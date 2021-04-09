@@ -1,0 +1,22 @@
+<message>
+  <header>
+    <module>KESWS_HLD_HOL</module>
+    <action>9</action>
+    <direction>IN</direction>
+    <user_id>KESWS</user_id>
+    <information>Request for Consignment verification</information>
+    <message_version>1</message_version>
+    <message_date>2021-03-19</message_date>
+  </header>
+  <data>
+    <data_in>
+      <SAD>
+        <message_nature>41</message_nature>
+        <sad_id>20NBOIM401638715</sad_id>
+        <version>1</version>
+        <oga_identification>KEBS</oga_identification>
+        <hold_detail>Entry no. 20NBOIM401638715</hold_detail>
+      </SAD>
+    </data_in>
+  </data>
+</message>

@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html data-wf-page="5e70fb3a565ebdc05ddb37cf" data-wf-site="5e70fb3a565ebd99c1db37ce"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>KEBS</title>
+    <th:block th:include="fragments/general-form.html :: headerfiles"/>
+    <style type="text/css">
+        #heading {
+            text-transform: uppercase;
+            color: #0082f3;
+            font-weight: normal
+        }
+
+        #msform {
+            text-align: center;
+            position: relative;
+            margin-top: 20px;
+            width: 90%;
+        }
+
+        #msform fieldset {
+            background: white;
+            border: 0 none;
+            border-radius: 0.5rem;
+            box-sizing: border-box;
+            width: 100%;
+            margin: 0 auto;
+            padding-bottom: 20px;
+            position: relative;
+            text-align: center;
+        }
+
+        .form-card {
+            text-align: left;
+            width: 100%;
+            text-align: center;
+        }
+
+        #msform fieldset:not(:first-of-type) {
+            display: none
+        }
+
+        #msform input,
+        #msform textarea,
+        #msform select{
+            padding: 8px 15px 8px 15px;
+            border: 1px solid #ccc;
+            border-radius: 0px;
+            margin-bottom: 25px;
+            margin-top: 2px;
+            display: block;
+            width: 50%;
+            box-sizing: border-box;
+            font-family: montserrat;
+            color: #2C3E50;
+            background-color: #ECEFF1;
+            font-size: 13px;
+            letter-spacing: 1px;
+            margin-left: 30px ;
+        }
+
+        #msform input:focus,
+        #msform textarea:focus,
+        #msform select:focus{
+            -moz-box-shadow: none !important;
+            -webkit-box-shadow: none !important;
+            box-shadow: none !important;
+            border: 1px solid #673AB7;
+            outline-width: 0
+        }
+
+        #msform .action-button {
+            width: 100px;
+            background: #0082f3;
+            font-weight: bold;
+            font-family: montserrat;
+            color: white;
+            border: 0 none;
+            border-radius: 0px;
+            cursor: pointer;
+            padding: 10px 5px;
+            margin: 10px 0px 10px 5px;
+            float: right
+        }
+
+        #msform .action-button:hover,
+        #msform .action-button:focus {
+            background-color: #0082f3
+            width: 100px;
+            background: #616161;
+            font-weight: bold;
+            color: white;
+            border: 0 none;
+            border-radius: 0px;
+            cursor: pointer;
+            padding: 10px 5px;
+            margin: 10px auto;
+            float: right
+        }
+
+
+
+        #msform .action-button-previous:hover,
+        #msform .action-button-previous:focus {
+            background-color: #000000
+        }
+
+        #msform .action-button-previous {
+            width: 100px;
+            background: #0082f3;
+            font-weight: bold;
+            color: white;
+            border: 0 none;
+            border-radius: 0px;
+            cursor: pointer;
+            padding: 10px 5px;
+            margin: 10px auto;
+            float: left;
+            margin-left: 700px;
+        }
+
+        /*#msform .next{*/
+        /*    margin-right: 200px;*/
+        /*}*/
+
+        .card {
+            z-index: 0;
+            border: none;
+            position: relative;
+            width: 900px;
+            border-radius: 5px;
+            -webkit-box-shadow: 0px 0px 5px 2px rgba(28,32,255,0.7);
+            box-shadow: 0px 0px 5px 2px rgba(28,32,255,0.7);
+            justify-content: center;
+            text-align: center;
+        }
+
+        .fs-title {
+            font-size: 25px;
+            color: #0082f3;
+            margin-bottom: 15px;
+            margin-left: 30px;
+            font-weight: normal;
+            text-align: left
+        }
+
+        .purple-text {
+            color: #0082f3;
+            font-weight: normal
+        }
+
+        .steps {
+            font-size: 25px;
+            color: #0082f3;;
+            margin-bottom: 10px;
+            font-weight: normal;
+            text-align: center;
+        }
+
+        .fieldlabels {
+            color: #1b75bc;
+            text-align: left;
+            display: block;
+            margin-left: 30px ;
+            font-size: 15px;
+        }
+
+        #msform table {
+            width: 100%;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        #msform table input{
+            height: 45px;
+            width: 100%;
+            font-size: 13px;
+        }
+
+        #progressbar {
+            margin-bottom: 30px;
+            overflow: hidden;
+            color: #0082f3;
+        }
+
+        #progressbar .active {
+            color: #0082f3
+        }
+
+        #progressbar li {
+            list-style-type: none;
+            font-size: 15px;
+            width: 25%;
+            float: left;
+            position: relative;
+            font-weight: 400
+        }
+
+        #progressbar #account:before {
+            font-family: FontAwesome;
+            content: "\f13e"
+        }
+
+        #progressbar #personal:before {
+            font-family: FontAwesome;
+            content: "\f007"
+        }
+
+        #progressbar #payment:before {
+            font-family: FontAwesome;
+            content: "\f030"
+        }
+
+        #progressbar #confirm:before {
+            font-family: FontAwesome;
+            content: "\f00c"
+        }
+
+        #progressbar li:before {
+            width: 50px;
+            height: 50px;
+            line-height: 45px;
+            display: block;
+            font-size: 20px;
+            color: #ffffff;
+            background: lightgray;
+            border-radius: 50%;
+            margin: 0 auto 10px auto;
+            padding: 2px
+        }
+
+        #progressbar li:after {
+            content: '';
+            width: 100%;
+            height: 2px;
+            background: lightgray;
+            position: absolute;
+            left: 0;
+            top: 25px;
+            z-index: -1
+        }
+
+        .radio-btn {
+            width: 20%;
+            height: 20%;
+        }
+
+        #progressbar li.active:before,
+        #progressbar li.active:after {
+            background: #0082f3
+        }
+
+        .progress {
+            height: 20px
+        }
+
+        .progress-bar {
+            background-color: #0082f3
+        }
+
+        .fit-image {
+            width: 100%;
+            object-fit: cover
+        }
+
+    </style>
+</head>
+<body>
+<div class="top-bar" th:replace="fragments/general-form.html :: top-bar"></div>
+<div class="section">
+    <div class="w-layout-grid main-grid">
+        <div class="main-grid-side-navigation" id="w-node-d308c123a20f-c123a20d" th:replace="fragments/general-form.html :: side-navigation-bar"></div>
+        <div class="main-content-div" id="w-node-d308c123a224-c123a20d">
+            <div class="content-nav" th:replace="fragments/general-form.html :: content-navigation-bar"></div>
+            <div class="content-wrap">
+                <div class="container-fluid">
+                    <div class="row justify-content-center">
+                        <div class="col-11 col-sm-9 col-md-7 col-lg-6 col-xl-5 text-center p-0 mt-3 mb-2">
+                            <div class="card px-0 pt-4 pb-0 mt-3 mb-3">
+                                <h2 id="heading">Apply For Product Exemption</h2>
+                                <p>Fill all form fields to go to next step</p>
+                                <form id="msform" method="post"
+                                      th:action="@{/api/di/pvoc/application-exception}" th:object="${pvocFormData}">
+                                    <!-- progressbar -->
+                                    <ul id="progressbar">
+                                        <li class="active" id="account"><strong>Manufacturer's Particulars</strong></li>
+                                        <li id="personal"><strong>Goods Manufactured</strong></li>
+                                        <li id="confirm"><strong>Finish</strong></li>
+                                    </ul>
+                                    <div class="progress">
+                                        <div class="progress-bar progress-bar-striped progress-bar-animated"
+                                             role="progressbar" aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+                                    <br> <!-- fieldsets -->
+                                    <fieldset >
+                                        <div class="form-card">
+                                            <div class="row">
+                                                <div class="col-7">
+                                                    <h2 class="fs-title">Identification Particulars Of The Manufacturers:</h2>
+                                                </div>
+                                                <div class="col-5">
+                                                    <h2 class="steps">Step 1 - 4</h2>
+                                                </div>
+                                            </div>
+                                            <label class="fieldlabels">Name Of the Company: *</label> <input id="conpanyName" type="text" readonly th:name="conpanyName" th:value="${manufacturer?.name}" placeholder="Name of the Company" />
+                                            <label class="fieldlabels">PIN No of the Company: *</label> <input type="text" readonly id="companyPinNo" th:name="companyPinNo" th:value="${manufacturer?.kraPin}" />
+                                            <label class="fieldlabels">Postal Address: *</label>
+                                            <input type="text" readonly id="postalAadress" th:name="postalAadress" th:value="${manufacturer?.postalAddress}" />
+                                            <label class="fieldlabels">Telephone No: *</label> <input type="phone" readonly id="telephoneNo" th:name="telephoneNo" th:value="${manufacturer?.companyTelephone}" />
+                                            <label class="fieldlabels">Email: *</label> <input type="email" readonly th:name="email" id="email" th:value="${manufacturer?.companyEmail}" />
+                                            <input type="hidden"  name="${_csrf.parameterName}"   value="${_csrf.token}"/>
+                                            <label class="fieldlabels">Physical Location: *</label> <input type="text" th:name="physicalLocation" th:value="${manufacturer.postalAddress}" />
+                                            <label class="fieldlabels">Contact Person: *</label>
+                                            <input type="text" th:name="contactPersorn" id="contactPersorn" th:value="${manufacturer?.companyTelephone}" />
+                                        </div>
+                                            <input type="button" name="next" class="next text-center action-button" value="Next" />
+                                    </fieldset>
+                                    <fieldset>
+                                        <div class="form-card">
+                                            <div class="row">
+                                                <div class="col-7">
+                                                    <h2 class="fs-title">Goods Manufactured:</h2>
+                                                </div>
+                                                <div class="col-5">
+                                                    <h2 class="steps">Step 2 - 4</h2>
+                                                </div>
+                                            </div>
+                                            <div th:object="${productsData}">
+                                                <table class="table table-striped table-responsive table-hover">
+                                                    <thead>
+                                                    <tr class="table-title">
+                                                        <th>SN</th>
+                                                        <th>PRODUCT NAME
+                                                        </th>
+                                                        <th>BRAND
+                                                        </th>
+                                                        <th> PERMIT NUMBER
+                                                        </th>
+                                                        <th>EXPIRY DATE
+                                                        </th>
+                                                        <th style="">Select</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    <tr th:each="product,itemStat  : ${products}">
+
+
+                                                        <td><input  class="productID" readonly
+                                                                   th:name="|products[${itemStat.index}]?.id|"
+                                                                   th:value="${product?.id}" type="text"></td>
+                                                        <td><input  class="productName"
+                                                                   th:name="|products[${itemStat.index}]?.productName|"
+                                                                   th:value="${product?.productName}"
+                                                                   type="text" readonly></td>
+                                                        <td><input  class="productBrand"
+                                                                   th:name="|products[${itemStat.index}]?.brandName|"
+                                                                   th:value="${product?.brandName}"
+                                                                   type="text" readonly></td>
+                                                        <td><input  class="permitNumber"
+                                                                   th:name="|products[${itemStat.index}]?.permitNumber|"
+                                                                   th:value="${product?.permitNumber}"
+                                                                   type="text" readonly></td>
+                                                        <td><input  class="expirelyDate"
+                                                                   th:name="|products[${itemStat.index}]?.expriryDate|"
+                                                                   th:value="${product?.expriryDate}"
+                                                                   type="text" readonly></td>
+                                                        <td><input
+                                                                   th:name="|products[${itemStat.index}]?.selectedProduct|"
+                                                                   th:value="${product?.selectedProduct}"
+                                                                   type="radio" class="radio-btn"  value="1"></td>
+
+                                                    </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+
+                                        </div>
+                                            <input type="button" name="previous" class="previous action-button-previous" value="Previous" />
+                                        <input type="submit" id="save" name="next" class="actionBtn next action-button" value="Submit" />
+                                    </fieldset>
+<!--                                    <fieldset>-->
+<!--                                        <div class="form-card">-->
+<!--                                            <div class="row">-->
+<!--                                                <div class="col-7">-->
+<!--                                                    <h2 class="fs-title">Exception Category:</h2>-->
+<!--                                                </div>-->
+<!--                                                <div class="col-5">-->
+<!--                                                    <h2 class="steps.css">Step 3 - 4</h2>-->
+<!--                                                </div>-->
+<!--                                            </div> <label class="fieldlabels">Select Exception Category:</label>-->
+<!--                                            <select th:field="*{exceptionCategory}" id="exceptionCategory">-->
+<!--                                                <option th:each="stats : ${exceptionCategories}" th:name="exceptionCategory" th:text="${stats?.name}"-->
+<!--                                                        th:value="${stats?.name}"  selected>Raw Materials</option>-->
+<!--                                            </select>-->
+<!--                                            <div style="display: block" id="sparePartsCat">-->
+<!--                                                <label class="fieldlabels">HS Code:</label>-->
+<!--                                                <input type="text" id="hsCode" th:name="hsCode" placeholder="HS Code:" />-->
+<!--                                                <div style="display: none" id="hsCodeAlter2"></div>-->
+<!--                                                <label class="fieldlabels">Country Of Orignin :</label>-->
+<!--                                                <select th:field="*{countryOfOrigin}" id="countryOfOrignin">-->
+<!--                                                    <option th:each="stats : ${contries}" th:name="countryOfOrigin" th:text="${stats?.name}"-->
+<!--                                                            th:value="${stats?.name}" >Japan</option>-->
+<!--                                                </select>-->
+<!--                                                <label class="fieldlabels">Raw Material Description:</label>-->
+<!--                                                <input type="text" id="rawMaterialDescription" th:name="industrialSparesDescription" placeholder="Industrial Spares Description:" />-->
+<!--                                                <label class="fieldlabels">End Product:</label>-->
+<!--                                                <input type="text" id="endProduct" th:name="industrialSparesDescription" placeholder="Industrial Spares Description:" />-->
+
+<!--                                                <label class="fieldlabels">Duty Rate:</label>-->
+<!--                                                <input type="text" id="dutyRate" th:name="industrialSparesDescription" placeholder="Duty Rate:" />-->
+<!--                                                <label class="fieldlabels">Industrial Spares Description:</label>-->
+<!--                                                <input type="text" id="industrialSparesDescription" th:name="industrialSparesDescription" placeholder="Industrial Spares Description:" />-->
+
+<!--                                                <label class="fieldlabels">Machine to be fitted to:</label>-->
+<!--                                                <input type="text" id="machineToBeFitted" th:name="machineToBeFitted" placeholder="Machine to be fitted to:" />-->
+
+<!--                                                <label class="fieldlabels">Machine Description :</label>-->
+<!--                                                <input type="text" id="machineDescription" th:name="machineDescription" placeholder="Machine description">-->
+
+<!--                                                <label class="fieldlabels">Make and Model :</label>-->
+<!--                                                <input type="text" id="makeModel" th:name="makeModel">-->
+<!--                                            </div>-->
+<!--&lt;!&ndash;                                            <div th:object="${receiveDummy.children.add(receiveDummy)}" id="receiveDummy" th:value="receiveDummy"></div>&ndash;&gt;-->
+<!--                                        </div>-->
+<!--                                                <input type="button" name="previous" class="actionBtn previous action-button-previous" value="Previous" />-->
+<!--                                    </fieldset>-->
+                                    <fieldset>
+                                        <div class="form-card">
+                                            <div class="row">
+                                                <div class="col-7">
+                                                    <h2 class="fs-title">Finish:</h2>
+                                                </div>
+                                                <div class="col-5">
+                                                    <h2 class="steps">Step 4 - 4</h2>
+                                                </div>
+                                            </div> <br><br>
+                                            <h2 class="purple-text text-center"><strong>SUCCESS !</strong></h2> <br>
+                                            <div class="row justify-content-center">
+                                                <div class="col-3"> <img src="https://i.imgur.com/GwStPmg.png" style="width: 60% ; height: auto" class="fit-image"> </div>
+                                            </div> <br><br>
+                                            <div class="row justify-content-center">
+                                                <div class="col-7 text-center">
+                                                    <h5 class="purple-text text-center">You are going to be redirected to exceptions page you can apply several exceptions of your products</h5>
+                                                    <h5 class="purple-text text-center">Congraturation on finishing first part of the application</h5>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </fieldset>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" th:src="@{/js/exception/steps.js}"></script>
+</body>
+</html>
+

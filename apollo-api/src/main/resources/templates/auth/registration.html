@@ -1,0 +1,139 @@
+<!--
+  ~ /*
+  ~  *
+  ~  *
+  ~  *  *    Copyright (c) ${YEAR}.   BSK Global Technologies
+  ~  *  *
+  ~  *  *    Licensed under the Apache License, Version 2.0 (the "License");
+  ~  *  *    you may not use this file except in compliance with the License.
+  ~  *  *    You may obtain a copy of the License at
+  ~  *  *
+  ~  *  *       http://www.apache.org/licenses/LICENSE-2.0
+  ~  *  *
+  ~  *  *    Unless required by applicable law or agreed to in writing, software
+  ~  *  *    distributed under the License is distributed on an "AS IS" BASIS,
+  ~  *  *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~  *  *   See the License for the specific language governing permissions and
+  ~  *  *   limitations under the License.
+  ~  *
+  ~  */
+  -->
+
+<!DOCTYPE html>
+<html
+        xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>KEBS</title>
+    <th:block th:include="fragments/anonymous-form.html :: headerfiles"/>
+</head>
+<body>
+<div class="top-bar" th:replace="fragments/anonymous-form.html :: top-bar">
+
+</div>
+<div class="section">
+    <div class="w-layout-grid main-grid">
+
+        <div class="main-content-div" id="w-node-d308c123a224-c123a20d">
+            <div class="content-nav" th:replace="fragments/anonymous-form.html :: content-navigation-bar"></div>
+            <div class="content-wrap">
+                <div class="form-nav">
+                    <a aria-current="page" class="link-block-2 w-inline-block w--current" href="../customer-import-inspection/pvoc-exemption-form.html">
+                        <div class="text-block-4"><span class="text-span">1</span>Manufacturer Details</div>
+                    </a>
+                    <a class="link-block-2 w-inline-block" href="../customer-import-inspection/pvoc-exemption-form-2.html">
+                        <div class="text-block-4"><span class="text-span">2</span>Exemption Goods Detail</div>
+                    </a>
+                </div>
+                <h1>Manufacturer Registration Form<span></span></h1>
+                <div>
+                    <h3>Kindly fill in the details below</h3>
+                    <div class="pvocformblock w-form">
+                        <form data-name="Manufacturer Registration Form" method="post" th:action="@{/api/auth/signup/manufacturer/save}" th:object="${manufacturersEntity}">
+                            <h2>A. FIRM DETAILS</h2>
+                            <div>
+                                <label class="field-label" for="CompanyName">Business / Company Name</label>
+                                <input class="w-input" data-name="Company Name" id="CompanyName" maxlength="256" name="CompanyName" required="" type="text" th:field="*{name}">
+                            </div>
+                            <div>
+                                <label class="field-label" for="Company-KRA-PIN">Company KRA PIN</label>
+                                <input class="w-input" data-name="Company KRA PIN" id="Company-KRA-PIN" maxlength="256" name="Company-KRA-PIN" th:required="required" type="text" th:field="*{kraPin}">
+                            </div>
+                            <div>
+                                <label class="field-label" for="manufacturerRegistrationNumber">Company KRA PIN</label>
+                                <input class="w-input" data-name="Company KRA PIN" id="manufacturerRegistrationNumber" maxlength="256" name="manufacturerRegistrationNumber" th:field="*{registrationNumber}"
+                                       th:required="required" type="text">
+                            </div>
+                            <div>
+                                <label class="field-label" for="Company-Email">Company Email</label>
+                                <input class="w-input" data-name="Company Email" id="Company-Email" maxlength="256" name="Company-Email" th:field="*{companyEmail}" th:required="required" type="text">
+                            </div>
+                            <div>
+                                <label class="field-label" for="Address">Postal Address</label>
+                                <input class="w-input" data-name="Address" id="Address" maxlength="256" name="address" type="text" th:field="*{postalAddress}" th:required="required">
+                            </div>
+                            <div>
+                                <label class="field-label" for="Telephone">Telephone</label>
+                                <input class="w-input" data-name="Telephone" id="Telephone" maxlength="256" name="telephone" required="" type="tel" th:field="*{companyTelephone}" th:required="required">
+                            </div>
+                            <div class="field-container">
+                                <label class="field-label" for="businessNatures">Manufacturer Nature of Business</label>
+                                <select id="businessNatures" name="businessNatures" th:field="${manufacturersEntity.businessNatureId}">
+                                    <option th:each="businessNature : ${businessNatures}"
+                                            th:utext="${businessNature.name}" th:value="${businessNature.id}"></option>
+                                </select>
+                            </div>
+                            <div class="field-container">
+                                <label class="field-label" for="businessLine">Manufacturer Line of Business</label>
+                                <select id="businessLine" name="businessLine" th:field="${businessLines}">
+                                    <option th:each="businessLine : ${businessLines}"
+                                            th:utext="${businessLine.name}" th:value="${businessLine.id}"></option>
+                                </select>
+                            </div>
+                            <div th:object="${manufacturerAddressesEntity}">
+                                <label class="field-label">Main Physical Location</label>
+                                <div>
+                                    <label class="field-label" for="buildingName">Main Address Building</label>
+                                    <input class="w-input" data-name="buildingName" id="buildingName" maxlength="256" name="buildingName" type="text" th:field="*{buildingName}" th:required="required">
+                                </div>
+                                <div>
+                                    <label class="field-label" for="streetName">Street Name</label>
+                                    <input class="w-input" data-name="streetName" id="streetName" maxlength="256" name="streetName" type="text" th:field="*{streetName}" th:required="required">
+                                </div>
+                            </div>
+                            <div th:object="${contactDetailsEntity}">
+                                <label class="field-label">Add A contact Person</label>
+                                <div class="field-container">
+                                    <label class="field-label" for="userFirstName">First Name</label>
+                                    <input class="input-field w-input" data-name="Name" id="userFirstName" maxlength="256" name="userFirstName" th:field="*{firstName}" th:required="required" type="text">
+                                </div>
+                                <div class="field-container"><label class="field-label" for="userLastName">Last Name</label>
+                                    <input class="input-field w-input" data-name="Name 2" id="userLastName" maxlength="256" name="userLastName-2" th:field="*{lastName}" th:required="required" type="text">
+                                </div>
+                                <div class="field-container">
+                                    <label class="field-label" for="Contact-Person-Telephone">Contact Person Telephone</label>
+                                    <input class="w-input" data-name="Contact Person Telephone" id="Contact-Person-Telephone" maxlength="256" name="Contact-Person-Telephone" required="" type="tel"
+                                           th:field="*{cellPhone}" th:required="required">
+                                </div>
+                                <div class="field-container">
+                                    <label class="field-label" for="Contact-Person-Email">Contact Person Email</label>
+                                    <input class="w-input" data-name="Contact Person Email" id="Contact-Person-Email" name="Contact-Person-Email" type="email" th:field="*{emailAddress}" th:required="required">
+                                </div>
+                            </div>
+                            <input class="w-button" data-wait="Please wait..." type="submit" value="Submit"></form>
+                        <div class="w-form-done">
+                            <div>Thank you! Your submission has been received!</div>
+                        </div>
+                        <div class="w-form-fail">
+                            <div>Oops! Something went wrong while submitting the form.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="div-block-4"><a class="content-button" href="#"><span class="font-awesome-span"></span>Notifications</a></div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

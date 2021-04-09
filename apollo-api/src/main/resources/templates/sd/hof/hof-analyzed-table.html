@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html >
+<head lang="en">
+
+    <title>providers</title>
+
+</head>
+<body>
+
+
+
+    <link href="css/style_2016.css" rel="stylesheet">
+    <link href="datatables/css/dataTables.bootstrap4.min.css" rel="stylesheet">
+    
+    <link rel="stylesheet" href="css/bootstrap.css">
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/settings.css">
+
+
+    <link href="{/font-awesome.min.css}" rel="stylesheet">
+    <link href="jquery/jquery.autocomplete.css" rel="stylesheet">
+
+
+    
+<div class="navbar navbar-inverse navbar-fixed-top">
+    <div class="navbar-inner clearfix">
+        <a class="brand" href=""><img src="" alt="" width="320" height="52" /></a>
+
+        
+        <ul class="nav">
+            <li><a href="#" onclick="pageTracker._link(this.href); return false;">
+                <strong>Logout</strong></a></li>
+            <li class="divider"></li>
+            
+          
+            
+            <li class="divider"></li>
+            <li><a href="https://www.dropbox.com/" target="_blank" ><strong>Save hospital document to cloud...........</strong></a></li>
+            
+            <li class="divider"></li>
+            <li style="border:1px solid #fff"><a href="/viewadmintimeline" style="color: #fff"><strong>Admin Timeline.......</strong></a></li>
+            
+        </ul>
+        
+    </div>
+</div> 
+<!-- <div class="container-fluid"> -->
+
+<div class="row-fluid">
+<div class="sidebar-nav">
+    <ul class="nav nav-list">
+        <ul class="nav nav-list">
+            <li class="nav-header">hospital staff</li>
+            <li><a href="/registerstaff" title="My Health Providers">
+                <img th:src="@{/img/images7.jfif}">add and view hospital staff</a></li>
+           
+            
+            <li class="nav-header">doctor tasks</li>
+            <li><a href="/registerdoc" data-toggle="modal" title="Appointments and Reminders">
+                <img th:src="@{/img/refer.png}">Register doctor to network</a></li>
+               
+                <li><a href="/managedoc" data-toggle="modal" title="Appointments and Reminders">
+                        <img th:src="@{/img/refer.png}">Manage doctor account</a></li>
+                         
+            <li class="nav-header">patient tasks</li>
+            <li><a href="/viewpatient" data-toggle="modal" title="Appointments and Reminders">
+                <img th:src="@{/img/imageskl.png}">view admitted patient</a></li>
+                <li><a href="/patientaccount" data-toggle="modal" title="Appointments and Reminders">
+                <img th:src="@{/img/images6.jfif}">manage patient account</a></li>
+               
+                <li><a href="/viewlabrequests" data-toggle="modal" title="Appointments and Reminders">
+                        <img th:src="@{img/folder.png}">View lab requests</a></li>
+                        
+                <li><a href="/viewfeedback" data-toggle="modal" title="Appointments and Reminders">
+                        <img th:src="@{/img/feedback.png}">view feedback</a></li>
+                        
+                <li><a href="/viewdonation" data-toggle="modal" title="Appointments and Reminders">
+                        <img th:src="@{/img/gift.png}">view pledges and donations</a></li>
+                        
+            <li class="nav-header">Announcements</li>
+            <li><a href="/postannouncement" data-toggle="modal" title="Appointments and Reminders">
+                <img th:src="@{/img/alert.png}">Post announcements</a></li>
+                  <li><a href="/enrollremind" data-toggle="modal" title="Appointments and Reminders">
+                <img th:src="@{/img/insurance.png}">Add insurance supported</a></li>
+                 <li><a href="/uploaddocument" data-toggle="modal" title="Appointments and Reminders">
+                <img th:src="@{/img/imagesjjk.png}">Upload doctor stuff</a></li>
+
+
+           
+    </ul>
+        <ul class="thumbnails" style="padding-top: 10px; min-height: 100px;" id="friendsList">
+        </ul>
+    </ul>
+</div>
+ <div class="container-fluid"> 
+
+
+<div class="content" >
+    <div class="row-fluid">    
+        <div class="span16">
+                <div class="table-responsive">
+                  <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>Name of insurance provider</th>
+                            <th>Service supported</th>
+					        <th >Action</th>
+                      </tr>
+                    </thead> 
+                    <tfoot>
+                        <th>Name of insurance provider</th>
+                        <th>Service supported</th>
+                        <th >Action</th>
+                    </tfoot>
+
+                    <tbody> 
+                        
+                        <tr>
+                                <td>2</td>
+                                <td>${user.ssoId}</td>
+                                <td>
+                                   <a  class="label label-success" href="go"> view  </a> 
+                                   <a  href="after" class="label label-warning" > edit  </a>
+                                   <a  class="label label-danger"href="DOCTYPE"> delete  </a>                              
+                                </td>                                             
+                               
+                            </tr>
+                           
+                            <tr>
+                                    <td>2</td>
+                                    <td>${user.ssoId}</td>
+                                    <td>
+                                       <a  class="label label-success" href="#"> view  </a> 
+                                       <a  class="label label-warning" href="#"> edit  </a>
+                                       <a  class="label label-danger"href="#"> delete  </a>                              
+                                    </td>                                             
+                                   
+                                </tr>
+                            
+                          
+                        
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+             </div> 
+                
+     </div> 
+        
+     <hr>
+     <!-- Placed at the end of the document so the pages load faster -->
+              
+             <script src="jquery3/jquery-3.3.1.js"></script>
+             <script src="bootstrap/js/bootstrap.bundle.min.js"></script>
+             <script src="datatables/js/jquery.dataTables.min.js"></script>
+             <script src="datatables/js/dataTables.bootstrap4.min.js"></script>
+             <script src="datatables/js/sb-admin-datatables.min.js"></script>
+         
+     
+ </body></html>
+ 

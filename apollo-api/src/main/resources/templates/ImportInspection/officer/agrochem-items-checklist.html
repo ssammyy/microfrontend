@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<!--  This site was created in Webflow. http://www.webflow.com  -->
+<!--  Last Published: Wed Mar 25 2020 22:10:52 GMT+0000 (Coordinated Universal Time)  -->
+<html
+        data-wf-page="5e7b4dbca80432508ef8b2ba"
+        data-wf-site="5e79ef7d4b44cb0a3bd7c0b4"
+        xmlns:th="http://www.w3.org/1999/xhtml">
+<div th:replace="fragments/head :: head-fragment"></div>
+<link th:rel="stylesheet" th:href="@{webjars/bootstrap/4.0.0-2/css/bootstrap.min.css} "/>
+<body>
+<div class="header-section">
+    <div class="div-block-6"></div>
+    <a
+            href="../importer/import-inspection-importer.html"
+            aria-current="page"
+            class="brand w-inline-block w--current"
+    ><img src="../../images/Component-1.png" alt="" class="kebs-logo"
+    /></a>
+    <div data-delay="0" class="dropdown w-dropdown">
+        <div class="dropdown-toggle w-dropdown-toggle">
+            <div>
+                <div class="dropdown-heading">Inspection Officer</div>
+                <div>Jane Doe</div>
+            </div>
+            <div class="dropdown-icon w-icon-dropdown-toggle"></div>
+        </div>
+        <nav class="dropdown-list w-dropdown-list"><a href="../officer/import-inspection-officer.html"
+                                                      class="dropdown-link w-dropdown-link">Inspection Officer</a><a href="../officer/my-notifications.html"
+                                                                                                                     class="dropdown-link w-dropdown-link">Notifications</a><a
+                href="../officer/import-goods-exempted-from-pvoc.html" class="dropdown-link w-dropdown-link">Import Exempted
+            from PVoC</a><a href="../officer/consignment-with-UCR.html" aria-current="page"
+                            class="dropdown-link w-dropdown-link w--current">Re-Imports</a><a
+                href="../officer/consignment-with-UCRs-detail.html" class="dropdown-link w-dropdown-link">Consignment with
+            UCRs Detail</a><a href="../officer/target-consignment-inspections.html"
+                              class="dropdown-link w-dropdown-link">Target Consign. Inspection</a><a
+                href="../officer/sp-targeted-consignment-inspections-detail-pending-review.html"
+                class="dropdown-link w-dropdown-link">Target Consign. Inspection<br>Pending Inspection</a><a
+                href="../officer/import-inspection-officer.html" class="dropdown-link w-dropdown-link">--Import Inspection -
+            supervisor</a></nav>
+    </div>
+</div>
+<div class="section">
+    <div th:replace="fragments/sidebar :: sidebar-fragment"></div>
+    <div class="content-body">
+        <div class="content-navbar">
+            <h3 th:text="${session.applicationName}"></h3>
+            <a href="#" class="content-link w-inline-block w-clearfix">
+                <div class="button-icon w-embed">
+                    <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            xmlns:xlink="http://www.w3.org/1999/xlink"
+                            width="20"
+                            height="20"
+                            viewbox="0 0 20 20"
+                    >
+                        <defs>
+                            <style>
+                                .cls-1 {
+                                    clip-path: url(#clip-dash);
+                                }
+                                .cls-2 {
+                                    fill: currentColor;
+                                }
+                            </style>
+                            <clippath id="clip-dash">
+                                <rect width="20" height="20"></rect>
+                            </clippath>
+                        </defs>
+                        <g id="dash" class="cls-1">
+                            <path
+                                    id="dashboard"
+                                    class="cls-2"
+                                    d="M124,3456h-5v-5h5v5Zm-7.5,0h-5v-5h5v5Zm-7.5,0h-5v-5h5v5Zm15-7.5h-5v-5h5v5Zm-7.5,0h-5v-5h5v5Zm-7.5,0h-5v-5h5v5Zm15-7.5h-5v-5h5v5Zm-7.5,0h-5v-5h5v5Zm-7.5,0h-5v-5h5v5Z"
+                                    transform="translate(-104 -3436)"
+                            ></path>
+                        </g>
+                    </svg>
+                </div>
+                <div class="text-block">Dashboard</div>
+            </a>
+            <a th:href="@{/api/inspection/importer/import-inspection-importer}"
+               aria-current="page"
+               class="content-link w-inline-block w-clearfix w--current"
+            >
+                <div class="button-icon w-embed">
+                    <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            xmlns:xlink="http://www.w3.org/1999/xlink"
+                            width="20"
+                            height="20"
+                            viewbox="0 0 20 20"
+                    >
+                        <defs>
+                            <style>
+                                .cls-1 {
+                                    clip-path: url(#clip-ii);
+                                }
+                                .cls-2 {
+                                    fill: currentColor;
+                                }
+                            </style>
+                            <clippath id="clip-ii">
+                                <rect width="20" height="20"></rect>
+                            </clippath>
+                        </defs>
+                        <g id="ii" class="cls-1">
+                            <path
+                                    id="import_inspection"
+                                    data-name="import inspection"
+                                    class="cls-2"
+                                    d="M460.272,3143h-.909a7.867,7.867,0,0,1-3.636-.9,7.96,7.96,0,0,1-7.273,0,7.977,7.977,0,0,1-3.637.9h-.909a.909.909,0,0,1,0-1.818h.909a6.357,6.357,0,0,0,3.391-1.037.46.46,0,0,1,.482,0,6.253,6.253,0,0,0,6.791,0,.46.46,0,0,1,.482,0,6.416,6.416,0,0,0,3.4,1.036h.909a.909.909,0,0,1,0,1.818Zm-.863-3.636h-.046a4.775,4.775,0,0,1-3.318-1.491.461.461,0,0,0-.317-.13.436.436,0,0,0-.31.13,4.825,4.825,0,0,1-3.327,1.491,4.775,4.775,0,0,1-3.318-1.491.462.462,0,0,0-.628,0,4.825,4.825,0,0,1-3.327,1.491h-.045l-1.727-6.073a.92.92,0,0,1,.054-.708.91.91,0,0,1,.546-.455l1.172-.382v-4.2a1.82,1.82,0,0,1,1.819-1.818h2.727v-1.818a.91.91,0,0,1,.909-.91h3.636a.911.911,0,0,1,.91.91v1.818h2.727a1.82,1.82,0,0,1,1.818,1.818v4.2l1.163.382a.905.905,0,0,1,.546.455.962.962,0,0,1,.055.708l-1.718,6.073Zm-7.323-9.907a1.877,1.877,0,0,1,.568.088l4.891,1.609v-2.7a.91.91,0,0,0-.909-.909h-9.091a.91.91,0,0,0-.909.909v2.7l4.881-1.609A1.883,1.883,0,0,1,452.086,3129.456Z"
+                                    transform="translate(-441.998 -3122)"
+                            ></path>
+                        </g>
+                    </svg>
+                </div>
+                <div class="text-block">Agrochem Inspection Checklist</div>
+            </a>
+            <div class="back-button-div"></div>
+        </div>
+        <div class="content-title-bar">
+            <div>
+                <h3 class="h3-blue">Agrochem Inspection Checklist</h3>
+                <div class="body-text">Kindly fill in the details below</div>
+            </div>
+            <div class="div-block-5">
+                <form action="/search" class="search hide w-clearfix w-form">
+                    <input
+                            type="search"
+                            class="search-input w-input"
+                            maxlength="256"
+                            name="query"
+                            placeholder="Search…"
+                            id="search"
+                            required=""
+                    /><input
+                        type="submit"
+                        value="Search"
+                        class="search-button w-button"
+                />
+                </form>
+            </div>
+        </div>
+        <div class="content-section">
+            <div class="left-column">
+                <div class="application-section">
+                    <div class="form-block w-form">
+                        <form id="email-form" th:action="@{/api/inspection/officer/inspection/checklist-submit/{id}(id=${itemCocs.id})}" method="post" data-name="Email Form" th:object="${checkList}">
+<!--                            <div class="field-container" >-->
+<!--                                <label for="status" class="field-label h3-blue">Status</label>-->
+<!--                                <textarea  style="margin: auto; display: block" id="status" class="input-field w-input" cols="12" rows="5"></textarea>-->
+<!--                            </div>-->
+                            <div class="field-container">
+                                <label for="serialNumber" class="field-label h3-blue">1. Serial Number</label>
+                                <div class="field-container" style="display: flex; width: 700px">
+                                    <input type="text"  class="input-field w-input" th:field="*{serialNumber}"  style="width: 75%;" maxlength="256" name="makeOfVehicle" data-name="makeOfVehicle" id="serialNumber">
+<!--                                    <div class="form-group"   style="display: flex; justify-content: space-between; align-items: center; color: darkred;  width: 20%; margin: 5px 10px">-->
+<!--                                        <input type="radio" class="form-check-input" th:name="serialNumberStatus" id="serialNumberStatus_yes" th:value="1" > <label for="serialNumberStatus_yes"> Compliant</label>-->
+<!--                                        <input type="radio" id="serialNumberStatus_no" class="form-check-input"  th:name="serialNumberStatus" th:value="0" > <label for="serialNumberStatus_no">Non Compliant</label>-->
+<!--                                    </div>-->
+                                </div>
+<!--                                <textarea  style="margin: auto;margin-left: 10px; display: none" id="serialNumberStatus_rm" th:name="serialNumberStatus" class="input-field w-input" cols="12" rows="5"></textarea>-->
+
+                            </div>
+
+                            <div class="field-container"><label for="productDescription" class="field-label h3-blue">2. Product description</label>
+                                <div class="field-container" style="display: flex; width: 850px">
+                                    <input type="text"   th:value="${itemCocs.itemDescription}" disabled class="input-field w-input" style="width: 95%;" maxlength="256" name="productDescription" data-name="productDescription" id="productDescription">
+                                    <div  style="display: flex; justify-content: space-between; align-items: center; color: darkred;  width: 55%; margin: 5px 10px">
+                                        <input type="radio" class="form-check-input" th:name="productStatus" id="productStatus_yes" th:value="1"> <label for="productStatus_yes"> Compliant</label>
+                                        <input type="radio" id="productStatus_no" th:name="productStatus" class="form-check-input"  th:value="0"> <label for="productStatus_no">Non Compliant</label>
+                                    </div>
+                                </div>
+                                <textarea  style="margin: auto;margin-left: 10px; display: none" id="productDescription_rm" th:field="*{productDescriptionRemarks}" class="input-field w-input" cols="12" rows="5"></textarea>
+                            </div>
+                            <div class="field-container"><label for="brand" class="field-label h3-blue">3. BRAND</label>
+                                <div class="field-container" style="display: flex; width: 700px">
+                                    <input type="text" class="input-field w-input"   th:field="*{brand}"  style="width: 75%;" maxlength="256"  id="brand">
+<!--                                    <div  style="display: flex; justify-content: space-between; align-items: center; color: darkred;  width: 20%; margin: 5px 10px">-->
+<!--                                        <input type="radio" class="form-check-input" id="brandStatus_yes" th:name="brandStatus" th:value="1"> <label for="brandStatus_yes"> Compliant</label>-->
+<!--                                        <input type="radio" id="brandStatus_no" th:name="brandStatus" class="form-check-input" th:value="0"> <label for="brandStatus_no">Non Compliant</label>-->
+<!--                                    </div>-->
+                                </div>
+<!--                                <textarea  style="margin: auto;margin-left: 10px; display: none" id="brand_rm" th:name="brand" class="input-field w-input" cols="12" rows="5"></textarea>-->
+                            </div>
+                            <div class="field-container"><label for="ksEasApplicable" class="field-label h3-blue">4. KS/EAS APPLICABLE</label>
+                                <div class="field-container" style="display: flex; width: 700px">
+                                    <input type="text" class="input-field w-input"  th:field="*{ksEasApplicable}"  style="width: 75%;" maxlength="256" name="ksEasApplicable" data-name="ksEasApplicable" id="ksEasApplicable">
+<!--                                    <div  style="display: flex; justify-content: space-between; align-items: center; color: darkred;  width: 20%; margin: 5px 10px">-->
+<!--                                        <input type="radio" class="form-check-input" id="ksEasApplicableStatus_yes" th:name="ksEasApplicableStatus" th:value="1"> <label for="ksEasApplicableStatus_yes"> Compliant</label>-->
+<!--                                        <input type="radio" id="ksEasApplicableStatus_no" class="form-check-input" th:name="ksEasApplicableStatus" th:value="0"> <label for="ksEasApplicableStatus_no">Non Compliant</label>-->
+<!--                                    </div>-->
+                                </div>
+<!--                                <textarea  style="margin: auto; margin-left: 10px; display: none" id="ksEasApplicable_rm" th:name="ksEasApplicable" class="input-field w-input" cols="12" rows="5"></textarea>-->
+                            </div>
+                            <div class="field-container"><label for="quantityDeclared" class="field-label h3-blue">5. QUANTITY DECLARED (No. Of items/packages)</label>
+                                <div class="field-container" style="display: flex; width: 850px">
+                                    <input type="text" class="input-field w-input"  th:value="${itemCocs.quantity}" disabled style="width: 95%;" maxlength="256" name="quantityDeclared" data-name="quantityDeclared" id="quantityDeclared">
+                                    <div  style="display: flex; justify-content: space-between; align-items: center; color: darkred;  width: 55%; margin: 5px 10px">
+                                        <input type="radio" class="form-check-input" id="quantityDeclaredStatus_yes" th:name="quantityDeclaredStatus" th:value="1"> <label for="quantityDeclaredStatus_yes"> Compliant</label>
+                                        <input type="radio" id="quantityDeclaredStatus_no" class="form-check-input" th:name="quantityDeclaredStatus" th:value="0"> <label for="quantityDeclaredStatus_no">Non Compliant</label>
+                                    </div>
+                                </div>
+                                <textarea  style="margin: auto; margin-left: 10px; display: none" id="quantityDeclared_rm" th:field="*{quantityDeclaredRemarks}"  th:name="quantityDeclared" class="input-field w-input" cols="12" rows="5"></textarea>
+                            </div>
+                            <div class="field-container"><label for="quantityVerified" class="field-label h3-blue">6. QUANTITY VERIFIED(No. Of items/packages)</label>
+                                <div class="field-container" style="display: flex; width: 700px">
+                                    <input type="text" class="input-field w-input"  th:field="*{quantityVerified}"  style="width: 75%;" maxlength="256" name="quantityVerified" data-name="quantityVerified" id="quantityVerified">
+<!--                                    <div  style="display: flex; justify-content: space-between; align-items: center; color: darkred;  width: 20%; margin: 5px 10px">-->
+<!--                                        <input type="radio" class="form-check-input" id="quantityVerifiedStatus_yes" th:name="quantityVerifiedStatus" th:value="1"> <label for="quantityVerifiedStatus_yes"> Compliant</label>-->
+<!--                                        <input type="radio" id="quantityVerifiedStatus_no" class="form-check-input" th:name="quantityVerifiedStatus" th:value="0"> <label for="quantityVerifiedStatus_no">Non Compliant</label>-->
+<!--                                    </div>-->
+                                </div>
+<!--                                <textarea  style="margin: auto; margin-left: 10px; display: none" id="quantityVerified_rm" th:name="quantityVerified" class="input-field w-input" cols="12" rows="5"></textarea>-->
+                            </div>
+
+                            <div class="field-container">
+                                <label for="dateMfgPackaging" class="field-label h3-black">MARKING </label>
+                                <label for="dateMfgPackaging" class="field-label h3-blue">Date of mfg/packaging</label>
+                                <div class="field-container" style="display: flex; width: 700px">
+                                    <input type="date" class="input-field w-input" th:field="*{dateMfgPackaging}"   style="width: 75%;" maxlength="256" id="dateMfgPackaging" th:name="dateMfgPackaging">
+<!--                                    <div  style="display: flex; justify-content: space-between; align-items: center; color: darkred;  width: 20%; margin: 5px 10px">-->
+<!--                                        <input type="radio" class="form-check-input" id="dateMfgPackagingStatus_yes" th:name="dateMfgPackagingStatus" th:value="1"> <label for="dateMfgPackagingStatus_yes"> Compliant</label>-->
+<!--                                        <input type="radio" id="dateMfgPackagingStatus_no" class="form-check-input"  th:name="dateMfgPackagingStatus" th:value="0"> <label for="dateMfgPackagingStatus_no">Non Compliant</label>-->
+<!--                                    </div>-->
+                                </div>
+<!--                                <input style="margin: auto; margin-left: 10px; display: none" type="date" id="dateMfgPackaging_rm" class="form-check-input" th:name="dateMfgPackaging" th:value="0">-->
+                            </div>
+                            <div class="field-container"><label for="dateExpiry" class="field-label h3-blue">Date of Expiry</label>
+                                <div class="field-container" style="display: flex; width: 700px">
+                                    <input type="date" class="input-field w-input" th:field="*{dateExpiry}"  style="width: 75%;" maxlength="256" id="dateExpiry" th:name="dateExpiry" >
+<!--                                    <div  style="display: flex; justify-content: space-between; align-items: center; color: darkred;  width: 20%; margin: 5px 10px">-->
+<!--                                        <input type="radio" class="form-check-input" id="dateExpiryStatus_yes" th:name="dateExpiryStatus" th:value="1"> <label for="dateExpiryStatus_yes"> Compliant</label>-->
+<!--                                        <input type="radio" id="dateExpiryStatus_no" class="form-check-input" th:name="dateExpiryStatus" th:value="0"> <label for="dateExpiryStatus_no">Non Compliant</label>-->
+<!--                                    </div>-->
+                                </div>
+<!--                                <input style="margin: auto; margin-left: 10px; display: none" type="date" id="dateExpiry_rm" class="form-check-input" th:name="dateExpiry" th:value="0">-->
+                            </div>
+                            <div class="field-container"><label for="mfgName" class="field-label h3-blue">Mfg Name</label>
+                                <div class="field-container" style="display: flex; width: 700px">
+                                    <input type="text" class="input-field w-input"  th:field="*{mfgName}"  style="width: 75%;" maxlength="256" th:name="mfgName" id="mfgName">
+<!--                                    <div  style="display: flex; justify-content: space-between; align-items: center; color: darkred;  width: 20%; margin: 5px 10px">-->
+<!--                                        <input type="radio" class="form-check-input" id="mfgNameStatus_yes" th:name="mfgNameStatus" th:value="1"> <label for="mfgNameStatus_yes"> Compliant</label>-->
+<!--                                        <input type="radio" id="mfgNameStatus_no" class="form-check-input" th:name="mfgNameStatus" th:value="0"> <label for="mfgNameStatus_no">Non Compliant</label>-->
+<!--                                    </div>-->
+                                </div>
+<!--                                <textarea  style="margin: auto; margin-left: 10px; display: none" id="mfgName_rm" th:name="mfgName" class="input-field w-input" cols="12" rows="5"></textarea>-->
+                            </div>
+                            <div class="field-container"><label for="mfgAddress" class="field-label h3-blue">Mfg Address</label>
+                                <div class="field-container" style="display: flex; width: 700px">
+                                    <input type="text" class="input-field w-input" th:field="*{mfgAddress}"   style="width: 75%;" maxlength="256" th:name="mfgAddress" id="mfgAddress">
+<!--                                    <div  style="display: flex; justify-content: space-between; align-items: center; color: darkred;  width: 20%; margin: 5px 10px">-->
+<!--                                        <input type="radio" class="form-check-input" id="mfgAddressStatus_yes" th:name="mfgAddressStatus" th:value="1"> <label for="mfgAddressStatus_yes"> Compliant</label>-->
+<!--                                        <input type="radio" id="mfgAddressStatus_no" class="form-check-input" th:name="mfgAddressStatus" th:value="0"> <label for="mfgAddressStatus_no">Non Compliant</label>-->
+<!--                                    </div>-->
+                                </div>
+<!--                                <textarea  style="margin: auto;margin-left: 10px; display: none" id="mfgAddress_rm" th:name="mfgAddress" class="input-field w-input" cols="12" rows="5"></textarea>-->
+                            </div>
+                            <div class="field-container"><label for="compositionIngredients" class="field-label h3-blue">Composition/Ingredients</label>
+                                <div class="field-container" style="display: flex; width: 700px">
+                                    <input type="text" class="input-field w-input"  th:field="*{compositionIngredients}"  style="width: 75%;" maxlength="256" th:name="compositionIngredients" id="compositionIngredients">
+<!--                                    <div  style="display: flex; justify-content: space-between; align-items: center; color: darkred;  width: 20%; margin: 5px 10px">-->
+<!--                                        <input type="radio" class="form-check-input" id="compositionIngredientsStatus_yes" th:name="compositionIngredientsStatus" th:value="1"> <label for="compositionIngredientsStatus_yes"> Compliant</label>-->
+<!--                                        <input type="radio" id="compositionIngredientsStatus_no" class="form-check-input" th:name="compositionIngredientsStatus" th:value="0"> <label for="compositionIngredientsStatus_no">Non Compliant</label>-->
+<!--                                    </div>-->
+                                </div>
+<!--                                <textarea  style="margin: auto;margin-left: 10px; display: none" id="compositionIngredients_rm" th:name="compositionIngredients" class="input-field w-input" cols="12" rows="5"></textarea>-->
+                            </div>
+                            <div class="field-container"><label for="storageCondition" class="field-label h3-blue">Storage Condition</label>
+                                <div class="field-container" style="display: flex; width: 700px">
+                                    <input type="text" class="input-field w-input" th:field="*{storageCondition}"  style="width: 75%;" maxlength="256" th:name="storageCondition" id="storageCondition">
+<!--                                    <div  style="display: flex; justify-content: space-between; align-items: center; color: darkred;  width: 20%; margin: 5px 10px">-->
+<!--                                        <input type="radio" class="form-check-input" id="storageConditionStatus_yes" th:name="storageConditionStatus" th:value="1"> <label for="storageConditionStatus_yes"> Compliant</label>-->
+<!--                                        <input type="radio" id="storageConditionStatus_no" class="form-check-input" th:name="storageConditionStatus" th:value="0"> <label for="storageConditionStatus_no">Non Compliant</label>-->
+<!--                                    </div>-->
+                                </div>
+<!--                                <textarea  style="margin: auto;margin-left: 10px; display: none" id="storageCondition_rm" th:name="storageCondition" class="input-field w-input" cols="12" rows="5"></textarea>-->
+                            </div>
+                            <div class="field-container"><label for="appearance" class="field-label h3-blue">Appearance (mouldy,infested,foreign matter e.t.c.)</label>
+                                <div class="field-container" style="display: flex; width: 700px">
+                                    <input type="text" class="input-field w-input" th:field="*{appearance}"  style="width: 75%;" maxlength="256" th:name="appearance" id="appearance">
+<!--                                    <div  style="display: flex; justify-content: space-between; align-items: center; color: darkred;  width: 20%; margin: 5px 10px">-->
+<!--                                        <input type="radio" class="form-check-input" id="appearanceStatus_yes" th:name="appearanceStatus" th:value="1"> <label for="appearanceStatus_yes"> Compliant</label>-->
+<!--                                        <input type="radio" id="appearanceStatus_no" class="form-check-input" th:name="appearanceStatus" th:value="0"> <label for="appearanceStatus_no">Non Compliant</label>-->
+<!--                                    </div>-->
+                                </div>
+<!--                                <textarea  style="margin: auto;margin-left: 10px; display: none" id="appearance_rm" th:name="mfgAddress" class="input-field w-input" cols="12" rows="5"></textarea>-->
+                            </div>
+                            <div class="field-container"><label for="certMarksPvocDoc" class="field-label h3-blue">Certification marks/pvoc documents</label>
+                                <div class="field-container" style="display: flex; width: 700px">
+                                    <input type="text" class="input-field w-input" th:field="*{certMarksPvocDoc}"  style="width: 75%;" maxlength="256" th:name="certMarksPvocDoc" id="certMarksPvocDoc">
+<!--                                    <div  style="display: flex; justify-content: space-between; align-items: center; color: darkred;  width: 20%; margin: 5px 10px">-->
+<!--                                        <input type="radio" class="form-check-input" id="certMarksPvocDocStatus_yes" th:name="certMarksPvocDocStatus" th:value="1"> <label for="certMarksPvocDocStatus_yes"> Compliant</label>-->
+<!--                                        <input type="radio" id="certMarksPvocDocStatus_no" class="form-check-input" th:name="certMarksPvocDocStatus" th:value="0"> <label for="certMarksPvocDocStatus_no">Non Compliant</label>-->
+<!--                                    </div>-->
+                                </div>
+<!--                                <textarea  style="margin: auto;margin-left: 10px; display: none" id="certMarksPvocDoc_rm" th:name="mfgAddress" class="input-field w-input" cols="12" rows="5"></textarea>-->
+                            </div>
+                            <div class="field-container">
+                                <label for="sampled" class="field-label h3-blue">7.Sampled Yes/No</label>
+                                <div class="field-container" style="display: flex; width: 700px">
+                                    <select th:field="*{sampled}" id="sampled" maxlength="256" style="width: 75%;">
+                                        <option th:value="'YES'" th:text="YES"></option>
+                                        <option th:value="'NO'" th:text="NO"></option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="field-container">
+                                <label for="sampled" class="field-label h3-blue">8.Remarks</label>
+                                <div class="field-container" style="display: flex; width: 700px">
+                                    <textarea name="" class="input-field w-input"  th:field="*{remarks}"  cols="10" rows="5" ></textarea>
+                                </div>
+                            </div>
+                            <div class="field-container">
+                                <label for="compliantStatus" class="field-label h3-blue">9.Overall Compliance Status</label>
+                                <div class="field-container" style="display: flex; width: 700px">
+                                    <div  style="display: flex; justify-content: space-between; align-items: center; color: darkred;  width: 50%; margin: 5px 10px">
+                                        <input type="radio" class="form-check-input" id="compliantStatus" th:name="compliantStatus" th:value="1"> <label for="compliantStatus"> Compliant</label>
+                                        <input type="radio" id="compliantStatus_no" class="form-check-input" th:name="compliantStatus" th:value="0"> <label for="compliantStatus">Non Compliant</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="field-container"><button class="button bg-yellow w-button">Back</button>
+                                <button class="button w-button" style="float: right;">SUBMIT</button></div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="right-column"></div>
+        </div>
+    </div>
+</div>
+<script
+        src="https://d3e54v103j8qbb.cloudfront.net/js/jquery-3.4.1.min.220afd743d.js?site=5e79ef7d4b44cb0a3bd7c0b4"
+        type="text/javascript"
+        integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+        crossorigin="anonymous"
+></script>
+<script src="../js/webflow.js" type="text/javascript"></script>
+<!-- [if lte IE 9]><script src="https://cdnjs.cloudflare.com/ajax/libs/placeholders/3.0.2/placeholders.min.js"></script><![endif] -->
+<script>
+    $(document).ready(function(){
+        $("#serialNumberStatus_no").click(function(){
+            if($(this).is(':checked')){
+                $("#serialNumberStatus_rm").css("display","block")
+            }else{
+                $("#serialNumberStatus_rm").css("display","none")
+            }
+        });
+        $("#serialNumberStatus_yes").click(function(){
+            if($(this).is(':checked')){
+                $("#serialNumberStatus_rm").css("display","none")
+            }
+        });
+        $("#productStatus_no").click(function(){
+            if($(this).is(':checked')){
+                $("#productDescription_rm").css("display","block")
+            }else{
+                $("#productDescription_rm").css("display","none")
+            }
+        });
+        $("#productStatus_yes").click(function(){
+            if($(this).is(':checked')){
+                $("#productDescription_rm").css("display","none")
+            }
+        });
+        $("#brandStatus_no").click(function(){
+            if($(this).is(':checked')){
+                $("#brand_rm").css("display","block")
+            }else{
+                $("#brand_rm").css("display","none")
+            }
+        });
+        $("#brandStatus_yes").click(function(){
+            if($(this).is(':checked')){
+                $("#brand_rm").css("display","none")
+            }
+        });
+        $("#ksEasApplicableStatus_no").click(function(){
+            if($(this).is(':checked')){
+                $("#ksEasApplicable_rm").css("display","block")
+            }else{
+                $("#ksEasApplicable_rm").css("display","none")
+            }
+        });
+        $("#ksEasApplicableStatus_yes").click(function(){
+            if($(this).is(':checked')){
+                $("#ksEasApplicable_rm").css("display","none")
+            }
+        });
+        $("#quantityDeclaredStatus_no").click(function(){
+            if($(this).is(':checked')){
+                $("#quantityDeclared_rm").css("display","block")
+            }else{
+                $("#quantityDeclared_rm").css("display","none")
+            }
+        });
+        $("#quantityDeclaredStatus_yes").click(function(){
+            if($(this).is(':checked')){
+                $("#quantityDeclared_rm").css("display","none")
+            }
+        });
+        $("#quantityVerifiedStatus_no").click(function(){
+            if($(this).is(':checked')){
+                $("#quantityVerified_rm").css("display","block")
+            }else{
+                $("#quantityVerified_rm").css("display","none")
+            }
+        });
+        $("#quantityVerifiedStatus_yes").click(function(){
+            if($(this).is(':checked')){
+                $("#quantityVerified_rm").css("display","none")
+            }
+        });
+        $("#dateMfgPackagingStatus_no").click(function(){
+            if($(this).is(':checked')){
+                $("#dateMfgPackaging_rm").css("display","block")
+            }else{
+                $("#dateMfgPackaging_rm").css("display","none")
+            }
+        });
+        $("#dateMfgPackagingStatus_yes").click(function(){
+            if($(this).is(':checked')){
+                $("#dateMfgPackaging_rm").css("display","none")
+            }
+        });
+
+        $("#dateExpiryStatus_no").click(function(){
+            if($(this).is(':checked')){
+                $("#dateExpiry_rm").css("display","block")
+            }else{
+                $("#dateExpiry_rm").css("display","none")
+            }
+        });
+        $("#dateExpiryStatus_yes").click(function(){
+            if($(this).is(':checked')){
+                $("#dateExpiry_rm").css("display","none")
+            }
+        });
+        ///
+        $("#mfgNameStatus_no").click(function(){
+            if($(this).is(':checked')){
+                $("#mfgName_rm").css("display","block")
+            }else{
+                $("#mfgName_rm").css("display","none")
+            }
+        });
+        $("#mfgNameStatus_yes").click(function(){
+            if($(this).is(':checked')){
+                $("#mfgName_rm").css("display","none")
+            }
+        });
+
+        $("#mfgAddressStatus_no").click(function(){
+            if($(this).is(':checked')){
+                $("#mfgAddress_rm").css("display","block")
+            }else{
+                $("#mfgAddress_rm").css("display","none")
+            }
+        });
+        $("#mfgAddressStatus_yes").click(function(){
+            if($(this).is(':checked')){
+                $("#mfgAddress_rm").css("display","none")
+            }
+        });
+
+        $("#compositionIngredientsStatus_no").click(function(){
+            if($(this).is(':checked')){
+                $("#compositionIngredients_rm").css("display","block")
+            }else{
+                $("#compositionIngredients_rm").css("display","none")
+            }
+        });
+        $("#compositionIngredientsStatus_yes").click(function(){
+            if($(this).is(':checked')){
+                $("#compositionIngredients_rm").css("display","none")
+            }
+        });
+
+        $("#storageConditionStatus_no").click(function(){
+            if($(this).is(':checked')){
+                $("#storageCondition_rm").css("display","block")
+            }else{
+                $("#storageCondition_rm").css("display","none")
+            }
+        });
+        $("#storageConditionStatus_yes").click(function(){
+            if($(this).is(':checked')){
+                $("#storageCondition_rm").css("display","none")
+            }
+        });
+
+        $("#appearanceStatus_no").click(function(){
+            if($(this).is(':checked')){
+                $("#appearance_rm").css("display","block")
+            }else{
+                $("#appearance_rm").css("display","none")
+            }
+        });
+        $("#appearanceStatus_yes").click(function(){
+            if($(this).is(':checked')){
+                $("#appearance_rm").css("display","none")
+            }
+        });
+
+        $("#certMarksPvocDocStatus_no").click(function(){
+            if($(this).is(':checked')){
+                $("#certMarksPvocDoc_rm").css("display","block")
+            }else{
+                $("#certMarksPvocDoc_rm").css("display","none")
+            }
+        });
+        $("#certMarksPvocDocStatus_yes").click(function(){
+            if($(this).is(':checked')){
+                $("#certMarksPvocDoc_rm").css("display","none")
+            }
+        });
+    });
+</script>
+</body>
+</html>

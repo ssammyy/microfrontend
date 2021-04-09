@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<!--  This site was created in Webflow. http://www.webflow.com  -->
+<!--  Last Published: Fri Jul 17 2020 07:38:10 GMT+0000 (Coordinated Universal Time)  -->
+<html data-wf-page="5f114f29a0db1a1e9a44be8b" data-wf-site="5e70fb3a565ebd99c1db37ce"
+      xmlns:th="http://www.thymeleaf.org"
+>
+<head>
+    <meta charset="utf-8">
+    <title>KEBS</title>
+    <th:block th:include="fragments/general-form.html :: headerfiles"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/css/multiStepForm.css}"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"/>
+</head>
+<body>
+<div class="top-bar flex">
+    <div class="div-block-8"></div>
+    <div class="top-bar-grid stretch">
+        <div class="div-block-3" id="w-node-1b8d60fecab3-9a44be8b">
+            <a class="brand w-inline-block" href="/" th:href="@{/index}">
+                <img alt="" th:src="@{/images/Component-1.png}" width="145">
+            </a>
+        </div>
+        <h1 class="white" id="w-node-1b8d60fecab6-9a44be8b" th:text="${session.applicationName}"></h1>
+    </div>
+</div>
+<div class="section">
+    <div class="w-layout-grid main-grid">
+        <div th:if="${message}">
+            <div th:if="${message}" th:with="myEmail=${message}">
+                <input type="hidden" th:value="${myEmail}" id="idMessage">
+            </div>
+
+            <!--            <div onload="hello()"></div>-->
+        </div>
+        <div class="main-content-div" id="w-node-a58aeb4cd9dd-9a44be8b">
+            <div class="content-nav">
+                <button class="back-button w-button" onclick="window.history.back()">go back</button>
+            </div>
+            <div class="content-wrap">
+                <div class="row">
+                    <div class="col-md-6 col-md-offset-3">
+                        <form id="msform" method="post" th:action="@{/api/auth/signup/user/save(appId = ${map.id})}" >
+                            <!-- progressbar -->
+                            <!--                            <ul id="progressbar">-->
+                            <!--                                <li class="active">BIO INFORMATION</li>-->
+                            <!--                                <li>COMPLAINT DETAILS</li>-->
+                            <!--                                <li>LOCATION </li>-->
+                            <!--                            </ul>-->
+                            <!-- fieldsets -->
+                            <fieldset th:object="${usersEntity}">
+                                <!--                                <div th:replace="fragments/general-form.html :: alerts-bar"></div>-->
+                                <h2 class="fs-title">Bio Information</h2>
+                                <h3 class="fs-subtitle">Tell us something more about you</h3>
+                                <label class="field-label" for="firstName">First Name</label>
+                                <input class="input-field w-input" id="firstName" required="" placeholder="E.g John" th:field="*{firstName}" th:required="required" type="text">
+                                <label class="field-label" for="lastName">Last Name</label>
+                                <input class="input-field w-input" id="lastName" placeholder="E.g Doe" th:field="*{lastName}" th:required="required" type="text">
+                                <label class="field-label" for="email">Email Address</label>
+                                <input class="input-field w-input" id="email" placeholder="e.g johndoe@mail.com" th:field="*{email}" th:required="required" type="email">
+                                <!--                                <label for="personalContactNumber" class="field-label">Personal Contact Number</label>-->
+                                <!--                                <input  type="text" required="required" class="form-control" placeholder="e.g 0700000000" id="personalContactNumber" th:field="*{personalContactNumber}"/>-->
+                                <!--                                <label for="workContactNumber" class="field-label">Work Contact Number</label>-->
+                                <!--                                <input  type="text" required="required" class="form-control" placeholder="e.g 0700000000" id="workContactNumber" th:field="*{workContactNumber}"/>-->
+                                <!--                                <div th:if="${messageUser == 'Employee'}">-->
+                                <!--                                    <label for="personalContactNumber" class="field-label">Personal Contact Number</label>-->
+                                <!--                                    <input  type="text" required="required" class="form-control" placeholder="Enter Your Personal Contact Number" id="personalContactNumber" th:field="*{personalContactNumber}"/>-->
+                                <!--                                    <label for="workContactNumber" class="field-label">Work Contact Number</label>-->
+                                <!--                                    <input  type="text" required="required" class="form-control" placeholder="Enter Your Work Contact Number" id="workContactNumber" th:field="*{workContactNumber}"/>-->
+                                <!--                                    <div th:object="${userProfilesEntity}">-->
+                                <!--                                        <label class="field-label" for="confirmDirectorateId">Directorate</label>-->
+                                <!--                                        <select id="confirmDirectorateId" name="confirmDirectorateId" class="select-field w-select" th:field="*{confirmDirectorateId}">-->
+                                <!--                                            <option value="">Select One...</option>-->
+                                <!--                                            <option th:each="directorate : ${directorates}" th:text="${directorate.directorate}" th:value="${directorate.id}"></option>-->
+                                <!--                                        </select>-->
+                                <!--                                    </div>-->
+                                <!--                                </div>-->
+                                <!--                                <input type="hidden" id="confirmUserType"  name="confirmUserType" th:value="'Employee'">-->
+                                <label for="confirmUserType" class="field-label">Select User Type</label>
+                                <select id="confirmUserType" required="" class="select-field w-select" th:field="*{confirmUserType}">
+                                    <option value="">Select One...</option>
+                                    <option th:each="userType : ${userTypes}" th:text="${userType.descriptions}" th:value="${userType.id}"></option>
+                                </select>
+                                <!--                                <select id="confirmUserType" required="" class="select-field w-select" th:field="*{confirmUserType}">-->
+                                <!--                                    <option th:value="'None'" th:text="'Select one.....'"></option>-->
+                                <!--                                    <option th:value="'Exporter'" th:text="'Exporter'"></option>-->
+                                <!--                                    <option th:value="'Importer'" th:text="'Importer'"></option>-->
+                                <!--                                    <option th:value="'Manufacturer'" th:text="'Manufacturer'"></option>-->
+                                <!--                                </select>-->
+                                <input type="submit" name="submit" class="submit action-button" style="background-color: #47cf73" value="Submit"/>
+                            </fieldset>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script crossorigin="anonymous" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" src="https://d3e54v103j8qbb.cloudfront.net/js/jquery-3.4.1.min.220afd743d.js?site=5e70fb3a565ebd99c1db37ce" type="text/javascript"></script>
+<script src="../js/webflow.js" type="text/javascript"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.3/jquery.easing.min.js"></script>
+<!-- [if lte IE 9]><!--<script src="https://cdnjs.cloudflare.com/ajax/libs/placeholders/3.0.2/placeholders.min.js"></script>--><![endif] -->
+<script>
+    //jQuery time
+    var current_fs, next_fs, previous_fs; //fieldsets
+    var left, opacity, scale; //fieldset properties which we will animate
+    var animating; //flag to prevent quick multi-click glitches
+
+    $(".next").click(function(){
+        if(animating) return false;
+        animating = true;
+
+        current_fs = $(this).parent();
+        next_fs = $(this).parent().next();
+
+        //activate next step on progressbar using the index of next_fs
+        $("#progressbar li").eq($("fieldset").index(next_fs)).addClass("active");
+
+        //show the next fieldset
+        next_fs.show();
+        //hide the current fieldset with style
+        current_fs.animate({opacity: 0}, {
+            step: function(now, mx) {
+                //as the opacity of current_fs reduces to 0 - stored in "now"
+                //1. scale current_fs down to 80%
+                scale = 1 - (1 - now) * 0.2;
+                //2. bring next_fs from the right(50%)
+                left = (now * 50)+"%";
+                //3. increase opacity of next_fs to 1 as it moves in
+                opacity = 1 - now;
+                current_fs.css({
+                    'transform': 'scale('+scale+')',
+                    'position': 'absolute'
+                });
+                next_fs.css({'left': left, 'opacity': opacity});
+            },
+            duration: 800,
+            complete: function(){
+                current_fs.hide();
+                animating = false;
+            },
+            //this comes from the custom easing plugin
+            easing: 'easeInOutBack'
+        });
+    });
+
+    $(".previous").click(function(){
+        if(animating) return false;
+        animating = true;
+
+        current_fs = $(this).parent();
+        previous_fs = $(this).parent().prev();
+
+        //de-activate current step on progressbar
+        $("#progressbar li").eq($("fieldset").index(current_fs)).removeClass("active");
+
+        //show the previous fieldset
+        previous_fs.show();
+        //hide the current fieldset with style
+        current_fs.animate({opacity: 0}, {
+            step: function(now, mx) {
+                //as the opacity of current_fs reduces to 0 - stored in "now"
+                //1. scale previous_fs from 80% to 100%
+                scale = 0.8 + (1 - now) * 0.2;
+                //2. take current_fs to the right(50%) - from 0%
+                left = ((1-now) * 50)+"%";
+                //3. increase opacity of previous_fs to 1 as it moves in
+                opacity = 1 - now;
+                current_fs.css({'left': left});
+                previous_fs.css({'transform': 'scale('+scale+')', 'opacity': opacity});
+            },
+            duration: 800,
+            complete: function(){
+                current_fs.hide();
+                animating = false;
+            },
+            //this comes from the custom easing plugin
+            easing: 'easeInOutBack'
+        });
+    });
+
+    $(".submit").click(function(){
+        return true;
+    })
+</script>
+<!--<script>-->
+<!--    function checkMailStatus(){-->
+<!--        //alert("came");-->
+<!--        let checkEmail=$("#email").val();// value in field email-->
+<!--        console.log(checkEmail);-->
+<!--        $.ajax({-->
+<!--            method: "GET",-->
+<!--            url: `/api/di/email-check/${checkEmail}`,-->
+<!--            success(response) {-->
+<!--                console.log(response);-->
+<!--                if (response!==null){-->
+<!--                    // alert(`This ${response.email} is already registered.`);-->
+<!--                    $(".submit").click(function(){-->
+<!--                        return false;-->
+<!--                    })-->
+<!--                }else{-->
+<!--                    console.log("this ends");-->
+<!--                    // $(".submit").click(function(){-->
+<!--                    //     return true;-->
+<!--                    // })-->
+<!--                }-->
+<!--                // console.log(response);-->
+<!--                // let s = '';-->
+<!--                // for (let i = 0; i < response.length; i++) {-->
+<!--                //     s += '<option value="' + response[i].id + '">' + response[i].labName + '</option>';-->
+<!--                // }-->
+<!--                // $("" + labId + "").html(s);-->
+<!--            }-->
+<!--        })-->
+<!--    }-->
+<!--</script>-->
+<script>
+    function hello () {
+        let checkEmail = $("#idMessage").val();// value in field email--
+        console.log(checkEmail)
+        if (checkEmail === 'exists'){
+            alert('This Email has Already been registerd ')
+        }
+
+    }
+
+    window.onload = function () {
+        setTimeout(function () {
+            hello();
+        }, 1000);
+    }
+</script>
+</body>
+</html>

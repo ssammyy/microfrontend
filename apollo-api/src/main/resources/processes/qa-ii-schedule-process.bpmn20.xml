@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/test">
+    <process id="qaIiScheduleProcess" name="Installation Inspection Schedule Process" isExecutable="true">
+        <startEvent id="startevent1" name="qaIisStart"></startEvent>
+        <userTask id="qaIisDirectorReviewAndSubmit" name="Director Review and Submit"></userTask>
+        <sequenceFlow id="flow1" sourceRef="startevent1" targetRef="qaIisDirectorReviewAndSubmit"></sequenceFlow>
+        <userTask id="qaIisPMReview" name="Petroleum Manager Review">
+            <extensionElements>
+                <activiti:taskListener event="assignment" expression="${bpmnNotifications.sendEmail(task)}"></activiti:taskListener>
+            </extensionElements>
+        </userTask>
+        <userTask id="qaIisAllocateInspectionOfficer" name="Allocate Inspection Officer"></userTask>
+        <sequenceFlow id="flow4" sourceRef="qaIisPMReview" targetRef="qaIisAllocateInspectionOfficer"></sequenceFlow>
+        <userTask id="qaIisGenerateProformaInvoice" name="Generate and Send Proforma Invoice">
+            <extensionElements>
+                <activiti:taskListener event="assignment" expression="${bpmnNotifications.sendEmail(task)}"></activiti:taskListener>
+            </extensionElements>
+        </userTask>
+        <userTask id="qaIisCustomerPayment" name="Customer Payment">
+            <extensionElements>
+                <activiti:taskListener event="assignment" expression="${bpmnNotifications.sendEmail(task)}"></activiti:taskListener>
+            </extensionElements>
+        </userTask>
+        <userTask id="qaIisSchedCalendarVisit" name="Schedule Calendar Visit">
+            <extensionElements>
+                <activiti:taskListener event="assignment" expression="${bpmnNotifications.sendEmail(task)}"></activiti:taskListener>
+            </extensionElements>
+        </userTask>
+        <endEvent id="endevent1" name="End"></endEvent>
+        <sequenceFlow id="flow14" sourceRef="qaIisCustomerPaymentNotif" targetRef="endevent1"></sequenceFlow>
+        <parallelGateway id="parallelgateway2" name="Parallel Gateway"></parallelGateway>
+        <sequenceFlow id="flow15" sourceRef="qaIisSchedCalendarVisit" targetRef="parallelgateway2"></sequenceFlow>
+        <sequenceFlow id="flow16" sourceRef="parallelgateway2" targetRef="qaIisPMCalendarVisitNotif"></sequenceFlow>
+        <sequenceFlow id="flow17" sourceRef="parallelgateway2" targetRef="qaIisPMCalendarVisitNotif"></sequenceFlow>
+        <parallelGateway id="parallelgateway3" name="Parallel Gateway"></parallelGateway>
+        <sequenceFlow id="flow19" sourceRef="qaIisDirectorReviewAndSubmit" targetRef="qaIisPMReview"></sequenceFlow>
+        <sequenceFlow id="flow20" sourceRef="qaIisAllocateInspectionOfficer" targetRef="qaIisGenerateProformaInvoice"></sequenceFlow>
+        <serviceTask id="qaIisCustomerPaymentNotif" name="Customer Payment Notification" activiti:expression="${bpmnNotifications.sendEmail(execution,137,customerEmail)}"></serviceTask>
+        <serviceTask id="qaIisQaoPaymentNotif" name="QAO Payment Notification" activiti:expression="${bpmnNotifications.sendEmailServiceTask(email)}"></serviceTask>
+        <serviceTask id="qaIisQaoCalendarVisitNotif" name="QAO Calendar Visit Notification" activiti:expression="${bpmnNotifications.sendEmail(execution,147,qaoUserId)}"></serviceTask>
+        <serviceTask id="qaIisPMCalendarVisitNotif" name="PM Calendar Visit Notification" activiti:expression="${bpmnNotifications.sendEmail(execution,147,pmUserId)}"></serviceTask>
+        <serviceTask id="qaIisQaoCustomerVisitNotif" name="Customer Calendar Visit Notification" activiti:expression="${bpmnNotifications.sendEmail(execution,147,customerEmail)}"></serviceTask>
+        <endEvent id="endevent2" name="End">
+            <extensionElements>
+                <activiti:executionListener event="end" expression="${qualityAssuranceBpmn.endQAIIScheduleProcess(objectId)}"></activiti:executionListener>
+            </extensionElements>
+        </endEvent>
+        <sequenceFlow id="flow23" sourceRef="parallelgateway2" targetRef="qaIisQaoCalendarVisitNotif"></sequenceFlow>
+        <sequenceFlow id="flow24" sourceRef="parallelgateway2" targetRef="qaIisQaoCustomerVisitNotif"></sequenceFlow>
+        <sequenceFlow id="flow25" sourceRef="qaIisPMCalendarVisitNotif" targetRef="endevent2"></sequenceFlow>
+        <sequenceFlow id="flow26" sourceRef="qaIisGenerateProformaInvoice" targetRef="qaIisCustomerPayment"></sequenceFlow>
+        <sequenceFlow id="flow27" sourceRef="qaIisQaoPaymentNotif" targetRef="qaIisSchedCalendarVisit"></sequenceFlow>
+        <sequenceFlow id="flow28" sourceRef="parallelgateway3" targetRef="qaIisQaoPaymentNotif"></sequenceFlow>
+        <sequenceFlow id="flow29" sourceRef="qaIisCustomerPayment" targetRef="parallelgateway3"></sequenceFlow>
+        <sequenceFlow id="flow30" sourceRef="parallelgateway3" targetRef="qaIisCustomerPaymentNotif"></sequenceFlow>
+    </process>
+    <bpmndi:BPMNDiagram id="BPMNDiagram_qaIiScheduleProcess">
+        <bpmndi:BPMNPlane bpmnElement="qaIiScheduleProcess" id="BPMNPlane_qaIiScheduleProcess">
+            <bpmndi:BPMNShape bpmnElement="startevent1" id="BPMNShape_startevent1">
+                <omgdc:Bounds height="35.0" width="35.0" x="80.0" y="123.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="qaIisDirectorReviewAndSubmit" id="BPMNShape_qaIisDirectorReviewAndSubmit">
+                <omgdc:Bounds height="61.0" width="121.0" x="180.0" y="110.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="qaIisPMReview" id="BPMNShape_qaIisPMReview">
+                <omgdc:Bounds height="61.0" width="121.0" x="390.0" y="110.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="qaIisAllocateInspectionOfficer" id="BPMNShape_qaIisAllocateInspectionOfficer">
+                <omgdc:Bounds height="61.0" width="121.0" x="630.0" y="110.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="qaIisGenerateProformaInvoice" id="BPMNShape_qaIisGenerateProformaInvoice">
+                <omgdc:Bounds height="61.0" width="107.0" x="838.0" y="110.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="qaIisCustomerPayment" id="BPMNShape_qaIisCustomerPayment">
+                <omgdc:Bounds height="61.0" width="107.0" x="1230.0" y="110.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="qaIisSchedCalendarVisit" id="BPMNShape_qaIisSchedCalendarVisit">
+                <omgdc:Bounds height="62.0" width="108.0" x="943.0" y="330.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="endevent1" id="BPMNShape_endevent1">
+                <omgdc:Bounds height="35.0" width="35.0" x="1428.0" y="370.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="parallelgateway2" id="BPMNShape_parallelgateway2">
+                <omgdc:Bounds height="40.0" width="40.0" x="810.0" y="340.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="parallelgateway3" id="BPMNShape_parallelgateway3">
+                <omgdc:Bounds height="40.0" width="40.0" x="1263.0" y="250.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="qaIisCustomerPaymentNotif" id="BPMNShape_qaIisCustomerPaymentNotif">
+                <omgdc:Bounds height="68.0" width="111.0" x="1390.0" y="237.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="qaIisQaoPaymentNotif" id="BPMNShape_qaIisQaoPaymentNotif">
+                <omgdc:Bounds height="62.0" width="121.0" x="1090.0" y="240.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="qaIisQaoCalendarVisitNotif" id="BPMNShape_qaIisQaoCalendarVisitNotif">
+                <omgdc:Bounds height="61.0" width="117.0" x="600.0" y="330.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="qaIisPMCalendarVisitNotif" id="BPMNShape_qaIisPMCalendarVisitNotif">
+                <omgdc:Bounds height="65.0" width="119.0" x="771.0" y="431.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="qaIisQaoCustomerVisitNotif" id="BPMNShape_qaIisQaoCustomerVisitNotif">
+                <omgdc:Bounds height="63.0" width="112.0" x="775.0" y="239.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="endevent2" id="BPMNShape_endevent2">
+                <omgdc:Bounds height="35.0" width="35.0" x="979.0" y="446.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNEdge bpmnElement="flow1" id="BPMNEdge_flow1">
+                <omgdi:waypoint x="115.0" y="140.0"></omgdi:waypoint>
+                <omgdi:waypoint x="180.0" y="140.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow4" id="BPMNEdge_flow4">
+                <omgdi:waypoint x="511.0" y="140.0"></omgdi:waypoint>
+                <omgdi:waypoint x="630.0" y="140.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow14" id="BPMNEdge_flow14">
+                <omgdi:waypoint x="1445.0" y="305.0"></omgdi:waypoint>
+                <omgdi:waypoint x="1445.0" y="370.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow15" id="BPMNEdge_flow15">
+                <omgdi:waypoint x="943.0" y="361.0"></omgdi:waypoint>
+                <omgdi:waypoint x="850.0" y="360.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow16" id="BPMNEdge_flow16">
+                <omgdi:waypoint x="830.0" y="380.0"></omgdi:waypoint>
+                <omgdi:waypoint x="830.0" y="431.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow17" id="BPMNEdge_flow17">
+                <omgdi:waypoint x="830.0" y="380.0"></omgdi:waypoint>
+                <omgdi:waypoint x="830.0" y="431.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow19" id="BPMNEdge_flow19">
+                <omgdi:waypoint x="301.0" y="140.0"></omgdi:waypoint>
+                <omgdi:waypoint x="390.0" y="140.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow20" id="BPMNEdge_flow20">
+                <omgdi:waypoint x="751.0" y="140.0"></omgdi:waypoint>
+                <omgdi:waypoint x="838.0" y="140.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow23" id="BPMNEdge_flow23">
+                <omgdi:waypoint x="810.0" y="360.0"></omgdi:waypoint>
+                <omgdi:waypoint x="717.0" y="360.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow24" id="BPMNEdge_flow24">
+                <omgdi:waypoint x="830.0" y="340.0"></omgdi:waypoint>
+                <omgdi:waypoint x="831.0" y="302.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow25" id="BPMNEdge_flow25">
+                <omgdi:waypoint x="890.0" y="463.0"></omgdi:waypoint>
+                <omgdi:waypoint x="979.0" y="463.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow26" id="BPMNEdge_flow26">
+                <omgdi:waypoint x="945.0" y="140.0"></omgdi:waypoint>
+                <omgdi:waypoint x="1230.0" y="140.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow27" id="BPMNEdge_flow27">
+                <omgdi:waypoint x="1150.0" y="302.0"></omgdi:waypoint>
+                <omgdi:waypoint x="1150.0" y="360.0"></omgdi:waypoint>
+                <omgdi:waypoint x="1051.0" y="361.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow28" id="BPMNEdge_flow28">
+                <omgdi:waypoint x="1263.0" y="270.0"></omgdi:waypoint>
+                <omgdi:waypoint x="1211.0" y="271.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow29" id="BPMNEdge_flow29">
+                <omgdi:waypoint x="1283.0" y="171.0"></omgdi:waypoint>
+                <omgdi:waypoint x="1283.0" y="250.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow30" id="BPMNEdge_flow30">
+                <omgdi:waypoint x="1303.0" y="270.0"></omgdi:waypoint>
+                <omgdi:waypoint x="1390.0" y="271.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+        </bpmndi:BPMNPlane>
+    </bpmndi:BPMNDiagram>
+</definitions>

@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<!--  This site was created in Webflow. http://www.webflow.com  -->
+<!--  Last Published: Wed Mar 18 2020 20:03:10 GMT+0000 (Coordinated Universal Time)  -->
+<html data-wf-page="5e7130c996c4ca37928b351f" data-wf-site="5e70fb3a565ebd99c1db37ce"
+      xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <title>KEBS</title>
+    <th:block th:include="fragments/general-form.html :: headerfiles"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/css/accordion.css}"/>
+    <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #f1f1f1;
+        }
+
+        #regForm {
+            background-color: #ffffff;
+            margin: 20px auto;
+            font-family: Raleway;
+            padding: 5px;
+            width: 75%;
+            min-width: 400px;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        input {
+            padding: 10px;
+            width: 100%;
+            font-size: 15px;
+            font-family: Raleway;
+            border: 1px solid #aaaaaa;
+        }
+
+        /* Mark input boxes that gets an error on validation: */
+        input.invalid {
+            background-color: #ffdddd;
+        }
+
+        /* Hide all steps.css by default: */
+        .tab {
+            display: none;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: #ffffff;
+            border: none;
+            padding: 10px 20px;
+            font-size: 17px;
+            font-family: Raleway;
+            cursor: pointer;
+        }
+
+        button:hover {
+            opacity: 0.8;
+        }
+
+        #prevBtn {
+            background-color: #bbbbbb;
+        }
+
+        /* Make circles that indicate the steps.css of the form: */
+        .step {
+            height: 15px;
+            width: 15px;
+            margin: 0 2px;
+            background-color: #bbbbbb;
+            border: none;
+            border-radius: 50%;
+            display: inline-block;
+            opacity: 0.5;
+        }
+
+        .step.active {
+            opacity: 1;
+        }
+
+        /* Mark the steps.css that are finished and valid: */
+        .step.finish {
+            background-color: #4CAF50;
+        }
+    </style>
+</head>
+<body>
+<div class="top-bar" th:replace="fragments/general-form.html :: top-bar"></div>
+
+<div class="section">
+    <div class="w-layout-grid main-grid">
+        <div class="main-grid-side-navigation" id="w-node-d308c123a20f-c123a20d" th:replace="fragments/general-form.html :: side-navigation-bar"></div>
+        <div id="w-node-27962c2db181-c676b3e3" class="main-content-div">
+            <div class="content-nav" th:replace="fragments/general-form.html :: content-navigation-bar"></div>
+            <div class="content-wrap">
+                <div class="content-row">
+                    <!--                    <div class="pvocformblock w-form">-->
+                    <form id="regForm" th:object="${temporaryImportsEntity}" th:action="@{/api/di/}" method="post">
+                        <h1>Temporary Import Application:</h1>
+                        <div id="TemporaryImporterDetails" th:object="${labParameter}">
+<!--                            <div>-->
+<!--                                <label for="containerNos" class="field-label">14. KRA Pin</label>-->
+<!--                                <input type="text" class="w-input" maxlength="256" name="postalCountry" data-name="postalCountry" id="postalCountry"   th:field="*{postalCountry}">-->
+<!--                            </div>-->
+                            <div>
+                                <label for="entryNumber" class="field-label">1. Customs Entry Number</label>
+                                <input type="text" class="w-input" maxlength="256" name="entryNumber" data-name="entryNumber" id="entryNumber"   th:field="*{entryNumber}">
+                            </div>
+                            <div>
+                                <label for="goodsDescription" class="field-label">2. Description of Goods</label>
+                                <input type="text" class="w-input" maxlength="256" name="goodsDescription" data-name="goodsDescription" id="goodsDescription"   th:field="*{goodsDescription}">
+                            </div>
+                            <div>
+                                <label for="ucrNumber" class="field-label">3. UCR Number</label>
+                                <input type="text" class="w-input" maxlength="256" name="ucrNumber" data-name="ucrNumber" id="ucrNumber"   th:field="*{ucrNumber}">
+                            </div>
+                            <div>
+                                <label for="billOfLanding" class="field-label">4. Bill of Landing/ Airway Bill</label>
+                                <input type="text" class="w-input" maxlength="256" name="billOfLanding" data-name="billOfLanding" id="billOfLanding"   th:field="*{billOfLanding}">
+                            </div>
+                            <div>
+                                <label for="importationDOC" class="field-label">5. Importation documents</label>
+                                <input type="file" class="w-input" maxlength="256" name="importationDOC" data-name="importationDOC" id="importationDOC" required="" th:field="*{importationDOC}">
+                            </div>
+                            <div>
+                                <label for="kraBond" class="field-label">6. KRA Bond</label>
+                                <input type="file" class="w-input" maxlength="256" name="kraBond" data-name="kraBond" id="kraBond" required="" th:field="*{kraBond}">
+                            </div>
+                        </div>
+
+                        <div class="field-container">
+                            <button class="button bg-yellow w-button">Back</button>
+                            <button type="submit" class="button w-button" style="float: right;"/>Submit</div>
+                        <!--                        <div style="float:right;">-->
+                        <!--                            <button type="button" id="nextBtn" onclick="nextPrev(1)">Submit</button>-->
+                        <!--                        </div>-->
+                    </form>
+                    <!--                    </div>-->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--<script src="https://d3e54v103j8qbb.cloudfront.net/js/jquery-3.4.1.min.220afd743d.js" type="text/javascript" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>-->
+<script src="../assets/js/webflow.js" type="text/javascript"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+<!-- [if lte IE 9]><script src="https://cdnjs.cloudflare.com/ajax/libs/placeholders/3.0.2/placeholders.min.js"></script><![endif] -->
+
+</body>
+</html>

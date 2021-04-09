@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html data-wf-page="5e70fb3a565ebdc05ddb37cf" data-wf-site="5e70fb3a565ebd99c1db37ce"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>KEBS</title>
+    <th:block th:include="fragments/general-form.html :: headerfiles"/>
+    <link rel="stylesheet" th:href="@{/css/exceptions/HeaderFiles.css}"/>
+</head>
+<body>
+<div class="top-bar flex">
+    <div class="div-block-8"></div>
+    <div class="top-bar-grid stretch">
+        <div class="div-block-3" id="w-node-1b8d60fecab3-9a44be8b">
+            <a class="brand w-inline-block" href="/" th:href="@{/index}">
+                <img alt="" th:src="@{/images/Component-1.png}" width="145">
+            </a>
+        </div>
+<!--        <h1 class="white" id="w-node-1b8d60fecab6-9a44be8b" th:text="${session.applicationName}"></h1>-->
+    </div>
+</div>
+<div class="section">
+    <div class="w-layout-grid main-grid">
+        <div class="main-content-div" id="w-node-a58aeb4cd9dd-9a44be8b">
+            <div class="content-nav">
+                <button class="back-button w-button" onclick="window.history.back()">go back</button>
+            </div>
+            <div class="content-wrap">
+                <div class="row">
+                    <div class="col-md-6 col-md-offset-3">
+                        <form id="msform" enctype="multipart/form-data" method="post" th:action="@{/api/di/pvoc/complaints-save}" th:object="${complaint}">
+                            <fieldset>
+                                <h2 class="fs-title">Complaint Details</h2>
+                                <h3 class="fs-subtitle">Fill in bellow Your Complaints details</h3>
+                                <label class="field-label">Complainant Name</label>
+                                <input class="input-field w-input" placeholder="Complain Name" th:field="*{complaintName}" th:required="required">
+                                <label class="field-label">Complainant Email</label>
+                                <input class="input-field w-input" placeholder="Complain Name" th:field="*{email}" th:required="required">
+                                <label class="field-label">Phone No</label>
+                                <input class="input-field w-input" placeholder="Phone no" th:field="*{phoneNo}" th:required="required">
+                                <label for="pvocAgent" class="col-form-label">Pvoc Agent:</label>
+                                <select id="pvocAgent"  class="select-field w-select" th:name="userId">
+                                    <option  th:each="category : ${profiles}" th:text="${category.userId.firstName} +' '+ ${category.userId.lastName}"  th:value="${category.userId.id}"></option>
+                                </select>
+                                <label  class="col-form-label">Nature of Complaint:</label>
+                                <select id="compliantNature" class="form-control" th:name="categoryId">
+                                    <option  th:each="category : ${complaintsCategories}" th:text="${category.name}"  th:value="${category.id}" th:data-id="${category.id}"></option>
+                                </select>
+
+                                <label class="typeInDetails col-form-label" for="typeIn">Please write a detailed reason </label>
+                                <textarea th:name="generalDescription" id="typeIn" class="form-control typeInDetails" cols="30" rows="10"></textarea>
+
+                                <label  for="delay" class="col-form-label delaySub">Complaint Certification Delayed Reason :</label>
+                                <select id="delay"   class="select-field w-select delaySub" th:name="subCategoryId">
+                                    <option  th:each="category : ${complaintsCategoriesSubs}" th:text="${category.name}"  th:value="${category.id}" th:data-sub-id="${category.id}"></option>
+                                </select>
+
+                                <label style="display: none" for="delayCertification" class="col-form-label rfcNum">Enter RFC Number</label>
+                                <input style="display: none" type="text" class="form-control rfcNum" th:name="rfcNo" id="delayCertification">
+
+                                <label style="display: none" for="delayOther" class="col-form-label cocNum">Enter COC Number</label>
+                                <input style="display: none" type="text" class="form-control cocNum" th:name="cocNo" id="delayOther">
+                                <input type="submit" name="submit" class="submit action-button" style="background-color: #47cf73" value="Submit"/>
+                            </fieldset>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script crossorigin="anonymous" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" src="https://d3e54v103j8qbb.cloudfront.net/js/jquery-3.4.1.min.220afd743d.js?site=5e70fb3a565ebd99c1db37ce" type="text/javascript"></script>
+<script src="../js/webflow.js" type="text/javascript"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+<script th:src="@{/assets/bootstrap3/js/bootstrap.js}" type="text/javascript"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.3/jquery.easing.min.js"></script>
+<!-- [if lte IE 9]><!--<script src="https://cdnjs.cloudflare.com/ajax/libs/placeholders/3.0.2/placeholders.min.js"></script>--><![endif] -->
+<script>
+    //jQuery time
+    var current_fs, next_fs, previous_fs; //fieldsets
+    var left, opacity, scale; //fieldset properties which we will animate
+    var animating; //flag to prevent quick multi-click glitches
+
+    $(".next").click(function(){
+        if(animating) return false;
+        animating = true;
+
+        current_fs = $(this).parent();
+        next_fs = $(this).parent().next();
+
+        //activate next step on progressbar using the index of next_fs
+        $("#progressbar li").eq($("fieldset").index(next_fs)).addClass("active");
+
+        //show the next fieldset
+        next_fs.show();
+        //hide the current fieldset with style
+        current_fs.animate({opacity: 0}, {
+            step: function(now, mx) {
+                //as the opacity of current_fs reduces to 0 - stored in "now"
+                //1. scale current_fs down to 80%
+                scale = 1 - (1 - now) * 0.2;
+                //2. bring next_fs from the right(50%)
+                left = (now * 50)+"%";
+                //3. increase opacity of next_fs to 1 as it moves in
+                opacity = 1 - now;
+                current_fs.css({
+                    'transform': 'scale('+scale+')',
+                    'position': 'absolute'
+                });
+                next_fs.css({'left': left, 'opacity': opacity});
+            },
+            duration: 800,
+            complete: function(){
+                current_fs.hide();
+                animating = false;
+            },
+            //this comes from the custom easing plugin
+            easing: 'easeInOutBack'
+        });
+    });
+
+    $(".previous").click(function(){
+        if(animating) return false;
+        animating = true;
+
+        current_fs = $(this).parent();
+        previous_fs = $(this).parent().prev();
+
+        //de-activate current step on progressbar
+        $("#progressbar li").eq($("fieldset").index(current_fs)).removeClass("active");
+
+        //show the previous fieldset
+        previous_fs.show();
+        //hide the current fieldset with style
+        current_fs.animate({opacity: 0}, {
+            step: function(now, mx) {
+                //as the opacity of current_fs reduces to 0 - stored in "now"
+                //1. scale previous_fs from 80% to 100%
+                scale = 0.8 + (1 - now) * 0.2;
+                //2. take current_fs to the right(50%) - from 0%
+                left = ((1-now) * 50)+"%";
+                //3. increase opacity of previous_fs to 1 as it moves in
+                opacity = 1 - now;
+                current_fs.css({'left': left});
+                previous_fs.css({'transform': 'scale('+scale+')', 'opacity': opacity});
+            },
+            duration: 800,
+            complete: function(){
+                current_fs.hide();
+                animating = false;
+            },
+            //this comes from the custom easing plugin
+            easing: 'easeInOutBack'
+        });
+    });
+
+    $("#compliantNature").click(function () {
+        let methodId4 = parseInt($("#compliantNature").children("option:selected").attr("data-id"));
+        if(methodId4 == 3){
+            $(".delaySub").css({"display":"block"})
+            hideShowDelayFields()
+        }else{
+            $(".delaySub").css({"display":"none"})
+        }
+
+        if(methodId4 === 2){
+            $(".typeInDetails").css({"display":"block"})
+            $(".delay").css({"display":"none"})
+        }else{
+            $(".typeInDetails").css({"display":"none"})
+        }
+
+    });
+
+    $("#delay").click(function(){
+        hideShowDelayFields()
+    })
+
+    function hideShowDelayFields() {
+        let delayId =  parseInt($("#delay").children("option:selected").attr('data-sub-id'))
+        if(delayId === 1)          {
+            $(".cocNum").css({"display": "none"})
+            $(".rfcNum").css({"display": "block"})
+        } else if (delayId > 1 && delayId < 6 ) {
+            $(".cocNum").css({"display":"block"})
+            $(".rfcNum").css({"display":"none"})
+        }
+
+    }
+
+</script>
+<script>
+
+</script>
+</body>
+</html>

@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/test">
+    <process id="sLSiteVisitProcess" name="Standards Levy Site Visit" isExecutable="true">
+        <startEvent id="sLSvStart" name="Start"></startEvent>
+        <userTask id="sLSvQueryManufacturerDetails" name="Query for Manufacturer Details">
+            <extensionElements>
+                <activiti:taskListener event="assignment" expression="${bpmnNotifications.sendEmail(task)}"></activiti:taskListener>
+            </extensionElements>
+        </userTask>
+        <sequenceFlow id="flow1" sourceRef="sLSvStart" targetRef="sLSvQueryManufacturerDetails"></sequenceFlow>
+        <userTask id="sLsVScheduleVisit" name="Schedule Visit">
+            <extensionElements>
+                <activiti:taskListener event="assignment" expression="${bpmnNotifications.sendEmail(task)}"></activiti:taskListener>
+            </extensionElements>
+        </userTask>
+        <sequenceFlow id="flow2" sourceRef="sLSvQueryManufacturerDetails" targetRef="sLsVScheduleVisit"></sequenceFlow>
+        <userTask id="sLsVPrepareVisitReport" name="Prepare Visit Report">
+            <extensionElements>
+                <activiti:taskListener event="assignment" expression="${bpmnNotifications.sendEmail(task)}"></activiti:taskListener>
+            </extensionElements>
+        </userTask>
+        <userTask id="sLsVApproveReportAssMgr" name="Ass Mgr approve report">
+            <extensionElements>
+                <activiti:taskListener event="assignment" expression="${bpmnNotifications.sendEmail(task)}"></activiti:taskListener>
+            </extensionElements>
+        </userTask>
+        <sequenceFlow id="flow4" sourceRef="sLsVPrepareVisitReport" targetRef="sLsVApproveReportAssMgr"></sequenceFlow>
+        <exclusiveGateway id="exclusivegateway1" name="Exclusive Gateway"></exclusiveGateway>
+        <sequenceFlow id="flow5" sourceRef="sLsVApproveReportAssMgr" targetRef="exclusivegateway1"></sequenceFlow>
+        <userTask id="sLsVApproveReportMgr" name="Mgr approve report">
+            <extensionElements>
+                <activiti:taskListener event="assignment" expression="${bpmnNotifications.sendEmail(task)}"></activiti:taskListener>
+            </extensionElements>
+        </userTask>
+        <sequenceFlow id="flow6" sourceRef="exclusivegateway1" targetRef="sLsVApproveReportMgr" skipExpression="${approvedAsstMgr==1}"></sequenceFlow>
+        <sequenceFlow id="flow7" sourceRef="exclusivegateway1" targetRef="sLsVPrepareVisitReport" skipExpression="${approvedAsstMgr==0}"></sequenceFlow>
+        <exclusiveGateway id="exclusivegateway2" name="Exclusive Gateway"></exclusiveGateway>
+        <sequenceFlow id="flow8" sourceRef="sLsVApproveReportMgr" targetRef="exclusivegateway2"></sequenceFlow>
+        <userTask id="sLsVDraftFeedbackAndShare" name="Draft Feedback and Share">
+            <extensionElements>
+                <activiti:taskListener event="assignment" expression="${bpmnNotifications.sendEmail(task)}"></activiti:taskListener>
+            </extensionElements>
+        </userTask>
+        <sequenceFlow id="flow9" sourceRef="exclusivegateway2" targetRef="sLsVDraftFeedbackAndShare" skipExpression="${approvedMgr==1}"></sequenceFlow>
+        <sequenceFlow id="flow10" sourceRef="exclusivegateway2" targetRef="sLsVApproveReportAssMgr" skipExpression="${approvedMgr==0}"></sequenceFlow>
+        <serviceTask id="sLsVFeedbackNotification" name="Feedback Notification" activiti:expression="${bpmnCommonFunctions.generateBSNumber()}"></serviceTask>
+        <sequenceFlow id="flow11" sourceRef="sLsVDraftFeedbackAndShare" targetRef="sLsVFeedbackNotification"></sequenceFlow>
+        <endEvent id="endevent1" name="End">
+            <extensionElements>
+                <activiti:executionListener event="end" expression="${standardsLevyBpmn.endSlSiteVisitProcess(objectId)}"></activiti:executionListener>
+            </extensionElements>
+        </endEvent>
+        <sequenceFlow id="flow12" sourceRef="sLsVFeedbackNotification" targetRef="endevent1"></sequenceFlow>
+        <sequenceFlow id="flow13" sourceRef="sLsVScheduleVisit" targetRef="sLsVPrepareVisitReport"></sequenceFlow>
+    </process>
+    <bpmndi:BPMNDiagram id="BPMNDiagram_sLSiteVisitProcess">
+        <bpmndi:BPMNPlane bpmnElement="sLSiteVisitProcess" id="BPMNPlane_sLSiteVisitProcess">
+            <bpmndi:BPMNShape bpmnElement="sLSvStart" id="BPMNShape_sLSvStart">
+                <omgdc:Bounds height="35.0" width="35.0" x="140.0" y="120.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="sLSvQueryManufacturerDetails" id="BPMNShape_sLSvQueryManufacturerDetails">
+                <omgdc:Bounds height="71.0" width="121.0" x="240.0" y="102.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="sLsVScheduleVisit" id="BPMNShape_sLsVScheduleVisit">
+                <omgdc:Bounds height="62.0" width="111.0" x="420.0" y="107.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="sLsVPrepareVisitReport" id="BPMNShape_sLsVPrepareVisitReport">
+                <omgdc:Bounds height="63.0" width="125.0" x="620.0" y="107.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="sLsVApproveReportAssMgr" id="BPMNShape_sLsVApproveReportAssMgr">
+                <omgdc:Bounds height="62.0" width="121.0" x="853.0" y="109.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="exclusivegateway1" id="BPMNShape_exclusivegateway1">
+                <omgdc:Bounds height="40.0" width="40.0" x="893.0" y="240.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="sLsVApproveReportMgr" id="BPMNShape_sLsVApproveReportMgr">
+                <omgdc:Bounds height="68.0" width="123.0" x="1030.0" y="227.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="exclusivegateway2" id="BPMNShape_exclusivegateway2">
+                <omgdc:Bounds height="40.0" width="40.0" x="1230.0" y="240.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="sLsVDraftFeedbackAndShare" id="BPMNShape_sLsVDraftFeedbackAndShare">
+                <omgdc:Bounds height="68.0" width="125.0" x="1188.0" y="360.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="sLsVFeedbackNotification" id="BPMNShape_sLsVFeedbackNotification">
+                <omgdc:Bounds height="65.0" width="111.0" x="998.0" y="361.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="endevent1" id="BPMNShape_endevent1">
+                <omgdc:Bounds height="35.0" width="35.0" x="896.0" y="376.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNEdge bpmnElement="flow1" id="BPMNEdge_flow1">
+                <omgdi:waypoint x="175.0" y="137.0"></omgdi:waypoint>
+                <omgdi:waypoint x="240.0" y="137.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow2" id="BPMNEdge_flow2">
+                <omgdi:waypoint x="361.0" y="137.0"></omgdi:waypoint>
+                <omgdi:waypoint x="420.0" y="138.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow4" id="BPMNEdge_flow4">
+                <omgdi:waypoint x="745.0" y="138.0"></omgdi:waypoint>
+                <omgdi:waypoint x="853.0" y="140.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow5" id="BPMNEdge_flow5">
+                <omgdi:waypoint x="913.0" y="171.0"></omgdi:waypoint>
+                <omgdi:waypoint x="913.0" y="240.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow6" id="BPMNEdge_flow6">
+                <omgdi:waypoint x="933.0" y="260.0"></omgdi:waypoint>
+                <omgdi:waypoint x="1030.0" y="261.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow7" id="BPMNEdge_flow7">
+                <omgdi:waypoint x="893.0" y="260.0"></omgdi:waypoint>
+                <omgdi:waypoint x="682.0" y="260.0"></omgdi:waypoint>
+                <omgdi:waypoint x="682.0" y="170.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow8" id="BPMNEdge_flow8">
+                <omgdi:waypoint x="1153.0" y="261.0"></omgdi:waypoint>
+                <omgdi:waypoint x="1230.0" y="260.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow9" id="BPMNEdge_flow9">
+                <omgdi:waypoint x="1250.0" y="280.0"></omgdi:waypoint>
+                <omgdi:waypoint x="1250.0" y="360.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow10" id="BPMNEdge_flow10">
+                <omgdi:waypoint x="1250.0" y="240.0"></omgdi:waypoint>
+                <omgdi:waypoint x="1249.0" y="139.0"></omgdi:waypoint>
+                <omgdi:waypoint x="974.0" y="140.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow11" id="BPMNEdge_flow11">
+                <omgdi:waypoint x="1188.0" y="394.0"></omgdi:waypoint>
+                <omgdi:waypoint x="1109.0" y="393.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow12" id="BPMNEdge_flow12">
+                <omgdi:waypoint x="998.0" y="393.0"></omgdi:waypoint>
+                <omgdi:waypoint x="931.0" y="393.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow13" id="BPMNEdge_flow13">
+                <omgdi:waypoint x="531.0" y="138.0"></omgdi:waypoint>
+                <omgdi:waypoint x="620.0" y="138.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+        </bpmndi:BPMNPlane>
+    </bpmndi:BPMNDiagram>
+</definitions>

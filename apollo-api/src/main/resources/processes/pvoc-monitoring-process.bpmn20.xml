@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/test">
+    <process id="pvocMonitoringProcess" name="Pvoc Monitoring Process" isExecutable="true">
+        <startEvent id="pvocMoStart" name="Start"></startEvent>
+        <userTask id="pvocMoGenerateAnalysisReport" name="Generate analysis report">
+            <extensionElements>
+                <activiti:taskListener event="assignment" expression="${bpmnNotifications.sendEmail(task)}"></activiti:taskListener>
+            </extensionElements>
+        </userTask>
+        <sequenceFlow id="flow1" sourceRef="pvocMoStart" targetRef="pvocMoGenerateAnalysisReport"></sequenceFlow>
+        <userTask id="pvocMoRequestForInfo" name="Request for info">
+            <extensionElements>
+                <activiti:taskListener event="assignment" expression="${bpmnNotifications.sendEmail(task)}"></activiti:taskListener>
+            </extensionElements>
+        </userTask>
+        <userTask id="pvocMoRequestForInfoFeedback" name="Request for Info feedback">
+            <extensionElements>
+                <activiti:taskListener event="assignment" expression="${bpmnNotifications.sendEmail(task)}"></activiti:taskListener>
+            </extensionElements>
+        </userTask>
+        <userTask id="pvocMoGenMonitoredCasesAnalysisRpt" name="Generate monitored cases analysis report">
+            <extensionElements>
+                <activiti:taskListener event="assignment" expression="${bpmnNotifications.sendEmail(task)}"></activiti:taskListener>
+            </extensionElements>
+        </userTask>
+        <userTask id="pvocMoMpvocAnalysisRptReview" name="MPVOC analysis report review">
+            <extensionElements>
+                <activiti:taskListener event="assignment" expression="${bpmnNotifications.sendEmail(task)}"></activiti:taskListener>
+            </extensionElements>
+        </userTask>
+        <sequenceFlow id="flow7" sourceRef="pvocMoGenMonitoredCasesAnalysisRpt" targetRef="pvocMoMpvocAnalysisRptReview"></sequenceFlow>
+        <userTask id="pvocMoHodAnalysisRptReview" name="HOD analysis report review">
+            <extensionElements>
+                <activiti:taskListener event="assignment" expression="${bpmnNotifications.sendEmail(task)}"></activiti:taskListener>
+            </extensionElements>
+        </userTask>
+        <sequenceFlow id="flow8" sourceRef="pvocMoMpvocAnalysisRptReview" targetRef="pvocMoHodAnalysisRptReview"></sequenceFlow>
+        <exclusiveGateway id="exclusivegateway1" name="Exclusive Gateway"></exclusiveGateway>
+        <sequenceFlow id="flow9" sourceRef="pvocMoHodAnalysisRptReview" targetRef="exclusivegateway1"></sequenceFlow>
+        <userTask id="pvocMoCheckAnalysisReport" name="Check analysis report">
+            <extensionElements>
+                <activiti:taskListener event="assignment" expression="${bpmnNotifications.sendEmail(task)}"></activiti:taskListener>
+            </extensionElements>
+        </userTask>
+        <sequenceFlow id="flow10" sourceRef="pvocMoGenerateAnalysisReport" targetRef="pvocMoCheckAnalysisReport"></sequenceFlow>
+        <exclusiveGateway id="exclusivegateway2" name="Exclusive Gateway"></exclusiveGateway>
+        <sequenceFlow id="flow11" sourceRef="pvocMoCheckAnalysisReport" targetRef="exclusivegateway2"></sequenceFlow>
+        <userTask id="pvocMoGeneratePenaltyLetter" name="Generate penalty letter and invoice">
+            <extensionElements>
+                <activiti:taskListener event="assignment" expression="${bpmnNotifications.sendEmail(task)}"></activiti:taskListener>
+            </extensionElements>
+        </userTask>
+        <sequenceFlow id="flow12" sourceRef="exclusivegateway1" targetRef="pvocMoGeneratePenaltyLetter">
+            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${analysisReportAction==penalty}]]></conditionExpression>
+        </sequenceFlow>
+        <userTask id="pvocMoSubmitPenaltyLetter" name="Submit penalty letter and invoice">
+            <extensionElements>
+                <activiti:taskListener event="assignment" expression="${bpmnNotifications.sendEmail(task)}"></activiti:taskListener>
+            </extensionElements>
+        </userTask>
+        <sequenceFlow id="flow13" sourceRef="pvocMoGeneratePenaltyLetter" targetRef="pvocMoSubmitPenaltyLetter"></sequenceFlow>
+        <userTask id="pvocMoPenaltyPayment" name="Penalty payment">
+            <extensionElements>
+                <activiti:taskListener event="assignment" expression="${bpmnNotifications.sendEmail(task)}"></activiti:taskListener>
+            </extensionElements>
+        </userTask>
+        <sequenceFlow id="flow14" sourceRef="pvocMoSubmitPenaltyLetter" targetRef="pvocMoPenaltyPayment"></sequenceFlow>
+        <userTask id="pvocMoGenerateWarningLetter" name="Generate warning letter">
+            <extensionElements>
+                <activiti:taskListener event="assignment" expression="${bpmnNotifications.sendEmail(task)}"></activiti:taskListener>
+            </extensionElements>
+        </userTask>
+        <sequenceFlow id="flow15" sourceRef="exclusivegateway1" targetRef="pvocMoGenerateWarningLetter">
+            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${analysisReportAction==warning}]]></conditionExpression>
+        </sequenceFlow>
+        <sequenceFlow id="flow16" sourceRef="exclusivegateway2" targetRef="pvocMoRequestForInfo">
+            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${analysisReportOk==0}]]></conditionExpression>
+        </sequenceFlow>
+        <endEvent id="pvocMoEnd" name="End">
+            <extensionElements>
+                <activiti:executionListener event="end" expression="${pvocBpmn.endPvocMoProcess(objectId)}"></activiti:executionListener>
+            </extensionElements>
+        </endEvent>
+        <endEvent id="pvocMoEndAnalysisOk" name="End">
+            <extensionElements>
+                <activiti:executionListener event="end" expression="${pvocBpmn.endPvocMoProcess(objectId)}"></activiti:executionListener>
+            </extensionElements>
+        </endEvent>
+        <sequenceFlow id="flow18" sourceRef="exclusivegateway2" targetRef="pvocMoEndAnalysisOk">
+            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${analysisReportOk==1}]]></conditionExpression>
+        </sequenceFlow>
+        <sequenceFlow id="flow19" sourceRef="pvocMoRequestForInfo" targetRef="pvocMoRequestForInfoFeedback"></sequenceFlow>
+        <sequenceFlow id="flow20" sourceRef="pvocMoRequestForInfoFeedback" targetRef="pvocMoGenMonitoredCasesAnalysisRpt"></sequenceFlow>
+        <userTask id="pvocMoCloseCase" name="Close case">
+            <extensionElements>
+                <activiti:taskListener event="assignment" expression="${bpmnNotifications.sendEmail(task)}"></activiti:taskListener>
+            </extensionElements>
+        </userTask>
+        <sequenceFlow id="flow21" sourceRef="exclusivegateway1" targetRef="pvocMoCloseCase">
+            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${analysisReportAction==close}]]></conditionExpression>
+        </sequenceFlow>
+        <sequenceFlow id="flow22" sourceRef="pvocMoCloseCase" targetRef="pvocMoEnd"></sequenceFlow>
+        <serviceTask id="pvocMoWarningLetterNotification" name="Warning letter notification" activiti:expression="${bpmnNotifications.sendEmailServiceTask(pvocAgentId,282)}"></serviceTask>
+        <sequenceFlow id="flow23" sourceRef="pvocMoGenerateWarningLetter" targetRef="pvocMoWarningLetterNotification"></sequenceFlow>
+        <sequenceFlow id="flow25" sourceRef="pvocMoPenaltyPayment" targetRef="pvocMoCloseCase"></sequenceFlow>
+        <sequenceFlow id="flow26" sourceRef="pvocMoWarningLetterNotification" targetRef="pvocMoCloseCase"></sequenceFlow>
+    </process>
+    <bpmndi:BPMNDiagram id="BPMNDiagram_pvocMonitoringProcess">
+        <bpmndi:BPMNPlane bpmnElement="pvocMonitoringProcess" id="BPMNPlane_pvocMonitoringProcess">
+            <bpmndi:BPMNShape bpmnElement="pvocMoStart" id="BPMNShape_pvocMoStart">
+                <omgdc:Bounds height="35.0" width="35.0" x="101.0" y="150.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="pvocMoGenerateAnalysisReport" id="BPMNShape_pvocMoGenerateAnalysisReport">
+                <omgdc:Bounds height="71.0" width="105.0" x="220.0" y="132.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="pvocMoRequestForInfo" id="BPMNShape_pvocMoRequestForInfo">
+                <omgdc:Bounds height="63.0" width="105.0" x="700.0" y="136.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="pvocMoRequestForInfoFeedback" id="BPMNShape_pvocMoRequestForInfoFeedback">
+                <omgdc:Bounds height="63.0" width="105.0" x="862.0" y="136.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="pvocMoGenMonitoredCasesAnalysisRpt" id="BPMNShape_pvocMoGenMonitoredCasesAnalysisRpt">
+                <omgdc:Bounds height="81.0" width="121.0" x="1071.0" y="127.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="pvocMoMpvocAnalysisRptReview" id="BPMNShape_pvocMoMpvocAnalysisRptReview">
+                <omgdc:Bounds height="67.0" width="105.0" x="1079.0" y="266.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="pvocMoHodAnalysisRptReview" id="BPMNShape_pvocMoHodAnalysisRptReview">
+                <omgdc:Bounds height="65.0" width="105.0" x="862.0" y="266.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="exclusivegateway1" id="BPMNShape_exclusivegateway1">
+                <omgdc:Bounds height="40.0" width="40.0" x="897.0" y="384.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="pvocMoCheckAnalysisReport" id="BPMNShape_pvocMoCheckAnalysisReport">
+                <omgdc:Bounds height="67.0" width="105.0" x="412.0" y="134.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="exclusivegateway2" id="BPMNShape_exclusivegateway2">
+                <omgdc:Bounds height="40.0" width="40.0" x="600.0" y="147.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="pvocMoGeneratePenaltyLetter" id="BPMNShape_pvocMoGeneratePenaltyLetter">
+                <omgdc:Bounds height="70.0" width="105.0" x="700.0" y="264.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="pvocMoSubmitPenaltyLetter" id="BPMNShape_pvocMoSubmitPenaltyLetter">
+                <omgdc:Bounds height="62.0" width="105.0" x="515.0" y="268.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="pvocMoPenaltyPayment" id="BPMNShape_pvocMoPenaltyPayment">
+                <omgdc:Bounds height="55.0" width="105.0" x="340.0" y="272.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="pvocMoGenerateWarningLetter" id="BPMNShape_pvocMoGenerateWarningLetter">
+                <omgdc:Bounds height="68.0" width="105.0" x="1021.0" y="371.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="pvocMoEnd" id="BPMNShape_pvocMoEnd">
+                <omgdc:Bounds height="35.0" width="35.0" x="900.0" y="550.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="pvocMoEndAnalysisOk" id="BPMNShape_pvocMoEndAnalysisOk">
+                <omgdc:Bounds height="35.0" width="35.0" x="603.0" y="50.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="pvocMoCloseCase" id="BPMNShape_pvocMoCloseCase">
+                <omgdc:Bounds height="55.0" width="105.0" x="865.0" y="460.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="pvocMoWarningLetterNotification" id="BPMNShape_pvocMoWarningLetterNotification">
+                <omgdc:Bounds height="67.0" width="105.0" x="1210.0" y="371.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNEdge bpmnElement="flow1" id="BPMNEdge_flow1">
+                <omgdi:waypoint x="136.0" y="167.0"></omgdi:waypoint>
+                <omgdi:waypoint x="220.0" y="167.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow7" id="BPMNEdge_flow7">
+                <omgdi:waypoint x="1131.0" y="208.0"></omgdi:waypoint>
+                <omgdi:waypoint x="1131.0" y="266.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow8" id="BPMNEdge_flow8">
+                <omgdi:waypoint x="1079.0" y="299.0"></omgdi:waypoint>
+                <omgdi:waypoint x="967.0" y="298.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow9" id="BPMNEdge_flow9">
+                <omgdi:waypoint x="914.0" y="331.0"></omgdi:waypoint>
+                <omgdi:waypoint x="917.0" y="384.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow10" id="BPMNEdge_flow10">
+                <omgdi:waypoint x="325.0" y="167.0"></omgdi:waypoint>
+                <omgdi:waypoint x="412.0" y="167.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow11" id="BPMNEdge_flow11">
+                <omgdi:waypoint x="517.0" y="167.0"></omgdi:waypoint>
+                <omgdi:waypoint x="600.0" y="167.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow12" id="BPMNEdge_flow12">
+                <omgdi:waypoint x="897.0" y="404.0"></omgdi:waypoint>
+                <omgdi:waypoint x="752.0" y="404.0"></omgdi:waypoint>
+                <omgdi:waypoint x="752.0" y="334.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow13" id="BPMNEdge_flow13">
+                <omgdi:waypoint x="700.0" y="299.0"></omgdi:waypoint>
+                <omgdi:waypoint x="620.0" y="299.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow14" id="BPMNEdge_flow14">
+                <omgdi:waypoint x="515.0" y="299.0"></omgdi:waypoint>
+                <omgdi:waypoint x="445.0" y="299.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow15" id="BPMNEdge_flow15">
+                <omgdi:waypoint x="937.0" y="404.0"></omgdi:waypoint>
+                <omgdi:waypoint x="1021.0" y="405.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow16" id="BPMNEdge_flow16">
+                <omgdi:waypoint x="640.0" y="167.0"></omgdi:waypoint>
+                <omgdi:waypoint x="700.0" y="167.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow18" id="BPMNEdge_flow18">
+                <omgdi:waypoint x="620.0" y="147.0"></omgdi:waypoint>
+                <omgdi:waypoint x="620.0" y="85.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow19" id="BPMNEdge_flow19">
+                <omgdi:waypoint x="805.0" y="167.0"></omgdi:waypoint>
+                <omgdi:waypoint x="862.0" y="167.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow20" id="BPMNEdge_flow20">
+                <omgdi:waypoint x="967.0" y="167.0"></omgdi:waypoint>
+                <omgdi:waypoint x="1071.0" y="167.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow21" id="BPMNEdge_flow21">
+                <omgdi:waypoint x="917.0" y="424.0"></omgdi:waypoint>
+                <omgdi:waypoint x="917.0" y="460.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow22" id="BPMNEdge_flow22">
+                <omgdi:waypoint x="917.0" y="515.0"></omgdi:waypoint>
+                <omgdi:waypoint x="917.0" y="550.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow23" id="BPMNEdge_flow23">
+                <omgdi:waypoint x="1126.0" y="405.0"></omgdi:waypoint>
+                <omgdi:waypoint x="1210.0" y="404.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow25" id="BPMNEdge_flow25">
+                <omgdi:waypoint x="392.0" y="327.0"></omgdi:waypoint>
+                <omgdi:waypoint x="392.0" y="487.0"></omgdi:waypoint>
+                <omgdi:waypoint x="865.0" y="487.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow26" id="BPMNEdge_flow26">
+                <omgdi:waypoint x="1262.0" y="438.0"></omgdi:waypoint>
+                <omgdi:waypoint x="1262.0" y="487.0"></omgdi:waypoint>
+                <omgdi:waypoint x="970.0" y="487.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+        </bpmndi:BPMNPlane>
+    </bpmndi:BPMNDiagram>
+</definitions>

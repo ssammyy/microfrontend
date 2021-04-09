@@ -1,0 +1,70 @@
+<div class="container-fluid" style="margin-top: 5%">
+  <form (ngSubmit)="onSubmitPassword()" [formGroup]="passwordForm" class="form">
+    <h1>Welcome To KIMS</h1>
+    <p>Enter your details to be Activated into KIMS PLATFORM</p>
+    <hr>
+
+    <div class="form-body">
+      <div class="form-group">
+        <label><b>OTP</b></label>
+        <input [ngClass]="{ 'is-invalid': submitted && formPassword.otpVerification.errors }"
+               aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+               class="form-control one-column-input" formControlName="otpVerification" name="otpVerification"
+               placeholder="OHJB56265576%&^mnjh" type="text">
+        <div *ngIf="submitted && formPassword.otpVerification.errors" class="invalid-feedback">
+          <div *ngIf="formPassword.otpVerification.errors.required">OTP required</div>
+        </div>
+      </div>
+
+      <!--      <div class="form-group">-->
+      <!--        <label><b>Email</b></label>-->
+      <!--        <input [ngClass]="{ 'is-invalid': submitted && formPassword.emailUsername.errors }"-->
+      <!--               aria-describedby="inputGroup-sizing-sm" aria-label="Small"-->
+      <!--               class="form-control one-column-input" formControlName="emailUsername" name="emailUsername"-->
+      <!--               placeholder="email.gmail.com" type="text">-->
+      <!--        <div *ngIf="submitted && formPassword.emailUsername.errors" class="invalid-feedback">-->
+      <!--          <div *ngIf="formPassword.emailUsername.errors.required">Email is required</div>-->
+      <!--        </div>-->
+      <!--      </div>-->
+
+      <div class="form-group">
+        <label><b>Password</b></label>
+        <input [ngClass]="{ 'is-invalid': submitted && formPassword.password.errors }"
+               aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+               class="form-control one-column-input " formControlName="password" name="password"
+               placeholder="********" type="password">
+        <div *ngIf="submitted && formPassword.password.errors" class="invalid-feedback">
+          <div *ngIf="formPassword.password.errors.required">Password is required</div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label><b>Password Confirmation</b></label>
+        <input [ngClass]="{ 'is-invalid': submitted && formPassword.passwordConfirmation.errors }"
+               aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+               class="form-control one-column-input " formControlName="passwordConfirmation" name="passwordConfirmation"
+               placeholder="********" type="password">
+        <div *ngIf="submitted && formPassword.passwordConfirmation.errors" class="invalid-feedback">
+          <div *ngIf="formPassword.passwordConfirmation.errors.required">Password Confirmation is required</div>
+          <div *ngIf="formPassword.passwordConfirmation.errors.confirmedValidator">Password and Confirm Password must be
+            match.
+          </div>
+        </div>
+      </div>
+
+
+      <div style="margin: 3em 0 2em 0">
+        <button [disabled]="!passwordForm.valid" class="submit-button" type="submit">SUBMIT</button>
+      </div>
+
+      <!--      <div>-->
+      <!--        <span>Don't have an account ? </span><span><a routerLink="/register" >Register</a></span>-->
+      <!--      </div>-->
+      <!--      <div>-->
+      <!--        <span>Forgot username/password ? </span><span><a>Reset</a></span>-->
+      <!--      </div>-->
+    </div>
+
+
+  </form>
+</div>

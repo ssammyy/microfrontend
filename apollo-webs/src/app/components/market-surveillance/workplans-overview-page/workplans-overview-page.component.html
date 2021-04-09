@@ -1,0 +1,96 @@
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3">
+  <h1 class="h2">Workplans</h1>
+  <!--    <div class="resolved-pill">-->
+  <!--      <p>10000</p>-->
+  <!--    </div>-->
+  <div class="row">
+    <button class="btn btn-outline-secondary mr-4">EXPORT</button>
+    <div class="btn-toolbar mb-2 mb-md-0">
+
+      <button class="submit-button mr-4" (click)="onclick()" data-toggle="modal" data-target="#myModal">
+        {{ isLoading ? "Loading" : "ADD WORKPLAN"}}
+        <div class="spinner-border text-light" role="status" *ngIf="isLoading">
+          <span class="sr-only">Loading...</span>
+        </div>
+      </button>
+
+    </div>
+
+  </div>
+</div>
+
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        Workplan WP#1283IDJSFS has been created successfully
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Go to workplan</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="row mt-5">
+  <div class="col-6 col-md-3">
+    <input class="form-control form-control-dark" type="text" placeholder="Search" aria-label="Search"
+           style="width: 80%; height: 30px">
+  </div>
+  <div class="col-6 col-md-3">
+    <button class="btn btn-sm btn-outline-secondary mr-2">TODAY</button>
+    <button class="btn btn-sm btn-outline-secondary">FILTER BY</button>
+  </div>
+</div>
+
+  <table class="table-hover">
+    <thead>
+    <th>Ref Number</th>
+    <th>Year</th>
+    <th>Date Created</th>
+    <th>Date Completed</th>
+    <th>Created By</th>
+    <th>Status</th>
+    </thead>
+    <tbody>
+    <tr *ngFor="let item of allWorkPlanData">
+      <td><a class="ref-link" routerLink="/workplan-activities/{{item.refNumber}}">{{item.refNumber}}</a></td>
+      <td>{{item.year}}</td>
+      <td>{{item.dateCreated}}</td>
+      <td>{{item.dateCompleted}}</td>
+      <td class="amount">{{item.createdBy}}</td>
+      <td class="status">{{item.status}}</td>
+    </tr>
+    </tbody>
+  </table>
+  <!--      <div class="btn-group" role="group" aria-label="...">-->
+  <!--        <div class="btn-group" role="group">-->
+  <!--          <button type="button" class="btn btn-default">Back</button>-->
+  <!--        </div>-->
+  <!--        <div class="btn-group" role="group">-->
+  <!--          <button type="button" class="btn btn-default">First</button>-->
+  <!--        </div>-->
+  <!--        <div class="btn-group" role="group">-->
+  <!--          <button type="button" class="btn btn-default">Previous</button>-->
+  <!--        </div>-->
+  <!--        <div class="btn-group" role="group">-->
+  <!--          <button type="button" class="btn btn-default">Next</button>-->
+  <!--        </div>-->
+  <!--        <div class="btn-group" role="group">-->
+  <!--          <button type="button" class="btn btn-default">Last</button>-->
+  <!--        </div>-->
+  <!--        <div class="btn-group" role="group">-->
+  <!--          <span>Showing rows 1 to 10 of 20</span>-->
+  <!--        </div>-->
+  <!--      </div>-->
+
+

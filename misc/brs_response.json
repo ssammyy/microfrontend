@@ -1,0 +1,30 @@
+{
+  "records": [
+    {
+      "status": "registered",
+      "registration_number": "PVT-KAUQ22K",
+      "registration_date": "3 May 2019",
+      "postal_address": "25185 - 00603",
+      "physical_address": "LR No 3734/1119, Amboseli Road off Gitanga Road, Fl: 1, Room/Door: 01, LR No 3734/1119, Amboseli Road off Gitanga Road",
+      "phone_number": "+254723365991",
+      "partners": [
+        {
+          "name": "IAN LEONARD MWATHI",
+          "id_type": "citizen",
+          "id_number": "13644371"
+        },
+        {
+          "name": "RAHA WANGECI GATERE",
+          "id_type": "citizen",
+          "id_number": "14496967"
+        }
+      ],
+      "kra_pin": "P051809929Y",
+      "id": 1400443,
+      "email": "imwathi@gmail.com",
+      "business_name": "THE CONNECTIV INTERACTIVE AGENCY  LIMITED",
+      "branches": null
+    }
+  ],
+  "count": 1
+}

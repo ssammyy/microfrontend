@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/test">
+    <process id="pvocWaiversApplicationsProcess" name="Pvoc Waivers Applications Process" isExecutable="true">
+        <startEvent id="pvocWaStart" name="Start"></startEvent>
+        <userTask id="pvocWaSubmitApplication" name="Submit waiver application"></userTask>
+        <sequenceFlow id="flow1" sourceRef="pvocWaStart" targetRef="pvocWaSubmitApplication"></sequenceFlow>
+        <userTask id="pvocWaGenerateReport" name="Generate report">
+            <extensionElements>
+                <activiti:taskListener event="assignment" expression="${bpmnNotifications.sendEmail(task)}"></activiti:taskListener>
+            </extensionElements>
+        </userTask>
+        <userTask id="pvocWaApproveWaiver" name="Approve waiver">
+            <extensionElements>
+                <activiti:taskListener event="assignment" expression="${bpmnNotifications.sendEmail(task)}"></activiti:taskListener>
+            </extensionElements>
+        </userTask>
+        <sequenceFlow id="flow3" sourceRef="pvocWaGenerateReport" targetRef="pvocWaApproveWaiver"></sequenceFlow>
+        <userTask id="pvocWaGenerateMinutes" name="Generate minutes">
+            <extensionElements>
+                <activiti:taskListener event="assignment" expression="${bpmnNotifications.sendEmail(task)}"></activiti:taskListener>
+            </extensionElements>
+        </userTask>
+        <sequenceFlow id="flow4" sourceRef="pvocWaApproveWaiver" targetRef="pvocWaGenerateMinutes"></sequenceFlow>
+        <userTask id="pvocWaGenerateDeferral" name="Generate deferral">
+            <extensionElements>
+                <activiti:taskListener event="assignment" expression="${bpmnNotifications.sendEmail(task)}"></activiti:taskListener>
+            </extensionElements>
+        </userTask>
+        <userTask id="pvocWaNscApproval" name="NSC approval">
+            <extensionElements>
+                <activiti:taskListener event="create" expression="${bpmnNotifications.sendEmail(task)}"></activiti:taskListener>
+            </extensionElements>
+        </userTask>
+        <sequenceFlow id="flow5" sourceRef="pvocWaGenerateMinutes" targetRef="parallelgateway1"></sequenceFlow>
+        <parallelGateway id="parallelgateway1" name="Exclusive Gateway"></parallelGateway>
+        <sequenceFlow id="flow6" sourceRef="parallelgateway1" targetRef="pvocWaGenerateDeferral"></sequenceFlow>
+        <sequenceFlow id="flow7" sourceRef="parallelgateway1" targetRef="pvocWaNscApproval"></sequenceFlow>
+        <userTask id="pvocWaGenerateWaiverRequestLetter" name="Generate waiver request letter">
+            <extensionElements>
+                <activiti:taskListener event="create" expression="${bpmnNotifications.sendEmail(task)}"></activiti:taskListener>
+            </extensionElements>
+        </userTask>
+        <sequenceFlow id="flow8" sourceRef="pvocWaNscApproval" targetRef="pvocWaGenerateWaiverRequestLetter"></sequenceFlow>
+        <userTask id="pvocWaSubmitApprovalLetter" name="Submit waiver approval letter">
+            <extensionElements>
+                <activiti:taskListener event="assignment" expression="${bpmnNotifications.sendEmail(task)}"></activiti:taskListener>
+            </extensionElements>
+        </userTask>
+        <sequenceFlow id="flow9" sourceRef="pvocWaGenerateWaiverRequestLetter" targetRef="pvocWaSubmitApprovalLetter"></sequenceFlow>
+        <exclusiveGateway id="exclusivegateway1" name="Exclusive Gateway"></exclusiveGateway>
+        <sequenceFlow id="flow10" sourceRef="pvocWaSubmitApprovalLetter" targetRef="exclusivegateway1"></sequenceFlow>
+        <userTask id="pvocWaGenerateApprovalLetter" name="Generate waiver approval letter">
+            <extensionElements>
+                <activiti:taskListener event="assignment" expression="${bpmnNotifications.sendEmail(task)}"></activiti:taskListener>
+            </extensionElements>
+        </userTask>
+        <sequenceFlow id="flow11" sourceRef="exclusivegateway1" targetRef="pvocWaGenerateApprovalLetter">
+            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${waiverApproved==1}]]></conditionExpression>
+        </sequenceFlow>
+        <serviceTask id="pvocWaWaiverApprovalMail" name="Waiver approval letter mail" activiti:expression="${bpmnNotifications.sendEmailServiceTask(importerUserId,261)}"></serviceTask>
+        <sequenceFlow id="flow12" sourceRef="pvocWaGenerateApprovalLetter" targetRef="pvocWaWaiverApprovalMail"></sequenceFlow>
+        <userTask id="pvocWaGenerateRejectionLetter" name="Generate waiver rejection letter">
+            <extensionElements>
+                <activiti:taskListener event="assignment" expression="${bpmnNotifications.sendEmail(task)}"></activiti:taskListener>
+            </extensionElements>
+        </userTask>
+        <sequenceFlow id="flow13" sourceRef="exclusivegateway1" targetRef="pvocWaGenerateRejectionLetter">
+            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${waiverApproved==0}]]></conditionExpression>
+        </sequenceFlow>
+        <serviceTask id="pvocWaWaiverRejectionMail" name="Waiver rejection letter mail" activiti:expression="${bpmnNotifications.sendEmailServiceTask(importerUserId,261)}"></serviceTask>
+        <sequenceFlow id="flow14" sourceRef="pvocWaGenerateRejectionLetter" targetRef="pvocWaWaiverRejectionMail"></sequenceFlow>
+        <endEvent id="pvocWaEnd" name="End">
+            <extensionElements>
+                <activiti:executionListener event="end" expression="${pvocBpmn.endPvocWaProcess(objectId)}"></activiti:executionListener>
+            </extensionElements>
+        </endEvent>
+        <sequenceFlow id="flow15" sourceRef="pvocWaWaiverRejectionMail" targetRef="pvocWaEnd"></sequenceFlow>
+        <sequenceFlow id="flow16" sourceRef="pvocWaWaiverApprovalMail" targetRef="pvocWaEnd"></sequenceFlow>
+        <endEvent id="endevent1" name="End"></endEvent>
+        <sequenceFlow id="flow17" sourceRef="pvocWaGenerateDeferral" targetRef="endevent1"></sequenceFlow>
+        <sequenceFlow id="flow18" sourceRef="pvocWaSubmitApplication" targetRef="parallelgateway2"></sequenceFlow>
+        <parallelGateway id="parallelgateway2" name="Exclusive Gateway"></parallelGateway>
+        <serviceTask id="pvocWaImporterSubmitNotification" name="Importer Submit Notification" activiti:expression="${bpmnNotifications.sendEmailServiceTask(importerUserId,281)}"></serviceTask>
+        <sequenceFlow id="flow20" sourceRef="parallelgateway2" targetRef="pvocWaImporterSubmitNotification"></sequenceFlow>
+        <serviceTask id="pvocWaWetcSubmitNotification" name="Wetc Submt Notification" activiti:expression="${bpmnNotifications.sendEmailServiceTask(wetcUserId,282)}"></serviceTask>
+        <sequenceFlow id="flow21" sourceRef="parallelgateway2" targetRef="pvocWaWetcSubmitNotification"></sequenceFlow>
+        <userTask id="pvocWaReviewApplication" name="Review application">
+            <extensionElements>
+                <activiti:taskListener event="assignment" expression="${bpmnNotifications.sendEmail(task)}"></activiti:taskListener>
+            </extensionElements>
+        </userTask>
+        <sequenceFlow id="flow22" sourceRef="parallelgateway2" targetRef="pvocWaReviewApplication"></sequenceFlow>
+        <sequenceFlow id="flow23" sourceRef="pvocWaReviewApplication" targetRef="pvocWaGenerateReport"></sequenceFlow>
+    </process>
+    <bpmndi:BPMNDiagram id="BPMNDiagram_pvocWaiversApplicationsProcess">
+        <bpmndi:BPMNPlane bpmnElement="pvocWaiversApplicationsProcess" id="BPMNPlane_pvocWaiversApplicationsProcess">
+            <bpmndi:BPMNShape bpmnElement="pvocWaStart" id="BPMNShape_pvocWaStart">
+                <omgdc:Bounds height="35.0" width="35.0" x="60.0" y="80.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="pvocWaSubmitApplication" id="BPMNShape_pvocWaSubmitApplication">
+                <omgdc:Bounds height="71.0" width="105.0" x="190.0" y="62.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="pvocWaGenerateReport" id="BPMNShape_pvocWaGenerateReport">
+                <omgdc:Bounds height="55.0" width="105.0" x="471.0" y="70.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="pvocWaApproveWaiver" id="BPMNShape_pvocWaApproveWaiver">
+                <omgdc:Bounds height="55.0" width="105.0" x="620.0" y="70.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="pvocWaGenerateMinutes" id="BPMNShape_pvocWaGenerateMinutes">
+                <omgdc:Bounds height="55.0" width="105.0" x="770.0" y="70.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="pvocWaGenerateDeferral" id="BPMNShape_pvocWaGenerateDeferral">
+                <omgdc:Bounds height="55.0" width="105.0" x="888.0" y="190.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="pvocWaNscApproval" id="BPMNShape_pvocWaNscApproval">
+                <omgdc:Bounds height="55.0" width="105.0" x="1070.0" y="71.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="parallelgateway1" id="BPMNShape_parallelgateway1">
+                <omgdc:Bounds height="40.0" width="40.0" x="920.0" y="78.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="pvocWaGenerateWaiverRequestLetter" id="BPMNShape_pvocWaGenerateWaiverRequestLetter">
+                <omgdc:Bounds height="70.0" width="105.0" x="1070.0" y="183.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="pvocWaSubmitApprovalLetter" id="BPMNShape_pvocWaSubmitApprovalLetter">
+                <omgdc:Bounds height="62.0" width="105.0" x="1070.0" y="320.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="exclusivegateway1" id="BPMNShape_exclusivegateway1">
+                <omgdc:Bounds height="40.0" width="40.0" x="920.0" y="330.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="pvocWaGenerateApprovalLetter" id="BPMNShape_pvocWaGenerateApprovalLetter">
+                <omgdc:Bounds height="68.0" width="105.0" x="726.0" y="317.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="pvocWaWaiverApprovalMail" id="BPMNShape_pvocWaWaiverApprovalMail">
+                <omgdc:Bounds height="62.0" width="105.0" x="540.0" y="320.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="pvocWaGenerateRejectionLetter" id="BPMNShape_pvocWaGenerateRejectionLetter">
+                <omgdc:Bounds height="71.0" width="105.0" x="726.0" y="460.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="pvocWaWaiverRejectionMail" id="BPMNShape_pvocWaWaiverRejectionMail">
+                <omgdc:Bounds height="63.0" width="105.0" x="540.0" y="464.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="pvocWaEnd" id="BPMNShape_pvocWaEnd">
+                <omgdc:Bounds height="35.0" width="35.0" x="362.0" y="410.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="endevent1" id="BPMNShape_endevent1">
+                <omgdc:Bounds height="35.0" width="35.0" x="750.0" y="200.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="parallelgateway2" id="BPMNShape_parallelgateway2">
+                <omgdc:Bounds height="40.0" width="40.0" x="370.0" y="160.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="pvocWaImporterSubmitNotification" id="BPMNShape_pvocWaImporterSubmitNotification">
+                <omgdc:Bounds height="63.0" width="105.0" x="180.0" y="223.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="pvocWaWetcSubmitNotification" id="BPMNShape_pvocWaWetcSubmitNotification">
+                <omgdc:Bounds height="74.0" width="120.0" x="471.0" y="227.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="pvocWaReviewApplication" id="BPMNShape_pvocWaReviewApplication">
+                <omgdc:Bounds height="55.0" width="105.0" x="338.0" y="70.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNEdge bpmnElement="flow1" id="BPMNEdge_flow1">
+                <omgdi:waypoint x="95.0" y="97.0"></omgdi:waypoint>
+                <omgdi:waypoint x="190.0" y="97.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow3" id="BPMNEdge_flow3">
+                <omgdi:waypoint x="576.0" y="97.0"></omgdi:waypoint>
+                <omgdi:waypoint x="620.0" y="97.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow4" id="BPMNEdge_flow4">
+                <omgdi:waypoint x="725.0" y="97.0"></omgdi:waypoint>
+                <omgdi:waypoint x="770.0" y="97.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow5" id="BPMNEdge_flow5">
+                <omgdi:waypoint x="875.0" y="97.0"></omgdi:waypoint>
+                <omgdi:waypoint x="920.0" y="98.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow6" id="BPMNEdge_flow6">
+                <omgdi:waypoint x="940.0" y="118.0"></omgdi:waypoint>
+                <omgdi:waypoint x="940.0" y="190.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow7" id="BPMNEdge_flow7">
+                <omgdi:waypoint x="960.0" y="98.0"></omgdi:waypoint>
+                <omgdi:waypoint x="1070.0" y="98.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow8" id="BPMNEdge_flow8">
+                <omgdi:waypoint x="1122.0" y="126.0"></omgdi:waypoint>
+                <omgdi:waypoint x="1122.0" y="183.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow9" id="BPMNEdge_flow9">
+                <omgdi:waypoint x="1122.0" y="253.0"></omgdi:waypoint>
+                <omgdi:waypoint x="1122.0" y="320.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow10" id="BPMNEdge_flow10">
+                <omgdi:waypoint x="1070.0" y="351.0"></omgdi:waypoint>
+                <omgdi:waypoint x="960.0" y="350.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow11" id="BPMNEdge_flow11">
+                <omgdi:waypoint x="920.0" y="350.0"></omgdi:waypoint>
+                <omgdi:waypoint x="831.0" y="351.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow12" id="BPMNEdge_flow12">
+                <omgdi:waypoint x="726.0" y="351.0"></omgdi:waypoint>
+                <omgdi:waypoint x="645.0" y="351.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow13" id="BPMNEdge_flow13">
+                <omgdi:waypoint x="940.0" y="370.0"></omgdi:waypoint>
+                <omgdi:waypoint x="940.0" y="495.0"></omgdi:waypoint>
+                <omgdi:waypoint x="831.0" y="495.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow14" id="BPMNEdge_flow14">
+                <omgdi:waypoint x="726.0" y="495.0"></omgdi:waypoint>
+                <omgdi:waypoint x="645.0" y="495.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow15" id="BPMNEdge_flow15">
+                <omgdi:waypoint x="540.0" y="495.0"></omgdi:waypoint>
+                <omgdi:waypoint x="379.0" y="495.0"></omgdi:waypoint>
+                <omgdi:waypoint x="379.0" y="445.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow16" id="BPMNEdge_flow16">
+                <omgdi:waypoint x="540.0" y="351.0"></omgdi:waypoint>
+                <omgdi:waypoint x="379.0" y="351.0"></omgdi:waypoint>
+                <omgdi:waypoint x="379.0" y="410.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow17" id="BPMNEdge_flow17">
+                <omgdi:waypoint x="888.0" y="217.0"></omgdi:waypoint>
+                <omgdi:waypoint x="785.0" y="217.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow18" id="BPMNEdge_flow18">
+                <omgdi:waypoint x="242.0" y="133.0"></omgdi:waypoint>
+                <omgdi:waypoint x="242.0" y="179.0"></omgdi:waypoint>
+                <omgdi:waypoint x="370.0" y="180.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow20" id="BPMNEdge_flow20">
+                <omgdi:waypoint x="390.0" y="200.0"></omgdi:waypoint>
+                <omgdi:waypoint x="389.0" y="254.0"></omgdi:waypoint>
+                <omgdi:waypoint x="285.0" y="254.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow21" id="BPMNEdge_flow21">
+                <omgdi:waypoint x="390.0" y="200.0"></omgdi:waypoint>
+                <omgdi:waypoint x="531.0" y="227.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow22" id="BPMNEdge_flow22">
+                <omgdi:waypoint x="390.0" y="160.0"></omgdi:waypoint>
+                <omgdi:waypoint x="390.0" y="125.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow23" id="BPMNEdge_flow23">
+                <omgdi:waypoint x="443.0" y="97.0"></omgdi:waypoint>
+                <omgdi:waypoint x="471.0" y="97.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+        </bpmndi:BPMNPlane>
+    </bpmndi:BPMNDiagram>
+</definitions>

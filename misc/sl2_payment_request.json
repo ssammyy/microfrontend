@@ -1,0 +1,76 @@
+{
+  "loginId": "vmuriuki",
+  "password": "password",
+  "hash": "123445",
+  "transmissionDate": "2021-03-02@13:08:31.971+0000",
+  "HEADER": {
+    "entryNo": "12",
+    "kraPin": "1234567",
+    "manufacturerName": "test",
+    "paymentSlipNo": "test",
+    "paymentSlipDate": "02/03/2021",
+    "paymentType": "CASH",
+    "paymentDate": "02/03/2021",
+    "totalDeclAmt": 110000,
+    "totalPenaltyAmt": 30000,
+    "bankRefNo": "1234567",
+    "TotalPaymentAmt": 80000,
+    "Bank": "test"
+  },
+  "DETAILS": {
+    "DECLARATION": [
+      {
+        "commodityType": "FOOD",
+        "periodFrom": "31/01/2021",
+        "periodTo": "27/02/2021",
+        "qtyManf": 5,
+        "exFactVal": 50000,
+        "levyPaid": 20000
+      },
+      {
+        "commodityType": "FOOD",
+        "periodFrom": "31/01/2021",
+        "periodTo": "27/02/2021",
+        "qtyManf": 5,
+        "exFactVal": 50000,
+        "levyPaid": 20000
+      },
+      {
+        "commodityType": "FOOD",
+        "periodFrom": "31/01/2021",
+        "periodTo": "27/02/2021",
+        "qtyManf": 5,
+        "exFactVal": 50000,
+        "levyPaid": 20000
+      },
+      {
+        "commodityType": "FOOD",
+        "periodFrom": "31/01/2021",
+        "periodTo": "27/02/2021",
+        "qtyManf": 5,
+        "exFactVal": 50000,
+        "levyPaid": 20000
+      }
+    ],
+    "PENALTY": [
+      {
+        "penaltyOrderNo": "test",
+        "periodFrom": "31/00/2021",
+        "periodTo": "27/02/2021",
+        "penaltyPaid": 10000
+      },
+      {
+        "penaltyOrderNo": "test",
+        "periodFrom": "31/00/2021",
+        "periodTo": "27/02/2021",
+        "penaltyPaid": 10000
+      },
+      {
+        "penaltyOrderNo": "test",
+        "periodFrom": "31/00/2021",
+        "periodTo": "27/02/2021",
+        "penaltyPaid": 10000
+      }
+    ]
+  }
+}

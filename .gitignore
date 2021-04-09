@@ -1,0 +1,46 @@
+.gradle
+**/target/
+!.mvn/wrapper/maven-wrapper.jar
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+./gradlew*
+
+### IntelliJ IDEA ###
+.idea/**
+*.iws
+*.iml
+*.ipr
+**/node_modules/
+
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+/build/
+**/.idea/
+/node_modules
+
+### VS Code ###
+.vscode/
+**.kotlintest/
+.history/**
+**/build/
+**/.gradle/
+**/out/
+**/logs/
+**/lib/
+
+### PROFILER DUMPS ###
+*.hprof
+
+**/uploads/

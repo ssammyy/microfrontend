@@ -1,0 +1,780 @@
+package org.kebs.app.kotlin.apollo.api.ports.provided.dao
+
+import org.kebs.app.kotlin.apollo.api.ports.provided.criteria.SearchCriteria
+import org.kebs.app.kotlin.apollo.api.ports.provided.spec.UserSpecification
+import org.kebs.app.kotlin.apollo.common.dto.*
+import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
+import org.kebs.app.kotlin.apollo.common.exceptions.InvalidInputException
+import org.kebs.app.kotlin.apollo.common.exceptions.InvalidValueException
+import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
+import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
+import org.kebs.app.kotlin.apollo.store.model.*
+import org.kebs.app.kotlin.apollo.store.model.di.UsersCfsAssignmentsEntity
+import org.kebs.app.kotlin.apollo.store.repo.*
+import org.kebs.app.kotlin.apollo.store.repo.di.IUsersCfsAssignmentsRepository
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.repository.findByIdOrNull
+import org.springframework.security.core.context.SecurityContextHolder
+import org.springframework.stereotype.Component
+import org.springframework.transaction.annotation.Propagation
+import org.springframework.transaction.annotation.Transactional
+import java.sql.Date
+import java.sql.Timestamp
+import java.time.Instant
+
+@Component
+class SystemsAdminDaoService(
+    private val privilegesRepo: IUserPrivilegesRepository,
+    private val usersRepo: IUserRepository,
+    private val usersCfsRepo: IUsersCfsAssignmentsRepository,
+    private val userProfilesRepo: IUserProfilesRepository,
+    private val commonDaoServices: CommonDaoServices,
+    private val rolesRepo: IUserRolesRepository,
+    private val rolePrivilegesRepo: IUserRolesPrivilegesRepository,
+    private val titlesRepo: ITitlesRepository,
+    private val userTypesRepo: IUserTypesEntityRepository,
+    private val userRolesRepo: IUserRoleAssignmentsRepository,
+    private val registrationDaoServices: RegistrationDaoServices,
+    private val designationsRepo: IDesignationsRepository,
+    private val departmentsRepo: IDepartmentsRepository,
+    private val divisionsRepo: IDivisionsRepository,
+    private val directoratesRepo: IDirectoratesRepository,
+    private val regionsRepo: IRegionsRepository,
+    private val subRegionsRepo: ISubRegionsRepository,
+    private val sectionsRepo: ISectionsRepository,
+    private val subSectionsL1Repo: ISubSectionsLevel1Repository,
+    private val subSectionsL2Repo: ISubSectionsLevel2Repository,
+    private val applicationMapProperties: ApplicationMapProperties,
+    private val countiesRepo: ICountiesRepository,
+    private val townsRepo: ITownsRepository
+) {
+
+    final val appId: Int = applicationMapProperties.mapUserRegistration
+
+    fun listTitles(status: Int): List<TitlesEntityDto>? = titlesRepo.findAll().sortedBy { it.id }.map { TitlesEntityDto(it.id, it.title, it.remarks, it.status == 1) }
+    fun listUserTypes(status: Int): List<UserTypesEntityDto>? = userTypesRepo.findAll().sortedBy { it.id }.map { UserTypesEntityDto(it.id, it.typeName, it.descriptions, it.status == 1, it.defaultRole) }
+
+
+    fun loggedInUserDetails(): UsersEntity {
+        SecurityContextHolder.getContext().authentication?.name
+                ?.let { username ->
+                    usersRepo.findByUserName(username)
+                            ?.let { loggedInUser ->
+                                return loggedInUser
+                            }
+                            ?: throw ExpectedDataNotFound("No userName with the following userName=$username, Exist in the users table")
+                }
+                ?: throw ExpectedDataNotFound("No user has logged in")
+    }
+
+    fun checkIfUserLoggedIn(userEmail: String): String? {
+        SecurityContextHolder.getContext().authentication?.name
+                ?.let { username ->
+                    return when (val loggedInUser = usersRepo.findByUserName(username)) {
+                        null -> {
+                            userEmail
+                        }
+                        else -> {
+                            loggedInUser.userName
+                        }
+                    }
+
+                }
+                ?: throw ExpectedDataNotFound("No user has logged in")
+    }
+
+
+    fun listPrivileges(page: Int, records: Int): Page<UserPrivilegesEntity>? =
+            PageRequest.of(page, records)
+                    .let { pages ->
+                        privilegesRepo.findAll(pages)
+                    }
+
+    fun addOrEditPrivilege(privilegesEntity: UserPrivilegesEntity): UserPrivilegesEntity? {
+        return privilegesRepo.save(privilegesEntity)
+    }
+
+    fun addOrEditUser(usersEntity: UsersEntity): UsersEntity? {
+        return usersRepo.save(usersEntity)
+    }
+
+    fun getAuthority(id: String): UserPrivilegesEntity? {
+        return privilegesRepo.findByIdOrNull(id.toLongOrNull())
+
+    }
+
+    fun getUser(id: String): UsersEntity? {
+        return usersRepo.findByIdOrNull(id.toLongOrNull())
+
+    }
+
+    fun getUserDetails(id: Long): UserDetailsDto {
+        val user = commonDaoServices.findUserByID(id)
+        val employeeProfile = userProfilesRepo.findByUserId(user)
+        val employeeProfileDto = EmployeeProfileDetailsDto(
+                employeeProfile?.directorateId?.id?.let { directoratesRepo.findByIdOrNull(it)?.directorate },
+                employeeProfile?.departmentId?.id?.let { departmentsRepo.findByIdOrNull(it)?.department },
+                employeeProfile?.divisionId?.id?.let { divisionsRepo.findByIdOrNull(it)?.division },
+                employeeProfile?.sectionId?.id?.let { sectionsRepo.findByIdOrNull(it)?.section },
+                employeeProfile?.subSectionL1Id?.id?.let { subSectionsL1Repo.findByIdOrNull(it)?.subSection },
+                employeeProfile?.subSectionL2Id?.id?.let { subSectionsL2Repo.findByIdOrNull(it)?.subSection },
+                employeeProfile?.designationId?.id?.let { designationsRepo.findByIdOrNull(it)?.designationName },
+                employeeProfile?.id,
+                employeeProfile?.regionId?.id?.let { regionsRepo.findByIdOrNull(it)?.region },
+                employeeProfile?.countyID?.id?.let { countiesRepo.findByIdOrNull(it)?.county },
+                employeeProfile?.townID?.id?.let { townsRepo.findByIdOrNull(it)?.town },
+                employeeProfile?.status == 1
+
+        )
+
+        return UserDetailsDto(
+            user.id,
+            user.firstName,
+            user.lastName,
+            user.userName,
+            user.email,
+            user.userRegNo,
+            user.enabled == 1,
+            user.accountExpired == 1,
+            user.accountLocked == 1,
+            user.credentialsExpired == 1,
+            user.status == 1,
+            user.registrationDate,
+            user.title?.let { titlesRepo.findByIdOrNull(user.title)?.title },
+            employeeProfileDto,
+
+            )
+
+    }
+
+    fun listUsers(page: Int, records: Int): List<UserEntityDto>? {
+        val userList = mutableListOf<UserEntityDto>()
+
+        PageRequest.of(page, records)
+                .let {
+                    usersRepo.findAll(it)
+                            .map { u ->
+//                                val profile = userProfilesRepo.findFirstByUserIdOrderByIdDesc(u)
+                                userList.add(
+                                        UserEntityDto(
+                                            u.id,
+                                            u.firstName,
+                                            u.lastName,
+                                            u.userName,
+                                            u.email,
+                                            u.userRegNo,
+                                            u.enabled == 1,
+                                            u.accountExpired == 1,
+                                            u.accountLocked == 1,
+                                            u.credentialsExpired == 1,
+                                            u.status == 1,
+                                            u.registrationDate,
+                                            u.userTypes,
+                                            u.title,
+//                                                profile?.directorateId?.id,
+//                                                profile?.departmentId?.id,
+//                                                profile?.divisionId?.id,
+//                                                profile?.sectionId?.id,
+//                                                profile?.subSectionL1Id?.id,
+//                                                profile?.subSectionL2Id?.id,
+//                                                profile?.designationId?.id,
+//                                                profile?.id
+                                        )
+                                )
+                            }
+                }
+
+//        return usersRepo.findAll().toList().sortedBy { it.id }
+        return userList.sortedByDescending { it.id }
+    }
+
+    fun listAllRoles(): List<RolesEntityDto>? = rolesRepo.findAll().sortedBy { it.id }.map { RolesEntityDto(it.id, it.roleName, it.descriptions, it.status == 1) }
+    fun listAllRolesByStatus(status: Int): List<RolesEntityDto>? = rolesRepo.findByStatus(status)?.sortedBy { it.id }?.map { RolesEntityDto(it.id, it.roleName, it.descriptions, it.status == 1) }
+
+    fun listAllAuthorities(): List<AuthoritiesEntityDto>? = privilegesRepo.findAll().sortedBy { it.id }.map { AuthoritiesEntityDto(it.id, it.name, it.descriptions, it.status == 1) }
+    fun listAllAuthoritiesByStatus(status: Int): List<AuthoritiesEntityDto>? = privilegesRepo.findByStatus(status)?.sortedBy { it.id }?.map { AuthoritiesEntityDto(it.id, it.name, it.descriptions, it.status == 1) }
+
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun updateUserDetails(dto: UserEntityDto): UserEntityDto? {
+
+        when {
+            dto.id ?: -1L < 1L -> {
+                var user = UsersEntity()
+                user.title = dto.title
+                user.firstName = dto.firstName
+                user.lastName = dto.lastName
+                user.userName = dto.userName
+                user.email = dto.email
+                user.enabled = when (dto.enabled) {
+                    true -> 1
+                    else -> 0
+                }
+
+                user.accountExpired = when (dto.accountExpired) {
+                    true -> 1
+                    else -> 0
+                }
+                user.accountLocked = when (dto.accountLocked) {
+                    true -> 1
+                    else -> 0
+                }
+                user.credentialsExpired = when (dto.credentialsExpired) {
+                    true -> 1
+                    else -> 0
+                }
+
+
+                user.status = when (dto.status) {
+                    true -> 1
+                    else -> 0
+                }
+                //Todo: Removal of user Types
+//                user.userTypes = dto.userType
+                user.userRegNo = dto.userRegNo
+                user.registrationDate = commonDaoServices.getCurrentDate()
+                user.createdBy = user.userName?.let { checkIfUserLoggedIn(it) }
+                user.createdOn = Timestamp.from(Instant.now())
+                user.registrationDate = Date(java.util.Date().time)
+
+
+                user = usersRepo.save(user)
+//
+                val userRole = userRolesRepo.save(
+                    registrationDaoServices.userRoleAssignment(
+                        user,
+                        1,
+                        applicationMapProperties.mapUserRegistrationUserRoleID
+                    )
+                )
+
+                //Todo: ask Ken How we will go about this function and adding of BPM function for sending mail
+                userRegistrationMailSending(user, userRole, applicationMapProperties.mapUserRegistrationActivationNotification)
+
+                dto.directorate?.let { createUserProfilesEntity(dto, user) }
+
+
+                return dto
+
+            }
+            else -> {
+                usersRepo.findByIdOrNull(dto.id)
+                        ?.let { user ->
+                            user.title = dto.title
+                            user.firstName = dto.firstName
+                            user.lastName = dto.lastName
+                            user.userName = dto.userName
+                            user.email = dto.email
+                            user.enabled = when (dto.enabled) {
+                                true -> 1
+                                else -> 0
+                            }
+
+                            user.accountExpired = when (dto.accountExpired) {
+                                true -> 1
+                                else -> 0
+                            }
+                            user.accountLocked = when (dto.accountLocked) {
+                                true -> 1
+                                else -> 0
+                            }
+                            user.credentialsExpired = when (dto.credentialsExpired) {
+                                true -> 1
+                                else -> 0
+                            }
+                            user.status = when (dto.status) {
+                                true -> 1
+                                else -> 0
+                            }
+                            user.userTypes = dto.userType
+
+                            user.modifiedBy = loggedInUserDetails().userName
+                            user.modifiedOn = Timestamp.from(Instant.now())
+                            usersRepo.save(user)
+                            //Todo: Ask Ken what this is all about
+                            userProfilesRepo.findByIdOrNull(dto.profileId)
+                                    ?.let { profile ->
+                                        profile.lastModifiedOn = Timestamp.from(Instant.now())
+                                        profile.lastModifiedBy = loggedInUserDetails().userName
+                                        dto.region?.let { profile.regionId = regionsRepo.findByIdOrNull(dto.region) }
+                                        dto.county?.let { profile.countyID = countiesRepo.findByIdOrNull(dto.county) }
+                                        dto.town?.let { profile.townID = townsRepo.findByIdOrNull(dto.town) }
+                                        dto.subRegion?.let {
+                                            profile.subRegionId = subRegionsRepo.findByIdOrNull(dto.subRegion)
+                                        }
+                                        dto.designation?.let {
+                                            profile.designationId = designationsRepo.findByIdOrNull(dto.designation)
+                                        }
+                                        dto.directorate?.let {
+                                            profile.directorateId = directoratesRepo.findByIdOrNull(dto.directorate)
+                                        }
+                                        dto.department?.let {
+                                            profile.departmentId = departmentsRepo.findByIdOrNull(dto.department)
+                                        }
+                                        dto.division?.let {
+                                            profile.divisionId = divisionsRepo.findByIdOrNull(dto.division)
+                                        }
+                                        dto.section?.let {
+                                            profile.sectionId = sectionsRepo.findByIdOrNull(dto.section)
+                                        }
+                                        dto.l1SubSubSection?.let {
+                                            profile.subSectionL1Id =
+                                                subSectionsL1Repo.findByIdOrNull(dto.l1SubSubSection)
+                                        }
+                                        dto.l2SubSubSection?.let {
+                                            profile.subSectionL2Id =
+                                                subSectionsL2Repo.findByIdOrNull(dto.l2SubSubSection)
+                                        }
+                                        userProfilesRepo.save(profile)
+                                    }
+                                    ?: run {
+                                        createUserProfilesEntity(dto, user)
+
+                                    }
+
+                            return dto
+                        }
+                        ?: throw NullValueNotAllowedException("Record not found, check and try again")
+
+            }
+        }
+    }
+
+    fun userRegistrationMailSending(user: UsersEntity, userRole: UserRoleAssignmentsEntity?, emailUuid: String) {
+        val map = commonDaoServices.serviceMapDetails(appId)
+        val payload = "$user $userRole"
+        val sr = commonDaoServices.mapServiceRequestForSuccess(map, payload, user)
+        val emailEntity = commonDaoServices.userRegisteredSuccessfulEmailCompose(user, sr, map, null)
+        commonDaoServices.sendEmailAfterCompose(user, emailUuid, emailEntity, appId, payload)
+    }
+
+
+    private fun createUserProfilesEntity(dto: UserEntityDto, user: UsersEntity): UserProfilesEntity {
+        var profile = UserProfilesEntity()
+        profile.userId = user
+        profile.status = 1
+        profile.createdOn = Timestamp.from(Instant.now())
+        profile.createdBy = loggedInUserDetails().userName
+        dto.region?.let { profile.regionId = regionsRepo.findByIdOrNull(dto.region) }
+        dto.county?.let { profile.countyID = countiesRepo.findByIdOrNull(dto.county) }
+        dto.town?.let { profile.townID = townsRepo.findByIdOrNull(dto.town) }
+        dto.subRegion?.let { profile.subRegionId = subRegionsRepo.findByIdOrNull(dto.subRegion) }
+        dto.designation?.let { profile.designationId = designationsRepo.findByIdOrNull(dto.designation) }
+        dto.directorate?.let { profile.directorateId = directoratesRepo.findByIdOrNull(dto.directorate) }
+        dto.department?.let { profile.departmentId = departmentsRepo.findByIdOrNull(dto.department) }
+        dto.division?.let { profile.divisionId = divisionsRepo.findByIdOrNull(dto.division) }
+        dto.section?.let { profile.sectionId = sectionsRepo.findByIdOrNull(dto.section) }
+        dto.l1SubSubSection?.let { profile.subSectionL1Id = subSectionsL1Repo.findByIdOrNull(dto.l1SubSubSection) }
+        dto.l2SubSubSection?.let { profile.subSectionL2Id = subSectionsL2Repo.findByIdOrNull(dto.l2SubSubSection) }
+
+        profile = userProfilesRepo.save(profile)
+        //Having EmployeeRole
+        userRolesRepo.save(
+            registrationDaoServices.userRoleAssignment(
+                user,
+                1,
+                applicationMapProperties.mapUserRegistrationEmployeeRoleID
+            )
+        )
+        return profile
+    }
+
+    fun updateRole(role: RolesEntityDto): RolesEntityDto? {
+        when {
+            role.id ?: 0L < 1L -> {
+                val r = UserRolesEntity()
+                r.roleName = role.roleName
+                r.descriptions = role.descriptions
+                if (role.status == true) r.status = 1 else r.status = 0
+                r.createdBy = loggedInUserDetails().userName
+                r.createdOn = Timestamp.from(Instant.now())
+                rolesRepo.save(r)
+                return role
+
+            }
+            else -> {
+                rolesRepo.findByIdOrNull(role.id)
+                        ?.let { r ->
+                            r.roleName = role.roleName
+                            if (role.status == true) r.status = 1 else r.status = 0
+                            r.descriptions = role.descriptions
+                            r.modifiedBy = loggedInUserDetails().userName
+                            r.modifiedOn = Timestamp.from(Instant.now())
+                            rolesRepo.save(r)
+                            return role
+
+                        }
+                        ?: throw NullValueNotAllowedException("Record not found, check and try again")
+
+            }
+        }
+
+
+    }
+
+    fun updateAuthorities(privilege: AuthoritiesEntityDto): AuthoritiesEntityDto? {
+        when {
+            privilege.id ?: -1L < 1L -> {
+                val r = UserPrivilegesEntity()
+                r.name = privilege.name
+                r.descriptions = privilege.descriptions
+                if (privilege.status == true) r.status = 1 else r.status = 0
+                r.createdBy = loggedInUserDetails().userName
+                r.createdOn = Timestamp.from(Instant.now())
+                privilegesRepo.save(r)
+                return privilege
+
+            }
+            else -> {
+                privilegesRepo.findByIdOrNull(privilege.id)
+                        ?.let { r ->
+                            r.name = privilege.name
+                            r.descriptions = privilege.descriptions
+                            if (privilege.status == true) r.status = 1 else r.status = 0
+                            r.modifiedBy = loggedInUserDetails().userName
+                            r.modifiedOn = Timestamp.from(Instant.now())
+                            privilegesRepo.save(r)
+                            return privilege
+                        }
+                        ?: throw NullValueNotAllowedException("Record not found, check and try again")
+
+            }
+        }
+
+
+    }
+
+    fun updateTitle(entity: TitlesEntityDto): TitlesEntityDto? {
+        when {
+            entity.id ?: 0L < 1L -> {
+                val r = TitlesEntity()
+                r.title = entity.title
+                r.remarks = entity.remarks
+                if (entity.status == true) r.status = 1 else r.status = 0
+                r.createdBy = loggedInUserDetails().userName
+                r.createdOn = Timestamp.from(Instant.now())
+                titlesRepo.save(r)
+                return entity
+
+            }
+            else -> {
+                titlesRepo.findByIdOrNull(entity.id)
+                        ?.let { r ->
+                            r.title = entity.title
+                            r.remarks = entity.remarks
+                            if (entity.status == true) r.status = 1 else r.status = 0
+
+                            r.lastModifiedBy = loggedInUserDetails().userName
+                            r.lastModifiedOn = Timestamp.from(Instant.now())
+                            titlesRepo.save(r)
+                            return entity
+                        }
+                        ?: throw NullValueNotAllowedException("Record not found, check and try again")
+
+            }
+        }
+
+    }
+
+
+    fun updateUserType(entity: UserTypesEntityDto): UserTypesEntityDto? {
+        when {
+            entity.id ?: 0L < 1L -> {
+                val r = UserTypesEntity()
+                r.typeName = entity.typeName
+                if (entity.status == true) r.status = 1 else r.status = 0
+                r.defaultRole = entity.defaultRoleId
+                r.descriptions = entity.descriptions
+                r.createdBy = loggedInUserDetails().userName
+                r.createdOn = Timestamp.from(Instant.now())
+                userTypesRepo.save(r)
+                return entity
+
+            }
+            else -> {
+                userTypesRepo.findByIdOrNull(entity.id)
+                        ?.let { r ->
+                            r.typeName = entity.typeName
+                            if (entity.status == true) r.status = 1 else r.status = 0
+                            r.defaultRole = entity.defaultRoleId
+                            r.descriptions = entity.descriptions
+
+                            r.modifiedBy = loggedInUserDetails().userName
+                            r.modifiedOn = Timestamp.from(Instant.now())
+                            userTypesRepo.save(r)
+                            return entity
+                        }
+                        ?: throw NullValueNotAllowedException("Record not found, check and try again")
+
+            }
+        }
+
+    }
+
+    fun listRbacRolesByStatus(status: Int): List<UserRolesEntity>? = rolesRepo.findByStatus(status)?.sortedBy { it.id }
+    fun listAuthoritiesByRoleAndStatus(roleId: Long, status: Int): List<UserPrivilegesEntity>? = privilegesRepo.findPrivilegesForRole(roleId, status)?.sortedBy { it.name }
+
+
+    fun revokeAuthorizationFromRole(roleId: Long, privilegeId: Long, status: Int): RolesPrivilegesEntity? {
+        return rolesRepo.findByIdOrNull(roleId)
+                ?.let { role ->
+                    privilegesRepo.findByIdOrNull(privilegeId)
+                            ?.let { privilege ->
+                                rolePrivilegesRepo.findByUserRolesAndPrivilegeAndStatus(role, privilege, status)
+                                        ?.let { rolePrivilege ->
+                                            rolePrivilege.status = 0
+                                            rolePrivilege.modifiedBy = loggedInUserDetails().userName
+                                            rolePrivilege.modifiedOn = Timestamp.from(Instant.now())
+                                            rolePrivilege.varField1 = "${rolePrivilege.status}"
+                                            rolePrivilegesRepo.save(rolePrivilege)
+                                        }
+                                        ?: throw InvalidInputException("Revoking authorization that does not exist")
+
+
+                            }
+                            ?: throw InvalidValueException("Record with id=$privilegeId not found, check and try again")
+
+                }
+                ?: throw InvalidValueException("Record with id=$roleId not found, check and try again")
+    }
+
+
+    fun assignAuthorizationFromRole(roleId: Long, privilegeId: Long, status: Int): RolesPrivilegesEntity? {
+        return rolesRepo.findByIdOrNull(roleId)
+                ?.let { role ->
+                    privilegesRepo.findByIdOrNull(privilegeId)
+                            ?.let { privilege ->
+                                rolePrivilegesRepo.findByUserRolesAndPrivilegeAndStatus(role, privilege, status)
+                                        ?.let { rolePrivilege ->
+                                            rolePrivilege.status = 1
+                                            rolePrivilege.modifiedBy = loggedInUserDetails().userName
+                                            rolePrivilege.modifiedOn = Timestamp.from(Instant.now())
+                                            rolePrivilege.varField1 = "${rolePrivilege.status}"
+                                            rolePrivilegesRepo.save(rolePrivilege)
+                                        }
+                                        ?: kotlin.run {
+                                            val rolePrivilege = RolesPrivilegesEntity()
+                                            rolePrivilege.userRoles = role
+                                            rolePrivilege.privilege = privilege
+                                            rolePrivilege.status = 1
+                                            rolePrivilege.createdBy = loggedInUserDetails().userName
+                                            rolePrivilege.createdOn = Timestamp.from(Instant.now())
+                                            rolePrivilegesRepo.save(rolePrivilege)
+
+                                        }
+
+
+                            }
+                            ?: throw InvalidValueException("Record with id=$privilegeId not found, check and try again")
+
+                }
+                ?: throw InvalidValueException("Record with id=$roleId not found, check and try again")
+    }
+
+    fun assignRoleToUser(userId: Long, roleId: Long, status: Int): UserRoleAssignmentsEntity? {
+        return usersRepo.findByIdOrNull(userId)
+                ?.let { user ->
+                    rolesRepo.findByIdOrNull(roleId)
+                            ?.let { role ->
+                                /* todo: Discuss with KEN on how the function works */
+                                userRolesRepo.findByUserIdAndRoleId(user.id ?: -1L, role.id)
+                                    ?.let { usersRole ->
+                                        usersRole.status = 1
+                                        usersRole.lastModifiedBy = loggedInUserDetails().userName
+                                        usersRole.lastModifiedOn = Timestamp.from(Instant.now())
+                                        usersRole.varField1 = "${usersRole.status}"
+                                        userRolesRepo.save(usersRole)
+                                    }
+                                    ?: kotlin.run {
+                                        val usersRole = UserRoleAssignmentsEntity()
+                                        usersRole.userId = user.id
+                                            usersRole.roleId = role.id
+                                            usersRole.status = 1
+                                            usersRole.createdBy = loggedInUserDetails().userName
+                                            usersRole.createdOn = Timestamp.from(Instant.now())
+                                            userRolesRepo.save(usersRole)
+
+                                        }
+
+
+                            }
+                            ?: throw InvalidValueException("Record with id=$roleId not found, check and try again")
+
+                }
+                ?: throw InvalidValueException("Record with id=$userId not found, check and try again")
+    }
+
+    fun revokeRoleFromUser(userId: Long, roleId: Long, status: Int): UserRoleAssignmentsEntity? {
+        return usersRepo.findByIdOrNull(userId)
+                ?.let { user ->
+                    rolesRepo.findByIdOrNull(roleId)
+                            ?.let { role ->
+                                /* todo: Discuss with KEN on how the function works */
+                                userRolesRepo.findByUserIdAndRoleIdAndStatus(user.id ?: -1L, role.id, status)
+                                    ?.let { userRole ->
+                                        userRole.status = 0
+                                        userRole.lastModifiedBy = loggedInUserDetails().userName
+                                        userRole.lastModifiedOn = Timestamp.from(Instant.now())
+                                        userRole.varField1 = "${userRole.status}"
+                                        userRolesRepo.save(userRole)
+                                    }
+                                    ?: throw InvalidInputException("Revoking Role that does not exist")
+
+
+                            }
+                            ?: throw InvalidValueException("Record with id=$roleId not found, check and try again")
+
+                }
+                ?: throw InvalidValueException("Record with id=$userId not found, check and try again")
+    }
+
+    fun listRbacUsersByStatus(status: Int): List<UserEntityDto> {
+        val userList = mutableListOf<UserEntityDto>()
+        usersRepo.findRbacUsersByStatus(status)
+                ?.map { u ->
+//                val profile = userProfilesRepo.findBfindByFirstUserIdOrderByIdDesc(u)
+                    userList.add(
+                            UserEntityDto(
+                                    u.id,
+                                    u.firstName,
+                                    u.lastName,
+                                    u.userName,
+                                    u.email,
+                                    u.userRegNo,
+                                    u.enabled == 1,
+                                    u.accountExpired == 1,
+                                    u.accountLocked == 1,
+                                    u.credentialsExpired == 1,
+                                    u.status == 1,
+                                u.registrationDate,
+                                u.userTypes,
+                                u.title
+                            )
+                    )
+                }
+
+        return userList
+    }
+
+
+    fun assignCFSToUser(userProfileId: Long, cfsId: Long): UsersCfsAssignmentsEntity? {
+        return userProfilesRepo.findByIdOrNull(userProfileId)
+            ?.let { userProfile ->
+                subSectionsL2Repo.findByIdOrNull(cfsId)
+                    ?.let { cfs ->
+                        /* todo: Discuss with KEN on how the function works */
+                        usersCfsRepo.findByUserProfileIdAndCfsId(userProfile.id ?: -1L, cfs.id)
+                            ?.let { usersCfs ->
+                                usersCfs.status = 1
+                                usersCfs.modifiedBy = loggedInUserDetails().userName
+                                usersCfs.modifiedOn = Timestamp.from(Instant.now())
+                                usersCfs.varField1 = "${usersCfs.status}"
+                                usersCfsRepo.save(usersCfs)
+                            }
+                            ?: kotlin.run {
+                                val usersCfs = UsersCfsAssignmentsEntity()
+                                usersCfs.userProfileId = userProfile.id
+                                usersCfs.cfsId = cfs.id
+                                usersCfs.status = 1
+                                usersCfs.createdBy = loggedInUserDetails().userName
+                                usersCfs.createdOn = Timestamp.from(Instant.now())
+                                usersCfsRepo.save(usersCfs)
+
+                            }
+
+
+                    }
+                    ?: throw InvalidValueException("Record with id=$cfsId not found, check and try again")
+
+            }
+            ?: throw InvalidValueException("Record with id=$userProfileId not found, check and try again")
+    }
+
+    fun revokeCfsFromUser(userProfileId: Long, cfsId: Long, status: Int): UsersCfsAssignmentsEntity? {
+        return userProfilesRepo.findByIdOrNull(userProfileId)
+            ?.let { userProfile ->
+                subSectionsL2Repo.findByIdOrNull(cfsId)
+                    ?.let { cfs ->
+                        /* todo: Discuss with KEN on how the function works */
+                        usersCfsRepo.findByUserProfileIdAndCfsIdAndStatus(userProfile.id ?: -1L, cfs.id, status)
+                            ?.let { usersCfs ->
+                                usersCfs.status = 1
+                                usersCfs.modifiedBy = loggedInUserDetails().userName
+                                usersCfs.modifiedOn = Timestamp.from(Instant.now())
+                                usersCfs.varField1 = "${usersCfs.status}"
+                                usersCfsRepo.save(usersCfs)
+                            }
+                            ?: throw InvalidInputException("Revoking Role that does not exist")
+
+
+                    }
+                    ?: throw InvalidValueException("Record with id=$cfsId not found, check and try again")
+
+            }
+            ?: throw InvalidValueException("Record with id=$userProfileId not found, check and try again")
+    }
+
+    fun listRbacRolesByUsersIdAndByStatus(userId: Long, status: Int): List<UserRolesEntity>? =
+        rolesRepo.findRbacRolesByUserId(userId, status)
+
+
+    fun userSearchResultListing(search: UserSearchValues): List<UserEntityDto>? {
+        val userList = mutableListOf<UserEntityDto>()
+        val userNameSpec: UserSpecification?
+        var emailSpec: UserSpecification? = null
+        var firstNameSpec: UserSpecification? = null
+        var lastNameSpec: UserSpecification? = null
+
+
+        userNameSpec = UserSpecification(SearchCriteria("userName", ":", search.userName))
+        search.email?.let {
+            emailSpec = UserSpecification(SearchCriteria("email", ":", search.email))
+        }
+        search.firstName?.let {
+
+            firstNameSpec = UserSpecification(SearchCriteria("firstName", ":", search.firstName))
+        }
+        search.lastName?.let {
+
+
+            lastNameSpec = UserSpecification(SearchCriteria("lastName", ":", search.lastName))
+        }
+        usersRepo.findAll(userNameSpec.or(firstNameSpec).or(lastNameSpec).or(emailSpec))
+                .map { u ->
+                    val profile = userProfilesRepo.findFirstByUserIdOrderByIdDesc(u)
+                    userList.add(
+                            UserEntityDto(
+                                    u.id,
+                                    u.firstName,
+                                    u.lastName,
+                                    u.userName,
+                                    u.email,
+                                    u.userRegNo,
+                                    u.enabled == 1,
+                                    u.accountExpired == 1,
+                                    u.accountLocked == 1,
+                                    u.credentialsExpired == 1,
+                                    u.status == 1,
+                                    u.registrationDate,
+                                    u.userTypes,
+                                    u.title,
+                                    profile?.directorateId?.id,
+                                    profile?.departmentId?.id,
+                                    profile?.divisionId?.id,
+                                    profile?.sectionId?.id,
+                                    profile?.subSectionL1Id?.id,
+                                    profile?.subSectionL2Id?.id,
+                                    profile?.designationId?.id,
+                                    profile?.id,
+                                    profile?.regionId?.id,
+                                    profile?.subRegionId?.id
+                            )
+                    )
+                }
+
+        return userList.sortedBy { it.id }
+
+    }
+
+
+}

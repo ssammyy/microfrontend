@@ -1,0 +1,541 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.16.0.final using JasperReports Library version 6.16.0-48579d909b7943b64690c65c71e07e0b80981928  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Blank_A4" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="c5b422c6-ef73-4497-8883-63114b4f1bd7">
+    <style name="Table_TH" mode="Opaque" backcolor="#FFFFFF">
+        <box>
+            <pen lineWidth="0.5" lineColor="#000000"/>
+            <topPen lineWidth="0.5" lineColor="#000000"/>
+            <leftPen lineWidth="0.5" lineColor="#000000"/>
+            <bottomPen lineWidth="0.5" lineColor="#000000"/>
+            <rightPen lineWidth="0.5" lineColor="#000000"/>
+        </box>
+    </style>
+    <style name="Table_CH" mode="Opaque" backcolor="#FFFFFF">
+        <box>
+            <pen lineWidth="0.5" lineColor="#000000"/>
+            <topPen lineWidth="0.5" lineColor="#000000"/>
+            <leftPen lineWidth="0.5" lineColor="#000000"/>
+            <bottomPen lineWidth="0.5" lineColor="#000000"/>
+            <rightPen lineWidth="0.5" lineColor="#000000"/>
+        </box>
+    </style>
+    <style name="Table_TD" mode="Opaque" backcolor="#FFFFFF">
+        <box>
+            <pen lineWidth="0.5" lineColor="#000000"/>
+            <topPen lineWidth="0.5" lineColor="#000000"/>
+            <leftPen lineWidth="0.5" lineColor="#000000"/>
+            <bottomPen lineWidth="0.5" lineColor="#000000"/>
+            <rightPen lineWidth="0.5" lineColor="#000000"/>
+        </box>
+    </style>
+    <parameter name="exporterName" class="java.lang.String"/>
+    <parameter name="exporterAddress" class="java.lang.String"/>
+    <parameter name="invoiceNumber" class="java.lang.String"/>
+    <parameter name="documentDate" class="java.lang.String"/>
+    <parameter name="orderNumber" class="java.lang.String"/>
+    <parameter name="orderDate" class="java.lang.String"/>
+    <parameter name="customerNumber" class="java.lang.String"/>
+    <parameter name="poNumber" class="java.lang.String"/>
+    <parameter name="shipVia" class="java.lang.String"/>
+    <parameter name="termsCode" class="java.lang.String"/>
+    <parameter name="amount" class="java.lang.String"/>
+    <parameter name="description" class="java.lang.String"/>
+    <parameter name="subtotalBeforeTaxes" class="java.lang.String"/>
+    <parameter name="totalTaxes" class="java.lang.String"/>
+    <parameter name="totalAmount" class="java.lang.String"/>
+    <parameter name="amountDue" class="java.lang.String"/>
+    <queryString>
+        <![CDATA[]]>
+    </queryString>
+    <background>
+        <band splitType="Stretch"/>
+    </background>
+    <title>
+        <band height="205" splitType="Stretch">
+            <frame>
+                <reportElement x="94" y="0" width="266" height="100" uuid="bfb8d0eb-7198-4187-915b-ec3e7ffec671"/>
+                <staticText>
+                    <reportElement x="34" y="0" width="220" height="16" uuid="2802ed4c-7ad8-4219-b11d-271542df9d39">
+                        <property name="com.jaspersoft.studio.unit.height" value="px"/>
+                    </reportElement>
+                    <textElement>
+                        <font size="12" isBold="true"/>
+                    </textElement>
+                    <text><![CDATA[KENYA BUREAU OF STANDARDS]]></text>
+                </staticText>
+                <staticText>
+                    <reportElement x="34" y="17" width="170" height="13" uuid="af7525c5-b671-45eb-a6eb-3bb68095bc20">
+                        <property name="com.jaspersoft.studio.unit.height" value="px"/>
+                    </reportElement>
+                    <textElement>
+                        <font isBold="true"/>
+                    </textElement>
+                    <text><![CDATA[KEBS HEAD OFFICE ADDRESS]]></text>
+                </staticText>
+                <staticText>
+                    <reportElement x="34" y="28" width="150" height="11" uuid="dbe0189d-17a0-48c7-a192-98976b18287e">
+                        <property name="com.jaspersoft.studio.unit.height" value="px"/>
+                    </reportElement>
+                    <textElement>
+                        <font size="8"/>
+                    </textElement>
+                    <text><![CDATA[Kapiti Road, Off Mombasa Road]]></text>
+                </staticText>
+                <staticText>
+                    <reportElement x="34" y="39" width="150" height="11" uuid="5c1e5097-1784-4fe6-a227-fa2cbcfa7471">
+                        <property name="com.jaspersoft.studio.unit.height" value="px"/>
+                    </reportElement>
+                    <textElement>
+                        <font size="8"/>
+                    </textElement>
+                    <text><![CDATA[P.O Box 00200 54974]]></text>
+                </staticText>
+                <staticText>
+                    <reportElement x="34" y="51" width="150" height="11" uuid="0ef9a414-4554-4ef9-ac8b-9e00243b31aa">
+                        <property name="com.jaspersoft.studio.unit.height" value="px"/>
+                    </reportElement>
+                    <textElement>
+                        <font size="8"/>
+                    </textElement>
+                    <text><![CDATA[Nairobi, Kenya]]></text>
+                </staticText>
+                <staticText>
+                    <reportElement x="35" y="63" width="150" height="11" uuid="225fda0a-c263-4ac7-ba02-2d9fe5f115fc">
+                        <property name="com.jaspersoft.studio.unit.height" value="px"/>
+                    </reportElement>
+                    <textElement>
+                        <font size="8"/>
+                    </textElement>
+                    <text><![CDATA[Tel: (+254 02) 6948000/605490]]></text>
+                </staticText>
+                <staticText>
+                    <reportElement x="35" y="74" width="150" height="11" uuid="c7230c54-97ef-4e0c-b371-7be08550d4ed">
+                        <property name="com.jaspersoft.studio.unit.height" value="px"/>
+                    </reportElement>
+                    <textElement>
+                        <font size="8"/>
+                    </textElement>
+                    <text><![CDATA[Fax: (+254 02) 604031, 609660]]></text>
+                </staticText>
+                <staticText>
+                    <reportElement x="34" y="85" width="150" height="11" uuid="d6913883-a6fb-4601-a92c-ad24c8e7a78a">
+                        <property name="com.jaspersoft.studio.unit.height" value="px"/>
+                    </reportElement>
+                    <textElement>
+                        <font size="8"/>
+                    </textElement>
+                    <text><![CDATA[Email: info@kebs.org]]></text>
+                </staticText>
+            </frame>
+            <staticText>
+                <reportElement x="2" y="114" width="68" height="16" uuid="85a2a3f9-920e-4a69-8668-4c3fe5e48254"/>
+                <text><![CDATA[Sold To:]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="470" y="100" width="68" height="16" uuid="df3a9521-96c0-4114-a2d5-add740b6e448"/>
+                <textElement>
+                    <font size="12" isBold="true"/>
+                </textElement>
+                <text><![CDATA[Invoice]]></text>
+            </staticText>
+            <rectangle>
+                <reportElement x="0" y="140" width="210" height="45" backcolor="rgba(255, 255, 255, 0.0)" uuid="c6f13bea-ee91-4a49-a5c9-51eaa1222a10"/>
+            </rectangle>
+            <textField>
+                <reportElement x="6" y="144" width="128" height="16" uuid="6230db29-2a8a-432e-a34e-e60e53d5d9db">
+                    <property name="com.jaspersoft.studio.unit.height" value="px"/>
+                </reportElement>
+                <textElement>
+                    <font size="12" isBold="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$P{exporterName}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="7" y="161" width="118" height="18" uuid="9234031d-ee09-4c15-b916-f985b3557fe2">
+                    <property name="com.jaspersoft.studio.unit.height" value="px"/>
+                </reportElement>
+                <textFieldExpression><![CDATA[$P{exporterAddress}]]></textFieldExpression>
+            </textField>
+            <rectangle>
+                <reportElement x="340" y="127" width="213" height="57" uuid="809725e9-193c-4307-adc1-ecf0a56154f6"/>
+            </rectangle>
+            <line>
+                <reportElement x="340" y="154" width="213" height="1" uuid="8bd36c52-03df-47e3-964f-34a6ca49e813"/>
+            </line>
+            <line>
+                <reportElement x="425" y="127" width="1" height="57" uuid="e947e989-ea4e-4883-a305-a9f5e89074e2"/>
+            </line>
+            <staticText>
+                <reportElement x="344" y="135" width="80" height="14" uuid="cdad7e8a-5b33-468d-b945-3020e352f853"/>
+                <textElement>
+                    <font isBold="true"/>
+                </textElement>
+                <text><![CDATA[Invoice Number]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="343" y="163" width="80" height="14" uuid="11aaa86a-4dbe-4c2d-b55b-8ce74627b7cd"/>
+                <textElement>
+                    <font isBold="true"/>
+                </textElement>
+                <text><![CDATA[Document Date]]></text>
+            </staticText>
+            <textField>
+                <reportElement x="436" y="133" width="100" height="18" uuid="ae43af3a-50b6-44b6-8391-e7b45356bb92"/>
+                <textElement>
+                    <font isBold="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$P{invoiceNumber}]]></textFieldExpression>
+            </textField>
+            <textField pattern="MMM d, yyyy h:mm:ss ">
+                <reportElement x="436" y="160" width="100" height="18" uuid="7b790774-6a73-4b5a-8cfe-66186b0001f9"/>
+                <textElement>
+                    <font isBold="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$P{documentDate}]]></textFieldExpression>
+            </textField>
+        </band>
+    </title>
+    <pageHeader>
+        <band height="460" splitType="Stretch">
+            <rectangle>
+                <reportElement x="0" y="0" width="560" height="39" uuid="ff2a0ddc-45ea-475d-812c-fa1ad8f6ae93"/>
+            </rectangle>
+            <line>
+                <reportElement x="106" y="-1" width="1" height="40" uuid="20dfe60d-57f4-45fb-a2a7-3729405721b4"/>
+            </line>
+            <line>
+                <reportElement x="199" y="-1" width="1" height="40" uuid="2716d6eb-1449-4960-af20-9e5aff521529"/>
+            </line>
+            <line>
+                <reportElement x="298" y="0" width="1" height="40" uuid="f56b9029-0c95-4852-bee7-0a8152b17274"/>
+            </line>
+            <line>
+                <reportElement x="394" y="0" width="1" height="40" uuid="a7918461-cdc9-476c-9f4b-b26254cfe513"/>
+            </line>
+            <line>
+                <reportElement x="464" y="0" width="1" height="40" uuid="46f8b29b-8459-4cc8-b6c1-0d89b1a94c6a"/>
+            </line>
+            <staticText>
+                <reportElement x="16" y="3" width="64" height="16" uuid="0f39bb48-05c4-43a0-8eb6-c9eac97484d2"/>
+                <textElement>
+                    <font isBold="true"/>
+                </textElement>
+                <text><![CDATA[Order No.]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="120" y="3" width="64" height="16" uuid="550b2b71-4b89-4958-875d-5c4c2a983892"/>
+                <textElement>
+                    <font isBold="true"/>
+                </textElement>
+                <text><![CDATA[Order Date]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="210" y="3" width="82" height="16" uuid="451b9388-a9b5-4514-86b6-ffc76fc9f31a"/>
+                <textElement>
+                    <font isBold="true"/>
+                </textElement>
+                <text><![CDATA[Customer No.]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="310" y="3" width="70" height="16" uuid="0e4c904f-9a53-42fd-9851-1ef04d2428fd"/>
+                <textElement>
+                    <font isBold="true"/>
+                </textElement>
+                <text><![CDATA[PO Number]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="403" y="3" width="50" height="16" uuid="553444d0-8d2b-4e7e-9b99-0fafd4ac85d1"/>
+                <textElement>
+                    <font isBold="true"/>
+                </textElement>
+                <text><![CDATA[Ship Via]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="483" y="3" width="70" height="16" uuid="116346b6-fa95-4571-aeb5-9d4f496d3862"/>
+                <textElement>
+                    <font isBold="true"/>
+                </textElement>
+                <text><![CDATA[Terms Code]]></text>
+            </staticText>
+            <textField>
+                <reportElement x="10" y="20" width="78" height="18" uuid="e8a99d53-274e-4ea1-9e82-f8807067b878"/>
+                <textElement>
+                    <font isBold="false"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$P{orderNumber}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="120" y="19" width="64" height="20" uuid="fe8387d8-962a-44f5-a924-7e5b01a48ef4"/>
+                <textFieldExpression><![CDATA[$P{orderDate}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="201" y="20" width="100" height="18" uuid="27b53e4f-05c2-490c-847a-2c8ddb5cd050"/>
+                <textFieldExpression><![CDATA[$P{customerNumber}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="307" y="19" width="76" height="20" uuid="25b50eb4-a63c-46d2-bada-4a1c88c8cd0b"/>
+                <textFieldExpression><![CDATA[$P{poNumber}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="400" y="21" width="58" height="16" uuid="65fe159c-04b5-490f-9629-a8ae4ac0152f"/>
+                <textFieldExpression><![CDATA[$P{shipVia}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="476" y="19" width="78" height="20" uuid="5c97a5cc-61ab-4abc-8df3-ae23386d913f"/>
+                <textFieldExpression><![CDATA[$P{termsCode}]]></textFieldExpression>
+            </textField>
+            <rectangle>
+                <reportElement x="0" y="55" width="553" height="240" uuid="5cf1c2cd-53da-4993-a107-d9970017d476"/>
+            </rectangle>
+            <line>
+                <reportElement x="0" y="75" width="553" height="1" uuid="bf9ef21a-eab0-46c5-8c85-d73a3bb8223d"/>
+            </line>
+            <line>
+                <reportElement x="27" y="55" width="1" height="240" uuid="5ad14f83-efa5-4c21-b5f8-581bfc733b4f"/>
+            </line>
+            <line>
+                <reportElement x="360" y="55" width="1" height="325" uuid="77d59ea2-fa38-4d7a-9b8a-c9cd33b08423"/>
+            </line>
+            <line>
+                <reportElement x="464" y="55" width="1" height="325" uuid="b97b1583-5efe-41a2-a506-e2c1c7db1757"/>
+            </line>
+            <staticText>
+                <reportElement x="7" y="59" width="16" height="16" uuid="d3115764-8cbc-406e-b0f1-2ac509b186be"/>
+                <textElement>
+                    <font isBold="true"/>
+                </textElement>
+                <text><![CDATA[No.]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="82" y="58" width="70" height="16" uuid="427cdc9f-1282-452c-9a38-5ed0ac21d5df"/>
+                <textElement>
+                    <font isBold="true"/>
+                </textElement>
+                <text><![CDATA[Description]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="370" y="56" width="70" height="16" uuid="90538587-c1d0-4b15-9ec5-9df40e44eec4"/>
+                <textElement>
+                    <font isBold="true"/>
+                </textElement>
+                <text><![CDATA[Unit Price]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="469" y="57" width="70" height="16" uuid="623b253d-0b08-43d2-87ef-02a120f70ea7"/>
+                <textElement>
+                    <font isBold="true"/>
+                </textElement>
+                <text><![CDATA[Amount(USD)]]></text>
+            </staticText>
+            <line>
+                <reportElement x="553" y="62" width="1" height="317" uuid="9d9c0380-bb28-4dde-8c1f-d63607d02778"/>
+            </line>
+            <line>
+                <reportElement x="360" y="379" width="193" height="1" uuid="d53061f5-c705-4641-821c-8e76b5d55612"/>
+            </line>
+            <staticText>
+                <reportElement x="363" y="304" width="100" height="16" uuid="a5af1341-ee2d-4415-ab95-a47980b9c264"/>
+                <textElement>
+                    <font size="9" isBold="true"/>
+                </textElement>
+                <text><![CDATA[Subtotal before taxes]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="363" y="324" width="100" height="16" uuid="90818ebf-120b-4488-8bf1-4132be8a4d4a"/>
+                <textElement>
+                    <font size="9" isBold="true"/>
+                </textElement>
+                <text><![CDATA[Total Taxes]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="363" y="342" width="100" height="16" uuid="29eb4032-baa6-428b-a8fa-e9cabbbe678e"/>
+                <textElement>
+                    <font size="9" isBold="true"/>
+                </textElement>
+                <text><![CDATA[Total Amount]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="363" y="359" width="100" height="16" uuid="acbfab51-61a7-4d61-a739-d77a6ecff2f6"/>
+                <textElement>
+                    <font size="9" isBold="true"/>
+                </textElement>
+                <text><![CDATA[Amount due]]></text>
+            </staticText>
+            <textField>
+                <reportElement x="472" y="78" width="74" height="14" uuid="77fc9a5d-c462-4d49-bb7e-1bcbea409d1c"/>
+                <textFieldExpression><![CDATA[$P{amount}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="55" y="80" width="100" height="20" uuid="334150a6-a1bf-4737-a1f6-e8650bbe4130"/>
+                <textFieldExpression><![CDATA[$P{description}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="471" y="300" width="92" height="20" uuid="e93bc778-e64d-4b15-a43b-900d0d100387"/>
+                <textFieldExpression><![CDATA[$P{subtotalBeforeTaxes}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="472" y="322" width="78" height="18" uuid="c9d7074b-14d0-401e-83b8-8842205f2d75"/>
+                <textFieldExpression><![CDATA[$P{totalTaxes}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="472" y="342" width="90" height="16" uuid="14bc03e4-5f1f-49de-959e-e5ccc2837e6f"/>
+                <textFieldExpression><![CDATA[$P{totalAmount}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="472" y="359" width="78" height="20" uuid="9d635338-4d60-41c9-aece-1a91d2d20cda"/>
+                <textFieldExpression><![CDATA[$P{amountDue}]]></textFieldExpression>
+            </textField>
+            <rectangle>
+                <reportElement mode="Transparent" x="-1" y="325" width="241" height="125" uuid="1e480718-f83f-4591-a998-a9039dafc159"/>
+                <graphicElement>
+                    <pen lineColor="#FFFFFF"/>
+                </graphicElement>
+            </rectangle>
+            <staticText>
+                <reportElement x="10" y="335" width="70" height="14" uuid="535699be-ea44-4501-92a9-c042c11c0dc4"/>
+                <textElement>
+                    <font isBold="true" isItalic="true" isUnderline="true"/>
+                </textElement>
+                <text><![CDATA[Bank Details]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="10" y="352" width="96" height="18" uuid="c5333cb7-fefb-4451-b20a-25370442a8f4"/>
+                <textElement>
+                    <font isBold="true"/>
+                </textElement>
+                <text><![CDATA[ACCOUNT NAME:]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="114" y="352" width="126" height="18" uuid="052ba172-bb4e-464c-9668-a027591c5aa6"/>
+                <textElement>
+                    <font isItalic="true"/>
+                </textElement>
+                <text><![CDATA[Kenya Bureau of Standards]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="10" y="369" width="96" height="18" uuid="9f0845e8-c5cd-4f72-86d6-8f51925adddb"/>
+                <textElement>
+                    <font isBold="true"/>
+                </textElement>
+                <text><![CDATA[BANK NAME:]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="114" y="368" width="126" height="18" uuid="156bafc9-cf05-4deb-bab0-4ac0cd72af68"/>
+                <textElement>
+                    <font isItalic="true"/>
+                </textElement>
+                <text><![CDATA[National Bank of Kenya]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="10" y="386" width="96" height="18" uuid="6aef3f80-4212-4e01-8829-b2ca9089375d"/>
+                <textElement>
+                    <font isBold="true"/>
+                </textElement>
+                <text><![CDATA[BRANCH:]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="114" y="386" width="126" height="18" uuid="c5d42097-0c53-4954-b917-97d88ef90435"/>
+                <textElement>
+                    <font isItalic="true"/>
+                </textElement>
+                <text><![CDATA[Harambee Avenue]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="9" y="405" width="96" height="18" uuid="4f18a1c1-a09b-411b-ab69-afa1be9362d5"/>
+                <textElement>
+                    <font isBold="true"/>
+                </textElement>
+                <text><![CDATA[KES ACCOUNT NO:]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="114" y="407" width="126" height="18" uuid="3d223d18-0e21-465c-ab34-6f555d8e6015"/>
+                <text><![CDATA[0100-302-830-604]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="8" y="423" width="96" height="18" uuid="8357173a-e946-4387-a934-8aaeb810e47c"/>
+                <textElement>
+                    <font isBold="true"/>
+                </textElement>
+                <text><![CDATA[KES ACCOUNT NO:]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="114" y="422" width="126" height="18" uuid="5dd7eda4-bec6-485d-a752-8ef1fecf21cc"/>
+                <text><![CDATA[0200-302-830-600]]></text>
+            </staticText>
+            <rectangle>
+                <reportElement x="310" y="395" width="190" height="50" uuid="7f1395b3-33e0-4ebe-89ad-bf01eaef1eb0"/>
+                <graphicElement>
+                    <pen lineColor="#FFFFFF"/>
+                </graphicElement>
+            </rectangle>
+            <staticText>
+                <reportElement x="313" y="398" width="62" height="16" uuid="c486eb27-648b-4613-8e01-35e8358b37a5">
+                    <property name="com.jaspersoft.studio.unit.height" value="px"/>
+                </reportElement>
+                <textElement>
+                    <font isBold="true" isItalic="true" isUnderline="true"/>
+                </textElement>
+                <text><![CDATA[Swift Details]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="313" y="415" width="162" height="15" uuid="f3196d29-57eb-49c5-b25e-fa4311e5388a">
+                    <property name="com.jaspersoft.studio.unit.height" value="px"/>
+                </reportElement>
+                <text><![CDATA[Bank and Branch Code: 12003]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="313" y="430" width="162" height="15" uuid="21a7828e-9a4c-41ac-9b59-03596d4ded4e">
+                    <property name="com.jaspersoft.studio.unit.height" value="px"/>
+                </reportElement>
+                <text><![CDATA[SWIFT CODE:     NBKEKENXXXX]]></text>
+            </staticText>
+            <line>
+                <reportElement x="0" y="458" width="240" height="1" uuid="809712e2-5c5f-4b7a-82e9-b7ab16c1635a"/>
+            </line>
+        </band>
+    </pageHeader>
+    <pageFooter>
+        <band height="59" splitType="Stretch">
+            <staticText>
+                <reportElement x="330" y="0" width="100" height="16" uuid="2e8d2fa8-ffc6-4977-9036-5ba00c7e810d">
+                    <property name="com.jaspersoft.studio.unit.height" value="px"/>
+                </reportElement>
+                <textElement>
+                    <font isBold="true"/>
+                </textElement>
+                <text><![CDATA[VAT No: 0130253A]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="447" y="0" width="106" height="16" uuid="9e5ed046-a8a4-435c-b8be-daea3078384f">
+                    <property name="com.jaspersoft.studio.unit.height" value="px"/>
+                </reportElement>
+                <textElement>
+                    <font isBold="true"/>
+                </textElement>
+                <text><![CDATA[PIN No: P051092837Y]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="2" y="10" width="258" height="42" uuid="7e06ff8c-782d-487a-8d5e-d2e93ee8abd0">
+                    <property name="com.jaspersoft.studio.unit.height" value="px"/>
+                </reportElement>
+                <textElement markup="styled">
+                    <font isItalic="true"/>
+                </textElement>
+                <text><![CDATA[Please Quote Invoice Number while paying
+Mode of Payment: Bank Transfer or Bankers Cheques
+Terms: Payment is due within 30 days from invoice date]]></text>
+            </staticText>
+        </band>
+    </pageFooter>
+    <summary>
+        <band height="48" splitType="Stretch">
+            <staticText>
+                <reportElement x="162" y="13" width="228" height="22" uuid="f283b9df-cf9b-4775-a8c6-24ee5cc11c3e"/>
+                <textElement textAlignment="Center">
+                    <font size="11" isBold="true" isItalic="true"/>
+                </textElement>
+                <text><![CDATA[* Please Note: This invoice is machine generated]]></text>
+            </staticText>
+        </band>
+    </summary>
+</jasperReport>

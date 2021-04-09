@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<!--  This site was created in Webflow. http://www.webflow.com  -->
+<!--  Last Published: Wed Mar 18 2020 20:03:10 GMT+0000 (Coordinated Universal Time)  -->
+<html data-wf-page="5e7130c996c4ca37928b351f" data-wf-site="5e70fb3a565ebd99c1db37ce"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>KEBS</title>
+    <th:block th:include="fragments/general-form.html :: headerfiles"/>
+    <link rel="stylesheet" th:href="@{/css/extra.css}" type="text/css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" th:href="@{/assets/bootstrap3/css/bootstrap.css}"/>
+    <!--    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"-->
+    <!--    integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"/>-->
+</head>
+<body>
+<div class="top-bar" th:replace="fragments/general-form.html :: top-bar">
+
+</div>
+<div class="section">
+    <div class="w-layout-grid main-grid">
+        <div class="main-grid-side-navigation" id="w-node-d308c123a20f-c123a20d" th:replace="fragments/general-form.html :: side-navigation-bar"></div>
+        <div id="w-node-27962c2db181-c676b3e3" class="main-content-div">
+                                    <div class="content-nav" th:replace="fragments/general-form.html :: content-navigation-bar"></div>
+<!--            <div class="content-nav">-->
+<!--                <div class="dropdown">-->
+<!--                    <div onclick="myFunction()" class="dropbtn" ><i class="fa fa-bell" aria-hidden="true" ></i> <span th:text="${#lists.size(tasks)}"></span></div>-->
+<!--                    <div id="myDropdown" class="dropdown-content">-->
+<!--                        <input type="text" placeholder="Search.." id="myInput" onkeyup="filterFunction()">-->
+<!--                        <small th:each="task: ${tasks}">-->
+<!--                            <a th:href="@{/api/qao/application/details/{id}(id=${task.permitId})}" th:text="${task.permitId}"><i class="fa fa-bell special-block" aria-hidden="true" ></i><i class="fa fa-window-close special-block" aria-hidden="true"></i></a>-->
+<!--                        </small>-->
+
+<!--                    </div>-->
+<!--                </div>-->
+<!--                <a class="back-button w-button" onclick="goBack()" href="#">go back</a>-->
+<!--            </div>-->
+
+            <div class="content-wrap">
+                <div class="content-container">
+                    <div th:replace="fragments/general-form.html :: alerts-bar"></div>
+                    <h1 th:if="${manufacturers} and ${type == 'load_manufacturers'}">All Manufacturers</h1>
+                    <h1 th:if="${tasks} and ${type == 'load_tasks'}">My Pending Tasks</h1>
+                    <div class="content-block">
+                        <div class="content-block-parent" >
+
+                            <div class="row-table ">
+                                <table class="table table-striped">
+                                    <thead>
+                                    <tr th:if="${not #lists?.isEmpty(manufacturers)} and ${not #lists?.isEmpty(tasks)}">
+                                        <th>REF No.</th>
+                                        <th>Company Name</th>
+                                        <th>KRA PIN</th>
+                                        <th>Registration Date</th>
+                                        <th>View</th>
+                                        <!--                                        <th>View</th>-->
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <!--                <a th:each="coc, iStat: ${cocs}" th:href="@{/api/inspection/supervisor/coc-details/{id}(id=${coc.id})}" class="table-row w-inline-block">-->
+                                    <tr  class="list" th:if="${manufacturers} and ${not #lists?.isEmpty(manufacturers)} and ${type == 'load_manufacturers'}"  th:each="manufacturer, iStat: ${manufacturers}" style="cursor: pointer">
+                                        <td th:text="${manufacturer?.id}"></td>
+                                        <td th:text="${manufacturer?.name}"></td>
+                                        <td  th:text="${manufacturer?.kraPin}"></td>
+                                        <td th:text="${#dates.format(app?.createdOn, 'dd/MM/yyyy')}"></td>
+                                        <td><a class="btn btn-info" th:href="@{/sl/manufacturer(manufacturerId = ${manufacturer.id}, appId=${map.id})}">view</a></td>
+                                    </tr>
+
+                                    <tr class="list" th:if="${tasks} and ${not #lists?.isEmpty(tasks)} and ${type == 'load_tasks'}"  th:each="manufacturer, iStat: ${tasks}" style="cursor: pointer">
+                                        <td th:text="${manufacturer?.id}"></td>
+                                        <td th:text="${manufacturer?.name}"></td>
+                                        <td  th:text="${manufacturer?.kraPin}"></td>
+                                        <td th:text="${#dates.format(app?.createdOn, 'dd/MM/yyyy')}"></td>
+                                        <td><a class="btn btn-info" th:href="@{/sl/manufacturer(manufacturerId = ${manufacturer.id}, appId=${map.id})}">view</a></td>
+                                    </tr>
+
+                                    </tbody>
+                                </table>
+                                <div th:if="${#lists?.isEmpty(manufacturers)} and ${#lists?.isEmpty(tasks)}">
+<!--                                    <h1 th:if="${manufacturers}">You have no tasks</h1>-->
+<!--                                    <h1 th:if="${tasks}">You have no tasks</h1>-->
+                                    <h1>There's nothing here, &#129409;</h1>
+                                </div>
+                            </div>
+
+                            <div class=class="pagenation-block" th:each="pageNumber : ${pageNumbers}"
+                                 th:if="${totalPages > 0}">
+                                <a class="button w-button"
+                                   th:href="@{/api/qao/applications(page=1,records=10,appId=199)}"
+                                   th:text="${pageNumber}">Next</a>
+                            </div>
+
+                        </div>
+                        <div class="filter-block">
+                            <div class="filter-block-title">
+                                <div class="filter-title">Filter By:</div>
+                            </div>
+                            <div class="w-form">
+                                <form id="email-form" name="email-form" data-name="Email Form">
+<!--                                    <div class="form-div"><label for="name">Status</label>-->
+<!--                                        <label class="w-checkbox">-->
+<!--                                            <input type="checkbox" id="checkbox" name="checkbox" data-name="Checkbox" class="w-checkbox-input">-->
+<!--                                            <span class="w-form-label">Pending Review</span>-->
+<!--                                        </label>-->
+<!--                                        <label class="w-checkbox">-->
+<!--                                            <input type="checkbox" id="checkbox-2" name="checkbox-2" data-name="Checkbox 2" class="w-checkbox-input">-->
+<!--                                            <span class="w-form-label">Approved</span>-->
+<!--                                        </label>-->
+<!--                                    </div>-->
+
+<!--                                    <div>-->
+<!--                                        <label for="name">Date Range</label>-->
+<!--                                        <div class="date-field-div">-->
+<!--                                            <div class="date-field-label">From</div>-->
+<!--                                            <input type="text" class="date-field w-input" maxlength="256" name="name" data-name="Name" id="name">-->
+<!--                                        </div>-->
+<!--                                        <div class="date-field-div">-->
+<!--                                            <div class="date-field-label">To</div>-->
+<!--                                            <input type="text" class="date-field w-input" maxlength="256" name="name-2" data-name="Name 2" id="name-2">-->
+<!--                                        </div>-->
+
+<!--                                    </div><input type="submit" value="Apply Filter" data-wait="Please wait..." class="button w-button">-->
+                                </form>
+                                <br><br>
+                                <div sec:authorize="hasAuthority('PETROLEUM_ALLOCATE_INSPECTION_OFFICER') or hasAuthority('RECEIVE_EPRA_NOTIFICATION_LETTER') or hasAuthority('SCHEDULE_FACTORY_VISIT') or hasAuthority('ASSIGN_OFFICER')">
+                                    <b>Fuel Inspection</b>
+                                    <a class="btn btn-info"  th:href="@{/ii(whereTo=all_tasks)}"> Fuel Inspection Tasks</a>
+                                </div>
+                                <div class="w-form-done">
+                                    <div>Thank you! Your submission has been received!</div>
+                                </div>
+                                <div class="w-form-fail">
+                                    <div>Oops! Something went wrong while submitting the form.</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://d3e54v103j8qbb.cloudfront.net/js/jquery-3.4.1.min.220afd743d.js" type="text/javascript" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<script th:src="@{/js/webflow.js}" type="text/javascript"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js" type="javascript"></script>
+<!-- [if lte IE 9]><script src="https://cdnjs.cloudflare.com/ajax/libs/placeholders/3.0.2/placeholders.min.js"></script><![endif] -->
+<script th:src="@{/js/extra.js}" type="javascript"></script>
+<script>
+    function myFunction() {
+        document.getElementById("myDropdown").classList.toggle("show");
+    }
+
+    function filterFunction() {
+        var input, filter, ul, li, a, i;
+        input = document.getElementById("myInput");
+        filter = input.value.toUpperCase();
+        div = document.getElementById("myDropdown");
+        a = div.getElementsByTagName("a");
+        for (i = 0; i < a.length; i++) {
+            txtValue = a[i].textContent || a[i].innerText;
+            if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                a[i].style.display = "";
+            } else {
+                a[i].style.display = "none";
+            }
+        }
+    }
+</script>
+</body>
+</html>
+

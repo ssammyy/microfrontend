@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/test">
+  <process id="qaAppReviewProcess" name="QA Application Review" isExecutable="true">
+    <startEvent id="qaAppReviewStart" name="qaAppReviewStart">
+      <documentation>Start the QA application review process</documentation>
+    </startEvent>
+    <endEvent id="qaAppReviewEnd" name="qaAppReviewEnd">
+      <documentation>QA App review process ends</documentation>
+    </endEvent>
+    <userTask id="qaHOFCheckIfComplete" name="Check if the application is complete">
+      <documentation>QA HOF checks if the application is complete</documentation>
+      <extensionElements>
+        <activiti:taskListener event="assignment" expression="${bpmnNotifications.sendEmail(task)}"></activiti:taskListener>
+      </extensionElements>
+    </userTask>
+    <exclusiveGateway id="qaExcGWApplicationComplete" name="qaExcGWApplicationComplete">
+      <documentation>Decision base on completed app review</documentation>
+    </exclusiveGateway>
+    <sequenceFlow id="qaFlowCheckifComplete" sourceRef="qaHOFCheckIfComplete" targetRef="qaExcGWApplicationComplete"></sequenceFlow>
+    <userTask id="qaAllocateFileToQAO" name="Allocate application file to QAO"></userTask>
+    <sequenceFlow id="qaFlowAppComplete" name="qaFlowAppComplete" sourceRef="qaExcGWApplicationComplete" targetRef="qaAllocateFileToQAO">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${applicationComplete==1}]]></conditionExpression>
+    </sequenceFlow>
+    <userTask id="qaPlanFactoryVisit" name="Plan Factory Visit">
+      <extensionElements>
+        <activiti:taskListener event="assignment" expression="${bpmnNotifications.sendEmail(task)}"></activiti:taskListener>
+      </extensionElements>
+    </userTask>
+    <sequenceFlow id="flow6" sourceRef="qaPlanFactoryVisit" targetRef="qaAppReviewEnd"></sequenceFlow>
+    <userTask id="qaCorrectApplication" name="Correct Application" activiti:category="manufacturer">
+      <extensionElements>
+        <activiti:taskListener event="assignment" expression="${bpmnNotifications.sendEmail(task)}"></activiti:taskListener>
+      </extensionElements>
+    </userTask>
+    <userTask id="qaResubmitApplication" name="QA Resubmit Application" activiti:category="manufacturer">
+      <extensionElements>
+        <activiti:taskListener event="assignment" expression="${bpmnNotifications.sendEmail(task)}"></activiti:taskListener>
+      </extensionElements>
+    </userTask>
+    <sequenceFlow id="flow9" sourceRef="qaCorrectApplication" targetRef="qaResubmitApplication"></sequenceFlow>
+    <sequenceFlow id="flow10" sourceRef="qaResubmitApplication" targetRef="qaAppReviewEnd"></sequenceFlow>
+    <sequenceFlow id="flow11" sourceRef="qaAppReviewStart" targetRef="qaHOFCheckIfComplete"></sequenceFlow>
+    <sequenceFlow id="flow12" sourceRef="qaExcGWApplicationComplete" targetRef="qaCorrectApplication">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${applicationComplete==0}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="flow13" sourceRef="qaAllocateFileToQAO" targetRef="qaPlanFactoryVisit"></sequenceFlow>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_qaAppReviewProcess">
+    <bpmndi:BPMNPlane bpmnElement="qaAppReviewProcess" id="BPMNPlane_qaAppReviewProcess">
+      <bpmndi:BPMNShape bpmnElement="qaAppReviewStart" id="BPMNShape_qaAppReviewStart">
+        <omgdc:Bounds height="35.0" width="41.0" x="100.0" y="180.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="qaAppReviewEnd" id="BPMNShape_qaAppReviewEnd">
+        <omgdc:Bounds height="35.0" width="35.0" x="1360.0" y="180.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="qaHOFCheckIfComplete" id="BPMNShape_qaHOFCheckIfComplete">
+        <omgdc:Bounds height="61.0" width="141.0" x="330.0" y="167.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="qaExcGWApplicationComplete" id="BPMNShape_qaExcGWApplicationComplete">
+        <omgdc:Bounds height="40.0" width="40.0" x="610.0" y="177.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="qaAllocateFileToQAO" id="BPMNShape_qaAllocateFileToQAO">
+        <omgdc:Bounds height="59.0" width="131.0" x="760.0" y="168.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="qaPlanFactoryVisit" id="BPMNShape_qaPlanFactoryVisit">
+        <omgdc:Bounds height="55.0" width="105.0" x="1020.0" y="170.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="qaCorrectApplication" id="BPMNShape_qaCorrectApplication">
+        <omgdc:Bounds height="55.0" width="131.0" x="760.0" y="330.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="qaResubmitApplication" id="BPMNShape_qaResubmitApplication">
+        <omgdc:Bounds height="55.0" width="141.0" x="980.0" y="330.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="qaFlowCheckifComplete" id="BPMNEdge_qaFlowCheckifComplete">
+        <omgdi:waypoint x="471.0" y="197.0"></omgdi:waypoint>
+        <omgdi:waypoint x="610.0" y="197.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="qaFlowAppComplete" id="BPMNEdge_qaFlowAppComplete">
+        <omgdi:waypoint x="650.0" y="197.0"></omgdi:waypoint>
+        <omgdi:waypoint x="760.0" y="197.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="13.0" width="100.0" x="650.0" y="197.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow6" id="BPMNEdge_flow6">
+        <omgdi:waypoint x="1125.0" y="197.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1360.0" y="197.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow9" id="BPMNEdge_flow9">
+        <omgdi:waypoint x="891.0" y="357.0"></omgdi:waypoint>
+        <omgdi:waypoint x="980.0" y="357.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow10" id="BPMNEdge_flow10">
+        <omgdi:waypoint x="1050.0" y="330.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1377.0" y="215.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow11" id="BPMNEdge_flow11">
+        <omgdi:waypoint x="141.0" y="197.0"></omgdi:waypoint>
+        <omgdi:waypoint x="330.0" y="197.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow12" id="BPMNEdge_flow12">
+        <omgdi:waypoint x="630.0" y="217.0"></omgdi:waypoint>
+        <omgdi:waypoint x="630.0" y="357.0"></omgdi:waypoint>
+        <omgdi:waypoint x="760.0" y="357.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow13" id="BPMNEdge_flow13">
+        <omgdi:waypoint x="891.0" y="197.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1020.0" y="197.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

@@ -1,0 +1,373 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:flowable="http://flowable.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.flowable.org/processdef">
+  <process id="DIImportedVehiclesWithCorProcess" name="DI Imported Vehicles With CoR Process" isExecutable="true">
+    <startEvent id="ImportedVehiclesWithCorStart" name="Start" flowable:formFieldValidation="true"></startEvent>
+    <userTask id="ImportedVehiclesWithCoRAssignIo" name="Assign IO" flowable:formFieldValidation="true">
+      <extensionElements>
+        <flowable:taskListener event="assignment" expression="${bpmnNotifications.sendEmail(task)}"></flowable:taskListener>
+      </extensionElements>
+    </userTask>
+    <subProcess id="ImportedVehiclesWithCoRMotorInspection" name="Motor Inspection ">
+      <startEvent id="MotorVehicleInspectionStart" name="Start" flowable:formFieldValidation="true"></startEvent>
+      <exclusiveGateway id="exclusivegateway4" name="Payment?"></exclusiveGateway>
+      <serviceTask id="MotorInspectionSendPaymentDemandToSW" name="Send Payment Demand To SW" flowable:expression="${bpmnCommonFunctions.sendSwPaymentDemandNote(objectId)}"></serviceTask>
+      <userTask id="MotorInspectionFillInspectionForms" name="Fill Inspection Forms" flowable:formFieldValidation="true"></userTask>
+      <exclusiveGateway id="exclusivegateway5" name="Forward to Ministry?"></exclusiveGateway>
+      <userTask id="MotorInspectionMinistryGenerateReport" name="Generate Motor Vehicle Inspection Report" flowable:formFieldValidation="true">
+        <extensionElements>
+          <flowable:taskListener event="assignment" expression="${bpmnNotifications.sendEmail(task)}"></flowable:taskListener>
+        </extensionElements>
+      </userTask>
+      <userTask id="MotorInspectionReviewMinistryInspectionReport" name="Review Ministry Inspection Report" flowable:formFieldValidation="true">
+        <extensionElements>
+          <flowable:taskListener event="assignment" expression="${bpmnNotifications.sendEmail(task)}"></flowable:taskListener>
+        </extensionElements>
+      </userTask>
+      <userTask id="MotorInspectionGenerateMotorInspectionReport" name="Generate Motor Inspection Report" flowable:formFieldValidation="true">
+        <extensionElements>
+          <flowable:taskListener event="assignment" expression="${bpmnNotifications.sendEmail(task)}"></flowable:taskListener>
+        </extensionElements>
+      </userTask>
+      <userTask id="MotorInspectionReviewMotorInspectionReport" name="Review Motor Inspection Report" flowable:formFieldValidation="true">
+        <extensionElements>
+          <flowable:taskListener event="assignment" expression="${bpmnNotifications.sendEmail(task)}"></flowable:taskListener>
+        </extensionElements>
+      </userTask>
+      <exclusiveGateway id="exclusivegateway6" name="Approved?"></exclusiveGateway>
+      <endEvent id="MotorVehicleInspectionEnd" name="End">
+        <terminateEventDefinition></terminateEventDefinition>
+      </endEvent>
+      <sequenceFlow id="flow17" sourceRef="MotorVehicleInspectionStart" targetRef="MotorInspectionScheduleRequest"></sequenceFlow>
+      <sequenceFlow id="flow27" sourceRef="MotorInspectionMinistryGenerateReport" targetRef="MotorInspectionReviewMinistryInspectionReport"></sequenceFlow>
+      <userTask id="MotorInspectionPaymentRequired" name="Payment Required" flowable:formFieldValidation="true"></userTask>
+      <sequenceFlow id="sid-DCE60AD3-194D-418C-83F1-DFC9E977F7A2" sourceRef="MotorInspectionPaymentRequired" targetRef="exclusivegateway4"></sequenceFlow>
+      <serviceTask id="MotorInspectionScheduleRequest" name="Request Inspection Schedule" flowable:async="true" flowable:expression="${bpmnCommonFunctions.submitMotorVehicleInspectionRequest(itemId)}" flowable:triggerable="true"></serviceTask>
+      <receiveTask id="MotorInspectionReceiveSchedule" name="Receive Inspection Schedule"></receiveTask>
+      <sequenceFlow id="flow18" sourceRef="MotorInspectionScheduleRequest" targetRef="MotorInspectionReceiveSchedule"></sequenceFlow>
+      <sequenceFlow id="flow30" sourceRef="MotorInspectionGenerateMotorInspectionReport" targetRef="MotorInspectionReviewMotorInspectionReport"></sequenceFlow>
+      <receiveTask id="MotorInspectionReceivePaymentConfirmation" name="Receive Payment Confirmation"></receiveTask>
+      <sequenceFlow id="flow39" sourceRef="MotorInspectionReceiveSchedule" targetRef="MotorInspectionPaymentRequired"></sequenceFlow>
+      <userTask id="MotorInspectionMinistryInspectionRequired" name="Ministry Inspection Required" flowable:formFieldValidation="true"></userTask>
+      <sequenceFlow id="flow31" sourceRef="MotorInspectionReviewMotorInspectionReport" targetRef="exclusivegateway6"></sequenceFlow>
+      <sequenceFlow id="flow33" sourceRef="exclusivegateway6" targetRef="MotorVehicleInspectionEnd">
+        <conditionExpression xsi:type="tFormalExpression"><![CDATA[${motorInspectionReportApproved=='1'}]]></conditionExpression>
+      </sequenceFlow>
+      <sequenceFlow id="flow32" sourceRef="exclusivegateway6" targetRef="MotorInspectionGenerateMotorInspectionReport">
+        <conditionExpression xsi:type="tFormalExpression"><![CDATA[${motorInspectionReportApproved=='0'}]]></conditionExpression>
+      </sequenceFlow>
+      <sequenceFlow id="flow77" sourceRef="MotorInspectionSendPaymentDemandToSW" targetRef="MotorInspectionReceivePaymentConfirmation"></sequenceFlow>
+      <sequenceFlow id="flow20" sourceRef="exclusivegateway4" targetRef="MotorInspectionFillInspectionForms">
+        <conditionExpression xsi:type="tFormalExpression"><![CDATA[${paymentRequired=='0'}]]></conditionExpression>
+      </sequenceFlow>
+      <sequenceFlow id="flow19" sourceRef="exclusivegateway4" targetRef="MotorInspectionSendPaymentDemandToSW">
+        <conditionExpression xsi:type="tFormalExpression"><![CDATA[${paymentRequired=='1'}]]></conditionExpression>
+      </sequenceFlow>
+      <sequenceFlow id="flow24" sourceRef="MotorInspectionFillInspectionForms" targetRef="MotorInspectionMinistryInspectionRequired"></sequenceFlow>
+      <sequenceFlow id="flow78" sourceRef="MotorInspectionMinistryInspectionRequired" targetRef="exclusivegateway5"></sequenceFlow>
+      <sequenceFlow id="flow29" sourceRef="exclusivegateway5" targetRef="MotorInspectionGenerateMotorInspectionReport">
+        <conditionExpression xsi:type="tFormalExpression"><![CDATA[${forwardToMinistry=='0'}]]></conditionExpression>
+      </sequenceFlow>
+      <sequenceFlow id="flow28" sourceRef="MotorInspectionReviewMinistryInspectionReport" targetRef="MotorInspectionGenerateMotorInspectionReport"></sequenceFlow>
+      <sequenceFlow id="flow25" sourceRef="exclusivegateway5" targetRef="MotorInspectionMinistryGenerateReport">
+        <conditionExpression xsi:type="tFormalExpression"><![CDATA[${forwardToMinistry=='1'}]]></conditionExpression>
+      </sequenceFlow>
+      <sequenceFlow id="flow80" sourceRef="MotorInspectionReceivePaymentConfirmation" targetRef="MotorInspectionFillInspectionForms"></sequenceFlow>
+    </subProcess>
+    <serviceTask id="ImportedVehiclesWithCoRUpdateKebsCdStatus" name="Update KEBS CD status " flowable:expression="${bpmnCommonFunctions.updateCdStatusOnSw(objectId)}"></serviceTask>
+    <endEvent id="EndImportedVehiclesWithCorProcess">
+      <extensionElements>
+        <flowable:executionListener event="end" expression="${destinationInspectionBpmn.endImportedVehiclesWithCorProcess(objectId)}"></flowable:executionListener>
+      </extensionElements>
+    </endEvent>
+    <userTask id="ImportedVehiclesWithCoRCheckCdComplete" name="Check CD Complete" flowable:formFieldValidation="true"></userTask>
+    <exclusiveGateway id="exclusivegateway1"></exclusiveGateway>
+    <serviceTask id="ImportedVehiclesWithCoRSendCdRejectToSw" name="Send Rejection To SW" flowable:expression="${bpmnCommonFunctions.updateCdStatusOnSw(objectId)}"></serviceTask>
+    <serviceTask id="ImportedVehiclesWithCoRSendCdApproveToSw" name="Send Approval To SW" flowable:expression="${bpmnCommonFunctions.updateCdStatusOnSw(objectId)}"></serviceTask>
+    <exclusiveGateway id="sid-42B0CEB0-2355-4FAA-B73B-6F609D05267C"></exclusiveGateway>
+    <userTask id="ImportedVehiclesWithCoRReviewTargetApprovalRequest" name="Review Target Approval Request" flowable:formFieldValidation="true">
+      <extensionElements>
+        <flowable:taskListener event="assignment" expression="${bpmnNotifications.sendEmail(task)}"></flowable:taskListener>
+      </extensionElements>
+    </userTask>
+    <exclusiveGateway id="sid-2E918059-9C18-4532-963E-61177E5F7A1E"></exclusiveGateway>
+    <serviceTask id="ImportedVehiclesWithCoRSupervisorTargetRejectionNotification" name="Send Target Rejection Notification" flowable:expression="${bpmnCommonFunctions.updateCdStatusOnSw(objectId)}"></serviceTask>
+    <sequenceFlow id="sid-D52986EA-6EE8-47EE-9A59-786A31A9239E" sourceRef="ImportedVehiclesWithCoRSendCdRejectToSw" targetRef="EndImportedVehiclesWithCorProcess"></sequenceFlow>
+    <sequenceFlow id="flow7" sourceRef="ImportedVehiclesWithCoRSendCdApproveToSw" targetRef="EndImportedVehiclesWithCorProcess"></sequenceFlow>
+    <sequenceFlow id="flow1" sourceRef="ImportedVehiclesWithCorStart" targetRef="ImportedVehiclesWithCoRAssignIo"></sequenceFlow>
+    <serviceTask id="ImportedVehiclesWithCoRSupervisorTargetApprovalNotification" name="Send Target Approval Notification" flowable:expression="${bpmnCommonFunctions.notifyTargetApproval(objectId,supervisorTargetApproved)}"></serviceTask>
+    <sequenceFlow id="flow14" sourceRef="ImportedVehiclesWithCoRSupervisorTargetRejectionNotification" targetRef="ImportedVehiclesWithCoRCheckCdComplete"></sequenceFlow>
+    <sequenceFlow id="flow9" sourceRef="ImportedVehiclesWithCoRUpdateKebsCdStatus" targetRef="EndImportedVehiclesWithCorProcess"></sequenceFlow>
+    <sequenceFlow id="flow16" sourceRef="ImportedVehiclesWithCoRMotorInspection" targetRef="ImportedVehiclesWithCoRUpdateKebsCdStatus"></sequenceFlow>
+    <sequenceFlow id="flow3" sourceRef="ImportedVehiclesWithCoRCheckCdComplete" targetRef="exclusivegateway1"></sequenceFlow>
+    <sequenceFlow id="flow2" sourceRef="ImportedVehiclesWithCoRAssignIo" targetRef="sid-42B0CEB0-2355-4FAA-B73B-6F609D05267C"></sequenceFlow>
+    <sequenceFlow id="flow5" sourceRef="exclusivegateway1" targetRef="ImportedVehiclesWithCoRSendCdApproveToSw">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${cdDecision=='APPROVE'}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="flow13" sourceRef="sid-2E918059-9C18-4532-963E-61177E5F7A1E" targetRef="ImportedVehiclesWithCoRSupervisorTargetRejectionNotification">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${supervisorTargetApproved=='0'}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="flow11" sourceRef="ImportedVehiclesWithCoRReviewTargetApprovalRequest" targetRef="sid-2E918059-9C18-4532-963E-61177E5F7A1E"></sequenceFlow>
+    <sequenceFlow id="flow15" sourceRef="sid-42B0CEB0-2355-4FAA-B73B-6F609D05267C" targetRef="ImportedVehiclesWithCoRMotorInspection">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${supervisorTarget==1}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="flow8" sourceRef="sid-42B0CEB0-2355-4FAA-B73B-6F609D05267C" targetRef="ImportedVehiclesWithCoRCheckCdComplete">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${supervisorTarget==0}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="flow12" sourceRef="sid-2E918059-9C18-4532-963E-61177E5F7A1E" targetRef="ImportedVehiclesWithCoRSupervisorTargetApprovalNotification">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${supervisorTargetApproved=='1'}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="flow4" sourceRef="exclusivegateway1" targetRef="ImportedVehiclesWithCoRReviewTargetApprovalRequest">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${cdDecision=='TARGET'}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="flow6" sourceRef="exclusivegateway1" targetRef="ImportedVehiclesWithCoRSendCdRejectToSw">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${cdDecision=='REJECT'}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="flow40" sourceRef="ImportedVehiclesWithCoRSupervisorTargetApprovalNotification" targetRef="ImportedVehiclesWithCoRMotorInspection"></sequenceFlow>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_DIImportedVehiclesWithCorProcess">
+    <bpmndi:BPMNPlane bpmnElement="DIImportedVehiclesWithCorProcess" id="BPMNPlane_DIImportedVehiclesWithCorProcess">
+      <bpmndi:BPMNShape bpmnElement="ImportedVehiclesWithCorStart" id="BPMNShape_ImportedVehiclesWithCorStart">
+        <omgdc:Bounds height="30.0" width="30.0" x="15.0" y="160.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="ImportedVehiclesWithCoRAssignIo" id="BPMNShape_ImportedVehiclesWithCoRAssignIo">
+        <omgdc:Bounds height="80.0" width="100.0" x="120.0" y="135.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="ImportedVehiclesWithCoRMotorInspection" id="BPMNShape_ImportedVehiclesWithCoRMotorInspection" isExpanded="false">
+        <omgdc:Bounds height="80.0" width="100.0" x="600.0" y="600.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="ImportedVehiclesWithCoRUpdateKebsCdStatus" id="BPMNShape_ImportedVehiclesWithCoRUpdateKebsCdStatus">
+        <omgdc:Bounds height="80.0" width="100.0" x="795.0" y="600.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="EndImportedVehiclesWithCorProcess" id="BPMNShape_EndImportedVehiclesWithCorProcess">
+        <omgdc:Bounds height="28.0" width="28.0" x="960.0" y="161.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="ImportedVehiclesWithCoRCheckCdComplete" id="BPMNShape_ImportedVehiclesWithCoRCheckCdComplete">
+        <omgdc:Bounds height="80.0" width="100.0" x="465.0" y="135.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="exclusivegateway1" id="BPMNShape_exclusivegateway1">
+        <omgdc:Bounds height="40.0" width="40.0" x="630.0" y="155.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="ImportedVehiclesWithCoRSendCdRejectToSw" id="BPMNShape_ImportedVehiclesWithCoRSendCdRejectToSw">
+        <omgdc:Bounds height="80.0" width="100.0" x="765.0" y="135.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="ImportedVehiclesWithCoRSendCdApproveToSw" id="BPMNShape_ImportedVehiclesWithCoRSendCdApproveToSw">
+        <omgdc:Bounds height="80.0" width="100.0" x="600.0" y="0.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="sid-42B0CEB0-2355-4FAA-B73B-6F609D05267C" id="BPMNShape_sid-42B0CEB0-2355-4FAA-B73B-6F609D05267C">
+        <omgdc:Bounds height="40.0" width="40.0" x="315.0" y="155.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="ImportedVehiclesWithCoRReviewTargetApprovalRequest" id="BPMNShape_ImportedVehiclesWithCoRReviewTargetApprovalRequest">
+        <omgdc:Bounds height="80.0" width="100.0" x="600.0" y="240.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="sid-2E918059-9C18-4532-963E-61177E5F7A1E" id="BPMNShape_sid-2E918059-9C18-4532-963E-61177E5F7A1E">
+        <omgdc:Bounds height="40.0" width="40.0" x="630.0" y="375.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="ImportedVehiclesWithCoRSupervisorTargetRejectionNotification" id="BPMNShape_ImportedVehiclesWithCoRSupervisorTargetRejectionNotification">
+        <omgdc:Bounds height="80.0" width="100.0" x="465.0" y="270.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="ImportedVehiclesWithCoRSupervisorTargetApprovalNotification" id="BPMNShape_ImportedVehiclesWithCoRSupervisorTargetApprovalNotification">
+        <omgdc:Bounds height="80.0" width="100.0" x="600.0" y="465.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="flow1" id="BPMNEdge_flow1">
+        <omgdi:waypoint x="44.94999906759471" y="175.0"></omgdi:waypoint>
+        <omgdi:waypoint x="120.0" y="175.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow2" id="BPMNEdge_flow2">
+        <omgdi:waypoint x="219.94999999998356" y="175.0"></omgdi:waypoint>
+        <omgdi:waypoint x="315.0" y="175.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow3" id="BPMNEdge_flow3">
+        <omgdi:waypoint x="564.95" y="175.0"></omgdi:waypoint>
+        <omgdi:waypoint x="630.0" y="175.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow4" id="BPMNEdge_flow4">
+        <omgdi:waypoint x="650.0" y="194.93490922844182"></omgdi:waypoint>
+        <omgdi:waypoint x="650.0" y="240.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow5" id="BPMNEdge_flow5">
+        <omgdi:waypoint x="650.0" y="155.0"></omgdi:waypoint>
+        <omgdi:waypoint x="650.0" y="79.95"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow6" id="BPMNEdge_flow6">
+        <omgdi:waypoint x="669.9439582071294" y="175.0"></omgdi:waypoint>
+        <omgdi:waypoint x="764.9999999999847" y="175.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow7" id="BPMNEdge_flow7">
+        <omgdi:waypoint x="699.9499999999999" y="40.0"></omgdi:waypoint>
+        <omgdi:waypoint x="974.0" y="40.0"></omgdi:waypoint>
+        <omgdi:waypoint x="974.0" y="161.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow8" id="BPMNEdge_flow8">
+        <omgdi:waypoint x="354.9444614102993" y="175.0"></omgdi:waypoint>
+        <omgdi:waypoint x="464.99999999997226" y="175.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow9" id="BPMNEdge_flow9">
+        <omgdi:waypoint x="894.9499999999512" y="640.0"></omgdi:waypoint>
+        <omgdi:waypoint x="972.0" y="640.0"></omgdi:waypoint>
+        <omgdi:waypoint x="973.9397854914224" y="188.94987369697978"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow40" id="BPMNEdge_flow40">
+        <omgdi:waypoint x="650.0" y="544.95"></omgdi:waypoint>
+        <omgdi:waypoint x="650.0" y="600.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow13" id="BPMNEdge_flow13">
+        <omgdi:waypoint x="630.0" y="395.0"></omgdi:waypoint>
+        <omgdi:waypoint x="515.0" y="395.0"></omgdi:waypoint>
+        <omgdi:waypoint x="515.0" y="349.95000000000005"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow14" id="BPMNEdge_flow14">
+        <omgdi:waypoint x="515.0" y="270.0"></omgdi:waypoint>
+        <omgdi:waypoint x="515.0" y="214.95000000000002"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow15" id="BPMNEdge_flow15">
+        <omgdi:waypoint x="335.0" y="194.94785529993553"></omgdi:waypoint>
+        <omgdi:waypoint x="335.0" y="640.0"></omgdi:waypoint>
+        <omgdi:waypoint x="599.9999999995885" y="640.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow16" id="BPMNEdge_flow16">
+        <omgdi:waypoint x="699.9499999998152" y="640.0"></omgdi:waypoint>
+        <omgdi:waypoint x="794.9999999999902" y="640.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-D52986EA-6EE8-47EE-9A59-786A31A9239E" id="BPMNEdge_sid-D52986EA-6EE8-47EE-9A59-786A31A9239E">
+        <omgdi:waypoint x="864.9499999999605" y="175.0"></omgdi:waypoint>
+        <omgdi:waypoint x="960.0" y="175.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow11" id="BPMNEdge_flow11">
+        <omgdi:waypoint x="650.0" y="319.95000000000005"></omgdi:waypoint>
+        <omgdi:waypoint x="650.0" y="375.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow12" id="BPMNEdge_flow12">
+        <omgdi:waypoint x="650.0" y="414.93597046413504"></omgdi:waypoint>
+        <omgdi:waypoint x="650.0" y="465.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_ImportedVehiclesWithCoRMotorInspection">
+    <bpmndi:BPMNPlane bpmnElement="ImportedVehiclesWithCoRMotorInspection" id="BPMNPlane_ImportedVehiclesWithCoRMotorInspection">
+      <bpmndi:BPMNShape bpmnElement="MotorVehicleInspectionStart" id="BPMNShape_MotorVehicleInspectionStart">
+        <omgdc:Bounds height="30.0" width="30.0" x="75.0" y="81.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="exclusivegateway4" id="BPMNShape_exclusivegateway4">
+        <omgdc:Bounds height="40.0" width="40.0" x="570.0" y="76.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="MotorInspectionSendPaymentDemandToSW" id="BPMNShape_MotorInspectionSendPaymentDemandToSW">
+        <omgdc:Bounds height="80.0" width="100.0" x="675.0" y="56.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="MotorInspectionFillInspectionForms" id="BPMNShape_MotorInspectionFillInspectionForms">
+        <omgdc:Bounds height="80.0" width="100.0" x="675.0" y="165.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="exclusivegateway5" id="BPMNShape_exclusivegateway5">
+        <omgdc:Bounds height="40.0" width="40.0" x="705.0" y="405.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="MotorInspectionMinistryGenerateReport" id="BPMNShape_MotorInspectionMinistryGenerateReport">
+        <omgdc:Bounds height="80.0" width="100.0" x="870.0" y="385.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="MotorInspectionReviewMinistryInspectionReport" id="BPMNShape_MotorInspectionReviewMinistryInspectionReport">
+        <omgdc:Bounds height="75.0" width="110.0" x="865.0" y="510.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="MotorInspectionGenerateMotorInspectionReport" id="BPMNShape_MotorInspectionGenerateMotorInspectionReport">
+        <omgdc:Bounds height="80.0" width="100.0" x="870.0" y="630.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="MotorInspectionReviewMotorInspectionReport" id="BPMNShape_MotorInspectionReviewMotorInspectionReport">
+        <omgdc:Bounds height="80.0" width="100.0" x="1005.0" y="630.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="exclusivegateway6" id="BPMNShape_exclusivegateway6">
+        <omgdc:Bounds height="40.0" width="40.0" x="1035.0" y="765.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="MotorVehicleInspectionEnd" id="BPMNShape_MotorVehicleInspectionEnd">
+        <omgdc:Bounds height="28.0" width="28.0" x="1041.0" y="855.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="flow17" id="BPMNEdge_flow17">
+        <omgdi:waypoint x="104.94999797575196" y="96.0"></omgdi:waypoint>
+        <omgdi:waypoint x="135.0" y="96.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow27" id="BPMNEdge_flow27">
+        <omgdi:waypoint x="920.0" y="464.95000000000005"></omgdi:waypoint>
+        <omgdi:waypoint x="920.0" y="510.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape bpmnElement="MotorInspectionPaymentRequired" id="BPMNShape_MotorInspectionPaymentRequired">
+        <omgdc:Bounds height="80.0" width="100.0" x="435.0" y="56.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="sid-DCE60AD3-194D-418C-83F1-DFC9E977F7A2" id="BPMNEdge_sid-DCE60AD3-194D-418C-83F1-DFC9E977F7A2">
+        <omgdi:waypoint x="534.95" y="96.0"></omgdi:waypoint>
+        <omgdi:waypoint x="570.0" y="96.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape bpmnElement="MotorInspectionScheduleRequest" id="BPMNShape_MotorInspectionScheduleRequest">
+        <omgdc:Bounds height="80.0" width="100.0" x="135.0" y="56.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="MotorInspectionReceiveSchedule" id="BPMNShape_MotorInspectionReceiveSchedule">
+        <omgdc:Bounds height="80.0" width="100.0" x="285.0" y="56.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="flow18" id="BPMNEdge_flow18">
+        <omgdi:waypoint x="234.94999999999442" y="96.0"></omgdi:waypoint>
+        <omgdi:waypoint x="285.0" y="96.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow30" id="BPMNEdge_flow30">
+        <omgdi:waypoint x="969.9499999999327" y="670.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1005.0" y="670.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape bpmnElement="MotorInspectionReceivePaymentConfirmation" id="BPMNShape_MotorInspectionReceivePaymentConfirmation">
+        <omgdc:Bounds height="80.0" width="100.0" x="855.0" y="56.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="flow39" id="BPMNEdge_flow39">
+        <omgdi:waypoint x="384.9499999999944" y="96.0"></omgdi:waypoint>
+        <omgdi:waypoint x="435.0" y="96.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape bpmnElement="MotorInspectionMinistryInspectionRequired" id="BPMNShape_MotorInspectionMinistryInspectionRequired">
+        <omgdc:Bounds height="80.0" width="100.0" x="675.0" y="285.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="flow31" id="BPMNEdge_flow31">
+        <omgdi:waypoint x="1055.0" y="709.9499999999999"></omgdi:waypoint>
+        <omgdi:waypoint x="1055.0" y="765.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow33" id="BPMNEdge_flow33">
+        <omgdi:waypoint x="1055.0" y="804.9381391200952"></omgdi:waypoint>
+        <omgdi:waypoint x="1055.0" y="855.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow32" id="BPMNEdge_flow32">
+        <omgdi:waypoint x="1035.0" y="785.0"></omgdi:waypoint>
+        <omgdi:waypoint x="920.0" y="785.0"></omgdi:waypoint>
+        <omgdi:waypoint x="920.0" y="709.9499999999999"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow77" id="BPMNEdge_flow77">
+        <omgdi:waypoint x="774.9499999999999" y="96.0"></omgdi:waypoint>
+        <omgdi:waypoint x="855.0" y="96.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow20" id="BPMNEdge_flow20">
+        <omgdi:waypoint x="590.0" y="115.94085701191567"></omgdi:waypoint>
+        <omgdi:waypoint x="590.0" y="205.0"></omgdi:waypoint>
+        <omgdi:waypoint x="674.999999999972" y="205.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow19" id="BPMNEdge_flow19">
+        <omgdi:waypoint x="609.9384146341293" y="96.0"></omgdi:waypoint>
+        <omgdi:waypoint x="675.0" y="96.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow24" id="BPMNEdge_flow24">
+        <omgdi:waypoint x="725.0" y="244.95000000000002"></omgdi:waypoint>
+        <omgdi:waypoint x="725.0" y="285.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow78" id="BPMNEdge_flow78">
+        <omgdi:waypoint x="725.0" y="364.95000000000005"></omgdi:waypoint>
+        <omgdi:waypoint x="725.0" y="405.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow29" id="BPMNEdge_flow29">
+        <omgdi:waypoint x="725.0" y="444.9459302325581"></omgdi:waypoint>
+        <omgdi:waypoint x="725.0" y="670.0"></omgdi:waypoint>
+        <omgdi:waypoint x="870.0" y="670.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow28" id="BPMNEdge_flow28">
+        <omgdi:waypoint x="920.0" y="584.95"></omgdi:waypoint>
+        <omgdi:waypoint x="920.0" y="630.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow25" id="BPMNEdge_flow25">
+        <omgdi:waypoint x="744.9431724845995" y="425.0"></omgdi:waypoint>
+        <omgdi:waypoint x="869.9999999999052" y="425.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow80" id="BPMNEdge_flow80">
+        <omgdi:waypoint x="905.0" y="135.95"></omgdi:waypoint>
+        <omgdi:waypoint x="905.0" y="205.0"></omgdi:waypoint>
+        <omgdi:waypoint x="774.949999999995" y="205.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

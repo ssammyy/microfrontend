@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.13.0.final using JasperReports Library version 6.13.0-46ada4d1be8f3c5985fd0b6146f3ed44caed6f05  -->
+<jasperReport xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xmlns="http://jasperreports.sourceforge.net/jasperreports"
+              xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
+              name="LabTestParamaters" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail"
+              columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20"
+              uuid="56817ab5-c25e-4af5-8b09-1433ed25d6f9">
+    <property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+    <property name="com.jaspersoft.studio.data.defaultdataadapter" value="apollo"/>
+    <parameter name="ITEM_ID" class="java.lang.String"/>
+    <parameter name="imagePath" class="java.lang.String"/>
+    <field name="id" class="java.math.BigDecimal">
+        <property name="com.jaspersoft.studio.field.label" value="id"/>
+    </field>
+    <field name="laboratoryId" class="java.math.BigDecimal">
+        <property name="com.jaspersoft.studio.field.label" value="laboratoryId"/>
+    </field>
+    <field name="parameters" class="java.lang.String">
+        <property name="com.jaspersoft.studio.field.label" value="parameters"/>
+    </field>
+    <field name="sampleSubmissionId" class="java.math.BigDecimal">
+        <property name="com.jaspersoft.studio.field.label" value="sampleSubmissionId"/>
+    </field>
+    <field name="description" class="java.lang.String">
+        <property name="com.jaspersoft.studio.field.label" value="description"/>
+    </field>
+    <field name="status" class="java.math.BigDecimal">
+        <property name="com.jaspersoft.studio.field.label" value="status"/>
+    </field>
+    <field name="createdBy" class="java.lang.String">
+        <property name="com.jaspersoft.studio.field.label" value="createdBy"/>
+    </field>
+    <field name="createdOn" class="java.sql.Timestamp">
+        <property name="com.jaspersoft.studio.field.label" value="createdOn"/>
+    </field>
+    <field name="modifiedBy" class="java.lang.String">
+        <property name="com.jaspersoft.studio.field.label" value="modifiedBy"/>
+    </field>
+    <field name="modifiedOn" class="java.sql.Timestamp">
+        <property name="com.jaspersoft.studio.field.label" value="modifiedOn"/>
+    </field>
+    <field name="deleteBy" class="java.lang.String">
+        <property name="com.jaspersoft.studio.field.label" value="deleteBy"/>
+    </field>
+    <field name="deletedOn" class="java.sql.Timestamp">
+        <property name="com.jaspersoft.studio.field.label" value="deletedOn"/>
+    </field>
+    <field name="purposeOfTest" class="java.lang.String">
+        <property name="com.jaspersoft.studio.field.label" value="purposeOfTest"/>
+    </field>
+    <field name="measurementUncertainty" class="java.lang.String">
+        <property name="com.jaspersoft.studio.field.label" value="measurementUncertainty"/>
+    </field>
+    <field name="laboratoryName" class="java.lang.String">
+        <property name="com.jaspersoft.studio.field.label" value="laboratoryName"/>
+    </field>
+    <background>
+        <band splitType="Stretch"/>
+    </background>
+    <title>
+        <band height="118" splitType="Stretch">
+            <staticText>
+                <reportElement x="35" y="82" width="470" height="33" uuid="3b019d54-2bb9-4cf2-8617-fa132270108f">
+                    <property name="com.jaspersoft.studio.unit.height" value="px"/>
+                </reportElement>
+                <textElement textAlignment="Center">
+                    <font size="18" isBold="true" isItalic="false"/>
+                </textElement>
+                <text><![CDATA[TEST REQUEST]]></text>
+            </staticText>
+            <image>
+                <reportElement x="255" y="0" width="50" height="45" uuid="61834ac4-00c1-4fd2-9c11-af8768e0ae21"/>
+                <imageExpression><![CDATA[$P{imagePath}]]></imageExpression>
+            </image>
+            <staticText>
+                <reportElement x="180" y="45" width="201" height="34" forecolor="#000000"
+                               uuid="1a133ddd-cb7f-4387-a749-77041431121d"/>
+                <textElement textAlignment="Center">
+                    <font size="12"/>
+                </textElement>
+                <text><![CDATA[THE STANDARDS ACT                               (Cap 496 of the laws of Kenya)]]></text>
+            </staticText>
+        </band>
+    </title>
+    <columnHeader>
+        <band height="26" splitType="Stretch">
+            <staticText>
+                <reportElement x="0" y="5" width="120" height="20" uuid="0779f406-7363-4fa4-8dcb-9596fd81b77b">
+                    <property name="com.jaspersoft.studio.spreadsheet.connectionID"
+                              value="c271d709-6aec-4dfd-94e4-ebee5ad54ec4"/>
+                    <property name="com.jaspersoft.studio.unit.height" value="px"/>
+                </reportElement>
+                <box>
+                    <topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+                    <leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+                    <bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+                    <rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+                </box>
+                <textElement textAlignment="Center">
+                    <font isBold="true"/>
+                </textElement>
+                <text><![CDATA[LABORATORY NAME]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="120" y="5" width="100" height="20" uuid="71479693-fbb1-4c10-b2a4-a292f0a3cc7f">
+                    <property name="com.jaspersoft.studio.spreadsheet.connectionID"
+                              value="9d0147be-c3ed-4bbd-97ef-49e818ec4da3"/>
+                    <property name="com.jaspersoft.studio.unit.height" value="px"/>
+                </reportElement>
+                <box>
+                    <topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+                    <leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+                    <bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+                    <rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+                </box>
+                <textElement textAlignment="Center">
+                    <font isBold="true"/>
+                </textElement>
+                <text><![CDATA[PURPOSE OF TEST]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="220" y="5" width="180" height="20" uuid="fa9f6e4f-29bf-4041-a83d-3683f2f29609">
+                    <property name="com.jaspersoft.studio.spreadsheet.connectionID"
+                              value="0e5f7ad0-b8cb-4a0b-a862-b91f30d8c3ce"/>
+                    <property name="com.jaspersoft.studio.unit.height" value="px"/>
+                </reportElement>
+                <box>
+                    <topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+                    <leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+                    <bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+                    <rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+                </box>
+                <textElement textAlignment="Center">
+                    <font isBold="true"/>
+                </textElement>
+                <text><![CDATA[PARAMETERS]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="400" y="5" width="153" height="20" uuid="10db9e7b-7dc5-40f3-9b5a-509d0e279767">
+                    <property name="com.jaspersoft.studio.spreadsheet.connectionID"
+                              value="dba724dc-ca3d-4fef-8701-44495243bc5e"/>
+                    <property name="com.jaspersoft.studio.unit.height" value="px"/>
+                </reportElement>
+                <box>
+                    <topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+                    <leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+                    <bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+                    <rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+                </box>
+                <textElement textAlignment="Center">
+                    <font isBold="true"/>
+                </textElement>
+                <text><![CDATA[MEASUREMENT UNCERTAINTY]]></text>
+            </staticText>
+        </band>
+    </columnHeader>
+    <detail>
+        <band height="20" splitType="Stretch">
+            <property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+            <textField>
+                <reportElement x="0" y="0" width="120" height="20" uuid="d0115dff-c571-41e6-8ad6-37a30b4963a1">
+                    <property name="com.jaspersoft.studio.spreadsheet.connectionID"
+                              value="c271d709-6aec-4dfd-94e4-ebee5ad54ec4"/>
+                    <property name="com.jaspersoft.studio.unit.height" value="px"/>
+                </reportElement>
+                <box>
+                    <topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+                    <leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+                    <bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+                    <rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+                </box>
+                <textElement textAlignment="Center"/>
+                <textFieldExpression><![CDATA[$F{laboratoryName}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="121" y="0" width="100" height="20" uuid="0f99a88a-1a0a-4a16-837f-17bad2be80e1">
+                    <property name="com.jaspersoft.studio.spreadsheet.connectionID"
+                              value="9d0147be-c3ed-4bbd-97ef-49e818ec4da3"/>
+                    <property name="com.jaspersoft.studio.unit.height" value="px"/>
+                </reportElement>
+                <box>
+                    <topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+                    <leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+                    <bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+                    <rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+                </box>
+                <textElement textAlignment="Center"/>
+                <textFieldExpression><![CDATA[$F{purposeOfTest}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="221" y="0" width="179" height="20" uuid="70a6d664-b764-4f35-96d4-045daa804a5f">
+                    <property name="com.jaspersoft.studio.spreadsheet.connectionID"
+                              value="0e5f7ad0-b8cb-4a0b-a862-b91f30d8c3ce"/>
+                    <property name="com.jaspersoft.studio.unit.height" value="px"/>
+                </reportElement>
+                <box>
+                    <topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+                    <leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+                    <bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+                    <rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+                </box>
+                <textElement textAlignment="Center"/>
+                <textFieldExpression><![CDATA[$F{parameters}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="400" y="0" width="153" height="20" uuid="90dfa8c9-62cd-4cc8-8c31-a815f5d993c8">
+                    <property name="com.jaspersoft.studio.spreadsheet.connectionID"
+                              value="dba724dc-ca3d-4fef-8701-44495243bc5e"/>
+                    <property name="com.jaspersoft.studio.unit.height" value="px"/>
+                </reportElement>
+                <box>
+                    <topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+                    <leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+                    <bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+                    <rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+                </box>
+                <textElement textAlignment="Center"/>
+                <textFieldExpression><![CDATA[$F{measurementUncertainty}]]></textFieldExpression>
+            </textField>
+        </band>
+    </detail>
+</jasperReport>

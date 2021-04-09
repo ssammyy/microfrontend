@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html data-wf-page="5e70fb3a565ebdc05ddb37cf" data-wf-site="5e70fb3a565ebd99c1db37ce"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta th:field="_csrf" content="${_csrf.token}"/>
+    <meta th:field="_csrf_header" content="${_csrf.headerth:field}"/>
+
+    <title>KEBS</title>
+    <th:block th:include="fragments/general-form.html :: headerfiles"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href='https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css'>
+    <link href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.0.3/css/font-awesome.css'>
+    <link rel="stylesheet" th:href="@{/css/rich_editor/richtext.min.css}" type="text/css">
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js'></script>
+    <script src='https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js'></script>
+    <script type="text/javascript" th:src="@{/css/rich_editor/jquery.richtext.js}"></script>
+    <style type="text/css">
+        * {
+            margin: 0;
+            padding: 0
+        }
+
+        html {
+            height: 100%
+        }
+
+        p {
+            color: grey
+        }
+
+        #heading {
+            text-transform: uppercase;
+            color: #0082f3;
+            font-weight: normal
+        }
+
+        #msform {
+            text-align: center;
+            position: relative;
+            margin-top: 20px;
+            width: 90%;
+        }
+
+        #msform fieldset {
+            background: white;
+            border: 0 none;
+            border-radius: 0.5rem;
+            box-sizing: border-box;
+            width: 100%;
+            margin: 0 auto;
+            padding-bottom: 20px;
+            position: relative;
+            text-align: center;
+        }
+
+        .form-card {
+            text-align: left;
+            width: 100%;
+            text-align: center;
+        }
+
+        #msform fieldset:not(:first-of-type) {
+            display: none
+        }
+
+        #msform input,
+        #msform textarea,
+        #msform select{
+            padding: 8px 15px 8px 15px;
+            border: 1px solid #ccc;
+            border-radius: 0px;
+            margin-bottom: 25px;
+            margin-top: 2px;
+            display: block;
+            width: 50%;
+            box-sizing: border-box;
+            font-family: montserrat;
+            color: #2C3E50;
+            background-color: #ECEFF1;
+            font-size: 13px;
+            letter-spacing: 1px;
+            margin-left: 30px ;
+        }
+
+        #msform input:focus,
+        #msform textarea:focus,
+        #msform select:focus{
+            -moz-box-shadow: none !important;
+            -webkit-box-shadow: none !important;
+            box-shadow: none !important;
+            border: 1px solid #673AB7;
+            outline-width: 0
+        }
+
+        #msform .action-button {
+            width: 100px;
+            background: #0082f3;
+            font-weight: bold;
+            font-family: montserrat;
+            color: white;
+            border: 0 none;
+            border-radius: 0px;
+            cursor: pointer;
+            padding: 10px 5px;
+            margin: 10px 0px 10px 5px;
+            float: right
+        }
+
+        #msform .action-button:hover,
+        #msform .action-button:focus {
+            background-color: #0082f3
+            width: 100px;
+            background: #616161;
+            font-weight: bold;
+            color: white;
+            border: 0 none;
+            border-radius: 0px;
+            cursor: pointer;
+            padding: 10px 5px;
+            margin: 10px auto;
+            float: right
+        }
+
+
+
+        #msform .action-button-previous:hover,
+        #msform .action-button-previous:focus {
+            background-color: #000000
+        }
+
+        #msform .action-button-previous {
+            width: 100px;
+            background: #0082f3;
+            font-weight: bold;
+            color: white;
+            border: 0 none;
+            border-radius: 0px;
+            cursor: pointer;
+            padding: 10px 5px;
+            margin: 10px auto;
+            float: left;
+            margin-left: 700px;
+        }
+
+        /*#msform .next{*/
+        /*    margin-right: 200px;*/
+        /*}*/
+
+        .card {
+            z-index: 0;
+            border: none;
+            position: relative;
+            width: 900px;
+            border-radius: 5px;
+            -webkit-box-shadow: 0px 0px 5px 2px rgba(28,32,255,0.7);
+            box-shadow: 0px 0px 5px 2px rgba(28,32,255,0.7);
+            justify-content: center;
+            text-align: center;
+        }
+
+        .fs-title {
+            font-size: 25px;
+            color: #0082f3;
+            margin-bottom: 15px;
+            margin-left: 30px;
+            font-weight: normal;
+            text-align: left
+        }
+
+        .purple-text {
+            color: #0082f3;
+            font-weight: normal
+        }
+
+        .steps {
+            font-size: 25px;
+            color: #0082f3;;
+            margin-bottom: 10px;
+            font-weight: normal;
+            text-align: center;
+        }
+
+        .fieldlabels {
+            color: #1b75bc;
+            text-align: left;
+            display: block;
+            margin-left: 30px ;
+            font-size: 15px;
+        }
+
+        #msform table {
+            width: 100%;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        #progressbar {
+            margin-bottom: 30px;
+            overflow: hidden;
+            color: #0082f3;
+        }
+
+        #progressbar .active {
+            color: #0082f3
+        }
+
+        #progressbar li {
+            list-style-type: none;
+            font-size: 15px;
+            width: 25%;
+            float: left;
+            position: relative;
+            font-weight: 400
+        }
+
+        #progressbar #account:before {
+            font-family: FontAwesome;
+            content: "\f13e"
+        }
+
+        #progressbar #personal:before {
+            font-family: FontAwesome;
+            content: "\f007"
+        }
+
+        #progressbar #payment:before {
+            font-family: FontAwesome;
+            content: "\f030"
+        }
+
+        #progressbar #confirm:before {
+            font-family: FontAwesome;
+            content: "\f00c"
+        }
+
+        #progressbar li:before {
+            width: 50px;
+            height: 50px;
+            line-height: 45px;
+            display: block;
+            font-size: 20px;
+            color: #ffffff;
+            background: lightgray;
+            border-radius: 50%;
+            margin: 0 auto 10px auto;
+            padding: 2px
+        }
+
+        #progressbar li:after {
+            content: '';
+            width: 100%;
+            height: 2px;
+            background: lightgray;
+            position: absolute;
+            left: 0;
+            top: 25px;
+            z-index: -1
+        }
+
+        .radio-btn {
+            width: 20%;
+            height: 20%;
+        }
+
+        #progressbar li.active:before,
+        #progressbar li.active:after {
+            background: #0082f3
+        }
+
+        .progress {
+            height: 20px
+        }
+
+        .progress-bar {
+            background-color: #0082f3
+        }
+
+        .fit-image {
+            width: 100%;
+            object-fit: cover
+        }
+
+    </style>
+</head>
+<body>
+<div class="top-bar" th:replace="fragments/general-form.html :: top-bar"></div>
+<div class="section">
+    <div class="w-layout-grid main-grid">
+        <div class="main-grid-side-navigation" id="w-node-d308c123a20f-c123a20d" th:replace="fragments/general-form.html :: side-navigation-bar"></div>
+        <div class="main-content-div" id="w-node-d308c123a224-c123a20d">
+            <div class="content-nav" th:replace="fragments/general-form.html :: content-navigation-bar"></div>
+            <div class="content-wrap">
+                <div class="container-fluid">
+                    <div class="row justify-content-center">
+                        <div class="col-11 col-sm-9 col-md-7 col-lg-6 text-center p-0 mt-3 mb-2">
+                            <div class="card px-0 pt-4 pb-0 mt-3 mb-3">
+                                <h2 id="heading">Generate PVOC Penalty Letter</h2>
+                                <form id="msform" method="POST"
+                                      th:action="@{/api/di/pvoc/save-pvoc-monitoring-letter}" th:object="${pvoc_letter}">
+                                    <!-- progressbar -->
+                                    <br>
+                                    <fieldset>
+                                        <div class="form-card">
+                                            <input type="hidden" name="cocId" id="waiverId" th:value="${coc_id}">
+                                            <input type="hidden" name="saveReason" id="warning"  th:value="warning">
+                                            <label class="fieldlabels">Address: *</label>
+                                            <textarea th:field="*{address}" class="address" cols="30" rows="10"></textarea>
+                                            <label class="fieldlabels">Reference: *</label>
+                                            <textarea th:field="*{reference}" class="reference" cols="30" rows="10"></textarea>
+                                            <label class="fieldlabels">Description: *</label>
+                                            <textarea th:field="*{body}" class="currentMeetingDiscussion" cols="30" rows="10"></textarea>
+                                            <label class="fieldlabels">Bottom Address: *</label>
+                                            <textarea th:field="*{bottomAddress}" class="bottomAddress" cols="30" rows="10"></textarea>
+                                        </div>
+                                        <input type="submit" id="save"  class="actionBtn next action-button" value="Submit" />
+                                    </fieldset>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        //Steps controls
+        let current_fs, next_fs, previous_fs; //fieldsets
+        let opacity;
+        let current = 1;
+        const steps = $("fieldset").length;
+
+        setProgressBar(current);
+
+        $(".next").click(function () {
+
+            current_fs = $(this).parent();
+            next_fs = $(this).parent().next();
+
+            //Add Class Active
+            $("#progressbar li").eq($("fieldset").index(next_fs)).addClass("active");
+
+            //show the next fieldset
+            next_fs.show();
+            //hide the current fieldset with style
+            current_fs.animate({opacity: 0}, {
+                step: function (now) {
+                    // for making fielset appear animation
+                    opacity = 1 - now;
+
+                    current_fs.css({
+                        'display': 'none',
+                        'position': 'relative'
+                    });
+                    next_fs.css({'opacity': opacity});
+                },
+                duration: 500
+            });
+            setProgressBar(++current);
+        });
+
+        $(".previous").click(function () {
+
+            current_fs = $(this).parent();
+            previous_fs = $(this).parent().prev();
+
+            //Remove class active
+            $("#progressbar li").eq($("fieldset").index(current_fs)).removeClass("active");
+
+            //show the previous fieldset
+            previous_fs.show();
+
+            //hide the current fieldset with style
+            current_fs.animate({opacity: 0}, {
+                step: function (now) {
+                    // for making fielset appear animation
+                    opacity = 1 - now;
+
+                    current_fs.css({
+                        'display': 'none',
+                        'position': 'relative'
+                    });
+                    previous_fs.css({'opacity': opacity});
+                },
+                duration: 500
+            });
+            setProgressBar(--current);
+        });
+
+        function setProgressBar(curStep) {
+            var percent = parseFloat(100 / steps) * curStep;
+            percent = percent.toFixed();
+            $(".progress-bar")
+                .css("width", percent + "%")
+        }
+
+        $(".submit").click(function () {
+            return false;
+        });//controls end
+
+        //categoryException children controls
+        $("#categoryException").change(function () {
+            const category = parseInt($(this).children("option:selected").val());
+            console.log(category);
+            switch (category) {
+                case 1:
+                    $("#sparePartsCat").css("display", "block");
+                    $("#mainMachinery").css("display", "none");
+                    $("#spareParts").css("display", "none");
+                    break;
+                case 2:
+                    $("#sparePartsCat").css("display", "none");
+                    $("#mainMachinery").css("display", "block");
+                    $("#spareParts").css("display", "none");
+                    break;
+
+                case 3:
+                    $("#sparePartsCat").css("display", "none");
+                    $("#mainMachinery").css("display", "none");
+                    $("#spareParts").css("display", "block");
+                    break
+
+
+            }
+
+        });
+        $(".address").richText();
+        $(".currentMeetingDiscussion").richText();
+        $(".reference").richText();
+        $(".bottomAddress").richText();
+    });
+</script>
+<script>
+
+</script>
+</body>
+</html>

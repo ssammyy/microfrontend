@@ -1,0 +1,145 @@
+
+.accordion {
+    background-color: #eee;
+    color: #0082f3;
+    cursor: pointer;
+    padding: 13px;
+    width: 100%;
+    border: none;
+    text-align: left;
+    outline: none;
+    font-size: 14px;
+    font-weight: bold;
+    font-family: 'San Francisco', Raleway;
+    transition: 0.4s;
+}
+
+.active, .accordion:hover {
+    background-color: #0082f3;
+    color: white;
+    border-style: hidden;
+    border: none;
+}
+
+
+
+
+.accordion:after {
+    content: '\002B';
+    color: #777;
+    border: none;
+    outline: none;
+    font-weight: bold;
+    float: right;
+    margin-left: 5px;
+}
+
+.active:after {
+    content: "\2212";
+    outline: none;
+    border: none;
+}
+
+.panel {
+    padding: 0 18px;
+    background-color: white;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.2s ease-out;
+}
+
+div.sticky {
+    position: -webkit-sticky;
+    position: sticky;
+    top: 0;
+    background-color: #f3f3f3;
+    padding: 5px;
+}
+.application_details{
+    font-size: 13px;
+    -webkit-box-flex: 0;
+    -webkit-flex: 0 58%;
+    -ms-flex: 0 58%;
+    flex: 0 58%;
+}
+
+.application_reports{
+    font-size: 13px;
+    font-weight: bold;
+    height: 100%;
+    padding: 20px;
+    -webkit-box-flex: 0;
+    -webkit-flex: 0 40%;
+    -ms-flex: 0 40%;
+    flex: 0 40%;
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    text-align: start;
+    justify-content: space-evenly;
+    font-size: medium;
+    background-color: #f3f3f3;
+    border-radius: 5px;
+    display: block;
+    /*margin-top: -25px;*/
+}
+
+.applicant_details_container{
+    display: flex;
+    position: sticky;
+    align-items: center;
+    justify-content: space-around;
+}
+
+
+
+
+.list-item-accordion {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    padding-top: 2px;
+    padding-bottom: 2px;
+    -webkit-box-pack: justify;
+    -webkit-justify-content: space-between;
+    -ms-flex-pack: justify;
+    justify-content: space-between;
+    -webkit-box-align: center;
+    -webkit-align-items: center;
+    -ms-flex-align: center;
+    align-items: center;
+    list-style-type: none;
+}
+
+.list-title-accordion {
+    -webkit-box-flex: 0;
+    -webkit-flex: 0 49%;
+    -ms-flex: 0 49%;
+    flex: 0 49%;
+    font-weight: 600;
+    font-size: 14px
+}
+
+.list-text-accordion {
+    -webkit-box-flex: 0;
+    -webkit-flex: 0 49%;
+    -ms-flex: 0 49%;
+    flex: 0 49%;
+    font-size: 14px
+}
+
+.button_pop {
+    background-color: #1b75bc;
+    border: none;
+    color: white;
+    padding: 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+}
+
+.buttonPop4 {border-radius: 12px;}

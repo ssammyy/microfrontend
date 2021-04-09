@@ -1,0 +1,101 @@
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
+  <h1 class="h2">Dashboard</h1>
+  <div class="btn-toolbar mb-2 mb-md-0">
+    <div class="btn-group mr-2">
+      <button class="btn btn-sm btn-outline-secondary">Share</button>
+      <button class="btn btn-sm btn-outline-secondary">Export</button>
+    </div>
+    <button class="btn btn-sm btn-outline-secondary dropdown-toggle">
+      <span data-feather="calendar"></span>
+      This week
+    </button>
+  </div>
+</div>
+
+<div class="d-block">
+  <div class="row">
+    <div class="col-lg-3 col-sm-12">
+      <div class="card">
+        <div class="card-body">
+          <p>fduiewop</p>
+        </div>
+
+      </div>
+    </div>
+      <div class="col-lg-3 col-sm-12">
+        <div class="card">
+          <div class="card-body">
+            <p>fduiewop</p>
+          </div>
+
+        </div>
+    </div>
+    <div class="col-lg-3 col-sm-12">
+      <div class="card">
+        <div class="card-body">
+          <p>fduiewop</p>
+        </div>
+
+      </div>
+    </div>
+    <div class="col-lg-3 col-sm-12">
+      <div class="card">
+        <div class="card-body">
+          <p>fduiewop</p>
+        </div>
+
+      </div>
+    </div>
+
+</div>
+</div>
+
+<div class="row" style="margin-top: 5%">
+  <div class="col-lg-6">
+<!--  <apx-chart-->
+<!--    [series]="chartOptions.series"-->
+<!--    [chart]="chartOptions.chart"-->
+<!--    [xaxis]="chartOptions.xaxis"-->
+<!--  ></apx-chart>-->
+</div>
+<div class="col-lg-6">
+<apx-chart
+  [series]="chart1Options.series!"
+  [chart]="chart1Options.chart!"
+  [colors]="chart1Options.colors!"
+  [yaxis]="chart1Options.yaxis!"
+  [dataLabels]="commonOptions.dataLabels!"
+  [markers]="commonOptions.markers!"
+  [stroke]="commonOptions.stroke!"
+  [grid]="commonOptions.grid!"
+  [xaxis]="commonOptions.xaxis!"
+  [tooltip]="commonOptions.tooltip!"
+
+></apx-chart>
+
+<apx-chart
+  [series]="chart2Options.series!"
+  [chart]="chart2Options.chart!"
+  [colors]="chart2Options.colors!"
+  [yaxis]="chart2Options.yaxis!"
+  [dataLabels]="commonOptions.dataLabels!"
+  [markers]="commonOptions.markers!"
+  [stroke]="commonOptions.stroke!"
+  [grid]="commonOptions.grid!"
+  [xaxis]="commonOptions.xaxis!"
+  [tooltip]="commonOptions.tooltip!"
+></apx-chart>
+<apx-chart
+  [series]="chart3Options.series!"
+  [chart]="chart3Options.chart!"
+  [colors]="chart3Options.colors!"
+  [yaxis]="chart3Options.yaxis!"
+  [dataLabels]="commonOptions.dataLabels!"
+  [markers]="commonOptions.markers!"
+  [stroke]="commonOptions.stroke!"
+  [grid]="commonOptions.grid!"
+  [xaxis]="commonOptions.xaxis!"
+  [tooltip]="commonOptions.tooltip!"
+></apx-chart>
+</div>
+</div>

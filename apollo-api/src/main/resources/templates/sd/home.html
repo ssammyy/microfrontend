@@ -1,0 +1,56 @@
+<!--
+  ~ /*
+  ~  *
+  ~  *
+  ~  *  *    Copyright (c) ${YEAR}.   BSK Global Technologies
+  ~  *  *
+  ~  *  *    Licensed under the Apache License, Version 2.0 (the "License");
+  ~  *  *    you may not use this file except in compliance with the License.
+  ~  *  *    You may obtain a copy of the License at
+  ~  *  *
+  ~  *  *       http://www.apache.org/licenses/LICENSE-2.0
+  ~  *  *
+  ~  *  *    Unless required by applicable law or agreed to in writing, software
+  ~  *  *    distributed under the License is distributed on an "AS IS" BASIS,
+  ~  *  *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~  *  *   See the License for the specific language governing permissions and
+  ~  *  *   limitations under the License.
+  ~  *
+  ~  */
+  -->
+
+  <!DOCTYPE html>
+  <html data-wf-page="5e70fb3a565ebdc05ddb37cf" data-wf-site="5e70fb3a565ebd99c1db37ce"
+        xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+  <head>
+      <meta charset="utf-8">
+      <title>KEBS</title>
+      <th:block th:include="fragments/general-form.html :: headerfiles"/>
+  </head>
+  <body>
+  <div class="top-bar" th:replace="fragments/general-form.html :: top-bar">
+  
+  </div>
+  <div class="section">
+      <div class="w-layout-grid main-grid">
+          <div class="main-grid-side-navigation" id="w-node-d308c123a20f-c123a20d" th:replace="fragments/general-form.html ::side-navigation-bar"></div>
+          <div class="main-content-div" id="w-node-d308c123a224-c123a20d">
+              <div class="content-nav" th:replace="fragments/general-form.html :: content-navigation-bar"></div>
+              <div class="content-wrap" sec:authorize="isAuthenticated()">
+                  <div class="content-row-top">
+                      <h4>Standard Development  and Trade</h4><br>
+  <!--                    <a class="content-button" th:href="@{/api/ms/home/officer}"><span class="font-awesome-span"></span>Officer Engineering</a>-->
+                      <!-- <a class="content-button" sec:authorize="hasAuthority('MS_IO_MODIFY') or hasAuthority('MS_HOD_MODIFY') or hasAuthority('MS_RM_MODIFY') or hasAuthority('MS_HOF_MODIFY') or hasAuthority('MS_DIRECTOR_MODIFY')" th:href="@{/api/ms/all-complaints(currentPage=0,pageSize=10,listView='allComplaint')}"><span class="font-awesome-span"></span>All Complaints</a>
+                      <a class="content-button"  sec:authorize="hasAuthority('EPRA') or hasAuthority('MS_MP_MODIFY') or hasAuthority('MS_IOP_MODIFY')" th:href="@{/api/ms/all-fuels(currentPage=0,pageSize=10,listView='allFuel')}"><span class="font-awesome-span"></span>All Fuel Visits</a>
+                      <a class="content-button"  sec:authorize="hasAuthority('EPRA')" th:href="@{/api/ms/fuel-inspection/new}"><span class="font-awesome-span"></span>Fuel Inspection Form</a>
+                      <a class="content-button" sec:authorize="hasAuthority('MS_IO_MODIFY') or hasAuthority('MS_HOD_MODIFY') or hasAuthority('MS_RM_MODIFY') or hasAuthority('MS_HOF_MODIFY') or hasAuthority('MS_DIRECTOR_MODIFY')" th:href="@{/api/ms/all-workPlans(currentPage=0,pageSize=10,listView='allWorkPlan')}"><span class="font-awesome-span"></span>All WorkPlans Generated</a> -->
+  <!--                    <a class="content-button" th:href="@{/api/ms/home}"><span class="font-awesome-span"></span>HOD</a>-->
+  <!--                    <a class="content-button" th:href="@{/api/ms/home}"><span class="font-awesome-span"></span>Director</a>-->
+                  </div>
+  <!--                <div class="div-block-4"><a class="content-button" th:href="@{/api/ms/all-notifications(currentPage=0,pageSize=10)}"><span class="font-awesome-span"></span>Notifications</a></div>-->
+              </div>
+          </div>
+      </div>
+  </div>
+  </body>
+  </html>

@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<!--  This site was created in Webflow. http://www.webflow.com  -->
+<!--  Last Published: Wed Mar 18 2020 20:03:10 GMT+0000 (Coordinated Universal Time)  -->
+<html data-wf-page="5e7130c996c4ca37928b351f" data-wf-site="5e70fb3a565ebd99c1db37ce"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title th:text="'KIMS - ' + ${title}"></title>
+    <th:block th:include="fragments/general-form.html :: headerfiles"/>
+</head>
+
+<body>
+<div class="top-bar" th:replace="fragments/general-form.html :: top-bar"></div>
+<div class="section">
+    <div class="w-layout-grid main-grid">
+        <div class="main-grid-side-navigation" id="w-node-d308c123a20f-c123a20d" th:replace="fragments/general-form.html :: side-navigation-bar"></div>
+        <div id="w-node-a58aeb4cd9dd-b7f94a3d" class="main-content-div">
+<!--            <div class="content-nav" th:replace="fragments/general-form.html :: content-navigation-bar"></div>-->
+<!--            <div class="content-nav">-->
+<!--                <div class="content-title">KIMS Platform</div>-->
+<!--                <a class="content-nav-link" href="#"><span class="font-awesome-span">th</span>Dashboard</a><a class="content-nav-link" href="#"><span class="font-awesome-span"></span>Quality Assurance</a><a class="content-nav-link" href="#"><span class="font-awesome-span"></span><span th:text="${title}"></span></a>-->
+<!--            </div>-->
+            <div class="content-nav" th:replace="fragments/general-form.html :: content-navigation-bar"></div>
+            <div class="content-wrap">
+                <div class="content-row">
+                    <div class="form-nav">
+                    </div>
+                    <h1>Update STA 3<span></span></h1>
+                    <div>
+<!--                        <h3>Kindly fill in the details below</h3>-->
+                        <div class="pvocformblock w-form">
+                            <form id="smark-form" name="smark-form" data-name="S Mark Form" method="post" th:object="${questionnaire}" th:action="@{/questionnaire/sta3/{id}(id = ${questionnaire.id}, invoiceId = ${invoice?.id})}">
+<!--                                <div><label for="permitId"></label><input th:value="${permit?.id}" type="hidden" class="w-input" maxlength="256"  data-name="total number" id="permitId" name="permitId"/></div>-->
+                                <div><label for="kebsPermitNo"></label><input th:value="${permit?.permitNumber}" type="hidden" class="w-input" maxlength="256"  data-name="total number" id="kebsPermitNo" name="kebsPermitNo"  /></div>
+                                <input type="hidden" th:value="${questionnaire?.createdOn}" name="createdOn" id="createdOn">
+                                <input type="hidden" th:value="${questionnaire?.createdBy}" name="createdBy" id="createdBy">
+                                <input type="hidden" th:value="${questionnaire?.status}" name="status" id="status">
+                                <input type="hidden" th:value="${pId}" name="permitId" id="permitId">
+
+                                <input type="hidden" th:value="${questionnaire?.illustrationFile}" name="illustrationFile" id="illustrationFile">
+                                <input type="hidden" th:value="${questionnaire?.manufacturingStepsFile}" name="manufacturingStepsFile" id="manufacturingStepsFile">
+                                <input type="hidden" th:value="${questionnaire?.qualityManualFile}" name="qualityManualFile" id="qualityManualFile">
+                                <input type="hidden" th:value="${questionnaire?.testReportsLevelOfDefectivesFile}" name="testReportsLevelOfDefectivesFile" id="testReportsLevelOfDefectivesFile">
+                                <input type="hidden" th:value="${questionnaire?.testsAgainstTheStandardFile}" name="testsAgainstTheStandardFile" id="testsAgainstTheStandardFile">
+
+                                <h2>1. FACTORY ORGANIZATION</h2>
+                                <h3>1.1 Procedures / Paper work</h3>
+
+                                <br />
+                                <div>
+                                    <label for="againstOrForStock">Do you produce against orders or for stock?</label>
+                                    <select name="againstOrForStock" id="againstOrForStock" th:field="*{againstOrForStock}" class="w-input">
+                                        <option value="">Select one...</option>
+                                        <option  th:text="Orders" th:value="Orders"></option>
+                                        <option  th:text="Stock" th:value="Stock"></option>
+                                    </select>
+                                </div>
+                                <div id="againstOrForStockMoreInfoId">
+                                    <label for="againstOrForStockMoreInfo" class="field-label">Add any additional info on the above selection</label>
+                                    <textarea placeholder="" maxlength="5000" id="againstOrForStockMoreInfo" name="field" th:field="*{againstOrForStockMoreInfo}" class="textarea w-input"></textarea>
+                                </div>
+                                <br />
+
+                                <br />
+                                <div>
+                                    <label for="workOrEquivalent">Do you issue work order or equivalent?</label>
+                                    <select name="workOrEquivalent" id="workOrEquivalent" th:field="*{workOrEquivalent}" class="w-input">
+                                        <option value="">Select one...</option>
+                                        <option  th:text="WorkOrder" th:value="WorkOrder"></option>
+                                        <option  th:text="Equivalent" th:value="Equivalent"></option>
+                                    </select>
+                                </div>
+                                <div id="workOrEquivalentInfoId">
+                                    <label for="workOrEquivalentMoreInfo" class="field-label">Add any additional info on the above selection</label>
+                                    <textarea placeholder="" maxlength="5000" id="workOrEquivalentMoreInfo" name="field" th:field="*{workOrEquivalentMoreInfo}" class="textarea w-input"></textarea>
+                                </div>
+
+                                <br />
+
+
+                                <div>
+                                    <label for="separateEntity" class="field-label">If so, does this identify a batch as separate entity?</label>
+                                    <textarea placeholder="" maxlength="5000" id="separateEntity" name="separateEntity" th:field="*{separateEntity}" class="textarea w-input"></textarea>
+                                </div>
+
+                                <br />
+                                <!--                    <h4>Do Products and/or Containers carry work orders identification in manufacture?</h4>-->
+                                <div><label for="carryWordOrderIdentificationYes" class="field-label">Do Products and/or Containers carry work orders identification in manufacture?</label>
+                                    <select name="carryWordOrderIdentification" id="carryWordOrderIdentificationYes" th:field="*{carryWordOrderIdentification}" class="w-input">
+                                        <option value="">Select one...</option>
+                                        <option  th:text="Yes" th:value="Yes"></option>
+                                        <option  th:text="No" th:value="No"></option>
+                                    </select>
+                                </div>
+
+                                <br />
+
+                                <!--                    <div><label for="Commodity-Description" class="field-label">If not, how does the system allow for products to be isolated in case of doubtful quality?</label><textarea placeholder="Example Text" maxlength="5000" id="field" name="field" class="textarea w-input"></textarea></div>-->
+                                <div>
+                                    <label for="doubtfulQuality" class="field-label">If not, how does the system allow for products to be isolated in case of doubtful quality?</label>
+                                    <textarea placeholder="" maxlength="5000" id="doubtfulQuality" name="field" th:field="*{doubtfulQuality}"class="textarea w-input"></textarea>
+                                </div>
+
+                                <h3>1.2 Quality Control/Inspection Staff</h3><br>
+                                <p class="paragraph-1">Please give the following information on factory and QC staff organization:</p>
+
+                                <div><label for="staffOrganization" class="field-label">Head of Quality Assurance, Qualification, Trainings, etc.</label><input type="text" class="w-input" maxlength="256" name="KS" data-name="KS" id="staffOrganization" required="" th:field="*{staffOrganization}"></div>
+
+                                <div><label for="reportingTo" class="field-label">Reporting to:</label><input type="text" class="w-input" maxlength="256" data-name="KS Title" id="reportingTo" name="reportingTo" required="" th:field="*{reportingTo}"></div>
+
+                                <br />
+                                <h4>Is there a separate Quality Control Inspection Department?</h4>
+                                <div>
+                                    <label for="separateQualityControlDept" class="field-label">Yes</label>
+                                    <select  id="separateQualityControlDept"  name="carryWordOrderIdentification" th:field="*{carryWordOrderIdentification}" class="w-input">
+                                        <option value="">Select one...</option>
+                                        <option  th:text="Yes" th:value="Yes"></option>
+                                        <option  th:text="No" th:value="No"></option>
+                                    </select>
+                                </div>
+
+                                <br />
+
+                                <div>
+                                    <label for="awarenessOfTests" class="field-label">If so indicate if staff are aware of the tests in the relevant standard(s)</label><textarea  maxlength="5000" id="awarenessOfTests" name="field" class="textarea w-input" th:field="*{awarenessOfTests}"></textarea></div>
+
+                                <h3>Are Storemen/Production Operations responsible for inspection and test on:</h3>
+                                <br />
+                                <!--                    <h4>In-coming materials?</h4>-->
+                                <div>
+                                    <label for="incomingMaterials">In-coming materials?</label>
+                                    <select  id="incomingMaterials" name="incomingMaterials" th:field="*{incomingMaterials}" class="w-input">
+                                        <option value="">Select one...</option>
+                                        <option  th:text="Yes" th:value="Yes"></option>
+                                        <option  th:text="No" th:value="No"></option>
+                                    </select>
+                                </div>
+                                <br />
+
+                                <br />
+                                <!--                                <h4>In process operations?</h4>-->
+                                <div>
+                                    <label for="inProcessApplications">In-process materials?</label>
+                                    <select name="" id="inProcessApplications" th:field="*{inProcessApplications}" class="w-input">
+                                        <option value="">Select one...</option>
+                                        <option  th:text="Yes" th:value="Yes"></option>
+                                        <option  th:text="No" th:value="No"></option>
+                                    </select>
+                                </div>
+                                <br />
+
+                                <br />
+                                <!--                    <h4>Final products?</h4>-->
+                                <div>
+                                    <label for="finalProducts">Final products?</label>
+                                    <select name="" id="finalProducts" th:field="*{finalProducts}" class="w-input">
+                                        <option value="">Select one...</option>
+                                        <option  th:text="Yes" th:value="Yes"></option>
+                                        <option  th:text="No" th:value="No"></option>
+                                    </select>
+                                </div>
+                                <br />
+
+                                <br />
+                                <!--                    <h4>If so are they monitored by quality control staff?</h4>-->
+                                <div>
+                                    <label for="monitoredByQualityControlStaff">If so are they monitored by quality control staff?</label>
+                                    <select name="" id="monitoredByQualityControlStaff" th:field="*{monitoredByQualityControlStaff}" class="w-input">
+                                        <option value="">Select one...</option>
+                                        <option  th:text="Yes" th:value="Yes"></option>
+                                        <option  th:text="No" th:value="No"></option>
+                                    </select>
+                                </div>
+                                <br />
+
+                                <br />
+                                <!--                    <h4>Are Quality Audit checks carried out and by whom?</h4>-->
+                                <div>
+                                    <label for="qualityAuditChecks">Are Quality Audit checks carried out and by whom?</label>
+                                    <select name="" id="qualityAuditChecks" th:field="*{qualityAuditChecks}" class="w-input">
+                                        <option value="">Select one...</option>
+                                        <option  th:text="Yes" th:value="Yes"></option>
+                                        <option  th:text="No" th:value="No"></option>
+                                    </select>
+                                </div>
+                                <br />
+
+<!--                                <div><label for="KS" class="field-label"></label><input type="text" class="w-input" maxlength="256" name="KS" data-name="KS" id="KS" required=""></div>-->
+
+                                <div>
+                                    <label for="infoOnQualityControlStaff" class="field-label">Please give any other information on quality control staff organization</label>
+                                    <textarea  maxlength="5000" id="infoOnQualityControlStaff" name="field" class="textarea w-input" th:field="*{infoOnqualityControlStaff}"></textarea>
+                                </div>
+
+                                <h2>2. MATERIALS OR COMPONENTS</h2>
+                                <h3>2.1 Purchase Specification / Materials Quality Assurance</h3>
+
+                                <div>
+                                    <label for="materialsPurchased" class="field-label">Please detail main materials purchased, specification(s) used and major supplies involved</label><textarea maxlength="5000" id="materialsPurchased" name="field" class="textarea w-input" th:field="*{materialsPurchased}"></textarea></div>
+                                <div>
+                                    <label for="qualityAssuranceMethod" class="field-label">Please also give quality assurance method adopted on receipt of materials, or components indicating action taken on rejects</label><textarea maxlength="5000" id="qualityAssuranceMethod" name="field" class="textarea w-input" th:field="*{qualityAssuranceMethod}"></textarea></div>
+                                <div><label for="existingStorageFacilities" class="field-label">What storage facilities exist for in-coming materials and finished products?</label><textarea maxlength="5000" id="existingStorageFacilities" name="field" class="textarea w-input" th:field="*{existingStorageFacilities}"></textarea></div>
+
+                                <h2>3. MANUFACTURE</h2>
+                                <h3>3.1 System</h3>
+
+                                <div><label for="manufacturingSteps" class="field-label">Please detail various steps in manufacture - A production schedule and / or supplement in chart form showing stages, which may be advantageous</label><textarea maxlength="5000" id="manufacturingSteps" name="field" class="textarea w-input" th:field="*{manufacturingSteps}"></textarea></div>
+<!--                                 <input type="file"   value="Upload document" data-wait="Please wait..." class="w-input">-->
+                                <div><label for="manufacturingStepss" class="field-label"></label><input type="file" class="w-input" maxlength="256" data-name="Employment Date" name="manufacturingStepss" id="manufacturingStepss"  ></div>
+                                <br /><br />
+
+
+                                <h3>3.2 Maintenance System - Plant and Equipment</h3>
+                                <div><label for="operatingMaintenanceSystem" class="field-label">What Maintenance system is in operation?</label><textarea placeholder="" maxlength="5000" id="operatingMaintenanceSystem" name="field" class="textarea w-input" th:field="*{operatingMaintenanceSystem}"></textarea></div>
+
+                                <h2>4. QUALITY CONTROL AND TESTING</h2>
+                                <h3>4.1 System</h3>
+
+                                <div>
+                                    <label for="qualityControlSystem" class="field-label">Please detail Quality Control System, including sampling followed with particular reference to the tests in the relevant Standard. A quality Control Schedule or supplement cross-reference to Chart required in 3.1 is advantageous</label><textarea placeholder="" maxlength="5000" id="qualityControlSystem" name="field" class="textarea w-input" th:field="*{qualityControlSystem}"></textarea></div>
+<!--                                <div><label for="mm" class="field-label"></label><input type="file" class="w-input" maxlength="256" name="Employment-Date" data-name="Employment Date" id="mm" ></div>-->
+                                <div><label for="qualityManualAttachment" class="field-label"></label><input type="file" class="w-input" name="qualityManualAttachment" id="qualityManualAttachment"  ></div>
+                                <br /><br />
+<!--                                <p class="paragraph-1">Please attach a copy of the Quality Manual or instructions on Quality Control issued to staff</p>-->
+                                <!--                    <input type="file"   value="Upload document" data-wait="Please wait..." class="w-input">-->
+<!--                                <div><label for="labReports" class="field-label"></label><input type="file" class="w-input" maxlength="256" name="Employment-Date" data-name="Employment Date" id="labReports"  ></div>-->
+                                <br /><br />
+
+                                <h3>4.2 TEST EQUIPMENT/INSTRUMENTS, GAUGES AND TOOLS</h3>
+
+                                <div><label for="testEquipment" class="field-label">Please detail test equipment used and if any of the production or test equipment are calibrated?</label><textarea maxlength="5000" id="testEquipment" name="field" class="textarea w-input" th:field="*{testEquipment}"></textarea></div>
+                                <div><label for="externalArrangementForTesting" class="field-label">Indicate External arrangement for testing if any</label><textarea maxlength="5000" id="externalArrangementForTesting" name="field" class="textarea w-input" th:field="*{externalArrangementOrTesting}"></textarea></div>
+
+
+                                <h2>5. RECORDS AND DOCUMENTATION</h2>
+                                <h3>5.1 COMPLIANCE TO SPECIFICATION</h3>
+
+                                <div><label for="levelOfDefectives" class="field-label">Please indicate level of defectives found in past six month. If tests in accordance with the relevant standard(s) have already been carried out attach copies of test reports if available.</label><textarea maxlength="5000" id="levelOfDefectives" name="field" class="textarea w-input" th:field="*{levelOfDefectives}"></textarea></div>
+                                <input type="file" value="Upload document" id="testReportsLevelOfDefectives" name="testReportsLevelOfDefectives" data-wait="Please wait..." class="w-input"><br /><br />
+<!--                                <input type="file" value="Upload document" data-wait="Please wait..." class="w-input"><br /><br />-->
+
+                                <div><label for="levelOfClaims" class="field-label">Please indicate the level of claims/complaints made under warranty and/or otherwise and also give as a percentage of total out put.</label><textarea placeholder="" maxlength="5000" id="levelOfClaims" name="field" class="textarea w-input" th:field="*{levelOfClaims}"></textarea></div>
+                                <div><label for="independentTests" class="field-label">Have independent tests been made on products against the standard? By whom? Please attach copies if available.</label><textarea maxlength="5000" id="independentTests" name="field" class="textarea w-input" th:field="*{independentTests}"></textarea></div>
+                                <!--                    <div><input type="file" value="Upload document" data-wait="Please wait..." class="w-input"/></div>-->
+<!--                                <div><label for="labReports" class="field-label"></label><input type="file" class="w-input" maxlength="256" name="Employment-Date" data-name="Employment Date" id="labReports" ></div>-->
+                                <br /><br />
+
+
+                                <h2>6. RECORDS AND DOCUMENTATION</h2>
+                                <p class="paragraph-1 field-label" >Please attaché an illustration and indicate method e.g. special label, Embossing etc. which will be used to affix the Mark of Conformity. Please indicate at which stage of manufacture the Mark of Conformity will be affixed.</p>
+                                <div><label for="illustration" class="field-label"></label><input type="file" class="w-input" maxlength="256" name="illustration" data-name="Employment Date" id="illustration"  ></div>
+<!--                                <p class="paragraph-1">Please attaché an illustration and indicate method e.g. special label, Embossing etc. which will be used to affix the Mark of Conformity. Please indicate at which stage of manufacture the Mark of Conformity will be affixed.</p>-->
+                                <!--                    <input type="file" value="Upload document" data-wait="Please wait..." class="w-input"/>-->
+<!--                                <div><label for="labReports" class="field-label"></label><input type="file" class="w-input" maxlength="256" name="Employment-Date" data-name="Employment Date" id="labReports"  ></div>-->
+                                <br /><br />
+
+                                <!-- <div><label for="Brand-Name" class="field-label">Trade mark or brand which is use in respect to the commodity</label><input type="text" class="w-input" maxlength="256" name="Brand-Name" data-name="Brand Name" id="Brand-Name" required=""></div>
+                                <h2>Standard Specification associated with commodity</h2>
+                                <div><label for="KS" class="field-label">KS</label><input type="text" class="w-input" maxlength="256" name="KS" data-name="KS" id="KS" required=""></div>
+                                <div><label for="KS-Title" class="field-label">Title</label><input type="text" class="w-input" maxlength="256" name="KS-Title" data-name="KS Title" id="KS-Title" required=""></div>
+                                 -->
+                                <input type="submit" value="Next"  data-wait="Please wait..." class="w-button" /></form>
+                            <div class="w-form-done">
+                                <div>Thank you! Your submission has been received!</div>
+                            </div>
+                            <div class="w-form-fail">
+                                <div>Oops! Something went wrong while submitting the form.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://d3e54v103j8qbb.cloudfront.net/js/jquery-3.4.1.min.220afd743d.js" type="text/javascript" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<script src="../assets/js/webflow.js" type="text/javascript"></script>
+<!-- [if lte IE 9]><script src="https://cdnjs.cloudflare.com/ajax/libs/placeholders/3.0.2/placeholders.min.js"></script><![endif] -->
+</body>
+</html>

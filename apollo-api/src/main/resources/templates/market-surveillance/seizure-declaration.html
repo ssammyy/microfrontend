@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<!--  This site was created in Webflow. http://www.webflow.com  -->
+<!--  Last Published: Wed Mar 18 2020 20:03:10 GMT+0000 (Coordinated Universal Time)  -->
+<html data-wf-page="5e7130c996c4ca37928b351f" data-wf-site="5e70fb3a565ebd99c1db37ce"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>KEBS</title>
+    <th:block th:include="fragments/general-form.html :: headerfiles"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/css/multiStepForm.css}"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"/>
+</head>
+<body>
+<div class="top-bar" th:replace="fragments/general-form.html :: top-bar"></div>
+<div class="section">
+    <div class="w-layout-grid main-grid">
+        <div class="main-grid-side-navigation" id="w-node-d308c123a20f-c123a20d" th:replace="fragments/general-form.html :: side-navigation-bar"></div>
+        <div id="w-node-27962c2db181-c676b3e3" class="main-content-div">
+            <div class="content-nav" th:replace="fragments/general-form.html :: content-navigation-bar"></div>
+            <div class="content-wrap">
+                <div class="content-row">
+                    <div class="row">
+                    <div class="col-md-6 col-md-offset-3">
+                        <form id="msform" enctype="multipart/form-data" method="post" th:object="${seizureDeclaration}" th:action="@{/api/ms/onsite/forms/save(workPlanID=${workPlanId}, docType='seizureDeclaration',ViewType =${ViewType})}">
+                            <!-- progressbar -->
+<!--                            <ul id="progressbar">-->
+<!--                                <li class="active">BIO INFORMATION</li>-->
+<!--                                <li>Counts And Particulars</li>-->
+<!--                                <li>If Accused Arrested</li>-->
+<!--                                <li>Other Details</li>-->
+<!--                            </ul>-->
+                            <!-- fieldsets -->
+                            <fieldset >
+                                <h2 class="fs-title">SEIZURE NOTIFICATION</h2>
+                                <h3 class="fs-subtitle">Fill in the Details to genarate a Seizure Notification</h3>
+                                <label class="field-label" for="christianName">To</label>
+                                <input class="input-field w-input" id="christianName" required="" placeholder="to" th:field="*{seizureTo}" th:required="required" type="text">
+                                <label class="field-label" for="surname">Premises of </label>
+                                <input class="input-field w-input" id="surname" placeholder="Premises of details" th:field="*{seizurePremises}" th:required="required" type="text">
+                                <label class="field-label" for="seizureRequirementsStandards">Do not meet the requirements of Standard(s)</label>
+<!--                                <select id="sex"  class="select-field w-select" th:field="*{sex}">-->
+<!--                                    <option value="'None'">Select one...</option>-->
+<!--                                    <option th:value="'Female'" th:text="'Female'"></option>-->
+<!--                                    <option th:value="'Male'" th:text="'Male'"></option>-->
+<!--                                </select>-->
+                                <input class="input-field w-input" id="seizureRequirementsStandards" placeholder="Do not meet the requirements of Standard(s)" th:field="*{seizureRequirementsStandards}" th:required="required" type="text">
+                                <input type="button" name="next" class="next action-button" value="Next"/>
+                            </fieldset>
+                            <fieldset>
+                                <h2 class="fs-title">DETAILS OF GOODS</h2>
+                                <h3 class="fs-subtitle">Fill in bellow goods details</h3>
+                                <label class="field-label" for="firstCount">Name of manufacturer/Trader</label>
+                                <input class="input-field w-input" id="firstCount" placeholder="Name of manufacturer/Trader" th:field="*{goodsManufactureTrader}" th:required="required">
+                                <label class="field-label" for="goodsAddress">Address</label>
+                                <input class="input-field w-input" id="goodsAddress" placeholder="Address" th:field="*{goodsAddress}">
+                                <label class="field-label" for="secondCount">Physical location</label>
+                                <input class="input-field w-input" id="secondCount" placeholder="Physical location" th:field="*{goodsPhysical}" th:required="required">
+                                <label class="field-label" for="goodsMarkedBranded">Goods are marked/branded as follows</label>
+                                <input class="input-field w-input" id="goodsMarkedBranded" placeholder="Goods are marked/branded as follows" th:field="*{goodsMarkedBranded}" th:required="required">
+                                <label class="field-label" for="goodsPhysicalSeal">Physical seal</label>
+                                <input class="input-field w-input" id="goodsPhysicalSeal" placeholder="Physical seal" th:field="*{goodsPhysicalSeal}" th:required="required">
+                                <label class="field-label" for="descriptionGoods">Description of goods</label>
+                                <input class="input-field w-input" id="descriptionGoods" placeholder="Description of goods" th:field="*{descriptionGoods}" th:required="required">
+                                <label class="field-label" for="goodsQuantity">Quantity</label>
+                                <input class="input-field w-input" id="goodsQuantity" placeholder="Quantity" th:field="*{goodsQuantity}" th:required="required">
+                                <p>Now therefore I <input type="text" class="input-field w-input" id="goodsThereforei" placeholder="e.g Paul Kalenda" th:field="*{goodsThereforei}" th:required="required">
+                                    as an inspector under     the Standards Act Cap 496, Laws of Kenya , hereby seize and detain the said goods under the
+                                    provisions of the standards Act Cap 496 Laws of Kenya , miscellaneous amendment 2002, No 2  </p>
+<!--                                <textarea class="input-field w-input" cols="30" id="particularsOffenceSecond" rows="8" placeholder="Particulars of offence" th:field="*{particularsOffenceSecond}"></textarea>-->
+                                <!--                                <input id="filepath" multiple name="filepath"  th:field="*{document}" type="file">-->
+                                <input type="button" name="previous"  class="previous action-button-previous" value="Previous"/>
+                                <input type="button" name="next" class="next action-button" value="Next"/>
+                            </fieldset>
+                            <fieldset>
+                                <h2 class="fs-title">Inspector Details</h2>
+                                <h3 class="fs-subtitle">Fill in the below the details</h3>
+                                <label class="field-label" for="nameInspector">Name </label>
+                                <input class="input-field w-input" id="nameInspector" placeholder="Name of inspector" th:field="*{nameInspector}" type="text">
+                                <label class="field-label" for="designationInspector">Designation </label>
+                                <input class="input-field w-input" id="designationInspector" placeholder="Designation" th:field="*{designationInspector}" th:required="required">
+                                <label class="field-label" for="dateInspector">Date </label>
+                                <input type="date" class="input-field w-input" id="dateInspector" placeholder="Date" th:field="*{dateInspector}" th:required="required">
+                                <input type="button" name="previous" class="previous action-button-previous" value="Previous"/>
+                                <input type="button" name="next" class="next action-button" value="Next"/>
+                            </fieldset>
+                            <fieldset>
+                                <h2 class="fs-title">Manufacturer/Trader Details</h2>
+                                <h3 class="fs-subtitle">Fill in the below the details</h3>
+                                <label class="field-label" for="nameManufactureTrader">Name </label>
+                                <input class="input-field w-input" id="nameManufactureTrader" placeholder="Name of Manufacturer/Trader" th:field="*{nameManufactureTrader}" type="text">
+                                <label class="field-label" for="designationManufactureTrader">Designation </label>
+                                <input class="input-field w-input" type="text" id="designationManufactureTrader" placeholder="Designation" th:field="*{designationManufactureTrader}" th:required="required">
+                                <label class="field-label" for="dateManufactureTrader">Date </label>
+                                <input class="input-field w-input" id="dateManufactureTrader" type="date" placeholder="Date" th:field="*{dateManufactureTrader}" th:required="required">
+                                <input type="button" name="previous" class="previous action-button-previous" value="Previous"/>
+                                <input type="button" name="next" class="next action-button" value="Next"/>
+                            </fieldset>
+                            <fieldset>
+                                <h2 class="fs-title">Witness Details</h2>
+                                <h3 class="fs-subtitle">Fill in the below the details</h3>
+                                <label class="field-label" for="nameWitness">Name </label>
+                                <input class="input-field w-input" id="nameWitness" placeholder="Name of Witness" th:field="*{nameWitness}" type="text">
+                                <label class="field-label" for="designationWitness">Designation </label>
+                                <input class="input-field w-input" id="designationWitness" placeholder="Designation" th:field="*{designationWitness}" type="text" th:required="required">
+                                <label class="field-label" for="dateWitness">Date </label>
+                                <input class="input-field w-input" id="dateWitness" placeholder="Date" th:field="*{dateWitness}"  type="date" th:required="required">
+                                <input type="button" name="previous" class="previous action-button-previous" value="Previous"/>
+                                <input type="button" name="next" class="next action-button" value="Next"/>
+                            </fieldset>
+                            <fieldset>
+                                <h2 class="fs-title">Declaration Details</h2>
+                                <h3 class="fs-subtitle">Fill in the below the details</h3>
+                                <p>DECLARATION taken by<input type="text" class="input-field w-input" id="declarationTakenBy" placeholder="e.g Paul Kalenda" th:field="*{declarationTakenBy}" th:required="required">
+                                    An Inspector, in accordance with section 14 (1) (f) of the Standards Act, Cap 496.
+                                    On the <input  type="text" class="input-field w-input" id="declarationOnThe" placeholder="e.g Paul Kalenda" th:field="*{declarationOnThe}" th:required="required"> day of <input class="input-field w-input" type="date" id="declarationDayOf" placeholder="e.g 12/08/2020" th:field="*{declarationDayOf}" th:required="required">.</p>
+                                <p>MY NAME<input type="text" class="input-field w-input" id="declarationMyName" placeholder="e.g Paul Kalenda" th:field="*{declarationMyName}" th:required="required"> .
+                                    I reside at <input type="text" class="input-field w-input" id="declarationIresideAt" placeholder="e.g Paul Kalenda" th:field="*{declarationIresideAt}" th:required="required">.
+                                    And I am employed as <input type="text" class="input-field w-input" id="declarationIemployeedAs" placeholder="e.g Paul Kalenda" th:field="*{declarationIemployeedAs}" th:required="required"> of <input type="text" class="input-field w-input" id="declarationIemployeedOf" th:field="*{declarationIemployeedOf}" th:required="required">..
+
+                                    Situated at:<textarea  class="input-field w-input" id="declarationSituatedAt"  th:field="*{declarationSituatedAt}" th:required="required"></textarea>.I State that<textarea  class="input-field w-input" id="declarationStateThat"  th:field="*{declarationStateThat}" th:required="required"></textarea>. I declare the above statement to be true.</p>
+                                <input type="button" name="previous" class="previous action-button-previous" value="Previous"/>
+                                <input type="submit" name="submit" class="submit action-button" style="background-color: #47cf73" value="Submit"/>
+                            </fieldset>
+<!--                            <fieldset>-->
+<!--                                <h2 class="fs-title">Other Details</h2>-->
+<!--                                <h3 class="fs-subtitle">Fill in the below the details</h3>-->
+<!--                                <label class="field-label" for="remandedAdjourned">Remanded or adjourned to   </label>-->
+<!--                                <input class="input-field w-input" id="remandedAdjourned" placeholder="Remanded or adjourned to  " th:field="*{remandedAdjourned}" type="text">-->
+<!--                                <label class="field-label" for="complainantName">Complainant Name </label>-->
+<!--                                <input class="input-field w-input" id="complainantName" placeholder="Complainant  name " th:field="*{complainantName}" type="text">-->
+<!--                                <label class="field-label" for="complainantAddress">Complainant Address </label>-->
+<!--                                <input class="input-field w-input" id="complainantAddress" placeholder="Complainant Address" th:field="*{complainantAddress}" type="text">-->
+<!--                                <label class="field-label" for="prosecutor">Prosecutor </label>-->
+<!--                                <input class="input-field w-input" id="prosecutor" placeholder="Prosecutor " th:field="*{prosecutor}"  type="text">-->
+<!--                                <label class="field-label" for="witnesses">Witnesses </label>-->
+<!--                                <input class="input-field w-input" id="witnesses" placeholder="Witnesses " th:field="*{witnesses}" type="text">-->
+<!--                                <label class="field-label" for="sentence">Sentence</label>-->
+<!--                                <textarea class="input-field w-input" cols="30" id="sentence" rows="8" placeholder="Sentence" th:field="*{sentence}"></textarea>-->
+<!--                                <label for="nonComplianceStatus_yes">if fine is not paid<input type="radio"  th:name="nonComplianceStatus" id="nonComplianceStatus_yes" th:value="1"></label>-->
+<!--                                <label for="nonComplianceStatus_no" style="color: red">if fine is paid <input type="radio" id="nonComplianceStatus_no" th:name="nonComplianceStatus"  th:value="0"></label>-->
+<!--                                <textarea  style="margin: auto;margin-left: 10px; display: none" id="nonCompliance_rm" th:field="*{finePaid}" class="w-input" cols="15" rows="8"></textarea>-->
+<!--                                <label class="field-label" for="courtName">Court Name </label>-->
+<!--                                <input class="input-field w-input" id="courtName" placeholder="Court" th:field="*{courtName}" type="text">-->
+<!--                                <label class="field-label" for="courtDate">Court Date</label>-->
+<!--                                <input class="input-field w-input" id="courtDate" placeholder="Court Date" th:field="*{courtDate}" type="date">-->
+<!--                                <input type="button" name="previous" class="previous action-button-previous" value="Previous"/>-->
+<!--                                <input type="submit" name="submit" class="submit action-button" style="background-color: #47cf73" value="Submit"/>-->
+<!--                            </fieldset>-->
+                        </form>
+                    </div>
+            </div>
+        </div>
+    </div>
+</div>
+    </div>
+</div>
+<script crossorigin="anonymous" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" src="https://d3e54v103j8qbb.cloudfront.net/js/jquery-3.4.1.min.220afd743d.js?site=5e70fb3a565ebd99c1db37ce" type="text/javascript"></script>
+<script src="../js/webflow.js" type="text/javascript"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+<script th:src="@{/assets/bootstrap3/js/bootstrap.js}" type="text/javascript"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.3/jquery.easing.min.js"></script>t>
+<!-- [if lte IE 9]>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/placeholders/3.0.2/placeholders.min.js"></script><![endif] -->
+<script>
+
+    $(document).ready(function(){
+        $("#nonComplianceStatus_no").click(function(){
+            if($(this).is(':checked')){
+                $("#nonCompliance_rm").css("display","block")
+            }else{
+                $("#nonCompliance_rm").css("display","none")
+            }
+        });
+        $("#nonComplianceStatus_yes").click(function(){
+            if($(this).is(':checked')){
+                $("#nonCompliance_rm").css("display","none")
+            }
+        });
+
+    });
+
+
+    //jQuery time
+    var current_fs, next_fs, previous_fs; //fieldsets
+    var left, opacity, scale; //fieldset properties which we will animate
+    var animating; //flag to prevent quick multi-click glitches
+
+    $(".next").click(function(){
+        if(animating) return false;
+        animating = true;
+
+        current_fs = $(this).parent();
+        next_fs = $(this).parent().next();
+
+        //activate next step on progressbar using the index of next_fs
+        $("#progressbar li").eq($("fieldset").index(next_fs)).addClass("active");
+
+        //show the next fieldset
+        next_fs.show();
+        //hide the current fieldset with style
+        current_fs.animate({opacity: 0}, {
+            step: function(now, mx) {
+                //as the opacity of current_fs reduces to 0 - stored in "now"
+                //1. scale current_fs down to 80%
+                scale = 1 - (1 - now) * 0.2;
+                //2. bring next_fs from the right(50%)
+                left = (now * 50)+"%";
+                //3. increase opacity of next_fs to 1 as it moves in
+                opacity = 1 - now;
+                current_fs.css({
+                    'transform': 'scale('+scale+')',
+                    'position': 'absolute'
+                });
+                next_fs.css({'left': left, 'opacity': opacity});
+            },
+            duration: 800,
+            complete: function(){
+                current_fs.hide();
+                animating = false;
+            },
+            //this comes from the custom easing plugin
+            easing: 'easeInOutBack'
+        });
+    });
+
+    $(".previous").click(function(){
+        if(animating) return false;
+        animating = true;
+
+        current_fs = $(this).parent();
+        previous_fs = $(this).parent().prev();
+
+        //de-activate current step on progressbar
+        $("#progressbar li").eq($("fieldset").index(current_fs)).removeClass("active");
+
+        //show the previous fieldset
+        previous_fs.show();
+        //hide the current fieldset with style
+        current_fs.animate({opacity: 0}, {
+            step: function(now, mx) {
+                //as the opacity of current_fs reduces to 0 - stored in "now"
+                //1. scale previous_fs from 80% to 100%
+                scale = 0.8 + (1 - now) * 0.2;
+                //2. take current_fs to the right(50%) - from 0%
+                left = ((1-now) * 50)+"%";
+                //3. increase opacity of previous_fs to 1 as it moves in
+                opacity = 1 - now;
+                current_fs.css({'left': left});
+                previous_fs.css({'transform': 'scale('+scale+')', 'opacity': opacity});
+            },
+            duration: 800,
+            complete: function(){
+                current_fs.hide();
+                animating = false;
+            },
+            //this comes from the custom easing plugin
+            easing: 'easeInOutBack'
+        });
+    });
+
+    $(".submit").click(function(){
+        return true;
+    })
+</script>
+</body>
+</html>
+
+

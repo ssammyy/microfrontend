@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<!--  This site was created in Webflow. http://www.webflow.com  -->
+<!--  Last Published: Wed Mar 18 2020 20:03:10 GMT+0000 (Coordinated Universal Time)  -->
+<html data-wf-page="5e7111dc08e6f973c676b3e3" data-wf-site="5e70fb3a565ebd99c1db37ce"
+      xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <title th:text="'KIMS - ' + ${title}"></title>
+    <th:block th:include="fragments/general-form.html :: headerfiles"/>
+    <link rel="stylesheet" th:href="@{/css/accordion.css}"/>
+    <link rel="stylesheet" th:href="@{/assets/bootstrap3/css/bootstrap.css}"/>
+</head>
+<body>
+<div class="top-bar" th:replace="fragments/general-form.html :: top-bar"></div>
+
+<div class="section">
+    <div class="w-layout-grid main-grid">
+        <div class="main-grid-side-navigation" id="w-node-d308c123a20f-c123a20d" th:replace="fragments/general-form.html :: side-navigation-bar"></div>
+        <div id="w-node-27962c2db181-c676b3e3" class="main-content-div">
+            <div class="content-nav" th:replace="fragments/general-form.html :: content-navigation-bar"></div>
+            <div class="content-wrap">
+                <div class="content-container">
+                    <div class="content-block">
+                        <div class="content-block-parent">
+                            <div class="content-block-child---top">
+                                <div class="applicant-details" style="width: 550px">
+                                    <div th:replace="fragments/general-form.html :: alerts-bar"></div>
+                                    <button class="accordion" style="flex: 0 50%">Sample Submission Details</button>
+<!--                                    <div class="panel">-->
+<!--                                        <a th:href="@{/foreign/files/{path}(path = ${ssf})}" class="btn btn-info">Download the Sample Submission form</a>-->
+<!--                                    </div>-->
+                                    <div class="panel">
+                                        <ul  style="width: 500px" class="w-list-unstyled">
+
+                                            <div class="my-3 p-3 bg-white rounded shadow-sm">
+                                                <h6 class="border-bottom border-gray pb-2 mb-0"></h6>
+                                                <div class="media text-muted pt-3">
+                                                    <svg class="bd-placeholder-img mr-2 rounded" width="32" height="32" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: 32x32"><title>Placeholder</title><rect width="100%" height="100%" fill="#007bff"/><text x="50%" y="50%" fill="#007bff" dy=".3em">32x32</text></svg>
+                                                    <p class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
+                                                        <strong class="d-block text-gray-dark" th:text="'Submitted by' + ' ' + ${single_ssf?.createdBy}"></strong>
+                                                        <span th:text="'Submitted on.' + ${single_ssf?.createdOn}"></span>
+                                                    </p>
+                                                </div>
+                                                <small class="d-block text-right mt-3">
+                                                    <a th:href="@{/inspection(whereTo='download_sample_submitted', sampleSubmittedId=${single_ssf.id})}">Download</a>
+                                                </small>
+                                            </div>
+
+                                        </ul>
+                                    </div>
+                                    <!-- Load lab report on Lab user's page -->
+                                    <div th:if="${labReport != null}">
+                                        <button class="accordion" style="flex: 0 50%">Lab Report</button>
+                                        <div class="panel">
+                                            <ul  style="width: 500px" class="w-list-unstyled">
+
+                                                <div class="my-3 p-3 bg-white rounded shadow-sm">
+                                                    <h6 class="border-bottom border-gray pb-2 mb-0"></h6>
+                                                    <div class="media text-muted pt-3">
+                                                        <svg class="bd-placeholder-img mr-2 rounded" width="32" height="32" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: 32x32"><title>Placeholder</title><rect width="100%" height="100%" fill="#007bff"/><text x="50%" y="50%" fill="#007bff" dy=".3em">32x32</text></svg>
+                                                        <p class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
+                                                            <strong class="d-block text-gray-dark" th:text="'Submitted by' + ' ' + ${labReport?.createdBy}"></strong>
+                                                            <span th:text="'on.' + ${labReport?.createdOn}"></span>
+                                                        </p>
+                                                    </div>
+                                                    <small class="d-block text-right mt-3">
+                                                        <a th:href="@{/inspection(whereTo='download_lab_report', labReportId=${labReport?.id})}">Download</a>
+                                                    </small>
+                                                </div>
+
+                                            </ul>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div>
+                            </div>
+
+                        </div>
+                        <div class="filter-block">
+                            <div class="filter-block-title">
+                                <div class="filter-title">Actions</div>
+                            </div>
+                            <div>
+                                <div th:if="${single_ssf.samplesCompleteness != 1}">
+                                    <p>Are the samples complete?</p>
+                                    <a sec:authorize="hasAuthority('GENERATE_BS_NUMBER')" class="btn btn-success" th:href="@{/inspection(permitId = ${single_ssf?.permitId?.id}, ssf_id = ${single_ssf.id}, completenessStatus=1, whereTo='samples_completeness')}"><i class="fa fa-check" aria-hidden="true"></i></a>
+                                    <a sec:authorize="hasAuthority('GENERATE_BS_NUMBER')" class="btn btn-danger" th:href="@{/inspection(permitId = ${single_ssf?.permitId?.id}, ssf_id = ${single_ssf.id}, completenessStatus=0, whereTo='samples_completeness')}"><i class="fa fa-times" aria-hidden="true"></i></a>
+                                </div>
+                                <br><br>
+
+                                <div >
+                                    <a style="width: 270px;" th:if="${single_ssf.bsNumber} == null" sec:authorize="hasAuthority('GENERATE_BS_NUMBER')" class="btn btn-info" th:href="@{/inspection(whereTo='generate_bs', ssf_id = ${single_ssf.id}, appId=${appId})}">Generate Bs. No.</a>
+                                    <div  th:if="${single_ssf.bsNumber} != null">
+                                        <p>BS No.:</p>
+                                        <b th:text="${single_ssf.bsNumber}"></b>
+                                    </div>
+                                </div><br><br>
+
+                                <!-- Submit samples -->
+                                <button style="width: 270px;" type="submit" class="btn btn-primary" data-toggle="modal" data-target="#sampleSubmissionModal">Upload Lab report</button>
+<!--                                <button th:if="${single_ssf.bsNumber} != null" type="submit" class="btn btn-primary" data-toggle="modal" data-target="#sampleSubmissionModal">Upload Lab report</button>-->
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            <div class="modal fade" id="sampleSubmissionModal" tabindex="-1" role="dialog" aria-labelledby="sampleSubmissionLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <form th:action="@{/inspection/save(pId=${single_ssf?.permitId?.id}, ss_id=${single_ssf?.id}, whereTo='save_lab_report')}" method="post" th:object="${labReport}">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="sampleSubmissionLabel">Upload scanned Lab Report</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <p class="h5">Please scan the physical form filled during lab report generation and upload</p>
+                                <br>
+                                <div class="form-group">
+                                    <label for="labReportFile"></label>
+                                    <input type="file" class="form-control-file" id="labReportFile" name="labReportFile">
+                                    <small>Allowed formats: png, jpg, word, pdf</small>
+                                </div>
+<!--                                <input type="hidden" th:value="${app.id}" name="pId">-->
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-primary">Save</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script th:src="@{/js/webflow.js}" type="text/javascript"></script>
+<script src="https://d3e54v103j8qbb.cloudfront.net/js/jquery-3.4.1.min.220afd743d.js" type="text/javascript" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<script th:src="@{/assets/bootstrap3/js/bootstrap.js}" type="text/javascript"></script>
+<!-- [if lte IE 9]><script src="https://cdnjs.cloudflare.com/ajax/libs/placeholders/3.0.2/placeholders.min.js"></script><![endif] -->
+<script>
+    $(document).ready(function(){
+        $('#scheduleId').on('click',function (event) {
+            $('.myForm #exampleModal').modal();
+        });
+        $('#generateSchemeOfSupervisionId').on('click',function (event) {
+            $('.scheme #schemeModal').modal();
+        });
+        $('#fillFactoryInspection').on('click',function (event) {
+            $('.factoryInspectionForm #factoryInspectionFormModal').modal();
+        });
+    });
+
+</script>
+<script>
+    // document.getElementById("firstDateId").onchange = function () {
+    //     var input = document.getElementById("schedule");
+    var input = document.getElementById("schedule");
+
+    input.setAttribute("min", this.value);
+    // }
+</script>
+<script>
+    var acc = document.getElementsByClassName("accordion");
+    // var btn = document.getElementsByClassName("button w-button eBtn");
+    var i;
+
+    for (i = 0; i < acc.length; i++) {
+        acc[i].addEventListener("click", function() {
+            this.classList.toggle("active");
+            this.style.border = "none";
+            // this.style.position = "sticky"
+            var panel = this.nextElementSibling;
+            if (panel.style.maxHeight) {
+                panel.style.maxHeight = null;
+            } else {
+                panel.style.maxHeight = panel.scrollHeight + "px";
+                // panel.style.position = "-webkit-sticky"
+                // panel.style.position = "sticky"
+            }
+        });
+    }
+</script>
+<!-- [if lte IE 9]><script src="https://cdnjs.cloudflare.com/ajax/libs/placeholders/3.0.2/placeholders.min.js"></script><![endif] -->
+</body>
+</html>
+
+
+
+

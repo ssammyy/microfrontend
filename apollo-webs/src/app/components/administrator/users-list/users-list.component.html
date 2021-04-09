@@ -1,0 +1,169 @@
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3">
+  <h1 class="h2">Users</h1>
+  <div class="btn-toolbar mb-2 mb-md-0">
+    <button class="submit-button" routerLink="/add-user">
+      ADD USER
+    </button>
+  </div>
+</div>
+
+<div>
+  <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+
+    <li class="nav-item">
+      <a aria-controls="pills-all" aria-selected="true" class="nav-link active" data-toggle="pill" href="#pills-all"
+         id="pills-all-tab" role="tab">All</a>
+    </li>
+
+    <!--    <li class="nav-item">-->
+    <!--      <a class="nav-link" id="pills-new-tab" data-toggle="pill" href="#pills-new" role="tab"-->
+    <!--         aria-controls="pills-new" aria-selected="false">New</a>-->
+    <!--    </li>-->
+
+    <li class="nav-item">
+      <a aria-controls="pills-review" aria-selected="false" class="nav-link" data-toggle="pill" href="#pills-review"
+         id="pills-review-tab" role="tab">Active</a>
+    </li>
+
+
+    <li class="nav-item">
+      <a aria-controls="pills-accepted" aria-selected="false" class="nav-link" data-toggle="pill" href="#pills-accepted"
+         id="pills-accepted-tab" role="tab">In Active</a>
+    </li>
+
+    <li class="nav-item">
+      <a aria-controls="pills-rejected" aria-selected="false" class="nav-link" data-toggle="pill" href="#pills-rejected"
+         id="pills-rejected-tab" role="tab">Locked</a>
+    </li>
+
+    <li class="nav-item">
+      <a aria-controls="pills-resolved" aria-selected="false" class="nav-link" data-toggle="pill" href="#pills-resolved"
+         id="pills-resolved-tab" role="tab">Expired</a>
+    </li>
+
+    <!--    <li class="nav-item">-->
+    <!--      <a class="nav-link" id="pills-overdue-tab" data-toggle="pill" href="#pills-overdue" role="tab"-->
+    <!--         aria-controls="pills-overdue" aria-selected="false">Overdue</a>-->
+    <!--    </li>-->
+
+  </ul>
+  <hr style="margin-top: -16px">
+
+</div>
+
+<div class="tab-content" id="pills-tabContent">
+
+  <div aria-labelledby="pills-all-tab" class="tab-pane fade show active" id="pills-all" role="tabpanel">
+    <div class="d-block">
+
+      <div class="justify-content-between d-flex flex-wrap align-items-center mt-5">
+        <div class="d-flex flex-wrap align-items-center">
+          <h5 class="mr-4">All Users</h5>
+          <div class="resolved-pill">
+            <p>{{allUsersData.length}}</p>
+          </div>
+        </div>
+
+        <button class="btn btn-sm btn-outline-secondary mr-2">EXPORT</button>
+
+      </div>
+
+      <div class="row mt-5">
+        <form (ngSubmit)="onSubmitSearch()" [formGroup]="searchFormGroup">
+
+          <div class="form-body">
+
+            <div class="row">
+              <div class="col-6 col-md-3">
+                <div class="form-group">
+                  <label><b>User Name</b></label>
+                  <input [class.is-invalid]="formSearch.userName.invalid && formSearch.userName.touched"
+                         class="form-control two-column-input"
+                         formControlName="userName" name="userName" required type="text">
+                </div>
+              </div>
+              <div class="col-6 col-md-3">
+                <div class="form-group">
+                  <label><b>First Name</b></label>
+                  <input class="form-control two-column-input" formControlName="firstName"
+                         name="firstName" type="text">
+                </div>
+              </div>
+
+              <div class="col-6 col-md-3">
+                <div class="form-group">
+                  <label><b>Last Name</b> </label>
+                  <input class="form-control two-column-input" formControlName="lastName"
+                         name="lastName"
+                         type="text">
+                </div>
+              </div>
+
+              <div class="col-6 col-md-3">
+                <div class="form-group">
+                  <label><b>Email</b> </label>
+                  <input class="form-control two-column-input" formControlName="email"
+                         name="email"
+                         type="text">
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+
+          <button [disabled]="!searchFormGroup.valid" class="submit-button mt-3" type="submit">APPLY FILTER</button>
+
+
+        </form>
+      </div>
+
+      <table class="table-hover">
+        <thead>
+        <!--        <th class="id">Reg Number</th>-->
+        <th class="id">ID</th>
+        <!--        <th class="date">Title</th>-->
+        <th class="date">Full Name</th>
+        <th class="method">User name</th>
+        <th class="invoice">Email</th>
+        <th class="amount">Date Registered</th>
+        <th class="status">Status</th>
+        </thead>
+        <tbody>
+        <tr *ngFor="let user of allUsersData | paginate: { itemsPerPage: 10, currentPage: p }">
+          <td><a (click)="onSelect(user.id)" class="ref-link">{{user.id}}</a></td>
+          <td>{{user.firstName}} {{user.lastName}}</td>
+          <td>{{user.userName}}</td>
+          <td>{{user.email}}</td>
+          <td class="amount">{{user.registrationDate}}</td>
+          <td class="status">{{user.status}}</td>
+        </tr>
+        </tbody>
+
+      </table>
+      <pagination-controls (pageChange)="p = $event"></pagination-controls>
+    </div>
+  </div>
+
+
+  <div aria-labelledby="pills-review-tab" class="tab-pane fade" id="pills-review" role="tabpanel">
+    <p>hdsjsfjbs</p>
+  </div>
+
+  <div aria-labelledby="pills-accepted-tab" class="tab-pane fade" id="pills-accepted" role="tabpanel">
+    <p>hdsjsfjbs</p>
+  </div>
+
+  <div aria-labelledby="pills-rejected-tab" class="tab-pane fade" id="pills-rejected" role="tabpanel">
+    <p>hdsjsfjbs</p>
+  </div>
+
+  <div aria-labelledby="pills-resolved-tab" class="tab-pane fade" id="pills-resolved" role="tabpanel">
+    <p>hdsjsfjbs</p>
+  </div>
+
+  <div aria-labelledby="pills-overdue-tab" class="tab-pane fade" id="pills-overdue" role="tabpanel">
+    <p>hdsjsfjbs</p>
+  </div>
+
+</div>

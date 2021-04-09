@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<!--  This site was created in Webflow. http://www.webflow.com  -->
+<!--  Last Published: Wed Mar 18 2020 20:03:10 GMT+0000 (Coordinated Universal Time)  -->
+<html data-wf-page="5e70fb3a565ebdc05ddb37cf" data-wf-site="5e70fb3a565ebd99c1db37ce"
+      xmlns:sec="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>KEBS</title>
+    <th:block th:include="fragments/general-form.html:: headerfiles"/>
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <link rel="stylesheet" th:href="@{/css/accordion.css}"/>
+    <link rel="stylesheet" th:href="@{/assets/bootstrap3/css/bootstrap.css}"/>
+
+
+</head>
+<body>
+<div class="top-bar" th:replace="fragments/general-form.html :: top-bar"></div>
+
+<div class="section">
+    <div class="w-layout-grid main-grid">
+        <div class="main-grid-side-navigation" id="w-node-d308c123a20f-c123a20d"
+             th:replace="fragments/general-form.html :: side-navigation-bar"></div>
+        <div class="main-content-div" id="w-node-27962c2db181-c676b3e3">
+            <div class="content-nav" th:replace="fragments/general-form.html :: content-navigation-bar"></div>
+            <div class="content-wrap">
+                <div class="content-container">
+                    <h3 class="h3-blue" style="color: #0082f3">Manifest Document Details</h3>
+                    <div class="content-block">
+                        <div class="content-block-parent" style="flex: 0 75%">
+                            <div class="sticky" style="margin-bottom: 30px">
+                                <h6 class="h3-blue" style="font-weight: bold; font-size: 16px">CD Standard Details</h6>
+                                <div class="applicant_details_container">
+                                    <div class="detail-list application_details">
+                                        <ul class="w-list-unstyled">
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Application Ref Number</div>
+                                                <div class="list-text-accordion"
+                                                     th:text="${cdDetails?.cdStandard?.applicationRefNo}"></div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Application Date</div>
+                                                <div class="list-text-accordion"
+                                                     th:text="${cdDetails?.cdStandard?.applicationDate}"></div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Declaration Number</div>
+                                                <div class="list-text-accordion"
+                                                     th:text="${cdDetails?.cdStandard?.declarationNumber}"></div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">UCR Number</div>
+                                                <div class="list-text-accordion"
+                                                     th:text="${cdDetails?.ucrNumber}"></div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Application Type</div>
+                                                <div class="list-text-accordion"
+                                                     th:text="${cdDetails?.cdStandard?.applicationTypeDescription}"></div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Document Type</div>
+                                                <div class="list-text-accordion"
+                                                     th:text="${cdDetails?.cdStandard?.documentTypeDescription}"></div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Document</div>
+                                                <div class="list-text-accordion"
+                                                     th:text="${cdDetails?.cdStandard?.documentDescription}"></div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">MDA</div>
+                                                <div class="list-text-accordion"
+                                                     th:text="${cdDetails?.cdStandard?.mdaDescription}"></div>
+                                            </li>
+
+                                        </ul>
+                                    </div>
+                                    <div class="application_reports">
+                                        <li class="list-item-accordion">
+                                            <div class="list-title-accordion">Assigned Officer</div>
+                                            <div class="list-text-accordion" style="color: #0082f3"
+                                                 th:if="${cdDetails?.assignedStatus == 1}"
+                                                 th:text="${cdDetails?.assignedInspectionOfficer?.firstName}+ ' ' +${cdDetails?.assignedInspectionOfficer?.lastName}"></div>
+                                            <div class="list-text-accordion" th:if="${cdDetails?.assignedStatus != 1}">
+                                                NOT ASSIGNED
+                                            </div>
+                                        </li>
+                                        <li class="list-item-accordion">
+                                            <div class="list-title-accordion">Approval Status</div>
+                                            <div class="list-text-accordion"
+                                                 th:text="${cdDetails?.cdStandard?.approvalStatus}"></div>
+                                        </li>
+                                        <li class="list-item-accordion">
+                                            <div class="list-title-accordion">Approval Date</div>
+                                            <div class="list-text-accordion"
+                                                 th:text="${cdDetails?.cdStandard?.approvalDate}"></div>
+                                        </li>
+                                        <li class="list-item-accordion">
+                                            <div class="list-title-accordion">Final Approval Date</div>
+                                            <div class="list-text-accordion"
+                                                 th:text="${cdDetails?.cdStandard?.finalApprovalDate}"></div>
+                                        </li>
+                                        <li class="list-item-accordion">
+                                            <div class="list-title-accordion">Version No</div>
+                                            <div class="list-text-accordion"
+                                                 th:text="${cdDetails?.cdStandard?.versionNo}"></div>
+                                        </li>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <button class="accordion">Manifest General Details</button>
+                            <div class="panel">
+                                <ul class="w-list-unstyled">
+                                    <li class="list-item-accordion">
+                                        <div class="list-title-accordion">MANIFEST NUMBER</div>
+                                        <div class="list-text-accordion"
+                                             th:text="${manifestDetails?.manifestNumber}"></div>
+                                    </li>
+                                    <li class="list-item-accordion">
+                                        <div class="list-title-accordion">CUSTOMS OFFICE COUNTRY</div>
+                                        <div class="list-text-accordion"
+                                             th:text="${manifestDetails?.customsOfficeCountry}"></div>
+                                    </li>
+                                    <li class="list-item-accordion">
+                                        <div class="list-title-accordion">EXIT OFFICE SUB2</div>
+                                        <div class="list-text-accordion"
+                                             th:text="${manifestDetails?.exitOfficeSub2}"></div>
+                                    </li>
+                                    <li class="list-item-accordion">
+                                        <div class="list-title-accordion">EXIT OFFICE SUB3</div>
+                                        <div class="list-text-accordion"
+                                             th:text="${manifestDetails?.exitOfficeSub3}"></div>
+                                    </li>
+                                    <li class="list-item-accordion">
+                                        <div class="list-title-accordion">TRANSPORT MODE</div>
+                                        <div class="list-text-accordion"
+                                             th:text="${manifestDetails?.transportMode}"></div>
+                                    </li>
+                                    <li class="list-item-accordion">
+                                        <div class="list-title-accordion">TRADE MOVEMENT</div>
+                                        <div class="list-text-accordion"
+                                             th:text="${manifestDetails?.tradeMovement}"></div>
+                                    </li>
+                                    <li class="list-item-accordion">
+                                        <div class="list-title-accordion">EXPECTED DATE</div>
+                                        <div class="list-text-accordion"
+                                             th:text="${manifestDetails?.expectedDate}"></div>
+                                    </li>
+                                    <li class="list-item-accordion">
+                                        <div class="list-title-accordion">DISPATCH COUNTRY</div>
+                                        <div class="list-text-accordion"
+                                             th:text="${manifestDetails?.dispatchCountry}"></div>
+                                    </li>
+                                    <li class="list-item-accordion">
+                                        <div class="list-title-accordion">DISCHARGE PLACE</div>
+                                        <div class="list-text-accordion"
+                                             th:text="${manifestDetails?.dischargePlace}"></div>
+                                    </li>
+                                    <li class="list-item-accordion">
+                                        <div class="list-title-accordion">TRANSPORT NATIONALITY</div>
+                                        <div class="list-text-accordion"
+                                             th:text="${manifestDetails?.transportNationality}"></div>
+                                    </li>
+                                    <li class="list-item-accordion">
+                                        <div class="list-title-accordion">TRANSPORT ID</div>
+                                        <div class="list-text-accordion"
+                                             th:text="${manifestDetails?.transportId}"></div>
+                                    </li>
+                                    <li class="list-item-accordion">
+                                        <div class="list-title-accordion">VOYAGE NUMBER</div>
+                                        <div class="list-text-accordion"
+                                             th:text="${manifestDetails?.voyageNumber}"></div>
+                                    </li>
+                                    <li class="list-item-accordion">
+                                        <div class="list-title-accordion">BOOKING NUMBER</div>
+                                        <div class="list-text-accordion"
+                                             th:text="${manifestDetails?.bookingNumber}"></div>
+                                    </li>
+                                    <li class="list-item-accordion">
+                                        <div class="list-title-accordion">CONSIGNMENT NUMBER</div>
+                                        <div class="list-text-accordion"
+                                             th:text="${manifestDetails?.consignmentNumber}"></div>
+                                    </li>
+                                    <li class="list-item-accordion">
+                                        <div class="list-title-accordion">UCR NO</div>
+                                        <div class="list-text-accordion"
+                                             th:text="${manifestDetails?.ucrn}"></div>
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <button class="accordion">Manifest Other Details</button>
+                            <div class="panel">
+                                <ul class="w-list-unstyled">
+                                    <li class="list-item-accordion">
+                                        <div class="list-title-accordion">NIL CARGO</div>
+                                        <div class="list-text-accordion"
+                                             th:text="${manifestDetails?.nilCargo}"></div>
+                                    </li>
+                                    <li class="list-item-accordion">
+                                        <div class="list-title-accordion">ON BOARD</div>
+                                        <div class="list-text-accordion"
+                                             th:text="${manifestDetails?.onboard}"></div>
+                                    </li>
+                                    <li class="list-item-accordion">
+                                        <div class="list-title-accordion">REMARK</div>
+                                        <div class="list-text-accordion"
+                                             th:text="${manifestDetails?.remark}"></div>
+                                    </li>
+                                    <li class="list-item-accordion">
+                                        <div class="list-title-accordion">REF SD REG NUMBER</div>
+                                        <div class="list-text-accordion"
+                                             th:text="${manifestDetails?.refSdRegNumber}"></div>
+                                    </li>
+                                    <li class="list-item-accordion">
+                                        <div class="list-title-accordion">REF TD PREFIX</div>
+                                        <div class="list-text-accordion"
+                                             th:text="${manifestDetails?.refTdPrefix}"></div>
+                                    </li>
+                                    <li class="list-item-accordion">
+                                        <div class="list-title-accordion">REF TD BILL CODE</div>
+                                        <div class="list-text-accordion"
+                                             th:text="${manifestDetails?.refTdBillCode}"></div>
+                                    </li>
+                                    <li class="list-item-accordion">
+                                        <div class="list-title-accordion">TD PREFIX</div>
+                                        <div class="list-text-accordion"
+                                             th:text="${manifestDetails?.tdPrefix}"></div>
+                                    </li>
+                                    <li class="list-item-accordion">
+                                        <div class="list-title-accordion">TD BILL CODE</div>
+                                        <div class="list-text-accordion"
+                                             th:text="${manifestDetails?.tdBillCode}"></div>
+                                    </li>
+                                    <li class="list-item-accordion">
+                                        <div class="list-title-accordion">FREIGHT COST</div>
+                                        <div class="list-text-accordion"
+                                             th:text="${manifestDetails?.freightCost}"></div>
+                                    </li>
+                                    <li class="list-item-accordion">
+                                        <div class="list-title-accordion">INSURANCE COSTS</div>
+                                        <div class="list-text-accordion"
+                                             th:text="${manifestDetails?.insuranceCosts}"></div>
+                                    </li>
+                                    <li class="list-item-accordion">
+                                        <div class="list-title-accordion">FIRST PORT</div>
+                                        <div class="list-text-accordion"
+                                             th:text="${manifestDetails?.firstPort}"></div>
+                                    </li>
+                                    <li class="list-item-accordion">
+                                        <div class="list-title-accordion">FIRST PORT DATE</div>
+                                        <div class="list-text-accordion"
+                                             th:text="${manifestDetails?.firstPortDate}"></div>
+                                    </li>
+                                    <li class="list-item-accordion">
+                                        <div class="list-title-accordion">TRANSPORT EQU ID</div>
+                                        <div class="list-text-accordion"
+                                             th:text="${manifestDetails?.transportEquId}"></div>
+                                    </li>
+                                    <li class="list-item-accordion">
+                                        <div class="list-title-accordion">ROUTING</div>
+                                        <div class="list-text-accordion"
+                                             th:text="${manifestDetails?.routing}"></div>
+                                    </li>
+                                    <li class="list-item-accordion">
+                                        <div class="list-title-accordion">FINAL DEST LOC CITY</div>
+                                        <div class="list-text-accordion"
+                                             th:text="${manifestDetails?.finalDestLocCity}"></div>
+                                    </li>
+                                    <li class="list-item-accordion">
+                                        <div class="list-title-accordion"> PAY METHOD</div>
+                                        <div class="list-text-accordion"
+                                             th:text="${manifestDetails?.payMethod}"></div>
+                                    </li>
+                                    <li class="list-item-accordion">
+                                        <div class="list-title-accordion"> CURRENCY CODE</div>
+                                        <div class="list-text-accordion"
+                                             th:text="${manifestDetails?.currencyCode}"></div>
+                                    </li>
+                                    <li class="list-item-accordion">
+                                        <div class="list-title-accordion"> TOTAL INVOICE AMOUNT</div>
+                                        <div class="list-text-accordion"
+                                             th:text="${manifestDetails?.totalInvoiceAmount}"></div>
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <button class="accordion">CARRIER Details</button>
+                            <div class="panel">
+                                <ul class="w-list-unstyled">
+                                    <li class="list-item-accordion">
+                                        <div class="list-title-accordion">CARRIER AGENT REGISTERED</div>
+                                        <div class="list-text-accordion"
+                                             th:text="${manifestDetails?.carrierAgentRegistered}"></div>
+                                    </li>
+                                    <li class="list-item-accordion">
+                                        <div class="list-title-accordion">CARRIER AGENT PIN</div>
+                                        <div class="list-text-accordion"
+                                             th:text="${manifestDetails?.carrierAgentPin}"></div>
+                                    </li>
+                                    <li class="list-item-accordion">
+                                        <div class="list-title-accordion">CARRIER AGENT BUSINESS NATION</div>
+                                        <div class="list-text-accordion"
+                                             th:text="${manifestDetails?.carrierAgentBusinessNation}"></div>
+                                    </li>
+                                    <li class="list-item-accordion">
+                                        <div class="list-title-accordion">CARRIER AGENT BUSINESS NAME</div>
+                                        <div class="list-text-accordion"
+                                             th:text="${manifestDetails?.carrierAgentBusinessName}"></div>
+                                    </li>
+                                    <li class="list-item-accordion">
+                                        <div class="list-title-accordion">CARRIER AGENT BUSINESS ADDRESS</div>
+                                        <div class="list-text-accordion"
+                                             th:text="${manifestDetails?.carrierAgentBusinessAddress}"></div>
+                                    </li>
+                                </ul>
+                            </div>
+
+
+                            <button class="accordion">CONSIGNOR Details</button>
+                            <div class="panel">
+                                <ul class="w-list-unstyled">
+                                    <li class="list-item-accordion">
+                                        <div class="list-title-accordion">CONSIGNOR REGISTERED</div>
+                                        <div class="list-text-accordion"
+                                             th:text="${manifestDetails?.consignorRegistered}"></div>
+                                    </li>
+                                    <li class="list-item-accordion">
+                                        <div class="list-title-accordion">CONSIGNOR PIN NUMBER</div>
+                                        <div class="list-text-accordion"
+                                             th:text="${manifestDetails?.consignorPinNumber}"></div>
+                                    </li>
+                                    <li class="list-item-accordion">
+                                        <div class="list-title-accordion">CONSIGNOR COUNTRY CODE</div>
+                                        <div class="list-text-accordion"
+                                             th:text="${manifestDetails?.consignorCountryCode}"></div>
+                                    </li>
+                                    <li class="list-item-accordion">
+                                        <div class="list-title-accordion">CONSIGNOR BUSINESS NAME</div>
+                                        <div class="list-text-accordion"
+                                             th:text="${manifestDetails?.consignorBusinessName}"></div>
+                                    </li>
+                                    <li class="list-item-accordion">
+                                        <div class="list-title-accordion">CONSIGNOR PHONE NUMBER</div>
+                                        <div class="list-text-accordion"
+                                             th:text="${manifestDetails?.consignorPhoneNumber}"></div>
+                                    </li>
+                                    <li class="list-item-accordion">
+                                        <div class="list-title-accordion">CONSIGNOR BUSINESS ADDRESS</div>
+                                        <div class="list-text-accordion"
+                                             th:text="${manifestDetails?.consignorBusinessAddress}"></div>
+                                    </li>
+                                    <li class="list-item-accordion">
+                                        <div class="list-title-accordion">CONSIGNOR BUSINESS NATION</div>
+                                        <div class="list-text-accordion"
+                                             th:text="${manifestDetails?.consignorBusinessNation}"></div>
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <button class="accordion">CONSIGNEE Details</button>
+                            <div class="panel">
+                                <ul class="w-list-unstyled">
+                                    <li class="list-item-accordion">
+                                        <div class="list-title-accordion">CONSIGNEE REGISTERED</div>
+                                        <div class="list-text-accordion"
+                                             th:text="${manifestDetails?.consigneeRegistered}"></div>
+                                    </li>
+                                    <li class="list-item-accordion">
+                                        <div class="list-title-accordion">CONSIGNEE PIN NUMBER</div>
+                                        <div class="list-text-accordion"
+                                             th:text="${manifestDetails?.consigneePinNumber}"></div>
+                                    </li>
+                                    <li class="list-item-accordion">
+                                        <div class="list-title-accordion">CONSIGNEE COUNTRY CODE</div>
+                                        <div class="list-text-accordion"
+                                             th:text="${manifestDetails?.consigneeCountryCode}"></div>
+                                    </li>
+                                    <li class="list-item-accordion">
+                                        <div class="list-title-accordion">CONSIGNEE BUSINESS NAME</div>
+                                        <div class="list-text-accordion"
+                                             th:text="${manifestDetails?.consigneeBusinessName}"></div>
+                                    </li>
+                                    <li class="list-item-accordion">
+                                        <div class="list-title-accordion">CONSIGNEE PHONE NUMBER</div>
+                                        <div class="list-text-accordion"
+                                             th:text="${manifestDetails?.consigneePhoneNumber}"></div>
+                                    </li>
+                                    <li class="list-item-accordion">
+                                        <div class="list-title-accordion">CONSIGNEE BUSINESS ADDRESS</div>
+                                        <div class="list-text-accordion"
+                                             th:text="${manifestDetails?.consigneeBusinessAddress}"></div>
+                                    </li>
+                                    <li class="list-item-accordion">
+                                        <div class="list-title-accordion">CONSIGNEE BUSINESS NATION</div>
+                                        <div class="list-text-accordion"
+                                             th:text="${manifestDetails?.consigneeBusinessNation}"></div>
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <!--                            <button class="accordion">Item Details</button>-->
+                            <!--                            <div class="panel">-->
+                            <!--                                <div class="row-table">-->
+                            <!--                                    <table class="table table-striped">-->
+                            <!--                                        <thead>-->
+                            <!--                                        <tr>-->
+                            <!--                                            <th>ITEM NUM</th>-->
+                            <!--                                            <th>COMMODITY CODE Code</th>-->
+                            <!--                                            <th>ORIGIN COUNTRY</th>-->
+                            <!--                                            <th>ITEM PRICE</th>-->
+                            <!--                                        </tr>-->
+                            <!--                                        </thead>-->
+                            <!--                                        <tbody>-->
+                            <!--                                        <tr class="list" style="cursor: pointer" th:each="itemCert: ${itemDeclaration}">-->
+                            <!--                                            <td th:text="${itemCert?.itemNum}"></td>-->
+                            <!--                                            <td th:text="${itemCert?.commodityCode}"></td>-->
+                            <!--                                            <td th:text="${itemCert?.originCountry}"></td>-->
+                            <!--                                            <td th:text="${itemCert?.itemPrice}"></td>-->
+                            <!--                                        </tr>-->
+
+                            <!--                                        </tbody>-->
+                            <!--                                    </table>-->
+                            <!--                                </div>-->
+                            <!--                            </div>-->
+
+                        </div>
+                        <!--                        <div class="filter-block">-->
+                        <!--                            <div class="filter-block-title">-->
+                        <!--                                <div class="filter-title">Action:</div>-->
+                        <!--                            </div>-->
+                        <!--                            <div>-->
+                        <!--                                <a class="filter-link inspectBtn"-->
+                        <!--                                   th:href="@{/api/di/back-view(close = ${session.certBack},id = ${idfDetails.id},section = ${session.section.section})}">Close</a>-->
+                        <!--                            </div>-->
+                        <!--                        </div>-->
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+</div>
+<script crossorigin="anonymous" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+        src="https://d3e54v103j8qbb.cloudfront.net/js/jquery-3.4.1.min.220afd743d.js" type="text/javascript"></script>
+<script src="../assets/js/webflow.js" type="text/javascript"></script>
+<script th:src="@{/assets/bootstrap3/js/bootstrap.js}" type="text/javascript"></script>
+<!-- [if lte IE 9]>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/placeholders/3.0.2/placeholders.min.js"></script><![endif] -->
+<script>
+    var acc = document.getElementsByClassName("accordion");
+    // var btn = document.getElementsByClassName("button w-button eBtn");
+    var i;
+
+    for (i = 0; i < acc.length; i++) {
+        acc[i].addEventListener("click", function () {
+            this.classList.toggle("active");
+            this.style.border = "none";
+            // this.style.position = "sticky"
+            var panel = this.nextElementSibling;
+            if (panel.style.maxHeight) {
+                panel.style.maxHeight = null;
+            } else {
+                panel.style.maxHeight = panel.scrollHeight + "px";
+                // panel.style.position = "-webkit-sticky"
+                // panel.style.position = "sticky"
+            }
+        });
+    }
+
+
+</script>
+</body>
+</html>
+
+

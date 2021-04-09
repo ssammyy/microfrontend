@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<!--  This site was created in Webflow. http://www.webflow.com  -->
+<!--  Last Published: Wed Mar 18 2020 20:03:10 GMT+0000 (Coordinated Universal Time)  -->
+<html data-wf-page="5e70fb3a565ebdc05ddb37cf" data-wf-site="5e70fb3a565ebd99c1db37ce"
+      xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <title>KEBS</title>
+    <th:block th:include="fragments/general-form.html:: headerfiles"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" th:href="@{/css/accordion.css}"/>
+    <link rel="stylesheet" th:href="@{/assets/bootstrap3/css/bootstrap.css}"/>
+
+</head>
+<body>
+<div class="top-bar" th:replace="fragments/general-form.html :: top-bar"></div>
+
+<div class="section">
+    <div class="w-layout-grid main-grid">
+        <div class="main-grid-side-navigation" id="w-node-d308c123a20f-c123a20d"
+             th:replace="fragments/general-form.html :: side-navigation-bar"></div>
+        <div id="w-node-27962c2db181-c676b3e3" class="main-content-div">
+            <div class="content-nav" th:replace="fragments/general-form.html :: content-navigation-bar"></div>
+            <div class="content-wrap">
+                <div class="content-container">
+<!--                    <h3 class="h3-blue" style="color: #0082f3">WorkPlan Uploads List</h3>-->
+                    <div class="content-block">
+                        <div class="content-block-parent" style="flex: 0 95%" >
+                            <div class="content-block-child---top" style="flex: 0 75%" >
+                            <div class="applicant-details" >
+                            <div>
+                                <h5 style="font-weight: bold; color: #0082f3; font-size: 14px"><u>SAMPLE SUBMISSION FORM</u></h5>
+                            </div>
+<!--                                <div>-->
+<!--                                    <ul  class="w-list-unstyled" >-->
+<!--                                        <li class="list-item-accordion">-->
+<!--                                            <div class="list-title-accordion" style="color: #0082f3">BS NUMBER</div>-->
+<!--                                            <div class="list-text-accordion">-->
+<!--                                                <span th:if="${sampleSubmit?.bsNumber == null}">No BS NUMBER</span>-->
+<!--                                                <span th:unless="${sampleSubmit?.bsNumber == null}" th:text="${sampleSubmit?.bsNumber}"></span>-->
+<!--                                            </div>-->
+<!--                                            &lt;!&ndash;                                            <div class="list-text-accordion"><span th:text="${complaintEntity?.assignedIo?.firstName}">Not</span> <span th:text="${complaintEntity?.assignedIo?.lastName}">Assigned</span></div>&ndash;&gt;-->
+<!--                                        </li>-->
+<!--                                        &lt;!&ndash;                                        <li class="list-item-accordion">&ndash;&gt;-->
+<!--                                        &lt;!&ndash;                                            <div class="list-title-accordion">Described Complaint Details</div>&ndash;&gt;-->
+<!--                                        &lt;!&ndash;                                            <div class="list-text-accordion"  th:text="${complaintEntity?.complaintDetails}"></div>&ndash;&gt;-->
+<!--                                        &lt;!&ndash;                                        </li>&ndash;&gt;-->
+<!--                                    </ul>-->
+<!--                                </div>-->
+                            <ul class="w-list-unstyled"  >
+                                <li class="list-item-accordion">
+                                    <div class="list-title-accordion">Name of Product:</div>
+                                    <div class="list-text-accordion" style="width: 650px" th:text="${sampleSubmit?.nameProduct}"></div>
+                                </li>
+                                <li class="list-item-accordion">
+                                    <div class="list-title-accordion">Packaging:</div>
+                                    <div class="list-text-accordion" th:text="${sampleSubmit?.packaging}"></div>
+                                </li>
+                                <li class="list-item-accordion">
+                                    <div class="list-title-accordion">Labeling/Identification Details:</div>
+                                    <div class="list-text-accordion" th:text="${sampleSubmit?.labellingIdentification}"></div>
+                                </li>
+                                <li class="list-item-accordion">
+                                    <div class="list-title-accordion">File Ref. Number:</div>
+                                    <div class="list-text-accordion" th:text="${sampleSubmit?.fileRefNumber}"></div>
+                                </li>
+                                <li class="list-item-accordion">
+                                    <div class="list-title-accordion">Reference Standard:</div>
+                                    <div class="list-text-accordion" th:text="${sampleSubmit?.referencesStandards}"></div>
+                                </li>
+                                <div>
+                                    <h5 style="font-weight: bold; color: #0082f3; font-size: 14px"><u>Sample Details</u></h5>
+                                </div>
+                                <li class="list-item-accordion">
+                                    <div class="list-title-accordion">Size of Test Sample:</div>
+                                    <div class="list-text-accordion" th:text="${sampleSubmit?.sizeTestSample}"></div>
+                                </li>
+                                <li class="list-item-accordion">
+                                    <div class="list-title-accordion">Size of Reference Sample:</div>
+                                    <div class="list-text-accordion" th:text="${sampleSubmit?.sizeRefSample}"></div>
+                                </li>
+                                <li class="list-item-accordion">
+                                    <div class="list-title-accordion">Sample Reference:</div>
+                                    <div class="list-text-accordion" th:text="${sampleSubmit?.sampleReferences}"></div>
+                                </li>
+                                <li class="list-item-accordion">
+                                    <div class="list-title-accordion">Condition:</div>
+                                    <div class="list-text-accordion" th:text="${sampleSubmit?.condition}"></div>
+                                </li>
+                                <div>
+                                    <h5 style="font-weight: bold; color: #0082f3; font-size: 14px"><u>Sender's Details</u></h5>
+                                </div>
+                                <li class="list-item-accordion">
+                                    <div class="list-title-accordion">Sender's Name:</div>
+                                    <div class="list-text-accordion" th:text="${sampleSubmit?.sendersName}"></div>
+                                </li>
+                                <li class="list-item-accordion">
+                                    <div class="list-title-accordion">Designation:</div>
+                                    <div class="list-text-accordion" th:text="${sampleSubmit?.designation}"></div>
+                                </li>
+                                <li class="list-item-accordion">
+                                    <div class="list-title-accordion">Address:</div>
+                                    <div class="list-text-accordion" th:text="${sampleSubmit?.address}"></div>
+                                </li>
+                                <li class="list-item-accordion">
+                                    <div class="list-title-accordion">Date</div>
+                                    <div class="list-text-accordion" th:text="${sampleSubmit?.sendersDate}"></div>
+                                </li>
+                                <div>
+                                    <h5 style="font-weight: bold; color: #0082f3; font-size: 14px"><u>Receiver Details</u></h5>
+                                </div>
+                                <li class="list-item-accordion">
+                                    <div class="list-title-accordion">Receiver's Name:</div>
+                                    <div class="list-text-accordion" th:text="${sampleSubmit?.receiversName}"></div>
+                                </li>
+                                <div>
+                                    <h5 style="font-weight: bold; color: #0082f3; font-size: 14px"><u>Test Charges Details</u></h5>
+                                </div>
+                                <li class="list-item-accordion">
+                                    <div class="list-title-accordion">Test Charges (Ksh):</div>
+                                    <div class="list-text-accordion" th:text="${sampleSubmit?.testChargesKsh}"></div>
+                                </li>
+                                <li class="list-item-accordion">
+                                    <div class="list-title-accordion">Receipt/LPO No:</div>
+                                    <div class="list-text-accordion" th:text="${sampleSubmit?.receiptLpoNumber}"></div>
+                                </li>
+                                <li class="list-item-accordion">
+                                    <div class="list-title-accordion">Invoice No:</div>
+                                    <div class="list-text-accordion" th:text="${sampleSubmit?.invoiceNumber}"></div>
+                                </li>
+                                <div>
+                                    <h5 style="font-weight: bold; color: #0082f3; font-size: 14px"><u>Other Details</u></h5>
+                                </div>
+                                <li class="list-item-accordion">
+                                    <div class="list-title-accordion">Disposal:</div>
+                                    <div class="list-text-accordion" th:text="${sampleSubmit?.disposal}"></div>
+                                </li>
+                                <li class="list-item-accordion">
+                                    <div class="list-title-accordion">Remarks:</div>
+                                    <div class="list-text-accordion" th:text="${sampleSubmit?.remarks}"></div>
+                                </li>
+                            </ul>
+                            <div class="row-table ">
+                                <table class="table table-striped">
+                                    <thead>
+                                    <tr>
+                                        <th>Parameter Name</th>
+                                        <th>Laboratory Name</th>
+<!--                                        <th>Add BS Number</th>-->
+<!--                                        <th>Sample Size</th>-->
+<!--                                        <th>Remarks</th>-->
+<!--                                        <th>Delete</th>-->
+                                        <th>View/Add</th>
+<!--                                        <th th:if="${sampleSubmit?.msFuelInspectionId?.bsNumberStatus != 1-->
+<!--                                         and sampleSubmit?.msFuelInspectionId?.sampleSubmittedStatus == 1 and sampleSubmit?.msFuelInspectionId?.ssfLabparamsStatus == 1 }"  >View/Add</th>-->
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <!--                <a th:each="coc, iStat: ${cocs}" th:href="@{/api/inspection/supervisor/coc-details/{id}(id=${coc.id})}" class="table-row w-inline-block">-->
+                                    <tr class="list" th:each="sampleSubmitParam: ${sampleSubmitParams}" style="cursor: pointer">
+
+                                        <td th:text="${sampleSubmitParam?.parameters}"></td>
+                                        <td th:text="${sampleSubmitParam?.laboratoryName}"></td>
+<!--                                        <td th:text="${sampleSubmitParam?.batchSize}"></td>-->
+<!--                                        <td th:text="${sampleSubmitParam?.sampleSize}"></td>-->
+<!--                                        <td th:text="${sampleSubmitParam?.remarks}"></td>-->
+                                        <td th:if="${sampleSubmitParam?.sampleSubmissionId?.workPlanGeneratedID != null}">
+                                            <a sec:authorize="hasAuthority('MS_IO_MODIFY')" th:href="@{/api/ms/sample-submit-lab/(labParmID=${sampleSubmitParam?.id}, currentPage=0,pageSize=10,ViewType=${ViewType})}"
+                                               th:if="${sampleSubmitParam?.bsNumber == null and sampleSubmitParam?.sampleSubmissionId?.workPlanGeneratedID?.sampleSubmittedStatus == 1 and sampleSubmitParam?.sampleSubmissionId?.workPlanGeneratedID?.ssfLabparamsStatus == 1 }" class="filter-link bsNumberBtn " style="color: white">Add BS Number</a></td>
+
+                                        <td th:if="${sampleSubmitParam?.sampleSubmissionId?.msFuelInspectionId != null}">
+                                            <a sec:authorize="hasAuthority('MS_IOP_MODIFY')" th:href="@{/api/ms/sample-submit-lab/(labParmID=${sampleSubmitParam?.id}, currentPage=0,pageSize=10,ViewType=${ViewType})}"
+                                               th:if="${sampleSubmitParam?.bsNumber == null and sampleSubmitParam?.sampleSubmissionId?.msFuelInspectionId?.sampleSubmittedStatus == 1 and sampleSubmitParam?.sampleSubmissionId?.msFuelInspectionId?.ssfLabparamsStatus == 1 }" class="filter-link bsNumberBtn" style="color: white">Add BS Number</a></td>
+
+                                        <td th:if="${sampleSubmitParam?.sampleSubmissionId?.workPlanGeneratedID != null}">
+                                            <a sec:authorize="hasAuthority('MS_IO_MODIFY')" th:href="@{/api/ms/sample-submit-lab/(labParmID=${sampleSubmitParam?.id}, currentPage=0,pageSize=10,ViewType=${ViewType})}"
+                                               th:if="${sampleSubmitParam?.sampleSubmissionId?.workPlanGeneratedID?.bsNumberStatus == 1 and sampleSubmitParam?.sampleSubmissionId?.workPlanGeneratedID?.sampleSubmittedStatus == 1 and sampleSubmitParam?.sampleSubmissionId?.workPlanGeneratedID?.ssfLabparamsStatus == 1 }" class="filter-link " style="color: white">LAB</a></td>
+
+                                        <td th:if="${sampleSubmitParam?.sampleSubmissionId?.msFuelInspectionId != null}">
+                                            <a sec:authorize="hasAuthority('MS_IOP_MODIFY')" th:href="@{/api/ms/sample-submit-lab/(labParmID=${sampleSubmitParam?.id}, currentPage=0,pageSize=10,ViewType=${ViewType})}"
+                                               th:if="${sampleSubmitParam?.sampleSubmissionId?.msFuelInspectionId?.bsNumberStatus == 1 and sampleSubmitParam?.sampleSubmissionId?.msFuelInspectionId?.sampleSubmittedStatus == 1 and sampleSubmitParam?.sampleSubmissionId?.msFuelInspectionId?.ssfLabparamsStatus == 1
+                                               and  sampleSubmitParam?.labPassedStatus == null and sampleSubmitParam?.labFailedStatus == null}" class="filter-link " style="color: white">LAB</a></td>
+
+                                        <td th:if="${sampleSubmitParam?.sampleSubmissionId?.msFuelInspectionId != null}">
+                                        <a sec:authorize="hasAuthority('MS_IOP_MODIFY')" th:if="${sampleSubmitParam?.labResultStatusGood == 1 and sampleSubmitParam?.labResultStatus == 1
+                                    and sampleSubmitParam?.labPassedStatus != null and sampleSubmitParam?.labFailedStatus != null and sampleSubmitParam?.ownerLabResultsStatus == null}"  class="filter-link"
+                                           th:href="@{/api/ms/sample-submit-lab(labParmID=${sampleSubmitParam?.id},currentPage=0,pageSize=10,ViewType=${ViewType})}" style="color: white">SEND RESULTS</a></td>
+
+                                    </tr>
+
+                                    </tbody>
+                                </table>
+<!--                                <div class="pagination-div">-->
+<!--                                    <div th:if="${sampleCollect?.workPlanGeneratedID != null}">-->
+<!--                                        <span th:if="${sampleSubmitParams.hasPrevious()}">-->
+<!--                                            <a th:href="@{/api/ms/sample-submit(workPlanID=${sampleSubmit?.workPlanGeneratedID?.id},currentPage=${sampleSubmitParams?.number-1},pageSize=${sampleSubmitParams?.size},ViewType=${ViewType})}">Previous</a>-->
+<!--                                        </span>-->
+<!--                                        <span th:if="${sampleSubmitParams.hasNext()}">-->
+<!--                                            <a th:href="@{/api/ms/sample-submit(workPlanID=${sampleSubmit?.workPlanGeneratedID?.id},currentPage=${sampleSubmitParams?.number+1},pageSize=${sampleSubmitParams?.size},ViewType=${ViewType})}">Next</a>-->
+<!--                                        </span>-->
+<!--                                    </div>-->
+<!--                                    <div th:if="${sampleCollect?.msFuelInspectionId != null}">-->
+<!--                                        <span th:if="${sampleSubmitParams.hasPrevious()}">-->
+<!--                                            <a th:href="@{/api/ms/sample-submit(fuelInspectID=${sampleSubmit?.msFuelInspectionId?.id},currentPage=${sampleSubmitParams?.number-1},pageSize=${sampleSubmitParams?.size},ViewType=${ViewType})}">Previous</a>-->
+<!--                                        </span>-->
+<!--                                        <span th:if="${sampleSubmitParams.hasNext()}">-->
+<!--                                            <a th:href="@{/api/ms/sample-submit(fuelInspectID=${sampleSubmit?.msFuelInspectionId?.id},currentPage=${sampleSubmitParams?.number+1},pageSize=${sampleSubmitParams?.size},ViewType=${ViewType})}">Next</a>-->
+<!--                                        </span>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+                            </div>
+                                </div></div>
+                        </div>
+                        <div class="filter-block">
+                            <div class="filter-block-title">
+                                <div class="filter-title">Action:</div>
+                            </div>
+                            <div>
+                                <div th:if="${sampleSubmit?.workPlanGeneratedID != null}">
+                                    <a sec:authorize="hasAuthority('MS_IO_MODIFY')" th:if="${sampleSubmit?.workPlanGeneratedID?.sampleSubmittedStatus == 1 and sampleSubmit?.workPlanGeneratedID?.ssfLabparamsStatus != 1}"  class="filter-link uploadBtn" style="color: white">ADD NEW</a>
+<!--                                    <a sec:authorize="hasAuthority('MS_IO_MODIFY')" th:if="${sampleSubmit?.workPlanGeneratedID?.bsNumberStatus != 1 and sampleSubmit?.workPlanGeneratedID?.sampleSubmittedStatus == 1 and sampleSubmit?.workPlanGeneratedID?.ssfLabparamsStatus == 1 }"  class="filter-link bsNumberBtn" style="color: white">ADD BS NUMBER</a>-->
+                                    <a sec:authorize="hasAuthority('MS_IO_MODIFY')" th:if="${sampleSubmit?.workPlanGeneratedID?.sampleSubmittedStatus == 1 and sampleSubmit?.workPlanGeneratedID?.ssfLabparamsStatus != 1}" th:href="@{/api/ms/sample-submit(workPlanID=${sampleSubmit?.workPlanGeneratedID?.id},currentPage=0,pageSize=10,docType ='close',ViewType=${ViewType})}" class="filter-link" style="color: white">CLOSE ADD</a>
+                                    <a sec:authorize="hasAuthority('MS_IO_MODIFY')" th:if="${sampleSubmit?.workPlanGeneratedID?.sampleSubmittedStatus == 1 and sampleSubmit?.workPlanGeneratedID?.ssfLabparamsStatus == 1 and sampleSubmit?.workPlanGeneratedID?.sendSffStatus == 1 and sampleSubmit?.workPlanGeneratedID?.bsNumberStatus != 1}" th:href="@{/api/ms/sample-submit(workPlanID=${sampleSubmit?.workPlanGeneratedID?.id},currentPage=0,pageSize=10,docType ='closeBs',ViewType=${ViewType})}" class="filter-link" style="color: white">CLOSE BS NUMBER</a>
+                                </div>
+                                <div th:if="${sampleSubmit?.msFuelInspectionId != null}">
+                                    <a sec:authorize="hasAuthority('MS_IOP_MODIFY')" th:if="${sampleSubmit?.msFuelInspectionId?.sampleSubmittedStatus == 1 and sampleSubmit?.msFuelInspectionId?.ssfLabparamsStatus != 1}"  class="filter-link uploadBtn" style="color: white">ADD NEW</a>
+<!--                                    <a sec:authorize="hasAuthority('MS_IO_MODIFY')" th:if="${sampleSubmit?.msFuelInspectionId?.bsNumberStatus != 1 and sampleSubmit?.msFuelInspectionId?.sampleSubmittedStatus == 1 and sampleSubmit?.msFuelInspectionId?.ssfLabparamsStatus == 1 }"  class="filter-link bsNumberBtn" style="color: white">ADD BS NUMBER</a>-->
+                                    <a sec:authorize="hasAuthority('MS_IOP_MODIFY')" th:if="${sampleSubmit?.msFuelInspectionId?.sampleSubmittedStatus == 1 and sampleSubmit?.msFuelInspectionId?.ssfLabparamsStatus != 1}" th:href="@{/api/ms/sample-submit(fuelInspectID=${sampleSubmit?.msFuelInspectionId?.id},currentPage=0,pageSize=10,docType ='close',ViewType=${ViewType})}" class="filter-link" style="color: white">CLOSE ADD</a>
+                                    <a sec:authorize="hasAuthority('MS_IOP_MODIFY')" th:if="${sampleSubmit?.msFuelInspectionId?.sampleSubmittedStatus == 1 and sampleSubmit?.msFuelInspectionId?.ssfLabparamsStatus == 1 and sampleSubmit?.msFuelInspectionId?.sendSffStatus == 1 and sampleSubmit?.msFuelInspectionId?.bsNumberStatus != 1}" th:href="@{/api/ms/sample-submit(fuelInspectID=${sampleSubmit?.msFuelInspectionId?.id},currentPage=0,pageSize=10,docType ='closeBs',ViewType=${ViewType})}" class="filter-link" style="color: white">CLOSE BS NUMBER</a>
+
+                                    <a sec:authorize="hasAuthority('MS_IOP_MODIFY')" th:if="${sampleSubmit?.msFuelInspectionId?.sampleSubmittedStatus == 1 and sampleSubmit?.msFuelInspectionId?.ssfLabparamsStatus == 1 and sampleSubmit?.msFuelInspectionId?.sendSffStatus == 1 and sampleSubmit?.msFuelInspectionId?.bsNumberStatus == 1 and sampleSubmit?.msFuelInspectionId?.ownerAllLabResultsStatus != 1}" th:href="@{/api/ms/sample-submit(fuelInspectID=${sampleSubmit?.msFuelInspectionId?.id},currentPage=0,pageSize=10,docType ='closeSendResults',ViewType=${ViewType})}" class="filter-link" style="color: white">CLOSE SEND RESULTS</a>
+                                </div>
+<!--                                <a class="filter-link inspectBtn" th:href="@{/api/di/back-view(close = ${session.certBack},id = ${session.coc.id},section = ${session.section.section})}">Close</a>-->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="uploadForm" sec:authorize="hasAuthority('MS_IO_MODIFY') or hasAuthority('MS_IOP_MODIFY')">
+                <form id="upload-form"  enctype="multipart/form-data"  name="upload-form" th:action="@{/api/ms/onsite/forms/save(workPlanID=${detailID}, docType='sampleSubmitParam', ViewType=${ViewType})}" th:object="${sampleSubmitParamsEntity}" method="post" >
+                    <div class="modal fade" id="uploadModal" tabindex="-1" role="dialog" aria-labelledby="uploadModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 style="font-weight: bold; " class="modal-title" id="uploadModalLabel"><span id="uploadSpan-1" >none</span> Officer</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="form-group">
+                                        <input type="hidden" id="createdBy" name="createdBy" th:value="${session.currentUser.firstName}+ ' ' +${session.currentUser.lastName}">
+                                        <label for="parameters" class="col-form-label">Parameters Name</label>
+                                        <input  type="text" class="input-field w-input" id="parameters" placeholder="parameters" th:field="*{parameters}" th:required="required">
+                                        <label for="laboratoryName" class="col-form-label">Laboratory Name</label>
+                                        <select id="laboratoryName" class="select-field w-select" th:field="*{laboratoryName}">
+                                            <option value="0">Select one...</option>
+                                            <option th:each="labs : ${laboratories}" th:name="labs" th:text="${labs.labName}" th:value="${labs.labName}"></option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button class="btn btn-secondary" data-dismiss="modal" onClick="window.location.reload()"
+                                            type="button">Close
+                                    </button>
+                                    <input type="submit" id="upload-1" class="btn btn-primary" value="Save"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="bsForm" sec:authorize="hasAuthority('MS_IO_MODIFY') or hasAuthority('MS_IOP_MODIFY')">
+                <form id="bs-form"  enctype="multipart/form-data"  name="bs-form" th:action="@{/api/ms/onsite/forms/save(workPlanID=${detailID}, docType='sampleBsNumber',ViewType=${ViewType})}" method="post"  th:object="${sampleSubmitBsNumber}">
+                    <div class="modal fade" id="bsModal" tabindex="-1" role="dialog" aria-labelledby="bsModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 style="font-weight: bold; " class="modal-title" id="bsModalLabel"><span id="bsSpan-1" >none</span></h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="form-group">
+                                        <input type="hidden" id="parametersLabID" name="parametersLabID" th:value="0">
+                                        <label for="bsNumber" class="col-form-label">Bs Number</label>
+                                        <input  type="text" class="input-field w-input" id="bsNumber" placeholder="bs Number" th:field="*{bsNumber}" th:required="required">
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button class="btn btn-secondary" data-dismiss="modal" onClick="window.location.reload()"
+                                            type="button">Close
+                                    </button>
+                                    <input type="submit" id="bsBtn-1" class="btn btn-primary" value="Save"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://d3e54v103j8qbb.cloudfront.net/js/jquery-3.4.1.min.220afd743d.js" type="text/javascript" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<script src="../assets/js/webflow.js" type="text/javascript"></script>
+<script th:src="@{/assets/bootstrap3/js/bootstrap.js}" type="text/javascript"></script>
+<!-- [if lte IE 9]><script src="https://cdnjs.cloudflare.com/ajax/libs/placeholders/3.0.2/placeholders.min.js"></script><![endif] -->
+<script>
+    var acc = document.getElementsByClassName("accordion");
+    // var btn = document.getElementsByClassName("button w-button eBtn");
+    var i;
+
+    for (i = 0; i < acc.length; i++) {
+        acc[i].addEventListener("click", function () {
+            this.classList.toggle("active");
+            this.style.border = "none";
+            // this.style.position = "sticky"
+            var panel = this.nextElementSibling;
+            if (panel.style.maxHeight) {
+                panel.style.maxHeight = null;
+            } else {
+                panel.style.maxHeight = panel.scrollHeight + "px";
+                // panel.style.position = "-webkit-sticky"
+                // panel.style.position = "sticky"
+            }
+        });
+    }
+
+
+</script>
+<script>
+    var remarkType = '';
+    var myConstants = null;
+    $(document).ready(function() {
+        /***************************************************************************************************
+         * Thymeleaf Complaint Remarks Buttons
+         ***************************************************************************************************/
+
+        $('.filter-block .uploadBtn').on('click', function (event) {
+            document.getElementById('uploadSpan-1').innerHTML = 'Add New Parameters'
+            document.getElementById("upload-1").value = "ADD";
+            // document.getElementById('bsnumberID').remove();
+            $('.uploadForm #uploadModal').modal();
+        });
+
+        $('.filter-block .bsNumberBtn').on('click', function (event) {
+            document.getElementById('bsSpan-1').innerHTML = 'Add BS Number'
+            document.getElementById("bsBtn-1").value = "ADD";
+
+
+            var data_var = $(event.relatedTarget).data('some-id')
+            console.log(data_var);
+            document.getElementById("parametersLabID").value = data_var;
+            // // $(this).find('.modal-body input').val(bookId)
+            // // https://stackoverflow.com/questions/10626885/passing-data-to-a-bootstrap-modal
+            // // var data_var = $(this).data('some-id');
+            // $('#bsModal .form-group').html(' <input type="hidden" id="parametersLabID" name="parametersLabID" th:value="'+data_var+'">') ;
+            $('.bsForm #bsModal').modal();
+        });
+    });
+
+</script>
+
+</body>
+</html>
+
+

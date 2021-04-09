@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en"  xmlns:th="http://www.w3.org/1999/xhtml">
+</head>
+
+    <link href="css/style_2016.css" rel="stylesheet">
+
+    <link href="/font-awesome.min.css" rel="stylesheet">
+
+
+    <body style="position: relative; min-height: 100%; top: 0px;"><script type="text/javascript" src="./patienttimeline_files/jquery.js.download"></script>
+
+        
+        <div class="navbar navbar-inverse navbar-fixed-top">
+            <div class="navbar-inner clearfix">
+                <a class="brand" href=""><img src="" alt="" width="320" height="52" /></a>
+
+                
+                <ul class="nav">
+                    <li><a href="#" onclick="pageTracker._link(this.href); return false;">
+                        <strong>Logout</strong></a></li>
+                    <!-- <li class="divider"></li>
+                    <li><a href="/enrollfeedback" target="_blank"><strong>Give us your Feedback</strong></a></li>
+                    <li class="divider"></li>
+                    <li><a href="/enrolldonation"><strong>Donate to our courses</strong></a></li>
+                    <li class="divider"></li>
+                     <li><a href="/"><strong>manage my account</strong>
+                            </a></li>
+                    
+                    <li class="divider"></li>
+                    <li><a href="@routes.PatientController.healthtimeline()"><strong>Announcement</strong></a></li>
+                    
+                    <li class="divider"></li>
+                    <li style="border:1px solid #fff"><a href="#" style="color: #fff"><strong>Patient Timeline</strong></a></li> -->
+                    
+                </ul>
+                
+            </div>
+        </div> 
+        <div class="container-fluid">
+
+    <div class="row-fluid">
+  <div class="sidebar-nav">
+            <ul class="nav nav-list">
+                    <li class="nav-header">Standard Development  and Trade</li>
+                    <li><a href="/enrollremind" data-toggle="modal" title="Appo Reminders">
+                        <img src="img/alert.png">view available requests for compilation</a></li>
+                   
+    
+                   
+            </ul>
+            <ul class="thumbnails" style="padding-top: 10px; min-height: 100px;" id="friendsList">
+            </ul>
+        </div>
+       
+
+                  <div class="container-fluid">
+        
+                    <br>    
+        
+                     
+                  <div class="content" id="personalWizardPage">
+                      <div class="row-fluid">
+                          <div class="span1">&nbsp;</div>
+                          <div class="span8">   
+                                  <h2>Personal Information</h2>
+                              </div
+                      <div class="span2">&nbsp;</div>
+                  </div>
+                  <br>
+                  <div class="row-fluid">
+                          <div class="span1">&nbsp;</div>
+                      <div class="span8">
+                          
+                          <div class="well">
+                              <h3>sStandard Request Details</h3>
+              
+                              <table class="table-collapse noBorder">
+                                      <tbody>
+                                            <tr th:each="recordp : ${recordps}">
+
+                                         <tr>
+                                              <td><b>Name:</b></td>
+                                              <td>@profile.getFullname</td>
+                                          </tr>
+                                          <tr>
+                                              <td><b>Date of Birth:</b></td>
+                                              <td>@profile.getDob</td>
+                                          </tr>
+                                          <tr>
+                                              <td><b>Mobile no</b></td>
+                                              <td>@profile.getMobileno</td>
+                                          </tr>
+                                          <tr>
+                                              <td><b>National I.D</b></td>
+                                              <td>@profile.getIdno</td>
+                                          </tr> 
+                                          <tr>
+                                              <td><b>Gender</b></td>
+                                              <td>>@profile.getGender</td>
+                                          </tr>  
+                                          <tr>
+                                              <td><b>Area of residence</b></td>
+                                              <td>@profile.getResidence</td>
+                                          </tr>
+                                          <tr>
+                                              <td><b>Home Address</b></td>
+                                              <td>@profile.getAddress</td>
+                                          </tr>				
+                                          <tr>
+                                              <td><b>Next of kin</b></td>
+                                              <td>@profile.getNok</td>
+                                          </tr>
+                                          <tr>
+                                              <td><b>Relationship with next ok kin</b></td>
+                                              <td>@profile.getRelationship</td>
+                                          </tr>	
+                                          <div class="actions">  
+                                                <a href="@routes.ProfileController.updateProfile(profile.getId)">
+                                                        <button class="btn btn-primary">Clean the   Request </button>
+                                                  </a>      
+                                               
+                            
+                                              
+                                                  
+                                            </div>
+                                        </tr>
+
+                                        
+                                                      
+                                      </tbody>
+                                  </table>      
+                      
+                              
+                              
+                          <br>
+                         
+                          
+                      </div>
+                      <div class="span2">&nbsp;</div>
+                  </div>
+                   </div>   
+              
+                      
+                       
+                      
+              
+                      
+                      <hr>
+                     
+            <input type="hidden" id="ForgeryToken" value="p-PShebvZB3DMs5kF-CzIzSzYbZYFG6P6g9Sb3Mb_vW40zWg85eXzxgdkQdAayQ4GGxmLk2B7dXMkATlVUvPjBqss4M1,qG7IoxFW41U2Tqe6a51i2z_Yefl3e30SSG7IMkyxKjEut1R61a5jPdw488F_cOz0JBUsvKvZhUNxEBlXEU_ZqqlQIguXo8ZX01L5_YWnZFAVGpkJ0">
+                </div>  
+                <hr>
+
+              
+            
+        
+    </body></html>
+
+
+
+

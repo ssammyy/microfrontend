@@ -1,0 +1,416 @@
+<div *ngIf="userDetails" class="pb-2 mb-3 mr-2 border-bottom w-100">
+  <h3>
+    <fa-icon [icon]="arrowLeftIcon" routerLink="/users-list"
+             style="padding-right: 3px; cursor: pointer"></fa-icon>
+    {{userID}}
+  </h3>
+</div>
+
+<div class="row mt-4">
+  <div *ngIf="userDetails" class="col-lg-9 push-sm-12">
+    <div class="row">
+      <div class="col-lg-12">
+        <h4 class="mb-4">User Bio Details</h4>
+        <table class="mb-4">
+          <tbody>
+          <tr>
+            <td class="field-titles">Title</td>
+            <td>{{userDetails.title}}</td>
+          </tr>
+          <tr>
+            <td class="field-titles">First Name</td>
+            <td>{{userDetails.firstName}}</td>
+          </tr>
+          <tr>
+            <td class="field-titles">Last Name</td>
+            <td>{{userDetails.lastName}}</td>
+          </tr>
+          <tr>
+            <td class="field-titles">UserName</td>
+            <td>{{userDetails.userName}}</td>
+          </tr>
+          <tr>
+            <td class="field-titles">Email Address</td>
+            <td>{{userDetails.email}}</td>
+          </tr>
+          <tr>
+            <td class="field-titles">Registration Number</td>
+            <td>{{userDetails.userRegNo}}</td>
+          </tr>
+          <tr>
+            <td class="field-titles">Registration Date</td>
+            <td>{{userDetails.registrationDate}}</td>
+          </tr>
+          <tr>
+            <td class="field-titles">Enabled</td>
+            <td>{{userDetails.enabled}}</td>
+          </tr>
+          <tr>
+            <td class="field-titles">Account Expired</td>
+            <td>{{userDetails.accountExpired}}</td>
+          </tr>
+          <tr>
+            <td class="field-titles">Account Locked</td>
+            <td>{{userDetails.accountLocked}}</td>
+          </tr>
+          <tr>
+            <td class="field-titles">Credentials Expired</td>
+            <td>{{userDetails.credentialsExpired}}</td>
+          </tr>
+          <tr>
+            <td class="field-titles">Status</td>
+            <td>{{userDetails.status}}</td>
+          </tr>
+
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div *ngIf="userDetails.employeeProfile" class="row">
+      <div class="col-lg-12">
+        <h4 class="mb-4">Employee Profile Details</h4>
+        <table class="mb-4">
+          <tbody>
+          <!--          <tr>-->
+          <!--            <td class="field-titles">Profile Id</td>-->
+          <!--            <td>{{userDetails.employeeProfile.profileId}}</td>-->
+          <!--          </tr>-->
+          <tr>
+            <td class="field-titles">Directorate</td>
+            <td>{{userDetails.employeeProfile.directorate}}</td>
+          </tr>
+          <tr>
+            <td class="field-titles">Designation</td>
+            <td>{{userDetails.employeeProfile.designation}}</td>
+          </tr>
+          <tr>
+            <td class="field-titles">Department</td>
+            <td>{{userDetails.employeeProfile.department}}</td>
+          </tr>
+          <tr>
+            <td class="field-titles">Division</td>
+            <td>{{userDetails.employeeProfile.division}}</td>
+          </tr>
+          <tr>
+            <td class="field-titles">Section</td>
+            <td>{{userDetails.employeeProfile.section}}</td>
+          </tr>
+          <tr>
+            <td class="field-titles">L1 Sub Section</td>
+            <td>{{userDetails.employeeProfile.l1SubSubSection}}</td>
+          </tr>
+          <tr>
+            <td class="field-titles">L2 Sub Section</td>
+            <td>{{userDetails.employeeProfile.l2SubSubSection}}</td>
+          </tr>
+          <tr>
+            <td class="field-titles">Region</td>
+            <td>{{userDetails.employeeProfile.region}}</td>
+          </tr>
+          <tr>
+            <td class="field-titles">County</td>
+            <td>{{userDetails.employeeProfile.county}}</td>
+          </tr>
+          <tr>
+            <td class="field-titles">Town</td>
+            <td>{{userDetails.employeeProfile.town}}</td>
+          </tr>
+          <tr>
+            <td class="field-titles">Status</td>
+            <td>{{userDetails.employeeProfile.status}}</td>
+          </tr>
+
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!--    <div class="row">-->
+    <!--      <div class="col-lg-12">-->
+    <!--        <h4 class="mb-4">Location Details</h4>-->
+    <!--        <table class="mb-4">-->
+    <!--          <tbody>-->
+    <!--          <tr>-->
+    <!--            <td class="field-titles">County</td>-->
+    <!--            <td>{{userDetails.county}}</td>-->
+    <!--          </tr>-->
+    <!--          <tr>-->
+    <!--            <td class="field-titles">Town</td>-->
+    <!--            <td>{{userDetails.town}}</td>-->
+    <!--          </tr>-->
+    <!--          <tr>-->
+    <!--            <td class="field-titles">Market Center</td>-->
+    <!--            <td>{{userDetails.marketCenter}}</td>-->
+    <!--          </tr>-->
+    <!--          <tr>-->
+    <!--            <td class="field-titles">Building Name</td>-->
+    <!--            <td>{{userDetails.buildingName}}</td>-->
+    <!--          </tr>-->
+
+    <!--          </tbody>-->
+    <!--        </table>-->
+    <!--      </div>-->
+    <!--    </div>-->
+
+  </div>
+
+  <div class="col-lg-3 col-sm-12 pull-sm-12 mb-4">
+    <div class="mb-5">
+      <h3 class="mb-3">Actions</h3>
+      <div *ngFor="let role of accountService.userValue.roles">
+        <!--              <div *ngIf="(userDetails.rejectedStatus == null && userDetails.approvedStatus == null)">-->
+        <button (click)="openModal('assignUserARole')" *ngIf="(role == 'USER_MANAGEMENT_MODIFY')"
+                class="submit-button mb-4"
+                data-toggle="modal" type="button">USER ASSIGN ROLE
+        </button>
+        <!--        <button *ngIf="(role == 'MS_HOD_MODIFY')"  class="btn btn-outline-secondary action-button"  type="button" data-toggle="modal"  >REJECT</button>-->
+        <button (click)="openModal('assignUserACFS')" *ngIf="(role == 'RBAC_ASSIGN_CFS')"
+                class="submit-button mb-4"
+                data-toggle="modal" type="button">USER ASSIGN CFS
+        </button>
+
+      </div>
+    </div>
+  </div>
+
+
+</div>
+
+<ng-template #editModal let-modal>
+
+  <div class="modal-header">
+    <h5 class="modal-title" id="modal-basic-title">{{currDivLabel}}</h5>
+    <button (click)="modal.dismiss()" aria-label="Close" class="close" type="button">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+
+  <div class="modal-body">
+    <!--                <p>Are you sure this userDetails falls in the KEBS mandate ?</p>-->
+    <div *ngIf="(currDiv == 'assignUserARole')">
+      <form [formGroup]="assignRoleForm" class="form">
+        <div class="form-body">
+          <div class="form-group">
+
+            <div>
+              <!--                <input type="checkbox" class="form-control one-column-input" aria-label="Small" aria-describedby="inputGroup-sizing-sm" [value]="1"-->
+              <!--                       formControlName="approved"-->
+              <!--                       name="approved" required>-->
+              <label><b>Select Division</b></label>
+              <select [class.is-invalid]="formAssignRole.roleID.invalid && formAssignRole.roleID.touched"
+                      class="form-control mt-2" formControlName="roleID"
+                      name="roleID">
+                <option label="--select something --"></option>
+                <option *ngFor="let rle of rolesEntity"
+                        [value]="rle.id"> {{ rle.roleName }} </option>
+              </select>
+              <!--              <label><b>Remarks</b></label>-->
+              <!--              <textarea-->
+              <!--                [class.is-invalid]="formAssignAuthorities.approvedRemarks.invalid && formKEBSMandateIn.approvedRemarks.touched"-->
+              <!--                aria-describedby="inputGroup-sizing-sm" aria-label="Small" class="form-control one-column-input"-->
+              <!--                cols="65" formControlName="approvedRemarks"-->
+              <!--                name="approvedRemarks"-->
+              <!--                required rows="5"></textarea>-->
+
+            </div>
+          </div>
+        </div>
+
+
+      </form>
+    </div>
+
+    <div *ngIf="(currDiv == 'assignUserACFS')">
+      <form [formGroup]="assignCfsForm" class="form">
+        <div class="form-body">
+          <div class="form-group">
+            <div>
+              <label><b>Select cfs</b></label>
+              <select [class.is-invalid]="formAssignCfs.cfsID.invalid && formAssignCfs.cfsID.touched"
+                      class="form-control mt-2" formControlName="cfsID"
+                      name="cfsID">
+                <option label="--select something --"></option>
+                <option *ngFor="let cfs of cfsEntity"
+                        [value]="cfs.id"> {{ cfs.subSection }} </option>
+              </select>
+
+            </div>
+          </div>
+        </div>
+
+      </form>
+    </div>
+
+    <!--    <div *ngIf="(currDiv == 'rejectuserDetails')">-->
+    <!--      <form [formGroup]="rejectuserDetailsForm" class="form">-->
+    <!--        <div class="form-body">-->
+    <!--          <div class="form-group">-->
+    <!--            &lt;!&ndash;            <label><b>Choose type of rejection</b></label>&ndash;&gt;-->
+    <!--            <div>-->
+    <!--              &lt;!&ndash;              <select class="browser-default custom-select" name="rejectType"&ndash;&gt;-->
+    <!--              &lt;!&ndash;                      formControlName="rejectType"&ndash;&gt;-->
+    <!--              &lt;!&ndash;                      [class.is-invalid]="formKEBSNotMandateIn.rejectType.invalid && formKEBSNotMandateIn.rejectType.touched">&ndash;&gt;-->
+<!--              &lt;!&ndash;                <option label="&#45;&#45;select something &#45;&#45;"></option>&ndash;&gt;-->
+<!--              &lt;!&ndash;                <option [value]="reject.id"&ndash;&gt;-->
+<!--              &lt;!&ndash;                        *ngFor="let reject of rejectOptions"> {{ reject.option }} </option>&ndash;&gt;-->
+<!--              &lt;!&ndash;                &lt;!&ndash;                                  <option [value]="0" selected>single</option>&ndash;&gt;&ndash;&gt;-->
+<!--              &lt;!&ndash;                &lt;!&ndash;                                  <option [value]="1">Weekly</option>&ndash;&gt;&ndash;&gt;-->
+<!--              &lt;!&ndash;                &lt;!&ndash;                                  <option [value]="2">Monthly</option>&ndash;&gt;&ndash;&gt;-->
+<!--              &lt;!&ndash;                &lt;!&ndash;                                  <option [value]="3">Yearly</option>&ndash;&gt;&ndash;&gt;-->
+<!--              &lt;!&ndash;              </select>&ndash;&gt;-->
+<!--              <label><b>Remarks</b></label>-->
+<!--              <textarea-->
+<!--                [class.is-invalid]="formKEBSNotMandateIn.rejectedRemarks.invalid && formKEBSNotMandateIn.rejectedRemarks.touched"-->
+<!--                aria-describedby="inputGroup-sizing-sm" aria-label="Small" class="form-control one-column-input"-->
+<!--                cols="65" formControlName="rejectedRemarks"-->
+<!--                name="rejectedRemarks"-->
+<!--                required rows="5"></textarea>-->
+
+<!--              &lt;!&ndash;                                <div class="single" *ngIf="selectedValue == 0">single working fine</div>&ndash;&gt;-->
+<!--              &lt;!&ndash;                                <div class="weekly" *ngIf="selectedValue == 1">Weekly working fine</div>&ndash;&gt;-->
+<!--              &lt;!&ndash;                                <div class="monthly" *ngIf="selectedValue == 2">monthly working fine</div>&ndash;&gt;-->
+<!--              &lt;!&ndash;                                <div class="yearly" *ngIf="selectedValue == 3">yearly working fine</div>&ndash;&gt;-->
+<!--            </div>-->
+<!--          </div>-->
+<!--        </div>-->
+
+
+<!--      </form>-->
+<!--    </div>-->
+
+<!--    <div *ngIf="(currDiv == 'rejectOGAuserDetails')">-->
+<!--      <form [formGroup]="adviceuserDetailsForm" class="form">-->
+<!--        <div class="form-body">-->
+<!--          <div class="form-group">-->
+<!--            <div>-->
+<!--              <label><b>Remarks</b></label>-->
+<!--              <textarea-->
+<!--                [class.is-invalid]="formKEBSNotMandateButWithinOGA.rejectedRemarks.invalid && formKEBSNotMandateButWithinOGA.rejectedRemarks.touched"-->
+<!--                aria-describedby="inputGroup-sizing-sm" aria-label="Small" class="form-control one-column-input"-->
+<!--                cols="65" formControlName="rejectedRemarks"-->
+<!--                name="rejectedRemarks"-->
+<!--                required rows="5"></textarea>-->
+<!--              <label><b>Advice</b></label>-->
+<!--              <textarea-->
+<!--                [class.is-invalid]="formKEBSNotMandateButWithinOGA.advisedWhereToRemarks.invalid && formKEBSNotMandateButWithinOGA.advisedWhereToRemarks.touched"-->
+<!--                aria-describedby="inputGroup-sizing-sm" aria-label="Small" class="form-control one-column-input"-->
+<!--                cols="65" formControlName="advisedWhereToRemarks"-->
+<!--                name="advisedWhereToRemarks"-->
+<!--                required rows="5"></textarea>-->
+
+<!--              &lt;!&ndash;                                <div class="single" *ngIf="selectedValue == 0">single working fine</div>&ndash;&gt;-->
+<!--              &lt;!&ndash;                                <div class="weekly" *ngIf="selectedValue == 1">Weekly working fine</div>&ndash;&gt;-->
+<!--              &lt;!&ndash;                                <div class="monthly" *ngIf="selectedValue == 2">monthly working fine</div>&ndash;&gt;-->
+<!--              &lt;!&ndash;                                <div class="yearly" *ngIf="selectedValue == 3">yearly working fine</div>&ndash;&gt;-->
+<!--            </div>-->
+<!--          </div>-->
+<!--        </div>-->
+
+
+<!--      </form>-->
+<!--    </div>-->
+
+<!--    <div *ngIf="(currDiv == 'assignOfficer')">-->
+<!--      <form [formGroup]="assignIOuserDetailsForm" class="form">-->
+<!--        <div class="form-body">-->
+<!--          <div class="form-group">-->
+
+<!--            <div>-->
+<!--              &lt;!&ndash;                <input type="checkbox" class="form-control one-column-input" aria-label="Small" aria-describedby="inputGroup-sizing-sm" [value]="1"&ndash;&gt;-->
+<!--              &lt;!&ndash;                       formControlName="approved"&ndash;&gt;-->
+<!--              &lt;!&ndash;                       name="approved" required>&ndash;&gt;-->
+<!--              <label><b>Select Officer</b></label>-->
+<!--              <select [class.is-invalid]="formKEBSAssignIO.assignedIo.invalid && formKEBSAssignIO.assignedIo.touched"-->
+<!--                      class="form-control mt-2" formControlName="assignedIo"-->
+<!--                      id="field_officers"-->
+<!--                      name="assignedIo">-->
+<!--                <option label="&#45;&#45;select something &#45;&#45;"></option>-->
+<!--                <option *ngFor="let officer of userDetails.officersList"-->
+    <!--                        [value]="officer.id"> {{ officer.firstName }} {{ officer.lastName }} </option>-->
+    <!--              </select>-->
+    <!--              <label><b>Remarks</b></label>-->
+    <!--              <textarea-->
+    <!--                [class.is-invalid]="formKEBSAssignIO.assignedRemarks.invalid && formKEBSAssignIO.assignedRemarks.touched"-->
+    <!--                aria-describedby="inputGroup-sizing-sm" aria-label="Small" class="form-control one-column-input"-->
+    <!--                cols="65" formControlName="assignedRemarks"-->
+    <!--                name="assignedRemarks"-->
+    <!--                required rows="5"></textarea>-->
+
+    <!--            </div>-->
+    <!--          </div>-->
+    <!--        </div>-->
+
+
+    <!--      </form>-->
+    <!--    </div>-->
+
+
+  </div>
+
+  <div *ngIf="userDetails" class="modal-footer">
+    <button (click)="modal.dismiss()" class="btn btn-outline-secondary mr-4" data-dismiss="modal" type="button">NO
+    </button>
+    <button (click)="onSubmitAssignedRole(userDetails?.id); modal.dismiss()"
+            *ngIf="currDiv == 'assignUserARole'"
+            [disabled]="!assignRoleForm.valid" class="submit-button"
+            data-dismiss="modal"
+            type="button">ASSIGN ROLE
+    </button>
+    <button (click)="onSubmitAssignedCFS(userDetails?.employeeProfile?.profileId); modal.dismiss()"
+            *ngIf="currDiv == 'assignUserACFS'"
+            [disabled]="!assignCfsForm.valid" class="submit-button"
+            data-dismiss="modal"
+            type="button">ASSIGN CFS
+    </button>
+    <!--    <button (click)="onRejectKEBSMandate(userDetails.refNumber); modal.dismiss()" *ngIf="currDiv == 'rejectuserDetails'"-->
+    <!--            [disabled]="!rejectuserDetailsForm.valid" class="submit-button" data-dismiss="modal"-->
+    <!--            type="button">SEND FEEDBACK-->
+    <!--    </button>-->
+    <!--    <button (click)="onAdviceKEBSMandate(userDetails.refNumber); modal.dismiss()"-->
+    <!--            *ngIf="currDiv == 'rejectOGAuserDetails'"-->
+    <!--            [disabled]="!adviceuserDetailsForm.valid" class="submit-button" data-dismiss="modal"-->
+    <!--            type="button">SEND FEEDBACK-->
+    <!--    </button>-->
+
+    <!--    <button (click)="onAssignOfficer(userDetails.refNumber); modal.dismiss()" *ngIf="currDiv == 'assignOfficer'"-->
+    <!--            [disabled]="!assignIOuserDetailsForm.valid" class="submit-button" data-dismiss="modal"-->
+    <!--            type="button">ASSIGN-->
+    <!--    </button>-->
+    <!--        <button type="button" class="submit-button" (click)="onAcceptuserDetails(userDetails)">CONFIRM AND FORWARD</button>-->
+  </div>
+
+</ng-template>
+
+<!--&lt;!&ndash; Modal &ndash;&gt;-->
+<!--<div aria-hidden="true" aria-labelledby="exampleModalCenterTitle" class="modal fade" id="rejectModal"-->
+<!--     role="dialog" tabindex="-1">-->
+<!--  <div class="modal-dialog modal-dialog-centered" role="document">-->
+<!--    <div class="modal-content">-->
+<!--      <div class="modal-header">-->
+<!--        <h5 class="modal-title" id="rejectModalLongTitle">Reject userDetails</h5>-->
+<!--        <button aria-label="Close" class="close" data-dismiss="modal" type="button">-->
+<!--          <span aria-hidden="true">&times;</span>-->
+<!--        </button>-->
+
+<!--      </div>-->
+<!--      <div class="modal-body">-->
+<!--        <form [formGroup]="rejectuserDetailsForm" class="form">-->
+<!--          <div class="form-body">-->
+<!--            <div class="form-group">-->
+<!--              <label><b>CLICK The buttons below based on type of rejection</b></label>-->
+<!--            </div>-->
+<!--          </div>-->
+<!--        </form>-->
+<!--      </div>-->
+<!--      <div class="modal-footer">-->
+<!--        &lt;!&ndash;        <button type="button" class="btn btn-outline-secondary mr-4" data-dismiss="modal">NO</button>&ndash;&gt;-->
+<!--        <button (click)="openModal('rejectOGAuserDetails')" class="submit-button" data-dismiss="modal" type="button">OGA-->
+<!--          REJECTION-->
+<!--        </button>-->
+<!--        <button (click)="openModal('rejectuserDetails')" class="submit-button" data-dismiss="modal" type="button">REJECT-->
+<!--        </button>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--  </div>-->
+<!--</div>-->
+

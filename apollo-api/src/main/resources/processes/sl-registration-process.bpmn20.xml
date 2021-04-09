@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:flowable="http://flowable.org/bpmn"
+             xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+             xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC"
+             xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             expressionLanguage="https://www.w3.org/1999/XPath"
+             targetNamespace="http://www.activiti.org/test">
+    <process id="slRegistrationProcess" name="Standards Levy Registration Process" isExecutable="true">
+        <startEvent id="slrStart" name="Start"></startEvent>
+        <userTask id="slrRegister" name="Manufacturer Registration"></userTask>
+        <sequenceFlow id="flow1" sourceRef="slrStart" targetRef="slrRegister"></sequenceFlow>
+        <exclusiveGateway id="exclusivegateway1" name="Exclusive Gateway"></exclusiveGateway>
+        <sequenceFlow id="flow2" sourceRef="slrRegister" targetRef="exclusivegateway1"></sequenceFlow>
+        <userTask id="slrFillSl1Form" name="Fill SL 1 Form">
+            <extensionElements>
+                <flowable:taskListener event="assignment"
+                                       expression="${bpmnNotifications.sendEmail(task)}"></flowable:taskListener>
+            </extensionElements>
+        </userTask>
+        <sequenceFlow id="flow3" sourceRef="exclusivegateway1" targetRef="slrFillSl1Form">
+            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${isContractor==0}]]></conditionExpression>
+        </sequenceFlow>
+        <userTask id="slrFillSl1CForm" name="Fill SL 1 C Form">
+            <extensionElements>
+                <flowable:taskListener event="assignment"
+                                       expression="${bpmnNotifications.sendEmail(task)}"></flowable:taskListener>
+            </extensionElements>
+        </userTask>
+        <sequenceFlow id="flow4" sourceRef="exclusivegateway1" targetRef="slrFillSl1CForm">
+            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${isContractor==1}]]></conditionExpression>
+        </sequenceFlow>
+        <userTask id="slrSubmitDetails" name="Submit Details">
+            <extensionElements>
+                <flowable:taskListener event="assignment"
+                                       expression="${bpmnNotifications.sendEmail(task)}"></flowable:taskListener>
+            </extensionElements>
+        </userTask>
+        <sequenceFlow id="flow5" sourceRef="slrFillSl1CForm" targetRef="slrSubmitDetails"></sequenceFlow>
+        <serviceTask id="slrSendConfirmationEmail" name="Send Confirmation Email"
+                     flowable:expression="${bpmnCommonFunctions.generateBSNumber()}"></serviceTask>
+        <sequenceFlow id="flow6" sourceRef="slrSubmitDetails" targetRef="slrSendConfirmationEmail"></sequenceFlow>
+        <sequenceFlow id="flow7" sourceRef="slrFillSl1Form" targetRef="slrSubmitDetails"></sequenceFlow>
+        <endEvent id="slrEnd" name="End">
+            <extensionElements>
+                <flowable:executionListener event="end"
+                                            expression="${standardsLevyBpmn.endSlRegistrationProcess(objectId)}"></flowable:executionListener>
+            </extensionElements>
+        </endEvent>
+        <sequenceFlow id="flow8" sourceRef="slrSendConfirmationEmail" targetRef="slrEnd"></sequenceFlow>
+    </process>
+    <bpmndi:BPMNDiagram id="BPMNDiagram_slRegistrationProcess">
+        <bpmndi:BPMNPlane bpmnElement="slRegistrationProcess" id="BPMNPlane_slRegistrationProcess">
+            <bpmndi:BPMNShape bpmnElement="slrStart" id="BPMNShape_slrStart">
+                <omgdc:Bounds height="35.0" width="35.0" x="160.0" y="80.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="slrRegister" id="BPMNShape_slrRegister">
+                <omgdc:Bounds height="71.0" width="121.0" x="300.0" y="62.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="exclusivegateway1" id="BPMNShape_exclusivegateway1">
+                <omgdc:Bounds height="40.0" width="40.0" x="520.0" y="77.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="slrFillSl1Form" id="BPMNShape_slrFillSl1Form">
+                <omgdc:Bounds height="55.0" width="105.0" x="690.0" y="70.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="slrFillSl1CForm" id="BPMNShape_slrFillSl1CForm">
+                <omgdc:Bounds height="55.0" width="105.0" x="488.0" y="200.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="slrSubmitDetails" id="BPMNShape_slrSubmitDetails">
+                <omgdc:Bounds height="55.0" width="105.0" x="690.0" y="200.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="slrSendConfirmationEmail" id="BPMNShape_slrSendConfirmationEmail">
+                <omgdc:Bounds height="71.0" width="121.0" x="870.0" y="192.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="slrEnd" id="BPMNShape_slrEnd">
+                <omgdc:Bounds height="35.0" width="35.0" x="1040.0" y="210.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNEdge bpmnElement="flow1" id="BPMNEdge_flow1">
+                <omgdi:waypoint x="195.0" y="97.0"></omgdi:waypoint>
+                <omgdi:waypoint x="300.0" y="97.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow2" id="BPMNEdge_flow2">
+                <omgdi:waypoint x="421.0" y="97.0"></omgdi:waypoint>
+                <omgdi:waypoint x="520.0" y="97.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow3" id="BPMNEdge_flow3">
+                <omgdi:waypoint x="560.0" y="97.0"></omgdi:waypoint>
+                <omgdi:waypoint x="690.0" y="97.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow4" id="BPMNEdge_flow4">
+                <omgdi:waypoint x="540.0" y="117.0"></omgdi:waypoint>
+                <omgdi:waypoint x="540.0" y="200.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow5" id="BPMNEdge_flow5">
+                <omgdi:waypoint x="593.0" y="227.0"></omgdi:waypoint>
+                <omgdi:waypoint x="690.0" y="227.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow6" id="BPMNEdge_flow6">
+                <omgdi:waypoint x="795.0" y="227.0"></omgdi:waypoint>
+                <omgdi:waypoint x="870.0" y="227.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow7" id="BPMNEdge_flow7">
+                <omgdi:waypoint x="742.0" y="125.0"></omgdi:waypoint>
+                <omgdi:waypoint x="742.0" y="200.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow8" id="BPMNEdge_flow8">
+                <omgdi:waypoint x="991.0" y="227.0"></omgdi:waypoint>
+                <omgdi:waypoint x="1040.0" y="227.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+        </bpmndi:BPMNPlane>
+    </bpmndi:BPMNDiagram>
+</definitions>

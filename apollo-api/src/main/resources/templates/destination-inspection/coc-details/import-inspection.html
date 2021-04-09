@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html data-wf-page="5e70fb3a565ebdc05ddb37cf" data-wf-site="5e70fb3a565ebd99c1db37ce"
+      xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <title>KEBS</title>
+    <th:block th:include="fragments/general-form.html:: headerfiles"/>
+</head>
+<body>
+<div class="top-bar" th:replace="fragments/general-form.html:: top-bar"></div>
+<div class="section">
+    <div class="w-layout-grid main-grid">
+        <div class="main-grid-side-navigation" id="w-node-d308c123a20f-c123a20d" th:replace="fragments/general-form.html:: side-navigation-bar"></div>
+        <div class="main-content-div" id="w-node-d308c123a224-c123a20d">
+            <div class="content-nav" th:replace="fragments/general-form.html:: content-navigation-bar"></div>
+            <div class="content-wrap">
+                <div sec:authorize="isAuthenticated()" class="content-row-top">
+                    <h2>Imported Goods With CoC</h2><br>
+                    <a class="content-button"
+                       th:href="@{/api/di/all-CoCs(id=${session.currentUser.id},userRole = ${session.currentUser.userTypes.defaultRole.id},section = ${session.section.section},currentPage=0,pageSize=10)}"><span
+                            class="font-awesome-span"></span>Goods With CoC</a>
+                    <!--                    <a class="content-button" th:href="@{/api/inspection/supervisor/excempt-pvoc}" ><span class="font-awesome-span"></span>Imported Goods Without COC</a>-->
+                    <!--                    <a class="content-button" ><span class="font-awesome-span"></span>Courier Goods</a>-->
+                    <!--                    <a class="content-button" th:href="@{/api/inspection/supervisor/temporary-imports}"><span class="font-awesome-span"></span>Temporary Import Applications</a>-->
+                    <!--                    <a class="content-button" th:href="@{/api/inspection/officer}"><span class="font-awesome-span"></span>Motor Vehicle Destination Inspection</a>-->
+                    <a class="content-button" sec:authorize="hasAuthority('CD_SUPERVISOR_READ')" th:href="@{/api/di/blacklist}"><span class="font-awesome-span"></span>Consignment Blacklists</a>
+                    <a class="content-button" sec:authorize="hasAuthority('CD_SUPERVISOR_READ')" th:href="@{/api/di/all-CoCs-target-blacklist(actionType = 'Targeting',section = ${session.section.section},currentPage=0,pageSize=10)}"><span
+                            class="font-awesome-span"></span>Consignment Targeted For Inspections</a>
+                    <!--                    <a class="content-button" ><span class="font-awesome-span"></span>Auction Goods &amp; Vehicles</a>-->
+                </div>
+                <div class="div-block-4">
+                    <a class="content-button" ><span class="font-awesome-span"></span>Notifications</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

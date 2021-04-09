@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<div>
+    <div class="row">
+        <div class="col-lg-7">
+            <div>
+                <label>Filter:
+                    <input ng-model="searchText.subRegion" placeholder="Enter  Region to search" type="text">
+                </label><br/><br/>
+            </div>
+            <div id="role-list">
+                <button class="content-nav-link tablinks"
+                        ng-click="loadInitialData()"
+                        style="float: right; margin-bottom: 2em; height: 20px;"><i
+                        class="fa fa-refresh"></i>
+                </button>
+                <table class="table table-striped table-hover">
+                    <thead>
+                    <tr>
+                        <!--                        <th>item#</th>-->
+                        <th>Name</th>
+                        <th>Enabled</th>
+                        <th>View</th>
+
+                    </tr>
+                    </thead>
+                    <tbody>
+
+                    <tr ng-repeat="subRegion in paged.subRegions |filter : searchText">
+                        <!--                        <td> {{ designation.id }}</td>-->
+                        <td> {{ subRegion.subRegion }}</td>
+                        <td>
+                            <label>
+                                <input ng-model="subRegion.status" readonly type="checkbox"/>
+                            </label>
+                        </td>
+
+                        <td>
+                            <a class="edit-button"
+                               ng-click="editsubRegion(subRegion)">View</a>
+                        </td>
+
+                    </tr>
+                    </tbody>
+                </table>
+
+                <!--    {{noOfPages}} &nbsp; {{currentPage}} &nbsp; {{maxSize}}-->
+                <pagination items-per-page="itemsPerPage" max-size="maxSize"
+                            ng-model="currentPage" num-pages="noOfPages"
+                            total-items="subRegions.length"></pagination>
+            </div>
+        </div>
+        <div class="col-lg-5" style="margin-top: 5%;">
+            <div class="form-block w-form" id="role-form-div">
+                <form ng-submit="submitsubRegion()">
+                    <!-- <h2>ROLE DETAILS</h2> -->
+                    <div>
+                        <label class="field-label" for="id">#</label>
+                        <input class="w-input" id="id" ng-model="subRegionsForm.id"
+                               readonly required="" type="text">
+                    </div>
+                    <div>
+                        <label class="field-label" for="name">Name</label>
+                        <input class="w-input" id="name"
+                               ng-model="subRegionsForm.subRegion" type="text">
+                    </div>
+
+                    <div>
+                        <label for="status">Enabled</label>
+                        <input class="checkbox" id="status" ng-model="subRegionsForm.status"
+                               type="checkbox">
+                    </div>
+
+
+                    <div>
+                        <label class="field-label" for="county">Select County
+                        </label>
+                        <select id="county" ng-model="subRegionsForm.regionId">
+                            <option value="">Select One...</option>
+                            <option convert-to-number ng-repeat="x in activeRegions track by x.id"
+                                    ng-value="{{x.id}}">{{x.region}}
+                            </option>
+                        </select>
+                    </div>
+
+                    <input class="w-button" data-wait="Please wait..." type="submit"
+                           value="Save">
+                    <input class="w-button" data-wait="Please wait..." type="reset"
+                           value="Cancel">
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>

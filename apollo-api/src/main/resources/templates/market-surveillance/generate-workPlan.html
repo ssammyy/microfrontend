@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<!--  This site was created in Webflow. http://www.webflow.com  -->
+<!--  Last Published: Fri Jul 17 2020 07:38:10 GMT+0000 (Coordinated Universal Time)  -->
+<html data-wf-page="5f114f29a0db1a1e9a44be8b" data-wf-site="5e70fb3a565ebd99c1db37ce"
+      xmlns:th="http://www.thymeleaf.org"
+>
+<head>
+    <meta charset="utf-8">
+    <title>KEBS</title>
+    <th:block th:include="fragments/general-form.html :: headerfiles"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/css/multiStepForm.css}"/>
+    <link rel="stylesheet" th:href="@{/assets/bootstrap3/css/bootstrap.css}"/>
+</head>
+<body>
+<div class="top-bar" th:replace="fragments/general-form.html :: top-bar"></div>
+<div class="section">
+    <div class="w-layout-grid main-grid">
+        <div class="main-grid-side-navigation" id="w-node-d308c123a20f-c123a20d" th:replace="fragments/general-form.html :: side-navigation-bar"></div>
+        <div id="w-node-27962c2db181-c676b3e3" class="main-content-div">
+            <div class="content-nav" th:replace="fragments/general-form.html :: content-navigation-bar"></div>
+            <div class="content-wrap">
+                <div class="row">
+                    <div class="col-md-6 col-md-offset-3">
+                        <form id="msform" enctype="multipart/form-data" method="post" th:object="${msWorkPlanGeneratedEntity}" th:action="@{/api/ms/create/workPlan/save(createdWorkPlanUuid=${createdWorkPlan.uuid})}">
+                            <fieldset >
+                                <h2 class="fs-title">Generate Activity</h2>
+                                <h3 class="fs-subtitle">Fill in bellow activity Details </h3>
+                                <label class="field-label" for="complaintDepartment">Department</label>
+                                <select id="complaintDepartment" name="complaintDepartment" required="required" class="select-field w-select" th:field="*{complaintDepartment}">
+                                    <option value="">Select One...</option>
+                                    <option th:each="department : ${departments}" th:text="${department.department}" th:value="${department.id}"></option>
+                                </select>
+                                <!--                                <input class="input-field w-input" id="department" required="" placeholder="Department" th:field="*{department}" th:required="required" type="text">-->
+                                <label class="field-label" for="division">Division</label>
+                                <select id="divisionId" name="divisionId" class="select-field w-select" th:field="*{divisionId}">
+                                    <option value="">Select One...</option>
+                                    <!--                                    <option th:each="division : ${divisions}" th:text="${division.division}" th:value="${division.id}"></option>-->
+                                </select>
+                                <label class="field-label" for="nameActivity">Name of Activity</label>
+                                <select id="nameActivity" class="input-field w-input" th:field="*{nameActivity}">
+                                    <option value="0">Select one...</option>
+                                    <option th:value="'Survillance'" th:text="Survillance"></option>
+                                    <option th:value="'Complaint'" th:text="Complaint"></option>
+                                </select>
+                                <label class="field-label" for="timeActivityDate">Date of activity </label>
+                                <input class="input-field w-input"  required="required" id="timeActivityDate" th:field="*{timeActivityDate}" type="date">
+                                <label class="field-label" for="county">County</label>
+                                <select id="county" name="county" class="form-control" th:field="*{county}">
+                                    <option value="0">Select One...</option>
+                                    <option th:each="county : ${counties}" th:text="${county.county}" th:value="${county.id}"></option>
+                                    <!--                                        <option th:each="subRegion : ${subRegions}" th:text="${subRegion.subRegion}" th:value="${subRegion.id}"></option>-->
+                                </select>
+                                <!--                                <label class="field-label" for="subcounty">Subcounty</label>-->
+                                <!--                                <input class="input-field w-input" id="subcounty" placeholder="Subcounty" th:field="*{subcounty}" th:required="required">-->
+                                <label class="field-label" for="townMarketCenter">Town/market center</label>
+                                <select id="townMarketCenter" name="townMarketCenter" class="input-field w-input" th:field="*{townMarketCenter}">
+                                    <option value="0">Select One...</option>
+                                    <!--                                        <option th:each="subRegion : ${subRegions}" th:text="${subRegion.subRegion}" th:value="${subRegion.id}"></option>-->
+                                </select>
+                                <!--                                <input class="input-field w-input" id="townMarketCenter" placeholder="Town/market center" th:field="*{townMarketCenter}" th:required="required">-->
+                                <label class="field-label" for="locationActivityOther">Other</label>
+                                <input class="input-field w-input" id="locationActivityOther" placeholder="Other" th:field="*{locationActivityOther}" th:required="required">
+<!--                                <input class="input-field w-input" id="nameActivity" placeholder="Name of Activity" th:field="*{nameActivity}" th:required="required" type="text">-->
+<!--                                <label class="field-label" for="targetedProducts">Targeted products</label>-->
+<!--                                <input class="input-field w-input" id="targetedProducts" placeholder="Targeted products" th:field="*{targetedProducts}" th:required="required" type="text">-->
+                                <label for="standardCategory" class="field-label">Select Product Category:</label>
+                                <select id="standardCategory" name="standardCategory" required="required" class="select-field w-select" th:field="*{standardCategory}">
+                                    <option value="">Select One...</option>
+                                    <option th:each="stdCat : ${standardCategory}" th:text="${stdCat.standardCategory}" th:value="${stdCat.id}"></option>
+                                </select>
+                                <label for="broadCat" class="field-label">Broad Product Category</label>
+                                <select reqiured="" id="broadCat" th:field="*{broadProductCategory}" class="select-field w-select">
+                                    <option value="">Select one...</option>
+                                </select>
+                                <label for="productCategories" class="field-label">Product Category</label>
+                                <select reqiured="" id="productCategories" th:field="*{productCategory}" class="select-field w-select">
+                                    <option value="">Select one...</option>
+                                    <!--                                        <option value="">Select one...</option>-->
+                                    <!--                                        <option  th:each="product : ${session.products}" th:value="${product.id}" th:text="${product.category}"></option>-->
+                                </select>
+                                <label for="product" class="field-label">Product</label>
+                                <select reqiured="" id="product" th:field="*{product}" class="select-field w-select">
+                                    <option value="">Select one...</option>
+                                </select>
+                                <label for="subc" class="field-label">Product Sub-Category</label>
+                                <select reqiured="" id="subc" th:field="*{productSubCategory}" class="select-field w-select">
+                                    <option value="">Select one...</option>
+                                </select>
+                                <label class="field-label" for="todolist">Resources required</label>
+                                <input onfocus="this.value=''" id="entryText" />
+                                <button id="btn_add" style="background: #47cf73">add</button>
+                                <textarea id="todolist" class="todolist" name="todolist" rows="10" placeholder="maintain resources required tasks" th:field="*{resourcesRequired}"></textarea>
+<!--                                <input class="input-field w-input" id="resourcesRequired" placeholder="Resources required" th:field="*{resourcesRequired}" th:required="required"  type="text">-->
+                                <label class="field-label" for="budget">Budget</label>
+                                <input class="input-field w-input" id="budget" placeholder="Budget" th:field="*{budget}" th:required="required" type="number">
+                                <input type="submit" name="submit" class="submit action-button" style="background-color: #47cf73" value="Submit"/>
+                            </fieldset>
+<!--                            <fieldset>-->
+<!--                                <h2 class="fs-title">Location of activity</h2>-->
+<!--                                <h3 class="fs-subtitle">Fill in bellow Location of activity in details</h3>-->
+<!--&lt;!&ndash;                                <label class="field-label" for="town">Select Region</label>&ndash;&gt;-->
+<!--&lt;!&ndash;                                <select id="officer"  class="select-field w-select" th:field="*{regionId}">&ndash;&gt;-->
+<!--&lt;!&ndash;                                    <option value="0">Select one...</option>&ndash;&gt;-->
+<!--&lt;!&ndash;                                    <option  th:each="reg : ${regions}" th:text="${#strings.capitalize(reg.region)}" th:name="assignedIo" th:value="${reg.id}"></option>&ndash;&gt;-->
+<!--&lt;!&ndash;                                </select>&ndash;&gt;-->
+<!--                                <label class="field-label" for="county">County</label>-->
+<!--                                <select id="county" name="county" class="form-control" th:field="*{county}">-->
+<!--                                    <option value="0">Select One...</option>-->
+<!--                                    <option th:each="county : ${counties}" th:text="${county.county}" th:value="${county.id}"></option>-->
+<!--                                    &lt;!&ndash;                                        <option th:each="subRegion : ${subRegions}" th:text="${subRegion.subRegion}" th:value="${subRegion.id}"></option>&ndash;&gt;-->
+<!--                                </select>-->
+<!--&lt;!&ndash;                                <label class="field-label" for="subcounty">Subcounty</label>&ndash;&gt;-->
+<!--&lt;!&ndash;                                <input class="input-field w-input" id="subcounty" placeholder="Subcounty" th:field="*{subcounty}" th:required="required">&ndash;&gt;-->
+<!--                                <label class="field-label" for="townMarketCenter">Town/market center</label>-->
+<!--                                <select id="townMarketCenter" name="townMarketCenter" class="input-field w-input" th:field="*{townMarketCenter}">-->
+<!--                                    <option value="0">Select One...</option>-->
+<!--                                    &lt;!&ndash;                                        <option th:each="subRegion : ${subRegions}" th:text="${subRegion.subRegion}" th:value="${subRegion.id}"></option>&ndash;&gt;-->
+<!--                                </select>-->
+<!--&lt;!&ndash;                                <input class="input-field w-input" id="townMarketCenter" placeholder="Town/market center" th:field="*{townMarketCenter}" th:required="required">&ndash;&gt;-->
+<!--                                <label class="field-label" for="locationActivityOther">Other</label>-->
+<!--                                <input class="input-field w-input" id="locationActivityOther" placeholder="Other" th:field="*{locationActivityOther}" th:required="required">-->
+<!--                                <input type="button" name="previous"  class="previous action-button-previous" value="Previous"/>-->
+<!--                                <input type="button" name="next" class="next action-button" value="Next"/>-->
+<!--                            </fieldset>-->
+<!--                            <fieldset>-->
+<!--                                <h2 class="fs-title">Resources For activity</h2>-->
+<!--                                <h3 class="fs-subtitle">Fill in the below Resources for activity details</h3>-->
+<!--                                <label class="field-label" for="todolist">Resources required</label>-->
+<!--                                <input placeholder="enter todo value" id="entryText" />-->
+<!--                                <button id="btn_add" style="background: blue">add</button>-->
+<!--                                <textarea id="todolist" class="todolist" name="todolist" rows="10" placeholder="maintain resources required" th:field="*{resourcesRequired}"></textarea>-->
+<!--                                &lt;!&ndash;                                <input class="input-field w-input" id="resourcesRequired" placeholder="Resources required" th:field="*{resourcesRequired}" th:required="required"  type="text">&ndash;&gt;-->
+<!--                                <label class="field-label" for="budget">Budget</label>-->
+<!--                                <input class="input-field w-input" id="budget" placeholder="Budget" th:field="*{budget}" th:required="required" type="number">-->
+<!--                                <input type="button" name="previous" class="previous action-button-previous" value="Previous"/>-->
+<!--                                <input type="submit" name="submit" class="submit action-button" style="background-color: #47cf73" value="Submit"/>-->
+<!--                            </fieldset>-->
+                            <!--                            <fieldset>-->
+                            <!--                                <h2 class="fs-title">Rescheduled activities</h2>-->
+                            <!--                                <h3 class="fs-subtitle">Fill in the below Rescheduled activities details</h3>-->
+                            <!--                                <label class="field-label" for="Rescheduled">Rescheduled to date(if not visited)</label>-->
+                            <!--                                <input class="input-field w-input" id="Rescheduled" placeholder="Rescheduled to date(if not visited)" th:field="*{remandedAdjourned}" type="text">-->
+                            <!--                                <label class="field-label" for="submitted">Date report submitted</label>-->
+                            <!--                                <input class="input-field w-input" id="submitted" placeholder="Date report submitted" th:field="*{complainantName}" type="text">-->
+                            <!--                                <label class="field-label" for="Remarks">Remarks</label>-->
+                            <!--                                <input class="input-field w-input" id="Remarks" placeholder="Remarks" th:field="*{complainantAddress}" type="text">-->
+                            <!--                                <label class="field-label" for="undertaken">Alternative activity undertaken in that period </label>-->
+                            <!--                                <input class="input-field w-input" id="undertaken" placeholder="Alternative activity undertaken in that period" th:field="*{prosecutor}"  type="text">-->
+                            <!--                                <input type="button" name="previous" class="previous action-button-previous" value="Previous"/>-->
+                            <!--                                <input type="submit" name="submit" class="submit action-button" style="background-color: #47cf73" value="Submit"/>-->
+                            <!--                            </fieldset>-->
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script crossorigin="anonymous" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" src="https://d3e54v103j8qbb.cloudfront.net/js/jquery-3.4.1.min.220afd743d.js?site=5e70fb3a565ebd99c1db37ce" type="text/javascript"></script>
+<script src="../js/webflow.js" type="text/javascript"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+<script th:src="@{/assets/bootstrap3/js/bootstrap.js}" type="text/javascript"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.3/jquery.easing.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<!-- [if lte IE 9]><!--<script src="https://cdnjs.cloudflare.com/ajax/libs/placeholders/3.0.2/placeholders.min.js"></script>--><![endif] -->
+<script>
+
+    $(document).ready(function(){
+        $("#btn_add").click(function(){
+            document.getElementById('todolist').value +='● ' + $("#entryText").val()+"\n";
+        });
+
+        $("#nonComplianceStatus_no").click(function(){
+            if($(this).is(':checked')){
+                $("#nonCompliance_rm").css("display","block")
+            }else{
+                $("#nonCompliance_rm").css("display","none")
+            }
+        });
+        $("#nonComplianceStatus_yes").click(function(){
+            if($(this).is(':checked')){
+                $("#nonCompliance_rm").css("display","none")
+            }
+        });
+
+        $("#standardCategory").click(function () {
+            let methodId = $("#standardCategory").val()
+            // let categories = $("#sth").val()
+            // console.log(categories.length)
+            $.ajax({
+                method: "GET",
+                url: `/api/auth/populate-broad-category/${methodId}`,
+                data: methodId,
+                success(response){
+                    console.log(response)
+                    let s = '';
+                    s +=  ' <option value="0">Select One...</option>';
+                    for(let i = 0; i < response.length; i++) {
+                        // response.push('Select one')
+                        s += '<option value="' + response[i].id + '">' + response[i].category + '</option>';
+                    }
+                    $("#broadCat").html(s);
+                }
+            })
+        });
+
+        $("#broadCat").click(function () {
+            let methodId2 = $("#broadCat").val()
+            // let categories = $("#sth").val()
+            // console.log(categories.length)
+            $.ajax({
+                method: "GET",
+                url: `/api/auth/populate-product-category/${methodId2}`,
+                data: methodId2,
+                success(response){
+                    console.log(response)
+                    var s = '';
+                    s +=  ' <option value="0">Select One...</option>';
+                    for(var i = 0; i < response.length; i++) {
+                        // response.push('Select one')
+                        s += '<option value="' + response[i].id + '">' + response[i].name + '</option>';
+                    }
+                    $("#productCategories").html(s);
+                }
+            })
+
+        });
+
+        $("#productCategories").click(function () {
+            let methodId3 = $("#productCategories").val()
+            // let categories = $("#sth").val()
+            // console.log(categories.length)
+            $.ajax({
+                method: "GET",
+                url: `/api/auth/populate-product-categories/${methodId3}`,
+                data: methodId3,
+                success(response){
+                    console.log(response)
+                    var s = '';
+                    s +=  ' <option value="0">Select One...</option>';
+                    for(var i = 0; i < response.length; i++) {
+                        // response.push('Select one')
+                        s += '<option value="' + response[i].id + '">' + response[i].name + '</option>';
+                    }
+                    $("#product").html(s);
+                }
+            })
+
+        });
+
+        $("#product").click(function () {
+            let methodId4 = $("#product").val()
+            // let categories = $("#sth").val()
+            // console.log(categories.length)
+            $.ajax({
+                method: "GET",
+                url: `/api/auth/populate-sub-category/${methodId4}`,
+                data: methodId4,
+                success(response){
+                    console.log(response)
+                    let s = '';
+                    s +=  ' <option value="0">Select One...</option>';
+                    for(let i = 0; i < response.length; i++) {
+                        // response.push('Select one')
+                        s += '<option value="' + response[i].id + '">' + response[i].name + '</option>';
+                    }
+                    $("#subc").html(s);
+                }
+            })
+
+        });
+
+        $("#county").click(function () {
+            // let methodId = $("#divisionId").children("option:selected").val()
+            let countyId = $("#county").val()
+            // console.log(categories.length)
+            if (countyId!==0){
+                $.ajax({
+                    method: "GET",
+                    url: `/api/auth/town-list/${countyId}`,
+                    // data: regionId,
+                    success(response){
+                        console.log(response)
+                        let s = '';
+                        s +=  ' <option value="0">Select One...</option>';
+                        for(let i = 0; i < response.length; i++) {
+                            // response.push('Select one')
+                            s += '<option value="' + response[i].id + '">' + response[i].town + '</option>';
+                            // <option th:each="subRegion : ${subRegions}" th:text="${subRegion.subRegion}" th:value="${subRegion.id}"></option>-->
+                            // s += ' <option th:each="department : ${departments}" th:text="${department.department}" th:value="${department.id}"></option>';
+                        }
+                        $("#townMarketCenter").html(s);
+                    }
+                })
+            }
+        });
+
+        $("#complaintDepartment").click(function () {
+            let departmentId = $("#complaintDepartment").val()
+            // console.log(categories.length)
+            $.ajax({
+                method: "GET",
+                url: `/api/auth/division-list/${departmentId}`,
+                success(response){
+                    console.log(response)
+                    var s = '';
+                    s +=  ' <option value="0">Select One...</option>';
+                    for(var i = 0; i < response.length; i++) {
+                        // response.push('Select one')
+                        s += '<option value="' + response[i].id + '">' + response[i].division + '</option>';
+                    }
+                    $("#divisionId").html(s);
+                }
+            })
+
+        });
+
+    });
+
+    // $(document).ready(function() {
+    //         $("#confirmDirectorateId").click(function () {
+    //             loadDepartment();
+    //             loadDesignation();
+    //         });
+    //
+    //         $("#confirmRegionId").click(function () {
+    //             // let methodId = $("#divisionId").children("option:selected").val()
+    //             let regionId = $("#confirmRegionId").val()
+    //             // console.log(categories.length)
+    //             $.ajax({
+    //                 method: "GET",
+    //                 url: `/api/auth/sub-region/${regionId}`,
+    //                 // data: regionId,
+    //                 success(response){
+    //                     console.log(response)
+    //                     let s = '';
+    //                     s +=  ' <option value="0">Select One...</option>';
+    //                     for(let i = 0; i < response.length; i++) {
+    //                         // response.push('Select one')
+    //                         s += '<option value="' + response[i].id + '">' + response[i].subRegion + '</option>';
+    //                         // <option th:each="subRegion : ${subRegions}" th:text="${subRegion.subRegion}" th:value="${subRegion.id}"></option>-->
+    //                         // s += ' <option th:each="department : ${departments}" th:text="${department.department}" th:value="${department.id}"></option>';
+    //                     }
+    //                     $("#confirmSubRegionId").html(s);
+    //                 }
+    //             })
+    //         });
+    //
+    //
+    //
+    //         $("#confirmDivisionId").click(function () {
+    //             let divisionId = $("#confirmDivisionId").val()
+    //             // console.log(categories.length)
+    //             $.ajax({
+    //                 method: "GET",
+    //                 url: `/api/auth/section-list/${divisionId}`,
+    //                 success(response){
+    //                     console.log(response)
+    //                     var s = '';
+    //                     s +=  ' <option value="0">Select One...</option>';
+    //                     for(var i = 0; i < response.length; i++) {
+    //                         // response.push('Select one')
+    //                         s += '<option value="' + response[i].id + '">' + response[i].section + '</option>';
+    //                     }
+    //                     $("#confirmSectionId").html(s);
+    //                 }
+    //             })
+    //
+    //         });
+    //
+    //         $("#confirmSectionId").click(function () {
+    //             let sectionId = $("#confirmSectionId").val()
+    //             // console.log(categories.length)
+    //             $.ajax({
+    //                 method: "GET",
+    //                 url: `/api/auth/sub-section-l1-list/${sectionId}`,
+    //                 success(response){
+    //                     console.log(response)
+    //                     var s = ''
+    //                     s +=  ' <option value="0">Select One...</option>';
+    //                     for(var i = 0; i < response.length; i++) {
+    //                         // response.push('Select one')
+    //                         s += '<option value="' + response[i].id + '">' + response[i].subSection + '</option>';
+    //                     }
+    //                     $("#confirmSubSectionL1Id").html(s);
+    //                 }
+    //             })
+    //
+    //         });
+    //
+    //         $("#confirmSubSectionL1Id").click(function () {
+    //             let sectionId = $("#confirmSubSectionL1Id").val()
+    //             // console.log(categories.length)
+    //             $.ajax({
+    //                 method: "GET",
+    //                 url: `/api/auth/sub-section-l2-list/${sectionId}`,
+    //                 success(response){
+    //                     console.log(response)
+    //                     let s = '';
+    //                     s +=  ' <option value="0">Select One...</option>';
+    //                     for(let i = 0; i < response.length; i++) {
+    //                         // response.push('Select one')
+    //                         s += '<option value="' + response[i].id + '">' + response[i].subSection + '</option>';
+    //                     }
+    //                     $("#confirmSubSectionL2Id").html(s);
+    //                 }
+    //             })
+    //
+    //         });
+    //     }
+    // )
+
+
+    //jQuery time
+    var current_fs, next_fs, previous_fs; //fieldsets
+    var left, opacity, scale; //fieldset properties which we will animate
+    var animating; //flag to prevent quick multi-click glitches
+
+    $(".next").click(function(){
+        if(animating) return false;
+        animating = true;
+
+        current_fs = $(this).parent();
+        next_fs = $(this).parent().next();
+
+        //activate next step on progressbar using the index of next_fs
+        $("#progressbar li").eq($("fieldset").index(next_fs)).addClass("active");
+
+        //show the next fieldset
+        next_fs.show();
+        //hide the current fieldset with style
+        current_fs.animate({opacity: 0}, {
+            step: function(now, mx) {
+                //as the opacity of current_fs reduces to 0 - stored in "now"
+                //1. scale current_fs down to 80%
+                scale = 1 - (1 - now) * 0.2;
+                //2. bring next_fs from the right(50%)
+                left = (now * 50)+"%";
+                //3. increase opacity of next_fs to 1 as it moves in
+                opacity = 1 - now;
+                current_fs.css({
+                    'transform': 'scale('+scale+')',
+                    'position': 'absolute'
+                });
+                next_fs.css({'left': left, 'opacity': opacity});
+            },
+            duration: 800,
+            complete: function(){
+                current_fs.hide();
+                animating = false;
+            },
+            //this comes from the custom easing plugin
+            easing: 'easeInOutBack'
+        });
+    });
+
+    $(".previous").click(function(){
+        if(animating) return false;
+        animating = true;
+
+        current_fs = $(this).parent();
+        previous_fs = $(this).parent().prev();
+
+        //de-activate current step on progressbar
+        $("#progressbar li").eq($("fieldset").index(current_fs)).removeClass("active");
+
+        //show the previous fieldset
+        previous_fs.show();
+        //hide the current fieldset with style
+        current_fs.animate({opacity: 0}, {
+            step: function(now, mx) {
+                //as the opacity of current_fs reduces to 0 - stored in "now"
+                //1. scale previous_fs from 80% to 100%
+                scale = 0.8 + (1 - now) * 0.2;
+                //2. take current_fs to the right(50%) - from 0%
+                left = ((1-now) * 50)+"%";
+                //3. increase opacity of previous_fs to 1 as it moves in
+                opacity = 1 - now;
+                current_fs.css({'left': left});
+                previous_fs.css({'transform': 'scale('+scale+')', 'opacity': opacity});
+            },
+            duration: 800,
+            complete: function(){
+                current_fs.hide();
+                animating = false;
+            },
+            //this comes from the custom easing plugin
+            easing: 'easeInOutBack'
+        });
+    });
+
+    $(".submit").click(function(){
+        return true;
+    })
+</script>
+<script>
+
+</script>
+</body>
+</html>

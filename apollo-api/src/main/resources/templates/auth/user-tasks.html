@@ -1,0 +1,168 @@
+<!--
+  ~ /*
+  ~  *
+  ~  *
+  ~  *  *    Copyright (c) ${YEAR}.   BSK Global Technologies
+  ~  *  *
+  ~  *  *    Licensed under the Apache License, Version 2.0 (the "License");
+  ~  *  *    you may not use this file except in compliance with the License.
+  ~  *  *    You may obtain a copy of the License at
+  ~  *  *
+  ~  *  *       http://www.apache.org/licenses/LICENSE-2.0
+  ~  *  *
+  ~  *  *    Unless required by applicable law or agreed to in writing, software
+  ~  *  *    distributed under the License is distributed on an "AS IS" BASIS,
+  ~  *  *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~  *  *   See the License for the specific language governing permissions and
+  ~  *  *   limitations under the License.
+  ~  *
+  ~  */
+  -->
+
+<!DOCTYPE html>
+<html data-wf-page="5e70fb3a565ebdc05ddb37cf" data-wf-site="5e70fb3a565ebd99c1db37ce"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>KEBS</title>
+    <th:block th:include="fragments/general-form.html :: headerfiles"/>
+</head>
+<body>
+<div class="top-bar" th:replace="fragments/general-form.html :: top-bar">
+
+</div>
+<div class="section">
+    <div class="w-layout-grid main-grid">
+        <div class="main-grid-side-navigation" id="w-node-d308c123a20f-c123a20d" th:replace="fragments/general-form.html ::side-navigation-bar"></div>
+        <div class="main-content-div" id="w-node-d308c123a224-c123a20d">
+            <!--            <div class="content-nav" th:replace="fragments/general-form.html :: content-navigation-bar"></div>-->
+            <div class="content-wrap">
+                <div class="content-container">
+                    <h1>User Tasks</h1>
+                    <div class="content-block">
+                        <div class="content-block-parent">
+                            <div>
+                                <table>
+                                    <thead>
+                                    <tr class="task-list user">
+                                        <th>ID</th>
+                                        <th>Name</th>
+                                        <th>Owner</th>
+                                        <th>Assignee</th>
+                                        <th>Priority</th>
+                                        <th>Action</th>
+
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr class="task-list user" th:each="task: ${userTasks}">
+                                        <td th:text="${task.taskId}"></td>
+                                        <td th:text="${task.name}"></td>
+                                        <td th:text="${task.owner}"></td>
+                                        <td th:text="${task.assignee}"></td>
+                                        <td th:text="${task.priority}"></td>
+                                        <td><a th:ref="@{/api/user/tasks/}"></a></td>
+                                    </tr>
+
+                                    </tbody>
+                                </table>
+
+                            </div>
+
+                            <div class=class="pagenation-block" th:each="pageNumber : ${pageNumbers}"
+                                 th:if="${totalPages > 0}">
+                                <a th:href="@{/api/ms/home/officer(size=${bookPage.size}, page=${pageNumber}, user=sec:authentication="")}"
+                                th:text=${pageNumber}
+                                class="button w-button"></a>
+                            </div>
+                        </div>
+                        <div class="filter-block">
+                            <div class="filter-block-title">
+                                <div class="filter-title">Filter By:</div>
+                            </div>
+                            <div class="w-form">
+                                <form data-name="Email Form" id="email-form" name="email-form">
+                                    <div class="form-div"><label for="name">Application Status</label><label class="w-checkbox"><input class="w-checkbox-input" data-name="Checkbox" id="checkbox"
+                                                                                                                                       name="checkbox"
+                                                                                                                                       type="checkbox"><span
+                                            class="w-form-label">Exempted</span></label><label
+                                            class="w-checkbox"><input class="w-checkbox-input" data-name="Checkbox 2" id="checkbox-2" name="checkbox-2" type="checkbox"><span class="w-form-label">Rejected</span></label>
+                                    </div>
+                                    <div class="form-div"><label for="name-2">Approval Status</label><label class="w-checkbox"><input class="w-checkbox-input" data-name="Checkbox 3" id="checkbox-3"
+                                                                                                                                      name="checkbox-3"
+                                                                                                                                      type="checkbox"><span
+                                            class="w-form-label">Pending</span></label><label
+                                            class="w-checkbox"><input class="w-checkbox-input" data-name="Checkbox 2" id="checkbox-2" name="checkbox-2" type="checkbox"><span
+                                            class="w-form-label">Approved</span></label><label class="w-checkbox"><input class="w-checkbox-input" data-name="Checkbox 2" id="checkbox-2"
+                                                                                                                         name="checkbox-2"
+                                                                                                                         type="checkbox"><span class="w-form-label">Rejected</span></label></div>
+                                    <div><label for="name-2">Application Date</label>
+                                        <div class="date-field-div">
+                                            <div class="date-field-label">From</div>
+                                            <input class="date-field w-input" data-name="Name" id="name" maxlength="256" name="name" type="text"></div>
+                                        <div class="date-field-div">
+                                            <div class="date-field-label">To</div>
+                                            <input class="date-field w-input" data-name="Name 2" id="name-2" maxlength="256" name="name-2" type="text"></div>
+                                    </div>
+                                    <input class="button w-button" data-wait="Please wait..." type="submit" value="Apply Filter"></form>
+                                <div class="w-form-done">
+                                    <div>Thank you! Your submission has been received!</div>
+                                </div>
+                                <div class="w-form-fail">
+                                    <div>Oops! Something went wrong while submitting the form.</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h1>Group Tasks</h1>
+                    <div class="content-block">
+                        <div class="content-block-parent">
+                            <div>
+                                <table>
+                                    <thead>
+                                    <tr class="exemption-application-list">
+                                        <th>ID</th>
+                                        <th>Name</th>
+                                        <th>Owner</th>
+                                        <th>Assignee</th>
+                                        <th>Priority</th>
+
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr class="exemption-application-list" th:each="task: ${groupTasks}">
+                                        <td th:text="${task.taskId}"></td>
+                                        <td th:text="${task.name}"></td>
+                                        <td th:text="${task.owner}"></td>
+                                        <td th:text="${task.assignee}"></td>
+                                        <td th:text="${task.priority}"></td>
+                                    </tr>
+
+                                    </tbody>
+                                </table>
+
+                            </div>
+
+                            <div class=class="pagenation-block" th:each="pageNumber : ${pageNumbers}"
+                                 th:if="${totalPages > 0}">
+                                <a th:href="@{/api/ms/home/officer(size=${bookPage.size}, page=${pageNumber}, user=sec:authentication="")}"
+                                th:text=${pageNumber}
+                                class="button w-button"></a>
+                            </div>
+                        </div>
+
+                    </div>
+                    <form action="/search" class="search w-form"><input class="search-input w-input" id="search" maxlength="256" name="query" placeholder="Search…" required="" type="search"><input
+                            class="search-button w-button"
+                            type="submit"
+                            value="Search">
+                    </form>
+                </div>
+                <!--                <div class="div-block-4"><a class="content-button" href="#"><span class="font-awesome-span"></span>Notifications</a></div>-->
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

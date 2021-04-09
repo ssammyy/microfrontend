@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/test">
+    <process id="qaSfPermitAwardProcess" name="QA SF Permit Award Process" isExecutable="true">
+        <startEvent id="startevent1" name="Start"></startEvent>
+        <userTask id="qaSfpaPscApproval" name="PSC permit approval">
+            <extensionElements>
+                <activiti:taskListener event="assignment" expression="${bpmnNotifications.sendEmail(task)}"></activiti:taskListener>
+            </extensionElements>
+        </userTask>
+        <exclusiveGateway id="exclusivegateway1" name="Exclusive Gateway"></exclusiveGateway>
+        <sequenceFlow id="flow3" sourceRef="qaSfpaPscApproval" targetRef="exclusivegateway1"></sequenceFlow>
+        <userTask id="qaSfpaPCMPermitAward" name="PCM Permit Award">
+            <extensionElements>
+                <activiti:taskListener event="assignment" expression="${bpmnNotifications.sendEmail(task)}"></activiti:taskListener>
+            </extensionElements>
+        </userTask>
+        <exclusiveGateway id="exclusivegateway2" name="Exclusive Gateway"></exclusiveGateway>
+        <sequenceFlow id="flow6" sourceRef="qaSfpaPCMPermitAward" targetRef="qaSfpaPermitAwardNotif"></sequenceFlow>
+        <sequenceFlow id="flow7" sourceRef="qaSfpaPermitAwardNotif" targetRef="exclusivegateway2"></sequenceFlow>
+        <sequenceFlow id="flow8" sourceRef="exclusivegateway2" targetRef="qaSfpaSendEpermit">
+            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${permitAwarded==1}]]></conditionExpression>
+        </sequenceFlow>
+        <sequenceFlow id="flow9" sourceRef="exclusivegateway2" targetRef="qaSfpaDefferalNotif">
+            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${permitAwarded==0}]]></conditionExpression>
+        </sequenceFlow>
+        <sequenceFlow id="flow10" sourceRef="exclusivegateway1" targetRef="qaSfpaDefferalNotif">
+            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${permitApproved==0}]]></conditionExpression>
+        </sequenceFlow>
+        <endEvent id="endevent1" name="End">
+            <extensionElements>
+                <activiti:executionListener event="end" expression="${qualityAssuranceBpmn.endQASFPermitAwardProcess(permitId)}"></activiti:executionListener>
+            </extensionElements>
+        </endEvent>
+        <sequenceFlow id="flow11" sourceRef="qaSfpaSendEpermit" targetRef="endevent1"></sequenceFlow>
+        <sequenceFlow id="flow12" sourceRef="qaSfpaDefferalNotif" targetRef="endevent1"></sequenceFlow>
+        <sequenceFlow id="flow13" sourceRef="startevent1" targetRef="qaSfpaPscApproval"></sequenceFlow>
+        <sequenceFlow id="flow14" sourceRef="exclusivegateway1" targetRef="qaSfpaPCMPermitAward">
+            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${permitApproved==1}]]></conditionExpression>
+        </sequenceFlow>
+        <serviceTask id="qaSfpaPermitAwardNotif" name="Pemit Award Notification" activiti:expression="${bpmnNotifications.sendEmailServiceTask(email)}"></serviceTask>
+        <serviceTask id="qaSfpaDefferalNotif" name="Deferral Notification" activiti:expression="${bpmnNotifications.sendEmailServiceTask(email)}"></serviceTask>
+        <serviceTask id="qaSfpaSendEpermit" name="Send E-Permit" activiti:expression="${bpmnNotifications.sendEmailServiceTask(manufacturerEmail)}"></serviceTask>
+    </process>
+    <bpmndi:BPMNDiagram id="BPMNDiagram_qaSfPermitAwardProcess">
+        <bpmndi:BPMNPlane bpmnElement="qaSfPermitAwardProcess" id="BPMNPlane_qaSfPermitAwardProcess">
+            <bpmndi:BPMNShape bpmnElement="startevent1" id="BPMNShape_startevent1">
+                <omgdc:Bounds height="35.0" width="35.0" x="90.0" y="90.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="qaSfpaPscApproval" id="BPMNShape_qaSfpaPscApproval">
+                <omgdc:Bounds height="61.0" width="121.0" x="360.0" y="77.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="exclusivegateway1" id="BPMNShape_exclusivegateway1">
+                <omgdc:Bounds height="40.0" width="40.0" x="549.0" y="87.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="qaSfpaPCMPermitAward" id="BPMNShape_qaSfpaPCMPermitAward">
+                <omgdc:Bounds height="55.0" width="105.0" x="880.0" y="80.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="exclusivegateway2" id="BPMNShape_exclusivegateway2">
+                <omgdc:Bounds height="40.0" width="40.0" x="1100.0" y="210.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="endevent1" id="BPMNShape_endevent1">
+                <omgdc:Bounds height="35.0" width="35.0" x="1103.0" y="440.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="qaSfpaPermitAwardNotif" id="BPMNShape_qaSfpaPermitAwardNotif">
+                <omgdc:Bounds height="61.0" width="121.0" x="1060.0" y="77.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="qaSfpaDefferalNotif" id="BPMNShape_qaSfpaDefferalNotif">
+                <omgdc:Bounds height="55.0" width="105.0" x="665.0" y="203.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="qaSfpaSendEpermit" id="BPMNShape_qaSfpaSendEpermit">
+                <omgdc:Bounds height="55.0" width="105.0" x="1068.0" y="320.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNEdge bpmnElement="flow3" id="BPMNEdge_flow3">
+                <omgdi:waypoint x="481.0" y="107.0"></omgdi:waypoint>
+                <omgdi:waypoint x="549.0" y="107.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow6" id="BPMNEdge_flow6">
+                <omgdi:waypoint x="985.0" y="107.0"></omgdi:waypoint>
+                <omgdi:waypoint x="1060.0" y="107.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow7" id="BPMNEdge_flow7">
+                <omgdi:waypoint x="1120.0" y="138.0"></omgdi:waypoint>
+                <omgdi:waypoint x="1120.0" y="210.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow8" id="BPMNEdge_flow8">
+                <omgdi:waypoint x="1120.0" y="250.0"></omgdi:waypoint>
+                <omgdi:waypoint x="1120.0" y="320.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow9" id="BPMNEdge_flow9">
+                <omgdi:waypoint x="1100.0" y="230.0"></omgdi:waypoint>
+                <omgdi:waypoint x="770.0" y="230.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow10" id="BPMNEdge_flow10">
+                <omgdi:waypoint x="569.0" y="127.0"></omgdi:waypoint>
+                <omgdi:waypoint x="569.0" y="230.0"></omgdi:waypoint>
+                <omgdi:waypoint x="665.0" y="230.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow11" id="BPMNEdge_flow11">
+                <omgdi:waypoint x="1120.0" y="375.0"></omgdi:waypoint>
+                <omgdi:waypoint x="1120.0" y="440.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow12" id="BPMNEdge_flow12">
+                <omgdi:waypoint x="717.0" y="258.0"></omgdi:waypoint>
+                <omgdi:waypoint x="717.0" y="457.0"></omgdi:waypoint>
+                <omgdi:waypoint x="1103.0" y="457.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow13" id="BPMNEdge_flow13">
+                <omgdi:waypoint x="125.0" y="107.0"></omgdi:waypoint>
+                <omgdi:waypoint x="360.0" y="107.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow14" id="BPMNEdge_flow14">
+                <omgdi:waypoint x="589.0" y="107.0"></omgdi:waypoint>
+                <omgdi:waypoint x="880.0" y="107.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+        </bpmndi:BPMNPlane>
+    </bpmndi:BPMNDiagram>
+</definitions>

@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+</head>
+
+<body>
+<div th:fragment="agrochemChecklist">
+    <div th:object="${agrochemItemInspectionChecklist}" id='agrochem-item-details'>
+        <div class="form-row">
+            <div class="col-md-12 mb-3">
+                <label style="color: #0082f3">AGROCHEM Markings Details</label>
+                <!--                                        <input type="text" class="form-control" disabled id="firstName" th:field="*{firstName}" placeholder="First name"-->
+                <!--                                               required>-->
+                <!--                                    <div class="valid-feedback">-->
+                <!--                                        Looks good!-->
+                <!--                                    </div>-->
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="col-md-4 mb-3">
+                <label for="serialNumber">Serial Number</label>
+                <input type="text" class="form-control" maxlength="256" name="serialNumber"
+                       data-name="clearing Agent" id="serialNumber" th:field="*{serialNumber}">
+            </div>
+            <div class="col-md-4 mb-3">
+                <label for="brand">Brand</label>
+                <input type="text" class="form-control" maxlength="256" name="brand"
+                       data-name="brand" id="brand" th:field="*{brand}">
+            </div>
+            <div class="col-md-4 mb-3">
+                <label for="productDescription">Product description</label>
+                <input type="hidden" id="productDescription" name="productDescription"
+                       th:value="${item?.itemDescription}">
+                <input type="text" disabled class="form-control" maxlength="256"
+                       name="productDescription" data-name="product Description"
+                       id="productDescription2" th:value="${item?.itemDescription}">
+                <!--                                        <div class="invalid-feedback">-->
+                <!--                                            Please provide a valid zip.-->
+                <!--                                        </div>-->
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="col-md-4 mb-3">
+                <label for="ksEasApplicable">KS/EAS Applicable</label>
+                <input type="text" class="form-control" maxlength="256" name="ksEasApplicable"
+                       data-name="ksEas Applicable" id="ksEasApplicable"
+                       th:field="*{ksEasApplicable}">
+            </div>
+            <div class="col-md-4 mb-3">
+                <label for="quantityDeclared">Quantity Declared (No. Of items/packages)</label>
+                <input type="hidden" id="quantityDeclared" name="quantityDeclared"
+                       th:value="${item?.quantity}">
+                <input type="text" disabled class="form-control" maxlength="256"
+                       name="quantityDeclared" data-name="quantity Declared" id="quantityDeclared2"
+                       th:value="${item?.quantity}">
+                <!--                                        <div class="invalid-feedback">-->
+                <!--                                            Please provide a valid state.-->
+                <!--                                        </div>-->
+            </div>
+            <div class="col-md-4 mb-3">
+                <label for="quantityVerified">Quantity Verified (No. Of items/packages)</label>
+                <input type="text" class="form-control" maxlength="256" name="quantityVerified"
+                       data-name="quantity Verified" id="quantityVerified"
+                       th:field="*{quantityVerified}">
+                <!--                                    <div class="invalid-feedback">-->
+                <!--                                        Please provide a valid city.-->
+                <!--                                    </div>-->
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="col-md-4 mb-3">
+                <label for="dateMfgPackaging">Date of mfg/packaging</label>
+                <input type="date" class="form-control" maxlength="256" name="dateMfgPackaging"
+                       data-name="dateMfg Packaging" id="dateMfgPackaging" required=""
+                       th:field="*{dateMfgPackaging}">
+                <!--                                    <div class="invalid-feedback">-->
+                <!--                                        Please provide a valid city.-->
+                <!--                                    </div>-->
+            </div>
+            <div class="col-md-4 mb-3">
+                <label for="dateExpiry">Date of Expiry</label>
+                <input type="date" class="form-control" maxlength="256" name="dateExpiry"
+                       data-name="date Expiry" id="dateExpiry" required="" th:field="*{dateExpiry}">
+                <!--                                        <div class="invalid-feedback">-->
+                <!--                                            Please provide a valid state.-->
+                <!--                                        </div>-->
+            </div>
+            <div class="col-md-4 mb-3">
+                <label for="mfgName">Mfg Name</label>
+                <input type="text" class="form-control" maxlength="256" name="mfgName"
+                       data-name="mfg Name" id="mfgName" th:field="*{mfgName}">
+                <!--                                        <div class="invalid-feedback">-->
+                <!--                                            Please provide a valid zip.-->
+                <!--                                        </div>-->
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="col-md-4 mb-3">
+                <label for="mfgAddress">Mfg Address</label>
+                <input type="text" class="form-control" maxlength="256" name="mfgAddress"
+                       data-name="mfg Address" id="mfgAddress" th:field="*{mfgAddress}">
+                <!--                                    <div class="invalid-feedback">-->
+                <!--                                        Please provide a valid city.-->
+                <!--                                    </div>-->
+            </div>
+            <div class="col-md-4 mb-3">
+                <label for="compositionIngredients">Composition/Ingredients</label>
+                <input type="text" class="form-control" maxlength="256"
+                       name="compositionIngredients" data-name="composition Ingredients"
+                       id="compositionIngredients" th:field="*{compositionIngredients}">
+                <!--                                        <div class="invalid-feedback">-->
+                <!--                                            Please provide a valid state.-->
+                <!--                                        </div>-->
+            </div>
+            <div class="col-md-4 mb-3">
+                <label for="storageCondition">Storage Condition</label>
+                <input type="text" class="form-control" maxlength="256" name="storageCondition"
+                       data-name="storage Condition" id="storageCondition"
+                       th:field="*{storageCondition}">
+                <!--                                        <div class="invalid-feedback">-->
+                <!--                                            Please provide a valid zip.-->
+                <!--                                        </div>-->
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="col-md-4 mb-3">
+                <label for="appearance">Appearance (mouldy,infested,foreign matter e.t.c.)</label>
+                <input type="text" class="form-control" maxlength="256" name="appearance"
+                       data-name="appearance" id="appearance" th:field="*{appearance}">
+                <!--                                    <div class="invalid-feedback">-->
+                <!--                                        Please provide a valid city.-->
+                <!--                                    </div>-->
+            </div>
+            <div class="col-md-4 mb-3">
+                <label for="certMarksPvocDoc">Certification marks/pvoc documents</label>
+                <input type="text" class="form-control" maxlength="256" name="certMarksPvocDoc"
+                       data-name="ksEas Applicable" id="certMarksPvocDoc"
+                       th:field="*{certMarksPvocDoc}">
+                <!--                                        <div class="invalid-feedback">-->
+                <!--                                            Please provide a valid state.-->
+                <!--                                        </div>-->
+            </div>
+            <div class="col-md-4 mb-3">
+                <label for="sampled">Sampled Yes/No</label>
+                <select id="sampled" class="form-control" th:field="*{sampled}">
+                    <option value="0">Select one...</option>
+                    <option th:value="'YES'" th:text="YES"></option>
+                    <option th:value="'NO'" th:text="NO"></option>
+                </select>
+                <!--                                    <div class="invalid-feedback">-->
+                <!--                                        Please provide a valid city.-->
+                <!--                                    </div>-->
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="col-md-4 mb-3">
+                <label for="remarks">Remarks</label>
+                <textarea class="form-control" maxlength="256" name="remarks" data-name="remarks"
+                          id="remarks" th:field="*{remarks}"></textarea>
+                <!--                                        <div class="invalid-feedback">-->
+                <!--                                            Please provide a valid state.-->
+                <!--                                        </div>-->
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:fragment="engineeringChecklist">
+    <div th:object="${engineeringItemInspectionChecklist}" id='engineering-item-details'>
+        <div class="form-row">
+            <div class="col-md-12 mb-3">
+                <label style="color: #0082f3">ENGINEERING Markings Details</label>
+                <!--                                        <input type="text" class="form-control" disabled id="firstName" th:field="*{firstName}" placeholder="First name"-->
+                <!--                                               required>-->
+                <!--                                    <div class="valid-feedback">-->
+                <!--                                        Looks good!-->
+                <!--                                    </div>-->
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="col-md-4 mb-3">
+                <label for="serialNumber">Serial Number</label>
+                <input type="text" class="form-control" maxlength="256" name="serialNumber"
+                       data-name="clearing Agent" id="serialNumber" th:field="*{serialNumber}">
+            </div>
+            <div class="col-md-4 mb-3">
+                <label for="brand">Brand</label>
+                <input type="text" class="form-control" maxlength="256" name="brand"
+                       data-name="brand" id="brand" th:field="*{brand}">
+            </div>
+            <div class="col-md-4 mb-3">
+                <label for="productDescription">Product description</label>
+                <input type="hidden" id="productDescription" name="productDescription"
+                       th:value="${item?.itemDescription}">
+                <input type="text" disabled class="form-control" maxlength="256"
+                       name="productDescription" data-name="product Description"
+                       id="productDescription2" th:value="${item?.itemDescription}">
+                <!--                                        <div class="invalid-feedback">-->
+                <!--                                            Please provide a valid zip.-->
+                <!--                                        </div>-->
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="col-md-4 mb-3">
+                <label for="ksEasApplicable">KS/EAS Applicable</label>
+                <input type="text" class="form-control" maxlength="256" name="ksEasApplicable"
+                       data-name="ksEas Applicable" id="ksEasApplicable"
+                       th:field="*{ksEasApplicable}">
+            </div>
+            <div class="col-md-4 mb-3">
+                <label for="quantityDeclared">Quantity Declared (No. Of items/packages)</label>
+                <input type="hidden" id="quantityDeclared" name="quantityDeclared"
+                       th:value="${item?.quantity}">
+                <input type="text" disabled class="form-control" maxlength="256"
+                       name="quantityDeclared" data-name="quantity Declared" id="quantityDeclared2"
+                       th:value="${item?.quantity}">
+                <!--                                        <div class="invalid-feedback">-->
+                <!--                                            Please provide a valid state.-->
+                <!--                                        </div>-->
+            </div>
+            <div class="col-md-4 mb-3">
+                <label for="quantityVerified">Quantity Verified (No. Of items/packages)</label>
+                <input type="text" class="form-control" maxlength="256" name="quantityVerified"
+                       data-name="quantity Verified" id="quantityVerified"
+                       th:field="*{quantityVerified}">
+                <!--                                    <div class="invalid-feedback">-->
+                <!--                                        Please provide a valid city.-->
+                <!--                                    </div>-->
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="col-md-4 mb-3">
+                <label for="mfgNameAddress">Mfg Name/Address</label>
+                <input type="text" class="form-control" maxlength="256" name="mfgNameAddress"
+                       data-name="mfg Name" id="mfgNameAddress" th:field="*{mfgNameAddress}">
+                <!--                                    <div class="invalid-feedback">-->
+                <!--                                        Please provide a valid city.-->
+                <!--                                    </div>-->
+            </div>
+            <div class="col-md-4 mb-3">
+                <label for="batchNoModelTypeRef">Batch no./model/type/reference</label>
+                <input type="text" class="form-control" maxlength="256" name="batchNoModelTypeRef"
+                       data-name="batchNo ModelTypeRef" id="batchNoModelTypeRef" required=""
+                       th:field="*{batchNoModelTypeRef}">
+                <!--                                        <div class="invalid-feedback">-->
+                <!--                                            Please provide a valid zip.-->
+                <!--                                        </div>-->
+            </div>
+            <div class="col-md-4 mb-3">
+                <label for="fiberComposition">Fibre composition</label>
+                <input type="text" class="form-control" maxlength="256" name="fiberComposition"
+                       data-name="fiber Composition" id="fiberComposition"
+                       th:field="*{fiberComposition}">
+                <!--                                        <div class="invalid-feedback">-->
+                <!--                                            Please provide a valid zip.-->
+                <!--                                        </div>-->
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="col-md-4 mb-3">
+                <label for="instructionsUseManual">Instructions for use/manual</label>
+                <input type="text" class="form-control" maxlength="256" name="instructionsUseManual"
+                       data-name="instructions UseManual" id="instructionsUseManual"
+                       th:field="*{instructionsUseManual}">
+                <!--                                    <div class="invalid-feedback">-->
+                <!--                                        Please provide a valid city.-->
+                <!--                                    </div>-->
+            </div>
+            <div class="col-md-4 mb-3">
+                <label for="warrantyPeriodDocumentation">Warranty period/documentation</label>
+                <input type="text" class="form-control" maxlength="256"
+                       name="warrantyPeriodDocumentation" data-name="warrantyPeriod Documentation"
+                       id="warrantyPeriodDocumentation" th:field="*{warrantyPeriodDocumentation}">
+            </div>
+            <div class="col-md-4 mb-3">
+                <label for="safetyCautionaryRemarks">Safety /cautionary remark</label>
+                <input type="text" class="form-control" maxlength="256"
+                       name="safetyCautionaryRemarks" data-name="safety Cautionary Remarks"
+                       id="safetyCautionaryRemarks" th:field="*{safetyCautionaryRemarks}">
+                <!--                                    <div class="invalid-feedback">-->
+                <!--                                        Please provide a valid city.-->
+                <!--                                    </div>-->
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="col-md-4 mb-3">
+                <label for="sizeClassCapacity">Size/class/capacity</label>
+                <input type="text" class="form-control" maxlength="256" name="sizeClassCapacity"
+                       data-name="size Class Capacity" id="sizeClassCapacity"
+                       th:field="*{sizeClassCapacity}">
+                <!--                                        <div class="invalid-feedback">-->
+                <!--                                            Please provide a valid zip.-->
+                <!--                                        </div>-->
+            </div>
+            <div class="col-md-4 mb-3">
+                <label for="certMarksPvocDoc2">Certification marks/pvoc documents</label>
+                <input type="text" class="form-control" maxlength="256" name="certMarksPvocDoc"
+                       data-name="ksEas Applicable" id="certMarksPvocDoc2"
+                       th:field="*{certMarksPvocDoc}">
+                <!--                                    <div class="invalid-feedback">-->
+                <!--                                        Please provide a valid city.-->
+                <!--                                    </div>-->
+            </div>
+            <div class="col-md-4 mb-3">
+                <label for="disposalInstruction">Disposal instructions</label>
+                <input type="text" class="form-control" maxlength="256" name="disposalInstruction"
+                       data-name="disposal Instruction" id="disposalInstruction"
+                       th:field="*{disposalInstruction}">
+                <!--                                        <div class="invalid-feedback">-->
+                <!--                                            Please provide a valid state.-->
+                <!--                                        </div>-->
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="col-md-4 mb-3">
+                <label for="sampled">Sampled Yes/No</label>
+                <select id="sampled" class="form-control" th:field="*{sampled}">
+                    <option value="0">Select one...</option>
+                    <option th:value="'YES'" th:text="YES"></option>
+                    <option th:value="'NO'" th:text="NO"></option>
+                </select>
+                <!--                                    <div class="invalid-feedback">-->
+                <!--                                        Please provide a valid city.-->
+                <!--                                    </div>-->
+            </div>
+            <div class="col-md-4 mb-3">
+                <label for="remarks">Remarks</label>
+                <textarea class="form-control" maxlength="256" name="remarks" data-name="remarks"
+                          id="remarks" th:field="*{remarks}"></textarea>
+                <!--                                        <div class="invalid-feedback">-->
+                <!--                                            Please provide a valid state.-->
+                <!--                                        </div>-->
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:fragment="otherItemChecklist">
+    <div th:object="${otherItemInspectionChecklist}" id='other-item-details'>
+        <div class="form-row">
+            <div class="col-md-12 mb-3">
+                <label style="color: #0082f3">OTHERS (Used clothing/shoes, personal effects etc)
+                    Markings Details</label>
+                <!--                                        <input type="text" class="form-control" disabled id="firstName" th:field="*{firstName}" placeholder="First name"-->
+                <!--                                               required>-->
+                <!--                                    <div class="valid-feedback">-->
+                <!--                                        Looks good!-->
+                <!--                                    </div>-->
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="col-md-4 mb-3">
+                <label for="serialNumber">Serial Number</label>
+                <input type="text" class="form-control" maxlength="256" name="serialNumber"
+                       data-name="clearing Agent" id="serialNumber" th:field="*{serialNumber}">
+            </div>
+            <div class="col-md-4 mb-3">
+                <label for="brand">Brand</label>
+                <input type="text" class="form-control" maxlength="256" name="brand"
+                       data-name="brand" id="brand" th:field="*{brand}">
+            </div>
+            <div class="col-md-4 mb-3">
+                <label for="productDescription">Product description</label>
+                <input type="hidden" id="productDescription" name="productDescription"
+                       th:value="${item?.itemDescription}">
+                <input type="text" disabled class="form-control" maxlength="256"
+                       name="productDescription" data-name="product Description"
+                       id="productDescription2" th:value="${item?.itemDescription}">
+                <!--                                        <div class="invalid-feedback">-->
+                <!--                                            Please provide a valid zip.-->
+                <!--                                        </div>-->
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="col-md-4 mb-3">
+                <label for="ksEasApplicable">KS/EAS Applicable</label>
+                <input type="text" class="form-control" maxlength="256" name="ksEasApplicable"
+                       data-name="ksEas Applicable" id="ksEasApplicable"
+                       th:field="*{ksEasApplicable}">
+            </div>
+            <div class="col-md-4 mb-3">
+                <label for="quantityDeclared">Quantity Declared (No. Of items/packages)</label>
+                <input type="hidden" id="quantityDeclared" name="quantityDeclared"
+                       th:value="${item?.quantity}">
+                <input type="text" disabled class="form-control" maxlength="256"
+                       name="quantityDeclared" data-name="quantity Declared" id="quantityDeclared2"
+                       th:value="${item?.quantity}">
+                <!--                                        <div class="invalid-feedback">-->
+                <!--                                            Please provide a valid state.-->
+                <!--                                        </div>-->
+            </div>
+            <div class="col-md-4 mb-3">
+                <label for="quantityVerified">Quantity Verified (No. Of items/packages)</label>
+                <input type="text" class="form-control" maxlength="256" name="quantityVerified"
+                       data-name="quantity Verified" id="quantityVerified"
+                       th:field="*{quantityVerified}">
+                <!--                                    <div class="invalid-feedback">-->
+                <!--                                        Please provide a valid city.-->
+                <!--                                    </div>-->
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="col-md-4 mb-3">
+                <label for="packagingLabelling">Packaging/labelling</label>
+                <input type="text" class="form-control" maxlength="256" name="packagingLabelling"
+                       data-name="packaging Labelling" id="packagingLabelling"
+                       th:field="*{packagingLabelling}">
+                <!--                                    <div class="invalid-feedback">-->
+                <!--                                        Please provide a valid city.-->
+                <!--                                    </div>-->
+            </div>
+            <div class="col-md-4 mb-3">
+                <label for="physicalCondition">Physical condition</label>
+                <input type="text" class="form-control" maxlength="256" name="physical Condition"
+                       data-name="physical Condition" id="physicalCondition"
+                       th:field="*{physicalCondition}">
+                <!--                                        <div class="invalid-feedback">-->
+                <!--                                            Please provide a valid state.-->
+                <!--                                        </div>-->
+            </div>
+            <div class="col-md-4 mb-3">
+                <label for="defects">Defects</label>
+                <input type="text" class="form-control" maxlength="256" name="defects"
+                       data-name="defects" id="defects" th:field="*{defects}">
+                <!--                                        <div class="invalid-feedback">-->
+                <!--                                            Please provide a valid zip.-->
+                <!--                                        </div>-->
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="col-md-4 mb-3">
+                <label for="presenceAbsenceBanned">Presence/absence of banned items</label>
+                <input type="text" class="form-control" maxlength="256" name="presenceAbsenceBanned"
+                       data-name="presence AbsenceBanned" id="presenceAbsenceBanned"
+                       th:field="*{presenceAbsenceBanned}">
+                <!--                                        <div class="invalid-feedback">-->
+                <!--                                            Please provide a valid zip.-->
+                <!--                                        </div>-->
+            </div>
+            <div class="col-md-4 mb-3">
+                <label for="documentation">Documentation (heath/fumigation certificates
+                    e.t.c.)</label>
+                <input type="text" class="form-control" maxlength="256" name="documentation"
+                       data-name="documentation" id="documentation" th:field="*{documentation}">
+                <!--                                    <div class="invalid-feedback">-->
+                <!--                                        Please provide a valid city.-->
+                <!--                                    </div>-->
+            </div>
+            <div class="col-md-4 mb-3">
+                <label for="sampled">Sampled Yes/No</label>
+                <select id="sampled" class="form-control" th:field="*{sampled}">
+                    <option value="0">Select one...</option>
+                    <option th:value="'YES'" th:text="YES"></option>
+                    <option th:value="'NO'" th:text="NO"></option>
+                </select>
+                <!--                                    <div class="invalid-feedback">-->
+                <!--                                        Please provide a valid city.-->
+                <!--                                    </div>-->
+            </div>
+
+        </div>
+        <div class="form-row">
+            <div class="col-md-6 mb-3">
+                <label for="remarks">Remarks</label>
+                <textarea class="form-control" maxlength="256" name="remarks" data-name="remarks"
+                          id="remarks" th:field="*{remarks}"></textarea>
+                <!--                                        <div class="invalid-feedback">-->
+                <!--                                            Please provide a valid state.-->
+                <!--                                        </div>-->
+            </div>
+<!--            <div class="col-md-4 mb-3">-->
+<!--                <label for="documentation">Documentation (heath/fumigation certificates-->
+<!--                    e.t.c.)</label>-->
+<!--                <input type="text" class="form-control" maxlength="256" name="documentation"-->
+<!--                       data-name="documentation" id="documentation" th:field="*{documentation}">-->
+<!--                &lt;!&ndash;                                    <div class="invalid-feedback">&ndash;&gt;-->
+<!--                &lt;!&ndash;                                        Please provide a valid city.&ndash;&gt;-->
+<!--                &lt;!&ndash;                                    </div>&ndash;&gt;-->
+<!--            </div>-->
+<!--            <div class="col-md-4 mb-3">-->
+<!--                <label for="remarks">Remarks</label>-->
+<!--                <textarea class="form-control" maxlength="256" name="remarks" data-name="remarks"-->
+<!--                          id="remarks" th:field="*{remarks}"></textarea>-->
+<!--                &lt;!&ndash;                                        <div class="invalid-feedback">&ndash;&gt;-->
+<!--                &lt;!&ndash;                                            Please provide a valid state.&ndash;&gt;-->
+<!--                &lt;!&ndash;                                        </div>&ndash;&gt;-->
+<!--            </div>-->
+        </div>
+    </div>
+</div>
+
+<div th:fragment="motorVehicleChecklist">
+    <div th:object="${motorVehicleItemInspectionChecklist}" id='motor-vehicle-details'>
+        <div class="form-row">
+            <div class="col-md-12 mb-3">
+                <label style="color: #0082f3">USED MOTOR VEHICLES</label>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="col-md-4 mb-3">
+                <label for="serialNumber">Serial Number</label>
+                <input type="text" class="form-control" maxlength="256" name="serialNumber"
+                       data-name="clearing Agent" id="serialNumber" th:field="*{serialNumber}">
+            </div>
+            <div class="col-md-4 mb-3">
+                <label for="makeOfVehicle">Make Of Vehicle</label>
+                <!--                                        <input type="text" class="form-control" maxlength="256" name="Make Of Vehicle"-->
+                <!--                                               data-name="Make Of Vehicle" id="makeOfVehicle" th:field="*{makeVehicle}">-->
+                <input type="text"
+                       class="form-control" maxlength="256" name="Make Of Vehicle"
+                       data-name="Make Of Vehicle"
+                       id="makeOfVehicle"
+                       th:field="*{makeVehicle}">
+            </div>
+            <div class="col-md-4 mb-3">
+                <label for="chassisNumber">Chassis Number</label>
+                <input type="text" class="form-control" maxlength="256" name="Chassis Number"
+                       data-name="Chassis Number"
+                       id="chassisNumber"
+                       th:field="*{chassisNo}">
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="col-md-4 mb-3">
+                <label for="engineNo">Engine No./Capacity</label>
+                <input type="text" class="form-control" maxlength="256" name="Engine Number"
+                       data-name="Engine Number" id="engineNo" th:field="*{engineNoCapacity}">
+            </div>
+            <div class="col-md-4 mb-3">
+                <label for="manufacturerDate">Manufacturer Date</label>
+                <input type="date" class="form-control" maxlength="256" name="Manufacturer Date"
+                       data-name="Manufacturer Date" id="manufacturerDate"
+                       th:field="${currentDate}">
+            </div>
+            <div class="col-md-4 mb-3">
+                <label for="registrationDate">Registration Date</label>
+                <input type="date" class="form-control" maxlength="256" name="Registration Date"
+                       data-name="Registration Date" id="registrationDate"
+                       th:field="${currentDate}">
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="col-md-4 mb-3">
+                <label for="odometreReading">Odometre Reading</label>
+                <input type="text" class="form-control" maxlength="256" name="Odometre Reading"
+                       data-name="Odometre Reading" id="odometreReading" th:field="*{odemetreReading}">
+            </div>
+            <div class="col-md-4 mb-3">
+                <label for="driveRhdLhd">Drive(RHD/LHD)</label>
+                <input type="text" class="form-control" maxlength="256" name="Drive(RHD/LHD)"
+                       data-name="Drive(RHD/LHD)" id="driveRhdLhd"
+                       th:field="*{driveRhdLhd}">
+            </div>
+            <div class="col-md-4 mb-3">
+                <label for="transmission">Transmission(Automatic/Manual)</label>
+                <input type="text" class="form-control" maxlength="256" name="Transmission"
+                       data-name="Transmission" id="transmission"
+                       th:field="*{transmissionAutoManual}">
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="col-md-4 mb-3">
+                <label for="colour">Colour</label>
+                <input type="text" class="form-control" maxlength="256" name="Colour"
+                       data-name="Colour" id="colour" th:field="*{colour}">
+            </div>
+            <div class="col-md-4 mb-3">
+                <label for="overallAppearance">Overall Appearance</label>
+                <input type="text" class="form-control" maxlength="256" name="Overall Appearance"
+                       data-name="Overall Appearance" id="overallAppearance"
+                       th:field="*{overallAppearance}">
+            </div>
+            <!--                                <div class="col-md-4 mb-3">-->
+            <!--                                    <label for="transmission">Transmission(Automatic/Manual)</label>-->
+            <!--                                    <input type="text" class="form-control" maxlength="256" name="Transmission"-->
+            <!--                                           data-name="Transmission" id="transmission"-->
+            <!--                                           th:field="*{transmisionAutoManual}">-->
+            <!--                                </div>-->
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
