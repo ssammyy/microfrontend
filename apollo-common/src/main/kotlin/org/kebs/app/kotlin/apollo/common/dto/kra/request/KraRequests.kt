@@ -1,8 +1,6 @@
 package org.kebs.app.kotlin.apollo.common.dto.kra.request
 
-import com.fasterxml.jackson.annotation.JsonFormat
-import com.fasterxml.jackson.annotation.JsonProperty
-import com.fasterxml.jackson.annotation.JsonRootName
+import com.fasterxml.jackson.annotation.*
 import java.math.BigDecimal
 import java.sql.Date
 import java.sql.Timestamp
@@ -11,6 +9,11 @@ import javax.validation.Valid
 import javax.validation.constraints.NotEmpty
 import javax.validation.constraints.NotNull
 
+data class PinValidationWebRequest(
+
+    @NotEmpty(message = "Required field") val integration: Long,
+    @NotNull(message = "Required field") val kraPin: String
+)
 
 class PinValidationRequest {
     @NotEmpty(message = "Required field")
@@ -24,7 +27,16 @@ class PinValidationRequest {
     var kraPin: String? = null
 }
 
-@JsonRootName("REQUEST")
+/**
+ * Request Payload Object
+ * <pre>
+ *     {@literal
+ *
+ *         {"REQUEST": {"loginId": "", "password": "", "hash": "", "transmissionDate": "", "HEADER": {"entryNo": "", "kraPin": "", "manufacturerName": "", "paymentSlipNo": "", "paymentSlipDate": "", "paymentType": "", "paymentDate": "", "totalDeclAmt": "", "totalPenaltyAmt": "", "TotalPaymentAmt": "", "Bank": "", "bankRefNo": ""}, "DETAILS": {"DECLARATION": [{"commodityType": "", "periodFrom": "", "periodTo": "", "qtyManf": "", "exFactVal": "", "levyPaid": ""}, {"commodityType": "", "periodFrom": "", "periodTo": "", "qtyManf": "", "exFactVal": "", "levyPaid": ""}], "PENALTY": [{"penaltyOrderNo": "", "periodFrom": "", "periodTo": "", "penaltyPaid": ""}, {"penaltyOrderNo": "", "periodFrom": "", "periodTo": "", "penaltyPaid": ""}]}}}
+ *     }
+ * </pre>
+ */
+@JsonRootName(value = "REQUEST")
 class ReceiveSL2PaymentRequest {
 
     @NotNull(message = "Required field")
@@ -54,12 +66,10 @@ class ReceiveSL2PaymentRequest {
 
 class ReceiveSL2PaymentDetails {
     @JsonProperty("DECLARATION")
-    @NotNull(message = "Required field")
     @Valid
     var declaration: List<ReceiveSL2PaymentDeclaration>? = null
 
     @JsonProperty("PENALTY")
-    @NotNull(message = "Required field")
     @Valid
     var penalty: List<ReceiveSL2PaymentPenalty>? = null
 }
@@ -168,16 +178,19 @@ data class RequestHeader(
     var transmissionDate: Timestamp = Timestamp.from(Instant.now())
 }
 
+
 data class EntryDetails(
     val entryNumber: String?,
     val kraPin: String?,
     val manufacturerName: String?,
-    val registrationDate: String?,
+    val registrationDate: String,
     val status: String?,
 
     )
 
-@JsonRootName("REQUEST")
+
+@JsonTypeName(value = "REQUEST")
+@JsonTypeInfo(include = JsonTypeInfo.As.WRAPPER_OBJECT, use = JsonTypeInfo.Id.NAME)
 class EntryRequest {
     @JsonProperty("HEADER")
     var header: RequestHeader? = null
@@ -186,7 +199,8 @@ class EntryRequest {
     var details: List<EntryDetails>? = null
 }
 
-@JsonRootName("REQUEST")
+@JsonTypeName(value = "REQUEST")
+@JsonTypeInfo(include = JsonTypeInfo.As.WRAPPER_OBJECT, use = JsonTypeInfo.Id.NAME)
 class PenaltyRequest {
     @JsonProperty("HEADER")
     var header: RequestHeader? = null

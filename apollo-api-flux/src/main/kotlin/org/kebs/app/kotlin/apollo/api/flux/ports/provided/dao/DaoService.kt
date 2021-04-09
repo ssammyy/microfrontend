@@ -94,6 +94,7 @@ class DaoService(
 
     fun mapper(excludeNull: Boolean = false): ObjectMapper {
         val mapper = ObjectMapper()
+//            .configure(SerializationFeature.WRAP_ROOT_VALUE, true)
             .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
             .configure(DeserializationFeature.USE_BIG_DECIMAL_FOR_FLOATS, true)
 //            .configure(SerializationFeature.WRITE_SELF_REFERENCES_AS_NULL, false)
@@ -228,7 +229,7 @@ class DaoService(
                 accessToken
                     ?.let {
                         header("Authorization", "Bearer $it")
-                        header("Accept", "application/json")
+//                        header("Accept", "application/json")
                     }
 
                 log?.transactionStartDate = Timestamp.from(Instant.now())

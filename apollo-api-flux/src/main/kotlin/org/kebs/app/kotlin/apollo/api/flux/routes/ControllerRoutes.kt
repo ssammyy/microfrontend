@@ -1,10 +1,7 @@
 package org.kebs.app.kotlin.apollo.api.flux.routes
 
 import mu.KotlinLogging
-import org.kebs.app.kotlin.apollo.api.flux.handlers.PaymentsApiHandler
-import org.kebs.app.kotlin.apollo.api.flux.handlers.PvocHandler
-import org.kebs.app.kotlin.apollo.api.flux.handlers.RegistrationHandler
-import org.kebs.app.kotlin.apollo.api.flux.handlers.StandardsLevyHandler
+import org.kebs.app.kotlin.apollo.api.flux.handlers.*
 import org.kebs.app.kotlin.apollo.api.flux.ports.provided.RequestLoggingDecorator
 import org.kebs.app.kotlin.apollo.api.flux.ports.provided.dao.DaoService
 import org.springframework.context.annotation.Bean
@@ -58,8 +55,38 @@ class ControllerRoutes(private val daoService: DaoService) {
                     POST("{job}/start", handler::processSendPenalties)
                 }
             }
+            "/pinValidation".nest {
+                POST("/validate", handler::processValidatePin)
+            }
 
         }
+    }
+
+    /**
+     * Routes for the EAC Integration
+     * The main purpose of ISP API is to allow other System interface with EAC
+     * ISP System to post, retrieve(get) products information.
+     * This therefore means each Agency within EAC will interface through this API and post
+     * certified products, banned products and suspended products
+     */
+    @Bean
+    fun eastAfricanCommunityRoutes(handler: EastAfricanCommunityHandler) = coRouter {
+
+        "/api/eac/".nest {
+            /**
+             * Post products
+             */
+            "/products".nest {
+                "/post".nest {
+                    /**
+                     * Posting a New Certified and Approved product
+                     */
+                    POST("/{job}/start", handler::postProduct)
+
+                }
+            }
+        }
+
     }
 
     @Bean

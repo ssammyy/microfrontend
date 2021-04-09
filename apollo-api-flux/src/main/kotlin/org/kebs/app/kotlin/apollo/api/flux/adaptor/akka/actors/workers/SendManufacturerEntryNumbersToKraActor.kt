@@ -49,7 +49,7 @@ class SendManufacturerEntryNumbersToKraActor(
                                 ?.let { integId ->
                                     configRepo.findByIdOrNull(integId)
                                         ?.let { config ->
-                                            val pages = totalRecords.div(jobDetails.pageSize) + 1
+                                            val pages = totalRecords.div(jobDetails.pageSize)
                                             repeat((jobDetails.initialPage..pages).count()) {
                                                 val page = PageRequest.of(jobDetails.initialPage, jobDetails.pageSize)
                                                 penaltyRepository.findAllByStatus(status, page)
@@ -86,7 +86,7 @@ class SendManufacturerEntryNumbersToKraActor(
                         ?.let { integId ->
                             configRepo.findByIdOrNull(integId)
                                 ?.let { config ->
-                                    val pages = totalRecords.div(jobDetails.pageSize) + 1
+                                    val pages = totalRecords.div(jobDetails.pageSize)
                                     repeat((jobDetails.initialPage..pages).count()) {
                                         val page = PageRequest.of(jobDetails.initialPage, jobDetails.pageSize)
                                         entryNumberRepository.findAllByStatus(status, page)

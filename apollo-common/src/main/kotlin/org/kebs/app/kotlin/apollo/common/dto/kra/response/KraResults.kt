@@ -2,18 +2,21 @@ package org.kebs.app.kotlin.apollo.common.dto.kra.response
 
 import com.fasterxml.jackson.annotation.JsonFormat
 import com.fasterxml.jackson.annotation.JsonProperty
-import com.fasterxml.jackson.annotation.JsonRootName
 import com.fasterxml.jackson.databind.PropertyNamingStrategies
 import com.fasterxml.jackson.databind.annotation.JsonNaming
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement
 import java.sql.Date
 
 
 class PinValidationResponse {
     var pinValidationResponseResult: PinValidationResponseResult? = null
     val pinData: PinData? = null
+    val principalPhysicalAddress: PrincipalPhysicalAddress? = null
+    val principalPostalAddress: PrincipalPostalAddress? = null
+    val shareholderDetails: ShareholderDetails? = null
 }
 
-@JsonRootName("PINDATA")
+@JacksonXmlRootElement(localName = "PINDATA")
 class PinData {
     @JsonProperty("KRAPIN")
     var kraPin: String? = null
@@ -137,7 +140,7 @@ class PrincipalPhysicalAddress {
 
 }
 
-@JsonRootName("RESULT")
+@JacksonXmlRootElement(localName = "RESULT")
 @JsonNaming(PropertyNamingStrategies.UpperCamelCaseStrategy::class)
 class PinValidationResponseResult {
     var responseCode: String? = null
@@ -145,7 +148,7 @@ class PinValidationResponseResult {
     var status: String? = null
 }
 
-@JsonRootName("RESULT")
+@JacksonXmlRootElement(localName = "RESULT")
 class RequestResult {
     @JsonProperty("RESPONSECODE")
     var responseCode: String? = null
