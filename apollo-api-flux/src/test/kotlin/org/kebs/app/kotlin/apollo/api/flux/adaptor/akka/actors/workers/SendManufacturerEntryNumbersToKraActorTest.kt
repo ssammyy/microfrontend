@@ -103,7 +103,7 @@ class SendManufacturerEntryNumbersToKraActorTest {
     @Test
     fun givenJobDetailAndEntryNumberListDoBatchUpdate() {
         jobsRepo.findByIdOrNull(2L)
-            ?.let { job ->
+            ?.let { _ ->
 //                val data = mutableListOf<Long?>(4633L, 4989L, 9982L, 11695L, 14303L, 14380L)
                 daoService.generateTransactionReference()
 //                daoService.postJobProcessingRecordsCleanUp(

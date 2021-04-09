@@ -39,6 +39,8 @@ package org.kebs.app.kotlin.apollo.store.repo
 
 import org.kebs.app.kotlin.apollo.store.model.*
 import org.springframework.data.hazelcast.repository.HazelcastRepository
+import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor
 import org.springframework.stereotype.Repository
 
 
@@ -74,3 +76,11 @@ interface IServiceMapsWorkflowsFunctionsVwRepository : HazelcastRepository<Servi
 
     fun findByServiceMapOrderBySequenceNumber(serviceMap: Int): List<ServiceMapsWorkflowsFunctionsVwEntity>?
 }
+
+@Repository
+interface IKraPinValidationsRepository : HazelcastRepository<KraPinValidations, Long>, JpaSpecificationExecutor<KraPinValidations> {
+    fun findFirstByKraPinAndStatusOrderByIdDesc(kraPin: String, status: Int?): KraPinValidations?
+}
+
+@Repository
+interface ICertifiedProductsDetailsRepository : JpaRepository<CertifiedProductsDetailsEntity, Long>, JpaSpecificationExecutor<CertifiedProductsDetailsEntity>

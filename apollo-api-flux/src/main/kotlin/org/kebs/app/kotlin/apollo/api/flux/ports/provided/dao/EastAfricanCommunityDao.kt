@@ -35,10 +35,11 @@ class EastAfricanCommunityDao(
      * @param data the CertifiedProduct data to be sent to EAC
      */
     suspend fun postProduct(data: CertifiedProduct, config: IntegrationConfigurationEntity, job: BatchJobDetails): RequestResult? {
+        val c = generateToken(config)
         val log = daoService.createTransactionLog(0, daoService.generateTransactionReference())
-        val finalUrl = "${config.url}${job.jobUri}"
-        val resp = daoService.getHttpResponseFromPostCall(finalUrl, config.token, data, config, null, null, log)
-        return daoService.processResponses<RequestResult>(resp, log, finalUrl, config).second
+        val finalUrl = "${c.url}${job.jobUri}"
+        val resp = daoService.getHttpResponseFromPostCall(finalUrl, c.token, data, c, null, null, log)
+        return daoService.processResponses<RequestResult>(resp, log, finalUrl, c).second
 
 
     }

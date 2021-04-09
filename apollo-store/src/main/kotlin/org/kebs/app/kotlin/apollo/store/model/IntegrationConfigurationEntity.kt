@@ -144,6 +144,10 @@ class IntegrationConfigurationEntity : Serializable {
     @Basic
     var password: String = ""
 
+    @Column(name = "SECRET_VALUE")
+    @Basic
+    var secretValue: String = ""
+
     @Column(name = "REQUEST_KEYWORD")
     @Basic
     var requestKeyword: String? = null
