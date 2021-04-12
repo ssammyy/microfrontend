@@ -49,7 +49,7 @@ class PvocServiceFlux(
     @Autowired
     lateinit var iCocItemRepository: ICocItemRepository
 
-    fun saveCocData(cocData: CocsBakEntity): GeneralResponse {
+    fun saveCocData(cocData: CocsEntity): GeneralResponse {
         val generalResponse = GeneralResponse()
 
         val log = WorkflowTransactionsEntity()
@@ -240,7 +240,7 @@ class PvocServiceFlux(
         return generalResponse
     }
 
-    fun submitCocToKeSWS(cocData: CocsBakEntity) {
+    fun submitCocToKeSWS(cocData: CocsEntity) {
         val coc: CustomCocXmlDto = cocData.toCocXmlRecordRefl()
         val cocItem = iCocItemRepository.findByCocId(cocData.id)?.get(0)
         cocItem?.toCocItemDetailsXmlRecordRefl().let {
@@ -258,7 +258,7 @@ class PvocServiceFlux(
         }
     }
 
-    fun submitCoiToKeSWS(cocData: CocsBakEntity) {
+    fun submitCoiToKeSWS(cocData: CocsEntity) {
         KotlinLogging.logger { }.info { "The COI entity: ${cocData.coiNumber}" }
         val coi: CustomCoiXmlDto = cocData.toCoiXmlRecordRefl()
         val coiFinalDto = COIXmlDTO()

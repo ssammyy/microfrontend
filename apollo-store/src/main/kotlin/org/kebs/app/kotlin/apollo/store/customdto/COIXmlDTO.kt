@@ -2,8 +2,7 @@ package org.kebs.app.kotlin.apollo.store.customdto
 
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement
-import org.kebs.app.kotlin.apollo.store.model.CocsBakEntity
-import org.kebs.app.kotlin.apollo.store.model.CoisEntity
+import org.kebs.app.kotlin.apollo.store.model.CocsEntity
 import java.sql.Timestamp
 import java.text.SimpleDateFormat
 import kotlin.reflect.full.memberProperties
@@ -174,8 +173,8 @@ class CustomCoiXmlDto(id: Long?, coiNumber: String?, idfNumber: String?, rfiNumb
     }
 }
 
-fun CocsBakEntity.toCoiXmlRecordRefl() = with(CustomCoiXmlDto::class.primaryConstructor!!) {
-    val propertiesByName = CocsBakEntity::class.memberProperties.associateBy { it.name }
+fun CocsEntity.toCoiXmlRecordRefl() = with(CustomCoiXmlDto::class.primaryConstructor!!) {
+    val propertiesByName = CocsEntity::class.memberProperties.associateBy { it.name }
     callBy(args = parameters.associate { parameter ->
         parameter to when (parameter.name) {
             else -> propertiesByName[parameter.name]?.get(this@toCoiXmlRecordRefl)

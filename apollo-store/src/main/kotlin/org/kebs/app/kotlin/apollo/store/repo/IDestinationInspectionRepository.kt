@@ -1,16 +1,11 @@
 package org.kebs.app.kotlin.apollo.store.repo
 
-import oracle.sql.TIMESTAMP
 import org.kebs.app.kotlin.apollo.store.model.*
 import org.kebs.app.kotlin.apollo.store.model.di.*
-import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.hazelcast.repository.HazelcastRepository
-import org.springframework.data.jpa.repository.Query
-import org.springframework.data.repository.query.Param
 import org.springframework.stereotype.Repository
-import java.sql.Time
 import java.util.*
 
 
@@ -108,11 +103,11 @@ interface IRemarksRepository : HazelcastRepository<RemarksEntity, Long>{
 }
 
 @Repository
-interface ICocsBakRepository : HazelcastRepository<CocsBakEntity, Long>{
-    fun findByUcrNumber(ucrNumber: String): CocsBakEntity?
-    fun findFirstByCocNumber(cocNumber: String) : CocsBakEntity?
-    fun findAllByRouteAndShipmentSealNumbersIsNull(route : String,  pageable: Pageable) : Page<CocsBakEntity>?
-    fun findAllByReportGenerationStatus(reportGenerationStatus: Int) : List<CocsBakEntity>
+interface ICocsBakRepository : HazelcastRepository<CocsEntity, Long>{
+    fun findByUcrNumber(ucrNumber: String): CocsEntity?
+    fun findFirstByCocNumber(cocNumber: String) : CocsEntity?
+    fun findAllByRouteAndShipmentSealNumbersIsNull(route : String,  pageable: Pageable) : Page<CocsEntity>?
+    fun findAllByReportGenerationStatus(reportGenerationStatus: Int) : List<CocsEntity>
 }
 
 
@@ -133,6 +128,6 @@ interface IRiskProfile : HazelcastRepository<RiskProfileEntity, Long>{
 }
 
 @Repository
-interface ICocsRepository : HazelcastRepository<CocsBakEntity, Long>{
-    fun findByUcrNumber(ucrNumber: String): CocsBakEntity?
+interface ICocsRepository : HazelcastRepository<CocsEntity, Long>{
+    fun findByUcrNumber(ucrNumber: String): CocsEntity?
 }

@@ -14,22 +14,17 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DestinationInspectionDaoServices
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.customdto.*
-import org.kebs.app.kotlin.apollo.store.model.CdDemandNoteEntity
 import org.kebs.app.kotlin.apollo.store.model.CorsBakEntity
 import org.kebs.app.kotlin.apollo.store.repo.ICorsBakRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.junit4.SpringRunner
 import java.io.File
-import kotlin.test.assertNotNull
-import org.kebs.app.kotlin.apollo.store.model.CocsBakEntity
-import org.kebs.app.kotlin.apollo.store.model.CoisEntity
+import org.kebs.app.kotlin.apollo.store.model.CocsEntity
 import org.kebs.app.kotlin.apollo.store.repo.ICocsBakRepository
 import org.kebs.app.kotlin.apollo.store.repo.ICocItemRepository
 import org.kebs.app.kotlin.apollo.store.repo.ICoisRepository
 import org.kebs.app.kotlin.apollo.store.repo.di.IDemandNoteRepository
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 
 @SpringBootTest
 @RunWith(SpringRunner::class)
@@ -116,11 +111,11 @@ class SftpTest {
     fun whenCocpojoSerializedToXmlFile_thenCorrect() {
         val cocId: Long = 1282
 
-        val cocsBakEntity: CocsBakEntity = iCocsBakRepository.findById(cocId).get()
-        cocsBakEntity.let {
+        val cocsEntity: CocsEntity = iCocsBakRepository.findById(cocId).get()
+        cocsEntity.let {
             val coc: CustomCocXmlDto = it.toCocXmlRecordRefl()
             //COC ITEM
-            val cocItem = iCocItemRepository.findByCocId(cocsBakEntity.id)?.get(0)
+            val cocItem = iCocItemRepository.findByCocId(cocsEntity.id)?.get(0)
             cocItem?.toCocItemDetailsXmlRecordRefl().let {
                 coc.cocDetals = it
                 val cocFinalDto = COCXmlDTO()
@@ -231,8 +226,8 @@ class SftpTest {
     fun testKeswsDateConversion() {
         val cocId: Long = 861
 
-        val cocsBakEntity: CocsBakEntity = iCocsBakRepository.findById(cocId).get()
-        cocsBakEntity.let {
+        val cocsEntity: CocsEntity = iCocsBakRepository.findById(cocId).get()
+        cocsEntity.let {
             val keswsDate = it.cocIssueDate?.let { it1 -> commonDaoServices.convertTimestampToKeswsValidDate(it1) }
         }
     }

@@ -527,8 +527,8 @@ class DITest {
         val inputFile = File(classLoader.getResource(inputFilePath).file)
         val fileContent: ByteArray = FileUtils.readFileToByteArray(inputFile)
         val encodedString = Base64
-                .getEncoder()
-                .encodeToString(fileContent)
+            .getEncoder()
+            .encodeToString(fileContent)
 
         // create output file
         val outputFile = File(
@@ -539,8 +539,8 @@ class DITest {
 
         // decode the string and write to file
         val decodedBytes = Base64
-                .getDecoder()
-                .decode(encodedString)
+            .getDecoder()
+            .decode(encodedString)
         FileUtils.writeByteArrayToFile(outputFile, decodedBytes)
         assertTrue(FileUtils.contentEquals(inputFile, outputFile))
     }
@@ -552,7 +552,12 @@ class DITest {
         with(cdDetails) {
             confirmAssignedUserId = 1083
         }
-        destinationInspectionDaoServices.updateCDDetails(cdDetails, 24, commonDaoServices.loggedInUserDetails(), commonDaoServices.serviceMapDetails(122))
+        destinationInspectionDaoServices.updateCDDetails(
+            cdDetails,
+            24,
+            commonDaoServices.loggedInUserDetails(),
+            commonDaoServices.serviceMapDetails(122)
+        )
 
     }
 
@@ -606,37 +611,47 @@ class DITest {
         val appId = applicationMapProperties.mapImportInspection
 
         usersRepo.findByUserName("kpaul7747@gmail.com")
-                ?.let { loggedInUser ->
+            ?.let { loggedInUser ->
 //                    val payload = "Assigned Inspection Officer [assignedStatus= 1, assignedRemarks= test]"
-                    val map = commonDaoServices.serviceMapDetails(appId)
+                val map = commonDaoServices.serviceMapDetails(appId)
 //                    val demandNotes: MutableList<CdDemandNoteEntity> = mutableListOf()
 
-                    var itemDetails = destinationInspectionDaoServices.findItemWithUuid("dd4ce6c8-8715-4d92-9512-40353d16075b")
-                    with(itemDetails) {
-                        paymentFeeIdSelected = iDIFeeDetailsRepo.findByIdOrNull(7)
-                    }
-                    itemDetails = destinationInspectionDaoServices.updateCdItemDetailsInDB(itemDetails, loggedInUser)
-                    val importerDetails =
-                        itemDetails.cdDocId?.cdImporter?.let { destinationInspectionDaoServices.findCDImporterDetails(it) }
-                    val demandNote =
-                        destinationInspectionDaoServices.generateDemandNoteWithItemList(itemDetails, map, loggedInUser)
+                var itemDetails =
+                    destinationInspectionDaoServices.findItemWithUuid("dd4ce6c8-8715-4d92-9512-40353d16075b")
+                with(itemDetails) {
+                    paymentFeeIdSelected = iDIFeeDetailsRepo.findByIdOrNull(7)
+                }
+                itemDetails = destinationInspectionDaoServices.updateCdItemDetailsInDB(itemDetails, loggedInUser)
+                val importerDetails =
+                    itemDetails.cdDocId?.cdImporter?.let { destinationInspectionDaoServices.findCDImporterDetails(it) }
+                val demandNote =
+                    destinationInspectionDaoServices.generateDemandNoteWithItemList(itemDetails, map, loggedInUser)
 //                    val demandNoteNumber = destinationInspectionDaoServices.demandNotePayment(demandNote, map, loggedInUser, itemDetails)
-                    KotlinLogging.logger { }.info { "DEMAND NOTE GENERATED WITH ID = ${demandNote.id} " }
+                KotlinLogging.logger { }.info { "DEMAND NOTE GENERATED WITH ID = ${demandNote.id} " }
 //                    demandNotes.add(demandNote1)
 
-                    demandNote.demandNoteNumber?.let {
-                        val batchInvoiceDetail = invoiceDaoService.createBatchInvoiceDetails(loggedInUser, it)
-                        itemDetails.cdDocId?.cdType?.let { it1 ->
-                            destinationInspectionDaoServices.findCdTypeDetails(it1).demandNotePrefix?.let { myPrefix ->
-                                val updateBatchInvoiceDetail = invoiceDaoService.addInvoiceDetailsToBatchInvoice(demandNote, applicationMapProperties.mapInvoiceTransactionsForDemandNote, loggedInUser, batchInvoiceDetail)
+                demandNote.demandNoteNumber?.let {
+                    val batchInvoiceDetail = invoiceDaoService.createBatchInvoiceDetails(loggedInUser, it)
+                    itemDetails.cdDocId?.cdType?.let { it1 ->
+                        destinationInspectionDaoServices.findCdTypeDetails(it1).demandNotePrefix?.let { myPrefix ->
+                            val updateBatchInvoiceDetail = invoiceDaoService.addInvoiceDetailsToBatchInvoice(
+                                demandNote,
+                                applicationMapProperties.mapInvoiceTransactionsForDemandNote,
+                                loggedInUser,
+                                batchInvoiceDetail
+                            )
 
-                                val myAccountDetails = InvoiceDaoService.InvoiceAccountDetails()
-                                with(myAccountDetails) {
-                                    accountName = importerDetails?.name
-                                    accountNumber = importerDetails?.pin
-                                    currency = applicationMapProperties.mapInvoiceTransactionsLocalCurrencyPrefix
-                                }
-                                val invoiceDetail = invoiceDaoService.createPaymentDetailsOnStgReconciliationTable(loggedInUser, updateBatchInvoiceDetail, myAccountDetails)
+                            val myAccountDetails = InvoiceDaoService.InvoiceAccountDetails()
+                            with(myAccountDetails) {
+                                accountName = importerDetails?.name
+                                accountNumber = importerDetails?.pin
+                                currency = applicationMapProperties.mapInvoiceTransactionsLocalCurrencyPrefix
+                            }
+                            val invoiceDetail = invoiceDaoService.createPaymentDetailsOnStgReconciliationTable(
+                                loggedInUser,
+                                updateBatchInvoiceDetail,
+                                myAccountDetails
+                            )
 //                                invoiceDetail.invoiceId?.let {
 //                                    val batchInvoiceDetail = invoiceDaoService.findInvoiceBatchDetails(it)
 //                                    val updatedBatchInvoiceDetail = invoiceDaoService.updateInvoiceBatchDetailsAfterPaymentDone(batchInvoiceDetail)
@@ -644,10 +659,10 @@ class DITest {
 //                                        invoiceDaoService.updateDemandNotDetailsAfterPaymentDone(invoiceDetail)
 //                                    }
 //                                }
-                            }
                         }
                     }
                 }
+            }
 //        assertTrue { demandNoteNumber.isNotEmpty() }
     }
 
@@ -656,18 +671,18 @@ class DITest {
         val appId = applicationMapProperties.mapImportInspection
 
         usersRepo.findByUserName("kpaul7747@gmail.com")
-                ?.let { loggedInUser ->
+            ?.let { loggedInUser ->
 //                    val payload = "Assigned Inspection Officer [assignedStatus= 1, assignedRemarks= test]"
-                    val map = commonDaoServices.serviceMapDetails(appId)
-                    val itemDetails = destinationInspectionDaoServices.findItemWithItemID(281)
-                    val demandNote = destinationInspectionDaoServices.findDemandNote(itemDetails)
-                    if (demandNote != null) {
+                val map = commonDaoServices.serviceMapDetails(appId)
+                val itemDetails = destinationInspectionDaoServices.findItemWithItemID(281)
+                val demandNote = destinationInspectionDaoServices.findDemandNote(itemDetails)
+                if (demandNote != null) {
 //                        val demandNoteNumber = destinationInspectionDaoServices.demandNotePayment(demandNote, loggedInUser)
 //                        KotlinLogging.logger { }.info { "demandNoteNumber Payment Status = ${demandNoteNumber.paymentStatus} " }
-                    }
+                }
 //                    = destinationInspectionDaoServices.generateDemandNoteNumber()
 
-                }
+            }
 //        assertTrue { demandNoteNumber.isNotEmpty() }
     }
 
@@ -676,8 +691,10 @@ class DITest {
         val dateFromstr = "2021-01-13"
         val dateTostr = "2021-01-15"
 
-        val returnedValues: PvocReconciliationReportDto? = pvocReconciliationReportEntityRepo.getPvocReconciliationReportDto(
-                dateFromstr, dateTostr)
+        val returnedValues: PvocReconciliationReportDto? =
+            pvocReconciliationReportEntityRepo.getPvocReconciliationReportDto(
+                dateFromstr, dateTostr
+            )
         KotlinLogging.logger { }.info {
             "inspectionfeesum = ${returnedValues?.inspectionfeesum}, " +
                     "verificationfeesum = ${returnedValues?.verificationfeesum}, royaltiestokebssum = ${returnedValues?.royaltiestokebssum} "
@@ -713,8 +730,8 @@ class DITest {
 
     @Test
     fun testUpdatingConsignmentDocument() {
-    val cdInString = String(consignmentDocumentDaoService.findSavedCDXmlFile(401L,1))
-        consignmentDocumentDaoService.updateCDDetails(cdInString,"TEST101Status","TEST101Date")
+        val cdInString = String(consignmentDocumentDaoService.findSavedCDXmlFile(401L, 1))
+        consignmentDocumentDaoService.updateCDDetails(cdInString, "TEST101Status", "TEST101Date")
     }
 
     @Test
@@ -722,7 +739,7 @@ class DITest {
         val cdItemId: Long = 541
         val inspectionOfficerId: Long = 1083
 
-        val cdItemEntity =destinationInspectionDaoServices.findItemWithItemID(cdItemId)
+        val cdItemEntity = destinationInspectionDaoServices.findItemWithItemID(cdItemId)
         val inspectionDate = commonDaoServices.getCalculatedDate(7)
 
         destinationInspectionDaoServices.updateInspectionScheduleReceived(cdItemEntity, inspectionDate)
@@ -730,14 +747,15 @@ class DITest {
         cdItemEntity.cdDocId?.id?.let { cdId ->
             //Receive Inspection Schedule Complete
             destinationInspectionBpmn.diReceiveInspectionScheduleComplete(cdId, inspectionOfficerId).let {
-                destinationInspectionBpmn.fetchTaskByObjectId(cdId, diMvWithCorProcessDefinitionKey)?.let { taskDetails ->
-                    println("Task details after triggerInspectionScheduleRequest task complete")
-                    for (taskDetail in taskDetails) {
-                        taskDetail.task.let { task ->
-                            println("${taskDetail.objectId} -- ${task.id} -- ${task.name} -- ${task.assignee} -- ${task.processInstanceId} -- ${task.taskDefinitionKey} ")
+                destinationInspectionBpmn.fetchTaskByObjectId(cdId, diMvWithCorProcessDefinitionKey)
+                    ?.let { taskDetails ->
+                        println("Task details after triggerInspectionScheduleRequest task complete")
+                        for (taskDetail in taskDetails) {
+                            taskDetail.task.let { task ->
+                                println("${taskDetail.objectId} -- ${task.id} -- ${task.name} -- ${task.assignee} -- ${task.processInstanceId} -- ${task.taskDefinitionKey} ")
+                            }
                         }
                     }
-                }
             } ?: return
         }
     }
@@ -760,11 +778,31 @@ class DITest {
         } ?: return
     }
 
+    @Test
+    fun testSendingCOC() {
+        val cdId: Long = 481
+        val inspectionOfficerId: Long = 1083
+        val appId = applicationMapProperties.mapImportInspection
+
+        usersRepo.findByUserName("kpaul7747@gmail.com")
+            ?.let { loggedInUser ->
+//                    val payload = "Assigned Inspection Officer [assignedStatus= 1, assignedRemarks= test]"
+                val map = commonDaoServices.serviceMapDetails(appId)
+                destinationInspectionDaoServices.findCdWithUcrNumber("UCR2100006322")
+                    ?.let { cdDetails ->
+                        KotlinLogging.logger { }.debug("Starting background task")
+                        destinationInspectionDaoServices.createLocalCoc(loggedInUser, cdDetails, map, "A")
+
+                    }
+            }
+    }
+
     private fun updateCDDetails() {
-        val consignmentDocument = consignmentDocument.replace("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>", "")
+        val consignmentDocument =
+            consignmentDocument.replace("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>", "")
 
         val xmlDoc: Document = XMLDocument.documentBuilder.parse(
-                InputSource(StringReader(consignmentDocument))
+            InputSource(StringReader(consignmentDocument))
         )
         xmlDoc.documentElement.normalize()
         val doc = XMLDocument(xmlDoc.documentElement)
@@ -777,18 +815,30 @@ class DITest {
         val date = "2021-01-15"
 
         val newStatus = doc.document.ownerDocument.createTextNode(status)
-        val statusPath: String = listOf("ConsignmentDocument", "DocumentDetails", "ConsignmentDocDetails", "CDStandard", "ApprovalStatus").toPath()
+        val statusPath: String = listOf(
+            "ConsignmentDocument",
+            "DocumentDetails",
+            "ConsignmentDocDetails",
+            "CDStandard",
+            "ApprovalStatus"
+        ).toPath()
         doc.setNested(statusPath, XMLDocument(newStatus))
 
         val newDate = doc.document.ownerDocument.createTextNode(status)
-        val datePath: String = listOf("ConsignmentDocument", "DocumentDetails", "ConsignmentDocDetails", "CDStandard", "ApprovalDate").toPath()
+        val datePath: String = listOf(
+            "ConsignmentDocument",
+            "DocumentDetails",
+            "ConsignmentDocDetails",
+            "CDStandard",
+            "ApprovalDate"
+        ).toPath()
         doc.setNested(datePath, XMLDocument(newDate))
 
         print(doc.toSerializable())
     }
 
     val consignmentDocument =
-            """    
+        """    
    <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <ConsignmentDocument>
     <DocumentHeader>

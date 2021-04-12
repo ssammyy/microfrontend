@@ -1,7 +1,6 @@
 package org.kebs.app.kotlin.apollo.api.controllers.diControllers.pvoc
 
 
-import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.common.exceptions.SupervisorNotFoundException
 import org.kebs.app.kotlin.apollo.store.model.*
@@ -68,7 +67,7 @@ class PvocMonitoringAgents(
     @GetMapping("coc-sampled-at-entry-point")
     fun cocSampledAtEntryPoint(model: Model): String {
         val cdIds = mutableListOf<Long>()
-        val cocsDocs = mutableListOf<CocsBakEntity>()
+        val cocsDocs = mutableListOf<CocsEntity>()
         iCdItemDetailsRepo.findAllByStatusAndSampledStatus(1, 1)?.let { items ->
             items.forEach { item ->
                 item.consigmentId?.let { cdIds.add(it) }

@@ -27,7 +27,7 @@ where UUID = '59572e2d-222a-4850-a256-d04d07a00ca7'
 -- where CD_DOC_ID = 184
 order by ID desc;
 select *
-from DAT_KEBS_COCS_BAK
+from DAT_KEBS_COCS
 -- where UCR_NUMBER = 'UCR2100006322'
 -- where id = 283
 order by ID desc;
