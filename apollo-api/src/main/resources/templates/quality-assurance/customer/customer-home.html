@@ -40,7 +40,7 @@
                         <input type="text" placeholder="Search.." id="myInput" onkeyup="filterFunction()">
                         <small th:each="task: ${tasks}">
 <!--                            <a th:classappend="${#lists.size(payments) < 1} ? 'isDisabled'"  class="special-block" th:href="@{/api/v1/permit/my-applications/{id}(id=${task.permitId})}" th:text="${task.permitId}"></a><i class="fa fa-bell special-block" aria-hidden="true" ></i><i class="fa fa-window-close special-block" aria-hidden="true"></i>-->
-                            <a   class="special-block" th:href="@{/api/v1/permit/my-applications/{id}(id=${task.permitId})}" th:text="${task.permitId}"></a><i class="fa fa-bell special-block" aria-hidden="true" ></i><i class="fa fa-window-close special-block" aria-hidden="true"></i>
+                            <a   class="special-block" th:href="@{/api/permit/my-applications/{id}(id=${task.permitId})}" th:text="${task.permitId}"></a><i class="fa fa-bell special-block" aria-hidden="true" ></i><i class="fa fa-window-close special-block" aria-hidden="true"></i>
                         </small>
 
                     </div>
@@ -57,11 +57,8 @@
                             <div class="link-wrap-left" >
 <!--                                <a class="link-block w-inline-block" th:classappend="${#lists.size(payments) < 1} ? 'isDisabled'"-->
                                 <a class="link-block w-inline-block"
-
-
                                    th:each="permitType : ${permitTypes}"
-
-                                   th:href="@{/api/v1/permit/application-type/{id}(id = ${permitType.id},appId=${session.appId})}"
+                                   th:href="@{/api/permit/application-type/{id}(id = ${permitType.id},appId=${session.appId})}"
                                 >
                                     <div class="link-block-title-div">
                                         <img
@@ -78,11 +75,42 @@
 
                                     </p>
                                 </a>
+                                <div>
+                                    <h3>Customer Details</h3>
+
+                                    <table th:object="${manufacturer}">
+                                        <tr>
+                                            <td><strong>Name : &nbsp;</strong></td>
+                                            <td th:text="${manufacturer.name}"></td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>KRA Pin : &nbsp;</strong> </td>
+                                            <td th:text="${manufacturer.kraPin}"></td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Registration No : &nbsp;</strong></td>
+                                            <td th:text="${manufacturer.registrationNumber}"></td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Postal Address : &nbsp;</strong></td>
+                                            <td th:text="${manufacturer.postalAddress}"></td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Company Email : &nbsp;</strong></td>
+                                            <td th:text="${manufacturer.companyEmail}"></td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Company Ownership : &nbsp;</strong></td>
+                                            <td th:text="${manufacturer.ownership}"></td>
+                                        </tr>
+                                    </table>
+                                </div>
 
                             </div>
+
                             <div class="link-wrap-right">
-                                <a class="content-button"   style="width: 170px" th:href="@{/api/v1/permit/my-applications(appstatus=0,page=1,records=10,appId=150)}"><span class="font-awesome-span fas fa-question-circle"></span>Application History</a>
-                                <a class="content-button"   style="width: 170px" th:href="@{/api/v1/permit/all-permits(appstatus=1,page=1,records=10,appId=199)}"><span class="font-awesome-span fas fa-question-circle"></span>My
+                                <a class="content-button"   style="width: 170px" th:href="@{/api/permit/my-applications(appstatus=0,page=1,records=10,appId=150)}"><span class="font-awesome-span fas fa-question-circle"></span>Application History</a>
+                                <a class="content-button"   style="width: 170px" th:href="@{/api/permit/all-permits(appstatus=1,page=1,records=10,appId=199)}"><span class="font-awesome-span fas fa-question-circle"></span>My
                                     Permits</a>
                                 <a class="content-button"   style="width: 170px" th:href="@{/all-invoices(page=1,records=10,appId=199)}" th:onclick="'loadSpinner();'"
                                 ><span class="font-awesome-span fas fa-question-circle"></span>My Invoices</a>
@@ -94,6 +122,11 @@
                         </div>
                     </div>
                 </div>
+
+
+
+
+
                 <!-- Update Manufacturer Details Modal -->
                 <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                     <div class="modal-dialog" role="document">

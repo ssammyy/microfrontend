@@ -518,7 +518,7 @@
 <!--                                <span class="status-text" th:unless="${app.labReportStatus == 1}">Available</span>-->
                                 <div th:if="${app.applicationCompletenessStatus == 0}" class="filter-title">
 <!--                                    <a style="width: 270px" th:href="@{/api/v1/permit/correct_resubmit_application/(permitId = ${app.id}, action = 1)}" class="btn btn-primary mb-4">Correct application</a>-->
-                                    <a style="width: 270px" th:href="@{/api/v1/permit/correct_resubmit_application/(permitId = ${app.id}, action = 2)}" class="btn btn-info">Resubmit application</a>
+                                    <a style="width: 270px" th:href="@{/api/permit/correct_resubmit_application/(permitId = ${app.id}, action = 2)}" class="btn btn-info">Resubmit application</a>
                                 </div>
                             </div>
                         </div>

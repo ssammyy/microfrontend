@@ -32,7 +32,7 @@
                     <div>
                         <h3>Kindly fill in the details below</h3>
                         <div class="pvocformblock w-form">
-                            <form id="smark-form" name="smark-form" data-name="S Mark Form"  th:object="${permits}" th:action="@{/api/v1/permit/apply/new/smark}" method="post">
+                            <form id="smark-form" name="smark-form" data-name="S Mark Form"  th:object="${permits}" th:action="@{/api/permit/apply/new/smark}" method="post">
 
                                 <datalist id="broadCategory" th:field="${broadProductCategories}">
                                     <option th:each="broadCategory : ${broadProductCategories}" th:value="${broadCategory.category}" value="HTML">
