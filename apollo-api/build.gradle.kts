@@ -63,7 +63,7 @@ dependencies {
      * BPMN BOM
      */
 //    implementation("org.activiti:activiti-spring-boot-starter:7.1.0.M6")
-    implementation("org.flowable:flowable-spring-boot-starter-basic:6.5.0")
+    implementation("org.flowable:flowable-spring-boot-starter-basic:6.6.0")
 
     /**
      * MPESA

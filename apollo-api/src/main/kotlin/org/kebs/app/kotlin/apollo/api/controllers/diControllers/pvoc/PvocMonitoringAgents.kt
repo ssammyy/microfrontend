@@ -22,26 +22,26 @@ import kotlin.streams.asSequence
 @Controller
 @RequestMapping("/api/di/pvoc/")
 class PvocMonitoringAgents(
-        private val iCocsBakRepository: ICocsBakRepository,
-        private val iCdSampleCollectionEntityRepo: ICdSampleCollectionEntityRepo,
-        private val iPvocCoiTimelinesDataEntityRepo: IPvocCoiTimelinesDataEntityRepo,
-        private val iCdItemDetailsRepo: ICdItemDetailsRepo,
-        private val iDestinationInspectionRepository: IDestinationInspectionRepository,
-        private val iPvocTimelinesDataRepository: IPvocTimelinesDataRepository,
-        private val iPvocWaiversRemarksRepo: IPvocWaiversRemarksRepo,
-        private val iUserRepository: IUserRepository,
-        private val iUserRoleAssignmentsRepository: IUserRoleAssignmentsRepository,
-        private val iPvocAgentMonitoringStatusEntityRepo: IPvocAgentMonitoringStatusEntityRepo,
-        private val iUserRolesRepository: IUserRolesRepository,
-        private val iPvocTimelineDataPenaltyInvoiceEntityRepo: PvocTimelineDataPenaltyInvoiceEntityRepo,
-        private val iPvocQuerriesRepository: IPvocQuerriesRepository,
-        private val rfcCocEntityRepo: IRfcCocEntityRepo,
-        private val commonDaoServices: CommonDaoServices,
-        private val pvocInvoicingRepository: IPvocInvoicingRepository,
-        private val pvocPartnersRepository: IPvocPartnersRepository,
-        private val pvocAgentContractEntityRepo: PvocAgentContractEntityRepo,
-        private val pvocRevenueReportEntityRepo: PvocRevenueReportEntityRepo,
-        private val pvocPenaltyInvoicingEntityRepo: PvocPenaltyInvoicingEntityRepo,
+    private val iCocsRepository: ICocsRepository,
+    private val iCdSampleCollectionEntityRepo: ICdSampleCollectionEntityRepo,
+    private val iPvocCoiTimelinesDataEntityRepo: IPvocCoiTimelinesDataEntityRepo,
+    private val iCdItemDetailsRepo: ICdItemDetailsRepo,
+    private val iDestinationInspectionRepository: IDestinationInspectionRepository,
+    private val iPvocTimelinesDataRepository: IPvocTimelinesDataRepository,
+    private val iPvocWaiversRemarksRepo: IPvocWaiversRemarksRepo,
+    private val iUserRepository: IUserRepository,
+    private val iUserRoleAssignmentsRepository: IUserRoleAssignmentsRepository,
+    private val iPvocAgentMonitoringStatusEntityRepo: IPvocAgentMonitoringStatusEntityRepo,
+    private val iUserRolesRepository: IUserRolesRepository,
+    private val iPvocTimelineDataPenaltyInvoiceEntityRepo: PvocTimelineDataPenaltyInvoiceEntityRepo,
+    private val iPvocQuerriesRepository: IPvocQuerriesRepository,
+    private val rfcCocEntityRepo: IRfcCocEntityRepo,
+    private val commonDaoServices: CommonDaoServices,
+    private val pvocInvoicingRepository: IPvocInvoicingRepository,
+    private val pvocPartnersRepository: IPvocPartnersRepository,
+    private val pvocAgentContractEntityRepo: PvocAgentContractEntityRepo,
+    private val pvocRevenueReportEntityRepo: PvocRevenueReportEntityRepo,
+    private val pvocPenaltyInvoicingEntityRepo: PvocPenaltyInvoicingEntityRepo,
 //        private val iUserRoleAssignmentsRepository: IUserRoleAssignmentsRepository
 
 ) {
@@ -76,7 +76,7 @@ class PvocMonitoringAgents(
         // get coc using ucrno
         cdIds.forEach { consignmentId ->
             iDestinationInspectionRepository.findByIdOrNull(consignmentId).let { consignment ->
-                consignment?.ucrNumber?.let { ucr -> iCocsBakRepository.findByUcrNumber(ucr)?.let { cocsDocs.add(it) } }
+                consignment?.ucrNumber?.let { ucr -> iCocsRepository.findByUcrNumber(ucr)?.let { cocsDocs.add(it) } }
             }
         }
         model.addAttribute("sampled_goods", cocsDocs)
@@ -85,7 +85,7 @@ class PvocMonitoringAgents(
 
     @GetMapping("coc-sampled-at-entry-point/{id}")
     fun cocSampledAtEntryPoint(model: Model, @PathVariable("id") id: Long): String {
-        iCocsBakRepository.findByIdOrNull(id)?.let { coc ->
+        iCocsRepository.findByIdOrNull(id)?.let { coc ->
             model.addAttribute("coc", coc)
             return "destination-inspection/pvoc/monitoring/CocSampledAtPortOfEntry"
         } ?: throw Exception("Coc with {id} does not exist")
@@ -260,17 +260,17 @@ class PvocMonitoringAgents(
                         ?: throw Exception("Role [id=${role.id}] not found, may not be active or assigned yet")
             } ?: throw Exception("User role name does not exist")
             coc.cocNumber?.let {
-                model.addAttribute("shipmentMode",iCocsBakRepository.findFirstByCocNumber(it)?.shipmentMode  )
+                model.addAttribute("shipmentMode", iCocsRepository.findFirstByCocNumber(it)?.shipmentMode)
                 rfcCocEntityRepo.findByCocNumber(it).let { rfcDoc ->
                     model.addAttribute("rfc", rfcDoc)
                     rfcDoc?.partner?.let { it2 ->
                         pvocPartnersRepository.findByIdOrNull(it2).let { partnerDetails ->
                             model.addAttribute("partner", partnerDetails)
                             pvocInvoicingRepository.findFirstByPartner(it2).let { invoice ->
-                                model.addAttribute("invoice",invoice )
+                                model.addAttribute("invoice", invoice)
                                 val date = LocalDate.now()
                                 val days: Int = Period.between(invoice?.invoiceDate?.toLocalDate(), date).days
-                                if(days > 14){
+                                if (days > 14) {
                                     val penaltyMonths : Int = ((days -14)/30)
                                     //calculate the loyalty amount for the services offered on general goods
                                     partnerDetails?.partnerName?.let { it1 -> pvocAgentContractEntityRepo.findByServiceRenderedIdAndName(2, it1.toUpperCase())
@@ -445,7 +445,7 @@ class PvocMonitoringAgents(
 
     @GetMapping("coc-with-no-container-seal-details/{id}")
     fun cocWithNoContainerSealDetails(model: Model, @PathVariable("id") id: Long): String {
-        iCocsBakRepository.findByIdOrNull(id)?.let { coc ->
+        iCocsRepository.findByIdOrNull(id)?.let { coc ->
             model.addAttribute("coc", coc)
         } ?: throw Exception("Coc with {id} id does not exist")
         return "destination-inspection/pvoc/monitoring/CocWithNoContainerSealDetails"
@@ -470,14 +470,16 @@ class PvocMonitoringAgents(
                             auth.authorities.stream().anyMatch { authority -> authority.authority == "PVOC_APPLICATION_READ" || authority.authority == "PVOC_APPLICATION_PROCESS" } -> {
                                 when (filter) {
                                     "filter" -> {
-                                        iCocsBakRepository.findAllByRouteAndShipmentSealNumbersIsNull("A", page).let { cocs ->
-                                            model.addAttribute("seals", cocs)
-                                        }
+                                        iCocsRepository.findAllByRouteAndShipmentSealNumbersIsNull("A", page)
+                                            .let { cocs ->
+                                                model.addAttribute("seals", cocs)
+                                            }
                                     }
                                     else -> {
-                                        iCocsBakRepository.findAllByRouteAndShipmentSealNumbersIsNull("A", page).let { cocs ->
-                                            model.addAttribute("seals", cocs)
-                                        }
+                                        iCocsRepository.findAllByRouteAndShipmentSealNumbersIsNull("A", page)
+                                            .let { cocs ->
+                                                model.addAttribute("seals", cocs)
+                                            }
                                     }
                                 }
 

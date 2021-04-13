@@ -18,7 +18,7 @@ order by id desc;
 
 select *
 from DAT_KEBS_IDF_DETAILS
-where UCR_NO = 'UCR2100006314'
+-- where UCR_NO = 'UCR2100006322'
 order by id desc;
 select *
 from DAT_KEBS_CD_ITEM_DETAILS

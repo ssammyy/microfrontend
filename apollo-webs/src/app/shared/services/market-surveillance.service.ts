@@ -8,13 +8,14 @@ import {HttpClient, HttpParams} from '@angular/common/http';
 export class MarketSurveillanceService {
 
   public apiUrl = `${dev.connect}ms/ui/`;
+  public urlToComplaint = `${this.apiUrl}complaint/`;
 
   constructor(private http: HttpClient) {
   }
 
   postMSComplaint(customerDetails: any, complaintDetails: any, locationDetails: any): any {
     console.log({customerDetails, complaintDetails, locationDetails});
-    return this.http.post<any>(`${this.apiUrl}complaint/detail/new/save`, {
+    return this.http.post<any>(`${this.urlToComplaint}detail/new/save`, {
       customerDetails,
       complaintDetails,
       locationDetails
@@ -27,42 +28,46 @@ export class MarketSurveillanceService {
 
   loadMSComplaintList(): any {
     // console.log(this.http.head());
-    return this.http.get<any>(`${this.apiUrl}complaint/list`);
+    return this.http.get<any>(`${this.urlToComplaint}list`);
   }
 
   loadMSComplaintDetail(refNumber: any): any {
     console.log(refNumber);
     const params = new HttpParams()
       .set('refNumber', refNumber);
-    return this.http.get<any>(`${this.apiUrl}complaint/detail/view`, {params});
+    return this.http.get<any>(`${this.urlToComplaint}detail/view`, {params});
   }
 
   updateComplaintKEBSMandate(approveData: any, refNumber: string): any {
     console.log(approveData);
     const params = new HttpParams()
       .set('refNumber', refNumber);
-    return this.http.put<any>(`${this.apiUrl}complaint/detail/update/approve`, approveData, {params});
+    return this.http.put<any>(`${this.urlToComplaint}detail/update/approve`, approveData, {params});
   }
 
   updateComplaintKEBSNotWithInMandate(rejectData: any, refNumber: string): any {
     console.log(rejectData);
     const params = new HttpParams()
       .set('refNumber', refNumber);
-    return this.http.put<any>(`${this.apiUrl}complaint/detail/update/reject`, rejectData, {params});
+    return this.http.put<any>(`${this.urlToComplaint}detail/update/reject`, rejectData, {params});
   }
 
   updateComplaintKEBSNotWithInMandateButOGA(adviceData: any, refNumber: string): any {
     console.log(adviceData);
     const params = new HttpParams()
       .set('refNumber', refNumber);
-    return this.http.put<any>(`${this.apiUrl}complaint/detail/update/advice`, adviceData, {params});
+    return this.http.put<any>(`${this.urlToComplaint}detail/update/advice`, adviceData, {params});
   }
 
   assignComplaintToIO(assignData: any, refNumber: string): any {
     console.log(assignData);
     const params = new HttpParams()
       .set('refNumber', refNumber);
-    return this.http.put<any>(`${this.apiUrl}complaint/detail/update/assign`, assignData, {params});
+    return this.http.put<any>(`${this.urlToComplaint}detail/update/assign`, assignData, {params});
   }
 
+  loadComplaintSearch(complaintSearch: any): any {
+    console.log(complaintSearch);
+    return this.http.post(`${this.urlToComplaint}search`, complaintSearch);
+  }
 }

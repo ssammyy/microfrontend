@@ -103,11 +103,11 @@ interface IRemarksRepository : HazelcastRepository<RemarksEntity, Long>{
 }
 
 @Repository
-interface ICocsBakRepository : HazelcastRepository<CocsEntity, Long>{
+interface ICocsRepository : HazelcastRepository<CocsEntity, Long> {
     fun findByUcrNumber(ucrNumber: String): CocsEntity?
-    fun findFirstByCocNumber(cocNumber: String) : CocsEntity?
-    fun findAllByRouteAndShipmentSealNumbersIsNull(route : String,  pageable: Pageable) : Page<CocsEntity>?
-    fun findAllByReportGenerationStatus(reportGenerationStatus: Int) : List<CocsEntity>
+    fun findFirstByCocNumber(cocNumber: String): CocsEntity?
+    fun findAllByRouteAndShipmentSealNumbersIsNull(route: String, pageable: Pageable): Page<CocsEntity>?
+    fun findAllByReportGenerationStatus(reportGenerationStatus: Int): List<CocsEntity>
 }
 
 
@@ -118,16 +118,16 @@ interface ILocalCocItems : HazelcastRepository<CdLocalCocItemsEntity, Long>{
 }
 
 @Repository
-interface IRiskTypes : HazelcastRepository<CfgRiskTypesEntity, Long>{
+interface IRiskTypes : HazelcastRepository<CfgRiskTypesEntity, Long> {
 //    fun findByUcrNumber(ucrNumber: String): CfgRiskTypesEntity?
 }
 
 @Repository
-interface IRiskProfile : HazelcastRepository<RiskProfileEntity, Long>{
+interface IRiskProfile : HazelcastRepository<RiskProfileEntity, Long> {
     fun findByImporterName(importerName: String): RiskProfileEntity?
 }
 
-@Repository
-interface ICocsRepository : HazelcastRepository<CocsEntity, Long>{
-    fun findByUcrNumber(ucrNumber: String): CocsEntity?
-}
+//@Repository
+//interface ICocsRepository : HazelcastRepository<CocsEntity, Long>{
+//    fun findByUcrNumber(ucrNumber: String): CocsEntity?
+//}

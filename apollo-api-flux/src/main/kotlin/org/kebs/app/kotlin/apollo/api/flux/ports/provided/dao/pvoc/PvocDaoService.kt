@@ -25,7 +25,7 @@ import java.time.Instant
 class PvocServiceFlux(
     private val workflowTransactionsRepository: IWorkflowTransactionsRepository,
     private val pvocIntegrationProperties: PvocIntegrationProperties,
-    private val cocsBakRepository: ICocsBakRepository,
+    private val cocsRepository: ICocsRepository,
     private val cocItemsRepository: ICocItemsRepository,
     private val coiItemsRepository: ICoiItemsRepository,
     private val corsBakRepository: ICorsBakRepository,
@@ -61,7 +61,7 @@ class PvocServiceFlux(
                 createdOn = Timestamp.from(Instant.now())
 
             }
-            cocsBakRepository.save(cocData)
+            cocsRepository.save(cocData)
             generalResponse.responseCode = pvocIntegrationProperties.pvocIntegSuccessResponseCode
             generalResponse.responseMessage = pvocIntegrationProperties.pvocIntegSuccessResponseMessage
             log.responseStatus = generalResponse.responseCode.toString()
@@ -102,7 +102,7 @@ class PvocServiceFlux(
             //Check if CoC with same UCR Number has been created before
             var cocExists = false
             cocData.coc?.ucrNumber?.let {
-                cocsBakRepository.findByUcrNumber(it)?.let { cocExists = true }
+                cocsRepository.findByUcrNumber(it)?.let { cocExists = true }
             }
             if (cocExists) {
                 KotlinLogging.logger {  }.info { "CoC with UCR number already exists" }
@@ -122,7 +122,7 @@ class PvocServiceFlux(
                 return generalResponse
             }
             //Save the CoC
-            val savedCoc = cocData.coc?.let { cocsBakRepository.save(it) }
+            val savedCoc = cocData.coc?.let { cocsRepository.save(it) }
             if (savedCoc != null) {
                 //Save Items
                 cocData.items?.forEach { item ->
@@ -179,7 +179,7 @@ class PvocServiceFlux(
             //Check if CoI with same UCR Number has been created before
             var cocExists = false
             coiData.coi?.ucrNumber?.let {
-                cocsBakRepository.findByUcrNumber(it)?.let { cocExists = true }
+                cocsRepository.findByUcrNumber(it)?.let { cocExists = true }
             }
             if (cocExists) {
                 KotlinLogging.logger {  }.info { "CoC with UCR number already exists" }
@@ -199,7 +199,7 @@ class PvocServiceFlux(
                 return generalResponse
             }
             //Save the CoI
-            val savedCoc = coiData.coi?.let { cocsBakRepository.save(it) }
+            val savedCoc = coiData.coi?.let { cocsRepository.save(it) }
             if (savedCoc != null) {
                 //Save Items
                 coiData.items?.forEach { item ->
@@ -335,7 +335,7 @@ class PvocServiceFlux(
 
             cocItemsData.cocNumber
                 ?.let {
-                    cocsBakRepository.findByUcrNumber(it)
+                    cocsRepository.findByUcrNumber(it)
                         ?.let { coc ->
                             cocItemsData.cocId = coc.id
                             cocItemsRepository.save(cocItemsData)

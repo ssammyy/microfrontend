@@ -39,7 +39,7 @@ class MSTest {
     lateinit var idfsEntityRepository: IdfsEntityRepository
 
     @Autowired
-    lateinit var cocBakRepository: ICocsBakRepository
+    lateinit var cocRepository: ICocsRepository
 
     @Autowired
     lateinit var coisRepository: ICoisRepository

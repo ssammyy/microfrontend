@@ -198,63 +198,34 @@ class MarketSurveillanceDaoServices(
         return complaintList.sortedBy { it.date }
     }
 
-//    fun complaintSearchResultListing(search: ComplaintSearchValues): List<UserEntityDto>? {
-//        val complaintList = mutableListOf<ComplaintsDto>()
-//        val refNumberSpec: ComplaintSpecification?
-//        var dateSpec: ComplaintSpecification? = null
-////        var firstNameSpec: ComplaintSpecification? = null
-////        var lastNameSpec: ComplaintSpecification? = null
-//
-//
-//        refNumberSpec = ComplaintSpecification(SearchCriteria("refNumber", ":", search.refNumber))
-//        search.date?.let {
-//            dateSpec = ComplaintSpecification(SearchCriteria("date", ":", search.date))
-//        }
-////        search.firstName?.let {
-////
-////            firstNameSpec = UserSpecification(SearchCriteria("firstName", ":", search.firstName))
-////        }
-////        search.lastName?.let {
-////
-////
-////            lastNameSpec = UserSpecification(SearchCriteria("lastName", ":", search.lastName))
-////        }
-//        complaintsRepo.findAll(refNumberSpec.or(dateSpec))
-//            .map { u ->
-//                val profile = userProfilesRepo.findFirstByUserIdOrderByIdDesc(u)
-//                userList.add(
-//                    UserEntityDto(
-//                        u.id,
-//                        u.firstName,
-//                        u.lastName,
-//                        u.userName,
-//                        u.email,
-//                        u.userRegNo,
-//                        u.enabled == 1,
-//                        u.accountExpired == 1,
-//                        u.accountLocked == 1,
-//                        u.credentialsExpired == 1,
-//                        u.status == 1,
-//                        u.registrationDate,
-//                        u.userTypes,
-//                        u.title,
-//                        profile?.directorateId?.id,
-//                        profile?.departmentId?.id,
-//                        profile?.divisionId?.id,
-//                        profile?.sectionId?.id,
-//                        profile?.subSectionL1Id?.id,
-//                        profile?.subSectionL2Id?.id,
-//                        profile?.designationId?.id,
-//                        profile?.id,
-//                        profile?.regionId?.id,
-//                        profile?.subRegionId?.id
-//                    )
-//                )
-//            }
-//
-//        return userList.sortedBy { it.id }
+    fun complaintSearchResultListing(search: ComplaintSearchValues): List<ComplaintsDto>? {
+        val complaintList = mutableListOf<ComplaintsDto>()
+        val refNumberSpec: ComplaintSpecification?
+        var dateSpec: ComplaintSpecification? = null
 
-//    }
+
+        refNumberSpec = ComplaintSpecification(SearchCriteria("referenceNumber", ":", search.refNumber))
+        search.date?.let {
+            dateSpec = ComplaintSpecification(SearchCriteria("transactionDate", ":", search.date))
+        }
+
+        complaintsRepo.findAll(refNumberSpec.or(dateSpec))
+            .map { comp ->
+                complaintList.add(
+                    ComplaintsDto(
+                        comp.referenceNumber,
+                        comp.createdBy,
+                        comp.complaintDepartment?.let { commonDaoServices.findDepartmentByID(it).department },
+                        comp.complaintTitle,
+                        comp.transactionDate,
+                        comp.progressStep
+                    )
+                )
+            }
+
+        return complaintList.sortedBy { it.date }
+
+    }
 
     fun msComplaint(refNumber: String, map: ServiceMapsEntity): ComplaintsDetailsDto {
 //        complaints.map { comp ->

@@ -21,7 +21,7 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.junit4.SpringRunner
 import java.io.File
 import org.kebs.app.kotlin.apollo.store.model.CocsEntity
-import org.kebs.app.kotlin.apollo.store.repo.ICocsBakRepository
+import org.kebs.app.kotlin.apollo.store.repo.ICocsRepository
 import org.kebs.app.kotlin.apollo.store.repo.ICocItemRepository
 import org.kebs.app.kotlin.apollo.store.repo.ICoisRepository
 import org.kebs.app.kotlin.apollo.store.repo.di.IDemandNoteRepository
@@ -46,7 +46,7 @@ class SftpTest {
     lateinit var iCorsBakRepository: ICorsBakRepository
 
     @Autowired
-    lateinit var iCocsBakRepository: ICocsBakRepository
+    lateinit var iCocsRepository: ICocsRepository
 
     @Autowired
     lateinit var iCoisBakRepository: ICoisRepository
@@ -111,7 +111,7 @@ class SftpTest {
     fun whenCocpojoSerializedToXmlFile_thenCorrect() {
         val cocId: Long = 1282
 
-        val cocsEntity: CocsEntity = iCocsBakRepository.findById(cocId).get()
+        val cocsEntity: CocsEntity = iCocsRepository.findById(cocId).get()
         cocsEntity.let {
             val coc: CustomCocXmlDto = it.toCocXmlRecordRefl()
             //COC ITEM
@@ -226,7 +226,7 @@ class SftpTest {
     fun testKeswsDateConversion() {
         val cocId: Long = 861
 
-        val cocsEntity: CocsEntity = iCocsBakRepository.findById(cocId).get()
+        val cocsEntity: CocsEntity = iCocsRepository.findById(cocId).get()
         cocsEntity.let {
             val keswsDate = it.cocIssueDate?.let { it1 -> commonDaoServices.convertTimestampToKeswsValidDate(it1) }
         }

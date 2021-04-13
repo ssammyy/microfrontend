@@ -334,7 +334,7 @@ class ControllerRoutes {
 
                 "/complaint".nest {
                     GET("/list", handler::msComplaintLists)
-//                    POST("/search", handler::complaintsSearchListing)
+                    POST("/search", handler::complaintsSearchListing)
 
                     "/detail".nest {
                         GET("/view", handler::msComplaintDetails)

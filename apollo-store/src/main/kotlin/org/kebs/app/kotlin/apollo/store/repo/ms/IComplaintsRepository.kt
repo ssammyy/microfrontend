@@ -28,11 +28,12 @@ import org.kebs.app.kotlin.apollo.store.model.ms.ComplaintLocationEntity
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.hazelcast.repository.HazelcastRepository
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor
 import org.springframework.stereotype.Repository
 import java.sql.Date
 
 @Repository
-interface IComplaintRepository : HazelcastRepository<ComplaintEntity, Long>{
+interface IComplaintRepository : HazelcastRepository<ComplaintEntity, Long>, JpaSpecificationExecutor<ComplaintEntity> {
     override fun findAll(): List<ComplaintEntity>
     fun findAllByOrderByIdDesc(pageable: Pageable): Page<ComplaintEntity>
     fun findByHodAssigned(hodAssigned: Long): List<ComplaintEntity>
@@ -46,10 +47,7 @@ interface IComplaintRepository : HazelcastRepository<ComplaintEntity, Long>{
 
 //    fun findAllByUserNameContainingIgnoreCaseOrEmailContainingIgnoreCaseOrFirstNameContainingIgnoreCaseOrLastNameContainingIgnoreCase(userName: String?, email: String?, firstName: String?, lastName: String?): List<ComplaintEntity>?
 
-//    fun findAllByReferenceNumberContainingIgnoreCaseOrTransactionDateContainingIgnoreCase(
-//        referenceNumber: String,
-//        transactionDate: Date
-//    ): List<ComplaintEntity>?
+//    fun findAllByReferenceNumberContainingIgnoreCaseOrTransactionDateContainingIgnoreCase(referenceNumber: String?, transactionDate: Date?): List<ComplaintEntity>?
 }
 
 @Repository

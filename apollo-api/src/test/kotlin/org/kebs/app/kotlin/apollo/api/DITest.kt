@@ -14,7 +14,6 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.sftp.UpAndDownLoad
 import org.kebs.app.kotlin.apollo.api.utils.Delimiters
 import org.kebs.app.kotlin.apollo.api.utils.XMLDocument
 import org.kebs.app.kotlin.apollo.common.dto.kesws.receive.ConsignmentDocument
-import org.kebs.app.kotlin.apollo.common.utils.generateRandomText
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.customdto.PvocReconciliationReportDto
 import org.kebs.app.kotlin.apollo.store.model.*
@@ -58,7 +57,7 @@ class DITest {
     lateinit var idfsEntityRepository: IdfsEntityRepository
 
     @Autowired
-    lateinit var cocBakRepository: ICocsBakRepository
+    lateinit var cocRepository: ICocsRepository
 
     @Autowired
     lateinit var coisRepository: ICoisRepository
@@ -780,8 +779,8 @@ class DITest {
 
     @Test
     fun testSendingCOC() {
-        val cdId: Long = 481
-        val inspectionOfficerId: Long = 1083
+//        val cdId: Long = 481
+//        val inspectionOfficerId: Long = 1083
         val appId = applicationMapProperties.mapImportInspection
 
         usersRepo.findByUserName("kpaul7747@gmail.com")

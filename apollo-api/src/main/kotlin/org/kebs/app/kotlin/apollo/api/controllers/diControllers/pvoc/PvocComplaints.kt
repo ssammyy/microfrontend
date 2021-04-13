@@ -25,19 +25,19 @@ import java.time.format.DateTimeFormatter
 @Controller
 @RequestMapping("/api/di/pvoc/")
 class PvocComplaints(
-        private val iPvocComplaintRepo: IPvocComplaintRepo,
-        private val iUserRepository: IUserRepository,
-        private val commonDaoServices: CommonDaoServices,
-        private val notifications: Notifications,
-        private val iCocsBakRepository: ICocsBakRepository,
-        private val iCocItemRepository: ICocItemRepository,
-        applicationMapProperties: ApplicationMapProperties,
-        private val iPvocComplaintCertificationsSubCategoryRepo: IPvocComplaintCertificationsSubCategoryRepo,
-        private val iPvocComplaintCategoryRepo: IPvocComplaintCategoryRepo,
-        private val iUserRoleAssignmentsRepository: IUserRoleAssignmentsRepository,
-        private val iRfcCocEntityRepo: IRfcCocEntityRepo,
-        private val pvocComplaintRemarksEntityRepo: PvocComplaintRemarksEntityRepo,
-        pvocComplainStatusEntityRepo: PvocComplainStatusEntityRepo
+    private val iPvocComplaintRepo: IPvocComplaintRepo,
+    private val iUserRepository: IUserRepository,
+    private val commonDaoServices: CommonDaoServices,
+    private val notifications: Notifications,
+    private val iCocsRepository: ICocsRepository,
+    private val iCocItemRepository: ICocItemRepository,
+    applicationMapProperties: ApplicationMapProperties,
+    private val iPvocComplaintCertificationsSubCategoryRepo: IPvocComplaintCertificationsSubCategoryRepo,
+    private val iPvocComplaintCategoryRepo: IPvocComplaintCategoryRepo,
+    private val iUserRoleAssignmentsRepository: IUserRoleAssignmentsRepository,
+    private val iRfcCocEntityRepo: IRfcCocEntityRepo,
+    private val pvocComplaintRemarksEntityRepo: PvocComplaintRemarksEntityRepo,
+    pvocComplainStatusEntityRepo: PvocComplainStatusEntityRepo
 ) {
 
     final val appId = applicationMapProperties.mapImportInspection
@@ -186,7 +186,7 @@ class PvocComplaints(
 
     @GetMapping("coc-details/{cocNo}")
     fun cocDetails(model: Model, @PathVariable("cocNo") cocNo : String) : String{
-        iCocsBakRepository.findFirstByCocNumber(cocNo).let { cocDetails ->
+        iCocsRepository.findFirstByCocNumber(cocNo).let { cocDetails ->
             model.addAttribute("coc", cocDetails)
             model.addAttribute("coc_items", cocDetails?.id?.let { iCocItemRepository.findByCocId(it) })
             return "destination-inspection/pvoc/complaint/COC_Details"

@@ -54,7 +54,7 @@ class DestinationInspectionDaoServices(
     private val manifestRepo: IManifestDetailsEntityRepository,
     private val declarationRepo: IDeclarationDetailsEntityRepository,
     private val iLocalCocTypeRepo: ILocalCocTypesRepository,
-    private val cocBakRepo: ICocsBakRepository,
+    private val cocRepo: ICocsRepository,
     private val coisRep: ICoisRepository,
     private val iCdInspectionChecklistRepo: ICdInspectionChecklistRepository,
     private val cdTypesRepo: IConsignmentDocumentTypesEntityRepository,
@@ -349,13 +349,13 @@ fun createLocalCoc(
 ): CocsEntity {
     var localCoc = CocsEntity()
     consignmentDocumentDetailsEntity.ucrNumber?.let {
-        cocBakRepo.findByUcrNumber(it)
+        cocRepo.findByUcrNumber(it)
             ?.let { coc ->
                 throw Exception("There is an Existing COC with the following UCR No = ${coc.ucrNumber}")
             }
     }
         ?: kotlin.run {
-            GlobalScope.launch(Dispatchers.IO) {
+//            GlobalScope.launch(Dispatchers.IO) {
                 KotlinLogging.logger { }.debug("Starting background task")
                 try {
                     with(localCoc) {
@@ -426,7 +426,7 @@ fun createLocalCoc(
                         createdOn = commonDaoServices.getTimestamp()
                     }
 
-                    localCoc = cocBakRepo.save(localCoc)
+                    localCoc = cocRepo.save(localCoc)
                     KotlinLogging.logger { }.info { "localCoc = ${localCoc.id}" }
                     localCocItems(consignmentDocumentDetailsEntity, localCoc, user, map)
                     sendLocalCoc(localCoc.id)
@@ -435,7 +435,7 @@ fun createLocalCoc(
                     KotlinLogging.logger { }.debug(e.message)
                     KotlinLogging.logger { }.debug(e.toString())
                 }
-            }
+//            }
             return localCoc
         }
 
@@ -450,7 +450,7 @@ fun createLocalCoc(
     ): CocsEntity {
         val coc = CocsEntity()
         consignmentDocumentDetailsEntity.ucrNumber?.let {
-            cocBakRepo.findByUcrNumber(it)
+            cocRepo.findByUcrNumber(it)
                 ?.let { coc ->
                     throw Exception("There is an Existing COI with the following UCR No = ${coc.ucrNumber}")
                 }
@@ -523,7 +523,7 @@ fun createLocalCoc(
                     createdBy = commonDaoServices.concatenateName(user)
                     createdOn = commonDaoServices.getTimestamp()
                 }
-                return cocBakRepo.save(coc)
+                return cocRepo.save(coc)
             }
 
 
@@ -637,7 +637,7 @@ fun createLocalCoc(
 
     fun sendLocalCoc(cocId: Long) {
 
-        val cocsEntity: CocsEntity = cocBakRepo.findById(cocId).get()
+        val cocsEntity: CocsEntity = cocRepo.findById(cocId).get()
 
         cocsEntity.let {
             val coc: CustomCocXmlDto = it.toCocXmlRecordRefl()
@@ -666,7 +666,7 @@ fun createLocalCoc(
 
     fun sendLocalCoi(cocId: Long) {
 
-        val cocsEntity: CocsEntity = cocBakRepo.findById(cocId).get()
+        val cocsEntity: CocsEntity = cocRepo.findById(cocId).get()
 
         cocsEntity.let {
             val coi: CustomCoiXmlDto = it.toCoiXmlRecordRefl()
@@ -1863,7 +1863,7 @@ fun createLocalCoc(
     }
 
     fun findCOC(ucrNumber: String): CocsEntity {
-        cocBakRepo.findByUcrNumber(ucrNumber)
+        cocRepo.findByUcrNumber(ucrNumber)
             ?.let { cocEntity ->
                 return cocEntity
             }
@@ -1871,11 +1871,11 @@ fun createLocalCoc(
     }
 
     fun findCocByUcrNumber(ucrNumber: String): CocsEntity? {
-        return cocBakRepo.findByUcrNumber(ucrNumber)
+        return cocRepo.findByUcrNumber(ucrNumber)
     }
 
     fun findCOI(ucrNumber: String): CocsEntity {
-        cocBakRepo.findByUcrNumber(ucrNumber)
+        cocRepo.findByUcrNumber(ucrNumber)
             ?.let { coiEntity ->
                 return coiEntity
             }
