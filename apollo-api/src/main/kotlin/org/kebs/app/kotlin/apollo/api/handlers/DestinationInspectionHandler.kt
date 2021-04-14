@@ -216,6 +216,12 @@ class DestinationInspectionHandler(
                             req.attributes()["availableDemandNote"] =
                                 cdDetails.id?.let { iDemandNoteRepo.findByCdId(it) }
                             req.attributes()["blacklists"] = daoServices.findAllBlackListUsers(map.activeStatus)
+                            req.attributes()["oldVersionList"] = cdDetails.ucrNumber?.let {
+                                daoServices.findAllOlderVersionCDsWithSameUcrNumber(
+                                    it,
+                                    map
+                                )
+                            }
                             req.attributes()["cdTypeGoodsCategory"] = daoServices.cdTypeGoodsCategory
                             req.attributes()["cdTypeVehiclesCategory"] = daoServices.cdTypeVehiclesCategory
                             req.attributes()["cdStatusTypeApproveCategory"] = daoServices.cdStatusTypeApproveCategory

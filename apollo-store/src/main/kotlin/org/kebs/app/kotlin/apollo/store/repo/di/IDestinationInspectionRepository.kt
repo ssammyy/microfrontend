@@ -18,14 +18,30 @@ interface IConsignmentDocumentDetailsRepository : HazelcastRepository<Consignmen
     fun findAllById(Id: Long): List<ConsignmentDocumentDetailsEntity>?
 //    fun findByPortOfArrivalAndCocIdIsNotNull(portOfArrival: SectionsEntity, pageable: Pageable): Page<ConsignmentDocumentDetailsEntity>?
 
-    fun findByPortOfArrivalAndCdTypeAndUcrNumberIsNotNull(portOfArrival: Long, cdType: Long): List<ConsignmentDocumentDetailsEntity>?
-    fun findByPortOfArrivalIsNullAndCdTypeAndUcrNumberIsNotNull(cdType: Long): List<ConsignmentDocumentDetailsEntity>?
+    fun findByPortOfArrivalAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNull(
+        portOfArrival: Long,
+        cdType: Long
+    ): List<ConsignmentDocumentDetailsEntity>?
 
-    fun findByPortOfArrivalOrderByIdDesc(portOfArrival: Long, pageable: Pageable): Page<ConsignmentDocumentDetailsEntity>?
+    fun findByPortOfArrivalIsNullAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNull(cdType: Long): List<ConsignmentDocumentDetailsEntity>?
 
-    fun findAllByAssignedInspectionOfficerAndCdTypeAndUcrNumberIsNotNull(assignedInspectionOfficer: UsersEntity, cdType: Long): List<ConsignmentDocumentDetailsEntity>?
-    fun findByFreightStationAndAssignedInspectionOfficerIsNullAndCdTypeAndUcrNumberIsNotNull(freightStation: Long, cdType: Long): List<ConsignmentDocumentDetailsEntity>?
+    fun findByPortOfArrivalOrderByIdDesc(
+        portOfArrival: Long,
+        pageable: Pageable
+    ): Page<ConsignmentDocumentDetailsEntity>?
+
+    fun findAllByAssignedInspectionOfficerAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNull(
+        assignedInspectionOfficer: UsersEntity,
+        cdType: Long
+    ): List<ConsignmentDocumentDetailsEntity>?
+
+    fun findByFreightStationAndAssignedInspectionOfficerIsNullAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNull(
+        freightStation: Long,
+        cdType: Long
+    ): List<ConsignmentDocumentDetailsEntity>?
+
     fun findByUcrNumber(ucrNumber: String): ConsignmentDocumentDetailsEntity?
+    fun findByUcrNumberAndOldCdStatus(ucrNumber: String, oldCdStatus: Int): List<ConsignmentDocumentDetailsEntity>?
     fun findTopByUcrNumberOrderByIdDesc(ucrNumber: String): ConsignmentDocumentDetailsEntity?
     fun findByUuid(uuid: String): ConsignmentDocumentDetailsEntity?
 }
