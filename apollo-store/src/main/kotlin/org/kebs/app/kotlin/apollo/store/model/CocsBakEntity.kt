@@ -9,12 +9,12 @@ import javax.validation.constraints.NotEmpty
 import javax.validation.constraints.NotNull
 
 @Entity
-@Table(name = "DAT_KEBS_COCS_BAK")
+@Table(name = "DAT_KEBS_COCS")
 class CocsBakEntity : Serializable {
     @Column(name = "ID", nullable = false, precision = 0)
     @Id
-    @SequenceGenerator(name = "DAT_KEBS_COCS_BAK_SEQ_GEN", sequenceName = "DAT_KEBS_COCS_BAK_SEQ", allocationSize = 1)
-    @GeneratedValue(generator = "DAT_KEBS_COCS_BAK_SEQ_GEN", strategy = GenerationType.SEQUENCE)
+    @SequenceGenerator(name = "DAT_KEBS_COCS_SEQ_GEN", sequenceName = "DAT_KEBS_COCS_SEQ", allocationSize = 1)
+    @GeneratedValue(generator = "DAT_KEBS_COCS_SEQ_GEN", strategy = GenerationType.SEQUENCE)
 
     var id: Long = 0
 
@@ -340,7 +340,7 @@ class CocsBakEntity : Serializable {
     @Basic
     var pvocPartner: Long? = null
 
-//    alter table DAT_KEBS_COCS_BAK
+//    alter table DAT_KEBS_COCS
 //    add PVOC_PARTNER NUMBER REFERENCES DAT_KEBS_PVOC_PARTNERS(ID) ON DELETE CASCADE
 //    /
 
