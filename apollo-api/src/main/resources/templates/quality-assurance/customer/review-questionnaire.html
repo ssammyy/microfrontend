@@ -357,7 +357,7 @@
                                 <a th:href="@{/generated/invoice/{id}(id = ${invoice.id})}" style="width: 350px" class="filter-link ">
                                     Submit
                                 </a>
-                                <a class="filter-link " style="width: 350px" th:href="@{/api/v1/permit/update/sta10/{id}/{invoiceId}(id = ${questionnaire?.id}, invoiceId = ${invoice.id}, appId=${session.appId})}">
+                                <a class="filter-link " style="width: 350px" th:href="@{/api/permit/update/sta10/{id}/{invoiceId}(id = ${questionnaire?.id}, invoiceId = ${invoice.id}, appId=${session.appId})}">
                                     Update Questionnaire
                                 </a>
                                 <button  class="filter-link" value="SUBMIT" id="changeNoOfSites" style="width: 350px">Update application details</button>
@@ -366,7 +366,7 @@
                     </div>
                 </div>
                 <div class="sites">
-                    <form id="sitesS-form"   name="sitesS-form" th:action="@{/api/v1/permit/saveNoOfSites(id = ${permit.id})}" method="post" th:object="${permit}">
+                    <form id="sitesS-form"   name="sitesS-form" th:action="@{/api/permit/saveNoOfSites(id = ${permit.id})}" method="post" th:object="${permit}">
                         <div class="modal fade" id="modal2" tabindex="-1" role="dialog" aria-labelledby="modal2Label" aria-hidden="true">
                             <div class="modal-dialog" role="document">
                                 <div class="modal-content">

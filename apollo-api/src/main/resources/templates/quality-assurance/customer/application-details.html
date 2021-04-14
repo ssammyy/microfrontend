@@ -518,7 +518,7 @@
 <!--                                <span class="status-text" th:unless="${app.labReportStatus == 1}">Available</span>-->
                                 <div th:if="${app.applicationCompletenessStatus == 0}" class="filter-title">
 <!--                                    <a style="width: 270px" th:href="@{/api/v1/permit/correct_resubmit_application/(permitId = ${app.id}, action = 1)}" class="btn btn-primary mb-4">Correct application</a>-->
-                                    <a style="width: 270px" th:href="@{/api/v1/permit/correct_resubmit_application/(permitId = ${app.id}, action = 2)}" class="btn btn-info">Resubmit application</a>
+                                    <a style="width: 270px" th:href="@{/api/permit/correct_resubmit_application/(permitId = ${app.id}, action = 2)}" class="btn btn-info">Resubmit application</a>
                                 </div>
                             </div>
                         </div>
@@ -663,8 +663,8 @@
                                         </p>
                                     </div>
                                     <div th:if="${app.schemeOfSupervisionAcceptanceStatus  == null}">
-                                        <a th:href="@{/api/v1/permit/accept/{id}/scheme(id = ${app?.id}, acceptanceStatus = 1)}" class="btn btn-primary btn-sm" style="display: inline-block">Accept</a>
-                                        <a th:href="@{/api/v1/permit/accept/{id}/scheme(id = ${app?.id}, acceptanceStatus = 2)}" class="btn btn-danger btn-sm" style="display: inline-block">Reject</a>
+                                        <a th:href="@{/api/permit/accept/{id}/scheme(id = ${app?.id}, acceptanceStatus = 1)}" class="btn btn-primary btn-sm" style="display: inline-block">Accept</a>
+                                        <a th:href="@{/api/permit/accept/{id}/scheme(id = ${app?.id}, acceptanceStatus = 2)}" class="btn btn-danger btn-sm" style="display: inline-block">Reject</a>
                                     </div>
                                     <div th:if="${app?.schemeOfSupervisionAcceptanceStatus  == 1}" style="color: #1b75bc">Accepted</div>
                                     <div th:if="${app?.schemeOfSupervisionAcceptanceStatus  == 2}" style="color: #ea384c">Rejected</div>
@@ -688,7 +688,7 @@
                     <!--                    </form>-->
                 </div>
                 <div class="myRemarks">
-                    <form id="remarks-form"   name="remarks-form" th:action="@{/api/v1/permit/remark/{id}(id = ${app.id})}" method="post" th:object="${remarks}">
+                    <form id="remarks-form"   name="remarks-form" th:action="@{/api/permit/remark/{id}(id = ${app.id})}" method="post" th:object="${remarks}">
                         <div class="modal fade" id="remarksModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                             <div class="modal-dialog" role="document">
                                 <div class="modal-content">

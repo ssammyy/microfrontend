@@ -40,7 +40,7 @@ import javax.validation.Valid
 
 
 @Controller
-@RequestMapping("/api/v1/permit")
+@RequestMapping("/api/permit")
 @SessionAttributes("appId")
 class QAController(
 
@@ -95,7 +95,7 @@ class QAController(
         SecurityContextHolder.getContext().authentication
                 ?.let { m ->
                     result = if (m.authorities.contains(SimpleGrantedAuthority("PERMIT_APPLICATION"))) {
-                        "redirect:/api/v1/permit/customer"
+                        "redirect:/api/permit/customer"
                     }
 //                    else if (m.authorities.contains(SimpleGrantedAuthority("ALLOCATE_DMARK_TO_QAO"))  ||
 //                            m.authorities.contains(SimpleGrantedAuthority("ASSIGN_OFFICER")) ||
@@ -150,13 +150,14 @@ class QAController(
                                                 qualityAssuranceBpmn.fetchAllTasksByAssignee(it)?.let { lstTaskDetails ->
                                                     model.addAttribute("tasks", lstTaskDetails)
                                                 }
+                                                model.addAttribute("manufacturer", manufacturer)
 //                                                val baseUrl: String = ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString();
 //                                                KotlinLogging.logger {  }.info { "Base Url: $baseUrl" }
                                                 standardLevyPaymentsRepository.findByManufacturerEntity(manufacturer)
                                                         .let { payments ->
                                                             model.addAttribute("payments", payments)
 //                                                            KotlinLogging.logger {  }.info { payments?.size }
-                                                            model.addAttribute("manufacturer", manufacturer)
+                                                            //model.addAttribute("manufacturer", manufacturer)
                                                         }
                                             }
                                         }
@@ -410,7 +411,7 @@ class QAController(
                             qualityAssuranceBpmn.qaAppReviewResubmitApplication(permitId)
                                     .let {
                                         redirectAttributes.addFlashAttribute("alert", "Your application has been resubmitted.")
-                                        result =  "redirect:/api/v1/permit/customer"
+                                        result =  "redirect:/api/permit/customer"
                                     }
                         }
             }
@@ -618,7 +619,7 @@ class QAController(
                                                             }
                                                             else {
                                                                 redirectAttributes.addFlashAttribute("message", "Caught an exception")
-                                                                return "redirect:/api/v1/permit/apply/new/smark"
+                                                                return "redirect:/api/permit/apply/new/smark"
                                                             }
                                                             pmForm = permitRepo.save(pmForm)
                                                             KotlinLogging.logger {  }.info { "Permit saved with id ${pmForm.id}" }
@@ -657,7 +658,7 @@ class QAController(
 
         } catch (e: Exception) {
             KotlinLogging.logger { }.error { e }
-            "redirect:/api/v1/permit/apply/new/smark"
+            "redirect:/api/permit/apply/new/smark"
         }
 
     }
@@ -788,7 +789,7 @@ class QAController(
                     } catch (e: Exception) {
                         KotlinLogging.logger { }.error(e.message,e)
                         redirectAttributes.addFlashAttribute("error", "Something went wrong. Try again!")
-                        result = "redirect:/api/v1/permit/permit/renew-get/{id}"
+                        result = "redirect:/api/permit/permit/renew-get/{id}"
                     }
                 }
         return result
@@ -881,7 +882,7 @@ class QAController(
                     permitRepo.save(i)
                 }
 
-        return "redirect:/api/v1/permit/permit/renew-get/${id}"
+        return "redirect:/api/permit/permit/renew-get/${id}"
     }
 
     @PostMapping("/remark/{id}")
@@ -934,11 +935,11 @@ class QAController(
                                 }
                     }
 
-            "redirect:/api/v1/permit/my-applications/{id}"
+            "redirect:/api/permit/my-applications/{id}"
         } catch (e: Exception) {
             KotlinLogging.logger { }.error { "Caught an error, $e" }
             redirectAttributes.addFlashAttribute("message", "Couldn't save your comment. Try again later")
-            "redirect:/api/v1/permit/my-applications/{id}"
+            "redirect:/api/permit/my-applications/{id}"
         }
     }
 
@@ -978,7 +979,7 @@ class QAController(
 
                 }
 
-        return "redirect:/api/v1/permit/my-applications/{id}"
+        return "redirect:/api/permit/my-applications/{id}"
     }
 
     fun generateBufferedNotification(notification: NotificationsEntity, map: ServiceMapsEntity, email: String?, data: Any?, sr: ServiceRequestsEntity? = null): NotificationsBufferEntity? {

@@ -30,7 +30,7 @@ class QAHandlers(
 ) {
     final val appId = applicationMapProperties.mapPermitApplication
     final val allPermits = "quality-assurance/customer/my-permits"
-    final val createPermit = "redirect:/api/v1/permit/apply/new/smark"
+    final val createPermit = "redirect:/api/permit/apply/new/smark"
     final val currentUserSessionAttribute = "userId"
     private final val errors = mutableMapOf<String, String>()
 

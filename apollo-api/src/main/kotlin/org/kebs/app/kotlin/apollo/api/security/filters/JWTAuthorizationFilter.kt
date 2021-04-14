@@ -69,7 +69,7 @@ class JWTAuthorizationFilter : OncePerRequestFilter() {
                     response.addHeader(HttpHeaders.AUTHORIZATION, token)
 
                 }
+            filterChain.doFilter(request, response)
 
-        filterChain.doFilter(request, response)
     }
 }

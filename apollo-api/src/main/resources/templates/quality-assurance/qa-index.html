@@ -29,7 +29,7 @@
                                 <a sec:authorize="hasAuthority('SCHEDULE_FACTORY_VISIT')" class="content-button" th:href="@{/api/qao}"><span class="font-awesome-span"></span>QAO</a>
                                 <a sec:authorize="hasRole('ASSESSOR')" class="content-button" th:href="@{/api/ms/home}"><span class="font-awesome-span"></span>Assessor</a>
                 </div>
-                <div sec:authorize="hasAuthority('PERMIT_APPLICATION') and hasAuthority('PERMIT_RENEWAL')" class="div-block-4"><a class="content-button" th:href="@{/api/v1/permit/customer(appId=${session.appId})}"><span class="font-awesome-span"></span>Customer</a></div>
+                <div sec:authorize="hasAuthority('PERMIT_APPLICATION') and hasAuthority('PERMIT_RENEWAL')" class="div-block-4"><a class="content-button" th:href="@{/api/permit/customer(appId=${session.appId})}"><span class="font-awesome-span"></span>Customer</a></div>
             </div>
         </div>
     </div>

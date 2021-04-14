@@ -57,7 +57,7 @@
                                         <td th:text="${permit?.permitType}"></td>
                                         <!--                                    <td  th:text="${permit?.productName}"></td>-->
                                         <td  th:text="${permit?.tradeMark}"></td>
-                                        <td><a class="btn btn-info" th:href="@{/api/v1/permit/permit-details/{id}(id = ${permit.id})}">view</a></td>
+                                        <td><a class="btn btn-info" th:href="@{/api/permit/permit-details/{id}(id = ${permit.id})}">view</a></td>
                                     </tr>
                                     </tbody>
                                 </table>

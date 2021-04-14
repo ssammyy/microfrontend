@@ -80,7 +80,7 @@
                                 </ul>
                             </div>
                             <div class="applicant-details">
-                                <form id="smark-form" name="smark-form" data-name="S Mark Form" th:object="${permit}" th:action="@{/api/v1/permit/permit/renew/{id}(id = ${pr.id})}">
+                                <form id="smark-form" name="smark-form" data-name="S Mark Form" th:object="${permit}" th:action="@{/api/permit/permit/renew/{id}(id = ${pr.id})}">
                                     <h2>Confirm Renewal of Permit</h2>
 
                                     <div><input type="hidden" class="w-input" required="" th:name="id" th:value="${pr.id}"></div>
