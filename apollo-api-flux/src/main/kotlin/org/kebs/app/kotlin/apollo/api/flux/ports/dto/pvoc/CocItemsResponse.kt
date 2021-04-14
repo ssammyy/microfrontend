@@ -1,7 +1,7 @@
 package org.kebs.app.kotlin.apollo.api.flux.ports.dto.pvoc
 
 import org.kebs.app.kotlin.apollo.store.model.CocItemsEntity
-import org.kebs.app.kotlin.apollo.store.model.CocsBakEntity
+import org.kebs.app.kotlin.apollo.store.model.CocsEntity
 
 
 class CocItemsResponse {
@@ -36,11 +36,11 @@ class CocItemsResponse {
 //}
 
 class CocWithItems{
-    var coc:CocsBakEntity? = null
+    var coc:CocsEntity? = null
     var items: List<CocItemsEntity>? = null
 }
 
 class CoiWithItems{
-    var coi:CocsBakEntity? = null
+    var coi:CocsEntity? = null
     var items: List<CocItemsEntity>? = null
 }

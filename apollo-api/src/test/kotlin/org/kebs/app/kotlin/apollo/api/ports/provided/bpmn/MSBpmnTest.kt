@@ -44,7 +44,7 @@ class MSBpmnTest {
     @Value("\${bpmn.ms.market.surveillance.process.definition.key}")
     lateinit var msMarketSurveillanceProcessDefinitionKey: String
 
-    val complaintId: Long = 4
+    val complaintId: Long = 22
     val fuelInspectionId:Long = 42
     val workPlanId:Long = 321
     val assigneeId:Long = 101
@@ -60,7 +60,7 @@ class MSBpmnTest {
     val complainantEmail: String = "james.mantu@gmail.com"
 
     @Test
-    @Ignore
+    //@Ignore
     fun testMsComplaintProcess() {
 
         //Start the process
@@ -498,7 +498,7 @@ class MSBpmnTest {
     }
 
     @Test
-    //@Ignore
+    @Ignore
     fun testDownloadPdf() {
         invoiceRepo.findByIdOrNull(2224)?.let{
             exportFile.parseThymeleafTemplate("templates/TestPdf/TestPdf","invoice",it)?.let { htmlString->

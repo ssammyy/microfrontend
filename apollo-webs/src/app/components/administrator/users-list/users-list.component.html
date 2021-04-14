@@ -74,7 +74,7 @@
           <div class="form-body">
 
             <div class="row">
-              <div class="col-6 col-md-3">
+              <div class="col">
                 <div class="form-group">
                   <label><b>User Name</b></label>
                   <input [class.is-invalid]="formSearch.userName.invalid && formSearch.userName.touched"
@@ -82,7 +82,7 @@
                          formControlName="userName" name="userName" required type="text">
                 </div>
               </div>
-              <div class="col-6 col-md-3">
+              <div class="col">
                 <div class="form-group">
                   <label><b>First Name</b></label>
                   <input class="form-control two-column-input" formControlName="firstName"
@@ -90,7 +90,7 @@
                 </div>
               </div>
 
-              <div class="col-6 col-md-3">
+              <div class="col">
                 <div class="form-group">
                   <label><b>Last Name</b> </label>
                   <input class="form-control two-column-input" formControlName="lastName"
@@ -99,7 +99,7 @@
                 </div>
               </div>
 
-              <div class="col-6 col-md-3">
+              <div class="col">
                 <div class="form-group">
                   <label><b>Email</b> </label>
                   <input class="form-control two-column-input" formControlName="email"
@@ -107,12 +107,13 @@
                          type="text">
                 </div>
               </div>
-
+              <div class="col">
+                <button [disabled]="!searchFormGroup.valid" class="submit-button mt-4" type="submit">APPLY FILTER
+                </button>
+              </div>
             </div>
 
           </div>
-
-          <button [disabled]="!searchFormGroup.valid" class="submit-button mt-3" type="submit">APPLY FILTER</button>
 
 
         </form>

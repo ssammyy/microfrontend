@@ -51,7 +51,7 @@ class DestinationInspectionDaoServices(
     private val manifestRepo: IManifestDetailsEntityRepository,
     private val declarationRepo: IDeclarationDetailsEntityRepository,
     private val iLocalCocTypeRepo: ILocalCocTypesRepository,
-    private val cocBakRepo: ICocsBakRepository,
+    private val cocRepo: ICocsRepository,
     private val coisRep: ICoisRepository,
     private val iCdInspectionChecklistRepo: ICdInspectionChecklistRepository,
     private val cdTypesRepo: IConsignmentDocumentTypesEntityRepository,
@@ -269,6 +269,17 @@ class DestinationInspectionDaoServices(
             ?: throw Exception("List Of BlackList Users With Status = ${status}, does not Exist")
     }
 
+    fun findAllOlderVersionCDsWithSameUcrNumber(
+        ucrNumber: String,
+        map: ServiceMapsEntity
+    ): List<ConsignmentDocumentDetailsEntity>? {
+        return iConsignmentDocumentDetailsRepo.findByUcrNumberAndOldCdStatus(ucrNumber, map.activeStatus)
+//            ?.let {
+//                return it
+//            }
+//            ?: throw Exception("List Of ALl , does not Exist")
+    }
+
     fun findCocTypeWithTypeName(cocType: String): CocTypesEntity {
         iCocTypesRepo.findByTypeName(cocType)
             ?.let {
@@ -336,105 +347,118 @@ class DestinationInspectionDaoServices(
 //
 //        return applicationStatusDetails
 //    }
-
-    //Todo : after confermation
-    fun createLocalCoc(
-        user: UsersEntity,
-        consignmentDocumentDetailsEntity: ConsignmentDocumentDetailsEntity,
-        map: ServiceMapsEntity,
-        routValue: String
-    ): CocsBakEntity {
-        val coc = CocsBakEntity()
-        consignmentDocumentDetailsEntity.ucrNumber?.let {
-            cocBakRepo.findByUcrNumber(it)
-                ?.let { coc ->
-                    throw Exception("There is an Existing COC with the following UCR No = ${coc.ucrNumber}")
-                }
-        }
-            ?: kotlin.run {
-
-                with(coc) {
-                    coiNumber = "UNKNOWN"
-                    cocNumber =
-                        "KEBSCOC${
-                            generateRandomText(
-                                5,
-                                map.secureRandom,
-                                map.messageDigestAlgorithm,
-                                true
-                            )
-                        }".toUpperCase()
-                    idfNumber = consignmentDocumentDetailsEntity.ucrNumber?.let { findIdf(it)?.baseDocRefNo }
-                    rfiNumber = "UNKNOWN"
-                    ucrNumber = consignmentDocumentDetailsEntity.ucrNumber
-                    rfcDate = commonDaoServices.getTimestamp()
-                    shipmentQuantityDelivered = "UNKNOWN"
-                    cocIssueDate = commonDaoServices.getTimestamp()
-                    coiIssueDate = commonDaoServices.getTimestamp()
-                    clean = "Y"
-
-                    cocRemarks = "UNKNOWN"
-                    coiRemarks = "UNKNOWN"
-                    issuingOffice = "UNKNOWN"
-
-                    val cdImporter = consignmentDocumentDetailsEntity.cdImporter?.let { findCDImporterDetails(it) }
-                    importerName = cdImporter?.name
-                    importerPin = cdImporter?.pin
-                    importerAddress1 = cdImporter?.physicalAddress
-                    importerAddress2 = "UNKNOWN"
-                    importerCity = "UNKNOWN"
-                    importerCountry = cdImporter?.physicalCountryName
-                    importerZipCode = "UNKNOWN"
-                    importerTelephoneNumber = cdImporter?.telephone
-                    importerFaxNumber = cdImporter?.fax
-                    importerEmail = cdImporter?.email
-
-                    val cdExporter = consignmentDocumentDetailsEntity.cdExporter?.let { findCdExporterDetails(it) }
-                    exporterName = cdExporter?.name
-                    exporterPin = cdExporter?.pin
-                    exporterAddress1 = cdExporter?.physicalAddress
-                    exporterAddress2 = "UNKNOWN"
-                    exporterCity = "UNKNOWN"
-                    exporterCountry = cdExporter?.physicalCountryName
-                    exporterZipCode = "UNKNOWN"
-                    exporterTelephoneNumber = cdExporter?.telephone
-                    exporterFaxNumber = cdExporter?.fax
-                    exporterEmail = cdExporter?.email
-
-                    placeOfInspection = "UNKNOWN"
-                    dateOfInspection = commonDaoServices.getTimestamp()
-
-                    val cdTransport = consignmentDocumentDetailsEntity.cdTransport?.let { findCdTransportDetails(it) }
-                    portOfDestination = cdTransport?.portOfArrival
-                    shipmentMode = "UNKNOWN"
-                    countryOfSupply = "UNKNOWN"
-                    finalInvoiceCurrency = "KES"
-                    finalInvoiceDate = commonDaoServices.getTimestamp()
-                    shipmentSealNumbers = "UNKNOWN"
-                    shipmentContainerNumber = "UNKNOWN"
-                    shipmentGrossWeight = "UNKNOWN"
-                    route = routValue
-                    cocType = "L"
-                    productCategory = "UNKNOWN"
-                    partner = "UNKNOWN"
-                    createdBy = commonDaoServices.concatenateName(user)
-                    createdOn = commonDaoServices.getTimestamp()
-                }
-
-                return cocBakRepo.save(coc)
+//Todo : after confermation
+@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+fun createLocalCoc(
+    user: UsersEntity,
+    consignmentDocumentDetailsEntity: ConsignmentDocumentDetailsEntity,
+    map: ServiceMapsEntity,
+    routValue: String
+): CocsEntity {
+    var localCoc = CocsEntity()
+    consignmentDocumentDetailsEntity.ucrNumber?.let {
+        cocRepo.findByUcrNumber(it)
+            ?.let { coc ->
+                throw Exception("There is an Existing COC with the following UCR No = ${coc.ucrNumber}")
             }
-
     }
+        ?: kotlin.run {
+//            GlobalScope.launch(Dispatchers.IO) {
+                KotlinLogging.logger { }.debug("Starting background task")
+                try {
+                    with(localCoc) {
+                        coiNumber = "UNKNOWN"
+                        cocNumber =
+                            "KEBSCOC${
+                                generateRandomText(
+                                    5,
+                                    map.secureRandom,
+                                    map.messageDigestAlgorithm,
+                                    true
+                                )
+                            }".toUpperCase()
+                        idfNumber = consignmentDocumentDetailsEntity.ucrNumber?.let { findIdf(it)?.baseDocRefNo }
+                        rfiNumber = "UNKNOWN"
+                        ucrNumber = consignmentDocumentDetailsEntity.ucrNumber
+                        rfcDate = commonDaoServices.getTimestamp()
+                        shipmentQuantityDelivered = "UNKNOWN"
+                        cocIssueDate = commonDaoServices.getTimestamp()
+                        coiIssueDate = commonDaoServices.getTimestamp()
+                        clean = "Y"
 
+                        cocRemarks = "UNKNOWN"
+                        coiRemarks = "UNKNOWN"
+                        issuingOffice = "UNKNOWN"
+
+                        val cdImporter = consignmentDocumentDetailsEntity.cdImporter?.let { findCDImporterDetails(it) }
+                        importerName = cdImporter?.name
+                        importerPin = cdImporter?.pin
+                        importerAddress1 = cdImporter?.physicalAddress
+                        importerAddress2 = "UNKNOWN"
+                        importerCity = "UNKNOWN"
+                        importerCountry = cdImporter?.physicalCountryName
+                        importerZipCode = "UNKNOWN"
+                        importerTelephoneNumber = cdImporter?.telephone
+                        importerFaxNumber = cdImporter?.fax
+                        importerEmail = cdImporter?.email
+
+                        val cdExporter = consignmentDocumentDetailsEntity.cdExporter?.let { findCdExporterDetails(it) }
+                        exporterName = cdExporter?.name
+                        exporterPin = cdExporter?.pin
+                        exporterAddress1 = cdExporter?.physicalAddress
+                        exporterAddress2 = "UNKNOWN"
+                        exporterCity = "UNKNOWN"
+                        exporterCountry = cdExporter?.physicalCountryName
+                        exporterZipCode = "UNKNOWN"
+                        exporterTelephoneNumber = cdExporter?.telephone
+                        exporterFaxNumber = cdExporter?.fax
+                        exporterEmail = cdExporter?.email
+
+                        placeOfInspection = "UNKNOWN"
+                        dateOfInspection = commonDaoServices.getTimestamp()
+
+                        val cdTransport = consignmentDocumentDetailsEntity.cdTransport?.let { findCdTransportDetails(it) }
+                        portOfDestination = cdTransport?.portOfArrival
+                        shipmentMode = "UNKNOWN"
+                        countryOfSupply = "UNKNOWN"
+                        finalInvoiceCurrency = "KES"
+                        finalInvoiceDate = commonDaoServices.getTimestamp()
+                        shipmentSealNumbers = "UNKNOWN"
+                        shipmentContainerNumber = "UNKNOWN"
+                        shipmentGrossWeight = "UNKNOWN"
+                        route = routValue
+                        cocType = "L"
+                        productCategory = "UNKNOWN"
+                        partner = "UNKNOWN"
+                        createdBy = commonDaoServices.concatenateName(user)
+                        createdOn = commonDaoServices.getTimestamp()
+                    }
+
+                    localCoc = cocRepo.save(localCoc)
+                    KotlinLogging.logger { }.info { "localCoc = ${localCoc.id}" }
+                    localCocItems(consignmentDocumentDetailsEntity, localCoc, user, map)
+                    sendLocalCoc(localCoc.id)
+                } catch (e: Exception) {
+                    KotlinLogging.logger { }.debug("Threw error from forward express callback")
+                    KotlinLogging.logger { }.debug(e.message)
+                    KotlinLogging.logger { }.debug(e.toString())
+                }
+//            }
+            return localCoc
+        }
+
+}
+
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun createLocalCoi(
         user: UsersEntity,
         consignmentDocumentDetailsEntity: ConsignmentDocumentDetailsEntity,
         map: ServiceMapsEntity,
         routValue: String
-    ): CocsBakEntity {
-        val coc = CocsBakEntity()
+    ): CocsEntity {
+        val coc = CocsEntity()
         consignmentDocumentDetailsEntity.ucrNumber?.let {
-            cocBakRepo.findByUcrNumber(it)
+            cocRepo.findByUcrNumber(it)
                 ?.let { coc ->
                     throw Exception("There is an Existing COI with the following UCR No = ${coc.ucrNumber}")
                 }
@@ -507,11 +531,12 @@ class DestinationInspectionDaoServices(
                     createdBy = commonDaoServices.concatenateName(user)
                     createdOn = commonDaoServices.getTimestamp()
                 }
-                return cocBakRepo.save(coc)
+                return cocRepo.save(coc)
             }
 
 
     }
+
 
 
 //    fun generateLocalCoc(cdLocalCocEntity: CdLocalCocEntity, consignmentDocumentDetailsEntity: ConsignmentDocumentDetailsEntity, user: UsersEntity, map: ServiceMapsEntity): CdLocalCocEntity {
@@ -544,7 +569,7 @@ class DestinationInspectionDaoServices(
 
     fun generateLocalCocItem(
         cdItemDetails: CdItemDetailsEntity,
-        localCocEntity: CocsBakEntity,
+        localCocEntity: CocsEntity,
         user: UsersEntity,
         map: ServiceMapsEntity,
         ownerPinValues: String,
@@ -581,7 +606,7 @@ class DestinationInspectionDaoServices(
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun localCocItems(
         updatedCDDetails: ConsignmentDocumentDetailsEntity,
-        localCocEntity: CocsBakEntity,
+        localCocEntity: CocsEntity,
         user: UsersEntity,
         map: ServiceMapsEntity
     ) {
@@ -599,7 +624,7 @@ class DestinationInspectionDaoServices(
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun localCoiItems(
         updatedCDDetails: ConsignmentDocumentDetailsEntity,
-        localCocEntity: CocsBakEntity,
+        localCocEntity: CocsEntity,
         user: UsersEntity,
         map: ServiceMapsEntity
     ) {
@@ -620,12 +645,12 @@ class DestinationInspectionDaoServices(
 
     fun sendLocalCoc(cocId: Long) {
 
-        val cocsBakEntity: CocsBakEntity = cocBakRepo.findById(cocId).get()
+        val cocsEntity: CocsEntity = cocRepo.findById(cocId).get()
 
-        cocsBakEntity.let {
+        cocsEntity.let {
             val coc: CustomCocXmlDto = it.toCocXmlRecordRefl()
             //COC ITEM
-            val cocItem = iCocItemRepository.findByCocId(cocsBakEntity.id)?.get(0)
+            val cocItem = iCocItemRepository.findByCocId(cocsEntity.id)?.get(0)
             cocItem?.toCocItemDetailsXmlRecordRefl().let {
                 coc.cocDetals = it
                 val cocFinalDto = COCXmlDTO()
@@ -649,13 +674,13 @@ class DestinationInspectionDaoServices(
 
     fun sendLocalCoi(cocId: Long) {
 
-        val cocsBakEntity: CocsBakEntity = cocBakRepo.findById(cocId).get()
+        val cocsEntity: CocsEntity = cocRepo.findById(cocId).get()
 
-        cocsBakEntity.let {
+        cocsEntity.let {
             val coi: CustomCoiXmlDto = it.toCoiXmlRecordRefl()
 //            val coc: CustomCocXmlDto = it.toCocXmlRecordRefl()
             //COC ITEM
-            val cocItem = iCocItemRepository.findByCocId(cocsBakEntity.id)?.get(0)
+            val cocItem = iCocItemRepository.findByCocId(cocsEntity.id)?.get(0)
             cocItem?.toCocItemDetailsXmlRecordRefl().let {
                 val coiFinalDto = COIXmlDTO()
                 coiFinalDto.coi = coi
@@ -1782,7 +1807,7 @@ class DestinationInspectionDaoServices(
     }
 
     fun updateCDDetailsWithCOCData(
-        cocEntity: CocsBakEntity,
+        cocEntity: CocsEntity,
         cdDetailsEntity: ConsignmentDocumentDetailsEntity
     ): ConsignmentDocumentDetailsEntity {
         if (cocEntity.clean.equals("Y")) {
@@ -1845,20 +1870,20 @@ class DestinationInspectionDaoServices(
         return true
     }
 
-    fun findCOC(ucrNumber: String): CocsBakEntity {
-        cocBakRepo.findByUcrNumber(ucrNumber)
+    fun findCOC(ucrNumber: String): CocsEntity {
+        cocRepo.findByUcrNumber(ucrNumber)
             ?.let { cocEntity ->
                 return cocEntity
             }
             ?: throw Exception("COC Details with the following UCR NUMBER = ${ucrNumber}, does not Exist")
     }
 
-    fun findCocByUcrNumber(ucrNumber: String): CocsBakEntity? {
-        return cocBakRepo.findByUcrNumber(ucrNumber)
+    fun findCocByUcrNumber(ucrNumber: String): CocsEntity? {
+        return cocRepo.findByUcrNumber(ucrNumber)
     }
 
-    fun findCOI(ucrNumber: String): CocsBakEntity {
-        cocBakRepo.findByUcrNumber(ucrNumber)
+    fun findCOI(ucrNumber: String): CocsEntity {
+        cocRepo.findByUcrNumber(ucrNumber)
             ?.let { coiEntity ->
                 return coiEntity
             }
@@ -1885,7 +1910,10 @@ class DestinationInspectionDaoServices(
         sectionsEntity: SectionsEntity,
         cdType: ConsignmentDocumentTypesEntity
     ): List<ConsignmentDocumentDetailsEntity> {
-        iConsignmentDocumentDetailsRepo.findByPortOfArrivalAndCdTypeAndUcrNumberIsNotNull(sectionsEntity.id, cdType.id)
+        iConsignmentDocumentDetailsRepo.findByPortOfArrivalAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNull(
+            sectionsEntity.id,
+            cdType.id
+        )
             ?.let {
                 return it
             }
@@ -1894,7 +1922,9 @@ class DestinationInspectionDaoServices(
     }
 
     fun findAllCdWithNoPortOfEntry(cdType: ConsignmentDocumentTypesEntity): List<ConsignmentDocumentDetailsEntity>? {
-        return iConsignmentDocumentDetailsRepo.findByPortOfArrivalIsNullAndCdTypeAndUcrNumberIsNotNull(cdType.id)
+        return iConsignmentDocumentDetailsRepo.findByPortOfArrivalIsNullAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNull(
+            cdType.id
+        )
 //                ?.let {
 //                    return it
 //                }
@@ -1906,7 +1936,7 @@ class DestinationInspectionDaoServices(
         usersEntity: UsersEntity,
         cdType: ConsignmentDocumentTypesEntity
     ): List<ConsignmentDocumentDetailsEntity> {
-        iConsignmentDocumentDetailsRepo.findAllByAssignedInspectionOfficerAndCdTypeAndUcrNumberIsNotNull(
+        iConsignmentDocumentDetailsRepo.findAllByAssignedInspectionOfficerAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNull(
             usersEntity,
             cdType.id
         )
@@ -1922,7 +1952,7 @@ class DestinationInspectionDaoServices(
         subSectionsLevel2Entity: SubSectionsLevel2Entity,
         cdType: ConsignmentDocumentTypesEntity
     ): List<ConsignmentDocumentDetailsEntity>? {
-        return iConsignmentDocumentDetailsRepo.findByFreightStationAndAssignedInspectionOfficerIsNullAndCdTypeAndUcrNumberIsNotNull(
+        return iConsignmentDocumentDetailsRepo.findByFreightStationAndAssignedInspectionOfficerIsNullAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNull(
             subSectionsLevel2Entity.id,
             cdType.id
         )

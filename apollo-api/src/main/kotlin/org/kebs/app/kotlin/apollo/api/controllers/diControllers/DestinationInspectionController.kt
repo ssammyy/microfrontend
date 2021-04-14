@@ -1,6 +1,5 @@
 package org.kebs.app.kotlin.apollo.api.controllers.diControllers
 
-import kotlinx.coroutines.delay
 import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.DestinationInspectionBpmn
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
@@ -50,7 +49,7 @@ class DestinationInspectionController(
     @PreAuthorize("hasAuthority('DI_OFFICER_CHARGE_MODIFY') or hasAuthority('DI_INSPECTION_OFFICER_MODIFY')")
     @PostMapping("cd-save/details")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
-    suspend fun cdDetailsSave(
+    fun cdDetailsSave(
         @ModelAttribute cdDetails: ConsignmentDocumentDetailsEntity,
         @RequestParam("cdUuid") cdUuid: String,
         model: Model,
@@ -146,7 +145,7 @@ class DestinationInspectionController(
                                         daoServices.submitCDStatusToKesWS(
                                             it1,
                                             it,
-                                            cdDetails.version.toString(),
+                                            consignmentDocument.version.toString() ,
                                             consignmentDocument
                                         )
                                     }
@@ -347,17 +346,18 @@ class DestinationInspectionController(
                     cdDetails.localCocOrCorStatus == map.activeStatus -> {
                         if (updatedCDDetails.cdType?.let { daoServices.findCdTypeDetails(it).localCocStatus } == map.activeStatus) {
 
-                            if (cdDetails.localCoi == map.activeStatus) {
-                                val localCoi = daoServices.createLocalCoi(loggedInUser, updatedCDDetails, map, "D")
-                            } else {
-                                val localCoc = daoServices.createLocalCoc(loggedInUser, updatedCDDetails, map, "A")
-                                KotlinLogging.logger { }.info { "localCoc = ${localCoc.id}" }
-                                delay(7000L)
-                                daoServices.localCocItems(updatedCDDetails, localCoc, loggedInUser, map)
-                                daoServices.sendLocalCoc(localCoc.id)
-
-
-                                //Todo : How the Local coc will look like
+                            when (cdDetails.localCoi) {
+                                //Todo : Ask Fred on where to get the routValue
+                                map.activeStatus -> {
+                                    val localCoi = daoServices.createLocalCoi(loggedInUser, updatedCDDetails, map, "D")
+                                }
+                                else -> {
+                                    val localCoc = daoServices.createLocalCoc(loggedInUser, updatedCDDetails, map, "A")
+                                    KotlinLogging.logger { }.info { "localCoc = ${localCoc.id}" }
+//                                    daoServices.localCocItems(updatedCDDetails, localCoc, loggedInUser, map)
+//                                    daoServices.sendLocalCoc(localCoc.id)
+                                    //Todo : How the Local coc will look like
+                                }
                             }
 
                         } else if (updatedCDDetails.cdType?.let { daoServices.findCdTypeDetails(it).localCorStatus } == map.activeStatus) {

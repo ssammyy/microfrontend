@@ -102,6 +102,12 @@ input.w-button {
   -webkit-appearance: button;
 }
 
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  margin-left: 0;
+}
+
 .form-block {
   margin-bottom: 0px;
   padding: 20px;

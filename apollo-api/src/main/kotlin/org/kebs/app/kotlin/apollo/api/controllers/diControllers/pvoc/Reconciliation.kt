@@ -35,15 +35,15 @@ class ReconciliationSummary{
 @Controller
 @RequestMapping("/api/di/pvoc/")
 class Reconciliation(
-        private val pvocReconciliationReportEntityRepo: PvocReconciliationReportEntityRepo,
-        private val pvocAgentContractEntityRepo: PvocAgentContractEntityRepo,
-        private val iCocsBakRepository: ICocsBakRepository,
-        private val iPvocPartnersRepository: IPvocPartnersRepository,
-        private val pvocPartnersRepository: IPvocPartnersRepository,
-        private val iPvocInvoicingRepository: IPvocInvoicingRepository,
-        private val pvocDaoServices: PvocDaoServices,
-        private val iUserRepository: IUserRepository,
-        private val stgPaymentReconciliationEntityRepo: StgPaymentReconciliationEntityRepo
+    private val pvocReconciliationReportEntityRepo: PvocReconciliationReportEntityRepo,
+    private val pvocAgentContractEntityRepo: PvocAgentContractEntityRepo,
+    private val iCocsRepository: ICocsRepository,
+    private val iPvocPartnersRepository: IPvocPartnersRepository,
+    private val pvocPartnersRepository: IPvocPartnersRepository,
+    private val iPvocInvoicingRepository: IPvocInvoicingRepository,
+    private val pvocDaoServices: PvocDaoServices,
+    private val iUserRepository: IUserRepository,
+    private val stgPaymentReconciliationEntityRepo: StgPaymentReconciliationEntityRepo
 ) {
     val map = hashMapOf<String, Any>()
 
@@ -174,7 +174,7 @@ class Reconciliation(
         KotlinLogging.logger {}.info { "Day of month $todaysDayOfMonth" }
         when (todaysDayOfMonth) {
             reportGenerationDate -> {
-                iCocsBakRepository.findAllByReportGenerationStatus(0).let { cocs ->
+                iCocsRepository.findAllByReportGenerationStatus(0).let { cocs ->
                     val cocsTotal: Int = cocs.count()
                     for (i in 0 until cocsTotal) {
                         val coc = cocs[i]
@@ -214,7 +214,7 @@ class Reconciliation(
                         coc.reportGenerationStatus = 1
                         coc.createdBy = "Admin"
                         coc.modifiedOn = Timestamp.from(Instant.now())
-                        iCocsBakRepository.save(coc)
+                        iCocsRepository.save(coc)
                     }
 //                    }
                 }
@@ -243,17 +243,19 @@ class Reconciliation(
     @GetMapping("all-reports/{id}")
     fun reportById(@PathVariable("id") id: Long, model: Model): String {
         pvocReconciliationReportEntityRepo.findByIdOrNull(id).let { report ->
-            report?.certificateNo?.let { iCocsBakRepository.findFirstByCocNumber(it).let { cocDetails ->
-                iPvocPartnersRepository.findByIdOrNull(cocDetails?.pvocPartner).let { partner ->
-                    val discount = 0
-                    model.addAttribute("discount", discount)
-                    model.addAttribute("partner", partner)
-                    model.addAttribute("invoiceNo", generateRandomNumbers("KEBS/PVOC"))
-                    model.addAttribute("orderNumber", generateRandomNumbers("ORD"))
-                    model.addAttribute("customerNumber", generateRandomNumbers("FOR"))
-                    model.addAttribute("reconsiliationInvoice", PvocInvoicingEntity())
+            report?.certificateNo?.let {
+                iCocsRepository.findFirstByCocNumber(it).let { cocDetails ->
+                    iPvocPartnersRepository.findByIdOrNull(cocDetails?.pvocPartner).let { partner ->
+                        val discount = 0
+                        model.addAttribute("discount", discount)
+                        model.addAttribute("partner", partner)
+                        model.addAttribute("invoiceNo", generateRandomNumbers("KEBS/PVOC"))
+                        model.addAttribute("orderNumber", generateRandomNumbers("ORD"))
+                        model.addAttribute("customerNumber", generateRandomNumbers("FOR"))
+                        model.addAttribute("reconsiliationInvoice", PvocInvoicingEntity())
+                    }
                 }
-            } }
+            }
             model.addAttribute("coc", report)
             var saveReason = "invoice"
             when(report?.invoiced){
@@ -428,13 +430,13 @@ class Reconciliation(
 
     fun calculateRoyaltyToKebs(certificateNo: String, fobValue: Long): Long? {
         //find coc document details
-        iCocsBakRepository.findFirstByCocNumber(certificateNo)?.let { cocDetails ->
+        iCocsRepository.findFirstByCocNumber(certificateNo)?.let { cocDetails ->
             pvocPartnersRepository.findByIdOrNull(cocDetails.pvocPartner).let { partinerDetails ->
                 partinerDetails?.id?.let {
                     pvocAgentContractEntityRepo.findByServiceRenderedIdAndPvocPartner(2, it)?.let { contract ->
                         KotlinLogging.logger { }.info { "royalty applicable ==> " + contract.applicableRoyalty }
                         return contract.applicableRoyalty?.let { it1 -> fobValue.times(it1) }?.toLong()
-                    }?: throw Exception("recond not found")
+                    } ?: throw Exception("recond not found")
                 }
             }
         } ?: throw Exception("An error occurred please try again later")

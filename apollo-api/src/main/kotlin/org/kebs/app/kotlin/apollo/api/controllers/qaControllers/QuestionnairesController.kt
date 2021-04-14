@@ -387,7 +387,7 @@ class QuestionnairesController(
             "quality-assurance/customer/review-questionnaire"
         } catch (e: Exception){
             model.addAttribute("message", "Something went wrong. Try again")
-            "redirect:/api/v1/permit/update/sta10/{id}/{invoiceId}"
+            "redirect:/api/permit/update/sta10/{id}/{invoiceId}"
 
         }
     }

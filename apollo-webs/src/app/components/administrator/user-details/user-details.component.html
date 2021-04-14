@@ -1,8 +1,7 @@
 <div *ngIf="userDetails" class="pb-2 mb-3 mr-2 border-bottom w-100">
   <h3>
-    <fa-icon [icon]="arrowLeftIcon" routerLink="/users-list"
-             style="padding-right: 3px; cursor: pointer"></fa-icon>
-    {{userID}}
+    <fa-icon [icon]="arrowLeftIcon" routerLink="/users-list" style="padding-right: 3px; cursor: pointer"></fa-icon>
+    {{userDetails.id}}
   </h3>
 </div>
 

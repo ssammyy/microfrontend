@@ -158,12 +158,6 @@ export class UserDetailsComponent implements OnInit {
     this.route.fragment.subscribe(params => {
       this.userID = params;
       console.log(this.userID);
-      switch (this.userID) {
-        case null: // @ts-ignore
-          this.userID = this.userDetails.id.toString();
-          break;
-      }
-      console.log(this.userID);
       this.administratorService.loadUserDetails(this.userID).subscribe(
         (data: UserRegister) => {
           this.userDetails = data;
@@ -176,8 +170,6 @@ export class UserDetailsComponent implements OnInit {
           this.spinner.hide();
         }
       );
-
-
     });
 
   }

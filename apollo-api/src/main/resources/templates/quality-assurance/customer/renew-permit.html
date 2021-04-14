@@ -148,7 +148,7 @@
             <div class="left-column">
                 <div class="application-section">
                     <div class="form-block w-form">
-                        <form id="newApplication" name="email-form" data-name="Email Form" th:object="${permits}" th:action="@{/api/v1/permit/renew}" method="post">
+                        <form id="newApplication" name="email-form" data-name="Email Form" th:object="${permits}" th:action="@{/api/permit/renew}" method="post">
                             <div class="field-container">
                                 <label for="officer" class="field-label">Permit type </label><br>
                                 <select id="officer" class="select-field w-select" th:field="${permitTypes}" >

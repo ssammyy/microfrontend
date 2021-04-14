@@ -69,16 +69,52 @@
 
       </div>
 
+      <!--            <div class="row mt-5">-->
+      <!--              <div class="col-6 col-md-3">-->
+      <!--                <input class="form-control form-control-dark" type="text" placeholder="Search" aria-label="Search"-->
+      <!--                       style="width: 80%; height: 30px">-->
+      <!--              </div>-->
+      <!--              <div class="col-6 col-md-3">-->
+      <!--                <button class="btn btn-sm btn-outline-secondary mr-2">TODAY</button>-->
+      <!--                <button class="btn btn-sm btn-outline-secondary">FILTER BY</button>-->
+      <!--              </div>-->
+      <!--            </div>-->
+
+
       <div class="row mt-5">
-        <div class="col-6 col-md-3">
-          <input class="form-control form-control-dark" type="text" placeholder="Search" aria-label="Search"
-                 style="width: 80%; height: 30px">
-        </div>
-        <div class="col-6 col-md-3">
-          <button class="btn btn-sm btn-outline-secondary mr-2">TODAY</button>
-          <button class="btn btn-sm btn-outline-secondary">FILTER BY</button>
-        </div>
+        <form (ngSubmit)="onSubmitSearch()" [formGroup]="searchFormGroup">
+
+
+          <div class="form-body">
+            <div class="row">
+              <div class="col">
+                <div class="form-group">
+                  <label><b>REF Number</b></label>
+                  <input [class.is-invalid]="formSearch.refNumber.invalid && formSearch.refNumber.touched"
+                         class="form-control two-column-input"
+                         formControlName="refNumber" name="refNumber" required type="text">
+                </div>
+              </div>
+
+
+              <div class="col">
+                <div class="form-group">
+                  <label><b>DATE</b></label>
+                  <input class="form-control two-column-input" formControlName="date"
+                         name="date" type="date">
+                </div>
+              </div>
+              <div class="col">
+                <button [disabled]="!searchFormGroup.valid" class="submit-button mt-4" type="submit">APPLY FILTER
+                </button>
+              </div>
+            </div>
+          </div>
+
+
+        </form>
       </div>
+
       <table class="table-hover">
         <thead>
         <th class="id">Ref Number</th>
