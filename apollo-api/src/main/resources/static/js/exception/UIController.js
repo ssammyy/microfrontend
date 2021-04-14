@@ -12,6 +12,7 @@ testApp.controller("exceptionController", ['$scope', 'ExceptionService',
     $scope.manufacturDetails = []
     $scope.details = {}
     $scope.myFile=[]
+        $scope.termsAccept = false
     $scope.exemptionApp = {
             "manufacturer" : {},
             "products" :  [],
@@ -72,6 +73,29 @@ testApp.controller("exceptionController", ['$scope', 'ExceptionService',
                 },
                 function(errResponse){
                     console.error('Error while uploading Application');
+                }
+            );
+
+    }
+
+    $scope.saveExemptionAppPartial = function (){
+        const data = $scope.exemptionApp = {
+            "manufacturer" : $scope.details,
+            "products" : $scope.products.length > 0 ? $scope.products : [],
+            "rawMaterials": $scope.rawMaterials.length > 0 ? $scope.rawMaterials : [],
+            "mainMachinary" : $scope.mainMachinaries.length > 0 ? $scope.mainMachinaries : [],
+            "spares" : $scope.spares.length > 0 ? $scope.spares : []
+        }
+
+        ExemptionService.saveExceptionPartially(data)
+            .then(
+                function(d) {
+                    if(d.success === true){
+                        goCNN(0, 10, 0, d.fro, d.to)
+                    }
+                },
+                function(errResponse){
+                    console.error('Error while saving Application');
                 }
             );
 

@@ -15,6 +15,7 @@ interface IPvocApplicationRepo : HazelcastRepository<PvocApplicationEntity, Long
     fun findByIdAndPvocWaStatus(id: Long, pvocWaStatus: Int): PvocApplicationEntity?
     fun findAllByStatus(status: Int, pageable: Pageable): Page<PvocApplicationEntity>?
     fun findFirstByConpanyNameAndCompanyPinNo(conpanyName: String, companyPinNo : String) : PvocApplicationEntity?
+    fun findFirstByConpanyNameAndCompanyPinNoAndFinished(conpanyName: String, companyPinNo: String, finished: Int) : PvocApplicationEntity?
     fun findAllByCreatedOnBetween(createdOn: Date, createdOn2: Date, pageable: Pageable): Page<PvocApplicationEntity>?
     fun findAllByConpanyNameAndStatus(conpanyName: String, status: Int, pageable: Pageable): Page<PvocApplicationEntity>?
     fun findAllByApplicationDateBetweenAndConpanyNameAndStatus(applicationDate: java.util.Date, applicationDate2: java.util.Date, conpanyName: String, status: Int, pageable: Pageable): Page<PvocApplicationEntity>?
