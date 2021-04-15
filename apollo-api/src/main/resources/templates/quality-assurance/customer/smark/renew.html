@@ -108,7 +108,7 @@
                             <div class="filter-block-title">
                             </div>
                             <div th:if="${days < 0}">
-                                <a th:href="@{/api/v1/permit/permit/renew-get/{id}(id = ${pr?.id},appId=${appId})}"  class="btn btn-primary" value="SUBMIT" id="changeNoOfSites" style="width: 200px">Confirm</a>
+                                <a th:href="@{/api/permit/permit/renew-get/{id}(id = ${pr?.id},appId=${appId})}"  class="btn btn-primary" value="SUBMIT" id="changeNoOfSites" style="width: 200px">Confirm</a>
                             </div>
                             <div th:if="${days > 0}">
                                 Your permit will expire on, <span th:text="${#dates.format(pr?.expiryDate, 'dd/MM/yyyy')}"></span>

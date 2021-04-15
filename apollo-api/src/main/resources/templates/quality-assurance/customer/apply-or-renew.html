@@ -24,10 +24,10 @@
             <div class="content-wrap">
                 <div class="content-row-top">
                     <h1>Apply or renew Standardization Mark</h1>
-                    <a class="content-button" th:href="@{/api/v1/permit/apply/new/{permitTypeId}(permitTypeId = ${permitTypeId},appId=103)}">
+                    <a class="content-button" th:href="@{/api/permit/apply/new/{permitTypeId}(permitTypeId = ${permitTypeId},appId=103)}">
                         <span class="font-awesome-span"></span>New Application
                     </a>
-                    <a class="content-button" th:href="@{/api/v1/permit/my-spermits(appstatus = 1,appId=${appId}, permitTypeId = 2)}">
+                    <a class="content-button" th:href="@{/api/permit/my-spermits(appstatus = 1,appId=${appId}, permitTypeId = 2)}">
                         <span class="font-awesome-span"></span>Renew Application
                     </a>
                     <!--                    <a href="../lead-auditor/reports.html" class="content-button"><span class="font-awesome-span"></span>Reports</a>-->

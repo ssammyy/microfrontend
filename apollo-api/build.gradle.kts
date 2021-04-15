@@ -36,10 +36,12 @@
  */
 
 import org.springframework.boot.gradle.tasks.bundling.BootWar
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 
 plugins {
     war
+    kotlin("jvm") version "1.5.0-RC"
 }
 
 description = "apollo-api"
@@ -145,11 +147,17 @@ dependencies {
      */
     testImplementation("org.springframework.security:spring-security-test")
 
+    /**
+     * Google guava
+     */
+    //implementation("com.google.guava:11.0.2")
+
     implementation("net.sf.ehcache:ehcache-core:2.6.11")
     implementation("com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.2")
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
         exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
     }
+    implementation(kotlin("stdlib-jdk8"))
 }
 application {
     mainClassName = "org.kebs.app.kotlin.apollo.api.ApiApplicationKt"
@@ -160,3 +168,15 @@ tasks.withType<BootWar>().configureEach {
     launchScript()
 }
 
+repositories {
+    maven("https://dl.bintray.com/kotlin/kotlin-eap")
+    mavenCentral()
+}
+val compileKotlin: KotlinCompile by tasks
+compileKotlin.kotlinOptions {
+    jvmTarget = "1.8"
+}
+val compileTestKotlin: KotlinCompile by tasks
+compileTestKotlin.kotlinOptions {
+    jvmTarget = "1.8"
+}

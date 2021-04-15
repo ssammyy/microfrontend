@@ -375,22 +375,22 @@ class MarketSurveillanceHandler(
         }
     }
 
-//    @PreAuthorize("hasAuthority('MS_IO_READ') or hasAuthority('MS_HOD_READ') or hasAuthority('MS_RM_READ') or hasAuthority('MS_HOF_READ') or hasAuthority('MS_DIRECTOR_READ')")
-//    fun complaintsSearchListing(req: ServerRequest): ServerResponse {
-//        try {
-//            val dto = req.body<ComplaintSearchValues>()
-//
-//            daoServices.complaintSearchResultListing(dto)?.let {
-//                KotlinLogging.logger { }.info("Record found ${it.count()}")
-//            return ok().body(it)
-//            }
-//                ?: throw NullValueNotAllowedException("Update failed")
-//        } catch (e: Exception) {
-//            KotlinLogging.logger { }.error(e.message)
-//            KotlinLogging.logger { }.debug(e.message, e)
-//            return badRequest().body(e.message ?: "Unknown Error")
-//        }
-//    }
+    @PreAuthorize("hasAuthority('MS_IO_READ') or hasAuthority('MS_HOD_READ') or hasAuthority('MS_RM_READ') or hasAuthority('MS_HOF_READ') or hasAuthority('MS_DIRECTOR_READ')")
+    fun complaintsSearchListing(req: ServerRequest): ServerResponse {
+        try {
+            val dto = req.body<ComplaintSearchValues>()
+
+            daoServices.complaintSearchResultListing(dto)?.let {
+                KotlinLogging.logger { }.info("Record found ${it.count()}")
+                return ok().body(it)
+            }
+                ?: throw NullValueNotAllowedException("Update failed")
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            return badRequest().body(e.message ?: "Unknown Error")
+        }
+    }
 
 
     @PreAuthorize("hasAuthority('MS_IO_READ') or hasAuthority('MS_HOD_READ') or hasAuthority('MS_RM_READ') or hasAuthority('MS_HOF_READ') or hasAuthority('MS_DIRECTOR_READ')")

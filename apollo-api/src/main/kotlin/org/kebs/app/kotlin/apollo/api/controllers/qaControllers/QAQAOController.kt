@@ -989,7 +989,7 @@ class QAQAOController(
                                 }
                                 qaWorkplanRepository.save(workplan)
                                 redirectAttributes.addFlashAttribute("alert", "You have successfully generated a workplan.")
-                                result = "redirect:/api/v1/permit?appId=${map.id}"
+                                result = "redirect:/api/permit?appId=${map.id}"
                             }
 
                 }

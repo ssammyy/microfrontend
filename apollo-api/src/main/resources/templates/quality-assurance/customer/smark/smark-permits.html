@@ -49,7 +49,7 @@
                                             <td th:text="${permit?.permitType?.typeName}"></td>
                                             <td  th:text="${permit?.product?.name}"></td>
                                             <td  th:text="${permit?.tradeMark}"></td>
-                                            <td><a th:href="@{/api/v1/permit/permit/renew/{id}(id = ${app.id}, appId=${appId})}">view</a></td>
+                                            <td><a th:href="@{/api/permit/permit/renew/{id}(id = ${app.id}, appId=${appId})}">view</a></td>
                                         </tr>
                                     </tbody>
                                 </table>

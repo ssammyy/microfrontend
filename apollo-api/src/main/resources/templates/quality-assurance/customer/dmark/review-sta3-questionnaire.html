@@ -312,7 +312,7 @@
                                     SUBMIT
                                 </a>
                                 <button style="width: 300px" th:if="${permit.foreignApplication == 1}" type="button" class="filter-link" value="SUBMIT" id="submitBtn">SUBMIT</button>
-                                <a class="filter-link " th:href="@{/api/v1/permit/update/sta3/{id}(id = ${questionnaire?.id}, invoiceId = ${invoice?.id}, appId=150)}">
+                                <a class="filter-link " th:href="@{/api/permit/update/sta3/{id}(id = ${questionnaire?.id}, invoiceId = ${invoice?.id}, appId=150)}">
                                     Edit Questionnaire
                                 </a>
                                 <button  class="filter-link" value="SUBMIT" id="changeNoOfSites" style="width: 300px">Update application details</button>
@@ -402,7 +402,7 @@
                                     <h2>You have successfully submitted your application. We'll get back to you soon.</h2>
                                 </div>
                                 <div class="modal-footer">
-                                    <a th:href="@{/api/v1/permit/my-applications}" class="btn btn-secondary" >Close</a>
+                                    <a th:href="@{/api/permit/my-applications}" class="btn btn-secondary" >Close</a>
                                 </div>
                             </div>
                         </div>

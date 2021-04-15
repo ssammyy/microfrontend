@@ -52,9 +52,9 @@ class PvocHandler(
 
     suspend fun receiveCoc(req: ServerRequest): ServerResponse {
         return try {
-            req.awaitBodyOrNull<CocsBakEntity>()
+            req.awaitBodyOrNull<CocsEntity>()
                 ?.let { body ->
-                    val errors: Errors = BeanPropertyBindingResult(body, CocsBakEntity::class.java.name)
+                    val errors: Errors = BeanPropertyBindingResult(body, CocsEntity::class.java.name)
                     validator.validate(body, errors)
                     if (errors.allErrors.isEmpty()) {
                         val response = service.saveCocData(body)

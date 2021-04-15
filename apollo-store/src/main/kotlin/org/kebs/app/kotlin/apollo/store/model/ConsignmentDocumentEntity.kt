@@ -483,11 +483,11 @@ class ConsignmentDocumentEntity : Serializable {
 
     @JoinColumn(name = "COC_ID", referencedColumnName = "ID")
     @ManyToOne
-    var cocId: CocsBakEntity? = null
+    var cocId: CocsEntity? = null
 
     @JoinColumn(name = "NCR_ID", referencedColumnName = "ID")
     @ManyToOne
-    var ncrId: CocsBakEntity? = null
+    var ncrId: CocsEntity? = null
 
     @JoinColumn(name = "COR_ID", referencedColumnName = "ID")
     @ManyToOne

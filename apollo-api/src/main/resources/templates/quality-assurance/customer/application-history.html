@@ -60,7 +60,7 @@
                                         <td  th:text="${app?.permitType}"></td>
 <!--                                        <td  th:text="${app?.productName}"></td>-->
                                         <td  th:text="${app?.tradeMark}"></td>
-                                        <td><a class="btn btn-info" th:href="@{/api/v1/permit/my-applications/{id}(id = ${app.id}, schemeOfSupervisionId = 1,page=1,records=10)}">view</a></td>
+                                        <td><a class="btn btn-info" th:href="@{/api/permit/my-applications/{id}(id = ${app.id}, schemeOfSupervisionId = 1,page=1,records=10)}">view</a></td>
                                     </tr>
                                     </tbody>
                                 </table>
@@ -69,7 +69,7 @@
                             <div class=class="pagenation-block" th:each="pageNumber : ${pageNumbers}"
                                  th:if="${totalPages > 0}">
                                 <a class="button w-button"
-                                   th:href="@{/api/v1/permit/my-applications(page=1,records=10,appId=199)}"
+                                   th:href="@{/api/permit/my-applications(page=1,records=10,appId=199)}"
                                    th:text="${pageNumber}">Next</a>
                             </div>
                         </div>

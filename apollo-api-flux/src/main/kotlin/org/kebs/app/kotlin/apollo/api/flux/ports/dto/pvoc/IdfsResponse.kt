@@ -1,7 +1,5 @@
 package org.kebs.app.kotlin.apollo.api.flux.ports.dto.pvoc
 
-import org.kebs.app.kotlin.apollo.store.model.CocItemsEntity
-import org.kebs.app.kotlin.apollo.store.model.CocsBakEntity
 import org.kebs.app.kotlin.apollo.store.model.IdfItemsEntity
 import org.kebs.app.kotlin.apollo.store.model.IdfsEntity
 import java.sql.Timestamp

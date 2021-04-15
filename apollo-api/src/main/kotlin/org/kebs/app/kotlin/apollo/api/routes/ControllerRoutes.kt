@@ -190,6 +190,15 @@ class ControllerRoutes {
         }
     }
 
+    @Bean
+    fun pvocWaivers(handler: PvocComplaintHandler) = router {
+        "/".nest {
+            GET("/pvoc/waivers/")(handler::complaintForm)
+        }
+    }
+
+
+
 
     @Bean
     fun tasksRoute(handler: BpmnTasksHandler) =
@@ -263,10 +272,12 @@ class ControllerRoutes {
         }
     }
 
+
     /*
     @Bean
     fun qualityAssuranceRoutes(handler: QualityAssuranceHandler) = router {
-        "/api/qa".nest {
+        "/api/v1/permit".nest {
+            println("**************************")
             GET("/home", handler::home)
             GET("/permits-list", handler::permitList)
             GET("/permit-details", handler::newPermit)
@@ -334,7 +345,7 @@ class ControllerRoutes {
 
                 "/complaint".nest {
                     GET("/list", handler::msComplaintLists)
-//                    POST("/search", handler::complaintsSearchListing)
+                    POST("/search", handler::complaintsSearchListing)
 
                     "/detail".nest {
                         GET("/view", handler::msComplaintDetails)

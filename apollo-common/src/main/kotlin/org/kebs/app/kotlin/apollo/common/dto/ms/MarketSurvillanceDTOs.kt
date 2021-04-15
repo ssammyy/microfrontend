@@ -30,8 +30,8 @@ data class ComplaintRejectDto(
 //        var refNumber: String? = null,
 //)
 data class ComplaintSearchValues(
-    var refNumber: String? = null,
-    var date: Date? = null,
+        var refNumber: String? = null,
+        var date: Date? = null
 //        var approvedStatus: Int? = null,
 //        var assignedIOStatus: Int? = null,
 //        var rejectedStatus: Int? = null,

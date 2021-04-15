@@ -44,7 +44,7 @@
                                         <td th:text="${permit?.permitType}"></td>
                                         <td  th:text="${permit?.product?.name}"></td>
                                         <td  th:text="${permit?.tradeMark}"></td>
-                                        <td><a  th:href="@{/api/v1/permit/permit-details/{id}(id = ${app.id})}">view</a></td>
+                                        <td><a  th:href="@{/api/permit/permit-details/{id}(id = ${app.id})}">view</a></td>
                                     </tr>
                                     </tbody>
                                 </table>

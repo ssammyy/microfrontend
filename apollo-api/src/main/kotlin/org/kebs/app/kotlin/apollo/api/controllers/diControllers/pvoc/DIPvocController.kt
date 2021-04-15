@@ -229,7 +229,7 @@ class DIPvocController(
         @RequestParam(value = "currentPage", required = false) currentPage: String?,//currentPage
         @RequestParam(value = "pageSize", required = false) pageSize: String?,
         model: Model
-    ) {
+    ) : String? {
         if (currentPage != null) {
             pageSize?.toInt()?.let { it ->
                 PageRequest.of(currentPage.toInt(), it)
@@ -246,7 +246,7 @@ class DIPvocController(
                                                         ?.let { pvocApps ->
                                                             model.addAttribute("pvocFilter", PvocApplicationEntity())
                                                             model.addAttribute("exceptionApplications", pvocApps)
-                                                            "destination-inspection/pvoc/UnfinishedExceptions"
+                                                            return "destination-inspection/pvoc/UnfinishedExceptions"
                                                         }?: throw Exception("You have no drafts")
                                                 }?: throw Exception("Please login")
                                             }
@@ -256,15 +256,15 @@ class DIPvocController(
                             }?: throw Exception("Please login")
 
                     }
-            }
+            }?: throw Exception("")
         }
+        return null
     }
 
 
 
-    var pvocApplicationEntity = PvocApplicationEntity()
-   // @PostAuthorize()
-   @PostAuthorize("returnObject.companyPinNo == pvocApplicationEntity.companyPinNo")
+
+   //@PostAuthorize("returnObject.companyPinNo == pvocApplicationEntity.companyPinNo")
     @PreAuthorize("hasAuthority('PVOC_APPLICATION_READ') or hasAuthority('PVOC_APPLICATION_PROCESS') or hasAnyAuthority('PVOC_APPLICATION_PROCESS_CHAIRMAN')")
     @GetMapping("pvoc-application-details/{id}")
     fun pvocApplicationDetails(@PathVariable("id") id: Long, model: Model): String {

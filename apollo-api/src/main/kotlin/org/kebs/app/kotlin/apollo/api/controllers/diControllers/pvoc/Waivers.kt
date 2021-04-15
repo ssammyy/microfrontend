@@ -8,10 +8,13 @@ package org.kebs.app.kotlin.apollo.api.controllers.diControllers.pvoc
 //import org.apache.poi.ss.usermodel.Workbook
 //import org.apache.poi.xssf.usermodel.XSSFWorkbook
 import mu.KotlinLogging
+import org.kebs.app.kotlin.apollo.api.notifications.Notifications
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.PvocBpmn
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.QualityAssuranceDaoServices
+import org.kebs.app.kotlin.apollo.api.service.OTPService
 import org.kebs.app.kotlin.apollo.common.exceptions.SupervisorNotFoundException
+import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.*
 import org.kebs.app.kotlin.apollo.store.repo.*
 import org.springframework.beans.support.MutableSortDefinition
@@ -34,28 +37,39 @@ import java.util.*
 import java.util.concurrent.ThreadLocalRandom
 import javax.servlet.http.HttpServletResponse
 import kotlin.streams.asSequence
+import org.springframework.beans.factory.annotation.Autowired
+
+
+//
 
 @Controller
 @RequestMapping("/api/di/pvoc/")
 class Waivers(
-        private val iwaiversApplicationRepo: IwaiversApplicationRepo,
-        private val iPvocMasterListRepo: IPvocMasterListRepo,
-        iPvocWaiversStatusRepo: IPvocWaiversStatusRepo,
-        private val iPvocWaiversRemarksRepo: IPvocWaiversRemarksRepo,
-        private val iUserRepository: IUserRepository,
-        private val iUserRoleAssignmentsRepository: IUserRoleAssignmentsRepository,
-        private val iPvocWaiversReportRepo: IPvocWaiversReportRepo,
-        private val iPvocWaiversApplicationDocumentRepo: IPvocWaiversApplicationDocumentRepo,
-        private val iPvocWaiversWetcMinutesEntityRepo: IPvocWaiversWetcMinutesEntityRepo,
-        private val qualityAssuranceDaoServices: QualityAssuranceDaoServices,
-        private val iPvocWaiversRequestLetterRepo: IPvocWaiversRequestLetterRepo,
-        private val iPvocWaiversCategoriesRepo: IPvocWaiversCategoriesRepo,
-        private val pvocBpmn: PvocBpmn,
-        private val iPvocWaiversCategoryDocumentsRepo: IPvocWaiversCategoryDocumentsRepo,
-        private  val commonDaoServices: CommonDaoServices,
-        private val iUserRolesRepository: IUserRolesRepository
+    private val iwaiversApplicationRepo: IwaiversApplicationRepo,
+    private val iPvocMasterListRepo: IPvocMasterListRepo,
+    iPvocWaiversStatusRepo: IPvocWaiversStatusRepo,
+    private val iPvocWaiversRemarksRepo: IPvocWaiversRemarksRepo,
+    private val iUserRepository: IUserRepository,
+    private val iUserRoleAssignmentsRepository: IUserRoleAssignmentsRepository,
+    private val iPvocWaiversReportRepo: IPvocWaiversReportRepo,
+    private val iPvocWaiversApplicationDocumentRepo: IPvocWaiversApplicationDocumentRepo,
+    private val iPvocWaiversWetcMinutesEntityRepo: IPvocWaiversWetcMinutesEntityRepo,
+    private val qualityAssuranceDaoServices: QualityAssuranceDaoServices,
+    private val iPvocWaiversRequestLetterRepo: IPvocWaiversRequestLetterRepo,
+    private val iPvocWaiversCategoriesRepo: IPvocWaiversCategoriesRepo,
+    private val notifications: Notifications,
+    private val pvocBpmn: PvocBpmn,
+    private val iPvocWaiversCategoryDocumentsRepo: IPvocWaiversCategoryDocumentsRepo,
+    private  val commonDaoServices: CommonDaoServices,
+    private val iUserRolesRepository: IUserRolesRepository,
+    private val pvocComplainStatusEntityRepo: PvocComplainStatusEntityRepo,
+    private val applicationMapProperties: ApplicationMapProperties
 
-) {
+    ) {
+
+    final val appId = applicationMapProperties.mapImportInspection
+    final val statuses = pvocComplainStatusEntityRepo.findByStatus(1)
+
     private val waiversStatus = iPvocWaiversStatusRepo.findByIdOrNull(2)
 
     fun getLoggedInUser(): UsersEntity? {
@@ -91,6 +105,29 @@ class Waivers(
             }
         }
         return "destination-inspection/pvoc/WaiversApplication"
+    }
+
+    @GetMapping("email_entry/waiver")
+    fun emailEntry(model: Model): String {
+        model.addAttribute("emailObject", PvocComplaintsEmailVerificationEntity())
+        return "destination-inspection/pvoc/EmailTemplate"
+    }
+
+    @PostMapping("save_email/waiver")
+    fun saveEmail(model: Model,
+                  emailObject: PvocComplaintsEmailVerificationEntity) : String {
+        val map = commonDaoServices.serviceMapDetails(appId)
+        val sr: ServiceRequestsEntity
+        val payload = "Complaint Verification Token [EMail for Verification = ${emailObject.email}]"
+        sr = commonDaoServices.mapServiceRequestForSuccess(map, payload, null)
+        val token = commonDaoServices.generateEmailVerificationToken(sr, emailObject, map)
+        val messageBody = "Please Click the link Bellow \n" +
+                "\n " +
+                "https://localhost:8006/pvoc/complaint/?token=${token.token}"
+
+
+        emailObject.email?.let { notifications.sendEmail(it, "Complaint Verification", messageBody) }
+        return "redirect:/"
     }
 
     @PostMapping("save-waiver-application")
