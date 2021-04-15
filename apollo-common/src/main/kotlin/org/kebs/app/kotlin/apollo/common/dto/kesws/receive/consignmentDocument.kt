@@ -13,6 +13,10 @@ class ConsignmentDocument {
     @NotNull
     @JsonProperty("DocumentDetails")
     val documentDetails: DocumentDetails? = null
+
+    @NotNull
+    @JsonProperty("DocumentSummary")
+    val documentSummaryResponse: DocumentSummaryResponse? = null
 }
 
 class DocumentDetails {
@@ -1176,6 +1180,14 @@ class CDItemNonStandardResponse {
     @JsonProperty("vehicleMake")
     val vehicleMake: String? = null
 
+}
+
+class DocumentSummaryResponse {
+    @JsonProperty("IssuedDateTime")
+    val issuedDateTime: String? = null
+
+    @JsonProperty("SummaryPageUrl")
+    val summaryPageURL: String? = null
 }
 
 

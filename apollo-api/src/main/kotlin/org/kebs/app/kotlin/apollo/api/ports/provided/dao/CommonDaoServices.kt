@@ -228,6 +228,7 @@ class CommonDaoServices(
         val formatted = current.format(formatter)
         KotlinLogging.logger { }.info(":::::: Formatted datetime: $formatted :::::::")
 
+        //TODO: Add static fields to config file
         var finalFileName = filePrefix
                 .plus("-")
                 .plus(documentIdentifier)

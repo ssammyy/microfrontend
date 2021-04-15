@@ -40,6 +40,14 @@ class ConsignmentDocumentDetailsEntity : Serializable {
     var uuid: String? = null
 
     @Basic
+    @Column(name = "ISSUED_DATE_TIME")
+    var issuedDateTime: String? = null
+
+    @Basic
+    @Column(name = "SUMMARY_PAGE_URL")
+    var summaryPageURL: String? = null
+
+    @Basic
     @Column(name = "LOCAL_COI_REMARKS")
     var localCoiRemarks: String? = null
 
@@ -74,6 +82,10 @@ class ConsignmentDocumentDetailsEntity : Serializable {
     @Column(name = "LOCAL_COI")
     @Basic
     var localCoi: Int? = null
+
+    @Column(name = "OLD_CD_STATUS")
+    @Basic
+    var oldCdStatus: Int? = null
 
     @Column(name = "SEND_COI_STATUS")
     @Basic
@@ -403,6 +415,8 @@ class ConsignmentDocumentDetailsEntity : Serializable {
                 uuid == that.uuid &&
                 cdCocLocalTypeId == that.cdCocLocalTypeId &&
                 cdType == that.cdType &&
+                issuedDateTime == that.issuedDateTime &&
+                summaryPageURL == that.summaryPageURL &&
                 portOfArrival == that.portOfArrival &&
                 clusterId == that.clusterId &&
                 freightStation == that.freightStation &&
@@ -464,6 +478,7 @@ class ConsignmentDocumentDetailsEntity : Serializable {
                 approveRejectCdRemarks == that.approveRejectCdRemarks &&
                 approveRejectCdStatusType == that.approveRejectCdStatusType &&
                 cdRefNumber == that.cdRefNumber &&
+                oldCdStatus == that.oldCdStatus &&
                 status == that.status &&
                 varField1 == that.varField1 &&
                 varField2 == that.varField2 &&
@@ -511,6 +526,7 @@ class ConsignmentDocumentDetailsEntity : Serializable {
             docTypeId,
             idfNumber,
             cocNumber,
+            oldCdStatus,
             compliantStatus,
             compliantDate,
             compliantRemarks,
@@ -533,6 +549,8 @@ class ConsignmentDocumentDetailsEntity : Serializable {
             reassignedStatus,
             reassignedDate,
             reassignedRemarks,
+            issuedDateTime,
+            summaryPageURL,
 //                assigner,confirmPortId, confirmCfsId,
             csApprovalStatus,
             diProcessInstanceId,

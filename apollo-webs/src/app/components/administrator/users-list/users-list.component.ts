@@ -50,8 +50,8 @@ export class UsersListComponent implements OnInit {
     );
   }
 
-  public onSelect(userRegNo: any): any {
-    this.router.navigate(['/user-details'], {fragment: userRegNo});
+  public onSelect(userID: any): any {
+    this.router.navigate(['/user-details'], {fragment: userID});
   }
 
 

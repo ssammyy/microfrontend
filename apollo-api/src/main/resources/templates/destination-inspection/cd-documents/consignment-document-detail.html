@@ -146,11 +146,18 @@
                                                 <div class="list-text-accordion"
                                                      th:text="${cdDetails?.cdStandard?.versionNo}"></div>
                                             </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Summary Page Url</div>
+                                                <div class="list-text-accordion"><a class="btn btn-primary itemViewBtn"
+                                                                                    target='_blank'
+                                                                                    th:href="${cdDetails?.summaryPageURL}">view</a>
+                                                </div>
+                                            </li>
                                             <!--                                            <li class="list-item-accordion">-->
-                                            <!--                                                <div class="list-title-accordion">Importer Blacklisted</div>-->
-                                            <!--                                                <div class="list-text-accordion"-->
-                                            <!--                                                     th:text="riskProfileImporter ? 'BLACKLISTED' : 'NOT BLACKLISTED'"></div>-->
-                                            <!--                                            </li>-->
+                                            <!--                                                                                            <div class="list-title-accordion">Importer Blacklisted</div>-->
+                                            <!--                                                                                            <div class="list-text-accordion"-->
+                                            <!--                                                                                                 th:text="riskProfileImporter ? 'BLACKLISTED' : 'NOT BLACKLISTED'"></div>-->
+                                            <!--                                                                                        </li>-->
                                             <!--                                            <li class="list-item-accordion">-->
                                             <!--                                                <div class="list-title-accordion">Exporter Blacklisted</div>-->
                                             <!--                                                <div class="list-text-accordion"-->
@@ -875,6 +882,33 @@
                                 </div>
                             </div>
 
+                            <button class="accordion">Other Version Details</button>
+                            <div class="panel">
+                                <div class="row-table ">
+                                    <table class="table table-striped table-bordered" id="oldVersions"
+                                           style="width:100%">
+                                        <thead>
+                                        <tr>
+                                            <th>UCR Number</th>
+                                            <th>Version Number</th>
+                                            <th>View</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr class="list" style="cursor: pointer"
+                                            th:each="olderVersion: ${oldVersionList}">
+
+                                            <td th:text="${olderVersion?.ucrNumber}"></td>
+                                            <td th:text="${olderVersion?.cdStandard?.versionNo}"></td>
+                                            <td><a class="btn btn-primary itemViewBtn" target='_blank'
+                                                   th:href="@{/api/di/cd-details(cdUuid=${olderVersion.uuid})}">view</a>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
 
                         </div>
 
@@ -956,13 +990,13 @@
                                        th:if="${cdDetails.localCoi == activeStatus and cdDetails.sendCoiStatus != activeStatus}">SEND
                                         LOCAL COI</a>
 
-                                    <a sec:authorize="hasAuthority('DI_INSPECTION_OFFICER_MODIFY')"
-                                       th:if="${cdDetails.blacklistStatus != activeStatus}" class="filter-link bgred"
-                                       onclick="popUpFunction('blacklist');">Blacklist</a>
-                                    <a sec:authorize="hasAuthority('DI_OFFICER_CHARGE_MODIFY')"
-                                       th:if="${cdDetails.blacklistStatus == activeStatus and cdDetails.blacklistApprovedStatus != activeStatus}"
-                                       style="background-color: red" class="filter-link"
-                                       onclick="popUpFunction('blacklistApprove');">Approve Blacklist</a>
+                                    <!--                                    <a sec:authorize="hasAuthority('DI_INSPECTION_OFFICER_MODIFY')"-->
+                                    <!--                                       th:if="${cdDetails.blacklistStatus != activeStatus}" class="filter-link bgred"-->
+                                    <!--                                       onclick="popUpFunction('blacklist');">Blacklist</a>-->
+                                    <!--                                    <a sec:authorize="hasAuthority('DI_OFFICER_CHARGE_MODIFY')"-->
+                                    <!--                                       th:if="${cdDetails.blacklistStatus == activeStatus and cdDetails.blacklistApprovedStatus != activeStatus}"-->
+                                    <!--                                       style="background-color: red" class="filter-link"-->
+                                    <!--                                       onclick="popUpFunction('blacklistApprove');">Approve Blacklist</a>-->
                                     <!--                                <a th:if="${coc.rejectedStatus != 1}" style="background-color: red" class="filter-link officeRejectBtn">Reject</a>-->
                                     <!--                                <a style="color: white" th:if="${coc.deferStatus != 1}"  class="filter-link officerDeferBtn">Defer with Remarks</a>-->
                                 </div>

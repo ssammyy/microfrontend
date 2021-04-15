@@ -77,6 +77,12 @@
   padding: 0 10px;
 }
 
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  margin-left: 0;
+}
+
 table {
   width: 100%;
   margin: 3% 0;

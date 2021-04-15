@@ -1,9 +1,6 @@
 package org.kebs.app.kotlin.apollo.api.ports.provided.dao
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import mu.KotlinLogging
 import org.json.JSONException
 import org.json.JSONObject
@@ -270,6 +267,17 @@ class DestinationInspectionDaoServices(
                 return it
             }
             ?: throw Exception("List Of BlackList Users With Status = ${status}, does not Exist")
+    }
+
+    fun findAllOlderVersionCDsWithSameUcrNumber(
+        ucrNumber: String,
+        map: ServiceMapsEntity
+    ): List<ConsignmentDocumentDetailsEntity>? {
+        return iConsignmentDocumentDetailsRepo.findByUcrNumberAndOldCdStatus(ucrNumber, map.activeStatus)
+//            ?.let {
+//                return it
+//            }
+//            ?: throw Exception("List Of ALl , does not Exist")
     }
 
     fun findCocTypeWithTypeName(cocType: String): CocTypesEntity {
@@ -1902,7 +1910,10 @@ fun createLocalCoc(
         sectionsEntity: SectionsEntity,
         cdType: ConsignmentDocumentTypesEntity
     ): List<ConsignmentDocumentDetailsEntity> {
-        iConsignmentDocumentDetailsRepo.findByPortOfArrivalAndCdTypeAndUcrNumberIsNotNull(sectionsEntity.id, cdType.id)
+        iConsignmentDocumentDetailsRepo.findByPortOfArrivalAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNull(
+            sectionsEntity.id,
+            cdType.id
+        )
             ?.let {
                 return it
             }
@@ -1911,7 +1922,9 @@ fun createLocalCoc(
     }
 
     fun findAllCdWithNoPortOfEntry(cdType: ConsignmentDocumentTypesEntity): List<ConsignmentDocumentDetailsEntity>? {
-        return iConsignmentDocumentDetailsRepo.findByPortOfArrivalIsNullAndCdTypeAndUcrNumberIsNotNull(cdType.id)
+        return iConsignmentDocumentDetailsRepo.findByPortOfArrivalIsNullAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNull(
+            cdType.id
+        )
 //                ?.let {
 //                    return it
 //                }
@@ -1923,7 +1936,7 @@ fun createLocalCoc(
         usersEntity: UsersEntity,
         cdType: ConsignmentDocumentTypesEntity
     ): List<ConsignmentDocumentDetailsEntity> {
-        iConsignmentDocumentDetailsRepo.findAllByAssignedInspectionOfficerAndCdTypeAndUcrNumberIsNotNull(
+        iConsignmentDocumentDetailsRepo.findAllByAssignedInspectionOfficerAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNull(
             usersEntity,
             cdType.id
         )
@@ -1939,7 +1952,7 @@ fun createLocalCoc(
         subSectionsLevel2Entity: SubSectionsLevel2Entity,
         cdType: ConsignmentDocumentTypesEntity
     ): List<ConsignmentDocumentDetailsEntity>? {
-        return iConsignmentDocumentDetailsRepo.findByFreightStationAndAssignedInspectionOfficerIsNullAndCdTypeAndUcrNumberIsNotNull(
+        return iConsignmentDocumentDetailsRepo.findByFreightStationAndAssignedInspectionOfficerIsNullAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNull(
             subSectionsLevel2Entity.id,
             cdType.id
         )
