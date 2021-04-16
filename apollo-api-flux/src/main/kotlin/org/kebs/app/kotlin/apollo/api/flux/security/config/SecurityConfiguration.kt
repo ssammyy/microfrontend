@@ -87,6 +87,8 @@ class WebConfig(
         jwtRoleAuthorizationManager: JwtRoleAuthorizationManager
     ): SecurityWebFilterChain {
         return http
+//            .requiresChannel().anyRequest().requiresSecure()
+//            .and()
             .csrf().disable()
             .logout().disable()
             .authorizeExchange()
