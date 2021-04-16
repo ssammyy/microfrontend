@@ -145,9 +145,17 @@ class DestinationInspectionController(
                                         daoServices.submitCDStatusToKesWS(
                                             it1,
                                             it,
-                                            consignmentDocument.version.toString() ,
+                                            consignmentDocument.version.toString(),
                                             consignmentDocument
                                         )
+                                        cdDetails.cdStandard?.let { cdStd ->
+                                            cdDetails.approveRejectCdStatusType?.id?.let { it2 ->
+                                                daoServices.updateCDStatus(
+                                                    cdStd,
+                                                    it2
+                                                )
+                                            }
+                                        }
                                     }
                                 }
                                     ?: throw Exception("Cd  status for ID = ${cdStatusType.id}, does not have an Existing STATUS CODE")
@@ -243,6 +251,12 @@ class DestinationInspectionController(
                                             )
                                             demandNote.id?.let { it1 ->
                                                 daoServices.sendDemandNotGeneratedToKWIS(it1)
+                                                cdDetails.cdStandard?.let { cdStd ->
+                                                    daoServices.updateCDStatus(
+                                                        cdStd,
+                                                        daoServices.awaitPaymentStatus.toLong()
+                                                    )
+                                                }
                                             }
                                                 ?: throw Exception("Demand Note with ID= ${demandNote.id}, do not Exist")
                                         }

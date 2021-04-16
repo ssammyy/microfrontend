@@ -609,48 +609,51 @@ class DITest {
     fun demandNoteCreationDetails() {
         val appId = applicationMapProperties.mapImportInspection
 
+
+
         usersRepo.findByUserName("kpaul7747@gmail.com")
             ?.let { loggedInUser ->
-//                    val payload = "Assigned Inspection Officer [assignedStatus= 1, assignedRemarks= test]"
-                val map = commonDaoServices.serviceMapDetails(appId)
+                for (i in 1..10) {
+                    //                    val payload = "Assigned Inspection Officer [assignedStatus= 1, assignedRemarks= test]"
+                    val map = commonDaoServices.serviceMapDetails(appId)
 //                    val demandNotes: MutableList<CdDemandNoteEntity> = mutableListOf()
 
-                var itemDetails =
-                    destinationInspectionDaoServices.findItemWithUuid("dd4ce6c8-8715-4d92-9512-40353d16075b")
-                with(itemDetails) {
-                    paymentFeeIdSelected = iDIFeeDetailsRepo.findByIdOrNull(7)
-                }
-                itemDetails = destinationInspectionDaoServices.updateCdItemDetailsInDB(itemDetails, loggedInUser)
-                val importerDetails =
-                    itemDetails.cdDocId?.cdImporter?.let { destinationInspectionDaoServices.findCDImporterDetails(it) }
-                val demandNote =
-                    destinationInspectionDaoServices.generateDemandNoteWithItemList(itemDetails, map, loggedInUser)
+                    var itemDetails =
+                        destinationInspectionDaoServices.findItemWithUuid("dd4ce6c8-8715-4d92-9512-40353d16075b")
+                    with(itemDetails) {
+                        paymentFeeIdSelected = iDIFeeDetailsRepo.findByIdOrNull(7)
+                    }
+                    itemDetails = destinationInspectionDaoServices.updateCdItemDetailsInDB(itemDetails, loggedInUser)
+                    val importerDetails =
+                        itemDetails.cdDocId?.cdImporter?.let { destinationInspectionDaoServices.findCDImporterDetails(it) }
+                    val demandNote =
+                        destinationInspectionDaoServices.generateDemandNoteWithItemList(itemDetails, map, loggedInUser)
 //                    val demandNoteNumber = destinationInspectionDaoServices.demandNotePayment(demandNote, map, loggedInUser, itemDetails)
-                KotlinLogging.logger { }.info { "DEMAND NOTE GENERATED WITH ID = ${demandNote.id} " }
+                    KotlinLogging.logger { }.info { "DEMAND NOTE GENERATED WITH ID = ${demandNote.id} " }
 //                    demandNotes.add(demandNote1)
 
-                demandNote.demandNoteNumber?.let {
-                    val batchInvoiceDetail = invoiceDaoService.createBatchInvoiceDetails(loggedInUser, it)
-                    itemDetails.cdDocId?.cdType?.let { it1 ->
-                        destinationInspectionDaoServices.findCdTypeDetails(it1).demandNotePrefix?.let { myPrefix ->
-                            val updateBatchInvoiceDetail = invoiceDaoService.addInvoiceDetailsToBatchInvoice(
-                                demandNote,
-                                applicationMapProperties.mapInvoiceTransactionsForDemandNote,
-                                loggedInUser,
-                                batchInvoiceDetail
-                            )
+                    demandNote.demandNoteNumber?.let {
+                        val batchInvoiceDetail = invoiceDaoService.createBatchInvoiceDetails(loggedInUser, it)
+                        itemDetails.cdDocId?.cdType?.let { it1 ->
+                            destinationInspectionDaoServices.findCdTypeDetails(it1).demandNotePrefix?.let { myPrefix ->
+                                val updateBatchInvoiceDetail = invoiceDaoService.addInvoiceDetailsToBatchInvoice(
+                                    demandNote,
+                                    applicationMapProperties.mapInvoiceTransactionsForDemandNote,
+                                    loggedInUser,
+                                    batchInvoiceDetail
+                                )
 
-                            val myAccountDetails = InvoiceDaoService.InvoiceAccountDetails()
-                            with(myAccountDetails) {
-                                accountName = importerDetails?.name
-                                accountNumber = importerDetails?.pin
-                                currency = applicationMapProperties.mapInvoiceTransactionsLocalCurrencyPrefix
-                            }
-                            val invoiceDetail = invoiceDaoService.createPaymentDetailsOnStgReconciliationTable(
-                                loggedInUser,
-                                updateBatchInvoiceDetail,
-                                myAccountDetails
-                            )
+                                val myAccountDetails = InvoiceDaoService.InvoiceAccountDetails()
+                                with(myAccountDetails) {
+                                    accountName = importerDetails?.name
+                                    accountNumber = importerDetails?.pin
+                                    currency = applicationMapProperties.mapInvoiceTransactionsLocalCurrencyPrefix
+                                }
+                                val invoiceDetail = invoiceDaoService.createPaymentDetailsOnStgReconciliationTable(
+                                    loggedInUser,
+                                    updateBatchInvoiceDetail,
+                                    myAccountDetails
+                                )
 //                                invoiceDetail.invoiceId?.let {
 //                                    val batchInvoiceDetail = invoiceDaoService.findInvoiceBatchDetails(it)
 //                                    val updatedBatchInvoiceDetail = invoiceDaoService.updateInvoiceBatchDetailsAfterPaymentDone(batchInvoiceDetail)
@@ -658,6 +661,7 @@ class DITest {
 //                                        invoiceDaoService.updateDemandNotDetailsAfterPaymentDone(invoiceDetail)
 //                                    }
 //                                }
+                            }
                         }
                     }
                 }

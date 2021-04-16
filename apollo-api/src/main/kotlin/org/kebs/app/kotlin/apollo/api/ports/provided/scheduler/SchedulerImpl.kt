@@ -205,7 +205,12 @@ class SchedulerImpl(
                 diDaoServices.triggerDemandNotePaidBpmTask(demandNote)
                 //Update the demandNote status
                 demandNote.paymentStatus = map.initStatus
-                diDaoServices.upDateDemandNote(demandNote)
+                val demandNoteDetails = diDaoServices.upDateDemandNote(demandNote)
+                //Update CD Status
+                val cdDetails = demandNoteDetails.cdId?.let { diDaoServices.findCD(it) }
+                cdDetails?.cdStandard?.let { cdStd ->
+                    diDaoServices.updateCDStatus(cdStd, diDaoServices.paymentMadeStatus.toLong())
+                }
             }
             return true
         }

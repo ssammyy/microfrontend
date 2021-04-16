@@ -195,8 +195,8 @@ class InvoiceController(
                     invoiceRepository.findByIdOrNull(id)?.let{ invoice ->
                         invoice.permitId?.let{ permitId->
                             val pm = permitRepository.findById(permitId).get()
-                            model.addAttribute("permit", permitRepository.findByIdOrNull(pm?.id))
-                            if (pm?.status != map.activeStatus) {
+                            model.addAttribute("permit", permitRepository.findByIdOrNull(pm.id))
+                            if (pm.status != map.activeStatus) {
                                 model.addAttribute("application", "application")
                             } else {
                                 model.addAttribute("renewal", "renewal")
@@ -304,12 +304,12 @@ class InvoiceController(
                                     invoice.permitId?.let{ permitId->
                                         val pm = permitRepository.findById(permitId).get()
                                         with(pm) {
-                                            this?.paymentStatus = map.activeStatus
+                                            this.paymentStatus = map.activeStatus
                                         }
-                                        pm?.let { permitRepository.save(it) }
+                                        pm.let { permitRepository.save(it) }
 
                                         // Start QA review process (BPMN)
-                                        pm?.id?.let {
+                                        pm.id?.let {
                                             qualityAssuranceBpmn.startQAAppReviewProcess(it, hofId)
                                         }
                                     }
@@ -357,7 +357,13 @@ class InvoiceController(
         invoiceRepository.findByIdOrNull(invoiceId)
                 ?.let { invoiceEntity ->
                     //mpesaService.loginMethod()
-                    mpesaService.mainMpesaTransaction(amount.toString(),phone.toString(),invoiceId,"",invoiceSource)
+                    mpesaService.mainMpesaTransaction(
+                        amount.toString(),
+                        phone.toString(),
+                        invoiceId.toString(),
+                        "",
+                        invoiceSource
+                    )
                     KotlinLogging.logger { }.debug("MPESA STK PUSH ${amount}, $phone")
 //                    if (phone != null) {
                     /*

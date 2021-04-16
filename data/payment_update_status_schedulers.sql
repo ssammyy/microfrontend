@@ -82,17 +82,46 @@ alter table DAT_KEBS_CD_DEMAND_NOTE
 
 
 
-select * from DAT_KEBS_CD_DEMAND_NOTE
--- where ID = 15
-where DEMAND_NOTE_NUMBER = 'DN2021032975320'
+select *
+from CFG_INTEGRATION_CONFIGURATION
+where ID = 25
+-- where INVOICE_ID = 'DN2021040521BBB'
 ;
 
-select *from STG_PAYMENT_RECONCILIATION
-where REFERENCE_CODE = 'DN2021032975320'
+select *
+from LOG_WORKFLOW_TRANSACTIONS
+-- where ID = 25
+-- where INVOICE_ID = 'DN2021040521BBB'
 order by id desc;/
 
-select * from LOG_STG_PAYMENT_RECONCILIATION
--- where REFERENCE_CODE = 'DN#202103084FD3C'
+select *
+from CFG_BATCH_JOB_DETAILS
+where INTEGRATION_ID = 25
+-- where INVOICE_ID = 'DN2021040521BBB'
+;
+
+
+select *
+from DAT_KEBS_MPESA_TRANSACTION
+-- where ID = 15
+where INVOICE_ID = 'DN2021040521BBB'
+;
+
+select *
+from DAT_KEBS_CD_DEMAND_NOTE
+-- where ID = 781
+where DEMAND_NOTE_NUMBER = 'DN202104159878E'
+;
+
+select *
+from STG_PAYMENT_RECONCILIATION --DN20210407C4C3D--DN20210331288A1
+-- where REFERENCE_CODE = 'DN202104159878E'
+-- where PAYMENT_TABLES_UPDATED_STATUS = 1
+order by id desc;/
+
+select *
+from LOG_STG_PAYMENT_RECONCILIATION
+where REFERENCE_CODE = 'DN2021040521BBB'
 order by id desc;/
 
 select *
@@ -210,7 +239,7 @@ begin
 end;
 /
 
-
+DN20210415B58FA
 create or replace procedure proc_update_demand_note_when_payment_done(PAID_STATUS number, TABLE_SOURCE_NAME varchar2)
 as
 DECLARE MY_TRANSACTION_IDS VARCHAR2;
