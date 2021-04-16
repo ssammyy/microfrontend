@@ -48,7 +48,8 @@
                             <div class="form-row" >
                                 <div class="col-md-4 mb-3">
                                     <label for="pointOfInspection" >1. Point Of Inspection</label>
-                                    <input type="hidden" id="pointOfInspection"  name="pointOfInspection" th:value="${item?.cdDocId?.cdTransport?.freightStation}">
+                                    <input id="pointOfInspection" name="pointOfInspection"
+                                           th:value="${cdTransport?..freightStation}" type="hidden">
                                     <input type="text" required="required" disabled class="form-control" maxlength="256" name="freightStation" data-name="foreigh tStation" id="freightStation" th:value="${item?.cdDocId?.cdTransport?.freightStation}">
                                     <!--                                    <div class="valid-feedback">-->
                                     <!--                                        Looks good!-->
@@ -70,9 +71,12 @@
                             </div>
                             <div class="form-row">
                                 <div class="col-md-4 mb-3">
-                                    <label for="importerName" >4. Importer Name</label>
-                                    <input type="hidden" id="importerName"  name="importerName" th:value="${item?.cdDocId?.cdImporter?.name}">
-                                    <input type="text" required="required" disabled class="form-control" maxlength="256" name="importerName" data-name="importer Name" id="importerName2" th:value="${item?.cdDocId?.cdImporter?.name}">
+                                    <label for="importerName">4. Importer Name</label>
+                                    <input id="importerName" name="importerName" th:value="${cdImporter?.name}"
+                                           type="hidden">
+                                    <input class="form-control" data-name="importer Name" disabled id="importerName2"
+                                           maxlength="256" name="importerName" required="required"
+                                           th:value="${cdImporter?.name}" type="text">
                                     <!-- <input type="text" required="required" class="form-control" disabled id="email" th:field="*{email}" placeholder="Email" required> -->
                                     <!--                                    <div class="valid-feedback">-->
                                     <!--                                        Looks good!-->
@@ -80,16 +84,22 @@
                                 </div>
                                 <div class="col-md-4 mb-3">
                                     <label for="postalAddress">5. Importer Address</label>
-                                    <input type="hidden" id="importerAddress"  name="importerAddress" th:value="${item?.cdDocId?.cdImporter?.postalAddress}">
-                                    <input type="text" required="required" disabled class="form-control" maxlength="256" name="postalAddress" data-name="postal Address" id="postalAddress" th:value="${item?.cdDocId?.cdImporter?.postalAddress}">
+                                    <input id="importerAddress" name="importerAddress"
+                                           th:value="${cdImporter?.postalAddress}" type="hidden">
+                                    <input class="form-control" data-name="postal Address" disabled id="postalAddress"
+                                           maxlength="256" name="postalAddress" required="required"
+                                           th:value="${cdImporter?.postalAddress}" type="text">
                                     <!--                                    <div class="valid-feedback">-->
                                     <!--                                        Looks good!-->
                                     <!--                                    </div>-->
                                 </div>
                                 <div class="col-md-4 mb-3">
-                                    <label for="telephone" >6. Importer Telephone</label>
-                                    <input type="hidden" id="importerTelephone"  name="importerTelephone" th:value="${item?.cdDocId?.cdImporter?.telephone}">
-                                    <input type="text" required="required" disabled class="form-control" maxlength="256" name="telephone" data-name="telephone" id="telephone" th:value="${item?.cdDocId?.cdImporter?.telephone}">
+                                    <label for="telephone">6. Importer Telephone</label>
+                                    <input id="importerTelephone" name="importerTelephone"
+                                           th:value="${cdImporter?.telephone}" type="hidden">
+                                    <input class="form-control" data-name="telephone" disabled id="telephone"
+                                           maxlength="256" name="telephone" required="required"
+                                           th:value="${cdImporter?.telephone}" type="text">
                                     <!--                                    <div class="valid-feedback">-->
                                     <!--                                        Looks good!-->
                                     <!--                                    </div>-->
@@ -97,18 +107,23 @@
                             </div>
                             <div class="form-row">
                                 <div class="col-md-4 mb-3">
-                                    <label for="fax" >7. Importer fax</label>
-                                    <input type="hidden" id="importerFax"  name="importerFax" th:value="${item?.cdDocId?.cdImporter?.fax}">
-                                    <input type="text" required="required" disabled class="form-control" maxlength="256" name="fax" data-name="fax" id="fax" th:value="${item?.cdDocId?.cdImporter?.fax}">
+                                    <label for="fax">7. Importer fax</label>
+                                    <input id="importerFax" name="importerFax" th:value="${cdImporter?.fax}"
+                                           type="hidden">
+                                    <input class="form-control" data-name="fax" disabled id="fax" maxlength="256"
+                                           name="fax" required="required" th:value="${cdImporter?.fax}" type="text">
                                     <!-- <input type="text" required="required" class="form-control" disabled id="email" th:field="*{email}" placeholder="Email" required> -->
                                     <!--                                    <div class="valid-feedback">-->
                                     <!--                                        Looks good!-->
                                     <!--                                    </div>-->
                                 </div>
                                 <div class="col-md-4 mb-3">
-                                    <label for="physicalAddress" >8. Physical Location</label>
-                                    <input type="hidden" id="importerPhysicalLocation"  name="importerPhysicalLocation" th:value="${item?.cdDocId?.cdImporter?.physicalAddress}">
-                                    <input type="text" required="required" disabled class="form-control" maxlength="256" name="physicalAddress" data-name="physicalAddress" id="physicalAddress" th:value="${item?.cdDocId?.cdImporter?.physicalAddress}">
+                                    <label for="physicalAddress">8. Physical Location</label>
+                                    <input id="importerPhysicalLocation" name="importerPhysicalLocation"
+                                           th:value="${cdImporter?.physicalAddress}" type="hidden">
+                                    <input class="form-control" data-name="physicalAddress" disabled
+                                           id="physicalAddress" maxlength="256" name="physicalAddress"
+                                           required="required" th:value="${cdImporter?.physicalAddress}" type="text">
                                     <!--                                    <div class="valid-feedback">-->
                                     <!--                                        Looks good!-->
                                     <!--                                    </div>-->
@@ -131,17 +146,23 @@
                                     <!--                                    </div>-->
                                 </div>
                                 <div class="col-md-4 mb-3">
-                                    <label for="exporterIdName" >11. Exporter Name</label>
-                                    <input type="hidden" id="supplierName"  name="supplierName" th:value="${item?.cdDocId?.cdExporter?.name}">
-                                    <input type="text" required="required" disabled class="form-control" maxlength="256" name="cdExporterName" data-name="exporter IdName" id="exporterIdName" th:value="${item?.cdDocId?.cdExporter?.name}">
+                                    <label for="exporterIdName">11. Exporter Name</label>
+                                    <input id="supplierName" name="supplierName" th:value="${cdExporter?.name}"
+                                           type="hidden">
+                                    <input class="form-control" data-name="exporter IdName" disabled id="exporterIdName"
+                                           maxlength="256" name="cdExporterName" required="required"
+                                           th:value="${cdExporter?.name}" type="text">
                                     <!--                                    <div class="valid-feedback">-->
                                     <!--                                        Looks good!-->
                                     <!--                                    </div>-->
                                 </div>
                                 <div class="col-md-4 mb-3">
-                                    <label for="exporterIdpostalAddress" >12. Exporter Address</label>
-                                    <input type="hidden" id="supplierAddress"  name="supplierAddress" th:value="${item?.cdDocId?.cdExporter?.postalAddress}">
-                                    <input type="text" required="required" disabled class="form-control" maxlength="256" name="exporterIdpostalAddress" data-name="exporterId postalAddress" id="exporterIdpostalAddress" th:value="${item?.cdDocId?.cdExporter?.postalAddress}">
+                                    <label for="exporterIdpostalAddress">12. Exporter Address</label>
+                                    <input id="supplierAddress" name="supplierAddress"
+                                           th:value="${cdExporter?.postalAddress}" type="hidden">
+                                    <input class="form-control" data-name="exporterId postalAddress" disabled
+                                           id="exporterIdpostalAddress" maxlength="256" name="exporterIdpostalAddress"
+                                           required="required" th:value="${cdExporter?.postalAddress}" type="text">
                                     <!--                                    <div class="valid-feedback">-->
                                     <!--                                        Looks good!-->
                                     <!--                                    </div>-->

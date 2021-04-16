@@ -271,7 +271,7 @@
                                 <div class="filter-title">Actions:</div>
                             </div>
                             <div>
-                                <div th:if="${cdType?.inspectionStatus == activeStatus}">
+                                <div th:if="${cdType?.inspectionStatus == activeStatus and item?.cdDocId?.approveRejectCdStatusType == null}">
                                     <div sec:authorize="hasAuthority('DI_INSPECTION_OFFICER_MODIFY')">
                                         <a class="filter-link" onclick="popUpFunction('approveItem');"
                                            th:if="${cdType?.category != cdTypeVehiclesCategory and item.approveStatus != activeStatus}">Approve</a>
