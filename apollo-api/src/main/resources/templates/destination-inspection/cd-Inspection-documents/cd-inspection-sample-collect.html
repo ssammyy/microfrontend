@@ -47,10 +47,12 @@
                             </div>
                             <div class="form-row" >
                                 <div class="col-md-4 mb-3">
-                                    <label for="pointOfInspection" >1. Point Of Inspection</label>
+                                    <label for="pointOfInspection">1. Point Of Inspection</label>
                                     <input id="pointOfInspection" name="pointOfInspection"
-                                           th:value="${cdTransport?..freightStation}" type="hidden">
-                                    <input type="text" required="required" disabled class="form-control" maxlength="256" name="freightStation" data-name="foreigh tStation" id="freightStation" th:value="${item?.cdDocId?.cdTransport?.freightStation}">
+                                           th:value="${cdTransport?.freightStation}" type="hidden">
+                                    <input class="form-control" data-name="foreigh tStation" disabled
+                                           id="freightStation" maxlength="256" name="freightStation" required="required"
+                                           th:value="${cdTransport?.freightStation}" type="text">
                                     <!--                                    <div class="valid-feedback">-->
                                     <!--                                        Looks good!-->
                                     <!--                                    </div>-->

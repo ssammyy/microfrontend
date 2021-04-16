@@ -150,16 +150,13 @@ class DestinationInspectionController(
                                         )
                                         cdDetails.cdStandard?.let { cdStd ->
                                             cdDetails.approveRejectCdStatusType?.id?.let { it2 ->
-                                                daoServices.updateCDStatus(
-                                                    cdStd,
-                                                    it2
-                                                )
+                                                daoServices.updateCDStatus(cdStd, it2)
                                             }
                                         }
                                     }
                                 }
-                                    ?: throw Exception("Cd  status for ID = ${cdStatusType.id}, does not have an Existing STATUS CODE")
-                        }
+
+                            }
                         //Update Check CD task in Bpm
                         cdDetails.id?.let { it1 ->
                             cdDetails.assigner?.id?.let { it2 ->
@@ -258,7 +255,6 @@ class DestinationInspectionController(
                                                     )
                                                 }
                                             }
-                                                ?: throw Exception("Demand Note with ID= ${demandNote.id}, do not Exist")
                                         }
 
                                 }

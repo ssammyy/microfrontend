@@ -943,46 +943,48 @@
                                         <!--                                <a th:if="${coc.targetApproved == 1}" th:href="@{/api/di/inspection-cd(inspectionType = 'actual')}" class="filter-link inspectBtn">Inspection</a>-->
                                         <!--                                <a th:if="${coc.targetApproved != 1}" style="background-color: red" class="filter-link officerTargetBtn">Target Inspection</a>-->
                                         <!--                                <a th:if="${coc.blacklistStatus != 1}" style="background-color: red" class="filter-link officerBlacklistBtn">Blacklist</a>-->
-                                        <div th:if="${cdType?.localCocStatus == activeStatus or cdType?.localCorStatus == activeStatus}">
-                                            <a class="filter-link"
-                                               onclick="popUpFunction('compliant');"
-                                               sec:authorize="hasAuthority('DI_INSPECTION_OFFICER_MODIFY')"
-                                               th:if="${cdDetails.compliantStatus == null}">COMPLIANT</a>
-                                            <a class="filter-link bgred"
-                                               onclick="popUpFunction('notCompliant');"
-                                               sec:authorize="hasAuthority('DI_INSPECTION_OFFICER_MODIFY')"
-                                               th:if="${cdDetails.compliantStatus == null}">NOT COMPLIANT</a>
+                                        <div th:if="${cdDetails.assignedStatus == activeStatus}">
+                                            <div th:if="${cdType?.localCocStatus == activeStatus or cdType?.localCorStatus == activeStatus}">
+                                                <a class="filter-link"
+                                                   onclick="popUpFunction('compliant');"
+                                                   sec:authorize="hasAuthority('DI_INSPECTION_OFFICER_MODIFY')"
+                                                   th:if="${cdDetails.compliantStatus == null}">COMPLIANT</a>
+                                                <a class="filter-link bgred"
+                                                   onclick="popUpFunction('notCompliant');"
+                                                   sec:authorize="hasAuthority('DI_INSPECTION_OFFICER_MODIFY')"
+                                                   th:if="${cdDetails.compliantStatus == null}">NOT COMPLIANT</a>
 
-                                            <div th:if="${cdDetails.compliantStatus == activeStatus and cdDetails.localCocOrCorStatus != activeStatus}">
-                                                <a class="filter-link"
-                                                   onclick="popUpFunction('generateLocalCoc');"
-                                                   sec:authorize="hasAuthority('DI_INSPECTION_OFFICER_MODIFY')"
-                                                   th:if="${cdType?.localCocStatus == activeStatus}">GENERATE
-                                                    LOCAL COC/COI</a>
-                                                <a class="filter-link"
-                                                   onclick="popUpFunction('generateLocalCor');"
-                                                   sec:authorize="hasAuthority('DI_INSPECTION_OFFICER_MODIFY')"
-                                                   th:if="${cdType?.localCorStatus == activeStatus}">GENERATE
-                                                    LOCAL COR</a>
+                                                <div th:if="${cdDetails.compliantStatus == activeStatus and cdDetails.localCocOrCorStatus != activeStatus}">
+                                                    <a class="filter-link"
+                                                       onclick="popUpFunction('generateLocalCoc');"
+                                                       sec:authorize="hasAuthority('DI_INSPECTION_OFFICER_MODIFY')"
+                                                       th:if="${cdType?.localCocStatus == activeStatus}">GENERATE
+                                                        LOCAL COC/COI</a>
+                                                    <a class="filter-link"
+                                                       onclick="popUpFunction('generateLocalCor');"
+                                                       sec:authorize="hasAuthority('DI_INSPECTION_OFFICER_MODIFY')"
+                                                       th:if="${cdType?.localCorStatus == activeStatus}">GENERATE
+                                                        LOCAL COR</a>
+                                                </div>
                                             </div>
-                                        </div>
-                                        <a class="filter-link"
+                                            <a class="filter-link"
 
-                                           onclick="popUpFunction('approveConsignment');"
-                                           sec:authorize="hasAuthority('DI_INSPECTION_OFFICER_MODIFY')">Approve
-                                            Consignment</a>
-                                        <a class="filter-link bgred"
-                                           onclick="popUpFunction('rejectConsignment');"
-                                           sec:authorize="hasAuthority('DI_INSPECTION_OFFICER_MODIFY')">Reject
-                                            Consignment</a>
-                                        <a class="filter-link byellow"
-                                           onclick="popUpFunction('consignmentQuery');"
-                                           sec:authorize="hasAuthority('DI_INSPECTION_OFFICER_MODIFY')">Query
-                                            Consignment</a>
-                                        <a class="filter-link byellow"
-                                           onclick="popUpFunction('consignmentOnHold');"
-                                           sec:authorize="hasAuthority('DI_INSPECTION_OFFICER_MODIFY')">Consignment
-                                            On Hold</a>
+                                               onclick="popUpFunction('approveConsignment');"
+                                               sec:authorize="hasAuthority('DI_INSPECTION_OFFICER_MODIFY')">Approve
+                                                Consignment</a>
+                                            <a class="filter-link bgred"
+                                               onclick="popUpFunction('rejectConsignment');"
+                                               sec:authorize="hasAuthority('DI_INSPECTION_OFFICER_MODIFY')">Reject
+                                                Consignment</a>
+                                            <a class="filter-link byellow"
+                                               onclick="popUpFunction('consignmentQuery');"
+                                               sec:authorize="hasAuthority('DI_INSPECTION_OFFICER_MODIFY')">Query
+                                                Consignment</a>
+                                            <a class="filter-link byellow"
+                                               onclick="popUpFunction('consignmentOnHold');"
+                                               sec:authorize="hasAuthority('DI_INSPECTION_OFFICER_MODIFY')">Consignment
+                                                On Hold</a>
+                                        </div>
                                     </div>
 
 
