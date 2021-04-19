@@ -141,6 +141,15 @@ class ApplicationMapProperties {
     @Value("\${org.kebs.app.kotlin.apollo.resources.report.demand.note.with.item.path}")
     val mapReportDemandNoteWithItemsPath: String = ""
 
+    @Value("\${destination.inspection.cd.status.type.coc.generated.and.send}")
+    val mapDICdStatusTypeCOCGeneratedAndSendID: Long = 0L
+
+    @Value("\${destination.inspection.cd.status.type.coi.generated.and.send}")
+    val mapDICdStatusTypeCOIGeneratedAndSendID: Long = 0L
+
+    @Value("\${destination.inspection.cd.status.type.cor.generated.and.send}")
+    val mapDICdStatusTypeCORGeneratedAndSendID: Long = 0L
+
     @Value("\${org.kebs.app.kotlin.apollo.application.map.kesws.config.integration}")
     val mapKeswsConfigIntegration: Long = 0L
 
@@ -245,6 +254,60 @@ class ApplicationMapProperties {
 
     @Value("\${org.kebs.app.kotlin.apollo.application.map.market.surveillance.fuel.type.uuid}")
     val mapMsFuelTypeUuid: String = ""
+
+    @Value("\${destination.inspection.cd.status.type.assignIO.id}")
+    val mapDIStatusTypeAssignIoId: Long = 0L
+
+    @Value("\${destination.inspection.cd.status.type.reassignIO.id}")
+    val mapDIStatusTypeReassignIoId: Long = 0L
+
+    @Value("\${destination.inspection.cd.status.type.awaiting.targeting.approval.id}")
+    val mapDIStatusTypeAwaitingTargetingApprovalId: Long = 0L
+
+    @Value("\${destination.inspection.cd.status.type.targeted.approved.id}")
+    val mapDIStatusTypeTargetedApprovedId: Long = 0L
+
+    @Value("\${destination.inspection.cd.status.type.kra.verification.send.id}")
+    val mapDIStatusTypeKraVerificationSendId: Long = 0L
+
+    @Value("\${destination.inspection.cd.status.type.kra.verification.approved.id}")
+    val mapDIStatusTypeKraVerificationApprovedId: Long = 0L
+
+    @Value("\${destination.inspection.cd.status.type.inspection.start.id}")
+    val mapDIStatusTypeInspectionStartId: Long = 0L
+
+    @Value("\${destination.inspection.cd.status.type.inspection.ended.id}")
+    val mapDIStatusTypeInspectionEndId: Long = 0L
+
+    @Value("\${destination.inspection.cd.status.type.inspection.checklist.id}")
+    val mapDIStatusTypeInspectionChecklistId: Long = 0L
+
+    @Value("\${destination.inspection.cd.status.type.inspection.sample.collection.id}")
+    val mapDIStatusTypeInspectionSampleCollectionId: Long = 0L
+
+    @Value("\${destination.inspection.cd.status.type.inspection.sample.submission.id}")
+    val mapDIStatusTypeInspectionSampleSubmissionId: Long = 0L
+
+    @Value("\${destination.inspection.cd.status.type.inspection.sample.bsNumber.id}")
+    val mapDIStatusTypeInspectionSampleBsNumberId: Long = 0L
+
+    @Value("\${destination.inspection.cd.status.type.inspection.sample.results.awaiting.ID}")
+    val mapDIStatusTypeInspectionSampleResultsAwaitingId: Long = 0L
+
+    @Value("\${destination.inspection.cd.status.type.inspection.sample.results.received.ID}")
+    val mapDIStatusTypeInspectionSampleResultsReceivedId: Long = 0L
+
+    @Value("\${destination.inspection.cd.status.type.inspection.sample.results.compliant.ID}")
+    val mapDIStatusTypeInspectionSampleResultsCompliantId: Long = 0L
+
+    @Value("\${destination.inspection.cd.status.type.inspection.sample.results.not.compliant.ID}")
+    val mapDIStatusTypeInspectionSampleResultsNotCompliantId: Long = 0L
+
+    @Value("\${destination.inspection.cd.status.type.inspection.generate.inspection.report.ID}")
+    val mapDIStatusTypeInspectionGenerateInspectionReportId: Long = 0L
+
+    @Value("\${destination.inspection.cd.status.type.inspection.approve.inspection.report.ID}")
+    val mapDIStatusTypeInspectionApproveInspectionReportId: Long = 0L
 
     @Value("\${org.kebs.app.kotlin.apollo.application.map.market.surveillance.complaint.and.workPlan.designation.inspection.officer.id}")
     val mapMsComplaintAndWorkPlanDesignationIO: Long = 0L
