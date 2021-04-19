@@ -10,6 +10,7 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.mpesa.requests.MpesaLoginRe
 import org.kebs.app.kotlin.apollo.api.ports.provided.mpesa.requests.MpesaPushRequest
 import org.kebs.app.kotlin.apollo.api.ports.provided.mpesa.requests.MpesaTransactionsRequest
 import org.kebs.app.kotlin.apollo.api.ports.provided.mpesa.response.MpesaPushResponse
+import org.kebs.app.kotlin.apollo.common.dto.eac.responses.TokenRequestResult
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.*
@@ -187,12 +188,13 @@ class MPesaService(
 
         val log2 = daoService.createTransactionLog(0, "${transactionRef}_0")
         val tokenResponse = daoService.getHttpResponseFromPostCall(false, url, null, loginRequest, config, null, null)
-        val respToken = daoService.processResponses<Any>(tokenResponse, log2, url, config).second.toString()
+        val data = daoService.processResponses<String>(tokenResponse, log2, url, config)
+        val tokenResult = data.second ?: throw ExpectedDataNotFound("TOKEN NOT FOUND")
 //        var respToken = sampleExtractTokenFromHeader(tokenResponse)
-//        if (respToken.isNullOrEmpty()){
+//        if (tokenResult.isNullOrEmpty()){
 //            respToken = ""
 //        }
-        return saveTokenToConfigIntegration(respToken, config)
+        return saveTokenToConfigIntegration(tokenResult, config)
     }
 
     private fun mpesaTransactionEntity(
