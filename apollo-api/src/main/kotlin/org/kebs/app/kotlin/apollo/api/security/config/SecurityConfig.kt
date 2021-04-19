@@ -16,6 +16,7 @@ import org.kebs.app.kotlin.apollo.store.repo.IUserRepository
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.core.annotation.Order
+import org.springframework.http.HttpMethod
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity
@@ -59,11 +60,6 @@ class WebSecurityConfig {
                     .passwordEncoder(passwordEncoder)
         }
 
-//        @Bean
-//        override fun authenticationManager(): AuthenticationManager {
-//            return super.authenticationManager()
-//        }
-
         override fun configure(http: HttpSecurity) {
             http.cors().and().csrf().disable()
                     .antMatcher("/api/v1/**")
@@ -71,9 +67,8 @@ class WebSecurityConfig {
                     .antMatchers(
                             "/api/v1/login", "/api/v1/sftp/kesws/download", "/api/v1/auth/**")
                     .permitAll()
+                    .antMatchers(HttpMethod.OPTIONS,"/**").permitAll()
                     .anyRequest().authenticated()
-//                    .antMatchers("/api/v1/**")
-//                    .authenticated()
                     .and()
                     .exceptionHandling()
                     .and()
