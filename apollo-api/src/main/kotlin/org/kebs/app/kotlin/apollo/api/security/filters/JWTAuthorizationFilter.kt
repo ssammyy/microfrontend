@@ -55,6 +55,13 @@ class JWTAuthorizationFilter : OncePerRequestFilter() {
             request: HttpServletRequest, response: HttpServletResponse,
             filterChain: FilterChain
     ) {
+        response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"))
+        response.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+        response.setHeader("Access-Control-Allow-Headers", "Content-Type, Accept, X-Requested-With")
+        response.setHeader("Access-Control-Allow-Credentials", "true")
+        if ("OPTIONS".equals(request.getMethod())) {
+            response.setStatus(HttpServletResponse.SC_OK);
+        }
         extractorService
                 .extract(request)
                 ?.let { token ->
@@ -70,6 +77,5 @@ class JWTAuthorizationFilter : OncePerRequestFilter() {
 
                 }
             filterChain.doFilter(request, response)
-
     }
 }
