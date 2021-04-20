@@ -5,7 +5,6 @@ import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapPrope
 import org.kebs.app.kotlin.apollo.store.model.*
 import org.kebs.app.kotlin.apollo.store.repo.*
 import org.springframework.data.repository.findByIdOrNull
-import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Component
 import org.springframework.web.servlet.function.ServerRequest
 import org.springframework.web.servlet.function.ServerResponse
@@ -13,22 +12,19 @@ import org.springframework.web.servlet.function.paramOrNull
 
 @Component
 class PvocComplaintHandler(
-        private val commonDaoServices: CommonDaoServices,
-        private val applicationMapProperties: ApplicationMapProperties,
-        private val iPvocComplaintCertificationsSubCategoryRepo: IPvocComplaintCertificationsSubCategoryRepo,
-        private val iPvocComplaintCategoryRepo: IPvocComplaintCategoryRepo,
-        private val iDepartmentsRepository: IDepartmentsRepository,
-        private val iDirectoratesRepository: IDirectoratesRepository,
-        private val iDivisionsRepository: IDivisionsRepository,
-        private val iUserProfilesRepository: IUserProfilesRepository,
-        private val iPvocWaiversCategoriesRepo: IPvocWaiversCategoriesRepo
+    private val commonDaoServices: CommonDaoServices,
+    applicationMapProperties: ApplicationMapProperties,
+    private val iPvocComplaintCertificationsSubCategoryRepo: IPvocComplaintCertificationsSubCategoryRepo,
+    private val iPvocComplaintCategoryRepo: IPvocComplaintCategoryRepo,
+    private val iUserProfilesRepository: IUserProfilesRepository,
+    private val iPvocWaiversCategoriesRepo: IPvocWaiversCategoriesRepo
 
 ) {
     final val appId = applicationMapProperties.mapImportInspection
     fun complaintForm(req: ServerRequest): ServerResponse =
         req.paramOrNull("token").let { token ->
             val map = commonDaoServices.serviceMapDetails(appId)
-            var sr = commonDaoServices.createServiceRequest(map)
+            val sr: ServiceRequestsEntity
             val payload = "VerifyToken [token= ${token}]"
             sr = commonDaoServices.mapServiceRequestForSuccess(map, payload, null)
             commonDaoServices.validateVerificationToken(sr, token)
@@ -63,7 +59,7 @@ class PvocComplaintHandler(
     fun waiversForm(req: ServerRequest): ServerResponse =
         req.paramOrNull("token").let { token ->
             val map = commonDaoServices.serviceMapDetails(appId)
-            var sr = commonDaoServices.createServiceRequest(map)
+            val sr: ServiceRequestsEntity
             val payload = "VerifyToken [token= ${token}]"
             sr = commonDaoServices.mapServiceRequestForSuccess(map, payload, null)
             commonDaoServices.validateVerificationToken(sr, token)
@@ -75,7 +71,7 @@ class PvocComplaintHandler(
                             req.attributes()["waiver"] = PvocWaiversApplicationEntity()
                         }
                     }
-                    ServerResponse.ok().render("destination-inspection/pvoc/complaint/ComplaintsForm", req.attributes())
+                    ServerResponse.ok().render("destination-inspection/pvoc/WaiversApplication", req.attributes())
                 }
         }
 

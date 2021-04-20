@@ -12,7 +12,6 @@ import org.kebs.app.kotlin.apollo.api.notifications.Notifications
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.PvocBpmn
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.QualityAssuranceDaoServices
-import org.kebs.app.kotlin.apollo.api.service.OTPService
 import org.kebs.app.kotlin.apollo.common.exceptions.SupervisorNotFoundException
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.*
@@ -95,17 +94,17 @@ class Waivers(
                 } ?: throw Exception("Failed")
     }
 
-    @GetMapping("waivers-application")
-    fun waiversApplication(model: Model): String {
-        getContext().authentication.name.let { username ->
-            iUserRepository.findByUserName(username).let { userDetails ->
-                model.addAttribute("applicant", userDetails)
-                model.addAttribute("categories", iPvocWaiversCategoriesRepo.findAllByStatus(1))
-                model.addAttribute("waiver", PvocWaiversApplicationEntity())
-            }
-        }
-        return "destination-inspection/pvoc/WaiversApplication"
-    }
+//    @GetMapping("waivers-application")
+//    fun waiversApplication(model: Model): String {
+//        getContext().authentication.name.let { username ->
+//            iUserRepository.findByUserName(username).let { userDetails ->
+//                model.addAttribute("applicant", userDetails)
+//                model.addAttribute("categories", iPvocWaiversCategoriesRepo.findAllByStatus(1))
+//                model.addAttribute("waiver", PvocWaiversApplicationEntity())
+//            }
+//        }
+//        return "destination-inspection/pvoc/WaiversApplication"
+//    }
 
     @GetMapping("email_entry/waiver")
     fun emailEntry(model: Model): String {
@@ -123,8 +122,7 @@ class Waivers(
         val token = commonDaoServices.generateEmailVerificationToken(sr, emailObject, map)
         val messageBody = "Please Click the link Bellow \n" +
                 "\n " +
-                "https://localhost:8006/pvoc/complaint/?token=${token.token}"
-
+                "https://localhost:8006/api/di/pvoc/waivers-application/?token=${token.token}"
 
         emailObject.email?.let { notifications.sendEmail(it, "Complaint Verification", messageBody) }
         return "redirect:/"
@@ -201,10 +199,12 @@ class Waivers(
         val dateFrom = Date.valueOf(LocalDate.parse(LocalDate.now().toString(), DateTimeFormatter.ofPattern("yyyy-MM-dd")))
         val dateTo = Date.valueOf(LocalDate.parse(LocalDate.now().toString(), DateTimeFormatter.ofPattern("yyyy-MM-dd")))
         iwaiversApplicationRepo.findByIdOrNull(id)?.let { waiverApp ->
+
             iwaiversApplicationRepo.save(waiverApp)
-           getLoggedInUser()?.id?.let {it ->
-                pvocBpmn.startPvocWaiversApplicationsProcess(id, 710, 720L)
-            }
+
+//           getLoggedInUser()?.id?.let {it ->
+//                pvocBpmn.startPvocWaiversApplicationsProcess(id, it, 720L)
+//            }
             return "redirect:/api/di/pvoc/all-waivers-applications-list?currentPage=0&pageSize=10&fromDate=${dateFrom}&toDate=${dateTo}&filter=123"
         }?: throw Exception("Application does not exist")
     }
@@ -255,6 +255,7 @@ class Waivers(
                                                 getLoggedInUser()
                                                         ?.let { loggedInUser ->
                                                             loggedInUser.id?.let {
+                                                                KotlinLogging.logger {  }.info { "User id ==>" + it }
                                                                 getTasks(it).let { tasks ->
                                                                     KotlinLogging.logger {  }.info { "Tasks " +tasks.count() }
                                                                     val listPage: PagedListHolder<*> = PagedListHolder<PvocWaiversApplicationEntity?>(tasks, MutableSortDefinition(false))

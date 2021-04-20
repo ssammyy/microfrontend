@@ -42,6 +42,7 @@ class PvocMonitoringAgents(
     private val pvocAgentContractEntityRepo: PvocAgentContractEntityRepo,
     private val pvocRevenueReportEntityRepo: PvocRevenueReportEntityRepo,
     private val pvocPenaltyInvoicingEntityRepo: PvocPenaltyInvoicingEntityRepo,
+    private val iPvocCorTimelinesDataEntityRepo: IPvocCorTimelinesDataEntityRepo
 //        private val iUserRoleAssignmentsRepository: IUserRoleAssignmentsRepository
 
 ) {
@@ -208,6 +209,42 @@ class PvocMonitoringAgents(
                             else -> throw SupervisorNotFoundException("Only users with the following privilege PVOC Appliaction READ or PVOC APPLICATION PROCESS, can access this page")
                         }
                         return "destination-inspection/pvoc/monitoring/CoiWithTimelinesIssue"
+                    } ?: throw Exception("You must be loggedIn to access this page")
+
+            }
+    }
+
+    @GetMapping("cor-with-timeline-issue")
+    fun corWithTimelineIssue(
+        model: Model,
+        @RequestParam(value = "fromDate", required = false) fromDate: String,
+        @RequestParam(value = "toDate", required = false) toDate: String,
+        @RequestParam(value = "filter", required = false) filter: String,
+        @RequestParam(value = "currentPage", required = false) currentPage: Int,
+        @RequestParam(value = "pageSize", required = false) pageSize: Int
+    ): String {
+        PageRequest.of(currentPage, pageSize)
+            .let { page ->
+                SecurityContextHolder.getContext().authentication
+                    ?.let { auth ->
+                        when {
+                            auth.authorities.stream().anyMatch { authority -> authority.authority == "PVOC_APPLICATION_READ" || authority.authority == "PVOC_APPLICATION_PROCESS" } -> {
+                                when (filter) {
+                                    "filter" -> {
+                                        iPvocCorTimelinesDataEntityRepo.findAllByUcrNumberNotNull(page)?.let { pvocTimelines ->
+                                            model.addAttribute("pvocTimelines", pvocTimelines)
+                                        }
+                                    }
+                                    else -> {
+                                        iPvocCorTimelinesDataEntityRepo.findAllByUcrNumberNotNull(page).let { pvocTimelines ->
+                                            model.addAttribute("pvocTimelines", pvocTimelines)
+                                        }
+                                    }
+                                }
+                            }
+                            else -> throw SupervisorNotFoundException("Only users with the following privilege PVOC Appliaction READ or PVOC APPLICATION PROCESS, can access this page")
+                        }
+                        return "destination-inspection/pvoc/monitoring/CorWithTimelinesIssue"
                     } ?: throw Exception("You must be loggedIn to access this page")
 
             }
