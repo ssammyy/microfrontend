@@ -99,7 +99,8 @@ select * from LOG_KEBS_CD_TRANSACTIONS
 order by ID desc;
 
 select * from CFG_SERVICE_MAPS
-where id = 220 ---CD DOWNLOAD?UPLOAD
+where id = 127 ---CD DOWNLOAD?UPLOAD
+-- where id = 220 ---CD DOWNLOAD?UPLOAD
 order by ID desc;
 
 select * from DAT_KEBS_USERS order by ID desc ;

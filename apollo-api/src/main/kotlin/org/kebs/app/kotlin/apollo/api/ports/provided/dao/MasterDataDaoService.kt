@@ -3,6 +3,7 @@ package org.kebs.app.kotlin.apollo.api.ports.provided.dao
 import org.kebs.app.kotlin.apollo.common.dto.*
 import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
 import org.kebs.app.kotlin.apollo.store.model.*
+import org.kebs.app.kotlin.apollo.store.model.registration.UserRequestTypesEntity
 import org.kebs.app.kotlin.apollo.store.repo.*
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
@@ -25,6 +26,7 @@ class MasterDataDaoService(
     private val subSectionsL2Repo: ISubSectionsLevel2Repository,
     private val countiesRepo: ICountiesRepository,
     private val townsRepo: ITownsRepository,
+    private val userRequestTypesRepo: IUserRequestTypesRepository,
     private val standardCategoryRepo: IStandardCategoryRepository,
     private val productCategoriesRepo: IKebsProductCategoriesRepository,
     private val broadProductCategoryRepo: IBroadProductCategoryRepository,
@@ -61,6 +63,9 @@ class MasterDataDaoService(
 
     fun getAllStandardProductCategory(): List<StandardProductCategoryEntityDto>? = standardCategoryRepo.findAll().sortedBy { it.id }.sortedBy { it.id }.map { StandardProductCategoryEntityDto(it.id, it.standardCategory, it.standardNickname, it.standardId, it.status == 1) }
     fun getStandardProductCategoryByStatus(status: Int): List<StandardProductCategoryEntityDto>? = standardCategoryRepo.findByStatusOrderByStandardCategory(status)?.sortedBy { it.id }?.sortedBy { it.id }?.map { StandardProductCategoryEntityDto(it.id, it.standardCategory, it.standardNickname, it.standardId, it.status == 1) }
+
+    fun getAllUserRequestTypes(): List<UserRequestTypesEntityDto>? = userRequestTypesRepo.findAll().sortedBy { it.id }.sortedBy { it.id }.map { UserRequestTypesEntityDto(it.id, it.userRequest, it.description, it.status == 1) }
+    fun getUserRequestTypesByStatus(status: Int): List<UserRequestTypesEntityDto>? = userRequestTypesRepo.findByStatusOrderByUserRequest(status)?.sortedBy { it.id }?.sortedBy { it.id }?.map { UserRequestTypesEntityDto(it.id, it.userRequest, it.description,  it.status == 1) }
 
     fun getAllProductCategories(): List<ProductCategoriesEntityDto>? = productCategoriesRepo.findAll().sortedBy { it.id }.sortedBy { it.id }.map { ProductCategoriesEntityDto(it.id, it.name, it.status == 1, it.broadProductCategoryId) }
     fun getProductCategoriesByStatus(status: Int): List<ProductCategoriesEntityDto>? = productCategoriesRepo.findByStatusOrderByName(status)?.sortedBy { it.id }?.sortedBy { it.id }?.map { ProductCategoriesEntityDto(it.id, it.name, it.status == 1, it.broadProductCategoryId)  }
@@ -473,6 +478,35 @@ class MasterDataDaoService(
                         r.modifiedBy = commonDaoServices.loggedInUserDetails().userName
                         r.modifiedOn = Timestamp.from(Instant.now())
                         standardCategoryRepo.save(r)
+                        return entity
+                    }
+                    ?: throw NullValueNotAllowedException("Record not found, check and try again")
+            }
+        }
+
+    }
+
+    fun updateUserRequestType(entity: UserRequestTypesEntityDto): UserRequestTypesEntityDto? {
+        when {
+            entity.id ?: 0L < 1L -> {
+                val r = UserRequestTypesEntity()
+                r.userRequest= entity.userRequest
+                r.description= entity.description
+                r.createdBy = commonDaoServices.loggedInUserDetails().userName
+                r.createdOn = Timestamp.from(Instant.now())
+                if (entity.status == true) r.status = 1 else r.status = 0
+                userRequestTypesRepo.save(r)
+                return entity
+            }
+            else -> {
+                userRequestTypesRepo.findByIdOrNull(entity.id)
+                    ?.let { r ->
+                        r.userRequest= entity.userRequest
+                        r.description= entity.description
+                        if (entity.status == true) r.status = 1 else r.status = 0
+                        r.modifiedBy = commonDaoServices.loggedInUserDetails().userName
+                        r.modifiedOn = Timestamp.from(Instant.now())
+                        userRequestTypesRepo.save(r)
                         return entity
                     }
                     ?: throw NullValueNotAllowedException("Record not found, check and try again")

@@ -188,6 +188,14 @@ class UsersEntity : Serializable {
     @Basic
     var userRegNo: String? = null
 
+    @Column(name = "USER_PIN_ID_NUMBER")
+    @Basic
+    var userPinIdNumber: String? = null
+
+    @Column(name = "TYPE_OF_USER")
+    @Basic
+    var typeOfUser: Int? = null
+
 
 //    @JoinColumn(name = "ROLE_ID", referencedColumnName = "ID")
 //    @ManyToOne

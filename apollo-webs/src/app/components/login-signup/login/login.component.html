@@ -8,7 +8,7 @@
       <div class="form-group">
         <label><b>Username</b></label>
         <input type="text" class="form-control one-column-input" aria-label="Small"
-               aria-describedby="inputGroup-sizing-sm" placeholder="email.gmail.com" formControlName="username"
+               aria-describedby="inputGroup-sizing-sm" placeholder="ID/PASSPORT/PIN" formControlName="username"
                [ngClass]="{ 'is-invalid': submitted && formSignIn.username.errors }" name="username">
         <div *ngIf="submitted && formSignIn.username.errors" class="invalid-feedback">
           <div *ngIf="formSignIn.username.errors.required">Username is required</div>

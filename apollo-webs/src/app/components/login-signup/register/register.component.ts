@@ -18,6 +18,7 @@ export class RegisterComponent implements OnInit {
   loading = false;
   submitted = false;
   returnUrl!: string;
+  selectedType!: number;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -38,7 +39,10 @@ export class RegisterComponent implements OnInit {
     this.registerForm = this.formBuilder.group({
       firstName: ['', Validators.required],
       lastName: ['', Validators.required],
-      email: ['', Validators.required]
+      email: ['', Validators.required],
+      personalContactNumber: ['', Validators.required],
+      typeOfUser: ['', Validators.required],
+      userPinIdNumber: ['', Validators.required]
     });
 
     // get return url from route parameters or default to '/'
@@ -68,5 +72,8 @@ export class RegisterComponent implements OnInit {
       });
   }
 
+  onChange(event: number): void{
+    this.selectedType = event;
+  }
 }
 

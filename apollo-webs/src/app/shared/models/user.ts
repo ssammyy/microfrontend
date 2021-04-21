@@ -13,6 +13,9 @@ export class UserRegister {
   firstName?: string;
   lastName?: string;
   userName?: string;
+  personalContactNumber?: string;
+  userPinIdNumber?: string;
+  typeOfUser?: number;
   email?: string;
   userRegNo?: string;
   enabled?: boolean;

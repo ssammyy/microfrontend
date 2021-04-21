@@ -278,6 +278,25 @@ class MasterDataHandler(
 
     }
 
+//    @PreAuthorize("hasAuthority('STANDARD_PRODUCT_CATEGORY_WRITE')")
+    fun userRequestTypeUpdate(req: ServerRequest): ServerResponse {
+        try {
+            val entity = req.body<UserRequestTypesEntityDto>()
+            daoService.updateUserRequestType(entity)
+                    ?.let {
+                        return ok().body(it)
+                    }
+                    ?: throw NullValueNotAllowedException("Update failed")
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            return badRequest().body(e.message ?: "Unknown Error")
+        }
+
+
+    }
+
     @PreAuthorize("hasAuthority('DESIGNATIONS_LIST')")
     fun designationsListing(req: ServerRequest): ServerResponse {
         try {
@@ -732,6 +751,40 @@ class MasterDataHandler(
                 }
                 else -> {
                     daoService.getStandardProductCategoryByStatus(status)
+                            ?.let {
+                                return ok().body(it)
+                            }
+                            ?: throw NullValueNotAllowedException("No records found")
+
+                }
+            }
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            return badRequest().body(e.message ?: "Unknown Error")
+        }
+
+
+    }
+
+    fun userRequestTypeListing(req: ServerRequest): ServerResponse {
+        try {
+            val status = try {
+                req.pathVariable("status").toInt()
+            } catch (e: Exception) {
+                -1
+            }
+            when {
+                status <= 1 -> {
+                    daoService.getAllUserRequestTypes()
+                            ?.let {
+                                return ok().body(it)
+                            }
+                            ?: throw NullValueNotAllowedException("No records found")
+
+                }
+                else -> {
+                    daoService.getUserRequestTypesByStatus(status)
                             ?.let {
                                 return ok().body(it)
                             }

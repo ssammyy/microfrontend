@@ -39,6 +39,8 @@ package org.kebs.app.kotlin.apollo.store.repo
 
 
 import org.kebs.app.kotlin.apollo.store.model.*
+import org.kebs.app.kotlin.apollo.store.model.registration.UserRequestTypesEntity
+import org.kebs.app.kotlin.apollo.store.model.registration.UserRequestsEntity
 import org.springframework.data.hazelcast.repository.HazelcastRepository
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor
 import org.springframework.data.jpa.repository.Query
@@ -139,6 +141,20 @@ interface IUserTypesEntityRepository : HazelcastRepository<UserTypesEntity, Long
     fun findByStatus(status: Int): List<UserTypesEntity>
     fun findByTypeNameAndStatus(typeName: String, status: Int): UserTypesEntity?
     fun findByDefaultRole(defaultRole: Long): UserTypesEntity?
+
+}
+
+@Repository
+interface IUserRequestsRepository : HazelcastRepository<UserRequestsEntity, Long>, JpaSpecificationExecutor<UsersEntity> {
+    fun findByStatus(status: Int): List<UserRequestsEntity>?
+    fun findByUserIdAndRequestId(userId: Long, requestId: Long): UserRequestsEntity?
+}
+
+@Repository
+interface IUserRequestTypesRepository : HazelcastRepository<UserRequestTypesEntity, Long> {
+    fun findByStatus(status: Int): List<UserRequestTypesEntity>?
+    fun findByStatusOrderByUserRequest(status: Int): List<UserRequestTypesEntity>?
+
 
 }
 

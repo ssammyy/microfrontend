@@ -251,6 +251,9 @@ data class UserEntityDto(
     var firstName: String?,
     var lastName: String?,
     var userName: String?,
+    var userPinIdNumber: String?,
+    var personalContactNumber: String?,
+    var typeOfUser: Int?,
     var email: String?,
     var userRegNo: String?,
     var enabled: Boolean = false,
@@ -282,6 +285,9 @@ data class UserDetailsDto(
     var lastName: String?,
     var userName: String?,
     var email: String?,
+    var userPinIdNumber: String?,
+    var personalContactNumber: String?,
+    var typeOfUser: Int?,
     var userRegNo: String?,
     var enabled: Boolean = false,
     var accountExpired: Boolean = false,
@@ -344,6 +350,34 @@ data class StandardProductCategoryEntityDto(
         var standardNickname:String?=null,
         var standardId:Long?=null,
         var status:Boolean?=null
+)
+
+data class UserRequestTypesEntityDto(
+        var id:Long?=null,
+        var userRequest:String?=null,
+        var description:String?=null,
+        var status:Boolean?=null
+)
+
+data class UserRequestEntityDto(
+        var id:Long?=null,
+        var requestId:Long?=null,
+        var userId:Long?=null,
+        var userRoleAssigned:Long?=null,
+        var requestStatus:Boolean?=null,
+        var description:String?=null,
+        var status:Boolean?=null
+)
+
+data class UserRequestListEntityDto(
+    var id: Long? =null,
+    var requestName: String? =null,
+    var userName: String? =null,
+    var userId: Long? =null,
+    var userRoleAssignedName: String? =null,
+    var requestStatus: Boolean? =null,
+    var description: String? =null,
+    var status: Boolean? =null
 )
 
 data class ProductCategoriesEntityDto(

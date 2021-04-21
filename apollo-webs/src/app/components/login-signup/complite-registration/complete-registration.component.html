@@ -10,7 +10,7 @@
         <input [ngClass]="{ 'is-invalid': submitted && formPassword.otpVerification.errors }"
                aria-describedby="inputGroup-sizing-sm" aria-label="Small"
                class="form-control one-column-input" formControlName="otpVerification" name="otpVerification"
-               placeholder="OHJB56265576%&^mnjh" type="text">
+               placeholder="OHJB5" type="text">
         <div *ngIf="submitted && formPassword.otpVerification.errors" class="invalid-feedback">
           <div *ngIf="formPassword.otpVerification.errors.required">OTP required</div>
         </div>
