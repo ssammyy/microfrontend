@@ -5,12 +5,14 @@
       xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8">
-    <title th:text="'KIMS - ' + ${title}"></title>
     <th:block th:include="fragments/general-form.html :: headerfiles"/>
     <link rel="stylesheet" th:href="@{/css/extra.css}" type="text/css">
-    <link rel="stylesheet" th:href="@{/css/pageLoad.css}" type="text/css">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link rel="stylesheet" th:href="@{/assets/bootstrap3/css/bootstrap.css}"/>
+    <!-- Font Awesome -->
+    <link href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" rel="stylesheet"/>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" rel="stylesheet"/>
+    <!-- MDB -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/2.2.1/mdb.min.css" rel="stylesheet"/>
     <style>
         .isDisabled {
             color: currentColor;
@@ -22,10 +24,6 @@
 </head>
 <!--<body style="filter: blur(4px)">-->
 <body>
-<div id ="spinnerContainer">
-    <div class="spinner"></div>
-</div>
-
 <div class="top-bar" th:replace="fragments/general-form.html :: top-bar">
 
 </div>
@@ -34,17 +32,6 @@
         <div class="main-grid-side-navigation" id="w-node-d308c123a20f-c123a20d" th:replace="fragments/general-form.html :: side-navigation-bar"></div>
         <div id="w-node-a58aeb4cd9dd-261457dd" class="main-content-div">
             <div class="content-nav">
-                <div class="dropdown">
-<!--                    <div onclick="myFunction()" class="dropbtn" ><i class="fa fa-bell" aria-hidden="true" ></i> <span th:text="${#lists.size(tasks)}"></span></div> -->
-                    <div id="myDropdown" class="dropdown-content">
-                        <input type="text" placeholder="Search.." id="myInput" onkeyup="filterFunction()">
-                        <small th:each="task: ${tasks}">
-<!--                            <a th:classappend="${#lists.size(payments) < 1} ? 'isDisabled'"  class="special-block" th:href="@{/api/v1/permit/my-applications/{id}(id=${task.permitId})}" th:text="${task.permitId}"></a><i class="fa fa-bell special-block" aria-hidden="true" ></i><i class="fa fa-window-close special-block" aria-hidden="true"></i>-->
-                            <a   class="special-block" th:href="@{/api/permit/my-applications/{id}(id=${task.permitId})}" th:text="${task.permitId}"></a><i class="fa fa-bell special-block" aria-hidden="true" ></i><i class="fa fa-window-close special-block" aria-hidden="true"></i>
-                        </small>
-
-                    </div>
-                </div>
                 <a class="back-button w-button" onclick="goBack()" href="#">go back</a>
             </div>
 
@@ -52,13 +39,13 @@
                 <div class="content-row">
                     <h1>Quality Assurance<span></span></h1>
                     <div>
-                        <h3>Apply / renew your quality assurance permits</h3>
                         <div class="link-div">
                             <div class="link-wrap-left" >
-<!--                                <a class="link-block w-inline-block" th:classappend="${#lists.size(payments) < 1} ? 'isDisabled'"-->
+                                <!--                                <a class="link-block w-inline-block" th:classappend="${#lists.size(payments) < 1} ? 'isDisabled'"-->
                                 <a class="link-block w-inline-block"
                                    th:each="permitType : ${permitTypes}"
-                                   th:href="@{/api/permit/application-type/{id}(id = ${permitType.id},appId=${session.appId})}"
+
+                                   th:href="@{/api/qa/permits-list(permitTypeID = ${permitType.id})}"
                                 >
                                     <div class="link-block-title-div">
                                         <img
@@ -67,104 +54,26 @@
                                                 class="standardization-icon"
                                         />
                                         <div>
-                                            <h4>Apply/ Renew</h4>
-                                            <div th:text="${permitType.mark}"></div>
+                                            <h4><span th:text="${permitType.mark}"></span></h4>
                                         </div>
                                     </div>
                                     <p class="paragraph-1" th:text="${permitType.descriptions}">
 
                                     </p>
                                 </a>
-                                <div>
-                                    <h3>Customer Details</h3>
-
-                                    <table th:object="${manufacturer}">
-                                        <tr>
-                                            <td><strong>Name : &nbsp;</strong></td>
-                                            <td th:text="${manufacturer.name}"></td>
-                                        </tr>
-                                        <tr>
-                                            <td><strong>KRA Pin : &nbsp;</strong> </td>
-                                            <td th:text="${manufacturer.kraPin}"></td>
-                                        </tr>
-                                        <tr>
-                                            <td><strong>Registration No : &nbsp;</strong></td>
-                                            <td th:text="${manufacturer.registrationNumber}"></td>
-                                        </tr>
-                                        <tr>
-                                            <td><strong>Postal Address : &nbsp;</strong></td>
-                                            <td th:text="${manufacturer.postalAddress}"></td>
-                                        </tr>
-                                        <tr>
-                                            <td><strong>Company Email : &nbsp;</strong></td>
-                                            <td th:text="${manufacturer.companyEmail}"></td>
-                                        </tr>
-                                        <tr>
-                                            <td><strong>Company Ownership : &nbsp;</strong></td>
-                                            <td th:text="${manufacturer.ownership}"></td>
-                                        </tr>
-                                    </table>
-                                </div>
 
                             </div>
+                            <!--                            <div class="link-wrap-right">-->
+                            <!--                                <a class="content-button"   style="width: 170px" th:href="@{/api/v1/permit/my-applications(appstatus=0,page=1,records=10,appId=150)}"><span class="font-awesome-span fas fa-question-circle"></span>Application History</a>-->
+                            <!--                                <a class="content-button"   style="width: 170px" th:href="@{/api/v1/permit/all-permits(appstatus=1,page=1,records=10,appId=199)}"><span class="font-awesome-span fas fa-question-circle"></span>My-->
+                            <!--                                    Permits</a>-->
+                            <!--&lt;!&ndash;                                <a class="content-button"   style="width: 170px" th:href="@{/all-invoices(page=1,records=10,appId=199)}"><span class="font-awesome-span fas fa-question-circle"></span>My Invoices</a>&ndash;&gt;-->
+                            <!--                                <button type="button" class="btn btn-primary" style="width: 170px" data-toggle="modal" data-target="#exampleModal">-->
+                            <!--                                    Modify account details-->
+                            <!--                                </button>-->
 
-                            <div class="link-wrap-right">
-                                <a class="content-button"   style="width: 170px" th:href="@{/api/permit/my-applications(appstatus=0,page=1,records=10,appId=150)}"><span class="font-awesome-span fas fa-question-circle"></span>Application History</a>
-                                <a class="content-button"   style="width: 170px" th:href="@{/api/permit/all-permits(appstatus=1,page=1,records=10,appId=199)}"><span class="font-awesome-span fas fa-question-circle"></span>My
-                                    Permits</a>
-                                <a class="content-button"   style="width: 170px" th:href="@{/all-invoices(page=1,records=10,appId=199)}" th:onclick="'loadSpinner();'"
-                                ><span class="font-awesome-span fas fa-question-circle"></span>My Invoices</a>
-                                <button type="button" class="btn btn-primary" style="width: 170px" data-toggle="modal" data-target="#exampleModal">
-                                    Modify account details
-                                </button>
-
-                            </div>
+                            <!--                            </div>-->
                         </div>
-                    </div>
-                </div>
-
-
-
-
-
-                <!-- Update Manufacturer Details Modal -->
-                <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                    <div class="modal-dialog" role="document">
-                        <form method="post" th:object="${manufacturer}" th:action="@{/sl/update-manufacturer(manufacturerId = ${manufacturer?.id})}">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="exampleModalLabel">Update Manufacturer Details</h5>
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
-                                </div>
-                                <div class="modal-body">
-                                    <div class="form-group">
-                                        <label for="postalAddress">Address</label>
-                                        <input type="text" class="form-control" id="postalAddress" name="postalAddress" th:field="*{postalAddress}" placeholder="Password">
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label for="ownership">Select Ownership type</label>
-                                        <select class="form-control" name="ownership" id="ownership" th:field="*{ownership}">
-                                            <option th:text="Single_Ownership" th:value="Single_Ownership"></option>
-                                            <option th:text="Limited_Company" th:value="Limited_Company"></option>
-                                        </select>
-                                    </div>
-                                    <small>Declare closure of operations</small>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" th:value="${manufacturer?.closureOfOperations}" th:checked="${manufacturer?.closureOfOperations == 0}" name="closureOfOperations" id="closureOfOperations" th:field="*{closureOfOperations}">
-                                        <label class="form-check-label" for="closureOfOperations">
-                                            Declare closure of operations
-                                        </label>
-                                    </div>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                    <button type="submit" class="btn btn-primary">Update</button>
-                                </div>
-                            </div>
-                        </form>
                     </div>
                 </div>
             </div>
@@ -175,8 +84,10 @@
 <!-- [if lte IE 9]><script src="https://cdnjs.cloudflare.com/ajax/libs/placeholders/3.0.2/placeholders.min.js"></script><![endif] -->
 <script th:src="@{/js/extra.js}" type="javascript"></script>
 <script src="https://d3e54v103j8qbb.cloudfront.net/js/jquery-3.4.1.min.220afd743d.js" type="text/javascript" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
-<script th:src="@{/assets/bootstrap3/js/bootstrap.js}" type="text/javascript"></script>
-<script th:src="@{/js/spinner.js}" type="text/javascript"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+<!-- MDB -->
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/2.2.1/mdb.min.js"></script>
 <script>
     function myFunction() {
         document.getElementById("myDropdown").classList.toggle("show");
@@ -197,15 +108,6 @@
             }
         }
     }
-
-    document.onreadystatechange = function(){
-        showSpinnerOnLoad(document)
-    }
-
-    function loadSpinner(){
-        showSpinner(document)
-    }
-
 </script>
 </body>
 </html>

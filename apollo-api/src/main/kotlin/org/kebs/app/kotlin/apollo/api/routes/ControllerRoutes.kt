@@ -270,10 +270,10 @@ class ControllerRoutes {
     }
 
 
-    /*
+
     @Bean
     fun qualityAssuranceRoutes(handler: QualityAssuranceHandler) = router {
-        "/api/v1/permit".nest {
+        "/api/qa".nest {
             println("**************************")
             GET("/home", handler::home)
             GET("/permits-list", handler::permitList)
@@ -281,7 +281,7 @@ class ControllerRoutes {
             GET("/new-permit", handler::newPermit)
         }
     }
-    */
+
 
     @Bean
     fun destinationInspectionRoutes(handler: DestinationInspectionHandler) = router {

@@ -39,7 +39,10 @@ class ApplicationMapProperties {
     val mapPermitQuestionnaire: Int? = null
 
     @Value("\${org.kebs.app.kotlin.apollo.application.map.quality.assurance.processes}")
-    val mapQualityAssurance: Int? = null
+    val mapQualityAssurance: Int = 0
+
+    @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.manufacture.roleName}")
+    val mapQualityAssuranceManufactureRoleName: String = ""
 
     @Value("\${org.kebs.app.kotlin.apollo.application.map.user.registration}")
     val mapUserRegistration: Int = 0
