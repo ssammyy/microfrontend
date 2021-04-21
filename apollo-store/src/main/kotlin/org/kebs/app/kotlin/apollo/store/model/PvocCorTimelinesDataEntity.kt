@@ -1,12 +1,13 @@
 package org.kebs.app.kotlin.apollo.store.model
 
+import java.io.Serializable
 import java.sql.Timestamp
 import java.util.*
 import javax.persistence.*
 
 @Entity
-@Table(name = "DAT_KEBS_PVOC_COR_TIMELINES_DATA", schema = "APOLLO", catalog = "")
-class DatKebsPvocCorTimelinesDataEntity {
+@Table(name = "DAT_KEBS_PVOC_COR_TIMELINES_DATA")
+class PvocCorTimelinesDataEntity : Serializable {
     @Column(name = "ID")
     @GeneratedValue
     @Id
@@ -271,7 +272,7 @@ class DatKebsPvocCorTimelinesDataEntity {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other == null || javaClass != other.javaClass) return false
-        val that = other as DatKebsPvocCorTimelinesDataEntity
+        val that = other as PvocCorTimelinesDataEntity
         return id == that.id && idfNumber == that.idfNumber && rfiNumber == that.rfiNumber && certificateNumber == that.certificateNumber && certificateIssueDate == that.certificateIssueDate && cocNcrNumber == that.cocNcrNumber && remarks == that.remarks && issuingOffice == that.issuingOffice && importer == that.importer && importerAddressL1 == that.importerAddressL1 && importerAddressL2 == that.importerAddressL2 && importerCity == that.importerCity && importerCountry == that.importerCountry && importerZipCode == that.importerZipCode && importerTelephone == that.importerTelephone && importerFaxNo == that.importerFaxNo && importerEmail == that.importerEmail && portOfInspection == that.portOfInspection && dateOfInspection == that.dateOfInspection && shipmentMode == that.shipmentMode && countryOfSupply == that.countryOfSupply && finalInvoiceFobValue == that.finalInvoiceFobValue && finalInvoiceCurrency == that.finalInvoiceCurrency && finalInvoiceExchangeRate == that.finalInvoiceExchangeRate && finalInvoiceNumber == that.finalInvoiceNumber && finalInvoiceDate == that.finalInvoiceDate && shipmentPartialNumber == that.shipmentPartialNumber && shipmentSealNumber == that.shipmentSealNumber && shipmentQualityDelivered == that.shipmentQualityDelivered && shipmentLineNumber == that.shipmentLineNumber && shipmentLineHsCode == that.shipmentLineHsCode && shipmentLineUnitOfMeasure == that.shipmentLineUnitOfMeasure && shipmentLineDescription == that.shipmentLineDescription && shipmentLineVin == that.shipmentLineVin && shipmentLineLocalIcs == that.shipmentLineLocalIcs && shipmentLineStandardsRef == that.shipmentLineStandardsRef && route == that.route && ucrNumber == that.ucrNumber && inspectionScheduling == that.inspectionScheduling && tatCocInsurance == that.tatCocInsurance && status == that.status && varField1 == that.varField1 && varField2 == that.varField2 && varField3 == that.varField3 && varField4 == that.varField4 && varField5 == that.varField5 && varField6 == that.varField6 && varField7 == that.varField7 && varField8 == that.varField8 && varField9 == that.varField9 && varField10 == that.varField10 && createdBy == that.createdBy && createdOn == that.createdOn && modifiedBy == that.modifiedBy && modifiedOn == that.modifiedOn && deleteBy == that.deleteBy && deletedOn == that.deletedOn && hodStatus == that.hodStatus && mpvocAgent == that.mpvocAgent && pvocMonitStatus == that.pvocMonitStatus && pvocMonitStartedOn == that.pvocMonitStartedOn && pvocMonitCompletedOn == that.pvocMonitCompletedOn && pvocMonitProcessInstanceId == that.pvocMonitProcessInstanceId
     }
 

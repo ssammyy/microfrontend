@@ -3,7 +3,6 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     war
-    kotlin("jvm") version "1.5.0-RC"
 }
 description = "apollo-api Test Bed"
 
