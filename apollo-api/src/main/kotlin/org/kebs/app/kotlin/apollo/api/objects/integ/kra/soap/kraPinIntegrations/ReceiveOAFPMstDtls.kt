@@ -33,7 +33,7 @@ import javax.xml.bind.annotation.*
  */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "receiveOAFPMstDtls", propOrder = ["loginId", "password", "oafpApprovedMstData"])
+@XmlType(name = "receiveOAFPMstDtls", propOrder = ["loginId", "password", "oAFPApprovedMstData"])
 class ReceiveOAFPMstDtls {
     /**
      * Gets the value of the loginId property.

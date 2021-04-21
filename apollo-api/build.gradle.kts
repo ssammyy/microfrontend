@@ -142,14 +142,16 @@ dependencies {
      */
     implementation("org.springframework.boot:spring-boot-devtools")
     implementation("org.springframework.boot:spring-boot-starter-web-services")
-    implementation("javax.xml.bind:jaxb-api:2.3.0-b170201.1204")
-    implementation("javax.xml.bind:jaxb-api:2.3.0-b170201.1204")
+    implementation("javax.xml.bind:jaxb-api:2.3.0")
     implementation("javax.activation:activation:1.1")
-    implementation("org.glassfish.jaxb:jaxb-runtime:2.3.0-b170127.1453")
+    implementation("org.glassfish.jaxb:jaxb-runtime:2.3.0")
+//    implementation("javax.xml.bind:jaxb-api:2.3.0-b170201.1204")
+//    implementation("javax.activation:activation:1.1")
+//    implementation("org.glassfish.jaxb:jaxb-runtime:2.3.0-b170127.1453")
     implementation("org.springframework:spring-oxm:5.3.4")
     implementation("org.glassfish.metro:webservices-rt:2.4.4")
     implementation("org.glassfish.metro:webservices-api:2.4.4")
-    implementation("com.sun.xml.messaging.saaj:saaj-impl:1.5.1")
+    implementation("com.sun.xml.messaging.saaj:saaj-impl")
 
 
 

@@ -33,7 +33,7 @@ import javax.xml.bind.annotation.*
  */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "validatePIN", propOrder = ["loginId", "password", "krapin"])
+@XmlType(name = "validatePIN", propOrder = ["loginId", "password", "kRAPIN"])
 class ValidatePIN {
     /**
      * Gets the value of the loginId property.

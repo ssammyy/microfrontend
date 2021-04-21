@@ -9,7 +9,7 @@ import org.springframework.ws.client.core.WebServiceTemplate
 import java.lang.Exception
 
 @Service
-class KraSoapService {
+class KraSoapService() {
     @Autowired
     private val marshaller: Jaxb2Marshaller? = null
     fun getPinStatus(request: ValidatePIN?): ValidatePINResponse? {
