@@ -195,8 +195,8 @@ class InvoiceController(
                     invoiceRepository.findByIdOrNull(id)?.let{ invoice ->
                         invoice.permitId?.let{ permitId->
                             val pm = permitRepository.findById(permitId).get()
-                            model.addAttribute("permit", permitRepository.findByIdOrNull(pm.id))
-                            if (pm.status != map.activeStatus) {
+                            model.addAttribute("permit", permitRepository.findByIdOrNull(pm?.id))
+                            if (pm?.status != map.activeStatus) {
                                 model.addAttribute("application", "application")
                             } else {
                                 model.addAttribute("renewal", "renewal")
@@ -304,43 +304,15 @@ class InvoiceController(
                                     invoice.permitId?.let{ permitId->
                                         val pm = permitRepository.findById(permitId).get()
                                         with(pm) {
-                                            this.paymentStatus = map.activeStatus
+                                            this?.paymentStatus = map.activeStatus
                                         }
-                                        pm.let { permitRepository.save(it) }
+                                        pm?.let { permitRepository.save(it) }
 
                                         // Start QA review process (BPMN)
-                                        pm.id?.let {
+                                        pm?.id?.let {
                                             qualityAssuranceBpmn.startQAAppReviewProcess(it, hofId)
                                         }
                                     }
-
-
-//                                    if (transaction.amount!! < invoice.amount) {
-////                                        do something
-//                                        request.localAddr
-//                                        request.localName
-//                                        val baseUrl: String = ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString();
-//
-//                                        pm?.userId?.email?.let {
-//                                            notifications.sendEmail(it, "Incomplete Payment", "Dear esteemed customer\n" +
-//                                                    "Your partial payment for your permit application has been received.\n" +
-//                                                    "However, for your application to move to the next step, you need yo pay the remaining balance, KSH${invoice.amount?.minus(transaction.amount!!)}.\n" +
-//                                                    "Visit the link ${baseUrl}/generated/invoice/${invoice.id}\n" +
-//                                                    "Regards, \n" +
-//                                                    "The KIMS team")
-//                                        }
-//                                    }
-
-//                                    exportFile.parseThymeleafTemplate("templates/TestPdf/receipt", "invoice", invoice)
-//                                            ?.let { htmlString ->
-//                                                exportFile.generatePdfFromHtml(htmlString)
-//                                                invoice.permitId?.userId?.email?.let {
-//                                                    notifications.processEmail(it, "Payment Acknowledgement", "Dear esteemed customer\n" +
-//                                                            "Your payment for permit has been received.\n" +
-//                                                            "Regards, \n" +
-//                                                            "The KIMS team", "${uploadDir}pdf_output.pdf")
-//                                                }
-//                                            }
                                 }
                             }
                 }
@@ -357,13 +329,7 @@ class InvoiceController(
         invoiceRepository.findByIdOrNull(invoiceId)
                 ?.let { invoiceEntity ->
                     //mpesaService.loginMethod()
-                    mpesaService.mainMpesaTransaction(
-                        amount.toString(),
-                        phone.toString(),
-                        invoiceId.toString(),
-                        "",
-                        invoiceSource
-                    )
+                    //mpesaService.mainMpesaTransaction(amount.toString(),phone.toString(),invoiceId.toString(),"",invoiceSource)
                     KotlinLogging.logger { }.debug("MPESA STK PUSH ${amount}, $phone")
 //                    if (phone != null) {
                     /*
@@ -381,7 +347,30 @@ class InvoiceController(
 //                                pm.paymentStatus = 1
 //                                permitRepository.save(pm)
 //                            }
-                    redirectAttributes.addFlashAttribute("alert", "Check Your Phone for a Payment Request")
+                    //redirectAttributes.addFlashAttribute("alert", "Check Your Phone for a Payment Request")
+                    serviceMapsRepo.findByIdAndStatus(globalAppId, 1)
+                            ?.let { map ->
+                                with(invoiceEntity) {
+                                    status = map.activeStatus
+                                    paidOn = java.sql.Timestamp.from(java.time.Instant.now())
+                                    //amountPaid = transaction.amount
+                                    //phone = transaction.phonenumber
+                                }
+
+                                invoiceEntity.permitId?.let{ permitId->
+                                    val pm = permitRepository.findById(permitId).get()
+                                    with(pm) {
+                                        this?.paymentStatus = map.activeStatus
+                                    }
+                                    pm?.let { permitRepository.save(it) }
+
+                                    // Start QA review process (BPMN)
+                                    pm?.id?.let {
+                                        qualityAssuranceBpmn.startQAAppReviewProcess(it, hofId)
+                                    }
+                                }
+                            }
+
 
                     return "redirect:/generated/invoice/${invoiceId}"
                 }
