@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {StandardRequestService} from "../../../shared/services/standard-request.service";
 import {FormControl, FormGroup, NgForm} from "@angular/forms";
-import {Product, StandardRequest} from "./standardrequest";
+import {Department, Product, StandardRequest, TechnicalCommittee} from "./standardrequest";
 import {HttpErrorResponse} from "@angular/common/http";
 
 @Component({
@@ -12,19 +12,43 @@ import {HttpErrorResponse} from "@angular/common/http";
 export class StandardRequestComponent implements OnInit {
 
   public products : Product[] | undefined;
+  public departments: Department[] | undefined;
+  private committees: TechnicalCommittee[] | undefined;
 
   constructor(private standardRequestService:StandardRequestService) { }
 
 
 
   ngOnInit() {
-   this.getStandards();
+    this.getStandards();
+    this.getDepartments();
   }
 
   public getStandards(): void{
     this.standardRequestService.getStandards().subscribe(
       (response: Product[])=> {
         this.products = response;
+      },
+      (error: HttpErrorResponse)=>{
+        alert(error.message);
+      }
+    );
+  }
+  public getDepartments(): void{
+    this.standardRequestService.getDepartments().subscribe(
+      (response: Department[])=> {
+        this.departments = response;
+      },
+      (error: HttpErrorResponse)=>{
+        alert(error.message);
+      }
+    );
+  }
+
+  public getTechnicalCommittee(): void{
+    this.standardRequestService.getTechnicalCommittee().subscribe(
+      (response: TechnicalCommittee[])=> {
+        this.committees = response;
       },
       (error: HttpErrorResponse)=>{
         alert(error.message);

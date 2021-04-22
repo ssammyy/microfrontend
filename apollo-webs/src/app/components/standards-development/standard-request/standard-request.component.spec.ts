@@ -10,7 +10,7 @@ describe('StandardRequestComponent', () => {
     await TestBed.configureTestingModule({
       declarations: [ StandardRequestComponent ]
     })
-    .compileComponents();
+      .compileComponents();
   });
 
   beforeEach(() => {

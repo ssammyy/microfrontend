@@ -1,4 +1,3 @@
-
 <div class="row">
   <div class="col-sm-4"></div>
   <div class="col-sm-4" >
@@ -10,32 +9,30 @@
         <select class="form-control" ngModel name="department_id"  id="department_sector" data-toggle="tooltip"
                 data-placement="right" title="Select Department">
           <option value="null">--Select Department--</option>
-          <option value="01">AGRICULTURE</option>
-          <option value="02">CIVIL ENGINEERING</option>
-          <option value="04">ELECTRICAL ENGINEERING</option>
-          <option value="05">FOOD</option>
-          <option value="06">MECHANICAL ENGINEERING</option>
-          <option value="07">ICT</option>
-          <option value="08">TEXTILE</option>
-          <option value="09">SERVICES</option>
+          <option *ngFor="let department of departments" value="{{department.id}}}">{{department.name}}</option>
         </select>
       </div>
       <div class="form-group">
         <label for="tech_committee">Technical Committee</label>
         <select class="form-control" ngModel name="tc_id"  id="tech_committee" data-toggle="tooltip"
                 data-placement="right" title="Select Department">
-          <option value="null">--Select Technical Committee--</option>
-          <option value="01">Kenya National Committee of IEC (KNCIEC)</option>
-          <option value="02">Cereals and  pulses</option>
-          <option value="04">Tea</option>
+          <option *ngFor="let committee of committees" value="{{committee.id}}}">{{committee.technical_committee_no}}</option>
         </select>
       </div>
       <div class="form-group">
-        <label for="subcategory">Product Category</label>
+        <label for="productCategory">Product Category</label>
+        <select class="form-control" id="productCategory"  ngModel name="productcategory"  (ngModelChange)="selectedNode=$event.target.value"  data-toggle="tooltip"
+                data-placement="right" title="Select Product Category">
+          <option value="null">--Select Category--</option>
+          <option *ngFor="let product of products" value="{{product.id}}}">{{product.name}}</option>
+        </select>
+      </div>
+      <div class="form-group" *ngFor="let module of selectedNode.modules">
+        <label for="subcategory">Product Sub Category</label>
         <select class="form-control" id="subcategory"  ngModel name="product_category"  data-toggle="tooltip"
                 data-placement="right" title="Select Product Sub Category">
           <option value="null">--Select Sub Category--</option>
-          <option *ngFor="let product of products" value="{{product.id}}}">{{product.name}}</option>
+          <option *ngFor="let channel of module.channels" value="{{channel.id}}}">{{channel.name}}</option>
         </select>
       </div>
       <div class="form-group">
