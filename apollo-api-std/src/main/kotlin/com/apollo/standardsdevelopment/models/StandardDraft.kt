@@ -12,9 +12,11 @@ class StandardDraft {
 
     @Column(name="TITLE")
     @Basic
-    var name:String?=null
+    var title:String?=null
 
     @Column(name="CD")
     @Basic
     var cd:String?= null
+
+
 }

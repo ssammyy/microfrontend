@@ -185,7 +185,12 @@ class StandardRequestService(private val runtimeService: RuntimeService,
         return technicalCommitteeRepository.findAll()
     }
 
-    fun getProductCategories(id:ID): MutableList<ProductSubCategory>
+    /*fun getProductCategories(id:ID): MutableList<ProductSubCategory>
+    {
+        return productSubCategoryRepository.findAll()
+    }*/
+
+    fun getProductCategories(id:String?): MutableList<ProductSubCategory>
     {
         return productSubCategoryRepository.findAll()
     }

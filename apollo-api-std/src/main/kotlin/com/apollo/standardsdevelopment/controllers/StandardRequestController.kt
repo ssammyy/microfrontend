@@ -43,26 +43,48 @@ class StandardRequestController(val standardRequestService: StandardRequestServi
          return ServerResponse(HttpStatus.OK,"Successfully returned products",standardRequestService.getProducts());
     }*/
 
-    @PostMapping("/getProductCategories")
+    @GetMapping("/getProductCategories/{productId}")
+    @ResponseBody
+    fun getProductCategories(@PathVariable("productId") productId: String?): MutableList<ProductSubCategory>
+    {
+        return standardRequestService.getProductCategories(productId);
+    }
+
+    /*@PostMapping("/getProductCategories")
     @ResponseBody
     fun getProductCategories(@RequestBody id: ID): ServerResponse
     {
         return ServerResponse(HttpStatus.OK,"Successfully returned product categories",standardRequestService.getProductCategories(id));
-    }
+    }*/
+
 
     @GetMapping("/getDepartments")
+    @ResponseBody
+    fun getDepartments(): MutableList<Department>
+    {
+        return standardRequestService.getDepartments();
+    }
+
+    /*@GetMapping("/getDepartments")
     @ResponseBody
     fun getDepartments(): ServerResponse
     {
         return ServerResponse(HttpStatus.OK,"Successfully returned departments",standardRequestService.getDepartments());
-    }
+    }*/
 
     @GetMapping("/getTechnicalCommittee")
+    @ResponseBody
+    fun getTechnicalCommittee(): MutableList<TechnicalCommittee>
+    {
+        return standardRequestService.getTechnicalCommittee();
+    }
+
+    /*@GetMapping("/getTechnicalCommittee")
     @ResponseBody
     fun getTechnicalCommittee(): ServerResponse
     {
         return ServerResponse(HttpStatus.OK,"Successfully returned technical committee",standardRequestService.getTechnicalCommittee());
-    }
+    }*/
 
     @GetMapping("/getHOFTasks")
     fun getHOFTasks():List<TaskDetails>
