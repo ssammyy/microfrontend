@@ -18,3 +18,15 @@ export interface Product{
   name: string;
 
 }
+
+export interface Department{
+  id: number;
+  name: string;
+
+}
+
+export interface TechnicalCommittee{
+  id: number;
+  technical_committee_no: string;
+
+}

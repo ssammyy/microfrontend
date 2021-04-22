@@ -195,7 +195,16 @@ const routes: Routes = [
     path: 'add-user', component: AdministratorComponent,
     children: [{path: '', component: AddUserComponent}]
   },
+
+
+  /****************************************************************
+   * STANDARD DEVELOPMENT ROUTES
+   ***************************************************************/
   { path: 'request-standard', component: StandardRequestComponent },
+
+  /****************************************************************
+   * END OF STANDARD DEVELOPMENT ROUTES
+   ***************************************************************/
 
 ];
 
