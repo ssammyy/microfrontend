@@ -48,6 +48,8 @@ import {UserDetailsComponent} from './components/administrator/user-details/user
 import {AddUserComponent} from './components/administrator/add-user/add-user.component';
 import {AccessControlComponent} from './components/administrator/access-control/access-control.component';
 import {NgxPaginationModule} from 'ngx-pagination';
+import { StandardsDevelopmentComponent } from './components/standards-development/standards-development.component';
+import { StandardRequestComponent } from './components/standards-development/standard-request/standard-request.component';
 
 
 @NgModule({
@@ -86,6 +88,8 @@ import {NgxPaginationModule} from 'ngx-pagination';
     UserDetailsComponent,
     AddUserComponent,
     AccessControlComponent,
+    StandardsDevelopmentComponent,
+    StandardRequestComponent,
   ],
   exports: [
   ],

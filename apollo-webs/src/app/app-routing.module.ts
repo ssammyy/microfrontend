@@ -30,6 +30,7 @@ import {AdminHomeComponent} from './components/administrator/admin-home/admin-ho
 import {UsersListComponent} from './components/administrator/users-list/users-list.component';
 import {UserDetailsComponent} from './components/administrator/user-details/user-details.component';
 import {AddUserComponent} from './components/administrator/add-user/add-user.component';
+import {StandardRequestComponent} from "./components/standards-development/standard-request/standard-request.component";
 
 const routes: Routes = [
   // { path: 'login-signup', component: LoginSignupComponent },
@@ -185,7 +186,7 @@ const routes: Routes = [
     path: 'add-user', component: AdministratorComponent,
     children: [{path: '', component: AddUserComponent}]
   },
-
+  { path: 'request-standard', component: StandardRequestComponent },
 
 ];
 

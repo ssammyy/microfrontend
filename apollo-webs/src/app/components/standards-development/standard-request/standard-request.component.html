@@ -1,0 +1,69 @@
+
+<div class="row">
+  <div class="col-sm-4"></div>
+  <div class="col-sm-4" >
+
+    <form #savestandard="ngForm" (ngSubmit)="saveStandard(savestandard)">
+      <h3 style="align-items: center">Request Standard</h3>
+      <div class="form-group">
+        <label for="department_sector">Department/Sector</label>
+        <select class="form-control" ngModel name="department_id"  id="department_sector" data-toggle="tooltip"
+                data-placement="right" title="Select Department">
+          <option value="null">--Select Department--</option>
+          <option value="01">AGRICULTURE</option>
+          <option value="02">CIVIL ENGINEERING</option>
+          <option value="04">ELECTRICAL ENGINEERING</option>
+          <option value="05">FOOD</option>
+          <option value="06">MECHANICAL ENGINEERING</option>
+          <option value="07">ICT</option>
+          <option value="08">TEXTILE</option>
+          <option value="09">SERVICES</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="tech_committee">Technical Committee</label>
+        <select class="form-control" ngModel name="tc_id"  id="tech_committee" data-toggle="tooltip"
+                data-placement="right" title="Select Department">
+          <option value="null">--Select Technical Committee--</option>
+          <option value="01">Kenya National Committee of IEC (KNCIEC)</option>
+          <option value="02">Cereals and  pulses</option>
+          <option value="04">Tea</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="subcategory">Product Category</label>
+        <select class="form-control" id="subcategory"  ngModel name="product_category"  data-toggle="tooltip"
+                data-placement="right" title="Select Product Sub Category">
+          <option value="null">--Select Sub Category--</option>
+          <option *ngFor="let product of products" value="{{product.id}}}">{{product.name}}</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="requestNumber">Request Number*</label>
+        <input type="text" class="form-control" id="requestNumber"  ngModel name="requestNumber" data-toggle="tooltip"
+               data-placement="right" title="Enter Request Number*" >
+        <input type="hidden" value="78" ngModel name="id">
+      </div>
+      <div class="form-group">
+        <label for="username">Enter your name*</label>
+        <input type="text" class="form-control" id="username"  ngModel name="name" data-toggle="tooltip"
+               data-placement="right" title="Enter your name*" >
+
+      </div>
+      <div class="form-group">
+        <label for="phoneNumber">Enter Phone Number*</label>
+        <input type="text" class="form-control" id="phoneNumber"  ngModel name="phone" data-toggle="tooltip"
+               data-placement="right" title="Enter Phone Number*" >
+
+      </div>
+
+      <div class="form-group">
+        <label for="emailAddress">Enter Email Address*</label>
+        <input type="text" class="form-control" id="emailAddress" ngModel name="email"
+               data-toggle="tooltip" data-placement="right" title="Enter Email Address">
+      </div>
+      <button [disabled]="savestandard.invalid"  type="submit" class="btn btn-primary float-right">Send request</button>
+    </form>
+  </div>
+  <div class="col-sm-4"></div>
+</div>
