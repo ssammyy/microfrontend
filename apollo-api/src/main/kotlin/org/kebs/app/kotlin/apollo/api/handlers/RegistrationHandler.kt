@@ -121,7 +121,7 @@ class RegistrationHandler(
             val map = commonDaoServices.serviceMapDetails(appId)
             val dto = req.body<UserEntityDto>()
             dto.id = -1L
-            dto.userName = dto.email
+            dto.userName = dto.userPinIdNumber
             dto.userRegNo = "KEBS${generateRandomText(5, map.secureRandom, map.messageDigestAlgorithm, true).toUpperCase()}"
             systemsAdminDaoService.updateUserDetails(dto)?.let {
                 return ok().body(it)

@@ -137,3 +137,31 @@ export class AuthoritiesEntityDto {
   descriptions?: string;
   status?: boolean;
 }
+
+export class UserRequestTypesEntityDto {
+  id?: bigint;
+  userRequest?: string;
+  description?: string;
+  status?: boolean;
+}
+
+export class UserRequestEntityDto {
+  id?: bigint;
+  requestId?: bigint;
+  userId?: bigint;
+  userRoleAssigned?: bigint;
+  requestStatus?: boolean;
+  description?: string;
+  status?: boolean;
+}
+
+export class UserRequestDetailEntityDto {
+  id?: bigint;
+  requestName?: string;
+  userName?: string;
+  userId?: bigint;
+  userRoleAssignedName?: string;
+  requestStatus?: boolean;
+  description?: string;
+  status?: boolean;
+}

@@ -50,6 +50,7 @@ import {AccessControlComponent} from './components/administrator/access-control/
 import {NgxPaginationModule} from 'ngx-pagination';
 import { StandardsDevelopmentComponent } from './components/standards-development/standards-development.component';
 import { StandardRequestComponent } from './components/standards-development/standard-request/standard-request.component';
+import { UserProfileComponent } from './components/home/user-profile/user-profile.component';
 
 
 @NgModule({
@@ -90,6 +91,7 @@ import { StandardRequestComponent } from './components/standards-development/sta
     AccessControlComponent,
     StandardsDevelopmentComponent,
     StandardRequestComponent,
+    UserProfileComponent,
   ],
   exports: [
   ],

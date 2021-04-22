@@ -64,16 +64,16 @@ class DestinationInspectionController(
                 val cdID: Long = consignmentDocument.id?.let { commonDaoServices.makeAnyNotBeNull(it) } as Long
                 cdDetails.id = cdID
                 var cdStatusType: CdStatusTypesEntity? = null
+
+
                 when {
+                    // Assign Officer Function
                     cdDetails.confirmAssignedUserId != null -> {
                         with(cdDetails) {
                             assignedInspectionOfficer =
                                 confirmAssignedUserId?.let { commonDaoServices.findUserByID(it) }
                             val userProfile = assignedInspectionOfficer?.let {
-                                commonDaoServices.findUserProfileByUserID(
-                                    it,
-                                    map.activeStatus
-                                )
+                                commonDaoServices.findUserProfileByUserID(it, map.activeStatus)
                             }
                             assigner = userProfile?.sectionId?.let {
                                 commonDaoServices.findUserProfileWithSectionIdAndDesignationId(
@@ -84,6 +84,7 @@ class DestinationInspectionController(
                             }
                         }
                     }
+                    // Approve or Reject Function
                     cdDetails.approveRejectCdStatus == map.activeStatus -> {
                         KotlinLogging.logger { }.info { "approveRejectCdStatusType = $cdDetails.confirmCdStatusTypeId" }
                         cdStatusType = cdDetails.confirmCdStatusTypeId?.let { daoServices.findCdStatusValue(it) }
@@ -93,20 +94,17 @@ class DestinationInspectionController(
                             }
                         }
                     }
+                    // Local coi Function
                     cdDetails.localCoi == map.activeStatus -> {
-
                         with(cdDetails) {
                             localCoiRemarks = localCocOrCorRemarks
                         }
-
                     }
                 }
                 //updating of Details in DB
                 val updatedCDDetails = daoServices.updateCdDetailsInDB(
-                    commonDaoServices.updateDetails(
-                        cdDetails,
-                        consignmentDocument
-                    ) as ConsignmentDocumentDetailsEntity, loggedInUser
+                    commonDaoServices.updateDetails(cdDetails, consignmentDocument) as ConsignmentDocumentDetailsEntity,
+                    loggedInUser
                 )
 //                                            val updatedCDDetails = com.updateCDDetails(cdDetails, cdID, loggedInUser, map)
 
@@ -114,49 +112,39 @@ class DestinationInspectionController(
                 //Todo: Use the method for saving details
                 if (updatedCDDetails.cdType?.let { daoServices.findCdTypeDetails(it).uuid } == daoServices.noCorCdType) {
                     updatedCDDetails.id?.let {
-                        daoServices.loopAllItemsInCDToBeTargeted(
-                            it,
-                            updatedCDDetails,
-                            map,
-                            loggedInUser
-                        )
+                        daoServices.loopAllItemsInCDToBeTargeted(it, updatedCDDetails, map, loggedInUser)
                     }
                 }
 
                 when {
+                    // CD transaction log Details Function
                     cdDetails.freightStation != null && cdDetails.portOfArrival != null && cdDetails.clusterId != null -> {
                         updatedCDDetails.assignPortRemarks?.let {
                             processStages.process1?.let { it1 ->
-                                daoServices.createCDTransactionLog(
-                                    map,
-                                    loggedInUser,
-                                    cdID,
-                                    it,
-                                    it1
-                                )
+                                daoServices.createCDTransactionLog(map, loggedInUser, cdID, it, it1)
                             }
                         }
                     }
-                     cdDetails.approveRejectCdStatus == map.activeStatus -> {
-                            //Send Approval/Rejection message
-                            if (cdStatusType != null) {
-                                cdStatusType.statusCode?.let {
-                                    cdDetails.approveRejectCdRemarks?.let { it1 ->
-                                        daoServices.submitCDStatusToKesWS(
-                                            it1,
-                                            it,
-                                            consignmentDocument.version.toString(),
-                                            consignmentDocument
-                                        )
-                                        cdDetails.cdStandard?.let { cdStd ->
-                                            cdDetails.approveRejectCdStatusType?.id?.let { it2 ->
-                                                daoServices.updateCDStatus(cdStd, it2)
-                                            }
+                    //Send Approval/Rejection message To Single Window
+                    cdDetails.approveRejectCdStatus == map.activeStatus -> {
+                        if (cdStatusType != null) {
+                            cdStatusType.statusCode?.let {
+                                cdDetails.approveRejectCdRemarks?.let { it1 ->
+                                    daoServices.submitCDStatusToKesWS(
+                                        it1,
+                                        it,
+                                        consignmentDocument.version.toString(),
+                                        consignmentDocument
+                                    )
+                                    cdDetails.cdStandard?.let { cdStd ->
+                                        cdDetails.approveRejectCdStatusType?.id?.let { it2 ->
+                                            daoServices.updateCDStatus(cdStd, it2)
                                         }
                                     }
                                 }
-
                             }
+
+                        }
                         //Update Check CD task in Bpm
                         cdDetails.id?.let { it1 ->
                             cdDetails.assigner?.id?.let { it2 ->
@@ -166,25 +154,41 @@ class DestinationInspectionController(
                             }
                         }
                     }
+                    //Function for assigning IO
                     cdDetails.assignedStatus == map.activeStatus -> {
 //                            val payload = "Assigned Inspection Officer [assignedStatus= ${updatedCDDetails.assignedStatus}, assignedRemarks= ${updatedCDDetails.assignedRemarks}]"
 //                            val sr = commonDaoServices.mapServiceRequestForSuccess(map, payload, loggedInUser)
 //                            updatedCDDetails.assignedInspectionOfficer?.let { commonDaoServices.sendEmailWithUserEntity(it, daoServices.diCdAssignedUuid, updatedCDDetails, map, sr) }
                         updatedCDDetails.assignedRemarks?.let {
                             processStages.process2?.let { it1 ->
-                                daoServices.createCDTransactionLog(
-                                    map,
-                                    loggedInUser,
-                                    cdID,
-                                    it,
-                                    it1
-                                )
+                                daoServices.createCDTransactionLog(map, loggedInUser, cdID, it, it1)
                             }
+                        }
+                        cdDetails.cdStandard?.let { cdStd ->
+                            daoServices.updateCDStatus(cdStd, applicationMapProperties.mapDIStatusTypeAssignIoId)
                         }
                         //Start the relevant BPM
                         daoServices.startDiBpmProcessByCdType(updatedCDDetails)
                         daoServices.assignIOBpmTask(updatedCDDetails)
                     }
+                    //Function for reassigning IO
+                    cdDetails.reassignedStatus == map.activeStatus -> {
+//                            val payload = "Assigned Inspection Officer [assignedStatus= ${updatedCDDetails.assignedStatus}, assignedRemarks= ${updatedCDDetails.assignedRemarks}]"
+//                            val sr = commonDaoServices.mapServiceRequestForSuccess(map, payload, loggedInUser)
+//                            updatedCDDetails.assignedInspectionOfficer?.let { commonDaoServices.sendEmailWithUserEntity(it, daoServices.diCdAssignedUuid, updatedCDDetails, map, sr) }
+                        updatedCDDetails.reassignedRemarks?.let {
+                            processStages.process2?.let { it1 ->
+                                daoServices.createCDTransactionLog(map, loggedInUser, cdID, it, it1)
+                            }
+                        }
+                        cdDetails.cdStandard?.let { cdStd ->
+                            daoServices.updateCDStatus(cdStd, applicationMapProperties.mapDIStatusTypeReassignIoId)
+                        }
+                        //Start the relevant BPM
+                        daoServices.startDiBpmProcessByCdType(updatedCDDetails)
+                        daoServices.assignIOBpmTask(updatedCDDetails)
+                    }
+                    //Function for blackList awaiting approval
                     cdDetails.blacklistStatus == map.activeStatus -> {
                         val payload =
                             "BlackList Consignment Document [blacklistStatus= ${updatedCDDetails.blacklistStatus}, blacklistRemarks= ${updatedCDDetails.blacklistRemarks}]"
@@ -210,6 +214,7 @@ class DestinationInspectionController(
                             }
                         }
                     }
+                    //Send Demand Note
                     cdDetails.sendDemandNote == map.activeStatus -> {
                         //Send Demand Note
                         val demandNote = updatedCDDetails.id?.let {
@@ -253,6 +258,7 @@ class DestinationInspectionController(
                                                         cdStd,
                                                         daoServices.awaitPaymentStatus.toLong()
                                                     )
+
                                                 }
                                             }
                                         }
@@ -268,6 +274,7 @@ class DestinationInspectionController(
 //                                }
 //                            }
                     }
+                    //Function for blackList approved
                     cdDetails.blacklistApprovedStatus == map.activeStatus -> {
                         when (cdDetails.blacklistId) {
                             applicationMapProperties.mapRiskProfileImporter -> {
@@ -336,23 +343,22 @@ class DestinationInspectionController(
                             }
                         }
                     }
-                    cdDetails.processRejectionStatus == map.activeStatus -> {
-                        cdDetails.cdStandard?.let {
-                            daoServices.updateCDStatus(
-                                it,
-                                daoServices.rejectedStatus.toLong()
-                            )
-                        }
-                    }
-
+                    //Send Coi Data to Single Window
                     cdDetails.sendCoiStatus == map.activeStatus -> {
                         val localCoi = updatedCDDetails.ucrNumber?.let { daoServices.findCOC(it) }
                         if (localCoi != null) {
                             daoServices.localCoiItems(updatedCDDetails, localCoi, loggedInUser, map)
                             daoServices.sendLocalCoi(localCoi.id)
+                            cdDetails.cdStandard?.let { cdStd ->
+                                daoServices.updateCDStatus(
+                                    cdStd,
+                                    applicationMapProperties.mapDICdStatusTypeCOIGeneratedAndSendID
+                                )
+                            }
                         }
 
                     }
+                    //Send LOCAL COI/COC/COR Data to Single Window
                     cdDetails.localCocOrCorStatus == map.activeStatus -> {
                         if (updatedCDDetails.cdType?.let { daoServices.findCdTypeDetails(it).localCocStatus } == map.activeStatus) {
 
@@ -363,6 +369,12 @@ class DestinationInspectionController(
                                 }
                                 else -> {
                                     val localCoc = daoServices.createLocalCoc(loggedInUser, updatedCDDetails, map, "A")
+                                    cdDetails.cdStandard?.let { cdStd ->
+                                        daoServices.updateCDStatus(
+                                            cdStd,
+                                            applicationMapProperties.mapDICdStatusTypeCOCGeneratedAndSendID
+                                        )
+                                    }
                                     KotlinLogging.logger { }.info { "localCoc = ${localCoc.id}" }
 //                                    daoServices.localCocItems(updatedCDDetails, localCoc, loggedInUser, map)
 //                                    daoServices.sendLocalCoc(localCoc.id)
@@ -373,6 +385,12 @@ class DestinationInspectionController(
                         } else if (updatedCDDetails.cdType?.let { daoServices.findCdTypeDetails(it).localCorStatus } == map.activeStatus) {
                             daoServices.generateCor(updatedCDDetails, map, loggedInUser).let {
                                 daoServices.submitCoRToKesWS(it)
+                                cdDetails.cdStandard?.let { cdStd ->
+                                    daoServices.updateCDStatus(
+                                        cdStd,
+                                        applicationMapProperties.mapDICdStatusTypeCORGeneratedAndSendID
+                                    )
+                                }
                             }
                         }
                     }

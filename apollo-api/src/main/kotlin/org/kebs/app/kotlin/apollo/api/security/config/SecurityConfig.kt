@@ -30,6 +30,7 @@ import org.springframework.security.web.AuthenticationEntryPoint
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher
+import org.springframework.web.servlet.config.annotation.CorsRegistry
 
 @EnableWebSecurity
 @Configuration
@@ -47,6 +48,9 @@ class WebSecurityConfig {
             private val passwordEncoder: PasswordEncoder
     ) : WebSecurityConfigurerAdapter() {
 
+        fun addCorsMappings(registry: CorsRegistry) {
+            registry.addMapping("/**").allowedOrigins("*").allowedMethods("GET", "POST", "PUT", "DELETE")
+        }
 
         @Bean
         fun authenticationTokenFilterBean(): JWTAuthorizationFilter {
@@ -64,10 +68,10 @@ class WebSecurityConfig {
             http.cors().and().csrf().disable()
                     .antMatcher("/api/v1/**")
                     .authorizeRequests()
+                    .antMatchers(HttpMethod.OPTIONS,"/**").permitAll()
                     .antMatchers(
                             "/api/v1/login", "/api/v1/sftp/kesws/download", "/api/v1/auth/**")
                     .permitAll()
-                    .antMatchers(HttpMethod.OPTIONS,"/**").permitAll()
                     .anyRequest().authenticated()
                     .and()
                     .exceptionHandling()
@@ -94,6 +98,9 @@ class WebSecurityConfig {
 
     ) {
 
+        fun addCorsMappings(registry: CorsRegistry) {
+            registry.addMapping("/**").allowedOrigins("*").allowedMethods("GET", "POST", "PUT", "DELETE")
+        }
 
         @Bean
         fun accessDeniedHandler(): CustomAccessDeniedHandler = CustomAccessDeniedHandler()
@@ -118,7 +125,7 @@ class WebSecurityConfig {
                     .requiresChannel().anyRequest().requiresSecure()
                     .and()
                     .httpBasic().disable()
-                    .csrf().disable()
+                    .cors().and().csrf().disable()
                     .authorizeRequests()
                     .antMatchers(
                             "/api/sftp/kesws/download",
@@ -173,8 +180,6 @@ class WebSecurityConfig {
                     .defaultAuthenticationEntryPointFor(mainAuthenticationEntryPoint("/auth/login"), AntPathRequestMatcher("/"))
                     .accessDeniedPage("/accessDenied")
                     .accessDeniedHandler(accessDeniedHandler())
-
-
         }
 
         fun loginSuccessHandler(url: String?): RefererAuthenticationSuccessHandler =

@@ -16,39 +16,52 @@ Content-Type: application/json
 ###GET all tasks assigned to a HOF
 GET http://localhost:8080/standard/getHOFTasks
 
-###GET Complete review by HOF
-GET http://localhost:8080/standard/hof/review/86af0467-9e93-11eb-bcc5-2c337a287f07
+###POST Complete review by HOF
+POST http://localhost:8080/standard/hof/review
+Content-Type: application/json
+
+{
+  "id": "4a2d34c4-a35b-11eb-8f9a-fe5c68490b49"
+}
 
 ###GET all tasks assigned to a TC-SEC
 GET http://localhost:8080/standard/getTCSECTasks
 
 ###POST apply for standard request
-POST http://localhost:8080/standard/uploadNWI/faf25a81-9e93-11eb-bcc5-2c337a287f07
+POST http://localhost:8080/standard/uploadNWI
 Content-Type: application/json
 
 {
   "proposal_title": "ENG/01:2021",
-  "name_of_proposer": "Edwin Inganji"
+  "name_of_proposer": "Edwin Inganji",
+  "taskId": "62d1097e-a35b-11eb-8f9a-fe5c68490b49"
 }
 
 ###GET all tasks assigned to a TC
 GET http://localhost:8080/standard/getTCTasks
 
 ### POST Provide decision on NWI
-POST http://localhost:8080/standard/decisionOnNWI/2f29a9c7-9e94-11eb-bcc5-2c337a287f07/true
+POST http://localhost:8080/standard/decisionOnNWI
+Content-Type: application/json
+
+{
+  "taskId": "76ccd9f4-a35b-11eb-8f9a-fe5c68490b49",
+  "decision": "true"
+}
 
 ###GET all tasks assigned to a TC
 GET http://localhost:8080/standard/tc-sec/tasks
 
 
 ###POST upload justification
-POST http://localhost:8080/standard/uploadJustification/67d1999e-9e94-11eb-bcc5-2c337a287f07
+POST http://localhost:8080/standard/uploadJustification
 Content-Type: application/json
 
 {
   "title": "ENG/01:2021",
   "scope": "scope",
-  "purpose": "purpose"
+  "purpose": "purpose",
+  "taskId": "9500f00b-a35b-11eb-8f9a-fe5c68490b49"
 }
 
 
@@ -56,25 +69,52 @@ Content-Type: application/json
 GET http://localhost:8080/standard/spc-sec/tasks
 
 ### POST Provide decision on Justification
-POST http://localhost:8080/standard/decisionOnJustification/7ffac014-9e94-11eb-bcc5-2c337a287f07/true
+POST http://localhost:8080/standard/decisionOnJustification
+Content-Type: application/json
+
+{
+  "taskId": "a68d4721-a35b-11eb-8f9a-fe5c68490b49",
+  "decision": "true"
+}
 
 ###GET all tasks assigned to a TC for the workplan
 GET http://localhost:8080/standard/tc-sec/tasks/workplan
 
 ###POST upload workplan
-POST http://localhost:8080/standard/uploadWorkPlan/94169bab-9e94-11eb-bcc5-2c337a287f07
+POST http://localhost:8080/standard/uploadWorkPlan
 Content-Type: application/json
 
 {
-  "title": "ENG/01:2021"
+  "title": "ENG/01:2021",
+  "taskId": "b3326e18-a35b-11eb-8f9a-fe5c68490b49"
 }
 
+###GET Department
+GET http://localhost:8080/standard/getDepartments
+
+###GET technical committee
+GET http://localhost:8080/standard/getTechnicalCommittee
 
 ###GET products
 GET http://localhost:8080/standard/getProducts
 
-###GET process state
-GET http://localhost:8080/standard/process/7fe5cdcf-9e93-11eb-bcc5-2c337a287f07
+###POST Product categories
+POST http://localhost:8080/standard/getProductCategories
+Content-Type: application/json
+
+{
+  "id": "1"
+}
+
+
+
+###POST process state
+POST http://localhost:8080/standard/process
+Content-Type: application/json
+
+{
+  "id": "46ae472c-a35b-11eb-8f9a-fe5c68490b49"
+}
 
 ###
 

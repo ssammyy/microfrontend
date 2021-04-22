@@ -55,7 +55,8 @@ class JWTAuthorizationFilter : OncePerRequestFilter() {
             request: HttpServletRequest, response: HttpServletResponse,
             filterChain: FilterChain
     ) {
-        response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"))
+        KotlinLogging.logger { }.info { ":::::: Request recieved in filter :::::::::::" }
+        response.setHeader("Access-Control-Allow-Origin", "*")
         response.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
         response.setHeader("Access-Control-Allow-Headers", "Content-Type, Accept, X-Requested-With")
         response.setHeader("Access-Control-Allow-Credentials", "true")

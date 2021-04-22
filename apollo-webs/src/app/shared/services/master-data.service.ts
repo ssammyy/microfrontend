@@ -60,6 +60,10 @@ export class MasterDataService {
     return this.http.get<any>(`${this.sysAdmin}masters/divisions/load`);
   }
 
+  loadRequestTypeSystemAdmin(status: number): any {
+    return this.http.get<any>(`${this.sysAdmin}masters/userRequestType/loads/${status}`);
+  }
+
   loadDirectorateSystemAdmin(): any {
     return this.http.get<any>(`${this.sysAdmin}masters/directorate/load`);
   }

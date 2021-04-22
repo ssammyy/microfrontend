@@ -170,6 +170,7 @@ class SystemsAdministrationHandler(
 
     }
 
+
     @PreAuthorize("hasAuthority('ROLES_LIST')")
     fun roleListing(req: ServerRequest): ServerResponse {
 
@@ -245,8 +246,27 @@ class SystemsAdministrationHandler(
             }
             val records = req.paramOrNull("records")?.toIntOrNull() ?: 20
             daoService.listUsers(page, records)
-                    ?.let { return ok().body(it) }
-                    ?: throw NullValueNotAllowedException("No users found")
+                ?.let { return ok().body(it) }
+                ?: throw NullValueNotAllowedException("No users found")
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            return badRequest().body(e.message ?: "Unknown Error")
+        }
+    }
+
+    @PreAuthorize("hasAuthority('USERS_LIST')")
+    fun listUserRequests(req: ServerRequest): ServerResponse {
+        try {
+            //Todo: Ask ken why put a 1 instead of 0
+            var page = req.paramOrNull("page")?.toIntOrNull() ?: 0
+            when {
+                page < 0 -> page = 0
+            }
+            val records = req.paramOrNull("records")?.toIntOrNull() ?: 20
+            daoService.listUsersRequest(page, records)
+                ?.let { return ok().body(it) }
+                ?: throw NullValueNotAllowedException("No users Request found")
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
@@ -430,6 +450,42 @@ class SystemsAdministrationHandler(
         }
     }
 
+    @PreAuthorize("hasAuthority('RBAC_ASSIGN_ROLE')")
+    fun assignRoleToUserThroughRequest(req: ServerRequest): ServerResponse {
+        return try {
+            req.pathVariable("status").toIntOrNull()
+                ?.let { status ->
+                    req.pathVariable("userId").toLongOrNull()
+                        ?.let { userId ->
+                            req.pathVariable("roleId").toLongOrNull()
+                                ?.let { roleId ->
+                                    req.pathVariable("requestID").toLongOrNull()
+                                        ?.let { requestId ->
+                                            val u = UserRequestEntityDto()
+                                            u.userId = userId
+                                            u.requestId = requestId
+                                            u.userRoleAssigned = daoService.assignRoleToUser(userId, roleId, status)?.roleId
+                                            daoService.userRequest(u)
+                                                ?.let { ok().body(it) }
+                                                ?: throw NullValueNotAllowedException("No records found")
+                                        }
+                                        ?: throw InvalidValueException("Valid value for roleId required")
+                                }
+                                ?: throw InvalidValueException("Valid value for roleId required")
+
+                        }
+                        ?: throw InvalidValueException("Valid value for userId required")
+
+                }
+                ?: throw InvalidValueException("Valid value for status required")
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            badRequest().body(e.message ?: "Unknown Error")
+        }
+    }
+
     @PreAuthorize("hasAuthority('RBAC_REVOKE_ROLE')")
     fun revokeRoleFromUser(req: ServerRequest): ServerResponse {
         return try {
@@ -589,7 +645,7 @@ class SystemsAdministrationHandler(
         try {
             val map = commonDaoServices.serviceMapDetails(appId)
             val dto = req.body<UserEntityDto>()
-            dto.userName = dto.email
+            dto.userName = dto.userPinIdNumber
             dto.userRegNo =
                 "KEBS#EMP${generateRandomText(5, map.secureRandom, map.messageDigestAlgorithm, true).toUpperCase()}"
             daoService.updateUserDetails(dto)?.let {
@@ -614,6 +670,25 @@ class SystemsAdministrationHandler(
                 return ok().body(it)
             }
                 ?: throw NullValueNotAllowedException("Update failed")
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            return badRequest().body(e.message ?: "Unknown Error")
+        }
+    }
+
+    @PreAuthorize("hasAuthority('USER')")
+    fun usersRequests(req: ServerRequest): ServerResponse {
+        try {
+            req.pathVariable("userId").toLongOrNull()
+                ?.let { id ->
+                    val dto = req.body<UserRequestEntityDto>()
+                    dto.userId = id
+                    daoService.userRequest(dto)?.let {
+                        return ok().body(it)
+                    }
+                        ?: throw NullValueNotAllowedException("User ID is null")
+                } ?: throw NullValueNotAllowedException("Update failed")
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)

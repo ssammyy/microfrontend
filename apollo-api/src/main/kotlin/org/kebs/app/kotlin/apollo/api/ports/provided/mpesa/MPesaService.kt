@@ -3,6 +3,7 @@ package org.kebs.app.kotlin.apollo.api.ports.provided.mpesa
 
 import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
+import io.ktor.client.statement.*
 import org.jasypt.encryption.StringEncryptor
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DaoService
@@ -10,8 +11,8 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.mpesa.requests.MpesaLoginRe
 import org.kebs.app.kotlin.apollo.api.ports.provided.mpesa.requests.MpesaPushRequest
 import org.kebs.app.kotlin.apollo.api.ports.provided.mpesa.requests.MpesaTransactionsRequest
 import org.kebs.app.kotlin.apollo.api.ports.provided.mpesa.response.MpesaPushResponse
-import org.kebs.app.kotlin.apollo.common.dto.eac.responses.TokenRequestResult
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
+import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.*
 import org.kebs.app.kotlin.apollo.store.repo.IIntegrationConfigurationRepository
@@ -25,12 +26,12 @@ import java.util.regex.Pattern
 
 @Service
 class MPesaService(
-        private val iMpesaTransactionsRepo: IMpesaTransactionsRepository,
-        private val commonDaoServices: CommonDaoServices,
-        private val jasyptStringEncryptor: StringEncryptor,
-        private val daoService: DaoService,
-        private  val applicationMapProperties: ApplicationMapProperties,
-        private val configurationRepository: IIntegrationConfigurationRepository
+    private val iMpesaTransactionsRepo: IMpesaTransactionsRepository,
+    private val commonDaoServices: CommonDaoServices,
+    private val jasyptStringEncryptor: StringEncryptor,
+    private val daoService: DaoService,
+    private val applicationMapProperties: ApplicationMapProperties,
+    private val configurationRepository: IIntegrationConfigurationRepository
 
 ) {
 
@@ -71,46 +72,42 @@ class MPesaService(
                     config = loginRequest(loginUrl, transactionRef, config)
                 }
             }
-            when {
-                commonDaoServices.getTimestamp() > config.tokenTimeExpires -> {
-                    config = loginRequest(loginUrl, transactionRef, config)
-                }
-                else -> {
-                    val headerParameters = mutableMapOf<String, String>()
-                    config.token.let { headerParameters["Authorization"] = it }
-                    KotlinLogging.logger { }.info("$headerParameters")
-
-                    val response = pushRequest(
-                        pushUrl,
-                        amount,
-                        phoneNumber,
-                        invoiceReference,
-                        transactionRef,
-                        config,
-                        headerParameters
-                    ).second
-
-                    response?.merchantRequestID
-                        ?.let { merchantCode ->
-                            val checkOutCode = response.checkoutRequestID.toString()
-                            val mpesaTransaction = mpesaTransactionEntity(
-                                invoiceReference,
-                                invoiceSource,
-                                merchantCode,
-                                userName,
-                                checkOutCode,
-                                map
-                            )
-                            KotlinLogging.logger { }.info { "MPESA TRANSACTION DONE ID = ${mpesaTransaction.id}" }
-                        }
-                        ?: run {
-                            log.transactionStatus = 20
-                            log.transactionCompletedDate = Timestamp.from(Instant.now())
-                            KotlinLogging.logger { }.error("Failed")
-                        }
-
-                }
+            if (commonDaoServices.getTimestamp() > config.tokenTimeExpires) {
+                config = loginRequest(loginUrl, transactionRef, config)
             }
+
+            val headerParameters = mutableMapOf<String, String>()
+            config.token.let { headerParameters["Authorization"] = it }
+            KotlinLogging.logger { }.info("$headerParameters")
+
+            val response = pushRequest(
+                pushUrl,
+                amount,
+                phoneNumber,
+                invoiceReference,
+                transactionRef,
+                config,
+                headerParameters
+            ).second
+
+            response?.merchantRequestID
+                ?.let { merchantCode ->
+                    val checkOutCode = response.checkoutRequestID.toString()
+                    val mpesaTransaction = mpesaTransactionEntity(
+                        invoiceReference,
+                        invoiceSource,
+                        merchantCode,
+                        userName,
+                        checkOutCode,
+                        map
+                    )
+                    KotlinLogging.logger { }.info { "MPESA TRANSACTION DONE ID = ${mpesaTransaction.id}" }
+                }
+                ?: run {
+                    log.transactionStatus = 20
+                    log.transactionCompletedDate = Timestamp.from(Instant.now())
+                    KotlinLogging.logger { }.error("Failed")
+                }
 
         }
     }
@@ -127,13 +124,13 @@ class MPesaService(
         return configurationRepository.save(config)
     }
 
-//    private fun sampleExtractTokenFromHeader(tokenResponse: HttpResponse?): String? {
-//        tokenResponse
-//                ?.let { response ->
-//                    return response.headers["Authorization"]
-//                }
-//                ?: throw NullValueNotAllowedException("Response cannot be empty")
-//    }
+    private fun sampleExtractTokenFromHeader(tokenResponse: HttpResponse?): String? {
+        tokenResponse
+            ?.let { response ->
+                return response.headers["Authorization"]
+            }
+            ?: throw NullValueNotAllowedException("Response cannot be empty")
+    }
 
 //    private fun updateMpesaTransactionEntity(merchantCode: String, checkOutCode: String, response: MpesaValidationResponse, map: ServiceMapsEntity): MpesaTransactionEntity {
 //        val mpesaTransaction = findMpesaTransactionEntity(merchantCode, checkOutCode)
@@ -181,20 +178,22 @@ class MPesaService(
         return daoService.processResponses(resp, log, url, config)
     }
 
-    private suspend fun loginRequest(url: String, transactionRef: String, config: IntegrationConfigurationEntity): IntegrationConfigurationEntity {
+    private suspend fun loginRequest(
+        url: String,
+        transactionRef: String,
+        config: IntegrationConfigurationEntity
+    ): IntegrationConfigurationEntity {
         val loginRequest = MpesaLoginRequest()
         loginRequest.username = jasyptStringEncryptor.decrypt(config.username)
         loginRequest.password = jasyptStringEncryptor.decrypt(config.password)
 
-        val log2 = daoService.createTransactionLog(0, "${transactionRef}_0")
+        daoService.createTransactionLog(0, "${transactionRef}_0")
         val tokenResponse = daoService.getHttpResponseFromPostCall(false, url, null, loginRequest, config, null, null)
-        val data = daoService.processResponses<String>(tokenResponse, log2, url, config)
-        val tokenResult = data.second ?: throw ExpectedDataNotFound("TOKEN NOT FOUND")
-//        var respToken = sampleExtractTokenFromHeader(tokenResponse)
-//        if (tokenResult.isNullOrEmpty()){
-//            respToken = ""
-//        }
-        return saveTokenToConfigIntegration(tokenResult, config)
+        var respToken = sampleExtractTokenFromHeader(tokenResponse)
+        if (respToken.isNullOrEmpty()) {
+            respToken = ""
+        }
+        return saveTokenToConfigIntegration(respToken, config)
     }
 
     private fun mpesaTransactionEntity(
@@ -238,7 +237,8 @@ class MPesaService(
 
     fun sanitizePhoneNumber(inputPhone: String): String? {
         var validPhoneNo: String? = "Fasle"
-        val safaricom = "^(?:254|\\+254|0)?(7(?:(?:[129][0-9])|(?:0[0-9])|(?:6[8-9])|(?:5[7-9])|(?:4[5-6])|(?:4[8])|(4[0-3]))[0-9]{6})$"
+        val safaricom =
+            "^(?:254|\\+254|0)?(7(?:(?:[129][0-9])|(?:0[0-9])|(?:6[8-9])|(?:5[7-9])|(?:4[5-6])|(?:4[8])|(4[0-3]))[0-9]{6})$"
         val telkom = "^(?:254|\\+254|0)?(7(?:(?:[7][0-9]))[0-9]{6})$"
         val airtel = "^(?:254|\\+254|0)?(7(?:(?:[3][0-9])|(?:5[0-6])|(?:6[2])|(8[0-9]))[0-9]{6})$"
         var patt: Pattern

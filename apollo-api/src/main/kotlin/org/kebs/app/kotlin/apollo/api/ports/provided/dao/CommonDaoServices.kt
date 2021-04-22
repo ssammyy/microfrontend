@@ -714,7 +714,7 @@ class CommonDaoServices(
 
     //    generating token
     private fun generateTransactionReference(map: ServiceMapsEntity): String =
-            generateRandomText(map.transactionRefLength, map.secureRandom, map.messageDigestAlgorithm, false)
+            generateRandomText(map.transactionRefLength, map.secureRandom, map.messageDigestAlgorithm, false).toUpperCase()
 
     fun createServiceRequest(s: ServiceMapsEntity): ServiceRequestsEntity {
         var serviceRequests = ServiceRequestsEntity()
