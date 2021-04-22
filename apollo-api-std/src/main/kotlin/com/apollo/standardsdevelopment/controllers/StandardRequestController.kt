@@ -29,13 +29,19 @@ class StandardRequestController(val standardRequestService: StandardRequestServi
         return ServerResponse(HttpStatus.OK,"Successfully uploaded standard request",standardRequestService.requestForStandard(standardRequest))
     }
 
-
     @GetMapping("/getProducts")
+    @ResponseBody
+    fun getProducts(): MutableList<Product>
+    {
+        return standardRequestService.getProducts();
+    }
+
+   /* @GetMapping("/getProducts")
     @ResponseBody
     fun getProducts(): ServerResponse
     {
          return ServerResponse(HttpStatus.OK,"Successfully returned products",standardRequestService.getProducts());
-    }
+    }*/
 
     @PostMapping("/getProductCategories")
     @ResponseBody
