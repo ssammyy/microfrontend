@@ -22,7 +22,7 @@ interface IPvocApplicationRepo : HazelcastRepository<PvocApplicationEntity, Long
     fun findAllByCreatedOnBetweenAndConpanyNameAndStatus(createdOn: Date, createdOn2: Date, conpanyName: String, status: Int, pageable: Pageable): Page<PvocApplicationEntity>?
     fun findByIdIsIn(ids: List<Long>) : List<PvocApplicationEntity>?
 
-    fun findAllByConpanyNameAndFinished(conpanyName: String, finished: Int, pageable: Pageable) : Page<PvocApplicationEntity>?
+    fun findAllByConpanyNameAndFinished(conpanyName: String, finished: Int) : List<PvocApplicationEntity>?
 
 }
 

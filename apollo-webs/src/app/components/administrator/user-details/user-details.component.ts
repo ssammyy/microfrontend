@@ -22,6 +22,8 @@ export class UserDetailsComponent implements OnInit {
   @ViewChild('editModal') editModal !: TemplateRef<any>;
   currDiv!: string;
   currDivLabel!: string;
+  requestId!: string;
+  requestName!: string;
 
   arrowLeftIcon = faArrowLeft;
   public selectedUser: any;
@@ -171,6 +173,15 @@ export class UserDetailsComponent implements OnInit {
         }
       );
     });
+    this.route.paramMap.subscribe(params => {
+       const r = params.get('requestID');
+       const rn = params.get('requestNAME');
+       if (r != null && rn != null){
+         this.requestId = r;
+         this.requestName = rn;
+       }
+       console.log(this.requestId);
+    });
 
   }
 
@@ -181,8 +192,8 @@ export class UserDetailsComponent implements OnInit {
   }
 
   openModal(divVal: string): void {
-    const arrHead = ['assignUserARole', 'rejectOGAComplaint', 'approveComplaint', 'assignOfficer'];
-    const arrHeadSave = ['Assign Role', 'Not Within KEBS Mandate but Within OGA', 'KEBS Mandate', 'Assign Officer'];
+    const arrHead = ['assignUserARole', 'assignUserARoleFromRequest', 'rejectOGAComplaint', 'approveComplaint', 'assignOfficer'];
+    const arrHeadSave = ['Assign Role', 'Assign Role with Matching Request', 'Not Within KEBS Mandate but Within OGA', 'KEBS Mandate', 'Assign Officer'];
 
     for (let h = 0; h < arrHead.length; h++) {
       if (divVal === arrHead[h]) {
@@ -200,6 +211,20 @@ export class UserDetailsComponent implements OnInit {
 
   onSubmitAssignedRole(userId: any): void {
     this.administratorService.assignRoleToUser(userId, this.assignRoleForm.get('roleID')?.value, 1).subscribe(
+      (data: Complaints) => {
+        console.log(data);
+        // this.onUpdateReturnToList();
+      },
+      // tslint:disable-next-line:max-line-length
+      (error: { error: { message: any; }; }) => {
+        this.notificationService.showError(error.error.message, 'Access Denied');
+        this.spinner.hide();
+      }
+    );
+  }
+
+  onSubmitAssignedRoleRequest(userId: any, requestId: string): void {
+    this.administratorService.assignRoleToUserRequested(userId, this.assignRoleForm.get('roleID')?.value, 1, requestId).subscribe(
       (data: Complaints) => {
         console.log(data);
         // this.onUpdateReturnToList();

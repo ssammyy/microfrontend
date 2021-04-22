@@ -38,6 +38,12 @@ from DAT_KEBS_COC_ITEMS
 where COI_NUMBER = 'KEBSCOI2021040872B57'
 order by ID desc;
 
+select *
+from CFG_CD_STATUS_TYPES
+-- where uuid = 401
+-- where COI_NUMBER = 'KEBSCOI2021040872B57'
+order by ID desc;
+
 
 select *
 from dat_kebs_di_uploads
@@ -62,8 +68,8 @@ select * from CFG_KEBS_CFS_TYPE_CODES
 -- where CD_ITEM_DETAILS_ID = '281'
 ;
 
-select * from CFG_KEBS_PROCESSES_STAGES
--- where CD_ITEM_DETAILS_ID = '281'
+select *from CFG_KEBS_PROCESSES_STAGES
+where SERVICE_MAP_ID = 122
 ;
 
 select * from DAT_KEBS_CD_FILE_XML
@@ -93,7 +99,8 @@ select * from LOG_KEBS_CD_TRANSACTIONS
 order by ID desc;
 
 select * from CFG_SERVICE_MAPS
-where id = 220 ---CD DOWNLOAD?UPLOAD
+where id = 127 ---CD DOWNLOAD?UPLOAD
+-- where id = 220 ---CD DOWNLOAD?UPLOAD
 order by ID desc;
 
 select * from DAT_KEBS_USERS order by ID desc ;

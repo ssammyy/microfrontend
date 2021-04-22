@@ -119,7 +119,7 @@ class MpesaTransactionEntity : Serializable{
 
     @Column(name = "INVOICE_ID")
     @Basic
-    var invoiceId: Long? = null
+    var invoiceId: String? = null
 
     @Column(name = "INVOICE_SOURCE")
     @Basic

@@ -30,6 +30,7 @@ import {AdminHomeComponent} from './components/administrator/admin-home/admin-ho
 import {UsersListComponent} from './components/administrator/users-list/users-list.component';
 import {UserDetailsComponent} from './components/administrator/user-details/user-details.component';
 import {AddUserComponent} from './components/administrator/add-user/add-user.component';
+import {UserProfileComponent} from './components/home/user-profile/user-profile.component';
 
 const routes: Routes = [
   // { path: 'login-signup', component: LoginSignupComponent },
@@ -86,7 +87,7 @@ const routes: Routes = [
 
   {
     path: 'profile', component: HomeComponent,
-    children: [{path: '', component: CompanyProfileComponent}]
+    children: [{path: '', component: UserProfileComponent}]
   },
 
 
@@ -175,6 +176,14 @@ const routes: Routes = [
 
   {
     path: 'user-details',
+    component: AdministratorComponent,
+    canActivate: [AuthGuard],
+    // data: {roles: [Role.MsHod, Role.MsDirector, Role.MsRm, Role.MsHof, Role.MsIo, Role.Employee]},
+    children: [{path: '', component: UserDetailsComponent}]
+  },
+
+  {
+    path: 'user-details/:requestID/:requestNAME',
     component: AdministratorComponent,
     canActivate: [AuthGuard],
     // data: {roles: [Role.MsHod, Role.MsDirector, Role.MsRm, Role.MsHof, Role.MsIo, Role.Employee]},

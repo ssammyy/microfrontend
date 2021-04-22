@@ -158,15 +158,20 @@
       <h3 class="mb-3">Actions</h3>
       <div *ngFor="let role of accountService.userValue.roles">
         <!--              <div *ngIf="(userDetails.rejectedStatus == null && userDetails.approvedStatus == null)">-->
-        <button (click)="openModal('assignUserARole')" *ngIf="(role == 'USER_MANAGEMENT_MODIFY')"
+        <button (click)="openModal('assignUserARole')" *ngIf="(role == 'USER_MANAGEMENT_MODIFY') && (requestId==null)"
                 class="submit-button mb-4"
                 data-toggle="modal" type="button">USER ASSIGN ROLE
         </button>
-        <!--        <button *ngIf="(role == 'MS_HOD_MODIFY')"  class="btn btn-outline-secondary action-button"  type="button" data-toggle="modal"  >REJECT</button>-->
-        <button (click)="openModal('assignUserACFS')" *ngIf="(role == 'RBAC_ASSIGN_CFS')"
+
+        <button (click)="openModal('assignUserARoleFromRequest')" *ngIf="(role == 'USER_MANAGEMENT_MODIFY')  && (requestId!=null)"
                 class="submit-button mb-4"
-                data-toggle="modal" type="button">USER ASSIGN CFS
+                data-toggle="modal" type="button">USER ASSIGN ROLE REQUEST
         </button>
+        <!--        <button *ngIf="(role == 'MS_HOD_MODIFY')"  class="btn btn-outline-secondary action-button"  type="button" data-toggle="modal"  >REJECT</button>-->
+<!--        <button (click)="openModal('assignUserACFS')" *ngIf="(role == 'RBAC_ASSIGN_CFS')"-->
+<!--                class="submit-button mb-4"-->
+<!--                data-toggle="modal" type="button">USER ASSIGN CFS-->
+<!--        </button>-->
 
       </div>
     </div>
@@ -195,7 +200,42 @@
               <!--                <input type="checkbox" class="form-control one-column-input" aria-label="Small" aria-describedby="inputGroup-sizing-sm" [value]="1"-->
               <!--                       formControlName="approved"-->
               <!--                       name="approved" required>-->
-              <label><b>Select Division</b></label>
+              <label><b>Select Role</b></label>
+              <select [class.is-invalid]="formAssignRole.roleID.invalid && formAssignRole.roleID.touched"
+                      class="form-control mt-2" formControlName="roleID"
+                      name="roleID">
+                <option label="--select something --"></option>
+                <option *ngFor="let rle of rolesEntity"
+                        [value]="rle.id"> {{ rle.roleName }} </option>
+              </select>
+              <!--              <label><b>Remarks</b></label>-->
+              <!--              <textarea-->
+              <!--                [class.is-invalid]="formAssignAuthorities.approvedRemarks.invalid && formKEBSMandateIn.approvedRemarks.touched"-->
+              <!--                aria-describedby="inputGroup-sizing-sm" aria-label="Small" class="form-control one-column-input"-->
+              <!--                cols="65" formControlName="approvedRemarks"-->
+              <!--                name="approvedRemarks"-->
+              <!--                required rows="5"></textarea>-->
+
+            </div>
+          </div>
+        </div>
+
+
+      </form>
+    </div>
+
+    <div *ngIf="(currDiv == 'assignUserARoleFromRequest')">
+      <form [formGroup]="assignRoleForm" class="form">
+        <div class="form-body">
+          <div class="form-group">
+
+            <div>
+              <!--                <input type="checkbox" class="form-control one-column-input" aria-label="Small" aria-describedby="inputGroup-sizing-sm" [value]="1"-->
+              <!--                       formControlName="approved"-->
+              <!--                       name="approved" required>-->
+              <label><b>Requested role {{requestName}}</b></label>
+              <br>
+              <label><b>Select Role</b></label>
               <select [class.is-invalid]="formAssignRole.roleID.invalid && formAssignRole.roleID.touched"
                       class="form-control mt-2" formControlName="roleID"
                       name="roleID">
@@ -239,111 +279,6 @@
 
       </form>
     </div>
-
-    <!--    <div *ngIf="(currDiv == 'rejectuserDetails')">-->
-    <!--      <form [formGroup]="rejectuserDetailsForm" class="form">-->
-    <!--        <div class="form-body">-->
-    <!--          <div class="form-group">-->
-    <!--            &lt;!&ndash;            <label><b>Choose type of rejection</b></label>&ndash;&gt;-->
-    <!--            <div>-->
-    <!--              &lt;!&ndash;              <select class="browser-default custom-select" name="rejectType"&ndash;&gt;-->
-    <!--              &lt;!&ndash;                      formControlName="rejectType"&ndash;&gt;-->
-    <!--              &lt;!&ndash;                      [class.is-invalid]="formKEBSNotMandateIn.rejectType.invalid && formKEBSNotMandateIn.rejectType.touched">&ndash;&gt;-->
-<!--              &lt;!&ndash;                <option label="&#45;&#45;select something &#45;&#45;"></option>&ndash;&gt;-->
-<!--              &lt;!&ndash;                <option [value]="reject.id"&ndash;&gt;-->
-<!--              &lt;!&ndash;                        *ngFor="let reject of rejectOptions"> {{ reject.option }} </option>&ndash;&gt;-->
-<!--              &lt;!&ndash;                &lt;!&ndash;                                  <option [value]="0" selected>single</option>&ndash;&gt;&ndash;&gt;-->
-<!--              &lt;!&ndash;                &lt;!&ndash;                                  <option [value]="1">Weekly</option>&ndash;&gt;&ndash;&gt;-->
-<!--              &lt;!&ndash;                &lt;!&ndash;                                  <option [value]="2">Monthly</option>&ndash;&gt;&ndash;&gt;-->
-<!--              &lt;!&ndash;                &lt;!&ndash;                                  <option [value]="3">Yearly</option>&ndash;&gt;&ndash;&gt;-->
-<!--              &lt;!&ndash;              </select>&ndash;&gt;-->
-<!--              <label><b>Remarks</b></label>-->
-<!--              <textarea-->
-<!--                [class.is-invalid]="formKEBSNotMandateIn.rejectedRemarks.invalid && formKEBSNotMandateIn.rejectedRemarks.touched"-->
-<!--                aria-describedby="inputGroup-sizing-sm" aria-label="Small" class="form-control one-column-input"-->
-<!--                cols="65" formControlName="rejectedRemarks"-->
-<!--                name="rejectedRemarks"-->
-<!--                required rows="5"></textarea>-->
-
-<!--              &lt;!&ndash;                                <div class="single" *ngIf="selectedValue == 0">single working fine</div>&ndash;&gt;-->
-<!--              &lt;!&ndash;                                <div class="weekly" *ngIf="selectedValue == 1">Weekly working fine</div>&ndash;&gt;-->
-<!--              &lt;!&ndash;                                <div class="monthly" *ngIf="selectedValue == 2">monthly working fine</div>&ndash;&gt;-->
-<!--              &lt;!&ndash;                                <div class="yearly" *ngIf="selectedValue == 3">yearly working fine</div>&ndash;&gt;-->
-<!--            </div>-->
-<!--          </div>-->
-<!--        </div>-->
-
-
-<!--      </form>-->
-<!--    </div>-->
-
-<!--    <div *ngIf="(currDiv == 'rejectOGAuserDetails')">-->
-<!--      <form [formGroup]="adviceuserDetailsForm" class="form">-->
-<!--        <div class="form-body">-->
-<!--          <div class="form-group">-->
-<!--            <div>-->
-<!--              <label><b>Remarks</b></label>-->
-<!--              <textarea-->
-<!--                [class.is-invalid]="formKEBSNotMandateButWithinOGA.rejectedRemarks.invalid && formKEBSNotMandateButWithinOGA.rejectedRemarks.touched"-->
-<!--                aria-describedby="inputGroup-sizing-sm" aria-label="Small" class="form-control one-column-input"-->
-<!--                cols="65" formControlName="rejectedRemarks"-->
-<!--                name="rejectedRemarks"-->
-<!--                required rows="5"></textarea>-->
-<!--              <label><b>Advice</b></label>-->
-<!--              <textarea-->
-<!--                [class.is-invalid]="formKEBSNotMandateButWithinOGA.advisedWhereToRemarks.invalid && formKEBSNotMandateButWithinOGA.advisedWhereToRemarks.touched"-->
-<!--                aria-describedby="inputGroup-sizing-sm" aria-label="Small" class="form-control one-column-input"-->
-<!--                cols="65" formControlName="advisedWhereToRemarks"-->
-<!--                name="advisedWhereToRemarks"-->
-<!--                required rows="5"></textarea>-->
-
-<!--              &lt;!&ndash;                                <div class="single" *ngIf="selectedValue == 0">single working fine</div>&ndash;&gt;-->
-<!--              &lt;!&ndash;                                <div class="weekly" *ngIf="selectedValue == 1">Weekly working fine</div>&ndash;&gt;-->
-<!--              &lt;!&ndash;                                <div class="monthly" *ngIf="selectedValue == 2">monthly working fine</div>&ndash;&gt;-->
-<!--              &lt;!&ndash;                                <div class="yearly" *ngIf="selectedValue == 3">yearly working fine</div>&ndash;&gt;-->
-<!--            </div>-->
-<!--          </div>-->
-<!--        </div>-->
-
-
-<!--      </form>-->
-<!--    </div>-->
-
-<!--    <div *ngIf="(currDiv == 'assignOfficer')">-->
-<!--      <form [formGroup]="assignIOuserDetailsForm" class="form">-->
-<!--        <div class="form-body">-->
-<!--          <div class="form-group">-->
-
-<!--            <div>-->
-<!--              &lt;!&ndash;                <input type="checkbox" class="form-control one-column-input" aria-label="Small" aria-describedby="inputGroup-sizing-sm" [value]="1"&ndash;&gt;-->
-<!--              &lt;!&ndash;                       formControlName="approved"&ndash;&gt;-->
-<!--              &lt;!&ndash;                       name="approved" required>&ndash;&gt;-->
-<!--              <label><b>Select Officer</b></label>-->
-<!--              <select [class.is-invalid]="formKEBSAssignIO.assignedIo.invalid && formKEBSAssignIO.assignedIo.touched"-->
-<!--                      class="form-control mt-2" formControlName="assignedIo"-->
-<!--                      id="field_officers"-->
-<!--                      name="assignedIo">-->
-<!--                <option label="&#45;&#45;select something &#45;&#45;"></option>-->
-<!--                <option *ngFor="let officer of userDetails.officersList"-->
-    <!--                        [value]="officer.id"> {{ officer.firstName }} {{ officer.lastName }} </option>-->
-    <!--              </select>-->
-    <!--              <label><b>Remarks</b></label>-->
-    <!--              <textarea-->
-    <!--                [class.is-invalid]="formKEBSAssignIO.assignedRemarks.invalid && formKEBSAssignIO.assignedRemarks.touched"-->
-    <!--                aria-describedby="inputGroup-sizing-sm" aria-label="Small" class="form-control one-column-input"-->
-    <!--                cols="65" formControlName="assignedRemarks"-->
-    <!--                name="assignedRemarks"-->
-    <!--                required rows="5"></textarea>-->
-
-    <!--            </div>-->
-    <!--          </div>-->
-    <!--        </div>-->
-
-
-    <!--      </form>-->
-    <!--    </div>-->
-
-
   </div>
 
   <div *ngIf="userDetails" class="modal-footer">
@@ -351,6 +286,12 @@
     </button>
     <button (click)="onSubmitAssignedRole(userDetails?.id); modal.dismiss()"
             *ngIf="currDiv == 'assignUserARole'"
+            [disabled]="!assignRoleForm.valid" class="submit-button"
+            data-dismiss="modal"
+            type="button">ASSIGN ROLE
+    </button>
+    <button (click)="onSubmitAssignedRoleRequest(userDetails?.id, requestId); modal.dismiss()"
+            *ngIf="currDiv == 'assignUserARoleFromRequest'"
             [disabled]="!assignRoleForm.valid" class="submit-button"
             data-dismiss="modal"
             type="button">ASSIGN ROLE

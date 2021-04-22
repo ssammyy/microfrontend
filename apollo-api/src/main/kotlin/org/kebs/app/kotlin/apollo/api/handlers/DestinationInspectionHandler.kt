@@ -534,7 +534,12 @@ class DestinationInspectionHandler(
                                         req.attributes().putAll(loadCDItemDetailsUIComponents(cdItemDetails))
                                         req.attributes()["itemNonStandard"] = daoServices.findCdItemNonStandardByItemID(cdItemDetails)
                                         req.attributes()["cdTransport"] = cdItemDetails.cdDocId?.cdTransport?.let { daoServices.findCdTransportDetails(it) }
-                                        req.attributes()["cdImporter"] = cdItemDetails.cdDocId?.cdImporter?.let { daoServices.findCDImporterDetails(it) }
+                                        req.attributes()["cdImporter"] = cdItemDetails.cdDocId?.cdImporter?.let {
+                                            daoServices.findCDImporterDetails(it)
+                                        }
+                                        req.attributes()["cdExporter"] = cdItemDetails.cdDocId?.cdExporter?.let {
+                                            daoServices.findCdExporterDetails(it)
+                                        }
                                         req.attributes()["map"] = map
                                         var myPage = ""
                                         // TODO: 12/15/2020  create a page for Error for initializing myPage

@@ -13,7 +13,6 @@ import org.springframework.beans.support.MutableSortDefinition
 import org.springframework.beans.support.PagedListHolder
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.repository.findByIdOrNull
-import org.springframework.security.access.prepost.PostAuthorize
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Controller
@@ -26,14 +25,14 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 
-class Manufacturer{
-    var companyName : String? = null
-    var email : String? = null
-    var companyPinNo : String? = null
-    var telephoneNo : String? = null
-    var postalAadress : String? = null
-    var physicalLocation : String? = null
-    var contactPersorn : String? = null
+class Manufacturer {
+    var companyName: String? = null
+    var email: String? = null
+    var companyPinNo: String? = null
+    var telephoneNo: String? = null
+    var postalAadress: String? = null
+    var physicalLocation: String? = null
+    var contactPersorn: String? = null
 }
 
 
@@ -49,37 +48,36 @@ class PermitProduct {
     var selectedProduct: Boolean = false
 }
 
-class RawMaterials{
-    var hsCode : String? = null
-    var rawMaterialDescription : String? = null
-    var endProduct : String? = null
-    var dutyRate : String? = null
-    var countryOfOrigin : String? = null
+class RawMaterials {
+    var hsCode: String? = null
+    var rawMaterialDescription: String? = null
+    var endProduct: String? = null
+    var dutyRate: String? = null
+    var countryOfOrigin: String? = null
 
 }
 
-class MainMachinary{
-    var hsCode : String? = null
-    var machineDescription : String? = null
-    var makeModel : String? = null
-    var countryOfOrigin : String? = null
+class MainMachinary {
+    var hsCode: String? = null
+    var machineDescription: String? = null
+    var makeModel: String? = null
+    var countryOfOrigin: String? = null
 }
 
 
-
-class Spares{
-    var hsCode : String? = null
-    var industrialSpares : String? = null
-    var machineToFit : String? = null
-    var countryOfOrigin : String? = null
+class Spares {
+    var hsCode: String? = null
+    var industrialSpares: String? = null
+    var machineToFit: String? = null
+    var countryOfOrigin: String? = null
 }
 
-class ExceptionPayload{
-    var manufacturer : Manufacturer? = null
-    var products : ArrayList<PermitProduct>? = null
-    var rawMaterials : ArrayList<RawMaterials>? = null
-    var mainMachinary : ArrayList<MainMachinary>? = null
-    var spares : ArrayList<Spares>? = null
+class ExceptionPayload {
+    var manufacturer: Manufacturer? = null
+    var products: ArrayList<PermitProduct>? = null
+    var rawMaterials: ArrayList<RawMaterials>? = null
+    var mainMachinary: ArrayList<MainMachinary>? = null
+    var spares: ArrayList<Spares>? = null
 }
 
 class RawMaterialsCheck {
@@ -117,19 +115,19 @@ class DIPvocController(
 
     fun getTasks(userId: Long): MutableList<PvocApplicationEntity?> {
         pvocBpmn.fetchAllTasksByAssignee(userId)
-                ?.let { listTaskDetails ->
-                    var tasks = mutableListOf<PvocApplicationEntity?>()
-                    val ids = mutableListOf<Long>()
+            ?.let { listTaskDetails ->
+                var tasks = mutableListOf<PvocApplicationEntity?>()
+                val ids = mutableListOf<Long>()
 
-                    listTaskDetails.sortedByDescending { it.objectId }
-                            .forEach { taskDetails ->
-                                ids.add(taskDetails.objectId)
-                            }
-                    iPvocApplicationRepo.findByIdIsIn(ids)?.let {
-                        tasks = it.toMutableList()
+                listTaskDetails.sortedByDescending { it.objectId }
+                    .forEach { taskDetails ->
+                        ids.add(taskDetails.objectId)
                     }
-                    return tasks
-                } ?: throw Exception("Failed")
+                iPvocApplicationRepo.findByIdIsIn(ids)?.let {
+                    tasks = it.toMutableList()
+                }
+                return tasks
+            } ?: throw Exception("Failed")
     }
 
     //Get the for for application
@@ -144,78 +142,120 @@ class DIPvocController(
     //    @PreAuthorize("hasAuthority('PVOC_APPLICATION_READ') or hasAuthority('PVOC_APPLICATION_PROCESS')")
     @GetMapping("officer")
     fun officerExceptionApplicationFormsIndex(
-            @RequestParam(value = "fromDate", required = false) fromDate: String?,
-            @RequestParam(value = "toDate", required = false) toDate: String?,
-            @RequestParam(value = "filter", required = false) filter: String?,
-            @RequestParam(value = "currentPage", required = false) currentPage: String?,//currentPage
-            @RequestParam(value = "pageSize", required = false) pageSize: String?,
-            model: Model): String {
+        @RequestParam(value = "fromDate", required = false) fromDate: String?,
+        @RequestParam(value = "toDate", required = false) toDate: String?,
+        @RequestParam(value = "filter", required = false) filter: String?,
+        @RequestParam(value = "currentPage", required = false) currentPage: String?,//currentPage
+        @RequestParam(value = "pageSize", required = false) pageSize: String?,
+        model: Model
+    ): String {
         if (currentPage != null) {
             pageSize?.toInt()?.let { it ->
                 PageRequest.of(currentPage.toInt(), it)
-                        .let { page ->
-                            val dateFrom = Date.valueOf(LocalDate.parse(fromDate, DateTimeFormatter.ofPattern("yyyy-MM-dd")))
-                            val dateTo = Date.valueOf(LocalDate.parse(toDate, DateTimeFormatter.ofPattern("yyyy-MM-dd")))
-                            SecurityContextHolder.getContext().authentication
-                                    ?.let { auth ->
-                                        when {
-                                            auth.authorities.stream().anyMatch { authority -> authority.authority == "PVOC_APPLICATION_PROCESS" || authority.authority == "PVOC_APPLICATION_PROCESS_CHAIRMAN" } -> {
-                                                when (filter) {
-                                                    "filter" -> {
-                                                        model.addAttribute("pvocFilter", PvocApplicationEntity())
-                                                        model.addAttribute("exceptionApplications", iPvocApplicationRepo.findAllByCreatedOnBetween(dateFrom, dateTo, page))
-                                                    }
-                                                    else -> {
-                                                        model.addAttribute("pvocFilter", PvocApplicationEntity())
-                                                        commonDaoServices.getLoggedInUser()
-                                                                ?.let { loggedInUser ->
-                                                                    loggedInUser.id?.let {
-                                                                        getTasks(it).let { tasks ->
-                                                                            val listPage: PagedListHolder<*> = PagedListHolder<PvocApplicationEntity?>(tasks, MutableSortDefinition(false))
-                                                                            listPage.pageSize = page.pageSize // number of items per page
-                                                                            listPage.page = page.pageNumber
-                                                                            KotlinLogging.logger { }.info { "tasks ==>" + listPage.pageList.count() }
-                                                                            model.addAttribute("exceptionApplications", listPage.pageList)
-                                                                        }
-                                                                    }
-
-                                                                }
-                                                    }
-                                                }
+                    .let { page ->
+                        val dateFrom =
+                            Date.valueOf(LocalDate.parse(fromDate, DateTimeFormatter.ofPattern("yyyy-MM-dd")))
+                        val dateTo = Date.valueOf(LocalDate.parse(toDate, DateTimeFormatter.ofPattern("yyyy-MM-dd")))
+                        SecurityContextHolder.getContext().authentication
+                            ?.let { auth ->
+                                when {
+                                    auth.authorities.stream()
+                                        .anyMatch { authority -> authority.authority == "PVOC_APPLICATION_PROCESS" || authority.authority == "PVOC_APPLICATION_PROCESS_CHAIRMAN" } -> {
+                                        when (filter) {
+                                            "filter" -> {
+                                                model.addAttribute("pvocFilter", PvocApplicationEntity())
+                                                model.addAttribute(
+                                                    "exceptionApplications",
+                                                    iPvocApplicationRepo.findAllByCreatedOnBetween(
+                                                        dateFrom,
+                                                        dateTo,
+                                                        page
+                                                    )
+                                                )
                                             }
-                                            auth.authorities.stream().anyMatch { authority -> authority.authority == "PVOC_APPLICATION_READ" } -> {
-                                                commonDaoServices.getLoggedInUser().let { user ->
-                                                    user?.id?.let {
-                                                        iManufacturerRepository.findByIdAndStatus(it, 1)
-                                                                .let { manufacturer ->
-                                                                    manufacturer?.name?.let {
-                                                                        when (filter) {
-                                                                            "filter" -> {
-                                                                                iPvocApplicationRepo.findAllByCreatedOnBetweenAndConpanyNameAndStatus(dateFrom, dateTo, it, 1, page)
-                                                                                        .let { pvocApps ->
-                                                                                            model.addAttribute("pvocFilter", PvocApplicationEntity())
-                                                                                            model.addAttribute("exceptionApplications", pvocApps)
+                                            else -> {
+                                                model.addAttribute("pvocFilter", PvocApplicationEntity())
+                                                commonDaoServices.getLoggedInUser()
+                                                    ?.let { loggedInUser ->
+                                                        loggedInUser.id?.let {
+                                                            getTasks(it).let { tasks ->
+                                                                val listPage: PagedListHolder<*> =
+                                                                    PagedListHolder<PvocApplicationEntity?>(
+                                                                        tasks,
+                                                                        MutableSortDefinition(false)
+                                                                    )
+                                                                listPage.pageSize =
+                                                                    page.pageSize // number of items per page
+                                                                listPage.page = page.pageNumber
+                                                                KotlinLogging.logger { }
+                                                                    .info { "tasks ==>" + listPage.pageList.count() }
+                                                                model.addAttribute(
+                                                                    "exceptionApplications",
+                                                                    listPage.pageList
+                                                                )
+                                                            }
+                                                        }
 
-                                                                                        }
-                                                                            }
-                                                                            else -> {
-                                                                                iPvocApplicationRepo.findAllByConpanyNameAndStatus(it, 1, page)
-                                                                                        .let { pvocApps ->
-                                                                                            model.addAttribute("pvocFilter", PvocApplicationEntity())
-                                                                                            model.addAttribute("exceptionApplications", pvocApps)
-                                                                                        }
-                                                                            }
-                                                                        }
-                                                                    }
-                                                                }
                                                     }
-                                                }
                                             }
-                                            else -> throw SupervisorNotFoundException("Only users with the following privilege PVOC Appliaction READ or PVOC APPLICATION PROCESS, can access this page")
                                         }
                                     }
+                                    auth.authorities.stream()
+                                        .anyMatch { authority -> authority.authority == "PVOC_APPLICATION_READ" } -> {
+                                        commonDaoServices.getLoggedInUser().let { user ->
+                                            user?.id?.let {
+                                                iManufacturerRepository.findByIdAndStatus(it, 1)
+                                                    .let { manufacturer ->
+                                                        manufacturer?.name?.let { it ->
+                                                            when (filter) {
+                                                                "filter" -> {
+                                                                    iPvocApplicationRepo.findAllByCreatedOnBetweenAndConpanyNameAndStatus(
+                                                                        dateFrom,
+                                                                        dateTo,
+                                                                        it,
+                                                                        1,
+                                                                        page
+                                                                    )
+                                                                        .let { pvocApps ->
+                                                                            model.addAttribute(
+                                                                                "pvocFilter",
+                                                                                PvocApplicationEntity()
+                                                                            )
+                                                                            model.addAttribute(
+                                                                                "exceptionApplications",
+                                                                                pvocApps
+                                                                            )
 
-                        }
+                                                                        }
+                                                                }
+                                                                else -> {
+                                                                    iPvocApplicationRepo.findAllByConpanyNameAndStatus(
+                                                                        it,
+                                                                        1,
+                                                                        page
+                                                                    )
+                                                                        .let { pvocApps ->
+                                                                            model.addAttribute(
+                                                                                "pvocFilter",
+                                                                                PvocApplicationEntity()
+                                                                            )
+                                                                            model.addAttribute(
+                                                                                "exceptionApplications",
+                                                                                pvocApps
+                                                                            )
+                                                                        }
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                            }
+                                        }
+                                    }
+                                    else -> throw SupervisorNotFoundException("Only users with the following privilege PVOC Appliaction READ or PVOC APPLICATION PROCESS, can access this page")
+                                }
+                            }
+
+                    }
             }
         }
         return "destination-inspection/pvoc/ExceptionApplicationsForms"
@@ -229,42 +269,30 @@ class DIPvocController(
         @RequestParam(value = "currentPage", required = false) currentPage: String?,//currentPage
         @RequestParam(value = "pageSize", required = false) pageSize: String?,
         model: Model
-    ) : String? {
-        if (currentPage != null) {
-            pageSize?.toInt()?.let { it ->
-                PageRequest.of(currentPage.toInt(), it)
-                    .let { page ->
-                        SecurityContextHolder.getContext().authentication
-                            ?.let { _ ->
-                                commonDaoServices.getLoggedInUser().let { user ->
-                                    user?.id?.let {
-                                        iManufacturerRepository.findByIdAndStatus(it, 1)
-                                            .let { manufacturer ->
-                                                manufacturer?.name?.let {
-                                                    KotlinLogging.logger { }.info { "manufacturer ==> $it" }
-                                                    iPvocApplicationRepo.findAllByConpanyNameAndFinished(it, 0, page)
-                                                        ?.let { pvocApps ->
-                                                            model.addAttribute("pvocFilter", PvocApplicationEntity())
-                                                            model.addAttribute("exceptionApplications", pvocApps)
-                                                            return "destination-inspection/pvoc/UnfinishedExceptions"
-                                                        }?: throw Exception("You have no drafts")
-                                                }?: throw Exception("Please login")
-                                            }
-                                    } ?: throw Exception("Please login")
-                                }
-
-                            }?: throw Exception("Please login")
-
+    ): String {
+        SecurityContextHolder.getContext().authentication
+            .let { auth ->
+                when {
+                    auth.authorities.stream()
+                        .anyMatch { authority -> authority.authority == "PVOC_APPLICATION_READ" } -> {
+                        commonDaoServices.getLoggedInUser()?.let { userId ->
+                            iManufacturerRepository.findByUserId(userId)?.name?.let { companyName ->
+                                iPvocApplicationRepo.findAllByConpanyNameAndFinished(
+                                    companyName,
+                                    0
+                                )?.let { exemptions ->
+                                    KotlinLogging.logger {  }.info { "Appps unfinished "+ exemptions.count() }
+                                    model.addAttribute("exceptionApplications", exemptions)
+                                }?: throw Exception("No unifinished applications currently")
+                            } ?: throw Exception("Please login")
+                        } ?: throw Exception("Please login")
                     }
-            }?: throw Exception("")
-        }
-        return null
+                }
+                return "destination-inspection/pvoc/UnfinishedExceptions"
+            }
     }
 
-
-
-
-   //@PostAuthorize("returnObject.companyPinNo == pvocApplicationEntity.companyPinNo")
+    //@PostAuthorize("returnObject.companyPinNo == pvocApplicationEntity.companyPinNo")
     @PreAuthorize("hasAuthority('PVOC_APPLICATION_READ') or hasAuthority('PVOC_APPLICATION_PROCESS') or hasAnyAuthority('PVOC_APPLICATION_PROCESS_CHAIRMAN')")
     @GetMapping("pvoc-application-details/{id}")
     fun pvocApplicationDetails(@PathVariable("id") id: Long, model: Model): String {
@@ -273,95 +301,103 @@ class DIPvocController(
         val machineries: MutableList<PvocExceptionMainMachineryCategoryEntity> = ArrayList()
         val spares: MutableList<PvocExceptionIndustrialSparesCategoryEntity> = ArrayList()
         iPvocApplicationRepo.findByIdOrNull(id)
-                ?.let { pvoc ->
+            ?.let { pvoc ->
 
-                    pvoc.id?.let { it1 ->
-                        iPvocExceptionRawMaterialCategoryEntityRepo.findAllByExceptionId(it1).let { rawMaterials ->
-                            rawMaterials.forEach { raw ->
-                                rawMaterisl.add(raw)
-                            }
-                            model.addAttribute("rawMaterials", rawMaterisl)
-                            model.addAttribute("rawMaterialsCount", rawMaterials.count())
+                pvoc.id?.let { it1 ->
+                    iPvocExceptionRawMaterialCategoryEntityRepo.findAllByExceptionId(it1).let { rawMaterials ->
+                        rawMaterials.forEach { raw ->
+                            rawMaterisl.add(raw)
                         }
-                        iPvocExceptionIndustrialSparesCategoryEntityRepo.findAllByExceptionId(it1).let { sparesss ->
-                            sparesss.forEach { spare ->
-                                spares.add(spare)
-                            }
-                            model.addAttribute("spares", spares)
-                            model.addAttribute("sparesssCount", spares.count())
-                        }
-                        iPvocExceptionMainMachineryCategoryEntityRepo.findAllByExceptionId(it1).let { machinerzs ->
-                            machinerzs.forEach { machine ->
-                                machineries.add(machine)
-                            }
-                            model.addAttribute("machineries", machineries)
-                            model.addAttribute("macheineriesCount", machineries.count())
-                        }
-
+                        model.addAttribute("rawMaterials", rawMaterisl)
+                        model.addAttribute("rawMaterialsCount", rawMaterials.count())
                     }
-                    model.addAttribute("rawMaterial", PvocExceptionRawMaterialCategoryEntity())
-                    model.addAttribute("mainMachinery", MachinerysCheck())
-                    model.addAttribute("pvocApp", PvocApplicationEntity())
-                    model.addAttribute("sparess", SparesCheck().spares)
-                    model.addAttribute("pvoc", pvoc)
-                    model.addAttribute("remarkData", RemarksEntity())
-                    iPvocApplicationProductsRepo.findAllByPvocApplicationId(pvoc)?.forEach {
-                        products.add(it)
-                    } ?: throw Exception("No Products Available")
-                    model.addAttribute("products", products)
+                    iPvocExceptionIndustrialSparesCategoryEntityRepo.findAllByExceptionId(it1).let { sparesss ->
+                        sparesss.forEach { spare ->
+                            spares.add(spare)
+                        }
+                        model.addAttribute("spares", spares)
+                        model.addAttribute("sparesssCount", spares.count())
+                    }
+                    iPvocExceptionMainMachineryCategoryEntityRepo.findAllByExceptionId(it1).let { machinerzs ->
+                        machinerzs.forEach { machine ->
+                            machineries.add(machine)
+                        }
+                        model.addAttribute("machineries", machineries)
+                        model.addAttribute("macheineriesCount", machineries.count())
+                    }
+
+                }
+                model.addAttribute("rawMaterial", PvocExceptionRawMaterialCategoryEntity())
+                model.addAttribute("mainMachinery", MachinerysCheck())
+                model.addAttribute("pvocApp", PvocApplicationEntity())
+                model.addAttribute("sparess", SparesCheck().spares)
+                model.addAttribute("pvoc", pvoc)
+                model.addAttribute("remarkData", RemarksEntity())
+                iPvocApplicationProductsRepo.findAllByPvocApplicationId(pvoc)?.forEach {
+                    products.add(it)
+                } ?: throw Exception("No Products Available")
+                model.addAttribute("products", products)
 //                    model.addAttribute("checkBoxChecked", checkBoxChecked)
-                    return "destination-inspection/pvoc/PvocApplicationFormDetailView"
-                } ?: throw Exception("Product with $id id does not exist")
+                return "destination-inspection/pvoc/PvocApplicationFormDetailView"
+            } ?: throw Exception("Product with $id id does not exist")
     }
 
 
     @PreAuthorize("hasAuthority('PVOC_APPLICATION_PROCESS')")
     @PostMapping("pvoc_process_exceptions_application/{id}/{remarksType}")
-    fun exceptionsRemarks(@PathVariable("id") id: Long, @PathVariable("remarksType") remarksType: String, @ModelAttribute remarkData: RemarksEntity): String {
+    fun exceptionsRemarks(
+        @PathVariable("id") id: Long,
+        @PathVariable("remarksType") remarksType: String,
+        @ModelAttribute remarkData: RemarksEntity
+    ): String {
         commonDaoServices.getLoggedInUser()
-                ?.let { userDetails ->
-                    iPvocApplicationRepo.findByIdOrNull(id).let { doc ->
-                        remarkData.firstName = userDetails.firstName
-                        remarkData.lastName = userDetails.lastName
-                        remarkData.userId = userDetails.id
-                        remarkData.pvocExceptionApplicationId = doc?.id
-                        remarkData.remarkStatus = 1
-                        remarkData.createdBy = userDetails.firstName + " " + userDetails.lastName
-                        remarkData.createdOn = Timestamp.from(Instant.now())
-                        when (remarksType) {
-                            "deffered" -> {
-                                doc?.reviewStatus = pvocReviewStatus?.differedStatus
-                                remarkData.remarksProcess = pvocReviewStatus?.differedStatus
-                                iRemarksRepository.save(remarkData)
-                                doc?.email?.let {
-                                    iUserRepository.findByEmail(it).let { user ->
-                                        user?.id?.let { it1 -> pvocBpmn.pvocEaCheckApplicationComplete(id, it1, false) }
-                                    }
+            ?.let { userDetails ->
+                iPvocApplicationRepo.findByIdOrNull(id).let { doc ->
+                    remarkData.firstName = userDetails.firstName
+                    remarkData.lastName = userDetails.lastName
+                    remarkData.userId = userDetails.id
+                    remarkData.pvocExceptionApplicationId = doc?.id
+                    remarkData.remarkStatus = 1
+                    remarkData.createdBy = userDetails.firstName + " " + userDetails.lastName
+                    remarkData.createdOn = Timestamp.from(Instant.now())
+                    when (remarksType) {
+                        "deffered" -> {
+                            doc?.reviewStatus = pvocReviewStatus?.differedStatus
+                            remarkData.remarksProcess = pvocReviewStatus?.differedStatus
+                            iRemarksRepository.save(remarkData)
+                            doc?.email?.let {
+                                iUserRepository.findByEmail(it).let { user ->
+                                    user?.id?.let { it1 -> pvocBpmn.pvocEaCheckApplicationComplete(id, it1, false) }
                                 }
                             }
-                            "excepted" -> {
-                                doc?.reviewStatus = pvocReviewStatus?.varField1
-                                remarkData.remarksProcess = pvocReviewStatus?.exceptionStatus
-                                iRemarksRepository.save(remarkData)
-                                    pvocBpmn.pvocEaCheckApplicationComplete(id, 1007, true)
-                            }
-                            "rejected" -> {
-                                doc?.reviewStatus = pvocReviewStatus?.varField1
-                                remarkData.remarksProcess = pvocReviewStatus?.rejectedStatus
-                                iRemarksRepository.save(remarkData)
-                                    pvocBpmn.pvocEaCheckApplicationComplete(id, 1007, false)
-                            }
                         }
-                        doc?.let { it -> iPvocApplicationRepo.save(it) }
-                        return "redirect:/api/di/pvoc/pvoc-application-details/{id}"
+                        "excepted" -> {
+                            doc?.reviewStatus = pvocReviewStatus?.varField1
+                            remarkData.remarksProcess = pvocReviewStatus?.exceptionStatus
+                            iRemarksRepository.save(remarkData)
+                            pvocBpmn.pvocEaCheckApplicationComplete(id, 1007, true)
+                        }
+                        "rejected" -> {
+                            doc?.reviewStatus = pvocReviewStatus?.varField1
+                            remarkData.remarksProcess = pvocReviewStatus?.rejectedStatus
+                            iRemarksRepository.save(remarkData)
+                            pvocBpmn.pvocEaCheckApplicationComplete(id, 1007, false)
+                        }
                     }
+                    doc?.let { it -> iPvocApplicationRepo.save(it) }
+                    return "redirect:/api/di/pvoc/pvoc-application-details/{id}"
                 }
-                ?: throw NullValueNotAllowedException("Username cannot be empty")
+            }
+            ?: throw NullValueNotAllowedException("Username cannot be empty")
     }
 
     //@PreAuthorize("hasAuthority('PVOC_APPLICATION_PROCESS_CHAIR')")
     @PostMapping("pvoc_process_exceptions_application-chairman/{id}/{remarksType}")
-    fun exceptionsRemarksByChairman(@PathVariable("id") id: Long, @PathVariable("remarksType") remarksType: String, @ModelAttribute remarkData: RemarksEntity): String {
+    fun exceptionsRemarksByChairman(
+        @PathVariable("id") id: Long,
+        @PathVariable("remarksType") remarksType: String,
+        @ModelAttribute remarkData: RemarksEntity
+    ): String {
         commonDaoServices.getLoggedInUser().let { userDetails ->
             iPvocApplicationRepo.findByIdOrNull(id).let { doc ->
                 remarkData.firstName = userDetails?.firstName
@@ -415,22 +451,25 @@ class DIPvocController(
     fun remarksView(model: Model, @PathVariable("id") id: Long): String {
 
         iRemarksRepository.findAllByPvocExceptionApplicationId(id)
-                ?.let { remarks ->
-                    model.addAttribute("remarks", remarks)
-                    return "destination-inspection/pvoc/RemarksView"
-                }
-                ?: throw PvocRemarksNotFoundException("The Remarks with the following [id=$id], does not exist")
+            ?.let { remarks ->
+                model.addAttribute("remarks", remarks)
+                return "destination-inspection/pvoc/RemarksView"
+            }
+            ?: throw PvocRemarksNotFoundException("The Remarks with the following [id=$id], does not exist")
 
     }
 
     @PostMapping("exceptions-machinery-items-approve/{id}")
-    fun exceptionsMachineryItemsApprove(@PathVariable("id") id: Long, @ModelAttribute("mainMachineryss") mainMachineryss: MachinerysCheck): String {
+    fun exceptionsMachineryItemsApprove(
+        @PathVariable("id") id: Long,
+        @ModelAttribute("mainMachineryss") mainMachineryss: MachinerysCheck
+    ): String {
         mainMachineryss.machineries?.let { machineries ->
             machineries.forEach { rawMat ->
                 iPvocExceptionMainMachineryCategoryEntityRepo.findByIdOrNull(rawMat?.id)?.let { data ->
                     data.checkBoxChecked = rawMat?.checkBoxChecked ?: data.checkBoxChecked
                     data.remarks = rawMat?.remarks ?: data.remarks
-                    data.reviewStatus = rawMat?.reviewStatus?: data.reviewStatus
+                    data.reviewStatus = rawMat?.reviewStatus ?: data.reviewStatus
                     iPvocExceptionMainMachineryCategoryEntityRepo.save(data)
                 } ?: throw Exception("The Raw Material with ${rawMat?.id} id does not exist")
             }
@@ -439,13 +478,16 @@ class DIPvocController(
     }
 
     @PostMapping("exceptions-raw-materials-items-approve/{id}")
-    fun exceptionsRawMaterialsItemsApprove(@PathVariable("id") id: Long, @ModelAttribute("rawMaterial") rawMaterial: RawMaterialsCheck): String {
+    fun exceptionsRawMaterialsItemsApprove(
+        @PathVariable("id") id: Long,
+        @ModelAttribute("rawMaterial") rawMaterial: RawMaterialsCheck
+    ): String {
         rawMaterial.rawMaterials?.let { rawMats ->
             rawMats.forEach { rawMat ->
                 iPvocExceptionRawMaterialCategoryEntityRepo.findByIdOrNull(rawMat?.id)?.let { data ->
-                    data.checkBoxChecked = rawMat?.checkBoxChecked?: data.checkBoxChecked
+                    data.checkBoxChecked = rawMat?.checkBoxChecked ?: data.checkBoxChecked
                     data.remarks = rawMat?.remarks ?: data.remarks
-                    data.reviewStatus = rawMat?.reviewStatus?: data.reviewStatus
+                    data.reviewStatus = rawMat?.reviewStatus ?: data.reviewStatus
                     iPvocExceptionRawMaterialCategoryEntityRepo.save(data)
                 } ?: throw Exception("The Raw Material with ${rawMat?.id} id does not exist")
             }
@@ -455,7 +497,10 @@ class DIPvocController(
 
 
     @PostMapping("exceptions-spares-items-approve/{id}")
-    fun exceptionsSparesItemsApproveApprove(@PathVariable("id") id: Long, @ModelAttribute("sparess") sparess: SparesCheck): String {
+    fun exceptionsSparesItemsApproveApprove(
+        @PathVariable("id") id: Long,
+        @ModelAttribute("sparess") sparess: SparesCheck
+    ): String {
         sparess.spares?.forEach { rawMat ->
             iPvocExceptionIndustrialSparesCategoryEntityRepo.findByIdOrNull(rawMat?.id)?.let { data ->
                 data.checkBoxChecked = rawMat?.checkBoxChecked ?: data.checkBoxChecked
@@ -468,23 +513,26 @@ class DIPvocController(
     }
 
     @GetMapping("single-exception-download/{id}")
-    fun singleExceptionDownload(@PathVariable("id") id: Long, model: Model) : String {
+    fun singleExceptionDownload(@PathVariable("id") id: Long, model: Model): String {
         iPvocApplicationRepo.findByIdOrNull(id)?.let { exception ->
             exception.id?.let {
-                iPvocExceptionRawMaterialCategoryEntityRepo.findAllByExceptionIdAndReviewStatus(it, "Exempt").let { rawMaterials ->
-                    model.addAttribute("rawMaterial", rawMaterials)
-                    model.addAttribute("rawMaterialCount", rawMaterials.count())
-                }
+                iPvocExceptionRawMaterialCategoryEntityRepo.findAllByExceptionIdAndReviewStatus(it, "Exempt")
+                    .let { rawMaterials ->
+                        model.addAttribute("rawMaterial", rawMaterials)
+                        model.addAttribute("rawMaterialCount", rawMaterials.count())
+                    }
 
-                iPvocExceptionMainMachineryCategoryEntityRepo.findAllByExceptionIdAndReviewStatus(it, "Exempt").let { machineries ->
-                    model.addAttribute("machineries", machineries)
-                    model.addAttribute("machineryCount", machineries.count())
-                }
+                iPvocExceptionMainMachineryCategoryEntityRepo.findAllByExceptionIdAndReviewStatus(it, "Exempt")
+                    .let { machineries ->
+                        model.addAttribute("machineries", machineries)
+                        model.addAttribute("machineryCount", machineries.count())
+                    }
 
-                iPvocExceptionIndustrialSparesCategoryEntityRepo.findAllByExceptionIdAndReviewStatus(it, "Exempt").let { spares ->
-                    model.addAttribute("spares", spares)
-                    model.addAttribute("sparesCount", spares.count())
-                }
+                iPvocExceptionIndustrialSparesCategoryEntityRepo.findAllByExceptionIdAndReviewStatus(it, "Exempt")
+                    .let { spares ->
+                        model.addAttribute("spares", spares)
+                        model.addAttribute("sparesCount", spares.count())
+                    }
 
             }
             model.addAttribute("pvoc", exception)

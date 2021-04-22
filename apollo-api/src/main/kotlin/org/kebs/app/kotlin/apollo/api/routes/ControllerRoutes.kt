@@ -155,6 +155,12 @@ class ControllerRoutes {
                     PUT("/", handler::standardProductCategoryUpdate)
                     POST("/", handler::standardProductCategoryUpdate)
                 }
+                "/userRequestType".nest {
+                    GET("/load", handler::userRequestTypeListing)
+                    GET("/loads/{status}", handler::userRequestTypeListing)
+                    PUT("/", handler::userRequestTypeUpdate)
+                    POST("/", handler::userRequestTypeUpdate)
+                }
             }
         }
 
@@ -438,6 +444,8 @@ class ControllerRoutes {
                     POST("/role/assign/{userId}/{roleId}/{status}", handler::assignRoleToUser)
                     POST("/cfs/revoke/{userProfileId}/{cfsId}/{status}", handler::revokeCfsFromUser)
                     POST("/cfs/assign/{userProfileId}/{cfsId}/{status}", handler::assignCfsToUser)
+                    POST("/user/request/role/assign/{userId}/{roleId}/{status}/{requestID}", handler::assignRoleToUserThroughRequest)
+//                    POST("/user/request/{userId}/{cfsId}/{status}", handler::assignCfsToUser)
 
 
                 }
@@ -472,8 +480,10 @@ class ControllerRoutes {
 //                    GET("/new", handler::userNewFormView)
 //                    GET("/list", handler::usersListView)
                     GET("/load", handler::usersListing)
+                    GET("/load/users-requests", handler::listUserRequests)
                     GET("/user-details", handler::userDetails)
                     POST("/search", handler::usersSearchListing)
+                    POST("/{userId}/user-request", handler::usersRequests)
                     PUT("/", handler::usersUpdate)
                     POST("/", handler::usersUpdate)
                 }

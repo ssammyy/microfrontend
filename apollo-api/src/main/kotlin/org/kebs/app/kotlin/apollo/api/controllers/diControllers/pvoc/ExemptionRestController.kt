@@ -373,4 +373,9 @@ class ExemptionRestController(
             return UploadedFileResponse()
         }
     }
+
+    @GetMapping("unifinished-app/{id}")
+    fun getUnfinishedAppDetails(@PathVariable("id") id: Long){
+
+    }
 }

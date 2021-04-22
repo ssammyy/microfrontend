@@ -43,7 +43,7 @@
                                         <td sec:authorize="hasAuthority('PVOC_APPLICATION_PROCESS_CHAIR') or hasAuthority('PVOC_APPLICATION_PROCESS')" th:text="${coc?.postalAadress}"></td>
                                         <td th:text="${#dates.format(coc?.createdOn, 'dd/MM/yyyy')}"></td>
                                         <td th:text="${coc?.reviewStatus}"></td>
-                                        <td><a th:href="@{/api/di/pvoc/exceptions-application-page/{id}(id=${coc.id})}">view</a>
+                                        <td><a th:href="@{/api/di/pvoc/application(edit=1)}">Resume Application</a>
                                         </td>
                                     </tr>
                                     <!--                                    sec:authorize="hasAuthority('')"-->

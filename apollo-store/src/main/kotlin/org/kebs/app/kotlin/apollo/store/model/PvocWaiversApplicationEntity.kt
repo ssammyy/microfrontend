@@ -141,6 +141,10 @@ class PvocWaiversApplicationEntity : Serializable {
     @Basic
     var pvocWaProcessInstanceId: String? = null
 
+    @Column(name = "WETC_MEMBER")
+    @Basic
+    var wetcMember: Long? = null
+
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -187,12 +191,13 @@ class PvocWaiversApplicationEntity : Serializable {
                 pvocWaStartedOn == that.pvocWaStartedOn &&
                 pvocWaCompletedOn == that.pvocWaCompletedOn &&
                 pvocWaProcessInstanceId == that.pvocWaProcessInstanceId &&
+                wetcMember == that.wetcMember &&
                 cs == that.cs
 
 
     }
 
     override fun hashCode(): Int {
-        return Objects.hash(id, status, applicantName, phoneNumber, emailAddress, kraPin, address, category, justification, productDescription, documentation, reviewStatus, serialNo, csResponceCode, csResponceMessage, varField1, varField2, varField3, varField4, varField5, varField6, varField7, varField8, varField9, varField10, createdBy, createdOn, modifiedBy, modifiedOn, deleteBy, deletedOn, approvalStatus, rejectionStatus, defferalStatus, wetcSecretary, wetcChairman, ncsSecretary,pvocWaStatus,pvocWaStartedOn ,pvocWaCompletedOn ,pvocWaProcessInstanceId ,pvocWaCompletedOn, cs)
+        return Objects.hash(id, status, applicantName, phoneNumber, emailAddress, kraPin, address, category, justification, productDescription, documentation, reviewStatus, serialNo, csResponceCode, csResponceMessage, varField1, varField2, varField3, varField4, varField5, varField6, varField7, varField8, varField9, varField10, createdBy, createdOn, modifiedBy, modifiedOn, deleteBy, deletedOn, approvalStatus, rejectionStatus, defferalStatus, wetcSecretary, wetcChairman, ncsSecretary,pvocWaStatus,pvocWaStartedOn ,pvocWaCompletedOn ,pvocWaProcessInstanceId ,pvocWaCompletedOn, wetcMember, cs)
     }
 }

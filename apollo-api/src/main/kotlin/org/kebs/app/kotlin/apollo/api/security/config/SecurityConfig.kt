@@ -16,6 +16,7 @@ import org.kebs.app.kotlin.apollo.store.repo.IUserRepository
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.core.annotation.Order
+import org.springframework.http.HttpMethod
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity
@@ -29,6 +30,7 @@ import org.springframework.security.web.AuthenticationEntryPoint
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher
+import org.springframework.web.servlet.config.annotation.CorsRegistry
 
 @EnableWebSecurity
 @Configuration
@@ -46,6 +48,9 @@ class WebSecurityConfig {
             private val passwordEncoder: PasswordEncoder
     ) : WebSecurityConfigurerAdapter() {
 
+        fun addCorsMappings(registry: CorsRegistry) {
+            registry.addMapping("/**").allowedOrigins("*").allowedMethods("GET", "POST", "PUT", "DELETE")
+        }
 
         @Bean
         fun authenticationTokenFilterBean(): JWTAuthorizationFilter {
@@ -59,21 +64,15 @@ class WebSecurityConfig {
                     .passwordEncoder(passwordEncoder)
         }
 
-//        @Bean
-//        override fun authenticationManager(): AuthenticationManager {
-//            return super.authenticationManager()
-//        }
-
         override fun configure(http: HttpSecurity) {
             http.cors().and().csrf().disable()
                     .antMatcher("/api/v1/**")
                     .authorizeRequests()
+                    .antMatchers(HttpMethod.OPTIONS,"/**").permitAll()
                     .antMatchers(
                             "/api/v1/login", "/api/v1/sftp/kesws/download", "/api/v1/auth/**")
                     .permitAll()
                     .anyRequest().authenticated()
-//                    .antMatchers("/api/v1/**")
-//                    .authenticated()
                     .and()
                     .exceptionHandling()
                     .and()
@@ -99,6 +98,9 @@ class WebSecurityConfig {
 
     ) {
 
+        fun addCorsMappings(registry: CorsRegistry) {
+            registry.addMapping("/**").allowedOrigins("*").allowedMethods("GET", "POST", "PUT", "DELETE")
+        }
 
         @Bean
         fun accessDeniedHandler(): CustomAccessDeniedHandler = CustomAccessDeniedHandler()
@@ -123,7 +125,7 @@ class WebSecurityConfig {
                     .requiresChannel().anyRequest().requiresSecure()
                     .and()
                     .httpBasic().disable()
-                    .csrf().disable()
+                    .cors().and().csrf().disable()
                     .authorizeRequests()
                     .antMatchers(
                             "/api/sftp/kesws/download",
@@ -178,8 +180,6 @@ class WebSecurityConfig {
                     .defaultAuthenticationEntryPointFor(mainAuthenticationEntryPoint("/auth/login"), AntPathRequestMatcher("/"))
                     .accessDeniedPage("/accessDenied")
                     .accessDeniedHandler(accessDeniedHandler())
-
-
         }
 
         fun loginSuccessHandler(url: String?): RefererAuthenticationSuccessHandler =

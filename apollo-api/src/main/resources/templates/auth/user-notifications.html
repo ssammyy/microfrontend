@@ -182,11 +182,11 @@
         // console.log(categories.length)
         $.ajax({
             method: "GET",
-            url: `/api/system/admin/users/view/notification/${paramValue}`,
-            success(response){
+            url: `/api/v1/system/admin/users/view/notification/${paramValue}`,
+            success(response) {
                 console.log(response)
                 let s = '';
-                for(let i = 0; i < response.length; i++) {
+                for (let i = 0; i < response.length; i++) {
                     // response.push('Select one')
 
                     document.getElementById("subject").value = response[i].subject;

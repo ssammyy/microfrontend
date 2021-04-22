@@ -199,9 +199,8 @@ class Waivers(
         val dateFrom = Date.valueOf(LocalDate.parse(LocalDate.now().toString(), DateTimeFormatter.ofPattern("yyyy-MM-dd")))
         val dateTo = Date.valueOf(LocalDate.parse(LocalDate.now().toString(), DateTimeFormatter.ofPattern("yyyy-MM-dd")))
         iwaiversApplicationRepo.findByIdOrNull(id)?.let { waiverApp ->
-
+            waiverApp.wetcMember = 720L
             iwaiversApplicationRepo.save(waiverApp)
-
 //           getLoggedInUser()?.id?.let {it ->
 //                pvocBpmn.startPvocWaiversApplicationsProcess(id, it, 720L)
 //            }

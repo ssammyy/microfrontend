@@ -22,7 +22,7 @@
 
     <li class="nav-item">
       <a aria-controls="pills-review" aria-selected="false" class="nav-link" data-toggle="pill" href="#pills-review"
-         id="pills-review-tab" role="tab">Active</a>
+         id="pills-review-tab" role="tab">User Request</a>
     </li>
 
 
@@ -148,7 +148,73 @@
 
 
   <div aria-labelledby="pills-review-tab" class="tab-pane fade" id="pills-review" role="tabpanel">
-    <p>hdsjsfjbs</p>
+    <div class="d-block">
+
+    <div class="justify-content-between d-flex flex-wrap align-items-center mt-5">
+      <div class="d-flex flex-wrap align-items-center">
+        <h5 class="mr-4">All Users Request</h5>
+        <div class="resolved-pill">
+          <p>{{allUsersRequestData.length}}</p>
+        </div>
+      </div>
+
+      <button class="btn btn-sm btn-outline-secondary mr-2">EXPORT</button>
+
+    </div>
+
+    <div class="row mt-5">
+      <form (ngSubmit)="onSubmitUserRequestSearch()" [formGroup]="searchFormUserRequestGroup">
+
+        <div class="form-body">
+
+          <div class="row">
+            <div class="col">
+              <div class="form-group">
+                <label><b>User Name</b></label>
+                <input [class.is-invalid]="formUserRequestSearch.userName.invalid && formUserRequestSearch.userName.touched"
+                       class="form-control two-column-input"
+                       formControlName="userName" name="userName" required type="text">
+              </div>
+            </div>
+            <div class="col">
+              <button [disabled]="!searchFormUserRequestGroup.valid" class="submit-button mt-4" type="submit">APPLY FILTER
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+
+      </form>
+    </div>
+
+    <table class="table-hover">
+      <thead>
+      <!--        <th class="id">Reg Number</th>-->
+      <th class="id">ID</th>
+      <!--        <th class="date">Title</th>-->
+      <th class="date">Request Name</th>
+      <th class="method">User name</th>
+      <th class="invoice">User Role Assigned</th>
+      <th class="amount">Approved Status</th>
+      <th class="amount">Description</th>
+      <th class="status">Status</th>
+      </thead>
+      <tbody>
+      <tr *ngFor="let userRequest of allUsersRequestData | paginate: { itemsPerPage: 10, currentPage: p2 }">
+        <td><a (click)="onSelectRequest(userRequest.id, userRequest.userId, userRequest.requestName)" class="ref-link">{{userRequest.id}}</a></td>
+        <td>{{userRequest.requestName}}</td>
+        <td>{{userRequest.userName}}</td>
+        <td>{{userRequest.userRoleAssignedName}}</td>
+        <td class="status">{{userRequest.requestStatus}}</td>
+        <td class="amount">{{userRequest.description}}</td>
+        <td class="status">{{userRequest.status}}</td>
+      </tr>
+      </tbody>
+
+    </table>
+    <pagination-controls (pageChange)="p2 = $event"></pagination-controls>
+  </div>
   </div>
 
   <div aria-labelledby="pills-accepted-tab" class="tab-pane fade" id="pills-accepted" role="tabpanel">
