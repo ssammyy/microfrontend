@@ -2,7 +2,6 @@ import {Timestamp} from "rxjs";
 
 export interface StandardRequest {
   id : number;
-  requestNumber: string;
   name: string;
   phone: string;
   email: string;

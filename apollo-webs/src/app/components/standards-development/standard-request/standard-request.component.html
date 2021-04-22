@@ -21,25 +21,19 @@
       </div>
       <div class="form-group">
         <label for="productCategory">Product Category</label>
-        <select class="form-control" id="productCategory"  ngModel name="productcategory"  (ngModelChange)="selectedNode=$event.target.value"  data-toggle="tooltip"
+        <select class="form-control" id="productCategory"  ngModel name="productcategory"    data-toggle="tooltip"
                 data-placement="right" title="Select Product Category">
           <option value="null">--Select Category--</option>
           <option *ngFor="let product of products" value="{{product.id}}}">{{product.name}}</option>
         </select>
       </div>
-      <div class="form-group" *ngFor="let module of selectedNode.modules">
+      <div class="form-group" >
         <label for="subcategory">Product Sub Category</label>
         <select class="form-control" id="subcategory"  ngModel name="product_category"  data-toggle="tooltip"
                 data-placement="right" title="Select Product Sub Category">
           <option value="null">--Select Sub Category--</option>
-          <option *ngFor="let channel of module.channels" value="{{channel.id}}}">{{channel.name}}</option>
+          <option *ngFor="let product of products" value="{{product.id}}}">{{product.name}}</option>
         </select>
-      </div>
-      <div class="form-group">
-        <label for="requestNumber">Request Number*</label>
-        <input type="text" class="form-control" id="requestNumber"  ngModel name="requestNumber" data-toggle="tooltip"
-               data-placement="right" title="Enter Request Number*" >
-        <input type="hidden" value="78" ngModel name="id">
       </div>
       <div class="form-group">
         <label for="username">Enter your name*</label>
