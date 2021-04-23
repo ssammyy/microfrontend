@@ -464,7 +464,8 @@ class SystemsAdministrationHandler(
                                             val u = UserRequestEntityDto()
                                             u.userId = userId
                                             u.requestId = requestId
-                                            u.userRoleAssigned = daoService.assignRoleToUser(userId, roleId, status)?.roleId
+                                            u.userRoleAssigned =
+                                                daoService.assignRoleToUser(userId, roleId, status)?.roleId
                                             daoService.userRequest(u)
                                                 ?.let { ok().body(it) }
                                                 ?: throw NullValueNotAllowedException("No records found")
@@ -652,6 +653,26 @@ class SystemsAdministrationHandler(
                 return ok().body(it)
             }
                 ?: throw NullValueNotAllowedException("Update failed")
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            return badRequest().body(e.message ?: "Unknown Error")
+        }
+    }
+
+    @PreAuthorize("hasAuthority('USER')")
+    fun usersUpdateCompanyProfile(req: ServerRequest): ServerResponse {
+        try {
+            req.pathVariable("userId").toLongOrNull()
+                ?.let { userId ->
+                    val map = commonDaoServices.serviceMapDetails(appId)
+                    val dto = req.body<UserCompanyEntityDto>()
+                    dto.userId = userId
+                    daoService.updateUserCompanyDetails(dto).let {
+                        return ok().body(it)
+                    }
+                } ?: throw NullValueNotAllowedException("User ID is null")
 
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)

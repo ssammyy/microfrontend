@@ -45,6 +45,7 @@ import org.flowable.task.api.Task
 import org.kebs.app.kotlin.apollo.adaptor.kafka.producer.service.SendToKafkaQueue
 import org.kebs.app.kotlin.apollo.api.notifications.Notifications
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.StandardsLevyBpmn
+import org.kebs.app.kotlin.apollo.common.dto.UserEntityDto
 import org.kebs.app.kotlin.apollo.common.dto.UserPasswordVerificationValuesDto
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.common.exceptions.MissingConfigurationException
@@ -54,7 +55,9 @@ import org.kebs.app.kotlin.apollo.common.utils.generateRandomText
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.*
 import org.kebs.app.kotlin.apollo.store.repo.*
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.context.annotation.Lazy
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
@@ -69,113 +72,133 @@ import java.util.*
 
 @Service
 class RegistrationDaoServices(
-        private val usersRepo: IUserRepository,
-        private val applicationMapProperties: ApplicationMapProperties,
-        private val userVerificationTokensRepository: IUserVerificationTokensRepository,
+    private val usersRepo: IUserRepository,
+    private val applicationMapProperties: ApplicationMapProperties,
+    private val userVerificationTokensRepository: IUserVerificationTokensRepository,
 
-        private val employeesRepo: IEmployeesRepository,
-        private val userProfilesRepo: IUserProfilesRepository,
-        private val iImporterRepo: IImporterRepository,
-        private val iImporterContactRepo: IImporterContactRepository,
-        private val serviceRequestsRepository: IServiceRequestsRepository,
-        private val serviceMapsRepository: IServiceMapsRepository,
-        private val notifications: Notifications,
-        private val commonDaoServices: CommonDaoServices,
+    private val employeesRepo: IEmployeesRepository,
+    private val userProfilesRepo: IUserProfilesRepository,
+    private val iImporterRepo: IImporterRepository,
+    private val iImporterContactRepo: IImporterContactRepository,
+    private val serviceRequestsRepository: IServiceRequestsRepository,
+    private val serviceMapsRepository: IServiceMapsRepository,
+    private val notifications: Notifications,
+    private val commonDaoServices: CommonDaoServices,
 
-        private val notificationsRepo: INotificationsRepository,
-        private val workflowTransactionsRepository: IWorkflowTransactionsRepository,
-        private val verificationTokensRepo: IUserVerificationTokensRepository,
-        private val contactDetailsRepository: IManufacturerContactsRepository,
-        private val manufacturersRepo: IManufacturerRepository,
-        private val manufacturerAddressesEntityRepo: IManufacturerAddressRepository,
-        private val stdLevyNotificationFormRepo: IStdLevyNotificationFormRepository,
-        private val userTypesRepo: IUserTypesEntityRepository,
-        private val subSectionsLevel1Repo: ISubSectionsLevel1Repository,
-        private val subSectionsLevel2Repo: ISubSectionsLevel2Repository,
-        private val titlesRepository: ITitlesRepository,
-        private val divisionsRepo: IDivisionsRepository,
-        private val departmentsRepo: IDepartmentsRepository,
-        private val directorateRepo: IDirectoratesRepository,
-        private val designationRepo: IDesignationsRepository,
-        private val sectionsRepo: ISectionsRepository,
-        private val subRegionsRepo: ISubRegionsRepository,
-        private val regionsRepo: IRegionsRepository,
-        private val countiesRepo: ICountiesRepository,
-        private val townsRepo: ITownsRepository,
-        private val userRolesRepo: IUserRolesRepository,
-        private val userRolesAssignmentsRepository: IUserRoleAssignmentsRepository,
-        private val sendToKafkaQueue: SendToKafkaQueue,
-        private val runtimeService: RuntimeService,
-        private val taskService: TaskService,
-        private val bufferRepo: INotificationsBufferRepository,
-        private val yearlyTurnoverRepo: IManufacturerPaymentDetailsRepository,
-        private val standardLevyPaymentsRepository: IStandardLevyPaymentsRepository,
-        private val standardsLevyBpmn: StandardsLevyBpmn
+    private val notificationsRepo: INotificationsRepository,
+    private val workflowTransactionsRepository: IWorkflowTransactionsRepository,
+    private val verificationTokensRepo: IUserVerificationTokensRepository,
+    private val contactDetailsRepository: IManufacturerContactsRepository,
+    private val manufacturersRepo: IManufacturerRepository,
+    private val manufacturerAddressesEntityRepo: IManufacturerAddressRepository,
+    private val stdLevyNotificationFormRepo: IStdLevyNotificationFormRepository,
+    private val userTypesRepo: IUserTypesEntityRepository,
+    private val subSectionsLevel1Repo: ISubSectionsLevel1Repository,
+    private val subSectionsLevel2Repo: ISubSectionsLevel2Repository,
+    private val titlesRepository: ITitlesRepository,
+    private val divisionsRepo: IDivisionsRepository,
+    private val departmentsRepo: IDepartmentsRepository,
+    private val directorateRepo: IDirectoratesRepository,
+    private val designationRepo: IDesignationsRepository,
+    private val sectionsRepo: ISectionsRepository,
+    private val subRegionsRepo: ISubRegionsRepository,
+    private val regionsRepo: IRegionsRepository,
+    private val countiesRepo: ICountiesRepository,
+    private val townsRepo: ITownsRepository,
+    private val userRolesRepo: IUserRolesRepository,
+    private val userRolesAssignmentsRepository: IUserRoleAssignmentsRepository,
+    private val sendToKafkaQueue: SendToKafkaQueue,
+    private val runtimeService: RuntimeService,
+    private val taskService: TaskService,
+    private val bufferRepo: INotificationsBufferRepository,
+    private val yearlyTurnoverRepo: IManufacturerPaymentDetailsRepository,
+    private val standardLevyPaymentsRepository: IStandardLevyPaymentsRepository,
+    private val standardsLevyBpmn: StandardsLevyBpmn
 ) {
 
+
+    @Lazy
+    @Autowired
+    lateinit var systemsAdminDaoService: SystemsAdminDaoService
 
     /***********************************************************************************
      * NEW REGISTRATIONION SERVICES
      ***********************************************************************************/
 
-    fun findServiceRequestByTransactionRef(ref: String): ServiceRequestsEntity? = serviceRequestsRepository.findFirstByTransactionReference(ref)
+    fun findServiceRequestByTransactionRef(ref: String): ServiceRequestsEntity? =
+        serviceRequestsRepository.findFirstByTransactionReference(ref)
 
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
-    fun validateVerificationToken(data: UserPasswordVerificationValuesDto, appID: Int): Int {
+    fun validateVerificationToken(data: UserPasswordVerificationValuesDto, appID: Int): ServiceRequestsEntity {
         var log: WorkflowTransactionsEntity? = null
         val token = data.otpVerification ?: throw Exception("Verification Token not found")
         var sr = findServiceRequestByTransactionRef(token)
-                ?: throw Exception("Verification Token not found in service request transactions")
+            ?: throw Exception("Verification Token not found in service request transactions")
         try {
             sr.serviceMapsId
-                    ?.let { map ->
-                        sr.payload = data.otpVerification
-                        log = createTransactionLog(sr, map)
-                        val verificationToken = verificationTokensRepo.findByTokenAndStatus(token, map.initStatus)
-                                ?: throw Exception("Verification Token not found")
-                        log?.integrationResponse = "${verificationToken.id}"
-                        val expiry = verificationToken.tokenExpiryDate
-                                ?: throw Exception("Verification Token without a valid expiry found")
-                        when {
-                            expiry.after(Timestamp.from(Instant.now())) -> {
-                                /**
-                                 * If user exists activate and enable
-                                 */
-                                verificationToken.userId
-                                        ?.let { user ->
-                                            user.credentials = BCryptPasswordEncoder().encode(data.password)
-                                            user.confirmCredentials = BCryptPasswordEncoder().encode(data.passwordConfirmation)
-                                            activateUser(user, map, sr)
-                                            resetUserPassword(map, user, true, sr)?.let { requestsEntity -> sr = requestsEntity }
-                                            val emailEntity = commonDaoServices.userRegisteredSuccessfulEmailCompose(user, sr, map, verificationToken.token)
-                                            sr.payload?.let { commonDaoServices.sendEmailAfterCompose(user, applicationMapProperties.mapUserPasswordChangedNotification, emailEntity, appID, it) }
-                                        }
+                ?.let { map ->
+                    sr.payload = data.otpVerification
+                    log = createTransactionLog(sr, map)
+                    val verificationToken = verificationTokensRepo.findByTokenAndStatus(token, map.initStatus)
+                        ?: throw Exception("Verification Token not found")
+                    log?.integrationResponse = "${verificationToken.id}"
+                    val expiry = verificationToken.tokenExpiryDate
+                        ?: throw Exception("Verification Token without a valid expiry found")
+                    when {
+                        expiry.after(Timestamp.from(Instant.now())) -> {
+                            /**
+                             * If user exists activate and enable
+                             */
+                            verificationToken.userId
+                                ?.let { user ->
+                                    user.credentials = BCryptPasswordEncoder().encode(data.password)
+                                    user.confirmCredentials = BCryptPasswordEncoder().encode(data.passwordConfirmation)
+                                    activateUser(user, map, sr)
+                                    resetUserPassword(map, user, true, sr)?.let { requestsEntity ->
+                                        sr = requestsEntity
+                                    }
+                                    val emailEntity = commonDaoServices.userRegisteredSuccessfulEmailCompose(
+                                        user,
+                                        sr,
+                                        map,
+                                        verificationToken.token
+                                    )
+                                    sr.payload?.let {
+                                        commonDaoServices.sendEmailAfterCompose(
+                                            user,
+                                            applicationMapProperties.mapUserPasswordChangedNotification,
+                                            emailEntity,
+                                            appID,
+                                            it
+                                        )
+                                    }
+                                }
 
-                                verificationToken.status = map.inactiveStatus
-                                verificationToken.lastModifiedOn = Timestamp.from(Instant.now())
-                                verificationToken.lastModifiedBy = "Verification Token Received"
-                                verificationTokensRepo.save(verificationToken)
+                            verificationToken.status = map.inactiveStatus
+                            verificationToken.lastModifiedOn = Timestamp.from(Instant.now())
+                            verificationToken.lastModifiedBy = "Verification Token Received"
+                            verificationTokensRepo.save(verificationToken)
 
-                            }
-                            else -> {
-                                verificationToken.status = map.failedStatus
-                                verificationToken.lastModifiedOn = Timestamp.from(Instant.now())
-                                verificationToken.lastModifiedBy = "Expired Verification Token Received"
-                                verificationTokensRepo.save(verificationToken)
-                                throw Exception("Expired Verification Token Received")
-                            }
                         }
-
-                        sr.responseStatus = sr.serviceMapsId?.successStatusCode
-                        sr.responseMessage = "Success ${sr.payload}"
-                        sr.status = map.successStatus
-                        sr.processingEndDate = Timestamp.from(Instant.now())
-
-                        log?.responseMessage = "Token generation successful"
-                        log?.responseStatus = map.successStatusCode
-                        log?.transactionStatus = map.successStatus
-
+                        else -> {
+                            verificationToken.status = map.failedStatus
+                            verificationToken.lastModifiedOn = Timestamp.from(Instant.now())
+                            verificationToken.lastModifiedBy = "Expired Verification Token Received"
+                            verificationTokensRepo.save(verificationToken)
+                            throw Exception("Expired Verification Token Received")
+                        }
                     }
+
+                    sr.responseStatus = sr.serviceMapsId?.successStatusCode
+                    sr.responseMessage = "Success ${sr.payload}"
+                    sr.status = map.successStatus
+                    sr.processingEndDate = Timestamp.from(Instant.now())
+
+                    log?.responseMessage = "Token generation successful"
+                    log?.responseStatus = map.successStatusCode
+                    log?.transactionStatus = map.successStatus
+
+                }
 
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
@@ -186,12 +209,12 @@ class RegistrationDaoServices(
         }
         log?.transactionCompletedDate = Timestamp.from(Instant.now())
         try {
-            serviceRequestsRepository.save(sr)
+            sr = serviceRequestsRepository.save(sr)
             log?.let { log = workflowTransactionsRepository.save(it) }
         } catch (e: Exception) {
             KotlinLogging.logger { }.error { e }
         }
-        return log?.transactionStatus ?: 25
+        return sr
 
     }
 
@@ -210,7 +233,12 @@ class RegistrationDaoServices(
     }
 
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
-    fun resetUserPassword(s: ServiceMapsEntity, usersEntity: UsersEntity, initial: Boolean, sr: ServiceRequestsEntity? = null): ServiceRequestsEntity? {
+    fun resetUserPassword(
+        s: ServiceMapsEntity,
+        usersEntity: UsersEntity,
+        initial: Boolean,
+        sr: ServiceRequestsEntity? = null
+    ): ServiceRequestsEntity? {
         sr ?: commonDaoServices.createServiceRequest(s)
         try {
             var user = usersEntity
@@ -282,11 +310,18 @@ class RegistrationDaoServices(
     lateinit var manufacturerUserTypeID: String
 
     private fun generateCredentials(map: ServiceMapsEntity): String =
-            map.passwordLength
-                    ?.let {
-                        BCryptPasswordEncoder().encode(generateRandomText(it, map.secureRandom, map.messageDigestAlgorithm, false))
-                    }
-                    ?: ""
+        map.passwordLength
+            ?.let {
+                BCryptPasswordEncoder().encode(
+                    generateRandomText(
+                        it,
+                        map.secureRandom,
+                        map.messageDigestAlgorithm,
+                        false
+                    )
+                )
+            }
+            ?: ""
 
 
     fun assignUserType(userType: Long?): UserTypesEntity? = userTypesRepo.findByIdOrNull(userType)
@@ -299,9 +334,14 @@ class RegistrationDaoServices(
     fun assignDesignation(designationId: Long?): DesignationsEntity? = designationRepo.findByIdOrNull(designationId)
     fun assignSection(sectionId: Long?): SectionsEntity? = sectionsRepo.findByIdOrNull(sectionId)
     fun assignRegion(regionId: Long?): RegionsEntity? = regionsRepo.findByIdOrNull(regionId)
-    fun assignSubSectionL1(subSectionL1Id: Long?): SubSectionsLevel1Entity? = subSectionsLevel1Repo.findByIdOrNull(subSectionL1Id)
-    fun assignSubSectionL2(subSectionL2Id: Long?): SubSectionsLevel2Entity? = subSectionsLevel2Repo.findByIdOrNull(subSectionL2Id)
-    fun assignUserTypeByTypeName(userType: String, s: ServiceMapsEntity): UserTypesEntity? = userTypesRepo.findByTypeNameAndStatus(userType, s.activeStatus)
+    fun assignSubSectionL1(subSectionL1Id: Long?): SubSectionsLevel1Entity? =
+        subSectionsLevel1Repo.findByIdOrNull(subSectionL1Id)
+
+    fun assignSubSectionL2(subSectionL2Id: Long?): SubSectionsLevel2Entity? =
+        subSectionsLevel2Repo.findByIdOrNull(subSectionL2Id)
+
+    fun assignUserTypeByTypeName(userType: String, s: ServiceMapsEntity): UserTypesEntity? =
+        userTypesRepo.findByTypeNameAndStatus(userType, s.activeStatus)
 
 
     fun userRoleAssignment(user: UsersEntity, active: Int, roleID: Long): UserRoleAssignmentsEntity {
@@ -322,23 +362,32 @@ class RegistrationDaoServices(
 
     fun userRoleAssignmentUpdate(user: UsersEntity, s: ServiceMapsEntity): UserRoleAssignmentsEntity {
         userRolesAssignmentsRepository.findByUserId(user.id ?: -1L)
-                ?.let { userRoleAssignmentsEntity ->
-                    with(userRoleAssignmentsEntity) {
-                        userId = user.id
+            ?.let { userRoleAssignmentsEntity ->
+                with(userRoleAssignmentsEntity) {
+                    userId = user.id
 //                        roleId = user.roleId
-                        status = s.activeStatus
-                        lastModifiedBy = "${user.firstName} ${user.lastName}"
-                        lastModifiedOn = Timestamp.from(Instant.now())
+                    status = s.activeStatus
+                    lastModifiedBy = "${user.firstName} ${user.lastName}"
+                    lastModifiedOn = Timestamp.from(Instant.now())
 
-                    }
-                    return userRoleAssignmentsEntity
                 }
-                ?: throw Exception("User with the following [id=$user.id], recheck your user")
+                return userRoleAssignmentsEntity
+            }
+            ?: throw Exception("User with the following [id=$user.id], recheck your user")
 
     }
 
     //    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
-    fun registerManufacturer(s: ServiceMapsEntity, manufacturerContactsEntity: ManufacturerContactsEntity, stdLevyNotificationFormEntity: StdLevyNotificationFormEntity, manufacturersEntity: ManufacturersEntity, manufacturerAddressesEntity: ManufacturerAddressesEntity, userTypeId: Int?, userId: Long, yearlyTurnoverEntity: ManufacturePaymentDetailsEntity): ServiceRequestsEntity {
+    fun registerManufacturer(
+        s: ServiceMapsEntity,
+        manufacturerContactsEntity: ManufacturerContactsEntity,
+        stdLevyNotificationFormEntity: StdLevyNotificationFormEntity,
+        manufacturersEntity: ManufacturersEntity,
+        manufacturerAddressesEntity: ManufacturerAddressesEntity,
+        userTypeId: Int?,
+        userId: Long,
+        yearlyTurnoverEntity: ManufacturePaymentDetailsEntity
+    ): ServiceRequestsEntity {
 
         var sr = commonDaoServices.createServiceRequest(s)
         try {
@@ -357,7 +406,14 @@ class RegistrationDaoServices(
             val stdLevyForm = manufacturerStdLevyInit(stdLevyNotificationFormEntity, manufacturer, s, sr)
             sr.payload = "${sr.payload}: ManufacturerStdLevyForm[id=${stdLevyForm.id}]"
 
-            val contact = contactDetailsRepository.save(manufacturerContactsInit(manufacturerContactsEntity, sr, user, manufacturer))
+            val contact = contactDetailsRepository.save(
+                manufacturerContactsInit(
+                    manufacturerContactsEntity,
+                    sr,
+                    user,
+                    manufacturer
+                )
+            )
             sr.payload = "${sr.payload}: ManufacturerContact[id=${contact.id}]"
 
             val turnover = yearlyTurnoverInit(yearlyTurnoverEntity, manufacturer, s, sr)
@@ -370,12 +426,12 @@ class RegistrationDaoServices(
 
             // Start standard levy bpmn registration process
             standardsLevyBpmn
-                    .let {
-                        it.startSlRegistrationProcess(kra.id, 681)
-                        it.slManufacturerRegistrationComplete(kra.id, true)
-                        it.slFillSl1CFormComplete(kra.id)
-                        it.slSubmitDetailsComplete(kra.id)
-                    }
+                .let {
+                    it.startSlRegistrationProcess(kra.id, 681)
+                    it.slManufacturerRegistrationComplete(kra.id, true)
+                    it.slFillSl1CFormComplete(kra.id)
+                    it.slSubmitDetailsComplete(kra.id)
+                }
 
             sr.responseStatus = sr.serviceMapsId?.successStatusCode
             sr.responseMessage = "Success ${sr.payload}"
@@ -395,11 +451,11 @@ class RegistrationDaoServices(
 //            runtimeService.startProcessInstanceByKey(s.bpmnProcessKey, variables)
             sr = serviceRequestsRepository.save(sr)
             runtimeService
-                    .createProcessInstanceBuilder()
-                    .processDefinitionKey(s.bpmnProcessKey)
-                    .businessKey(sr.transactionReference)
-                    .variables(variables)
-                    .start()
+                .createProcessInstanceBuilder()
+                .processDefinitionKey(s.bpmnProcessKey)
+                .businessKey(sr.transactionReference)
+                .variables(variables)
+                .start()
             KotlinLogging.logger { }.info { "Started bpmn registration process" }
 
 //            sendToKafkaQueue.submitAsyncRequestToBus(manufacturer, s.serviceTopic)
@@ -420,7 +476,11 @@ class RegistrationDaoServices(
         return sr
     }
 
-    fun registerImporter(s: ServiceMapsEntity, importerContactDetailsEntity: ImporterContactDetailsEntity, userId: Long): ServiceRequestsEntity {
+    fun registerImporter(
+        s: ServiceMapsEntity,
+        importerContactDetailsEntity: ImporterContactDetailsEntity,
+        userId: Long
+    ): ServiceRequestsEntity {
 
         var sr = commonDaoServices.createServiceRequest(s)
         try {
@@ -451,11 +511,11 @@ class RegistrationDaoServices(
 //            runtimeService.startProcessInstanceByKey(s.bpmnProcessKey, variables)
             sr = serviceRequestsRepository.save(sr)
             runtimeService
-                    .createProcessInstanceBuilder()
-                    .processDefinitionKey(s.bpmnProcessKey)
-                    .businessKey(sr.transactionReference)
-                    .variables(variables)
-                    .start()
+                .createProcessInstanceBuilder()
+                .processDefinitionKey(s.bpmnProcessKey)
+                .businessKey(sr.transactionReference)
+                .variables(variables)
+                .start()
 
 //            sendToKafkaQueue.submitAsyncRequestToBus(manufacturer, s.serviceTopic)
             sr.processingEndDate = Timestamp.from(Instant.now())
@@ -475,50 +535,57 @@ class RegistrationDaoServices(
         return sr
     }
 
-    fun registerUser(s: ServiceMapsEntity, usersEntity: UsersEntity, userProfilesEntity: UserProfilesEntity?, userTypeId: Long?): ServiceRequestsEntity {
+    fun registerUser(
+        s: ServiceMapsEntity,
+        u: UsersEntity,
+        up: UserProfilesEntity?
+    ): ServiceRequestsEntity {
 
         var sr = commonDaoServices.createServiceRequest(s)
         try {
 
-            val user = usersRepo.save(extractUserFromUserEntity(usersEntity, s, userTypeId))
+            var user = UserEntityDto()
+            with(user) {
+                id = -1
+                firstName = u.firstName
+                lastName = u.lastName
+                email = u.email
+                personalContactNumber = u.personalContactNumber
+                typeOfUser = u.typeOfUser
+                userPinIdNumber = u.userPinIdNumber
+                userName = u.userPinIdNumber
+                when {
+                    up!=null -> {
+                        title = u.title
+                        email = u.email
+                        firstName = u.firstName
+                        lastName = u.lastName
+                        directorate = up.confirmDirectorateId
+                        designation = up.confirmDesignationId
+                        department = up.confirmDepartmentId
+                        division = up.confirmDivisionId
+                        section = up.confirmSectionId
+                        l1SubSubSection = up.confirmSubSectionL1Id
+                        l2SubSubSection = up.confirmSubSectionL2Id
+                        region = up.confirmRegionId
+                        county = up.confirmCountyId
+                        town = up.confirmTownId
+                        userRegNo ="KEBS#EMP${generateRandomText(5, s.secureRandom, s.messageDigestAlgorithm, true).toUpperCase()}"
+                    }
+                    else -> {
+                        userRegNo = "KEBS${generateRandomText(5, s.secureRandom, s.messageDigestAlgorithm, true).toUpperCase()}"
+                    }
+                }
+            }
+            user = systemsAdminDaoService.updateUserDetails(user) ?: throw NullValueNotAllowedException("Registration failed")
+
             sr.payload = "User[id= ${user.id}]"
             sr.names = "${user.firstName} ${user.lastName}"
-
-//            var userProfile: UserProfilesEntity? = null
-//            when {
-//                userProfilesEntity != null -> {
-//                    userProfile = userProfilesInit(userProfilesEntity, user, s)
-//                    sr.payload = "${sr.payload}: UserProfile[id=${userProfile.id}]"
-//                }
-//            }
-            //            runtimeService.startProcessInstanceByKey(s.bpmnProcessKey, variables)
-
-            //            sendToKafkaQueue.submitAsyncRequestToBus(manufacturer, s.serviceTopic)
-
 
             sr.responseStatus = sr.serviceMapsId?.successStatusCode
             sr.responseMessage = "Success ${sr.payload}"
             sr.status = s.successStatus
-
-            val variables = mutableMapOf<String, Any?>()
-            variables["map"] = s
-            variables["userTypeId"] = user.userTypes
-            variables["user"] = user
-//            variables["userProfile"] = userProfile
-            variables["continue"] = false
-
-            variables["transactionRef"] = sr.transactionReference
-            variables["sr"] = sr
-//            runtimeService.startProcessInstanceByKey(s.bpmnProcessKey, variables)
             sr = serviceRequestsRepository.save(sr)
-            runtimeService
-                    .createProcessInstanceBuilder()
-                    .processDefinitionKey(s.bpmnProcessKey)
-                    .businessKey(sr.transactionReference)
-                    .variables(variables)
-                    .start()
-
-//            sendToKafkaQueue.submitAsyncRequestToBus(manufacturer, s.serviceTopic)
             sr.processingEndDate = Timestamp.from(Instant.now())
 
         } catch (e: Exception) {
@@ -531,13 +598,17 @@ class RegistrationDaoServices(
 
         }
 
-//        sr = serviceRequestsRepository.save(sr)
         KotlinLogging.logger { }.trace("${sr.id} ${sr.responseStatus}")
         return sr
     }
 
 
-    private fun manufacturerContactsInit(manufacturerContactsEntity: ManufacturerContactsEntity, sr: ServiceRequestsEntity, usersEntity: UsersEntity, manufacturer: ManufacturersEntity): ManufacturerContactsEntity {
+    private fun manufacturerContactsInit(
+        manufacturerContactsEntity: ManufacturerContactsEntity,
+        sr: ServiceRequestsEntity,
+        usersEntity: UsersEntity,
+        manufacturer: ManufacturersEntity
+    ): ManufacturerContactsEntity {
         with(manufacturerContactsEntity) {
             lastName = usersEntity.lastName
             firstName = usersEntity.firstName
@@ -553,7 +624,12 @@ class RegistrationDaoServices(
         return manufacturerContactsEntity
     }
 
-    private fun manufacturerAddressesInit(manufacturerAddressesEntity: ManufacturerAddressesEntity, manufacturer: ManufacturersEntity, s: ServiceMapsEntity, sr: ServiceRequestsEntity): ManufacturerAddressesEntity {
+    private fun manufacturerAddressesInit(
+        manufacturerAddressesEntity: ManufacturerAddressesEntity,
+        manufacturer: ManufacturersEntity,
+        s: ServiceMapsEntity,
+        sr: ServiceRequestsEntity
+    ): ManufacturerAddressesEntity {
         var add = manufacturerAddressesEntity
         with(add) {
             registrationDate = Date(Date().time)
@@ -568,7 +644,12 @@ class RegistrationDaoServices(
         return add
     }
 
-    private fun manufacturerStdLevyInit(stdLevyNotificationFormEntity: StdLevyNotificationFormEntity, manufacturer: ManufacturersEntity, s: ServiceMapsEntity, sr: ServiceRequestsEntity): StdLevyNotificationFormEntity {
+    private fun manufacturerStdLevyInit(
+        stdLevyNotificationFormEntity: StdLevyNotificationFormEntity,
+        manufacturer: ManufacturersEntity,
+        s: ServiceMapsEntity,
+        sr: ServiceRequestsEntity
+    ): StdLevyNotificationFormEntity {
         var add = stdLevyNotificationFormEntity
         with(add) {
             manufacturerId = manufacturer
@@ -582,7 +663,12 @@ class RegistrationDaoServices(
     }
 
 
-    private fun importerInit(importerContactDetailsEntity: ImporterContactDetailsEntity, sr: ServiceRequestsEntity, user: UsersEntity, s: ServiceMapsEntity): ImporterContactDetailsEntity {
+    private fun importerInit(
+        importerContactDetailsEntity: ImporterContactDetailsEntity,
+        sr: ServiceRequestsEntity,
+        user: UsersEntity,
+        s: ServiceMapsEntity
+    ): ImporterContactDetailsEntity {
         var importerExporter = importerContactDetailsEntity
         with(importerExporter) {
             firstName = user.firstName
@@ -600,7 +686,12 @@ class RegistrationDaoServices(
     }
 
 
-    private fun manufacturersInit(manufacturersEntity: ManufacturersEntity, sr: ServiceRequestsEntity, user: UsersEntity?, s: ServiceMapsEntity): ManufacturersEntity {
+    private fun manufacturersInit(
+        manufacturersEntity: ManufacturersEntity,
+        sr: ServiceRequestsEntity,
+        user: UsersEntity?,
+        s: ServiceMapsEntity
+    ): ManufacturersEntity {
         var manufacturer = manufacturersEntity
         with(manufacturer) {
 //            businessLineId = manufacturersEntity.confirmLineBusinessId?.let { commonDaoServices.findBusinessLineEntityByID(it, s.activeStatus) }
@@ -616,7 +707,11 @@ class RegistrationDaoServices(
         return manufacturer
     }
 
-    private fun extractUserFromManufacturer(manufacturerContactsEntity: ManufacturerContactsEntity, s: ServiceMapsEntity, usertypeId: Long?): UsersEntity {
+    private fun extractUserFromManufacturer(
+        manufacturerContactsEntity: ManufacturerContactsEntity,
+        s: ServiceMapsEntity,
+        usertypeId: Long?
+    ): UsersEntity {
         val user = UsersEntity()
         with(user) {
             firstName = manufacturerContactsEntity.firstName
@@ -642,20 +737,24 @@ class RegistrationDaoServices(
     private fun updateUserFromUserEntity(userId: Long, s: ServiceMapsEntity): UsersEntity {
         var user = UsersEntity()
         usersRepo.findByIdOrNull(userId)
-                ?.let { usersEntity ->
+            ?.let { usersEntity ->
 
 //                    KotlinLogging.logger { }.info { "User ID before update:  = ${usersEntity.id}" }
-                    usersEntity.userProfileStatus = s.activeStatus
-                    usersEntity.modifiedBy = usersEntity.firstName + " " + usersEntity.lastName
-                    usersEntity.modifiedOn = Timestamp.from(Instant.now())
+                usersEntity.userProfileStatus = s.activeStatus
+                usersEntity.modifiedBy = usersEntity.firstName + " " + usersEntity.lastName
+                usersEntity.modifiedOn = Timestamp.from(Instant.now())
 
-                    user = usersEntity
+                user = usersEntity
 
-                }
+            }
         return user
     }
 
-    private fun extractUserFromUserEntity(usersEntity: UsersEntity, s: ServiceMapsEntity, usertypeId: Long?): UsersEntity {
+    private fun extractUserFromUserEntity(
+        usersEntity: UsersEntity,
+        s: ServiceMapsEntity,
+        usertypeId: Long?
+    ): UsersEntity {
         with(usersEntity) {
             userName = email
             credentials = generateCredentials(s)
@@ -678,13 +777,19 @@ class RegistrationDaoServices(
     }
 
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
-    fun registerEmployee(s: ServiceMapsEntity, usersEntity: UsersEntity, userProfilesEntity: UserProfilesEntity, businessKey: String? = null): ServiceRequestsEntity {
+    fun registerEmployee(
+        s: ServiceMapsEntity,
+        usersEntity: UsersEntity,
+        userProfilesEntity: UserProfilesEntity,
+        businessKey: String? = null
+    ): ServiceRequestsEntity {
 
 
         var sr = commonDaoServices.createServiceRequest(s)
 
         try {
-            var user = usersRepo.save(extractUserFromUserEntity(usersEntity, s, applicationMapProperties.mapUserTypeEmployee))
+            var user =
+                usersRepo.save(extractUserFromUserEntity(usersEntity, s, applicationMapProperties.mapUserTypeEmployee))
             sr.payload = "User[id= ${user.id}]"
             sr.names = "${user.firstName} ${user.lastName}"
 
@@ -726,11 +831,11 @@ class RegistrationDaoServices(
 //            runtimeService.startProcessInstanceByKey(s.bpmnProcessKey, variables)
             sr = serviceRequestsRepository.save(sr)
             runtimeService
-                    .createProcessInstanceBuilder()
-                    .processDefinitionKey(s.bpmnProcessKey)
-                    .businessKey(sr.transactionReference)
-                    .variables(variables)
-                    .start()
+                .createProcessInstanceBuilder()
+                .processDefinitionKey(s.bpmnProcessKey)
+                .businessKey(sr.transactionReference)
+                .variables(variables)
+                .start()
 
 //            sendToKafkaQueue.submitAsyncRequestToBus(manufacturer, s.serviceTopic)
             sr.processingEndDate = Timestamp.from(Instant.now())
@@ -751,7 +856,11 @@ class RegistrationDaoServices(
 
     }
 
-    private fun userProfilesInit(userProfilesEntity: UserProfilesEntity, user: UsersEntity, s: ServiceMapsEntity): UserProfilesEntity {
+    private fun userProfilesInit(
+        userProfilesEntity: UserProfilesEntity,
+        user: UsersEntity,
+        s: ServiceMapsEntity
+    ): UserProfilesEntity {
         var userProfile = userProfilesEntity
         with(userProfile) {
             id = null
@@ -787,20 +896,24 @@ class RegistrationDaoServices(
         return userProfile
     }
 
-    private fun userUpdateRole(userProfilesEntity: UserProfilesEntity, user: UsersEntity, s: ServiceMapsEntity): UsersEntity {
+    private fun userUpdateRole(
+        userProfilesEntity: UserProfilesEntity,
+        user: UsersEntity,
+        s: ServiceMapsEntity
+    ): UsersEntity {
 
         userProfilesEntity.designationId?.let {
             userRolesRepo.findByDesignationIdAndStatus(it.id, s.activeStatus)
-                    ?.let {
+                ?.let {
 //                        userTypesRepo.findByDefaultRole(userRolesEntity)
 //                                ?.let { userType ->
-                        with(user) {
+                    with(user) {
 //                            roleId = userRolesEntity
 //                            userTypes = userType
 //<<<<<<< HEAD
-                            KotlinLogging.logger { }.info { "MY USER ROLE UPDATED:  = ${user.userName}" }
-                            return user
-                        }
+                        KotlinLogging.logger { }.info { "MY USER ROLE UPDATED:  = ${user.userName}" }
+                        return user
+                    }
 //=======
 //                        return user
 //                    }
@@ -808,15 +921,19 @@ class RegistrationDaoServices(
 //                                }
 //                                ?: throw Exception("Missing Role with the following [id=$userRolesEntity.id], recheck configuration Your UserType")
 
-                    }
-                    ?: throw Exception("Missing Role with The Designation Entity with the following [id=$userProfilesEntity.designationId], recheck configuration")
+                }
+                ?: throw Exception("Missing Role with The Designation Entity with the following [id=$userProfilesEntity.designationId], recheck configuration")
 
         }
-                ?: throw Exception("Missing Designation Entity with the following [id=$userProfilesEntity.designationId], recheck configuration")
+            ?: throw Exception("Missing Designation Entity with the following [id=$userProfilesEntity.designationId], recheck configuration")
 
     }
 
-    private fun employeesInit(userProfilesEntity: UserProfilesEntity, user: UsersEntity, s: ServiceMapsEntity): EmployeesEntity {
+    private fun employeesInit(
+        userProfilesEntity: UserProfilesEntity,
+        user: UsersEntity,
+        s: ServiceMapsEntity
+    ): EmployeesEntity {
         var employee = EmployeesEntity()
         with(employee) {
             id = null
@@ -830,7 +947,12 @@ class RegistrationDaoServices(
         return employee
     }
 
-    private fun yearlyTurnoverInit(yearlyTurnoverEntity: ManufacturePaymentDetailsEntity, manufacturer: ManufacturersEntity, s: ServiceMapsEntity, sr: ServiceRequestsEntity): ManufacturePaymentDetailsEntity {
+    private fun yearlyTurnoverInit(
+        yearlyTurnoverEntity: ManufacturePaymentDetailsEntity,
+        manufacturer: ManufacturersEntity,
+        s: ServiceMapsEntity,
+        sr: ServiceRequestsEntity
+    ): ManufacturePaymentDetailsEntity {
         var turnover = yearlyTurnoverEntity
         with(turnover) {
             manufacturerId = manufacturer.id
@@ -842,7 +964,13 @@ class RegistrationDaoServices(
         return turnover
     }
 
-    private fun kraInit(manufacturer: ManufacturersEntity, standardLevyPayments: StandardLevyPaymentsEntity, turnover: ManufacturePaymentDetailsEntity, sr: ServiceRequestsEntity, s: ServiceMapsEntity): StandardLevyPaymentsEntity {
+    private fun kraInit(
+        manufacturer: ManufacturersEntity,
+        standardLevyPayments: StandardLevyPaymentsEntity,
+        turnover: ManufacturePaymentDetailsEntity,
+        sr: ServiceRequestsEntity,
+        s: ServiceMapsEntity
+    ): StandardLevyPaymentsEntity {
         var kra = standardLevyPayments
         with(kra) {
             manufacturerEntity = manufacturer
@@ -867,7 +995,11 @@ class RegistrationDaoServices(
         return amout
     }
 
-    private fun extractUsersFromEmployee(usersEntity: UsersEntity, s: ServiceMapsEntity, userTypeName: String): UsersEntity {
+    private fun extractUsersFromEmployee(
+        usersEntity: UsersEntity,
+        s: ServiceMapsEntity,
+        userTypeName: String
+    ): UsersEntity {
         var user = usersEntity
         with(user) {
             id = null
@@ -891,18 +1023,23 @@ class RegistrationDaoServices(
 
     fun completeTask(processInstance: ProcessInstance, sr: ServiceRequestsEntity): ServiceRequestsEntity {
         taskService.createTaskQuery().processInstanceId(processInstance.processInstanceId).singleResult()
-                ?.let { task ->
+            ?.let { task ->
 
-                    taskService.complete(task.id)
-                }
+                taskService.complete(task.id)
+            }
         return sr
 
     }
 
 
-    fun processInstance(sr: ServiceRequestsEntity): ProcessInstance? = runtimeService.createProcessInstanceQuery().processInstanceBusinessKey(sr.transactionReference).singleResult()
+    fun processInstance(sr: ServiceRequestsEntity): ProcessInstance? =
+        runtimeService.createProcessInstanceQuery().processInstanceBusinessKey(sr.transactionReference).singleResult()
 
-    fun generateVerificationToken(sr: ServiceRequestsEntity, user: UsersEntity, map: ServiceMapsEntity): UserVerificationTokensEntity? {
+    fun generateVerificationToken(
+        sr: ServiceRequestsEntity,
+        user: UsersEntity,
+        map: ServiceMapsEntity
+    ): UserVerificationTokensEntity? {
         var tokensEntity = UserVerificationTokensEntity()
         with(tokensEntity) {
             token = sr.transactionReference
@@ -911,7 +1048,7 @@ class RegistrationDaoServices(
             createdBy = sr.transactionReference
             createdOn = Timestamp.from(Instant.now())
             map.tokenExpiryHours?.let { h -> tokenExpiryDate = Timestamp.from(Instant.now().plus(h, ChronoUnit.HOURS)) }
-                    ?: throw Exception("Missing Configuration: Hours to Token Expiry")
+                ?: throw Exception("Missing Configuration: Hours to Token Expiry")
             transactionDate = Date(Date().time)
         }
 
@@ -927,7 +1064,6 @@ class RegistrationDaoServices(
         variables["continue"] = true
         return true
     }
-
 
 
     fun submitKraToQueue(map: ServiceMapsEntity, user: UsersEntity, sr: ServiceRequestsEntity): Int? {
@@ -958,15 +1094,17 @@ class RegistrationDaoServices(
 
     fun submitBrsToQueue(map: ServiceMapsEntity, user: UsersEntity, sr: ServiceRequestsEntity): Int? {
         return try {
-            runtimeService.createProcessInstanceQuery().processInstanceBusinessKey(sr.transactionReference).singleResult()
-                    ?.let { proc ->
-                        val task: Task = taskService.createTaskQuery().processInstanceId(proc.processInstanceId).singleResult()
+            runtimeService.createProcessInstanceQuery().processInstanceBusinessKey(sr.transactionReference)
+                .singleResult()
+                ?.let { proc ->
+                    val task: Task =
+                        taskService.createTaskQuery().processInstanceId(proc.processInstanceId).singleResult()
 
-                        val variables: MutableMap<String, Any> = taskService.getVariables(task.id)
-                        variables["continue"] = true
-                        KotlinLogging.logger { }.info { "Reached here" }
-                        sr.status
-                    }
+                    val variables: MutableMap<String, Any> = taskService.getVariables(task.id)
+                    variables["continue"] = true
+                    KotlinLogging.logger { }.info { "Reached here" }
+                    sr.status
+                }
 //                    ?:throw NullValueNotAllowedException("No Notification configured for  combination [SrStatus=${sr.status}, mapId=${map.id}] ")
         } catch (e: java.lang.Exception) {
             KotlinLogging.logger { }.error(e.message)
@@ -988,22 +1126,22 @@ class RegistrationDaoServices(
 
             KotlinLogging.logger { }.info { "Started Mail process" }
             notificationsUseCase(map, mutableListOf(user.email), sr, sr)
-                    ?.let { list ->
-                        list.forEach { buffer ->
-                            /**
-                             * TODO: Make topic a field on the Buffer table
-                             */
-                            buffer.recipient?.let { recipient ->
-                                KotlinLogging.logger { }.info { "Started recipient $recipient" }
-                                buffer.subject?.let { subject ->
-                                    KotlinLogging.logger { }.info { "Started subject $subject" }
-                                    buffer.messageBody?.let { messageBody ->
-                                        KotlinLogging.logger { }.info { "Started messageBody $messageBody" }
-                                        notifications.sendEmail(recipient, subject, messageBody)
-                                        KotlinLogging.logger { }.info { "Email sent" }
-                                    }
+                ?.let { list ->
+                    list.forEach { buffer ->
+                        /**
+                         * TODO: Make topic a field on the Buffer table
+                         */
+                        buffer.recipient?.let { recipient ->
+                            KotlinLogging.logger { }.info { "Started recipient $recipient" }
+                            buffer.subject?.let { subject ->
+                                KotlinLogging.logger { }.info { "Started subject $subject" }
+                                buffer.messageBody?.let { messageBody ->
+                                    KotlinLogging.logger { }.info { "Started messageBody $messageBody" }
+                                    notifications.sendEmail(recipient, subject, messageBody)
+                                    KotlinLogging.logger { }.info { "Email sent" }
                                 }
                             }
+                        }
 
 
 //                            buffer.varField1?.let { topic ->
@@ -1011,8 +1149,8 @@ class RegistrationDaoServices(
 //                            }
 //                            KotlinLogging.logger { }.info { "Email sent" }
 
-                        }
-                        serviceRequestsRepository.save(sr)
+                    }
+                    serviceRequestsRepository.save(sr)
 
 
 //                        val task = taskService.createTaskQuery().processInstanceId(proc.processInstanceId).singleResult()
@@ -1021,10 +1159,10 @@ class RegistrationDaoServices(
 //                        variables["sr"] = sr
 //                        variables["user"] = user
 //                        taskService.complete(task.id, variables)
-                        sr.status
+                    sr.status
 
-                    }
-                    ?: throw NullValueNotAllowedException("No Notification configured for  combination [SrStatus=${sr.status}, mapId=${map.id}] ")
+                }
+                ?: throw NullValueNotAllowedException("No Notification configured for  combination [SrStatus=${sr.status}, mapId=${map.id}] ")
 
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
@@ -1085,59 +1223,169 @@ class RegistrationDaoServices(
 //    }
 
 
-    fun notificationsUseCase(map: ServiceMapsEntity, email: MutableList<String?>, data: Any?, sr: ServiceRequestsEntity? = null): List<NotificationsBufferEntity>? {
+    fun notificationsUseCase(
+        map: ServiceMapsEntity,
+        email: MutableList<String?>,
+        data: Any?,
+        sr: ServiceRequestsEntity? = null
+    ): List<NotificationsBufferEntity>? {
         notificationsRepo.findByServiceMapIdAndServiceRequestStatusAndStatus(map, sr?.status, map.activeStatus)
-                ?.let { notifications ->
-                    return commonDaoServices.generateBufferedNotification(notifications, map, email, data, sr)
-                }
-                ?: throw MissingConfigurationException("Notification for current Scenario is missing, review setup and try again later")
+            ?.let { notifications ->
+                return commonDaoServices.generateBufferedNotification(notifications, map, email, data, sr)
+            }
+            ?: throw MissingConfigurationException("Notification for current Scenario is missing, review setup and try again later")
 
     }
 
 
     fun extractServiceMapFromAppId(mapId: String): ServiceMapsEntity? =
-            serviceMapsRepository.findByIdOrNull(mapId.toIntOrNull())
+        serviceMapsRepository.findByIdOrNull(mapId.toIntOrNull())
 
 
     fun extractUserFromEmail(email: String): UsersEntity? = usersRepo.findByEmail(email)
 
 
     fun extractUserFromValidationToken(transactionReference: String?, map: ServiceMapsEntity): UsersEntity? =
-            verificationTokensRepo.findByTokenAndStatus(transactionReference, map.successStatus)?.userId
+        verificationTokensRepo.findByTokenAndStatus(transactionReference, map.successStatus)?.userId
 
     fun findUserById(userId: String): UsersEntity? = usersRepo.findByIdOrNull(userId.toLongOrNull())
 
     fun findUserTypeByID(id: Long): UserTypesEntity {
         userTypesRepo.findByIdOrNull(id)
-                ?.let { userType ->
-                    return userType
-                }
-                ?: throw ExpectedDataNotFound("User type with ID  = ${id}, does not Exist")
+            ?.let { userType ->
+                return userType
+            }
+            ?: throw ExpectedDataNotFound("User type with ID  = ${id}, does not Exist")
     }
 
 
-    fun findNotificationByToken(token: String?, appId: String?, emails: List<String>, user: UsersEntity): List<NotificationsBufferEntity>? {
-        token
-                ?.let { ref ->
-                    serviceRequestsRepository.findFirstByTransactionReference(ref)
-                            ?.let { sr ->
-                                sr.status = 40
-                                sr.eventBusSubmitDate = Timestamp.from(Instant.now())
-                                sr.requestId = user.id
-                                serviceRequestsRepository.save(sr)
-                                serviceMapsRepository.findByIdOrNull(appId?.toIntOrNull())
-                                        ?.let { map ->
-                                            return notificationsUseCase(map, emails.toMutableList(), sr, sr)
+    fun valVerificatToken(sr: ServiceRequestsEntity, token: String): Int {
+        var log: WorkflowTransactionsEntity? = null
+
+        try {
+//            runtimeService.createProcessInstanceQuery().processInstanceBusinessKey(sr.transactionReference).singleResult()
+//                    ?.let { proc ->
+//                        val task: Task = taskService.createTaskQuery().processInstanceId(proc.processInstanceId).singleResult()
+
+//                        val variables: MutableMap<String, Any> = taskService.getVariables(task.id)
+//                        variables["continue"] = false
+
+
+//
+            sr.serviceMapsId
+                ?.let { map ->
+                    sr.payload = token
+
+                    log = createTransactionLog(sr, map)
+
+
+                    verificationTokensRepo.findByTokenAndStatus(token, map.initStatus)
+                        ?.let { verificationToken ->
+                            log?.integrationResponse = "${verificationToken.id}"
+                            verificationToken.tokenExpiryDate
+                                ?.let { expiry ->
+                                    when {
+                                        expiry.after(Timestamp.from(Instant.now())) -> {
+                                            /**
+                                             * If user exists activate and enable
+                                             */
+                                            verificationToken.userId
+                                                ?.let {
+                                                    activateUser(it, map, sr)
+//                                                                                variables["continue"] = true
+
+                                                }
+
+                                            verificationToken.status = map.successStatus
+                                            verificationToken.lastModifiedOn = Timestamp.from(Instant.now())
+                                            verificationToken.lastModifiedBy = "Verification Token Received"
+                                            verificationTokensRepo.save(verificationToken)
 
                                         }
-                                        ?: throw ServiceMapNotFoundException("Missing application mapping for [id=$appId], recheck configuration")
+                                        else -> {
+                                            verificationToken.status = map.failedStatus
+                                            verificationToken.lastModifiedOn = Timestamp.from(Instant.now())
+                                            verificationToken.lastModifiedBy = "Expired Verification Token Received"
+                                            verificationTokensRepo.save(verificationToken)
+                                            throw Exception("Expired Verification Token Received")
+                                        }
+                                    }
+
+                                }
+                                ?: throw Exception("Verification Token without a valid expiry found")
 
 
-                            }
-                            ?: throw NullValueNotAllowedException("No matching service request for token")
+                        } ?: throw Exception("Verification Token not found")
+
+
+
+
+                    sr.responseStatus = sr.serviceMapsId?.successStatusCode
+                    sr.responseMessage = "Success ${sr.payload}"
+                    sr.status = map.successStatus
+                    sr.processingEndDate = Timestamp.from(Instant.now())
+
+                    log?.responseMessage = "Token generation successful"
+                    log?.responseStatus = map.successStatusCode
+                    log?.transactionStatus = map.successStatus
 
                 }
-                ?: throw NullValueNotAllowedException("Invalid token received")
+//                        taskService.complete(task.id, variables)
+
+
+//                    }
+//                    ?: throw ProcessInstanceNotFoundException("No process instance with [businessKey=${sr.transactionReference}]")
+
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            log?.responseMessage = e.message
+            log?.responseStatus = sr.serviceMapsId?.exceptionStatusCode
+            log?.transactionStatus = sr.serviceMapsId?.exceptionStatus!!
+        }
+        log?.transactionCompletedDate = Timestamp.from(Instant.now())
+
+        try {
+            serviceRequestsRepository.save(sr)
+            log?.let { log = workflowTransactionsRepository.save(it) }
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error { e }
+
+        }
+        return log?.transactionStatus ?: 25
+
+    }
+
+
+    fun findNotificationByToken(
+        token: String?,
+        appId: String?,
+        emails: List<String>,
+        user: UsersEntity
+    ): List<NotificationsBufferEntity>? {
+        token
+            ?.let { ref ->
+                serviceRequestsRepository.findFirstByTransactionReference(ref)
+                    ?.let { sr ->
+                        sr.status = 40
+                        sr.eventBusSubmitDate = Timestamp.from(Instant.now())
+                        sr.requestId = user.id
+                        serviceRequestsRepository.save(sr)
+                        serviceMapsRepository.findByIdOrNull(appId?.toIntOrNull())
+                            ?.let { map ->
+                                return notificationsUseCase(map, emails.toMutableList(), sr, sr)
+
+                            }
+                            ?: throw ServiceMapNotFoundException("Missing application mapping for [id=$appId], recheck configuration")
+
+
+                    }
+                    ?: throw NullValueNotAllowedException("No matching service request for token")
+
+            }
+            ?: throw NullValueNotAllowedException("Invalid token received")
 
 
     }

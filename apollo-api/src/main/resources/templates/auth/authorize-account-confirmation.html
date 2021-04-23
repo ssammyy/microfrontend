@@ -35,7 +35,7 @@
                 <div class="row">
                     <div class="col-md-6 col-md-offset-3">
                         <form id="msform"
-                              th:action="@{/api/auth/signup/authorize(messageKey=${token},message=${usersEntity.id}, appId=${map.id})}"
+                              th:action="@{/api/auth/kebs/signup/authorize/token}"
                               method="post">
                             <fieldset th:object="${usersEntity}">
                                 <h2 class="fs-title">SetUp Password</h2>
@@ -48,8 +48,13 @@
                                 <input class="input-field w-input" id="lastName" disabled placeholder="Last Name"
                                        th:field="*{lastName}" type="text">
                                 <label class="field-label" for="email">Email</label>
-                                <input class="input-field w-input" id="email" placeholder="Email Address"
-                                       th:field="*{email}" disabled type="text">
+                                <input class="input-field w-input" id="email" placeholder="Email Address" th:field="*{email}" disabled type="text">
+                                <label class="field-label" for="userPinIdNumber">Pin/ID/Passport Number</label>
+                                <input class="input-field w-input" id="userPinIdNumber" placeholder="00000000" th:field="*{userPinIdNumber}" disabled type="text">
+                                <label class="field-label" for="userName">UserName</label>
+                                <input class="input-field w-input" id="userName" placeholder="00000000" th:field="*{userName}" disabled type="text">
+                                <label class="field-label" for="varField1">Enter OTP</label>
+                                <input class="input-field w-input" id="varField1" placeholder="5BG98" th:field="*{varField1}" type="text">
                                 <label class="field-label" for="password">Password</label>
                                 <input class="input-field w-input" id="password" placeholder="password"
                                        th:field="*{credentials}" th:required="required" type="password">

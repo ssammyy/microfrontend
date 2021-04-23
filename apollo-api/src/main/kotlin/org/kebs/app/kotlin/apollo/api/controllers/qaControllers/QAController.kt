@@ -563,13 +563,13 @@ class QAController(
             redirectAttributes: RedirectAttributes
     ): String {
         return try {
-            KotlinLogging.logger { }.debug { "Permit app id ${myPermit.id}" }
+            KotlinLogging.logger { }.error( "Permit app id ${myPermit.id}" )
 
-            if (fileElem?.isEmpty()!!) {
+            if (fileElem?.isEmpty() == true) {
                 KotlinLogging.logger {  }.info { "fileElem is empty" }
             }
             else {
-                fileElem.let { daoServices.storeFiles(it) }
+                fileElem.let { it?.let { it1 -> daoServices.storeFiles(it1) } }
             }
 
             serviceMapsRepo.findByIdOrNull(appId)
@@ -605,7 +605,7 @@ class QAController(
 //                                                                    manufacturerId = manufacturerRepository.findByUserId(loggedInUser)?.id
                                                                     manufacturerId = man.id
                                                                     manufacturerName = man.name
-                                                                    if (fileElem.isNotEmpty()) {
+                                                                    if (fileElem?.isNotEmpty() == true) {
                                                                         val fileNames4 = StringBuilder()
                                                                         fileElem.forEach { file ->
                                                                             fileNames4.append(file.originalFilename + ",")
@@ -657,7 +657,8 @@ class QAController(
 
 
         } catch (e: Exception) {
-            KotlinLogging.logger { }.error { e }
+            KotlinLogging.logger { }.error(e.message,e)
+
             "redirect:/api/permit/apply/new/smark"
         }
 
