@@ -1,3 +1,5 @@
+###REQUEST FOR STANDARD ENDPOINTS ######
+
 ###POST deploy application
 POST http://localhost:8080/standard/deploy
 
@@ -6,7 +8,7 @@ POST http://localhost:8080/standard/request
 Content-Type: application/json
 
 {
-  "requestNumber": "ENG/01:2021",
+  "requestNumber": "ENG/02:2021",
   "requestor_id": {"id": "1","name": "Edwin Inganji","phone": "0700402788","email": "einganji@gmail.com"},
   "tc_id": "1",
   "department_id": "1",
@@ -21,7 +23,7 @@ POST http://localhost:8080/standard/hof/review
 Content-Type: application/json
 
 {
-  "id": "ce92da77-a3b9-11eb-adad-28b2bd7bef93"
+  "id": "198dc264-a40e-11eb-88f8-fe5c68490b49"
 }
 
 ###GET all tasks assigned to a TC-SEC
@@ -34,11 +36,11 @@ Content-Type: application/json
 {
   "proposal_title": "ENG/01:2021",
   "name_of_proposer": "Edwin Inganji",
-  "taskId": "62d1097e-a35b-11eb-8f9a-fe5c68490b49"
+  "taskId": "558f8aa8-a40e-11eb-88f8-fe5c68490b49"
 }
 
 ###GET all tasks assigned to a TC
-GET http://localhost:8080/standard/getTCTasks/
+GET http://localhost:8080/standard/getTCTasks
 
 ### POST Provide decision on NWI
 POST http://localhost:8080/standard/decisionOnNWI
@@ -98,6 +100,9 @@ GET http://localhost:8080/standard/getTechnicalCommittee
 ###GET products
 GET http://localhost:8080/standard/getProducts
 
+###GET product categories
+GET http://localhost:8080/standard/getProductCategories/1
+
 ###POST Product categories
 POST http://localhost:8080/standard/getProductCategories
 Content-Type: application/json
@@ -118,4 +123,48 @@ Content-Type: application/json
 
 ###
 
+###PUBLISHING ENDPOINTS ######
+
+###POST deploy application
+POST http://localhost:8080/publishing/deploy
+
+###POST apply for standard request
+POST http://localhost:8080/publishing/submit
+Content-Type: application/json
+
+{
+  "title": "ENG/01:2021",
+  "requestor_id": "1",
+  "standard_officer_id": "1"
+}
+
+###
+###GET all tasks assigned to a HOP
+GET http://localhost:8080/publishing/getHOPTasks
+
+### POST Provide decision on KS draft
+POST http://localhost:8080/publishing/decisionOnKSDraft
+Content-Type: application/json
+
+{
+  "taskId": "4ab39b09-a3fd-11eb-b2bd-fe5c68490b49",
+  "decision": "false"
+}
+
+###GET all tasks assigned to a HOP
+GET http://localhost:8080/publishing/getHOPTasks
+
+###POST upload rejection feedback
+POST http://localhost:8080/publishing/uploadRejectionFeedback
+Content-Type: application/json
+
+{
+  "item_id": "ENG/01:2021",
+  "user_id": "1",
+  "status": "false",
+  "comment": "Its not upto standard",
+  "taskId": "5f6f6020-a3fd-11eb-b2bd-fe5c68490b49"
+}
+
+###
 

@@ -1,9 +1,10 @@
 package com.apollo.standardsdevelopment.models
 
+import java.sql.Timestamp
 import javax.persistence.*
 
 @Entity
-@Table(name="SD_STANDARD-DRAFT")
+@Table(name="SD_STANDARD_DRAFT")
 class StandardDraft {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -14,9 +15,44 @@ class StandardDraft {
     @Basic
     var title:String?=null
 
-    @Column(name="CD")
+    @Column(name="REQUESTOR_ID")
     @Basic
-    var cd:String?= null
+    var requestorId:String?= null
+
+    @Column(name="STANDARD_OFFICER_ID")
+    @Basic
+    var standardOfficerId:String?= null
+
+    @Column(name="SUBMISSION_DATE")
+    @Basic
+    var submission_date: Timestamp?=null
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as StandardDraft
+
+        if (id != other.id) return false
+        if (title != other.title) return false
+        if (requestorId != other.requestorId) return false
+        if (standardOfficerId != other.standardOfficerId) return false
+        if (submission_date != other.submission_date) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = id.hashCode()
+        result = 31 * result + (title?.hashCode() ?: 0)
+        result = 31 * result + (requestorId?.hashCode() ?: 0)
+        result = 31 * result + (standardOfficerId?.hashCode() ?: 0)
+        result = 31 * result + (submission_date?.hashCode() ?: 0)
+        return result
+    }
+
+    override fun toString(): String {
+        return "StandardDraft(id=$id, title=$title, requestorId=$requestorId, standardOfficerId=$standardOfficerId, submission_date=$submission_date)"
+    }
 
 
 }
