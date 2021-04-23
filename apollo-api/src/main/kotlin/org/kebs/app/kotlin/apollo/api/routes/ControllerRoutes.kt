@@ -47,7 +47,7 @@ class ControllerRoutes {
 
     @Bean
     fun masterDataRoutes(handler: MasterDataHandler) = router {
-        "/api/v1/system/admin".nest {
+        "/api/system/admin".nest {
             "/masters".nest {
                 "/ui".nest {
                     GET("/designations", handler::designationsUi)
@@ -430,7 +430,7 @@ class ControllerRoutes {
 
     @Bean
     fun systemsAdministrationRoutes(handler: SystemsAdministrationHandler) = router {
-        "/api/v1/system/admin".nest {
+        "/api/system/admin".nest {
             GET("/home", handler::sysadminHome)
             "/ui".nest {
                 GET("/rbac-user-roles", handler::rbacUserRoles)

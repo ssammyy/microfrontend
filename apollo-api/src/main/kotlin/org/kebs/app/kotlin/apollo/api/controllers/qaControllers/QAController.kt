@@ -565,12 +565,12 @@ class QAController(
         return try {
             KotlinLogging.logger { }.error( "Permit app id ${myPermit.id}" )
 
-            if (fileElem?.isEmpty() == true) {
-                KotlinLogging.logger {  }.info { "fileElem is empty" }
-            }
-            else {
-                fileElem.let { it?.let { it1 -> daoServices.storeFiles(it1) } }
-            }
+//            if (fileElem?.isEmpty() == true) {
+//                KotlinLogging.logger {  }.info { "fileElem is empty" }
+//            }
+//            else {
+//                fileElem.let { it?.let { it1 -> daoServices.storeFiles(it1) } }
+//            }
 
             serviceMapsRepo.findByIdOrNull(appId)
                     ?.let { map ->
@@ -605,15 +605,15 @@ class QAController(
 //                                                                    manufacturerId = manufacturerRepository.findByUserId(loggedInUser)?.id
                                                                     manufacturerId = man.id
                                                                     manufacturerName = man.name
-                                                                    if (fileElem?.isNotEmpty() == true) {
-                                                                        val fileNames4 = StringBuilder()
-                                                                        fileElem.forEach { file ->
-                                                                            fileNames4.append(file.originalFilename + ",")
-                                                                            val documentList: List<String>? = fileNames4.split(",")
-                                                                            val newDocumentList = documentList?.dropLast(1)
-                                                                            extraDocuments = newDocumentList.toString().replace("[", "").replace("]", "")
-                                                                        }
-                                                                    }
+//                                                                    if (fileElem?.isNotEmpty() == true) {
+//                                                                        val fileNames4 = StringBuilder()
+//                                                                        fileElem.forEach { file ->
+//                                                                            fileNames4.append(file.originalFilename + ",")
+//                                                                            val documentList: List<String>? = fileNames4.split(",")
+//                                                                            val newDocumentList = documentList?.dropLast(1)
+//                                                                            extraDocuments = newDocumentList.toString().replace("[", "").replace("]", "")
+//                                                                        }
+//                                                                    }
 
                                                                 }
                                                             }
