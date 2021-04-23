@@ -191,4 +191,8 @@ $(document).ready(function () {
             $("#success-save").slideUp(500);
         });
     });
+
+    $("#modalBtn").click(function (){
+        $("#myModal").modal("hide");
+    })
 });

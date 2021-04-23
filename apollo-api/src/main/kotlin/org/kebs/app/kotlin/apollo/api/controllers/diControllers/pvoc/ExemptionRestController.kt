@@ -2,6 +2,7 @@ package org.kebs.app.kotlin.apollo.api.controllers.diControllers.pvoc
 
 import com.google.gson.Gson
 import mu.KotlinLogging
+import org.apache.commons.io.FilenameUtils
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.PvocBpmn
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.service.FileExcelProcessService
@@ -191,28 +192,35 @@ class ExemptionRestController(
         @RequestParam("postalAadress", required = false) postalAadress: String,
         @RequestParam("physicalLocation", required = false) physicalLocation: String
     ): UploadedFileResponse {
-        iPvocApplicationRepo.findFirstByConpanyNameAndCompanyPinNo(conpanyName, companyPinNo)?.let { company ->
-            fileExcelProcessService?.store(uploadedfile, company)
-            return UploadedFileResponse()
-        } ?: commonDaoServices.getLoggedInUser().let { userDetails ->
-            val manufacturer = PvocApplicationEntity()
-            manufacturer.companyPinNo = companyPinNo
-            manufacturer.email = email
-            manufacturer.telephoneNo = telephoneNo
-            manufacturer.conpanyName = conpanyName
-            manufacturer.postalAadress = postalAadress
-            manufacturer.physicalLocation = physicalLocation
-            with(manufacturer) {
-                createdBy = userDetails?.firstName + " " + userDetails?.lastName
-                createdOn = Timestamp.from(Instant.now())
-                applicationDate = java.util.Date.from(Instant.now())
-                finished = 0
-                iPvocApplicationRepo.save(manufacturer)
+        if (uploadedfile.isEmpty()) {
+            val extension: String = FilenameUtils.getExtension(uploadedfile.getOriginalFilename())
+            KotlinLogging.logger {  }.info { "Extension " +extension }
+            if (extension.endsWith("xlsx")) {
+               commonDaoServices.getLoggedInUser()
+                    .let { userDetails ->
+                        val manufacturer = PvocApplicationEntity()
+                        manufacturer.companyPinNo = companyPinNo
+                        manufacturer.email = email
+                        manufacturer.telephoneNo = telephoneNo
+                        manufacturer.conpanyName = conpanyName
+                        manufacturer.postalAadress = postalAadress
+                        manufacturer.physicalLocation = physicalLocation
+                        with(manufacturer) {
+                            createdBy = userDetails?.firstName + " " + userDetails?.lastName
+                            createdOn = Timestamp.from(Instant.now())
+                            applicationDate = java.util.Date.from(Instant.now())
+                            finished = 0
+                            iPvocApplicationRepo.save(manufacturer)
+                        }
+                        fileExcelProcessService?.store(uploadedfile, manufacturer)
+                        return UploadedFileResponse()
+                    }
+            }else{
+                throw Exception("Upload a valid file")
             }
-            fileExcelProcessService?.store(uploadedfile, manufacturer)
-            return UploadedFileResponse()
+        }else{
+          throw Exception("File cannot be empty")
         }
-
     }
 
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
