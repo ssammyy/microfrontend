@@ -2,37 +2,25 @@
 <definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:flowable="http://flowable.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.flowable.org/processdef">
   <process id="sd_publishing" name="Publishing module" isExecutable="true">
     <startEvent id="startEvent" flowable:formFieldValidation="true"></startEvent>
-    <userTask id="submitDraft" name="Submit draft for editing" flowable:assignee="${standard_officer}" flowable:formFieldValidation="true">
-      <extensionElements>
-        <modeler:initiator-can-complete xmlns:modeler="http://flowable.org/modeler"><![CDATA[false]]></modeler:initiator-can-complete>
-      </extensionElements>
-    </userTask>
-    <serviceTask id="sendNotificationOfStandard" name="Send notification of a standard for editing" flowable:class="apollo.sd.email_handler.kt"></serviceTask>
+    <serviceTask id="sendNotificationOfStandard" name="Send notification of a standard for editing" flowable:class="com.apollo.standardsdevelopment.handlers.EmailHandler"></serviceTask>
     <userTask id="reveiewKS" name="Approve or disapprove KS" flowable:candidateGroups="head_of_publishing" flowable:formFieldValidation="true"></userTask>
     <exclusiveGateway id="decisionOnKS"></exclusiveGateway>
     <userTask id="rejectSendFeedback" name="Reject and send feedback" flowable:candidateGroups="head_of_publishing" flowable:formFieldValidation="true"></userTask>
-    <userTask id="approveDraftStandard" name="Approved draft standard for editing" flowable:candidateGroups="head_of publishing" flowable:formFieldValidation="true"></userTask>
-    <userTask id="rejectionWithReason" name="Receive notification of rejection with reason" flowable:formFieldValidation="true"></userTask>
     <endEvent id="endEvent"></endEvent>
-    <serviceTask id="sendNotificationOfDraft" name="Send notification of draft standard to edit" flowable:class="apollo.sd.email_handler.kt"></serviceTask>
+    <serviceTask id="sendNotificationOfDraft" name="Send notification of draft standard to edit" flowable:class="com.apollo.standardsdevelopment.handlers.EmailHandler"></serviceTask>
     <userTask id="editDraftStandard" name="Edit draft standard" flowable:candidateGroups="editor" flowable:formFieldValidation="true"></userTask>
-    <serviceTask id="sendNotificationProofreading" name="Send notification for proofreading" flowable:class="apollo.sd.email_handler.kt"></serviceTask>
+    <serviceTask id="sendNotificationProofreading" name="Send notification for proofreading" flowable:class="com.apollo.standardsdevelopment.handlers.EmailHandler"></serviceTask>
     <userTask id="proofRead" name="Proofread" flowable:candidateGroups="proofreader" flowable:formFieldValidation="true"></userTask>
     <exclusiveGateway id="isThereNeedToProofread"></exclusiveGateway>
-    <serviceTask id="sendNotificationForDraught" name="Send notification for draughting" flowable:class="apollo.sd.email_handler.kt"></serviceTask>
+    <serviceTask id="sendNotificationForDraught" name="Send notification for draughting" flowable:class="com.apollo.standardsdevelopment.handlers.EmailHandler"></serviceTask>
     <userTask id="draught" name="Draught" flowable:candidateGroups="draughtsman" flowable:formFieldValidation="true"></userTask>
     <userTask id="checkDraughtApproveChange" name="Check draught standard and approve change" flowable:candidateGroups="head_of_publishing" flowable:formFieldValidation="true"></userTask>
-    <sequenceFlow id="flow1" sourceRef="startEvent" targetRef="submitDraft"></sequenceFlow>
-    <sequenceFlow id="flow2" sourceRef="submitDraft" targetRef="sendNotificationOfStandard"></sequenceFlow>
+    <sequenceFlow id="flow1" sourceRef="startEvent" targetRef="sendNotificationOfStandard"></sequenceFlow>
     <sequenceFlow id="flow3" sourceRef="sendNotificationOfStandard" targetRef="reveiewKS"></sequenceFlow>
     <sequenceFlow id="flow4" sourceRef="reveiewKS" targetRef="decisionOnKS"></sequenceFlow>
     <sequenceFlow id="flow5" sourceRef="decisionOnKS" targetRef="rejectSendFeedback">
       <conditionExpression xsi:type="tFormalExpression"><![CDATA[${!approved}]]></conditionExpression>
     </sequenceFlow>
-    <sequenceFlow id="flow6" sourceRef="decisionOnKS" targetRef="approveDraftStandard">
-      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${approved}]]></conditionExpression>
-    </sequenceFlow>
-    <sequenceFlow id="flow9" sourceRef="approveDraftStandard" targetRef="sendNotificationOfDraft"></sequenceFlow>
     <sequenceFlow id="flow10" sourceRef="sendNotificationOfDraft" targetRef="editDraftStandard"></sequenceFlow>
     <sequenceFlow id="flow11" sourceRef="editDraftStandard" targetRef="sendNotificationProofreading"></sequenceFlow>
     <sequenceFlow id="flow13" sourceRef="proofRead" targetRef="isThereNeedToProofread"></sequenceFlow>
@@ -41,25 +29,24 @@
     </sequenceFlow>
     <sequenceFlow id="flow16" sourceRef="sendNotificationForDraught" targetRef="draught"></sequenceFlow>
     <sequenceFlow id="flow17" sourceRef="draught" targetRef="checkDraughtApproveChange"></sequenceFlow>
-    <serviceTask id="sendNotificationOnFeedback" name="Send notification" flowable:class="com.apollo.standardsdevelopment.handlers.NotificationHandler"></serviceTask>
-    <sequenceFlow id="flow7" sourceRef="sendNotificationOnFeedback" targetRef="rejectionWithReason"></sequenceFlow>
+    <serviceTask id="sendNotificationOnFeedback" name="Send notification" flowable:class="com.apollo.standardsdevelopment.handlers.EmailHandler"></serviceTask>
     <sequenceFlow id="flow80" sourceRef="rejectSendFeedback" targetRef="sendNotificationOnFeedback"></sequenceFlow>
-    <serviceTask id="receiveNotificationEditedDraft" name="Receive notification of edited draft standard" flowable:class="com.apollo.standardsdevelopment.handlers.NotificationHandler"></serviceTask>
+    <serviceTask id="receiveNotificationEditedDraft" name="Receive notification of edited draft standard" flowable:class="com.apollo.standardsdevelopment.handlers.EmailHandler"></serviceTask>
     <sequenceFlow id="flow81" sourceRef="checkDraughtApproveChange" targetRef="receiveNotificationEditedDraft"></sequenceFlow>
     <sequenceFlow id="flow82" sourceRef="receiveNotificationEditedDraft" targetRef="endEvent"></sequenceFlow>
     <sequenceFlow id="flow15" sourceRef="isThereNeedToProofread" targetRef="checkDraughtApproveChange">
       <conditionExpression xsi:type="tFormalExpression"><![CDATA[${!draught}]]></conditionExpression>
     </sequenceFlow>
-    <sequenceFlow id="flow8" sourceRef="rejectionWithReason" targetRef="endEvent"></sequenceFlow>
     <sequenceFlow id="flow12" sourceRef="sendNotificationProofreading" targetRef="proofRead"></sequenceFlow>
+    <sequenceFlow id="flow8" sourceRef="sendNotificationOnFeedback" targetRef="endEvent"></sequenceFlow>
+    <sequenceFlow id="flow6" sourceRef="decisionOnKS" targetRef="sendNotificationOfDraft">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${approved}]]></conditionExpression>
+    </sequenceFlow>
   </process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_sd_publishing">
     <bpmndi:BPMNPlane bpmnElement="sd_publishing" id="BPMNPlane_sd_publishing">
       <bpmndi:BPMNShape bpmnElement="startEvent" id="BPMNShape_startEvent">
-        <omgdc:Bounds height="30.0" width="30.0" x="100.0" y="75.0"></omgdc:Bounds>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="submitDraft" id="BPMNShape_submitDraft">
-        <omgdc:Bounds height="80.0" width="100.0" x="175.0" y="50.0"></omgdc:Bounds>
+        <omgdc:Bounds height="30.0" width="30.0" x="165.0" y="75.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="sendNotificationOfStandard" id="BPMNShape_sendNotificationOfStandard">
         <omgdc:Bounds height="80.0" width="100.0" x="320.0" y="50.0"></omgdc:Bounds>
@@ -73,17 +60,11 @@
       <bpmndi:BPMNShape bpmnElement="rejectSendFeedback" id="BPMNShape_rejectSendFeedback">
         <omgdc:Bounds height="80.0" width="100.0" x="695.0" y="50.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="approveDraftStandard" id="BPMNShape_approveDraftStandard">
-        <omgdc:Bounds height="80.0" width="100.0" x="580.0" y="210.0"></omgdc:Bounds>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="rejectionWithReason" id="BPMNShape_rejectionWithReason">
-        <omgdc:Bounds height="80.0" width="100.0" x="1091.6988025059081" y="49.99999999999999"></omgdc:Bounds>
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="endEvent" id="BPMNShape_endEvent">
         <omgdc:Bounds height="27.999999999999943" width="28.0" x="1134.238811451709" y="490.48164819533355"></omgdc:Bounds>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="sendNotificationOfDraft" id="BPMNShape_sendNotificationOfDraft">
-        <omgdc:Bounds height="80.0" width="100.0" x="725.0" y="210.0"></omgdc:Bounds>
+        <omgdc:Bounds height="80.0" width="100.0" x="585.0" y="210.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="editDraftStandard" id="BPMNShape_editDraftStandard">
         <omgdc:Bounds height="80.0" width="100.0" x="870.0" y="210.0"></omgdc:Bounds>
@@ -107,30 +88,30 @@
         <omgdc:Bounds height="80.0" width="100.0" x="218.33976050118162" y="302.3165914631745"></omgdc:Bounds>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="sendNotificationOnFeedback" id="BPMNShape_sendNotificationOnFeedback">
-        <omgdc:Bounds height="80.0" width="100.0" x="840.0" y="50.0"></omgdc:Bounds>
+        <omgdc:Bounds height="80.0" width="100.0" x="1098.238811451709" y="50.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="receiveNotificationEditedDraft" id="BPMNShape_receiveNotificationEditedDraft">
         <omgdc:Bounds height="79.99999999999994" width="100.00000000000001" x="83.97683096199295" y="453.47488719476183"></omgdc:Bounds>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge bpmnElement="flow17" id="BPMNEdge_flow17">
-        <omgdi:waypoint x="403.088788617566" y="375.9073238479717"></omgdi:waypoint>
-        <omgdi:waypoint x="360.71427455937385" y="375.9073238479717"></omgdi:waypoint>
-        <omgdi:waypoint x="360.71427455937385" y="342.3165914631745"></omgdi:waypoint>
-        <omgdi:waypoint x="318.2897605011816" y="342.3165914631745"></omgdi:waypoint>
+        <omgdi:waypoint x="403.0887886175643" y="375.4199806021061"></omgdi:waypoint>
+        <omgdi:waypoint x="360.0" y="375.0"></omgdi:waypoint>
+        <omgdi:waypoint x="360.0" y="342.0"></omgdi:waypoint>
+        <omgdi:waypoint x="318.28976050117916" y="342.14389310186453"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="flow13" id="BPMNEdge_flow13">
-        <omgdi:waypoint x="869.9999999999737" y="375.9073238479717"></omgdi:waypoint>
-        <omgdi:waypoint x="764.9024353845068" y="375.9073238479717"></omgdi:waypoint>
+        <omgdi:waypoint x="869.9999999999999" y="375.9073238479717"></omgdi:waypoint>
+        <omgdi:waypoint x="764.9056746712407" y="375.9073238479717"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="flow14" id="BPMNEdge_flow14">
-        <omgdi:waypoint x="725.4130434782609" y="376.3203673262326"></omgdi:waypoint>
-        <omgdi:waypoint x="679.9499999999846" y="376.1235576142054"></omgdi:waypoint>
+        <omgdi:waypoint x="725.0" y="375.9073238479717"></omgdi:waypoint>
+        <omgdi:waypoint x="679.9499999999526" y="375.9073238479717"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="flow15" id="BPMNEdge_flow15">
-        <omgdi:waypoint x="745.5" y="395.34063706463775"></omgdi:waypoint>
-        <omgdi:waypoint x="745.5" y="433.0887886175661"></omgdi:waypoint>
-        <omgdi:waypoint x="251.544394308783" y="433.0887886175661"></omgdi:waypoint>
-        <omgdi:waypoint x="251.544394308783" y="382.26659146317456"></omgdi:waypoint>
+        <omgdi:waypoint x="745.0" y="395.83988280364383"></omgdi:waypoint>
+        <omgdi:waypoint x="745.0" y="433.0"></omgdi:waypoint>
+        <omgdi:waypoint x="268.3397605011816" y="433.0"></omgdi:waypoint>
+        <omgdi:waypoint x="268.3397605011816" y="382.26659146317456"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="flow16" id="BPMNEdge_flow16">
         <omgdi:waypoint x="580.0" y="375.9073238479717"></omgdi:waypoint>
@@ -138,65 +119,53 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="flow80" id="BPMNEdge_flow80">
         <omgdi:waypoint x="794.9499999999999" y="90.0"></omgdi:waypoint>
-        <omgdi:waypoint x="840.0" y="90.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1098.238811451709" y="90.0"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="flow1" id="BPMNEdge_flow1">
-        <omgdi:waypoint x="129.9499984899576" y="90.0"></omgdi:waypoint>
-        <omgdi:waypoint x="175.0" y="90.0"></omgdi:waypoint>
+        <omgdi:waypoint x="194.9499990807687" y="90.0"></omgdi:waypoint>
+        <omgdi:waypoint x="320.0" y="90.0"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="flow81" id="BPMNEdge_flow81">
-        <omgdi:waypoint x="218.33976050118162" y="343.99882497742016"></omgdi:waypoint>
-        <omgdi:waypoint x="156.537610829121" y="453.47488719476183"></omgdi:waypoint>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge bpmnElement="flow2" id="BPMNEdge_flow2">
-        <omgdi:waypoint x="274.95000000000005" y="90.0"></omgdi:waypoint>
-        <omgdi:waypoint x="320.0" y="90.0"></omgdi:waypoint>
+        <omgdi:waypoint x="232.78420494562607" y="382.26659146317456"></omgdi:waypoint>
+        <omgdi:waypoint x="169.48794207310402" y="453.47488719476183"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="flow3" id="BPMNEdge_flow3">
         <omgdi:waypoint x="419.95000000000005" y="90.0"></omgdi:waypoint>
         <omgdi:waypoint x="465.0" y="90.0"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="flow4" id="BPMNEdge_flow4">
-        <omgdi:waypoint x="564.9499999999978" y="90.21623376623376"></omgdi:waypoint>
-        <omgdi:waypoint x="610.4130434782554" y="90.41304347826085"></omgdi:waypoint>
+        <omgdi:waypoint x="564.9499999999937" y="90.0"></omgdi:waypoint>
+        <omgdi:waypoint x="610.0" y="90.0"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="flow5" id="BPMNEdge_flow5">
-        <omgdi:waypoint x="649.5247370727421" y="90.41666666666669"></omgdi:waypoint>
-        <omgdi:waypoint x="694.999999999997" y="90.21812227074236"></omgdi:waypoint>
+        <omgdi:waypoint x="649.9413336229366" y="90.0"></omgdi:waypoint>
+        <omgdi:waypoint x="695.0" y="90.0"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="flow6" id="BPMNEdge_flow6">
-        <omgdi:waypoint x="630.440251572327" y="109.50359836580768"></omgdi:waypoint>
-        <omgdi:waypoint x="630.1252351097179" y="210.0"></omgdi:waypoint>
+        <omgdi:waypoint x="630.0" y="109.94365054105664"></omgdi:waypoint>
+        <omgdi:waypoint x="630.0" y="210.0"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="flow10" id="BPMNEdge_flow10">
-        <omgdi:waypoint x="824.9499999999082" y="250.0"></omgdi:waypoint>
-        <omgdi:waypoint x="869.9999999999807" y="250.0"></omgdi:waypoint>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge bpmnElement="flow7" id="BPMNEdge_flow7">
-        <omgdi:waypoint x="939.9499999999314" y="90.0"></omgdi:waypoint>
-        <omgdi:waypoint x="1091.6988025058868" y="90.0"></omgdi:waypoint>
+        <omgdi:waypoint x="684.9499999999999" y="250.0"></omgdi:waypoint>
+        <omgdi:waypoint x="870.0" y="250.0"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="flow11" id="BPMNEdge_flow11">
         <omgdi:waypoint x="969.9499999999082" y="250.0"></omgdi:waypoint>
         <omgdi:waypoint x="1014.9999999999807" y="250.0"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="flow8" id="BPMNEdge_flow8">
-        <omgdi:waypoint x="1141.7027017521561" y="129.95"></omgdi:waypoint>
-        <omgdi:waypoint x="1143.1822148764436" y="490.48164819533355"></omgdi:waypoint>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge bpmnElement="flow9" id="BPMNEdge_flow9">
-        <omgdi:waypoint x="679.9499999999082" y="250.0"></omgdi:waypoint>
-        <omgdi:waypoint x="724.9999999999807" y="250.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1148.238811451709" y="129.95"></omgdi:waypoint>
+        <omgdi:waypoint x="1148.238811451709" y="490.48164819533355"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="flow12" id="BPMNEdge_flow12">
         <omgdi:waypoint x="1065.0" y="289.95000000000005"></omgdi:waypoint>
-        <omgdi:waypoint x="1065.0" y="312.95366192398586"></omgdi:waypoint>
-        <omgdi:waypoint x="920.0" y="312.95366192398586"></omgdi:waypoint>
+        <omgdi:waypoint x="1065.0" y="312.0"></omgdi:waypoint>
+        <omgdi:waypoint x="920.0" y="312.0"></omgdi:waypoint>
         <omgdi:waypoint x="920.0" y="335.9073238479717"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="flow82" id="BPMNEdge_flow82">
-        <omgdi:waypoint x="183.92683096199295" y="493.54865720275234"></omgdi:waypoint>
-        <omgdi:waypoint x="1134.238811451709" y="494.9521511585346"></omgdi:waypoint>
+        <omgdi:waypoint x="183.92683096198974" y="494.0169441017091"></omgdi:waypoint>
+        <omgdi:waypoint x="1134.2391835169674" y="504.329729095064"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
