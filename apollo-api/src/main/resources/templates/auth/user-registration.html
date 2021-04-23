@@ -41,7 +41,7 @@
             <div class="content-wrap">
                 <div class="row">
                     <div class="col-md-6 col-md-offset-3">
-                        <form id="msform" method="post" th:action="@{/api/auth/signup/user/save(appId = ${map.id})}" >
+                        <form id="msform" method="post" th:action="@{/api/auth/kebs/signup/user/save}" >
                             <!-- progressbar -->
                             <!--                            <ul id="progressbar">-->
                             <!--                                <li class="active">BIO INFORMATION</li>-->
@@ -59,6 +59,10 @@
                                 <input class="input-field w-input" id="lastName" placeholder="E.g Doe" th:field="*{lastName}" th:required="required" type="text">
                                 <label class="field-label" for="email">Email Address</label>
                                 <input class="input-field w-input" id="email" placeholder="e.g johndoe@mail.com" th:field="*{email}" th:required="required" type="email">
+                                <label class="field-label" for="personalContactNumber">Mobile Number</label>
+                                <input class="input-field w-input" id="personalContactNumber" placeholder="+254700000000" th:field="*{personalContactNumber}" th:required="required" type="text">
+                                <label for="userPinIdNumber" class="field-label" >ID/Passport/Pin Number</label>
+                                <input id="userPinIdNumber" class="input-field w-input"  placeholder="00000000" th:field="*{userPinIdNumber}" th:required="required" type="text">
                                 <!--                                <label for="personalContactNumber" class="field-label">Personal Contact Number</label>-->
                                 <!--                                <input  type="text" required="required" class="form-control" placeholder="e.g 0700000000" id="personalContactNumber" th:field="*{personalContactNumber}"/>-->
                                 <!--                                <label for="workContactNumber" class="field-label">Work Contact Number</label>-->
@@ -77,10 +81,12 @@
                                 <!--                                    </div>-->
                                 <!--                                </div>-->
                                 <!--                                <input type="hidden" id="confirmUserType"  name="confirmUserType" th:value="'Employee'">-->
-                                <label for="confirmUserType" class="field-label">Select User Type</label>
-                                <select id="confirmUserType" required="" class="select-field w-select" th:field="*{confirmUserType}">
-                                    <option value="">Select One...</option>
-                                    <option th:each="userType : ${userTypes}" th:text="${userType.descriptions}" th:value="${userType.id}"></option>
+                                <label for="confirmUserType" class="field-label">Select User</label>
+                                <select id="confirmUserType" required="required" class="select-field w-select" th:field="*{confirmUserType}">
+                                    <option value="" >Select One...</option>
+                                    <option th:value="0" th:text="'Individual'"></option>
+                                    <option th:value="1" th:text="'Non-Individual'"></option>
+<!--                                    <option th:each="userType : ${userTypes}" th:text="${userType.descriptions}" th:value="${userType.id}"></option>-->
                                 </select>
                                 <!--                                <select id="confirmUserType" required="" class="select-field w-select" th:field="*{confirmUserType}">-->
                                 <!--                                    <option th:value="'None'" th:text="'Select one.....'"></option>-->

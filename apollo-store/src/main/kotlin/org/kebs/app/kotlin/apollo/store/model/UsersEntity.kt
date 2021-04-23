@@ -103,6 +103,13 @@ class UsersEntity : Serializable {
 //    @ManyToOne
 //    var roleId: UserRolesEntity? = null
 
+    @Column(name = "MANUFACTURE_PROFILE")
+    @Basic
+    var manufactureProfile: Int? = null
+
+    @Column(name = "IMPORTER_PROFILE")
+    @Basic
+    var importerProfile: Int? = null
 
     @Column(name = "STATUS")
     @Basic

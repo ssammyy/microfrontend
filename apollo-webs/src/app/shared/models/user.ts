@@ -1,3 +1,4 @@
+import {UserCompanyDetailsDto} from './master-data-details';
 
 export class User {
   accessToken?: string;
@@ -27,6 +28,7 @@ export class UserRegister {
   userType?: bigint;
   title?: string;
   employeeProfile?: EmployeeProfile;
+  companyProfile?: UserCompanyDetailsDto;
 }
 
 export class EmployeeProfile {
