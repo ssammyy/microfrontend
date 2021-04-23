@@ -21,7 +21,7 @@ POST http://localhost:8080/standard/hof/review
 Content-Type: application/json
 
 {
-  "id": "4a2d34c4-a35b-11eb-8f9a-fe5c68490b49"
+  "id": "ce92da77-a3b9-11eb-adad-28b2bd7bef93"
 }
 
 ###GET all tasks assigned to a TC-SEC
@@ -38,7 +38,7 @@ Content-Type: application/json
 }
 
 ###GET all tasks assigned to a TC
-GET http://localhost:8080/standard/getTCTasks
+GET http://localhost:8080/standard/getTCTasks/
 
 ### POST Provide decision on NWI
 POST http://localhost:8080/standard/decisionOnNWI
