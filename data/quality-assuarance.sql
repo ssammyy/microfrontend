@@ -77,7 +77,7 @@
  *
  */
 ***************************Table USED IN QA*****************************************
-select * from CFG_ROLES_PRIVILEGES
+select * from DAT_KEBS_PERMIT_TRANSACTION
 
 order by id desc;
 
@@ -149,7 +149,7 @@ order by id desc;
 
 select *
 from CFG_SERVICE_MAPS
-where ID = 127
+where ID = 208
 -- where  UUID = '266f9769-0a28-491c-8e05-aee12e9db5d0'
 order by id desc;
 

@@ -23,14 +23,13 @@ package org.kebs.app.kotlin.apollo.api.handlers
 
 import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
+import org.kebs.app.kotlin.apollo.api.ports.provided.dao.QADaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.QualityAssuranceDaoServices
-import org.kebs.app.kotlin.apollo.common.dto.ms.ComplaintsDto
 import org.kebs.app.kotlin.apollo.common.exceptions.*
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
-import org.kebs.app.kotlin.apollo.store.model.PermitApplicationEntity
 import org.kebs.app.kotlin.apollo.store.model.qa.PermitApplicationsEntity
 import org.kebs.app.kotlin.apollo.store.repo.qa.IPermitTypesEntityRepository
-import org.springframework.beans.factory.annotation.Value
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Component
 import org.springframework.web.servlet.function.ServerRequest
 import org.springframework.web.servlet.function.ServerResponse
@@ -43,7 +42,8 @@ class QualityAssuranceHandler(
     private val applicationMapProperties: ApplicationMapProperties,
     private val daoServices: QualityAssuranceDaoServices,
     private val commonDaoServices: CommonDaoServices,
-    private val permitTypesRepo: IPermitTypesEntityRepository
+    private val permitTypesRepo: IPermitTypesEntityRepository,
+    private val qaDaoServices: QADaoServices
 
 ) {
 
@@ -56,20 +56,20 @@ class QualityAssuranceHandler(
     private final val qaHomePage = "quality-assurance/home"
     private final val qaCustomerHomePage = "quality-assurance/customer/customer-home"
     private final val qaPermitListPage = "quality-assurance/permit-list"
-    private final val qaPermitDetailPage = "quality-assurance/permit-list"
+    private final val qaPermitDetailPage = "quality-assurance/permit-details"
     private final val qaNewPermitPage = "quality-assurance/customer/permit-application"
 
     final val appId: Int = applicationMapProperties.mapQualityAssurance
 
     fun home(req: ServerRequest): ServerResponse {
-
         try {
             val auth = commonDaoServices.loggedInUserAuthentication()
             val map = commonDaoServices.serviceMapDetails(appId)
             val loggedInUser = commonDaoServices.loggedInUserDetails()
-           return when {
-                auth.authorities.stream().anyMatch { authority -> authority.authority == applicationMapProperties.mapQualityAssuranceManufactureRoleName } -> {
-                    req.attributes()["permitTypes"] = permitTypesRepo.findByStatus(map.activeStatus)
+            return when {
+                auth.authorities.stream()
+                    .anyMatch { authority -> authority.authority == applicationMapProperties.mapQualityAssuranceManufactureRoleName } -> {
+                    req.attributes()["permitTypes"] = qaDaoServices.findPermitTypesList(map.activeStatus)
                     req.attributes()["map"] = map
                     ok().render(qaCustomerHomePage, req.attributes())
                 }
@@ -85,55 +85,46 @@ class QualityAssuranceHandler(
         }
     }
 
-    fun permitList(req: ServerRequest): ServerResponse =
-        daoServices.loggedInUserDetails()
-            .let { usersEntity ->
-                daoServices.serviceMapDetails()
-                    .let {
-                        req.paramOrNull("permitTypeID")
-                            ?.let { permitTypeID ->
-                                val permitType = permitTypesRepo.findById(permitTypeID.toLong())
-                                req.attributes()["permitType"] = permitType
-                                permitType.get().id?.let {
-                                    req.attributes()["permitList"] =
-                                        daoServices.findAllByManufactureAndType(usersEntity, it)
-                                }
+    @PreAuthorize("hasAuthority('PERMIT_APPLICATION')")
+    fun permitList(req: ServerRequest): ServerResponse {
+        val map = commonDaoServices.serviceMapDetails(appId)
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val permitTypeID = req.paramOrNull("permitTypeID")?.toLong()
+            ?: throw ExpectedDataNotFound("Required PermitType ID, check config")
+        val permitType = qaDaoServices.findPermitType(permitTypeID)
 
-                                return ok().render(qaPermitListPage, req.attributes())
-                            }
-                            ?: throw ExpectedDataNotFound("Required PermitType ID, check config")
-                    }
-            }
+        req.attributes()["permitType"] = permitType
+        req.attributes()["permitList"] = qaDaoServices.findAllUserPermitWithPermitType(loggedInUser, permitTypeID)
+        return ok().render(qaPermitListPage, req.attributes())
+    }
 
-    fun newPermit(req: ServerRequest): ServerResponse =
-        daoServices.loggedInUserDetails()
-            .let { usersEntity ->
-                daoServices.serviceMapDetails()
-                    .let {
-                        req.paramOrNull("permitTypeID")
-                            ?.let { permitTypeID ->
-                                req.attributes()["permitType"] = permitTypesRepo.findById(permitTypeID.toLong())
-                                req.attributes()["permit"] = PermitApplicationsEntity()
-                                return ok().render(qaNewPermitPage, req.attributes())
-                            }
-                            ?: throw ExpectedDataNotFound("Required PermitType ID, check config")
-                    }
-            }
+    @PreAuthorize("hasAuthority('PERMIT_APPLICATION')")
+    fun permitDetails(req: ServerRequest): ServerResponse {
+        val map = commonDaoServices.serviceMapDetails(appId)
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val permitID =
+            req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
+        val permit = loggedInUser.id?.let { qaDaoServices.findPermitBYUserIDAndPermitTypeIDANdId(permitID, it,permitID) }?: throw ExpectedDataNotFound("User Id required")
+        req.attributes()["permitType"] = permit.permitType?.let { qaDaoServices.findPermitType(it) }
+        req.attributes()["permitDetails"] = permit
+        return ok().render(qaPermitDetailPage, req.attributes())
 
-    fun permitDetails(req: ServerRequest): ServerResponse =
-        daoServices.loggedInUserDetails()
-            .let {
-                daoServices.serviceMapDetails()
-                    .let { map ->
-                        req.paramOrNull("permitID")
-                            ?.let { permitID ->
-//                                                val permitType = daoServices.findPermitTypeByPermitType(permitTypeID.toLong())
-//                                                req.attributes()["permitType"] = permitType
-                                req.attributes()["permitDetails"] = daoServices.findByPermitId(permitID.toLong())
-                                return ok().render(qaPermitDetailPage, req.attributes())
-                            }
-                            ?: throw ExpectedDataNotFound("Required Permit ID, check config")
-                    }
-            }
+
+    }
+
+
+    fun newPermit(req: ServerRequest): ServerResponse {
+        val map = commonDaoServices.serviceMapDetails(appId)
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val permitTypeID = req.paramOrNull("permitTypeID")?.toLong()
+            ?: throw ExpectedDataNotFound("Required PermitType ID, check config")
+        val permitType = qaDaoServices.findPermitType(permitTypeID)
+
+        req.attributes()["permitType"] = permitType
+        req.attributes()["permit"] = PermitApplicationsEntity()
+        return ok().render(qaNewPermitPage, req.attributes())
+
+    }
+
 
 }

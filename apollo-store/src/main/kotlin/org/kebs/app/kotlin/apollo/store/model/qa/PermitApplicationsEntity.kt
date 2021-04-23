@@ -18,7 +18,7 @@ class PermitApplicationsEntity:Serializable {
 
     @Column(name = "APPLICANT_NAME")
     @Basic
-    var name: String? = null
+    var applicantName: String? = null
 
     @Column(name = "FIRM_NAME")
     @Basic
@@ -35,6 +35,10 @@ class PermitApplicationsEntity:Serializable {
     @Column(name = "PERMIT_NUMBER")
     @Basic
     var permitNumber: String? = null
+
+    @Column(name = "COMMODITY_DESCRIPTION")
+    @Basic
+    var commodityDescription: String? = null
 
     @Column(name = "TELEPHONE_NO")
     @Basic
@@ -73,19 +77,23 @@ class PermitApplicationsEntity:Serializable {
     var region: String? = null
 
 
-    @JoinColumn(name = "USER_ID", referencedColumnName = "ID")
-    @ManyToOne
-    var userId: UsersEntity? = null
+//    @JoinColumn(name = "USER_ID", referencedColumnName = "ID")
+//    @ManyToOne
+//    var userId: UsersEntity? = null
 
-    @JoinColumn(name = "PERMIT_TYPE", referencedColumnName = "ID")
-    @ManyToOne
-    var permitType: PermitTypesEntity? = null
+//    @JoinColumn(name = "PERMIT_TYPE", referencedColumnName = "ID")
+//    @ManyToOne
+//    var permitType: PermitTypesEntity? = null
 
-    /*
+
+    @Column(name = "USER_ID")
+    @Basic
+    var userId: Long? = null
+
     @Column(name = "PERMIT_TYPE")
     @Basic
     var permitType: Long? = null
-    */
+
 
     @Column(name = "KS_NUMBER")
     @Basic
@@ -118,6 +126,10 @@ class PermitApplicationsEntity:Serializable {
     @Column(name = "STATUS")
     @Basic
     var status: Int? = null
+
+    @Column(name = "ENABLED")
+    @Basic
+    var enabled: Int? = null
 
 
 
@@ -217,6 +229,7 @@ class PermitApplicationsEntity:Serializable {
     @Column(name = "DELETED_ON")
     @Basic
     var deletedOn: Timestamp? = null
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
@@ -224,7 +237,7 @@ class PermitApplicationsEntity:Serializable {
         other as PermitApplicationsEntity
 
         if (id != other.id) return false
-        if (name != other.name) return false
+        if (applicantName != other.applicantName) return false
         if (firmName != other.firmName) return false
         if (permitNumber != other.permitNumber) return false
         if (postalAddress != other.postalAddress) return false
@@ -240,12 +253,14 @@ class PermitApplicationsEntity:Serializable {
         if (userId != other.userId) return false
         if (permitType != other.permitType) return false
         if (ksNumber != other.ksNumber) return false
+        if (commodityDescription != other.commodityDescription) return false
         if (dateOfIssue != other.dateOfIssue) return false
         if (dateOfExpiry != other.dateOfExpiry) return false
         if (applicationSuspensionStatus != other.applicationSuspensionStatus) return false
         if (productName != other.productName) return false
         if (tradeMark != other.tradeMark) return false
         if (status != other.status) return false
+        if (enabled != other.enabled) return false
         if (title != other.title) return false
         if (totalCost != other.totalCost) return false
         if (totalPayment != other.totalPayment) return false
@@ -275,7 +290,7 @@ class PermitApplicationsEntity:Serializable {
 
     override fun hashCode(): Int {
         var result = id?.hashCode() ?: 0
-        result = 31 * result + (name?.hashCode() ?: 0)
+        result = 31 * result + (applicantName?.hashCode() ?: 0)
         result = 31 * result + (firmName?.hashCode() ?: 0)
         result = 31 * result + (permitNumber?.hashCode() ?: 0)
         result = 31 * result + (postalAddress?.hashCode() ?: 0)
@@ -295,7 +310,9 @@ class PermitApplicationsEntity:Serializable {
         result = 31 * result + (dateOfExpiry?.hashCode() ?: 0)
         result = 31 * result + (applicationSuspensionStatus ?: 0)
         result = 31 * result + (productName?.hashCode() ?: 0)
+        result = 31 * result + (commodityDescription?.hashCode() ?: 0)
         result = 31 * result + (tradeMark?.hashCode() ?: 0)
+        result = 31 * result + (enabled ?: 0)
         result = 31 * result + (status ?: 0)
         result = 31 * result + (title?.hashCode() ?: 0)
         result = 31 * result + (totalCost?.hashCode() ?: 0)
