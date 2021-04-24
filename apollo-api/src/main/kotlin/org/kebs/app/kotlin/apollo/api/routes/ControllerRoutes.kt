@@ -300,8 +300,9 @@ class ControllerRoutes {
             println("**************************")
             GET("/home", handler::home)
             GET("/permits-list", handler::permitList)
-            GET("/permit-details", handler::newPermit)
+            GET("/permit-details", handler::permitDetails)
             GET("/new-permit", handler::newPermit)
+            GET("/new-sta3", handler::newSta3)
         }
     }
 

@@ -495,6 +495,7 @@ class CommonDaoServices(
         return SecurityContextHolder.getContext().authentication?.name
     }
 
+
     fun loggedInUserAuthentication(): Authentication {
         SecurityContextHolder.getContext().authentication
                 ?.let { auths ->

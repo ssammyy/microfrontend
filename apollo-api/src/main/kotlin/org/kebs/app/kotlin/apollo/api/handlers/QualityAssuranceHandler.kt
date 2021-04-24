@@ -28,7 +28,10 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.dao.QualityAssuranceDaoServ
 import org.kebs.app.kotlin.apollo.common.exceptions.*
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.qa.PermitApplicationsEntity
+import org.kebs.app.kotlin.apollo.store.model.qa.QaSta3Entity
+import org.kebs.app.kotlin.apollo.store.repo.*
 import org.kebs.app.kotlin.apollo.store.repo.qa.IPermitTypesEntityRepository
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Component
 import org.springframework.web.servlet.function.ServerRequest
@@ -40,9 +43,13 @@ import org.springframework.web.servlet.function.paramOrNull
 @Component
 class QualityAssuranceHandler(
     private val applicationMapProperties: ApplicationMapProperties,
-    private val daoServices: QualityAssuranceDaoServices,
     private val commonDaoServices: CommonDaoServices,
-    private val permitTypesRepo: IPermitTypesEntityRepository,
+    private val standardCategoryRepo: IStandardCategoryRepository,
+    private val productCategoriesRepository: IKebsProductCategoriesRepository,
+    private val broadProductCategoryRepository: IBroadProductCategoryRepository,
+    private val productsRepo: IProductsRepository,
+    private val productSubCategoryRepo: IProductSubcategoryRepository,
+    private val sampleStandardsRepository: ISampleStandardsRepository,
     private val qaDaoServices: QADaoServices
 
 ) {
@@ -56,8 +63,9 @@ class QualityAssuranceHandler(
     private final val qaHomePage = "quality-assurance/home"
     private final val qaCustomerHomePage = "quality-assurance/customer/customer-home"
     private final val qaPermitListPage = "quality-assurance/permit-list"
-    private final val qaPermitDetailPage = "quality-assurance/permit-details"
+    private final val qaPermitDetailPage = "quality-assurance/customer/permit-details"
     private final val qaNewPermitPage = "quality-assurance/customer/permit-application"
+    private final val qaNewSta3Page = "quality-assurance/customer/permit-application"
 
     final val appId: Int = applicationMapProperties.mapQualityAssurance
 
@@ -104,7 +112,13 @@ class QualityAssuranceHandler(
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         val permitID =
             req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
-        val permit = loggedInUser.id?.let { qaDaoServices.findPermitBYUserIDAndPermitTypeIDANdId(permitID, it,permitID) }?: throw ExpectedDataNotFound("User Id required")
+        val permit = loggedInUser.id?.let { qaDaoServices.findPermitBYUserIDAndId(permitID, it) }?: throw ExpectedDataNotFound("User Id required")
+        req.attributes()["standardCategory"] = standardCategoryRepo.findByIdOrNull(permit.standardCategory)
+        req.attributes()["productCategory"] = productCategoriesRepository.findByIdOrNull(permit.productCategory)
+        req.attributes()["broadProductCategory"] = broadProductCategoryRepository.findByIdOrNull(permit.broadProductCategory)
+        req.attributes()["product"] = productsRepo.findByIdOrNull(permit.product)
+        req.attributes()["productSubCategory"] = productSubCategoryRepo.findByIdOrNull(permit.productSubCategory)
+        req.attributes()["ksApplicable"] = sampleStandardsRepository.findBySubCategoryId(permit.productSubCategory)
         req.attributes()["permitType"] = permit.permitType?.let { qaDaoServices.findPermitType(it) }
         req.attributes()["permitDetails"] = permit
         return ok().render(qaPermitDetailPage, req.attributes())
@@ -113,6 +127,7 @@ class QualityAssuranceHandler(
     }
 
 
+    @PreAuthorize("hasAuthority('PERMIT_APPLICATION')")
     fun newPermit(req: ServerRequest): ServerResponse {
         val map = commonDaoServices.serviceMapDetails(appId)
         val loggedInUser = commonDaoServices.loggedInUserDetails()
@@ -120,9 +135,23 @@ class QualityAssuranceHandler(
             ?: throw ExpectedDataNotFound("Required PermitType ID, check config")
         val permitType = qaDaoServices.findPermitType(permitTypeID)
 
+        req.attributes()["applicationDate"] = commonDaoServices.getCurrentDate()
         req.attributes()["permitType"] = permitType
         req.attributes()["permit"] = PermitApplicationsEntity()
+        req.attributes()["standardCategory"] = standardCategoryRepo.findByStatusOrderByStandardCategory(map.activeStatus)
         return ok().render(qaNewPermitPage, req.attributes())
+
+    }
+
+    @PreAuthorize("hasAuthority('PERMIT_APPLICATION')")
+    fun newSta3(req: ServerRequest): ServerResponse {
+        val map = commonDaoServices.serviceMapDetails(appId)
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+
+        val permitID = req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
+        req.attributes()["permit"] =  loggedInUser.id?.let { qaDaoServices.findPermitBYUserIDAndId(permitID, it) }?: throw ExpectedDataNotFound("User Id required")
+        req.attributes()["QaSta3Entity"] = QaSta3Entity()
+        return ok().render(qaNewSta3Page, req.attributes())
 
     }
 

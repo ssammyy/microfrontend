@@ -82,7 +82,10 @@ select * from DAT_KEBS_PERMIT_TRANSACTION
 order by id desc;
 
 
-
+alter table DAT_KEBS_PERMIT_TRANSACTION
+    add  PRODUCT_STANDARD                          NUMBER
+        references CFG_SAMPLE_STANDARDS(ID)
+;/
 
 
 
@@ -193,13 +196,38 @@ create unique index DAT_KEBS_USER_VERIFICATION_TOKEN_USER_ID_STATUS on DAT_KEBS_
  *******************************************Created Tables USED IN DI********************************
 
 
-create table dat_user_requests
+create table dat_kebs_qa_sta3
 (
     ID                       NUMBER  primary key,
-    REQUEST_ID              NUMBER references CFG_USER_REQUEST_TYPES(id),
-    USER_ID              NUMBER references DAT_KEBS_USERS(id),
-    USER_ROLE_ASSIGNED              NUMBER references CFG_USER_PRIVILEGES(id),
-    REQUEST_STATUS              NUMBER(2),
+    permit_id               NUMBER references DAT_KEBS_PERMIT_TRANSACTION(ID),
+    produce_Orders_or_Stock  VARCHAR2(500),
+    issue_work_order_or_equivalent  VARCHAR2(500),
+    identify_batch_as_separate  VARCHAR2(500),
+    products_containers_carry_works_order  VARCHAR2(500),
+    isolated_case_doubtful_quality  VARCHAR2(500),
+    head_qa_qualifications_training  VARCHAR2(500),
+    reporting_to  VARCHAR2(500),
+    separate_qcid  VARCHAR2(500),
+    tests_relevant_standard VARCHAR2(500),
+    spo_coming_materials VARCHAR2(500),
+    spo_process_operations VARCHAR2(500),
+    spo_final_products VARCHAR2(500),
+    monitored_qcs VARCHAR2(500),
+    qaudit_checks_carried VARCHAR2(500),
+    information_qcso VARCHAR2(500),
+    main_materials_purchased_specification VARCHAR2(500),
+    adopted_receipt_materials VARCHAR2(500),
+    storage_facilities_exist VARCHAR2(500),
+    steps_manufacture VARCHAR2(500),
+    maintenance_system VARCHAR2(500),
+    qcs_supplement VARCHAR2(500),
+    qm_instructions VARCHAR2(500),
+    test_equipment_used VARCHAR2(500),
+    indicate_external_arrangement VARCHAR2(500),
+    level_defectives_found VARCHAR2(500),
+    level_claims_complaints VARCHAR2(500),
+    independent_tests  VARCHAR2(500),
+    indicate_stage_manufacture  VARCHAR2(500),
     DESCRIPTION              VARCHAR2(200),
     status                   NUMBER(2),
     var_field_1              VARCHAR2(350 CHAR),
@@ -220,17 +248,17 @@ create table dat_user_requests
     deleted_on               TIMESTAMP(6) WITH TIME ZONE
 ) TABLESPACE qaimssdb_data;
 
-create sequence dat_user_requests_seq minvalue 1 maxvalue 9999999999999999999999999999 increment by 1 start with 1 cache 20 noorder nocycle;
+create sequence dat_kebs_qa_sta3_seq minvalue 1 maxvalue 9999999999999999999999999999 increment by 1 start with 1 cache 20 noorder nocycle;
 
-create trigger dat_user_requests_seq_trg
+create trigger dat_kebs_qa_sta3_seq_trg
     before
         insert
-    on dat_user_requests
+    on dat_kebs_qa_sta3
     for each row
 begin
     if inserting then
         if :new.id is null then
-            select dat_user_requests_seq.nextval
+            select dat_kebs_qa_sta3_seq.nextval
             into :new.id
             from dual;
 
@@ -239,99 +267,5 @@ begin
     end if;
 end;
 
-create index dat_user_requests_idx on dat_user_requests (status, REQUEST_ID, USER_ID,REQUEST_STATUS) TABLESPACE qaimssdb_idx;
-/
-
-create table cfg_user_request_types
-(
-    ID                       NUMBER  primary key,
-    USER_REQUEST             VARCHAR2(200),
-    DESCRIPTION              VARCHAR2(200),
-    status                   NUMBER(2),
-    var_field_1              VARCHAR2(350 CHAR),
-    var_field_2              VARCHAR2(350 CHAR),
-    var_field_3              VARCHAR2(350 CHAR),
-    var_field_4              VARCHAR2(350 CHAR),
-    var_field_5              VARCHAR2(350 CHAR),
-    var_field_6              VARCHAR2(350 CHAR),
-    var_field_7              VARCHAR2(350 CHAR),
-    var_field_8              VARCHAR2(350 CHAR),
-    var_field_9              VARCHAR2(350 CHAR),
-    var_field_10             VARCHAR2(350 CHAR),
-    created_by               VARCHAR2(100 CHAR)          DEFAULT 'admin' NOT NULL ENABLE,
-    created_on               TIMESTAMP(6) WITH TIME ZONE DEFAULT sysdate NOT NULL ENABLE,
-    modified_by              VARCHAR2(100 CHAR)          DEFAULT 'admin',
-    modified_on              TIMESTAMP(6) WITH TIME ZONE DEFAULT sysdate,
-    delete_by                VARCHAR2(100 CHAR)          DEFAULT 'admin',
-    deleted_on               TIMESTAMP(6) WITH TIME ZONE
-) TABLESPACE qaimssdb_data;
-
-create sequence cfg_user_request_types_seq minvalue 1 maxvalue 9999999999999999999999999999 increment by 1 start with 1 cache 20 noorder nocycle;
-
-create trigger cfg_user_request_types_seq_trg
-    before
-        insert
-    on cfg_user_request_types
-    for each row
-begin
-    if inserting then
-        if :new.id is null then
-            select cfg_user_request_types_seq.nextval
-            into :new.id
-            from dual;
-
-        end if;
-
-    end if;
-end;
-
-create index cfg_user_request_types_idx on cfg_user_request_types (status, USER_REQUEST) TABLESPACE qaimssdb_idx;
-/
-
-
-create table cfg_users_cfs_ASSIGNMENTS
-(
-    ID                       NUMBER  primary key,
-    USER_PROFILE_ID                  NUMBER references DAT_KEBS_USER_PROFILES(id),
-    CFS_ID        NUMBER references CFG_KEBS_SUB_SECTIONS_LEVEL2(ID),
-    DESCRIPTION              VARCHAR2(200),
-    status                   NUMBER(2),
-    var_field_1              VARCHAR2(350 CHAR),
-    var_field_2              VARCHAR2(350 CHAR),
-    var_field_3              VARCHAR2(350 CHAR),
-    var_field_4              VARCHAR2(350 CHAR),
-    var_field_5              VARCHAR2(350 CHAR),
-    var_field_6              VARCHAR2(350 CHAR),
-    var_field_7              VARCHAR2(350 CHAR),
-    var_field_8              VARCHAR2(350 CHAR),
-    var_field_9              VARCHAR2(350 CHAR),
-    var_field_10             VARCHAR2(350 CHAR),
-    created_by               VARCHAR2(100 CHAR)          DEFAULT 'admin' NOT NULL ENABLE,
-    created_on               TIMESTAMP(6) WITH TIME ZONE DEFAULT sysdate NOT NULL ENABLE,
-    modified_by              VARCHAR2(100 CHAR)          DEFAULT 'admin',
-    modified_on              TIMESTAMP(6) WITH TIME ZONE DEFAULT sysdate,
-    delete_by                VARCHAR2(100 CHAR)          DEFAULT 'admin',
-    deleted_on               TIMESTAMP(6) WITH TIME ZONE
-) TABLESPACE qaimssdb_data;
-
-create sequence cfg_users_cfs_ASSIGNMENTS_seq minvalue 1 maxvalue 9999999999999999999999999999 increment by 1 start with 1 cache 20 noorder nocycle;
-
-create trigger cfg_users_cfs_ASSIGNMENTS_seq_trg
-    before
-        insert
-    on cfg_users_cfs_ASSIGNMENTS
-    for each row
-begin
-    if inserting then
-        if :new.id is null then
-            select cfg_users_cfs_ASSIGNMENTS_seq.nextval
-            into :new.id
-            from dual;
-
-        end if;
-
-    end if;
-end;
-
-create index cfg_users_cfs_ASSIGNMENTS_idx on cfg_users_cfs_ASSIGNMENTS (status, USER_PROFILE_ID, CFS_ID) TABLESPACE qaimssdb_idx;
+create index dat_kebs_qa_sta3_idx on dat_kebs_qa_sta3 (status, permit_id) TABLESPACE qaimssdb_idx;
 /

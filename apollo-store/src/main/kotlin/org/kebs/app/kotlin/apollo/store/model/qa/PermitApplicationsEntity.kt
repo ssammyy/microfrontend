@@ -123,6 +123,14 @@ class PermitApplicationsEntity:Serializable {
     var tradeMark: String? = null
 
 
+    @Column(name = "STA10_FILLED_STATUS")
+    @Basic
+    var sta10FilledStatus: Int? = null
+
+    @Column(name = "STA3_FILLED_STATUS")
+    @Basic
+    var sta3FilledStatus: Int? = null
+
     @Column(name = "STATUS")
     @Basic
     var status: Int? = null
@@ -164,6 +172,30 @@ class PermitApplicationsEntity:Serializable {
     @Column(name = "DATE_OF_VISIT")
     @Basic
     var dateOfVisit :Timestamp? = null
+
+    @Column(name = "PRODUCT_CATEGORY")
+    @Basic
+    var productCategory: Long? = null
+
+    @Column(name = "BROAD_PRODUCT_CATEGORY")
+    @Basic
+    var broadProductCategory: Long? = null
+
+    @Column(name = "PRODUCT")
+    @Basic
+    var product: Long? = null
+
+    @Column(name = "PRODUCT_STANDARD")
+    @Basic
+    var productStandard: Long? = null
+
+    @Column(name = "STANDARD_CATEGORY")
+    @Basic
+    var standardCategory: Long? = null
+
+    @Column(name = "PRODUCT_SUB_CATEGORY")
+    @Basic
+    var productSubCategory: Long? = null
 
 
     @Column(name = "VAR_FIELD_1")
@@ -249,6 +281,12 @@ class PermitApplicationsEntity:Serializable {
         if (plotNo != other.plotNo) return false
         if (designation != other.designation) return false
         if (vatNo != other.vatNo) return false
+        if (productCategory != other.productCategory) return false
+        if (broadProductCategory != other.broadProductCategory) return false
+        if (product != other.product) return false
+        if (standardCategory != other.standardCategory) return false
+        if (productStandard != other.productStandard) return false
+        if (productSubCategory != other.productSubCategory) return false
         if (region != other.region) return false
         if (userId != other.userId) return false
         if (permitType != other.permitType) return false
@@ -260,6 +298,8 @@ class PermitApplicationsEntity:Serializable {
         if (productName != other.productName) return false
         if (tradeMark != other.tradeMark) return false
         if (status != other.status) return false
+        if (sta10FilledStatus != other.sta10FilledStatus) return false
+        if (sta3FilledStatus != other.sta3FilledStatus) return false
         if (enabled != other.enabled) return false
         if (title != other.title) return false
         if (totalCost != other.totalCost) return false
@@ -302,6 +342,12 @@ class PermitApplicationsEntity:Serializable {
         result = 31 * result + (plotNo?.hashCode() ?: 0)
         result = 31 * result + (designation?.hashCode() ?: 0)
         result = 31 * result + (vatNo?.hashCode() ?: 0)
+        result = 31 * result + (productCategory?.hashCode() ?: 0)
+        result = 31 * result + (broadProductCategory?.hashCode() ?: 0)
+        result = 31 * result + (product?.hashCode() ?: 0)
+        result = 31 * result + (standardCategory?.hashCode() ?: 0)
+        result = 31 * result + (productStandard?.hashCode() ?: 0)
+        result = 31 * result + (productSubCategory?.hashCode() ?: 0)
         result = 31 * result + (region?.hashCode() ?: 0)
         result = 31 * result + (userId?.hashCode() ?: 0)
         result = 31 * result + (permitType?.hashCode() ?: 0)
@@ -314,6 +360,8 @@ class PermitApplicationsEntity:Serializable {
         result = 31 * result + (tradeMark?.hashCode() ?: 0)
         result = 31 * result + (enabled ?: 0)
         result = 31 * result + (status ?: 0)
+        result = 31 * result + (sta10FilledStatus ?: 0)
+        result = 31 * result + (sta3FilledStatus ?: 0)
         result = 31 * result + (title?.hashCode() ?: 0)
         result = 31 * result + (totalCost?.hashCode() ?: 0)
         result = 31 * result + (totalPayment?.hashCode() ?: 0)

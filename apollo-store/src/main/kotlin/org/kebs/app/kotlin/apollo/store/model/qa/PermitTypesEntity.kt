@@ -18,9 +18,21 @@ class PermitTypesEntity : Serializable {
     @Basic
     var status: Int? = null
 
+    @Column(name = "ST3_STATUS")
+    @Basic
+    var st3Status: Int? = null
+
+    @Column(name = "ST10_STATUS")
+    @Basic
+    var st10Status: Int? = null
+
     @Column(name = "MARK")
     @Basic
     var mark: String? = null
+
+    @Column(name = "IMAGE")
+    @Basic
+    var image: String? = null
 
     @Column(name = "MARK_NUMBER")
     @Basic
@@ -108,6 +120,9 @@ class PermitTypesEntity : Serializable {
                 status == that.status &&
                 descriptions == that.descriptions &&
                 typeName == that.typeName &&
+                st3Status == that.st3Status &&
+                st10Status == that.st10Status &&
+                image == that.image &&
                 varField1 == that.varField1 &&
                 varField2 == that.varField2 &&
                 varField3 == that.varField3 &&
@@ -132,6 +147,9 @@ class PermitTypesEntity : Serializable {
                 status,
                 descriptions,
                 typeName,
+            st3Status,
+            st10Status,
+            image,
                 markNumber,
                 varField1,
                 varField2,
