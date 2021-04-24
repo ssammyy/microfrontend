@@ -92,15 +92,28 @@ order by id desc;
 
 select *
 from CFG_USER_PRIVILEGES
+where id = 143
+-- where id like '%18%'
+order by id desc;
+
+select *
+from CFG_USER_ROLES_PRIVILEGES
 -- where id like '%18%'
 order by id desc;--MS_MP_MODIFY MS_MP_READ AUTHORITIES_WRITE 29
+143
+4
+3
+
 select *
 from CFG_ROLES_PRIVILEGES
--- where ROLES_ID = -1
+where ROLES_ID = 3
 order by id desc;--MS_MP_MODIFY MS_MP_READ
+
+select * from CFG_USER_ROLES  order by ID desc ;
 select *
 from CFG_USER_ROLES_ASSIGNMENTS
-where USER_ID = 1393
+-- where USER_ID = 534
+
 order by id desc;--MS_MP_MODIFY MS_MP_READ
 select *
 from DAT_KEBS_USER_VERIFICATION_TOKEN
@@ -176,7 +189,7 @@ FROM CFG_ROLES_PRIVILEGES rp,
      CFG_USER_PRIVILEGES cup
 WHERE CUP.ID = rp.PRIVILEGE_ID
   AND CUR.ID = rp.ROLES_ID
-  AND rp.ROLES_ID IN (-1)
+  AND rp.ROLES_ID IN (121)
   and rp.STATUS = 1;
 
 drop index DAT_KEBS_USER_VERIFICATION_TOKEN_USER_OD_STATUS;

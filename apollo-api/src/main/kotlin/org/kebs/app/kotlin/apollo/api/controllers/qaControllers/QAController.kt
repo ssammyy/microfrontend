@@ -581,11 +581,7 @@ class QAController(
                                             ?.let { loggedInUser ->
                                                 daoServices.extractManufacturerFromUser(loggedInUser)
                                                         ?.let { man ->
-                                                            var userTypeId:Long = 0
-                                                            userTypesRepo.findByIdOrNull(4)?.id?.let{
-                                                                userTypeId = it
-                                                            }
-                                                            if (loggedInUser.userTypes !== userTypeId) {
+
                                                                 with(pmForm) {
                                                                     dateCreated = Timestamp.from(Instant.now())
                                                                     status = map.inactiveStatus
@@ -615,11 +611,7 @@ class QAController(
 //                                                                        }
 //                                                                    }
 
-                                                                }
-                                                            }
-                                                            else {
-                                                                redirectAttributes.addFlashAttribute("message", "Caught an exception")
-                                                                return "redirect:/api/permit/apply/new/smark"
+
                                                             }
                                                             pmForm = permitRepo.save(pmForm)
                                                             KotlinLogging.logger {  }.info { "Permit saved with id ${pmForm.id}" }
