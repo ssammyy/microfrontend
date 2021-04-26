@@ -30,7 +30,11 @@ import {AdminHomeComponent} from './components/administrator/admin-home/admin-ho
 import {UsersListComponent} from './components/administrator/users-list/users-list.component';
 import {UserDetailsComponent} from './components/administrator/user-details/user-details.component';
 import {AddUserComponent} from './components/administrator/add-user/add-user.component';
+import {StandardRequestComponent} from "./components/standards-development/standard-request/standard-request.component";
 import {UserProfileComponent} from './components/home/user-profile/user-profile.component';
+import {StandardTaskComponent} from "./components/standards-development/standard-task/standard-task.component";
+import {StdTscSecTasksComponent} from "./components/standards-development/std-tsc-sec-tasks/std-tsc-sec-tasks.component";
+import {RequestStandardFormComponent} from "./components/standards-development/standard-request/request-standard-form/request-standard-form.component";
 
 const routes: Routes = [
   // { path: 'login-signup', component: LoginSignupComponent },
@@ -195,6 +199,22 @@ const routes: Routes = [
     children: [{path: '', component: AddUserComponent}]
   },
 
+
+  /****************************************************************
+   * STANDARD DEVELOPMENT ROUTES
+   ***************************************************************/
+  {
+    path: 'request-standard', component: StandardRequestComponent,
+    children: [{path: '', component: RequestStandardFormComponent}]
+  },
+  // { path: 'request-standard', component: StandardRequestComponent },
+  { path: 'standard-task', component: StandardTaskComponent },
+
+
+  { path: 'std-tsc-sec-task', component: StdTscSecTasksComponent },
+  /****************************************************************
+   * END OF STANDARD DEVELOPMENT ROUTES
+   ***************************************************************/
 
 ];
 

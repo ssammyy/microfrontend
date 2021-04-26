@@ -1,5 +1,6 @@
 package com.apollo.standardsdevelopment.models
 
+import com.fasterxml.jackson.annotation.JsonProperty
 import java.sql.Timestamp
 import javax.persistence.*
 
@@ -14,6 +15,10 @@ class StandardJustification {
     @Column(name="TITLE")
     @Basic
     val title:String?=null
+
+    @Transient
+    @JsonProperty("taskId")
+    var taskId:String?=null
 
     @Column(name="SCOPE")
     @Basic

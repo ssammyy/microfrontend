@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:flowable="http://flowable.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.flowable.org/processdef">
+  <process id="sd_publishing" name="Publishing module" isExecutable="true">
+    <startEvent id="startEvent" flowable:formFieldValidation="true"/>
+    <serviceTask id="sendNotificationOfStandard" name="Send notification of a standard for editing" flowable:class="com.apollo.standardsdevelopment.handlers.EmailHandler"/>
+    <userTask id="reveiewKS" name="Approve or disapprove KS" flowable:candidateGroups="head_of_publishing" flowable:formFieldValidation="true"/>
+    <exclusiveGateway id="decisionOnKS"/>
+    <userTask id="rejectSendFeedback" name="Reject and send feedback" flowable:candidateGroups="head_of_publishing" flowable:formFieldValidation="true"/>
+    <endEvent id="endEvent"/>
+    <serviceTask id="sendNotificationOfDraft" name="Send notification of draft standard to edit" flowable:class="com.apollo.standardsdevelopment.handlers.EmailHandler"/>
+    <userTask id="editDraftStandard" name="Edit draft standard" flowable:candidateGroups="editor" flowable:formFieldValidation="true"/>
+    <serviceTask id="sendNotificationProofreading" name="Send notification for proofreading" flowable:class="com.apollo.standardsdevelopment.handlers.EmailHandler"/>
+    <userTask id="proofRead" name="Proofread" flowable:candidateGroups="proofreader" flowable:formFieldValidation="true"/>
+    <exclusiveGateway id="isThereNeedToProofread"/>
+    <serviceTask id="sendNotificationForDraught" name="Send notification for draughting" flowable:class="com.apollo.standardsdevelopment.handlers.EmailHandler"/>
+    <userTask id="draught" name="Draught" flowable:candidateGroups="draughtsman" flowable:formFieldValidation="true"/>
+    <userTask id="checkDraughtApproveChange" name="Check draught standard and approve change" flowable:candidateGroups="head_of_publishing" flowable:formFieldValidation="true"/>
+    <sequenceFlow id="flow1" sourceRef="startEvent" targetRef="sendNotificationOfStandard"/>
+    <sequenceFlow id="flow3" sourceRef="sendNotificationOfStandard" targetRef="reveiewKS"/>
+    <sequenceFlow id="flow4" sourceRef="reveiewKS" targetRef="decisionOnKS"/>
+    <sequenceFlow id="flow5" sourceRef="decisionOnKS" targetRef="rejectSendFeedback">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${!approved}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="flow10" sourceRef="sendNotificationOfDraft" targetRef="editDraftStandard"/>
+    <sequenceFlow id="flow11" sourceRef="editDraftStandard" targetRef="sendNotificationProofreading"/>
+    <sequenceFlow id="flow13" sourceRef="proofRead" targetRef="isThereNeedToProofread"/>
+    <sequenceFlow id="flow14" sourceRef="isThereNeedToProofread" targetRef="sendNotificationForDraught">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${draught}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="flow16" sourceRef="sendNotificationForDraught" targetRef="draught"/>
+    <sequenceFlow id="flow17" sourceRef="draught" targetRef="checkDraughtApproveChange"/>
+    <serviceTask id="sendNotificationOnFeedback" name="Send notification" flowable:class="com.apollo.standardsdevelopment.handlers.EmailHandler"/>
+    <sequenceFlow id="flow80" sourceRef="rejectSendFeedback" targetRef="sendNotificationOnFeedback"/>
+    <serviceTask id="receiveNotificationEditedDraft" name="Receive notification of edited draft standard" flowable:class="com.apollo.standardsdevelopment.handlers.EmailHandler"/>
+    <sequenceFlow id="flow81" sourceRef="checkDraughtApproveChange" targetRef="receiveNotificationEditedDraft"/>
+    <sequenceFlow id="flow82" sourceRef="receiveNotificationEditedDraft" targetRef="endEvent"/>
+    <sequenceFlow id="flow15" sourceRef="isThereNeedToProofread" targetRef="checkDraughtApproveChange">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${!draught}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="flow12" sourceRef="sendNotificationProofreading" targetRef="proofRead"/>
+    <sequenceFlow id="flow8" sourceRef="sendNotificationOnFeedback" targetRef="endEvent"/>
+    <sequenceFlow id="flow6" sourceRef="decisionOnKS" targetRef="sendNotificationOfDraft">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${approved}]]></conditionExpression>
+    </sequenceFlow>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_sd_publishing">
+    <bpmndi:BPMNPlane bpmnElement="sd_publishing" id="BPMNPlane_sd_publishing">
+      <bpmndi:BPMNShape bpmnElement="startEvent" id="BPMNShape_startEvent">
+        <omgdc:Bounds height="30.0" width="30.0" x="165.0" y="75.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="sendNotificationOfStandard" id="BPMNShape_sendNotificationOfStandard">
+        <omgdc:Bounds height="80.0" width="100.0" x="320.0" y="50.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="reveiewKS" id="BPMNShape_reveiewKS">
+        <omgdc:Bounds height="80.0" width="100.0" x="465.0" y="50.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="decisionOnKS" id="BPMNShape_decisionOnKS">
+        <omgdc:Bounds height="40.0" width="40.0" x="610.0" y="70.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="rejectSendFeedback" id="BPMNShape_rejectSendFeedback">
+        <omgdc:Bounds height="80.0" width="100.0" x="695.0" y="50.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endEvent" id="BPMNShape_endEvent">
+        <omgdc:Bounds height="27.999999999999943" width="28.0" x="1134.238811451709" y="490.48164819533355"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="sendNotificationOfDraft" id="BPMNShape_sendNotificationOfDraft">
+        <omgdc:Bounds height="80.0" width="100.0" x="585.0" y="210.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="editDraftStandard" id="BPMNShape_editDraftStandard">
+        <omgdc:Bounds height="80.0" width="100.0" x="826.724" y="210.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="sendNotificationProofreading" id="BPMNShape_sendNotificationProofreading">
+        <omgdc:Bounds height="80.0" width="100.0" x="1015.0" y="210.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="proofRead" id="BPMNShape_proofRead">
+        <omgdc:Bounds height="80.0" width="100.00000000000011" x="869.9999999999999" y="335.9073238479717"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="isThereNeedToProofread" id="BPMNShape_isThereNeedToProofread">
+        <omgdc:Bounds height="40.0" width="40.0" x="725.0" y="355.9073238479717"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="sendNotificationForDraught" id="BPMNShape_sendNotificationForDraught">
+        <omgdc:Bounds height="80.0" width="100.0" x="580.0" y="335.9073238479717"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="draught" id="BPMNShape_draught">
+        <omgdc:Bounds height="80.0" width="100.0" x="403.088788617566" y="335.9073238479717"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="checkDraughtApproveChange" id="BPMNShape_checkDraughtApproveChange">
+        <omgdc:Bounds height="80.0" width="100.0" x="218.33976050118162" y="302.3165914631745"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="sendNotificationOnFeedback" id="BPMNShape_sendNotificationOnFeedback">
+        <omgdc:Bounds height="80.0" width="100.0" x="1098.238811451709" y="50.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="receiveNotificationEditedDraft" id="BPMNShape_receiveNotificationEditedDraft">
+        <omgdc:Bounds height="79.99999999999994" width="100.00000000000001" x="83.97683096199295" y="453.47488719476183"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="flow17" id="BPMNEdge_flow17">
+        <omgdi:waypoint x="403.0887886175643" y="375.4199806021061"/>
+        <omgdi:waypoint x="360.0" y="375.0"/>
+        <omgdi:waypoint x="360.0" y="342.0"/>
+        <omgdi:waypoint x="318.28976050117916" y="342.14389310186453"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow13" id="BPMNEdge_flow13">
+        <omgdi:waypoint x="869.9999999999999" y="375.9073238479717"/>
+        <omgdi:waypoint x="764.9056746712407" y="375.9073238479717"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow14" id="BPMNEdge_flow14">
+        <omgdi:waypoint x="725.0" y="375.9073238479717"/>
+        <omgdi:waypoint x="679.9499999999526" y="375.9073238479717"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow15" id="BPMNEdge_flow15">
+        <omgdi:waypoint x="745.0" y="395.83988280364383"/>
+        <omgdi:waypoint x="745.0" y="433.0"/>
+        <omgdi:waypoint x="268.3397605011816" y="433.0"/>
+        <omgdi:waypoint x="268.3397605011816" y="382.26659146317456"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow16" id="BPMNEdge_flow16">
+        <omgdi:waypoint x="580.0" y="375.9073238479717"/>
+        <omgdi:waypoint x="503.038788617371" y="375.9073238479717"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow80" id="BPMNEdge_flow80">
+        <omgdi:waypoint x="794.9499999999999" y="90.0"/>
+        <omgdi:waypoint x="1098.238811451709" y="90.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow1" id="BPMNEdge_flow1">
+        <omgdi:waypoint x="194.9499990807687" y="90.0"/>
+        <omgdi:waypoint x="320.0" y="90.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow81" id="BPMNEdge_flow81">
+        <omgdi:waypoint x="232.78420494562607" y="382.26659146317456"/>
+        <omgdi:waypoint x="169.48794207310402" y="453.47488719476183"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow3" id="BPMNEdge_flow3">
+        <omgdi:waypoint x="419.95000000000005" y="90.0"/>
+        <omgdi:waypoint x="465.0" y="90.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow4" id="BPMNEdge_flow4">
+        <omgdi:waypoint x="564.9499999999937" y="90.0"/>
+        <omgdi:waypoint x="610.0" y="90.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow5" id="BPMNEdge_flow5">
+        <omgdi:waypoint x="649.9413336229366" y="90.0"/>
+        <omgdi:waypoint x="695.0" y="90.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow6" id="BPMNEdge_flow6">
+        <omgdi:waypoint x="630.0" y="109.94365054105664"/>
+        <omgdi:waypoint x="630.0" y="210.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow10" id="BPMNEdge_flow10">
+        <omgdi:waypoint x="684.9499999999999" y="250.0"/>
+        <omgdi:waypoint x="826.724" y="250.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow11" id="BPMNEdge_flow11">
+        <omgdi:waypoint x="926.674" y="250.0"/>
+        <omgdi:waypoint x="1014.9999999999807" y="250.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow8" id="BPMNEdge_flow8">
+        <omgdi:waypoint x="1148.238811451709" y="129.95"/>
+        <omgdi:waypoint x="1148.238811451709" y="490.48164819533355"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow12" id="BPMNEdge_flow12">
+        <omgdi:waypoint x="1065.0" y="289.95000000000005"/>
+        <omgdi:waypoint x="1065.0" y="312.0"/>
+        <omgdi:waypoint x="920.0" y="312.0"/>
+        <omgdi:waypoint x="920.0" y="335.9073238479717"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow82" id="BPMNEdge_flow82">
+        <omgdi:waypoint x="183.92683096198974" y="494.0169441017091"/>
+        <omgdi:waypoint x="1134.2391835169674" y="504.329729095064"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>
