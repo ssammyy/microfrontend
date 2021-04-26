@@ -24,6 +24,7 @@ package org.kebs.app.kotlin.apollo.config.properties.map.apps
 import com.ulisesbocchio.jasyptspringboot.annotation.EncryptablePropertySource
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Configuration
+import java.math.BigDecimal
 
 @Configuration
 @EncryptablePropertySource("file:\${CONFIG_PATH}/application-map.properties")
@@ -67,6 +68,33 @@ class ApplicationMapProperties {
 
     @Value("\${org.kebs.app.kotlin.apollo.application.map.fuel.inspection}")
     val mapQaFuelInspection: Int = 0
+
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.tax.rate}")
+    val mapKebsTaxRate: BigDecimal = 0.0000.toBigDecimal()
+
+    @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.type.fmark.domestic.amountToPay}")
+    val mapQaDmarkDomesticAmountToPay: BigDecimal = 0.0000.toBigDecimal()
+
+    @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.type.fmark.foregin.amountToPay}")
+    val mapQaDmarkForeginAmountToPay: BigDecimal = 0.0000.toBigDecimal()
+
+    @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.type.fmark.amountToPay}")
+    val mapQaFmarkAmountToPay: BigDecimal = 0.0000.toBigDecimal()
+
+    @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.type.fmark.type.foregin.status}")
+    val mapQaDmarkForeginStatus: Int = 0
+
+    @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.type.fmark.type.domestic.status}")
+    val mapQaDmarkDomesticStatus: Int = 0
+
+    @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.type.smark.turnover.for.largefirms.ID}")
+    val mapQASmarkLargeFirmsTurnOverId: Long = 0L
+
+    @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.type.smark.turnover.for.mediumFirms.ID}")
+    val mapQASmarkMediumTurnOverId: Long = 0L
+
+    @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.type.smark.turnover.for.juakaliFirm.ID}")
+    val mapQASmarkJuakaliTurnOverId: Long = 0L
 
     @Value("\${org.kebs.app.kotlin.apollo.application.map.user.request.importer}")
     val mapUserRequestImporter: Long = 0L
@@ -137,6 +165,9 @@ class ApplicationMapProperties {
 
     @Value("\${org.kebs.app.kotlin.apollo.application.map.kesws}")
     val mapKesws: Int = 0
+
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.uss.rate.name}")
+    val mapUssRateName: String = ""
 
     @Value("\${org.kebs.app.kotlin.apollo.application.map.kesws.doc.type}")
     val mapKeswsDocType: String = ""
