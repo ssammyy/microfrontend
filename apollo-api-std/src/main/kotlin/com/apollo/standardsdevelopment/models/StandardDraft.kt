@@ -1,5 +1,6 @@
 package com.apollo.standardsdevelopment.models
 
+import com.fasterxml.jackson.annotation.JsonProperty
 import java.sql.Timestamp
 import javax.persistence.*
 
@@ -23,6 +24,14 @@ class StandardDraft {
     @Basic
     var standardOfficerId:String?= null
 
+    @Column(name="VERSION_NUMBER")
+    @Basic
+    var versionNumber:Long?=0
+
+    @Transient
+    @JsonProperty("taskId")
+    var taskId:String?=null
+
     @Column(name="SUBMISSION_DATE")
     @Basic
     var submission_date: Timestamp?=null
@@ -36,6 +45,8 @@ class StandardDraft {
         if (title != other.title) return false
         if (requestorId != other.requestorId) return false
         if (standardOfficerId != other.standardOfficerId) return false
+        if (versionNumber != other.versionNumber) return false
+        if (taskId != other.taskId) return false
         if (submission_date != other.submission_date) return false
 
         return true
@@ -46,12 +57,14 @@ class StandardDraft {
         result = 31 * result + (title?.hashCode() ?: 0)
         result = 31 * result + (requestorId?.hashCode() ?: 0)
         result = 31 * result + (standardOfficerId?.hashCode() ?: 0)
+        result = 31 * result + (versionNumber?.hashCode() ?: 0)
+        result = 31 * result + (taskId?.hashCode() ?: 0)
         result = 31 * result + (submission_date?.hashCode() ?: 0)
         return result
     }
 
     override fun toString(): String {
-        return "StandardDraft(id=$id, title=$title, requestorId=$requestorId, standardOfficerId=$standardOfficerId, submission_date=$submission_date)"
+        return "StandardDraft(id=$id, title=$title, requestorId=$requestorId, standardOfficerId=$standardOfficerId, versionNumber=$versionNumber, taskId=$taskId, submission_date=$submission_date)"
     }
 
 
