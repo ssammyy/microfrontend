@@ -67,6 +67,7 @@ import org.kebs.app.kotlin.apollo.common.utils.replacePrefixedItemsWithObjectVal
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.*
 import org.kebs.app.kotlin.apollo.store.model.di.CdLaboratoryEntity
+import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileEntity
 import org.kebs.app.kotlin.apollo.store.repo.*
 import org.kebs.app.kotlin.apollo.store.repo.di.ILaboratoryRepository
 import org.modelmapper.ModelMapper
@@ -103,6 +104,7 @@ import javax.xml.stream.XMLOutputFactory
 class CommonDaoServices(
         private val jasyptStringEncryptor: StringEncryptor,
         private val usersRepo: IUserRepository,
+        private val companyProfileRepo: ICompanyProfileRepository,
         private val batchJobRepository: IBatchJobDetailsRepository,
         private val iSubSectionsLevel2Repo: ISubSectionsLevel2Repository,
         private val iSubSectionsLevel1Repo: ISubSectionsLevel1Repository,
@@ -400,6 +402,16 @@ class CommonDaoServices(
 //    fun assignSubRegion(subRegionId: Long?): SubRegionsEntity? = subRegionsRepo.findByIdOrNull(subRegionId)
     fun assignDesignation(designationId: Long?): DesignationsEntity? = designationRepo.findByIdOrNull(designationId)
 
+    fun returnValues(
+        result: ServiceRequestsEntity,
+        map: ServiceMapsEntity,
+        sm: CommonDaoServices.MessageSuccessFailDTO
+    ): String? {
+        return when (result.status) {
+            map.successStatus -> "${successLink}?message=${sm.message}&closeLink=${sm.closeLink}"
+            else -> map.failureNotificationUrl
+        }
+    }
 
     fun concatenateName(user: UsersEntity): String {
         return "${user.firstName} ${user.lastName}"
@@ -660,6 +672,15 @@ class CommonDaoServices(
                     return userEntity
                 }
                 ?: throw ExpectedDataNotFound("Username  = ${userName}, does not Exist")
+    }
+
+
+    fun findCompanyProfile(userID: Long): CompanyProfileEntity {
+        companyProfileRepo.findByUserId(userID)
+                ?.let { userCompanyDetails ->
+                    return userCompanyDetails
+                }
+                ?: throw ExpectedDataNotFound("Company Profile with [user ID= ${userID}], does not Exist")
     }
 
     fun findAllUsers(): List<UsersEntity> {

@@ -303,6 +303,11 @@ class ControllerRoutes {
             GET("/permit-details", handler::permitDetails)
             GET("/new-permit", handler::newPermit)
             GET("/new-sta3", handler::newSta3)
+            GET("/new-sta10", handler::newSta10)
+            GET("/view-sta3", handler::viewSta3)
+            GET("/view-sta10", handler::viewSta10)
+            GET("/new-sta10-submit", handler::submitSta10)
+            GET("/invoice-details", handler::getInvoiceDetails)
         }
     }
 

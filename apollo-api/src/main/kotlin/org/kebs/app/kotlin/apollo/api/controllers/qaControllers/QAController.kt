@@ -709,10 +709,12 @@ class QAController(
                         permitRepo.findByIdOrNull(id)
                                 ?.let { per ->
                                     //            val inv = per?.let { qCont.invoiceGen(InvoiceEntity(), it) }
-                                    invoiceRepository.findByPermitId(per)
+                                    per.id?.let {
+                                        invoiceRepository.findByPermitId(it)
                                             ?.let { i ->
                                                 model.addAttribute("invoice", i)
                                             }
+                                    }
 
 
                                     model.addAttribute("permit", per)

@@ -1,62 +1,50 @@
-/*
- *
- *  *
- *  *
- *  *  *    Copyright (c) ${YEAR}.   BSK Global Technologies
- *  *  *
- *  *  *    Licensed under the Apache License, Version 2.0 (the "License");
- *  *  *    you may not use this file except in compliance with the License.
- *  *  *    You may obtain a copy of the License at
- *  *  *
- *  *  *       http://www.apache.org/licenses/LICENSE-2.0
- *  *  *
- *  *  *    Unless required by applicable law or agreed to in writing, software
- *  *  *    distributed under the License is distributed on an "AS IS" BASIS,
- *  *  *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  *  *   See the License for the specific language governing permissions and
- *  *  *   limitations under the License.
- *  *
- *
- */
-
-package org.kebs.app.kotlin.apollo.store.model
+package org.kebs.app.kotlin.apollo.store.model.qa
 
 import java.io.Serializable
-import java.math.BigDecimal
 import java.sql.Timestamp
 import java.util.*
 import javax.persistence.*
 
 @Entity
-@Table(name = "CFG_TURNOVER_RATES")
-class TurnOverRatesEntity : Serializable {
+@Table(name = "DAT_KEBS_QA_MANUFACTURING_PROCESS")
+class QaManufacturingProcessEntity : Serializable {
     @Column(name = "ID")
     @Id
-    var id: Int = 0
+    @SequenceGenerator(name = "DAT_KEBS_QA_MANUFACTURING_PROCESS_SEQ_GEN", sequenceName = "DAT_KEBS_QA_MANUFACTURING_PROCESS_SEQ", allocationSize = 1)
+    @GeneratedValue(generator = "DAT_KEBS_QA_MANUFACTURING_PROCESS_SEQ_GEN", strategy = GenerationType.SEQUENCE)
+    var id: Long? = 0
+
+    @Column(name = "STA10_ID")
+    @Basic
+    var sta10Id: Long? = null
+
+    @Column(name = "PROCESS_FLOW_OF_PRODUCTION")
+    @Basic
+    var processFlowOfProduction: String? = null
+
+    @Column(name = "OPERATIONS")
+    @Basic
+    var operations: String? = null
+
+    @Column(name = "CRITICAL_PROCESS_PARAMETERS_MONITORED")
+    @Basic
+    var criticalProcessParametersMonitored: String? = null
+
+    @Column(name = "FREQUENCY")
+    @Basic
+    var frequency: String? = null
+
+    @Column(name = "PROCESS_MONITORING_RECORDS")
+    @Basic
+    var processMonitoringRecords: String? = null
+
+    @Column(name = "DESCRIPTION")
+    @Basic
+    var description: String? = null
 
     @Column(name = "STATUS")
     @Basic
     var status: Int? = null
-
-    @Column(name = "LOWER_LIMIT")
-    @Basic
-    var lowerLimit: BigDecimal? = null
-
-    @Column(name = "VARIABLE_AMOUNT_TO_PAY")
-    @Basic
-    var variableAmountToPay: BigDecimal? = BigDecimal.ZERO
-
-    @Column(name = "FIXED_AMOUNT_TO_PAY")
-    @Basic
-    var fixedAmountToPay: BigDecimal? = BigDecimal.ZERO
-
-    @Column(name = "UPPER_LIMIT")
-    @Basic
-    var upperLimit: BigDecimal? = null
-
-    @Column(name = "FIRM_TYPE")
-    @Basic
-    var firmType: String? = null
 
     @Column(name = "VAR_FIELD_1")
     @Basic
@@ -121,18 +109,19 @@ class TurnOverRatesEntity : Serializable {
     @Column(name = "DELETED_ON")
     @Basic
     var deletedOn: Timestamp? = null
-
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other == null || javaClass != other.javaClass) return false
-        val that = other as TurnOverRatesEntity
+        val that = other as QaManufacturingProcessEntity
         return id == that.id &&
+                sta10Id == that.sta10Id &&
+                processFlowOfProduction == that.processFlowOfProduction &&
+                operations == that.operations &&
+                criticalProcessParametersMonitored == that.criticalProcessParametersMonitored &&
+                frequency == that.frequency &&
+                processMonitoringRecords == that.processMonitoringRecords &&
+                description == that.description &&
                 status == that.status &&
-                lowerLimit == that.lowerLimit &&
-                upperLimit == that.upperLimit &&
-                fixedAmountToPay == that.fixedAmountToPay &&
-                variableAmountToPay == that.variableAmountToPay &&
-                firmType == that.firmType &&
                 varField1 == that.varField1 &&
                 varField2 == that.varField2 &&
                 varField3 == that.varField3 &&
@@ -154,12 +143,14 @@ class TurnOverRatesEntity : Serializable {
     override fun hashCode(): Int {
         return Objects.hash(
             id,
+            sta10Id,
+            processFlowOfProduction,
+            operations,
+            criticalProcessParametersMonitored,
+            frequency,
+            processMonitoringRecords,
+            description,
             status,
-            lowerLimit,
-            upperLimit,
-            fixedAmountToPay,
-            variableAmountToPay,
-            firmType,
             varField1,
             varField2,
             varField3,

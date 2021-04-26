@@ -4,6 +4,7 @@ import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.store.model.PermitApplicationEntity
 import org.kebs.app.kotlin.apollo.store.model.PetroleumInstallationInspectionEntity
 import org.kebs.app.kotlin.apollo.store.repo.*
+import org.kebs.app.kotlin.apollo.store.repo.qa.ITurnOverRatesRepository
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Component
 import java.math.BigDecimal
@@ -28,17 +29,17 @@ class FuelInspectionCalculator() {
 
 @Component
 class PaymentCalculator(
-        private val iPermitRepository: IPermitRepository,
-        private val iTurnOverRatesRepository: ITurnOverRatesRepository,
-        private val manufacturersRepo: IManufacturerRepository,
-        private val manufacturerAddressesEntityRepo: IManufacturerAddressRepository,
-        private val iBrandPerSiteRepository: IBrandPerSiteRepository,
-        private val iManufacturerProductRepository: IManufacturerProductRepository,
-        private val iManufacturerProductBrandRepository: IManufacturerProductBrandRepository,
-        private val iManufacturerBranchRepository: IManufacturerBranchRepository,
-        private val iManufacturePaymentDetailsRepository: IManufacturerPaymentDetailsRepository,
-        private val sampleStandardsRepository: ISampleStandardsRepository,
-        private val paymentUnitsRepository: ICfgKebsPermitPaymentUnitsRepository
+    private val iPermitRepository: IPermitRepository,
+    private val iTurnOverRatesRepository: ITurnOverRatesRepository,
+    private val manufacturersRepo: IManufacturerRepository,
+    private val manufacturerAddressesEntityRepo: IManufacturerAddressRepository,
+    private val iBrandPerSiteRepository: IBrandPerSiteRepository,
+    private val iManufacturerProductRepository: IManufacturerProductRepository,
+    private val iManufacturerProductBrandRepository: IManufacturerProductBrandRepository,
+    private val iManufacturerBranchRepository: IManufacturerBranchRepository,
+    private val iManufacturePaymentDetailsRepository: IManufacturerPaymentDetailsRepository,
+    private val sampleStandardsRepository: ISampleStandardsRepository,
+    private val paymentUnitsRepository: ICfgKebsPermitPaymentUnitsRepository
 )
 {
 

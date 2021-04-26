@@ -1,6 +1,7 @@
 package org.kebs.app.kotlin.apollo.store.model.registration
 
 import java.io.Serializable
+import java.math.BigDecimal
 import java.sql.Timestamp
 import java.util.*
 import javax.persistence.*
@@ -40,7 +41,7 @@ class CompanyProfileEntity : Serializable {
 
     @Column(name = "YEARLY_TURNOVER")
     @Basic
-    var yearlyTurnover: String? = null
+    var yearlyTurnover: BigDecimal? = null
 
     @Column(name = "BUSINESS_LINES")
     @Basic
@@ -53,6 +54,10 @@ class CompanyProfileEntity : Serializable {
     @Column(name = "BUILDING_NAME")
     @Basic
     var buildingName: String? = null
+
+    @Column(name = "USER_CLASSIFICATION")
+    @Basic
+    var userClassification: Long? = null
 
     @Column(name = "STREET_NAME")
     @Basic
@@ -163,6 +168,7 @@ class CompanyProfileEntity : Serializable {
                 businessNatures == that.businessNatures &&
                 buildingName == that.buildingName &&
                 streetName == that.streetName &&
+                userClassification == that.userClassification &&
                 region == that.region &&
                 county == that.county &&
                 town == that.town &&
@@ -201,6 +207,7 @@ class CompanyProfileEntity : Serializable {
             businessNatures,
             buildingName,
             streetName,
+            userClassification,
             region,
             county,
             town,

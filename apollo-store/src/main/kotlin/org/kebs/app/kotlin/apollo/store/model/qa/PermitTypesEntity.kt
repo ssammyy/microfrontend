@@ -26,6 +26,18 @@ class PermitTypesEntity : Serializable {
     @Basic
     var st10Status: Int? = null
 
+    @Column(name = "LOCAL_FOREIGN_STATUS")
+    @Basic
+    var localForeignStatus: Int? = null
+
+    @Column(name = "SME_DECLARATION_FORM")
+    @Basic
+    var smeDeclarationForm: Int? = null
+
+    @Column(name = "PERMIT_AWARD_YEARS")
+    @Basic
+    var permitAwardYears: Int? = null
+
     @Column(name = "MARK")
     @Basic
     var mark: String? = null
@@ -116,6 +128,9 @@ class PermitTypesEntity : Serializable {
         val that = other as PermitTypesEntity
         return id == that.id &&
                 mark == that.mark &&
+                smeDeclarationForm == that.smeDeclarationForm &&
+                localForeignStatus == that.localForeignStatus &&
+                permitAwardYears == that.permitAwardYears &&
                 markNumber == that.markNumber &&
                 status == that.status &&
                 descriptions == that.descriptions &&
@@ -143,31 +158,34 @@ class PermitTypesEntity : Serializable {
 
     override fun hashCode(): Int {
         return Objects.hash(
-                id,
-                status,
-                descriptions,
-                typeName,
+            id,
+            status,
+            descriptions,
+            smeDeclarationForm,
+            typeName,
+            permitAwardYears,
+            localForeignStatus,
             st3Status,
             st10Status,
             image,
-                markNumber,
-                varField1,
-                varField2,
-                varField3,
-                varField4,
-                varField5,
-                varField6,
-                varField7,
-                varField8,
-                varField9,
-                varField10,
-                createdBy,
-                createdOn,
-                modifiedBy,
-                modifiedOn,
-                deleteBy,
-                deletedOn,
-                mark
+            markNumber,
+            varField1,
+            varField2,
+            varField3,
+            varField4,
+            varField5,
+            varField6,
+            varField7,
+            varField8,
+            varField9,
+            varField10,
+            createdBy,
+            createdOn,
+            modifiedBy,
+            modifiedOn,
+            deleteBy,
+            deletedOn,
+            mark
         )
     }
 }

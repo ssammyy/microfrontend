@@ -44,8 +44,20 @@ class ApplicationMapProperties {
     @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.manufacture.roleName}")
     val mapQualityAssuranceManufactureRoleName: String = ""
 
+    @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.manufacture.viewPage}")
+    val mapQualityAssuranceManufactureViewPage: String = ""
+
     @Value("\${org.kebs.app.kotlin.apollo.application.map.user.registration}")
     val mapUserRegistration: Int = 0
+
+    @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.type.dmark.id}")
+    val mapQAPermitTypeIDDmark: Long = 0L
+
+    @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.type.smark.id}")
+    val mapQAPermitTypeIdSmark: Long = 0L
+
+    @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.type.fmark.id}")
+    val mapQAPermitTypeIdFmark: Long = 0L
 
     @Value("\${org.kebs.app.kotlin.apollo.application.map.importer.details}")
     val mapImporterDetails: Int = 0

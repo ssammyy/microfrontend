@@ -1,9 +1,6 @@
 package org.kebs.app.kotlin.apollo.store.repo.qa
 
-import org.kebs.app.kotlin.apollo.store.model.qa.PermitTypesEntity
-import org.kebs.app.kotlin.apollo.store.model.UsersEntity
-import org.kebs.app.kotlin.apollo.store.model.qa.PermitApplicationsEntity
-import org.kebs.app.kotlin.apollo.store.model.qa.QaSta3Entity
+import org.kebs.app.kotlin.apollo.store.model.qa.*
 import org.springframework.data.hazelcast.repository.HazelcastRepository
 import org.springframework.stereotype.Repository
 
@@ -31,3 +28,35 @@ interface IQaSta3EntityRepository : HazelcastRepository<QaSta3Entity, Long> {
     fun findByPermitId(permitId: Long): QaSta3Entity?
 }
 
+@Repository
+interface IQaSta10EntityRepository : HazelcastRepository<QaSta10Entity, Long> {
+    fun findByStatusAndId(status: Int, id: Long): QaSta10Entity?
+    fun findByPermitId(permitId: Long): QaSta10Entity?
+}
+
+@Repository
+interface IQaMachineryRepository : HazelcastRepository<QaMachineryEntity, Long> {
+    fun findBySta10Id(sta10Id: Long): List<QaMachineryEntity>?
+}
+
+
+@Repository
+interface IQaRawMaterialRepository: HazelcastRepository<QaRawMaterialEntity, Long> {
+    fun findBySta10Id(sta10Id: Long): List<QaRawMaterialEntity>?
+}
+
+@Repository
+interface IQaManufactureProcessRepository: HazelcastRepository<QaManufacturingProcessEntity, Long> {
+    fun findBySta10Id(sta10Id: Long): List<QaManufacturingProcessEntity>?
+}
+
+@Repository
+interface IQaProductBrandEntityRepository: HazelcastRepository<QaProductManufacturedEntity, Long> {
+    fun findBySta10Id(sta10Id: Long): List<QaProductManufacturedEntity>?
+}
+
+
+@Repository
+interface ITurnOverRatesRepository : HazelcastRepository<TurnOverRatesEntity, Long> {
+    fun findByIdAndFirmType(id: Long, firmType: String): TurnOverRatesEntity?
+}

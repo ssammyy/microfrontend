@@ -1,4 +1,4 @@
-package org.kebs.app.kotlin.apollo.store.model
+package org.kebs.app.kotlin.apollo.store.model.qa
 
 import java.io.Serializable
 import java.math.BigDecimal
@@ -8,10 +8,12 @@ import javax.persistence.*
 
 @Entity
 @Table(name = "CFG_TURNOVER_RATES")
-class CfgTurnOverRatesEntity : Serializable {
+class TurnOverRatesEntity : Serializable {
     @Column(name = "ID")
     @Id
-    var id: Long = 0
+    @SequenceGenerator(name = "CFG_TURNOVER_RATES_SEQ_GEN", sequenceName = "CFG_TURNOVER_RATES_SEQ", allocationSize = 1)
+    @GeneratedValue(generator = "CFG_TURNOVER_RATES_SEQ_GEN", strategy = GenerationType.SEQUENCE)
+    var id: Long? = null
 
     @Column(name = "STATUS")
     @Basic
@@ -32,6 +34,10 @@ class CfgTurnOverRatesEntity : Serializable {
     @Column(name = "UPPER_LIMIT")
     @Basic
     var upperLimit: BigDecimal? = null
+
+    @Column(name = "TAX_RATE")
+    @Basic
+    var taxRate: Long? = null
 
     @Column(name = "FIRM_TYPE")
     @Basic
@@ -104,11 +110,12 @@ class CfgTurnOverRatesEntity : Serializable {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other == null || javaClass != other.javaClass) return false
-        val that = other as CfgTurnOverRatesEntity
+        val that = other as TurnOverRatesEntity
         return id == that.id &&
                 status == that.status &&
                 lowerLimit == that.lowerLimit &&
                 upperLimit == that.upperLimit &&
+                taxRate == that.taxRate &&
                 fixedAmountToPay == that.fixedAmountToPay &&
                 variableAmountToPay == that.variableAmountToPay &&
                 firmType == that.firmType &&
@@ -132,29 +139,30 @@ class CfgTurnOverRatesEntity : Serializable {
 
     override fun hashCode(): Int {
         return Objects.hash(
-                id,
-                status,
-                lowerLimit,
-                upperLimit,
-                fixedAmountToPay,
-                variableAmountToPay,
-                firmType,
-                varField1,
-                varField2,
-                varField3,
-                varField4,
-                varField5,
-                varField6,
-                varField7,
-                varField8,
-                varField9,
-                varField10,
-                createdBy,
-                createdOn,
-                modifiedBy,
-                modifiedOn,
-                deleteBy,
-                deletedOn
+            id,
+            status,
+            lowerLimit,
+            taxRate,
+            upperLimit,
+            fixedAmountToPay,
+            variableAmountToPay,
+            firmType,
+            varField1,
+            varField2,
+            varField3,
+            varField4,
+            varField5,
+            varField6,
+            varField7,
+            varField8,
+            varField9,
+            varField10,
+            createdBy,
+            createdOn,
+            modifiedBy,
+            modifiedOn,
+            deleteBy,
+            deletedOn
         )
     }
 }

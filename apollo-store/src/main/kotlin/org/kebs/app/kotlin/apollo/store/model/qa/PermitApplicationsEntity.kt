@@ -135,10 +135,26 @@ class PermitApplicationsEntity:Serializable {
     @Basic
     var status: Int? = null
 
+    @Column(name = "PERMIT_FOREIGN_STATUS")
+    @Basic
+    var permitForeignStatus: Int? = null
+
     @Column(name = "ENABLED")
     @Basic
     var enabled: Int? = null
 
+    @Column(name = "INVOICE_GENERATED")
+    @Basic
+    var invoiceGenerated: Int? = null
+
+
+    @Column(name = "SME_FORM_FILLED_STATUS")
+    @Basic
+    var smeFormFilledStatus: Int? = null
+
+    @Column(name = "SEND_APPLICATION")
+    @Basic
+    var sendApplication: Int? = null
 
 
     @Column(name = "TITLE")
@@ -297,10 +313,14 @@ class PermitApplicationsEntity:Serializable {
         if (applicationSuspensionStatus != other.applicationSuspensionStatus) return false
         if (productName != other.productName) return false
         if (tradeMark != other.tradeMark) return false
+        if (permitForeignStatus != other.permitForeignStatus) return false
         if (status != other.status) return false
         if (sta10FilledStatus != other.sta10FilledStatus) return false
         if (sta3FilledStatus != other.sta3FilledStatus) return false
+        if (sendApplication != other.sendApplication) return false
+        if (invoiceGenerated != other.invoiceGenerated) return false
         if (enabled != other.enabled) return false
+        if (smeFormFilledStatus != other.smeFormFilledStatus) return false
         if (title != other.title) return false
         if (totalCost != other.totalCost) return false
         if (totalPayment != other.totalPayment) return false
@@ -358,7 +378,11 @@ class PermitApplicationsEntity:Serializable {
         result = 31 * result + (productName?.hashCode() ?: 0)
         result = 31 * result + (commodityDescription?.hashCode() ?: 0)
         result = 31 * result + (tradeMark?.hashCode() ?: 0)
+        result = 31 * result + (smeFormFilledStatus ?: 0)
+        result = 31 * result + (invoiceGenerated ?: 0)
         result = 31 * result + (enabled ?: 0)
+        result = 31 * result + (sendApplication ?: 0)
+        result = 31 * result + (permitForeignStatus ?: 0)
         result = 31 * result + (status ?: 0)
         result = 31 * result + (sta10FilledStatus ?: 0)
         result = 31 * result + (sta3FilledStatus ?: 0)

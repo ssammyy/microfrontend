@@ -22,6 +22,7 @@
     <!--    <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/2.2.1/mdb.min.css" rel="stylesheet"/>-->
 </head>
 <body>
+<div id ="spinnerContainer"><div class="spinner"></div></div>
 <div class="top-bar" th:replace="fragments/general-form.html :: top-bar"></div>
 <div class="section">
     <div class="w-layout-grid main-grid">
@@ -90,6 +91,10 @@
                                             <li class="list-item-accordion">
                                                 <div class="list-title-accordion">Trade Mark</div>
                                                 <div class="list-text-accordion" th:text="${permitDetails?.tradeMark}"></div>
+                                            </li>
+                                            <li th:if="${permitType?.localForeignStatus == 1}" class="list-item-accordion">
+                                                <div class="list-title-accordion">APPLICATION TYPE</div>
+                                                <div class="list-text-accordion" th:text="${permitDetails?.permitForeignStatus} ? 'FOREGIN' : 'DOMESTIC'" ></div>
                                             </li>
 
                                         </ul>
@@ -217,20 +222,33 @@
 
                         <div class="filter-block">
                             <div class="filter-block-title">
+                                <div class="filter-title">Document Details:</div>
+                            </div>
+                            <div>
+                                <a th:if="${permitType?.st3Status == 1 and permitDetails?.sta3FilledStatus == 1}" target='_blank' th:href="@{/api/qa/view-sta3(permitID=${permitDetails?.id}, userID=${permitDetails?.userId})}" class="filter-link" style="color: white">STA 3</a>
+                                <a th:if="${permitType?.st10Status == 1 and permitDetails?.sta10FilledStatus == 1}" target='_blank' th:href="@{/api/qa/view-sta10(permitID=${permitDetails?.id}, userID=${permitDetails?.userId})}" class="filter-link" style="color: white">STA 10</a>
+                                <a th:if="${permitDetails?.sendApplication == 1 and permitDetails?.invoiceGenerated == 1}" target='_blank' th:href="@{/api/qa/invoice-details(permitID=${permitDetails?.id})}" class="filter-link" style="color: white">GENERATED INVOICE</a>
+                            </div>
+                            <div class="filter-block-title">
                                 <div class="filter-title">Action:</div>
                             </div>
                             <div>
                                 <div sec:authorize="hasAuthority('PERMIT_APPLICATION')">
                                     <a th:if="${permitType?.st3Status == 1 and permitDetails?.sta3FilledStatus == null}"  th:href="@{/api/qa/new-sta3(permitID=${permitDetails?.id})}" class="filter-link" style="color: white">Fill STA 3</a>
+                                    <a th:if="${permitType?.st10Status == 1 and permitDetails?.sta10FilledStatus == null}"  th:href="@{/api/qa/new-sta10(permitID=${permitDetails?.id})}" class="filter-link" style="color: white">Fill STA 10</a>
+                                    <a th:if="${permitType?.smeDeclarationForm == 1 and permitDetails?.smeFormFilledStatus == null}"  th:href="@{/api/qa/new-sme-declaration(permitID=${permitDetails?.id})}" class="filter-link" style="color: white">Fill SME DECLARATION</a>
+
+                                    <div th:if="${permitType?.st10Status == 1 and permitDetails?.sta10FilledStatus == 1}">
+                                        <a th:if="${permitDetails?.sendApplication != 1}"  th:href="@{/api/qa/new-permit-submit(permitID=${permitDetails?.id})}" class="filter-link" style="color: white">SUBMIT APPLICATION</a>
+                                    </div>
+                                    <div th:if="${permitType?.st3Status == 1 and permitDetails?.sta3FilledStatus == 1}">
+                                        <a th:if="${permitDetails?.sendApplication != 1}"  th:href="@{/api/qa/new-permit-submit(permitID=${permitDetails?.id})}" class="filter-link" style="color: white">SUBMIT APPLICATION</a>
+                                    </div>
+
                                 </div>
 
                             </div>
-                            <div class="filter-block-title">
-                                <div class="filter-title">Document Details:</div>
-                            </div>
-                            <div>
 
-                            </div>
                         </div>
 
                         <!--                        <div sec:authorize="hasAuthority('DI_OFFICER_CHARGE_READ')" th:if="${userNumber == 0}"class="filter-block">-->

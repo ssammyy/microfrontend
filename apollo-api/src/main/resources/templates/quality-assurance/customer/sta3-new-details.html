@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<!--  This site was created in Webflow. http://www.webflow.com  -->
+<!--  Last Published: Wed Mar 18 2020 20:03:10 GMT+0000 (Coordinated Universal Time)  -->
+<html data-wf-page="5e7130c996c4ca37928b351f" data-wf-site="5e70fb3a565ebd99c1db37ce"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>KEBS</title>
+    <th:block th:include="fragments/general-form.html :: headerfiles"/>
+    <link rel="stylesheet" th:href="@{/css/pageLoad.css}" type="text/css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Font Awesome -->
+    <link href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" rel="stylesheet"/>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" rel="stylesheet"/>
+    <!-- MDB -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/2.2.1/mdb.min.css" rel="stylesheet"/>
+</head>
+<body>
+<div id ="spinnerContainer"><div class="spinner"></div></div>
+<div class="top-bar" th:replace="fragments/general-form.html :: top-bar"></div>
+<div class="section">
+    <div class="w-layout-grid main-grid">
+        <div class="main-grid-side-navigation" id="w-node-d308c123a20f-c123a20d"
+             th:replace="fragments/general-form.html :: side-navigation-bar"></div>
+        <div id="w-node-27962c2db181-c676b3e3" class="main-content-div">
+            <div class="content-nav" th:replace="fragments/general-form.html :: content-navigation-bar"></div>
+            <div class="content-wrap">
+                <div class="content-row">
+                    <div class="row">
+                        <div th:if="${message}" th:with="myStatus=${message}">
+                            <input type="hidden" th:value="${myStatus}" id="idStatus">
+                        </div>
+                        <h5 style="font-weight: bold; color: #0082f3; font-size: 14px">STA 3: QUESTIONNAIRE FOR INITIAL
+                            FACTORY ASSESSMENT</h5>
+                        <form  id="sta3Form" class="needs-validation"  novalidate th:action="@{/api/qa/apply/new-sta3(permitID = ${permit.id})}" method="post">
+                            <div th:object="${QaSta3Entity}" >
+                                <div class="form-row">
+                                    <div class="col-md-12 mb-3">
+                                        <p style="font-size: 20px">1. This document shall be completed by
+                                            the applicant and shall be returned together with the
+                                            application
+                                            form STA/1 and/or covering letter.</p>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="col-md-12 mb-3">
+                                        <p style="font-size: 20px">2. Supplements may be included where it
+                                            is necessary to expand any statements.</p>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="col-md-12 mb-3">
+                                        <p style="font-size: 20px">3. A separate document shall be
+                                            completed for each factory involved.</p>
+                                    </div>
+                                </div>
+
+                                <div class="form-row">
+                                    <div class="col-md-12 mb-3">
+                                        <p style="font-size: 20px">4. The statements shall relate to the
+                                            facilities available as of the date of completion of the
+                                            form.</p>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="col-md-12 mb-3">
+                                        <p style="font-size: 20px">5. The information given in this
+                                            document shall be treated in Confidence.</p>
+                                    </div>
+                                </div>
+                                <div class="form-row" >
+                                    <div class="col-md-12 mb-3">
+                                        <label for="produceOrdersOrStock" style="color: #0082f3; font-size: 16px">1.FACTORY ORGANIZATION</label>
+                                    </div>
+                                </div>
+                                <div class="form-row" >
+                                    <div class="col-md-12 mb-3">
+                                        <label for="produceOrdersOrStock" class="field-label">1.1. PROCEDURES/PAPER WORK: </label>
+                                        <label for="produceOrdersOrStock" class="field-label">Please give the following information</label>
+                                    </div>
+                                </div>
+                                <div class="form-row" >
+                                    <div class="col-md-12 mb-3">
+                                        <label for="produceOrdersOrStock" class="field-label">a). Do you produce against Orders or for Stock?</label>
+                                        <textarea type="text" class="form-control" rows="2" id="produceOrdersOrStock" th:field="*{produceOrdersOrStock}"   required="required"></textarea>
+                                    </div>
+                                </div>
+                                <div class="form-row" >
+                                    <div class="col-md-12 mb-3">
+                                        <label for="issueWorkOrderOrEquivalent" class="field-label">b). Do you issue a work Order or equivalent?</label>
+                                        <textarea type="text" class="form-control" rows="2" id="issueWorkOrderOrEquivalent" th:field="*{issueWorkOrderOrEquivalent}"   required="required"></textarea>
+                                    </div>
+                                </div><div class="form-row" >
+                                    <div class="col-md-12 mb-3">
+                                        <label for="identifyBatchAsSeparate" class="field-label">c). If so does this identify a batch as separate entity?</label>
+                                        <textarea type="text" class="form-control" rows="2" id="identifyBatchAsSeparate" th:field="*{identifyBatchAsSeparate}"   required="required"></textarea>
+                                    </div>
+                                </div><div class="form-row" >
+                                    <div class="col-md-12 mb-3">
+                                        <label for="productsContainersCarryWorksOrder" class="field-label">d). Do products and/or containers carry works order identification in manufacture?</label>
+                                        <textarea type="text" class="form-control" rows="2" id="productsContainersCarryWorksOrder" th:field="*{productsContainersCarryWorksOrder}"   required="required"></textarea>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="col-md-12 mb-3">
+                                        <label for="isolatedCaseDoubtfulQuality" class="field-label">e). If not how does system allow for products to be isolated in case of doubtful quality?</label>
+                                        <textarea type="text" class="form-control" rows="2" id="isolatedCaseDoubtfulQuality" th:field="*{isolatedCaseDoubtfulQuality}" required="required"></textarea>
+                                    </div>
+                                </div>
+                                <div class="form-row" >
+                                    <div class="col-md-12 mb-3">
+                                        <label for="produceOrdersOrStock" class="field-label">1.2. QUALITY CONTROL/INSPECTION STAFF: </label>
+                                        <label for="produceOrdersOrStock" class="field-label"> Please give the following information on factory QC staff organization:</label>
+                                    </div>
+                                </div>
+                                <div class="form-row" >
+                                    <div class="col-md-6 mb-3">
+                                        <label for="headQaQualificationsTraining" class="field-label">a). Head of Quality Assurance, Qualifications, Training etc</label>
+                                        <textarea type="text" class="form-control" rows="2" id="headQaQualificationsTraining" th:field="*{headQaQualificationsTraining}"   required="required"></textarea>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="reportingTo" class="field-label">Reporting to:</label>
+                                        <textarea type="text" class="form-control" rows="2" id="reportingTo" th:field="*{reportingTo}"   required="required"></textarea>
+                                    </div>
+                                </div>
+                                <div class="form-row" >
+                                    <div class="col-md-6 mb-3">
+                                        <label for="separateQcid" class="field-label">b). Is there a separate Quality Control Inspection Department?</label>
+                                        <textarea type="text" class="form-control" rows="2" id="separateQcid" th:field="*{separateQcid}"   required="required"></textarea>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="testsRelevantStandard" class="field-label">c). If so indicate if staff are aware of the tests in the relevant standard(s)</label>
+                                        <textarea type="text" class="form-control" rows="2" id="testsRelevantStandard" th:field="*{testsRelevantStandard}"   required="required"></textarea>
+                                    </div>
+                                </div>
+                                <div class="form-row" >
+                                    <div class="col-md-12 mb-3">
+                                        <label for="produceOrdersOrStock" class="field-label">d). Are Storemen/Production Operations responsible for inspection and test on </label>
+                                    </div>
+                                </div>
+                                <div class="form-row" >
+                                    <div class="col-md-4 mb-3">
+                                        <label for="spoComingMaterials" class="field-label">i). In-coming materials?</label>
+                                        <textarea type="text" class="form-control" rows="2" id="spoComingMaterials" th:field="*{spoComingMaterials}"   required="required"></textarea>
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <label for="spoProcessOperations" class="field-label">ii). In process operations?</label>
+                                        <textarea type="text" class="form-control" rows="2" id="spoProcessOperations" th:field="*{spoProcessOperations}"   required="required"></textarea>
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <label for=" spoFinalProducts" class="field-label">iii). Final Products?</label>
+                                        <textarea type="text" class="form-control" rows="2" id=" spoFinalProducts" th:field="*{spoFinalProducts}"   required="required"></textarea>
+                                    </div>
+                                </div>
+                                <div class="form-row" >
+                                    <div class="col-md-6 mb-3">
+                                        <label for="monitoredQcs" class="field-label">e). If so are they monitored by Quality Control Staff?</label>
+                                        <textarea type="text" class="form-control" rows="2" id="monitoredQcs" th:field="*{monitoredQcs}"   required="required"></textarea>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="qauditChecksCarried" class="field-label">f). Are Quality Audit checks carried out and by whom?</label>
+                                        <textarea type="text" class="form-control" rows="2" id="qauditChecksCarried" th:field="*{qauditChecksCarried}"   required="required"></textarea>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="col-md-12 mb-3">
+                                        <label for="informationQcso" class="field-label">g). Please give any other information on quality Control Staff Organization</label>
+                                        <textarea type="text" class="form-control" rows="2" id="informationQcso" th:field="*{informationQcso}" required="required"></textarea>
+                                    </div>
+                                </div>
+                                <div class="form-row" >
+                                    <div class="col-md-12 mb-3">
+                                        <label for="produceOrdersOrStock" style="color: #0082f3; font-size: 16px">2. MATERIALS OR COMPONENTS:</label>
+                                    </div>
+                                </div>
+                                <div class="form-row" >
+                                    <div class="col-md-12 mb-3">
+                                        <label for="produceOrdersOrStock" class="field-label">2.1 PURCHASE SPECIFICATION/MATERIALS QUALITY ASSURANCE: </label>
+<!--                                        <label for="produceOrdersOrStock" class="field-label">Please give the following information on factory QC staff organization:</label>-->
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="col-md-12 mb-3">
+                                        <label for="mainMaterialsPurchasedSpecification" class="field-label">a) Please detail main materials purchased, specification(s) used and major supplies involved.</label>
+                                        <textarea type="text" class="form-control" rows="2" id="mainMaterialsPurchasedSpecification" th:field="*{mainMaterialsPurchasedSpecification}" required="required"></textarea>
+                                    </div>
+                                </div> <div class="form-row">
+                                    <div class="col-md-12 mb-3">
+                                        <label for="adoptedReceiptMaterials" class="field-label">b) Please also give quality assurance method adopted on receipt of materials, or components indicating
+                                            action taken on rejects.</label>
+                                        <textarea type="text" class="form-control" rows="2" id="adoptedReceiptMaterials" th:field="*{adoptedReceiptMaterials}" required="required"></textarea>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="col-md-12 mb-3">
+                                        <label for="storageFacilitiesExist" class="field-label">c) What storage facilities exist for in-coming materials and finished products?</label>
+                                        <textarea type="text" class="form-control" rows="2" id="storageFacilitiesExist" th:field="*{storageFacilitiesExist}" required="required"></textarea>
+                                    </div>
+                                </div>
+                                <div class="form-row" >
+                                    <div class="col-md-12 mb-3">
+                                        <label for="produceOrdersOrStock" style="color: #0082f3; font-size: 16px">3. MANUFACTURE:</label>
+                                    </div>
+                                </div>
+                                <div class="form-row" >
+                                    <div class="col-md-12 mb-3">
+                                        <label for="produceOrdersOrStock" class="field-label">3.1 SYSTEM: </label>
+                                        <!--                                        <label for="produceOrdersOrStock" class="field-label">Please give the following information on factory QC staff organization:</label>-->
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="col-md-12 mb-3">
+                                        <label for="stepsManufacture" class="field-label">a) Please detail various steps in manufacture – A production schedule and /or supplement in chart form
+                                            showing stages, which may be advantageous.</label>
+                                        <textarea type="text" class="form-control" rows="2" id="stepsManufacture" th:field="*{stepsManufacture}" required="required"></textarea>
+                                    </div>
+                                </div>
+                                <div class="form-row" >
+                                    <div class="col-md-12 mb-3">
+                                        <label for="produceOrdersOrStock" class="field-label">3.2 MAINTENANCE SYSTEM – PLANT AND EQUIPMENT: </label>
+                                        <!--                                        <label for="produceOrdersOrStock" class="field-label">Please give the following information on factory QC staff organization:</label>-->
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="col-md-12 mb-3">
+                                        <label for="maintenanceSystem" class="field-label">a) What maintenance system is in operation?</label>
+                                        <textarea type="text" class="form-control" rows="2" id="maintenanceSystem" th:field="*{maintenanceSystem}" required="required"></textarea>
+                                    </div>
+                                </div>
+                                <div class="form-row" >
+                                    <div class="col-md-12 mb-3">
+                                        <label for="produceOrdersOrStock" style="color: #0082f3; font-size: 16px">4. QUALITY CONTROL AND TESTING:</label>
+                                    </div>
+                                </div>
+                                <div class="form-row" >
+                                    <div class="col-md-12 mb-3">
+                                        <label for="produceOrdersOrStock" class="field-label">4.1 SYSTEM: </label>
+                                        <!--                                        <label for="produceOrdersOrStock" class="field-label">Please give the following information on factory QC staff organization:</label>-->
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="col-md-12 mb-3">
+                                        <label for="qcsSupplement" class="field-label">a) Please detail Quality Control System, including sampling followed with particular reference to the tests
+                                            in the relevant Standard. A quality Control Schedule or supplement cross-reference to Chart required in
+                                            3.1 is advantageous.</label>
+                                        <textarea type="text" class="form-control" rows="2" id="qcsSupplement" th:field="*{qcsSupplement}" required="required"></textarea>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="col-md-12 mb-3">
+                                        <label for="qmInstructions" class="field-label">b) Please attach a copy of the Quality Manual or instructions on Quality Control issued to staff.</label>
+                                        <textarea type="text" class="form-control" rows="2" id="qmInstructions" th:field="*{qmInstructions}" required="required"></textarea>
+                                    </div>
+                                </div>
+                                <div class="form-row" >
+                                    <div class="col-md-12 mb-3">
+                                        <label for="produceOrdersOrStock" class="field-label"><u>a) TEST EQUIPMENT/INSTRUMENTS, GAUGES AND TOOLS.</u> </label>
+                                        <!--                                        <label for="produceOrdersOrStock" class="field-label">Please give the following information on factory QC staff organization:</label>-->
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="col-md-12 mb-3">
+                                        <label for="testEquipmentUsed" class="field-label">a) Please detail test equipment used and if any of the production or test equipment are calibrated?</label>
+                                        <textarea type="text" class="form-control" rows="2" id="testEquipmentUsed" th:field="*{testEquipmentUsed}" required="required"></textarea>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="col-md-12 mb-3">
+                                        <label for="indicateExternalArrangement" class="field-label">b) Indicate External arrangement for testing if any</label>
+                                        <textarea type="text" class="form-control" rows="2" id="indicateExternalArrangement" th:field="*{indicateExternalArrangement}" required="required"></textarea>
+                                    </div>
+                                </div>
+                                <div class="form-row" >
+                                    <div class="col-md-12 mb-3">
+                                        <label for="produceOrdersOrStock" style="color: #0082f3; font-size: 16px">5. RECORDS AND DOCUMENTATION:</label>
+                                    </div>
+                                </div>
+                                <div class="form-row" >
+                                    <div class="col-md-12 mb-3">
+                                        <label for="produceOrdersOrStock" class="field-label"><u>5.1 COMPLIANCE TO SPECIFICATION:</u> </label>
+                                        <!--                                        <label for="produceOrdersOrStock" class="field-label">Please give the following information on factory QC staff organization:</label>-->
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="col-md-12 mb-3">
+                                        <label for="levelDefectivesFound" class="field-label">a) Please indicate level of defectives found in past six month. If tests in accordance with the relevant
+                                            standard(s) have already been carried out attach copies of test reports if available.</label>
+                                        <textarea type="text" class="form-control" rows="2" id="levelDefectivesFound" th:field="*{levelDefectivesFound}" required="required"></textarea>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="col-md-12 mb-3">
+                                        <label for="levelClaimsComplaints" class="field-label">b) Please indicate the level of claims/complaints made under warranty and/or otherwise and also give as a
+                                        percentage of total out put.</label>
+                                        <textarea type="text" class="form-control" rows="2" id="levelClaimsComplaints" th:field="*{levelClaimsComplaints}" required="required"></textarea>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="col-md-12 mb-3">
+                                        <label for="independentTests" class="field-label">c) Have independent tests been made on products against the standard? By whom? Please attach
+                                            copies if available.</label>
+                                        <textarea type="text" class="form-control" rows="2" id="independentTests" th:field="*{independentTests}" required="required"></textarea>
+                                    </div>
+                                </div>
+                                <div class="form-row" >
+                                    <div class="col-md-12 mb-3">
+                                        <label for="produceOrdersOrStock" style="color: #0082f3; font-size: 16px">6. AFFIXATION ON MARK OF CONFORMITY:</label>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="col-md-12 mb-3">
+                                        <label for="indicateStageManufacture" class="field-label">a) Please attach an illustration and indicate method e.g. special label, Embossing etc. which will be used
+                                            to affix the Mark of Conformity. Please indicate at which stage of manufacture the Mark of Conformity
+                                            will be affixed.</label>
+                                        <textarea type="text" class="form-control" rows="3" id="indicateStageManufacture" th:field="*{indicateStageManufacture}" required="required"></textarea>
+                                    </div>
+                                </div>
+                                <!--                                <div>-->
+                                <!--                                    <div class="form-group">-->
+                                <!--                                        <div class="form-check">-->
+                                <!--                                            <input class="form-check-input" type="checkbox" value="" id="invalidCheck" required="required" >-->
+                                <!--                                            <label class="form-check-label" for="invalidCheck">-->
+                                <!--                                                Agree to terms and conditions-->
+                                <!--                                            </label>-->
+                                <!--                                            <div class="invalid-feedback">-->
+                                <!--                                                You must agree before submitting.-->
+                                <!--                                            </div>-->
+                                <!--                                        </div>-->
+                                <!--                                    </div>-->
+                                <!--                                </div>-->
+                                <div id="idSubmit">
+                                    <div class="form-group">
+                                        <div class="col-md-4 mb-3">
+                                            <button class="btn btn-primary" type="submit">Submit form</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script crossorigin="anonymous" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+        src="https://d3e54v103j8qbb.cloudfront.net/js/jquery-3.4.1.min.220afd743d.js?site=5e70fb3a565ebd99c1db37ce"
+        type="text/javascript"></script>
+<!-- MDB -->
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/2.2.1/mdb.min.js"></script>
+<script th:src="@{/js/spinner.js}" type="text/javascript"></script>
+
+<script>
+    document.onreadystatechange = function(){
+        showSpinnerOnLoad(document)
+    }
+
+    function loadSpinner(){
+        showSpinner(document)
+    }
+    //
+    // $(function() {
+    //     $('form').submit(function(e) {
+    //         e.preventDefault();
+    //         showSpinnerOnLoad(document)
+    //     });
+    // });
+</script>
+<script>
+    function hello () {
+        let checkStatus = $("#idStatus").val();
+        console.log(checkStatus)
+        if (checkStatus === 'VIEW_PAGE'){
+            // $('textarea').attr('readonly', true);
+            $("#sta3Form :input").prop("disabled", true);
+            $("#idSubmit").remove()
+        }
+
+    }
+    window.onload = function () {
+        setTimeout(function () {
+            hello();
+        }, 1000);
+    }
+</script>
+</body>
+</html>
