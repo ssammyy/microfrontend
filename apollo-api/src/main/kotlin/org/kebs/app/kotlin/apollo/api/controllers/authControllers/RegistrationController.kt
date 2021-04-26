@@ -40,35 +40,45 @@ package org.kebs.app.kotlin.apollo.api.controllers.authControllers
 
 //import org.flowable.engine.RuntimeService
 import mu.KotlinLogging
+import org.apache.commons.lang3.StringUtils
 import org.kebs.app.kotlin.apollo.adaptor.kafka.producer.service.SendToKafkaQueue
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.RegistrationDaoServices
+import org.kebs.app.kotlin.apollo.api.ports.provided.dao.SystemsAdminDaoService
+import org.kebs.app.kotlin.apollo.common.dto.UserPasswordVerificationValuesDto
+import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
+import org.kebs.app.kotlin.apollo.common.exceptions.PasswordsMismatchException
 import org.kebs.app.kotlin.apollo.common.exceptions.ServiceMapNotFoundException
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.*
 import org.kebs.app.kotlin.apollo.store.model.qa.ManufacturePlantDetailsEntity
 import org.kebs.app.kotlin.apollo.store.repo.*
 import org.springframework.data.repository.findByIdOrNull
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
 import org.springframework.validation.BindingResult
 import org.springframework.web.bind.annotation.*
+import org.springframework.web.servlet.function.ServerResponse
 import org.springframework.web.servlet.mvc.support.RedirectAttributes
+import javax.servlet.http.HttpServletResponse
 import javax.validation.Valid
 
 
 @Controller
 @RequestMapping("/api/auth/")
 class RegisterController(
-        applicationMapProperties: ApplicationMapProperties,
-        private val commonDaoServices: CommonDaoServices,
-        private val sendToKafkaQueue: SendToKafkaQueue,
-        private val serviceMapsRepository: IServiceMapsRepository,
-        private val userTypesEntityRepository: IUserTypesEntityRepository,
-        private val daoServices: RegistrationDaoServices,
-        private val manufacturePlantRepository: IManufacturePlantDetailsRepository,
-        private val usersRepo: IUserRepository
+   private val applicationMapProperties: ApplicationMapProperties,
+    private val commonDaoServices: CommonDaoServices,
+    private val sendToKafkaQueue: SendToKafkaQueue,
+    private val serviceMapsRepository: IServiceMapsRepository,
+    private val userTypesEntityRepository: IUserTypesEntityRepository,
+    private val daoServices: RegistrationDaoServices,
+    private val manufacturePlantRepository: IManufacturePlantDetailsRepository,
+    private val usersRepo: IUserRepository,
+
+    private val systemsAdminDaoService: SystemsAdminDaoService,
 
 //        private val runtimeService: RuntimeService
 
@@ -78,6 +88,127 @@ class RegisterController(
 
     private val profilePageDetails = "redirect:/api/user/user-profile?userName="
     final val manufacturerRegAppId: Int = applicationMapProperties.mapManufacturerRegistration
+
+
+    final val appId: Int = applicationMapProperties.mapUserRegistration
+
+    /***********************************************************************************
+     * NEW REGISTRATION HANDLERS
+     ***********************************************************************************/
+
+    @PostMapping("kebs/signup/user/save")
+    fun registerAllUsers(
+        model: Model,
+        @ModelAttribute("usersEntity") usersEntity: UsersEntity,
+        results: BindingResult,
+        response: HttpServletResponse,
+        redirectAttributes: RedirectAttributes
+    ): String? {
+        val result: ServiceRequestsEntity?
+        val map = commonDaoServices.serviceMapDetails(appId)
+        usersEntity.email?.let {
+            usersRepo.findByUserName(it)
+                .let { checkUsersEntity ->
+                    when {
+                        checkUsersEntity != null -> {
+                            throw ServiceMapNotFoundException("The User PIN/PASSPORT/ID Number Already Exists")
+                        }
+                        else -> {
+                            result = daoServices.registerUser(map, usersEntity, null)
+                            val sm = CommonDaoServices.MessageSuccessFailDTO()
+                            sm.closeLink = "${applicationMapProperties.baseUrlValue}/auth/signup/authorize/${usersEntity.userPinIdNumber}"
+                            sm.message = "You have successful Registered check the Email and Get the OTP For activation"
+                            return returnValues(result, map, sm)
+                        }
+                    }
+
+                }
+        } ?: throw ServiceMapNotFoundException("No  User PIN/PASSPORT/ID Number attached")
+
+    }
+
+    @PreAuthorize("hasAuthority('USERS_WRITE')")
+    @PostMapping("kebs/signup/employee/save")
+    fun registerAllEmployees(
+        model: Model,
+        @ModelAttribute("usersEntity") usersEntity: UsersEntity,
+        @ModelAttribute("userProfilesEntity") userProfilesEntity: UserProfilesEntity,
+        results: BindingResult,
+        redirectAttributes: RedirectAttributes
+    ): String? {
+        val result: ServiceRequestsEntity?
+        val map = commonDaoServices.serviceMapDetails(appId)
+
+        result = daoServices.registerUser(map, usersEntity, userProfilesEntity)
+        return when (result.status) {
+            map.successStatus -> map.successNotificationUrl
+            else -> map.failureNotificationUrl
+        }
+    }
+
+    //    @PreAuthorize("hasAuthority('USER')")
+    @PostMapping("kebs/signup/authorize/token")
+    fun forgotPasswordAllUsers(
+        model: Model,
+        @ModelAttribute("usersEntity") usersEntity: UsersEntity,
+        results: BindingResult,
+        redirectAttributes: RedirectAttributes
+    ): String? {
+        val result: ServiceRequestsEntity?
+        val map = commonDaoServices.serviceMapDetails(appId)
+        when (StringUtils.equals(usersEntity.credentials, usersEntity.confirmCredentials)) {
+            true -> {
+                val upvDto = UserPasswordVerificationValuesDto()
+                with(upvDto) {
+                    otpVerification = usersEntity.varField1
+                    password = usersEntity.credentials
+                    passwordConfirmation = usersEntity.confirmCredentials
+                }
+                result = daoServices.validateVerificationToken(upvDto, appId)
+                val sm = CommonDaoServices.MessageSuccessFailDTO()
+                sm.closeLink = "/"
+                sm.message = "You have successful submitted your credentials you can now login"
+                return returnValues(result, map, sm)
+            }
+            else -> throw PasswordsMismatchException("Passwords and Confirmation do not match")
+        }
+
+    }
+
+    @PostMapping("kebs/signup/authorize/forgot-password")
+    fun forgotPasswordReset(
+        model: Model,
+        @ModelAttribute("usersEntity") usersEntity: UsersEntity,
+        results: BindingResult,
+        redirectAttributes: RedirectAttributes
+    ): String? {
+        val result: ServiceRequestsEntity?
+        val map = commonDaoServices.serviceMapDetails(appId)
+        val user = usersEntity.userName?.let { commonDaoServices.findUserByUserName(it) }
+            ?: throw NullValueNotAllowedException("User with user name ${usersEntity.userName} do not exist")
+        result = systemsAdminDaoService.userRegistrationMailSending(user, null, applicationMapProperties.mapUserPasswordResetNotification)
+        val sm = CommonDaoServices.MessageSuccessFailDTO()
+        sm.closeLink = "${applicationMapProperties.baseUrlValue}/auth/signup/authorize/${user.userPinIdNumber}"
+        sm.message = "You have successful your Email, check your email, Get the OTP For activation"
+
+        return returnValues(result, map, sm)
+    }
+
+    private fun returnValues(
+        result: ServiceRequestsEntity,
+        map: ServiceMapsEntity,
+        sm: CommonDaoServices.MessageSuccessFailDTO
+    ): String? {
+        return when (result.status) {
+            map.successStatus -> "${commonDaoServices.successLink}?message=${sm.message}&closeLink=${sm.closeLink}"
+            else -> map.failureNotificationUrl
+        }
+    }
+
+
+    /***********************************************************************************
+     * OLD REGISTRATIONION HANDLERS
+     ***********************************************************************************/
 
 //    private fun loadUIComponents(s: ServiceMapsEntity, model: Model, app: Int): Model {
 //
@@ -91,32 +222,32 @@ class RegisterController(
 
     @PostMapping("/signup/employee/save")
     fun registerEmployee(
-            model: Model,
-            @RequestParam(value = "appId", required = false) appId: Int,
-            @ModelAttribute("userProfilesEntity") userProfilesEntity: UserProfilesEntity,
-            @ModelAttribute("usersEntity") usersEntity: UsersEntity,
-            results: BindingResult,
-            redirectAttributes: RedirectAttributes
+        model: Model,
+        @RequestParam(value = "appId", required = false) appId: Int,
+        @ModelAttribute("userProfilesEntity") userProfilesEntity: UserProfilesEntity,
+        @ModelAttribute("usersEntity") usersEntity: UsersEntity,
+        results: BindingResult,
+        redirectAttributes: RedirectAttributes
     ): String? {
 
         var result: ServiceRequestsEntity?
 
         appId.let {
             serviceMapsRepository.findByIdAndStatus(it, 1)
-                    ?.let { s ->
+                ?.let { s ->
 
 //                                var proc = runtimeService.startProcessInstanceByKey(s.bpmnProcessKey, variables)
 
 
-                        result = daoServices.registerEmployee(s, usersEntity, userProfilesEntity)
-                        return when (result?.status) {
-                            s.successStatus -> s.successNotificationUrl
-                            else -> s.failureNotificationUrl
-
-                        }
+                    result = daoServices.registerEmployee(s, usersEntity, userProfilesEntity)
+                    return when (result?.status) {
+                        s.successStatus -> s.successNotificationUrl
+                        else -> s.failureNotificationUrl
 
                     }
-                    ?: throw ServiceMapNotFoundException("No service map found for appId=$it, aborting")
+
+                }
+                ?: throw ServiceMapNotFoundException("No service map found for appId=$it, aborting")
 
         }
 
@@ -125,24 +256,29 @@ class RegisterController(
 
     @PostMapping("/add/plant-details/save")
     fun addManufacturePlantDetails(
-            model: Model,
-            @RequestParam(value = "manufactureID") manufactureID: Long,
-            @ModelAttribute("manufacturePlantDetailsEntity") manufacturePlantDetailsEntity: ManufacturePlantDetailsEntity,
-            results: BindingResult,
-            redirectAttributes: RedirectAttributes
+        model: Model,
+        @RequestParam(value = "manufactureID") manufactureID: Long,
+        @ModelAttribute("manufacturePlantDetailsEntity") manufacturePlantDetailsEntity: ManufacturePlantDetailsEntity,
+        results: BindingResult,
+        redirectAttributes: RedirectAttributes
     ): String {
 
         commonDaoServices.serviceMapDetails(manufacturerRegAppId)
-                .let { map ->
-                    commonDaoServices.loggedInUserDetails()
-                            .let { loggedInUser ->
-                                addPlantDetailsManufacture(manufactureID,manufacturePlantDetailsEntity, map, loggedInUser)
-                                return """$profilePageDetails${loggedInUser.userName}"""
-                            }
-                }
+            .let { map ->
+                commonDaoServices.loggedInUserDetails()
+                    .let { loggedInUser ->
+                        addPlantDetailsManufacture(manufactureID, manufacturePlantDetailsEntity, map, loggedInUser)
+                        return """$profilePageDetails${loggedInUser.userName}"""
+                    }
+            }
     }
 
-    private fun addPlantDetailsManufacture(manufactureID: Long, manufacturePlantDetailsEntity: ManufacturePlantDetailsEntity, map: ServiceMapsEntity, loggedInUser: UsersEntity) : Boolean{
+    private fun addPlantDetailsManufacture(
+        manufactureID: Long,
+        manufacturePlantDetailsEntity: ManufacturePlantDetailsEntity,
+        map: ServiceMapsEntity,
+        loggedInUser: UsersEntity
+    ): Boolean {
         with(manufacturePlantDetailsEntity) {
             manufactureId = commonDaoServices.findManufactureWithID(manufactureID).id
             region = county?.let { commonDaoServices.findCountiesEntityByCountyId(it, map.activeStatus).regionId }
@@ -156,17 +292,17 @@ class RegisterController(
 
     @PostMapping("/signup/manufacturer/save")
     fun registerManufacturer(
-            model: Model,
-            @RequestParam(value = "userTypeId", required = false) userTypeId: Int?,
-            @RequestParam(value = "userLoggedInId", required = true) userLoggedInId: Long,
-            @RequestParam(value = "appId", required = false) appId: Int?,
-            @ModelAttribute("manufacturersEntity") @Valid manufacturersEntity: ManufacturersEntity,
-            @ModelAttribute("manufacturerContactEntity") @Valid manufacturerContactsEntity: ManufacturerContactsEntity,
-            @ModelAttribute("manufacturerAddressesEntity") @Valid manufacturerAddressesEntity: ManufacturerAddressesEntity,
-            @ModelAttribute("yearlyTurnoverEntity") yearlyTurnoverEntity: ManufacturePaymentDetailsEntity,
-            @ModelAttribute("stdLevyNotificationFormEntity") stdLevyNotificationFormEntity: StdLevyNotificationFormEntity,
-            results: BindingResult,
-            redirectAttributes: RedirectAttributes
+        model: Model,
+        @RequestParam(value = "userTypeId", required = false) userTypeId: Int?,
+        @RequestParam(value = "userLoggedInId", required = true) userLoggedInId: Long,
+        @RequestParam(value = "appId", required = false) appId: Int?,
+        @ModelAttribute("manufacturersEntity") @Valid manufacturersEntity: ManufacturersEntity,
+        @ModelAttribute("manufacturerContactEntity") @Valid manufacturerContactsEntity: ManufacturerContactsEntity,
+        @ModelAttribute("manufacturerAddressesEntity") @Valid manufacturerAddressesEntity: ManufacturerAddressesEntity,
+        @ModelAttribute("yearlyTurnoverEntity") yearlyTurnoverEntity: ManufacturePaymentDetailsEntity,
+        @ModelAttribute("stdLevyNotificationFormEntity") stdLevyNotificationFormEntity: StdLevyNotificationFormEntity,
+        results: BindingResult,
+        redirectAttributes: RedirectAttributes
     ): String? {
 
 
@@ -175,7 +311,7 @@ class RegisterController(
 
         appId?.let {
             serviceMapsRepository.findByIdAndStatus(it, 1)
-                    ?.let { s ->
+                ?.let { s ->
 //                                when {
 //                                    results.hasErrors() -> {
 //                                        result = "redirect:/api/auth/signup/manufacturer"
@@ -188,47 +324,56 @@ class RegisterController(
 //                                variables["address"] = manufacturerAddressesEntity
 //                                variables["userTypeId"] = userTypeId
 //                                runtimeService.startProcessInstanceByKey(s.bpmnProcessKey, variables)
-                        result = daoServices.registerManufacturer(s, manufacturerContactsEntity, stdLevyNotificationFormEntity, manufacturersEntity, manufacturerAddressesEntity, userTypeId, userLoggedInId, yearlyTurnoverEntity)
-                        return when (result?.status) {
-                            s.successStatus -> s.successNotificationUrl
-                            else -> s.failureNotificationUrl
-                        }
-
+                    result = daoServices.registerManufacturer(
+                        s,
+                        manufacturerContactsEntity,
+                        stdLevyNotificationFormEntity,
+                        manufacturersEntity,
+                        manufacturerAddressesEntity,
+                        userTypeId,
+                        userLoggedInId,
+                        yearlyTurnoverEntity
+                    )
+                    return when (result?.status) {
+                        s.successStatus -> s.successNotificationUrl
+                        else -> s.failureNotificationUrl
                     }
-                    ?: throw ServiceMapNotFoundException("No service map found for appId=$it, aborting")
+
+                }
+                ?: throw ServiceMapNotFoundException("No service map found for appId=$it, aborting")
 
         }
-                ?: throw ServiceMapNotFoundException("Empty and/or Invalid Application Id Received, aborting")
+            ?: throw ServiceMapNotFoundException("Empty and/or Invalid Application Id Received, aborting")
 
 
     }
 
     @PostMapping("/signup/importer/save")
     fun registerImporterExporter(
-            model: Model,
-            @RequestParam(value = "userLoggedInId", required = false) userLoggedInId: Long,
-            @RequestParam(value = "appId", required = false) appId: Int?,
-            @ModelAttribute("importerContactDetailsEntity") @Valid  importerContactDetailsEntity: ImporterContactDetailsEntity,
-            results: BindingResult,
-            redirectAttributes: RedirectAttributes
+        model: Model,
+        @RequestParam(value = "userLoggedInId", required = false) userLoggedInId: Long,
+        @RequestParam(value = "appId", required = false) appId: Int?,
+        @ModelAttribute("importerContactDetailsEntity") @Valid importerContactDetailsEntity: ImporterContactDetailsEntity,
+        results: BindingResult,
+        redirectAttributes: RedirectAttributes
     ): String? {
 
         var result: ServiceRequestsEntity?
 
         appId?.let {
             serviceMapsRepository.findByIdAndStatus(it, 1)
-                    ?.let { s ->
-                        result = daoServices.registerImporter(s, importerContactDetailsEntity, userLoggedInId)
-                        return when (result?.status) {
-                            s.successStatus -> s.successNotificationUrl
-                            else -> s.failureNotificationUrl
-                        }
-
+                ?.let { s ->
+                    result = daoServices.registerImporter(s, importerContactDetailsEntity, userLoggedInId)
+                    return when (result?.status) {
+                        s.successStatus -> s.successNotificationUrl
+                        else -> s.failureNotificationUrl
                     }
-                    ?: throw ServiceMapNotFoundException("No service map found for appId=$it, aborting")
+
+                }
+                ?: throw ServiceMapNotFoundException("No service map found for appId=$it, aborting")
 
         }
-                ?: throw ServiceMapNotFoundException("Empty and/or Invalid Application Id Received, aborting")
+            ?: throw ServiceMapNotFoundException("Empty and/or Invalid Application Id Received, aborting")
 
 
     }
@@ -266,53 +411,54 @@ class RegisterController(
 
     @PostMapping("/signup/user/save")
     fun registerUser(
-            model: Model,
-            @ModelAttribute("usersEntity") usersEntity: UsersEntity,
-            @ModelAttribute("userProfilesEntity") userProfilesEntity: UserProfilesEntity?,
-            @RequestParam(value = "appId", required = false) appId: Int?,
-            results: BindingResult,
-            redirectAttributes: RedirectAttributes
+        model: Model,
+        @ModelAttribute("usersEntity") usersEntity: UsersEntity,
+        @ModelAttribute("userProfilesEntity") userProfilesEntity: UserProfilesEntity?,
+        @RequestParam(value = "appId", required = false) appId: Int?,
+        results: BindingResult,
+        redirectAttributes: RedirectAttributes
     ): String? {
 
         var result: ServiceRequestsEntity?
 
         appId?.let {
             serviceMapsRepository.findByIdAndStatus(it, 1)
-                    ?.let { s ->
-                        KotlinLogging.logger { }.info { "My Service Request map Id:  = ${s.id}" }
-                        usersEntity.confirmUserType
-                                ?.let { userTypeId ->
-                                    userTypesEntityRepository.findByIdOrNull(userTypeId)
-                                            ?.let { userTypeEntity ->
-                                                usersEntity.email?.let { it1 ->
-                                                    usersRepo.findByEmail(it1)
-                                                            .let { checkUsersEntity ->
-                                                                return if (checkUsersEntity !== null) {
+                ?.let { s ->
+                    KotlinLogging.logger { }.info { "My Service Request map Id:  = ${s.id}" }
+                    usersEntity.confirmUserType
+                        ?.let { userTypeId ->
+                            userTypesEntityRepository.findByIdOrNull(userTypeId)
+                                ?.let { userTypeEntity ->
+                                    usersEntity.email?.let { it1 ->
+                                        usersRepo.findByEmail(it1)
+                                            .let { checkUsersEntity ->
+                                                return if (checkUsersEntity !== null) {
 //                                                                    if (userTypeEntity.id == 5){
 //                                                                        "redirect:/api/auth/signup/user?message=exists&messageUser=Employee"
 //                                                                    }else{
-                                                                        "redirect:/api/auth/signup/user?message=exists"
+                                                    "redirect:/api/auth/signup/user?message=exists"
 //                                                                    }
-                                                                } else {
-                                                                    result = daoServices.registerUser(s, usersEntity, userProfilesEntity, userTypeEntity.id)
-                                                                    when (result?.status) {
-                                                                        s.successStatus -> s.successNotificationUrl
-                                                                        else -> s.failureNotificationUrl
-                                                                    }
-                                                                }
-
-                                                            }
+                                                } else {
+                                                    result =
+                                                        daoServices.registerUser(s, usersEntity, userProfilesEntity)
+                                                    when (result?.status) {
+                                                        s.successStatus -> s.successNotificationUrl
+                                                        else -> s.failureNotificationUrl
+                                                    }
                                                 }
 
-
                                             }
-                                }
+                                    }
 
-                    }
-                    ?: throw ServiceMapNotFoundException("No service map found for appId=$it, aborting")
+
+                                }
+                        }
+
+                }
+                ?: throw ServiceMapNotFoundException("No service map found for appId=$it, aborting")
 
         }
-                ?: throw ServiceMapNotFoundException("Empty and/or Invalid Application Id Received, aborting")
+            ?: throw ServiceMapNotFoundException("Empty and/or Invalid Application Id Received, aborting")
 
 
     }
@@ -326,8 +472,8 @@ class RegisterController(
 
     @PostMapping("/forgot-password")
     fun forgotPassword(
-            @ModelAttribute("forgotPasswordForm") email: String,
-            redirectAttributes: RedirectAttributes
+        @ModelAttribute("forgotPasswordForm") email: String,
+        redirectAttributes: RedirectAttributes
     ): String {
 
         /*
@@ -351,8 +497,8 @@ class RegisterController(
 
     @PostMapping("/create-password/{token}")
     fun createPassword(
-            @ModelAttribute("passwordForm") userDetails: UsersEntity,
-            redirectAttributes: RedirectAttributes, @PathVariable token: String
+        @ModelAttribute("passwordForm") userDetails: UsersEntity,
+        redirectAttributes: RedirectAttributes, @PathVariable token: String
     ): String {
 
         /*
@@ -404,9 +550,9 @@ class RegisterController(
 
     @PostMapping("/create-user-emp")
     fun createUserEmployee(
-            @ModelAttribute("employeeSignUpForm") userDetails: UsersEntity,
+        @ModelAttribute("employeeSignUpForm") userDetails: UsersEntity,
 
-            redirectAttributes: RedirectAttributes
+        redirectAttributes: RedirectAttributes
     ): String {
 
         /*

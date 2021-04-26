@@ -47,7 +47,7 @@
         <a class="w-dropdown-link" th:href="@{/api/user/user-profile(userName=${session.currentUser.userName})}">My Account</a>
         <a class="w-dropdown-link" th:href="@{/api/user/tasks/list}">My Tasks</a>
         <a class="w-dropdown-link" th:href="@{/api/user/user-notifications}">Notifications</a>
-        <a class="w-dropdown-link" th:href="@{/api/v2/system/admin/home}">Settings</a>
+        <a class="w-dropdown-link" th:href="@{/api/system/admin/home}">Settings</a>
         <a th:each="single_url: ${session.myUrls}" class="w-dropdown-link" th:href="@{${single_url.url}}" th:text="${single_url.displayText}"></a>
     </nav>
 </div>

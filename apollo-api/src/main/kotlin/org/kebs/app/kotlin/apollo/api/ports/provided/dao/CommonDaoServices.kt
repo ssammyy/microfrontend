@@ -77,6 +77,8 @@ import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Service
 import org.springframework.util.StringUtils
 import org.springframework.web.multipart.MultipartFile
+import org.springframework.web.servlet.function.ServerRequest
+import org.springframework.web.servlet.function.ServerResponse
 import java.io.ByteArrayInputStream
 import java.io.File
 import java.io.FileWriter
@@ -157,6 +159,8 @@ class CommonDaoServices(
 
     @Value("\${destination.inspection.division.id}")
     lateinit var pointOfEntries: String
+
+    val successLink = "redirect:/api/auth/signup/notification/success/message"
 
     //Deserialize XML to POJO
     final inline fun <reified T> deserializeFromXML(xmlString: String, toExclude: String = ""): T {
@@ -355,6 +359,15 @@ class CommonDaoServices(
     fun makeAnyNotBeNull(anyValue: Any): Any {
         return anyValue
     }
+
+
+    class MessageSuccessFailDTO{
+
+        var message: String? = null
+
+        var closeLink: String? = null
+    }
+
 
     fun loadCommonUIComponents(s: ServiceMapsEntity): MutableMap<String, Any> {
 

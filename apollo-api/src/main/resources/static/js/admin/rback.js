@@ -70,7 +70,7 @@ app.controller('RBackAdminController', ['$scope', '$http', function ($scope, $ht
 
         function _revokeAuthority(roleId, authorityId) {
             var method = "POST";
-            var url = "/api/v2/system/admin/security/titles/" + roleId + "/" + authorityId;
+            var url = "/api/system/admin/security/titles/" + roleId + "/" + authorityId;
 
             $http({
                 method: method,
@@ -85,7 +85,7 @@ app.controller('RBackAdminController', ['$scope', '$http', function ($scope, $ht
         function _refreshActiveRolesData(status) {
             $http({
                 method: 'GET',
-                url: "/api/v2/system/admin/security/rbac/fetch/" + status
+                url: "/api/system/admin/security/rbac/fetch/" + status
             }).then(
                 function (res) { // success
                     // console.log("Error: " + url + " : " + data);
@@ -103,7 +103,7 @@ app.controller('RBackAdminController', ['$scope', '$http', function ($scope, $ht
         function _refreshActiveAuthoritiesData(roleId, status) {
             $http({
                 method: 'GET',
-                url: "/api/v2/system/admin/security/authorities/load/" + roleId + "/" + status
+                url: "/api/system/admin/security/authorities/load/" + roleId + "/" + status
             }).then(
                 function (res) { // success
                     // console.log("Error: " + url + " : " + data);
