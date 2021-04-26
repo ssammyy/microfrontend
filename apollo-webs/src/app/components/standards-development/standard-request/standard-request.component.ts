@@ -13,7 +13,7 @@ export class StandardRequestComponent implements OnInit {
 
   public products : Product[] | undefined;
   public departments: Department[] | undefined;
-  private committees: TechnicalCommittee[] | undefined;
+  public committees: TechnicalCommittee[] | undefined;
 
   constructor(private standardRequestService:StandardRequestService) { }
 
@@ -22,6 +22,7 @@ export class StandardRequestComponent implements OnInit {
   ngOnInit() {
     this.getStandards();
     this.getDepartments();
+    this.getTechnicalCommittee();
   }
 
   public getStandards(): void{

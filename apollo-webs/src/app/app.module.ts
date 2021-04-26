@@ -51,7 +51,10 @@ import {NgxPaginationModule} from 'ngx-pagination';
 import { StandardsDevelopmentComponent } from './components/standards-development/standards-development.component';
 import { StandardRequestComponent } from './components/standards-development/standard-request/standard-request.component';
 import { UserProfileComponent } from './components/home/user-profile/user-profile.component';
-
+import { StandardTaskComponent } from './components/standards-development/standard-task/standard-task.component';
+import {StdTscSecTasksComponent} from "./components/standards-development/std-tsc-sec-tasks/std-tsc-sec-tasks.component";
+import { StdTscTasksComponent } from './components/standards-development/std-tsc-tasks/std-tsc-tasks.component';
+import { RequestStandardFormComponent } from './components/standards-development/standard-request/request-standard-form/request-standard-form.component';
 
 @NgModule({
   declarations: [
@@ -92,6 +95,10 @@ import { UserProfileComponent } from './components/home/user-profile/user-profil
     StandardsDevelopmentComponent,
     StandardRequestComponent,
     UserProfileComponent,
+    StandardTaskComponent,
+    StdTscSecTasksComponent,
+    StdTscTasksComponent,
+    RequestStandardFormComponent,
   ],
   exports: [
   ],
