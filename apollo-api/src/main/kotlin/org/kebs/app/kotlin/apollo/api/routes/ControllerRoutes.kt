@@ -47,7 +47,7 @@ class ControllerRoutes {
 
     @Bean
     fun masterDataRoutes(handler: MasterDataHandler) = router {
-        "/api/v1/system/admin".nest {
+        "/api/v2/system/admin".nest {
             "/masters".nest {
                 "/ui".nest {
                     GET("/designations", handler::designationsUi)
@@ -217,6 +217,43 @@ class ControllerRoutes {
                     GET("/add/plant-details/save", handler::userProfile)
                 }
             }
+
+    @Bean
+    fun registrationRoutesV0(handler: RegistrationHandler) = router {
+        "/api/auth/signup".nest {
+            GET(pattern = "/user", f = handler::signUpAllUsersViews)
+            POST("/user", handler::signUpAllUsersView)
+            PUT("/authorize", handler::signUpAllUsersVerification)
+            PUT("/forgot-password", handler::signUpUserRestPassword)
+
+
+//            GET(pattern = "/manufacturer", f = handler::signupManufacturerView)
+            GET(pattern = "/employee", f = handler::signUpEmployeeView)
+            GET(pattern = "/update-user-details", f = handler::updateUserView)
+            GET("/new", handler::userNewFormView)
+            "notification".nest {
+                GET(pattern = "success", f = handler::registrationSuccessNotificationView)
+                GET(pattern = "fail", f = handler::registrationFailureNotificationView)
+            }
+            GET(pattern = "/authorize", f = handler::authorizeUserAccountView)
+
+            GET(pattern = "/forgot-password", f = handler::forgotPasswordView)
+            POST(pattern = "/forgotPassword", f = handler::forgotPasswordAction)
+            GET(pattern = "/reset", f = handler::resetPasswordView)
+            POST(pattern = "/reset", f = handler::submitPasswordReset)
+//            GET(pattern = "/activate-now", f = handler::authorizeActivateAccount)
+//            GET(pattern = "/activate", f = handler::activateUserAccountView)
+//            POST(pattern = "/activated", f = handler::submitActivateUserAccount)
+//            POST(pattern = "/forgot-password", f = handler::submitAuthorizeUserAccount)
+        }
+        "/auth".nest {
+            GET("logout", handler::signOut)
+            GET("login", handler::loginPageView)
+
+        }
+
+//        POST(pattern = "/api/signup/manufacturer", f = handler::signupManufacturer)
+    }
 
     @Bean
     fun registrationRoutes(handler: RegistrationHandler) = router {
@@ -407,7 +444,7 @@ class ControllerRoutes {
 
     @Bean
     fun systemsAdministrationRoutes(handler: SystemsAdministrationHandler) = router {
-        "/api/v1/system/admin".nest {
+        "/api/v2/system/admin".nest {
             GET("/home", handler::sysadminHome)
             "/ui".nest {
                 GET("/rbac-user-roles", handler::rbacUserRoles)

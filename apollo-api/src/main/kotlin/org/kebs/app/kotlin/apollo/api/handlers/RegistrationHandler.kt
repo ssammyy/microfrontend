@@ -111,6 +111,29 @@ class RegistrationHandler(
 
     final val appId: Int = applicationMapProperties.mapUserRegistration
 
+    fun signUpAllUsersViews(req: ServerRequest): ServerResponse =
+        serviceMapsRepository.findByIdAndStatus(appId, 1)
+            ?.let { map ->
+                req.paramOrNull("message")
+                    ?.let { message ->
+                        req.attributes()["message"] = message
+                    }
+                req.paramOrNull("messageUser")
+                    ?.let { messageUser ->
+                        req.attributes()["messageUser"] = messageUser
+                    }
+
+                req.attributes()["map"] = map
+                req.attributes()["usersEntity"] = UsersEntity()
+                req.attributes()["userProfilesEntity"] = UserProfilesEntity()
+                req.attributes().putAll(loadEmployeeUIComponents(map))
+
+                return ok().render("/auth/user-registration", req.attributes())
+
+
+            }
+            ?: throw Exception("Missing application mapping for [id=$appId], recheck configuration")
+
     /***********************************************************************************
      * NEW REGISTRATIONION HANDLERS
      ***********************************************************************************/
@@ -251,11 +274,11 @@ class RegistrationHandler(
         )
     }
 
-    private fun loadMapPropertiesUIComponents(s: ServiceMapsEntity): MutableMap<String, Any> {
+    private fun loadMapPropertiesUIComponents(): MutableMap<String, Any> {
         return mutableMapOf(
-                Pair("mapUserTypeEmployee", applicationMapProperties.mapUserTypeEmployee),
-                Pair("mapUserTypeManufacture", applicationMapProperties.mapUserTypeManufacture),
-                Pair("mapUserTypeImporter", applicationMapProperties.mapUserTypeImporter)
+            Pair("mapUserTypeEmployee", applicationMapProperties.mapUserTypeEmployee),
+            Pair("mapUserTypeManufacture", applicationMapProperties.mapUserTypeManufacture),
+            Pair("mapUserTypeImporter", applicationMapProperties.mapUserTypeImporter)
         )
     }
 
@@ -424,7 +447,7 @@ class RegistrationHandler(
     }
 
     fun submitCredentialsUserAccount(user: UsersEntity, map: ServiceMapsEntity, sr: ServiceRequestsEntity, req: ServerRequest): ServerResponse? {
-        var sr = sr
+//        var sr = sr
         var myRender: ServerResponse? = null
         daoServices.processInstance(sr)
                 ?.let { proc ->
@@ -434,26 +457,28 @@ class RegistrationHandler(
                         true -> {
                             user.credentials = BCryptPasswordEncoder().encode(credentials)
                             user.confirmCredentials = BCryptPasswordEncoder().encode(confirmCredentials)
-                            daoServices.resetUserPassword(map, user, true, sr)?.let { requestsEntity -> sr = requestsEntity }
-                            daoServices.completeTask(proc, sr)
-                            sr.status?.let { status ->
-                                when {
-                                    status > map.activeStatus -> {
-                                        req.attributes()["message"] = "Account Activated successfully"
-                                        req.attributes()["closeLink"] = "/"
-                                        req.attributes()["activateAccountLink"] = ""
-                                        req.attributes()["activateAccountLinkText"] = ""
-                                        req.attributes()["otherActionLink"] = ""
-                                        req.attributes()["otherActionLinkText"] = ""
-                                        myRender = ok().render("/auth/register-success-view", req.attributes())
+                            daoServices.resetUserPassword(map, user, true, sr)?.let { requestsEntity ->
+//                                sr = requestsEntity
+                                daoServices.completeTask(proc, requestsEntity)
+                                requestsEntity.status?.let { status ->
+                                    when {
+                                        status > map.activeStatus -> {
+                                            req.attributes()["message"] = "Account Activated successfully"
+                                            req.attributes()["closeLink"] = "/"
+                                            req.attributes()["activateAccountLink"] = ""
+                                            req.attributes()["activateAccountLinkText"] = ""
+                                            req.attributes()["otherActionLink"] = ""
+                                            req.attributes()["otherActionLinkText"] = ""
+                                            myRender = ok().render("/auth/register-success-view", req.attributes())
 
-                                    }
-                                    else -> {
-                                        myRender = ok().render("/auth/authorize-account-confirmation", req.attributes())
+                                        }
+                                        else -> {
+                                            myRender = ok().render("/auth/authorize-account-confirmation", req.attributes())
 
+                                        }
                                     }
+
                                 }
-
                             }
 
 
@@ -724,7 +749,7 @@ class RegistrationHandler(
                                                             /**
                                                              * Only Load the application map properties Configuration Details
                                                              * */
-                                                            req.attributes().putAll(loadMapPropertiesUIComponents(map))
+                                                            req.attributes().putAll(loadMapPropertiesUIComponents())
                                                             /**
                                                              * Only Load the logged in user Details
                                                              * */
@@ -739,7 +764,7 @@ class RegistrationHandler(
                                                             req.attributes()["manufacturerAddressesEntity"] = ManufacturerAddressesEntity()
                                                             req.attributes()["manufacturerContactEntity"] = ManufacturerContactsEntity()
                                                             req.attributes()["yearlyTurnoverEntity"] = ManufacturePaymentDetailsEntity()
-                                                            return ok().render("/auth/user-update-profile", req.attributes())
+                                                            ok().render("/auth/user-update-profile", req.attributes())
                                                         }
                                             }
                                 }

@@ -4,12 +4,12 @@ app.value('activeStatus', 1);
 app.value('currentPage', 1);
 app.value('itemsPerPage', 10);
 app.value('maxSize', 5);
-app.value('authoritiesUrl', '/api/v1/system/admin/security/authorities/load');
+app.value('authoritiesUrl', '/api/v2/system/admin/security/authorities/load');
 app
     .factory('dataFactory', ['$http', '$log', function ($http, $log) {
 
-        const urlBase = '/api/v1/system/admin/security/';
-        const masterDataBaseUrl = '/api/v1/system/admin/masters/';
+        const urlBase = '/api/v2/system/admin/security/';
+        const masterDataBaseUrl = '/api/v2/system/admin/masters/';
         const authoritiesUri = urlBase + "authorities/loads";
         const allDesignationsUri = masterDataBaseUrl + "designations/load";
         const allRegionCountyTownsDesignationsUri = masterDataBaseUrl + "regionCountyTown/load";
@@ -120,7 +120,7 @@ app
 
         dataFactory._revokeAuthority = (roleId, authorityId, status) => {
             const method = "POST";
-            const url = "/api/v1/system/admin/security/rbac/revoke/" + roleId + "/" + authorityId + "/" + status;
+            const url = "/api/v2/system/admin/security/rbac/revoke/" + roleId + "/" + authorityId + "/" + status;
 
             return $http({
                 method: method,
@@ -134,22 +134,22 @@ app
 
         dataFactory._refreshActiveRolesData = status => $http({
             method: 'GET',
-            url: "/api/v1/system/admin/security/rbac/fetch/roles/" + status
+            url: "/api/v2/system/admin/security/rbac/fetch/roles/" + status
         });
 
         dataFactory._refreshActiveAuthoritiesData = (roleId, status) => $http({
             method: 'GET',
-            url: "/api/v1/system/admin/security/rbac/fetch/authorities/" + roleId + "/" + status
+            url: "/api/v2/system/admin/security/rbac/fetch/authorities/" + roleId + "/" + status
         });
 
         dataFactory.loadActiveRbacUsers = status => $http({
             method: 'GET',
-            url: "/api/v1/system/admin/security/rbac/fetch/users/" + status
+            url: "/api/v2/system/admin/security/rbac/fetch/users/" + status
         })
 
         dataFactory.loadActiveRbacUserRoles = (userId, status) => $http({
             method: 'GET',
-            url: "/api/v1/system/admin/security/rbac/fetch/user-roles/" + userId + "/" + status
+            url: "/api/v2/system/admin/security/rbac/fetch/user-roles/" + userId + "/" + status
         })
 
         dataFactory.assignRole = (userId, roleId, status) => {
@@ -181,7 +181,7 @@ app
         dataFactory.submitUserTypeData = userTypeForm => {
 
             let method;
-            let url = "/api/v1/system/admin/security/userTypes/";
+            let url = "/api/v2/system/admin/security/userTypes/";
 
             if (userTypeForm.id === -1) {
                 method = "POST";
@@ -206,7 +206,7 @@ app
         dataFactory.submitTitleData = titleForm => {
 
             let method;
-            let url = "/api/v1/system/admin/security/titles/";
+            let url = "/api/v2/system/admin/security/titles/";
 
             if (titleForm.id === -1) {
                 method = "POST";
@@ -228,7 +228,7 @@ app
             $log.log("Error " + authorityForm?.id)
 
             let method;
-            let url = '/api/v1/system/admin/security/authorities/';
+            let url = '/api/v2/system/admin/security/authorities/';
 
             if (authorityForm.id === -1) {
                 method = "POST";
@@ -254,10 +254,10 @@ app
             let url;
             if (roleForm.id === -1) {
                 method = "POST";
-                url = "/api/v1/system/admin/security/roles/";
+                url = "/api/v2/system/admin/security/roles/";
             } else {
                 method = "PUT";
-                url = "/api/v1/system/admin/security/roles/";
+                url = "/api/v2/system/admin/security/roles/";
             }
             $log.log("Issues :" + roleForm?.roleName + " method:" + method)
 
@@ -292,11 +292,11 @@ app
 
             if (userForm.id === -1) {
                 method = "POST";
-                url = "/api/v1/system/admin/security/users/";
+                url = "/api/v2/system/admin/security/users/";
             } else {
                 method = "PUT";
 
-                url = "/api/v1/system/admin/security/users/";
+                url = "/api/v2/system/admin/security/users/";
             }
 
             return $http({
@@ -312,7 +312,7 @@ app
         }
         dataFactory.submitDesignationsData = designationForm => {
             let method;
-            let url = "/api/v1/system/admin/masters/designations/";
+            let url = "/api/v2/system/admin/masters/designations/";
             if (designationForm.id === -1) {
                 method = "POST";
             } else {
@@ -330,7 +330,7 @@ app
         }
         dataFactory.submitDepartmentsData = departmentsForm => {
             let method;
-            let url = "/api/v1/system/admin/masters/departments/";
+            let url = "/api/v2/system/admin/masters/departments/";
             if (departmentsForm.id === -1) {
                 method = "POST";
             } else {
@@ -348,7 +348,7 @@ app
         }
         dataFactory.submitDivisionsData = divisionsForm => {
             let method;
-            let url = "/api/v1/system/admin/masters/divisions/";
+            let url = "/api/v2/system/admin/masters/divisions/";
             if (divisionsForm.id === -1) {
                 method = "POST";
             } else {
@@ -366,7 +366,7 @@ app
         }
         dataFactory.submitDirectorateData = directorateForm => {
             let method;
-            let url = "/api/v1/system/admin/masters/directorate/";
+            let url = "/api/v2/system/admin/masters/directorate/";
             if (directorateForm.id === -1) {
                 method = "POST";
             } else {
@@ -384,7 +384,7 @@ app
         }
         dataFactory.submitRegionsData = regionsForm => {
             let method;
-            let url = "/api/v1/system/admin/masters/regions/";
+            let url = "/api/v2/system/admin/masters/regions/";
             if (regionsForm.id === -1) {
                 method = "POST";
             } else {
@@ -402,7 +402,7 @@ app
         }
         dataFactory.submitSubRegionsData = subRegionsForm => {
             let method;
-            let url = "/api/v1/system/admin/masters/subRegions/";
+            let url = "/api/v2/system/admin/masters/subRegions/";
             if (subRegionsForm.id === -1) {
                 method = "POST";
             } else {
@@ -420,7 +420,7 @@ app
         }
         dataFactory.submitSectionsData = sectionsForm => {
             let method;
-            let url = "/api/v1/system/admin/masters/sections/";
+            let url = "/api/v2/system/admin/masters/sections/";
             if (sectionsForm.id === -1) {
                 method = "POST";
             } else {
@@ -438,7 +438,7 @@ app
         }
         dataFactory.submitSubSectionsL1Data = subSectionsL1Form => {
             let method;
-            let url = "/api/v1/system/admin/masters/subsections/l1/";
+            let url = "/api/v2/system/admin/masters/subsections/l1/";
             if (subSectionsL1Form.id === -1) {
                 method = "POST";
             } else {
@@ -456,7 +456,7 @@ app
         }
         dataFactory.submitSubSectionsL2Data = subSectionsL2Form => {
             let method;
-            let url = "/api/v1/system/admin/masters/subsections/l2/";
+            let url = "/api/v2/system/admin/masters/subsections/l2/";
             if (subSectionsL2Form.id === -1) {
                 method = "POST";
             } else {
@@ -474,7 +474,7 @@ app
         }
         dataFactory.submitCountiesData = countiesForm => {
             let method;
-            let url = "/api/v1/system/admin/masters/counties";
+            let url = "/api/v2/system/admin/masters/counties";
             if (countiesForm.id === -1) {
                 method = "POST";
             } else {
@@ -492,7 +492,7 @@ app
         }
         dataFactory.submitTownsData = townsForm => {
             let method;
-            let url = "/api/v1/system/admin/masters/towns";
+            let url = "/api/v2/system/admin/masters/towns";
             if (townsForm.id === -1) {
                 method = "POST";
             } else {
@@ -1923,7 +1923,7 @@ app
         $httpProvider.interceptors.push('responseObserver');
     })
     .config(function ($routeProvider) {
-        let adminBaseUrl = "/api/v1/system/admin";
+        let adminBaseUrl = "/api/v2/system/admin";
         let mastersBaseUrl = adminBaseUrl + "/masters";
 
 
