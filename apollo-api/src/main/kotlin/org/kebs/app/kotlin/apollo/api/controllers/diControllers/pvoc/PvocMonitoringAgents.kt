@@ -301,8 +301,6 @@ class PvocMonitoringAgents(
             coc.ucrNumber?.let {
                 model.addAttribute("shipmentMode", iCocsRepository.findFirstByCocNumber(it)?.shipmentMode)
                 rfcCocEntityRepo.findByUcrNumber(it).let { rfcDoc ->
-                    KotlinLogging.logger {  }.info { "Partner no ==> "+rfcDoc?.partner }
-                    KotlinLogging.logger {  }.info { "RFC no ==> "+rfcDoc?.rfcNumber }
                     model.addAttribute("rfc", rfcDoc)
                     rfcDoc?.partner?.let { it2 ->
                         pvocPartnersRepository.findByIdOrNull(it2).let { partnerDetails ->
