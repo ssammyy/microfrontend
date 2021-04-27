@@ -178,6 +178,7 @@ class ControllerRoutes {
     fun ApiAuthRoute(handler: ApiAuthenticationHandler) = router {
         "/api/v1".nest {
             POST("/login", handler::uiLogin)
+            POST("/otp", handler::generateOtp)
         }
     }
 
