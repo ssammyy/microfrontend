@@ -30,6 +30,8 @@ import javax.persistence.*
 @Entity
 @Table(name = "DAT_KEBS_USERS")
 class UsersEntity : Serializable {
+
+
     @Column(name = "ID")
     @Id
     @SequenceGenerator(name = "DAT_KEBS_USERS_SEQ_GEN", sequenceName = "DAT_KEBS_USERS_SEQ", allocationSize = 1)
@@ -73,6 +75,10 @@ class UsersEntity : Serializable {
     @Column(name = "EMAIL")
     @Basic
     var email: String? = ""
+
+    @Column(name = "CELL_PHONE")
+    @Basic
+    val cellphone: String? = null
 
     @Column(name = "ENABLED")
     @Basic

@@ -1,26 +1,33 @@
-<h4 style="align-items: center">Review Tasks</h4>
 <div class="container" id="main-container">
-<div  class="row col-sm-6" style="text-align: center;" >
+<div class="justify-content-between d-flex flex-wrap align-items-center mt-5">
+  <div class="d-flex flex-wrap align-items-center">
+    <h5 class="mr-4">All Tasks</h5>
+    <div class="resolved-pill">
+      <p>{{tasks.length}}</p>
+    </div>
+  </div>
 
-  <table class="table-hover">
-    <thead>
-    <th class="id">ID</th>
-    <th class="task">Task</th>
-    <th class="action">Action</th>
-    <th></th>
-    </thead>
-    <tbody>
-    <tr *ngFor="let task of tasks | paginate: { itemsPerPage: 10, currentPage: p2 }">
-      <td>{{task.taskId}}</td>
-      <td>{{task.name}}</td>
-      <td><a  (click)="onOpenModal(task,'edit')" class="btn btn-primary tooltips" data-placement="top"  data-original-title="Review"> Review</a></td>
-      <td><button type="submit" class="btn btn-danger">Reject</button></td>
-    </tr>
-    </tbody>
+  <button class="btn btn-sm btn-outline-secondary mr-2">EXPORT</button>
 
-  </table>
-  <pagination-controls (pageChange)="p2 = $event"></pagination-controls>
 </div>
+<table class="table-hover">
+  <thead>
+  <th class="id">ID</th>
+  <th class="task">Task</th>
+  <th class="action">Action</th>
+  <th></th>
+  </thead>
+  <tbody>
+  <tr  *ngFor="let task of tasks | paginate: { itemsPerPage: 10, currentPage: p2 }">
+    <td >{{countLine + 1}}</td>
+    <td>{{task.name}}</td>
+    <td><a  (click)="onOpenModal(task,'edit')" class="btn btn-primary tooltips" data-placement="top"  data-original-title="Review"> Review</a></td>
+    <td><button type="submit" class="btn btn-danger">Reject</button></td>
+  </tr>
+  </tbody>
+</table>
+
+<pagination-controls (pageChange)="p2 = $event"></pagination-controls>
 <div class="modal fade" id="updateRequestModal" tabindex="-1" role="dialog" aria-labelledby="updateExampleModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
@@ -31,14 +38,14 @@
         </button>
       </div>
       <form #editForm="ngForm" >
-      <div class="modal-body">
-        <p>You are reviewing Task ID: {{actionRequest?.taskId}} </p>
-      </div>
+        <div class="modal-body">
+          <p>You are reviewing Task ID: {{actionRequest?.taskId}} </p>
+        </div>
         <input type="hidden" ngModel="{{actionRequest?.taskId}}" name="id" id="id" >
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button  class="btn btn-info" (click)="onReviewTask(editForm.value)" >Approve</button>
-      </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button  class="btn btn-info" (click)="onReviewTask(editForm.value)" >Approve</button>
+        </div>
       </form>
     </div>
   </div>

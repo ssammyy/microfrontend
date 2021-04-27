@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {HttpErrorResponse} from "@angular/common/http";
-import {StandardTaskService} from "../../../shared/services/standard-task.service";
-import {StandardTasks} from "./standardtasks";
+import {StandardDevelopmentService} from "../../../shared/services/standard-development.service";
+import {StandardTasks} from "../../../shared/models/standard-development";
 
 @Component({
   selector: 'app-standard-task',
@@ -11,17 +11,18 @@ import {StandardTasks} from "./standardtasks";
 export class StandardTaskComponent implements OnInit {
   p = 1;
   p2 = 1;
+  countLine=0;
   tasks: StandardTasks[] = [];
   public actionRequest: StandardTasks | undefined;
 
-  constructor(private standardTaskService:StandardTaskService) { }
+  constructor(private standardDevelopmentService:StandardDevelopmentService) { }
 
   ngOnInit(): void {
     this.getHOFTasks();
   }
 
   public getHOFTasks(): void{
-    this.standardTaskService.getHOFTasks().subscribe(
+    this.standardDevelopmentService.getHOFTasks().subscribe(
       (response: StandardTasks[])=> {
         this.tasks = response;
       },
@@ -32,7 +33,7 @@ export class StandardTaskComponent implements OnInit {
   }
 
   public onReviewTask(task: StandardTasks): void{
-    this.standardTaskService.reviewTask(task).subscribe(
+    this.standardDevelopmentService.reviewTask(task).subscribe(
       (response:StandardTasks) =>{
         console.log(response);
         this.getHOFTasks();
