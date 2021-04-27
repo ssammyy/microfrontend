@@ -182,8 +182,8 @@ class PvocComplaints(
         }?: throw Exception("Compaint with $id id does not exist")
     }
 
-    @GetMapping("coc-details/{cocNo}")
-    fun cocDetails(model: Model, @PathVariable("cocNo") cocNo : String) : String{
+    @GetMapping("coc-details")
+    fun cocDetails(model: Model, @RequestParam("cocNo") cocNo : String) : String{
         iCocsRepository.findFirstByCocNumber(cocNo).let { cocDetails ->
             model.addAttribute("coc", cocDetails)
             model.addAttribute("coc_items", cocDetails?.id?.let { iCocItemRepository.findByCocId(it) })

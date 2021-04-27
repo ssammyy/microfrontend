@@ -1,6 +1,7 @@
 package org.kebs.app.kotlin.apollo.api.controllers.diControllers.pvoc
 
 
+import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.common.exceptions.SupervisorNotFoundException
 import org.kebs.app.kotlin.apollo.store.model.*
@@ -287,6 +288,7 @@ class PvocMonitoringAgents(
                 model.addAttribute("orderNumber", generatingRandomInvoice("5"))
                 model.addAttribute("customerNumber", generatingRandomInvoice("5"))
                 model.addAttribute("penaltyInvoice", PvocPenaltyInvoicingEntity())
+                model.addAttribute("enquires" , coc.cocNumber?.let { iPvocQuerriesRepository.findAllByCocNumber(it) })
                 iUserRoleAssignmentsRepository.findByRoleIdAndStatus(role.id, 1)
                         ?.let { it ->
                             val userList = mutableListOf<Long?>()
@@ -296,9 +298,11 @@ class PvocMonitoringAgents(
                         }
                         ?: throw Exception("Role [id=${role.id}] not found, may not be active or assigned yet")
             } ?: throw Exception("User role name does not exist")
-            coc.cocNumber?.let {
+            coc.ucrNumber?.let {
                 model.addAttribute("shipmentMode", iCocsRepository.findFirstByCocNumber(it)?.shipmentMode)
-                rfcCocEntityRepo.findByCocNumber(it).let { rfcDoc ->
+                rfcCocEntityRepo.findByUcrNumber(it).let { rfcDoc ->
+                    KotlinLogging.logger {  }.info { "Partner no ==> "+rfcDoc?.partner }
+                    KotlinLogging.logger {  }.info { "RFC no ==> "+rfcDoc?.rfcNumber }
                     model.addAttribute("rfc", rfcDoc)
                     rfcDoc?.partner?.let { it2 ->
                         pvocPartnersRepository.findByIdOrNull(it2).let { partnerDetails ->
@@ -405,9 +409,6 @@ class PvocMonitoringAgents(
                         }
                     }
                 }
-
-                model.addAttribute("enquires" , it.let { it1 -> iPvocQuerriesRepository.findAllByCocNumber(it1) })
-
             }
             model.addAttribute("monitoring_status", iPvocAgentMonitoringStatusEntityRepo.findAllByStatus(1))
             model.addAttribute("coc", coc)

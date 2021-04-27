@@ -29,7 +29,6 @@
                                         <th>User</th>
                                         <th>Date</th>
                                         <th>Remarks</th>
-                                        <th>Remarks Against</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -38,7 +37,6 @@
                                         <td th:text="${coc?.userId.firstName}  + ' ' + ${coc?.userId.lastName}"></td>
                                         <td th:text="${#dates.format(coc?.createdOn, 'dd/MM/yyyy')}"></td>
                                         <td th:text="${coc.remarks}"></td>
-                                        <td th:text="${coc.remarkAgainist}"></td>
                                     </tr>
 
                                     </tbody>
