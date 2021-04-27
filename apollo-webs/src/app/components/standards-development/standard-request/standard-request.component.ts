@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import {StandardRequestService} from "../../../shared/services/standard-request.service";
 import {FormControl, FormGroup, NgForm} from "@angular/forms";
-import {Department, Product, StandardRequest, TechnicalCommittee} from "./standardrequest";
 import {HttpErrorResponse} from "@angular/common/http";
+import {StandardDevelopmentService} from "../../../shared/services/standard-development.service";
+import {Product, StandardRequest, TechnicalCommittee,Department} from "../../../shared/models/standard-development";
 
 @Component({
   selector: 'app-standard-request',
@@ -15,7 +15,7 @@ export class StandardRequestComponent implements OnInit {
   public departments: Department[] | undefined;
   public committees: TechnicalCommittee[] | undefined;
 
-  constructor(private standardRequestService:StandardRequestService) { }
+  constructor(private standardDevelopmentService:StandardDevelopmentService) { }
 
 
 
@@ -26,7 +26,7 @@ export class StandardRequestComponent implements OnInit {
   }
 
   public getStandards(): void{
-    this.standardRequestService.getStandards().subscribe(
+    this.standardDevelopmentService.getStandards().subscribe(
       (response: Product[])=> {
         this.products = response;
       },
@@ -36,7 +36,7 @@ export class StandardRequestComponent implements OnInit {
     );
   }
   public getDepartments(): void{
-    this.standardRequestService.getDepartments().subscribe(
+    this.standardDevelopmentService.getDepartments().subscribe(
       (response: Department[])=> {
         this.departments = response;
       },
@@ -47,7 +47,7 @@ export class StandardRequestComponent implements OnInit {
   }
 
   public getTechnicalCommittee(): void{
-    this.standardRequestService.getTechnicalCommittee().subscribe(
+    this.standardDevelopmentService.getTechnicalCommittee().subscribe(
       (response: TechnicalCommittee[])=> {
         this.committees = response;
       },
@@ -59,7 +59,7 @@ export class StandardRequestComponent implements OnInit {
 
   public saveStandard(savestandard: NgForm): void{
 
-    this.standardRequestService.addStandardRequest(savestandard.value).subscribe(
+    this.standardDevelopmentService.addStandardRequest(savestandard.value).subscribe(
       (response:StandardRequest) =>{
         console.log(response);
         savestandard.resetForm();

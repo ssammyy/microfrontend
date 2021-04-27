@@ -1,8 +1,15 @@
 import { Component, OnInit } from '@angular/core';
-import {Department, Product, StandardRequest, TechnicalCommittee} from "../standardrequest";
 import {HttpErrorResponse} from "@angular/common/http";
-import {StandardRequestService} from "../../../../shared/services/standard-request.service";
 import {FormBuilder, FormGroup, NgForm, Validators} from "@angular/forms";
+import {ActivatedRoute, Router} from "@angular/router";
+import {StandardDevelopmentService} from "../../../../shared/services/standard-development.service";
+import {
+  Product,
+  ProductSubCategory,
+  StandardRequest,
+  TechnicalCommittee,
+  Department
+} from "../../../../shared/models/standard-development";
 
 @Component({
   selector: 'app-request-standard-form',
@@ -10,15 +17,18 @@ import {FormBuilder, FormGroup, NgForm, Validators} from "@angular/forms";
   styleUrls: ['./request-standard-form.component.css']
 })
 export class RequestStandardFormComponent implements OnInit {
-  public products : Product[] | undefined;
-  public departments: Department[] | undefined;
-  public committees: TechnicalCommittee[] | undefined;
+  public products !: Product[] ;
+  public productsSubCategory !: ProductSubCategory[] ;
+  public departments !: Department[] ;
+  public committees !: TechnicalCommittee[] ;
 
   public stdRequestFormGroup!: FormGroup;
 
   constructor(
     private formBuilder: FormBuilder,
-    private standardRequestService:StandardRequestService
+    private route: ActivatedRoute,
+    private router: Router,
+    private standardDevelopmentService:StandardDevelopmentService
   ) { }
 
   ngOnInit(): void {
@@ -42,7 +52,7 @@ export class RequestStandardFormComponent implements OnInit {
     return this.stdRequestFormGroup.controls;
   }
   public getStandards(): void{
-    this.standardRequestService.getStandards().subscribe(
+    this.standardDevelopmentService.getStandards().subscribe(
       (response: Product[])=> {
         this.products = response;
       },
@@ -52,7 +62,7 @@ export class RequestStandardFormComponent implements OnInit {
     );
   }
   public getDepartments(): void{
-    this.standardRequestService.getDepartments().subscribe(
+    this.standardDevelopmentService.getDepartments().subscribe(
       (response: Department[])=> {
         this.departments = response;
       },
@@ -63,7 +73,7 @@ export class RequestStandardFormComponent implements OnInit {
   }
 
   public getTechnicalCommittee(): void{
-    this.standardRequestService.getTechnicalCommittee().subscribe(
+    this.standardDevelopmentService.getTechnicalCommittee().subscribe(
       (response: TechnicalCommittee[])=> {
         this.committees = response;
       },
@@ -75,17 +85,26 @@ export class RequestStandardFormComponent implements OnInit {
 
    saveStandard(): void{
 
-    this.standardRequestService.addStandardRequest(this.stdRequestFormGroup.value).subscribe(
+    this.standardDevelopmentService.addStandardRequest(this.stdRequestFormGroup.value).subscribe(
       (response:StandardRequest) =>{
         console.log(response);
+        this.router.navigate(['/login'])
       },
       (error:HttpErrorResponse) =>{
         alert(error.message);
       }
-    )
+    );
   }
 
   onSelectProductCategory(value: any): any {
-    return
+    this.standardDevelopmentService.getProductSubcategory(value).subscribe(
+      (response:ProductSubCategory[]) =>{
+        console.log(response);
+        this.productsSubCategory = response
+      },
+      (error:HttpErrorResponse) =>{
+        alert(error.message);
+      }
+    );
   }
 }
