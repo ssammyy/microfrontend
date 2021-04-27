@@ -118,7 +118,8 @@ class Waivers(
         val token = commonDaoServices.generateEmailVerificationToken(sr, emailObject, map)
         val messageBody = "Please Click the link Bellow \n" +
                 "\n " +
-                "https://localhost:8006/api/di/pvoc/waivers-application/?token=${token.token}"
+//                "https://localhost:8006/api/di/pvoc/waivers-application/?token=${token.token}"
+                "https://kims.kebs.org:8006/api/di/pvoc/waivers-application/?token=${token.token}"
 
         emailObject.email?.let { notifications.sendEmail(it, "Complaint Verification", messageBody) }
         return "redirect:/"

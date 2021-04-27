@@ -145,9 +145,10 @@ class PvocComplaints(
                     complaint.email?.let { notifications.sendEmail(it, "Complaint  Submission", messageBody) }
                     val messageBody2 = "Please Click the link bellow to review the complaint \n" +
                             "\n " +
-                            "https://localhost:8006/pvoc/complaint-details/${newComp.id}"
+//                            "https://localhost:8006/pvoc/complaint-details/${newComp.id}"
+                            "https://kims.kebs.org:8006/pvoc/complaint-details/${newComp.id}"
                     agent.email?.let { notifications.sendEmail(it, "Complaint  Submission", messageBody2) }
-                    return "redirect:/api/di/pvoc/complaints-list?currentPage=0&pageSize=10&fromDate=${fro}&toDate=${to}&filter=0"
+                    return "redirect:/"
                 }
             }
         } ?: throw Exception("User not found")
