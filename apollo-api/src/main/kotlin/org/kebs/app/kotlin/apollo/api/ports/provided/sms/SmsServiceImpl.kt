@@ -1,6 +1,8 @@
 package org.kebs.app.kotlin.apollo.api.ports.provided.sms
 
 import mu.KotlinLogging
+import org.jasypt.encryption.StringEncryptor
+import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
@@ -12,19 +14,24 @@ import org.springframework.web.client.RestTemplate
 
 
 @Service
-class SmsServiceImpl(private val applicationMapProperties: ApplicationMapProperties): ISmsService {
+class SmsServiceImpl(private val applicationMapProperties: ApplicationMapProperties,
+                     private val commonDaoServices: CommonDaoServices,
+                     private val jasyptStringEncryptor: StringEncryptor): ISmsService {
 
-    /*
-    Replace with values from DB
-     */
-    val url = "http://10.10.0.146/sms_kernel/bulk_smssend.php"
-    val username = "test"
-    val password = "test"
+    final var config =
+        commonDaoServices.findIntegrationConfigurationEntity(applicationMapProperties.mapSmsConfigIntegration)
+
+    val url = config.url.toString()
+    val username = jasyptStringEncryptor.decrypt(config.username)
+    val password = jasyptStringEncryptor.decrypt(config.password)
 
     override fun sendSms(phone: String, message: String): Boolean {
         val restTemplate = RestTemplate()
         //Create Header
+        val username = username
+        val password = password
         val headers = HttpHeaders()
+        headers.setBasicAuth(username, password)
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED)
         //Add params
         val map = LinkedMultiValueMap<Any, Any>()
