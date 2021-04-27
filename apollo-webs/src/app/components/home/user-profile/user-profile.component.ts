@@ -5,7 +5,7 @@ import {User, UserRegister} from '../../../shared/models/user';
 import {
   DivisionDetails,
   RolesEntityDto,
-  SubSectionsL2EntityDto, UserRequestEntityDto,
+  SubSectionsL2EntityDto, UserCompanyDetailsDto, UserCompanyEntityDto, UserRequestEntityDto,
   UserRequestTypesEntityDto
 } from '../../../shared/models/master-data-details';
 import {ActivatedRoute, Router} from '@angular/router';
@@ -30,6 +30,8 @@ export class UserProfileComponent implements OnInit {
   currDivLabel!: string;
   user?: User;
   userRequest!: UserRequestEntityDto;
+  userCompanyProfileDetails!: UserCompanyDetailsDto;
+  userCompanyProfileUpdate!: UserCompanyEntityDto;
   status!: number;
 
   arrowLeftIcon = faArrowLeft;
@@ -37,6 +39,7 @@ export class UserProfileComponent implements OnInit {
   selectedValue = '0';
   checkBoxValue = false;
   public userRequestForm!: FormGroup;
+  public userCompanyForm!: FormGroup;
   public assignRoleForm!: FormGroup;
   public assignCfsForm!: FormGroup;
 
@@ -90,6 +93,10 @@ export class UserProfileComponent implements OnInit {
     return this.userRequestForm.controls;
   }
 
+  get formUserCompany(): any {
+    return this.userCompanyForm.controls;
+  }
+
   ngOnInit(): void {
     this.getSelectedUser();
 
@@ -98,6 +105,24 @@ export class UserProfileComponent implements OnInit {
       // userId: ['', Validators.required],
       description: ['', Validators.required]
       // approvedRemarks: ['', Validators.required],
+    });
+
+    this.userCompanyForm = this.formBuilder.group({
+      name: ['', Validators.required],
+      kraPin: ['', Validators.required],
+      profileType: ['', Validators.required],
+      registrationNumber: ['', Validators.required],
+      postalAddress: ['', Validators.required],
+      companyEmail: ['', Validators.required],
+      companyTelephone: ['', Validators.required],
+      yearlyTurnover: ['', Validators.required],
+      // businessLines: ['', Validators.required],
+      // businessNatures: ['', Validators.required],
+      buildingName: ['', Validators.required],
+      streetName: ['', Validators.required],
+      // region: ['', Validators.required],
+      // county: ['', Validators.required],
+      // town: ['', Validators.required],
     });
   }
 
@@ -146,8 +171,8 @@ export class UserProfileComponent implements OnInit {
   }
 
   openModal(divVal: string): void {
-    const arrHead = ['selectUserRequest', 'rejectOGAComplaint', 'approveComplaint', 'assignOfficer'];
-    const arrHeadSave = ['User Request', 'Not Within KEBS Mandate but Within OGA', 'KEBS Mandate', 'Assign Officer'];
+    const arrHead = ['selectUserRequest', 'companyProfile', 'rejectOGAComplaint', 'approveComplaint', 'assignOfficer'];
+    const arrHeadSave = ['User Request', 'Update Company Profile', 'Not Within KEBS Mandate but Within OGA', 'KEBS Mandate', 'Assign Officer'];
 
     for (let h = 0; h < arrHead.length; h++) {
       if (divVal === arrHead[h]) {
@@ -169,6 +194,24 @@ export class UserProfileComponent implements OnInit {
       return;
     }
     this.administratorService.sendUserRequest(this.userRequestForm.value, userId).subscribe(
+      (data: any) => {
+        console.log(data);
+        // this.onUpdateReturnToList();
+      },
+      // tslint:disable-next-line:max-line-length
+      (error: { error: { message: any; }; }) => {
+        this.notificationService.showError(error.error.message, 'Access Denied');
+        this.spinner.hide();
+      }
+    );
+  }
+
+  onSubmitUserComapany(userId: any): any {
+    // stop here if form is invalid
+    if (this.userCompanyForm.invalid) {
+      return;
+    }
+    this.administratorService.sendUserCompanyDetails(this.userCompanyForm.value, userId).subscribe(
       (data: any) => {
         console.log(data);
         // this.onUpdateReturnToList();

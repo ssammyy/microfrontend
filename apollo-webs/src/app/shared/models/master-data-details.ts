@@ -155,6 +155,43 @@ export class UserRequestEntityDto {
   status?: boolean;
 }
 
+export class UserCompanyDetailsDto{
+ name?: string;
+ kraPin?: string;
+ userId?: bigint;
+ registrationNumber?: string;
+ postalAddress?: string;
+ companyEmail?: string;
+ companyTelephone?: string;
+ yearlyTurnover?: string;
+ businessLines?: string;
+ businessNatures?: string;
+ buildingName?: string;
+ streetName?: string;
+ region?: string;
+ county?: string;
+ town?: string;
+}
+
+export class UserCompanyEntityDto{
+ name?: string;
+ kraPin?: string;
+ userId?: bigint;
+ profileType?: bigint;
+ registrationNumber?: string;
+ postalAddress?: string;
+ companyEmail?: string;
+ companyTelephone?: string;
+ yearlyTurnover?: string;
+ businessLines?: bigint;
+ businessNatures?: bigint;
+ buildingName?: string;
+ streetName?: string;
+ region?: bigint;
+ county?: bigint;
+ town?: bigint;
+}
+
 export class UserRequestDetailEntityDto {
   id?: bigint;
   requestName?: string;
