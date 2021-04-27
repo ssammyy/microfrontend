@@ -1,9 +1,13 @@
 package com.apollo.standardsdevelopment.controllers
 
-import com.apollo.standardsdevelopment.dto.ProcessInstanceResponse
+import com.apollo.standardsdevelopment.dto.Decision
+import com.apollo.standardsdevelopment.dto.ID
 import com.apollo.standardsdevelopment.dto.TaskDetails
+import com.apollo.standardsdevelopment.dto.ServerResponse
 import com.apollo.standardsdevelopment.models.*
 import com.apollo.standardsdevelopment.services.StandardRequestService
+import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
 @RestController
@@ -12,23 +16,75 @@ class StandardRequestController(val standardRequestService: StandardRequestServi
 
     //********************************************************** deployment endpoints **********************************************************
     @PostMapping("/deploy")
-    fun deployWorkflow(){
+    fun deployWorkflow(): ServerResponse {
         standardRequestService.deployProcessDefinition()
+        return ServerResponse(HttpStatus.OK,"Successfully deployed server", HttpStatus.OK)
     }
 
     //********************************************************** process upload standard request **********************************************************
     @PostMapping("/request")
-    fun requestForStandard(@RequestBody standardRequest: StandardRequest): ProcessInstanceResponse{
-        return standardRequestService.requestForStandard(standardRequest)
+    @ResponseBody
+    fun requestForStandard(@RequestBody standardRequest: StandardRequest): ServerResponse{
+        //return ResponseEntity(standardRequestService.requestForStandard(standardRequest), HttpStatus.OK)
+        return ServerResponse(HttpStatus.OK,"Successfully uploaded standard request",standardRequestService.requestForStandard(standardRequest))
     }
 
-
     @GetMapping("/getProducts")
+    @ResponseBody
     fun getProducts(): MutableList<Product>
     {
         return standardRequestService.getProducts();
     }
 
+   /* @GetMapping("/getProducts")
+    @ResponseBody
+    fun getProducts(): ServerResponse
+    {
+         return ServerResponse(HttpStatus.OK,"Successfully returned products",standardRequestService.getProducts());
+    }*/
+
+    @GetMapping("/getProductCategories/{productId}")
+    @ResponseBody
+    fun getProductCategories(@PathVariable("productId") productId: String?): MutableList<ProductSubCategory>
+    {
+        return standardRequestService.getProductCategories(productId);
+    }
+
+    /*@PostMapping("/getProductCategories")
+    @ResponseBody
+    fun getProductCategories(@RequestBody id: ID): ServerResponse
+    {
+        return ServerResponse(HttpStatus.OK,"Successfully returned product categories",standardRequestService.getProductCategories(id));
+    }*/
+
+
+    @GetMapping("/getDepartments")
+    @ResponseBody
+    fun getDepartments(): MutableList<Department>
+    {
+        return standardRequestService.getDepartments();
+    }
+
+    /*@GetMapping("/getDepartments")
+    @ResponseBody
+    fun getDepartments(): ServerResponse
+    {
+        return ServerResponse(HttpStatus.OK,"Successfully returned departments",standardRequestService.getDepartments());
+    }*/
+
+    @GetMapping("/getTechnicalCommittee")
+    @ResponseBody
+    fun getTechnicalCommittee(): MutableList<TechnicalCommittee>
+    {
+        return standardRequestService.getTechnicalCommittee();
+    }
+
+    /*@GetMapping("/getTechnicalCommittee")
+    @ResponseBody
+    fun getTechnicalCommittee(): ServerResponse
+    {
+        return ServerResponse(HttpStatus.OK,"Successfully returned technical committee",standardRequestService.getTechnicalCommittee());
+    }*/
 
     @GetMapping("/getHOFTasks")
     fun getHOFTasks():List<TaskDetails>
@@ -36,15 +92,17 @@ class StandardRequestController(val standardRequestService: StandardRequestServi
         return standardRequestService.getHOFTasks()
     }
 
-    @GetMapping("/process/{processId}")
-    fun checkState(@PathVariable("processId") processId: String?) {
-        standardRequestService.checkProcessHistory(processId)
+    @PostMapping("/process")
+    @ResponseBody
+    fun checkState( @RequestBody id: ID): ServerResponse {
+        return ServerResponse(HttpStatus.OK,"Successfully returned process history",standardRequestService.checkProcessHistory(id))
     }
 
-    @GetMapping("/hof/review/{taskId}")
-    fun hofReview(@PathVariable("taskId") taskId: String?)
+    @PostMapping("/hof/review")
+    @ResponseBody
+    fun hofReview(@RequestBody id: ID): ServerResponse
     {
-        standardRequestService.hofReview(taskId)
+        return ServerResponse(HttpStatus.OK,"Successfully completed HOF review",standardRequestService.hofReview(id))
     }
 
     @GetMapping("/getTCSECTasks")
@@ -54,9 +112,11 @@ class StandardRequestController(val standardRequestService: StandardRequestServi
     }
 
 
-    @PostMapping("/uploadNWI/{taskId}")
-    fun uploadNWI(@RequestBody standardNWI: StandardNWI, @PathVariable("taskId") taskId: String?) {
-        standardRequestService.uploadNWI(standardNWI, taskId)
+    @PostMapping("/uploadNWI")
+    @ResponseBody
+    fun uploadNWI(@RequestBody standardNWI: StandardNWI): ServerResponse
+    {
+        return ServerResponse(HttpStatus.OK,"Upload new work item",standardRequestService.uploadNWI(standardNWI))
     }
 
     @GetMapping("/getTCTasks")
@@ -66,10 +126,11 @@ class StandardRequestController(val standardRequestService: StandardRequestServi
     }
 
 
-    @PostMapping("/decisionOnNWI/{taskId}/{approved}")
-    fun decisionOnNWI(@PathVariable("taskId") taskId: String, @PathVariable("approved") approved: Boolean)
+    @PostMapping("/decisionOnNWI")
+    @ResponseBody
+    fun decisionOnNWI(@RequestBody decision: Decision): ServerResponse
     {
-        standardRequestService.decisionOnNWI(taskId, approved)
+        return ServerResponse(HttpStatus.OK,"Decision on New Work Item by the TC",standardRequestService.decisionOnNWI(decision))
     }
 
 
@@ -78,9 +139,10 @@ class StandardRequestController(val standardRequestService: StandardRequestServi
         return standardRequestService.getTCSecTasks()
     }
 
-    @PostMapping("/uploadJustification/{taskId}")
-    fun uploadJustification(@RequestBody standardJustification: StandardJustification, @PathVariable("taskId") taskId: String?) {
-        standardRequestService.uploadJustification(standardJustification, taskId)
+    @PostMapping("/uploadJustification")
+    @ResponseBody
+    fun uploadJustification(@RequestBody standardJustification: StandardJustification): ServerResponse {
+        return ServerResponse(HttpStatus.OK,"Successfully uploaded justification by the TC",standardRequestService.uploadJustification(standardJustification))
     }
 
     @GetMapping("/spc-sec/tasks")
@@ -88,10 +150,11 @@ class StandardRequestController(val standardRequestService: StandardRequestServi
         return standardRequestService.getSPCSecTasks()
     }
 
-    @PostMapping("/decisionOnJustification/{taskId}/{spc_approved}")
-    fun decisionOnJustification(@PathVariable("taskId") taskId: String, @PathVariable("spc_approved") approved: Boolean)
+    @PostMapping("/decisionOnJustification")
+    @ResponseBody
+    fun decisionOnJustification(@RequestBody decision: Decision): ServerResponse
     {
-        standardRequestService.decisionOnJustification(taskId, approved)
+        return ServerResponse(HttpStatus.OK,"Submitted decision on justification",standardRequestService.decisionOnJustification(decision))
     }
 
     @GetMapping("/tc-sec/tasks/workplan")
@@ -99,9 +162,10 @@ class StandardRequestController(val standardRequestService: StandardRequestServi
         return standardRequestService.getTCSecTasksWorkPlan()
     }
 
-    @PostMapping("/uploadWorkPlan/{taskId}")
-    fun uploadWorkPlan(@RequestBody standardWorkPlan: StandardWorkPlan, @PathVariable("taskId") taskId: String?) {
-        standardRequestService.uploadWorkPlan(standardWorkPlan, taskId)
+    @PostMapping("/uploadWorkPlan")
+    @ResponseBody
+    fun uploadWorkPlan(@RequestBody standardWorkPlan: StandardWorkPlan): ServerResponse {
+        return ServerResponse(HttpStatus.OK,"Successfully uploaded workplan",standardRequestService.uploadWorkPlan(standardWorkPlan))
     }
 
 }

@@ -69,17 +69,20 @@
                     <input class="w-input" data-name="Email" id="username" maxlength="256" name="username" required="" type="text">
                     <label for="password">Password</label>
                     <input class="w-input" data-name="Password" id="password" maxlength="256" name="password" placeholder="" required="" type="password">
+                    <label for="password">OTP</label>
+                    <input class="w-input" data-name="otp" id="otp" maxlength="50" name="otp" placeholder="" required="" type="text">
+                    <button class="w-button">Request OTP</button>
                     <a class="link" th:href="@{/api/auth/signup/forgot-password}">Forgot Password?</a>
                     <input class="w-button" type="submit" value="Submit">
                     <div class="create-account">Dont have an account? <br>
                         <a th:href="@{/api/auth/signup/user}">Create Account/SignUp?</a><br>
                         <a th:href="@{/api/ms/complaints/new}">Report Complaint?</a><br>
-<!--                        <a th:href="@{/api/auth/signup/manufacturer}">Company?</a>-->
-<!--                        <a th:href="@{/api/auth/signup/user(messageUser='Employee')}">Employee?</a>-->
-<!--                        <a th:href="@{/api/auth/signup/importerExporter(userId = '495')}">Importer?</a>-->
-<!--                        <a th:href="@{/api/auth/signup/user}">SignUp?</a>-->
-<!--                        <a th:href="@{/api/auth/signup/importerExporter(userName='EXPORTER')}">Exporter?</a>-->
-<!--                        <a th:href="@{/}">Partner?</a>-->
+                        <!--                        <a th:href="@{/api/auth/signup/manufacturer}">Company?</a>-->
+                        <!--                        <a th:href="@{/api/auth/signup/user(messageUser='Employee')}">Employee?</a>-->
+                        <!--                        <a th:href="@{/api/auth/signup/importerExporter(userId = '495')}">Importer?</a>-->
+                        <!--                        <a th:href="@{/api/auth/signup/user}">SignUp?</a>-->
+                        <!--                        <a th:href="@{/api/auth/signup/importerExporter(userName='EXPORTER')}">Exporter?</a>-->
+                        <!--                        <a th:href="@{/}">Partner?</a>-->
                     </div>
                 </form>
                 <div class="w-form-done">

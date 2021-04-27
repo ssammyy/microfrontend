@@ -48,7 +48,16 @@ import {UserDetailsComponent} from './components/administrator/user-details/user
 import {AddUserComponent} from './components/administrator/add-user/add-user.component';
 import {AccessControlComponent} from './components/administrator/access-control/access-control.component';
 import {NgxPaginationModule} from 'ngx-pagination';
+import { StandardsDevelopmentComponent } from './components/standards-development/standards-development.component';
+import { StandardRequestComponent } from './components/standards-development/standard-request/standard-request.component';
 import { UserProfileComponent } from './components/home/user-profile/user-profile.component';
+import { StandardTaskComponent } from './components/standards-development/standard-task/standard-task.component';
+import {StdTscSecTasksComponent} from "./components/standards-development/std-tsc-sec-tasks/std-tsc-sec-tasks.component";
+import { StdTscTasksComponent } from './components/standards-development/std-tsc-tasks/std-tsc-tasks.component';
+import { RequestStandardFormComponent } from './components/standards-development/standard-request/request-standard-form/request-standard-form.component';
+import {FileUploadModule} from "ng2-file-upload";
+import { StdTcTasksComponent } from './components/standards-development/std-tc-tasks/std-tc-tasks.component';
+
 
 
 @NgModule({
@@ -87,7 +96,14 @@ import { UserProfileComponent } from './components/home/user-profile/user-profil
     UserDetailsComponent,
     AddUserComponent,
     AccessControlComponent,
+    StandardsDevelopmentComponent,
+    StandardRequestComponent,
     UserProfileComponent,
+    StandardTaskComponent,
+    StdTscSecTasksComponent,
+    StdTscTasksComponent,
+    RequestStandardFormComponent,
+    StdTcTasksComponent,
   ],
   exports: [
   ],
@@ -103,6 +119,7 @@ import { UserProfileComponent } from './components/home/user-profile/user-profil
     NgxSpinnerModule,
     NgxPaginationModule,
     HttpClientModule,
+    FileUploadModule,
     ToastrModule.forRoot({
       timeOut: 5000,
       positionClass: 'toast-bottom-right',

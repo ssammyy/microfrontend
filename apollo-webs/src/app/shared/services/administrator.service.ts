@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {dev} from '../dev/dev';
 import {HttpClient, HttpParams} from '@angular/common/http';
-import {UserRequestEntityDto} from "../models/master-data-details";
+import {UserCompanyEntityDto, UserRequestEntityDto} from "../models/master-data-details";
 
 @Injectable({
   providedIn: 'root'
@@ -37,6 +37,10 @@ export class AdministratorService {
 
   sendUserRequest(data: UserRequestEntityDto, userId: bigint): any {
     return this.http.post(`${this.urlToUsers}${userId}/user-request`, data);
+  }
+
+  sendUserCompanyDetails(data: UserCompanyEntityDto, userId: bigint): any {
+    return this.http.post(`${this.urlToUsers}${userId}/update/company-profile`, data);
   }
 
   assignCfsToUser(userProfileId: bigint, cfsId: bigint, status: number): any {

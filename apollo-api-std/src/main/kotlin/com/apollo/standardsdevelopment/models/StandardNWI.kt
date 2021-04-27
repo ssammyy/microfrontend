@@ -1,5 +1,6 @@
 package com.apollo.standardsdevelopment.models
 
+import com.fasterxml.jackson.annotation.JsonProperty
 import java.sql.Timestamp
 import javax.persistence.*
 
@@ -10,6 +11,10 @@ class StandardNWI {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="ID")
     var id:Long=0
+
+    @Transient
+    @JsonProperty("taskId")
+    var taskId:String?=null
 
     @Column(name="PROPOSAL_TITLE")
     @Basic

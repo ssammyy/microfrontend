@@ -30,7 +30,13 @@ import {AdminHomeComponent} from './components/administrator/admin-home/admin-ho
 import {UsersListComponent} from './components/administrator/users-list/users-list.component';
 import {UserDetailsComponent} from './components/administrator/user-details/user-details.component';
 import {AddUserComponent} from './components/administrator/add-user/add-user.component';
+import {StandardRequestComponent} from "./components/standards-development/standard-request/standard-request.component";
 import {UserProfileComponent} from './components/home/user-profile/user-profile.component';
+import {StandardTaskComponent} from "./components/standards-development/standard-task/standard-task.component";
+import {StdTscSecTasksComponent} from "./components/standards-development/std-tsc-sec-tasks/std-tsc-sec-tasks.component";
+import {RequestStandardFormComponent} from "./components/standards-development/standard-request/request-standard-form/request-standard-form.component";
+import {StandardsDevelopmentComponent} from "./components/standards-development/standards-development.component";
+import {StdTcTasksComponent} from "./components/standards-development/std-tc-tasks/std-tc-tasks.component";
 
 const routes: Routes = [
   // { path: 'login-signup', component: LoginSignupComponent },
@@ -195,6 +201,32 @@ const routes: Routes = [
     children: [{path: '', component: AddUserComponent}]
   },
 
+
+  /****************************************************************
+   * STANDARD DEVELOPMENT ROUTES
+   ***************************************************************/
+  {
+    path: 'request-standard', component: StandardRequestComponent,
+    children: [{path: '', component: RequestStandardFormComponent}]
+  },
+
+  {
+    path: 'std-tsc-sec-task', component: StandardsDevelopmentComponent,
+    children: [{path: '', component: StdTscSecTasksComponent}]
+  },
+  {
+    path: 'standard-task', component: StandardsDevelopmentComponent,
+    children: [{path: '', component: StandardTaskComponent}]
+  },
+  {
+    path: 'std-tc-task', component: StandardsDevelopmentComponent,
+    children: [{path: '', component: StdTcTasksComponent}]
+  },
+
+
+  /****************************************************************
+   * END OF STANDARD DEVELOPMENT ROUTES
+   ***************************************************************/
 
 ];
 

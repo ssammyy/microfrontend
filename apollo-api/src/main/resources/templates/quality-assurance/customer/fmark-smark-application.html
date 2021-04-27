@@ -186,7 +186,7 @@
                         <!--                        <h5>Kindly fill in the details below</h5>-->
                         <div class="content-row">
                             <div th:replace="fragments/general-form.html :: alerts-bar"></div>
-                            <form id="regForm" name="smark-form" th:object="${myPermit}" enctype="multipart/form-data" th:action="@{/api/permit/apply/new/smark(appId=${session.appId}, pType = ${permitType})}" method="post">
+                            <form id="regForm" name="smark-form" th:object="${myPermit}" enctype="multipart/form-data" th:action="@{/api/permit/apply/new/smark(appId=${session.appId}, pType = 2)}" method="post">
 
                                 <!--                                DIVISION -->
                                 <div>

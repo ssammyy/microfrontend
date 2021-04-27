@@ -39,6 +39,7 @@ package org.kebs.app.kotlin.apollo.store.repo
 
 
 import org.kebs.app.kotlin.apollo.store.model.*
+import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileEntity
 import org.kebs.app.kotlin.apollo.store.model.registration.UserRequestTypesEntity
 import org.kebs.app.kotlin.apollo.store.model.registration.UserRequestsEntity
 import org.springframework.data.hazelcast.repository.HazelcastRepository
@@ -154,6 +155,16 @@ interface IUserRequestsRepository : HazelcastRepository<UserRequestsEntity, Long
 interface IUserRequestTypesRepository : HazelcastRepository<UserRequestTypesEntity, Long> {
     fun findByStatus(status: Int): List<UserRequestTypesEntity>?
     fun findByStatusOrderByUserRequest(status: Int): List<UserRequestTypesEntity>?
+
+
+}
+
+
+@Repository
+interface ICompanyProfileRepository : HazelcastRepository<CompanyProfileEntity, Long> {
+    fun findByStatus(status: Int): List<CompanyProfileEntity>?
+    fun findByKraPin(kraPin: String): CompanyProfileEntity?
+    fun findByUserId(userId: Long): CompanyProfileEntity?
 
 
 }

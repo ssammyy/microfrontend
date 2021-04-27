@@ -55,31 +55,31 @@ import java.time.Instant
 
 @Component
 class RegistrationHandler(
-        private val applicationMapProperties: ApplicationMapProperties,
-        private val systemsAdminDaoService: SystemsAdminDaoService,
+    private val applicationMapProperties: ApplicationMapProperties,
+    private val systemsAdminDaoService: SystemsAdminDaoService,
 
-        private val sendToKafkaQueue: SendToKafkaQueue,
-        private val countriesRepository: ICountriesRepository,
-        private val serviceMapsRepository: IServiceMapsRepository,
-        private val businessLinesRepository: IBusinessLinesRepository,
-        private val commonDaoServices: CommonDaoServices,
-        private val businessNatureRepository: IBusinessNatureRepository,
-        private val contactTypesRepository: IContactTypesRepository,
-        private val userTypesRepo: IUserTypesEntityRepository,
-        private val SubSectionsLevel1Repo: ISubSectionsLevel1Repository,
-        private val SubSectionsLevel2Repo: ISubSectionsLevel2Repository,
-        private val titlesRepository: ITitlesRepository,
-        private val divisionsRepo: IDivisionsRepository,
-        private val departmentsRepo: IDepartmentsRepository,
-        private val directorateRepo: IDirectoratesRepository,
-        private val designationRepository: IDesignationsRepository,
-        private val sectionsRepo: ISectionsRepository,
-        private val subRegionsRepository: ISubRegionsRepository,
-        private val regionsRepository: IRegionsRepository,
-        private val usersRepo: IUserRepository,
-        private val userProfilesRepo: IUserProfilesRepository,
-        private val userVerificationTokensRepository: IUserVerificationTokensRepository,
-        private val daoServices: RegistrationDaoServices
+    private val sendToKafkaQueue: SendToKafkaQueue,
+    private val countriesRepository: ICountriesRepository,
+    private val serviceMapsRepository: IServiceMapsRepository,
+    private val businessLinesRepository: IBusinessLinesRepository,
+    private val commonDaoServices: CommonDaoServices,
+    private val businessNatureRepository: IBusinessNatureRepository,
+    private val contactTypesRepository: IContactTypesRepository,
+    private val userTypesRepo: IUserTypesEntityRepository,
+    private val SubSectionsLevel1Repo: ISubSectionsLevel1Repository,
+    private val SubSectionsLevel2Repo: ISubSectionsLevel2Repository,
+    private val titlesRepository: ITitlesRepository,
+    private val divisionsRepo: IDivisionsRepository,
+    private val departmentsRepo: IDepartmentsRepository,
+    private val directorateRepo: IDirectoratesRepository,
+    private val designationRepository: IDesignationsRepository,
+    private val sectionsRepo: ISectionsRepository,
+    private val subRegionsRepository: ISubRegionsRepository,
+    private val regionsRepository: IRegionsRepository,
+    private val usersRepo: IUserRepository,
+    private val userProfilesRepo: IUserProfilesRepository,
+    private val userVerificationTokensRepository: IUserVerificationTokensRepository,
+    private val daoServices: RegistrationDaoServices
 ) {
     @Value("\${user.profile.employee.userTypeID}")
     lateinit var employeeUserTypeId: String
@@ -116,17 +116,18 @@ class RegistrationHandler(
      ***********************************************************************************/
 
 
-    fun signUpAllUsersView(req: ServerRequest): ServerResponse {
+    fun signUpAllUsers(req: ServerRequest): ServerResponse {
         try {
             val map = commonDaoServices.serviceMapDetails(appId)
             val dto = req.body<UserEntityDto>()
             dto.id = -1L
             dto.userName = dto.userPinIdNumber
-            dto.userRegNo = "KEBS${generateRandomText(5, map.secureRandom, map.messageDigestAlgorithm, true).toUpperCase()}"
+            dto.userRegNo =
+                "KEBS${generateRandomText(5, map.secureRandom, map.messageDigestAlgorithm, true).toUpperCase()}"
             systemsAdminDaoService.updateUserDetails(dto)?.let {
                 return ok().body(it)
             }
-                    ?: throw NullValueNotAllowedException("Update failed")
+                ?: throw NullValueNotAllowedException("Update failed")
 
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message, e)
@@ -157,7 +158,7 @@ class RegistrationHandler(
         return try {
             val dto = req.body<UserPasswordResetValuesDto>()
             val user = dto.emailUsername?.let { commonDaoServices.findUserByUserName(it) }
-                    ?: throw NullValueNotAllowedException("User with user name ${dto.emailUsername} do not exist")
+                ?: throw NullValueNotAllowedException("User with user name ${dto.emailUsername} do not exist")
             ok().body(systemsAdminDaoService.userRegistrationMailSending(user, null, applicationMapProperties.mapUserPasswordResetNotification))
 
         } catch (e: Exception) {
@@ -171,75 +172,102 @@ class RegistrationHandler(
      * OLD REGISTRATIONION HANDLERS
      ***********************************************************************************/
 
-//    fun submitAuthorizeUserAccount(req: ServerRequest): ServerResponse =
-//            req.paramOrNull("appId")
-//                    ?.let { mapId ->
-//                        daoServices.extractServiceMapFromAppId(mapId)
-//                                ?.let { map ->
-//                                    req.paramOrNull("messageKey")
-//                                            ?.let { token ->
-//                                                daoServices.findServiceRequestByTransactionRef(token)
-//                                                        ?.let {
-//                                                            var sr = it
-//                                                            daoServices.validateVerificationToken(sr, token)
-//                                                                    .let {
-//                                                                        userVerificationTokensRepository.findByTokenAndStatus(token, map.successStatus)
-//                                                                                ?.let { v ->
-//                                                                                    v.userId
-//                                                                                            ?.let { user ->
-//                                                                                                val credentials = req.paramOrNull("credentials")
-//                                                                                                val confirmCredentials = req.paramOrNull("confirmCredentials")
-//                                                                                                when (StringUtils.equals(credentials, confirmCredentials)) {
-//
-//                                                                                                    true -> {
-//                                                                                                        user.credentials = BCryptPasswordEncoder().encode(credentials)
-//                                                                                                        user.confirmCredentials = BCryptPasswordEncoder().encode(confirmCredentials)
-//                                                                                                        daoServices.resetUserPassword(map, user, true, sr)?.let { requestsEntity -> sr = requestsEntity }
-////                                                                                                        daoServices.completeTask(proc, sr)
-//                                                                                                        sr.status?.let { status ->
-//                                                                                                            return when {
-//                                                                                                                status > map.activeStatus -> {
-//                                                                                                                    req.attributes()["message"] = "Account authorization completed successfully"
-//                                                                                                                    req.attributes()["closeLink"] = "/"
-//                                                                                                                    req.attributes()["activateAccountLink"] = ""
-//                                                                                                                    req.attributes()["activateAccountLinkText"] = ""
-//                                                                                                                    req.attributes()["otherActionLink"] = ""
-//                                                                                                                    req.attributes()["otherActionLinkText"] = ""
-//                                                                                                                    ok().render("/auth/register-success-view", req.attributes())
-//                                                                                                                }
-//                                                                                                                else -> {
-//                                                                                                                    ok().render("/auth/authorize-account-confirmation", req.attributes())
-//                                                                                                                }
-//                                                                                                            }
-//                                                                                                        }
-//                                                                                                    }
-//                                                                                                    else -> throw PasswordsMismatchException("Passwords and Confirmation do not match")
-//                                                                                                }
-//                                                                                            }
-//                                                                                }
-//                                                                                ?: throw Exception("Expired Verification Token Received")
-//                                                                    }
-////                                                            daoServices.extractUserFromValidationToken(sr.transactionReference, map)
-//
-//                                                        }
-//                                                        ?: throw NullValueNotAllowedException("Received request with empty token")
-//
-//                                            }
-//                                            ?: throw NullValueNotAllowedException("Received request with empty token")
-//                                }
-//                                ?: throw ServiceMapNotFoundException("Missing application mapping for [id=$appId], recheck configuration")
-//
-//                    }
-//                    ?: throw NullValueNotAllowedException("Received request with empty appId")
+    fun submitAuthorizeUserAccount(req: ServerRequest): ServerResponse =
+        req.paramOrNull("appId")
+            ?.let { mapId ->
+                daoServices.extractServiceMapFromAppId(mapId)
+                    ?.let { map ->
+                        req.paramOrNull("messageKey")
+                            ?.let { token ->
+                                daoServices.findServiceRequestByTransactionRef(token)
+                                    ?.let {
+                                        var sr = it
+                                        daoServices.valVerificatToken(sr, token)
+                                            .let {
+                                                userVerificationTokensRepository.findByTokenAndStatus(
+                                                    token,
+                                                    map.successStatus
+                                                )
+                                                    ?.let { v ->
+                                                        v.userId
+                                                            ?.let { user ->
+                                                                val credentials = req.paramOrNull("credentials")
+                                                                val confirmCredentials =
+                                                                    req.paramOrNull("confirmCredentials")
+                                                                when (StringUtils.equals(
+                                                                    credentials,
+                                                                    confirmCredentials
+                                                                )) {
+
+                                                                    true -> {
+                                                                        user.credentials =
+                                                                            BCryptPasswordEncoder().encode(credentials)
+                                                                        user.confirmCredentials =
+                                                                            BCryptPasswordEncoder().encode(
+                                                                                confirmCredentials
+                                                                            )
+                                                                        daoServices.resetUserPassword(
+                                                                            map,
+                                                                            user,
+                                                                            true,
+                                                                            sr
+                                                                        )?.let { requestsEntity -> sr = requestsEntity }
+//                                                                                                        daoServices.completeTask(proc, sr)
+                                                                        sr.status?.let { status ->
+                                                                            return when {
+                                                                                status > map.activeStatus -> {
+                                                                                    req.attributes()["message"] =
+                                                                                        "Account authorization completed successfully"
+                                                                                    req.attributes()["closeLink"] = "/"
+                                                                                    req.attributes()["activateAccountLink"] =
+                                                                                        ""
+                                                                                    req.attributes()["activateAccountLinkText"] =
+                                                                                        ""
+                                                                                    req.attributes()["otherActionLink"] =
+                                                                                        ""
+                                                                                    req.attributes()["otherActionLinkText"] =
+                                                                                        ""
+                                                                                    ok().render(
+                                                                                        "/auth/register-success-view",
+                                                                                        req.attributes()
+                                                                                    )
+                                                                                }
+                                                                                else -> {
+                                                                                    ok().render(
+                                                                                        "/auth/authorize-account-confirmation",
+                                                                                        req.attributes()
+                                                                                    )
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                    else -> throw PasswordsMismatchException("Passwords and Confirmation do not match")
+                                                                }
+                                                            }
+                                                    }
+                                                    ?: throw Exception("Expired Verification Token Received")
+                                            }
+//                                                            daoServices.extractUserFromValidationToken(sr.transactionReference, map)
+
+                                    }
+                                    ?: throw NullValueNotAllowedException("Received request with empty token")
+
+                            }
+                            ?: throw NullValueNotAllowedException("Received request with empty token")
+                    }
+                    ?: throw ServiceMapNotFoundException("Missing application mapping for [id=$appId], recheck configuration")
+
+            }
+            ?: throw NullValueNotAllowedException("Received request with empty appId")
 
     private val redirectAttributes: RedirectAttributes? = null
     private fun loadManufacturerUIComponents(s: ServiceMapsEntity): MutableMap<String, List<Serializable>?> {
 
         return mutableMapOf(
-                Pair("businessLines", businessLinesRepository.findByStatus(s.activeStatus)),
+            Pair("businessLines", businessLinesRepository.findByStatus(s.activeStatus)),
 //                Pair("businessNatures", businessNatureRepository.findByStatus(s.activeStatus)),
-                Pair("contactTypes", contactTypesRepository.findByStatus(s.activeStatus)),
-                Pair("userTypes", userTypesRepo.findByStatus(s.activeStatus))
+            Pair("contactTypes", contactTypesRepository.findByStatus(s.activeStatus)),
+            Pair("userTypes", userTypesRepo.findByStatus(s.activeStatus))
         )
 
 
@@ -247,15 +275,15 @@ class RegistrationHandler(
 
     private fun loadImporterExporterUIComponents(s: ServiceMapsEntity): MutableMap<String, Any> {
         return mutableMapOf(
-                Pair("userTypes", userTypesRepo.findByStatus(s.activeStatus))
+            Pair("userTypes", userTypesRepo.findByStatus(s.activeStatus))
         )
     }
 
     private fun loadMapPropertiesUIComponents(s: ServiceMapsEntity): MutableMap<String, Any> {
         return mutableMapOf(
-                Pair("mapUserTypeEmployee", applicationMapProperties.mapUserTypeEmployee),
-                Pair("mapUserTypeManufacture", applicationMapProperties.mapUserTypeManufacture),
-                Pair("mapUserTypeImporter", applicationMapProperties.mapUserTypeImporter)
+            Pair("mapUserTypeEmployee", applicationMapProperties.mapUserTypeEmployee),
+            Pair("mapUserTypeManufacture", applicationMapProperties.mapUserTypeManufacture),
+            Pair("mapUserTypeImporter", applicationMapProperties.mapUserTypeImporter)
         )
     }
 
@@ -263,14 +291,14 @@ class RegistrationHandler(
     private fun loadEmployeeUIComponents(s: ServiceMapsEntity): MutableMap<String, Any?> {
 
         return mutableMapOf(
-                Pair("titles", titlesRepository.findByStatus(s.activeStatus)),
+            Pair("titles", titlesRepository.findByStatus(s.activeStatus)),
 //                Pair("subRegions", subRegionsRepository.findByStatusOrderBySubRegion(s.activeStatus)),
-                Pair("regions", regionsRepository.findByStatusOrderByRegion(s.activeStatus)),
+            Pair("regions", regionsRepository.findByStatusOrderByRegion(s.activeStatus)),
 //                Pair("divisions", divisionsRepo.findByStatusOrderByDivision(s.activeStatus)),
-                Pair("directorates", directorateRepo.findByStatusOrderByDirectorate(s.activeStatus)),
+            Pair("directorates", directorateRepo.findByStatusOrderByDirectorate(s.activeStatus)),
 //                Pair("departments", departmentsRepo.findByStatusOrderByDepartment(s.activeStatus)),
-                Pair("designations", designationRepository.findByStatus(s.activeStatus)),
-                Pair("userTypes", userTypesRepo.findByStatus(s.activeStatus))
+            Pair("designations", designationRepository.findByStatus(s.activeStatus)),
+            Pair("userTypes", userTypesRepo.findByStatus(s.activeStatus))
 //                Pair("subSectionsL1", SubSectionsLevel1Repo.findByStatusOrderBySubSection(s.activeStatus)),
 //                Pair("subSectionsL2", SubSectionsLevel2Repo.findByStatusOrderBySubSection(s.activeStatus)),
 //                Pair("sections", sectionsRepo.findByStatusOrderBySection(s.activeStatus))
@@ -280,60 +308,75 @@ class RegistrationHandler(
     }
 
     fun signOut(req: ServerRequest): ServerResponse =
-            SecurityContextHolder.getContext().authentication
-                    ?.let { auth ->
-                        SecurityContextLogoutHandler().logout(req.servletRequest(), null, auth)
-                        req.session().invalidate()
-                        for (cookie in req.cookies()) {
-                            cookie.setValue(null)
-                        }
-                        ok().render("redirect:/auth/login?logout")
-                    }
-                    ?: ok().render("redirect:/auth/login?logout")
+        SecurityContextHolder.getContext().authentication
+            ?.let { auth ->
+                SecurityContextLogoutHandler().logout(req.servletRequest(), null, auth)
+                req.session().invalidate()
+                for (cookie in req.cookies()) {
+                    cookie.setValue(null)
+                }
+                ok().render("redirect:/auth/login?logout")
+            }
+            ?: ok().render("redirect:/auth/login?logout")
 
 
     fun loginPageView(req: ServerRequest): ServerResponse = ok().render("/auth/login")
 
     fun userNewFormView(req: ServerRequest): ServerResponse {
         serviceMapsRepository.findByIdAndStatus(appId, activeStatus.toInt())
-                ?.let { map ->
+            ?.let { map ->
 
-                    req.attributes()["usersEntity"] = UsersEntity()
-                    req.attributes()["userProfilesEntity"] = UserProfilesEntity()
-                    req.attributes()["map"] = map
-                    req.attributes().putAll(loadEmployeeUIComponents(map))
+                req.attributes()["usersEntity"] = UsersEntity()
+                req.attributes()["userProfilesEntity"] = UserProfilesEntity()
+                req.attributes()["map"] = map
+                req.attributes().putAll(loadEmployeeUIComponents(map))
 
-                    return ok().render(newUserProfilePage, req.attributes())
-                }
-                ?: throw Exception("Missing application mapping for [id=$appId], recheck configuration")
+                return ok().render(newUserProfilePage, req.attributes())
+            }
+            ?: throw Exception("Missing application mapping for [id=$appId], recheck configuration")
 
     }
 
     fun signUpEmployeeView(req: ServerRequest): ServerResponse =
-            serviceMapsRepository.findByIdAndStatus(appId, 1)
-                    ?.let { map ->
-                        req.attributes().putAll(loadEmployeeUIComponents(map))
-                        req.attributes()["employeesEntity"] = EmployeesEntity()
-                        req.attributes()["userProfilesEntity"] = UserProfilesEntity()
-                        req.attributes()["usersEntity"] = UsersEntity()
-                        req.attributes()["map"] = map
+        serviceMapsRepository.findByIdAndStatus(appId, 1)
+            ?.let { map ->
+                req.attributes().putAll(loadEmployeeUIComponents(map))
+                req.attributes()["employeesEntity"] = EmployeesEntity()
+                req.attributes()["userProfilesEntity"] = UserProfilesEntity()
+                req.attributes()["usersEntity"] = UsersEntity()
+                req.attributes()["map"] = map
 
-                        return ok().render("/auth/employee-registration", req.attributes())
-                    }
-                    ?: throw Exception("Missing application mapping for [id=$appId], recheck configuration")
+                return ok().render("/auth/employee-registration", req.attributes())
+            }
+            ?: throw Exception("Missing application mapping for [id=$appId], recheck configuration")
 
     fun registrationSuccessNotificationView(req: ServerRequest): ServerResponse =
-            serviceMapsRepository.findByIdAndStatus(appId, 1)
-                    ?.let {
-                        req.attributes()["message"] = "Successfully submitted registration details, check your mail for activation details"
-                        req.attributes()["closeLink"] = "/"
-                        req.attributes()["activateAccountLink"] = ""
-                        req.attributes()["activateAccountLinkText"] = ""
-                        req.attributes()["otherActionLink"] = ""
-                        req.attributes()["otherActionLinkText"] = ""
-                        return ok().render("/auth/register-success-view", req.attributes())
-                    }
-                    ?: throw ServiceMapNotFoundException("Missing application mapping for [id=$appId], recheck configuration")
+        serviceMapsRepository.findByIdAndStatus(appId, 1)
+            ?.let {
+                req.attributes()["message"] =
+                    "Successfully submitted registration details, check your mail for activation details"
+                req.attributes()["closeLink"] = "/"
+                req.attributes()["activateAccountLink"] = ""
+                req.attributes()["activateAccountLinkText"] = ""
+                req.attributes()["otherActionLink"] = ""
+                req.attributes()["otherActionLinkText"] = ""
+                return ok().render("/auth/register-success-view", req.attributes())
+            }
+            ?: throw ServiceMapNotFoundException("Missing application mapping for [id=$appId], recheck configuration")
+
+
+    fun successNotificationView(req: ServerRequest): ServerResponse =
+        serviceMapsRepository.findByIdAndStatus(appId, 1)
+            ?.let {
+                req.attributes()["message"] = req.paramOrNull("message")
+                req.attributes()["closeLink"] = req.paramOrNull("closeLink")
+                req.attributes()["activateAccountLink"] = ""
+                req.attributes()["activateAccountLinkText"] = ""
+                req.attributes()["otherActionLink"] = ""
+                req.attributes()["otherActionLinkText"] = ""
+                return ServerResponse.ok().render("/auth/register-success-view", req.attributes())
+            }
+            ?: throw ServiceMapNotFoundException("Missing application mapping for [id=$appId], recheck configuration")
 
 //    fun authorizeActivateAccount(req: ServerRequest): ServerResponse {
 //        applicationMapProperties.mapUserActivation
@@ -352,115 +395,132 @@ class RegistrationHandler(
 
     fun submitPasswordReset(req: ServerRequest): ServerResponse {
         req.paramOrNull("mapId")
-                ?.let { mapId ->
-                    daoServices.extractServiceMapFromAppId(mapId)
-                            ?.let { map ->
-                                req.paramOrNull("messageKey")
-                                        ?.let { token ->
-                                            daoServices.findServiceRequestByTransactionRef(token)
-                                                    ?.let {
-                                                        var sr = it
+            ?.let { mapId ->
+                daoServices.extractServiceMapFromAppId(mapId)
+                    ?.let { map ->
+                        req.paramOrNull("messageKey")
+                            ?.let { token ->
+                                daoServices.findServiceRequestByTransactionRef(token)
+                                    ?.let {
+                                        var sr = it
 
-                                                        req.paramOrNull("message")
-                                                                ?.let { userId ->
-                                                                    daoServices.findUserById(userId)
-                                                                            ?.let { user ->
+                                        req.paramOrNull("message")
+                                            ?.let { userId ->
+                                                daoServices.findUserById(userId)
+                                                    ?.let { user ->
 
-                                                                                val credentials = req.paramOrNull("credentials")
-                                                                                val confirmCredentials = req.paramOrNull("confirmCredentials")
-                                                                                when (StringUtils.equals(credentials, confirmCredentials)) {
+                                                        val credentials = req.paramOrNull("credentials")
+                                                        val confirmCredentials = req.paramOrNull("confirmCredentials")
+                                                        when (StringUtils.equals(credentials, confirmCredentials)) {
 
-                                                                                    true -> {
-                                                                                        user.credentials = BCryptPasswordEncoder().encode(credentials)
-                                                                                        user.confirmCredentials = BCryptPasswordEncoder().encode(confirmCredentials)
-                                                                                        daoServices.resetUserPassword(map, user, true, sr)?.let { requestsEntity -> sr = requestsEntity }
+                                                            true -> {
+                                                                user.credentials =
+                                                                    BCryptPasswordEncoder().encode(credentials)
+                                                                user.confirmCredentials =
+                                                                    BCryptPasswordEncoder().encode(confirmCredentials)
+                                                                daoServices.resetUserPassword(map, user, true, sr)
+                                                                    ?.let { requestsEntity -> sr = requestsEntity }
 
-                                                                                        sr.status?.let { status ->
-                                                                                            return when {
-                                                                                                status > map.activeStatus -> {
-                                                                                                    req.attributes()["message"] = "Account authorization completed successfully"
-                                                                                                    req.attributes()["closeLink"] = "/"
-                                                                                                    req.attributes()["activateAccountLink"] = ""
-                                                                                                    req.attributes()["activateAccountLinkText"] = ""
-                                                                                                    req.attributes()["otherActionLink"] = ""
-                                                                                                    req.attributes()["otherActionLinkText"] = ""
-                                                                                                    ok().render("/auth/register-success-view", req.attributes())
+                                                                sr.status?.let { status ->
+                                                                    return when {
+                                                                        status > map.activeStatus -> {
+                                                                            req.attributes()["message"] =
+                                                                                "Account authorization completed successfully"
+                                                                            req.attributes()["closeLink"] = "/"
+                                                                            req.attributes()["activateAccountLink"] = ""
+                                                                            req.attributes()["activateAccountLinkText"] =
+                                                                                ""
+                                                                            req.attributes()["otherActionLink"] = ""
+                                                                            req.attributes()["otherActionLinkText"] = ""
+                                                                            ok().render(
+                                                                                "/auth/register-success-view",
+                                                                                req.attributes()
+                                                                            )
 
-                                                                                                }
-                                                                                                else -> {
-                                                                                                    req.attributes()["token"] = token
-                                                                                                    req.attributes()["map"] = map
-                                                                                                    req.attributes()["usersEntity"] = user
-                                                                                                    ok().render("auth/confirm-password-reset.html", req.attributes())
+                                                                        }
+                                                                        else -> {
+                                                                            req.attributes()["token"] = token
+                                                                            req.attributes()["map"] = map
+                                                                            req.attributes()["usersEntity"] = user
+                                                                            ok().render(
+                                                                                "auth/confirm-password-reset.html",
+                                                                                req.attributes()
+                                                                            )
 
-                                                                                                }
-                                                                                            }
-
-                                                                                        }
-
-
-                                                                                    }
-                                                                                    else -> throw PasswordsMismatchException("Passwords and Confirmation do not match")
-                                                                                }
-
-
-                                                                            }
-                                                                            ?: throw NullValueNotAllowedException("Invalid User Request")
-
+                                                                        }
+                                                                    }
 
                                                                 }
-                                                                ?: throw NullValueNotAllowedException("Received request with empty message")
+
+
+                                                            }
+                                                            else -> throw PasswordsMismatchException("Passwords and Confirmation do not match")
+                                                        }
+
+
                                                     }
-                                                    ?: throw NullValueNotAllowedException("Received request with empty token")
+                                                    ?: throw NullValueNotAllowedException("Invalid User Request")
 
-                                        }
-                                        ?: throw NullValueNotAllowedException("Received request with empty token")
+
+                                            }
+                                            ?: throw NullValueNotAllowedException("Received request with empty message")
+                                    }
+                                    ?: throw NullValueNotAllowedException("Received request with empty token")
+
                             }
-                            ?: throw ServiceMapNotFoundException("Missing application mapping for [id=$appId], recheck configuration")
+                            ?: throw NullValueNotAllowedException("Received request with empty token")
+                    }
+                    ?: throw ServiceMapNotFoundException("Missing application mapping for [id=$appId], recheck configuration")
 
-                }
-                ?: throw NullValueNotAllowedException("Received request with empty appId")
+            }
+            ?: throw NullValueNotAllowedException("Received request with empty appId")
 
     }
 
-    fun submitCredentialsUserAccount(user: UsersEntity, map: ServiceMapsEntity, sr: ServiceRequestsEntity, req: ServerRequest): ServerResponse? {
+    fun submitCredentialsUserAccount(
+        user: UsersEntity,
+        map: ServiceMapsEntity,
+        sr: ServiceRequestsEntity,
+        req: ServerRequest
+    ): ServerResponse? {
         var sr = sr
         var myRender: ServerResponse? = null
         daoServices.processInstance(sr)
-                ?.let { proc ->
-                    val credentials = req.paramOrNull("credentials")
-                    val confirmCredentials = req.paramOrNull("confirmCredentials")
-                    when (StringUtils.equals(credentials, confirmCredentials)) {
-                        true -> {
-                            user.credentials = BCryptPasswordEncoder().encode(credentials)
-                            user.confirmCredentials = BCryptPasswordEncoder().encode(confirmCredentials)
-                            daoServices.resetUserPassword(map, user, true, sr)?.let { requestsEntity -> sr = requestsEntity }
-                            daoServices.completeTask(proc, sr)
-                            sr.status?.let { status ->
-                                when {
-                                    status > map.activeStatus -> {
-                                        req.attributes()["message"] = "Account Activated successfully"
-                                        req.attributes()["closeLink"] = "/"
-                                        req.attributes()["activateAccountLink"] = ""
-                                        req.attributes()["activateAccountLinkText"] = ""
-                                        req.attributes()["otherActionLink"] = ""
-                                        req.attributes()["otherActionLinkText"] = ""
-                                        myRender = ok().render("/auth/register-success-view", req.attributes())
+            ?.let { proc ->
+                val credentials = req.paramOrNull("credentials")
+                val confirmCredentials = req.paramOrNull("confirmCredentials")
+                when (StringUtils.equals(credentials, confirmCredentials)) {
+                    true -> {
+                        user.credentials = BCryptPasswordEncoder().encode(credentials)
+                        user.confirmCredentials = BCryptPasswordEncoder().encode(confirmCredentials)
+                        daoServices.resetUserPassword(map, user, true, sr)
+                            ?.let { requestsEntity -> sr = requestsEntity }
+                        daoServices.completeTask(proc, sr)
+                        sr.status?.let { status ->
+                            when {
+                                status > map.activeStatus -> {
+                                    req.attributes()["message"] = "Account Activated successfully"
+                                    req.attributes()["closeLink"] = "/"
+                                    req.attributes()["activateAccountLink"] = ""
+                                    req.attributes()["activateAccountLinkText"] = ""
+                                    req.attributes()["otherActionLink"] = ""
+                                    req.attributes()["otherActionLinkText"] = ""
+                                    myRender = ok().render("/auth/register-success-view", req.attributes())
 
-                                    }
-                                    else -> {
-                                        myRender = ok().render("/auth/authorize-account-confirmation", req.attributes())
-
-                                    }
                                 }
+                                else -> {
+                                    myRender = ok().render("/auth/authorize-account-confirmation", req.attributes())
 
+                                }
                             }
 
-
                         }
-                        else -> throw PasswordsMismatchException("Passwords and Confirmation do not match")
+
+
                     }
+                    else -> throw PasswordsMismatchException("Passwords and Confirmation do not match")
                 }
+            }
 
         return myRender
     }
@@ -468,132 +528,141 @@ class RegistrationHandler(
 
     fun forgotPasswordAction(req: ServerRequest): ServerResponse {
         req.paramOrNull("appId")
-                ?.let { appId ->
-                    req.paramOrNull("email")
-                            ?.let { email ->
-                                daoServices.extractUserFromEmail(email)
-                                        ?.let { user ->
+            ?.let { appId ->
+                req.paramOrNull("email")
+                    ?.let { email ->
+                        daoServices.extractUserFromEmail(email)
+                            ?.let { user ->
 
-                                            user.email?.let { e ->
-                                                daoServices.findNotificationByToken(req.paramOrNull("token"), appId, mutableListOf(e), user)
-                                                        ?.let { buffers ->
-                                                            buffers.forEach { buffer ->
-                                                                /**
-                                                                 * TODO: Make topic a field on the Buffer table
-                                                                 */
-                                                                buffer.varField1?.let { topic ->
-                                                                    sendToKafkaQueue.submitAsyncRequestToBus(buffer, topic)
-                                                                }
-                                                            }
-                                                        }
-
-
+                                user.email?.let { e ->
+                                    daoServices.findNotificationByToken(
+                                        req.paramOrNull("token"),
+                                        appId,
+                                        mutableListOf(e),
+                                        user
+                                    )
+                                        ?.let { buffers ->
+                                            buffers.forEach { buffer ->
+                                                /**
+                                                 * TODO: Make topic a field on the Buffer table
+                                                 */
+                                                buffer.varField1?.let { topic ->
+                                                    sendToKafkaQueue.submitAsyncRequestToBus(buffer, topic)
+                                                }
                                             }
-
-
-                                            req.attributes()["continue"] = true
-
                                         }
-                                        ?: throw NullValueNotAllowedException("Invalid Request")
 
-                                return ok().render("auth/forgot-pass", req.attributes())
+
+                                }
+
+
+                                req.attributes()["continue"] = true
 
                             }
-                            ?: throw NullValueNotAllowedException("Provide a valid email")
-                }
-                ?: throw NullValueNotAllowedException("Invalid App Id")
+                            ?: throw NullValueNotAllowedException("Invalid Request")
+
+                        return ok().render("auth/forgot-pass", req.attributes())
+
+                    }
+                    ?: throw NullValueNotAllowedException("Provide a valid email")
+            }
+            ?: throw NullValueNotAllowedException("Invalid App Id")
 
 
     }
 
     fun forgotPasswordView(req: ServerRequest): ServerResponse {
 
-        daoServices.extractServiceMapFromAppId(req.paramOrNull("appId") ?: "128")
-                ?.let { map ->
-                    req.attributes()["token"] = commonDaoServices.createServiceRequest(map).transactionReference
-                    req.attributes()["email"] = req.paramOrNull("email")
-                    req.attributes()["map"] = map
-                }
+        req.attributes()["usersEntity"] = UsersEntity()
         return ok().render("auth/forgot-pass", req.attributes())
     }
 
     fun resetPasswordView(req: ServerRequest): ServerResponse {
         daoServices.extractServiceMapFromAppId(req.paramOrNull("appId") ?: "128")
-                ?.let { map ->
-                    req.paramOrNull("token")
-                            ?.let { token ->
-                                daoServices.findServiceRequestByTransactionRef(token)
-                                        ?.let { sr ->
-                                            usersRepo.findByIdOrNull(sr.requestId)
-                                                    ?.let { user ->
-                                                        req.attributes()["token"] = token
-                                                        req.attributes()["map"] = map
-                                                        req.attributes()["usersEntity"] = user
-                                                        return ok().render("/auth/confirm-password-reset", req.attributes())
+            ?.let { map ->
+                req.paramOrNull("token")
+                    ?.let { token ->
+                        daoServices.findServiceRequestByTransactionRef(token)
+                            ?.let { sr ->
+                                usersRepo.findByIdOrNull(sr.requestId)
+                                    ?.let { user ->
+                                        req.attributes()["token"] = token
+                                        req.attributes()["map"] = map
+                                        req.attributes()["usersEntity"] = user
+                                        return ok().render("/auth/confirm-password-reset", req.attributes())
 
-                                                    }
-                                                    ?: throw NullValueNotAllowedException("Invalid Request")
-
-
-                                        }
-                                        ?: throw NullValueNotAllowedException("Invalid Request")
+                                    }
+                                    ?: throw NullValueNotAllowedException("Invalid Request")
 
 
                             }
-                            ?: throw NullValueNotAllowedException("Received request with empty token")
+                            ?: throw NullValueNotAllowedException("Invalid Request")
 
-                }
-                ?: throw ServiceMapNotFoundException("Missing application mapping for [id=$appId], recheck configuration")
+
+                    }
+                    ?: throw NullValueNotAllowedException("Received request with empty token")
+
+            }
+            ?: throw ServiceMapNotFoundException("Missing application mapping for [id=$appId], recheck configuration")
 
     }
 
 
+    fun authorizeUAccountView(req: ServerRequest): ServerResponse =
+        req.pathVariable("userName").let { userName ->
+            req.attributes()["usersEntity"] = commonDaoServices.findUserByUserName(userName)
+            ok().render("/auth/authorize-account-confirmation", req.attributes())
+        }
+
     fun authorizeUserAccountView(req: ServerRequest): ServerResponse =
-            req.paramOrNull("appId")
-                    ?.let { mapId ->
-                        daoServices.extractServiceMapFromAppId(mapId)
-                                ?.let { map ->
-                                    req.paramOrNull("token")
-                                            ?.let { token ->
-                                                userVerificationTokensRepository.findByTokenAndStatus(token, map.initStatus)
-                                                        ?.let { verificationToken ->
-                                                            verificationToken.tokenExpiryDate?.let { expiry ->
-                                                                when {
-                                                                    expiry.toInstant().isAfter(Instant.now()) -> {
-                                                                        daoServices.findServiceRequestByTransactionRef(token)
-                                                                                ?.let { sr ->
+        req.paramOrNull("appId")
+            ?.let { mapId ->
+                daoServices.extractServiceMapFromAppId(mapId)
+                    ?.let { map ->
+                        req.paramOrNull("token")
+                            ?.let { token ->
+                                userVerificationTokensRepository.findByTokenAndStatus(token, map.initStatus)
+                                    ?.let { verificationToken ->
+                                        verificationToken.tokenExpiryDate?.let { expiry ->
+                                            when {
+                                                expiry.toInstant().isAfter(Instant.now()) -> {
+                                                    daoServices.findServiceRequestByTransactionRef(token)
+                                                        ?.let { sr ->
 //                                                                                    daoServices.validateVerificationToken(sr, token)
 //                                                                                    daoServices.extractUserFromValidationToken(sr.transactionReference, map)
 //                                                                                            ?.let { user ->
-                                                                                    req.attributes()["token"] = token
-                                                                                    req.attributes()["usersEntity"] = verificationToken.userId
-                                                                                    req.attributes()["map"] = map
-                                                                                    return ok().render("/auth/authorize-account-confirmation", req.attributes())
+                                                            req.attributes()["token"] = token
+                                                            req.attributes()["usersEntity"] = verificationToken.userId
+                                                            req.attributes()["map"] = map
+                                                            return ok().render(
+                                                                "/auth/authorize-account-confirmation",
+                                                                req.attributes()
+                                                            )
 //                                                                                            }
 //                                                                                            ?: throw NullValueNotAllowedException("Invalid User Request")
 
-                                                                                }
-                                                                                ?: throw NullValueNotAllowedException("Invalid request")
-                                                                    }
-                                                                    else -> {
-                                                                        throw Exception("Invalid Validation Request")
-                                                                    }
-                                                                }
-
-                                                            }
-
-
                                                         }
-                                                        ?: throw Exception("Invalid Requests")
-
+                                                        ?: throw NullValueNotAllowedException("Invalid request")
+                                                }
+                                                else -> {
+                                                    throw Exception("Invalid Validation Request")
+                                                }
                                             }
-                                            ?: throw NullValueNotAllowedException("Received request with empty token")
 
-                                }
-                                ?: throw ServiceMapNotFoundException("Missing application mapping for [id=$appId], recheck configuration")
+                                        }
+
+
+                                    }
+                                    ?: throw Exception("Invalid Requests")
+
+                            }
+                            ?: throw NullValueNotAllowedException("Received request with empty token")
 
                     }
-                    ?: throw NullValueNotAllowedException("Received request with empty appId")
+                    ?: throw ServiceMapNotFoundException("Missing application mapping for [id=$appId], recheck configuration")
+
+            }
+            ?: throw NullValueNotAllowedException("Received request with empty appId")
 
 //    fun activateUserAccountView(req: ServerRequest): ServerResponse =
 //            req.paramOrNull("appId")
@@ -668,15 +737,15 @@ class RegistrationHandler(
 
 
     fun registrationFailureNotificationView(req: ServerRequest): ServerResponse =
-            serviceMapsRepository.findByIdAndStatus(appId, 1)
-                    ?.let {
-                        req.attributes()["message"] = "Registration failed! Try again later"
-                        req.attributes()["closeLink"] = "/"
-                        req.attributes()["otherActionLink"] = "/api/auth/signup/employee"
-                        req.attributes()["otherActionLinkText"] = "Register Another Employee?"
-                        return ok().render("/auth/register-failure-view", req.attributes())
-                    }
-                    ?: throw Exception("Missing application mapping for [id=$appId], recheck configuration")
+        serviceMapsRepository.findByIdAndStatus(appId, 1)
+            ?.let {
+                req.attributes()["message"] = "Registration failed! Try again later"
+                req.attributes()["closeLink"] = "/"
+                req.attributes()["otherActionLink"] = "/api/auth/signup/employee"
+                req.attributes()["otherActionLinkText"] = "Register Another Employee?"
+                return ok().render("/auth/register-failure-view", req.attributes())
+            }
+            ?: throw Exception("Missing application mapping for [id=$appId], recheck configuration")
 
 //    fun signupManufacturerView(req: ServerRequest): ServerResponse =
 //            serviceMapsRepository.findByIdAndStatus(appId, 1)
@@ -694,81 +763,66 @@ class RegistrationHandler(
 
 
     fun updateUserView(req: ServerRequest): ServerResponse =
-            serviceMapsRepository.findByIdAndStatus(appId, 1)
-                    ?.let { map ->
-                        req.paramOrNull("userId")
-                                ?.let { userId ->
-                                    usersRepo.findByIdOrNull(userId.toLong())
-                                            ?.let { usersEntity ->
-                                                countriesRepository.findAll()
-                                                        .let { countries ->
-                                                            /**
-                                                             * For Employee Update User Profile
-                                                             * */
+        serviceMapsRepository.findByIdAndStatus(appId, 1)
+            ?.let { map ->
+                req.paramOrNull("userId")
+                    ?.let { userId ->
+                        usersRepo.findByIdOrNull(userId.toLong())
+                            ?.let { usersEntity ->
+                                countriesRepository.findAll()
+                                    .let { countries ->
+                                        /**
+                                         * For Employee Update User Profile
+                                         * */
 //                                                            userProfilesRepo.findByUserIdAndStatus(usersEntity, map.inactiveStatus)
 //                                                                    ?.let {userProfilesEntity ->
-                                                            req.attributes()["employeesEntity"] = EmployeesEntity()
-                                                            req.attributes()["userProfilesEntity"] = UserProfilesEntity()
+                                        req.attributes()["employeesEntity"] = EmployeesEntity()
+                                        req.attributes()["userProfilesEntity"] = UserProfilesEntity()
 //                                                                        KotlinLogging.logger { }.info { "User DIRECTORATE before update:  = ${userProfilesEntity.directorateId?.directorate}" }
-                                                            req.attributes().putAll(loadEmployeeUIComponents(map))
+                                        req.attributes().putAll(loadEmployeeUIComponents(map))
 //                                                                        req.attributes()["departmentsByDirectorate"] = userProfilesEntity.directorateId?.let { departmentsRepo.findByDirectorateIdAndStatus(it) }
 //                                                                    }
-                                                            /**
-                                                             * For Importer and Exporter Update profile
-                                                             * */
-                                                            req.attributes()["map"] = map
-                                                            req.attributes()["countries"] = countries
-                                                            req.attributes().putAll(loadImporterExporterUIComponents(map))
-                                                            req.attributes()["importerContactDetailsEntity"] = ImporterContactDetailsEntity()
+                                        /**
+                                         * For Importer and Exporter Update profile
+                                         * */
+                                        req.attributes()["map"] = map
+                                        req.attributes()["countries"] = countries
+                                        req.attributes().putAll(loadImporterExporterUIComponents(map))
+                                        req.attributes()["importerContactDetailsEntity"] =
+                                            ImporterContactDetailsEntity()
 
-                                                            /**
-                                                             * Only Load the application map properties Configuration Details
-                                                             * */
-                                                            req.attributes().putAll(loadMapPropertiesUIComponents(map))
-                                                            /**
-                                                             * Only Load the logged in user Details
-                                                             * */
-                                                            req.attributes()["usersEntity"] = usersEntity
+                                        /**
+                                         * Only Load the application map properties Configuration Details
+                                         * */
+                                        req.attributes().putAll(loadMapPropertiesUIComponents(map))
+                                        /**
+                                         * Only Load the logged in user Details
+                                         * */
+                                        req.attributes()["usersEntity"] = usersEntity
 
-                                                            /**
-                                                             * For Manufacturer Update profile
-                                                             * */
-                                                            req.attributes().putAll(loadManufacturerUIComponents(map))
-                                                            req.attributes()["manufacturersEntity"] = ManufacturersEntity()
-                                                            req.attributes()["stdLevyNotificationFormEntity"] = StdLevyNotificationFormEntity()
-                                                            req.attributes()["manufacturerAddressesEntity"] = ManufacturerAddressesEntity()
-                                                            req.attributes()["manufacturerContactEntity"] = ManufacturerContactsEntity()
-                                                            req.attributes()["yearlyTurnoverEntity"] = ManufacturePaymentDetailsEntity()
-                                                            return ok().render("/auth/user-update-profile", req.attributes())
-                                                        }
-                                            }
-                                }
-
+                                        /**
+                                         * For Manufacturer Update profile
+                                         * */
+                                        req.attributes().putAll(loadManufacturerUIComponents(map))
+                                        req.attributes()["manufacturersEntity"] = ManufacturersEntity()
+                                        req.attributes()["stdLevyNotificationFormEntity"] =
+                                            StdLevyNotificationFormEntity()
+                                        req.attributes()["manufacturerAddressesEntity"] = ManufacturerAddressesEntity()
+                                        req.attributes()["manufacturerContactEntity"] = ManufacturerContactsEntity()
+                                        req.attributes()["yearlyTurnoverEntity"] = ManufacturePaymentDetailsEntity()
+                                        return ok().render("/auth/user-update-profile", req.attributes())
+                                    }
+                            }
                     }
-                    ?: throw Exception("Missing application mapping for [id=$appId], recheck configuration")
+
+            }
+            ?: throw Exception("Missing application mapping for [id=$appId], recheck configuration")
 
 
-//    fun signUpAllUsersView(req: ServerRequest): ServerResponse =
-//            serviceMapsRepository.findByIdAndStatus(appId, 1)
-//                    ?.let { map ->
-//                        req.paramOrNull("message")
-//                                ?.let { message ->
-//                                    req.attributes()["message"] = message
-//                                }
-//                        req.paramOrNull("messageUser")
-//                                ?.let { messageUser ->
-//                                    req.attributes()["messageUser"] = messageUser
-//                                }
-//
-//                        req.attributes()["map"] = map
-//                        req.attributes()["usersEntity"] = UsersEntity()
-//                        req.attributes()["userProfilesEntity"] = UserProfilesEntity()
-//                        req.attributes().putAll(loadEmployeeUIComponents(map))
-//
-//                        return ok().render("/auth/user-registration", req.attributes())
-//
-//
-//                    }
-//                    ?: throw Exception("Missing application mapping for [id=$appId], recheck configuration")
+    fun signUpAllUsersView(req: ServerRequest): ServerResponse {
+        req.attributes()["usersEntity"] = UsersEntity()
+        return ok().render("/auth/user-registration", req.attributes())
+    }
+
 
 }

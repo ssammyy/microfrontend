@@ -1,0 +1,88 @@
+<div class="container-fluid" style="margin-top: 5%">
+  <form (ngSubmit)="saveStandard()" [formGroup]="stdRequestFormGroup" class="form">
+
+    <p>Fill in the form below to request for a standard</p>
+    <hr>
+
+    <div class="form-body">
+      <div class="form-group">
+        <label>Department/Sector</label>
+        <select aria-label="Small" aria-describedby="inputGroup-sizing-lg"
+                class="form-control" required
+                formControlName="department_id"
+                name="department_id"
+                [class.is-invalid]="formStdRequest.department_id.invalid && formStdRequest.department_id.touched">
+          <option disabled>--Select Department--</option>
+          <option *ngFor="let department of departments" value="{{department.id}}}">{{department.name}}</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Technical Committee</label>
+        <select aria-label="Small" aria-describedby="inputGroup-sizing-lg"
+                class="form-control" required
+                formControlName="tc_id"
+                name="tc_id" [class.is-invalid]="formStdRequest.tc_id.invalid && formStdRequest.tc_id.touched">
+          <option disabled>--Select committee--</option>
+          <option *ngFor="let committee of committees"
+                  [value]="committee.id">{{committee.technical_committee_no}}</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Product Category</label>
+        <select aria-label="Small" aria-describedby="inputGroup-sizing-lg"
+                class="form-control"
+                formControlName="productCategory"
+                name="productCategory" (change)="onSelectProductCategory($event.target.value)" [class.is-invalid]="formStdRequest.productCategory.invalid && formStdRequest.productCategory.touched">
+          <option disabled>--Select Category--</option>
+          <option *ngFor="let product of products" [value]="product.id">{{product.name}}</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Product Sub Category</label>
+        <select aria-label="Small" aria-describedby="inputGroup-sizing-lg"
+                class="form-control" required
+                formControlName="product_category"
+                name="product_category" [class.is-invalid]="formStdRequest.product_category.invalid && formStdRequest.product_category.touched">
+          <option disabled>--Select Sub Category--</option>
+          <option *ngFor="let productSub of productsSubCategory" [value]="productSub.id">{{productSub.name}}</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label><b>Enter your name</b></label>
+        <input [class.is-invalid]="formStdRequest.name.invalid && formStdRequest.name.touched"
+               aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+               class="form-control one-column-input" formControlName="name" name="name"
+               placeholder="name" type="text">
+      </div>
+      <div class="form-group">
+        <label><b>Enter Phone Number</b></label>
+        <input [class.is-invalid]="formStdRequest.phone.invalid && formStdRequest.phone.touched"
+               aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+               class="form-control one-column-input" formControlName="phone" name="phone"
+               placeholder="+25470000000" type="text">
+      </div>
+      <div class="form-group">
+        <label><b>Enter your Email address</b></label>
+        <input [class.is-invalid]="formStdRequest.email.invalid && formStdRequest.email.touched"
+               aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+               class="form-control one-column-input" formControlName="email" name="email"
+               placeholder="joedoe@gmail.com" type="email">
+      </div>
+
+
+      <div style="margin: 3em 0 2em 0">
+        <button [disabled]="!stdRequestFormGroup.valid" class="submit-button" type="submit">SUBMIT</button>
+      </div>
+
+      <!--      <div>-->
+      <!--        <span>Don't have an account ? </span><span><a routerLink="/register" >Register</a></span>-->
+      <!--      </div>-->
+      <!--      <div>-->
+      <!--        <span>Forgot username/password ? </span><span><a>Reset</a></span>-->
+      <!--      </div>-->
+    </div>
+
+
+  </form>
+</div>

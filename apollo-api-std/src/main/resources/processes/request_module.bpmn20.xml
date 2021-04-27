@@ -25,18 +25,8 @@
         </userTask>
         <endEvent id="endEvent"></endEvent>
         <serviceTask id="sendNotificationCompiledRequests" name="Send notification of the compiled request"
-                     flowable:type="mail" >
-          <extensionElements>
-            <flowable:field name="to">
-                <flowable:string><![CDATA[user@mail.com]]></flowable:string>
-            </flowable:field>
-            <flowable:field name="subject">
-                <flowable:string><![CDATA[Notification of the compiled request]]></flowable:string>
-            </flowable:field>
-              <flowable:field name="html">
-                  <flowable:string><![CDATA[<p>Notification of the compiled request has been completed</p>]]></flowable:string>
-              </flowable:field>
-          </extensionElements>
+                      flowable:class="com.apollo.standardsdevelopment.handlers.EmailHandler" >
+
         </serviceTask>
         <userTask id="analyzeNotificationRequest" name="Review request" flowable:candidateGroups="HOF"
                   flowable:formFieldValidation="true"></userTask>

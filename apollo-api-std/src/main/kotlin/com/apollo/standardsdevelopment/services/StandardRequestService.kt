@@ -1,5 +1,7 @@
 package com.apollo.standardsdevelopment.services
 
+import com.apollo.standardsdevelopment.dto.Decision
+import com.apollo.standardsdevelopment.dto.ID
 import com.apollo.standardsdevelopment.dto.ProcessInstanceResponse
 import com.apollo.standardsdevelopment.dto.TaskDetails
 import com.apollo.standardsdevelopment.models.*
@@ -8,8 +10,11 @@ import org.flowable.engine.ProcessEngine
 import org.flowable.engine.RepositoryService
 import org.flowable.engine.RuntimeService
 import org.flowable.engine.TaskService
+import org.flowable.engine.history.HistoricActivityInstance
 import org.flowable.engine.repository.Deployment
+import org.flowable.engine.runtime.ProcessInstance
 import org.flowable.task.api.Task
+import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Service
 import java.util.*
 import kotlin.collections.HashMap
@@ -17,13 +22,16 @@ import kotlin.collections.HashMap
 @Service
 class StandardRequestService(private val runtimeService: RuntimeService,
                              private val taskService: TaskService,
-                             private val processEngine: ProcessEngine,
+                             @Qualifier("processEngine") private val processEngine: ProcessEngine,
                              private val repositoryService: RepositoryService,
                              private val standardRequestRepository: StandardRequestRepository,
                              private val standardNWIRepository: StandardNWIRepository,
                              private val standardJustificationRepository: StandardJustificationRepository,
                              private val standardWorkPlanRepository: StandardWorkPlanRepository,
-                             private val productRepository: ProductRepository
+                             private val productRepository: ProductRepository,
+                             private val departmentRepository: DepartmentRepository,
+                             private val technicalCommitteeRepository: TechnicalCommitteeRepository,
+                             private val productSubCategoryRepository: ProductSubCategoryRepository
 ) {
 
     val PROCESS_DEFINITION_KEY = "requestModule"
@@ -67,10 +75,10 @@ class StandardRequestService(private val runtimeService: RuntimeService,
         return taskDetails
     }
 
-    fun hofReview(taskId: String?)
+    fun hofReview(taskId: ID)
     {
         println("HOF has finished the review")
-        taskService.complete(taskId)
+        taskService.complete(taskId.ID)
     }
 
     fun getTCSECTasks():List<TaskDetails>
@@ -79,7 +87,7 @@ class StandardRequestService(private val runtimeService: RuntimeService,
         return getTaskDetails(tasks)
     }
 
-    fun uploadNWI(standardNWI: StandardNWI, taskId: String?)
+    fun uploadNWI(standardNWI: StandardNWI)
     {
        val variable:MutableMap<String, Any> = HashMap()
         standardNWI.proposalTitle?.let{variable.put("proposal_title", it)}
@@ -88,7 +96,7 @@ class StandardRequestService(private val runtimeService: RuntimeService,
         print(standardNWI.toString())
 
         standardNWIRepository.save(standardNWI)
-        taskService.complete(taskId)
+        taskService.complete(standardNWI.taskId)
         println("TC-SEC has uploaded NWI")
 
     }
@@ -100,11 +108,11 @@ class StandardRequestService(private val runtimeService: RuntimeService,
         return getTaskDetails(tasks)
     }
 
-    fun decisionOnNWI(taskId: String?, approved: Boolean)
+    fun decisionOnNWI(decision: Decision)
     {
         val variables: MutableMap<String, Any> = java.util.HashMap()
-        variables["approved"] = approved
-        taskService.complete(taskId, variables)
+        variables["approved"] = decision.decision
+        taskService.complete(decision.taskId, variables)
     }
 
     fun getTCSecTasks():List<TaskDetails>
@@ -115,7 +123,7 @@ class StandardRequestService(private val runtimeService: RuntimeService,
     }
 
 
-    fun uploadJustification(standardJustification: StandardJustification, taskId: String?)
+    fun uploadJustification(standardJustification: StandardJustification)
     {
         val variable:MutableMap<String, Any> = HashMap()
         standardJustification.title?.let{variable.put("title", it)}
@@ -126,7 +134,7 @@ class StandardRequestService(private val runtimeService: RuntimeService,
 
         standardJustificationRepository.save(standardJustification)
 
-        taskService.complete(taskId)
+        taskService.complete(standardJustification.taskId)
         println("TC-SEC has uploaded Justification")
 
     }
@@ -137,11 +145,11 @@ class StandardRequestService(private val runtimeService: RuntimeService,
         return getTaskDetails(tasks)
     }
 
-    fun decisionOnJustification(taskId: String?, approved: Boolean)
+    fun decisionOnJustification(decision: Decision)
     {
         val variables: MutableMap<String, Any> = java.util.HashMap()
-        variables["spc_approved"] = approved
-        taskService.complete(taskId, variables)
+        variables["spc_approved"] = decision.decision
+        taskService.complete(decision.taskId, variables)
     }
 
     fun getTCSecTasksWorkPlan():List<TaskDetails>
@@ -150,14 +158,14 @@ class StandardRequestService(private val runtimeService: RuntimeService,
         return getTaskDetails(tasks)
     }
 
-    fun uploadWorkPlan(standardWorkPlan: StandardWorkPlan, taskId: String?)
+    fun uploadWorkPlan(standardWorkPlan: StandardWorkPlan)
     {
         val variable:MutableMap<String, Any> = HashMap()
         standardWorkPlan.title?.let{variable.put("title", it)}
 
 
         standardWorkPlanRepository.save(standardWorkPlan)
-        taskService.complete(taskId)
+        taskService.complete(standardWorkPlan.taskId)
         println("TC-SEC has uploaded workplan")
 
     }
@@ -167,11 +175,31 @@ class StandardRequestService(private val runtimeService: RuntimeService,
         return productRepository.findAll()
     }
 
-    fun checkProcessHistory(processId: String?) {
+    fun getDepartments(): MutableList<Department>
+    {
+        return departmentRepository.findAll()
+    }
+
+    fun getTechnicalCommittee(): MutableList<TechnicalCommittee>
+    {
+        return technicalCommitteeRepository.findAll()
+    }
+
+    /*fun getProductCategories(id:ID): MutableList<ProductSubCategory>
+    {
+        return productSubCategoryRepository.findAll()
+    }*/
+
+    fun getProductCategories(id:String?): MutableList<ProductSubCategory>
+    {
+        return productSubCategoryRepository.findAll()
+    }
+
+    fun checkProcessHistory(id: ID): List<HistoricActivityInstance> {
         val historyService = processEngine.historyService
         val activities = historyService
                 .createHistoricActivityInstanceQuery()
-                .processInstanceId(processId)
+                .processInstanceId(id.ID)
                 .finished()
                 .orderByHistoricActivityInstanceEndTime()
                 .asc()
@@ -180,6 +208,8 @@ class StandardRequestService(private val runtimeService: RuntimeService,
             println(
                     activity.activityId + " took " + activity.durationInMillis + " milliseconds")
         }
+
+        return activities
 
     }
 

@@ -53,6 +53,12 @@ class ApplicationMapProperties {
     @Value("\${org.kebs.app.kotlin.apollo.application.map.fuel.inspection}")
     val mapQaFuelInspection: Int = 0
 
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.user.request.importer}")
+    val mapUserRequestImporter: Long = 0L
+
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.user.request.manufacture}")
+    val mapUserRequestManufacture: Long = 0L
+
     @Value("\${org.kebs.app.kotlin.apollo.application.map.standards.development}")
     val mapStandardsDevelopment: Int = 0
 
@@ -113,6 +119,9 @@ class ApplicationMapProperties {
 
     @Value("\${org.kebs.app.kotlin.apollo.application.map.mpesa.config.integration}")
     val mapMpesaConfigIntegration: Long = 0L
+
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.sms.config.integration}")
+    val mapSmsConfigIntegration: Long = 0L
 
     @Value("\${org.kebs.app.kotlin.apollo.application.map.kesws}")
     val mapKesws: Int = 0
