@@ -123,12 +123,12 @@ Content-Type: application/json
 
 ###
 
-###PUBLISHING ENDPOINTS ######
+######################################################PUBLISHING ENDPOINTS #####################################################
 
 ###POST deploy application
 POST http://localhost:8080/publishing/deploy
 
-###POST apply for standard request
+###POST submit draft standard
 POST http://localhost:8080/publishing/submit
 Content-Type: application/json
 
@@ -147,12 +147,10 @@ POST http://localhost:8080/publishing/decisionOnKSDraft
 Content-Type: application/json
 
 {
-  "taskId": "4ab39b09-a3fd-11eb-b2bd-fe5c68490b49",
-  "decision": "false"
+  "taskId": "d352d544-a669-11eb-b7e6-fe5c68490b49",
+  "decision": "true"
 }
 
-###GET all tasks assigned to a HOP
-GET http://localhost:8080/publishing/getHOPTasks
 
 ###POST upload rejection feedback
 POST http://localhost:8080/publishing/uploadRejectionFeedback
@@ -165,6 +163,67 @@ Content-Type: application/json
   "comment": "Its not upto standard",
   "taskId": "5f6f6020-a3fd-11eb-b2bd-fe5c68490b49"
 }
+
+
+###GET all tasks assigned to Editors
+GET http://localhost:8080/publishing/getEditorTasks
+
+###POST finished editing draft
+POST http://localhost:8080/publishing/finishEditingDraft
+Content-Type: application/json
+
+{
+  "title": "ENG/01:2021",
+  "requestor_id": "1",
+  "standard_officer_id": "1",
+  "version_number": "1",
+  "taskId": "e13cb13d-a669-11eb-b7e6-fe5c68490b49"
+}
+
+###GET all tasks assigned to Proofreader
+GET http://localhost:8080/publishing/getProofReaderTasks
+
+
+### POST Provide decision on KS draft
+POST http://localhost:8080/publishing/finishedProofReading
+Content-Type: application/json
+
+{
+  "taskId": "fe796f03-a669-11eb-b7e6-fe5c68490b49",
+  "decision": "true"
+}
+
+
+
+###GET all tasks assigned to a Draughtsman
+GET http://localhost:8080/publishing/getDraughtsmanTasks
+
+###POST finished draughting
+POST http://localhost:8080/publishing/uploadDraughtChanges
+Content-Type: application/json
+
+{
+  "title": "ENG/01:2021",
+  "requestor_id": "1",
+  "standard_officer_id": "1",
+  "version_number": "2",
+  "taskId": "0effa0bc-a66a-11eb-b7e6-fe5c68490b49"
+}
+
+###GET all tasks assigned to a HOP
+GET http://localhost:8080/publishing/getHOPTasks
+
+###POST approve draft standard change
+POST http://localhost:8080/publishing/approvedDraftStandard
+Content-Type: application/json
+
+{
+  "title": "ENG/01:2021",
+  "requestor_id": "1",
+  "taskId": "3089bfa0-a66a-11eb-b7e6-fe5c68490b49"
+}
+
+
 
 ###
 

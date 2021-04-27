@@ -49,4 +49,46 @@ class PublishingController(val publishingService: PublishingService) {
         return ServerResponse(HttpStatus.OK,"Successfully uploaded feedback on draft",publishingService.uploadFeedbackOnDraft(decisionFeedback))
     }
 
+    @GetMapping("/getEditorTasks")
+    fun getEditorTasks():List<TaskDetails>
+    {
+        return publishingService.getEditorTasks()
+    }
+
+    @PostMapping("/finishEditingDraft")
+    @ResponseBody
+    fun editDraftStandard(@RequestBody standardDraft: StandardDraft): ServerResponse {
+        return ServerResponse(HttpStatus.OK,"Finished editing draft",publishingService.editDraftStandard(standardDraft))
+    }
+
+    @GetMapping("/getProofReaderTasks")
+    fun getProofreaderTasks():List<TaskDetails>
+    {
+        return publishingService.getProofreaderTasks()
+    }
+
+    @PostMapping("/finishedProofReading")
+    @ResponseBody
+    fun decisionOnProofReading(@RequestBody decision: Decision): ServerResponse {
+        return ServerResponse(HttpStatus.OK,"Finished checking proof reading",publishingService.decisionOnProofReading(decision))
+    }
+
+    @PostMapping("/approvedDraftStandard")
+    @ResponseBody
+    fun approveDraughtChange(@RequestBody standardDraft: StandardDraft): ServerResponse {
+        return ServerResponse(HttpStatus.OK,"Check draught standard and approve change",publishingService.approveDraughtChange(standardDraft))
+    }
+
+    @GetMapping("/getDraughtsmanTasks")
+    fun getDraughtsmanTasks():List<TaskDetails>
+    {
+        return publishingService.getDraughtsmanTasks()
+    }
+
+    @PostMapping("/uploadDraughtChanges")
+    @ResponseBody
+    fun uploadDraftStandard(@RequestBody standardDraft: StandardDraft): ServerResponse {
+        return ServerResponse(HttpStatus.OK,"Finished draughting changes",publishingService.uploadDraftStandard(standardDraft))
+    }
+
 }

@@ -8,9 +8,11 @@ import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.common.exceptions.InvalidInputException
 import org.kebs.app.kotlin.apollo.common.exceptions.InvalidValueException
 import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
+import org.kebs.app.kotlin.apollo.common.utils.generateRandomText
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.*
 import org.kebs.app.kotlin.apollo.store.model.di.UsersCfsAssignmentsEntity
+import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileEntity
 import org.kebs.app.kotlin.apollo.store.model.registration.UserRequestsEntity
 import org.kebs.app.kotlin.apollo.store.repo.*
 import org.kebs.app.kotlin.apollo.store.repo.di.IUsersCfsAssignmentsRepository
@@ -34,6 +36,9 @@ class SystemsAdminDaoService(
     private val userProfilesRepo: IUserProfilesRepository,
     private val commonDaoServices: CommonDaoServices,
     private val rolesRepo: IUserRolesRepository,
+    private val businessLinesRepo: IBusinessLinesRepository,
+    private val businessNatureRepo: IBusinessNatureRepository,
+    private val companyProfileRepo: ICompanyProfileRepository,
     private val rolePrivilegesRepo: IUserRolesPrivilegesRepository,
     private val titlesRepo: ITitlesRepository,
     private val userTypesRepo: IUserTypesEntityRepository,
@@ -51,7 +56,8 @@ class SystemsAdminDaoService(
     private val subSectionsL2Repo: ISubSectionsLevel2Repository,
     private val applicationMapProperties: ApplicationMapProperties,
     private val countiesRepo: ICountiesRepository,
-    private val townsRepo: ITownsRepository
+    private val townsRepo: ITownsRepository,
+    private val serviceRequestsRepository: IServiceRequestsRepository
 ) {
 
     final val appId: Int = applicationMapProperties.mapUserRegistration
@@ -119,23 +125,8 @@ class SystemsAdminDaoService(
     fun getUserDetails(id: Long): UserDetailsDto {
         val user = commonDaoServices.findUserByID(id)
         val employeeProfile = userProfilesRepo.findByUserId(user)
-        val employeeProfileDto = employeeProfile?.let {
-            EmployeeProfileDetailsDto(
-                employeeProfile.directorateId?.id?.let { directoratesRepo.findByIdOrNull(it)?.directorate },
-                employeeProfile.departmentId?.id?.let { departmentsRepo.findByIdOrNull(it)?.department },
-                employeeProfile.divisionId?.id?.let { divisionsRepo.findByIdOrNull(it)?.division },
-                employeeProfile.sectionId?.id?.let { sectionsRepo.findByIdOrNull(it)?.section },
-                employeeProfile.subSectionL1Id?.id?.let { subSectionsL1Repo.findByIdOrNull(it)?.subSection },
-                employeeProfile.subSectionL2Id?.id?.let { subSectionsL2Repo.findByIdOrNull(it)?.subSection },
-                employeeProfile.designationId?.id?.let { designationsRepo.findByIdOrNull(it)?.designationName },
-                employeeProfile.id,
-                employeeProfile.regionId?.id?.let { regionsRepo.findByIdOrNull(it)?.region },
-                employeeProfile.countyID?.id?.let { countiesRepo.findByIdOrNull(it)?.county },
-                employeeProfile.townID?.id?.let { townsRepo.findByIdOrNull(it)?.town },
-                employeeProfile.status == 1
-
-            )
-        }
+        val companyProfile = user.id?.let { userId-> companyProfileRepo.findByUserId(userId)?.let { returnCompanyProfileEntityDto(it) } }
+        val employeeProfileDto = employeeProfile?.let { getEmployeeProfileDto(it) }
         return UserDetailsDto(
             user.id,
             user.firstName,
@@ -154,9 +145,27 @@ class SystemsAdminDaoService(
             user.registrationDate,
             user.title?.let { titlesRepo.findByIdOrNull(user.title)?.title },
             employeeProfileDto,
-
+            companyProfile
             )
 
+    }
+
+    private fun getEmployeeProfileDto(employeeProfile: UserProfilesEntity) : EmployeeProfileDetailsDto{
+           return EmployeeProfileDetailsDto(
+                employeeProfile.directorateId?.id?.let { directoratesRepo.findByIdOrNull(it)?.directorate },
+                employeeProfile.departmentId?.id?.let { departmentsRepo.findByIdOrNull(it)?.department },
+                employeeProfile.divisionId?.id?.let { divisionsRepo.findByIdOrNull(it)?.division },
+                employeeProfile.sectionId?.id?.let { sectionsRepo.findByIdOrNull(it)?.section },
+                employeeProfile.subSectionL1Id?.id?.let { subSectionsL1Repo.findByIdOrNull(it)?.subSection },
+                employeeProfile.subSectionL2Id?.id?.let { subSectionsL2Repo.findByIdOrNull(it)?.subSection },
+                employeeProfile.designationId?.id?.let { designationsRepo.findByIdOrNull(it)?.designationName },
+                employeeProfile.id,
+                employeeProfile.regionId?.id?.let { regionsRepo.findByIdOrNull(it)?.region },
+                employeeProfile.countyID?.id?.let { countiesRepo.findByIdOrNull(it)?.county },
+                employeeProfile.townID?.id?.let { townsRepo.findByIdOrNull(it)?.town },
+                employeeProfile.status == 1
+
+            )
     }
 
     fun listUsers(page: Int, records: Int): List<UserEntityDto>? {
@@ -382,12 +391,98 @@ class SystemsAdminDaoService(
         }
     }
 
-    fun userRegistrationMailSending(user: UsersEntity, userRole: UserRoleAssignmentsEntity?, emailUuid: String) {
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun updateUserCompanyDetails(dto: UserCompanyEntityDto): UserCompanyDto {
+        dto.userId?.let {
+            companyProfileRepo.findByUserId(it)
+                ?.let { companyProfile ->
+                    with(companyProfile) {
+                        name = dto.name
+                        kraPin = dto.kraPin
+                        userId = dto.userId
+                        registrationNumber = dto.registrationNumber
+                        postalAddress = dto.postalAddress
+                        companyEmail = dto.companyEmail
+                        companyTelephone = dto.companyTelephone
+                        yearlyTurnover = dto.yearlyTurnover
+                        businessLines = dto.businessLines
+                        businessNatures = dto.businessNatures
+                        buildingName = dto.buildingName
+                        streetName = dto.streetName
+                        region = dto.region
+                        county = dto.county
+                        town = dto.town
+                        status = 1
+                        modifiedBy = loggedInUserDetails().userName
+                        modifiedOn = Timestamp.from(Instant.now())
+                    }
+                    companyProfileRepo.save(companyProfile)
+                   return returnCompanyProfileEntityDto(companyProfile)
+                }
+        }
+            ?: kotlin.run {
+                var companyProfile = CompanyProfileEntity()
+                with(companyProfile) {
+                    name = dto.name
+                    kraPin = dto.kraPin
+                    userId = dto.userId
+                    registrationNumber = dto.registrationNumber
+                    postalAddress = dto.postalAddress
+                    companyEmail = dto.companyEmail
+                    companyTelephone = dto.companyTelephone
+                    yearlyTurnover = dto.yearlyTurnover
+                    businessLines = dto.businessLines
+                    businessNatures = dto.businessNatures
+                    buildingName = dto.buildingName
+                    streetName = dto.streetName
+                    region = dto.region
+                    county = dto.county
+                    town = dto.town
+                    userId = dto.userId
+                    status = 1
+                    createdBy = loggedInUserDetails().userName
+                    createdOn = java.sql.Timestamp.from(java.time.Instant.now())
+                }
+
+                companyProfile = companyProfileRepo.save(companyProfile)
+                dto.profileType?.let { it1 -> companyProfile.userId?.let { it2 -> updateUserProfile(it1, it2, 1) } }
+                return returnCompanyProfileEntityDto(companyProfile)
+            }
+    }
+
+    fun userRegistrationMailSending(user: UsersEntity, userRole: UserRoleAssignmentsEntity?, emailUuid: String): ServiceRequestsEntity {
+
+
         val map = commonDaoServices.serviceMapDetails(appId)
-        val payload = "$user $userRole"
-        val sr = commonDaoServices.mapServiceRequestForSuccess(map, payload, user)
-        val emailEntity = commonDaoServices.userRegisteredSuccessfulEmailCompose(user, sr, map, null)
-        commonDaoServices.sendEmailAfterCompose(user, emailUuid, emailEntity, appId, payload)
+
+        var sr = commonDaoServices.createServiceRequest(map)
+        try {
+            val payload = "$user $userRole"
+            sr = commonDaoServices.mapServiceRequestForSuccess(map, payload, user)
+            val emailEntity = commonDaoServices.userRegisteredSuccessfulEmailCompose(user, sr, map, null)
+            commonDaoServices.sendEmailAfterCompose(user, emailUuid, emailEntity, appId, payload)
+
+            sr.payload = "User[id= ${user.id}]"
+            sr.names = "${user.firstName} ${user.lastName}"
+
+            sr.responseStatus = sr.serviceMapsId?.successStatusCode
+            sr.responseMessage = "Success ${sr.payload}"
+            sr.status = map.successStatus
+            sr = serviceRequestsRepository.save(sr)
+            sr.processingEndDate = Timestamp.from(Instant.now())
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message, e)
+//            KotlinLogging.logger { }.trace(e.message, e)
+            sr.status = sr.serviceMapsId?.exceptionStatus
+            sr.responseStatus = sr.serviceMapsId?.exceptionStatusCode
+            sr.responseMessage = e.message
+            sr = serviceRequestsRepository.save(sr)
+
+        }
+
+        KotlinLogging.logger { }.trace("${sr.id} ${sr.responseStatus}")
+        return sr
     }
 
 
@@ -748,6 +843,27 @@ class SystemsAdminDaoService(
         )
     }
 
+    fun returnCompanyProfileEntityDto(cp: CompanyProfileEntity): UserCompanyDto {
+
+        return UserCompanyDto(
+            cp.name,
+            cp.kraPin,
+            cp.userId,
+            cp.registrationNumber,
+            cp.postalAddress,
+            cp.companyEmail,
+            cp.companyTelephone,
+            cp.yearlyTurnover,
+            cp.businessLines?.let { businessLinesRepo.findByIdOrNull(cp.businessLines)?.name },
+            cp.businessNatures?.let { businessNatureRepo.findByIdOrNull(cp.businessNatures)?.name },
+            cp.buildingName,
+            cp.streetName,
+            cp.region?.let { regionsRepo.findByIdOrNull(cp.region)?.region },
+            cp.county?.let { countiesRepo.findByIdOrNull(cp.county)?.county },
+            cp.town?.let { townsRepo.findByIdOrNull(cp.town)?.town }
+        )
+    }
+
     fun userRequest(userRequestDto: UserRequestEntityDto): UserRequestEntityDto? {
         return usersRepo.findByIdOrNull(userRequestDto.userId)
             ?.let { userDetails ->
@@ -762,13 +878,23 @@ class SystemsAdminDaoService(
                                         status = 1
                                         modifiedBy = loggedInUserDetails().userName
                                         modifiedOn = java.sql.Timestamp.from(java.time.Instant.now())
-                                        varField1 = "${status}"
+                                        varField1 = "$status"
                                     }
-                                    returnUserRequestEntityDto(userRequestRepo.save(usersRequestDetails))
+                                    val request = userRequestRepo.save(usersRequestDetails)
+                                    request.requestId?.let { it1 ->
+                                        request.userId?.let { it2 ->
+                                            updateUserProfile(
+                                                it1,
+                                                it2,
+                                                0
+                                            )
+                                        }
+                                    }
+                                    returnUserRequestEntityDto(request)
                                 }
                         }
                             ?: kotlin.run {
-                                val userRequest = UserRequestsEntity()
+                                var userRequest = UserRequestsEntity()
                                 with(userRequest) {
                                     userId = userDetails.id
                                     requestId = requestDetails.id
@@ -779,7 +905,17 @@ class SystemsAdminDaoService(
                                     createdBy = loggedInUserDetails().userName
                                     createdOn = Timestamp.from(Instant.now())
                                 }
-                                returnUserRequestEntityDto(userRequestRepo.save(userRequest))
+                                userRequest = userRequestRepo.save(userRequest)
+                                userRequest.requestId?.let { it1 ->
+                                    userRequest.userId?.let { it2 ->
+                                        updateUserProfile(
+                                            it1,
+                                            it2,
+                                            0
+                                        )
+                                    }
+                                }
+                                returnUserRequestEntityDto(userRequest)
 
                             }
 
@@ -789,6 +925,21 @@ class SystemsAdminDaoService(
 
             }
             ?: throw InvalidValueException("Record with id=${userRequestDto.userId} not found, check and try again")
+    }
+
+    fun updateUserProfile(requestID: Long, userId: Long, status: Int) {
+        usersRepo.findByIdOrNull(userId)?.let { u ->
+            when (requestID) {
+                applicationMapProperties.mapUserRequestManufacture -> {
+                    u.manufactureProfile = status
+                }
+                applicationMapProperties.mapUserRequestImporter -> {
+                    u.importerProfile = status
+                }
+            }
+            usersRepo.save(u)
+        }
+
     }
 
     fun revokeCfsFromUser(userProfileId: Long, cfsId: Long, status: Int): UsersCfsAssignmentsEntity? {
