@@ -9,10 +9,10 @@
     <exclusiveGateway id="decisionOnFeedback"/>
     <userTask id="feedbackOnRejection2" name="Feedback on rejection" flowable:candidateGroups="SAC" flowable:formFieldValidation="true"/>
     <serviceTask id="generateTCNumber" name="Generate TC number and advertise position on site" flowable:class="com.apollo.standardsdevelopment.handlers.GenerateTCNumber"/>
-    <serviceTask id="sendNotificationForRecommendation1" name="Send notification for recommendation" flowable:class="com.apollo.standardsdevelopment.handlers.NotificationHandler"/>
+    <serviceTask id="sendNotificationForRecommendation1" name="Send notification for recommendation" flowable:class="com.apollo.standardsdevelopment.handlers.EmailHandler"/>
     <userTask id="feedbackOnRejection" name="Feedback on rejection" flowable:candidateGroups="SPC" flowable:formFieldValidation="true"/>
-    <serviceTask id="sendNotificationFeedback2" name="Send notification and feedback" flowable:class="com.apollo.standardsdevelopment.handlers.NotificationHandler"/>
-    <serviceTask id="sendFeedbackNotification" name="Send notification of feedback" flowable:class="com.apollo.standardsdevelopment.handlers.NotificationHandler"/>
+    <serviceTask id="sendNotificationFeedback2" name="Send notification and feedback" flowable:class="com.apollo.standardsdevelopment.handlers.EmailHandler"/>
+    <serviceTask id="sendFeedbackNotification" name="Send notification of feedback" flowable:class="com.apollo.standardsdevelopment.handlers.EmailHandler"/>
     <sequenceFlow id="flow3" sourceRef="sendNotificationForRecommendation1" targetRef="reviewJustification"/>
     <sequenceFlow id="flow4" sourceRef="reviewJustification" targetRef="deceisionOnJustification"/>
     <sequenceFlow id="flow6" sourceRef="feedbackOnRejection" targetRef="sendNotificationFeedback2"/>
