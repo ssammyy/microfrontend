@@ -80,7 +80,8 @@
                                 <div class="filter-title">Action:</div>
                             </div>
                             <div>
-                                <a th:if="${complaint.cocNo}" style="color: white" class="filter-link " th:href="@{/api/di/pvoc/coc-details/{cocNo}(cocNo=${complaint.cocNo})}">View Coc Document</a>
+<!--                                <a th:if="${complaint.cocNo}" style="color: white" class="filter-link " th:href="@{/api/di/pvoc/coc-details/{cocNo}(cocNo=${complaint.cocNo})}">View Coc Document</a>-->
+                                <a th:if="${complaint.cocNo}" style="color: white" class="filter-link " th:href="@{/api/di/pvoc/coc-details(cocNo=${complaint.cocNo})}">View Coc Document</a>
                                 <a th:if="${complaint.rfcNo}"  style="color: white" class="filter-link " th:href="@{/api/di/pvoc/rfc-details/{rfcNo}(rfcNo=${complaint.rfcNo})}">View RFC Document</a>
                                 <a style="color: white" class="filter-link " th:href="@{/api/di/pvoc/view-remarks/{id}(id=${complaint.id})}">View Remarks</a>
                                 <a  style="color: white" class="filter-link assignMpvoc">Assign MPVOC</a>
@@ -164,7 +165,7 @@
                             </div>
                             <div class="modal-body">
                                 <div class="form-group">
-                                    <label for="remarksAdd" class="col-form-label">Please write, in detail, your reason for Rejecting:</label>
+                                    <label for="remarksAdd" class="col-form-label">Enter Your Recommendation Below:</label>
                                     <textarea required name="name" id="remarksAdd" class="input-field w-input" cols="65" rows="5" th:field="*{recomendation}"></textarea>
                                 </div>
                             </div>
@@ -183,7 +184,7 @@
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h5 class="modal-title" id="diffjjjer">Reject With Remarks</h5>
+                                <h5 class="modal-title" id="diffjjjer">Approval With Remarks</h5>
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
@@ -219,7 +220,7 @@
                                     <div class="modal-body">
                                         <div class="form-group">
                                             <input type="hidden" th:field="*{remarkAgainist}" th:value="Approval">
-                                            <label for="remarksAdd" class="col-form-label">Please write, in detail, your feedback for this Exception:</label>
+                                            <label for="remarksAdd" class="col-form-label">Rejection Remarks:</label>
                                             <textarea required name="name" id="remarksAdd" class="input-field w-input" cols="65" rows="5" th:field="*{remarks}"></textarea>
                                         </div>
                                     </div>

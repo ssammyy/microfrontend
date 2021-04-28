@@ -1,7 +1,7 @@
 <div class="container-fluid" style="margin-top: 5%">
   <form (ngSubmit)="saveStandard()" [formGroup]="stdRequestFormGroup" class="form">
-    <h1>Welcome To KIMS</h1>
-    <p>Enter your details to be Activated into KIMS PLATFORM</p>
+
+    <p>Fill in the form below to request for a standard</p>
     <hr>
 
     <div class="form-body">
@@ -44,7 +44,7 @@
                 formControlName="product_category"
                 name="product_category" [class.is-invalid]="formStdRequest.product_category.invalid && formStdRequest.product_category.touched">
           <option disabled>--Select Sub Category--</option>
-          <option *ngFor="let product of products" [value]="product.id">{{product.name}}</option>
+          <option *ngFor="let productSub of productsSubCategory" [value]="productSub.id">{{productSub.name}}</option>
         </select>
       </div>
 

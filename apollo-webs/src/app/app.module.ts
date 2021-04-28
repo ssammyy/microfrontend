@@ -55,6 +55,10 @@ import { StandardTaskComponent } from './components/standards-development/standa
 import {StdTscSecTasksComponent} from "./components/standards-development/std-tsc-sec-tasks/std-tsc-sec-tasks.component";
 import { StdTscTasksComponent } from './components/standards-development/std-tsc-tasks/std-tsc-tasks.component';
 import { RequestStandardFormComponent } from './components/standards-development/standard-request/request-standard-form/request-standard-form.component';
+import {FileUploadModule} from "ng2-file-upload";
+import { StdTcTasksComponent } from './components/standards-development/std-tc-tasks/std-tc-tasks.component';
+
+
 
 @NgModule({
   declarations: [
@@ -99,6 +103,7 @@ import { RequestStandardFormComponent } from './components/standards-development
     StdTscSecTasksComponent,
     StdTscTasksComponent,
     RequestStandardFormComponent,
+    StdTcTasksComponent,
   ],
   exports: [
   ],
@@ -114,6 +119,7 @@ import { RequestStandardFormComponent } from './components/standards-development
     NgxSpinnerModule,
     NgxPaginationModule,
     HttpClientModule,
+    FileUploadModule,
     ToastrModule.forRoot({
       timeOut: 5000,
       positionClass: 'toast-bottom-right',
