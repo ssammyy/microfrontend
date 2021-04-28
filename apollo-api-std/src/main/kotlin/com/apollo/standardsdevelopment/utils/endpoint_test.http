@@ -223,7 +223,20 @@ Content-Type: application/json
   "taskId": "3089bfa0-a66a-11eb-b7e6-fe5c68490b49"
 }
 
+######################################################FORMATION OF TECHNICAL COMMITTEE##################################################
 
+###POST deploy application
+POST http://localhost:8080/publishing/deploy
+
+###POST submit draft standard
+POST http://localhost:8080/publishing/submit
+Content-Type: application/json
+
+{
+  "title": "ENG/01:2021",
+  "requestor_id": "1",
+  "standard_officer_id": "1"
+}
 
 ###
 
