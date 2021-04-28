@@ -141,7 +141,7 @@
                                 <a sec:authorize="hasAuthority('WAIVERS_APPLICATION_REPORT_GENERATE')"  style="color: white" class="filter-link approveBtn" th:href="@{/api/di/pvoc/generate-waivers-report(id = ${waiverDetails.id})}">Generate Report</a>
                                 <a sec:authorize="hasAuthority('WAIVERS_APPLICATION_MINUTES_GENERATE')"  style="color: white" class="filter-link approveBtn" th:href="@{/api/di/pvoc/generate-minutes/(id = ${waiverDetails.id})}">Generate Minutes</a>
                                 <a target="_blank"  style="color: white" class="filter-link uploadMasterList" th:href="@{/api/di/pvoc/load/uploads(id = ${waiverDetails.id})}" >View MasterList File</a>
-                                <a  style="color: white" class="filter-link approveBtn">generate waiver letter </a>
+<!--                                <a  style="color: white" class="filter-link approveBtn">generate waiver letter </a>-->
 <!--                                <a th:if="${waiverDetails.rejectedStatus != 1}" style="font-weight: bold;" class="filter-link bgred rejectBtn">Reject</a>-->
 <!--                                <a th:if="${waiverDetails.targetApproved != 1}" style="font-weight: bold;" class="filter-link bgred targetBtn">Target Inspection</a>-->
 <!--                                <a  th:if="${waiverDetails.blacklistStatus != 1}" style="font-weight: bold;" class="filter-link bgred blacklistBtn">Blacklist</a>-->

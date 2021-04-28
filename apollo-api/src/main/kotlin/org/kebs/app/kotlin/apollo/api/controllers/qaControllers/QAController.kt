@@ -563,14 +563,14 @@ class QAController(
             redirectAttributes: RedirectAttributes
     ): String {
         return try {
-            KotlinLogging.logger { }.debug { "Permit app id ${myPermit.id}" }
+            KotlinLogging.logger { }.error( "Permit app id ${myPermit.id}" )
 
-            if (fileElem?.isEmpty()!!) {
-                KotlinLogging.logger {  }.info { "fileElem is empty" }
-            }
-            else {
-                fileElem.let { daoServices.storeFiles(it) }
-            }
+//            if (fileElem?.isEmpty() == true) {
+//                KotlinLogging.logger {  }.info { "fileElem is empty" }
+//            }
+//            else {
+//                fileElem.let { it?.let { it1 -> daoServices.storeFiles(it1) } }
+//            }
 
             serviceMapsRepo.findByIdOrNull(appId)
                     ?.let { map ->
@@ -581,11 +581,7 @@ class QAController(
                                             ?.let { loggedInUser ->
                                                 daoServices.extractManufacturerFromUser(loggedInUser)
                                                         ?.let { man ->
-                                                            var userTypeId:Long = 0
-                                                            userTypesRepo.findByIdOrNull(4)?.id?.let{
-                                                                userTypeId = it
-                                                            }
-                                                            if (loggedInUser.userTypes !== userTypeId) {
+
                                                                 with(pmForm) {
                                                                     dateCreated = Timestamp.from(Instant.now())
                                                                     status = map.inactiveStatus
@@ -605,21 +601,17 @@ class QAController(
 //                                                                    manufacturerId = manufacturerRepository.findByUserId(loggedInUser)?.id
                                                                     manufacturerId = man.id
                                                                     manufacturerName = man.name
-                                                                    if (fileElem.isNotEmpty()) {
-                                                                        val fileNames4 = StringBuilder()
-                                                                        fileElem.forEach { file ->
-                                                                            fileNames4.append(file.originalFilename + ",")
-                                                                            val documentList: List<String>? = fileNames4.split(",")
-                                                                            val newDocumentList = documentList?.dropLast(1)
-                                                                            extraDocuments = newDocumentList.toString().replace("[", "").replace("]", "")
-                                                                        }
-                                                                    }
+//                                                                    if (fileElem?.isNotEmpty() == true) {
+//                                                                        val fileNames4 = StringBuilder()
+//                                                                        fileElem.forEach { file ->
+//                                                                            fileNames4.append(file.originalFilename + ",")
+//                                                                            val documentList: List<String>? = fileNames4.split(",")
+//                                                                            val newDocumentList = documentList?.dropLast(1)
+//                                                                            extraDocuments = newDocumentList.toString().replace("[", "").replace("]", "")
+//                                                                        }
+//                                                                    }
 
-                                                                }
-                                                            }
-                                                            else {
-                                                                redirectAttributes.addFlashAttribute("message", "Caught an exception")
-                                                                return "redirect:/api/permit/apply/new/smark"
+
                                                             }
                                                             pmForm = permitRepo.save(pmForm)
                                                             KotlinLogging.logger {  }.info { "Permit saved with id ${pmForm.id}" }
@@ -657,7 +649,8 @@ class QAController(
 
 
         } catch (e: Exception) {
-            KotlinLogging.logger { }.error { e }
+            KotlinLogging.logger { }.error(e.message,e)
+
             "redirect:/api/permit/apply/new/smark"
         }
 

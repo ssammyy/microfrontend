@@ -144,13 +144,13 @@
                                                         <td th:text="${itemCoc?.endProduct}">
                                                         </td>
                                                         <td sec:authorize="hasAuthority('PVOC_APPLICATION_PROCESS')">
-                                                            <input type="radio" th:name="|rawMaterials[${itemStat.index}]?.checkBoxChecked|" th:value="1" class="form-control" >
+                                                            <input th:disable="${itemCoc?.checkBoxChecked}" type="radio" th:name="|rawMaterials[${itemStat.index}]?.checkBoxChecked|" th:value="1" class="form-control" >
                                                         </td>
                                                         <td sec:authorize="hasAuthority('PVOC_APPLICATION_PROCESS')">
-                                                            <input type="radio" th:name="|rawMaterials[${itemStat.index}]?.checkBoxChecked|" th:value="0" class="form-control" >
+                                                            <input th:disable="${itemCoc?.checkBoxChecked}" type="radio" th:name="|rawMaterials[${itemStat.index}]?.checkBoxChecked|" th:value="0" class="form-control" >
                                                         </td>
                                                         <td sec:authorize="hasAuthority('PVOC_APPLICATION_PROCESS')">
-                                                            <input type="text" th:name="|rawMaterials[${itemStat.index}]?.remarks|" class="form-control" >
+                                                            <input th:disable="${itemCoc?.checkBoxChecked != null}" type="text" th:name="|rawMaterials[${itemStat.index}]?.remarks|" class="form-control" >
                                                         </td>
                                                         <td th:switch="${itemCoc?.checkBoxChecked}">
                                                             <div th:case="1">
@@ -161,7 +161,7 @@
                                                             </div>
                                                         </td>
                                                         <td sec:authorize="hasAnyAuthority('PVOC_APPLICATION_PROCESS_CHAIRMAN')">
-                                                            <select th:name="|rawMaterials[${itemStat.index}]?.reviewStatus|" style="width: 100%" id="endProduct" class="form-control">
+                                                            <select th:disable="${itemCoc?.reviewStatus}" th:name="|rawMaterials[${itemStat.index}]?.reviewStatus|" style="width: 100%" id="endProduct" class="form-control">
                                                                 <option
                                                                         th:name="|rawMaterials[${itemStat.index}]?.reviewStatus|"
                                                                         th:value="Exempt"  selected>Exempt</option>
@@ -219,13 +219,13 @@
                                                         <td th:text="${itemCoc?.hsCode}">
                                                         </td>
                                                         <td sec:authorize="hasAuthority('PVOC_APPLICATION_PROCESS')">
-                                                            <input type="radio" th:name="|machineries[${itemStat.index}]?.checkBoxChecked|" th:value="1" class="form-control" >
+                                                            <input th:disable="${itemCoc?.checkBoxChecked == null}" type="radio" th:name="|machineries[${itemStat.index}]?.checkBoxChecked|" th:value="1" class="form-control" >
                                                         </td>
                                                         <td sec:authorize="hasAuthority('PVOC_APPLICATION_PROCESS')">
-                                                            <input type="radio" th:name="|machineries[${itemStat.index}]?.checkBoxChecked|" th:value="0" class="form-control" >
+                                                            <input th:disable="${itemCoc?.checkBoxChecked == null}" type="radio" th:name="|machineries[${itemStat.index}]?.checkBoxChecked|" th:value="0" class="form-control" >
                                                         </td>
                                                         <td sec:authorize="hasAuthority('PVOC_APPLICATION_PROCESS')">
-                                                            <input type="text" style="width: 100%" th:name="|machineries[${itemStat.index}]?.remarks|" class="form-control" >
+                                                            <input th:disable="${itemCoc?.checkBoxChecked == null}" type="text" style="width: 100%" th:name="|machineries[${itemStat.index}]?.remarks|" class="form-control" >
                                                         </td>
                                                         <td th:switch="${itemCoc?.checkBoxChecked}">
                                                             <div th:case="1">
@@ -236,7 +236,7 @@
                                                             </div>
                                                         </td>
                                                         <td sec:authorize="hasAuthority('PVOC_APPLICATION_PROCESS_CHAIRMAN')">
-                                                            <select th:name="|machineries[${itemStat.index}]?.reviewStatus|" style="width: 100%"  class="form-control">
+                                                            <select th:disable="${itemCoc?.reviewStatus}" th:name="|machineries[${itemStat.index}]?.reviewStatus|" style="width: 100%"  class="form-control">
                                                                 <option
                                                                         th:name="|machineries[${itemStat.index}]?.reviewStatus|"
                                                                         th:value="Exempt"  selected>Exempt</option>
@@ -294,13 +294,13 @@
                                                         <td th:text="${itemCoc?.machineToFit}">
                                                         </td>
                                                         <td sec:authorize="hasAuthority('PVOC_APPLICATION_PROCESS')">
-                                                            <input type="radio" th:name="|spares[${itemStat.index}]?.checkBoxChecked|" th:value="1" class="form-control" >
+                                                            <input th:disable="${itemCoc?.checkBoxChecked != null}" type="radio" th:name="|spares[${itemStat.index}]?.checkBoxChecked|" th:value="1" class="form-control" >
                                                         </td>
                                                         <td sec:authorize="hasAuthority('PVOC_APPLICATION_PROCESS')">
-                                                            <input type="radio" th:name="|spares[${itemStat.index}]?.checkBoxChecked|" th:value="0" class="form-control" >
+                                                            <input th:disable="${itemCoc?.checkBoxChecked == null}" type="radio" th:name="|spares[${itemStat.index}]?.checkBoxChecked|" th:value="0" class="form-control" >
                                                         </td>
                                                         <td sec:authorize="hasAuthority('PVOC_APPLICATION_PROCESS')">
-                                                            <input type="text" th:name="|spares[${itemStat.index}]?.remarks|"  class="form-control" >
+                                                            <input th:disable="${itemCoc?.checkBoxChecked == null}" type="text" th:name="|spares[${itemStat.index}]?.remarks|"  class="form-control" >
                                                         </td>
                                                         <td th:switch="${itemCoc?.checkBoxChecked}">
                                                             <div th:case="1">
@@ -311,7 +311,7 @@
                                                             </div>
                                                         </td>
                                                         <td sec:authorize="hasAuthority('PVOC_APPLICATION_PROCESS_CHAIRMAN')" >
-                                                            <select th:name="|spares[${itemStat.index}]?.reviewStatus|" style="width: 100%"  class="form-control">
+                                                            <select th:disable="${itemCoc?.reviewStatus}" th:name="|spares[${itemStat.index}]?.reviewStatus|" style="width: 100%"  class="form-control">
                                                                 <option
                                                                         th:name="|spares[${itemStat.index}]?.reviewStatus|"
                                                                         th:value="Exempt"  selected>Exempt</option>
@@ -326,7 +326,7 @@
                                                         <td sec:authorize="hasAuthority('PVOC_APPLICATION_PROCESS_CHAIRMAN')" th:text="${itemCoc?.reviewStatus}"></td>
                                                     </tr>
                                                     <tr sec:authorize="hasAuthority('PVOC_APPLICATION_PROCESS') or hasAuthority('PVOC_APPLICATION_PROCESS_CHAIRMAN')">
-                                                        <td colspan="6"><input type="submit" value="Up Applications Details"></td>
+                                                        <td colspan="6"><input type="submit" value="Update Applications Details"></td>
                                                     </tr>
                                                     </tbody>
                                                 </table>

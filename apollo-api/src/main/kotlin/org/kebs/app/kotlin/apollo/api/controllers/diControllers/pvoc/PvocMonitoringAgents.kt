@@ -1,6 +1,7 @@
 package org.kebs.app.kotlin.apollo.api.controllers.diControllers.pvoc
 
 
+import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.common.exceptions.SupervisorNotFoundException
 import org.kebs.app.kotlin.apollo.store.model.*
@@ -42,6 +43,7 @@ class PvocMonitoringAgents(
     private val pvocAgentContractEntityRepo: PvocAgentContractEntityRepo,
     private val pvocRevenueReportEntityRepo: PvocRevenueReportEntityRepo,
     private val pvocPenaltyInvoicingEntityRepo: PvocPenaltyInvoicingEntityRepo,
+    private val iPvocCorTimelinesDataEntityRepo: IPvocCorTimelinesDataEntityRepo
 //        private val iUserRoleAssignmentsRepository: IUserRoleAssignmentsRepository
 
 ) {
@@ -213,6 +215,42 @@ class PvocMonitoringAgents(
             }
     }
 
+    @GetMapping("cor-with-timeline-issue")
+    fun corWithTimelineIssue(
+        model: Model,
+        @RequestParam(value = "fromDate", required = false) fromDate: String,
+        @RequestParam(value = "toDate", required = false) toDate: String,
+        @RequestParam(value = "filter", required = false) filter: String,
+        @RequestParam(value = "currentPage", required = false) currentPage: Int,
+        @RequestParam(value = "pageSize", required = false) pageSize: Int
+    ): String {
+        PageRequest.of(currentPage, pageSize)
+            .let { page ->
+                SecurityContextHolder.getContext().authentication
+                    ?.let { auth ->
+                        when {
+                            auth.authorities.stream().anyMatch { authority -> authority.authority == "PVOC_APPLICATION_READ" || authority.authority == "PVOC_APPLICATION_PROCESS" } -> {
+                                when (filter) {
+                                    "filter" -> {
+                                        iPvocCorTimelinesDataEntityRepo.findAllByUcrNumberNotNull(page)?.let { pvocTimelines ->
+                                            model.addAttribute("pvocTimelines", pvocTimelines)
+                                        }
+                                    }
+                                    else -> {
+                                        iPvocCorTimelinesDataEntityRepo.findAllByUcrNumberNotNull(page).let { pvocTimelines ->
+                                            model.addAttribute("pvocTimelines", pvocTimelines)
+                                        }
+                                    }
+                                }
+                            }
+                            else -> throw SupervisorNotFoundException("Only users with the following privilege PVOC Appliaction READ or PVOC APPLICATION PROCESS, can access this page")
+                        }
+                        return "destination-inspection/pvoc/monitoring/CorWithTimelinesIssue"
+                    } ?: throw Exception("You must be loggedIn to access this page")
+
+            }
+    }
+
     @GetMapping("coi-with-timeline-issue/{id}")
     fun coiWithTimelineIssueDetails(model: Model, @PathVariable("id") id: Long): String {
         iPvocCoiTimelinesDataEntityRepo.findByIdOrNull(id)?.let { coi ->
@@ -250,6 +288,7 @@ class PvocMonitoringAgents(
                 model.addAttribute("orderNumber", generatingRandomInvoice("5"))
                 model.addAttribute("customerNumber", generatingRandomInvoice("5"))
                 model.addAttribute("penaltyInvoice", PvocPenaltyInvoicingEntity())
+                model.addAttribute("enquires" , coc.cocNumber?.let { iPvocQuerriesRepository.findAllByCocNumber(it) })
                 iUserRoleAssignmentsRepository.findByRoleIdAndStatus(role.id, 1)
                         ?.let { it ->
                             val userList = mutableListOf<Long?>()
@@ -259,9 +298,9 @@ class PvocMonitoringAgents(
                         }
                         ?: throw Exception("Role [id=${role.id}] not found, may not be active or assigned yet")
             } ?: throw Exception("User role name does not exist")
-            coc.cocNumber?.let {
+            coc.ucrNumber?.let {
                 model.addAttribute("shipmentMode", iCocsRepository.findFirstByCocNumber(it)?.shipmentMode)
-                rfcCocEntityRepo.findByCocNumber(it).let { rfcDoc ->
+                rfcCocEntityRepo.findByUcrNumber(it).let { rfcDoc ->
                     model.addAttribute("rfc", rfcDoc)
                     rfcDoc?.partner?.let { it2 ->
                         pvocPartnersRepository.findByIdOrNull(it2).let { partnerDetails ->
@@ -368,9 +407,6 @@ class PvocMonitoringAgents(
                         }
                     }
                 }
-
-                model.addAttribute("enquires" , it.let { it1 -> iPvocQuerriesRepository.findAllByCocNumber(it1) })
-
             }
             model.addAttribute("monitoring_status", iPvocAgentMonitoringStatusEntityRepo.findAllByStatus(1))
             model.addAttribute("coc", coc)

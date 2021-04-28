@@ -47,7 +47,7 @@ class ControllerRoutes {
 
     @Bean
     fun masterDataRoutes(handler: MasterDataHandler) = router {
-        "/api/v1/system/admin".nest {
+        "/api/system/admin".nest {
             "/masters".nest {
                 "/ui".nest {
                     GET("/designations", handler::designationsUi)
@@ -117,7 +117,6 @@ class ControllerRoutes {
                         GET("/loads/{status}", handler::subSectionsL2Listing)
                         PUT("/", handler::subSectionsL2Update)
                         POST("/", handler::subSectionsL2Update)
-
                     }
 
                 }
@@ -179,6 +178,7 @@ class ControllerRoutes {
     fun ApiAuthRoute(handler: ApiAuthenticationHandler) = router {
         "/api/v1".nest {
             POST("/login", handler::uiLogin)
+            POST("/otp", handler::generateOtp)
         }
     }
 
@@ -195,6 +195,15 @@ class ControllerRoutes {
             GET("/pvoc/complaint/")(handler::complaintForm)
         }
     }
+
+    @Bean
+    fun pvocWaivers(handler: PvocComplaintHandler) = router {
+        "/".nest {
+            GET("api/di/pvoc/waivers-application")(handler::waiversForm)
+        }
+    }
+
+
 
 
     @Bean
@@ -221,7 +230,7 @@ class ControllerRoutes {
     @Bean
     fun registrationRoutes(handler: RegistrationHandler) = router {
         "/api/v1/auth/signup".nest {
-            POST("/user", handler::signUpAllUsersView)
+            POST("/user", handler::signUpAllUsers)
             PUT("/authorize", handler::signUpAllUsersVerification)
             PUT("/forgot-password", handler::signUpUserRestPassword)
 
@@ -236,6 +245,30 @@ class ControllerRoutes {
             }
             GET(pattern = "/authorize", f = handler::authorizeUserAccountView)
 
+            GET(pattern = "/forgot-password", f = handler::forgotPasswordView)
+            POST(pattern = "/forgotPassword", f = handler::forgotPasswordAction)
+            GET(pattern = "/reset", f = handler::resetPasswordView)
+            POST(pattern = "/reset", f = handler::submitPasswordReset)
+//            GET(pattern = "/activate-now", f = handler::authorizeActivateAccount)
+//            GET(pattern = "/activate", f = handler::activateUserAccountView)
+//            POST(pattern = "/activated", f = handler::submitActivateUserAccount)
+//            POST(pattern = "/forgot-password", f = handler::submitAuthorizeUserAccount)
+        }
+
+        "/api/auth/signup".nest {
+            GET(pattern = "/user", f = handler::signUpAllUsersView)
+//            GET(pattern = "/manufacturer", f = handler::signupManufacturerView)
+//            GET(pattern = "/employee", f = handler::signUpEmployeeView)
+            GET(pattern = "/update-user-details", f = handler::updateUserView)
+            GET("/new", handler::userNewFormView)
+            "notification".nest {
+                GET(pattern = "success", f = handler::registrationSuccessNotificationView)
+                GET(pattern = "success/message", f = handler::successNotificationView)
+                GET(pattern = "fail", f = handler::registrationFailureNotificationView)
+            }
+            GET(pattern = "/authorize", f = handler::authorizeUserAccountView)
+            GET(pattern = "/authorize/{userName}", f = handler::authorizeUAccountView)
+            POST(pattern = "/authorize", f = handler::submitAuthorizeUserAccount)
             GET(pattern = "/forgot-password", f = handler::forgotPasswordView)
             POST(pattern = "/forgotPassword", f = handler::forgotPasswordAction)
             GET(pattern = "/reset", f = handler::resetPasswordView)
@@ -407,7 +440,7 @@ class ControllerRoutes {
 
     @Bean
     fun systemsAdministrationRoutes(handler: SystemsAdministrationHandler) = router {
-        "/api/v1/system/admin".nest {
+        "/api/system/admin".nest {
             GET("/home", handler::sysadminHome)
             "/ui".nest {
                 GET("/rbac-user-roles", handler::rbacUserRoles)
@@ -475,6 +508,7 @@ class ControllerRoutes {
                     GET("/user-details", handler::userDetails)
                     POST("/search", handler::usersSearchListing)
                     POST("/{userId}/user-request", handler::usersRequests)
+                    POST("/{userId}/update/company-profile", handler::usersUpdateCompanyProfile)
                     PUT("/", handler::usersUpdate)
                     POST("/", handler::usersUpdate)
                 }

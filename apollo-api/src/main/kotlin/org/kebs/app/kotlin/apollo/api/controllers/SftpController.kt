@@ -47,8 +47,9 @@ class SftpController {
     @GetMapping("/kesws/download")
     fun downloadKeswsFiles(): ResponseEntity<RestResponseModel> {
         //TODO: Fetch DocTypes from the DB
-        val keswsDocTypes = listOf(applicationMapProperties.mapKeswsCdDoctype, applicationMapProperties.mapKeswsBaseDocumentDoctype,
-            applicationMapProperties.mapKeswsUcrResDoctype, applicationMapProperties.mapKeswsDeclarationDoctype, applicationMapProperties.mapKeswsManifestDoctype)
+//        val keswsDocTypes = listOf(applicationMapProperties.mapKeswsCdDoctype, applicationMapProperties.mapKeswsBaseDocumentDoctype,
+//            applicationMapProperties.mapKeswsUcrResDoctype, applicationMapProperties.mapKeswsDeclarationDoctype, applicationMapProperties.mapKeswsManifestDoctype)
+        val keswsDocTypes = listOf(applicationMapProperties.mapKeswsCdDoctype)
 
         for (doctype in keswsDocTypes) {
             when(doctype) {

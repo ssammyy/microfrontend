@@ -61,8 +61,6 @@ class PvocComplaints(
         val messageBody = "Please Click the link Bellow \n" +
                 "\n " +
                 "https://localhost:8006/pvoc/complaint/?token=${token.token}"
-
-
         emailObject.email?.let { notifications.sendEmail(it, "Complaint Verification", messageBody) }
         return "redirect:/api/di/pvoc/email_entry"
     }
@@ -147,9 +145,10 @@ class PvocComplaints(
                     complaint.email?.let { notifications.sendEmail(it, "Complaint  Submission", messageBody) }
                     val messageBody2 = "Please Click the link bellow to review the complaint \n" +
                             "\n " +
-                            "https://localhost:8006/pvoc/complaint-details/${newComp.id}"
+//                            "https://localhost:8006/pvoc/complaint-details/${newComp.id}"
+                            "https://kims.kebs.org:8006/pvoc/complaint-details/${newComp.id}"
                     agent.email?.let { notifications.sendEmail(it, "Complaint  Submission", messageBody2) }
-                    return "redirect:/api/di/pvoc/complaints-list?currentPage=0&pageSize=10&fromDate=${fro}&toDate=${to}&filter=0"
+                    return "redirect:/"
                 }
             }
         } ?: throw Exception("User not found")
@@ -184,8 +183,8 @@ class PvocComplaints(
         }?: throw Exception("Compaint with $id id does not exist")
     }
 
-    @GetMapping("coc-details/{cocNo}")
-    fun cocDetails(model: Model, @PathVariable("cocNo") cocNo : String) : String{
+    @GetMapping("coc-details")
+    fun cocDetails(model: Model, @RequestParam("cocNo") cocNo : String) : String{
         iCocsRepository.findFirstByCocNumber(cocNo).let { cocDetails ->
             model.addAttribute("coc", cocDetails)
             model.addAttribute("coc_items", cocDetails?.id?.let { iCocItemRepository.findByCocId(it) })
