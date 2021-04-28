@@ -36,6 +36,7 @@
  */
 
 import org.springframework.boot.gradle.tasks.bundling.BootWar
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 
 plugins {
@@ -135,6 +136,28 @@ dependencies {
     /**
      * Commons file upload
      */
+
+    /**
+     * KRA Integrations
+     */
+    implementation("org.springframework.boot:spring-boot-devtools")
+    implementation("org.springframework.boot:spring-boot-starter-web-services")
+    implementation("javax.xml.bind:jaxb-api:2.3.0")
+    implementation("javax.activation:activation:1.1")
+    implementation("org.glassfish.jaxb:jaxb-runtime:2.3.0")
+//    implementation("javax.xml.bind:jaxb-api:2.3.0-b170201.1204")
+//    implementation("javax.activation:activation:1.1")
+//    implementation("org.glassfish.jaxb:jaxb-runtime:2.3.0-b170127.1453")
+    implementation("org.springframework:spring-oxm:5.3.4")
+    implementation("org.glassfish.metro:webservices-rt:2.4.4")
+    implementation("org.glassfish.metro:webservices-api:2.4.4")
+    implementation("com.sun.xml.messaging.saaj:saaj-impl")
+
+
+
+    /**
+     * kra Integrations end
+     */
     implementation("commons-fileupload:commons-fileupload:1.4")
     /**
      * Starter mail
@@ -145,11 +168,17 @@ dependencies {
      */
     testImplementation("org.springframework.security:spring-security-test")
 
+    /**
+     * Google guava
+     */
+    //implementation("com.google.guava:11.0.2")
+
     implementation("net.sf.ehcache:ehcache-core:2.6.11")
     implementation("com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.2")
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
         exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
     }
+    implementation(kotlin("stdlib-jdk8"))
 }
 application {
     mainClassName = "org.kebs.app.kotlin.apollo.api.ApiApplicationKt"
@@ -160,3 +189,15 @@ tasks.withType<BootWar>().configureEach {
     launchScript()
 }
 
+repositories {
+    maven("https://dl.bintray.com/kotlin/kotlin-eap")
+    mavenCentral()
+}
+val compileKotlin: KotlinCompile by tasks
+compileKotlin.kotlinOptions {
+    jvmTarget = "1.8"
+}
+val compileTestKotlin: KotlinCompile by tasks
+compileTestKotlin.kotlinOptions {
+    jvmTarget = "1.8"
+}

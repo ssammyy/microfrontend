@@ -4,13 +4,16 @@ angular.module('myApp').factory('ExceptionService', ['$http', '$q', function($ht
 
    // var PRODUCTS_URI = 'https://kims.kebs.org:8006/api/di/pvoc/rest/permits-products';
     const PRODUCTS_URI = 'https://localhost:8006/api/di/pvoc/rest/permits-products';
-    const MANUFACTURER_URI = 'https://localhost:8006/api/di/pvoc/rest/manufacturer-details';
-    // var MANUFACTURER_URI = 'https://kims.kebs.org:8006/api/di/pvoc/rest/manufacturer-details';
+    // const MANUFACTURER_URI = 'https://localhost:8006/api/di/pvoc/rest/manufacturer-details';
+    var MANUFACTURER_URI = 'https://kims.kebs.org:8006/api/di/pvoc/rest/manufacturer-details';
     var EXCEL_DOWNLOAD_URL = 'https://kims.kebs.org:8006/file'
     //var EXCEL_DOWNLOAD_URL = 'https://localhost:8006/file'
    // var EXEMPTION_UPLOAD_URI = 'https://localhost:8006/api/di/pvoc/rest/application-exception2'
     var EXEMPTION_UPLOAD_URI = 'https://kims.kebs.org:8006/api/di/pvoc/rest/application-exception2'
     var EXEMPTION_SAVE_URI = 'https://kims.kebs.org:8006/api/di/pvoc/rest/application-exception3'
+    // var EXEMPTION_SAVE_URI = 'https://localhost:8006/api/di/pvoc/rest/application-exception3'
+    // var EXEMPTION_PARTIAL_SAVE_URI = 'https://localhost:8006/api/di/pvoc/rest/application-exception4'
+    var EXEMPTION_PARTIAL_SAVE_URI = 'https://kims.kebs.org:8006/api/di/pvoc/rest/application-exception4'
     //var EXEMPTION_SAVE_URI = 'https://localhost:8006/api/di/pvoc/rest/application-exception3'
 
     var factory = {
@@ -19,7 +22,8 @@ angular.module('myApp').factory('ExceptionService', ['$http', '$q', function($ht
         getExceptionExcel : getExceptionExcel,
         createExemption: createExemption,
         uploadExemption: uploadExemption,
-        saveExceptionViaSystem:saveExceptionViaSystem
+        saveExceptionViaSystem:saveExceptionViaSystem,
+        saveExceptionPartially: saveExceptionPartially
     };
 
     return factory;
@@ -120,6 +124,27 @@ angular.module('myApp').factory('ExceptionService', ['$http', '$q', function($ht
         console.log(exemptionApp)
         const request = {
             "url": EXEMPTION_SAVE_URI,
+            "method": "POST",
+            "data": exemptionApp,
+            "headers": {
+                'Content-Type': 'application/json' // important
+            }
+        };
+
+        const deffered = $q.defer();
+
+        $http(request).success(function(data){
+            deffered.resolve(data);
+        }).error(function(error){
+            deffered.reject(error);
+        });
+        return deffered.promise;
+    }
+
+    function saveExceptionPartially(exemptionApp){
+        console.log(exemptionApp)
+        const request = {
+            "url": EXEMPTION_PARTIAL_SAVE_URI,
             "method": "POST",
             "data": exemptionApp,
             "headers": {

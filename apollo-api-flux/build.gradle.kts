@@ -1,4 +1,5 @@
 import org.springframework.boot.gradle.tasks.bundling.BootWar
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     war
@@ -29,6 +30,7 @@ dependencies {
         exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
     }
     testImplementation("org.springframework.security:spring-security-test")
+    implementation(kotlin("stdlib-jdk8"))
 }
 
 application {
@@ -38,4 +40,16 @@ application {
 
 tasks.withType<BootWar>().configureEach {
     launchScript()
+}
+repositories {
+    maven("https://dl.bintray.com/kotlin/kotlin-eap")
+    mavenCentral()
+}
+val compileKotlin: KotlinCompile by tasks
+compileKotlin.kotlinOptions {
+    jvmTarget = "1.8"
+}
+val compileTestKotlin: KotlinCompile by tasks
+compileTestKotlin.kotlinOptions {
+    jvmTarget = "1.8"
 }

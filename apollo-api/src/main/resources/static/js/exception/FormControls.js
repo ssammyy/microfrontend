@@ -184,4 +184,15 @@ $(document).ready(function () {
             $("#success-spare").slideUp(500);
         });
     });
+
+    $("#success-save").hide();
+    $("#save_exemption").click(function showAlert() {
+        $("#success-save").fadeTo(2000, 500).slideUp(500, function() {
+            $("#success-save").slideUp(500);
+        });
+    });
+
+    $("#modalBtn").click(function (){
+        $("#myModal").modal("hide");
+    })
 });

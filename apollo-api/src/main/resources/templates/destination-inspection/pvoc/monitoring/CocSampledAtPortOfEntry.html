@@ -44,7 +44,7 @@
                                         <td th:text="${coc?.route}"></td>
                                         <td th:text="${#dates.format(coc?.createdOn, 'dd/MM/yyyy')}"></td>
                                         <td th:text="${coc?.status}"></td>
-                                        <td><a th:href="@{/api/di/pvoc/waivers-reports/{id}(id=${coc.id})}">view</a>
+                                        <td><a th:href="@{/api/di/pvoc/coc-details(cocNo=${coc.cocNumber})}">view</a>
                                         </td>
                                     </tr>
                                     </tbody>

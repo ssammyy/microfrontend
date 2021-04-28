@@ -196,6 +196,15 @@ class ControllerRoutes {
         }
     }
 
+    @Bean
+    fun pvocWaivers(handler: PvocComplaintHandler) = router {
+        "/".nest {
+            GET("api/di/pvoc/waivers-application")(handler::waiversForm)
+        }
+    }
+
+
+
 
     @Bean
     fun tasksRoute(handler: BpmnTasksHandler) =
