@@ -590,12 +590,12 @@ class CommonDaoServices(
                 ?: throw ExpectedDataNotFound("The following County with ID  = $countyId and status = $status, does not Exist")
     }
 
-    fun findTownEntityByTownId(townId: Long, status: Int): TownsEntity {
-        townsRepo.findByIdAndStatus(townId, status)
+    fun findTownEntityByTownId(townId: Long): TownsEntity {
+        townsRepo.findByIdOrNull(townId)
                 ?.let { townEntity ->
                     return townEntity
                 }
-                ?: throw ExpectedDataNotFound("The following Town with ID  = $townId and status = $status, does not Exist")
+                ?: throw ExpectedDataNotFound("The following Town with ID  = $townId, does not Exist")
     }
 
 

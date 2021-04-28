@@ -7,6 +7,8 @@ import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
 import org.kebs.app.kotlin.apollo.common.utils.generateRandomText
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.*
+import org.kebs.app.kotlin.apollo.store.model.importer.TemporaryImportApplicationsEntity
+import org.kebs.app.kotlin.apollo.store.model.importer.TemporaryImportApplicationsUploadsEntity
 import org.kebs.app.kotlin.apollo.store.model.qa.*
 import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileEntity
 import org.kebs.app.kotlin.apollo.store.repo.*
@@ -14,6 +16,7 @@ import org.kebs.app.kotlin.apollo.store.repo.di.ICfgMoneyTypeCodesRepository
 import org.kebs.app.kotlin.apollo.store.repo.qa.*
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
+import org.springframework.web.multipart.MultipartFile
 import java.math.BigDecimal
 import java.sql.Timestamp
 import java.time.Instant
@@ -37,7 +40,9 @@ class QADaoServices(
     private val productsManufactureSTA10Repo: IQaProductBrandEntityRepository,
     private val rawMaterialsSTA10Repo: IQaRawMaterialRepository,
     private val machinePlantsSTA10Repo: IQaMachineryRepository,
+    private val qaUploadsRepo: IQaUploadsRepository,
     private val manufacturingProcessSTA10Repo: IQaManufactureProcessRepository,
+    private val manufacturePlantRepository: IManufacturePlantDetailsRepository,
     private val permitTypesRepo: IPermitTypesEntityRepository,
     private val iMoneyTypeCodesRepo: ICfgMoneyTypeCodesRepository,
     private val mpesaServices: MPesaService
@@ -96,6 +101,12 @@ class QADaoServices(
         } ?: throw ExpectedDataNotFound("No Permit Type found with the following [ID=$id]")
     }
 
+    fun findPermitBYUserIDANDProductionStatus(status: Int, permitTypeID: Long, userId: Long): List<PermitApplicationsEntity> {
+        permitRepo.findByUserIdAndPermitTypeAndEndOfProductionStatus(userId,permitTypeID, status)?.let {
+            return it
+        } ?: throw ExpectedDataNotFound("No Permit List found with the following user [ID=$userId]")
+    }
+
     fun findPermitInvoiceByPermitID(id: Long, userId: Long): InvoiceEntity {
         invoiceRepository.findByPermitIdAndUserId(id, userId)?.let {
             return it
@@ -108,10 +119,35 @@ class QADaoServices(
         } ?: throw ExpectedDataNotFound("No STA3 found with the following [permit id=$permitId]")
     }
 
+    fun findAllPlantDetails(userId: Long): List<ManufacturePlantDetailsEntity> {
+        manufacturePlantRepository.findByUserId(userId)?.let {
+            return it
+        } ?: throw ExpectedDataNotFound("No Plant details found with the following [user id=$userId]")
+    }
+
+    fun findPlantDetails(plantID: Long): ManufacturePlantDetailsEntity {
+        manufacturePlantRepository.findByIdOrNull(plantID)?.let {
+            return it
+        } ?: throw ExpectedDataNotFound("No Plant details found with the following [id=$plantID]")
+    }
+
+
     fun findSTA10WithPermitIDBY(permitId: Long): QaSta10Entity {
         sta10Repo.findByPermitId(permitId)?.let {
             return it
         } ?: throw ExpectedDataNotFound("No STA10 found with the following [permit id=$permitId]")
+    }
+
+    fun findUploadedFileBYId(fileID: Long): QaUploadsEntity {
+        qaUploadsRepo.findByIdOrNull(fileID)?.let {
+            return it
+        } ?: throw ExpectedDataNotFound("No File found with the following [ id=$fileID]")
+    }
+
+    fun findAllUploadedFileBYPermitID(permitId: Long): List<QaUploadsEntity> {
+        qaUploadsRepo.findByPermitId(permitId)?.let {
+            return it
+        } ?: throw ExpectedDataNotFound("No File found with the following [ id=$permitId]")
     }
 
     fun findProductsManufactureWithSTA10ID(sta10Id: Long): List<QaProductManufacturedEntity>? {
@@ -142,15 +178,9 @@ class QADaoServices(
             userId = user.id
             productName = product?.let { commonDaoServices.findProductByID(it).name }
             permitType = permitTypeDetails.id
-            permitNumber = "${permitTypeDetails.markNumber}${
-                generateRandomText(
-                    5,
-                    map.secureRandom,
-                    map.messageDigestAlgorithm,
-                    false
-                )
-            }".toUpperCase()
+            permitNumber = "${permitTypeDetails.markNumber}${generateRandomText(5, map.secureRandom, map.messageDigestAlgorithm, false)}".toUpperCase()
             enabled = map.initStatus
+            endOfProductionStatus = map.initStatus
             status = map.activeStatus
             createdBy = commonDaoServices.concatenateName(user)
             createdOn = commonDaoServices.getTimestamp()
@@ -183,7 +213,7 @@ class QADaoServices(
 
         with(qaSta10Details) {
             totalNumberPersonnel = totalNumberMale?.let { totalNumberFemale?.plus(it) }
-            town = town?.let { commonDaoServices.findTownEntityByTownId(it, map.activeStatus).id }
+            town = town?.let { commonDaoServices.findTownEntityByTownId(it).id }
             county = county?.let { commonDaoServices.findCountiesEntityByCountyId(it, map.activeStatus).id }
             region = county?.let { commonDaoServices.findCountiesEntityByCountyId(it, map.activeStatus).regionId }
             permitId = permitNewID
@@ -243,6 +273,50 @@ class QADaoServices(
         return machinePlantsSTA10Repo.save(machinePlantsDetails)
     }
 
+
+    fun saveQaFileUploads(docFile: MultipartFile, doc: String, user: UsersEntity, map: ServiceMapsEntity, permitID: Long): ServiceRequestsEntity {
+
+            var sr = commonDaoServices.createServiceRequest(map)
+            try {
+
+                 var uploads = QaUploadsEntity()
+                with(uploads) {
+                    name = commonDaoServices.saveDocuments(docFile)
+                    fileType = docFile.contentType
+                    documentType = doc
+                    document = docFile.bytes
+                    permitId = permitID
+                    transactionDate = commonDaoServices.getCurrentDate()
+                    status = map.activeStatus
+                    createdBy = commonDaoServices.concatenateName(user)
+                    createdOn = commonDaoServices.getTimestamp()
+                }
+
+                uploads = qaUploadsRepo.save(uploads)
+
+                sr.payload = "DOC File Added [${uploads.name} and ${uploads.permitId}]"
+                sr.names = "${user.userName}"
+
+                sr.responseStatus = sr.serviceMapsId?.successStatusCode
+                sr.responseMessage = "Success ${sr.payload}"
+                sr.status = map.successStatus
+                sr = serviceRequestsRepository.save(sr)
+                sr.processingEndDate = Timestamp.from(Instant.now())
+
+            } catch (e: Exception) {
+                KotlinLogging.logger { }.error(e.message, e)
+//            KotlinLogging.logger { }.trace(e.message, e)
+                sr.status = sr.serviceMapsId?.exceptionStatus
+                sr.responseStatus = sr.serviceMapsId?.exceptionStatusCode
+                sr.responseMessage = e.message
+                sr = serviceRequestsRepository.save(sr)
+
+            }
+
+            KotlinLogging.logger { }.trace("${sr.id} ${sr.responseStatus}")
+            return sr
+        }
+
     fun sta10ManufacturingProcessNewSave(
         qaSta10ID: Long,
         manufacturingProcessDetails: QaManufacturingProcessEntity,
@@ -260,14 +334,82 @@ class QADaoServices(
     }
 
 
-    fun permitUpdateDetails(permits: PermitApplicationsEntity, user: UsersEntity): PermitApplicationsEntity {
+    fun addPlantDetailsManufacture(
+        manufacturePlant: ManufacturePlantDetailsEntity,
+        s: ServiceMapsEntity,
+        loggedInUser: UsersEntity
+    ): ServiceRequestsEntity {
 
-        with(permits) {
-            modifiedBy = commonDaoServices.concatenateName(user)
-            modifiedOn = commonDaoServices.getTimestamp()
+        var sr = commonDaoServices.createServiceRequest(s)
+        try {
+            var plantDetails = manufacturePlant
+            with(plantDetails) {
+                userId = loggedInUser.id
+                region = county?.let { commonDaoServices.findCountiesEntityByCountyId(it, s.activeStatus).regionId }
+                status = s.activeStatus
+                createdOn = commonDaoServices.getTimestamp()
+                createdBy = commonDaoServices.concatenateName(loggedInUser)
+            }
+
+            plantDetails =  manufacturePlantRepository.save(plantDetails)
+
+            sr.payload = "Plant Details [plantDetails ID= ${plantDetails.id}]"
+            sr.names = "${plantDetails.buildingName}} ${plantDetails.userId}"
+
+            sr.responseStatus = sr.serviceMapsId?.successStatusCode
+            sr.responseMessage = "Success ${sr.payload}"
+            sr.status = s.successStatus
+            sr = serviceRequestsRepository.save(sr)
+            sr.processingEndDate = Timestamp.from(Instant.now())
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message, e)
+//            KotlinLogging.logger { }.trace(e.message, e)
+            sr.status = sr.serviceMapsId?.exceptionStatus
+            sr.responseStatus = sr.serviceMapsId?.exceptionStatusCode
+            sr.responseMessage = e.message
+            sr = serviceRequestsRepository.save(sr)
+
         }
-        return permitRepo.save(permits)
+
+        KotlinLogging.logger { }.trace("${sr.id} ${sr.responseStatus}")
+        return sr
     }
+
+    fun permitUpdateDetails(permits: PermitApplicationsEntity, s: ServiceMapsEntity, user: UsersEntity): ServiceRequestsEntity {
+
+            var sr = commonDaoServices.createServiceRequest(s)
+            try {
+                var updatePermit = permits
+                with(updatePermit) {
+                    modifiedBy = commonDaoServices.concatenateName(user)
+                    modifiedOn = commonDaoServices.getTimestamp()
+                }
+                updatePermit =  permitRepo.save(permits)
+
+                sr.payload = "Permit Updated [updatePermit= ${updatePermit.id}]"
+                sr.names = "${updatePermit.permitNumber}} ${updatePermit.userId}"
+
+                sr.responseStatus = sr.serviceMapsId?.successStatusCode
+                sr.responseMessage = "Success ${sr.payload}"
+                sr.status = s.successStatus
+                sr = serviceRequestsRepository.save(sr)
+                sr.processingEndDate = Timestamp.from(Instant.now())
+
+            } catch (e: Exception) {
+                KotlinLogging.logger { }.error(e.message, e)
+//            KotlinLogging.logger { }.trace(e.message, e)
+                sr.status = sr.serviceMapsId?.exceptionStatus
+                sr.responseStatus = sr.serviceMapsId?.exceptionStatusCode
+                sr.responseMessage = e.message
+                sr = serviceRequestsRepository.save(sr)
+
+            }
+
+            KotlinLogging.logger { }.trace("${sr.id} ${sr.responseStatus}")
+            return sr
+        }
+
 
     fun invoiceUpdateDetails(invoice: InvoiceEntity, user: UsersEntity): InvoiceEntity {
 
@@ -369,6 +511,45 @@ class QADaoServices(
         return sr
     }
 
+    fun permitGenerateFmark(
+        s: ServiceMapsEntity,
+        user: UsersEntity,
+        phoneNumber: String,
+        invoice: InvoiceEntity
+    ): ServiceRequestsEntity {
+
+        var sr = commonDaoServices.createServiceRequest(s)
+        try {
+
+            //TODO: PAYMENT METHOD UPDATE THE AMOUNT BY REMOVING THE STATIC VALUE
+            user.userName?.let { invoice.invoiceNumber?.let { it1 -> mpesaServices.sanitizePhoneNumber(phoneNumber)?.let { it2 ->
+                mpesaServices.mainMpesaTransaction("10",
+                    it2, it1, it, applicationMapProperties.mapInvoiceTransactionsForPermit)
+            } } }
+
+            sr.payload = "User[id= ${user.id}]"
+            sr.names = "$phoneNumber} ${invoice.invoiceNumber}"
+
+            sr.responseStatus = sr.serviceMapsId?.successStatusCode
+            sr.responseMessage = "Success ${sr.payload}"
+            sr.status = s.successStatus
+            sr = serviceRequestsRepository.save(sr)
+            sr.processingEndDate = Timestamp.from(Instant.now())
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message, e)
+//            KotlinLogging.logger { }.trace(e.message, e)
+            sr.status = sr.serviceMapsId?.exceptionStatus
+            sr.responseStatus = sr.serviceMapsId?.exceptionStatusCode
+            sr.responseMessage = e.message
+            sr = serviceRequestsRepository.save(sr)
+
+        }
+
+        KotlinLogging.logger { }.trace("${sr.id} ${sr.responseStatus}")
+        return sr
+    }
+
 
     //Todo: CHECK THE METHODE AGAIN AFTER DEMO
     fun invoiceGen(permits: PermitApplicationsEntity, entity: CompanyProfileEntity, user: UsersEntity, permitType: PermitTypesEntity): InvoiceEntity {
@@ -386,7 +567,7 @@ class QADaoServices(
 
             signature = commonDaoServices.concatenateName(user)
             createdBy = commonDaoServices.concatenateName(user)
-            val generatedPayments = permits.let { calculatePayment(it) }
+            val generatedPayments = permits.let { calculatePayment(it, map, user) }
             amount = generatedPayments[3]
             applicationCost = generatedPayments[2]
             val cost: BigDecimal? = generatedPayments[0]
@@ -398,6 +579,7 @@ class QADaoServices(
             businessName = entity.name
             permitId = permits.id
             userId = user.id
+            paymentStatus = 0
             invoiceNumber ="${permitType.markNumber}${generateRandomText(3, map.secureRandom, map.messageDigestAlgorithm, true).toUpperCase()}"
         }
 
@@ -408,8 +590,7 @@ class QADaoServices(
 
 
     //Todo: CHECK THE METHODE AGAIN AFTER DEMO
-    fun calculatePayment(permit: PermitApplicationsEntity): MutableList<BigDecimal?> {
-//        val manufactureId = 100L
+    fun calculatePayment(permit: PermitApplicationsEntity, map: ServiceMapsEntity, user: UsersEntity): MutableList<BigDecimal?> {
         KotlinLogging.logger { }.info { "ManufacturerId, ${permit.userId}" }
         val manufactureId = permit.userId
 //        val manufactureTurnOver: BigDecimal? = manufactureId.let { it?.let { it1 -> iManufacturePaymentDetailsRepository.findByManufacturerIdAndStatus(it1, 1)?.turnOverAmount } }
@@ -431,7 +612,7 @@ class QADaoServices(
         val standardCost: BigDecimal? = (paymentUnits?.standardStandardCost?.times(noOf!!))?.toBigDecimal()
         //                val inspectionCost: BigDecimal? = permit.noOfSitesProducingTheBrand?.let { paymentUnits?.standardInspectionCost?.times(it)?.toBigDecimal() }
         val inspectionCost: BigDecimal? = paymentUnits?.standardInspectionCost?.toBigDecimal()
-        var applicationCost: BigDecimal? = paymentUnits?.standardApplicationCost?.toBigDecimal()
+        var applicationCost: BigDecimal? = null
 
         when (permit.permitType) {
             applicationMapProperties.mapQAPermitTypeIdSmark -> {
@@ -440,23 +621,23 @@ class QADaoServices(
 
                         when {
                             manufactureTurnOver > iTurnOverRatesRepository.findByIdOrNull(applicationMapProperties.mapQASmarkLargeFirmsTurnOverId)?.lowerLimit -> {
-
+                                KotlinLogging.logger { }.info { "Turnover is above 500, 000" }
                                 //                val noOf = sampleStandardsRepository.findBySubCategoryId(permit.productSubCategory?.id)?.noOfPages))
-
+                                val turnoverValues = iTurnOverRatesRepository.findByIdOrNull(applicationMapProperties.mapQASmarkLargeFirmsTurnOverId)?: throw ExpectedDataNotFound("MISSING TURNOVER RATES FOR Large Firm SMARK")
+                                applicationCost = turnoverValues.variableAmountToPay?.let { turnoverValues.fixedAmountToPay?.plus(it) }
 
                                 if (permit.product == 61L) {
-                                    stgAmt = standardCost?.plus(inspectionCost!!)?.let { applicationCost?.plus(it) }
-                                        ?.let { 2.toBigDecimal().times(it) }
+                                    stgAmt = applicationCost?.let { standardCost?.plus(inspectionCost!!)?.plus(it) }
                                     fmark = 1.toBigDecimal()
                                     fmarkCost = standardCost?.plus(inspectionCost!!)?.let { applicationMapProperties.mapQaFmarkAmountToPay.plus(it) }
                                     //Todo : ask if foreign cost will also be added as vat
-                                    taxAmount = stgAmt?.let { taxRate.times(it) }
+                                    taxAmount = fmarkCost?.let { taxRate.times(it) }
                                     amountToPay = taxAmount?.let { stgAmt?.plus(it) }
                                 } else {
                                     KotlinLogging.logger { }.info { "second loop, ${permit.product}" }
-                                    stgAmt = standardCost?.plus(inspectionCost!!)?.let { applicationCost?.plus(it) }
+                                    stgAmt = applicationCost?.let { standardCost?.plus(inspectionCost!!)?.plus(it) }
                                     fmark = 0.toBigDecimal()
-                                    taxAmount = stgAmt?.let {taxRate.times(it) }
+//                                    taxAmount = stgAmt?.let {taxRate.times(it) }
                                     amountToPay = taxAmount?.let { stgAmt?.plus(it) }
                                 }
                                 //                amountToPay = standardCost?.plus(inspectionCost!!)?.let { applicationCost?.plus(it) }
@@ -475,63 +656,87 @@ class QADaoServices(
                                 )
 
                             }
-//                            manufactureTurnOver  < iTurnOverRatesRepository.findByIdOrNull(applicationMapProperties.mapQASmarkMediumTurnOverId)?.upperLimit && manufactureTurnOver > iTurnOverRatesRepository.findByIdOrNull(applicationMapProperties.mapQASmarkMediumTurnOverId)?.lowerLimit -> {
-//
-//                                //                val noOf = sampleStandardsRepository.findBySubCategoryId(permit.productSubCategory?.id)?.noOfPages))
-//                                val productList =
-//
-//                                if (permit.product == 61L) {
-//                                    stgAmt = standardCost?.plus(inspectionCost!!)?.let { applicationCost?.plus(it) }
-//                                        ?.let { 2.toBigDecimal().times(it) }
-//                                    fmark = 1.toBigDecimal()
-//                                    fmarkCost = standardCost?.plus(inspectionCost!!)?.let { applicationMapProperties.mapQaFmarkAmountToPay.plus(it) }
-//                                    //Todo : ask if foreign cost will also be added as vat
-//                                    taxAmount = stgAmt?.let { taxRate.times(it) }
-//                                    amountToPay = taxAmount?.let { stgAmt?.plus(it) }
-//                                } else {
-//                                    KotlinLogging.logger { }.info { "second loop, ${permit.product}" }
-//                                    stgAmt = standardCost?.plus(inspectionCost!!)?.let { applicationCost?.plus(it) }
-//                                    fmark = 0.toBigDecimal()
+                            manufactureTurnOver  < iTurnOverRatesRepository.findByIdOrNull(applicationMapProperties.mapQASmarkMediumTurnOverId)?.upperLimit && manufactureTurnOver > iTurnOverRatesRepository.findByIdOrNull(applicationMapProperties.mapQASmarkMediumTurnOverId)?.lowerLimit -> {
+                                KotlinLogging.logger { }.info { "Turnover is less than 500, 000 but above 200, 000" }
+                                //                val noOf = sampleStandardsRepository.findBySubCategoryId(permit.productSubCategory?.id)?.noOfPages))
+                                val turnoverValues = iTurnOverRatesRepository.findByIdOrNull(applicationMapProperties.mapQASmarkMediumTurnOverId)?: throw ExpectedDataNotFound("MISSING TURNOVER RATES FOR Medium Firm SMARK")
+                                val productList = user.id?.let { findPermitBYUserIDANDProductionStatus(map.inactiveStatus, applicationMapProperties.mapQAPermitTypeIdSmark, it) }?: throw ExpectedDataNotFound("MISSING USER ID")
+                                val productSize = productList.size
+                                val remainingSize = productSize.minus(applicationMapProperties.mapQaSmarkMediumMaxProduct).toBigDecimal()
+                                var extraProductCost: BigDecimal? = 0.000.toBigDecimal()
+                                extraProductCost = turnoverValues.variableAmountToPay?.let { remainingSize.times(it) }
+                                applicationCost = extraProductCost?.let { turnoverValues.fixedAmountToPay?.plus(it) }
+                                    if (permit.product == 61L) {
+                                    stgAmt = applicationCost?.let { standardCost?.plus(inspectionCost!!)?.plus(it) }
+                                    fmark = 1.toBigDecimal()
+                                    fmarkCost = standardCost?.plus(inspectionCost!!)?.let { applicationMapProperties.mapQaFmarkAmountToPay.plus(it) }
+                                    //Todo : ask if foreign cost will also be added as vat
+                                    taxAmount = fmarkCost?.let { taxRate.times(it) }
+                                    amountToPay = taxAmount?.let { stgAmt?.plus(it) }
+                                } else {
+                                    KotlinLogging.logger { }.info { "second loop, ${permit.product}" }
+                                    stgAmt = applicationCost?.let { standardCost?.plus(inspectionCost!!)?.plus(it) }
+                                    fmark = 0.toBigDecimal()
 //                                    taxAmount = stgAmt?.let {taxRate.times(it) }
-//                                    amountToPay = taxAmount?.let { stgAmt?.plus(it) }
-//                                }
-//                                //                amountToPay = standardCost?.plus(inspectionCost!!)?.let { applicationCost?.plus(it) }
-//                                KotlinLogging.logger { }.info { "Manufacturer turnover, $manufactureTurnOver" }
-//                                KotlinLogging.logger { }.info { "Total Amount To Pay   = " + amountToPay?.toDouble() }
-//
-//                                m =   myReturPaymentValues(
-//                                    m,
-//                                    standardCost,
-//                                    inspectionCost,
-//                                    applicationCost,
-//                                    amountToPay,
-//                                    fmark,
-//                                    fmarkCost,
-//                                    taxAmount
-//                                )
-//
-//                            }
-                            else -> {
-                                KotlinLogging.logger { }.info { "Turnover is less than 500000" }
+                                    amountToPay = taxAmount?.let { stgAmt?.plus(it) }
+                                }
+                                //                amountToPay = standardCost?.plus(inspectionCost!!)?.let { applicationCost?.plus(it) }
+                                KotlinLogging.logger { }.info { "Manufacturer turnover, $manufactureTurnOver" }
+                                KotlinLogging.logger { }.info { "Total Amount To Pay   = " + amountToPay?.toDouble() }
 
+                                m =   myReturPaymentValues(
+                                    m,
+                                    standardCost,
+                                    inspectionCost,
+                                    applicationCost,
+                                    amountToPay,
+                                    fmark,
+                                    fmarkCost,
+                                    taxAmount
+                                )
 
                             }
+                            else -> {
+                                KotlinLogging.logger { }.info { "Turnover is less than 200, 000" }
+
+                                //                val noOf = sampleStandardsRepository.findBySubCategoryId(permit.productSubCategory?.id)?.noOfPages))
+                                val turnoverValues = iTurnOverRatesRepository.findByIdOrNull(applicationMapProperties.mapQASmarkJuakaliTurnOverId)?: throw ExpectedDataNotFound("MISSING TURNOVER RATES FOR Medium Firm SMARK")
+                                val productList = user.id?.let { findPermitBYUserIDANDProductionStatus(map.inactiveStatus, applicationMapProperties.mapQAPermitTypeIdSmark, it) }?: throw ExpectedDataNotFound("MISSING USER ID")
+                                val productSize = productList.size
+                                val remainingSize = productSize.minus(applicationMapProperties.mapQaSmarkJuakaliMaxProduct).toBigDecimal()
+                                var extraProductCost: BigDecimal? = 0.000.toBigDecimal()
+                                extraProductCost = turnoverValues.variableAmountToPay?.let { remainingSize.times(it) }
+                                applicationCost = extraProductCost?.let { turnoverValues.fixedAmountToPay?.plus(it) }
+                                if (permit.product == 61L) {
+                                    stgAmt = applicationCost?.let { standardCost?.plus(inspectionCost!!)?.plus(it) }
+                                    fmark = 1.toBigDecimal()
+                                    fmarkCost = standardCost?.plus(inspectionCost!!)?.let { applicationMapProperties.mapQaFmarkAmountToPay.plus(it) }
+                                    //Todo : ask if foreign cost will also be added as vat
+                                    taxAmount = fmarkCost?.let { taxRate.times(it) }
+                                    amountToPay = taxAmount?.let { stgAmt?.plus(it) }
+                                } else {
+                                    KotlinLogging.logger { }.info { "second loop, ${permit.product}" }
+                                    stgAmt = applicationCost?.let { standardCost?.plus(inspectionCost!!)?.plus(it) }
+                                    fmark = 0.toBigDecimal()
+//                                    taxAmount = stgAmt?.let {taxRate.times(it) }
+                                    amountToPay = taxAmount?.let { stgAmt?.plus(it) }
+                                }
+                                //                amountToPay = standardCost?.plus(inspectionCost!!)?.let { applicationCost?.plus(it) }
+                                KotlinLogging.logger { }.info { "Manufacturer turnover, $manufactureTurnOver" }
+                                KotlinLogging.logger { }.info { "Total Amount To Pay   = " + amountToPay?.toDouble() }
+
+                                m =   myReturPaymentValues(
+                                    m,
+                                    standardCost,
+                                    inspectionCost,
+                                    applicationCost,
+                                    amountToPay,
+                                    fmark,
+                                    fmarkCost,
+                                    taxAmount
+                                )
+                            }
                         }
-                        //            else if (manufactureTurnOver < iTurnOverRatesRepository.findByIdAndFirmType(2, "Medium Enterprises")?.upperLimit && manufactureTurnOver > iTurnOverRatesRepository.findByIdAndFirmType(2, "Medium Enterprises")?.lowerLimit) {
-                        //                fixAmountToPay = iTurnOverRatesRepository.findByIdAndFirmType(2, "Medium Enterprises")?.fixedAmountToPay
-                        //                variableAmountToPay = iTurnOverRatesRepository.findByIdAndFirmType(2, "Medium Enterprises")?.variableAmountToPay
-                        //                if (totalProducts != null) {
-                        //                    if (totalProducts > 3) {
-                        //                        val remProduct: Int? = totalProducts.minus(3)
-                        //                        amountToPay = (remProduct?.toBigDecimal()?.multiply(variableAmountToPay))?.add(fixAmountToPay)
-                        //                        KotlinLogging.logger { }.info { "Total Amount To Pay for Medium Enterprises = " + remProduct + " =" + amountToPay?.toDouble() }
-                        //                    } else {
-                        //                        amountToPay = fixAmountToPay
-                        //                        KotlinLogging.logger { }.info { "Total Amount To Pay for Medium Enterprises = " + amountToPay?.toDouble() }
-                        //                    }
-                        //                }
-
-
                     }
                     else -> {
                          throw ExpectedDataNotFound("The Turn over Details are missing for logged in user")
@@ -581,32 +786,6 @@ class QADaoServices(
             }
         }
 
-
-//        else if (manufactureTurnOver < iTurnOverRatesRepository.findByIdAndFirmType(3, "Jua kali and small Enterprises")?.upperLimit) {
-//                fixAmountToPay = iTurnOverRatesRepository.findByIdAndFirmType(3, "Jua kali and small Enterprises")?.fixedAmountToPay
-//                variableAmountToPay = iTurnOverRatesRepository.findByIdAndFirmType(3, "Jua kali and small Enterprises")?.variableAmountToPay
-//                if (totalProducts != null) {
-//                    if (totalProducts > 3) {
-//                        val remProduct: Int? = totalProducts.minus(3)
-//                        amountToPay = (remProduct?.toBigDecimal()?.multiply(variableAmountToPay))?.add(fixAmountToPay)
-//                        KotlinLogging.logger { }.info { "Total Amount To Pay For Jua kali and small Enterprises  = " + remProduct + " =" + amountToPay?.toDouble() }
-//                    } else {
-//                        amountToPay = fixAmountToPay
-//                        KotlinLogging.logger { }.info { "Total Amount To Pay For Jua kali and small Enterprises  = " + amountToPay?.toDouble() }
-//                    }
-//                }
-//            }
-//
-//        }
-        /**
-        //         * Save the payment Details
-        //         */
-//        val myPermit = permit
-//        with(myPermit) {
-//            totalAmountToPay = amountToPay.toString()
-//            KotlinLogging.logger { }.info { "Total Amount To Pay and save = " + amountToPay?.toDouble() }
-//        }
-//        iPermitRepository.save(permit)
         return m
     }
 

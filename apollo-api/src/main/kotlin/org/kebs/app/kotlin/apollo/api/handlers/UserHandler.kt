@@ -2,6 +2,7 @@ package org.kebs.app.kotlin.apollo.api.handlers
 
 import org.kebs.app.kotlin.apollo.adaptor.kafka.producer.service.SendToKafkaQueue
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
+import org.kebs.app.kotlin.apollo.api.ports.provided.dao.QADaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.RegistrationDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.SystemsAdminDaoService
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
@@ -19,7 +20,7 @@ import org.springframework.web.servlet.function.paramOrNull
 
 
 @Service
-class userHandler(
+class UserHandler(
         private val daoService: SystemsAdminDaoService,
         private val sendToKafkaQueue: SendToKafkaQueue,
         private val countriesRepository: ICountriesRepository,
@@ -28,6 +29,7 @@ class userHandler(
         private val businessLinesRepository: IBusinessLinesRepository,
         private val manufacturePlantRepository: IManufacturePlantDetailsRepository,
         private val commonDaoServices: CommonDaoServices,
+        private val qaDaoServices: QADaoServices,
         private val applicationMapProperties: ApplicationMapProperties,
         private val businessNatureRepository: IBusinessNatureRepository,
         private val contactTypesRepository: IContactTypesRepository,
@@ -61,12 +63,10 @@ class userHandler(
                         return ok().render(usersNotificationListPage, req.attributes())
                     }
 
-    fun userProfile(req: ServerRequest): ServerResponse =
+    fun userProfile(req: ServerRequest): ServerResponse {
 
-            req.paramOrNull("userName")
-                    ?.let { userName ->
                         val map = commonDaoServices.serviceMapDetails(appId)
-                        val userDetails = commonDaoServices.findUserByUserName(userName)
+                        val userDetails = commonDaoServices.loggedInUserDetails()
                         val auth = commonDaoServices.loggedInUserAuthentication()
                         when {
                             auth.authorities.stream().anyMatch { authority -> authority.authority == applicationMapProperties.mapQualityAssuranceManufactureRoleName } -> {
@@ -77,46 +77,24 @@ class userHandler(
                                         req.attributes()["businessLineValue"] = manufactureProfile.businessLines?.let {  businessLinesRepository.findByIdOrNull(it)?.name}
                                         req.attributes()["businessNatureValue"] =manufactureProfile.businessNatures?.let {  businessNatureRepository.findByIdOrNull(it)?.name}
 //                                        req.attributes()["userClassificationValue"] = null
+                                        req.attributes()["plantsDetails"] = qaDaoServices.findAllPlantDetails(userDetails.id!!)
                                         req.attributes()["regionValue"] = manufactureProfile.region?.let { commonDaoServices.findRegionEntityByRegionID(it, map.activeStatus).region }
                                         req.attributes()["countyValue"] = manufactureProfile.county?.let { commonDaoServices.findCountiesEntityByCountyId(it, map.activeStatus).county }
-                                        req.attributes()["townValue"] = manufactureProfile.town?.let { commonDaoServices.findTownEntityByTownId(it, map.activeStatus).town }
+                                        req.attributes()["townValue"] = manufactureProfile.town?.let { commonDaoServices.findTownEntityByTownId(it).town }
+                                        req.attributes()["manufacturePlantDetails"] = ManufacturePlantDetailsEntity()
 
                                     }
                                 }
                             }
                         }
-                        var profile :String? = null
-                        when (userDetails.userTypes) {
-                            applicationMapProperties.mapUserTypeEmployee -> {
-                                profile = applicationMapProperties.mapUserTypeNameEmployee
-                                val myUserProfile = commonDaoServices.findUserProfileByUserID(userDetails, map.activeStatus)
-                                req.attributes()["userProfilesEntity"] = myUserProfile
-                                req.attributes()["myUserProfile"] = myUserProfile
-                            }
-                            applicationMapProperties.mapUserTypeManufacture -> {
-                                profile = applicationMapProperties.mapUserTypeNameManufacture
-                                req.attributes()["manufacturerContactEntity"] = commonDaoServices.findManufacturerContactDetailsByManufacturerProfile(userDetails, map.activeStatus)
-                                req.attributes()["manufacturePlantDetailsEntity"] = ManufacturePlantDetailsEntity()
-
-                                val manufacture = commonDaoServices.findManufacturerProfileByUserID(userDetails, map.activeStatus)
-                                req.attributes()["manufacturePlants"] = manufacturePlantRepository.findByManufactureId(manufacture.id)
-                                req.attributes()["manufacturersEntity"] = manufacture
-                                req.attributes()["businessLineValue"] = businessLinesRepository.findByIdOrNull(manufacture.businessLineId)?.name
-                                req.attributes()["businessNatureValue"] = businessNatureRepository.findByIdOrNull(manufacture.businessNatureId)?.name
-                            }
-                            applicationMapProperties.mapUserTypeImporter -> {
-                                profile = applicationMapProperties.mapUserTypeNameImporter
-                                req.attributes()["importerEntity"] = commonDaoServices.findImporterProfileByUserID(userDetails, map.activeStatus)
-                            }
-                        }
 
                         req.attributes()["counties"] = countyRepo.findByStatusOrderByCounty(map.activeStatus)
                         req.attributes()["usersEntity"] =userDetails
-                        req.attributes()["profile"] = profile
+//                        req.attributes()["profile"] = profile
                         req.attributes()["companyProfileEntity"] = CompanyProfileEntity()
                         req.attributes()["businessLines"] =  businessLinesRepository.findByStatus(map.activeStatus)
                         return ok().render(userProfilePage, req.attributes())
-                    }
-                    ?: throw ExpectedDataNotFound("Missing username, recheck configuration")
+    }
+
 
     }

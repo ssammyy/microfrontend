@@ -24,14 +24,11 @@ package org.kebs.app.kotlin.apollo.api.handlers
 import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.QADaoServices
-import org.kebs.app.kotlin.apollo.api.ports.provided.dao.QualityAssuranceDaoServices
 import org.kebs.app.kotlin.apollo.common.exceptions.*
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.*
-import org.kebs.app.kotlin.apollo.store.model.di.*
 import org.kebs.app.kotlin.apollo.store.model.qa.*
 import org.kebs.app.kotlin.apollo.store.repo.*
-import org.kebs.app.kotlin.apollo.store.repo.qa.IPermitTypesEntityRepository
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Component
@@ -82,7 +79,6 @@ class QualityAssuranceHandler(
         try {
             val auth = commonDaoServices.loggedInUserAuthentication()
             val map = commonDaoServices.serviceMapDetails(appId)
-            val loggedInUser = commonDaoServices.loggedInUserDetails()
             return when {
                 auth.authorities.stream().anyMatch { authority -> authority.authority == applicationMapProperties.mapQualityAssuranceManufactureRoleName } -> {
                     req.attributes()["permitTypes"] = qaDaoServices.findPermitTypesList(map.activeStatus)
@@ -103,7 +99,6 @@ class QualityAssuranceHandler(
 
     @PreAuthorize("hasAuthority('PERMIT_APPLICATION')")
     fun permitList(req: ServerRequest): ServerResponse {
-        val map = commonDaoServices.serviceMapDetails(appId)
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         val permitTypeID = req.paramOrNull("permitTypeID")?.toLong()
             ?: throw ExpectedDataNotFound("Required PermitType ID, check config")
@@ -116,18 +111,29 @@ class QualityAssuranceHandler(
 
     @PreAuthorize("hasAuthority('PERMIT_APPLICATION')")
     fun permitDetails(req: ServerRequest): ServerResponse {
-        val map = commonDaoServices.serviceMapDetails(appId)
         val permitUserId = req.paramOrNull("userID")?.toLong() ?: throw ExpectedDataNotFound("Required User ID, check config")
         val permitID = req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
+       val map = commonDaoServices.serviceMapDetails(appId)
         val permit = qaDaoServices.findPermitBYUserIDAndId(permitID, permitUserId)
+        val plantAttached = permit.attachedPlantId?.let { qaDaoServices.findPlantDetails(it) }
+        val docFileName : String? = null
+        req.attributes()["fileParameters"] = qaDaoServices.findAllUploadedFileBYPermitID(permitID)
         req.attributes()["standardCategory"] = standardCategoryRepo.findByIdOrNull(permit.standardCategory)
         req.attributes()["productCategory"] = productCategoriesRepository.findByIdOrNull(permit.productCategory)
         req.attributes()["broadProductCategory"] = broadProductCategoryRepository.findByIdOrNull(permit.broadProductCategory)
         req.attributes()["product"] = productsRepo.findByIdOrNull(permit.product)
         req.attributes()["productSubCategory"] = productSubCategoryRepo.findByIdOrNull(permit.productSubCategory)
         req.attributes()["ksApplicable"] = sampleStandardsRepository.findBySubCategoryId(permit.productSubCategory)
+        req.attributes()["sectionValue"] = permit.sectionId?.let { commonDaoServices.findSectionWIthId(it).section }
+        req.attributes()["divisionValue"] = permit.divisionId?.let { commonDaoServices.findDivisionWIthId(it).division }
+        req.attributes()["regionPlantValue"] = plantAttached?.region?.let { commonDaoServices.findRegionEntityByRegionID(it, map.activeStatus).region }
+        req.attributes()["countyPlantValue"] = plantAttached?.county?.let { commonDaoServices.findCountiesEntityByCountyId(it, map.activeStatus).county }
+        req.attributes()["townPlantValue"] = plantAttached?.town?.let { commonDaoServices.findTownEntityByTownId(it).town }
         req.attributes()["permitType"] = permit.permitType?.let { qaDaoServices.findPermitType(it) }
         req.attributes()["permitDetails"] = permit
+        req.attributes()["docFileName"] =  docFileName
+        req.attributes()["plantAttached"] = plantAttached
+        req.attributes()["plantsDetails"] = qaDaoServices.findAllPlantDetails(permitUserId)
         return ok().render(qaPermitDetailPage, req.attributes())
     }
 
@@ -135,14 +141,15 @@ class QualityAssuranceHandler(
     @PreAuthorize("hasAuthority('PERMIT_APPLICATION')")
     fun newPermit(req: ServerRequest): ServerResponse {
         val map = commonDaoServices.serviceMapDetails(appId)
-        val loggedInUser = commonDaoServices.loggedInUserDetails()
         val permitTypeID = req.paramOrNull("permitTypeID")?.toLong()
             ?: throw ExpectedDataNotFound("Required PermitType ID, check config")
         val permitType = qaDaoServices.findPermitType(permitTypeID)
+        val departmentEntity = commonDaoServices.findDepartmentByID(applicationMapProperties.mapQADepertmentId)
 
         req.attributes()["applicationDate"] = commonDaoServices.getCurrentDate()
         req.attributes()["permitType"] = permitType
         req.attributes()["permit"] = PermitApplicationsEntity()
+        req.attributes()["divisions"] = commonDaoServices.findDivisionByDepartmentId(departmentEntity, map.activeStatus)
         req.attributes()["standardCategory"] = standardCategoryRepo.findByStatusOrderByStandardCategory(map.activeStatus)
         return ok().render(qaNewPermitPage, req.attributes())
 
@@ -150,7 +157,6 @@ class QualityAssuranceHandler(
 
     @PreAuthorize("hasAuthority('PERMIT_APPLICATION')")
     fun newSta3(req: ServerRequest): ServerResponse {
-        val map = commonDaoServices.serviceMapDetails(appId)
         val loggedInUser = commonDaoServices.loggedInUserDetails()
 
         val permitID = req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
@@ -176,7 +182,6 @@ class QualityAssuranceHandler(
 
     @PreAuthorize("hasAuthority('PERMIT_APPLICATION')")
     fun viewSta3(req: ServerRequest): ServerResponse {
-        val map = commonDaoServices.serviceMapDetails(appId)
         val permitUserId = req.paramOrNull("userID")?.toLong() ?: throw ExpectedDataNotFound("Required User ID, check config")
 
         val permitID = req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
@@ -198,9 +203,9 @@ class QualityAssuranceHandler(
         req.attributes()["QaSta10Entity"] = qaDaoServices.findSTA10WithPermitIDBY(permitID)
         req.attributes()["regionDetails"] = qaSta10Entity.region?.let { commonDaoServices.findRegionEntityByRegionID(it, map.activeStatus).region }
         req.attributes()["countyDetails"] = qaSta10Entity.county?.let { commonDaoServices.findCountiesEntityByCountyId(it, map.activeStatus).county }
-        req.attributes()["townDetails"] = qaSta10Entity.town?.let { commonDaoServices.findTownEntityByTownId(it, map.activeStatus).town }
+        req.attributes()["townDetails"] = qaSta10Entity.town?.let { commonDaoServices.findTownEntityByTownId(it).town }
         req.attributes()["QaSta10Entity"] = qaSta10Entity
-        req.attributes().putAll(loadSTA10UIComponents(map))
+        req.attributes().putAll(loadSTA10UIComponents())
         req.attributes()["productsManufacturedList"] = qaSta10Entity.id?.let { qaDaoServices.findProductsManufactureWithSTA10ID(it) }
         req.attributes()["rawMaterialList"] = qaSta10Entity.id?.let { qaDaoServices.findRawMaterialsWithSTA10ID(it) }
         req.attributes()["machinePlantList"] = qaSta10Entity.id?.let { qaDaoServices.findMachinePlantsWithSTA10ID(it) }
@@ -218,12 +223,12 @@ class QualityAssuranceHandler(
         val loggedInUser = commonDaoServices.loggedInUserDetails()
 
         val permitID = req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
-        val qaSta10Entity = qaDaoServices.findSTA10WithPermitIDBY(permitID)
-        var permit = loggedInUser.id?.let { qaDaoServices.findPermitBYUserIDAndId(permitID, it) }?: throw ExpectedDataNotFound("Required User ID, check config")
+        val permit = loggedInUser.id?.let { qaDaoServices.findPermitBYUserIDAndId(permitID, it) }?: throw ExpectedDataNotFound("Required User ID, check config")
         with(permit){
             sta10FilledStatus = map.activeStatus
         }
-        permit = qaDaoServices.permitUpdateDetails(permit, loggedInUser)
+
+        qaDaoServices.permitUpdateDetails(permit,map, loggedInUser)
 
         return ok().render("${qaDaoServices.permitDetails}=${permit.id}&userID=${loggedInUser.id}")
 
@@ -232,7 +237,6 @@ class QualityAssuranceHandler(
     @PreAuthorize("hasAuthority('PERMIT_APPLICATION')")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun getInvoiceDetails(req: ServerRequest): ServerResponse {
-        val map = commonDaoServices.serviceMapDetails(appId)
         val loggedInUser = commonDaoServices.loggedInUserDetails()
 
         val permitID = req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
@@ -282,7 +286,7 @@ class QualityAssuranceHandler(
 //
 //    }
 
-    private fun loadSTA10UIComponents(map: ServiceMapsEntity): MutableMap<String, Any?> {
+    private fun loadSTA10UIComponents(): MutableMap<String, Any?> {
 
         return mutableMapOf(
             Pair("QaProductManufacturedEntity", QaProductManufacturedEntity()),

@@ -289,40 +289,40 @@ class RegisterController(
 
     }
 
-    @PostMapping("/add/plant-details/save")
-    fun addManufacturePlantDetails(
-        model: Model,
-        @RequestParam(value = "manufactureID") manufactureID: Long,
-        @ModelAttribute("manufacturePlantDetailsEntity") manufacturePlantDetailsEntity: ManufacturePlantDetailsEntity,
-        results: BindingResult,
-        redirectAttributes: RedirectAttributes
-    ): String {
-
-        commonDaoServices.serviceMapDetails(manufacturerRegAppId)
-            .let { map ->
-                commonDaoServices.loggedInUserDetails()
-                    .let { loggedInUser ->
-                        addPlantDetailsManufacture(manufactureID, manufacturePlantDetailsEntity, map, loggedInUser)
-                        return """$profilePageDetails${loggedInUser.userName}"""
-                    }
-            }
-    }
-
-    private fun addPlantDetailsManufacture(
-        manufactureID: Long,
-        manufacturePlantDetailsEntity: ManufacturePlantDetailsEntity,
-        map: ServiceMapsEntity,
-        loggedInUser: UsersEntity
-    ): Boolean {
-        with(manufacturePlantDetailsEntity) {
-            manufactureId = commonDaoServices.findManufactureWithID(manufactureID).id
-            region = county?.let { commonDaoServices.findCountiesEntityByCountyId(it, map.activeStatus).regionId }
-            createdOn = commonDaoServices.getTimestamp()
-            createdBy = loggedInUser.userName
-        }
-        manufacturePlantRepository.save(manufacturePlantDetailsEntity)
-        return true
-    }
+//    @PostMapping("kebs/add/plant-details/save")
+//    fun addManufacturePlantDetails(
+//        model: Model,
+//        @RequestParam(value = "manufactureID") manufactureID: Long,
+//        @ModelAttribute("manufacturePlantDetailsEntity") manufacturePlantDetailsEntity: ManufacturePlantDetailsEntity,
+//        results: BindingResult,
+//        redirectAttributes: RedirectAttributes
+//    ): String {
+//
+//        commonDaoServices.serviceMapDetails(manufacturerRegAppId)
+//            .let { map ->
+//                commonDaoServices.loggedInUserDetails()
+//                    .let { loggedInUser ->
+//                        addPlantDetailsManufacture(manufactureID, manufacturePlantDetailsEntity, map, loggedInUser)
+//                        return """$profilePageDetails${loggedInUser.userName}"""
+//                    }
+//            }
+//    }
+//
+//    private fun addPlantDetailsManufacture(
+//        manufactureID: Long,
+//        manufacturePlantDetailsEntity: ManufacturePlantDetailsEntity,
+//        map: ServiceMapsEntity,
+//        loggedInUser: UsersEntity
+//    ): Boolean {
+//        with(manufacturePlantDetailsEntity) {
+//            manufactureId = commonDaoServices.findManufactureWithID(manufactureID).id
+//            region = county?.let { commonDaoServices.findCountiesEntityByCountyId(it, map.activeStatus).regionId }
+//            createdOn = commonDaoServices.getTimestamp()
+//            createdBy = loggedInUser.userName
+//        }
+//        manufacturePlantRepository.save(manufacturePlantDetailsEntity)
+//        return true
+//    }
 
 
     @PostMapping("/signup/manufacturer/save")

@@ -1,5 +1,7 @@
 package org.kebs.app.kotlin.apollo.store.repo.qa
 
+import org.kebs.app.kotlin.apollo.store.model.importer.TemporaryImportApplicationsEntity
+import org.kebs.app.kotlin.apollo.store.model.importer.TemporaryImportApplicationsUploadsEntity
 import org.kebs.app.kotlin.apollo.store.model.qa.*
 import org.springframework.data.hazelcast.repository.HazelcastRepository
 import org.springframework.stereotype.Repository
@@ -8,6 +10,7 @@ import org.springframework.stereotype.Repository
 interface IPermitApplicationsRepository : HazelcastRepository<PermitApplicationsEntity, Long> {
     fun findByUserId(userId: Long): List<PermitApplicationsEntity>?
     fun findByUserIdAndPermitType(userId: Long, permitType: Long): List<PermitApplicationsEntity>?
+    fun findByUserIdAndPermitTypeAndEndOfProductionStatus(userId: Long, permitType: Long, endOfProductionStatus: Int): List<PermitApplicationsEntity>?
     fun findByIdAndUserIdAndPermitType(id: Long, userId: Long, permitType: Long): PermitApplicationsEntity?
     fun findByIdAndUserId(id: Long, userId: Long): PermitApplicationsEntity?
 
@@ -59,4 +62,15 @@ interface IQaProductBrandEntityRepository: HazelcastRepository<QaProductManufact
 @Repository
 interface ITurnOverRatesRepository : HazelcastRepository<TurnOverRatesEntity, Long> {
     fun findByIdAndFirmType(id: Long, firmType: String): TurnOverRatesEntity?
+}
+
+@Repository
+interface IQaUploadsRepository : HazelcastRepository<QaUploadsEntity, Long> {
+    fun findByPermitId(permitId: Long): List<QaUploadsEntity>?
+}
+
+@Repository
+interface IQaSmarkFmarkRepository : HazelcastRepository<QaSmarkFmarkEntity, Long> {
+    fun findByFmarkId(fmarkID: Long): QaSmarkFmarkEntity?
+    fun findBySmarkId(smarkID: Long): QaSmarkFmarkEntity?
 }

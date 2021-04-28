@@ -70,6 +70,33 @@
                                     </div>
                                 </div>
                                 <div class="form-row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="divisionId" class="field-label" >Select Division:</label>
+                                        <select id="divisionId" name="divisionId" required="required" class="form-control" th:field="*{divisionId}">
+                                            <option value="required">Select One...</option>
+                                            <option th:each="divi : ${divisions}" th:text="${divi.division}" th:value="${divi.id}"></option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="sectionId" class="field-label" >Select Section</label>
+                                        <select reqiured="required" id="sectionId"  name="sectionId" th:field="*{sectionId}" class="form-control">
+                                            <option value="">Select one...</option>
+                                        </select>
+                                    </div>
+<!--                                    <div class="col-md-4 mb-3">-->
+<!--                                        <label for="productCategories" class="field-label">Product Category</label>-->
+<!--                                        <select reqiured="" id="productCategories" th:field="*{productCategory}" class="form-control">-->
+<!--                                            <option value="">Select one...</option>-->
+<!--                                            &lt;!&ndash;                                        <option value="">Select one...</option>&ndash;&gt;-->
+<!--                                            &lt;!&ndash;                                        <option  th:each="product : ${session.products}" th:value="${product.id}" th:text="${product.category}"></option>&ndash;&gt;-->
+<!--                                        </select>-->
+<!--                                        &lt;!&ndash;                                        <input type="text" class="form-control"  id="departmentId" th:value="${departmentId?.department}" placeholder="department" required="required" >&ndash;&gt;-->
+<!--                                        &lt;!&ndash;                                        <div class="invalid-feedback">&ndash;&gt;-->
+<!--                                        &lt;!&ndash;                                            Please provide a valid zip.&ndash;&gt;-->
+<!--                                        &lt;!&ndash;                                        </div>&ndash;&gt;-->
+<!--                                    </div>-->
+                                </div>
+                                <div class="form-row">
                                     <div class="col-md-4 mb-3">
                                         <label for="standardCategory" class="field-label" >Select Product Category:</label>
                                         <select id="standardCategory" name="standardCategory" required="required" class="form-control" th:field="*{standardCategory}">
@@ -436,6 +463,28 @@
                     $("#productsubcat").html(s);
                 }
             })
+
+        });
+
+        $("#confirmDivisionId").click(function () {
+            let divisionId = $("#divisionId").val()
+            // console.log(categories.length)
+            if (divisionId!==0){
+                $.ajax({
+                    method: "GET",
+                    url: `/api/auth/section-list/${divisionId}`,
+                    success(response){
+                        console.log(response)
+                        var s = '';
+                        s +=  ' <option value="0">Select One...</option>';
+                        for(var i = 0; i < response.length; i++) {
+                            // response.push('Select one')
+                            s += '<option value="' + response[i].id + '">' + response[i].section + '</option>';
+                        }
+                        $("#sectionId").html(s);
+                    }
+                })
+            }
 
         });
 

@@ -208,7 +208,7 @@ class ControllerRoutes {
             }
 
     @Bean
-    fun userRoute(handler: userHandler) =
+    fun userRoute(handler: UserHandler) =
             router {
                 "/api/user".nest {
                     GET("/user-notifications", handler::notificationList)

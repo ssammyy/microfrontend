@@ -56,6 +56,10 @@ class PermitApplicationsEntity:Serializable {
     @Basic
     var physicalAddress: String? = null
 
+    @Column(name = "DESCRIPTION")
+    @Basic
+    var description: String? = null
+
     @Column(name = "PLOT_NO")
     @Basic
     var plotNo: String? = null
@@ -93,6 +97,14 @@ class PermitApplicationsEntity:Serializable {
     @Column(name = "PERMIT_TYPE")
     @Basic
     var permitType: Long? = null
+
+    @Column(name = "DIVISION_ID")
+    @Basic
+    var divisionId: Long? = null
+
+    @Column(name = "SECTION_ID")
+    @Basic
+    var sectionId: Long? = null
 
 
     @Column(name = "KS_NUMBER")
@@ -134,6 +146,14 @@ class PermitApplicationsEntity:Serializable {
     @Column(name = "STATUS")
     @Basic
     var status: Int? = null
+
+    @Column(name = "END_OF_PRODUCTION_STATUS")
+    @Basic
+    var endOfProductionStatus: Int? = null
+
+    @Column(name = "FMARK_GENERATED")
+    @Basic
+    var fmarkGenerated: Int? = null
 
     @Column(name = "PERMIT_FOREIGN_STATUS")
     @Basic
@@ -181,6 +201,10 @@ class PermitApplicationsEntity:Serializable {
     @Basic
     var inspectorsRemark: String? = null
 
+    @Column(name = "ATTACHED_PLANT_REMARKS")
+    @Basic
+    var attachedPlantRemarks: String? = null
+
     @Column(name = "INSPECTOR_NAME")
     @Basic
     var inspectorsName: String? = null
@@ -201,6 +225,10 @@ class PermitApplicationsEntity:Serializable {
     @Basic
     var product: Long? = null
 
+    @Column(name = "VERSION_NUMBER")
+    @Basic
+    var versionNumber: Long? = null
+
     @Column(name = "PRODUCT_STANDARD")
     @Basic
     var productStandard: Long? = null
@@ -212,6 +240,10 @@ class PermitApplicationsEntity:Serializable {
     @Column(name = "PRODUCT_SUB_CATEGORY")
     @Basic
     var productSubCategory: Long? = null
+
+    @Column(name = "ATTACHED_PLANT_ID")
+    @Basic
+    var attachedPlantId: Long? = null
 
 
     @Column(name = "VAR_FIELD_1")
@@ -288,6 +320,7 @@ class PermitApplicationsEntity:Serializable {
         if (applicantName != other.applicantName) return false
         if (firmName != other.firmName) return false
         if (permitNumber != other.permitNumber) return false
+        if (description != other.description) return false
         if (postalAddress != other.postalAddress) return false
         if (position != other.position) return false
         if (telephoneNo != other.telephoneNo) return false
@@ -300,10 +333,14 @@ class PermitApplicationsEntity:Serializable {
         if (productCategory != other.productCategory) return false
         if (broadProductCategory != other.broadProductCategory) return false
         if (product != other.product) return false
+        if (versionNumber != other.versionNumber) return false
+        if (divisionId != other.divisionId) return false
+        if (sectionId != other.sectionId) return false
         if (standardCategory != other.standardCategory) return false
         if (productStandard != other.productStandard) return false
         if (productSubCategory != other.productSubCategory) return false
-        if (region != other.region) return false
+        if (attachedPlantId != other.attachedPlantId) return false
+        if (attachedPlantId != other.attachedPlantId) return false
         if (userId != other.userId) return false
         if (permitType != other.permitType) return false
         if (ksNumber != other.ksNumber) return false
@@ -311,6 +348,7 @@ class PermitApplicationsEntity:Serializable {
         if (dateOfIssue != other.dateOfIssue) return false
         if (dateOfExpiry != other.dateOfExpiry) return false
         if (applicationSuspensionStatus != other.applicationSuspensionStatus) return false
+        if (attachedPlantRemarks != other.attachedPlantRemarks) return false
         if (productName != other.productName) return false
         if (tradeMark != other.tradeMark) return false
         if (permitForeignStatus != other.permitForeignStatus) return false
@@ -319,6 +357,8 @@ class PermitApplicationsEntity:Serializable {
         if (sta3FilledStatus != other.sta3FilledStatus) return false
         if (sendApplication != other.sendApplication) return false
         if (invoiceGenerated != other.invoiceGenerated) return false
+        if (fmarkGenerated != other.fmarkGenerated) return false
+        if (endOfProductionStatus != other.endOfProductionStatus) return false
         if (enabled != other.enabled) return false
         if (smeFormFilledStatus != other.smeFormFilledStatus) return false
         if (title != other.title) return false
@@ -353,6 +393,7 @@ class PermitApplicationsEntity:Serializable {
         result = 31 * result + (applicantName?.hashCode() ?: 0)
         result = 31 * result + (firmName?.hashCode() ?: 0)
         result = 31 * result + (permitNumber?.hashCode() ?: 0)
+        result = 31 * result + (description?.hashCode() ?: 0)
         result = 31 * result + (postalAddress?.hashCode() ?: 0)
         result = 31 * result + (position?.hashCode() ?: 0)
         result = 31 * result + (telephoneNo?.hashCode() ?: 0)
@@ -365,6 +406,10 @@ class PermitApplicationsEntity:Serializable {
         result = 31 * result + (productCategory?.hashCode() ?: 0)
         result = 31 * result + (broadProductCategory?.hashCode() ?: 0)
         result = 31 * result + (product?.hashCode() ?: 0)
+        result = 31 * result + (versionNumber?.hashCode() ?: 0)
+        result = 31 * result + (divisionId?.hashCode() ?: 0)
+        result = 31 * result + (sectionId?.hashCode() ?: 0)
+        result = 31 * result + (attachedPlantId?.hashCode() ?: 0)
         result = 31 * result + (standardCategory?.hashCode() ?: 0)
         result = 31 * result + (productStandard?.hashCode() ?: 0)
         result = 31 * result + (productSubCategory?.hashCode() ?: 0)
@@ -375,6 +420,7 @@ class PermitApplicationsEntity:Serializable {
         result = 31 * result + (dateOfIssue?.hashCode() ?: 0)
         result = 31 * result + (dateOfExpiry?.hashCode() ?: 0)
         result = 31 * result + (applicationSuspensionStatus ?: 0)
+        result = 31 * result + (attachedPlantRemarks?.hashCode() ?: 0)
         result = 31 * result + (productName?.hashCode() ?: 0)
         result = 31 * result + (commodityDescription?.hashCode() ?: 0)
         result = 31 * result + (tradeMark?.hashCode() ?: 0)
@@ -383,6 +429,8 @@ class PermitApplicationsEntity:Serializable {
         result = 31 * result + (enabled ?: 0)
         result = 31 * result + (sendApplication ?: 0)
         result = 31 * result + (permitForeignStatus ?: 0)
+        result = 31 * result + (fmarkGenerated ?: 0)
+        result = 31 * result + (endOfProductionStatus ?: 0)
         result = 31 * result + (status ?: 0)
         result = 31 * result + (sta10FilledStatus ?: 0)
         result = 31 * result + (sta3FilledStatus ?: 0)

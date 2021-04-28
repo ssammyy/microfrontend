@@ -48,6 +48,15 @@
                         <form class="needs-validation" novalidate>
                             <div th:object="${usersEntity}">
 
+                                    &nbsp; &nbsp;
+                                <div class="form-row">
+                                    <div class="col-md-4 mb-3">
+                                        <button id="addRequestModel" class="btn btn-primary" data-mdb-toggle="modal" data-mdb-target="#requestModal" type="button">SEND REQUEST</button>
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                    </div>
+                                </div>
+
                                 <div class="form-row">
                                     <div class="col-md-12 mb-3">
                                         <label for="firstName" style="color: #0082f3">Profile</label>
@@ -136,7 +145,7 @@
                                 &nbsp;
                             </div>
 
-                            <div th:if="${usersEntity.manufactureProfile == 1}" th:object="${manufactureProfile}">
+                            <div sec:authorize="hasAuthority('PERMIT_APPLICATION')" th:if="${usersEntity.manufactureProfile == 1}" th:object="${manufactureProfile}">
                                 &nbsp;
                                 <div class="form-row">
                                     <div class="col-md-12 mb-3">
@@ -206,15 +215,15 @@
 
                                     </div>
                                     <div class="col-md-4 mb-3">
-                                        <label for="county">County</label>
-                                        <input type="text" class="form-control" disabled id="county"
-                                               th:value="${countyValue}" placeholder="business Line" required>
+                                        <label for="countyValue">County</label>
+                                        <input type="text" class="form-control" disabled id="countyValue"
+                                               th:value="${countyValue}" required>
 
                                     </div>
                                     <div class="col-md-4 mb-3">
-                                        <label for="town">Town</label>
-                                        <input type="text" class="form-control" disabled id="town"
-                                               th:field="${townValue}" required>
+                                        <label for="townValue">Town</label>
+                                        <input type="text" class="form-control" disabled id="townValue"
+                                               th:value="${townValue}" required>
 
                                     </div>
                                 </div>
@@ -222,13 +231,13 @@
                                     <div class="col-md-4 mb-3">
                                         <label for="buildingName">Building Name</label>
                                         <input type="text" class="form-control" disabled id="buildingName"
-                                               th:value="${buildingName}" placeholder="Business Nature" required>
+                                               th:value="*{buildingName}" placeholder="Business Nature" required>
 
                                     </div>
                                     <div class="col-md-4 mb-3">
                                         <label for="streetName">Street Name</label>
                                         <input type="text" class="form-control" disabled id="streetName"
-                                               th:value="${streetName}" placeholder="business Line" required>
+                                               th:value="*{streetName}" placeholder="business Line" required>
 
                                     </div>
                                     <div class="col-md-4 mb-3">
@@ -238,6 +247,78 @@
 
                                     </div>
                                 </div>
+                            </div>
+
+                            <div sec:authorize="hasAuthority('PERMIT_APPLICATION')" th:if="${usersEntity.manufactureProfile == 1}">
+                                &nbsp;
+                                <div id="idButtons">
+                                    &nbsp; &nbsp;
+                                    <div class="form-row">
+                                        <div class="col-md-4 mb-3">
+                                            <button id="addParam" class="btn btn-primary" data-mdb-toggle="modal" data-mdb-target="#uploadModal" type="button">ADD PLANT DETAILS</button>
+                                        </div>
+                                        <div class="col-md-4 mb-3">
+                                            <!--                                    <label for="remarks" >Remarks</label>-->
+                                            <!--                                    <button id="sendToLab" class="btn btn-primary" onclick="popUpFunctionUpload('sendLabBtn');" type="button">SEND TO LAB</button>-->
+                                            <!--                                <div class="valid-feedback">-->
+                                            <!--                                    Looks good!-->
+                                            <!--                                </div>-->
+                                        </div>
+                                        <!--                                <div class="col-md-4 mb-3">-->
+                                        <!--                                        <label for="cocNumber" >16. C.O.C. No</label>-->
+                                        <!--                                        <input id="cocNumber" name="cocNumber" th:value="${session.coc?.cocId?.cocNumber}" type="hidden">-->
+                                        <!--                                        <input class="form-control" data-name="coc Number" disabled id="cocNumber2" maxlength="256" name="cocNumber" th:value="${session.coc?.cocId?.cocNumber}" required="required">-->
+                                        <!--                                    <div class="valid-feedback">-->
+                                        <!--                                        Looks good!-->
+                                        <!--                                    </div>-->
+                                        <!--                                </div>-->
+                                    </div>
+                                    &nbsp; &nbsp;
+                                </div>
+                                <br>
+                                <div id="idTableParam" class="row-table ">
+
+                                    <table id="example" class="table table-striped table-bordered" style="width:100%">
+                                        <thead>
+                                        <tr>
+                                            <!--                                    <th>Id</th>-->
+                                            <th>Location</th>
+                                            <th>Street</th>
+                                            <th>Building Name</th>
+                                            <th>Nearest LandMark</th>
+                                            <th>Postal Address</th>
+                                            <th>Contact Person</th>
+                                            <th>Telephone No</th>
+                                            <!--                                    <th th:if="${message == bsNumber}">BS NUMBER</th>-->
+                                            <!--                                    <th th:if="${message == bsNumber}">ADD BS NUMBER</th>-->
+                                            <!--                                    <th th:if="${message == labResults}">LAB RESULTS</th>-->
+                                            <!--                                    <th>Inspection Status</th>-->
+                                            <!--                                    <th>View</th>-->
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr class="list" th:each="itemParam: ${plantsDetails}" style="cursor: pointer">
+
+                                            <!--                                    <td th:text="${itemParam.id}"></td>-->
+                                            <td th:text="${itemParam.location}"></td>
+                                            <td th:text="${itemParam.street}"></td>
+                                            <td th:text="${itemParam.buildingName}"></td>
+                                            <td th:text="${itemParam.nearestLandMark}"></td>
+                                            <td th:text="${itemParam.postalAddress}"></td>
+                                            <td th:text="${itemParam.contactPerson}"></td>
+                                            <td th:text="${itemParam.telephone}"></td>
+                                            <!--                                    <td th:if="${message == bsNumber and itemParam?.bsNumber != null}" th:text="${itemParam.bsNumber}"></td>-->
+                                            <!--                                    <td th:if="${message == bsNumber and itemParam?.bsNumber == null}" >NO BS NO</td>-->
+                                            <!--                                    <td th:if="${message == bsNumber and itemParam?.bsNumber == null}" ><button class="btn btn-primary" th:value="${itemParam.id}" onclick="popUpFunctionBSNumber('addBsNumberBtn', this);" type="button">ADD</button></td>-->
+                                            <!--                                    <td th:if="${message == labResults and itemParam?.labResultStatus == map.activeStatus }" ><button class="btn btn-primary" th:value="${itemParam.id}" onclick="popUpFunctionViewResults('labResultsBtn', this);" type="button">VIEW</button></td>-->
+                                            <!--                                    <td th:if="${message == labResults and itemParam?.labResultStatus == null }" >NO RESULTS</td>-->
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+
+
                             </div>
 <!--                            <div th:if="${usersEntity.manufactureProfile != 1}" th:object="${userProfilesEntity}">-->
 <!--                                <div class="form-row">-->
@@ -390,152 +471,78 @@
                         </form>
 
 
-                        <div th:if="${profile == 'Manufacturer'}">
-                            &nbsp;
-                            <div id="idButtons">
-                                <div class="form-row">
-                                    <div class="col-md-4 mb-3">
-                                        <button id="addParam" class="btn btn-primary"
-                                                data-mdb-toggle="modal"
-                                                data-mdb-target="#uploadModal"
-                                                type="button">ADD PLANT DETAILS
-                                        </button>
-                                    </div>
-                                    <div class="col-md-4 mb-3">
-                                        <!--                                    <label for="remarks" >Remarks</label>-->
-                                        <!--                                    <button id="sendToLab" class="btn btn-primary" onclick="popUpFunctionUpload('sendLabBtn');" type="button">SEND TO LAB</button>-->
-                                        <!--                                <div class="valid-feedback">-->
-                                        <!--                                    Looks good!-->
-                                        <!--                                </div>-->
-                                    </div>
-                                    <!--                                <div class="col-md-4 mb-3">-->
-                                    <!--                                        <label for="cocNumber" >16. C.O.C. No</label>-->
-                                    <!--                                        <input id="cocNumber" name="cocNumber" th:value="${session.coc?.cocId?.cocNumber}" type="hidden">-->
-                                    <!--                                        <input class="form-control" data-name="coc Number" disabled id="cocNumber2" maxlength="256" name="cocNumber" th:value="${session.coc?.cocId?.cocNumber}" required="required">-->
-                                    <!--                                    <div class="valid-feedback">-->
-                                    <!--                                        Looks good!-->
-                                    <!--                                    </div>-->
-                                    <!--                                </div>-->
-                                </div>
-                            </div>
-                            <br>
-                            <div id="idTableParam" class="row-table ">
-
-                                <table id="example" class="table table-striped table-bordered" style="width:100%">
-                                    <thead>
-                                    <tr>
-                                        <!--                                    <th>Id</th>-->
-                                        <th>Location</th>
-                                        <th>Street</th>
-                                        <th>Building Name</th>
-                                        <th>Nearest LandMark</th>
-                                        <th>Postal Address</th>
-                                        <th>Contact Person</th>
-                                        <th>Telephone No</th>
-                                        <!--                                    <th th:if="${message == bsNumber}">BS NUMBER</th>-->
-                                        <!--                                    <th th:if="${message == bsNumber}">ADD BS NUMBER</th>-->
-                                        <!--                                    <th th:if="${message == labResults}">LAB RESULTS</th>-->
-                                        <!--                                    <th>Inspection Status</th>-->
-                                        <!--                                    <th>View</th>-->
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    <tr class="list" th:each="itemParam: ${manufacturePlants}" style="cursor: pointer">
-
-                                        <!--                                    <td th:text="${itemParam.id}"></td>-->
-                                        <td th:text="${itemParam.location}"></td>
-                                        <td th:text="${itemParam.street}"></td>
-                                        <td th:text="${itemParam.buildingName}"></td>
-                                        <td th:text="${itemParam.nearestLandMark}"></td>
-                                        <td th:text="${itemParam.postalAddress}"></td>
-                                        <td th:text="${itemParam.contactPerson}"></td>
-                                        <td th:text="${itemParam.telephone}"></td>
-                                        <!--                                    <td th:if="${message == bsNumber and itemParam?.bsNumber != null}" th:text="${itemParam.bsNumber}"></td>-->
-                                        <!--                                    <td th:if="${message == bsNumber and itemParam?.bsNumber == null}" >NO BS NO</td>-->
-                                        <!--                                    <td th:if="${message == bsNumber and itemParam?.bsNumber == null}" ><button class="btn btn-primary" th:value="${itemParam.id}" onclick="popUpFunctionBSNumber('addBsNumberBtn', this);" type="button">ADD</button></td>-->
-                                        <!--                                    <td th:if="${message == labResults and itemParam?.labResultStatus == map.activeStatus }" ><button class="btn btn-primary" th:value="${itemParam.id}" onclick="popUpFunctionViewResults('labResultsBtn', this);" type="button">VIEW</button></td>-->
-                                        <!--                                    <td th:if="${message == labResults and itemParam?.labResultStatus == null }" >NO RESULTS</td>-->
-                                    </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-
-                            <div id="idPopUp" class="uploadForm">
-                                <form id="upload-form" name="upload-form"
-                                      th:action="@{/api/auth/add/plant-details/save(manufactureID=${manufacturersEntity?.id})}"
-                                      method="post" th:object="${manufacturePlantDetailsEntity}">
-                                    <div class="modal fade" id="uploadModal" tabindex="-1" role="dialog"
-                                         aria-labelledby="uploadModalLabel" aria-hidden="true">
-                                        <div class="modal-dialog" role="document">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <h5 class="modal-title" id="exampleModalLabel">Plant Details</h5>
-                                                    <button
-                                                            type="button"
-                                                            class="btn-close"
-                                                            data-mdb-dismiss="modal"
-                                                            aria-label="Close"
-                                                    ></button>
-                                                </div>
-                                                <div class="modal-body">
-                                                    <div class="form-group">
-                                                        <!--                                                    <input type="hidden" id="confirmSampleId"  name="confirmSampleId" th:value="${sampleSubmit?.id}">-->
-                                                        <div id="addParamBtn">
-                                                            <!--                                                        <input type="hidden" id="message"  name="message" th:value="${message}">-->
-                                                            <label class="field-label" for="county">County:</label>
-                                                            <select id="county" name="county" class="input-field w-input"
-                                                                    th:field="*{county}">
-                                                                <option value="0">Select One...</option>
-                                                                <option th:each="county : ${counties}"
-                                                                        th:text="${county.county}"
-                                                                        th:value="${county.id}"></option>
-                                                                <!--                                        <option th:each="subRegion : ${subRegions}" th:text="${subRegion.subRegion}" th:value="${subRegion.id}"></option>-->
-                                                            </select>
-                                                            <label class="field-label" for="town">Town:</label>
-                                                            <select id="town" name="town" class="input-field w-input"
-                                                                    th:field="*{town}">
-                                                                <option value="0">Select One...</option>
-                                                                <!--                                        <option th:each="subRegion : ${subRegions}" th:text="${subRegion.subRegion}" th:value="${subRegion.id}"></option>-->
-                                                            </select>
-                                                            <label for="location" class="field-label">Location:</label>
-                                                            <input class="input-field w-input" max="20" id="location"
-                                                                   th:field="*{location}" th:required="required">
-                                                            <label for="street" class="field-label">Street:</label>
-                                                            <input class="input-field w-input" max="20" id="street"
-                                                                   th:field="*{street}" th:required="required">
-                                                            <label for="buildingName" class="field-label">Building
-                                                                Name:</label>
-                                                            <input class="input-field w-input" max="20" id="buildingName"
-                                                                   th:field="*{buildingName}" th:required="required">
-                                                            <label for="nearestLandMark" class="field-label">Nearest Land
-                                                                Mark:</label>
-                                                            <input class="input-field w-input" max="20" id="nearestLandMark"
-                                                                   th:field="*{nearestLandMark}" th:required="required">
-                                                            <label for="postalAddress" class="field-label">Postal
-                                                                Address:</label>
-                                                            <input class="input-field w-input" max="20" id="postalAddress"
-                                                                   th:field="*{postalAddress}" th:required="required">
-                                                            <label for="contactPerson" class="field-label">Contact
-                                                                Person:</label>
-                                                            <input class="input-field w-input" max="20" id="contactPerson"
-                                                                   th:field="*{contactPerson}" th:required="required">
-                                                            <label for="telephone" class="field-label">Telephone:</label>
-                                                            <input class="input-field w-input" max="20" id="telephone"
-                                                                   th:field="*{telephone}" th:required="required">
-                                                        </div>
-
+                        <div id="idPopUp" class="uploadForm">
+                            <form id="upload-form" name="upload-form" th:action="@{/api/qa/kebs/add/plant-details/save}" method="post" th:object="${manufacturePlantDetails}">
+                                <div class="modal fade" id="uploadModal" tabindex="-1" role="dialog"
+                                     aria-labelledby="uploadModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="exampleModalLabel">Plant Details</h5>
+                                                <button
+                                                        type="button"
+                                                        class="btn-close"
+                                                        data-mdb-dismiss="modal"
+                                                        aria-label="Close"
+                                                ></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div class="form-group">
+                                                    <!--                                                    <input type="hidden" id="confirmSampleId"  name="confirmSampleId" th:value="${sampleSubmit?.id}">-->
+                                                    <div id="addParamBtn">
+                                                        <!--                                                        <input type="hidden" id="message"  name="message" th:value="${message}">-->
+                                                        <label class="field-label" for="county">County:</label>
+                                                        <select id="county" name="county" class="input-field w-input"
+                                                                th:field="*{county}">
+                                                            <option value="0">Select One...</option>
+                                                            <option th:each="county : ${counties}"
+                                                                    th:text="${county.county}"
+                                                                    th:value="${county.id}"></option>
+                                                            <!--                                        <option th:each="subRegion : ${subRegions}" th:text="${subRegion.subRegion}" th:value="${subRegion.id}"></option>-->
+                                                        </select>
+                                                        <label class="field-label" for="town">Town:</label>
+                                                        <select id="town" name="town" class="input-field w-input"
+                                                                th:field="*{town}">
+                                                            <option value="0">Select One...</option>
+                                                            <!--                                        <option th:each="subRegion : ${subRegions}" th:text="${subRegion.subRegion}" th:value="${subRegion.id}"></option>-->
+                                                        </select>
+                                                        <label for="location" class="field-label">Location:</label>
+                                                        <input class="input-field w-input" max="20" id="location"
+                                                               th:field="*{location}" th:required="required">
+                                                        <label for="street" class="field-label">Street:</label>
+                                                        <input class="input-field w-input" max="20" id="street"
+                                                               th:field="*{street}" th:required="required">
+                                                        <label for="buildingName" class="field-label">Building
+                                                            Name:</label>
+                                                        <input class="input-field w-input" max="20" id="buildingName"
+                                                               th:field="*{buildingName}" th:required="required">
+                                                        <label for="nearestLandMark" class="field-label">Nearest Land
+                                                            Mark:</label>
+                                                        <input class="input-field w-input" max="20" id="nearestLandMark"
+                                                               th:field="*{nearestLandMark}" th:required="required">
+                                                        <label for="postalAddress" class="field-label">Postal
+                                                            Address:</label>
+                                                        <input class="input-field w-input" max="20" id="postalAddress"
+                                                               th:field="*{postalAddress}" th:required="required">
+                                                        <label for="contactPerson" class="field-label">Contact
+                                                            Person:</label>
+                                                        <input class="input-field w-input" max="20" id="contactPerson"
+                                                               th:field="*{contactPerson}" th:required="required">
+                                                        <label for="telephone" class="field-label">Telephone:</label>
+                                                        <input class="input-field w-input" max="20" id="telephone"
+                                                               th:field="*{telephone}" th:required="required">
                                                     </div>
+
                                                 </div>
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary" onClick="window.location.reload()" data-mdb-dismiss="modal">Close</button>
-                                                    <input type="submit" id="upload" class="btn btn-primary" value="Save"/>
-                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" onClick="window.location.reload()" data-mdb-dismiss="modal">Close</button>
+                                                <input type="submit" id="upload" class="btn btn-primary" value="Save"/>
                                             </div>
                                         </div>
                                     </div>
-                                </form>
-                            </div>
-
+                                </div>
+                            </form>
                         </div>
 
                         <div id="companyProfilePopUp" class="uploadForm">

@@ -121,7 +121,7 @@ where DEMAND_NOTE_NUMBER = 'DN2021042045B72'
 
 select *
 from STG_PAYMENT_RECONCILIATION --DN20210407C4C3D--DN20210331288A1
--- where REFERENCE_CODE = 'DM#20210426B8C'
+where REFERENCE_CODE = 'DM#20210428DE4'
 --                            ||
 --                        'DN20210422E1513' ||
 --                        'DN202104229B7D1'
@@ -130,7 +130,7 @@ order by id desc;/
 
 select *
 from LOG_STG_PAYMENT_RECONCILIATION
-where REFERENCE_CODE = 'DN2021041576884'
+where REFERENCE_CODE = 'DM#20210428DE4'
 order by id desc;/
 
 select *
@@ -141,7 +141,7 @@ order by id desc;/
 /*Permit INVOICE*/
 select * from DAT_KEBS_INVOICE
 -- where id = 2
-where INVOICE_NUMBER = 'DM#20210426B8C'
+where INVOICE_NUMBER = 'DM#20210428DE4'
 order by id desc;
 
 

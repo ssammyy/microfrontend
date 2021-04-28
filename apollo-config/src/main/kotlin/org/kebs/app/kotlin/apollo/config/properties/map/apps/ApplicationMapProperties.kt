@@ -51,8 +51,17 @@ class ApplicationMapProperties {
     @Value("\${org.kebs.app.kotlin.apollo.application.map.user.registration}")
     val mapUserRegistration: Int = 0
 
+    @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.type.smark.mediumFirm.max.products}")
+    val mapQaSmarkMediumMaxProduct: Int = 0
+
+    @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.type.smark.juakaliFirm.max.products}")
+    val mapQaSmarkJuakaliMaxProduct: Int = 0
+
     @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.type.dmark.id}")
     val mapQAPermitTypeIDDmark: Long = 0L
+
+    @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.department.id.for.users}")
+    val mapQADepertmentId: Long = 0L
 
     @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.type.smark.id}")
     val mapQAPermitTypeIdSmark: Long = 0L
@@ -71,6 +80,12 @@ class ApplicationMapProperties {
 
     @Value("\${org.kebs.app.kotlin.apollo.application.map.tax.rate}")
     val mapKebsTaxRate: BigDecimal = 0.0000.toBigDecimal()
+
+    @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.type.smark.mediumFirm.extra.products.cost}")
+    val mapQaSmarkMediumExtraProductCost: BigDecimal = 0.0000.toBigDecimal()
+
+    @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.type.smark.juakaliFirm.extra.products.cost}")
+    val mapQaSmarkJuakaliExtraProductCost: BigDecimal = 0.0000.toBigDecimal()
 
     @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.type.fmark.domestic.amountToPay}")
     val mapQaDmarkDomesticAmountToPay: BigDecimal = 0.0000.toBigDecimal()
