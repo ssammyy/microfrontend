@@ -1,25 +1,38 @@
 package com.apollo.standardsdevelopment.models
+
 import java.sql.Timestamp
 import javax.persistence.*
+import javax.xml.stream.events.Comment
 
 @Entity
-@Table(name = "CommitteeDraftPD")
-class CommitteeDraftsPD {
+@Table(name = "PublicReviewDraftComments")
+class PublicReviewDraftComments {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID")
     var id: Long = 0
 
-    @Column(name = "PD_DRAFT_NAME")
-    //PD- Preliminary Draft
+    @Column(name = "PRD_ID")
     @Basic
-    var PdDraftName: String? = null
+    var prdId: Long? = 0
 
 
-    @Column(name = "PD_DRAFT_BY")
+    @Column(name = "ROLE_ID")
     @Basic
-    var PddraftBy: String? = null
+    var roleId: Long? = 0
 
+
+    @Column(name = "ROLE_NAME")
+    @Basic
+    var roleName: String? = null
+
+    @Column(name = "USER_ID")
+    @Basic
+    var userId: Long? = 0
+
+    @Column(name = "COMMENT")
+    @Basic
+    var comment: String? = null
 
     @Column(name = "CREATED_ON")
     @Basic
@@ -36,11 +49,14 @@ class CommitteeDraftsPD {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
 
-        other as CommitteeDraftsPD
+        other as PublicReviewDraftComments
 
         if (id != other.id) return false
-        if (PdDraftName != other.PdDraftName) return false
-        if (PddraftBy != other.PddraftBy) return false
+        if (prdId != other.prdId) return false
+        if (roleId != other.roleId) return false
+        if (roleName != other.roleName) return false
+        if (userId != other.userId) return false
+        if (comment != other.comment) return false
         if (createdOn != other.createdOn) return false
         if (modifiedOn != other.modifiedOn) return false
         if (deletedOn != other.deletedOn) return false
@@ -50,8 +66,11 @@ class CommitteeDraftsPD {
 
     override fun hashCode(): Int {
         var result = id.hashCode()
-        result = 31 * result + (PdDraftName?.hashCode() ?: 0)
-        result = 31 * result + (PddraftBy?.hashCode() ?: 0)
+        result = 31 * result + (prdId?.hashCode() ?: 0)
+        result = 31 * result + (roleId?.hashCode() ?: 0)
+        result = 31 * result + (roleName?.hashCode() ?: 0)
+        result = 31 * result + (userId?.hashCode() ?: 0)
+        result = 31 * result + (comment?.hashCode() ?: 0)
         result = 31 * result + (createdOn?.hashCode() ?: 0)
         result = 31 * result + (modifiedOn?.hashCode() ?: 0)
         result = 31 * result + (deletedOn?.hashCode() ?: 0)
@@ -59,7 +78,7 @@ class CommitteeDraftsPD {
     }
 
     override fun toString(): String {
-        return "CommitteeDraftsPD(id=$id, PdDraftName=$PdDraftName, Pd_draftBy=$PddraftBy" +
+        return "PublicReviewDraftComments(id=$id, prdId=$prdId,roleId=$roleId,roleName=$roleName, userId=$userId,comment=$comment" +
                 "createdOn=$createdOn, modifiedOn=$modifiedOn, deletedOn=$deletedOn)"
     }
 

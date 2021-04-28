@@ -10,23 +10,26 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import javax.validation.ValidationException
+import javax.xml.bind.ValidationException
 
 
 @RestController
 @RequestMapping("/feedback")
 class FeedbackController(val emailConfig: EmailConfig) {
     @PostMapping
-    fun sendFeedback(@RequestBody feedback: Feedback,
-                     bindingResult: BindingResult) {
+    fun sendFeedback(
+        @RequestBody feedback: Feedback,
+        bindingResult: BindingResult
+    ) {
         if (bindingResult.hasErrors()) {
             throw ValidationException("Feedback is not valid")
         }
 
         // Create a mail sender
         val mailSender = JavaMailSenderImpl()
-        mailSender.host=this.emailConfig.host
-        mailSender.port=this.emailConfig.port
-        mailSender.username=this.emailConfig.username
+        mailSender.host = this.emailConfig.host
+        mailSender.port = this.emailConfig.port
+        mailSender.username = this.emailConfig.username
         mailSender.password = this.emailConfig.password
 
 
