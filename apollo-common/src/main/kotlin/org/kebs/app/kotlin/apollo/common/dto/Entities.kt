@@ -246,6 +246,15 @@ data class UserPasswordResetValuesDto(
     var emailUsername: String? = null,
 )
 
+data class OtpRequestValuesDto(
+    var username: String? = null,
+    var password: String? = null
+)
+
+data class OtpResponseDto(
+    var message: String? = null,
+)
+
 
 data class UserCompanyDto(
     var name: String? = null,

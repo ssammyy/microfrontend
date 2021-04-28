@@ -5,6 +5,9 @@ import io.jsonwebtoken.ExpiredJwtException
 import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.common.exceptions.ServiceMapNotFoundException
+import org.springframework.core.Ordered
+import org.springframework.core.annotation.Order
+import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.MethodArgumentNotValidException
@@ -18,7 +21,7 @@ import java.time.Instant
 import javax.servlet.http.HttpServletRequest
 import javax.validation.ConstraintViolationException
 
-
+@Order(Ordered.HIGHEST_PRECEDENCE)
 @ControllerAdvice
 class CustomExceptionHandler {
 
@@ -125,6 +128,16 @@ class CustomExceptionHandler {
         return ErrorResponse("Required input missing", details)
     }
 
+    @ExceptionHandler(GenericRuntimeException::class)
+    fun handleGenericException(ex: GenericRuntimeException): ResponseEntity<Any> {
+        return buildErrorResponseEntity(
+            GenericErrorResponse(ex.message),
+            HttpStatus.valueOf(ex.status)
+        )
+    }
+
+    private fun buildErrorResponseEntity(responseBody: GenericErrorResponse, status: HttpStatus
+    ): ResponseEntity<Any> { return ResponseEntity<Any>(responseBody, HttpHeaders(), status) }
 }
 
 
