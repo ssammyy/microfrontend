@@ -2,8 +2,8 @@
 
 angular.module('myApp').factory('ExceptionService', ['$http', '$q', function($http, $q){
 
-   // var PRODUCTS_URI = 'https://kims.kebs.org:8006/api/di/pvoc/rest/permits-products';
-    const PRODUCTS_URI = 'https://localhost:8006/api/di/pvoc/rest/permits-products';
+   var PRODUCTS_URI = 'https://kims.kebs.org:8006/api/di/pvoc/rest/permits-products';
+   //  const PRODUCTS_URI = 'https://localhost:8006/api/di/pvoc/rest/permits-products';
     // const MANUFACTURER_URI = 'https://localhost:8006/api/di/pvoc/rest/manufacturer-details';
     var MANUFACTURER_URI = 'https://kims.kebs.org:8006/api/di/pvoc/rest/manufacturer-details';
     var EXCEL_DOWNLOAD_URL = 'https://kims.kebs.org:8006/file'
