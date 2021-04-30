@@ -10,6 +10,9 @@ import org.springframework.stereotype.Repository
 interface IPermitApplicationsRepository : HazelcastRepository<PermitApplicationsEntity, Long> {
     fun findByUserId(userId: Long): List<PermitApplicationsEntity>?
     fun findByUserIdAndPermitType(userId: Long, permitType: Long): List<PermitApplicationsEntity>?
+    fun findByQamIdAndPermitType(userId: Long, permitType: Long): List<PermitApplicationsEntity>?
+    fun findByHodIdAndPermitType(userId: Long, permitType: Long): List<PermitApplicationsEntity>?
+    fun findByQaoIdAndPermitType(userId: Long, permitType: Long): List<PermitApplicationsEntity>?
     fun findByUserIdAndPermitTypeAndEndOfProductionStatus(userId: Long, permitType: Long, endOfProductionStatus: Int): List<PermitApplicationsEntity>?
     fun findByIdAndUserIdAndPermitType(id: Long, userId: Long, permitType: Long): PermitApplicationsEntity?
     fun findByIdAndUserId(id: Long, userId: Long): PermitApplicationsEntity?

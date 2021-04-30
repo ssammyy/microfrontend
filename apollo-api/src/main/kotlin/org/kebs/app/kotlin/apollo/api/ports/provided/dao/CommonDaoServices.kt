@@ -78,8 +78,6 @@ import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Service
 import org.springframework.util.StringUtils
 import org.springframework.web.multipart.MultipartFile
-import org.springframework.web.servlet.function.ServerRequest
-import org.springframework.web.servlet.function.ServerResponse
 import java.io.ByteArrayInputStream
 import java.io.File
 import java.io.FileWriter
@@ -1190,6 +1188,14 @@ class CommonDaoServices(
                     return users
                 }
                 ?: throw ExpectedDataNotFound("Users with section ID  = ${sectionsEntity.id} and status = $status, does not Exist")
+    }
+
+    fun findAllUsersWithinRegionDepartmentDivisionSectionId(region: RegionsEntity, department: DepartmentsEntity, division: DivisionsEntity, section: SectionsEntity, status: Int): List<UserProfilesEntity> {
+        iUserProfilesRepo.findByRegionIdAndDepartmentIdAndDivisionIdAndSectionIdAndStatus(region,department, division, section, status)
+                ?.let { users ->
+                    return users
+                }
+                ?: throw ExpectedDataNotFound("Users List with section ID  = ${section.id} and status = $status, does not Exist")
     }
 
 

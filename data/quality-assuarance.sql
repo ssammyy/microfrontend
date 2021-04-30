@@ -79,9 +79,15 @@
 ***************************Table USED IN QA*****************************************
 select * from DAT_KEBS_PERMIT_TRANSACTION
 -- where id = 61
-order by id desc;
+-- where PERMIT_NUMBER = 'DM#0954A'
+order by id desc; 1522
 
-alter table DAT_KEBS_PERMIT_TRANSACTION rename column SECTION_ID to DIVISION_ID
+alter table DAT_KEBS_PERMIT_TRANSACTION
+    add HOD_ID NUMBER REFERENCES DAT_KEBS_USERS(ID)
+/
+
+alter table DAT_KEBS_PERMIT_TRANSACTION
+    add RM_ID NUMBER REFERENCES DAT_KEBS_USERS(ID)
 /
 
 select * from CFG_TURNOVER_RATES
@@ -107,9 +113,17 @@ alter table DAT_KEBS_COMPANY_PROFILE modify YEARLY_TURNOVER NUMBER
 /
 
 
-alter table DAT_KEBS_INVOICE
-    add RECEIPT_NO VARCHAR2(200)
-/
+alter table DAT_KEBS_QA_STA10
+    add PRODUCT_LABELED_MARKED_SPECIFY_1A VARCHAR2(200)
+/alter table DAT_KEBS_QA_STA10
+    add PRODUCT_LABELED_MARKED_SPECIFY_1B VARCHAR2(200)
+/alter table DAT_KEBS_QA_STA10
+    add PRODUCT_LABELED_MARKED_SPECIFY_1C VARCHAR2(200)
+/alter table DAT_KEBS_QA_STA10
+    add PRODUCT_LABELED_MARKED_SPECIFY_1D VARCHAR2(200)
+/alter table DAT_KEBS_QA_STA10
+    add PRODUCT_LABELED_MARKED_SPECIFY_1E VARCHAR2(200)
+    /
 
 select * from DAT_KEBS_QA_STA3
 -- where id = 43

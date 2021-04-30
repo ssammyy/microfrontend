@@ -139,6 +139,30 @@ class PermitApplicationsEntity:Serializable {
     @Basic
     var sta10FilledStatus: Int? = null
 
+    @Column(name = "STA10_FILLED_OFFICER_STATUS")
+    @Basic
+    var sta10FilledOfficerStatus: Int? = null
+
+    @Column(name = "QAM_ID")
+    @Basic
+    var qamId: Long? = null
+
+    @Column(name = "HOD_ID")
+    @Basic
+    var hodId: Long? = null
+
+    @Column(name = "RM_ID")
+    @Basic
+    var rmId: Long? = null
+
+    @Column(name = "HOF_ID")
+    @Basic
+    var hofId: Long? = null
+
+    @Column(name = "QAO_ID")
+    @Basic
+    var qaoId: Long? = null
+
     @Column(name = "STA3_FILLED_STATUS")
     @Basic
     var sta3FilledStatus: Int? = null
@@ -176,10 +200,28 @@ class PermitApplicationsEntity:Serializable {
     @Basic
     var sendApplication: Int? = null
 
+    @Column(name = "PAID_STATUS")
+    @Basic
+    var paidStatus: Int? = null
+
+    @Column(name = "ASSIGN_OFFICER_STATUS")
+    @Basic
+    var assignOfficerStatus: Int? = null
+
 
     @Column(name = "TITLE")
     @Basic
     var title: String? = null
+
+    @Column(name = "HOF_QAM_COMPLETENESS_STATUS")
+    @Basic
+    var hofQamCompletenessStatus: Int? = null
+
+
+    @Column(name = "HOF_QAM_COMPLETENESS_REMARKS")
+    @Basic
+    var hofQamCompletenessRemarks: String? = null
+
     //A Declaration Form
 
     @Column(name = "TOTAL_COST")
@@ -342,6 +384,11 @@ class PermitApplicationsEntity:Serializable {
         if (attachedPlantId != other.attachedPlantId) return false
         if (attachedPlantId != other.attachedPlantId) return false
         if (userId != other.userId) return false
+        if (qamId != other.qamId) return false
+        if (hodId != other.hodId) return false
+        if (rmId != other.rmId) return false
+        if (hofId != other.hofId) return false
+        if (qaoId != other.qaoId) return false
         if (permitType != other.permitType) return false
         if (ksNumber != other.ksNumber) return false
         if (commodityDescription != other.commodityDescription) return false
@@ -351,8 +398,13 @@ class PermitApplicationsEntity:Serializable {
         if (attachedPlantRemarks != other.attachedPlantRemarks) return false
         if (productName != other.productName) return false
         if (tradeMark != other.tradeMark) return false
+        if (hofQamCompletenessRemarks != other.hofQamCompletenessRemarks) return false
+        if (hofQamCompletenessStatus != other.hofQamCompletenessStatus) return false
+        if (paidStatus != other.paidStatus) return false
+        if (assignOfficerStatus != other.assignOfficerStatus) return false
         if (permitForeignStatus != other.permitForeignStatus) return false
         if (status != other.status) return false
+        if (sta10FilledOfficerStatus != other.sta10FilledOfficerStatus) return false
         if (sta10FilledStatus != other.sta10FilledStatus) return false
         if (sta3FilledStatus != other.sta3FilledStatus) return false
         if (sendApplication != other.sendApplication) return false
@@ -415,6 +467,11 @@ class PermitApplicationsEntity:Serializable {
         result = 31 * result + (productSubCategory?.hashCode() ?: 0)
         result = 31 * result + (region?.hashCode() ?: 0)
         result = 31 * result + (userId?.hashCode() ?: 0)
+        result = 31 * result + (qamId?.hashCode() ?: 0)
+        result = 31 * result + (hofId?.hashCode() ?: 0)
+        result = 31 * result + (hodId?.hashCode() ?: 0)
+        result = 31 * result + (rmId?.hashCode() ?: 0)
+        result = 31 * result + (qaoId?.hashCode() ?: 0)
         result = 31 * result + (permitType?.hashCode() ?: 0)
         result = 31 * result + (ksNumber?.hashCode() ?: 0)
         result = 31 * result + (dateOfIssue?.hashCode() ?: 0)
@@ -424,6 +481,9 @@ class PermitApplicationsEntity:Serializable {
         result = 31 * result + (productName?.hashCode() ?: 0)
         result = 31 * result + (commodityDescription?.hashCode() ?: 0)
         result = 31 * result + (tradeMark?.hashCode() ?: 0)
+        result = 31 * result + (paidStatus?.hashCode() ?: 0)
+        result = 31 * result + (hofQamCompletenessRemarks?.hashCode() ?: 0)
+        result = 31 * result + (assignOfficerStatus ?: 0)
         result = 31 * result + (smeFormFilledStatus ?: 0)
         result = 31 * result + (invoiceGenerated ?: 0)
         result = 31 * result + (enabled ?: 0)
@@ -432,6 +492,8 @@ class PermitApplicationsEntity:Serializable {
         result = 31 * result + (fmarkGenerated ?: 0)
         result = 31 * result + (endOfProductionStatus ?: 0)
         result = 31 * result + (status ?: 0)
+        result = 31 * result + (hofQamCompletenessStatus ?: 0)
+        result = 31 * result + (sta10FilledOfficerStatus ?: 0)
         result = 31 * result + (sta10FilledStatus ?: 0)
         result = 31 * result + (sta3FilledStatus ?: 0)
         result = 31 * result + (title?.hashCode() ?: 0)

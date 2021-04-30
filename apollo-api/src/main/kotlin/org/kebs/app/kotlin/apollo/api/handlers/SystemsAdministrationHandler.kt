@@ -93,16 +93,16 @@ class SystemsAdministrationHandler(
 
     @PreAuthorize("hasAuthority('SYSADMIN_VIEW')")
     fun sysadminHome(req: ServerRequest): ServerResponse {
-        req.attributes()["authoritiesListLink"] = "/api/v1/system/admin/security/authorities/load"
-        req.attributes()["usersListViewLink"] = "/api/v1/system/admin/security/users/load"
-        req.attributes()["rolesListLinkLink"] = "/api/v1/system/admin/security/roles/load"
-        req.attributes()["authoritiesListLink"] = "/api/v1/system/admin/security/authorities/load"
-        req.attributes()["titlesListLink"] = "/api/v1/system/admin/security/authorities/load"
-        req.attributes()["userTypesListLink"] = "/api/v1/system/admin/security/authorities/load"
+        req.attributes()["authoritiesListLink"] = "/api/system/admin/security/authorities/load"
+        req.attributes()["usersListViewLink"] = "/api/system/admin/security/users/load"
+        req.attributes()["rolesListLinkLink"] = "/api/system/admin/security/roles/load"
+        req.attributes()["authoritiesListLink"] = "/api/system/admin/security/authorities/load"
+        req.attributes()["titlesListLink"] = "/api/system/admin/security/authorities/load"
+        req.attributes()["userTypesListLink"] = "/api/system/admin/security/authorities/load"
 
-        req.attributes()["getLink"] = "/api/v1/system/admin/security/authorities"
-        req.attributes()["rolesPostLink"] = "/api/v1/system/admin/security/roles/"
-        req.attributes()["listLink"] = "/api/v1/system/admin/security/authorities/list"
+        req.attributes()["getLink"] = "/api/system/admin/security/authorities"
+        req.attributes()["rolesPostLink"] = "/api/system/admin/security/roles/"
+        req.attributes()["listLink"] = "/api/system/admin/security/authorities/list"
 //        req.attributes()["titles"] = daoService.listTitles(1)
 //        req.attributes()["userTypes"] = daoService.listUserTypes(1)
 
@@ -293,8 +293,8 @@ class SystemsAdministrationHandler(
 
             req.attributes()["content"] = user
             req.attributes()["heading"] = "USERS LISTING"
-            req.attributes()["postLink"] = "/api/v1/system/admin/security/users/save"
-            req.attributes()["getLink"] = "/api/v1/system/admin/security/users"
+            req.attributes()["postLink"] = "/api/system/admin/security/users/save"
+            req.attributes()["getLink"] = "/api/system/admin/security/users"
 
             return ok().render("fragments/security-crud :: user-form-view", req.attributes())
         } catch (e: Exception) {

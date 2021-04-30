@@ -471,7 +471,7 @@
                         </form>
 
 
-                        <div id="idPopUp" class="uploadForm">
+                        <div sec:authorize="hasAuthority('PERMIT_APPLICATION')" id="idPopUp" class="uploadForm">
                             <form id="upload-form" name="upload-form" th:action="@{/api/qa/kebs/add/plant-details/save}" method="post" th:object="${manufacturePlantDetails}">
                                 <div class="modal fade" id="uploadModal" tabindex="-1" role="dialog"
                                      aria-labelledby="uploadModalLabel" aria-hidden="true">
@@ -492,8 +492,7 @@
                                                     <div id="addParamBtn">
                                                         <!--                                                        <input type="hidden" id="message"  name="message" th:value="${message}">-->
                                                         <label class="field-label" for="county">County:</label>
-                                                        <select id="county" name="county" class="input-field w-input"
-                                                                th:field="*{county}">
+                                                        <select id="county" name="county" class="input-field w-input" th:field="*{county}">
                                                             <option value="0">Select One...</option>
                                                             <option th:each="county : ${counties}"
                                                                     th:text="${county.county}"
@@ -545,7 +544,7 @@
                             </form>
                         </div>
 
-                        <div id="companyProfilePopUp" class="uploadForm">
+                        <div sec:authorize="hasAuthority('PERMIT_APPLICATION')" id="companyProfilePopUp" class="uploadForm">
                             <form id="companyProfile-form" name="companyProfile-form" th:action="@{/api/auth/kebs/add/manufacture-details/save}" method="post" th:object="${companyProfileEntity}">
                                 <div class="modal fade" id="companyProfileModal" tabindex="-1" role="dialog" aria-labelledby="companyProfileModalLabel" aria-hidden="true">
                                     <div class="modal-dialog" role="document">

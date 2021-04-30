@@ -47,7 +47,7 @@ class ControllerRoutes {
 
     @Bean
     fun masterDataRoutes(handler: MasterDataHandler) = router {
-        "/api/v1/system/admin".nest {
+        "/api/system/admin".nest {
             "/masters".nest {
                 "/ui".nest {
                     GET("/designations", handler::designationsUi)
@@ -304,6 +304,7 @@ class ControllerRoutes {
             GET("/new-permit", handler::newPermit)
             GET("/new-sta3", handler::newSta3)
             GET("/new-sta10", handler::newSta10)
+            GET("/new-sta10-officer", handler::newSta10Officer)
             GET("/view-sta3", handler::viewSta3)
             GET("/view-sta10", handler::viewSta10)
             GET("/new-sta10-submit", handler::submitSta10)
@@ -436,7 +437,7 @@ class ControllerRoutes {
 
     @Bean
     fun systemsAdministrationRoutes(handler: SystemsAdministrationHandler) = router {
-        "/api/v1/system/admin".nest {
+        "/api/system/admin".nest {
             GET("/home", handler::sysadminHome)
             "/ui".nest {
                 GET("/rbac-user-roles", handler::rbacUserRoles)

@@ -71,7 +71,7 @@
                                 <div class="filter-title">Action:</div>
                             </div>
                             <div>
-                                <a th:href="@{/api/qa/new-permit(permitTypeID=${permitType.id})}" class="filter-link" style="color: white">NEW PERMIT</a>
+                                <a sec:authorize="hasAuthority('PERMIT_APPLICATION')" th:href="@{/api/qa/new-permit(permitTypeID=${permitType.id})}" class="filter-link" style="color: white">NEW PERMIT</a>
                             </div>
                         </div>
                     </div>

@@ -4,11 +4,10 @@ import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.ports.provided.mpesa.MPesaService
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
+import org.kebs.app.kotlin.apollo.common.exceptions.ServiceMapNotFoundException
 import org.kebs.app.kotlin.apollo.common.utils.generateRandomText
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.*
-import org.kebs.app.kotlin.apollo.store.model.importer.TemporaryImportApplicationsEntity
-import org.kebs.app.kotlin.apollo.store.model.importer.TemporaryImportApplicationsUploadsEntity
 import org.kebs.app.kotlin.apollo.store.model.qa.*
 import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileEntity
 import org.kebs.app.kotlin.apollo.store.repo.*
@@ -67,8 +66,38 @@ class QADaoServices(
     }
 
     fun findAllUserPermitWithPermitType(user: UsersEntity, permitType: Long): List<PermitApplicationsEntity> {
-        val userId = user.id ?: throw ExpectedDataNotFound("No ID Found")
+        val userId = user.id ?: throw ExpectedDataNotFound("No USER ID Found")
         permitRepo.findByUserIdAndPermitType(userId, permitType)
+            ?.let { permitList ->
+                return permitList
+            }
+
+            ?: throw ExpectedDataNotFound("No Permit Found for the following user with USERNAME = ${user.userName}")
+    }
+
+    fun findAllQAMPermitListWithPermitType(user: UsersEntity, permitType: Long): List<PermitApplicationsEntity> {
+        val userId = user.id ?: throw ExpectedDataNotFound("No USER ID Found")
+        permitRepo.findByQamIdAndPermitType(userId, permitType)
+            ?.let { permitList ->
+                return permitList
+            }
+
+            ?: throw ExpectedDataNotFound("No Permit Found for the following user with USERNAME = ${user.userName}")
+    }
+
+    fun findAllHODPermitListWithPermitType(user: UsersEntity, permitType: Long): List<PermitApplicationsEntity> {
+        val userId = user.id ?: throw ExpectedDataNotFound("No USER ID Found")
+        permitRepo.findByHodIdAndPermitType(userId, permitType)
+            ?.let { permitList ->
+                return permitList
+            }
+
+            ?: throw ExpectedDataNotFound("No Permit Found for the following user with USERNAME = ${user.userName}")
+    }
+
+    fun findAllQAOPermitListWithPermitType(user: UsersEntity, permitType: Long): List<PermitApplicationsEntity> {
+        val userId = user.id ?: throw ExpectedDataNotFound("No USER ID Found")
+        permitRepo.findByQaoIdAndPermitType(userId, permitType)
             ?.let { permitList ->
                 return permitList
             }
@@ -167,25 +196,86 @@ class QADaoServices(
         return manufacturingProcessSTA10Repo.findBySta10Id(sta10Id)
     }
 
+
+    fun findOfficersList(permit: PermitApplicationsEntity, map: ServiceMapsEntity): List<UserProfilesEntity> {
+        val plantID = permit.attachedPlantId
+            ?: throw ServiceMapNotFoundException("Atta ched Plant details For Permit with ID = ${permit.id}, is Empty")
+
+        val plantAttached = findPlantDetails(plantID)
+        val region = plantAttached.region?.let { commonDaoServices.findRegionEntityByRegionID(it, map.activeStatus) }
+            ?: throw ExpectedDataNotFound("Plant attached Region Id is Empty, check config")
+        val department = commonDaoServices.findDepartmentByID(applicationMapProperties.mapQADepertmentId)
+        val division = permit.divisionId?.let { commonDaoServices.findDivisionWIthId(it) }
+            ?: throw ExpectedDataNotFound("Permit Division Id is Empty, check config")
+        val section = permit.sectionId?.let { commonDaoServices.findSectionWIthId(it) }
+            ?: throw ExpectedDataNotFound("Permit Section Id is Empty, check config")
+
+        return commonDaoServices.findAllUsersWithinRegionDepartmentDivisionSectionId(region, department, division, section, map.activeStatus)
+    }
+
+
+    fun assignNextOfficerAfterPayment(permit: PermitApplicationsEntity, map: ServiceMapsEntity, designationID:Long): UsersEntity? {
+        val plantID = permit.attachedPlantId
+            ?: throw ServiceMapNotFoundException("Attached Plant details For Permit with ID = ${permit.id}, is Empty")
+
+        val plantAttached = findPlantDetails(plantID)
+        val designation = commonDaoServices.findDesignationByID(designationID)
+        val region = plantAttached.region?.let { commonDaoServices.findRegionEntityByRegionID(it, map.activeStatus) }
+            ?: throw ExpectedDataNotFound("Plant attached Region Id is Empty, check config")
+        val department = commonDaoServices.findDepartmentByID(applicationMapProperties.mapQADepertmentId)
+
+
+        return commonDaoServices.findUserProfileWithDesignationRegionDepartmentAndStatus(designation, region, department, map.activeStatus).userId
+
+    }
+
     fun permitSave(
         permits: PermitApplicationsEntity,
         permitTypeDetails: PermitTypesEntity,
         user: UsersEntity,
         map: ServiceMapsEntity
-    ): PermitApplicationsEntity {
+    ): ServiceRequestsEntity {
 
-        with(permits) {
-            userId = user.id
-            productName = product?.let { commonDaoServices.findProductByID(it).name }
-            permitType = permitTypeDetails.id
-            permitNumber = "${permitTypeDetails.markNumber}${generateRandomText(5, map.secureRandom, map.messageDigestAlgorithm, false)}".toUpperCase()
-            enabled = map.initStatus
-            endOfProductionStatus = map.initStatus
-            status = map.activeStatus
-            createdBy = commonDaoServices.concatenateName(user)
-            createdOn = commonDaoServices.getTimestamp()
+        var sr = commonDaoServices.createServiceRequest(map)
+        try {
+            var savePermit = permits
+            with(permits) {
+                userId = user.id
+                productName = product?.let { commonDaoServices.findProductByID(it).name }
+                permitType = permitTypeDetails.id
+                permitNumber = "${permitTypeDetails.markNumber}${generateRandomText(5, map.secureRandom, map.messageDigestAlgorithm, false)}".toUpperCase()
+                enabled = map.initStatus
+                endOfProductionStatus = map.initStatus
+                status = map.activeStatus
+                createdBy = commonDaoServices.concatenateName(user)
+                createdOn = commonDaoServices.getTimestamp()
+            }
+
+
+            savePermit = permitRepo.save(savePermit)
+
+            sr.payload = "New Permit Saved [Firm name${savePermit.firmName} and ${savePermit.id}]"
+            sr.names = "${savePermit.firmName}"
+            sr.varField1 = savePermit.id.toString()
+
+            sr.responseStatus = sr.serviceMapsId?.successStatusCode
+            sr.responseMessage = "Success ${sr.payload}"
+            sr.status = map.successStatus
+            sr = serviceRequestsRepository.save(sr)
+            sr.processingEndDate = Timestamp.from(Instant.now())
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message, e)
+//            KotlinLogging.logger { }.trace(e.message, e)
+            sr.status = sr.serviceMapsId?.exceptionStatus
+            sr.responseStatus = sr.serviceMapsId?.exceptionStatusCode
+            sr.responseMessage = e.message
+            sr = serviceRequestsRepository.save(sr)
+
         }
-        return permitRepo.save(permits)
+
+        KotlinLogging.logger { }.trace("${sr.id} ${sr.responseStatus}")
+        return sr
     }
 
     fun sta3NewSave(
@@ -221,6 +311,21 @@ class QADaoServices(
             status = map.activeStatus
             createdBy = commonDaoServices.concatenateName(user)
             createdOn = commonDaoServices.getTimestamp()
+        }
+        return sta10Repo.save(qaSta10Details)
+    }
+
+    fun sta10OfficerNewSave(
+        qaSta10Details: QaSta10Entity,
+        map: ServiceMapsEntity,
+        user: UsersEntity
+    ): QaSta10Entity {
+
+        with(qaSta10Details) {
+            officialFillDate = commonDaoServices.getCurrentDate()
+            status = map.activeStatus
+            modifiedBy = commonDaoServices.concatenateName(user)
+            modifiedOn = commonDaoServices.getTimestamp()
         }
         return sta10Repo.save(qaSta10Details)
     }

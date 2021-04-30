@@ -9,7 +9,7 @@ import javax.persistence.*
 
 @Entity
 @Table(name = "DAT_KEBS_QA_STA10")
-class QaSta10Entity: Serializable {
+class QaSta10Entity : Serializable {
     @Column(name = "ID")
     @SequenceGenerator(name = "DAT_KEBS_QA_STA10_SEQ_GEN", allocationSize = 1, sequenceName = "DAT_KEBS_QA_STA10_SEQ")
     @GeneratedValue(generator = "DAT_KEBS_QA_STA10_SEQ_GEN", strategy = GenerationType.SEQUENCE)
@@ -172,6 +172,26 @@ class QaSta10Entity: Serializable {
     @Basic
     var productLabeledMarkedSpecify: String? = null
 
+    @Column(name = "PRODUCT_LABELED_MARKED_SPECIFY_1A")
+    @Basic
+    var productLabeledMarkedSpecify1a: String? = null
+
+    @Column(name = "PRODUCT_LABELED_MARKED_SPECIFY_1B")
+    @Basic
+    var productLabeledMarkedSpecify1b: String? = null
+
+    @Column(name = "PRODUCT_LABELED_MARKED_SPECIFY_1C")
+    @Basic
+    var productLabeledMarkedSpecify1c: String? = null
+
+    @Column(name = "PRODUCT_LABELED_MARKED_SPECIFY_1D")
+    @Basic
+    var productLabeledMarkedSpecify1d: String? = null
+
+    @Column(name = "PRODUCT_LABELED_MARKED_SPECIFY_1E")
+    @Basic
+    var productLabeledMarkedSpecify1e: String? = null
+
     @Column(name = "LABELS_MARKS_COMPLY_REQUIREMENTS_RELEVANT_STANDARD")
     @Basic
     var labelsMarksComplyRequirementsRelevantStandard: String? = null
@@ -194,7 +214,7 @@ class QaSta10Entity: Serializable {
 
     @Column(name = "OFFICIAL_FILL_DATE")
     @Basic
-    var officialFillDate: Time? = null
+    var officialFillDate: Date? = null
 
     @Column(name = "DESCRIPTION")
     @Basic
@@ -281,6 +301,11 @@ class QaSta10Entity: Serializable {
                 telephone == that.telephone &&
                 contactPerson == that.contactPerson &&
                 emailAddress == that.emailAddress &&
+                productLabeledMarkedSpecify1a == that.productLabeledMarkedSpecify1a &&
+                productLabeledMarkedSpecify1b == that.productLabeledMarkedSpecify1b &&
+                productLabeledMarkedSpecify1c == that.productLabeledMarkedSpecify1c &&
+                productLabeledMarkedSpecify1d == that.productLabeledMarkedSpecify1d &&
+                productLabeledMarkedSpecify1e == that.productLabeledMarkedSpecify1e &&
                 physicalLocationMap == that.physicalLocationMap &&
                 region == that.region &&
                 county == that.county &&
@@ -347,6 +372,11 @@ class QaSta10Entity: Serializable {
             ownerNameProprietorDirector,
             postalAddress,
             telephone,
+            productLabeledMarkedSpecify1a,
+            productLabeledMarkedSpecify1b,
+            productLabeledMarkedSpecify1c,
+            productLabeledMarkedSpecify1d,
+            productLabeledMarkedSpecify1e,
             contactPerson,
             emailAddress,
             physicalLocationMap,
