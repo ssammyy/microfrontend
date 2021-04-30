@@ -577,6 +577,10 @@ class RegistrationHandler(
         return ok().render("auth/forgot-pass", req.attributes())
     }
 
+    fun confirmOtpView(req: ServerRequest): ServerResponse {
+        return ok().render("auth/otp-confirmation")
+    }
+
     fun resetPasswordView(req: ServerRequest): ServerResponse {
         daoServices.extractServiceMapFromAppId(req.paramOrNull("appId") ?: "128")
             ?.let { map ->

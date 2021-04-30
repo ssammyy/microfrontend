@@ -35,6 +35,7 @@
     <link rel="stylesheet" th:href="@{/css/normalize.css}" type="text/css">
     <link rel="stylesheet" th:href="@{/css/webflow.css}" type="text/css">
     <link rel="stylesheet" th:href="@{/css/kebs.webflow.css}" type="text/css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"/>
     <script th:src="@{/js/webfont.js}" type="text/javascript"></script>
     <script type="text/javascript">WebFont.load({google: {families: ["Open Sans:300,300italic,400,400italic,600,600italic,700,700italic,800,800italic"]}});</script>
     <!-- [if lt IE 9]>
@@ -69,11 +70,16 @@
                     <input class="w-input" data-name="Email" id="username" maxlength="256" name="username" required="" type="text">
                     <label for="password">Password</label>
                     <input class="w-input" data-name="Password" id="password" maxlength="256" name="password" placeholder="" required="" type="password">
-                    <label for="password">OTP</label>
-                    <input class="w-input" data-name="otp" id="otp" maxlength="50" name="otp" placeholder="" required="" type="text">
-                    <button class="w-button">Request OTP</button>
+                    <label for="otp">Enter OTP Code</label>
+                    <div class="input-group mb-3">
+                        <input class="w-input" data-name="otp" id="otp" maxlength="50" name="otp" placeholder="" required="" type="text" style="width: 250px; vertical-align: middle;">
+                        <span class="input-group-btn">
+<!--                            <button class="btn btn-default" type="button" id="get_otp">Get OTP</button>-->
+                            <input type="button" value="Get OTP Code" class="btn btn-blue" onClick="getOTPCodeBtn(this)" id="verificationCode" style="background-color: #3898ec; color: white;">
+                        </span>
+                    </div>
+                    <input id="login-btn" class="w-button" type="submit" value="Submit" style="display:none;">
                     <a class="link" th:href="@{/api/auth/signup/forgot-password}">Forgot Password?</a>
-                    <input class="w-button" type="submit" value="Submit">
                     <div class="create-account">Dont have an account? <br>
                         <a th:href="@{/api/auth/signup/user}">Create Account/SignUp?</a><br>
                         <a th:href="@{/api/ms/complaints/new}">Report Complaint?</a><br>
@@ -95,14 +101,44 @@
         </div>
         <div class="column bg-image w-col w-col-6"></div>
     </div>
-</div>
-<script crossorigin="anonymous" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
-        src="https://d3e54v103j8qbb.cloudfront.net/js/jquery-3.4.1.min.220afd743d.js?site=5e70fb3a565ebd99c1db37ce" type="text/javascript"></script>
-<script th:src="@{/js/webfont.js}" type="text/javascript"></script>
-<!-- [if lte IE 9]>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/placeholders/3.0.2/placeholders.min.js"></script><![endif] -->
-<script th:src="@{/js/spinner.js}" type="text/javascript"></script>
 
+</div>
+<!-- Submit OTP Modal -->
+<div class="modal fade" id="modal-submit-otp" tabindex="-1" role="dialog" aria-labelledby="myModalLabelSubmitOTP" aria-hidden="true">
+    <form role="form" id="form-submit-otp">
+        <div class="modal-dialog large-modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title" id="myModalLabelSubmitOTP">
+                        <i class="fa fa-edit"></i>&nbsp;&nbsp;Enter OTP Code
+                    </h4>
+                </div>
+                <div class="modal-body" id="otp-content">
+                    <input type="hidden" id="final_username" value="" />
+                    <input type="hidden" id="final_password" value="" />
+                    <div class="form-group row">
+                        <label for="otp_code" class="col-sm-5 control-label">OTP Code:</label>
+                        <div class="col-sm-7">
+                            <input type="text" name="otp_code" id="otp_code" placeholder="OTP Code"
+                                   class="form-control  input-sm"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <input class="btn btn-info waves-effect waves-light" type="submit"
+                           value="Submit" id="btn-submit-otp">
+                    <a href="#" class="btn btn-danger waves-effect waves-light" data-dismiss="modal">Cancel</a>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script src="https://d3e54v103j8qbb.cloudfront.net/js/jquery-3.4.1.min.220afd743d.js" type="text/javascript" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<script th:src="@{/js/webfont.js}" type="text/javascript"></script>
+<script th:src="@{/js/spinner.js}" type="text/javascript"></script>
+<script th:src="@{/assets2/bootstrap-4.5.3-dist/js/bootstrap.js}"></script>
 <script>
     document.onreadystatechange = function(){
         showSpinnerOnLoad(document)
@@ -111,6 +147,59 @@
     function loadSpinner(){
         showSpinner(document)
     }
+</script>
+<script>
+    var wait=60;
+    function getOTPCodeBtn(btn) {
+        if ($("#username").val()==""){
+            alert("Please fill in the username first.");
+            return;
+        }
+
+        if (wait == 0) {
+            btn.removeAttribute("disabled");
+            $(btn).val("Get OTP Code ");
+            wait = 60;
+        } else {
+            $(btn).attr("disabled", true);
+            $(btn).val(wait + " secs");
+            // btn.value = "Obtain again in "+wait +" seconds";
+            if (wait == 60) {
+                getMobileCode();
+            }
+            wait--;
+            setTimeout(function() {
+                getOTPCodeBtn(btn);
+            }, 1000)
+        }
+    }
+
+    function getMobileCode(){
+                var loginInfo = {
+                    "username": $('#username').val(),
+                    "password": $('#password').val()
+                };
+                var loginInfoJson = JSON.stringify(loginInfo)
+        $.ajax({
+            cache : true,
+            type : "POST",
+            url : "/api/v1/otp",
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            data: loginInfoJson,
+            async : false,
+            dataType : 'json',
+            error : function(request) {
+                alert("Connection error");
+            },
+            success :function(json){
+                console.log(json);
+                $("#login-btn").show();
+            }
+        });
+    }
+
 </script>
 </body>
 </html>

@@ -244,7 +244,7 @@ class ControllerRoutes {
                 GET(pattern = "fail", f = handler::registrationFailureNotificationView)
             }
             GET(pattern = "/authorize", f = handler::authorizeUserAccountView)
-
+            GET(pattern = "/otp-confirmation", f = handler::confirmOtpView)
             GET(pattern = "/forgot-password", f = handler::forgotPasswordView)
             POST(pattern = "/forgotPassword", f = handler::forgotPasswordAction)
             GET(pattern = "/reset", f = handler::resetPasswordView)
@@ -281,7 +281,7 @@ class ControllerRoutes {
         "/auth".nest {
             GET("logout", handler::signOut)
             GET("login", handler::loginPageView)
-
+            GET(pattern = "/otp-confirmation", f = handler::confirmOtpView)
         }
 
 //        POST(pattern = "/api/signup/manufacturer", f = handler::signupManufacturer)
