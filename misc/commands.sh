@@ -88,7 +88,8 @@ gradle -D"CONFIG_PATH=D:\\kzmuhia\\Developers\\git\\apollo\\conf\\test" :apollo-
 gradle  apollo-ipc:bootRun --info
 
 
-gradle apollo-config:test --tests org.kebs.app.kotlin.apollo.config.security.HashingImplementationTest.hashString --info
+gradle apollo-api:test --tests org.kebs.app.kotlin.apollo.config.security.UserProfileDaoServiceTest.testBrs --info
+gradle apollo-config:test --tests org.kebs.app.kotlin.apollo.api.ports.provided.dao.HashingImplementationTest.hashString --info
 gradle apollo-config:test --tests org.kebs.app.kotlin.apollo.config.service.adaptor.akka.actors.TestActorTest.testActors --info
 gradle apollo-kafka-consumer-adaptor:test --tests org.kebs.app.kotlin.apollo.ipc.workflows.WorkFlowProcessServicesIntegrationTester.workFlowTest --info
 gradle apollo-kafka-consumer-adaptor:test --tests org.kebs.app.kotlin.apollo.ipc.workflows.WorkFlowProcessServicesIntegrationTester.jsonToObjectUsingGson --info
