@@ -319,6 +319,7 @@ class ControllerRoutes {
             GET("/view-sta10", handler::viewSta10)
             GET("/new-sta10-submit", handler::submitSta10)
             GET("/scheme-of-supervision", handler::generatedSchemeSupervision)
+            GET("/product-quality-status", handler::generateProductQualityStatus)
             GET("/invoice-details", handler::getInvoiceDetails)
         }
     }
