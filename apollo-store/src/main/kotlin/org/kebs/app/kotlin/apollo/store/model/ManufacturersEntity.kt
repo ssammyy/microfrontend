@@ -11,6 +11,8 @@ import javax.validation.constraints.Size
 @Entity
 @Table(name = "DAT_KEBS_MANUFACTURERS")
 class ManufacturersEntity : Serializable {
+
+
     @Column(name = "ID")
     @Id
     @SequenceGenerator(name = "DAT_KEBS_MANUFACTURERS_SEQ_GEN", sequenceName = "DAT_KEBS_MANUFACTURERS_SEQ", allocationSize = 1)
@@ -28,6 +30,10 @@ class ManufacturersEntity : Serializable {
     @Column(name = "OWNERSHIP")
     @Basic
     var ownership: String? = null
+
+    @Column(name = "DIRECTOR_ID_NUMBER")
+    @Basic
+    var directorIdNumber: String?= null
 
     @Column(name = "FACTORY_VISIT_DATE")
     @Basic

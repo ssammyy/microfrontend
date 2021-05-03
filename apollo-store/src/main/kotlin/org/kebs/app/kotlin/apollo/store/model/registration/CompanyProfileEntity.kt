@@ -78,6 +78,10 @@ class CompanyProfileEntity : Serializable {
     @Basic
     var description: String? = null
 
+    @Column(name = "DIRECTOR_ID_NUMBER")
+    @Basic
+    var directorIdNumber: String?= null
+
     @Column(name = "STATUS")
     @Basic
     var status: Int? = null
