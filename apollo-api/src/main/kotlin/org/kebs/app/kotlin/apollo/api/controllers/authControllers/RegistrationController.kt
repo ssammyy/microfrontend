@@ -120,8 +120,7 @@ class RegisterController(
                         else -> {
                             result = daoServices.registerUser(map, usersEntity, null)
                             val sm = CommonDaoServices.MessageSuccessFailDTO()
-                            sm.closeLink =
-                                "${applicationMapProperties.baseUrlValue}/auth/signup/authorize/${usersEntity.userPinIdNumber}"
+                            sm.closeLink = "${applicationMapProperties.baseUrlValue}/auth/signup/authorize/${usersEntity.userPinIdNumber}"
                             sm.message = "You have successful Registered check the Email and Get the OTP For activation"
                             return returnValues(result, map, sm)
                         }
