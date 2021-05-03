@@ -882,7 +882,7 @@ class MarketSurveillanceHandler(
     private fun loadCommonUIComponents(countyID: Long, townID: Long, map: ServiceMapsEntity): MutableMap<String, Any> {
         return mutableMapOf(
                 Pair("countyName", commonDaoServices.findCountiesEntityByCountyId(countyID, map.activeStatus)),
-                Pair("townDetails", commonDaoServices.findTownEntityByTownId(townID, map.activeStatus))
+                Pair("townDetails", commonDaoServices.findTownEntityByTownId(townID))
         )
     }
 

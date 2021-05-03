@@ -1,66 +1,47 @@
 package org.kebs.app.kotlin.apollo.store.model.qa
 
 import java.io.Serializable
+import java.math.BigDecimal
 import java.sql.Timestamp
 import java.util.*
 import javax.persistence.*
 
 @Entity
-@Table(name = "CFG_PERMIT_TYPES")
-class PermitTypesEntity : Serializable {
+@Table(name = "CFG_TURNOVER_RATES")
+class TurnOverRatesEntity : Serializable {
     @Column(name = "ID")
     @Id
-    @SequenceGenerator(name = "CFG_PERMIT_TYPES_SEQ_GEN", sequenceName = "CFG_PERMIT_TYPES_SEQ", allocationSize = 1)
-    @GeneratedValue(generator = "CFG_PERMIT_TYPES_SEQ_GEN", strategy = GenerationType.SEQUENCE)
-    var id: Long? = 0
+    @SequenceGenerator(name = "CFG_TURNOVER_RATES_SEQ_GEN", sequenceName = "CFG_TURNOVER_RATES_SEQ", allocationSize = 1)
+    @GeneratedValue(generator = "CFG_TURNOVER_RATES_SEQ_GEN", strategy = GenerationType.SEQUENCE)
+    var id: Long? = null
 
     @Column(name = "STATUS")
     @Basic
     var status: Int? = null
 
-    @Column(name = "ST3_STATUS")
+    @Column(name = "LOWER_LIMIT")
     @Basic
-    var st3Status: Int? = null
+    var lowerLimit: BigDecimal? = null
 
-    @Column(name = "SCHEME_GENERATE")
+    @Column(name = "VARIABLE_AMOUNT_TO_PAY")
     @Basic
-    var schemeGenerate: Int? = null
+    var variableAmountToPay: BigDecimal? = BigDecimal.ZERO
 
-    @Column(name = "ST10_STATUS")
+    @Column(name = "FIXED_AMOUNT_TO_PAY")
     @Basic
-    var st10Status: Int? = null
+    var fixedAmountToPay: BigDecimal? = BigDecimal.ZERO
 
-    @Column(name = "LOCAL_FOREIGN_STATUS")
+    @Column(name = "UPPER_LIMIT")
     @Basic
-    var localForeignStatus: Int? = null
+    var upperLimit: BigDecimal? = null
 
-    @Column(name = "SME_DECLARATION_FORM")
+    @Column(name = "TAX_RATE")
     @Basic
-    var smeDeclarationForm: Int? = null
+    var taxRate: Long? = null
 
-    @Column(name = "PERMIT_AWARD_YEARS")
+    @Column(name = "FIRM_TYPE")
     @Basic
-    var permitAwardYears: Int? = null
-
-    @Column(name = "MARK")
-    @Basic
-    var mark: String? = null
-
-    @Column(name = "IMAGE")
-    @Basic
-    var image: String? = null
-
-    @Column(name = "MARK_NUMBER")
-    @Basic
-    var markNumber: String? = null
-
-    @Column(name = "DESCRIPTIONS")
-    @Basic
-    var descriptions: String? = null
-
-    @Column(name = "TYPE_NAME")
-    @Basic
-    var typeName: String? = null
+    var firmType: String? = null
 
     @Column(name = "VAR_FIELD_1")
     @Basic
@@ -129,20 +110,15 @@ class PermitTypesEntity : Serializable {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other == null || javaClass != other.javaClass) return false
-        val that = other as PermitTypesEntity
+        val that = other as TurnOverRatesEntity
         return id == that.id &&
-                mark == that.mark &&
-                smeDeclarationForm == that.smeDeclarationForm &&
-                localForeignStatus == that.localForeignStatus &&
-                permitAwardYears == that.permitAwardYears &&
-                markNumber == that.markNumber &&
                 status == that.status &&
-                descriptions == that.descriptions &&
-                typeName == that.typeName &&
-                schemeGenerate == that.schemeGenerate &&
-                st3Status == that.st3Status &&
-                st10Status == that.st10Status &&
-                image == that.image &&
+                lowerLimit == that.lowerLimit &&
+                upperLimit == that.upperLimit &&
+                taxRate == that.taxRate &&
+                fixedAmountToPay == that.fixedAmountToPay &&
+                variableAmountToPay == that.variableAmountToPay &&
+                firmType == that.firmType &&
                 varField1 == that.varField1 &&
                 varField2 == that.varField2 &&
                 varField3 == that.varField3 &&
@@ -165,16 +141,12 @@ class PermitTypesEntity : Serializable {
         return Objects.hash(
             id,
             status,
-            schemeGenerate,
-            descriptions,
-            smeDeclarationForm,
-            typeName,
-            permitAwardYears,
-            localForeignStatus,
-            st3Status,
-            st10Status,
-            image,
-            markNumber,
+            lowerLimit,
+            taxRate,
+            upperLimit,
+            fixedAmountToPay,
+            variableAmountToPay,
+            firmType,
             varField1,
             varField2,
             varField3,
@@ -190,8 +162,7 @@ class PermitTypesEntity : Serializable {
             modifiedBy,
             modifiedOn,
             deleteBy,
-            deletedOn,
-            mark
+            deletedOn
         )
     }
 }

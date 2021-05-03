@@ -40,7 +40,11 @@ class Scheduler (
 
     @Scheduled(fixedRate = 300 * 1000)
     fun runSchedulerAfterEveryFiveMin() {
-//        KotlinLogging.logger { }.info("Now running runSchedulerAfterEveryFiveMin.......")
         schedulerImpl.updatePaidDemandNotesStatus()
+    }
+
+    @Scheduled(fixedRate = 30 * 60000)
+    fun runSchedulerAfterEvery30Min() {
+        schedulerImpl.assignPermitApplicationAfterPayment()
     }
 }

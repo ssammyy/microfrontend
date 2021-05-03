@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <!--  This site was created in Webflow. http://www.webflow.com  -->
 <!--  Last Published: Wed Mar 18 2020 20:03:10 GMT+0000 (Coordinated Universal Time)  -->
-<html data-wf-page="5e7130c996c4ca37928b351f" data-wf-site="5e70fb3a565ebd99c1db37ce"
-      xmlns:th="http://www.thymeleaf.org">
+<html data-wf-page="5e70fb3a565ebdc05ddb37cf" data-wf-site="5e70fb3a565ebd99c1db37ce"
+      xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="utf-8">
     <title>KEBS</title>
@@ -47,6 +47,15 @@
                     <div class="row">
                         <form class="needs-validation" novalidate>
                             <div th:object="${usersEntity}">
+
+                                    &nbsp; &nbsp;
+                                <div class="form-row">
+                                    <div class="col-md-4 mb-3">
+                                        <button id="addRequestModel" class="btn btn-primary" data-mdb-toggle="modal" data-mdb-target="#requestModal" type="button">SEND REQUEST</button>
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                    </div>
+                                </div>
 
                                 <div class="form-row">
                                     <div class="col-md-12 mb-3">
@@ -111,287 +120,333 @@
                                     </div>
                                 </div>
                             </div>
-                            <div th:if="${profile == 'Employee'}" th:object="${userProfilesEntity}">
-                                <div class="form-row">
-                                    <br>
-                                    <div class="col-md-12 mb-3">
-                                        <label for="firstName" style="color: #0082f3">Employee Details</label>
-                                        <!--                                        <input type="text" class="form-control" disabled id="firstName" th:field="*{firstName}" placeholder="First name"-->
-                                        <!--                                               required>-->
-                                        <!--                                    <div class="valid-feedback">-->
-                                        <!--                                        Looks good!-->
-                                        <!--                                    </div>-->
+                            <div  sec:authorize="hasAuthority('PERMIT_APPLICATION')" id="idCompanyProfileButtons">
+                                &nbsp; &nbsp;
+                                <div th:if="${usersEntity.manufactureProfile != 1}" class="form-row">
+                                    <div class="col-md-4 mb-3">
+                                        <button id="addCompanyProfile" class="btn btn-primary" data-mdb-toggle="modal" data-mdb-target="#companyProfileModal" type="button">ADD MANUFACTURE DETAILS</button>
                                     </div>
+                                    <div class="col-md-4 mb-3">
+                                        <!--                                    <label for="remarks" >Remarks</label>-->
+                                        <!--                                    <button id="sendToLab" class="btn btn-primary" onclick="popUpFunctionUpload('sendLabBtn');" type="button">SEND TO LAB</button>-->
+                                        <!--                                <div class="valid-feedback">-->
+                                        <!--                                    Looks good!-->
+                                        <!--                                </div>-->
+                                    </div>
+                                    <!--                                <div class="col-md-4 mb-3">-->
+                                    <!--                                        <label for="cocNumber" >16. C.O.C. No</label>-->
+                                    <!--                                        <input id="cocNumber" name="cocNumber" th:value="${session.coc?.cocId?.cocNumber}" type="hidden">-->
+                                    <!--                                        <input class="form-control" data-name="coc Number" disabled id="cocNumber2" maxlength="256" name="cocNumber" th:value="${session.coc?.cocId?.cocNumber}" required="required">-->
+                                    <!--                                    <div class="valid-feedback">-->
+                                    <!--                                        Looks good!-->
+                                    <!--                                    </div>-->
+                                    <!--                                </div>-->
                                 </div>
-                                <div class="form-row">
-                                    <div class="col-md-4 mb-3">
-                                        <label for="directorateId">Directorate</label>
-                                        <!--                                        <label id="directorateId" th:text="${directorateId?.directorate}"></label>-->
-                                        <input type="text" class="form-control" disabled id="directorateId"
-                                               th:value="${userProfilesEntity?.directorateId?.directorate}"
-                                               placeholder="directorate" required>
-                                        <!--                                    <div class="invalid-feedback">-->
-                                        <!--                                        Please provide a valid city.-->
-                                        <!--                                    </div>-->
-                                    </div>
-                                    <div class="col-md-4 mb-3">
-                                        <label for="designationId">Designation</label>
-                                        <input type="text" class="form-control" disabled id="designationId"
-                                               th:value="${userProfilesEntity?.designationId?.designationName}"
-                                               placeholder="designation Name" required>
-                                        <!--                                        <div class="invalid-feedback">-->
-                                        <!--                                            Please provide a valid state.-->
-                                        <!--                                        </div>-->
-                                    </div>
-                                    <div class="col-md-4 mb-3">
-                                        <label for="departmentId">Department</label>
-                                        <input type="text" class="form-control" disabled id="departmentId"
-                                               th:value="${userProfilesEntity?.departmentId?.department}"
-                                               placeholder="department" required>
-                                        <!--                                        <div class="invalid-feedback">-->
-                                        <!--                                            Please provide a valid zip.-->
-                                        <!--                                        </div>-->
-                                    </div>
-                                </div>
-                                <div class="form-row">
-                                    <div class="col-md-4 mb-3">
-                                        <label for="divisionId">Division</label>
-                                        <input type="text" class="form-control" disabled id="divisionId"
-                                               th:value="${userProfilesEntity?.divisionId?.division}"
-                                               placeholder="division" required>
-                                        <!--                                    <div class="invalid-feedback">-->
-                                        <!--                                        Please provide a valid city.-->
-                                        <!--                                    </div>-->
-                                    </div>
-                                    <div class="col-md-4 mb-3">
-                                        <label for="sectionId">Section</label>
-                                        <input type="text" class="form-control" disabled id="sectionId"
-                                               th:value="${userProfilesEntity?.sectionId?.section}"
-                                               placeholder="section" required>
-                                        <!--                                        <div class="invalid-feedback">-->
-                                        <!--                                            Please provide a valid state.-->
-                                        <!--                                        </div>-->
-                                    </div>
-                                    <div class="col-md-4 mb-3">
-                                        <label for="subSectionL1Id">Sub-Category L1</label>
-                                        <input type="text" class="form-control" disabled id="subSectionL1Id"
-                                               th:value="${userProfilesEntity?.subSectionL1Id?.subSection}"
-                                               placeholder="Sub-Category L1" required>
-                                        <!--                                        <div class="invalid-feedback">-->
-                                        <!--                                            Please provide a valid zip.-->
-                                        <!--                                        </div>-->
-                                    </div>
-                                </div>
-                                <div class="form-row">
-                                    <div class="col-md-4 mb-3">
-                                        <label for="subSectionL2Id">Sub-Category L2</label>
-                                        <input type="text" class="form-control" disabled id="subSectionL2Id"
-                                               th:value="${userProfilesEntity?.subSectionL2Id?.subSection}"
-                                               placeholder="division" required>
-                                        <!--                                    <div class="invalid-feedback">-->
-                                        <!--                                        Please provide a valid city.-->
-                                        <!--                                    </div>-->
-                                    </div>
-                                    <div class="col-md-4 mb-3">
-                                        <label for="regionId">Region</label>
-                                        <input type="text" class="form-control" disabled id="regionId"
-                                               th:value="${userProfilesEntity?.regionId?.region}" placeholder="region"
-                                               required>
-                                        <!--                                        <div class="invalid-feedback">-->
-                                        <!--                                            Please provide a valid zip.-->
-                                        <!--                                        </div>-->
-                                    </div>
-                                    <div class="col-md-4 mb-3">
-                                        <label for="countyID">County</label>
-                                        <input type="text" class="form-control" disabled id="countyID"
-                                               th:value="${userProfilesEntity?.countyID?.county}" placeholder="county"
-                                               required>
-
-                                        <!--                                    <div class="invalid-feedback">-->
-                                        <!--                                        Please provide a valid city.-->
-                                        <!--                                    </div>-->
-                                    </div>
-                                </div>
-                                <div class="form-row">
-                                    <div class="col-md-4 mb-3">
-                                        <label for="townID">Town</label>
-                                        <input type="text" class="form-control" disabled id="townID"
-                                               th:value="${userProfilesEntity?.townID?.town}" placeholder="State"
-                                               required>
-                                        <!--                                        <div class="invalid-feedback">-->
-                                        <!--                                            Please provide a valid state.-->
-                                        <!--                                        </div>-->
-                                    </div>
-                                    <div class="col-md-4 mb-3">
-                                        <!--                                        <label for="regionId">Region</label>-->
-                                        <!--                                        <input type="text" class="form-control" disabled id="regionId" th:value="${userProfilesEntity?.regionId?.region}" placeholder="region" required>-->
-                                        <!--                                        <div class="invalid-feedback">-->
-                                        <!--                                            Please provide a valid zip.-->
-                                        <!--                                        </div>-->
-                                    </div>
-                                    <div class="col-md-4 mb-3">
-                                        <!--                                        <label for="countyID">County</label>-->
-                                        <!--                                        <input type="text" class="form-control" disabled id="countyID" th:text="${userProfilesEntity?.countyID?.county}" placeholder="county" required>-->
-                                        <!--                                    <div class="invalid-feedback">-->
-                                        <!--                                        Please provide a valid city.-->
-                                        <!--                                    </div>-->
-                                    </div>
-                                </div>
+                                &nbsp;
                             </div>
-                            <div th:if="${profile == 'Manufacturer'}" th:object="${manufacturersEntity}">
+
+                            <div sec:authorize="hasAuthority('PERMIT_APPLICATION')" th:if="${usersEntity.manufactureProfile == 1}" th:object="${manufactureProfile}">
+                                &nbsp;
                                 <div class="form-row">
                                     <div class="col-md-12 mb-3">
                                         <label for="firstName" style="color: #0082f3">Company Details</label>
-                                        <!--                                        <input type="text" class="form-control" disabled id="firstName" th:field="*{firstName}" placeholder="First name"-->
-                                        <!--                                               required>-->
-                                        <!--                                    <div class="valid-feedback">-->
-                                        <!--                                        Looks good!-->
-                                        <!--                                    </div>-->
                                     </div>
                                 </div>
                                 <div class="form-row">
                                     <div class="col-md-4 mb-3">
-                                        <label for="name">Name</label>
+                                        <label for="name">Company Name</label>
                                         <input type="text" class="form-control" disabled id="name" th:field="*{name}"
                                                placeholder="company/manufacturer name" required>
-                                        <!--                                    <div class="invalid-feedback">-->
-                                        <!--                                        Please provide a valid city.-->
-                                        <!--                                    </div>-->
                                     </div>
                                     <div class="col-md-4 mb-3">
                                         <label for="companyEmail">Company Email</label>
                                         <input type="text" class="form-control" disabled id="companyEmail"
                                                th:field="*{companyEmail}" placeholder="Company Email" required>
-                                        <!--                                        <div class="invalid-feedback">-->
-                                        <!--                                            Please provide a valid state.-->
-                                        <!--                                        </div>-->
+                                 
                                     </div>
                                     <div class="col-md-4 mb-3">
                                         <label for="companyTelephone">Company Telephone Number</label>
                                         <input type="text" class="form-control" disabled id="companyTelephone"
                                                th:field="*{companyTelephone}" placeholder="Company Telephone" required>
-                                        <!--                                        <div class="invalid-feedback">-->
-                                        <!--                                            Please provide a valid zip.-->
-                                        <!--                                        </div>-->
+                                    
                                     </div>
                                 </div>
                                 <div class="form-row">
+                                    
+                                    <div class="col-md-4 mb-3">
+                                        <label for="postalAddress">Postal Address</label>
+                                        <input type="text" class="form-control" disabled id="postalAddress"
+                                               th:field="*{postalAddress}" placeholder="Entry Number" required>
+                                 
+                                    </div>
                                     <div class="col-md-4 mb-3">
                                         <label for="kraPin">KRA Pin</label>
                                         <input type="text" class="form-control" disabled id="kraPin"
                                                th:field="*{kraPin}" placeholder="kraPin" required>
-                                        <!--                                    <div class="invalid-feedback">-->
-                                        <!--                                        Please provide a valid city.-->
-                                        <!--                                    </div>-->
-                                    </div>
-                                    <div class="col-md-4 mb-3">
-                                        <label for="entryNumber">Entry Number</label>
-                                        <input type="text" class="form-control" disabled id="entryNumber"
-                                               th:field="*{entryNumber}" placeholder="Entry Number" required>
-                                        <!--                                        <div class="invalid-feedback">-->
-                                        <!--                                            Please provide a valid state.-->
-                                        <!--                                        </div>-->
+                                       
                                     </div>
                                     <div class="col-md-4 mb-3">
                                         <label for="registrationNumber">Registration Number</label>
                                         <input type="text" class="form-control" disabled id="registrationNumber"
                                                th:field="*{registrationNumber}" placeholder="Registration Number"
                                                required>
-                                        <!--                                        <div class="invalid-feedback">-->
-                                        <!--                                            Please provide a valid zip.-->
-                                        <!--                                        </div>-->
+                                    
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="businessNatures">Business Nature</label>
+                                        <input type="text" class="form-control" disabled id="businessNatures"
+                                               th:value="${businessNatureValue}" placeholder="Business Nature" required>
+                                       
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="businessLines">Business Line</label>
+                                        <input type="text" class="form-control" disabled id="businessLines"
+                                               th:value="${businessLineValue}" placeholder="business Line" required>
+                                 
                                     </div>
                                 </div>
                                 <div class="form-row">
                                     <div class="col-md-4 mb-3">
-                                        <label for="businessNatureId">Business Nature</label>
-                                        <input type="text" class="form-control" disabled id="businessNatureId"
-                                               th:value="${businessNatureValue}" placeholder="Business Nature" required>
-                                        <!--                                    <div class="invalid-feedback">-->
-                                        <!--                                        Please provide a valid city.-->
-                                        <!--                                    </div>-->
+                                        <label for="region">Region</label>
+                                        <input type="text" class="form-control" disabled id="region"
+                                               th:value="${regionValue}" placeholder="Business Nature" required>
+
                                     </div>
                                     <div class="col-md-4 mb-3">
-                                        <label for="businessLineId">Business Line</label>
-                                        <input type="text" class="form-control" disabled id="businessLineId"
-                                               th:value="${businessLineValue}" placeholder="business Line" required>
-                                        <!--                                        <div class="invalid-feedback">-->
-                                        <!--                                            Please provide a valid state.-->
-                                        <!--                                        </div>-->
+                                        <label for="countyValue">County</label>
+                                        <input type="text" class="form-control" disabled id="countyValue"
+                                               th:value="${countyValue}" required>
+
                                     </div>
                                     <div class="col-md-4 mb-3">
-                                        <label for="registrationNumber">User Classification</label>
-                                        <input type="text" class="form-control" disabled id="registrationNumber"
-                                               th:field="*{varField1}" required>
-                                        <!--                                        <div class="invalid-feedback">-->
-                                        <!--                                            Please provide a valid zip.-->
-                                        <!--                                        </div>-->
+                                        <label for="townValue">Town</label>
+                                        <input type="text" class="form-control" disabled id="townValue"
+                                               th:value="${townValue}" required>
+
                                     </div>
                                 </div>
-                                <div th:object="${manufacturerContactEntity}">
-                                    <div class="form-row">
-                                        <div class="col-md-12 mb-3">
-                                            <label for="firstName" style="color: #0082f3">Contact Details</label>
-                                            <!--                                        <input type="text" class="form-control" disabled id="firstName" th:field="*{firstName}" placeholder="First name"-->
-                                            <!--                                               required>-->
-                                            <!--                                    <div class="valid-feedback">-->
-                                            <!--                                        Looks good!-->
-                                            <!--                                    </div>-->
-                                        </div>
-                                    </div>
+                                <div class="form-row">
+                                    <div class="col-md-4 mb-3">
+                                        <label for="buildingName">Building Name</label>
+                                        <input type="text" class="form-control" disabled id="buildingName"
+                                               th:value="*{buildingName}" placeholder="Business Nature" required>
 
-                                    <div class="form-row">
-                                        <div class="col-md-4 mb-3">
-                                            <label for="firstName">First Name</label>
-                                            <input type="text" class="form-control" disabled id="firstName"
-                                                   th:field="*{firstName}" placeholder="first Name" required>
-                                            <!--                                    <div class="invalid-feedback">-->
-                                            <!--                                        Please provide a valid city.-->
-                                            <!--                                    </div>-->
-                                        </div>
-                                        <div class="col-md-4 mb-3">
-                                            <label for="lastName">Last Name</label>
-                                            <input type="text" class="form-control" disabled id="lastName"
-                                                   th:field="*{lastName}" placeholder="last Name" required>
-                                            <!--                                        <div class="invalid-feedback">-->
-                                            <!--                                            Please provide a valid state.-->
-                                            <!--                                        </div>-->
-                                        </div>
-                                        <div class="col-md-4 mb-3">
-                                            <label for="emailAddress">Email Address</label>
-                                            <input type="text" class="form-control" disabled id="emailAddress"
-                                                   th:field="*{emailAddress}" placeholder="email Address" required>
-                                            <!--                                        <div class="invalid-feedback">-->
-                                            <!--                                            Please provide a valid zip.-->
-                                            <!--                                        </div>-->
-                                        </div>
                                     </div>
-                                    <div class="form-row">
-                                        <div class="col-md-4 mb-3">
-                                            <label for="cellPhone">Cell Phone</label>
-                                            <input type="text" class="form-control" disabled id="cellPhone"
-                                                   th:field="*{cellPhone}" placeholder="cellPhone" required>
-                                            <!--                                        <div class="invalid-feedback">-->
-                                            <!--                                            Please provide a valid zip.-->
-                                            <!--                                        </div>-->
-                                        </div>
-                                        <div class="col-md-4 mb-3">
-                                            <!--                                            <label for="countyID">County</label>-->
-                                            <!--                                            <input type="text" class="form-control" disabled id="countyID" th:field="*{countyID.county}" placeholder="county" required>-->
-                                            <!--                                    <div class="invalid-feedback">-->
-                                            <!--                                        Please provide a valid city.-->
-                                            <!--                                    </div>-->
-                                        </div>
-                                        <div class="col-md-4 mb-3">
-                                            <!--                                            <label for="townID">Town</label>-->
-                                            <!--                                            <input type="text" class="form-control" disabled id="townID" th:field="*{townID.town}" placeholder="State" required>-->
-                                            <!--                                            <div class="invalid-feedback">-->
-                                            <!--                                                Please provide a valid state.-->
-                                            <!--                                            </div>-->
-                                        </div>
+                                    <div class="col-md-4 mb-3">
+                                        <label for="streetName">Street Name</label>
+                                        <input type="text" class="form-control" disabled id="streetName"
+                                               th:value="*{streetName}" placeholder="business Line" required>
+
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <label for="yearlyTurnover">Yearly Turnover</label>
+                                        <input type="text" class="form-control" disabled id="yearlyTurnover"
+                                               th:field="*{yearlyTurnover}" required>
+
                                     </div>
                                 </div>
                             </div>
+
+                            <div sec:authorize="hasAuthority('PERMIT_APPLICATION')" th:if="${usersEntity.manufactureProfile == 1}">
+                                &nbsp;
+                                <div id="idButtons">
+                                    &nbsp; &nbsp;
+                                    <div class="form-row">
+                                        <div class="col-md-4 mb-3">
+                                            <button id="addParam" class="btn btn-primary" data-mdb-toggle="modal" data-mdb-target="#uploadModal" type="button">ADD PLANT DETAILS</button>
+                                        </div>
+                                        <div class="col-md-4 mb-3">
+                                            <!--                                    <label for="remarks" >Remarks</label>-->
+                                            <!--                                    <button id="sendToLab" class="btn btn-primary" onclick="popUpFunctionUpload('sendLabBtn');" type="button">SEND TO LAB</button>-->
+                                            <!--                                <div class="valid-feedback">-->
+                                            <!--                                    Looks good!-->
+                                            <!--                                </div>-->
+                                        </div>
+                                        <!--                                <div class="col-md-4 mb-3">-->
+                                        <!--                                        <label for="cocNumber" >16. C.O.C. No</label>-->
+                                        <!--                                        <input id="cocNumber" name="cocNumber" th:value="${session.coc?.cocId?.cocNumber}" type="hidden">-->
+                                        <!--                                        <input class="form-control" data-name="coc Number" disabled id="cocNumber2" maxlength="256" name="cocNumber" th:value="${session.coc?.cocId?.cocNumber}" required="required">-->
+                                        <!--                                    <div class="valid-feedback">-->
+                                        <!--                                        Looks good!-->
+                                        <!--                                    </div>-->
+                                        <!--                                </div>-->
+                                    </div>
+                                    &nbsp; &nbsp;
+                                </div>
+                                <br>
+                                <div id="idTableParam" class="row-table ">
+
+                                    <table id="example" class="table table-striped table-bordered" style="width:100%">
+                                        <thead>
+                                        <tr>
+                                            <!--                                    <th>Id</th>-->
+                                            <th>Location</th>
+                                            <th>Street</th>
+                                            <th>Building Name</th>
+                                            <th>Nearest LandMark</th>
+                                            <th>Postal Address</th>
+                                            <th>Contact Person</th>
+                                            <th>Telephone No</th>
+                                            <!--                                    <th th:if="${message == bsNumber}">BS NUMBER</th>-->
+                                            <!--                                    <th th:if="${message == bsNumber}">ADD BS NUMBER</th>-->
+                                            <!--                                    <th th:if="${message == labResults}">LAB RESULTS</th>-->
+                                            <!--                                    <th>Inspection Status</th>-->
+                                            <!--                                    <th>View</th>-->
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr class="list" th:each="itemParam: ${plantsDetails}" style="cursor: pointer">
+
+                                            <!--                                    <td th:text="${itemParam.id}"></td>-->
+                                            <td th:text="${itemParam.location}"></td>
+                                            <td th:text="${itemParam.street}"></td>
+                                            <td th:text="${itemParam.buildingName}"></td>
+                                            <td th:text="${itemParam.nearestLandMark}"></td>
+                                            <td th:text="${itemParam.postalAddress}"></td>
+                                            <td th:text="${itemParam.contactPerson}"></td>
+                                            <td th:text="${itemParam.telephone}"></td>
+                                            <!--                                    <td th:if="${message == bsNumber and itemParam?.bsNumber != null}" th:text="${itemParam.bsNumber}"></td>-->
+                                            <!--                                    <td th:if="${message == bsNumber and itemParam?.bsNumber == null}" >NO BS NO</td>-->
+                                            <!--                                    <td th:if="${message == bsNumber and itemParam?.bsNumber == null}" ><button class="btn btn-primary" th:value="${itemParam.id}" onclick="popUpFunctionBSNumber('addBsNumberBtn', this);" type="button">ADD</button></td>-->
+                                            <!--                                    <td th:if="${message == labResults and itemParam?.labResultStatus == map.activeStatus }" ><button class="btn btn-primary" th:value="${itemParam.id}" onclick="popUpFunctionViewResults('labResultsBtn', this);" type="button">VIEW</button></td>-->
+                                            <!--                                    <td th:if="${message == labResults and itemParam?.labResultStatus == null }" >NO RESULTS</td>-->
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+
+
+                            </div>
+<!--                            <div th:if="${usersEntity.manufactureProfile != 1}" th:object="${userProfilesEntity}">-->
+<!--                                <div class="form-row">-->
+<!--                                    <br>-->
+<!--                                    <div class="col-md-12 mb-3">-->
+<!--                                        <label for="firstName" style="color: #0082f3">Employee Details</label>-->
+<!--                                        &lt;!&ndash;                                        <input type="text" class="form-control" disabled id="firstName" th:field="*{firstName}" placeholder="First name"&ndash;&gt;-->
+<!--                                        &lt;!&ndash;                                               required>&ndash;&gt;-->
+<!--                                        &lt;!&ndash;                                    <div class="valid-feedback">&ndash;&gt;-->
+<!--                                        &lt;!&ndash;                                        Looks good!&ndash;&gt;-->
+<!--                                        &lt;!&ndash;                                    </div>&ndash;&gt;-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                                <div class="form-row">-->
+<!--                                    <div class="col-md-4 mb-3">-->
+<!--                                        <label for="directorateId">Directorate</label>-->
+<!--                                        &lt;!&ndash;                                        <label id="directorateId" th:text="${directorateId?.directorate}"></label>&ndash;&gt;-->
+<!--                                        <input type="text" class="form-control" disabled id="directorateId"-->
+<!--                                               th:value="${userProfilesEntity?.directorateId?.directorate}"-->
+<!--                                               placeholder="directorate" required>-->
+<!--                                        &lt;!&ndash;                                    <div class="invalid-feedback">&ndash;&gt;-->
+<!--                                        &lt;!&ndash;                                        Please provide a valid city.&ndash;&gt;-->
+<!--                                        &lt;!&ndash;                                    </div>&ndash;&gt;-->
+<!--                                    </div>-->
+<!--                                    <div class="col-md-4 mb-3">-->
+<!--                                        <label for="designationId">Designation</label>-->
+<!--                                        <input type="text" class="form-control" disabled id="designationId"-->
+<!--                                               th:value="${userProfilesEntity?.designationId?.designationName}"-->
+<!--                                               placeholder="designation Name" required>-->
+<!--                                        &lt;!&ndash;                                        <div class="invalid-feedback">&ndash;&gt;-->
+<!--                                        &lt;!&ndash;                                            Please provide a valid state.&ndash;&gt;-->
+<!--                                        &lt;!&ndash;                                        </div>&ndash;&gt;-->
+<!--                                    </div>-->
+<!--                                    <div class="col-md-4 mb-3">-->
+<!--                                        <label for="departmentId">Department</label>-->
+<!--                                        <input type="text" class="form-control" disabled id="departmentId"-->
+<!--                                               th:value="${userProfilesEntity?.departmentId?.department}"-->
+<!--                                               placeholder="department" required>-->
+<!--                                        &lt;!&ndash;                                        <div class="invalid-feedback">&ndash;&gt;-->
+<!--                                        &lt;!&ndash;                                            Please provide a valid zip.&ndash;&gt;-->
+<!--                                        &lt;!&ndash;                                        </div>&ndash;&gt;-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                                <div class="form-row">-->
+<!--                                    <div class="col-md-4 mb-3">-->
+<!--                                        <label for="divisionId">Division</label>-->
+<!--                                        <input type="text" class="form-control" disabled id="divisionId"-->
+<!--                                               th:value="${userProfilesEntity?.divisionId?.division}"-->
+<!--                                               placeholder="division" required>-->
+<!--                                        &lt;!&ndash;                                    <div class="invalid-feedback">&ndash;&gt;-->
+<!--                                        &lt;!&ndash;                                        Please provide a valid city.&ndash;&gt;-->
+<!--                                        &lt;!&ndash;                                    </div>&ndash;&gt;-->
+<!--                                    </div>-->
+<!--                                    <div class="col-md-4 mb-3">-->
+<!--                                        <label for="sectionId">Section</label>-->
+<!--                                        <input type="text" class="form-control" disabled id="sectionId"-->
+<!--                                               th:value="${userProfilesEntity?.sectionId?.section}"-->
+<!--                                               placeholder="section" required>-->
+<!--                                        &lt;!&ndash;                                        <div class="invalid-feedback">&ndash;&gt;-->
+<!--                                        &lt;!&ndash;                                            Please provide a valid state.&ndash;&gt;-->
+<!--                                        &lt;!&ndash;                                        </div>&ndash;&gt;-->
+<!--                                    </div>-->
+<!--                                    <div class="col-md-4 mb-3">-->
+<!--                                        <label for="subSectionL1Id">Sub-Category L1</label>-->
+<!--                                        <input type="text" class="form-control" disabled id="subSectionL1Id"-->
+<!--                                               th:value="${userProfilesEntity?.subSectionL1Id?.subSection}"-->
+<!--                                               placeholder="Sub-Category L1" required>-->
+<!--                                        &lt;!&ndash;                                        <div class="invalid-feedback">&ndash;&gt;-->
+<!--                                        &lt;!&ndash;                                            Please provide a valid zip.&ndash;&gt;-->
+<!--                                        &lt;!&ndash;                                        </div>&ndash;&gt;-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                                <div class="form-row">-->
+<!--                                    <div class="col-md-4 mb-3">-->
+<!--                                        <label for="subSectionL2Id">Sub-Category L2</label>-->
+<!--                                        <input type="text" class="form-control" disabled id="subSectionL2Id"-->
+<!--                                               th:value="${userProfilesEntity?.subSectionL2Id?.subSection}"-->
+<!--                                               placeholder="division" required>-->
+<!--                                        &lt;!&ndash;                                    <div class="invalid-feedback">&ndash;&gt;-->
+<!--                                        &lt;!&ndash;                                        Please provide a valid city.&ndash;&gt;-->
+<!--                                        &lt;!&ndash;                                    </div>&ndash;&gt;-->
+<!--                                    </div>-->
+<!--                                    <div class="col-md-4 mb-3">-->
+<!--                                        <label for="regionId">Region</label>-->
+<!--                                        <input type="text" class="form-control" disabled id="regionId"-->
+<!--                                               th:value="${userProfilesEntity?.regionId?.region}" placeholder="region"-->
+<!--                                               required>-->
+<!--                                        &lt;!&ndash;                                        <div class="invalid-feedback">&ndash;&gt;-->
+<!--                                        &lt;!&ndash;                                            Please provide a valid zip.&ndash;&gt;-->
+<!--                                        &lt;!&ndash;                                        </div>&ndash;&gt;-->
+<!--                                    </div>-->
+<!--                                    <div class="col-md-4 mb-3">-->
+<!--                                        <label for="countyID">County</label>-->
+<!--                                        <input type="text" class="form-control" disabled id="countyID"-->
+<!--                                               th:value="${userProfilesEntity?.countyID?.county}" placeholder="county"-->
+<!--                                               required>-->
+
+<!--                                        &lt;!&ndash;                                    <div class="invalid-feedback">&ndash;&gt;-->
+<!--                                        &lt;!&ndash;                                        Please provide a valid city.&ndash;&gt;-->
+<!--                                        &lt;!&ndash;                                    </div>&ndash;&gt;-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                                <div class="form-row">-->
+<!--                                    <div class="col-md-4 mb-3">-->
+<!--                                        <label for="townID">Town</label>-->
+<!--                                        <input type="text" class="form-control" disabled id="townID"-->
+<!--                                               th:value="${userProfilesEntity?.townID?.town}" placeholder="State"-->
+<!--                                               required>-->
+<!--                                        &lt;!&ndash;                                        <div class="invalid-feedback">&ndash;&gt;-->
+<!--                                        &lt;!&ndash;                                            Please provide a valid state.&ndash;&gt;-->
+<!--                                        &lt;!&ndash;                                        </div>&ndash;&gt;-->
+<!--                                    </div>-->
+<!--                                    <div class="col-md-4 mb-3">-->
+<!--                                        &lt;!&ndash;                                        <label for="regionId">Region</label>&ndash;&gt;-->
+<!--                                        &lt;!&ndash;                                        <input type="text" class="form-control" disabled id="regionId" th:value="${userProfilesEntity?.regionId?.region}" placeholder="region" required>&ndash;&gt;-->
+<!--                                        &lt;!&ndash;                                        <div class="invalid-feedback">&ndash;&gt;-->
+<!--                                        &lt;!&ndash;                                            Please provide a valid zip.&ndash;&gt;-->
+<!--                                        &lt;!&ndash;                                        </div>&ndash;&gt;-->
+<!--                                    </div>-->
+<!--                                    <div class="col-md-4 mb-3">-->
+<!--                                        &lt;!&ndash;                                        <label for="countyID">County</label>&ndash;&gt;-->
+<!--                                        &lt;!&ndash;                                        <input type="text" class="form-control" disabled id="countyID" th:text="${userProfilesEntity?.countyID?.county}" placeholder="county" required>&ndash;&gt;-->
+<!--                                        &lt;!&ndash;                                    <div class="invalid-feedback">&ndash;&gt;-->
+<!--                                        &lt;!&ndash;                                        Please provide a valid city.&ndash;&gt;-->
+<!--                                        &lt;!&ndash;                                    </div>&ndash;&gt;-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                            </div>-->
                             <!--                            <div>-->
                             <!--                                <div class="form-group">-->
                             <!--                                    <div class="form-check">-->
@@ -414,151 +469,147 @@
 
 
                         </form>
-                        <div th:if="${profile == 'Manufacturer'}">
-                            <br>
-                            <div id="idButtons">
-                                <div class="form-row">
-                                    <div class="col-md-4 mb-3">
-                                        <button id="addParam" class="btn btn-primary"
-                                                data-mdb-toggle="modal"
-                                                data-mdb-target="#uploadModal"
-                                                type="button">ADD PLANT DETAILS
-                                        </button>
-                                    </div>
-                                    <div class="col-md-4 mb-3">
-                                        <!--                                    <label for="remarks" >Remarks</label>-->
-                                        <!--                                    <button id="sendToLab" class="btn btn-primary" onclick="popUpFunctionUpload('sendLabBtn');" type="button">SEND TO LAB</button>-->
-                                        <!--                                <div class="valid-feedback">-->
-                                        <!--                                    Looks good!-->
-                                        <!--                                </div>-->
-                                    </div>
-                                    <!--                                <div class="col-md-4 mb-3">-->
-                                    <!--                                        <label for="cocNumber" >16. C.O.C. No</label>-->
-                                    <!--                                        <input id="cocNumber" name="cocNumber" th:value="${session.coc?.cocId?.cocNumber}" type="hidden">-->
-                                    <!--                                        <input class="form-control" data-name="coc Number" disabled id="cocNumber2" maxlength="256" name="cocNumber" th:value="${session.coc?.cocId?.cocNumber}" required="required">-->
-                                    <!--                                    <div class="valid-feedback">-->
-                                    <!--                                        Looks good!-->
-                                    <!--                                    </div>-->
-                                    <!--                                </div>-->
-                                </div>
-                            </div>
-                            <br>
-                            <div id="idTableParam" class="row-table ">
 
-                                <table id="example" class="table table-striped table-bordered" style="width:100%">
-                                    <thead>
-                                    <tr>
-                                        <!--                                    <th>Id</th>-->
-                                        <th>Location</th>
-                                        <th>Street</th>
-                                        <th>Building Name</th>
-                                        <th>Nearest LandMark</th>
-                                        <th>Postal Address</th>
-                                        <th>Contact Person</th>
-                                        <th>Telephone No</th>
-                                        <!--                                    <th th:if="${message == bsNumber}">BS NUMBER</th>-->
-                                        <!--                                    <th th:if="${message == bsNumber}">ADD BS NUMBER</th>-->
-                                        <!--                                    <th th:if="${message == labResults}">LAB RESULTS</th>-->
-                                        <!--                                    <th>Inspection Status</th>-->
-                                        <!--                                    <th>View</th>-->
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    <tr class="list" th:each="itemParam: ${manufacturePlants}" style="cursor: pointer">
 
-                                        <!--                                    <td th:text="${itemParam.id}"></td>-->
-                                        <td th:text="${itemParam.location}"></td>
-                                        <td th:text="${itemParam.street}"></td>
-                                        <td th:text="${itemParam.buildingName}"></td>
-                                        <td th:text="${itemParam.nearestLandMark}"></td>
-                                        <td th:text="${itemParam.postalAddress}"></td>
-                                        <td th:text="${itemParam.contactPerson}"></td>
-                                        <td th:text="${itemParam.telephone}"></td>
-                                        <!--                                    <td th:if="${message == bsNumber and itemParam?.bsNumber != null}" th:text="${itemParam.bsNumber}"></td>-->
-                                        <!--                                    <td th:if="${message == bsNumber and itemParam?.bsNumber == null}" >NO BS NO</td>-->
-                                        <!--                                    <td th:if="${message == bsNumber and itemParam?.bsNumber == null}" ><button class="btn btn-primary" th:value="${itemParam.id}" onclick="popUpFunctionBSNumber('addBsNumberBtn', this);" type="button">ADD</button></td>-->
-                                        <!--                                    <td th:if="${message == labResults and itemParam?.labResultStatus == map.activeStatus }" ><button class="btn btn-primary" th:value="${itemParam.id}" onclick="popUpFunctionViewResults('labResultsBtn', this);" type="button">VIEW</button></td>-->
-                                        <!--                                    <td th:if="${message == labResults and itemParam?.labResultStatus == null }" >NO RESULTS</td>-->
-                                    </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-
-                            <div id="idPopUp" class="uploadForm">
-                                <form id="upload-form" name="upload-form"
-                                      th:action="@{/api/auth/add/plant-details/save(manufactureID=${manufacturersEntity?.id})}"
-                                      method="post" th:object="${manufacturePlantDetailsEntity}">
-                                    <div class="modal fade" id="uploadModal" tabindex="-1" role="dialog"
-                                         aria-labelledby="uploadModalLabel" aria-hidden="true">
-                                        <div class="modal-dialog" role="document">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <h5 class="modal-title" id="exampleModalLabel">Plant Details</h5>
-                                                    <button
-                                                            type="button"
-                                                            class="btn-close"
-                                                            data-mdb-dismiss="modal"
-                                                            aria-label="Close"
-                                                    ></button>
-                                                </div>
-                                                <div class="modal-body">
-                                                    <div class="form-group">
-                                                        <!--                                                    <input type="hidden" id="confirmSampleId"  name="confirmSampleId" th:value="${sampleSubmit?.id}">-->
-                                                        <div id="addParamBtn">
-                                                            <!--                                                        <input type="hidden" id="message"  name="message" th:value="${message}">-->
-                                                            <label class="field-label" for="county">County:</label>
-                                                            <select id="county" name="county" class="input-field w-input"
-                                                                    th:field="*{county}">
-                                                                <option value="0">Select One...</option>
-                                                                <option th:each="county : ${counties}"
-                                                                        th:text="${county.county}"
-                                                                        th:value="${county.id}"></option>
-                                                                <!--                                        <option th:each="subRegion : ${subRegions}" th:text="${subRegion.subRegion}" th:value="${subRegion.id}"></option>-->
-                                                            </select>
-                                                            <label class="field-label" for="town">Town:</label>
-                                                            <select id="town" name="town" class="input-field w-input"
-                                                                    th:field="*{town}">
-                                                                <option value="0">Select One...</option>
-                                                                <!--                                        <option th:each="subRegion : ${subRegions}" th:text="${subRegion.subRegion}" th:value="${subRegion.id}"></option>-->
-                                                            </select>
-                                                            <label for="location" class="field-label">Location:</label>
-                                                            <input class="input-field w-input" max="20" id="location"
-                                                                   th:field="*{location}" th:required="required">
-                                                            <label for="street" class="field-label">Street:</label>
-                                                            <input class="input-field w-input" max="20" id="street"
-                                                                   th:field="*{street}" th:required="required">
-                                                            <label for="buildingName" class="field-label">Building
-                                                                Name:</label>
-                                                            <input class="input-field w-input" max="20" id="buildingName"
-                                                                   th:field="*{buildingName}" th:required="required">
-                                                            <label for="nearestLandMark" class="field-label">Nearest Land
-                                                                Mark:</label>
-                                                            <input class="input-field w-input" max="20" id="nearestLandMark"
-                                                                   th:field="*{nearestLandMark}" th:required="required">
-                                                            <label for="postalAddress" class="field-label">Postal
-                                                                Address:</label>
-                                                            <input class="input-field w-input" max="20" id="postalAddress"
-                                                                   th:field="*{postalAddress}" th:required="required">
-                                                            <label for="contactPerson" class="field-label">Contact
-                                                                Person:</label>
-                                                            <input class="input-field w-input" max="20" id="contactPerson"
-                                                                   th:field="*{contactPerson}" th:required="required">
-                                                            <label for="telephone" class="field-label">Telephone:</label>
-                                                            <input class="input-field w-input" max="20" id="telephone"
-                                                                   th:field="*{telephone}" th:required="required">
-                                                        </div>
-
+                        <div sec:authorize="hasAuthority('PERMIT_APPLICATION')" id="idPopUp" class="uploadForm">
+                            <form id="upload-form" name="upload-form" th:action="@{/api/qa/kebs/add/plant-details/save}" method="post" th:object="${manufacturePlantDetails}">
+                                <div class="modal fade" id="uploadModal" tabindex="-1" role="dialog"
+                                     aria-labelledby="uploadModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="exampleModalLabel">Plant Details</h5>
+                                                <button
+                                                        type="button"
+                                                        class="btn-close"
+                                                        data-mdb-dismiss="modal"
+                                                        aria-label="Close"
+                                                ></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div class="form-group">
+                                                    <!--                                                    <input type="hidden" id="confirmSampleId"  name="confirmSampleId" th:value="${sampleSubmit?.id}">-->
+                                                    <div id="addParamBtn">
+                                                        <!--                                                        <input type="hidden" id="message"  name="message" th:value="${message}">-->
+                                                        <label class="field-label" for="county">County:</label>
+                                                        <select id="county" name="county" class="input-field w-input" th:field="*{county}">
+                                                            <option value="0">Select One...</option>
+                                                            <option th:each="county : ${counties}"
+                                                                    th:text="${county.county}"
+                                                                    th:value="${county.id}"></option>
+                                                            <!--                                        <option th:each="subRegion : ${subRegions}" th:text="${subRegion.subRegion}" th:value="${subRegion.id}"></option>-->
+                                                        </select>
+                                                        <label class="field-label" for="town">Town:</label>
+                                                        <select id="town" name="town" class="input-field w-input"
+                                                                th:field="*{town}">
+                                                            <option value="0">Select One...</option>
+                                                            <!--                                        <option th:each="subRegion : ${subRegions}" th:text="${subRegion.subRegion}" th:value="${subRegion.id}"></option>-->
+                                                        </select>
+                                                        <label for="location" class="field-label">Location:</label>
+                                                        <input class="input-field w-input" max="20" id="location"
+                                                               th:field="*{location}" th:required="required">
+                                                        <label for="street" class="field-label">Street:</label>
+                                                        <input class="input-field w-input" max="20" id="street"
+                                                               th:field="*{street}" th:required="required">
+                                                        <label for="buildingName" class="field-label">Building
+                                                            Name:</label>
+                                                        <input class="input-field w-input" max="20" id="buildingName"
+                                                               th:field="*{buildingName}" th:required="required">
+                                                        <label for="nearestLandMark" class="field-label">Nearest Land
+                                                            Mark:</label>
+                                                        <input class="input-field w-input" max="20" id="nearestLandMark"
+                                                               th:field="*{nearestLandMark}" th:required="required">
+                                                        <label for="postalAddress" class="field-label">Postal
+                                                            Address:</label>
+                                                        <input class="input-field w-input" max="20" id="postalAddress"
+                                                               th:field="*{postalAddress}" th:required="required">
+                                                        <label for="contactPerson" class="field-label">Contact
+                                                            Person:</label>
+                                                        <input class="input-field w-input" max="20" id="contactPerson"
+                                                               th:field="*{contactPerson}" th:required="required">
+                                                        <label for="telephone" class="field-label">Telephone:</label>
+                                                        <input class="input-field w-input" max="20" id="telephone"
+                                                               th:field="*{telephone}" th:required="required">
                                                     </div>
+
                                                 </div>
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary" onClick="window.location.reload()" data-mdb-dismiss="modal">Close</button>
-                                                    <input type="submit" id="upload" class="btn btn-primary" value="Save"/>
-                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" onClick="window.location.reload()" data-mdb-dismiss="modal">Close</button>
+                                                <input type="submit" id="upload" class="btn btn-primary" value="Save"/>
                                             </div>
                                         </div>
                                     </div>
-                                </form>
-                            </div>
+                                </div>
+                            </form>
+                        </div>
+
+                        <div sec:authorize="hasAuthority('PERMIT_APPLICATION')" id="companyProfilePopUp" class="uploadForm">
+                            <form id="companyProfile-form" name="companyProfile-form" th:action="@{/api/auth/kebs/add/manufacture-details/save}" method="post" th:object="${companyProfileEntity}">
+                                <div class="modal fade" id="companyProfileModal" tabindex="-1" role="dialog" aria-labelledby="companyProfileModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="companyProfileModalLabel">Add Company Profile Details</h5>
+                                                <button type="button" class="btn-close" data-mdb-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div class="form-group">
+                                                    <!--                                                    <input type="hidden" id="confirmSampleId"  name="confirmSampleId" th:value="${sampleSubmit?.id}">-->
+                                                    <div id="addCompanyProfileBtn">
+                                                        <!--                                                        <input type="hidden" id="message"  name="message" th:value="${message}">-->
+
+                                                        <label for="name" class="field-label">Name:</label>
+                                                        <input class="input-field w-input" max="20" id="name" th:field="*{name}" th:required="required">
+                                                        <label for="kraPin" class="field-label">KRA Pin:</label>
+                                                        <input class="input-field w-input" max="20" id="kraPin" th:field="*{kraPin}" th:required="required">
+                                                        <label for="registrationNumber" class="field-label">Registration Number:</label>
+                                                        <input class="input-field w-input" max="20" id="registrationNumber" th:field="*{registrationNumber}" th:required="required">
+                                                        <label for="postalAddress" class="field-label">Postal Address:</label>
+                                                        <input class="input-field w-input" max="20" id="postalAddress" th:field="*{postalAddress}" th:required="required">
+                                                        <label for="companyEmail" class="field-label">Company Email:</label>
+                                                        <input class="input-field w-input" max="20" id="companyEmail" th:field="*{companyEmail}" th:required="required">
+                                                        <label for="companyTelephone" class="field-label">Company Telephone:</label>
+                                                        <input class="input-field w-input" max="20" id="companyTelephone" th:field="*{companyTelephone}" th:required="required">
+                                                        <label for="yearlyTurnover" class="field-label">Yearly Turnover:</label>
+                                                        <input class="input-field w-input" type="number" id="yearlyTurnover" th:field="*{yearlyTurnover}" th:required="required">
+                                                        <label for="buildingName" class="field-label">Building Name:</label>
+                                                        <input class="input-field w-input" max="20" id="buildingName" th:field="*{buildingName}" th:required="required">
+                                                        <label for="streetName" class="field-label">Street Name:</label>
+                                                        <input class="input-field w-input" max="20" id="streetName" th:field="*{streetName}" th:required="required">
+                                                        <label class="field-label" for="county">County:</label>
+                                                        <select id="county" name="county" class="input-field w-input" th:field="*{county}">
+                                                            <option value="0">Select One...</option>
+                                                            <option th:each="county : ${counties}" th:text="${county.county}" th:value="${county.id}"></option>
+                                                            <!--                                        <option th:each="subRegion : ${subRegions}" th:text="${subRegion.subRegion}" th:value="${subRegion.id}"></option>-->
+                                                        </select>
+                                                        <label class="field-label" for="town">Town:</label>
+                                                        <select id="town" name="town" class="input-field w-input" th:field="*{town}">
+                                                            <option value="0">Select One...</option>
+                                                            <!--                                        <option th:each="subRegion : ${subRegions}" th:text="${subRegion.subRegion}" th:value="${subRegion.id}"></option>-->
+                                                        </select>
+                                                        <label for="businessLines" class="field-label">Manufacturer Line of Business</label>
+                                                        <select  required="required" id="businessLines"   class="input-field w-input" th:field="*{businessLines}">
+                                                            <option value="">Select One...</option>
+                                                            <option th:each="businessLine : ${businessLines}" th:text="${businessLine.name}" th:value="${businessLine.id}"></option>
+                                                        </select>
+                                                        <label for="businessNatures" class="field-label">Manufacturer Nature of Business</label>
+                                                        <select  required="required" id="businessNatures"  class="input-field w-input" th:field="*{businessNatures}">
+                                                            <option value="">Select One...</option>
+                                                            <!--                                        <option th:each="businessNature : ${businessNatures}" th:text="${businessNature.name}" th:value="${businessNature.id}"></option>-->
+                                                        </select>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" onClick="window.location.reload()" data-mdb-dismiss="modal">Close</button>
+                                                <input type="submit" id="uploadCompanyProfile" class="btn btn-primary" value="Save"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -890,8 +941,8 @@
 
             });
 
-            $("#confirmLineBusinessId").click(function () {
-                let businessLineId = $("#confirmLineBusinessId").val()
+            $("#businessLines").click(function () {
+                let businessLineId = $("#businessLines").val()
                 // console.log(categories.length)
                 $.ajax({
                     method: "GET",
@@ -904,7 +955,7 @@
                             // response.push('Select one')
                             s += '<option value="' + response[i].id + '">' + response[i].name + '</option>';
                         }
-                        $("#confirmBusinessNatureId").html(s);
+                        $("#businessNatures").html(s);
                     }
                 })
 

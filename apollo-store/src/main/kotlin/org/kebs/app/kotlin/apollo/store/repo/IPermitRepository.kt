@@ -6,7 +6,6 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.hazelcast.repository.HazelcastRepository
 import org.springframework.stereotype.Repository
-import java.util.*
 
 @Repository
 interface IPermitRepository : HazelcastRepository<PermitApplicationEntity, Long> {
@@ -68,9 +67,4 @@ interface IReviewRepository : HazelcastRepository<HofQamReviewEntity, Int> {
 @Repository
 interface IAwardReviewRepository : HazelcastRepository<PermitAwardingEntity, Int> {
     fun findByPermitIdAndManufacturerIdAndAwardedStatus(permitId: Long, manufacturerId: Long, awardedStatus: Int): PermitAwardingEntity?
-}
-
-@Repository
-interface ITurnOverRatesRepository : HazelcastRepository<CfgTurnOverRatesEntity, Long> {
-    fun findByIdAndFirmType(id: Long, firmType: String): CfgTurnOverRatesEntity?
 }

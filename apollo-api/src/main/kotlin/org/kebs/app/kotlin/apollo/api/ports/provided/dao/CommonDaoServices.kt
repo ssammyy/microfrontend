@@ -67,6 +67,7 @@ import org.kebs.app.kotlin.apollo.common.utils.replacePrefixedItemsWithObjectVal
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.*
 import org.kebs.app.kotlin.apollo.store.model.di.CdLaboratoryEntity
+import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileEntity
 import org.kebs.app.kotlin.apollo.store.repo.*
 import org.kebs.app.kotlin.apollo.store.repo.di.ILaboratoryRepository
 import org.modelmapper.ModelMapper
@@ -77,8 +78,6 @@ import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Service
 import org.springframework.util.StringUtils
 import org.springframework.web.multipart.MultipartFile
-import org.springframework.web.servlet.function.ServerRequest
-import org.springframework.web.servlet.function.ServerResponse
 import java.io.ByteArrayInputStream
 import java.io.File
 import java.io.FileWriter
@@ -103,6 +102,7 @@ import javax.xml.stream.XMLOutputFactory
 class CommonDaoServices(
         private val jasyptStringEncryptor: StringEncryptor,
         private val usersRepo: IUserRepository,
+        private val companyProfileRepo: ICompanyProfileRepository,
         private val batchJobRepository: IBatchJobDetailsRepository,
         private val iSubSectionsLevel2Repo: ISubSectionsLevel2Repository,
         private val iSubSectionsLevel1Repo: ISubSectionsLevel1Repository,
@@ -400,6 +400,16 @@ class CommonDaoServices(
 //    fun assignSubRegion(subRegionId: Long?): SubRegionsEntity? = subRegionsRepo.findByIdOrNull(subRegionId)
     fun assignDesignation(designationId: Long?): DesignationsEntity? = designationRepo.findByIdOrNull(designationId)
 
+    fun returnValues(
+        result: ServiceRequestsEntity,
+        map: ServiceMapsEntity,
+        sm: CommonDaoServices.MessageSuccessFailDTO
+    ): String? {
+        return when (result.status) {
+            map.successStatus -> "${successLink}?message=${sm.message}&closeLink=${sm.closeLink}"
+            else -> map.failureNotificationUrl
+        }
+    }
 
     fun concatenateName(user: UsersEntity): String {
         return "${user.firstName} ${user.lastName}"
@@ -495,6 +505,7 @@ class CommonDaoServices(
         return SecurityContextHolder.getContext().authentication?.name
     }
 
+
     fun loggedInUserAuthentication(): Authentication {
         SecurityContextHolder.getContext().authentication
                 ?.let { auths ->
@@ -577,12 +588,12 @@ class CommonDaoServices(
                 ?: throw ExpectedDataNotFound("The following County with ID  = $countyId and status = $status, does not Exist")
     }
 
-    fun findTownEntityByTownId(townId: Long, status: Int): TownsEntity {
-        townsRepo.findByIdAndStatus(townId, status)
+    fun findTownEntityByTownId(townId: Long): TownsEntity {
+        townsRepo.findByIdOrNull(townId)
                 ?.let { townEntity ->
                     return townEntity
                 }
-                ?: throw ExpectedDataNotFound("The following Town with ID  = $townId and status = $status, does not Exist")
+                ?: throw ExpectedDataNotFound("The following Town with ID  = $townId, does not Exist")
     }
 
 
@@ -659,6 +670,15 @@ class CommonDaoServices(
                     return userEntity
                 }
                 ?: throw ExpectedDataNotFound("Username  = ${userName}, does not Exist")
+    }
+
+
+    fun findCompanyProfile(userID: Long): CompanyProfileEntity {
+        companyProfileRepo.findByUserId(userID)
+                ?.let { userCompanyDetails ->
+                    return userCompanyDetails
+                }
+                ?: throw ExpectedDataNotFound("Company Profile with [user ID= ${userID}], does not Exist")
     }
 
     fun findAllUsers(): List<UsersEntity> {
@@ -1168,6 +1188,14 @@ class CommonDaoServices(
                     return users
                 }
                 ?: throw ExpectedDataNotFound("Users with section ID  = ${sectionsEntity.id} and status = $status, does not Exist")
+    }
+
+    fun findAllUsersWithinRegionDepartmentDivisionSectionId(region: RegionsEntity, department: DepartmentsEntity, division: DivisionsEntity, section: SectionsEntity, status: Int): List<UserProfilesEntity> {
+        iUserProfilesRepo.findByRegionIdAndDepartmentIdAndDivisionIdAndSectionIdAndStatus(region,department, division, section, status)
+                ?.let { users ->
+                    return users
+                }
+                ?: throw ExpectedDataNotFound("Users List with section ID  = ${section.id} and status = $status, does not Exist")
     }
 
 

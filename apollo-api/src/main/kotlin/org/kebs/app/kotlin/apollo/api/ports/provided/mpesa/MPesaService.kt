@@ -237,8 +237,7 @@ class MPesaService(
 
     fun sanitizePhoneNumber(inputPhone: String): String? {
         var validPhoneNo: String? = "Fasle"
-        val safaricom =
-            "^(?:254|\\+254|0)?(7(?:(?:[129][0-9])|(?:0[0-9])|(?:6[8-9])|(?:5[7-9])|(?:4[5-6])|(?:4[8])|(4[0-3]))[0-9]{6})$"
+        val safaricom = "^(?:254|\\+254|0)?(7(?:(?:[129][0-9])|(?:0[0-9])|(?:6[8-9])|(?:5[7-9])|(?:4[5-6])|(?:4[8])|(4[0-3]))[0-9]{6})$"
         val telkom = "^(?:254|\\+254|0)?(7(?:(?:[7][0-9]))[0-9]{6})$"
         val airtel = "^(?:254|\\+254|0)?(7(?:(?:[3][0-9])|(?:5[0-6])|(?:6[2])|(8[0-9]))[0-9]{6})$"
         var patt: Pattern
@@ -274,75 +273,10 @@ class MPesaService(
                             }
                         }
                     }
-                    else -> {
-                        patt = Pattern.compile(airtel)
-                        match = patt.matcher(replPhone2)
-                        when {
-                            match.find() -> {
-                                //                    Toast.makeText(getApplicationContext(), "Airtel Number", Toast.LENGTH_LONG).show()
-                                val replPhone3: String
-                                //                    phoneCompany = "airtel"
-                                when {
-                                    replPhone2.startsWith("0") -> {
-                                        replPhone3 = replPhone2.replaceFirst("0".toRegex(), "\\254")
-                                        //                        Log.e("TAG phone starts 0", replPhone3)
-                                        validPhoneNo = replPhone3
-                                    }
-                                    replPhone2.startsWith("7") -> {
-                                        replPhone3 = replPhone2.replaceFirst("7".toRegex(), "\\254")
-                                        //                        Log.e("TAG phone starts 7", replPhone3)
-                                        validPhoneNo = replPhone3
-                                    }
-                                    replPhone2.startsWith("+") -> {
-                                        validPhoneNo = replPhone2.replace("[\\-+.^:,]".toRegex(), "")
-                                        //                        Log.e("TAG phone number +", validPhoneNo)
-                                    }
-                                    else -> {
-                                        validPhoneNo = replPhone2
-                                    }
-                                }
-                            }
-                            else -> {
-
-                                patt = Pattern.compile(telkom)
-                                match = patt.matcher(replPhone2)
-                                when {
-                                    match.find() -> {
-                                        //                        Toast.makeText(getApplicationContext(), "Telkom Number", Toast.LENGTH_LONG).show()
-                                        val replPhone3: String
-                                        //                        phoneCompany = "telkom"
-                                        when {
-                                            replPhone2.startsWith("0") -> {
-                                                replPhone3 = replPhone2.replaceFirst("0".toRegex(), "\\254")
-                                                //                            Log.e("TAG phone starts 0", replPhone3)
-                                                validPhoneNo = replPhone3
-                                            }
-                                            replPhone2.startsWith("7") -> {
-                                                replPhone3 = replPhone2.replaceFirst("7".toRegex(), "\\254")
-                                                //                            Log.e("TAG phone starts 7", replPhone3)
-                                                validPhoneNo = replPhone3
-                                            }
-                                            replPhone2.startsWith("+") -> {
-                                                validPhoneNo = replPhone2.replace("[\\-+.^:,]".toRegex(), "")
-                                                //                            Log.e("TAG phone number +", validPhoneNo)
-                                            }
-                                            else -> {
-                                                validPhoneNo = replPhone2
-                                            }
-                                        }
-                                    }
-                                    else -> {
-                                        //                        Toast.makeText(getApplicationContext(), "Please enter a valid mobile number 'Safaricom only'", Toast.LENGTH_LONG).show()
-                                        //                        Log.e("TAG phone No not check", replPhone2)
-                                        //                        moveToContact(view)
-                                    }
-                                }
-                            }
-                        }
-                    }
                 }
             }
             else -> {
+                 throw ExpectedDataNotFound("Please Enter a valid Safaricom Phone Number")
 //            Toast.makeText(getApplicationContext(), "Please enter a mobile number ", Toast.LENGTH_LONG).show()
 //            moveToContact(view)
             }

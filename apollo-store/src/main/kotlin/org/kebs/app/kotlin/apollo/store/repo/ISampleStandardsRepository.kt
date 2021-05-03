@@ -8,5 +8,6 @@ import org.springframework.stereotype.Repository
 @Repository
 interface ISampleStandardsRepository : HazelcastRepository<SampleStandardsEntity, Long>{
     fun findBySubCategoryId(subCategoryId: Long?): SampleStandardsEntity?
+    fun findBySubCategoryIdOrderByCreatedOn(subCategoryId: Long?): List<SampleStandardsEntity>?
     fun findBySubCategoryIdAndStatus(subCategoryId: Long, status: Int): SampleStandardsEntity
 }

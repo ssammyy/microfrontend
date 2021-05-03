@@ -45,6 +45,7 @@ import org.flowable.task.api.Task
 import org.kebs.app.kotlin.apollo.adaptor.kafka.producer.service.SendToKafkaQueue
 import org.kebs.app.kotlin.apollo.api.notifications.Notifications
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.StandardsLevyBpmn
+import org.kebs.app.kotlin.apollo.common.dto.UserCompanyEntityDto
 import org.kebs.app.kotlin.apollo.common.dto.UserEntityDto
 import org.kebs.app.kotlin.apollo.common.dto.UserPasswordVerificationValuesDto
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
@@ -54,6 +55,7 @@ import org.kebs.app.kotlin.apollo.common.exceptions.ServiceMapNotFoundException
 import org.kebs.app.kotlin.apollo.common.utils.generateRandomText
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.*
+import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileEntity
 import org.kebs.app.kotlin.apollo.store.repo.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
@@ -581,6 +583,61 @@ class RegistrationDaoServices(
 
             sr.payload = "User[id= ${user.id}]"
             sr.names = "${user.firstName} ${user.lastName}"
+
+            sr.responseStatus = sr.serviceMapsId?.successStatusCode
+            sr.responseMessage = "Success ${sr.payload}"
+            sr.status = s.successStatus
+            sr = serviceRequestsRepository.save(sr)
+            sr.processingEndDate = Timestamp.from(Instant.now())
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message, e)
+//            KotlinLogging.logger { }.trace(e.message, e)
+            sr.status = sr.serviceMapsId?.exceptionStatus
+            sr.responseStatus = sr.serviceMapsId?.exceptionStatusCode
+            sr.responseMessage = e.message
+            sr = serviceRequestsRepository.save(sr)
+
+        }
+
+        KotlinLogging.logger { }.trace("${sr.id} ${sr.responseStatus}")
+        return sr
+    }
+
+
+    fun addUserManufactureProfile(
+        s: ServiceMapsEntity,
+        u: UsersEntity,
+        cp: CompanyProfileEntity
+    ): ServiceRequestsEntity {
+
+        var sr = commonDaoServices.createServiceRequest(s)
+        try {
+
+            val userCompanyDetails = UserCompanyEntityDto()
+            with(userCompanyDetails) {
+                name = cp.name
+                kraPin = cp.kraPin
+                userId = u.id
+                profileType = applicationMapProperties.mapUserRequestManufacture
+                registrationNumber = cp.registrationNumber
+                postalAddress = cp.postalAddress
+                companyEmail = cp.companyEmail
+                companyTelephone = cp.companyTelephone
+                yearlyTurnover = cp.yearlyTurnover
+                businessLines = cp.businessLines
+                businessNatures = cp.businessNatures
+                buildingName = cp.buildingName
+                streetName = cp.streetName
+                county = cp.county
+                town = cp.town
+                region = county?.let { commonDaoServices.findCountiesEntityByCountyId(it, s.activeStatus).regionId }
+
+            }
+           val userCompany = systemsAdminDaoService.updateUserCompanyDetails(userCompanyDetails) ?: throw NullValueNotAllowedException("Registration failed")
+
+            sr.payload = "User[id= ${userCompany.userId}]"
+            sr.names = "${userCompany.name} ${userCompany.kraPin}"
 
             sr.responseStatus = sr.serviceMapsId?.successStatusCode
             sr.responseMessage = "Success ${sr.payload}"
