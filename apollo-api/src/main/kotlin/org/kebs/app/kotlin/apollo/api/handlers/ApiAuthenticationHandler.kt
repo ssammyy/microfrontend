@@ -46,8 +46,7 @@ class ApiAuthenticationHandler(
                 ?.let { user ->
                     val otp = generateTransactionReference(8).toUpperCase()
                     val token = generateVerificationToken(otp, user)
-//                    val response = sendOtpViaSMS(token)
-                    val response = "success"
+                    val response = sendOtpViaSMS(token)
 
                     req.attributes()["username"] = reqBody.username
                     req.attributes()["password"] = reqBody.password
