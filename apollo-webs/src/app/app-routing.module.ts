@@ -37,10 +37,10 @@ import {StdTscSecTasksComponent} from "./components/standards-development/std-ts
 import {RequestStandardFormComponent} from "./components/standards-development/standard-request/request-standard-form/request-standard-form.component";
 import {StandardsDevelopmentComponent} from "./components/standards-development/standards-development.component";
 import {StdTcTasksComponent} from "./components/standards-development/std-tc-tasks/std-tc-tasks.component";
-import {DivisionresponseComponent} from "./components/standards-development/sd-national-enquiry-point/divisionresponse/divisionresponse.component";
-import {InformationcheckComponent} from "./components/standards-development/sd-national-enquiry-point/informationcheck/informationcheck.component";
+import {InformationcheckComponent} from "./components/standards-development/informationcheck/informationcheck.component";
 import {EnquiryComponent} from "./components/standards-development/sd-national-enquiry-point/enquiry/enquiry.component";
 import {SuccessComponent} from "./components/standards-development/sd-national-enquiry-point/success/success.component";
+import {DivisionresponseComponent} from "./components/standards-development/divisionresponse/divisionresponse.component";
 
 const routes: Routes = [
   // { path: 'login-signup', component: LoginSignupComponent },
@@ -226,8 +226,14 @@ const routes: Routes = [
     path: 'std-tc-task', component: StandardsDevelopmentComponent,
     children: [{path: '', component: StdTcTasksComponent}]
   },
-  { path: 'divisionresponse', component: DivisionresponseComponent },
-  { path: 'checkinfo', component: InformationcheckComponent },
+  {
+    path: 'divisionresponse', component: StandardsDevelopmentComponent,
+    children: [{path: '', component: DivisionresponseComponent}]
+  },
+  {
+    path: 'checkinfo', component: StandardsDevelopmentComponent,
+    children: [{path: '', component: InformationcheckComponent}]
+  },
   { path: 'enquire', component: EnquiryComponent },
   { path: 'success', component: SuccessComponent },
 

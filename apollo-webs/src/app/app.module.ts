@@ -57,9 +57,9 @@ import { StdTscTasksComponent } from './components/standards-development/std-tsc
 import { RequestStandardFormComponent } from './components/standards-development/standard-request/request-standard-form/request-standard-form.component';
 import {FileUploadModule} from "ng2-file-upload";
 import { StdTcTasksComponent } from './components/standards-development/std-tc-tasks/std-tc-tasks.component';
-import { DivisionresponseComponent } from './components/standards-development/sd-national-enquiry-point/divisionresponse/divisionresponse.component';
+import { DivisionresponseComponent } from './components/standards-development/divisionresponse/divisionresponse.component';
 import { EnquiryComponent } from './components/standards-development/sd-national-enquiry-point/enquiry/enquiry.component';
-import { InformationcheckComponent } from './components/standards-development/sd-national-enquiry-point/informationcheck/informationcheck.component';
+import { InformationcheckComponent } from './components/standards-development/informationcheck/informationcheck.component';
 import { SuccessComponent } from './components/standards-development/sd-national-enquiry-point/success/success.component';
 
 
