@@ -611,6 +611,41 @@
                                 </div>
                             </form>
                         </div>
+
+                        <div sec:authorize="hasAuthority('PERMIT_APPLICATION')" id="requestModalPopUp" class="uploadForm">
+                            <form id="requestModal-form" name="companyProfile-form" th:action="@{/api/auth/kebs/add/manufacture-details/save}" method="post" th:object="${companyProfileEntity}">
+                                <div class="modal fade" id="requestModal" tabindex="-1" role="dialog" aria-labelledby="requestModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="requestModalLabel">Send Request</h5>
+                                                <button type="button" class="btn-close" data-mdb-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div class="form-group">
+                                                    <!--                                                    <input type="hidden" id="confirmSampleId"  name="confirmSampleId" th:value="${sampleSubmit?.id}">-->
+                                                    <div id="requestModalBtn">
+                                                        <label class="field-label" for="county">User Request:</label>
+                                                        <select id="userRequest" name="userRequest" class="input-field w-input" th:field="*{county}">
+                                                            <option value="0">Select One...</option>
+                                                            <option th:each="userRequest : ${userRequests}" th:text="${userRequest.userRequest}" th:value="${userRequest.id}"></option>
+                                                            <!--                                        <option th:each="subRegion : ${subRegions}" th:text="${subRegion.subRegion}" th:value="${subRegion.id}"></option>-->
+                                                        </select>
+                                                        <label class="field-label" for="county">Reason:</label>
+                                                        <textarea required name="name" id="hofQamCompletenessRemarks" class="input-field w-input" cols="65" rows="5" th:field="*{hofQamCompletenessRemarks}"></textarea>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" onClick="window.location.reload()" data-mdb-dismiss="modal">Close</button>
+                                                <input type="submit" id="request" class="btn btn-primary" value="Save"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
