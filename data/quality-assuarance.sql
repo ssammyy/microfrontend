@@ -360,6 +360,90 @@ end;
 create index dat_kebs_qa_sta10_idx on dat_kebs_qa_sta10 (status, permit_id) TABLESPACE qaimssdb_idx;
 /
 
+create table dat_kebs_qa_scheme_for_supervision
+(
+    id               NUMBER PRIMARY KEY,
+    PERMIT_ID      NUMBER REFERENCES DAT_KEBS_PERMIT_TRANSACTION (ID),
+    process_flow_raw_materials_intake          VARCHAR2(200),
+    operations_raw_materials_intake          VARCHAR2(200),
+    quality_checks_raw_materials_intake          VARCHAR2(200),
+    frequency_raw_materials_intake          VARCHAR2(200),
+    records_raw_materials_intake          VARCHAR2(200),
+
+    process_flow_in_process          VARCHAR2(200),
+    operations_in_process          VARCHAR2(200),
+    quality_checks_in_process          VARCHAR2(200),
+    frequency_in_process          VARCHAR2(200),
+    records_in_process          VARCHAR2(200),
+
+    process_flow_final_product          VARCHAR2(200),
+    operations_final_product           VARCHAR2(200),
+    quality_checks_final_product           VARCHAR2(200),
+    frequency_final_product           VARCHAR2(200),
+    records_final_product           VARCHAR2(200),
+
+    process_flow_packaging          VARCHAR2(200),
+    operations_packaging         VARCHAR2(200),
+    quality_checks_packaging          VARCHAR2(200),
+    frequency_packaging          VARCHAR2(200),
+    records_packaging          VARCHAR2(200),
+
+    process_flow_storage          VARCHAR2(200),
+    operations_storage          VARCHAR2(200),
+    quality_checks_storage          VARCHAR2(200),
+    frequency_storage          VARCHAR2(200),
+    records_storage          VARCHAR2(200),
+
+    process_flow_dispatch          VARCHAR2(200),
+    operations_dispatch          VARCHAR2(200),
+    quality_checks_dispatch          VARCHAR2(200),
+    frequency_dispatch          VARCHAR2(200),
+    records_dispatch          VARCHAR2(200),
+    accepted_rejected_status          VARCHAR2(200),
+    accepted_rejected_date          DATE,
+    DESCRIPTION      VARCHAR2(200),
+    status           NUMBER(2),
+    var_field_1      VARCHAR2(350 CHAR),
+    var_field_2      VARCHAR2(350 CHAR),
+    var_field_3      VARCHAR2(350 CHAR),
+    var_field_4      VARCHAR2(350 CHAR),
+    var_field_5      VARCHAR2(350 CHAR),
+    var_field_6      VARCHAR2(350 CHAR),
+    var_field_7      VARCHAR2(350 CHAR),
+    var_field_8      VARCHAR2(350 CHAR),
+    var_field_9      VARCHAR2(350 CHAR),
+    var_field_10     VARCHAR2(350 CHAR),
+    created_by       VARCHAR2(100 CHAR)          DEFAULT 'admin' NOT NULL ENABLE,
+    created_on       TIMESTAMP(6) WITH TIME ZONE DEFAULT sysdate NOT NULL ENABLE,
+    modified_by      VARCHAR2(100 CHAR)          DEFAULT 'admin',
+    modified_on      TIMESTAMP(6) WITH TIME ZONE DEFAULT sysdate,
+    delete_by        VARCHAR2(100 CHAR)          DEFAULT 'admin',
+    deleted_on       TIMESTAMP(6) WITH TIME ZONE
+) TABLESPACE qaimssdb_data;
+
+create sequence dat_kebs_qa_scheme_for_supervision_seq minvalue 1 maxvalue 9999999999999999999999999999 increment by 1 start with 1 cache 20 noorder nocycle;
+
+create or replace trigger dat_kebs_qa_scheme_for_supervision_seq_trg
+    before
+        insert
+    on dat_kebs_qa_scheme_for_supervision
+    for each row
+begin
+    if inserting then
+        if :new.id is null then
+            select dat_kebs_qa_scheme_for_supervision_seq.nextval
+            into :new.id
+            from dual;
+
+        end if;
+
+    end if;
+end;
+
+create index dat_kebs_qa_scheme_for_supervision_idx on dat_kebs_qa_scheme_for_supervision (PERMIT_ID, status) TABLESPACE qaimssdb_idx;
+/
+
+
 create table dat_kebs_qa_uploads
 (
     id               NUMBER PRIMARY KEY,
