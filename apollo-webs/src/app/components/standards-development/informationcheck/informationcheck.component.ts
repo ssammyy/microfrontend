@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import {FeedbackEmail, InfoAvailableYes, Notification, RootObject} from '../../../../shared/models/standard-development';
-import {StandardDevelopmentService} from "../../../../shared/services/standard-development.service";
+import {FeedbackEmail, InfoAvailableYes, Notification, RootObject} from '../../../shared/models/standard-development';
+import {NepPointService} from "../../../shared/services/nep-point.service";
 import {HttpErrorResponse} from '@angular/common/http';
 import {FormBuilder, FormGroup, NgForm} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
@@ -17,7 +17,7 @@ export class InformationcheckComponent implements OnInit {
   constructor(private formBuilder: FormBuilder,
               private route: ActivatedRoute,
               private router: Router,
-              private notificationService: StandardDevelopmentService) { }
+              private notificationService: NepPointService) { }
   ngOnInit(): void {
     this.getRequests();
   }
