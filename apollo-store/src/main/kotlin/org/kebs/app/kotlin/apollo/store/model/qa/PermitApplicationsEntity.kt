@@ -3,6 +3,7 @@ package org.kebs.app.kotlin.apollo.store.model.qa
 import org.kebs.app.kotlin.apollo.store.model.UsersEntity
 import java.io.Serializable
 import java.math.BigDecimal
+import java.sql.Date
 import java.sql.Timestamp
 import javax.persistence.*
 
@@ -79,6 +80,18 @@ class PermitApplicationsEntity:Serializable {
     @Column(name = "region")
     @Basic
     var region: String? = null
+
+    @Column(name = "INSPECTION_DATE")
+    @Basic
+    var inspectionDate: Date? = null
+
+    @Column(name = "INSPECTION_SCHEDULED_STATUS")
+    @Basic
+    var inspectionScheduledStatus: Int? = null
+
+    @Column(name = "GENERATE_SCHEME_STATUS")
+    @Basic
+    var generateSchemeStatus: Int? = null
 
 
 //    @JoinColumn(name = "USER_ID", referencedColumnName = "ID")
@@ -405,7 +418,10 @@ class PermitApplicationsEntity:Serializable {
         if (permitForeignStatus != other.permitForeignStatus) return false
         if (status != other.status) return false
         if (sta10FilledOfficerStatus != other.sta10FilledOfficerStatus) return false
+        if (generateSchemeStatus != other.generateSchemeStatus) return false
         if (sta10FilledStatus != other.sta10FilledStatus) return false
+        if (inspectionDate != other.inspectionDate) return false
+        if (inspectionScheduledStatus != other.inspectionScheduledStatus) return false
         if (sta3FilledStatus != other.sta3FilledStatus) return false
         if (sendApplication != other.sendApplication) return false
         if (invoiceGenerated != other.invoiceGenerated) return false
@@ -492,10 +508,13 @@ class PermitApplicationsEntity:Serializable {
         result = 31 * result + (fmarkGenerated ?: 0)
         result = 31 * result + (endOfProductionStatus ?: 0)
         result = 31 * result + (status ?: 0)
+        result = 31 * result + (generateSchemeStatus ?: 0)
         result = 31 * result + (hofQamCompletenessStatus ?: 0)
         result = 31 * result + (sta10FilledOfficerStatus ?: 0)
+        result = 31 * result + (inspectionScheduledStatus?: 0)
         result = 31 * result + (sta10FilledStatus ?: 0)
         result = 31 * result + (sta3FilledStatus ?: 0)
+        result = 31 * result + (inspectionDate?.hashCode() ?: 0)
         result = 31 * result + (title?.hashCode() ?: 0)
         result = 31 * result + (totalCost?.hashCode() ?: 0)
         result = 31 * result + (totalPayment?.hashCode() ?: 0)

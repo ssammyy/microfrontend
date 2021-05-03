@@ -22,6 +22,10 @@ class PermitTypesEntity : Serializable {
     @Basic
     var st3Status: Int? = null
 
+    @Column(name = "SCHEME_GENERATE")
+    @Basic
+    var schemeGenerate: Int? = null
+
     @Column(name = "ST10_STATUS")
     @Basic
     var st10Status: Int? = null
@@ -135,6 +139,7 @@ class PermitTypesEntity : Serializable {
                 status == that.status &&
                 descriptions == that.descriptions &&
                 typeName == that.typeName &&
+                schemeGenerate == that.schemeGenerate &&
                 st3Status == that.st3Status &&
                 st10Status == that.st10Status &&
                 image == that.image &&
@@ -160,6 +165,7 @@ class PermitTypesEntity : Serializable {
         return Objects.hash(
             id,
             status,
+            schemeGenerate,
             descriptions,
             smeDeclarationForm,
             typeName,

@@ -122,6 +122,10 @@
                                                 <div class="list-title-accordion">Section</div>
                                                 <div class="list-text-accordion" th:text="${sectionValue}"></div>
                                             </li>
+                                            <li th:if="${permitDetails?.inspectionScheduledStatus == 1}" class="list-item-accordion">
+                                                <div class="list-title-accordion">Inspection Date</div>
+                                                <div class="list-text-accordion" th:text="${#dates.format(permitDetails?.inspectionDate, 'dd/MM/yyyy')}"></div>
+                                            </li>
                                             <li class="list-item-accordion">
                                                 <div class="list-title-accordion">Status</div>
 <!--                                                <div class="list-text-accordion" th:text="${#dates.format(permitDetails?.dateOfExpiry, 'dd/MM/yyyy')}"></div>-->
@@ -303,6 +307,7 @@
                                 <a th:if="${permitType?.st3Status == 1 and permitDetails?.sta3FilledStatus == 1}" target='_blank' th:href="@{/api/qa/view-sta3(permitID=${permitDetails?.id}, userID=${permitDetails?.userId})}" class="filter-link" style="color: white">STA 3</a>
                                 <a th:if="${permitType?.st10Status == 1 and permitDetails?.sta10FilledStatus == 1}" target='_blank' th:href="@{/api/qa/view-sta10(permitID=${permitDetails?.id}, userID=${permitDetails?.userId})}" class="filter-link" style="color: white">STA 10</a>
                                 <a th:if="${permitDetails?.sendApplication == 1 and permitDetails?.invoiceGenerated == 1}" target='_blank' th:href="@{/api/qa/invoice-details(permitID=${permitDetails?.id})}" class="filter-link" style="color: white">GENERATED INVOICE</a>
+                                <a th:if="${permitDetails?.generateSchemeStatus == 1 and permitType?.schemeGenerate == 1}" th:href="@{/api/qa/scheme-of-supervision(permitID=${permitDetails?.id})}" style="color: white" onclick="popUpFunction('generateScheme');" class="filter-link">GENERATE SCHEME FOR SUPERVISION AND CONTROL</a>
                             </div>
                             <div class="filter-block-title">
                                 <div class="filter-title">Action:</div>
@@ -329,6 +334,12 @@
 
                                 <div sec:authorize="hasAuthority('QA_MANAGER_ASSESSORS_MODIFY') or hasAuthority('QA_HOF_READ') or hasAuthority('QA_HOD_READ')">
                                     <a th:if="${permitDetails?.hofQamCompletenessStatus == null}" style="color: white" onclick="popUpFunction('permitCompleteness');" class="filter-link">COMPLETENESS ?</a>
+                                    <a th:if="${permitDetails?.hofQamCompletenessStatus == 1 and permitDetails?.assignOfficerStatus == null}" style="color: white" onclick="popUpFunction('assignOfficer');" class="filter-link">Assign Officer</a>
+                                </div>
+
+                                <div sec:authorize="hasAuthority('QA_OFFICER_MODIFY')">
+                                    <a th:if="${permitDetails?.inspectionScheduledStatus == null}" style="color: white" onclick="popUpFunction('scheduleInspectionDate');" class="filter-link">SCHEDULE INSPECTION</a>
+                                    <a th:if="${permitDetails?.generateSchemeStatus == null and permitType?.schemeGenerate == 1}" th:href="@{/api/qa/scheme-of-supervision(permitID=${permitDetails?.id})}" style="color: white" onclick="popUpFunction('generateScheme');" class="filter-link">GENERATE SCHEME FOR SUPERVISION AND CONTROL</a>
                                     <a th:if="${permitDetails?.hofQamCompletenessStatus == 1 and permitDetails?.assignOfficerStatus == null}" style="color: white" onclick="popUpFunction('assignOfficer');" class="filter-link">Assign Officer</a>
                                 </div>
 
@@ -418,6 +429,18 @@
                                                 <option value="0">Select one...</option>
                                                 <option th:each="officer : ${officers}" th:text="${officer.userId?.firstName} + ' ' + ${officer.userId?.lastName}" th:name="qaoId" th:value="${officer.userId?.id}"></option>
                                             </select>
+<!--                                            <label for="hofQamCompletenessRemarks" class="col-form-label">Please write, in detail, your feedback for this Permit:</label>-->
+<!--                                            <textarea required name="name" id="hofQamCompletenessRemarks" class="input-field w-input" cols="65" rows="5" th:field="*{hofQamCompletenessRemarks}"></textarea>-->
+                                        </div>
+                                        <div id="scheduleInspectionDate">
+                                            <input type="hidden" id="description4" name="description" th:value="'Inspection Date set sucessfull'">
+                                            <input type="hidden" id="inspectionScheduledStatus" name="inspectionScheduledStatus" th:value="${activeStatus}">
+                                            <label for="qaoId" class="col-form-label">Inspection Date:</label>
+                                            <input class="input-field w-input" type="date" max="20" id="inspectionDate" name="inspectionDate" th:required="required">
+<!--                                            <select id="qaoId" required class="select-field w-select" th:field="*{qaoId}">-->
+<!--                                                <option value="0">Select one...</option>-->
+<!--                                                <option th:each="officer : ${officers}" th:text="${officer.userId?.firstName} + ' ' + ${officer.userId?.lastName}" th:name="qaoId" th:value="${officer.userId?.id}"></option>-->
+<!--                                            </select>-->
 <!--                                            <label for="hofQamCompletenessRemarks" class="col-form-label">Please write, in detail, your feedback for this Permit:</label>-->
 <!--                                            <textarea required name="name" id="hofQamCompletenessRemarks" class="input-field w-input" cols="65" rows="5" th:field="*{hofQamCompletenessRemarks}"></textarea>-->
                                         </div>
@@ -574,8 +597,8 @@
 </script>
 <script>
     function popUpFunction(eventAction) {
-        let arrHead = [ 'attachePlant', 'permitCompleteness', 'assignOfficer'];
-        let arrHeadSave = [ 'Attach a Plant for manufacturing the product', 'Is The Permit Complete', 'Select An officer'];
+        let arrHead = [ 'attachePlant', 'permitCompleteness', 'assignOfficer', 'scheduleInspectionDate'];
+        let arrHeadSave = [ 'Attach a Plant for manufacturing the product', 'Is The Permit Complete', 'Select An officer',' Set The Date of Inspection'];
 
         for (let h = 0; h < arrHead.length; h++) {
             if(eventAction !== arrHead[h]){
