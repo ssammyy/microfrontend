@@ -37,6 +37,7 @@
 
 package org.kebs.app.kotlin.apollo.api.ports.provided.dao
 
+import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
 import org.flowable.engine.RuntimeService
 import org.flowable.engine.TaskService
@@ -47,6 +48,7 @@ import org.kebs.app.kotlin.apollo.api.notifications.Notifications
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.StandardsLevyBpmn
 import org.kebs.app.kotlin.apollo.common.dto.UserEntityDto
 import org.kebs.app.kotlin.apollo.common.dto.UserPasswordVerificationValuesDto
+import org.kebs.app.kotlin.apollo.common.dto.brs.response.BrsLookUpResponse
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.common.exceptions.MissingConfigurationException
 import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
@@ -75,6 +77,7 @@ class RegistrationDaoServices(
     private val usersRepo: IUserRepository,
     private val applicationMapProperties: ApplicationMapProperties,
     private val userVerificationTokensRepository: IUserVerificationTokensRepository,
+    private val serviceRequestRepo: IServiceRequestsRepository,
 
     private val employeesRepo: IEmployeesRepository,
     private val userProfilesRepo: IUserProfilesRepository,
@@ -84,6 +87,7 @@ class RegistrationDaoServices(
     private val serviceMapsRepository: IServiceMapsRepository,
     private val notifications: Notifications,
     private val commonDaoServices: CommonDaoServices,
+    private val iCompanyProfileRepository: ICompanyProfileRepository,
 
     private val notificationsRepo: INotificationsRepository,
     private val workflowTransactionsRepository: IWorkflowTransactionsRepository,
@@ -120,6 +124,16 @@ class RegistrationDaoServices(
     @Lazy
     @Autowired
     lateinit var systemsAdminDaoService: SystemsAdminDaoService
+
+
+    @Autowired
+    lateinit var configurationRepository: IIntegrationConfigurationRepository
+
+    @Autowired
+    lateinit var daoService: DaoService
+
+    @Autowired
+    lateinit var logsRepo: IWorkflowTransactionsRepository
 
     /***********************************************************************************
      * NEW REGISTRATIONION SERVICES
@@ -1059,10 +1073,40 @@ class RegistrationDaoServices(
     /**
      * Check BRS
      */
-    fun checkBrs(sr: ServiceRequestsEntity, user: UsersEntity, map: ServiceMapsEntity): Boolean {
-        val variables = mutableMapOf<String, Any?>()
-        variables["continue"] = true
-        return true
+     fun checkBrs( user: UsersEntity): Boolean {
+        var response = false
+        user.id?.let {
+            iCompanyProfileRepository.findByUserId(it)?.let{
+                manufacturer ->
+                configurationRepository.findByIdOrNull(3L)
+                    ?.let { config ->
+                        config.createdOn = Timestamp.from(Instant.now())
+                        config.modifiedOn = Timestamp.from(Instant.now())
+                        configurationRepository.save(config)
+                        runBlocking{
+                            config.url?.let { url ->
+                                val log = daoService.createTransactionLog(0, "integ")
+                                val params = mapOf(Pair("registration_number", manufacturer.registrationNumber))
+                                log.integrationRequest = "$params"
+                                val resp = daoService.getHttpResponseFromGetCall(true, url, config, null, params, null)
+                                val data = daoService.processResponses<BrsLookUpResponse>(resp, log, url, config)
+                                logsRepo.save(data.first)
+                                val brsResponse = data.second
+                                brsResponse
+                                    ?.let { r->
+                                        r.records?.get(0)?.partners?.forEach {
+                                            response = manufacturer.directorIdNumber == it?.idNumber?: 0
+                                        }?: throw Exception("No Partners available")
+                                        //
+                                    }?: throw Exception("No Response")
+                            }?: throw Exception("Pass a valid endpoint")
+                        }
+                    }?: throw Exception("Company Does not exist")
+//                sr.varField3 = user.id.toString()
+//                serviceRequestRepo.save(sr)
+            }?: throw Exception("Company not found")
+        }?: throw Exception("User id is null")
+        return response
     }
 
 
