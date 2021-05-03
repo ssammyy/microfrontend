@@ -12,6 +12,7 @@ import org.kebs.app.kotlin.apollo.store.model.CdDemandNoteEntity
 import org.kebs.app.kotlin.apollo.store.model.SchedulerEntity
 import org.kebs.app.kotlin.apollo.store.repo.ISchedulerRepository
 import org.kebs.app.kotlin.apollo.store.repo.IUserRepository
+import org.kebs.app.kotlin.apollo.store.repo.qa.IPermitApplicationsRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Lazy
@@ -38,6 +39,9 @@ class SchedulerImpl(
 
     @Autowired
     lateinit var qaDaoServices: QADaoServices
+
+    @Autowired
+    lateinit var permitRepo: IPermitApplicationsRepository
 
     final val diAppId = applicationMapProperties.mapImportInspection
 
@@ -234,6 +238,8 @@ class SchedulerImpl(
              } else if (permit.permitType == applicationMapProperties.mapQAPermitTypeIdSmark) {
                  qaDaoServices.assignNextOfficerAfterPayment(permit, map, applicationMapProperties.mapQADesignationIDForQAMId)
              }
+            permit.paidStatus = map.initStatus
+            permitRepo.save(permit)
         }
     }
  }
