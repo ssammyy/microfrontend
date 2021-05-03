@@ -41,6 +41,8 @@ import {InformationcheckComponent} from "./components/standards-development/info
 import {EnquiryComponent} from "./components/standards-development/sd-national-enquiry-point/enquiry/enquiry.component";
 import {SuccessComponent} from "./components/standards-development/sd-national-enquiry-point/success/success.component";
 import {DivisionresponseComponent} from "./components/standards-development/divisionresponse/divisionresponse.component";
+import {NepNotificationComponent} from "./components/standards-development/nep-notification/nep-notification.component";
+import {ManagernotificationsComponent} from "./components/standards-development/managernotifications/managernotifications.component";
 
 const routes: Routes = [
   // { path: 'login-signup', component: LoginSignupComponent },
@@ -233,6 +235,14 @@ const routes: Routes = [
   {
     path: 'checkinfo', component: StandardsDevelopmentComponent,
     children: [{path: '', component: InformationcheckComponent}]
+  },
+  {
+    path: 'nepnotification', component: StandardsDevelopmentComponent,
+    children: [{path: '', component: NepNotificationComponent}]
+  },
+  {
+    path: 'managernotification', component: StandardsDevelopmentComponent,
+    children: [{path: '', component: ManagernotificationsComponent}]
   },
   { path: 'enquire', component: EnquiryComponent },
   { path: 'success', component: SuccessComponent },

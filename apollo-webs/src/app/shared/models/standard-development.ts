@@ -94,6 +94,14 @@ export interface InfoAvailableYes{
   taskId: string;
   isAvailable: string;
 }
+
+export interface InfoAvailableNo{
+  taskId: string;
+  isAvailable: string;
+}
+
+
+
 export interface DepartmentResponse {
   departmentResponseID: number;
   enquiryID: number;
