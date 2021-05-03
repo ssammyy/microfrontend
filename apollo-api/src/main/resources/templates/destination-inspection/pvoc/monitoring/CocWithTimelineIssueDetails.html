@@ -297,7 +297,7 @@
                     </div>
                 </div>
             </div>
-            <div class="remarksForm">
+            <div class="remarksForm"  th:if="${invoice.count() != null}">
                 <form id="kebsInquirelyForm"   name="remarksForm" th:action="@{/api/di/pvoc/save-kebs-query(cocId = ${coc.id})}" method="post" th:object="${remarkData}" >
                     <div class="modal fade" id="kebsInquirelyModal" tabindex="-1" role="dialog" aria-labelledby="remarksModalLabel" aria-hidden="true">
                         <div class="modal-dialog" role="document">
