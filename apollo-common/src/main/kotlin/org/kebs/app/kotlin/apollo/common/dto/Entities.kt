@@ -22,6 +22,7 @@
 package org.kebs.app.kotlin.apollo.common.dto
 
 
+import java.math.BigDecimal
 import java.sql.Date
 import javax.validation.constraints.NotBlank
 import javax.validation.constraints.Size
@@ -264,7 +265,7 @@ data class UserCompanyDto(
     var postalAddress: String? = null,
     var companyEmail: String? = null,
     var companyTelephone: String? = null,
-    var yearlyTurnover: String? = null,
+    var yearlyTurnover: BigDecimal? = null,
     var businessLines: String? = null,
     var businessNatures: String? = null,
     var buildingName: String? = null,
@@ -283,7 +284,7 @@ data class UserCompanyEntityDto(
     var postalAddress: String? = null,
     var companyEmail: String? = null,
     var companyTelephone: String? = null,
-    var yearlyTurnover: String? = null,
+    var yearlyTurnover: BigDecimal? = null,
     var businessLines: Long? = null,
     var businessNatures: Long? = null,
     var buildingName: String? = null,

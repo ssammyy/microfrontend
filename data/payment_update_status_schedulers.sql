@@ -121,7 +121,7 @@ where DEMAND_NOTE_NUMBER = 'DN2021042045B72'
 
 select *
 from STG_PAYMENT_RECONCILIATION --DN20210407C4C3D--DN20210331288A1
-where REFERENCE_CODE = 'DN202104229B7D1'
+where REFERENCE_CODE = 'DM#202104290CF'
 --                            ||
 --                        'DN20210422E1513' ||
 --                        'DN202104229B7D1'
@@ -130,13 +130,18 @@ order by id desc;/
 
 select *
 from LOG_STG_PAYMENT_RECONCILIATION
-where REFERENCE_CODE = 'DN2021041576884'
+where REFERENCE_CODE = 'DM#20210428DE4'
 order by id desc;/
 
-select *
-from DAT_KEBS_INVOICE_BATCH_DETAILS
-where BATCH_NUMBER = 'DN2021032975320'
+select * from DAT_KEBS_INVOICE_BATCH_DETAILS
+where BATCH_NUMBER = 'DM#202104290CF'
 order by id desc;/
+
+/*Permit INVOICE*/
+select * from DAT_KEBS_INVOICE
+-- where id = 2
+where INVOICE_NUMBER = 'DM#202104290CF'
+order by id desc;
 
 
 select FUN_UPDATE_INVOICE_WHEN_PAYMENTS_MADE(1)
@@ -275,6 +280,29 @@ end;
 /
 
 
+
+create or replace procedure proc_update_permit_invoice_when_payment_done(PAID_STATUS number, TABLE_SOURCE_NAME varchar2)
+as
+begin
+    FOR X IN (SELECT * FROM DAT_KEBS_INVOICE_BATCH_DETAILS s  where s.STATUS in (PAID_STATUS) and s.TABLE_SOURCE in (TABLE_SOURCE_NAME))
+        LOOP
+            update DAT_KEBS_INVOICE d
+            set d.PAYMENT_STATUS = 1,
+                d.RECEIPT_NO     = x.RECEIPT_NUMBER
+            where d.INVOICE_BATCH_NUMBER_ID = x.id
+--               and d.TOTAL_AMOUNT = x.PAID_AMOUNT
+              and d.PAYMENT_STATUS != 1;
+--         update STG_PAYMENT_RECONCILIATION ss set ss.PAYMENT_TABLES_UPDATED_STATUS = 10 where ss.INVOICE_ID = x.INVOICE_ID;
+            commit;
+        end loop;
+
+    update DAT_KEBS_INVOICE_BATCH_DETAILS ss set ss.STATUS = 10 where ss.id in (SELECT s.id FROM DAT_KEBS_INVOICE_BATCH_DETAILS s where s.STATUS in (PAID_STATUS));
+end;
+/
+
+
+
+
 ****************old working************************
 
 create or replace procedure proc_update_demand_note_when_payment_done(PAID_STATUS number, TABLE_SOURCE_NAME varchar2)
@@ -332,6 +360,18 @@ BEGIN
         );
 END;
 
+
+BEGIN
+    DBMS_SCHEDULER.CREATE_PROGRAM(
+            program_name => 'PROG_UPDATE_PERMIT_INVOICE_PAYMENT_DETAILS',
+            program_type => 'STORED_PROCEDURE',
+            program_action => 'PROC_UPDATE_PERMIT_INVOICE_WHEN_PAYMENT_DONE',
+            number_of_arguments =>0,
+            enabled => TRUE,
+            comments => '1 min update on permit invoice payment details'
+        );
+END;
+
 BEGIN
     DBMS_SCHEDULER.CREATE_PROGRAM(
             program_name => 'PROG_UPDATE_INVOICE_WHEN_PAYMENT_DONE',
@@ -361,6 +401,16 @@ BEGIN
             schedule_name => 'SCHEDULE_UPDATE_PAYMENT_DETAILS',
             enabled => TRUE,
             comments => 'update on demand note payment is done'
+        );
+END;
+
+BEGIN
+    DBMS_SCHEDULER.CREATE_JOB(
+            job_name => 'JOB_UPDATE_PERMIT_INVOICE_WHEN_PAYMENT_DONE',
+            program_name => 'PROG_UPDATE_PERMIT_INVOICE_PAYMENT_DETAILS',
+            schedule_name => 'SCHEDULE_UPDATE_PAYMENT_DETAILS',
+            enabled => TRUE,
+            comments => 'update on permit invoice payment is done'
         );
 END;
 
@@ -426,6 +476,69 @@ BEGIN
 
 
     DBMS_SCHEDULER.ENABLE(name=>'APOLLO.PROG_UPDATE_DEMAND_NOTE_PAYMENT_DETAILS');
+END;
+
+
+BEGIN
+    DBMS_SCHEDULER.DISABLE(name=>'APOLLO.PROG_UPDATE_DEMAND_NOTE_PAYMENT_DETAILS', force=> TRUE);
+
+    DBMS_SCHEDULER.set_attribute(name => 'APOLLO.PROG_UPDATE_DEMAND_NOTE_PAYMENT_DETAILS',
+                                 attribute => 'program_action',
+                                 value => 'APOLLO.PROC_UPDATE_DEMAND_NOTE_WHEN_PAYMENT_DONE');
+    DBMS_SCHEDULER.set_attribute(name => 'APOLLO.PROG_UPDATE_DEMAND_NOTE_PAYMENT_DETAILS',
+                                 attribute => 'number_of_arguments', value => '2');
+
+
+    DBMS_SCHEDULER.define_program_argument(
+            program_name => 'APOLLO.PROG_UPDATE_DEMAND_NOTE_PAYMENT_DETAILS',
+            argument_name => 'PAID_STATUS',
+            argument_position => 1,
+            argument_type => 'NUMBER',
+            default_value => '1',
+            out_argument => FALSE);
+
+
+    DBMS_SCHEDULER.define_program_argument(
+            program_name => 'APOLLO.PROG_UPDATE_DEMAND_NOTE_PAYMENT_DETAILS',
+            argument_name => 'TABLE_SOURCE_NAME',
+            argument_position => 2,
+            argument_type => 'VARCHAR2',
+            default_value => 'DN',
+            out_argument => FALSE);
+
+
+    DBMS_SCHEDULER.ENABLE(name=>'APOLLO.PROG_UPDATE_DEMAND_NOTE_PAYMENT_DETAILS');
+END;
+
+BEGIN
+    DBMS_SCHEDULER.DISABLE(name=>'APOLLO.PROG_UPDATE_PERMIT_INVOICE_PAYMENT_DETAILS', force=> TRUE);
+
+    DBMS_SCHEDULER.set_attribute(name => 'APOLLO.PROG_UPDATE_PERMIT_INVOICE_PAYMENT_DETAILS',
+                                 attribute => 'program_action',
+                                 value => 'APOLLO.PROC_UPDATE_PERMIT_INVOICE_WHEN_PAYMENT_DONE');
+    DBMS_SCHEDULER.set_attribute(name => 'APOLLO.PROG_UPDATE_PERMIT_INVOICE_PAYMENT_DETAILS',
+                                 attribute => 'number_of_arguments', value => '2');
+
+
+    DBMS_SCHEDULER.define_program_argument(
+            program_name => 'APOLLO.PROG_UPDATE_PERMIT_INVOICE_PAYMENT_DETAILS',
+            argument_name => 'PAID_STATUS',
+            argument_position => 1,
+            argument_type => 'NUMBER',
+            default_value => '1',
+            out_argument => FALSE);
+
+
+    DBMS_SCHEDULER.define_program_argument(
+            program_name => 'APOLLO.PROG_UPDATE_PERMIT_INVOICE_PAYMENT_DETAILS',
+            argument_name => 'TABLE_SOURCE_NAME',
+            argument_position => 2,
+            argument_type => 'VARCHAR2',
+            default_value => 'PM',
+            out_argument => FALSE);
+
+
+    DBMS_SCHEDULER.ENABLE(name=>'APOLLO.PROG_UPDATE_PERMIT_INVOICE_PAYMENT_DETAILS');
 END;
 
 create or replace function fun_update_invoice_WHEN_payments_made(PAID_STATUS IN NUMBER)

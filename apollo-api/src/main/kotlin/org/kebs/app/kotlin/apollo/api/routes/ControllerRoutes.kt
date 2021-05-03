@@ -218,7 +218,7 @@ class ControllerRoutes {
             }
 
     @Bean
-    fun userRoute(handler: userHandler) =
+    fun userRoute(handler: UserHandler) =
             router {
                 "/api/user".nest {
                     GET("/user-notifications", handler::notificationList)
@@ -303,18 +303,27 @@ class ControllerRoutes {
     }
 
 
-    /*
+
     @Bean
     fun qualityAssuranceRoutes(handler: QualityAssuranceHandler) = router {
-        "/api/v1/permit".nest {
+        "/api/qa".nest {
             println("**************************")
             GET("/home", handler::home)
             GET("/permits-list", handler::permitList)
-            GET("/permit-details", handler::newPermit)
+            GET("/permit-details", handler::permitDetails)
             GET("/new-permit", handler::newPermit)
+            GET("/new-sta3", handler::newSta3)
+            GET("/new-sta10", handler::newSta10)
+            GET("/new-sta10-officer", handler::newSta10Officer)
+            GET("/view-sta3", handler::viewSta3)
+            GET("/view-sta10", handler::viewSta10)
+            GET("/new-sta10-submit", handler::submitSta10)
+            GET("/scheme-of-supervision", handler::generatedSchemeSupervision)
+            GET("/product-quality-status", handler::generateProductQualityStatus)
+            GET("/invoice-details", handler::getInvoiceDetails)
         }
     }
-    */
+
 
     @Bean
     fun destinationInspectionRoutes(handler: DestinationInspectionHandler) = router {

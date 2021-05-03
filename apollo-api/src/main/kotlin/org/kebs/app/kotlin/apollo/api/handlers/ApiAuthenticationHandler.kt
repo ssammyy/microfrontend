@@ -46,8 +46,10 @@ class ApiAuthenticationHandler(
                 ?.let { user ->
                     val otp = generateTransactionReference(8).toUpperCase()
                     val token = generateVerificationToken(otp, user)
+                    KotlinLogging.logger {  }.info { "Token: ${token.token}" }
+
 //                    val response = sendOtpViaSMS(token)
-                    val response = "success"
+                    val response = "Success"
 
                     req.attributes()["username"] = reqBody.username
                     req.attributes()["password"] = reqBody.password
@@ -63,7 +65,7 @@ class ApiAuthenticationHandler(
 
 
     fun sendOtpViaSMS(token: UserVerificationTokensEntity): String {
-        val phone = token.userId?.cellphone
+        val phone = token.userId?.personalContactNumber
         val message = "Your verification code is ${token.token}"
         var smsSent = false
         if (phone != null) {

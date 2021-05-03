@@ -1,43 +1,47 @@
 package org.kebs.app.kotlin.apollo.store.model.qa
 
-import java.io.Serializable
 import java.sql.Timestamp
-import javax.persistence.Basic
-import javax.persistence.Column
-import javax.persistence.Entity
 import javax.persistence.*
+import java.io.Serializable
+
 
 @Entity
-@Table(name = "DAT_KEBS_QA_PRODUCT")
-class QaProductBrandEntity:Serializable {
+@Table(name = " DAT_KEBS_QA_RAW_MATERIAL")
+class QaRawMaterialEntity : Serializable {
     @Column(name = "ID")
     @Id
-    @SequenceGenerator(name = "DAT_KEBS_QA_PRODUCT_SEQ_GEN", sequenceName = "DAT_KEBS_QA_PRODUCT_TYPES_SEQ", allocationSize = 1)
-    @GeneratedValue(generator = "DAT_KEBS_QA_PRODUCT__SEQ_GEN", strategy = GenerationType.SEQUENCE)
+    @SequenceGenerator(name = "DAT_KEBS_QA_RAW_MATERIAL_SEQ_GEN", sequenceName = "DAT_KEBS_QA_RAW_MATERIAL_SEQ", allocationSize = 1)
+    @GeneratedValue(generator = "DAT_KEBS_QA_RAW_MATERIAL_SEQ_GEN", strategy = GenerationType.SEQUENCE)
     var id: Long? = 0
-    @Column(name = "PRODUCT_NAME")
-    @Basic
-    var productName: String? = null
 
-    @Column(name = "PRODUCT_BRAND")
-    @Basic
-    var productBrand: String? = null
 
-    @Column(name = "DEPARTMENT")
+    @Column(name = "DESCRIPTIONS")
     @Basic
-    var department: String? = null
+    var descriptions: String? = null
 
-    @Column(name = "PRODUCT_NUMBER")
+    @Column(name = "STATUS")
     @Basic
-    var productNo: String? = null
+    var status: Int? = null
 
-    @Column(name = "KEBS_PERMIT_NO")
+    @Column(name = "name")
     @Basic
-    var permitNo: String? = null
+    var name: String? = null
 
-    @ManyToOne
-    @JoinColumn(name = "CBRAND_ID", referencedColumnName = "ID")
-    var applicationsEntity: PermitApplicationsEntity? = null
+    @Column(name = "STA10_ID")
+    @Basic
+    var sta10Id: Long? = null
+
+    @Column(name = "ORIGIN")
+    @Basic
+    var origin: String? = null
+
+    @Column(name = "SPECIFICATIONS")
+    @Basic
+    var specifications: String? = null
+
+    @Column(name = "QUALITY_CHECKS_TESTING_RECORDS")
+    @Basic
+    var qualityChecksTestingRecords: String? = null
 
     @Column(name = "VAR_FIELD_1")
     @Basic
@@ -106,15 +110,17 @@ class QaProductBrandEntity:Serializable {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
 
-        other as QaProductBrandEntity
+        other as QaRawMaterialEntity
 
         if (id != other.id) return false
-        if (productName != other.productName) return false
-        if (productBrand != other.productBrand) return false
-        if (department != other.department) return false
-        if (productNo != other.productNo) return false
-        if (permitNo != other.permitNo) return false
-        if (applicationsEntity != other.applicationsEntity) return false
+        if (status != other.status) return false
+        if (name != other.name) return false
+
+        if (qualityChecksTestingRecords != other.qualityChecksTestingRecords) return false
+        if (descriptions != other.descriptions) return false
+        if (sta10Id != other.sta10Id) return false
+        if (origin != other.origin) return false
+        if (specifications != other.specifications) return false
         if (varField1 != other.varField1) return false
         if (varField2 != other.varField2) return false
         if (varField3 != other.varField3) return false
@@ -137,12 +143,13 @@ class QaProductBrandEntity:Serializable {
 
     override fun hashCode(): Int {
         var result = id?.hashCode() ?: 0
-        result = 31 * result + (productName?.hashCode() ?: 0)
-        result = 31 * result + (productBrand?.hashCode() ?: 0)
-        result = 31 * result + (department?.hashCode() ?: 0)
-        result = 31 * result + (productNo?.hashCode() ?: 0)
-        result = 31 * result + (permitNo?.hashCode() ?: 0)
-        result = 31 * result + (applicationsEntity?.hashCode() ?: 0)
+        result = 31 * result + (status ?: 0)
+        result = 31 * result + (descriptions?.hashCode() ?: 0)
+        result = 31 * result + (qualityChecksTestingRecords?.hashCode() ?: 0)
+        result = 31 * result + (sta10Id?.hashCode() ?: 0)
+        result = 31 * result + (name?.hashCode() ?: 0)
+        result = 31 * result + (origin?.hashCode() ?: 0)
+        result = 31 * result + (specifications?.hashCode() ?: 0)
         result = 31 * result + (varField1?.hashCode() ?: 0)
         result = 31 * result + (varField2?.hashCode() ?: 0)
         result = 31 * result + (varField3?.hashCode() ?: 0)

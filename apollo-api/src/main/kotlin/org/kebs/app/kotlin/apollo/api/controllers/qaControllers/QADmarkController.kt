@@ -340,10 +340,12 @@ class QADmarkController(
                         permitRepo.findByIdOrNull(id)
                                 ?.let { pm ->
                                     if(pm.foreignApplication == 0) {
-                                        invoiceRepository.findByPermitId(pm)
+                                        pm.id?.let {
+                                            invoiceRepository.findByPermitId(it)
                                                 ?.let { i ->
                                                     model.addAttribute("invoice", i)
                                                 }
+                                        }
 
 
                                     }

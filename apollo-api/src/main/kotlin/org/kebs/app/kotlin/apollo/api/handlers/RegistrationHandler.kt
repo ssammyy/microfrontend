@@ -809,8 +809,7 @@ class RegistrationHandler(
                                          * */
                                         req.attributes().putAll(loadManufacturerUIComponents(map))
                                         req.attributes()["manufacturersEntity"] = ManufacturersEntity()
-                                        req.attributes()["stdLevyNotificationFormEntity"] =
-                                            StdLevyNotificationFormEntity()
+                                        req.attributes()["stdLevyNotificationFormEntity"] = StdLevyNotificationFormEntity()
                                         req.attributes()["manufacturerAddressesEntity"] = ManufacturerAddressesEntity()
                                         req.attributes()["manufacturerContactEntity"] = ManufacturerContactsEntity()
                                         req.attributes()["yearlyTurnoverEntity"] = ManufacturePaymentDetailsEntity()

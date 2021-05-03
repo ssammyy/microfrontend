@@ -23,11 +23,11 @@
                 <div class="content-row-top">
                     <h4>Quality Assurance home</h4><br>
                               <a sec:authorize="hasRole('HOD')" class="content-button" th:href="@{/dmark/select}"><span class="font-awesome-span"></span>HOD</a>
-                              <a sec:authorize="hasAuthority('ASSIGN_OFFICER')"  class="content-button" th:href="@{/api/qa/hof}"><span class="font-awesome-span"></span>HOF</a>
-                                <a sec:authorize="hasRole('PSC')" class="content-button" th:href="@{/api/ms/home}"><span class="font-awesome-span"></span>PSC</a>
-                                <a sec:authorize="hasRole('QAM')" class="content-button" th:href="@{/api/ms/home}"><span class="font-awesome-span"></span>QAM</a>
-                                <a sec:authorize="hasAuthority('SCHEDULE_FACTORY_VISIT')" class="content-button" th:href="@{/api/qao}"><span class="font-awesome-span"></span>QAO</a>
-                                <a sec:authorize="hasRole('ASSESSOR')" class="content-button" th:href="@{/api/ms/home}"><span class="font-awesome-span"></span>Assessor</a>
+                              <a sec:authorize="hasAuthority('QA_MANAGER_ASSESSORS_READ')"  class="content-button" th:href="@{/api/qa/hof}"><span class="font-awesome-span"></span>HOF</a>
+                                <a sec:authorize="hasAuthority('QA_MANAGER_ASSESSORS_READ')" class="content-button" th:href="@{/api/ms/home}"><span class="font-awesome-span"></span>PSC</a>
+                                <a sec:authorize="hasAuthority('QA_MANAGER_ASSESSORS_READ')" class="content-button" th:href="@{/api/ms/home}"><span class="font-awesome-span"></span>QAM</a>
+                                <a sec:authorize="hasAuthority('QA_MANAGER_ASSESSORS_READ')" class="content-button" th:href="@{/api/qao}"><span class="font-awesome-span"></span>QAO</a>
+                                <a sec:authorize="hasAuthority('QA_MANAGER_ASSESSORS_READ')" class="content-button" th:href="@{/api/ms/home}"><span class="font-awesome-span"></span>Assessor</a>
                 </div>
 
             </div>

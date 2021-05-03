@@ -6,11 +6,13 @@ import org.kebs.app.kotlin.apollo.api.notifications.Notifications
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.BpmnCommonFunctions
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DestinationInspectionDaoServices
+import org.kebs.app.kotlin.apollo.api.ports.provided.dao.QADaoServices
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.CdDemandNoteEntity
 import org.kebs.app.kotlin.apollo.store.model.SchedulerEntity
 import org.kebs.app.kotlin.apollo.store.repo.ISchedulerRepository
 import org.kebs.app.kotlin.apollo.store.repo.IUserRepository
+import org.kebs.app.kotlin.apollo.store.repo.qa.IPermitApplicationsRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Lazy
@@ -35,7 +37,15 @@ class SchedulerImpl(
     @Autowired
     lateinit var diDaoServices: DestinationInspectionDaoServices
 
+    @Autowired
+    lateinit var qaDaoServices: QADaoServices
+
+    @Autowired
+    lateinit var permitRepo: IPermitApplicationsRepository
+
     final val diAppId = applicationMapProperties.mapImportInspection
+
+    final val qaAppId = applicationMapProperties.mapQualityAssurance
 
     @Value("\${scheduler.ms.director.id}")
     lateinit var msDirectorId: String
@@ -216,4 +226,20 @@ class SchedulerImpl(
         }
         return false
     }
-}
+
+    fun assignPermitApplicationAfterPayment() {
+        val map = commonDaoServices.serviceMapDetails(diAppId)
+        //Find all permits with Paid status
+        val paidPermits = qaDaoServices.findAllQAOPermitListWithPaymentStatus(map.activeStatus)
+        for (permit in paidPermits) {
+            //Get permit type
+             if (permit.permitType == applicationMapProperties.mapQAPermitTypeIDDmark) {
+                 qaDaoServices.assignNextOfficerAfterPayment(permit, map, applicationMapProperties.mapQADesignationIDForHODId)
+             } else if (permit.permitType == applicationMapProperties.mapQAPermitTypeIdSmark) {
+                 qaDaoServices.assignNextOfficerAfterPayment(permit, map, applicationMapProperties.mapQADesignationIDForQAMId)
+             }
+            permit.paidStatus = map.initStatus
+            permitRepo.save(permit)
+        }
+    }
+ }
