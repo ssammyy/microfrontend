@@ -341,6 +341,7 @@
                                     <a th:if="${permitDetails?.inspectionScheduledStatus == null}" style="color: white" onclick="popUpFunction('scheduleInspectionDate');" class="filter-link">SCHEDULE INSPECTION</a>
                                     <a th:if="${permitDetails?.generateSchemeStatus == null and permitType?.schemeGenerate == 1}" th:href="@{/api/qa/scheme-of-supervision(permitID=${permitDetails?.id})}" style="color: white" onclick="popUpFunction('generateScheme');" class="filter-link">GENERATE SCHEME FOR SUPERVISION AND CONTROL</a>
                                     <a th:if="${permitDetails?.hofQamCompletenessStatus == 1 and permitDetails?.assignOfficerStatus == null}" style="color: white" onclick="popUpFunction('assignOfficer');" class="filter-link">Assign Officer</a>
+                                    <a th:if="${permitDetails?.generateSchemeStatus == null and permitType?.schemeGenerate == 1}" th:href="@{/api/qa/scheme-of-supervision(permitID=${permitDetails?.id})}" style="color: white" onclick="popUpFunction('generateScheme');" class="filter-link">GENERATE JUSTIFICATION REPORT</a>
                                 </div>
 
                             </div>

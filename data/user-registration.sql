@@ -88,7 +88,7 @@ order by id desc;
 
 select *
 from CFG_USER_ROLES--512
-where id like '%5%'
+--where id like '%5%'
 -- where ROLE_NAME = 'SYSADMIN_VIEW'
 order by id desc;
 
