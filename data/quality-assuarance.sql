@@ -114,7 +114,7 @@ order by id desc;
 
 select * from DAT_KEBS_INVOICE
 -- where id = 2
-where INVOICE_NUMBER = 'DM#20210426B8C'
+-- where INVOICE_NUMBER = 'DM#20210426B8C'
 order by id desc;
 
 alter table DAT_KEBS_QA_PRODUCT modify AVAILABLE NUMBER(2)/
@@ -144,7 +144,7 @@ select * from LOG_SERVICE_REQUESTS
 order by id desc;
 
 select * from DAT_KEBS_MANUFACTURE_PLANT_DETAILS
--- where id = 43
+where id = 81
 order by id desc;
 
 

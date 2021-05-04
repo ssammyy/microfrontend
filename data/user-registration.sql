@@ -85,6 +85,10 @@ select * from CFG_ROLES_PRIVILEGES --the role is 40 and prRole ID = 774
 -- where PRIVILEGE_ID =52425
 order by id desc;
 
+select * from CFG_KEBS_REGIONS --the role is 40 and prRole ID = 774
+where id = 4
+order by id desc;
+
 select * from DAT_KEBS_COMPANY_PROFILE --the role is 40 and prRole ID = 774
 -- where PRIVILEGE_ID =52425
 order by id desc;
@@ -119,7 +123,7 @@ order by id desc;21384
 
 select *
 from DAT_KEBS_USER_PROFILES
--- where USER_ID = 1403
+-- where REGION_ID = 4 and DESIGNATION_ID = 304
 -- where email = '254safaris@gmail.com'
 order by id desc;
 

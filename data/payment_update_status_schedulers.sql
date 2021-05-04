@@ -121,7 +121,7 @@ where DEMAND_NOTE_NUMBER = 'DN2021042045B72'
 
 select *
 from STG_PAYMENT_RECONCILIATION --DN20210407C4C3D--DN20210331288A1
-where REFERENCE_CODE = 'DM#202104290CF'
+-- where REFERENCE_CODE = 'DM#202104290CF'
 --                            ||
 --                        'DN20210422E1513' ||
 --                        'DN202104229B7D1'

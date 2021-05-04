@@ -261,7 +261,7 @@ class QualityAssuranceController(
         val updatePermit = PermitApplicationsEntity()
         with(updatePermit) {
             id = permit.id
-            sta10FilledStatus = map.activeStatus
+            sta10FilledStatus = map.inactiveStatus
         }
         //updating of Details in DB
         result = qaDaoServices.permitUpdateDetails(commonDaoServices.updateDetails(permit, updatePermit) as PermitApplicationsEntity, map,loggedInUser).first
@@ -422,9 +422,8 @@ class QualityAssuranceController(
         result = qaDaoServices.saveQaFileUploads(docFile, docFileName, loggedInUser, map, permitID)
 
         val sm = CommonDaoServices.MessageSuccessFailDTO()
-        sm.closeLink =
-            "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitDetails.id}%26userID=${loggedInUser.id}"
-        sm.message = "You have successful Uploaded the Document with the following [Name = ${docFileName}]"
+        sm.closeLink = "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitDetails.id}%26userID=${loggedInUser.id}"
+        sm.message = "Document Uploaded successfull"
 
         return commonDaoServices.returnValues(result, map, sm)
     }
@@ -465,29 +464,20 @@ class QualityAssuranceController(
 
         var result: ServiceRequestsEntity?
 
-        val permit = loggedInUser.id?.let { qaDaoServices.findPermitBYUserIDAndId(permitID, it) }
-            ?: throw ExpectedDataNotFound("Required User ID, check config")
-        val permitType = permit.permitType?.let { qaDaoServices.findPermitType(it) }
-            ?: throw ExpectedDataNotFound("PermitType Id Not found")
+        val permit = loggedInUser.id?.let { qaDaoServices.findPermitBYUserIDAndId(permitID, it) } ?: throw ExpectedDataNotFound("Required User ID, check config")
+        val permitType = permit.permitType?.let { qaDaoServices.findPermitType(it) } ?: throw ExpectedDataNotFound("PermitType Id Not found")
 //       val fmarkGenerated =
         result = qaDaoServices.permitInvoiceCalculation(map, loggedInUser, permit, permitType)
         with(permit) {
             sendApplication = map.activeStatus
             invoiceGenerated = map.activeStatus
+            //Todo: Ask anthony about this
             when {
                 permit.permitType!! == applicationMapProperties.mapQAPermitTypeIDDmark -> {
-                    hodId = qaDaoServices.assignNextOfficerAfterPayment(
-                        permit,
-                        map,
-                        applicationMapProperties.mapQADesignationIDForHODId
-                    )?.id
+                    hodId = qaDaoServices.assignNextOfficerAfterPayment(permit, map, applicationMapProperties.mapQADesignationIDForHODId)?.id
                 }
                 permit.permitType!! == applicationMapProperties.mapQAPermitTypeIdSmark -> {
-                    qamId = qaDaoServices.assignNextOfficerAfterPayment(
-                        permit,
-                        map,
-                        applicationMapProperties.mapQADesignationIDForQAMId
-                    )?.id
+                    qamId = qaDaoServices.assignNextOfficerAfterPayment(permit, map, applicationMapProperties.mapQADesignationIDForQAMId)?.id
                 }
             }
 
@@ -495,10 +485,8 @@ class QualityAssuranceController(
         result = qaDaoServices.permitUpdateDetails(permit, map, loggedInUser).first
 
         val sm = CommonDaoServices.MessageSuccessFailDTO()
-        sm.closeLink =
-            "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permit.id}%26userID=${loggedInUser.id}"
-        sm.message =
-            "You have successful Submitted Your Application, an invoice has been generated, check Your permit detail and pay for the Invoice"
+        sm.closeLink = "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permit.id}%26userID=${loggedInUser.id}"
+        sm.message = "You have successful Submitted Your Application, an invoice has been generated, check Your permit detail and pay for the Invoice"
 
         return commonDaoServices.returnValues(result!!, map, sm)
     }
