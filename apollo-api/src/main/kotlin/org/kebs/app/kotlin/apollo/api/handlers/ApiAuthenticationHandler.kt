@@ -57,6 +57,8 @@ class ApiAuthenticationHandler(
 
                     val otpResponseDto = OtpResponseDto()
                     otpResponseDto.message = response
+                    otpResponseDto.otp = token.token
+
                    ServerResponse.ok().body(otpResponseDto)
                 }
         }
