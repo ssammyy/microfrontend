@@ -55,6 +55,54 @@ class QualityAssuranceController(
         return commonDaoServices.returnValues(result, map, sm)
     }
 
+    @PreAuthorize("hasAuthority('PERMIT_APPLICATION')")
+    @PostMapping("/apply/new-scheme-of-supervision")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun saveNewSchemeOfSupervision(
+        @ModelAttribute("QaSchemeForSupervisionEntity") QaSchemeForSupervisionEntity: QaSchemeForSupervisionEntity,
+        @RequestParam( "permitID") permitID: Long,
+        model: Model)
+    : String? {
+        val result: ServiceRequestsEntity?
+        val map = commonDaoServices.serviceMapDetails(appId)
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        //Find Permit with permit ID
+        val permitDetails = qaDaoServices.findPermitBYID(permitID)
+
+        result = qaDaoServices.newSchemeSupervisionSave(permitDetails, QaSchemeForSupervisionEntity, loggedInUser,map)
+        //Set scheme as generated and update results
+        permitDetails.generateSchemeStatus = map.activeStatus
+        qaDaoServices.permitUpdateDetails(permitDetails,map, loggedInUser)
+
+
+        val sm = CommonDaoServices.MessageSuccessFailDTO()
+        sm.closeLink = "${applicationMapProperties.baseUrlValue}/qa/scheme-of-supervision?permitID=${result.varField1}%26userID=${loggedInUser.id}"
+        sm.message = "You have Successful Filled SSC"
+
+        return commonDaoServices.returnValues(result, map, sm)
+    }
+
+    @PreAuthorize("hasAuthority('PERMIT_APPLICATION')")
+    @PostMapping("/apply/update-scheme-of-supervision")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun updateSchemeOfSupervision(
+        @ModelAttribute("schemeFound") schemeFound: QaSchemeForSupervisionEntity,
+        @RequestParam( "schemeID") schemeID: Long,
+        model: Model)
+    : String? {
+        val result: ServiceRequestsEntity?
+        val map = commonDaoServices.serviceMapDetails(appId)
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+
+        result = qaDaoServices.schemeSupervisionUpdateSave(schemeID, schemeFound, loggedInUser,map)
+
+        val sm = CommonDaoServices.MessageSuccessFailDTO()
+        sm.closeLink = "${applicationMapProperties.baseUrlValue}/qa/scheme-of-supervision?permitID=${result.varField1}%26userID=${loggedInUser.id}"
+        sm.message = "You have Successful UPDATED SSC"
+
+        return commonDaoServices.returnValues(result, map, sm)
+    }
+
     @PreAuthorize("hasAuthority('PERMIT_APPLICATION') or hasAuthority('QA_MANAGER_ASSESSORS_READ') or hasAuthority('QA_HOF_READ') or hasAuthority('QA_HOD_READ') or hasAuthority('QA_OFFICER_MODIFY')")
     @PostMapping("/apply/update-permit")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)

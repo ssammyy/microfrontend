@@ -22,13 +22,17 @@
 package org.kebs.app.kotlin.apollo.api.handlers
 
 import mu.KotlinLogging
+import org.kebs.app.kotlin.apollo.api.ports.provided.createUserAlert
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
+import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DestinationInspectionDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.QADaoServices
 import org.kebs.app.kotlin.apollo.common.exceptions.*
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.*
+import org.kebs.app.kotlin.apollo.store.model.di.*
 import org.kebs.app.kotlin.apollo.store.model.qa.*
 import org.kebs.app.kotlin.apollo.store.repo.*
+import org.kebs.app.kotlin.apollo.store.repo.di.ILaboratoryRepository
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Component
@@ -38,18 +42,21 @@ import org.springframework.web.servlet.function.ServerRequest
 import org.springframework.web.servlet.function.ServerResponse
 import org.springframework.web.servlet.function.ServerResponse.ok
 import org.springframework.web.servlet.function.paramOrNull
+import java.sql.Date
 
 
 @Component
 class QualityAssuranceHandler(
     private val applicationMapProperties: ApplicationMapProperties,
     private val commonDaoServices: CommonDaoServices,
+    private val destinationDaoServices: DestinationInspectionDaoServices,
     private val standardCategoryRepo: IStandardCategoryRepository,
     private val productCategoriesRepository: IKebsProductCategoriesRepository,
     private val broadProductCategoryRepository: IBroadProductCategoryRepository,
     private val productsRepo: IProductsRepository,
     private val paymentMethodsRepository: IPaymentMethodsRepository,
     private val countyRepo: ICountiesRepository,
+    private val iLaboratoryRepo: ILaboratoryRepository,
     private val productSubCategoryRepo: IProductSubcategoryRepository,
     private val sampleStandardsRepository: ISampleStandardsRepository,
     private val qaDaoServices: QADaoServices
@@ -68,12 +75,17 @@ class QualityAssuranceHandler(
     private final val qaPermitDetailPage = "quality-assurance/customer/permit-details"
     private final val qaSchemeDetailPage = "quality-assurance/customer/scheme-of-supervision-and-control-details"
     private final val qaProductQualityStatusPage = "quality-assurance/product-quality-status"
+    private final val qaNewSchemeDetailPage = "quality-assurance/customer/new-scheme-of-supervision-details"
     private final val qaNewPermitPage = "quality-assurance/customer/permit-application"
     private final val qaNewSta3Page = "quality-assurance/customer/sta3-new-details"
     private final val qaNewSta10Page = "quality-assurance/customer/sta10-new-application"
     private final val qaNewSta10OfficerPage = "quality-assurance/customer/sta10-new-application-officer"
     private final val qaNewSta10DetailsPage = "quality-assurance/customer/sta10-new-details"
     private final val qaInvoiceGenerated = "quality-assurance/customer/generated-invoice"
+
+    //Inspection details
+    private final val cdSampleCollectPage = "destination-inspection/cd-Inspection-documents/cd-inspection-sample-collect.html"
+    private final val cdSampleSubmitPage = "destination-inspection/cd-Inspection-documents/cd-inspection-sample-submit.html"
 
     final val appId: Int = applicationMapProperties.mapQualityAssurance
 
@@ -304,13 +316,13 @@ class QualityAssuranceHandler(
     }
 
     @PreAuthorize("hasAuthority('PERMIT_APPLICATION') or hasAuthority('QA_OFFICER_MODIFY')")
-    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun generatedSchemeSupervision(req: ServerRequest): ServerResponse {
         val permitID = req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
 //        val map = commonDaoServices.serviceMapDetails(appId)
         val permit = qaDaoServices.findPermitBYID(permitID)
 
         req.attributes()["product"] = productsRepo.findByIdOrNull(permit.product)
+        req.attributes()["schemeFound"] = qaDaoServices.findSchemeOfSupervisionWithPermitIDBY(permitID)
         req.attributes()["ksApplicable"] = sampleStandardsRepository.findBySubCategoryId(permit.productSubCategory)
         req.attributes()["permitDetails"] = permit
 
@@ -330,13 +342,25 @@ class QualityAssuranceHandler(
     }
 
 
+    @PreAuthorize("hasAuthority('PERMIT_APPLICATION') or hasAuthority('QA_OFFICER_MODIFY')")
+    fun newSchemeSupervision(req: ServerRequest): ServerResponse {
+        val permitID = req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
+//        val map = commonDaoServices.serviceMapDetails(appId)
+        val permit = qaDaoServices.findPermitBYID(permitID)
+
+        req.attributes()["QaSchemeForSupervisionEntity"] = QaSchemeForSupervisionEntity()
+        req.attributes()["permitDetails"] = permit
+
+        return ok().render(qaNewSchemeDetailPage, req.attributes())
+
+    }
+
     @PreAuthorize("hasAuthority('PERMIT_APPLICATION') or hasAuthority('QA_HOD_READ') or hasAuthority('QA_MANAGER_ASSESSORS_READ') or hasAuthority('QA_HOF_READ') or hasAuthority('QA_OFFICER_MODIFY')")
-    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun getInvoiceDetails(req: ServerRequest): ServerResponse {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
 
         val permitID = req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
-        val permit = loggedInUser.id?.let { qaDaoServices.findPermitBYID(permitID) }?: throw ExpectedDataNotFound("Required User ID, check config")
+        val permit = qaDaoServices.findPermitBYID(permitID)
         //Todo: Remove smart cast
         val invoiceDetails = permit.userId?.let { qaDaoServices.findPermitInvoiceByPermitID(permitID, it) }
         val applicationState: String = when {
@@ -357,6 +381,102 @@ class QualityAssuranceHandler(
         return ok().render(qaInvoiceGenerated, req.attributes())
 
     }
+
+
+//    fun inspectionDetails(req: ServerRequest): ServerResponse =
+//        try {
+//            val map = commonDaoServices.serviceMapDetails(appId)
+//            val permitID = req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
+//            val permit =  qaDaoServices.findPermitBYID(permitID)
+//
+//                  val docType =  req.paramOrNull("docType") ?: throw ExpectedDataNotFound("Required docType, check config")
+//
+//
+//                            req.attributes().putAll(loadCommonUIComponents(map))
+//                            req.attributes().putAll(loadCDInspectionModuleUIComponents(map))
+//                            req.attributes()["map"] = map
+//                            var myPage = ""
+//                            // TODO: 12/15/2020  create a page for Error for initializing myPage
+//                            when (docType) {
+//                                destinationDaoServices.sampCollectName -> {
+//                                    var ksEasApplicable: String? = null
+//                                    var dateExpiry: Date? = null
+//                                    var dateMfgPackaging: Date? = null
+//                                    //Get checklist type details
+//                                    when (filledCheckList.checkListType?.uuid) {
+//                                        destinationDaoServices.agrochemItemChecklistType -> {
+//                                            val agrochem = daoServices.findInspectionAgrochemWithInspectionGeneral(filledCheckList)
+//                                            dateExpiry = agrochem.dateExpiry
+//                                            dateMfgPackaging = agrochem.dateMfgPackaging
+//                                            ksEasApplicable = agrochem.ksEasApplicable
+//                                        }
+//                                        destinationDaoServices.engineeringItemChecklistType -> {
+//                                            val engineering = daoServices.findInspectionEngineeringWithInspectionGeneral(filledCheckList)
+//                                            ksEasApplicable = engineering.ksEasApplicable
+//                                        }
+//                                        destinationDaoServices.otherItemChecklistType -> {
+//                                            val others = daoServices.findInspectionOthersWithInspectionGeneral(filledCheckList)
+//                                            ksEasApplicable = others.ksEasApplicable
+//                                        }
+//                                    }
+//                                    req.attributes()["dateExpiry"] = dateExpiry
+//                                    req.attributes()["dateMfgPackaging"] = dateMfgPackaging
+//                                    req.attributes()["ksEasApplicable"] = ksEasApplicable
+//                                    req.attributes()["message"] = docType
+//                                    myPage = cdSampleCollectPage
+//                                }
+//                                destinationDaoServices.sampSubmitName -> {
+//                                    val sampleCollect = daoServices.findSavedSampleCollection(cdItemID)
+//                                    req.attributes().putAll(sampleDetails(daoServices.findSavedGeneralInspection(cdItemDetails), sampleCollect))
+//                                    req.attributes().putAll(sampleDatesDetails(sampleCollect))
+//                                    req.attributes()["message"] = docType
+//                                    myPage = cdSampleSubmitPage
+//                                }
+//                                destinationDaoServices.sampSubmitAddParamDetails -> {
+//                                    val sampleCollect = daoServices.findSavedSampleCollection(cdItemID)
+//                                    val sampleSubmit = daoServices.findSavedSampleSubmission(cdItemID)
+//                                    val itemParameters = daoServices.findListSampleSubmissionParameter(sampleSubmit)
+//                                    req.attributes().putAll(sampleDetails(daoServices.findSavedGeneralInspection(cdItemDetails), sampleCollect))
+//                                    req.attributes().putAll(sampleDatesDetails(sampleCollect))
+//                                    req.attributes().putAll(loadSampleViewDetailsUIComponents(docType, daoServices.findSavedSampleSubmission(cdItemID), itemParameters))
+//                                    req.attributes()["sampleParam"] = CdSampleSubmissionParamatersEntity()
+//                                    myPage = cdSampleSubmitPage
+//                                }
+//                                destinationDaoServices.bsNumber -> {
+//                                    val sampleCollect = daoServices.findSavedSampleCollection(cdItemID)
+//                                    val sampleSubmit = daoServices.findSavedSampleSubmission(cdItemID)
+//                                    val itemParameters = daoServices.findListSampleSubmissionParameter(sampleSubmit)
+//                                    req.attributes().putAll(sampleDetails(daoServices.findSavedGeneralInspection(cdItemDetails), sampleCollect))
+//                                    req.attributes().putAll(sampleDatesDetails(sampleCollect))
+//                                    req.attributes().putAll(loadSampleViewDetailsUIComponents(docType, daoServices.findSavedSampleSubmission(cdItemID), itemParameters))
+//                                    myPage = cdSampleSubmitPage
+//                                }
+//                                destinationDaoServices.labResults -> {
+//                                    val sampleCollect = daoServices.findSavedSampleCollection(cdItemID)
+//                                    val sampleSubmit = daoServices.findSavedSampleSubmission(cdItemID)
+//                                    val itemParameters = daoServices.findListSampleSubmissionParameter(sampleSubmit)
+//                                    req.attributes()["allParameterCompleteResults"] = daoServices.checkIfResultsCompleted(itemParameters, map)
+//                                    req.attributes().putAll(sampleDetails(daoServices.findSavedGeneralInspection(cdItemDetails), sampleCollect))
+//                                    req.attributes().putAll(sampleDatesDetails(sampleCollect))
+//                                    req.attributes().putAll(loadSampleViewDetailsUIComponents(docType, daoServices.findSavedSampleSubmission(cdItemID), itemParameters))
+//                                    myPage = cdSampleSubmitPage
+//                                }
+//                                destinationDaoServices.sampSubmitParamName -> {
+//                                    val sampleSubmit = daoServices.findSavedSampleSubmission(cdItemID)
+//                                    req.attributes()["itemParameters"] = daoServices.findListSampleSubmissionParameter(sampleSubmit)
+//                                    req.attributes()["sampleSubmit"] = sampleSubmit
+//                                    req.attributes()["message"] = docType
+//                                    myPage = cdSampleSubmitPage
+//                                }
+//                            }
+//                            return ServerResponse.ok().render(myPage, req.attributes())
+//
+//
+//
+//
+//        } catch (e: Exception) {
+//            createUserAlert(req, e)
+//        }
 
 //    @PreAuthorize("hasAuthority('PERMIT_APPLICATION')")
 //    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
@@ -392,6 +512,49 @@ class QualityAssuranceHandler(
             Pair("countries", commonDaoServices.findCountryList()),
         )
     }
+
+    private fun loadCommonUIComponents(s: ServiceMapsEntity): MutableMap<String, Any> {
+        return mutableMapOf(
+            Pair("activeStatus", s.activeStatus),
+            Pair("inActiveStatus", s.inactiveStatus),
+            Pair("initStatus", s.initStatus),
+            Pair("currentDate", commonDaoServices.getCurrentDate())
+        )
+    }
+
+    private fun loadCDInspectionModuleUIComponents(map: ServiceMapsEntity): MutableMap<String, Any?> {
+
+        return mutableMapOf(
+
+            Pair("sampleSubmit", CdSampleSubmissionItemsEntity()),
+            Pair("sampleCollect", CdSampleCollectionEntity()),
+            Pair("sampleParam", CdSampleSubmissionParamatersEntity()),
+            Pair("generalCheckList", CdInspectionGeneralEntity()),
+            Pair("agrochemItemInspectionChecklist", CdInspectionAgrochemItemChecklistEntity()),
+            Pair("engineeringItemInspectionChecklist", CdInspectionEngineeringItemChecklistEntity()),
+            Pair("otherItemInspectionChecklist", CdInspectionOtherItemChecklistEntity()),
+            Pair("motorVehicleItemInspectionChecklist", CdInspectionMotorVehicleItemChecklistEntity()),
+
+            Pair("laboratories", iLaboratoryRepo.findByStatus(commonDaoServices.activeStatus.toInt())),
+
+            Pair("sampCollectName", destinationDaoServices.sampCollectName),
+            Pair("sampSubmitName", destinationDaoServices.sampSubmitName),
+            Pair("sampSubmitParamName", destinationDaoServices.sampSubmitParamName),
+            Pair("sampSubmitAddParamDetails", destinationDaoServices.sampSubmitAddParamDetails),
+            Pair("checkListName", destinationDaoServices.checkListName),
+            Pair("bsNumber", destinationDaoServices.bsNumber),
+            Pair("labResults", destinationDaoServices.labResults),
+            Pair("labResultsAllComplete", destinationDaoServices.labResultsAllComplete),
+            Pair("viewPage", destinationDaoServices.viewPage)
+
+
+//                Pair("rfcCOCEntity", MainRfcCocEntity()),
+//                Pair("rfcCOREntity", MainRfcCorEntity()),
+//                Pair("rfcCoiItemEntity", MainRfcCoiItemsEntity())
+
+        )
+    }
+
 
 
 }

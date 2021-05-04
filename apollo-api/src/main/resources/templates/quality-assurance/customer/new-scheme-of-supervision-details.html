@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<!--  This site was created in Webflow. http://www.webflow.com  -->
+<!--  Last Published: Wed Mar 18 2020 20:03:10 GMT+0000 (Coordinated Universal Time)  -->
+<html data-wf-page="5e7130c996c4ca37928b351f" data-wf-site="5e70fb3a565ebd99c1db37ce"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>KEBS</title>
+    <th:block th:include="fragments/general-form.html :: headerfiles"/>
+    <link rel="stylesheet" th:href="@{/css/pageLoad.css}" type="text/css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Font Awesome -->
+    <link href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" rel="stylesheet"/>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" rel="stylesheet"/>
+    <!-- MDB -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/2.2.1/mdb.min.css" rel="stylesheet"/>
+</head>
+<body>
+<div id ="spinnerContainer"><div class="spinner"></div></div>
+<div class="top-bar" th:replace="fragments/general-form.html :: top-bar"></div>
+<div class="section">
+    <div class="w-layout-grid main-grid">
+        <div class="main-grid-side-navigation" id="w-node-d308c123a20f-c123a20d"
+             th:replace="fragments/general-form.html :: side-navigation-bar"></div>
+        <div id="w-node-27962c2db181-c676b3e3" class="main-content-div">
+            <div class="content-nav" th:replace="fragments/general-form.html :: content-navigation-bar"></div>
+            <div class="content-wrap">
+                <div class="content-row">
+                    <div class="row">
+                        <div th:if="${message}" th:with="myStatus=${message}">
+                            <input type="hidden" th:value="${myStatus}" id="idStatus">
+                        </div>
+                        <h5 style="font-weight: bold; color: #0082f3; font-size: 14px">STA 3: QUESTIONNAIRE FOR INITIAL
+                            FACTORY ASSESSMENT</h5>
+                        <form  id="sta3Form" class="needs-validation"  novalidate th:action="@{/api/qa/apply/new-scheme-of-supervision(permitID = ${permit.id})}" method="post">
+                            <div th:object="${QaSchemeForSupervisionEntity}" >
+                                <div class="form-row" >
+                                    <div class="col-md-12 mb-3">
+                                        <label for="processFlowRawMaterialsIntake" style="color: #0082f3; font-size: 16px">1.RAW MATERIALS INTAKE</label>
+                                    </div>
+                                </div>
+                                <div class="form-row" >
+                                    <div class="col-md-12 mb-3">
+                                        <label for="processFlowRawMaterialsIntake" class="field-label">1.1. PROCESS FLOW</label>
+                                        <textarea type="text" class="form-control"  style="font-size: 16px" rows="2" id="processFlowRawMaterialsIntake" th:field="*{processFlowRawMaterialsIntake}"   required="required"></textarea>
+                                    </div>
+                                </div>
+                                <div class="form-row" >
+                                    <div class="col-md-12 mb-3">
+                                        <label for="operationsRawMaterialsIntake" class="field-label">1.2. OPERATIONS</label>
+                                         <textarea type="text" class="form-control"  style="font-size: 16px" rows="2" id="operationsRawMaterialsIntake" th:field="*{operationsRawMaterialsIntake}"   required="required"></textarea>
+                                    </div>
+                                </div>
+                                <div class="form-row" >
+                                    <div class="col-md-12 mb-3">
+                                        <label for="qualityChecksRawMaterialsIntake" class="field-label">1.3. QUALITY CHECKS</label>
+                                         <textarea type="text" class="form-control" style="font-size: 16px" rows="2" id="qualityChecksRawMaterialsIntake" th:field="*{qualityChecksRawMaterialsIntake}"   required="required"></textarea>
+                                    </div>
+                                </div><div class="form-row" >
+                                    <div class="col-md-12 mb-3">
+                                        <label for="frequencyRawMaterialsIntake" class="field-label">1.4. FREQUENCY</label>
+                                         <textarea type="text" class="form-control" style="font-size: 16px" rows="2" id="frequencyRawMaterialsIntake" th:field="*{frequencyRawMaterialsIntake}"   required="required"></textarea>
+                                    </div>
+                                </div><div class="form-row" >
+                                    <div class="col-md-12 mb-3">
+                                        <label for="recordsRawMaterialsIntake" class="field-label">1.5. RECORDS</label>
+                                         <textarea type="text" class="form-control" style="font-size: 16px" rows="2" id="recordsRawMaterialsIntake" th:field="*{recordsRawMaterialsIntake}"   required="required"></textarea>
+                                    </div>
+                                </div>
+                                <div class="form-row" >
+                                    <div class="col-md-12 mb-3">
+                                        <label for="processFlowRawMaterialsIntake" style="color: #0082f3; font-size: 16px">2.IN PROCESS</label>
+                                    </div>
+                                </div>
+                                <div class="form-row" >
+                                    <div class="col-md-12 mb-3">
+                                        <label for="processFlowInProcess" class="field-label">2.1. PROCESS FLOW</label>
+                                        <textarea type="text" class="form-control"  style="font-size: 16px" rows="2" id="processFlowInProcess" th:field="*{processFlowInProcess}"   required="required"></textarea>
+                                    </div>
+                                </div>
+                                <div class="form-row" >
+                                    <div class="col-md-12 mb-3">
+                                        <label for="operationsInProcess" class="field-label">2.2. OPERATIONS</label>
+                                         <textarea type="text" class="form-control"  style="font-size: 16px" rows="2" id="operationsInProcess" th:field="*{operationsInProcess}"   required="required"></textarea>
+                                    </div>
+                                </div>
+                                <div class="form-row" >
+                                    <div class="col-md-12 mb-3">
+                                        <label for="qualityChecksInProcess" class="field-label">2.3. QUALITY CHECKS</label>
+                                         <textarea type="text" class="form-control" style="font-size: 16px" rows="2" id="qualityChecksInProcess" th:field="*{qualityChecksInProcess}"   required="required"></textarea>
+                                    </div>
+                                </div><div class="form-row" >
+                                    <div class="col-md-12 mb-3">
+                                        <label for="frequencyInProcess" class="field-label">2.4. FREQUENCY</label>
+                                         <textarea type="text" class="form-control" style="font-size: 16px" rows="2" id="frequencyInProcess" th:field="*{frequencyInProcess}"   required="required"></textarea>
+                                    </div>
+                                </div><div class="form-row" >
+                                    <div class="col-md-12 mb-3">
+                                        <label for="recordsInProcess" class="field-label">2.5. RECORDS</label>
+                                         <textarea type="text" class="form-control" style="font-size: 16px" rows="2" id="recordsInProcess" th:field="*{recordsInProcess}"   required="required"></textarea>
+                                    </div>
+                                </div>
+                                <div class="form-row" >
+                                    <div class="col-md-12 mb-3">
+                                        <label for="processFlowRawMaterialsIntake" style="color: #0082f3; font-size: 16px">3.FINAL PRODUCT</label>
+                                    </div>
+                                </div>
+                                <div class="form-row" >
+                                    <div class="col-md-12 mb-3">
+                                        <label for="processFlowInProcess" class="field-label">3.1. PROCESS FLOW</label>
+                                        <textarea type="text" class="form-control"  style="font-size: 16px" rows="2" id="processFlowInProcess" th:field="*{processFlowInProcess}"   required="required"></textarea>
+                                    </div>
+                                </div>
+                                <div class="form-row" >
+                                    <div class="col-md-12 mb-3">
+                                        <label for="operationsInProcess" class="field-label">3.2. OPERATIONS</label>
+                                         <textarea type="text" class="form-control"  style="font-size: 16px" rows="2" id="operationsInProcess" th:field="*{operationsInProcess}"   required="required"></textarea>
+                                    </div>
+                                </div>
+                                <div class="form-row" >
+                                    <div class="col-md-12 mb-3">
+                                        <label for="qualityChecksInProcess" class="field-label">3.3. QUALITY CHECKS</label>
+                                         <textarea type="text" class="form-control" style="font-size: 16px" rows="2" id="qualityChecksInProcess" th:field="*{qualityChecksInProcess}"   required="required"></textarea>
+                                    </div>
+                                </div><div class="form-row" >
+                                    <div class="col-md-12 mb-3">
+                                        <label for="frequencyInProcess" class="field-label">3.4. FREQUENCY</label>
+                                         <textarea type="text" class="form-control" style="font-size: 16px" rows="2" id="frequencyInProcess" th:field="*{frequencyInProcess}"   required="required"></textarea>
+                                    </div>
+                                </div><div class="form-row" >
+                                    <div class="col-md-12 mb-3">
+                                        <label for="recordsInProcess" class="field-label">3.5. RECORDS</label>
+                                         <textarea type="text" class="form-control" style="font-size: 16px" rows="2" id="recordsInProcess" th:field="*{recordsInProcess}"   required="required"></textarea>
+                                    </div>
+                                </div>
+                                <div class="form-row" >
+                                    <div class="col-md-12 mb-3">
+                                        <label for="processFlowRawMaterialsIntake" style="color: #0082f3; font-size: 16px">4.PACKAGING</label>
+                                    </div>
+                                </div>
+                                <div class="form-row" >
+                                    <div class="col-md-12 mb-3">
+                                        <label for="processFlowPackaging" class="field-label">4.1. PROCESS FLOW</label>
+                                        <textarea type="text" class="form-control"  style="font-size: 16px" rows="2" id="processFlowPackaging" th:field="*{processFlowPackaging}"   required="required"></textarea>
+                                    </div>
+                                </div>
+                                <div class="form-row" >
+                                    <div class="col-md-12 mb-3">
+                                        <label for="operationsPackaging" class="field-label">4.2. OPERATIONS</label>
+                                         <textarea type="text" class="form-control"  style="font-size: 16px" rows="2" id="operationsPackaging" th:field="*{operationsPackaging}"   required="required"></textarea>
+                                    </div>
+                                </div>
+                                <div class="form-row" >
+                                    <div class="col-md-12 mb-3">
+                                        <label for="qualityChecksPackaging" class="field-label">4.3. QUALITY CHECKS</label>
+                                         <textarea type="text" class="form-control" style="font-size: 16px" rows="2" id="qualityChecksPackaging" th:field="*{qualityChecksPackaging}"   required="required"></textarea>
+                                    </div>
+                                </div><div class="form-row" >
+                                    <div class="col-md-12 mb-3">
+                                        <label for="frequencyPackaging" class="field-label">4.4. FREQUENCY</label>
+                                         <textarea type="text" class="form-control" style="font-size: 16px" rows="2" id="frequencyPackaging" th:field="*{frequencyPackaging}"   required="required"></textarea>
+                                    </div>
+                                </div><div class="form-row" >
+                                    <div class="col-md-12 mb-3">
+                                        <label for="recordsPackaging" class="field-label">4.5. RECORDS</label>
+                                         <textarea type="text" class="form-control" style="font-size: 16px" rows="2" id="recordsPackaging" th:field="*{recordsPackaging}"   required="required"></textarea>
+                                    </div>
+                                </div>
+                                <div class="form-row" >
+                                    <div class="col-md-12 mb-3">
+                                        <label for="processFlowRawMaterialsIntake" style="color: #0082f3; font-size: 16px">5.STORAGE</label>
+                                    </div>
+                                </div>
+                                <div class="form-row" >
+                                    <div class="col-md-12 mb-3">
+                                        <label for="processFlowStorage" class="field-label">5.1. PROCESS FLOW</label>
+                                        <textarea type="text" class="form-control"  style="font-size: 16px" rows="2" id="processFlowStorage" th:field="*{processFlowStorage}"   required="required"></textarea>
+                                    </div>
+                                </div>
+                                <div class="form-row" >
+                                    <div class="col-md-12 mb-3">
+                                        <label for="operationsStorage" class="field-label">5.2. OPERATIONS</label>
+                                         <textarea type="text" class="form-control"  style="font-size: 16px" rows="2" id="operationsStorage" th:field="*{operationsStorage}"   required="required"></textarea>
+                                    </div>
+                                </div>
+                                <div class="form-row" >
+                                    <div class="col-md-12 mb-3">
+                                        <label for="qualityChecksStorage" class="field-label">5.3. QUALITY CHECKS</label>
+                                         <textarea type="text" class="form-control" style="font-size: 16px" rows="2" id="qualityChecksStorage" th:field="*{qualityChecksStorage}"   required="required"></textarea>
+                                    </div>
+                                </div><div class="form-row" >
+                                    <div class="col-md-12 mb-3">
+                                        <label for="frequencyStorage" class="field-label">5.4. FREQUENCY</label>
+                                         <textarea type="text" class="form-control" style="font-size: 16px" rows="2" id="frequencyStorage" th:field="*{frequencyStorage}"   required="required"></textarea>
+                                    </div>
+                                </div><div class="form-row" >
+                                    <div class="col-md-12 mb-3">
+                                        <label for="recordsStorage" class="field-label">5.5. RECORDS</label>
+                                         <textarea type="text" class="form-control" style="font-size: 16px" rows="2" id="recordsStorage" th:field="*{recordsStorage}"   required="required"></textarea>
+                                    </div>
+                                </div>
+                                <div class="form-row" >
+                                    <div class="col-md-12 mb-3">
+                                        <label for="processFlowRawMaterialsIntake" style="color: #0082f3; font-size: 16px">6.DISPATCH</label>
+                                    </div>
+                                </div>
+                                <div class="form-row" >
+                                    <div class="col-md-12 mb-3">
+                                        <label for="processFlowDispatch" class="field-label">6.1. PROCESS FLOW</label>
+                                        <textarea type="text" class="form-control"  style="font-size: 16px" rows="2" id="processFlowDispatch" th:field="*{processFlowDispatch}"   required="required"></textarea>
+                                    </div>
+                                </div>
+                                <div class="form-row" >
+                                    <div class="col-md-12 mb-3">
+                                        <label for="operationsDispatch" class="field-label">6.2. OPERATIONS</label>
+                                         <textarea type="text" class="form-control"  style="font-size: 16px" rows="2" id="operationsDispatch" th:field="*{operationsDispatch}"   required="required"></textarea>
+                                    </div>
+                                </div>
+                                <div class="form-row" >
+                                    <div class="col-md-12 mb-3">
+                                        <label for="qualityChecksDispatch" class="field-label">6.3. QUALITY CHECKS</label>
+                                         <textarea type="text" class="form-control" style="font-size: 16px" rows="2" id="qualityChecksDispatch" th:field="*{qualityChecksDispatch}"   required="required"></textarea>
+                                    </div>
+                                </div><div class="form-row" >
+                                    <div class="col-md-12 mb-3">
+                                        <label for="frequencyDispatch" class="field-label">6.4. FREQUENCY</label>
+                                         <textarea type="text" class="form-control" style="font-size: 16px" rows="2" id="frequencyDispatch" th:field="*{frequencyDispatch}"   required="required"></textarea>
+                                    </div>
+                                </div><div class="form-row" >
+                                    <div class="col-md-12 mb-3">
+                                        <label for="recordsDispatch" class="field-label">6.5. RECORDS</label>
+                                         <textarea type="text" class="form-control" style="font-size: 16px" rows="2" id="recordsDispatch" th:field="*{recordsDispatch}"   required="required"></textarea>
+                                    </div>
+                                </div>
+                                <!--                                <div>-->
+                                <!--                                    <div class="form-group">-->
+                                <!--                                        <div class="form-check">-->
+                                <!--                                            <input class="form-check-input" type="checkbox" value="" id="invalidCheck" required="required" >-->
+                                <!--                                            <label class="form-check-label" for="invalidCheck">-->
+                                <!--                                                Agree to terms and conditions-->
+                                <!--                                            </label>-->
+                                <!--                                            <div class="invalid-feedback">-->
+                                <!--                                                You must agree before submitting.-->
+                                <!--                                            </div>-->
+                                <!--                                        </div>-->
+                                <!--                                    </div>-->
+                                <!--                                </div>-->
+                                <div id="idSubmit">
+                                    <div class="form-group">
+                                        <div class="col-md-4 mb-3">
+                                            <button class="btn btn-primary" type="submit">Submit form</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script crossorigin="anonymous" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+        src="https://d3e54v103j8qbb.cloudfront.net/js/jquery-3.4.1.min.220afd743d.js?site=5e70fb3a565ebd99c1db37ce"
+        type="text/javascript"></script>
+<!-- MDB -->
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/2.2.1/mdb.min.js"></script>
+<script th:src="@{/js/spinner.js}" type="text/javascript"></script>
+
+<script>
+    document.onreadystatechange = function(){
+        showSpinnerOnLoad(document)
+    }
+
+    function loadSpinner(){
+        showSpinner(document)
+    }
+    //
+    // $(function() {
+    //     $('form').submit(function(e) {
+    //         e.preventDefault();
+    //         showSpinnerOnLoad(document)
+    //     });
+    // });
+</script>
+<script>
+    function hello () {
+        let checkStatus = $("#idStatus").val();
+        console.log(checkStatus)
+        if (checkStatus === 'VIEW_PAGE'){
+            // $('textarea').attr('readonly', true);
+            $("#sta3Form :input").prop("disabled", true);
+            $("#idSubmit").remove()
+        }
+
+    }
+    window.onload = function () {
+        setTimeout(function () {
+            hello();
+        }, 1000);
+    }
+</script>
+</body>
+</html>
