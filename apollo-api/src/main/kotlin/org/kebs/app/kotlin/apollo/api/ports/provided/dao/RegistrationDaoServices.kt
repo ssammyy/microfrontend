@@ -652,6 +652,7 @@ class RegistrationDaoServices(
                 businessLines = cp.businessLines
                 businessNatures = cp.businessNatures
                 buildingName = cp.buildingName
+                directorIdNumber = cp.directorIdNumber
                 streetName = cp.streetName
                 county = cp.county
                 town = cp.town
@@ -1177,10 +1178,10 @@ class RegistrationDaoServices(
     /**
      * Check BRS
      */
-    fun checkBrs(user: UsersEntity): Boolean {
+    fun checkBrs(cp: CompanyProfileEntity): Boolean {
         var response = false
-        user.id?.let {
-            iCompanyProfileRepository.findByUserId(it)?.let { manufacturer ->
+//        user.id?.let {
+//            iCompanyProfileRepository.findByUserId(it)?.let { manufacturer ->
                 configurationRepository.findByIdOrNull(3L)
                     ?.let { config ->
                         config.createdOn = Timestamp.from(Instant.now())
@@ -1189,7 +1190,7 @@ class RegistrationDaoServices(
                         runBlocking {
                             config.url?.let { url ->
                                 val log = daoService.createTransactionLog(0, "integ")
-                                val params = mapOf(Pair("registration_number", manufacturer.registrationNumber))
+                                val params = mapOf(Pair("registration_number", cp.registrationNumber))
                                 log.integrationRequest = "$params"
                                 val resp = daoService.getHttpResponseFromGetCall(true, url, config, null, params, null)
                                 val data = daoService.processResponses<BrsLookUpResponse>(resp, log, url, config)
@@ -1201,7 +1202,7 @@ class RegistrationDaoServices(
                                             response = false
                                         } else {
                                             r.records?.get(0)?.partners?.forEach {
-                                                response = manufacturer.directorIdNumber == it?.idNumber ?: 0
+                                                response = cp.directorIdNumber == it?.idNumber ?: 0
                                             }
                                         }
                                         //
@@ -1211,8 +1212,8 @@ class RegistrationDaoServices(
                     } ?: throw Exception("Company Does not exist")
 //                sr.varField3 = user.id.toString()
 //                serviceRequestRepo.save(sr)
-            } ?: throw Exception("Company not found")
-        } ?: throw Exception("User id is null")
+//            } ?: throw Exception("Company not found")
+//        } ?: throw Exception("User id is null")
         return response
     }
 

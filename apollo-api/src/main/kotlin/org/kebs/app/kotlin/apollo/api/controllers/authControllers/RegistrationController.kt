@@ -48,6 +48,7 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.dao.RegistrationDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.SystemsAdminDaoService
 import org.kebs.app.kotlin.apollo.common.dto.UserPasswordVerificationValuesDto
 import org.kebs.app.kotlin.apollo.common.dto.UserRequestEntityDto
+import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
 import org.kebs.app.kotlin.apollo.common.exceptions.PasswordsMismatchException
 import org.kebs.app.kotlin.apollo.common.exceptions.ServiceMapNotFoundException
@@ -148,7 +149,7 @@ class RegisterController(
         val map = commonDaoServices.serviceMapDetails(appId)
         val loggedInUser = commonDaoServices.loggedInUserDetails()
 
-        val brsCheckUp = daoServices.checkBrs(loggedInUser)
+        val brsCheckUp = daoServices.checkBrs(companyProfileEntity)
         if (brsCheckUp){
             result = daoServices.addUserManufactureProfile(map, loggedInUser, companyProfileEntity)
 
@@ -157,7 +158,7 @@ class RegisterController(
             sm.message = "You have successful Added your Company details Verify was success"
             return returnValues(result, map, sm)
         }else{
-            throw ServiceMapNotFoundException("The Company Details Verification failed Due to Invalid Registration Number or Director Id Failed")
+             throw ExpectedDataNotFound("The Company Details Verification failed Due to Invalid Registration Number or Director Id Failed")
         }
 
     }
