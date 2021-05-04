@@ -50,6 +50,7 @@ import org.kebs.app.kotlin.apollo.common.dto.UserCompanyEntityDto
 import org.kebs.app.kotlin.apollo.common.dto.UserEntityDto
 import org.kebs.app.kotlin.apollo.common.dto.UserPasswordVerificationValuesDto
 import org.kebs.app.kotlin.apollo.common.dto.UserRequestEntityDto
+import org.kebs.app.kotlin.apollo.common.dto.brs.response.BrsLookUpRecords
 import org.kebs.app.kotlin.apollo.common.dto.brs.response.BrsLookUpResponse
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.common.exceptions.MissingConfigurationException
@@ -632,7 +633,8 @@ class RegistrationDaoServices(
     fun addUserManufactureProfile(
         s: ServiceMapsEntity,
         u: UsersEntity,
-        cp: CompanyProfileEntity
+        cp: CompanyProfileEntity,
+        brs: BrsLookUpRecords
     ): ServiceRequestsEntity {
 
         var sr = commonDaoServices.createServiceRequest(s)
@@ -640,14 +642,14 @@ class RegistrationDaoServices(
 
             val userCompanyDetails = UserCompanyEntityDto()
             with(userCompanyDetails) {
-                name = cp.name
-                kraPin = cp.kraPin
+                name = brs.businessName
+                kraPin = brs.kraPin
                 userId = u.id
                 profileType = applicationMapProperties.mapUserRequestManufacture
-                registrationNumber = cp.registrationNumber
-                postalAddress = cp.postalAddress
-                companyEmail = cp.companyEmail
-                companyTelephone = cp.companyTelephone
+                registrationNumber = brs.registrationNumber
+                postalAddress = brs.postalAddress
+                companyEmail = brs.email
+                companyTelephone = brs.phoneNumber
                 yearlyTurnover = cp.yearlyTurnover
                 businessLines = cp.businessLines
                 businessNatures = cp.businessNatures
@@ -1178,8 +1180,9 @@ class RegistrationDaoServices(
     /**
      * Check BRS
      */
-    fun checkBrs(cp: CompanyProfileEntity): Boolean {
+    fun checkBrs(cp: CompanyProfileEntity): Pair<Boolean, BrsLookUpRecords?>{
         var response = false
+        var brsResults: BrsLookUpRecords? = null
 //        user.id?.let {
 //            iCompanyProfileRepository.findByUserId(it)?.let { manufacturer ->
                 configurationRepository.findByIdOrNull(3L)
@@ -1202,7 +1205,11 @@ class RegistrationDaoServices(
                                             response = false
                                         } else {
                                             r.records?.get(0)?.partners?.forEach {
-                                                response = cp.directorIdNumber == it?.idNumber ?: 0
+                                                if(!response) {
+                                                    response = cp.directorIdNumber == it?.idNumber ?: 0
+                                                    brsResults = r.records?.get(0)
+                                                    KotlinLogging.logger { }.info { "MY UPDATED:  = ${cp.directorIdNumber} ======${it?.idNumber}" }
+                                                }
                                             }
                                         }
                                         //
@@ -1214,7 +1221,7 @@ class RegistrationDaoServices(
 //                serviceRequestRepo.save(sr)
 //            } ?: throw Exception("Company not found")
 //        } ?: throw Exception("User id is null")
-        return response
+        return Pair(response, brsResults)
     }
 
 
