@@ -10,4 +10,5 @@ import java.util.*
 interface IPvocQuerriesRepository:HazelcastRepository<PvocQueriesEntity,Long> {
     fun findByRfcNumberOrCocNumberOrUcrNumberOrInvoiceNumber(rfcNumber:String, cocNumber:String, ucrNumber:String, invoiceNumber:String): Optional<PvocQueriesEntity>
     fun findAllByCocNumber(cocNumber: String) : List<PvocQueriesEntity>?
+    fun findByCocNumberOrRfcNumber(cocNumber: String, rfcNumber: String) : List<PvocQueriesEntity>?
 }
