@@ -60,7 +60,8 @@ class PvocComplaints(
         val token = commonDaoServices.generateEmailVerificationToken(sr, emailObject, map)
         val messageBody = "Please Click the link Bellow \n" +
                 "\n " +
-                "https://localhost:8006/pvoc/complaint/?token=${token.token}"
+//                "https://localhost:8006/pvoc/complaint/?token=${token.token}"
+                "https://kims.kebs.org:8006/pvoc/complaint/?token=${token.token}"
         emailObject.email?.let { notifications.sendEmail(it, "Complaint Verification", messageBody) }
         return "redirect:/api/di/pvoc/email_entry"
     }
@@ -128,8 +129,6 @@ class PvocComplaints(
                        @RequestParam("userId", required = false)  userId : String,
                        @RequestParam("categoryId", required = false) categoryId: String,
                        @RequestParam("subCategoryId", required = false) subCategoryId: String): String {
-        val fro = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
-        val to = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
         userId.replace(",", "")
         iUserRepository.findByIdOrNull(userId.toLong())?.let { agent ->
             iPvocComplaintCategoryRepo.findByIdOrNull(categoryId.toLong()).let { category ->

@@ -74,6 +74,7 @@ class QualityAssuranceHandler(
     private final val qaPermitListPage = "quality-assurance/permit-list"
     private final val qaPermitDetailPage = "quality-assurance/customer/permit-details"
     private final val qaSchemeDetailPage = "quality-assurance/customer/scheme-of-supervision-and-control-details"
+    private final val qaProductQualityStatusPage = "quality-assurance/product-quality-status"
     private final val qaNewSchemeDetailPage = "quality-assurance/customer/new-scheme-of-supervision-details"
     private final val qaNewPermitPage = "quality-assurance/customer/permit-application"
     private final val qaNewSta3Page = "quality-assurance/customer/sta3-new-details"
@@ -328,6 +329,18 @@ class QualityAssuranceHandler(
         return ok().render(qaSchemeDetailPage, req.attributes())
 
     }
+
+    @PreAuthorize("hasAuthority('QA_OFFICER_MODIFY') or hasAuthority('QA_HOD_READ')")
+    fun generateProductQualityStatus(req: ServerRequest): ServerResponse {
+        val permitID = req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
+        val permit = qaDaoServices.findPermitBYID(permitID)
+
+        req.attributes()["product"] = productsRepo.findByIdOrNull(permit.product)
+        req.attributes()["permitDetails"] = permit
+
+        return ok().render(qaProductQualityStatusPage, req.attributes())
+    }
+
 
     @PreAuthorize("hasAuthority('PERMIT_APPLICATION') or hasAuthority('QA_OFFICER_MODIFY')")
     fun newSchemeSupervision(req: ServerRequest): ServerResponse {

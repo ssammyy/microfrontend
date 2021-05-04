@@ -2,15 +2,23 @@ package org.kebs.app.kotlin.apollo.api.ports.provided.bpmn
 
 import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.adaptor.kafka.producer.service.SendToKafkaQueue
+import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DaoService
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.RegistrationDaoServices
+import org.kebs.app.kotlin.apollo.common.dto.brs.response.BrsLookUpResponse
 import org.kebs.app.kotlin.apollo.store.model.ManufacturersEntity
 import org.kebs.app.kotlin.apollo.store.model.ServiceMapsEntity
 import org.kebs.app.kotlin.apollo.store.model.ServiceRequestsEntity
 import org.kebs.app.kotlin.apollo.store.model.UsersEntity
+import org.kebs.app.kotlin.apollo.store.repo.IIntegrationConfigurationRepository
 import org.kebs.app.kotlin.apollo.store.repo.IServiceRequestsRepository
 import org.kebs.app.kotlin.apollo.store.repo.IUserRepository
+import org.kebs.app.kotlin.apollo.store.repo.IWorkflowTransactionsRepository
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Component
+import java.sql.Date
+import java.sql.Timestamp
+import java.time.Instant
 
 @Component
 class PrepareEmailForSending(
@@ -19,6 +27,16 @@ class PrepareEmailForSending(
         private val serviceRequestRepo: IServiceRequestsRepository,
         private val userRepo: IUserRepository
 ) {
+
+    @Autowired
+    lateinit var configurationRepository: IIntegrationConfigurationRepository
+
+    @Autowired
+    lateinit var daoService: DaoService
+
+    @Autowired
+    lateinit var logsRepo: IWorkflowTransactionsRepository
+
 
 
     fun sendEmail(user: UsersEntity, sr: ServiceRequestsEntity, map: ServiceMapsEntity): Int? {
@@ -40,13 +58,9 @@ class PrepareEmailForSending(
     /**
      *
      */
-    fun checkBrs(user: ManufacturersEntity, sr: ServiceRequestsEntity, map: ServiceMapsEntity, workFlowId: Long): Unit? {
+    suspend fun checkBrs(user: ManufacturersEntity, sr: ServiceRequestsEntity, map: ServiceMapsEntity, workFlowId: Long): Unit? {
         KotlinLogging.logger {  }.info { "Sending BRS for verification" }
 //        sr.varField1 = user.id
-        sr.varField2 = workFlowId.toString()
-        sr.varField3 = user.id.toString()
-        serviceRequestRepo.save(sr)
-
         return sendToKafkaQueue.submitAsyncRequestToBus(sr, map.serviceTopic)
     }
 

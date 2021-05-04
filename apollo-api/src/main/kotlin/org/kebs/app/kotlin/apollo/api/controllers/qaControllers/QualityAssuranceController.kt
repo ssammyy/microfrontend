@@ -427,4 +427,39 @@ class QualityAssuranceController(
         return commonDaoServices.returnValues(result, map, sm)
     }
 
+    @PreAuthorize("hasAuthority('QA_OFFICER_MODIFY')")
+    @GetMapping("/justification-submit")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun submitJustification(@RequestParam( "permitID") permitID: Long, model: Model): String? {
+        val map = commonDaoServices.serviceMapDetails(appId)
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+
+        var result: ServiceRequestsEntity?
+
+        val permit = loggedInUser.id?.let { qaDaoServices.findPermitBYUserIDAndId(permitID, it) }?: throw ExpectedDataNotFound("Required User ID, check config")
+        val permitType = permit.permitType?.let { qaDaoServices.findPermitType(it) }?: throw ExpectedDataNotFound("PermitType Id Not found")
+//       val fmarkGenerated =
+        result = qaDaoServices.permitInvoiceCalculation(map, loggedInUser, permit, permitType)
+        with(permit){
+            sendApplication = map.activeStatus
+            invoiceGenerated = map.activeStatus
+            when {
+                permit.permitType!! == applicationMapProperties.mapQAPermitTypeIDDmark -> {
+                    hodId = qaDaoServices.assignNextOfficerAfterPayment(permit, map,applicationMapProperties.mapQADesignationIDForHODId)?.id
+                }
+                permit.permitType!! == applicationMapProperties.mapQAPermitTypeIdSmark -> {
+                    qamId = qaDaoServices.assignNextOfficerAfterPayment(permit, map,applicationMapProperties.mapQADesignationIDForQAMId)?.id
+                }
+            }
+
+        }
+        result = qaDaoServices.permitUpdateDetails(permit, map, loggedInUser)
+
+        val sm = CommonDaoServices.MessageSuccessFailDTO()
+        sm.closeLink = "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permit.id}%26userID=${loggedInUser.id}"
+        sm.message = "You have successful Submitted Your Application, an invoice has been generated, check Your permit detail and pay for the Invoice"
+
+        return commonDaoServices.returnValues(result, map, sm)
+    }
+
 }

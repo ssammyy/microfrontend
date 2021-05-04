@@ -97,6 +97,10 @@ class PermitApplicationsEntity:Serializable {
     @Basic
     var compliantStatus: Int? = null
 
+    @Column(name = "JUSTIFICATION_REPORT_STATUS")
+    @Basic
+    var justificationReportStatus: Int? = null
+
 
 //    @JoinColumn(name = "USER_ID", referencedColumnName = "ID")
 //    @ManyToOne
@@ -418,6 +422,7 @@ class PermitApplicationsEntity:Serializable {
         if (hofQamCompletenessRemarks != other.hofQamCompletenessRemarks) return false
         if (hofQamCompletenessStatus != other.hofQamCompletenessStatus) return false
         if (compliantStatus != other.compliantStatus) return false
+        if (justificationReportStatus != other.justificationReportStatus) return false
         if (paidStatus != other.paidStatus) return false
         if (assignOfficerStatus != other.assignOfficerStatus) return false
         if (permitForeignStatus != other.permitForeignStatus) return false
@@ -506,6 +511,7 @@ class PermitApplicationsEntity:Serializable {
         result = 31 * result + (hofQamCompletenessRemarks?.hashCode() ?: 0)
         result = 31 * result + (assignOfficerStatus ?: 0)
         result = 31 * result + (compliantStatus ?: 0)
+        result = 31 * result + (justificationReportStatus ?: 0)
         result = 31 * result + (smeFormFilledStatus ?: 0)
         result = 31 * result + (invoiceGenerated ?: 0)
         result = 31 * result + (enabled ?: 0)

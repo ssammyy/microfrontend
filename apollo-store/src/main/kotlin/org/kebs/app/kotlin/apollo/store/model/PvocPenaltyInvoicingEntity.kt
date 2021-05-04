@@ -21,9 +21,10 @@ class PvocPenaltyInvoicingEntity : Serializable {
     @get:Column(name = "SOLD_TO")
     @get:Basic
     var soldTo: String? = null
+
     @get:Column(name = "INVOICE_DATE")
     @get:Basic
-    var invoiceDate: Time? = null
+    var invoiceDate: Timestamp? = null
     @get:Column(name = "ORDER_DATE")
     @get:Basic
     var orderDate: Timestamp? = null
@@ -65,10 +66,10 @@ class PvocPenaltyInvoicingEntity : Serializable {
     var subtotalBeforeTaxes: Long? = null
     @get:Column(name = "TOTAL_TAXES")
     @get:Basic
-    var totalTaxes: Long = 0
+    var totalTaxes: Double = 0.0
     @get:Column(name = "TOTAL_AMOUNT")
     @get:Basic
-    var totalAmount: Long = 0
+    var totalAmount: Double = 0.0
     @get:Column(name = "ACCOUNT_NAME")
     @get:Basic
     var accountName: String? = null
@@ -98,7 +99,7 @@ class PvocPenaltyInvoicingEntity : Serializable {
     var pinNumber: String? = null
     @get:Column(name = "STATUS")
     @get:Basic
-    var status: Long? = null
+    var status: Int? = null
     @get:Column(name = "VAR_FIELD_1")
     @get:Basic
     var varField1: String? = null
