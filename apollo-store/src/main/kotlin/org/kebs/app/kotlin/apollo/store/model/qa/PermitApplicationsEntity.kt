@@ -101,6 +101,10 @@ class PermitApplicationsEntity:Serializable {
     @Basic
     var justificationReportStatus: Int? = null
 
+    @Column(name = "OLD_PERMIT_STATUS")
+    @Basic
+    var oldPermitStatus: Int? = null
+
 
 //    @JoinColumn(name = "USER_ID", referencedColumnName = "ID")
 //    @ManyToOne
@@ -224,6 +228,10 @@ class PermitApplicationsEntity:Serializable {
     @Column(name = "PAID_STATUS")
     @Basic
     var paidStatus: Int? = null
+
+    @Column(name = "PERMIT_EXPIRED_STATUS")
+    @Basic
+    var permitExpiredStatus: Int? = null
 
     @Column(name = "ASSIGN_OFFICER_STATUS")
     @Basic
@@ -425,11 +433,13 @@ class PermitApplicationsEntity:Serializable {
         if (justificationReportStatus != other.justificationReportStatus) return false
         if (paidStatus != other.paidStatus) return false
         if (assignOfficerStatus != other.assignOfficerStatus) return false
+        if (permitExpiredStatus != other.permitExpiredStatus) return false
         if (permitForeignStatus != other.permitForeignStatus) return false
         if (status != other.status) return false
         if (sta10FilledOfficerStatus != other.sta10FilledOfficerStatus) return false
         if (generateSchemeStatus != other.generateSchemeStatus) return false
         if (sta10FilledStatus != other.sta10FilledStatus) return false
+        if (oldPermitStatus != other.oldPermitStatus) return false
         if (inspectionDate != other.inspectionDate) return false
         if (inspectionScheduledStatus != other.inspectionScheduledStatus) return false
         if (sta3FilledStatus != other.sta3FilledStatus) return false
@@ -510,6 +520,7 @@ class PermitApplicationsEntity:Serializable {
         result = 31 * result + (paidStatus?.hashCode() ?: 0)
         result = 31 * result + (hofQamCompletenessRemarks?.hashCode() ?: 0)
         result = 31 * result + (assignOfficerStatus ?: 0)
+        result = 31 * result + (permitExpiredStatus ?: 0)
         result = 31 * result + (compliantStatus ?: 0)
         result = 31 * result + (justificationReportStatus ?: 0)
         result = 31 * result + (smeFormFilledStatus ?: 0)
@@ -519,6 +530,7 @@ class PermitApplicationsEntity:Serializable {
         result = 31 * result + (permitForeignStatus ?: 0)
         result = 31 * result + (fmarkGenerated ?: 0)
         result = 31 * result + (endOfProductionStatus ?: 0)
+        result = 31 * result + (oldPermitStatus ?: 0)
         result = 31 * result + (status ?: 0)
         result = 31 * result + (generateSchemeStatus ?: 0)
         result = 31 * result + (hofQamCompletenessStatus ?: 0)
