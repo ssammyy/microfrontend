@@ -39,6 +39,7 @@ class QADaoServices(
     private val paymentUnitsRepository: ICfgKebsPermitPaymentUnitsRepository,
     private val serviceRequestsRepository: IServiceRequestsRepository,
     private val permitRepo: IPermitApplicationsRepository,
+    private val SampleCollectionRepo: IQaSampleCollectionRepository,
     private val schemeForSupervisionRepo: IQaSchemeForSupervisionRepository,
     private val sta3Repo: IQaSta3EntityRepository,
     private val invoiceRepository: IInvoiceRepository,
@@ -124,6 +125,11 @@ class QADaoServices(
         } ?: throw ExpectedDataNotFound("No Permit Type found with the following [ID=$id]")
     }
 
+    fun findSampleCollectBYPermitID(permitId: Long): QaSampleCollectionEntity {
+        SampleCollectionRepo.findByPermitId(permitId)?.let {
+            return it
+        } ?: throw ExpectedDataNotFound("No sample collection found with the following [permitId=$permitId]")
+    }
 
     fun findSta3BYID(id: Long): QaSta3Entity {
         sta3Repo.findByIdOrNull(id)?.let {

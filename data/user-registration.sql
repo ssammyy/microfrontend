@@ -112,7 +112,8 @@ order by id desc;--MS_MP_MODIFY MS_MP_READ
 
 select * from DAT_KEBS_USERS
 -- where USER_TYPE = 5
-where USER_NAME = '254safaris@gmail.com'
+where EMAIL = '254safaris@gmail.com'
+-- where USER_NAME = '0715668934'
 order by id desc;21384
 
 select *

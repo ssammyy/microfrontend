@@ -135,7 +135,6 @@ class RegisterController(
 
     }
 
-    @PreAuthorize("hasAuthority('PERMIT_APPLICATION')")
     @PostMapping("kebs/add/manufacture-details/save")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun addManufactureDetails(
@@ -149,12 +148,17 @@ class RegisterController(
         val map = commonDaoServices.serviceMapDetails(appId)
         val loggedInUser = commonDaoServices.loggedInUserDetails()
 
-        result = daoServices.addUserManufactureProfile(map, loggedInUser, companyProfileEntity)
-        val sm = CommonDaoServices.MessageSuccessFailDTO()
-        sm.closeLink = "${applicationMapProperties.baseUrlValue}/user/user-profile?userName=${loggedInUser.userName}"
-        sm.message = "You have successful Added your Company details we will Verify Them With The Ones On KRA for Anomalies"
-        return returnValues(result, map, sm)
+        val brsCheckUp = daoServices.checkBrs(loggedInUser)
+        if (brsCheckUp){
+            result = daoServices.addUserManufactureProfile(map, loggedInUser, companyProfileEntity)
 
+            val sm = CommonDaoServices.MessageSuccessFailDTO()
+            sm.closeLink = "${applicationMapProperties.baseUrlValue}/user/user-profile?userName=${loggedInUser.userName}"
+            sm.message = "You have successful Added your Company details Verify was success"
+            return returnValues(result, map, sm)
+        }else{
+            throw ServiceMapNotFoundException("The Company Details Verification failed Due to Invalid Registration Number or Director Id Failed")
+        }
 
     }
 
@@ -174,6 +178,7 @@ class RegisterController(
         dto.userId = loggedInUser.id
 
         result = daoServices.addUserRequestDetails(map,loggedInUser,dto)
+
         val sm = CommonDaoServices.MessageSuccessFailDTO()
         sm.closeLink = "${applicationMapProperties.baseUrlValue}/user/user-profile?userName=${loggedInUser.userName}"
         sm.message = "You have successful Sent a Request"

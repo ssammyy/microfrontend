@@ -89,7 +89,7 @@ class UserHandler(
                         }
 
                         req.attributes()["counties"] = countyRepo.findByStatusOrderByCounty(map.activeStatus)
-                        req.attributes()["userRequests"] = masterDataDaoService.getAllUserRequestTypes()
+                        req.attributes()["userRequests"] = masterDataDaoService.getUserRequestTypesByStatus(map.activeStatus)
                         req.attributes()["userRequestEntityDto"] = UserRequestEntityDto()
                         req.attributes()["usersEntity"] =userDetails
 //                        req.attributes()["profile"] = profile

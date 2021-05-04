@@ -567,7 +567,7 @@ class RegistrationDaoServices(
                 firstName = u.firstName
                 lastName = u.lastName
                 email = u.email
-                personalContactNumber = u.personalContactNumber
+                personalContactNumber = commonDaoServices.makeKenyanMSISDNFormat(u.personalContactNumber)
                 typeOfUser = u.typeOfUser
                 userPinIdNumber = u.userPinIdNumber
                 userName = u.userPinIdNumber
@@ -661,7 +661,9 @@ class RegistrationDaoServices(
             val userCompany = systemsAdminDaoService.updateUserCompanyDetails(userCompanyDetails)
                 ?: throw NullValueNotAllowedException("Registration failed")
 
-            sr.payload = "User[id= ${userCompany.userId}]"
+            val userAssignRole = u.id?.let { systemsAdminDaoService.assignRoleToUser(it, applicationMapProperties.mapUserManufactureRoleID, s.activeStatus) }
+
+            sr.payload = "User and assigned role [id= ${userCompany.userId}]"
             sr.names = "${userCompany.name} ${userCompany.kraPin}"
 
             sr.responseStatus = sr.serviceMapsId?.successStatusCode
