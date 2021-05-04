@@ -11,6 +11,7 @@ import org.kebs.app.kotlin.apollo.common.utils.generateRandomText
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.*
 import org.kebs.app.kotlin.apollo.store.model.di.CdSampleSubmissionParamatersEntity
+import org.kebs.app.kotlin.apollo.store.model.di.ConsignmentDocumentDetailsEntity
 import org.kebs.app.kotlin.apollo.store.model.di.CdItemDetailsEntity
 import org.kebs.app.kotlin.apollo.store.model.qa.*
 import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileEntity
@@ -19,6 +20,8 @@ import org.kebs.app.kotlin.apollo.store.repo.di.ICfgMoneyTypeCodesRepository
 import org.kebs.app.kotlin.apollo.store.repo.qa.*
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Propagation
+import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.multipart.MultipartFile
 import org.springframework.web.servlet.function.ServerRequest
 import org.springframework.web.servlet.function.ServerResponse
@@ -41,6 +44,7 @@ class QADaoServices(
     private val paymentUnitsRepository: ICfgKebsPermitPaymentUnitsRepository,
     private val serviceRequestsRepository: IServiceRequestsRepository,
     private val permitRepo: IPermitApplicationsRepository,
+    private val SampleCollectionRepo: IQaSampleCollectionRepository,
     private val schemeForSupervisionRepo: IQaSchemeForSupervisionRepository,
     private val sta3Repo: IQaSta3EntityRepository,
     private val invoiceRepository: IInvoiceRepository,
@@ -105,6 +109,14 @@ class QADaoServices(
             ?: throw ExpectedDataNotFound("No Permit Found for the following user with USERNAME = ${user.userName}")
     }
 
+    fun findPermitWithPermitNumberLatest(permitNumber: String): PermitApplicationsEntity {
+        permitRepo.findTopByPermitNumberOrderByIdDesc(permitNumber)
+            ?.let {
+                return it
+            }
+            ?: throw ExpectedDataNotFound("No Permit Found for the following [PERMIT NO = ${permitNumber}]")
+    }
+
     fun findAllQAOPermitListWithPermitType(user: UsersEntity, permitType: Long): List<PermitApplicationsEntity> {
         val userId = user.id ?: throw ExpectedDataNotFound("No USER ID Found")
         permitRepo.findByQaoIdAndPermitType(userId, permitType)
@@ -136,6 +148,11 @@ class QADaoServices(
         } ?: throw ExpectedDataNotFound("No Permit found with the following [ID=$id]")
     }
 
+    fun findSampleCollectBYPermitID(permitId: Long): QaSampleCollectionEntity {
+        SampleCollectionRepo.findByPermitId(permitId)?.let {
+            return it
+        } ?: throw ExpectedDataNotFound("No sample collection found with the following [permitId=$permitId]")
+    }
 
     fun findSta3BYID(id: Long): QaSta3Entity {
         sta3Repo.findByIdOrNull(id)?.let {
@@ -300,6 +317,7 @@ class QADaoServices(
                 permitType = permitTypeDetails.id
                 permitNumber = "${permitTypeDetails.markNumber}${generateRandomText(5, map.secureRandom, map.messageDigestAlgorithm, false)}".toUpperCase()
                 enabled = map.initStatus
+                versionNumber = 1
                 endOfProductionStatus = map.initStatus
                 status = map.activeStatus
                 createdBy = commonDaoServices.concatenateName(user)
@@ -623,11 +641,12 @@ class QADaoServices(
         return sr
     }
 
-    fun permitUpdateDetails(permits: PermitApplicationsEntity, s: ServiceMapsEntity, user: UsersEntity): ServiceRequestsEntity {
+    fun permitUpdateDetails(permits: PermitApplicationsEntity, s: ServiceMapsEntity, user: UsersEntity): Pair<ServiceRequestsEntity, PermitApplicationsEntity>{
 
             var sr = commonDaoServices.createServiceRequest(s)
+            var updatePermit = permits
             try {
-                var updatePermit = permits
+
                 with(updatePermit) {
                     modifiedBy = commonDaoServices.concatenateName(user)
                     modifiedOn = commonDaoServices.getTimestamp()
@@ -636,6 +655,7 @@ class QADaoServices(
 
                 sr.payload = "Permit Updated [updatePermit= ${updatePermit.id}]"
                 sr.names = "${updatePermit.permitNumber}} ${updatePermit.userId}"
+                sr.varField1 = "${updatePermit.id}"
 
                 sr.responseStatus = sr.serviceMapsId?.successStatusCode
                 sr.responseMessage = "Success ${sr.payload}"
@@ -654,8 +674,84 @@ class QADaoServices(
             }
 
             KotlinLogging.logger { }.trace("${sr.id} ${sr.responseStatus}")
-            return sr
+            return Pair(sr, updatePermit)
         }
+
+
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun permitUpdateNewWithSamePermitNumber(permitNo: String, s: ServiceMapsEntity, user: UsersEntity): ServiceRequestsEntity {
+
+        var sr = commonDaoServices.createServiceRequest(s)
+        try {
+            var oldPermit = findPermitWithPermitNumberLatest(permitNo)
+            KotlinLogging.logger { }.info { "::::::::::::::::::PERMIT With PERMIT NUMBER = $permitNo, Exists::::::::::::::::::::: " }
+            var versionNumberOld = oldPermit.versionNumber ?: throw ExpectedDataNotFound("Permit Version Number is Empty")
+
+            oldPermit.oldPermitStatus = s.activeStatus
+            //update last previous version permit old status
+            oldPermit = permitUpdateDetails(oldPermit,s, user).second
+
+            var savePermit = PermitApplicationsEntity()
+            with(savePermit) {
+                userId = user.id
+                permitType = oldPermit.permitType
+                permitNumber = oldPermit.permitNumber
+                enabled = s.initStatus
+                versionNumber = versionNumberOld++
+                endOfProductionStatus = s.initStatus
+                status = s.activeStatus
+                createdBy = commonDaoServices.concatenateName(user)
+                createdOn = commonDaoServices.getTimestamp()
+            }
+            savePermit = permitRepo.save(savePermit)
+
+            //make some values to be null for the oldest permit in here
+            with(oldPermit){
+                id = null
+                userId = null
+                permitType = null
+                permitNumber = null
+                enabled = null
+                versionNumber = null
+                endOfProductionStatus =null
+                status =null
+                createdBy = null
+                createdOn = null
+                oldPermitStatus = null
+                permitExpiredStatus = null
+                paidStatus = null
+
+            }
+
+            //Update Permit renewed with new details
+            savePermit = permitUpdateDetails(commonDaoServices.updateDetails(savePermit, oldPermit) as PermitApplicationsEntity,s, user).second
+
+            //Generate Invoice
+            savePermit.permitType?.let { findPermitType(it) }?.let { permitInvoiceCalculation(s, user, savePermit, it) }
+
+            sr.payload = "Permit Renewed Updated [updatePermit= ${savePermit.id}]"
+            sr.names = "${savePermit.permitNumber}} ${savePermit.userId}"
+            sr.varField1 = "${savePermit.id}"
+
+            sr.responseStatus = sr.serviceMapsId?.successStatusCode
+            sr.responseMessage = "Success ${sr.payload}"
+            sr.status = s.successStatus
+            sr = serviceRequestsRepository.save(sr)
+            sr.processingEndDate = Timestamp.from(Instant.now())
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message, e)
+//            KotlinLogging.logger { }.trace(e.message, e)
+            sr.status = sr.serviceMapsId?.exceptionStatus
+            sr.responseStatus = sr.serviceMapsId?.exceptionStatusCode
+            sr.responseMessage = e.message
+            sr = serviceRequestsRepository.save(sr)
+
+        }
+
+        KotlinLogging.logger { }.trace("${sr.id} ${sr.responseStatus}")
+        return sr
+    }
 
 
     fun invoiceUpdateDetails(invoice: InvoiceEntity, user: UsersEntity): InvoiceEntity {

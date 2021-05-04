@@ -50,6 +50,7 @@ import org.kebs.app.kotlin.apollo.common.dto.UserCompanyEntityDto
 import org.kebs.app.kotlin.apollo.common.dto.UserEntityDto
 import org.kebs.app.kotlin.apollo.common.dto.UserPasswordVerificationValuesDto
 import org.kebs.app.kotlin.apollo.common.dto.UserRequestEntityDto
+import org.kebs.app.kotlin.apollo.common.dto.brs.response.BrsLookUpRecords
 import org.kebs.app.kotlin.apollo.common.dto.brs.response.BrsLookUpResponse
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.common.exceptions.MissingConfigurationException
@@ -567,7 +568,7 @@ class RegistrationDaoServices(
                 firstName = u.firstName
                 lastName = u.lastName
                 email = u.email
-                personalContactNumber = u.personalContactNumber
+                personalContactNumber = commonDaoServices.makeKenyanMSISDNFormat(u.personalContactNumber)
                 typeOfUser = u.typeOfUser
                 userPinIdNumber = u.userPinIdNumber
                 userName = u.userPinIdNumber
@@ -632,7 +633,8 @@ class RegistrationDaoServices(
     fun addUserManufactureProfile(
         s: ServiceMapsEntity,
         u: UsersEntity,
-        cp: CompanyProfileEntity
+        cp: CompanyProfileEntity,
+        brs: BrsLookUpRecords
     ): ServiceRequestsEntity {
 
         var sr = commonDaoServices.createServiceRequest(s)
@@ -640,18 +642,19 @@ class RegistrationDaoServices(
 
             val userCompanyDetails = UserCompanyEntityDto()
             with(userCompanyDetails) {
-                name = cp.name
-                kraPin = cp.kraPin
+                name = brs.businessName
+                kraPin = brs.kraPin
                 userId = u.id
                 profileType = applicationMapProperties.mapUserRequestManufacture
-                registrationNumber = cp.registrationNumber
-                postalAddress = cp.postalAddress
-                companyEmail = cp.companyEmail
-                companyTelephone = cp.companyTelephone
+                registrationNumber = brs.registrationNumber
+                postalAddress = brs.postalAddress
+                companyEmail = brs.email
+                companyTelephone = brs.phoneNumber
                 yearlyTurnover = cp.yearlyTurnover
                 businessLines = cp.businessLines
                 businessNatures = cp.businessNatures
                 buildingName = cp.buildingName
+                directorIdNumber = cp.directorIdNumber
                 streetName = cp.streetName
                 county = cp.county
                 town = cp.town
@@ -661,7 +664,18 @@ class RegistrationDaoServices(
             val userCompany = systemsAdminDaoService.updateUserCompanyDetails(userCompanyDetails)
                 ?: throw NullValueNotAllowedException("Registration failed")
 
-            sr.payload = "User[id= ${userCompany.userId}]"
+            val userAssignRole = u.id?.let { systemsAdminDaoService.assignRoleToUser(it, applicationMapProperties.mapUserManufactureRoleID, s.activeStatus) }
+
+            var userUpdated = u.id?.let { commonDaoServices.findUserByID(it) }
+            userUpdated?.manufactureProfile = s.activeStatus
+
+            when {
+                userUpdated!=null -> {
+                    userUpdated = usersRepo.save(userUpdated)
+                }
+            }
+
+            sr.payload = "User and assigned role [id= ${userCompany.userId}]"
             sr.names = "${userCompany.name} ${userCompany.kraPin}"
 
             sr.responseStatus = sr.serviceMapsId?.successStatusCode
@@ -1175,10 +1189,11 @@ class RegistrationDaoServices(
     /**
      * Check BRS
      */
-    fun checkBrs(user: UsersEntity): Boolean {
+    fun checkBrs(cp: CompanyProfileEntity): Pair<Boolean, BrsLookUpRecords?>{
         var response = false
-        user.id?.let {
-            iCompanyProfileRepository.findByUserId(it)?.let { manufacturer ->
+        var brsResults: BrsLookUpRecords? = null
+//        user.id?.let {
+//            iCompanyProfileRepository.findByUserId(it)?.let { manufacturer ->
                 configurationRepository.findByIdOrNull(3L)
                     ?.let { config ->
                         config.createdOn = Timestamp.from(Instant.now())
@@ -1187,7 +1202,7 @@ class RegistrationDaoServices(
                         runBlocking {
                             config.url?.let { url ->
                                 val log = daoService.createTransactionLog(0, "integ")
-                                val params = mapOf(Pair("registration_number", manufacturer.registrationNumber))
+                                val params = mapOf(Pair("registration_number", cp.registrationNumber))
                                 log.integrationRequest = "$params"
                                 val resp = daoService.getHttpResponseFromGetCall(true, url, config, null, params, null)
                                 val data = daoService.processResponses<BrsLookUpResponse>(resp, log, url, config)
@@ -1199,7 +1214,11 @@ class RegistrationDaoServices(
                                             response = false
                                         } else {
                                             r.records?.get(0)?.partners?.forEach {
-                                                response = manufacturer.directorIdNumber == it?.idNumber ?: 0
+                                                if(!response) {
+                                                    response = cp.directorIdNumber == it?.idNumber ?: 0
+                                                    brsResults = r.records?.get(0)
+                                                    KotlinLogging.logger { }.info { "MY UPDATED:  = ${cp.directorIdNumber} ======${it?.idNumber}" }
+                                                }
                                             }
                                         }
                                         //
@@ -1209,9 +1228,9 @@ class RegistrationDaoServices(
                     } ?: throw Exception("Company Does not exist")
 //                sr.varField3 = user.id.toString()
 //                serviceRequestRepo.save(sr)
-            } ?: throw Exception("Company not found")
-        } ?: throw Exception("User id is null")
-        return response
+//            } ?: throw Exception("Company not found")
+//        } ?: throw Exception("User id is null")
+        return Pair(response, brsResults)
     }
 
 

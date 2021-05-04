@@ -86,10 +86,11 @@ SELECT * FROM
     DAT_KEBS_USER_VERIFICATION_TOKEN
 WHERE USER_ID = 1464
 ORDER BY ID DESC;
-
+-- /****************************
 alter table DAT_KEBS_PERMIT_TRANSACTION
-    add GENERATE_SCHEME_STATUS NUMBER(2)
+    add PERMIT_EXPIRED_STATUS NUMBER(2)
 /
+-- /***************************/
 
 alter table CFG_PERMIT_TYPES
     add SCHEME_GENERATE NUMBER(2)

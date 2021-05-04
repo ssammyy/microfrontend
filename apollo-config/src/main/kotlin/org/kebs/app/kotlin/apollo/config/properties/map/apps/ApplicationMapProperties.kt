@@ -129,6 +129,10 @@ class ApplicationMapProperties {
     @Value("\${org.kebs.app.kotlin.apollo.application.map.user.request.manufacture}")
     val mapUserRequestManufacture: Long = 0L
 
+
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.user.manufacture.role.id}")
+    val mapUserManufactureRoleID: Long = 0L
+
     @Value("\${org.kebs.app.kotlin.apollo.application.map.standards.development}")
     val mapStandardsDevelopment: Int = 0
 

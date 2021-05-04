@@ -53,9 +53,9 @@ class UserProfileDaoServiceTest {
 
     @Test
     fun testBrs(){
-        usersRepo.findByIdOrNull(1464)?.let { user ->
-            registrationDaoServices.checkBrs(user)
-        }
+//        usersRepo.findByIdOrNull(1464)?.let { user ->
+//            registrationDaoServices.checkBrs(user)
+//        }
     }
 
     @Test

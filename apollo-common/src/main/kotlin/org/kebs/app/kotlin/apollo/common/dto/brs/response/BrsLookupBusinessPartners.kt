@@ -1,14 +1,15 @@
 package org.kebs.app.kotlin.apollo.common.dto.brs.response
 
+import com.fasterxml.jackson.annotation.JsonProperty
 import com.google.gson.annotations.SerializedName
 
 class BrsLookupBusinessPartners {
     var name: String? = null
 
-    @SerializedName("id_type")
+    @JsonProperty("id_type")
     var idType: String? = null
 
-    @SerializedName("id_number")
+    @JsonProperty("id_number")
     var idNumber: String? = null
 
 

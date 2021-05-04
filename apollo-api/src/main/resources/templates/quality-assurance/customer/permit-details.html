@@ -330,6 +330,8 @@
                                 <div sec:authorize="hasAuthority('PERMIT_APPLICATION')">
                                     <a th:if="${permitDetails?.attachedPlantId == null}" style="color: white" onclick="popUpFunction('attachePlant');" class="filter-link">ATTACHE PLANT</a>
 
+                                    <a th:if="${permitDetails?.permitExpiredStatus == 1}"  th:href="@{/api/qa/kebs/renew/permit-details/save(permitNo=${permitDetails?.permitNumber})}" class="filter-link" style="color: white">RENEW PERMIT</a>
+
                                     <a th:if="${permitType?.st3Status == 1 and permitDetails?.sta3FilledStatus == null}"  th:href="@{/api/qa/new-sta3(permitID=${permitDetails?.id})}" class="filter-link" style="color: white">Fill STA 3</a>
                                     <a th:if="${permitType?.st10Status == 1 and permitDetails?.sta10FilledStatus == null}"  th:href="@{/api/qa/new-sta10(permitID=${permitDetails?.id})}" class="filter-link" style="color: white">Fill STA 10</a>
                                     <a th:if="${permitType?.smeDeclarationForm == 1 and permitDetails?.smeFormFilledStatus == null}"  th:href="@{/api/qa/new-sme-declaration(permitID=${permitDetails?.id})}" class="filter-link" style="color: white">Fill SME DECLARATION</a>

@@ -65,7 +65,7 @@ class QualityAssuranceController(
         @RequestParam( "permitID") permitID: Long,
         model: Model)
     : String? {
-        val result: ServiceRequestsEntity?
+        var result: ServiceRequestsEntity?
         val map = commonDaoServices.serviceMapDetails(appId)
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         //Find Permit with permit ID
@@ -74,7 +74,8 @@ class QualityAssuranceController(
         result = qaDaoServices.newSchemeSupervisionSave(permitDetails, QaSchemeForSupervisionEntity, loggedInUser,map)
         //Set scheme as generated and update results
         permitDetails.generateSchemeStatus = map.activeStatus
-        qaDaoServices.permitUpdateDetails(permitDetails,map, loggedInUser)
+
+        result = qaDaoServices.permitUpdateDetails(permitDetails,map, loggedInUser).first
 
 
         val sm = CommonDaoServices.MessageSuccessFailDTO()
@@ -116,7 +117,7 @@ class QualityAssuranceController(
         val map = commonDaoServices.serviceMapDetails(appId)
         val loggedInUser = commonDaoServices.loggedInUserDetails()
 
-        val result: ServiceRequestsEntity?
+        var result: ServiceRequestsEntity?
 
         //Find Permit with permit ID
         val permitDetails = qaDaoServices.findPermitBYID(permitID)
@@ -130,7 +131,7 @@ class QualityAssuranceController(
                 permit,
                 permitDetails
             ) as PermitApplicationsEntity, map, loggedInUser
-        )
+        ).first
 
         when {
             permit.assignAssessorStatus == map.activeStatus -> {
@@ -144,11 +145,15 @@ class QualityAssuranceController(
                 val manufacturer = permitDetails.userId?.let { commonDaoServices.findUserByID(it) }
                 manufacturer?.email?.let { qaDaoServices.sendScheduledFactoryAssessmentNotificationEmail(it, permitDetails) }
             }
+
+
         }
 
+        //updating of Details in DB
+        result = qaDaoServices.permitUpdateDetails(commonDaoServices.updateDetails(permit, permitDetails) as PermitApplicationsEntity, map, loggedInUser).first
+
         val sm = CommonDaoServices.MessageSuccessFailDTO()
-        sm.closeLink =
-            "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitDetails.id}%26userID=${loggedInUser.id}"
+        sm.closeLink = "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitDetails.id}%26userID=${loggedInUser.id}"
         sm.message = "${permit.description}"
 
         return commonDaoServices.returnValues(result, map, sm)
@@ -179,6 +184,30 @@ class QualityAssuranceController(
         return commonDaoServices.returnValues(result, map, sm)
     }
 
+    @PreAuthorize("hasAuthority('PERMIT_APPLICATION')")
+    @GetMapping("kebs/renew/permit-details/save")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun permitRenewDetails(
+        model: Model,
+        @RequestParam( "permitNo") permitNo: String,
+        results: BindingResult,
+        redirectAttributes: RedirectAttributes
+    ): String? {
+
+        val map = commonDaoServices.serviceMapDetails(appId)
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+
+        val result: ServiceRequestsEntity?
+
+        result = qaDaoServices.permitUpdateNewWithSamePermitNumber(permitNo,map, loggedInUser)
+
+        val sm = CommonDaoServices.MessageSuccessFailDTO()
+        sm.closeLink = "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${result.varField1}%26userID=${loggedInUser.id}"
+        sm.message = "You have Successful Renewed your Permit , Invoice has Been Generated"
+
+        return commonDaoServices.returnValues(result, map, sm)
+    }
+
 
     @PreAuthorize("hasAuthority('PERMIT_APPLICATION')")
     @PostMapping("/apply/new-sta3")
@@ -203,12 +232,7 @@ class QualityAssuranceController(
             sta3FilledStatus = map.activeStatus
         }
         //updating of Details in DB
-        result = qaDaoServices.permitUpdateDetails(
-            commonDaoServices.updateDetails(
-                permit,
-                updatePermit
-            ) as PermitApplicationsEntity, map, loggedInUser
-        )
+        result = qaDaoServices.permitUpdateDetails(commonDaoServices.updateDetails(permit, updatePermit) as PermitApplicationsEntity,map, loggedInUser).first
 
         val sm = CommonDaoServices.MessageSuccessFailDTO()
         sm.closeLink =
@@ -241,12 +265,7 @@ class QualityAssuranceController(
             sta10FilledStatus = map.activeStatus
         }
         //updating of Details in DB
-        result = qaDaoServices.permitUpdateDetails(
-            commonDaoServices.updateDetails(
-                permit,
-                updatePermit
-            ) as PermitApplicationsEntity, map, loggedInUser
-        )
+        result = qaDaoServices.permitUpdateDetails(commonDaoServices.updateDetails(permit, updatePermit) as PermitApplicationsEntity, map,loggedInUser).first
 
         val sm = CommonDaoServices.MessageSuccessFailDTO()
         sm.closeLink =
@@ -286,12 +305,8 @@ class QualityAssuranceController(
             sta10FilledOfficerStatus = map.activeStatus
         }
         //updating of Details in DB
-        result = qaDaoServices.permitUpdateDetails(
-            commonDaoServices.updateDetails(
-                permit,
-                updatePermit
-            ) as PermitApplicationsEntity, map, loggedInUser
-        )
+        result = qaDaoServices.permitUpdateDetails(commonDaoServices.updateDetails(permit, updatePermit) as PermitApplicationsEntity, map,loggedInUser).first
+
 
         val sm = CommonDaoServices.MessageSuccessFailDTO()
         sm.closeLink =
@@ -478,7 +493,7 @@ class QualityAssuranceController(
             }
 
         }
-        result = qaDaoServices.permitUpdateDetails(permit, map, loggedInUser)
+        result = qaDaoServices.permitUpdateDetails(permit, map, loggedInUser).first
 
         val sm = CommonDaoServices.MessageSuccessFailDTO()
         sm.closeLink =
@@ -486,7 +501,7 @@ class QualityAssuranceController(
         sm.message =
             "You have successful Submitted Your Application, an invoice has been generated, check Your permit detail and pay for the Invoice"
 
-        return commonDaoServices.returnValues(result, map, sm)
+        return commonDaoServices.returnValues(result!!, map, sm)
     }
 
     @PreAuthorize("hasAuthority('PERMIT_APPLICATION')")
@@ -531,7 +546,7 @@ class QualityAssuranceController(
         with(permit) {
             justificationReportStatus = map.initStatus
         }
-        result = qaDaoServices.permitUpdateDetails(permit, map, loggedInUser)
+        result = qaDaoServices.permitUpdateDetails(permit, map, loggedInUser).first
 
         //Send notification to HOD for permit approval
 
@@ -540,7 +555,7 @@ class QualityAssuranceController(
             "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permit.id}%26userID=${loggedInUser.id}"
         sm.message = "Justification report successfully submitted for Approval"
 
-        return commonDaoServices.returnValues(result, map, sm)
+        return commonDaoServices.returnValues(result!!, map, sm)
     }
 
     @PreAuthorize("hasAuthority('QA_ASSESSORS_MODIFY')")
