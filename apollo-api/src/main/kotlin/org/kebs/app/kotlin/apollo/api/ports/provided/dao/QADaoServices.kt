@@ -2,6 +2,7 @@ package org.kebs.app.kotlin.apollo.api.ports.provided.dao
 
 import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.notifications.Notifications
+import org.kebs.app.kotlin.apollo.api.ports.provided.createUserAlert
 import org.kebs.app.kotlin.apollo.api.ports.provided.mpesa.MPesaService
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
@@ -9,6 +10,7 @@ import org.kebs.app.kotlin.apollo.common.exceptions.ServiceMapNotFoundException
 import org.kebs.app.kotlin.apollo.common.utils.generateRandomText
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.*
+import org.kebs.app.kotlin.apollo.store.model.di.CdSampleSubmissionParamatersEntity
 import org.kebs.app.kotlin.apollo.store.model.di.CdItemDetailsEntity
 import org.kebs.app.kotlin.apollo.store.model.qa.*
 import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileEntity
@@ -18,7 +20,11 @@ import org.kebs.app.kotlin.apollo.store.repo.qa.*
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartFile
+import org.springframework.web.servlet.function.ServerRequest
+import org.springframework.web.servlet.function.ServerResponse
+import org.springframework.web.servlet.function.paramOrNull
 import java.math.BigDecimal
+import java.sql.Date
 import java.sql.Timestamp
 import java.time.Instant
 import java.time.temporal.ChronoUnit
@@ -35,6 +41,7 @@ class QADaoServices(
     private val paymentUnitsRepository: ICfgKebsPermitPaymentUnitsRepository,
     private val serviceRequestsRepository: IServiceRequestsRepository,
     private val permitRepo: IPermitApplicationsRepository,
+    private val schemeForSupervisionRepo: IQaSchemeForSupervisionRepository,
     private val sta3Repo: IQaSta3EntityRepository,
     private val invoiceRepository: IInvoiceRepository,
     private val sta10Repo: IQaSta10EntityRepository,
@@ -47,7 +54,7 @@ class QADaoServices(
     private val permitTypesRepo: IPermitTypesEntityRepository,
     private val iMoneyTypeCodesRepo: ICfgMoneyTypeCodesRepository,
     private val mpesaServices: MPesaService,
-    private val notifications: Notifications
+    private val notifications: Notifications,
 ) {
 
     final var appId = applicationMapProperties.mapQualityAssurance
@@ -185,6 +192,12 @@ class QADaoServices(
         } ?: throw ExpectedDataNotFound("No STA10 found with the following [permit id=$permitId]")
     }
 
+    fun findSchemeOfSupervisionWithPermitIDBY(permitId: Long): QaSchemeForSupervisionEntity {
+        schemeForSupervisionRepo.findByPermitId(permitId)?.let {
+            return it
+        } ?: throw ExpectedDataNotFound("No SCHEME OF SUPERVISION found with the following [permit id=$permitId]")
+    }
+
     fun findUploadedFileBYId(fileID: Long): QaUploadsEntity {
         qaUploadsRepo.findByIdOrNull(fileID)?.let {
             return it
@@ -281,7 +294,7 @@ class QADaoServices(
         var sr = commonDaoServices.createServiceRequest(map)
         try {
             var savePermit = permits
-            with(permits) {
+            with(savePermit) {
                 userId = user.id
                 productName = product?.let { commonDaoServices.findProductByID(it).name }
                 permitType = permitTypeDetails.id
@@ -299,6 +312,93 @@ class QADaoServices(
             sr.payload = "New Permit Saved [Firm name${savePermit.firmName} and ${savePermit.id}]"
             sr.names = "${savePermit.firmName}"
             sr.varField1 = savePermit.id.toString()
+
+            sr.responseStatus = sr.serviceMapsId?.successStatusCode
+            sr.responseMessage = "Success ${sr.payload}"
+            sr.status = map.successStatus
+            sr = serviceRequestsRepository.save(sr)
+            sr.processingEndDate = Timestamp.from(Instant.now())
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message, e)
+//            KotlinLogging.logger { }.trace(e.message, e)
+            sr.status = sr.serviceMapsId?.exceptionStatus
+            sr.responseStatus = sr.serviceMapsId?.exceptionStatusCode
+            sr.responseMessage = e.message
+            sr = serviceRequestsRepository.save(sr)
+
+        }
+
+        KotlinLogging.logger { }.trace("${sr.id} ${sr.responseStatus}")
+        return sr
+    }
+
+    fun newSchemeSupervisionSave(
+        permits: PermitApplicationsEntity,
+        schemeSupervision: QaSchemeForSupervisionEntity,
+        user: UsersEntity,
+        map: ServiceMapsEntity
+    ): ServiceRequestsEntity {
+
+        var sr = commonDaoServices.createServiceRequest(map)
+        try {
+            var saveSSC = schemeSupervision
+            with(saveSSC) {
+                permitId = permits.id
+                status = map.inactiveStatus
+                createdBy = commonDaoServices.concatenateName(user)
+                createdOn = commonDaoServices.getTimestamp()
+            }
+
+
+            saveSSC = schemeForSupervisionRepo.save(saveSSC)
+
+
+            sr.payload = "New Scheme Saved [ID ${saveSSC.id} and ${saveSSC.permitId}]"
+            sr.names = "${saveSSC.createdBy}"
+
+            sr.responseStatus = sr.serviceMapsId?.successStatusCode
+            sr.responseMessage = "Success ${sr.payload}"
+            sr.status = map.successStatus
+            sr = serviceRequestsRepository.save(sr)
+            sr.processingEndDate = Timestamp.from(Instant.now())
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message, e)
+//            KotlinLogging.logger { }.trace(e.message, e)
+            sr.status = sr.serviceMapsId?.exceptionStatus
+            sr.responseStatus = sr.serviceMapsId?.exceptionStatusCode
+            sr.responseMessage = e.message
+            sr = serviceRequestsRepository.save(sr)
+
+        }
+
+        KotlinLogging.logger { }.trace("${sr.id} ${sr.responseStatus}")
+        return sr
+    }
+
+    fun schemeSupervisionUpdateSave(
+        schemeID: Long,
+        schemeSupervision: QaSchemeForSupervisionEntity,
+        user: UsersEntity,
+        map: ServiceMapsEntity
+    ): ServiceRequestsEntity {
+
+        var sr = commonDaoServices.createServiceRequest(map)
+        try {
+            var foundSSC = schemeForSupervisionRepo.findByIdOrNull(schemeID)?: throw ExpectedDataNotFound("Scheme with [Id = $schemeID], does not exist")
+            with(foundSSC) {
+                acceptedRejectedStatus = schemeSupervision.acceptedRejectedStatus
+                acceptedRejectedDate = commonDaoServices.getCurrentDate()
+                status = map.activeStatus
+                modifiedBy = commonDaoServices.concatenateName(user)
+                modifiedOn = commonDaoServices.getTimestamp()
+            }
+
+            foundSSC = schemeForSupervisionRepo.save(foundSSC)
+
+            sr.payload = "UPDATED Scheme Saved [ID ${foundSSC.id} and ${foundSSC.permitId}]"
+            sr.names = "${foundSSC.createdBy}"
 
             sr.responseStatus = sr.serviceMapsId?.successStatusCode
             sr.responseMessage = "Success ${sr.payload}"

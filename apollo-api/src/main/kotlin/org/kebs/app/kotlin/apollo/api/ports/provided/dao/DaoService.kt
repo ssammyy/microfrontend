@@ -194,12 +194,12 @@ class DaoService(
     }
 
     suspend fun getHttpResponseFromGetCall(
-            auth: Boolean,
-            url: String,
-            config: IntegrationConfigurationEntity,
-            payload: Any? = null,
-            bodyParams: Map<String, String>? = null,
-            headerParams: Map<String, String>? = null,
+        auth: Boolean,
+        url: String,
+        config: IntegrationConfigurationEntity,
+        payload: Any? = null,
+        bodyParams: Map<String, String?>? = null,
+        headerParams: Map<String, String>? = null,
     ): HttpResponse? {
         return buildClient(auth, config)?.get<HttpResponse>(url) {
             method = HttpMethod.Get

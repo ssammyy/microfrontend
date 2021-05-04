@@ -30,6 +30,12 @@ interface IPermitTypesEntityRepository : HazelcastRepository<PermitTypesEntity, 
 }
 
 @Repository
+interface IQaSchemeForSupervisionRepository : HazelcastRepository<QaSchemeForSupervisionEntity, Long> {
+    fun findByStatusAndId(status: Int, id: Long): QaSchemeForSupervisionEntity?
+    fun findByPermitId(permitId: Long): QaSchemeForSupervisionEntity?
+}
+
+@Repository
 interface IQaSta3EntityRepository : HazelcastRepository<QaSta3Entity, Long> {
     fun findByStatusAndId(status: Int, id: Long): QaSta3Entity?
     fun findByPermitId(permitId: Long): QaSta3Entity?

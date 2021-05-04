@@ -1,9 +1,5 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
-plugins {
-    kotlin("jvm") version "1.5.0-RC"
-}
-
 buildscript {
     repositories {
         maven {
@@ -43,7 +39,7 @@ subprojects {
 
     apply(plugin = "kotlin")
     apply(plugin = "org.jetbrains.kotlin.jvm")
-    apply(plugin = "java")
+//    apply(plugin = "java")
 
     configure(allprojects - project(":apollo-common")) { //or ':Android:AndroidApps' not sure
         apply(plugin = "application")
@@ -140,19 +136,4 @@ subprojects {
     }
 
 
-}
-dependencies {
-    implementation(kotlin("stdlib-jdk8"))
-}
-repositories {
-    maven("https://dl.bintray.com/kotlin/kotlin-eap")
-    mavenCentral()
-}
-val compileKotlin: KotlinCompile by tasks
-compileKotlin.kotlinOptions {
-    jvmTarget = "1.8"
-}
-val compileTestKotlin: KotlinCompile by tasks
-compileTestKotlin.kotlinOptions {
-    jvmTarget = "1.8"
 }

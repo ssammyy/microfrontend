@@ -612,8 +612,8 @@
                             </form>
                         </div>
 
-                        <div sec:authorize="hasAuthority('PERMIT_APPLICATION')" id="requestModalPopUp" class="uploadForm">
-                            <form id="requestModal-form" name="companyProfile-form" th:action="@{/api/auth/kebs/add/manufacture-details/save}" method="post" th:object="${companyProfileEntity}">
+                        <div sec:authorize="hasAuthority('USER')" id="requestModalPopUp" class="uploadForm">
+                            <form id="requestModal-form" name="companyProfile-form" th:action="@{/api/auth/kebs/add/request-details/save}" method="post" th:object="${userRequestEntityDto}">
                                 <div class="modal fade" id="requestModal" tabindex="-1" role="dialog" aria-labelledby="requestModalLabel" aria-hidden="true">
                                     <div class="modal-dialog" role="document">
                                         <div class="modal-content">
@@ -626,13 +626,13 @@
                                                     <!--                                                    <input type="hidden" id="confirmSampleId"  name="confirmSampleId" th:value="${sampleSubmit?.id}">-->
                                                     <div id="requestModalBtn">
                                                         <label class="field-label" for="county">User Request:</label>
-                                                        <select id="userRequest" name="userRequest" class="input-field w-input" th:field="*{county}">
+                                                        <select id="requestId" name="requestId" class="input-field w-input" th:field="*{requestId}">
                                                             <option value="0">Select One...</option>
                                                             <option th:each="userRequest : ${userRequests}" th:text="${userRequest.userRequest}" th:value="${userRequest.id}"></option>
                                                             <!--                                        <option th:each="subRegion : ${subRegions}" th:text="${subRegion.subRegion}" th:value="${subRegion.id}"></option>-->
                                                         </select>
-                                                        <label class="field-label" for="county">Reason:</label>
-                                                        <textarea required name="name" id="hofQamCompletenessRemarks" class="input-field w-input" cols="65" rows="5" th:field="*{hofQamCompletenessRemarks}"></textarea>
+                                                        <label class="field-label" for="description">Reason:</label>
+                                                        <textarea required name="description" id="description" class="input-field w-input" cols="65" rows="5" th:field="*{description}"></textarea>
                                                     </div>
 
                                                 </div>
