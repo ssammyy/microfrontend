@@ -571,7 +571,7 @@ class RegistrationDaoServices(
                 userPinIdNumber = u.userPinIdNumber
                 userName = u.userPinIdNumber
                 when {
-                    up!=null -> {
+                    up != null -> {
                         title = u.title
                         email = u.email
                         firstName = u.firstName
@@ -586,14 +586,23 @@ class RegistrationDaoServices(
                         region = up.confirmRegionId
                         county = up.confirmCountyId
                         town = up.confirmTownId
-                        userRegNo ="KEBS#EMP${generateRandomText(5, s.secureRandom, s.messageDigestAlgorithm, true).toUpperCase()}"
+                        userRegNo = "KEBS#EMP${
+                            generateRandomText(
+                                5,
+                                s.secureRandom,
+                                s.messageDigestAlgorithm,
+                                true
+                            ).toUpperCase()
+                        }"
                     }
                     else -> {
-                        userRegNo = "KEBS${generateRandomText(5, s.secureRandom, s.messageDigestAlgorithm, true).toUpperCase()}"
+                        userRegNo =
+                            "KEBS${generateRandomText(5, s.secureRandom, s.messageDigestAlgorithm, true).toUpperCase()}"
                     }
                 }
             }
-            user = systemsAdminDaoService.updateUserDetails(user) ?: throw NullValueNotAllowedException("Registration failed")
+            user = systemsAdminDaoService.updateUserDetails(user)
+                ?: throw NullValueNotAllowedException("Registration failed")
 
             sr.payload = "User[id= ${user.id}]"
             sr.names = "${user.firstName} ${user.lastName}"
@@ -648,7 +657,8 @@ class RegistrationDaoServices(
                 region = county?.let { commonDaoServices.findCountiesEntityByCountyId(it, s.activeStatus).regionId }
 
             }
-           val userCompany = systemsAdminDaoService.updateUserCompanyDetails(userCompanyDetails) ?: throw NullValueNotAllowedException("Registration failed")
+            val userCompany = systemsAdminDaoService.updateUserCompanyDetails(userCompanyDetails)
+                ?: throw NullValueNotAllowedException("Registration failed")
 
             sr.payload = "User[id= ${userCompany.userId}]"
             sr.names = "${userCompany.name} ${userCompany.kraPin}"
@@ -1130,17 +1140,16 @@ class RegistrationDaoServices(
     /**
      * Check BRS
      */
-     fun checkBrs( user: UsersEntity): Boolean {
+    fun checkBrs(user: UsersEntity): Boolean {
         var response = false
         user.id?.let {
-            iCompanyProfileRepository.findByUserId(it)?.let{
-                manufacturer ->
+            iCompanyProfileRepository.findByUserId(it)?.let { manufacturer ->
                 configurationRepository.findByIdOrNull(3L)
                     ?.let { config ->
                         config.createdOn = Timestamp.from(Instant.now())
                         config.modifiedOn = Timestamp.from(Instant.now())
                         configurationRepository.save(config)
-                        runBlocking{
+                        runBlocking {
                             config.url?.let { url ->
                                 val log = daoService.createTransactionLog(0, "integ")
                                 val params = mapOf(Pair("registration_number", manufacturer.registrationNumber))
@@ -1150,19 +1159,23 @@ class RegistrationDaoServices(
                                 logsRepo.save(data.first)
                                 val brsResponse = data.second
                                 brsResponse
-                                    ?.let { r->
-                                        r.records?.get(0)?.partners?.forEach {
-                                            response = manufacturer.directorIdNumber == it?.idNumber?: 0
-                                        }?: throw Exception("No Partners available")
+                                    ?.let { r ->
+                                        if (r.count ?: 0 < 1) {
+                                            response = false
+                                        } else {
+                                            r.records?.get(0)?.partners?.forEach {
+                                                response = manufacturer.directorIdNumber == it?.idNumber ?: 0
+                                            }
+                                        }
                                         //
-                                    }?: throw Exception("No Response")
-                            }?: throw Exception("Pass a valid endpoint")
+                                    } ?: throw Exception("No Response")
+                            } ?: throw Exception("Pass a valid endpoint")
                         }
-                    }?: throw Exception("Company Does not exist")
+                    } ?: throw Exception("Company Does not exist")
 //                sr.varField3 = user.id.toString()
 //                serviceRequestRepo.save(sr)
-            }?: throw Exception("Company not found")
-        }?: throw Exception("User id is null")
+            } ?: throw Exception("Company not found")
+        } ?: throw Exception("User id is null")
         return response
     }
 
