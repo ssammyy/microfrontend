@@ -94,11 +94,11 @@ order by id desc;
 
 select *
 from CFG_USER_PRIVILEGES--QA_OFFICER_READ
-where id like '%50%'
+where id like '%521%'
 order by id desc;--MS_MP_MODIFY MS_MP_READ AUTHORITIES_WRITE 29
 select *
 from CFG_ROLES_PRIVILEGES
-where ROLES_ID = 502
+where ROLES_ID = 510
 
 order by id desc;--MS_MP_MODIFY MS_MP_READ
 select *

@@ -11,7 +11,7 @@ class BrsLookUpRecords {
     var registrationNumber: String? = null
 
     @JsonProperty("registration_date")
-    var registrationDate: java.util.Date? = null
+    var registrationDate: String? = null
 
     @JsonProperty("postal_address")
     var postalAddress: String? = null
@@ -32,5 +32,6 @@ class BrsLookUpRecords {
 
     @JsonProperty("business_name")
     var businessName: String? = null
+
     var branches: MutableList<BrsLookupBusinessBranches?>? = null
 }

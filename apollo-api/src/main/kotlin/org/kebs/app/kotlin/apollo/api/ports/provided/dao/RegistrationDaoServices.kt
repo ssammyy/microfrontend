@@ -666,6 +666,15 @@ class RegistrationDaoServices(
 
             val userAssignRole = u.id?.let { systemsAdminDaoService.assignRoleToUser(it, applicationMapProperties.mapUserManufactureRoleID, s.activeStatus) }
 
+            var userUpdated = u.id?.let { commonDaoServices.findUserByID(it) }
+            userUpdated?.manufactureProfile = s.activeStatus
+
+            when {
+                userUpdated!=null -> {
+                    userUpdated = usersRepo.save(userUpdated)
+                }
+            }
+
             sr.payload = "User and assigned role [id= ${userCompany.userId}]"
             sr.names = "${userCompany.name} ${userCompany.kraPin}"
 
