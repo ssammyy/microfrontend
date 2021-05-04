@@ -1,6 +1,7 @@
 package org.kebs.app.kotlin.apollo.api.ports.provided.dao
 
 import mu.KotlinLogging
+import org.kebs.app.kotlin.apollo.api.notifications.Notifications
 import org.kebs.app.kotlin.apollo.api.ports.provided.createUserAlert
 import org.kebs.app.kotlin.apollo.api.ports.provided.mpesa.MPesaService
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
@@ -11,6 +12,7 @@ import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapPrope
 import org.kebs.app.kotlin.apollo.store.model.*
 import org.kebs.app.kotlin.apollo.store.model.di.CdSampleSubmissionParamatersEntity
 import org.kebs.app.kotlin.apollo.store.model.di.ConsignmentDocumentDetailsEntity
+import org.kebs.app.kotlin.apollo.store.model.di.CdItemDetailsEntity
 import org.kebs.app.kotlin.apollo.store.model.qa.*
 import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileEntity
 import org.kebs.app.kotlin.apollo.store.repo.*
@@ -55,7 +57,8 @@ class QADaoServices(
     private val manufacturePlantRepository: IManufacturePlantDetailsRepository,
     private val permitTypesRepo: IPermitTypesEntityRepository,
     private val iMoneyTypeCodesRepo: ICfgMoneyTypeCodesRepository,
-    private val mpesaServices: MPesaService
+    private val mpesaServices: MPesaService,
+    private val notifications: Notifications,
 ) {
 
     final var appId = applicationMapProperties.mapQualityAssurance
@@ -124,6 +127,15 @@ class QADaoServices(
             ?: throw ExpectedDataNotFound("No Permit Found for the following user with USERNAME = ${user.userName}")
     }
 
+    fun findAllAssessorPermitListWithPermitType(user: UsersEntity, permitType: Long): List<PermitApplicationsEntity> {
+        val userId = user.id ?: throw ExpectedDataNotFound("No USER ID Found")
+        permitRepo.findByAssessorIdAndPermitType(userId, permitType)
+            ?.let { permitList ->
+                return permitList
+            }
+            ?: throw ExpectedDataNotFound("No Permit Found for the following user with USERNAME = ${user.userName}")
+    }
+
     fun findAllQAOPermitListWithPaymentStatus(paymentStatus: Int): List<PermitApplicationsEntity> {
         permitRepo.findAllByPaidStatus(paymentStatus)?.let { permitList ->
                 return permitList
@@ -133,7 +145,7 @@ class QADaoServices(
     fun findPermitBYID(id: Long): PermitApplicationsEntity {
         permitRepo.findByIdOrNull(id)?.let {
             return it
-        } ?: throw ExpectedDataNotFound("No Permit Type found with the following [ID=$id]")
+        } ?: throw ExpectedDataNotFound("No Permit found with the following [ID=$id]")
     }
 
     fun findSampleCollectBYPermitID(permitId: Long): QaSampleCollectionEntity {
@@ -157,7 +169,7 @@ class QADaoServices(
     fun findPermitBYUserIDAndId(id: Long, userId: Long): PermitApplicationsEntity {
         permitRepo.findByIdAndUserId(id, userId)?.let {
             return it
-        } ?: throw ExpectedDataNotFound("No Permit Type found with the following [ID=$id]")
+        } ?: throw ExpectedDataNotFound("No Permit found with the following [ID=$id]")
     }
 
     fun findPermitBYUserIDANDProductionStatus(status: Int, permitTypeID: Long, userId: Long): List<PermitApplicationsEntity> {
@@ -209,6 +221,12 @@ class QADaoServices(
         } ?: throw ExpectedDataNotFound("No File found with the following [ id=$fileID]")
     }
 
+    fun findUploadedFileByPermitIdAndDocType(permitId: Long, docType: String): QaUploadsEntity {
+        qaUploadsRepo.findByPermitIdAndDocumentType(permitId, docType)?.let {
+            return it
+        } ?: throw ExpectedDataNotFound("No File found with the following details: [ permitId=$permitId], [ docType=$docType]")
+    }
+
     fun findAllUploadedFileBYPermitID(permitId: Long): List<QaUploadsEntity> {
         qaUploadsRepo.findByPermitId(permitId)?.let {
             return it
@@ -233,7 +251,7 @@ class QADaoServices(
     }
 
 
-    fun findOfficersList(permit: PermitApplicationsEntity, map: ServiceMapsEntity): List<UserProfilesEntity> {
+    fun findOfficersList(permit: PermitApplicationsEntity, map: ServiceMapsEntity, designationID:Long): List<UserProfilesEntity> {
         val plantID = permit.attachedPlantId
             ?: throw ServiceMapNotFoundException("Atta ched Plant details For Permit with ID = ${permit.id}, is Empty")
 
@@ -241,12 +259,10 @@ class QADaoServices(
         val region = plantAttached.region?.let { commonDaoServices.findRegionEntityByRegionID(it, map.activeStatus) }
             ?: throw ExpectedDataNotFound("Plant attached Region Id is Empty, check config")
         val department = commonDaoServices.findDepartmentByID(applicationMapProperties.mapQADepertmentId)
-        val division = permit.divisionId?.let { commonDaoServices.findDivisionWIthId(it) }
-            ?: throw ExpectedDataNotFound("Permit Division Id is Empty, check config")
-        val section = permit.sectionId?.let { commonDaoServices.findSectionWIthId(it) }
-            ?: throw ExpectedDataNotFound("Permit Section Id is Empty, check config")
+        val designation = commonDaoServices.findDesignationByID(designationID)
 
-        return commonDaoServices.findAllUsersWithinRegionDepartmentDivisionSectionId(region, department, division, section, map.activeStatus)
+        //return commonDaoServices.findAllUsersWithinRegionDepartmentDivisionSectionId(region, department, division, section, map.activeStatus)
+        return commonDaoServices.findAllUsersWithDesignationRegionDepartmentAndStatus(designation, region, department, map.activeStatus)
     }
 
 
@@ -263,6 +279,26 @@ class QADaoServices(
 
         return commonDaoServices.findUserProfileWithDesignationRegionDepartmentAndStatus(designation, region, department, map.activeStatus).userId
 
+    }
+
+    fun sendAppointAssessorNotificationEmail(recipientEmail: String, permit: PermitApplicationsEntity): Boolean {
+        val subject = "DMARK Application Assessment"
+        val messageBody = "DMARK application with the details below has been assisgned to you for assessment:  \n" +
+                "\n " +
+                "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permit.id}%26userID=${permit.userId}"
+        notifications.sendEmail(recipientEmail, subject, messageBody)
+        return true
+    }
+
+    fun sendScheduledFactoryAssessmentNotificationEmail(recipientEmail: String, permit: PermitApplicationsEntity): Boolean {
+        val subject = "Factory Assessment Visit Schedule"
+        val messageBody = "Factory visit assessment has been scheduled on: ${permit.assessmentDate}:  \n" +
+                "\n " +
+                "The Assessment Criteria:" +
+                "\n " +
+                "${permit.assessmentCriteria}."
+        notifications.sendEmail(recipientEmail, subject, messageBody)
+        return true
     }
 
     fun permitSave(

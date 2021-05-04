@@ -35,21 +35,21 @@ class UserProfileDaoServiceTest {
 //    @Autowired
 //    lateinit var sessionFactory: SessionFactory
 
-//    @Test
-//    fun initialIntegrationTest() {
-//
-//        val list: List<RegionsCountyTownViewDto> = entityManager.createNamedQuery(RegionsCountyTownViewDto.FIND_ALL, RegionsCountyTownViewDto::class.java).resultList.filter { it.townId != null }
-//        expect(list.isEmpty(), "Empty List found", { false })
-//        list.forEach {
-//            KotlinLogging.logger { }.info("Record found: ${it.townId} ${it.county}")
-//        }
-//    }
-//
-//    @Test
-//    fun initialDirectorateToSubSectionL2ViewDtoTest() {
-//        val list = entityManager.createNamedQuery(DirectorateToSubSectionL2ViewDto.FIND_ALL, DirectorateToSubSectionL2ViewDto::class.java).resultList
-//        list.forEach { l -> KotlinLogging.logger { }.info("Record found: ${l.department} ${l.directorate}") }
-//    }
+    @Test
+    fun initialIntegrationTest() {
+
+        val list: List<RegionsCountyTownViewDto> = entityManager.createNamedQuery(RegionsCountyTownViewDto.FIND_ALL, RegionsCountyTownViewDto::class.java).resultList.filter { it.townId != null }
+        expect(list.isEmpty(), "Empty List found", { false })
+        list.forEach {
+            KotlinLogging.logger { }.info("Record found: ${it.townId} ${it.county}")
+        }
+    }
+
+    @Test
+    fun initialDirectorateToSubSectionL2ViewDtoTest() {
+        val list = entityManager.createNamedQuery(DirectorateToSubSectionL2ViewDto.FIND_ALL, DirectorateToSubSectionL2ViewDto::class.java).resultList
+        list.forEach { l -> KotlinLogging.logger { }.info("Record found: ${l.department} ${l.directorate}") }
+    }
 
     @Test
     fun testBrs(){
@@ -58,30 +58,30 @@ class UserProfileDaoServiceTest {
 //        }
     }
 
-//    @Test
-//    fun returnUserListGivenSearchFormParameterTest() {
-//        val search = UserSearchValues("vmuriuki", "vincentmuriuki42@gmail.com", "Vincent")
-////        val list = usersRepo.findAllByUserNameContainingIgnoreCaseOrEmailContainingIgnoreCaseOrFirstNameContainingIgnoreCaseOrLastNameContainingIgnoreCase(search.userName, search.email, search.firstName, search.lastName)
-////        list?.forEach { l -> KotlinLogging.logger { }.info("${l.id} ${l.userName} ${l.email} ${l.firstName} ${l.lastName}") }
-//
-////        val query = "select * from DAT_KEBS_USERS where USER_NAME = :userName and EMAIL= :email and FIRST_NAME = :firstName and LAST_NAME = :lastName"
-////        val list: List<UsersEntity> = entityManager.createNativeQuery(query)
-////            .setParameter("userName", search.userName)
-////            .setParameter("email", search.email)
-////            .setParameter("firstName", search.firstName)
-////            .setParameter("lastName", search.lastName)
-////            .resultList as List<UsersEntity>
-////        list.forEach { l -> KotlinLogging.logger { }.info(l.userName) }
-//
-//        val spec = UserSpecification(SearchCriteria("email", ":", search.email))
-//        val spec4 = UserSpecification(SearchCriteria("userName", ":", search.userName))
-//        val spec2 = UserSpecification(SearchCriteria("firstName", ":", search.firstName))
-//        val spec3 = UserSpecification(SearchCriteria("lastName", ":", search.lastName))
-//        val other = usersRepo.findAll(spec.or(spec2).or(spec3).or(spec4))
-//        other.forEach { l -> KotlinLogging.logger { }.info("${l.id} ${l.userName} ${l.email} ${l.firstName} ${l.lastName}") }
-//
-//
-//    }
+    @Test
+    fun returnUserListGivenSearchFormParameterTest() {
+        val search = UserSearchValues("vmuriuki", "vincentmuriuki42@gmail.com", "Vincent")
+//        val list = usersRepo.findAllByUserNameContainingIgnoreCaseOrEmailContainingIgnoreCaseOrFirstNameContainingIgnoreCaseOrLastNameContainingIgnoreCase(search.userName, search.email, search.firstName, search.lastName)
+//        list?.forEach { l -> KotlinLogging.logger { }.info("${l.id} ${l.userName} ${l.email} ${l.firstName} ${l.lastName}") }
+
+//        val query = "select * from DAT_KEBS_USERS where USER_NAME = :userName and EMAIL= :email and FIRST_NAME = :firstName and LAST_NAME = :lastName"
+//        val list: List<UsersEntity> = entityManager.createNativeQuery(query)
+//            .setParameter("userName", search.userName)
+//            .setParameter("email", search.email)
+//            .setParameter("firstName", search.firstName)
+//            .setParameter("lastName", search.lastName)
+//            .resultList as List<UsersEntity>
+//        list.forEach { l -> KotlinLogging.logger { }.info(l.userName) }
+
+        val spec = UserSpecification(SearchCriteria("email", ":", search.email))
+        val spec4 = UserSpecification(SearchCriteria("userName", ":", search.userName))
+        val spec2 = UserSpecification(SearchCriteria("firstName", ":", search.firstName))
+        val spec3 = UserSpecification(SearchCriteria("lastName", ":", search.lastName))
+        val other = usersRepo.findAll(spec.or(spec2).or(spec3).or(spec4))
+        other.forEach { l -> KotlinLogging.logger { }.info("${l.id} ${l.userName} ${l.email} ${l.firstName} ${l.lastName}") }
+
+
+    }
 
 }
 

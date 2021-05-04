@@ -85,9 +85,17 @@ class PermitApplicationsEntity:Serializable {
     @Basic
     var inspectionDate: Date? = null
 
+    @Column(name = "ASSESSMENT_DATE")
+    @Basic
+    var assessmentDate: Date? = null
+
     @Column(name = "INSPECTION_SCHEDULED_STATUS")
     @Basic
     var inspectionScheduledStatus: Int? = null
+
+    @Column(name = "ASSESSMENT_SCHEDULED_STATUS")
+    @Basic
+    var assessmentScheduledStatus: Int? = null
 
     @Column(name = "GENERATE_SCHEME_STATUS")
     @Basic
@@ -104,6 +112,10 @@ class PermitApplicationsEntity:Serializable {
     @Column(name = "OLD_PERMIT_STATUS")
     @Basic
     var oldPermitStatus: Int? = null
+
+    @Column(name = "JUSTIFICATION_REPORT_REMARKS")
+    @Basic
+    var justificationReportRemarks: String? = null
 
 
 //    @JoinColumn(name = "USER_ID", referencedColumnName = "ID")
@@ -188,6 +200,10 @@ class PermitApplicationsEntity:Serializable {
     @Basic
     var qaoId: Long? = null
 
+    @Column(name = "ASSESSOR_ID")
+    @Basic
+    var assessorId: Long? = null
+
     @Column(name = "STA3_FILLED_STATUS")
     @Basic
     var sta3FilledStatus: Int? = null
@@ -237,6 +253,9 @@ class PermitApplicationsEntity:Serializable {
     @Basic
     var assignOfficerStatus: Int? = null
 
+    @Column(name = "ASSIGN_ASSESSOR_STATUS")
+    @Basic
+    var assignAssessorStatus: Int? = null
 
     @Column(name = "TITLE")
     @Basic
@@ -250,6 +269,10 @@ class PermitApplicationsEntity:Serializable {
     @Column(name = "HOF_QAM_COMPLETENESS_REMARKS")
     @Basic
     var hofQamCompletenessRemarks: String? = null
+
+    @Column(name = "ASSESSMENT_CRITERIA")
+    @Basic
+    var assessmentCriteria: String? = null
 
     //A Declaration Form
 
@@ -428,9 +451,13 @@ class PermitApplicationsEntity:Serializable {
         if (productName != other.productName) return false
         if (tradeMark != other.tradeMark) return false
         if (hofQamCompletenessRemarks != other.hofQamCompletenessRemarks) return false
+        if (assessmentCriteria != other.assessmentCriteria) return false
         if (hofQamCompletenessStatus != other.hofQamCompletenessStatus) return false
         if (compliantStatus != other.compliantStatus) return false
         if (justificationReportStatus != other.justificationReportStatus) return false
+        if (justificationReportRemarks != other.justificationReportRemarks) return false
+        if (assignAssessorStatus != other.assignAssessorStatus) return false
+        if (assessorId != other.assessorId) return false
         if (paidStatus != other.paidStatus) return false
         if (assignOfficerStatus != other.assignOfficerStatus) return false
         if (permitExpiredStatus != other.permitExpiredStatus) return false
@@ -441,7 +468,9 @@ class PermitApplicationsEntity:Serializable {
         if (sta10FilledStatus != other.sta10FilledStatus) return false
         if (oldPermitStatus != other.oldPermitStatus) return false
         if (inspectionDate != other.inspectionDate) return false
+        if (assessmentDate != other.assessmentDate) return false
         if (inspectionScheduledStatus != other.inspectionScheduledStatus) return false
+        if (assessmentScheduledStatus != other.assessmentScheduledStatus) return false
         if (sta3FilledStatus != other.sta3FilledStatus) return false
         if (sendApplication != other.sendApplication) return false
         if (invoiceGenerated != other.invoiceGenerated) return false
@@ -506,6 +535,7 @@ class PermitApplicationsEntity:Serializable {
         result = 31 * result + (qamId?.hashCode() ?: 0)
         result = 31 * result + (hofId?.hashCode() ?: 0)
         result = 31 * result + (hodId?.hashCode() ?: 0)
+        result = 31 * result + (assessorId?.hashCode() ?: 0)
         result = 31 * result + (rmId?.hashCode() ?: 0)
         result = 31 * result + (qaoId?.hashCode() ?: 0)
         result = 31 * result + (permitType?.hashCode() ?: 0)
@@ -519,9 +549,12 @@ class PermitApplicationsEntity:Serializable {
         result = 31 * result + (tradeMark?.hashCode() ?: 0)
         result = 31 * result + (paidStatus?.hashCode() ?: 0)
         result = 31 * result + (hofQamCompletenessRemarks?.hashCode() ?: 0)
+        result = 31 * result + (assessmentCriteria?.hashCode() ?: 0)
+        result = 31 * result + (justificationReportRemarks?.hashCode() ?: 0)
         result = 31 * result + (assignOfficerStatus ?: 0)
         result = 31 * result + (permitExpiredStatus ?: 0)
         result = 31 * result + (compliantStatus ?: 0)
+        result = 31 * result + (assignAssessorStatus ?: 0)
         result = 31 * result + (justificationReportStatus ?: 0)
         result = 31 * result + (smeFormFilledStatus ?: 0)
         result = 31 * result + (invoiceGenerated ?: 0)
@@ -536,9 +569,11 @@ class PermitApplicationsEntity:Serializable {
         result = 31 * result + (hofQamCompletenessStatus ?: 0)
         result = 31 * result + (sta10FilledOfficerStatus ?: 0)
         result = 31 * result + (inspectionScheduledStatus?: 0)
+        result = 31 * result + (assessmentScheduledStatus?: 0)
         result = 31 * result + (sta10FilledStatus ?: 0)
         result = 31 * result + (sta3FilledStatus ?: 0)
         result = 31 * result + (inspectionDate?.hashCode() ?: 0)
+        result = 31 * result + (assessmentDate?.hashCode() ?: 0)
         result = 31 * result + (title?.hashCode() ?: 0)
         result = 31 * result + (totalCost?.hashCode() ?: 0)
         result = 31 * result + (totalPayment?.hashCode() ?: 0)
