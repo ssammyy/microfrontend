@@ -40,8 +40,7 @@ class QualityAssuranceController(
         @ModelAttribute("permit") permit: PermitApplicationsEntity,
         @RequestParam("permitTypeID") permitTypeID: Long,
         model: Model
-    )
-            : String? {
+    ): String? {
         val result: ServiceRequestsEntity?
         val map = commonDaoServices.serviceMapDetails(appId)
         val loggedInUser = commonDaoServices.loggedInUserDetails()

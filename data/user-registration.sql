@@ -81,24 +81,20 @@ select *
 from DAT_KEBS_USER_VERIFICATION_TOKEN
 where TOKEN =
 ;
-select *
-from CFG_ROLES_PRIVILEGES --the role is 40 and prRole ID = 774
+select * from CFG_ROLES_PRIVILEGES --the role is 40 and prRole ID = 774
 -- where PRIVILEGE_ID =52425
 order by id desc;
 
-select *
-from DAT_KEBS_COMPANY_PROFILE --the role is 40 and prRole ID = 774
+select * from DAT_KEBS_COMPANY_PROFILE --the role is 40 and prRole ID = 774
 -- where PRIVILEGE_ID =52425
 order by id desc;
 
-select *
-from CFG_USER_ROLES--512
+select * from CFG_USER_ROLES--512
 --where id like '%5%'
 -- where ROLE_NAME = 'SYSADMIN_VIEW'
 order by id desc;
 
-select *
-from CFG_USER_PRIVILEGES--QA_OFFICER_READ
+select * from CFG_USER_PRIVILEGES--QA_OFFICER_READ
 where id like '%521%'
 order by id desc;--MS_MP_MODIFY MS_MP_READ AUTHORITIES_WRITE 29
 select *

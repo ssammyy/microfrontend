@@ -300,6 +300,24 @@ begin
 end;
 /
 
+create or replace procedure proc_update_permit_when_permit_invoice_payment_done(PAID_STATUS number)
+as
+begin
+    FOR X IN (SELECT * FROM DAT_KEBS_INVOICE s  where s.PAYMENT_STATUS in (PAID_STATUS))
+        LOOP
+            update DAT_KEBS_PERMIT_TRANSACTION d
+            set d.PAID_STATUS = 1
+            where d.ID = x.PERMIT_ID
+--               and d.TOTAL_AMOUNT = x.PAID_AMOUNT
+              and d.PAID_STATUS != 1;
+--         update STG_PAYMENT_RECONCILIATION ss set ss.PAYMENT_TABLES_UPDATED_STATUS = 10 where ss.INVOICE_ID = x.INVOICE_ID;
+            commit;
+        end loop;
+
+    update DAT_KEBS_INVOICE ss set ss.PAYMENT_STATUS = 10 where ss.id in (SELECT s.id FROM DAT_KEBS_INVOICE s where s.PAYMENT_STATUS in (PAID_STATUS));
+end;
+/
+
 
 
 
@@ -382,6 +400,17 @@ BEGIN
             comments => '5 min update on invoice payment'
         );
 END;
+
+BEGIN
+    DBMS_SCHEDULER.CREATE_PROGRAM(
+            program_name => 'PROG_UPDATE_PERMIT_WHEN_PAYMENT_DONE',
+            program_type => 'STORED_PROCEDURE',
+            program_action => 'PROC_UPDATE_PERMIT_WHEN_PERMIT_INVOICE_PAYMENT_DONE',
+            number_of_arguments =>0,
+            enabled => TRUE,
+            comments => '5 min update on invoice payment'
+        );
+END;
 /
 
 
@@ -391,6 +420,15 @@ BEGIN
             Start_date => SYSTIMESTAMP,
             Repeat_interval =>'FREQ=MINUTELY; INTERVAL=1',
             Comments => '5 min update on invoice payment'
+        );
+END;
+
+BEGIN
+    DBMS_SCHEDULER.CREATE_SCHEDULE(
+            Schedule_name => 'SCHEDULE_UPDATE_PAYMENT_1MIN_DETAILS',
+            Start_date => SYSTIMESTAMP,
+            Repeat_interval =>'FREQ=MINUTELY; INTERVAL=1',
+            Comments => '1 min update on table'
         );
 END;
 
@@ -413,6 +451,16 @@ BEGIN
             comments => 'update on permit invoice payment is done'
         );
 END;
+proc_update_permit_when_permit_invoice_payment_done
+BEGIN
+    DBMS_SCHEDULER.CREATE_JOB(
+            job_name => 'JOB_UPDATE_PERMIT_WHEN_PAYMENT_DONE',
+            program_name => 'PROG_UPDATE_PERMIT_WHEN_PAYMENT_DONE',
+            schedule_name => 'SCHEDULE_UPDATE_PAYMENT_1MIN_DETAILS',
+            enabled => TRUE,
+            comments => 'update on permit payment is done'
+        );
+END;
 
 BEGIN
     DBMS_SCHEDULER.DROP_PROGRAM(
@@ -427,6 +475,24 @@ END;/
 DBMS_SCHEDULER.enable('PROG_UPDATE_PAYMENT_DETAILS')
 
 
+
+BEGIN
+    DBMS_SCHEDULER.DISABLE(name=>'APOLLO.PROG_UPDATE_PERMIT_WHEN_PAYMENT_DONE', force=> TRUE);
+
+    DBMS_SCHEDULER.drop_program_argument(program_name => 'APOLLO.PROG_UPDATE_PERMIT_WHEN_PAYMENT_DONE',
+                                         argument_position => 1);
+
+    DBMS_SCHEDULER.define_program_argument(
+            program_name => 'APOLLO.PROG_UPDATE_PERMIT_WHEN_PAYMENT_DONE',
+            argument_name => 'PAID_STATUS',
+            argument_position => 1,
+            argument_type => 'NUMBER',
+            default_value => '1',
+            out_argument => FALSE);
+
+
+    DBMS_SCHEDULER.ENABLE(name=>'APOLLO.PROG_UPDATE_PERMIT_WHEN_PAYMENT_DONE');
+END;
 
 BEGIN
     DBMS_SCHEDULER.DISABLE(name=>'APOLLO.PROG_UPDATE_INVOICE_WHEN_PAYMENT_DONE', force=> TRUE);
