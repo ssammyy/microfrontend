@@ -254,6 +254,7 @@ data class OtpRequestValuesDto(
 
 data class OtpResponseDto(
     var message: String? = null,
+    var otp: String? = null
 )
 
 
