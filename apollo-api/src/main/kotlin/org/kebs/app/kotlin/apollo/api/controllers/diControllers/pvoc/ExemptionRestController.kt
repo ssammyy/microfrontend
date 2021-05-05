@@ -127,7 +127,6 @@ class ExemptionRestController(
                 with(pvocRawMaterialCategory) {
                     hsCode = rawMat.hsCode
                     rawMaterialDescription = rawMat.rawMaterialDescription
-                    dutyRate = rawMat.dutyRate?.toLong()
                     endProduct = rawMat.endProduct
                     countryOfOrgin = rawMat.countryOfOrigin
                     exceptionId = pvocExceptionApp.id
@@ -312,6 +311,7 @@ class ExemptionRestController(
             pvocExceptionApp.contactPersorn = manufacturer?.contactPersorn
             pvocExceptionApp.email = manufacturer?.email
             pvocExceptionApp.status = 1
+            pvocExceptionApp.reviewStatus = statuses?.initialStatus
             pvocExceptionApp.telephoneNo = manufacturer?.telephoneNo
             pvocExceptionApp.conpanyName = manufacturer?.companyName
             pvocExceptionApp.postalAadress = manufacturer?.postalAadress
@@ -342,7 +342,6 @@ class ExemptionRestController(
                 with(pvocRawMaterialCategory) {
                     hsCode = rawMat.hsCode
                     rawMaterialDescription = rawMat.rawMaterialDescription
-                    dutyRate = rawMat.dutyRate?.toLong()
                     endProduct = rawMat.endProduct
                     countryOfOrgin = rawMat.countryOfOrigin
                     exceptionId = pvocExceptionApp.id
