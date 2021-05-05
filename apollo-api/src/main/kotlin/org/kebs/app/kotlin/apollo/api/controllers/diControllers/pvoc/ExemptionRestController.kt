@@ -235,77 +235,78 @@ class ExemptionRestController(
         val rawMaterials = exemptionPayload.rawMaterials
         val spares = exemptionPayload.spares
         val mainMachinaries = exemptionPayload.mainMachinary
-        manufacturer?.companyPinNo?.let {
-            manufacturer.companyName?.let { it1 ->
-                iPvocApplicationRepo.findFirstByConpanyNameAndCompanyPinNoAndFinished(
-                    it1,
-                    it, 0
-                )?.let { company ->
-                    products?.forEach { product ->
-                        val pvocApplicationProductsEntity = PvocApplicationProductsEntity()
-                        KotlinLogging.logger { }.info { company.id }
-                        with(pvocApplicationProductsEntity) {
-                            productName = product.productName
-                            brand = product.brandName
-                            pvocApplicationId = company
-                            expirelyDate = product.expriryDate.toString()
-                            kebsStandardizationMarkPermit = product.permitNumber
-                            createdBy = company.createdBy
-                            createdOn = company.createdOn
-                            iPvocApplicationProductsRepo.save(pvocApplicationProductsEntity)
-                            KotlinLogging.logger { }.info { "Machine save OK" }
-                        }
-                    }
-
-                    rawMaterials?.forEach { rawMat ->
-                        val pvocRawMaterialCategory = PvocExceptionRawMaterialCategoryEntity()
-                        with(pvocRawMaterialCategory) {
-                            hsCode = rawMat.hsCode
-                            rawMaterialDescription = rawMat.rawMaterialDescription
-                            dutyRate = rawMat.dutyRate?.toLong()
-                            endProduct = rawMat.endProduct
-                            exceptionId = company.id
-                            countryOfOrgin = rawMat.countryOfOrigin
-                            createdBy = company.createdBy
-                            createdOn = company.createdOn
-                            iPvocExceptionRawMaterialCategoryEntityRepo.save(pvocRawMaterialCategory)
-                            KotlinLogging.logger { }.info { "Machine save OK" }
-                        }
-                    }
-
-                    mainMachinaries?.forEach { machinary ->
-                        val machine = PvocExceptionMainMachineryCategoryEntity()
-                        with(machine) {
-                            hsCode = machinary.hsCode
-                            machineDescription = machinary.machineDescription
-                            countryOfOrigin = machinary.countryOfOrigin
-                            makeModel = machinary.makeModel
-                            exceptionId = company.id
-                            createdBy = company.createdBy
-                            createdOn = company.createdOn
-                            iPvocExceptionMainMachineryCategoryEntityRepo.save(machine)
-                            KotlinLogging.logger { }.info { "Machine save OK" }
-                        }
-                    }
-
-                    spares?.forEach { spare ->
-                        val spareEntity = PvocExceptionIndustrialSparesCategoryEntity()
-                        with(spareEntity) {
-                            hsCode = spare.hsCode
-                            machineToFit = spare.machineToFit
-                            countryOfOrigin = spare.countryOfOrigin
-                            industrialSpares = spare.industrialSpares
-                            exceptionId = company.id
-                            createdBy = company.createdBy
-                            createdOn = company.createdOn
-                            iPvocExceptionIndustrialSparesCategoryEntityRepo.save(spareEntity)
-                            KotlinLogging.logger { }.info { "Machine save OK" }
-                        }
-                    }
-                    return UploadedFileResponse()
-                }
-            }
-        } ?: commonDaoServices.getLoggedInUser().let { userDetails ->
+//        manufacturer?.companyPinNo?.let {
+//            manufacturer.companyName?.let { it1 ->
+//                iPvocApplicationRepo.findFirstByConpanyNameAndCompanyPinNoAndFinished(
+//                    it1,
+//                    it, 0
+//                )?.let { company ->
+//                    products?.forEach { product ->
+//                        val pvocApplicationProductsEntity = PvocApplicationProductsEntity()
+//                        KotlinLogging.logger { }.info { company.id }
+//                        with(pvocApplicationProductsEntity) {
+//                            productName = product.productName
+//                            brand = product.brandName
+//                            pvocApplicationId = company
+//                            expirelyDate = product.expriryDate.toString()
+//                            kebsStandardizationMarkPermit = product.permitNumber
+//                            createdBy = company.createdBy
+//                            createdOn = company.createdOn
+//                            iPvocApplicationProductsRepo.save(pvocApplicationProductsEntity)
+//                            KotlinLogging.logger { }.info { "Machine save OK" }
+//                        }
+//                    }
+//
+//                    rawMaterials?.forEach { rawMat ->
+//                        val pvocRawMaterialCategory = PvocExceptionRawMaterialCategoryEntity()
+//                        with(pvocRawMaterialCategory) {
+//                            hsCode = rawMat.hsCode
+//                            rawMaterialDescription = rawMat.rawMaterialDescription
+//                            dutyRate = rawMat.dutyRate?.toLong()
+//                            endProduct = rawMat.endProduct
+//                            exceptionId = company.id
+//                            countryOfOrgin = rawMat.countryOfOrigin
+//                            createdBy = company.createdBy
+//                            createdOn = company.createdOn
+//                            iPvocExceptionRawMaterialCategoryEntityRepo.save(pvocRawMaterialCategory)
+//                            KotlinLogging.logger { }.info { "Machine save OK" }
+//                        }
+//                    }
+//
+//                    mainMachinaries?.forEach { machinary ->
+//                        val machine = PvocExceptionMainMachineryCategoryEntity()
+//                        with(machine) {
+//                            hsCode = machinary.hsCode
+//                            machineDescription = machinary.machineDescription
+//                            countryOfOrigin = machinary.countryOfOrigin
+//                            makeModel = machinary.makeModel
+//                            exceptionId = company.id
+//                            createdBy = company.createdBy
+//                            createdOn = company.createdOn
+//                            iPvocExceptionMainMachineryCategoryEntityRepo.save(machine)
+//                            KotlinLogging.logger { }.info { "Machine save OK" }
+//                        }
+//                    }
+//
+//                    spares?.forEach { spare ->
+//                        val spareEntity = PvocExceptionIndustrialSparesCategoryEntity()
+//                        with(spareEntity) {
+//                            hsCode = spare.hsCode
+//                            machineToFit = spare.machineToFit
+//                            countryOfOrigin = spare.countryOfOrigin
+//                            industrialSpares = spare.industrialSpares
+//                            exceptionId = company.id
+//                            createdBy = company.createdBy
+//                            createdOn = company.createdOn
+//                            iPvocExceptionIndustrialSparesCategoryEntityRepo.save(spareEntity)
+//                            KotlinLogging.logger { }.info { "Machine save OK" }
+//                        }
+//                    }
+//                    return UploadedFileResponse()
+//                }
+//            }
+//        } ?:
+        commonDaoServices.getLoggedInUser().let { userDetails ->
             var pvocExceptionApp = PvocApplicationEntity()
             pvocExceptionApp.companyPinNo = manufacturer?.companyPinNo
             pvocExceptionApp.contactPersorn = manufacturer?.contactPersorn
