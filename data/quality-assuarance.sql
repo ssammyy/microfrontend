@@ -100,6 +100,10 @@ alter table DAT_KEBS_PERMIT_TRANSACTION
     add RM_ID NUMBER REFERENCES DAT_KEBS_USERS(ID)
 /
 
+select * from CFG_PRODUCTS
+-- where id = 2
+order by id desc;
+
 select * from CFG_TURNOVER_RATES
 -- where id = 2
 order by id desc;

@@ -138,13 +138,17 @@
                                                 <div class="list-title-accordion">Status</div>
 <!--                                                <div class="list-text-accordion" th:text="${#dates.format(permitDetails?.dateOfExpiry, 'dd/MM/yyyy')}"></div>-->
                                             </li>
-<!--                                            <li class="list-item-accordion">-->
-<!--                                                <div class="list-title-accordion">Summary Page Url</div>-->
-<!--                                                <div class="list-text-accordion"><a class="btn btn-primary itemViewBtn"-->
-<!--                                                                                    target='_blank'-->
-<!--                                                                                    th:href="${cdDetails?.summaryPageURL}">view</a>-->
-<!--                                                </div>-->
-<!--                                            </li>-->
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Version Number</div>
+                                                <div class="list-text-accordion" th:text="${permitDetails?.versionNumber}"></div>
+                                            </li>
+                                            <li th:if="${permitDetails?.fmarkGenerated == 1}" class="list-item-accordion">
+                                                <div class="list-title-accordion">FMARK VIEW</div>
+                                                <div class="list-text-accordion"><a class="btn btn-primary itemViewBtn"
+                                                                                    target='_blank'
+                                                                                    th:href="@{/api/qa/view/fmark-generated(smarkID=${permitDetails.id})}">view</a>
+                                                </div>
+                                            </li>
                                         </ul>
                                     </div>
                                 </div>
@@ -249,6 +253,33 @@
                                             <td th:text="${fileParam.fileType}"></td>
                                             <td th:text="${fileParam.documentType}"></td>
                                             <td><a th:href="@{/api/qa/kebs/view/attached(fileID=${fileParam.id})}" target='_blank' class="btn btn-primary itemViewBtn">view</a></td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <button class="accordion">Other Version Details</button>
+                            <div class="panel">
+                                <div class="row-table ">
+                                    <table class="table table-striped table-bordered" id="oldVersions"
+                                           style="width:100%">
+                                        <thead>
+                                        <tr>
+                                            <th>Permit Number</th>
+                                            <th>Version Number</th>
+                                            <th>View</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr class="list" style="cursor: pointer"
+                                            th:each="olderVersion: ${oldVersionList}">
+
+                                            <td th:text="${olderVersion?.permitNumber}"></td>
+                                            <td th:text="${olderVersion?.versionNumber}"></td>
+                                            <td><a class="btn btn-primary itemViewBtn" target='_blank'
+                                                   th:href="@{/api/qa/permit-details(permitID=${olderVersion.id},userID=${olderVersion?.userId})}">VIEW</a>
+                                            </td>
                                         </tr>
                                         </tbody>
                                     </table>

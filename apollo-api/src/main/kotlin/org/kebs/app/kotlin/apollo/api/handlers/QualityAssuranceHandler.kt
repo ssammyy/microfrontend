@@ -198,6 +198,53 @@ class QualityAssuranceHandler(
         req.attributes()["plantAttached"] = plantAttached
         req.attributes()["plantsDetails"] = qaDaoServices.findAllPlantDetails(permitUserId)
 
+        req.attributes()["oldVersionList"] = permit.permitNumber?.let { qaDaoServices.findAllOldPermitWithPermitID(it) }
+
+        return ok().render(qaPermitDetailPage, req.attributes())
+    }
+
+
+    @PreAuthorize("hasAuthority('PERMIT_APPLICATION') or hasAuthority('QA_OFFICER_MODIFY') or hasAuthority('QA_HOD_READ') or hasAuthority('QA_MANAGER_ASSESSORS_READ') or hasAuthority('QA_HOF_READ') or hasAuthority('QA_ASSESSORS_READ')")
+    fun permitViewSmarkDetails(req: ServerRequest): ServerResponse {
+        val smarkID = req.paramOrNull("smarkID")?.toLong() ?: throw ExpectedDataNotFound("Required Smark ID, check config")
+       val map = commonDaoServices.serviceMapDetails(appId)
+        val fmarkID = qaDaoServices.findFmarkWithSmarkId(smarkID)
+        val permit = fmarkID.fmarkId?.let { qaDaoServices.findPermitBYID(it) } ?: throw ExpectedDataNotFound("Required Fmark ID MISSING")
+        val plantAttached = permit.attachedPlantId?.let { qaDaoServices.findPlantDetails(it) }
+
+
+        req.attributes().putAll(commonDaoServices.loadCommonUIComponents(map))
+
+        if (permit.hofQamCompletenessStatus == map.activeStatus && permit.assignOfficerStatus != map.activeStatus) {
+            req.attributes()["officers"] = qaDaoServices.findOfficersList(permit, map, applicationMapProperties.mapQADesignationIDForQAOId)
+        }else if (permit.assignOfficerStatus == map.activeStatus) {
+            req.attributes()["officerAssigned"] = permit.qaoId?.let { commonDaoServices.findUserByID(it) }
+        }
+
+        if (permit.justificationReportStatus == map.activeStatus && permit.assignAssessorStatus != map.activeStatus) {
+            req.attributes()["assessors"] = qaDaoServices.findOfficersList(permit, map, applicationMapProperties.mapQADesignationIDForAssessorId)
+        } else if (permit.assignAssessorStatus == map.activeStatus) {
+            req.attributes()["assessorAssigned"] = permit.assessorId?.let { commonDaoServices.findUserByID(it) }
+        }
+
+        req.attributes()["fileParameters"] = qaDaoServices.findAllUploadedFileBYPermitID(smarkID)
+        req.attributes()["standardCategory"] = standardCategoryRepo.findByIdOrNull(permit.standardCategory)
+        req.attributes()["productCategory"] = productCategoriesRepository.findByIdOrNull(permit.productCategory)
+        req.attributes()["broadProductCategory"] = broadProductCategoryRepository.findByIdOrNull(permit.broadProductCategory)
+        req.attributes()["product"] = productsRepo.findByIdOrNull(permit.product)
+        req.attributes()["productSubCategory"] = productSubCategoryRepo.findByIdOrNull(permit.productSubCategory)
+        req.attributes()["ksApplicable"] = sampleStandardsRepository.findBySubCategoryId(permit.productSubCategory)
+        req.attributes()["sectionValue"] = permit.sectionId?.let { commonDaoServices.findSectionWIthId(it).section }
+        req.attributes()["divisionValue"] = permit.divisionId?.let { commonDaoServices.findDivisionWIthId(it).division }
+        req.attributes()["regionPlantValue"] = plantAttached?.region?.let { commonDaoServices.findRegionEntityByRegionID(it, map.activeStatus).region }
+        req.attributes()["countyPlantValue"] = plantAttached?.county?.let { commonDaoServices.findCountiesEntityByCountyId(it, map.activeStatus).county }
+        req.attributes()["townPlantValue"] = plantAttached?.town?.let { commonDaoServices.findTownEntityByTownId(it).town }
+        req.attributes()["permitType"] = permit.permitType?.let { qaDaoServices.findPermitType(it) }
+        req.attributes()["permitDetails"] = permit
+        req.attributes()["plantAttached"] = plantAttached
+
+        req.attributes()["oldVersionList"] = permit.permitNumber?.let { qaDaoServices.findAllOldPermitWithPermitID(it) }
+
         return ok().render(qaPermitDetailPage, req.attributes())
     }
 

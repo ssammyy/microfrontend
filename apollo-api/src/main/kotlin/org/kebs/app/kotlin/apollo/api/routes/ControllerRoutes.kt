@@ -311,6 +311,7 @@ class ControllerRoutes {
             GET("/home", handler::home)
             GET("/permits-list", handler::permitList)
             GET("/permit-details", handler::permitDetails)
+            GET("/view/fmark-generated", handler::permitViewSmarkDetails)
             GET("/new-permit", handler::newPermit)
             GET("/new-sta3", handler::newSta3)
             GET("/new-sta10", handler::newSta10)

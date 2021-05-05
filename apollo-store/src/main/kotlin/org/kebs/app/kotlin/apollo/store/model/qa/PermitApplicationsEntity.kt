@@ -113,6 +113,10 @@ class PermitApplicationsEntity:Serializable {
     @Basic
     var oldPermitStatus: Int? = null
 
+    @Column(name = "RENEWAL_STATUS")
+    @Basic
+    var renewalStatus: Int? = null
+
     @Column(name = "JUSTIFICATION_REPORT_REMARKS")
     @Basic
     var justificationReportRemarks: String? = null
@@ -467,6 +471,7 @@ class PermitApplicationsEntity:Serializable {
         if (generateSchemeStatus != other.generateSchemeStatus) return false
         if (sta10FilledStatus != other.sta10FilledStatus) return false
         if (oldPermitStatus != other.oldPermitStatus) return false
+        if (renewalStatus != other.renewalStatus) return false
         if (inspectionDate != other.inspectionDate) return false
         if (assessmentDate != other.assessmentDate) return false
         if (inspectionScheduledStatus != other.inspectionScheduledStatus) return false
@@ -564,6 +569,7 @@ class PermitApplicationsEntity:Serializable {
         result = 31 * result + (fmarkGenerated ?: 0)
         result = 31 * result + (endOfProductionStatus ?: 0)
         result = 31 * result + (oldPermitStatus ?: 0)
+        result = 31 * result + (renewalStatus ?: 0)
         result = 31 * result + (status ?: 0)
         result = 31 * result + (generateSchemeStatus ?: 0)
         result = 31 * result + (hofQamCompletenessStatus ?: 0)

@@ -46,11 +46,10 @@ class QualityAssuranceController(
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         val permitType = qaDaoServices.findPermitType(permitTypeID)
 
-        result = qaDaoServices.permitSave(permit, permitType, loggedInUser, map)
+        result = qaDaoServices.permitSave(permit, permitType, loggedInUser, map).first
 
         val sm = CommonDaoServices.MessageSuccessFailDTO()
-        sm.closeLink =
-            "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${result.varField1}%26userID=${loggedInUser.id}"
+        sm.closeLink = "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${result.varField1}%26userID=${loggedInUser.id}"
         sm.message = "You have Successful Filled STA 1 , Complete your application"
 
         return commonDaoServices.returnValues(result, map, sm)
@@ -196,9 +195,22 @@ class QualityAssuranceController(
         val map = commonDaoServices.serviceMapDetails(appId)
         val loggedInUser = commonDaoServices.loggedInUserDetails()
 
-        val result: ServiceRequestsEntity?
+        var result: ServiceRequestsEntity?
 
-        result = qaDaoServices.permitUpdateNewWithSamePermitNumber(permitNo,map, loggedInUser)
+        var myRenewedPermit = qaDaoServices.permitUpdateNewWithSamePermitNumber(permitNo,map, loggedInUser)
+        val permit = myRenewedPermit.second
+        //If It has FMARK Then Generate FMARK then RENEW
+        if (permit.fmarkGenerated ==1 && applicationMapProperties.mapQAPermitTypeIdSmark == permit.permitType){
+            val fmarkID = permit.id?.let { qaDaoServices.findFmarkWithSmarkId(it) } ?: throw ExpectedDataNotFound("SMARK ID MISSING ON RENEWAL FOR FMARK")
+            val foundFmark = fmarkID.fmarkId?.let { qaDaoServices.findPermitBYID(it) }
+            val fmarkRenewed = foundFmark?.permitNumber?.let { qaDaoServices.permitUpdateNewWithSamePermitNumber(it,map, loggedInUser) } ?: throw ExpectedDataNotFound("FMARK PERMIT NUMBER CAN'T BE NULL")
+            qaDaoServices.generateSmarkFmarkEntity( permit,fmarkRenewed.second,loggedInUser)
+            //Generate Invoice
+            result = qaDaoServices.permitInvoiceCalculation(map, loggedInUser, permit, qaDaoServices.findPermitType(permit.permitType!!))
+        }else{
+            //Generate Invoice
+            result = qaDaoServices.permitInvoiceCalculation(map, loggedInUser, permit, qaDaoServices.findPermitType(permit.permitType!!))
+        }
 
         val sm = CommonDaoServices.MessageSuccessFailDTO()
         sm.closeLink = "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${result.varField1}%26userID=${loggedInUser.id}"
@@ -466,7 +478,11 @@ class QualityAssuranceController(
 
         val permit = loggedInUser.id?.let { qaDaoServices.findPermitBYUserIDAndId(permitID, it) } ?: throw ExpectedDataNotFound("Required User ID, check config")
         val permitType = permit.permitType?.let { qaDaoServices.findPermitType(it) } ?: throw ExpectedDataNotFound("PermitType Id Not found")
-//       val fmarkGenerated =
+        val ifProductCanGenerateFmark = permit.id?.let { commonDaoServices.findProductByID(it).fmarkGenerateStatus }
+        if (ifProductCanGenerateFmark == 1){
+            val fmarkGenerated = qaDaoServices.permitGenerateFmark(map,loggedInUser,permit)
+        }
+
         result = qaDaoServices.permitInvoiceCalculation(map, loggedInUser, permit, permitType)
         with(permit) {
             sendApplication = map.activeStatus
