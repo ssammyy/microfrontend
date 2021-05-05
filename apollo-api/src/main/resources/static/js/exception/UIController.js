@@ -32,7 +32,7 @@ testApp.controller("exceptionController", ['$scope', 'ExceptionService',
         }
 
         function goCNN2(currentPage, pageSize, filters, fromDate, toDate){
-            window.location.href=`/api/di/pvoc/officer?currentPage=${currentPage}&pageSize=${pageSize}&filter=${filters}&fromDate=${fromDate}&toDate=${toDate}`;
+            window.location.href=`/api/di/pvoc/application/unfinished?currentPage=${currentPage}&pageSize=${pageSize}&filter=${filters}&fromDate=${fromDate}&toDate=${toDate}`;
         }
 
 
@@ -162,7 +162,6 @@ testApp.controller("exceptionController", ['$scope', 'ExceptionService',
             'hsCode': $scope.hsCode.split("=>")[0],
             'rawMaterialDescription': $scope.rawMaterialDesc,
             'endProduct': $scope.endProduct.productName,
-            'dutyRate': $scope.dutyRate,
             'countryOfOrigin': $scope.countryR
         });
         $scope.hsCode = '';
