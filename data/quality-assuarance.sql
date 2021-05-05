@@ -86,10 +86,11 @@ SELECT * FROM
     DAT_KEBS_USER_VERIFICATION_TOKEN
 WHERE USER_ID = 1464
 ORDER BY ID DESC;
-
+-- /****************************
 alter table DAT_KEBS_PERMIT_TRANSACTION
-    add GENERATE_SCHEME_STATUS NUMBER(2)
+    add PERMIT_EXPIRED_STATUS NUMBER(2)
 /
+-- /***************************/
 
 alter table CFG_PERMIT_TYPES
     add SCHEME_GENERATE NUMBER(2)
@@ -98,6 +99,10 @@ alter table CFG_PERMIT_TYPES
 alter table DAT_KEBS_PERMIT_TRANSACTION
     add RM_ID NUMBER REFERENCES DAT_KEBS_USERS(ID)
 /
+
+select * from CFG_PRODUCTS
+-- where id = 2
+order by id desc;
 
 select * from CFG_TURNOVER_RATES
 -- where id = 2
@@ -113,7 +118,7 @@ order by id desc;
 
 select * from DAT_KEBS_INVOICE
 -- where id = 2
-where INVOICE_NUMBER = 'DM#20210426B8C'
+-- where INVOICE_NUMBER = 'DM#20210426B8C'
 order by id desc;
 
 alter table DAT_KEBS_QA_PRODUCT modify AVAILABLE NUMBER(2)/
@@ -143,7 +148,7 @@ select * from LOG_SERVICE_REQUESTS
 order by id desc;
 
 select * from DAT_KEBS_MANUFACTURE_PLANT_DETAILS
--- where id = 43
+where id = 81
 order by id desc;
 
 

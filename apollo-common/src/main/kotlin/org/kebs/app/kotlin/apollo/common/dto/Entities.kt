@@ -254,6 +254,7 @@ data class OtpRequestValuesDto(
 
 data class OtpResponseDto(
     var message: String? = null,
+    var otp: String? = null
 )
 
 
@@ -289,6 +290,7 @@ data class UserCompanyEntityDto(
     var businessNatures: Long? = null,
     var buildingName: String? = null,
     var streetName: String? = null,
+    var directorIdNumber: String? = null,
     var region: Long? = null,
     var county: Long? = null,
     var town: Long? = null,

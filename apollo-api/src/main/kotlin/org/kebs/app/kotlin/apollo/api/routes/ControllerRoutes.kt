@@ -311,6 +311,7 @@ class ControllerRoutes {
             GET("/home", handler::home)
             GET("/permits-list", handler::permitList)
             GET("/permit-details", handler::permitDetails)
+            GET("/view/fmark-generated", handler::permitViewSmarkDetails)
             GET("/new-permit", handler::newPermit)
             GET("/new-sta3", handler::newSta3)
             GET("/new-sta10", handler::newSta10)
@@ -322,7 +323,7 @@ class ControllerRoutes {
             GET("/scheme-of-supervision", handler::generatedSchemeSupervision)
             GET("/product-quality-status", handler::generateProductQualityStatus)
             GET("/invoice-details", handler::getInvoiceDetails)
-
+//
 //            "/inspection".nest {
 //                GET("/check-list", handler::inspectionDetails)
 //                GET("/sample-collection", handler::inspectionDetails)

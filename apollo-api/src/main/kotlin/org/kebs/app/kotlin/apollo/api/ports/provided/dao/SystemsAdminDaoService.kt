@@ -403,6 +403,7 @@ class SystemsAdminDaoService(
                         kraPin = dto.kraPin
                         userId = dto.userId
                         registrationNumber = dto.registrationNumber
+                        directorIdNumber = dto.directorIdNumber
                         postalAddress = dto.postalAddress
                         companyEmail = dto.companyEmail
                         companyTelephone = dto.companyTelephone
@@ -429,6 +430,7 @@ class SystemsAdminDaoService(
                     kraPin = dto.kraPin
                     userId = dto.userId
                     registrationNumber = dto.registrationNumber
+                    directorIdNumber = dto.directorIdNumber
                     postalAddress = dto.postalAddress
                     companyEmail = dto.companyEmail
                     companyTelephone = dto.companyTelephone

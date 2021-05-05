@@ -81,24 +81,29 @@ select *
 from DAT_KEBS_USER_VERIFICATION_TOKEN
 where TOKEN =
 ;
-select *
-from CFG_ROLES_PRIVILEGES --the role is 40 and prRole ID = 774
+select * from CFG_ROLES_PRIVILEGES --the role is 40 and prRole ID = 774
 -- where PRIVILEGE_ID =52425
 order by id desc;
 
-select *
-from CFG_USER_ROLES--512
+select * from CFG_KEBS_REGIONS --the role is 40 and prRole ID = 774
+where id = 4
+order by id desc;
+
+select * from DAT_KEBS_COMPANY_PROFILE --the role is 40 and prRole ID = 774
+-- where PRIVILEGE_ID =52425
+order by id desc;
+
+select * from CFG_USER_ROLES--512
 --where id like '%5%'
 -- where ROLE_NAME = 'SYSADMIN_VIEW'
 order by id desc;
 
-select *
-from CFG_USER_PRIVILEGES--QA_OFFICER_READ
-where id like '%50%'
+select * from CFG_USER_PRIVILEGES--QA_OFFICER_READ
+where id like '%521%'
 order by id desc;--MS_MP_MODIFY MS_MP_READ AUTHORITIES_WRITE 29
 select *
 from CFG_ROLES_PRIVILEGES
-where ROLES_ID = 502
+where ROLES_ID = 510
 
 order by id desc;--MS_MP_MODIFY MS_MP_READ
 select *
@@ -112,12 +117,13 @@ order by id desc;--MS_MP_MODIFY MS_MP_READ
 
 select * from DAT_KEBS_USERS
 -- where USER_TYPE = 5
-where USER_NAME = '254safaris@gmail.com'
+where EMAIL = '254safaris@gmail.com'
+-- where USER_NAME = '0715668934'
 order by id desc;21384
 
 select *
 from DAT_KEBS_USER_PROFILES
--- where USER_ID = 1403
+-- where REGION_ID = 4 and DESIGNATION_ID = 304
 -- where email = '254safaris@gmail.com'
 order by id desc;
 

@@ -10,13 +10,22 @@ import org.springframework.stereotype.Repository
 interface IPermitApplicationsRepository : HazelcastRepository<PermitApplicationsEntity, Long> {
     fun findByUserId(userId: Long): List<PermitApplicationsEntity>?
     fun findByUserIdAndPermitType(userId: Long, permitType: Long): List<PermitApplicationsEntity>?
+    fun findByUserIdAndPermitTypeAndOldPermitStatusIsNull(userId: Long, permitType: Long): List<PermitApplicationsEntity>?
     fun findByQamIdAndPermitType(userId: Long, permitType: Long): List<PermitApplicationsEntity>?
+    fun findByQamIdAndPermitTypeAndOldPermitStatusIsNull(userId: Long, permitType: Long): List<PermitApplicationsEntity>?
     fun findByHodIdAndPermitType(userId: Long, permitType: Long): List<PermitApplicationsEntity>?
+    fun findByHodIdAndPermitTypeAndOldPermitStatusIsNull(userId: Long, permitType: Long): List<PermitApplicationsEntity>?
     fun findByQaoIdAndPermitType(userId: Long, permitType: Long): List<PermitApplicationsEntity>?
+    fun findByQaoIdAndPermitTypeAndOldPermitStatusIsNull(userId: Long, permitType: Long): List<PermitApplicationsEntity>?
+    fun findByAssessorIdAndPermitType(userId: Long, permitType: Long): List<PermitApplicationsEntity>?
+    fun findByAssessorIdAndPermitTypeAndOldPermitStatusIsNull(userId: Long, permitType: Long): List<PermitApplicationsEntity>?
     fun findByUserIdAndPermitTypeAndEndOfProductionStatus(userId: Long, permitType: Long, endOfProductionStatus: Int): List<PermitApplicationsEntity>?
+    fun findByUserIdAndPermitTypeAndEndOfProductionStatusAndOldPermitStatusIsNull(userId: Long, permitType: Long, endOfProductionStatus: Int): List<PermitApplicationsEntity>?
     fun findByIdAndUserIdAndPermitType(id: Long, userId: Long, permitType: Long): PermitApplicationsEntity?
     fun findByIdAndUserId(id: Long, userId: Long): PermitApplicationsEntity?
     fun findAllByPaidStatus(paymentStatus: Int): List<PermitApplicationsEntity>?
+    fun findByPermitNumberAndOldPermitStatus(permitNumber: String, oldPermitStatus: Int): List<PermitApplicationsEntity>?
+    fun findTopByPermitNumberOrderByIdDesc(permitNumber: String): PermitApplicationsEntity?
 }
 
 
@@ -32,6 +41,12 @@ interface IPermitTypesEntityRepository : HazelcastRepository<PermitTypesEntity, 
 interface IQaSchemeForSupervisionRepository : HazelcastRepository<QaSchemeForSupervisionEntity, Long> {
     fun findByStatusAndId(status: Int, id: Long): QaSchemeForSupervisionEntity?
     fun findByPermitId(permitId: Long): QaSchemeForSupervisionEntity?
+}
+
+@Repository
+interface IQaSampleCollectionRepository : HazelcastRepository<QaSampleCollectionEntity, Long> {
+    fun findByStatusAndId(status: Int, id: Long): QaSampleCollectionEntity?
+    fun findByPermitId(permitId: Long): QaSampleCollectionEntity?
 }
 
 @Repository
@@ -76,6 +91,7 @@ interface ITurnOverRatesRepository : HazelcastRepository<TurnOverRatesEntity, Lo
 @Repository
 interface IQaUploadsRepository : HazelcastRepository<QaUploadsEntity, Long> {
     fun findByPermitId(permitId: Long): List<QaUploadsEntity>?
+    fun findByPermitIdAndDocumentType(permitId: Long, docType: String): QaUploadsEntity?
 }
 
 @Repository

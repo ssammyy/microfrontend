@@ -321,7 +321,7 @@
                         </div>
                         <div class="col-md-3 sidebar hidden-print">
                             <div id="sticky-sidebar">
-                                <div th:if="${invoice.paymentStatus == 0}"
+                                <div th:if="${invoice.status == 0}"
                                         menuitemname="Client Details"
                                         class="panel panel-sidebar panel-payment"
                                         style="background-color: #1b75bc;"
@@ -420,7 +420,7 @@
 
                                 </div>
 
-                                <div th:if="${invoice.paymentStatus == 1}"
+                                <div th:if="${invoice.status == 1}"
                                      menuitemname="Client Details"
                                      class="panel panel-sidebar panel-payment"
                                      style="background-color: #1b75bc;"
