@@ -10,7 +10,7 @@
     <process id="committee_stage" name="Committee Stage" isExecutable="true">
         <documentation>Standard Development Module Committee Stage</documentation>
         <startEvent id="start" name="Start" flowable:formFieldValidation="true"/>
-        <userTask id="prepareANWI" name="Prepare A NWI" flowable:candidateGroups="TC_sec"
+        <userTask id="prepareANWI" name="Prepare A NWI" flowable:candidateGroups="TC-sec"
                   flowable:formFieldValidation="true"/>
         <exclusiveGateway id="approve"/>
         <userTask id="Uploadalldraftsanddocuments" name="Upload all drafts and documents from NWI discussion"

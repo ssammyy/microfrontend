@@ -7,6 +7,8 @@ import com.apollo.standardsdevelopment.services.CommitteeService
 import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.*
 
+@CrossOrigin(origins = ["http://localhost:4200"])
+
 @RestController
 @RequestMapping("/committee")
 
@@ -32,9 +34,9 @@ class CommitteeController(val committeeService: CommitteeService) {
         committeeService.uploadDrafts(committeeDrafts, taskId)
     }
 
-    @PostMapping("/preparePD/{taskId}")
-    fun preparePD(@RequestBody committeePD: CommitteePD, @PathVariable("taskId") taskId: String?) {
-        return committeeService.preparePD(committeePD, taskId)
+    @PostMapping("/preparePD")
+    fun preparePD(@RequestBody committeePD: CommitteePD): ProcessInstanceResponse {
+        return committeeService.preparePD(committeePD)
     }
 
     @PostMapping("/uploaddraftspd/{taskId}")
@@ -42,9 +44,9 @@ class CommitteeController(val committeeService: CommitteeService) {
         committeeService.uploadDraftsPD(committeeDraftsPD, taskId)
     }
 
-    @PostMapping("/prepareCD/{taskId}")
-    fun prepareCD(@RequestBody committeeCD: CommitteeCD, @PathVariable("taskId") taskId: String?) {
-        committeeService.prepareCD(committeeCD, taskId)
+    @PostMapping("/prepareCD")
+    fun prepareCD(@RequestBody committeeCD: CommitteeCD):ProcessInstanceResponse {
+        return committeeService.prepareCD(committeeCD)
     }
 
     @PostMapping("/approveCD/{taskId}/{approved}")
@@ -61,4 +63,18 @@ class CommitteeController(val committeeService: CommitteeService) {
     fun getTCSecTasks(): List<TaskDetails> {
         return committeeService.getTCSECTasks()
     }
+
+    @GetMapping("/getnwis")
+    fun getNWIs(): MutableList<CommitteeNWI> {
+        return committeeService.getNWIs()
+    }
+    @GetMapping("/getPds")
+    fun getPDS(): MutableList<CommitteePD> {
+        return committeeService.getPds()
+    }
+    @GetMapping("/getCds")
+    fun getCDS(): MutableList<CommitteeCD> {
+        return committeeService.getCds()
+    }
+
 }

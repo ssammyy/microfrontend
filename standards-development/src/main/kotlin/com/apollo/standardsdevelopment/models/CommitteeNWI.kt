@@ -36,6 +36,10 @@ class CommitteeNWI {
     @Basic
     var stage_date: String? = null
 
+    @Column(name = "APPROVED")
+    @Basic
+    var approved: Long = 0
+
     @Column(name = "CREATED_ON")
     @Basic
     var createdOn: Timestamp? = null
@@ -60,6 +64,7 @@ class CommitteeNWI {
         if (ed != other.ed) return false
         if (title != other.title) return false
         if (stage_date != other.stage_date) return false
+        if (approved != other.approved) return false
 
         if (createdOn != other.createdOn) return false
         if (modifiedOn != other.modifiedOn) return false
@@ -76,6 +81,7 @@ class CommitteeNWI {
         result = 31 * result + (ed?.hashCode() ?: 0)
         result = 31 * result + (title?.hashCode() ?: 0)
         result = 31 * result + (stage_date?.hashCode() ?: 0)
+        result = 31 * result + (approved.hashCode() ?: 0)
 
         result = 31 * result + (createdOn?.hashCode() ?: 0)
         result = 31 * result + (modifiedOn?.hashCode() ?: 0)
@@ -85,7 +91,7 @@ class CommitteeNWI {
 
     override fun toString(): String {
         return "CommitteeNWI(id=$id, slNo=$slNo, reference=$reference, ta=$ta,ed=$ed,title = $title,stage_date = $stage_date" +
-                "createdOn=$createdOn, modifiedOn=$modifiedOn, deletedOn=$deletedOn)"
+                "approved=$approved,createdOn=$createdOn, modifiedOn=$modifiedOn, deletedOn=$deletedOn)"
     }
 
 }

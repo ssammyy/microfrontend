@@ -1,4 +1,5 @@
 package com.apollo.standardsdevelopment.models
+
 import java.sql.Timestamp
 import javax.persistence.*
 
@@ -9,6 +10,14 @@ class CommitteeCD {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID")
     var id: Long = 0
+
+    @Column(name = "NWI_ID")
+    @Basic
+    var nwiID: String? = null
+
+    @Column(name = "PD_ID")
+    @Basic
+    var pdID: String? = null
 
     @Column(name = "CD_NAME")
     @Basic
@@ -42,6 +51,9 @@ class CommitteeCD {
         other as CommitteeCD
 
         if (id != other.id) return false
+        if (nwiID != other.nwiID) return false
+        if (pdID != other.pdID) return false
+
         if (cdName != other.cdName) return false
         if (cdBy != other.cdBy) return false
         if (approved != other.approved) return false
@@ -54,6 +66,9 @@ class CommitteeCD {
 
     override fun hashCode(): Int {
         var result = id.hashCode()
+        result = 31 * result + (nwiID?.hashCode() ?: 0)
+        result = 31 * result + (pdID?.hashCode() ?: 0)
+
         result = 31 * result + (cdName?.hashCode() ?: 0)
         result = 31 * result + (cdBy?.hashCode() ?: 0)
         result = 31 * result + (approved?.hashCode() ?: 0)
@@ -65,7 +80,7 @@ class CommitteeCD {
     }
 
     override fun toString(): String {
-        return "CommitteeCD(id=$id, cdName=$cdName, cdBy=$cdBy, approved=$approved" +
+        return "CommitteeCD(id=$id, nwiID=$nwiID,pdID=$pdID,cdName=$cdName, cdBy=$cdBy, approved=$approved" +
                 "createdOn=$createdOn, modifiedOn=$modifiedOn, deletedOn=$deletedOn)"
     }
 

@@ -11,6 +11,7 @@ import org.flowable.engine.RuntimeService
 import org.flowable.engine.TaskService
 import org.flowable.engine.repository.Deployment
 import org.flowable.task.api.Task
+import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Service
 import java.util.ArrayList
 
@@ -18,7 +19,7 @@ import java.util.ArrayList
 class CommitteeService(
     private val runtimeService: RuntimeService,
     private val taskService: TaskService,
-    private val processEngine: ProcessEngine,
+    @Qualifier("processEngine") private val processEngine: ProcessEngine,
     private val repositoryService: RepositoryService,
     private val committeeNWIRepository: CommitteeNWIRepository,
     private val committeeDraftsRepository: CommitteeDraftsRepository,
@@ -49,7 +50,10 @@ class CommitteeService(
         committeeNWI.ed?.let { variable.put("ed", it) }
         committeeNWI.title?.let { variable.put("title", it) }
         committeeNWI.stage_date?.let { variable.put("stage_date", it) }
+        committeeNWI.approved.let { variable.put("approved", it) }
+
         print(committeeNWI.toString())
+
 
         committeeNWIRepository.save(committeeNWI)
         val processInstance = runtimeService.startProcessInstanceByKey(PROCESS_DEFINITION_KEY, variable)
@@ -88,14 +92,15 @@ class CommitteeService(
 
     }
 
-    fun preparePD(committeePD: CommitteePD, taskId: String?) {
+    fun preparePD(committeePD: CommitteePD): ProcessInstanceResponse {
+        committeePD.nwiID?.let { variable.put("nwiID", it) }
         committeePD.pdName?.let { variable.put("pdName", it) }
         committeePD.pdBy?.let { variable.put("pdBy", it) }
         print(committeePD.toString())
         committeePDRepository.save(committeePD)
-        taskService.complete(taskId)
         println("TC-SEC has prepared Preliminary Draft document")
-
+        val processInstance = runtimeService.startProcessInstanceByKey(PROCESS_DEFINITION_KEY, variable)
+        return ProcessInstanceResponse(processInstance.id, processInstance.isEnded)
     }
 
     fun uploadDraftsPD(committeeDraftsPD: CommitteeDraftsPD, taskId: String?) {
@@ -109,13 +114,16 @@ class CommitteeService(
 
     }
 
-    fun prepareCD(committeeCD: CommitteeCD, taskId: String?) {
+    fun prepareCD(committeeCD: CommitteeCD): ProcessInstanceResponse {
+        committeeCD.nwiID?.let { variable.put("nwiID", it) }
+        committeeCD.pdID?.let { variable.put("pdID", it) }
         committeeCD.cdName?.let { variable.put("cdName", it) }
         committeeCD.cdBy?.let { variable.put("cdBy", it) }
         print(committeeCD.toString())
         committeeCDRepository.save(committeeCD)
-        taskService.complete(taskId)
         println("TC-SEC has prepared Preliminary Draft document")
+        val processInstance = runtimeService.startProcessInstanceByKey(PROCESS_DEFINITION_KEY, variable)
+        return ProcessInstanceResponse(processInstance.id, processInstance.isEnded)
 
     }
 
@@ -130,6 +138,18 @@ class CommitteeService(
         val variables: MutableMap<String, Any> = java.util.HashMap()
         variables["approved"] = approved
         taskService.complete(taskId, variables)
+    }
+
+    fun getNWIs(): MutableList<CommitteeNWI> {
+        return committeeNWIRepository.findAll()
+    }
+
+    fun getPds(): MutableList<CommitteePD> {
+        return committeePDRepository.findAll()
+    }
+
+    fun getCds(): MutableList<CommitteeCD> {
+        return committeeCDRepository.findAll()
     }
 
     fun checkProcessHistory(processId: String?) {
