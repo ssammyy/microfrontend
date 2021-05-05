@@ -29,11 +29,11 @@ class ProductsEntity: Serializable {
 
     @Column(name = "FMARK_GENERATE_STATUS")
     @Basic
-    var fmarkGenerateStatus: Int = 0
+    var fmarkGenerateStatus: Int? = null
 
     @Column(name = "STATUS")
     @Basic
-    var status: Int = 0
+    var status: Int? = 0
 
     @Column(name = "VAR_FIELD_1")
     @Basic
