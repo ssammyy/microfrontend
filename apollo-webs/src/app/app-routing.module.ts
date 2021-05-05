@@ -38,6 +38,18 @@ import {RequestStandardFormComponent} from "./components/standards-development/s
 import {StandardsDevelopmentComponent} from "./components/standards-development/standards-development.component";
 import {StdTcTasksComponent} from "./components/standards-development/std-tc-tasks/std-tc-tasks.component";
 
+
+//Committee Module
+import {PreparePdComponent} from "./components/standards-development/commitee/prepare-pd/prepare-pd.component";
+import {PdDetailsComponent} from "./components/standards-development/commitee/pd-details/pd-details.component";
+import {PdListComponent} from "./components/standards-development/commitee/pd-list/pd-list.component";
+import {PrepareNwiComponent} from "./components/standards-development/commitee/prepare-nwi/prepare-nwi.component";
+import {NwiListComponent} from "./components/standards-development/commitee/nwi-list/nwi-list.component";
+import {CdListComponent} from "./components/standards-development/commitee/cd-list/cd-list.component";
+import {PrepareCdComponent} from "./components/standards-development/commitee/prepare-cd/prepare-cd.component";
+import {ApproveNwiComponent} from "./components/standards-development/commitee/approve-nwi/approve-nwi.component";
+import {ApproveCdComponent} from "./components/standards-development/commitee/approve-cd/approve-cd.component";
+
 const routes: Routes = [
   // { path: 'login-signup', component: LoginSignupComponent },
   // Customer Login
@@ -228,6 +240,24 @@ const routes: Routes = [
    * END OF STANDARD DEVELOPMENT ROUTES
    ***************************************************************/
 
+  /****************************************************************
+   * STANDARD DEVELOPMENT - COMMITTEE MODULE ROUTES
+   ***************************************************************/
+
+  {path: 'preliminary_draft', component: PdListComponent},
+  {path: 'add', component: PreparePdComponent},
+  {path: 'details/:id', component: PdDetailsComponent},
+  {path: 'add_nwi', component: PrepareNwiComponent},
+  {path: 'nwi', component: NwiListComponent},
+  {path: 'committee_draft', component: CdListComponent},
+  {path: 'add_cd', component: PrepareCdComponent},
+  {path: 'approve_nwi', component: ApproveNwiComponent},
+  {path: 'approve_cd', component: ApproveCdComponent},
+
+
+  /****************************************************************
+   * END OF STANDARD DEVELOPMENT - COMMITTEE MODULE ROUTES
+   ***************************************************************/
 ];
 
 @NgModule({

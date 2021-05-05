@@ -1,0 +1,27 @@
+<div class="panel panel-primary">
+  <div class="panel-heading">
+    <h2>Preliminary Committee_module</h2>
+  </div>
+  <div class="panel-body">
+    <table class="table table-striped">
+      <thead>
+      <tr>
+        <th>Preliminary Draft Id</th>
+        <th>Preliminary Draft Name</th>
+        <th>Preliminary Draft By</th>
+        <th>Actions</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let pd of preliminary_draft | async">
+        <td>{{pd.id}}</td>
+        <td>{{pd.pdName}}</td>
+        <td>{{pd.pdBy}}</td>
+        <td><button (click)="deletePreliminaryDraft(pd.id)" class="btn btn-danger">Delete</button>
+          <button (click)="PreliminaryDraftDetails(pd.id)" class="btn btn-info" style="margin-left: 10px">Details</button>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

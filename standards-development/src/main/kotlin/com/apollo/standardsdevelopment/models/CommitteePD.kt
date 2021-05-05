@@ -1,4 +1,5 @@
 package com.apollo.standardsdevelopment.models
+
 import java.sql.Timestamp
 import javax.persistence.*
 
@@ -9,6 +10,10 @@ class CommitteePD {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID")
     var id: Long = 0
+
+    @Column(name = "NWI_ID")
+    @Basic
+    var nwiID: String? = null
 
     @Column(name = "PD_NAME")
     @Basic
@@ -38,6 +43,7 @@ class CommitteePD {
         other as CommitteePD
 
         if (id != other.id) return false
+        if (nwiID != other.nwiID) return false
         if (pdName != other.pdName) return false
         if (pdBy != other.pdBy) return false
         if (createdOn != other.createdOn) return false
@@ -49,6 +55,7 @@ class CommitteePD {
 
     override fun hashCode(): Int {
         var result = id.hashCode()
+        result = 31 * result + (nwiID?.hashCode() ?: 0)
         result = 31 * result + (pdName?.hashCode() ?: 0)
         result = 31 * result + (pdBy?.hashCode() ?: 0)
         result = 31 * result + (createdOn?.hashCode() ?: 0)
@@ -58,7 +65,7 @@ class CommitteePD {
     }
 
     override fun toString(): String {
-        return "CommitteePD(id=$id, pdName=$pdName, pdBy=$pdBy" +
+        return "CommitteePD(id=$id, nwiID=$nwiID,pdName=$pdName, pdBy=$pdBy" +
                 "createdOn=$createdOn, modifiedOn=$modifiedOn, deletedOn=$deletedOn)"
     }
 
