@@ -176,8 +176,7 @@ class QualityAssuranceController(
 
         val sm = CommonDaoServices.MessageSuccessFailDTO()
         sm.closeLink = "${applicationMapProperties.baseUrlValue}/user/user-profile"
-        sm.message =
-            "Plant with the following building [Name = ${manufacturePlantDetails.buildingName}] was added sucessfull"
+        sm.message = "Plant with the following building Name = ${manufacturePlantDetails.buildingName} was added successfully"
 
         return commonDaoServices.returnValues(result, map, sm)
     }
@@ -487,15 +486,15 @@ class QualityAssuranceController(
         with(permit) {
             sendApplication = map.activeStatus
             invoiceGenerated = map.activeStatus
-            //Todo: Ask anthony about this
-            when {
-                permit.permitType!! == applicationMapProperties.mapQAPermitTypeIDDmark -> {
-                    hodId = qaDaoServices.assignNextOfficerAfterPayment(permit, map, applicationMapProperties.mapQADesignationIDForHODId)?.id
-                }
-                permit.permitType!! == applicationMapProperties.mapQAPermitTypeIdSmark -> {
-                    qamId = qaDaoServices.assignNextOfficerAfterPayment(permit, map, applicationMapProperties.mapQADesignationIDForQAMId)?.id
-                }
-            }
+//            //Todo: Ask anthony about this
+//            when {
+//                permit.permitType!! == applicationMapProperties.mapQAPermitTypeIDDmark -> {
+//                    hodId = qaDaoServices.assignNextOfficerAfterPayment(permit, map, applicationMapProperties.mapQADesignationIDForHODId)?.id
+//                }
+//                permit.permitType!! == applicationMapProperties.mapQAPermitTypeIdSmark -> {
+//                    qamId = qaDaoServices.assignNextOfficerAfterPayment(permit, map, applicationMapProperties.mapQADesignationIDForQAMId)?.id
+//                }
+//            }
 
         }
         result = qaDaoServices.permitUpdateDetails(permit, map, loggedInUser).first
