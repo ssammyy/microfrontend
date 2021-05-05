@@ -141,6 +141,15 @@ class QADaoServices(
             ?: throw ExpectedDataNotFound("No Permit Found for the following user with USERNAME = ${user.userName}")
     }
 
+    fun findAllPacSecPermitListWithPermitType(user: UsersEntity, permitType: Long): List<PermitApplicationsEntity> {
+        val userId = user.id ?: throw ExpectedDataNotFound("No USER ID Found")
+        permitRepo.findByPacSecIdAndPermitTypeAndOldPermitStatusIsNull(userId, permitType)
+            ?.let { permitList ->
+                return permitList
+            }
+            ?: throw ExpectedDataNotFound("No Permit Found for the following user with USERNAME = ${user.userName}")
+    }
+
     fun findAllQAOPermitListWithPaymentStatus(paymentStatus: Int): List<PermitApplicationsEntity> {
         permitRepo.findAllByPaidStatus(paymentStatus)?.let { permitList ->
                 return permitList
@@ -274,7 +283,6 @@ class QADaoServices(
         return commonDaoServices.findAllUsersWithDesignationRegionDepartmentAndStatus(designation, region, department, map.activeStatus)
     }
 
-
     fun assignNextOfficerAfterPayment(permit: PermitApplicationsEntity, map: ServiceMapsEntity, designationID:Long): UsersEntity? {
         val plantID = permit.attachedPlantId
             ?: throw ServiceMapNotFoundException("Attached Plant details For Permit with ID = ${permit.id}, is Empty")
@@ -306,6 +314,15 @@ class QADaoServices(
                 "The Assessment Criteria:" +
                 "\n " +
                 "${permit.assessmentCriteria}."
+        notifications.sendEmail(recipientEmail, subject, messageBody)
+        return true
+    }
+
+    fun sendPacDmarkAssessmentNotificationEmail(recipientEmail: String, permit: PermitApplicationsEntity): Boolean {
+        val subject = "DMARK Factory Conformity Status"
+        val messageBody = "Dmark assessment report and conformity status is available for below:  \n" +
+                "\n " +
+                "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permit.id}%26userID=${permit.userId}"
         notifications.sendEmail(recipientEmail, subject, messageBody)
         return true
     }

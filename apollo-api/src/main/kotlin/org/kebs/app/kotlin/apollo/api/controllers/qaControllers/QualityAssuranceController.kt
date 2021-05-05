@@ -1,6 +1,7 @@
 package org.kebs.app.kotlin.apollo.api.controllers.qaControllers
 
 
+import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.QADaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.QualityAssuranceDaoServices
@@ -104,7 +105,8 @@ class QualityAssuranceController(
         return commonDaoServices.returnValues(result, map, sm)
     }
 
-    @PreAuthorize("hasAuthority('PERMIT_APPLICATION') or hasAuthority('QA_MANAGER_ASSESSORS_READ') or hasAuthority('QA_HOF_READ') or hasAuthority('QA_HOD_READ') or hasAuthority('QA_OFFICER_MODIFY')")
+    @PreAuthorize("hasAuthority('PERMIT_APPLICATION') or hasAuthority('QA_MANAGER_ASSESSORS_READ') or hasAuthority('QA_HOF_READ') " +
+            "or hasAuthority('QA_HOD_READ') or hasAuthority('QA_OFFICER_MODIFY') or hasAuthority('QA_PAC_SECRETARY_MODIFY')")
     @PostMapping("/apply/update-permit")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun updatePermitDetails(
@@ -137,14 +139,27 @@ class QualityAssuranceController(
                 val assessor = permitDetails.assessorId?.let { commonDaoServices.findUserByID(it) }
                 assessor?.email?.let { qaDaoServices.sendAppointAssessorNotificationEmail(it, permitDetails) }
             }
-
             permit.assessmentScheduledStatus == map.activeStatus -> {
                 //Send manufacturers notification
                 val manufacturer = permitDetails.userId?.let { commonDaoServices.findUserByID(it) }
                 manufacturer?.email?.let { qaDaoServices.sendScheduledFactoryAssessmentNotificationEmail(it, permitDetails) }
             }
+            permit.permitAwardStatus == map.activeStatus -> {
+                val issueDate = commonDaoServices.getCurrentDate()
+                val permitType = permitDetails.permitType?.let { qaDaoServices.findPermitType(it) }
+                val expiryDate = permitType?.permitAwardYears?.let { commonDaoServices.addYearsToCurrentDate(it.toLong()) }
 
-
+                with(permit) {
+                    dateOfIssue = issueDate
+                    dateOfExpiry = expiryDate
+                }
+               //Generate permit and forward to manufacturer
+                KotlinLogging.logger { }.info(":::::: Sending compliance status along with e-permit :::::::")
+            }
+            permit.permitAwardStatus == map.inactiveStatus -> {
+                //Send defer notification
+                KotlinLogging.logger { }.info(":::::: Sending defer notification to assessor/qao :::::::")
+            }
         }
 
         //updating of Details in DB
@@ -568,19 +583,29 @@ class QualityAssuranceController(
         @RequestParam("permitID") permitID: Long,
         @RequestParam("docFileName") docFileName: String,
         @RequestParam("doc_file") docFile: MultipartFile,
+        @RequestParam("assessment_recommendations") assessmentRecommendations: String,
         model: Model): String? {
         val map = commonDaoServices.serviceMapDetails(appId)
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         val permitDetails = qaDaoServices.findPermitBYID(permitID)
 
-        with(permitDetails) {
-            assessmentScheduledStatus = map.successStatus
-        }
-        qaDaoServices.permitUpdateDetails(permitDetails, map, loggedInUser)
-
         val result: ServiceRequestsEntity?
 
         result = qaDaoServices.saveQaFileUploads(docFile, docFileName, loggedInUser, map, permitID)
+
+        val pacSecList =  qaDaoServices.findOfficersList(permitDetails, map, applicationMapProperties.mapQADesignationIDForPacSecId)
+        val appointedPacSec = pacSecList.get(0)
+
+        with(permitDetails) {
+            assessmentScheduledStatus = map.successStatus
+            assessmentReportRemarks = assessmentRecommendations
+            pacSecId = appointedPacSec.userId?.id
+        }
+        qaDaoServices.permitUpdateDetails(permitDetails, map, loggedInUser)
+
+        //Send notification to PAC secretary
+        val pacSec = appointedPacSec.userId?.id?.let { commonDaoServices.findUserByID(it) }
+        pacSec?.email?.let { qaDaoServices.sendPacDmarkAssessmentNotificationEmail(it, permitDetails) }
 
         val sm = CommonDaoServices.MessageSuccessFailDTO()
         sm.closeLink =
@@ -589,5 +614,4 @@ class QualityAssuranceController(
 
         return commonDaoServices.returnValues(result, map, sm)
     }
-
 }

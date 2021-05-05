@@ -121,6 +121,10 @@ class PermitApplicationsEntity:Serializable {
     @Basic
     var justificationReportRemarks: String? = null
 
+    @Column(name = "ASSESSMENT_REPORT_REMARKS")
+    @Basic
+    var assessmentReportRemarks: String? = null
+
 
 //    @JoinColumn(name = "USER_ID", referencedColumnName = "ID")
 //    @ManyToOne
@@ -155,11 +159,11 @@ class PermitApplicationsEntity:Serializable {
 
     @Column(name = "DATE_OF_ISSUE")
     @Basic
-    var dateOfIssue: Timestamp? = null
+    var dateOfIssue: Date? = null
 
     @Column(name = "DATE_OF_EXPIRY")
     @Basic
-    var dateOfExpiry: Timestamp? = null
+    var dateOfExpiry: Date? = null
 
     @Column(name = "SUSPENSION_STATUS")
     @Basic
@@ -208,6 +212,10 @@ class PermitApplicationsEntity:Serializable {
     @Basic
     var assessorId: Long? = null
 
+    @Column(name = "PAC_SEC_ID")
+    @Basic
+    var pacSecId: Long? = null
+
     @Column(name = "STA3_FILLED_STATUS")
     @Basic
     var sta3FilledStatus: Int? = null
@@ -227,6 +235,10 @@ class PermitApplicationsEntity:Serializable {
     @Column(name = "PERMIT_FOREIGN_STATUS")
     @Basic
     var permitForeignStatus: Int? = null
+
+    @Column(name = "PERMIT_AWARD_STATUS")
+    @Basic
+    var permitAwardStatus: Int? = null
 
     @Column(name = "ENABLED")
     @Basic
@@ -277,6 +289,10 @@ class PermitApplicationsEntity:Serializable {
     @Column(name = "ASSESSMENT_CRITERIA")
     @Basic
     var assessmentCriteria: String? = null
+
+    @Column(name = "PAC_DECISION_REMARKS")
+    @Basic
+    var pacDecisionRemarks: String? = null
 
     //A Declaration Form
 
@@ -456,16 +472,20 @@ class PermitApplicationsEntity:Serializable {
         if (tradeMark != other.tradeMark) return false
         if (hofQamCompletenessRemarks != other.hofQamCompletenessRemarks) return false
         if (assessmentCriteria != other.assessmentCriteria) return false
+        if (pacDecisionRemarks != other.pacDecisionRemarks) return false
         if (hofQamCompletenessStatus != other.hofQamCompletenessStatus) return false
         if (compliantStatus != other.compliantStatus) return false
         if (justificationReportStatus != other.justificationReportStatus) return false
         if (justificationReportRemarks != other.justificationReportRemarks) return false
+        if (assessmentReportRemarks != other.assessmentReportRemarks) return false
         if (assignAssessorStatus != other.assignAssessorStatus) return false
         if (assessorId != other.assessorId) return false
+        if (pacSecId != other.pacSecId) return false
         if (paidStatus != other.paidStatus) return false
         if (assignOfficerStatus != other.assignOfficerStatus) return false
         if (permitExpiredStatus != other.permitExpiredStatus) return false
         if (permitForeignStatus != other.permitForeignStatus) return false
+        if (permitAwardStatus != other.permitAwardStatus) return false
         if (status != other.status) return false
         if (sta10FilledOfficerStatus != other.sta10FilledOfficerStatus) return false
         if (generateSchemeStatus != other.generateSchemeStatus) return false
@@ -541,6 +561,7 @@ class PermitApplicationsEntity:Serializable {
         result = 31 * result + (hofId?.hashCode() ?: 0)
         result = 31 * result + (hodId?.hashCode() ?: 0)
         result = 31 * result + (assessorId?.hashCode() ?: 0)
+        result = 31 * result + (pacSecId?.hashCode() ?: 0)
         result = 31 * result + (rmId?.hashCode() ?: 0)
         result = 31 * result + (qaoId?.hashCode() ?: 0)
         result = 31 * result + (permitType?.hashCode() ?: 0)
@@ -554,8 +575,9 @@ class PermitApplicationsEntity:Serializable {
         result = 31 * result + (tradeMark?.hashCode() ?: 0)
         result = 31 * result + (paidStatus?.hashCode() ?: 0)
         result = 31 * result + (hofQamCompletenessRemarks?.hashCode() ?: 0)
-        result = 31 * result + (assessmentCriteria?.hashCode() ?: 0)
+        result = 31 * result + (pacDecisionRemarks?.hashCode() ?: 0)
         result = 31 * result + (justificationReportRemarks?.hashCode() ?: 0)
+        result = 31 * result + (assessmentReportRemarks?.hashCode() ?: 0)
         result = 31 * result + (assignOfficerStatus ?: 0)
         result = 31 * result + (permitExpiredStatus ?: 0)
         result = 31 * result + (compliantStatus ?: 0)
@@ -565,7 +587,7 @@ class PermitApplicationsEntity:Serializable {
         result = 31 * result + (invoiceGenerated ?: 0)
         result = 31 * result + (enabled ?: 0)
         result = 31 * result + (sendApplication ?: 0)
-        result = 31 * result + (permitForeignStatus ?: 0)
+        result = 31 * result + (permitAwardStatus ?: 0)
         result = 31 * result + (fmarkGenerated ?: 0)
         result = 31 * result + (endOfProductionStatus ?: 0)
         result = 31 * result + (oldPermitStatus ?: 0)

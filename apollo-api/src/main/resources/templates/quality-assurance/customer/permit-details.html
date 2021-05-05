@@ -347,8 +347,11 @@
                                 <a th:if="${permitType?.st10Status == 1 and permitDetails?.sta10FilledStatus == 1}" target='_blank' th:href="@{/api/qa/view-sta10(permitID=${permitDetails?.id}, userID=${permitDetails?.userId})}" class="filter-link" style="color: white">STA 10</a>
                                 <a th:if="${permitDetails?.sendApplication == 1 and permitDetails?.invoiceGenerated == 1}" target='_blank' th:href="@{/api/qa/invoice-details(permitID=${permitDetails?.id})}" class="filter-link" style="color: white">GENERATED INVOICE</a>
                                 <a th:if="${permitDetails?.generateSchemeStatus == 1 and permitType?.schemeGenerate == 1}" th:href="@{/api/qa/scheme-of-supervision(permitID=${permitDetails?.id})}" style="color: white" onclick="popUpFunction('generateScheme');" class="filter-link">GENERATE SCHEME FOR SUPERVISION AND CONTROL</a>
-                                <div sec:authorize="hasAuthority('QA_ASSESSORS_READ')">
+                                <div sec:authorize="hasAuthority('QA_ASSESSORS_READ') or hasAuthority('QA_PAC_SECRETARY_READ')">
                                     <a th:if="${permitDetails?.assessmentScheduledStatus == 30}" target='_blank' th:href="@{/api/qa/factory-assessment(permitID=${permitDetails?.id})}" class="filter-link" style="color: white">FACTORY ASSESSMENT REPORT</a>
+                                </div>
+                                <div sec:authorize="hasAuthority('QA_PAC_SECRETARY_READ')">
+                                    <a th:if="${permitDetails?.assessmentScheduledStatus == 30}" target='_blank' th:href="@{/api/qa/report/pac_summary(permit_id=${permitDetails?.id})}" class="filter-link" style="color: white">DMARK FACTORY CONFORMITY SUMMARY</a>
                                 </div>
                             </div>
                             <div class="filter-block-title">
@@ -392,6 +395,10 @@
                                 <div sec:authorize="hasAuthority('QA_ASSESSORS_MODIFY')">
                                     <a th:if="${permitDetails?.assessmentScheduledStatus == null}" style="color: white" onclick="popUpFunction('scheduleAssessmentDate');" class="filter-link">SCHEDULE ASSESSMENT</a>
                                     <a th:if="${permitDetails?.assessmentScheduledStatus == 1}" class="filter-link uploadAssessmentReportBtn" style="color: white">UPLOAD ASSESSMENT REPORT</a>
+                                </div>
+
+                                <div sec:authorize="hasAuthority('QA_PAC_SECRETARY_MODIFY')">
+                                    <a th:if="${permitDetails?.assessmentScheduledStatus == 30}" style="color: white" onclick="popUpFunction('dmarkApplicationApproval');" class="filter-link">Grant/Defer Application</a>
                                 </div>
 
                             </div>
@@ -512,6 +519,17 @@
                                             <label for="assessmentCriteria" class="col-form-label">Please write, in detail, the assessment criteria for the visit:</label>
                                             <textarea required name="assessmentCriteria" id="assessmentCriteria" class="input-field w-input" cols="65" rows="5" th:field="*{assessmentCriteria}"></textarea>
                                         </div>
+                                        <div id="dmarkApplicationApproval">
+                                            <input type="hidden" id="description7" name="description" th:value="'Permit status successfully updated'">
+                                            <label for="attachedPlantId" class="col-form-label">Select application status:</label>
+                                            <select id="permitAwardStatus" required class="select-field w-select" th:field="*{permitAwardStatus}">
+                                                <option th:text="'Select one.....'" th:value="null"></option>
+                                                <option th:text="'Grant'" th:value="1"></option>
+                                                <option th:text="'Deffer'" th:value="0"></option>
+                                            </select>
+                                            <label for="hofQamCompletenessRemarks" class="col-form-label">Please write, in detail, PAC decision/remarks:</label>
+                                            <textarea required name="name" id="pacDecisionRemarks" class="input-field w-input" cols="65" rows="5" th:field="*{pacDecisionRemarks}"></textarea>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="modal-footer">
@@ -569,6 +587,10 @@
                                         <input type="hidden" id="docFileName" name="docFileName" th:value="FACTORY_ASSESSMENT_REPORT">
                                         <label for="doc_file">Upload The Factory Assessment Report</label>
                                         <input type="file" class="form-control"  multiple name="doc_file" data-name="doc_file" id="doc_file" required="required" >
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="assessment_recommendations" class="col-form-label">Please write, in detail, your recommendations:</label>
+                                        <textarea required name="assessment_recommendations" id="assessment_recommendations" class="input-field w-input" cols="65" rows="5"></textarea>
                                     </div>
                                 </div>
                                 <div class="modal-footer">
@@ -697,8 +719,9 @@
 </script>
 <script>
     function popUpFunction(eventAction) {
-        let arrHead = [ 'attachePlant', 'permitCompleteness', 'assignOfficer', 'scheduleInspectionDate', 'assignAssessor', 'scheduleAssessmentDate'];
-        let arrHeadSave = [ 'Attach a Plant for manufacturing the product', 'Is The Permit Complete', 'Select An officer',' Set The Date of Inspection', 'Select An Assessor', 'Schedule Factory Assessment Date'];
+        let arrHead = [ 'attachePlant', 'permitCompleteness', 'assignOfficer', 'scheduleInspectionDate', 'assignAssessor', 'scheduleAssessmentDate', 'dmarkApplicationApproval'];
+        let arrHeadSave = [ 'Attach a Plant for manufacturing the product', 'Is The Permit Complete', 'Select An officer',' Set The Date of Inspection', 'Select An Assessor', 'Schedule Factory Assessment Date',
+        'Grant/Defer Application'];
 
         for (let h = 0; h < arrHead.length; h++) {
             if(eventAction !== arrHead[h]){
