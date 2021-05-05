@@ -41,10 +41,11 @@ class Scheduler (
     @Scheduled(fixedRate = 300 * 1000)
     fun runSchedulerAfterEveryFiveMin() {
         schedulerImpl.updatePaidDemandNotesStatus()
-    }
-
-    @Scheduled(fixedRate = 30 * 60000)
-    fun runSchedulerAfterEvery30Min() {
         schedulerImpl.assignPermitApplicationAfterPayment()
     }
+
+//    @Scheduled(fixedRate = 30 * 60000)
+//    fun runSchedulerAfterEvery30Min() {
+//
+//    }
 }
