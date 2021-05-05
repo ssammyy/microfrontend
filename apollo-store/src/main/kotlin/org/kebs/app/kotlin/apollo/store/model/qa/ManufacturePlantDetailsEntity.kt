@@ -26,6 +26,10 @@ class ManufacturePlantDetailsEntity : Serializable {
     @Basic
     var town: Long? = null
 
+    @Column(name = "USER_ID")
+    @Basic
+    var userId: Long? = null
+
     @Column(name = "LOCATION")
     @Basic
     var location: String? = null
@@ -161,6 +165,7 @@ class ManufacturePlantDetailsEntity : Serializable {
         return id == that.id &&
                 manufactureId == that.manufactureId &&
                 county == that.county &&
+                userId == that.userId &&
                 town == that.town &&
                 location == that.location &&
                 street == that.street &&
@@ -197,7 +202,7 @@ class ManufacturePlantDetailsEntity : Serializable {
     }
 
     override fun hashCode(): Int {
-        var result = Objects.hash(id, manufactureId, county, town, location, street, buildingName, nearestLandMark, postalAddress, telephone, contactPerson, attachedSketchMapName, attachedSketchMapFileType, status, descriptions, varField1, varField2, varField3, varField4, varField5, varField6, varField7, varField8, varField9, varField10, createdBy, createdOn, lastModifiedBy, lastModifiedOn, updateBy, updatedOn, deleteBy, deletedOn, version, region)
+        var result = Objects.hash(id, manufactureId, county,userId, town, location, street, buildingName, nearestLandMark, postalAddress, telephone, contactPerson, attachedSketchMapName, attachedSketchMapFileType, status, descriptions, varField1, varField2, varField3, varField4, varField5, varField6, varField7, varField8, varField9, varField10, createdBy, createdOn, lastModifiedBy, lastModifiedOn, updateBy, updatedOn, deleteBy, deletedOn, version, region)
         result = 31 * result + Arrays.hashCode(attachedSketchMapDocument)
         return result
     }

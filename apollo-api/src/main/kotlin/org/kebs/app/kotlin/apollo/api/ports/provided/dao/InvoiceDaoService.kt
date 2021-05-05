@@ -30,6 +30,10 @@ class InvoiceDaoService(
     @Autowired
     lateinit var diDaoServices: DestinationInspectionDaoServices
 
+    @Lazy
+    @Autowired
+    lateinit var qaDaoServices: QADaoServices
+
     final val appId = applicationMapProperties.mapInvoiceTransactions
     val map = commonDaoServices.serviceMapDetails(appId)
 
@@ -90,7 +94,16 @@ class InvoiceDaoService(
                 //Todo: Adding Function for Ms Fuel
             }
             applicationMapProperties.mapInvoiceTransactionsForPermit -> {
-                //Todo: Adding Function for Permit details
+                var invoiceNote = addDetails as InvoiceEntity
+                with(invoiceNote) {
+                    invoiceBatchNumberId = invoiceBatchDetails.id
+//                    invoiceNumber = invoiceBatchDetails.batchNumber
+                    paymentStatus = map.inactiveStatus
+                }
+                invoiceNote = qaDaoServices.invoiceUpdateDetails(invoiceNote, user)
+
+                totalAmount = invoiceNote.amount?.let { totalAmount.plus(it) }!!
+                detailsDescription = "PERMIT INVOICE NUMBER:${invoiceNote.invoiceNumber}"
             }
         }
 

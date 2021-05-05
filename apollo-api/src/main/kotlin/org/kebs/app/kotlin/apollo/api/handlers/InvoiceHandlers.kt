@@ -33,15 +33,17 @@ class InvoiceHandlers(
                     val pages: Pageable? = (pageSize ?: map.uiPageSize)?.let { PageRequest.of(currentPage ?: 0, it) }
                     req.attributes()["invoiceEntity"] = pages?.let { invoiceRepository.findByStatus(0, it) }
 
-                    val totalRecords: Int = invoiceRepository.findAllByStatus(0).size
+                    val totalRecords: Int? = invoiceRepository.findAllByStatus(0)?.size
 //                    var pageNumbers: List<Int>? = null
 
 
 
 //                            ?.let { pages ->
 
-                    val pageNumbers = IntStream.rangeClosed(1, totalRecords)
+                    val pageNumbers = totalRecords?.let {
+                        IntStream.rangeClosed(1, it)
                             .boxed().collect(Collectors.toList())
+                    }
                     req.attributes()["totalPages"] = pageNumbers ?: 1
 //                    req.attributes()["pageNumbers"] = pageNumbers
 

@@ -11,6 +11,7 @@ import org.kebs.app.kotlin.apollo.common.exceptions.StorageException
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.config.properties.storage.StorageProperties
 import org.kebs.app.kotlin.apollo.store.model.*
+import org.kebs.app.kotlin.apollo.store.model.di.ConsignmentDocumentDetailsEntity
 import org.kebs.app.kotlin.apollo.store.repo.*
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.data.domain.Page
@@ -117,6 +118,8 @@ class QualityAssuranceDaoServices(
 //                }
 //                ?: throw ExpectedDataNotFound("The following Permit Detail with ID = ${permitID}, Does not Exist")
 //    }
+
+
 
     fun findByPermitId(permitID: Long): PermitApplicationEntity {
         permitRepo.findByIdOrNull(permitID)

@@ -88,7 +88,7 @@ class RegistrationJSONControllers(
     @GetMapping("/populate-standards/{id}", produces = [MediaType.APPLICATION_JSON_VALUE])
     fun populateStandards(@PathVariable("id") id: Long): String? {
         val gson = Gson()
-        return gson.toJson(sampleStandardsRepository.findBySubCategoryId(id))
+        return gson.toJson(sampleStandardsRepository.findBySubCategoryIdOrderByCreatedOn(id))
     }
 
     @GetMapping("counties/{id}", produces = [MediaType.APPLICATION_JSON_VALUE])

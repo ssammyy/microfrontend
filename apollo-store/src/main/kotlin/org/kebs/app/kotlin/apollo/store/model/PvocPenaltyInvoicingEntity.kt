@@ -1,6 +1,7 @@
 package org.kebs.app.kotlin.apollo.store.model
 
 import java.io.Serializable
+import java.sql.Date
 import java.sql.Time
 import java.sql.Timestamp
 import java.util.*
@@ -15,149 +16,150 @@ class PvocPenaltyInvoicingEntity : Serializable {
     @GeneratedValue(generator = "DAT_KEBS_PVOC_PENALTY_INVOICING_SEQ_GEN", strategy = GenerationType.SEQUENCE)
     var id: Long = 0
 
-    @get:Column(name = "INVOICE_NUMBER")
-    @get:Basic
+    @Column(name = "INVOICE_NUMBER")
+    @Basic
     var invoiceNumber: String? = null
-    @get:Column(name = "SOLD_TO")
-    @get:Basic
+    @Column(name = "SOLD_TO")
+    @Basic
     var soldTo: String? = null
-    @get:Column(name = "INVOICE_DATE")
-    @get:Basic
-    var invoiceDate: Time? = null
-    @get:Column(name = "ORDER_DATE")
-    @get:Basic
-    var orderDate: Timestamp? = null
-    @get:Column(name = "ORDER_NUMBER")
-    @get:Basic
+
+    @Column(name = "INVOICE_DATE")
+    @Basic
+    var invoiceDate: Date? = null
+    @Column(name = "ORDER_DATE")
+    @Basic
+    var orderDate: Date? = null
+    @Column(name = "ORDER_NUMBER")
+    @Basic
     var orderNumber: String? = null
-    @get:Column(name = "CUSTOMER_NUMBER")
-    @get:Basic
+    @Column(name = "CUSTOMER_NUMBER")
+    @Basic
     var customerNumber: String? = null
-    @get:Column(name = "PO_NUMBER")
-    @get:Basic
+    @Column(name = "PO_NUMBER")
+    @Basic
     var poNumber: String? = null
-    @get:Column(name = "SHIP_VIA")
-    @get:Basic
+    @Column(name = "SHIP_VIA")
+    @Basic
     var shipVia: String? = null
-    @get:Column(name = "TERMS_CODE")
-    @get:Basic
+    @Column(name = "TERMS_CODE")
+    @Basic
     var termsCode: String? = null
-    @get:Column(name = "DESCRIPTION")
-    @get:Basic
+    @Column(name = "DESCRIPTION")
+    @Basic
     var description: String? = null
-    @get:Column(name = "DUE_DATE")
-    @get:Basic
-    var dueDate: Timestamp? = null
-    @get:Column(name = "PENALTY_DUE")
-    @get:Basic
+    @Column(name = "DUE_DATE")
+    @Basic
+    var dueDate: Date? = null
+    @Column(name = "PENALTY_DUE")
+    @Basic
     var penaltyDue: Long = 0
-    @get:Column(name = "UNIT_PRICE")
-    @get:Basic
+    @Column(name = "UNIT_PRICE")
+    @Basic
     var unitPrice: Long = 0
-    @get:Column(name = "UNIT_OF_MEASURE")
-    @get:Basic
+    @Column(name = "UNIT_OF_MEASURE")
+    @Basic
     var unitOfMeasure: String? = null
-    @get:Column(name = "CURRENCY")
-    @get:Basic
+    @Column(name = "CURRENCY")
+    @Basic
     var currency: String? = null
-    @get:Column(name = "SUBTOTAL_BEFORE_TAXES")
-    @get:Basic
+    @Column(name = "SUBTOTAL_BEFORE_TAXES")
+    @Basic
     var subtotalBeforeTaxes: Long? = null
-    @get:Column(name = "TOTAL_TAXES")
-    @get:Basic
-    var totalTaxes: Long = 0
-    @get:Column(name = "TOTAL_AMOUNT")
-    @get:Basic
-    var totalAmount: Long = 0
-    @get:Column(name = "ACCOUNT_NAME")
-    @get:Basic
+    @Column(name = "TOTAL_TAXES")
+    @Basic
+    var totalTaxes: Double = 0.0
+    @Column(name = "TOTAL_AMOUNT")
+    @Basic
+    var totalAmount: Double = 0.0
+    @Column(name = "ACCOUNT_NAME")
+    @Basic
     var accountName: String? = null
-    @get:Column(name = "BANK_NAME")
-    @get:Basic
+    @Column(name = "BANK_NAME")
+    @Basic
     var bankName: String? = null
-    @get:Column(name = "BRANCH")
-    @get:Basic
+    @Column(name = "BRANCH")
+    @Basic
     var branch: String? = null
-    @get:Column(name = "KEBS_ACCOUNT_NUMBER")
-    @get:Basic
+    @Column(name = "KEBS_ACCOUNT_NUMBER")
+    @Basic
     var kebsAccountNumber: String? = null
-    @get:Column(name = "USD_ACCOUNT_NUMBER")
-    @get:Basic
+    @Column(name = "USD_ACCOUNT_NUMBER")
+    @Basic
     var usdAccountNumber: String? = null
-    @get:Column(name = "BANK_CODE")
-    @get:Basic
+    @Column(name = "BANK_CODE")
+    @Basic
     var bankCode: Long = 0
-    @get:Column(name = "SWIFT_CODE")
-    @get:Basic
+    @Column(name = "SWIFT_CODE")
+    @Basic
     var swiftCode: String? = null
-    @get:Column(name = "VAT_NUMBER")
-    @get:Basic
+    @Column(name = "VAT_NUMBER")
+    @Basic
     var vatNumber: String? = null
-    @get:Column(name = "PIN_NUMBER")
-    @get:Basic
+    @Column(name = "PIN_NUMBER")
+    @Basic
     var pinNumber: String? = null
-    @get:Column(name = "STATUS")
-    @get:Basic
-    var status: Long? = null
-    @get:Column(name = "VAR_FIELD_1")
-    @get:Basic
+    @Column(name = "STATUS")
+    @Basic
+    var status: Int? = null
+    @Column(name = "VAR_FIELD_1")
+    @Basic
     var varField1: String? = null
-    @get:Column(name = "VAR_FIELD_2")
-    @get:Basic
+    @Column(name = "VAR_FIELD_2")
+    @Basic
     var varField2: String? = null
-    @get:Column(name = "VAR_FIELD_3")
-    @get:Basic
+    @Column(name = "VAR_FIELD_3")
+    @Basic
     var varField3: String? = null
-    @get:Column(name = "VAR_FIELD_4")
-    @get:Basic
+    @Column(name = "VAR_FIELD_4")
+    @Basic
     var varField4: String? = null
-    @get:Column(name = "VAR_FIELD_5")
-    @get:Basic
+    @Column(name = "VAR_FIELD_5")
+    @Basic
     var varField5: String? = null
-    @get:Column(name = "VAR_FIELD_6")
-    @get:Basic
+    @Column(name = "VAR_FIELD_6")
+    @Basic
     var varField6: String? = null
-    @get:Column(name = "VAR_FIELD_7")
-    @get:Basic
+    @Column(name = "VAR_FIELD_7")
+    @Basic
     var varField7: String? = null
-    @get:Column(name = "VAR_FIELD_8")
-    @get:Basic
+    @Column(name = "VAR_FIELD_8")
+    @Basic
     var varField8: String? = null
-    @get:Column(name = "VAR_FIELD_9")
-    @get:Basic
+    @Column(name = "VAR_FIELD_9")
+    @Basic
     var varField9: String? = null
-    @get:Column(name = "VAR_FIELD_10")
-    @get:Basic
+    @Column(name = "VAR_FIELD_10")
+    @Basic
     var varField10: String? = null
-    @get:Column(name = "CREATED_BY")
-    @get:Basic
+    @Column(name = "CREATED_BY")
+    @Basic
     var createdBy: String? = null
-    @get:Column(name = "CREATED_ON")
-    @get:Basic
+    @Column(name = "CREATED_ON")
+    @Basic
     var createdOn: Timestamp? = null
-    @get:Column(name = "MODIFIED_BY")
-    @get:Basic
+    @Column(name = "MODIFIED_BY")
+    @Basic
     var modifiedBy: String? = null
-    @get:Column(name = "MODIFIED_ON")
-    @get:Basic
+    @Column(name = "MODIFIED_ON")
+    @Basic
     var modifiedOn: Timestamp? = null
-    @get:Column(name = "DELETE_BY")
-    @get:Basic
+    @Column(name = "DELETE_BY")
+    @Basic
     var deleteBy: String? = null
-    @get:Column(name = "DELETED_ON")
-    @get:Basic
+    @Column(name = "DELETED_ON")
+    @Basic
     var deletedOn: Timestamp? = null
-    @get:Column(name = "PARTNER")
-    @get:Basic
+    @Column(name = "PARTNER")
+    @Basic
     var partner: Long? = null
-    @get:Column(name = "PAID_STATUS")
-    @get:Basic
+    @Column(name = "PAID_STATUS")
+    @Basic
     var paidStatus: Long? = null
-    @get:Column(name = "PAYMENT_DATE")
-    @get:Basic
+    @Column(name = "PAYMENT_DATE")
+    @Basic
     var paymentDate: Timestamp? = null
-    @get:Column(name = "COC_ID")
-    @get:Basic
+    @Column(name = "COC_ID")
+    @Basic
     var cocId: Long? = null
 
     override fun equals(o: Any?): Boolean {

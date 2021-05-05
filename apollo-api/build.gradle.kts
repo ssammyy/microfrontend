@@ -35,8 +35,8 @@
  *   limitations under the License.
  */
 
-import org.springframework.boot.gradle.tasks.bundling.BootWar
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.springframework.boot.gradle.tasks.bundling.BootWar
 
 
 plugins {
@@ -190,7 +190,7 @@ tasks.withType<BootWar>().configureEach {
 }
 
 repositories {
-    maven("https://dl.bintray.com/kotlin/kotlin-eap")
+//    maven("https://dl.bintray.com/kotlin/kotlin-eap")
     mavenCentral()
 }
 val compileKotlin: KotlinCompile by tasks

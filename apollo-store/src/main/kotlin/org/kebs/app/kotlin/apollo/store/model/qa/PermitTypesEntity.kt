@@ -18,9 +18,37 @@ class PermitTypesEntity : Serializable {
     @Basic
     var status: Int? = null
 
+    @Column(name = "ST3_STATUS")
+    @Basic
+    var st3Status: Int? = null
+
+    @Column(name = "SCHEME_GENERATE")
+    @Basic
+    var schemeGenerate: Int? = null
+
+    @Column(name = "ST10_STATUS")
+    @Basic
+    var st10Status: Int? = null
+
+    @Column(name = "LOCAL_FOREIGN_STATUS")
+    @Basic
+    var localForeignStatus: Int? = null
+
+    @Column(name = "SME_DECLARATION_FORM")
+    @Basic
+    var smeDeclarationForm: Int? = null
+
+    @Column(name = "PERMIT_AWARD_YEARS")
+    @Basic
+    var permitAwardYears: Int? = null
+
     @Column(name = "MARK")
     @Basic
     var mark: String? = null
+
+    @Column(name = "IMAGE")
+    @Basic
+    var image: String? = null
 
     @Column(name = "MARK_NUMBER")
     @Basic
@@ -104,10 +132,17 @@ class PermitTypesEntity : Serializable {
         val that = other as PermitTypesEntity
         return id == that.id &&
                 mark == that.mark &&
+                smeDeclarationForm == that.smeDeclarationForm &&
+                localForeignStatus == that.localForeignStatus &&
+                permitAwardYears == that.permitAwardYears &&
                 markNumber == that.markNumber &&
                 status == that.status &&
                 descriptions == that.descriptions &&
                 typeName == that.typeName &&
+                schemeGenerate == that.schemeGenerate &&
+                st3Status == that.st3Status &&
+                st10Status == that.st10Status &&
+                image == that.image &&
                 varField1 == that.varField1 &&
                 varField2 == that.varField2 &&
                 varField3 == that.varField3 &&
@@ -128,28 +163,35 @@ class PermitTypesEntity : Serializable {
 
     override fun hashCode(): Int {
         return Objects.hash(
-                id,
-                status,
-                descriptions,
-                typeName,
-                markNumber,
-                varField1,
-                varField2,
-                varField3,
-                varField4,
-                varField5,
-                varField6,
-                varField7,
-                varField8,
-                varField9,
-                varField10,
-                createdBy,
-                createdOn,
-                modifiedBy,
-                modifiedOn,
-                deleteBy,
-                deletedOn,
-                mark
+            id,
+            status,
+            schemeGenerate,
+            descriptions,
+            smeDeclarationForm,
+            typeName,
+            permitAwardYears,
+            localForeignStatus,
+            st3Status,
+            st10Status,
+            image,
+            markNumber,
+            varField1,
+            varField2,
+            varField3,
+            varField4,
+            varField5,
+            varField6,
+            varField7,
+            varField8,
+            varField9,
+            varField10,
+            createdBy,
+            createdOn,
+            modifiedBy,
+            modifiedOn,
+            deleteBy,
+            deletedOn,
+            mark
         )
     }
 }

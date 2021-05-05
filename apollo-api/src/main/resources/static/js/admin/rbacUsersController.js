@@ -31,6 +31,7 @@ app
             title: 0,
             firstName: "",
             lastName: "",
+            userPinIdNumber: "",
             userName: "",
             email: "",
             enabled: 0,
@@ -195,6 +196,7 @@ app
             $scope.userForm.firstName = user.firstName;
             $scope.userForm.lastName = user.lastName;
             $scope.userForm.userName = user.userName;
+            $scope.userForm.userPinIdNumber = user.userPinIdNumber;
             $scope.userForm.email = user.email;
             $scope.userForm.enabled = user.enabled;
             $scope.userForm.accountExpired = user.accountExpired;

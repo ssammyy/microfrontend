@@ -57,17 +57,6 @@ import { StdTscTasksComponent } from './components/standards-development/std-tsc
 import { RequestStandardFormComponent } from './components/standards-development/standard-request/request-standard-form/request-standard-form.component';
 import {FileUploadModule} from "ng2-file-upload";
 import { StdTcTasksComponent } from './components/standards-development/std-tc-tasks/std-tc-tasks.component';
-import { PreparePdComponent } from './components/standards-development/commitee/prepare-pd/prepare-pd.component';
-import { CommentPdComponent } from './components/standards-development/commitee/comment-pd/comment-pd.component';
-import { CommentListComponent } from './components/standards-development/commitee/comment-list/comment-list.component';
-import { PdDetailsComponent } from './components/standards-development/commitee/pd-details/pd-details.component';
-import { PdListComponent } from './components/standards-development/commitee/pd-list/pd-list.component';
-import { NwiListComponent } from './components/standards-development/commitee/nwi-list/nwi-list.component';
-import { PrepareNwiComponent } from './components/standards-development/commitee/prepare-nwi/prepare-nwi.component';
-import { PrepareCdComponent } from './components/standards-development/commitee/prepare-cd/prepare-cd.component';
-import { CdListComponent } from './components/standards-development/commitee/cd-list/cd-list.component';
-import { ApproveNwiComponent } from './components/standards-development/commitee/approve-nwi/approve-nwi.component';
-import { ApproveCdComponent } from './components/standards-development/commitee/approve-cd/approve-cd.component';
 
 
 
@@ -115,17 +104,6 @@ import { ApproveCdComponent } from './components/standards-development/commitee/
     StdTscTasksComponent,
     RequestStandardFormComponent,
     StdTcTasksComponent,
-    PreparePdComponent,
-    CommentPdComponent,
-    CommentListComponent,
-    PdDetailsComponent,
-    PdListComponent,
-    NwiListComponent,
-    PrepareNwiComponent,
-    PrepareCdComponent,
-    CdListComponent,
-    ApproveNwiComponent,
-    ApproveCdComponent,
   ],
   exports: [
   ],
