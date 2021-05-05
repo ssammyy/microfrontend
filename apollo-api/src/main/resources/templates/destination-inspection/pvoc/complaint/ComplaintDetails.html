@@ -74,6 +74,85 @@
                                     </div>
                                 </div>
                             </div>
+                            <button class="accordion" >Pvoc Officer And Agent Communication</button>
+                            <div class="panel">
+                                <table class="table table-striped" id="maintable">
+                                    <thead>
+                                    <tr>
+                                        <th>REF NO</th>
+                                        <th>COC Number</th>
+                                        <th>UCR No</th>
+                                        <th>Invoice</th>
+                                        <th>Created On</th>
+                                        <th>View</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <!--                <a th:each="coc, iStat: ${cocs}" th:href="@{/api/inspection/supervisor/coc-details/{id}(id=${coc.id})}" class="table-row w-inline-block">-->
+                                    <tr class="list" style="cursor: pointer" th:each="query: ${enquires}">
+
+                                        <td th:text="${query?.id}"></td>
+                                        <td th:text="${query?.cocNumber}"></td>
+                                        <td th:text="${query?.ucrNumber}"></td>
+                                        <td th:text="${query?.invoiceNumber}"></td>
+                                        <td th:text="${#dates.format(query?.createdOn, 'dd/MM/yyyy')}"></td>
+                                        <td><a th:href="@{/api/di/pvoc/pvoc-query-details/{id}(id=${query.id})}">view</a>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                                <!--                                <div class="row" th:each="remark: ${enquires}">-->
+                                <!--                                    <input type="hidden" id="">-->
+                                <!--                                    <div class="col-md-10 blogShort">-->
+                                <!--                                        <h2>KEBS Query</h2>-->
+                                <!--                                        <article>-->
+                                <!--                                            <p th:text="${remark.kebsQuery}"></p>-->
+                                <!--                                        </article>-->
+                                <!--                                        <a class="btn btn-blog replyPartiner pull-right marginBottom10" >REPLY</a>-->
+                                <!--                                    </div>-->
+                                <!--                                    <div class="col-md-10 blogShort">-->
+                                <!--                                        <h2>Partner Reply</h2>-->
+                                <!--                                        <article>-->
+                                <!--                                            <p th:text="${remark.partnerQuery}"></p>-->
+                                <!--                                        </article>-->
+                                <!--                                        <a class="btn btn-blog analysePartnerResponse pull-right marginBottom10" href="http://bootsnipp.com/user/snippets/2RoQ">Analyse Partner Reply</a>-->
+                                <!--                                    </div>-->
+                                <!--                                    <div class="col-md-10 blogShort">-->
+                                <!--                                        <h2>Partner Reply Analysis</h2>-->
+                                <!--                                        <article>-->
+                                <!--                                            <p th:text="${remark.partnerResponseAnalysis}"></p>-->
+                                <!--                                        </article>-->
+                                <!--                                        <a class="btn btn-blog analysePartnerResponse pull-right marginBottom10" href="http://bootsnipp.com/user/snippets/2RoQ">KEBS Conclusion</a>-->
+                                <!--                                    </div>-->
+
+                                <!--                                    <div class="col-md-10 blogShort">-->
+                                <!--                                        <h2>KEBS Conclusion</h2>-->
+                                <!--                                        <article>-->
+                                <!--                                            <p th:text="${remark.conclusion}"></p>-->
+                                <!--                                        </article>-->
+                                <!--                                        <a class="btn btn-blog analysePartnerResponse pull-right marginBottom10" href="http://bootsnipp.com/user/snippets/2RoQ">KEBS Conclusion</a>-->
+                                <!--                                    </div>-->
+                                <!--                                </div>-->
+                                <!--                                <ul class="w-list-unstyled">-->
+                                <!--                                    <li class="list-item-accordion" >-->
+                                <!--                                        -->
+                                <!--                                        <br><br>-->
+                                <!--                                        <div class="filter-title">PVOV Officer Query:</div>-->
+                                <!--                                        <div class="list-text-accordion" th:text="${remark?.kebsQuery}"></div>-->
+                                <!--                                        <br><br>-->
+                                <!--                                        <div th:if="${remark?.pvocAgentReplyStatus == 0}" class="filter-title replyButton">Actions:</div>-->
+                                <!--                                        <br><br>-->
+                                <!--                                        <div class="filter-title">Partiner Responce:</div>-->
+                                <!--                                        <div th:if="${remark?.pvocAgentReplyStatus == 1}" class="list-text-accordion" th:text="${remark?.partnerResponse}"></div>-->
+                                <!--                                        <div th:if="${remark?.kebsReplyReplyStatus == 1}" class="filter-title">PVOC Officer Responce:</div>-->
+                                <!--                                        <div th:if="${remark?.kebsReplyReplyStatus == 1}" class="list-text-accordion" th:text="${remark?.kebsResponse}"></div>-->
+                                <!--                                        <div th:if="${remark?.partnerResponceAnalysisStatus == 1}" class="filter-title">Partner Responce Analysis:</div>-->
+                                <!--                                        <div th:if="${remark?.partnerResponceAnalysisStatus == 1}" class="list-text-accordion" th:text="${remark?.partnerResponseAnalysis}"></div>-->
+                                <!--                                        <div th:if="${remark?.conclusionStatus == 1}" class="filter-title">Conlusion:</div>-->
+                                <!--                                        <div th:if="${remark?.conclusionStatus == 1}" class="list-text-accordion" th:text="${remark?.conclusion}"></div>-->
+                                <!--                                    </li>-->
+                                <!--                                </ul>-->
+                            </div>
                         </div>
                         <div class="filter-block">
                             <div class="filter-block-title">
@@ -86,7 +165,8 @@
                                 <a style="color: white" class="filter-link " th:href="@{/api/di/pvoc/view-remarks/{id}(id=${complaint.id})}">View Remarks</a>
                                 <a  style="color: white" class="filter-link assignMpvoc">Assign MPVOC</a>
                                 <a  style="color: white" class="filter-link assignHod">Assign HOD</a>
-                                <a  style="color: white" class="filter-link agentPartnerCommunication">Agent-Partner Communication</a>
+
+                                <a  style="color: white" class="filter-link addEnquirelyBtn">Agent-Partner Communication</a>
                                 <a  style="color: white" class="filter-link addRemarks">Add Recommendation</a>
                                 <a   class="filter-link officerApprove">Approve with Remarks</a>
                                 <a   class="filter-link officerReject">Reject with Remarks</a>
@@ -95,6 +175,48 @@
                     </div>
                 </div>
             </div>
+        </div>
+        <div class="remarksForm">
+            <form id="kebsInquirelyForm"   name="remarksForm" th:action="@{/api/di/pvoc/save-kebs-query-complain(cocId = ${complaint.id})}" method="post" th:object="${remarkData}" >
+                <div class="modal fade" id="kebsInquirelyModal" tabindex="-1" role="dialog" aria-labelledby="remarksModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="remarksModalLabel">Remarks</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="form-group">
+                                    <label for="cocNumber" class="col-form-label">COC Number</label>
+                                    <input type="text" class="form-control" name="cocNumber" readonly th:value="${complaint.cocNo}" id="cocNumber">
+                                </div>
+                                <div class="form-group">
+                                    <label for="remarksAdd" class="col-form-label">RFC Number</label>
+                                    <input class="form-control" type="text" name="rfcNumber" readonly th:value="${complaint?.rfcNo}"  id="rcfNumber">
+                                </div>
+<!--                                <div class="form-group">-->
+<!--                                    <label for="remarksAdd" class="col-form-label">Invoice Number</label>-->
+<!--                                    <input type="text" class="form-control" name="invoiceNumber" readonly  id="invoiceNumber" th:value="${invoice.invoiceNumber}">-->
+<!--                                </div>-->
+<!--                                <div class="form-group">-->
+<!--                                    <label for="remarksAdd" class="col-form-label">UCR Number</label>-->
+<!--                                    <input type="text" class="form-control" name="ucrNumber" readonly th:value="${coc.ucrNumber}"  id="ucrNumber">-->
+<!--                                </div>-->
+                                <div class="form-group">
+                                    <label for="remarksAdd" class="col-form-label">Enquire More Info</label>
+                                    <textarea required class="form-control" name="kebsQuery" id="remarksAdd" cols="65" rows="5"></textarea>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <input type="submit" class="btn btn-primary" value="Save"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
         </div>
         <div class="assignMpvocAgent">
             <form id="defferForm25"   name="deffer" th:action="@{/api/di/pvoc/assign-mpvoc/(id=${complaint.id})}" method="post" th:object="${complaintObj}" >
@@ -206,7 +328,7 @@
                 </div>
             </form>
         </div>
-                <div class="rejectHodAgent">
+        <div class="rejectHodAgent">
                     <form id="defferForm22"   name="deffer" th:action="@{/api/di/pvoc/remarks-reject(id=${complaint.id})}" method="post" th:object="${remarksObj}" >
                         <div class="modal fade" id="hodAgentReject" tabindex="-1" role="dialog" aria-labelledby="remarksModalLabel" aria-hidden="true">
                             <div class="modal-dialog" role="document">
@@ -269,6 +391,11 @@
         $('.filter-block .assignMpvoc').on('click',function (event) {
 
             $('.assignMpvocAgent #mpvocAgent').modal();
+        });
+
+        $('.filter-block .addEnquirelyBtn').on('click',function (event) {
+
+            $('.remarksForm #kebsInquirelyModal').modal();
         });
 
         $('.filter-block .assignHod').on('click',function (event) {

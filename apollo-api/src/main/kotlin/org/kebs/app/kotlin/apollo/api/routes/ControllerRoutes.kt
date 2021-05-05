@@ -311,6 +311,7 @@ class ControllerRoutes {
             GET("/home", handler::home)
             GET("/permits-list", handler::permitList)
             GET("/permit-details", handler::permitDetails)
+            GET("/view/fmark-generated", handler::permitViewSmarkDetails)
             GET("/new-permit", handler::newPermit)
             GET("/new-sta3", handler::newSta3)
             GET("/new-sta10", handler::newSta10)
@@ -318,9 +319,18 @@ class ControllerRoutes {
             GET("/view-sta3", handler::viewSta3)
             GET("/view-sta10", handler::viewSta10)
             GET("/new-sta10-submit", handler::submitSta10)
+            GET("/new-scheme-of-supervision", handler::newSchemeSupervision)
             GET("/scheme-of-supervision", handler::generatedSchemeSupervision)
             GET("/product-quality-status", handler::generateProductQualityStatus)
             GET("/invoice-details", handler::getInvoiceDetails)
+//
+//            "/inspection".nest {
+//                GET("/check-list", handler::inspectionDetails)
+//                GET("/sample-collection", handler::inspectionDetails)
+//                GET("/sample-submission", handler::inspectionDetails)
+//                GET("/item-report", handler::inspectionChecklistReportDetails)
+//                GET("/item/sample-Submit-param/bs-number", handler::inspectionDetails)
+//            }
         }
     }
 
@@ -453,6 +463,7 @@ class ControllerRoutes {
             GET("/home", handler::sysadminHome)
             "/ui".nest {
                 GET("/rbac-user-roles", handler::rbacUserRoles)
+                GET("/rbac-user-requests", handler::rbacUserRequests)
                 GET("/rbac-role-authorities", handler::rbacRoleAuthorities)
                 GET("/users-crud", handler::usersCrud)
                 GET("/roles-crud", handler::rolesCrud)

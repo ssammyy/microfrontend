@@ -66,6 +66,12 @@ class ApplicationMapProperties {
     @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.designation.id.for.QAM}")
     val mapQADesignationIDForQAMId: Long = 0L
 
+    @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.designation.id.for.QAO}")
+    val mapQADesignationIDForQAOId: Long = 0L
+
+    @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.designation.id.for.Assessor}")
+    val mapQADesignationIDForAssessorId: Long = 0L
+
     @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.designation.id.for.HOD}")
     val mapQADesignationIDForHODId: Long = 0L
 
@@ -122,6 +128,10 @@ class ApplicationMapProperties {
 
     @Value("\${org.kebs.app.kotlin.apollo.application.map.user.request.manufacture}")
     val mapUserRequestManufacture: Long = 0L
+
+
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.user.manufacture.role.id}")
+    val mapUserManufactureRoleID: Long = 0L
 
     @Value("\${org.kebs.app.kotlin.apollo.application.map.standards.development}")
     val mapStandardsDevelopment: Int = 0

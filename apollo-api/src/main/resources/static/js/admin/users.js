@@ -39,6 +39,7 @@ app
         const activeTownsUri = masterDataBaseUrl + "towns/loads";
         const rolesUri = urlBase + "roles/loads";
         const allRolesUri = urlBase + "roles/load";
+        const allUserRequestsUri = urlBase + "users/load/users-requests";
         const allAuthoritiesUri = urlBase + "authorities/load";
         const activeTitlesUri = urlBase + "titles/loads";
         const activeUserTypesUri = urlBase + "userTypes/loads";
@@ -88,6 +89,8 @@ app
 
 
         dataFactory.getAllRoles = () => $http.get(allRolesUri)
+
+        dataFactory.getAllUserRequests= () => $http.get(allUserRequestsUri)
 
         dataFactory.getAllAuthorities = () => $http.get(allAuthoritiesUri)
 
@@ -680,6 +683,120 @@ app
                         $scope.rbacUsers = res.data;
                         refreshUsersTable();
                         initializeUIData();
+                    }, function (error) {
+                        dataFactory.errorAlert(error);
+                    }
+                )
+            ;
+
+
+        }
+
+
+        $scope.loadRolesForSelectedUser = (userId) => {
+            $scope.selectedUser = userId;
+            dataFactory.loadActiveRbacUserRoles(userId, $scope.activeStatus)
+                .then(
+                    function (res) {
+                        $scope.rbacUserRoles = res.data;
+                        $log.log(userId + ":" + $scope.rbacUserRoles.length);
+                    }, function (error) {
+                        dataFactory.errorAlert(error);
+                    }
+                );
+        }
+
+        $scope.assignSelectedRole = (roleId, status) => {
+
+            if (roleId <= 0 || $scope.selectedUser <= 0) {
+
+                alert("Error: Invalid Role=" + roleId + " User=" + $scope.selectedUser + " combination selected,  Try again");
+
+            } else {
+                dataFactory.assignRole($scope.selectedUser, roleId, status)
+                    .then(
+                        function () {
+                            $scope.loadRolesForSelectedUser($scope.selectedUser);
+                        },
+                        function (error) {
+                            dataFactory.errorAlert(error)
+                        }
+                    );
+
+            }
+
+        }
+
+        $scope.revokeSelectedRole = (roleId, status) => {
+            dataFactory.revokeRole($scope.selectedUser, roleId, status)
+                .then(
+                    function () {
+                        $scope.loadRolesForSelectedUser($scope.selectedUser);
+                    },
+                    function (error) {
+                        dataFactory.errorAlert(error)
+                    }
+                )
+        }
+
+
+    }])
+
+    .controller('RbacUserRequestsController', ['$scope', '$log', 'dataFactory', function ($scope, $log, dataFactory) {
+        $scope.rbacUsers = [];
+        $scope.rbacUsersRequests = [];
+        $scope.rbacUserRoles = [];
+        $scope.rbacActiveRoles = [];
+        $scope.activeStatus = dataFactory.activeStatus
+        $scope.selectedUserRole = -1;
+        $scope.selectedUser = -1;
+        $scope.currentPage = dataFactory.currentPage;
+        $scope.itemsPerPage = dataFactory.itemsPerPage;
+        $scope.maxSize = dataFactory.maxSize;
+        $scope.noOfPages = $scope.rbacUsers.length / $scope.itemsPerPage;
+
+        initializeUIData();
+
+
+        function initializeUIData() {
+            dataFactory.getActiveRoles($scope.activeStatus)
+                .then(
+                    function (res) {
+                        $scope.rbacActiveRoles = res.data;
+                    }, function (error) {
+                        dataFactory.errorAlert(error);
+                    }
+                );
+
+        }
+
+        $scope.$watch('currentPage', function () {
+            refreshUsersTable();
+        });
+
+        function refreshUsersTable() {
+            let begin = ($scope.currentPage - 1) * $scope.itemsPerPage;
+            let end = begin + $scope.itemsPerPage;
+            $scope.paged = {
+                rbacUsers: $scope.rbacUsers.slice(begin, end)
+            }
+        }
+
+        function refreshUsersRequestTable() {
+            let begin = ($scope.currentPage - 1) * $scope.itemsPerPage;
+            let end = begin + $scope.itemsPerPage;
+            $scope.paged = {
+                rbacUsersRequests: $scope.rbacUsersRequests.slice(begin, end)
+            }
+        }
+
+        $scope.loadInitialData = function () {
+            $log.log("loadInitialData S:" + $scope.activeStatus);
+            dataFactory.getAllUserRequests($scope.activeStatus)
+                .then(function (res) {
+                        $scope.rbacUsersRequests = res.data;
+                    refreshUsersRequestTable();
+                        // initializeUIData();
                     }, function (error) {
                         dataFactory.errorAlert(error);
                     }
@@ -1931,6 +2048,10 @@ app
                 .when("/rbac-user-roles", {
                     templateUrl: adminBaseUrl + "/ui/rbac-user-roles",
                     controller: "RbacUserRolesController"
+                })
+                .when("/rbac-user-requests", {
+                    templateUrl: adminBaseUrl + "/ui/rbac-user-requests",
+                    controller: "RbacUserRequestsController"
                 })
                 .when("/rbac-role-authorities", {
                     templateUrl: adminBaseUrl + "/ui/rbac-role-authorities",

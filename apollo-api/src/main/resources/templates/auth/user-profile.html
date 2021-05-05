@@ -120,9 +120,9 @@
                                     </div>
                                 </div>
                             </div>
-                            <div  sec:authorize="hasAuthority('PERMIT_APPLICATION')" id="idCompanyProfileButtons">
+                            <div  id="idCompanyProfileButtons">
                                 &nbsp; &nbsp;
-                                <div th:if="${usersEntity.manufactureProfile != 1}" class="form-row">
+                                <div th:if="${usersEntity.manufactureProfile == 0}" class="form-row">
                                     <div class="col-md-4 mb-3">
                                         <button id="addCompanyProfile" class="btn btn-primary" data-mdb-toggle="modal" data-mdb-target="#companyProfileModal" type="button">ADD MANUFACTURE DETAILS</button>
                                     </div>
@@ -544,7 +544,7 @@
                             </form>
                         </div>
 
-                        <div sec:authorize="hasAuthority('PERMIT_APPLICATION')" id="companyProfilePopUp" class="uploadForm">
+                        <div id="companyProfilePopUp" class="uploadForm">
                             <form id="companyProfile-form" name="companyProfile-form" th:action="@{/api/auth/kebs/add/manufacture-details/save}" method="post" th:object="${companyProfileEntity}">
                                 <div class="modal fade" id="companyProfileModal" tabindex="-1" role="dialog" aria-labelledby="companyProfileModalLabel" aria-hidden="true">
                                     <div class="modal-dialog" role="document">
@@ -559,18 +559,20 @@
                                                     <div id="addCompanyProfileBtn">
                                                         <!--                                                        <input type="hidden" id="message"  name="message" th:value="${message}">-->
 
-                                                        <label for="name" class="field-label">Name:</label>
-                                                        <input class="input-field w-input" max="20" id="name" th:field="*{name}" th:required="required">
-                                                        <label for="kraPin" class="field-label">KRA Pin:</label>
-                                                        <input class="input-field w-input" max="20" id="kraPin" th:field="*{kraPin}" th:required="required">
+<!--                                                        <label for="name" class="field-label">Name:</label>-->
+<!--                                                        <input class="input-field w-input" max="20" id="name" th:field="*{name}" th:required="required">-->
+<!--                                                        <label for="kraPin" class="field-label">KRA Pin:</label>-->
+<!--                                                        <input class="input-field w-input" max="20" id="kraPin" th:field="*{kraPin}" th:required="required">-->
                                                         <label for="registrationNumber" class="field-label">Registration Number:</label>
                                                         <input class="input-field w-input" max="20" id="registrationNumber" th:field="*{registrationNumber}" th:required="required">
-                                                        <label for="postalAddress" class="field-label">Postal Address:</label>
-                                                        <input class="input-field w-input" max="20" id="postalAddress" th:field="*{postalAddress}" th:required="required">
-                                                        <label for="companyEmail" class="field-label">Company Email:</label>
-                                                        <input class="input-field w-input" max="20" id="companyEmail" th:field="*{companyEmail}" th:required="required">
-                                                        <label for="companyTelephone" class="field-label">Company Telephone:</label>
-                                                        <input class="input-field w-input" max="20" id="companyTelephone" th:field="*{companyTelephone}" th:required="required">
+                                                        <label for="directorIdNumber" class="field-label">Director Number:</label>
+                                                        <input class="input-field w-input" max="20" id="directorIdNumber" th:field="*{directorIdNumber}" th:required="required">
+<!--                                                        <label for="postalAddress" class="field-label">Postal Address:</label>-->
+<!--                                                        <input class="input-field w-input" max="20" id="postalAddress" th:field="*{postalAddress}" th:required="required">-->
+<!--                                                        <label for="companyEmail" class="field-label">Company Email:</label>-->
+<!--                                                        <input class="input-field w-input" max="20" id="companyEmail" th:field="*{companyEmail}" th:required="required">-->
+<!--                                                        <label for="companyTelephone" class="field-label">Company Telephone:</label>-->
+<!--                                                        <input class="input-field w-input" max="20" id="companyTelephone" th:field="*{companyTelephone}" th:required="required">-->
                                                         <label for="yearlyTurnover" class="field-label">Yearly Turnover:</label>
                                                         <input class="input-field w-input" type="number" id="yearlyTurnover" th:field="*{yearlyTurnover}" th:required="required">
                                                         <label for="buildingName" class="field-label">Building Name:</label>
@@ -612,8 +614,8 @@
                             </form>
                         </div>
 
-                        <div sec:authorize="hasAuthority('PERMIT_APPLICATION')" id="requestModalPopUp" class="uploadForm">
-                            <form id="requestModal-form" name="companyProfile-form" th:action="@{/api/auth/kebs/add/manufacture-details/save}" method="post" th:object="${companyProfileEntity}">
+                        <div sec:authorize="hasAuthority('USER')" id="requestModalPopUp" class="uploadForm">
+                            <form id="requestModal-form" name="companyProfile-form" th:action="@{/api/auth/kebs/add/request-details/save}" method="post" th:object="${userRequestEntityDto}">
                                 <div class="modal fade" id="requestModal" tabindex="-1" role="dialog" aria-labelledby="requestModalLabel" aria-hidden="true">
                                     <div class="modal-dialog" role="document">
                                         <div class="modal-content">
@@ -626,13 +628,13 @@
                                                     <!--                                                    <input type="hidden" id="confirmSampleId"  name="confirmSampleId" th:value="${sampleSubmit?.id}">-->
                                                     <div id="requestModalBtn">
                                                         <label class="field-label" for="county">User Request:</label>
-                                                        <select id="userRequest" name="userRequest" class="input-field w-input" th:field="*{county}">
+                                                        <select id="requestId" name="requestId" class="input-field w-input" th:field="*{requestId}">
                                                             <option value="0">Select One...</option>
                                                             <option th:each="userRequest : ${userRequests}" th:text="${userRequest.userRequest}" th:value="${userRequest.id}"></option>
                                                             <!--                                        <option th:each="subRegion : ${subRegions}" th:text="${subRegion.subRegion}" th:value="${subRegion.id}"></option>-->
                                                         </select>
-                                                        <label class="field-label" for="county">Reason:</label>
-                                                        <textarea required name="name" id="hofQamCompletenessRemarks" class="input-field w-input" cols="65" rows="5" th:field="*{hofQamCompletenessRemarks}"></textarea>
+                                                        <label class="field-label" for="description">Reason:</label>
+                                                        <textarea required name="description" id="description" class="input-field w-input" cols="65" rows="5" th:field="*{description}"></textarea>
                                                     </div>
 
                                                 </div>

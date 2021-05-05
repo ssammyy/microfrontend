@@ -194,6 +194,8 @@ interface IUserProfilesRepository : HazelcastRepository<UserProfilesEntity, Long
 
     fun findByDesignationIdAndRegionIdAndDepartmentIdAndStatus(designationId: DesignationsEntity, regionId: RegionsEntity, departmentId: DepartmentsEntity, status: Int): UserProfilesEntity?
 
+    fun findAllByDesignationIdAndRegionIdAndDepartmentIdAndStatus(designationId: DesignationsEntity, regionId: RegionsEntity, departmentId: DepartmentsEntity, status: Int): List<UserProfilesEntity>?
+
     fun findByRegionIdAndDesignationIdAndStatus(regionId: RegionsEntity, designationId: DesignationsEntity, status: Int): List<UserProfilesEntity>?
 
     fun findByRegionIdAndDesignationIdAndDepartmentIdAndStatus(regionId: RegionsEntity, designationId: DesignationsEntity, departmentId: DepartmentsEntity, status: Int): List<UserProfilesEntity>?

@@ -233,13 +233,21 @@ class SchedulerImpl(
         val paidPermits = qaDaoServices.findAllQAOPermitListWithPaymentStatus(map.activeStatus)
         for (permit in paidPermits) {
             //Get permit type
+            val user = permit.userId?.let { commonDaoServices.findUserByID(it) }
              if (permit.permitType == applicationMapProperties.mapQAPermitTypeIDDmark) {
-                 qaDaoServices.assignNextOfficerAfterPayment(permit, map, applicationMapProperties.mapQADesignationIDForHODId)
+
+                permit.hodId = qaDaoServices.assignNextOfficerAfterPayment(permit, map, applicationMapProperties.mapQADesignationIDForHODId)?.id
+
              } else if (permit.permitType == applicationMapProperties.mapQAPermitTypeIdSmark) {
-                 qaDaoServices.assignNextOfficerAfterPayment(permit, map, applicationMapProperties.mapQADesignationIDForQAMId)
+                 permit.qamId = qaDaoServices.assignNextOfficerAfterPayment(permit, map, applicationMapProperties.mapQADesignationIDForQAMId)?.id
              }
+
             permit.paidStatus = map.initStatus
-            permitRepo.save(permit)
+
+            if (user != null) {
+                qaDaoServices.permitUpdateDetails(permit,map,user)
+            }
+//            permitRepo.save(permit)
         }
     }
  }
