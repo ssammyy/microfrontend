@@ -1,0 +1,51 @@
+<h3>Prepare Committee Draft</h3>
+<div [hidden]="submitted" style="width: 400px;">
+  <form (ngSubmit)="onSubmit()" [formGroup]="committee_draftFormGroup" class="form">
+    <div class="form-group">
+      <label>Work Item SL Number</label>
+      <select aria-label="Small" aria-describedby="inputGroup-sizing-lg"
+              class="form-control" required
+              formControlName="nwiID"
+              name="nwiID"
+      >
+        <option disabled>--Select Work Item SL Number--</option>
+        <option *ngFor="let preliminary_draft of preliminary_drafts" value="{{preliminary_draft.slNo}}">{{preliminary_draft.slNo}}</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Preliminary Draft Name</label>
+      <select aria-label="Small" aria-describedby="inputGroup-sizing-lg"
+              class="form-control" required
+              formControlName="pdID"
+              name="pdID"
+      >
+        <option disabled>--Select Preliminary Draft Name--</option>
+        <option *ngFor="let preliminary_draft of committee_drafts" value="{{preliminary_draft.id}}">{{preliminary_draft.pdName}}</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="cdName">Committee Draft Name</label>
+      <input type="text" class="form-control" id="cdName" required formControlName="cdName"  name="cdName">
+
+    </div>
+
+
+    <div class="form-group">
+      <label for="cdBy">Prepared By</label>
+      <input type="text" class="form-control" id="cdBy" required formControlName="cdBy"  name="cdBy">
+
+    </div>
+
+    <!--    <div class="form-group">-->
+    <!--      <label for="name">Email Id</label>-->
+    <!--      <input type="text" class="form-control" id="emailId" required [(ngModel)]="employee.emailId" name="emailId">-->
+    <!--    </div>-->
+
+    <button type="submit" class="btn btn-success">Submit</button>
+  </form>
+</div>
+
+<div [hidden]="!submitted">
+  <h4>You submitted successfully!</h4>
+  <!-- <button class="btn btn-success" (click)="newEmployee()">Add</button> -->
+</div>

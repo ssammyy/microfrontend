@@ -721,7 +721,7 @@ class QADaoServices(
 
 
             with(savePermit) {
-                renewalStatus = 1
+//                renewalStatus = 1
                 userId = user.id
                 permitType = oldPermit.permitType
                 permitNumber = oldPermit.permitNumber
@@ -749,7 +749,7 @@ class QADaoServices(
                 oldPermitStatus = null
                 permitExpiredStatus = null
                 paidStatus = null
-                renewalStatus = null
+//                renewalStatus = null
 
             }
 
@@ -892,25 +892,44 @@ class QADaoServices(
         try {
 
             val permitType = findPermitType(applicationMapProperties.mapQAPermitTypeIdFmark)
-            val smark = permit.id?.let { findPermitBYID(it) } ?: throw ExpectedDataNotFound("SMARK Id Not found")
+//            val smark = permit.id?.let { findPermitBYID(it) } ?: throw ExpectedDataNotFound("SMARK Id Not found")
 
-            var fmarkPermit = smark
+            var fmarkPermit = PermitApplicationsEntity()
             with(fmarkPermit){
-                id = null
+                commodityDescription = permit.commodityDescription
+                tradeMark = permit.tradeMark
+                divisionId = permit.divisionId
+                sectionId = permit.sectionId
+                standardCategory = permit.standardCategory
+                broadProductCategory = permit.broadProductCategory
+                productCategory = permit.productCategory
+                product = permit.product
+                productSubCategory = permit.productSubCategory
+                applicantName = permit.applicantName
+                firmName = permit.firmName
+                postalAddress = permit.postalAddress
+                telephoneNo = permit.telephoneNo
+                email = permit.email
+                physicalAddress = permit.physicalAddress
+                faxNo = permit.faxNo
+                plotNo = permit.plotNo
+                designation = permit.designation
+                attachedPlantId = permit.attachedPlantId
+                attachedPlantRemarks = permit.attachedPlantRemarks
             }
              fmarkPermit = permitSave(fmarkPermit,permitType, user, s).second
 
-            var savedSmarkFmarkId = generateSmarkFmarkEntity(smark, fmarkPermit, user)
+            val savedSmarkFmarkId = generateSmarkFmarkEntity(permit, fmarkPermit, user)
 
 
-            with(smark){
+            with(permit){
                 fmarkGenerated = 1
             }
 
-            val updateSmarkAndFmarkDetails = permitUpdateDetails(smark, s, user)
+            val updateSmarkAndFmarkDetails = permitUpdateDetails(permit, s, user)
 
             sr.payload = "savedSmarkFmarkId [id= ${savedSmarkFmarkId.id}]"
-            sr.names = " Fmark created ID = $fmarkPermit.id} SMARK TIED ID = ${smark.id}"
+            sr.names = " Fmark created ID = $fmarkPermit.id} SMARK TIED ID = ${permit.id}"
 
             sr.responseStatus = sr.serviceMapsId?.successStatusCode
             sr.responseMessage = "Success ${sr.payload}"
@@ -997,7 +1016,7 @@ class QADaoServices(
         KotlinLogging.logger { }.info { manufactureTurnOver }
         var amountToPay: BigDecimal? = null
         var taxAmount: BigDecimal? = null
-        var inspectionCost: BigDecimal? = null
+//        var inspectionCost: BigDecimal? = null
 
         var m = mutableListOf<BigDecimal?>()
         var fmarkCost: BigDecimal? = null
@@ -1012,9 +1031,9 @@ class QADaoServices(
         val standardCost: BigDecimal? = (paymentUnits?.standardStandardCost?.times(noOf!!))?.toBigDecimal()
         //                val inspectionCost: BigDecimal? = permit.noOfSitesProducingTheBrand?.let { paymentUnits?.standardInspectionCost?.times(it)?.toBigDecimal() }
       //Check if its a Renewal status
-       if (permit.renewalStatus!=1){
-           inspectionCost = paymentUnits?.standardInspectionCost?.toBigDecimal()
-       }
+//       if (permit.renewalStatus!=1){
+         val  inspectionCost = paymentUnits?.standardInspectionCost?.toBigDecimal()
+//       }
 
         var applicationCost: BigDecimal? = null
 

@@ -71,7 +71,6 @@ class PermitApplicationsEntity:Serializable {
     var designation: String? = null
 
 
-
     @Column(name = "VAT_NO")
     @Basic
     var vatNo: String? = null
@@ -116,6 +115,10 @@ class PermitApplicationsEntity:Serializable {
     @Column(name = "RENEWAL_STATUS")
     @Basic
     var renewalStatus: Int? = null
+
+    @Column(name = "APPROVED_REJECTED_SCHEME")
+    @Basic
+    var approvedRejectedScheme: Int? = null
 
     @Column(name = "JUSTIFICATION_REPORT_REMARKS")
     @Basic
@@ -492,6 +495,7 @@ class PermitApplicationsEntity:Serializable {
         if (sta10FilledStatus != other.sta10FilledStatus) return false
         if (oldPermitStatus != other.oldPermitStatus) return false
         if (renewalStatus != other.renewalStatus) return false
+        if (approvedRejectedScheme != other.approvedRejectedScheme) return false
         if (inspectionDate != other.inspectionDate) return false
         if (assessmentDate != other.assessmentDate) return false
         if (inspectionScheduledStatus != other.inspectionScheduledStatus) return false
@@ -592,6 +596,7 @@ class PermitApplicationsEntity:Serializable {
         result = 31 * result + (endOfProductionStatus ?: 0)
         result = 31 * result + (oldPermitStatus ?: 0)
         result = 31 * result + (renewalStatus ?: 0)
+        result = 31 * result + (approvedRejectedScheme ?: 0)
         result = 31 * result + (status ?: 0)
         result = 31 * result + (generateSchemeStatus ?: 0)
         result = 31 * result + (hofQamCompletenessStatus ?: 0)

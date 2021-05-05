@@ -52,7 +52,6 @@ class RawMaterials {
     var hsCode: String? = null
     var rawMaterialDescription: String? = null
     var endProduct: String? = null
-    var dutyRate: String? = null
     var countryOfOrigin: String? = null
 
 }

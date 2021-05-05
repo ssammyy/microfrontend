@@ -191,8 +191,7 @@ class QualityAssuranceController(
 
         val sm = CommonDaoServices.MessageSuccessFailDTO()
         sm.closeLink = "${applicationMapProperties.baseUrlValue}/user/user-profile"
-        sm.message =
-            "Plant with the following building [Name = ${manufacturePlantDetails.buildingName}] was added sucessfull"
+        sm.message = "Plant with the following building Name = ${manufacturePlantDetails.buildingName} was added successfully"
 
         return commonDaoServices.returnValues(result, map, sm)
     }
@@ -493,7 +492,8 @@ class QualityAssuranceController(
 
         val permit = loggedInUser.id?.let { qaDaoServices.findPermitBYUserIDAndId(permitID, it) } ?: throw ExpectedDataNotFound("Required User ID, check config")
         val permitType = permit.permitType?.let { qaDaoServices.findPermitType(it) } ?: throw ExpectedDataNotFound("PermitType Id Not found")
-        val ifProductCanGenerateFmark = permit.id?.let { commonDaoServices.findProductByID(it).fmarkGenerateStatus }
+        val ifProductCanGenerateFmark = permit.product?.let { commonDaoServices.findProductByID(it).fmarkGenerateStatus }
+
         if (ifProductCanGenerateFmark == 1){
             val fmarkGenerated = qaDaoServices.permitGenerateFmark(map,loggedInUser,permit)
         }
@@ -502,15 +502,15 @@ class QualityAssuranceController(
         with(permit) {
             sendApplication = map.activeStatus
             invoiceGenerated = map.activeStatus
-            //Todo: Ask anthony about this
-            when {
-                permit.permitType!! == applicationMapProperties.mapQAPermitTypeIDDmark -> {
-                    hodId = qaDaoServices.assignNextOfficerAfterPayment(permit, map, applicationMapProperties.mapQADesignationIDForHODId)?.id
-                }
-                permit.permitType!! == applicationMapProperties.mapQAPermitTypeIdSmark -> {
-                    qamId = qaDaoServices.assignNextOfficerAfterPayment(permit, map, applicationMapProperties.mapQADesignationIDForQAMId)?.id
-                }
-            }
+//            //Todo: Ask anthony about this
+//            when {
+//                permit.permitType!! == applicationMapProperties.mapQAPermitTypeIDDmark -> {
+//                    hodId = qaDaoServices.assignNextOfficerAfterPayment(permit, map, applicationMapProperties.mapQADesignationIDForHODId)?.id
+//                }
+//                permit.permitType!! == applicationMapProperties.mapQAPermitTypeIdSmark -> {
+//                    qamId = qaDaoServices.assignNextOfficerAfterPayment(permit, map, applicationMapProperties.mapQADesignationIDForQAMId)?.id
+//                }
+//            }
 
         }
         result = qaDaoServices.permitUpdateDetails(permit, map, loggedInUser).first
