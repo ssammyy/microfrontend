@@ -477,7 +477,7 @@ class QualityAssuranceController(
 
         val permit = loggedInUser.id?.let { qaDaoServices.findPermitBYUserIDAndId(permitID, it) } ?: throw ExpectedDataNotFound("Required User ID, check config")
         val permitType = permit.permitType?.let { qaDaoServices.findPermitType(it) } ?: throw ExpectedDataNotFound("PermitType Id Not found")
-        val ifProductCanGenerateFmark = permit.id?.let { commonDaoServices.findProductByID(it).fmarkGenerateStatus }
+        val ifProductCanGenerateFmark = permit.product?.let { commonDaoServices.findProductByID(it).fmarkGenerateStatus }
         if (ifProductCanGenerateFmark == 1){
             val fmarkGenerated = qaDaoServices.permitGenerateFmark(map,loggedInUser,permit)
         }
