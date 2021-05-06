@@ -1,11 +1,6 @@
 package org.kebs.app.kotlin.apollo.api.controllers.diControllers.pvoc
 
-//import org.apache.poi.ss.usermodel.Cell
-//import org.apache.poi.ss.usermodel.CellType
-//import org.apache.poi.ss.usermodel.Row
-//import org.apache.poi.ss.usermodel.Sheet
-//import org.apache.poi.ss.usermodel.Workbook
-//import org.apache.poi.xssf.usermodel.XSSFWorkbook
+import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.notifications.Notifications
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.PvocBpmn
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
@@ -15,9 +10,10 @@ import org.kebs.app.kotlin.apollo.common.exceptions.SupervisorNotFoundException
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.*
 import org.kebs.app.kotlin.apollo.store.repo.*
+import org.springframework.beans.support.MutableSortDefinition
+import org.springframework.beans.support.PagedListHolder
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.repository.findByIdOrNull
-import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.core.context.SecurityContextHolder.getContext
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
@@ -56,8 +52,8 @@ class Waivers(
     private val commonDaoServices: CommonDaoServices,
     private val iUserRolesRepository: IUserRolesRepository,
     private val pvocDaoServices: PvocDaoServices,
-    private val pvocComplainStatusEntityRepo: PvocComplainStatusEntityRepo,
-    private val applicationMapProperties: ApplicationMapProperties
+    pvocComplainStatusEntityRepo: PvocComplainStatusEntityRepo,
+    applicationMapProperties: ApplicationMapProperties
 ) {
 
     final val appId = applicationMapProperties.mapImportInspection
@@ -66,7 +62,7 @@ class Waivers(
     private val waiversStatus = iPvocWaiversStatusRepo.findByIdOrNull(2)
 
     fun getLoggedInUser(): UsersEntity? {
-        SecurityContextHolder.getContext().authentication.let { auth ->
+        getContext().authentication.let { auth ->
             iUserRepository.findByUserName(userName = auth.name).let { userDetails ->
                 return userDetails
             }
@@ -118,12 +114,13 @@ class Waivers(
         val token = commonDaoServices.generateEmailVerificationToken(sr, emailObject, map)
         val messageBody = "Please Click the link Bellow \n" +
                 "\n " +
-//                "https://localhost:8006/api/di/pvoc/waivers-application/?token=${token.token}"
-                "https://kims.kebs.org:8006/api/di/pvoc/waivers-application/?token=${token.token}"
+                "https://localhost:8006/api/di/pvoc/waivers-application/?token=${token.token}"
+//                "https://kims.kebs.org:8006/api/di/pvoc/waivers-application/?token=${token.token}"
 
         emailObject.email?.let { notifications.sendEmail(it, "Complaint Verification", messageBody) }
         return "redirect:/"
     }
+
 
     @PostMapping("save-waiver-application")
     fun saveWaiverApplication(
@@ -179,15 +176,15 @@ class Waivers(
     @PostMapping("waivers-master-save/")
     fun saveMasterList(@RequestParam("id") id: Long, masterList: PvocMasterListEntity): String {
         getContext().authentication.name.let { username ->
-            iUserRepository.findByUserName(username).let { userDetails ->
+
                 iwaiversApplicationRepo.findByIdOrNull(id)?.let { waiver ->
                     masterList.waiversApplicationId = id
                     masterList.createdOn = Timestamp.from(Instant.now())
+                    masterList.createdBy = waiver.createdBy
                     masterList.status = 1
                     iPvocMasterListRepo.save(masterList)
                     return "redirect:/api/di/pvoc/add-musterlist-details/${id}"
                 } ?: throw Exception("Waivers application with $id id does not exist")
-            }
         }
     }
 
@@ -201,9 +198,12 @@ class Waivers(
             waiverApp.wetcMember = 720L
             waiverApp.serialNo = pvocDaoServices.generateRandomNumbers("PVOC-WAIVER")
             iwaiversApplicationRepo.save(waiverApp)
-//           getLoggedInUser()?.id?.let {it ->
-//                pvocBpmn.startPvocWaiversApplicationsProcess(id, it, 720L)
-//            }
+           getLoggedInUser()?.id?.let {it ->
+               KotlinLogging.logger {  }.info { "Entity id $id and impoter id is $it" }
+                pvocBpmn.startPvocWaiversApplicationsProcess(id, it, 720)
+                pvocBpmn.pvocWaSubmitApplicationComplete(id, 720)
+
+            }
             return "redirect:/api/di/pvoc/all-waivers-applications-list?currentPage=0&pageSize=10&fromDate=${dateFrom}&toDate=${dateTo}&filter=123"
         } ?: throw Exception("Application does not exist")
     }
@@ -215,85 +215,66 @@ class Waivers(
         @RequestParam(value = "toDate", required = false) toDate: String,
         @RequestParam(value = "filter", required = false) filter: String,
         @RequestParam(value = "currentPage", required = false) currentPage: Int,
-        @RequestParam(value = "pageSize", required = false) pageSize: Int
-    ): String {
+        @RequestParam(value = "pageSize", required = false) pageSize: Int): String {
 
         val dateFrom = Date.valueOf(LocalDate.parse(fromDate, DateTimeFormatter.ofPattern("yyyy-MM-dd")))
         val dateTo = Date.valueOf(LocalDate.parse(toDate, DateTimeFormatter.ofPattern("yyyy-MM-dd")))
 
         PageRequest.of(currentPage, pageSize)
             .let { page ->
-                SecurityContextHolder.getContext().authentication
+                getContext().authentication
                     ?.let { auth ->
                         when {
-                            auth.authorities.stream()
-                                .anyMatch { authority -> authority.authority == "MAKE_WAIVER_APPLICATION" } -> {
+                            auth.authorities.stream().anyMatch { authority -> authority.authority == "MAKE_WAIVER_APPLICATION" } -> {
                                 getLoggedInUser().let { userDetails ->
                                     when (filter) {
                                         "filter" -> {
-                                            iwaiversApplicationRepo.findAllByStatusAndApplicantNameAndCreatedOnBetweenOrderByCreatedOnDesc(
-                                                1,
-                                                userDetails?.firstName + " " + userDetails?.lastName,
-                                                dateFrom,
-                                                dateTo,
-                                                page
-                                            ).let { waivers ->
+                                            iwaiversApplicationRepo.findAllByStatusAndApplicantNameAndCreatedOnBetweenOrderByCreatedOnDesc(1, userDetails?.firstName + " " + userDetails?.lastName, dateFrom, dateTo, page)?.let { waivers ->
                                                 model.addAttribute("waivers", waivers)
-                                            }
+//                                                return "destination-inspection/pvoc/WaiversApplications"
+                                            }?: throw Exception("You have waiver applications")
                                         }
                                         else -> {
-                                            iwaiversApplicationRepo.findAllByStatusAndApplicantNameOrderByCreatedOnDesc(
-                                                1,
-                                                userDetails?.firstName + " " + userDetails?.lastName,
-                                                page
-                                            ).let { waivers ->
+                                            iwaiversApplicationRepo.findAllByStatusAndApplicantNameOrderByCreatedOnDesc(1, userDetails?.firstName + " " + userDetails?.lastName, page)?.let { waivers ->
                                                 model.addAttribute("waivers", waivers)
-                                            }
+//                                                return "destination-inspection/pvoc/WaiversApplications"
+                                            }?: throw Exception("You have waiver applications")
                                         }
 
                                     }
                                 }
 
                             }
-                            auth.authorities.stream()
-                                .anyMatch { authority -> authority.authority == "WAIVERS_APPLICATION_REPORT_GENERATE" || authority.authority == "PVOC_APPLICATION_PROCESS" || authority.authority == "WAIVERS_APPLICATION_REVIEW" } -> {
+                            auth.authorities.stream().anyMatch { authority -> authority.authority == "WAIVERS_APPLICATION_REPORT_GENERATE" || authority.authority == "PVOC_APPLICATION_PROCESS" || authority.authority == "WAIVERS_APPLICATION_REVIEW" } -> {
                                 when (filter) {
                                     "filter" -> {
-                                        iwaiversApplicationRepo.findAllByStatusAndCreatedOnBetweenOrderByCreatedOnDesc(
-                                            1,
-                                            dateFrom,
-                                            dateTo,
-                                            page
-                                        ).let { waivers ->
+                                        iwaiversApplicationRepo.findAllByStatusAndCreatedOnBetweenOrderByCreatedOnDesc(1, dateFrom, dateTo, page)?.let { waivers ->
                                             model.addAttribute("waivers", waivers)
-                                        }
+//                                            return "destination-inspection/pvoc/WaiversApplications"
+                                        }?: throw Exception("You have waiver applications")
                                     }
                                     else -> {
-//                                                getLoggedInUser()
-//                                                        ?.let { loggedInUser ->
-//                                                            loggedInUser.id?.let {
-//                                                                KotlinLogging.logger {  }.info { "User id ==>" + it }
-//                                                                getTasks(it).let { tasks ->
-//                                                                    KotlinLogging.logger {  }.info { "Tasks " +tasks.count() }
-//                                                                    val listPage: PagedListHolder<*> = PagedListHolder<PvocWaiversApplicationEntity?>(tasks, MutableSortDefinition(false))
-//                                                                    listPage.pageSize = page.pageSize // number of items per page
-//                                                                    listPage.page = page.pageNumber
-//                                                                    model.addAttribute("waivers", listPage.pageList)
-//                                                                }
-//                                                            }
-//
-//                                                        }
-                                        iwaiversApplicationRepo.findAll().let { waivers ->
-                                            model.addAttribute("waivers", waivers)
-                                        }
+                                        getLoggedInUser()
+                                            ?.let { loggedInUser ->
+                                                loggedInUser.id?.let {
+                                                    getTasks(it).let { tasks ->
+                                                        KotlinLogging.logger {  }.info { "Tasks " +tasks.count() }
+                                                        val listPage: PagedListHolder<*> = PagedListHolder<PvocWaiversApplicationEntity?>(tasks, MutableSortDefinition(false))
+                                                        listPage.pageSize = page.pageSize // number of items per page
+                                                        listPage.page = page.pageNumber
+                                                        model.addAttribute("waivers", listPage.pageList)
+                                                    }
+                                                }
+
+                                            }?: throw Exception("Please login")
                                     }
                                 }
                             }
                             else -> throw SupervisorNotFoundException("Only users with the following privilege PVOC Appliaction READ or PVOC APPLICATION PROCESS, can access this page")
                         }
                     }
-                return "destination-inspection/pvoc/WaiversApplications"
             }
+        return "destination-inspection/pvoc/WaiversApplications"
     }
 
     @GetMapping("all-waivers-applications-list/{id}")
@@ -304,7 +285,7 @@ class Waivers(
             model.addAttribute("remarkData", PvocWaiversRemarksEntity())
             return "destination-inspection/pvoc/WaiversApplicationDetails"
         }
-            ?: throw Exception("Waiver with ${id} does not exist")
+            ?: throw Exception("Waiver with $id does not exist")
     }
 
     @GetMapping("aprrove-waivers-application-by-wetc-chiarman/{id}")
@@ -318,7 +299,7 @@ class Waivers(
             waiver.approvalStatus = waiversStatus?.approvalStatus
             waiver.modifiedOn = Timestamp.from(Instant.now())
             iwaiversApplicationRepo.save(waiver)
-            return "redirect:/api/di/pvoc/all-waivers-applications-list/${id}"
+            return "redirect:/api/di/pvoc/all-waivers-applications-list/$id"
         } ?: throw Exception("Waiver with $id does not exist")
 
     }
@@ -362,7 +343,7 @@ class Waivers(
         }
         iPvocWaiversRemarksRepo.save(remarkData)
         //passing the process to wetc secretary
-        pvocBpmn.pvocWaSubmitApplicationComplete(id, 740)
+        pvocBpmn.pvocWaReviewApplicationComplete(id, 740)
         return "redirect:/api/di/pvoc/all-waivers-applications-list/${id}"
     }
 
@@ -426,6 +407,7 @@ class Waivers(
             reportData.waiverId = id
             reportData.status = 1
             iPvocWaiversReportRepo.save(reportData)
+            KotlinLogging.logger {  }.info { "Doc id is $id" }
             pvocBpmn.pvocWaGenerateReportComplete(id, 781)
             return "redirect:/api/di/pvoc/all-waivers-applications-list/${id}"
         } ?: throw Exception("Waivers with that $id id does not exist")
@@ -448,7 +430,7 @@ class Waivers(
                     ?.let { auth ->
                         when {
                             auth.authorities.stream()
-                                .anyMatch { authority -> authority.authority == "PVOC_APPLICATION_READ" || authority.authority == "PVOC_APPLICATION_PROCESS" } -> {
+                                .anyMatch { authority -> authority.authority == "PVOC_APPLICATION_READ" || authority.authority == "WAIVER_APPLICATION_REPORT_PROCESS" || authority.authority == "PVOC_APPLICATION_PROCESS" } -> {
                                 when (filter) {
                                     "filter" -> {
                                         iPvocWaiversReportRepo.findAllByStatus(1, page).let { waivers ->
@@ -463,7 +445,7 @@ class Waivers(
                                 }
 
                             }
-                            else -> throw SupervisorNotFoundException("Only users with the following privilege PVOC Appliaction READ or PVOC APPLICATION PROCESS, can access this page")
+                            else -> throw SupervisorNotFoundException("You can't access this page")
                         }
                         return "destination-inspection/pvoc/WaiverApplicationReports"
                     } ?: throw Exception("You must be loggedIn to access this page")
@@ -559,13 +541,17 @@ class Waivers(
 
     @PostMapping("save-generated-minutes")
     fun saveGeneratedMinutes(@ModelAttribute minute: PvocWaiversWetcMinutesEntity): String {
+        val dateFrom =
+            Date.valueOf(LocalDate.parse(LocalDate.now().toString(), DateTimeFormatter.ofPattern("yyyy-MM-dd")))
+        val dateTo =
+            Date.valueOf(LocalDate.parse(LocalDate.now().toString(), DateTimeFormatter.ofPattern("yyyy-MM-dd")))
         getLoggedInUser().let { userDeails ->
             minute.createdBy = userDeails?.firstName + " " + userDeails?.lastName
             minute.createdOn = Timestamp.from(Instant.now())
             minute.status = 1
             iPvocWaiversWetcMinutesEntityRepo.save(minute)
             minute.waiverId?.let { it2 -> pvocBpmn.pvocWaGenerateMinutesComplete(it2, 716) }
-            return "redirect:/api/di/pvoc/waiversWETCMinutes?currentPage=0&pageSize=10"
+            return "redirect:/api/di/pvoc/waiversWETCMinutes?currentPage=0&pageSize=10&fromDate=${dateFrom}&toDate=${dateTo}"
         }
     }
 
@@ -662,7 +648,7 @@ class Waivers(
                     .let { auth ->
                         when {
                             auth.authorities.stream()
-                                .anyMatch { authority -> authority.authority == "PVOC_APPLICATION_READ" || authority.authority == "PVOC_APPLICATION_PROCESS" } -> {
+                                .anyMatch { authority -> authority.authority == "PVOC_APPLICATION_READ" || authority.authority == "WAIVERS_MINUTES_REVIEW_NCS" || authority.authority == "PVOC_APPLICATION_PROCESS" } -> {
                                 when (filter) {
                                     "filter" -> {
                                         iPvocWaiversWetcMinutesEntityRepo.findAllByStatusAndCreatedOnBetweenOrderByCreatedOnDesc(

@@ -100,6 +100,8 @@ angular.module('myApp').factory('ExceptionService', ['$http', '$q', function($ht
             payload.append(key, manufacturer[key]);
         }
 
+        console.log(payload)
+
         const request = {
             "url": EXEMPTION_UPLOAD_URI,
             "method": "POST",

@@ -44,6 +44,7 @@ testApp.controller("exceptionController", ['$scope', 'ExceptionService',
     $scope.uploadExceptions = function (){
         const file = $scope.myFile;
         const manufacturer = $scope.details
+        console.log(manufacturer)
         ExemptionService.uploadExemption(manufacturer, file)
             .then(
                 function(d) {

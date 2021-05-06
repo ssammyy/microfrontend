@@ -61,7 +61,7 @@ class NationalEnquiryPointService(private val runtimeService: RuntimeService,
 
     //request task list retrieval
     fun getManagerTasks(): List<TaskDetails?>? {
-        val tasks = taskService.createTaskQuery().taskCandidateGroup(TASK_CANDIDATE_GROUP_NEP).list()
+        val tasks = taskService.createTaskQuery().taskCandidateGroup(TASK_CANDIDATE_GROUP_NEP).processDefinitionKey(PROCESS_DEFINITION_KEY).list()
         return getTaskDetails(tasks)
     }
 
@@ -121,7 +121,7 @@ class NationalEnquiryPointService(private val runtimeService: RuntimeService,
 
     //displays tasks due for organizations
     fun getDepartmentTasks() : List<TaskDetails?>?{
-        val tasks = taskService.createTaskQuery().taskCandidateGroup(TASK_CANDIDATE_GROUP_DEPT).list()
+        val tasks = taskService.createTaskQuery().taskCandidateGroup(TASK_CANDIDATE_GROUP_DEPT).processDefinitionKey(PROCESS_DEFINITION_KEY).list()
         return getTaskDetails(tasks)
     }
 

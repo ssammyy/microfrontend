@@ -1,5 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import {FeedbackEmail, InfoAvailableYes, Notification, RootObject} from '../../../shared/models/standard-development';
+import {
+  FeedbackEmail,
+  InfoAvailableNo,
+  InfoAvailableYes,
+  Notification,
+  RootObject
+} from '../../../shared/models/standard-development';
 import {NepPointService} from "../../../shared/services/nep-point.service";
 import {HttpErrorResponse} from '@angular/common/http';
 import {FormBuilder, FormGroup, NgForm} from '@angular/forms';
@@ -43,6 +49,7 @@ export class InformationcheckComponent implements OnInit {
       }
     );
   }
+
 
   public sendEmailFeedback(notification: FeedbackEmail): void{
     this.notificationService.feedbackEmail(notification).subscribe(

@@ -5,6 +5,7 @@ import {NewWorkItemService} from "../new-work-item.service";
 import {New_work_item, TaskData} from "../../../../shared/models/committee_module";
 import {FormBuilder, FormGroup, NgForm, Validators} from '@angular/forms';
 import {HttpErrorResponse} from "@angular/common/http";
+import {NgbDateStruct} from '@ng-bootstrap/ng-bootstrap';
 
 
 @Component({
@@ -16,6 +17,7 @@ export class PrepareNwiComponent implements OnInit {
 
   public nwi: New_work_item[] | undefined;
   submitted = false;
+  model: NgbDateStruct | undefined;
 
 
   constructor(private nwi_service: NewWorkItemService,
