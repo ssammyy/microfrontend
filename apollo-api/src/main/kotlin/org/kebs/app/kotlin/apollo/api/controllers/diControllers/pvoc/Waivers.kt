@@ -202,6 +202,7 @@ class Waivers(
                KotlinLogging.logger {  }.info { "Entity id $id and impoter id is $it" }
                 pvocBpmn.startPvocWaiversApplicationsProcess(id, it, 720)
                 pvocBpmn.pvocWaSubmitApplicationComplete(id, 720)
+
             }
             return "redirect:/api/di/pvoc/all-waivers-applications-list?currentPage=0&pageSize=10&fromDate=${dateFrom}&toDate=${dateTo}&filter=123"
         } ?: throw Exception("Application does not exist")
