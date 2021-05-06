@@ -180,10 +180,10 @@ class ExemptionRestController(
 
     }
 
-    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+//
     @PostMapping("application-exception2", consumes = ["multipart/form-data"])
     fun saveApplicationException(
-        @RequestParam("conpanyName", required = false) conpanyName: String,
+        @RequestParam("companyName", required = false) companyName: String,
         @RequestParam("uploadedfile", required = false) uploadedfile: MultipartFile,
         @RequestParam("companyPinNo", required = false) companyPinNo: String,
         @RequestParam("email", required = false) email: String,
@@ -191,7 +191,6 @@ class ExemptionRestController(
         @RequestParam("postalAadress", required = false) postalAadress: String,
         @RequestParam("physicalLocation", required = false) physicalLocation: String
     ): UploadedFileResponse {
-        if (uploadedfile.isEmpty()) {
             val extension: String = FilenameUtils.getExtension(uploadedfile.getOriginalFilename())
             KotlinLogging.logger {  }.info { "Extension " +extension }
             if (extension.endsWith("xlsx")) {
@@ -201,7 +200,7 @@ class ExemptionRestController(
                         manufacturer.companyPinNo = companyPinNo
                         manufacturer.email = email
                         manufacturer.telephoneNo = telephoneNo
-                        manufacturer.conpanyName = conpanyName
+                        manufacturer.conpanyName = companyName
                         manufacturer.postalAadress = postalAadress
                         manufacturer.physicalLocation = physicalLocation
                         with(manufacturer) {
@@ -217,9 +216,6 @@ class ExemptionRestController(
             }else{
                 throw Exception("Upload a valid file")
             }
-        }else{
-          throw Exception("File cannot be empty")
-        }
     }
 
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
