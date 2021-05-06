@@ -662,14 +662,14 @@ class QualityAssuranceController(
             sendApplication = map.activeStatus
             invoiceGenerated = map.activeStatus
 //            //Todo: Ask anthony about this
-//            when {
-//                permit.permitType!! == applicationMapProperties.mapQAPermitTypeIDDmark -> {
-//                    hodId = qaDaoServices.assignNextOfficerAfterPayment(permit, map, applicationMapProperties.mapQADesignationIDForHODId)?.id
-//                }
-//                permit.permitType!! == applicationMapProperties.mapQAPermitTypeIdSmark -> {
-//                    qamId = qaDaoServices.assignNextOfficerAfterPayment(permit, map, applicationMapProperties.mapQADesignationIDForQAMId)?.id
-//                }
-//            }
+            when {
+                permit.permitType!! == applicationMapProperties.mapQAPermitTypeIDDmark -> {
+                    hodId = qaDaoServices.assignNextOfficerAfterPayment(permit, map, applicationMapProperties.mapQADesignationIDForHODId)?.id
+                }
+                permit.permitType!! == applicationMapProperties.mapQAPermitTypeIdSmark -> {
+                    qamId = qaDaoServices.assignNextOfficerAfterPayment(permit, map, applicationMapProperties.mapQADesignationIDForQAMId)?.id
+                }
+            }
 
         }
         result = qaDaoServices.permitUpdateDetails(permit, map, loggedInUser).first
