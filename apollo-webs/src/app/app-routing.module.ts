@@ -53,6 +53,7 @@ import {CdListComponent} from "./components/standards-development/commitee/cd-li
 import {PrepareCdComponent} from "./components/standards-development/commitee/prepare-cd/prepare-cd.component";
 import {ApproveNwiComponent} from "./components/standards-development/commitee/approve-nwi/approve-nwi.component";
 import {ApproveCdComponent} from "./components/standards-development/commitee/approve-cd/approve-cd.component";
+import {CommentCdComponent} from "./components/standards-development/commitee/comment-cd/comment-cd.component";
 
 const routes: Routes = [
   // { path: 'login-signup', component: LoginSignupComponent },
@@ -266,6 +267,8 @@ const routes: Routes = [
   {path: 'add_cd', component: PrepareCdComponent},
   {path: 'approve_nwi', component: ApproveNwiComponent},
   {path: 'approve_cd', component: ApproveCdComponent},
+  {path: 'comment_cd', component: CommentCdComponent},
+
 
 
   /****************************************************************

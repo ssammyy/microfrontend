@@ -8,12 +8,14 @@ import org.kebs.app.kotlin.apollo.store.model.*
 import org.kebs.app.kotlin.apollo.store.repo.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Propagation
 import org.springframework.web.multipart.MultipartFile
 import java.io.IOException
 import java.sql.Timestamp
 import java.time.Instant
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
+import org.springframework.transaction.annotation.Transactional
 
 @Service
 class FileExcelProcessService {
@@ -39,6 +41,7 @@ class FileExcelProcessService {
     @Autowired
     lateinit var iPvocExceptionRawMaterialCategoryEntityRepo: IPvocExceptionRawMaterialCategoryEntityRepo
 
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun store(file: MultipartFile, manufactuer: PvocApplicationEntity) {
         try {
             val lstProducts: List<PvocApplicationProductsEntity> = ExcelParserUtils.parseExcelFile(file.inputStream)
@@ -76,16 +79,16 @@ class FileExcelProcessService {
             KotlinLogging.logger { }.info { "Saved successfully" }
 
             iPvocExceptionIndustrialSparesCategoryEntityRepo.saveAll(lstSpares)
+            KotlinLogging.logger {  }.info { "App id is ${manufactuer.id}" }
             manufactuer.finished = 1
             iPvocApplicationRepo.save(manufactuer)
-            KotlinLogging.logger { }.info { "Saved successfully" }
+            KotlinLogging.logger { }.info { "Finished successfully" }
             manufactuer.id?.let { commonDaoServices.getLoggedInUser()?.id?.let { it1 ->
                 pvocBpmn.startPvocApplicationExemptionsProcess(it,
                     it1
                 )
+                pvocBpmn.pvocEaSubmitApplicationComplete(it, 502)
             } }
-            manufactuer.id?.let { pvocBpmn.pvocEaSubmitApplicationComplete(it, 502) }
-//            return "redirect:/api/di/pvoc/officer?currentPage=0&pageSize=10&fromDate=${fro}&toDate=${to}&filter=0"
         } catch (e: IOException) {
             throw Exception(e.message)
         }

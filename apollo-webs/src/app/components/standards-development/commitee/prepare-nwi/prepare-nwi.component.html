@@ -14,10 +14,17 @@
              placeholder="Reference">
 
     </div>
+
     <div class="form-group">
       <label for="ta">Target date</label>
-      <input type="text" id="ta" class="form-control" required formControlName="ta" name="ta" placeholder="Target date">
 
+      <div class="input-group">
+        <input class="form-control" id="ta" required formControlName="ta" name="ta" placeholder="yyyy-mm-dd"
+               name="dp" [(ngModel)]="model" ngbDatepicker #d="ngbDatepicker">
+        <div class="input-group-append">
+          <button class="btn btn-outline-secondary calendar" (click)="d.toggle()" type="button"></button>
+        </div>
+      </div>
     </div>
     <div class="form-group">
       <label for="ed">Edition of the standard </label>
@@ -32,11 +39,15 @@
 
     </div>
     <div class="form-group">
-      <label for="stage_date">Stage Date</label>
+      <label for="ta">Stage date</label>
 
-      <input type="text" id="stage_date" class="form-control" required formControlName="stage_date" name="stage_date"
-             placeholder="Stage Date">
-
+      <div class="input-group">
+        <input class="form-control" id="stage_date" required formControlName="stage_date" name="stage_date" placeholder="yyyy-mm-dd"
+               [(ngModel)]="model" ngbDatepicker #d="ngbDatepicker">
+        <div class="input-group-append">
+          <button class="btn btn-outline-secondary calendar" (click)="d.toggle()" type="button"></button>
+        </div>
+      </div>
     </div>
 
     <!--    <div class="form-group">-->
