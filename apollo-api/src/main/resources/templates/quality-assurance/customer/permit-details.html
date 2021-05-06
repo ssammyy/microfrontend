@@ -453,7 +453,7 @@
                                 <div sec:authorize="hasAuthority('QA_PSC_MEMBERS_READ')" >
                                     <a th:if="${ permitDetails?.pscMemberApprovalStatus == null}" style="color: white" onclick="popUpFunction('pscMemberApproval');" class="filter-link">APPROVE/REJECT PERMIT AWARDING</a>
                                 </div>
-                                <div sec:authorize="hasAuthority('hasAuthority('QA_PCM_READ')')" >
+                                <div sec:authorize="hasAuthority('hasAuthority('QA_PCM_READ')" >
                                     <a th:if="${ permitDetails?.pcmApprovalStatus == null and permitDetails?.pscMemberApprovalStatus == 1}" style="color: white" onclick="popUpFunction('pcmApproval');" class="filter-link">APPROVE/REJECT PERMIT AWARDING</a>
                                 </div>
 
