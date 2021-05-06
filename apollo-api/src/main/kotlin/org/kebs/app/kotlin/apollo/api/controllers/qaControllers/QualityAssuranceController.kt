@@ -1,6 +1,7 @@
 package org.kebs.app.kotlin.apollo.api.controllers.qaControllers
 
 
+import org.kebs.app.kotlin.apollo.api.notifications.Notifications
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.QADaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.QualityAssuranceDaoServices
@@ -28,6 +29,7 @@ import javax.servlet.http.HttpServletResponse
 class QualityAssuranceController(
     private val applicationMapProperties: ApplicationMapProperties,
     private val qaDaoServices: QADaoServices,
+    private val notifications: Notifications,
     private val commonDaoServices: CommonDaoServices,
 ) {
 
@@ -61,6 +63,8 @@ class QualityAssuranceController(
     fun saveNewSchemeOfSupervision(
         @ModelAttribute("QaSchemeForSupervisionEntity") QaSchemeForSupervisionEntity: QaSchemeForSupervisionEntity,
         @RequestParam( "permitID") permitID: Long,
+        @RequestParam( "status") status: Int?,
+        @RequestParam( "schemeID") schemeID: Long?,
         model: Model)
     : String? {
         var result: ServiceRequestsEntity?
@@ -68,17 +72,29 @@ class QualityAssuranceController(
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         //Find Permit with permit ID
         val permitDetails = qaDaoServices.findPermitBYID(permitID)
+        val sm = CommonDaoServices.MessageSuccessFailDTO()
 
-        result = qaDaoServices.newSchemeSupervisionSave(permitDetails, QaSchemeForSupervisionEntity, loggedInUser,map)
+
+        if (schemeID!=null && status!=null){
+            QaSchemeForSupervisionEntity.status= status
+            QaSchemeForSupervisionEntity.acceptedRejectedStatus= null
+            result = qaDaoServices.schemeSupervisionUpdateSave(schemeID, QaSchemeForSupervisionEntity, loggedInUser,map)
+            sm.message = "You have Successful UPDATED SSC"
+        }else{
+            result = qaDaoServices.newSchemeSupervisionSave(permitDetails, QaSchemeForSupervisionEntity, loggedInUser,map)
+            sm.message = "You have Successful Filled SSC"
+        }
+
+
         //Set scheme as generated and update results
         permitDetails.generateSchemeStatus = map.activeStatus
 
         result = qaDaoServices.permitUpdateDetails(permitDetails,map, loggedInUser).first
 
 
-        val sm = CommonDaoServices.MessageSuccessFailDTO()
+
         sm.closeLink = "${applicationMapProperties.baseUrlValue}/qa/scheme-of-supervision?permitID=${result.varField1}%26userID=${loggedInUser.id}"
-        sm.message = "You have Successful Filled SSC"
+
 
         return commonDaoServices.returnValues(result, map, sm)
     }
@@ -144,6 +160,16 @@ class QualityAssuranceController(
                 manufacturer?.email?.let { qaDaoServices.sendScheduledFactoryAssessmentNotificationEmail(it, permitDetails) }
             }
 
+            permit.compliantStatus != null -> {
+                //Send manufacturers notification
+                qaDaoServices.sendComplianceStatusAndLabReport(permitDetails)
+            }
+
+            permit.recommendationRemarks != null -> {
+                //Send manufacturers notification
+                qaDaoServices.sendComplianceStatusAndLabReport(permitDetails)
+            }
+
 
         }
 
@@ -156,6 +182,7 @@ class QualityAssuranceController(
 
         return commonDaoServices.returnValues(result, map, sm)
     }
+
 
     @PreAuthorize("hasAuthority('PERMIT_APPLICATION')")
     @PostMapping("kebs/add/plant-details/save")
@@ -413,11 +440,16 @@ class QualityAssuranceController(
         return "${qaDaoServices.sta10Details}=${qaSta10.permitId}&userID=${loggedInUser.id}"
     }
 
-    @PreAuthorize("hasAuthority('PERMIT_APPLICATION')")
+    @PreAuthorize("hasAuthority('PERMIT_APPLICATION') or hasAuthority('QA_MANAGER_ASSESSORS_READ') or hasAuthority('QA_HOF_READ') or hasAuthority('QA_HOD_READ') or hasAuthority('QA_OFFICER_MODIFY')")
     @PostMapping("kebs/add/new-upload")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun uploadFilesQA(
         @RequestParam("permitID") permitID: Long,
+        @RequestParam("manufactureNonStatus") manufactureNonStatus: Int,
+        @RequestParam("inspectionReportStatus") inspectionReportStatus: Int?,
+        @RequestParam("scfStatus") scfStatus: Int?,
+        @RequestParam("ssfStatus") ssfStatus: Int?,
+        @RequestParam("labResultsStatus") labResultsStatus: Int?,
         @RequestParam("docFileName") docFileName: String,
         @RequestParam("doc_file") docFile: MultipartFile,
         model: Model
@@ -425,18 +457,60 @@ class QualityAssuranceController(
             : String? {
         val map = commonDaoServices.serviceMapDetails(appId)
         val loggedInUser = commonDaoServices.loggedInUserDetails()
-        val permitDetails = loggedInUser.id?.let { qaDaoServices.findPermitBYUserIDAndId(permitID, it) }
-            ?: throw ExpectedDataNotFound("User Id required")
+        var permitDetails =  qaDaoServices.findPermitBYID(permitID)
 
         val result: ServiceRequestsEntity?
+        val uploadResults = qaDaoServices.saveQaFileUploads(docFile, docFileName, loggedInUser, map, permitID, manufactureNonStatus)
 
-        result = qaDaoServices.saveQaFileUploads(docFile, docFileName, loggedInUser, map, permitID)
+        result = uploadResults.first
+
+        when {
+            inspectionReportStatus!= null -> {
+                permitDetails.inspectionReportId = uploadResults.second.id
+                permitDetails = qaDaoServices.permitUpdateDetails(permitDetails,map,loggedInUser).second
+                sendInspectionReport(permitDetails)
+            }
+            scfStatus!= null -> {
+                permitDetails.scfId = uploadResults.second.id
+                permitDetails = qaDaoServices.permitUpdateDetails(permitDetails,map,loggedInUser).second
+
+            }
+            ssfStatus!= null -> {
+                permitDetails.ssfId = uploadResults.second.id
+                permitDetails = qaDaoServices.permitUpdateDetails(permitDetails,map,loggedInUser).second
+
+            }
+            labResultsStatus!= null -> {
+                permitDetails.testReportId = uploadResults.second.id
+                permitDetails = qaDaoServices.permitUpdateDetails(permitDetails,map,loggedInUser).second
+
+            }
+        }
 
         val sm = CommonDaoServices.MessageSuccessFailDTO()
         sm.closeLink = "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitDetails.id}%26userID=${loggedInUser.id}"
         sm.message = "Document Uploaded successfull"
 
         return commonDaoServices.returnValues(result, map, sm)
+    }
+
+    private fun sendInspectionReport(permitDetails: PermitApplicationsEntity) {
+        //todo: for now lets work with this i will change it
+        var userPermit: UsersEntity? = null
+        if (permitDetails.permitType == applicationMapProperties.mapQAPermitTypeIDDmark) {
+            userPermit = permitDetails.hodId?.let { commonDaoServices.findUserByID(it) }
+        } else if (permitDetails.permitType == applicationMapProperties.mapQAPermitTypeIdSmark) {
+            userPermit = permitDetails.qamId?.let { commonDaoServices.findUserByID(it) }
+        }
+
+        val subject = "FACTORY INSPECTION REPORT"
+        val messageBody = "Dear ${userPermit?.let { commonDaoServices.concatenateName(it) }}: \n" +
+                "\n " +
+                "Factory Inspection Report has been sent for approval :" +
+                "\n " +
+                "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitDetails.id}%26userID=${permitDetails.userId}"
+
+        userPermit?.email?.let { notifications.sendEmail(it, subject, messageBody) }
     }
 
     @GetMapping("/kebs/view/attached")
@@ -580,7 +654,7 @@ class QualityAssuranceController(
 
         val result: ServiceRequestsEntity?
 
-        result = qaDaoServices.saveQaFileUploads(docFile, docFileName, loggedInUser, map, permitID)
+        result = qaDaoServices.saveQaFileUploads(docFile, docFileName, loggedInUser, map, permitID, null).first
 
         val sm = CommonDaoServices.MessageSuccessFailDTO()
         sm.closeLink =

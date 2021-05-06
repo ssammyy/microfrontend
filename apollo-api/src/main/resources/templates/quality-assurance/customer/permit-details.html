@@ -344,10 +344,16 @@
                             </div>
                             <div>
                                 <a th:if="${permitType?.st3Status == 1 and permitDetails?.sta3FilledStatus == 1}" target='_blank' th:href="@{/api/qa/view-sta3(permitID=${permitDetails?.id}, userID=${permitDetails?.userId})}" class="filter-link" style="color: white">STA 3</a>
+
                                 <a th:if="${permitType?.st10Status == 1 and permitDetails?.sta10FilledStatus == 1}" target='_blank' th:href="@{/api/qa/view-sta10(permitID=${permitDetails?.id}, userID=${permitDetails?.userId})}" class="filter-link" style="color: white">STA 10</a>
+
                                 <a th:if="${permitDetails?.sendApplication == 1 and permitDetails?.invoiceGenerated == 1}" target='_blank' th:href="@{/api/qa/invoice-details(permitID=${permitDetails?.id})}" class="filter-link" style="color: white">GENERATED INVOICE</a>
 
-                                <a th:if="${permitDetails?.generateSchemeStatus == 1 and permitType?.schemeGenerate == 1}" th:href="@{/api/qa/scheme-of-supervision(permitID=${permitDetails?.id})}" style="color: white" class="filter-link">VIEW GENERATED SCHEME FOR SUPERVISION AND CONTROL</a>
+                                <a th:if="${permitDetails?.generateSchemeStatus == 1 and permitDetails?.approvedRejectedScheme == 1 and permitType?.schemeGenerate == 1}" th:href="@{/api/qa/scheme-of-supervision(permitID=${permitDetails?.id})}" style="color: white" class="filter-link">GENERATED SCHEME FOR SUPERVISION AND CONTROL</a>
+
+                                <div sec:authorize="hasAuthority('QA_MANAGER_ASSESSORS_MODIFY') or hasAuthority('QA_HOF_READ') or hasAuthority('QA_HOD_READ') or hasAuthority('QA_OFFICER_MODIFY')">
+                                    <a th:if="${permitDetails?.factoryInspectionReportApprovedRejectedStatus == 1}" th:href="@{/api/qa/kebs/view/attached(fileID=${permitDetails.inspectionReportId})}" target='_blank' style="color: white" class="filter-link">FACTORY INSPECTION REPORT</a>
+                                </div>
 
                                 <div sec:authorize="hasAuthority('QA_ASSESSORS_READ')">
                                     <a th:if="${permitDetails?.assessmentScheduledStatus == 30}" target='_blank' th:href="@{/api/qa/factory-assessment(permitID=${permitDetails?.id})}" class="filter-link" style="color: white">FACTORY ASSESSMENT REPORT</a>
@@ -358,7 +364,7 @@
                             </div>
                             <div>
 
-                                    <a    class="filter-link uploadBtn" style="color: white">UPLOAD ATTACHMENTS</a>
+                                    <a    class="filter-link"  onclick="popUpUploadFunction('uploadAttachments');"  style="color: white">UPLOAD ATTACHMENTS</a>
 
                                 <div sec:authorize="hasAuthority('PERMIT_APPLICATION')">
                                     <a th:if="${permitDetails?.attachedPlantId == null}" style="color: white" onclick="popUpFunction('attachePlant');" class="filter-link">ATTACHE PLANT</a>
@@ -385,12 +391,32 @@
 
                                 <div sec:authorize="hasAuthority('QA_MANAGER_ASSESSORS_MODIFY') or hasAuthority('QA_HOF_READ') or hasAuthority('QA_HOD_READ')">
                                     <a th:if="${permitDetails?.hofQamCompletenessStatus == null}" style="color: white" onclick="popUpFunction('permitCompleteness');" class="filter-link">COMPLETENESS ?</a>
+
+                                    <a th:if="${permitDetails?.factoryInspectionReportApprovedRejectedStatus == null or permitDetails?.factoryInspectionReportApprovedRejectedStatus == 0}" style="color: white" onclick="popUpFunction('approveInspectionReport');" class="filter-link">APPROVE/REJECT FACTORY INSPECTION REPORT</a>
+
                                     <a th:if="${permitDetails?.hofQamCompletenessStatus == 1 and permitDetails?.assignOfficerStatus == null}" style="color: white" onclick="popUpFunction('assignOfficer');" class="filter-link">Assign Officer</a>
                                 </div>
 
                                 <div sec:authorize="hasAuthority('QA_OFFICER_MODIFY') or hasAuthority('QA_HOD_MODIFY')">
+                                    <a th:if="${permitDetails?.approvedRejectedScheme == 1 and permitDetails?.inspectionReportId == null}" style="color: white" onclick="popUpUploadFunction('uploadInspectionReport');" class="filter-link">UPLOAD INSPECTION REPORT</a>
+
+                                    <a th:if="${permitDetails?.factoryInspectionReportApprovedRejectedStatus == 1 and permitDetails?.scfId == null}" style="color: white" onclick="popUpUploadFunction('uploadSCF');" class="filter-link">UPLOAD SCF</a>
+
+                                    <a th:if="${permitDetails?.factoryInspectionReportApprovedRejectedStatus == 1 and permitDetails?.scfId != null and permitDetails?.ssfId == null}" style="color: white" onclick="popUpUploadFunction('uploadSSF');" class="filter-link">UPLOAD SSF</a>
+
+                                    <a th:if="${permitDetails?.factoryInspectionReportApprovedRejectedStatus == 1 and permitDetails?.scfId != null and permitDetails?.ssfId != null and permitDetails?.bsNumber == null}" style="color: white" onclick="popUpFunction('addBsNumber');" class="filter-link">ADD BS NUMBER</a>
+
+                                    <a th:if="${permitDetails?.factoryInspectionReportApprovedRejectedStatus == 1 and permitDetails?.scfId != null and permitDetails?.ssfId != null and permitDetails?.bsNumber != null and permitDetails?.testReportId == null}" style="color: white" onclick="popUpUploadFunction('uploadLabResults');" class="filter-link">UPLOAD LAB RESULTS</a>
+
+                                    <a th:if="${permitDetails?.factoryInspectionReportApprovedRejectedStatus == 1 and permitDetails?.scfId != null and permitDetails?.ssfId != null and permitDetails?.bsNumber != null and permitDetails?.testReportId != null and permitDetails?.compliantStatus == null}" style="color: white" onclick="popUpFunction('complianceStatus');" class="filter-link">ASSIGN COMPLIANCE STATUS(Lab Report)</a>
+
+                                    <a th:if="${ permitDetails?.recommendationRemarks == null and permitDetails?.compliantStatus != null}" style="color: white" onclick="popUpFunction('addRecommendation');" class="filter-link">ADD RECOMMENDATION REMARKS</a>
+
                                     <a th:if="${permitDetails?.inspectionScheduledStatus == null}" style="color: white" onclick="popUpFunction('scheduleInspectionDate');" class="filter-link">SCHEDULE INSPECTION</a>
+
                                     <a th:if="${permitDetails?.generateSchemeStatus == null and permitType?.schemeGenerate == 1}" th:href="@{/api/qa/new-scheme-of-supervision(permitID=${permitDetails?.id})}" style="color: white" class="filter-link">GENERATE SCHEME FOR SUPERVISION AND CONTROL</a>
+
+                                    <a th:if="${permitDetails?.generateSchemeStatus == 0 and permitType?.schemeGenerate == 1}" th:href="@{/api/qa/update-scheme-of-supervision(permitID=${permitDetails?.id})}" style="color: white" class="filter-link">GENERATE NEW SCHEME FOR SUPERVISION AND CONTROL</a>
 
 
                                     <a th:if="${permitDetails?.hofQamCompletenessStatus == 1 and permitDetails?.assignOfficerStatus == null}" style="color: white" onclick="popUpFunction('assignOfficer');" class="filter-link">Assign Officer</a>
@@ -481,6 +507,8 @@
                                             <textarea required name="name" id="hofQamCompletenessRemarks" class="input-field w-input" cols="65" rows="5" th:field="*{hofQamCompletenessRemarks}"></textarea>
                                         </div>
 
+
+
                                         <div id="assignOfficer">
                                             <input type="hidden" id="description3" name="description" th:value="'Officer Assigned sucessfull'">
                                             <input type="hidden" id="assignOfficerStatus" name="assignOfficerStatus" th:value="${activeStatus}">
@@ -504,6 +532,7 @@
 <!--                                            <label for="hofQamCompletenessRemarks" class="col-form-label">Please write, in detail, your feedback for this Permit:</label>-->
 <!--                                            <textarea required name="name" id="hofQamCompletenessRemarks" class="input-field w-input" cols="65" rows="5" th:field="*{hofQamCompletenessRemarks}"></textarea>-->
                                         </div>
+
                                         <div id="assignAssessor">
                                             <input type="hidden" id="description5" name="description" th:value="'Assessor successfully assigned'">
                                             <input type="hidden" id="assignAssessorStatus" name="assignAssessorStatus" th:value="${activeStatus}">
@@ -520,6 +549,47 @@
                                             <input class="input-field w-input" type="date" max="20" id="assessmentDate" name="assessmentDate" th:required="required">
                                             <label for="assessmentCriteria" class="col-form-label">Please write, in detail, the assessment criteria for the visit:</label>
                                             <textarea required name="assessmentCriteria" id="assessmentCriteria" class="input-field w-input" cols="65" rows="5" th:field="*{assessmentCriteria}"></textarea>
+                                        </div>
+
+                                        <div id="approveInspectionReport">
+                                            <input type="hidden" id="description7" name="description" th:value="'Factory Inspection Report Approved Succesfull'">
+                                            <input type="hidden" id="varField7" name="varField1" th:value="'Factory Inspection Report Rejected Succesfull'">
+                                            <label for="attachedPlantId" class="col-form-label">View Report: </label>
+                                            <button><a th:href="@{/api/qa/kebs/view/attached(fileID=${permitDetails.inspectionReportId})}" target='_blank' class="btn btn-primary itemViewBtn">view</a></button>
+                                            <label for="attachedPlantId" class="col-form-label">Select Status:</label>
+                                            <select id="factoryInspectionReportApprovedRejectedStatus" required class="select-field w-select" th:field="*{factoryInspectionReportApprovedRejectedStatus}">
+                                                <option th:text="'Select one.....'" th:value="null"></option>
+                                                <option th:text="'Approve'" th:value="1"></option>
+                                                <option th:text="'Reject'" th:value="0"></option>
+                                            </select>
+                                            <label for="factoryInspectionReportApprovedRejectedRemarks" class="col-form-label">Please write, in detail, your feedback for this Factory Inspection report:</label>
+                                            <textarea required name="name" id="factoryInspectionReportApprovedRejectedRemarks" class="input-field w-input" cols="65" rows="5" th:field="*{factoryInspectionReportApprovedRejectedRemarks}"></textarea>
+                                        </div>
+                                        <div id="addBsNumber">
+                                            <input type="hidden" id="description8" name="description" th:value="'BS Number was added sucessfull'">
+<!--                                            <input type="hidden" id="inspectionScheduledStatus" name="inspectionScheduledStatus" th:value="${activeStatus}">-->
+                                            <label for="bsNumber" class="col-form-label">BS NUMBER:</label>
+                                            <input class="input-field w-input" type="text" max="20" id="bsNumber" name="bsNumber" th:field="*{bsNumber}" th:required="required">
+                                        </div>
+                                        <div id="complianceStatus">
+                                            <input type="hidden" id="description9" name="description" th:value="'Compliance status Was added Succesfull'">
+<!--                                            <input type="hidden" id="varField8" name="varField1" th:value="'Factory Inspection Report Rejected Succesfull'">-->
+                                            <label for="attachedPlantId" class="col-form-label">View Report: </label>
+                                            <button><a th:href="@{/api/qa/kebs/view/attached(fileID=${permitDetails.testReportId})}" target='_blank' class="btn btn-primary itemViewBtn">view</a></button>
+                                            <label for="attachedPlantId" class="col-form-label">Select Status:</label>
+                                            <select id="compliantStatus" required class="select-field w-select" th:field="*{compliantStatus}">
+                                                <option th:text="'Select one.....'" th:value="null"></option>
+                                                <option th:text="'Compliant'" th:value="1"></option>
+                                                <option th:text="'Non-Compliant'" th:value="0"></option>
+                                            </select>
+                                            <label for="compliantRemarks" class="col-form-label">Please write, in detail, your feedback for this Lab Report report:</label>
+                                            <textarea required name="name" id="compliantRemarks" class="input-field w-input" cols="65" rows="5" th:field="*{compliantRemarks}"></textarea>
+                                        </div>
+                                        <div id="addRecommendation">
+                                            <input type="hidden" id="description10" name="description" th:value="'Recommendation has been added Succesfull'">
+<!--                                            <input type="hidden" id="varField8" name="varField1" th:value="'Factory Inspection Report Rejected Succesfull'">-->
+                                            <label for="recommendationRemarks" class="col-form-label">Please write, in detail, your Recommendation for this Permit:</label>
+                                            <textarea required name="name" id="recommendationRemarks" class="input-field w-input" cols="65" rows="5" th:field="*{recommendationRemarks}"></textarea>
                                         </div>
                                     </div>
                                 </div>
@@ -539,17 +609,53 @@
                         <div class="modal-dialog" role="document">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <h5 style="font-weight: bold; " class="modal-title" id="uploadModalLabel"><span id="uploadSpan-1" >none</span></h5>
+                                    <h5 style="font-weight: bold; " class="modal-title" id="uploadModalLabel"><span id="spanValueUpload" >none</span></h5>
                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                         <span aria-hidden="true">&times;</span>
                                     </button>
                                 </div>
                                 <div class="modal-body">
                                     <div class="form-group">
-                                        <label for="docFileName" class="col-form-label">Description Of Attachment(s):</label>
-                                        <input class="input-field w-input"  max="20" id="docFileName" name="docFileName" th:required="required">
-                                        <label for="doc_file">Upload your Attachments</label>
-                                        <input type="file" class="form-control"  multiple name="doc_file" data-name="doc_file" id="doc_file" required="required" >
+                                        <div id="uploadAttachments">
+                                            <input type="hidden" id="manufactureNonStatus" name="manufactureNonStatus" th:value="${inActiveStatus}">
+                                            <label for="docFileName" class="col-form-label">Description Of Attachment(s):</label>
+                                            <input class="input-field w-input"  max="20" id="docFileName" name="docFileName" th:required="required">
+                                            <label for="doc_file">Upload your Attachments</label>
+                                            <input type="file" class="form-control"  multiple name="doc_file" data-name="doc_file" id="doc_file" required="required" >
+                                        </div>
+                                        <div id="uploadInspectionReport">
+                                            <input type="hidden" id="manufactureNonStatus1" name="manufactureNonStatus" th:value="${activeStatus}">
+                                            <input type="hidden" id="inspectionReportStatus" name="inspectionReportStatus" th:value="${activeStatus}">
+<!--                                            <label for="docFileName" class="col-form-label">Description Of Attachment(s):</label>-->
+                                            <input type="hidden" id="docFileName1" name="docFileName" th:value="FACTORY_INSPECTION_REPORT">
+                                            <label for="doc_file">Upload your inspection Report for Approval</label>
+                                            <input type="file" class="form-control"  multiple name="doc_file" data-name="doc_file" id="doc_file1" required="required" >
+                                        </div>
+                                        <div id="uploadSCF">
+                                            <input type="hidden" id="manufactureNonStatus2" name="manufactureNonStatus" th:value="${activeStatus}">
+                                            <input type="hidden" id="scfStatus" name="scfStatus" th:value="${activeStatus}">
+<!--                                            <label for="docFileName" class="col-form-label">Description Of Attachment(s):</label>-->
+                                            <input type="hidden" id="docFileName2" name="docFileName" th:value="SAMPLE_COLLECTION_FORM">
+                                            <label for="doc_file">Upload your SCF</label>
+                                            <input type="file" class="form-control"  multiple name="doc_file" data-name="doc_file" id="doc_file2" required="required" >
+                                        </div>
+                                        <div id="uploadSSF">
+                                            <input type="hidden" id="manufactureNonStatus3" name="manufactureNonStatus" th:value="${activeStatus}">
+                                            <input type="hidden" id="ssfStatus" name="ssfStatus" th:value="${activeStatus}">
+<!--                                            <label for="docFileName" class="col-form-label">Description Of Attachment(s):</label>-->
+                                            <input type="hidden" id="docFileName3" name="docFileName" th:value="SAMPLE_SUBMISSION_FORM">
+                                            <label for="doc_file">Upload your SCF</label>
+                                            <input type="file" class="form-control"  multiple name="doc_file" data-name="doc_file" id="doc_file3" required="required" >
+                                        </div>
+                                        <div id="uploadLabResults">
+                                            <input type="hidden" id="manufactureNonStatus4" name="manufactureNonStatus" th:value="${activeStatus}">
+                                            <input type="hidden" id="labResultsStatus" name="labResultsStatus" th:value="${activeStatus}">
+<!--                                            <label for="docFileName" class="col-form-label">Description Of Attachment(s):</label>-->
+                                            <input type="hidden" id="docFileName4" name="docFileName" th:value="LAB_RESULTS_FINAL_REPORT">
+                                            <label for="doc_file">Upload your SCF</label>
+                                            <input type="file" class="form-control"  multiple name="doc_file" data-name="doc_file" id="doc_file4" required="required" >
+                                        </div>
+
                                     </div>
                                 </div>
                                 <div class="modal-footer">
@@ -575,9 +681,9 @@
                                 </div>
                                 <div class="modal-body">
                                     <div class="form-group">
-                                        <input type="hidden" id="docFileName" name="docFileName" th:value="FACTORY_ASSESSMENT_REPORT">
+                                        <input type="hidden" id="docFileName0" name="docFileName" th:value="FACTORY_ASSESSMENT_REPORT">
                                         <label for="doc_file">Upload The Factory Assessment Report</label>
-                                        <input type="file" class="form-control"  multiple name="doc_file" data-name="doc_file" id="doc_file" required="required" >
+                                        <input type="file" class="form-control"  multiple name="doc_file" data-name="doc_file" id="doc_file0" required="required" >
                                     </div>
                                 </div>
                                 <div class="modal-footer">
@@ -647,11 +753,11 @@
 </script>
 <script>
     $(document).ready(function () {
-        $('.filter-block .uploadBtn').on('click', function (event) {
-            document.getElementById('uploadSpan-1').innerHTML = 'Upload document And Give The Name'
-            document.getElementById("upload-1").value = "submit";
-            $('.uploadForm #uploadModal').modal();
-        });
+        // $('.filter-block .uploadBtn').on('click', function (event) {
+        //     document.getElementById('uploadSpan-1').innerHTML = 'Upload document And Give The Name'
+        //     document.getElementById("upload-1").value = "submit";
+        //     $('.uploadForm #uploadModal').modal();
+        // });
 
         $('.filter-block .uploadAssessmentReportBtn').on('click', function (event) {
             document.getElementById('uploadSpan-2').innerHTML = 'Upload factory assessment report'
@@ -706,8 +812,8 @@
 </script>
 <script>
     function popUpFunction(eventAction) {
-        let arrHead = [ 'attachePlant', 'permitCompleteness', 'assignOfficer', 'scheduleInspectionDate', 'assignAssessor', 'scheduleAssessmentDate'];
-        let arrHeadSave = [ 'Attach a Plant for manufacturing the product', 'Is The Permit Complete', 'Select An officer',' Set The Date of Inspection', 'Select An Assessor', 'Schedule Factory Assessment Date'];
+        let arrHead = [ 'attachePlant', 'permitCompleteness', 'assignOfficer', 'scheduleInspectionDate', 'assignAssessor', 'scheduleAssessmentDate', 'approveInspectionReport', 'addBsNumber', 'complianceStatus', 'addRecommendation'];
+        let arrHeadSave = [ 'Attach a Plant for manufacturing the product', 'Is The Permit Complete', 'Select An officer',' Set The Date of Inspection', 'Select An Assessor', 'Schedule Factory Assessment Date', 'Approve Or Reject the Factory Inspection Report', 'Add Bs Number','Select a suitable Compliance Status for the Lab Report', 'Add Recommendation'];
 
         for (let h = 0; h < arrHead.length; h++) {
             if(eventAction !== arrHead[h]){
@@ -721,6 +827,24 @@
         }
 
         $('.qaApplicationForm #qaApplicationModal').modal();
+    }
+
+    function popUpUploadFunction(eventAction) {
+        let arrHead = [ 'uploadAttachments', 'uploadInspectionReport', 'uploadSCF', 'uploadSSF', 'uploadLabResults'];
+        let arrHeadSave = [ 'Upload document And Give The Name', 'Upload A Generated Inspection Report', 'Upload filled and signed sample collection form', 'Upload filled and signed sample submission form', 'Upload Final Lab Results Report'];
+
+        for (let h = 0; h < arrHead.length; h++) {
+            if(eventAction !== arrHead[h]){
+                document.getElementById(arrHead[h]).remove();
+            }else {
+                if (eventAction === arrHead[h]) {
+                    document.getElementById('spanValueUpload').innerHTML = arrHeadSave[h];
+                    document.getElementById("upload-1").value = 'Save';
+                }
+            }
+        }
+
+        $('.uploadForm #uploadModal').modal();
     }
 
     function refreshPage() {

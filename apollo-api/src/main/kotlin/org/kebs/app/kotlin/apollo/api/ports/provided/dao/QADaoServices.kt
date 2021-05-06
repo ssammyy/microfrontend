@@ -381,6 +381,7 @@ class QADaoServices(
 
             saveSSC = schemeForSupervisionRepo.save(saveSSC)
 
+            schemeSendToManufacture(permits)
 
             sr.payload = "New Scheme Saved [ID ${saveSSC.id} and ${saveSSC.permitId}]"
             sr.names = "${saveSSC.createdBy}"
@@ -405,6 +406,19 @@ class QADaoServices(
         return sr
     }
 
+    fun schemeSendToManufacture(permits: PermitApplicationsEntity) {
+        //todo: for now lets work with this i will change it
+        val userPermit = permits.userId?.let { commonDaoServices.findUserByID(it) }
+        val subject = "SCHEME FOR SUPERVISION AND CONTROL (SSC)"
+        val messageBody = "Dear ${userPermit?.let { commonDaoServices.concatenateName(it) }}: \n" +
+                "\n " +
+                "Scheme For Supervision And Control has been Generated that needs your approval for the process to continue:" +
+                "\n " +
+                "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permits.id}%26userID=${permits.userId}"
+
+        userPermit?.email?.let { notifications.sendEmail(it, subject, messageBody) }
+    }
+
     fun schemeSupervisionUpdateSave(
         schemeID: Long,
         schemeSupervision: QaSchemeForSupervisionEntity,
@@ -415,15 +429,38 @@ class QADaoServices(
         var sr = commonDaoServices.createServiceRequest(map)
         try {
             var foundSSC = schemeForSupervisionRepo.findByIdOrNull(schemeID)?: throw ExpectedDataNotFound("Scheme with [Id = $schemeID], does not exist")
+            schemeSupervision.id = foundSSC.id
+
+            foundSSC = commonDaoServices.updateDetails(schemeSupervision,foundSSC) as QaSchemeForSupervisionEntity
+
             with(foundSSC) {
-                acceptedRejectedStatus = schemeSupervision.acceptedRejectedStatus
-                acceptedRejectedDate = commonDaoServices.getCurrentDate()
                 status = map.activeStatus
                 modifiedBy = commonDaoServices.concatenateName(user)
                 modifiedOn = commonDaoServices.getTimestamp()
             }
 
             foundSSC = schemeForSupervisionRepo.save(foundSSC)
+
+            var reasonValue : String? = null
+            if(schemeSupervision.acceptedRejectedStatus==map.activeStatus){
+                var permitUpdate = schemeUpdatePermit(foundSSC, map.activeStatus)
+
+                permitUpdate = permitUpdateDetails(permitUpdate, map, user).second
+                reasonValue = "ACCEPTED"
+                schemeSendEmail(permitUpdate, reasonValue, foundSSC)
+            }else if (schemeSupervision.acceptedRejectedStatus==map.inactiveStatus){
+                var permitUpdate = schemeUpdatePermit(foundSSC, map.inactiveStatus)
+                permitUpdate.generateSchemeStatus = map.inactiveStatus
+                permitUpdate = permitUpdateDetails(permitUpdate, map, user).second
+                reasonValue = "REJECTED"
+
+                schemeSendEmail(permitUpdate, reasonValue, foundSSC)
+            }else if (schemeSupervision.status==map.inactiveStatus){
+                var permitUpdate = schemeUpdatePermit(foundSSC, null)
+                permitUpdate = permitUpdateDetails(permitUpdate, map, user).second
+
+                schemeSendToManufacture(permitUpdate)
+            }
 
             sr.payload = "UPDATED Scheme Saved [ID ${foundSSC.id} and ${foundSSC.permitId}]"
             sr.names = "${foundSSC.createdBy}"
@@ -446,6 +483,33 @@ class QADaoServices(
 
         KotlinLogging.logger { }.trace("${sr.id} ${sr.responseStatus}")
         return sr
+    }
+
+    private fun schemeSendEmail(
+        permitUpdate: PermitApplicationsEntity,
+        reasonValue: String?,
+        foundSSC: QaSchemeForSupervisionEntity
+    ) {
+        //todo: for now lets work with this i will change it
+        val userPermit = permitUpdate.userId?.let { commonDaoServices.findUserByID(it) }
+        val subject = "SCHEME FOR SUPERVISION AND CONTROL (SSC)"
+        val messageBody = "Dear ${userPermit?.let { commonDaoServices.concatenateName(it) }}: \n" +
+                "\n " +
+                "Scheme For Supervision And Control was ${reasonValue} due to the Following reason ${foundSSC.acceptedRejectedReason}:" +
+                "\n " +
+                "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitUpdate.id}%26userID=${permitUpdate.userId}"
+
+        userPermit?.email?.let { notifications.sendEmail(it, subject, messageBody) }
+    }
+
+    private fun schemeUpdatePermit(
+        foundSSC: QaSchemeForSupervisionEntity,
+        status: Int?
+    ): PermitApplicationsEntity {
+        val permitUpdate =
+            foundSSC.permitId?.let { findPermitBYID(it) } ?: throw ExpectedDataNotFound("Permit ID cannot be null")
+        permitUpdate.approvedRejectedScheme = status
+        return permitUpdate
     }
 
     fun sta3NewSave(
@@ -549,18 +613,24 @@ class QADaoServices(
     }
 
 
-    fun saveQaFileUploads(docFile: MultipartFile, doc: String, user: UsersEntity, map: ServiceMapsEntity, permitID: Long): ServiceRequestsEntity {
+    fun saveQaFileUploads(docFile: MultipartFile, doc: String, user: UsersEntity, map: ServiceMapsEntity, permitID: Long, manufactureNonStatus: Int?): Pair<ServiceRequestsEntity,QaUploadsEntity >{
 
             var sr = commonDaoServices.createServiceRequest(map)
+            var uploads = QaUploadsEntity()
             try {
 
-                 var uploads = QaUploadsEntity()
+
                 with(uploads) {
                     name = commonDaoServices.saveDocuments(docFile)
                     fileType = docFile.contentType
                     documentType = doc
                     document = docFile.bytes
-                    permitId = permitID
+                    nonManufactureStatus = manufactureNonStatus
+                    when {
+                        manufactureNonStatus != 1 -> {
+                            permitId = permitID
+                        }
+                    }
                     transactionDate = commonDaoServices.getCurrentDate()
                     status = map.activeStatus
                     createdBy = commonDaoServices.concatenateName(user)
@@ -589,7 +659,7 @@ class QADaoServices(
             }
 
             KotlinLogging.logger { }.trace("${sr.id} ${sr.responseStatus}")
-            return sr
+            return Pair(sr,uploads)
         }
 
     fun sta10ManufacturingProcessNewSave(
@@ -1214,6 +1284,19 @@ class QADaoServices(
         m.add(taxAmount)
 
         return m
+    }
+
+    fun sendComplianceStatusAndLabReport(permitDetails: PermitApplicationsEntity) {
+        val manufacturer = permitDetails.userId?.let { commonDaoServices.findUserByID(it) }
+        val subject = "LAB REPORT AND COMPLIANCE STATUS "
+        val messageBody = "Dear ${manufacturer?.let { commonDaoServices.concatenateName(it) }}: \n" +
+                "\n " +
+                "The lab test report are available  at ${applicationMapProperties.baseUrlValue}/qa/kebs/view/attached?fileID=${permitDetails.testReportId}: \n" +
+                " with the following compliance status  ${permitDetails.compliantStatus} ? 'COMPLIANT' : 'NON-COMPLIANT':" +
+                "\n " +
+                "for the following permit : ${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitDetails.id}%26userID=${permitDetails.userId}"
+
+        manufacturer?.email?.let { notifications.sendEmail(it, subject, messageBody) }
     }
 
 }
