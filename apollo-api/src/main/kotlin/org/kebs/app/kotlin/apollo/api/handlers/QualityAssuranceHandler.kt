@@ -172,7 +172,7 @@ class QualityAssuranceHandler(
         val plantAttached = permit.attachedPlantId?.let { qaDaoServices.findPlantDetails(it) }
         val docFileName : String? = null
 
-        req.attributes().putAll(commonDaoServices.loadCommonUIComponents(map))
+        req.attributes().putAll(loadCommonUIComponents(map))
 
         if (permit.hofQamCompletenessStatus == map.activeStatus && permit.assignOfficerStatus != map.activeStatus) {
             req.attributes()["officers"] = qaDaoServices.findOfficersList(permit, map, applicationMapProperties.mapQADesignationIDForQAOId)
@@ -596,6 +596,8 @@ class QualityAssuranceHandler(
             Pair("activeStatus", s.activeStatus),
             Pair("inActiveStatus", s.inactiveStatus),
             Pair("initStatus", s.initStatus),
+            Pair("dmarkPermit", applicationMapProperties.mapQAPermitTypeIDDmark),
+            Pair("smarkPermit", applicationMapProperties.mapQAPermitTypeIdSmark),
             Pair("currentDate", commonDaoServices.getCurrentDate())
         )
     }

@@ -224,6 +224,9 @@ class ApplicationMapProperties {
     @Value("\${org.kebs.app.kotlin.apollo.resources.static.images.dmark.image.path}")
     val mapDmarkImagePath: String = ""
 
+    @Value("\${org.kebs.app.kotlin.apollo.resources.static.images.smark.image.path}")
+    val mapSmarkImagePath: String = ""
+
     @Value("\${org.kebs.app.kotlin.apollo.resources.static.images.mpesa.logo.path}")
     val mapMPESALogoPath: String = ""
 

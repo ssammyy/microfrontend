@@ -24,6 +24,9 @@ class ReportsController(
     final val dMarkImageResource = resourceLoader.getResource(applicationMapProperties.mapDmarkImagePath)
     val dMarkImageFile = dMarkImageResource.file.toString()
 
+    final val sMarkImageResource = resourceLoader.getResource(applicationMapProperties.mapSmarkImagePath)
+    val sMarkImageFile = sMarkImageResource.file.toString()
+
     @RequestMapping(value = ["pac_summary"], method = [RequestMethod.GET])
     @Throws(Exception::class)
     fun pacSummary(
@@ -46,7 +49,7 @@ class ReportsController(
     /*
     DMARK Permit Report
      */
-    @RequestMapping(value = ["dmark_permit"], method = [RequestMethod.GET])
+    @RequestMapping(value = ["permit-certificate"], method = [RequestMethod.GET])
     @Throws(Exception::class)
     fun dmarkPermit(
         response: HttpServletResponse,
@@ -64,12 +67,24 @@ class ReportsController(
         map["PhysicalAddress"] = permit.physicalAddress.toString()
         map["DateOfIssue"] = permit.dateOfIssue?.let { commonDaoServices.convertDateToString(it, "dd-MM-YYYY") }!!
         map["ExpiryDate"] = permit.dateOfExpiry?.let { commonDaoServices.convertDateToString(it, "dd-MM-YYYY") }!!
-        map["DmarkLogo"] = dMarkImageFile
+
         map["FirmName"] = permit.firmName.toString()
         map["CommodityDesc"] = permit.commodityDescription.toString()
         map["TradeMark"] = permit.tradeMark.toString()
         map["StandardTitle"] = "$standardNo".plus(" $ksApplicable")
 
-        reportsDaoService.extractReportEmptyDataSource(map, response, applicationMapProperties.mapReportDmarkPermitReportPath)
+        map["faxNumber"] = permit.faxNo.toString()
+        map["EmailAddress"] =  permit.email.toString()
+        map["phoneNumber"] =  permit.telephoneNo.toString()
+
+
+        if (permit.permitType==applicationMapProperties.mapQAPermitTypeIDDmark){
+            map["DmarkLogo"] = dMarkImageFile
+            reportsDaoService.extractReportEmptyDataSource(map, response, applicationMapProperties.mapReportDmarkPermitReportPath)
+        }else if (permit.permitType==applicationMapProperties.mapQAPermitTypeIdSmark){
+            map["SmarkLogo"] = sMarkImageFile
+            reportsDaoService.extractReportEmptyDataSource(map, response, applicationMapProperties.mapReportSmarkPermitReportPath)
+        }
+
     }
 }

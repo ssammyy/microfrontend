@@ -239,12 +239,21 @@ class QualityAssuranceController(
             permit.pcmApprovalStatus != null -> {
                 //Send notification
                 if (permit.pcmApprovalStatus ==map.activeStatus){
-                    with(permit){
-                        pscMemberId= qaDaoServices.assignNextOfficerAfterPayment(permitDetails, map, applicationMapProperties.mapQADesignationIDForPSCId)?.id
+                    val issueDate = commonDaoServices.getCurrentDate()
+                    val permitType = permitDetails.permitType?.let { qaDaoServices.findPermitType(it) }
+                    val expiryDate = permitType?.permitAwardYears?.let { commonDaoServices.addYearsToCurrentDate(it.toLong()) }
+
+
+                    with(permit) {
+                        permitAwardStatus= map.activeStatus
+                        dateOfIssue = issueDate
+                        dateOfExpiry = expiryDate
                     }
+                    //Generate permit and forward to manufacturer
+                    KotlinLogging.logger { }.info(":::::: Sending compliance status along with e-permit :::::::")
                     //updating of Details in DB
                     permitDetails = qaDaoServices.permitUpdateDetails(commonDaoServices.updateDetails(permit, permitDetails) as PermitApplicationsEntity, map, loggedInUser).second
-                    qaDaoServices.sendNotificationPSCForAwardingPermit(permitDetails)
+//                    qaDaoServices.sendNotificationPSCForAwardingPermit(permitDetails)
 
                 }else if (permit.pcmApprovalStatus ==map.inactiveStatus){
 //                    with(permit){
