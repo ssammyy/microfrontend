@@ -44,6 +44,7 @@ export class DivisionresponseComponent implements OnInit {
     container.appendChild(button);
     button.click();
   }
+
   public onReSubmit(notification: DepartmentResponse): void{
     this.standardDevelopmentService.deptResponse(notification).subscribe(
       (response: DepartmentResponse) => {

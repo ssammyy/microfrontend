@@ -5,7 +5,6 @@
     <table class="table table-hover">
       <thead>
       <tr>
-        <th>Information Available</th>
         <th>Status</th>
         <th>Requester Name</th>
         <th>Country</th>
@@ -14,19 +13,14 @@
         <th>Phone</th>
         <th>Subject</th>
         <th>Comment</th>
+        <th>Information Available</th>
       </tr>
       </thead>
       <tbody class="table-striped ">
 
       <tr *ngFor="let notification of notifications">
-        <td *ngIf="notification.name ==='New Notification'">
-          <a  (click)="onOpenModal(notification,'yes2')" class="btn btn-primary tooltips" data-placement="top"  data-original-title="Yes"> Yes</a>
-          &nbsp;<a  (click)="onOpenModal(notification,'no')" class="btn btn-danger tooltips" data-placement="top"  data-original-title="Yes"> No</a>
-        </td>
-        <td *ngIf="notification.name ==='Send Feedback Email'">
-          <a  (click)="onOpenModal(notification,'SendEmail')" class="btn btn-success tooltips" data-placement="top"  data-original-title="Yes"> Send Email</a>
-        </td>
-        <td>{{notification.name}}</td>
+        <td *ngIf="notification.name ==='New Notification'"><span class="badge badge-pill badge-warning ">{{notification.name}}</span></td>
+        <td *ngIf="notification.name ==='Send Feedback Email'"><span class="badge badge-pill badge-success ">{{notification.name}}</span></td>
         <td>{{notification.taskData.requesterName}}</td>
         <td>{{notification.taskData.requesterCountry}}</td>
         <td>{{notification.taskData.requesterInstitution}}</td>
@@ -34,6 +28,13 @@
         <td>{{notification.taskData.requesterPhone}}</td>
         <td>{{notification.taskData.requesterSubject}}</td>
         <td>{{notification.taskData.requesterComment}}</td>
+        <td *ngIf="notification.name ==='New Notification'">
+          <a  (click)="onOpenModal(notification,'yes2')" class="btn btn-outline-primary tooltips" data-placement="top"  data-original-title="Yes"> Yes</a>
+          &nbsp;<a  style = "width: 49.28px;" (click)="onOpenModal(notification,'no')" class="btn btn-outline-danger tooltips" data-placement="top"  data-original-title="Yes"> No</a>
+        </td>
+        <td *ngIf="notification.name ==='Send Feedback Email'">
+          <a  (click)="onOpenModal(notification,'SendEmail')" class="btn btn-outline-success tooltips" data-placement="top"  data-original-title="Yes">Respond</a>
+        </td>
       </tr>
       </tbody>
     </table>
@@ -51,12 +52,11 @@
             <form #editForm="ngForm" >
               <input type="hidden" ngModel="{{actionRequest?.taskId}}" name="taskId" id="taskId" >
               <input type="hidden" ngModel="true" name="isAvailable"  id="isAvailable" >
-              <button  class="btn btn-success btn-lg" (click)="onReSubmit(editForm.value)" data-dismiss="modal" >Yes</button>
-              &nbsp;&nbsp;<button  class="btn btn-danger btn-lg" data-dismiss="modal" >No</button>
+              <button  class="btn btn-success btn-lg" (click)="onReSubmit(editForm.value)" data-dismiss="modal" >Yes Information is Available</button>
+              &nbsp;&nbsp;<button  class="btn btn-outline-info btn-lg" data-dismiss="modal" >Close</button>
             </form>
           </div>
           <div class="modal-footer">
-            <button type="button"  class="btn btn-default" data-dismiss="modal">Close</button>
           </div>
         </div>
       </div>

@@ -43,7 +43,7 @@ export class PrepareCdComponent implements OnInit {
   save(): void {
     this.committee_service
       .createCommitteeDraft(this.committee_draftFormGroup.value).subscribe(
-      (response: Preliminary_Draft) => {
+      (response: Committee_Draft) => {
         console.log(response);
         this.gotoList();
       },
