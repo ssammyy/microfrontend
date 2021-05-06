@@ -212,6 +212,12 @@ class ApplicationMapProperties {
     @Value("\${org.kebs.app.kotlin.apollo.resources.static.images.kebs.logo.path}")
     val mapKebsLogoPath: String = ""
 
+    @Value("\${org.kebs.app.kotlin.apollo.resources.static.images.checkmark.path}")
+    val mapCheckmarkImagePath: String = ""
+
+    @Value("\${org.kebs.app.kotlin.apollo.resources.static.images.dmark.image.path}")
+    val mapDmarkImagePath: String = ""
+
     @Value("\${org.kebs.app.kotlin.apollo.resources.static.images.mpesa.logo.path}")
     val mapMPESALogoPath: String = ""
 
@@ -227,11 +233,26 @@ class ApplicationMapProperties {
     @Value("\${org.kebs.app.kotlin.apollo.resources.report.demand.note.path}")
     val mapReportDemandNotePath: String = ""
 
+    @Value("\${org.kebs.app.kotlin.apollo.resources.report.ministry.checklist.report.path}")
+    val mapReportMinistryChecklistPath: String = ""
+
+    @Value("\${org.kebs.app.kotlin.apollo.resources.report.motor.vehicle.checklist.report.path}")
+    val mapReportMotorVehicleChecklistPath: String = ""
+
+    @Value("\${org.kebs.app.kotlin.apollo.resources.report.local.cor.report.path}")
+    val mapReportLocalCorPath: String = ""
+
     @Value("\${org.kebs.app.kotlin.apollo.resources.report.demand.note.with.item.path}")
     val mapReportDemandNoteWithItemsPath: String = ""
 
     @Value("\${org.kebs.app.kotlin.apollo.resources.report.pac.summary.report.path}")
     val mapReportPacSummaryReportPath: String = ""
+
+    @Value("\${org.kebs.app.kotlin.apollo.resources.report.qa.dmark.permit.report.path}")
+    val mapReportDmarkPermitReportPath: String = ""
+
+    @Value("\${org.kebs.app.kotlin.apollo.resources.report.qa.smark.permit.report.path}")
+    val mapReportSmarkPermitReportPath: String = ""
 
     @Value("\${destination.inspection.cd.status.type.coc.generated.and.send}")
     val mapDICdStatusTypeCOCGeneratedAndSendID: Long = 0L

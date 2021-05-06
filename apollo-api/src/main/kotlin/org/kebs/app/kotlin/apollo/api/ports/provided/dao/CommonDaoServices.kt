@@ -203,6 +203,11 @@ class CommonDaoServices(
         return date
     }
 
+    fun convertDateToString(date: Date, format:String): String {
+        val format = SimpleDateFormat(format)
+        return format.format(date)
+    }
+
     fun convertISO8601DateToTimestamp(dateString: String): Timestamp? {
         try {
         val formatter = DateTimeFormatterBuilder()
