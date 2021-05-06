@@ -78,7 +78,7 @@
  */
 ***************************Table USED IN QA*****************************************
 select * from DAT_KEBS_PERMIT_TRANSACTION
--- where id = 61
+where id = 141
 -- where PERMIT_NUMBER = 'DM#0954A'
 order by id desc; 1522
 
@@ -138,6 +138,10 @@ alter table DAT_KEBS_QA_STA10
 /alter table DAT_KEBS_QA_STA10
     add PRODUCT_LABELED_MARKED_SPECIFY_1E VARCHAR2(200)
     /
+
+select * from DAT_KEBS_QA_SCHEME_FOR_SUPERVISION
+-- where id = 43
+order by id desc;
 
 select * from DAT_KEBS_QA_STA3
 -- where id = 43

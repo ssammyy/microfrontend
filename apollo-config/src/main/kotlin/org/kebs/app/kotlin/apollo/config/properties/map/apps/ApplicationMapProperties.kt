@@ -78,6 +78,12 @@ class ApplicationMapProperties {
     @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.designation.id.for.HOD}")
     val mapQADesignationIDForHODId: Long = 0L
 
+    @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.designation.id.for.PSC}")
+    val mapQADesignationIDForPSCId: Long = 0L
+
+    @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.designation.id.for.PCM}")
+    val mapQADesignationIDForPCMId: Long = 0L
+
     @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.type.smark.id}")
     val mapQAPermitTypeIdSmark: Long = 0L
 

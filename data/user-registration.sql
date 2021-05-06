@@ -85,6 +85,10 @@ select * from CFG_ROLES_PRIVILEGES --the role is 40 and prRole ID = 774
 -- where PRIVILEGE_ID =52425
 order by id desc;
 
+select * from CFG_KEBS_DESIGNATIONS --the role is 40 and prRole ID = 774
+-- where PRIVILEGE_ID =52425
+order by id desc;
+
 select * from CFG_KEBS_REGIONS --the role is 40 and prRole ID = 774
 where id = 4
 order by id desc;

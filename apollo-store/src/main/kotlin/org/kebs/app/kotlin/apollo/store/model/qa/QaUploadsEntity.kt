@@ -47,6 +47,10 @@ class QaUploadsEntity : Serializable {
     @Basic
     var permitId: Long? = null
 
+    @Column(name = "NON_MANUFACTURE_STATUS")
+    @Basic
+    var nonManufactureStatus: Int? = null
+
     @Column(name = "STATUS")
     @Basic
     var status: Int? = null
@@ -128,6 +132,7 @@ class QaUploadsEntity : Serializable {
                 Arrays.equals(document, that.document) &&
                 transactionDate == that.transactionDate &&
                 permitId == that.permitId &&
+                nonManufactureStatus == that.nonManufactureStatus &&
                 status == that.status &&
                 varField1 == that.varField1 &&
                 varField2 == that.varField2 &&
@@ -157,6 +162,7 @@ class QaUploadsEntity : Serializable {
             documentType,
             transactionDate,
             permitId,
+            nonManufactureStatus,
             status,
             varField1,
             varField2,
