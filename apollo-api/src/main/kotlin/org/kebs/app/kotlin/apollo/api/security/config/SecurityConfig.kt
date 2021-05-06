@@ -74,7 +74,7 @@ class WebSecurityConfig {
                 .authorizeRequests()
                 .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 .antMatchers(
-                    "/api/v1/login", "/api/v1/otp", "/api/v1/sftp/kesws/download", "/api/v1/auth/**", "/api/v1/otp"
+                    "/api/v1/login/**", "/api/v1/otp", "/api/v1/sftp/kesws/download", "/api/v1/auth/**", "/api/v1/otp"
                 )
                 .permitAll()
                 .anyRequest().authenticated()
