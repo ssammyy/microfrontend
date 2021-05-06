@@ -748,6 +748,10 @@ class CommonDaoServices(
         return Date.valueOf(LocalDate.now().plusMonths(noOfMonths))
     }
 
+    fun addYearsToCurrentDate(noOfYears: Long): Date {
+        return Date.valueOf(LocalDate.now().plusYears(noOfYears))
+    }
+
     fun generateUUIDString(): String {
         // Creating a random UUID (Universally unique identifier).
         val uuid = UUID.randomUUID()

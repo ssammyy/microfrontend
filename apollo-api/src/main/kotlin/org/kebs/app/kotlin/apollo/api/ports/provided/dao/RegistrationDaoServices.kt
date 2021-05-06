@@ -663,6 +663,7 @@ class RegistrationDaoServices(
             }
             val userCompany = systemsAdminDaoService.updateUserCompanyDetails(userCompanyDetails)
                 ?: throw NullValueNotAllowedException("Registration failed")
+//            systemsAdminDaoService.assignRoleToUser(u.id?:throw NullValueNotAllowedException(""),applicationMapProperties.mapUserManufactureRoleID, s.activeStatus)
 
             val userAssignRole = u.id?.let { systemsAdminDaoService.assignRoleToUser(it, applicationMapProperties.mapUserManufactureRoleID, s.activeStatus) }
 

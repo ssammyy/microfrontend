@@ -85,6 +85,10 @@ select * from CFG_ROLES_PRIVILEGES --the role is 40 and prRole ID = 774
 -- where PRIVILEGE_ID =52425
 order by id desc;
 
+select * from CFG_KEBS_DESIGNATIONS --the role is 40 and prRole ID = 774
+-- where PRIVILEGE_ID =52425
+order by id desc;
+
 select * from CFG_KEBS_REGIONS --the role is 40 and prRole ID = 774
 where id = 4
 order by id desc;
@@ -117,9 +121,10 @@ order by id desc;--MS_MP_MODIFY MS_MP_READ
 
 select * from DAT_KEBS_USERS
 -- where USER_TYPE = 5
-where EMAIL = '254safaris@gmail.com'
+-- where EMAIL = '254safaris@gmail.com'
 -- where USER_NAME = '0715668934'
-order by id desc;21384
+-- order by id desc
+;21384
 
 select *
 from DAT_KEBS_USER_PROFILES

@@ -77,6 +77,27 @@
  *
  */
 ***************************Table USED IN DI*****************************************
+
+select  * from  DAT_KEBS_PERMIT_TRANSACTION d
+    where d.ID = 141
+--               and d.TOTAL_AMOUNT = x.PAID_AMOUNT
+    and d.PAID_STATUS is null
+    ;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 alter table DAT_KEBS_CD_DEMAND_NOTE
     modify (PAYMENT_STATUS number(2, 0));
 

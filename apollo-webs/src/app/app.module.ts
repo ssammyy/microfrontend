@@ -57,6 +57,17 @@ import { StdTscTasksComponent } from './components/standards-development/std-tsc
 import { RequestStandardFormComponent } from './components/standards-development/standard-request/request-standard-form/request-standard-form.component';
 import {FileUploadModule} from "ng2-file-upload";
 import { StdTcTasksComponent } from './components/standards-development/std-tc-tasks/std-tc-tasks.component';
+import { PreparePdComponent } from './components/standards-development/commitee/prepare-pd/prepare-pd.component';
+import { CommentPdComponent } from './components/standards-development/commitee/comment-pd/comment-pd.component';
+import { CommentCdComponent } from './components/standards-development/commitee/comment-cd/comment-cd.component';
+import { PdDetailsComponent } from './components/standards-development/commitee/pd-details/pd-details.component';
+import { PdListComponent } from './components/standards-development/commitee/pd-list/pd-list.component';
+import { NwiListComponent } from './components/standards-development/commitee/nwi-list/nwi-list.component';
+import { PrepareNwiComponent } from './components/standards-development/commitee/prepare-nwi/prepare-nwi.component';
+import { PrepareCdComponent } from './components/standards-development/commitee/prepare-cd/prepare-cd.component';
+import { CdListComponent } from './components/standards-development/commitee/cd-list/cd-list.component';
+import { ApproveNwiComponent } from './components/standards-development/commitee/approve-nwi/approve-nwi.component';
+import { ApproveCdComponent } from './components/standards-development/commitee/approve-cd/approve-cd.component';
 import { DivisionresponseComponent } from './components/standards-development/divisionresponse/divisionresponse.component';
 import { EnquiryComponent } from './components/standards-development/sd-national-enquiry-point/enquiry/enquiry.component';
 import { InformationcheckComponent } from './components/standards-development/informationcheck/informationcheck.component';
@@ -110,6 +121,17 @@ import { ManagernotificationsComponent } from './components/standards-developmen
     StdTscTasksComponent,
     RequestStandardFormComponent,
     StdTcTasksComponent,
+    PreparePdComponent,
+    CommentPdComponent,
+    CommentCdComponent,
+    PdDetailsComponent,
+    PdListComponent,
+    NwiListComponent,
+    PrepareNwiComponent,
+    PrepareCdComponent,
+    CdListComponent,
+    ApproveNwiComponent,
+    ApproveCdComponent,
     DivisionresponseComponent,
     EnquiryComponent,
     InformationcheckComponent,

@@ -71,7 +71,6 @@ class PermitApplicationsEntity:Serializable {
     var designation: String? = null
 
 
-
     @Column(name = "VAT_NO")
     @Basic
     var vatNo: String? = null
@@ -117,9 +116,17 @@ class PermitApplicationsEntity:Serializable {
     @Basic
     var renewalStatus: Int? = null
 
+    @Column(name = "APPROVED_REJECTED_SCHEME")
+    @Basic
+    var approvedRejectedScheme: Int? = null
+
     @Column(name = "JUSTIFICATION_REPORT_REMARKS")
     @Basic
     var justificationReportRemarks: String? = null
+
+    @Column(name = "ASSESSMENT_REPORT_REMARKS")
+    @Basic
+    var assessmentReportRemarks: String? = null
 
 
 //    @JoinColumn(name = "USER_ID", referencedColumnName = "ID")
@@ -143,6 +150,10 @@ class PermitApplicationsEntity:Serializable {
     @Basic
     var divisionId: Long? = null
 
+    @Column(name = "INSPECTION_REPORT_ID")
+    @Basic
+    var inspectionReportId: Long? = null
+
     @Column(name = "SECTION_ID")
     @Basic
     var sectionId: Long? = null
@@ -155,11 +166,11 @@ class PermitApplicationsEntity:Serializable {
 
     @Column(name = "DATE_OF_ISSUE")
     @Basic
-    var dateOfIssue: Timestamp? = null
+    var dateOfIssue: Date? = null
 
     @Column(name = "DATE_OF_EXPIRY")
     @Basic
-    var dateOfExpiry: Timestamp? = null
+    var dateOfExpiry: Date? = null
 
     @Column(name = "SUSPENSION_STATUS")
     @Basic
@@ -170,6 +181,29 @@ class PermitApplicationsEntity:Serializable {
     var productName: String? = null
 
 
+    @Column(name = "BS_NUMBER")
+    @Basic
+    var bsNumber: String? = null
+
+    @Column(name = "COMPLIANT_REMARKS")
+    @Basic
+    var compliantRemarks: String? = null
+
+
+
+
+    @Column(name = "RECOMMENDATION_APPROVAL_STATUS")
+    @Basic
+    var recommendationApprovalStatus: Int? = null
+
+    @Column(name = "RECOMMENDATION_REMARKS")
+    @Basic
+    var recommendationRemarks: String? = null
+
+
+    @Column(name = "RECOMMENDATION_APPROVAL_REMARKS")
+    @Basic
+    var recommendationApprovalRemarks: String? = null
 
     @Column(name = "TRADE_MARK")
     @Basic
@@ -183,6 +217,27 @@ class PermitApplicationsEntity:Serializable {
     @Column(name = "STA10_FILLED_OFFICER_STATUS")
     @Basic
     var sta10FilledOfficerStatus: Int? = null
+
+
+    @Column(name = "SCF_ID")
+    @Basic
+    var scfId: Long? = null
+
+    @Column(name = "SSF_ID")
+    @Basic
+    var ssfId: Long? = null
+
+    @Column(name = "TEST_REPORT_ID")
+    @Basic
+    var testReportId: Long? = null
+
+    @Column(name = "PSC_MEMBER_ID")
+    @Basic
+    var pscMemberId: Long? = null
+
+    @Column(name = "PCM_ID")
+    @Basic
+    var pcmId: Long? = null
 
     @Column(name = "QAM_ID")
     @Basic
@@ -208,6 +263,10 @@ class PermitApplicationsEntity:Serializable {
     @Basic
     var assessorId: Long? = null
 
+    @Column(name = "PAC_SEC_ID")
+    @Basic
+    var pacSecId: Long? = null
+
     @Column(name = "STA3_FILLED_STATUS")
     @Basic
     var sta3FilledStatus: Int? = null
@@ -227,6 +286,10 @@ class PermitApplicationsEntity:Serializable {
     @Column(name = "PERMIT_FOREIGN_STATUS")
     @Basic
     var permitForeignStatus: Int? = null
+
+    @Column(name = "PERMIT_AWARD_STATUS")
+    @Basic
+    var permitAwardStatus: Int? = null
 
     @Column(name = "ENABLED")
     @Basic
@@ -274,9 +337,40 @@ class PermitApplicationsEntity:Serializable {
     @Basic
     var hofQamCompletenessRemarks: String? = null
 
+    @Column(name = "FACTORY_INSPECTION_REPORT_APPROVED_REJECTED_STATUS")
+    @Basic
+    var factoryInspectionReportApprovedRejectedStatus: Int? = null
+
+
+    @Column(name = "FACTORY_INSPECTION_REPORT_APPROVED_REJECTED_REMARKS")
+    @Basic
+    var factoryInspectionReportApprovedRejectedRemarks: String? = null
+
+    @Column(name = "PSC_MEMBER_APPROVAL_STATUS")
+    @Basic
+    var pscMemberApprovalStatus: Int? = null
+
+
+    @Column(name = "PSC_MEMBER_APPROVAL_REMARKS")
+    @Basic
+    var pscMemberApprovalRemarks: String? = null
+
+    @Column(name = "PCM_APPROVAL_STATUS")
+    @Basic
+    var pcmApprovalStatus: Int? = null
+
+
+    @Column(name = "PCM_APPROVAL_REMARKS")
+    @Basic
+    var pcmApprovalRemarks: String? = null
+
     @Column(name = "ASSESSMENT_CRITERIA")
     @Basic
     var assessmentCriteria: String? = null
+
+    @Column(name = "PAC_DECISION_REMARKS")
+    @Basic
+    var pacDecisionRemarks: String? = null
 
     //A Declaration Form
 
@@ -433,6 +527,7 @@ class PermitApplicationsEntity:Serializable {
         if (product != other.product) return false
         if (versionNumber != other.versionNumber) return false
         if (divisionId != other.divisionId) return false
+        if (inspectionReportId != other.inspectionReportId) return false
         if (sectionId != other.sectionId) return false
         if (standardCategory != other.standardCategory) return false
         if (productStandard != other.productStandard) return false
@@ -440,6 +535,13 @@ class PermitApplicationsEntity:Serializable {
         if (attachedPlantId != other.attachedPlantId) return false
         if (attachedPlantId != other.attachedPlantId) return false
         if (userId != other.userId) return false
+        if (bsNumber != other.bsNumber) return false
+        if (compliantRemarks != other.compliantRemarks) return false
+        if (scfId != other.scfId) return false
+        if (ssfId != other.ssfId) return false
+        if (testReportId != other.testReportId) return false
+        if (pscMemberId != other.pscMemberId) return false
+        if (pcmId != other.pcmId) return false
         if (qamId != other.qamId) return false
         if (hodId != other.hodId) return false
         if (rmId != other.rmId) return false
@@ -454,24 +556,38 @@ class PermitApplicationsEntity:Serializable {
         if (attachedPlantRemarks != other.attachedPlantRemarks) return false
         if (productName != other.productName) return false
         if (tradeMark != other.tradeMark) return false
+        if (recommendationApprovalStatus != other.recommendationApprovalStatus) return false
+        if (recommendationRemarks != other.recommendationRemarks) return false
+        if (recommendationApprovalRemarks != other.recommendationApprovalRemarks) return false
         if (hofQamCompletenessRemarks != other.hofQamCompletenessRemarks) return false
+        if (pscMemberApprovalStatus != other.pscMemberApprovalStatus) return false
+        if (pscMemberApprovalRemarks != other.pscMemberApprovalRemarks) return false
+        if (pcmApprovalStatus != other.pcmApprovalStatus) return false
+        if (pcmApprovalRemarks != other.pcmApprovalRemarks) return false
+        if (factoryInspectionReportApprovedRejectedStatus != other.factoryInspectionReportApprovedRejectedStatus) return false
+        if (factoryInspectionReportApprovedRejectedRemarks != other.factoryInspectionReportApprovedRejectedRemarks) return false
         if (assessmentCriteria != other.assessmentCriteria) return false
+        if (pacDecisionRemarks != other.pacDecisionRemarks) return false
         if (hofQamCompletenessStatus != other.hofQamCompletenessStatus) return false
         if (compliantStatus != other.compliantStatus) return false
         if (justificationReportStatus != other.justificationReportStatus) return false
         if (justificationReportRemarks != other.justificationReportRemarks) return false
+        if (assessmentReportRemarks != other.assessmentReportRemarks) return false
         if (assignAssessorStatus != other.assignAssessorStatus) return false
         if (assessorId != other.assessorId) return false
+        if (pacSecId != other.pacSecId) return false
         if (paidStatus != other.paidStatus) return false
         if (assignOfficerStatus != other.assignOfficerStatus) return false
         if (permitExpiredStatus != other.permitExpiredStatus) return false
         if (permitForeignStatus != other.permitForeignStatus) return false
+        if (permitAwardStatus != other.permitAwardStatus) return false
         if (status != other.status) return false
         if (sta10FilledOfficerStatus != other.sta10FilledOfficerStatus) return false
         if (generateSchemeStatus != other.generateSchemeStatus) return false
         if (sta10FilledStatus != other.sta10FilledStatus) return false
         if (oldPermitStatus != other.oldPermitStatus) return false
         if (renewalStatus != other.renewalStatus) return false
+        if (approvedRejectedScheme != other.approvedRejectedScheme) return false
         if (inspectionDate != other.inspectionDate) return false
         if (assessmentDate != other.assessmentDate) return false
         if (inspectionScheduledStatus != other.inspectionScheduledStatus) return false
@@ -529,6 +645,7 @@ class PermitApplicationsEntity:Serializable {
         result = 31 * result + (broadProductCategory?.hashCode() ?: 0)
         result = 31 * result + (product?.hashCode() ?: 0)
         result = 31 * result + (versionNumber?.hashCode() ?: 0)
+        result = 31 * result + (inspectionReportId?.hashCode() ?: 0)
         result = 31 * result + (divisionId?.hashCode() ?: 0)
         result = 31 * result + (sectionId?.hashCode() ?: 0)
         result = 31 * result + (attachedPlantId?.hashCode() ?: 0)
@@ -537,10 +654,18 @@ class PermitApplicationsEntity:Serializable {
         result = 31 * result + (productSubCategory?.hashCode() ?: 0)
         result = 31 * result + (region?.hashCode() ?: 0)
         result = 31 * result + (userId?.hashCode() ?: 0)
+        result = 31 * result + (bsNumber?.hashCode() ?: 0)
+        result = 31 * result + (compliantRemarks?.hashCode() ?: 0)
+        result = 31 * result + (scfId?.hashCode() ?: 0)
+        result = 31 * result + (ssfId?.hashCode() ?: 0)
+        result = 31 * result + (testReportId?.hashCode() ?: 0)
+        result = 31 * result + (pscMemberId?.hashCode() ?: 0)
+        result = 31 * result + (pcmId?.hashCode() ?: 0)
         result = 31 * result + (qamId?.hashCode() ?: 0)
         result = 31 * result + (hofId?.hashCode() ?: 0)
         result = 31 * result + (hodId?.hashCode() ?: 0)
         result = 31 * result + (assessorId?.hashCode() ?: 0)
+        result = 31 * result + (pacSecId?.hashCode() ?: 0)
         result = 31 * result + (rmId?.hashCode() ?: 0)
         result = 31 * result + (qaoId?.hashCode() ?: 0)
         result = 31 * result + (permitType?.hashCode() ?: 0)
@@ -548,14 +673,24 @@ class PermitApplicationsEntity:Serializable {
         result = 31 * result + (dateOfIssue?.hashCode() ?: 0)
         result = 31 * result + (dateOfExpiry?.hashCode() ?: 0)
         result = 31 * result + (applicationSuspensionStatus ?: 0)
+        result = 31 * result + (pscMemberApprovalStatus ?: 0)
+        result = 31 * result + (pscMemberApprovalRemarks?.hashCode() ?: 0)
+        result = 31 * result + (pcmApprovalStatus ?: 0)
+        result = 31 * result + (pcmApprovalRemarks?.hashCode() ?: 0)
+        result = 31 * result + (factoryInspectionReportApprovedRejectedStatus ?: 0)
+        result = 31 * result + (factoryInspectionReportApprovedRejectedRemarks?.hashCode() ?: 0)
         result = 31 * result + (attachedPlantRemarks?.hashCode() ?: 0)
         result = 31 * result + (productName?.hashCode() ?: 0)
         result = 31 * result + (commodityDescription?.hashCode() ?: 0)
         result = 31 * result + (tradeMark?.hashCode() ?: 0)
         result = 31 * result + (paidStatus?.hashCode() ?: 0)
+        result = 31 * result + (recommendationApprovalStatus?.hashCode() ?: 0)
+        result = 31 * result + (recommendationRemarks?.hashCode() ?: 0)
+        result = 31 * result + (recommendationApprovalRemarks?.hashCode() ?: 0)
         result = 31 * result + (hofQamCompletenessRemarks?.hashCode() ?: 0)
-        result = 31 * result + (assessmentCriteria?.hashCode() ?: 0)
+        result = 31 * result + (pacDecisionRemarks?.hashCode() ?: 0)
         result = 31 * result + (justificationReportRemarks?.hashCode() ?: 0)
+        result = 31 * result + (assessmentReportRemarks?.hashCode() ?: 0)
         result = 31 * result + (assignOfficerStatus ?: 0)
         result = 31 * result + (permitExpiredStatus ?: 0)
         result = 31 * result + (compliantStatus ?: 0)
@@ -565,11 +700,12 @@ class PermitApplicationsEntity:Serializable {
         result = 31 * result + (invoiceGenerated ?: 0)
         result = 31 * result + (enabled ?: 0)
         result = 31 * result + (sendApplication ?: 0)
-        result = 31 * result + (permitForeignStatus ?: 0)
+        result = 31 * result + (permitAwardStatus ?: 0)
         result = 31 * result + (fmarkGenerated ?: 0)
         result = 31 * result + (endOfProductionStatus ?: 0)
         result = 31 * result + (oldPermitStatus ?: 0)
         result = 31 * result + (renewalStatus ?: 0)
+        result = 31 * result + (approvedRejectedScheme ?: 0)
         result = 31 * result + (status ?: 0)
         result = 31 * result + (generateSchemeStatus ?: 0)
         result = 31 * result + (hofQamCompletenessStatus ?: 0)

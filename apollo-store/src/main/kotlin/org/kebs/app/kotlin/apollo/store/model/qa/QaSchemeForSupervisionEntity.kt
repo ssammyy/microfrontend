@@ -148,6 +148,10 @@ class QaSchemeForSupervisionEntity : Serializable {
     @Basic
     var acceptedRejectedBy: String? = null
 
+    @Column(name = "ACCEPTED_REJECTED_REASON")
+    @Basic
+    var acceptedRejectedReason: String? = null
+
     @Column(name = "ACCEPTED_REJECTED_DATE")
     @Basic
     var acceptedRejectedDate: Date? = null
@@ -262,6 +266,7 @@ class QaSchemeForSupervisionEntity : Serializable {
                 recordsDispatch == that.recordsDispatch &&
                 acceptedRejectedStatus == that.acceptedRejectedStatus &&
                 acceptedRejectedDate == that.acceptedRejectedDate &&
+                acceptedRejectedReason == that.acceptedRejectedReason &&
                 acceptedRejectedBy == that.acceptedRejectedBy &&
                 description == that.description &&
                 status == that.status &&
@@ -293,6 +298,7 @@ class QaSchemeForSupervisionEntity : Serializable {
             frequencyRawMaterialsIntake,
             recordsRawMaterialsIntake,
             processFlowInProcess,
+            acceptedRejectedReason,
             operationsInProcess,
             qualityChecksInProcess,
             frequencyInProcess,

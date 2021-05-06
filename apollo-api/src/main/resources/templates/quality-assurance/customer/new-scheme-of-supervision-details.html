@@ -28,13 +28,16 @@
             <div class="content-wrap">
                 <div class="content-row">
                     <div class="row">
-                        <div th:if="${message}" th:with="myStatus=${message}">
-                            <input type="hidden" th:value="${myStatus}" id="idStatus">
-                        </div>
+
                         <h5 style="font-weight: bold; color: #0082f3; font-size: 14px">STA 3: QUESTIONNAIRE FOR INITIAL
                             FACTORY ASSESSMENT</h5>
-                        <form  id="sta3Form" class="needs-validation"  novalidate th:action="@{/api/qa/apply/new-scheme-of-supervision(permitID = ${permit.id})}" method="post">
+                        <form  id="sta3Form" class="needs-validation"  novalidate th:action="@{/api/qa/apply/new-scheme-of-supervision(permitID = ${permitDetails.id})}" method="post">
                             <div th:object="${QaSchemeForSupervisionEntity}" >
+                                <div th:if="${message}" th:with="myStatus=${message}">
+                                    <input type="hidden" name="status" th:value="0">
+                                    <input type="hidden" name="schemeID" th:value="${QaSchemeForSupervisionEntity.id}">
+                                </div>
+
                                 <div class="form-row" >
                                     <div class="col-md-12 mb-3">
                                         <label for="processFlowRawMaterialsIntake" style="color: #0082f3; font-size: 16px">1.RAW MATERIALS INTAKE</label>
@@ -108,30 +111,30 @@
                                 </div>
                                 <div class="form-row" >
                                     <div class="col-md-12 mb-3">
-                                        <label for="processFlowInProcess" class="field-label">3.1. PROCESS FLOW</label>
-                                        <textarea type="text" class="form-control"  style="font-size: 16px" rows="2" id="processFlowInProcess" th:field="*{processFlowInProcess}"   required="required"></textarea>
+                                        <label for="processFlowFinalProduct" class="field-label">3.1. PROCESS FLOW</label>
+                                        <textarea type="text" class="form-control"  style="font-size: 16px" rows="2" id="processFlowFinalProduct" th:field="*{processFlowFinalProduct}"   required="required"></textarea>
                                     </div>
                                 </div>
                                 <div class="form-row" >
                                     <div class="col-md-12 mb-3">
-                                        <label for="operationsInProcess" class="field-label">3.2. OPERATIONS</label>
-                                         <textarea type="text" class="form-control"  style="font-size: 16px" rows="2" id="operationsInProcess" th:field="*{operationsInProcess}"   required="required"></textarea>
+                                        <label for="operationsFinalProduct" class="field-label">3.2. OPERATIONS</label>
+                                         <textarea type="text" class="form-control"  style="font-size: 16px" rows="2" id="operationsFinalProduct" th:field="*{operationsFinalProduct}"   required="required"></textarea>
                                     </div>
                                 </div>
                                 <div class="form-row" >
                                     <div class="col-md-12 mb-3">
-                                        <label for="qualityChecksInProcess" class="field-label">3.3. QUALITY CHECKS</label>
-                                         <textarea type="text" class="form-control" style="font-size: 16px" rows="2" id="qualityChecksInProcess" th:field="*{qualityChecksInProcess}"   required="required"></textarea>
+                                        <label for="qualityChecksFinalProduct" class="field-label">3.3. QUALITY CHECKS</label>
+                                         <textarea type="text" class="form-control" style="font-size: 16px" rows="2" id="qualityChecksFinalProduct" th:field="*{qualityChecksFinalProduct}"   required="required"></textarea>
                                     </div>
                                 </div><div class="form-row" >
                                     <div class="col-md-12 mb-3">
-                                        <label for="frequencyInProcess" class="field-label">3.4. FREQUENCY</label>
-                                         <textarea type="text" class="form-control" style="font-size: 16px" rows="2" id="frequencyInProcess" th:field="*{frequencyInProcess}"   required="required"></textarea>
+                                        <label for="frequencyFinalProduct" class="field-label">3.4. FREQUENCY</label>
+                                         <textarea type="text" class="form-control" style="font-size: 16px" rows="2" id="frequencyFinalProduct" th:field="*{frequencyFinalProduct}"   required="required"></textarea>
                                     </div>
                                 </div><div class="form-row" >
                                     <div class="col-md-12 mb-3">
-                                        <label for="recordsInProcess" class="field-label">3.5. RECORDS</label>
-                                         <textarea type="text" class="form-control" style="font-size: 16px" rows="2" id="recordsInProcess" th:field="*{recordsInProcess}"   required="required"></textarea>
+                                        <label for="recordsFinalProduct" class="field-label">3.5. RECORDS</label>
+                                         <textarea type="text" class="form-control" style="font-size: 16px" rows="2" id="recordsFinalProduct" th:field="*{recordsFinalProduct}"   required="required"></textarea>
                                     </div>
                                 </div>
                                 <div class="form-row" >

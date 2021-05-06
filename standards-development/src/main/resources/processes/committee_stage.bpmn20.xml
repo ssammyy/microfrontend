@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:flowable="http://flowable.org/bpmn"
+             xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+             xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC"
+             xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI"
+             typeLanguage="http://www.w3.org/2001/XMLSchema"
+             expressionLanguage="http://www.w3.org/1999/XPath"
+             targetNamespace="http://www.flowable.org/processdef">
+    <process id="committee_stage" name="Committee Stage" isExecutable="true">
+        <documentation>Standard Development Module Committee Stage</documentation>
+        <startEvent id="start" name="Start" flowable:formFieldValidation="true"/>
+        <userTask id="prepareANWI" name="Prepare A NWI" flowable:candidateGroups="TC-sec"
+                  flowable:formFieldValidation="true"/>
+        <exclusiveGateway id="approve"/>
+        <userTask id="Uploadalldraftsanddocuments" name="Upload all drafts and documents from NWI discussion"
+                  flowable:candidateGroups="TC-sec" flowable:formFieldValidation="true"/>
+        <serviceTask id="ReceivenotificationofPD" name="Receive notification of PD"
+                     flowable:class="com.apollo.standardsdevelopment.handlers.EmailHandler"/>
+        <serviceTask id="ReceivenotificationofCommentsonPD" name="Receive notification of Comments on PD"
+                     flowable:class="com.apollo.standardsdevelopment.handlers.EmailHandler"/>
+        <userTask id="UploadalldraftsanddocumentsfromPDdiscussion"
+                  name="Upload all drafts and documents from PD discussion" flowable:candidateGroups="TC-sec"
+                  flowable:formFieldValidation="true"/>
+        <serviceTask id="ReceivenotificationofCD" name="Receive notification of CD"
+                     flowable:class="com.apollo.standardsdevelopment.handlers.EmailHandler"/>
+        <serviceTask id="ReceivenotificationofComments" name="Receive notification of Comments"
+                     flowable:class="com.apollo.standardsdevelopment.handlers.EmailHandler"/>
+        <exclusiveGateway id="approveb"/>
+        <sequenceFlow id="sid-3BE5B605-17BA-43E0-BA72-5408B18D3266" sourceRef="start" targetRef="prepareANWI"/>
+        <endEvent id="end" name="End"/>
+        <serviceTask id="NotificationofKSnumberassignment" name="Notification of KS number assignment"
+                     flowable:class="com.apollo.standardsdevelopment.handlers.EmailHandler"/>
+        <sequenceFlow id="sid-977BC954-7D4F-4AE3-832B-DB42CE7CA229" sourceRef="ReceivenotificationofComments"
+                      targetRef="approveb"/>
+        <sequenceFlow id="sid-2FA3031F-C470-4879-A131-578D6E9086F4" sourceRef="NotificationofKSnumberassignment"
+                      targetRef="end"/>
+        <sequenceFlow id="sid-7EAA7104-F68E-4D60-8385-C6918FB2E30A" sourceRef="ReceivenotificationofPD"
+                      targetRef="ReceivenotificationofCommentsonPD"/>
+        <sequenceFlow id="sid-B12EB498-6320-4F51-885C-6E3129849FED" sourceRef="ReceivenotificationofCommentsonPD"
+                      targetRef="UploadalldraftsanddocumentsfromPDdiscussion"/>
+        <sequenceFlow id="yes" name="Yes" sourceRef="approveb" targetRef="NotificationofKSnumberassignment">
+            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${approved}]]></conditionExpression>
+        </sequenceFlow>
+        <sequenceFlow id="No" name="No" sourceRef="approveb" targetRef="ReceivenotificationofComments">
+            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${!approved}]]></conditionExpression>
+        </sequenceFlow>
+        <sequenceFlow id="sid-7B236C4B-2839-4073-936E-C84195D0BE1E" sourceRef="ReceivenotificationofComments"
+                      targetRef="approveb"/>
+        <sequenceFlow id="sid-566BF756-6B38-4ACE-96EE-907672C595B8" sourceRef="approve" targetRef="prepareANWI">
+            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${!approved}]]></conditionExpression>
+        </sequenceFlow>
+        <sequenceFlow id="sid-DF8F00FD-A527-45A0-AFE4-307B866600D0" sourceRef="prepareANWI" targetRef="approve"/>
+        <userTask id="preparePd" name="Prepare PD" flowable:candidateGroups="TC-sec"
+                  flowable:formFieldValidation="true"/>
+        <sequenceFlow id="sid-31CD5557-6CAE-4928-8D35-ACCA264FEA8A" name="Yes" sourceRef="approve"
+                      targetRef="Uploadalldraftsanddocuments">
+            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${approved}]]></conditionExpression>
+        </sequenceFlow>
+        <sequenceFlow id="sid-F98AE10F-DB7B-4B69-9979-8C7E722F790D" sourceRef="ReceivenotificationofCD"
+                      targetRef="ReceivenotificationofComments"/>
+        <sequenceFlow id="sid-65C05C3A-1E18-4765-BD5A-5211A5FE20D5" sourceRef="Uploadalldraftsanddocuments"
+                      targetRef="preparePd"/>
+        <sequenceFlow id="sid-882a6aed-6bf7-4527-9373-31bd3fc5febe" sourceRef="preparePd"
+                      targetRef="ReceivenotificationofPD"/>
+        <userTask id="prepareCd" name="Prepare CD" flowable:candidateGroups="TC-Sec"
+                  flowable:formFieldValidation="true"/>
+        <sequenceFlow id="sid-D57C3D45-1A47-41AA-AFAD-8FAE04B72835"
+                      sourceRef="UploadalldraftsanddocumentsfromPDdiscussion" targetRef="prepareCd"/>
+        <sequenceFlow id="sid-8CAB26D6-26F2-4555-B3B1-AB4C29EBD9C4" sourceRef="prepareCd"
+                      targetRef="ReceivenotificationofCD"/>
+    </process>
+    <bpmndi:BPMNDiagram id="BPMNDiagram_committee_stage">
+        <bpmndi:BPMNPlane bpmnElement="committee_stage" id="BPMNPlane_committee_stage">
+            <bpmndi:BPMNShape bpmnElement="start" id="BPMNShape_start">
+                <omgdc:Bounds height="30.0" width="30.0" x="100.0" y="157.0"/>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="prepareANWI" id="BPMNShape_prepareANWI">
+                <omgdc:Bounds height="80.0" width="100.0" x="186.0" y="132.0"/>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="approve" id="BPMNShape_approve">
+                <omgdc:Bounds height="40.0" width="40.0" x="330.0" y="152.0"/>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="Uploadalldraftsanddocuments" id="BPMNShape_Uploadalldraftsanddocuments">
+                <omgdc:Bounds height="80.0" width="100.0" x="420.0" y="132.0"/>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="ReceivenotificationofPD" id="BPMNShape_ReceivenotificationofPD">
+                <omgdc:Bounds height="80.0" width="100.0" x="606.0" y="132.0"/>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="ReceivenotificationofCommentsonPD"
+                              id="BPMNShape_ReceivenotificationofCommentsonPD">
+                <omgdc:Bounds height="80.0" width="100.0" x="810.0" y="132.0"/>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="UploadalldraftsanddocumentsfromPDdiscussion"
+                              id="BPMNShape_UploadalldraftsanddocumentsfromPDdiscussion">
+                <omgdc:Bounds height="80.0" width="100.0" x="990.0" y="132.0"/>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="ReceivenotificationofCD" id="BPMNShape_ReceivenotificationofCD">
+                <omgdc:Bounds height="80.0" width="100.0" x="900.0" y="280.0"/>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="ReceivenotificationofComments" id="BPMNShape_ReceivenotificationofComments">
+                <omgdc:Bounds height="80.0" width="100.0" x="615.0" y="280.0"/>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="approveb" id="BPMNShape_approveb">
+                <omgdc:Bounds height="40.0" width="40.0" x="405.0" y="300.0"/>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="end" id="BPMNShape_end">
+                <omgdc:Bounds height="28.0" width="28.0" x="101.0" y="306.0"/>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="NotificationofKSnumberassignment"
+                              id="BPMNShape_NotificationofKSnumberassignment">
+                <omgdc:Bounds height="80.0" width="100.0" x="186.0" y="280.0"/>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="preparePd" id="BPMNShape_preparePd">
+                <omgdc:Bounds height="80.0" width="100.0" x="529.8988" y="-5.015091"/>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="prepareCd" id="BPMNShape_prepareCd">
+                <omgdc:Bounds height="80.0" width="100.0" x="1080.0" y="280.0"/>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNEdge bpmnElement="sid-65C05C3A-1E18-4765-BD5A-5211A5FE20D5"
+                             id="BPMNEdge_sid-65C05C3A-1E18-4765-BD5A-5211A5FE20D5">
+                <omgdi:waypoint x="502.04360211679165" y="132.0"/>
+                <omgdi:waypoint x="547.8150932497706" y="74.934909"/>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="sid-8CAB26D6-26F2-4555-B3B1-AB4C29EBD9C4"
+                             id="BPMNEdge_sid-8CAB26D6-26F2-4555-B3B1-AB4C29EBD9C4">
+                <omgdi:waypoint x="1080.0" y="320.0"/>
+                <omgdi:waypoint x="999.9499999998765" y="320.0"/>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="No" id="BPMNEdge_No">
+                <omgdi:waypoint x="444.9458454807325" y="320.0"/>
+                <omgdi:waypoint x="615.0" y="320.0"/>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="sid-D57C3D45-1A47-41AA-AFAD-8FAE04B72835"
+                             id="BPMNEdge_sid-D57C3D45-1A47-41AA-AFAD-8FAE04B72835">
+                <omgdi:waypoint x="1040.0" y="211.95000000000002"/>
+                <omgdi:waypoint x="1040.0" y="246.0"/>
+                <omgdi:waypoint x="1130.0" y="246.0"/>
+                <omgdi:waypoint x="1130.0" y="280.0"/>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="sid-DF8F00FD-A527-45A0-AFE4-307B866600D0"
+                             id="BPMNEdge_sid-DF8F00FD-A527-45A0-AFE4-307B866600D0">
+                <omgdi:waypoint x="285.95000000000005" y="172.0"/>
+                <omgdi:waypoint x="330.0" y="172.0"/>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="yes" id="BPMNEdge_yes">
+                <omgdi:waypoint x="405.0" y="320.0"/>
+                <omgdi:waypoint x="285.9499999996825" y="320.0"/>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="sid-2FA3031F-C470-4879-A131-578D6E9086F4"
+                             id="BPMNEdge_sid-2FA3031F-C470-4879-A131-578D6E9086F4">
+                <omgdi:waypoint x="185.99999999994264" y="320.0"/>
+                <omgdi:waypoint x="128.94993011419797" y="320.0"/>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="sid-7EAA7104-F68E-4D60-8385-C6918FB2E30A"
+                             id="BPMNEdge_sid-7EAA7104-F68E-4D60-8385-C6918FB2E30A">
+                <omgdi:waypoint x="705.9499999999294" y="172.0"/>
+                <omgdi:waypoint x="809.9999999999015" y="172.0"/>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="sid-31CD5557-6CAE-4928-8D35-ACCA264FEA8A"
+                             id="BPMNEdge_sid-31CD5557-6CAE-4928-8D35-ACCA264FEA8A">
+                <omgdi:waypoint x="369.941694421308" y="172.0"/>
+                <omgdi:waypoint x="420.0" y="172.0"/>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="sid-3BE5B605-17BA-43E0-BA72-5408B18D3266"
+                             id="BPMNEdge_sid-3BE5B605-17BA-43E0-BA72-5408B18D3266">
+                <omgdi:waypoint x="129.94999875192588" y="172.0"/>
+                <omgdi:waypoint x="186.0" y="172.0"/>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="sid-F98AE10F-DB7B-4B69-9979-8C7E722F790D"
+                             id="BPMNEdge_sid-F98AE10F-DB7B-4B69-9979-8C7E722F790D">
+                <omgdi:waypoint x="900.0" y="320.0"/>
+                <omgdi:waypoint x="714.9499999999999" y="320.0"/>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="sid-B12EB498-6320-4F51-885C-6E3129849FED"
+                             id="BPMNEdge_sid-B12EB498-6320-4F51-885C-6E3129849FED">
+                <omgdi:waypoint x="909.9499999999431" y="172.0"/>
+                <omgdi:waypoint x="989.9999999999723" y="172.0"/>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="sid-977BC954-7D4F-4AE3-832B-DB42CE7CA229"
+                             id="BPMNEdge_sid-977BC954-7D4F-4AE3-832B-DB42CE7CA229">
+                <omgdi:waypoint x="615.0" y="320.0"/>
+                <omgdi:waypoint x="444.9041371404752" y="320.0"/>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="sid-7B236C4B-2839-4073-936E-C84195D0BE1E"
+                             id="BPMNEdge_sid-7B236C4B-2839-4073-936E-C84195D0BE1E">
+                <omgdi:waypoint x="615.0" y="320.0"/>
+                <omgdi:waypoint x="444.9041371404752" y="320.0"/>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="sid-566BF756-6B38-4ACE-96EE-907672C595B8"
+                             id="BPMNEdge_sid-566BF756-6B38-4ACE-96EE-907672C595B8">
+                <omgdi:waypoint x="330.0" y="172.0"/>
+                <omgdi:waypoint x="285.94999999999783" y="172.0"/>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="sid-882a6aed-6bf7-4527-9373-31bd3fc5febe"
+                             id="BPMNEdge_sid-882a6aed-6bf7-4527-9373-31bd3fc5febe">
+                <omgdi:waypoint x="602.0879101032076" y="74.934909"/>
+                <omgdi:waypoint x="633.7831187952866" y="132.0"/>
+            </bpmndi:BPMNEdge>
+        </bpmndi:BPMNPlane>
+    </bpmndi:BPMNDiagram>
+</definitions>

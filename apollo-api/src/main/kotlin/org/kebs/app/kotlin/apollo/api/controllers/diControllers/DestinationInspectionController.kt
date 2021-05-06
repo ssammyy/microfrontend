@@ -129,18 +129,9 @@ class DestinationInspectionController(
                     cdDetails.approveRejectCdStatus == map.activeStatus -> {
                         if (cdStatusType != null) {
                             cdStatusType.statusCode?.let {
-                                cdDetails.approveRejectCdRemarks?.let { it1 ->
-                                    daoServices.submitCDStatusToKesWS(
-                                        it1,
-                                        it,
-                                        consignmentDocument.version.toString(),
-                                        consignmentDocument
-                                    )
-                                    cdDetails.cdStandard?.let { cdStd ->
-                                        cdDetails.approveRejectCdStatusType?.id?.let { it2 ->
-                                            daoServices.updateCDStatus(cdStd, it2)
-                                        }
-                                    }
+                                cdDetails.approveRejectCdRemarks?.let { it1 -> daoServices.submitCDStatusToKesWS(it1, it, consignmentDocument.version.toString(), consignmentDocument)
+
+                                    cdDetails.cdStandard?.let { cdStd -> cdDetails.approveRejectCdStatusType?.id?.let { it2 -> daoServices.updateCDStatus(cdStd, it2) } }
                                 }
                             }
 
