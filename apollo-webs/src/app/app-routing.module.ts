@@ -56,6 +56,10 @@ import {PrepareCdComponent} from "./components/standards-development/commitee/pr
 import {ApproveNwiComponent} from "./components/standards-development/commitee/approve-nwi/approve-nwi.component";
 import {ApproveCdComponent} from "./components/standards-development/commitee/approve-cd/approve-cd.component";
 import {CommentCdComponent} from "./components/standards-development/commitee/comment-cd/comment-cd.component";
+import {HodjoinrequestComponent} from "./components/standards-development/hodjoinrequest/hodjoinrequest.component";
+import {SicjoinrequestComponent} from "./components/standards-development/sicjoinrequest/sicjoinrequest.component";
+import {SicpaymentconfirmComponent} from "./components/standards-development/sicpaymentconfirm/sicpaymentconfirm.component";
+import {SchememembershipComponent} from "./components/standards-development/schememembership/schememembership/schememembership.component";
 
 const routes: Routes = [
   // { path: 'login-signup', component: LoginSignupComponent },
@@ -257,7 +261,20 @@ const routes: Routes = [
     path: 'managernotification', component: StandardsDevelopmentComponent,
     children: [{path: '', component: ManagernotificationsComponent}]
   },
+  {
+    path: 'hodjoin', component: StandardsDevelopmentComponent,
+    children: [{path: '', component: HodjoinrequestComponent}]
+  },
+  {
+    path: 'sicjoin', component: StandardsDevelopmentComponent,
+    children: [{path: '', component: SicjoinrequestComponent}]
+  },
+  {
+    path: 'sicpayconfirm', component: StandardsDevelopmentComponent,
+    children: [{path: '', component: SicpaymentconfirmComponent}]
+  },
   { path: 'enquire', component: EnquiryComponent },
+  { path: 'schemejoin', component: SchememembershipComponent },
   { path: 'success', component: SuccessComponent },
 
   /****************************************************************
