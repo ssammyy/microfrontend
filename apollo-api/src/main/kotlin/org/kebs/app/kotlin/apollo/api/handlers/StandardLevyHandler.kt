@@ -8,6 +8,7 @@ import org.kebs.app.kotlin.apollo.common.exceptions.ServiceMapNotFoundException
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.ManufacturersEntity
 import org.kebs.app.kotlin.apollo.store.model.StandardLevyFactoryVisitReportEntity
+import org.kebs.app.kotlin.apollo.store.model.UsersEntity
 import org.kebs.app.kotlin.apollo.store.repo.*
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.repository.findByIdOrNull
@@ -19,6 +20,7 @@ import org.springframework.web.servlet.function.ServerResponse
 import org.springframework.web.servlet.function.ServerResponse.ok
 import org.springframework.web.servlet.function.paramOrNull
 import org.springframework.web.servlet.mvc.support.RedirectAttributes
+import java.math.BigDecimal
 
 @Component
 class StandardLevyHandler(
@@ -39,8 +41,8 @@ class StandardLevyHandler(
     private val principalLevyOfficer = applicationMapProperties.principalLevyOfficer
 
     final val appId = applicationMapProperties.mapPermitApplication
-    private final val slAllManufacturers = "standard-levy/manufacturers"
-    private final val slHome = "standard-levy/home"
+    private val slAllManufacturers = "standard-levy/manufacturers"
+    private val slHome = "standard-levy/home"
     private val singleManufacturerPage = "standard-levy/single-manufacturers"
     private val allPayments = "standard-levy/payments"
 
@@ -61,8 +63,8 @@ class StandardLevyHandler(
         }
 
 
-    fun loadManufacturers(req: ServerRequest): ServerResponse =
-        try {
+    fun loadManufacturers(req: ServerRequest): ServerResponse {
+        return try {
             serviceMapsRepository.findByIdOrNull(appId)
                 ?.let { map ->
                     SecurityContextHolder.getContext().authentication
@@ -73,70 +75,70 @@ class StandardLevyHandler(
                                 .let { page ->
                                     userRepo.findByUserName(auth.name)
                                         ?.let { user ->
-                                            req.paramOrNull("whereTo")
-                                                ?.let { whereTo ->
-                                                    when (whereTo) {
-                                                        "load_manufacturers" -> {
-                                                            manufacturerRepository.findByOrderByIdDesc(page)
-                                                                .let { manufacturers ->
-                                                                    req.attributes()["manufacturers"] = manufacturers
-                                                                    req.attributes()["map"] = map
-                                                                    req.attributes()["type"] = "load_manufacturers"
+                                            val whereTo = req.paramOrNull("whereTo") ?: throw NullValueNotAllowedException("whereTo parameter is required")
+                                            when (whereTo) {
+                                                "load_manufacturers" -> {
+                                                    manufacturerRepository.findByOrderByIdDesc(page)
+                                                        .let { manufacturers ->
+                                                            req.attributes()["manufacturers"] = manufacturers
+                                                            req.attributes()["map"] = map
+                                                            req.attributes()["type"] = "load_manufacturers"
+                                                            ok().render(slAllManufacturers, req.attributes())
 
-                                                                }
                                                         }
-                                                        "load_tasks" -> {
-                                                            user.id
-                                                                ?.let { userId ->
-                                                                    standardsLevyBpmn.fetchAllTasksByAssignee(userId)
-                                                                        ?.let { lstTaskDetails ->
-                                                                            val tasks = mutableListOf<ManufacturersEntity?>()
-                                                                            lstTaskDetails.sortedByDescending { it.objectId }.forEach { details ->
-                                                                                if (standardLevyPaymentsRepository.findByIdOrNull(details.objectId) == null) {
-                                                                                    redirectAttributes?.addFlashAttribute("error", "Caught an exception while loading your tasks")
-                                                                                    req.attributes()["map"] = map
-                                                                                    KotlinLogging.logger { }.info { "there" }
-                                                                                    req.attributes()["type"] = "load_tasks"
-                                                                                    ok().render(slAllManufacturers, req.attributes())
-                                                                                } else {
-                                                                                    tasks.add(standardLevyPaymentsRepository.findByIdOrNull(details.objectId)?.manufacturerEntity)
+                                                }
+                                                "load_tasks" -> {
+                                                    user.id
+                                                        ?.let { userId ->
+                                                            standardsLevyBpmn.fetchAllTasksByAssignee(userId)
+                                                                ?.let { lstTaskDetails ->
+                                                                    val tasks = mutableListOf<ManufacturersEntity?>()
+                                                                    lstTaskDetails.sortedByDescending { it.objectId }.forEach { details ->
+                                                                        if (standardLevyPaymentsRepository.findByIdOrNull(details.objectId) == null) {
+                                                                            redirectAttributes?.addFlashAttribute("error", "Caught an exception while loading your tasks")
+                                                                            req.attributes()["map"] = map
+                                                                            KotlinLogging.logger { }.info { "there" }
+                                                                            req.attributes()["type"] = "load_tasks"
+//                                                                            ok().render(slAllManufacturers, req.attributes())
+                                                                        } else {
+                                                                            standardLevyPaymentsRepository.findByIdOrNull(details.objectId)
+                                                                                ?.let { paymentsEntity ->
+                                                                                    tasks.add(paymentsEntity.manufacturerEntity)
                                                                                     req.attributes()["tasks"] = tasks
                                                                                     req.attributes()["map"] = map
                                                                                     KotlinLogging.logger { }.info { "here" }
                                                                                     redirectAttributes?.addFlashAttribute("success", "View your tasks")
-                                                                                    ok().render(slAllManufacturers, req.attributes())
                                                                                 }
-                                                                            }
-
-
+                                                                                ?: throw ExpectedDataNotFound("No payment with id=${details.objectId}")
                                                                         }
-                                                                        ?: ok().render(slAllManufacturers, req.attributes())
+                                                                    }
+                                                                    ok().render(slAllManufacturers, req.attributes())
+
+
                                                                 }
                                                                 ?: ok().render(slAllManufacturers, req.attributes())
+                                                        }
+                                                        ?: ok().render(slAllManufacturers, req.attributes())
 
-                                                        }
-                                                        "load_levy_payments" -> {
-                                                            standardLevyPaymentsRepository.findByOrderById(page)
-                                                                .let { payments ->
-                                                                    req.attributes()["payments"] = payments
-                                                                    req.attributes()["map"] = map
-                                                                    ok().render(allPayments, req.attributes())
-                                                                }
-                                                        }
-                                                        else -> {
-                                                            redirectAttributes?.addFlashAttribute("error", "")
-                                                            ok().render("redirect:/sl", req.attributes())
-                                                        }
-                                                    }
                                                 }
-                                                ?: throw NullValueNotAllowedException("Invalid session, user not found")
-                                            ok().render(slAllManufacturers, req.attributes())
+                                                "load_levy_payments" -> {
+                                                    standardLevyPaymentsRepository.findByOrderByIdDesc(page)
+                                                        .let { payments ->
+                                                            KotlinLogging.logger { }.info("Records found ${payments.count()}")
+                                                            req.attributes()["payments"] = payments
+                                                            req.attributes()["map"] = map
+                                                            ok().render(allPayments, req.attributes())
+                                                        }
+                                                }
+                                                else -> {
+                                                    redirectAttributes?.addFlashAttribute("error", "")
+                                                    ok().render("redirect:/sl", req.attributes())
+                                                }
+                                            }
                                         }
                                         ?: ok().render(slAllManufacturers, req.attributes())
 
                                 }
-
-
                         }
                         ?: throw NullValueNotAllowedException("Invalid session")
                 }
@@ -147,6 +149,7 @@ class StandardLevyHandler(
             ServerResponse.badRequest().body(e.message ?: "Unknown error")
 
         }
+    }
 
     fun singleManufacturer(req: ServerRequest): ServerResponse =
         try {
@@ -197,7 +200,7 @@ class StandardLevyHandler(
                 ?: throw ServiceMapNotFoundException("Missing application mapping for [id=$appId], recheck configuration")
 
         } catch (e: Exception) {
-            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.error(e.message, e)
             KotlinLogging.logger { }.debug(e.message, e)
             ServerResponse.badRequest().body(e.message ?: "Unknown error")
         }
@@ -322,3 +325,12 @@ class StandardLevyHandler(
         }
 
 }
+
+data class PaymentsEntityDto(
+    val id: Long?,
+    val manufacturer: String?,
+    val paymentDate: String?,
+    val paymentAmount: BigDecimal?,
+    val visitStatus: Long?,
+    val assignedTo: UsersEntity?
+)
