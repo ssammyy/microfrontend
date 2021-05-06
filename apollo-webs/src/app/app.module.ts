@@ -72,6 +72,8 @@ import { DivisionresponseComponent } from './components/standards-development/di
 import { EnquiryComponent } from './components/standards-development/sd-national-enquiry-point/enquiry/enquiry.component';
 import { InformationcheckComponent } from './components/standards-development/informationcheck/informationcheck.component';
 import { SuccessComponent } from './components/standards-development/sd-national-enquiry-point/success/success.component';
+import { NepNotificationComponent } from './components/standards-development/nep-notification/nep-notification.component';
+import { ManagernotificationsComponent } from './components/standards-development/managernotifications/managernotifications.component';
 
 
 
@@ -134,6 +136,8 @@ import { SuccessComponent } from './components/standards-development/sd-national
     EnquiryComponent,
     InformationcheckComponent,
     SuccessComponent,
+    NepNotificationComponent,
+    ManagernotificationsComponent,
   ],
   exports: [
   ],

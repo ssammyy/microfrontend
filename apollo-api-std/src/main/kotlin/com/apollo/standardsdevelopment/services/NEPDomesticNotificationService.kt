@@ -69,7 +69,7 @@ class NEPDomesticNotificationService(private val runtimeService: RuntimeService,
 
     //request task list retrieval
     fun getManagerTasks(): List<TaskDetails?>? {
-        val tasks = taskService.createTaskQuery().taskCandidateGroup(TASK_CANDIDATE_GROUP_NEP).list()
+        val tasks = taskService.createTaskQuery().taskCandidateGroup(TASK_CANDIDATE_GROUP_NEP).processDefinitionKey(PROCESS_DEFINITION_KEY).list()
         return getTaskDetails(tasks)
     }
 
@@ -98,7 +98,7 @@ class NEPDomesticNotificationService(private val runtimeService: RuntimeService,
 
     //check manager tasks pending approval
     fun getManagersTasks(): List<TaskDetails?>? {
-        val tasks = taskService.createTaskQuery().taskCandidateGroup(TASK_CANDIDATE_GROUP_MANAGER).list()
+        val tasks = taskService.createTaskQuery().taskCandidateGroup(TASK_CANDIDATE_GROUP_MANAGER).processDefinitionKey(PROCESS_DEFINITION_KEY).list()
         return getTaskDetails(tasks)
     }
 

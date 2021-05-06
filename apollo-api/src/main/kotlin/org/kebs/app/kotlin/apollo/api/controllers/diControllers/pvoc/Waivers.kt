@@ -202,6 +202,7 @@ class Waivers(
                KotlinLogging.logger {  }.info { "Entity id $id and impoter id is $it" }
                 pvocBpmn.startPvocWaiversApplicationsProcess(id, it, 720)
                 pvocBpmn.pvocWaSubmitApplicationComplete(id, 720)
+
             }
             return "redirect:/api/di/pvoc/all-waivers-applications-list?currentPage=0&pageSize=10&fromDate=${dateFrom}&toDate=${dateTo}&filter=123"
         } ?: throw Exception("Application does not exist")
@@ -429,7 +430,7 @@ class Waivers(
                     ?.let { auth ->
                         when {
                             auth.authorities.stream()
-                                .anyMatch { authority -> authority.authority == "PVOC_APPLICATION_READ" || authority.authority == "PVOC_APPLICATION_PROCESS" } -> {
+                                .anyMatch { authority -> authority.authority == "PVOC_APPLICATION_READ" || authority.authority == "WAIVER_APPLICATION_REPORT_PROCESS" || authority.authority == "PVOC_APPLICATION_PROCESS" } -> {
                                 when (filter) {
                                     "filter" -> {
                                         iPvocWaiversReportRepo.findAllByStatus(1, page).let { waivers ->
@@ -444,7 +445,7 @@ class Waivers(
                                 }
 
                             }
-                            else -> throw SupervisorNotFoundException("Only users with the following privilege PVOC Appliaction READ or PVOC APPLICATION PROCESS, can access this page")
+                            else -> throw SupervisorNotFoundException("You can't access this page")
                         }
                         return "destination-inspection/pvoc/WaiverApplicationReports"
                     } ?: throw Exception("You must be loggedIn to access this page")
@@ -540,13 +541,17 @@ class Waivers(
 
     @PostMapping("save-generated-minutes")
     fun saveGeneratedMinutes(@ModelAttribute minute: PvocWaiversWetcMinutesEntity): String {
+        val dateFrom =
+            Date.valueOf(LocalDate.parse(LocalDate.now().toString(), DateTimeFormatter.ofPattern("yyyy-MM-dd")))
+        val dateTo =
+            Date.valueOf(LocalDate.parse(LocalDate.now().toString(), DateTimeFormatter.ofPattern("yyyy-MM-dd")))
         getLoggedInUser().let { userDeails ->
             minute.createdBy = userDeails?.firstName + " " + userDeails?.lastName
             minute.createdOn = Timestamp.from(Instant.now())
             minute.status = 1
             iPvocWaiversWetcMinutesEntityRepo.save(minute)
             minute.waiverId?.let { it2 -> pvocBpmn.pvocWaGenerateMinutesComplete(it2, 716) }
-            return "redirect:/api/di/pvoc/waiversWETCMinutes?currentPage=0&pageSize=10"
+            return "redirect:/api/di/pvoc/waiversWETCMinutes?currentPage=0&pageSize=10&fromDate=${dateFrom}&toDate=${dateTo}"
         }
     }
 
@@ -643,7 +648,7 @@ class Waivers(
                     .let { auth ->
                         when {
                             auth.authorities.stream()
-                                .anyMatch { authority -> authority.authority == "PVOC_APPLICATION_READ" || authority.authority == "PVOC_APPLICATION_PROCESS" } -> {
+                                .anyMatch { authority -> authority.authority == "PVOC_APPLICATION_READ" || authority.authority == "WAIVERS_MINUTES_REVIEW_NCS" || authority.authority == "PVOC_APPLICATION_PROCESS" } -> {
                                 when (filter) {
                                     "filter" -> {
                                         iPvocWaiversWetcMinutesEntityRepo.findAllByStatusAndCreatedOnBetweenOrderByCreatedOnDesc(

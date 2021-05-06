@@ -324,7 +324,7 @@
                                             <label class="fieldlabels">Date Of Meeting: *</label> 
                                             <input type="date"  th:field="*{dateHeld}" />
                                             <label class="fieldlabels">Time Meeting Started: *</label>
-                                            <input type="text" th:field="*{startTime}"  />
+                                            <input type="time" th:field="*{startTime}"  />
                                             <label class="fieldlabels">Location: *</label>
                                             <input type="text" id="location" th:field="*{location}"  />
                                             <label class="fieldlabels">MEETING CALLED BY: *</label>
@@ -341,7 +341,7 @@
                                             <label class="fieldlabels">AGENDA: *</label>
                                             <textarea th:field="*{agenda}" class="agenda" id="agenda" cols="30" rows="10"></textarea>
                                             <label class="fieldlabels">Previous Minutes: *</label>
-                                            <textarea th:field="*{previousMinutes}" class="content" cols="30" rows="10"></textarea>
+                                            <textarea th:field="*{previousMinutes}" class="previousMinutes" cols="30" rows="10"></textarea>
                                             <label class="fieldlabels">Previous Minutes Discussion: *</label>
                                             <textarea th:field="*{previousMeetingDiscussion}" class="previousMeetingDiscussion"  cols="30" rows="10"></textarea>
                                         </div>
@@ -503,9 +503,9 @@
 
 
             }
-
         });
         $(".content").richText();
+        $(".previousMinutes").richText();
         $(".currentMeetingDiscussion").richText();
         $(".previousMeetingDiscussion").richText();
         $(".agenda").richText();

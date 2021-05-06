@@ -25,7 +25,7 @@
         <td>{{notification.taskData.requesterSubject}}</td>
         <td>{{notification.taskData.requesterComment}}</td>
         <td>
-          <a  (click)="onOpenModal(notification,'yes')" class="btn btn-primary tooltips" data-placement="top"  data-original-title="Yes">Send Feedback</a>
+          <a  (click)="onOpenModal(notification,'yes')" class="btn btn-outline-primary tooltips" data-placement="top"  data-original-title="Yes">Send Feedback</a>
         </td>
       </tr>
       </tbody>
@@ -48,7 +48,7 @@
                 <label for="exampleFormControlTextarea1">Please type your feedback</label>
                 <textarea class="form-control" ngModel="" id="exampleFormControlTextarea1" name="feedbackProvided" rows="3"></textarea>
               </div>
-              <button type="submit" class="btn btn-primary" (click)="onReSubmit(sendFeedback.value)">Submit</button>
+              <button type="submit" class="btn btn-primary" (click)="onReSubmit(sendFeedback.value)" data-dismiss="modal">Submit</button>
             </form>
           </div>
           <div class="modal-footer">

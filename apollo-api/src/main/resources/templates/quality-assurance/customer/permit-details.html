@@ -352,6 +352,7 @@
                                 <div class="filter-title">Document Details:</div>
                             </div>
                             <div>
+                                <a th:if="${permitDetails?.permitAwardStatus == 1}" target='_blank' th:href="@{/api/qa/report/dmark_permit(permit_id=${permitDetails?.id})}" class="filter-link" style="color: white">PERMIT CERTIFICATE</a>
                                 <a th:if="${permitType?.st3Status == 1 and permitDetails?.sta3FilledStatus == 1}" target='_blank' th:href="@{/api/qa/view-sta3(permitID=${permitDetails?.id}, userID=${permitDetails?.userId})}" class="filter-link" style="color: white">STA 3</a>
 
                                 <a th:if="${permitType?.st10Status == 1 and permitDetails?.sta10FilledStatus == 1}" target='_blank' th:href="@{/api/qa/view-sta10(permitID=${permitDetails?.id}, userID=${permitDetails?.userId})}" class="filter-link" style="color: white">STA 10</a>
