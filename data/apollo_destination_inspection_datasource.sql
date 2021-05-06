@@ -21,6 +21,10 @@ from DAT_KEBS_IDF_DETAILS
 -- where UCR_NO = 'UCR2100006322'
 order by id desc;
 
+select * from DAT_KEBS_CD_STANDARDS
+-- where UCR_NO = 'UCR2100006322'
+order by id desc;
+
 select * from CFG_KEBS_IMPORTER_DI_APPLICATIONS_TYPES
 -- where UCR_NO = 'UCR2100006322'
 order by id desc;
