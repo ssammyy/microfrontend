@@ -57,16 +57,16 @@
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    <!--                <a th:each="coc, iStat: ${cocs}" th:href="@{/api/inspection/supervisor/coc-details/{id}(id=${coc.id})}" class="table-row w-inline-block">-->
-                                    <tr class="list"  th:each="paymnent, iStat: ${payments}" style="cursor: pointer">
+                                    <!--                                    <tr  class="list" th:if="${payments} and ${not #lists?.isEmpty(payments)} and ${type == 'load_levy_payments'}"  th:each="payment, iStat: ${payments}" style="cursor: pointer">-->
+                                    <tr class="list" th:each="payment, iStat: ${payments}">
                                         <td th:text="${payment?.id}"></td>
                                         <td th:text="${payment?.manufacturerEntity.name}"></td>
-                                        <td  th:text="${#dates.format(payment?.paymentDate, 'dd/MM/yyyy')}"></td>
+                                        <td th:text="${#dates.format(payment?.paymentDate, 'dd/MM/yyyy')}"></td>
                                         <td th:text="'Ksh. ' + ${payment?.levyPayable}"></td>
                                         <td th:if="${payment?.visitStatus == 1}" th:text="Visited"></td>
                                         <td th:if="${payment?.visitStatus == 1}" th:text="Pending Visit"></td>
                                         <td th:text="${payment?.officerAssigned?.firstName} + ' ' + ${payment?.officerAssigned?.lastName}"></td>
-<!--                                        <td><a class="btn btn-info" th:href="@{/sl/manufacturer(manufacturerId = ${manufacturer.id}, appId=${map.id})}">view</a></td>-->
+                                        <!--                                        <td><a class="btn btn-info" th:href="@{/sl/manufacturer(manufacturerId = ${manufacturer.id}, appId=${map.id})}">view</a></td>-->
                                     </tr>
                                     </tbody>
                                 </table>
@@ -75,7 +75,7 @@
                             <div class=class="pagenation-block" th:each="pageNumber : ${pageNumbers}"
                                  th:if="${totalPages > 0}">
                                 <a class="button w-button"
-                                   th:href="@{/sl/manufacturers(whereTo='load_levy_payments', page=1,records=10,appId=199)}"
+                                   th:href="@{/sl/payments(whereTo='load_levy_payments', page=1,records=10,appId=199)}"
                                    th:text="${pageNumber}">Next</a>
                             </div>
 
