@@ -1,0 +1,59 @@
+POST http://localhost:8080/committee/deploy_committee
+###
+GET http://localhost:8080/committee/tcsec/tasks
+###
+POST http://localhost:8080/committee/approveNWI/103abdd1-9e96-11eb-a1b9-0a0ef85668b1/true
+
+
+###
+POST http://localhost:8080/committee/prepareNWI
+Content-Type: application/json
+
+{
+  "slNo": "3242WE",
+  "reference": "342232",
+  "ta": "17/02/2021",
+  "ed": "version 2",
+  "title": "Test Draft",
+  "stage_date": "12/02/2021",
+  "approved": "0"
+}
+
+
+#####
+GET http://localhost:8080/committee/getnwis
+
+#####
+POST http://localhost:8080/committee/preparePD
+Content-Type: application/json
+
+{
+  "nwiID": "3242WE",
+  "pdName": "test preliminary draft",
+  "pdBy": "TC-SEC"
+
+}
+
+###
+GET http://localhost:8080/committee/getPds
+
+#####
+POST http://localhost:8080/committee/prepareCD
+Content-Type: application/json
+
+{
+  "nwiID": "3242WE",
+  "pdID": "2",
+  "cdName": "test committee draft",
+  "cdBy": "TC-SEC"
+
+}
+###
+GET http://localhost:8080/committee/getCds
+
+
+
+
+
+
+

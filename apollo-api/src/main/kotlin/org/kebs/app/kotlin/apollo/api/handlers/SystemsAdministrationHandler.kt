@@ -37,6 +37,15 @@ class SystemsAdministrationHandler(
         badRequest().body(e.message ?: "Unknown Error")
     }
 
+    @PreAuthorize("hasAuthority('RBAC_USER_ROLES_VIEW')")
+    fun rbacUserRequests(req: ServerRequest) = try {
+        ok().render("admin/rbac-user-requests")
+    } catch (e: Exception) {
+        KotlinLogging.logger { }.error(e.message)
+        KotlinLogging.logger { }.debug(e.message, e)
+        badRequest().body(e.message ?: "Unknown Error")
+    }
+
     @PreAuthorize("hasAuthority('RBAC_ROLE_AUTHORITIES_VIEW')")
     fun rbacRoleAuthorities(req: ServerRequest) = try {
         ok().render("admin/rbac-role-authorities")

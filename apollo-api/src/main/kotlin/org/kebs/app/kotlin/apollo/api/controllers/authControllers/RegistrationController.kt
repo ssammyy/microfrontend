@@ -43,15 +43,17 @@ import mu.KotlinLogging
 import org.apache.commons.lang3.StringUtils
 import org.kebs.app.kotlin.apollo.adaptor.kafka.producer.service.SendToKafkaQueue
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
+import org.kebs.app.kotlin.apollo.api.ports.provided.dao.MasterDataDaoService
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.RegistrationDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.SystemsAdminDaoService
 import org.kebs.app.kotlin.apollo.common.dto.UserPasswordVerificationValuesDto
+import org.kebs.app.kotlin.apollo.common.dto.UserRequestEntityDto
+import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
 import org.kebs.app.kotlin.apollo.common.exceptions.PasswordsMismatchException
 import org.kebs.app.kotlin.apollo.common.exceptions.ServiceMapNotFoundException
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.*
-import org.kebs.app.kotlin.apollo.store.model.qa.ManufacturePlantDetailsEntity
 import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileEntity
 import org.kebs.app.kotlin.apollo.store.repo.*
 import org.springframework.data.repository.findByIdOrNull
@@ -63,7 +65,6 @@ import org.springframework.transaction.annotation.Transactional
 import org.springframework.ui.Model
 import org.springframework.validation.BindingResult
 import org.springframework.web.bind.annotation.*
-import org.springframework.web.servlet.function.ServerResponse
 import org.springframework.web.servlet.mvc.support.RedirectAttributes
 import javax.servlet.http.HttpServletResponse
 import javax.validation.Valid
@@ -78,6 +79,7 @@ class RegisterController(
     private val serviceMapsRepository: IServiceMapsRepository,
     private val userTypesEntityRepository: IUserTypesEntityRepository,
     private val daoServices: RegistrationDaoServices,
+    private val masterDataDaoService: MasterDataDaoService,
     private val manufacturePlantRepository: IManufacturePlantDetailsRepository,
     private val usersRepo: IUserRepository,
 
@@ -131,7 +133,6 @@ class RegisterController(
 
     }
 
-    @PreAuthorize("hasAuthority('PERMIT_APPLICATION')")
     @PostMapping("kebs/add/manufacture-details/save")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun addManufactureDetails(
@@ -145,10 +146,40 @@ class RegisterController(
         val map = commonDaoServices.serviceMapDetails(appId)
         val loggedInUser = commonDaoServices.loggedInUserDetails()
 
-        result = daoServices.addUserManufactureProfile(map, loggedInUser, companyProfileEntity)
+        val brsCheckUp = daoServices.checkBrs(companyProfileEntity)
+        if (brsCheckUp.first){
+
+            result = brsCheckUp.second?.let { daoServices.addUserManufactureProfile(map, loggedInUser, companyProfileEntity, it) }?: throw ExpectedDataNotFound("The Company Details Verification details could not be found")
+
+            val sm = CommonDaoServices.MessageSuccessFailDTO()
+            sm.closeLink = "${applicationMapProperties.baseUrlValue}/user/user-profile?userName=${loggedInUser.userName}"
+            sm.message = "You have successful Added your Company details, Verify was success"
+            return returnValues(result, map, sm)
+        }else{
+             throw ExpectedDataNotFound("The Company Details Verification failed Due to Invalid Registration Number or Director Id Failed")
+        }
+
+    }
+
+    @PreAuthorize("hasAuthority('USER')")
+    @PostMapping("kebs/add/request-details/save")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun addRequestDetails(
+        model: Model,
+        @ModelAttribute("userRequestEntityDto") userRequestEntityDto: UserRequestEntityDto,
+        response: HttpServletResponse,
+        redirectAttributes: RedirectAttributes
+    ): String? {
+        val result: ServiceRequestsEntity?
+        val map = commonDaoServices.serviceMapDetails(appId)
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        userRequestEntityDto.userId = loggedInUser.id
+
+        result = daoServices.addUserRequestDetails(map, loggedInUser, userRequestEntityDto)
+
         val sm = CommonDaoServices.MessageSuccessFailDTO()
         sm.closeLink = "${applicationMapProperties.baseUrlValue}/user/user-profile?userName=${loggedInUser.userName}"
-        sm.message = "You have successful Added your Company details we will Verify Them With The Ones On KRA for Anomalies"
+        sm.message = "You have successful Sent a Request"
         return returnValues(result, map, sm)
 
 

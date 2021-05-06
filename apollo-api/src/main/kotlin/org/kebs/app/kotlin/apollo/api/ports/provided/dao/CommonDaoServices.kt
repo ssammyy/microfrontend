@@ -203,6 +203,11 @@ class CommonDaoServices(
         return date
     }
 
+    fun convertDateToString(date: Date, format:String): String {
+        val format = SimpleDateFormat(format)
+        return format.format(date)
+    }
+
     fun convertISO8601DateToTimestamp(dateString: String): Timestamp? {
         try {
         val formatter = DateTimeFormatterBuilder()
@@ -572,6 +577,15 @@ class CommonDaoServices(
                 ?: throw ExpectedDataNotFound("No user Profile Matched the following details [designation id = ${designationsEntity.id}] and [region id = ${regionsEntity.id}]and [department id = ${departmentsEntity.id}] and [status = $status]")
     }
 
+    fun findAllUsersWithDesignationRegionDepartmentAndStatus(designationsEntity: DesignationsEntity, regionsEntity: RegionsEntity, departmentsEntity: DepartmentsEntity, status: Int): List<UserProfilesEntity> {
+        iUserProfilesRepo.findAllByDesignationIdAndRegionIdAndDepartmentIdAndStatus(designationsEntity, regionsEntity, departmentsEntity, status)
+            ?.let { users ->
+                return users
+            }
+            ?: throw ExpectedDataNotFound("No users Profile Matched the following details [designation id = ${designationsEntity.id}] and [region id = ${regionsEntity.id}]and [department id = ${departmentsEntity.id}] and [status = $status]")
+    }
+
+
     fun findRegionEntityByRegionID(regionsId: Long, status: Int): RegionsEntity {
         regionsRepo.findByIdAndStatus(regionsId, status)
                 ?.let { regionEntity ->
@@ -737,6 +751,10 @@ class CommonDaoServices(
 
     fun addMonthsToCurrentDate(noOfMonths: Long): Date {
         return Date.valueOf(LocalDate.now().plusMonths(noOfMonths))
+    }
+
+    fun addYearsToCurrentDate(noOfYears: Long): Date {
+        return Date.valueOf(LocalDate.now().plusYears(noOfYears))
     }
 
     fun generateUUIDString(): String {

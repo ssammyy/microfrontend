@@ -427,10 +427,20 @@ class PvocMonitoringAgents(
         SecurityContextHolder.getContext().authentication.let { n->
             iUserRepository.findByUserName(n.name).let { userDetails ->
                 with(penaltyInvoice){
+                    currency = "KSH"
+                    accountName = "KEBS"
+                    bankName = "KCB"
+                    bankCode = 254
+                    kebsAccountNumber = "123345677"
+                    usdAccountNumber = "1224566"
+                    branch = "Branch 1"
+                    vatNumber = "12456"
+                    swiftCode = "654322"
+                    pinNumber = "A1234559578"
                     createdOn = Timestamp.from(Instant.now())
                     createdBy = userDetails?.firstName +" "+userDetails?.lastName
                     pvocPenaltyInvoicingEntityRepo.save(penaltyInvoice)
-                    return "redirect:/api/di/pvoc/generate-penalty-invoice?id=${cocId}"
+                    return "redirect:/api/di/pvoc/coc-with-timeline-issue/${id}"
                 }
             }
 

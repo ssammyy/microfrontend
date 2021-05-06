@@ -1,13 +1,11 @@
 package org.kebs.app.kotlin.apollo.api.controllers.diControllers.pvoc
 
+import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.notifications.Notifications
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.common.exceptions.SupervisorNotFoundException
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
-import org.kebs.app.kotlin.apollo.store.model.PvocComplaintEntity
-import org.kebs.app.kotlin.apollo.store.model.PvocComplaintRemarksEntity
-import org.kebs.app.kotlin.apollo.store.model.PvocComplaintsEmailVerificationEntity
-import org.kebs.app.kotlin.apollo.store.model.ServiceRequestsEntity
+import org.kebs.app.kotlin.apollo.store.model.*
 import org.kebs.app.kotlin.apollo.store.repo.*
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.repository.findByIdOrNull
@@ -21,6 +19,7 @@ import java.sql.Timestamp
 import java.time.Instant
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
+import kotlin.jvm.internal.Intrinsics
 
 @Controller
 @RequestMapping("/api/di/pvoc/")
@@ -30,6 +29,7 @@ class PvocComplaints(
     private val commonDaoServices: CommonDaoServices,
     private val notifications: Notifications,
     private val iCocsRepository: ICocsRepository,
+    private val iPvocQuerriesRepository: IPvocQuerriesRepository,
     private val iCocItemRepository: ICocItemRepository,
     applicationMapProperties: ApplicationMapProperties,
     private val iPvocComplaintCertificationsSubCategoryRepo: IPvocComplaintCertificationsSubCategoryRepo,
@@ -106,7 +106,7 @@ class PvocComplaints(
     }
 
     @GetMapping("complaint-details/{id}")
-    fun complaintDetails(@PathVariable("id") id : Long, model: Model) : String{
+    fun complaintDetails(@PathVariable("id") id: Long, model: Model): String {
         val usersIds = mutableListOf<Long?>()
         iPvocComplaintRepo.findByIdOrNull(id)?.let { complaint ->
             iUserRoleAssignmentsRepository.findByRoleIdAndStatus(261, 1)?.let { mpvocs ->
@@ -115,13 +115,23 @@ class PvocComplaints(
                 }
             }
             iUserRepository.findAllByIdIn(usersIds).let { mpvocs ->
-                model.addAttribute("mpvocs", mpvocs )
+                model.addAttribute("mpvocs", mpvocs)
+            }
+            complaint.rfcNo?.let {
+                complaint.cocNo?.let { it1 ->
+                    iPvocQuerriesRepository.findByCocNumberOrRfcNumber(
+                        it1, it
+                    ).let { enquires ->
+                        KotlinLogging.logger {  }.info { "Queries ==> "+enquires?.count() }
+                        model.addAttribute("enquires", enquires)
+                    }
+                }
             }
             model.addAttribute("complaint", complaint)
             model.addAttribute("complaintObj", PvocComplaintEntity())
             model.addAttribute("remarksObj", PvocComplaintRemarksEntity())
             return "destination-inspection/pvoc/complaint/ComplaintDetails"
-        }?: throw Exception("Complaint with {id} id does not exist")
+        } ?: throw Exception("Complaint with {id} id does not exist")
     }
 
     @PostMapping("complaints-save")
@@ -248,6 +258,26 @@ class PvocComplaints(
             iPvocComplaintRepo.save(complaint)
             return "redirect:/api/di/pvoc/complaint-details/${id}"
         }?: throw Exception("Complaint with ${id} id does not exist")
+    }
+
+
+    @PostMapping("save-kebs-query-complain")
+    fun saveKebsQuery(@RequestParam("cocId") cocId: Long, pvocQuery: PvocQueriesEntity): String {
+        SecurityContextHolder.getContext().authentication.name.let { username ->
+            iUserRepository.findByUserName(username).let { userDetails ->
+                pvocQuery.invoiceNumber = pvocQuery.invoiceNumber ?:"No Invoice No"
+                pvocQuery.rfcNumber = pvocQuery.rfcNumber ?:"No RFC No"
+                pvocQuery.ucrNumber = pvocQuery.ucrNumber ?: "No UCR No"
+                pvocQuery.createdBy = userDetails?.firstName + ' ' + userDetails?.lastName
+                pvocQuery.status = 1
+                pvocQuery.partnerResponceAnalysisStatus = 0
+                pvocQuery.kebsReplyReplyStatus = 0
+                pvocQuery.pvocAgentReplyStatus = 0
+                pvocQuery.createdOn = Timestamp.from(Instant.now())
+                iPvocQuerriesRepository.save(pvocQuery)
+                return "redirect:/api/di/pvoc/complaint-details/${cocId}"
+            }
+        }
     }
 
 

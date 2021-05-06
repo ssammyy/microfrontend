@@ -2,18 +2,18 @@
 
 angular.module('myApp').factory('ExceptionService', ['$http', '$q', function($http, $q){
 
-   var PRODUCTS_URI = 'https://kims.kebs.org:8006/api/di/pvoc/rest/permits-products';
-   //  const PRODUCTS_URI = 'https://localhost:8006/api/di/pvoc/rest/permits-products';
-    // const MANUFACTURER_URI = 'https://localhost:8006/api/di/pvoc/rest/manufacturer-details';
-    var MANUFACTURER_URI = 'https://kims.kebs.org:8006/api/di/pvoc/rest/manufacturer-details';
-    var EXCEL_DOWNLOAD_URL = 'https://kims.kebs.org:8006/file'
+   // var PRODUCTS_URI = 'https://kims.kebs.org:8006/api/di/pvoc/rest/permits-products';
+    const PRODUCTS_URI = '/api/di/pvoc/rest/permits-products';
+    const MANUFACTURER_URI = '/api/di/pvoc/rest/manufacturer-details';
+    // var MANUFACTURER_URI = 'https://kims.kebs.org:8006/api/di/pvoc/rest/manufacturer-details';
+    var EXCEL_DOWNLOAD_URL = '/file'
     //var EXCEL_DOWNLOAD_URL = 'https://localhost:8006/file'
    // var EXEMPTION_UPLOAD_URI = 'https://localhost:8006/api/di/pvoc/rest/application-exception2'
-    var EXEMPTION_UPLOAD_URI = 'https://kims.kebs.org:8006/api/di/pvoc/rest/application-exception2'
-    var EXEMPTION_SAVE_URI = 'https://kims.kebs.org:8006/api/di/pvoc/rest/application-exception3'
+    var EXEMPTION_UPLOAD_URI = '/api/di/pvoc/rest/application-exception2'
+    var EXEMPTION_SAVE_URI = '/api/di/pvoc/rest/application-exception3'
     // var EXEMPTION_SAVE_URI = 'https://localhost:8006/api/di/pvoc/rest/application-exception3'
     // var EXEMPTION_PARTIAL_SAVE_URI = 'https://localhost:8006/api/di/pvoc/rest/application-exception4'
-    var EXEMPTION_PARTIAL_SAVE_URI = 'https://kims.kebs.org:8006/api/di/pvoc/rest/application-exception4'
+    var EXEMPTION_PARTIAL_SAVE_URI = '/api/di/pvoc/rest/application-exception4'
     //var EXEMPTION_SAVE_URI = 'https://localhost:8006/api/di/pvoc/rest/application-exception3'
 
     var factory = {
@@ -99,6 +99,8 @@ angular.module('myApp').factory('ExceptionService', ['$http', '$q', function($ht
         for (const key in manufacturer ) {
             payload.append(key, manufacturer[key]);
         }
+
+        console.log(payload)
 
         const request = {
             "url": EXEMPTION_UPLOAD_URI,

@@ -37,6 +37,25 @@ import {StdTscSecTasksComponent} from "./components/standards-development/std-ts
 import {RequestStandardFormComponent} from "./components/standards-development/standard-request/request-standard-form/request-standard-form.component";
 import {StandardsDevelopmentComponent} from "./components/standards-development/standards-development.component";
 import {StdTcTasksComponent} from "./components/standards-development/std-tc-tasks/std-tc-tasks.component";
+import {InformationcheckComponent} from "./components/standards-development/informationcheck/informationcheck.component";
+import {EnquiryComponent} from "./components/standards-development/sd-national-enquiry-point/enquiry/enquiry.component";
+import {SuccessComponent} from "./components/standards-development/sd-national-enquiry-point/success/success.component";
+import {DivisionresponseComponent} from "./components/standards-development/divisionresponse/divisionresponse.component";
+import {NepNotificationComponent} from "./components/standards-development/nep-notification/nep-notification.component";
+import {ManagernotificationsComponent} from "./components/standards-development/managernotifications/managernotifications.component";
+
+
+//Committee Module
+import {PreparePdComponent} from "./components/standards-development/commitee/prepare-pd/prepare-pd.component";
+import {PdDetailsComponent} from "./components/standards-development/commitee/pd-details/pd-details.component";
+import {PdListComponent} from "./components/standards-development/commitee/pd-list/pd-list.component";
+import {PrepareNwiComponent} from "./components/standards-development/commitee/prepare-nwi/prepare-nwi.component";
+import {NwiListComponent} from "./components/standards-development/commitee/nwi-list/nwi-list.component";
+import {CdListComponent} from "./components/standards-development/commitee/cd-list/cd-list.component";
+import {PrepareCdComponent} from "./components/standards-development/commitee/prepare-cd/prepare-cd.component";
+import {ApproveNwiComponent} from "./components/standards-development/commitee/approve-nwi/approve-nwi.component";
+import {ApproveCdComponent} from "./components/standards-development/commitee/approve-cd/approve-cd.component";
+import {CommentCdComponent} from "./components/standards-development/commitee/comment-cd/comment-cd.component";
 
 const routes: Routes = [
   // { path: 'login-signup', component: LoginSignupComponent },
@@ -222,12 +241,49 @@ const routes: Routes = [
     path: 'std-tc-task', component: StandardsDevelopmentComponent,
     children: [{path: '', component: StdTcTasksComponent}]
   },
-
+  {
+    path: 'divisionresponse', component: StandardsDevelopmentComponent,
+    children: [{path: '', component: DivisionresponseComponent}]
+  },
+  {
+    path: 'checkinfo', component: StandardsDevelopmentComponent,
+    children: [{path: '', component: InformationcheckComponent}]
+  },
+  {
+    path: 'nepnotification', component: StandardsDevelopmentComponent,
+    children: [{path: '', component: NepNotificationComponent}]
+  },
+  {
+    path: 'managernotification', component: StandardsDevelopmentComponent,
+    children: [{path: '', component: ManagernotificationsComponent}]
+  },
+  { path: 'enquire', component: EnquiryComponent },
+  { path: 'success', component: SuccessComponent },
 
   /****************************************************************
    * END OF STANDARD DEVELOPMENT ROUTES
    ***************************************************************/
 
+  /****************************************************************
+   * STANDARD DEVELOPMENT - COMMITTEE MODULE ROUTES
+   ***************************************************************/
+
+  {path: 'preliminary_draft', component: PdListComponent},
+  {path: 'add', component: PreparePdComponent},
+  {path: 'details/:id', component: PdDetailsComponent},
+  {path: 'add_nwi', component: PrepareNwiComponent},
+  {path: 'nwi', component: NwiListComponent},
+  {path: 'committee_draft', component: CdListComponent},
+  {path: 'add_cd', component: PrepareCdComponent},
+  {path: 'approve_nwi', component: ApproveNwiComponent},
+  {path: 'approve_cd', component: ApproveCdComponent},
+  {path: 'comment_cd', component: CommentCdComponent},
+
+
+
+  /****************************************************************
+   * END OF STANDARD DEVELOPMENT - COMMITTEE MODULE ROUTES
+   ***************************************************************/
 ];
 
 @NgModule({

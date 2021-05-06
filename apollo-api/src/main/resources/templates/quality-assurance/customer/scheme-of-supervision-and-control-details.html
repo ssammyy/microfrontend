@@ -482,7 +482,7 @@
                                 </ul>
                             </div>
 
-                            <button class="accordion">4.0 AGREEMENT TO COMPLY WITH THE SCHEME OF SUPERVISION</button>
+                            <button class="accordion">F4.0 AGREEMENT TO COMPLY WITH THE SCHEME OF SUPERVISION</button>
                             <div class="panel">
                                 <ul class="w-list-unstyled">
                                     <li class="list-item-accordion">
@@ -496,138 +496,216 @@
                                         <div class="list-title-accordion">Kenya Bureau of Standards Representative:
                                             implementing officer:
                                         </div>
-                                        <div class="list-text-accordion" th:text="${permitDetails?.firmName}"></div>
+                                        <div class="list-text-accordion" th:text="${schemeFound?.createdBy}"></div>
                                     </li>
                                     <li class="list-item-accordion">
                                         <div class="list-title-accordion">Company Representative:</div>
-                                        <div class="list-text-accordion" th:text="${permitDetails?.firmName}"></div>
+                                        <div class="list-text-accordion" th:text="${schemeFound?.acceptedRejectedBy}"></div>
                                     </li>
                                 </ul>
                             </div>
 
-                            <!--                            <button class="accordion" >Documents Attached Details</button>-->
-                            <!--                            <div class="panel">-->
-                            <!--                                <div class="row-table ">-->
-                            <!--                                    <table class="table table-striped">-->
-                            <!--                                        <thead>-->
-                            <!--                                        <tr>-->
-                            <!--                                            <th>File Name</th>-->
-                            <!--                                            <th>File Type</th>-->
-                            <!--                                            <th>Document Description</th>-->
-                            <!--                                            <th>View</th>-->
-                            <!--                                        </tr>-->
-                            <!--                                        </thead>-->
-                            <!--                                        <tbody>-->
-                            <!--                                        <tr class="list" th:each="fileParam: ${fileParameters}" style="cursor: pointer">-->
-
-                            <!--                                            <td th:text="${fileParam.name}"></td>-->
-                            <!--                                            <td th:text="${fileParam.fileType}"></td>-->
-                            <!--                                            <td th:text="${fileParam.documentType}"></td>-->
-                            <!--                                            <td><a th:href="@{/api/qa/kebs/view/attached(fileID=${fileParam.id})}" target='_blank' class="btn btn-primary itemViewBtn">view</a></td>-->
-                            <!--                                        </tr>-->
-                            <!--                                        </tbody>-->
-                            <!--                                    </table>-->
-                            <!--                                </div>-->
-                            <!--                            </div>-->
-
-
-                            <!--                            <button class="accordion">Item Details</button>-->
-                            <!--                            <div class="panel">-->
-                            <!--                                <div class="row-table ">-->
-                            <!--                                    <table id="example" class="table table-striped table-bordered" style="width:100%">-->
-                            <!--                                        <thead>-->
-                            <!--                                        <tr>-->
-                            <!--                                            <th>Number</th>-->
-                            <!--                                            <th>Description</th>-->
-                            <!--                                            <th>HS Code</th>-->
-                            <!--                                            <th>Quantity</th>-->
-                            <!--                                            <th>Unit Quantity</th>-->
-                            <!--                                            <th>Country Of Origin</th>-->
-                            <!--                                            <th>Inspection Status</th>-->
-                            <!--                                            <th th:if="${cdDetails.localCoi == activeStatus}">Owner Status</th>-->
-                            <!--                                            <th>View</th>-->
-                            <!--                                        </tr>-->
-                            <!--                                        </thead>-->
-                            <!--                                        <tbody>-->
-                            <!--                                        <tr class="list" th:each="itemCD: ${itemsCD}" style="cursor: pointer">-->
-
-                            <!--                                            <td th:text="${itemCD.itemNo}"></td>-->
-                            <!--                                            <td th:text="${itemCD.itemDescription}"></td>-->
-                            <!--                                            <td th:text="${itemCD.itemHsCode}"></td>-->
-                            <!--                                            <td th:text="${itemCD.quantity}"></td>-->
-                            <!--                                            <td th:text="${itemCD.unitOfQuantity}"></td>-->
-                            <!--                                            <td th:text="${itemCD.countryOfOrgin}"></td>-->
-                            <!--                                            <td style="color: #f30014; font-weight: bold; "-->
-                            <!--                                                th:if="${itemCD?.inspectionNotificationStatus == 1}">YES-->
-                            <!--                                            </td>-->
-                            <!--                                            <td style="color: #20f300; font-weight: bold; "-->
-                            <!--                                                th:unless="${itemCD?.inspectionNotificationStatus == 1}">NO-->
-                            <!--                                            </td>-->
-                            <!--                                            <td style="color: #20f300; font-weight: bold; "-->
-                            <!--                                                th:if="${itemCD?.ownerPin != null and itemCD?.cdDocId?.localCoi == 1}">-->
-                            <!--                                                YES-->
-                            <!--                                            </td>-->
-                            <!--                                            <td style="color: #f30014; font-weight: bold; "-->
-                            <!--                                                th:if="${itemCD?.ownerPin == null and itemCD?.cdDocId?.localCoi == 1}">-->
-                            <!--                                                NO-->
-                            <!--                                            </td>-->
-                            <!--                                            <td><a th:href="@{/api/di/cd-item-details/(cdItemUuid=${itemCD.uuid})}"-->
-                            <!--                                                   class="btn btn-primary itemViewBtn">view</a></td>-->
-                            <!--                                        </tr>-->
-                            <!--                                        </tbody>-->
-                            <!--                                    </table>-->
-                            <!--                                </div>-->
-                            <!--                            </div>-->
+                            <button class="accordion">F5.0 PROCESS CONTROLS (AS APPLICABLE) - SSC (Raw materials intake)</button>
+                            <div class="panel">
+                                <ul class="w-list-unstyled">
+                                    <li class="list-item-accordion">
+                                        <div class="list-title-accordion">PROCESS FLOW : </div>
+                                        <div class="list-text-accordion" th:text="${schemeFound?.processFlowRawMaterialsIntake}"></div>
+                                    </li>
+                                    <li class="list-item-accordion">
+                                        <div class="list-title-accordion">OPERATIONS  :
+                                        </div>
+                                        <div class="list-text-accordion" th:text="${schemeFound?.operationsRawMaterialsIntake}"></div>
+                                    </li>
+                                    <li class="list-item-accordion">
+                                        <div class="list-title-accordion">QUALITY CHECKS :
+                                        </div>
+                                        <div class="list-text-accordion" th:text="${schemeFound?.qualityChecksRawMaterialsIntake}"></div>
+                                    </li>
+                                    <li class="list-item-accordion">
+                                        <div class="list-title-accordion">FREQUENCY :
+                                        </div>
+                                        <div class="list-text-accordion" th:text="${schemeFound?.frequencyRawMaterialsIntake}"></div>
+                                    </li>
+                                    <li class="list-item-accordion">
+                                        <div class="list-title-accordion">RECORDS :
+                                        </div>
+                                        <div class="list-text-accordion" th:text="${schemeFound?.recordsRawMaterialsIntake}"></div>
+                                    </li>
+                                </ul>
+                            </div>
+                            <button class="accordion">F5.0 PROCESS CONTROLS (AS APPLICABLE) - SSC (In process)</button>
+                            <div class="panel">
+                                <ul class="w-list-unstyled">
+                                    <li class="list-item-accordion">
+                                        <div class="list-title-accordion">PROCESS FLOW :
+                                        </div>
+                                        <div class="list-text-accordion" th:text="${schemeFound?.processFlowInProcess}"></div>
+                                    </li>
+                                    <li class="list-item-accordion">
+                                        <div class="list-title-accordion">OPERATIONS :
+                                        </div>
+                                        <div class="list-text-accordion" th:text="${schemeFound?.operationsInProcess}"></div>
+                                    </li>
+                                    <li class="list-item-accordion">
+                                        <div class="list-title-accordion">QUALITY CHECKS:
+                                        </div>
+                                        <div class="list-text-accordion" th:text="${schemeFound?.qualityChecksInProcess}"></div>
+                                    </li>
+                                    <li class="list-item-accordion">
+                                        <div class="list-title-accordion">FREQUENCY:
+                                        </div>
+                                        <div class="list-text-accordion" th:text="${schemeFound?.frequencyInProcess}"></div>
+                                    </li>
+                                    <li class="list-item-accordion">
+                                        <div class="list-title-accordion">RECORDS:
+                                        </div>
+                                        <div class="list-text-accordion" th:text="${schemeFound?.recordsInProcess}"></div>
+                                    </li>
+                                </ul>
+                            </div>
+                            <button class="accordion">F5.0 PROCESS CONTROLS (AS APPLICABLE) - SSC (Final product)</button>
+                            <div class="panel">
+                                <ul class="w-list-unstyled">
+                                    <li class="list-item-accordion">
+                                        <div class="list-title-accordion">PROCESS FLOW :
+                                        </div>
+                                        <div class="list-text-accordion" th:text="${schemeFound?.processFlowFinalProduct}"></div>
+                                    </li>
+                                    <li class="list-item-accordion">
+                                        <div class="list-title-accordion">OPERATIONS  :
+                                        </div>
+                                        <div class="list-text-accordion" th:text="${schemeFound?.operationsFinalProduct}"></div>
+                                    </li>
+                                    <li class="list-item-accordion">
+                                        <div class="list-title-accordion">QUALITY CHECKS :
+                                        </div>
+                                        <div class="list-text-accordion" th:text="${schemeFound?.qualityChecksFinalProduct}"></div>
+                                    </li>
+                                    <li class="list-item-accordion">
+                                        <div class="list-title-accordion">FREQUENCY :
+                                        </div>
+                                        <div class="list-text-accordion" th:text="${schemeFound?.frequencyFinalProduct}"></div>
+                                    </li>
+                                    <li class="list-item-accordion">
+                                        <div class="list-title-accordion">RECORDS :
+                                        </div>
+                                        <div class="list-text-accordion" th:text="${schemeFound?.recordsFinalProduct}"></div>
+                                    </li>
+                                </ul>
+                            </div>
+                            <button class="accordion">F5.0 PROCESS CONTROLS (AS APPLICABLE) - SSC (Packaging)</button>
+                            <div class="panel">
+                                <ul class="w-list-unstyled">
+                                    <li class="list-item-accordion">
+                                        <div class="list-title-accordion">PROCESS FLOW:
+                                        </div>
+                                        <div class="list-text-accordion" th:text="${schemeFound?.processFlowPackaging}"></div>
+                                    </li>
+                                    <li class="list-item-accordion">
+                                        <div class="list-title-accordion">OPERATIONS :
+                                        </div>
+                                        <div class="list-text-accordion" th:text="${schemeFound?.operationsPackaging}"></div>
+                                    </li>
+                                    <li class="list-item-accordion">
+                                        <div class="list-title-accordion">QUALITY CHECKS:
+                                        </div>
+                                        <div class="list-text-accordion" th:text="${schemeFound?.qualityChecksPackaging}"></div>
+                                    </li>
+                                    <li class="list-item-accordion">
+                                        <div class="list-title-accordion">FREQUENCY:
+                                        </div>
+                                        <div class="list-text-accordion" th:text="${schemeFound?.frequencyPackaging}"></div>
+                                    </li>
+                                    <li class="list-item-accordion">
+                                        <div class="list-title-accordion">RECORDS:
+                                        </div>
+                                        <div class="list-text-accordion" th:text="${schemeFound?.recordsPackaging}"></div>
+                                    </li>
+                                </ul>
+                            </div>
+                            <button class="accordion">F5.0 PROCESS CONTROLS (AS APPLICABLE) - SSC (Storage)</button>
+                            <div class="panel">
+                                <ul class="w-list-unstyled">
+                                    <li class="list-item-accordion">
+                                        <div class="list-title-accordion">PROCESS FLOW:
+                                        </div>
+                                        <div class="list-text-accordion" th:text="${schemeFound?.processFlowStorage}"></div>
+                                    </li>
+                                    <li class="list-item-accordion">
+                                        <div class="list-title-accordion">OPERATIONS :
+                                        </div>
+                                        <div class="list-text-accordion" th:text="${schemeFound?.operationsStorage}"></div>
+                                    </li>
+                                    <li class="list-item-accordion">
+                                        <div class="list-title-accordion">QUALITY CHECKS:
+                                        </div>
+                                        <div class="list-text-accordion" th:text="${schemeFound?.qualityChecksStorage}"></div>
+                                    </li>
+                                    <li class="list-item-accordion">
+                                        <div class="list-title-accordion">FREQUENCY:
+                                        </div>
+                                        <div class="list-text-accordion" th:text="${schemeFound?.frequencyStorage}"></div>
+                                    </li>
+                                    <li class="list-item-accordion">
+                                        <div class="list-title-accordion">RECORDS:
+                                        </div>
+                                        <div class="list-text-accordion" th:text="${schemeFound?.recordsStorage}"></div>
+                                    </li>
+                                </ul>
+                            </div>
+                            <button class="accordion">F5.0 PROCESS CONTROLS (AS APPLICABLE) - SSC (Dispatch)</button>
+                            <div class="panel">
+                                <ul class="w-list-unstyled">
+                                    <li class="list-item-accordion">
+                                        <div class="list-title-accordion">PROCESS FLOW :
+                                        </div>
+                                        <div class="list-text-accordion" th:text="${schemeFound?.processFlowDispatch}"></div>
+                                    </li>
+                                    <li class="list-item-accordion">
+                                        <div class="list-title-accordion">OPERATIONS :
+                                        </div>
+                                        <div class="list-text-accordion" th:text="${schemeFound?.operationsDispatch}"></div>
+                                    </li>
+                                    <li class="list-item-accordion">
+                                        <div class="list-title-accordion">QUALITY CHECKS:
+                                        </div>
+                                        <div class="list-text-accordion" th:text="${schemeFound?.qualityChecksDispatch}"></div>
+                                    </li>
+                                    <li class="list-item-accordion">
+                                        <div class="list-title-accordion">FREQUENCY:
+                                        </div>
+                                        <div class="list-text-accordion" th:text="${schemeFound?.frequencyDispatch}"></div>
+                                    </li>
+                                    <li class="list-item-accordion">
+                                        <div class="list-title-accordion">RECORDS:
+                                        </div>
+                                        <div class="list-text-accordion" th:text="${schemeFound?.recordsDispatch}"></div>
+                                    </li>
+                                </ul>
+                            </div>
 
 
                         </div>
 
-                        <!--                        <div class="filter-block">-->
-                        <!--                            <div class="filter-block-title">-->
-                        <!--                                <div class="filter-title">Document Details:</div>-->
-                        <!--                            </div>-->
-                        <!--                            <div>-->
-                        <!--                                <a th:if="${permitType?.st3Status == 1 and permitDetails?.sta3FilledStatus == 1}" target='_blank' th:href="@{/api/qa/view-sta3(permitID=${permitDetails?.id}, userID=${permitDetails?.userId})}" class="filter-link" style="color: white">STA 3</a>-->
-                        <!--                                <a th:if="${permitType?.st10Status == 1 and permitDetails?.sta10FilledStatus == 1}" target='_blank' th:href="@{/api/qa/view-sta10(permitID=${permitDetails?.id}, userID=${permitDetails?.userId})}" class="filter-link" style="color: white">STA 10</a>-->
-                        <!--                                <a th:if="${permitDetails?.sendApplication == 1 and permitDetails?.invoiceGenerated == 1}" target='_blank' th:href="@{/api/qa/invoice-details(permitID=${permitDetails?.id})}" class="filter-link" style="color: white">GENERATED INVOICE</a>-->
-                        <!--                            </div>-->
-                        <!--                            <div class="filter-block-title">-->
-                        <!--                                <div class="filter-title">Action:</div>-->
-                        <!--                            </div>-->
-                        <!--                            <div>-->
+                        <div class="filter-block">
+                            <div class="filter-block-title">
+                                <div class="filter-title">Document Details:</div>
+                            </div>
+                            <div></div>
+                            <div class="filter-block-title">
+                                <div class="filter-title">Action:</div>
+                            </div>
+                            <div>
 
-                        <!--                                    <a    class="filter-link uploadBtn" style="color: white">UPLOAD ATTACHMENTS</a>-->
+                                <div sec:authorize="hasAuthority('PERMIT_APPLICATION')">
+                                    <a th:if="${schemeFound?.acceptedRejectedStatus == null}" style="color: white" onclick="popUpFunction('acceptRejectScheme');" class="filter-link">ACCEPT/REJECT SCHEME</a>
 
-                        <!--                                <div sec:authorize="hasAuthority('PERMIT_APPLICATION')">-->
-                        <!--                                    <a th:if="${permitDetails?.attachedPlantId == null}" style="color: white" onclick="popUpFunction('attachePlant');" class="filter-link">ATTACHE PLANT</a>-->
+                                </div>
 
-                        <!--                                    <a th:if="${permitType?.st3Status == 1 and permitDetails?.sta3FilledStatus == null}"  th:href="@{/api/qa/new-sta3(permitID=${permitDetails?.id})}" class="filter-link" style="color: white">Fill STA 3</a>-->
-                        <!--                                    <a th:if="${permitType?.st10Status == 1 and permitDetails?.sta10FilledStatus == null}"  th:href="@{/api/qa/new-sta10(permitID=${permitDetails?.id})}" class="filter-link" style="color: white">Fill STA 10</a>-->
-                        <!--                                    <a th:if="${permitType?.smeDeclarationForm == 1 and permitDetails?.smeFormFilledStatus == null}"  th:href="@{/api/qa/new-sme-declaration(permitID=${permitDetails?.id})}" class="filter-link" style="color: white">Fill SME DECLARATION</a>-->
+                            </div>
 
-                        <!--                                    <div th:if="${permitType?.st10Status == 1 and permitDetails?.sta10FilledStatus == 1 and permitDetails?.attachedPlantId != null}">-->
-                        <!--                                        <a th:if="${permitDetails?.sendApplication != 1}"  th:href="@{/api/qa/new-permit-submit(permitID=${permitDetails?.id})}" class="filter-link" style="color: white">SUBMIT APPLICATION</a>-->
-                        <!--                                    </div>-->
-                        <!--                                    <div th:if="${permitType?.st3Status == 1 and permitDetails?.sta3FilledStatus == 1 and permitDetails?.attachedPlantId != null}">-->
-                        <!--                                        <a th:if="${permitDetails?.sendApplication != 1}"  th:href="@{/api/qa/new-permit-submit(permitID=${permitDetails?.id})}" class="filter-link" style="color: white">SUBMIT APPLICATION</a>-->
-                        <!--                                    </div>-->
-
-                        <!--                                </div>-->
-
-                        <!--                                <div sec:authorize="hasAuthority('QA_MANAGER_ASSESSORS_MODIFY') or hasAuthority('QA_HOF_READ') or hasAuthority('QA_HOD_READ')">-->
-                        <!--                                    <a th:if="${permitDetails?.hofQamCompletenessStatus == null}" style="color: white" onclick="popUpFunction('permitCompleteness');" class="filter-link">COMPLETENESS ?</a>-->
-                        <!--                                    <a th:if="${permitDetails?.hofQamCompletenessStatus == 1 and permitDetails?.assignOfficerStatus == null}" style="color: white" onclick="popUpFunction('assignOfficer');" class="filter-link">Assign Officer</a>-->
-                        <!--                                </div>-->
-
-                        <!--                                <div sec:authorize="hasAuthority('QA_OFFICER_MODIFY')">-->
-                        <!--                                    <a th:if="${permitDetails?.inspectionScheduledStatus == null}" style="color: white" onclick="popUpFunction('scheduleInspectionDate');" class="filter-link">SCHEDULE INSPECTION</a>-->
-                        <!--                                    <a th:if="${permitDetails?.inspectionScheduledStatus == null}" style="color: white" onclick="popUpFunction('generateScheme');" class="filter-link">GENERATE SCHEME FOR SUPERVISION AND CONTROL</a>-->
-                        <!--                                    <a th:if="${permitDetails?.hofQamCompletenessStatus == 1 and permitDetails?.assignOfficerStatus == null}" style="color: white" onclick="popUpFunction('assignOfficer');" class="filter-link">Assign Officer</a>-->
-                        <!--                                </div>-->
-
-                        <!--                            </div>-->
-
-                        <!--                        </div>-->
+                        </div>
 
                         <!--                        <div sec:authorize="hasAuthority('DI_OFFICER_CHARGE_READ')" th:if="${userNumber == 0}"class="filter-block">-->
                         <!--                            <div class="filter-block-title">-->
@@ -666,77 +744,43 @@
                 </div>
             </div>
 
-            <!--            <div  class="qaApplicationForm">-->
-            <!--                <form id="qa-application-form"   name="qa-application-form" th:action="@{/api/qa/apply/update-permit(permitID=${permitDetails.id})}" method="post" th:object="${permitDetails}">-->
-            <!--                    <div class="modal fade" id="qaApplicationModal" tabindex="-1" role="dialog" aria-labelledby="qaApplicationModalLabel" aria-hidden="true">-->
-            <!--                        <div class="modal-dialog" role="document">-->
-            <!--                            <div class="modal-content">-->
-            <!--                                <div class="modal-header">-->
-            <!--                                    <h5 style="font-weight: bold; " class="modal-title" id="qaApplicationModalLabel"><span id="spanValue" >none</span></h5>-->
-            <!--                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">-->
-            <!--                                        <span aria-hidden="true">&times;</span>-->
-            <!--                                    </button>-->
-            <!--                                </div>-->
-            <!--                                <div class="modal-body">-->
-            <!--                                    <div class="form-group">-->
-            <!--                                        <div id="attachePlant">-->
-            <!--                                            <input type="hidden" id="description" name="description" th:value="'Plant attached sucessfull'">-->
-            <!--                                            <label for="attachedPlantId" class="col-form-label">Select a Plant:</label>-->
-            <!--                                            <select id="attachedPlantId" required class="select-field w-select" th:field="*{attachedPlantId}">-->
-            <!--                                                <option value="0">Select one...</option>-->
-            <!--                                                <option  th:each="plant : ${plantsDetails}" th:text="${plant?.buildingName}" th:name="attachedPlantId" th:value="${plant?.id}"></option>-->
-            <!--                                            </select>-->
-            <!--                                            <label for="attachedPlantRemarks" class="col-form-label">Please write, in detail, your feedback for attaching the Plant above:</label>-->
-            <!--                                            <textarea required name="name" id="attachedPlantRemarks" class="input-field w-input" cols="65" rows="5" th:field="*{attachedPlantRemarks}"></textarea>-->
-            <!--                                        </div>-->
+                        <div  class="qaApplicationForm">
+                            <form id="qa-application-form"   name="qa-application-form" th:action="@{/api/qa/apply/update-scheme-of-supervision(schemeID=${schemeFound.id})}" method="post" th:object="${schemeFound}">
+                                <div class="modal fade" id="qaApplicationModal" tabindex="-1" role="dialog" aria-labelledby="qaApplicationModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 style="font-weight: bold; " class="modal-title" id="qaApplicationModalLabel"><span id="spanValue" >none</span></h5>
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div class="form-group">
 
-            <!--                                        <div id="permitCompleteness">-->
-            <!--                                            <input type="hidden" id="description2" name="description" th:value="'Permit Is Complete,Please Assign The next Officer'">-->
-            <!--                                            <input type="hidden" id="varField1" name="varField1" th:value="'Permit Is Incomplete'">-->
-            <!--                                            <label for="attachedPlantId" class="col-form-label">Select a completeness status:</label>-->
-            <!--                                            <select id="hofQamCompletenessStatus" required class="select-field w-select" th:field="*{hofQamCompletenessStatus}">-->
-            <!--                                                <option th:text="'Select one.....'" th:value="null"></option>-->
-            <!--                                                <option th:text="'Yes'" th:value="1"></option>-->
-            <!--                                                <option th:text="'No'" th:value="0"></option>-->
-            <!--                                            </select>-->
-            <!--                                            <label for="hofQamCompletenessRemarks" class="col-form-label">Please write, in detail, your feedback for this Permit:</label>-->
-            <!--                                            <textarea required name="name" id="hofQamCompletenessRemarks" class="input-field w-input" cols="65" rows="5" th:field="*{hofQamCompletenessRemarks}"></textarea>-->
-            <!--                                        </div>-->
+                                                    <div id="acceptRejectScheme">
+                                                        <input type="hidden" id="acceptedRejectedBy" name="acceptedRejectedBy" th:value="${session.currentUser.firstName}+ ' ' +${session.currentUser.lastName}">
+                                                        <label for="acceptedRejectedStatus" class="col-form-label">ACCEPT/REJECT</label>
+                                                        <select id="acceptedRejectedStatus" required class="select-field w-select" th:field="*{acceptedRejectedStatus}">
+                                                            <option th:text="'Select one.....'" th:value="null"></option>
+                                                            <option th:text="'Accept'" th:value="1"></option>
+                                                            <option th:text="'Reject'" th:value="0"></option>
+                                                        </select>
+                                                        <label for="acceptedRejectedReason" class="col-form-label">Please write, in detail, the reason:</label>
+                                                        <textarea required name="acceptedRejectedReason" id="acceptedRejectedReason" class="input-field w-input" cols="65" rows="5" th:field="*{acceptedRejectedReason}"></textarea>
+                                                    </div>
 
-            <!--                                        <div id="assignOfficer">-->
-            <!--                                            <input type="hidden" id="description3" name="description" th:value="'Officer Assigned sucessfull'">-->
-            <!--                                            <input type="hidden" id="assignOfficerStatus" name="assignOfficerStatus" th:value="${activeStatus}">-->
-            <!--                                            <label for="qaoId" class="col-form-label">Select Officer:</label>-->
-            <!--                                            <select id="qaoId" required class="select-field w-select" th:field="*{qaoId}">-->
-            <!--                                                <option value="0">Select one...</option>-->
-            <!--                                                <option th:each="officer : ${officers}" th:text="${officer.userId?.firstName} + ' ' + ${officer.userId?.lastName}" th:name="qaoId" th:value="${officer.userId?.id}"></option>-->
-            <!--                                            </select>-->
-            <!--&lt;!&ndash;                                            <label for="hofQamCompletenessRemarks" class="col-form-label">Please write, in detail, your feedback for this Permit:</label>&ndash;&gt;-->
-            <!--&lt;!&ndash;                                            <textarea required name="name" id="hofQamCompletenessRemarks" class="input-field w-input" cols="65" rows="5" th:field="*{hofQamCompletenessRemarks}"></textarea>&ndash;&gt;-->
-            <!--                                        </div>-->
-            <!--                                        <div id="scheduleInspectionDate">-->
-            <!--                                            <input type="hidden" id="description4" name="description" th:value="'Inspection Date set sucessfull'">-->
-            <!--                                            <input type="hidden" id="inspectionScheduledStatus" name="inspectionScheduledStatus" th:value="${activeStatus}">-->
-            <!--                                            <label for="qaoId" class="col-form-label">Inspection Date:</label>-->
-            <!--                                            <input class="input-field w-input" type="date" max="20" id="inspectionDate" name="inspectionDate" th:required="required">-->
-            <!--&lt;!&ndash;                                            <select id="qaoId" required class="select-field w-select" th:field="*{qaoId}">&ndash;&gt;-->
-            <!--&lt;!&ndash;                                                <option value="0">Select one...</option>&ndash;&gt;-->
-            <!--&lt;!&ndash;                                                <option th:each="officer : ${officers}" th:text="${officer.userId?.firstName} + ' ' + ${officer.userId?.lastName}" th:name="qaoId" th:value="${officer.userId?.id}"></option>&ndash;&gt;-->
-            <!--&lt;!&ndash;                                            </select>&ndash;&gt;-->
-            <!--&lt;!&ndash;                                            <label for="hofQamCompletenessRemarks" class="col-form-label">Please write, in detail, your feedback for this Permit:</label>&ndash;&gt;-->
-            <!--&lt;!&ndash;                                            <textarea required name="name" id="hofQamCompletenessRemarks" class="input-field w-input" cols="65" rows="5" th:field="*{hofQamCompletenessRemarks}"></textarea>&ndash;&gt;-->
-            <!--                                        </div>-->
-            <!--                                    </div>-->
-            <!--                                </div>-->
-            <!--                                <div class="modal-footer">-->
-            <!--                                    <button class="btn btn-secondary" data-dismiss="modal" onClick="refreshPage()" type="button">Close</button>-->
-            <!--                                    <input type="submit" id="saveValue" class="btn btn-primary" value="Save"/>-->
-            <!--                                </div>-->
-            <!--                            </div>-->
-            <!--                        </div>-->
-            <!--                    </div>-->
-            <!--                </form>-->
-            <!--            </div>-->
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button class="btn btn-secondary" data-dismiss="modal" onClick="refreshPage()" type="button">Close</button>
+                                                <input type="submit" id="saveValue" class="btn btn-primary" value="Save"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
 
             <!--            <div class="uploadForm">-->
             <!--                <form id="upload-form" enctype="multipart/form-data"  name="upload-form" th:action="@{/api/qa/kebs/add/new-upload(permitID = ${permitDetails?.id})}" method="post" >-->
@@ -879,8 +923,8 @@
 </script>
 <script>
     function popUpFunction(eventAction) {
-        let arrHead = ['attachePlant', 'permitCompleteness', 'assignOfficer', 'scheduleInspectionDate'];
-        let arrHeadSave = ['Attach a Plant for manufacturing the product', 'Is The Permit Complete', 'Select An officer', ' Set The Date of Inspection'];
+        let arrHead = ['acceptRejectScheme'];
+        let arrHeadSave = ['Accept or reject Scheme'];
 
         for (let h = 0; h < arrHead.length; h++) {
             if (eventAction !== arrHead[h]) {

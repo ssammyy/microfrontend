@@ -102,7 +102,7 @@ class KRADaoServiceTest {
                     config.url?.let { url ->
 
                         val log = daoService.createTransactionLog(0, "test")
-                        val params = mapOf(Pair("registration_number", "CPR/2013/117374"))
+                        val params = mapOf(Pair("registration_number", "PVT-DLU36K7"))
                         log.integrationRequest = "$params"
                         val resp = daoService.getHttpResponseFromGetCall(true, url, config, null, params, null)
                         val data = daoService.processResponses<BrsLookUpResponse>(resp, log, url, config)

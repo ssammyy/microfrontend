@@ -393,7 +393,7 @@ class SystemsAdminDaoService(
         }
     }
 
-    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+
     fun updateUserCompanyDetails(dto: UserCompanyEntityDto): UserCompanyDto {
         dto.userId?.let {
             companyProfileRepo.findByUserId(it)
@@ -403,6 +403,7 @@ class SystemsAdminDaoService(
                         kraPin = dto.kraPin
                         userId = dto.userId
                         registrationNumber = dto.registrationNumber
+                        directorIdNumber = dto.directorIdNumber
                         postalAddress = dto.postalAddress
                         companyEmail = dto.companyEmail
                         companyTelephone = dto.companyTelephone
@@ -429,6 +430,7 @@ class SystemsAdminDaoService(
                     kraPin = dto.kraPin
                     userId = dto.userId
                     registrationNumber = dto.registrationNumber
+                    directorIdNumber = dto.directorIdNumber
                     postalAddress = dto.postalAddress
                     companyEmail = dto.companyEmail
                     companyTelephone = dto.companyTelephone
@@ -728,6 +730,8 @@ class SystemsAdminDaoService(
                                 usersRole.lastModifiedOn = Timestamp.from(Instant.now())
                                 usersRole.varField1 = "${usersRole.status}"
                                 userRolesRepo.save(usersRole)
+
+
                             }
                             ?: kotlin.run {
                                 val usersRole = UserRoleAssignmentsEntity()

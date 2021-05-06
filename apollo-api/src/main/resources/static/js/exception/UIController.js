@@ -28,7 +28,11 @@ testApp.controller("exceptionController", ['$scope', 'ExceptionService',
     */
 
         function goCNN(currentPage, pageSize, filters, fromDate, toDate){
-            window.location.href=`https://localhost:8006/api/di/pvoc/officer?currentPage=${currentPage}&pageSize=${pageSize}&filter=${filters}&fromDate=${fromDate}&toDate=${toDate}`;
+            window.location.href=`/api/di/pvoc/officer?currentPage=${currentPage}&pageSize=${pageSize}&filter=${filters}&fromDate=${fromDate}&toDate=${toDate}`;
+        }
+
+        function goCNN2(currentPage, pageSize, filters, fromDate, toDate){
+            window.location.href=`/api/di/pvoc/application/unfinished?currentPage=${currentPage}&pageSize=${pageSize}&filter=${filters}&fromDate=${fromDate}&toDate=${toDate}`;
         }
 
 
@@ -40,6 +44,7 @@ testApp.controller("exceptionController", ['$scope', 'ExceptionService',
     $scope.uploadExceptions = function (){
         const file = $scope.myFile;
         const manufacturer = $scope.details
+        console.log(manufacturer)
         ExemptionService.uploadExemption(manufacturer, file)
             .then(
                 function(d) {
@@ -91,7 +96,7 @@ testApp.controller("exceptionController", ['$scope', 'ExceptionService',
             .then(
                 function(d) {
                     if(d.success === true){
-                        goCNN(0, 10, 0, d.fro, d.to)
+                        goCNN2(0, 10, 0, d.fro, d.to)
                     }
                 },
                 function(errResponse){
@@ -158,7 +163,6 @@ testApp.controller("exceptionController", ['$scope', 'ExceptionService',
             'hsCode': $scope.hsCode.split("=>")[0],
             'rawMaterialDescription': $scope.rawMaterialDesc,
             'endProduct': $scope.endProduct.productName,
-            'dutyRate': $scope.dutyRate,
             'countryOfOrigin': $scope.countryR
         });
         $scope.hsCode = '';

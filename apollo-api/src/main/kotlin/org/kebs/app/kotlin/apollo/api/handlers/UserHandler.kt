@@ -1,10 +1,8 @@
 package org.kebs.app.kotlin.apollo.api.handlers
 
 import org.kebs.app.kotlin.apollo.adaptor.kafka.producer.service.SendToKafkaQueue
-import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
-import org.kebs.app.kotlin.apollo.api.ports.provided.dao.QADaoServices
-import org.kebs.app.kotlin.apollo.api.ports.provided.dao.RegistrationDaoServices
-import org.kebs.app.kotlin.apollo.api.ports.provided.dao.SystemsAdminDaoService
+import org.kebs.app.kotlin.apollo.api.ports.provided.dao.*
+import org.kebs.app.kotlin.apollo.common.dto.UserRequestEntityDto
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.NotificationsBufferEntity
@@ -21,33 +19,35 @@ import org.springframework.web.servlet.function.paramOrNull
 
 @Service
 class UserHandler(
-        private val daoService: SystemsAdminDaoService,
-        private val sendToKafkaQueue: SendToKafkaQueue,
-        private val countriesRepository: ICountriesRepository,
-        private val serviceMapsRepository: IServiceMapsRepository,
-        private val countyRepo: ICountiesRepository,
-        private val businessLinesRepository: IBusinessLinesRepository,
-        private val manufacturePlantRepository: IManufacturePlantDetailsRepository,
-        private val commonDaoServices: CommonDaoServices,
-        private val qaDaoServices: QADaoServices,
-        private val applicationMapProperties: ApplicationMapProperties,
-        private val businessNatureRepository: IBusinessNatureRepository,
-        private val contactTypesRepository: IContactTypesRepository,
-        private val userTypesRepo: IUserTypesEntityRepository,
-        private val SubSectionsLevel1Repo: ISubSectionsLevel1Repository,
-        private val SubSectionsLevel2Repo: ISubSectionsLevel2Repository,
-        private val titlesRepository: ITitlesRepository,
-        private val divisionsRepo: IDivisionsRepository,
-        private val departmentsRepo: IDepartmentsRepository,
-        private val directorateRepo: IDirectoratesRepository,
-        private val designationRepository: IDesignationsRepository,
-        private val sectionsRepo: ISectionsRepository,
-        private val subRegionsRepository: ISubRegionsRepository,
-        private val regionsRepository: IRegionsRepository,
-        private val usersRepo: IUserRepository,
-        private val userProfilesRepo: IUserProfilesRepository,
-        private val userVerificationTokensRepository: IUserVerificationTokensRepository,
-        private val daoServices: RegistrationDaoServices
+    private val daoService: SystemsAdminDaoService,
+    private val sendToKafkaQueue: SendToKafkaQueue,
+    private val countriesRepository: ICountriesRepository,
+    private val serviceMapsRepository: IServiceMapsRepository,
+    private val countyRepo: ICountiesRepository,
+    private val systemsAdminDaoService: SystemsAdminDaoService,
+    private val masterDataDaoService: MasterDataDaoService,
+    private val businessLinesRepository: IBusinessLinesRepository,
+    private val manufacturePlantRepository: IManufacturePlantDetailsRepository,
+    private val commonDaoServices: CommonDaoServices,
+    private val qaDaoServices: QADaoServices,
+    private val applicationMapProperties: ApplicationMapProperties,
+    private val businessNatureRepository: IBusinessNatureRepository,
+    private val contactTypesRepository: IContactTypesRepository,
+    private val userTypesRepo: IUserTypesEntityRepository,
+    private val SubSectionsLevel1Repo: ISubSectionsLevel1Repository,
+    private val SubSectionsLevel2Repo: ISubSectionsLevel2Repository,
+    private val titlesRepository: ITitlesRepository,
+    private val divisionsRepo: IDivisionsRepository,
+    private val departmentsRepo: IDepartmentsRepository,
+    private val directorateRepo: IDirectoratesRepository,
+    private val designationRepository: IDesignationsRepository,
+    private val sectionsRepo: ISectionsRepository,
+    private val subRegionsRepository: ISubRegionsRepository,
+    private val regionsRepository: IRegionsRepository,
+    private val usersRepo: IUserRepository,
+    private val userProfilesRepo: IUserProfilesRepository,
+    private val userVerificationTokensRepository: IUserVerificationTokensRepository,
+    private val daoServices: RegistrationDaoServices
 ) {
 
     final val appId: Int = applicationMapProperties.mapUserRegistration
@@ -89,6 +89,8 @@ class UserHandler(
                         }
 
                         req.attributes()["counties"] = countyRepo.findByStatusOrderByCounty(map.activeStatus)
+                        req.attributes()["userRequests"] = masterDataDaoService.getUserRequestTypesByStatus(map.activeStatus)
+                        req.attributes()["userRequestEntityDto"] = UserRequestEntityDto()
                         req.attributes()["usersEntity"] =userDetails
 //                        req.attributes()["profile"] = profile
                         req.attributes()["companyProfileEntity"] = CompanyProfileEntity()

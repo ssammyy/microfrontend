@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:flowable="http://flowable.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.flowable.org/processdef">
+  <process id="publicreview" name="Public Review" isExecutable="true">
+    <documentation>Standard Development Module Public Review</documentation>
+    <startEvent id="startEvent1" flowable:formFieldValidation="true"/>
+    <userTask id="PreparePublicReviewDraft" name="Prepare Public Review Draft" flowable:candidateGroups="TC-sec"
+              flowable:formFieldValidation="true"/>
+    <sequenceFlow id="sid-01C7E35F-DCC6-466F-B43E-42B27BC3F00D" sourceRef="startEvent1"
+                  targetRef="PreparePublicReviewDraft"/>
+    <serviceTask id="receive_notification_of_prd_hp" name="Receive Notification of PRD"
+                 flowable:class="com.apollo.standardsdevelopment.handlers.EmailHandler"/>
+    <serviceTask id="ReceiveNotificationofPRDNO" name="Receive Notification of PRD"
+                 flowable:class="com.apollo.standardsdevelopment.handlers.EmailHandler"/>
+    <serviceTask id="ReceiveNotificationofPRDICT" name="Receive Notification of PRD for posting on the website"
+                 flowable:class="com.apollo.standardsdevelopment.handlers.EmailHandler"/>
+    <serviceTask id="ReceiveNotificationofPRDDO" name="Receive Notification of PRD"
+                 flowable:class="com.apollo.standardsdevelopment.handlers.EmailHandler"/>
+    <sequenceFlow id="sid-3AD7A442-360F-4616-8AE6-72853C155751" sourceRef="PreparePublicReviewDraft"
+                  targetRef="receive_notification_of_prd_hp"/>
+    <sequenceFlow id="sid-64DC9F2C-FB21-46D3-AD9D-1AB65F171579" sourceRef="PreparePublicReviewDraft"
+                  targetRef="ReceiveNotificationofPRDNO"/>
+    <sequenceFlow id="sid-07A14A06-D758-4835-B6A6-0ABDEC8DB53B" sourceRef="PreparePublicReviewDraft"
+                  targetRef="ReceiveNotificationofPRDICT"/>
+    <sequenceFlow id="sid-74409E86-3901-4BBF-BF90-C9332B3EF70A" sourceRef="PreparePublicReviewDraft"
+                  targetRef="ReceiveNotificationofPRDDO"/>
+    <serviceTask id="ReceiveNotificationOfComments" name="Receive Notification Of Comments"
+                 flowable:class="com.apollo.standardsdevelopment.handlers.EmailHandler"/>
+    <sequenceFlow id="sid-0A88D92F-FA2E-4804-AC01-41A4220C1DDD" sourceRef="receive_notification_of_prd_hp"
+                  targetRef="ReceiveNotificationOfComments"/>
+    <sequenceFlow id="sid-13CC3702-ADBA-4C44-AE76-64923201786E" sourceRef="ReceiveNotificationofPRDNO"
+                  targetRef="ReceiveNotificationOfComments"/>
+    <sequenceFlow id="sid-27E79788-A24C-4CCB-AFB8-AAA7B8970FEA" sourceRef="ReceiveNotificationofPRDICT"
+                  targetRef="ReceiveNotificationOfComments"/>
+    <sequenceFlow id="sid-C409344F-D254-4D11-8DC0-4977F4DC734B" sourceRef="ReceiveNotificationofPRDDO"
+                  targetRef="ReceiveNotificationOfComments"/>
+    <userTask id="ReviewDraft" name="Review Draft" flowable:candidateGroups="TC" flowable:formFieldValidation="true"/>
+    <serviceTask id="NotificationOfRevisedPRD" name="Notification Of Revised PRD"
+                 flowable:class="com.apollo.standardsdevelopment.handlers.EmailHandler"/>
+    <userTask id="Balloting" name="Balloting" flowable:candidateGroups="TC-Sec" flowable:formFieldValidation="true"/>
+    <endEvent id="sid-7D0CC7C6-1C04-47E0-BB94-2931464F3F97"/>
+    <sequenceFlow id="sid-BF9670C4-F77A-4933-8BB0-049273E1E531" sourceRef="ReceiveNotificationOfComments"
+                  targetRef="ReviewDraft"/>
+    <sequenceFlow id="sid-BF57D97F-27EB-481D-BD99-E9D5C4DCB711" sourceRef="ReviewDraft"
+                  targetRef="NotificationOfRevisedPRD"/>
+    <sequenceFlow id="sid-6DFE8510-55D2-44E7-9F61-AC454E917935" sourceRef="ReviewDraft" targetRef="Balloting"/>
+    <sequenceFlow id="sid-2830C591-FF98-405B-A474-11ACC7C8A9CC" sourceRef="Balloting"
+                  targetRef="sid-7D0CC7C6-1C04-47E0-BB94-2931464F3F97"/>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_publicreview">
+    <bpmndi:BPMNPlane bpmnElement="publicreview" id="BPMNPlane_publicreview">
+      <bpmndi:BPMNShape bpmnElement="startEvent1" id="BPMNShape_startEvent1">
+        <omgdc:Bounds height="30.0" width="30.0" x="100.0" y="163.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="PreparePublicReviewDraft" id="BPMNShape_PreparePublicReviewDraft">
+        <omgdc:Bounds height="80.0" width="100.0" x="195.0" y="138.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="receive_notification_of_prd_hp" id="BPMNShape_receive_notification_of_prd_hp">
+        <omgdc:Bounds height="80.0" width="100.0" x="402.0" y="24.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="ReceiveNotificationofPRDNO" id="BPMNShape_ReceiveNotificationofPRDNO">
+        <omgdc:Bounds height="80.0" width="100.0" x="402.0" y="124.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="ReceiveNotificationofPRDICT" id="BPMNShape_ReceiveNotificationofPRDICT">
+        <omgdc:Bounds height="80.0" width="100.0" x="402.0" y="245.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="ReceiveNotificationofPRDDO" id="BPMNShape_ReceiveNotificationofPRDDO">
+        <omgdc:Bounds height="80.0" width="100.0" x="402.0" y="378.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="ReceiveNotificationOfComments" id="BPMNShape_ReceiveNotificationOfComments">
+        <omgdc:Bounds height="80.0" width="100.0" x="630.0" y="159.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="ReviewDraft" id="BPMNShape_ReviewDraft">
+        <omgdc:Bounds height="80.0" width="100.0" x="825.0" y="159.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="NotificationOfRevisedPRD" id="BPMNShape_NotificationOfRevisedPRD">
+        <omgdc:Bounds height="80.0" width="100.0" x="999.0" y="39.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="Balloting" id="BPMNShape_Balloting">
+        <omgdc:Bounds height="80.0" width="100.0" x="999.0" y="250.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="sid-7D0CC7C6-1C04-47E0-BB94-2931464F3F97" id="BPMNShape_sid-7D0CC7C6-1C04-47E0-BB94-2931464F3F97">
+        <omgdc:Bounds height="28.0" width="28.0" x="1035.0" y="450.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="sid-07A14A06-D758-4835-B6A6-0ABDEC8DB53B" id="BPMNEdge_sid-07A14A06-D758-4835-B6A6-0ABDEC8DB53B">
+        <omgdi:waypoint x="294.95" y="203.81956521739133"/>
+        <omgdi:waypoint x="401.99999999999994" y="259.15458937198065"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-74409E86-3901-4BBF-BF90-C9332B3EF70A" id="BPMNEdge_sid-74409E86-3901-4BBF-BF90-C9332B3EF70A">
+        <omgdi:waypoint x="279.456875" y="217.95000000000002"/>
+        <omgdi:waypoint x="417.5" y="378.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-BF57D97F-27EB-481D-BD99-E9D5C4DCB711" id="BPMNEdge_sid-BF57D97F-27EB-481D-BD99-E9D5C4DCB711">
+        <omgdi:waypoint x="924.9499999999999" y="164.51724137931035"/>
+        <omgdi:waypoint x="999.0" y="113.448275862069"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-6DFE8510-55D2-44E7-9F61-AC454E917935" id="BPMNEdge_sid-6DFE8510-55D2-44E7-9F61-AC454E917935">
+        <omgdi:waypoint x="924.9499999999999" y="225.12327586206897"/>
+        <omgdi:waypoint x="998.9999999999999" y="263.85057471264366"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-01C7E35F-DCC6-466F-B43E-42B27BC3F00D" id="BPMNEdge_sid-01C7E35F-DCC6-466F-B43E-42B27BC3F00D">
+        <omgdi:waypoint x="129.94999891869114" y="178.0"/>
+        <omgdi:waypoint x="194.99999999999022" y="178.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-3AD7A442-360F-4616-8AE6-72853C155751" id="BPMNEdge_sid-3AD7A442-360F-4616-8AE6-72853C155751">
+        <omgdi:waypoint x="294.95000000000005" y="150.46376811594203"/>
+        <omgdi:waypoint x="402.0" y="91.5086956521739"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-2830C591-FF98-405B-A474-11ACC7C8A9CC" id="BPMNEdge_sid-2830C591-FF98-405B-A474-11ACC7C8A9CC">
+        <omgdi:waypoint x="1049.0" y="329.95000000000005"/>
+        <omgdi:waypoint x="1049.0" y="450.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-0A88D92F-FA2E-4804-AC01-41A4220C1DDD" id="BPMNEdge_sid-0A88D92F-FA2E-4804-AC01-41A4220C1DDD">
+        <omgdi:waypoint x="501.95000000000005" y="93.57565789473686"/>
+        <omgdi:waypoint x="630.0" y="169.39473684210526"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-C409344F-D254-4D11-8DC0-4977F4DC734B" id="BPMNEdge_sid-C409344F-D254-4D11-8DC0-4977F4DC734B">
+        <omgdi:waypoint x="493.59178082191784" y="378.0"/>
+        <omgdi:waypoint x="638.3561643835617" y="238.95000000000002"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-13CC3702-ADBA-4C44-AE76-64923201786E" id="BPMNEdge_sid-13CC3702-ADBA-4C44-AE76-64923201786E">
+        <omgdi:waypoint x="501.9499999999997" y="171.66776315789474"/>
+        <omgdi:waypoint x="629.9999999999999" y="191.3245614035088"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-27E79788-A24C-4CCB-AFB8-AAA7B8970FEA" id="BPMNEdge_sid-27E79788-A24C-4CCB-AFB8-AAA7B8970FEA">
+        <omgdi:waypoint x="501.94999999999993" y="266.140350877193"/>
+        <omgdi:waypoint x="630.0" y="217.84078947368423"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-64DC9F2C-FB21-46D3-AD9D-1AB65F171579" id="BPMNEdge_sid-64DC9F2C-FB21-46D3-AD9D-1AB65F171579">
+        <omgdi:waypoint x="294.9499999999998" y="174.6183574879227"/>
+        <omgdi:waypoint x="402.0" y="167.3782608695652"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-BF9670C4-F77A-4933-8BB0-049273E1E531" id="BPMNEdge_sid-BF9670C4-F77A-4933-8BB0-049273E1E531">
+        <omgdi:waypoint x="729.9499999999803" y="199.0"/>
+        <omgdi:waypoint x="824.9999999999362" y="199.0"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>
