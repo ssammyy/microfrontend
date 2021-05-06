@@ -29,6 +29,7 @@ export class AccountService {
 
   // tslint:disable-next-line:typedef
   login(loginData: any) {
+    console.log(loginData)
     return this.http.post<any>(`${this.apiUrl}login`, loginData)
       .pipe(map(user => {
         // store user details and jwt token in local storage to keep user logged in between page refreshes
