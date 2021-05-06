@@ -414,7 +414,7 @@ class PvocBpmn(
 
     //submit the application
     fun pvocWaReviewApplicationComplete(objectId: Long, assigneeId: Long): Boolean {
-        KotlinLogging.logger { }.info("objectId : $objectId :  Submit application form complete")
+        KotlinLogging.logger { }.info("objectId : $objectId :  Review application form complete")
         pvocCompleteTask(objectId, "pvocWaReviewApplication", pvocWaProcessDefinitionKey)?.let {
             return bpmnCommonFunctions.assignTask(it["processInstanceId"].toString(), "pvocWaGenerateReport", assigneeId)
         }
@@ -443,7 +443,7 @@ class PvocBpmn(
     //adding method for defarrerals for reports by chairman
     //pass the rejected waiver back to sec(wetc)
     fun pvocWaDefferalWaiverComplete(objectId: Long, assigneeId: Long): Boolean {
-        KotlinLogging.logger { }.info("objectId : $objectId :  Approve waiver complete")
+        KotlinLogging.logger { }.info("objectId : $objectId :  Deferral waiver complete")
         pvocCompleteTask(objectId, "pvocWaApproveWaiver", pvocWaProcessDefinitionKey)?.let {
             return bpmnCommonFunctions.assignTask(it["processInstanceId"].toString(), "pvocWaGenerateMinutes", assigneeId)
         }
@@ -453,7 +453,7 @@ class PvocBpmn(
     //adding method for rejection of report by chairman
     //pass the rejected waiver back to sec(wetc)
     fun pvocWaRejectionWaiverComplete(objectId: Long, assigneeId: Long): Boolean {
-        KotlinLogging.logger { }.info("objectId : $objectId :  Approve waiver complete")
+        KotlinLogging.logger { }.info("objectId : $objectId :  Rejection waiver complete")
         pvocCompleteTask(objectId, "pvocWaApproveWaiver", pvocWaProcessDefinitionKey)?.let {
             return bpmnCommonFunctions.assignTask(it["processInstanceId"].toString(), "pvocWaGenerateMinutes", assigneeId)
         }
