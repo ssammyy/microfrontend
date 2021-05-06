@@ -10,10 +10,7 @@ import net.sf.jasperreports.engine.export.JRPdfExporter
 import net.sf.jasperreports.engine.xml.JRXmlLoader
 import net.sf.jasperreports.export.SimpleExporterInput
 import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput
-import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
-import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DestinationInspectionDaoServices
-import org.kebs.app.kotlin.apollo.api.ports.provided.dao.InvoiceDaoService
-import org.kebs.app.kotlin.apollo.api.ports.provided.dao.ReportsDaoService
+import org.kebs.app.kotlin.apollo.api.ports.provided.dao.*
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.repo.*
@@ -44,6 +41,7 @@ class DIReportsControllers(
         private val iPvocInvoicingRepository: IPvocInvoicingRepository,
         private val iPvocPartnersRepository: IPvocPartnersRepository,
         private val daoServices: DestinationInspectionDaoServices,
+        private val qaDaoServices: QADaoServices,
         private val iCdItemsRepo: IConsignmentItemsRepository,
         private val reportsDaoService: ReportsDaoService,
         private val commonDaoServices: CommonDaoServices,
@@ -340,75 +338,6 @@ Get Ministry inspection report
         }
         reportsDaoService.extractReportEmptyDataSource(map, response, "classpath:reports/LocalCoRReport.jrxml")
     }
-
-//    private fun extractReport(map: HashMap<String, Any>, response: HttpServletResponse, filePath: String, sampCollect: List<Any>) {
-//       val dataSource = JRBeanCollectionDataSource(sampCollect)
-//
-//                    ResourceUtils.getFile(filePath)
-//                            .let { file ->
-//                                JRXmlLoader.load(file)
-//                                        .let { design ->
-//                                            JasperCompileManager.compileReport(design)
-//                                                    .let { jasperReport ->
-//                                                        JasperFillManager.fillReport(jasperReport, map, dataSource)
-//                                                                .let { jasperPrint ->
-//                                                                    JRPdfExporter()
-//                                                                            .let { pdfExporter ->
-//                                                                                ByteArrayOutputStream()
-//                                                                                        .let { pdfReportStream ->
-//                                                                                            pdfExporter.setExporterInput(SimpleExporterInput(jasperPrint))
-//                                                                                            pdfExporter.exporterOutput = SimpleOutputStreamExporterOutput(pdfReportStream)
-//                                                                                            pdfExporter.exportReport()
-//                                                                                            response.contentType = "text/html"
-//                                                                                            response.contentType = "application/pdf"
-//                                                                                            response.setHeader("Content-Length", pdfReportStream.size().toString())
-//                                                                                            response.addHeader("Content-Dispostion", "inline; filename=jasper.pdf;")
-//                                                                                            response.outputStream
-//                                                                                                    .let { responseOutputStream ->
-//                                                                                                        responseOutputStream.write(pdfReportStream.toByteArray())
-//                                                                                                        responseOutputStream.close()
-//                                                                                                        pdfReportStream.close()
-//                                                                                                    }
-//                                                                                        }
-//
-//                                                                            }
-//                                                                }
-//                                                    }
-//                                        }
-//                            }
-//
-//    }
-//
-//    /*
-//    Note: Use this method if your report contains multiple data bands and you have not set any fields in the report,
-//    i.e you're using Parameters only.
-//     */
-//    private fun extractReportEmptyDataSource(map: HashMap<String, Any>, response: HttpServletResponse, filePath: String) {
-//        ResourceUtils.getFile(filePath).let { file ->
-//            JRXmlLoader.load(file).let { design ->
-//                JasperCompileManager.compileReport(design).let { jasperReport ->
-//                    JasperFillManager.fillReport(jasperReport, map, JREmptyDataSource()).let { jasperPrint ->
-//                        JRPdfExporter().let { pdfExporter ->
-//                            ByteArrayOutputStream().let { pdfReportStream ->
-//                                pdfExporter.setExporterInput(SimpleExporterInput(jasperPrint))
-//                                pdfExporter.exporterOutput = SimpleOutputStreamExporterOutput(pdfReportStream)
-//                                pdfExporter.exportReport()
-//                                response.contentType = "text/html"
-//                                response.contentType = "application/pdf"
-//                                response.setHeader("Content-Length", pdfReportStream.size().toString())
-//                                response.addHeader("Content-Dispostion", "inline; filename=jasper.pdf;")
-//                                response.outputStream.let { responseOutputStream ->
-//                                            responseOutputStream.write(pdfReportStream.toByteArray())
-//                                            responseOutputStream.close()
-//                                            pdfReportStream.close()
-//                                        }
-//                            }
-//                        }
-//                    }
-//                    }
-//                }
-//            }
-//        }
 }
 
 

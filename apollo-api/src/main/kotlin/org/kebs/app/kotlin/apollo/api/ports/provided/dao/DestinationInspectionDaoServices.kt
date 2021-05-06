@@ -348,7 +348,7 @@ class DestinationInspectionDaoServices(
 //        return applicationStatusDetails
 //    }
 //Todo : after confermation
-@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+
 fun createLocalCoc(
     user: UsersEntity,
     consignmentDocumentDetailsEntity: ConsignmentDocumentDetailsEntity,
@@ -449,7 +449,7 @@ fun createLocalCoc(
 
 }
 
-    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+
     fun createLocalCoi(
         user: UsersEntity,
         consignmentDocumentDetailsEntity: ConsignmentDocumentDetailsEntity,
@@ -603,7 +603,7 @@ fun createLocalCoc(
         return localCocItems
     }
 
-    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+
     fun localCocItems(
         updatedCDDetails: ConsignmentDocumentDetailsEntity,
         localCocEntity: CocsEntity,
@@ -621,7 +621,7 @@ fun createLocalCoc(
 
     }
 
-    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+
     fun localCoiItems(
         updatedCDDetails: ConsignmentDocumentDetailsEntity,
         localCocEntity: CocsEntity,
