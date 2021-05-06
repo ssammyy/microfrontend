@@ -1299,4 +1299,71 @@ class QADaoServices(
         manufacturer?.email?.let { notifications.sendEmail(it, subject, messageBody) }
     }
 
+    fun sendNotificationForRecommendation(permitDetails: PermitApplicationsEntity) {
+        val manufacturer = permitDetails.qamId?.let { commonDaoServices.findUserByID(it) }
+        val subject = "RECOMMENDATION FOR AWARDING OF PERMIT"
+        val messageBody = "Dear ${manufacturer?.let { commonDaoServices.concatenateName(it) }}: \n" +
+                "\n " +
+                "A recommendation has been added for the following permit : ${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitDetails.id}%26userID=${permitDetails.userId}: \n" +
+                "That awaits your approval"
+
+        manufacturer?.email?.let { notifications.sendEmail(it, subject, messageBody) }
+    }
+
+    fun sendNotificationForRecommendationCorrectness(permitDetails: PermitApplicationsEntity) {
+        val manufacturer = permitDetails.qaoId?.let { commonDaoServices.findUserByID(it) }
+        val subject = "RECOMMENDATION FOR AWARDING OF PERMIT CORRECTION"
+        val messageBody = "Dear ${manufacturer?.let { commonDaoServices.concatenateName(it) }}: \n" +
+                "\n " +
+                "The recommendation has been rejected due to the following reasons: ${permitDetails.recommendationApprovalRemarks} \n" +
+                "Please do some correction and send it back for approval : ${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitDetails.id}%26userID=${permitDetails.userId}: \n"
+
+
+        manufacturer?.email?.let { notifications.sendEmail(it, subject, messageBody) }
+    }
+
+    fun sendNotificationForDeferredPermitToQaoFromPSC(permitDetails: PermitApplicationsEntity) {
+        val manufacturer = permitDetails.qaoId?.let { commonDaoServices.findUserByID(it) }
+        val subject = "AWARDING OF PERMIT DEFERRED "
+        val messageBody = "Dear ${manufacturer?.let { commonDaoServices.concatenateName(it) }}: \n" +
+                "\n " +
+                "The below permit has been DEFERRED due to the following reasons: ${permitDetails.pscMemberApprovalRemarks} \n" +
+                "Please do some correction and send it back for approval : ${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitDetails.id}%26userID=${permitDetails.userId}: \n"
+
+        manufacturer?.email?.let { notifications.sendEmail(it, subject, messageBody) }
+    }
+
+    fun sendNotificationForDeferredPermitToQaoFromPCM(permitDetails: PermitApplicationsEntity) {
+        val manufacturer = permitDetails.qaoId?.let { commonDaoServices.findUserByID(it) }
+        val subject = "AWARDING OF PERMIT DEFERRED "
+        val messageBody = "Dear ${manufacturer?.let { commonDaoServices.concatenateName(it) }}: \n" +
+                "\n " +
+                "The below permit has been DEFERRED due to the following reasons: ${permitDetails.pcmApprovalRemarks} \n" +
+                "Please do some correction and send it back for approval : ${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitDetails.id}%26userID=${permitDetails.userId}: \n"
+
+        manufacturer?.email?.let { notifications.sendEmail(it, subject, messageBody) }
+    }
+
+    fun sendNotificationPSCForAwardingPermit(permitDetails: PermitApplicationsEntity) {
+        val manufacturer = permitDetails.pscMemberId?.let { commonDaoServices.findUserByID(it) }
+        val subject = "INSPECTION REVIEW FOR APPROVAL"
+        val messageBody = "Dear ${manufacturer?.let { commonDaoServices.concatenateName(it) }}: \n" +
+                "\n " +
+                "The permit below awaits your approval for inspection review \n" +
+                " ${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitDetails.id}%26userID=${permitDetails.userId}: \n"
+
+        manufacturer?.email?.let { notifications.sendEmail(it, subject, messageBody) }
+    }
+
+    fun sendNotificationPCMForAwardingPermit(permitDetails: PermitApplicationsEntity) {
+        val manufacturer = permitDetails.pcmId?.let { commonDaoServices.findUserByID(it) }
+        val subject = "INSPECTION REVIEW FOR APPROVAL"
+        val messageBody = "Dear ${manufacturer?.let { commonDaoServices.concatenateName(it) }}: \n" +
+                "\n " +
+                "The permit below awaits your approval for inspection review \n" +
+                " ${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitDetails.id}%26userID=${permitDetails.userId}: \n"
+
+        manufacturer?.email?.let { notifications.sendEmail(it, subject, messageBody) }
+    }
+
 }

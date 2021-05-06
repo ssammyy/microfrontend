@@ -234,6 +234,15 @@
                                 </ul>
                             </div>
 
+                            <button class="accordion">Recommendation Details</button>
+                            <div class="panel">
+                                <ul class="w-list-unstyled">
+                                    <li class="list-item-accordion">
+                                        <p><span th:text="${permitDetails.recommendationRemarks}"></span></p>
+                                    </li>
+                                </ul>
+                            </div>
+
                             <button class="accordion" >Documents Attached Details</button>
                             <div class="panel">
                                 <div class="row-table ">
@@ -412,6 +421,8 @@
 
                                     <a th:if="${ permitDetails?.recommendationRemarks == null and permitDetails?.compliantStatus != null}" style="color: white" onclick="popUpFunction('addRecommendation');" class="filter-link">ADD RECOMMENDATION REMARKS</a>
 
+                                    <a th:if="${ permitDetails?.recommendationRemarks != null and permitDetails?.recommendationApprovalStatus == null}" style="color: white" onclick="popUpFunction('approveRecommendation');" class="filter-link">APPROVE/REJECT RECOMMENDATION</a>
+
                                     <a th:if="${permitDetails?.inspectionScheduledStatus == null}" style="color: white" onclick="popUpFunction('scheduleInspectionDate');" class="filter-link">SCHEDULE INSPECTION</a>
 
                                     <a th:if="${permitDetails?.generateSchemeStatus == null and permitType?.schemeGenerate == 1}" th:href="@{/api/qa/new-scheme-of-supervision(permitID=${permitDetails?.id})}" style="color: white" class="filter-link">GENERATE SCHEME FOR SUPERVISION AND CONTROL</a>
@@ -427,6 +438,13 @@
                                 <div sec:authorize="hasAuthority('QA_ASSESSORS_MODIFY')">
                                     <a th:if="${permitDetails?.assessmentScheduledStatus == null}" style="color: white" onclick="popUpFunction('scheduleAssessmentDate');" class="filter-link">SCHEDULE ASSESSMENT</a>
                                     <a th:if="${permitDetails?.assessmentScheduledStatus == 1}" class="filter-link uploadAssessmentReportBtn" style="color: white">UPLOAD ASSESSMENT REPORT</a>
+                                </div>
+
+                                <div >
+                                    <a th:if="${ permitDetails?.pscMemberApprovalStatus == null}" style="color: white" onclick="popUpFunction('pscMemberApproval');" class="filter-link">APPROVE/REJECT PERMIT AWARDING</a>
+                                </div>
+                                <div >
+                                    <a th:if="${ permitDetails?.pcmApprovalStatus == null and permitDetails?.pscMemberApprovalStatus == 1}" style="color: white" onclick="popUpFunction('pcmApproval');" class="filter-link">APPROVE/REJECT PERMIT AWARDING</a>
                                 </div>
 
                             </div>
@@ -590,6 +608,39 @@
 <!--                                            <input type="hidden" id="varField8" name="varField1" th:value="'Factory Inspection Report Rejected Succesfull'">-->
                                             <label for="recommendationRemarks" class="col-form-label">Please write, in detail, your Recommendation for this Permit:</label>
                                             <textarea required name="name" id="recommendationRemarks" class="input-field w-input" cols="65" rows="5" th:field="*{recommendationRemarks}"></textarea>
+                                        </div>
+                                        <div id="approveRecommendation">
+                                            <input type="hidden" id="description11" name="description" th:value="'Recommendation Status Updated succesfull'">
+                                            <label for="recommendationApprovalStatus" class="col-form-label">Select Status:</label>
+                                            <select id="recommendationApprovalStatus" required class="select-field w-select" th:field="*{recommendationApprovalStatus}">
+                                                <option th:text="'Select one.....'" th:value="null"></option>
+                                                <option th:text="'APPROVE'" th:value="1"></option>
+                                                <option th:text="'REJECT'" th:value="0"></option>
+                                            </select>
+                                            <label for="recommendationApprovalRemarks" class="col-form-label">Please write, in detail, your feedback for this Approval/Rejection:</label>
+                                            <textarea required name="name" id="recommendationApprovalRemarks" class="input-field w-input" cols="65" rows="5" th:field="*{recommendationApprovalRemarks}"></textarea>
+                                        </div>
+                                        <div id="pscMemberApproval">
+                                            <input type="hidden" id="description12" name="description" th:value="'Permit Status Updated succesfull'">
+                                            <label for="pscMemberApprovalStatus" class="col-form-label">Select Status:</label>
+                                            <select id="pscMemberApprovalStatus" required class="select-field w-select" th:field="*{pscMemberApprovalStatus}">
+                                                <option th:text="'Select one.....'" th:value="null"></option>
+                                                <option th:text="'APPROVE'" th:value="1"></option>
+                                                <option th:text="'REJECT'" th:value="0"></option>
+                                            </select>
+                                            <label for="pscMemberApprovalRemarks" class="col-form-label">Please write, in detail, your feedback for this Approval/Rejection:</label>
+                                            <textarea required name="name" id="pscMemberApprovalRemarks" class="input-field w-input" cols="65" rows="5" th:field="*{pscMemberApprovalRemarks}"></textarea>
+                                        </div>
+                                        <div id="pcmApproval">
+                                            <input type="hidden" id="description13" name="description" th:value="'Permit Status Updated succesfull'">
+                                            <label for="pcmApprovalStatus" class="col-form-label">Select Status:</label>
+                                            <select id="pcmApprovalStatus" required class="select-field w-select" th:field="*{pcmApprovalStatus}">
+                                                <option th:text="'Select one.....'" th:value="null"></option>
+                                                <option th:text="'APPROVE'" th:value="1"></option>
+                                                <option th:text="'REJECT'" th:value="0"></option>
+                                            </select>
+                                            <label for="pcmApprovalRemarks" class="col-form-label">Please write, in detail, your feedback for this Approval/Rejection:</label>
+                                            <textarea required name="name" id="pcmApprovalRemarks" class="input-field w-input" cols="65" rows="5" th:field="*{pcmApprovalRemarks}"></textarea>
                                         </div>
                                     </div>
                                 </div>
@@ -812,8 +863,8 @@
 </script>
 <script>
     function popUpFunction(eventAction) {
-        let arrHead = [ 'attachePlant', 'permitCompleteness', 'assignOfficer', 'scheduleInspectionDate', 'assignAssessor', 'scheduleAssessmentDate', 'approveInspectionReport', 'addBsNumber', 'complianceStatus', 'addRecommendation'];
-        let arrHeadSave = [ 'Attach a Plant for manufacturing the product', 'Is The Permit Complete', 'Select An officer',' Set The Date of Inspection', 'Select An Assessor', 'Schedule Factory Assessment Date', 'Approve Or Reject the Factory Inspection Report', 'Add Bs Number','Select a suitable Compliance Status for the Lab Report', 'Add Recommendation'];
+        let arrHead = [ 'attachePlant', 'permitCompleteness', 'assignOfficer', 'scheduleInspectionDate', 'assignAssessor', 'scheduleAssessmentDate', 'approveInspectionReport', 'addBsNumber', 'complianceStatus', 'addRecommendation', 'approveRecommendation', 'pscMemberApproval', 'pcmApproval'];
+        let arrHeadSave = [ 'Attach a Plant for manufacturing the product', 'Is The Permit Complete', 'Select An officer',' Set The Date of Inspection', 'Select An Assessor', 'Schedule Factory Assessment Date', 'Approve Or Reject the Factory Inspection Report', 'Add Bs Number','Select a suitable Compliance Status for the Lab Report', 'Add Recommendation', 'Approve / Reject Recommendation', 'Approve / Reject Awarding of Permit', 'Approve / Reject Awarding of Permit'];
 
         for (let h = 0; h < arrHead.length; h++) {
             if(eventAction !== arrHead[h]){

@@ -134,18 +134,29 @@ class QualityAssuranceController(
         var result: ServiceRequestsEntity?
 
         //Find Permit with permit ID
-        val permitDetails = qaDaoServices.findPermitBYID(permitID)
+        var permitDetails = qaDaoServices.findPermitBYID(permitID)
 
         //Add Permit ID THAT was Fetched so That it wont create a new record while updating with the methode
         permit.id = permitDetails.id
 
+//        if( permit.recommendationApprovalStatus == map.inactiveStatus){
+//            with(permit){
+//                recommendationRemarks = null
+//                recommendationApprovalStatus=
+//            }
+//        }
 
-        result = qaDaoServices.permitUpdateDetails(
+        //updating of Details in DB
+        val updateResults = qaDaoServices.permitUpdateDetails(
             commonDaoServices.updateDetails(
                 permit,
                 permitDetails
             ) as PermitApplicationsEntity, map, loggedInUser
-        ).first
+        )
+
+        result = updateResults.first
+
+        permitDetails = updateResults.second
 
         when {
             permit.assignAssessorStatus == map.activeStatus -> {
@@ -169,12 +180,75 @@ class QualityAssuranceController(
                 //Send manufacturers notification
                 qaDaoServices.sendComplianceStatusAndLabReport(permitDetails)
             }
+            permit.recommendationApprovalStatus != null -> {
+                //Send notification
+                if (permit.recommendationApprovalStatus ==map.activeStatus){
+                    with(permit){
+                        pscMemberId= qaDaoServices.assignNextOfficerAfterPayment(permitDetails, map, applicationMapProperties.mapQADesignationIDForPSCId)?.id
+                    }
+                    //updating of Details in DB
+                    permitDetails = qaDaoServices.permitUpdateDetails(commonDaoServices.updateDetails(permit, permitDetails) as PermitApplicationsEntity, map, loggedInUser).second
+                    qaDaoServices.sendNotificationPSCForAwardingPermit(permitDetails)
 
+                }else if (permit.recommendationApprovalStatus ==map.inactiveStatus){
+                    with(permit){
+                        recommendationRemarks= null
+                        recommendationApprovalStatus =null
+                    }
+                    qaDaoServices.sendNotificationForRecommendationCorrectness(permitDetails)
+                }
+
+            }
+            permit.pscMemberApprovalStatus != null -> {
+                //Send notification
+                if (permit.pscMemberApprovalStatus ==map.activeStatus){
+                    with(permit){
+                        pcmId= qaDaoServices.assignNextOfficerAfterPayment(permitDetails, map, applicationMapProperties.mapQADesignationIDForPCMId)?.id
+                    }
+                    //updating of Details in DB
+                    permitDetails = qaDaoServices.permitUpdateDetails(commonDaoServices.updateDetails(permit, permitDetails) as PermitApplicationsEntity, map, loggedInUser).second
+                    qaDaoServices.sendNotificationPCMForAwardingPermit(permitDetails)
+
+                }else if (permit.pscMemberApprovalStatus ==map.inactiveStatus){
+//                    with(permit){
+//                        recommendationRemarks= null
+//                        recommendationApprovalStatus =null
+//                    }
+                    qaDaoServices.sendNotificationForDeferredPermitToQaoFromPSC(permitDetails)
+                }
+
+            }
+
+            permit.pcmApprovalStatus != null -> {
+                //Send notification
+                if (permit.pcmApprovalStatus ==map.activeStatus){
+                    with(permit){
+                        pscMemberId= qaDaoServices.assignNextOfficerAfterPayment(permitDetails, map, applicationMapProperties.mapQADesignationIDForPSCId)?.id
+                    }
+                    //updating of Details in DB
+                    permitDetails = qaDaoServices.permitUpdateDetails(commonDaoServices.updateDetails(permit, permitDetails) as PermitApplicationsEntity, map, loggedInUser).second
+                    qaDaoServices.sendNotificationPSCForAwardingPermit(permitDetails)
+
+                }else if (permit.pcmApprovalStatus ==map.inactiveStatus){
+//                    with(permit){
+//                        recommendationRemarks= null
+//                        recommendationApprovalStatus =null
+//                    }
+                    qaDaoServices.sendNotificationForDeferredPermitToQaoFromPCM(permitDetails)
+                }
+
+            }
 
         }
 
         //updating of Details in DB
-        result = qaDaoServices.permitUpdateDetails(commonDaoServices.updateDetails(permit, permitDetails) as PermitApplicationsEntity, map, loggedInUser).first
+        result = qaDaoServices.permitUpdateDetails(
+            commonDaoServices.updateDetails(
+                permit,
+                permitDetails
+            ) as PermitApplicationsEntity, map, loggedInUser
+        ).first
+
 
         val sm = CommonDaoServices.MessageSuccessFailDTO()
         sm.closeLink = "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitDetails.id}%26userID=${loggedInUser.id}"

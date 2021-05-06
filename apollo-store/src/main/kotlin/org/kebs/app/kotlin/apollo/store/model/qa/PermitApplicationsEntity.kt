@@ -227,6 +227,14 @@ class PermitApplicationsEntity:Serializable {
     @Basic
     var testReportId: Long? = null
 
+    @Column(name = "PSC_MEMBER_ID")
+    @Basic
+    var pscMemberId: Long? = null
+
+    @Column(name = "PCM_ID")
+    @Basic
+    var pcmId: Long? = null
+
     @Column(name = "QAM_ID")
     @Basic
     var qamId: Long? = null
@@ -325,6 +333,24 @@ class PermitApplicationsEntity:Serializable {
     @Column(name = "FACTORY_INSPECTION_REPORT_APPROVED_REJECTED_REMARKS")
     @Basic
     var factoryInspectionReportApprovedRejectedRemarks: String? = null
+
+    @Column(name = "PSC_MEMBER_APPROVAL_STATUS")
+    @Basic
+    var pscMemberApprovalStatus: Int? = null
+
+
+    @Column(name = "PSC_MEMBER_APPROVAL_REMARKS")
+    @Basic
+    var pscMemberApprovalRemarks: String? = null
+
+    @Column(name = "PCM_APPROVAL_STATUS")
+    @Basic
+    var pcmApprovalStatus: Int? = null
+
+
+    @Column(name = "PCM_APPROVAL_REMARKS")
+    @Basic
+    var pcmApprovalRemarks: String? = null
 
     @Column(name = "ASSESSMENT_CRITERIA")
     @Basic
@@ -498,6 +524,8 @@ class PermitApplicationsEntity:Serializable {
         if (scfId != other.scfId) return false
         if (ssfId != other.ssfId) return false
         if (testReportId != other.testReportId) return false
+        if (pscMemberId != other.pscMemberId) return false
+        if (pcmId != other.pcmId) return false
         if (qamId != other.qamId) return false
         if (hodId != other.hodId) return false
         if (rmId != other.rmId) return false
@@ -516,9 +544,13 @@ class PermitApplicationsEntity:Serializable {
         if (recommendationRemarks != other.recommendationRemarks) return false
         if (recommendationApprovalRemarks != other.recommendationApprovalRemarks) return false
         if (hofQamCompletenessRemarks != other.hofQamCompletenessRemarks) return false
+        if (pscMemberApprovalStatus != other.pscMemberApprovalStatus) return false
+        if (pscMemberApprovalRemarks != other.pscMemberApprovalRemarks) return false
+        if (pcmApprovalStatus != other.pcmApprovalStatus) return false
+        if (pcmApprovalRemarks != other.pcmApprovalRemarks) return false
+        if (factoryInspectionReportApprovedRejectedStatus != other.factoryInspectionReportApprovedRejectedStatus) return false
         if (factoryInspectionReportApprovedRejectedRemarks != other.factoryInspectionReportApprovedRejectedRemarks) return false
         if (assessmentCriteria != other.assessmentCriteria) return false
-        if (factoryInspectionReportApprovedRejectedStatus != other.factoryInspectionReportApprovedRejectedStatus) return false
         if (hofQamCompletenessStatus != other.hofQamCompletenessStatus) return false
         if (compliantStatus != other.compliantStatus) return false
         if (justificationReportStatus != other.justificationReportStatus) return false
@@ -607,6 +639,8 @@ class PermitApplicationsEntity:Serializable {
         result = 31 * result + (scfId?.hashCode() ?: 0)
         result = 31 * result + (ssfId?.hashCode() ?: 0)
         result = 31 * result + (testReportId?.hashCode() ?: 0)
+        result = 31 * result + (pscMemberId?.hashCode() ?: 0)
+        result = 31 * result + (pcmId?.hashCode() ?: 0)
         result = 31 * result + (qamId?.hashCode() ?: 0)
         result = 31 * result + (hofId?.hashCode() ?: 0)
         result = 31 * result + (hodId?.hashCode() ?: 0)
@@ -618,6 +652,10 @@ class PermitApplicationsEntity:Serializable {
         result = 31 * result + (dateOfIssue?.hashCode() ?: 0)
         result = 31 * result + (dateOfExpiry?.hashCode() ?: 0)
         result = 31 * result + (applicationSuspensionStatus ?: 0)
+        result = 31 * result + (pscMemberApprovalStatus ?: 0)
+        result = 31 * result + (pscMemberApprovalRemarks?.hashCode() ?: 0)
+        result = 31 * result + (pcmApprovalStatus ?: 0)
+        result = 31 * result + (pcmApprovalRemarks?.hashCode() ?: 0)
         result = 31 * result + (factoryInspectionReportApprovedRejectedStatus ?: 0)
         result = 31 * result + (factoryInspectionReportApprovedRejectedRemarks?.hashCode() ?: 0)
         result = 31 * result + (attachedPlantRemarks?.hashCode() ?: 0)
