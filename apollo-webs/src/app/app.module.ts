@@ -59,7 +59,7 @@ import {FileUploadModule} from "ng2-file-upload";
 import { StdTcTasksComponent } from './components/standards-development/std-tc-tasks/std-tc-tasks.component';
 import { PreparePdComponent } from './components/standards-development/commitee/prepare-pd/prepare-pd.component';
 import { CommentPdComponent } from './components/standards-development/commitee/comment-pd/comment-pd.component';
-import { CommentListComponent } from './components/standards-development/commitee/comment-list/comment-list.component';
+import { CommentCdComponent } from './components/standards-development/commitee/comment-cd/comment-cd.component';
 import { PdDetailsComponent } from './components/standards-development/commitee/pd-details/pd-details.component';
 import { PdListComponent } from './components/standards-development/commitee/pd-list/pd-list.component';
 import { NwiListComponent } from './components/standards-development/commitee/nwi-list/nwi-list.component';
@@ -121,7 +121,7 @@ import { SuccessComponent } from './components/standards-development/sd-national
     StdTcTasksComponent,
     PreparePdComponent,
     CommentPdComponent,
-    CommentListComponent,
+    CommentCdComponent,
     PdDetailsComponent,
     PdListComponent,
     NwiListComponent,

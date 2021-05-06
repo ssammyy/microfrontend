@@ -15,10 +15,10 @@
         </tr>
         </thead>
         <tbody>
-        <tr *ngFor="let pd of preliminary_draft | async">
+        <tr *ngFor="let pd of committee_draft | async">
           <td>{{pd.id}}</td>
-          <td>{{pd.pdName}}</td>
-          <td>{{pd.pdBy}}</td>
+          <td>{{pd.cdName}}</td>
+          <td>{{pd.cdBy}}</td>
           <td>
             <a (click)="onOpenModal(pd,'yes')" class="btn btn-primary tooltips" data-placement="top"
                data-original-title="Yes">Send Feedback</a>
