@@ -2,6 +2,7 @@ package org.kebs.app.kotlin.apollo.store.model
 
 import java.io.Serializable
 import java.sql.Timestamp
+import java.time.LocalDate
 import java.util.*
 import javax.persistence.*
 
@@ -114,6 +115,30 @@ class StandardLevyFactoryVisitReportEntity: Serializable {
     @Column(name = "DELETED_ON")
     @Basic
     var deletedOn: Timestamp? = null
+
+    @Column(name = "SCHEDULED_VISIT_DATE")
+    @Basic
+    var scheduledVisitDate: LocalDate? = null
+
+    @Column(name = "REPORT_DATE")
+    @Basic
+    var reportDate: LocalDate? = null
+
+    @Column(name = "SL_STATUS")
+    @Basic
+    var slStatus: Int? = null
+
+    @Column(name = "SL_STARTED_ON")
+    @Basic
+    var slStartedOn: Timestamp? = null
+
+    @Column(name = "SL_COMPLETED_ON")
+    @Basic
+    var slCompletedOn: Timestamp? = null
+
+    @Column(name = "SL_PROCESS_INSTANCE_ID")
+    @Basic
+    var slProcessInstanceId: String? = null
 
     override fun equals(o: Any?): Boolean {
         if (this === o) return true

@@ -23,6 +23,7 @@ import org.springframework.web.servlet.function.ServerResponse.ok
 import org.springframework.web.servlet.function.paramOrNull
 import org.springframework.web.servlet.mvc.support.RedirectAttributes
 import java.math.BigDecimal
+import java.time.LocalDate
 
 @Component
 class StandardLevyHandler(
@@ -36,7 +37,8 @@ class StandardLevyHandler(
     private val standardLevyPaymentsRepository: IStandardLevyPaymentsRepository,
     private val standardsLevyBpmn: StandardsLevyBpmn,
     private val commonDaoServices: CommonDaoServices,
-    private val userRepo: IUserRepository
+    private val userRepo: IUserRepository,
+    private val companyProfileRepo: ICompanyProfileRepository
 ) {
 
     private val redirectAttributes: RedirectAttributes? = null
@@ -48,6 +50,8 @@ class StandardLevyHandler(
     private val slHome = "standard-levy/home"
     private val singleManufacturerPage = "standard-levy/single-manufacturers"
     private val allPayments = "standard-levy/payments"
+
+    //var formatter = DateTimeFormatter.ofPattern("yyyy-mm-dd")
 
     @PreAuthorize("hasAuthority('SL_APPROVE_VISIT_REPORT') or hasAuthority('SL_SECOND_APPROVE_VISIT_REPORT') or hasAuthority('SL_MANUFACTURERS_VIEW')")
     fun home(req: ServerRequest): ServerResponse =
@@ -78,7 +82,8 @@ class StandardLevyHandler(
                                 .let { page ->
                                     userRepo.findByUserName(auth.name)
                                         ?.let { user ->
-                                            val whereTo = req.paramOrNull("whereTo") ?: throw NullValueNotAllowedException("whereTo parameter is required")
+                                            val whereTo = req.paramOrNull("whereTo")
+                                                ?: throw NullValueNotAllowedException("whereTo parameter is required")
                                             when (whereTo) {
                                                 "load_manufacturers" -> {
                                                     manufacturerRepository.findByOrderByIdDesc(page)
@@ -96,25 +101,47 @@ class StandardLevyHandler(
                                                             standardsLevyBpmn.fetchAllTasksByAssignee(userId)
                                                                 ?.let { lstTaskDetails ->
                                                                     val tasks = mutableListOf<CompanyProfileEntity?>()
-                                                                    lstTaskDetails.sortedByDescending { it.objectId }.forEach { details ->
-                                                                        if (standardLevyPaymentsRepository.findByIdOrNull(details.objectId) == null) {
-                                                                            redirectAttributes?.addFlashAttribute("error", "Caught an exception while loading your tasks")
-                                                                            req.attributes()["map"] = map
-                                                                            KotlinLogging.logger { }.info { "there" }
-                                                                            req.attributes()["type"] = "load_tasks"
+                                                                    lstTaskDetails.sortedByDescending { it.objectId }
+                                                                        .forEach { details ->
+                                                                            if (standardLevyPaymentsRepository.findByIdOrNull(
+                                                                                    details.objectId
+                                                                                ) == null
+                                                                            ) {
+                                                                                redirectAttributes?.addFlashAttribute(
+                                                                                    "error",
+                                                                                    "Caught an exception while loading your tasks"
+                                                                                )
+                                                                                req.attributes()["map"] = map
+                                                                                KotlinLogging.logger { }
+                                                                                    .info { "there" }
+                                                                                req.attributes()["type"] = "load_tasks"
 //                                                                            ok().render(slAllManufacturers, req.attributes())
-                                                                        } else {
-                                                                            standardLevyPaymentsRepository.findByIdOrNull(details.objectId)
-                                                                                ?.let { paymentsEntity ->
-                                                                                    tasks.add(commonDaoServices.findCompanyProfileWithID(paymentsEntity.manufacturerEntity?:throw ExpectedDataNotFound("INVALID MANUFACTURE ID")))
-                                                                                    req.attributes()["tasks"] = tasks
-                                                                                    req.attributes()["map"] = map
-                                                                                    KotlinLogging.logger { }.info { "here" }
-                                                                                    redirectAttributes?.addFlashAttribute("success", "View your tasks")
-                                                                                }
-                                                                                ?: throw ExpectedDataNotFound("No payment with id=${details.objectId}")
+                                                                            } else {
+                                                                                standardLevyPaymentsRepository.findByIdOrNull(
+                                                                                    details.objectId
+                                                                                )
+                                                                                    ?.let { paymentsEntity ->
+                                                                                        tasks.add(
+                                                                                            commonDaoServices.findCompanyProfileWithID(
+                                                                                                paymentsEntity.manufacturerEntity
+                                                                                                    ?: throw ExpectedDataNotFound(
+                                                                                                        "INVALID MANUFACTURE ID"
+                                                                                                    )
+                                                                                            )
+                                                                                        )
+                                                                                        req.attributes()["tasks"] =
+                                                                                            tasks
+                                                                                        req.attributes()["map"] = map
+                                                                                        KotlinLogging.logger { }
+                                                                                            .info { "here" }
+                                                                                        redirectAttributes?.addFlashAttribute(
+                                                                                            "success",
+                                                                                            "View your tasks"
+                                                                                        )
+                                                                                    }
+                                                                                    ?: throw ExpectedDataNotFound("No payment with id=${details.objectId}")
+                                                                            }
                                                                         }
-                                                                    }
                                                                     ok().render(slAllManufacturers, req.attributes())
 
 
@@ -127,7 +154,8 @@ class StandardLevyHandler(
                                                 "load_levy_payments" -> {
                                                     standardLevyPaymentsRepository.findByOrderByIdDesc(page)
                                                         .let { payments ->
-                                                            KotlinLogging.logger { }.info("Records found ${payments.count()}")
+                                                            KotlinLogging.logger { }
+                                                                .info("Records found ${payments.count()}")
                                                             req.attributes()["payments"] = payments
                                                             req.attributes()["map"] = map
                                                             ok().render(allPayments, req.attributes())
@@ -164,30 +192,40 @@ class StandardLevyHandler(
                                 ?.let { manufacturerId ->
                                     commonDaoServices.findCompanyProfileWithID(manufacturerId)
                                         .let { manufacturer ->
-                                           commonDaoServices.findAllPlantDetails(manufacturer.userId?:throw ExpectedDataNotFound("INVALID USER ID"))
+                                            commonDaoServices.findAllPlantDetails(
+                                                manufacturer.userId ?: throw ExpectedDataNotFound("INVALID USER ID")
+                                            )
                                                 .let { contacts ->
 
-                                                            businessNatureRepository.findByIdOrNull(manufacturer.businessNatures)
-                                                                .let { nature ->
-                                                                    standardLevyFactoryVisitReportRepo.findByManufacturerEntity(manufacturer.id?: throw ExpectedDataNotFound("INVALID ID"))
-                                                                        .let {
-                                                                            req.attributes()["visitReport"] = it
-                                                                        }
-
-                                                                    standardLevyPaymentsRepository.findByManufacturerEntity(manufacturer.id?: throw ExpectedDataNotFound("INVALID ID"))
-                                                                        .let { paymentHistory ->
-                                                                            req.attributes()["paymentHistory"] = paymentHistory
-                                                                            KotlinLogging.logger { }.info { "Payment history, $paymentHistory" }
-                                                                        }
-                                //                                                                                                        }
-                                                                    req.attributes()["reportData"] = StandardLevyFactoryVisitReportEntity()
-                                                                    req.attributes()["manufacturer"] = manufacturer
-                                                                    req.attributes()["map"] = map
-                                                                    req.attributes()["contacts"] = contacts
-                                                                    req.attributes()["turnover"] = manufacturer.yearlyTurnover
-                                                                    req.attributes()["nature"] = nature
-                                                                    return ok().render(singleManufacturerPage, req.attributes())
+                                                    businessNatureRepository.findByIdOrNull(manufacturer.businessNatures)
+                                                        .let { nature ->
+                                                            standardLevyFactoryVisitReportRepo.findByManufacturerEntity(
+                                                                manufacturer.id
+                                                                    ?: throw ExpectedDataNotFound("INVALID ID")
+                                                            )
+                                                                .let {
+                                                                    req.attributes()["visitReport"] = it
                                                                 }
+
+                                                            standardLevyPaymentsRepository.findByManufacturerEntity(
+                                                                manufacturer.id
+                                                                    ?: throw ExpectedDataNotFound("INVALID ID")
+                                                            )
+                                                                .let { paymentHistory ->
+                                                                    req.attributes()["paymentHistory"] = paymentHistory
+                                                                    KotlinLogging.logger { }
+                                                                        .info { "Payment history, $paymentHistory" }
+                                                                }
+                                                            //                                                                                                        }
+                                                            req.attributes()["reportData"] =
+                                                                StandardLevyFactoryVisitReportEntity()
+                                                            req.attributes()["manufacturer"] = manufacturer
+                                                            req.attributes()["map"] = map
+                                                            req.attributes()["contacts"] = contacts
+                                                            req.attributes()["turnover"] = manufacturer.yearlyTurnover
+                                                            req.attributes()["nature"] = nature
+                                                            return ok().render(singleManufacturerPage, req.attributes())
+                                                        }
 
                                                 }
 
@@ -224,13 +262,84 @@ class StandardLevyHandler(
                                             }
                                             manufacturerRepository.save(manufacturer)
 
-                                            val kraId = req.paramOrNull("kraId")?.toLong() ?: throw NullValueNotAllowedException("Invalid KraId")
+                                            val kraId = req.paramOrNull("kraId")?.toLong()
+                                                ?: throw NullValueNotAllowedException("Invalid KraId")
 
                                             // Schedule site visit complete
                                             standardsLevyBpmn.slsvScheduleVisitComplete(kraId)
 
-                                            redirectAttributes?.addFlashAttribute("alert", "You have scheduled the factory visit")
-                                            return ok().render("redirect:/sl/manufacturer?manufacturerId=${manufacturer.id}&appId=${appId}", req.attributes())
+                                            redirectAttributes?.addFlashAttribute(
+                                                "alert",
+                                                "You have scheduled the factory visit"
+                                            )
+                                            return ok().render(
+                                                "redirect:/sl/manufacturer?manufacturerId=${manufacturer.id}&appId=${appId}",
+                                                req.attributes()
+                                            )
+                                        }
+
+                                }
+                        }
+
+                }
+                ?: throw ServiceMapNotFoundException("Missing application mapping for [id=$appId], recheck configuration")
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            ServerResponse.badRequest().body(e.message ?: "Unknown error")
+
+        }
+
+    @PreAuthorize("hasAuthority('SL_SCHEDULE_FACTORY_VISIT_MANUFACTURER') and hasAuthority('SL_MANUFACTURERS_VIEW')")
+    fun actionScheduleVisit(req: ServerRequest): ServerResponse =
+        try {
+            serviceMapsRepository.findByIdOrNull(appId)
+                ?.let { map ->
+                    req.paramOrNull("manufacturerId")
+                        ?.let { manufacturerId ->
+                            commonDaoServices.findCompanyProfileWithID(
+                                manufacturerId.toLongOrNull()
+                                    ?: throw NullValueNotAllowedException("Invalid manufacturer id")
+                            )
+                                ?.let { manufacturer ->
+                                    req.paramOrNull("scheduleDate")
+                                        ?.let { scheduleDate ->
+                                            with(manufacturer) {
+                                                factoryVisitDate = LocalDate.parse(scheduleDate)
+                                                factoryVisitStatus = map.activeStatus
+                                            }
+                                            companyProfileRepo.save(manufacturer)
+
+                                            //val kraId = req.paramOrNull("kraId")?.toLong() ?: throw NullValueNotAllowedException("Invalid KraId")
+
+                                            // Schedule site visit complete
+                                            var visit = StandardLevyFactoryVisitReportEntity().apply {
+                                                manufacturerEntity = manufacturer.id
+                                                scheduledVisitDate = manufacturer.factoryVisitDate
+                                                status = map.initStatus
+                                            }
+                                            visit = standardLevyFactoryVisitReportRepo.save(visit)
+
+                                            val userName = SecurityContextHolder.getContext().authentication?.name
+                                                ?: throw NullValueNotAllowedException("Invalid session")
+                                            userRepo.findByUserName(userName)
+                                                ?.let {
+                                                    standardsLevyBpmn.startSlSiteVisitProcess(visit.id, it.id?:throw NullValueNotAllowedException("Invalid user"))
+                                                    standardsLevyBpmn.slsvQueryManufacturerDetailsComplete(visit.id)
+                                                    standardsLevyBpmn.slsvScheduleVisitComplete(visit.id)
+                                                }
+                                                ?:throw NullValueNotAllowedException("User not found")
+                                            //standardsLevyBpmn.slsvScheduleVisitComplete(kraId)
+
+                                            redirectAttributes?.addFlashAttribute(
+                                                "alert",
+                                                "You have scheduled the factory visit"
+                                            )
+                                            return ok().render(
+                                                "redirect:/sl/manufacturer?manufacturerId=${manufacturer.id}&appId=${appId}",
+                                                req.attributes()
+                                            )
                                         }
 
                                 }
@@ -251,67 +360,114 @@ class StandardLevyHandler(
         try {
             serviceMapsRepository.findByIdOrNull(appId)
                 ?.let { map ->
-                commonDaoServices.findCompanyProfileWithID(req.paramOrNull("manufacturerId")?.toLong()?: throw ExpectedDataNotFound("INVALID ID"))
-                    .let { manufacturer ->
+                    commonDaoServices.findCompanyProfileWithID(
+                        req.paramOrNull("manufacturerId")?.toLong() ?: throw ExpectedDataNotFound("INVALID ID")
+                    )
+                        .let { manufacturer ->
                             req.paramOrNull("whereTo")
                                 ?.let { whereTo ->
                                     return when (whereTo) {
                                         "assistant_manager_approval" -> {
-                                            standardLevyFactoryVisitReportRepo.findByManufacturerEntity(manufacturer.id?: throw ExpectedDataNotFound("INVALID ID"))
+                                            standardLevyFactoryVisitReportRepo.findByManufacturerEntity(
+                                                manufacturer.id ?: throw ExpectedDataNotFound("INVALID ID")
+                                            )
                                                 ?.let { visitReport ->
                                                     with(visitReport) {
-                                                        assistantManagerApproval = req.paramOrNull("approvalStatus")?.toIntOrNull() ?: throw NullValueNotAllowedException("Invalid approvalStatus")
+                                                        assistantManagerApproval =
+                                                            req.paramOrNull("approvalStatus")?.toIntOrNull()
+                                                                ?: throw NullValueNotAllowedException("Invalid approvalStatus")
                                                     }
                                                     standardLevyFactoryVisitReportRepo.save(visitReport)
 
-                                                    val kraId = req.paramOrNull("kraId")?.toLongOrNull() ?: throw NullValueNotAllowedException("Invalid KraId")
+                                                    val kraId = req.paramOrNull("kraId")?.toLongOrNull()
+                                                        ?: throw NullValueNotAllowedException("Invalid KraId")
                                                     //Assistant manager approve complete
-                                                    standardsLevyBpmn.slsvApproveReportAsstManagerComplete(kraId, slManager, true)
+                                                    standardsLevyBpmn.slsvApproveReportAsstManagerComplete(
+                                                        kraId,
+                                                        slManager,
+                                                        true
+                                                    )
 
-                                                    redirectAttributes?.addFlashAttribute("success", "You have approved the report.")
-                                                    ok().render("redirect:/sl/manufacturer?manufacturerId=${manufacturer.id}&appId=${map.id}", req.attributes())
+                                                    redirectAttributes?.addFlashAttribute(
+                                                        "success",
+                                                        "You have approved the report."
+                                                    )
+                                                    ok().render(
+                                                        "redirect:/sl/manufacturer?manufacturerId=${manufacturer.id}&appId=${map.id}",
+                                                        req.attributes()
+                                                    )
                                                 }
                                                 ?: throw NullValueNotAllowedException("Required report data is not present")
                                         }
 
                                         "manager_approval" -> {
-                                            standardLevyFactoryVisitReportRepo.findByManufacturerEntity(manufacturer.id?: throw ExpectedDataNotFound("INVALID ID"))
+                                            standardLevyFactoryVisitReportRepo.findByManufacturerEntity(
+                                                manufacturer.id ?: throw ExpectedDataNotFound("INVALID ID")
+                                            )
                                                 ?.let { visitReport ->
                                                     with(visitReport) {
-                                                        managersApproval = req.paramOrNull("approvalStatus")?.toIntOrNull()
+                                                        managersApproval =
+                                                            req.paramOrNull("approvalStatus")?.toIntOrNull()
                                                     }
                                                     standardLevyFactoryVisitReportRepo.save(visitReport)
 
-                                                    val kraId = req.paramOrNull("kraId")?.toLongOrNull() ?: throw NullValueNotAllowedException("Invalid kraId")
+                                                    val kraId = req.paramOrNull("kraId")?.toLongOrNull()
+                                                        ?: throw NullValueNotAllowedException("Invalid kraId")
                                                     //Assistant manager approve complete
-                                                    standardsLevyBpmn.slsvApproveReportManagerComplete(kraId, principalLevyOfficer, true)
+                                                    standardsLevyBpmn.slsvApproveReportManagerComplete(
+                                                        kraId,
+                                                        principalLevyOfficer,
+                                                        true
+                                                    )
 
-                                                    redirectAttributes?.addFlashAttribute("success", "You have approved the report.")
-                                                    ok().render("redirect:/sl/manufacturer?manufacturerId=${manufacturer.id}&appId=${map.id}", req.attributes())
+                                                    redirectAttributes?.addFlashAttribute(
+                                                        "success",
+                                                        "You have approved the report."
+                                                    )
+                                                    ok().render(
+                                                        "redirect:/sl/manufacturer?manufacturerId=${manufacturer.id}&appId=${map.id}",
+                                                        req.attributes()
+                                                    )
                                                 }
                                                 ?: throw NullValueNotAllowedException("Required report data is not present")
 
                                         }
                                         "submit_feedback" -> {
-                                            standardLevyFactoryVisitReportRepo.findByManufacturerEntity(manufacturer.id?: throw ExpectedDataNotFound("INVALID ID"))
+                                            standardLevyFactoryVisitReportRepo.findByManufacturerEntity(
+                                                manufacturer.id ?: throw ExpectedDataNotFound("INVALID ID")
+                                            )
                                                 ?.let { visitReport ->
                                                     with(visitReport) {
                                                         officersFeedback = req.paramOrNull("feedback")
                                                     }
                                                     standardLevyFactoryVisitReportRepo.save(visitReport)
 
-                                                    val kraId = req.paramOrNull("kraId")?.toLongOrNull() ?: throw NullValueNotAllowedException("Invalid kraId")
+                                                    val kraId = req.paramOrNull("kraId")?.toLongOrNull()
+                                                        ?: throw NullValueNotAllowedException("Invalid kraId")
                                                     //Assistant manager approve complete
-                                                    standardsLevyBpmn.slsvApproveReportManagerComplete(kraId, principalLevyOfficer, true)
+                                                    standardsLevyBpmn.slsvApproveReportManagerComplete(
+                                                        kraId,
+                                                        principalLevyOfficer,
+                                                        true
+                                                    )
 
-                                                    redirectAttributes?.addFlashAttribute("alert", "You have added your feedbackt.")
-                                                    ok().render("redirect:/sl/manufacturer?manufacturerId=${manufacturer.id}&appId=${map.id}", req.attributes())
+                                                    redirectAttributes?.addFlashAttribute(
+                                                        "alert",
+                                                        "You have added your feedbackt."
+                                                    )
+                                                    ok().render(
+                                                        "redirect:/sl/manufacturer?manufacturerId=${manufacturer.id}&appId=${map.id}",
+                                                        req.attributes()
+                                                    )
                                                 }
                                                 ?: throw NullValueNotAllowedException("Required report data is not present")
                                         }
                                         else -> {
                                             redirectAttributes?.addFlashAttribute("error", "Caught an exception. ")
-                                            ok().render("redirect:/sl/manufacturer?manufacturerId=${manufacturer.id}&appId=${map.id}", req.attributes())
+                                            ok().render(
+                                                "redirect:/sl/manufacturer?manufacturerId=${manufacturer.id}&appId=${map.id}",
+                                                req.attributes()
+                                            )
                                         }
                                     }
                                 }
