@@ -147,6 +147,12 @@ class QualityAssuranceHandler(
                 auth.authorities.stream().anyMatch { authority -> authority.authority == "QA_PAC_SECRETARY_READ" } -> {
                     qaDaoServices.findAllPacSecPermitListWithPermitType(loggedInUser, permitTypeID)
                 }
+                auth.authorities.stream().anyMatch { authority -> authority.authority == "QA_PCM_READ" } -> {
+                    qaDaoServices.findAllPCMPermitListWithPermitType(loggedInUser, permitTypeID)
+                }
+                auth.authorities.stream().anyMatch { authority -> authority.authority == "QA_PSC_MEMBERS_READ" } -> {
+                    qaDaoServices.findAllPSCPermitListWithPermitType(loggedInUser, permitTypeID)
+                }
                 else -> {
                     throw ExpectedDataNotFound("UNAUTHORISED LOGGED IN USER (ACCESS DENIED)")
                 }

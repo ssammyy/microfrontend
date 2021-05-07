@@ -23,6 +23,8 @@ interface IPermitApplicationsRepository : HazelcastRepository<PermitApplications
     fun findByUserIdAndPermitTypeAndEndOfProductionStatus(userId: Long, permitType: Long, endOfProductionStatus: Int): List<PermitApplicationsEntity>?
     fun findByUserIdAndPermitTypeAndEndOfProductionStatusAndOldPermitStatusIsNull(userId: Long, permitType: Long, endOfProductionStatus: Int): List<PermitApplicationsEntity>?
     fun findByIdAndUserIdAndPermitType(id: Long, userId: Long, permitType: Long): PermitApplicationsEntity?
+    fun findByPcmIdAndPermitTypeAndOldPermitStatusIsNull(userId: Long, permitType: Long): List<PermitApplicationsEntity>?
+    fun findByPscMemberIdAndPermitTypeAndOldPermitStatusIsNull(userId: Long, permitType: Long): List<PermitApplicationsEntity>?
     fun findByIdAndUserId(id: Long, userId: Long): PermitApplicationsEntity?
     fun findAllByPaidStatus(paymentStatus: Int): List<PermitApplicationsEntity>?
     fun findByPermitNumberAndOldPermitStatus(permitNumber: String, oldPermitStatus: Int): List<PermitApplicationsEntity>?
