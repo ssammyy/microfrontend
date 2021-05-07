@@ -2,6 +2,7 @@ package org.kebs.app.kotlin.apollo.api.flux.ports.dto.pvoc
 
 import org.kebs.app.kotlin.apollo.store.model.CocItemsEntity
 import org.kebs.app.kotlin.apollo.store.model.CocsEntity
+import javax.validation.Valid
 
 
 class CocItemsResponse {
@@ -36,11 +37,15 @@ class CocItemsResponse {
 //}
 
 class CocWithItems{
+    @Valid
     var coc:CocsEntity? = null
+    @Valid
     var items: List<CocItemsEntity>? = null
 }
 
 class CoiWithItems{
+    @Valid
     var coi:CocsEntity? = null
+    @Valid
     var items: List<CocItemsEntity>? = null
 }
