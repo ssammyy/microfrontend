@@ -251,22 +251,22 @@
                                     <div class="panel">
                                         <ul  style="width: 500px" class="w-list-unstyled">
                                             <li class="list-item" th:if="${contacts?.firstName}">
-                                                <div class="list-title" style="color: #1B75BC;">ContactPerson</div>
+                                                <div class="list-title" style="color: #0166B1;">ContactPerson</div>
                                                 <div class="list-text" th:text="${contacts?.firstName} + ' ' + ${contacts?.firstName}"></div>
                                             </li>
                                             <br>
                                             <li class="list-item" th:if="${contacts?.cellPhone}">
-                                                <div class="list-title" style="color: #1B75BC;">Phone Number</div>
+                                                <div class="list-title" style="color: #0166B1;">Phone Number</div>
                                                 <div class="list-text" th:text="${contacts?.cellPhone}"></div>
                                             </li>
                                             <br>
                                             <li class="list-item" th:if="${contacts?.emailAddress}">
-                                                <div class="list-title" style="color: #1B75BC;">Email Address</div>
+                                                <div class="list-title" style="color: #0166B1;">Email Address</div>
                                                 <div class="list-text" th:text="${contacts?.emailAddress}"></div>
                                             </li>
                                             <br>
                                             <li class="list-item" th:if="${contacts?.emailAddress}">
-                                                <div class="list-title" style="color: #1B75BC;">Business Nature</div>
+                                                <div class="list-title" style="color: #0166B1;">Business Nature</div>
                                                 <div class="list-text" th:text="${nature?.name}"></div>
                                             </li>
                                             <br>
@@ -311,38 +311,38 @@
                                         <div class="panel">
                                             <ul  style="width: 500px" class="w-list-unstyled">
                                                 <li class="list-item" th:if="${visitReport?.purpose}">
-                                                    <div class="list-title" style="color: #1B75BC;">Purpose of visit</div>
+                                                    <div class="list-title" style="color: #0166B1;">Purpose of visit</div>
                                                     <div class="list-text" th:text="${visitReport?.purpose}"></div>
                                                 </li>
                                                 <br>
                                                 <li class="list-item" th:if="${visitReport?.personMet}">
-                                                    <div class="list-title" style="color: #1B75BC;">Person met during visit</div>
+                                                    <div class="list-title" style="color: #0166B1;">Person met during visit</div>
                                                     <div class="list-text" th:text="${visitReport?.personMet}"></div>
                                                 </li>
                                                 <br>
                                                 <li class="list-item" th:if="${visitReport?.actionTaken}">
-                                                    <div class="list-title" style="color: #1B75BC;">Action taken</div>
+                                                    <div class="list-title" style="color: #0166B1;">Action taken</div>
                                                     <div class="list-text" th:text="${visitReport?.actionTaken}"></div>
                                                 </li>
                                                 <br>
                                                 <li class="list-item" th:if="${visitReport?.remarks}">
-                                                    <div class="list-title" style="color: #1B75BC;">Remarks from the visit</div>
+                                                    <div class="list-title" style="color: #0166B1;">Remarks from the visit</div>
                                                     <div class="list-text" th:text="${visitReport?.remarks}"></div>
                                                 </li>
                                                 <br>
                                                 <li class="list-item" th:if="${visitReport?.officersFeedback}">
-                                                    <div class="list-title" style="color: #1B75BC;">Officers Feedback</div>
+                                                    <div class="list-title" style="color: #0166B1;">Officers Feedback</div>
                                                     <div class="list-text" th:text="${visitReport?.officersFeedback}"></div>
                                                 </li>
                                                 <br>
                                                 <li class="list-item">
-                                                    <div class="list-title" style="color: #1B75BC;">Assistant managers approval</div>
+                                                    <div class="list-title" style="color: #0166B1;">Assistant managers approval</div>
                                                     <div th:if="${visitReport.assistantManagerApproval == 1}" class="list-text" th:text="'Approved'"></div>
                                                     <div th:if="${visitReport.assistantManagerApproval != 1}" class="list-text" th:text="'Pending Approval'"></div>
                                                 </li>
                                                 <br>
                                                 <li class="list-item">
-                                                    <div class="list-title" style="color: #1B75BC;">Assistant managers approval</div>
+                                                    <div class="list-title" style="color: #0166B1;">Assistant managers approval</div>
                                                     <div th:if="${visitReport.managersApproval == 1}" class="list-text" th:text="'Approved'"></div>
                                                     <div th:if="${visitReport.managersApproval != 1}" class="list-text" th:text="'Pending Approval'"></div>
                                                 </li>

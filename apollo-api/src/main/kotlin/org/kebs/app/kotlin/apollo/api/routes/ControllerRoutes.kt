@@ -555,6 +555,7 @@ class ControllerRoutes {
             GET("/manufacturers", handler::loadManufacturers)
             GET("/manufacturer", handler::singleManufacturer)
             GET("/schedule", handler::scheduleVisit)
+            POST("/schedule", handler::actionScheduleVisit)
             GET("/general-actions", handler::generalActions)
         }
 

@@ -18,7 +18,9 @@ class StandardsLevyBpmn(private val taskService: TaskService,
                         private val runtimeService: RuntimeService,
                         private val userRepo: IUserRepository,
                         private val slPaymentsRepo: IStandardLevyPaymentsRepository,
+                        private val companyProfileRepo: ICompanyProfileRepository,
                         private val manufacturerRepo: IManufacturerRepository,
+                        private val slFactoryVisitReportRepo:IStandardLevyFactoryVisitReportRepository,
                         private val bpmnCommonFunctions: BpmnCommonFunctions) {
     @Value("\${bpmn.sl.registration.process.definition.key}")
     lateinit var slRegistrationProcessDefinitionKey: String
@@ -56,18 +58,25 @@ class StandardsLevyBpmn(private val taskService: TaskService,
         val variables: HashMap<String, Any> = HashMap()
         try{
             var processInstanceId = ""
-            slPaymentsRepo.findByIdOrNull(objectId)?.let { slPayment ->//Check that the slPayment is valid
+
                 KotlinLogging.logger { }.trace("ObjectId : $objectId : Valid slPayment found")
                 if (process == slRegistrationProcessDefinitionKey){
-                    processInstanceId = slPayment.slRegistrationProcessInstanceId.toString()
+                    slPaymentsRepo.findByIdOrNull(objectId)?.let { slPayment ->//Check that the slPayment is valid
+                        processInstanceId = slPayment.slRegistrationProcessInstanceId.toString()
+                        variables["slPayment"] = slPayment
+                    }
                 }
                 if (process == slSiteVisitProcessDefinitionKey){
-                    processInstanceId = slPayment.slSiteVisitProcessInstanceId.toString()
+                    slFactoryVisitReportRepo.findByIdOrNull(objectId)?.let { slFactoryVisitReport ->//Check that the sl factory visit report is valid
+                        processInstanceId = slFactoryVisitReport.slProcessInstanceId.toString()
+                        variables["slFactoryVisitReport"] = slFactoryVisitReport
+                    }
+
                 }
                 variables["processInstanceId"] = processInstanceId
-                variables["slPayment"] = slPayment
+
                 return variables
-            }
+            //}
             KotlinLogging.logger { }.info("slPayment : $objectId : No slPayment found")
         } catch (e:Exception){
             KotlinLogging.logger { }.error(e.message, e)
@@ -173,7 +182,7 @@ class StandardsLevyBpmn(private val taskService: TaskService,
                     if (processKey == slRegistrationProcessDefinitionKey) {
                         slPayment.slRegistrationStatus?.let { status ->
                             if (status != 0) {
-                                //KotlinLogging.logger { }.info("objectId : $objectId : object already has a sl registration task assigned"); return null
+                                KotlinLogging.logger { }.info("objectId : $objectId : object already has a sl registration task assigned"); return null
                             }
                         }
                     }
@@ -181,7 +190,7 @@ class StandardsLevyBpmn(private val taskService: TaskService,
                     if (processKey == slSiteVisitProcessDefinitionKey) {
                         slPayment.slSiteVisitStatus?.let { status ->
                             if (status != 0) {
-                                //KotlinLogging.logger { }.info("objectId : $objectId : object already has a sl site visit task assigned"); return null
+                                KotlinLogging.logger { }.info("objectId : $objectId : object already has a sl site visit task assigned"); return null
                             }
                         }
                     }

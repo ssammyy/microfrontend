@@ -60,15 +60,15 @@
                       </li>
                       <li class="list-item-accordion">
                         <div class="list-title-accordion">BS Number</div>
-<!--                        <div class="list-text-accordion" th:text="${product?.name}"></div>-->
+                        <div class="list-text-accordion" th:text="${permitDetails?.bsNumber}"></div>
                       </li>
                       <li class="list-item-accordion">
                         <div class="list-title-accordion">Date of Issue</div>
-<!--                        <div class="list-text-accordion" th:text="${permitDetails?.tradeMark}"></div>-->
+                        <div class="list-text-accordion" th:text="${#dates.format(permitDetails?.dateOfIssue, 'dd/MM/yyyy')}"></div>
                       </li>
                       <li class="list-item-accordion">
                         <div class="list-title-accordion">Compliance Status</div>
-                        <div class="list-text-accordion" th:text="${permitDetails?.compliantStatus}"></div>
+                        <div class="list-text-accordion" th:text="${permitDetails?.compliantStatus} ? 'COMPLIANT' : 'NON-COMPLIANT'"></div>
                       </li>
 
                     </ul>

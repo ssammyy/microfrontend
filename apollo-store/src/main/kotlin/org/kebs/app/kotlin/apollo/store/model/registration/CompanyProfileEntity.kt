@@ -3,6 +3,7 @@ package org.kebs.app.kotlin.apollo.store.model.registration
 import java.io.Serializable
 import java.math.BigDecimal
 import java.sql.Timestamp
+import java.time.LocalDate
 import java.util.*
 import javax.persistence.*
 
@@ -154,6 +155,14 @@ class CompanyProfileEntity : Serializable {
     @Column(name = "DELETED_ON")
     @Basic
     var deletedOn: Timestamp? = null
+
+    @Column(name = "FACTORY_VISIT_DATE ")
+    @Basic
+    var factoryVisitDate: LocalDate? = null
+
+    @Column(name = "FACTORY_VISIT_STATUS ")
+    @Basic
+    var factoryVisitStatus: Int? = null
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

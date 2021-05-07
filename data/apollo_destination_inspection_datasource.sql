@@ -34,8 +34,7 @@ where UUID = '59572e2d-222a-4850-a256-d04d07a00ca7'
 -- where ID = 85
 -- where CD_DOC_ID = 184
 order by ID desc;
-select *
-from DAT_KEBS_COCS
+select * from DAT_KEBS_COCS
 -- where UCR_NUMBER = 'UCR202100126859'
 -- where id = 283
 order by ID desc;
@@ -45,6 +44,7 @@ from dual;
 
 -- alter sequence CFG_KEBS_COUNTRY_TYPE_CODES_SEQ
 alter sequence DAT_KEBS_COCS_SEQ increment by 1500;
+
 
 select *
 from DAT_KEBS_COC_ITEMS

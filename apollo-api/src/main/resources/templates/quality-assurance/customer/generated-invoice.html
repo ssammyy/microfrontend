@@ -115,7 +115,7 @@
 >
 
 <!--    <div class="app-nav app-nav-condensed hidden-print">-->
-<!--      <section id="header" style="background-color: #1b75bc;">-->
+<!--      <section id="header" style="background-color: #0166B1;">-->
 <!--        <div class="container">-->
 
 <!--          <a th:href="@{/}" class="logo"-->
@@ -311,7 +311,7 @@
                                                 <td></td>
                                                 <td></td>
                                                 <td>Balance</td>
-                                                <td th:text="'KSH ' + ${invoice?.amount}"></td>
+                                                <td th:text="'KSH ' + ${invoiceBalanceDetails?.invoiceAmount}"></td>
                                             </tr>
                                             </tbody>
                                         </table>
@@ -324,7 +324,7 @@
                                 <div th:if="${invoice.status == 0}"
                                         menuitemname="Client Details"
                                         class="panel panel-sidebar panel-payment"
-                                        style="background-color: #1b75bc;"
+                                        style="background-color: #0166B1;"
                                 >
                                     <div  class="panel-body" data-role="paymethod-info">
                                         <div class="total">
@@ -406,15 +406,15 @@
                                             </div>
 
                                         </div>
-<!--                                        <button th:if="${invoice.status == 0}"  type="button" id="paymentBtn" style="-->
-<!--                                            color: blue;-->
-<!--                                            border-radius: 5px;-->
-<!--                                            -moz-border-radius: 5px;-->
-<!--                                            padding: 5px;-->
-<!--                                            margin-left: 10px;-->
-<!--                                            width: 200px;">-->
-<!--                                            Already paid?-->
-<!--                                        </button>-->
+                                        <button th:if="${invoice.status == 0}"  type="button" id="paymentBtn" style="
+                                            color: blue;
+                                            border-radius: 5px;
+                                            -moz-border-radius: 5px;
+                                            padding: 5px;
+                                            margin-left: 10px;
+                                            width: 200px;">
+                                            CHECK BALANCE?
+                                        </button>
                                         <div th:replace="fragments/general-form.html :: alerts-bar"></div>
                                     </div>
 
@@ -423,7 +423,7 @@
                                 <div th:if="${invoice.status == 1}"
                                      menuitemname="Client Details"
                                      class="panel panel-sidebar panel-payment"
-                                     style="background-color: #1b75bc;"
+                                     style="background-color: #0166B1;"
                                 >
                                     <div class="panel-body">
                                         <div class="total">

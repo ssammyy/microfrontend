@@ -355,63 +355,6 @@ class RegisterController(
 //    }
 
 
-    @PostMapping("/signup/manufacturer/save")
-    fun registerManufacturer(
-        model: Model,
-        @RequestParam(value = "userTypeId", required = false) userTypeId: Int?,
-        @RequestParam(value = "userLoggedInId", required = true) userLoggedInId: Long,
-        @RequestParam(value = "appId", required = false) appId: Int?,
-        @ModelAttribute("manufacturersEntity") @Valid manufacturersEntity: ManufacturersEntity,
-        @ModelAttribute("manufacturerContactEntity") @Valid manufacturerContactsEntity: ManufacturerContactsEntity,
-        @ModelAttribute("manufacturerAddressesEntity") @Valid manufacturerAddressesEntity: ManufacturerAddressesEntity,
-        @ModelAttribute("yearlyTurnoverEntity") yearlyTurnoverEntity: ManufacturePaymentDetailsEntity,
-        @ModelAttribute("stdLevyNotificationFormEntity") stdLevyNotificationFormEntity: StdLevyNotificationFormEntity,
-        results: BindingResult,
-        redirectAttributes: RedirectAttributes
-    ): String? {
-
-
-//        var result = "redirect:/api/auth/signup/notification/success"
-        var result: ServiceRequestsEntity?
-
-        appId?.let {
-            serviceMapsRepository.findByIdAndStatus(it, 1)
-                ?.let { s ->
-//                                when {
-//                                    results.hasErrors() -> {
-//                                        result = "redirect:/api/auth/signup/manufacturer"
-//                                    }
-//                                }
-//                                val variables = mutableMapOf<String, Any?>()
-//                                variables["map"] = s
-//                                variables["contact"] = manufacturerContactsEntity
-//                                variables["manufacturer"] = manufacturersEntity
-//                                variables["address"] = manufacturerAddressesEntity
-//                                variables["userTypeId"] = userTypeId
-//                                runtimeService.startProcessInstanceByKey(s.bpmnProcessKey, variables)
-                    result = daoServices.registerManufacturer(
-                        s,
-                        manufacturerContactsEntity,
-                        stdLevyNotificationFormEntity,
-                        manufacturersEntity,
-                        manufacturerAddressesEntity,
-                        userTypeId,
-                        userLoggedInId,
-                        yearlyTurnoverEntity
-                    )
-                    return when (result?.status) {
-                        s.successStatus -> s.successNotificationUrl
-                        else -> s.failureNotificationUrl
-                    }
-
-                }
-                ?: throw ServiceMapNotFoundException("No service map found for appId=$it, aborting")
-
-        }
-            ?: throw ServiceMapNotFoundException("Empty and/or Invalid Application Id Received, aborting")
-
-
-    }
 
     @PostMapping("/signup/importer/save")
     fun registerImporterExporter(

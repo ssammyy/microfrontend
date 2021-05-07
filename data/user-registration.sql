@@ -129,7 +129,7 @@ order by id desc
 select *
 from DAT_KEBS_USER_PROFILES
 -- where REGION_ID = 4 and DESIGNATION_ID = 304
--- where email = '254safaris@gmail.com'
+where USER_ID = 1523
 order by id desc;
 
 alter table DAT_KEBS_USERS
