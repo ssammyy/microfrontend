@@ -42,9 +42,10 @@ class StandardLevyFactoryVisitReportEntity: Serializable {
     @Basic
     var remarks: String? = null
 
-    @JoinColumn(name = "MANUFACTURER_ENTITY", referencedColumnName = "ID")
-    @ManyToOne
-    var manufacturerEntity: ManufacturersEntity? = null
+    @Column(name = "MANUFACTURER_ENTITY")
+    @Basic
+    var manufacturerEntity: Long? = null
+
 
     @Column(name = "OFFICERS_FEEDBACK")
     @Basic

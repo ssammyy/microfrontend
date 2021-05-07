@@ -1303,13 +1303,13 @@ class QADaoServices(
         return m
     }
 
-    fun sendComplianceStatusAndLabReport(permitDetails: PermitApplicationsEntity) {
+    fun sendComplianceStatusAndLabReport(permitDetails: PermitApplicationsEntity, compliantStatus: String) {
         val manufacturer = permitDetails.userId?.let { commonDaoServices.findUserByID(it) }
         val subject = "LAB REPORT AND COMPLIANCE STATUS "
         val messageBody = "Dear ${manufacturer?.let { commonDaoServices.concatenateName(it) }}: \n" +
                 "\n " +
                 "The lab test report are available  at ${applicationMapProperties.baseUrlValue}/qa/kebs/view/attached?fileID=${permitDetails.testReportId}: \n" +
-                " with the following compliance status  ${permitDetails.compliantStatus} ? 'COMPLIANT' : 'NON-COMPLIANT':" +
+                " with the following compliance status  $compliantStatus" +
                 "\n " +
                 "for the following permit : ${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitDetails.id}%26userID=${permitDetails.userId}"
 
