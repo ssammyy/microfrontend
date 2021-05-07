@@ -563,6 +563,7 @@ class RegistrationDaoServices(
                 county = cp.county
                 town = cp.town
                 region = county?.let { commonDaoServices.findCountiesEntityByCountyId(it, s.activeStatus).regionId }
+                manufactureStatus = 1
 
             }
             val userCompany = systemsAdminDaoService.updateUserCompanyDetails(userCompanyDetails)

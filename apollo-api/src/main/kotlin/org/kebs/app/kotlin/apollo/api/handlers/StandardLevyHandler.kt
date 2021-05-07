@@ -36,6 +36,7 @@ class StandardLevyHandler(
     private val standardLevyPaymentsRepository: IStandardLevyPaymentsRepository,
     private val standardsLevyBpmn: StandardsLevyBpmn,
     private val commonDaoServices: CommonDaoServices,
+    private val companyProfileRepo: ICompanyProfileRepository,
     private val userRepo: IUserRepository
 ) {
 
@@ -72,18 +73,15 @@ class StandardLevyHandler(
                 ?.let { map ->
                     SecurityContextHolder.getContext().authentication
                         ?.let { auth ->
-                            val currentPage = req.paramOrNull("currentPage")?.toIntOrNull() ?: 1
-                            val pgSize = req.paramOrNull("pageSize")?.toIntOrNull() ?: 1
-                            PageRequest.of(currentPage, pgSize)
-                                .let { page ->
+
                                     userRepo.findByUserName(auth.name)
                                         ?.let { user ->
                                             val whereTo = req.paramOrNull("whereTo") ?: throw NullValueNotAllowedException("whereTo parameter is required")
                                             when (whereTo) {
                                                 "load_manufacturers" -> {
-                                                    manufacturerRepository.findByOrderByIdDesc(page)
-                                                        .let { manufacturers ->
-                                                            req.attributes()["manufacturers"] = manufacturers
+                                                    commonDaoServices.findCompanyProfileWhoAreManufactures(map.activeStatus)
+                                                        .let { manufacturer ->
+                                                            req.attributes()["manufacturers"] = manufacturer
                                                             req.attributes()["map"] = map
                                                             req.attributes()["type"] = "load_manufacturers"
                                                             ok().render(slAllManufacturers, req.attributes())
@@ -125,9 +123,9 @@ class StandardLevyHandler(
 
                                                 }
                                                 "load_levy_payments" -> {
-                                                    standardLevyPaymentsRepository.findByOrderByIdDesc(page)
+                                                    standardLevyPaymentsRepository.findAllByOrderByIdDesc()
                                                         .let { payments ->
-                                                            KotlinLogging.logger { }.info("Records found ${payments.count()}")
+                                                            KotlinLogging.logger { }.info("Records found ${payments?.count()}")
                                                             req.attributes()["payments"] = payments
                                                             req.attributes()["map"] = map
                                                             ok().render(allPayments, req.attributes())
@@ -141,7 +139,6 @@ class StandardLevyHandler(
                                         }
                                         ?: throw ExpectedDataNotFound("Invalid DATA")
 
-                                }
                         }
                         ?: throw NullValueNotAllowedException("Invalid session")
                 }

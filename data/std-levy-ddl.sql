@@ -1225,6 +1225,12 @@ from STG_STANDARDS_LEVY_MANUFACTURER_PENALTY
 order by id
 ;
 
+select *
+from CFG_KEBS_BUSINESS_NATURE
+where BUSINESS_TYPE_ID = 1
+order by id
+;
+
 commit;
 
 select *

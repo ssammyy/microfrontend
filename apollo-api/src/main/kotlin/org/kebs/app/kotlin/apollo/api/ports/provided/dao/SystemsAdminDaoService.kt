@@ -417,6 +417,7 @@ class SystemsAdminDaoService(
                         town = dto.town
                         factoryVisitDate = dto.factoryVisitDate
                         factoryVisitStatus = dto.factoryVisitStatus
+                        manufactureStatus = dto.manufactureStatus
                         status = 1
                         modifiedBy = loggedInUserDetails().userName
                         modifiedOn = Timestamp.from(Instant.now())
@@ -446,6 +447,7 @@ class SystemsAdminDaoService(
                     town = dto.town
                     factoryVisitDate = dto.factoryVisitDate
                     factoryVisitStatus = dto.factoryVisitStatus
+                    manufactureStatus = dto.manufactureStatus
                     userId = dto.userId
                     status = 1
                     createdBy = loggedInUserDetails().userName

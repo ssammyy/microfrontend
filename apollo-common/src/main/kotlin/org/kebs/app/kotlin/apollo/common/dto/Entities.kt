@@ -276,6 +276,7 @@ data class UserCompanyDto(
     var town: String? = null,
     var factoryVisitDate: Date? = null,
     var factoryVisitStatus: Int? = null,
+    var manufactureStatus: Int? = null,
 )
 
 data class UserCompanyEntityDto(
@@ -298,6 +299,7 @@ data class UserCompanyEntityDto(
     var town: Long? = null,
     var factoryVisitDate: Date? = null,
     var factoryVisitStatus: Int? = null,
+    var manufactureStatus: Int? = null,
 
     )
 

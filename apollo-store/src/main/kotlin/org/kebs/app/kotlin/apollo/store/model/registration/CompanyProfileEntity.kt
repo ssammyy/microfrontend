@@ -36,6 +36,10 @@ class CompanyProfileEntity : Serializable {
     @Basic
     var factoryVisitStatus: Int? = null
 
+    @Column(name = "MANUFACTURE_STATUS")
+    @Basic
+    var manufactureStatus: Int? = null
+
     @Column(name = "REGISTRATION_NUMBER")
     @Basic
     var registrationNumber: String? = null
@@ -191,6 +195,7 @@ class CompanyProfileEntity : Serializable {
                 town == that.town &&
                 factoryVisitDate == that.factoryVisitDate &&
                 factoryVisitStatus == that.factoryVisitStatus &&
+                manufactureStatus == that.manufactureStatus &&
                 description == that.description &&
                 status == that.status &&
                 varField1 == that.varField1 &&
@@ -232,6 +237,7 @@ class CompanyProfileEntity : Serializable {
             town,
             factoryVisitDate,
             factoryVisitStatus,
+            manufactureStatus,
             description,
             status,
             varField1,
