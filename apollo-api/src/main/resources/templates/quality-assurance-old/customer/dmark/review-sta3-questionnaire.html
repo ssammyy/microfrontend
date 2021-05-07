@@ -32,52 +32,52 @@
                                             <div th:if="${permit.foreignApplication == 1}">
                                                 <h5>Foreign Manufacturer Details</h5>
                                                 <li class="list-item">
-                                                    <div class="list-title" style="color: #1b75bc">Street Address</div>
+                                                    <div class="list-title" style="color: #0166B1">Street Address</div>
                                                     <div class="list-text" th:text="${permit?.streetAddress}"></div>
                                                 </li>
                                                 <li class="list-item">
-                                                    <div class="list-title" style="color: #1b75bc">Building</div>
+                                                    <div class="list-title" style="color: #0166B1">Building</div>
                                                     <div class="list-text" th:text="${permit?.city}"></div>
                                                 </li>
                                                 <li class="list-item">
-                                                    <div class="list-title" style="color: #1b75bc">City</div>
+                                                    <div class="list-title" style="color: #0166B1">City</div>
                                                     <div class="list-text" th:text="${permit?.city}"></div>
                                                 </li>
                                                 <li class="list-item">
-                                                    <div class="list-title" style="color: #1b75bc">State</div>
+                                                    <div class="list-title" style="color: #0166B1">State</div>
                                                     <div class="list-text" th:text="${permit?.state}"></div>
                                                 </li>
                                                 <li class="list-item">
-                                                    <div class="list-title" style="color: #1b75bc">Zip Code</div>
+                                                    <div class="list-title" style="color: #0166B1">Zip Code</div>
                                                     <div class="list-text" th:text="${permit?.zipCode}"></div>
                                                 </li>
                                                 <h5>Other details</h5>
                                             </div>
 
                                             <li class="list-item">
-                                                <div class="list-title" style="color: #1b75bc">Product</div>
+                                                <div class="list-title" style="color: #0166B1">Product</div>
                                                 <div class="list-text" th:text="${product?.name}"></div>
                                             </li>
                                             <li class="list-item">
-                                                <div class="list-title" style="color: #1b75bc">Product Sub-category</div>
+                                                <div class="list-title" style="color: #0166B1">Product Sub-category</div>
                                                 <div class="list-text" th:text="${productSubCategory?.name}"></div>
                                             </li>
                                             <li class="list-item">
-                                                <div class="list-title" style="color: #1b75bc">Application type</div>
+                                                <div class="list-title" style="color: #0166B1">Application type</div>
                                                 <div class="list-text" th:text="${permitType}"></div>
                                             </li>
 
                                             <li class="list-item">
-                                                <div class="list-title" style="color: #1b75bc">Trade mark</div>
+                                                <div class="list-title" style="color: #0166B1">Trade mark</div>
                                                 <div class="list-text" th:text="${permit?.tradeMark}"></div>
                                             </li>
 
                                             <li class="list-item">
-                                                <div class="list-title" style="color: #1b75bc">No. of sites producing the brand</div>
+                                                <div class="list-title" style="color: #0166B1">No. of sites producing the brand</div>
                                                 <div class="list-text" th:text="${permit?.noOfSitesProducingTheBrand}"></div>
                                             </li>
                                             <li th:if="${permit?.labReportsFilepath1 != null}" class="list-item">
-                                                <div class="list-title" style="color: #1b75bc">Lab report </div>
+                                                <div class="list-title" style="color: #0166B1">Lab report </div>
                                                 <div class="list-text" th:text="${permit?.labReportsFilepath1}"></div>
                                                 <div th:each="i : ${labDocs}">
                                                     <a th:href="@{/foreign/files/{path}(path = ${i})}" target="_blank"><i class="fa fa-download"></i>Download</a>
@@ -88,7 +88,7 @@
                                                 <h4>Extra documents attached</h4>
                                                 <div th:each="i : ${documents}">
                                                     <li class="list-item">
-                                                        <!--                                                <div class="list-title" style="color: #1b75bc">Lab report 3</div>-->
+                                                        <!--                                                <div class="list-title" style="color: #0166B1">Lab report 3</div>-->
                                                         <div class="list-text" th:text="${i}"></div>
                                                         <a th:href="@{/foreign/files/{path}(path = ${i})}" target="_blank"><i class="fa fa-download"></i>Download</a>
                                                     </li>
@@ -99,11 +99,11 @@
 
 
                                             <li class="list-item">
-                                                <div class="list-title" style="color: #1b75bc">Standard title</div>
+                                                <div class="list-title" style="color: #0166B1">Standard title</div>
                                                 <div class="list-text" th:text="${std?.standardTitle}"></div>
                                             </li>
                                             <li class="list-item">
-                                                <div class="list-title" style="color: #1b75bc">Standard KS Number</div>
+                                                <div class="list-title" style="color: #0166B1">Standard KS Number</div>
                                                 <div class="list-text" th:text="${std?.standardNumber}"></div>
                                             </li>
 
@@ -114,122 +114,122 @@
                                     <div class="panel">
                                         <ul class="w-list-unstyled">
                                             <li class="list-item">
-                                                <div class="list-title" style="color: #1b75bc">Against or for stock</div>
+                                                <div class="list-title" style="color: #0166B1">Against or for stock</div>
                                                 <div class="list-text" th:text="${questionnaire?.againstOrForStock}"></div>
                                             </li>
                                             <li class="list-item">
-                                                <div class="list-title" style="color: #1b75bc">Work or Equivalent</div>
+                                                <div class="list-title" style="color: #0166B1">Work or Equivalent</div>
                                                 <div class="list-text" th:text="${questionnaire?.workOrEquivalent}"></div>
                                             </li>
                                             <li class="list-item">
-                                                <div class="list-title" style="color: #1b75bc">Separate Entity</div>
+                                                <div class="list-title" style="color: #0166B1">Separate Entity</div>
                                                 <div class="list-text" th:text="${questionnaire?.separateEntity}"></div>
                                             </li>
                                             <li class="list-item">
-                                                <div class="list-title" style="color: #1b75bc">Doubtful Quality</div>
+                                                <div class="list-title" style="color: #0166B1">Doubtful Quality</div>
                                                 <div class="list-text" th:text="${questionnaire?.doubtfulQuality}"></div>
                                             </li>
                                             <li class="list-item">
-                                                <div class="list-title" style="color: #1b75bc">Staff Organization</div>
+                                                <div class="list-title" style="color: #0166B1">Staff Organization</div>
                                                 <div class="list-text" th:text="${questionnaire?.staffOrganization}"></div>
                                             </li>
                                             <li class="list-item">
-                                                <div class="list-title" style="color: #1b75bc">Reporting to</div>
+                                                <div class="list-title" style="color: #0166B1">Reporting to</div>
                                                 <div class="list-text" th:text="${questionnaire?.reportingTo}"></div>
                                             </li>
                                             <li class="list-item">
-                                                <div class="list-title" style="color: #1b75bc">Carry word order identification</div>
+                                                <div class="list-title" style="color: #0166B1">Carry word order identification</div>
                                                 <div class="list-text" th:text="${questionnaire?.carryWordOrderIdentification}"></div>
                                             </li>
                                             <li class="list-item">
-                                                <div class="list-title" style="color: #1b75bc">Awareness of Tests</div>
+                                                <div class="list-title" style="color: #0166B1">Awareness of Tests</div>
                                                 <div class="list-text" th:text="${questionnaire?.awarenessOfTests}"></div>
                                             </li>
                                             <!--                                        <a class="filter-link " th:href="@{questionnaire?.certificateFilepath}">Certificate</a>-->
 
                                             <li class="list-item">
-                                                <div class="list-title" style="color: #1b75bc">Incoming Materials</div>
+                                                <div class="list-title" style="color: #0166B1">Incoming Materials</div>
                                                 <div class="list-text" th:text="${questionnaire?.incomingMaterials}"></div>
                                             </li>
 
                                             <li class="list-item">
-                                                <div class="list-title" style="color: #1b75bc">In process applications</div>
+                                                <div class="list-title" style="color: #0166B1">In process applications</div>
                                                 <div class="list-text" th:text="${questionnaire?.inProcessApplications}"></div>
                                             </li>
 
                                             <li class="list-item">
-                                                <div class="list-title" style="color: #1b75bc">Final products</div>
+                                                <div class="list-title" style="color: #0166B1">Final products</div>
                                                 <div class="list-text" th:text="${questionnaire?.finalProducts}"></div>
                                             </li>
                                             <li class="list-item">
-                                                <div class="list-title" style="color: #1b75bc">Monitored by quality control staff</div>
+                                                <div class="list-title" style="color: #0166B1">Monitored by quality control staff</div>
                                                 <div class="list-text" th:text="${questionnaire?.monitoredByQualityControlStaff}"></div>
                                             </li>
                                             <li class="list-item">
-                                                <div class="list-title" style="color: #1b75bc">Quiality audit checks</div>
+                                                <div class="list-title" style="color: #0166B1">Quiality audit checks</div>
                                                 <div class="list-text" th:text="${questionnaire?.qualityAuditChecks}"></div>
                                             </li>
 
                                             <li class="list-item" >
-                                                <div class="list-title"  style="color: #1b75bc">Info on quality control staff</div>
+                                                <div class="list-title"  style="color: #0166B1">Info on quality control staff</div>
                                                 <div class="list-text" th:text="${questionnaire?.infoOnqualityControlStaff}"></div>
                                             </li>
 
                                             <li class="list-item">
-                                                <div class="list-title"  style="color: #1b75bc">Materials purchased</div>
+                                                <div class="list-title"  style="color: #0166B1">Materials purchased</div>
                                                 <div class="list-text" th:text="${questionnaire?.materialsPurchased}"></div>
                                             </li>
 
                                             <li class="list-item" >
-                                                <div class="list-title"  style="color: #1b75bc"> Quality assurance method</div>
+                                                <div class="list-title"  style="color: #0166B1"> Quality assurance method</div>
                                                 <div class="list-text" th:text="${questionnaire?.qualityAssuranceMethod}"></div>
                                             </li>
 
                                             <li class="list-item">
-                                                <div class="list-title" style="color: #1b75bc"> Existing storage facilities</div>
+                                                <div class="list-title" style="color: #0166B1"> Existing storage facilities</div>
                                                 <div class="list-text" th:text="${questionnaire?.existingStorageFacilities}"></div>
                                             </li>
                                             <!--                                        <a class="filter-link " th:href="@{questionnaire?.rawMaterialsTestingRecordFilepath}">Quality checks</a>-->
                                             <li class="list-item">
-                                                <div class="list-title" style="color: #1b75bc"> Manufacturing steps</div>
+                                                <div class="list-title" style="color: #0166B1"> Manufacturing steps</div>
                                                 <div class="list-text" th:text="${questionnaire?.manufacturingSteps}"></div>
                                             </li>
 
                                             <li class="list-item">
-                                                <div class="list-title" style="color: #1b75bc"> Operating maintenance system</div>
+                                                <div class="list-title" style="color: #0166B1"> Operating maintenance system</div>
                                                 <div class="list-text" th:text="${questionnaire?.operatingMaintenanceSystem}"></div>
                                             </li>
 
                                             <li class="list-item">
-                                                <div class="list-title" style="color: #1b75bc" >Quality control system</div>
+                                                <div class="list-title" style="color: #0166B1" >Quality control system</div>
                                                 <div class="list-text" th:text="${questionnaire?.qualityControlSystem}"></div>
                                             </li>
 
                                             <li class="list-item">
-                                                <div class="list-title" style="color: #1b75bc">Test equipment</div>
+                                                <div class="list-title" style="color: #0166B1">Test equipment</div>
                                                 <div class="list-text" th:text="${questionnaire?.testEquipment}"></div>
                                             </li>
 
                                             <li class="list-item">
-                                                <div class="list-title" style="color: #1b75bc">External arrangements of testing</div>
+                                                <div class="list-title" style="color: #0166B1">External arrangements of testing</div>
                                                 <div class="list-text" th:text="${questionnaire?.externalArrangementOrTesting}"></div>
                                             </li>
 
                                             <li class="list-item">
-                                                <div class="list-title" style="color: #1b75bc">Level of defectives</div>
+                                                <div class="list-title" style="color: #0166B1">Level of defectives</div>
                                                 <div class="list-text" th:text="${questionnaire?.levelOfDefectives}"></div>
                                             </li>
                                             <li class="list-item">
-                                                <div class="list-title" style="color: #1b75bc">Level of claims</div>
+                                                <div class="list-title" style="color: #0166B1">Level of claims</div>
                                                 <div class="list-text" th:text="${questionnaire?.levelOfClaims}"></div>
                                             </li>
                                             <li class="list-item">
-                                                <div class="list-title" style="color: #1b75bc">Independent tests</div>
+                                                <div class="list-title" style="color: #0166B1">Independent tests</div>
                                                 <div class="list-text" th:text="${questionnaire?.independentTests}"></div>
                                             </li>
 
                                             <div th:if="${questionnaire?.manufacturingStepsFile}">
-                                                <div class="list-title" style="color: #1b75bc">Manufacturing steps(attachment)</div>
+                                                <div class="list-title" style="color: #0166B1">Manufacturing steps(attachment)</div>
                                                 <div th:each="i : ${manufacturingStepsFiles}">
                                                     <li class="list-item">
                                                         <div class="list-text" th:text="${i}"></div>
@@ -239,7 +239,7 @@
                                             </div>
 
                                             <div th:if="${questionnaire?.qualityManualFile}">
-                                                <div class="list-title" style="color: #1b75bc">Quality manual(attachment)</div>
+                                                <div class="list-title" style="color: #0166B1">Quality manual(attachment)</div>
                                                 <div th:each="i : ${qualityManualFiles}">
                                                     <li class="list-item">
                                                         <div class="list-text" th:text="${i}"></div>
@@ -249,7 +249,7 @@
                                             </div>
 
                                             <div th:if="${questionnaire?.testReportsLevelOfDefectivesFile}">
-                                                <div class="list-title" style="color: #1b75bc">Tests reports on level of defectives(attachment)</div>
+                                                <div class="list-title" style="color: #0166B1">Tests reports on level of defectives(attachment)</div>
                                                 <div th:each="i : ${testReportsLevelOfDefectivesFiles}">
                                                     <li class="list-item">
                                                         <div class="list-text" th:text="${i}"></div>
@@ -260,7 +260,7 @@
 
 
                                             <div th:if="${questionnaire?.testsAgainstTheStandardFile}">
-                                                <div class="list-title" style="color: #1b75bc">Tests against the standard(attachment)</div>
+                                                <div class="list-title" style="color: #0166B1">Tests against the standard(attachment)</div>
                                                 <div th:each="i : ${testsAgainstTheStandardFiles}">
                                                     <li class="list-item">
                                                         <div class="list-text" th:text="${i}"></div>
@@ -270,12 +270,12 @@
                                             </div>
 
                                             <!--                                        <li class="list-item">-->
-                                            <!--                                            <div class="list-title" style="color: #1b75bc">Special label, Embossing etc</div>-->
+                                            <!--                                            <div class="list-title" style="color: #0166B1">Special label, Embossing etc</div>-->
                                             <!--                                            <div class="list-text" th:text="${questionnaire?.illustrationFile}"></div>-->
                                             <!--                                            <a th:href="@{/foreign/files/{path}(path = ${questionnaire?.illustrationFile})}" target="_blank"><i class="fa fa-download"></i></a>-->
                                             <!--                                        </li>-->
                                             <div th:if="${questionnaire?.illustrationFile}">
-                                                <div class="list-title" style="color: #1b75bc"> Special label, Embossing etc(attachment)</div>
+                                                <div class="list-title" style="color: #0166B1"> Special label, Embossing etc(attachment)</div>
                                                 <div th:each="i : ${illustrations}">
                                                     <li class="list-item">
                                                         <div class="list-text" th:text="${i}"></div>

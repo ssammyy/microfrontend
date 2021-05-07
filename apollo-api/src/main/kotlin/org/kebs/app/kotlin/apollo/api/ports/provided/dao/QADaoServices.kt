@@ -150,6 +150,24 @@ class QADaoServices(
             ?: throw ExpectedDataNotFound("No Permit Found for the following user with USERNAME = ${user.userName}")
     }
 
+    fun findAllPCMPermitListWithPermitType(user: UsersEntity, permitType: Long): List<PermitApplicationsEntity> {
+        val userId = user.id ?: throw ExpectedDataNotFound("No USER ID Found")
+        permitRepo.findByPcmIdAndPermitTypeAndOldPermitStatusIsNull(userId, permitType)
+            ?.let { permitList ->
+                return permitList
+            }
+            ?: throw ExpectedDataNotFound("No Permit Found for the following user with USERNAME = ${user.userName}")
+    }
+
+    fun findAllPSCPermitListWithPermitType(user: UsersEntity, permitType: Long): List<PermitApplicationsEntity> {
+        val userId = user.id ?: throw ExpectedDataNotFound("No USER ID Found")
+        permitRepo.findByPscMemberIdAndPermitTypeAndOldPermitStatusIsNull(userId, permitType)
+            ?.let { permitList ->
+                return permitList
+            }
+            ?: throw ExpectedDataNotFound("No Permit Found for the following user with USERNAME = ${user.userName}")
+    }
+
     fun findAllQAOPermitListWithPaymentStatus(paymentStatus: Int): List<PermitApplicationsEntity> {
         permitRepo.findAllByPaidStatus(paymentStatus)?.let { permitList ->
                 return permitList
@@ -1130,7 +1148,7 @@ class QADaoServices(
                                     KotlinLogging.logger { }.info { "second loop, ${permit.product}" }
                                     stgAmt = applicationCost?.let { standardCost?.plus(inspectionCost!!)?.plus(it) }
                                     fmark = 0.toBigDecimal()
-//                                    taxAmount = stgAmt?.let {taxRate.times(it) }
+                                    taxAmount = stgAmt?.let {taxRate.times(it) }
                                     amountToPay = taxAmount?.let { stgAmt?.plus(it) }
                                 }
                                 //                amountToPay = standardCost?.plus(inspectionCost!!)?.let { applicationCost?.plus(it) }
@@ -1170,7 +1188,7 @@ class QADaoServices(
                                     KotlinLogging.logger { }.info { "second loop, ${permit.product}" }
                                     stgAmt = applicationCost?.let { standardCost?.plus(inspectionCost!!)?.plus(it) }
                                     fmark = 0.toBigDecimal()
-//                                    taxAmount = stgAmt?.let {taxRate.times(it) }
+                                    taxAmount = stgAmt?.let {taxRate.times(it) }
                                     amountToPay = taxAmount?.let { stgAmt?.plus(it) }
                                 }
                                 //                amountToPay = standardCost?.plus(inspectionCost!!)?.let { applicationCost?.plus(it) }
@@ -1211,7 +1229,7 @@ class QADaoServices(
                                     KotlinLogging.logger { }.info { "second loop, ${permit.product}" }
                                     stgAmt = applicationCost?.let { standardCost?.plus(inspectionCost!!)?.plus(it) }
                                     fmark = 0.toBigDecimal()
-//                                    taxAmount = stgAmt?.let {taxRate.times(it) }
+                                    taxAmount = stgAmt?.let {taxRate.times(it) }
                                     amountToPay = taxAmount?.let { stgAmt?.plus(it) }
                                 }
                                 //                amountToPay = standardCost?.plus(inspectionCost!!)?.let { applicationCost?.plus(it) }
@@ -1303,13 +1321,13 @@ class QADaoServices(
         return m
     }
 
-    fun sendComplianceStatusAndLabReport(permitDetails: PermitApplicationsEntity) {
+    fun sendComplianceStatusAndLabReport(permitDetails: PermitApplicationsEntity, compliantStatus: String) {
         val manufacturer = permitDetails.userId?.let { commonDaoServices.findUserByID(it) }
         val subject = "LAB REPORT AND COMPLIANCE STATUS "
         val messageBody = "Dear ${manufacturer?.let { commonDaoServices.concatenateName(it) }}: \n" +
                 "\n " +
                 "The lab test report are available  at ${applicationMapProperties.baseUrlValue}/qa/kebs/view/attached?fileID=${permitDetails.testReportId}: \n" +
-                " with the following compliance status  ${permitDetails.compliantStatus} ? 'COMPLIANT' : 'NON-COMPLIANT':" +
+                " with the following compliance status  $compliantStatus" +
                 "\n " +
                 "for the following permit : ${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitDetails.id}%26userID=${permitDetails.userId}"
 

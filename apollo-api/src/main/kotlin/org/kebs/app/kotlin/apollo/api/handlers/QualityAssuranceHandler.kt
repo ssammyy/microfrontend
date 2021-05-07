@@ -25,6 +25,7 @@ import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.ports.provided.createUserAlert
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DestinationInspectionDaoServices
+import org.kebs.app.kotlin.apollo.api.ports.provided.dao.InvoiceDaoService
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.QADaoServices
 import org.kebs.app.kotlin.apollo.common.exceptions.*
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
@@ -55,6 +56,7 @@ class QualityAssuranceHandler(
     private val broadProductCategoryRepository: IBroadProductCategoryRepository,
     private val productsRepo: IProductsRepository,
     private val paymentMethodsRepository: IPaymentMethodsRepository,
+    private val invoiceDaoService: InvoiceDaoService,
     private val countyRepo: ICountiesRepository,
     private val iLaboratoryRepo: ILaboratoryRepository,
     private val productSubCategoryRepo: IProductSubcategoryRepository,
@@ -90,7 +92,7 @@ class QualityAssuranceHandler(
     final val appId: Int = applicationMapProperties.mapQualityAssurance
 
     @PreAuthorize("hasAuthority('PERMIT_APPLICATION') or hasAuthority('QA_OFFICER_MODIFY') or hasAuthority('QA_HOD_READ') or hasAuthority('QA_MANAGER_ASSESSORS_READ') " +
-            "or hasAuthority('QA_HOF_READ') or hasAuthority('QA_ASSESSORS_READ') or hasAuthority('QA_PAC_SECRETARY_READ')")
+            "or hasAuthority('QA_HOF_READ') or hasAuthority('QA_ASSESSORS_READ') or hasAuthority('QA_PAC_SECRETARY_READ') or hasAuthority('QA_PSC_MEMBERS_READ') or hasAuthority('QA_PCM_READ')")
     fun home(req: ServerRequest): ServerResponse {
         try {
             val auth = commonDaoServices.loggedInUserAuthentication()
@@ -117,7 +119,7 @@ class QualityAssuranceHandler(
     }
 
     @PreAuthorize("hasAuthority('PERMIT_APPLICATION') or hasAuthority('QA_OFFICER_READ') or hasAuthority('QA_HOD_READ') or hasAuthority('QA_MANAGER_ASSESSORS_READ')" +
-            " or hasAuthority('QA_HOF_READ') or hasAuthority('QA_ASSESSORS_READ') or hasAuthority('QA_PAC_SECRETARY_READ')")
+            " or hasAuthority('QA_HOF_READ') or hasAuthority('QA_ASSESSORS_READ') or hasAuthority('QA_PAC_SECRETARY_READ') or hasAuthority('QA_PSC_MEMBERS_READ') or hasAuthority('QA_PCM_READ')")
     fun permitList(req: ServerRequest): ServerResponse {
         try {
             val auth = commonDaoServices.loggedInUserAuthentication()
@@ -145,6 +147,12 @@ class QualityAssuranceHandler(
                 auth.authorities.stream().anyMatch { authority -> authority.authority == "QA_PAC_SECRETARY_READ" } -> {
                     qaDaoServices.findAllPacSecPermitListWithPermitType(loggedInUser, permitTypeID)
                 }
+                auth.authorities.stream().anyMatch { authority -> authority.authority == "QA_PCM_READ" } -> {
+                    qaDaoServices.findAllPCMPermitListWithPermitType(loggedInUser, permitTypeID)
+                }
+                auth.authorities.stream().anyMatch { authority -> authority.authority == "QA_PSC_MEMBERS_READ" } -> {
+                    qaDaoServices.findAllPSCPermitListWithPermitType(loggedInUser, permitTypeID)
+                }
                 else -> {
                     throw ExpectedDataNotFound("UNAUTHORISED LOGGED IN USER (ACCESS DENIED)")
                 }
@@ -163,7 +171,7 @@ class QualityAssuranceHandler(
     }
 
     @PreAuthorize("hasAuthority('PERMIT_APPLICATION') or hasAuthority('QA_OFFICER_MODIFY') or hasAuthority('QA_HOD_READ') " +
-            "or hasAuthority('QA_MANAGER_ASSESSORS_READ') or hasAuthority('QA_HOF_READ') or hasAuthority('QA_ASSESSORS_READ') or hasAuthority('QA_PAC_SECRETARY_READ')")
+            "or hasAuthority('QA_MANAGER_ASSESSORS_READ') or hasAuthority('QA_HOF_READ') or hasAuthority('QA_ASSESSORS_READ') or hasAuthority('QA_PAC_SECRETARY_READ') or hasAuthority('QA_PSC_MEMBERS_READ') or hasAuthority('QA_PCM_READ')")
     fun permitDetails(req: ServerRequest): ServerResponse {
         val permitUserId = req.paramOrNull("userID")?.toLong() ?: throw ExpectedDataNotFound("Required User ID, check config")
         val permitID = req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
@@ -172,7 +180,7 @@ class QualityAssuranceHandler(
         val plantAttached = permit.attachedPlantId?.let { qaDaoServices.findPlantDetails(it) }
         val docFileName : String? = null
 
-        req.attributes().putAll(commonDaoServices.loadCommonUIComponents(map))
+        req.attributes().putAll(loadCommonUIComponents(map))
 
         if (permit.hofQamCompletenessStatus == map.activeStatus && permit.assignOfficerStatus != map.activeStatus) {
             req.attributes()["officers"] = qaDaoServices.findOfficersList(permit, map, applicationMapProperties.mapQADesignationIDForQAOId)
@@ -210,7 +218,7 @@ class QualityAssuranceHandler(
     }
 
 
-    @PreAuthorize("hasAuthority('PERMIT_APPLICATION') or hasAuthority('QA_OFFICER_MODIFY') or hasAuthority('QA_HOD_READ') or hasAuthority('QA_MANAGER_ASSESSORS_READ') or hasAuthority('QA_HOF_READ') or hasAuthority('QA_ASSESSORS_READ')")
+    @PreAuthorize("hasAuthority('PERMIT_APPLICATION') or hasAuthority('QA_OFFICER_MODIFY') or hasAuthority('QA_HOD_READ') or hasAuthority('QA_MANAGER_ASSESSORS_READ') or hasAuthority('QA_HOF_READ') or hasAuthority('QA_ASSESSORS_READ') or hasAuthority('QA_PSC_MEMBERS_READ') or hasAuthority('QA_PCM_READ')")
     fun permitViewSmarkDetails(req: ServerRequest): ServerResponse {
         val smarkID = req.paramOrNull("smarkID")?.toLong() ?: throw ExpectedDataNotFound("Required Smark ID, check config")
        val map = commonDaoServices.serviceMapDetails(appId)
@@ -311,7 +319,7 @@ class QualityAssuranceHandler(
 
     }
 
-    @PreAuthorize("hasAuthority('PERMIT_APPLICATION') or hasAuthority('QA_HOD_READ') or hasAuthority('QA_MANAGER_ASSESSORS_READ') or hasAuthority('QA_HOF_READ') or hasAuthority('QA_ASSESSORS_READ')")
+    @PreAuthorize("hasAuthority('PERMIT_APPLICATION') or hasAuthority('QA_HOD_READ') or hasAuthority('QA_MANAGER_ASSESSORS_READ') or hasAuthority('QA_HOF_READ') or hasAuthority('QA_ASSESSORS_READ') or hasAuthority('QA_PSC_MEMBERS_READ') or hasAuthority('QA_PCM_READ')")
     fun viewSta3(req: ServerRequest): ServerResponse {
         val permitUserId = req.paramOrNull("userID")?.toLong() ?: throw ExpectedDataNotFound("Required User ID, check config")
 
@@ -323,7 +331,7 @@ class QualityAssuranceHandler(
 
     }
 
-    @PreAuthorize("hasAuthority('PERMIT_APPLICATION') or hasAuthority('QA_HOD_READ') or hasAuthority('QA_MANAGER_ASSESSORS_READ') or hasAuthority('QA_HOF_READ') or hasAuthority('QA_OFFICER_MODIFY')")
+    @PreAuthorize("hasAuthority('PERMIT_APPLICATION') or hasAuthority('QA_HOD_READ') or hasAuthority('QA_MANAGER_ASSESSORS_READ') or hasAuthority('QA_HOF_READ') or hasAuthority('QA_OFFICER_MODIFY') or hasAuthority('QA_PSC_MEMBERS_READ') or hasAuthority('QA_PCM_READ')")
     fun viewSta10Officer(req: ServerRequest): ServerResponse {
         val permitUserId = req.paramOrNull("userID")?.toLong() ?: throw ExpectedDataNotFound("Required User ID, check config")
 
@@ -335,7 +343,7 @@ class QualityAssuranceHandler(
 
     }
 
-    @PreAuthorize("hasAuthority('PERMIT_APPLICATION') or hasAuthority('QA_HOD_READ') or hasAuthority('QA_MANAGER_ASSESSORS_READ') or hasAuthority('QA_HOF_READ') or hasAuthority('QA_OFFICER_MODIFY')")
+    @PreAuthorize("hasAuthority('PERMIT_APPLICATION') or hasAuthority('QA_HOD_READ') or hasAuthority('QA_MANAGER_ASSESSORS_READ') or hasAuthority('QA_HOF_READ') or hasAuthority('QA_OFFICER_MODIFY') or hasAuthority('QA_PSC_MEMBERS_READ') or hasAuthority('QA_PCM_READ')")
     fun viewSta10(req: ServerRequest): ServerResponse {
         val map = commonDaoServices.serviceMapDetails(appId)
         val permitUserId = req.paramOrNull("userID")?.toLong() ?: throw ExpectedDataNotFound("Required User ID, check config")
@@ -404,7 +412,7 @@ class QualityAssuranceHandler(
     }
 
 
-    @PreAuthorize("hasAuthority('PERMIT_APPLICATION') or hasAuthority('QA_HOD_READ') or hasAuthority('QA_MANAGER_ASSESSORS_READ') or hasAuthority('QA_HOF_READ') or hasAuthority('QA_OFFICER_MODIFY') or hasAuthority('QA_ASSESSORS_READ')")
+    @PreAuthorize("hasAuthority('PERMIT_APPLICATION') or hasAuthority('QA_HOD_READ') or hasAuthority('QA_MANAGER_ASSESSORS_READ') or hasAuthority('QA_HOF_READ') or hasAuthority('QA_OFFICER_MODIFY') or hasAuthority('QA_ASSESSORS_READ') or hasAuthority('QA_PSC_MEMBERS_READ') or hasAuthority('QA_PCM_READ')")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun newSchemeSupervision(req: ServerRequest): ServerResponse {
         val permitID = req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
@@ -418,7 +426,7 @@ class QualityAssuranceHandler(
 
     }
 
-    @PreAuthorize("hasAuthority('PERMIT_APPLICATION') or hasAuthority('QA_HOD_READ') or hasAuthority('QA_MANAGER_ASSESSORS_READ') or hasAuthority('QA_HOF_READ') or hasAuthority('QA_OFFICER_MODIFY') or hasAuthority('QA_ASSESSORS_READ')")
+    @PreAuthorize("hasAuthority('PERMIT_APPLICATION') or hasAuthority('QA_HOD_READ') or hasAuthority('QA_MANAGER_ASSESSORS_READ') or hasAuthority('QA_HOF_READ') or hasAuthority('QA_OFFICER_MODIFY') or hasAuthority('QA_ASSESSORS_READ') or hasAuthority('QA_PSC_MEMBERS_READ') or hasAuthority('QA_PCM_READ')")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun updateSchemeSupervision(req: ServerRequest): ServerResponse {
         val permitID = req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
@@ -433,7 +441,7 @@ class QualityAssuranceHandler(
 
     }
 
-    @PreAuthorize("hasAuthority('PERMIT_APPLICATION') or hasAuthority('QA_HOD_READ') or hasAuthority('QA_MANAGER_ASSESSORS_READ') or hasAuthority('QA_HOF_READ') or hasAuthority('QA_OFFICER_MODIFY')")
+    @PreAuthorize("hasAuthority('PERMIT_APPLICATION') or hasAuthority('QA_HOD_READ') or hasAuthority('QA_MANAGER_ASSESSORS_READ') or hasAuthority('QA_HOF_READ') or hasAuthority('QA_OFFICER_MODIFY') or hasAuthority('QA_PSC_MEMBERS_READ') or hasAuthority('QA_PCM_READ')")
     fun getInvoiceDetails(req: ServerRequest): ServerResponse {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
 
@@ -450,6 +458,7 @@ class QualityAssuranceHandler(
         req.attributes()["phoneNumber"] = permit.telephoneNo
         req.attributes()["applicationState"] = applicationState
         req.attributes()["permit"] = permit
+        req.attributes()["invoiceBalanceDetails"] = invoiceDaoService.findInvoiceStgReconciliationDetails(invoiceDetails?.invoiceNumber?: throw ExpectedDataNotFound("INVALID REFERENCE CODE"))
         req.attributes()["product"] = permit.product?.let { commonDaoServices.findProductByID(it) }
         req.attributes()["permitType"] = permit.permitType?.let { qaDaoServices.findPermitType(it) }
         req.attributes()["mpesa"] = CdLaboratoryParametersEntity()
@@ -596,6 +605,8 @@ class QualityAssuranceHandler(
             Pair("activeStatus", s.activeStatus),
             Pair("inActiveStatus", s.inactiveStatus),
             Pair("initStatus", s.initStatus),
+            Pair("dmarkPermit", applicationMapProperties.mapQAPermitTypeIDDmark),
+            Pair("smarkPermit", applicationMapProperties.mapQAPermitTypeIdSmark),
             Pair("currentDate", commonDaoServices.getCurrentDate())
         )
     }

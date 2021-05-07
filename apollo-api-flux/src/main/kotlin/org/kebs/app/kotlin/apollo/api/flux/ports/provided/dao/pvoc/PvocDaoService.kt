@@ -210,8 +210,8 @@ class PvocServiceFlux(
                 try {
                     this.submitCoiToKeSWS(savedCoc)
                 } catch (e: Exception) {
-                    e.printStackTrace()
-                    KotlinLogging.logger { }.error(e.message)
+//                    e.printStackTrace()
+                    KotlinLogging.logger { }.error(e.message, e)
                     KotlinLogging.logger { }.debug(e.message, e)
                 }
             }

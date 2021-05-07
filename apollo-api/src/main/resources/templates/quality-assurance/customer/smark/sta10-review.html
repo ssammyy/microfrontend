@@ -37,7 +37,7 @@
                 <h3>Kindly fill in the details below</h3>
                 <div class="pvocformblock w-form">
                   <div th:if="${message}">
-                    <span th:text="${message}" style="color: #1b75bc"></span>
+                    <span th:text="${message}" style="color: #0166B1"></span>
                   </div>
                   <form data-name="S Mark Form" id="smark-form" method="post" name="smark-form" th:action="@{/questionnaire/sta10/{id}/{invoiceId}(id = ${questionnaire.id}, invoiceId = ${invoice.id}, appId=${session.appId})}" th:object="${questionnaire}">
                       <input type="hidden" th:value="${questionnaire.id}" id="id" name="id">

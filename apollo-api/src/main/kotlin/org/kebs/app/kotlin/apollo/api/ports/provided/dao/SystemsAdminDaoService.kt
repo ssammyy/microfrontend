@@ -415,6 +415,9 @@ class SystemsAdminDaoService(
                         region = dto.region
                         county = dto.county
                         town = dto.town
+                        factoryVisitDate = dto.factoryVisitDate
+                        factoryVisitStatus = dto.factoryVisitStatus
+                        manufactureStatus = dto.manufactureStatus
                         status = 1
                         modifiedBy = loggedInUserDetails().userName
                         modifiedOn = Timestamp.from(Instant.now())
@@ -442,6 +445,9 @@ class SystemsAdminDaoService(
                     region = dto.region
                     county = dto.county
                     town = dto.town
+                    factoryVisitDate = dto.factoryVisitDate
+                    factoryVisitStatus = dto.factoryVisitStatus
+                    manufactureStatus = dto.manufactureStatus
                     userId = dto.userId
                     status = 1
                     createdBy = loggedInUserDetails().userName
@@ -870,7 +876,9 @@ class SystemsAdminDaoService(
             cp.streetName,
             cp.region?.let { regionsRepo.findByIdOrNull(cp.region)?.region },
             cp.county?.let { countiesRepo.findByIdOrNull(cp.county)?.county },
-            cp.town?.let { townsRepo.findByIdOrNull(cp.town)?.town }
+            cp.town?.let { townsRepo.findByIdOrNull(cp.town)?.town },
+            cp.factoryVisitDate,
+                    cp.factoryVisitStatus
         )
     }
 

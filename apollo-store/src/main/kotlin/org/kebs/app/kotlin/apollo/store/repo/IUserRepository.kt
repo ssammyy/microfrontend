@@ -165,6 +165,7 @@ interface ICompanyProfileRepository : HazelcastRepository<CompanyProfileEntity, 
     fun findByStatus(status: Int): List<CompanyProfileEntity>?
     fun findByKraPin(kraPin: String): CompanyProfileEntity?
     fun findByUserId(userId: Long): CompanyProfileEntity?
+    fun findByManufactureStatus(status: Int): List<CompanyProfileEntity>?
 
 
 }

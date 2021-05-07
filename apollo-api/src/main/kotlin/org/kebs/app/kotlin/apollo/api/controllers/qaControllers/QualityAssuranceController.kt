@@ -58,7 +58,7 @@ class QualityAssuranceController(
         return commonDaoServices.returnValues(result, map, sm)
     }
 
-    @PreAuthorize("hasAuthority('PERMIT_APPLICATION') or hasAuthority('QA_MANAGER_ASSESSORS_READ') or hasAuthority('QA_HOF_READ') or hasAuthority('QA_HOD_READ') or hasAuthority('QA_OFFICER_MODIFY') or hasAuthority('QA_ASSESSORS_MODIFY')")
+    @PreAuthorize("hasAuthority('PERMIT_APPLICATION') or hasAuthority('QA_MANAGER_ASSESSORS_READ') or hasAuthority('QA_HOF_READ') or hasAuthority('QA_HOD_READ') or hasAuthority('QA_OFFICER_MODIFY') or hasAuthority('QA_ASSESSORS_MODIFY') or hasAuthority('QA_PSC_MEMBERS_READ') or hasAuthority('QA_PCM_READ')")
     @PostMapping("/apply/new-scheme-of-supervision")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun saveNewSchemeOfSupervision(
@@ -121,8 +121,8 @@ class QualityAssuranceController(
         return commonDaoServices.returnValues(result, map, sm)
     }
 
-    @PreAuthorize("hasAuthority('PERMIT_APPLICATION') or hasAuthority('QA_MANAGER_ASSESSORS_READ') or hasAuthority('QA_HOF_READ') " +
-            "or hasAuthority('QA_HOD_READ') or hasAuthority('QA_OFFICER_MODIFY') or hasAuthority('QA_PAC_SECRETARY_MODIFY')")
+    @PreAuthorize("hasAuthority('PERMIT_APPLICATION') or hasAuthority('QA_MANAGER_ASSESSORS_MODIFY') or hasAuthority('QA_HOF_MODIFY') " +
+            "or hasAuthority('QA_HOD_MODIFY') or hasAuthority('QA_OFFICER_MODIFY') or hasAuthority('QA_PAC_SECRETARY_MODIFY') or hasAuthority('QA_PSC_MEMBERS_MODIFY') or hasAuthority('QA_PCM_MODIFY') or hasAuthority('QA_ASSESSORS_MODIFY')")
     @PostMapping("/apply/update-permit")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun updatePermitDetails(
@@ -190,12 +190,18 @@ class QualityAssuranceController(
             }
             permit.compliantStatus != null -> {
                 //Send manufacturers notification
-                qaDaoServices.sendComplianceStatusAndLabReport(permitDetails)
+                var complianceValue: String?= null
+                if (permit.compliantStatus==map.activeStatus){
+                    complianceValue= "COMPLIANT"
+                }else if (permit.compliantStatus==map.inactiveStatus){
+                    complianceValue= "NON-COMPLIANT"
+                }
+                qaDaoServices.sendComplianceStatusAndLabReport(permitDetails, complianceValue ?: throw ExpectedDataNotFound(" "))
             }
 
             permit.recommendationRemarks != null -> {
                 //Send manufacturers notification
-                qaDaoServices.sendComplianceStatusAndLabReport(permitDetails)
+                qaDaoServices.sendNotificationForRecommendation(permitDetails)
             }
             permit.recommendationApprovalStatus != null -> {
                 //Send notification
@@ -239,12 +245,21 @@ class QualityAssuranceController(
             permit.pcmApprovalStatus != null -> {
                 //Send notification
                 if (permit.pcmApprovalStatus ==map.activeStatus){
-                    with(permit){
-                        pscMemberId= qaDaoServices.assignNextOfficerAfterPayment(permitDetails, map, applicationMapProperties.mapQADesignationIDForPSCId)?.id
+                    val issueDate = commonDaoServices.getCurrentDate()
+                    val permitType = permitDetails.permitType?.let { qaDaoServices.findPermitType(it) }
+                    val expiryDate = permitType?.permitAwardYears?.let { commonDaoServices.addYearsToCurrentDate(it.toLong()) }
+
+
+                    with(permit) {
+                        permitAwardStatus= map.activeStatus
+                        dateOfIssue = issueDate
+                        dateOfExpiry = expiryDate
                     }
+                    //Generate permit and forward to manufacturer
+                    KotlinLogging.logger { }.info(":::::: Sending compliance status along with e-permit :::::::")
                     //updating of Details in DB
                     permitDetails = qaDaoServices.permitUpdateDetails(commonDaoServices.updateDetails(permit, permitDetails) as PermitApplicationsEntity, map, loggedInUser).second
-                    qaDaoServices.sendNotificationPSCForAwardingPermit(permitDetails)
+//                    qaDaoServices.sendNotificationPSCForAwardingPermit(permitDetails)
 
                 }else if (permit.pcmApprovalStatus ==map.inactiveStatus){
 //                    with(permit){
@@ -531,7 +546,7 @@ class QualityAssuranceController(
         return "${qaDaoServices.sta10Details}=${qaSta10.permitId}&userID=${loggedInUser.id}"
     }
 
-    @PreAuthorize("hasAuthority('PERMIT_APPLICATION') or hasAuthority('QA_MANAGER_ASSESSORS_READ') or hasAuthority('QA_HOF_READ') or hasAuthority('QA_HOD_READ') or hasAuthority('QA_OFFICER_MODIFY')")
+    @PreAuthorize("hasAuthority('PERMIT_APPLICATION') or hasAuthority('QA_MANAGER_ASSESSORS_READ') or hasAuthority('QA_HOF_READ') or hasAuthority('QA_HOD_READ') or hasAuthority('QA_OFFICER_MODIFY') or hasAuthority('QA_PSC_MEMBERS_READ') or hasAuthority('QA_PCM_READ')")
     @PostMapping("kebs/add/new-upload")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun uploadFilesQA(
@@ -653,14 +668,14 @@ class QualityAssuranceController(
             sendApplication = map.activeStatus
             invoiceGenerated = map.activeStatus
 //            //Todo: Ask anthony about this
-//            when {
-//                permit.permitType!! == applicationMapProperties.mapQAPermitTypeIDDmark -> {
-//                    hodId = qaDaoServices.assignNextOfficerAfterPayment(permit, map, applicationMapProperties.mapQADesignationIDForHODId)?.id
-//                }
-//                permit.permitType!! == applicationMapProperties.mapQAPermitTypeIdSmark -> {
-//                    qamId = qaDaoServices.assignNextOfficerAfterPayment(permit, map, applicationMapProperties.mapQADesignationIDForQAMId)?.id
-//                }
-//            }
+            when {
+                permit.permitType!! == applicationMapProperties.mapQAPermitTypeIDDmark -> {
+                    hodId = qaDaoServices.assignNextOfficerAfterPayment(permit, map, applicationMapProperties.mapQADesignationIDForHODId)?.id
+                }
+                permit.permitType!! == applicationMapProperties.mapQAPermitTypeIdSmark -> {
+                    qamId = qaDaoServices.assignNextOfficerAfterPayment(permit, map, applicationMapProperties.mapQADesignationIDForQAMId)?.id
+                }
+            }
 
         }
         result = qaDaoServices.permitUpdateDetails(permit, map, loggedInUser).first

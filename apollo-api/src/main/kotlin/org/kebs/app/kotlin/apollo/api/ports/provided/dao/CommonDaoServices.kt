@@ -67,6 +67,7 @@ import org.kebs.app.kotlin.apollo.common.utils.replacePrefixedItemsWithObjectVal
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.*
 import org.kebs.app.kotlin.apollo.store.model.di.CdLaboratoryEntity
+import org.kebs.app.kotlin.apollo.store.model.qa.ManufacturePlantDetailsEntity
 import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileEntity
 import org.kebs.app.kotlin.apollo.store.repo.*
 import org.kebs.app.kotlin.apollo.store.repo.di.ILaboratoryRepository
@@ -103,6 +104,7 @@ class CommonDaoServices(
         private val jasyptStringEncryptor: StringEncryptor,
         private val usersRepo: IUserRepository,
         private val companyProfileRepo: ICompanyProfileRepository,
+        private val manufacturePlantRepository: IManufacturePlantDetailsRepository,
         private val batchJobRepository: IBatchJobDetailsRepository,
         private val iSubSectionsLevel2Repo: ISubSectionsLevel2Repository,
         private val iSubSectionsLevel1Repo: ISubSectionsLevel1Repository,
@@ -203,6 +205,11 @@ class CommonDaoServices(
         return date
     }
 
+    fun convertDateToString(date: Date, format:String): String {
+        val format = SimpleDateFormat(format)
+        return format.format(date)
+    }
+
     fun convertISO8601DateToTimestamp(dateString: String): Timestamp? {
         try {
         val formatter = DateTimeFormatterBuilder()
@@ -292,6 +299,12 @@ class CommonDaoServices(
             hashedList.add(HashedStringDto(hashed))
         }
         return hashedList
+    }
+
+    fun findAllPlantDetails(userId: Long): List<ManufacturePlantDetailsEntity> {
+        manufacturePlantRepository.findByUserId(userId)?.let {
+            return it
+        } ?: throw ExpectedDataNotFound("No Plant details found with the following [user id=$userId]")
     }
 
     fun convertClassToJson(classToConvert: Any): String? {
@@ -688,6 +701,22 @@ class CommonDaoServices(
                     return userCompanyDetails
                 }
                 ?: throw ExpectedDataNotFound("Company Profile with [user ID= ${userID}], does not Exist")
+    }
+
+    fun findCompanyProfileWhoAreManufactures(status: Int): List<CompanyProfileEntity> {
+        companyProfileRepo.findByManufactureStatus(status)
+                ?.let { userCompanyDetails ->
+                    return userCompanyDetails
+                }
+                ?: throw ExpectedDataNotFound("Company Profile list with [user ID= ${status}], does not Exist")
+    }
+
+    fun findCompanyProfileWithID(id: Long): CompanyProfileEntity {
+        companyProfileRepo.findByIdOrNull(id)
+            ?.let { userCompanyDetails ->
+                return userCompanyDetails
+            }
+            ?: throw ExpectedDataNotFound("Company Profile with [ ID= ${id}], does not Exist")
     }
 
     fun findAllUsers(): List<UsersEntity> {
