@@ -359,8 +359,11 @@
                                 <a th:if="${permitType?.st10Status == 1 and permitDetails?.sta10FilledStatus == 1}" target='_blank' th:href="@{/api/qa/view-sta10(permitID=${permitDetails?.id}, userID=${permitDetails?.userId})}" class="filter-link" style="color: white">STA 10</a>
 
                                 <a th:if="${permitDetails?.sendApplication == 1 and permitDetails?.invoiceGenerated == 1}" target='_blank' th:href="@{/api/qa/invoice-details(permitID=${permitDetails?.id})}" class="filter-link" style="color: white">GENERATED INVOICE</a>
-                                <a th:if="${permitDetails?.generateSchemeStatus == 1 and permitType?.schemeGenerate == 1}" th:href="@{/api/qa/scheme-of-supervision(permitID=${permitDetails?.id})}" style="color: white" onclick="popUpFunction('generateScheme');" class="filter-link">GENERATE SCHEME FOR SUPERVISION AND CONTROL</a>
-                                <div sec:authorize="hasAuthority('QA_ASSESSORS_READ') or hasAuthority('QA_PAC_SECRETARY_READ')">
+
+
+                                <a th:if="${permitDetails?.generateSchemeStatus == 1 and permitDetails?.approvedRejectedScheme == 1 and permitType?.schemeGenerate == 1}" th:href="@{/api/qa/scheme-of-supervision(permitID=${permitDetails?.id})}" style="color: white" class="filter-link">GENERATED SCHEME FOR SUPERVISION AND CONTROL</a>
+
+
 
                                 <a th:if="${permitDetails?.generateSchemeStatus == 1 and permitDetails?.approvedRejectedScheme == 1 and permitType?.schemeGenerate == 1}" th:href="@{/api/qa/scheme-of-supervision(permitID=${permitDetails?.id})}" style="color: white" class="filter-link">GENERATED SCHEME FOR SUPERVISION AND CONTROL</a>
 

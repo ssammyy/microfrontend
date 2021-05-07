@@ -1130,7 +1130,7 @@ class QADaoServices(
                                     KotlinLogging.logger { }.info { "second loop, ${permit.product}" }
                                     stgAmt = applicationCost?.let { standardCost?.plus(inspectionCost!!)?.plus(it) }
                                     fmark = 0.toBigDecimal()
-//                                    taxAmount = stgAmt?.let {taxRate.times(it) }
+                                    taxAmount = stgAmt?.let {taxRate.times(it) }
                                     amountToPay = taxAmount?.let { stgAmt?.plus(it) }
                                 }
                                 //                amountToPay = standardCost?.plus(inspectionCost!!)?.let { applicationCost?.plus(it) }
@@ -1170,7 +1170,7 @@ class QADaoServices(
                                     KotlinLogging.logger { }.info { "second loop, ${permit.product}" }
                                     stgAmt = applicationCost?.let { standardCost?.plus(inspectionCost!!)?.plus(it) }
                                     fmark = 0.toBigDecimal()
-//                                    taxAmount = stgAmt?.let {taxRate.times(it) }
+                                    taxAmount = stgAmt?.let {taxRate.times(it) }
                                     amountToPay = taxAmount?.let { stgAmt?.plus(it) }
                                 }
                                 //                amountToPay = standardCost?.plus(inspectionCost!!)?.let { applicationCost?.plus(it) }
@@ -1211,7 +1211,7 @@ class QADaoServices(
                                     KotlinLogging.logger { }.info { "second loop, ${permit.product}" }
                                     stgAmt = applicationCost?.let { standardCost?.plus(inspectionCost!!)?.plus(it) }
                                     fmark = 0.toBigDecimal()
-//                                    taxAmount = stgAmt?.let {taxRate.times(it) }
+                                    taxAmount = stgAmt?.let {taxRate.times(it) }
                                     amountToPay = taxAmount?.let { stgAmt?.plus(it) }
                                 }
                                 //                amountToPay = standardCost?.plus(inspectionCost!!)?.let { applicationCost?.plus(it) }
