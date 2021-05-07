@@ -126,45 +126,45 @@ class QAController(
         return result
     }
 
-    /**
-     * Customer home
-     */
-    @GetMapping("/customer")
-    fun customerHomePage(
-        model: Model,
-        @RequestParam(value = "appId", required = false) appId: Int?
-    ): String {
-        model.addAttribute("permitTypes", permitTypesRepo.findByStatus(1))
-        model.addAttribute("title", "Customer home")
-        model.addAttribute("appId", appId)
-
-        SecurityContextHolder.getContext().authentication?.name
-            ?.let { username ->
-                userRepository.findByUserName(username)
-                    ?.let { loggedInUser ->
-                        daoServices.extractManufacturerFromUser(loggedInUser)
-                            ?.let { manufacturer ->
-                                loggedInUser.id?.let {
-                                    qualityAssuranceBpmn.fetchAllTasksByAssignee(it)?.let { lstTaskDetails ->
-                                        model.addAttribute("tasks", lstTaskDetails)
-                                    }
-                                    model.addAttribute("manufacturer", manufacturer)
-//                                                val baseUrl: String = ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString();
-//                                                KotlinLogging.logger {  }.info { "Base Url: $baseUrl" }
-                                    standardLevyPaymentsRepository.findByManufacturerEntity(manufacturer)
-                                        .let { payments ->
-                                            model.addAttribute("payments", payments)
-//                                                            KotlinLogging.logger {  }.info { payments?.size }
-                                            //model.addAttribute("manufacturer", manufacturer)
-                                        }
-                                }
-                            }
-
-                    }
-            }
-
-        return "quality-assurance/customer/customer-home"
-    }
+//    /**
+//     * Customer home
+//     */
+//    @GetMapping("/customer")
+//    fun customerHomePage(
+//        model: Model,
+//        @RequestParam(value = "appId", required = false) appId: Int?
+//    ): String {
+//        model.addAttribute("permitTypes", permitTypesRepo.findByStatus(1))
+//        model.addAttribute("title", "Customer home")
+//        model.addAttribute("appId", appId)
+//
+//        SecurityContextHolder.getContext().authentication?.name
+//            ?.let { username ->
+//                userRepository.findByUserName(username)
+//                    ?.let { loggedInUser ->
+//                        daoServices.extractManufacturerFromUser(loggedInUser)
+//                            ?.let { manufacturer ->
+//                                loggedInUser.id?.let {
+//                                    qualityAssuranceBpmn.fetchAllTasksByAssignee(it)?.let { lstTaskDetails ->
+//                                        model.addAttribute("tasks", lstTaskDetails)
+//                                    }
+//                                    model.addAttribute("manufacturer", manufacturer)
+////                                                val baseUrl: String = ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString();
+////                                                KotlinLogging.logger {  }.info { "Base Url: $baseUrl" }
+//                                    standardLevyPaymentsRepository.findByManufacturerEntity(manufacturer)
+//                                        .let { payments ->
+//                                            model.addAttribute("payments", payments)
+////                                                            KotlinLogging.logger {  }.info { payments?.size }
+//                                            //model.addAttribute("manufacturer", manufacturer)
+//                                        }
+//                                }
+//                            }
+//
+//                    }
+//            }
+//
+//        return "quality-assurance/customer/customer-home"
+//    }
 
     @GetMapping("/my-applications")
     fun myApplications(

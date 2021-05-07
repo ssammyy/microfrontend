@@ -25,6 +25,7 @@ import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.ports.provided.createUserAlert
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DestinationInspectionDaoServices
+import org.kebs.app.kotlin.apollo.api.ports.provided.dao.InvoiceDaoService
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.QADaoServices
 import org.kebs.app.kotlin.apollo.common.exceptions.*
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
@@ -55,6 +56,7 @@ class QualityAssuranceHandler(
     private val broadProductCategoryRepository: IBroadProductCategoryRepository,
     private val productsRepo: IProductsRepository,
     private val paymentMethodsRepository: IPaymentMethodsRepository,
+    private val invoiceDaoService: InvoiceDaoService,
     private val countyRepo: ICountiesRepository,
     private val iLaboratoryRepo: ILaboratoryRepository,
     private val productSubCategoryRepo: IProductSubcategoryRepository,
@@ -450,6 +452,7 @@ class QualityAssuranceHandler(
         req.attributes()["phoneNumber"] = permit.telephoneNo
         req.attributes()["applicationState"] = applicationState
         req.attributes()["permit"] = permit
+        req.attributes()["invoiceBalanceDetails"] = invoiceDaoService.findInvoiceStgReconciliationDetails(invoiceDetails?.invoiceNumber?: throw ExpectedDataNotFound("INVALID REFERENCE CODE"))
         req.attributes()["product"] = permit.product?.let { commonDaoServices.findProductByID(it) }
         req.attributes()["permitType"] = permit.permitType?.let { qaDaoServices.findPermitType(it) }
         req.attributes()["mpesa"] = CdLaboratoryParametersEntity()

@@ -77,7 +77,7 @@ html, body {
 }
 
 .left-column {
-    background-image: url("../../static/images/image-login.jpg");
+    background-image: url("../../images/image-login.jpg");
     background-size: cover;
     background-position: 50% 50%;
     padding-right: 0;

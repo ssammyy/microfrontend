@@ -124,3 +124,9 @@ order by ID;
 select *
 from LOG_SL2_PAYMENTS_HEADER
 order by ID;
+
+
+select * from DAT_KEBS_COCS
+-- where UCR_NUMBER = 'UCR202100126859'
+-- where id = 283
+order by ID desc;

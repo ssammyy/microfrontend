@@ -311,7 +311,7 @@
                                                 <td></td>
                                                 <td></td>
                                                 <td>Balance</td>
-                                                <td th:text="'KSH ' + ${invoice?.amount}"></td>
+                                                <td th:text="'KSH ' + ${invoiceBalanceDetails?.invoiceAmount}"></td>
                                             </tr>
                                             </tbody>
                                         </table>
@@ -406,15 +406,15 @@
                                             </div>
 
                                         </div>
-<!--                                        <button th:if="${invoice.status == 0}"  type="button" id="paymentBtn" style="-->
-<!--                                            color: blue;-->
-<!--                                            border-radius: 5px;-->
-<!--                                            -moz-border-radius: 5px;-->
-<!--                                            padding: 5px;-->
-<!--                                            margin-left: 10px;-->
-<!--                                            width: 200px;">-->
-<!--                                            Already paid?-->
-<!--                                        </button>-->
+                                        <button th:if="${invoice.status == 0}"  type="button" id="paymentBtn" style="
+                                            color: blue;
+                                            border-radius: 5px;
+                                            -moz-border-radius: 5px;
+                                            padding: 5px;
+                                            margin-left: 10px;
+                                            width: 200px;">
+                                            CHECK BALANCE?
+                                        </button>
                                         <div th:replace="fragments/general-form.html :: alerts-bar"></div>
                                     </div>
 

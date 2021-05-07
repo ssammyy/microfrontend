@@ -19,9 +19,10 @@ class StandardLevyPaymentsEntity: Serializable {
     @Basic
     var status: Int? = null
 
-    @JoinColumn(name = "MANUFACTURER_ENTITY", referencedColumnName = "ID")
-    @ManyToOne
-    var manufacturerEntity: ManufacturersEntity? = null
+    @Column(name = "MANUFACTURER_ENTITY")
+    @Basic
+    var manufacturerEntity: Long? = null
+
 
     @Column(name = "PAYMENT_DATE")
     @Basic

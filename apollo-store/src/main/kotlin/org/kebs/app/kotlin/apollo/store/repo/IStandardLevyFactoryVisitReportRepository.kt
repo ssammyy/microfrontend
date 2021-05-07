@@ -5,5 +5,5 @@ import org.kebs.app.kotlin.apollo.store.model.StandardLevyFactoryVisitReportEnti
 import org.springframework.data.hazelcast.repository.HazelcastRepository
 
 interface IStandardLevyFactoryVisitReportRepository: HazelcastRepository<StandardLevyFactoryVisitReportEntity, Long> {
-    fun findByManufacturerEntity(manufacturersEntity: ManufacturersEntity): StandardLevyFactoryVisitReportEntity?
+    fun findByManufacturerEntity(manufacturerEntity: Long): StandardLevyFactoryVisitReportEntity?
 }

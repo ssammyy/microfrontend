@@ -2,6 +2,7 @@ package org.kebs.app.kotlin.apollo.api.handlers
 
 import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.StandardsLevyBpmn
+import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
 import org.kebs.app.kotlin.apollo.common.exceptions.ServiceMapNotFoundException
@@ -9,6 +10,7 @@ import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapPrope
 import org.kebs.app.kotlin.apollo.store.model.ManufacturersEntity
 import org.kebs.app.kotlin.apollo.store.model.StandardLevyFactoryVisitReportEntity
 import org.kebs.app.kotlin.apollo.store.model.UsersEntity
+import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileEntity
 import org.kebs.app.kotlin.apollo.store.repo.*
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.repository.findByIdOrNull
@@ -33,6 +35,7 @@ class StandardLevyHandler(
     private val standardLevyFactoryVisitReportRepo: IStandardLevyFactoryVisitReportRepository,
     private val standardLevyPaymentsRepository: IStandardLevyPaymentsRepository,
     private val standardsLevyBpmn: StandardsLevyBpmn,
+    private val commonDaoServices: CommonDaoServices,
     private val userRepo: IUserRepository
 ) {
 
@@ -92,7 +95,7 @@ class StandardLevyHandler(
                                                         ?.let { userId ->
                                                             standardsLevyBpmn.fetchAllTasksByAssignee(userId)
                                                                 ?.let { lstTaskDetails ->
-                                                                    val tasks = mutableListOf<ManufacturersEntity?>()
+                                                                    val tasks = mutableListOf<CompanyProfileEntity?>()
                                                                     lstTaskDetails.sortedByDescending { it.objectId }.forEach { details ->
                                                                         if (standardLevyPaymentsRepository.findByIdOrNull(details.objectId) == null) {
                                                                             redirectAttributes?.addFlashAttribute("error", "Caught an exception while loading your tasks")
@@ -103,7 +106,7 @@ class StandardLevyHandler(
                                                                         } else {
                                                                             standardLevyPaymentsRepository.findByIdOrNull(details.objectId)
                                                                                 ?.let { paymentsEntity ->
-                                                                                    tasks.add(paymentsEntity.manufacturerEntity)
+                                                                                    tasks.add(commonDaoServices.findCompanyProfileWithID(paymentsEntity.manufacturerEntity?:throw ExpectedDataNotFound("INVALID MANUFACTURE ID")))
                                                                                     req.attributes()["tasks"] = tasks
                                                                                     req.attributes()["map"] = map
                                                                                     KotlinLogging.logger { }.info { "here" }
@@ -116,9 +119,9 @@ class StandardLevyHandler(
 
 
                                                                 }
-                                                                ?: ok().render(slAllManufacturers, req.attributes())
+                                                                ?: throw ExpectedDataNotFound("Invalid DATA")
                                                         }
-                                                        ?: ok().render(slAllManufacturers, req.attributes())
+                                                        ?: throw ExpectedDataNotFound("Invalid DATA")
 
                                                 }
                                                 "load_levy_payments" -> {
@@ -136,7 +139,7 @@ class StandardLevyHandler(
                                                 }
                                             }
                                         }
-                                        ?: ok().render(slAllManufacturers, req.attributes())
+                                        ?: throw ExpectedDataNotFound("Invalid DATA")
 
                                 }
                         }
@@ -157,40 +160,38 @@ class StandardLevyHandler(
                 ?.let { map ->
                     SecurityContextHolder.getContext().authentication?.name
                         ?.let {
-                            req.paramOrNull("manufacturerId")
+                            req.paramOrNull("manufacturerId")?.toLongOrNull()
                                 ?.let { manufacturerId ->
-                                    manufacturerRepository.findByIdOrNull(manufacturerId.toLong())
-                                        ?.let { manufacturer ->
-                                            manufacturerContactsRepository.findByManufacturerId(manufacturer)
+                                    commonDaoServices.findCompanyProfileWithID(manufacturerId)
+                                        .let { manufacturer ->
+                                           commonDaoServices.findAllPlantDetails(manufacturer.userId?:throw ExpectedDataNotFound("INVALID USER ID"))
                                                 .let { contacts ->
-                                                    iManufacturePaymentDetailsRepository.findByManufacturerId(manufacturer.id)
-                                                        .let { turnover ->
-                                                            businessNatureRepository.findByIdOrNull(manufacturer.businessNatureId)
+
+                                                            businessNatureRepository.findByIdOrNull(manufacturer.businessNatures)
                                                                 .let { nature ->
-                                                                    standardLevyFactoryVisitReportRepo.findByManufacturerEntity(manufacturer)
+                                                                    standardLevyFactoryVisitReportRepo.findByManufacturerEntity(manufacturer.id?: throw ExpectedDataNotFound("INVALID ID"))
                                                                         .let {
                                                                             req.attributes()["visitReport"] = it
                                                                         }
 
-                                                                    standardLevyPaymentsRepository.findByManufacturerEntity(manufacturer)
+                                                                    standardLevyPaymentsRepository.findByManufacturerEntity(manufacturer.id?: throw ExpectedDataNotFound("INVALID ID"))
                                                                         .let { paymentHistory ->
                                                                             req.attributes()["paymentHistory"] = paymentHistory
                                                                             KotlinLogging.logger { }.info { "Payment history, $paymentHistory" }
                                                                         }
-//                                                                                                        }
+                                //                                                                                                        }
                                                                     req.attributes()["reportData"] = StandardLevyFactoryVisitReportEntity()
                                                                     req.attributes()["manufacturer"] = manufacturer
                                                                     req.attributes()["map"] = map
                                                                     req.attributes()["contacts"] = contacts
-                                                                    req.attributes()["turnover"] = turnover
+                                                                    req.attributes()["turnover"] = manufacturer.yearlyTurnover
                                                                     req.attributes()["nature"] = nature
                                                                     return ok().render(singleManufacturerPage, req.attributes())
                                                                 }
-                                                        }
+
                                                 }
 
                                         }
-                                        ?: throw ExpectedDataNotFound("Manufacturer [id=${req.paramOrNull("manufacturerId")}] does not exist")
                                 }
                                 ?: throw ExpectedDataNotFound("Manufacturer [id=${req.paramOrNull("manufacturerId")}] does not exist")
                         }
@@ -250,13 +251,13 @@ class StandardLevyHandler(
         try {
             serviceMapsRepository.findByIdOrNull(appId)
                 ?.let { map ->
-                    manufacturerRepository.findByIdOrNull(req.paramOrNull("manufacturerId")?.toLong())
-                        ?.let { manufacturer ->
+                commonDaoServices.findCompanyProfileWithID(req.paramOrNull("manufacturerId")?.toLong()?: throw ExpectedDataNotFound("INVALID ID"))
+                    .let { manufacturer ->
                             req.paramOrNull("whereTo")
                                 ?.let { whereTo ->
                                     return when (whereTo) {
                                         "assistant_manager_approval" -> {
-                                            standardLevyFactoryVisitReportRepo.findByManufacturerEntity(manufacturer)
+                                            standardLevyFactoryVisitReportRepo.findByManufacturerEntity(manufacturer.id?: throw ExpectedDataNotFound("INVALID ID"))
                                                 ?.let { visitReport ->
                                                     with(visitReport) {
                                                         assistantManagerApproval = req.paramOrNull("approvalStatus")?.toIntOrNull() ?: throw NullValueNotAllowedException("Invalid approvalStatus")
@@ -274,7 +275,7 @@ class StandardLevyHandler(
                                         }
 
                                         "manager_approval" -> {
-                                            standardLevyFactoryVisitReportRepo.findByManufacturerEntity(manufacturer)
+                                            standardLevyFactoryVisitReportRepo.findByManufacturerEntity(manufacturer.id?: throw ExpectedDataNotFound("INVALID ID"))
                                                 ?.let { visitReport ->
                                                     with(visitReport) {
                                                         managersApproval = req.paramOrNull("approvalStatus")?.toIntOrNull()
@@ -292,7 +293,7 @@ class StandardLevyHandler(
 
                                         }
                                         "submit_feedback" -> {
-                                            standardLevyFactoryVisitReportRepo.findByManufacturerEntity(manufacturer)
+                                            standardLevyFactoryVisitReportRepo.findByManufacturerEntity(manufacturer.id?: throw ExpectedDataNotFound("INVALID ID"))
                                                 ?.let { visitReport ->
                                                     with(visitReport) {
                                                         officersFeedback = req.paramOrNull("feedback")

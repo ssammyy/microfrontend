@@ -395,104 +395,6 @@ class RegistrationDaoServices(
 
     }
 
-    //    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
-    fun registerManufacturer(
-        s: ServiceMapsEntity,
-        manufacturerContactsEntity: ManufacturerContactsEntity,
-        stdLevyNotificationFormEntity: StdLevyNotificationFormEntity,
-        manufacturersEntity: ManufacturersEntity,
-        manufacturerAddressesEntity: ManufacturerAddressesEntity,
-        userTypeId: Int?,
-        userId: Long,
-        yearlyTurnoverEntity: ManufacturePaymentDetailsEntity
-    ): ServiceRequestsEntity {
-
-        var sr = commonDaoServices.createServiceRequest(s)
-        try {
-
-//            val user = usersRepo.save(extractUserFromManufacturer(manufacturerContactsEntity, s, userTypeId))
-            val user = usersRepo.save(updateUserFromUserEntity(userId, s))
-            sr.payload = "User[id= ${user.id}]"
-            sr.names = "${user.firstName} ${user.lastName}"
-
-            val manufacturer = manufacturersInit(manufacturersEntity, sr, user, s)
-            sr.payload = "${sr.payload}: Manufacturer[id=${manufacturer.id}]"
-
-            val add = manufacturerAddressesInit(manufacturerAddressesEntity, manufacturer, s, sr)
-            sr.payload = "${sr.payload}: ManufacturerAddresses[id=${add.id}]"
-
-            val stdLevyForm = manufacturerStdLevyInit(stdLevyNotificationFormEntity, manufacturer, s, sr)
-            sr.payload = "${sr.payload}: ManufacturerStdLevyForm[id=${stdLevyForm.id}]"
-
-            val contact = contactDetailsRepository.save(
-                manufacturerContactsInit(
-                    manufacturerContactsEntity,
-                    sr,
-                    user,
-                    manufacturer
-                )
-            )
-            sr.payload = "${sr.payload}: ManufacturerContact[id=${contact.id}]"
-
-            val turnover = yearlyTurnoverInit(yearlyTurnoverEntity, manufacturer, s, sr)
-            sr.payload = "${sr.payload}: YearlyTurnover[id=${turnover.id}]"
-
-            // Mimic KRA table
-            val standardLevyPayments = StandardLevyPaymentsEntity()
-            val kra = kraInit(manufacturer, standardLevyPayments, turnover, sr, s)
-            sr.payload = "${sr.payload}: Amount to pay[id=${kra.id}]"
-
-            // Start standard levy bpmn registration process
-            standardsLevyBpmn
-                .let {
-                    it.startSlRegistrationProcess(kra.id, 681)
-                    it.slManufacturerRegistrationComplete(kra.id, true)
-                    it.slFillSl1CFormComplete(kra.id)
-                    it.slSubmitDetailsComplete(kra.id)
-                }
-
-            sr.responseStatus = sr.serviceMapsId?.successStatusCode
-            sr.responseMessage = "Success ${sr.payload}"
-            sr.status = s.successStatus
-
-            val variables = mutableMapOf<String, Any?>()
-            variables["map"] = s
-            variables["contact"] = manufacturerContactsEntity
-            variables["manufacturer"] = manufacturersEntity
-            variables["address"] = manufacturerAddressesEntity
-            variables["userTypeId"] = user.userTypes
-            variables["user"] = user
-            variables["continue"] = false
-
-            variables["transactionRef"] = sr.transactionReference
-            variables["sr"] = sr
-//            runtimeService.startProcessInstanceByKey(s.bpmnProcessKey, variables)
-            sr = serviceRequestsRepository.save(sr)
-            runtimeService
-                .createProcessInstanceBuilder()
-                .processDefinitionKey(s.bpmnProcessKey)
-                .businessKey(sr.transactionReference)
-                .variables(variables)
-                .start()
-            KotlinLogging.logger { }.info { "Started bpmn registration process" }
-
-//            sendToKafkaQueue.submitAsyncRequestToBus(manufacturer, s.serviceTopic)
-            sr.processingEndDate = Timestamp.from(Instant.now())
-
-        } catch (e: Exception) {
-            KotlinLogging.logger { }.error(e.message, e)
-//            KotlinLogging.logger { }.trace(e.message, e)
-            sr.status = sr.serviceMapsId?.exceptionStatus
-            sr.responseStatus = sr.serviceMapsId?.exceptionStatusCode
-            sr.responseMessage = e.message
-            sr = serviceRequestsRepository.save(sr)
-
-        }
-
-//        sr = serviceRequestsRepository.save(sr)
-        KotlinLogging.logger { }.trace("${sr.id} ${sr.responseStatus}")
-        return sr
-    }
 
     fun registerImporter(
         s: ServiceMapsEntity,
@@ -1095,25 +997,6 @@ class RegistrationDaoServices(
         return turnover
     }
 
-    private fun kraInit(
-        manufacturer: ManufacturersEntity,
-        standardLevyPayments: StandardLevyPaymentsEntity,
-        turnover: ManufacturePaymentDetailsEntity,
-        sr: ServiceRequestsEntity,
-        s: ServiceMapsEntity
-    ): StandardLevyPaymentsEntity {
-        var kra = standardLevyPayments
-        with(kra) {
-            manufacturerEntity = manufacturer
-            createdBy = sr.transactionReference
-            createdOn = Timestamp.from(Instant.now())
-            status = s.activeStatus
-            paymentAmount = calculateLevyPayable((turnover))
-            levyPayable = calculateLevyPayable(turnover)
-        }
-        kra = standardLevyPaymentsRepository.save(kra)
-        return kra
-    }
 
     private fun calculateLevyPayable(turnover: ManufacturePaymentDetailsEntity): BigDecimal {
         var amout: BigDecimal? = null
