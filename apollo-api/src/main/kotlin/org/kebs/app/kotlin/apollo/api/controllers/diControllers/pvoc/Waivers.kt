@@ -38,7 +38,7 @@ import kotlin.streams.asSequence
 class Waivers(
     private val iwaiversApplicationRepo: IwaiversApplicationRepo,
     private val iPvocMasterListRepo: IPvocMasterListRepo,
-    iPvocWaiversStatusRepo: IPvocWaiversStatusRepo,
+    private val iPvocWaiversStatusRepo: IPvocWaiversStatusRepo,
     private val iPvocWaiversRemarksRepo: IPvocWaiversRemarksRepo,
     private val iUserRepository: IUserRepository,
     private val iUserRoleAssignmentsRepository: IUserRoleAssignmentsRepository,
@@ -52,8 +52,8 @@ class Waivers(
     private val commonDaoServices: CommonDaoServices,
     private val iUserRolesRepository: IUserRolesRepository,
     private val pvocDaoServices: PvocDaoServices,
-    pvocComplainStatusEntityRepo: PvocComplainStatusEntityRepo,
-    applicationMapProperties: ApplicationMapProperties
+    private val pvocComplainStatusEntityRepo: PvocComplainStatusEntityRepo,
+    private val applicationMapProperties: ApplicationMapProperties
 ) {
 
     final val appId = applicationMapProperties.mapImportInspection
@@ -207,6 +207,7 @@ class Waivers(
             return "redirect:/api/di/pvoc/all-waivers-applications-list?currentPage=0&pageSize=10&fromDate=${dateFrom}&toDate=${dateTo}&filter=123"
         } ?: throw Exception("Application does not exist")
     }
+
 
     @GetMapping("all-waivers-applications-list")
     fun waiversApplicationLists(
@@ -517,8 +518,8 @@ class Waivers(
                                 waiver.approvalStatus = 0
                                 waiver.rejectionStatus = 0
                                 iwaiversApplicationRepo.save(waiver)
-//                                        pvocBpmn.pvocWaGenerateDeferralComplete(id)
-                                pvocBpmn.pvocWaApproveWaiverComplete(id, 740)
+                                        pvocBpmn.pvocWaGenerateDeferralComplete(id)
+//                                pvocBpmn.pvocWaApproveWaiverComplete(id, 740)
                             }
                             else -> {
                                 remarkData.remarks = remarks.wetcRecomendation
@@ -551,6 +552,7 @@ class Waivers(
             minute.status = 1
             iPvocWaiversWetcMinutesEntityRepo.save(minute)
             minute.waiverId?.let { it2 -> pvocBpmn.pvocWaGenerateMinutesComplete(it2, 716) }
+            minute.waiverId?.let { it2 -> pvocBpmn.pvocWaGenerateMinutesComplete(it2, 742) }
             return "redirect:/api/di/pvoc/waiversWETCMinutes?currentPage=0&pageSize=10&fromDate=${dateFrom}&toDate=${dateTo}"
         }
     }
@@ -586,7 +588,7 @@ class Waivers(
                     ?.let { auth ->
                         when {
                             auth.authorities.stream()
-                                .anyMatch { authority -> authority.authority == "PVOC_APPLICATION_READ" || authority.authority == "PVOC_APPLICATION_PROCESS" } -> {
+                                .anyMatch { authority -> authority.authority == "PVOC_APPLICATION_READ" ||authority.authority == "WAIVERS_MINUTES_PROCESS_NCS" || authority.authority == "PVOC_APPLICATION_PROCESS" } -> {
                                 iPvocWaiversRequestLetterRepo.findAllByStatus(1, page).let { request_letters ->
                                     model.addAttribute("request_letters", request_letters)
                                 }
@@ -648,7 +650,7 @@ class Waivers(
                     .let { auth ->
                         when {
                             auth.authorities.stream()
-                                .anyMatch { authority -> authority.authority == "PVOC_APPLICATION_READ" || authority.authority == "WAIVERS_MINUTES_REVIEW_NCS" || authority.authority == "PVOC_APPLICATION_PROCESS" } -> {
+                                .anyMatch { authority -> authority.authority == "PVOC_APPLICATION_READ" || authority.authority == "WAIVERS_MINUTES_REVIEW_NCS" ||authority.authority == "WAIVERS_MINUTES_PROCESS_NCS" || authority.authority == "PVOC_APPLICATION_PROCESS" } -> {
                                 when (filter) {
                                     "filter" -> {
                                         iPvocWaiversWetcMinutesEntityRepo.findAllByStatusAndCreatedOnBetweenOrderByCreatedOnDesc(
@@ -718,7 +720,7 @@ class Waivers(
                                 waiver.defferalStatus = 0
                                 iwaiversApplicationRepo.save(waiver)
                                 pvocBpmn.pvocWaNscApproveComplete(waiver.id, 742)
-                                //pvocBpmn.pvocWaGenerateWaiverReqLetterComplete(waiver.id, 222)
+                                pvocBpmn.pvocWaGenerateWaiverReqLetterComplete(waiver.id, 740)
                             }
                             "reject" -> {
                                 remarkData.remarks = remarks.wetcRecomendation
@@ -729,6 +731,7 @@ class Waivers(
                                 waiver.defferalStatus = 0
                                 iwaiversApplicationRepo.save(waiver)
                                 pvocBpmn.pvocWaNscApproveComplete(waiver.id, 742)
+                                pvocBpmn.pvocWaGenerateWaiverReqLetterComplete(waiver.id, 740)
                             }
                             "differ" -> {
                                 remarkData.remarks = remarks.wetcRecomendation
@@ -739,11 +742,13 @@ class Waivers(
                                 waiver.rejectionStatus = 0
                                 iwaiversApplicationRepo.save(waiver)
                                 pvocBpmn.pvocWaNscApproveComplete(waiver.id, 742)
+                                pvocBpmn.pvocWaGenerateWaiverReqLetterComplete(waiver.id, 740)
                             }
                             else -> {
                                 remarkData.remarks = remarks.wetcRecomendation
                                 iwaiversApplicationRepo.save(waiver)
-//                                        pvocBpmn.pvocWaGenerateMinutesComplete(waiver.id, 742 )
+//                                pvocBpmn.pvocWaNscApproveComplete(waiver.id, 742)
+//                                pvocBpmn.pvocWaGenerateMinutesComplete(waiver.id, 742 )
                             }
                         }
 //                                waiver.let { iwaiversApplicationRepo.save(it) }
