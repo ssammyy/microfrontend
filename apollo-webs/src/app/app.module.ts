@@ -74,6 +74,10 @@ import { InformationcheckComponent } from './components/standards-development/in
 import { SuccessComponent } from './components/standards-development/sd-national-enquiry-point/success/success.component';
 import { NepNotificationComponent } from './components/standards-development/nep-notification/nep-notification.component';
 import { ManagernotificationsComponent } from './components/standards-development/managernotifications/managernotifications.component';
+import { HodjoinrequestComponent } from './components/standards-development/hodjoinrequest/hodjoinrequest.component';
+import { SicjoinrequestComponent } from './components/standards-development/sicjoinrequest/sicjoinrequest.component';
+import { SicpaymentconfirmComponent } from './components/standards-development/sicpaymentconfirm/sicpaymentconfirm.component';
+import { SchememembershipComponent } from './components/standards-development/schememembership/schememembership/schememembership.component';
 
 
 
@@ -138,6 +142,10 @@ import { ManagernotificationsComponent } from './components/standards-developmen
     SuccessComponent,
     NepNotificationComponent,
     ManagernotificationsComponent,
+    HodjoinrequestComponent,
+    SicjoinrequestComponent,
+    SicpaymentconfirmComponent,
+    SchememembershipComponent,
   ],
   exports: [
   ],

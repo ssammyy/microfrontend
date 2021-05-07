@@ -37,48 +37,79 @@
                 <a class="back-button w-button" onclick="goBack()" href="#">go back</a>
             </div>
 
-            <div class="content-wrap">
-                <div class="content-row">
-                    <h1>Quality Assurance<span></span></h1>
-                    <div>
-                        <div class="link-div">
-                            <div class="link-wrap-left" >
-                                <!--                                <a class="link-block w-inline-block" th:classappend="${#lists.size(payments) < 1} ? 'isDisabled'"-->
-                                <a class="link-block w-inline-block"
-                                   th:each="permitType : ${permitTypes}"
+<!--            <div class="content-wrap">-->
+<!--                <div class="content-row">-->
+<!--                    <h1>Quality Assurance<span></span></h1>-->
+<!--                    <div>-->
+<!--                        <div class="link-div">-->
+<!--                            <div class="link-wrap-left" >-->
+<!--                                &lt;!&ndash;                                <a class="link-block w-inline-block" th:classappend="${#lists.size(payments) < 1} ? 'isDisabled'"&ndash;&gt;-->
+<!--                                <a class="link-block w-inline-block"-->
+<!--                                   th:each="permitType : ${permitTypes}"-->
 
-                                   th:href="@{/api/qa/permits-list(permitTypeID = ${permitType.id})}"
-                                >
-                                    <div class="link-block-title-div">
-                                        <img
-                                                th:src="${permitType.image}"
-                                                alt=""
-                                                class="standardization-icon"
-                                        />
-                                        <div>
-                                            <h4><span th:text="${permitType.mark}"></span></h4>
-                                        </div>
-                                    </div>
-                                    <p class="paragraph-1" th:text="${permitType.descriptions}">
+<!--                                   th:href="@{/api/qa/permits-list(permitTypeID = ${permitType.id})}"-->
+<!--                                >-->
+<!--                                    <div class="link-block-title-div">-->
+<!--                                        <img-->
+<!--                                                th:src="${permitType.image}"-->
+<!--                                                alt=""-->
+<!--                                                class="standardization-icon"-->
+<!--                                        />-->
+<!--                                        <div>-->
+<!--                                            <h4><span th:text="${permitType.mark}"></span></h4>-->
+<!--                                        </div>-->
+<!--                                    </div>-->
+<!--                                    <p class="paragraph-1" th:text="${permitType.descriptions}">-->
 
-                                    </p>
-                                </a>
+<!--                                    </p>-->
+<!--                                </a>-->
+
+<!--                            </div>-->
+<!--                            &lt;!&ndash;                            <div class="link-wrap-right">&ndash;&gt;-->
+<!--                            &lt;!&ndash;                                <a class="content-button"   style="width: 170px" th:href="@{/api/v1/permit/my-applications(appstatus=0,page=1,records=10,appId=150)}"><span class="font-awesome-span fas fa-question-circle"></span>Application History</a>&ndash;&gt;-->
+<!--                            &lt;!&ndash;                                <a class="content-button"   style="width: 170px" th:href="@{/api/v1/permit/all-permits(appstatus=1,page=1,records=10,appId=199)}"><span class="font-awesome-span fas fa-question-circle"></span>My&ndash;&gt;-->
+<!--                            &lt;!&ndash;                                    Permits</a>&ndash;&gt;-->
+<!--                            &lt;!&ndash;&lt;!&ndash;                                <a class="content-button"   style="width: 170px" th:href="@{/all-invoices(page=1,records=10,appId=199)}"><span class="font-awesome-span fas fa-question-circle"></span>My Invoices</a>&ndash;&gt;&ndash;&gt;-->
+<!--                            &lt;!&ndash;                                <button type="button" class="btn btn-primary" style="width: 170px" data-toggle="modal" data-target="#exampleModal">&ndash;&gt;-->
+<!--                            &lt;!&ndash;                                    Modify account details&ndash;&gt;-->
+<!--                            &lt;!&ndash;                                </button>&ndash;&gt;-->
+
+<!--                            &lt;!&ndash;                            </div>&ndash;&gt;-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+
+            <div class="d-block mt-4">
+                <div class="row w-100">
+
+                    <div class="col-lg-6 mb-4">
+
+                        <div class="card h-100">
+                            <img th:src="${permitType.image}" class="card-img-top" alt="..."
+                                 style="width: 100px; height:100px; margin-left: 10px">
+                            <div class="card-body">
+                                <div class="card-title">
+                                    <h3 th:text="${permitType.mark}"></h3>
+                                </div>
+                                <div class="card-text">
+                                    <p th:text="${permitType.descriptions}"></p>
+                                </div>
 
                             </div>
-                            <!--                            <div class="link-wrap-right">-->
-                            <!--                                <a class="content-button"   style="width: 170px" th:href="@{/api/v1/permit/my-applications(appstatus=0,page=1,records=10,appId=150)}"><span class="font-awesome-span fas fa-question-circle"></span>Application History</a>-->
-                            <!--                                <a class="content-button"   style="width: 170px" th:href="@{/api/v1/permit/all-permits(appstatus=1,page=1,records=10,appId=199)}"><span class="font-awesome-span fas fa-question-circle"></span>My-->
-                            <!--                                    Permits</a>-->
-                            <!--&lt;!&ndash;                                <a class="content-button"   style="width: 170px" th:href="@{/all-invoices(page=1,records=10,appId=199)}"><span class="font-awesome-span fas fa-question-circle"></span>My Invoices</a>&ndash;&gt;-->
-                            <!--                                <button type="button" class="btn btn-primary" style="width: 170px" data-toggle="modal" data-target="#exampleModal">-->
-                            <!--                                    Modify account details-->
-                            <!--                                </button>-->
+                            <div class="card-footer">
+                                <a  th:each="permitType : ${permitTypes}"
 
-                            <!--                            </div>-->
+                                    th:href="@{/api/qa/permits-list(permitTypeID = ${permitType.id})}">Go to Application</a>
+
+                            </div>
                         </div>
                     </div>
+
                 </div>
+
             </div>
+
         </div>
     </div>
 </div>
