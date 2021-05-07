@@ -77,22 +77,21 @@ class PvocHandler(
         return try {
             req.awaitBodyOrNull<CocWithItems>()
                 ?.let { body ->
-                    body.coc?.coiNumber = "NA"
-                    body.coc?.coiIssueDate = Timestamp.from(Instant.now())
-                    body.coc?.coiRemarks = "NA"
-                    body.items?.let {
-                        for (item in it) {
-                            item.coiNumber = "NA"
-                            item.ownerName = "NA"
-                            item.ownerPin = "NA"
-                        }
-                    }
                     val errors: Errors = BeanPropertyBindingResult(body, CocWithItems::class.java.name)
                     validator.validate(body, errors)
                     if (errors.allErrors.isEmpty()) {
+                        body.coc?.coiNumber = "NA"
+                        body.coc?.coiIssueDate = Timestamp.from(Instant.now())
+                        body.coc?.coiRemarks = "NA"
+                        body.items?.let {
+                            for (item in it) {
+                                item.coiNumber = "NA"
+                                item.ownerName = "NA"
+                                item.ownerPin = "NA"
+                            }
+                        }
                         val response = service.saveCocDataWithItems(body)
                         ServerResponse.ok().bodyValueAndAwait(response)
-
                     } else {
                         onValidationErrors(errors)
                     }
@@ -105,36 +104,6 @@ class PvocHandler(
 
         }
     }
-
-//    suspend fun receiveCoiWithItems(req: ServerRequest): ServerResponse {
-//        return try {
-//            req.awaitBodyOrNull<CoiWithItemsResponse>()
-//                ?.let { body ->
-//                    val errors: Errors = BeanPropertyBindingResult(body, CoiWithItemsResponse::class.java.name)
-//                    validator.validate(body, errors)
-//                    if (errors.allErrors.isEmpty()) {
-//                        val response = service.saveCoiDataWithItems(body)
-//                        ServerResponse.ok().bodyValueAndAwait(response)
-//
-//                    } else {
-//                        onValidationErrors(errors)
-//                    }
-//                }
-//                ?: throw InvalidValueException("No Body found")
-//        } catch (e: Exception) {
-//            KotlinLogging.logger { }.debug(e.message, e)
-//            KotlinLogging.logger { }.error(e.message)
-//            onErrors(e.message)
-//        }
-//    }
-//    suspend fun receiveCoc(req: ServerRequest): ServerResponse {
-//        return req.validateRequestTypeThen<CocsBakEntity> { body ->
-////            ServerResponse.ok().contentTy
-//            val response = service.saveCocData(body)
-//            KotlinLogging.logger {  }.debug(daoService.mapper().writeValueAsString(response))
-//            ServerResponse.ok().bodyValueAndAwait(response)
-//        }
-//    }
 
     suspend fun receiveCOCItems(req: ServerRequest): ServerResponse {
         return try {
@@ -148,8 +117,6 @@ class PvocHandler(
                     } else {
                         onValidationErrors(errors)
                     }
-
-
                 }
                 ?: throw InvalidValueException("No Body found")
         } catch (e: Exception) {
@@ -158,35 +125,7 @@ class PvocHandler(
             onErrors(e.message)
 
         }
-
-
     }
-
-//    suspend fun receiveCOCWithItems(req: ServerRequest): ServerResponse {
-//        return try {
-//            req.awaitBodyOrNull<CocItemsEntity>()
-//                ?.let { body ->
-//                    val errors: Errors = BeanPropertyBindingResult(body, CocItemsEntity::class.java.name)
-//                    validator.validate(body, errors)
-//                    if (errors.allErrors.isEmpty()) {
-//                        ServerResponse.ok().bodyValueAndAwait(service.saveCocItemsData(body))
-//
-//                    } else {
-//                        onValidationErrors(errors)
-//                    }
-//
-//
-//                }
-//                ?: throw InvalidValueException("No Body found")
-//        } catch (e: Exception) {
-//            KotlinLogging.logger { }.debug(e.message, e)
-//            KotlinLogging.logger { }.error(e.message)
-//            onErrors(e.message)
-//
-//        }
-//
-//
-//    }
 
     suspend fun receiveCOR(req: ServerRequest): ServerResponse {
         return try {
@@ -196,22 +135,16 @@ class PvocHandler(
                     validator.validate(body, errors)
                     if (errors.allErrors.isEmpty()) {
                         ServerResponse.ok().bodyValueAndAwait(service.saveCorData(body))
-
                     } else {
                         onValidationErrors(errors)
                     }
-
-
                 }
                 ?: throw InvalidValueException("No Body found")
         } catch (e: Exception) {
             KotlinLogging.logger { }.debug(e.message, e)
             KotlinLogging.logger { }.error(e.message)
             onErrors(e.message)
-
         }
-
-
     }
 
     suspend fun receiveCOI(req: ServerRequest): ServerResponse {
@@ -245,20 +178,20 @@ class PvocHandler(
         return try {
             req.awaitBodyOrNull<CoiWithItems>()
                 ?.let { body ->
-                    body.coi?.cocNumber = "NA"
-                    body.coi?.cocIssueDate = Timestamp.from(Instant.now())
-                    body.coi?.cocRemarks = "NA"
-                    body.items?.let {
-                        for (item in it) {
-                            item.cocNumber = "NA"
-                        }
-                    }
+
                     val errors: Errors = BeanPropertyBindingResult(body, CoiWithItems::class.java.name)
                     validator.validate(body, errors)
                     if (errors.allErrors.isEmpty()) {
+                        body.coi?.cocNumber = "NA"
+                        body.coi?.cocIssueDate = Timestamp.from(Instant.now())
+                        body.coi?.cocRemarks = "NA"
+                        body.items?.let {
+                            for (item in it) {
+                                item.cocNumber = "NA"
+                            }
+                        }
                         val response = service.saveCoiDataWithItems(body)
                         ServerResponse.ok().bodyValueAndAwait(response)
-
                     } else {
                         onValidationErrors(errors)
                     }
@@ -286,8 +219,6 @@ class PvocHandler(
                     } else {
                         onValidationErrors(errors)
                     }
-
-
                 }
                 ?: throw InvalidValueException("No Body found")
         } catch (e: Exception) {
@@ -331,13 +262,9 @@ class PvocHandler(
                     validator.validate(body, errors)
                     if (errors.allErrors.isEmpty()) {
                         ServerResponse.ok().bodyValueAndAwait(service.saveCoiItemsData(body))
-
-
                     } else {
                         onValidationErrors(errors)
                     }
-
-
                 }
                 ?: throw InvalidValueException("No Body found")
         } catch (e: Exception) {
