@@ -477,28 +477,33 @@ class QADaoServices(
             foundSSC = schemeForSupervisionRepo.save(foundSSC)
 
             var reasonValue : String? = null
-            if(schemeSupervision.acceptedRejectedStatus==map.activeStatus){
-                var permitUpdate = schemeUpdatePermit(foundSSC, map.activeStatus)
+            when {
+                schemeSupervision.acceptedRejectedStatus==map.activeStatus -> {
+                    var permitUpdate = schemeUpdatePermit(foundSSC, map.activeStatus)
 
-                permitUpdate = permitUpdateDetails(permitUpdate, map, user).second
-                reasonValue = "ACCEPTED"
-                schemeSendEmail(permitUpdate, reasonValue, foundSSC)
-            }else if (schemeSupervision.acceptedRejectedStatus==map.inactiveStatus){
-                var permitUpdate = schemeUpdatePermit(foundSSC, map.inactiveStatus)
-                permitUpdate.generateSchemeStatus = map.inactiveStatus
-                permitUpdate = permitUpdateDetails(permitUpdate, map, user).second
-                reasonValue = "REJECTED"
+                    permitUpdate = permitUpdateDetails(permitUpdate, map, user).second
+                    reasonValue = "ACCEPTED"
+                    schemeSendEmail(permitUpdate, reasonValue, foundSSC)
+                }
+                schemeSupervision.acceptedRejectedStatus==map.inactiveStatus -> {
+                    var permitUpdate = schemeUpdatePermit(foundSSC, map.inactiveStatus)
+                    permitUpdate.generateSchemeStatus = map.inactiveStatus
+                    permitUpdate = permitUpdateDetails(permitUpdate, map, user).second
+                    reasonValue = "REJECTED"
 
-                schemeSendEmail(permitUpdate, reasonValue, foundSSC)
-            }else if (schemeSupervision.status==map.inactiveStatus){
-                var permitUpdate = schemeUpdatePermit(foundSSC, null)
-                permitUpdate = permitUpdateDetails(permitUpdate, map, user).second
+                    schemeSendEmail(permitUpdate, reasonValue, foundSSC)
+                }
+                schemeSupervision.status==map.inactiveStatus -> {
+                    var permitUpdate = schemeUpdatePermit(foundSSC, null)
+                    permitUpdate = permitUpdateDetails(permitUpdate, map, user).second
 
-                schemeSendToManufacture(permitUpdate)
+                    schemeSendToManufacture(permitUpdate)
+                }
             }
 
             sr.payload = "UPDATED Scheme Saved [ID ${foundSSC.id} and ${foundSSC.permitId}]"
             sr.names = "${foundSSC.createdBy}"
+            sr.varField1 = foundSSC.permitId.toString()
 
             sr.responseStatus = sr.serviceMapsId?.successStatusCode
             sr.responseMessage = "Success ${sr.payload}"
