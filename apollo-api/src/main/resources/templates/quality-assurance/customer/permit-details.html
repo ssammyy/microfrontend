@@ -370,8 +370,8 @@
                                 <div sec:authorize="hasAuthority('QA_MANAGER_ASSESSORS_MODIFY') or hasAuthority('QA_HOF_READ') or hasAuthority('QA_HOD_READ') or hasAuthority('QA_OFFICER_MODIFY')">
                                     <a th:if="${permitDetails?.factoryInspectionReportApprovedRejectedStatus == 1}" th:href="@{/api/qa/kebs/view/attached(fileID=${permitDetails.inspectionReportId})}" target='_blank' style="color: white" class="filter-link">FACTORY INSPECTION REPORT</a>
 
-                                    <a th:if="${permitDetails?.scfId != 1}" th:href="@{/api/qa/kebs/view/attached(fileID=${permitDetails.scfId})}" target='_blank' class="btn btn-primary itemViewBtn">SCF</a>
-                                    <a th:if="${permitDetails?.ssfId != 1}" th:href="@{/api/qa/kebs/view/attached(fileID=${permitDetails.ssfId})}" target='_blank' class="btn btn-primary itemViewBtn">SSF</a>
+                                    <a th:if="${permitDetails?.scfId != 1}" th:href="@{/api/qa/kebs/view/attached(fileID=${permitDetails.scfId})}" target='_blank' class="btn btn-primary itemViewBtn">SAMPLE COLLECTION UPLOADED</a>
+                                    <a th:if="${permitDetails?.ssfId != 1}" th:href="@{/api/qa/kebs/view/attached(fileID=${permitDetails.ssfId})}" target='_blank' class="btn btn-primary itemViewBtn">SAMPLE SUBMISSION UPLOADED</a>
                                     <a th:if="${permitDetails?.testReportId != 1}" th:href="@{/api/qa/kebs/view/attached(fileID=${permitDetails.testReportId})}" target='_blank' class="btn btn-primary itemViewBtn">LAB REPORT</a>
 
 

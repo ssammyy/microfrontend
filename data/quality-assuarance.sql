@@ -100,6 +100,10 @@ alter table DAT_KEBS_PERMIT_TRANSACTION
     add RM_ID NUMBER REFERENCES DAT_KEBS_USERS(ID)
 /
 
+select * from DAT_KEBS_QA_UPLOADS
+-- where id = 2
+order by id desc;
+
 select * from CFG_PRODUCTS
 -- where id = 2
 order by id desc;
@@ -118,7 +122,7 @@ order by id desc;
 
 select * from DAT_KEBS_INVOICE
 -- where id = 2
--- where INVOICE_NUMBER = 'DM#20210426B8C'
+where PERMIT_ID = 243
 order by id desc;
 
 alter table DAT_KEBS_QA_PRODUCT modify AVAILABLE NUMBER(2)/
