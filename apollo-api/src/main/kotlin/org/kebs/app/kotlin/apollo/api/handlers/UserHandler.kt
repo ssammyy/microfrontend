@@ -86,6 +86,12 @@ class UserHandler(
                                     }
                                 }
                             }
+                            auth.authorities.stream().anyMatch { authority -> authority.authority == applicationMapProperties.mapQualityAssuranceEmployeeRoleName } -> {
+
+                                        val employeeProfiles= commonDaoServices.findUserProfileByUserID(userDetails, map.activeStatus)
+                                        req.attributes()["employeeProfiles"] = employeeProfiles
+
+                            }
                         }
 
                         req.attributes()["counties"] = countyRepo.findByStatusOrderByCounty(map.activeStatus)

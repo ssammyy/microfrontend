@@ -94,7 +94,7 @@ class QualityAssuranceController(
 
 
 
-        sm.closeLink = "${applicationMapProperties.baseUrlValue}/qa/scheme-of-supervision?permitID=${result.varField1}%26userID=${loggedInUser.id}"
+        sm.closeLink = "${applicationMapProperties.baseUrlValue}/qa/scheme-of-supervision?permitID=${permitDetails.id}"
 
 
         return commonDaoServices.returnValues(result, map, sm)
@@ -115,7 +115,7 @@ class QualityAssuranceController(
         result = qaDaoServices.schemeSupervisionUpdateSave(schemeID, schemeFound, loggedInUser,map)
 
         val sm = CommonDaoServices.MessageSuccessFailDTO()
-        sm.closeLink = "${applicationMapProperties.baseUrlValue}/qa/scheme-of-supervision?permitID=${result.varField1}%26userID=${loggedInUser.id}"
+        sm.closeLink = "${applicationMapProperties.baseUrlValue}/qa/scheme-of-supervision?permitID=${result.varField1}"
         sm.message = "You have Successful UPDATED SSC"
 
         return commonDaoServices.returnValues(result, map, sm)
