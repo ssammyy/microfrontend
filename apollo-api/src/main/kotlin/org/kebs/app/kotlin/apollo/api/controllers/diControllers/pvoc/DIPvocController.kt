@@ -4,6 +4,7 @@ import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.PvocBpmn
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.PvocDaoServices
+import org.kebs.app.kotlin.apollo.api.service.UserRolesService
 import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
 import org.kebs.app.kotlin.apollo.common.exceptions.PvocRemarksNotFoundException
 import org.kebs.app.kotlin.apollo.common.exceptions.SupervisorNotFoundException
@@ -107,7 +108,8 @@ class DIPvocController(
     private val pvocDaoServices: PvocDaoServices,
     private val iPvocExceptionIndustrialSparesCategoryEntityRepo: IPvocExceptionIndustrialSparesCategoryEntityRepo,
     private val iPvocExceptionMainMachineryCategoryEntityRepo: IPvocExceptionMainMachineryCategoryEntityRepo,
-    private val iPvocExceptionRawMaterialCategoryEntityRepo: IPvocExceptionRawMaterialCategoryEntityRepo
+    private val iPvocExceptionRawMaterialCategoryEntityRepo: IPvocExceptionRawMaterialCategoryEntityRepo,
+    private val userRolesService: UserRolesService
 
 
 ) {
@@ -374,13 +376,20 @@ class DIPvocController(
                             doc?.reviewStatus = pvocReviewStatus?.varField1
                             remarkData.remarksProcess = pvocReviewStatus?.exceptionStatus
                             iRemarksRepository.save(remarkData)
-                            pvocBpmn.pvocEaCheckApplicationComplete(id, 1007, true)
+                            userRolesService.getUserId("userRolesService")?.let {
+                                pvocBpmn.pvocEaCheckApplicationComplete(id,
+                                    it, true)
+                            }
                         }
                         "rejected" -> {
                             doc?.reviewStatus = pvocReviewStatus?.varField1
                             remarkData.remarksProcess = pvocReviewStatus?.rejectedStatus
                             iRemarksRepository.save(remarkData)
-                            pvocBpmn.pvocEaCheckApplicationComplete(id, 1007, false)
+                            userRolesService.getUserId("userRolesService")?.let {
+                                pvocBpmn.pvocEaCheckApplicationComplete(id,
+                                    it, false)
+                            }
+                            //pvocBpmn.pvocEaCheckApplicationComplete(id, 1007, false)
                         }
                     }
                     doc?.let { it -> iPvocApplicationRepo.save(it) }
@@ -414,7 +423,10 @@ class DIPvocController(
                         doc?.sn = pvocDaoServices.generateRandomNumbers("PVOC-EXEMPTION")
                         doc?.id?.let {
                             pvocBpmn.pvocAeDeferApplicationComplete(it)
-                            pvocBpmn.pvocEaCheckApplicationComplete(it, 100, false)
+                            userRolesService.getUserId("PERMIT_APPLICATION")?.let { it1 ->
+                                pvocBpmn.pvocEaCheckApplicationComplete(it,
+                                    it1, false)
+                            }
                         }
                     }
                     "excepted" -> {
@@ -422,7 +434,11 @@ class DIPvocController(
                         remarkData.remarksProcess = pvocReviewStatus?.exceptionStatus
                         doc?.id?.let {
                             pvocBpmn.pvocEaApproveApplicationComplete(it, true)
-                            pvocBpmn.pvocEaCheckApplicationComplete(it, 100, true)
+                            userRolesService.getUserId("PERMIT_APPLICATION")?.let { it1 ->
+                                pvocBpmn.pvocEaCheckApplicationComplete(it,
+                                    it1, true)
+                            }
+//                            pvocBpmn.pvocEaCheckApplicationComplete(it, 100, true)
                         }
                         doc?.finalApproval = 1
                         doc?.sn = pvocDaoServices.generateRandomNumbers("PVOC-EXEMPTION")
@@ -434,7 +450,11 @@ class DIPvocController(
                         doc?.sn = pvocDaoServices.generateRandomNumbers("PVOC-EXEMPTION")
                         doc?.id?.let {
                             pvocBpmn.pvocAeRejectApplicationComplete(it)
-                            pvocBpmn.pvocEaCheckApplicationComplete(it, 100, false)
+                            userRolesService.getUserId("PERMIT_APPLICATION")?.let { it1 ->
+                                pvocBpmn.pvocEaCheckApplicationComplete(it,
+                                    it1, false)
+                            }
+//                            pvocBpmn.pvocEaCheckApplicationComplete(it, 100, false)
                         }
                     }
                 }
