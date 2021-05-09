@@ -96,12 +96,16 @@ interface IUserPrivilegesRepository : HazelcastRepository<UserPrivilegesEntity, 
     fun findPrivilegesForRole(@Param("roleId") roleId: Long, @Param("rStatus") rStatus: Int): List<UserPrivilegesEntity>?
     fun findByStatus(status: Int): List<UserPrivilegesEntity>?
 
+    fun findByName(name: String) : UserPrivilegesEntity
+
 
 }
 
 @Repository
 interface IUserRolesPrivilegesRepository : HazelcastRepository<RolesPrivilegesEntity, Long> {
     fun findByUserRolesAndStatus(userRoles: UserRolesEntity?, status: Int?): List<RolesPrivilegesEntity>?
+
+    fun findByPrivilege(privilege: UserPrivilegesEntity) : List<RolesPrivilegesEntity>?
 
 
     @Query(value = "SELECT * FROM CFG_ROLES_PRIVILEGES p WHERE p.ROLES_ID  IN (:userRoles) and STATUS = :status", nativeQuery = true)
@@ -127,6 +131,7 @@ interface IUserRolesRepository : HazelcastRepository<UserRolesEntity, Long> {
 interface IUserRoleAssignmentsRepository : HazelcastRepository<UserRoleAssignmentsEntity, Long> {
     fun findByUserIdAndStatus(userId: Long, status: Int): List<UserRoleAssignmentsEntity>?
     fun findByRoleIdAndStatus(roleId: Long, status: Int): List<UserRoleAssignmentsEntity>?
+    fun findByRoleId(roleId: Long): List<UserRoleAssignmentsEntity>
     fun findByUserId(userId: Long): UserRoleAssignmentsEntity?
 
 
