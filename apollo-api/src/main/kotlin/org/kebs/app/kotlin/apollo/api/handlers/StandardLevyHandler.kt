@@ -5,7 +5,6 @@ import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.StandardsLevyBpmn
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
-import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
 import org.kebs.app.kotlin.apollo.common.exceptions.ServiceMapNotFoundException
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.StandardLevyFactoryVisitReportEntity
@@ -81,7 +80,7 @@ class StandardLevyHandler(
                                     userRepo.findByUserName(auth.name)
                                         ?.let { user ->
                                             val whereTo = req.paramOrNull("whereTo")
-                                                ?: throw NullValueNotAllowedException("whereTo parameter is required")
+                                                ?: throw ExpectedDataNotFound("whereTo parameter is required")
                                             when (whereTo) {
                                                 "load_manufacturers" -> {
                                                     commonDaoServices.findCompanyProfileWhoAreManufactures(map.activeStatus)
@@ -169,7 +168,7 @@ class StandardLevyHandler(
                                         ?: throw ExpectedDataNotFound("Invalid DATA")
 
                         }
-                        ?: throw NullValueNotAllowedException("Invalid session")
+                        ?: throw ExpectedDataNotFound("Invalid session")
                 }
                 ?: throw ServiceMapNotFoundException("Missing application mapping for [id=$appId], recheck configuration")
         } catch (e: Exception) {
@@ -231,7 +230,7 @@ class StandardLevyHandler(
                                 }
                                 ?: throw ExpectedDataNotFound("Manufacturer [id=${req.paramOrNull("manufacturerId")}] does not exist")
                         }
-                        ?: throw NullValueNotAllowedException("Invalid session")
+                        ?: throw ExpectedDataNotFound("Invalid session")
 
                 }
                 ?: throw ServiceMapNotFoundException("Missing application mapping for [id=$appId], recheck configuration")
@@ -261,7 +260,7 @@ class StandardLevyHandler(
                                             manufacturerRepository.save(manufacturer)
 
                                             val kraId = req.paramOrNull("kraId")?.toLong()
-                                                ?: throw NullValueNotAllowedException("Invalid KraId")
+                                                ?: throw ExpectedDataNotFound("Invalid KraId")
 
                                             // Schedule site visit complete
                                             standardsLevyBpmn.slsvScheduleVisitComplete(kraId)
@@ -298,7 +297,7 @@ class StandardLevyHandler(
                         ?.let { manufacturerId ->
                             commonDaoServices.findCompanyProfileWithID(
                                 manufacturerId.toLongOrNull()
-                                    ?: throw NullValueNotAllowedException("Invalid manufacturer id")
+                                    ?: throw ExpectedDataNotFound("Invalid manufacturer id")
                             )
                                 ?.let { manufacturer ->
                                     req.paramOrNull("scheduleDate")
@@ -312,7 +311,6 @@ class StandardLevyHandler(
                                             }
                                             companyProfileRepo.save(manufacturer)
 
-                                            //val kraId = req.paramOrNull("kraId")?.toLong() ?: throw NullValueNotAllowedException("Invalid KraId")
 
                                             // Schedule site visit complete
                                             var visit = StandardLevyFactoryVisitReportEntity().apply {
@@ -323,14 +321,14 @@ class StandardLevyHandler(
                                             visit = standardLevyFactoryVisitReportRepo.save(visit)
 
                                             val userName = SecurityContextHolder.getContext().authentication?.name
-                                                ?: throw NullValueNotAllowedException("Invalid session")
+                                                ?: throw ExpectedDataNotFound("Invalid session")
                                             userRepo.findByUserName(userName)
                                                 ?.let {
-                                                    standardsLevyBpmn.startSlSiteVisitProcess(visit.id, it.id?:throw NullValueNotAllowedException("Invalid user"))
+                                                    standardsLevyBpmn.startSlSiteVisitProcess(visit.id, it.id?:throw ExpectedDataNotFound("Invalid user"))
                                                     standardsLevyBpmn.slsvQueryManufacturerDetailsComplete(visit.id)
                                                     standardsLevyBpmn.slsvScheduleVisitComplete(visit.id)
                                                 }
-                                                ?:throw NullValueNotAllowedException("User not found")
+                                                ?:throw ExpectedDataNotFound("User not found")
                                             //standardsLevyBpmn.slsvScheduleVisitComplete(kraId)
 
                                             redirectAttributes?.addFlashAttribute(
@@ -352,7 +350,7 @@ class StandardLevyHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            ServerResponse.badRequest().body(e.message ?: "Unknown error")
+            throw e
 
         }
 
@@ -376,12 +374,12 @@ class StandardLevyHandler(
                                                     with(visitReport) {
                                                         assistantManagerApproval =
                                                             req.paramOrNull("approvalStatus")?.toIntOrNull()
-                                                                ?: throw NullValueNotAllowedException("Invalid approvalStatus")
+                                                                ?: throw ExpectedDataNotFound("Invalid approvalStatus")
                                                     }
                                                     standardLevyFactoryVisitReportRepo.save(visitReport)
 
                                                     val kraId = req.paramOrNull("kraId")?.toLongOrNull()
-                                                        ?: throw NullValueNotAllowedException("Invalid KraId")
+                                                        ?: throw ExpectedDataNotFound("Invalid KraId")
                                                     //Assistant manager approve complete
                                                     standardsLevyBpmn.slsvApproveReportAsstManagerComplete(
                                                         kraId,
@@ -398,7 +396,7 @@ class StandardLevyHandler(
                                                         req.attributes()
                                                     )
                                                 }
-                                                ?: throw NullValueNotAllowedException("Required report data is not present")
+                                                ?: throw ExpectedDataNotFound("Required report data is not present")
                                         }
 
                                         "manager_approval" -> {
@@ -413,7 +411,7 @@ class StandardLevyHandler(
                                                     standardLevyFactoryVisitReportRepo.save(visitReport)
 
                                                     val kraId = req.paramOrNull("kraId")?.toLongOrNull()
-                                                        ?: throw NullValueNotAllowedException("Invalid kraId")
+                                                        ?: throw ExpectedDataNotFound("Invalid kraId")
                                                     //Assistant manager approve complete
                                                     standardsLevyBpmn.slsvApproveReportManagerComplete(
                                                         kraId,
@@ -430,7 +428,7 @@ class StandardLevyHandler(
                                                         req.attributes()
                                                     )
                                                 }
-                                                ?: throw NullValueNotAllowedException("Required report data is not present")
+                                                ?: throw ExpectedDataNotFound("Required report data is not present")
 
                                         }
                                         "submit_feedback" -> {
@@ -444,7 +442,7 @@ class StandardLevyHandler(
                                                     standardLevyFactoryVisitReportRepo.save(visitReport)
 
                                                     val kraId = req.paramOrNull("kraId")?.toLongOrNull()
-                                                        ?: throw NullValueNotAllowedException("Invalid kraId")
+                                                        ?: throw ExpectedDataNotFound("Invalid kraId")
                                                     //Assistant manager approve complete
                                                     standardsLevyBpmn.slsvApproveReportManagerComplete(
                                                         kraId,
@@ -461,7 +459,7 @@ class StandardLevyHandler(
                                                         req.attributes()
                                                     )
                                                 }
-                                                ?: throw NullValueNotAllowedException("Required report data is not present")
+                                                ?: throw ExpectedDataNotFound("Required report data is not present")
                                         }
                                         else -> {
                                             redirectAttributes?.addFlashAttribute("error", "Caught an exception. ")

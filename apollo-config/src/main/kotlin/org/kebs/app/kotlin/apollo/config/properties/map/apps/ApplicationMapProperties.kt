@@ -45,6 +45,9 @@ class ApplicationMapProperties {
     @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.manufacture.roleName}")
     val mapQualityAssuranceManufactureRoleName: String = ""
 
+    @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.employee.roleName}")
+    val mapQualityAssuranceEmployeeRoleName: String = ""
+
     @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.manufacture.viewPage}")
     val mapQualityAssuranceManufactureViewPage: String = ""
 
