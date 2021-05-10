@@ -117,7 +117,7 @@ class RegisterController(
                 .let { checkUsersEntity ->
                     when {
                         checkUsersEntity != null -> {
-                            throw ServiceMapNotFoundException("The User PIN/PASSPORT/ID Number Already Exists")
+                            throw ExpectedDataNotFound("The User PIN/PASSPORT/ID Number Already Exists")
                         }
                         else -> {
                             result = daoServices.registerUser(map, usersEntity, null)
