@@ -94,7 +94,7 @@ class QualityAssuranceController(
 
 
 
-        sm.closeLink = "${applicationMapProperties.baseUrlValue}/qa/scheme-of-supervision?permitID=${result.varField1}%26userID=${loggedInUser.id}"
+        sm.closeLink = "${applicationMapProperties.baseUrlValue}/qa/scheme-of-supervision?permitID=${permitDetails.id}"
 
 
         return commonDaoServices.returnValues(result, map, sm)
@@ -115,7 +115,7 @@ class QualityAssuranceController(
         result = qaDaoServices.schemeSupervisionUpdateSave(schemeID, schemeFound, loggedInUser,map)
 
         val sm = CommonDaoServices.MessageSuccessFailDTO()
-        sm.closeLink = "${applicationMapProperties.baseUrlValue}/qa/scheme-of-supervision?permitID=${result.varField1}%26userID=${loggedInUser.id}"
+        sm.closeLink = "${applicationMapProperties.baseUrlValue}/qa/scheme-of-supervision?permitID=${result.varField1}"
         sm.message = "You have Successful UPDATED SSC"
 
         return commonDaoServices.returnValues(result, map, sm)
@@ -546,7 +546,8 @@ class QualityAssuranceController(
         return "${qaDaoServices.sta10Details}=${qaSta10.permitId}&userID=${loggedInUser.id}"
     }
 
-    @PreAuthorize("hasAuthority('PERMIT_APPLICATION') or hasAuthority('QA_MANAGER_ASSESSORS_READ') or hasAuthority('QA_HOF_READ') or hasAuthority('QA_HOD_READ') or hasAuthority('QA_OFFICER_MODIFY') or hasAuthority('QA_PSC_MEMBERS_READ') or hasAuthority('QA_PCM_READ')")
+    @PreAuthorize("hasAuthority('PERMIT_APPLICATION') or hasAuthority('QA_OFFICER_MODIFY') or hasAuthority('QA_HOD_MODIFY') or hasAuthority('QA_MANAGER_ASSESSORS_MODIFY')" +
+            " or hasAuthority('QA_HOF_MODIFY') or hasAuthority('QA_ASSESSORS_MODIFY') or hasAuthority('QA_PAC_SECRETARY_MODIFY') or hasAuthority('QA_PSC_MEMBERS_MODIFY') or hasAuthority('QA_PCM_MODIFY')")
     @PostMapping("kebs/add/new-upload")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun uploadFilesQA(
@@ -768,9 +769,6 @@ class QualityAssuranceController(
         }
         qaDaoServices.permitUpdateDetails(permitDetails, map, loggedInUser)
 
-//        val result: ServiceRequestsEntity?
-
-        result = qaDaoServices.saveQaFileUploads(docFile, docFileName, loggedInUser, map, permitID, null).first
         //Send notification to PAC secretary
         val pacSec = appointedPacSec.userId?.id?.let { commonDaoServices.findUserByID(it) }
         pacSec?.email?.let { qaDaoServices.sendPacDmarkAssessmentNotificationEmail(it, permitDetails) }

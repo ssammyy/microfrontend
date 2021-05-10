@@ -1,6 +1,7 @@
 package org.kebs.app.kotlin.apollo.store.model
 
 import java.io.Serializable
+import java.sql.Date
 import java.sql.Timestamp
 import java.time.LocalDate
 import java.util.*
@@ -118,7 +119,7 @@ class StandardLevyFactoryVisitReportEntity: Serializable {
 
     @Column(name = "SCHEDULED_VISIT_DATE")
     @Basic
-    var scheduledVisitDate: LocalDate? = null
+    var scheduledVisitDate: Date? = null
 
     @Column(name = "REPORT_DATE")
     @Basic

@@ -237,7 +237,7 @@
 
                                                                     <dt>Created On:</dt> <dd th:text="${#dates.format(manufacturer?.createdOn, 'dd/MM/yyyy')}"></dd>
                                                                     <dt>Status:</dt> <dd th:if="${manufacturer.status = 1}" th:text="'Active'"> <dd th:if="${manufacturer.status = 0}" th:text="'Inactive'">	 </dd>
-                                                                    <dt>Monthly turnover:</dt> <dd th:text="'KSH.' + ' ' + ${turnover?.turnOverAmount}">      </dd>
+                                                                    <dt>Yearly turnover:</dt> <dd th:text="'KSH.' + ' ' + ${turnover}">      </dd>
                                                                 </dl>
                                                             </div>
                                                         </div>
@@ -250,25 +250,28 @@
                                     <button class="accordion" style="flex: 0 50%">Manufacturer Contacts Details</button>
                                     <div class="panel">
                                         <ul  style="width: 500px" class="w-list-unstyled">
-                                            <li class="list-item" th:if="${contacts?.firstName}">
+                                            <li class="list-item" th:if="${contacts?.contactPerson}">
                                                 <div class="list-title" style="color: #0166B1;">ContactPerson</div>
-                                                <div class="list-text" th:text="${contacts?.firstName} + ' ' + ${contacts?.firstName}"></div>
+                                                <div class="list-text" th:text="${contacts?.contactPerson}"></div>
                                             </li>
                                             <br>
-                                            <li class="list-item" th:if="${contacts?.cellPhone}">
+                                            <li class="list-item" th:if="${contacts?.telephone}">
                                                 <div class="list-title" style="color: #0166B1;">Phone Number</div>
-                                                <div class="list-text" th:text="${contacts?.cellPhone}"></div>
+                                                <div class="list-text" th:text="${contacts?.telephone}"></div>
                                             </li>
                                             <br>
-                                            <li class="list-item" th:if="${contacts?.emailAddress}">
+                                            <li class="list-item" th:if="${manufacturer?.companyEmail}">
                                                 <div class="list-title" style="color: #0166B1;">Email Address</div>
-                                                <div class="list-text" th:text="${contacts?.emailAddress}"></div>
+                                                <div class="list-text" th:text="${manufacturer?.companyEmail}"></div>
                                             </li>
                                             <br>
-                                            <li class="list-item" th:if="${contacts?.emailAddress}">
+                                            <!--
+                                             <li class="list-item" th:if="${contacts?.emailAddress}">
                                                 <div class="list-title" style="color: #0166B1;">Business Nature</div>
                                                 <div class="list-text" th:text="${nature?.name}"></div>
                                             </li>
+                                            -->
+
                                             <br>
                                         </ul>
                                     </div>

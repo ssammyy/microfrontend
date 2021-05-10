@@ -206,7 +206,7 @@
             </div>
             <div class="remarksForm">
                 <form id="remarksForm"   name="remarksForm"
-                      th:action="@{/api/di/pvoc/waivers-reports-remarks/{pvocId}/{remarksType}(pvocId = ${report.id}, remarksType='addRemarks' )}"
+                      th:action="@{/api/di/pvoc/waivers-minutes-remarks/{pvocId}/{remarksType}(pvocId = ${report.id}, remarksType='addRemarks' )}"
                       method="post" th:object="${remarks}" >
                     <div class="modal fade" id="ncs-member" tabindex="-1" role="dialog" aria-labelledby="remarksModalLabel" aria-hidden="true">
                         <div class="modal-dialog" role="document">

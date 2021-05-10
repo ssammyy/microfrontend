@@ -703,6 +703,14 @@ class CommonDaoServices(
                 ?: throw ExpectedDataNotFound("Company Profile with [user ID= ${userID}], does not Exist")
     }
 
+    fun findCompanyProfileWhoAreManufactures(status: Int): List<CompanyProfileEntity> {
+        companyProfileRepo.findByManufactureStatus(status)
+                ?.let { userCompanyDetails ->
+                    return userCompanyDetails
+                }
+                ?: throw ExpectedDataNotFound("Company Profile list with [user ID= ${status}], does not Exist")
+    }
+
     fun findCompanyProfileWithID(id: Long): CompanyProfileEntity {
         companyProfileRepo.findByIdOrNull(id)
             ?.let { userCompanyDetails ->

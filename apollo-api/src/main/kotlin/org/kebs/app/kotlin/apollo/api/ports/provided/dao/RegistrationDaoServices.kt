@@ -558,9 +558,12 @@ class RegistrationDaoServices(
                 buildingName = cp.buildingName
                 directorIdNumber = cp.directorIdNumber
                 streetName = cp.streetName
+                factoryVisitDate = cp.factoryVisitDate
+                factoryVisitStatus = cp.factoryVisitStatus
                 county = cp.county
                 town = cp.town
                 region = county?.let { commonDaoServices.findCountiesEntityByCountyId(it, s.activeStatus).regionId }
+                manufactureStatus = 1
 
             }
             val userCompany = systemsAdminDaoService.updateUserCompanyDetails(userCompanyDetails)

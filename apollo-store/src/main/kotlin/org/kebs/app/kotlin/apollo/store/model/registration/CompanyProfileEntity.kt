@@ -2,6 +2,7 @@ package org.kebs.app.kotlin.apollo.store.model.registration
 
 import java.io.Serializable
 import java.math.BigDecimal
+import java.sql.Date
 import java.sql.Timestamp
 import java.time.LocalDate
 import java.util.*
@@ -12,7 +13,11 @@ import javax.persistence.*
 class CompanyProfileEntity : Serializable {
     @Column(name = "ID")
     @Id
-    @SequenceGenerator(name = "DAT_KEBS_COMPANY_PROFILE_SEQ_GEN", sequenceName = "DAT_KEBS_COMPANY_PROFILE_SEQ", allocationSize = 1)
+    @SequenceGenerator(
+        name = "DAT_KEBS_COMPANY_PROFILE_SEQ_GEN",
+        sequenceName = "DAT_KEBS_COMPANY_PROFILE_SEQ",
+        allocationSize = 1
+    )
     @GeneratedValue(generator = "DAT_KEBS_COMPANY_PROFILE_SEQ_GEN", strategy = GenerationType.SEQUENCE)
     var id: Long? = null
 
@@ -23,6 +28,10 @@ class CompanyProfileEntity : Serializable {
     @Column(name = "KRA_PIN")
     @Basic
     var kraPin: String? = null
+
+    @Column(name = "MANUFACTURE_STATUS")
+    @Basic
+    var manufactureStatus: Int? = null
 
     @Column(name = "REGISTRATION_NUMBER")
     @Basic
@@ -86,7 +95,7 @@ class CompanyProfileEntity : Serializable {
 
     @Column(name = "DIRECTOR_ID_NUMBER")
     @Basic
-    var directorIdNumber: String?= null
+    var directorIdNumber: String? = null
 
     @Column(name = "STATUS")
     @Basic
@@ -158,7 +167,7 @@ class CompanyProfileEntity : Serializable {
 
     @Column(name = "FACTORY_VISIT_DATE ")
     @Basic
-    var factoryVisitDate: LocalDate? = null
+    var factoryVisitDate: Date? = null
 
     @Column(name = "FACTORY_VISIT_STATUS ")
     @Basic
@@ -185,6 +194,9 @@ class CompanyProfileEntity : Serializable {
                 region == that.region &&
                 county == that.county &&
                 town == that.town &&
+                factoryVisitDate == that.factoryVisitDate &&
+                factoryVisitStatus == that.factoryVisitStatus &&
+                manufactureStatus == that.manufactureStatus &&
                 description == that.description &&
                 status == that.status &&
                 varField1 == that.varField1 &&
@@ -224,6 +236,9 @@ class CompanyProfileEntity : Serializable {
             region,
             county,
             town,
+            factoryVisitDate,
+            factoryVisitStatus,
+            manufactureStatus,
             description,
             status,
             varField1,

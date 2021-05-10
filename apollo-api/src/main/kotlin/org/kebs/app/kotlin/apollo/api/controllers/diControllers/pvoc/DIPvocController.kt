@@ -4,6 +4,7 @@ import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.PvocBpmn
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.PvocDaoServices
+import org.kebs.app.kotlin.apollo.api.service.UserRolesService
 import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
 import org.kebs.app.kotlin.apollo.common.exceptions.PvocRemarksNotFoundException
 import org.kebs.app.kotlin.apollo.common.exceptions.SupervisorNotFoundException
@@ -107,7 +108,8 @@ class DIPvocController(
     private val pvocDaoServices: PvocDaoServices,
     private val iPvocExceptionIndustrialSparesCategoryEntityRepo: IPvocExceptionIndustrialSparesCategoryEntityRepo,
     private val iPvocExceptionMainMachineryCategoryEntityRepo: IPvocExceptionMainMachineryCategoryEntityRepo,
-    private val iPvocExceptionRawMaterialCategoryEntityRepo: IPvocExceptionRawMaterialCategoryEntityRepo
+    private val iPvocExceptionRawMaterialCategoryEntityRepo: IPvocExceptionRawMaterialCategoryEntityRepo,
+    private val userRolesService: UserRolesService
 
 
 ) {
@@ -280,9 +282,9 @@ class DIPvocController(
                                     companyName,
                                     0
                                 )?.let { exemptions ->
-                                    KotlinLogging.logger {  }.info { "Appps unfinished "+ exemptions.count() }
+                                    KotlinLogging.logger { }.info { "Appps unfinished " + exemptions.count() }
                                     model.addAttribute("exceptionApplications", exemptions)
-                                }?: throw Exception("No unifinished applications currently")
+                                } ?: throw Exception("No unifinished applications currently")
                             } ?: throw Exception("Please login")
                         } ?: throw Exception("Please login")
                     }
@@ -360,27 +362,16 @@ class DIPvocController(
                     remarkData.createdBy = userDetails.firstName + " " + userDetails.lastName
                     remarkData.createdOn = Timestamp.from(Instant.now())
                     when (remarksType) {
-                        "deffered" -> {
-                            doc?.reviewStatus = pvocReviewStatus?.differedStatus
-                            remarkData.remarksProcess = pvocReviewStatus?.differedStatus
-                            iRemarksRepository.save(remarkData)
-                            doc?.email?.let {
-                                iUserRepository.findByEmail(it).let { user ->
-                                    user?.id?.let { it1 -> pvocBpmn.pvocEaCheckApplicationComplete(id, it1, false) }
-                                }
-                            }
-                        }
                         "excepted" -> {
                             doc?.reviewStatus = pvocReviewStatus?.varField1
                             remarkData.remarksProcess = pvocReviewStatus?.exceptionStatus
                             iRemarksRepository.save(remarkData)
-                            pvocBpmn.pvocEaCheckApplicationComplete(id, 1007, true)
-                        }
-                        "rejected" -> {
-                            doc?.reviewStatus = pvocReviewStatus?.varField1
-                            remarkData.remarksProcess = pvocReviewStatus?.rejectedStatus
-                            iRemarksRepository.save(remarkData)
-                            pvocBpmn.pvocEaCheckApplicationComplete(id, 1007, false)
+                            userRolesService.getUserId("PVOC_APPLICATION_PROCESS_CHAIRMAN")?.let {
+                                pvocBpmn.pvocEaCheckApplicationComplete(
+                                    id,
+                                    it, true
+                                )
+                            }
                         }
                     }
                     doc?.let { it -> iPvocApplicationRepo.save(it) }
@@ -414,7 +405,12 @@ class DIPvocController(
                         doc?.sn = pvocDaoServices.generateRandomNumbers("PVOC-EXEMPTION")
                         doc?.id?.let {
                             pvocBpmn.pvocAeDeferApplicationComplete(it)
-                            pvocBpmn.pvocEaCheckApplicationComplete(it, 100, false)
+                            userRolesService.getUserId("PERMIT_APPLICATION")?.let { it1 ->
+                                pvocBpmn.pvocEaCheckApplicationComplete(
+                                    it,
+                                    it1, false
+                                )
+                            }
                         }
                     }
                     "excepted" -> {
@@ -422,7 +418,13 @@ class DIPvocController(
                         remarkData.remarksProcess = pvocReviewStatus?.exceptionStatus
                         doc?.id?.let {
                             pvocBpmn.pvocEaApproveApplicationComplete(it, true)
-                            pvocBpmn.pvocEaCheckApplicationComplete(it, 100, true)
+                            userRolesService.getUserId("PERMIT_APPLICATION")?.let { it1 ->
+                                pvocBpmn.pvocEaCheckApplicationComplete(
+                                    it,
+                                    it1, true
+                                )
+                            }
+//                            pvocBpmn.pvocEaCheckApplicationComplete(it, 100, true)
                         }
                         doc?.finalApproval = 1
                         doc?.sn = pvocDaoServices.generateRandomNumbers("PVOC-EXEMPTION")
@@ -434,7 +436,13 @@ class DIPvocController(
                         doc?.sn = pvocDaoServices.generateRandomNumbers("PVOC-EXEMPTION")
                         doc?.id?.let {
                             pvocBpmn.pvocAeRejectApplicationComplete(it)
-                            pvocBpmn.pvocEaCheckApplicationComplete(it, 100, false)
+                            userRolesService.getUserId("PERMIT_APPLICATION")?.let { it1 ->
+                                pvocBpmn.pvocEaCheckApplicationComplete(
+                                    it,
+                                    it1, false
+                                )
+                            }
+//                            pvocBpmn.pvocEaCheckApplicationComplete(it, 100, false)
                         }
                     }
                 }

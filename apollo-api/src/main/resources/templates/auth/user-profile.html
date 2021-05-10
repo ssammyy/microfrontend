@@ -320,146 +320,141 @@
 
 
                             </div>
-<!--                            <div th:if="${usersEntity.manufactureProfile != 1}" th:object="${userProfilesEntity}">-->
-<!--                                <div class="form-row">-->
-<!--                                    <br>-->
-<!--                                    <div class="col-md-12 mb-3">-->
-<!--                                        <label for="firstName" style="color: #0082f3">Employee Details</label>-->
-<!--                                        &lt;!&ndash;                                        <input type="text" class="form-control" disabled id="firstName" th:field="*{firstName}" placeholder="First name"&ndash;&gt;-->
-<!--                                        &lt;!&ndash;                                               required>&ndash;&gt;-->
-<!--                                        &lt;!&ndash;                                    <div class="valid-feedback">&ndash;&gt;-->
-<!--                                        &lt;!&ndash;                                        Looks good!&ndash;&gt;-->
-<!--                                        &lt;!&ndash;                                    </div>&ndash;&gt;-->
-<!--                                    </div>-->
-<!--                                </div>-->
-<!--                                <div class="form-row">-->
-<!--                                    <div class="col-md-4 mb-3">-->
-<!--                                        <label for="directorateId">Directorate</label>-->
-<!--                                        &lt;!&ndash;                                        <label id="directorateId" th:text="${directorateId?.directorate}"></label>&ndash;&gt;-->
-<!--                                        <input type="text" class="form-control" disabled id="directorateId"-->
-<!--                                               th:value="${userProfilesEntity?.directorateId?.directorate}"-->
-<!--                                               placeholder="directorate" required>-->
-<!--                                        &lt;!&ndash;                                    <div class="invalid-feedback">&ndash;&gt;-->
-<!--                                        &lt;!&ndash;                                        Please provide a valid city.&ndash;&gt;-->
-<!--                                        &lt;!&ndash;                                    </div>&ndash;&gt;-->
-<!--                                    </div>-->
-<!--                                    <div class="col-md-4 mb-3">-->
-<!--                                        <label for="designationId">Designation</label>-->
-<!--                                        <input type="text" class="form-control" disabled id="designationId"-->
-<!--                                               th:value="${userProfilesEntity?.designationId?.designationName}"-->
-<!--                                               placeholder="designation Name" required>-->
-<!--                                        &lt;!&ndash;                                        <div class="invalid-feedback">&ndash;&gt;-->
-<!--                                        &lt;!&ndash;                                            Please provide a valid state.&ndash;&gt;-->
-<!--                                        &lt;!&ndash;                                        </div>&ndash;&gt;-->
-<!--                                    </div>-->
-<!--                                    <div class="col-md-4 mb-3">-->
-<!--                                        <label for="departmentId">Department</label>-->
-<!--                                        <input type="text" class="form-control" disabled id="departmentId"-->
-<!--                                               th:value="${userProfilesEntity?.departmentId?.department}"-->
-<!--                                               placeholder="department" required>-->
-<!--                                        &lt;!&ndash;                                        <div class="invalid-feedback">&ndash;&gt;-->
-<!--                                        &lt;!&ndash;                                            Please provide a valid zip.&ndash;&gt;-->
-<!--                                        &lt;!&ndash;                                        </div>&ndash;&gt;-->
-<!--                                    </div>-->
-<!--                                </div>-->
-<!--                                <div class="form-row">-->
-<!--                                    <div class="col-md-4 mb-3">-->
-<!--                                        <label for="divisionId">Division</label>-->
-<!--                                        <input type="text" class="form-control" disabled id="divisionId"-->
-<!--                                               th:value="${userProfilesEntity?.divisionId?.division}"-->
-<!--                                               placeholder="division" required>-->
-<!--                                        &lt;!&ndash;                                    <div class="invalid-feedback">&ndash;&gt;-->
-<!--                                        &lt;!&ndash;                                        Please provide a valid city.&ndash;&gt;-->
-<!--                                        &lt;!&ndash;                                    </div>&ndash;&gt;-->
-<!--                                    </div>-->
-<!--                                    <div class="col-md-4 mb-3">-->
-<!--                                        <label for="sectionId">Section</label>-->
-<!--                                        <input type="text" class="form-control" disabled id="sectionId"-->
-<!--                                               th:value="${userProfilesEntity?.sectionId?.section}"-->
-<!--                                               placeholder="section" required>-->
-<!--                                        &lt;!&ndash;                                        <div class="invalid-feedback">&ndash;&gt;-->
-<!--                                        &lt;!&ndash;                                            Please provide a valid state.&ndash;&gt;-->
-<!--                                        &lt;!&ndash;                                        </div>&ndash;&gt;-->
-<!--                                    </div>-->
-<!--                                    <div class="col-md-4 mb-3">-->
-<!--                                        <label for="subSectionL1Id">Sub-Category L1</label>-->
-<!--                                        <input type="text" class="form-control" disabled id="subSectionL1Id"-->
-<!--                                               th:value="${userProfilesEntity?.subSectionL1Id?.subSection}"-->
-<!--                                               placeholder="Sub-Category L1" required>-->
-<!--                                        &lt;!&ndash;                                        <div class="invalid-feedback">&ndash;&gt;-->
-<!--                                        &lt;!&ndash;                                            Please provide a valid zip.&ndash;&gt;-->
-<!--                                        &lt;!&ndash;                                        </div>&ndash;&gt;-->
-<!--                                    </div>-->
-<!--                                </div>-->
-<!--                                <div class="form-row">-->
-<!--                                    <div class="col-md-4 mb-3">-->
-<!--                                        <label for="subSectionL2Id">Sub-Category L2</label>-->
-<!--                                        <input type="text" class="form-control" disabled id="subSectionL2Id"-->
-<!--                                               th:value="${userProfilesEntity?.subSectionL2Id?.subSection}"-->
-<!--                                               placeholder="division" required>-->
-<!--                                        &lt;!&ndash;                                    <div class="invalid-feedback">&ndash;&gt;-->
-<!--                                        &lt;!&ndash;                                        Please provide a valid city.&ndash;&gt;-->
-<!--                                        &lt;!&ndash;                                    </div>&ndash;&gt;-->
-<!--                                    </div>-->
-<!--                                    <div class="col-md-4 mb-3">-->
-<!--                                        <label for="regionId">Region</label>-->
-<!--                                        <input type="text" class="form-control" disabled id="regionId"-->
-<!--                                               th:value="${userProfilesEntity?.regionId?.region}" placeholder="region"-->
-<!--                                               required>-->
-<!--                                        &lt;!&ndash;                                        <div class="invalid-feedback">&ndash;&gt;-->
-<!--                                        &lt;!&ndash;                                            Please provide a valid zip.&ndash;&gt;-->
-<!--                                        &lt;!&ndash;                                        </div>&ndash;&gt;-->
-<!--                                    </div>-->
-<!--                                    <div class="col-md-4 mb-3">-->
-<!--                                        <label for="countyID">County</label>-->
-<!--                                        <input type="text" class="form-control" disabled id="countyID"-->
-<!--                                               th:value="${userProfilesEntity?.countyID?.county}" placeholder="county"-->
-<!--                                               required>-->
 
-<!--                                        &lt;!&ndash;                                    <div class="invalid-feedback">&ndash;&gt;-->
-<!--                                        &lt;!&ndash;                                        Please provide a valid city.&ndash;&gt;-->
-<!--                                        &lt;!&ndash;                                    </div>&ndash;&gt;-->
-<!--                                    </div>-->
-<!--                                </div>-->
-<!--                                <div class="form-row">-->
-<!--                                    <div class="col-md-4 mb-3">-->
-<!--                                        <label for="townID">Town</label>-->
-<!--                                        <input type="text" class="form-control" disabled id="townID"-->
-<!--                                               th:value="${userProfilesEntity?.townID?.town}" placeholder="State"-->
-<!--                                               required>-->
-<!--                                        &lt;!&ndash;                                        <div class="invalid-feedback">&ndash;&gt;-->
-<!--                                        &lt;!&ndash;                                            Please provide a valid state.&ndash;&gt;-->
-<!--                                        &lt;!&ndash;                                        </div>&ndash;&gt;-->
-<!--                                    </div>-->
-<!--                                    <div class="col-md-4 mb-3">-->
-<!--                                        &lt;!&ndash;                                        <label for="regionId">Region</label>&ndash;&gt;-->
-<!--                                        &lt;!&ndash;                                        <input type="text" class="form-control" disabled id="regionId" th:value="${userProfilesEntity?.regionId?.region}" placeholder="region" required>&ndash;&gt;-->
-<!--                                        &lt;!&ndash;                                        <div class="invalid-feedback">&ndash;&gt;-->
-<!--                                        &lt;!&ndash;                                            Please provide a valid zip.&ndash;&gt;-->
-<!--                                        &lt;!&ndash;                                        </div>&ndash;&gt;-->
-<!--                                    </div>-->
-<!--                                    <div class="col-md-4 mb-3">-->
-<!--                                        &lt;!&ndash;                                        <label for="countyID">County</label>&ndash;&gt;-->
-<!--                                        &lt;!&ndash;                                        <input type="text" class="form-control" disabled id="countyID" th:text="${userProfilesEntity?.countyID?.county}" placeholder="county" required>&ndash;&gt;-->
-<!--                                        &lt;!&ndash;                                    <div class="invalid-feedback">&ndash;&gt;-->
-<!--                                        &lt;!&ndash;                                        Please provide a valid city.&ndash;&gt;-->
-<!--                                        &lt;!&ndash;                                    </div>&ndash;&gt;-->
-<!--                                    </div>-->
-<!--                                </div>-->
-<!--                            </div>-->
-                            <!--                            <div>-->
-                            <!--                                <div class="form-group">-->
-                            <!--                                    <div class="form-check">-->
-                            <!--                                        <input class="form-check-input" type="checkbox" value="" id="invalidCheck" required>-->
-                            <!--                                        <label class="form-check-label" for="invalidCheck">-->
-                            <!--                                            Agree to terms and conditions-->
-                            <!--                                        </label>-->
-                            <!--                                        <div class="invalid-feedback">-->
-                            <!--                                            You must agree before submitting.-->
-                            <!--                                        </div>-->
-                            <!--                                    </div>-->
-                            <!--                                </div>-->
-                            <!--                            </div>-->
+                            <div  sec:authorize="hasAuthority('EMPLOYEE')" th:if="${usersEntity.manufactureProfile != 1}" th:object="${employeeProfiles}">
+                                <div class="form-row">
+                                    <br>
+                                    <div class="col-md-12 mb-3">
+                                        <label for="firstName" style="color: #0082f3">Employee Details</label>
+                                </div>
+                                <div class="form-row">
+                                    <div class="col-md-4 mb-3">
+                                        <label for="directorateId">Directorate</label>
+                                        <!--                                        <label id="directorateId" th:text="${directorateId?.directorate}"></label>-->
+                                        <input type="text" class="form-control" disabled id="directorateId"
+                                               th:value="${employeeProfiles?.directorateId?.directorate}"
+                                               placeholder="directorate" required>
+                                        <!--                                    <div class="invalid-feedback">-->
+                                        <!--                                        Please provide a valid city.-->
+                                        <!--                                    </div>-->
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <label for="designationId">Designation</label>
+                                        <input type="text" class="form-control" disabled id="designationId"
+                                               th:value="${employeeProfiles?.designationId?.designationName}"
+                                               placeholder="designation Name" required>
+                                        <!--                                        <div class="invalid-feedback">-->
+                                        <!--                                            Please provide a valid state.-->
+                                        <!--                                        </div>-->
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <label for="departmentId">Department</label>
+                                        <input type="text" class="form-control" disabled id="departmentId"
+                                               th:value="${employeeProfiles?.departmentId?.department}"
+                                               placeholder="department" required>
+                                        <!--                                        <div class="invalid-feedback">-->
+                                        <!--                                            Please provide a valid zip.-->
+                                        <!--                                        </div>-->
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="col-md-4 mb-3">
+                                        <label for="divisionId">Division</label>
+                                        <input type="text" class="form-control" disabled id="divisionId"
+                                               th:value="${employeeProfiles?.divisionId?.division}"
+                                               placeholder="division" required>
+                                        <!--                                    <div class="invalid-feedback">-->
+                                        <!--                                        Please provide a valid city.-->
+                                        <!--                                    </div>-->
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <label for="sectionId">Section</label>
+                                        <input type="text" class="form-control" disabled id="sectionId"
+                                               th:value="${employeeProfiles?.sectionId?.section}"
+                                               placeholder="section" required>
+                                        <!--                                        <div class="invalid-feedback">-->
+                                        <!--                                            Please provide a valid state.-->
+                                        <!--                                        </div>-->
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <label for="subSectionL1Id">Sub-Category L1</label>
+                                        <input type="text" class="form-control" disabled id="subSectionL1Id"
+                                               th:value="${employeeProfiles?.subSectionL1Id?.subSection}"
+                                               placeholder="Sub-Category L1" required>
+                                        <!--                                        <div class="invalid-feedback">-->
+                                        <!--                                            Please provide a valid zip.-->
+                                        <!--                                        </div>-->
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="col-md-4 mb-3">
+                                        <label for="subSectionL2Id">Sub-Category L2</label>
+                                        <input type="text" class="form-control" disabled id="subSectionL2Id"
+                                               th:value="${employeeProfiles?.subSectionL2Id?.subSection}"
+                                               placeholder="division" required>
+                                        <!--                                    <div class="invalid-feedback">-->
+                                        <!--                                        Please provide a valid city.-->
+                                        <!--                                    </div>-->
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <label for="regionId">Region</label>
+                                        <input type="text" class="form-control" disabled id="regionId"
+                                               th:value="${employeeProfiles?.regionId?.region}" placeholder="region"
+                                               required>
+                                        <!--                                        <div class="invalid-feedback">-->
+                                        <!--                                            Please provide a valid zip.-->
+                                        <!--                                        </div>-->
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <label for="countyID">County</label>
+                                        <input type="text" class="form-control" disabled id="countyID"
+                                               th:value="${employeeProfiles?.countyID?.county}" placeholder="county"
+                                               required>
+
+                                        <!--                                    <div class="invalid-feedback">-->
+                                        <!--                                        Please provide a valid city.-->
+                                        <!--                                    </div>-->
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="col-md-4 mb-3">
+                                        <label for="townID">Town</label>
+                                        <input type="text" class="form-control" disabled id="townID"
+                                               th:value="${employeeProfiles?.townID?.town}" placeholder="State"
+                                               required>
+                                        <!--                                        <div class="invalid-feedback">-->
+                                        <!--                                            Please provide a valid state.-->
+                                        <!--                                        </div>-->
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <!--                                        <label for="regionId">Region</label>-->
+                                        <!--                                        <input type="text" class="form-control" disabled id="regionId" th:value="${userProfilesEntity?.regionId?.region}" placeholder="region" required>-->
+                                        <!--                                        <div class="invalid-feedback">-->
+                                        <!--                                            Please provide a valid zip.-->
+                                        <!--                                        </div>-->
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <!--                                        <label for="countyID">County</label>-->
+                                        <!--                                        <input type="text" class="form-control" disabled id="countyID" th:text="${userProfilesEntity?.countyID?.county}" placeholder="county" required>-->
+                                        <!--                                    <div class="invalid-feedback">-->
+                                        <!--                                        Please provide a valid city.-->
+                                        <!--                                    </div>-->
+                                    </div>
+                                </div>
+                            </div>
+<!--                                                        <div>-->
+<!--                                                            <div class="form-group">-->
+<!--                                                                <div class="form-check">-->
+<!--                                                                    <input class="form-check-input" type="checkbox" value="" id="invalidCheck" required>-->
+<!--                                                                    <label class="form-check-label" for="invalidCheck">-->
+<!--                                                                        Agree to terms and conditions-->
+<!--                                                                    </label>-->
+<!--                                                                    <div class="invalid-feedback">-->
+<!--                                                                        You must agree before submitting.-->
+<!--                                                                    </div>-->
+<!--                                                                </div>-->
+<!--                                                            </div>-->
+<!--                                                        </div>-->
 <!--                                                        <div>-->
 <!--                                                            <div class="form-group">-->
 <!--                                                                <br>-->

@@ -103,8 +103,10 @@ select * from CFG_USER_ROLES--512
 order by id desc;
 
 select * from CFG_USER_PRIVILEGES--QA_OFFICER_READ
-where id like '%521%'
-order by id desc;--MS_MP_MODIFY MS_MP_READ AUTHORITIES_WRITE 29
+-- where id like '%521%'
+order by id desc;--MS
+
+-- _MP_MODIFY MS_MP_READ AUTHORITIES_WRITE 29
 select *
 from CFG_ROLES_PRIVILEGES
 where ROLES_ID = 510

@@ -6,6 +6,7 @@ import org.apache.commons.io.FilenameUtils
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.PvocBpmn
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.service.FileExcelProcessService
+import org.kebs.app.kotlin.apollo.api.service.UserRolesService
 import org.kebs.app.kotlin.apollo.store.model.*
 import org.kebs.app.kotlin.apollo.store.repo.*
 import org.springframework.beans.factory.annotation.Autowired
@@ -29,6 +30,7 @@ class ExemptionRestController(
     private val pvocBpmn: PvocBpmn,
     iPvocExceptionApplicationStatusEntityRepo: IPvocExceptionApplicationStatusEntityRepo,
     private val commonDaoServices: CommonDaoServices,
+    private val userRolesService: UserRolesService,
     private val iPvocExceptionIndustrialSparesCategoryEntityRepo: IPvocExceptionIndustrialSparesCategoryEntityRepo,
     private val iPvocExceptionMainMachineryCategoryEntityRepo: IPvocExceptionMainMachineryCategoryEntityRepo,
     private val iPvocExceptionRawMaterialCategoryEntityRepo: IPvocExceptionRawMaterialCategoryEntityRepo
@@ -174,7 +176,11 @@ class ExemptionRestController(
                     )
                 }
             }
-            pvocExceptionApp.id?.let { pvocBpmn.pvocEaSubmitApplicationComplete(it, 502) }
+            pvocExceptionApp.id?.let { userRolesService.getUserId("PVOC_APPLICATION_PROCESS")?.let { it1 ->
+                pvocBpmn.pvocEaSubmitApplicationComplete(it,
+                    it1
+                )
+            } }
             return UploadedFileResponse()
         }
 

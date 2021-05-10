@@ -27,6 +27,9 @@ class FileExcelProcessService {
     lateinit var commonDaoServices : CommonDaoServices
 
     @Autowired
+    lateinit var userRolesService: UserRolesService
+
+    @Autowired
     lateinit var iPvocApplicationProductsRepo: IPvocApplicationProductsRepo
 
     @Autowired
@@ -87,7 +90,11 @@ class FileExcelProcessService {
                 pvocBpmn.startPvocApplicationExemptionsProcess(it,
                     it1
                 )
-                pvocBpmn.pvocEaSubmitApplicationComplete(it, 502)
+                userRolesService.getUserId("PVOC_APPLICATION_PROCESS")?.let { it2 ->
+                    pvocBpmn.pvocEaSubmitApplicationComplete(it,
+                        it2
+                    )
+                }
             } }
         } catch (e: IOException) {
             throw Exception(e.message)

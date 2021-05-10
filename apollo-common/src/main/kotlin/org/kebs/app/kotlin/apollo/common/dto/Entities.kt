@@ -274,6 +274,9 @@ data class UserCompanyDto(
     var region: String? = null,
     var county: String? = null,
     var town: String? = null,
+    var factoryVisitDate: Date? = null,
+    var factoryVisitStatus: Int? = null,
+    var manufactureStatus: Int? = null,
 )
 
 data class UserCompanyEntityDto(
@@ -294,6 +297,9 @@ data class UserCompanyEntityDto(
     var region: Long? = null,
     var county: Long? = null,
     var town: Long? = null,
+    var factoryVisitDate: Date? = null,
+    var factoryVisitStatus: Int? = null,
+    var manufactureStatus: Int? = null,
 
     )
 
