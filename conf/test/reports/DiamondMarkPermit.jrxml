@@ -30,14 +30,14 @@
 			<staticText>
 				<reportElement x="84" y="40" width="390" height="20" uuid="2e60ab76-bf15-4408-8c78-8101c30ea384"/>
 				<textElement>
-					<font fontName="Copperplate Gothic Light" size="14" isBold="true"/>
+					<font fontName="SansSerif" size="14" isBold="true"/>
 				</textElement>
 				<text><![CDATA[PERMIT TO USE THE DIAMOND MARK OF QUALITY]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="180" y="60" width="180" height="20" uuid="52c5994c-9f48-4878-9ee0-158b5df02158"/>
 				<textElement>
-					<font fontName="Copperplate Gothic Light"/>
+					<font fontName="SansSerif"/>
 				</textElement>
 				<text><![CDATA[THE STANDARDS ACT (CAP.496)]]></text>
 			</staticText>
@@ -48,14 +48,14 @@
 			<staticText>
 				<reportElement x="0" y="2" width="178" height="18" uuid="c607bd91-f9be-4661-8946-7a7af5a2d880"/>
 				<textElement>
-					<font fontName="Copperplate Gothic Light"/>
+					<font fontName="SansSerif"/>
 				</textElement>
 				<text><![CDATA[PERMIT IS GRANTED TO:]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="0" y="22" width="84" height="18" uuid="5bd7ae9f-8f36-4ae9-b21a-eaf6c761835c"/>
 				<textElement>
-					<font fontName="Copperplate Gothic Light"/>
+					<font fontName="SansSerif"/>
 				</textElement>
 				<text><![CDATA[NAME OF FIRM:]]></text>
 			</staticText>
@@ -65,7 +65,7 @@
 			<staticText>
 				<reportElement x="332" y="23" width="70" height="18" uuid="a586fa92-60de-4af9-b23a-3604bbdf3469"/>
 				<textElement>
-					<font fontName="Copperplate Gothic Light"/>
+					<font fontName="SansSerif"/>
 				</textElement>
 				<text><![CDATA[PERMIT NO:]]></text>
 			</staticText>
@@ -78,7 +78,7 @@
 			<staticText>
 				<reportElement x="333" y="49" width="106" height="18" uuid="f8962192-c8a5-434e-be27-cd27ccc367dc"/>
 				<textElement>
-					<font fontName="Copperplate Gothic Light"/>
+					<font fontName="SansSerif"/>
 				</textElement>
 				<text><![CDATA[EFFECTIVE FROM]]></text>
 			</staticText>
@@ -88,7 +88,7 @@
 			<staticText>
 				<reportElement x="0" y="75" width="120" height="18" uuid="ff753243-6f5e-477f-927a-7c8d5fa1861f"/>
 				<textElement>
-					<font fontName="Copperplate Gothic Light"/>
+					<font fontName="SansSerif"/>
 				</textElement>
 				<text><![CDATA[POSTAL ADDRESS]]></text>
 			</staticText>
@@ -98,7 +98,7 @@
 			<staticText>
 				<reportElement x="332" y="77" width="70" height="18" uuid="fff92383-315a-4727-8646-c5e3838263fe"/>
 				<textElement>
-					<font fontName="Copperplate Gothic Light"/>
+					<font fontName="SansSerif"/>
 				</textElement>
 				<text><![CDATA[EXPIRES ON]]></text>
 			</staticText>
@@ -111,7 +111,7 @@
 			<staticText>
 				<reportElement x="332" y="105" width="98" height="18" uuid="36e82ebd-1929-4d7f-a343-626e1253547d"/>
 				<textElement>
-					<font fontName="Copperplate Gothic Light"/>
+					<font fontName="SansSerif"/>
 				</textElement>
 				<text><![CDATA[DATE OF ISSUE]]></text>
 			</staticText>
@@ -121,7 +121,7 @@
 			<staticText>
 				<reportElement x="0" y="131" width="120" height="18" uuid="f603b75b-0d4a-4af4-b0b1-3e7840375c3a"/>
 				<textElement>
-					<font fontName="Copperplate Gothic Light"/>
+					<font fontName="SansSerif"/>
 				</textElement>
 				<text><![CDATA[PHYSICAL ADDRESS]]></text>
 			</staticText>
@@ -166,7 +166,7 @@
 			<staticText>
 				<reportElement x="0" y="10" width="552" height="40" uuid="f03e6f7c-5b57-4e87-bd99-760d258fb2fe"/>
 				<textElement>
-					<font fontName="Arial" size="10"/>
+					<font fontName="SansSerif" size="10"/>
 				</textElement>
 				<text><![CDATA[To use the Diamond mark of quality specified in the first column of the appendix hereunder and upon and in respect of the commodity and brand specified in the second and third column there of. which conform to the standard specification in the fourth column.]]></text>
 			</staticText>
@@ -201,28 +201,28 @@
 			<staticText>
 				<reportElement x="50" y="100" width="16" height="16" uuid="44c4a47f-96da-4a98-8ea8-d95d20ed54dd"/>
 				<textElement>
-					<font fontName="Copperplate Gothic Light" size="11" isBold="true"/>
+					<font fontName="SansSerif" size="11" isBold="true"/>
 				</textElement>
 				<text><![CDATA[1]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="184" y="100" width="16" height="16" uuid="7697d1cb-2a61-4bee-bef9-de597795b7cc"/>
 				<textElement>
-					<font fontName="Copperplate Gothic Light" isBold="true"/>
+					<font fontName="SansSerif" isBold="true"/>
 				</textElement>
 				<text><![CDATA[2]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="350" y="100" width="16" height="16" uuid="54bf5dbe-c7f1-485f-adda-c41e0ab49f8d"/>
 				<textElement>
-					<font fontName="Copperplate Gothic Light" isBold="true"/>
+					<font fontName="SansSerif" isBold="true"/>
 				</textElement>
 				<text><![CDATA[3]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="490" y="100" width="16" height="16" uuid="b79ad339-d298-409d-add5-d42080013ed8"/>
 				<textElement>
-					<font fontName="Copperplate Gothic Light" isBold="true"/>
+					<font fontName="SansSerif" isBold="true"/>
 				</textElement>
 				<text><![CDATA[4]]></text>
 			</staticText>
@@ -257,7 +257,7 @@
 			<staticText>
 				<reportElement x="1" y="368" width="298" height="60" uuid="a9155011-af2b-42b8-a6a4-2755ae2f8753"/>
 				<textElement>
-					<font fontName="Copperplate Gothic Light" size="9"/>
+					<font fontName="SansSerif" size="9"/>
 				</textElement>
 				<text><![CDATA[1. EVERY DIAMOND MARK HOLDER SHALL PAY AN ANNUAL  FEE IN RESPECT OF EACH PERMIT GRANTED OR RENEWED
 
@@ -269,14 +269,14 @@
 			<staticText>
 				<reportElement x="330" y="388" width="240" height="20" uuid="b6496e46-7de6-479b-b1bc-67d93cf2153c"/>
 				<textElement>
-					<font fontName="Copperplate Gothic Light" size="9"/>
+					<font fontName="SansSerif" size="9"/>
 				</textElement>
 				<text><![CDATA[MANAGING DIRECTOR/AUTHORIZED OFFICER]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="330" y="408" width="224" height="20" uuid="a600a1fa-5a6c-49b7-a118-00381c4bfeda"/>
 				<textElement>
-					<font fontName="Copperplate Gothic Light" size="12" isBold="true"/>
+					<font fontName="SansSerif" size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[KENYA BUREAU OF STANDARDS]]></text>
 			</staticText>

@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test
 import org.junit.runner.RunWith
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.*
 import org.kebs.app.kotlin.apollo.api.ports.provided.sftp.UpAndDownLoad
+import org.kebs.app.kotlin.apollo.api.service.UserRolesService
 import org.kebs.app.kotlin.apollo.common.dto.HashListDto
 import org.kebs.app.kotlin.apollo.common.dto.ms.*
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
@@ -60,6 +61,9 @@ class MSTest {
     lateinit var upAndDownLoad: UpAndDownLoad
 
     @Autowired
+    lateinit var userRolesService: UserRolesService
+
+    @Autowired
     lateinit var pvocReconciliationReportEntityRepo: PvocReconciliationReportEntityRepo
 
 
@@ -95,6 +99,14 @@ class MSTest {
         val complaint =marketSurveillanceDaoServices.msComplaint("REF202101177E3528",map)
         KotlinLogging.logger { }.info { "complaint = $complaint " }
     }
+
+    @Test
+    fun testUserIdReturned(){
+       val userId = userRolesService.getUserId("PVOC_APPLICATION_PROCESS_CHAIRMAN")
+        KotlinLogging.logger {  }.info { "This is userId ==>" +userId }
+    }
+
+
 
 
 }

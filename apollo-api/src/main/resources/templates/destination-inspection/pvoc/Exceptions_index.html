@@ -25,12 +25,12 @@
 <!--                            class="font-awesome-span"></span>Imported Goods With NCR</a>-->
                     <a class="content-button"
                        sec:authorize="hasAuthority('PVOC_APPLICATION_READ')"
-                       th:href="@{/api/di/pvoc/officer(currentPage=0,pageSize=10, filter=0, fromDate=${#dates.format(#dates.createNow(), 'yyyy-MM-dd')}, toDate=${#dates.format(#dates.createNow(),'yyyy-MM-dd')})}"
+                       th:href="@{/api/di/pvoc/officer(currentPage=0,pageSize=20, filter=0, fromDate=${#dates.format(#dates.createNow(), 'yyyy-MM-dd')}, toDate=${#dates.format(#dates.createNow(),'yyyy-MM-dd')})}"
                     ><span
                             class="font-awesome-span"></span>My Exemptions</a>
                     <a class="content-button"
                        sec:authorize="hasAuthority('PVOC_APPLICATION_PROCESS') or hasAnyAuthority('PVOC_APPLICATION_PROCESS_CHAIRMAN')"
-                       th:href="@{/api/di/pvoc/officer(currentPage=0,pageSize=10, filter=0, fromDate=${#dates.format(#dates.createNow(), 'yyyy-MM-dd')}, toDate=${#dates.format(#dates.createNow(),'yyyy-MM-dd')})}"
+                       th:href="@{/api/di/pvoc/officer(currentPage=0,pageSize=20, filter=0, fromDate=${#dates.format(#dates.createNow(), 'yyyy-MM-dd')}, toDate=${#dates.format(#dates.createNow(),'yyyy-MM-dd')})}"
                     ><span
                             class="font-awesome-span"></span>Exemption Applications</a>
                     <a sec:authorize="hasAuthority('PVOC_APPLICATION_READ')"  class="content-button" th:href="@{/api/di/pvoc/application}"><span class="font-awesome-span"></span>Apply for  Exemption</a>

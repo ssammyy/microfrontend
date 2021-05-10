@@ -193,7 +193,9 @@ class StandardLevyHandler(
                                                 manufacturer.userId ?: throw ExpectedDataNotFound("INVALID USER ID")
                                             )
                                                 .let { contacts ->
-
+                                                    if (contacts.isEmpty()){
+                                                        throw ExpectedDataNotFound("Contact information does not exist")
+                                                    }
                                                     businessNatureRepository.findByIdOrNull(manufacturer.businessNatures)
                                                         .let { nature ->
                                                             standardLevyFactoryVisitReportRepo.findByManufacturerEntity(
@@ -218,7 +220,7 @@ class StandardLevyHandler(
                                                                 StandardLevyFactoryVisitReportEntity()
                                                             req.attributes()["manufacturer"] = manufacturer
                                                             req.attributes()["map"] = map
-                                                            req.attributes()["contacts"] = contacts
+                                                            req.attributes()["contacts"] = contacts[0]
                                                             req.attributes()["turnover"] = manufacturer.yearlyTurnover
                                                             req.attributes()["nature"] = nature
                                                             return ok().render(singleManufacturerPage, req.attributes())

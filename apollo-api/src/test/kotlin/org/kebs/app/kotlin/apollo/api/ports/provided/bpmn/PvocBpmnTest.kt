@@ -26,12 +26,12 @@ class PvocBpmnTest {
 
 
     val pvocAppEntityId: Long = 435
-    val pvocWaAppEntityId: Long = 171
+    val pvocWaAppEntityId: Long = 321
     val pvocTimelinesDataId: Long = 1
     val manufacturerId: Long = 101
     val sectionOfficerId:Long = 102
-    val importerId:Long = 103
-    val wetcId:Long = 104
+    val importerId:Long = 710
+    val wetcId:Long = 720
     val secretaryWetcId:Long = 105
     val chairmanWetcId:Long = 106
     val nscId:Long = 107
