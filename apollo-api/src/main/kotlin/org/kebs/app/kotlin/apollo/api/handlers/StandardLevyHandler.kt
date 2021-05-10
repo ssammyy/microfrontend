@@ -193,7 +193,9 @@ class StandardLevyHandler(
                                                 manufacturer.userId ?: throw ExpectedDataNotFound("INVALID USER ID")
                                             )
                                                 .let { contacts ->
-
+                                                    if (contacts.isEmpty()){
+                                                        throw ExpectedDataNotFound("Contact information does not exist")
+                                                    }
                                                     businessNatureRepository.findByIdOrNull(manufacturer.businessNatures)
                                                         .let { nature ->
                                                             standardLevyFactoryVisitReportRepo.findByManufacturerEntity(
