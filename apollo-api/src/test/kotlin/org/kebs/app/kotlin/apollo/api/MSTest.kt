@@ -102,7 +102,7 @@ class MSTest {
 
     @Test
     fun testUserIdReturned(){
-       val userId = userRolesService.getUserId("PVOC_APPLICATION_READ")
+       val userId = userRolesService.getUserId("PVOC_APPLICATION_PROCESS_CHAIRMAN")
         KotlinLogging.logger {  }.info { "This is userId ==>" +userId }
     }
 

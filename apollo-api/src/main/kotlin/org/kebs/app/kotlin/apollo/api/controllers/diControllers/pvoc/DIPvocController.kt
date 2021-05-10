@@ -282,9 +282,9 @@ class DIPvocController(
                                     companyName,
                                     0
                                 )?.let { exemptions ->
-                                    KotlinLogging.logger {  }.info { "Appps unfinished "+ exemptions.count() }
+                                    KotlinLogging.logger { }.info { "Appps unfinished " + exemptions.count() }
                                     model.addAttribute("exceptionApplications", exemptions)
-                                }?: throw Exception("No unifinished applications currently")
+                                } ?: throw Exception("No unifinished applications currently")
                             } ?: throw Exception("Please login")
                         } ?: throw Exception("Please login")
                     }
@@ -362,34 +362,16 @@ class DIPvocController(
                     remarkData.createdBy = userDetails.firstName + " " + userDetails.lastName
                     remarkData.createdOn = Timestamp.from(Instant.now())
                     when (remarksType) {
-                        "deffered" -> {
-                            doc?.reviewStatus = pvocReviewStatus?.differedStatus
-                            remarkData.remarksProcess = pvocReviewStatus?.differedStatus
-                            iRemarksRepository.save(remarkData)
-                            doc?.email?.let {
-                                iUserRepository.findByEmail(it).let { user ->
-                                    user?.id?.let { it1 -> pvocBpmn.pvocEaCheckApplicationComplete(id, it1, false) }
-                                }
-                            }
-                        }
                         "excepted" -> {
                             doc?.reviewStatus = pvocReviewStatus?.varField1
                             remarkData.remarksProcess = pvocReviewStatus?.exceptionStatus
                             iRemarksRepository.save(remarkData)
-                            userRolesService.getUserId("userRolesService")?.let {
-                                pvocBpmn.pvocEaCheckApplicationComplete(id,
-                                    it, true)
+                            userRolesService.getUserId("PVOC_APPLICATION_PROCESS_CHAIRMAN")?.let {
+                                pvocBpmn.pvocEaCheckApplicationComplete(
+                                    id,
+                                    it, true
+                                )
                             }
-                        }
-                        "rejected" -> {
-                            doc?.reviewStatus = pvocReviewStatus?.varField1
-                            remarkData.remarksProcess = pvocReviewStatus?.rejectedStatus
-                            iRemarksRepository.save(remarkData)
-                            userRolesService.getUserId("userRolesService")?.let {
-                                pvocBpmn.pvocEaCheckApplicationComplete(id,
-                                    it, false)
-                            }
-                            //pvocBpmn.pvocEaCheckApplicationComplete(id, 1007, false)
                         }
                     }
                     doc?.let { it -> iPvocApplicationRepo.save(it) }
@@ -424,8 +406,10 @@ class DIPvocController(
                         doc?.id?.let {
                             pvocBpmn.pvocAeDeferApplicationComplete(it)
                             userRolesService.getUserId("PERMIT_APPLICATION")?.let { it1 ->
-                                pvocBpmn.pvocEaCheckApplicationComplete(it,
-                                    it1, false)
+                                pvocBpmn.pvocEaCheckApplicationComplete(
+                                    it,
+                                    it1, false
+                                )
                             }
                         }
                     }
@@ -435,8 +419,10 @@ class DIPvocController(
                         doc?.id?.let {
                             pvocBpmn.pvocEaApproveApplicationComplete(it, true)
                             userRolesService.getUserId("PERMIT_APPLICATION")?.let { it1 ->
-                                pvocBpmn.pvocEaCheckApplicationComplete(it,
-                                    it1, true)
+                                pvocBpmn.pvocEaCheckApplicationComplete(
+                                    it,
+                                    it1, true
+                                )
                             }
 //                            pvocBpmn.pvocEaCheckApplicationComplete(it, 100, true)
                         }
@@ -451,8 +437,10 @@ class DIPvocController(
                         doc?.id?.let {
                             pvocBpmn.pvocAeRejectApplicationComplete(it)
                             userRolesService.getUserId("PERMIT_APPLICATION")?.let { it1 ->
-                                pvocBpmn.pvocEaCheckApplicationComplete(it,
-                                    it1, false)
+                                pvocBpmn.pvocEaCheckApplicationComplete(
+                                    it,
+                                    it1, false
+                                )
                             }
 //                            pvocBpmn.pvocEaCheckApplicationComplete(it, 100, false)
                         }
