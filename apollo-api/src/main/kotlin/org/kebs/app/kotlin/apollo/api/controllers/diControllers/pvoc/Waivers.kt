@@ -371,6 +371,7 @@ class Waivers(
         remarkData.createdBy = user.firstName + " " + user.lastName
         remarkData.createdOn = Timestamp.from(Instant.now())
         remarkData.status = 1L
+        remarkData.waiverId = id
         user.id?.let {
             remarkData.role = iUserRolesRepository.findByIdOrNull(
                 iUserRoleAssignmentsRepository.findByUserIdAndStatus(it, 1)?.get(0)?.roleId
@@ -525,6 +526,7 @@ class Waivers(
                 remarkData.createdBy = user.firstName + " " + user.lastName
                 remarkData.createdOn = Timestamp.from(Instant.now())
                 remarkData.status = 1L
+                remarkData.waiverId = id
                 user.id?.let {
                     remarkData.role = iUserRolesRepository.findByIdOrNull(
                         iUserRoleAssignmentsRepository.findByUserIdAndStatus(it, 1)?.get(0)?.roleId
@@ -537,6 +539,7 @@ class Waivers(
                             "recommend" -> {
                                 remarkData.remarks = remarks.wetcRecomendation
                                 report.reviewStatus = waiversStatus?.approval
+                                report.waiverId = id
                                 waiver.reviewStatus = waiversStatus?.approval
                                 waiver.approvalStatus = waiversStatus?.approvalStatus
                                 waiver.rejectionStatus = 0
@@ -547,6 +550,7 @@ class Waivers(
                             "reject" -> {
                                 remarkData.remarks = remarks.wetcRecomendation
                                 report.reviewStatus = waiversStatus?.rejection
+                                report.waiverId = id
                                 waiver.reviewStatus = waiversStatus?.rejection
                                 waiver.approvalStatus = waiversStatus?.rejectionStatus
                                 waiver.approvalStatus = 0
@@ -558,6 +562,7 @@ class Waivers(
                                 remarkData.remarks = remarks.wetcRecomendation
                                 report.reviewStatus = waiversStatus?.defferal
                                 waiver.reviewStatus = waiversStatus?.defferal
+                                report.waiverId = id
                                 waiver.defferalStatus = waiversStatus?.defferalStatus
                                 waiver.approvalStatus = 0
                                 waiver.rejectionStatus = 0
@@ -594,6 +599,7 @@ class Waivers(
             minute.createdBy = userDeails?.firstName + " " + userDeails?.lastName
             minute.createdOn = Timestamp.from(Instant.now())
             minute.status = 1
+
             iPvocWaiversWetcMinutesEntityRepo.save(minute)
             minute.waiverId?.let { it2 ->
                 userRolesService.getUserId("WAIVERS_MINUTES_REVIEW_NCS")?.let {
@@ -770,6 +776,7 @@ class Waivers(
                 remarkData.createdBy = user.firstName + " " + user.lastName
                 remarkData.createdOn = Timestamp.from(Instant.now())
                 remarkData.status = 1L
+                remarkData.waiverId = minute.waiverId
 
                 user.id?.let {
                     remarkData.role = iUserRolesRepository.findByIdOrNull(
