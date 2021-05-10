@@ -218,7 +218,7 @@ class StandardLevyHandler(
                                                                 StandardLevyFactoryVisitReportEntity()
                                                             req.attributes()["manufacturer"] = manufacturer
                                                             req.attributes()["map"] = map
-                                                            req.attributes()["contacts"] = contacts
+                                                            req.attributes()["contacts"] = contacts[0]
                                                             req.attributes()["turnover"] = manufacturer.yearlyTurnover
                                                             req.attributes()["nature"] = nature
                                                             return ok().render(singleManufacturerPage, req.attributes())
