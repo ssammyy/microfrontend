@@ -1,7 +1,14 @@
 import { Injectable } from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
-import {Product, StandardRequest, StandardTasks, Stdtsectask, TechnicalCommittee,Department,StdTCTask} from "../models/standard-development";
+import {
+  Product,
+  StandardRequest,
+  StandardTasks, Stdtsectask,
+  TechnicalCommittee,
+  Department,
+  StdTCTask
+} from "../models/standard-development";
 
 @Injectable({
   providedIn: 'root'

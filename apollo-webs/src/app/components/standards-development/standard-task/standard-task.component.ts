@@ -55,6 +55,7 @@ export class StandardTaskComponent implements OnInit {
       button.setAttribute('data-target','#updateRequestModal');
     }
 
+
     // @ts-ignore
     container.appendChild(button);
     button.click();
