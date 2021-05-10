@@ -65,6 +65,7 @@ export interface StdTCTask{
 
 }
 
+
 export interface NWAJustification{
   id: number;
   meetingDate: string;
@@ -267,4 +268,53 @@ export interface UpdateNwaGazette{
   taskId: string;
 }
 
+export interface TaskData {
+  requesterSubject: string;
+  requesterInstitution: string;
+  requesterEmail: string;
+  requesterName: string;
+  requesterCountry: string;
+  requesterComment: string;
+  requesterPhone: string;
+  feedbackProvided: string;
+}
+
+export interface Notification {
+  taskId: string;
+  name: string;
+  taskData: TaskData;
+}
+export interface RootObject {
+  requesterName: string;
+  requesterComment: string;
+  requesterCountry: string;
+  requesterEmail: string;
+  requesterInstitution: string;
+  requesterPhone: string;
+  requesterSubject: string;
+}
+export interface InfoAvailableYes{
+  taskId: string;
+  isAvailable: string;
+}
+
+export interface InfoAvailableNo{
+  taskId: string;
+  isAvailable: string;
+}
+
+
+
+export interface DepartmentResponse {
+  departmentResponseID: number;
+  enquiryID: number;
+  feedbackProvided: string;
+  taskId: string;
+}
+export interface FeedbackEmail {
+  nepOfficerId: string;
+  feedbackSent: string;
+  requesterEmail: string;
+  taskId: string;
+}
 

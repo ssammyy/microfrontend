@@ -22,6 +22,7 @@
 package org.kebs.app.kotlin.apollo.common.dto
 
 
+import java.math.BigDecimal
 import java.sql.Date
 import javax.validation.constraints.NotBlank
 import javax.validation.constraints.Size
@@ -246,6 +247,16 @@ data class UserPasswordResetValuesDto(
     var emailUsername: String? = null,
 )
 
+data class OtpRequestValuesDto(
+    var username: String? = null,
+    var password: String? = null
+)
+
+data class OtpResponseDto(
+    var message: String? = null,
+    var otp: String? = null
+)
+
 
 data class UserCompanyDto(
     var name: String? = null,
@@ -255,7 +266,7 @@ data class UserCompanyDto(
     var postalAddress: String? = null,
     var companyEmail: String? = null,
     var companyTelephone: String? = null,
-    var yearlyTurnover: String? = null,
+    var yearlyTurnover: BigDecimal? = null,
     var businessLines: String? = null,
     var businessNatures: String? = null,
     var buildingName: String? = null,
@@ -263,6 +274,9 @@ data class UserCompanyDto(
     var region: String? = null,
     var county: String? = null,
     var town: String? = null,
+    var factoryVisitDate: Date? = null,
+    var factoryVisitStatus: Int? = null,
+    var manufactureStatus: Int? = null,
 )
 
 data class UserCompanyEntityDto(
@@ -274,14 +288,18 @@ data class UserCompanyEntityDto(
     var postalAddress: String? = null,
     var companyEmail: String? = null,
     var companyTelephone: String? = null,
-    var yearlyTurnover: String? = null,
+    var yearlyTurnover: BigDecimal? = null,
     var businessLines: Long? = null,
     var businessNatures: Long? = null,
     var buildingName: String? = null,
     var streetName: String? = null,
+    var directorIdNumber: String? = null,
     var region: Long? = null,
     var county: Long? = null,
     var town: Long? = null,
+    var factoryVisitDate: Date? = null,
+    var factoryVisitStatus: Int? = null,
+    var manufactureStatus: Int? = null,
 
     )
 

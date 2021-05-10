@@ -22,14 +22,16 @@
 <!--                    &lt;!&ndash;                    <a class="content-button" th:href="@{/api/di/mpesa}"><span class="font-awesome-span"></span>Mpesa</a>&ndash;&gt;-->
 <!--                    <a class="content-button" th:href="@{/api/di/pvoc/officer(currentPage=0,pageSize=10, filter=0, fromDate=${#dates.format(#dates.createNow(), 'yyyy-MM-dd')}, toDate=${#dates.format(#dates.createNow(),'yyyy-MM-dd')})}"><span-->
 <!--                            class="font-awesome-span"></span>Officer(Application Exemption)</a>-->
-<!--                    <a class="content-button" th:href="@{/api/di/pvoc/application}"><span class="font-awesome-span"></span>Application for  Exemption</a>-->
-                    <a sec:authorize="hasAuthority('MAKE_WAIVER_APPLICATION')" class="content-button" th:href="@{/api/di/pvoc/waivers-application}"><span class="font-awesome-span"></span>Application for Waiver</a>
-                    <a sec:authorize="hasAuthority('MAKE_WAIVER_APPLICATION') or hasAuthority('WAIVERS_APPLICATION_REVIEW') or hasAuthority('WAIVERS_APPLICATION_REVIEW') or hasAuthority('WAIVERS_APPLICATION_REPORT_GENERATE')" class="content-button" th:href="@{/api/di/pvoc/all-waivers-applications-list(currentPage=0,pageSize=10,filter=0, fromDate=${#dates.format(#dates.createNow(), 'yyyy-MM-dd')}, toDate=${#dates.format(#dates.createNow(),'yyyy-MM-dd')})}"><span class="font-awesome-span"></span>Waiver Applications</a>
+<!--                    <a class="content-button" th:href="@{/api/di/pvoc/application}"><span class="font-awesome-span"></span>Application for  Exemption</a>-->,
+                    <a sec:authorize="hasAuthority('MAKE_WAIVER_APPLICATION')" class="content-button" th:href="@{/api/di/pvoc/email_entry/waiver}"><span class="font-awesome-span"></span>Application for Waiver</a>
+<!--                    <a sec:authorize="hasAuthority('MAKE_WAIVER_APPLICATION')" class="content-button" th:href="@{/api/di/pvoc/waivers-application}"><span class="font-awesome-span"></span>Application for Waiver</a>-->
+                    <a sec:authorize="hasAuthority('MAKE_WAIVER_APPLICATION') or hasAuthority('WAIVERS_APPLICATION_REVIEW')
+                    or hasAuthority('WAIVERS_APPLICATION_REVIEW') or hasAuthority('WAIVERS_APPLICATION_REPORT_GENERATE')" class="content-button" th:href="@{/api/di/pvoc/all-waivers-applications-list(currentPage=0,pageSize=10,filter=0, fromDate=${#dates.format(#dates.createNow(), 'yyyy-MM-dd')}, toDate=${#dates.format(#dates.createNow(),'yyyy-MM-dd')})}"><span class="font-awesome-span"></span>Waiver Applications</a>
                     <a class="content-button" sec:authorize="hasAuthority('WAIVER_APPLICATION_REPORT_PROCESS')" th:href="@{/api/di/pvoc/waivers-reports(currentPage=0,pageSize=10,
                         filter=0, fromDate=${#dates.format(#dates.createNow(), 'yyyy-MM-dd')}, toDate=${#dates.format(#dates.createNow(),'yyyy-MM-dd')})
                         }"><span class="font-awesome-span"></span>WETC(Waiver Application Reports)</a>
                     <a class="content-button"
-                       sec:authorize="hasAuthority('WAIVERS_APPLICATION_REPORT_GENERATE') or hasAuthority('WAIVERS_MINUTES_PROCESS_NCS')"
+                       sec:authorize="hasAuthority('WAIVERS_APPLICATION_REPORT_GENERATE') or hasAuthority('WAIVERS_MINUTES_REVIEW_NCS') or hasAuthority('WAIVERS_MINUTES_PROCESS_NCS')"
                        th:href="@{/api/di/pvoc/waiversWETCMinutes(currentPage=0,pageSize=10, filter=0, fromDate=${#dates.format(#dates.createNow(), 'yyyy-MM-dd')}, toDate=${#dates.format(#dates.createNow(),'yyyy-MM-dd')})}"><span
                             class="font-awesome-span"></span>WETC(Waivers Minutes)</a>
                     <!--                    <a class="content-button" th:href="@{/api/di/officer}"><span class="font-awesome-span"></span>Officer</a>-->

@@ -67,6 +67,8 @@ import org.kebs.app.kotlin.apollo.common.utils.replacePrefixedItemsWithObjectVal
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.*
 import org.kebs.app.kotlin.apollo.store.model.di.CdLaboratoryEntity
+import org.kebs.app.kotlin.apollo.store.model.qa.ManufacturePlantDetailsEntity
+import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileEntity
 import org.kebs.app.kotlin.apollo.store.repo.*
 import org.kebs.app.kotlin.apollo.store.repo.di.ILaboratoryRepository
 import org.modelmapper.ModelMapper
@@ -77,8 +79,6 @@ import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Service
 import org.springframework.util.StringUtils
 import org.springframework.web.multipart.MultipartFile
-import org.springframework.web.servlet.function.ServerRequest
-import org.springframework.web.servlet.function.ServerResponse
 import java.io.ByteArrayInputStream
 import java.io.File
 import java.io.FileWriter
@@ -103,6 +103,8 @@ import javax.xml.stream.XMLOutputFactory
 class CommonDaoServices(
         private val jasyptStringEncryptor: StringEncryptor,
         private val usersRepo: IUserRepository,
+        private val companyProfileRepo: ICompanyProfileRepository,
+        private val manufacturePlantRepository: IManufacturePlantDetailsRepository,
         private val batchJobRepository: IBatchJobDetailsRepository,
         private val iSubSectionsLevel2Repo: ISubSectionsLevel2Repository,
         private val iSubSectionsLevel1Repo: ISubSectionsLevel1Repository,
@@ -203,6 +205,11 @@ class CommonDaoServices(
         return date
     }
 
+    fun convertDateToString(date: Date, format:String): String {
+        val format = SimpleDateFormat(format)
+        return format.format(date)
+    }
+
     fun convertISO8601DateToTimestamp(dateString: String): Timestamp? {
         try {
         val formatter = DateTimeFormatterBuilder()
@@ -292,6 +299,12 @@ class CommonDaoServices(
             hashedList.add(HashedStringDto(hashed))
         }
         return hashedList
+    }
+
+    fun findAllPlantDetails(userId: Long): List<ManufacturePlantDetailsEntity> {
+        manufacturePlantRepository.findByUserId(userId)?.let {
+            return it
+        } ?: throw ExpectedDataNotFound("No Plant details found with the following [user id=$userId]")
     }
 
     fun convertClassToJson(classToConvert: Any): String? {
@@ -400,6 +413,16 @@ class CommonDaoServices(
 //    fun assignSubRegion(subRegionId: Long?): SubRegionsEntity? = subRegionsRepo.findByIdOrNull(subRegionId)
     fun assignDesignation(designationId: Long?): DesignationsEntity? = designationRepo.findByIdOrNull(designationId)
 
+    fun returnValues(
+        result: ServiceRequestsEntity,
+        map: ServiceMapsEntity,
+        sm: CommonDaoServices.MessageSuccessFailDTO
+    ): String? {
+        return when (result.status) {
+            map.successStatus -> "${successLink}?message=${sm.message}&closeLink=${sm.closeLink}"
+            else -> map.failureNotificationUrl
+        }
+    }
 
     fun concatenateName(user: UsersEntity): String {
         return "${user.firstName} ${user.lastName}"
@@ -495,6 +518,7 @@ class CommonDaoServices(
         return SecurityContextHolder.getContext().authentication?.name
     }
 
+
     fun loggedInUserAuthentication(): Authentication {
         SecurityContextHolder.getContext().authentication
                 ?.let { auths ->
@@ -561,6 +585,15 @@ class CommonDaoServices(
                 ?: throw ExpectedDataNotFound("No user Profile Matched the following details [designation id = ${designationsEntity.id}] and [region id = ${regionsEntity.id}]and [department id = ${departmentsEntity.id}] and [status = $status]")
     }
 
+    fun findAllUsersWithDesignationRegionDepartmentAndStatus(designationsEntity: DesignationsEntity, regionsEntity: RegionsEntity, departmentsEntity: DepartmentsEntity, status: Int): List<UserProfilesEntity> {
+        iUserProfilesRepo.findAllByDesignationIdAndRegionIdAndDepartmentIdAndStatus(designationsEntity, regionsEntity, departmentsEntity, status)
+            ?.let { users ->
+                return users
+            }
+            ?: throw ExpectedDataNotFound("No users Profile Matched the following details [designation id = ${designationsEntity.id}] and [region id = ${regionsEntity.id}]and [department id = ${departmentsEntity.id}] and [status = $status]")
+    }
+
+
     fun findRegionEntityByRegionID(regionsId: Long, status: Int): RegionsEntity {
         regionsRepo.findByIdAndStatus(regionsId, status)
                 ?.let { regionEntity ->
@@ -577,12 +610,12 @@ class CommonDaoServices(
                 ?: throw ExpectedDataNotFound("The following County with ID  = $countyId and status = $status, does not Exist")
     }
 
-    fun findTownEntityByTownId(townId: Long, status: Int): TownsEntity {
-        townsRepo.findByIdAndStatus(townId, status)
+    fun findTownEntityByTownId(townId: Long): TownsEntity {
+        townsRepo.findByIdOrNull(townId)
                 ?.let { townEntity ->
                     return townEntity
                 }
-                ?: throw ExpectedDataNotFound("The following Town with ID  = $townId and status = $status, does not Exist")
+                ?: throw ExpectedDataNotFound("The following Town with ID  = $townId, does not Exist")
     }
 
 
@@ -661,6 +694,31 @@ class CommonDaoServices(
                 ?: throw ExpectedDataNotFound("Username  = ${userName}, does not Exist")
     }
 
+
+    fun findCompanyProfile(userID: Long): CompanyProfileEntity {
+        companyProfileRepo.findByUserId(userID)
+                ?.let { userCompanyDetails ->
+                    return userCompanyDetails
+                }
+                ?: throw ExpectedDataNotFound("Company Profile with [user ID= ${userID}], does not Exist")
+    }
+
+    fun findCompanyProfileWhoAreManufactures(status: Int): List<CompanyProfileEntity> {
+        companyProfileRepo.findByManufactureStatus(status)
+                ?.let { userCompanyDetails ->
+                    return userCompanyDetails
+                }
+                ?: throw ExpectedDataNotFound("Company Profile list with [user ID= ${status}], does not Exist")
+    }
+
+    fun findCompanyProfileWithID(id: Long): CompanyProfileEntity {
+        companyProfileRepo.findByIdOrNull(id)
+            ?.let { userCompanyDetails ->
+                return userCompanyDetails
+            }
+            ?: throw ExpectedDataNotFound("Company Profile with [ ID= ${id}], does not Exist")
+    }
+
     fun findAllUsers(): List<UsersEntity> {
         usersRepo.findAllByOrderByIdAsc()
                 .let { usersEntity ->
@@ -717,6 +775,10 @@ class CommonDaoServices(
 
     fun addMonthsToCurrentDate(noOfMonths: Long): Date {
         return Date.valueOf(LocalDate.now().plusMonths(noOfMonths))
+    }
+
+    fun addYearsToCurrentDate(noOfYears: Long): Date {
+        return Date.valueOf(LocalDate.now().plusYears(noOfYears))
     }
 
     fun generateUUIDString(): String {
@@ -1170,6 +1232,14 @@ class CommonDaoServices(
                 ?: throw ExpectedDataNotFound("Users with section ID  = ${sectionsEntity.id} and status = $status, does not Exist")
     }
 
+    fun findAllUsersWithinRegionDepartmentDivisionSectionId(region: RegionsEntity, department: DepartmentsEntity, division: DivisionsEntity, section: SectionsEntity, status: Int): List<UserProfilesEntity> {
+        iUserProfilesRepo.findByRegionIdAndDepartmentIdAndDivisionIdAndSectionIdAndStatus(region,department, division, section, status)
+                ?.let { users ->
+                    return users
+                }
+                ?: throw ExpectedDataNotFound("Users List with section ID  = ${section.id} and status = $status, does not Exist")
+    }
+
 
     fun findManufacturerProfileByUserID(userId: UsersEntity, status: Int): ManufacturersEntity {
         manufacturersRepo.findByUserIdAndStatus(userId, status)
@@ -1284,6 +1354,12 @@ class CommonDaoServices(
                 return userDetails
             }
         }
+    }
+
+    fun makeKenyanMSISDNFormat(phoneNumber: String?): String? {
+        val reversedPhoneNumber = StringBuilder(phoneNumber).reverse().substring(0, 9)
+        val trimmedPhoneNumber = StringBuilder(reversedPhoneNumber).reverse().toString()
+        return "254$trimmedPhoneNumber"
     }
 
 }

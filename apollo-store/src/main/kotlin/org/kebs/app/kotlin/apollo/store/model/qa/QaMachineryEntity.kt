@@ -7,17 +7,15 @@ import java.io.Serializable
 
 @Entity
 @Table(name="DAT_KEBS_QA_MACHINE")
-class QaMachineryEntity:Serializable
-{
-
+class QaMachineryEntity:Serializable {
     @Column(name = "ID")
     @Id
-    @SequenceGenerator(name = "DAT_KEBS_QA_MACHINE_SEQ_GEN", sequenceName = "DAT_KEBS_QA_MACHINE_TYPES_SEQ", allocationSize = 1)
-    @GeneratedValue(generator = "DAT_KEBS_QA_MACHINE__SEQ_GEN", strategy = GenerationType.SEQUENCE)
+    @SequenceGenerator(name = "DAT_KEBS_QA_MACHINE_SEQ_GEN", sequenceName = "DAT_KEBS_QA_MACHINE_SEQ", allocationSize = 1)
+    @GeneratedValue(generator = "DAT_KEBS_QA_MACHINE_SEQ_GEN", strategy = GenerationType.SEQUENCE)
     var id: Long? = 0
     @Column(name = "MACHINE_NAME")
     @Basic
-    var productName: String? = null
+    var machineName: String? = null
 
     @Column(name = "TYPE_MODEL")
     @Basic
@@ -27,12 +25,18 @@ class QaMachineryEntity:Serializable
     @Basic
     var countryOfOrigin:String? = null
 
+    @Column(name = "DESCRIPTIONS")
+    @Basic
+    var descriptions: String? = null
 
-    @ManyToOne
-    @JoinColumn(name = "MACHINERY_ID", referencedColumnName = "ID")
-    var applicationsEntity: PermitApplicationsEntity? = null
 
+    @Column(name = "STA10_ID")
+    @Basic
+    var sta10Id: Long? = null
 
+    @Column(name = "STATUS")
+    @Basic
+    var status: Int? = null
 
     @Column(name = "VAR_FIELD_1")
     @Basic
@@ -104,10 +108,12 @@ class QaMachineryEntity:Serializable
         other as QaMachineryEntity
 
         if (id != other.id) return false
-        if (productName != other.productName) return false
+        if (sta10Id != other.sta10Id) return false
+        if (machineName != other.machineName) return false
         if (typeModel != other.typeModel) return false
         if (countryOfOrigin != other.countryOfOrigin) return false
-        if (applicationsEntity != other.applicationsEntity) return false
+        if (descriptions != other.descriptions) return false
+        if (status != other.status) return false
         if (varField1 != other.varField1) return false
         if (varField2 != other.varField2) return false
         if (varField3 != other.varField3) return false
@@ -130,10 +136,12 @@ class QaMachineryEntity:Serializable
 
     override fun hashCode(): Int {
         var result = id?.hashCode() ?: 0
-        result = 31 * result + (productName?.hashCode() ?: 0)
+        result = 31 * result + (sta10Id?.hashCode() ?: 0)
+        result = 31 * result + (machineName?.hashCode() ?: 0)
         result = 31 * result + (typeModel?.hashCode() ?: 0)
         result = 31 * result + (countryOfOrigin?.hashCode() ?: 0)
-        result = 31 * result + (applicationsEntity?.hashCode() ?: 0)
+        result = 31 * result + (descriptions?.hashCode() ?: 0)
+        result = 31 * result + (status ?: 0)
         result = 31 * result + (varField1?.hashCode() ?: 0)
         result = 31 * result + (varField2?.hashCode() ?: 0)
         result = 31 * result + (varField3?.hashCode() ?: 0)

@@ -67,6 +67,28 @@ import { NwaDiSdtTasksComponent } from './components/standards-development/nwa-d
 import { NwaHopTasksComponent } from './components/standards-development/nwa-hop-tasks/nwa-hop-tasks.component';
 import { SacSecTasksComponent } from './components/standards-development/sac-sec-tasks/sac-sec-tasks.component';
 import { NwaHoSicTasksComponent } from './components/standards-development/nwa-ho-sic-tasks/nwa-ho-sic-tasks.component';
+import { PreparePdComponent } from './components/standards-development/commitee/prepare-pd/prepare-pd.component';
+import { CommentPdComponent } from './components/standards-development/commitee/comment-pd/comment-pd.component';
+import { CommentCdComponent } from './components/standards-development/commitee/comment-cd/comment-cd.component';
+import { PdDetailsComponent } from './components/standards-development/commitee/pd-details/pd-details.component';
+import { PdListComponent } from './components/standards-development/commitee/pd-list/pd-list.component';
+import { NwiListComponent } from './components/standards-development/commitee/nwi-list/nwi-list.component';
+import { PrepareNwiComponent } from './components/standards-development/commitee/prepare-nwi/prepare-nwi.component';
+import { PrepareCdComponent } from './components/standards-development/commitee/prepare-cd/prepare-cd.component';
+import { CdListComponent } from './components/standards-development/commitee/cd-list/cd-list.component';
+import { ApproveNwiComponent } from './components/standards-development/commitee/approve-nwi/approve-nwi.component';
+import { ApproveCdComponent } from './components/standards-development/commitee/approve-cd/approve-cd.component';
+import { DivisionresponseComponent } from './components/standards-development/divisionresponse/divisionresponse.component';
+import { EnquiryComponent } from './components/standards-development/sd-national-enquiry-point/enquiry/enquiry.component';
+import { InformationcheckComponent } from './components/standards-development/informationcheck/informationcheck.component';
+import { SuccessComponent } from './components/standards-development/sd-national-enquiry-point/success/success.component';
+import { NepNotificationComponent } from './components/standards-development/nep-notification/nep-notification.component';
+import { ManagernotificationsComponent } from './components/standards-development/managernotifications/managernotifications.component';
+import { HodjoinrequestComponent } from './components/standards-development/hodjoinrequest/hodjoinrequest.component';
+import { SicjoinrequestComponent } from './components/standards-development/sicjoinrequest/sicjoinrequest.component';
+import { SicpaymentconfirmComponent } from './components/standards-development/sicpaymentconfirm/sicpaymentconfirm.component';
+import { SchememembershipComponent } from './components/standards-development/schememembership/schememembership/schememembership.component';
+
 
 
 
@@ -124,6 +146,27 @@ import { NwaHoSicTasksComponent } from './components/standards-development/nwa-h
     NwaHopTasksComponent,
     SacSecTasksComponent,
     NwaHoSicTasksComponent,
+    PreparePdComponent,
+    CommentPdComponent,
+    CommentCdComponent,
+    PdDetailsComponent,
+    PdListComponent,
+    NwiListComponent,
+    PrepareNwiComponent,
+    PrepareCdComponent,
+    CdListComponent,
+    ApproveNwiComponent,
+    ApproveCdComponent,
+    DivisionresponseComponent,
+    EnquiryComponent,
+    InformationcheckComponent,
+    SuccessComponent,
+    NepNotificationComponent,
+    ManagernotificationsComponent,
+    HodjoinrequestComponent,
+    SicjoinrequestComponent,
+    SicpaymentconfirmComponent,
+    SchememembershipComponent,
   ],
   exports: [
   ],

@@ -129,6 +129,7 @@
                                                         <th sec:authorize="hasAuthority('PVOC_APPLICATION_PROCESS')">Recomendations</th>
                                                         <th sec:authorize="hasAuthority('PVOC_APPLICATION_PROCESS_CHAIRMAN')">Exemption Update</th>
                                                         <th sec:authorize="hasAuthority('PVOC_APPLICATION_PROCESS_CHAIRMAN')">Exemption Status</th>
+                                                        <th sec:authorize="hasAuthority('PVOC_APPLICATION_PROCESS_CHAIRMAN')">Final Update</th>
                                                     </tr>
                                                     </thead>
                                                     <tbody>
@@ -144,13 +145,13 @@
                                                         <td th:text="${itemCoc?.endProduct}">
                                                         </td>
                                                         <td sec:authorize="hasAuthority('PVOC_APPLICATION_PROCESS')">
-                                                            <input type="radio" th:name="|rawMaterials[${itemStat.index}]?.checkBoxChecked|" th:value="1" class="form-control" >
+                                                            <input th:disable="${itemCoc?.checkBoxChecked}" type="radio" th:name="|rawMaterials[${itemStat.index}]?.checkBoxChecked|" th:value="1" class="form-control" >
                                                         </td>
                                                         <td sec:authorize="hasAuthority('PVOC_APPLICATION_PROCESS')">
-                                                            <input type="radio" th:name="|rawMaterials[${itemStat.index}]?.checkBoxChecked|" th:value="0" class="form-control" >
+                                                            <input th:disable="${itemCoc?.checkBoxChecked}" type="radio" th:name="|rawMaterials[${itemStat.index}]?.checkBoxChecked|" th:value="0" class="form-control" >
                                                         </td>
                                                         <td sec:authorize="hasAuthority('PVOC_APPLICATION_PROCESS')">
-                                                            <input type="text" th:name="|rawMaterials[${itemStat.index}]?.remarks|" class="form-control" >
+                                                            <input th:disable="${itemCoc?.checkBoxChecked != null}" type="text" th:name="|rawMaterials[${itemStat.index}]?.remarks|" class="form-control" >
                                                         </td>
                                                         <td th:switch="${itemCoc?.checkBoxChecked}">
                                                             <div th:case="1">
@@ -161,7 +162,7 @@
                                                             </div>
                                                         </td>
                                                         <td sec:authorize="hasAnyAuthority('PVOC_APPLICATION_PROCESS_CHAIRMAN')">
-                                                            <select th:name="|rawMaterials[${itemStat.index}]?.reviewStatus|" style="width: 100%" id="endProduct" class="form-control">
+                                                            <select th:disable="${itemCoc?.reviewStatus}" th:name="|rawMaterials[${itemStat.index}]?.reviewStatus|" style="width: 100%" id="endProduct" class="form-control">
                                                                 <option
                                                                         th:name="|rawMaterials[${itemStat.index}]?.reviewStatus|"
                                                                         th:value="Exempt"  selected>Exempt</option>
@@ -203,6 +204,7 @@
                                                         <th sec:authorize="hasAuthority('PVOC_APPLICATION_PROCESS')">Recomendations</th>
                                                         <th sec:authorize="hasAuthority('PVOC_APPLICATION_PROCESS_CHAIRMAN')">Exemption Update</th>
                                                         <th sec:authorize="hasAuthority('PVOC_APPLICATION_PROCESS_CHAIRMAN')">Exemption Status</th>
+                                                        <th sec:authorize="hasAuthority('PVOC_APPLICATION_PROCESS_CHAIRMAN')">Final Update</th>
                                                     </tr>
                                                     </thead>
                                                     <tbody>
@@ -219,13 +221,13 @@
                                                         <td th:text="${itemCoc?.hsCode}">
                                                         </td>
                                                         <td sec:authorize="hasAuthority('PVOC_APPLICATION_PROCESS')">
-                                                            <input type="radio" th:name="|machineries[${itemStat.index}]?.checkBoxChecked|" th:value="1" class="form-control" >
+                                                            <input th:disable="${itemCoc?.checkBoxChecked == null}" type="radio" th:name="|machineries[${itemStat.index}]?.checkBoxChecked|" th:value="1" class="form-control" >
                                                         </td>
                                                         <td sec:authorize="hasAuthority('PVOC_APPLICATION_PROCESS')">
-                                                            <input type="radio" th:name="|machineries[${itemStat.index}]?.checkBoxChecked|" th:value="0" class="form-control" >
+                                                            <input th:disable="${itemCoc?.checkBoxChecked == null}" type="radio" th:name="|machineries[${itemStat.index}]?.checkBoxChecked|" th:value="0" class="form-control" >
                                                         </td>
                                                         <td sec:authorize="hasAuthority('PVOC_APPLICATION_PROCESS')">
-                                                            <input type="text" style="width: 100%" th:name="|machineries[${itemStat.index}]?.remarks|" class="form-control" >
+                                                            <input th:disable="${itemCoc?.checkBoxChecked == null}" type="text" style="width: 100%" th:name="|machineries[${itemStat.index}]?.remarks|" class="form-control" >
                                                         </td>
                                                         <td th:switch="${itemCoc?.checkBoxChecked}">
                                                             <div th:case="1">
@@ -236,7 +238,7 @@
                                                             </div>
                                                         </td>
                                                         <td sec:authorize="hasAuthority('PVOC_APPLICATION_PROCESS_CHAIRMAN')">
-                                                            <select th:name="|machineries[${itemStat.index}]?.reviewStatus|" style="width: 100%"  class="form-control">
+                                                            <select th:disable="${itemCoc?.reviewStatus}" th:name="|machineries[${itemStat.index}]?.reviewStatus|" style="width: 100%"  class="form-control">
                                                                 <option
                                                                         th:name="|machineries[${itemStat.index}]?.reviewStatus|"
                                                                         th:value="Exempt"  selected>Exempt</option>
@@ -278,6 +280,7 @@
                                                         <th sec:authorize="hasAuthority('PVOC_APPLICATION_PROCESS')">Recomendations</th>
                                                         <th sec:authorize="hasAuthority('PVOC_APPLICATION_PROCESS_CHAIRMAN')">Exemption Update</th>
                                                         <th sec:authorize="hasAuthority('PVOC_APPLICATION_PROCESS_CHAIRMAN')">Exemption Status</th>
+                                                        <th sec:authorize="hasAuthority('PVOC_APPLICATION_PROCESS_CHAIRMAN')">Final Update</th>
                                                     </tr>
                                                     </thead>
                                                     <tbody>
@@ -294,13 +297,13 @@
                                                         <td th:text="${itemCoc?.machineToFit}">
                                                         </td>
                                                         <td sec:authorize="hasAuthority('PVOC_APPLICATION_PROCESS')">
-                                                            <input type="radio" th:name="|spares[${itemStat.index}]?.checkBoxChecked|" th:value="1" class="form-control" >
+                                                            <input th:disable="${itemCoc?.checkBoxChecked != null}" type="radio" th:name="|spares[${itemStat.index}]?.checkBoxChecked|" th:value="1" class="form-control" >
                                                         </td>
                                                         <td sec:authorize="hasAuthority('PVOC_APPLICATION_PROCESS')">
-                                                            <input type="radio" th:name="|spares[${itemStat.index}]?.checkBoxChecked|" th:value="0" class="form-control" >
+                                                            <input th:disable="${itemCoc?.checkBoxChecked == null}" type="radio" th:name="|spares[${itemStat.index}]?.checkBoxChecked|" th:value="0" class="form-control" >
                                                         </td>
                                                         <td sec:authorize="hasAuthority('PVOC_APPLICATION_PROCESS')">
-                                                            <input type="text" th:name="|spares[${itemStat.index}]?.remarks|"  class="form-control" >
+                                                            <input th:disable="${itemCoc?.checkBoxChecked == null}" type="text" th:name="|spares[${itemStat.index}]?.remarks|"  class="form-control" >
                                                         </td>
                                                         <td th:switch="${itemCoc?.checkBoxChecked}">
                                                             <div th:case="1">
@@ -311,7 +314,7 @@
                                                             </div>
                                                         </td>
                                                         <td sec:authorize="hasAuthority('PVOC_APPLICATION_PROCESS_CHAIRMAN')" >
-                                                            <select th:name="|spares[${itemStat.index}]?.reviewStatus|" style="width: 100%"  class="form-control">
+                                                            <select th:disable="${itemCoc?.reviewStatus}" th:name="|spares[${itemStat.index}]?.reviewStatus|" style="width: 100%"  class="form-control">
                                                                 <option
                                                                         th:name="|spares[${itemStat.index}]?.reviewStatus|"
                                                                         th:value="Exempt"  selected>Exempt</option>
@@ -326,7 +329,7 @@
                                                         <td sec:authorize="hasAuthority('PVOC_APPLICATION_PROCESS_CHAIRMAN')" th:text="${itemCoc?.reviewStatus}"></td>
                                                     </tr>
                                                     <tr sec:authorize="hasAuthority('PVOC_APPLICATION_PROCESS') or hasAuthority('PVOC_APPLICATION_PROCESS_CHAIRMAN')">
-                                                        <td colspan="6"><input type="submit" value="Up Applications Details"></td>
+                                                        <td colspan="6"><input type="submit" value="Update Applications Details"></td>
                                                     </tr>
                                                     </tbody>
                                                 </table>
@@ -342,13 +345,13 @@
                             </div>
                             <div  >
                                 <input type="hidden" id="pvocId" th:value="${pvoc.id}">
-                                <a sec:authorize="hasAuthority('PVOC_APPLICATION_PROCESS')" class="filter-link except addRemarksBtn" data-toggle="modal"  data-target="#modal-warning" style="color: white">Exempt Remarks</a>
+                                <a sec:authorize="hasAuthority('PVOC_APPLICATION_PROCESS')" class="filter-link except addRemarksBtn" data-toggle="modal"  data-target="#modal-warning" style="color: white">Add Remarks</a>
                                 <a sec:authorize="hasAuthority('PVOC_APPLICATION_PROCESS_CHAIRMAN')" class="filter-link addRemarksBtnChair"  data-toggle="modal"  data-target="#modal-warning" style="color: white">Exempt Remarks</a>
-                                <a sec:authorize="hasAuthority('PVOC_APPLICATION_PROCESS')" class="filter-link reject" data-toggle="modal" data-target="#modal-warning" style="color: white">Reject Remarks</a>
+<!--                                <a sec:authorize="hasAuthority('PVOC_APPLICATION_PROCESS')" class="filter-link reject" data-toggle="modal" data-target="#modal-warning" style="color: white">Reject Remarks</a>-->
                                 <a sec:authorize="hasAuthority('PVOC_APPLICATION_PROCESS')"  class="filter-link" th:href="@{/api/di/pvoc/single-exception-generate/{id}(id = ${pvoc.id })}" style="color: white">Generate Report</a>
                                 <a sec:authorize="hasAuthority('PVOC_APPLICATION_READ')" class="filter-link" th:href="@{/api/di/pvoc/single-exception-download/{id}(id = ${pvoc.id })}" style="color: white">Download Certificate</a>
                                 <a sec:authorize="hasAuthority('PVOC_APPLICATION_PROCESS_CHAIRMAN')" class="filter-link rejectChair123" data-toggle="modal" data-target="#modal-warning" style="color: white">Reject Remarks</a>
-                                <a sec:authorize="hasAuthority('PVOC_APPLICATION_PROCESS')" class="filter-link deffer" data-toggle="modal" data-target="#modal-warning" style="color: white">Deffer Remarks</a>
+<!--                                <a sec:authorize="hasAuthority('PVOC_APPLICATION_PROCESS')" class="filter-link deffer" data-toggle="modal" data-target="#modal-warning" style="color: white">Deffer Remarks</a>-->
                                 <a sec:authorize="hasAuthority('PVOC_APPLICATION_PROCESS_CHAIRMAN')" class="filter-link defferChair" data-toggle="modal" data-target="#modal-warning" style="color: white">Deffer Remarks</a>
                                 <a class="filter-link " th:href="@{/api/di/pvoc/remarks-view/{id}(id = ${pvoc.id })}" style="color: white">View Remarks</a>
                             </div>

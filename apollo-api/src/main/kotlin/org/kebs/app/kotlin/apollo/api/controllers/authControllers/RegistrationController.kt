@@ -43,24 +43,28 @@ import mu.KotlinLogging
 import org.apache.commons.lang3.StringUtils
 import org.kebs.app.kotlin.apollo.adaptor.kafka.producer.service.SendToKafkaQueue
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
+import org.kebs.app.kotlin.apollo.api.ports.provided.dao.MasterDataDaoService
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.RegistrationDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.SystemsAdminDaoService
 import org.kebs.app.kotlin.apollo.common.dto.UserPasswordVerificationValuesDto
+import org.kebs.app.kotlin.apollo.common.dto.UserRequestEntityDto
+import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
 import org.kebs.app.kotlin.apollo.common.exceptions.PasswordsMismatchException
 import org.kebs.app.kotlin.apollo.common.exceptions.ServiceMapNotFoundException
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.*
-import org.kebs.app.kotlin.apollo.store.model.qa.ManufacturePlantDetailsEntity
+import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileEntity
 import org.kebs.app.kotlin.apollo.store.repo.*
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Controller
+import org.springframework.transaction.annotation.Propagation
+import org.springframework.transaction.annotation.Transactional
 import org.springframework.ui.Model
 import org.springframework.validation.BindingResult
 import org.springframework.web.bind.annotation.*
-import org.springframework.web.servlet.function.ServerResponse
 import org.springframework.web.servlet.mvc.support.RedirectAttributes
 import javax.servlet.http.HttpServletResponse
 import javax.validation.Valid
@@ -69,12 +73,13 @@ import javax.validation.Valid
 @Controller
 @RequestMapping("/api/auth/")
 class RegisterController(
-   private val applicationMapProperties: ApplicationMapProperties,
+    private val applicationMapProperties: ApplicationMapProperties,
     private val commonDaoServices: CommonDaoServices,
     private val sendToKafkaQueue: SendToKafkaQueue,
     private val serviceMapsRepository: IServiceMapsRepository,
     private val userTypesEntityRepository: IUserTypesEntityRepository,
     private val daoServices: RegistrationDaoServices,
+    private val masterDataDaoService: MasterDataDaoService,
     private val manufacturePlantRepository: IManufacturePlantDetailsRepository,
     private val usersRepo: IUserRepository,
 
@@ -97,6 +102,7 @@ class RegisterController(
      ***********************************************************************************/
 
     @PostMapping("kebs/signup/user/save")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun registerAllUsers(
         model: Model,
         @ModelAttribute("usersEntity") usersEntity: UsersEntity,
@@ -111,7 +117,7 @@ class RegisterController(
                 .let { checkUsersEntity ->
                     when {
                         checkUsersEntity != null -> {
-                            throw ServiceMapNotFoundException("The User PIN/PASSPORT/ID Number Already Exists")
+                            throw ExpectedDataNotFound("The User PIN/PASSPORT/ID Number Already Exists")
                         }
                         else -> {
                             result = daoServices.registerUser(map, usersEntity, null)
@@ -127,8 +133,61 @@ class RegisterController(
 
     }
 
+    @PostMapping("kebs/add/manufacture-details/save")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun addManufactureDetails(
+        model: Model,
+        @ModelAttribute("companyProfileEntity") companyProfileEntity: CompanyProfileEntity,
+        results: BindingResult,
+        response: HttpServletResponse,
+        redirectAttributes: RedirectAttributes
+    ): String? {
+        val result: ServiceRequestsEntity?
+        val map = commonDaoServices.serviceMapDetails(appId)
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+
+        val brsCheckUp = daoServices.checkBrs(companyProfileEntity)
+        if (brsCheckUp.first){
+
+            result = brsCheckUp.second?.let { daoServices.addUserManufactureProfile(map, loggedInUser, companyProfileEntity, it) }?: throw ExpectedDataNotFound("The Company Details Verification details could not be found")
+
+            val sm = CommonDaoServices.MessageSuccessFailDTO()
+            sm.closeLink = "${applicationMapProperties.baseUrlValue}/user/user-profile?userName=${loggedInUser.userName}"
+            sm.message = "You have successful Added your Company details, Verify was success"
+            return returnValues(result, map, sm)
+        }else{
+             throw ExpectedDataNotFound("The Company Details Verification failed Due to Invalid Registration Number or Director Id Failed")
+        }
+
+    }
+
+    @PreAuthorize("hasAuthority('USER')")
+    @PostMapping("kebs/add/request-details/save")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun addRequestDetails(
+        model: Model,
+        @ModelAttribute("userRequestEntityDto") userRequestEntityDto: UserRequestEntityDto,
+        response: HttpServletResponse,
+        redirectAttributes: RedirectAttributes
+    ): String? {
+        val result: ServiceRequestsEntity?
+        val map = commonDaoServices.serviceMapDetails(appId)
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        userRequestEntityDto.userId = loggedInUser.id
+
+        result = daoServices.addUserRequestDetails(map, loggedInUser, userRequestEntityDto)
+
+        val sm = CommonDaoServices.MessageSuccessFailDTO()
+        sm.closeLink = "${applicationMapProperties.baseUrlValue}/user/user-profile?userName=${loggedInUser.userName}"
+        sm.message = "You have successful Sent a Request"
+        return returnValues(result, map, sm)
+
+
+    }
+
     @PreAuthorize("hasAuthority('USERS_WRITE')")
     @PostMapping("kebs/signup/employee/save")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun registerAllEmployees(
         model: Model,
         @ModelAttribute("usersEntity") usersEntity: UsersEntity,
@@ -148,6 +207,7 @@ class RegisterController(
 
     //    @PreAuthorize("hasAuthority('USER')")
     @PostMapping("kebs/signup/authorize/token")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun forgotPasswordAllUsers(
         model: Model,
         @ModelAttribute("usersEntity") usersEntity: UsersEntity,
@@ -176,6 +236,7 @@ class RegisterController(
     }
 
     @PostMapping("kebs/signup/authorize/forgot-password")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun forgotPasswordReset(
         model: Model,
         @ModelAttribute("usersEntity") usersEntity: UsersEntity,
@@ -186,7 +247,11 @@ class RegisterController(
         val map = commonDaoServices.serviceMapDetails(appId)
         val user = usersEntity.userName?.let { commonDaoServices.findUserByUserName(it) }
             ?: throw NullValueNotAllowedException("User with user name ${usersEntity.userName} do not exist")
-        result = systemsAdminDaoService.userRegistrationMailSending(user, null, applicationMapProperties.mapUserPasswordResetNotification)
+        result = systemsAdminDaoService.userRegistrationMailSending(
+            user,
+            null,
+            applicationMapProperties.mapUserPasswordResetNotification
+        )
         val sm = CommonDaoServices.MessageSuccessFailDTO()
         sm.closeLink = "${applicationMapProperties.baseUrlValue}/auth/signup/authorize/${user.userPinIdNumber}"
         sm.message = "You have successful your Email, check your email, Get the OTP For activation"
@@ -254,99 +319,42 @@ class RegisterController(
 
     }
 
-    @PostMapping("/add/plant-details/save")
-    fun addManufacturePlantDetails(
-        model: Model,
-        @RequestParam(value = "manufactureID") manufactureID: Long,
-        @ModelAttribute("manufacturePlantDetailsEntity") manufacturePlantDetailsEntity: ManufacturePlantDetailsEntity,
-        results: BindingResult,
-        redirectAttributes: RedirectAttributes
-    ): String {
-
-        commonDaoServices.serviceMapDetails(manufacturerRegAppId)
-            .let { map ->
-                commonDaoServices.loggedInUserDetails()
-                    .let { loggedInUser ->
-                        addPlantDetailsManufacture(manufactureID, manufacturePlantDetailsEntity, map, loggedInUser)
-                        return """$profilePageDetails${loggedInUser.userName}"""
-                    }
-            }
-    }
-
-    private fun addPlantDetailsManufacture(
-        manufactureID: Long,
-        manufacturePlantDetailsEntity: ManufacturePlantDetailsEntity,
-        map: ServiceMapsEntity,
-        loggedInUser: UsersEntity
-    ): Boolean {
-        with(manufacturePlantDetailsEntity) {
-            manufactureId = commonDaoServices.findManufactureWithID(manufactureID).id
-            region = county?.let { commonDaoServices.findCountiesEntityByCountyId(it, map.activeStatus).regionId }
-            createdOn = commonDaoServices.getTimestamp()
-            createdBy = loggedInUser.userName
-        }
-        manufacturePlantRepository.save(manufacturePlantDetailsEntity)
-        return true
-    }
-
-
-    @PostMapping("/signup/manufacturer/save")
-    fun registerManufacturer(
-        model: Model,
-        @RequestParam(value = "userTypeId", required = false) userTypeId: Int?,
-        @RequestParam(value = "userLoggedInId", required = true) userLoggedInId: Long,
-        @RequestParam(value = "appId", required = false) appId: Int?,
-        @ModelAttribute("manufacturersEntity") @Valid manufacturersEntity: ManufacturersEntity,
-        @ModelAttribute("manufacturerContactEntity") @Valid manufacturerContactsEntity: ManufacturerContactsEntity,
-        @ModelAttribute("manufacturerAddressesEntity") @Valid manufacturerAddressesEntity: ManufacturerAddressesEntity,
-        @ModelAttribute("yearlyTurnoverEntity") yearlyTurnoverEntity: ManufacturePaymentDetailsEntity,
-        @ModelAttribute("stdLevyNotificationFormEntity") stdLevyNotificationFormEntity: StdLevyNotificationFormEntity,
-        results: BindingResult,
-        redirectAttributes: RedirectAttributes
-    ): String? {
+//    @PostMapping("kebs/add/plant-details/save")
+//    fun addManufacturePlantDetails(
+//        model: Model,
+//        @RequestParam(value = "manufactureID") manufactureID: Long,
+//        @ModelAttribute("manufacturePlantDetailsEntity") manufacturePlantDetailsEntity: ManufacturePlantDetailsEntity,
+//        results: BindingResult,
+//        redirectAttributes: RedirectAttributes
+//    ): String {
+//
+//        commonDaoServices.serviceMapDetails(manufacturerRegAppId)
+//            .let { map ->
+//                commonDaoServices.loggedInUserDetails()
+//                    .let { loggedInUser ->
+//                        addPlantDetailsManufacture(manufactureID, manufacturePlantDetailsEntity, map, loggedInUser)
+//                        return """$profilePageDetails${loggedInUser.userName}"""
+//                    }
+//            }
+//    }
+//
+//    private fun addPlantDetailsManufacture(
+//        manufactureID: Long,
+//        manufacturePlantDetailsEntity: ManufacturePlantDetailsEntity,
+//        map: ServiceMapsEntity,
+//        loggedInUser: UsersEntity
+//    ): Boolean {
+//        with(manufacturePlantDetailsEntity) {
+//            manufactureId = commonDaoServices.findManufactureWithID(manufactureID).id
+//            region = county?.let { commonDaoServices.findCountiesEntityByCountyId(it, map.activeStatus).regionId }
+//            createdOn = commonDaoServices.getTimestamp()
+//            createdBy = loggedInUser.userName
+//        }
+//        manufacturePlantRepository.save(manufacturePlantDetailsEntity)
+//        return true
+//    }
 
 
-//        var result = "redirect:/api/auth/signup/notification/success"
-        var result: ServiceRequestsEntity?
-
-        appId?.let {
-            serviceMapsRepository.findByIdAndStatus(it, 1)
-                ?.let { s ->
-//                                when {
-//                                    results.hasErrors() -> {
-//                                        result = "redirect:/api/auth/signup/manufacturer"
-//                                    }
-//                                }
-//                                val variables = mutableMapOf<String, Any?>()
-//                                variables["map"] = s
-//                                variables["contact"] = manufacturerContactsEntity
-//                                variables["manufacturer"] = manufacturersEntity
-//                                variables["address"] = manufacturerAddressesEntity
-//                                variables["userTypeId"] = userTypeId
-//                                runtimeService.startProcessInstanceByKey(s.bpmnProcessKey, variables)
-                    result = daoServices.registerManufacturer(
-                        s,
-                        manufacturerContactsEntity,
-                        stdLevyNotificationFormEntity,
-                        manufacturersEntity,
-                        manufacturerAddressesEntity,
-                        userTypeId,
-                        userLoggedInId,
-                        yearlyTurnoverEntity
-                    )
-                    return when (result?.status) {
-                        s.successStatus -> s.successNotificationUrl
-                        else -> s.failureNotificationUrl
-                    }
-
-                }
-                ?: throw ServiceMapNotFoundException("No service map found for appId=$it, aborting")
-
-        }
-            ?: throw ServiceMapNotFoundException("Empty and/or Invalid Application Id Received, aborting")
-
-
-    }
 
     @PostMapping("/signup/importer/save")
     fun registerImporterExporter(

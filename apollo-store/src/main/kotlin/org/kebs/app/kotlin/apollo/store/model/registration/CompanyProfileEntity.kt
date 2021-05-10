@@ -1,7 +1,10 @@
 package org.kebs.app.kotlin.apollo.store.model.registration
 
 import java.io.Serializable
+import java.math.BigDecimal
+import java.sql.Date
 import java.sql.Timestamp
+import java.time.LocalDate
 import java.util.*
 import javax.persistence.*
 
@@ -10,7 +13,11 @@ import javax.persistence.*
 class CompanyProfileEntity : Serializable {
     @Column(name = "ID")
     @Id
-    @SequenceGenerator(name = "DAT_KEBS_COMPANY_PROFILE_SEQ_GEN", sequenceName = "DAT_KEBS_COMPANY_PROFILE_SEQ", allocationSize = 1)
+    @SequenceGenerator(
+        name = "DAT_KEBS_COMPANY_PROFILE_SEQ_GEN",
+        sequenceName = "DAT_KEBS_COMPANY_PROFILE_SEQ",
+        allocationSize = 1
+    )
     @GeneratedValue(generator = "DAT_KEBS_COMPANY_PROFILE_SEQ_GEN", strategy = GenerationType.SEQUENCE)
     var id: Long? = null
 
@@ -21,6 +28,10 @@ class CompanyProfileEntity : Serializable {
     @Column(name = "KRA_PIN")
     @Basic
     var kraPin: String? = null
+
+    @Column(name = "MANUFACTURE_STATUS")
+    @Basic
+    var manufactureStatus: Int? = null
 
     @Column(name = "REGISTRATION_NUMBER")
     @Basic
@@ -40,7 +51,7 @@ class CompanyProfileEntity : Serializable {
 
     @Column(name = "YEARLY_TURNOVER")
     @Basic
-    var yearlyTurnover: String? = null
+    var yearlyTurnover: BigDecimal? = null
 
     @Column(name = "BUSINESS_LINES")
     @Basic
@@ -53,6 +64,10 @@ class CompanyProfileEntity : Serializable {
     @Column(name = "BUILDING_NAME")
     @Basic
     var buildingName: String? = null
+
+    @Column(name = "USER_CLASSIFICATION")
+    @Basic
+    var userClassification: Long? = null
 
     @Column(name = "STREET_NAME")
     @Basic
@@ -77,6 +92,10 @@ class CompanyProfileEntity : Serializable {
     @Column(name = "DESCRIPTION")
     @Basic
     var description: String? = null
+
+    @Column(name = "DIRECTOR_ID_NUMBER")
+    @Basic
+    var directorIdNumber: String? = null
 
     @Column(name = "STATUS")
     @Basic
@@ -146,6 +165,14 @@ class CompanyProfileEntity : Serializable {
     @Basic
     var deletedOn: Timestamp? = null
 
+    @Column(name = "FACTORY_VISIT_DATE ")
+    @Basic
+    var factoryVisitDate: Date? = null
+
+    @Column(name = "FACTORY_VISIT_STATUS ")
+    @Basic
+    var factoryVisitStatus: Int? = null
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other == null || javaClass != other.javaClass) return false
@@ -163,9 +190,13 @@ class CompanyProfileEntity : Serializable {
                 businessNatures == that.businessNatures &&
                 buildingName == that.buildingName &&
                 streetName == that.streetName &&
+                userClassification == that.userClassification &&
                 region == that.region &&
                 county == that.county &&
                 town == that.town &&
+                factoryVisitDate == that.factoryVisitDate &&
+                factoryVisitStatus == that.factoryVisitStatus &&
+                manufactureStatus == that.manufactureStatus &&
                 description == that.description &&
                 status == that.status &&
                 varField1 == that.varField1 &&
@@ -201,9 +232,13 @@ class CompanyProfileEntity : Serializable {
             businessNatures,
             buildingName,
             streetName,
+            userClassification,
             region,
             county,
             town,
+            factoryVisitDate,
+            factoryVisitStatus,
+            manufactureStatus,
             description,
             status,
             varField1,

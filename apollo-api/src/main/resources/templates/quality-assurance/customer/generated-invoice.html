@@ -46,7 +46,7 @@
             href="https://truehost.co.ke/modules/addons/DomainAllocator/templates/admin/assets/css/icheck/skins/all.css"
     />
     <!--      <link rel="shortcut icon" th:href="@{/images/favicon.ico}" type="image/x-icon">-->
-    <!--      <link rel="apple-touch-icon" th:href="@{/images/webclip.png}">-->
+    <!--      <link rel="apple-touch-icon" th:href="@{/images/kebs_favicon.png}">-->
     <link rel="stylesheet" href="../../../static/css/pageLoad.css" type="text/css">
     <style>
         #MGLoader {
@@ -115,7 +115,7 @@
 >
 
 <!--    <div class="app-nav app-nav-condensed hidden-print">-->
-<!--      <section id="header" style="background-color: #1b75bc;">-->
+<!--      <section id="header" style="background-color: #0166B1;">-->
 <!--        <div class="container">-->
 
 <!--          <a th:href="@{/}" class="logo"-->
@@ -137,6 +137,7 @@
                         <h1>
                             View Invoice
                         </h1>
+                        <a class="back-button w-button" href="#" onclick="goBack()">go back</a>
                     </div>
                 </div>
                 <div class="main-content col-xs-12">
@@ -146,14 +147,13 @@
                                 <div class="section">
                                     <div class="row">
                                         <div class="col-sm-7">
-                          <span class="invoice-title" th:text="'Invoice' + ' #' + ${invoice.id}">
-
+                          <span class="invoice-title" th:text="'Invoice Number' + ': ' + ${invoice.invoiceNumber}">
                           </span>
-                                            <span th:if="${invoice.status == 0}"
+                                            <span th:if="${invoice.paymentStatus == 0}"
                                                   class="invoice-status label label-lg label-danger"
                                             >Unpaid</span
                                             >
-                                            <span th:if="${invoice.status == 1}"
+                                            <span th:if="${invoice.paymentStatus == 1}"
                                                   class="invoice-status label label-lg label-info"
                                             >Paid</span
                                             >
@@ -311,7 +311,7 @@
                                                 <td></td>
                                                 <td></td>
                                                 <td>Balance</td>
-                                                <td th:text="'KSH ' + ${invoice?.amount}"></td>
+                                                <td th:text="'KSH ' + ${invoiceBalanceDetails?.invoiceAmount}"></td>
                                             </tr>
                                             </tbody>
                                         </table>
@@ -324,13 +324,13 @@
                                 <div th:if="${invoice.status == 0}"
                                         menuitemname="Client Details"
                                         class="panel panel-sidebar panel-payment"
-                                        style="background-color: #1b75bc;"
+                                        style="background-color: #0166B1;"
                                 >
                                     <div  class="panel-body" data-role="paymethod-info">
                                         <div class="total">
                                             <span class="total-text">Total Due</span>
                                             <span class="total-price"
-                                                  th:text="'KSH ' + ${invoice?.amount}"><i
+                                                  th:text="'KSH ' + ${invoiceBalanceDetails?.invoiceAmount}"><i
                                                     class="ls ls-exclamation-circle"></i
                                             ></span>
                                         </div>
@@ -348,7 +348,7 @@
                                                           id="selectPaymentMethodId"
                                             >
                                                 <option value="default" selected="true">- SELECT -</option>
-                                                <option th:each="i : ${session.paymentMethods}" th:value="${i?.id}"
+                                                <option th:each="i : ${paymentMethods}" th:value="${i?.id}"
                                                         th:text="${i?.method}"></option>
                                             </select>
                                             </div>
@@ -406,15 +406,15 @@
                                             </div>
 
                                         </div>
-                                        <button th:if="${invoice.status == 0}"  type="button" id="paymentBtn" style="
-                                            color: blue;
-                                            border-radius: 5px;
-                                            -moz-border-radius: 5px;
-                                            padding: 5px;
-                                            margin-left: 10px;
-                                            width: 200px;">
-                                            Already paid?
-                                        </button>
+<!--                                        <button th:if="${invoice.status == 0}"  type="button" id="paymentBtn" style="-->
+<!--                                            color: blue;-->
+<!--                                            border-radius: 5px;-->
+<!--                                            -moz-border-radius: 5px;-->
+<!--                                            padding: 5px;-->
+<!--                                            margin-left: 10px;-->
+<!--                                            width: 200px;">-->
+<!--                                            CHECK BALANCE?-->
+<!--                                        </button>-->
                                         <div th:replace="fragments/general-form.html :: alerts-bar"></div>
                                     </div>
 
@@ -423,7 +423,7 @@
                                 <div th:if="${invoice.status == 1}"
                                      menuitemname="Client Details"
                                      class="panel panel-sidebar panel-payment"
-                                     style="background-color: #1b75bc;"
+                                     style="background-color: #0166B1;"
                                 >
                                     <div class="panel-body">
                                         <div class="total">
@@ -431,6 +431,12 @@
                                             <span  class="total-price"
                                                   th:text="'PAID'"><i class="ls ls-exclamation-circle"></i
                                             ></span>
+                                            &nbsp;
+                                            <span class="total-text">RECEIPT NO</span>
+                                            <span  class="total-price"
+                                                  th:text="${invoice.receiptNo}"><i class="ls ls-exclamation-circle"></i
+                                            ></span>
+
                                         </div>
                                     </div>
                                 </div>
@@ -459,8 +465,9 @@
                                                  viewbox="0 0 20 20"
                                                  width="20"
                                                  xmlns="http://www.w3.org/2000/svg"></svg>
-                                            <a class="filter-link " th:href="@{/api/permit/customer(appId='150')}">
+                                            <a class="filter-link " th:href="@{/api/qa/permit-details(permitID=${invoice.permitId},userID=${invoice.userId})}">
                                                 Close </a><br>
+<!--                                            <button class="back-button w-button" href="#" onclick="goBack()">go back</button>-->
                                             <!--                        <a th:if="${invoice?.permitId?.permitType?.typeName == 'SMARK'}" th:href="@{/api/v1/permit/update/sta10/{id}/{invoiceId}(id = ${questionnairesta10?.id}, invoiceId = ${invoice.id})}" class="filter-link "> Edit questionnaire details </a><br>-->
                                             <!--                            <a th:if="${invoice?.permitId?.permitType?.typeName == 'DMARK'}" th:href="@{/api/v1/permit/update/sta10/{id}/{invoiceId}(id = ${questionnairesta3?.id}, invoiceId = ${invoice.id})}" class="filter-link "> Edit questionnaire details </a><br>-->
                                             <!--                            <a class="filter-link " th:href="@{/generated/invoice/pay/{id}/{permitId}(id = ${invoice.id}, permitId = ${invoice.permitId.id},appId=${appId})}"><i class="fas fa-shopping-cart"></i> Pay-->
@@ -484,7 +491,7 @@
 
 
 <div class="myForm">
-    <form id="assign-form" name="assign-form" th:action="@{/mpesa-stkpush}" method="get">
+    <form id="assign-form" name="assign-form" th:action="@{/api/qa/kebs/mpesa-stk-push}" method="get">
         <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
              aria-hidden="true">
             <div class="modal-dialog" role="document">
@@ -498,10 +505,10 @@
                     </div>
                     <div class="modal-body">
                         <div class="form-group">
-                            <input type="hidden" name="invoiceId" th:value="${invoice.id}">
+                            <input type="hidden" name="permitID" th:value="${invoice.permitId}">
                             <!--                                <input type="hidden" name="amount" th:value="${invoice.amount}">-->
-                            <input type="hidden" name="amount" th:value="1">
-                            <input type="text" class="form-control" maxlength="256" name="phone"
+<!--                            <input type="hidden" name="amount" th:value="10">-->
+                            <input type="text" class="form-control" id="phoneNumber" maxlength="256" name="phoneNumber"
                                    placeholder="Phone Number">
                         </div>
                     </div>

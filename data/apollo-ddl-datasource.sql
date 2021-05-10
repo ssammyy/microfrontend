@@ -42,6 +42,29 @@
 
 
 
+create sequence DAT_KEBS_PVOC_COR_TIMELINES_DATA_seq minvalue 1 maxvalue 9999999999999999999999999999 increment by 1 start with 1 cache 20 noorder nocycle;
+
+select DAT_KEBS_PVOC_COR_TIMELINES_DATA_seq.nextval
+from dual;
+
+create trigger DAT_KEBS_PVOC_COR_TIMELINES_DATA_trg
+    before
+        insert
+    on DAT_KEBS_PVOC_COR_TIMELINES_DATA
+    for each row
+begin
+    if inserting then
+        if :new.ID is null then
+    select DAT_KEBS_PVOC_COR_TIMELINES_DATA_seq.nextval
+    into :new.ID
+    from dual;
+
+end if;
+
+end if;
+end;
+
+
 -- cor timeline data start
 
 -- auto-generated definition

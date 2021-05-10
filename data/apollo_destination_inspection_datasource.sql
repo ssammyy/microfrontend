@@ -20,22 +20,36 @@ select *
 from DAT_KEBS_IDF_DETAILS
 -- where UCR_NO = 'UCR2100006322'
 order by id desc;
+
+select * from DAT_KEBS_CD_STANDARDS
+-- where UCR_NO = 'UCR2100006322'
+order by id desc;
+
+select * from CFG_KEBS_IMPORTER_DI_APPLICATIONS_TYPES
+-- where UCR_NO = 'UCR2100006322'
+order by id desc;
 select *
 from DAT_KEBS_CD_ITEM_DETAILS
 where UUID = '59572e2d-222a-4850-a256-d04d07a00ca7'
 -- where ID = 85
 -- where CD_DOC_ID = 184
 order by ID desc;
-select *
-from DAT_KEBS_COCS
--- where UCR_NUMBER = 'UCR2100006322'
+select * from DAT_KEBS_COCS
+-- where UCR_NUMBER = 'UCR202100126859'
 -- where id = 283
 order by ID desc;
+
+select DAT_KEBS_COCS_SEQ.nextval
+from dual;
+
+-- alter sequence CFG_KEBS_COUNTRY_TYPE_CODES_SEQ
+alter sequence DAT_KEBS_COCS_SEQ increment by 1500;
+
 
 select *
 from DAT_KEBS_COC_ITEMS
 -- where uuid = 401
-where COI_NUMBER = 'KEBSCOI2021040872B57'
+-- where COI_NUMBER = 'KEBSCOI2021040872B57'
 order by ID desc;
 
 select *
@@ -212,8 +226,8 @@ order by ID desc;
 select *
 from DAT_KEBS_CONSIGNMENT_DOCUMENT_DETAILS
 -- where uuid = 'b8404c30-0286-46f6-9afb-c7347f11f701'
-where UCR_number = 'UCR2100006339'
--- where id = 321
+-- where UCR_number = 'UCR2100006339'
+-- where id = 861
 order by ID desc;
 
 DeclarationDetailsEntity

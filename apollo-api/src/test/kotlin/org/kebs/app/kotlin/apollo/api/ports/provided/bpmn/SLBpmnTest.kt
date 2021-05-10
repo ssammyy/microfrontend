@@ -142,13 +142,6 @@ class SLBpmnTest(
             }
         } ?: return
 
-        /*
-        Thread.sleep(3000)
-        Thread.sleep(3000)
-        Thread.sleep(3000)
-        Thread.sleep(3000)
-        */
-
         //Schedule visit complete
         standardsLevyBpmn.slsvScheduleVisitComplete(standardsLevyId).let {
             standardsLevyBpmn.fetchTaskByObjectId(standardsLevyId, slSiteVisitProcessDefinitionKey)?.let { taskDetails ->

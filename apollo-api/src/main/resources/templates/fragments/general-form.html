@@ -46,7 +46,7 @@ xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
     <!-- [if lte IE 9]>
     <script th:src="@{https://cdnjs.cloudflare.com/ajax/libs/placeholders/3.0.2/placeholders.min.js}"></script><![endif] -->
     <link rel="shortcut icon" th:href="@{/images/favicon.ico}" type="image/x-icon">
-    <link rel="apple-touch-icon" th:href="@{/images/webclip.png}">
+    <link rel="apple-touch-icon" th:href="@{/images/kebs_favicon.png}">
     <link rel="stylesheet" th:href="@{/assets/bootstrap3/css/bootstrap.css}"/>
 <!--    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"-->
 <!--          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"/>-->
@@ -75,7 +75,7 @@ xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
             <a class="side-navigation-link" th:href="@{/api/system/admin/home}"><span
                     class="font-awesome-span width"></span>Settings</a>
             <a class="side-navigation-link" th:href="@{/sl}"><span class="font-awesome-span width"></span>Standards Levy</a>
-            <a class="side-navigation-link" th:href="@{/api/permit(appId=103)}"><span class="font-awesome-span width"></span>Quality Assurance</a>
+            <a class="side-navigation-link" th:href="@{/api/qa/home}"><span class="font-awesome-span width"></span>Quality Assurance</a>
             <a class="side-navigation-link" th:href="@{/api/ms/home}"><span class="font-awesome-span width"></span>Market Surveillance</a>
 
             <a class="side-navigation-link" sec:authorize="hasAuthority('DI_INSPECTION_OFFICER_READ')  or hasAuthority('DI_DIRECTOR_READ')

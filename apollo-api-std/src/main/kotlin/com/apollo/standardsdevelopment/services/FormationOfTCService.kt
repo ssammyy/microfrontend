@@ -3,7 +3,9 @@ package com.apollo.standardsdevelopment.services
 import com.apollo.standardsdevelopment.dto.Decision
 import com.apollo.standardsdevelopment.dto.ProcessInstanceResponse
 import com.apollo.standardsdevelopment.dto.TaskDetails
+import com.apollo.standardsdevelopment.models.DecisionFeedback
 import com.apollo.standardsdevelopment.models.JustificationForTC
+import com.apollo.standardsdevelopment.repositories.DecisionFeedbackRepository
 import com.apollo.standardsdevelopment.repositories.JustificationForTCRepository
 import org.flowable.engine.ProcessEngine
 import org.flowable.engine.RepositoryService
@@ -21,11 +23,13 @@ class FormationOfTCService(private val runtimeService: RuntimeService,
                            private val taskService: TaskService,
                            @Qualifier("processEngine") private val processEngine: ProcessEngine,
                            private val repositoryService: RepositoryService,
-                           private val justificationForTCRepository: JustificationForTCRepository
+                           private val justificationForTCRepository: JustificationForTCRepository,
+                           private val decisionFeedbackRepository: DecisionFeedbackRepository
 ) {
 
     val PROCESS_DEFINITION_KEY = "sd_formation_of_technical_committee"
     val TASK_SPC = "SPC"
+    val TASK_SAC = "SAC"
 
     fun deployProcessDefinition(): Deployment =repositoryService
             .createDeployment()
@@ -63,6 +67,37 @@ class FormationOfTCService(private val runtimeService: RuntimeService,
 
 
     fun decisionOnJustificationForTC(decision: Decision)
+    {
+        val variables: MutableMap<String, Any> = java.util.HashMap()
+        variables["approved"] = decision.decision
+        taskService.complete(decision.taskId, variables)
+    }
+
+    fun uploadFeedbackOnJustification(decisionFeedback: DecisionFeedback)
+    {
+        val variable:MutableMap<String, Any> = HashMap()
+
+        decisionFeedback.user_id?.let{variable.put("user_id", it)}
+        decisionFeedback.item_id?.let{variable.put("item_id", it)}
+        decisionFeedback.status?.let{variable.put("status", it)}
+        decisionFeedback.comment?.let{variable.put("comment", it)}
+        decisionFeedback.taskId?.let{variable.put("taskId", it)}
+
+
+        print(decisionFeedback.toString())
+
+        decisionFeedbackRepository.save(decisionFeedback)
+
+        taskService.complete(decisionFeedback.taskId)
+    }
+
+    fun getSACTasks():List<TaskDetails>
+    {
+        val tasks = taskService.createTaskQuery().taskCandidateGroup(TASK_SAC).list()
+        return getTaskDetails(tasks)
+    }
+
+    fun decisionOnSPCFeedback(decision: Decision)
     {
         val variables: MutableMap<String, Any> = java.util.HashMap()
         variables["approved"] = decision.decision

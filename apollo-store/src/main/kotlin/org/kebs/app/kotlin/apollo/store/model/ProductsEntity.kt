@@ -27,9 +27,13 @@ class ProductsEntity: Serializable {
     @Basic
     var description: String? = null
 
+    @Column(name = "FMARK_GENERATE_STATUS")
+    @Basic
+    var fmarkGenerateStatus: Int? = null
+
     @Column(name = "STATUS")
     @Basic
-    var status: Int = 0
+    var status: Int? = 0
 
     @Column(name = "VAR_FIELD_1")
     @Basic
@@ -111,7 +115,9 @@ class ProductsEntity: Serializable {
         if (this === other) return true
         if (other == null || javaClass != other.javaClass) return false
         val that = other as ProductsEntity
-        return id == that.id && status == that.status &&
+        return id == that.id &&
+                status == that.status &&
+                fmarkGenerateStatus == that.fmarkGenerateStatus &&
                 productCategoryId == that.productCategoryId &&
                 name == that.name &&
                 description == that.description &&
@@ -135,6 +141,6 @@ class ProductsEntity: Serializable {
     }
 
     override fun hashCode(): Int {
-        return Objects.hash(id, name, productCategoryId, description, status, varField1, varField2, varField3, varField4, varField5, varField6, varField7, varField8, varField9, varField10, createdBy, createdOn, modifiedBy, modifiedOn, deleteBy, deletedOn, modifiedStatus)
+        return Objects.hash(id, name, fmarkGenerateStatus, productCategoryId, description, status, varField1, varField2, varField3, varField4, varField5, varField6, varField7, varField8, varField9, varField10, createdBy, createdOn, modifiedBy, modifiedOn, deleteBy, deletedOn, modifiedStatus)
     }
 }

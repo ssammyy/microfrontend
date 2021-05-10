@@ -30,6 +30,10 @@ class InvoiceDaoService(
     @Autowired
     lateinit var diDaoServices: DestinationInspectionDaoServices
 
+    @Lazy
+    @Autowired
+    lateinit var qaDaoServices: QADaoServices
+
     final val appId = applicationMapProperties.mapInvoiceTransactions
     val map = commonDaoServices.serviceMapDetails(appId)
 
@@ -53,6 +57,14 @@ class InvoiceDaoService(
                     return it
                 }
                 ?: throw ExpectedDataNotFound("BATCH INVOICE WITH [ID = ${batchInvoiceID}], DOES NOT EXIST")
+    }
+
+    fun findInvoiceStgReconciliationDetails(referenceCode: String): StagingPaymentReconciliation {
+        invoicePaymentRepo.findByReferenceCode(referenceCode)
+                ?.let {
+                    return it
+                }
+                ?: throw ExpectedDataNotFound(" INVOICE WITH [REFERENCE CODE = ${referenceCode}], DOES NOT EXIST")
     }
 
     fun updateInvoiceBatchDetails(invoiceBatchDetails: InvoiceBatchDetailsEntity, tableSourcePrefix: String, detailsDescription: String, user: UsersEntity, amount: BigDecimal): InvoiceBatchDetailsEntity {
@@ -90,7 +102,16 @@ class InvoiceDaoService(
                 //Todo: Adding Function for Ms Fuel
             }
             applicationMapProperties.mapInvoiceTransactionsForPermit -> {
-                //Todo: Adding Function for Permit details
+                var invoiceNote = addDetails as InvoiceEntity
+                with(invoiceNote) {
+                    invoiceBatchNumberId = invoiceBatchDetails.id
+//                    invoiceNumber = invoiceBatchDetails.batchNumber
+                    paymentStatus = map.inactiveStatus
+                }
+                invoiceNote = qaDaoServices.invoiceUpdateDetails(invoiceNote, user)
+
+                totalAmount = invoiceNote.amount?.let { totalAmount.plus(it) }!!
+                detailsDescription = "PERMIT INVOICE NUMBER:${invoiceNote.invoiceNumber}"
             }
         }
 

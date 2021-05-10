@@ -125,7 +125,9 @@ class SystemsAdminDaoService(
     fun getUserDetails(id: Long): UserDetailsDto {
         val user = commonDaoServices.findUserByID(id)
         val employeeProfile = userProfilesRepo.findByUserId(user)
-        val companyProfile = user.id?.let { userId-> companyProfileRepo.findByUserId(userId)?.let { returnCompanyProfileEntityDto(it) } }
+        val companyProfile = user.id?.let { userId ->
+            companyProfileRepo.findByUserId(userId)?.let { returnCompanyProfileEntityDto(it) }
+        }
         val employeeProfileDto = employeeProfile?.let { getEmployeeProfileDto(it) }
         return UserDetailsDto(
             user.id,
@@ -146,26 +148,26 @@ class SystemsAdminDaoService(
             user.title?.let { titlesRepo.findByIdOrNull(user.title)?.title },
             employeeProfileDto,
             companyProfile
-            )
+        )
 
     }
 
-    private fun getEmployeeProfileDto(employeeProfile: UserProfilesEntity) : EmployeeProfileDetailsDto{
-           return EmployeeProfileDetailsDto(
-                employeeProfile.directorateId?.id?.let { directoratesRepo.findByIdOrNull(it)?.directorate },
-                employeeProfile.departmentId?.id?.let { departmentsRepo.findByIdOrNull(it)?.department },
-                employeeProfile.divisionId?.id?.let { divisionsRepo.findByIdOrNull(it)?.division },
-                employeeProfile.sectionId?.id?.let { sectionsRepo.findByIdOrNull(it)?.section },
-                employeeProfile.subSectionL1Id?.id?.let { subSectionsL1Repo.findByIdOrNull(it)?.subSection },
-                employeeProfile.subSectionL2Id?.id?.let { subSectionsL2Repo.findByIdOrNull(it)?.subSection },
-                employeeProfile.designationId?.id?.let { designationsRepo.findByIdOrNull(it)?.designationName },
-                employeeProfile.id,
-                employeeProfile.regionId?.id?.let { regionsRepo.findByIdOrNull(it)?.region },
-                employeeProfile.countyID?.id?.let { countiesRepo.findByIdOrNull(it)?.county },
-                employeeProfile.townID?.id?.let { townsRepo.findByIdOrNull(it)?.town },
-                employeeProfile.status == 1
+    private fun getEmployeeProfileDto(employeeProfile: UserProfilesEntity): EmployeeProfileDetailsDto {
+        return EmployeeProfileDetailsDto(
+            employeeProfile.directorateId?.id?.let { directoratesRepo.findByIdOrNull(it)?.directorate },
+            employeeProfile.departmentId?.id?.let { departmentsRepo.findByIdOrNull(it)?.department },
+            employeeProfile.divisionId?.id?.let { divisionsRepo.findByIdOrNull(it)?.division },
+            employeeProfile.sectionId?.id?.let { sectionsRepo.findByIdOrNull(it)?.section },
+            employeeProfile.subSectionL1Id?.id?.let { subSectionsL1Repo.findByIdOrNull(it)?.subSection },
+            employeeProfile.subSectionL2Id?.id?.let { subSectionsL2Repo.findByIdOrNull(it)?.subSection },
+            employeeProfile.designationId?.id?.let { designationsRepo.findByIdOrNull(it)?.designationName },
+            employeeProfile.id,
+            employeeProfile.regionId?.id?.let { regionsRepo.findByIdOrNull(it)?.region },
+            employeeProfile.countyID?.id?.let { countiesRepo.findByIdOrNull(it)?.county },
+            employeeProfile.townID?.id?.let { townsRepo.findByIdOrNull(it)?.town },
+            employeeProfile.status == 1
 
-            )
+        )
     }
 
     fun listUsers(page: Int, records: Int): List<UserEntityDto>? {
@@ -391,7 +393,7 @@ class SystemsAdminDaoService(
         }
     }
 
-    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+
     fun updateUserCompanyDetails(dto: UserCompanyEntityDto): UserCompanyDto {
         dto.userId?.let {
             companyProfileRepo.findByUserId(it)
@@ -401,6 +403,7 @@ class SystemsAdminDaoService(
                         kraPin = dto.kraPin
                         userId = dto.userId
                         registrationNumber = dto.registrationNumber
+                        directorIdNumber = dto.directorIdNumber
                         postalAddress = dto.postalAddress
                         companyEmail = dto.companyEmail
                         companyTelephone = dto.companyTelephone
@@ -412,12 +415,15 @@ class SystemsAdminDaoService(
                         region = dto.region
                         county = dto.county
                         town = dto.town
+                        factoryVisitDate = dto.factoryVisitDate
+                        factoryVisitStatus = dto.factoryVisitStatus
+                        manufactureStatus = dto.manufactureStatus
                         status = 1
                         modifiedBy = loggedInUserDetails().userName
                         modifiedOn = Timestamp.from(Instant.now())
                     }
                     companyProfileRepo.save(companyProfile)
-                   return returnCompanyProfileEntityDto(companyProfile)
+                    return returnCompanyProfileEntityDto(companyProfile)
                 }
         }
             ?: kotlin.run {
@@ -427,6 +433,7 @@ class SystemsAdminDaoService(
                     kraPin = dto.kraPin
                     userId = dto.userId
                     registrationNumber = dto.registrationNumber
+                    directorIdNumber = dto.directorIdNumber
                     postalAddress = dto.postalAddress
                     companyEmail = dto.companyEmail
                     companyTelephone = dto.companyTelephone
@@ -438,6 +445,9 @@ class SystemsAdminDaoService(
                     region = dto.region
                     county = dto.county
                     town = dto.town
+                    factoryVisitDate = dto.factoryVisitDate
+                    factoryVisitStatus = dto.factoryVisitStatus
+                    manufactureStatus = dto.manufactureStatus
                     userId = dto.userId
                     status = 1
                     createdBy = loggedInUserDetails().userName
@@ -450,7 +460,11 @@ class SystemsAdminDaoService(
             }
     }
 
-    fun userRegistrationMailSending(user: UsersEntity, userRole: UserRoleAssignmentsEntity?, emailUuid: String): ServiceRequestsEntity {
+    fun userRegistrationMailSending(
+        user: UsersEntity,
+        userRole: UserRoleAssignmentsEntity?,
+        emailUuid: String
+    ): ServiceRequestsEntity {
 
 
         val map = commonDaoServices.serviceMapDetails(appId)
@@ -722,6 +736,8 @@ class SystemsAdminDaoService(
                                 usersRole.lastModifiedOn = Timestamp.from(Instant.now())
                                 usersRole.varField1 = "${usersRole.status}"
                                 userRolesRepo.save(usersRole)
+
+
                             }
                             ?: kotlin.run {
                                 val usersRole = UserRoleAssignmentsEntity()
@@ -860,7 +876,9 @@ class SystemsAdminDaoService(
             cp.streetName,
             cp.region?.let { regionsRepo.findByIdOrNull(cp.region)?.region },
             cp.county?.let { countiesRepo.findByIdOrNull(cp.county)?.county },
-            cp.town?.let { townsRepo.findByIdOrNull(cp.town)?.town }
+            cp.town?.let { townsRepo.findByIdOrNull(cp.town)?.town },
+            cp.factoryVisitDate,
+                    cp.factoryVisitStatus
         )
     }
 

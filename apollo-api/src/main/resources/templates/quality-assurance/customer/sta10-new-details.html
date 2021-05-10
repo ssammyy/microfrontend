@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+<!--  This site was created in Webflow. http://www.webflow.com  -->
+<!--  Last Published: Wed Mar 18 2020 20:03:10 GMT+0000 (Coordinated Universal Time)  -->
+<html data-wf-page="5e70fb3a565ebdc05ddb37cf" data-wf-site="5e70fb3a565ebd99c1db37ce"
+      xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <title>KEBS</title>
+    <th:block th:include="fragments/general-form.html:: headerfiles"/>
+    <link rel="stylesheet" th:href="@{/css/pageLoad.css}" type="text/css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" th:href="@{/css/accordion.css}"/>
+    <link rel="stylesheet" th:href="@{/assets/bootstrap3/css/bootstrap.css}"/>
+    <!--    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.22/css/dataTables.bootstrap.min.css"/>-->
+    <!--    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.6.4/css/buttons.bootstrap.min.css"/>-->
+
+    <!--    &lt;!&ndash; Font Awesome &ndash;&gt;-->
+    <!--    <link href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" rel="stylesheet"/>-->
+    <!--    &lt;!&ndash; Google Fonts &ndash;&gt;-->
+    <!--    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" rel="stylesheet"/>-->
+    <!--    &lt;!&ndash; MDB &ndash;&gt;-->
+    <!--    <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/2.2.1/mdb.min.css" rel="stylesheet"/>-->
+</head>
+<body>
+<div id="spinnerContainer">
+    <div class="spinner"></div>
+</div>
+<div class="top-bar" th:replace="fragments/general-form.html :: top-bar"></div>
+<div class="section">
+    <div class="w-layout-grid main-grid">
+        <div class="main-grid-side-navigation" id="w-node-d308c123a20f-c123a20d"
+             th:replace="fragments/general-form.html :: side-navigation-bar"></div>
+        <div id="w-node-27962c2db181-c676b3e3" class="main-content-div">
+            <div class="content-nav" th:replace="fragments/general-form.html :: content-navigation-bar"></div>
+            <div class="content-wrap">
+                <div class="content-container">
+                    <h5 style="font-weight: bold; color: #0082f3; font-size: 14px"><u>STA 10: INITIAL/(ROUTINE)
+                        INSPECTION REPORTS</u></h5>
+                    <div class="content-block">
+                        <div class="content-block-parent" style="flex: 0 75%">
+
+                            <div class="sticky" style="margin-bottom: 30px">
+                                <h6 class="h3-blue" style="font-weight: bold; font-size: 16px">A: FIRM DETAILS</h6>
+                                <div class="applicant_details_container">
+                                    <div class="detail-list application_details">
+                                        <ul class="w-list-unstyled">
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Name of the Firm:</div>
+                                                <div class="list-text-accordion"
+                                                     th:text="${QaSta10Entity?.firmName}"></div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Status of Company or Business
+                                                    registration:
+                                                </div>
+                                                <div class="list-text-accordion"
+                                                     th:text="${QaSta10Entity?.statusCompanyBusinessRegistration}"></div>
+                                            </li>
+
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Name of the Owner
+                                                    (s)/Proprietor(s)/Director (s):
+                                                </div>
+                                                <div class="list-text-accordion"
+                                                     th:text="${QaSta10Entity?.ownerNameProprietorDirector}"></div>
+                                            </li>
+
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Postal Address:</div>
+                                                <div class="list-text-accordion"
+                                                     th:text="${QaSta10Entity?.postalAddress}"></div>
+                                            </li>
+
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Telephone number</div>
+                                                <div class="list-text-accordion"
+                                                     th:text="${QaSta10Entity?.telephone}"></div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Contact Person:</div>
+                                                <div class="list-text-accordion"
+                                                     th:text="${QaSta10Entity?.contactPerson}"></div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Email address:</div>
+                                                <div class="list-text-accordion"
+                                                     th:text="${QaSta10Entity?.emailAddress}"></div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Region:</div>
+                                                <div class="list-text-accordion" th:text="${regionDetails}"></div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">County:</div>
+                                                <div class="list-text-accordion" th:text="${countyDetails}"></div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Town:</div>
+                                                <div class="list-text-accordion" th:text="${townDetails}"></div>
+                                            </li>
+
+
+                                        </ul>
+                                    </div>
+                                    <div class="application_reports">
+                                        <ul class="w-list-unstyled">
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Total No. of Personnel:</div>
+                                                <div class="list-text-accordion"
+                                                     th:text="${QaSta10Entity?.totalNumberPersonnel}"></div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Total No. of Female:</div>
+                                                <div class="list-text-accordion"
+                                                     th:text="${QaSta10Entity?.totalNumberFemale}"></div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Total No. of Male:</div>
+                                                <div class="list-text-accordion"
+                                                     th:text="${QaSta10Entity?.totalNumberMale}"></div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">No. of Permanent Employees:</div>
+                                                <div class="list-text-accordion"
+                                                     th:text="${QaSta10Entity?.totalNumberPermanentEmployees}"></div>
+                                            </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">No of Casual Employee:</div>
+                                                <div class="list-text-accordion"
+                                                     th:text="${QaSta10Entity?.totalNumberCasualEmployees}"></div>
+                                            </li>
+<!--                                            <li class="list-item-accordion">-->
+<!--                                                <div class="list-title-accordion">Physical Location (attach Google-->
+<!--                                                    Map)-->
+<!--                                                </div>-->
+<!--                                                <div class="list-text-accordion"><a class="btn btn-primary itemViewBtn"-->
+<!--                                                                                    target='_blank'-->
+<!--                                                                                    th:href="${cdDetails?.physicalLocationMap}">view</a>-->
+<!--                                                </div>-->
+<!--                                            </li>-->
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <button class="accordion">B: PRODUCTION DETAILS:<br>1. Products being manufactured/Brands</button>
+                            <div class="panel">
+                                &nbsp;
+                                <div th:if="${permit?.sta10FilledStatus != 1 }" id="idButtons">
+                                    <div class="form-row">
+                                        <div class="col-md-6 mb-3">
+                                            <button id="addParam" class="btn btn-primary"
+                                                    onclick="popUpFunction('addProductsDetails');" type="button">ADD
+                                                PRODUCTS MANUFACTURED
+                                            </button>
+                                        </div>
+<!--                                        <div class="col-md-6 mb-3">-->
+<!--                                            <button id="closeADD" class="btn btn-primary"-->
+<!--                                                    onclick="popUpFunction('closeAddProducts');" type="button">CLOSE ADD-->
+<!--                                            </button>-->
+<!--                                        </div>-->
+                                        <!--                                <div class="col-md-4 mb-3">-->
+                                        <!--                                        <label for="cocNumber" >16. C.O.C. No</label>-->
+                                        <!--                                        <input id="cocNumber" name="cocNumber" th:value="${session.coc?.cocId?.cocNumber}" type="hidden">-->
+                                        <!--                                        <input class="form-control" data-name="coc Number" disabled id="cocNumber2" maxlength="256" name="cocNumber" th:value="${session.coc?.cocId?.cocNumber}" required="required">-->
+                                        <!--                                    <div class="valid-feedback">-->
+                                        <!--                                        Looks good!-->
+                                        <!--                                    </div>-->
+                                        <!--                                </div>-->
+                                    </div>
+                                </div>
+                                &nbsp;
+                                <div class="row-table ">
+                                    <table id="example" class="table table-striped table-bordered" style="width:100%">
+                                        <thead>
+                                        <tr>
+                                            <th>Product Name</th>
+                                            <th>Brand Name</th>
+                                            <th>Applicable Product Standard number</th>
+                                            <th>Available (YES/NO)</th>
+                                            <th>KEBS Permit NO. (if applicable).</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr class="list" th:each="productDetail: ${productsManufacturedList}"
+                                            style="cursor: pointer">
+
+                                            <td th:text="${productDetail.productName}"></td>
+                                            <td th:text="${productDetail.productBrand}"></td>
+                                            <td th:text="${productDetail.productStandardNumber}"></td>
+                                            <td th:text="${productDetail?.available} ? 'YES' : 'NO'"></td>
+                                            <td th:text="${productDetail.permitNo}"></td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                &nbsp;
+                                <ul class="w-list-unstyled">
+                                    <li class="list-item-accordion">
+                                        <div class="list-title-accordion">What is the average Volume of production per
+                                            Month?
+                                        </div>
+                                        <div class="list-text-accordion"
+                                             th:text="${QaSta10Entity?.averageVolumeProductionMonth}"></div>
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <button class="accordion">2. Raw material</button>
+                            <div class="panel">
+                                &nbsp;
+                                <div th:if="${permit?.sta10FilledStatus != 1 }" id="idButtons">
+                                    <div class="form-row">
+                                        <div class="col-md-6 mb-3">
+                                            <button id="addRawMaterials" class="btn btn-primary"
+                                                    onclick="popUpFunctionAddRawMaterials('addRawMaterialsDetails');"
+                                                    type="button">ADD RAW MATERIALS
+                                            </button>
+                                        </div>
+<!--                                        <div class="col-md-6 mb-3">-->
+<!--                                            <button id="closeADDMaterials" class="btn btn-primary"-->
+<!--                                                    onclick="popUpFunctionAddRawMaterials('closeAddProducts');"-->
+<!--                                                    type="button">CLOSE ADD-->
+<!--                                            </button>-->
+<!--                                        </div>-->
+                                        <!--                                <div class="col-md-4 mb-3">-->
+                                        <!--                                        <label for="cocNumber" >16. C.O.C. No</label>-->
+                                        <!--                                        <input id="cocNumber" name="cocNumber" th:value="${session.coc?.cocId?.cocNumber}" type="hidden">-->
+                                        <!--                                        <input class="form-control" data-name="coc Number" disabled id="cocNumber2" maxlength="256" name="cocNumber" th:value="${session.coc?.cocId?.cocNumber}" required="required">-->
+                                        <!--                                    <div class="valid-feedback">-->
+                                        <!--                                        Looks good!-->
+                                        <!--                                    </div>-->
+                                        <!--                                </div>-->
+                                    </div>
+                                </div>
+                                &nbsp;
+                                <div class="row-table ">
+                                    <table id="example" class="table table-striped table-bordered" style="width:100%">
+                                        <thead>
+                                        <tr>
+                                            <th>Raw material</th>
+                                            <th>Origin</th>
+                                            <th>Specifications</th>
+                                            <th>Quality checks/testing records</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr class="list" th:each="rawMaterila: ${rawMaterialList}"
+                                            style="cursor: pointer">
+
+                                            <td th:text="${rawMaterila.name}"></td>
+                                            <td th:text="${rawMaterila.origin}"></td>
+                                            <td th:text="${rawMaterila.specifications}"></td>
+                                            <td th:text="${rawMaterila.qualityChecksTestingRecords}"></td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                &nbsp;
+                                <ul class="w-list-unstyled">
+                                    <li class="list-item-accordion">
+                                        <div class="list-title-accordion" style="color: red">Note: Relevant statutory specifications for all materials used and finished products manufactured shall be accessible at
+                                            the site
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <button class="accordion">3. Machinery and Plant</button>
+                            <div class="panel">
+                                &nbsp;
+                                <div th:if="${permit?.sta10FilledStatus != 1 }" id="idButtons">
+                                    <div class="form-row">
+                                        <div class="col-md-6 mb-3">
+                                            <button id="addMachinePlant" class="btn btn-primary"
+                                                    onclick="popUpFunctionAddMachinePlants('addMachinePlantDetails');"
+                                                    type="button">ADD MACHINE PLANT
+                                            </button>
+                                        </div>
+<!--                                        <div class="col-md-6 mb-3">-->
+<!--                                            <button id="closeADDMachinePlant" class="btn btn-primary"-->
+<!--                                                    onclick="popUpFunctionAddMachinePlants('closeAddMachinePlant');"-->
+<!--                                                    type="button">CLOSE ADD-->
+<!--                                            </button>-->
+<!--                                        </div>-->
+                                    </div>
+                                </div>
+                                &nbsp;
+                                <div class="row-table ">
+                                    <table id="example" class="table table-striped table-bordered" style="width:100%">
+                                        <thead>
+                                        <tr>
+                                            <th>Machine</th>
+                                            <th>Type/model</th>
+                                            <th>Country of Origin</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr class="list" th:each="machinePlant: ${machinePlantList}"
+                                            style="cursor: pointer">
+
+                                            <td th:text="${machinePlant.machineName}"></td>
+                                            <td th:text="${machinePlant.typeModel}"></td>
+                                            <td th:text="${machinePlant.countryOfOrigin}"></td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <button class="accordion">4. Manufacturing process</button>
+                            <div class="panel">
+                                &nbsp;
+                                <div th:if="${permit?.sta10FilledStatus != 1 }" id="idButtons">
+                                    <div class="form-row">
+                                        <div class="col-md-6 mb-3">
+                                            <button id="addManufactureProcess" class="btn btn-primary"
+                                                    onclick="popUpFunctionAddManufactureProcessDetails('addManufactureProcessDetails');"
+                                                    type="button">ADD MANUFACTURING PROCESS
+                                            </button>
+                                        </div>
+<!--                                        <div class="col-md-6 mb-3">-->
+<!--                                            <button id="closeAddManufactureProcess" class="btn btn-primary"-->
+<!--                                                    onclick="popUpFunctionAddManufactureProcessDetails('closeAddManufactureProcess');"-->
+<!--                                                    type="button">CLOSE ADD-->
+<!--                                            </button>-->
+<!--                                        </div>-->
+                                    </div>
+                                </div>
+                                &nbsp;
+                                <div class="row-table ">
+                                    <table id="example" class="table table-striped table-bordered" style="width:100%">
+                                        <thead>
+                                        <tr>
+                                            <th>Process flow of production</th>
+                                            <th>Operations</th>
+                                            <th>Critical process parameters monitored</th>
+                                            <th>Frequency</th>
+                                            <th>Process monitoring records</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr class="list" th:each="manufacturinProcess: ${manufacturingProcessesList}"
+                                            style="cursor: pointer">
+
+                                            <td th:text="${manufacturinProcess.processFlowOfProduction}"></td>
+                                            <td th:text="${manufacturinProcess.operations}"></td>
+                                            <td th:text="${manufacturinProcess.criticalProcessParametersMonitored}"></td>
+                                            <td th:text="${manufacturinProcess.frequency}"></td>
+                                            <td th:text="${manufacturinProcess.processMonitoringRecords}"></td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                &nbsp;
+                                <ul class="w-list-unstyled">
+                                    <li class="list-item-accordion">
+                                        <div class="list-title-accordion" style="color: red">Note: Note: Attach relevant test records</div>
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <button class="accordion">5. How are nonconforming products handled at the following stages of the manufacturing process:</button>
+                            <div class="panel">
+                                <ul class="w-list-unstyled">
+                                    <li class="list-item-accordion">
+                                        <div class="list-title-accordion">i. Raw materials</div>
+                                        <div class="list-text-accordion"
+                                             th:text="${QaSta10Entity?.handledManufacturingProcessRawMaterials}"></div>
+                                    </li>
+                                    <li class="list-item-accordion">
+                                        <div class="list-title-accordion">ii. In-process products</div>
+                                        <div class="list-text-accordion"
+                                             th:text="${QaSta10Entity?.handledManufacturingProcessInprocessProducts}"></div>
+                                    </li>
+                                    <li class="list-item-accordion">
+                                        <div class="list-title-accordion">iii. Final product</div>
+                                        <div class="list-text-accordion"
+                                             th:text="${QaSta10Entity?.handledManufacturingProcessFinalProduct}"></div>
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <button class="accordion">6. What strategy do you have in place for recalling your products from the market that are nonconforming
+                                and have an effect on Health, Safety and Environment?</button>
+                            <div class="panel">
+                                <ul class="w-list-unstyled">
+                                    <li class="list-item-accordion">
+                                        <div class="list-text-accordion"
+                                             th:text="${QaSta10Entity?.strategyInplaceRecallingProducts}"></div>
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <button class="accordion">7. State, where and how you store your raw materials and end products (State facility conditions).</button>
+                            <div class="panel">
+                                <ul class="w-list-unstyled">
+                                    <li class="list-item-accordion">
+                                        <div class="list-title-accordion">i. Raw materials?</div>
+                                        <div class="list-text-accordion"
+                                             th:text="${QaSta10Entity?.stateFacilityConditionsRawMaterials}"></div>
+                                    </li>
+                                    <li class="list-item-accordion">
+                                        <div class="list-title-accordion">ii.End product?</div>
+                                        <div class="list-text-accordion"
+                                             th:text="${QaSta10Entity?.stateFacilityConditionsEndProduct}"></div>
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <button class="accordion">8. What testing facilities exist on the premises (if any)?</button>
+                            <div class="panel">
+                                <ul class="w-list-unstyled">
+                                    <li class="list-item-accordion">
+                                        <div class="list-title-accordion">i. Specify equipment:</div>
+                                        <div class="list-text-accordion"
+                                             th:text="${QaSta10Entity?.testingFacilitiesExistSpecifyEquipment}"></div>
+                                    </li>
+                                    <li class="list-item-accordion">
+                                        <div class="list-title-accordion">ii.State parameters tested on site:</div>
+                                        <div class="list-text-accordion"
+                                             th:text="${QaSta10Entity?.testingFacilitiesExistStateParametersTested}"></div>
+                                    </li>
+                                    <li class="list-item-accordion">
+                                        <div class="list-title-accordion">iii. Specify any testing arrangement with other commercial laboratories (Specify parameters tested):</div>
+                                        <div class="list-text-accordion"
+                                             th:text="${QaSta10Entity?.testingFacilitiesSpecifyParametersTested}"></div>
+                                    </li>
+                                    <li class="list-item-accordion">
+                                        <div class="list-title-accordion">v. Calibration of Equipment:<br>How do you calibrate your measuring equipment stated in 8 (i) above?
+                                            (e.g. Weighing scales, Thermometers e.t.c)? Specify when last calibrated.</div>
+                                        <div class="list-text-accordion"
+                                             th:text="${QaSta10Entity?.calibrationEquipmentLastCalibrated}"></div>
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <button class="accordion">9. Handling of Complaints</button>
+                            <div class="panel">
+                                <ul class="w-list-unstyled">
+                                    <li class="list-item-accordion">
+                                        <div class="list-title-accordion">How do you plan to handle (New) or currently handle your consumer’s complaints?.</div>
+                                        <div class="list-text-accordion"
+                                             th:text="${QaSta10Entity?.handlingConsumerComplaints}"></div>
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <button class="accordion">Company Representative</button>
+                            <div class="panel">
+                                <ul class="w-list-unstyled">
+                                    <li class="list-item-accordion">
+                                        <div class="list-title-accordion">Company Representative</div>
+                                        <div class="list-text-accordion"
+                                             th:text="${QaSta10Entity?.companyRepresentative}"></div>
+                                    </li>
+                                    <li class="list-item-accordion">
+                                        <div class="list-title-accordion">Date filled</div>
+                                        <div class="list-text-accordion"
+                                             th:text="${QaSta10Entity?.applicationDate}"></div>
+                                    </li>
+                                </ul>
+                            </div>
+
+                        </div>
+
+                    <div class="filter-block">
+                        <div class="filter-block-title">
+                            <div class="filter-title">Document Details:</div>
+                        </div>
+                        <div>
+<!--                            <a th:if="${permitType?.st3Status == 1 and QaSta10Entity?.sta3FilledStatus == 1}" target='_blank' th:href="@{/api/qa/view-sta3(permitID=${QaSta10Entity?.id})}" class="filter-link" style="color: white">STA 3</a>-->
+                        </div>
+                        <div class="filter-block-title">
+                            <div class="filter-title">Action:</div>
+                        </div>
+                        <div>
+                            <div sec:authorize="hasAuthority('PERMIT_APPLICATION')">
+                                <a th:if="${permit?.sta10FilledStatus != 1 }"  th:href="@{/api/qa/new-sta10-submit(permitID=${permit?.id})}" class="filter-link" style="color: white">SUBMIT STA10</a>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                        <!--                        <div sec:authorize="hasAuthority('DI_OFFICER_CHARGE_READ')" th:if="${userNumber == 0}"class="filter-block">-->
+                        <!--                            <div class="filter-block-title">-->
+                        <!--                                <div class="filter-title">Actions:</div>-->
+                        <!--                            </div>-->
+                        <!--                            <div th:if="${session?.docView == 'importerAgent'}">-->
+                        <!--                                <a  th:if="${cdDetails?.blacklistApproved != 1}" style="color: white" class="filter-link blacklistApproveBtn">Approve</a>-->
+                        <!--                                <a th:if="${cdDetails?.blacklistRejected != 1}" style="font-weight: bold;" class="filter-link bgred blacklistRejectBtn">Reject</a>-->
+                        <!--                            </div>-->
+
+                        <!--                            <div th:if="${session?.docView == 'targeting'}">-->
+                        <!--                                <a th:if="${cdDetails?.targetApproved != 1}" style="color: white" class="filter-link targetingApproveBtn">Approve</a>-->
+                        <!--                                <a th:if="${cdDetails?.targetingRejected != 1}" style="font-weight: bold;" class="filter-link bgred targetingRejectBtn">Reject</a>-->
+                        <!--                            </div>-->
+
+                        <!--                            <div th:if="${session?.docView == 'cocDetails'}">-->
+                        <!--                                <a th:if="${cdDetails?.assignedStatus != 1}"  style="color: white" class="filter-link assignBtn">Assign Officer</a>-->
+                        <!--                                <a th:if="${cdDetails?.assignedStatus == 1}" style="color: white" class="filter-link assignBtn">Re-assign Officer</a>-->
+                        <!--                                <a  style="color: white" class="filter-link addRemarksBtn">Add Remarks</a>-->
+                        <!--                                <a  style="color: white" class="filter-link approveBtn">Approve</a>-->
+                        <!--                                <a th:if="${cdDetails?.rejectedStatus != 1}" style="font-weight: bold;" class="filter-link bgred rejectBtn">Reject</a>-->
+                        <!--                                <a th:if="${cdDetails?.targetApproved != 1}" style="font-weight: bold;" class="filter-link bgred targetBtn">Target Inspection</a>-->
+                        <!--                                <a  th:if="${cdDetails?.blacklistStatus != 1}" style="font-weight: bold;" class="filter-link bgred blacklistBtn">Blacklist</a>-->
+                        <!--                            </div>-->
+                        <!--                            <div class="filter-block-title">-->
+                        <!--                                <div class="filter-title">Document Details:</div>-->
+                        <!--                            </div>-->
+                        <!--                            <div>-->
+                        <!--                                <a th:href="@{/api/di/documents-view/(doc = 'coc',certBack = 'cocDetails')}" class="filter-link cocBtn">Certificate of compliance</a>-->
+                        <!--                                <a th:href="@{/api/di/documents-view/(doc = 'remarks',certBack = 'cocDetails')}" class="filter-link cocBtn">View Remarks</a>-->
+                        <!--                                <a th:href="@{/api/di/documents-view/(doc = 'idf',certBack = 'cocDetails')}" class="filter-link cocBtn">IDF Document</a>-->
+                        <!--&lt;!&ndash;                                <a th:href="@{/api/di/manifest-view/{certBack}(certBack = 'cocDetailsSupervisor')}" class="filter-link cocBtn">Manifest Document</a>&ndash;&gt;-->
+                        <!--                            </div>-->
+                        <!--                        </div>-->
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="productsManufacturedForm">
+                <form id="productsManufactured-Form" name="productsManufactured-Form"
+                      th:action="@{/api/qa/add/new-sta10-product-manufactured(qaSta10ID=${QaSta10Entity?.id})}"
+                      method="post" th:object="${QaProductManufacturedEntity}">
+                    <div class="modal fade" id="productsManufacturedModal" tabindex="-1" role="dialog"
+                         aria-labelledby="productsManufacturedModalLable"
+                         aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 style="font-weight: bold; " class="modal-title"
+                                        id="productsManufacturedModalLable"><span
+                                            id="spanValuePM">none</span></h5>
+                                    <button aria-label="Close" class="close" data-dismiss="modal"
+                                            onClick="refreshPage()" type="button">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="form-group">
+                                        <div id="addProductsDetails">
+                                            <label for="productName" class="col-form-label">Product Name</label>
+                                            <input type="text" class="form-control" id="productName"
+                                                   th:field="*{productName}" required="required">
+                                            <label for="productBrand" class="col-form-label">Brand Name</label>
+                                            <input type="text" class="form-control" id="productBrand"
+                                                   th:field="*{productBrand}" required="required">
+                                            <label for="productStandardNumber" class="col-form-label">Applicable Product
+                                                Standard number</label>
+                                            <input type="text" class="form-control" id="productStandardNumber"
+                                                   th:field="*{productStandardNumber}" required="required">
+                                            <label for="available" class="col-form-label">Available (YES/NO)</label>
+                                            <select class="form-control" id="available" name="available"
+                                                    th:field="*{available}">
+                                                <option th:text="'Select one.....'" th:value="null"></option>
+                                                <option th:text="'YES'" th:value="1"></option>
+                                                <option th:text="'NO'" th:value="0"></option>
+                                            </select>
+                                            <label for="permitNo" class="col-form-label">KEBS Permit NO. (if
+                                                applicable).</label>
+                                            <input type="text" class="form-control" id="permitNo"
+                                                   th:field="*{permitNo}">
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button class="btn btn-secondary" data-dismiss="modal" onClick="refreshPage()"
+                                            type="button">Close
+                                    </button>
+                                    <input type="submit" id="saveValuePM" class="btn btn-primary" value="Save"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="rawMaterialsForm">
+                <form id="rawMaterialsForm-Form" name="rawMaterialsForm-Form"
+                      th:action="@{/api/qa/add/new-sta10-raw-materials(qaSta10ID=${QaSta10Entity?.id})}"
+                      method="post" th:object="${QaRawMaterialEntity}">
+                    <div class="modal fade" id="rawMaterialsFormModal" tabindex="-1" role="dialog"
+                         aria-labelledby="rawMaterialsFormLable"
+                         aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 style="font-weight: bold; " class="modal-title" id="rawMaterialsFormLable"><span
+                                            id="spanValueRM">none</span></h5>
+                                    <button aria-label="Close" class="close" data-dismiss="modal"
+                                            onClick="refreshPage()" type="button">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="form-group">
+                                        <div id="addRawMaterialsDetails">
+                                            <label for="name" class="col-form-label">Raw material</label>
+                                            <input type="text" class="form-control" id="name" th:field="*{name}"
+                                                   required="required">
+                                            <label for="origin" class="col-form-label">Origin</label>
+                                            <input type="text" class="form-control" id="origin" th:field="*{origin}"
+                                                   required="required">
+                                            <label for="specifications" class="col-form-label">Specifications</label>
+                                            <input type="text" class="form-control" id="specifications"
+                                                   th:field="*{specifications}" required="required">
+                                            <label for="qualityChecksTestingRecords" class="col-form-label">Quality
+                                                checks/testing records</label>
+                                            <input type="text" class="form-control" id="qualityChecksTestingRecords"
+                                                   th:field="*{qualityChecksTestingRecords}">
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button class="btn btn-secondary" data-dismiss="modal" onClick="refreshPage()"
+                                            type="button">Close
+                                    </button>
+                                    <input type="submit" id="saveValueRM" class="btn btn-primary" value="Save"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="machinePlantForm">
+                <form id="machinePlantForm-Form" name="machinePlantForm-Form"
+                      th:action="@{/api/qa/add/new-sta10-machine-plant(qaSta10ID=${QaSta10Entity?.id})}"
+                      method="post" th:object="${QaMachineryEntity}">
+                    <div class="modal fade" id="machinePlantFormModal" tabindex="-1" role="dialog"
+                         aria-labelledby="machinePlantFormLable"
+                         aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 style="font-weight: bold; " class="modal-title" id="machinePlantFormLable"><span
+                                            id="spanValueMP">none</span></h5>
+                                    <button aria-label="Close" class="close" data-dismiss="modal"
+                                            onClick="refreshPage()" type="button">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="form-group">
+                                        <div id="addMachinePlantDetails">
+                                            <label for="machineName" class="col-form-label">Machine</label>
+                                            <input type="text" class="form-control" id="machineName" th:field="*{machineName}" required="required">
+                                            <label for="typeModel" class="col-form-label">Type/Model</label>
+                                            <input type="text" class="form-control" id="typeModel" th:field="*{typeModel}" required="required">
+                                            <label for="countryOfOrigin" class="col-form-label">Country Of Origin</label>
+                                            <select class="form-control" required="required" id="countryOfOrigin" th:field="*{countryOfOrigin}">
+                                                <option value="">Select Country...</option>
+                                                <option  th:each="selectCountry : ${countries}" th:value="${selectCountry.country}" th:text="${selectCountry.country}"></option>
+                                            </select>
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button class="btn btn-secondary" data-dismiss="modal" onClick="refreshPage()"
+                                            type="button">Close
+                                    </button>
+                                    <input type="submit" id="saveValueMP" class="btn btn-primary" value="Save"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="manufacturingProcessForm">
+                <form id="manufacturingProcessForm-Form" name="manufacturingProcessForm-Form"
+                      th:action="@{/api/qa/add/new-sta10-manufacturing-process(qaSta10ID=${QaSta10Entity?.id})}"
+                      method="post" th:object="${QaManufacturingProcessEntity}">
+                    <div class="modal fade" id="manufacturingProcessFormModal" tabindex="-1" role="dialog"
+                         aria-labelledby="manufacturingProcessFormLable"
+                         aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 style="font-weight: bold; " class="modal-title" id="manufacturingProcessFormLable"><span
+                                            id="spanValueMFP">none</span></h5>
+                                    <button aria-label="Close" class="close" data-dismiss="modal"
+                                            onClick="refreshPage()" type="button">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="form-group">
+                                        <div id="addManufactureProcessDetails">
+                                            <label for="processFlowOfProduction" class="col-form-label">Process flow of production</label>
+                                            <input type="text" class="form-control" id="processFlowOfProduction" th:field="*{processFlowOfProduction}" required="required">
+                                            <label for="operations" class="col-form-label">Operations</label>
+                                            <input type="text" class="form-control" id="operations" th:field="*{operations}" required="required">
+                                            <label for="criticalProcessParametersMonitored" class="col-form-label">Critical process parameters monitored</label>
+                                            <input type="text" class="form-control" id="criticalProcessParametersMonitored" th:field="*{criticalProcessParametersMonitored}" required="required">
+                                            <label for="frequency" class="col-form-label">Frequency</label>
+                                            <input type="text" class="form-control" id="frequency" th:field="*{frequency}" required="required">
+                                            <label for="processMonitoringRecords" class="col-form-label">Process monitoring records</label>
+                                            <input type="text" class="form-control" id="processMonitoringRecords" th:field="*{processMonitoringRecords}" required="required">
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button class="btn btn-secondary" data-dismiss="modal" onClick="refreshPage()"
+                                            type="button">Close
+                                    </button>
+                                    <input type="submit" id="saveValueMFP" class="btn btn-primary" value="Save"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+
+        </div>
+    </div>
+</div>
+<script src="https://d3e54v103j8qbb.cloudfront.net/js/jquery-3.4.1.min.220afd743d.js" type="text/javascript"
+        integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<script th:src="@{/assets/bootstrap3/js/bootstrap.js}" type="text/javascript"></script>
+<script src="../assets/js/webflow.js" type="text/javascript"></script>
+
+<!-- [if lte IE 9]>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/placeholders/3.0.2/placeholders.min.js"></script><![endif] -->
+<script th:src="@{/js/spinner.js}" type="text/javascript"></script>
+
+<script>
+    document.onreadystatechange = function () {
+        showSpinnerOnLoad(document)
+    }
+
+    function loadSpinner() {
+        showSpinner(document)
+    }
+</script>
+<script>
+    var acc = document.getElementsByClassName("accordion");
+    // var btn = document.getElementsByClassName("button w-button eBtn");
+    var i;
+
+    for (i = 0; i < acc.length; i++) {
+        acc[i].addEventListener("click", function () {
+            this.classList.toggle("active");
+            this.style.border = "none";
+            // this.style.position = "sticky"
+            var panel = this.nextElementSibling;
+            if (panel.style.maxHeight) {
+                panel.style.maxHeight = null;
+            } else {
+                panel.style.maxHeight = panel.scrollHeight + "px";
+                // panel.style.position = "-webkit-sticky"
+                // panel.style.position = "sticky"
+            }
+        });
+    }
+
+
+</script>
+<script>
+    $(document).ready(function () {
+        var table = $('#example').DataTable({
+            lengthChange: false,
+            buttons: ['copy', 'excel', 'pdf', 'colvis']
+        });
+
+        table.buttons().container()
+            .appendTo('#example_wrapper .col-sm-6:eq(0)');
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        $("#portOfArrival").click(function () {
+            let sectionId = $("#portOfArrival").val()
+            // console.log(categories.length)
+            if (sectionId !== 0) {
+                $.ajax({
+                    method: "GET",
+                    url: `/api/auth/sub-section-l1-list/${sectionId}`,
+                    success(response) {
+                        console.log(response)
+                        var s = ''
+                        s += ' <option value="0">Select One...</option>';
+                        for (var i = 0; i < response.length; i++) {
+                            // response.push('Select one')
+                            s += '<option value="' + response[i].id + '">' + response[i].subSection + '</option>';
+                        }
+                        $("#clusterId").html(s);
+                    }
+                })
+            }
+
+        });
+
+        $("#clusterId").click(function () {
+            let subSectionL1Id = $("#clusterId").val()
+            // console.log(categories.length)
+            if (subSectionL1Id !== 0) {
+                $.ajax({
+                    method: "GET",
+                    url: `/api/auth/sub-section-l2-list/${subSectionL1Id}`,
+                    success(response) {
+                        console.log(response)
+                        let s = '';
+                        s += ' <option value="0">Select One...</option>';
+                        for (let i = 0; i < response.length; i++) {
+                            // response.push('Select one')
+                            s += '<option value="' + response[i].id + '">' + response[i].subSection + '</option>';
+                        }
+                        $("#freightStation").html(s);
+                    }
+                })
+            }
+
+        });
+    });
+</script>
+<script>
+    function popUpFunction(eventAction) {
+        let arrHead = ['addProductsDetails'];
+        let arrHeadSave = ['Add Products being manufactured'];
+
+        for (let h = 0; h < arrHead.length; h++) {
+            if (eventAction !== arrHead[h]) {
+                document.getElementById(arrHead[h]).remove();
+            } else {
+                if (eventAction === arrHead[h]) {
+                    document.getElementById('spanValuePM').innerHTML = arrHeadSave[h];
+                    document.getElementById("saveValuePM").value = 'Save';
+                }
+            }
+        }
+
+        $('.productsManufacturedForm #productsManufacturedModal').modal();
+    }
+
+    function popUpFunctionAddRawMaterials(eventAction) {
+        let arrHead = ['addRawMaterialsDetails'];
+        let arrHeadSave = ['Specify the type of materials and origin (attach their specification where applicable):'];
+
+        for (let h = 0; h < arrHead.length; h++) {
+            if (eventAction !== arrHead[h]) {
+                document.getElementById(arrHead[h]).remove();
+            } else {
+                if (eventAction === arrHead[h]) {
+                    document.getElementById('spanValueRM').innerHTML = arrHeadSave[h];
+                    document.getElementById("saveValueRM").value = 'Save';
+                }
+            }
+        }
+
+        $('.rawMaterialsForm #rawMaterialsFormModal').modal();
+    }
+
+    function popUpFunctionAddMachinePlants(eventAction) {
+        let arrHead = ['addMachinePlantDetails'];
+        let arrHeadSave = ['ADD Machinery and Plant Details'];
+
+        for (let h = 0; h < arrHead.length; h++) {
+            if (eventAction !== arrHead[h]) {
+                document.getElementById(arrHead[h]).remove();
+            } else {
+                if (eventAction === arrHead[h]) {
+                    document.getElementById('spanValueMP').innerHTML = arrHeadSave[h];
+                    document.getElementById("saveValueMP").value = 'Save';
+                }
+            }
+        }
+
+        $('.machinePlantForm #machinePlantFormModal').modal();
+    }
+
+    function popUpFunctionAddManufactureProcessDetails(eventAction) {
+        let arrHead = ['addManufactureProcessDetails'];
+        let arrHeadSave = ['ADD Manufacturing process'];
+
+        for (let h = 0; h < arrHead.length; h++) {
+            if (eventAction !== arrHead[h]) {
+                document.getElementById(arrHead[h]).remove();
+            } else {
+                if (eventAction === arrHead[h]) {
+                    document.getElementById('spanValueMFP').innerHTML = arrHeadSave[h];
+                    document.getElementById("saveValueMFP").value = 'Save';
+                }
+            }
+        }
+
+        $('.manufacturingProcessForm #manufacturingProcessFormModal').modal();
+    }
+
+    function refreshPage() {
+        window.location.reload();
+    }
+</script>
+</body>
+</html>
+
+

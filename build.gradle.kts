@@ -39,7 +39,7 @@ subprojects {
 
     apply(plugin = "kotlin")
     apply(plugin = "org.jetbrains.kotlin.jvm")
-    apply(plugin = "java")
+//    apply(plugin = "java")
 
     configure(allprojects - project(":apollo-common")) { //or ':Android:AndroidApps' not sure
         apply(plugin = "application")

@@ -2,9 +2,12 @@ package org.kebs.app.kotlin.apollo.api.handlers
 
 import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
+import org.kebs.app.kotlin.apollo.api.ports.provided.sms.SmsServiceImpl
 import org.kebs.app.kotlin.apollo.api.security.jwt.JwtTokenService
 import org.kebs.app.kotlin.apollo.common.dto.JwtResponse
 import org.kebs.app.kotlin.apollo.common.dto.LoginRequest
+import org.kebs.app.kotlin.apollo.common.dto.OtpRequestValuesDto
+import org.kebs.app.kotlin.apollo.common.dto.OtpResponseDto
 import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
 import org.kebs.app.kotlin.apollo.common.utils.generateRandomText
 import org.kebs.app.kotlin.apollo.store.model.UserVerificationTokensEntity
@@ -19,6 +22,7 @@ import org.springframework.stereotype.Component
 import org.springframework.web.servlet.function.ServerRequest
 import org.springframework.web.servlet.function.ServerResponse
 import org.springframework.web.servlet.function.body
+import org.springframework.web.servlet.function.paramOrNull
 import java.sql.Date
 import java.sql.Timestamp
 import java.time.Instant
@@ -30,26 +34,49 @@ class ApiAuthenticationHandler(
     private val authenticationManager: AuthenticationManager,
     private val commonDaoServices: CommonDaoServices,
     private val usersRepo: IUserRepository,
-    private val verificationTokensRepo: IUserVerificationTokensRepository
+    private val verificationTokensRepo: IUserVerificationTokensRepository,
+    private val smsService: SmsServiceImpl
 ) {
 
     fun generateOtp(req: ServerRequest): ServerResponse {
-        val username = req.body<String>()
-        return usersRepo.findByUserName(username)
-            ?.let { user ->
-                val otp = generateTransactionReference(8).toUpperCase()
-                val response = sendOtpViaSMS(generateVerificationToken(otp, user))
-                ServerResponse.ok().body(response)
+        val reqBody = req.body<OtpRequestValuesDto>()
+        KotlinLogging.logger {  }.info { "Username received: ${reqBody.username}" }
+        return reqBody.username?.let {
+            usersRepo.findByUserName(it)
+                ?.let { user ->
+                    val otp = generateTransactionReference(8).toUpperCase()
+                    val token = generateVerificationToken(otp, user)
+                    KotlinLogging.logger {  }.info { "Token: ${token.token}" }
+
+//                    val response = sendOtpViaSMS(token)
+                    val response = "Success"
+
+                    req.attributes()["username"] = reqBody.username
+                    req.attributes()["password"] = reqBody.password
 
 
-            }
+                    val otpResponseDto = OtpResponseDto()
+                    otpResponseDto.message = response
+                    otpResponseDto.otp = token.token
+
+                   ServerResponse.ok().body(otpResponseDto)
+                }
+        }
             ?: throw NullValueNotAllowedException("Incorrect username and/or password provided")
-
     }
 
+
     fun sendOtpViaSMS(token: UserVerificationTokensEntity): String {
-        val phone = token.userId?.cellphone
-        return "Coming soon $phone"
+        val phone = token.userId?.personalContactNumber
+        val message = "Your verification code is ${token.token}"
+        var smsSent = false
+        if (phone != null) {
+            smsSent = smsService.sendSms(phone, message)
+        }
+        if (smsSent) {
+            return "OTP successfully sent"
+        }
+        return "An error occurred, please try again later"
     }
 
     fun generateVerificationToken(input: String, user: UsersEntity): UserVerificationTokensEntity {

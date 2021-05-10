@@ -88,7 +88,7 @@
                                 </div>
                                 <div class="mb-1" style="overflow:auto;">
                                     <div style="float:right;">
-                                        <button type="button" onclick="" id="saveBtn">SAVE</button>
+                                        <button type="button"  ng-click="saveExemptionAppPartial()" id="saveBtn">Save As Draft</button>
                                         <button type="button"  name="next" class="next button">SAVE AND PROCEED</button>
                                     </div>
                                 </div>
@@ -129,7 +129,7 @@
                                 <div class="mb-1" style="overflow:auto;">
                                     <button type="button" name="previous" class="previous prevBtn">PREVIOUS</button>
                                     <div style="float:right;">
-                                        <button type="button" onclick="">SAVE</button>
+                                        <button type="button" ng-click="saveExemptionAppPartial()">Save As Draft</button>
                                         <button type="button"  name="next" class="next button">SAVE AND PROCEED</button>
                                     </div>
                                 </div>
@@ -144,7 +144,8 @@
                                                 2. Select one or more exemptions below and fill in the form
                                         </div>
                                         <div class="col" style="text-align: right">
-                                            <a href="https://localhost:8006/file"><button type="button" class="download-button mr-5">DOWNLOAD EXCEL TEMPLATE</button></a>
+                                            <a href="https://kims.kebs.org:8006/file"><button type="button" class="download-button mr-3">DOWNLOAD EXCEL TEMPLATE</button></a>
+<!--                                            <a href="https://localhost:8006/file"><button type="button" class="download-button mr-3">DOWNLOAD EXCEL TEMPLATE</button></a>-->
                                             <button type="button"  data-toggle="modal" data-target="#myModal">UPLOAD FILLED APPLICATION</button>
                                         </div>
                                     </div>
@@ -189,12 +190,12 @@
                                                 <!--<option *ngFor="let industry of AllIndustryTypes" [value]="industry._id">{{industry.industryName}}</option>-->
                                             </select>
                                         </div>
-                                        <div class="form-group">
-                                            <label><b>Duty Rate</b></label>
-                                            <input type="text" class="form-control one-column-input" aria-label="Small"
-                                                   aria-describedby="inputGroup-sizing-sm" ng-model="dutyRate" id="dutyRate"
-                                                   name="dutyRate" required>
-                                        </div>
+<!--                                        <div class="form-group">-->
+<!--                                            <label><b>Duty Rate</b></label>-->
+<!--                                            <input type="text" class="form-control one-column-input" aria-label="Small"-->
+<!--                                                   aria-describedby="inputGroup-sizing-sm" ng-model="dutyRate" id="dutyRate"-->
+<!--                                                   name="dutyRate" required>-->
+<!--                                        </div>-->
                                         <div class="form-group">
                                             <label><b>Country of Origin</b></label>
                                             <div>
@@ -208,7 +209,7 @@
                                                 </select>
                                             </div>
                                         </div>
-                                        <div style="float:right;">
+                                        <div style="float:right;" class="mb-2">
                                             <button type="button" id="rawM" ng-click="addRawMaterial()">ADD RAW MATERIAL</button>
                                         </div>
                                     </div>
@@ -302,7 +303,7 @@
                                                 </select>
                                             </div>
                                         </div>
-                                        <div style="float:right;">
+                                        <div style="float:right;" class="mb-2">
                                             <button ng-click="addRawMachine()" type="button" id="AddMachine">ADD MACHINERY</button>
                                         </div>
 
@@ -393,7 +394,7 @@
                                             </div>
 
                                         </div>
-                                        <div style="float:right;">
+                                        <div style="float:right;" class="mb-2">
                                             <button ng-click="addSpare()" type="button" id="sparesBtn">ADD SPARE</button>
                                         </div>
 
@@ -439,13 +440,16 @@
                                 <div class="mb-1" style="overflow:auto;">
                                     <button type="button" name="previous" class="previous prevBtn action-button-previous">PREVIOUS</button>
                                     <div style="float:right;">
-                                        <button type="button" onclick="">SAVE</button>
+                                        <button type="button" ng-click="saveExemptionAppPartial()">Save As Draft</button>
                                         <button type="button"  name="next" class="next button">SAVE AND PROCEED</button>
                                     </div>
                                 </div>
                             </fieldset>
                             <fieldset class="tab">
-
+<!--                                <div class="alert alert-success" id="success-save">-->
+<!--                                    <button type="button" class="close" data-dismiss="alert">x</button>-->
+<!--                                    <strong>Success! </strong> Apllication saved successfully. We will get to you shortly-->
+<!--                                </div>-->
                                 <div class="row">
                                     <div class="col-lg-8">
                                         <h5 class="mb-4">Step 4/4: Review Your Application</h5>
@@ -586,20 +590,19 @@
                                         <div class="checkbox mt-5">
                                             <label for="termsAndConditions"
                                                    style="width: 100%; display: inline-flex; align-items: center;">
-                                                <input class="checkboxes" id="termsAndConditions" type="checkbox"
+                                                <input class="checkboxes" id="termsAndConditions" type="checkbox" ng-model="termsAccept"
                                                        style="width: 20px"
                                                        value="">I agree to the terms and conditions </label>
                                         </div>
                                     </div>
                                 </div>
 
-                                <button class="btn btn-success" type="button" ng-click="saveExemptionApp()">SAVE</button>
                                 <div class="mb-1" style="overflow:auto;">
                                     <button type="button" name="previous" class="previous prevBtn action-button-previous" >PREVIOUS</button>
 
                                     <div style="float:right;">
-                                        <button type="button" onclick="" >SAVE</button>
-                                        <button type="button" ng-click="saveExemptionApp()" name="next" class="button" >SUBMIT EXEMPTION</button>
+                                        <button type="button" ng-click="saveExemptionAppPartial()" onclick="" >Save As Draft</button>
+                                        <button type="button" ng-click="saveExemptionApp()" id="save_exemption" ng-show="termsAccept" name="next" class="button" >Submit Application</button>
                                     </div>
                                 </div>
 
@@ -658,6 +661,7 @@
 <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.js"></script>
 <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-animate.js"></script>
 <script src="//angular-ui.github.io/bootstrap/ui-bootstrap-tpls-1.0.3.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.28//angular-route.min.js"></script>
 <script type="text/javascript" th:src="@{/js/exception/FormControls.js}"></script>
 <script type="text/javascript" th:src="@{/js/exception/App.js}"></script>
 <script type="text/javascript" th:src="@{/js/exception/directive.js}"></script>

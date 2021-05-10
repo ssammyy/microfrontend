@@ -577,6 +577,10 @@ class RegistrationHandler(
         return ok().render("auth/forgot-pass", req.attributes())
     }
 
+    fun confirmOtpView(req: ServerRequest): ServerResponse {
+        return ok().render("auth/otp-confirmation")
+    }
+
     fun resetPasswordView(req: ServerRequest): ServerResponse {
         daoServices.extractServiceMapFromAppId(req.paramOrNull("appId") ?: "128")
             ?.let { map ->
@@ -805,8 +809,7 @@ class RegistrationHandler(
                                          * */
                                         req.attributes().putAll(loadManufacturerUIComponents(map))
                                         req.attributes()["manufacturersEntity"] = ManufacturersEntity()
-                                        req.attributes()["stdLevyNotificationFormEntity"] =
-                                            StdLevyNotificationFormEntity()
+                                        req.attributes()["stdLevyNotificationFormEntity"] = StdLevyNotificationFormEntity()
                                         req.attributes()["manufacturerAddressesEntity"] = ManufacturerAddressesEntity()
                                         req.attributes()["manufacturerContactEntity"] = ManufacturerContactsEntity()
                                         req.attributes()["yearlyTurnoverEntity"] = ManufacturePaymentDetailsEntity()

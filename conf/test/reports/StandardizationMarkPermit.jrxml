@@ -1,0 +1,343 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.16.0.final using JasperReports Library version 6.16.0-48579d909b7943b64690c65c71e07e0b80981928  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="DiamondMarkPermit" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="ed21babd-bc90-4f45-a015-31c53503a62e">
+	<parameter name="DmarkLogo" class="java.lang.String"/>
+	<parameter name="imagePath" class="java.lang.String"/>
+	<parameter name="FirmName" class="java.lang.String"/>
+	<parameter name="PermitNo" class="java.lang.String"/>
+	<parameter name="PostalAddress" class="java.lang.String"/>
+	<parameter name="ExpiryDate" class="java.lang.String"/>
+	<parameter name="DateOfIssue" class="java.lang.String"/>
+	<parameter name="PhysicalAddress" class="java.lang.String"/>
+	<parameter name="CommodityDesc" class="java.lang.String"/>
+	<parameter name="TradeMark" class="java.lang.String"/>
+	<parameter name="faxNumber" class="java.lang.String"/>
+	<parameter name="EmailAddress" class="java.lang.String"/>
+	<parameter name="StandardTitle" class="java.lang.String"/>
+	<parameter name="phoneNumber" class="java.lang.String"/>
+	<parameter name="SmarkLogo" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="60" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="-13" width="163" height="13" uuid="06ac078c-12b8-4df5-a224-4b0284ecea4f"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[ORIGINAL FORM STA/2]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="84" y="9" width="390" height="20" uuid="2e60ab76-bf15-4408-8c78-8101c30ea384"/>
+				<textElement>
+					<font fontName="SansSerif" size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[PERMIT TO USE THE DIAMOND MARK OF QUALITY]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="180" y="29" width="180" height="20" uuid="52c5994c-9f48-4878-9ee0-158b5df02158"/>
+				<textElement>
+					<font fontName="SansSerif"/>
+				</textElement>
+				<text><![CDATA[THE STANDARDS ACT (CAP.496)]]></text>
+			</staticText>
+		</band>
+	</title>
+	<columnHeader>
+		<band height="211" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="2" width="178" height="18" uuid="c607bd91-f9be-4661-8946-7a7af5a2d880"/>
+				<textElement>
+					<font fontName="SansSerif"/>
+				</textElement>
+				<text><![CDATA[PERMIT IS GRANTED TO:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="22" width="84" height="18" uuid="5bd7ae9f-8f36-4ae9-b21a-eaf6c761835c"/>
+				<textElement>
+					<font fontName="SansSerif"/>
+				</textElement>
+				<text><![CDATA[NAME OF FIRM:]]></text>
+			</staticText>
+			<line>
+				<reportElement x="84" y="31" width="246" height="1" uuid="57854f74-ee06-496f-a69f-382de468b694"/>
+			</line>
+			<staticText>
+				<reportElement x="347" y="17" width="70" height="18" uuid="a586fa92-60de-4af9-b23a-3604bbdf3469"/>
+				<textElement>
+					<font fontName="SansSerif"/>
+				</textElement>
+				<text><![CDATA[MARK NO:]]></text>
+			</staticText>
+			<line>
+				<reportElement x="430" y="31" width="123" height="1" uuid="bea51ac1-ba34-4959-88e4-dccbd76ccc7b"/>
+			</line>
+			<line>
+				<reportElement x="0" y="50" width="330" height="1" uuid="24242b6f-d346-485a-b63f-532ce00701b4"/>
+			</line>
+			<staticText>
+				<reportElement x="347" y="43" width="106" height="18" uuid="f8962192-c8a5-434e-be27-cd27ccc367dc"/>
+				<textElement>
+					<font fontName="SansSerif"/>
+				</textElement>
+				<text><![CDATA[EFFECTIVE FROM:]]></text>
+			</staticText>
+			<line>
+				<reportElement x="456" y="60" width="98" height="1" uuid="45014502-dd63-448b-ba7a-48355408a907"/>
+			</line>
+			<staticText>
+				<reportElement x="0" y="61" width="120" height="18" uuid="ff753243-6f5e-477f-927a-7c8d5fa1861f"/>
+				<textElement>
+					<font fontName="SansSerif"/>
+				</textElement>
+				<text><![CDATA[POSTAL ADDRESS]]></text>
+			</staticText>
+			<line>
+				<reportElement x="110" y="71" width="220" height="1" uuid="b5019cac-b4ec-45ad-98eb-fe4e2417c149"/>
+			</line>
+			<staticText>
+				<reportElement x="347" y="72" width="70" height="18" uuid="fff92383-315a-4727-8646-c5e3838263fe"/>
+				<textElement>
+					<font fontName="SansSerif"/>
+				</textElement>
+				<text><![CDATA[EXPIRES ON:]]></text>
+			</staticText>
+			<line>
+				<reportElement x="430" y="88" width="123" height="1" uuid="c88a8bbf-affc-4cea-a795-692e6943779b"/>
+			</line>
+			<line>
+				<reportElement x="0" y="90" width="330" height="1" uuid="66b5969d-81eb-4379-9168-89e09991a0c5"/>
+			</line>
+			<staticText>
+				<reportElement x="346" y="99" width="98" height="18" uuid="36e82ebd-1929-4d7f-a343-626e1253547d"/>
+				<textElement>
+					<font fontName="SansSerif"/>
+				</textElement>
+				<text><![CDATA[DATE OF ISSUE:]]></text>
+			</staticText>
+			<line>
+				<reportElement x="430" y="112" width="123" height="1" uuid="7c1983dd-6908-4b59-9157-f637265dad1a"/>
+			</line>
+			<staticText>
+				<reportElement x="0" y="102" width="120" height="18" uuid="f603b75b-0d4a-4af4-b0b1-3e7840375c3a"/>
+				<textElement>
+					<font fontName="SansSerif"/>
+				</textElement>
+				<text><![CDATA[PHYSICAL ADDRESS]]></text>
+			</staticText>
+			<line>
+				<reportElement x="118" y="113" width="212" height="1" uuid="95c9d26b-2791-46e6-9554-7f0ca539fe9a"/>
+			</line>
+			<line>
+				<reportElement x="0" y="132" width="330" height="1" uuid="f16d1933-649d-4a4a-9ec3-7238226e5e36"/>
+			</line>
+			<textField textAdjust="StretchHeight">
+				<reportElement x="100" y="17" width="230" height="33" uuid="687c578a-3654-4d75-ad5d-304dd1643677"/>
+				<textFieldExpression><![CDATA[$P{FirmName}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="424" y="16" width="100" height="24" uuid="07558563-4f33-44de-a603-467279f63912"/>
+				<textFieldExpression><![CDATA[$P{PermitNo}]]></textFieldExpression>
+			</textField>
+			<textField textAdjust="StretchHeight">
+				<reportElement x="140" y="54" width="190" height="45" uuid="84611ffb-2904-4fed-bb90-80ca8d565bbd"/>
+				<textFieldExpression><![CDATA[$P{PostalAddress}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="432" y="71" width="100" height="20" uuid="13ae75fa-6dfa-4f5f-8a3b-ccf86687d702"/>
+				<textFieldExpression><![CDATA[$P{ExpiryDate}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="429" y="98" width="100" height="20" uuid="9eccb848-a2b8-444b-aede-f879883e127e"/>
+				<textFieldExpression><![CDATA[$P{DateOfIssue}]]></textFieldExpression>
+			</textField>
+			<textField textAdjust="StretchHeight">
+				<reportElement stretchType="ContainerHeight" x="142" y="98" width="190" height="36" uuid="739fb948-6fe1-41c7-8b75-9a0a838c15fe"/>
+				<textFieldExpression><![CDATA[$P{PhysicalAddress}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="453" y="43" width="100" height="17" uuid="9f9b36d3-7967-4d4b-a9f3-9eb4641dd5a3"/>
+				<textFieldExpression><![CDATA[$P{DateOfIssue}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="1" y="143" width="120" height="18" uuid="92fab6d7-eeba-4fda-9505-711e52cf8c97"/>
+				<textElement>
+					<font fontName="SansSerif"/>
+				</textElement>
+				<text><![CDATA[TELEPHONE NO:]]></text>
+			</staticText>
+			<line>
+				<reportElement x="90" y="153" width="242" height="1" uuid="b3ed94a6-4842-40fd-8f32-6651c33f9cf4"/>
+			</line>
+			<staticText>
+				<reportElement x="1" y="166" width="120" height="18" uuid="415d5d09-9dd6-4eb0-abc0-d5819f0fe0fa"/>
+				<textElement>
+					<font fontName="SansSerif"/>
+				</textElement>
+				<text><![CDATA[FAX NO:]]></text>
+			</staticText>
+			<line>
+				<reportElement x="50" y="176" width="282" height="1" uuid="b6eef7be-6bec-47bb-afc4-518c962d0a08"/>
+			</line>
+			<line>
+				<reportElement x="100" y="202" width="230" height="1" uuid="9e931b25-c91d-42b8-a6a5-2e85534a5ed6"/>
+			</line>
+			<staticText>
+				<reportElement x="1" y="193" width="120" height="18" uuid="29515225-9644-4916-a7c3-7d755d3cef83"/>
+				<textElement>
+					<font fontName="SansSerif"/>
+				</textElement>
+				<text><![CDATA[EMAIL ADDRESS:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="145" y="135" width="185" height="18" uuid="5ccde697-90d0-4cd6-a6e7-c00a09a9e652"/>
+				<textFieldExpression><![CDATA[$P{phoneNumber}]]></textFieldExpression>
+			</textField>
+			<textField textAdjust="StretchHeight">
+				<reportElement x="140" y="158" width="190" height="18" uuid="c37f630f-6378-4559-a4a1-630e80f37eb5"/>
+				<textFieldExpression><![CDATA[$P{faxNumber}]]></textFieldExpression>
+			</textField>
+			<textField textAdjust="StretchHeight">
+				<reportElement x="140" y="182" width="190" height="20" uuid="8fa67896-122a-459d-9165-e29e3c63fd23"/>
+				<textFieldExpression><![CDATA[$P{EmailAddress}]]></textFieldExpression>
+			</textField>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="482" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="12" width="552" height="40" uuid="f03e6f7c-5b57-4e87-bd99-760d258fb2fe"/>
+				<textElement>
+					<font fontName="SansSerif" size="10"/>
+				</textElement>
+				<text><![CDATA[To use the standardization mark of quality specified in the row hereunder and upon and in respect of the commodity and brand specified in the second and third rows there of, which commodity, conform to the standard specification in the fourth row]]></text>
+			</staticText>
+			<line>
+				<reportElement x="1" y="115" width="553" height="1" uuid="8954d644-2f98-43c6-81f5-55f5cb18b95a"/>
+			</line>
+			<line>
+				<reportElement x="0" y="183" width="553" height="1" uuid="e33c5796-cb99-4a5c-921f-8cfccd257b19"/>
+			</line>
+			<line>
+				<reportElement x="1" y="249" width="553" height="1" uuid="b97c3ed3-3cd6-4ad7-9a92-73741ef4ac40"/>
+			</line>
+			<staticText>
+				<reportElement x="0" y="70" width="16" height="16" uuid="44c4a47f-96da-4a98-8ea8-d95d20ed54dd"/>
+				<textElement>
+					<font fontName="SansSerif" size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[1]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="145" width="16" height="16" uuid="7697d1cb-2a61-4bee-bef9-de597795b7cc"/>
+				<textElement>
+					<font fontName="SansSerif" isBold="true"/>
+				</textElement>
+				<text><![CDATA[2]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="1" y="207" width="16" height="16" uuid="54bf5dbe-c7f1-485f-adda-c41e0ab49f8d"/>
+				<textElement>
+					<font fontName="SansSerif" isBold="true"/>
+				</textElement>
+				<text><![CDATA[3]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="268" width="16" height="16" uuid="b79ad339-d298-409d-add5-d42080013ed8"/>
+				<textElement>
+					<font fontName="SansSerif" isBold="true"/>
+				</textElement>
+				<text><![CDATA[4]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="30" y="70" width="118" height="16" uuid="dd351a65-3479-4953-8cff-0455ec78bdf4"/>
+				<textElement>
+					<font fontName="SansSerif" size="8"/>
+				</textElement>
+				<text><![CDATA[STANDARDIZATION MARK]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="30" y="138" width="152" height="34" uuid="11ff7889-5e9e-41e2-99ca-1207aa6d3bc5"/>
+				<textElement textAlignment="Left">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[DESCRIPTION OF THE COMMODITY UPON WHICH THE STANDARDIZATION MARK IS TO BE USED]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="30" y="201" width="146" height="22" uuid="6db1d72f-5e75-4e92-be86-270cfd386e50"/>
+				<textElement textAlignment="Left">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[BRAND NAMES]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="30" y="261" width="124" height="30" uuid="d4cca7ad-ff11-4c41-9f92-d7d1024c7201"/>
+				<textElement textAlignment="Left">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[STANDARD SPECIFICATION (Number and Title)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="1" y="347" width="298" height="60" uuid="a9155011-af2b-42b8-a6a4-2755ae2f8753"/>
+				<textElement>
+					<font fontName="SansSerif" size="9"/>
+				</textElement>
+				<text><![CDATA[1. EVERY DIAMOND MARK HOLDER SHALL PAY AN ANNUAL  FEE IN RESPECT OF EACH PERMIT GRANTED OR RENEWED
+
+2. THIS PERMIT IS ISSUED SUBJECT TO THE CONDITIONS SET OUT IN THE  CONTRACT FOR USE OF THE DIAMOND MARK OF QUALITY]]></text>
+			</staticText>
+			<line>
+				<reportElement x="332" y="352" width="221" height="1" uuid="70f37210-99de-472b-8746-3572c2361d21"/>
+			</line>
+			<staticText>
+				<reportElement x="330" y="366" width="240" height="20" uuid="b6496e46-7de6-479b-b1bc-67d93cf2153c"/>
+				<textElement>
+					<font fontName="SansSerif" size="9"/>
+				</textElement>
+				<text><![CDATA[MANAGING DIRECTOR/AUTHORIZED OFFICER]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="330" y="387" width="224" height="20" uuid="a600a1fa-5a6c-49b7-a118-00381c4bfeda"/>
+				<textElement>
+					<font fontName="SansSerif" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[KENYA BUREAU OF STANDARDS]]></text>
+			</staticText>
+			<image>
+				<reportElement x="332" y="427" width="47" height="50" uuid="d42e2357-c5fd-497f-9c38-3479f96079cd"/>
+				<imageExpression><![CDATA[$P{imagePath}]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement x="386" y="438" width="88" height="29" forecolor="#1067E8" uuid="0e26ddaa-f30a-4fe3-a460-6f864191ad38"/>
+				<textElement verticalAlignment="Top">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Kenya Bureau of
+Standards]]></text>
+			</staticText>
+			<image>
+				<reportElement x="230" y="58" width="50" height="50" uuid="55ac87ae-248c-4aaf-98ea-7be3fb403701"/>
+				<imageExpression><![CDATA[$P{SmarkLogo}]]></imageExpression>
+			</image>
+			<textField textAdjust="StretchHeight">
+				<reportElement x="210" y="115" width="299" height="68" uuid="8dbacb9c-ec05-4a9c-b3b3-741d483637ff"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$P{CommodityDesc}]]></textFieldExpression>
+			</textField>
+			<textField textAdjust="StretchHeight">
+				<reportElement x="212" y="184" width="298" height="63" uuid="cbc4d867-09bc-4568-b0da-061dbef99dd8"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$P{TradeMark}]]></textFieldExpression>
+			</textField>
+			<textField textAdjust="StretchHeight">
+				<reportElement x="214" y="251" width="295" height="75" uuid="b167f4a3-c35a-4843-b70f-d3dbc9de287f"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$P{StandardTitle}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

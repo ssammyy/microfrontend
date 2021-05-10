@@ -10,10 +10,7 @@ import net.sf.jasperreports.engine.export.JRPdfExporter
 import net.sf.jasperreports.engine.xml.JRXmlLoader
 import net.sf.jasperreports.export.SimpleExporterInput
 import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput
-import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
-import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DestinationInspectionDaoServices
-import org.kebs.app.kotlin.apollo.api.ports.provided.dao.InvoiceDaoService
-import org.kebs.app.kotlin.apollo.api.ports.provided.dao.ReportsDaoService
+import org.kebs.app.kotlin.apollo.api.ports.provided.dao.*
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.repo.*
@@ -44,6 +41,7 @@ class DIReportsControllers(
         private val iPvocInvoicingRepository: IPvocInvoicingRepository,
         private val iPvocPartnersRepository: IPvocPartnersRepository,
         private val daoServices: DestinationInspectionDaoServices,
+        private val qaDaoServices: QADaoServices,
         private val iCdItemsRepo: IConsignmentItemsRepository,
         private val reportsDaoService: ReportsDaoService,
         private val commonDaoServices: CommonDaoServices,
@@ -51,6 +49,9 @@ class DIReportsControllers(
         private val resourceLoader: ResourceLoader
 ) {
 
+    //Get KEBS Logo
+    final val checkmarkImageResource = resourceLoader.getResource(applicationMapProperties.mapCheckmarkImagePath)
+    val checkmarkImageFile = checkmarkImageResource.file.toString()
 
     @PreAuthorize("hasAuthority('DI_INSPECTION_OFFICER_READ')  or hasAuthority('DI_DIRECTOR_READ') or hasAuthority('DI_WETC_CHAIR_READ')  or hasAuthority('DI_NSC_MEMBER_READ') or hasAuthority('DI_HOD_READ') or hasAuthority('DI_NSC_SECRETARY_READ') or hasAuthority('DI_CLUSTER_SUPERVISOR_READ') or hasAuthority('DI_WETC_MEMBER_READ') or hasAuthority('DI_OFFICER_CHARGE_READ') or hasAuthority('DI_MANAGER_INSPECTION_READ') or hasAuthority('DI_EXEMPTION_COMMITTEE_CHAIR_READ')  or hasAuthority('CD_SUPERVISOR_READ') or hasAuthority('IMPORTER') or hasAuthority('CD_OFFICER_READ') or hasAuthority('PVOC_APPLICATION_READ') or hasAuthority('PVOC_APPLICATION_PROCESS') or hasAuthority('MAKE_WAIVER_APPLICATION') or hasAuthority('WAIVERS_APPLICATION_REVIEW') or hasAuthority('WAIVER_APPLICATION_REPORT_PROCESS')")
     @RequestMapping(value = ["report"], method = [RequestMethod.GET])
@@ -245,7 +246,7 @@ class DIReportsControllers(
 
             } ?: throw ExpectedDataNotFound("Motor Vehicle Inspection Checklist does not exist")
 
-            reportsDaoService.extractReportEmptyDataSource(map, response, "classpath:reports/UsedMVMinistryChecklistFinal.jrxml")
+            reportsDaoService.extractReportEmptyDataSource(map, response, applicationMapProperties.mapReportMinistryChecklistPath)
         }
     }
 
@@ -258,22 +259,13 @@ class DIReportsControllers(
             response: HttpServletResponse,
             @RequestParam(value = "mvInspectionChecklistId", required = false) mvInspectionChecklistid: Long?
     ) {
-//        //Get KEBS Logo
-//        val logoImageresource = resourceLoader.getResource("classpath:static/images/KEBS_SMARK.png")
-//        val logoImageFile = logoImageresource.file.toString()
-
-        //Get checkmark image
-        val checkMarkImageresource = resourceLoader.getResource("classpath:static/images/checkmark.png")
-        val checkMarkImageFile = checkMarkImageresource.file.toString()
-
         val map = hashMapOf<String, Any>()
         mvInspectionChecklistid?.let { it ->
             daoServices.findInspectionMotorVehicleById(it)?.let { mvInspectionChecklist ->
-//                map["imagePath"] = logoImageFile
-                map["CheckMark"] = checkMarkImageFile
+                map["CheckMark"] = checkmarkImageFile
                 when (mvInspectionChecklist.inspectionGeneral?.inspection) {
-                    "100% Inspection" -> map["HundredPercentInspectionCheckmark"] = checkMarkImageFile
-                    "Partial Inspection" -> map["PartialInspectionCheckMark"] = checkMarkImageFile
+                    "100% Inspection" -> map["HundredPercentInspectionCheckmark"] = checkmarkImageFile
+                    "Partial Inspection" -> map["PartialInspectionCheckMark"] = checkmarkImageFile
                 }
                 map["EntryPoint"] = mvInspectionChecklist.inspectionGeneral?.entryPoint.toString()
                 map["Cfs"] = mvInspectionChecklist.inspectionGeneral?.cfs.toString()
@@ -303,30 +295,19 @@ class DIReportsControllers(
 
             } ?: throw ExpectedDataNotFound("Motor Vehicle Inspection Checklist does not exist")
 
-            reportsDaoService.extractReportEmptyDataSource(map, response, "classpath:reports/MotorVehicleChecklistReport.jrxml")
+            reportsDaoService.extractReportEmptyDataSource(map, response, applicationMapProperties.mapReportMotorVehicleChecklistPath)
         }
     }
 
     /*
     Get Local CoR report
      */
-/*
-Get Ministry inspection report
- */
     @RequestMapping(value = ["/local-cor-report"], method = [RequestMethod.GET])
     @Throws(Exception::class)
     fun localCorReport(
             response: HttpServletResponse,
             @RequestParam(value = "cdUuid", required = false) consignmentDocUuid: String?
     ) {
-        //Get KEBS Logo
-        val logoImageresource = resourceLoader.getResource("classpath:static/images/KEBS_SMARK.png")
-        val logoImageFile = logoImageresource.file.toString()
-
-        //Get checkmark image
-        val checkMarkImageresource = resourceLoader.getResource("classpath:static/images/checkmark.png")
-        val checkMarkImageFile = checkMarkImageresource.file.toString()
-
         var map = hashMapOf<String, Any>()
         val cdEntity = consignmentDocUuid?.let { daoServices.findCDWithUuid(it) }
         KotlinLogging.logger {}.info { "The cdEntity found: ${cdEntity?.id}" }
@@ -334,81 +315,11 @@ Get Ministry inspection report
             daoServices.findLocalCorByUcrNumber(it).let {
                 KotlinLogging.logger {}.info { "The cdLocalCorEntity found: ${it.id}" }
                 map = daoServices.createLocalCorReportMap(it)
-//                map["imagePath"] = logoImageFile
                 KotlinLogging.logger {}.info { "Final Map: ${map.values}" }
             }
         }
-        reportsDaoService.extractReportEmptyDataSource(map, response, "classpath:reports/LocalCoRReport.jrxml")
+        reportsDaoService.extractReportEmptyDataSource(map, response, applicationMapProperties.mapReportLocalCorPath)
     }
-
-//    private fun extractReport(map: HashMap<String, Any>, response: HttpServletResponse, filePath: String, sampCollect: List<Any>) {
-//       val dataSource = JRBeanCollectionDataSource(sampCollect)
-//
-//                    ResourceUtils.getFile(filePath)
-//                            .let { file ->
-//                                JRXmlLoader.load(file)
-//                                        .let { design ->
-//                                            JasperCompileManager.compileReport(design)
-//                                                    .let { jasperReport ->
-//                                                        JasperFillManager.fillReport(jasperReport, map, dataSource)
-//                                                                .let { jasperPrint ->
-//                                                                    JRPdfExporter()
-//                                                                            .let { pdfExporter ->
-//                                                                                ByteArrayOutputStream()
-//                                                                                        .let { pdfReportStream ->
-//                                                                                            pdfExporter.setExporterInput(SimpleExporterInput(jasperPrint))
-//                                                                                            pdfExporter.exporterOutput = SimpleOutputStreamExporterOutput(pdfReportStream)
-//                                                                                            pdfExporter.exportReport()
-//                                                                                            response.contentType = "text/html"
-//                                                                                            response.contentType = "application/pdf"
-//                                                                                            response.setHeader("Content-Length", pdfReportStream.size().toString())
-//                                                                                            response.addHeader("Content-Dispostion", "inline; filename=jasper.pdf;")
-//                                                                                            response.outputStream
-//                                                                                                    .let { responseOutputStream ->
-//                                                                                                        responseOutputStream.write(pdfReportStream.toByteArray())
-//                                                                                                        responseOutputStream.close()
-//                                                                                                        pdfReportStream.close()
-//                                                                                                    }
-//                                                                                        }
-//
-//                                                                            }
-//                                                                }
-//                                                    }
-//                                        }
-//                            }
-//
-//    }
-//
-//    /*
-//    Note: Use this method if your report contains multiple data bands and you have not set any fields in the report,
-//    i.e you're using Parameters only.
-//     */
-//    private fun extractReportEmptyDataSource(map: HashMap<String, Any>, response: HttpServletResponse, filePath: String) {
-//        ResourceUtils.getFile(filePath).let { file ->
-//            JRXmlLoader.load(file).let { design ->
-//                JasperCompileManager.compileReport(design).let { jasperReport ->
-//                    JasperFillManager.fillReport(jasperReport, map, JREmptyDataSource()).let { jasperPrint ->
-//                        JRPdfExporter().let { pdfExporter ->
-//                            ByteArrayOutputStream().let { pdfReportStream ->
-//                                pdfExporter.setExporterInput(SimpleExporterInput(jasperPrint))
-//                                pdfExporter.exporterOutput = SimpleOutputStreamExporterOutput(pdfReportStream)
-//                                pdfExporter.exportReport()
-//                                response.contentType = "text/html"
-//                                response.contentType = "application/pdf"
-//                                response.setHeader("Content-Length", pdfReportStream.size().toString())
-//                                response.addHeader("Content-Dispostion", "inline; filename=jasper.pdf;")
-//                                response.outputStream.let { responseOutputStream ->
-//                                            responseOutputStream.write(pdfReportStream.toByteArray())
-//                                            responseOutputStream.close()
-//                                            pdfReportStream.close()
-//                                        }
-//                            }
-//                        }
-//                    }
-//                    }
-//                }
-//            }
-//        }
 }
 
 

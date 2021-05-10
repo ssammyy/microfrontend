@@ -99,7 +99,7 @@ body {
 h1 {
   margin-top: 0px;
   margin-bottom: 20px;
-  color: #1b75bc;
+  color: #0166B1;
   font-size: 20px;
   line-height: 125%;
   font-weight: 700;
@@ -147,7 +147,7 @@ a {
 .top-bar {
   width: 100%;
   height: 12vh;
-  background-color: #1b75bc;
+  background-color: #0166B1;
 }
 
 .top-bar.flex {
@@ -256,7 +256,7 @@ a {
 
 .main-grid-side-navigation {
   border-top: 2px solid #fff;
-  background-color: #1b75bc;
+  background-color: #0166B1;
   color: #fff;
 }
 
@@ -387,11 +387,11 @@ a {
 }
 
 .content-nav-link:focus {
-  color: #1b75bc;
+  color: #0166B1;
 }
 
 .content-nav-link.w--current {
-  color: #1b75bc;
+  color: #0166B1;
   font-weight: 700;
 }
 
@@ -422,7 +422,7 @@ a {
   -webkit-align-items: center;
   -ms-flex-align: center;
   align-items: center;
-  background-color: #1b75bc;
+  background-color: #0166B1;
   -webkit-transition: all 200ms ease-in-out;
   transition: all 200ms ease-in-out;
   color: #fff;
@@ -473,7 +473,7 @@ a {
 
 .button {
   margin-bottom: 10px;
-  background-color: #1b75bc;
+  background-color: #0166B1;
   -webkit-transition: all 200ms ease-in-out;
   transition: all 200ms ease-in-out;
   text-transform: uppercase;
@@ -502,7 +502,7 @@ a {
   right: 4%;
   padding-right: 40px;
   padding-left: 40px;
-  background-color: #1b75bc;
+  background-color: #0166B1;
   -webkit-transition: all 200ms ease-in-out;
   transition: all 200ms ease-in-out;
   font-size: 12px;
@@ -801,7 +801,7 @@ a {
 
 .status-text {
   margin-left: 10px;
-  color: #1b75bc;
+  color: #0166B1;
 }
 
 .filter-link {
@@ -809,7 +809,7 @@ a {
   margin-bottom: 10px;
   padding-top: 10px;
   padding-bottom: 10px;
-  background-color: #1b75bc;
+  background-color: #0166B1;
   -webkit-transition: all 200ms ease;
   transition: all 200ms ease;
   color: #fff;
@@ -897,7 +897,7 @@ a {
   bottom: 10%;
   padding-right: 40px;
   padding-left: 40px;
-  background-color: #1b75bc;
+  background-color: #0166B1;
 }
 
 .submit-button:hover {
@@ -998,7 +998,7 @@ a {
   bottom: 0%;
   z-index: 1000;
   display: none;
-  background-color: #1b75bc;
+  background-color: #0166B1;
   background-image: url('../images/Component-1.png');
   background-position: 50% 50%;
   background-size: 125px;
@@ -1078,7 +1078,7 @@ a {
   -webkit-flex: 0 49%;
   -ms-flex: 0 49%;
   flex: 0 49%;
-  background-color: #1b75bc;
+  background-color: #0166B1;
   -webkit-transition: all 200ms ease;
   transition: all 200ms ease;
   color: #fff;
@@ -1091,7 +1091,7 @@ a {
   -webkit-flex: 0 32.5%;
   -ms-flex: 0 32.5%;
   flex: 0 32.5%;
-  background-color: #1b75bc;
+  background-color: #0166B1;
   -webkit-transition: all 200ms ease;
   transition: all 200ms ease;
   color: #fff;
@@ -1134,7 +1134,8 @@ a {
 }
 
 .field-label {
-  color: #1b75bc;
+  color: #0166B1;
+  font-size: 16px;
 }
 
 .div-block-margin-bottom {
@@ -1157,7 +1158,7 @@ a {
 .submit-button-2 {
   padding-right: 40px;
   padding-left: 40px;
-  background-color: #1b75bc;
+  background-color: #0166B1;
 }
 
 .submit-button-2:hover {
@@ -1401,7 +1402,7 @@ a {
     bottom: 0%;
     z-index: 1000;
     display: block;
-    background-color: #1b75bc;
+    background-color: #0166B1;
     background-image: url('../images/Component-1.png');
     background-position: 50% 50%;
     background-size: auto;

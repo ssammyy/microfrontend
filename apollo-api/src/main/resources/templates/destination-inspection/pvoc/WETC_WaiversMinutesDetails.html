@@ -5,6 +5,9 @@
     <meta charset="utf-8">
     <title>KEBS</title>
     <th:block th:include="fragments/general-form.html :: headerfiles"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" th:href="@{/css/accordion.css}"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <style>
         * {
             box-sizing: border-box;
@@ -190,12 +193,12 @@
                                 <div class="filter-title">Actions:</div>
                             </div>
                             <div>
-                                <a  style="color: white" class="filter-link addRemarksBtn">Add Remarks</a>
-                                <a  style="color: white" class="filter-link recommend" >Recommend</a>
-                                <a  style="color: white" class="filter-link reject">Reject</a>
-                                <a  style="color: white" class="filter-link differ">Differ</a>
-                                <a  style="color: white" class="filter-link" th:href="@{/api/di/pvoc/generate-waiver-request-letter/(id = ${report.waiverId})}">Waiver Request Letter</a>
-                                <a  style="color: white" class="filter-link" th:href="@{/api/di/pvoc/waivers-remarks-view/{id}/{remarkType}(id = ${report.id}, remarkType='minute')}">View Remarks</a>
+                                <a sec:authorise="hasAuthority('WAIVERS_MINUTES_REVIEW_NCS')"  style="color: white" class="filter-link addRemarksBtn">Add Remarks</a>
+                                <a sec:authorise="hasAuthority('WAIVERS_MINUTES_PROCESS_NCS')"  style="color: white" class="filter-link recommend" >Recommend</a>
+                                <a sec:authorise="hasAuthority('WAIVERS_MINUTES_PROCESS_NCS')"  style="color: white" class="filter-link reject">Reject</a>
+                                <a sec:authorise="hasAuthority('WAIVERS_MINUTES_PROCESS_NCS')"  style="color: white" class="filter-link differ">Differ</a>
+                                <a sec:authorise="hasAuthority('WAIVERS_MINUTES_PROCESS_NCS')"  style="color: white" class="filter-link" th:href="@{/api/di/pvoc/generate-waiver-request-letter/(id = ${report.waiverId})}">Waiver Request Letter</a>
+                                <a sec:authorise="hasAuthority('WAIVERS_MINUTES_REVIEW_NCS') or hasAuthority('WAIVERS_MINUTES_PROCESS_NCS')"  style="color: white" class="filter-link" th:href="@{/api/di/pvoc/waivers-remarks-view/{id}/{remarkType}(id = ${report.id}, remarkType='minute')}">View Remarks</a>
                             </div>
                         </div>
                     </div>
@@ -203,9 +206,9 @@
             </div>
             <div class="remarksForm">
                 <form id="remarksForm"   name="remarksForm"
-                      th:action="@{/api/di/pvoc/waivers-reports-remarks/{pvocId}/{remarksType}(pvocId = ${report.id}, remarksType='addRemarks' )}"
+                      th:action="@{/api/di/pvoc/waivers-minutes-remarks/{pvocId}/{remarksType}(pvocId = ${report.id}, remarksType='addRemarks' )}"
                       method="post" th:object="${remarks}" >
-                    <div class="modal fade" id="remarksModal" tabindex="-1" role="dialog" aria-labelledby="remarksModalLabel" aria-hidden="true">
+                    <div class="modal fade" id="ncs-member" tabindex="-1" role="dialog" aria-labelledby="remarksModalLabel" aria-hidden="true">
                         <div class="modal-dialog" role="document">
                             <div class="modal-content">
                                 <div class="modal-header">
@@ -360,7 +363,7 @@
 
         $('.filter-block .addRemarksBtn').on('click',function (event) {
 
-            $('.remarksForm #remarksModal').modal();
+            $('.remarksForm #ncs-member').modal();
         });
 
         $('.filter-block .differ').on('click',function (event) {

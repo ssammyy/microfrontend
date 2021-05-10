@@ -25,24 +25,21 @@
 <!--                            class="font-awesome-span"></span>Imported Goods With NCR</a>-->
                     <a class="content-button"
                        sec:authorize="hasAuthority('PVOC_APPLICATION_READ')"
-                       th:href="@{/api/di/pvoc/officer(currentPage=0,pageSize=10, filter=0, fromDate=${#dates.format(#dates.createNow(), 'yyyy-MM-dd')}, toDate=${#dates.format(#dates.createNow(),'yyyy-MM-dd')})}"
+                       th:href="@{/api/di/pvoc/officer(currentPage=0,pageSize=20, filter=0, fromDate=${#dates.format(#dates.createNow(), 'yyyy-MM-dd')}, toDate=${#dates.format(#dates.createNow(),'yyyy-MM-dd')})}"
                     ><span
                             class="font-awesome-span"></span>My Exemptions</a>
                     <a class="content-button"
                        sec:authorize="hasAuthority('PVOC_APPLICATION_PROCESS') or hasAnyAuthority('PVOC_APPLICATION_PROCESS_CHAIRMAN')"
-                       th:href="@{/api/di/pvoc/officer(currentPage=0,pageSize=10, filter=0, fromDate=${#dates.format(#dates.createNow(), 'yyyy-MM-dd')}, toDate=${#dates.format(#dates.createNow(),'yyyy-MM-dd')})}"
+                       th:href="@{/api/di/pvoc/officer(currentPage=0,pageSize=20, filter=0, fromDate=${#dates.format(#dates.createNow(), 'yyyy-MM-dd')}, toDate=${#dates.format(#dates.createNow(),'yyyy-MM-dd')})}"
                     ><span
-                            class="font-awesome-span"></span>Application Exemptions</a>
+                            class="font-awesome-span"></span>Exemption Applications</a>
                     <a sec:authorize="hasAuthority('PVOC_APPLICATION_READ')"  class="content-button" th:href="@{/api/di/pvoc/application}"><span class="font-awesome-span"></span>Apply for  Exemption</a>
                     <a sec:authorize="hasAuthority('PVOC_APPLICATION_READ')" class="content-button" th:href="@{/api/di/pvoc/application/unfinished}"><span class="font-awesome-span"></span>Save Draft Applications</a>
+                    <a class="content-button" ><span class="font-awesome-span"></span>Notifications</a>
 <!--                    <a sec:authorize="hasAuthority('MAKE_WAIVER_APPLICATION')" class="content-button" th:href="@{/api/di/pvoc/waivers-application}"><span class="font-awesome-span"></span>Application for Waiver</a>-->
 <!--                    <a sec:authorize="hasAuthority('MAKE_WAIVER_APPLICATION') or hasAuthority('WAIVERS_APPLICATION_REVIEW') or hasAuthority('WAIVERS_APPLICATION_REVIEW') or hasAuthority('WAIVERS_APPLICATION_REPORT_GENERATE')" class="content-button" th:href="@{/api/di/pvoc/all-waivers-applications-list(currentPage=0,pageSize=10,filter=0, fromDate=${#dates.format(#dates.createNow(), 'yyyy-MM-dd')}, toDate=${#dates.format(#dates.createNow(),'yyyy-MM-dd')})}"><span class="font-awesome-span"></span>Waiver Applications</a>-->
                     <!--                    <a class="content-button" th:href="@{/api/di/officer}"><span class="font-awesome-span"></span>Officer</a>-->
                     <!--  <a class="content-button" th:href="@{/api/ms/home}"><span class="font-awesome-span"></span>Assessor</a> -->
-                </div>
-                <div class="div-block-4">
-                    <a class="content-button" ><span class="font-awesome-span"></span>Notifications</a>
-                    <!-- <a class="content-button" th:href="@{/api/v1/permit/customer}"><span class="font-awesome-span"></span>Customer</a> -->
                 </div>
             </div>
         </div>

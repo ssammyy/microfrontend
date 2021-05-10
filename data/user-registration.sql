@@ -81,54 +81,57 @@ select *
 from DAT_KEBS_USER_VERIFICATION_TOKEN
 where TOKEN =
 ;
+select * from CFG_ROLES_PRIVILEGES --the role is 40 and prRole ID = 774
+-- where PRIVILEGE_ID =52425
+order by id desc;
+
+select * from CFG_KEBS_DESIGNATIONS --the role is 40 and prRole ID = 774
+-- where PRIVILEGE_ID =52425
+order by id desc;
+
+select * from CFG_KEBS_REGIONS --the role is 40 and prRole ID = 774
+where id = 4
+order by id desc;
+
+select * from DAT_KEBS_COMPANY_PROFILE --the role is 40 and prRole ID = 774
+-- where PRIVILEGE_ID =52425
+order by id desc;
+
+select * from CFG_USER_ROLES--512
+--where id like '%5%'
+-- where ROLE_NAME = 'SYSADMIN_VIEW'
+order by id desc;
+
+select * from CFG_USER_PRIVILEGES--QA_OFFICER_READ
+-- where id like '%521%'
+order by id desc;--MS
+
+-- _MP_MODIFY MS_MP_READ AUTHORITIES_WRITE 29
 select *
 from CFG_ROLES_PRIVILEGES
-order by id desc;
+where ROLES_ID = 510
 
-select *
-from CFG_USER_ROLES
--- where  = 1393
-order by id desc;
-
-select *
-from CFG_USER_PRIVILEGES
-where id = 143
--- where id like '%18%'
-order by id desc;
-
-select *
-from CFG_USER_ROLES_PRIVILEGES
--- where id like '%18%'
-order by id desc;--MS_MP_MODIFY MS_MP_READ AUTHORITIES_WRITE 29
-143
-4
-3
-
-select *
-from CFG_ROLES_PRIVILEGES
-where ROLES_ID = 3
 order by id desc;--MS_MP_MODIFY MS_MP_READ
-
-select * from CFG_USER_ROLES  order by ID desc ;
 select *
 from CFG_USER_ROLES_ASSIGNMENTS
--- where USER_ID = 534
-
+where USER_ID = 54
 order by id desc;--MS_MP_MODIFY MS_MP_READ
 select *
 from DAT_KEBS_USER_VERIFICATION_TOKEN
+
 order by id desc;--MS_MP_MODIFY MS_MP_READ
 
-select *
-from DAT_KEBS_USERS
+select * from DAT_KEBS_USERS
 -- where USER_TYPE = 5
-where EMAIL = '254safaris@gmail.com'
-order by id desc;
+-- where EMAIL like '254saf'
+-- where USER_NAME = '0715668934'
+order by id desc
+;21384
 
 select *
 from DAT_KEBS_USER_PROFILES
--- where USER_ID = 1403
-where email = '254safaris@gmail.com'
+-- where REGION_ID = 4 and DESIGNATION_ID = 304
+where USER_ID = 1523
 order by id desc;
 
 alter table DAT_KEBS_USERS
@@ -189,7 +192,7 @@ FROM CFG_ROLES_PRIVILEGES rp,
      CFG_USER_PRIVILEGES cup
 WHERE CUP.ID = rp.PRIVILEGE_ID
   AND CUR.ID = rp.ROLES_ID
-  AND rp.ROLES_ID IN (121)
+  AND rp.ROLES_ID IN (-1)
   and rp.STATUS = 1;
 
 drop index DAT_KEBS_USER_VERIFICATION_TOKEN_USER_OD_STATUS;

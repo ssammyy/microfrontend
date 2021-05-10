@@ -1,22 +1,28 @@
 package org.kebs.app.kotlin.apollo.api.controllers.diControllers.pvoc
 
 
+import io.ktor.util.*
+import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.common.exceptions.SupervisorNotFoundException
 import org.kebs.app.kotlin.apollo.store.model.*
 import org.kebs.app.kotlin.apollo.store.repo.*
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.repository.findByIdOrNull
+import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
 import org.springframework.web.bind.annotation.*
 import java.sql.Timestamp
+import java.sql.Date
 import java.time.Instant
 import java.time.LocalDate
 import java.time.Period
 import java.util.concurrent.ThreadLocalRandom
 import kotlin.streams.asSequence
+import java.text.SimpleDateFormat
+import java.time.format.DateTimeFormatter
 
 
 @Controller
@@ -42,6 +48,7 @@ class PvocMonitoringAgents(
     private val pvocAgentContractEntityRepo: PvocAgentContractEntityRepo,
     private val pvocRevenueReportEntityRepo: PvocRevenueReportEntityRepo,
     private val pvocPenaltyInvoicingEntityRepo: PvocPenaltyInvoicingEntityRepo,
+    private val iPvocCorTimelinesDataEntityRepo: IPvocCorTimelinesDataEntityRepo
 //        private val iUserRoleAssignmentsRepository: IUserRoleAssignmentsRepository
 
 ) {
@@ -213,6 +220,42 @@ class PvocMonitoringAgents(
             }
     }
 
+    @GetMapping("cor-with-timeline-issue")
+    fun corWithTimelineIssue(
+        model: Model,
+        @RequestParam(value = "fromDate", required = false) fromDate: String,
+        @RequestParam(value = "toDate", required = false) toDate: String,
+        @RequestParam(value = "filter", required = false) filter: String,
+        @RequestParam(value = "currentPage", required = false) currentPage: Int,
+        @RequestParam(value = "pageSize", required = false) pageSize: Int
+    ): String {
+        PageRequest.of(currentPage, pageSize)
+            .let { page ->
+                SecurityContextHolder.getContext().authentication
+                    ?.let { auth ->
+                        when {
+                            auth.authorities.stream().anyMatch { authority -> authority.authority == "PVOC_APPLICATION_READ" || authority.authority == "PVOC_APPLICATION_PROCESS" } -> {
+                                when (filter) {
+                                    "filter" -> {
+                                        iPvocCorTimelinesDataEntityRepo.findAllByUcrNumberNotNull(page)?.let { pvocTimelines ->
+                                            model.addAttribute("pvocTimelines", pvocTimelines)
+                                        }
+                                    }
+                                    else -> {
+                                        iPvocCorTimelinesDataEntityRepo.findAllByUcrNumberNotNull(page).let { pvocTimelines ->
+                                            model.addAttribute("pvocTimelines", pvocTimelines)
+                                        }
+                                    }
+                                }
+                            }
+                            else -> throw SupervisorNotFoundException("Only users with the following privilege PVOC Appliaction READ or PVOC APPLICATION PROCESS, can access this page")
+                        }
+                        return "destination-inspection/pvoc/monitoring/CorWithTimelinesIssue"
+                    } ?: throw Exception("You must be loggedIn to access this page")
+
+            }
+    }
+
     @GetMapping("coi-with-timeline-issue/{id}")
     fun coiWithTimelineIssueDetails(model: Model, @PathVariable("id") id: Long): String {
         iPvocCoiTimelinesDataEntityRepo.findByIdOrNull(id)?.let { coi ->
@@ -250,6 +293,7 @@ class PvocMonitoringAgents(
                 model.addAttribute("orderNumber", generatingRandomInvoice("5"))
                 model.addAttribute("customerNumber", generatingRandomInvoice("5"))
                 model.addAttribute("penaltyInvoice", PvocPenaltyInvoicingEntity())
+                model.addAttribute("enquires" , coc.cocNumber?.let { iPvocQuerriesRepository.findAllByCocNumber(it) })
                 iUserRoleAssignmentsRepository.findByRoleIdAndStatus(role.id, 1)
                         ?.let { it ->
                             val userList = mutableListOf<Long?>()
@@ -259,9 +303,9 @@ class PvocMonitoringAgents(
                         }
                         ?: throw Exception("Role [id=${role.id}] not found, may not be active or assigned yet")
             } ?: throw Exception("User role name does not exist")
-            coc.cocNumber?.let {
+            coc.ucrNumber?.let {
                 model.addAttribute("shipmentMode", iCocsRepository.findFirstByCocNumber(it)?.shipmentMode)
-                rfcCocEntityRepo.findByCocNumber(it).let { rfcDoc ->
+                rfcCocEntityRepo.findByUcrNumber(it).let { rfcDoc ->
                     model.addAttribute("rfc", rfcDoc)
                     rfcDoc?.partner?.let { it2 ->
                         pvocPartnersRepository.findByIdOrNull(it2).let { partnerDetails ->
@@ -276,89 +320,87 @@ class PvocMonitoringAgents(
                                     partnerDetails?.partnerName?.let { it1 -> pvocAgentContractEntityRepo.findByServiceRenderedIdAndName(2, it1.toUpperCase())
                                     }?.let { pvocAgentContract ->
                                         val applicableRoyalty = pvocAgentContract.applicableRoyalty
-                                        pvocRevenueReportEntityRepo.findByCocNo(it)?.let { revenueReport ->
-                                            val inpectionFee = revenueReport.inspectionFee?.toLong()
-                                            val intialPenalty = inpectionFee?.times(10)
-                                            val latePenalties: Double
-                                            var totalPenalties = 0.0
-                                            val fobValue = revenueReport.fobValue?.toDouble()
-                                            var fobToKebs = 0.0
-                                            val royaltyValue = applicableRoyalty?.let { it1 -> inpectionFee?.times(it1) }?: 0
-                                            if (intialPenalty != null) {
-                                                latePenalties = when(partnerDetails.partnerName) {
-                                                    "QISJ" -> {
-                                                        royaltyValue.times(1.15).times(penaltyMonths)
+                                        coc.cocNumber?.let { it1 ->
+                                            pvocRevenueReportEntityRepo.findByCocNo(it1)?.let { revenueReport ->
+                                                val inpectionFee = revenueReport.inspectionFee?.toLong()
+                                                val intialPenalty = inpectionFee?.times(10)
+                                                val latePenalties: Double
+                                                var totalPenalties = 0.0
+                                                val fobValue = revenueReport.fobValue?.toDouble()
+                                                var fobToKebs = 0.0
+                                                val royaltyValue = applicableRoyalty?.let { it1 -> inpectionFee?.times(it1) }?: 0
+                                                if (intialPenalty != null) {
+                                                    latePenalties = when(partnerDetails.partnerName) {
+                                                        "QISJ" -> {
+                                                            royaltyValue.times(1.15).times(penaltyMonths)
+                                                        }
+                                                        "EAA" ->{
+                                                            royaltyValue.times(1.15).times(penaltyMonths)
+                                                        }
+                                                        "ATJ" ->{
+                                                            royaltyValue.times(1.15).times(penaltyMonths)
+                                                        }
+                                                        else -> {
+                                                            royaltyValue.times(0.10).times(penaltyMonths)
+                                                        }
                                                     }
-                                                    "EAA" ->{
-                                                        royaltyValue.times(1.15).times(penaltyMonths)
+                                                    totalPenalties = intialPenalty.plus(latePenalties)
+                                                }
+
+                                                model.addAttribute("totalPenalty",totalPenalties )
+
+
+                                                when(coc.route){
+                                                    "A" ->{
+                                                        fobValue?.let { fobVl ->
+                                                            fobToKebs = fobVl.times(0.6)
+                                                            if(fobToKebs > 2700){
+                                                                fobToKebs = 2700.0
+                                                            } else
+                                                                if(fobToKebs < 265) {
+                                                                    fobToKebs = 265.0
+                                                                }
+                                                        }?: throw Exception("This cannot be null")
                                                     }
-                                                    "ATJ" ->{
-                                                        royaltyValue.times(1.15).times(penaltyMonths)
+                                                    "B" -> {
+                                                        fobValue?.let { fobVl ->
+                                                            fobToKebs = fobVl.times(0.55)
+                                                            if(fobToKebs > 2700){
+                                                                fobToKebs = 2700.0
+                                                            } else
+                                                                if(fobToKebs < 265) {
+                                                                    fobToKebs = 265.0
+                                                                }
+                                                        }?: throw Exception("This cannot be null")
+                                                    }
+                                                    "C" -> {
+                                                        fobValue?.let { fobVl ->
+                                                            fobToKebs = fobVl.times(0.35)
+                                                            if(fobToKebs > 2700){
+                                                                fobToKebs = 2700.0
+                                                            } else
+                                                                if(fobToKebs < 265) {
+                                                                    fobToKebs = 265.0
+                                                                }
+                                                        }?: throw Exception("This cannot be null")
                                                     }
                                                     else -> {
-                                                        royaltyValue.times(0.10).times(penaltyMonths)
+                                                        fobValue?.let { fobVl ->
+                                                            fobToKebs = fobVl.times(0.75)
+                                                            if(fobToKebs > 2700){
+                                                                fobToKebs = 2700.0
+                                                            } else
+                                                                if(fobToKebs < 265) {
+                                                                    fobToKebs = 265.0
+                                                                }
+                                                        }?: throw Exception("This cannot be null")
                                                     }
                                                 }
-                                                totalPenalties = intialPenalty.plus(latePenalties)
+                                                model.addAttribute("rfcDoc",rfcDoc )
+                                                model.addAttribute("fobValue", fobToKebs )
+
                                             }
-
-                                            model.addAttribute("totalPenalty",totalPenalties )
-
-
-                                            when(coc.route){
-                                                "A" ->{
-                                                    fobValue?.let { fobVl ->
-                                                        fobToKebs = fobVl.times(0.6)
-                                                        if(fobToKebs > 2700){
-                                                            fobToKebs = 2700.0
-                                                        }
-                                                        else
-                                                            if(fobToKebs < 265) {
-                                                                fobToKebs = 265.0
-                                                            }
-                                                    }?: throw Exception("This cannot be null")
-                                                }
-                                                "B" -> {
-                                                    fobValue?.let { fobVl ->
-                                                        fobToKebs = fobVl.times(0.55)
-                                                        if(fobToKebs > 2700){
-                                                            fobToKebs = 2700.0
-                                                        }
-                                                        else
-                                                            if(fobToKebs < 265) {
-                                                                fobToKebs = 265.0
-                                                            }
-                                                    }?: throw Exception("This cannot be null")
-                                                }
-                                                "C" -> {
-                                                    fobValue?.let { fobVl ->
-                                                        fobToKebs = fobVl.times(0.35)
-                                                        if(fobToKebs > 2700){
-                                                            fobToKebs = 2700.0
-                                                        }
-                                                        else
-                                                            if(fobToKebs < 265) {
-                                                                fobToKebs = 265.0
-                                                            }
-                                                    }?: throw Exception("This cannot be null")
-                                                }
-                                                else -> {
-                                                    fobValue?.let { fobVl ->
-                                                        fobToKebs = fobVl.times(0.75)
-                                                        if(fobToKebs > 2700){
-                                                            fobToKebs = 2700.0
-                                                        }
-                                                        else
-                                                            if(fobToKebs < 265) {
-                                                                fobToKebs = 265.0
-                                                            }
-                                                    }?: throw Exception("This cannot be null")
-                                                }
-                                            }
-                                            model.addAttribute("rfcDoc",rfcDoc )
-                                            model.addAttribute("fobValue", fobToKebs )
-
-                                        }?: throw Exception("No report associated with $it coc number")
+                                        } ?: throw Exception("No report associated with $it coc number")
 
                                     }?: throw Exception("Agent with ${partnerDetails?.partnerName} name does not exist")
 
@@ -368,9 +410,6 @@ class PvocMonitoringAgents(
                         }
                     }
                 }
-
-                model.addAttribute("enquires" , it.let { it1 -> iPvocQuerriesRepository.findAllByCocNumber(it1) })
-
             }
             model.addAttribute("monitoring_status", iPvocAgentMonitoringStatusEntityRepo.findAllByStatus(1))
             model.addAttribute("coc", coc)
@@ -388,10 +427,20 @@ class PvocMonitoringAgents(
         SecurityContextHolder.getContext().authentication.let { n->
             iUserRepository.findByUserName(n.name).let { userDetails ->
                 with(penaltyInvoice){
+                    currency = "KSH"
+                    accountName = "KEBS"
+                    bankName = "KCB"
+                    bankCode = 254
+                    kebsAccountNumber = "123345677"
+                    usdAccountNumber = "1224566"
+                    branch = "Branch 1"
+                    vatNumber = "12456"
+                    swiftCode = "654322"
+                    pinNumber = "A1234559578"
                     createdOn = Timestamp.from(Instant.now())
                     createdBy = userDetails?.firstName +" "+userDetails?.lastName
                     pvocPenaltyInvoicingEntityRepo.save(penaltyInvoice)
-                    return "redirect:/api/di/pvoc/generate-penalty-invoice?id=${cocId}"
+                    return "redirect:/api/di/pvoc/coc-with-timeline-issue/${id}"
                 }
             }
 

@@ -129,18 +129,9 @@ class DestinationInspectionController(
                     cdDetails.approveRejectCdStatus == map.activeStatus -> {
                         if (cdStatusType != null) {
                             cdStatusType.statusCode?.let {
-                                cdDetails.approveRejectCdRemarks?.let { it1 ->
-                                    daoServices.submitCDStatusToKesWS(
-                                        it1,
-                                        it,
-                                        consignmentDocument.version.toString(),
-                                        consignmentDocument
-                                    )
-                                    cdDetails.cdStandard?.let { cdStd ->
-                                        cdDetails.approveRejectCdStatusType?.id?.let { it2 ->
-                                            daoServices.updateCDStatus(cdStd, it2)
-                                        }
-                                    }
+                                cdDetails.approveRejectCdRemarks?.let { it1 -> daoServices.submitCDStatusToKesWS(it1, it, consignmentDocument.version.toString(), consignmentDocument)
+
+                                    updatedCDDetails.cdStandard?.let { cdStd -> cdDetails.approveRejectCdStatusType?.id?.let { it2 -> daoServices.updateCDStatus(cdStd, it2) } }
                                 }
                             }
 
@@ -164,7 +155,7 @@ class DestinationInspectionController(
                                 daoServices.createCDTransactionLog(map, loggedInUser, cdID, it, it1)
                             }
                         }
-                        cdDetails.cdStandard?.let { cdStd ->
+                        updatedCDDetails.cdStandard?.let { cdStd ->
                             daoServices.updateCDStatus(cdStd, applicationMapProperties.mapDIStatusTypeAssignIoId)
                         }
                         //Start the relevant BPM
@@ -181,7 +172,7 @@ class DestinationInspectionController(
                                 daoServices.createCDTransactionLog(map, loggedInUser, cdID, it, it1)
                             }
                         }
-                        cdDetails.cdStandard?.let { cdStd ->
+                        updatedCDDetails.cdStandard?.let { cdStd ->
                             daoServices.updateCDStatus(cdStd, applicationMapProperties.mapDIStatusTypeReassignIoId)
                         }
                         //Start the relevant BPM
@@ -253,7 +244,7 @@ class DestinationInspectionController(
                                             )
                                             demandNote.id?.let { it1 ->
                                                 daoServices.sendDemandNotGeneratedToKWIS(it1)
-                                                cdDetails.cdStandard?.let { cdStd ->
+                                                updatedCDDetails.cdStandard?.let { cdStd ->
                                                     daoServices.updateCDStatus(
                                                         cdStd,
                                                         daoServices.awaitPaymentStatus.toLong()
@@ -349,7 +340,7 @@ class DestinationInspectionController(
                         if (localCoi != null) {
                             daoServices.localCoiItems(updatedCDDetails, localCoi, loggedInUser, map)
                             daoServices.sendLocalCoi(localCoi.id)
-                            cdDetails.cdStandard?.let { cdStd ->
+                            updatedCDDetails.cdStandard?.let { cdStd ->
                                 daoServices.updateCDStatus(
                                     cdStd,
                                     applicationMapProperties.mapDICdStatusTypeCOIGeneratedAndSendID
@@ -369,7 +360,7 @@ class DestinationInspectionController(
                                 }
                                 else -> {
                                     val localCoc = daoServices.createLocalCoc(loggedInUser, updatedCDDetails, map, "A")
-                                    cdDetails.cdStandard?.let { cdStd ->
+                                    updatedCDDetails.cdStandard?.let { cdStd ->
                                         daoServices.updateCDStatus(
                                             cdStd,
                                             applicationMapProperties.mapDICdStatusTypeCOCGeneratedAndSendID
@@ -385,7 +376,7 @@ class DestinationInspectionController(
                         } else if (updatedCDDetails.cdType?.let { daoServices.findCdTypeDetails(it).localCorStatus } == map.activeStatus) {
                             daoServices.generateCor(updatedCDDetails, map, loggedInUser).let {
                                 daoServices.submitCoRToKesWS(it)
-                                cdDetails.cdStandard?.let { cdStd ->
+                                updatedCDDetails.cdStandard?.let { cdStd ->
                                     daoServices.updateCDStatus(
                                         cdStd,
                                         applicationMapProperties.mapDICdStatusTypeCORGeneratedAndSendID

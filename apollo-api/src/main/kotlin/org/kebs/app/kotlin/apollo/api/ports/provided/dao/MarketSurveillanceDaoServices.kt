@@ -280,7 +280,7 @@ class MarketSurveillanceDaoServices(
                 comp.product?.let { commonDaoServices.findProductByID(it).name },
                 complaintLocationDetails?.productBrand,
                 complaintLocationDetails?.county?.let { commonDaoServices.findCountiesEntityByCountyId(it, map.activeStatus).county },
-                complaintLocationDetails?.town?.let { commonDaoServices.findTownEntityByTownId(it, map.activeStatus).town },
+                complaintLocationDetails?.town?.let { commonDaoServices.findTownEntityByTownId(it).town },
                 complaintLocationDetails?.marketCenter,
                 complaintLocationDetails?.building,
                 comp.transactionDate,

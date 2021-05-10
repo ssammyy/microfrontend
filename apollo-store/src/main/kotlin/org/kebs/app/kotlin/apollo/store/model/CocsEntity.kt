@@ -135,6 +135,7 @@ class CocsEntity : Serializable {
     var exporterName: String? = null
 
     @NotEmpty(message = "Required field")
+    @NotNull(message = "exporterPin param missing")
     @Column(name = "EXPORTER_PIN", nullable = false, length = 150)
     @Basic
     var exporterPin: String? = null

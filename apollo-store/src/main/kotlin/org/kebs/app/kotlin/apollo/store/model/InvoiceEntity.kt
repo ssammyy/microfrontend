@@ -43,6 +43,14 @@ class InvoiceEntity: Serializable {
     @Basic
     var tax: BigDecimal? = null
 
+    @Column(name = "PAYMENT_STATUS")
+    @Basic
+    var paymentStatus: Int? = 0
+
+    @Column(name = "INVOICE_BATCH_NUMBER_ID")
+    @Basic
+    var invoiceBatchNumberId: Long? = null
+
     @Column(name = "STANDARD_COST")
     @Basic
     var standardCost: BigDecimal? = null
@@ -73,6 +81,10 @@ class InvoiceEntity: Serializable {
     @Basic
     var permitId: Long? = null
 
+    @Column(name = "USER_ID")
+    @Basic
+    var userId: Long? = null
+
     /*
     @JoinColumn(name = "PERMIT_ID", referencedColumnName = "ID")
     @ManyToOne
@@ -94,6 +106,14 @@ class InvoiceEntity: Serializable {
     @Column(name = "GOODS")
     @Basic
     var goods: String? = null
+
+    @Column(name = "RECEIPT_NO")
+    @Basic
+    var receiptNo: String? = null
+
+    @Column(name = "INVOICE_NUMBER")
+    @Basic
+    var invoiceNumber: String? = null
 
     @Column(name = "CONDITIONS")
     @Basic
@@ -182,7 +202,12 @@ class InvoiceEntity: Serializable {
         return id == that.id &&
                 inspectionCost == that.inspectionCost &&
                 applicationCost == that.applicationCost &&
+                paymentStatus == that.paymentStatus &&
+                receiptNo == that.receiptNo &&
+                invoiceNumber == that.invoiceNumber &&
+                invoiceBatchNumberId == that.invoiceBatchNumberId &&
                 standardCost == that.standardCost &&
+                userId == that.userId &&
                 permitId == that.permitId &&
                 fmarkCost == that.fmarkCost &&
                 amountPaid == that.amountPaid &&
@@ -219,6 +244,6 @@ class InvoiceEntity: Serializable {
     }
 
     override fun hashCode(): Int {
-        return Objects.hash(id, status, paidOn, phone, fmarkCost, amountPaid, fuelInspectionCost, installationInspectionId, tax, standardCost, fmarkStatus, inspectionCost, applicationCost, expiryDate, manufacturer, businessName, goods, conditions, signature, varField1, varField2, varField3, varField4, varField5, varField6, varField7, varField8, varField9, varField10, createdBy, createdOn, modifiedBy, modifiedOn, deleteBy, deletedOn, amount, permitId)
+        return Objects.hash(id, status, receiptNo, invoiceNumber,paymentStatus, invoiceBatchNumberId, userId, paidOn, phone, fmarkCost, amountPaid, fuelInspectionCost, installationInspectionId, tax, standardCost, fmarkStatus, inspectionCost, applicationCost, expiryDate, manufacturer, businessName, goods, conditions, signature, varField1, varField2, varField3, varField4, varField5, varField6, varField7, varField8, varField9, varField10, createdBy, createdOn, modifiedBy, modifiedOn, deleteBy, deletedOn, amount, permitId)
     }
 }

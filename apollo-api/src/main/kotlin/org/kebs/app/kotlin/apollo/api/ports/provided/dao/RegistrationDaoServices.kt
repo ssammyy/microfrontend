@@ -37,6 +37,7 @@
 
 package org.kebs.app.kotlin.apollo.api.ports.provided.dao
 
+import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
 import org.flowable.engine.RuntimeService
 import org.flowable.engine.TaskService
@@ -45,8 +46,12 @@ import org.flowable.task.api.Task
 import org.kebs.app.kotlin.apollo.adaptor.kafka.producer.service.SendToKafkaQueue
 import org.kebs.app.kotlin.apollo.api.notifications.Notifications
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.StandardsLevyBpmn
+import org.kebs.app.kotlin.apollo.common.dto.UserCompanyEntityDto
 import org.kebs.app.kotlin.apollo.common.dto.UserEntityDto
 import org.kebs.app.kotlin.apollo.common.dto.UserPasswordVerificationValuesDto
+import org.kebs.app.kotlin.apollo.common.dto.UserRequestEntityDto
+import org.kebs.app.kotlin.apollo.common.dto.brs.response.BrsLookUpRecords
+import org.kebs.app.kotlin.apollo.common.dto.brs.response.BrsLookUpResponse
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.common.exceptions.MissingConfigurationException
 import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
@@ -54,6 +59,7 @@ import org.kebs.app.kotlin.apollo.common.exceptions.ServiceMapNotFoundException
 import org.kebs.app.kotlin.apollo.common.utils.generateRandomText
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.*
+import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileEntity
 import org.kebs.app.kotlin.apollo.store.repo.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
@@ -75,6 +81,7 @@ class RegistrationDaoServices(
     private val usersRepo: IUserRepository,
     private val applicationMapProperties: ApplicationMapProperties,
     private val userVerificationTokensRepository: IUserVerificationTokensRepository,
+    private val serviceRequestRepo: IServiceRequestsRepository,
 
     private val employeesRepo: IEmployeesRepository,
     private val userProfilesRepo: IUserProfilesRepository,
@@ -84,6 +91,7 @@ class RegistrationDaoServices(
     private val serviceMapsRepository: IServiceMapsRepository,
     private val notifications: Notifications,
     private val commonDaoServices: CommonDaoServices,
+    private val iCompanyProfileRepository: ICompanyProfileRepository,
 
     private val notificationsRepo: INotificationsRepository,
     private val workflowTransactionsRepository: IWorkflowTransactionsRepository,
@@ -120,6 +128,16 @@ class RegistrationDaoServices(
     @Lazy
     @Autowired
     lateinit var systemsAdminDaoService: SystemsAdminDaoService
+
+
+    @Autowired
+    lateinit var configurationRepository: IIntegrationConfigurationRepository
+
+    @Autowired
+    lateinit var daoService: DaoService
+
+    @Autowired
+    lateinit var logsRepo: IWorkflowTransactionsRepository
 
     /***********************************************************************************
      * NEW REGISTRATIONION SERVICES
@@ -377,104 +395,6 @@ class RegistrationDaoServices(
 
     }
 
-    //    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
-    fun registerManufacturer(
-        s: ServiceMapsEntity,
-        manufacturerContactsEntity: ManufacturerContactsEntity,
-        stdLevyNotificationFormEntity: StdLevyNotificationFormEntity,
-        manufacturersEntity: ManufacturersEntity,
-        manufacturerAddressesEntity: ManufacturerAddressesEntity,
-        userTypeId: Int?,
-        userId: Long,
-        yearlyTurnoverEntity: ManufacturePaymentDetailsEntity
-    ): ServiceRequestsEntity {
-
-        var sr = commonDaoServices.createServiceRequest(s)
-        try {
-
-//            val user = usersRepo.save(extractUserFromManufacturer(manufacturerContactsEntity, s, userTypeId))
-            val user = usersRepo.save(updateUserFromUserEntity(userId, s))
-            sr.payload = "User[id= ${user.id}]"
-            sr.names = "${user.firstName} ${user.lastName}"
-
-            val manufacturer = manufacturersInit(manufacturersEntity, sr, user, s)
-            sr.payload = "${sr.payload}: Manufacturer[id=${manufacturer.id}]"
-
-            val add = manufacturerAddressesInit(manufacturerAddressesEntity, manufacturer, s, sr)
-            sr.payload = "${sr.payload}: ManufacturerAddresses[id=${add.id}]"
-
-            val stdLevyForm = manufacturerStdLevyInit(stdLevyNotificationFormEntity, manufacturer, s, sr)
-            sr.payload = "${sr.payload}: ManufacturerStdLevyForm[id=${stdLevyForm.id}]"
-
-            val contact = contactDetailsRepository.save(
-                manufacturerContactsInit(
-                    manufacturerContactsEntity,
-                    sr,
-                    user,
-                    manufacturer
-                )
-            )
-            sr.payload = "${sr.payload}: ManufacturerContact[id=${contact.id}]"
-
-            val turnover = yearlyTurnoverInit(yearlyTurnoverEntity, manufacturer, s, sr)
-            sr.payload = "${sr.payload}: YearlyTurnover[id=${turnover.id}]"
-
-            // Mimic KRA table
-            val standardLevyPayments = StandardLevyPaymentsEntity()
-            val kra = kraInit(manufacturer, standardLevyPayments, turnover, sr, s)
-            sr.payload = "${sr.payload}: Amount to pay[id=${kra.id}]"
-
-            // Start standard levy bpmn registration process
-            standardsLevyBpmn
-                .let {
-                    it.startSlRegistrationProcess(kra.id, 681)
-                    it.slManufacturerRegistrationComplete(kra.id, true)
-                    it.slFillSl1CFormComplete(kra.id)
-                    it.slSubmitDetailsComplete(kra.id)
-                }
-
-            sr.responseStatus = sr.serviceMapsId?.successStatusCode
-            sr.responseMessage = "Success ${sr.payload}"
-            sr.status = s.successStatus
-
-            val variables = mutableMapOf<String, Any?>()
-            variables["map"] = s
-            variables["contact"] = manufacturerContactsEntity
-            variables["manufacturer"] = manufacturersEntity
-            variables["address"] = manufacturerAddressesEntity
-            variables["userTypeId"] = user.userTypes
-            variables["user"] = user
-            variables["continue"] = false
-
-            variables["transactionRef"] = sr.transactionReference
-            variables["sr"] = sr
-//            runtimeService.startProcessInstanceByKey(s.bpmnProcessKey, variables)
-            sr = serviceRequestsRepository.save(sr)
-            runtimeService
-                .createProcessInstanceBuilder()
-                .processDefinitionKey(s.bpmnProcessKey)
-                .businessKey(sr.transactionReference)
-                .variables(variables)
-                .start()
-            KotlinLogging.logger { }.info { "Started bpmn registration process" }
-
-//            sendToKafkaQueue.submitAsyncRequestToBus(manufacturer, s.serviceTopic)
-            sr.processingEndDate = Timestamp.from(Instant.now())
-
-        } catch (e: Exception) {
-            KotlinLogging.logger { }.error(e.message, e)
-//            KotlinLogging.logger { }.trace(e.message, e)
-            sr.status = sr.serviceMapsId?.exceptionStatus
-            sr.responseStatus = sr.serviceMapsId?.exceptionStatusCode
-            sr.responseMessage = e.message
-            sr = serviceRequestsRepository.save(sr)
-
-        }
-
-//        sr = serviceRequestsRepository.save(sr)
-        KotlinLogging.logger { }.trace("${sr.id} ${sr.responseStatus}")
-        return sr
-    }
 
     fun registerImporter(
         s: ServiceMapsEntity,
@@ -550,12 +470,12 @@ class RegistrationDaoServices(
                 firstName = u.firstName
                 lastName = u.lastName
                 email = u.email
-                personalContactNumber = u.personalContactNumber
+                personalContactNumber = commonDaoServices.makeKenyanMSISDNFormat(u.personalContactNumber)
                 typeOfUser = u.typeOfUser
                 userPinIdNumber = u.userPinIdNumber
                 userName = u.userPinIdNumber
                 when {
-                    up!=null -> {
+                    up != null -> {
                         title = u.title
                         email = u.email
                         firstName = u.firstName
@@ -570,17 +490,133 @@ class RegistrationDaoServices(
                         region = up.confirmRegionId
                         county = up.confirmCountyId
                         town = up.confirmTownId
-                        userRegNo ="KEBS#EMP${generateRandomText(5, s.secureRandom, s.messageDigestAlgorithm, true).toUpperCase()}"
+                        userRegNo = "KEBS#EMP${
+                            generateRandomText(
+                                5,
+                                s.secureRandom,
+                                s.messageDigestAlgorithm,
+                                true
+                            ).toUpperCase()
+                        }"
                     }
                     else -> {
-                        userRegNo = "KEBS${generateRandomText(5, s.secureRandom, s.messageDigestAlgorithm, true).toUpperCase()}"
+                        userRegNo =
+                            "KEBS${generateRandomText(5, s.secureRandom, s.messageDigestAlgorithm, true).toUpperCase()}"
                     }
                 }
             }
-            user = systemsAdminDaoService.updateUserDetails(user) ?: throw NullValueNotAllowedException("Registration failed")
+            user = systemsAdminDaoService.updateUserDetails(user)
+                ?: throw NullValueNotAllowedException("Registration failed")
 
             sr.payload = "User[id= ${user.id}]"
             sr.names = "${user.firstName} ${user.lastName}"
+
+            sr.responseStatus = sr.serviceMapsId?.successStatusCode
+            sr.responseMessage = "Success ${sr.payload}"
+            sr.status = s.successStatus
+            sr = serviceRequestsRepository.save(sr)
+            sr.processingEndDate = Timestamp.from(Instant.now())
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message, e)
+//            KotlinLogging.logger { }.trace(e.message, e)
+            sr.status = sr.serviceMapsId?.exceptionStatus
+            sr.responseStatus = sr.serviceMapsId?.exceptionStatusCode
+            sr.responseMessage = e.message
+            sr = serviceRequestsRepository.save(sr)
+
+        }
+
+        KotlinLogging.logger { }.trace("${sr.id} ${sr.responseStatus}")
+        return sr
+    }
+
+
+    fun addUserManufactureProfile(
+        s: ServiceMapsEntity,
+        u: UsersEntity,
+        cp: CompanyProfileEntity,
+        brs: BrsLookUpRecords
+    ): ServiceRequestsEntity {
+
+        var sr = commonDaoServices.createServiceRequest(s)
+        try {
+
+            val userCompanyDetails = UserCompanyEntityDto()
+            with(userCompanyDetails) {
+                name = brs.businessName
+                kraPin = brs.kraPin
+                userId = u.id
+                profileType = applicationMapProperties.mapUserRequestManufacture
+                registrationNumber = brs.registrationNumber
+                postalAddress = brs.postalAddress
+                companyEmail = brs.email
+                companyTelephone = brs.phoneNumber
+                yearlyTurnover = cp.yearlyTurnover
+                businessLines = cp.businessLines
+                businessNatures = cp.businessNatures
+                buildingName = cp.buildingName
+                directorIdNumber = cp.directorIdNumber
+                streetName = cp.streetName
+                factoryVisitDate = cp.factoryVisitDate
+                factoryVisitStatus = cp.factoryVisitStatus
+                county = cp.county
+                town = cp.town
+                region = county?.let { commonDaoServices.findCountiesEntityByCountyId(it, s.activeStatus).regionId }
+                manufactureStatus = 1
+
+            }
+            val userCompany = systemsAdminDaoService.updateUserCompanyDetails(userCompanyDetails)
+                ?: throw NullValueNotAllowedException("Registration failed")
+//            systemsAdminDaoService.assignRoleToUser(u.id?:throw NullValueNotAllowedException(""),applicationMapProperties.mapUserManufactureRoleID, s.activeStatus)
+
+            val userAssignRole = u.id?.let { systemsAdminDaoService.assignRoleToUser(it, applicationMapProperties.mapUserManufactureRoleID, s.activeStatus) }
+
+            var userUpdated = u.id?.let { commonDaoServices.findUserByID(it) }
+            userUpdated?.manufactureProfile = s.activeStatus
+
+            when {
+                userUpdated!=null -> {
+                    userUpdated = usersRepo.save(userUpdated)
+                }
+            }
+
+            sr.payload = "User and assigned role [id= ${userCompany.userId}]"
+            sr.names = "${userCompany.name} ${userCompany.kraPin}"
+
+            sr.responseStatus = sr.serviceMapsId?.successStatusCode
+            sr.responseMessage = "Success ${sr.payload}"
+            sr.status = s.successStatus
+            sr = serviceRequestsRepository.save(sr)
+            sr.processingEndDate = Timestamp.from(Instant.now())
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message, e)
+//            KotlinLogging.logger { }.trace(e.message, e)
+            sr.status = sr.serviceMapsId?.exceptionStatus
+            sr.responseStatus = sr.serviceMapsId?.exceptionStatusCode
+            sr.responseMessage = e.message
+            sr = serviceRequestsRepository.save(sr)
+
+        }
+
+        KotlinLogging.logger { }.trace("${sr.id} ${sr.responseStatus}")
+        return sr
+    }
+
+    fun addUserRequestDetails(
+        s: ServiceMapsEntity,
+        u: UsersEntity,
+        dto: UserRequestEntityDto
+    ): ServiceRequestsEntity {
+
+        var sr = commonDaoServices.createServiceRequest(s)
+        try {
+
+           val userRequest = systemsAdminDaoService.userRequest(dto)
+
+            sr.payload = "User Request [id= ${userRequest?.id}]"
+            sr.names = "${userRequest?.userId} ${userRequest?.userRoleAssigned}"
 
             sr.responseStatus = sr.serviceMapsId?.successStatusCode
             sr.responseMessage = "Success ${sr.payload}"
@@ -964,25 +1000,6 @@ class RegistrationDaoServices(
         return turnover
     }
 
-    private fun kraInit(
-        manufacturer: ManufacturersEntity,
-        standardLevyPayments: StandardLevyPaymentsEntity,
-        turnover: ManufacturePaymentDetailsEntity,
-        sr: ServiceRequestsEntity,
-        s: ServiceMapsEntity
-    ): StandardLevyPaymentsEntity {
-        var kra = standardLevyPayments
-        with(kra) {
-            manufacturerEntity = manufacturer
-            createdBy = sr.transactionReference
-            createdOn = Timestamp.from(Instant.now())
-            status = s.activeStatus
-            paymentAmount = calculateLevyPayable((turnover))
-            levyPayable = calculateLevyPayable(turnover)
-        }
-        kra = standardLevyPaymentsRepository.save(kra)
-        return kra
-    }
 
     private fun calculateLevyPayable(turnover: ManufacturePaymentDetailsEntity): BigDecimal {
         var amout: BigDecimal? = null
@@ -1059,10 +1076,48 @@ class RegistrationDaoServices(
     /**
      * Check BRS
      */
-    fun checkBrs(sr: ServiceRequestsEntity, user: UsersEntity, map: ServiceMapsEntity): Boolean {
-        val variables = mutableMapOf<String, Any?>()
-        variables["continue"] = true
-        return true
+    fun checkBrs(cp: CompanyProfileEntity): Pair<Boolean, BrsLookUpRecords?>{
+        var response = false
+        var brsResults: BrsLookUpRecords? = null
+//        user.id?.let {
+//            iCompanyProfileRepository.findByUserId(it)?.let { manufacturer ->
+                configurationRepository.findByIdOrNull(3L)
+                    ?.let { config ->
+                        config.createdOn = Timestamp.from(Instant.now())
+                        config.modifiedOn = Timestamp.from(Instant.now())
+                        configurationRepository.save(config)
+                        runBlocking {
+                            config.url?.let { url ->
+                                val log = daoService.createTransactionLog(0, "integ")
+                                val params = mapOf(Pair("registration_number", cp.registrationNumber))
+                                log.integrationRequest = "$params"
+                                val resp = daoService.getHttpResponseFromGetCall(true, url, config, null, params, null)
+                                val data = daoService.processResponses<BrsLookUpResponse>(resp, log, url, config)
+                                logsRepo.save(data.first)
+                                val brsResponse = data.second
+                                brsResponse
+                                    ?.let { r ->
+                                        if (r.count ?: 0 < 1) {
+                                            response = false
+                                        } else {
+                                            r.records?.get(0)?.partners?.forEach {
+                                                if(!response) {
+                                                    response = cp.directorIdNumber == it?.idNumber ?: 0
+                                                    brsResults = r.records?.get(0)
+                                                    KotlinLogging.logger { }.info { "MY UPDATED:  = ${cp.directorIdNumber} ======${it?.idNumber}" }
+                                                }
+                                            }
+                                        }
+                                        //
+                                    } ?: throw Exception("No Response")
+                            } ?: throw Exception("Pass a valid endpoint")
+                        }
+                    } ?: throw Exception("Company Does not exist")
+//                sr.varField3 = user.id.toString()
+//                serviceRequestRepo.save(sr)
+//            } ?: throw Exception("Company not found")
+//        } ?: throw Exception("User id is null")
+        return Pair(response, brsResults)
     }
 
 

@@ -24,6 +24,7 @@ package org.kebs.app.kotlin.apollo.config.properties.map.apps
 import com.ulisesbocchio.jasyptspringboot.annotation.EncryptablePropertySource
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Configuration
+import java.math.BigDecimal
 
 @Configuration
 @EncryptablePropertySource("file:\${CONFIG_PATH}/application-map.properties")
@@ -39,10 +40,58 @@ class ApplicationMapProperties {
     val mapPermitQuestionnaire: Int? = null
 
     @Value("\${org.kebs.app.kotlin.apollo.application.map.quality.assurance.processes}")
-    val mapQualityAssurance: Int? = null
+    val mapQualityAssurance: Int = 0
+
+    @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.manufacture.roleName}")
+    val mapQualityAssuranceManufactureRoleName: String = ""
+
+    @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.employee.roleName}")
+    val mapQualityAssuranceEmployeeRoleName: String = ""
+
+    @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.manufacture.viewPage}")
+    val mapQualityAssuranceManufactureViewPage: String = ""
 
     @Value("\${org.kebs.app.kotlin.apollo.application.map.user.registration}")
     val mapUserRegistration: Int = 0
+
+    @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.type.smark.mediumFirm.max.products}")
+    val mapQaSmarkMediumMaxProduct: Int = 0
+
+    @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.type.smark.juakaliFirm.max.products}")
+    val mapQaSmarkJuakaliMaxProduct: Int = 0
+
+    @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.type.dmark.id}")
+    val mapQAPermitTypeIDDmark: Long = 0L
+
+    @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.department.id.for.users}")
+    val mapQADepertmentId: Long = 0L
+
+    @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.designation.id.for.QAM}")
+    val mapQADesignationIDForQAMId: Long = 0L
+
+    @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.designation.id.for.QAO}")
+    val mapQADesignationIDForQAOId: Long = 0L
+
+    @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.designation.id.for.Assessor}")
+    val mapQADesignationIDForAssessorId: Long = 0L
+
+    @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.designation.id.for.PAC}")
+    val mapQADesignationIDForPacSecId: Long = 0L
+
+    @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.designation.id.for.HOD}")
+    val mapQADesignationIDForHODId: Long = 0L
+
+    @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.designation.id.for.PSC}")
+    val mapQADesignationIDForPSCId: Long = 0L
+
+    @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.designation.id.for.PCM}")
+    val mapQADesignationIDForPCMId: Long = 0L
+
+    @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.type.smark.id}")
+    val mapQAPermitTypeIdSmark: Long = 0L
+
+    @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.type.fmark.id}")
+    val mapQAPermitTypeIdFmark: Long = 0L
 
     @Value("\${org.kebs.app.kotlin.apollo.application.map.importer.details}")
     val mapImporterDetails: Int = 0
@@ -53,11 +102,48 @@ class ApplicationMapProperties {
     @Value("\${org.kebs.app.kotlin.apollo.application.map.fuel.inspection}")
     val mapQaFuelInspection: Int = 0
 
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.tax.rate}")
+    val mapKebsTaxRate: BigDecimal = 0.0000.toBigDecimal()
+
+    @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.type.smark.mediumFirm.extra.products.cost}")
+    val mapQaSmarkMediumExtraProductCost: BigDecimal = 0.0000.toBigDecimal()
+
+    @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.type.smark.juakaliFirm.extra.products.cost}")
+    val mapQaSmarkJuakaliExtraProductCost: BigDecimal = 0.0000.toBigDecimal()
+
+    @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.type.fmark.domestic.amountToPay}")
+    val mapQaDmarkDomesticAmountToPay: BigDecimal = 0.0000.toBigDecimal()
+
+    @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.type.fmark.foregin.amountToPay}")
+    val mapQaDmarkForeginAmountToPay: BigDecimal = 0.0000.toBigDecimal()
+
+    @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.type.fmark.amountToPay}")
+    val mapQaFmarkAmountToPay: BigDecimal = 0.0000.toBigDecimal()
+
+    @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.type.fmark.type.foregin.status}")
+    val mapQaDmarkForeginStatus: Int = 0
+
+    @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.type.fmark.type.domestic.status}")
+    val mapQaDmarkDomesticStatus: Int = 0
+
+    @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.type.smark.turnover.for.largefirms.ID}")
+    val mapQASmarkLargeFirmsTurnOverId: Long = 0L
+
+    @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.type.smark.turnover.for.mediumFirms.ID}")
+    val mapQASmarkMediumTurnOverId: Long = 0L
+
+    @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.type.smark.turnover.for.juakaliFirm.ID}")
+    val mapQASmarkJuakaliTurnOverId: Long = 0L
+
     @Value("\${org.kebs.app.kotlin.apollo.application.map.user.request.importer}")
     val mapUserRequestImporter: Long = 0L
 
     @Value("\${org.kebs.app.kotlin.apollo.application.map.user.request.manufacture}")
     val mapUserRequestManufacture: Long = 0L
+
+
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.user.manufacture.role.id}")
+    val mapUserManufactureRoleID: Long = 0L
 
     @Value("\${org.kebs.app.kotlin.apollo.application.map.standards.development}")
     val mapStandardsDevelopment: Int = 0
@@ -120,14 +206,29 @@ class ApplicationMapProperties {
     @Value("\${org.kebs.app.kotlin.apollo.application.map.mpesa.config.integration}")
     val mapMpesaConfigIntegration: Long = 0L
 
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.sms.config.integration}")
+    val mapSmsConfigIntegration: Long = 0L
+
     @Value("\${org.kebs.app.kotlin.apollo.application.map.kesws}")
     val mapKesws: Int = 0
+
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.uss.rate.name}")
+    val mapUssRateName: String = ""
 
     @Value("\${org.kebs.app.kotlin.apollo.application.map.kesws.doc.type}")
     val mapKeswsDocType: String = ""
 
     @Value("\${org.kebs.app.kotlin.apollo.resources.static.images.kebs.logo.path}")
     val mapKebsLogoPath: String = ""
+
+    @Value("\${org.kebs.app.kotlin.apollo.resources.static.images.checkmark.path}")
+    val mapCheckmarkImagePath: String = ""
+
+    @Value("\${org.kebs.app.kotlin.apollo.resources.static.images.dmark.image.path}")
+    val mapDmarkImagePath: String = ""
+
+    @Value("\${org.kebs.app.kotlin.apollo.resources.static.images.smark.image.path}")
+    val mapSmarkImagePath: String = ""
 
     @Value("\${org.kebs.app.kotlin.apollo.resources.static.images.mpesa.logo.path}")
     val mapMPESALogoPath: String = ""
@@ -144,8 +245,26 @@ class ApplicationMapProperties {
     @Value("\${org.kebs.app.kotlin.apollo.resources.report.demand.note.path}")
     val mapReportDemandNotePath: String = ""
 
+    @Value("\${org.kebs.app.kotlin.apollo.resources.report.ministry.checklist.report.path}")
+    val mapReportMinistryChecklistPath: String = ""
+
+    @Value("\${org.kebs.app.kotlin.apollo.resources.report.motor.vehicle.checklist.report.path}")
+    val mapReportMotorVehicleChecklistPath: String = ""
+
+    @Value("\${org.kebs.app.kotlin.apollo.resources.report.local.cor.report.path}")
+    val mapReportLocalCorPath: String = ""
+
     @Value("\${org.kebs.app.kotlin.apollo.resources.report.demand.note.with.item.path}")
     val mapReportDemandNoteWithItemsPath: String = ""
+
+    @Value("\${org.kebs.app.kotlin.apollo.resources.report.pac.summary.report.path}")
+    val mapReportPacSummaryReportPath: String = ""
+
+    @Value("\${org.kebs.app.kotlin.apollo.resources.report.qa.dmark.permit.report.path}")
+    val mapReportDmarkPermitReportPath: String = ""
+
+    @Value("\${org.kebs.app.kotlin.apollo.resources.report.qa.smark.permit.report.path}")
+    val mapReportSmarkPermitReportPath: String = ""
 
     @Value("\${destination.inspection.cd.status.type.coc.generated.and.send}")
     val mapDICdStatusTypeCOCGeneratedAndSendID: Long = 0L

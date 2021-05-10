@@ -196,6 +196,15 @@ class ControllerRoutes {
         }
     }
 
+    @Bean
+    fun pvocWaivers(handler: PvocComplaintHandler) = router {
+        "/".nest {
+            GET("api/di/pvoc/waivers-application")(handler::waiversForm)
+        }
+    }
+
+
+
 
     @Bean
     fun tasksRoute(handler: BpmnTasksHandler) =
@@ -209,7 +218,7 @@ class ControllerRoutes {
             }
 
     @Bean
-    fun userRoute(handler: userHandler) =
+    fun userRoute(handler: UserHandler) =
             router {
                 "/api/user".nest {
                     GET("/user-notifications", handler::notificationList)
@@ -235,7 +244,7 @@ class ControllerRoutes {
                 GET(pattern = "fail", f = handler::registrationFailureNotificationView)
             }
             GET(pattern = "/authorize", f = handler::authorizeUserAccountView)
-
+            GET(pattern = "/otp-confirmation", f = handler::confirmOtpView)
             GET(pattern = "/forgot-password", f = handler::forgotPasswordView)
             POST(pattern = "/forgotPassword", f = handler::forgotPasswordAction)
             GET(pattern = "/reset", f = handler::resetPasswordView)
@@ -272,7 +281,7 @@ class ControllerRoutes {
         "/auth".nest {
             GET("logout", handler::signOut)
             GET("login", handler::loginPageView)
-
+            GET(pattern = "/otp-confirmation", f = handler::confirmOtpView)
         }
 
 //        POST(pattern = "/api/signup/manufacturer", f = handler::signupManufacturer)
@@ -294,18 +303,38 @@ class ControllerRoutes {
     }
 
 
-    /*
+
     @Bean
     fun qualityAssuranceRoutes(handler: QualityAssuranceHandler) = router {
-        "/api/v1/permit".nest {
+        "/api/qa".nest {
             println("**************************")
             GET("/home", handler::home)
             GET("/permits-list", handler::permitList)
-            GET("/permit-details", handler::newPermit)
+            GET("/permit-details", handler::permitDetails)
+            GET("/view/fmark-generated", handler::permitViewSmarkDetails)
             GET("/new-permit", handler::newPermit)
+            GET("/new-sta3", handler::newSta3)
+            GET("/new-sta10", handler::newSta10)
+            GET("/new-sta10-officer", handler::newSta10Officer)
+            GET("/view-sta3", handler::viewSta3)
+            GET("/view-sta10", handler::viewSta10)
+            GET("/new-sta10-submit", handler::submitSta10)
+            GET("/new-scheme-of-supervision", handler::newSchemeSupervision)
+            GET("/update-scheme-of-supervision", handler::updateSchemeSupervision)
+            GET("/scheme-of-supervision", handler::generatedSchemeSupervision)
+            GET("/product-quality-status", handler::generateProductQualityStatus)
+            GET("/invoice-details", handler::getInvoiceDetails)
+//
+//            "/inspection".nest {
+//                GET("/check-list", handler::inspectionDetails)
+//                GET("/sample-collection", handler::inspectionDetails)
+//                GET("/sample-submission", handler::inspectionDetails)
+//                GET("/item-report", handler::inspectionChecklistReportDetails)
+//                GET("/item/sample-Submit-param/bs-number", handler::inspectionDetails)
+//            }
         }
     }
-    */
+
 
     @Bean
     fun destinationInspectionRoutes(handler: DestinationInspectionHandler) = router {
@@ -435,6 +464,7 @@ class ControllerRoutes {
             GET("/home", handler::sysadminHome)
             "/ui".nest {
                 GET("/rbac-user-roles", handler::rbacUserRoles)
+                GET("/rbac-user-requests", handler::rbacUserRequests)
                 GET("/rbac-role-authorities", handler::rbacRoleAuthorities)
                 GET("/users-crud", handler::usersCrud)
                 GET("/roles-crud", handler::rolesCrud)
@@ -525,6 +555,7 @@ class ControllerRoutes {
             GET("/manufacturers", handler::loadManufacturers)
             GET("/manufacturer", handler::singleManufacturer)
             GET("/schedule", handler::scheduleVisit)
+            POST("/schedule", handler::actionScheduleVisit)
             GET("/general-actions", handler::generalActions)
         }
 
