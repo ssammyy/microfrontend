@@ -149,7 +149,7 @@ class StandardLevyHandler(
 
                                                 }
                                                 "load_levy_payments" -> {
-                                                    standardLevyPaymentsRepository.findAllByOrderByIdDesc()
+                                                    standardLevyPaymentsRepository.findAllByStatusOrderByIdDesc(1)
                                                         .let { payments ->
                                                             KotlinLogging.logger { }
                                                                 .info("Records found ${payments?.count()}")
@@ -159,6 +159,21 @@ class StandardLevyHandler(
                                                             ok().render(allPayments, req.attributes())
                                                         }
                                                 }
+
+                                                "load_levy_no_payments" -> {
+                                                    standardLevyPaymentsRepository.findAllByStatusOrderByIdDesc(0)
+                                                        .let { payments ->
+                                                            KotlinLogging.logger { }
+                                                                .info("Records found ${payments?.count()}")
+                                                            KotlinLogging.logger { }.info("Records found ${payments?.count()}")
+                                                            req.attributes()["payments"] = payments
+                                                            req.attributes()["map"] = map
+                                                            ok().render(allPayments, req.attributes())
+                                                        }
+                                                }
+
+
+
                                                 else -> {
                                                     redirectAttributes?.addFlashAttribute("error", "")
                                                     ok().render("redirect:/sl", req.attributes())
@@ -211,6 +226,7 @@ class StandardLevyHandler(
                                                                     ?: throw ExpectedDataNotFound("INVALID ID")
                                                             )
                                                                 .let { paymentHistory ->
+                                                                    KotlinLogging.logger {  }.info { "paymentHistory " }
                                                                     req.attributes()["paymentHistory"] = paymentHistory
                                                                     KotlinLogging.logger { }
                                                                         .info { "Payment history, $paymentHistory" }
@@ -245,8 +261,9 @@ class StandardLevyHandler(
 
 
     @PreAuthorize("hasAuthority('SL_SCHEDULE_FACTORY_VISIT_MANUFACTURER') and hasAuthority('SL_MANUFACTURERS_VIEW')")
-    fun scheduleVisit(req: ServerRequest): ServerResponse =
-        try {
+    fun scheduleVisit(req: ServerRequest): ServerResponse
+         {
+            KotlinLogging.logger {  }.info { "App ID ==> "+ appId }
             serviceMapsRepository.findByIdOrNull(appId)
                 ?.let { map ->
                     req.paramOrNull("manufacturerId")
@@ -255,6 +272,7 @@ class StandardLevyHandler(
                                 ?.let { manufacturer ->
                                     req.paramOrNull("scheduleDate")
                                         ?.let { scheduleDate ->
+                                            KotlinLogging.logger {  }.info { "Scheduled date  ==> "+ scheduleDate }
                                             with(manufacturer) {
                                                 factoryVisitDate = scheduleDate
                                                 factoryVisitStatus = map.activeStatus
@@ -283,12 +301,15 @@ class StandardLevyHandler(
                 }
                 ?: throw ServiceMapNotFoundException("Missing application mapping for [id=$appId], recheck configuration")
 
-        } catch (e: Exception) {
-            KotlinLogging.logger { }.error(e.message)
-            KotlinLogging.logger { }.debug(e.message, e)
-            ServerResponse.badRequest().body(e.message ?: "Unknown error")
-
         }
+
+    @PreAuthorize("hasAuthority('SL_SCHEDULE_FACTORY_VISIT_MANUFACTURER') and hasAuthority('SL_MANUFACTURERS_VIEW')")
+    fun paidLevies(req: ServerRequest) {
+        standardLevyPaymentsRepository.findAllByStatusOrderByIdDesc(1)?.let { paidLevies ->
+            req.attributes()["paidLevies"] = paidLevies
+        }
+        ok().render("destination-inspection/pvoc/complaint/ComplaintsForm", req.attributes())
+    }
 
     @PreAuthorize("hasAuthority('SL_SCHEDULE_FACTORY_VISIT_MANUFACTURER') and hasAuthority('SL_MANUFACTURERS_VIEW')")
     fun actionScheduleVisit(req: ServerRequest): ServerResponse =
