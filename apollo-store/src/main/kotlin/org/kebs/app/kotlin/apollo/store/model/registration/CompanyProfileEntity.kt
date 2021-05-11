@@ -173,6 +173,14 @@ class CompanyProfileEntity : Serializable {
     @Basic
     var factoryVisitStatus: Int? = null
 
+    @Column(name = "OWNERSHIP")
+    @Basic
+    var ownership: String? = null
+
+    @Column(name = "CLOSURE_OF_OPERATIONS")
+    @Basic
+    var closureOfOperations: Int? = null
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other == null || javaClass != other.javaClass) return false

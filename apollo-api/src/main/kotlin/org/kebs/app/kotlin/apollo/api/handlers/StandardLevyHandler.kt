@@ -120,9 +120,9 @@ class StandardLevyHandler(
                                                                                     ?.let { paymentsEntity ->
                                                                                         tasks.add(
                                                                                             commonDaoServices.findCompanyProfileWithID(
-                                                                                                paymentsEntity.manufacturerEntity
+                                                                                                paymentsEntity.manufacturerEntity?.id
                                                                                                     ?: throw ExpectedDataNotFound(
-                                                                                                        "INVALID MANUFACTURE ID"
+                                                                                                        "INVALID MANUFACTURER ID"
                                                                                                     )
                                                                                             )
                                                                                         )
@@ -207,7 +207,7 @@ class StandardLevyHandler(
                                                                 }
 
                                                             standardLevyPaymentsRepository.findByManufacturerEntity(
-                                                                manufacturer.id
+                                                                manufacturer
                                                                     ?: throw ExpectedDataNotFound("INVALID ID")
                                                             )
                                                                 .let { paymentHistory ->
