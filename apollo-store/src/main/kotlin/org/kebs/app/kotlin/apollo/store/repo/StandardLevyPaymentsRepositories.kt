@@ -13,6 +13,7 @@ interface IStandardLevyPaymentsRepository : HazelcastRepository<StandardLevyPaym
     fun findByManufacturerEntityOrderByIdDesc(manufacturerEntity: Long): List<StandardLevyPaymentsEntity>?
     fun findByManufacturerEntity(manufacturerEntity: CompanyProfileEntity): StandardLevyPaymentsEntity?
     fun findAllByOrderByIdDesc(): List<StandardLevyPaymentsEntity>?
+    fun findAllByStatusOrderByIdDesc(status: Int) : List<StandardLevyPaymentsEntity>?
 //    fun findByOrderById(page: Pageable?): List<StandardLevyPaymentsEntity>?
 }
 
