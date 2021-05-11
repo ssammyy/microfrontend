@@ -276,6 +276,8 @@ class StandardLevyHandler(
                             manufacturerDetails.factoryVisitDate = req.paramOrNull("scheduleDate")
                             manufacturerDetails.factoryVisitStatus = map.activeStatus
                             manufacturerRepository.save(manufacturerDetails)
+                            manufacturerDetails.id.let { standardsLevyBpmn.startSlSiteVisitProcess(manufacturerDetails.id, 54) }
+                            manufacturerDetails.id.let { standardsLevyBpmn.slsvQueryManufacturerDetailsComplete(it) }
                             manufacturerDetails.id.let { standardsLevyBpmn.slsvScheduleVisitComplete(it) }
                             redirectAttributes?.addFlashAttribute(
                                 "alert",
