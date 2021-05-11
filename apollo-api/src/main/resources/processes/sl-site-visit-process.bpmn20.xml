@@ -25,7 +25,7 @@
             </extensionElements>
         </userTask>
         <sequenceFlow id="flow4" sourceRef="sLsVPrepareVisitReport" targetRef="sLsVApproveReportAssMgr"></sequenceFlow>
-        <exclusiveGateway id="exclusivegateway1" name="Exclusive Gateway"></exclusiveGateway>
+        <exclusiveGateway id="exclusivegateway1" name="Exclusive Gateway" default="flow6"></exclusiveGateway>
         <sequenceFlow id="flow5" sourceRef="sLsVApproveReportAssMgr" targetRef="exclusivegateway1"></sequenceFlow>
         <userTask id="sLsVApproveReportMgr" name="Mgr approve report">
             <extensionElements>
@@ -34,7 +34,7 @@
         </userTask>
         <sequenceFlow id="flow6" sourceRef="exclusivegateway1" targetRef="sLsVApproveReportMgr" skipExpression="${approvedAsstMgr==1}"></sequenceFlow>
         <sequenceFlow id="flow7" sourceRef="exclusivegateway1" targetRef="sLsVPrepareVisitReport" skipExpression="${approvedAsstMgr==0}"></sequenceFlow>
-        <exclusiveGateway id="exclusivegateway2" name="Exclusive Gateway"></exclusiveGateway>
+        <exclusiveGateway id="exclusivegateway2" name="Exclusive Gateway" default="flow9"></exclusiveGateway>
         <sequenceFlow id="flow8" sourceRef="sLsVApproveReportMgr" targetRef="exclusivegateway2"></sequenceFlow>
         <userTask id="sLsVDraftFeedbackAndShare" name="Draft Feedback and Share">
             <extensionElements>
