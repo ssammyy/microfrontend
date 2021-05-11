@@ -503,6 +503,7 @@ class QADaoServices(
 
             sr.payload = "UPDATED Scheme Saved [ID ${foundSSC.id} and ${foundSSC.permitId}]"
             sr.names = "${foundSSC.createdBy}"
+            sr.varField1 = "${foundSSC.permitId}"
 
             sr.responseStatus = sr.serviceMapsId?.successStatusCode
             sr.responseMessage = "Success ${sr.payload}"

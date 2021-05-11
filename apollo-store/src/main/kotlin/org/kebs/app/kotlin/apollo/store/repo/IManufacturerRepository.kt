@@ -23,6 +23,7 @@ package org.kebs.app.kotlin.apollo.store.repo
 
 import org.kebs.app.kotlin.apollo.store.model.*
 import org.kebs.app.kotlin.apollo.store.model.qa.ManufacturePlantDetailsEntity
+import org.kebs.app.kotlin.apollo.store.model.qa.QaProcessStatusEntity
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.hazelcast.repository.HazelcastRepository
@@ -63,6 +64,13 @@ interface IManufacturerProductBrandRepository : HazelcastRepository<ManufactureB
 interface IManufacturerBranchRepository : HazelcastRepository<ManufactureBranchEntity, Long> {
     fun findByBranchName(branchName: String): ManufactureBranchEntity?
     fun findByManufacturerIdAndStatus(manufacturerId: Long, status: Int): List<ManufactureBranchEntity>
+}
+
+@Repository
+interface IQaProcessStatusRepository : HazelcastRepository<QaProcessStatusEntity, Long> {
+    fun findByProcessStatusName(processStatusName: String): QaProcessStatusEntity?
+    fun findByProcessStatusNameAndStatus(processStatusName: String, status: Long): QaProcessStatusEntity?
+    fun findByStatus(status: Long): List<QaProcessStatusEntity>?
 }
 
 @Repository
