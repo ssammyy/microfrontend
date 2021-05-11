@@ -26,6 +26,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes
 import java.math.BigDecimal
 import java.sql.Date
 import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 
 @Component
@@ -272,13 +273,13 @@ class StandardLevyHandler(
             serviceMapsRepository.findByIdOrNull(appId)
                 ?.let { map ->
                     req.pathVariable("manufacturer").let{ manufacturerId ->
-                        manufacturerRepository.findByIdOrNull(manufacturerId.toLong())?.let { manufacturerDetails ->
-                            manufacturerDetails.factoryVisitDate = req.paramOrNull("scheduleDate")
+                        commonDaoServices.findCompanyProfileWithID(manufacturerId.toLong())?.let { manufacturerDetails ->
+                            manufacturerDetails.factoryVisitDate =  LocalDate.parse(req.paramOrNull("scheduleDate"), DateTimeFormatter.ofPattern("dd-MM-yyyy")) as Date
                             manufacturerDetails.factoryVisitStatus = map.activeStatus
-                            manufacturerRepository.save(manufacturerDetails)
-                            manufacturerDetails.id.let { standardsLevyBpmn.startSlSiteVisitProcess(manufacturerDetails.id, 54) }
-                            manufacturerDetails.id.let { standardsLevyBpmn.slsvQueryManufacturerDetailsComplete(it) }
-                            manufacturerDetails.id.let { standardsLevyBpmn.slsvScheduleVisitComplete(it) }
+                            companyProfileRepo.save(manufacturerDetails)
+                            //manufacturerDetails.id.let { standardsLevyBpmn.startSlSiteVisitProcess(manufacturerDetails.id, 54) }
+                            //manufacturerDetails.id.let { standardsLevyBpmn.slsvQueryManufacturerDetailsComplete(it) }
+                            //manufacturerDetails.id.let { standardsLevyBpmn.slsvScheduleVisitComplete(it) }
                             redirectAttributes?.addFlashAttribute(
                                 "alert",
                                 "You have scheduled the factory visit"
