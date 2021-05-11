@@ -37,6 +37,16 @@ import {StdTscSecTasksComponent} from "./components/standards-development/std-ts
 import {RequestStandardFormComponent} from "./components/standards-development/standard-request/request-standard-form/request-standard-form.component";
 import {StandardsDevelopmentComponent} from "./components/standards-development/standards-development.component";
 import {StdTcTasksComponent} from "./components/standards-development/std-tc-tasks/std-tc-tasks.component";
+import {CsRequestFormComponent} from "./components/standards-development/company-standard-request/cs-request-form/cs-request-form.component";
+import {CompanyStandardRequestComponent} from "./components/standards-development/company-standard-request/company-standard-request.component";
+import {ComStdRequestListComponent} from "./components/standards-development/com-std-request-list/com-std-request-list.component";
+import {NwaJustificationFormComponent} from "./components/standards-development/nwa-justification-form/nwa-justification-form.component";
+import {NwaJustificationTasksComponent} from "./components/standards-development/nwa-justification-tasks/nwa-justification-tasks.component";
+import {NwaKnwSecTasksComponent} from "./components/standards-development/nwa-knw-sec-tasks/nwa-knw-sec-tasks.component";
+import {NwaDiSdtTasksComponent} from "./components/standards-development/nwa-di-sdt-tasks/nwa-di-sdt-tasks.component";
+import {NwaHopTasksComponent} from "./components/standards-development/nwa-hop-tasks/nwa-hop-tasks.component";
+import {SacSecTasksComponent} from "./components/standards-development/sac-sec-tasks/sac-sec-tasks.component";
+import {NwaHoSicTasksComponent} from "./components/standards-development/nwa-ho-sic-tasks/nwa-ho-sic-tasks.component";
 import {InformationcheckComponent} from "./components/standards-development/informationcheck/informationcheck.component";
 import {EnquiryComponent} from "./components/standards-development/sd-national-enquiry-point/enquiry/enquiry.component";
 import {SuccessComponent} from "./components/standards-development/sd-national-enquiry-point/success/success.component";
@@ -60,6 +70,7 @@ import {HodjoinrequestComponent} from "./components/standards-development/hodjoi
 import {SicjoinrequestComponent} from "./components/standards-development/sicjoinrequest/sicjoinrequest.component";
 import {SicpaymentconfirmComponent} from "./components/standards-development/sicpaymentconfirm/sicpaymentconfirm.component";
 import {SchememembershipComponent} from "./components/standards-development/schememembership/schememembership/schememembership.component";
+
 
 const routes: Routes = [
   // { path: 'login-signup', component: LoginSignupComponent },
@@ -232,20 +243,56 @@ const routes: Routes = [
     path: 'request-standard', component: StandardRequestComponent,
     children: [{path: '', component: RequestStandardFormComponent}]
   },
-
-  {
-    path: 'std-tsc-sec-task', component: StandardsDevelopmentComponent,
-    children: [{path: '', component: StdTscSecTasksComponent}]
-  },
   {
     path: 'standard-task', component: StandardsDevelopmentComponent,
     children: [{path: '', component: StandardTaskComponent}]
+  },
+  {
+    path: 'std-tsc-sec-task', component: StandardsDevelopmentComponent,
+    children: [{path: '', component: StdTscSecTasksComponent}]
   },
   {
     path: 'std-tc-task', component: StandardsDevelopmentComponent,
     children: [{path: '', component: StdTcTasksComponent}]
   },
   {
+    path: 'com-std-request', component: CompanyStandardRequestComponent,
+    children: [{path: '', component: CsRequestFormComponent}]
+  },
+  {
+    path: 'com-std-list', component: StandardsDevelopmentComponent,
+    children: [{path: '', component: ComStdRequestListComponent}]
+  },
+  {
+    path: 'nwa-prepare-justification', component: StandardsDevelopmentComponent,
+    children: [{path: '', component: NwaJustificationFormComponent}]
+  },
+  {
+    path: 'nwa-justification-tasks', component: StandardsDevelopmentComponent,
+    children: [{path: '', component: NwaJustificationTasksComponent}]
+  },
+  {
+    path: 'nwa-knw-sec-tasks', component: StandardsDevelopmentComponent,
+    children: [{path: '', component: NwaKnwSecTasksComponent}]
+  },
+  {
+    path: 'nwa-di-sdt-tasks', component: StandardsDevelopmentComponent,
+    children: [{path: '', component: NwaDiSdtTasksComponent}]
+  },
+  {
+    path: 'nwa-hop-tasks', component: StandardsDevelopmentComponent,
+    children: [{path: '', component: NwaHopTasksComponent}]
+  },
+  {
+    path: 'sac-sec-tasks', component: StandardsDevelopmentComponent,
+    children: [{path: '', component: SacSecTasksComponent}]
+  },
+  {
+    path: 'ho-sic-tasks', component: StandardsDevelopmentComponent,
+    children: [{path: '', component: NwaHoSicTasksComponent}]
+  },
+
+    {
     path: 'divisionresponse', component: StandardsDevelopmentComponent,
     children: [{path: '', component: DivisionresponseComponent}]
   },

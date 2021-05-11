@@ -1,0 +1,144 @@
+<div class="container" id="main-container">
+<div class="justify-content-between d-flex flex-wrap align-items-center mt-5">
+<div class="d-flex flex-wrap align-items-center">
+<h5 class="mr-4">All Tasks</h5>
+<div class="resolved-pill">
+<p>{{tasks.length}}</p>
+</div>
+</div>
+
+<button class="btn btn-sm btn-outline-secondary mr-2">EXPORT</button>
+
+</div>
+<table class="table-hover">
+<thead>
+<th class="knw">Title</th>
+<th class="sl">Reference Material</th>
+<th class="requestNumber">Scope</th>
+<th class="department">Normative Reference</th>
+<th class="issuesAddressed">Issues Addressed</th>
+<th class="referenceMaterial">Clause</th>
+<th class="referenceMaterial">Special</th>
+<th class="action">Action</th>
+<th></th>
+</thead>
+<tbody>
+<tr  *ngFor="let task of tasks | paginate: { itemsPerPage: 10, currentPage: p2 }">
+<td>{{task.taskData.title}}</td>
+<td>{{task.taskData.referenceMaterial}}</td>
+<td>{{task.taskData.scope}}</td>
+<td>{{task.taskData.normativeReference}}</td>
+<td>{{task.taskData.issuesAddressed}}</td>
+  <td>{{task.taskData.clause}}</td>
+  <td>{{task.taskData.special}}</td>
+  <td *ngIf="task.name ==='Editing of FDKNWA (Workshop Draft)'"><a  (click)="onOpenModal(task,'edit')" class="btn btn-primary btn-sm tooltips" data-placement="top" style="width: 90px; " data-original-title="Edit"> Edit Draft</a></td>
+  <td *ngIf="task.name ==='Upload KNWA to Standards Database'"><a  (click)="onOpenModal(task,'upload')" class="btn btn-success btn-sm tooltips" data-placement="top" style="width: 90px;" data-original-title="Edit">Save Standard</a></td>
+</tr>
+</tbody>
+</table>
+
+<pagination-controls (pageChange)="p2 = $event"></pagination-controls>
+<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="approveExampleModalLabel" aria-hidden="true">a
+<div class="modal-dialog " role="document">
+<div class="modal-content">
+<div class="modal-header">
+<h5 class="modal-title" id="approveExampleModalLabel">Edit Workshop Draft</h5>
+<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+<span aria-hidden="true">&times;</span>
+</button>
+</div>
+<form #editForm="ngForm" >
+<div class="modal-body">
+<div class="row col-12">
+<div class="form-group col-6">
+<label>Title</label>
+<input class="form-control"  ngModel="{{actionRequest?.taskData?.title}}" name="title" type="text">
+</div>
+<div class="form-group col-6">
+<label>Scope</label>
+<input class="form-control"  ngModel="{{actionRequest?.taskData?.scope}}" name="scope" type="text">
+</div>
+</div>
+<div class="row col-12">
+<div class="form-group col-6">
+<label>Normative Reference</label>
+<input class="form-control"  ngModel="{{actionRequest?.taskData?.normativeReference}}" name="normativeReference" type="text">
+</div>
+<div class="form-group col-6">
+<label>Reference Material</label>
+<input class="form-control"  ngModel="{{actionRequest?.taskData?.referenceMaterial}}" name="referenceMaterial" type="text">
+</div>
+</div>
+<div class="row col-12">
+<div class="form-group col-6">
+<label>Clause</label>
+<input class="form-control"  ngModel="{{actionRequest?.taskData?.clause}}" name="clause" type="text">
+</div>
+<div class="form-group col-6">
+<label>Special</label>
+<input class="form-control"  ngModel="{{actionRequest?.taskData?.special}}" name="special" type="text">
+</div>
+</div>
+</div>
+<input type="hidden" ngModel="{{actionRequest?.taskId}}" name="taskId" >
+<div class="modal-footer">
+<button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
+<button type="submit" class="btn btn-primary btn-sm" (click)="onEdit(editForm.value)" data-dismiss="modal">Edit</button>
+</div>
+</form>
+</div>
+</div>
+</div>
+  <div class="modal fade" id="uploadModal" tabindex="-1" role="dialog" aria-labelledby="uploadExampleModalLabel" aria-hidden="true">a
+    <div class="modal-dialog " role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="uploadExampleModalLabel">Upload KNWA to Standards Database</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <form #uploadForm="ngForm" >
+          <div class="modal-body">
+            <div class="row col-12">
+              <div class="form-group col-6">
+                <label>Title</label>
+                <input class="form-control"  ngModel="{{actionRequest?.taskData?.title}}" name="title" type="text">
+              </div>
+              <div class="form-group col-6">
+                <label>Scope</label>
+                <input class="form-control"  ngModel="{{actionRequest?.taskData?.scope}}" name="scope" type="text">
+              </div>
+            </div>
+            <div class="row col-12">
+              <div class="form-group col-6">
+                <label>Normative Reference</label>
+                <input class="form-control"  ngModel="{{actionRequest?.taskData?.normativeReference}}" name="normativeReference" type="text">
+              </div>
+              <div class="form-group col-6">
+                <label>Reference Material</label>
+                <input class="form-control"  ngModel="{{actionRequest?.taskData?.referenceMaterial}}" name="referenceMaterial" type="text">
+              </div>
+            </div>
+            <div class="row col-12">
+              <div class="form-group col-6">
+                <label>Clause</label>
+                <input class="form-control"  ngModel="{{actionRequest?.taskData?.clause}}" name="clause" type="text">
+              </div>
+              <div class="form-group col-6">
+                <label>Special</label>
+                <input class="form-control"  ngModel="{{actionRequest?.taskData?.special}}" name="special" type="text">
+              </div>
+            </div>
+          </div>
+          <input type="hidden" ngModel="{{actionRequest?.taskId}}" name="taskId" >
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary btn-sm" (click)="onNwaUpload(uploadForm.value)" data-dismiss="modal">Save</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
