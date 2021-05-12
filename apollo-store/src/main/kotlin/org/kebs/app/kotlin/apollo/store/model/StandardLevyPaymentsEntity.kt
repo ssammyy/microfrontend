@@ -20,11 +20,9 @@ class StandardLevyPaymentsEntity: Serializable {
     @Basic
     var status: Int? = null
 
-    @JoinColumn(name = "MANUFACTURER_ENTITY", referencedColumnName = "ID")
-    @ManyToOne
-    //@Column(name = "MANUFACTURER_ENTITY")
-    //@Basic
-    var manufacturerEntity: CompanyProfileEntity? = null
+    @Column(name = "MANUFACTURER_ENTITY")
+    @Basic
+    var manufacturerEntity: Long? = null
 
 
     @Column(name = "PAYMENT_DATE")
@@ -39,9 +37,10 @@ class StandardLevyPaymentsEntity: Serializable {
     @Basic
     var visitStatus: Long? = null
 
-    @JoinColumn(name = "OFFICER_ASSIGNED", referencedColumnName = "ID")
-    @ManyToOne
-    var officerAssigned: UsersEntity? = null
+
+    @Column(name="OFFICER_ASSIGNED")
+    @Basic
+    var officerAssigned: Long? = null
 
     @Column(name = "LEVY_PAID")
     @Basic
