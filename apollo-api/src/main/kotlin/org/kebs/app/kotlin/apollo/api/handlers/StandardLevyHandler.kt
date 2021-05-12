@@ -27,6 +27,12 @@ import java.math.BigDecimal
 import java.sql.Date
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
+import java.text.SimpleDateFormat
+
+import java.text.DateFormat
+
+
+
 
 
 @Component
@@ -273,10 +279,23 @@ class StandardLevyHandler(
             serviceMapsRepository.findByIdOrNull(appId)
                 ?.let { map ->
                     req.pathVariable("manufacturer").let{ manufacturerId ->
-                        commonDaoServices.findCompanyProfileWithID(manufacturerId.toLong())?.let { manufacturerDetails ->
-                            manufacturerDetails.factoryVisitDate =  LocalDate.parse(req.paramOrNull("scheduleDate"), DateTimeFormatter.ofPattern("dd-MM-yyyy")) as Date
+                        commonDaoServices.findCompanyProfileWithID(manufacturerId.toLong()).let { manufacturerDetails ->
+                            manufacturerDetails.factoryVisitDate =  Date.valueOf(req.paramOrNull("scheduleDate"))
                             manufacturerDetails.factoryVisitStatus = map.activeStatus
+                            manufacturerDetails.createdBy = "Admin"
+                            manufacturerDetails.createdOn= commonDaoServices.getTimestamp()
                             companyProfileRepo.save(manufacturerDetails)
+                            val factoryVisitReportEntity = StandardLevyFactoryVisitReportEntity()
+                            factoryVisitReportEntity.manufacturerEntity = manufacturerDetails.id
+                            factoryVisitReportEntity.scheduledVisitDate = manufacturerDetails.factoryVisitDate as Date
+                            factoryVisitReportEntity.createdBy= "Admin"
+                            factoryVisitReportEntity.createdOn = commonDaoServices.getTimestamp()
+                            val savedReport = standardLevyFactoryVisitReportRepo.save(factoryVisitReportEntity)
+                            KotlinLogging.logger {  }.info("New id ${savedReport.id}")
+                            standardsLevyBpmn.startSlSiteVisitProcess(savedReport.id, commonDaoServices.getLoggedInUser()?.id?:throw Exception("Please login"))
+                             standardsLevyBpmn.slsvQueryManufacturerDetailsComplete(savedReport.id)
+                            standardsLevyBpmn.slsvScheduleVisitComplete(savedReport.id)
+
                             //manufacturerDetails.id.let { standardsLevyBpmn.startSlSiteVisitProcess(manufacturerDetails.id, 54) }
                             //manufacturerDetails.id.let { standardsLevyBpmn.slsvQueryManufacturerDetailsComplete(it) }
                             //manufacturerDetails.id.let { standardsLevyBpmn.slsvScheduleVisitComplete(it) }
@@ -378,7 +397,7 @@ class StandardLevyHandler(
                                             // Schedule site visit complete
                                             var visit = StandardLevyFactoryVisitReportEntity().apply {
                                                 manufacturerEntity = manufacturer.id
-                                                scheduledVisitDate = manufacturer.factoryVisitDate
+                                                scheduledVisitDate = manufacturer.factoryVisitDate as Date?
                                                 status = map.initStatus
                                             }
                                             visit = standardLevyFactoryVisitReportRepo.save(visit)
