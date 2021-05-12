@@ -22,7 +22,7 @@
 package org.kebs.app.kotlin.apollo.api.handlers
 
 import mu.KotlinLogging
-import org.kebs.app.kotlin.apollo.api.ports.provided.createUserAlert
+//import org.kebs.app.kotlin.apollo.api.ports.provided.createUserAlert
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DestinationInspectionDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.InvoiceDaoService

@@ -47,8 +47,9 @@ class StandardLevyHandler(
     private val standardLevyPaymentsRepository: IStandardLevyPaymentsRepository,
     private val standardsLevyBpmn: StandardsLevyBpmn,
     private val commonDaoServices: CommonDaoServices,
+    private val companyProfileRepo:ICompanyProfileRepository,
     private val userRepo: IUserRepository,
-    private val companyProfileRepo: ICompanyProfileRepository
+
 ) {
 
     private val redirectAttributes: RedirectAttributes? = null
@@ -128,14 +129,12 @@ class StandardLevyHandler(
                                                                                     details.objectId
                                                                                 )
                                                                                     ?.let { paymentsEntity ->
-                                                                                        tasks.add(
-                                                                                            commonDaoServices.findCompanyProfileWithID(
-                                                                                                paymentsEntity.manufacturerEntity?.id
-                                                                                                    ?: throw ExpectedDataNotFound(
-                                                                                                        "INVALID MANUFACTURER ID"
-                                                                                                    )
-                                                                                            )
-                                                                                        )
+
+                                                                                            companyProfileRepo.findByIdOrNull(paymentsEntity.manufacturerEntity)
+                                                                                                ?.let {  tasks.add(it)}
+                                                                                                ?: throw ExpectedDataNotFound("INVALID MANUFACTURER ID")
+
+
                                                                                         req.attributes()["tasks"] =
                                                                                             tasks
                                                                                         req.attributes()["map"] = map
@@ -304,7 +303,7 @@ class StandardLevyHandler(
                                 "You have scheduled the factory visit"
                             )
                             return ok().render(
-                                "redirect:/sl/manufacturer?manufacturerId=${manufacturerDetails?.id}&appId=${appId}",
+                                "redirect:/sl/manufacturer?manufacturerId=${manufacturerDetails.id}&appId=${appId}",
                                 req.attributes()
                             )
 

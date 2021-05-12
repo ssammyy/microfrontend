@@ -6,16 +6,19 @@ import org.flowable.engine.RuntimeService
 import org.flowable.engine.runtime.ProcessInstance
 import org.flowable.job.api.Job
 import org.junit.Ignore
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.test.context.junit.jupiter.SpringExtension
 import org.springframework.test.context.junit4.SpringRunner
-import kotlin.test.Test
 
 
+
+@ExtendWith(SpringExtension::class)
 @SpringBootTest
-@RunWith(SpringRunner::class)
 class SLBpmnTest(
         ) {
     @Autowired
