@@ -1,7 +1,6 @@
 package org.kebs.app.kotlin.apollo.api.ports.provided.bpmn
 
 import mu.KotlinLogging
-import org.flowable.engine.RuntimeService
 import org.flowable.engine.TaskService
 import org.flowable.task.api.Task
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.di.BpmnTaskDetails
@@ -9,7 +8,9 @@ import org.kebs.app.kotlin.apollo.common.exceptions.InvalidValueException
 import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
 import org.kebs.app.kotlin.apollo.store.model.StandardLevyFactoryVisitReportEntity
 import org.kebs.app.kotlin.apollo.store.model.StandardLevyPaymentsEntity
-import org.kebs.app.kotlin.apollo.store.repo.*
+import org.kebs.app.kotlin.apollo.store.repo.IStandardLevyFactoryVisitReportRepository
+import org.kebs.app.kotlin.apollo.store.repo.IStandardLevyPaymentsRepository
+import org.kebs.app.kotlin.apollo.store.repo.IUserRepository
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
@@ -19,11 +20,8 @@ import java.time.Instant
 @Service
 class StandardsLevyBpmn(
     private val taskService: TaskService,
-    private val runtimeService: RuntimeService,
     private val userRepo: IUserRepository,
     private val slPaymentsRepo: IStandardLevyPaymentsRepository,
-    private val companyProfileRepo: ICompanyProfileRepository,
-    private val manufacturerRepo: IManufacturerRepository,
     private val slFactoryVisitReportRepo: IStandardLevyFactoryVisitReportRepository,
     private val bpmnCommonFunctions: BpmnCommonFunctions
 ) {
@@ -67,14 +65,14 @@ class StandardsLevyBpmn(
             KotlinLogging.logger { }.trace("ObjectId : $objectId : Valid slPayment found")
             if (process == slRegistrationProcessDefinitionKey) {
                 slPaymentsRepo.findByIdOrNull(objectId)?.let { slPayment ->//Check that the slPayment is valid
-                    processInstanceId = slPayment.slRegistrationProcessInstanceId.toString()
+                    processInstanceId = "${slPayment.slRegistrationProcessInstanceId}"
                     variables["slPayment"] = slPayment
                 }
             }
             if (process == slSiteVisitProcessDefinitionKey) {
                 slFactoryVisitReportRepo.findByIdOrNull(objectId)
                     ?.let { slFactoryVisitReport ->//Check that the sl factory visit report is valid
-                        processInstanceId = slFactoryVisitReport.slProcessInstanceId.toString()
+                        processInstanceId = slFactoryVisitReport.slProcessInstanceId ?: throw NullValueNotAllowedException("No process id on the site visit")
                         variables["slFactoryVisitReport"] = slFactoryVisitReport
                     }
 
@@ -92,7 +90,7 @@ class StandardsLevyBpmn(
 
     fun fetchAllTasksByAssignee(assigneeId: Long): List<BpmnTaskDetails>? {
         try {
-            taskService.createTaskQuery().taskAssignee(assigneeId.toString()).processDefinitionKeyLikeIgnoreCase("sl%")
+            taskService.createTaskQuery().taskAssignee("$assigneeId").processDefinitionKeyLikeIgnoreCase("sl%")
                 .list()?.let { tasks ->
                     return bpmnCommonFunctions.generateTaskDetails(tasks)
                 }
@@ -156,7 +154,6 @@ class StandardsLevyBpmn(
     fun slAssignTask(processInstanceId: String, taskDefinitionKey: String?, assigneeId: Long): Boolean {
         KotlinLogging.logger { }.info("Assign next task begin")
         try {
-            var localAssigneeId: String = assigneeId.toString()
             var task: Task? = null
 
             //complaint.let {
@@ -166,15 +163,15 @@ class StandardsLevyBpmn(
                 task = bpmnCommonFunctions.getTasks("processInstanceId", processInstanceId)?.get(0)
             }
 
-            task?.let { task ->
-                userRepo.findByIdOrNull(localAssigneeId.toLong())?.let { usersEntity ->
-                    bpmnCommonFunctions.updateVariable(task.id, "email", usersEntity.email.toString())
+            task?.let {
+                userRepo.findByIdOrNull(assigneeId)?.let { usersEntity ->
+                    bpmnCommonFunctions.updateVariable(it.id, "email", usersEntity.email ?: throw NullValueNotAllowedException("No email address defined for user id =${usersEntity.id}"))
                 }
-                //Refetch the task because we have updated the email variable
-                bpmnCommonFunctions.getTaskById(task.id)?.let { updatedTask ->
-                    updatedTask.assignee = localAssigneeId
+                //Re-fetch the task because we have updated the email variable
+                bpmnCommonFunctions.getTaskById(it.id)?.let { updatedTask ->
+                    updatedTask.assignee = "$assigneeId"
                     taskService.saveTask(updatedTask)
-                    KotlinLogging.logger { }.info("Task ${updatedTask.name} assigned to $localAssigneeId")
+                    KotlinLogging.logger { }.info("Task ${updatedTask.name} assigned to $assigneeId")
                     return true
                 }
             }
@@ -188,19 +185,14 @@ class StandardsLevyBpmn(
         val variables: HashMap<String, Any> = HashMap()
         KotlinLogging.logger { }.info("objectId : $objectId : Checking start process values")
         try {
-            //Check that the object is valid
             when (processKey) {
                 slRegistrationProcessDefinitionKey -> {
                     slPaymentsRepo.findByIdOrNull(objectId)
                         ?.let { slPayment ->
-                            variables["slPayment"] = slPayment
-                            if (processKey == slRegistrationProcessDefinitionKey) {
-                                slPayment.slRegistrationStatus?.let { status ->
-                                    if (status != 0) {
-                                        //KotlinLogging.logger { }.info("objectId : $objectId : object already has a sl registration task assigned"); return null
-                                    }
-                                }
+                            if (slPayment.slSiteVisitStatus ?: 0 != 0) {
+                                throw InvalidValueException("The visit is already scheduled and in process")
                             }
+                            variables["slPayment"] = slPayment
                         }
                         ?: throw InvalidValueException("objectId : $objectId : No object found for id $objectId")
                 }
@@ -208,29 +200,25 @@ class StandardsLevyBpmn(
                     slFactoryVisitReportRepo.findByIdOrNull(objectId)
                         ?.let { slFactoryVisit ->
                             variables["slFactoryVisit"] = slFactoryVisit
-                            slFactoryVisit.slStatus?.let { status ->
-                                if (status != 0) {
-                                    throw InvalidValueException("The visit is already scheduled and in process")
-                                    KotlinLogging.logger { }
-                                        .info("objectId : $objectId : object already has a sl registration task assigned"); return null
-                                }
+                            if (slFactoryVisit.slStatus ?: 0 != 0) {
+                                throw InvalidValueException("The visit is already scheduled and in process")
                             }
-                        } ?: throw InvalidValueException("objectId : $objectId : No object found for id $objectId")
+                        }
+                        ?: throw InvalidValueException("objectId : $objectId : No object found for id $objectId")
                 }
+
             }
-
             userRepo.findByIdOrNull(assigneeId)
-                ?.let { usersEntity ->
-                    variables["assigneeEmail"] = usersEntity.email.toString()
-                }
-                ?: throw NullValueNotAllowedException("objectId : $objectId : No user found for id $assigneeId")
-
+                ?.let { variables["assigneeEmail"] = it.email ?: throw InvalidValueException("User id=${it.id} does not have an email address") }
+                ?: throw InvalidValueException("objectId : $objectId : No user found for id $assigneeId")
             return variables
 
         } catch (e: Exception) {
-            KotlinLogging.logger { }.error(e.message, e)
+            KotlinLogging.logger { }.error(e.message)
             return null
+
         }
+
     }
 
     /*
@@ -246,7 +234,7 @@ class StandardsLevyBpmn(
             //Remember to start by setting email and assignee to manufacturer
             checkStartProcessInputs(objectId, assigneeId, slRegistrationProcessDefinitionKey)?.let { checkVariables ->
                 val slPayment: StandardLevyPaymentsEntity = checkVariables["slPayment"] as StandardLevyPaymentsEntity
-                variables["objectId"] = slPayment.id.toString()
+                variables["objectId"] = "${slPayment.id}"
                 variables["manufacturerId"] = assigneeId
                 variables["isContractor"] = 0
 
@@ -276,14 +264,14 @@ class StandardsLevyBpmn(
         KotlinLogging.logger { }.info("objectId : $objectId :  Manufacturer registration complete")
         var currAssigneeId: Long = 0
         fetchTaskByObjectId(objectId, slRegistrationProcessDefinitionKey)?.let { taskDetails ->
-            currAssigneeId = taskDetails[0].task.assignee.toLong()
+            currAssigneeId = taskDetails[0].task.assignee.toLongOrNull() ?: 54
         }
         updateTaskVariableByObjectIdAndKey(
             objectId,
             "slrRegister",
             slRegistrationProcessDefinitionKey,
             "isContractor",
-            bpmnCommonFunctions.booleanToInt(isContractor).toString()
+            "${bpmnCommonFunctions.booleanToInt(isContractor)}"
         )
         slCompleteTask(objectId, "slrRegister", slRegistrationProcessDefinitionKey)?.let {
             return if (isContractor) {   //Is a contractor
@@ -299,7 +287,7 @@ class StandardsLevyBpmn(
         KotlinLogging.logger { }.info("objectId : $objectId :  FIll SL 1 Form complete")
         var currAssigneeId: Long = 0
         fetchTaskByObjectId(objectId, slRegistrationProcessDefinitionKey)?.let { taskDetails ->
-            currAssigneeId = taskDetails[0].task.assignee.toLong()
+            currAssigneeId = taskDetails[0].task.assignee.toLongOrNull() ?: 54
         }
         slCompleteTask(objectId, "slrFillSl1Form", slRegistrationProcessDefinitionKey)?.let {
             return slAssignTask(it["processInstanceId"].toString(), "slrSubmitDetails", currAssigneeId)
@@ -311,7 +299,7 @@ class StandardsLevyBpmn(
         KotlinLogging.logger { }.info("objectId : $objectId :  FIll SL 1 C Form complete")
         var currAssigneeId: Long = 0
         fetchTaskByObjectId(objectId, slRegistrationProcessDefinitionKey)?.let { taskDetails ->
-            currAssigneeId = taskDetails[0].task.assignee.toLong()
+            currAssigneeId = taskDetails[0].task.assignee.toLongOrNull() ?: 54
         }
         slCompleteTask(objectId, "slrFillSl1CForm", slRegistrationProcessDefinitionKey)?.let {
             return slAssignTask(it["processInstanceId"].toString(), "slrSubmitDetails", currAssigneeId)
@@ -323,7 +311,7 @@ class StandardsLevyBpmn(
         KotlinLogging.logger { }.info("objectId : $objectId :  Submit details complete")
         var currAssigneeId: Long = 0
         fetchTaskByObjectId(objectId, slRegistrationProcessDefinitionKey)?.let { taskDetails ->
-            currAssigneeId = taskDetails[0].task.assignee.toLong()
+            currAssigneeId = taskDetails[0].task.assignee.toLongOrNull() ?: 54
         }
         slCompleteTask(objectId, "slrSubmitDetails", slRegistrationProcessDefinitionKey)?.let {
             return true
@@ -358,7 +346,7 @@ class StandardsLevyBpmn(
             checkStartProcessInputs(objectId, assigneeId, slSiteVisitProcessDefinitionKey)?.let { checkVariables ->
                 val slFactoryVisit: StandardLevyFactoryVisitReportEntity =
                     checkVariables["slFactoryVisit"] as StandardLevyFactoryVisitReportEntity
-                variables["objectId"] = slFactoryVisit.id
+                variables["objectId"] = slFactoryVisit.id ?: throw NullValueNotAllowedException("Id should not be null")
                 variables["manufacturerId"] = assigneeId
                 variables["approvedAsstMgr"] = 0
                 variables["approvedMgr"] = 0
@@ -387,17 +375,17 @@ class StandardsLevyBpmn(
 
     fun getSlsvProcessInstanceId(objectId: Long): String {
         slPaymentsRepo.findByIdOrNull(objectId)?.let { slpEntity ->
-            return slpEntity.slSiteVisitProcessInstanceId.toString()
+            return "${slpEntity.slSiteVisitProcessInstanceId}"
         }
         return ""
     }
 
-    fun slsvQueryManufacturerDetailsComplete(objectId: Long): Boolean {
+    fun slSvQueryManufacturerDetailsComplete(objectId: Long): Boolean {
         KotlinLogging.logger { }.info("objectId : $objectId :  Query Manufacturer details complete")
         var currAssigneeId: Long = 0
         fetchTaskByObjectId(objectId, slSiteVisitProcessDefinitionKey)
             ?.let { taskDetails ->
-                if (taskDetails.size < 1) {
+                if (taskDetails.isEmpty()) {
                     throw NullValueNotAllowedException("No task found")
                 } else {
                     currAssigneeId = taskDetails[0].task.assignee.toLong()
@@ -411,11 +399,12 @@ class StandardsLevyBpmn(
         return false
     }
 
-    fun slsvScheduleVisitComplete(objectId: Long): Boolean {
+    fun slSvScheduleVisitComplete(objectId: Long): Boolean {
         KotlinLogging.logger { }.info("objectId : $objectId :  Schedule Visit complete")
         var currAssigneeId: Long = 0
         fetchTaskByObjectId(objectId, slSiteVisitProcessDefinitionKey)?.let { taskDetails ->
-            currAssigneeId = taskDetails[0].task.assignee.toLong()
+            currAssigneeId = taskDetails[0].task.assignee?.toLongOrNull() ?: 54
+//            currAssigneeId = taskDetails[0].task.assignee?.toLongOrNull() ?: throw InvalidValueException("Assignee Id is not valid")
         }
 
         slCompleteTask(objectId, "sLsVScheduleVisit", slSiteVisitProcessDefinitionKey)?.let {
@@ -436,7 +425,7 @@ class StandardsLevyBpmn(
         KotlinLogging.logger { }.info("objectId : $objectId :  Assistant manager approve report complete")
         var currAssigneeId: Long = 0
         fetchTaskByObjectId(objectId, slSiteVisitProcessDefinitionKey)?.let { taskDetails ->
-            currAssigneeId = taskDetails[0].task.assignee.toLong()
+            currAssigneeId = taskDetails[0].task.assignee.toLongOrNull() ?: 54
         }
         updateTaskVariableByObjectIdAndKey(
             objectId,
@@ -459,14 +448,14 @@ class StandardsLevyBpmn(
         KotlinLogging.logger { }.info("objectId : $objectId :  Manager approve report complete")
         var currAssigneeId: Long = 0
         fetchTaskByObjectId(objectId, slSiteVisitProcessDefinitionKey)?.let { taskDetails ->
-            currAssigneeId = taskDetails[0].task.assignee.toLong()
+            currAssigneeId = taskDetails[0].task.assignee.toLongOrNull() ?: 54
         }
         updateTaskVariableByObjectIdAndKey(
             objectId,
             "sLsVApproveReportMgr",
             slSiteVisitProcessDefinitionKey,
             "approvedMgr",
-            bpmnCommonFunctions.booleanToInt(approvedMgr).toString()
+            "${bpmnCommonFunctions.booleanToInt(approvedMgr)}"
         )
         slCompleteTask(objectId, "sLsVApproveReportMgr", slSiteVisitProcessDefinitionKey)?.let {
             return if (approvedMgr) {   //Approved by manager

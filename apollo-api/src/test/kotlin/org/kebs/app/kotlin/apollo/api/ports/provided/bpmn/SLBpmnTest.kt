@@ -1,26 +1,16 @@
 package org.kebs.app.kotlin.apollo.api.ports.provided.bpmn
 
-import org.flowable.engine.ManagementService
-import org.flowable.engine.ProcessEngineConfiguration
-import org.flowable.engine.RuntimeService
-import org.flowable.engine.runtime.ProcessInstance
-import org.flowable.job.api.Job
-import org.junit.Ignore
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.junit.jupiter.SpringExtension
-import org.springframework.test.context.junit4.SpringRunner
-
 
 
 @ExtendWith(SpringExtension::class)
 @SpringBootTest
-class SLBpmnTest(
-        ) {
+class SLBpmnTest {
     @Autowired
     lateinit var standardsLevyBpmn: StandardsLevyBpmn
 
@@ -49,7 +39,6 @@ class SLBpmnTest(
     val managerId:Long = 103
 
     @Test
-    @Ignore
     fun testSlRegistrationProcess() {
         //Start the process
         standardsLevyBpmn.startSlRegistrationProcess(standardsLevyId, assigneeId)?.let {
@@ -135,7 +124,7 @@ class SLBpmnTest(
         } ?: return
 
         //Query manufacturer details complete
-        standardsLevyBpmn.slsvQueryManufacturerDetailsComplete(standardsLevyReportId).let {
+        standardsLevyBpmn.slSvQueryManufacturerDetailsComplete(standardsLevyReportId).let {
             standardsLevyBpmn.fetchTaskByObjectId(standardsLevyReportId, slSiteVisitProcessDefinitionKey)?.let { taskDetails ->
                 println("Task details after process")
                 for (taskDetail in taskDetails) {
@@ -147,7 +136,7 @@ class SLBpmnTest(
         } ?: return
 
         //Schedule visit complete
-        standardsLevyBpmn.slsvScheduleVisitComplete(standardsLevyReportId).let {
+        standardsLevyBpmn.slSvScheduleVisitComplete(standardsLevyReportId).let {
             standardsLevyBpmn.fetchTaskByObjectId(standardsLevyReportId, slSiteVisitProcessDefinitionKey)?.let { taskDetails ->
                 println("Task details after process")
                 for (taskDetail in taskDetails) {
