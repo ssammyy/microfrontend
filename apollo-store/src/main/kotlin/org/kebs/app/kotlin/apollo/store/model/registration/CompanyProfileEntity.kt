@@ -4,7 +4,6 @@ import java.io.Serializable
 import java.math.BigDecimal
 import java.sql.Date
 import java.sql.Timestamp
-//import java.time.LocalDate
 import java.util.*
 import javax.persistence.*
 
@@ -167,7 +166,7 @@ class CompanyProfileEntity : Serializable {
 
     @Column(name = "FACTORY_VISIT_DATE ")
     @Basic
-    var factoryVisitDate: Date? = null
+    var factoryVisitDate: java.sql.Date? = null
 
     @Column(name = "FACTORY_VISIT_STATUS ")
     @Basic
