@@ -40,6 +40,7 @@ class SLBpmnTest(
 
     //val manufacturerId: Long = 2
     val standardsLevyId: Long = 2
+    val standardsLevyReportId: Long = 62
     val assigneeId:Long = 101
     val asstManagerId:Long = 102
     val managerId:Long = 103
@@ -119,8 +120,8 @@ class SLBpmnTest(
     //@Ignore
     fun testSlSiteVisitProcess() {
         //Start the process
-        standardsLevyBpmn.startSlSiteVisitProcess(standardsLevyId, assigneeId)?.let {
-            standardsLevyBpmn.fetchTaskByObjectId(standardsLevyId, slSiteVisitProcessDefinitionKey)?.let { taskDetails ->
+        standardsLevyBpmn.startSlSiteVisitProcess(standardsLevyReportId, assigneeId)?.let {
+            standardsLevyBpmn.fetchTaskByObjectId(standardsLevyReportId, slSiteVisitProcessDefinitionKey)?.let { taskDetails ->
                 println("Task details after starting the process")
                 for (taskDetail in taskDetails) {
                     taskDetail.task.let { task ->
@@ -131,8 +132,8 @@ class SLBpmnTest(
         } ?: return
 
         //Query manufacturer details complete
-        standardsLevyBpmn.slsvQueryManufacturerDetailsComplete(standardsLevyId).let {
-            standardsLevyBpmn.fetchTaskByObjectId(standardsLevyId, slSiteVisitProcessDefinitionKey)?.let { taskDetails ->
+        standardsLevyBpmn.slsvQueryManufacturerDetailsComplete(standardsLevyReportId).let {
+            standardsLevyBpmn.fetchTaskByObjectId(standardsLevyReportId, slSiteVisitProcessDefinitionKey)?.let { taskDetails ->
                 println("Task details after process")
                 for (taskDetail in taskDetails) {
                     taskDetail.task.let { task ->
@@ -143,8 +144,8 @@ class SLBpmnTest(
         } ?: return
 
         //Schedule visit complete
-        standardsLevyBpmn.slsvScheduleVisitComplete(standardsLevyId).let {
-            standardsLevyBpmn.fetchTaskByObjectId(standardsLevyId, slSiteVisitProcessDefinitionKey)?.let { taskDetails ->
+        standardsLevyBpmn.slsvScheduleVisitComplete(standardsLevyReportId).let {
+            standardsLevyBpmn.fetchTaskByObjectId(standardsLevyReportId, slSiteVisitProcessDefinitionKey)?.let { taskDetails ->
                 println("Task details after process")
                 for (taskDetail in taskDetails) {
                     taskDetail.task.let { task ->
@@ -155,8 +156,8 @@ class SLBpmnTest(
         } ?: return
 
         //Prepare visit report complete
-        standardsLevyBpmn.slsvPrepareVisitReportComplete(standardsLevyId, asstManagerId).let {
-            standardsLevyBpmn.fetchTaskByObjectId(standardsLevyId, slSiteVisitProcessDefinitionKey)?.let { taskDetails ->
+        standardsLevyBpmn.slsvPrepareVisitReportComplete(standardsLevyReportId, asstManagerId).let {
+            standardsLevyBpmn.fetchTaskByObjectId(standardsLevyReportId, slSiteVisitProcessDefinitionKey)?.let { taskDetails ->
                 println("Task details after process")
                 for (taskDetail in taskDetails) {
                     taskDetail.task.let { task ->
@@ -167,8 +168,8 @@ class SLBpmnTest(
         } ?: return
 
         //Assistant manager approve complete
-        standardsLevyBpmn.slsvApproveReportAsstManagerComplete(standardsLevyId, managerId,true).let {
-            standardsLevyBpmn.fetchTaskByObjectId(standardsLevyId, slSiteVisitProcessDefinitionKey)?.let { taskDetails ->
+        standardsLevyBpmn.slsvApproveReportAsstManagerComplete(standardsLevyReportId, managerId,true).let {
+            standardsLevyBpmn.fetchTaskByObjectId(standardsLevyReportId, slSiteVisitProcessDefinitionKey)?.let { taskDetails ->
                 println("Task details after process")
                 for (taskDetail in taskDetails) {
                     taskDetail.task.let { task ->
@@ -179,8 +180,8 @@ class SLBpmnTest(
         } ?: return
 
         //Manager approve complete
-        standardsLevyBpmn.slsvApproveReportManagerComplete(standardsLevyId, assigneeId,true).let {
-            standardsLevyBpmn.fetchTaskByObjectId(standardsLevyId, slSiteVisitProcessDefinitionKey)?.let { taskDetails ->
+        standardsLevyBpmn.slsvApproveReportManagerComplete(standardsLevyReportId, assigneeId,true).let {
+            standardsLevyBpmn.fetchTaskByObjectId(standardsLevyReportId, slSiteVisitProcessDefinitionKey)?.let { taskDetails ->
                 println("Task details after process")
                 for (taskDetail in taskDetails) {
                     taskDetail.task.let { task ->
@@ -191,8 +192,8 @@ class SLBpmnTest(
         } ?: return
 
         //Draft feedback complete
-        standardsLevyBpmn.slsvDraftFeedbackComplete(standardsLevyId).let {
-            standardsLevyBpmn.fetchTaskByObjectId(standardsLevyId, slSiteVisitProcessDefinitionKey)?.let { taskDetails ->
+        standardsLevyBpmn.slsvDraftFeedbackComplete(standardsLevyReportId).let {
+            standardsLevyBpmn.fetchTaskByObjectId(standardsLevyReportId, slSiteVisitProcessDefinitionKey)?.let { taskDetails ->
                 println("Task details after process")
                 for (taskDetail in taskDetails) {
                     taskDetail.task.let { task ->

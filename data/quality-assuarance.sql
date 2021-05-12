@@ -78,7 +78,7 @@
  */
 ***************************Table USED IN QA*****************************************
 select * from DAT_KEBS_PERMIT_TRANSACTION
-where id = 285
+where id = 303
 -- where PERMIT_NUMBER = 'DM#0954A'
 order by id desc; 1522
 

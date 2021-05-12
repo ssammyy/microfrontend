@@ -613,13 +613,12 @@ class DITest {
 
         usersRepo.findByUserName("kpaul7747@gmail.com")
             ?.let { loggedInUser ->
-                for (i in 1..10) {
+//                for (i in 1..10) {
                     //                    val payload = "Assigned Inspection Officer [assignedStatus= 1, assignedRemarks= test]"
                     val map = commonDaoServices.serviceMapDetails(appId)
 //                    val demandNotes: MutableList<CdDemandNoteEntity> = mutableListOf()
 
-                    var itemDetails =
-                        destinationInspectionDaoServices.findItemWithUuid("dd4ce6c8-8715-4d92-9512-40353d16075b")
+                    var itemDetails = destinationInspectionDaoServices.findItemWithItemID(155)
                     with(itemDetails) {
                         paymentFeeIdSelected = iDIFeeDetailsRepo.findByIdOrNull(7)
                     }
@@ -665,7 +664,7 @@ class DITest {
                         }
                     }
                 }
-            }
+//            }
 //        assertTrue { demandNoteNumber.isNotEmpty() }
     }
 

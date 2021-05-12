@@ -408,7 +408,7 @@
 
                                         <a th:if="${permitDetails?.hofQamCompletenessStatus == 1 and permitDetails?.assignOfficerStatus == null}" style="color: white" onclick="popUpFunction('assignOfficer');" class="filter-link">Assign Officer</a>
 
-                                        <a th:if="${permitDetails?.factoryInspectionReportApprovedRejectedStatus == null or permitDetails?.factoryInspectionReportApprovedRejectedStatus == 0 and permitDetails?.inspectionReportId != null}" style="color: white" onclick="popUpFunction('approveInspectionReport');" class="filter-link">APPROVE/REJECT FACTORY INSPECTION REPORT</a>
+                                        <a th:if="${permitDetails?.factoryInspectionReportApprovedRejectedStatus == null and permitDetails?.inspectionReportId != null}" style="color: white" onclick="popUpFunction('approveInspectionReport');" class="filter-link">APPROVE/REJECT FACTORY INSPECTION REPORT</a>
 
 
 <!--                                        <a th:if="${ permitDetails?.recommendationRemarks != null and permitDetails?.recommendationApprovalStatus == null}" style="color: white" onclick="popUpFunction('approveRecommendation');" class="filter-link">APPROVE/REJECT RECOMMENDATION</a>-->
