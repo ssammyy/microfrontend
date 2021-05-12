@@ -226,7 +226,7 @@ order by ID desc;
 select *
 from DAT_KEBS_CONSIGNMENT_DOCUMENT_DETAILS
 -- where uuid = 'b8404c30-0286-46f6-9afb-c7347f11f701'
--- where UCR_number = 'UCR2100006339'
+where UCR_number = 'UCR202100127482'
 -- where id = 861
 order by ID desc;
 
