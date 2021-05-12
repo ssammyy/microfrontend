@@ -5,6 +5,7 @@ import org.flowable.engine.RuntimeService
 import org.flowable.engine.TaskService
 import org.flowable.task.api.Task
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.di.BpmnTaskDetails
+import org.kebs.app.kotlin.apollo.store.model.StandardLevyFactoryVisitReportEntity
 import org.kebs.app.kotlin.apollo.store.model.StandardLevyPaymentsEntity
 import org.kebs.app.kotlin.apollo.store.repo.*
 import org.springframework.beans.factory.annotation.Value
@@ -175,27 +176,30 @@ class StandardsLevyBpmn(private val taskService: TaskService,
         KotlinLogging.logger { }.info("objectId : $objectId : Checking start process values")
         try {
             //Check that the object is valid
-
+            if (processKey == slRegistrationProcessDefinitionKey) {
                 slPaymentsRepo.findByIdOrNull(objectId)?.let { //Check that the object is valid
-                    slPayment ->
+                        slPayment ->
                     variables["slPayment"] = slPayment
                     if (processKey == slRegistrationProcessDefinitionKey) {
                         slPayment.slRegistrationStatus?.let { status ->
                             if (status != 0) {
-                                KotlinLogging.logger { }.info("objectId : $objectId : object already has a sl registration task assigned"); return null
+                                //KotlinLogging.logger { }.info("objectId : $objectId : object already has a sl registration task assigned"); return null
                             }
                         }
                     }
-
-                    if (processKey == slSiteVisitProcessDefinitionKey) {
-                        slPayment.slSiteVisitStatus?.let { status ->
+                }  ?: run {KotlinLogging.logger { }.info("objectId : $objectId : No object found for id $objectId"); return null}
+            } else {
+                slFactoryVisitReportRepo.findByIdOrNull(objectId)?.let { //Check that the object is valid
+                        slFactoryVisit->
+                    variables["slFactoryVisit"] = slFactoryVisit
+                    slFactoryVisit.slStatus?.let { status ->
                             if (status != 0) {
-                                KotlinLogging.logger { }.info("objectId : $objectId : object already has a sl site visit task assigned"); return null
+                                //KotlinLogging.logger { }.info("objectId : $objectId : object already has a sl registration task assigned"); return null
                             }
-                        }
                     }
+                }  ?: run {KotlinLogging.logger { }.info("objectId : $objectId : No object found for id $objectId"); return null}
 
-                } ?: run {KotlinLogging.logger { }.info("objectId : $objectId : No object found for id $objectId"); return null}
+            }
 
             //Check that the assignee is valid
             userRepo.findByIdOrNull(assigneeId)?.let { usersEntity ->
@@ -322,17 +326,17 @@ class StandardsLevyBpmn(private val taskService: TaskService,
         try {
             //Remember to start by setting email and assignee to manufacturer
             checkStartProcessInputs(objectId,assigneeId,slSiteVisitProcessDefinitionKey)?.let{checkVariables->
-                val slPayment: StandardLevyPaymentsEntity = checkVariables["slPayment"] as StandardLevyPaymentsEntity
-                variables["objectId"] = slPayment.id.toString()
+                val slFactoryVisit: StandardLevyFactoryVisitReportEntity = checkVariables["slFactoryVisit"] as StandardLevyFactoryVisitReportEntity
+                variables["objectId"] = slFactoryVisit.id.toString()
                 variables["manufacturerId"] = assigneeId
                 variables["approvedAsstMgr"] = 0
                 variables["approvedMgr"] = 0
 
                 bpmnCommonFunctions.startBpmnProcess(slSiteVisitProcessDefinitionKey, slSiteVisitBusinessKey, variables, assigneeId)?.let {
-                    slPayment.slSiteVisitProcessInstanceId = it["processInstanceId"]
-                    slPayment.slSiteVisitStartedOn = Timestamp.from(Instant.now())
-                    slPayment.slSiteVisitStatus = processStarted
-                    slPaymentsRepo.save(slPayment)
+                    slFactoryVisit.slProcessInstanceId = it["processInstanceId"]
+                    slFactoryVisit.slStartedOn = Timestamp.from(Instant.now())
+                    slFactoryVisit.slStatus = processStarted
+                    slFactoryVisitReportRepo.save(slFactoryVisit)
                     KotlinLogging.logger { }.info("objectId : $objectId : Successfully started SL Site Visit process")
                     return it
                 }?: run{

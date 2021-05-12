@@ -1,6 +1,7 @@
 package org.kebs.app.kotlin.apollo.store.repo
 
 import org.kebs.app.kotlin.apollo.store.model.*
+import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileEntity
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.hazelcast.repository.HazelcastRepository
@@ -10,8 +11,9 @@ import org.springframework.data.repository.query.Param
 interface IStandardLevyPaymentsRepository : HazelcastRepository<StandardLevyPaymentsEntity, Long> {
     fun findByManufacturerEntity(manufacturerEntity: Long, pageable: Pageable): Page<StandardLevyPaymentsEntity>?
     fun findByManufacturerEntityOrderByIdDesc(manufacturerEntity: Long): List<StandardLevyPaymentsEntity>?
-    fun findByManufacturerEntity(manufacturerEntity: Long): StandardLevyPaymentsEntity?
+    fun findByManufacturerEntity(manufacturerEntity: CompanyProfileEntity): StandardLevyPaymentsEntity?
     fun findAllByOrderByIdDesc(): List<StandardLevyPaymentsEntity>?
+    fun findAllByStatusOrderByIdDesc(status: Int) : List<StandardLevyPaymentsEntity>?
 //    fun findByOrderById(page: Pageable?): List<StandardLevyPaymentsEntity>?
 }
 

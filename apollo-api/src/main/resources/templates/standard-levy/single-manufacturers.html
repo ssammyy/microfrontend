@@ -440,7 +440,7 @@
             </div>
 
             <div class="modal fade" id="scheduleVisit" tabindex="-1" role="dialog" aria-labelledby="scheduleVisit" aria-hidden="true">
-                <form th:action="@{/sl/schedule}" method="GET">
+                <form th:action="@{/sl/schedule/{manufacturer}(manufacturer = ${manufacturer.id})}" method="GET">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
@@ -451,8 +451,6 @@
                             </div>
                             <div class="modal-body">
                                 <input type="date" name="scheduleDate" id="scheduleDate" class="form-control">
-                                <input type="hidden" name="manufacturerId" th:value="${manufacturer.id}">
-                                <input type="hidden" name="kraId" id="kraId" th:value="${paymentHistory?.id}">
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>

@@ -4,7 +4,7 @@ import java.io.Serializable
 import java.math.BigDecimal
 import java.sql.Date
 import java.sql.Timestamp
-import java.time.LocalDate
+//import java.time.LocalDate
 import java.util.*
 import javax.persistence.*
 
@@ -172,6 +172,14 @@ class CompanyProfileEntity : Serializable {
     @Column(name = "FACTORY_VISIT_STATUS ")
     @Basic
     var factoryVisitStatus: Int? = null
+
+    @Column(name = "OWNERSHIP")
+    @Basic
+    var ownership: String? = null
+
+    @Column(name = "CLOSURE_OF_OPERATIONS")
+    @Basic
+    var closureOfOperations: Int? = null
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
