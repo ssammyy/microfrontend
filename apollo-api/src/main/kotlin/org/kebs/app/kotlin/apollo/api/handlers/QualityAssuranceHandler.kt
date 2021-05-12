@@ -173,7 +173,7 @@ class QualityAssuranceHandler(
     @PreAuthorize("hasAuthority('PERMIT_APPLICATION') or hasAuthority('QA_OFFICER_MODIFY') or hasAuthority('QA_HOD_READ') " +
             "or hasAuthority('QA_MANAGER_ASSESSORS_READ') or hasAuthority('QA_HOF_READ') or hasAuthority('QA_ASSESSORS_READ') or hasAuthority('QA_PAC_SECRETARY_READ') or hasAuthority('QA_PSC_MEMBERS_READ') or hasAuthority('QA_PCM_READ')")
     fun permitDetails(req: ServerRequest): ServerResponse {
-        val permitUserId = req.paramOrNull("userID")?.toLong() ?: throw ExpectedDataNotFound("Required User ID, check config")
+//        val permitUserId = req.paramOrNull("userID")?.toLong() ?: throw ExpectedDataNotFound("Required User ID, check config")
         val permitID = req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
        val map = commonDaoServices.serviceMapDetails(appId)
         val permit = qaDaoServices.findPermitBYID(permitID)
@@ -210,7 +210,7 @@ class QualityAssuranceHandler(
         req.attributes()["permitDetails"] = permit
         req.attributes()["docFileName"] =  docFileName
         req.attributes()["plantAttached"] = plantAttached
-        req.attributes()["plantsDetails"] = qaDaoServices.findAllPlantDetails(permitUserId)
+        req.attributes()["plantsDetails"] = permit.userId?.let { qaDaoServices.findAllPlantDetails(it) } ?: throw ExpectedDataNotFound("Required User ID, from Permit Details")
 
         req.attributes()["oldVersionList"] = permit.permitNumber?.let { qaDaoServices.findAllOldPermitWithPermitID(it) }
 
