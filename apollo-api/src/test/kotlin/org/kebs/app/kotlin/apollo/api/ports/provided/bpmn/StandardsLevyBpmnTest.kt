@@ -17,4 +17,14 @@ class StandardsLevyBpmnTest {
     fun startSlRegistrationProcessTest() {
         bpm.startSlSiteVisitProcess(86, 54)
     }
+
+    @Test
+    fun slQueryManufacturerDetailsCompleteTest() {
+        bpm.slSvQueryManufacturerDetailsComplete(86)
+    }
+
+    @Test
+    fun slScheduleVisitCompleteTest() {
+        bpm.slSvScheduleVisitComplete(86)
+    }
 }
