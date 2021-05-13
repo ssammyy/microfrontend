@@ -211,8 +211,6 @@ class StandardsLevyBpmn(
                             slFactoryVisit.slStatus?.let { status ->
                                 if (status != 0) {
                                     throw InvalidValueException("The visit is already scheduled and in process")
-                                    KotlinLogging.logger { }
-                                        .info("objectId : $objectId : object already has a sl registration task assigned"); return null
                                 }
                             }
                         } ?: throw InvalidValueException("objectId : $objectId : No object found for id $objectId")

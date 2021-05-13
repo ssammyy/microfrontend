@@ -215,9 +215,7 @@ class StandardLevyHandler(
                                     commonDaoServices.findCompanyProfileWithID(manufacturerId)
                                         .let { manufacturer ->
                                             KotlinLogging.logger {  }.info { "Manufacturer id ==> "+manufacturer.id  }
-                                            commonDaoServices.findAllPlantDetails(
-                                                manufacturer.userId ?: throw ExpectedDataNotFound("INVALID USER ID")
-                                            )
+                                            commonDaoServices.findAllPlantDetails(manufacturer.userId ?: throw ExpectedDataNotFound("INVALID USER ID"))
                                                 .let { contacts ->
                                                     if (contacts.isEmpty()){
                                                         throw ExpectedDataNotFound("Contact information does not exist")
@@ -233,7 +231,7 @@ class StandardLevyHandler(
                                                                 }
 
                                                             standardLevyPaymentsRepository.findByManufacturerEntity(
-                                                                manufacturer
+                                                                manufacturer.id
                                                                     ?: throw ExpectedDataNotFound("INVALID ID")
                                                             )
                                                                 .let { paymentHistory ->
@@ -310,33 +308,7 @@ class StandardLevyHandler(
                         }
 
                     }
-//                    req.body ()
-//                        ?.let { manufacturerId ->
-//                            manufacturerRepository.findByIdOrNull(manufacturerId.toLong())
-//                                ?.let { manufacturer ->
-//                                    req.param("scheduleDate")
-//                                        .let { scheduleDate ->
-//                                            KotlinLogging.logger {  }.info { "Scheduled date  ==> "+ scheduleDate }
-//                                            with(manufacturer) {
-//                                                factoryVisitDate = scheduleDate.toString()
-//                                                factoryVisitStatus = map.activeStatus
-//                                            }
-//                                            manufacturerRepository.save(manufacturer)
-//
-//                                            val kraId = req.paramOrNull("kraId")?.toLong()
-//
-//                                            KotlinLogging.logger {  }.info { "kraId ==> $kraId" }
-//
-//                                            // Schedule site visit complete
-//                                            if (kraId != null) {
-//
-//                                            }
-//
-//
-//                                        }
-//
-//                                }
-//                        }
+
 
                 }
                 ?: throw ServiceMapNotFoundException("Missing application mapping for [id=$appId], recheck configuration")
