@@ -33,8 +33,9 @@ class SLBpmnTest {
 
     //val manufacturerId: Long = 2
     val standardsLevyId: Long = 2
-    val standardsLevyReportId: Long = 62
+    val standardsLevyReportId: Long = 87
     val assigneeId:Long = 101
+    val principalOfficerId:Long = 101
     val asstManagerId:Long = 102
     val managerId:Long = 103
 
@@ -112,7 +113,7 @@ class SLBpmnTest {
     //@Ignore
     fun testSlSiteVisitProcess() {
         //Start the process
-        standardsLevyBpmn.startSlSiteVisitProcess(standardsLevyReportId, assigneeId)?.let {
+        standardsLevyBpmn.startSlSiteVisitProcess(standardsLevyReportId, principalOfficerId)?.let {
             standardsLevyBpmn.fetchTaskByObjectId(standardsLevyReportId, slSiteVisitProcessDefinitionKey)?.let { taskDetails ->
                 println("Task details after starting the process")
                 for (taskDetail in taskDetails) {
