@@ -481,7 +481,7 @@ class QualityAssuranceController(
             )
         }
 
-        return "${qaDaoServices.sta10Details}=${qaSta10.permitId}%26userID=${loggedInUser.id}"
+        return "${qaDaoServices.sta10Details}=${qaSta10.permitId}"
     }
 
     @PreAuthorize("hasAuthority('PERMIT_APPLICATION')")
@@ -499,7 +499,7 @@ class QualityAssuranceController(
         val qaSta10 = qaDaoServices.findSta10BYID(qaSta10ID)
         qaSta10.id?.let { qaDaoServices.sta10RawMaterialsNewSave(it, QaRawMaterialEntity, loggedInUser, map) }
 
-        return "${qaDaoServices.sta10Details}=${qaSta10.permitId}%26userID=${loggedInUser.id}"
+        return "${qaDaoServices.sta10Details}=${qaSta10.permitId}"
     }
 
 
@@ -518,7 +518,7 @@ class QualityAssuranceController(
         val qaSta10 = qaDaoServices.findSta10BYID(qaSta10ID)
         qaSta10.id?.let { qaDaoServices.sta10MachinePlantNewSave(it, QaMachineryEntity, loggedInUser, map) }
 
-        return "${qaDaoServices.sta10Details}=${qaSta10.permitId}%26userID=${loggedInUser.id}"
+        return "${qaDaoServices.sta10Details}=${qaSta10.permitId}"
     }
 
     @PreAuthorize("hasAuthority('PERMIT_APPLICATION')")
@@ -543,7 +543,7 @@ class QualityAssuranceController(
             )
         }
 
-        return "${qaDaoServices.sta10Details}=${qaSta10.permitId}%26userID=${loggedInUser.id}"
+        return "${qaDaoServices.sta10Details}=${qaSta10.permitId}"
     }
 
     @PreAuthorize("hasAuthority('PERMIT_APPLICATION') or hasAuthority('QA_OFFICER_MODIFY') or hasAuthority('QA_HOD_MODIFY') or hasAuthority('QA_MANAGER_ASSESSORS_MODIFY')" +
@@ -595,7 +595,7 @@ class QualityAssuranceController(
         }
 
         val sm = CommonDaoServices.MessageSuccessFailDTO()
-        sm.closeLink = "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitDetails.id}%26userID=${loggedInUser.id}"
+        sm.closeLink = "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitDetails.id}"
         sm.message = "Document Uploaded successful"
 
         return commonDaoServices.returnValues(result, map, sm)
@@ -615,7 +615,7 @@ class QualityAssuranceController(
                 "\n " +
                 "Factory Inspection Report has been sent for approval :" +
                 "\n " +
-                "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitDetails.id}%26userID=${permitDetails.userId}"
+                "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitDetails.id}"
 
         userPermit?.email?.let { notifications.sendEmail(it, subject, messageBody) }
     }
@@ -682,7 +682,7 @@ class QualityAssuranceController(
         result = qaDaoServices.permitUpdateDetails(permit, map, loggedInUser).first
 
         val sm = CommonDaoServices.MessageSuccessFailDTO()
-        sm.closeLink = "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permit.id}%26userID=${loggedInUser.id}"
+        sm.closeLink = "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permit.id}"
         sm.message = "You have successful Submitted Your Application, an invoice has been generated, check Your permit detail and pay for the Invoice"
 
         return commonDaoServices.returnValues(result!!, map, sm)
@@ -709,7 +709,7 @@ class QualityAssuranceController(
 
         val sm = CommonDaoServices.MessageSuccessFailDTO()
         sm.closeLink =
-            "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permit.id}%26userID=${loggedInUser.id}"
+            "${applicationMapProperties.baseUrlValue}/qa/invoice-details?permitID=${permit.id}"
         sm.message =
             "Check You phone for an STK Push,If You can't see the push either pay with Bank or Normal Mpesa service"
 
@@ -736,7 +736,7 @@ class QualityAssuranceController(
 
         val sm = CommonDaoServices.MessageSuccessFailDTO()
         sm.closeLink =
-            "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permit.id}%26userID=${loggedInUser.id}"
+            "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permit.id}"
         sm.message = "Justification report successfully submitted for Approval"
 
         return commonDaoServices.returnValues(result!!, map, sm)

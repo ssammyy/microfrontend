@@ -3,12 +3,15 @@ package org.kebs.app.kotlin.apollo.api.ports.provided.dao
 import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.notifications.Notifications
 import org.kebs.app.kotlin.apollo.api.ports.provided.mpesa.MPesaService
+import org.kebs.app.kotlin.apollo.common.dto.PermitEntityDto
+import org.kebs.app.kotlin.apollo.common.dto.ms.ComplaintsDto
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
 import org.kebs.app.kotlin.apollo.common.exceptions.ServiceMapNotFoundException
 import org.kebs.app.kotlin.apollo.common.utils.generateRandomText
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.*
+import org.kebs.app.kotlin.apollo.store.model.ms.ComplaintEntity
 import org.kebs.app.kotlin.apollo.store.model.qa.*
 import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileEntity
 import org.kebs.app.kotlin.apollo.store.repo.*
@@ -49,6 +52,7 @@ class QADaoServices(
     private val manufacturingProcessSTA10Repo: IQaManufactureProcessRepository,
     private val manufacturePlantRepository: IManufacturePlantDetailsRepository,
     private val permitTypesRepo: IPermitTypesEntityRepository,
+    private val processStatusRepo: IQaProcessStatusRepository,
     private val iMoneyTypeCodesRepo: ICfgMoneyTypeCodesRepository,
     private val mpesaServices: MPesaService,
     private val notifications: Notifications,
@@ -70,6 +74,15 @@ class QADaoServices(
         permitTypesRepo.findByIdOrNull(id)?.let {
             return it
         } ?: throw ExpectedDataNotFound("No Permit Type found with the following [ID=$id]")
+
+
+    }
+
+    fun findPermitStatus(statusID: Long): QaProcessStatusEntity {
+        processStatusRepo.findByIdOrNull(statusID)?.let {
+            return it
+        }  ?: throw ExpectedDataNotFound("No Status found with the following [ID =$statusID]")
+
     }
 
     fun findFmarkWithSmarkId(smarkID: Long): QaSmarkFmarkEntity {
@@ -287,6 +300,26 @@ class QADaoServices(
     }
 
 
+    fun listPermits(permits: List<PermitApplicationsEntity>, map: ServiceMapsEntity): List<PermitEntityDto> {
+        val permitsList = mutableListOf<PermitEntityDto>()
+        permits.map { p ->
+            permitsList.add(
+                PermitEntityDto(
+                    p.id,
+                           p.firmName,
+                           p.permitNumber,
+                           p.productName,
+                           p.tradeMark,
+                           p.dateOfIssue,
+                           p.dateOfExpiry,
+                           p.permitStatus?.let { findPermitStatus(it).processStatusName },
+                           p.userId
+                )
+            )
+        }
+        return permitsList.sortedBy { it.id }
+    }
+
     fun findOfficersList(permit: PermitApplicationsEntity, map: ServiceMapsEntity, designationID:Long): List<UserProfilesEntity> {
         val plantID = permit.attachedPlantId
             ?: throw ServiceMapNotFoundException("Atta ched Plant details For Permit with ID = ${permit.id}, is Empty")
@@ -320,7 +353,7 @@ class QADaoServices(
         val subject = "DMARK Application Assessment"
         val messageBody = "DMARK application with the details below has been assisgned to you for assessment:  \n" +
                 "\n " +
-                "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permit.id}%26userID=${permit.userId}"
+                "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permit.id}"
         notifications.sendEmail(recipientEmail, subject, messageBody)
         return true
     }
@@ -340,9 +373,18 @@ class QADaoServices(
         val subject = "DMARK Factory Conformity Status"
         val messageBody = "Dmark assessment report and conformity status is available for below:  \n" +
                 "\n " +
-                "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permit.id}%26userID=${permit.userId}"
+                "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permit.id}"
         notifications.sendEmail(recipientEmail, subject, messageBody)
         return true
+    }
+
+    fun permitInsertStatus(permit: PermitApplicationsEntity, statusID : Long,user: UsersEntity): PermitApplicationsEntity {
+        with(permit){
+            permitStatus = statusID
+            modifiedBy = commonDaoServices.concatenateName(user)
+            modifiedOn = commonDaoServices.getTimestamp()
+        }
+       return permitRepo.save(permit)
     }
 
     fun permitSave(
@@ -365,6 +407,7 @@ class QADaoServices(
                 versionNumber = 1
                 endOfProductionStatus = map.initStatus
                 status = map.activeStatus
+                permitStatus = applicationMapProperties.mapQaStatusDraft
                 createdBy = commonDaoServices.concatenateName(user)
                 createdOn = commonDaoServices.getTimestamp()
             }
@@ -449,7 +492,7 @@ class QADaoServices(
                 "\n " +
                 "Scheme For Supervision And Control has been Generated that needs your approval for the process to continue:" +
                 "\n " +
-                "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permits.id}%26userID=${permits.userId}"
+                "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permits.id}"
 
         userPermit?.email?.let { notifications.sendEmail(it, subject, messageBody) }
     }
@@ -537,7 +580,7 @@ class QADaoServices(
                 "\n " +
                 "Scheme For Supervision And Control was ${reasonValue} due to the Following reason ${foundSSC.acceptedRejectedReason}:" +
                 "\n " +
-                "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitUpdate.id}%26userID=${permitUpdate.userId}"
+                "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitUpdate.id}"
 
         userPermit?.email?.let { notifications.sendEmail(it, subject, messageBody) }
     }
@@ -1478,7 +1521,7 @@ class QADaoServices(
                 "The lab test report are available  at ${applicationMapProperties.baseUrlValue}/qa/kebs/view/attached?fileID=${permitDetails.testReportId}: \n" +
                 " with the following compliance status  $compliantStatus" +
                 "\n " +
-                "for the following permit : ${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitDetails.id}%26userID=${permitDetails.userId}"
+                "for the following permit : ${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitDetails.id}"
 
         manufacturer?.email?.let { notifications.sendEmail(it, subject, messageBody) }
     }
@@ -1488,7 +1531,7 @@ class QADaoServices(
         val subject = "RECOMMENDATION FOR AWARDING OF PERMIT"
         val messageBody = "Dear ${manufacturer?.let { commonDaoServices.concatenateName(it) }}: \n" +
                 "\n " +
-                "A recommendation has been added for the following permit : ${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitDetails.id}%26userID=${permitDetails.userId}: \n" +
+                "A recommendation has been added for the following permit : ${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitDetails.id} \n" +
                 "That awaits your approval"
 
         manufacturer?.email?.let { notifications.sendEmail(it, subject, messageBody) }
@@ -1500,8 +1543,7 @@ class QADaoServices(
         val messageBody = "Dear ${manufacturer?.let { commonDaoServices.concatenateName(it) }}: \n" +
                 "\n " +
                 "The recommendation has been rejected due to the following reasons: ${permitDetails.recommendationApprovalRemarks} \n" +
-                "Please do some correction and send it back for approval : ${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitDetails.id}%26userID=${permitDetails.userId}: \n"
-
+                "Please do some correction and send it back for approval : ${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitDetails.id} \n"
 
         manufacturer?.email?.let { notifications.sendEmail(it, subject, messageBody) }
     }
@@ -1512,7 +1554,7 @@ class QADaoServices(
         val messageBody = "Dear ${manufacturer?.let { commonDaoServices.concatenateName(it) }}: \n" +
                 "\n " +
                 "The below permit has been DEFERRED due to the following reasons: ${permitDetails.pscMemberApprovalRemarks} \n" +
-                "Please do some correction and send it back for approval : ${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitDetails.id}%26userID=${permitDetails.userId}: \n"
+                "Please do some correction and send it back for approval : ${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitDetails.id}\n"
 
         manufacturer?.email?.let { notifications.sendEmail(it, subject, messageBody) }
     }
@@ -1523,7 +1565,7 @@ class QADaoServices(
         val messageBody = "Dear ${manufacturer?.let { commonDaoServices.concatenateName(it) }}: \n" +
                 "\n " +
                 "The below permit has been DEFERRED due to the following reasons: ${permitDetails.pcmApprovalRemarks} \n" +
-                "Please do some correction and send it back for approval : ${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitDetails.id}%26userID=${permitDetails.userId}: \n"
+                "Please do some correction and send it back for approval : ${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitDetails.id}\n"
 
         manufacturer?.email?.let { notifications.sendEmail(it, subject, messageBody) }
     }
@@ -1534,7 +1576,7 @@ class QADaoServices(
         val messageBody = "Dear ${manufacturer?.let { commonDaoServices.concatenateName(it) }}: \n" +
                 "\n " +
                 "The permit below awaits your approval for inspection review \n" +
-                " ${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitDetails.id}%26userID=${permitDetails.userId}: \n"
+                " ${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitDetails.id}\n"
 
         manufacturer?.email?.let { notifications.sendEmail(it, subject, messageBody) }
     }
@@ -1545,7 +1587,7 @@ class QADaoServices(
         val messageBody = "Dear ${manufacturer?.let { commonDaoServices.concatenateName(it) }}: \n" +
                 "\n " +
                 "The permit below awaits your approval for inspection review \n" +
-                " ${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitDetails.id}%26userID=${permitDetails.userId}: \n"
+                " ${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitDetails.id}\n"
 
         manufacturer?.email?.let { notifications.sendEmail(it, subject, messageBody) }
     }

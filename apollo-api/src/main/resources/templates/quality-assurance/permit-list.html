@@ -55,9 +55,11 @@
                                         <td th:text="${permit?.tradeMark}"></td>
                                         <td th:text="${#dates.format(permit?.dateOfIssue, 'dd/MM/yyyy')}"></td>
                                         <td th:text="${#dates.format(permit?.dateOfExpiry, 'dd/MM/yyyy')}"></td>
-                                        <td style="color: #20f300; font-weight: bold; " th:if="${permit?.enabled == 1}">Active</td>
-<!--                                        <td style="color: Black; font-weight: bold; " th:unless="${permit?.enabled == 10}">Applied</td>-->
-                                        <td style="color: #f30014; font-weight: bold; " th:unless="${permit?.enabled == 1}">Expired</td>
+                                        <td  th:text="${permit?.permitStatus ?: 'UNKOWN'}"></td>
+
+<!--                                        <td style="color: #20f300; font-weight: bold; " th:if="${permit?.enabled == 1}">Active</td>-->
+<!--&lt;!&ndash;                                        <td style="color: Black; font-weight: bold; " th:unless="${permit?.enabled == 10}">Applied</td>&ndash;&gt;-->
+<!--                                        <td style="color: #f30014; font-weight: bold; " th:unless="${permit?.enabled == 1}">Expired</td>-->
                                         <!--                                        <td th:text="${complaint?.}"></td>-->
                                         <!--                                        <td sec:authorize="hasAuthority('CD_SUPERVISOR_READ')" th:if="${coc?.assignedStatus == 1}"  th:text="${coc?.assignIoId?.firstName}  + ' ' + ${coc?.assignIoId?.lastName}"></td>-->
                                         <td><a class="filter-link" th:href="@{/api/qa/permit-details(permitID=${permit.id},userID=${permit?.userId})}">view</a></td>

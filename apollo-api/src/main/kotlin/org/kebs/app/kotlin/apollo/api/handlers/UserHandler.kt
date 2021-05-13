@@ -68,31 +68,29 @@ class UserHandler(
                         val map = commonDaoServices.serviceMapDetails(appId)
                         val userDetails = commonDaoServices.loggedInUserDetails()
                         val auth = commonDaoServices.loggedInUserAuthentication()
-                        when {
-                            auth.authorities.stream().anyMatch { authority -> authority.authority == applicationMapProperties.mapQualityAssuranceManufactureRoleName } -> {
-                                when (userDetails.manufactureProfile) {
-                                    map.activeStatus -> {
-                                        val manufactureProfile= userDetails.id?.let { commonDaoServices.findCompanyProfile(it) } ?: throw ExpectedDataNotFound("Missing Manufacture Company Details, Fill The Details")
-                                        req.attributes()["manufactureProfile"] = manufactureProfile
-                                        req.attributes()["businessLineValue"] = manufactureProfile.businessLines?.let {  businessLinesRepository.findByIdOrNull(it)?.name}
-                                        req.attributes()["businessNatureValue"] =manufactureProfile.businessNatures?.let {  businessNatureRepository.findByIdOrNull(it)?.name}
-//                                        req.attributes()["userClassificationValue"] = null
-                                        req.attributes()["plantsDetails"] = qaDaoServices.findAllPlantDetails(userDetails.id!!)
-                                        req.attributes()["regionValue"] = manufactureProfile.region?.let { commonDaoServices.findRegionEntityByRegionID(it, map.activeStatus).region }
-                                        req.attributes()["countyValue"] = manufactureProfile.county?.let { commonDaoServices.findCountiesEntityByCountyId(it, map.activeStatus).county }
-                                        req.attributes()["townValue"] = manufactureProfile.town?.let { commonDaoServices.findTownEntityByTownId(it).town }
-                                        req.attributes()["manufacturePlantDetails"] = ManufacturePlantDetailsEntity()
+//        if (auth.authorities.stream().anyMatch { authority -> authority.authority == applicationMapProperties.mapQualityAssuranceManufactureRoleName }) {
+            when (userDetails.manufactureProfile) {
+                map.activeStatus -> {
+                    val manufactureProfile= userDetails.id?.let { commonDaoServices.findCompanyProfile(it) } ?: throw ExpectedDataNotFound("Missing Manufacture Company Details, Fill The Details")
+                    req.attributes()["manufactureProfile"] = manufactureProfile
+                    req.attributes()["businessLineValue"] = manufactureProfile.businessLines?.let {  businessLinesRepository.findByIdOrNull(it)?.name}
+                    req.attributes()["businessNatureValue"] =manufactureProfile.businessNatures?.let {  businessNatureRepository.findByIdOrNull(it)?.name}
+    //                                        req.attributes()["userClassificationValue"] = null
+                    req.attributes()["plantsDetails"] = qaDaoServices.findAllPlantDetails(userDetails.id!!)
+                    req.attributes()["regionValue"] = manufactureProfile.region?.let { commonDaoServices.findRegionEntityByRegionID(it, map.activeStatus).region }
+                    req.attributes()["countyValue"] = manufactureProfile.county?.let { commonDaoServices.findCountiesEntityByCountyId(it, map.activeStatus).county }
+                    req.attributes()["townValue"] = manufactureProfile.town?.let { commonDaoServices.findTownEntityByTownId(it).town }
+                    req.attributes()["manufacturePlantDetails"] = ManufacturePlantDetailsEntity()
 
-                                    }
-                                }
-                            }
-                            auth.authorities.stream().anyMatch { authority -> authority.authority == applicationMapProperties.mapQualityAssuranceEmployeeRoleName } -> {
+                }
+            }
+//        }
+       if (auth.authorities.stream().anyMatch { authority -> authority.authority == applicationMapProperties.mapQualityAssuranceEmployeeRoleName }) {
 
-                                        val employeeProfiles= commonDaoServices.findUserProfileByUserID(userDetails, map.activeStatus)
-                                        req.attributes()["employeeProfiles"] = employeeProfiles
+            val employeeProfiles= commonDaoServices.findUserProfileByUserID(userDetails, map.activeStatus)
+            req.attributes()["employeeProfiles"] = employeeProfiles
 
-                            }
-                        }
+        }
 
                         req.attributes()["counties"] = countyRepo.findByStatusOrderByCounty(map.activeStatus)
                         req.attributes()["userRequests"] = masterDataDaoService.getUserRequestTypesByStatus(map.activeStatus)
