@@ -435,7 +435,7 @@
 
                                         <a th:if="${permitType?.st10Status == 1 and permitDetails?.sta10FilledStatus == 0}" target='_blank' th:href="@{/api/qa/view-sta10(permitID=${permitDetails?.id}, userID=${permitDetails?.userId})}" class="filter-link" style="color: white">COMPLETE FILLING STA 10</a>
 
-                                        <a th:if="${permitType?.st10Status == 1 and permitDetails?.sta10FilledStatus == null}"  th:href="@{/api/qa/new-sta10(permitID=${permitDetails?.id})}" class="filter-link" style="color: white">Fill STA 10</a>
+                                        <a th:if="${permitType?.st10Status == 1 and permitDetails?.sta10FilledStatus == null and permitDetails?.attachedPlantId != null}"  th:href="@{/api/qa/new-sta10(permitID=${permitDetails?.id})}" class="filter-link" style="color: white">Fill STA 10</a>
 
 <!--                                        <a th:if="${permitType?.smeDeclarationForm == 1 and permitDetails?.smeFormFilledStatus == null}"  th:href="@{/api/qa/new-sme-declaration(permitID=${permitDetails?.id})}" class="filter-link" style="color: white">Fill SME DECLARATION</a>-->
 
@@ -480,7 +480,7 @@
 
                                     <div sec:authorize="hasAuthority('PERMIT_APPLICATION')">
 
-                                        <a th:if="${permitType?.st3Status == 1 and permitDetails?.sta3FilledStatus == null}"  th:href="@{/api/qa/new-sta3(permitID=${permitDetails?.id})}" class="filter-link" style="color: white">Fill STA 3</a>
+                                        <a th:if="${permitType?.st3Status == 1 and permitDetails?.sta3FilledStatus == null and permitDetails?.attachedPlantId != null}"  th:href="@{/api/qa/new-sta3(permitID=${permitDetails?.id})}" class="filter-link" style="color: white">Fill STA 3</a>
 
 
                                         <a th:if="${permitDetails?.generateSchemeStatus == 1 and permitDetails?.approvedRejectedScheme == null and permitType?.schemeGenerate == 1}" th:href="@{/api/qa/scheme-of-supervision(permitID=${permitDetails?.id})}" style="color: white" class="filter-link">APPROVE/REJECT GENERATED SCHEME FOR SUPERVISION AND CONTROL</a>

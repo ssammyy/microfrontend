@@ -220,6 +220,22 @@ class QaSta10Entity : Serializable {
     @Basic
     var description: String? = null
 
+    @Column(name = "CLOSED_RAW_MATERIALS")
+    @Basic
+    var closedRawMaterials: Int? = null
+
+    @Column(name = "CLOSED_MACHINERY_PLANTS")
+    @Basic
+    var closedMachineryPlants: Int? = null
+
+    @Column(name = "CLOSED_MANUFACTURING_PROCESSES")
+    @Basic
+    var closedManufacturingProcesses: Int? = null
+
+    @Column(name = "CLOSED_PRODUCTION")
+    @Basic
+    var closedProduction: Int? = null
+
     @Column(name = "STATUS")
     @Basic
     var status: Int? = null
@@ -310,6 +326,9 @@ class QaSta10Entity : Serializable {
                 region == that.region &&
                 county == that.county &&
                 town == that.town &&
+                closedRawMaterials == that.closedRawMaterials &&
+                closedMachineryPlants == that.closedMachineryPlants &&
+                closedManufacturingProcesses == that.closedManufacturingProcesses &&
                 totalNumberPersonnel == that.totalNumberPersonnel &&
                 totalNumberFemale == that.totalNumberFemale &&
                 totalNumberMale == that.totalNumberMale &&
@@ -344,6 +363,7 @@ class QaSta10Entity : Serializable {
                 assessorsRecommendationCertification == that.assessorsRecommendationCertification &&
                 officialFillDate == that.officialFillDate &&
                 description == that.description &&
+                closedProduction == that.closedProduction &&
                 status == that.status &&
                 varField1 == that.varField1 &&
                 varField2 == that.varField2 &&
@@ -383,6 +403,10 @@ class QaSta10Entity : Serializable {
             region,
             county,
             town,
+            closedProduction,
+            closedRawMaterials,
+            closedMachineryPlants,
+            closedManufacturingProcesses,
             totalNumberPersonnel,
             totalNumberFemale,
             totalNumberMale,

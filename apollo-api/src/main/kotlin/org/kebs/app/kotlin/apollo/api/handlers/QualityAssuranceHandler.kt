@@ -361,6 +361,7 @@ class QualityAssuranceHandler(
 
         val permitID = req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
         val qaSta10Entity = qaDaoServices.findSTA10WithPermitIDBY(permitID)
+        req.attributes().putAll(commonDaoServices.loadCommonUIComponents(map))
         req.attributes()["permit"] =   qaDaoServices.findPermitBYID(permitID)
         req.attributes()["regionDetails"] = qaSta10Entity.region?.let { commonDaoServices.findRegionEntityByRegionID(it, map.activeStatus).region }
         req.attributes()["countyDetails"] = qaSta10Entity.county?.let { commonDaoServices.findCountiesEntityByCountyId(it, map.activeStatus).county }
@@ -387,6 +388,7 @@ class QualityAssuranceHandler(
         val permit = loggedInUser.id?.let { qaDaoServices.findPermitBYUserIDAndId(permitID, it) }?: throw ExpectedDataNotFound("Required User ID, check config")
         with(permit){
             sta10FilledStatus = map.activeStatus
+            permitStatus = applicationMapProperties.mapQaStatusPSubmission
         }
 
         qaDaoServices.permitUpdateDetails(permit,map, loggedInUser)

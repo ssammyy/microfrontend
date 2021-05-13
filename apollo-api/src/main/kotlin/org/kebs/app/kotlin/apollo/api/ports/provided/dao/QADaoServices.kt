@@ -647,6 +647,20 @@ class QADaoServices(
         return sta10Repo.save(qaSta10Details)
     }
 
+    fun sta10Update(
+        qaSta10Details: QaSta10Entity,
+        map: ServiceMapsEntity,
+        user: UsersEntity
+    ): QaSta10Entity {
+
+        with(qaSta10Details) {
+            status = map.activeStatus
+            modifiedBy = commonDaoServices.concatenateName(user)
+            modifiedOn = commonDaoServices.getTimestamp()
+        }
+        return sta10Repo.save(qaSta10Details)
+    }
+
     fun sta10ManufactureProductNewSave(
         qaSta10ID: Long,
         productManufacturedDetails: QaProductManufacturedEntity,

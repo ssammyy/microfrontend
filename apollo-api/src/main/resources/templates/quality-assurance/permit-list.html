@@ -55,7 +55,7 @@
                                         <td th:text="${permit?.tradeMark}"></td>
                                         <td th:text="${#dates.format(permit?.dateOfIssue, 'dd/MM/yyyy')}"></td>
                                         <td th:text="${#dates.format(permit?.dateOfExpiry, 'dd/MM/yyyy')}"></td>
-                                        <td  th:text="${permit?.permitStatus ?: 'UNKOWN'}"></td>
+                                        <td  th:text="${permit?.permitStatus}"></td>
 
 <!--                                        <td style="color: #20f300; font-weight: bold; " th:if="${permit?.enabled == 1}">Active</td>-->
 <!--&lt;!&ndash;                                        <td style="color: Black; font-weight: bold; " th:unless="${permit?.enabled == 10}">Applied</td>&ndash;&gt;-->
