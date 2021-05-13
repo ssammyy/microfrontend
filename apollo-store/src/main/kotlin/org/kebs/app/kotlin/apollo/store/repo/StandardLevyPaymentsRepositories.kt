@@ -11,7 +11,7 @@ import org.springframework.data.repository.query.Param
 interface IStandardLevyPaymentsRepository : HazelcastRepository<StandardLevyPaymentsEntity, Long> {
     fun findByManufacturerEntity(manufacturerEntity: Long, pageable: Pageable): Page<StandardLevyPaymentsEntity>?
     fun findByManufacturerEntityOrderByIdDesc(manufacturerEntity: Long): List<StandardLevyPaymentsEntity>?
-    fun findByManufacturerEntity(manufacturerEntity: CompanyProfileEntity): StandardLevyPaymentsEntity?
+    fun findByManufacturerEntity(manufacturerEntity: Long): StandardLevyPaymentsEntity?
     fun findAllByOrderByIdDesc(): List<StandardLevyPaymentsEntity>?
     fun findAllByStatusOrderByIdDesc(status: Int) : List<StandardLevyPaymentsEntity>?
 //    fun findByOrderById(page: Pageable?): List<StandardLevyPaymentsEntity>?
