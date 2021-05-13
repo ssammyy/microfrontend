@@ -293,16 +293,16 @@
                                                 </thead>
                                                 <tbody>
                                                 <!--                <a th:each="coc, iStat: ${cocs}" th:href="@{/api/inspection/supervisor/coc-details/{id}(id=${coc.id})}" class="table-row w-inline-block">-->
-                                                <tr class="list" style="cursor: pointer">
-                                                    <td th:text="${paymentHistory?.paymentDate}"></td>
-                                                    <td th:if="${paymentHistory?.levyPaid} != null" th:text="'Ksh.' + ${paymentHistory?.levyPaid}"></td>
-                                                    <td th:if="${paymentHistory?.levyPaid} == null" th:text="'Not paid'"></td>
-                                                    <td  th:text="'Ksh.' + ${paymentHistory?.levyPayable}"></td>
-                                                    <td th:if="${paymentHistory?.paymentDate != null}" th:text="${#dates.format(paymentHistory?.paymentDate, 'dd/MM/yyyy')}"></td>
-                                                    <td th:if="${paymentHistory?.paymentDate == null}" th:text="'N/A'"></td>
-                                                    <td th:if="${paymentHistory?.levyPenaltyPaymentDate != null}" th:text="${#dates.format(paymentHistory?.levyPenaltyPaymentDate, 'dd/MM/yyyy')}"></td>
-                                                    <td th:if="${paymentHistory?.levyPenaltyPaymentDate == null}" th:text="'N/A'"></td>
-<!--                                                    <td><a class="btn btn-info" th:href="@{/sl/manufacturer(manufacturerId = ${manufacturer.id}, appId=${map.id})}">view</a></td>-->
+                                                <tr class="list" style="cursor: pointer" th:each="payment, iStat: ${paymentHistory}">
+                                                    <td th:text="${payment?.paymentDate}"></td>
+                                                    <td th:if="${payment?.levyPaid} != null" th:text="'Ksh.' + ${payment?.levyPaid}"></td>
+                                                    <td th:if="${payment?.levyPaid} == null" th:text="'Not paid'"></td>
+                                                    <td th:text="'Ksh.' + ${payment?.levyPayable}"></td>
+                                                    <td th:if="${payment?.paymentDate != null}" th:text="${#dates.format(payment?.paymentDate, 'dd/MM/yyyy')}"></td>
+                                                    <td th:if="${payment?.paymentDate == null}" th:text="'N/A'"></td>
+                                                    <td th:if="${payment?.levyPenaltyPaymentDate != null}" th:text="${#dates.format(payment?.levyPenaltyPaymentDate, 'dd/MM/yyyy')}"></td>
+                                                    <td th:if="${payment?.levyPenaltyPaymentDate == null}" th:text="'N/A'"></td>
+                                                    <!--                                                    <td><a class="btn btn-info" th:href="@{/sl/manufacturer(manufacturerId = ${manufacturer.id}, appId=${map.id})}">view</a></td>-->
                                                 </tr>
                                                 </tbody>
                                             </table>
@@ -361,9 +361,11 @@
                                                     </div>
                                                     <small class="d-block text-right mt-3">
                                                         <!--  Ass manager approval   -->
-                                                        <a sec:authorize="hasAuthority('SL_APPROVE_VISIT_REPORT')" th:if="${visitReport.assistantManagerApproval != 1}" th:href="@{/sl/general-actions(whereTo='assistant_manager_approval', manufacturerId=${manufacturer?.id}, kraId=${payment?.id}, approvalStatus = 1)}">Approve</a>
+                                                        <a sec:authorize="hasAuthority('SL_APPROVE_VISIT_REPORT')" th:href="@{/sl/general-actions(whereTo='assistant_manager_approval', manufacturerId=${manufacturer?.id}, kraId=${visitReport?.id}, approvalStatus = 1)}"
+                                                           th:if="${visitReport.assistantManagerApproval != 1}">Approve</a>
                                                         <!--  Manager's approval   -->
-                                                        <a sec:authorize="hasAuthority('SL_SECOND_APPROVE_VISIT_REPORT')" th:if="${visitReport.assistantManagerApproval == 1} and ${visitReport.managersApproval != 1}" th:href="@{/sl/general-actions(whereTo='manager_approval', manufacturerId=${manufacturer?.id}, kraId=${payment?.id}, approvalStatus = 1)}">Approve</a>
+                                                        <a sec:authorize="hasAuthority('SL_SECOND_APPROVE_VISIT_REPORT')" th:href="@{/sl/general-actions(whereTo='manager_approval', manufacturerId=${manufacturer?.id}, kraId=${visitReport?.id}, approvalStatus = 1)}"
+                                                           th:if="${visitReport.assistantManagerApproval == 1} and ${visitReport.managersApproval != 1}">Approve</a>
                                                     </small>
                                                 </div>
 
