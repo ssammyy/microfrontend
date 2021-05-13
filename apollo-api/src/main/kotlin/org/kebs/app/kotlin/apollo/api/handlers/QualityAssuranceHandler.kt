@@ -220,6 +220,7 @@ class QualityAssuranceHandler(
         req.attributes()["permitType"] = permit.permitType?.let { qaDaoServices.findPermitType(it) }
         req.attributes()["permitDetails"] = permit
         req.attributes()["docFileName"] =  docFileName
+        req.attributes()["statusName"] = permit.permitStatus?.let { qaDaoServices.findPermitStatus(it) }
         req.attributes()["plantAttached"] = plantAttached
         req.attributes()["plantsDetails"] = permit.userId?.let { qaDaoServices.findAllPlantDetails(it) } ?: throw ExpectedDataNotFound("Required User ID, from Permit Details")
 

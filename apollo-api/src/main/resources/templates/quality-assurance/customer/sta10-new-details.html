@@ -280,7 +280,7 @@
                                         </div>
                                         <div class="col-md-6 mb-3">
                                             <button id="closeADDMachinePlant" class="btn btn-primary"
-                                                    onclick="popUpFunctionAddMachinePlants('closeAddMachinePlant');"
+                                                    onclick="popUpFunctionAddMachinePlants('closeAddMachinePlantDetails');"
                                                     type="button">CLOSE ADD
                                             </button>
                                         </div>
@@ -322,7 +322,7 @@
                                         </div>
                                         <div class="col-md-6 mb-3">
                                             <button id="closeAddManufactureProcess" class="btn btn-primary"
-                                                    onclick="popUpFunctionAddManufactureProcessDetails('closeAddManufactureProcess');"
+                                                    onclick="popUpFunctionAddManufactureProcessDetails('closeAddManufactureProcessDetails');"
                                                     type="button">CLOSE ADD
                                             </button>
                                         </div>
@@ -477,7 +477,7 @@
                         </div>
                         <div>
                             <div sec:authorize="hasAuthority('PERMIT_APPLICATION')">
-                                <a th:if="${permit?.sta10FilledStatus == 1 and closedProduction == 1 and closedRawMaterials == 1 and closedMachineryPlants == 1 and closedManufacturingProcesses == 1 }"  th:href="@{/api/qa/new-sta10-submit(permitID=${permit?.id})}" class="filter-link" style="color: white">SUBMIT STA10</a>
+                                <a th:if="${permit?.sta10FilledStatus != 1 and QaSta10Entity?.closedProduction == 1 and QaSta10Entity?.closedRawMaterials == 1 and QaSta10Entity?.closedMachineryPlants == 1 and QaSta10Entity?.closedManufacturingProcesses == 1 }"  th:href="@{/api/qa/new-sta10-submit(permitID=${permit?.id})}" class="filter-link" style="color: white">SUBMIT STA10</a>
                             </div>
 
                         </div>
@@ -667,7 +667,7 @@
                                                 <option  th:each="selectCountry : ${countries}" th:value="${selectCountry.country}" th:text="${selectCountry.country}"></option>
                                             </select>
                                         </div>
-                                        <div id="closeAddMachinePlant">
+                                        <div id="closeAddMachinePlantDetails">
                                             <input type="hidden" name="closeStatus" th:value="${activeStatus}">
                                             <p>Are You Sure you want to mark Machinery and Plant as complete?</p>
                                         </div>
@@ -717,7 +717,8 @@
                                             <label for="processMonitoringRecords" class="col-form-label">Process monitoring records</label>
                                             <input type="text" class="form-control" id="processMonitoringRecords" th:field="*{processMonitoringRecords}" required="required">
                                         </div>
-                                        <div id="closeAddManufactureProcess">
+
+                                        <div id="closeAddManufactureProcessDetails">
                                             <input type="hidden" name="closeStatus" th:value="${activeStatus}">
                                             <p>Are You Sure you want to mark Manufacturing process as complete?</p>
                                         </div>
@@ -877,7 +878,7 @@
     }
 
     function popUpFunctionAddMachinePlants(eventAction) {
-        let arrHead = ['addMachinePlantDetails', 'closeAddMachinePlant'];
+        let arrHead = ['addMachinePlantDetails', 'closeAddMachinePlantDetails'];
         let arrHeadSave = ['ADD Machinery and Plant Details', 'Close'];
 
         for (let h = 0; h < arrHead.length; h++) {
@@ -895,7 +896,7 @@
     }
 
     function popUpFunctionAddManufactureProcessDetails(eventAction) {
-        let arrHead = ['addManufactureProcessDetails', 'closeAddManufactureProcess'];
+        let arrHead = ['addManufactureProcessDetails', 'closeAddManufactureProcessDetails'];
         let arrHeadSave = ['ADD Manufacturing process', 'Close'];
 
         for (let h = 0; h < arrHead.length; h++) {
