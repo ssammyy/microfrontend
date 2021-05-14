@@ -57,6 +57,16 @@ import { StdTscTasksComponent } from './components/standards-development/std-tsc
 import { RequestStandardFormComponent } from './components/standards-development/standard-request/request-standard-form/request-standard-form.component';
 import {FileUploadModule} from "ng2-file-upload";
 import { StdTcTasksComponent } from './components/standards-development/std-tc-tasks/std-tc-tasks.component';
+import { CompanyStandardRequestComponent } from './components/standards-development/company-standard-request/company-standard-request.component';
+import { CsRequestFormComponent } from './components/standards-development/company-standard-request/cs-request-form/cs-request-form.component';
+import { ComStdRequestListComponent } from './components/standards-development/com-std-request-list/com-std-request-list.component';
+import { NwaJustificationFormComponent } from './components/standards-development/nwa-justification-form/nwa-justification-form.component';
+import { NwaJustificationTasksComponent } from './components/standards-development/nwa-justification-tasks/nwa-justification-tasks.component';
+import { NwaKnwSecTasksComponent } from './components/standards-development/nwa-knw-sec-tasks/nwa-knw-sec-tasks.component';
+import { NwaDiSdtTasksComponent } from './components/standards-development/nwa-di-sdt-tasks/nwa-di-sdt-tasks.component';
+import { NwaHopTasksComponent } from './components/standards-development/nwa-hop-tasks/nwa-hop-tasks.component';
+import { SacSecTasksComponent } from './components/standards-development/sac-sec-tasks/sac-sec-tasks.component';
+import { NwaHoSicTasksComponent } from './components/standards-development/nwa-ho-sic-tasks/nwa-ho-sic-tasks.component';
 import { PreparePdComponent } from './components/standards-development/commitee/prepare-pd/prepare-pd.component';
 import { CommentPdComponent } from './components/standards-development/commitee/comment-pd/comment-pd.component';
 import { CommentCdComponent } from './components/standards-development/commitee/comment-cd/comment-cd.component';
@@ -78,6 +88,7 @@ import { HodjoinrequestComponent } from './components/standards-development/hodj
 import { SicjoinrequestComponent } from './components/standards-development/sicjoinrequest/sicjoinrequest.component';
 import { SicpaymentconfirmComponent } from './components/standards-development/sicpaymentconfirm/sicpaymentconfirm.component';
 import { SchememembershipComponent } from './components/standards-development/schememembership/schememembership/schememembership.component';
+
 
 
 
@@ -125,6 +136,16 @@ import { SchememembershipComponent } from './components/standards-development/sc
     StdTscTasksComponent,
     RequestStandardFormComponent,
     StdTcTasksComponent,
+    CompanyStandardRequestComponent,
+    CsRequestFormComponent,
+    ComStdRequestListComponent,
+    NwaJustificationFormComponent,
+    NwaJustificationTasksComponent,
+    NwaKnwSecTasksComponent,
+    NwaDiSdtTasksComponent,
+    NwaHopTasksComponent,
+    SacSecTasksComponent,
+    NwaHoSicTasksComponent,
     PreparePdComponent,
     CommentPdComponent,
     CommentCdComponent,

@@ -140,6 +140,12 @@ from DAT_KEBS_CD_DEMAND_NOTE
 where DEMAND_NOTE_NUMBER = 'DN2021042045B72'
 ;
 
+
+-- var c refcursor;
+execute pkg_name.get_user('14232', '15', 'TDWL', 'SA', 1, :c);
+print c;
+
+
 select *
 from STG_PAYMENT_RECONCILIATION --DN20210407C4C3D--DN20210331288A1
 -- where REFERENCE_CODE = 'DM#202104290CF'
@@ -151,7 +157,7 @@ order by id desc;/
 
 select *
 from LOG_STG_PAYMENT_RECONCILIATION
-where REFERENCE_CODE = 'DM#20210428DE4'
+-- where REFERENCE_CODE = 'DM#20210428DE4'
 order by id desc;/
 
 select * from DAT_KEBS_INVOICE_BATCH_DETAILS

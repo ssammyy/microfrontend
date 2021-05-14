@@ -719,6 +719,8 @@ class CommonDaoServices(
             ?: throw ExpectedDataNotFound("Company Profile with [ ID= ${id}], does not Exist")
     }
 
+
+
     fun findAllUsers(): List<UsersEntity> {
         usersRepo.findAllByOrderByIdAsc()
                 .let { usersEntity ->

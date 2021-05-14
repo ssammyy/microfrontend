@@ -1,5 +1,6 @@
 package org.kebs.app.kotlin.apollo.store.model
 
+import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileEntity
 import java.io.Serializable
 import java.math.BigDecimal
 import java.sql.Timestamp
@@ -36,9 +37,10 @@ class StandardLevyPaymentsEntity: Serializable {
     @Basic
     var visitStatus: Long? = null
 
-    @JoinColumn(name = "OFFICER_ASSIGNED", referencedColumnName = "ID")
-    @ManyToOne
-    var officerAssigned: UsersEntity? = null
+
+    @Column(name="OFFICER_ASSIGNED")
+    @Basic
+    var officerAssigned: Long? = null
 
     @Column(name = "LEVY_PAID")
     @Basic

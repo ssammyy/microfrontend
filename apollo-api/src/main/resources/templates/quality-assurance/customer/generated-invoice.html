@@ -229,7 +229,7 @@
 
                                                 </td>
                                                 <td class="text-center"
-                                                    th:text="'KSH ' + ${invoice?.applicationCost}"></td>
+                                                    th:text="'KSH ' + ${invoice?.inspectionCost}"></td>
                                             </tr>
                                             <tr th:if="${permit != null}" class="sub-total-row first">
                                                 <!--                              <td></td>-->
@@ -246,7 +246,7 @@
 
                                                 </td>
                                                 <td class="text-center"
-                                                    th:text="'KSH ' + ${invoice?.inspectionCost}"></td>
+                                                    th:text="'KSH ' + ${invoice?.applicationCost}"></td>
                                             </tr>
                                             <tr th:if="${invoice.fmarkCost != null} and ${permit != null}">
                                                 <td colspan="2">

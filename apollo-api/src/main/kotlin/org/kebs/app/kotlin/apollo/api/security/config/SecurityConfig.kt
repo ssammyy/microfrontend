@@ -52,9 +52,9 @@ class WebSecurityConfig {
         private val passwordEncoder: PasswordEncoder
     ) : WebSecurityConfigurerAdapter() {
 
-        fun addCorsMappings(registry: CorsRegistry) {
-            registry.addMapping("/**").allowedOrigins("*").allowedMethods("GET", "POST", "PUT", "DELETE")
-        }
+//        fun addCorsMappings(registry: CorsRegistry) {
+//            registry.addMapping("/**").allowedOrigins("*").allowedMethods("GET", "POST", "PUT", "DELETE")
+//        }
 
         @Bean
         fun authenticationTokenFilterBean(): JWTAuthorizationFilter {
@@ -72,9 +72,9 @@ class WebSecurityConfig {
             http.cors().and().csrf().disable()
                 .antMatcher("/api/v1/**")
                 .authorizeRequests()
-                .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+//                .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 .antMatchers(
-                    "/api/v1/login/**", "/api/v1/otp", "/api/v1/sftp/kesws/download", "/api/v1/auth/**", "/api/v1/otp"
+                    "/api/v1/login", "/api/v1/otp", "/api/v1/sftp/kesws/download", "/api/v1/auth/**", "/api/v1/otp"
                 )
                 .permitAll()
                 .anyRequest().authenticated()
