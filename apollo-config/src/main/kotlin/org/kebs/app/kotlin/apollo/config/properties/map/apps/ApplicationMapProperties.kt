@@ -144,6 +144,10 @@ class ApplicationMapProperties {
     @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.status.draft}")
     val mapQaStatusDraft: Long = 0L
 
+
+     @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.status.resubmitted}")
+    val mapQaStatusResubmitted: Long = 0L
+
     @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.status.pending_sta_3}")
     val mapQaStatusPSTA3: Long = 0L
 

@@ -328,6 +328,10 @@ class PermitApplicationsEntity:Serializable {
     @Basic
     var assignAssessorStatus: Int? = null
 
+    @Column(name = "RESUBMIT_APPLICATION_STATUS")
+    @Basic
+    var resubmitApplicationStatus: Int? = null
+
     @Column(name = "TITLE")
     @Basic
     var title: String? = null
@@ -579,6 +583,7 @@ class PermitApplicationsEntity:Serializable {
         if (justificationReportRemarks != other.justificationReportRemarks) return false
         if (assessmentReportRemarks != other.assessmentReportRemarks) return false
         if (assignAssessorStatus != other.assignAssessorStatus) return false
+        if (resubmitApplicationStatus != other.resubmitApplicationStatus) return false
         if (assessorId != other.assessorId) return false
         if (pacSecId != other.pacSecId) return false
         if (paidStatus != other.paidStatus) return false
@@ -701,6 +706,7 @@ class PermitApplicationsEntity:Serializable {
         result = 31 * result + (permitExpiredStatus ?: 0)
         result = 31 * result + (compliantStatus ?: 0)
         result = 31 * result + (assignAssessorStatus ?: 0)
+        result = 31 * result + (resubmitApplicationStatus ?: 0)
         result = 31 * result + (justificationReportStatus ?: 0)
         result = 31 * result + (smeFormFilledStatus ?: 0)
         result = 31 * result + (invoiceGenerated ?: 0)

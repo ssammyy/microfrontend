@@ -857,7 +857,6 @@ class QADaoServices(
         }
 
 
-    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun permitUpdateNewWithSamePermitNumber(permitNo: String, s: ServiceMapsEntity, user: UsersEntity): Pair<ServiceRequestsEntity, PermitApplicationsEntity> {
 
         var sr = commonDaoServices.createServiceRequest(s)
