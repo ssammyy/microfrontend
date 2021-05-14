@@ -234,6 +234,40 @@
                                 </ul>
                             </div>
 
+                            <button class="accordion">Remarks Details</button>
+                            <div class="panel">
+                                <ul class="w-list-unstyled">
+                                    <li th:if="${permitDetails?.hofQamCompletenessStatus != null}" class="list-item-accordion">
+                                        <div class="list-title-accordion">Completeness Remarks</div>
+                                        <div class="list-text-accordion"><a class="btn btn-primary itemViewBtn" onclick="popUpRemarksFunction('permitRemarksCompleteness');">VIEW</a></div>
+                                    </li>
+                                    <li class="list-item-accordion">
+                                        <div class="list-title-accordion">Broad Product Category</div>
+                                        <div class="list-text-accordion" th:text="${broadProductCategory?.category}"></div>
+                                    </li>
+                                    <li class="list-item-accordion">
+                                        <div class="list-title-accordion">Product Category</div>
+                                        <div class="list-text-accordion" th:text="${productCategory?.name}"></div>
+                                    </li>
+                                    <li class="list-item-accordion">
+                                        <div class="list-title-accordion">Product</div>
+                                        <div class="list-text-accordion" th:text="${product?.name}"></div>
+                                    </li>
+                                    <li class="list-item-accordion">
+                                        <div class="list-title-accordion">Product Sub-Category</div>
+                                        <div class="list-text-accordion" th:text="${productSubCategory?.name}"></div>
+                                    </li>
+                                    <li class="list-item-accordion">
+                                        <div class="list-title-accordion">KS Number</div>
+                                        <div class="list-text-accordion" th:text="${ksApplicable?.standardNumber}"></div>
+                                    </li>
+                                    <li class="list-item-accordion">
+                                        <div class="list-title-accordion">Title</div>
+                                        <div class="list-text-accordion" th:text="${ksApplicable?.standardTitle}"></div>
+                                    </li>
+                                </ul>
+                            </div>
+
                             <button class="accordion">Recommendation Details</button>
                             <div class="panel">
                                 <ul class="w-list-unstyled">
@@ -781,6 +815,40 @@
                 </form>
             </div>
 
+            <div  class="qaRemarksForm">
+                <form id="qa-remarks-form"   name="qa-remarks-form" th:object="${permitDetails}" >
+                    <div class="modal fade" id="qaRemarksModal" tabindex="-1" role="dialog" aria-labelledby="qaRemarksModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 style="font-weight: bold; " class="modal-title" id="qaRemarksModalLabel"><span id="spanRemarksValue" >none</span></h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="form-group">
+
+
+                                        <div id="permitRemarksCompleteness">
+                                            <label for="attachedPlantId" class="col-form-label">Completeness Status:</label>
+                                            <input type="text" disabled class="form-control" maxlength="256" name="entryPoint" data-name="entry Point" id="entryPoint2" th:value="${permitDetails?.hofQamCompletenessStatus} ? 'COMPLETE' : 'IN-COMPLETE'" >
+                                            <label for="hofQamCompletenessRemarks" class="col-form-label">Feedback for this Permit:</label>
+                                            <textarea required name="name" disabled id="hofQamCompletenessRemarks" class="input-field w-input" cols="65" rows="5" th:text="${permitDetails?.hofQamCompletenessRemarks}"></textarea>
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button class="btn btn-secondary" data-dismiss="modal" onClick="refreshPage()" type="button">Close</button>
+<!--                                    <input type="submit" id="saveRemarksValue" class="btn btn-primary" value="Save"/>-->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
             <div class="uploadForm">
                 <form id="upload-form" enctype="multipart/form-data"  name="upload-form" th:action="@{/api/qa/kebs/add/new-upload(permitID = ${permitDetails?.id})}" method="post" >
                     <div class="modal fade" id="uploadModal" tabindex="-1" role="dialog" aria-labelledby="uploadModalLabel" aria-hidden="true">
@@ -1012,6 +1080,25 @@
         }
 
         $('.qaApplicationForm #qaApplicationModal').modal();
+    }
+
+
+    function popUpRemarksFunction(eventAction) {
+        let arrHead = [ 'permitRemarksCompleteness'];
+        let arrHeadSave = [ 'Completeness Remarks Details'];
+
+        for (let h = 0; h < arrHead.length; h++) {
+            if(eventAction !== arrHead[h]){
+                document.getElementById(arrHead[h]).remove();
+            }else {
+                if (eventAction === arrHead[h]) {
+                    document.getElementById('spanRemarksValue').innerHTML = arrHeadSave[h];
+                    // document.getElementById("saveValue").value = 'Save';
+                }
+            }
+        }
+
+        $('.qaRemarksForm #qaRemarksModal').modal();
     }
 
     function popUpUploadFunction(eventAction) {

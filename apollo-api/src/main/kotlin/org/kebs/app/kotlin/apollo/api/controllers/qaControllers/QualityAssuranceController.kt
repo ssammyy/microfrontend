@@ -197,6 +197,20 @@ class QualityAssuranceController(
                     }
                 }
             }
+            permit.hofQamCompletenessStatus != null -> {
+                if (permit.hofQamCompletenessStatus==map.activeStatus){
+                    qaDaoServices.permitInsertStatus(permitDetails,applicationMapProperties.mapQaStatusPQAOAssign,loggedInUser)
+                }else if(permit.hofQamCompletenessStatus==map.inactiveStatus){
+                    qaDaoServices.permitInsertStatus(permitDetails,applicationMapProperties.mapQaStatusIncompleteAppl,loggedInUser)
+                }
+
+                if (permitDetails.permitType == applicationMapProperties.mapQAPermitTypeIDDmark) {
+                    qaDaoServices.permitInsertStatus(permitDetails,applicationMapProperties.mapQaStatusPSTA3,loggedInUser)
+                }
+                else if (permitDetails.permitType == applicationMapProperties.mapQAPermitTypeIdSmark) {
+                    qaDaoServices.permitInsertStatus(permitDetails,applicationMapProperties.mapQaStatusPSTA10,loggedInUser)
+                }
+            }
             permit.assignAssessorStatus == map.activeStatus -> {
                 //Send notification to assessor
                 val assessor = permitDetails.assessorId?.let { commonDaoServices.findUserByID(it) }
