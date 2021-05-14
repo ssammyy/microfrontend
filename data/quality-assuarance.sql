@@ -78,7 +78,7 @@
  */
 ***************************Table USED IN QA*****************************************
 select * from DAT_KEBS_PERMIT_TRANSACTION
-where id = 303
+where id = 341
 -- where PERMIT_NUMBER = 'DM#0954A'
 order by id desc; 1522
 
@@ -122,7 +122,7 @@ order by id desc;
 
 select * from DAT_KEBS_INVOICE
 -- where id = 2
-where PERMIT_ID = 285
+-- where PERMIT_ID = 285
 order by id desc;
 
 alter table DAT_KEBS_QA_PRODUCT modify AVAILABLE NUMBER(2)/

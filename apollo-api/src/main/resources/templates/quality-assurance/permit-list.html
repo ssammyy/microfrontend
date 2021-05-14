@@ -18,6 +18,12 @@
     <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" rel="stylesheet"/>
     <!-- MDB -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/2.2.1/mdb.min.css" rel="stylesheet"/>
+    <style>
+        .fade {
+            opacity: 1;
+        }
+    </style>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/3.0.0/mdb.min.css" rel="stylesheet"/>
 
 </head>
 <body>
@@ -55,7 +61,7 @@
                                         <td th:text="${permit?.tradeMark}"></td>
                                         <td th:text="${#dates.format(permit?.dateOfIssue, 'dd/MM/yyyy')}"></td>
                                         <td th:text="${#dates.format(permit?.dateOfExpiry, 'dd/MM/yyyy')}"></td>
-                                        <td  th:text="${permit?.permitStatus}"></td>
+                                        <td  style="color: #0082f3" th:text="${permit?.permitStatus}"></td>
 
 <!--                                        <td style="color: #20f300; font-weight: bold; " th:if="${permit?.enabled == 1}">Active</td>-->
 <!--&lt;!&ndash;                                        <td style="color: Black; font-weight: bold; " th:unless="${permit?.enabled == 10}">Applied</td>&ndash;&gt;-->
@@ -73,8 +79,48 @@
                                 <div class="filter-title">Action:</div>
                             </div>
                             <div>
-                                <a sec:authorize="hasAuthority('PERMIT_APPLICATION')" th:href="@{/api/qa/new-permit(permitTypeID=${permitType.id})}" class="filter-link" style="color: white">NEW PERMIT</a>
+                                <a sec:authorize="hasAuthority('PERMIT_APPLICATION')" th:if="${permitType?.id != fmarkPermit}" th:href="@{/api/qa/new-permit(permitTypeID=${permitType.id})}" class="filter-link" style="color: white">NEW PERMIT</a>
+                                <a sec:authorize="hasAuthority('PERMIT_APPLICATION')" th:if="${permitType?.id == fmarkPermit}" onclick="popUpFunctionUpload('addParamBtn');" class="filter-link" style="color: white">NEW FMARK PERMIT</a>
+<!--                                <button id="addParam" class="btn btn-primary"  type="button">ADD PLANT DETAILS</button>-->
                             </div>
+                        </div>
+
+
+
+                        <div sec:authorize="hasAuthority('PERMIT_APPLICATION')" id="idPopUp" class="uploadForm">
+                            <form id="upload-form" name="upload-form" th:action="@{/api/qa/kebs/apply/new-fmark-permit}" method="post" th:object="${fmarkEntityDto}">
+                                <div class="modal fade" id="uploadModal" tabindex="-1" role="dialog"
+                                     aria-labelledby="uploadModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 style="font-weight: bold; " class="modal-title" id="uploadModalLabel"><span id="uploadSpan" >none</span></h5>
+                                                <button type="button" class="btn-close" data-mdb-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div class="form-group">
+                                                    <!--                                                    <input type="hidden" id="confirmSampleId"  name="confirmSampleId" th:value="${sampleSubmit?.id}">-->
+                                                    <div id="addParamBtn">
+                                                        <!--                                                        <input type="hidden" id="companyProfileId"  name="companyProfileIdeId" th:value="${message}">-->
+                                                        <label class="field-label" for="smarkPermitID">Select Smark :</label>
+                                                        <select id="smarkPermitID" name="smarkPermitID" class="input-field w-input" th:field="*{smarkPermitID}">
+                                                            <option value="0">Select One...</option>
+                                                            <option th:each="mySmarkPermit : ${mySmarkPermits}" th:text="${mySmarkPermit.tradeMark}" th:value="${mySmarkPermit.id}"></option>
+                                                            <!--                                        <option th:each="subRegion : ${subRegions}" th:text="${subRegion.subRegion}" th:value="${subRegion.id}"></option>-->
+                                                        </select>
+
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" onClick="window.location.reload()" data-mdb-dismiss="modal">Close</button>
+                                                <input type="submit" id="upload" class="btn btn-primary" value="Save"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -120,6 +166,38 @@
         table.buttons().container()
             .appendTo( '#example_wrapper .col-sm-6:eq(0)' );
     } );
+</script>
+<script>
+
+    let arrHead = [ 'addParamBtn',];
+    let arrHeadSave = [ 'Please select applicable smark',];
+
+
+    function refreshPage() {
+        window.location.reload();
+    }
+
+    function popUpFunctionUpload(eventAction) {
+
+        for (let h = 0; h < arrHead.length; h++) {
+            if(eventAction !== arrHead[h]){
+                document.getElementById(arrHead[h]).remove();
+            }else {
+                if (eventAction === arrHead[h]) {
+                    document.getElementById('uploadSpan').innerHTML = arrHeadSave[h];
+                    document.getElementById("upload").value = 'Save';
+                }
+            }
+        }
+
+        $('.uploadForm #uploadModal').modal();
+    }
+
+    window.onload = function () {
+        setTimeout(function () {
+            hello();
+        }, 1000);
+    }
 </script>
 </body>
 </html>

@@ -471,6 +471,9 @@ data class ProductsEntityDto(
     var status: Boolean? = null,
     var productCategoryId: Long? = null,
 )
+data class FmarkEntityDto(
+    var smarkPermitID: Long? = null,
+)
 
 data class ProductSubcategoryEntityDto(
     var id: Long? = null,

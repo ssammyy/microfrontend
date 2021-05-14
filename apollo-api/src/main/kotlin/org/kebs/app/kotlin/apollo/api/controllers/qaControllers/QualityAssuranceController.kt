@@ -6,6 +6,7 @@ import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.QADaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.QualityAssuranceDaoServices
+import org.kebs.app.kotlin.apollo.common.dto.FmarkEntityDto
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.common.exceptions.ServiceMapNotFoundException
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
@@ -58,6 +59,27 @@ class QualityAssuranceController(
         return commonDaoServices.returnValues(result, map, sm)
     }
 
+    @PreAuthorize("hasAuthority('PERMIT_APPLICATION')")
+    @PostMapping("/kebs/apply/new-fmark-permit")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun saveNewFmarkPermit(
+        @ModelAttribute("fmarkEntityDto") fmarkEntityDto: FmarkEntityDto,
+        model: Model
+    ): String? {
+        val result: ServiceRequestsEntity?
+        val map = commonDaoServices.serviceMapDetails(appId)
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val permitDetails = qaDaoServices.findPermitBYID(fmarkEntityDto.smarkPermitID?: throw ExpectedDataNotFound("Smark Permit id not found"))
+
+        result = qaDaoServices.permitGenerateFmark(map,loggedInUser,permitDetails)
+
+        val sm = CommonDaoServices.MessageSuccessFailDTO()
+        sm.closeLink = "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${result.varField1}"
+        sm.message = "You have Successful Generated FMARK application, Proceed to Submit Your application"
+
+        return commonDaoServices.returnValues(result, map, sm)
+    }
+
     @PreAuthorize("hasAuthority('PERMIT_APPLICATION') or hasAuthority('QA_MANAGER_ASSESSORS_READ') or hasAuthority('QA_HOF_READ') or hasAuthority('QA_HOD_READ') or hasAuthority('QA_OFFICER_MODIFY') or hasAuthority('QA_ASSESSORS_MODIFY') or hasAuthority('QA_PSC_MEMBERS_READ') or hasAuthority('QA_PCM_READ')")
     @PostMapping("/apply/new-scheme-of-supervision")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
@@ -91,8 +113,6 @@ class QualityAssuranceController(
         permitDetails.generateSchemeStatus = map.activeStatus
 
         result = qaDaoServices.permitUpdateDetails(permitDetails,map, loggedInUser).first
-
-
 
         sm.closeLink = "${applicationMapProperties.baseUrlValue}/qa/scheme-of-supervision?permitID=${permitDetails.id}"
 
@@ -128,7 +148,8 @@ class QualityAssuranceController(
     fun updatePermitDetails(
         @ModelAttribute("permit") permit: PermitApplicationsEntity,
         @RequestParam("permitID") permitID: Long,
-        model: Model): String? {
+        model: Model
+    ): String? {
 
         val map = commonDaoServices.serviceMapDetails(appId)
         val loggedInUser = commonDaoServices.loggedInUserDetails()
@@ -141,20 +162,24 @@ class QualityAssuranceController(
         //Add Permit ID THAT was Fetched so That it wont create a new record while updating with the methode
         permit.id = permitDetails.id
 
-//        if( permit.recommendationApprovalStatus == map.inactiveStatus){
-//            with(permit){
-//                recommendationRemarks = null
-//                recommendationApprovalStatus=
-//            }
-//        }
+        //Add the extra permit details from plant attached
+        if( permit.attachedPlantId != null){
+            val plantDetails = qaDaoServices.findPlantDetails(permit.attachedPlantId!!)
+            val manufacturedDetails = commonDaoServices.findCompanyProfile(plantDetails.userId ?: throw ExpectedDataNotFound("MISSING USER ID"))
+            with(permit){
+                firmName = manufacturedDetails.name
+                postalAddress = plantDetails.postalAddress
+                telephoneNo = plantDetails.telephone
+                email = plantDetails.emailAddress
+                physicalAddress = plantDetails.physicalAddress
+                faxNo = plantDetails.faxNo
+                plotNo = plantDetails.plotNo
+                designation = plantDetails.designation
+            }
+        }
 
         //updating of Details in DB
-        val updateResults = qaDaoServices.permitUpdateDetails(
-            commonDaoServices.updateDetails(
-                permit,
-                permitDetails
-            ) as PermitApplicationsEntity, map, loggedInUser
-        )
+        val updateResults = qaDaoServices.permitUpdateDetails(commonDaoServices.updateDetails(permit, permitDetails) as PermitApplicationsEntity, map, loggedInUser)
 
         result = updateResults.first
 
@@ -343,17 +368,17 @@ class QualityAssuranceController(
         var myRenewedPermit = qaDaoServices.permitUpdateNewWithSamePermitNumber(permitNo,map, loggedInUser)
         val permit = myRenewedPermit.second
         //If It has FMARK Then Generate FMARK then RENEW
-        if (permit.fmarkGenerated ==1 && applicationMapProperties.mapQAPermitTypeIdSmark == permit.permitType){
-            val fmarkID = permit.id?.let { qaDaoServices.findFmarkWithSmarkId(it) } ?: throw ExpectedDataNotFound("SMARK ID MISSING ON RENEWAL FOR FMARK")
-            val foundFmark = fmarkID.fmarkId?.let { qaDaoServices.findPermitBYID(it) }
-            val fmarkRenewed = foundFmark?.permitNumber?.let { qaDaoServices.permitUpdateNewWithSamePermitNumber(it,map, loggedInUser) } ?: throw ExpectedDataNotFound("FMARK PERMIT NUMBER CAN'T BE NULL")
-            qaDaoServices.generateSmarkFmarkEntity( permit,fmarkRenewed.second,loggedInUser)
+//        if (permit.fmarkGenerated ==1 && applicationMapProperties.mapQAPermitTypeIdSmark == permit.permitType){
+//            val fmarkID = permit.id?.let { qaDaoServices.findFmarkWithSmarkId(it) } ?: throw ExpectedDataNotFound("SMARK ID MISSING ON RENEWAL FOR FMARK")
+//            val foundFmark = fmarkID.fmarkId?.let { qaDaoServices.findPermitBYID(it) }
+//            val fmarkRenewed = foundFmark?.permitNumber?.let { qaDaoServices.permitUpdateNewWithSamePermitNumber(it,map, loggedInUser) } ?: throw ExpectedDataNotFound("FMARK PERMIT NUMBER CAN'T BE NULL")
+//            qaDaoServices.generateSmarkFmarkEntity( permit,fmarkRenewed.second,loggedInUser)
+//            //Generate Invoice
+//            result = qaDaoServices.permitInvoiceCalculation(map, loggedInUser, permit, qaDaoServices.findPermitType(permit.permitType!!))
+//        }else{
             //Generate Invoice
             result = qaDaoServices.permitInvoiceCalculation(map, loggedInUser, permit, qaDaoServices.findPermitType(permit.permitType!!))
-        }else{
-            //Generate Invoice
-            result = qaDaoServices.permitInvoiceCalculation(map, loggedInUser, permit, qaDaoServices.findPermitType(permit.permitType!!))
-        }
+//        }
 
         val sm = CommonDaoServices.MessageSuccessFailDTO()
         sm.closeLink = "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${result.varField1}"
@@ -402,8 +427,7 @@ class QualityAssuranceController(
         @RequestParam("permitID") permitID: Long,
         @ModelAttribute("QaSta10Entity") QaSta10Entity: QaSta10Entity,
         model: Model
-    )
-            : String? {
+    ): String? {
         val map = commonDaoServices.serviceMapDetails(appId)
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         val permit = loggedInUser.id?.let { qaDaoServices.findPermitBYUserIDAndId(permitID, it) }
@@ -658,8 +682,7 @@ class QualityAssuranceController(
     fun submitPermit(
         @RequestParam("permitID") permitID: Long,
         model: Model
-    )
-            : String? {
+    ): String? {
         val map = commonDaoServices.serviceMapDetails(appId)
         val loggedInUser = commonDaoServices.loggedInUserDetails()
 
@@ -667,11 +690,11 @@ class QualityAssuranceController(
 
         val permit = loggedInUser.id?.let { qaDaoServices.findPermitBYUserIDAndId(permitID, it) } ?: throw ExpectedDataNotFound("Required User ID, check config")
         val permitType = permit.permitType?.let { qaDaoServices.findPermitType(it) } ?: throw ExpectedDataNotFound("PermitType Id Not found")
-        val ifProductCanGenerateFmark = permit.product?.let { commonDaoServices.findProductByID(it).fmarkGenerateStatus }
-
-        if (ifProductCanGenerateFmark == 1){
-            val fmarkGenerated = qaDaoServices.permitGenerateFmark(map,loggedInUser,permit)
-        }
+//        val ifProductCanGenerateFmark = permit.product?.let { commonDaoServices.findProductByID(it).fmarkGenerateStatus }
+//
+//        if (ifProductCanGenerateFmark == 1){
+//            val fmarkGenerated = qaDaoServices.permitGenerateFmark(map,loggedInUser,permit)
+//        }
 
         result = qaDaoServices.permitInvoiceCalculation(map, loggedInUser, permit, permitType)
         with(permit) {

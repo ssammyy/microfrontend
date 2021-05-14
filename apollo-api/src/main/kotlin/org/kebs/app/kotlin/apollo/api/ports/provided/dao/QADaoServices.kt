@@ -784,8 +784,10 @@ class QADaoServices(
 
         var sr = commonDaoServices.createServiceRequest(s)
         try {
+            val companyProfile = commonDaoServices.findCompanyProfile(loggedInUser.id?:throw ExpectedDataNotFound("MISSING USER ID FOR LOGGED IN USER"))
             var plantDetails = manufacturePlant
             with(plantDetails) {
+                companyProfileId = companyProfile.id
                 userId = loggedInUser.id
                 region = county?.let { commonDaoServices.findCountiesEntityByCountyId(it, s.activeStatus).regionId }
                 status = s.activeStatus
@@ -1080,7 +1082,8 @@ class QADaoServices(
             val updateSmarkAndFmarkDetails = permitUpdateDetails(permit, s, user)
 
             sr.payload = "savedSmarkFmarkId [id= ${savedSmarkFmarkId.id}]"
-            sr.names = " Fmark created ID = $fmarkPermit.id} SMARK TIED ID = ${permit.id}"
+            sr.names = " Fmark created ID = ${fmarkPermit.id} SMARK TIED ID = ${permit.id}"
+            sr.varField1 = "${fmarkPermit.id}"
 
             sr.responseStatus = sr.serviceMapsId?.successStatusCode
             sr.responseMessage = "Success ${sr.payload}"
@@ -1251,7 +1254,7 @@ class QADaoServices(
                         }
                     }
                     else -> {
-                         throw ExpectedDataNotFound("The Turn over Details are missing for logged in user")
+                        throw ExpectedDataNotFound("The Turn over Details are missing for logged in user")
                     }
                 }
             }
@@ -1283,7 +1286,7 @@ class QADaoServices(
                         taxAmount = stgAmt?.let {taxRate.times(it) }
                         amountToPay = taxAmount?.let { stgAmt?.plus(it) }
 
-                       m = myReturPaymentValues(
+                        m = myReturPaymentValues(
                             m,
                             standardCost,
                             inspectionCost,
@@ -1295,6 +1298,24 @@ class QADaoServices(
                         )
                     }
                 }
+            }
+            applicationMapProperties.mapQAPermitTypeIdFmark -> {
+                applicationCost = applicationMapProperties.mapQaFmarkAmountToPay
+                stgAmt = standardCost?.plus(inspectionCost!!)?.let { applicationCost!!.plus(it) }
+                fmark = 0.toBigDecimal()
+                taxAmount = stgAmt?.let { taxRate.times(it) }
+                amountToPay = taxAmount?.let { stgAmt?.plus(it) }
+
+                m =  myReturPaymentValues(
+                    m,
+                    standardCost,
+                    inspectionCost,
+                    applicationCost,
+                    amountToPay,
+                    fmark,
+                    fmarkCost,
+                    taxAmount
+                )
             }
         }
 
@@ -1477,8 +1498,7 @@ class QADaoServices(
         if (permit.fmarkGenerated == 1) {
             stgAmt1 = applicationCost1?.let { standardCost?.plus(inspectionCost!!)?.plus(it) }
             fmark1 = 1.toBigDecimal()
-            fmarkCost1 =
-                standardCost?.plus(inspectionCost!!)?.let { applicationMapProperties.mapQaFmarkAmountToPay.plus(it) }
+            fmarkCost1 = standardCost?.plus(inspectionCost!!)?.let { applicationMapProperties.mapQaFmarkAmountToPay.plus(it) }
             //Todo : ask if foreign cost will also be added as vat
             taxAmount1 = fmarkCost1?.let { taxRate.times(it) }
             amountToPay1 = taxAmount1?.let { stgAmt1?.plus(it) }

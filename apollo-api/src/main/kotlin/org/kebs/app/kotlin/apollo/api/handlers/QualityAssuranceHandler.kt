@@ -27,6 +27,7 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DestinationInspectionDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.InvoiceDaoService
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.QADaoServices
+import org.kebs.app.kotlin.apollo.common.dto.FmarkEntityDto
 import org.kebs.app.kotlin.apollo.common.dto.PermitEntityDto
 import org.kebs.app.kotlin.apollo.common.exceptions.*
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
@@ -166,6 +167,11 @@ class QualityAssuranceHandler(
                 }
             }
 
+            if (permitType.id ==applicationMapProperties.mapQAPermitTypeIdFmark){
+                req.attributes()["mySmarkPermits"] = qaDaoServices.findAllUserPermitWithPermitType(loggedInUser, applicationMapProperties.mapQAPermitTypeIdSmark)
+            }
+
+            req.attributes().putAll(loadCommonUIComponents(map))
             req.attributes()["permitType"] = permitType
             req.attributes()["permitList"] = permitList
             return ok().render(qaPermitListPage, req.attributes())
@@ -619,6 +625,8 @@ class QualityAssuranceHandler(
             Pair("activeStatus", s.activeStatus),
             Pair("inActiveStatus", s.inactiveStatus),
             Pair("initStatus", s.initStatus),
+            Pair("fmarkEntityDto", FmarkEntityDto()),
+            Pair("fmarkPermit", applicationMapProperties.mapQAPermitTypeIdFmark),
             Pair("dmarkPermit", applicationMapProperties.mapQAPermitTypeIDDmark),
             Pair("smarkPermit", applicationMapProperties.mapQAPermitTypeIdSmark),
             Pair("currentDate", commonDaoServices.getCurrentDate())
