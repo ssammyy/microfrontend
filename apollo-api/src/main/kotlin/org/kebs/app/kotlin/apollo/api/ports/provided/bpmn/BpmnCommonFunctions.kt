@@ -327,7 +327,7 @@ class BpmnCommonFunctions(
     fun submitMotorVehicleInspectionRequest(cdItemId:String) {
         KotlinLogging.logger { }.info("Submitting Motor Vehcle Item $cdItemId Inspection request to KeSWS............")
         //Update inspectionNotificationStatus & inspectionNotificationDate after request to KeSws
-        destinationInspectionDaoServices.updateInspectionNotificationSent(cdItemId.toLong())
+//        destinationInspectionDaoServices.updateInspectionNotificationSent(cdItemId.toLong())
     }
 
     fun sendSwPaymentDemandNote(cdId:String) {

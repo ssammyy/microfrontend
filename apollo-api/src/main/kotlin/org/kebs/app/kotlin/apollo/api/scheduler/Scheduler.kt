@@ -3,6 +3,7 @@ package org.kebs.app.kotlin.apollo.api.scheduler
 import mu.KotlinLogging
 import org.joda.time.DateTime
 import org.kebs.app.kotlin.apollo.api.ports.provided.scheduler.SchedulerImpl
+import org.kebs.app.kotlin.apollo.api.ports.provided.scheduler.SftpSchedulerImpl
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Configuration
 import org.springframework.scheduling.annotation.EnableScheduling
@@ -13,7 +14,8 @@ import org.springframework.stereotype.Component
 @Configuration
 @EnableScheduling
 class Scheduler (
-        private val schedulerImpl: SchedulerImpl
+        private val schedulerImpl: SchedulerImpl,
+        private val sftpSchedulerImpl: SftpSchedulerImpl
 ) {
     @Value("\${scheduler.run.send.notifications}")
     lateinit var runSendNotifications: String
@@ -42,6 +44,11 @@ class Scheduler (
     fun runSchedulerAfterEveryFiveMin() {
         schedulerImpl.updatePaidDemandNotesStatus()
         schedulerImpl.assignPermitApplicationAfterPayment()
+    }
+
+    @Scheduled(fixedDelay = 600000)
+    fun fetchKeswsFiles() {
+        sftpSchedulerImpl.downloadKeswsFiles()
     }
 
 //    @Scheduled(fixedRate = 30 * 60000)
