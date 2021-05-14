@@ -32,8 +32,12 @@
                 <activiti:taskListener event="assignment" expression="${bpmnNotifications.sendEmail(task)}"></activiti:taskListener>
             </extensionElements>
         </userTask>
-        <sequenceFlow id="flow6" sourceRef="exclusivegateway1" targetRef="sLsVApproveReportMgr" skipExpression="${approvedAsstMgr==1}"></sequenceFlow>
-        <sequenceFlow id="flow7" sourceRef="exclusivegateway1" targetRef="sLsVPrepareVisitReport" skipExpression="${approvedAsstMgr==0}"></sequenceFlow>
+        <sequenceFlow id="flow6" sourceRef="exclusivegateway1" targetRef="sLsVApproveReportMgr">
+            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${approvedAsstMgr==1}]]></conditionExpression>
+        </sequenceFlow>
+        <sequenceFlow id="flow7" sourceRef="exclusivegateway1" targetRef="sLsVPrepareVisitReport">
+            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${approvedAsstMgr==0}]]></conditionExpression>
+        </sequenceFlow>
         <exclusiveGateway id="exclusivegateway2" name="Exclusive Gateway"></exclusiveGateway>
         <sequenceFlow id="flow8" sourceRef="sLsVApproveReportMgr" targetRef="exclusivegateway2"></sequenceFlow>
         <userTask id="sLsVDraftFeedbackAndShare" name="Draft Feedback and Share">
@@ -41,8 +45,12 @@
                 <activiti:taskListener event="assignment" expression="${bpmnNotifications.sendEmail(task)}"></activiti:taskListener>
             </extensionElements>
         </userTask>
-        <sequenceFlow id="flow9" sourceRef="exclusivegateway2" targetRef="sLsVDraftFeedbackAndShare" skipExpression="${approvedMgr==1}"></sequenceFlow>
-        <sequenceFlow id="flow10" sourceRef="exclusivegateway2" targetRef="sLsVApproveReportAssMgr" skipExpression="${approvedMgr==0}"></sequenceFlow>
+        <sequenceFlow id="flow9" sourceRef="exclusivegateway2" targetRef="sLsVDraftFeedbackAndShare">
+            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${approvedMgr==1}]]></conditionExpression>
+        </sequenceFlow>
+        <sequenceFlow id="flow10" sourceRef="exclusivegateway2" targetRef="sLsVApproveReportAssMgr">
+            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${approvedMgr==0}]]></conditionExpression>
+        </sequenceFlow>
         <serviceTask id="sLsVFeedbackNotification" name="Feedback Notification" activiti:expression="${bpmnCommonFunctions.generateBSNumber()}"></serviceTask>
         <sequenceFlow id="flow11" sourceRef="sLsVDraftFeedbackAndShare" targetRef="sLsVFeedbackNotification"></sequenceFlow>
         <endEvent id="endevent1" name="End">

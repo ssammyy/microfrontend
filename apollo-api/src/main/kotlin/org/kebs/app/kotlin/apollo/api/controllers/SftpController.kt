@@ -38,11 +38,9 @@ class SftpController(
     @GetMapping("/kesws/download")
     fun downloadKeswsFiles(): ResponseEntity<RestResponseModel> {
         //TODO: Fetch DocTypes from the DB
-//        val keswsDocTypes = listOf(applicationMapProperties.mapKeswsBaseDocumentDoctype, applicationMapProperties.mapKeswsUcrResDoctype,
-//            applicationMapProperties.mapKeswsDeclarationDoctype, applicationMapProperties.mapKeswsManifestDoctype, applicationMapProperties.mapKeswsCdDoctype,
-//            applicationMapProperties.mapKeswsDeclarationVerificationDoctype)
-
-        val keswsDocTypes = listOf(applicationMapProperties.mapKeswsDeclarationVerificationDoctype)
+        val keswsDocTypes = listOf(applicationMapProperties.mapKeswsBaseDocumentDoctype, applicationMapProperties.mapKeswsUcrResDoctype,
+            applicationMapProperties.mapKeswsDeclarationDoctype, applicationMapProperties.mapKeswsManifestDoctype, applicationMapProperties.mapKeswsAirManifestDoctype,
+            applicationMapProperties.mapKeswsCdDoctype, applicationMapProperties.mapKeswsDeclarationVerificationDoctype)
 
         for (doctype in keswsDocTypes) {
             when(doctype) {
@@ -112,6 +110,16 @@ class SftpController(
                 applicationMapProperties.mapKeswsManifestDoctype -> {
                     val allFiles = sftpServiceImpl.downloadFilesByDocType(applicationMapProperties.mapKeswsManifestDoctype)
                     KotlinLogging.logger { }.info("No of Manifest Documents found in bucket: ${allFiles.size}")
+                    for (file in allFiles) {
+                        val xml = inputStreamToString(FileInputStream(file))
+                        val manifestDocumentMessage: ManifestDocumentMessage = commonDaoServices.deserializeFromXML(xml)
+                        val docSaved = manifestDaoService.mapManifestMessageToManifestEntity(manifestDocumentMessage)
+                        if (docSaved) { sftpServiceImpl.moveFileToProcessedFolder(file, processedRootFolder) }
+                    }
+                }
+                applicationMapProperties.mapKeswsAirManifestDoctype -> {
+                    val allFiles = sftpServiceImpl.downloadFilesByDocType(applicationMapProperties.mapKeswsAirManifestDoctype)
+                    KotlinLogging.logger { }.info("No of Air Manifest Documents found in bucket: ${allFiles.size}")
                     for (file in allFiles) {
                         val xml = inputStreamToString(FileInputStream(file))
                         val manifestDocumentMessage: ManifestDocumentMessage = commonDaoServices.deserializeFromXML(xml)

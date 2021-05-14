@@ -145,7 +145,7 @@
                                 &nbsp;
                             </div>
 
-                            <div sec:authorize="hasAuthority('PERMIT_APPLICATION')" th:if="${usersEntity.manufactureProfile == 1}" th:object="${manufactureProfile}">
+                            <div  th:if="${usersEntity.manufactureProfile == 1}" th:object="${manufactureProfile}">
                                 &nbsp;
                                 <div class="form-row">
                                     <div class="col-md-12 mb-3">
@@ -249,7 +249,7 @@
                                 </div>
                             </div>
 
-                            <div sec:authorize="hasAuthority('PERMIT_APPLICATION')" th:if="${usersEntity.manufactureProfile == 1}">
+                            <div th:if="${usersEntity.manufactureProfile == 1}">
                                 &nbsp;
                                 <div id="idButtons">
                                     &nbsp; &nbsp;
@@ -560,7 +560,7 @@
 <!--                                                        <input class="input-field w-input" max="20" id="kraPin" th:field="*{kraPin}" th:required="required">-->
                                                         <label for="registrationNumber" class="field-label">Registration Number:</label>
                                                         <input class="input-field w-input" max="20" id="registrationNumber" th:field="*{registrationNumber}" th:required="required">
-                                                        <label for="directorIdNumber" class="field-label">Director Number:</label>
+                                                        <label for="directorIdNumber" class="field-label">Director ID Number:</label>
                                                         <input class="input-field w-input" max="20" id="directorIdNumber" th:field="*{directorIdNumber}" th:required="required">
 <!--                                                        <label for="postalAddress" class="field-label">Postal Address:</label>-->
 <!--                                                        <input class="input-field w-input" max="20" id="postalAddress" th:field="*{postalAddress}" th:required="required">-->

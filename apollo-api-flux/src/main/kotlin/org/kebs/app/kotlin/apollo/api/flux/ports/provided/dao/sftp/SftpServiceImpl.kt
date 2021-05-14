@@ -145,7 +145,7 @@ class SftpServiceImpl(
 
     fun convertInputstreamToFile(inputStream: InputStream, fileName: String): File {
         val targetFile = File(Files.createTempDir(), fileName)
-        KotlinLogging.logger { }.info(":::: targetFile: ${targetFile.name} ::::")
+//        KotlinLogging.logger { }.info(":::: targetFile: ${targetFile.name} ::::")
         targetFile.deleteOnExit();
         try {
             FileUtils.copyInputStreamToFile(inputStream, targetFile)

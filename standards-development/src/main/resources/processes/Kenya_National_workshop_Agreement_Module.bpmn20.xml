@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:flowable="http://flowable.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.flowable.org/processdef">
+  <process id="std_KenyaNationalWorkshopAgreementModule" name="Kenya National workshop Agreement Module" isExecutable="true">
+    <documentation>Process for Kenya National Workshop agreement</documentation>
+    <startEvent id="startEvent" name="Start" flowable:formFieldValidation="true"></startEvent>
+    <userTask id="prepareJustification" name="Prepare Justification" flowable:candidateGroups="KNW_SEC" flowable:formFieldValidation="true"></userTask>
+    <userTask id="preparejustificationforDISDT" name="Prepare Justification for DI-SDT approval" flowable:candidateGroups="KNW_SEC" flowable:formFieldValidation="true"></userTask>
+    <exclusiveGateway id="distapproveJustification"></exclusiveGateway>
+    <userTask id="preparePd" name="Prepare a Preliminary draft" flowable:candidateGroups="KNW_SEC" flowable:formFieldValidation="true"></userTask>
+    <exclusiveGateway id="approvePreliminaryDraft"></exclusiveGateway>
+    <userTask id="gazettementProcess" name="Gazettement Process" flowable:candidateGroups="HO_SIC" flowable:formFieldValidation="true"></userTask>
+    <endEvent id="sid-C7F575CB-4E4C-4AB3-9078-1178D62E85C7" name="endEvent"></endEvent>
+    <sequenceFlow id="sid-D946626E-0A43-4D5A-8C74-36F66265800D" sourceRef="preparePd" targetRef="approvePreliminaryDraft"></sequenceFlow>
+    <sequenceFlow id="flow17" sourceRef="gazettementProcess" targetRef="sid-C7F575CB-4E4C-4AB3-9078-1178D62E85C7"></sequenceFlow>
+    <sequenceFlow id="flow1" sourceRef="startEvent" targetRef="prepareJustification"></sequenceFlow>
+    <sequenceFlow id="sid-FA2B62E6-EA28-4D42-9456-42E2D931B7A6" sourceRef="preparejustificationforDISDT" targetRef="distapproveJustification"></sequenceFlow>
+    <sequenceFlow id="flow11" name="Yes" sourceRef="approvePreliminaryDraft" targetRef="gazettementProcess">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${approvePreliminaryDraft=='Yes'}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="sid-4683C953-BBC1-4C4A-815A-B2A082385067" name="No" sourceRef="approvePreliminaryDraft" targetRef="preparePd">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${approvePreliminaryDraft=='!Yes'}]]></conditionExpression>
+    </sequenceFlow>
+    <exclusiveGateway id="isApproved" name="Justification Decision"></exclusiveGateway>
+    <sequenceFlow id="sid-68782468-73E6-4A61-817D-ABAE45370308" sourceRef="prepareJustification" targetRef="isApproved"></sequenceFlow>
+    <sequenceFlow id="flow9" name="Yes" sourceRef="distapproveJustification" targetRef="preparePd">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${distapproveJustification=='Yes'}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="flow8" name="No" sourceRef="distapproveJustification" targetRef="preparejustificationforDISDT">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${distapproveJustification=='!Yes'}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="sid-10903FA4-C8BE-44E5-AE34-18BE3FFE9682" sourceRef="isApproved" targetRef="prepareJustification">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${!Yes}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="yesApproved" name="yes" sourceRef="isApproved" targetRef="preparejustificationforDISDT">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${Yes}]]></conditionExpression>
+    </sequenceFlow>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_std_KenyaNationalWorkshopAgreementModuleTest">
+    <bpmndi:BPMNPlane bpmnElement="std_KenyaNationalWorkshopAgreementModuleTest" id="BPMNPlane_std_KenyaNationalWorkshopAgreementModuleTest">
+      <bpmndi:BPMNShape bpmnElement="startEvent" id="BPMNShape_startEvent">
+        <omgdc:Bounds height="30.0" width="30.0" x="90.0" y="150.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="prepareJustification" id="BPMNShape_prepareJustification">
+        <omgdc:Bounds height="61.0" width="82.99999999999997" x="225.00000000000003" y="134.50000000000003"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="preparejustificationforDISDT" id="BPMNShape_preparejustificationforDISDT">
+        <omgdc:Bounds height="79.99999999999999" width="100.0" x="525.0000000000001" y="120.00000000000001"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="distapproveJustification" id="BPMNShape_distapproveJustification">
+        <omgdc:Bounds height="39.99999999999997" width="40.0" x="705.0000000000001" y="255.00000000000003"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="preparePd" id="BPMNShape_preparePd">
+        <omgdc:Bounds height="80.0" width="100.0" x="800.0" y="235.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="approvePreliminaryDraft" id="BPMNShape_approvePreliminaryDraft">
+        <omgdc:Bounds height="40.0" width="40.0" x="830.0000000000001" y="360.00000000000006"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="gazettementProcess" id="BPMNShape_gazettementProcess">
+        <omgdc:Bounds height="80.0" width="99.99999999999997" x="180.00000000000003" y="340.00000000000006"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="sid-C7F575CB-4E4C-4AB3-9078-1178D62E85C7" id="BPMNShape_sid-C7F575CB-4E4C-4AB3-9078-1178D62E85C7">
+        <omgdc:Bounds height="28.0" width="28.0" x="91.0" y="366.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="isApproved" id="BPMNShape_isApproved">
+        <omgdc:Bounds height="40.0" width="40.0" x="390.0000000000001" y="145.00000000000006"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="flow17" id="BPMNEdge_flow17">
+        <omgdi:waypoint x="179.9999999999826" y="380.00000000000006"></omgdi:waypoint>
+        <omgdi:waypoint x="118.9499295798711" y="380.00000000000006"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-4683C953-BBC1-4C4A-815A-B2A082385067" id="BPMNEdge_sid-4683C953-BBC1-4C4A-815A-B2A082385067">
+        <omgdi:waypoint x="869.7193641618497" y="379.7687861271677"></omgdi:waypoint>
+        <omgdi:waypoint x="1021.0" y="378.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1021.0" y="275.0"></omgdi:waypoint>
+        <omgdi:waypoint x="899.9499999998736" y="275.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="yesApproved" id="BPMNEdge_yesApproved">
+        <omgdi:waypoint x="429.8045588235295" y="164.85294117647064"></omgdi:waypoint>
+        <omgdi:waypoint x="524.9999999999995" y="161.67006079027357"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow1" id="BPMNEdge_flow1">
+        <omgdi:waypoint x="119.94999929925844" y="165.00000000000003"></omgdi:waypoint>
+        <omgdi:waypoint x="224.9999999999563" y="165.00000000000003"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-FA2B62E6-EA28-4D42-9456-42E2D931B7A6" id="BPMNEdge_sid-FA2B62E6-EA28-4D42-9456-42E2D931B7A6">
+        <omgdi:waypoint x="624.9499999999581" y="160.0"></omgdi:waypoint>
+        <omgdi:waypoint x="725.0" y="160.0"></omgdi:waypoint>
+        <omgdi:waypoint x="725.0000000000001" y="255.00000000000003"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-D946626E-0A43-4D5A-8C74-36F66265800D" id="BPMNEdge_sid-D946626E-0A43-4D5A-8C74-36F66265800D">
+        <omgdi:waypoint x="850.0" y="314.95000000000005"></omgdi:waypoint>
+        <omgdi:waypoint x="850.0000000000001" y="360.00000000000006"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-10903FA4-C8BE-44E5-AE34-18BE3FFE9682" id="BPMNEdge_sid-10903FA4-C8BE-44E5-AE34-18BE3FFE9682">
+        <omgdi:waypoint x="390.4303135888498" y="165.43031358885023"></omgdi:waypoint>
+        <omgdi:waypoint x="307.94999999999334" y="165.14392361111115"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-68782468-73E6-4A61-817D-ABAE45370308" id="BPMNEdge_sid-68782468-73E6-4A61-817D-ABAE45370308">
+        <omgdi:waypoint x="307.95000000000005" y="165.14392361111115"></omgdi:waypoint>
+        <omgdi:waypoint x="390.4303135888498" y="165.43031358885023"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow11" id="BPMNEdge_flow11">
+        <omgdi:waypoint x="830.0000000000001" y="380.00000000000006"></omgdi:waypoint>
+        <omgdi:waypoint x="279.9499999998965" y="380.00000000000006"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow8" id="BPMNEdge_flow8">
+        <omgdi:waypoint x="705.2567478604346" y="274.7368421052631"></omgdi:waypoint>
+        <omgdi:waypoint x="575.0" y="273.0"></omgdi:waypoint>
+        <omgdi:waypoint x="575.0000000000001" y="199.95"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow9" id="BPMNEdge_flow9">
+        <omgdi:waypoint x="744.9420263787894" y="275.0"></omgdi:waypoint>
+        <omgdi:waypoint x="799.9999999998868" y="275.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

@@ -174,6 +174,16 @@ class BpmnCommonFunctions(
         return null
     }
 
+    fun getProcessVariables(processInstanceId: String): Map<String, Any>? {
+        KotlinLogging.logger { }.trace("Fetching process variables for $processInstanceId")
+        try {
+            return runtimeService.getVariables(processInstanceId)
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message, e)
+        }
+        return null
+    }
+
     fun getOverdueTasks(dueDate:Date, processDefinitionKeyPrefix:String): List<Task>? {
         try {
             KotlinLogging.logger { }.trace("Fetching task where due date <  $dueDate")

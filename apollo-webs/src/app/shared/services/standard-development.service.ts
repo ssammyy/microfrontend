@@ -9,7 +9,10 @@ import {
   TechnicalCommittee,
   Department,
   StdTCTask,
-  RootObject, InfoAvailableYes, DepartmentResponse, FeedbackEmail
+  RootObject,
+  InfoAvailableYes,
+  DepartmentResponse,
+  FeedbackEmail
 } from "../models/standard-development";
 
 @Injectable({

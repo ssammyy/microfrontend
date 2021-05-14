@@ -104,13 +104,13 @@ class SftpServiceImpl(
         val filesList = mutableListOf<File>()
 //        try {
             sftp.cd(applicationMapProperties.mapSftpDownloadRoot)
-            KotlinLogging.logger { }.info(":::: Downloading file to: ${applicationMapProperties.mapSftpDownloadRoot} ::::")
+//            KotlinLogging.logger { }.info(":::: Downloading file to: ${applicationMapProperties.mapSftpDownloadRoot} ::::")
 
             val allFiles = sftp.ls(applicationMapProperties.mapSftpDownloadRoot)
             for (file in allFiles) {
                 val entry: ChannelSftp.LsEntry = file as ChannelSftp.LsEntry
                 if (validateKeswsFileByDocType(entry.filename, docType)) {
-                    KotlinLogging.logger { }.info(":::: File found: ${entry.filename} ::::")
+//                    KotlinLogging.logger { }.info(":::: File found: ${entry.filename} ::::")
                     filesList.add(convertInputstreamToFile(sftp.get(entry.filename), entry.filename))
                 }
             }
@@ -144,7 +144,7 @@ class SftpServiceImpl(
 
     fun convertInputstreamToFile(inputStream: InputStream, fileName: String): File {
         val targetFile = File(Files.createTempDir(), fileName)
-        KotlinLogging.logger { }.info(":::: targetFile: ${targetFile.name} ::::")
+//        KotlinLogging.logger { }.info(":::: targetFile: ${targetFile.name} ::::")
         targetFile.deleteOnExit();
         try {
             FileUtils.copyInputStreamToFile(inputStream, targetFile)

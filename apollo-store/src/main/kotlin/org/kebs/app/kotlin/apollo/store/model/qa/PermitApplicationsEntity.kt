@@ -138,6 +138,10 @@ class PermitApplicationsEntity:Serializable {
 //    var permitType: PermitTypesEntity? = null
 
 
+    @Column(name = "PERMIT_STATUS")
+    @Basic
+    var permitStatus: Long? = null
+
     @Column(name = "USER_ID")
     @Basic
     var userId: Long? = null
@@ -534,6 +538,7 @@ class PermitApplicationsEntity:Serializable {
         if (productSubCategory != other.productSubCategory) return false
         if (attachedPlantId != other.attachedPlantId) return false
         if (attachedPlantId != other.attachedPlantId) return false
+        if (permitStatus != other.permitStatus) return false
         if (userId != other.userId) return false
         if (bsNumber != other.bsNumber) return false
         if (compliantRemarks != other.compliantRemarks) return false
@@ -653,6 +658,7 @@ class PermitApplicationsEntity:Serializable {
         result = 31 * result + (productStandard?.hashCode() ?: 0)
         result = 31 * result + (productSubCategory?.hashCode() ?: 0)
         result = 31 * result + (region?.hashCode() ?: 0)
+        result = 31 * result + (permitStatus?.hashCode() ?: 0)
         result = 31 * result + (userId?.hashCode() ?: 0)
         result = 31 * result + (bsNumber?.hashCode() ?: 0)
         result = 31 * result + (compliantRemarks?.hashCode() ?: 0)

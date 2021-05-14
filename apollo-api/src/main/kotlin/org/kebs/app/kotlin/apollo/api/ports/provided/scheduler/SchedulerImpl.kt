@@ -243,6 +243,7 @@ class SchedulerImpl(
              }
 
             permit.paidStatus = map.initStatus
+            permit.permitStatus = applicationMapProperties.mapQaStatusPApprovalCompletness
 
             if (user != null) {
                 qaDaoServices.permitUpdateDetails(permit,map,user)
