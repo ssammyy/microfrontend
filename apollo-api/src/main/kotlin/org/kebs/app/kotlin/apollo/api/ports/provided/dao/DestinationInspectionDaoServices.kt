@@ -1908,11 +1908,26 @@ fun createLocalCoc(
             ?: throw Exception("CD Type Details with the following uuid = ${uuid}, does not Exist")
     }
 
-    fun findAllCdWithPortOfEntry(
+    fun findAllOngoingCdWithPortOfEntry(
         sectionsEntity: SectionsEntity,
         cdType: ConsignmentDocumentTypesEntity
     ): List<ConsignmentDocumentDetailsEntity> {
-        iConsignmentDocumentDetailsRepo.findByPortOfArrivalAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNull(
+        iConsignmentDocumentDetailsRepo.findByPortOfArrivalAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNull(
+            sectionsEntity.id,
+            cdType.id
+        )
+            ?.let {
+                return it
+            }
+            ?: throw Exception("COC List with the following Port arrival = ${sectionsEntity.section} and CD Type = ${cdType.typeName}, does not Exist")
+
+    }
+
+    fun findAllCompleteCdWithPortOfEntry(
+        sectionsEntity: SectionsEntity,
+        cdType: ConsignmentDocumentTypesEntity
+    ): List<ConsignmentDocumentDetailsEntity> {
+        iConsignmentDocumentDetailsRepo.findByPortOfArrivalAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNotNull(
             sectionsEntity.id,
             cdType.id
         )
@@ -1938,7 +1953,7 @@ fun createLocalCoc(
         usersEntity: UsersEntity,
         cdType: ConsignmentDocumentTypesEntity
     ): List<ConsignmentDocumentDetailsEntity> {
-        iConsignmentDocumentDetailsRepo.findAllByAssignedInspectionOfficerAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNull(
+        iConsignmentDocumentDetailsRepo.findAllByAssignedInspectionOfficerAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNull(
             usersEntity,
             cdType.id
         )
@@ -1946,7 +1961,20 @@ fun createLocalCoc(
                 return it
             }
             ?: throw Exception("Assigned Inspection Officer with ID = ${usersEntity.id}, does not Exist")
+    }
 
+    fun findAllCompleteCdWithAssignedIoID(
+        usersEntity: UsersEntity,
+        cdType: ConsignmentDocumentTypesEntity
+    ): List<ConsignmentDocumentDetailsEntity> {
+        iConsignmentDocumentDetailsRepo.findAllByAssignedInspectionOfficerAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNotNull(
+            usersEntity,
+            cdType.id
+        )
+            ?.let {
+                return it
+            }
+            ?: throw Exception("Assigned Inspection Officer with ID = ${usersEntity.id}, does not Exist")
     }
 
 
