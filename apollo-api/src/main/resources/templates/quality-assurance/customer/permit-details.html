@@ -136,7 +136,7 @@
                                             </li>
                                             <li class="list-item-accordion">
                                                 <div class="list-title-accordion">Status</div>
-                                                <div class="list-text-accordion" th:text="${statusName}"></div>
+                                                <div class="list-text-accordion" style="color: #0082f3" th:text="${statusName?.processStatusName}"></div>
                                             </li>
                                             <li class="list-item-accordion">
                                                 <div class="list-title-accordion">Version Number</div>
@@ -426,6 +426,51 @@
                                         <a th:if="${permitDetails?.factoryInspectionReportApprovedRejectedStatus == 1 and permitDetails?.scfId != null and permitDetails?.ssfId != null and permitDetails?.bsNumber != null and permitDetails?.testReportId != null and permitDetails?.compliantStatus == null}" style="color: white" onclick="popUpFunction('complianceStatus');" class="filter-link">ASSIGN COMPLIANCE STATUS(Lab Report)</a>
                                     </div>
 
+
+                                </div>
+
+<!--                                Div for FmarkPermit actions-->
+                                <div th:if="${permitType?.id == fmarkPermit}">
+                                    <div sec:authorize="hasAuthority('PERMIT_APPLICATION')">
+
+<!--                                        <a th:if="${permitType?.st10Status == 1 and permitDetails?.sta10FilledStatus == 0}" target='_blank' th:href="@{/api/qa/view-sta10(permitID=${permitDetails?.id}, userID=${permitDetails?.userId})}" class="filter-link" style="color: white">COMPLETE FILLING STA 10</a>-->
+
+<!--                                        <a th:if="${permitType?.st10Status == 1 and permitDetails?.sta10FilledStatus == null and permitDetails?.attachedPlantId != null}"  th:href="@{/api/qa/new-sta10(permitID=${permitDetails?.id})}" class="filter-link" style="color: white">Fill STA 10</a>-->
+
+<!--                                        <a th:if="${permitType?.smeDeclarationForm == 1 and permitDetails?.smeFormFilledStatus == null}"  th:href="@{/api/qa/new-sme-declaration(permitID=${permitDetails?.id})}" class="filter-link" style="color: white">Fill SME DECLARATION</a>-->
+
+                                        <a th:if="${permitDetails?.generateSchemeStatus == 1 and permitDetails?.approvedRejectedScheme == null and permitType?.schemeGenerate == 1}" th:href="@{/api/qa/scheme-of-supervision(permitID=${permitDetails?.id})}" style="color: white" class="filter-link">APPROVE/REJECT GENERATED SCHEME FOR SUPERVISION AND CONTROL</a>
+
+                                        <div th:if="${permitDetails?.attachedPlantId != null}">
+                                            <a th:if="${permitDetails?.sendApplication != 1}"  th:href="@{/api/qa/new-permit-submit(permitID=${permitDetails?.id})}" class="filter-link" style="color: white">SUBMIT APPLICATION</a>
+                                        </div>
+                                    </div>
+
+                                    <div sec:authorize="hasAuthority('QA_MANAGER_ASSESSORS_MODIFY') or hasAuthority('QA_HOF_MODIFY')">
+
+                                        <a th:if="${ permitDetails?.recommendationRemarks != null and permitDetails?.recommendationApprovalStatus == null}" style="color: white" onclick="popUpFunction('approveRecommendation');" class="filter-link">APPROVE/REJECT RECOMMENDATION</a>
+
+                                    </div>
+
+                                    <div sec:authorize="hasAuthority('QA_OFFICER_MODIFY')">
+                                        <a th:if="${permitDetails?.inspectionScheduledStatus == null}" style="color: white" onclick="popUpFunction('scheduleInspectionDate');" class="filter-link">SCHEDULE INSPECTION</a>
+
+                                        <a th:if="${ permitDetails?.inspectionScheduledStatus == 1 and permitDetails?.generateSchemeStatus == null and permitType?.schemeGenerate == 1}" th:href="@{/api/qa/new-scheme-of-supervision(permitID=${permitDetails?.id})}" style="color: white" class="filter-link">GENERATE SCHEME FOR SUPERVISION AND CONTROL</a>
+
+                                        <a th:if="${permitDetails?.generateSchemeStatus == 0 and permitType?.schemeGenerate == 1}" th:href="@{/api/qa/update-scheme-of-supervision(permitID=${permitDetails?.id})}" style="color: white" class="filter-link">GENERATE NEW SCHEME FOR SUPERVISION AND CONTROL</a>
+
+                                        <a th:if="${permitDetails?.approvedRejectedScheme == 1 and permitDetails?.inspectionReportId == null}" style="color: white" onclick="popUpUploadFunction('uploadInspectionReport');" class="filter-link">UPLOAD INSPECTION REPORT</a>
+
+                                        <a th:if="${permitDetails?.recommendationRemarks == null and permitDetails?.compliantStatus == 1}" style="color: white" onclick="popUpFunction('addRecommendation');" class="filter-link">ADD RECOMMENDATION REMARKS</a>
+
+                                    </div>
+
+                                    <div sec:authorize="hasAuthority('QA_PSC_MEMBERS_READ')" >
+                                        <a th:if="${ permitDetails?.pscMemberApprovalStatus == null}" style="color: white" onclick="popUpFunction('pscMemberApproval');" class="filter-link">APPROVE/REJECT PERMIT AWARDING</a>
+                                    </div>
+                                    <div sec:authorize="hasAuthority('QA_PCM_READ')" >
+                                        <a th:if="${ permitDetails?.pcmApprovalStatus == null and permitDetails?.pscMemberApprovalStatus == 1}" style="color: white" onclick="popUpFunction('pcmApproval');" class="filter-link">APPROVE/REJECT PERMIT AWARDING</a>
+                                    </div>
 
                                 </div>
 
