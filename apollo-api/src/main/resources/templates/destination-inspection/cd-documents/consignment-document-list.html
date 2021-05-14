@@ -62,8 +62,8 @@
                                                     <td th:text="${CD?.id}"></td>
                                                     <td th:text="${CD?.ucrNumber}"></td>
                                                     <td th:text="${CD?.cdStandard?.cdServiceProvider?.name}"></td>
-                                                    <td th:text="${CD?.cdStandard?.applicationDate}"></td>
-                                                    <td th:text="${CD?.cdStandard?.approvalDate}"></td>
+                                                    <td th:text="${#dates.format(CD?.createdOn, 'dd/MM/yyyy hh:mm')}"></td>
+                                                    <td th:text="${#dates.format(CD?.approveRejectCdDate, 'dd/MM/yyyy hh:mm')}"></td>
                                                     <td th:text="${CD?.cdStandard?.approvalStatus}"></td>
                                                     <!--                                        <td th:text="${#dates.format(user?.registrationDate, 'dd/MM/yyyy')}"></td>-->
                                                     <td  style="color: #0082f3" th:if="${CD?.assignedStatus == 1}"  th:text="${CD?.assignedInspectionOfficer?.firstName}+ ' ' +${CD?.assignedInspectionOfficer?.lastName}"></td>

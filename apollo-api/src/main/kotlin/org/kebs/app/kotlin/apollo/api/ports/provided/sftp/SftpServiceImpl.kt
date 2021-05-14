@@ -102,7 +102,7 @@ class SftpServiceImpl(
     override fun downloadFilesByDocType(docType: String): List<File> {
         val sftp: ChannelSftp = this.createSftp()
         val filesList = mutableListOf<File>()
-        try {
+//        try {
             sftp.cd(applicationMapProperties.mapSftpDownloadRoot)
             KotlinLogging.logger { }.info(":::: Downloading file to: ${applicationMapProperties.mapSftpDownloadRoot} ::::")
 
@@ -115,19 +115,18 @@ class SftpServiceImpl(
                 }
             }
             return filesList
-        } catch (e: Exception) {
-            KotlinLogging.logger { }.error("An error occurred while downloading sftp files", e)
-            throw RuntimeException("An error occurred while downloading sftp files")
-        }
+//        } catch (e: Exception) {
+//            KotlinLogging.logger { }.error("An error occurred while downloading sftp files", e)
+////            throw RuntimeException("An error occurred while downloading sftp files")
+//        }
     }
 
-    fun moveFileToProcessedFolder(file: File): Boolean {
+    fun moveFileToProcessedFolder(file: File, destinationFolder: String): Boolean {
         val sftp: ChannelSftp = this.createSftp()
         try {
             val fileName = file.name
-            KotlinLogging.logger { }.info(":::: Moving file: $fileName from directory: ${applicationMapProperties.mapSftpDownloadRoot}" +
-                    " to directory: ${applicationMapProperties.mapSftpProcessedRoot}   ::::")
-            sftp.rename(applicationMapProperties.mapSftpDownloadRoot.plus("/").plus(fileName), applicationMapProperties.mapSftpProcessedRoot.plus("/").plus(fileName))
+            KotlinLogging.logger { }.info(":::: Moving file: $fileName from directory: ${applicationMapProperties.mapSftpDownloadRoot}" + " to directory: ${destinationFolder}   ::::")
+            sftp.rename(applicationMapProperties.mapSftpDownloadRoot.plus("/").plus(fileName), destinationFolder.plus("/").plus(fileName))
         } catch (e: Exception) {
             KotlinLogging.logger { }.error("An error occurred while moving sftp files", e)
         } finally {

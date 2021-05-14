@@ -566,6 +566,9 @@ class ApplicationMapProperties {
     @Value("\${org.kebs.app.kotlin.apollo.application.map.sftp.client.processed.root}")
     val mapSftpProcessedRoot: String = ""
 
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.sftp.client.unprocessable.root}")
+    val mapSftpUnprocessableRoot: String = ""
+
     @Value("\${org.kebs.app.kotlin.apollo.application.map.sftp.client.session.connection.timeout}")
     val mapSftpSessionConnectTimeout: String = ""
 
@@ -593,6 +596,9 @@ class ApplicationMapProperties {
     @Value("\${org.kebs.app.kotlin.apollo.application.map.kesws.demand.doctype}")
     val mapKeswsDemandNoteDoctype: String = ""
 
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.kesws.on.hold.doctype}")
+    val mapKeswsOnHoldDoctype: String = ""
+
     @Value("\${org.kebs.app.kotlin.apollo.application.map.kesws.demand.pay.doctype}")
     val mapKeswsDemandNotePayDoctype: String = ""
 
@@ -601,6 +607,9 @@ class ApplicationMapProperties {
 
     @Value("\${org.kebs.app.kotlin.apollo.application.map.kesws.declaration.doctype}")
     val mapKeswsDeclarationDoctype: String = ""
+
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.kesws.declaration.verification.doctype}")
+    val mapKeswsDeclarationVerificationDoctype: String = ""
 
     @Value("\${org.kebs.app.kotlin.apollo.application.map.kesws.manifest.doctype}")
     val mapKeswsManifestDoctype: String = ""

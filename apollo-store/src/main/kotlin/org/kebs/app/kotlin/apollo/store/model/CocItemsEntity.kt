@@ -148,12 +148,12 @@ class CocItemsEntity : Serializable {
     @Basic
     var deletedOn: Timestamp? = null
 
-    @NotEmpty(message = "Required field")
+    //@NotEmpty(message = "Required field")
     @Column(name = "COC_NUMBER", nullable = false, length = 100)
     @Basic
     var cocNumber: String? = null
 
-    @NotEmpty(message = "Required field")
+    //@NotEmpty(message = "Required field")
     @Column(name = "COI_NUMBER", nullable = false, length = 100)
     @Basic
     var coiNumber: String? = null
