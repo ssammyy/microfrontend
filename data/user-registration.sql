@@ -114,7 +114,7 @@ where ROLES_ID = 510
 order by id desc;--MS_MP_MODIFY MS_MP_READ
 select *
 from CFG_USER_ROLES_ASSIGNMENTS
-where USER_ID = 54
+-- where USER_ID = 54
 order by id desc;--MS_MP_MODIFY MS_MP_READ
 select *
 from DAT_KEBS_USER_VERIFICATION_TOKEN

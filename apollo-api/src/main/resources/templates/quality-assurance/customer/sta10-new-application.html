@@ -43,7 +43,8 @@
                                 <div class="form-row" >
                                     <div class="col-md-6 mb-3">
                                         <label for="firmName" class="field-label">1. Name of the Firm:</label>
-                                        <input required="required"  type="text" class="form-control" maxlength="256" name="firmName" data-name="lbIdAny Aomarking" id="firmName"   th:field="*{firmName}">
+                                        <input id="firmName" name="firmName" th:value="${permit?.firmName}" type="hidden">
+                                        <input required="required"  type="text" disabled class="form-control" maxlength="256" name="firmName" data-name="lbIdAny Aomarking" id="firmNameB"    th:value="${permit?.firmName}">
                                     </div>
                                     <div class="col-md-6 mb-3">
                                         <label for="statusCompanyBusinessRegistration" class="field-label">2. Status of Company or Business registration</label>
@@ -59,21 +60,26 @@
                                 <div class="form-row" >
                                     <div class="col-md-4 mb-3">
                                         <label for="postalAddress" class="field-label">4. Postal Address:</label>
-                                        <input required="required" type="text" class="form-control" maxlength="256" name="postalAddress" data-name="lbIdAny Aomarking" id="postalAddress"   th:field="*{postalAddress}">
-                                    </div>
-                                    <div class="col-md-4 mb-3">
-                                        <label for="telephone" class="field-label">5. Telephone:</label>
-                                        <input required="required" type="text" class="form-control" maxlength="256" name="telephone" data-name="lbIdAny Aomarking" id="telephone"   th:field="*{telephone}">
+                                        <input id="postalAddress" name="postalAddress" th:value="${permit?.postalAddress}" type="hidden">
+                                        <input required="required" type="text"  disabled class="form-control" maxlength="256" name="postalAddress" data-name="lbIdAny Aomarking" id="postalAddress2"   th:value="${permit?.postalAddress}">
                                     </div>
                                     <div class="col-md-4 mb-3">
                                         <label for="contactPerson" class="field-label">6. Contact Person:</label>
-                                        <input required="required" type="text" class="form-control" maxlength="256" name="contactPerson" data-name="lbIdAny Aomarking" id="contactPerson"   th:field="*{contactPerson}">
+                                        <input id="contactPerson" name="contactPerson" th:value="${permit?.contactPerson}" type="hidden">
+                                        <input required="required" type="text" disabled class="form-control" maxlength="256" name="contactPerson" data-name="lbIdAny Aomarking" id="contactPerson2"   th:value="${plantAttached?.contactPerson}">
                                     </div>
+                                    <div class="col-md-4 mb-3">
+                                        <label for="telephone" class="field-label">5. Telephone:</label>
+                                        <input id="telephone" name="telephone" th:value="${permit?.telephoneNo}" type="hidden">
+                                        <input required="required" type="text"  disabled class="form-control" maxlength="256" name="telephone" data-name="lbIdAny Aomarking" id="telephone2"   th:value="${permit?.telephoneNo}">
+                                    </div>
+
                                 </div>
                                 <div class="form-row" >
                                     <div class="col-md-4 mb-3">
                                         <label for="emailAddress" class="field-label">7. Email address:</label>
-                                        <input required="required" type="text" class="form-control" maxlength="256" name="emailAddress" data-name="lbIdAny Aomarking" id="emailAddress"   th:field="*{emailAddress}">
+                                        <input id="emailAddress" name="emailAddress" th:value="${permit?.email}" type="hidden">
+                                        <input required="required" type="text" disabled class="form-control" maxlength="256" name="emailAddress" data-name="lbIdAny Aomarking" id="emailAddress2"   th:value="${permit?.email}">
                                     </div>
                                     <div class="col-md-4 mb-3">
                                         <label for="physicalLocationMap" class="field-label">8. Physical Location</label>

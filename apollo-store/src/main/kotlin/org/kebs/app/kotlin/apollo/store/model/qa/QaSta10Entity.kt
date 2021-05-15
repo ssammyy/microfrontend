@@ -86,7 +86,7 @@ class QaSta10Entity : Serializable {
 
     @Column(name = "AVERAGE_VOLUME_PRODUCTION_MONTH")
     @Basic
-    var averageVolumeProductionMonth: Long? = null
+    var averageVolumeProductionMonth: String? = null
 
     @Column(name = "HANDLED_MANUFACTURING_PROCESS_RAW_MATERIALS")
     @Basic

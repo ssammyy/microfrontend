@@ -86,6 +86,7 @@ class QualityAssuranceHandler(
     private final val qaNewSta10OfficerPage = "quality-assurance/customer/sta10-new-application-officer"
     private final val qaNewSta10DetailsPage = "quality-assurance/customer/sta10-new-details"
     private final val qaInvoiceGenerated = "quality-assurance/customer/generated-invoice"
+    private final val qaSSFDetailesPage = "quality-assurance/customer/ssf-details"
 
     //Inspection details
     private final val cdSampleCollectPage = "destination-inspection/cd-Inspection-documents/cd-inspection-sample-collect.html"
@@ -369,7 +370,9 @@ class QualityAssuranceHandler(
         val permitID = req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
         val qaSta10Entity = qaDaoServices.findSTA10WithPermitIDBY(permitID)
         req.attributes().putAll(commonDaoServices.loadCommonUIComponents(map))
-        req.attributes()["permit"] =   qaDaoServices.findPermitBYID(permitID)
+        val permit =  qaDaoServices.findPermitBYID(permitID)
+        req.attributes()["permit"] =  permit
+        req.attributes()["plantAttached"] =  permit.attachedPlantId?.let { qaDaoServices.findPlantDetails(it) }
         req.attributes()["regionDetails"] = qaSta10Entity.region?.let { commonDaoServices.findRegionEntityByRegionID(it, map.activeStatus).region }
         req.attributes()["countyDetails"] = qaSta10Entity.county?.let { commonDaoServices.findCountiesEntityByCountyId(it, map.activeStatus).county }
         req.attributes()["townDetails"] = qaSta10Entity.town?.let { commonDaoServices.findTownEntityByTownId(it).town }
@@ -486,6 +489,21 @@ class QualityAssuranceHandler(
         req.attributes()["appId"] = appId
 
         return ok().render(qaInvoiceGenerated, req.attributes())
+
+    }
+
+
+    @PreAuthorize("hasAuthority('PERMIT_APPLICATION') or hasAuthority('QA_HOD_READ') or hasAuthority('QA_MANAGER_ASSESSORS_READ') or hasAuthority('QA_HOF_READ') or hasAuthority('QA_OFFICER_MODIFY') or hasAuthority('QA_PSC_MEMBERS_READ') or hasAuthority('QA_PCM_READ')")
+    fun getSSfDetails(req: ServerRequest): ServerResponse {
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+
+        val permitID = req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
+        val permit = qaDaoServices.findPermitBYID(permitID)
+
+
+        req.attributes()["ssfDetails"] = qaDaoServices.findSampleSubmittedBYPermitID(permit.id?: throw ExpectedDataNotFound("MISSING PERMIT ID"))
+
+        return ok().render(qaSSFDetailesPage, req.attributes())
 
     }
 
@@ -626,6 +644,7 @@ class QualityAssuranceHandler(
             Pair("inActiveStatus", s.inactiveStatus),
             Pair("initStatus", s.initStatus),
             Pair("fmarkEntityDto", FmarkEntityDto()),
+            Pair("SampleSubmissionDetails", QaSampleSubmissionEntity()),
             Pair("fmarkPermit", applicationMapProperties.mapQAPermitTypeIdFmark),
             Pair("dmarkPermit", applicationMapProperties.mapQAPermitTypeIDDmark),
             Pair("smarkPermit", applicationMapProperties.mapQAPermitTypeIdSmark),

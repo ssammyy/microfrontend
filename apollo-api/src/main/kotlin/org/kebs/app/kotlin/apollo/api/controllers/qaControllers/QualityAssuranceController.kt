@@ -232,6 +232,10 @@ class QualityAssuranceController(
                     qaDaoServices.permitInsertStatus(permitDetails,applicationMapProperties.mapQaStatusPGenSSC,loggedInUser)
                 }
             }
+            //Permit pending factory inspection Approval
+            permit.factoryInspectionReportApprovedRejectedStatus == map.activeStatus -> {
+                qaDaoServices.permitInsertStatus(permitDetails,applicationMapProperties.mapQaStatusPBSNumber,loggedInUser)
+            }
             permit.assignAssessorStatus == map.activeStatus -> {
                 //Send notification to assessor
                 val assessor = permitDetails.assessorId?.let { commonDaoServices.findUserByID(it) }
@@ -402,18 +406,8 @@ class QualityAssuranceController(
 
         var myRenewedPermit = qaDaoServices.permitUpdateNewWithSamePermitNumber(permitNo,map, loggedInUser)
         val permit = myRenewedPermit.second
-        //If It has FMARK Then Generate FMARK then RENEW
-//        if (permit.fmarkGenerated ==1 && applicationMapProperties.mapQAPermitTypeIdSmark == permit.permitType){
-//            val fmarkID = permit.id?.let { qaDaoServices.findFmarkWithSmarkId(it) } ?: throw ExpectedDataNotFound("SMARK ID MISSING ON RENEWAL FOR FMARK")
-//            val foundFmark = fmarkID.fmarkId?.let { qaDaoServices.findPermitBYID(it) }
-//            val fmarkRenewed = foundFmark?.permitNumber?.let { qaDaoServices.permitUpdateNewWithSamePermitNumber(it,map, loggedInUser) } ?: throw ExpectedDataNotFound("FMARK PERMIT NUMBER CAN'T BE NULL")
-//            qaDaoServices.generateSmarkFmarkEntity( permit,fmarkRenewed.second,loggedInUser)
-//            //Generate Invoice
-//            result = qaDaoServices.permitInvoiceCalculation(map, loggedInUser, permit, qaDaoServices.findPermitType(permit.permitType!!))
-//        }else{
-            //Generate Invoice
             result = qaDaoServices.permitInvoiceCalculation(map, loggedInUser, permit, qaDaoServices.findPermitType(permit.permitType!!))
-//        }
+
 
         val sm = CommonDaoServices.MessageSuccessFailDTO()
         sm.closeLink = "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${result.varField1}"
@@ -515,6 +509,35 @@ class QualityAssuranceController(
         sm.closeLink =
             "${applicationMapProperties.baseUrlValue}/qa/view-sta10?permitID=${permitID}"
         sm.message = "You have Successful Filled Some part of STA 10, Processed To finish the Rest and submit"
+
+        return commonDaoServices.returnValues(result, map, sm)
+    }
+
+    @PreAuthorize("hasAuthority('PERMIT_APPLICATION')")
+    @PostMapping("/kebs/ssf-details-uploads")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun saveNewSSF(
+        @RequestParam("permitID") permitID: Long,
+        @ModelAttribute("SampleSubmissionDetails") sampleSubmissionDetails: QaSampleSubmissionEntity,
+        model: Model
+    ): String? {
+        val map = commonDaoServices.serviceMapDetails(appId)
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val permit = qaDaoServices.findPermitBYID(permitID)
+
+        val result: ServiceRequestsEntity?
+
+
+        //updating of Details in DB
+        result = qaDaoServices.ssfSave(permit,sampleSubmissionDetails,loggedInUser,map).first
+        with(permit){
+            bsNumber = sampleSubmissionDetails.bsNumber
+        }
+        qaDaoServices.permitInsertStatus(permit,applicationMapProperties.mapQaStatusPLABResults,loggedInUser)
+
+        val sm = CommonDaoServices.MessageSuccessFailDTO()
+        sm.closeLink = "${applicationMapProperties.baseUrlValue}/qa/ssf-details?permitID=${permitID}"
+        sm.message = "You have Successful Filled Sample Submission Details"
 
         return commonDaoServices.returnValues(result, map, sm)
     }
@@ -674,7 +697,7 @@ class QualityAssuranceController(
             inspectionReportStatus!= null -> {
                 permitDetails.inspectionReportId = uploadResults.second.id
                 permitDetails = qaDaoServices.permitUpdateDetails(permitDetails,map,loggedInUser).second
-                qaDaoServices.permitInsertStatus(permitDetails,applicationMapProperties.mapQaStatusPSCF,loggedInUser)
+                qaDaoServices.permitInsertStatus(permitDetails,applicationMapProperties.mapQaStatusPInspectionReportApproval,loggedInUser)
                 sendInspectionReport(permitDetails)
             }
             scfStatus!= null -> {
@@ -759,26 +782,12 @@ class QualityAssuranceController(
 
         val permit = loggedInUser.id?.let { qaDaoServices.findPermitBYUserIDAndId(permitID, it) } ?: throw ExpectedDataNotFound("Required User ID, check config")
         val permitType = permit.permitType?.let { qaDaoServices.findPermitType(it) } ?: throw ExpectedDataNotFound("PermitType Id Not found")
-//        val ifProductCanGenerateFmark = permit.product?.let { commonDaoServices.findProductByID(it).fmarkGenerateStatus }
-//
-//        if (ifProductCanGenerateFmark == 1){
-//            val fmarkGenerated = qaDaoServices.permitGenerateFmark(map,loggedInUser,permit)
-//        }
 
         result = qaDaoServices.permitInvoiceCalculation(map, loggedInUser, permit, permitType)
         with(permit) {
             sendApplication = map.activeStatus
             invoiceGenerated = map.activeStatus
             permitStatus = applicationMapProperties.mapQaStatusPPayment
-////            //Todo: Ask anthony about this
-//            when {
-//                permit.permitType!! == applicationMapProperties.mapQAPermitTypeIDDmark -> {
-//                    hodId = qaDaoServices.assignNextOfficerAfterPayment(permit, map, applicationMapProperties.mapQADesignationIDForHODId)?.id
-//                }
-//                permit.permitType!! == applicationMapProperties.mapQAPermitTypeIdSmark -> {
-//                    qamId = qaDaoServices.assignNextOfficerAfterPayment(permit, map, applicationMapProperties.mapQADesignationIDForQAMId)?.id
-//                }
-//            }
 
         }
         result = qaDaoServices.permitUpdateDetails(permit, map, loggedInUser).first

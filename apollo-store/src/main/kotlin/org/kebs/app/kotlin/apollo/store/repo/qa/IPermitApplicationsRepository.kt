@@ -54,6 +54,13 @@ interface IQaSchemeForSupervisionRepository : HazelcastRepository<QaSchemeForSup
 }
 
 @Repository
+interface IQaSampleSubmissionRepository : HazelcastRepository<QaSampleSubmissionEntity, Long> {
+    fun findByStatusAndId(status: Int, id: Long): QaSampleSubmissionEntity?
+    fun findByPermitId(permitId: Long): QaSampleSubmissionEntity?
+    fun findByBsNumber(bsNumber: String): QaSampleSubmissionEntity?
+}
+
+@Repository
 interface IQaSampleCollectionRepository : HazelcastRepository<QaSampleCollectionEntity, Long> {
     fun findByStatusAndId(status: Int, id: Long): QaSampleCollectionEntity?
     fun findByPermitId(permitId: Long): QaSampleCollectionEntity?

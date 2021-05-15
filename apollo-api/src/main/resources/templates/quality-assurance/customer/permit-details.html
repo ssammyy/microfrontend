@@ -431,7 +431,7 @@
 
                                     <div sec:authorize="hasAuthority('PERMIT_APPLICATION')">
 
-                                        <a th:if="${permitDetails?.attachedPlantId == null}" style="color: white" onclick="popUpFunction('attachePlant');" class="filter-link">ATTACHE PLANT</a>
+                                        <a th:if="${permitDetails?.attachedPlantId == null}" style="color: white" onclick="popUpFunction('attachePlant');" class="filter-link">ATTACH PLANT</a>
 
                                         <a th:if="${permitDetails?.permitExpiredStatus == 1}"  th:href="@{/api/qa/kebs/renew/permit-details/save(permitNo=${permitDetails?.permitNumber})}" class="filter-link" style="color: white">RENEW PERMIT</a>
 
@@ -451,11 +451,11 @@
                                     </div>
 
                                     <div sec:authorize="hasAuthority('QA_OFFICER_MODIFY')">
-                                        <a th:if="${permitDetails?.factoryInspectionReportApprovedRejectedStatus == 1 and permitDetails?.scfId == null}" style="color: white" onclick="popUpUploadFunction('uploadSCF');" class="filter-link">UPLOAD SCF</a>
+<!--                                        <a th:if="${permitDetails?.factoryInspectionReportApprovedRejectedStatus == 1 and permitDetails?.scfId == null}" style="color: white" onclick="popUpUploadFunction('uploadSCF');" class="filter-link">UPLOAD SCF</a>-->
 
-                                        <a th:if="${permitDetails?.factoryInspectionReportApprovedRejectedStatus == 1 and permitDetails?.scfId != null and permitDetails?.ssfId == null}" style="color: white" onclick="popUpUploadFunction('uploadSSF');" class="filter-link">UPLOAD SSF</a>
+<!--                                        <a th:if="${permitDetails?.factoryInspectionReportApprovedRejectedStatus == 1 and permitDetails?.scfId != null and permitDetails?.ssfId == null}" style="color: white" onclick="popUpUploadFunction('uploadSSF');" class="filter-link">UPLOAD SSF</a>-->
 
-                                        <a th:if="${permitDetails?.factoryInspectionReportApprovedRejectedStatus == 1 and permitDetails?.scfId != null and permitDetails?.ssfId != null and permitDetails?.bsNumber == null}" style="color: white" onclick="popUpFunction('addBsNumber');" class="filter-link">ADD BS NUMBER</a>
+                                        <a th:if="${permitDetails?.factoryInspectionReportApprovedRejectedStatus == 1  and permitDetails?.bsNumber == null}" style="color: white" onclick="popUpSSFFunction('addSSFDetails');" class="filter-link">ADD SSF & BS NUMBER</a>
 
                                         <a th:if="${permitDetails?.factoryInspectionReportApprovedRejectedStatus == 1 and permitDetails?.scfId != null and permitDetails?.ssfId != null and permitDetails?.bsNumber != null and permitDetails?.testReportId == null}" style="color: white" onclick="popUpUploadFunction('uploadLabResults');" class="filter-link">UPLOAD LAB RESULTS</a>
 
@@ -735,12 +735,7 @@
                                             <label for="factoryInspectionReportApprovedRejectedRemarks" class="col-form-label">Please write, in detail, your feedback for this Factory Inspection report:</label>
                                             <textarea required name="name" id="factoryInspectionReportApprovedRejectedRemarks" class="input-field w-input" cols="65" rows="5" th:field="*{factoryInspectionReportApprovedRejectedRemarks}"></textarea>
                                         </div>
-                                        <div id="addBsNumber">
-                                            <input type="hidden" id="description8" name="description" th:value="'BS Number was added sucessfull'">
-<!--                                            <input type="hidden" id="inspectionScheduledStatus" name="inspectionScheduledStatus" th:value="${activeStatus}">-->
-                                            <label for="bsNumber" class="col-form-label">BS NUMBER:</label>
-                                            <input class="input-field w-input" type="text" max="20" id="bsNumber" name="bsNumber" th:field="*{bsNumber}" th:required="required">
-                                        </div>
+
                                         <div id="complianceStatus">
                                             <input type="hidden" id="description9" name="description" th:value="'Compliance status Was added Succesfull'">
 <!--                                            <input type="hidden" id="varField8" name="varField1" th:value="'Factory Inspection Report Rejected Succesfull'">-->
@@ -844,6 +839,48 @@
                                 <div class="modal-footer">
                                     <button class="btn btn-secondary" data-dismiss="modal" onClick="refreshPage()" type="button">Close</button>
 <!--                                    <input type="submit" id="saveRemarksValue" class="btn btn-primary" value="Save"/>-->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div  class="qaSSFForm">
+                <form id="qa-ssf-form"   name="qa-ssf-form" enctype="multipart/form-data" th:action="@{/api/qa/kebs/ssf-details-uploads(permitID = ${permitDetails?.id})}" method="post" th:object="${SampleSubmissionDetails}">
+                    <div class="modal fade" id="qaSSFModal" tabindex="-1" role="dialog" aria-labelledby="qaSSFModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 style="font-weight: bold; " class="modal-title" id="qaSSFModalLabel"><span id="spanSSFValue" >none</span></h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="form-group">
+
+
+                                        <div id="addSSFDetails">
+                                            <input type="hidden" id="description8" name="description" th:value="'SSF was added sucessfull'">
+                                            <!--                                            <input type="hidden" id="inspectionScheduledStatus" name="inspectionScheduledStatus" th:value="${activeStatus}">-->
+                                            <label for="ssfNo" class="col-form-label">SSF No:</label>
+                                            <input class="input-field w-input" type="text" max="20" id="ssfNo" name="ssfNo" th:field="*{ssfNo}" th:required="required">
+                                            <label for="ssfSubmissionDate" class="col-form-label">SSF Submission Date:</label>
+                                            <input class="input-field w-input" type="date" max="20" id="ssfSubmissionDate" name="ssfSubmissionDate" th:field="*{ssfSubmissionDate}" th:required="required">
+                                            <label for="bsNumber" class="col-form-label">BS Number:</label>
+                                            <input class="input-field w-input" type="text" max="20" id="bsNumber" name="bsNumber" th:field="*{bsNumber}" th:required="required">
+                                            <label for="brandName" class="col-form-label">Brand Name:</label>
+                                            <input class="input-field w-input" type="text" max="20" id="brandName" name="brandName" th:field="*{brandName}" th:required="required">
+                                            <label for="productDescription" class="col-form-label">Product Description:</label>
+                                            <input class="input-field w-input" type="text" max="20" id="productDescription" name="productDescription" th:field="*{productDescription}" th:required="required">
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button class="btn btn-secondary" data-dismiss="modal" onClick="refreshPage()" type="button">Close</button>
+                                    <input type="submit" id="saveSSfValue" class="btn btn-primary" value="Save"/>
                                 </div>
                             </div>
                         </div>
@@ -1064,8 +1101,8 @@
 </script>
 <script>
     function popUpFunction(eventAction) {
-        let arrHead = [ 'attachePlant', 'permitCompleteness', 'assignOfficer', 'scheduleInspectionDate', 'assignAssessor', 'scheduleAssessmentDate', 'approveInspectionReport', 'addBsNumber', 'complianceStatus', 'addRecommendation', 'approveRecommendation', 'pscMemberApproval', 'pcmApproval', 'dmarkApplicationApproval'];
-        let arrHeadSave = [ 'Attach a Plant for manufacturing the product', 'Is The Permit Complete', 'Select An officer',' Set The Date of Inspection', 'Select An Assessor', 'Schedule Factory Assessment Date', 'Approve Or Reject the Factory Inspection Report', 'Add Bs Number','Select a suitable Compliance Status for the Lab Report', 'Add Recommendation', 'Approve / Reject Recommendation', 'Approve / Reject Awarding of Permit', 'Approve / Reject Awarding of Permit', 'Grant/Defer Application'];
+        let arrHead = [ 'attachePlant', 'permitCompleteness', 'assignOfficer', 'scheduleInspectionDate', 'assignAssessor', 'scheduleAssessmentDate', 'approveInspectionReport', 'complianceStatus', 'addRecommendation', 'approveRecommendation', 'pscMemberApproval', 'pcmApproval', 'dmarkApplicationApproval'];
+        let arrHeadSave = [ 'Attach a Plant for manufacturing the product', 'Is The Permit Complete', 'Select An officer',' Set The Date of Inspection', 'Select An Assessor', 'Schedule Factory Assessment Date', 'Approve Or Reject the Factory Inspection Report', 'Select a suitable Compliance Status for the Lab Report', 'Add Recommendation', 'Approve / Reject Recommendation', 'Approve / Reject Awarding of Permit', 'Approve / Reject Awarding of Permit', 'Grant/Defer Application'];
         // let arrHead = [ 'attachePlant', 'permitCompleteness', 'assignOfficer', 'scheduleInspectionDate', 'assignAssessor', 'scheduleAssessmentDate', 'dmarkApplicationApproval'];
         // let arrHeadSave = [ 'Attach a Plant for manufacturing the product', 'Is The Permit Complete', 'Select An officer',' Set The Date of Inspection', 'Select An Assessor', 'Schedule Factory Assessment Date',
         // 'Grant/Defer Application'];
@@ -1101,6 +1138,24 @@
         }
 
         $('.qaRemarksForm #qaRemarksModal').modal();
+    }
+
+    function popUpSSFFunction(eventAction) {
+        let arrHead = [ 'addSSFDetails'];
+        let arrHeadSave = [ 'Add SSF Details Below'];
+
+        for (let h = 0; h < arrHead.length; h++) {
+            if(eventAction !== arrHead[h]){
+                document.getElementById(arrHead[h]).remove();
+            }else {
+                if (eventAction === arrHead[h]) {
+                    document.getElementById('spanSSFValue').innerHTML = arrHeadSave[h];
+                    document.getElementById("saveSSfValue").value = 'Save';
+                }
+            }
+        }
+
+        $('.qaSSFForm #qaSSFModal').modal();
     }
 
     function popUpUploadFunction(eventAction) {
