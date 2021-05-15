@@ -1405,7 +1405,10 @@ class QADaoServices(
                 ?: throw ExpectedDataNotFound("MISSING TURNOVER RATES FOR Medium Firm SMARK")
         val productList = user.id?.let { findPermitBYUserIDANDProductionStatus(map.inactiveStatus, applicationMapProperties.mapQAPermitTypeIdSmark, it) } ?: throw ExpectedDataNotFound("MISSING USER ID")
         val productSize = productList.size
-        val remainingSize = productSize.minus(applicationMapProperties.mapQaSmarkJuakaliMaxProduct).toBigDecimal()
+        var remainingSize = 1.00.toBigDecimal()
+        if(productSize > applicationMapProperties.mapQaSmarkJuakaliMaxProduct){
+            remainingSize =  productSize.minus(applicationMapProperties.mapQaSmarkJuakaliMaxProduct).toBigDecimal()
+        }
         var extraProductCost: BigDecimal? = 0.000.toBigDecimal()
         extraProductCost = turnoverValues.variableAmountToPay?.let { remainingSize.times(it) }
         applicationCost1 = extraProductCost?.let { turnoverValues.fixedAmountToPay?.plus(it) }
@@ -1477,7 +1480,11 @@ class QADaoServices(
             )
         } ?: throw ExpectedDataNotFound("MISSING USER ID")
         val productSize = productList.size
-        val remainingSize = productSize.minus(applicationMapProperties.mapQaSmarkMediumMaxProduct).toBigDecimal()
+        var remainingSize = 1.00.toBigDecimal()
+        if(productSize > applicationMapProperties.mapQaSmarkMediumMaxProduct){
+            remainingSize =  productSize.minus(applicationMapProperties.mapQaSmarkMediumMaxProduct).toBigDecimal()
+        }
+
         var extraProductCost: BigDecimal? = 0.000.toBigDecimal()
         extraProductCost = turnoverValues.variableAmountToPay?.let { remainingSize.times(it) }
         applicationCost1 = extraProductCost?.let { turnoverValues.fixedAmountToPay?.plus(it) }

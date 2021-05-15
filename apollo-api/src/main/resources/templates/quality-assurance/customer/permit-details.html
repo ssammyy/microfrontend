@@ -457,9 +457,9 @@
 
                                         <a th:if="${permitDetails?.factoryInspectionReportApprovedRejectedStatus == 1  and permitDetails?.bsNumber == null}" style="color: white" onclick="popUpSSFFunction('addSSFDetails');" class="filter-link">ADD SSF & BS NUMBER</a>
 
-                                        <a th:if="${permitDetails?.factoryInspectionReportApprovedRejectedStatus == 1 and permitDetails?.scfId != null and permitDetails?.ssfId != null and permitDetails?.bsNumber != null and permitDetails?.testReportId == null}" style="color: white" onclick="popUpUploadFunction('uploadLabResults');" class="filter-link">UPLOAD LAB RESULTS</a>
+<!--                                        <a th:if="${permitDetails?.factoryInspectionReportApprovedRejectedStatus == 1 and permitDetails?.scfId != null and permitDetails?.ssfId != null and permitDetails?.bsNumber != null and permitDetails?.testReportId == null}" style="color: white" onclick="popUpUploadFunction('uploadLabResults');" class="filter-link">UPLOAD LAB RESULTS</a>-->
 
-                                        <a th:if="${permitDetails?.factoryInspectionReportApprovedRejectedStatus == 1 and permitDetails?.scfId != null and permitDetails?.ssfId != null and permitDetails?.bsNumber != null and permitDetails?.testReportId != null and permitDetails?.compliantStatus == null}" style="color: white" onclick="popUpFunction('complianceStatus');" class="filter-link">ASSIGN COMPLIANCE STATUS(Lab Report)</a>
+                                        <a th:if="${permitDetails?.factoryInspectionReportApprovedRejectedStatus == 1 and permitDetails?.bsNumber != null  and permitDetails?.compliantStatus == null}" style="color: white" onclick="popUpFunction('complianceStatus');" class="filter-link">ASSIGN COMPLIANCE STATUS(Lab Report)</a>
                                     </div>
 
 
