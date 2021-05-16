@@ -4,6 +4,7 @@ import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.StandardsLevyBpmn
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
+import org.kebs.app.kotlin.apollo.common.exceptions.InvalidInputException
 import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
 import org.kebs.app.kotlin.apollo.common.exceptions.ServiceMapNotFoundException
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Component
 import org.springframework.web.servlet.function.ServerRequest
 import org.springframework.web.servlet.function.ServerResponse
 import org.springframework.web.servlet.function.ServerResponse.ok
+import org.springframework.web.servlet.function.body
 import org.springframework.web.servlet.function.paramOrNull
 import org.springframework.web.servlet.mvc.support.RedirectAttributes
 import java.math.BigDecimal
@@ -326,32 +328,6 @@ class StandardLevyHandler(
 
     }
 
-//    fun scheduleVisit(req: ServerRequest): ServerResponse {
-//        try {
-//            req.pathVariable("manufacturer").toLongOrNull()
-//                ?.let { id ->
-//                    val dto = req.body<StandardLevyFactoryVisitReportEntity>()
-//                    dto.userId = id
-//                    daoService.userRequest(dto)?.let {
-//                        return ok().body(it)
-//                    }
-//                        ?: throw NullValueNotAllowedException("User ID is null")
-//                } ?: throw NullValueNotAllowedException("Update failed")
-//        } catch (e: Exception) {
-//            KotlinLogging.logger { }.error(e.message)
-//            KotlinLogging.logger { }.debug(e.message, e)
-//            return ServerResponse.badRequest().body(e.message ?: "Unknown Error")
-//        }
-//    }
-
-    @PreAuthorize("hasAuthority('SL_SCHEDULE_FACTORY_VISIT_MANUFACTURER') and hasAuthority('SL_MANUFACTURERS_VIEW')")
-    fun paidLevies(req: ServerRequest) {
-        standardLevyPaymentsRepository.findAllByStatusOrderByIdDesc(1)?.let { paidLevies ->
-            req.attributes()["paidLevies"] = paidLevies
-        }
-        ok().render("destination-inspection/pvoc/complaint/ComplaintsForm", req.attributes())
-    }
-
     @PreAuthorize("hasAuthority('SL_SCHEDULE_FACTORY_VISIT_MANUFACTURER') and hasAuthority('SL_MANUFACTURERS_VIEW')")
     fun actionScheduleVisit(req: ServerRequest): ServerResponse =
         try {
@@ -417,6 +393,25 @@ class StandardLevyHandler(
             throw e
 
         }
+
+    fun actionSaveFactoryVisitReport(req: ServerRequest) : ServerResponse{
+        commonDaoServices.getLoggedInUser().let { user ->
+            val body = req.body<StandardLevyFactoryVisitReportEntity>()
+            req.pathVariable("manufacturerId").toLongOrNull()?.let { manufacturerId ->
+                standardLevyFactoryVisitReportRepo.findByManufacturerEntity(manufacturerId)?.let { report ->
+                  report.purpose = body.purpose
+                    report.personMet = body.personMet
+                    report.actionTaken = body.actionTaken
+                    report.remarks = body.remarks
+                    standardLevyFactoryVisitReportRepo.save(report)
+                    return ok().render(
+                        "redirect:/sl/manufacturer?manufacturerId=${manufacturerId}",
+                        req.attributes()
+                    )
+                }
+            }?: throw InvalidInputException("Please login")
+        }
+    }
 
 
     fun generalActions(req: ServerRequest): ServerResponse =
