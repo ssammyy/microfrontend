@@ -34,101 +34,89 @@
             <div class="content-nav" th:replace="fragments/general-form.html :: content-navigation-bar"></div>
             <div class="content-wrap">
                 <div class="content-container">
-                    <h5 style="font-weight: bold; color: #0082f3; font-size: 14px"><u>STA 10: INITIAL/(ROUTINE)
-                        INSPECTION REPORTS</u></h5>
+                    <h5 style="font-weight: bold; color: #0082f3; font-size: 14px"><u>Sample Submission Details</u></h5>
                     <div class="content-block">
                         <div class="content-block-parent" style="flex: 0 75%">
 
                             <div class="sticky" style="margin-bottom: 30px">
-                                <h6 class="h3-blue" style="font-weight: bold; font-size: 16px">A: FIRM DETAILS</h6>
+                                <h6 class="h3-blue" style="font-weight: bold; font-size: 16px">SSF DETAILS</h6>
                                 <div class="applicant_details_container">
                                     <div class="detail-list application_details">
                                         <ul class="w-list-unstyled">
                                             <li class="list-item-accordion">
-                                                <div class="list-title-accordion">Name of the Firm:</div>
+                                                <div class="list-title-accordion">SSF NO:</div>
                                                 <div class="list-text-accordion"
-                                                     th:text="${QaSta10Entity?.firmName}"></div>
+                                                     th:text="${ssfDetails?.ssfNo}"></div>
                                             </li>
                                             <li class="list-item-accordion">
-                                                <div class="list-title-accordion">Status of Company or Business
-                                                    registration:
+                                                <div class="list-title-accordion">SSF SUBMISSION DATE:
                                                 </div>
                                                 <div class="list-text-accordion"
-                                                     th:text="${QaSta10Entity?.statusCompanyBusinessRegistration}"></div>
+                                                     th:text="${ssfDetails?.ssfSubmissionDate}"></div>
                                             </li>
 
                                             <li class="list-item-accordion">
-                                                <div class="list-title-accordion">Name of the Owner
-                                                    (s)/Proprietor(s)/Director (s):
+                                                <div class="list-title-accordion">BS NUMBER
                                                 </div>
                                                 <div class="list-text-accordion"
-                                                     th:text="${QaSta10Entity?.ownerNameProprietorDirector}"></div>
+                                                     th:text="${ssfDetails?.bsNumber}"></div>
                                             </li>
 
                                             <li class="list-item-accordion">
-                                                <div class="list-title-accordion">Postal Address:</div>
+                                                <div class="list-title-accordion">BRAND NAME:</div>
                                                 <div class="list-text-accordion"
-                                                     th:text="${QaSta10Entity?.postalAddress}"></div>
+                                                     th:text="${ssfDetails?.brandName}"></div>
                                             </li>
 
                                             <li class="list-item-accordion">
-                                                <div class="list-title-accordion">Telephone number</div>
+                                                <div class="list-title-accordion">PRODUCT DESCRIPTION</div>
                                                 <div class="list-text-accordion"
-                                                     th:text="${QaSta10Entity?.telephone}"></div>
+                                                     th:text="${ssfDetails?.productDescription}"></div>
                                             </li>
                                             <li class="list-item-accordion">
-                                                <div class="list-title-accordion">Contact Person:</div>
+                                                <div class="list-title-accordion">SAMPLE STATUS:</div>
                                                 <div class="list-text-accordion"
-                                                     th:text="${QaSta10Entity?.contactPerson}"></div>
+                                                     th:text="${ssfDetails?.sampleStatus}"></div>
                                             </li>
                                             <li class="list-item-accordion">
-                                                <div class="list-title-accordion">Email address:</div>
+                                                <div class="list-title-accordion">RESULTS DATE:</div>
                                                 <div class="list-text-accordion"
-                                                     th:text="${QaSta10Entity?.emailAddress}"></div>
+                                                     th:text="${ssfDetails?.resultsDate}"></div>
                                             </li>
                                             <li class="list-item-accordion">
-                                                <div class="list-title-accordion">Region:</div>
-                                                <div class="list-text-accordion" th:text="${regionDetails}"></div>
+                                                <div class="list-title-accordion">RESULTS ANALYSIS:</div>
+                                                <div class="list-text-accordion"
+                                                     th:text="${ssfDetails?.resultsAnalysis}"></div>
                                             </li>
-                                            <li class="list-item-accordion">
-                                                <div class="list-title-accordion">County:</div>
-                                                <div class="list-text-accordion" th:text="${countyDetails}"></div>
-                                            </li>
-                                            <li class="list-item-accordion">
-                                                <div class="list-title-accordion">Town:</div>
-                                                <div class="list-text-accordion" th:text="${townDetails}"></div>
-                                            </li>
-
-
                                         </ul>
                                     </div>
                                     <div class="application_reports">
                                         <ul class="w-list-unstyled">
-                                            <li class="list-item-accordion">
-                                                <div class="list-title-accordion">Total No. of Personnel:</div>
-                                                <div class="list-text-accordion"
-                                                     th:text="${QaSta10Entity?.totalNumberPersonnel}"></div>
-                                            </li>
-                                            <li class="list-item-accordion">
-                                                <div class="list-title-accordion">Total No. of Female:</div>
-                                                <div class="list-text-accordion"
-                                                     th:text="${QaSta10Entity?.totalNumberFemale}"></div>
-                                            </li>
-                                            <li class="list-item-accordion">
-                                                <div class="list-title-accordion">Total No. of Male:</div>
-                                                <div class="list-text-accordion"
-                                                     th:text="${QaSta10Entity?.totalNumberMale}"></div>
-                                            </li>
-                                            <li class="list-item-accordion">
-                                                <div class="list-title-accordion">No. of Permanent Employees:</div>
-                                                <div class="list-text-accordion"
-                                                     th:text="${QaSta10Entity?.totalNumberPermanentEmployees}"></div>
-                                            </li>
-                                            <li class="list-item-accordion">
-                                                <div class="list-title-accordion">No of Casual Employee:</div>
-                                                <div class="list-text-accordion"
-                                                     th:text="${QaSta10Entity?.totalNumberCasualEmployees}"></div>
-                                            </li>
+<!--                                            <li class="list-item-accordion">-->
+<!--                                                <div class="list-title-accordion">Total No. of Personnel:</div>-->
+<!--                                                <div class="list-text-accordion"-->
+<!--                                                     th:text="${ssfDetails?.totalNumberPersonnel}"></div>-->
+<!--                                            </li>-->
+<!--                                            <li class="list-item-accordion">-->
+<!--                                                <div class="list-title-accordion">Total No. of Female:</div>-->
+<!--                                                <div class="list-text-accordion"-->
+<!--                                                     th:text="${ssfDetails?.totalNumberFemale}"></div>-->
+<!--                                            </li>-->
+<!--                                            <li class="list-item-accordion">-->
+<!--                                                <div class="list-title-accordion">Total No. of Male:</div>-->
+<!--                                                <div class="list-text-accordion"-->
+<!--                                                     th:text="${ssfDetails?.totalNumberMale}"></div>-->
+<!--                                            </li>-->
+<!--                                            <li class="list-item-accordion">-->
+<!--                                                <div class="list-title-accordion">No. of Permanent Employees:</div>-->
+<!--                                                <div class="list-text-accordion"-->
+<!--                                                     th:text="${ssfDetails?.totalNumberPermanentEmployees}"></div>-->
+<!--                                            </li>-->
+<!--                                            <li class="list-item-accordion">-->
+<!--                                                <div class="list-title-accordion">No of Casual Employee:</div>-->
+<!--                                                <div class="list-text-accordion"-->
+<!--                                                     th:text="${ssfDetails?.totalNumberCasualEmployees}"></div>-->
+<!--                                            </li>-->
 <!--                                            <li class="list-item-accordion">-->
 <!--                                                <div class="list-title-accordion">Physical Location (attach Google-->
 <!--                                                    Map)-->
@@ -143,326 +131,6 @@
                                 </div>
                             </div>
 
-
-                            <button class="accordion">B: PRODUCTION DETAILS:<br>1. Products being manufactured/Brands</button>
-                            <div class="panel">
-                                &nbsp;
-                                <div th:if="${QaSta10Entity?.closedProduction != 1 }" id="idButtons">
-                                    <div class="form-row">
-                                        <div class="col-md-6 mb-3">
-                                            <button id="addParam" class="btn btn-primary"
-                                                    onclick="popUpFunction('addProductsDetails');" type="button">ADD
-                                                PRODUCTS MANUFACTURED
-                                            </button>
-                                        </div>
-                                        <div class="col-md-6 mb-3">
-                                            <button id="closeADD" class="btn btn-primary"
-                                                    onclick="popUpFunction('closeAddProducts');" type="button">CLOSE ADD
-                                            </button>
-                                        </div>
-                                        <!--                                <div class="col-md-4 mb-3">-->
-                                        <!--                                        <label for="cocNumber" >16. C.O.C. No</label>-->
-                                        <!--                                        <input id="cocNumber" name="cocNumber" th:value="${session.coc?.cocId?.cocNumber}" type="hidden">-->
-                                        <!--                                        <input class="form-control" data-name="coc Number" disabled id="cocNumber2" maxlength="256" name="cocNumber" th:value="${session.coc?.cocId?.cocNumber}" required="required">-->
-                                        <!--                                    <div class="valid-feedback">-->
-                                        <!--                                        Looks good!-->
-                                        <!--                                    </div>-->
-                                        <!--                                </div>-->
-                                    </div>
-                                </div>
-                                &nbsp;
-                                <div class="row-table ">
-                                    <table id="example" class="table table-striped table-bordered" style="width:100%">
-                                        <thead>
-                                        <tr>
-                                            <th>Product Name</th>
-                                            <th>Brand Name</th>
-                                            <th>Applicable Product Standard number</th>
-                                            <th>Available (YES/NO)</th>
-                                            <th>KEBS Permit NO. (if applicable).</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        <tr class="list" th:each="productDetail: ${productsManufacturedList}"
-                                            style="cursor: pointer">
-
-                                            <td th:text="${productDetail.productName}"></td>
-                                            <td th:text="${productDetail.productBrand}"></td>
-                                            <td th:text="${productDetail.productStandardNumber}"></td>
-                                            <td th:text="${productDetail?.available} ? 'YES' : 'NO'"></td>
-                                            <td th:text="${productDetail.permitNo}"></td>
-                                        </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                                &nbsp;
-                                <ul class="w-list-unstyled">
-                                    <li class="list-item-accordion">
-                                        <div class="list-title-accordion">What is the average Volume of production per
-                                            Month?
-                                        </div>
-                                        <div class="list-text-accordion"
-                                             th:text="${QaSta10Entity?.averageVolumeProductionMonth}"></div>
-                                    </li>
-                                </ul>
-                            </div>
-
-                            <button class="accordion">2. Raw material</button>
-                            <div class="panel">
-                                &nbsp;
-                                <div th:if="${QaSta10Entity?.closedRawMaterials != 1 }" id="idButtons">
-                                    <div class="form-row">
-                                        <div class="col-md-6 mb-3">
-                                            <button id="addRawMaterials" class="btn btn-primary"
-                                                    onclick="popUpFunctionAddRawMaterials('addRawMaterialsDetails');"
-                                                    type="button">ADD RAW MATERIALS
-                                            </button>
-                                        </div>
-                                        <div class="col-md-6 mb-3">
-                                            <button id="closeADDMaterials" class="btn btn-primary"
-                                                    onclick="popUpFunctionAddRawMaterials('closeAddRawMaterialsDetails');"
-                                                    type="button">CLOSE ADD
-                                            </button>
-                                        </div>
-                                        <!--                                <div class="col-md-4 mb-3">-->
-                                        <!--                                        <label for="cocNumber" >16. C.O.C. No</label>-->
-                                        <!--                                        <input id="cocNumber" name="cocNumber" th:value="${session.coc?.cocId?.cocNumber}" type="hidden">-->
-                                        <!--                                        <input class="form-control" data-name="coc Number" disabled id="cocNumber2" maxlength="256" name="cocNumber" th:value="${session.coc?.cocId?.cocNumber}" required="required">-->
-                                        <!--                                    <div class="valid-feedback">-->
-                                        <!--                                        Looks good!-->
-                                        <!--                                    </div>-->
-                                        <!--                                </div>-->
-                                    </div>
-                                </div>
-                                &nbsp;
-                                <div class="row-table ">
-                                    <table id="example" class="table table-striped table-bordered" style="width:100%">
-                                        <thead>
-                                        <tr>
-                                            <th>Raw material</th>
-                                            <th>Origin</th>
-                                            <th>Specifications</th>
-                                            <th>Quality checks/testing records</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        <tr class="list" th:each="rawMaterila: ${rawMaterialList}"
-                                            style="cursor: pointer">
-
-                                            <td th:text="${rawMaterila.name}"></td>
-                                            <td th:text="${rawMaterila.origin}"></td>
-                                            <td th:text="${rawMaterila.specifications}"></td>
-                                            <td th:text="${rawMaterila.qualityChecksTestingRecords}"></td>
-                                        </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                                &nbsp;
-                                <ul class="w-list-unstyled">
-                                    <li class="list-item-accordion">
-                                        <div class="list-title-accordion" style="color: red">Note: Relevant statutory specifications for all materials used and finished products manufactured shall be accessible at
-                                            the site
-                                        </div>
-                                    </li>
-                                </ul>
-                            </div>
-
-                            <button class="accordion">3. Machinery and Plant</button>
-                            <div class="panel">
-                                &nbsp;
-                                <div th:if="${QaSta10Entity?.closedMachineryPlants != 1 }" id="idButtons">
-                                    <div class="form-row">
-                                        <div class="col-md-6 mb-3">
-                                            <button id="addMachinePlant" class="btn btn-primary"
-                                                    onclick="popUpFunctionAddMachinePlants('addMachinePlantDetails');"
-                                                    type="button">ADD MACHINE PLANT
-                                            </button>
-                                        </div>
-                                        <div class="col-md-6 mb-3">
-                                            <button id="closeADDMachinePlant" class="btn btn-primary"
-                                                    onclick="popUpFunctionAddMachinePlants('closeAddMachinePlantDetails');"
-                                                    type="button">CLOSE ADD
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                                &nbsp;
-                                <div class="row-table ">
-                                    <table id="example" class="table table-striped table-bordered" style="width:100%">
-                                        <thead>
-                                        <tr>
-                                            <th>Machine</th>
-                                            <th>Type/model</th>
-                                            <th>Country of Origin</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        <tr class="list" th:each="machinePlant: ${machinePlantList}"
-                                            style="cursor: pointer">
-
-                                            <td th:text="${machinePlant.machineName}"></td>
-                                            <td th:text="${machinePlant.typeModel}"></td>
-                                            <td th:text="${machinePlant.countryOfOrigin}"></td>
-                                        </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-
-                            <button class="accordion">4. Manufacturing process</button>
-                            <div class="panel">
-                                &nbsp;
-                                <div th:if="${QaSta10Entity?.closedManufacturingProcesses != 1 }" id="idButtons">
-                                    <div class="form-row">
-                                        <div class="col-md-6 mb-3">
-                                            <button id="addManufactureProcess" class="btn btn-primary"
-                                                    onclick="popUpFunctionAddManufactureProcessDetails('addManufactureProcessDetails');"
-                                                    type="button">ADD MANUFACTURING PROCESS
-                                            </button>
-                                        </div>
-                                        <div class="col-md-6 mb-3">
-                                            <button id="closeAddManufactureProcess" class="btn btn-primary"
-                                                    onclick="popUpFunctionAddManufactureProcessDetails('closeAddManufactureProcessDetails');"
-                                                    type="button">CLOSE ADD
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                                &nbsp;
-                                <div class="row-table ">
-                                    <table id="example" class="table table-striped table-bordered" style="width:100%">
-                                        <thead>
-                                        <tr>
-                                            <th>Process flow of production</th>
-                                            <th>Operations</th>
-                                            <th>Critical process parameters monitored</th>
-                                            <th>Frequency</th>
-                                            <th>Process monitoring records</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        <tr class="list" th:each="manufacturinProcess: ${manufacturingProcessesList}"
-                                            style="cursor: pointer">
-
-                                            <td th:text="${manufacturinProcess.processFlowOfProduction}"></td>
-                                            <td th:text="${manufacturinProcess.operations}"></td>
-                                            <td th:text="${manufacturinProcess.criticalProcessParametersMonitored}"></td>
-                                            <td th:text="${manufacturinProcess.frequency}"></td>
-                                            <td th:text="${manufacturinProcess.processMonitoringRecords}"></td>
-                                        </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                                &nbsp;
-                                <ul class="w-list-unstyled">
-                                    <li class="list-item-accordion">
-                                        <div class="list-title-accordion" style="color: red">Note: Note: Attach relevant test records</div>
-                                    </li>
-                                </ul>
-                            </div>
-
-                            <button class="accordion">5. How are nonconforming products handled at the following stages of the manufacturing process:</button>
-                            <div class="panel">
-                                <ul class="w-list-unstyled">
-                                    <li class="list-item-accordion">
-                                        <div class="list-title-accordion">i. Raw materials</div>
-                                        <div class="list-text-accordion"
-                                             th:text="${QaSta10Entity?.handledManufacturingProcessRawMaterials}"></div>
-                                    </li>
-                                    <li class="list-item-accordion">
-                                        <div class="list-title-accordion">ii. In-process products</div>
-                                        <div class="list-text-accordion"
-                                             th:text="${QaSta10Entity?.handledManufacturingProcessInprocessProducts}"></div>
-                                    </li>
-                                    <li class="list-item-accordion">
-                                        <div class="list-title-accordion">iii. Final product</div>
-                                        <div class="list-text-accordion"
-                                             th:text="${QaSta10Entity?.handledManufacturingProcessFinalProduct}"></div>
-                                    </li>
-                                </ul>
-                            </div>
-
-                            <button class="accordion">6. What strategy do you have in place for recalling your products from the market that are nonconforming
-                                and have an effect on Health, Safety and Environment?</button>
-                            <div class="panel">
-                                <ul class="w-list-unstyled">
-                                    <li class="list-item-accordion">
-                                        <div class="list-text-accordion"
-                                             th:text="${QaSta10Entity?.strategyInplaceRecallingProducts}"></div>
-                                    </li>
-                                </ul>
-                            </div>
-
-                            <button class="accordion">7. State, where and how you store your raw materials and end products (State facility conditions).</button>
-                            <div class="panel">
-                                <ul class="w-list-unstyled">
-                                    <li class="list-item-accordion">
-                                        <div class="list-title-accordion">i. Raw materials?</div>
-                                        <div class="list-text-accordion"
-                                             th:text="${QaSta10Entity?.stateFacilityConditionsRawMaterials}"></div>
-                                    </li>
-                                    <li class="list-item-accordion">
-                                        <div class="list-title-accordion">ii.End product?</div>
-                                        <div class="list-text-accordion"
-                                             th:text="${QaSta10Entity?.stateFacilityConditionsEndProduct}"></div>
-                                    </li>
-                                </ul>
-                            </div>
-
-                            <button class="accordion">8. What testing facilities exist on the premises (if any)?</button>
-                            <div class="panel">
-                                <ul class="w-list-unstyled">
-                                    <li class="list-item-accordion">
-                                        <div class="list-title-accordion">i. Specify equipment:</div>
-                                        <div class="list-text-accordion"
-                                             th:text="${QaSta10Entity?.testingFacilitiesExistSpecifyEquipment}"></div>
-                                    </li>
-                                    <li class="list-item-accordion">
-                                        <div class="list-title-accordion">ii.State parameters tested on site:</div>
-                                        <div class="list-text-accordion"
-                                             th:text="${QaSta10Entity?.testingFacilitiesExistStateParametersTested}"></div>
-                                    </li>
-                                    <li class="list-item-accordion">
-                                        <div class="list-title-accordion">iii. Specify any testing arrangement with other commercial laboratories (Specify parameters tested):</div>
-                                        <div class="list-text-accordion"
-                                             th:text="${QaSta10Entity?.testingFacilitiesSpecifyParametersTested}"></div>
-                                    </li>
-                                    <li class="list-item-accordion">
-                                        <div class="list-title-accordion">v. Calibration of Equipment:<br>How do you calibrate your measuring equipment stated in 8 (i) above?
-                                            (e.g. Weighing scales, Thermometers e.t.c)? Specify when last calibrated.</div>
-                                        <div class="list-text-accordion"
-                                             th:text="${QaSta10Entity?.calibrationEquipmentLastCalibrated}"></div>
-                                    </li>
-                                </ul>
-                            </div>
-
-                            <button class="accordion">9. Handling of Complaints</button>
-                            <div class="panel">
-                                <ul class="w-list-unstyled">
-                                    <li class="list-item-accordion">
-                                        <div class="list-title-accordion">How do you plan to handle (New) or currently handle your consumer’s complaints?.</div>
-                                        <div class="list-text-accordion"
-                                             th:text="${QaSta10Entity?.handlingConsumerComplaints}"></div>
-                                    </li>
-                                </ul>
-                            </div>
-
-                            <button class="accordion">Company Representative</button>
-                            <div class="panel">
-                                <ul class="w-list-unstyled">
-                                    <li class="list-item-accordion">
-                                        <div class="list-title-accordion">Company Representative</div>
-                                        <div class="list-text-accordion"
-                                             th:text="${QaSta10Entity?.companyRepresentative}"></div>
-                                    </li>
-                                    <li class="list-item-accordion">
-                                        <div class="list-title-accordion">Date filled</div>
-                                        <div class="list-text-accordion"
-                                             th:text="${QaSta10Entity?.applicationDate}"></div>
-                                    </li>
-                                </ul>
-                            </div>
-
                         </div>
 
                     <div class="filter-block">
@@ -470,14 +138,14 @@
                             <div class="filter-title">Document Details:</div>
                         </div>
                         <div>
-<!--                            <a th:if="${permitType?.st3Status == 1 and QaSta10Entity?.sta3FilledStatus == 1}" target='_blank' th:href="@{/api/qa/view-sta3(permitID=${QaSta10Entity?.id})}" class="filter-link" style="color: white">STA 3</a>-->
+<!--                            <a th:if="${permitType?.st3Status == 1 and ssfDetails?.sta3FilledStatus == 1}" target='_blank' th:href="@{/api/qa/view-sta3(permitID=${ssfDetails?.id})}" class="filter-link" style="color: white">STA 3</a>-->
                         </div>
                         <div class="filter-block-title">
                             <div class="filter-title">Action:</div>
                         </div>
                         <div>
                             <div sec:authorize="hasAuthority('PERMIT_APPLICATION')">
-                                <a th:if="${permit?.sta10FilledStatus != 1 and QaSta10Entity?.closedProduction == 1 and QaSta10Entity?.closedRawMaterials == 1 and QaSta10Entity?.closedMachineryPlants == 1 and QaSta10Entity?.closedManufacturingProcesses == 1 }"  th:href="@{/api/qa/new-sta10-submit(permitID=${permit?.id})}" class="filter-link" style="color: white">SUBMIT STA10</a>
+                                <a th:if="${permit?.sta10FilledStatus != 1 and ssfDetails?.closedProduction == 1 and ssfDetails?.closedRawMaterials == 1 and ssfDetails?.closedMachineryPlants == 1 and ssfDetails?.closedManufacturingProcesses == 1 }"  th:href="@{/api/qa/new-sta10-submit(permitID=${permit?.id})}" class="filter-link" style="color: white">SUBMIT STA10</a>
                             </div>
 
                         </div>
@@ -524,7 +192,7 @@
 
             <div class="productsManufacturedForm">
                 <form id="productsManufactured-Form" name="productsManufactured-Form"
-                      th:action="@{/api/qa/add/new-sta10-product-manufactured(qaSta10ID=${QaSta10Entity?.id})}"
+                      th:action="@{/api/qa/add/new-sta10-product-manufactured(qaSta10ID=${ssfDetails?.id})}"
                       method="post" th:object="${QaProductManufacturedEntity}">
                     <div class="modal fade" id="productsManufacturedModal" tabindex="-1" role="dialog"
                          aria-labelledby="productsManufacturedModalLable"
@@ -586,7 +254,7 @@
 
             <div class="rawMaterialsForm">
                 <form id="rawMaterialsForm-Form" name="rawMaterialsForm-Form"
-                      th:action="@{/api/qa/add/new-sta10-raw-materials(qaSta10ID=${QaSta10Entity?.id})}"
+                      th:action="@{/api/qa/add/new-sta10-raw-materials(qaSta10ID=${ssfDetails?.id})}"
                       method="post" th:object="${QaRawMaterialEntity}">
                     <div class="modal fade" id="rawMaterialsFormModal" tabindex="-1" role="dialog"
                          aria-labelledby="rawMaterialsFormLable"
@@ -639,7 +307,7 @@
 
             <div class="machinePlantForm">
                 <form id="machinePlantForm-Form" name="machinePlantForm-Form"
-                      th:action="@{/api/qa/add/new-sta10-machine-plant(qaSta10ID=${QaSta10Entity?.id})}"
+                      th:action="@{/api/qa/add/new-sta10-machine-plant(qaSta10ID=${ssfDetails?.id})}"
                       method="post" th:object="${QaMachineryEntity}">
                     <div class="modal fade" id="machinePlantFormModal" tabindex="-1" role="dialog"
                          aria-labelledby="machinePlantFormLable"
@@ -688,7 +356,7 @@
 
             <div class="manufacturingProcessForm">
                 <form id="manufacturingProcessForm-Form" name="manufacturingProcessForm-Form"
-                      th:action="@{/api/qa/add/new-sta10-manufacturing-process(qaSta10ID=${QaSta10Entity?.id})}"
+                      th:action="@{/api/qa/add/new-sta10-manufacturing-process(qaSta10ID=${ssfDetails?.id})}"
                       method="post" th:object="${QaManufacturingProcessEntity}">
                     <div class="modal fade" id="manufacturingProcessFormModal" tabindex="-1" role="dialog"
                          aria-labelledby="manufacturingProcessFormLable"

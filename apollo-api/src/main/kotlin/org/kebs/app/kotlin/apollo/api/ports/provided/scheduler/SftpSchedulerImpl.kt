@@ -1,4 +1,4 @@
-package org.kebs.app.kotlin.apollo.api.controllers
+package org.kebs.app.kotlin.apollo.api.ports.provided.scheduler
 
 import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.*
@@ -6,22 +6,14 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.sftp.SftpServiceImpl
 import org.kebs.app.kotlin.apollo.api.utils.RestResponseModel
 import org.kebs.app.kotlin.apollo.common.dto.kesws.receive.*
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.stereotype.Service
+import org.xhtmlrenderer.util.GeneralUtil
 import java.io.FileInputStream
 
-import org.xhtmlrenderer.util.GeneralUtil.inputStreamToString
-
-
-
-
-@RestController
-@RequestMapping("/api/v1/sftp/")
-class SftpController(
+@Service
+class SftpSchedulerImpl(
     private val applicationMapProperties: ApplicationMapProperties,
     private val sftpServiceImpl: SftpServiceImpl,
     private val commonDaoServices: CommonDaoServices,
@@ -35,9 +27,7 @@ class SftpController(
     val processedRootFolder = applicationMapProperties.mapSftpProcessedRoot
     val unprocessableRootFolder = applicationMapProperties.mapSftpUnprocessableRoot
 
-    @GetMapping("/kesws/download")
-    fun downloadKeswsFiles(): ResponseEntity<RestResponseModel> {
-        //TODO: Fetch DocTypes from the DB
+    fun downloadKeswsFiles(): Boolean {
         val keswsDocTypes = listOf(applicationMapProperties.mapKeswsBaseDocumentDoctype, applicationMapProperties.mapKeswsUcrResDoctype,
             applicationMapProperties.mapKeswsDeclarationDoctype, applicationMapProperties.mapKeswsManifestDoctype, applicationMapProperties.mapKeswsAirManifestDoctype,
             applicationMapProperties.mapKeswsCdDoctype, applicationMapProperties.mapKeswsDeclarationVerificationDoctype)
@@ -48,11 +38,10 @@ class SftpController(
                     val allFiles = sftpServiceImpl.downloadFilesByDocType(applicationMapProperties.mapKeswsBaseDocumentDoctype)
                     KotlinLogging.logger { }.info("No of Base Documents found in bucket: ${allFiles.size}")
                     for (file in allFiles) {
-                        val xml = inputStreamToString(FileInputStream(file))
-                        KotlinLogging.logger { }.info("Deserializing IDF Doc: ${file.name}")
+                        val xml = GeneralUtil.inputStreamToString(FileInputStream(file))
                         var baseDocumentResponse: BaseDocumentResponse? = null
                         try {
-                                baseDocumentResponse = commonDaoServices.deserializeFromXML(xml)
+                            baseDocumentResponse = commonDaoServices.deserializeFromXML(xml)
                         } catch (e: Exception) {
                             KotlinLogging.logger { }.error("An error occurred while deserializing ${file.name}", e)
                             sftpServiceImpl.moveFileToProcessedFolder(file, unprocessableRootFolder)
@@ -67,8 +56,7 @@ class SftpController(
                     val allFiles = sftpServiceImpl.downloadFilesByDocType(applicationMapProperties.mapKeswsUcrResDoctype)
                     KotlinLogging.logger { }.info("No of UCR Response files found in bucket: ${allFiles.size}")
                     for (file in allFiles) {
-                        val xml = inputStreamToString(FileInputStream(file))
-                        KotlinLogging.logger { }.info("Deserializing UCR Doc: ${file.name}")
+                        val xml = GeneralUtil.inputStreamToString(FileInputStream(file))
                         var ucrNumberMessage: UCRNumberMessage? = null
                         try {
                             ucrNumberMessage = commonDaoServices.deserializeFromXML(xml)
@@ -94,7 +82,7 @@ class SftpController(
                     KotlinLogging.logger { }.info("No of Declaration Documents found in bucket: ${allFiles.size}")
                     var declarationDocumentMessage: DeclarationDocumentMessage? = null
                     for (file in allFiles) {
-                        val xml = inputStreamToString(FileInputStream(file))
+                        val xml = GeneralUtil.inputStreamToString(FileInputStream(file))
                         try {
                             declarationDocumentMessage = commonDaoServices.deserializeFromXML(xml)
                         } catch (e: Exception) {
@@ -111,7 +99,7 @@ class SftpController(
                     val allFiles = sftpServiceImpl.downloadFilesByDocType(applicationMapProperties.mapKeswsManifestDoctype)
                     KotlinLogging.logger { }.info("No of Manifest Documents found in bucket: ${allFiles.size}")
                     for (file in allFiles) {
-                        val xml = inputStreamToString(FileInputStream(file))
+                        val xml = GeneralUtil.inputStreamToString(FileInputStream(file))
                         val manifestDocumentMessage: ManifestDocumentMessage = commonDaoServices.deserializeFromXML(xml)
                         val docSaved = manifestDaoService.mapManifestMessageToManifestEntity(manifestDocumentMessage)
                         if (docSaved) { sftpServiceImpl.moveFileToProcessedFolder(file, processedRootFolder) }
@@ -121,7 +109,7 @@ class SftpController(
                     val allFiles = sftpServiceImpl.downloadFilesByDocType(applicationMapProperties.mapKeswsAirManifestDoctype)
                     KotlinLogging.logger { }.info("No of Air Manifest Documents found in bucket: ${allFiles.size}")
                     for (file in allFiles) {
-                        val xml = inputStreamToString(FileInputStream(file))
+                        val xml = GeneralUtil.inputStreamToString(FileInputStream(file))
                         val manifestDocumentMessage: ManifestDocumentMessage = commonDaoServices.deserializeFromXML(xml)
                         val docSaved = manifestDaoService.mapManifestMessageToManifestEntity(manifestDocumentMessage)
                         if (docSaved) { sftpServiceImpl.moveFileToProcessedFolder(file, processedRootFolder) }
@@ -131,7 +119,7 @@ class SftpController(
                     val allFiles = sftpServiceImpl.downloadFilesByDocType(applicationMapProperties.mapKeswsCdDoctype)
                     KotlinLogging.logger { }.info("No of Consignment Documents found in bucket: ${allFiles.size}")
                     for (file in allFiles) {
-                        val xml = inputStreamToString(FileInputStream(file))
+                        val xml = GeneralUtil.inputStreamToString(FileInputStream(file))
                         val stringToExclude = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>"
                         val consignmentDoc: ConsignmentDocument = commonDaoServices.deserializeFromXML(xml, stringToExclude)
                         consignmentDocumentDaoService.insertConsignmentDetailsFromXml(consignmentDoc, xml.toByteArray())
@@ -143,7 +131,7 @@ class SftpController(
                     KotlinLogging.logger { }.info("No of Declaration Verification Documents found in bucket: ${allFiles.size}")
                     var declarationVerificationDocumentMessage: DeclarationVerificationMessage? = null
                     for (file in allFiles) {
-                        val xml = inputStreamToString(FileInputStream(file))
+                        val xml = GeneralUtil.inputStreamToString(FileInputStream(file))
                         try {
                             declarationVerificationDocumentMessage = commonDaoServices.deserializeFromXML(xml)
                         } catch (e: Exception) {
@@ -158,7 +146,6 @@ class SftpController(
                 }
             }
         }
-        return ResponseEntity.status(HttpStatus.OK)
-            .body(RestResponseModel(HttpStatus.OK.value(), "Files successfully Downloaded"));
+        return true
     }
 }

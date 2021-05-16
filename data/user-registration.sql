@@ -114,7 +114,7 @@ where ROLES_ID = 510
 order by id desc;--MS_MP_MODIFY MS_MP_READ
 select *
 from CFG_USER_ROLES_ASSIGNMENTS
-where USER_ID = 54
+-- where USER_ID = 54
 order by id desc;--MS_MP_MODIFY MS_MP_READ
 select *
 from DAT_KEBS_USER_VERIFICATION_TOKEN
@@ -122,6 +122,18 @@ from DAT_KEBS_USER_VERIFICATION_TOKEN
 order by id desc;--MS_MP_MODIFY MS_MP_READ
 
 select * from DAT_KEBS_USERS
+-- where ID = 1622
+
+-- where USER_TYPE = 5
+-- where EMAIL like '254saf'
+-- where USER_NAME = '0715668934'
+order by id desc
+;
+SELECT * from CFG_TURNOVER_RATES;
+
+select * from DAT_KEBS_COMPANY_PROFILE
+-- where ID = 1622
+
 -- where USER_TYPE = 5
 -- where EMAIL like '254saf'
 -- where USER_NAME = '0715668934'

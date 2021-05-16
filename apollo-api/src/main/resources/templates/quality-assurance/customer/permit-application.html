@@ -38,21 +38,21 @@
                                 </div>
                                 <div class="form-row">
                                     <div class="col-md-4 mb-3">
-                                        <label for="email" class="field-label">APPLICATION FOR  PERMIT </label>
+                                        <label for="commodityDescription" class="field-label">APPLICATION FOR  PERMIT </label>
                                         <input type="text" class="form-control"  disabled th:value="${permitType?.mark}"  >
                                         <!--                                    <div class="valid-feedback">-->
                                         <!--                                        Looks good!-->
                                         <!--                                    </div>-->
                                     </div>
                                     <div class="col-md-4 mb-3">
-                                        <label for="workContactNumber" class="field-label">COMMODITY DESCRIPTION</label>
+                                        <label for="commodityDescription" class="field-label">COMMODITY DESCRIPTION</label>
                                         <input type="text" class="form-control"  id="commodityDescription" th:field="*{commodityDescription}"   required="required">
                                         <!--                                    <div class="valid-feedback">-->
                                         <!--                                        Looks good!-->
                                         <!--                                    </div>-->
                                     </div>
                                     <div class="col-md-4 mb-3">
-                                        <label for="personalContactNumber" class="field-label">TRADE MARK</label>
+                                        <label for="tradeMark" class="field-label">TRADE MARK</label>
                                         <input type="text" class="form-control"  id="tradeMark" th:field="*{tradeMark}"  required="required">
                                         <!--                                    <div class="valid-feedback">-->
                                         <!--                                        Looks good!-->
@@ -70,31 +70,27 @@
                                     </div>
                                 </div>
                                 <div class="form-row">
-                                    <div class="col-md-6 mb-3">
+                                    <div class="col-md-4 mb-3">
+                                        <label for="name" class="field-label">APPLICANT NAME</label>
+                                        <input type="text" class="form-control" id="name"  th:field="*{applicantName}" required="required">
+                                        <!--                                    <div class="valid-feedback">-->
+                                        <!--                                        Looks good!-->
+                                        <!--                                    </div>-->
+                                    </div>
+                                    <div class="col-md-4 mb-3">
                                         <label for="divisionId" class="field-label" >Select Division:</label>
                                         <select id="divisionId" name="divisionId" required="required" class="form-control" th:field="*{divisionId}">
                                             <option value="required">Select One...</option>
                                             <option th:each="divi : ${divisions}" th:text="${divi.division}" th:value="${divi.id}"></option>
                                         </select>
                                     </div>
-                                    <div class="col-md-6 mb-3">
+                                    <div class="col-md-4 mb-3">
                                         <label for="sectionId" class="field-label" >Select Section</label>
                                         <select reqiured="required" id="sectionId"  name="sectionId" th:field="*{sectionId}" class="form-control">
                                             <option value="">Select one...</option>
                                         </select>
                                     </div>
-<!--                                    <div class="col-md-4 mb-3">-->
-<!--                                        <label for="productCategories" class="field-label">Product Category</label>-->
-<!--                                        <select reqiured="" id="productCategories" th:field="*{productCategory}" class="form-control">-->
-<!--                                            <option value="">Select one...</option>-->
-<!--                                            &lt;!&ndash;                                        <option value="">Select one...</option>&ndash;&gt;-->
-<!--                                            &lt;!&ndash;                                        <option  th:each="product : ${session.products}" th:value="${product.id}" th:text="${product.category}"></option>&ndash;&gt;-->
-<!--                                        </select>-->
-<!--                                        &lt;!&ndash;                                        <input type="text" class="form-control"  id="departmentId" th:value="${departmentId?.department}" placeholder="department" required="required" >&ndash;&gt;-->
-<!--                                        &lt;!&ndash;                                        <div class="invalid-feedback">&ndash;&gt;-->
-<!--                                        &lt;!&ndash;                                            Please provide a valid zip.&ndash;&gt;-->
-<!--                                        &lt;!&ndash;                                        </div>&ndash;&gt;-->
-<!--                                    </div>-->
+
                                 </div>
                                 <div class="form-row">
                                     <div class="col-md-4 mb-3">
@@ -193,73 +189,72 @@
 <!--                                        &lt;!&ndash;                                    </div>&ndash;&gt;-->
 <!--                                    </div>-->
 <!--                                </div>-->
-                                <div class="form-row" >
-                                    <div class="col-md-4 mb-3">
-                                        <label for="name" class="field-label">APPLICANT NAME</label>
-                                        <input type="text" class="form-control" id="name"  th:field="*{applicantName}"
-                                               required="required">
-                                        <!--                                    <div class="valid-feedback">-->
-                                        <!--                                        Looks good!-->
-                                        <!--                                    </div>-->
-                                    </div>
-                                    <div class="col-md-4 mb-3">
-                                        <label for="firmName" class="field-label">FIRM NAME</label>
-                                        <input type="text" class="form-control"  id="firmName" th:field="*{firmName}"   required="required">
-                                        <!--                                    <div class="valid-feedback">-->
-                                        <!--                                        Looks good!-->
-                                        <!--                                    </div>-->
-                                    </div>
-                                    <div class="col-md-4 mb-3">
-                                        <label for="userName" class="field-label">POSTAL ADDRESS</label>
-                                        <input type="text" class="form-control"  id="userName" th:field="*{postalAddress}"  required="required">
-                                    </div>
-                                </div>
-                                <div class="form-row">
-                                    <div class="col-md-4 mb-3">
-                                        <label for="telephoneNo" class="field-label">TELEPHONE NUMBER</label>
-                                        <input type="text" class="form-control"  id="telephoneNo" th:field="*{telephoneNo}"  required="required">
-                                        <!--                                    <div class="valid-feedback">-->
-                                        <!--                                        Looks good!-->
-                                        <!--                                    </div>-->
-                                    </div>
-                                    <div class="col-md-4 mb-3">
-                                        <label for="workContactNumber" class="field-label">EMAIL ADDRESS</label>
-                                        <input type="text" class="form-control"  id="workContactNumber" th:field="*{email}"   required="required">
-                                        <!--                                    <div class="valid-feedback">-->
-                                        <!--                                        Looks good!-->
-                                        <!--                                    </div>-->
-                                    </div>
-                                    <div class="col-md-4 mb-3">
-                                        <label for="personalContactNumber" class="field-label">PHYSICAL ADDRESS</label>
-                                        <input type="text" class="form-control"  id="personalContactNumber" th:field="*{physicalAddress}"   required="required">
-                                        <!--                                    <div class="valid-feedback">-->
-                                        <!--                                        Looks good!-->
-                                        <!--                                    </div>-->
-                                    </div>
-                                </div>
-                                <div class="form-row">
-                                    <div class="col-md-4 mb-3">
-                                        <label for="faxNo" class="field-label">FAX NUMBER</label>
-                                        <input type="text" class="form-control"  id="faxNo" th:field="*{faxNo}"  required="required">
-                                        <!--                                    <div class="valid-feedback">-->
-                                        <!--                                        Looks good!-->
-                                        <!--                                    </div>-->
-                                    </div>
-                                    <div class="col-md-4 mb-3">
-                                        <label for="workContactNumber" class="field-label">PLOT NUMBER</label>
-                                        <input type="text" class="form-control"  id="plotNo" th:field="*{plotNo}"   required="required">
-                                        <!--                                    <div class="valid-feedback">-->
-                                        <!--                                        Looks good!-->
-                                        <!--                                    </div>-->
-                                    </div>
-                                    <div class="col-md-4 mb-3">
-                                        <label for="personalContactNumber" class="field-label">DESIGNATION</label>
-                                        <input type="text" class="form-control"  id="designation" th:field="*{designation}"  required="required">
-                                        <!--                                    <div class="valid-feedback">-->
-                                        <!--                                        Looks good!-->
-                                        <!--                                    </div>-->
-                                    </div>
-                                </div>
+<!--                                <div class="form-row" >-->
+<!--                                    <div class="col-md-4 mb-3">-->
+<!--                                        <label for="name" class="field-label">APPLICANT NAME</label>-->
+<!--                                        <input type="text" class="form-control" id="name"  th:field="*{applicantName}" required="required">-->
+<!--                                        &lt;!&ndash;                                    <div class="valid-feedback">&ndash;&gt;-->
+<!--                                        &lt;!&ndash;                                        Looks good!&ndash;&gt;-->
+<!--                                        &lt;!&ndash;                                    </div>&ndash;&gt;-->
+<!--                                    </div>-->
+<!--                                    <div class="col-md-4 mb-3">-->
+<!--                                        <label for="firmName" class="field-label">FIRM NAME</label>-->
+<!--                                        <input type="text" class="form-control"  id="firmName" th:field="*{firmName}"   required="required">-->
+<!--                                        &lt;!&ndash;                                    <div class="valid-feedback">&ndash;&gt;-->
+<!--                                        &lt;!&ndash;                                        Looks good!&ndash;&gt;-->
+<!--                                        &lt;!&ndash;                                    </div>&ndash;&gt;-->
+<!--                                    </div>-->
+<!--                                    <div class="col-md-4 mb-3">-->
+<!--                                        <label for="userName" class="field-label">POSTAL ADDRESS</label>-->
+<!--                                        <input type="text" class="form-control"  id="userName" th:field="*{postalAddress}"  required="required">-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                                <div class="form-row">-->
+<!--                                    <div class="col-md-4 mb-3">-->
+<!--                                        <label for="telephoneNo" class="field-label">TELEPHONE NUMBER</label>-->
+<!--                                        <input type="text" class="form-control"  id="telephoneNo" th:field="*{telephoneNo}"  required="required">-->
+<!--                                        &lt;!&ndash;                                    <div class="valid-feedback">&ndash;&gt;-->
+<!--                                        &lt;!&ndash;                                        Looks good!&ndash;&gt;-->
+<!--                                        &lt;!&ndash;                                    </div>&ndash;&gt;-->
+<!--                                    </div>-->
+<!--                                    <div class="col-md-4 mb-3">-->
+<!--                                        <label for="workContactNumber" class="field-label">EMAIL ADDRESS</label>-->
+<!--                                        <input type="text" class="form-control"  id="workContactNumber" th:field="*{email}"   required="required">-->
+<!--                                        &lt;!&ndash;                                    <div class="valid-feedback">&ndash;&gt;-->
+<!--                                        &lt;!&ndash;                                        Looks good!&ndash;&gt;-->
+<!--                                        &lt;!&ndash;                                    </div>&ndash;&gt;-->
+<!--                                    </div>-->
+<!--                                    <div class="col-md-4 mb-3">-->
+<!--                                        <label for="personalContactNumber" class="field-label">PHYSICAL ADDRESS</label>-->
+<!--                                        <input type="text" class="form-control"  id="personalContactNumber" th:field="*{physicalAddress}"   required="required">-->
+<!--                                        &lt;!&ndash;                                    <div class="valid-feedback">&ndash;&gt;-->
+<!--                                        &lt;!&ndash;                                        Looks good!&ndash;&gt;-->
+<!--                                        &lt;!&ndash;                                    </div>&ndash;&gt;-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                                <div class="form-row">-->
+<!--                                    <div class="col-md-4 mb-3">-->
+<!--                                        <label for="faxNo" class="field-label">FAX NUMBER</label>-->
+<!--                                        <input type="text" class="form-control"  id="faxNo" th:field="*{faxNo}"  required="required">-->
+<!--                                        &lt;!&ndash;                                    <div class="valid-feedback">&ndash;&gt;-->
+<!--                                        &lt;!&ndash;                                        Looks good!&ndash;&gt;-->
+<!--                                        &lt;!&ndash;                                    </div>&ndash;&gt;-->
+<!--                                    </div>-->
+<!--                                    <div class="col-md-4 mb-3">-->
+<!--                                        <label for="workContactNumber" class="field-label">PLOT NUMBER</label>-->
+<!--                                        <input type="text" class="form-control"  id="plotNo" th:field="*{plotNo}"   required="required">-->
+<!--                                        &lt;!&ndash;                                    <div class="valid-feedback">&ndash;&gt;-->
+<!--                                        &lt;!&ndash;                                        Looks good!&ndash;&gt;-->
+<!--                                        &lt;!&ndash;                                    </div>&ndash;&gt;-->
+<!--                                    </div>-->
+<!--                                    <div class="col-md-4 mb-3">-->
+<!--                                        <label for="personalContactNumber" class="field-label">DESIGNATION</label>-->
+<!--                                        <input type="text" class="form-control"  id="designation" th:field="*{designation}"  required="required">-->
+<!--                                        &lt;!&ndash;                                    <div class="valid-feedback">&ndash;&gt;-->
+<!--                                        &lt;!&ndash;                                        Looks good!&ndash;&gt;-->
+<!--                                        &lt;!&ndash;                                    </div>&ndash;&gt;-->
+<!--                                    </div>-->
+<!--                                </div>-->
 <!--                                <div>-->
 <!--                                    <div class="form-group">-->
 <!--                                        <div class="form-check">-->

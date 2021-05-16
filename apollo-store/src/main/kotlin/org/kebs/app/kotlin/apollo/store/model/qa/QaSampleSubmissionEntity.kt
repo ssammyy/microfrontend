@@ -1,22 +1,56 @@
 package org.kebs.app.kotlin.apollo.store.model.qa
 
 import java.io.Serializable
+import java.sql.Date
+import java.sql.Time
 import java.sql.Timestamp
 import java.util.*
 import javax.persistence.*
 
 @Entity
-@Table(name = "CFG_KEBS_QA_PROCESS_STATUS")
-class QaProcessStatusEntity : Serializable {
+@Table(name = "DAT_KEBS_QA_SAMPLE_SUBMISSION")
+class QaSampleSubmissionEntity : Serializable {
     @Column(name = "ID")
     @Id
-    @SequenceGenerator(name = "CFG_KEBS_QA_PROCESS_STATUS_SEQ_GEN", sequenceName = "CFG_KEBS_QA_PROCESS_STATUS_SEQ", allocationSize = 1)
-    @GeneratedValue(generator = "CFG_KEBS_QA_PROCESS_STATUS_SEQ_GEN", strategy = GenerationType.SEQUENCE)
-    var id: Long = 0
+    @SequenceGenerator(name = "DAT_KEBS_QA_SAMPLE_SUBMISSION_SEQ_GEN", sequenceName = "DAT_KEBS_QA_SAMPLE_SUBMISSION_SEQ", allocationSize = 1)
+    @GeneratedValue(generator = "DAT_KEBS_QA_SAMPLE_SUBMISSION_SEQ_GEN", strategy = GenerationType.SEQUENCE)
+    var id: Long? = 0
 
-    @Column(name = "PROCESS_STATUS_NAME")
+    @Column(name = "PERMIT_ID")
     @Basic
-    var processStatusName: String? = null
+    var permitId: Long? = null
+
+    @Column(name = "SSF_NO")
+    @Basic
+    var ssfNo: String? = null
+
+    @Column(name = "SSF_SUBMISSION_DATE")
+    @Basic
+    var ssfSubmissionDate: Date? = null
+
+    @Column(name = "BS_NUMBER")
+    @Basic
+    var bsNumber: String? = null
+
+    @Column(name = "BRAND_NAME")
+    @Basic
+    var brandName: String? = null
+
+    @Column(name = "PRODUCT_DESCRIPTION")
+    @Basic
+    var productDescription: String? = null
+
+    @Column(name = "SAMPLE_STATUS")
+    @Basic
+    var sampleStatus: String? = null
+
+    @Column(name = "RESULTS_DATE")
+    @Basic
+    var resultsDate: Date? = null
+
+    @Column(name = "RESULTS_ANALYSIS")
+    @Basic
+    var resultsAnalysis: Int? = null
 
     @Column(name = "DESCRIPTION")
     @Basic
@@ -93,9 +127,17 @@ class QaProcessStatusEntity : Serializable {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other == null || javaClass != other.javaClass) return false
-        val that = other  as QaProcessStatusEntity
+        val that = other  as QaSampleSubmissionEntity
         return id == that.id &&
-                processStatusName == that.processStatusName &&
+                permitId == that.permitId &&
+                ssfNo == that.ssfNo &&
+                ssfSubmissionDate == that.ssfSubmissionDate &&
+                bsNumber == that.bsNumber &&
+                brandName == that.brandName &&
+                productDescription == that.productDescription &&
+                sampleStatus == that.sampleStatus &&
+                resultsDate == that.resultsDate &&
+                resultsAnalysis == that.resultsAnalysis &&
                 description == that.description &&
                 status == that.status &&
                 varField1 == that.varField1 &&
@@ -119,7 +161,15 @@ class QaProcessStatusEntity : Serializable {
     override fun hashCode(): Int {
         return Objects.hash(
             id,
-            processStatusName,
+            permitId,
+            ssfNo,
+            ssfSubmissionDate,
+            bsNumber,
+            brandName,
+            productDescription,
+            sampleStatus,
+            resultsDate,
+            resultsAnalysis,
             description,
             status,
             varField1,

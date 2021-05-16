@@ -191,54 +191,14 @@ class ConsignmentDocumentDetailsEntity : Serializable {
     @Basic
     var clusterId: Long? = null
 
-//    @JoinColumn(name = "CD_TYPE", referencedColumnName = "ID")
-//    @ManyToOne
-//    var cdType: ConsignmentDocumentTypesEntity? = null
-
     @JoinColumn(name = "ASSIGNED_INSPECTION_OFFICER", referencedColumnName = "ID")
     @ManyToOne
     var assignedInspectionOfficer: UsersEntity? = null
 
-//    @JoinColumn(name = "PORT_OF_ARRIVAL", referencedColumnName = "ID")
-//    @ManyToOne
-//    var portOfArrival: SectionsEntity? = null
-//
-//    @JoinColumn(name = "FREIGHT_STATION", referencedColumnName = "ID")
-//    @ManyToOne
-//    var freightStation: SubSectionsLevel2Entity? = null
-
-    //    @JoinColumn(name = "CD_EXPORTER", referencedColumnName = "ID")
-//    @ManyToOne
-//    var cdExporter: CdExporterDetailsEntity? = null
-//
-//    @JoinColumn(name = "CD_IMPORTER", referencedColumnName = "ID")
-//    @ManyToOne
-//    var cdImporter: CdImporterDetailsEntity? = null
-//
     @JoinColumn(name = "CD_STANDARD", referencedColumnName = "ID")
     @ManyToOne
     var cdStandard: CdStandardsEntity? = null
 
-    //
-//    @JoinColumn(name = "CD_TRANSPORT", referencedColumnName = "ID")
-//    @ManyToOne
-//    var cdTransport: CdTransportDetailsEntity? = null
-//
-//    @JoinColumn(name = "CD_CONSIGNEE", referencedColumnName = "ID")
-//    @ManyToOne
-//    var cdConsignee: CdConsigneeDetailsEntity? = null
-//
-//    @JoinColumn(name = "CD_CONSIGNOR", referencedColumnName = "ID")
-//    @ManyToOne
-//    var cdConsignor: CdConsignorDetailsEntity? = null
-//
-//    @JoinColumn(name = "CD_HEADER_ONE", referencedColumnName = "ID")
-//    @ManyToOne
-//    var cdHeaderOne: CdValuesHeaderLevelEntity? = null
-//
-////    @JoinColumn(name = "CD_STANDARDS_TWO", referencedColumnName = "ID")
-////    @ManyToOne
-////    var cdStandardsTwo: CdStandardsTwoEntity? = null
     @Column(name = "CD_COC_LOCAL_TYPE_ID")
     @Basic
     var cdCocLocalTypeId: Long? = null
@@ -334,6 +294,50 @@ class ConsignmentDocumentDetailsEntity : Serializable {
     @Column(name = "CDREFNUMBER")
     @Basic
     var cdRefNumber: String? = null
+
+    @Column(name = "INSPECTION_DATE_SET_STATUS")
+    @Basic
+    var inspectionDateSetStatus: Int? = null
+
+    @Column(name = "INSPECTION_NOTIFICATION_STATUS")
+    @Basic
+    var inspectionNotificationStatus: Int? = null
+
+    @Column(name = "INSPECTION_REMARKS")
+    @Basic
+    var inspectionRemarks: String? = null
+
+    @Column(name = "INSPECTION_DATE")
+    @Basic
+    var inspectionDate: Date? = null
+
+    @Column(name = "INSPECTION_NOTIFICATION_DATE")
+    @Basic
+    var inspectionNotificationDate: Date? = null
+
+    @Column(name = "TARGET_APPROVED_STATUS")
+    @Basic
+    var targetApproveStatus: Int? = null
+
+    @Column(name = "TARGET_STATUS")
+    @Basic
+    var targetStatus: Int? = null
+
+    @Column(name = "TARGET_APPROVED_REMARKS")
+    @Basic
+    var targetApproveRemarks: String? = null
+
+    @Column(name = "TARGET_APPROVED_DATE")
+    @Basic
+    var targetApproveDate: Date? = null
+
+    @Column(name = "TARGET_DATE")
+    @Basic
+    var targetDate: Date? = null
+
+    @Column(name = "TARGET_REASON")
+    @Basic
+    var targetReason: String? = null
 
     @Column(name = "DESCRIPTION")
     @Basic
@@ -434,8 +438,6 @@ class ConsignmentDocumentDetailsEntity : Serializable {
                 sendCoiStatus == that.sendCoiStatus &&
                 localCoiRemarks == that.localCoiRemarks &&
                 sendCoiRemarks == that.sendCoiRemarks &&
-//                confirmPortId == that.confirmPortId &&
-//                confirmCfsId == that.confirmCfsId &&
                 version == that.version &&
                 confirmAssignedUserId == that.confirmAssignedUserId &&
                 localCocOrCorStatus == that.localCocOrCorStatus &&
@@ -465,7 +467,6 @@ class ConsignmentDocumentDetailsEntity : Serializable {
                 ucrNumber == that.ucrNumber &&
                 idfNumber == that.idfNumber &&
                 cocNumber == that.cocNumber &&
-//                assigner == that.assigner &&
                 localCoi == that.localCoi &&
                 csApprovalStatus == that.csApprovalStatus &&
                 description == that.description &&
@@ -479,6 +480,17 @@ class ConsignmentDocumentDetailsEntity : Serializable {
                 approveRejectCdStatusType == that.approveRejectCdStatusType &&
                 cdRefNumber == that.cdRefNumber &&
                 oldCdStatus == that.oldCdStatus &&
+                inspectionDate == that.inspectionDate &&
+                inspectionNotificationDate == that.inspectionNotificationDate &&
+                inspectionDateSetStatus == that.inspectionDateSetStatus &&
+                inspectionRemarks == that.inspectionRemarks &&
+                inspectionNotificationStatus == that.inspectionNotificationStatus &&
+                targetApproveStatus == that.targetApproveStatus &&
+                targetStatus == that.targetStatus &&
+                targetApproveRemarks == that.targetApproveRemarks &&
+                targetApproveDate == that.targetApproveDate &&
+                targetDate == that.targetDate &&
+                targetReason == that.targetReason &&
                 status == that.status &&
                 varField1 == that.varField1 &&
                 varField2 == that.varField2 &&
@@ -551,7 +563,6 @@ class ConsignmentDocumentDetailsEntity : Serializable {
             reassignedRemarks,
             issuedDateTime,
             summaryPageURL,
-//                assigner,confirmPortId, confirmCfsId,
             csApprovalStatus,
             diProcessInstanceId,
             blacklistId,
@@ -564,6 +575,17 @@ class ConsignmentDocumentDetailsEntity : Serializable {
             approveRejectCdRemarks,
             approveRejectCdStatusType,
             cdRefNumber,
+            inspectionNotificationStatus,
+            inspectionNotificationDate,
+            inspectionDate,
+            inspectionDateSetStatus,
+            inspectionRemarks,
+            targetApproveStatus,
+            targetStatus,
+            targetApproveRemarks,
+            targetApproveDate,
+            targetDate,
+            targetReason,
             description,
             status,
             varField1,

@@ -18,12 +18,12 @@ class CocsEntity : Serializable {
 
     var id: Long = 0
 
-    @NotEmpty(message = "Required field")
+    //@NotEmpty(message = "Required field")
     @Column(name = "COC_NUMBER", nullable = false, length = 50)
     @Basic
     var cocNumber: String? = null
 
-    @NotEmpty(message = "Required field")
+    //@NotEmpty(message = "Required field")
     @Column(name = "COI_NUMBER", nullable = false, length = 50)
     @Basic
     var coiNumber: String? = null
@@ -47,13 +47,13 @@ class CocsEntity : Serializable {
     @JsonFormat(shape= JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     var rfcDate: Timestamp? = null
 
-    @NotNull(message = "Required field")
+    //@NotNull(message = "Required field")
     @Column(name = "COC_ISSUE_DATE", nullable = false)
     @Basic
     @JsonFormat(shape= JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     var cocIssueDate: Timestamp? = null
 
-    @NotNull(message = "Required field")
+    //@NotNull(message = "Required field")
     @Column(name = "COI_ISSUE_DATE", nullable = false)
     @Basic
     @JsonFormat(shape= JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
@@ -64,12 +64,12 @@ class CocsEntity : Serializable {
     @Basic
     var clean: String? = null
 
-    @NotEmpty(message = "Required field")
+    //@NotEmpty(message = "Required field")
     @Column(name = "COC_REMARKS", nullable = false, length = 4000)
     @Basic
     var cocRemarks: String? = null
 
-    @NotEmpty(message = "Required field")
+    //@NotEmpty(message = "Required field")
     @Column(name = "COI_REMARKS", nullable = false, length = 4000)
     @Basic
     var coiRemarks: String? = null

@@ -111,9 +111,9 @@
                                         <div class="list-title-accordion">Item Status</div>
                                         <div class="list-text-accordion" th:text="${item?.itemStatus}"></div>
                                     </li>
-                                    <li th:if="${item.inspectionNotificationStatus == 1}" class="list-item-accordion">
+                                    <li th:if="${item?.cdDocId?.inspectionNotificationStatus == 1}" class="list-item-accordion">
                                         <div class="list-title-accordion">Item Inspection Date</div>
-                                        <div class="list-text-accordion" th:text="${#dates.format(item?.inspectionDate, 'dd/MM/yyyy')}"></div>
+                                        <div class="list-text-accordion" th:text="${#dates.format(item?.cdDocId?.inspectionDate, 'dd/MM/yyyy')}"></div>
                                     </li>
                                     <li class="list-item-accordion">
                                         <div class="list-title-accordion">Item Description</div>
@@ -273,26 +273,26 @@
                             <div>
                                 <div th:if="${cdType?.inspectionStatus == activeStatus and item?.cdDocId?.approveRejectCdStatusType == null}">
                                     <div sec:authorize="hasAuthority('DI_INSPECTION_OFFICER_MODIFY')">
-                                        <a class="filter-link" onclick="popUpFunction('approveItem');"
-                                           th:if="${cdType?.category != cdTypeVehiclesCategory and item.approveStatus != activeStatus}">Approve</a>
-                                        <a class="filter-link" onclick="popUpFunction('rejectItem');"
-                                           style="background-color: red"
-                                           th:if="${cdType?.category != cdTypeVehiclesCategory and item.rejectStatus != activeStatus}">Reject</a>
-                                        <a class="filter-link" onclick="popUpFunction('targetItem');"
-                                           style="background-color: red" th:if="${item.targetStatus != activeStatus}">Target</a>
-                                        <a class="filter-link" onclick="popUpFunction('targetItem');"
-                                           style="background-color: red" th:if="${item.targetStatus != activeStatus}">Notify
-                                            KRA</a>
+<!--                                        <a class="filter-link" onclick="popUpFunction('approveItem');"-->
+<!--                                           th:if="${cdType?.category != cdTypeVehiclesCategory and item.approveStatus != activeStatus}">Approve</a>-->
+<!--                                        <a class="filter-link" onclick="popUpFunction('rejectItem');"-->
+<!--                                           style="background-color: red"-->
+<!--                                           th:if="${cdType?.category != cdTypeVehiclesCategory and item.rejectStatus != activeStatus}">Reject</a>-->
+<!--                                        <a class="filter-link" onclick="popUpFunction('targetItem');"-->
+<!--                                           style="background-color: red" th:if="${item.targetStatus != activeStatus}">Target</a>-->
+<!--                                        <a class="filter-link" onclick="popUpFunction('targetItem');"-->
+<!--                                           style="background-color: red" th:if="${item.targetStatus != activeStatus}">Notify-->
+<!--                                            KRA</a>-->
                                     </div>
 
 
-                                    <div sec:authorize=" hasAuthority('DI_OFFICER_CHARGE_MODIFY')">
-                                        <a class="filter-link" onclick="popUpFunction('targetSupervisorItem');"
-                                           style="background-color: red" th:if="${item.targetStatus != activeStatus}">Target</a>
-                                        <a class="filter-link" onclick="popUpFunction('targetApproveItem');"
-                                           th:if="${item.targetApproveStatus != activeStatus and item.targetStatus == activeStatus}">Target
-                                            Approve</a>
-                                    </div>
+<!--                                    <div sec:authorize=" hasAuthority('DI_OFFICER_CHARGE_MODIFY')">-->
+<!--                                        <a class="filter-link" onclick="popUpFunction('targetSupervisorItem');"-->
+<!--                                           style="background-color: red" th:if="${item.targetStatus != activeStatus}">Target</a>-->
+<!--                                        <a class="filter-link" onclick="popUpFunction('targetApproveItem');"-->
+<!--                                           th:if="${item.targetApproveStatus != activeStatus and item.targetStatus == activeStatus}">Target-->
+<!--                                            Approve</a>-->
+<!--                                    </div>-->
 
                                     <!--                                <a sec:authorize="hasAuthority('DI_OFFICER_CHARGE_MODIFY')" th:if="${item.targetApproveStatus != 1 and item.targetStatus == 1}"  class="filter-link" onclick="popUpFunction('approveItem');">Approve</a>-->
 
@@ -302,22 +302,27 @@
                                            th:if="${item.cdDocId.localCoi == activeStatus and item.ownerPin == null}">Add
                                             Owner</a>
 
-                                        <a sec:authorize="hasAuthority('DI_INSPECTION_OFFICER_MODIFY')"
-                                           th:if="${item.paymentNeededStatus != activeStatus}" class="filter-link"
-                                           onclick="popUpFunction('paymentNeeded');">Payment Needed</a>
-
-                                        <a sec:authorize="hasAuthority('DI_INSPECTION_OFFICER_MODIFY')"
-                                           class="filter-link" style="color: white"
-                                           onclick="popUpFunctionUpload('uploadBtn');">Upload Attachments</a>
-
-                                        <div th:if="${demandNote != null and demandNote.paymentStatus == initStatus}">
+                                        <div th:if="${item.cdDocId?.targetStatus == activeStatus and item.cdDocId?.inspectionDateSetStatus == activeStatus}">
                                             <a sec:authorize="hasAuthority('DI_INSPECTION_OFFICER_MODIFY')"
-                                               th:if="${item?.checklistStatus != activeStatus}"
-                                               th:href="@{/api/di/inspection/check-list(cdItemUuid=${item?.uuid}, docType=${checkListName})}"
-                                               class="filter-link " style="color: white">Check List</a>
-                                        </div>
-                                        <div th:if="${demandNote == null}">
-                                            <a sec:authorize="hasAuthority('DI_INSPECTION_OFFICER_MODIFY')" th:if="${item?.checklistStatus != activeStatus}" th:href="@{/api/di/inspection/check-list(cdItemUuid=${item?.uuid}, docType=${checkListName})}" class="filter-link " style="color: white">Check List</a>
+                                               th:if="${item.paymentNeededStatus != activeStatus}" class="filter-link"
+                                               onclick="popUpFunction('paymentNeeded');">Payment Needed</a>
+
+                                            <a sec:authorize="hasAuthority('DI_INSPECTION_OFFICER_MODIFY')"
+                                               class="filter-link" style="color: white"
+                                               onclick="popUpFunctionUpload('uploadBtn');">Upload Attachments</a>
+
+                                            <div th:if="${demandNote != null and demandNote.paymentStatus == initStatus}">
+                                                <a sec:authorize="hasAuthority('DI_INSPECTION_OFFICER_MODIFY')"
+                                                   th:if="${item?.checklistStatus != activeStatus}"
+                                                   th:href="@{/api/di/inspection/check-list(cdItemUuid=${item?.uuid}, docType=${checkListName})}"
+                                                   class="filter-link " style="color: white">Check List</a>
+                                            </div>
+                                            <div th:if="${demandNote == null}">
+                                                <a sec:authorize="hasAuthority('DI_INSPECTION_OFFICER_MODIFY')"
+                                                   th:if="${item?.checklistStatus != activeStatus}"
+                                                   th:href="@{/api/di/inspection/check-list(cdItemUuid=${item?.uuid}, docType=${checkListName})}"
+                                                   class="filter-link " style="color: white">Check List</a>
+                                            </div>
                                         </div>
                                         <a sec:authorize="hasAuthority('DI_INSPECTION_OFFICER_MODIFY') or hasAuthority('DI_OFFICER_CHARGE_MODIFY')" th:if="${item?.checklistStatus == activeStatus and item?.checkListTypeId.uuid == motorVehicleItemChecklist}" th:href="@{/api/di/motor-vehicle-inspection-details(itemId=${item?.id}, docType=${motorVehicleInspectionDetailsName})}" class="filter-link " style="color: white">Motor Vehicle Inspection Details</a>
 <!--                                        <a sec:authorize="hasAuthority('DI_INSPECTION_OFFICER_MODIFY')" th:if="${item?.checkListTypeId.uuid == motorVehicleItemChecklist and item?.ministrySubmissionStatus != activeStatus}" th:href="@{/api/di/ministry-submission(itemID=${item?.id})}" class="filter-link " style="color: white">Ministry Submission</a>-->
@@ -384,46 +389,6 @@
                                                     </select>
                                                     <label for="paymentNeededRemarks" class="col-form-label">Please write, in detail, your feedback for this consignment Item:</label>
                                                     <textarea required name="name" id="paymentNeededRemarks" class="input-field w-input" cols="65" rows="5" th:field="*{paymentNeededRemarks}"></textarea>
-                                                </div>
-                                                <div id="targetItem">
-                                                    <input type="hidden" id="targetStatus" name="targetStatus" th:value="${activeStatus}">
-                                                    <input type="hidden"  id="targetDate"  name="targetDate" th:value="${currentDate}">
-                                                    <label for="targetReason" class="col-form-label">Please write, in detail, your feedback for this consignment:</label>
-                                                    <textarea required name="name" id="targetReason" class="input-field w-input" cols="65" rows="5" th:field="*{targetReason}"></textarea>
-                                                </div>
-                                                <div id="targetSupervisorItem">
-                                                    <input type="hidden" id="targetStatus" name="targetStatus" th:value="${activeStatus}">
-                                                    <input type="hidden"  id="targetDate"  name="targetDate" th:value="${currentDate}">
-                                                    <input id="inspectionNotificationStatus"
-                                                           name="inspectionNotificationStatus"
-                                                           th:value="${activeStatus}" type="hidden">
-                                                    <input type="hidden" id="targetApproveStatus" name="targetApproveStatus" th:value="${activeStatus}">
-                                                    <input type="hidden"  id="targetApproveDate"  name="targetApproveDate" th:value="${currentDate}">
-                                                    <input id="inspectionNotificationDate"
-                                                           name="inspectionNotificationDate" th:value="${currentDate}"
-                                                           type="hidden">
-                                                    <input type="hidden"  id="targetApproveRemarks"  name="targetApproveRemarks" th:value="null">
-                                                    <label for="targetReason" class="col-form-label">Please write, in
-                                                        detail, your feedback for this consignment:</label>
-                                                    <textarea required name="name" id="targetReason" onkeyup="check();"
-                                                              class="input-field w-input" cols="65" rows="5"
-                                                              th:field="*{targetReason}"></textarea>
-                                                </div>
-                                                <div id="targetApproveItem">
-                                                    <input type="hidden" id="targetApproveStatus"
-                                                           name="targetApproveStatus" th:value="${activeStatus}">
-                                                    <input type="hidden" id="inspectionNotificationStatus"
-                                                           name="inspectionNotificationStatus"
-                                                           th:value="${activeStatus}">
-                                                    <input type="hidden" id="inspectionNotificationDate"
-                                                           name="inspectionNotificationDate" th:value="${currentDate}">
-                                                    <input type="hidden" id="targetApproveDate" name="targetApproveDate"
-                                                           th:value="${currentDate}">
-                                                    <label for="targetApproveRemarks" class="col-form-label">Please
-                                                        write, in detail, your feedback for this consignment:</label>
-                                                    <textarea required name="name" id="targetApproveRemarks"
-                                                              class="input-field w-input" cols="65" rows="5"
-                                                              th:field="*{targetApproveRemarks}"></textarea>
                                                 </div>
                                                 <div id="addOwner">
                                                     <label class="col-form-label" for="ownerName">Owner Name:</label>
@@ -536,8 +501,8 @@
 </script>
 <script>
     function popUpFunction(eventAction) {
-        let arrHead = ['approveItem', 'rejectItem', 'addOwner', 'targetItem', 'targetApproveItem', 'targetSupervisorItem', 'paymentNeeded'];
-        let arrHeadSave = ['Approve Item', 'Reject Item', 'Add COI Owner Item Details', 'Target Item', 'Approve Targeting', 'Targeting Item', 'Payment Needed'];
+        let arrHead = ['approveItem', 'rejectItem', 'addOwner', 'paymentNeeded'];
+        let arrHeadSave = ['Approve Item', 'Reject Item', 'Add COI Owner Item Details', 'Payment Needed'];
 
         for (let h = 0; h < arrHead.length; h++) {
             if (eventAction !== arrHead[h]) {

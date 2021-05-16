@@ -47,9 +47,9 @@ class StandardsLevyBpmn(
                 val processInstanceId = it["processInstanceId"].toString()
                 bpmnCommonFunctions.getTasks("processInstanceId", processInstanceId)?.let { tasks ->
                     return bpmnCommonFunctions.generateTaskDetails(tasks)
-                } ?: run { KotlinLogging.logger { }.info("ComplaintId : $objectId : No task found");return null }
+                } ?: run { KotlinLogging.logger { }.info("ObjectId : $objectId : No task found");return null }
             }
-            KotlinLogging.logger { }.info("ComplaintId : $objectId : No complaint found")
+            KotlinLogging.logger { }.info("ObjectId : $objectId : No object found")
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message, e)
         }
@@ -134,17 +134,20 @@ class StandardsLevyBpmn(
         return false
     }
 
-    fun slCompleteTask(objectId: Long, taskDefinitionKey: String, process: String): HashMap<String, String>? {
+    fun slCompleteTask(objectId: Long, taskDefinitionKey: String, process: String): HashMap<String, Any>? {
         KotlinLogging.logger { }.info("objectId : $objectId :  Completing task $taskDefinitionKey")
         try {
             getPIdByObjectAndProcess(objectId, process)?.let {
                 bpmnCommonFunctions.getTaskByTaskDefinitionKey(it["processInstanceId"].toString(), taskDefinitionKey)
                     ?.let { task ->
                         bpmnCommonFunctions.completeTask(task.id)
-                        return hashMapOf(Pair("assigneeId", task.assignee))
+                        //task.processVariables["principalOfficerId"]
+                        //return hashMapOf(Pair("assigneeId", task.assignee))
+                        it["assigneeId"] = task.assignee
+                        return it
                     }
             }
-            KotlinLogging.logger { }.info("objectId : $objectId :  No complaint found")
+            KotlinLogging.logger { }.info("objectId : $objectId :  No object found")
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message, e)
         }
@@ -155,8 +158,6 @@ class StandardsLevyBpmn(
         KotlinLogging.logger { }.info("Assign next task begin")
         try {
             var task: Task? = null
-
-            //complaint.let {
             taskDefinitionKey?.let {
                 task = bpmnCommonFunctions.getTaskByTaskDefinitionKey(processInstanceId, taskDefinitionKey)
             } ?: run {
@@ -226,7 +227,7 @@ class StandardsLevyBpmn(
     * STANDARDS LEVY REGISTRATION PROCESS
     ***********************************************************************************
      */
-    //Start the MS Complaint process
+    //Start the Standards Levy registration process
     fun startSlRegistrationProcess(objectId: Long, assigneeId: Long): HashMap<String, String>? {
         var variables: HashMap<String, Any> = HashMap()
         KotlinLogging.logger { }.info("objectId : $objectId : Starting SL Registration process")
@@ -337,7 +338,7 @@ class StandardsLevyBpmn(
     * STANDARDS LEVY SITE VISIT PROCESS
     ***********************************************************************************
      */
-    //Start the MS Complaint process
+    //Start the SL Site visit process
     fun startSlSiteVisitProcess(objectId: Long, assigneeId: Long): HashMap<String, String>? {
         var variables: HashMap<String, Any> = HashMap()
         KotlinLogging.logger { }.info("objectId : $objectId : Starting SL Site Visit process")
@@ -350,6 +351,7 @@ class StandardsLevyBpmn(
                 variables["manufacturerId"] = assigneeId
                 variables["approvedAsstMgr"] = 0
                 variables["approvedMgr"] = 0
+                variables["principalOfficerId"] = 0
 
                 bpmnCommonFunctions.startBpmnProcess(
                     slSiteVisitProcessDefinitionKey,
@@ -371,13 +373,6 @@ class StandardsLevyBpmn(
             KotlinLogging.logger { }.error(e.message, e)
         }
         return null
-    }
-
-    fun getSlsvProcessInstanceId(objectId: Long): String {
-        slPaymentsRepo.findByIdOrNull(objectId)?.let { slpEntity ->
-            return "${slpEntity.slSiteVisitProcessInstanceId}"
-        }
-        return ""
     }
 
     fun slSvQueryManufacturerDetailsComplete(objectId: Long): Boolean {
@@ -404,6 +399,7 @@ class StandardsLevyBpmn(
         var currAssigneeId: Long = 0
         fetchTaskByObjectId(objectId, slSiteVisitProcessDefinitionKey)?.let { taskDetails ->
             currAssigneeId = taskDetails[0].task.assignee?.toLongOrNull() ?: 54
+            updateTaskVariableByObjectIdAndKey(objectId, "sLsVScheduleVisit", slSiteVisitProcessDefinitionKey, "principalOfficerId", currAssigneeId.toString())
 //            currAssigneeId = taskDetails[0].task.assignee?.toLongOrNull() ?: throw InvalidValueException("Assignee Id is not valid")
         }
 
@@ -423,10 +419,6 @@ class StandardsLevyBpmn(
 
     fun slsvApproveReportAsstManagerComplete(objectId: Long, managerId: Long, approvedAsstMgr: Boolean): Boolean {
         KotlinLogging.logger { }.info("objectId : $objectId :  Assistant manager approve report complete")
-        var currAssigneeId: Long = 0
-        fetchTaskByObjectId(objectId, slSiteVisitProcessDefinitionKey)?.let { taskDetails ->
-            currAssigneeId = taskDetails[0].task.assignee.toLongOrNull() ?: 54
-        }
         updateTaskVariableByObjectIdAndKey(
             objectId,
             "sLsVApproveReportAssMgr",
@@ -434,11 +426,13 @@ class StandardsLevyBpmn(
             "approvedAsstMgr",
             bpmnCommonFunctions.booleanToInt(approvedAsstMgr).toString()
         )
+
         slCompleteTask(objectId, "sLsVApproveReportAssMgr", slSiteVisitProcessDefinitionKey)?.let {
             return if (approvedAsstMgr) {   //Approved by assistant manager
                 slAssignTask(it["processInstanceId"].toString(), "sLsVApproveReportMgr", managerId)
             } else {
-                slAssignTask(it["processInstanceId"].toString(), "sLsVPrepareVisitReport", currAssigneeId)
+                val principalOfficerId = bpmnCommonFunctions.getProcessVariables(it["processInstanceId"].toString())?.get("principalOfficerId").toString().toLong()
+                slAssignTask(it["processInstanceId"].toString(), "sLsVPrepareVisitReport", principalOfficerId)
             }
         }
         return false
@@ -478,10 +472,10 @@ class StandardsLevyBpmn(
     fun endSlSiteVisitProcess(objectId: String) {
         KotlinLogging.logger { }.info("End SL Site Visit for object $objectId............")
         try {
-            slPaymentsRepo.findByIdOrNull(objectId.toLong())?.let { slPayment ->
-                slPayment.slSiteVisitCompletedOn = Timestamp.from(Instant.now())
-                slPayment.slSiteVisitStatus = processCompleted
-                slPaymentsRepo.save(slPayment)
+            slFactoryVisitReportRepo.findByIdOrNull(objectId.toLong())?.let { slFactoryVisit ->
+                slFactoryVisit.slCompletedOn = Timestamp.from(Instant.now())
+                slFactoryVisit.slStatus = processCompleted
+                slFactoryVisitReportRepo.save(slFactoryVisit)
             }
         } catch (e: Exception) {
             KotlinLogging.logger { }.error("$objectId : Unable to complete SL Site Visit process")

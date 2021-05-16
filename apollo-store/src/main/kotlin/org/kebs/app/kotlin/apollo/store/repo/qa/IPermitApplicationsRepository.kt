@@ -41,9 +41,23 @@ interface IPermitTypesEntityRepository : HazelcastRepository<PermitTypesEntity, 
 }
 
 @Repository
+interface IQaProcessStatusRepository : HazelcastRepository<QaProcessStatusEntity, Long> {
+    fun findByProcessStatusName(processStatusName: String): QaProcessStatusEntity?
+    fun findByProcessStatusNameAndStatus(processStatusName: String, status: Long): QaProcessStatusEntity?
+    fun findByStatus(status: Int): List<QaProcessStatusEntity>?
+}
+
+@Repository
 interface IQaSchemeForSupervisionRepository : HazelcastRepository<QaSchemeForSupervisionEntity, Long> {
     fun findByStatusAndId(status: Int, id: Long): QaSchemeForSupervisionEntity?
     fun findByPermitId(permitId: Long): QaSchemeForSupervisionEntity?
+}
+
+@Repository
+interface IQaSampleSubmissionRepository : HazelcastRepository<QaSampleSubmissionEntity, Long> {
+    fun findByStatusAndId(status: Int, id: Long): QaSampleSubmissionEntity?
+    fun findByPermitId(permitId: Long): QaSampleSubmissionEntity?
+    fun findByBsNumber(bsNumber: String): QaSampleSubmissionEntity?
 }
 
 @Repository

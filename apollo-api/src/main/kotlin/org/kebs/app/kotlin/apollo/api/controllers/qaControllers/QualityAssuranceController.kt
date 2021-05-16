@@ -6,6 +6,7 @@ import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.QADaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.QualityAssuranceDaoServices
+import org.kebs.app.kotlin.apollo.common.dto.FmarkEntityDto
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.common.exceptions.ServiceMapNotFoundException
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
@@ -58,6 +59,27 @@ class QualityAssuranceController(
         return commonDaoServices.returnValues(result, map, sm)
     }
 
+    @PreAuthorize("hasAuthority('PERMIT_APPLICATION')")
+    @PostMapping("/kebs/apply/new-fmark-permit")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun saveNewFmarkPermit(
+        @ModelAttribute("fmarkEntityDto") fmarkEntityDto: FmarkEntityDto,
+        model: Model
+    ): String? {
+        val result: ServiceRequestsEntity?
+        val map = commonDaoServices.serviceMapDetails(appId)
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val permitDetails = qaDaoServices.findPermitBYID(fmarkEntityDto.smarkPermitID?: throw ExpectedDataNotFound("Smark Permit id not found"))
+
+        result = qaDaoServices.permitGenerateFmark(map,loggedInUser,permitDetails)
+
+        val sm = CommonDaoServices.MessageSuccessFailDTO()
+        sm.closeLink = "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${result.varField1}"
+        sm.message = "You have Successful Generated FMARK application, Proceed to Submit Your application"
+
+        return commonDaoServices.returnValues(result, map, sm)
+    }
+
     @PreAuthorize("hasAuthority('PERMIT_APPLICATION') or hasAuthority('QA_MANAGER_ASSESSORS_READ') or hasAuthority('QA_HOF_READ') or hasAuthority('QA_HOD_READ') or hasAuthority('QA_OFFICER_MODIFY') or hasAuthority('QA_ASSESSORS_MODIFY') or hasAuthority('QA_PSC_MEMBERS_READ') or hasAuthority('QA_PCM_READ')")
     @PostMapping("/apply/new-scheme-of-supervision")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
@@ -83,6 +105,8 @@ class QualityAssuranceController(
             sm.message = "You have Successful UPDATED SSC"
         }else{
             result = qaDaoServices.newSchemeSupervisionSave(permitDetails, QaSchemeForSupervisionEntity, loggedInUser,map)
+            //Permit SCC approval status
+            qaDaoServices.permitInsertStatus(permitDetails,applicationMapProperties.mapQaStatusPApprSSC,loggedInUser)
             sm.message = "You have Successful Filled SSC"
         }
 
@@ -91,8 +115,6 @@ class QualityAssuranceController(
         permitDetails.generateSchemeStatus = map.activeStatus
 
         result = qaDaoServices.permitUpdateDetails(permitDetails,map, loggedInUser).first
-
-
 
         sm.closeLink = "${applicationMapProperties.baseUrlValue}/qa/scheme-of-supervision?permitID=${permitDetails.id}"
 
@@ -113,6 +135,15 @@ class QualityAssuranceController(
         val loggedInUser = commonDaoServices.loggedInUserDetails()
 
         result = qaDaoServices.schemeSupervisionUpdateSave(schemeID, schemeFound, loggedInUser,map)
+        val permitDetails = qaDaoServices.findPermitBYID(result.varField1?.toLong() ?: throw ExpectedDataNotFound("MISSING PERMIT ID"))
+        when (schemeFound.acceptedRejectedStatus) {
+            map.activeStatus -> {
+                qaDaoServices.permitInsertStatus(permitDetails,applicationMapProperties.mapQaStatusPInspReport,loggedInUser)
+            }
+            map.inactiveStatus -> {
+                qaDaoServices.permitInsertStatus(permitDetails,applicationMapProperties.mapQaStatusSSCRejected,loggedInUser)
+            }
+        }
 
         val sm = CommonDaoServices.MessageSuccessFailDTO()
         sm.closeLink = "${applicationMapProperties.baseUrlValue}/qa/scheme-of-supervision?permitID=${result.varField1}"
@@ -128,7 +159,8 @@ class QualityAssuranceController(
     fun updatePermitDetails(
         @ModelAttribute("permit") permit: PermitApplicationsEntity,
         @RequestParam("permitID") permitID: Long,
-        model: Model): String? {
+        model: Model
+    ): String? {
 
         val map = commonDaoServices.serviceMapDetails(appId)
         val loggedInUser = commonDaoServices.loggedInUserDetails()
@@ -141,26 +173,69 @@ class QualityAssuranceController(
         //Add Permit ID THAT was Fetched so That it wont create a new record while updating with the methode
         permit.id = permitDetails.id
 
-//        if( permit.recommendationApprovalStatus == map.inactiveStatus){
-//            with(permit){
-//                recommendationRemarks = null
-//                recommendationApprovalStatus=
-//            }
-//        }
+        //Add the extra permit details from plant attached
+        if( permit.attachedPlantId != null){
+            val plantDetails = qaDaoServices.findPlantDetails(permit.attachedPlantId!!)
+            val manufacturedDetails = commonDaoServices.findCompanyProfile(plantDetails.userId ?: throw ExpectedDataNotFound("MISSING USER ID"))
+            with(permit){
+                firmName = manufacturedDetails.name
+                postalAddress = plantDetails.postalAddress
+                telephoneNo = plantDetails.telephone
+                email = plantDetails.emailAddress
+                physicalAddress = plantDetails.physicalAddress
+                faxNo = plantDetails.faxNo
+                plotNo = plantDetails.plotNo
+                designation = plantDetails.designation
+            }
+        }
 
         //updating of Details in DB
-        val updateResults = qaDaoServices.permitUpdateDetails(
-            commonDaoServices.updateDetails(
-                permit,
-                permitDetails
-            ) as PermitApplicationsEntity, map, loggedInUser
-        )
+        val updateResults = qaDaoServices.permitUpdateDetails(commonDaoServices.updateDetails(permit, permitDetails) as PermitApplicationsEntity, map, loggedInUser)
 
         result = updateResults.first
 
         permitDetails = updateResults.second
 
         when {
+            //Permit attached plants Details
+            permit.attachedPlantId != null -> {
+                when (permitDetails.permitType) {
+                    applicationMapProperties.mapQAPermitTypeIDDmark -> {
+                        qaDaoServices.permitInsertStatus(permitDetails,applicationMapProperties.mapQaStatusPSTA3,loggedInUser)
+                    }
+                    applicationMapProperties.mapQAPermitTypeIdSmark -> {
+                        qaDaoServices.permitInsertStatus(permitDetails,applicationMapProperties.mapQaStatusPSTA10,loggedInUser)
+                    }
+                }
+            }
+            //Permit completeness status
+            permit.hofQamCompletenessStatus != null -> {
+                when (permit.hofQamCompletenessStatus) {
+                    map.activeStatus -> {
+                        qaDaoServices.permitInsertStatus(permitDetails,applicationMapProperties.mapQaStatusPQAOAssign,loggedInUser)
+                    }
+                    map.inactiveStatus -> {
+                        qaDaoServices.permitInsertStatus(permitDetails,applicationMapProperties.mapQaStatusIncompleteAppl,loggedInUser)
+                    }
+                }
+            }
+            //Permit inspection scheduled status
+            permit.assignOfficerStatus != null -> {
+                if (permitDetails.permitType == applicationMapProperties.mapQAPermitTypeIdSmark){
+                    qaDaoServices.permitInsertStatus(permitDetails,applicationMapProperties.mapQaStatusPFactoryVisitSchedule,loggedInUser)
+                }
+
+            }
+            //Permit inspection scheduled status
+            permit.inspectionScheduledStatus != null -> {
+                if (permitDetails.permitType == applicationMapProperties.mapQAPermitTypeIdSmark){
+                    qaDaoServices.permitInsertStatus(permitDetails,applicationMapProperties.mapQaStatusPGenSSC,loggedInUser)
+                }
+            }
+            //Permit pending factory inspection Approval
+            permit.factoryInspectionReportApprovedRejectedStatus == map.activeStatus -> {
+                qaDaoServices.permitInsertStatus(permitDetails,applicationMapProperties.mapQaStatusPBSNumber,loggedInUser)
+            }
             permit.assignAssessorStatus == map.activeStatus -> {
                 //Send notification to assessor
                 val assessor = permitDetails.assessorId?.let { commonDaoServices.findUserByID(it) }
@@ -331,22 +406,43 @@ class QualityAssuranceController(
 
         var myRenewedPermit = qaDaoServices.permitUpdateNewWithSamePermitNumber(permitNo,map, loggedInUser)
         val permit = myRenewedPermit.second
-        //If It has FMARK Then Generate FMARK then RENEW
-        if (permit.fmarkGenerated ==1 && applicationMapProperties.mapQAPermitTypeIdSmark == permit.permitType){
-            val fmarkID = permit.id?.let { qaDaoServices.findFmarkWithSmarkId(it) } ?: throw ExpectedDataNotFound("SMARK ID MISSING ON RENEWAL FOR FMARK")
-            val foundFmark = fmarkID.fmarkId?.let { qaDaoServices.findPermitBYID(it) }
-            val fmarkRenewed = foundFmark?.permitNumber?.let { qaDaoServices.permitUpdateNewWithSamePermitNumber(it,map, loggedInUser) } ?: throw ExpectedDataNotFound("FMARK PERMIT NUMBER CAN'T BE NULL")
-            qaDaoServices.generateSmarkFmarkEntity( permit,fmarkRenewed.second,loggedInUser)
-            //Generate Invoice
             result = qaDaoServices.permitInvoiceCalculation(map, loggedInUser, permit, qaDaoServices.findPermitType(permit.permitType!!))
-        }else{
-            //Generate Invoice
-            result = qaDaoServices.permitInvoiceCalculation(map, loggedInUser, permit, qaDaoServices.findPermitType(permit.permitType!!))
-        }
+
 
         val sm = CommonDaoServices.MessageSuccessFailDTO()
         sm.closeLink = "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${result.varField1}"
         sm.message = "You have Successful Renewed your Permit , Invoice has Been Generated"
+
+        return commonDaoServices.returnValues(result, map, sm)
+    }
+
+    @PreAuthorize("hasAuthority('PERMIT_APPLICATION')")
+    @GetMapping("kebs/resubmit/permit-details/save")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun permitReSubmitDetails(
+        model: Model,
+        @RequestParam( "permitID") permitID: Long,
+        results: BindingResult,
+        redirectAttributes: RedirectAttributes
+    ): String? {
+
+        val map = commonDaoServices.serviceMapDetails(appId)
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val permit = loggedInUser.id?.let { qaDaoServices.findPermitBYUserIDAndId(permitID, it) } ?: throw ExpectedDataNotFound("User Id required")
+
+        val result: ServiceRequestsEntity?
+
+        with(permit){
+            resubmitApplicationStatus = map.activeStatus
+            hofQamCompletenessStatus = null
+            permitStatus = applicationMapProperties.mapQaStatusResubmitted
+        }
+
+        result = qaDaoServices.permitUpdateDetails(permit,map,loggedInUser).first
+
+        val sm = CommonDaoServices.MessageSuccessFailDTO()
+        sm.closeLink = "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${result.varField1}"
+        sm.message = "You have Successful resubmitted your Permit for approval"
 
         return commonDaoServices.returnValues(result, map, sm)
     }
@@ -359,12 +455,10 @@ class QualityAssuranceController(
         @RequestParam("permitID") permitID: Long,
         @ModelAttribute("QaSta3Entity") QaSta3Entity: QaSta3Entity,
         model: Model
-    )
-            : String? {
+    ): String? {
         val map = commonDaoServices.serviceMapDetails(appId)
         val loggedInUser = commonDaoServices.loggedInUserDetails()
-        val permit = loggedInUser.id?.let { qaDaoServices.findPermitBYUserIDAndId(permitID, it) }
-            ?: throw ExpectedDataNotFound("User Id required")
+        val permit = loggedInUser.id?.let { qaDaoServices.findPermitBYUserIDAndId(permitID, it) } ?: throw ExpectedDataNotFound("User Id required")
         permit.id?.let { qaDaoServices.sta3NewSave(it, QaSta3Entity, loggedInUser, map) }
 
         val result: ServiceRequestsEntity?
@@ -373,6 +467,7 @@ class QualityAssuranceController(
         with(updatePermit) {
             id = permit.id
             sta3FilledStatus = map.activeStatus
+            permitStatus = applicationMapProperties.mapQaStatusPSubmission
         }
         //updating of Details in DB
         result = qaDaoServices.permitUpdateDetails(commonDaoServices.updateDetails(permit, updatePermit) as PermitApplicationsEntity,map, loggedInUser).first
@@ -392,8 +487,7 @@ class QualityAssuranceController(
         @RequestParam("permitID") permitID: Long,
         @ModelAttribute("QaSta10Entity") QaSta10Entity: QaSta10Entity,
         model: Model
-    )
-            : String? {
+    ): String? {
         val map = commonDaoServices.serviceMapDetails(appId)
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         val permit = loggedInUser.id?.let { qaDaoServices.findPermitBYUserIDAndId(permitID, it) }
@@ -406,6 +500,7 @@ class QualityAssuranceController(
         with(updatePermit) {
             id = permit.id
             sta10FilledStatus = map.inactiveStatus
+            permitStatus = applicationMapProperties.mapQaStatusPSTA10Completion
         }
         //updating of Details in DB
         result = qaDaoServices.permitUpdateDetails(commonDaoServices.updateDetails(permit, updatePermit) as PermitApplicationsEntity, map,loggedInUser).first
@@ -418,6 +513,35 @@ class QualityAssuranceController(
         return commonDaoServices.returnValues(result, map, sm)
     }
 
+    @PreAuthorize("hasAuthority('PERMIT_APPLICATION')")
+    @PostMapping("/kebs/ssf-details-uploads")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun saveNewSSF(
+        @RequestParam("permitID") permitID: Long,
+        @ModelAttribute("SampleSubmissionDetails") sampleSubmissionDetails: QaSampleSubmissionEntity,
+        model: Model
+    ): String? {
+        val map = commonDaoServices.serviceMapDetails(appId)
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val permit = qaDaoServices.findPermitBYID(permitID)
+
+        val result: ServiceRequestsEntity?
+
+
+        //updating of Details in DB
+        result = qaDaoServices.ssfSave(permit,sampleSubmissionDetails,loggedInUser,map).first
+        with(permit){
+            bsNumber = sampleSubmissionDetails.bsNumber
+        }
+        qaDaoServices.permitInsertStatus(permit,applicationMapProperties.mapQaStatusPLABResults,loggedInUser)
+
+        val sm = CommonDaoServices.MessageSuccessFailDTO()
+        sm.closeLink = "${applicationMapProperties.baseUrlValue}/qa/ssf-details?permitID=${permitID}"
+        sm.message = "You have Successful Filled Sample Submission Details"
+
+        return commonDaoServices.returnValues(result, map, sm)
+    }
+
 
     @PreAuthorize("hasAuthority('QA_MANAGER_ASSESSORS_MODIFY') or hasAuthority('QA_OFFICER_MODIFY')")
     @PostMapping("/apply/new-sta10-officer")
@@ -426,19 +550,14 @@ class QualityAssuranceController(
         @RequestParam("sta10ID") sta10ID: Long,
         @ModelAttribute("QaSta10Entity") QaSta10Entity: QaSta10Entity,
         model: Model
-    )
-            : String? {
+    ): String? {
         val map = commonDaoServices.serviceMapDetails(appId)
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         var foundSta10Entity = qaDaoServices.findSta10BYID(sta10ID)
         foundSta10Entity = qaDaoServices.sta10OfficerNewSave(
-            commonDaoServices.updateDetails(
-                foundSta10Entity,
-                QaSta10Entity
-            ) as QaSta10Entity, map, loggedInUser
+            commonDaoServices.updateDetails(foundSta10Entity, QaSta10Entity) as QaSta10Entity, map, loggedInUser
         )
-        val permit = foundSta10Entity.permitId?.let { qaDaoServices.findPermitBYID(it) }
-            ?: throw ExpectedDataNotFound("PERMIT ID ON STA10  with [id=${sta10ID}] is NULL")
+        val permit = foundSta10Entity.permitId?.let { qaDaoServices.findPermitBYID(it) } ?: throw ExpectedDataNotFound("PERMIT ID ON STA10  with [id=${sta10ID}] is NULL")
 
         val result: ServiceRequestsEntity?
 
@@ -452,8 +571,7 @@ class QualityAssuranceController(
 
 
         val sm = CommonDaoServices.MessageSuccessFailDTO()
-        sm.closeLink =
-            "${applicationMapProperties.baseUrlValue}/qa/view-sta10?permitID=${permit.id}"
+        sm.closeLink = "${applicationMapProperties.baseUrlValue}/qa/view-sta10?permitID=${permit.id}"
         sm.message = "You have Successful Filled STA 10 Official Part"
 
         return commonDaoServices.returnValues(result, map, sm)
@@ -463,43 +581,46 @@ class QualityAssuranceController(
     @PostMapping("/add/new-sta10-product-manufactured")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun saveNewSta10ProductManufactured(
+        @RequestParam("closeStatus") closeStatus: Int?,
         @RequestParam("qaSta10ID") qaSta10ID: Long,
         @ModelAttribute("QaProductManufacturedEntity") QaProductManufacturedEntity: QaProductManufacturedEntity,
         model: Model,
         result: BindingResult
-    )
-            : String? {
+    ): String? {
         val map = commonDaoServices.serviceMapDetails(appId)
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         val qaSta10 = qaDaoServices.findSta10BYID(qaSta10ID)
-        qaSta10.id?.let {
-            qaDaoServices.sta10ManufactureProductNewSave(
-                it,
-                QaProductManufacturedEntity,
-                loggedInUser,
-                map
-            )
+        if (closeStatus!=null){
+            qaSta10.closedProduction = map.activeStatus
+            qaDaoServices.sta10Update(qaSta10, map, loggedInUser)
+        }else{
+            qaSta10.id?.let { qaDaoServices.sta10ManufactureProductNewSave(it, QaProductManufacturedEntity, loggedInUser, map) }
         }
 
-        return "${qaDaoServices.sta10Details}=${qaSta10.permitId}%26userID=${loggedInUser.id}"
+
+        return "${qaDaoServices.sta10Details}=${qaSta10.permitId}"
     }
 
     @PreAuthorize("hasAuthority('PERMIT_APPLICATION')")
     @PostMapping("/add/new-sta10-raw-materials")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun saveNewSta10RawMaterials(
+        @RequestParam("closeStatus") closeStatus: Int?,
         @RequestParam("qaSta10ID") qaSta10ID: Long,
         @ModelAttribute("QaRawMaterialEntity") QaRawMaterialEntity: QaRawMaterialEntity,
         model: Model,
         result: BindingResult
-    )
-            : String? {
+    ): String? {
         val map = commonDaoServices.serviceMapDetails(appId)
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         val qaSta10 = qaDaoServices.findSta10BYID(qaSta10ID)
-        qaSta10.id?.let { qaDaoServices.sta10RawMaterialsNewSave(it, QaRawMaterialEntity, loggedInUser, map) }
-
-        return "${qaDaoServices.sta10Details}=${qaSta10.permitId}%26userID=${loggedInUser.id}"
+        if (closeStatus!=null){
+            qaSta10.closedRawMaterials = map.activeStatus
+            qaDaoServices.sta10Update(qaSta10, map, loggedInUser)
+        }else {
+            qaSta10.id?.let { qaDaoServices.sta10RawMaterialsNewSave(it, QaRawMaterialEntity, loggedInUser, map) }
+        }
+        return "${qaDaoServices.sta10Details}=${qaSta10.permitId}"
     }
 
 
@@ -507,43 +628,44 @@ class QualityAssuranceController(
     @PostMapping("/add/new-sta10-machine-plant")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun saveNewSta10MachinePlant(
+        @RequestParam("closeStatus") closeStatus: Int?,
         @RequestParam("qaSta10ID") qaSta10ID: Long,
         @ModelAttribute("QaMachineryEntity") QaMachineryEntity: QaMachineryEntity,
         model: Model,
         result: BindingResult
-    )
-            : String? {
+    ): String? {
         val map = commonDaoServices.serviceMapDetails(appId)
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         val qaSta10 = qaDaoServices.findSta10BYID(qaSta10ID)
-        qaSta10.id?.let { qaDaoServices.sta10MachinePlantNewSave(it, QaMachineryEntity, loggedInUser, map) }
-
-        return "${qaDaoServices.sta10Details}=${qaSta10.permitId}%26userID=${loggedInUser.id}"
+        if (closeStatus!=null){
+            qaSta10.closedMachineryPlants = map.activeStatus
+            qaDaoServices.sta10Update(qaSta10, map, loggedInUser)
+        }else {
+            qaSta10.id?.let { qaDaoServices.sta10MachinePlantNewSave(it, QaMachineryEntity, loggedInUser, map) }
+        }
+        return "${qaDaoServices.sta10Details}=${qaSta10.permitId}"
     }
 
     @PreAuthorize("hasAuthority('PERMIT_APPLICATION')")
     @PostMapping("/add/new-sta10-manufacturing-process")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun saveNewSta10MachinePlant(
+        @RequestParam("closeStatus") closeStatus: Int?,
         @RequestParam("qaSta10ID") qaSta10ID: Long,
         @ModelAttribute("QaManufacturingProcessEntity") QaManufacturingProcessEntity: QaManufacturingProcessEntity,
         model: Model,
         result: BindingResult
-    )
-            : String? {
+    ): String? {
         val map = commonDaoServices.serviceMapDetails(appId)
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         val qaSta10 = qaDaoServices.findSta10BYID(qaSta10ID)
-        qaSta10.id?.let {
-            qaDaoServices.sta10ManufacturingProcessNewSave(
-                it,
-                QaManufacturingProcessEntity,
-                loggedInUser,
-                map
-            )
+        if (closeStatus!=null){
+            qaSta10.closedManufacturingProcesses = map.activeStatus
+            qaDaoServices.sta10Update(qaSta10, map, loggedInUser)
+        }else {
+            qaSta10.id?.let { qaDaoServices.sta10ManufacturingProcessNewSave(it, QaManufacturingProcessEntity, loggedInUser, map) }
         }
-
-        return "${qaDaoServices.sta10Details}=${qaSta10.permitId}%26userID=${loggedInUser.id}"
+        return "${qaDaoServices.sta10Details}=${qaSta10.permitId}"
     }
 
     @PreAuthorize("hasAuthority('PERMIT_APPLICATION') or hasAuthority('QA_OFFICER_MODIFY') or hasAuthority('QA_HOD_MODIFY') or hasAuthority('QA_MANAGER_ASSESSORS_MODIFY')" +
@@ -575,16 +697,19 @@ class QualityAssuranceController(
             inspectionReportStatus!= null -> {
                 permitDetails.inspectionReportId = uploadResults.second.id
                 permitDetails = qaDaoServices.permitUpdateDetails(permitDetails,map,loggedInUser).second
+                qaDaoServices.permitInsertStatus(permitDetails,applicationMapProperties.mapQaStatusPInspectionReportApproval,loggedInUser)
                 sendInspectionReport(permitDetails)
             }
             scfStatus!= null -> {
                 permitDetails.scfId = uploadResults.second.id
                 permitDetails = qaDaoServices.permitUpdateDetails(permitDetails,map,loggedInUser).second
+                qaDaoServices.permitInsertStatus(permitDetails,applicationMapProperties.mapQaStatusPSSF,loggedInUser)
 
             }
             ssfStatus!= null -> {
                 permitDetails.ssfId = uploadResults.second.id
                 permitDetails = qaDaoServices.permitUpdateDetails(permitDetails,map,loggedInUser).second
+                qaDaoServices.permitInsertStatus(permitDetails,applicationMapProperties.mapQaStatusPBSNumber,loggedInUser)
 
             }
             labResultsStatus!= null -> {
@@ -595,7 +720,7 @@ class QualityAssuranceController(
         }
 
         val sm = CommonDaoServices.MessageSuccessFailDTO()
-        sm.closeLink = "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitDetails.id}%26userID=${loggedInUser.id}"
+        sm.closeLink = "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitDetails.id}"
         sm.message = "Document Uploaded successful"
 
         return commonDaoServices.returnValues(result, map, sm)
@@ -615,7 +740,7 @@ class QualityAssuranceController(
                 "\n " +
                 "Factory Inspection Report has been sent for approval :" +
                 "\n " +
-                "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitDetails.id}%26userID=${permitDetails.userId}"
+                "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitDetails.id}"
 
         userPermit?.email?.let { notifications.sendEmail(it, subject, messageBody) }
     }
@@ -649,8 +774,7 @@ class QualityAssuranceController(
     fun submitPermit(
         @RequestParam("permitID") permitID: Long,
         model: Model
-    )
-            : String? {
+    ): String? {
         val map = commonDaoServices.serviceMapDetails(appId)
         val loggedInUser = commonDaoServices.loggedInUserDetails()
 
@@ -658,31 +782,18 @@ class QualityAssuranceController(
 
         val permit = loggedInUser.id?.let { qaDaoServices.findPermitBYUserIDAndId(permitID, it) } ?: throw ExpectedDataNotFound("Required User ID, check config")
         val permitType = permit.permitType?.let { qaDaoServices.findPermitType(it) } ?: throw ExpectedDataNotFound("PermitType Id Not found")
-        val ifProductCanGenerateFmark = permit.product?.let { commonDaoServices.findProductByID(it).fmarkGenerateStatus }
-
-        if (ifProductCanGenerateFmark == 1){
-            val fmarkGenerated = qaDaoServices.permitGenerateFmark(map,loggedInUser,permit)
-        }
 
         result = qaDaoServices.permitInvoiceCalculation(map, loggedInUser, permit, permitType)
         with(permit) {
             sendApplication = map.activeStatus
             invoiceGenerated = map.activeStatus
-//            //Todo: Ask anthony about this
-            when {
-                permit.permitType!! == applicationMapProperties.mapQAPermitTypeIDDmark -> {
-                    hodId = qaDaoServices.assignNextOfficerAfterPayment(permit, map, applicationMapProperties.mapQADesignationIDForHODId)?.id
-                }
-                permit.permitType!! == applicationMapProperties.mapQAPermitTypeIdSmark -> {
-                    qamId = qaDaoServices.assignNextOfficerAfterPayment(permit, map, applicationMapProperties.mapQADesignationIDForQAMId)?.id
-                }
-            }
+            permitStatus = applicationMapProperties.mapQaStatusPPayment
 
         }
         result = qaDaoServices.permitUpdateDetails(permit, map, loggedInUser).first
 
         val sm = CommonDaoServices.MessageSuccessFailDTO()
-        sm.closeLink = "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permit.id}%26userID=${loggedInUser.id}"
+        sm.closeLink = "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permit.id}"
         sm.message = "You have successful Submitted Your Application, an invoice has been generated, check Your permit detail and pay for the Invoice"
 
         return commonDaoServices.returnValues(result!!, map, sm)
@@ -709,7 +820,7 @@ class QualityAssuranceController(
 
         val sm = CommonDaoServices.MessageSuccessFailDTO()
         sm.closeLink =
-            "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permit.id}%26userID=${loggedInUser.id}"
+            "${applicationMapProperties.baseUrlValue}/qa/invoice-details?permitID=${permit.id}"
         sm.message =
             "Check You phone for an STK Push,If You can't see the push either pay with Bank or Normal Mpesa service"
 
@@ -736,7 +847,7 @@ class QualityAssuranceController(
 
         val sm = CommonDaoServices.MessageSuccessFailDTO()
         sm.closeLink =
-            "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permit.id}%26userID=${loggedInUser.id}"
+            "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permit.id}"
         sm.message = "Justification report successfully submitted for Approval"
 
         return commonDaoServices.returnValues(result!!, map, sm)
