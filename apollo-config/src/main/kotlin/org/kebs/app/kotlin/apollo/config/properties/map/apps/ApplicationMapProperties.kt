@@ -284,6 +284,9 @@ class ApplicationMapProperties {
     @Value("\${org.kebs.app.kotlin.apollo.application.map.invoice.transactions}")
     val mapInvoiceTransactions: Int = 0
 
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.lims}")
+    val mapLimsTransactions: Int = 0
+
     @Value("\${org.kebs.app.kotlin.apollo.application.map.invoice.transactions.mpesa.details}")
     val mapMpesaDetails: Long = 0L
 
@@ -328,6 +331,9 @@ class ApplicationMapProperties {
 
     @Value("\${org.kebs.app.kotlin.apollo.application.map.mpesa.config.integration}")
     val mapMpesaConfigIntegration: Long = 0L
+
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.lims.config.integration}")
+    val mapLimsConfigIntegration: Long = 0L
 
     @Value("\${org.kebs.app.kotlin.apollo.application.map.sms.config.integration}")
     val mapSmsConfigIntegration: Long = 0L

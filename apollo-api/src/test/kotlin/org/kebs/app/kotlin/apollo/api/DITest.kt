@@ -744,7 +744,7 @@ class DITest {
         val cdItemEntity = destinationInspectionDaoServices.findItemWithItemID(cdItemId)
         val inspectionDate = commonDaoServices.getCalculatedDate(7)
 
-        destinationInspectionDaoServices.updateInspectionScheduleReceived(cdItemEntity, inspectionDate)
+//        destinationInspectionDaoServices.updateInspectionScheduleReceived(cdItemEntity, inspectionDate)
 
         cdItemEntity.cdDocId?.id?.let { cdId ->
             //Receive Inspection Schedule Complete

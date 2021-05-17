@@ -79,6 +79,16 @@ interface IQaSta10EntityRepository : HazelcastRepository<QaSta10Entity, Long> {
 }
 
 @Repository
+interface IQaSampleLabTestResultsRepository : HazelcastRepository<QaSampleLabTestResultsEntity, Long> {
+    fun findByOrderId(orderId: String): QaSampleLabTestResultsEntity?
+}
+
+@Repository
+interface IQaSampleLabTestParametersRepository : HazelcastRepository<QaSampleLabTestParametersEntity, Long> {
+    fun findByOrderId(orderId: String): QaSampleLabTestParametersEntity?
+}
+
+@Repository
 interface IQaMachineryRepository : HazelcastRepository<QaMachineryEntity, Long> {
     fun findBySta10Id(sta10Id: Long): List<QaMachineryEntity>?
 }

@@ -435,12 +435,12 @@
 
                                         <a th:if="${permitDetails?.permitExpiredStatus == 1}"  th:href="@{/api/qa/kebs/renew/permit-details/save(permitNo=${permitDetails?.permitNumber})}" class="filter-link" style="color: white">RENEW PERMIT</a>
 
-                                        <a th:if="${permitDetails?.resubmitApplicationStatus == null and permitDetails?.hofQamCompletenessStatus == 0}"  th:href="@{/api/qa/kebs/resubmit/permit-details/save(permitID=${permitDetails?.id})}" class="filter-link" style="color: white">RENEW PERMIT</a>
+                                        <a th:if="${permitDetails?.resubmitApplicationStatus == null and permitDetails?.hofQamCompletenessStatus == 0}"  th:href="@{/api/qa/kebs/resubmit/permit-details/save(permitID=${permitDetails?.id})}" class="filter-link" style="color: white">RESUBMIT PERMIT</a>
 
                                     </div>
 
                                     <div sec:authorize="hasAuthority('QA_MANAGER_ASSESSORS_MODIFY') or hasAuthority('QA_HOF_MODIFY') or hasAuthority('QA_HOD_MODIFY')">
-                                        <a th:if="${permitDetails?.hofQamCompletenessStatus == null}" style="color: white" onclick="popUpFunction('permitCompleteness');" class="filter-link">COMPLETENESS ?</a>
+                                        <a th:if="${permitDetails?.hofQamCompletenessStatus == null}" style="color: white" onclick="popUpFunction('permitCompleteness');" class="filter-link">COMPLETE ?</a>
 
                                         <a th:if="${permitDetails?.hofQamCompletenessStatus == 1 and permitDetails?.assignOfficerStatus == null}" style="color: white" onclick="popUpFunction('assignOfficer');" class="filter-link">Assign Officer</a>
 
@@ -665,7 +665,7 @@
                                         </div>
 
                                         <div id="permitCompleteness">
-                                            <input type="hidden" id="description2" name="description" th:value="'Permit Is Complete,Please Assign The next Officer'">
+                                            <input type="hidden" id="description2" name="description" th:value="'Permit has been Updated Succesfull'">
                                             <input type="hidden" id="varField1" name="varField1" th:value="'Permit Is Incomplete'">
                                             <label for="attachedPlantId" class="col-form-label">Select a completeness status:</label>
                                             <select id="hofQamCompletenessStatus" required class="select-field w-select" th:field="*{hofQamCompletenessStatus}">
