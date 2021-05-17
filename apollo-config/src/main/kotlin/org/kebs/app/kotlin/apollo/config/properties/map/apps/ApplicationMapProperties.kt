@@ -144,6 +144,10 @@ class ApplicationMapProperties {
     @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.status.draft}")
     val mapQaStatusDraft: Long = 0L
 
+
+     @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.status.resubmitted}")
+    val mapQaStatusResubmitted: Long = 0L
+
     @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.status.pending_sta_3}")
     val mapQaStatusPSTA3: Long = 0L
 
@@ -194,6 +198,9 @@ class ApplicationMapProperties {
 
     @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.status.pending_ssf}")
     val mapQaStatusPSSF: Long = 0L
+
+    @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.status.pending_inspection_report_approval}")
+    val mapQaStatusPInspectionReportApproval: Long = 0L
 
     @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.status.pending_bs_number}")
     val mapQaStatusPBSNumber: Long = 0L
@@ -277,6 +284,9 @@ class ApplicationMapProperties {
     @Value("\${org.kebs.app.kotlin.apollo.application.map.invoice.transactions}")
     val mapInvoiceTransactions: Int = 0
 
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.lims}")
+    val mapLimsTransactions: Int = 0
+
     @Value("\${org.kebs.app.kotlin.apollo.application.map.invoice.transactions.mpesa.details}")
     val mapMpesaDetails: Long = 0L
 
@@ -321,6 +331,9 @@ class ApplicationMapProperties {
 
     @Value("\${org.kebs.app.kotlin.apollo.application.map.mpesa.config.integration}")
     val mapMpesaConfigIntegration: Long = 0L
+
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.lims.config.integration}")
+    val mapLimsConfigIntegration: Long = 0L
 
     @Value("\${org.kebs.app.kotlin.apollo.application.map.sms.config.integration}")
     val mapSmsConfigIntegration: Long = 0L

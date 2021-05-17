@@ -78,7 +78,7 @@
  */
 ***************************Table USED IN QA*****************************************
 select * from DAT_KEBS_PERMIT_TRANSACTION
-where id = 341
+-- where id = 350
 -- where PERMIT_NUMBER = 'DM#0954A'
 order by id desc; 1522
 
@@ -574,6 +574,230 @@ begin
 end;
 
 create index dat_kebs_qa_sample_collection_idx on dat_kebs_qa_sample_collection (PERMIT_ID, status) TABLESPACE qaimssdb_idx;
+/
+
+
+alter table DAT_KEBS_QA_STA10 modify AVERAGE_VOLUME_PRODUCTION_MONTH VARCHAR2(200)
+/
+
+
+
+
+create table dat_kebs_qa_sample_submission (
+    id               NUMBER PRIMARY KEY,
+    PERMIT_ID      NUMBER REFERENCES DAT_KEBS_PERMIT_TRANSACTION (ID),
+    SSF_NO         VARCHAR2(200),
+    SSF_SUBMISSION_DATE         DATE,
+    BS_NUMBER         VARCHAR2(200),
+    BRAND_NAME         VARCHAR2(200),
+    PRODUCT_DESCRIPTION         VARCHAR2(200),
+    SAMPLE_STATUS         VARCHAR2(200),
+    RESULTS_DATE         DATE,
+    RESULTS_ANALYSIS         NUMBER(2),
+    DESCRIPTION      VARCHAR2(200),
+    status           NUMBER(2),
+    var_field_1      VARCHAR2(350 CHAR),
+    var_field_2      VARCHAR2(350 CHAR),
+    var_field_3      VARCHAR2(350 CHAR),
+    var_field_4      VARCHAR2(350 CHAR),
+    var_field_5      VARCHAR2(350 CHAR),
+    var_field_6      VARCHAR2(350 CHAR),
+    var_field_7      VARCHAR2(350 CHAR),
+    var_field_8      VARCHAR2(350 CHAR),
+    var_field_9      VARCHAR2(350 CHAR),
+    var_field_10     VARCHAR2(350 CHAR),
+    created_by       VARCHAR2(100 CHAR)          DEFAULT 'admin' NOT NULL ENABLE,
+    created_on       TIMESTAMP(6) WITH TIME ZONE DEFAULT sysdate NOT NULL ENABLE,
+    modified_by      VARCHAR2(100 CHAR)          DEFAULT 'admin',
+    modified_on      TIMESTAMP(6) WITH TIME ZONE DEFAULT sysdate,
+    delete_by        VARCHAR2(100 CHAR)          DEFAULT 'admin',
+    deleted_on       TIMESTAMP(6) WITH TIME ZONE
+) TABLESPACE qaimssdb_data;
+
+create sequence dat_kebs_qa_sample_submission_seq minvalue 1 maxvalue 9999999999999999999999999999 increment by 1 start with 1 cache 20 noorder nocycle;
+
+create or replace trigger dat_kebs_qa_sample_submission_seq_trg
+    before
+        insert
+    on dat_kebs_qa_sample_submission
+    for each row
+begin
+    if inserting then
+        if :new.id is null then
+            select dat_kebs_qa_sample_submission_seq.nextval
+            into :new.id
+            from dual;
+
+        end if;
+
+    end if;
+end;
+
+create index dat_kebs_qa_sample_submission_idx on dat_kebs_qa_sample_submission (PERMIT_ID, status, RESULTS_ANALYSIS) TABLESPACE qaimssdb_idx;
+/
+
+
+create table dat_kebs_qa_sample_lab_test_parameters (
+    id               NUMBER PRIMARY KEY,
+    ORDER_ID  VARCHAR2(200),
+SAMPLE_NUMBER  VARCHAR2(200),
+TEST  VARCHAR2(200),
+MATRIX  VARCHAR2(200),
+METHOD  VARCHAR2(200),
+TEST_GROUP  VARCHAR2(200),
+PRIORITY  VARCHAR2(200),
+CURRENT_DEPARTMENT  VARCHAR2(200),
+LAST_DEPARTMENT  VARCHAR2(200),
+RE_DEPARTMENT  VARCHAR2(200),
+TEST_PRICE  VARCHAR2(200),
+CUSTOMER_TEST_PRICE  VARCHAR2(200),
+DUE_DATE  VARCHAR2(200),
+DUE_DATE_FLAG  VARCHAR2(200),
+PREP_DUE_DATE  VARCHAR2(200),
+PREP_METHOD  VARCHAR2(200),
+ANALYSIS_DUE_DATE  VARCHAR2(200),
+ANALYSIS_TIME  VARCHAR2(200),
+ANALYSIS_EMPLOYEE  VARCHAR2(200),
+KEEP_TEST  VARCHAR2(200),
+CANCELLED  VARCHAR2(200),
+HAS_RESULTS  VARCHAR2(200),
+SUPPLY_RECONCILED  VARCHAR2(200),
+CUSTOM_PARAMS  VARCHAR2(200),
+PRESERVATIVE  VARCHAR2(200),
+BOTTLE_TYPE  VARCHAR2(200),
+STORAGE_LOCATION  VARCHAR2(200),
+SAMPLE_DETAILS_USER1  VARCHAR2(200),
+SAMPLE_DETAILS_USER2  VARCHAR2(200),
+SAMPLE_DETAILS_USER3  VARCHAR2(200),
+SAMPLE_DETAILS_USER4  VARCHAR2(200),
+TS  VARCHAR2(200),
+    DESCRIPTION      VARCHAR2(200),
+    status           NUMBER(2),
+    var_field_1      VARCHAR2(350 CHAR),
+    var_field_2      VARCHAR2(350 CHAR),
+    var_field_3      VARCHAR2(350 CHAR),
+    var_field_4      VARCHAR2(350 CHAR),
+    var_field_5      VARCHAR2(350 CHAR),
+    var_field_6      VARCHAR2(350 CHAR),
+    var_field_7      VARCHAR2(350 CHAR),
+    var_field_8      VARCHAR2(350 CHAR),
+    var_field_9      VARCHAR2(350 CHAR),
+    var_field_10     VARCHAR2(350 CHAR),
+    created_by       VARCHAR2(100 CHAR)          DEFAULT 'admin' NOT NULL ENABLE,
+    created_on       TIMESTAMP(6) WITH TIME ZONE DEFAULT sysdate NOT NULL ENABLE,
+    modified_by      VARCHAR2(100 CHAR)          DEFAULT 'admin',
+    modified_on      TIMESTAMP(6) WITH TIME ZONE DEFAULT sysdate,
+    delete_by        VARCHAR2(100 CHAR)          DEFAULT 'admin',
+    deleted_on       TIMESTAMP(6) WITH TIME ZONE
+) TABLESPACE qaimssdb_data;
+
+create sequence dat_kebs_qa_sample_lab_test_parameters_seq minvalue 1 maxvalue 9999999999999999999999999999 increment by 1 start with 1 cache 20 noorder nocycle;
+
+create or replace trigger dat_kebs_qa_sample_lab_test_parameters_seq_trg
+    before
+        insert
+    on dat_kebs_qa_sample_lab_test_parameters
+    for each row
+begin
+    if inserting then
+        if :new.id is null then
+            select dat_kebs_qa_sample_lab_test_parameters_seq.nextval
+            into :new.id
+            from dual;
+
+        end if;
+
+    end if;
+end;
+
+create index dat_kebs_qa_sample_lab_test_parameters_idx on dat_kebs_qa_sample_lab_test_parameters (ORDER_ID, status) TABLESPACE qaimssdb_idx;
+/
+
+
+
+create table dat_kebs_qa_sample_lab_test_results (
+    id               NUMBER PRIMARY KEY,
+    ORDER_ID         VARCHAR2(200),
+SAMPLE_NUMBER  VARCHAR2(200),
+TEST  VARCHAR2(200),
+PARAM  VARCHAR2(200),
+SORT_ORDER  VARCHAR2(200),
+METHOD  VARCHAR2(200),
+RESULT  VARCHAR2(200),
+NUMERIC_RESULT  VARCHAR2(200),
+UNITS  VARCHAR2(200),
+DILUTION  VARCHAR2(200),
+ANALYSIS_VOLUME  VARCHAR2(200),
+SAMPLE_TYPE  VARCHAR2(200),
+QUALIFIER  VARCHAR2(200),
+REP_LIMIT  VARCHAR2(200),
+RETENTION_TIME  VARCHAR2(200),
+TIC  VARCHAR2(200),
+RESULT_STATUS  VARCHAR2(200),
+ENTERED_DATE  VARCHAR2(200),
+ENTERED_BY  VARCHAR2(200),
+VALIDATED_DATE  VARCHAR2(200),
+VALIDATED_BY  VARCHAR2(200),
+APPROVED_DATE  VARCHAR2(200),
+APPROVED_BY  VARCHAR2(200),
+APPROVED_REASON  VARCHAR2(200),
+COMMNT  VARCHAR2(200),
+MEASURED_RESULT  VARCHAR2(200),
+PERCENT_MOISTURE  VARCHAR2(200),
+METHOD_VOLUME  VARCHAR2(200),
+EXTRACT_VOLUME  VARCHAR2(200),
+METHOD_EXTRACT_VOLUME  VARCHAR2(200),
+INSTRUMENT  VARCHAR2(200),
+RESULTS_USER1  VARCHAR2(200),
+RESULTS_USER2  VARCHAR2(200),
+RESULTS_USER3  VARCHAR2(200),
+RESULTS_USER4  VARCHAR2(200),
+REPORT  VARCHAR2(200),
+PARAM_ANALYST  VARCHAR2(200),
+PARAM_ANALYSIS_DATE_TIME  VARCHAR2(200),
+PRINTED  VARCHAR2(200),
+PRINTED_AT  VARCHAR2(200),
+TS  VARCHAR2(200),
+    DESCRIPTION      VARCHAR2(200),
+    status           NUMBER(2),
+    var_field_1      VARCHAR2(350 CHAR),
+    var_field_2      VARCHAR2(350 CHAR),
+    var_field_3      VARCHAR2(350 CHAR),
+    var_field_4      VARCHAR2(350 CHAR),
+    var_field_5      VARCHAR2(350 CHAR),
+    var_field_6      VARCHAR2(350 CHAR),
+    var_field_7      VARCHAR2(350 CHAR),
+    var_field_8      VARCHAR2(350 CHAR),
+    var_field_9      VARCHAR2(350 CHAR),
+    var_field_10     VARCHAR2(350 CHAR),
+    created_by       VARCHAR2(100 CHAR)          DEFAULT 'admin' NOT NULL ENABLE,
+    created_on       TIMESTAMP(6) WITH TIME ZONE DEFAULT sysdate NOT NULL ENABLE,
+    modified_by      VARCHAR2(100 CHAR)          DEFAULT 'admin',
+    modified_on      TIMESTAMP(6) WITH TIME ZONE DEFAULT sysdate,
+    delete_by        VARCHAR2(100 CHAR)          DEFAULT 'admin',
+    deleted_on       TIMESTAMP(6) WITH TIME ZONE
+) TABLESPACE qaimssdb_data;
+
+create sequence dat_kebs_qa_sample_lab_test_results_seq minvalue 1 maxvalue 9999999999999999999999999999 increment by 1 start with 1 cache 20 noorder nocycle;
+
+create or replace trigger dat_kebs_qa_sample_lab_test_results_seq_trg
+    before
+        insert
+    on dat_kebs_qa_sample_lab_test_results
+    for each row
+begin
+    if inserting then
+        if :new.id is null then
+            select dat_kebs_qa_sample_lab_test_results_seq.nextval
+            into :new.id
+            from dual;
+
+        end if;
+
+    end if;
+end;
+
+create index dat_kebs_qa_sample_lab_test_results_idx on dat_kebs_qa_sample_lab_test_results (ORDER_ID, status) TABLESPACE qaimssdb_idx;
 /
 
 

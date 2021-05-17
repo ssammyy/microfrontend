@@ -40,6 +40,7 @@ class QADaoServices(
     private val serviceRequestsRepository: IServiceRequestsRepository,
     private val permitRepo: IPermitApplicationsRepository,
     private val SampleCollectionRepo: IQaSampleCollectionRepository,
+    private val SampleSubmissionRepo: IQaSampleSubmissionRepository,
     private val schemeForSupervisionRepo: IQaSchemeForSupervisionRepository,
     private val sta3Repo: IQaSta3EntityRepository,
     private val smarkFmarkRepo: IQaSmarkFmarkRepository,
@@ -191,6 +192,13 @@ class QADaoServices(
         permitRepo.findByIdOrNull(id)?.let {
             return it
         } ?: throw ExpectedDataNotFound("No Permit found with the following [ID=$id]")
+    }
+
+
+    fun findSampleSubmittedBYPermitID(permitId: Long): QaSampleSubmissionEntity {
+        SampleSubmissionRepo.findByPermitId(permitId)?.let {
+            return it
+        } ?: throw ExpectedDataNotFound("No sample submission found with the following [permitId=$permitId]")
     }
 
     fun findSampleCollectBYPermitID(permitId: Long): QaSampleCollectionEntity {
@@ -437,6 +445,51 @@ class QADaoServices(
 
         KotlinLogging.logger { }.trace("${sr.id} ${sr.responseStatus}")
         return Pair(sr, savePermit)
+    }
+
+    fun ssfSave(
+        permits: PermitApplicationsEntity,
+        ssfDetails: QaSampleSubmissionEntity,
+        user: UsersEntity,
+        map: ServiceMapsEntity
+    ): Pair<ServiceRequestsEntity, QaSampleSubmissionEntity> {
+
+        var sr = commonDaoServices.createServiceRequest(map)
+        var saveSSF = ssfDetails
+        try {
+
+            with(saveSSF) {
+                permitId = permits.id
+                status = map.activeStatus
+                createdBy = commonDaoServices.concatenateName(user)
+                createdOn = commonDaoServices.getTimestamp()
+            }
+
+
+            saveSSF = SampleSubmissionRepo.save(saveSSF)
+
+            sr.payload = "New SSF Saved [BRAND name${saveSSF.brandName} and ${saveSSF.id}]"
+            sr.names = "${saveSSF.brandName}"
+            sr.varField1 = permits.id.toString()
+
+            sr.responseStatus = sr.serviceMapsId?.successStatusCode
+            sr.responseMessage = "Success ${sr.payload}"
+            sr.status = map.successStatus
+            sr = serviceRequestsRepository.save(sr)
+            sr.processingEndDate = Timestamp.from(Instant.now())
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message, e)
+//            KotlinLogging.logger { }.trace(e.message, e)
+            sr.status = sr.serviceMapsId?.exceptionStatus
+            sr.responseStatus = sr.serviceMapsId?.exceptionStatusCode
+            sr.responseMessage = e.message
+            sr = serviceRequestsRepository.save(sr)
+
+        }
+
+        KotlinLogging.logger { }.trace("${sr.id} ${sr.responseStatus}")
+        return Pair(sr, saveSSF)
     }
 
     fun newSchemeSupervisionSave(
@@ -857,7 +910,6 @@ class QADaoServices(
         }
 
 
-    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun permitUpdateNewWithSamePermitNumber(permitNo: String, s: ServiceMapsEntity, user: UsersEntity): Pair<ServiceRequestsEntity, PermitApplicationsEntity> {
 
         var sr = commonDaoServices.createServiceRequest(s)
@@ -1351,33 +1403,30 @@ class QADaoServices(
         val turnoverValues =
             iTurnOverRatesRepository.findByIdOrNull(applicationMapProperties.mapQASmarkJuakaliTurnOverId)
                 ?: throw ExpectedDataNotFound("MISSING TURNOVER RATES FOR Medium Firm SMARK")
-        val productList = user.id?.let {
-            findPermitBYUserIDANDProductionStatus(
-                map.inactiveStatus,
-                applicationMapProperties.mapQAPermitTypeIdSmark,
-                it
-            )
-        } ?: throw ExpectedDataNotFound("MISSING USER ID")
+        val productList = user.id?.let { findPermitBYUserIDANDProductionStatus(map.inactiveStatus, applicationMapProperties.mapQAPermitTypeIdSmark, it) } ?: throw ExpectedDataNotFound("MISSING USER ID")
         val productSize = productList.size
-        val remainingSize = productSize.minus(applicationMapProperties.mapQaSmarkJuakaliMaxProduct).toBigDecimal()
+        var remainingSize = 1.00.toBigDecimal()
+        if(productSize > applicationMapProperties.mapQaSmarkJuakaliMaxProduct){
+            remainingSize =  productSize.minus(applicationMapProperties.mapQaSmarkJuakaliMaxProduct).toBigDecimal()
+        }
         var extraProductCost: BigDecimal? = 0.000.toBigDecimal()
         extraProductCost = turnoverValues.variableAmountToPay?.let { remainingSize.times(it) }
         applicationCost1 = extraProductCost?.let { turnoverValues.fixedAmountToPay?.plus(it) }
-        if (permit.fmarkGenerated == 1) {
-            stgAmt1 = applicationCost1?.let { standardCost?.plus(inspectionCost!!)?.plus(it) }
-            fmark1 = 1.toBigDecimal()
-            fmarkCost1 =
-                standardCost?.plus(inspectionCost!!)?.let { applicationMapProperties.mapQaFmarkAmountToPay.plus(it) }
-            //Todo : ask if foreign cost will also be added as vat
-            taxAmount1 = fmarkCost1?.let { taxRate.times(it) }
-            amountToPay1 = taxAmount1?.let { stgAmt1?.plus(it) }
-        } else {
+//        if (permit.fmarkGenerated == 1) {
+//            stgAmt1 = applicationCost1?.let { standardCost?.plus(inspectionCost!!)?.plus(it) }
+//            fmark1 = 1.toBigDecimal()
+//            fmarkCost1 =
+//                standardCost?.plus(inspectionCost!!)?.let { applicationMapProperties.mapQaFmarkAmountToPay.plus(it) }
+//            //Todo : ask if foreign cost will also be added as vat
+//            taxAmount1 = fmarkCost1?.let { taxRate.times(it) }
+//            amountToPay1 = taxAmount1?.let { stgAmt1?.plus(it) }
+//        } else {
             KotlinLogging.logger { }.info { "second loop, ${permit.product}" }
             stgAmt1 = applicationCost1?.let { standardCost?.plus(inspectionCost!!)?.plus(it) }
             fmark1 = 0.toBigDecimal()
             taxAmount1 = stgAmt1?.let { taxRate.times(it) }
             amountToPay1 = taxAmount1?.let { stgAmt1?.plus(it) }
-        }
+//        }
         //                amountToPay = standardCost?.plus(inspectionCost!!)?.let { applicationCost?.plus(it) }
         KotlinLogging.logger { }.info { "Manufacturer turnover, $manufactureTurnOver" }
         KotlinLogging.logger { }.info { "Total Amount To Pay   = " + amountToPay1?.toDouble() }
@@ -1431,25 +1480,29 @@ class QADaoServices(
             )
         } ?: throw ExpectedDataNotFound("MISSING USER ID")
         val productSize = productList.size
-        val remainingSize = productSize.minus(applicationMapProperties.mapQaSmarkMediumMaxProduct).toBigDecimal()
+        var remainingSize = 1.00.toBigDecimal()
+        if(productSize > applicationMapProperties.mapQaSmarkMediumMaxProduct){
+            remainingSize =  productSize.minus(applicationMapProperties.mapQaSmarkMediumMaxProduct).toBigDecimal()
+        }
+
         var extraProductCost: BigDecimal? = 0.000.toBigDecimal()
         extraProductCost = turnoverValues.variableAmountToPay?.let { remainingSize.times(it) }
         applicationCost1 = extraProductCost?.let { turnoverValues.fixedAmountToPay?.plus(it) }
-        if (permit.fmarkGenerated == 1) {
-            stgAmt1 = applicationCost1?.let { standardCost?.plus(inspectionCost!!)?.plus(it) }
-            fmark1 = 1.toBigDecimal()
-            fmarkCost1 =
-                standardCost?.plus(inspectionCost!!)?.let { applicationMapProperties.mapQaFmarkAmountToPay.plus(it) }
-            //Todo : ask if foreign cost will also be added as vat
-            taxAmount1 = fmarkCost1?.let { taxRate.times(it) }
-            amountToPay1 = taxAmount1?.let { stgAmt1?.plus(it) }
-        } else {
+//        if (permit.fmarkGenerated == 1) {
+//            stgAmt1 = applicationCost1?.let { standardCost?.plus(inspectionCost!!)?.plus(it) }
+//            fmark1 = 1.toBigDecimal()
+//            fmarkCost1 =
+//                standardCost?.plus(inspectionCost!!)?.let { applicationMapProperties.mapQaFmarkAmountToPay.plus(it) }
+//            //Todo : ask if foreign cost will also be added as vat
+//            taxAmount1 = fmarkCost1?.let { taxRate.times(it) }
+//            amountToPay1 = taxAmount1?.let { stgAmt1?.plus(it) }
+//        } else {
             KotlinLogging.logger { }.info { "second loop, ${permit.product}" }
             stgAmt1 = applicationCost1?.let { standardCost?.plus(inspectionCost!!)?.plus(it) }
             fmark1 = 0.toBigDecimal()
             taxAmount1 = stgAmt1?.let { taxRate.times(it) }
             amountToPay1 = taxAmount1?.let { stgAmt1?.plus(it) }
-        }
+//        }
         //                amountToPay = standardCost?.plus(inspectionCost!!)?.let { applicationCost?.plus(it) }
         KotlinLogging.logger { }.info { "Manufacturer turnover, $manufactureTurnOver" }
         KotlinLogging.logger { }.info { "Total Amount To Pay   = " + amountToPay1?.toDouble() }
@@ -1495,20 +1548,20 @@ class QADaoServices(
                 ?: throw ExpectedDataNotFound("MISSING TURNOVER RATES FOR Large Firm SMARK")
         applicationCost1 = turnoverValues.variableAmountToPay?.let { turnoverValues.fixedAmountToPay?.plus(it) }
 
-        if (permit.fmarkGenerated == 1) {
-            stgAmt1 = applicationCost1?.let { standardCost?.plus(inspectionCost!!)?.plus(it) }
-            fmark1 = 1.toBigDecimal()
-            fmarkCost1 = standardCost?.plus(inspectionCost!!)?.let { applicationMapProperties.mapQaFmarkAmountToPay.plus(it) }
-            //Todo : ask if foreign cost will also be added as vat
-            taxAmount1 = fmarkCost1?.let { taxRate.times(it) }
-            amountToPay1 = taxAmount1?.let { stgAmt1?.plus(it) }
-        } else {
+//        if (permit.fmarkGenerated == 1) {
+//            stgAmt1 = applicationCost1?.let { standardCost?.plus(inspectionCost!!)?.plus(it) }
+//            fmark1 = 1.toBigDecimal()
+//            fmarkCost1 = standardCost?.plus(inspectionCost!!)?.let { applicationMapProperties.mapQaFmarkAmountToPay.plus(it) }
+//            //Todo : ask if foreign cost will also be added as vat
+//            taxAmount1 = fmarkCost1?.let { taxRate.times(it) }
+//            amountToPay1 = taxAmount1?.let { stgAmt1?.plus(it) }
+//        } else {
             KotlinLogging.logger { }.info { "second loop, ${permit.product}" }
             stgAmt1 = applicationCost1?.let { standardCost?.plus(inspectionCost!!)?.plus(it) }
             fmark1 = 0.toBigDecimal()
             taxAmount1 = stgAmt1?.let { taxRate.times(it) }
             amountToPay1 = taxAmount1?.let { stgAmt1?.plus(it) }
-        }
+//        }
         //                amountToPay = standardCost?.plus(inspectionCost!!)?.let { applicationCost?.plus(it) }
         KotlinLogging.logger { }.info { "Manufacturer turnover, $manufactureTurnOver" }
         KotlinLogging.logger { }.info { "Total Amount To Pay   = " + amountToPay1?.toDouble() }
