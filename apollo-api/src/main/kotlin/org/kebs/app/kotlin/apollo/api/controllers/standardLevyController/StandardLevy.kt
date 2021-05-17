@@ -1,6 +1,7 @@
 package org.kebs.app.kotlin.apollo.api.controllers.standardLevyController
 
 import mu.KotlinLogging
+import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.StandardsLevyBpmn
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.common.exceptions.InvalidInputException
 import org.kebs.app.kotlin.apollo.store.model.StandardLevyFactoryVisitReportEntity
@@ -20,6 +21,7 @@ import java.time.LocalDate
 class StandardLevy(
     private val standardLevyFactoryVisitReportRepository: IStandardLevyFactoryVisitReportRepository,
     private val commonDaoServices: CommonDaoServices,
+    private val standardsLevyBpmn: StandardsLevyBpmn,
     private val companyProfileRepo: ICompanyProfileRepository
 ) {
     @GetMapping("test")
@@ -36,6 +38,7 @@ class StandardLevy(
             report.personMet = reportData.personMet
                 report.reportDate = LocalDate.now()
                 standardLevyFactoryVisitReportRepository.save(report)
+                report.id?.let { standardsLevyBpmn.slsvPrepareVisitReportComplete(it, 223) }
             return "redirect:/sl/manufacturer?manufacturerId=${manufacturerId}"
         }?: throw InvalidInputException("Please enter a valid id")
     }
@@ -58,6 +61,19 @@ class StandardLevy(
             report.assistantManagerApproval = 1
             report.assistanceManagerRemarks = reportData.assistanceManagerRemarks
             standardLevyFactoryVisitReportRepository.save(report)
+            report.id?.let { standardsLevyBpmn.slsvApproveReportAsstManagerComplete(it, 33, true) }
+            return "redirect:/sl/manufacturer?manufacturerId=${manufacturerId}"
+        }?: throw InvalidInputException("No Report found")
+    }
+
+
+    @PostMapping("manager-approval")
+    fun managerApproval(@RequestParam("manufacturerId") manufacturerId : Long, reportData: StandardLevyFactoryVisitReportEntity) : String{
+        standardLevyFactoryVisitReportRepository.findByManufacturerEntity(manufacturerId)?.let { report ->
+            report.managersApproval = 1
+            report.assistanceManagerRemarks = reportData.assistanceManagerRemarks
+            standardLevyFactoryVisitReportRepository.save(report)
+            report.id?.let { standardsLevyBpmn.slsvApproveReportManagerComplete(it, 33, true) }
             return "redirect:/sl/manufacturer?manufacturerId=${manufacturerId}"
         }?: throw InvalidInputException("No Report found")
     }
