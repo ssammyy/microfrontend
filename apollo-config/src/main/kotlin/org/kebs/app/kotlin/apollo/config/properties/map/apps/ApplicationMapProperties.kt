@@ -370,6 +370,9 @@ class ApplicationMapProperties {
     @Value("\${org.kebs.app.kotlin.apollo.resources.report.local.cor.report.path}")
     val mapReportLocalCorPath: String = ""
 
+    @Value("\${org.kebs.app.kotlin.apollo.resources.report.local.coc.report.path}")
+    val mapReportLocalCocPath: String = ""
+
     @Value("\${org.kebs.app.kotlin.apollo.resources.report.demand.note.with.item.path}")
     val mapReportDemandNoteWithItemsPath: String = ""
 

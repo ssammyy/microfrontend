@@ -49,6 +49,8 @@ dependencies {
     implementation("org.hibernate.validator:hibernate-validator:6.1.5.Final")
     implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.12.1")
     implementation(kotlin("stdlib-jdk8"))
+    implementation("com.lowagie:itext:2.1.7")
+    implementation("net.sf.jasperreports:jasperreports:6.13.0")
 
 }
 repositories {
