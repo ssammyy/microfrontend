@@ -862,6 +862,7 @@ class SystemsAdminDaoService(
     fun returnCompanyProfileEntityDto(cp: CompanyProfileEntity): UserCompanyDto {
 
         return UserCompanyDto(
+            cp.id,
             cp.name,
             cp.kraPin,
             cp.userId,

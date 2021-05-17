@@ -52,6 +52,7 @@ import org.kebs.app.kotlin.apollo.common.dto.UserPasswordVerificationValuesDto
 import org.kebs.app.kotlin.apollo.common.dto.UserRequestEntityDto
 import org.kebs.app.kotlin.apollo.common.dto.brs.response.BrsLookUpRecords
 import org.kebs.app.kotlin.apollo.common.dto.brs.response.BrsLookUpResponse
+import org.kebs.app.kotlin.apollo.common.dto.brs.response.BrsLookupBusinessPartners
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.common.exceptions.MissingConfigurationException
 import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
@@ -59,6 +60,9 @@ import org.kebs.app.kotlin.apollo.common.exceptions.ServiceMapNotFoundException
 import org.kebs.app.kotlin.apollo.common.utils.generateRandomText
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.*
+import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileCommoditiesManufactureEntity
+import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileContractsUndertakenEntity
+import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileDirectorsEntity
 import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileEntity
 import org.kebs.app.kotlin.apollo.store.repo.*
 import org.springframework.beans.factory.annotation.Autowired
@@ -84,6 +88,9 @@ class RegistrationDaoServices(
     private val serviceRequestRepo: IServiceRequestsRepository,
 
     private val employeesRepo: IEmployeesRepository,
+    private val companyProfileDirectorsRepo: ICompanyProfileDirectorsRepository,
+    private val companyProfileCommoditiesManufactureRepo: ICompanyProfileCommoditiesManufactureRepository,
+    private val companyProfileContractsUndertakenRepo: ICompanyProfileContractsUndertakenRepository,
     private val userProfilesRepo: IUserProfilesRepository,
     private val iImporterRepo: IImporterRepository,
     private val iImporterContactRepo: IImporterContactRepository,
@@ -567,6 +574,15 @@ class RegistrationDaoServices(
 
             }
             val userCompany = systemsAdminDaoService.updateUserCompanyDetails(userCompanyDetails)
+
+            brs.partners.forEach { partner->
+                userCompany.id?.let {
+                    if (partner != null) {
+                        addCompanyDirectorsDetails(s,u, it,partner)
+                    }
+                }
+            }
+
                 ?: throw NullValueNotAllowedException("Registration failed")
 //            systemsAdminDaoService.assignRoleToUser(u.id?:throw NullValueNotAllowedException(""),applicationMapProperties.mapUserManufactureRoleID, s.activeStatus)
 
@@ -617,6 +633,146 @@ class RegistrationDaoServices(
 
             sr.payload = "User Request [id= ${userRequest?.id}]"
             sr.names = "${userRequest?.userId} ${userRequest?.userRoleAssigned}"
+
+            sr.responseStatus = sr.serviceMapsId?.successStatusCode
+            sr.responseMessage = "Success ${sr.payload}"
+            sr.status = s.successStatus
+            sr = serviceRequestsRepository.save(sr)
+            sr.processingEndDate = Timestamp.from(Instant.now())
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message, e)
+//            KotlinLogging.logger { }.trace(e.message, e)
+            sr.status = sr.serviceMapsId?.exceptionStatus
+            sr.responseStatus = sr.serviceMapsId?.exceptionStatusCode
+            sr.responseMessage = e.message
+            sr = serviceRequestsRepository.save(sr)
+
+        }
+
+        KotlinLogging.logger { }.trace("${sr.id} ${sr.responseStatus}")
+        return sr
+    }
+
+
+    fun addCommodityCompanyDetails(
+        s: ServiceMapsEntity,
+        u: UsersEntity,
+        cPId: Long,
+        commodityDetails: CompanyProfileCommoditiesManufactureEntity
+    ): ServiceRequestsEntity {
+
+        var sr = commonDaoServices.createServiceRequest(s)
+        try {
+
+           var commodity = commodityDetails
+            with(commodity){
+                companyProfileId =cPId
+                commodityName =commodityDetails.commodityName
+                commodityDateCommence = commodityDetails.commodityDateCommence
+                status = s.activeStatus
+                createdOn = commonDaoServices.getTimestamp()
+                createdBy = commonDaoServices.concatenateName(u)
+            }
+
+            commodity = companyProfileCommoditiesManufactureRepo.save(commodity)
+
+            sr.payload = "User company details [id= ${cPId}]"
+            sr.names = "${commodity.commodityName}"
+
+            sr.responseStatus = sr.serviceMapsId?.successStatusCode
+            sr.responseMessage = "Success ${sr.payload}"
+            sr.status = s.successStatus
+            sr = serviceRequestsRepository.save(sr)
+            sr.processingEndDate = Timestamp.from(Instant.now())
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message, e)
+//            KotlinLogging.logger { }.trace(e.message, e)
+            sr.status = sr.serviceMapsId?.exceptionStatus
+            sr.responseStatus = sr.serviceMapsId?.exceptionStatusCode
+            sr.responseMessage = e.message
+            sr = serviceRequestsRepository.save(sr)
+
+        }
+
+        KotlinLogging.logger { }.trace("${sr.id} ${sr.responseStatus}")
+        return sr
+    }
+
+
+
+    fun addContractorsCompanyDetails(
+        s: ServiceMapsEntity,
+        u: UsersEntity,
+        cPId: Long,
+        contractorUndertakenDetails: CompanyProfileContractsUndertakenEntity
+    ): ServiceRequestsEntity {
+
+        var sr = commonDaoServices.createServiceRequest(s)
+        try {
+
+           var contructUnderTaken = contractorUndertakenDetails
+            with(contructUnderTaken){
+                companyProfileId =cPId
+                contractsName =contractorUndertakenDetails.contractsName
+                contractsDateCommence = contractorUndertakenDetails.contractsDateCommence
+                status = s.activeStatus
+                createdOn = commonDaoServices.getTimestamp()
+                createdBy = commonDaoServices.concatenateName(u)
+            }
+
+            contructUnderTaken = companyProfileContractsUndertakenRepo.save(contructUnderTaken)
+
+            sr.payload = "User company details [id= ${cPId}]"
+            sr.names = "${contructUnderTaken.contractsName}"
+
+            sr.responseStatus = sr.serviceMapsId?.successStatusCode
+            sr.responseMessage = "Success ${sr.payload}"
+            sr.status = s.successStatus
+            sr = serviceRequestsRepository.save(sr)
+            sr.processingEndDate = Timestamp.from(Instant.now())
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message, e)
+//            KotlinLogging.logger { }.trace(e.message, e)
+            sr.status = sr.serviceMapsId?.exceptionStatus
+            sr.responseStatus = sr.serviceMapsId?.exceptionStatusCode
+            sr.responseMessage = e.message
+            sr = serviceRequestsRepository.save(sr)
+
+        }
+
+        KotlinLogging.logger { }.trace("${sr.id} ${sr.responseStatus}")
+        return sr
+    }
+
+
+    fun addCompanyDirectorsDetails(
+        s: ServiceMapsEntity,
+        u: UsersEntity,
+        companyProfileID: Long,
+        brsPartners: BrsLookupBusinessPartners
+    ): ServiceRequestsEntity {
+
+        var sr = commonDaoServices.createServiceRequest(s)
+        try {
+
+           var companyDirectors = CompanyProfileDirectorsEntity()
+            with(companyDirectors){
+                companyProfileId = companyProfileID
+                directorName = brsPartners.name
+                directorId = brsPartners.idNumber
+                userType = brsPartners.idType
+                status = s.activeStatus
+                createdOn = commonDaoServices.getTimestamp()
+                createdBy = commonDaoServices.concatenateName(u)
+            }
+
+            companyDirectors = companyProfileDirectorsRepo.save(companyDirectors)
+
+            sr.payload = "User company Directors [id= ${companyDirectors?.id}]"
+            sr.names = "${companyDirectors?.companyProfileId} ${companyDirectors?.directorName}"
 
             sr.responseStatus = sr.serviceMapsId?.successStatusCode
             sr.responseMessage = "Success ${sr.payload}"

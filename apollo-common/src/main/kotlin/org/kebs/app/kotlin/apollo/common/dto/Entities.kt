@@ -259,6 +259,7 @@ data class OtpResponseDto(
 
 
 data class UserCompanyDto(
+    var id: Long? = null,
     var name: String? = null,
     var kraPin: String? = null,
     var userId: Long? = null,

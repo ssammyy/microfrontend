@@ -7,6 +7,8 @@ import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.NotificationsBufferEntity
 import org.kebs.app.kotlin.apollo.store.model.qa.ManufacturePlantDetailsEntity
+import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileCommoditiesManufactureEntity
+import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileContractsUndertakenEntity
 import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileEntity
 import org.kebs.app.kotlin.apollo.store.repo.*
 import org.springframework.data.repository.findByIdOrNull
@@ -24,6 +26,7 @@ class UserHandler(
     private val countriesRepository: ICountriesRepository,
     private val serviceMapsRepository: IServiceMapsRepository,
     private val countyRepo: ICountiesRepository,
+    private val companyProfileDirectorsRepo: ICompanyProfileDirectorsRepository,
     private val systemsAdminDaoService: SystemsAdminDaoService,
     private val masterDataDaoService: MasterDataDaoService,
     private val businessLinesRepository: IBusinessLinesRepository,
@@ -73,10 +76,13 @@ class UserHandler(
                 map.activeStatus -> {
                     val manufactureProfile= userDetails.id?.let { commonDaoServices.findCompanyProfile(it) } ?: throw ExpectedDataNotFound("Missing Manufacture Company Details, Fill The Details")
                     req.attributes()["manufactureProfile"] = manufactureProfile
+                    req.attributes()["directorsDetails"] = companyProfileDirectorsRepo.findByCompanyProfileId(manufactureProfile.id?: throw ExpectedDataNotFound("CompanyProfile ID Not Found"))
                     req.attributes()["businessLineValue"] = manufactureProfile.businessLines?.let {  businessLinesRepository.findByIdOrNull(it)?.name}
                     req.attributes()["businessNatureValue"] =manufactureProfile.businessNatures?.let {  businessNatureRepository.findByIdOrNull(it)?.name}
     //                                        req.attributes()["userClassificationValue"] = null
                     req.attributes()["plantsDetails"] = qaDaoServices.findAllPlantDetails(userDetails.id!!)
+                    req.attributes()["contractUndertakenDetails"] = commonDaoServices.findAllContractsUnderTakenDetails(manufactureProfile.id?: throw ExpectedDataNotFound("CompanyProfile ID Not Found"))
+                    req.attributes()["commodityDetails"] = commonDaoServices.findAllCommoditiesDetails(manufactureProfile.id?: throw ExpectedDataNotFound("CompanyProfile ID Not Found"))
                     req.attributes()["regionValue"] = manufactureProfile.region?.let { commonDaoServices.findRegionEntityByRegionID(it, map.activeStatus).region }
                     req.attributes()["countyValue"] = manufactureProfile.county?.let { commonDaoServices.findCountiesEntityByCountyId(it, map.activeStatus).county }
                     req.attributes()["townValue"] = manufactureProfile.town?.let { commonDaoServices.findTownEntityByTownId(it).town }
@@ -98,6 +104,8 @@ class UserHandler(
                         req.attributes()["usersEntity"] =userDetails
 //                        req.attributes()["profile"] = profile
                         req.attributes()["companyProfileEntity"] = CompanyProfileEntity()
+                        req.attributes()["CompanyProfileCommoditiesManufactureEntity"] = CompanyProfileCommoditiesManufactureEntity()
+                        req.attributes()["CompanyProfileContractsUndertakenEntity"] = CompanyProfileContractsUndertakenEntity()
                         req.attributes()["businessLines"] =  businessLinesRepository.findByStatus(map.activeStatus)
                         return ok().render(userProfilePage, req.attributes())
     }

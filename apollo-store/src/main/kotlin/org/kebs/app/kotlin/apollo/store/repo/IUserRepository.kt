@@ -39,9 +39,7 @@ package org.kebs.app.kotlin.apollo.store.repo
 
 
 import org.kebs.app.kotlin.apollo.store.model.*
-import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileEntity
-import org.kebs.app.kotlin.apollo.store.model.registration.UserRequestTypesEntity
-import org.kebs.app.kotlin.apollo.store.model.registration.UserRequestsEntity
+import org.kebs.app.kotlin.apollo.store.model.registration.*
 import org.springframework.data.hazelcast.repository.HazelcastRepository
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor
 import org.springframework.data.jpa.repository.Query
@@ -63,6 +61,8 @@ interface IUserRepository : HazelcastRepository<UsersEntity, Long>, JpaSpecifica
 
     //    @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
     fun findByUserName(userName: String): UsersEntity?
+
+    fun findByUserPinIdNumber(userPinIdNumber: String): UsersEntity?
 
     fun findFirstByIdAndStatus(id: Long, status: Int): UsersEntity?
     fun findAllById(supervisorId: Long?): MutableIterable<UsersEntity>
@@ -170,9 +170,24 @@ interface ICompanyProfileRepository : HazelcastRepository<CompanyProfileEntity, 
     fun findByStatus(status: Int): List<CompanyProfileEntity>?
     fun findByKraPin(kraPin: String): CompanyProfileEntity?
     fun findByUserId(userId: Long): CompanyProfileEntity?
+    fun findByRegistrationNumber(registrationNumber: String): CompanyProfileEntity?
     fun findByManufactureStatus(status: Int): List<CompanyProfileEntity>?
 
+}
 
+@Repository
+interface ICompanyProfileCommoditiesManufactureRepository : HazelcastRepository<CompanyProfileCommoditiesManufactureEntity, Long> {
+    fun findByCompanyProfileId(companyProfileId: Long): List<CompanyProfileCommoditiesManufactureEntity>?
+}
+
+@Repository
+interface ICompanyProfileContractsUndertakenRepository : HazelcastRepository<CompanyProfileContractsUndertakenEntity, Long> {
+    fun findByCompanyProfileId(companyProfileId: Long): List<CompanyProfileContractsUndertakenEntity>?
+}
+
+@Repository
+interface ICompanyProfileDirectorsRepository : HazelcastRepository<CompanyProfileDirectorsEntity, Long> {
+    fun findByCompanyProfileId(companyProfileId: Long): List<CompanyProfileDirectorsEntity>?
 }
 
 @Repository

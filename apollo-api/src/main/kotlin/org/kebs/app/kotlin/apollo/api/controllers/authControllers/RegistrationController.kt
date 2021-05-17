@@ -55,6 +55,8 @@ import org.kebs.app.kotlin.apollo.common.exceptions.ServiceMapNotFoundException
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.ServiceRequestsEntity
 import org.kebs.app.kotlin.apollo.store.model.*
+import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileCommoditiesManufactureEntity
+import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileContractsUndertakenEntity
 import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileEntity
 import org.kebs.app.kotlin.apollo.store.repo.*
 import org.springframework.data.repository.findByIdOrNull
@@ -113,12 +115,15 @@ class RegisterController(
     ): String? {
         val result: ServiceRequestsEntity?
         val map = commonDaoServices.serviceMapDetails(appId)
-        usersEntity.email?.let {
-            usersRepo.findByUserName(it)
-                .let { checkUsersEntity ->
-                    when {
-                        checkUsersEntity != null -> {
+        val userPinIdNumberExists = usersEntity.userPinIdNumber?.let { usersRepo.findByUserPinIdNumber(it) }
+        val userEmailExists = usersEntity.email?.let { usersRepo.findByEmail(it) }
+
+        when {
+            userPinIdNumberExists != null -> {
                             throw ExpectedDataNotFound("The User PIN/PASSPORT/ID Number Already Exists")
+                        }
+            userEmailExists != null -> {
+                            throw ExpectedDataNotFound("The Email Already Exists")
                         }
                         else -> {
                             result = daoServices.registerUser(map, usersEntity, null)
@@ -128,9 +133,6 @@ class RegisterController(
                             return returnValues(result, map, sm)
                         }
                     }
-
-                }
-        } ?: throw ServiceMapNotFoundException("No  User PIN/PASSPORT/ID Number attached")
 
     }
 
@@ -146,20 +148,24 @@ class RegisterController(
         val result: ServiceRequestsEntity?
         val map = commonDaoServices.serviceMapDetails(appId)
         val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val companyProfile = companyProfileEntity.registrationNumber?.let { commonDaoServices.findCompanyProfileWithRegistrationNumber(it) }
 
-        val brsCheckUp = daoServices.checkBrs(companyProfileEntity)
-        if (brsCheckUp.first){
+        if (companyProfile==null){
+            val brsCheckUp = daoServices.checkBrs(companyProfileEntity)
+            if (brsCheckUp.first){
 
-            result = brsCheckUp.second?.let { daoServices.addUserManufactureProfile(map, loggedInUser, companyProfileEntity, it) }?: throw ExpectedDataNotFound("The Company Details Verification details could not be found")
+                result = brsCheckUp.second?.let { daoServices.addUserManufactureProfile(map, loggedInUser, companyProfileEntity, it) }?: throw ExpectedDataNotFound("The Company Details Verification details could not be found")
 
-            val sm = CommonDaoServices.MessageSuccessFailDTO()
-            sm.closeLink = "${applicationMapProperties.baseUrlValue}/user/user-profile?userName=${loggedInUser.userName}"
-            sm.message = "You have successful Added your Company details, Verify was success"
-            return returnValues(result, map, sm)
+                val sm = CommonDaoServices.MessageSuccessFailDTO()
+                sm.closeLink = "${applicationMapProperties.baseUrlValue}/user/user-profile?userName=${loggedInUser.userName}"
+                sm.message = "You have successful Added your Company details, Verify was success"
+                return returnValues(result, map, sm)
+            }else{
+                throw ExpectedDataNotFound("The Company Details Verification failed Due to Invalid Registration Number or Director Id Failed")
+            }
         }else{
-             throw ExpectedDataNotFound("The Company Details Verification failed Due to Invalid Registration Number or Director Id Failed")
+            throw ExpectedDataNotFound("The Company with this [Registration Number : ${companyProfile.registrationNumber}] already exist")
         }
-
     }
 
     @PreAuthorize("hasAuthority('USER')")
@@ -181,6 +187,54 @@ class RegisterController(
         val sm = CommonDaoServices.MessageSuccessFailDTO()
         sm.closeLink = "${applicationMapProperties.baseUrlValue}/user/user-profile?userName=${loggedInUser.userName}"
         sm.message = "You have successful Sent a Request"
+        return returnValues(result, map, sm)
+
+
+    }
+
+    @PreAuthorize("hasAuthority('USER')")
+    @PostMapping("kebs/add/commodity-details/save")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun addCommodityDetails(
+        model: Model,
+        @ModelAttribute("commodityDetails") commodityDetails: CompanyProfileCommoditiesManufactureEntity,
+        response: HttpServletResponse,
+        redirectAttributes: RedirectAttributes
+    ): String? {
+        val result: ServiceRequestsEntity?
+        val map = commonDaoServices.serviceMapDetails(appId)
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+
+        val companyProfile = loggedInUser.id?.let { commonDaoServices.findCompanyProfile(it) }
+        result = daoServices.addCommodityCompanyDetails(map, loggedInUser,companyProfile?.id ?: throw ExpectedDataNotFound("Company Profile id is missing"),commodityDetails)
+
+        val sm = CommonDaoServices.MessageSuccessFailDTO()
+        sm.closeLink = "${applicationMapProperties.baseUrlValue}/user/user-profile?userName=${loggedInUser.userName}"
+        sm.message = "You have successful add details"
+        return returnValues(result, map, sm)
+
+
+    }
+
+    @PreAuthorize("hasAuthority('USER')")
+    @PostMapping("kebs/add/contracts-undertaken-details/save")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun addContractsUnderTakenDetails(
+        model: Model,
+        @ModelAttribute("contractsUnderTakenDetails") contractsUnderTakenDetails: CompanyProfileContractsUndertakenEntity,
+        response: HttpServletResponse,
+        redirectAttributes: RedirectAttributes
+    ): String? {
+        val result: ServiceRequestsEntity?
+        val map = commonDaoServices.serviceMapDetails(appId)
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+
+        val companyProfile = loggedInUser.id?.let { commonDaoServices.findCompanyProfile(it) }
+        result = daoServices.addContractorsCompanyDetails(map, loggedInUser,companyProfile?.id ?: throw ExpectedDataNotFound("Company Profile id is missing"),contractsUnderTakenDetails)
+
+        val sm = CommonDaoServices.MessageSuccessFailDTO()
+        sm.closeLink = "${applicationMapProperties.baseUrlValue}/user/user-profile?userName=${loggedInUser.userName}"
+        sm.message = "You have successful add details"
         return returnValues(result, map, sm)
 
 

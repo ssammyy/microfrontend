@@ -68,6 +68,8 @@ import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapPrope
 import org.kebs.app.kotlin.apollo.store.model.*
 import org.kebs.app.kotlin.apollo.store.model.di.CdLaboratoryEntity
 import org.kebs.app.kotlin.apollo.store.model.qa.ManufacturePlantDetailsEntity
+import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileCommoditiesManufactureEntity
+import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileContractsUndertakenEntity
 import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileEntity
 import org.kebs.app.kotlin.apollo.store.repo.*
 import org.kebs.app.kotlin.apollo.store.repo.di.ILaboratoryRepository
@@ -134,7 +136,9 @@ class CommonDaoServices(
         private val countiesRepo: ICountiesRepository,
         private val townsRepo: ITownsRepository,
         private val userTypesRepo: IUserTypesEntityRepository,
-
+        private val companyProfileDirectorsRepo: ICompanyProfileDirectorsRepository,
+        private val companyProfileCommoditiesManufactureRepo: ICompanyProfileCommoditiesManufactureRepository,
+        private val companyProfileContractsUndertakenRepo: ICompanyProfileContractsUndertakenRepository,
 
         private val countyRepo: ICountiesRepository,
         private val standardCategoryRepo: IStandardCategoryRepository,
@@ -326,6 +330,18 @@ class CommonDaoServices(
                     return it
                 }
                 ?: throw ExpectedDataNotFound("Processes with [Service Map=${map}] , does not exist")
+    }
+
+    fun findAllContractsUnderTakenDetails(companyProfileID: Long): List<CompanyProfileContractsUndertakenEntity> {
+        companyProfileContractsUndertakenRepo.findByCompanyProfileId(companyProfileID)?.let {
+            return it
+        } ?: throw ExpectedDataNotFound("Company Details Does not exist")
+    }
+
+    fun findAllCommoditiesDetails(companyProfileID: Long): List<CompanyProfileCommoditiesManufactureEntity> {
+        companyProfileCommoditiesManufactureRepo.findByCompanyProfileId(companyProfileID)?.let {
+            return it
+        } ?: throw ExpectedDataNotFound("Company Details Does not exist")
     }
 
     fun findAllFreightStationOnPortOfArrival(sectionsEntity: SectionsEntity, status: Int): List<SubSectionsLevel2Entity> {
@@ -701,6 +717,14 @@ class CommonDaoServices(
                     return userCompanyDetails
                 }
                 ?: throw ExpectedDataNotFound("Company Profile with [user ID= ${userID}], does not Exist")
+    }
+
+    fun findCompanyProfileWithRegistrationNumber(registrationNumber: String): CompanyProfileEntity {
+        companyProfileRepo.findByRegistrationNumber(registrationNumber)
+                ?.let { userCompanyDetails ->
+                    return userCompanyDetails
+                }
+                ?: throw ExpectedDataNotFound("Company Profile with [registration ID= ${registrationNumber}], does not Exist")
     }
 
     fun findCompanyProfileWhoAreManufactures(status: Int): List<CompanyProfileEntity> {
