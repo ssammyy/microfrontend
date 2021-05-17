@@ -1,6 +1,9 @@
 package org.kebs.app.kotlin.apollo.common.dto.kra.request
 
-import com.fasterxml.jackson.annotation.*
+import com.fasterxml.jackson.annotation.JsonFormat
+import com.fasterxml.jackson.annotation.JsonProperty
+import com.fasterxml.jackson.annotation.JsonTypeInfo
+import com.fasterxml.jackson.annotation.JsonTypeName
 import java.math.BigDecimal
 import java.sql.Date
 import java.sql.Timestamp
@@ -36,7 +39,9 @@ class PinValidationRequest {
  *     }
  * </pre>
  */
-@JsonRootName(value = "REQUEST")
+//@JsonRootName(value = "REQUEST")
+@JsonTypeName("REQUEST")
+@JsonTypeInfo(include = JsonTypeInfo.As.WRAPPER_OBJECT, use = JsonTypeInfo.Id.NAME)
 class ReceiveSL2PaymentRequest {
 
     @NotNull(message = "Required field")
