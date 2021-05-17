@@ -265,6 +265,14 @@ class CocsEntity : Serializable {
     @Basic
     var cocType: String? = null
 
+    @Column(name = "LOCAL_COC_FILE")
+    @Lob
+    var localCocFile: ByteArray? = null
+
+    @Column(name = "LOCAL_COC_FILE_NAME", length = 200)
+    @Basic
+    var localCocFileName: String? = null
+
     @Column(name = "STATUS", nullable = true, precision = 0)
     @Basic
     var status: Long? = null
@@ -402,6 +410,8 @@ class CocsEntity : Serializable {
                 route == that.route &&
                 productCategory == that.productCategory &&
                 cocType == that.cocType &&
+                Arrays.equals(localCocFile, that.localCocFile) &&
+                localCocFileName == that.localCocFileName &&
                 status == that.status &&
                 varField1 == that.varField1 &&
                 varField2 == that.varField2 &&
@@ -426,7 +436,7 @@ class CocsEntity : Serializable {
     }
 
     override fun hashCode(): Int {
-        return Objects.hash(
+        var result =  Objects.hash(
             id,
             cocNumber,
             coiNumber,
@@ -477,6 +487,7 @@ class CocsEntity : Serializable {
             route,
             cocType,
             productCategory,
+            localCocFileName,
             status,
             varField1,
             varField2,
@@ -498,5 +509,7 @@ class CocsEntity : Serializable {
             pvocPartner,
             partner
         )
+        result = 31 * result + Arrays.hashCode(localCocFile)
+        return result
     }
 }

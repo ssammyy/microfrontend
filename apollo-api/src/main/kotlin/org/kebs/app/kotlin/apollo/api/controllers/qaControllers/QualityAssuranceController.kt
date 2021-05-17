@@ -513,7 +513,8 @@ class QualityAssuranceController(
         return commonDaoServices.returnValues(result, map, sm)
     }
 
-    @PreAuthorize("hasAuthority('PERMIT_APPLICATION')")
+    @PreAuthorize("hasAuthority('PERMIT_APPLICATION') or hasAuthority('QA_OFFICER_MODIFY') or hasAuthority('QA_HOD_MODIFY') or hasAuthority('QA_MANAGER_ASSESSORS_MODIFY')" +
+            " or hasAuthority('QA_HOF_MODIFY') or hasAuthority('QA_ASSESSORS_MODIFY') or hasAuthority('QA_PAC_SECRETARY_MODIFY') or hasAuthority('QA_PSC_MEMBERS_MODIFY') or hasAuthority('QA_PCM_MODIFY')")
     @PostMapping("/kebs/ssf-details-uploads")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun saveNewSSF(

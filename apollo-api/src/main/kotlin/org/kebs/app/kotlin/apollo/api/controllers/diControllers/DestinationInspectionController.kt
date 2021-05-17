@@ -2,10 +2,7 @@ package org.kebs.app.kotlin.apollo.api.controllers.diControllers
 
 import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.DestinationInspectionBpmn
-import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
-import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DestinationInspectionDaoServices
-import org.kebs.app.kotlin.apollo.api.ports.provided.dao.InvoiceDaoService
-import org.kebs.app.kotlin.apollo.api.ports.provided.dao.RiskProfileDaoService
+import org.kebs.app.kotlin.apollo.api.ports.provided.dao.*
 import org.kebs.app.kotlin.apollo.api.ports.provided.emailDTO.MvInspectionNotificationDTO
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.common.utils.generateRandomText
@@ -36,6 +33,7 @@ class DestinationInspectionController(
     private val riskProfileDaoService: RiskProfileDaoService,
     private val commonDaoServices: CommonDaoServices,
     private val diBpmn: DestinationInspectionBpmn,
+    private val reportsDaoService: ReportsDaoService
 ) {
 
     final val appId = applicationMapProperties.mapImportInspection
@@ -367,12 +365,10 @@ class DestinationInspectionController(
                                         )
                                     }
                                     KotlinLogging.logger { }.info { "localCoc = ${localCoc.id}" }
-//                                    daoServices.localCocItems(updatedCDDetails, localCoc, loggedInUser, map)
-//                                    daoServices.sendLocalCoc(localCoc.id)
-                                    //Todo : How the Local coc will look like
+                                    //Generate PDF File & send to manufacturer
+                                    reportsDaoService.generateLocalCoCReportWithDataSource(updatedCDDetails, applicationMapProperties.mapReportLocalCocPath)
                                 }
                             }
-
                         } else if (updatedCDDetails.cdType?.let { daoServices.findCdTypeDetails(it).localCorStatus } == map.activeStatus) {
                             daoServices.generateCor(updatedCDDetails, map, loggedInUser).let {
                                 daoServices.submitCoRToKesWS(it)

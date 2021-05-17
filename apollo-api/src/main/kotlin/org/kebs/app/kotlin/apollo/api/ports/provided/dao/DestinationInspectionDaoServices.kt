@@ -1892,6 +1892,10 @@ fun createLocalCoc(
             ?: throw Exception("COI Details with the following UCR NUMBER = ${ucrNumber}, does not Exist")
     }
 
+    fun saveCoc(cocDetails: CocsEntity): CocsEntity {
+        return cocRepo.save(cocDetails)
+    }
+
     fun findCdTypeDetails(cdTypeID: Long): ConsignmentDocumentTypesEntity {
         cdTypesRepo.findByIdOrNull(cdTypeID)
             ?.let { cdTypeDetails ->
@@ -2736,6 +2740,26 @@ fun createLocalCoc(
         map["PrevRegNo"] = localCorEntity.prevRegNo.orEmpty()
         map["PrevCountryOfReg"] = localCorEntity.prevCountryOfReg.orEmpty()
         map["InspectionDetails"] = localCorEntity.inspectionDetails.orEmpty()
+
+        return map
+    }
+
+    fun createLocalCocReportMap(localCocEntity: CocsEntity): HashMap<String, Any> {
+        val map = hashMapOf<String, Any>()
+
+        map["CocNo"] = localCocEntity.cocNumber.orEmpty()
+        map["IssueDate"] = localCocEntity.cocIssueDate.toString()
+        map["EntryNo"] = ""
+        map["IdfNo"] = ""
+        map["ImporterName"] = localCocEntity.importerName.orEmpty()
+        map["ImporterAddress"] = localCocEntity.importerAddress1.orEmpty()
+        map["ImporterPin"] = localCocEntity.importerPin.orEmpty()
+        map["ClearingAgent"] = ""
+        map["PortOfEntry"] = localCocEntity.portOfDestination.orEmpty()
+        map["UcrNo"] = localCocEntity.ucrNumber.orEmpty()
+        map["Status"] = localCocEntity.status.toString()
+        map["Remarks"] = localCocEntity.cocRemarks.toString()
+        map["CoCType"] = localCocEntity.cocType.toString()
 
         return map
     }

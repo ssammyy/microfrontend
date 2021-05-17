@@ -1037,6 +1037,7 @@
                                 <a th:if="${cdType?.category == cdTypeGoodsCategory and cdType.localCocStatus != activeStatus}"
                                    th:href="@{/api/di/cd-coc(cdUuid=${cdDetails?.uuid})}" class="filter-link">Certificate
                                     of Compliance</a>
+
                                 <a th:if="${cdType?.category == cdTypeVehiclesCategory and cdType?.localCorStatus != activeStatus}"
                                    th:href="@{/api/di/cd-cor(cdUuid=${cdDetails?.uuid})}" class="filter-link">Certificate
                                     of Roadworthiness</a>
