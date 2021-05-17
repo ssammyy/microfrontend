@@ -46,10 +46,7 @@ import org.flowable.task.api.Task
 import org.kebs.app.kotlin.apollo.adaptor.kafka.producer.service.SendToKafkaQueue
 import org.kebs.app.kotlin.apollo.api.notifications.Notifications
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.StandardsLevyBpmn
-import org.kebs.app.kotlin.apollo.common.dto.UserCompanyEntityDto
-import org.kebs.app.kotlin.apollo.common.dto.UserEntityDto
-import org.kebs.app.kotlin.apollo.common.dto.UserPasswordVerificationValuesDto
-import org.kebs.app.kotlin.apollo.common.dto.UserRequestEntityDto
+import org.kebs.app.kotlin.apollo.common.dto.*
 import org.kebs.app.kotlin.apollo.common.dto.brs.response.BrsLookUpRecords
 import org.kebs.app.kotlin.apollo.common.dto.brs.response.BrsLookUpResponse
 import org.kebs.app.kotlin.apollo.common.dto.brs.response.BrsLookupBusinessPartners
@@ -91,6 +88,7 @@ class RegistrationDaoServices(
     private val companyProfileDirectorsRepo: ICompanyProfileDirectorsRepository,
     private val companyProfileCommoditiesManufactureRepo: ICompanyProfileCommoditiesManufactureRepository,
     private val companyProfileContractsUndertakenRepo: ICompanyProfileContractsUndertakenRepository,
+    private val companyProfileRepo: ICompanyProfileRepository,
     private val userProfilesRepo: IUserProfilesRepository,
     private val iImporterRepo: IImporterRepository,
     private val iImporterContactRepo: IImporterContactRepository,
@@ -145,6 +143,8 @@ class RegistrationDaoServices(
 
     @Autowired
     lateinit var logsRepo: IWorkflowTransactionsRepository
+
+    final val appId: Int = applicationMapProperties.mapUserRegistration
 
     /***********************************************************************************
      * NEW REGISTRATIONION SERVICES
@@ -557,6 +557,8 @@ class RegistrationDaoServices(
                 profileType = applicationMapProperties.mapUserRequestManufacture
                 registrationNumber = brs.registrationNumber
                 postalAddress = brs.postalAddress
+                physicalAddress = brs.physicalAddress
+                plotNumber = cp.plotNumber
                 companyEmail = brs.email
                 companyTelephone = brs.phoneNumber
                 yearlyTurnover = cp.yearlyTurnover
@@ -633,6 +635,96 @@ class RegistrationDaoServices(
 
             sr.payload = "User Request [id= ${userRequest?.id}]"
             sr.names = "${userRequest?.userId} ${userRequest?.userRoleAssigned}"
+
+            sr.responseStatus = sr.serviceMapsId?.successStatusCode
+            sr.responseMessage = "Success ${sr.payload}"
+            sr.status = s.successStatus
+            sr = serviceRequestsRepository.save(sr)
+            sr.processingEndDate = Timestamp.from(Instant.now())
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message, e)
+//            KotlinLogging.logger { }.trace(e.message, e)
+            sr.status = sr.serviceMapsId?.exceptionStatus
+            sr.responseStatus = sr.serviceMapsId?.exceptionStatusCode
+            sr.responseMessage = e.message
+            sr = serviceRequestsRepository.save(sr)
+
+        }
+
+        KotlinLogging.logger { }.trace("${sr.id} ${sr.responseStatus}")
+        return sr
+    }
+
+    fun closeManufactureRegistrationDetails(
+        s: ServiceMapsEntity,
+        u: UsersEntity,
+        dto: ManufactureSubmitEntityDto
+    ): ServiceRequestsEntity {
+
+        var sr = commonDaoServices.createServiceRequest(s)
+        try {
+
+           var cp = commonDaoServices.findCompanyProfile(u.id?: throw ExpectedDataNotFound("MISSING USER ID"))
+
+            with(cp){
+                closedCommodityManufactured =dto.closedCommodityManufactured
+                closedContractsUndertaken =dto.closedContractsUndertaken
+                status = dto.submittedStatus
+                modifiedBy = commonDaoServices.concatenateName(u)
+                modifiedOn = commonDaoServices.getTimestamp()
+            }
+
+            cp = companyProfileRepo.save(cp)
+
+            sr.payload = "Company Profile Updated [id= ${cp.id}]"
+            sr.names = "UPDATED BY USER = ID ${cp.userId} USER NAME = ${commonDaoServices.concatenateName(u)}"
+
+            sr.responseStatus = sr.serviceMapsId?.successStatusCode
+            sr.responseMessage = "Success ${sr.payload}"
+            sr.status = s.successStatus
+            sr = serviceRequestsRepository.save(sr)
+            sr.processingEndDate = Timestamp.from(Instant.now())
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message, e)
+//            KotlinLogging.logger { }.trace(e.message, e)
+            sr.status = sr.serviceMapsId?.exceptionStatus
+            sr.responseStatus = sr.serviceMapsId?.exceptionStatusCode
+            sr.responseMessage = e.message
+            sr = serviceRequestsRepository.save(sr)
+
+        }
+
+        KotlinLogging.logger { }.trace("${sr.id} ${sr.responseStatus}")
+        return sr
+    }
+
+    fun generateEntryNumberDetails(
+        s: ServiceMapsEntity,
+        u: UsersEntity
+    ): ServiceRequestsEntity {
+
+        var sr = commonDaoServices.createServiceRequest(s)
+        try {
+
+           var cp = commonDaoServices.findCompanyProfile(u.id?: throw ExpectedDataNotFound("MISSING USER ID"))
+
+            with(cp){
+                entryNumber = generateRandomText(5, s.secureRandom, s.messageDigestAlgorithm, true).toUpperCase()
+                modifiedBy = commonDaoServices.concatenateName(u)
+                modifiedOn = commonDaoServices.getTimestamp()
+            }
+
+            cp = companyProfileRepo.save(cp)
+
+            val payload = "${cp.name} ${cp.registrationNumber}"
+            sr = commonDaoServices.mapServiceRequestForSuccess(s, payload, u)
+            val emailEntity = commonDaoServices.userRegisteredEntryNumberSuccessfulEmailCompose(cp, sr, s, null)
+            commonDaoServices.sendEmailAfterCompose(u, applicationMapProperties.mapUserEntryNumberNotification, emailEntity, appId, payload)
+
+            sr.payload = "Company Profile Updated [id= ${cp.id}]"
+            sr.names = "UPDATED BY USER = ID ${cp.userId} USER NAME = ${commonDaoServices.concatenateName(u)}"
 
             sr.responseStatus = sr.serviceMapsId?.successStatusCode
             sr.responseMessage = "Success ${sr.payload}"

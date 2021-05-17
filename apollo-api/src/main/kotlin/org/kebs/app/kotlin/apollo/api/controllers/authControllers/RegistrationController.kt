@@ -46,6 +46,7 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.MasterDataDaoService
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.RegistrationDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.SystemsAdminDaoService
+import org.kebs.app.kotlin.apollo.common.dto.ManufactureSubmitEntityDto
 import org.kebs.app.kotlin.apollo.common.dto.UserPasswordVerificationValuesDto
 import org.kebs.app.kotlin.apollo.common.dto.UserRequestEntityDto
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
@@ -136,6 +137,97 @@ class RegisterController(
 
     }
 
+    @PreAuthorize("hasAuthority('USER')")
+    @GetMapping("close-commodity-manufacture")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun closeCommodityManufactureDetails(
+        model: Model,
+        results: BindingResult,
+        redirectAttributes: RedirectAttributes
+    ): String? {
+
+        val map = commonDaoServices.serviceMapDetails(appId)
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val companyProfile = loggedInUser.id?.let { commonDaoServices.findCompanyProfile(it) }
+
+        val result: ServiceRequestsEntity?
+
+        val myDetails = ManufactureSubmitEntityDto()
+        with(myDetails){
+            closedCommodityManufactured = 1
+        }
+
+        result = daoServices.closeManufactureRegistrationDetails(map, loggedInUser, myDetails)
+
+
+        val sm = CommonDaoServices.MessageSuccessFailDTO()
+        sm.closeLink = "${applicationMapProperties.baseUrlValue}/user/user-profile?userName=${loggedInUser.userName}"
+        sm.message = "You have Successful Updated Your Profile"
+
+        return commonDaoServices.returnValues(result, map, sm)
+    }
+
+    @PreAuthorize("hasAuthority('USER')")
+    @GetMapping("close-contracts-underTaken")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun closeContractsUnderTakenDetails(
+        model: Model,
+        results: BindingResult,
+        redirectAttributes: RedirectAttributes
+    ): String? {
+
+        val map = commonDaoServices.serviceMapDetails(appId)
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val companyProfile = loggedInUser.id?.let { commonDaoServices.findCompanyProfile(it) }
+
+        val result: ServiceRequestsEntity?
+
+        val myDetails = ManufactureSubmitEntityDto()
+        with(myDetails){
+            closedContractsUndertaken = 1
+        }
+
+        result = daoServices.closeManufactureRegistrationDetails(map, loggedInUser, myDetails)
+
+
+        val sm = CommonDaoServices.MessageSuccessFailDTO()
+        sm.closeLink = "${applicationMapProperties.baseUrlValue}/user/user-profile?userName=${loggedInUser.userName}"
+        sm.message = "You have Successful Updated Your Profile"
+
+        return commonDaoServices.returnValues(result, map, sm)
+    }
+
+    @PreAuthorize("hasAuthority('USER')")
+    @GetMapping("submit-registration-manufacture")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun submitRegistrationDetails(
+        model: Model,
+        results: BindingResult,
+        redirectAttributes: RedirectAttributes
+    ): String? {
+
+        val map = commonDaoServices.serviceMapDetails(appId)
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+
+        val result: ServiceRequestsEntity?
+
+        val myDetails = ManufactureSubmitEntityDto()
+        with(myDetails){
+            submittedStatus = 1
+        }
+
+        result = daoServices.closeManufactureRegistrationDetails(map, loggedInUser, myDetails)
+        //Generation of Entry Number
+        daoServices.generateEntryNumberDetails(map,loggedInUser)
+
+        val sm = CommonDaoServices.MessageSuccessFailDTO()
+        sm.closeLink = "${applicationMapProperties.baseUrlValue}/user/user-profile?userName=${loggedInUser.userName}"
+        sm.message = "You have Successful Register, Email Has been sent with Entry Number "
+
+        return commonDaoServices.returnValues(result, map, sm)
+    }
+
+    @PreAuthorize("hasAuthority('USER')")
     @PostMapping("kebs/add/manufacture-details/save")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun addManufactureDetails(

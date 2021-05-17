@@ -126,7 +126,7 @@ select * from DAT_KEBS_USERS
 
 -- where USER_TYPE = 5
 -- where EMAIL like '254saf'
--- where USER_NAME = '0715668934'
+-- where USER_PIN_ID_NUMBER = '0715668934'
 order by id desc
 ;
 SELECT * from CFG_TURNOVER_RATES;

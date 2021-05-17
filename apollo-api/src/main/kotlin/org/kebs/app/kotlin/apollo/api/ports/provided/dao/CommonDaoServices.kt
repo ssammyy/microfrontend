@@ -56,6 +56,7 @@ import org.jasypt.encryption.StringEncryptor
 import org.json.JSONObject
 import org.kebs.app.kotlin.apollo.api.notifications.Notifications
 import org.kebs.app.kotlin.apollo.api.ports.provided.emailDTO.RegistrationEmailDTO
+import org.kebs.app.kotlin.apollo.api.ports.provided.emailDTO.RegistrationForEntryNumberEmailDTO
 import org.kebs.app.kotlin.apollo.common.dto.HashedStringDto
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.common.exceptions.MissingConfigurationException
@@ -497,6 +498,19 @@ class CommonDaoServices(
         return dataValue
     }
 
+    fun userRegisteredEntryNumberSuccessfulEmailCompose(companyProfile: CompanyProfileEntity, sr: ServiceRequestsEntity, map: ServiceMapsEntity, token: String?): RegistrationForEntryNumberEmailDTO {
+        val dataValue = RegistrationForEntryNumberEmailDTO()
+        with(dataValue) {
+            baseUrl = applicationMapProperties.baseUrlValue
+            fullName = concatenateName(findUserByID(companyProfile.userId?: throw ExpectedDataNotFound("USER ID NOT FOUND")))
+            entryNumber = companyProfile.entryNumber
+            dateSubmitted = getCurrentDate()
+
+        }
+
+        return dataValue
+    }
+
 
     fun sendEmailAfterCompose(user: UsersEntity, emailTemplateUuid: String, emailEntity: Any, appID: Int, payload: String) {
         val map = serviceMapDetails(appID)
@@ -719,12 +733,11 @@ class CommonDaoServices(
                 ?: throw ExpectedDataNotFound("Company Profile with [user ID= ${userID}], does not Exist")
     }
 
-    fun findCompanyProfileWithRegistrationNumber(registrationNumber: String): CompanyProfileEntity {
-        companyProfileRepo.findByRegistrationNumber(registrationNumber)
-                ?.let { userCompanyDetails ->
-                    return userCompanyDetails
-                }
-                ?: throw ExpectedDataNotFound("Company Profile with [registration ID= ${registrationNumber}], does not Exist")
+    fun findCompanyProfileWithRegistrationNumber(registrationNumber: String): CompanyProfileEntity? {
+        return companyProfileRepo.findByRegistrationNumber(registrationNumber)
+//                ?.let { userCompanyDetails ->
+//                     userCompanyDetails
+//                }
     }
 
     fun findCompanyProfileWhoAreManufactures(status: Int): List<CompanyProfileEntity> {

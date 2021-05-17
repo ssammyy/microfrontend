@@ -39,6 +39,10 @@ class BusinessNatureEntity : Serializable {
     @Basic
     var name: String? = null
 
+    @Column(name = "BUSINESS_TYPE_ID")
+    @Basic
+    var businessTypeId: Int? = null
+
     @Column(name = "STATUS")
     @Basic
     var status: Int? = null
@@ -122,6 +126,7 @@ class BusinessNatureEntity : Serializable {
             other as BusinessNatureEntity
         return id == that.id &&
                 name == that.name &&
+                businessTypeId == that.businessTypeId &&
                 status == that.status &&
                 descriptions == that.descriptions &&
                 varField1 == that.varField1 &&
@@ -146,6 +151,7 @@ class BusinessNatureEntity : Serializable {
         return Objects.hash(
             id,
             name,
+            businessTypeId,
             status,
             descriptions,
             varField1,
