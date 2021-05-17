@@ -422,7 +422,9 @@
 
                                 <button th:if="${manufacturer.factoryVisitDate != null}" sec:authorize="hasAuthority('SL_MANUFACTURERS_VIEW')" style="width: 270px;" type="button" class="btn btn-primary" data-toggle="modal" data-target="#industryVisitReport">Prepare report</button>
                                 <br><br><br>
-                                <button th:if="${visitReport?.purpose != null}" sec:authorize="hasAuthority('SL_MANUFACTURERS_VIEW')" style="width: 270px;" type="button" class="btn btn-primary" data-toggle="modal" data-target="#industryVisitReportApproval">Factory Visit Report Approval</button>
+                                <button th:if="${visitReport?.purpose != null}" sec:authorize="hasAuthority('SL_APPROVE_VISIT_REPORT')" style="width: 270px;" type="button" class="btn btn-primary" data-toggle="modal" data-target="#industryVisitReportApproval">Factory Visit Report Approval</button>
+
+                                <button th:if="${visitReport?.purpose != null}" sec:authorize="hasAuthority('SL_SECOND_APPROVE_VISIT_REPORT')" style="width: 270px;" type="button" class="btn btn-primary" data-toggle="modal" data-target="#industryVisitReportApproval">Factory Visit Report Approval</button>
                                 <br><br>
                                 <button th:if="${visitReport?.purpose != null}" sec:authorize="hasAuthority('SL_MANUFACTURERS_VIEW')" style="width: 270px;" type="button" class="btn btn-primary" data-toggle="modal" data-target="#industryVisitReportApproval">Draft Feedback</button>
                                 <br><br>
