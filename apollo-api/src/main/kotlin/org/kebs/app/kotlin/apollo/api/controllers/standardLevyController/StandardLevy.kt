@@ -1,44 +1,67 @@
+package org.kebs.app.kotlin.apollo.api.controllers.standardLevyController
+
 import mu.KotlinLogging
-import org.eclipse.jdt.core.compiler.InvalidInputException
-import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.StandardsLevyBpmn
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
-import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
+import org.kebs.app.kotlin.apollo.common.exceptions.InvalidInputException
 import org.kebs.app.kotlin.apollo.store.model.StandardLevyFactoryVisitReportEntity
-import org.kebs.app.kotlin.apollo.store.repo.*
+import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileEntity
+import org.kebs.app.kotlin.apollo.store.repo.ICompanyProfileRepository
+import org.kebs.app.kotlin.apollo.store.repo.IStandardLevyFactoryVisitReportRepository
 import org.springframework.stereotype.Controller
-import org.springframework.web.bind.annotation.*
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
+import java.time.LocalDate
+
 
 @Controller
-@RequestMapping("/api/")
+@RequestMapping("/api/sl/")
 class StandardLevy(
-    applicationMapProperties: ApplicationMapProperties,
-    private val serviceMapsRepository: IServiceMapsRepository,
-    private val businessNatureRepository: IBusinessNatureRepository,
-    private val standardLevyFactoryVisitReportRepo: IStandardLevyFactoryVisitReportRepository,
-    private val standardLevyPaymentsRepository: IStandardLevyPaymentsRepository,
-    private val standardsLevyBpmn: StandardsLevyBpmn,
+    private val standardLevyFactoryVisitReportRepository: IStandardLevyFactoryVisitReportRepository,
     private val commonDaoServices: CommonDaoServices,
-    private val companyProfileRepo: ICompanyProfileRepository,
-    private val userRepo: IUserRepository
-){
-
-    @GetMapping("sl/get-data")
-    fun testGet(@RequestParam("manufacturerId") manufacturerId : Long): String {
-        KotlinLogging.logger { }.info { "manufacturerId:  = ${manufacturerId}" }
-        return "redirect:/sl/manufacturer?manufacturerId=${manufacturerId}"
+    private val companyProfileRepo: ICompanyProfileRepository
+) {
+    @GetMapping("test")
+    fun testWorks() : String{
+        return "works"
     }
 
-    @PostMapping("sl/save-data")
+    @PostMapping("/save-visit-report-data")
     fun saveFactoryVisitReport(@RequestParam("manufacturerId") manufacturerId : Long, reportData: StandardLevyFactoryVisitReportEntity) : String {
-        standardLevyFactoryVisitReportRepo.findByManufacturerEntity(manufacturerId)?.let { report ->
+            standardLevyFactoryVisitReportRepository.findByManufacturerEntity(manufacturerId)?.let { report ->
             report.remarks = reportData.remarks
             report.purpose = reportData.purpose
             report.actionTaken = reportData.actionTaken
             report.personMet = reportData.personMet
-            standardLevyFactoryVisitReportRepo.save(report)
+                report.reportDate = LocalDate.now()
+                standardLevyFactoryVisitReportRepository.save(report)
             return "redirect:/sl/manufacturer?manufacturerId=${manufacturerId}"
         }?: throw InvalidInputException("Please enter a valid id")
     }
+
+    @PostMapping("update-manufacturer")
+    fun updateManufacturerDetails(@RequestParam("manufacturerId") manufacturerId: Long, companyProfile: CompanyProfileEntity) : String{
+        KotlinLogging.logger {  }.info { "Company Details ===> "+manufacturerId  }
+        commonDaoServices.findCompanyProfileWithID(manufacturerId).let { manufacturerDetails ->
+            manufacturerDetails.ownership = companyProfile.ownership
+            manufacturerDetails.closureOfOperations = companyProfile.closureOfOperations
+            manufacturerDetails.postalAddress = companyProfile.postalAddress
+            companyProfileRepo.save(manufacturerDetails)
+            return "redirect:/sl/manufacturer?manufacturerId=${manufacturerId}"
+        }
+    }
+
+    @PostMapping("assistance-manager-approval")
+    fun assistanceManagerApproval(@RequestParam("manufacturerId") manufacturerId : Long, reportData: StandardLevyFactoryVisitReportEntity) : String{
+        standardLevyFactoryVisitReportRepository.findByManufacturerEntity(manufacturerId)?.let { report ->
+            report.assistantManagerApproval = 1
+            report.assistanceManagerRemarks = reportData.assistanceManagerRemarks
+            standardLevyFactoryVisitReportRepository.save(report)
+            return "redirect:/sl/manufacturer?manufacturerId=${manufacturerId}"
+        }?: throw InvalidInputException("No Report found")
+    }
+
 
 
 }

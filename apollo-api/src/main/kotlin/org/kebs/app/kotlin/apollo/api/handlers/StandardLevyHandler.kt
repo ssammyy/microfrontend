@@ -199,10 +199,8 @@ class StandardLevyHandler(
                         ?.let {
                             req.paramOrNull("manufacturerId")?.toLongOrNull()
                                 ?.let { manufacturerId ->
-                                    KotlinLogging.logger { }.info { "Manufacturer id juu ==> " + manufacturerId }
                                     commonDaoServices.findCompanyProfileWithID(manufacturerId)
                                         .let { manufacturer ->
-                                            KotlinLogging.logger { }.info { "Manufacturer id ==> " + manufacturer.id }
                                             commonDaoServices.findAllPlantDetails(
                                                 manufacturer.userId ?: throw ExpectedDataNotFound("INVALID USER ID")
                                             )
@@ -233,6 +231,7 @@ class StandardLevyHandler(
                                                             req.attributes()["reportData"] =
                                                                 StandardLevyFactoryVisitReportEntity()
                                                             req.attributes()["manufacturer"] = manufacturer
+                                                            req.attributes()["companyProfile"] = CompanyProfileEntity()
                                                             req.attributes()["map"] = map
 
                                                             req.attributes()["turnover"] = manufacturer.yearlyTurnover
@@ -271,6 +270,8 @@ class StandardLevyHandler(
                         companyProfileRepo.save(manufacturerDetails)
                         val factoryVisitReportEntity = StandardLevyFactoryVisitReportEntity()
                         factoryVisitReportEntity.manufacturerEntity = manufacturerDetails.id
+                        factoryVisitReportEntity.assistantManagerApproval = 0
+                        factoryVisitReportEntity.managersApproval = 0
                         factoryVisitReportEntity.scheduledVisitDate = manufacturerDetails.factoryVisitDate as Date
                         factoryVisitReportEntity.createdBy = "Admin"
                         factoryVisitReportEntity.createdOn = commonDaoServices.getTimestamp()
@@ -279,10 +280,6 @@ class StandardLevyHandler(
                         standardsLevyBpmn.startSlSiteVisitProcess(savedReport.id ?: throw NullValueNotAllowedException("Id should not be null"), commonDaoServices.getLoggedInUser()?.id ?: throw Exception("Please login"))
                         standardsLevyBpmn.slSvQueryManufacturerDetailsComplete(savedReport.id ?: throw NullValueNotAllowedException("Id should not be null"))
                         standardsLevyBpmn.slSvScheduleVisitComplete(savedReport.id ?: throw NullValueNotAllowedException("Id should not be null"))
-
-                        //manufacturerDetails.id.let { standardsLevyBpmn.startSlSiteVisitProcess(manufacturerDetails.id, 54) }
-                        //manufacturerDetails.id.let { standardsLevyBpmn.slsvQueryManufacturerDetailsComplete(it) }
-                        //manufacturerDetails.id.let { standardsLevyBpmn.slsvScheduleVisitComplete(it) }
                         redirectAttributes?.addFlashAttribute(
                             "alert",
                             "You have scheduled the factory visit"
@@ -295,34 +292,6 @@ class StandardLevyHandler(
                     }
 
                 }
-//                    req.body ()
-//                        ?.let { manufacturerId ->
-//                            manufacturerRepository.findByIdOrNull(manufacturerId.toLong())
-//                                ?.let { manufacturer ->
-//                                    req.param("scheduleDate")
-//                                        .let { scheduleDate ->
-//                                            KotlinLogging.logger {  }.info { "Scheduled date  ==> "+ scheduleDate }
-//                                            with(manufacturer) {
-//                                                factoryVisitDate = scheduleDate.toString()
-//                                                factoryVisitStatus = map.activeStatus
-//                                            }
-//                                            manufacturerRepository.save(manufacturer)
-//
-//                                            val kraId = req.paramOrNull("kraId")?.toLong()
-//
-//                                            KotlinLogging.logger {  }.info { "kraId ==> $kraId" }
-//
-//                                            // Schedule site visit complete
-//                                            if (kraId != null) {
-//
-//                                            }
-//
-//
-//                                        }
-//
-//                                }
-//                        }
-
             }
             ?: throw ServiceMapNotFoundException("Missing application mapping for [id=$appId], recheck configuration")
 
