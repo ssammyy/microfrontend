@@ -18,7 +18,12 @@ interface IConsignmentDocumentDetailsRepository : HazelcastRepository<Consignmen
     fun findAllById(Id: Long): List<ConsignmentDocumentDetailsEntity>?
 //    fun findByPortOfArrivalAndCocIdIsNotNull(portOfArrival: SectionsEntity, pageable: Pageable): Page<ConsignmentDocumentDetailsEntity>?
 
-    fun findByPortOfArrivalAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNull(
+    fun findByPortOfArrivalAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNull(
+        portOfArrival: Long,
+        cdType: Long
+    ): List<ConsignmentDocumentDetailsEntity>?
+
+    fun findByPortOfArrivalAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNotNull(
         portOfArrival: Long,
         cdType: Long
     ): List<ConsignmentDocumentDetailsEntity>?
@@ -30,7 +35,12 @@ interface IConsignmentDocumentDetailsRepository : HazelcastRepository<Consignmen
         pageable: Pageable
     ): Page<ConsignmentDocumentDetailsEntity>?
 
-    fun findAllByAssignedInspectionOfficerAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNull(
+    fun findAllByAssignedInspectionOfficerAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNull(
+        assignedInspectionOfficer: UsersEntity,
+        cdType: Long
+    ): List<ConsignmentDocumentDetailsEntity>?
+
+    fun findAllByAssignedInspectionOfficerAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNotNull(
         assignedInspectionOfficer: UsersEntity,
         cdType: Long
     ): List<ConsignmentDocumentDetailsEntity>?

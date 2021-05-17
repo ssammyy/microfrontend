@@ -102,32 +102,31 @@ class SftpServiceImpl(
     override fun downloadFilesByDocType(docType: String): List<File> {
         val sftp: ChannelSftp = this.createSftp()
         val filesList = mutableListOf<File>()
-        try {
+//        try {
             sftp.cd(applicationMapProperties.mapSftpDownloadRoot)
-            KotlinLogging.logger { }.info(":::: Downloading file to: ${applicationMapProperties.mapSftpDownloadRoot} ::::")
+//            KotlinLogging.logger { }.info(":::: Downloading file to: ${applicationMapProperties.mapSftpDownloadRoot} ::::")
 
             val allFiles = sftp.ls(applicationMapProperties.mapSftpDownloadRoot)
             for (file in allFiles) {
                 val entry: ChannelSftp.LsEntry = file as ChannelSftp.LsEntry
                 if (validateKeswsFileByDocType(entry.filename, docType)) {
-                    KotlinLogging.logger { }.info(":::: File found: ${entry.filename} ::::")
+//                    KotlinLogging.logger { }.info(":::: File found: ${entry.filename} ::::")
                     filesList.add(convertInputstreamToFile(sftp.get(entry.filename), entry.filename))
                 }
             }
             return filesList
-        } catch (e: Exception) {
-            KotlinLogging.logger { }.error("An error occurred while downloading sftp files", e)
-            throw RuntimeException("An error occurred while downloading sftp files")
-        }
+//        } catch (e: Exception) {
+//            KotlinLogging.logger { }.error("An error occurred while downloading sftp files", e)
+////            throw RuntimeException("An error occurred while downloading sftp files")
+//        }
     }
 
-    fun moveFileToProcessedFolder(file: File): Boolean {
+    fun moveFileToProcessedFolder(file: File, destinationFolder: String): Boolean {
         val sftp: ChannelSftp = this.createSftp()
         try {
             val fileName = file.name
-            KotlinLogging.logger { }.info(":::: Moving file: $fileName from directory: ${applicationMapProperties.mapSftpDownloadRoot}" +
-                    " to directory: ${applicationMapProperties.mapSftpProcessedRoot}   ::::")
-            sftp.rename(applicationMapProperties.mapSftpDownloadRoot.plus("/").plus(fileName), applicationMapProperties.mapSftpProcessedRoot.plus("/").plus(fileName))
+            KotlinLogging.logger { }.info(":::: Moving file: $fileName from directory: ${applicationMapProperties.mapSftpDownloadRoot}" + " to directory: ${destinationFolder}   ::::")
+            sftp.rename(applicationMapProperties.mapSftpDownloadRoot.plus("/").plus(fileName), destinationFolder.plus("/").plus(fileName))
         } catch (e: Exception) {
             KotlinLogging.logger { }.error("An error occurred while moving sftp files", e)
         } finally {
@@ -145,7 +144,7 @@ class SftpServiceImpl(
 
     fun convertInputstreamToFile(inputStream: InputStream, fileName: String): File {
         val targetFile = File(Files.createTempDir(), fileName)
-        KotlinLogging.logger { }.info(":::: targetFile: ${targetFile.name} ::::")
+//        KotlinLogging.logger { }.info(":::: targetFile: ${targetFile.name} ::::")
         targetFile.deleteOnExit();
         try {
             FileUtils.copyInputStreamToFile(inputStream, targetFile)

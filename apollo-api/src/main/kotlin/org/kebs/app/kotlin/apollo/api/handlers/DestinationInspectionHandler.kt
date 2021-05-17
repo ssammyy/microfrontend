@@ -141,8 +141,9 @@ class DestinationInspectionHandler(
                                     val userProfilesEntity = commonDaoServices.findUserProfileByUserID(usersEntity, map.activeStatus)
                                     userProfilesEntity.sectionId
                                             ?.let { sectionsEntity ->
-                                                req.attributes()["CDSAutoAssigned"] = daoServices.findAllCdWithPortOfEntry(sectionsEntity, cdType)
+                                                req.attributes()["CDSAutoAssigned"] = daoServices.findAllOngoingCdWithPortOfEntry(sectionsEntity, cdType)
                                                 req.attributes()["CDSManualAssign"] = daoServices.findAllCdWithNoPortOfEntry(cdType)
+                                                req.attributes()["CDCompleted"] = daoServices.findAllOngoingCdWithPortOfEntry(sectionsEntity, cdType)
                                                 ok().render(cdPageList, req.attributes())
                                             }
                                             ?: throw ExpectedDataNotFound("missing section id, check config")
@@ -152,6 +153,7 @@ class DestinationInspectionHandler(
                                     val userProfilesEntity = commonDaoServices.findUserProfileByUserID(usersEntity, map.activeStatus)
                                     req.attributes()["CDSAutoAssigned"] = daoServices.findAllCdWithAssignedIoID(usersEntity, cdType)
                                     req.attributes()["CDSManualAssign"] = userProfilesEntity.subSectionL2Id?.let { daoServices.findAllCdWithNoAssignedIoID(it, cdType) }
+                                    req.attributes()["CDCompleted"] = daoServices.findAllCompleteCdWithAssignedIoID(usersEntity, cdType)
                                     ok().render(cdPageList, req.attributes())
                                 }
                                 else -> throw SupervisorNotFoundException("can't access this page Due to Invalid authority")

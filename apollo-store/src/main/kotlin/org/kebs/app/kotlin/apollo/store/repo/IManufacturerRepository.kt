@@ -49,8 +49,8 @@ interface IManufacturerProductRepository : HazelcastRepository<ManufactureProduc
 interface IManufacturePlantDetailsRepository : HazelcastRepository<ManufacturePlantDetailsEntity, Long> {
 //    fun findByProductName(productName: String): ManufacturePlantDetailsEntity?
     fun findByUserId(manufactureId: Long): List<ManufacturePlantDetailsEntity>?
-    fun findByManufactureId(manufactureId: Long): List<ManufacturePlantDetailsEntity>?
-    fun findByManufactureIdAndStatus(manufactureId: Long, status: Int): List<ManufacturePlantDetailsEntity>?
+    fun findByCompanyProfileId(manufactureId: Long): List<ManufacturePlantDetailsEntity>?
+    fun findByCompanyProfileIdAndStatus(manufactureId: Long, status: Int): List<ManufacturePlantDetailsEntity>?
 }
 
 @Repository
@@ -64,13 +64,6 @@ interface IManufacturerProductBrandRepository : HazelcastRepository<ManufactureB
 interface IManufacturerBranchRepository : HazelcastRepository<ManufactureBranchEntity, Long> {
     fun findByBranchName(branchName: String): ManufactureBranchEntity?
     fun findByManufacturerIdAndStatus(manufacturerId: Long, status: Int): List<ManufactureBranchEntity>
-}
-
-@Repository
-interface IQaProcessStatusRepository : HazelcastRepository<QaProcessStatusEntity, Long> {
-    fun findByProcessStatusName(processStatusName: String): QaProcessStatusEntity?
-    fun findByProcessStatusNameAndStatus(processStatusName: String, status: Long): QaProcessStatusEntity?
-    fun findByStatus(status: Long): List<QaProcessStatusEntity>?
 }
 
 @Repository

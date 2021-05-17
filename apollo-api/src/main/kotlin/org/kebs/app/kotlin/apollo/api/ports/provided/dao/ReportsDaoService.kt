@@ -1,28 +1,45 @@
 package org.kebs.app.kotlin.apollo.api.ports.provided.dao
 
 
+import com.google.common.io.Files
+import mu.KotlinLogging
 import net.sf.jasperreports.engine.JREmptyDataSource
 import net.sf.jasperreports.engine.JasperCompileManager
+import net.sf.jasperreports.engine.JasperExportManager
 import net.sf.jasperreports.engine.JasperFillManager
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource
+import net.sf.jasperreports.engine.data.JRMapArrayDataSource
 import net.sf.jasperreports.engine.export.JRPdfExporter
 import net.sf.jasperreports.engine.xml.JRXmlLoader
 import net.sf.jasperreports.export.SimpleExporterInput
 import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput
+import org.kebs.app.kotlin.apollo.common.dto.reports.LocalCocItemsReportInput
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
+import org.kebs.app.kotlin.apollo.store.model.CocsEntity
+import org.kebs.app.kotlin.apollo.store.model.di.CdItemDetailsEntity
+import org.kebs.app.kotlin.apollo.store.model.di.ConsignmentDocumentDetailsEntity
+import org.kebs.app.kotlin.apollo.store.repo.ICocsRepository
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.context.annotation.Lazy
 import org.springframework.core.io.ResourceLoader
 import org.springframework.stereotype.Service
 import org.springframework.util.ResourceUtils
 import java.io.ByteArrayOutputStream
+import java.io.File
 import javax.servlet.http.HttpServletResponse
+
 
 @Service
 class ReportsDaoService(
-        private val applicationMapProperties: ApplicationMapProperties,
-        private val resourceLoader: ResourceLoader,
-        private val commonDaoServices: CommonDaoServices,
-        private val invoiceDaoService: InvoiceDaoService
+    private val applicationMapProperties: ApplicationMapProperties,
+    private val resourceLoader: ResourceLoader,
+    private val commonDaoServices: CommonDaoServices,
+    private val invoiceDaoService: InvoiceDaoService
 ) {
+
+    @Lazy
+    @Autowired
+    lateinit var diDaoServices: DestinationInspectionDaoServices
 
     //Get KEBS Logo
     final val logoImageResource = resourceLoader.getResource(applicationMapProperties.mapKebsLogoPath)
@@ -135,6 +152,47 @@ class ReportsDaoService(
             pdfReportStream.close()
         }
 
+    }
+
+    fun generateLocalCoCReportWithDataSource(cdDetails: ConsignmentDocumentDetailsEntity, filePath: String) {
+        var map = hashMapOf<String, Any>()
+        map["imagePath"] = logoImageFile
+        cdDetails.ucrNumber?.let {
+            diDaoServices.findCocByUcrNumber(it)?.let { coc ->
+                val map = diDaoServices.createLocalCocReportMap(coc)
+                val cocItems = cdDetails.let { diDaoServices.findCDItemsListWithCDID(it) }
+
+                val itemsReportInput: LocalCocItemsReportInput = assembleCocItemReportInput(cocItems)
+                val dataSource = JRMapArrayDataSource(arrayOf(itemsReportInput.getDataSources()))
+
+                val file = ResourceUtils.getFile(filePath)
+                val design = JRXmlLoader.load(file)
+                val jasperReport = JasperCompileManager.compileReport(design)
+
+                val jasperPrint = JasperFillManager.fillReport(jasperReport, map, dataSource)
+
+                val fileName: String = cdDetails.ucrNumber.plus("-coc-report.pdf")
+
+                val targetFile = File(Files.createTempDir(), fileName)
+                targetFile.deleteOnExit()
+
+                JasperExportManager.exportReportToPdfFile(jasperPrint, targetFile.absolutePath)
+
+                with(coc) {
+                    localCocFile = targetFile.readBytes()
+                    localCocFileName = targetFile.name
+                }
+                diDaoServices.saveCoc(coc)
+            }
+        }
+    }
+
+    fun assembleCocItemReportInput(items: List<CdItemDetailsEntity>): LocalCocItemsReportInput {
+        val itemDataSource = JRBeanCollectionDataSource(items, false)
+        var localCocItemsReportInput = LocalCocItemsReportInput()
+        localCocItemsReportInput.itemDataSource = itemDataSource
+
+        return localCocItemsReportInput
     }
 
 }

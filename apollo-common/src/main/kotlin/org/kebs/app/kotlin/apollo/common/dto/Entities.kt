@@ -428,6 +428,18 @@ data class UserRequestEntityDto(
     var status: Boolean? = null
 )
 
+data class PermitEntityDto(
+    var id: Long? = null,
+    var firmName: String? = null,
+    var permitNumber: String? = null,
+    var productName: String? = null,
+    var tradeMark: String? = null,
+    var dateOfIssue: Date? = null,
+    var dateOfExpiry: Date? = null,
+    var permitStatus: String? = null,
+    var userId: Long? = null
+)
+
 data class UserRequestListEntityDto(
     var id: Long? = null,
     var requestName: String? = null,
@@ -458,6 +470,9 @@ data class ProductsEntityDto(
     var name: String? = null,
     var status: Boolean? = null,
     var productCategoryId: Long? = null,
+)
+data class FmarkEntityDto(
+    var smarkPermitID: Long? = null,
 )
 
 data class ProductSubcategoryEntityDto(

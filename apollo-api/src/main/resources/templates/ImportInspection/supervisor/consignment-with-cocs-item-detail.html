@@ -1029,7 +1029,7 @@
             </div>
           </div>
           <a th:href="@{/api/inspection/supervisor/{id}/coc-approve-item-cd(id = ${itemCocs.id})}" class="button w-button action-button">Approve</a>
-          <a th:if="${itemCocs.targetStatus != 1}" th:href="@{/api/inspection/supervisor/{id}/coc-target-item-cd(id = ${itemCocs.id})}" class="button bg-red w-button action-button">Target Inspection</a>
+<!--          <a th:if="${itemCocs.targetStatus != 1}" th:href="@{/api/inspection/supervisor/{id}/coc-target-item-cd(id = ${itemCocs.id})}" class="button bg-red w-button action-button">Target Inspection</a>-->
           <a th:href="@{/api/inspection/supervisor/{id}/coc-reject-item-cd(id = ${itemCocs.id})}" class="button bg-red w-button action-button">Reject</a>
         </div>
       </div>

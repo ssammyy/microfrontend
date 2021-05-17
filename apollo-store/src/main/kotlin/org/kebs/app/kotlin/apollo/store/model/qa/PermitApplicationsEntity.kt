@@ -138,6 +138,10 @@ class PermitApplicationsEntity:Serializable {
 //    var permitType: PermitTypesEntity? = null
 
 
+    @Column(name = "PERMIT_STATUS")
+    @Basic
+    var permitStatus: Long? = null
+
     @Column(name = "USER_ID")
     @Basic
     var userId: Long? = null
@@ -323,6 +327,10 @@ class PermitApplicationsEntity:Serializable {
     @Column(name = "ASSIGN_ASSESSOR_STATUS")
     @Basic
     var assignAssessorStatus: Int? = null
+
+    @Column(name = "RESUBMIT_APPLICATION_STATUS")
+    @Basic
+    var resubmitApplicationStatus: Int? = null
 
     @Column(name = "TITLE")
     @Basic
@@ -534,6 +542,7 @@ class PermitApplicationsEntity:Serializable {
         if (productSubCategory != other.productSubCategory) return false
         if (attachedPlantId != other.attachedPlantId) return false
         if (attachedPlantId != other.attachedPlantId) return false
+        if (permitStatus != other.permitStatus) return false
         if (userId != other.userId) return false
         if (bsNumber != other.bsNumber) return false
         if (compliantRemarks != other.compliantRemarks) return false
@@ -574,6 +583,7 @@ class PermitApplicationsEntity:Serializable {
         if (justificationReportRemarks != other.justificationReportRemarks) return false
         if (assessmentReportRemarks != other.assessmentReportRemarks) return false
         if (assignAssessorStatus != other.assignAssessorStatus) return false
+        if (resubmitApplicationStatus != other.resubmitApplicationStatus) return false
         if (assessorId != other.assessorId) return false
         if (pacSecId != other.pacSecId) return false
         if (paidStatus != other.paidStatus) return false
@@ -653,6 +663,7 @@ class PermitApplicationsEntity:Serializable {
         result = 31 * result + (productStandard?.hashCode() ?: 0)
         result = 31 * result + (productSubCategory?.hashCode() ?: 0)
         result = 31 * result + (region?.hashCode() ?: 0)
+        result = 31 * result + (permitStatus?.hashCode() ?: 0)
         result = 31 * result + (userId?.hashCode() ?: 0)
         result = 31 * result + (bsNumber?.hashCode() ?: 0)
         result = 31 * result + (compliantRemarks?.hashCode() ?: 0)
@@ -695,6 +706,7 @@ class PermitApplicationsEntity:Serializable {
         result = 31 * result + (permitExpiredStatus ?: 0)
         result = 31 * result + (compliantStatus ?: 0)
         result = 31 * result + (assignAssessorStatus ?: 0)
+        result = 31 * result + (resubmitApplicationStatus ?: 0)
         result = 31 * result + (justificationReportStatus ?: 0)
         result = 31 * result + (smeFormFilledStatus ?: 0)
         result = 31 * result + (invoiceGenerated ?: 0)

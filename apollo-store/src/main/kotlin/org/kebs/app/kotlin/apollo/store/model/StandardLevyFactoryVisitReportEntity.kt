@@ -4,6 +4,8 @@ import java.io.Serializable
 import java.sql.Timestamp
 import java.time.LocalDate
 import java.util.*
+//import java.util.*
+//import java.util.*
 import javax.persistence.*
 
 @Entity
@@ -114,6 +116,14 @@ class StandardLevyFactoryVisitReportEntity : Serializable {
     @Column(name = "VAR_FIELD_10")
     @Basic
     var varField10: String? = null
+
+    @Column(name = "CHEIF_MANAGER_REMARKS")
+    @Basic
+    var cheifManagerRemarks: String? = null
+
+    @Column(name = "ASSISTANCE_MANAGER_REMARKS")
+    @Basic
+    var assistanceManagerRemarks: String? = null
 
     @Column(name = "CREATED_BY")
     @Basic

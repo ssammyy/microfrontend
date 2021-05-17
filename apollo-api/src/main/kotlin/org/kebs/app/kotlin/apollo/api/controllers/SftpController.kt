@@ -21,34 +21,26 @@ import org.xhtmlrenderer.util.GeneralUtil.inputStreamToString
 
 @RestController
 @RequestMapping("/api/v1/sftp/")
-class SftpController {
+class SftpController(
+    private val applicationMapProperties: ApplicationMapProperties,
+    private val sftpServiceImpl: SftpServiceImpl,
+    private val commonDaoServices: CommonDaoServices,
+    private val consignmentDocumentDaoService: ConsignmentDocumentDaoService,
+    private val iDFDaoService: IDFDaoService,
+    private val declarationDaoService: DeclarationDaoService,
+    private val manifestDaoService: ManifestDaoService,
+    private val destinationInspectionDaoServices: DestinationInspectionDaoServices
+) {
 
-    @Autowired
-    lateinit var sftpServiceImpl: SftpServiceImpl
-
-    @Autowired
-    lateinit var applicationMapProperties: ApplicationMapProperties
-
-    @Autowired
-    lateinit var commonDaoServices: CommonDaoServices
-
-    @Autowired
-    lateinit var consignmentDocumentDaoService: ConsignmentDocumentDaoService
-
-    @Autowired
-    lateinit var iDFDaoService: IDFDaoService
-
-    @Autowired
-    lateinit var declarationDaoService: DeclarationDaoService
-
-    @Autowired
-    lateinit var manifestDaoService: ManifestDaoService
+    val processedRootFolder = applicationMapProperties.mapSftpProcessedRoot
+    val unprocessableRootFolder = applicationMapProperties.mapSftpUnprocessableRoot
 
     @GetMapping("/kesws/download")
     fun downloadKeswsFiles(): ResponseEntity<RestResponseModel> {
         //TODO: Fetch DocTypes from the DB
-        val keswsDocTypes = listOf(applicationMapProperties.mapKeswsCdDoctype, applicationMapProperties.mapKeswsBaseDocumentDoctype,
-            applicationMapProperties.mapKeswsUcrResDoctype, applicationMapProperties.mapKeswsDeclarationDoctype, applicationMapProperties.mapKeswsManifestDoctype)
+        val keswsDocTypes = listOf(applicationMapProperties.mapKeswsBaseDocumentDoctype, applicationMapProperties.mapKeswsUcrResDoctype,
+            applicationMapProperties.mapKeswsDeclarationDoctype, applicationMapProperties.mapKeswsManifestDoctype, applicationMapProperties.mapKeswsAirManifestDoctype,
+            applicationMapProperties.mapKeswsCdDoctype, applicationMapProperties.mapKeswsDeclarationVerificationDoctype)
 
         for (doctype in keswsDocTypes) {
             when(doctype) {
@@ -57,9 +49,18 @@ class SftpController {
                     KotlinLogging.logger { }.info("No of Base Documents found in bucket: ${allFiles.size}")
                     for (file in allFiles) {
                         val xml = inputStreamToString(FileInputStream(file))
-                        val baseDocumentResponse: BaseDocumentResponse = commonDaoServices.deserializeFromXML(xml)
-                        val docSaved = iDFDaoService.mapBaseDocumentToIDF(baseDocumentResponse)
-                        if (docSaved) { sftpServiceImpl.moveFileToProcessedFolder(file) }
+                        KotlinLogging.logger { }.info("Deserializing IDF Doc: ${file.name}")
+                        var baseDocumentResponse: BaseDocumentResponse? = null
+                        try {
+                                baseDocumentResponse = commonDaoServices.deserializeFromXML(xml)
+                        } catch (e: Exception) {
+                            KotlinLogging.logger { }.error("An error occurred while deserializing ${file.name}", e)
+                            sftpServiceImpl.moveFileToProcessedFolder(file, unprocessableRootFolder)
+                        }
+                        if (baseDocumentResponse != null) {
+                            val docSaved = iDFDaoService.mapBaseDocumentToIDF(baseDocumentResponse)
+                            if (docSaved) { sftpServiceImpl.moveFileToProcessedFolder(file, processedRootFolder) }
+                        }
                     }
                 }
                 applicationMapProperties.mapKeswsUcrResDoctype -> {
@@ -67,25 +68,43 @@ class SftpController {
                     KotlinLogging.logger { }.info("No of UCR Response files found in bucket: ${allFiles.size}")
                     for (file in allFiles) {
                         val xml = inputStreamToString(FileInputStream(file))
-                        val ucrNumberMessage: UCRNumberMessage = commonDaoServices.deserializeFromXML(xml)
-                        val baseDocRefNo = ucrNumberMessage.data?.dataIn?.sadId
-                        val ucrNumber = ucrNumberMessage.data?.dataIn?.ucrNumber
-                        if (baseDocRefNo == null || ucrNumber == null) {
-                            KotlinLogging.logger { }.error { "BaseDocRef Number or UcrNumber missing" }
-                            throw Exception("BaseDocRef Number or UcrNumber missing")
+                        KotlinLogging.logger { }.info("Deserializing UCR Doc: ${file.name}")
+                        var ucrNumberMessage: UCRNumberMessage? = null
+                        try {
+                            ucrNumberMessage = commonDaoServices.deserializeFromXML(xml)
+                        } catch (e: Exception) {
+                            KotlinLogging.logger { }.error("An error occurred while deserializing ${file.name}", e)
                         }
-                        val idfUpdated = iDFDaoService.updateIdfUcrNumber(baseDocRefNo, ucrNumber)
-                        if (idfUpdated) { sftpServiceImpl.moveFileToProcessedFolder(file) }
+                        if (ucrNumberMessage == null) {
+                            sftpServiceImpl.moveFileToProcessedFolder(file, unprocessableRootFolder)
+                        } else {
+                            val baseDocRefNo = ucrNumberMessage.data?.dataIn?.sadId
+                            val ucrNumber = ucrNumberMessage.data?.dataIn?.ucrNumber
+                            if (baseDocRefNo == null || ucrNumber == null) {
+                                KotlinLogging.logger { }.error { "BaseDocRef Number or UcrNumber missing" }
+                                throw Exception("BaseDocRef Number or UcrNumber missing")
+                            }
+                            val idfUpdated = iDFDaoService.updateIdfUcrNumber(baseDocRefNo, ucrNumber)
+                            if (idfUpdated) { sftpServiceImpl.moveFileToProcessedFolder(file, processedRootFolder) }
+                        }
                     }
                 }
                 applicationMapProperties.mapKeswsDeclarationDoctype -> {
                     val allFiles = sftpServiceImpl.downloadFilesByDocType(applicationMapProperties.mapKeswsDeclarationDoctype)
                     KotlinLogging.logger { }.info("No of Declaration Documents found in bucket: ${allFiles.size}")
+                    var declarationDocumentMessage: DeclarationDocumentMessage? = null
                     for (file in allFiles) {
                         val xml = inputStreamToString(FileInputStream(file))
-                        val declarationDocumentMessage: DeclarationDocumentMessage = commonDaoServices.deserializeFromXML(xml)
-                        val docSaved = declarationDaoService.mapDeclarationMessageToEntities(declarationDocumentMessage)
-                        if (docSaved) { sftpServiceImpl.moveFileToProcessedFolder(file) }
+                        try {
+                            declarationDocumentMessage = commonDaoServices.deserializeFromXML(xml)
+                        } catch (e: Exception) {
+                            KotlinLogging.logger { }.error("An error occurred while deserializing ${file.name}", e)
+                            sftpServiceImpl.moveFileToProcessedFolder(file, unprocessableRootFolder)
+                        }
+                        if (declarationDocumentMessage != null) {
+                            val docSaved = declarationDaoService.mapDeclarationMessageToEntities(declarationDocumentMessage)
+                            if (docSaved) { sftpServiceImpl.moveFileToProcessedFolder(file, processedRootFolder) }
+                        }
                     }
                 }
                 applicationMapProperties.mapKeswsManifestDoctype -> {
@@ -95,7 +114,17 @@ class SftpController {
                         val xml = inputStreamToString(FileInputStream(file))
                         val manifestDocumentMessage: ManifestDocumentMessage = commonDaoServices.deserializeFromXML(xml)
                         val docSaved = manifestDaoService.mapManifestMessageToManifestEntity(manifestDocumentMessage)
-                        if (docSaved) { sftpServiceImpl.moveFileToProcessedFolder(file) }
+                        if (docSaved) { sftpServiceImpl.moveFileToProcessedFolder(file, processedRootFolder) }
+                    }
+                }
+                applicationMapProperties.mapKeswsAirManifestDoctype -> {
+                    val allFiles = sftpServiceImpl.downloadFilesByDocType(applicationMapProperties.mapKeswsAirManifestDoctype)
+                    KotlinLogging.logger { }.info("No of Air Manifest Documents found in bucket: ${allFiles.size}")
+                    for (file in allFiles) {
+                        val xml = inputStreamToString(FileInputStream(file))
+                        val manifestDocumentMessage: ManifestDocumentMessage = commonDaoServices.deserializeFromXML(xml)
+                        val docSaved = manifestDaoService.mapManifestMessageToManifestEntity(manifestDocumentMessage)
+                        if (docSaved) { sftpServiceImpl.moveFileToProcessedFolder(file, processedRootFolder) }
                     }
                 }
                 applicationMapProperties.mapKeswsCdDoctype -> {
@@ -106,7 +135,25 @@ class SftpController {
                         val stringToExclude = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>"
                         val consignmentDoc: ConsignmentDocument = commonDaoServices.deserializeFromXML(xml, stringToExclude)
                         consignmentDocumentDaoService.insertConsignmentDetailsFromXml(consignmentDoc, xml.toByteArray())
-                        sftpServiceImpl.moveFileToProcessedFolder(file)
+                        sftpServiceImpl.moveFileToProcessedFolder(file, processedRootFolder)
+                    }
+                }
+                applicationMapProperties.mapKeswsDeclarationVerificationDoctype -> {
+                    val allFiles = sftpServiceImpl.downloadFilesByDocType(applicationMapProperties.mapKeswsDeclarationVerificationDoctype)
+                    KotlinLogging.logger { }.info("No of Declaration Verification Documents found in bucket: ${allFiles.size}")
+                    var declarationVerificationDocumentMessage: DeclarationVerificationMessage? = null
+                    for (file in allFiles) {
+                        val xml = inputStreamToString(FileInputStream(file))
+                        try {
+                            declarationVerificationDocumentMessage = commonDaoServices.deserializeFromXML(xml)
+                        } catch (e: Exception) {
+                            KotlinLogging.logger { }.error("An error occurred while deserializing ${file.name}", e)
+                            sftpServiceImpl.moveFileToProcessedFolder(file, unprocessableRootFolder)
+                        }
+                        if (declarationVerificationDocumentMessage != null) {
+                            destinationInspectionDaoServices.updateCdVerificationSchedule(declarationVerificationDocumentMessage)
+                            sftpServiceImpl.moveFileToProcessedFolder(file, processedRootFolder)
+                        }
                     }
                 }
             }
