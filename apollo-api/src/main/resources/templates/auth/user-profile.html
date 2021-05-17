@@ -259,17 +259,15 @@
                                 <button class="accordion">Commodity Manufactured Details</button>
                                 <div class="panel">
                                     &nbsp;
-                                    <div id="idButtonsCommodity" th:if="${manufactureProfile.closedCommodityManufactured != 1 }">>
+                                    <div id="idButtonsCommodity" th:if="${manufactureProfile.closedCommodityManufactured != 1 }">
                                         <div class="form-row">
-                                            <div class="col-md-12 mb-3">
+                                            <div class="col-md-6 mb-3">
                                                 <button id="addCommodityParam" class="btn btn-primary"
                                                         onclick="popUpManufacturedFunction('addCommodityManufacturedDetails');" type="button">ADD DETAILS
                                                 </button>
                                             </div>
                                             <div class="col-md-6 mb-3">
-                                                <button id="closeManufacturedADD" class="btn btn-primary"
-                                                        th:href="@{/api/auth/close-commodity-manufacture}" type="button">CLOSE ADD
-                                                </button>
+                                                <a id="closeManufacturedADD" class="btn btn-primary" th:href="@{/api/auth/close-commodity-manufacture(companyProfileID=${manufactureProfile.id})}" type="button">CLOSE ADD</a>
                                             </div>
                                             <!--                                <div class="col-md-4 mb-3">-->
                                             <!--                                        <label for="cocNumber" >16. C.O.C. No</label>-->
@@ -313,9 +311,7 @@
                                                 </button>
                                             </div>
                                             <div class="col-md-6 mb-3">
-                                                <button id="closeContractADD" class="btn btn-primary"
-                                                        th:href="@{/api/auth/close-contracts-underTaken}" type="button">CLOSE ADD
-                                                </button>
+                                                <a  id="closeContractADD" class="btn btn-primary" th:href="@{/api/auth/close-contracts-underTaken(companyProfileID=${manufactureProfile.id})}" type="button">CLOSE ADD</a>
                                             </div>
                                             <!--                                <div class="col-md-4 mb-3">-->
                                             <!--                                        <label for="cocNumber" >16. C.O.C. No</label>-->
@@ -364,7 +360,7 @@
                                     <a th:if="${usersEntity.manufactureProfile != 1}" onclick="popUpCompanyFunction('addCompanyDetails');" class="filter-link" style="color: white">ADD COMPANY DETAILS</a>
 
                                     <div th:if="${usersEntity.manufactureProfile == 1}">
-                                        <a th:if="${manufactureProfile.status == 0 and manufactureProfile.closedCommodityManufactured == 1 and manufactureProfile.closedContractsUndertaken == 1}" th:href="@{/api/auth/submit-registration-manufacture}" class="filter-link" style="color: white">SUBMIT DETAILS</a>
+                                        <a th:if="${manufactureProfile.status == 0 and manufactureProfile.closedCommodityManufactured == 1 or manufactureProfile.closedContractsUndertaken == 1}" th:href="@{/api/auth/submit-registration-manufacture(companyProfileID=${manufactureProfile.id})}" class="filter-link" style="color: white">SUBMIT DETAILS</a>
                                     </div>
 
                                 </div>

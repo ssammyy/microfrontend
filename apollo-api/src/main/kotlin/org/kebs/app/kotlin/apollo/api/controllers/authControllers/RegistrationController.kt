@@ -141,9 +141,8 @@ class RegisterController(
     @GetMapping("close-commodity-manufacture")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun closeCommodityManufactureDetails(
-        model: Model,
-        results: BindingResult,
-        redirectAttributes: RedirectAttributes
+        @RequestParam( "companyProfileID") companyProfileID: Long,
+        model: Model
     ): String? {
 
         val map = commonDaoServices.serviceMapDetails(appId)
@@ -155,6 +154,7 @@ class RegisterController(
         val myDetails = ManufactureSubmitEntityDto()
         with(myDetails){
             closedCommodityManufactured = 1
+            submittedStatus = 0
         }
 
         result = daoServices.closeManufactureRegistrationDetails(map, loggedInUser, myDetails)
@@ -171,9 +171,8 @@ class RegisterController(
     @GetMapping("close-contracts-underTaken")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun closeContractsUnderTakenDetails(
-        model: Model,
-        results: BindingResult,
-        redirectAttributes: RedirectAttributes
+        @RequestParam( "companyProfileID") companyProfileID: Long,
+        model: Model
     ): String? {
 
         val map = commonDaoServices.serviceMapDetails(appId)
@@ -185,6 +184,7 @@ class RegisterController(
         val myDetails = ManufactureSubmitEntityDto()
         with(myDetails){
             closedContractsUndertaken = 1
+            submittedStatus = 0
         }
 
         result = daoServices.closeManufactureRegistrationDetails(map, loggedInUser, myDetails)
@@ -201,9 +201,8 @@ class RegisterController(
     @GetMapping("submit-registration-manufacture")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun submitRegistrationDetails(
-        model: Model,
-        results: BindingResult,
-        redirectAttributes: RedirectAttributes
+        @RequestParam( "companyProfileID") companyProfileID: Long,
+        model: Model
     ): String? {
 
         val map = commonDaoServices.serviceMapDetails(appId)
