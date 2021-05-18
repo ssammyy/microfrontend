@@ -55,7 +55,7 @@
                                     <thead>
                                     <tr>
                                         <th>REF No.</th>
-                                        <th>Manufacturer</th>
+                                        <th>Manufacturer Ref No</th>
                                         <th>Payment Date</th>
                                         <th>Payment Amount</th>
                                         <th>Visit Status</th>
@@ -67,12 +67,12 @@
                                     <!--                                    <tr  class="list" th:if="${payments} and ${not #lists?.isEmpty(payments)} and ${type == 'load_levy_payments'}"  th:each="payment, iStat: ${payments}" style="cursor: pointer">-->
                                     <tr class="list" th:each="payment, iStat: ${payments}">
                                         <td th:text="${payment?.id}"></td>
-                                        <td th:text="${payment?.manufacturerEntity.name}"></td>
+                                        <td th:text="${payment?.manufacturerEntity}"></td>
                                         <td th:text="${#dates.format(payment?.paymentDate, 'dd/MM/yyyy')}"></td>
                                         <td th:text="${payment?.levyPayable} == null ? 'Pending Payment' : 'Ksh. ' + ${payment?.levyPayable}"></td>
                                         <td th:if="${payment?.visitStatus == 1}" th:text="Visited"></td>
                                         <td th:text="${payment?.visitStatus} == null ? 'Not Visited' : 'Pending Visit'"></td>
-                                        <td th:text="${payment?.officerAssigned} == null ? 'Pending Assignment' :  ${payment?.officerAssigned?.lastName}"></td>
+<!--                                        <td th:text="${payment?.officerAssigned} == null ? 'Pending Assignment' :  ${payment?.officerAssigned?.lastName}"></td>-->
                                         <!--                                        <td><a class="btn btn-info" th:href="@{/sl/manufacturer(manufacturerId = ${manufacturer.id}, appId=${map.id})}">view</a></td>-->
                                     </tr>
                                     </tbody>
