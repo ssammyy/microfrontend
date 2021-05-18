@@ -3,13 +3,12 @@ package org.kebs.app.kotlin.apollo.api
 import mu.KotlinLogging
 import org.apache.commons.io.FileUtils
 import org.junit.Assert.assertTrue
+import org.junit.Ignore
 import org.junit.jupiter.api.Test
 import org.junit.runner.RunWith
+import org.kebs.app.kotlin.apollo.api.notifications.Notifications
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.DestinationInspectionBpmn
-import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
-import org.kebs.app.kotlin.apollo.api.ports.provided.dao.ConsignmentDocumentDaoService
-import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DestinationInspectionDaoServices
-import org.kebs.app.kotlin.apollo.api.ports.provided.dao.InvoiceDaoService
+import org.kebs.app.kotlin.apollo.api.ports.provided.dao.*
 import org.kebs.app.kotlin.apollo.api.ports.provided.sftp.UpAndDownLoad
 import org.kebs.app.kotlin.apollo.api.utils.Delimiters
 import org.kebs.app.kotlin.apollo.api.utils.XMLDocument
@@ -24,6 +23,7 @@ import org.kebs.app.kotlin.apollo.store.repo.di.IDestinationInspectionFeeReposit
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.context.annotation.Lazy
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.test.context.junit4.SpringRunner
 import java.io.File
@@ -82,6 +82,13 @@ class DITest {
 
     @Autowired
     lateinit var destinationInspectionBpmn: DestinationInspectionBpmn
+
+    @Autowired
+    lateinit var notifications: Notifications
+
+    @Lazy
+    @Autowired
+    lateinit var reportsDaoService: ReportsDaoService
 
     @Value("\${bpmn.di.mv.cor.process.definition.key}")
     lateinit var diMvWithCorProcessDefinitionKey: String
@@ -1119,4 +1126,24 @@ class DITest {
 </ConsignmentDocument>
             """.trimIndent()
 
+    @Test
+    @Ignore
+    fun testCocEmailAttachment() {
+        val consignmentDocumentEntity: ConsignmentDocumentDetailsEntity = destinationInspectionDaoServices.findCD(881)
+        reportsDaoService.generateLocalCoCReportWithDataSource(consignmentDocumentEntity, applicationMapProperties.mapReportLocalCocPath)?.let { file ->
+            notifications.processEmail("anthonykihagi@gmail.com","Test subject","Test Message",file.path)
+        }
+    }
+
+    @Test
+    @Ignore
+    fun testCorEmailAttachment() {
+        val consignmentDocumentEntity: ConsignmentDocumentDetailsEntity = destinationInspectionDaoServices.findCD(863)
+        reportsDaoService.generateLocalCoRReport(consignmentDocumentEntity, applicationMapProperties.mapReportLocalCorPath)?.let { file ->
+            consignmentDocumentEntity.cdImporter?.let { destinationInspectionDaoServices.findCDImporterDetails(it)
+            }?.let { importer ->
+                importer.email?.let { destinationInspectionDaoServices.sendLocalCorReportEmail(it, file.path) }
+            }
+        }
+    }
 }

@@ -19,3 +19,14 @@ class RegistrationEmailDTO {
     var otpGeneratedDate: Date? = null
 }
 
+class RegistrationForEntryNumberEmailDTO {
+
+    var baseUrl: String? = null
+
+    var fullName: String? = null
+
+    var entryNumber: String? = null
+
+    var dateSubmitted: Date? = null
+}
+

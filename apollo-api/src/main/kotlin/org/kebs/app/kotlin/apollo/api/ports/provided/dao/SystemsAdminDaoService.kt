@@ -405,6 +405,8 @@ class SystemsAdminDaoService(
                         registrationNumber = dto.registrationNumber
                         directorIdNumber = dto.directorIdNumber
                         postalAddress = dto.postalAddress
+                        physicalAddress = dto.physicalAddress
+                        plotNumber = dto.plotNumber
                         companyEmail = dto.companyEmail
                         companyTelephone = dto.companyTelephone
                         yearlyTurnover = dto.yearlyTurnover
@@ -435,6 +437,8 @@ class SystemsAdminDaoService(
                     registrationNumber = dto.registrationNumber
                     directorIdNumber = dto.directorIdNumber
                     postalAddress = dto.postalAddress
+                    physicalAddress = dto.physicalAddress
+                    plotNumber = dto.plotNumber
                     companyEmail = dto.companyEmail
                     companyTelephone = dto.companyTelephone
                     yearlyTurnover = dto.yearlyTurnover
@@ -449,7 +453,7 @@ class SystemsAdminDaoService(
                     factoryVisitStatus = dto.factoryVisitStatus
                     manufactureStatus = dto.manufactureStatus
                     userId = dto.userId
-                    status = 1
+                    status = 0
                     createdBy = loggedInUserDetails().userName
                     createdOn = java.sql.Timestamp.from(java.time.Instant.now())
                 }
@@ -862,11 +866,14 @@ class SystemsAdminDaoService(
     fun returnCompanyProfileEntityDto(cp: CompanyProfileEntity): UserCompanyDto {
 
         return UserCompanyDto(
+            cp.id,
             cp.name,
             cp.kraPin,
             cp.userId,
             cp.registrationNumber,
             cp.postalAddress,
+            cp.physicalAddress,
+            cp.plotNumber,
             cp.companyEmail,
             cp.companyTelephone,
             cp.yearlyTurnover,

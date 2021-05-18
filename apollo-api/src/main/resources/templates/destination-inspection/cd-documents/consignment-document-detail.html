@@ -1038,11 +1038,18 @@
                                    th:href="@{/api/di/cd-coc(cdUuid=${cdDetails?.uuid})}" class="filter-link">Certificate
                                     of Compliance</a>
 
+                                <a th:if="${cdType?.category == cdTypeGoodsCategory and cdType.localCocStatus == activeStatus and cdDetails.localCocOrCorStatus == activeStatus}"
+                                   th:href="@{/api/di/cd-coc(cdUuid=${cdDetails?.uuid})}" class="filter-link">Certificate
+                                    of Compliance</a>
+
                                 <a th:if="${cdType?.category == cdTypeVehiclesCategory and cdType?.localCorStatus != activeStatus}"
                                    th:href="@{/api/di/cd-cor(cdUuid=${cdDetails?.uuid})}" class="filter-link">Certificate
                                     of Roadworthiness</a>
-                                <!--                                <a th:href="@{/api/di/cd-coi(cdUuid=${cdDetails?.uuid})}" class="filter-link">COI-->
-                                <!--                                    Document</a>-->
+
+                                <a th:if="${cdType?.category == cdTypeVehiclesCategory and cdType?.localCorStatus == activeStatus and cdDetails.localCocOrCorStatus == activeStatus}"
+                                   th:href="@{/api/di/cd-cor(cdUuid=${cdDetails?.uuid})}" class="filter-link">Certificate
+                                    of Roadworthiness</a>
+
                                 <a th:href="@{/api/di/cd-idf(cdUuid=${cdDetails?.uuid})}" class="filter-link">IDF
                                     Document</a>
                                 <a class="filter-link"

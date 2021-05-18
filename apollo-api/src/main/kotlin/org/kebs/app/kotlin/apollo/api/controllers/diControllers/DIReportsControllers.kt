@@ -292,27 +292,27 @@ class DIReportsControllers(
         }
     }
 
-    /*
-    Get Local CoR report
-     */
-    @RequestMapping(value = ["/local-cor-report"], method = [RequestMethod.GET])
-    @Throws(Exception::class)
-    fun localCorReport(
-            response: HttpServletResponse,
-            @RequestParam(value = "cdUuid", required = false) consignmentDocUuid: String?
-    ) {
-        var map = hashMapOf<String, Any>()
-        val cdEntity = consignmentDocUuid?.let { daoServices.findCDWithUuid(it) }
-        KotlinLogging.logger {}.info { "The cdEntity found: ${cdEntity?.id}" }
-        cdEntity?.ucrNumber?.let {
-            daoServices.findLocalCorByUcrNumber(it).let {
-                KotlinLogging.logger {}.info { "The cdLocalCorEntity found: ${it.id}" }
-                map = daoServices.createLocalCorReportMap(it)
-                KotlinLogging.logger {}.info { "Final Map: ${map.values}" }
-            }
-        }
-        reportsDaoService.extractReportEmptyDataSource(map, response, applicationMapProperties.mapReportLocalCorPath)
-    }
+//    /*
+//    Get Local CoR report
+//     */
+//    @RequestMapping(value = ["/local-cor-report"], method = [RequestMethod.GET])
+//    @Throws(Exception::class)
+//    fun localCorReport(
+//            response: HttpServletResponse,
+//            @RequestParam(value = "cdUuid", required = false) consignmentDocUuid: String?
+//    ) {
+//        var map = hashMapOf<String, Any>()
+//        val cdEntity = consignmentDocUuid?.let { daoServices.findCDWithUuid(it) }
+//        KotlinLogging.logger {}.info { "The cdEntity found: ${cdEntity?.id}" }
+//        cdEntity?.ucrNumber?.let {
+//            daoServices.findLocalCorByUcrNumber(it).let {
+//                KotlinLogging.logger {}.info { "The cdLocalCorEntity found: ${it.id}" }
+//                map = daoServices.createLocalCorReportMap(it)
+//                KotlinLogging.logger {}.info { "Final Map: ${map.values}" }
+//            }
+//        }
+//        reportsDaoService.extractReportEmptyDataSource(map, response, applicationMapProperties.mapReportLocalCorPath)
+//    }
 }
 
 

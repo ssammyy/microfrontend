@@ -371,6 +371,9 @@ class ApplicationMapProperties {
     @Value("\${org.kebs.app.kotlin.apollo.application.map.user.registration.request.password.changed.notification}")
     val mapUserPasswordResetNotification: String = ""
 
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.user.registration.entry.number.notification}")
+    val mapUserEntryNumberNotification: String = ""
+
     @Value("\${org.kebs.app.kotlin.apollo.resources.report.demand.note.path}")
     val mapReportDemandNotePath: String = ""
 
@@ -433,6 +436,12 @@ class ApplicationMapProperties {
 
     @Value("\${org.kebs.app.kotlin.apollo.application.map.user.profile.importer.userTypeID}")
     val mapUserTypeImporter: Long = 0L
+
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.user.profile.contractors.type.id}")
+    val mapUserTypeContractorID: Long = 0L
+
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.user.profile.manufacture.type.id}")
+    val mapUserTypeManufactureID: Long = 0L
 
     @Value("\${org.kebs.app.kotlin.apollo.application.map.user.profile.employee.userType}")
     val mapUserTypeNameEmployee: String = ""

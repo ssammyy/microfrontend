@@ -162,32 +162,32 @@
                                 </div>
                                 <div>
                                     <label class="field-label" for="division">Select Division
-                                        <select id="division" ng-model="userForm.division" ng-options="x.id as x.division for x in divisions | filter:{departmentId:userForm.department}"></select>
+                                        <select id="division" ng-model="userForm.division" ng-options="x.id as x.division for x in divisions | filter:{departmentId:userForm.department,status:true}"></select>
                                     </label>
 
                                 </div>
                                 <div>
                                     <label class="field-label" for="section">Select Section
-                                        <select id="section" ng-model="userForm.section" ng-options="x.id as x.section for x in sections | filter:{divisionId:userForm.division}"></select>
+                                        <select id="section" ng-model="userForm.section" ng-options="x.id as x.section for x in sections | filter:{divisionId:userForm.division,status:true}"></select>
                                     </label>
 
                                 </div>
                                 <div>
                                     <label class="field-label" for="l1SubSubSection">Select Sub-Section-L2
-                                        <select id="l1SubSubSection" ng-model="userForm.l1SubSubSection" ng-options="x.id as x.subSection for x in subsectionsL1s | filter:{sectionId:userForm.section}"></select>
+                                        <select id="l1SubSubSection" ng-model="userForm.l1SubSubSection" ng-options="x.id as x.subSection for x in subsectionsL1s | filter:{sectionId:userForm.section,status:true}"></select>
                                     </label>
 
                                 </div>
                                 <div>
                                     <label class="field-label" for="l2SubSubSection">Select Sub-Section-L2
-                                        <select id="l2SubSubSection" ng-model="userForm.l2SubSubSection" ng-options="x.id as x.subSection for x in subsectionsL2s | filter:{subSectionId:userForm.l1SubSubSection}"></select>
+                                        <select id="l2SubSubSection" ng-model="userForm.l2SubSubSection" ng-options="x.id as x.subSection for x in subsectionsL2s | filter:{subSectionId:userForm.l1SubSubSection,status:true}"></select>
                                     </label>
 
                                 </div>
 
                                 <div>
                                     <label class="field-label" for="designation">Select Designation
-                                        <select id="designation" ng-model="userForm.designation" ng-options="x.id as x.designationName for x in activeDesignations | filter:{directorateId:userForm.directorate}"></select>
+                                        <select id="designation" ng-model="userForm.designation" ng-options="x.id as x.designationName for x in activeDesignations | filter:{directorateId:userForm.directorate,status:true}"></select>
                                     </label>
                                 </div>
 
@@ -200,7 +200,7 @@
 
                                 <div>
                                     <label class="field-label" for="subRegion">Select Sub-Region
-                                        <select id="subRegion" ng-model="userForm.subRegion" ng-options="x.id as x.subRegion for x in subRegions| filter:{regionId:userForm.region}"></select>
+                                        <select id="subRegion" ng-model="userForm.subRegion" ng-options="x.id as x.subRegion for x in subRegions| filter:{regionId:userForm.region,status:true}"></select>
                                     </label>
 
                                 </div>
