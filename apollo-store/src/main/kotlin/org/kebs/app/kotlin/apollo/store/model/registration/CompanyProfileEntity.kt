@@ -24,6 +24,10 @@ class CompanyProfileEntity : Serializable {
     @Basic
     var name: String? = null
 
+    @Column(name = "PHYSICAL_ADDRESS")
+    @Basic
+    var physicalAddress: String? = null
+
     @Column(name = "KRA_PIN")
     @Basic
     var kraPin: String? = null
@@ -39,6 +43,10 @@ class CompanyProfileEntity : Serializable {
     @Column(name = "POSTAL_ADDRESS")
     @Basic
     var postalAddress: String? = null
+
+    @Column(name = "PLOT_NUMBER")
+    @Basic
+    var plotNumber: String? = null
 
     @Column(name = "COMPANY_EMAIL")
     @Basic
@@ -96,9 +104,21 @@ class CompanyProfileEntity : Serializable {
     @Basic
     var directorIdNumber: String? = null
 
+    @Column(name = "ENTRY_NUMBER")
+    @Basic
+    var entryNumber: String? = null
+
     @Column(name = "STATUS")
     @Basic
     var status: Int? = null
+
+    @Column(name = "CLOSED_COMMODITY_MANUFACTURED")
+    @Basic
+    var closedCommodityManufactured: Int? = null
+
+    @Column(name = "CLOSED_CONTRACTS_UNDERTAKEN")
+    @Basic
+    var closedContractsUndertaken: Int? = null
 
     @Column(name = "VAR_FIELD_1")
     @Basic
@@ -186,16 +206,20 @@ class CompanyProfileEntity : Serializable {
         val that = other as CompanyProfileEntity
         return id == that.id &&
                 name == that.name &&
+                physicalAddress == that.physicalAddress &&
                 userId == that.userId &&
                 kraPin == that.kraPin &&
                 registrationNumber == that.registrationNumber &&
                 postalAddress == that.postalAddress &&
+                plotNumber == that.plotNumber &&
                 companyEmail == that.companyEmail &&
                 companyTelephone == that.companyTelephone &&
                 yearlyTurnover == that.yearlyTurnover &&
                 businessLines == that.businessLines &&
                 businessNatures == that.businessNatures &&
                 buildingName == that.buildingName &&
+                closedCommodityManufactured == that.closedCommodityManufactured &&
+                closedContractsUndertaken == that.closedContractsUndertaken &&
                 streetName == that.streetName &&
                 userClassification == that.userClassification &&
                 region == that.region &&
@@ -204,6 +228,8 @@ class CompanyProfileEntity : Serializable {
                 factoryVisitDate == that.factoryVisitDate &&
                 factoryVisitStatus == that.factoryVisitStatus &&
                 manufactureStatus == that.manufactureStatus &&
+                entryNumber == that.entryNumber &&
+                directorIdNumber == that.directorIdNumber &&
                 description == that.description &&
                 status == that.status &&
                 varField1 == that.varField1 &&
@@ -232,6 +258,10 @@ class CompanyProfileEntity : Serializable {
             kraPin,
             registrationNumber,
             postalAddress,
+            plotNumber,
+            entryNumber,
+            directorIdNumber,
+            physicalAddress,
             companyEmail,
             companyTelephone,
             yearlyTurnover,
@@ -239,6 +269,8 @@ class CompanyProfileEntity : Serializable {
             businessNatures,
             buildingName,
             streetName,
+            closedCommodityManufactured,
+            closedContractsUndertaken,
             userClassification,
             region,
             county,

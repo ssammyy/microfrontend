@@ -259,11 +259,14 @@ data class OtpResponseDto(
 
 
 data class UserCompanyDto(
+    var id: Long? = null,
     var name: String? = null,
     var kraPin: String? = null,
     var userId: Long? = null,
     var registrationNumber: String? = null,
     var postalAddress: String? = null,
+    var physicalAddress: String? = null,
+    var plotNumber: String? = null,
     var companyEmail: String? = null,
     var companyTelephone: String? = null,
     var yearlyTurnover: BigDecimal? = null,
@@ -286,6 +289,8 @@ data class UserCompanyEntityDto(
     var profileType: Long? = null,
     var registrationNumber: String? = null,
     var postalAddress: String? = null,
+    var physicalAddress: String? = null,
+    var plotNumber: String? = null,
     var companyEmail: String? = null,
     var companyTelephone: String? = null,
     var yearlyTurnover: BigDecimal? = null,
@@ -416,6 +421,12 @@ data class UserRequestTypesEntityDto(
     var userRequest: String? = null,
     var description: String? = null,
     var status: Boolean? = null
+)
+
+data class ManufactureSubmitEntityDto(
+    var closedCommodityManufactured: Int? = null,
+    var closedContractsUndertaken: Int? = null,
+    var submittedStatus: Int? = null,
 )
 
 data class UserRequestEntityDto(

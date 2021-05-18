@@ -40,6 +40,9 @@ package org.kebs.app.kotlin.apollo.api.routes
 import org.kebs.app.kotlin.apollo.api.handlers.*
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.http.HttpHeaders
+import org.springframework.http.MediaType
+import org.springframework.web.servlet.function.RequestPredicate
 import org.springframework.web.servlet.function.router
 
 @Configuration
@@ -558,9 +561,11 @@ class ControllerRoutes {
             GET("/schedule/{manufacturer}", handler::scheduleVisit)
             POST("/schedule", handler::actionScheduleVisit)
             GET("/general-actions", handler::generalActions)
+//            POST("/save-data/{manufacturerId}",  handler::actionSaveFactoryVisitReport)
         }
 
     }
+
 
 
 }

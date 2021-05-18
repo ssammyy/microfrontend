@@ -365,7 +365,7 @@ class QualityAssuranceController(
     }
 
 
-    @PreAuthorize("hasAuthority('PERMIT_APPLICATION')")
+    @PreAuthorize("hasAuthority('USER')")
     @PostMapping("kebs/add/plant-details/save")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun addManufacturePlantDetails(

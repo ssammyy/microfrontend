@@ -117,6 +117,14 @@ class StandardLevyFactoryVisitReportEntity : Serializable {
     @Basic
     var varField10: String? = null
 
+    @Column(name = "CHEIF_MANAGER_REMARKS")
+    @Basic
+    var cheifManagerRemarks: String? = null
+
+    @Column(name = "ASSISTANCE_MANAGER_REMARKS")
+    @Basic
+    var assistanceManagerRemarks: String? = null
+
     @Column(name = "CREATED_BY")
     @Basic
     var createdBy: String? = null

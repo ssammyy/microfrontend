@@ -1,55 +1,44 @@
-/*
- *
- *  *
- *  *
- *  *  *    Copyright (c) ${YEAR}.   BSK Global Technologies
- *  *  *
- *  *  *    Licensed under the Apache License, Version 2.0 (the "License");
- *  *  *    you may not use this file except in compliance with the License.
- *  *  *    You may obtain a copy of the License at
- *  *  *
- *  *  *       http://www.apache.org/licenses/LICENSE-2.0
- *  *  *
- *  *  *    Unless required by applicable law or agreed to in writing, software
- *  *  *    distributed under the License is distributed on an "AS IS" BASIS,
- *  *  *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  *  *   See the License for the specific language governing permissions and
- *  *  *   limitations under the License.
- *  *
- *
- */
-
-package org.kebs.app.kotlin.apollo.store.model
+package org.kebs.app.kotlin.apollo.store.model.registration
 
 import java.io.Serializable
+import java.sql.Date
+import java.sql.Time
 import java.sql.Timestamp
 import java.util.*
 import javax.persistence.*
 
 @Entity
-@Table(name = "CFG_KEBS_BUSINESS_NATURE")
-class BusinessNatureEntity : Serializable {
+@Table(name = "DAT_KEBS_COMPANY_PROFILE_CONTRACTS_UNDERTAKEN")
+class CompanyProfileContractsUndertakenEntity : Serializable {
     @Column(name = "ID")
     @Id
-    @SequenceGenerator(name = "CFG_KEBS_BUSINESS_NATURE_SEQ_GEN", sequenceName = "CFG_KEBS_BUSINESS_NATURE_SEQ", allocationSize = 1)
-    @GeneratedValue(generator = "CFG_KEBS_BUSINESS_NATURE_SEQ_GEN", strategy = GenerationType.SEQUENCE)
-    var id: Long = 0
+    @SequenceGenerator(
+        name = "DAT_KEBS_COMPANY_PROFILE_CONTRACTS_UNDERTAKEN_SEQ_GEN",
+        sequenceName = "DAT_KEBS_COMPANY_PROFILE_CONTRACTS_UNDERTAKEN_SEQ",
+        allocationSize = 1
+    )
+    @GeneratedValue(generator = "DAT_KEBS_COMPANY_PROFILE_CONTRACTS_UNDERTAKEN_SEQ_GEN", strategy = GenerationType.SEQUENCE)
+    var id: Long? = null
 
-    @Column(name = "NAME")
+    @Column(name = "COMPANY_PROFILE_ID")
     @Basic
-    var name: String? = null
+    var companyProfileId: Long? = null
 
-    @Column(name = "BUSINESS_TYPE_ID")
+    @Column(name = "CONTRACTS_NAME")
     @Basic
-    var businessTypeId: Int? = null
+    var contractsName: String? = null
+
+    @Column(name = "CONTRACTS_DATE_COMMENCE")
+    @Basic
+    var contractsDateCommence: Date? = null
+
+    @Column(name = "DESCRIPTION")
+    @Basic
+    var description: String? = null
 
     @Column(name = "STATUS")
     @Basic
     var status: Int? = null
-
-    @Column(name = "DESCRIPTIONS")
-    @Basic
-    var descriptions: String? = null
 
     @Column(name = "VAR_FIELD_1")
     @Basic
@@ -115,20 +104,16 @@ class BusinessNatureEntity : Serializable {
     @Basic
     var deletedOn: Timestamp? = null
 
-    @JoinColumn(name = "BUSINESS_LINES_ID", referencedColumnName = "ID")
-    @ManyToOne
-    var businessLinesId: BusinessLinesEntity? = null
-
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other == null || javaClass != other.javaClass) return false
-        val that =
-            other as BusinessNatureEntity
+        val that = other as CompanyProfileContractsUndertakenEntity
         return id == that.id &&
-                name == that.name &&
-                businessTypeId == that.businessTypeId &&
+                companyProfileId == that.companyProfileId &&
+                contractsName == that.contractsName &&
+                contractsDateCommence == that.contractsDateCommence &&
+                description == that.description &&
                 status == that.status &&
-                descriptions == that.descriptions &&
                 varField1 == that.varField1 &&
                 varField2 == that.varField2 &&
                 varField3 == that.varField3 &&
@@ -150,10 +135,11 @@ class BusinessNatureEntity : Serializable {
     override fun hashCode(): Int {
         return Objects.hash(
             id,
-            name,
-            businessTypeId,
+            companyProfileId,
+            contractsName,
+            contractsDateCommence,
+            description,
             status,
-            descriptions,
             varField1,
             varField2,
             varField3,
@@ -172,5 +158,4 @@ class BusinessNatureEntity : Serializable {
             deletedOn
         )
     }
-
 }

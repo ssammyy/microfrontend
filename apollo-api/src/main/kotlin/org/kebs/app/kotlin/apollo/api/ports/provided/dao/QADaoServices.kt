@@ -13,6 +13,7 @@ import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapPrope
 import org.kebs.app.kotlin.apollo.store.model.*
 import org.kebs.app.kotlin.apollo.store.model.ms.ComplaintEntity
 import org.kebs.app.kotlin.apollo.store.model.qa.*
+import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileContractsUndertakenEntity
 import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileEntity
 import org.kebs.app.kotlin.apollo.store.repo.*
 import org.kebs.app.kotlin.apollo.store.repo.di.ICfgMoneyTypeCodesRepository
@@ -248,6 +249,7 @@ class QADaoServices(
             return it
         } ?: throw ExpectedDataNotFound("No Plant details found with the following [user id=$userId]")
     }
+
 
     fun findPlantDetails(plantID: Long): ManufacturePlantDetailsEntity {
         manufacturePlantRepository.findByIdOrNull(plantID)?.let {
