@@ -51,7 +51,8 @@ class DestinationInspectionController(
         @ModelAttribute cdDetails: ConsignmentDocumentDetailsEntity,
         @RequestParam("cdUuid") cdUuid: String,
         model: Model,
-        result: BindingResult
+        result: BindingResult,
+        redirectAttributes: RedirectAttributes
     ): String {
         val processStages = commonDaoServices.findProcesses(appId)
         val map = commonDaoServices.serviceMapDetails(appId)
@@ -425,6 +426,8 @@ class DestinationInspectionController(
                             updatedCDDetails.cdStandard?.let { cdStd ->
                                 daoServices.updateCDStatus(cdStd, applicationMapProperties.mapDIStatusTypeKraVerificationSendId)
                             }
+                        } else {
+                            redirectAttributes.addFlashAttribute("error", "Could not send verification request. Declaration unavailable")
                         }
 //                        cdDetails?.id?.let { it1 ->
 //                            cdDetails.assigner?.id?.let { it2 ->
@@ -632,10 +635,13 @@ class DestinationInspectionController(
                         }
                         //BPM: Update fill inspection details workflow
                         val cdDetails = cdItem.cdDocId
-                        cdDetails?.id?.let { it1 ->
-                            cdDetails.assignedInspectionOfficer?.id?.let { it2 ->
-                                diBpmn.diFillInspectionForms(it1, it2)
-                            }
+//                        cdDetails?.id?.let { it1 ->
+//                            cdDetails.assignedInspectionOfficer?.id?.let { it2 ->
+//                                diBpmn.diFillInspectionForms(it1, it2)
+//                            }
+//                        }
+                        cdDetails?.cdStandard?.let { cdStd ->
+                            daoServices.updateCDStatus(cdStd, applicationMapProperties.mapDIStatusTypeInspectionChecklistId)
                         }
 
                         return daoServices.viewCdItemPage(cdItemUuid)
@@ -683,6 +689,7 @@ class DestinationInspectionController(
                                         }
                                     }
                                 }
+                                redirectAttributes.addFlashAttribute("success", "Report Submitted Successfully")
                                 return "$motorVehicleInspectionDetailsPage=${inspectionMotorVehicle.inspectionGeneral?.cdItemDetails?.id}&docType=${daoServices.motorVehicleMinistryInspectionChecklistName}"
                             } ?: throw ExpectedDataNotFound("No Motor Vehicle Inspection Checklist Found")
                     }

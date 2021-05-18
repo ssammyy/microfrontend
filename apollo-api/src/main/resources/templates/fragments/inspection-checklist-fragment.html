@@ -501,11 +501,6 @@
 
         <div class="form-row">
             <div class="col-md-4 mb-3">
-                <label for="serialNumber">Serial Number</label>
-                <input type="text" class="form-control" maxlength="256" name="serialNumber"
-                       data-name="clearing Agent" id="serialNumber" th:field="*{serialNumber}">
-            </div>
-            <div class="col-md-4 mb-3">
                 <label for="makeOfVehicle">Make Of Vehicle</label>
                 <!--                                        <input type="text" class="form-control" maxlength="256" name="Make Of Vehicle"-->
                 <!--                                               data-name="Make Of Vehicle" id="makeOfVehicle" th:field="*{makeVehicle}">-->
@@ -522,13 +517,13 @@
                        id="chassisNumber"
                        th:field="*{chassisNo}">
             </div>
-        </div>
-        <div class="form-row">
             <div class="col-md-4 mb-3">
                 <label for="engineNo">Engine No./Capacity</label>
                 <input type="text" class="form-control" maxlength="256" name="Engine Number"
                        data-name="Engine Number" id="engineNo" th:field="*{engineNoCapacity}">
             </div>
+        </div>
+        <div class="form-row">
             <div class="col-md-4 mb-3">
                 <label for="manufacturerDate">Manufacturer Date</label>
                 <input type="date" class="form-control" maxlength="256" name="Manufacturer Date"
@@ -541,13 +536,13 @@
                        data-name="Registration Date" id="registrationDate"
                        th:field="${currentDate}">
             </div>
-        </div>
-        <div class="form-row">
             <div class="col-md-4 mb-3">
                 <label for="odometreReading">Odometre Reading</label>
                 <input type="text" class="form-control" maxlength="256" name="Odometre Reading"
                        data-name="Odometre Reading" id="odometreReading" th:field="*{odemetreReading}">
             </div>
+        </div>
+        <div class="form-row">
             <div class="col-md-4 mb-3">
                 <label for="driveRhdLhd">Drive(RHD/LHD)</label>
                 <input type="text" class="form-control" maxlength="256" name="Drive(RHD/LHD)"
@@ -560,25 +555,19 @@
                        data-name="Transmission" id="transmission"
                        th:field="*{transmissionAutoManual}">
             </div>
-        </div>
-        <div class="form-row">
             <div class="col-md-4 mb-3">
                 <label for="colour">Colour</label>
                 <input type="text" class="form-control" maxlength="256" name="Colour"
                        data-name="Colour" id="colour" th:field="*{colour}">
             </div>
+        </div>
+        <div class="form-row">
             <div class="col-md-4 mb-3">
                 <label for="overallAppearance">Overall Appearance</label>
                 <input type="text" class="form-control" maxlength="256" name="Overall Appearance"
                        data-name="Overall Appearance" id="overallAppearance"
                        th:field="*{overallAppearance}">
             </div>
-            <!--                                <div class="col-md-4 mb-3">-->
-            <!--                                    <label for="transmission">Transmission(Automatic/Manual)</label>-->
-            <!--                                    <input type="text" class="form-control" maxlength="256" name="Transmission"-->
-            <!--                                           data-name="Transmission" id="transmission"-->
-            <!--                                           th:field="*{transmisionAutoManual}">-->
-            <!--                                </div>-->
         </div>
     </div>
 </div>

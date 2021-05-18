@@ -31,6 +31,8 @@
             <div class="content-nav" th:replace="fragments/general-form.html :: content-navigation-bar"></div>
             <div class="content-wrap">
                 <div class="content-container">
+                    <div class="alert alert-success" th:text="${success}" th:if="${success}"></div>
+                    <div class="alert alert-danger" th:text="${error}" th:if="${error}"></div>
                     <h5 class="h3-blue" style="color: #0082f3; font-weight: bold; ">Consignment Document with <span
                             th:text="${cdType?.typeName}"></span></h5>
                     <div class="content-block">

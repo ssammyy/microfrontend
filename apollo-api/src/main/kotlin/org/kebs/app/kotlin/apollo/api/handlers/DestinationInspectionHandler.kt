@@ -231,6 +231,20 @@ class DestinationInspectionHandler(
                             req.attributes()["cdStatusTypeOnHoldCategory"] = daoServices.cdStatusTypeOnHoldCategory
                             req.attributes()["cdStatusTypeQuerydCategory"] = daoServices.cdStatusTypeQueryCategory
 
+                            //Check for flash attributes
+                            val request = req.servletRequest()
+                            val flashMap = RequestContextUtils.getInputFlashMap(request)
+                            if (flashMap != null) {
+                                if (flashMap.containsKey("success")) {
+                                    val success = flashMap["success"] as String?
+                                    req.attributes()["success"] = success
+                                    KotlinLogging.logger { }.info { "Success param = $success" }
+                                } else if (flashMap.containsKey("error")) {
+                                    val error = flashMap["error"] as String?
+                                    req.attributes()["error"] = error
+                                    KotlinLogging.logger { }.info { "Error param = $error" }
+                                }
+                            }
                             ok().render(cdDetailsView, req.attributes())
                         }
                         ?: throw ExpectedDataNotFound("Required uuid, check config")
