@@ -54,7 +54,7 @@ dependencies {
 
 }
 repositories {
-    maven("https://dl.bintray.com/kotlin/kotlin-eap")
+//    maven("https://dl.bintray.com/kotlin/kotlin-eap")
     mavenCentral()
 }
 val compileKotlin: KotlinCompile by tasks

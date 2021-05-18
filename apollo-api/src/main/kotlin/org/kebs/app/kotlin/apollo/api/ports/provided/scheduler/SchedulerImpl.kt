@@ -234,13 +234,17 @@ class SchedulerImpl(
         for (permit in paidPermits) {
             //Get permit type
             val user = permit.userId?.let { commonDaoServices.findUserByID(it) }
-             if (permit.permitType == applicationMapProperties.mapQAPermitTypeIDDmark) {
-
-                permit.hodId = qaDaoServices.assignNextOfficerAfterPayment(permit, map, applicationMapProperties.mapQADesignationIDForHODId)?.id
-
-             } else if (permit.permitType == applicationMapProperties.mapQAPermitTypeIdSmark) {
-                 permit.qamId = qaDaoServices.assignNextOfficerAfterPayment(permit, map, applicationMapProperties.mapQADesignationIDForQAMId)?.id
-             }
+            when (permit.permitType) {
+                applicationMapProperties.mapQAPermitTypeIDDmark -> {
+                    permit.hodId = qaDaoServices.assignNextOfficerAfterPayment(permit, map, applicationMapProperties.mapQADesignationIDForHODId)?.id
+                }
+                applicationMapProperties.mapQAPermitTypeIdSmark -> {
+                    permit.qamId = qaDaoServices.assignNextOfficerAfterPayment(permit, map, applicationMapProperties.mapQADesignationIDForQAMId)?.id
+                }
+                applicationMapProperties.mapQAPermitTypeIdFmark -> {
+                    permit.qamId = qaDaoServices.assignNextOfficerAfterPayment(permit, map, applicationMapProperties.mapQADesignationIDForQAMId)?.id
+                }
+            }
 
             permit.paidStatus = map.initStatus
             permit.permitStatus = applicationMapProperties.mapQaStatusPApprovalCompletness
