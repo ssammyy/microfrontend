@@ -107,6 +107,7 @@ class QualityAssuranceHandler(
                     ok().render(qaCustomerHomePage, req.attributes())
                 }
                 else -> {
+                    req.attributes()["permitFmarkType"] = qaDaoServices.findPermitType(applicationMapProperties.mapQAPermitTypeIdFmark)
                     req.attributes()["permitSmarkType"] = qaDaoServices.findPermitType(applicationMapProperties.mapQAPermitTypeIdSmark)
                     req.attributes()["permitDmarkType"] = qaDaoServices.findPermitType(applicationMapProperties.mapQAPermitTypeIDDmark)
                     req.attributes()["map"] = map

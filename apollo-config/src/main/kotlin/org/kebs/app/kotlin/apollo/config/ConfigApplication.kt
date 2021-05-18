@@ -24,7 +24,7 @@ package org.kebs.app.kotlin.apollo.config
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = ["org.kebs.app.kotlin.apollo"])
 class ConfigApplication
 
 fun main(args: Array<String>) {
