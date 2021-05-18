@@ -420,13 +420,13 @@
                                 <button sec:authorize="hasAuthority('SL_MANUFACTURERS_VIEW') and hasAuthority('SL_SCHEDULE_FACTORY_VISIT_MANUFACTURER')" th:if="${manufacturer.factoryVisitDate != null} and ${visitReport} and ${visitReport.managersApproval == 1} and ${visitReport.officersFeedback == null} and ${visitReport.assistantManagerApproval == 1}" style="width: 270px;" type="button" class="btn btn-info" data-toggle="modal" data-target="#draftFeedback">Schedule visit</button>
                                 <br><br>
 
-                                <button th:if="${manufacturer.factoryVisitDate != null}" sec:authorize="hasAuthority('SL_MANUFACTURERS_VIEW')" style="width: 270px;" type="button" class="btn btn-primary" data-toggle="modal" data-target="#industryVisitReport">Prepare report</button>
+                                <button th:if="${manufacturer.factoryVisitDate != null}" sec:authorize="hasAuthority('SL_MANUFACTURERS_VIEW') or hasAuthority('SL_SCHEDULE_FACTORY_VISIT_MANUFACTURER')" style="width: 270px;" type="button" class="btn btn-primary" data-toggle="modal" data-target="#industryVisitReport">Prepare report</button>
                                 <br><br><br>
                                 <button th:if="${visitReport?.purpose != null}" sec:authorize="hasAuthority('SL_APPROVE_VISIT_REPORT')" style="width: 270px;" type="button" class="btn btn-primary" data-toggle="modal" data-target="#industryVisitReportApproval">Factory Visit Report Approval</button>
 
-                                <button th:if="${visitReport?.purpose != null}" sec:authorize="hasAuthority('SL_SECOND_APPROVE_VISIT_REPORT')" style="width: 270px;" type="button" class="btn btn-primary" data-toggle="modal" data-target="#industryVisitReportApproval">Factory Visit Report Approval</button>
+                                <button th:if="${visitReport?.purpose != null}" sec:authorize="hasAuthority('SL_SECOND_APPROVE_VISIT_REPORT')" style="width: 270px;" type="button" class="btn btn-primary" data-toggle="modal" data-target="#industryVisitReportApprovalMager">Factory Visit Report Approval</button>
                                 <br><br>
-                                <button th:if="${visitReport?.purpose != null}" sec:authorize="hasAuthority('SL_MANUFACTURERS_VIEW')" style="width: 270px;" type="button" class="btn btn-primary" data-toggle="modal" data-target="#industryVisitReportApproval">Draft Feedback</button>
+                                <button th:if="${visitReport?.purpose != null}" sec:authorize="hasAuthority('SL_MANUFACTURERS_VIEW') or hasAuthority('SL_SCHEDULE_FACTORY_VISIT_MANUFACTURER')" style="width: 270px;" type="button" class="btn btn-primary" data-toggle="modal" data-target="#industryVisitReportApprovalDraft">Draft Feedback</button>
                                 <br><br>
                                 <button type="button" class="btn btn-primary" style="width: 270px" data-toggle="modal" data-target="#updateManufacturerDetailsModal">
                                     Modify account details
@@ -489,6 +489,54 @@
                                 <div class="form-group">
                                     <label for="assistanceManagerRemarks">Assistance Manager Remarks</label>
                                     <textarea class="form-control" id="assistanceManagerRemarks" name="remarks" rows="3" th:name="assistanceManagerRemarks" ></textarea>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-primary">Save</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal fade" id="industryVisitReportApprovalMager" tabindex="-1" role="dialog" aria-labelledby="industryVisitReportApprovalMager" aria-hidden="true">
+                <form th:action="@{/api/sl/manager-approval(manufacturerId=${manufacturer.id})}" method="post" th:object="${reportData}">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="industryVisitRepo">Approval With Remarks</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="form-group">
+                                    <label for="cheifManagerRemarks">Manager Remarks</label>
+                                    <textarea class="form-control" id="cheifManagerRemarks" rows="3" th:name="cheifManagerRemarks" ></textarea>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-primary">Save</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal fade" id="industryVisitReportApprovalDraft" tabindex="-1" role="dialog" aria-labelledby="industryVisitReportApprovalDraft" aria-hidden="true">
+                <form th:action="@{/api/sl/draft-feedback(manufacturerId=${manufacturer.id})}" method="post" th:object="${reportData}">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="industryVisitRep22o">Draft Feedback To Manufacturer</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="form-group">
+                                    <label for="cheifManagerRemarks">Principal Feedback Remarks</label>
+                                    <textarea class="form-control" id="feedBackRemarks" rows="3" th:name="feedBackRemarks" ></textarea>
                                 </div>
                             </div>
                             <div class="modal-footer">
@@ -619,6 +667,14 @@
 
         $('#industryVisitReportApproval').on('click',function (event) {
             $('.factoryInspectionForm #industryVisitReportApproval').modal();
+        });
+
+        $('#industryVisitReportApprovalMager').on('click',function (event) {
+            $('.factoryInspectionForm #industryVisitReportApprovalMager').modal();
+        });
+
+        $('#industryVisitReportApprovalDraft').on('click',function (event) {
+            $('.factoryInspectionForm #industryVisitReportApprovalDraft').modal();
         });
     });
 

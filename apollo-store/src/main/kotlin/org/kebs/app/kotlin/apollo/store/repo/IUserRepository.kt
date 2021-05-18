@@ -45,6 +45,8 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.query.Param
 import org.springframework.stereotype.Repository
+import java.sql.Date
+import java.sql.Timestamp
 
 
 @Repository
@@ -171,6 +173,7 @@ interface ICompanyProfileRepository : HazelcastRepository<CompanyProfileEntity, 
     fun findByKraPin(kraPin: String): CompanyProfileEntity?
     fun findByUserId(userId: Long): CompanyProfileEntity?
     fun findByRegistrationNumber(registrationNumber: String): CompanyProfileEntity?
+    fun findAllByCreatedOnBetween(createdOn: Date, createdOn2: Date) : List<CompanyProfileEntity>?
     fun findByManufactureStatus(status: Int): List<CompanyProfileEntity>?
 
 }

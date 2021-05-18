@@ -125,6 +125,10 @@ class StandardLevyFactoryVisitReportEntity : Serializable {
     @Basic
     var assistanceManagerRemarks: String? = null
 
+    @Column(name = "FEED_BACK_REMARKS")
+    @Basic
+    var feedBackRemarks: String? = null
+
     @Column(name = "CREATED_BY")
     @Basic
     var createdBy: String? = null

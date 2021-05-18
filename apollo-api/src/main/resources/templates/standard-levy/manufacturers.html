@@ -105,10 +105,10 @@
                         </div>
                         <div class="filter-block">
                             <div class="filter-block-title">
-                                <div class="filter-title">Filter By:</div>
+                                <div class="filter-title">Filter By: Date Range</div>
                             </div>
                             <div class="w-form">
-                                <form id="email-form" name="email-form" data-name="Email Form">
+                                <form action="@{/api/sl/filter-by-date-created}" id="email-form" name="email-form" data-name="Email Form">
 <!--                                    <div class="form-div"><label for="name">Status</label>-->
 <!--                                        <label class="w-checkbox">-->
 <!--                                            <input type="checkbox" id="checkbox" name="checkbox" data-name="Checkbox" class="w-checkbox-input">-->
@@ -119,19 +119,17 @@
 <!--                                            <span class="w-form-label">Approved</span>-->
 <!--                                        </label>-->
 <!--                                    </div>-->
-
-<!--                                    <div>-->
-<!--                                        <label for="name">Date Range</label>-->
-<!--                                        <div class="date-field-div">-->
-<!--                                            <div class="date-field-label">From</div>-->
-<!--                                            <input type="text" class="date-field w-input" maxlength="256" name="name" data-name="Name" id="name">-->
-<!--                                        </div>-->
-<!--                                        <div class="date-field-div">-->
-<!--                                            <div class="date-field-label">To</div>-->
-<!--                                            <input type="text" class="date-field w-input" maxlength="256" name="name-2" data-name="Name 2" id="name-2">-->
-<!--                                        </div>-->
-
-<!--                                    </div><input type="submit" value="Apply Filter" data-wait="Please wait..." class="button w-button">-->
+                                    <div>
+                                        <label for="name">Date Range</label>
+                                        <div class="date-field-div">
+                                            <div class="date-field-label">From</div>
+                                            <input type="date" class="date-field w-input" maxlength="256" name="fromDate" data-name="fromDate" id="name">
+                                        </div>
+                                        <div class="date-field-div">
+                                            <div class="date-field-label">To</div>
+                                            <input type="date" class="date-field w-input" maxlength="256" name="toDate" data-name="toDate" id="name-2">
+                                        </div>
+                                    </div><input type="submit" value="Apply Filter" data-wait="Please wait..." class="button w-button">
                                 </form>
                                 <br><br>
                                 <div sec:authorize="hasAuthority('PETROLEUM_ALLOCATE_INSPECTION_OFFICER') or hasAuthority('RECEIVE_EPRA_NOTIFICATION_LETTER') or hasAuthority('SCHEDULE_FACTORY_VISIT') or hasAuthority('ASSIGN_OFFICER')">

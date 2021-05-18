@@ -469,7 +469,7 @@ class StandardsLevyBpmn(
         return false
     }
 
-    fun endSlSiteVisitProcess(objectId: String) {
+    fun endSlSiteVisitProcess(objectId: Long) {
         KotlinLogging.logger { }.info("End SL Site Visit for object $objectId............")
         try {
             slFactoryVisitReportRepo.findByIdOrNull(objectId.toLong())?.let { slFactoryVisit ->
