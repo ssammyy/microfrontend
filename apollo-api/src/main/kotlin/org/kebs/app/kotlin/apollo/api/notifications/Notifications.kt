@@ -74,7 +74,7 @@ class Notifications(
         }
     }
 
-    fun sendEmail(recipientEmail: String, subject: String, messageText: String){
+    fun sendEmail(recipientEmail: String, subject: String, messageText: String, attachmentFilePath: String? = null){
         processEmail(recipientEmail, subject, messageText, null)
     }
 
@@ -173,7 +173,7 @@ class Notifications(
         }
     }
 
-    fun processEmail(recipientEmail: String, subject: String, messageText: String, attachmentFileName: String?){
+    fun processEmail(recipientEmail: String, subject: String, messageText: String, attachmentFilePath: String?){
         KotlinLogging.logger { }.info("Sending email to $recipientEmail")
 
         val props = Properties()
@@ -206,13 +206,13 @@ class Notifications(
             messageBodyPart.setText(messageText)
             val multipart: Multipart = MimeMultipart()
             multipart.addBodyPart(messageBodyPart)
-            attachmentFileName?.let{ filename->
-                if(!filename.isBlank()){
+            attachmentFilePath?.let{ filepath->
+                if(!filepath.isBlank()){
                     // Add the attachment
                     messageBodyPart = MimeBodyPart()
-                    val source: DataSource = FileDataSource(filename)
+                    val source = FileDataSource(filepath)
                     messageBodyPart.dataHandler = DataHandler(source)
-                    messageBodyPart.fileName = filename
+                    messageBodyPart.fileName = source.name
                     multipart.addBodyPart(messageBodyPart)
                 }
             }

@@ -16,6 +16,7 @@ import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput
 import org.kebs.app.kotlin.apollo.common.dto.reports.LocalCocItemsReportInput
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.CocsEntity
+import org.kebs.app.kotlin.apollo.store.model.CorsBakEntity
 import org.kebs.app.kotlin.apollo.store.model.di.CdItemDetailsEntity
 import org.kebs.app.kotlin.apollo.store.model.di.ConsignmentDocumentDetailsEntity
 import org.kebs.app.kotlin.apollo.store.repo.ICocsRepository
@@ -154,12 +155,12 @@ class ReportsDaoService(
 
     }
 
-    fun generateLocalCoCReportWithDataSource(cdDetails: ConsignmentDocumentDetailsEntity, filePath: String) {
+    fun generateLocalCoCReportWithDataSource(cdDetails: ConsignmentDocumentDetailsEntity, filePath: String): File? {
         var map = hashMapOf<String, Any>()
         map["imagePath"] = logoImageFile
         cdDetails.ucrNumber?.let {
             diDaoServices.findCocByUcrNumber(it)?.let { coc ->
-                val map = diDaoServices.createLocalCocReportMap(coc)
+                map = diDaoServices.createLocalCocReportMap(coc)
                 val cocItems = cdDetails.let { diDaoServices.findCDItemsListWithCDID(it) }
 
                 val itemsReportInput: LocalCocItemsReportInput = assembleCocItemReportInput(cocItems)
@@ -183,8 +184,11 @@ class ReportsDaoService(
                     localCocFileName = targetFile.name
                 }
                 diDaoServices.saveCoc(coc)
+
+                return targetFile
             }
         }
+        return null
     }
 
     fun assembleCocItemReportInput(items: List<CdItemDetailsEntity>): LocalCocItemsReportInput {
@@ -193,6 +197,28 @@ class ReportsDaoService(
         localCocItemsReportInput.itemDataSource = itemDataSource
 
         return localCocItemsReportInput
+    }
+
+    fun generateLocalCoRReport(cdDetails: ConsignmentDocumentDetailsEntity, filePath: String): File? {
+        var map = hashMapOf<String, Any>()
+        map["imagePath"] = logoImageFile
+
+        map = diDaoServices.createLocalCorReportMap(cdDetails)
+
+        val file = ResourceUtils.getFile(filePath)
+        val design = JRXmlLoader.load(file)
+        val jasperReport = JasperCompileManager.compileReport(design)
+
+        val jasperPrint = JasperFillManager.fillReport(jasperReport, map, JREmptyDataSource())
+
+        val fileName: String = cdDetails.ucrNumber.plus("-cor-report.pdf")
+
+        val targetFile = File(Files.createTempDir(), fileName)
+        targetFile.deleteOnExit()
+
+        JasperExportManager.exportReportToPdfFile(jasperPrint, targetFile.absolutePath)
+
+        return targetFile
     }
 
 }

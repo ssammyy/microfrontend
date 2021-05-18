@@ -819,11 +819,15 @@ fun createLocalCoc(
                     createdBy = commonDaoServices.getUserName(user)
                     createdOn = commonDaoServices.getTimestamp()
                 }
-                localCor = corsBakRepository.save(localCor)
+                localCor = saveCorDetails(localCor)
                 KotlinLogging.logger { }.info { "Generated Local CoR WITH id = ${localCor.id}" }
             }
         }
         return localCor
+    }
+
+    fun saveCorDetails(corsBakEntity: CorsBakEntity): CorsBakEntity {
+        return corsBakRepository.save(corsBakEntity)
     }
 
     fun mapDataInJsonOrNull(dataFetched: JSONObject?, valueToFind: String): String? {
@@ -2699,47 +2703,53 @@ fun createLocalCoc(
             ?: throw Exception("Local Cor Details with the following UCR NUMBER = ${ucrNumber}, does not Exist")
     }
 
-    fun createLocalCorReportMap(localCorEntity: CdLocalCorEntity):
-            HashMap<String, Any> {
+    fun createLocalCorReportMap(cdDetails: ConsignmentDocumentDetailsEntity): HashMap<String, Any> {
         val map = hashMapOf<String, Any>()
+        val importerDetails = cdDetails.cdImporter?.let { findCDImporterDetails(it) }
         //Importer Details
-        map["ImporterName"] = localCorEntity.importerName.orEmpty()
-        map["ImporterAddress"] = localCorEntity.importerAddress.orEmpty()
-        map["ImporterPhone"] = localCorEntity.importerPhone.orEmpty()
+        map["ImporterName"] = importerDetails?.name.orEmpty()
+        map["ImporterAddress"] = importerDetails?.physicalAddress.orEmpty()
+        map["ImporterPhone"] = importerDetails?.telephone.orEmpty()
 
         //COR Details
-        map["CorSerialNo"] = localCorEntity.corSerialNo.orEmpty()
-        map["CorIssueDate"] = localCorEntity.corIssueDate.toString()
-        map["CorExpiryDate"] = localCorEntity.corExpiryDate.toString()
+        map["CorSerialNo"] = ""
+        map["CorIssueDate"] = commonDaoServices.getCurrentDate()
+        map["CorExpiryDate"] = commonDaoServices.addMonthsToCurrentDate(3)
+
+        val cdItem = findCDItemsListWithCDID(cdDetails)[0]
+        val itemNonStandardDetail = findCdItemNonStandardByItemID(cdItem)
+        val corDetails = itemNonStandardDetail?.chassisNo?.let { findCORByChassisNumber(it) }
 
         //Vehicle Details
-        map["ChassisNumber"] = localCorEntity.chassisNo.orEmpty()
-        map["EngineNo"] = localCorEntity.engineNoModel.orEmpty()
-        map["EngineCap"] = localCorEntity.engineCapacity.orEmpty()
-        map["Yom"] = localCorEntity.yearOfManufacture.orEmpty()
-        map["Yor"] = localCorEntity.yearOfFirstRegistration.orEmpty()
-        map["CustomsIeNo"] = localCorEntity.customsIeNo.orEmpty()
-        map["Cos"] = localCorEntity.countryOfSupply.orEmpty()
-        map["BodyType"] = localCorEntity.bodyType.orEmpty()
-        map["Fuel"] = localCorEntity.fuel.orEmpty()
-        map["TareWeight"] = localCorEntity.tareWeight.orEmpty()
-        map["VehicleType"] = localCorEntity.typeOfVehicle.orEmpty()
-        map["ExporterName"] = localCorEntity.exporterName.orEmpty()
-        map["ExporterAddress"] = localCorEntity.exporterAddress.orEmpty()
-        map["ExporterEmail"] = localCorEntity.exporterEmail.orEmpty()
-        map["IdfNumber"] = localCorEntity.idfNo.orEmpty()
-        map["UcrNumber"] = localCorEntity.ucrNumber.orEmpty()
-        map["Make"] = localCorEntity.make.orEmpty()
-        map["Model"] = localCorEntity.model.orEmpty()
-        map["InspectedMileage"] = localCorEntity.inspectionMileage.orEmpty()
-        map["UnitsOfMileage"] = localCorEntity.unitsOfMileage.orEmpty()
-        map["Color"] = localCorEntity.color.orEmpty()
-        map["AxleNo"] = localCorEntity.axleNo.orEmpty()
-        map["Transmision"] = localCorEntity.transmission.orEmpty()
-        map["NoOfPassengers"] = localCorEntity.noOfPassengers.orEmpty()
-        map["PrevRegNo"] = localCorEntity.prevRegNo.orEmpty()
-        map["PrevCountryOfReg"] = localCorEntity.prevCountryOfReg.orEmpty()
-        map["InspectionDetails"] = localCorEntity.inspectionDetails.orEmpty()
+        map["ChassisNumber"] = corDetails?.chasisNumber.orEmpty()
+        map["EngineNo"] = corDetails?.engineNumber.orEmpty()
+        map["EngineCap"] = corDetails?.engineCapacity.orEmpty()
+        map["Yom"] = corDetails?.yearOfManufacture.orEmpty()
+        map["Yor"] = corDetails?.yearOfFirstRegistration.orEmpty()
+        map["CustomsIeNo"] = ""
+        map["Cos"] = corDetails?.countryOfSupply.orEmpty()
+        map["BodyType"] = corDetails?.typeOfBody.orEmpty()
+        map["Fuel"] = corDetails?.fuelType.orEmpty()
+        map["TareWeight"] = corDetails?.tareWeight.toString()
+        map["VehicleType"] = corDetails?.typeOfVehicle.orEmpty()
+        map["ExporterName"] = corDetails?.exporterName.orEmpty()
+        map["ExporterAddress"] = corDetails?.exporterAddress1.orEmpty()
+        map["ExporterEmail"] = corDetails?.exporterEmail.orEmpty()
+        map["IdfNumber"] = ""
+        map["UcrNumber"] = corDetails?.ucrNumber.orEmpty()
+        map["Make"] = corDetails?.make.orEmpty()
+        map["Model"] = corDetails?.model.orEmpty()
+        map["InspectedMileage"] = corDetails?.inspectionMileage.orEmpty()
+        map["UnitsOfMileage"] = corDetails?.unitsOfMileage.orEmpty()
+        map["Color"] = corDetails?.bodyColor.orEmpty()
+        map["AxleNo"] = corDetails?.numberOfAxles.toString()
+        map["Transmision"] = ""
+        map["NoOfPassengers"] = corDetails?.numberOfPassangers.toString()
+        map["PrevRegNo"] = corDetails?.previousCountryOfRegistration.orEmpty()
+        map["PrevCountryOfReg"] = corDetails?.previousCountryOfRegistration.orEmpty()
+
+        val inspectionChecklist = findMotorVehicleInspectionByCdItem(cdItem)
+        map["InspectionDetails"] = inspectionChecklist?.remarks.orEmpty()
 
         return map
     }
@@ -2948,5 +2958,25 @@ fun createLocalCoc(
 
             } ?: KotlinLogging.logger { }.info { "Consignment document for declaration: ${declarationVerificationDocumentMessage.data?.dataIn?.sad?.sadId} not found" }
         }
+    }
+
+    fun sendLocalCocReportEmail(recipientEmail: String, filePath: String): Boolean {
+        val subject = "Local COC Certificate"
+        val messageBody =
+            "Hello,  \n" +
+                    "\n " +
+                    "Find attached the Local COC Certificate."
+        notifications.sendEmail(recipientEmail, subject, messageBody, filePath)
+        return true
+    }
+
+    fun sendLocalCorReportEmail(recipientEmail: String, filePath: String): Boolean {
+        val subject = "Local COR Certificate"
+        val messageBody =
+            "Hello,  \n" +
+                    "\n " +
+                    "Find attached the Local COR Certificate."
+        notifications.sendEmail(recipientEmail, subject, messageBody, filePath)
+        return true
     }
 }

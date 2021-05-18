@@ -366,17 +366,35 @@ class DestinationInspectionController(
                                     }
                                     KotlinLogging.logger { }.info { "localCoc = ${localCoc.id}" }
                                     //Generate PDF File & send to manufacturer
-                                    reportsDaoService.generateLocalCoCReportWithDataSource(updatedCDDetails, applicationMapProperties.mapReportLocalCocPath)
+                                    reportsDaoService.generateLocalCoCReportWithDataSource(updatedCDDetails, applicationMapProperties.mapReportLocalCocPath)?.let { file ->
+                                        updatedCDDetails.cdImporter?.let { daoServices.findCDImporterDetails(it)
+                                        }?.let { importer ->
+                                            importer.email?.let { daoServices.sendLocalCocReportEmail(it, file.path) }
+                                        }
+                                    }
                                 }
                             }
                         } else if (updatedCDDetails.cdType?.let { daoServices.findCdTypeDetails(it).localCorStatus } == map.activeStatus) {
-                            daoServices.generateCor(updatedCDDetails, map, loggedInUser).let {
-                                daoServices.submitCoRToKesWS(it)
+                            daoServices.generateCor(updatedCDDetails, map, loggedInUser).let { corDetails ->
+                                daoServices.submitCoRToKesWS(corDetails)
                                 updatedCDDetails.cdStandard?.let { cdStd ->
                                     daoServices.updateCDStatus(
                                         cdStd,
                                         applicationMapProperties.mapDICdStatusTypeCORGeneratedAndSendID
                                     )
+                                }
+                                //Send Cor to manufacturer
+                                reportsDaoService.generateLocalCoRReport(updatedCDDetails, applicationMapProperties.mapReportLocalCorPath)?.let { file ->
+                                    with(corDetails) {
+                                        localCorFile = file.readBytes()
+                                        localCorFileName = file.name
+                                    }
+                                    daoServices.saveCorDetails(corDetails)
+                                    //Send email
+                                    updatedCDDetails.cdImporter?.let { daoServices.findCDImporterDetails(it)
+                                    }?.let { importer ->
+                                        importer.email?.let { daoServices.sendLocalCorReportEmail(it, file.path) }
+                                    }
                                 }
                             }
                         }
