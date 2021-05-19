@@ -2,6 +2,8 @@ package org.kebs.app.kotlin.apollo.config.adaptor.akka.config
 
 import akka.actor.*
 import mu.KotlinLogging
+import org.kebs.app.kotlin.apollo.common.exceptions.InvalidValueException
+import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
 import org.springframework.context.ApplicationContext
 import org.springframework.stereotype.Component
 
@@ -42,10 +44,10 @@ class ActorSpringExtension(
                         )
                     } catch (e: Exception) {
                         KotlinLogging.logger { }.debug(e.message, e)
-                        throw RuntimeException(e.message)
+                        throw InvalidValueException(e.message)
                     }
                 }
-                ?: throw RuntimeException("$actorBeanName is not a valid actor class, returns null type")
+                ?: throw NullValueNotAllowedException("$actorBeanName is not a valid actor class, returns null type")
 
 
         }

@@ -25,7 +25,10 @@ class UserRolesService(
                 user.userId?.let { userIds.add(it) }
             }
             KotlinLogging.logger {  }.info { "UserIds count after loop ==> "+userIds.count() }
-            return userIds.let { userRepo.findAllByIdIn(it) }
+            userIds.let { userRepo.findAllByIdIn(it).let { usersReturned ->
+                KotlinLogging.logger {  }.info { "UserIds count from repo loop ==> "+usersReturned?.count() }
+                return usersReturned
+            } }
         }
 
 //        KotlinLds?.count() }ogging.logger {  }.info { "UserIds count ==> "+userI

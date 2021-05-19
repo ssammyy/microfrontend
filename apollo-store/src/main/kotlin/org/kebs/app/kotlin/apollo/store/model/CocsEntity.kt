@@ -28,7 +28,7 @@ class CocsEntity : Serializable {
     @Basic
     var coiNumber: String? = null
 
-    @NotEmpty(message = "Required field")
+//    @NotEmpty(message = "Required field")
     @Column(name = "IDF_NUMBER", nullable = false, length = 50)
     @Basic
     var idfNumber: String? = null

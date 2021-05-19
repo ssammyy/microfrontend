@@ -5,7 +5,9 @@ import org.flowable.engine.RepositoryService
 import org.flowable.engine.delegate.DelegateExecution
 import org.flowable.task.api.Task
 import org.flowable.task.service.delegate.DelegateTask
+import org.jasypt.encryption.StringEncryptor
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.BpmnCommonFunctions
+import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.repo.IManufacturerRepository
 import org.kebs.app.kotlin.apollo.store.repo.INotificationsRepository
 import org.kebs.app.kotlin.apollo.store.repo.IUserRepository
@@ -31,22 +33,25 @@ class Notifications(
         private val userRepo: IUserRepository,
         val manufacturerRepo: IManufacturerRepository,
         val notificationsRepo: INotificationsRepository,
-        val bpmnCommonFunctions: BpmnCommonFunctions)
+        val bpmnCommonFunctions: BpmnCommonFunctions,
+        val applicationMapProperties: ApplicationMapProperties,
+        val jasyptStringEncryptor: StringEncryptor
+)
 {
-    @Value("\${qa.bpmn.email.smtpStartTlsEnable}")
-    lateinit var smtpStartTlsEnable: String
-    @Value("\${qa.bpmn.email.smtpHost}")
-    lateinit var smtpHost: String
-    @Value("\${qa.bpmn.email.smtpPort}")
-    lateinit var smtpPort: String
-    @Value("\${qa.bpmn.email.smtpAuth}")
-    lateinit var smtpAuth: String
-    @Value("\${qa.bpmn.email.username}")
-    lateinit var smtpUsername: String
-    @Value("\${qa.bpmn.email.password}")
-    lateinit var smtpPassword: String
-    @Value("\${qa.bpmn.email.protocol}")
-    lateinit var protocol: String
+//    @Value("\${qa.bpmn.email.smtpStartTlsEnable}")
+//    lateinit var smtpStartTlsEnable: String
+//    @Value("\${qa.bpmn.email.smtpHost}")
+//    lateinit var smtpHost: String
+//    @Value("\${qa.bpmn.email.smtpPort}")
+//    lateinit var smtpPort: String
+//    @Value("\${qa.bpmn.email.smtpAuth}")
+//    lateinit var smtpAuth: String
+//    @Value("\${qa.bpmn.email.username}")
+//    lateinit var smtpUsername: String
+//    @Value("\${qa.bpmn.email.password}")
+//    lateinit var smtpPassword: String
+//    @Value("\${qa.bpmn.email.protocol}")
+//    lateinit var protocol: String
     //@Value("\${qa.bpmn.email.default.subject}")
     //lateinit var emailDefaultSubject: String
     //@Value("\${qa.bpmn.email.default.body}")
@@ -177,18 +182,18 @@ class Notifications(
         KotlinLogging.logger { }.info("Sending email to $recipientEmail")
 
         val props = Properties()
-        props.put("mail.smtp.starttls.enable", this.smtpStartTlsEnable)
-        props.put("mail.smtp.host", this.smtpHost);
-        props.put("mail.smtp.port", this.smtpPort);
-        props.put("mail.smtp.auth", this.smtpAuth);
-        props.put("mail.smtp.user", this.smtpUsername);
-        props.put("mail.smtp.password", this.smtpPassword);
+        props.put("mail.smtp.starttls.enable", applicationMapProperties.mapApplicationEmailSmtpStartTlsEnable)
+        props.put("mail.smtp.host", applicationMapProperties.mapApplicationEmailSmtpHost);
+        props.put("mail.smtp.port", applicationMapProperties.mapApplicationEmailSmtpPort);
+        props.put("mail.smtp.auth", applicationMapProperties.mapApplicationEmailSmtpAuth);
+        props.put("mail.smtp.user", applicationMapProperties.mapApplicationEmailUsername);
+        props.put("mail.smtp.password", "Kims@Kebs21");
 
         //Establishing a session with required user details
         val session: Session = Session.getInstance(props, object : Authenticator() {
             override fun getPasswordAuthentication(): PasswordAuthentication {
                 //return new PasswordAuthentication(username, password);
-                return PasswordAuthentication(smtpUsername, smtpPassword)
+                return PasswordAuthentication(applicationMapProperties.mapApplicationEmailUsername, "Kims@Kebs21")
             }
         })
 
@@ -200,7 +205,7 @@ class Notifications(
             msg.subject = subject
             msg.sentDate= Date()
             msg.setHeader("XPriority", "1")
-            msg.setFrom(InternetAddress("alerts@bskglobaltech.com", "bsk-alerts"))
+            msg.setFrom(InternetAddress(applicationMapProperties.mapApplicationEmailUsername, "Kims@Kebs21"))
             //val messageText = message
             var messageBodyPart: BodyPart = MimeBodyPart()
             messageBodyPart.setText(messageText)
@@ -217,17 +222,19 @@ class Notifications(
                 }
             }
             msg.setContent(multipart)
-            val transport: Transport = session.getTransport(this.protocol)
-            transport.connect(this.smtpHost, this.smtpUsername, this.smtpPassword)
+            val transport: Transport = session.getTransport(applicationMapProperties.mapApplicationEmailProtocol)
+            transport.connect(applicationMapProperties.mapApplicationEmailSmtpHost, applicationMapProperties.mapApplicationEmailUsername,
+                "Kims@Kebs21")
             //TODO: Add mail delivery check, update status if mail failed
             transport.sendMessage(msg, msg.allRecipients)
             KotlinLogging.logger { }.info("Mail has been sent successfully")
-        } catch (mex: MessagingException) {
-            println("Unable to send an email$mex")
-            KotlinLogging.logger { }.error("Unable to send an email : " + mex.message, mex)
-        } catch (e: UnsupportedEncodingException) {
-            KotlinLogging.logger { }.error(e.message, e)
+        } catch (ex: Exception) {
+            println("Unable to send an email: $ex")
+            KotlinLogging.logger { }.error("Unable to send an email : " + ex.message, ex)
         }
+//        } catch (e: UnsupportedEncodingException) {
+//            KotlinLogging.logger { }.error(e.message, e)
+//        }
     }
 
 }

@@ -56,7 +56,9 @@ interface IQaSchemeForSupervisionRepository : HazelcastRepository<QaSchemeForSup
 @Repository
 interface IQaSampleSubmissionRepository : HazelcastRepository<QaSampleSubmissionEntity, Long> {
     fun findByStatusAndId(status: Int, id: Long): QaSampleSubmissionEntity?
+    fun findByLabResultsStatus(labResultsStatus: Int): List<QaSampleSubmissionEntity>?
     fun findByPermitId(permitId: Long): QaSampleSubmissionEntity?
+    fun findByCdItemId(cdItemId: Long): QaSampleSubmissionEntity?
     fun findByBsNumber(bsNumber: String): QaSampleSubmissionEntity?
 }
 
@@ -80,12 +82,14 @@ interface IQaSta10EntityRepository : HazelcastRepository<QaSta10Entity, Long> {
 
 @Repository
 interface IQaSampleLabTestResultsRepository : HazelcastRepository<QaSampleLabTestResultsEntity, Long> {
-    fun findByOrderId(orderId: String): QaSampleLabTestResultsEntity?
+//    fun findByOrderId(orderId: String): QaSampleLabTestResultsEntity?
+    fun findByOrderId(orderId: String): List<QaSampleLabTestResultsEntity>?
 }
 
 @Repository
 interface IQaSampleLabTestParametersRepository : HazelcastRepository<QaSampleLabTestParametersEntity, Long> {
-    fun findByOrderId(orderId: String): QaSampleLabTestParametersEntity?
+//    fun findByOrderId(orderId: String): QaSampleLabTestParametersEntity?
+    fun findByOrderId(orderId: String): List<QaSampleLabTestParametersEntity>?
 }
 
 @Repository

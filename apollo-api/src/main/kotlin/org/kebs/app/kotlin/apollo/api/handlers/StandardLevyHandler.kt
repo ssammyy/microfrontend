@@ -233,8 +233,8 @@ class StandardLevyHandler(
                                                             req.attributes()["reportData"] =
                                                                 StandardLevyFactoryVisitReportEntity()
                                                             req.attributes()["manufacturer"] = manufacturer
-                                                            req.attributes()["assistantLevyManagers"] =  userRolesService.findAllUserWhoHaveRole(255)
-                                                            req.attributes()["levyManagers"] = userRolesService.findAllUserWhoHaveRole(182)
+                                                            req.attributes()["assistantLevyManagers"] =  userRolesService.findAllUserWhoHaveRole(182)
+                                                            req.attributes()["levyManagers"] = userRolesService.findAllUserWhoHaveRole(183)
                                                             req.attributes()["princialLevyOfficers"] = userRolesService.findAllUserWhoHaveRole(181)
                                                     req.attributes()["companyProfile"] = CompanyProfileEntity()
                                                             req.attributes()["map"] = map

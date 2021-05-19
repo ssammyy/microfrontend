@@ -465,7 +465,7 @@
                                 </div>
 
                                 <div class="form-group">
-                                    <label class="fieldlabels" for="category">Assign To: *</label>
+                                    <label class="fieldlabels" for="category">Assign Assistant Manager: *</label>
                                     <select name="categories" id="category" class="form-control" th:field="*{assistantManager}">
                                         <option  th:each="category : ${assistantLevyManagers}" th:text="${category.firstName}+' '+${category.lastName}" th:name="assistantManager" th:value="${category.id}"></option>
                                     </select>
@@ -495,7 +495,7 @@
                                     <textarea class="form-control" id="assistanceManagerRemarks" name="remarks" rows="3" th:name="assistanceManagerRemarks" ></textarea>
                                 </div>
                                 <div class="form-group">
-                                    <label class="fieldlabels" for="category">Assign To: *</label>
+                                    <label class="fieldlabels" for="category">Assign To Levy Manager: *</label>
                                     <select name="categories" id="category" class="form-control" th:field="*{slManager}">
                                         <option  th:each="category : ${levyManagers}" th:text="${category.firstName}+' '+${category.lastName}" th:name="slManager" th:value="${category.id}"></option>
                                     </select>
@@ -525,7 +525,7 @@
                                     <textarea class="form-control" id="cheifManagerRemarks" rows="3" th:name="cheifManagerRemarks" ></textarea>
                                 </div>
                                 <div class="form-group">
-                                    <label class="fieldlabels" for="category">Assign To: *</label>
+                                    <label class="fieldlabels" for="category">Assign Principal Officer: *</label>
                                     <select name="categories" id="category" class="form-control" th:field="*{principalLevyOfficer}">
                                         <option  th:each="category : ${princialLevyOfficers}" th:text="${category.firstName}+' '+${category.lastName}" th:name="principalLevyOfficer" th:value="${category.id}"></option>
                                     </select>

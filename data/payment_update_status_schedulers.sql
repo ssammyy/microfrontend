@@ -164,6 +164,10 @@ select * from DAT_KEBS_INVOICE_BATCH_DETAILS
 -- where BATCH_NUMBER = 'DM#202104290CF'
 order by id desc;/
 
+select * from DAT_KEBS_QA_SAMPLE_SUBMISSION
+-- where BATCH_NUMBER = 'DM#202104290CF'
+order by id desc;/
+
 /*Permit INVOICE*/
 select * from DAT_KEBS_INVOICE
 -- where id = 2

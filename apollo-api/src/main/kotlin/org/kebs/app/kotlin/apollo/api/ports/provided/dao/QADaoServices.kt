@@ -42,6 +42,8 @@ class QADaoServices(
     private val permitRepo: IPermitApplicationsRepository,
     private val SampleCollectionRepo: IQaSampleCollectionRepository,
     private val SampleSubmissionRepo: IQaSampleSubmissionRepository,
+    private val sampleLabTestResultsRepo: IQaSampleLabTestResultsRepository,
+    private val sampleLabTestParametersRepo: IQaSampleLabTestParametersRepository,
     private val schemeForSupervisionRepo: IQaSchemeForSupervisionRepository,
     private val sta3Repo: IQaSta3EntityRepository,
     private val smarkFmarkRepo: IQaSmarkFmarkRepository,
@@ -200,6 +202,18 @@ class QADaoServices(
         SampleSubmissionRepo.findByPermitId(permitId)?.let {
             return it
         } ?: throw ExpectedDataNotFound("No sample submission found with the following [permitId=$permitId]")
+    }
+
+    fun findSampleLabTestResultsRepoBYBSNumber(bsNumber: String): List<QaSampleLabTestResultsEntity> {
+        sampleLabTestResultsRepo.findByOrderId(bsNumber)?.let {
+            return it
+        } ?: throw ExpectedDataNotFound("No Results found with the following [bsNumber=$bsNumber]")
+    }
+
+ fun findSampleLabTestParametersRepoBYBSNumber(bsNumber: String): List<QaSampleLabTestParametersEntity> {
+     sampleLabTestParametersRepo.findByOrderId(bsNumber)?.let {
+            return it
+        } ?: throw ExpectedDataNotFound("No Paramaters found with the following [bsNumber=$bsNumber]")
     }
 
     fun findSampleCollectBYPermitID(permitId: Long): QaSampleCollectionEntity {
@@ -463,6 +477,7 @@ class QADaoServices(
             with(saveSSF) {
                 permitId = permits.id
                 status = map.activeStatus
+                labResultsStatus = map.inactiveStatus
                 createdBy = commonDaoServices.concatenateName(user)
                 createdOn = commonDaoServices.getTimestamp()
             }
@@ -1206,7 +1221,7 @@ class QADaoServices(
             permitId = permits.id
             userId = user.id
             paymentStatus = 0
-            invoiceNumber ="${permitType.markNumber}${generateRandomText(3, map.secureRandom, map.messageDigestAlgorithm, true).toUpperCase()}"
+            invoiceNumber ="KIMS${permitType.markNumber}${generateRandomText(3, map.secureRandom, map.messageDigestAlgorithm, true).toUpperCase()}"
         }
 
         return invoiceRepository.save(invoice)

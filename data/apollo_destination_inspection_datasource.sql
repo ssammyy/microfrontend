@@ -192,6 +192,13 @@ from DAT_KEBS_COCS_BAK
 -- where id = 283
 order by ID desc;
 
+
+select *
+from DAT_KEBS_ITEM_DETAILS
+-- where UCR_NUMBER = 'UCR2100006345'
+-- where id = 283
+order by ID desc;
+
 select *
 from DAT_KEBS_COC_ITEMS
 -- where uuid = 401

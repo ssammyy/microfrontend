@@ -20,6 +20,10 @@ class QaSampleSubmissionEntity : Serializable {
     @Basic
     var permitId: Long? = null
 
+    @Column(name = "CD_ITEM_ID")
+    @Basic
+    var cdItemId: Long? = null
+
     @Column(name = "SSF_NO")
     @Basic
     var ssfNo: String? = null
@@ -59,6 +63,10 @@ class QaSampleSubmissionEntity : Serializable {
     @Column(name = "STATUS")
     @Basic
     var status: Int? = null
+
+    @Column(name = "LAB_RESULTS_STATUS")
+    @Basic
+    var labResultsStatus: Int? = null
 
     @Column(name = "VAR_FIELD_1")
     @Basic
@@ -130,6 +138,7 @@ class QaSampleSubmissionEntity : Serializable {
         val that = other  as QaSampleSubmissionEntity
         return id == that.id &&
                 permitId == that.permitId &&
+                cdItemId == that.cdItemId &&
                 ssfNo == that.ssfNo &&
                 ssfSubmissionDate == that.ssfSubmissionDate &&
                 bsNumber == that.bsNumber &&
@@ -140,6 +149,7 @@ class QaSampleSubmissionEntity : Serializable {
                 resultsAnalysis == that.resultsAnalysis &&
                 description == that.description &&
                 status == that.status &&
+                labResultsStatus == that.labResultsStatus &&
                 varField1 == that.varField1 &&
                 varField2 == that.varField2 &&
                 varField3 == that.varField3 &&
@@ -162,6 +172,7 @@ class QaSampleSubmissionEntity : Serializable {
         return Objects.hash(
             id,
             permitId,
+            cdItemId,
             ssfNo,
             ssfSubmissionDate,
             bsNumber,
@@ -172,6 +183,7 @@ class QaSampleSubmissionEntity : Serializable {
             resultsAnalysis,
             description,
             status,
+            labResultsStatus,
             varField1,
             varField2,
             varField3,

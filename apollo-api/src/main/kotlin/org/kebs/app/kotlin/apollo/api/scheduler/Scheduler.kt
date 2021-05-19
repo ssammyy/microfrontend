@@ -44,6 +44,7 @@ class Scheduler (
     fun runSchedulerAfterEveryFiveMin() {
         schedulerImpl.updatePaidDemandNotesStatus()
         schedulerImpl.assignPermitApplicationAfterPayment()
+        schedulerImpl.updateLabResultsWithDetails()
     }
 
     @Scheduled(fixedDelay = 600000)
