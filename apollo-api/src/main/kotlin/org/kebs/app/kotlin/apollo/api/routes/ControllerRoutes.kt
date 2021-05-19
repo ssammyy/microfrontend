@@ -561,7 +561,6 @@ class ControllerRoutes {
             GET("/schedule/{manufacturer}", handler::scheduleVisit)
             POST("/schedule", handler::actionScheduleVisit)
             GET("/general-actions", handler::generalActions)
-//            POST("/save-data/{manufacturerId}",  handler::actionSaveFactoryVisitReport)
         }
 
     }

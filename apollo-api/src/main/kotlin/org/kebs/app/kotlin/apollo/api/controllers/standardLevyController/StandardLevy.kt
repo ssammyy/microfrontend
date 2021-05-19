@@ -35,38 +35,54 @@ class StandardLevy(
 
 
     @GetMapping("filter-by-date-created")
-    fun filterByDateCreated(@RequestParam("fromDate") fromDate: String, @RequestParam("toDate") toDate: String, @RequestParam("whereTo") whereTo: String, model: Model): String {
-        when(whereTo){
+    fun filterByDateCreated(
+        @RequestParam("fromDate") fromDate: String,
+        @RequestParam("toDate") toDate: String,
+        @RequestParam("whereTo") whereTo: String,
+        model: Model
+    ): String {
+        when (whereTo) {
             "filter" -> {
-                companyProfileRepo.findAllByCreatedOnBetween(Date.valueOf(fromDate), Date.valueOf(toDate))?.let { manufacturers ->
-                    model.addAttribute("manufacturers", manufacturers )
-                }?: throw InvalidInputException("No Data found")
+                companyProfileRepo.findAllByCreatedOnBetween(Date.valueOf(fromDate), Date.valueOf(toDate))
+                    ?.let { manufacturers ->
+                        model.addAttribute("manufacturers", manufacturers)
+                    } ?: throw InvalidInputException("No Data found")
             }
         }
         return "standard-levy/manufacturers"
     }
 
     @PostMapping("/save-visit-report-data")
-    fun saveFactoryVisitReport(@RequestParam("manufacturerId") manufacturerId : Long, reportData: StandardLevyFactoryVisitReportEntity) : String {
-            standardLevyFactoryVisitReportRepository.findByManufacturerEntity(manufacturerId)?.let { report ->
+    fun saveFactoryVisitReport(
+        @RequestParam("manufacturerId") manufacturerId: Long,
+        reportData: StandardLevyFactoryVisitReportEntity
+    ): String {
+        standardLevyFactoryVisitReportRepository.findByManufacturerEntity(manufacturerId)?.let { report ->
             report.remarks = reportData.remarks
             report.purpose = reportData.purpose
             report.actionTaken = reportData.actionTaken
             report.personMet = reportData.personMet
-                report.reportDate = LocalDate.now()
-                standardLevyFactoryVisitReportRepository.save(report)
-                report.id?.let { userRolesService.getUserId("SL_APPROVE_VISIT_REPORT")?.let { it1 ->
-                    standardsLevyBpmn.slsvPrepareVisitReportComplete(it,
-                        it1
+            report.assistantManager = reportData.assistantManager
+            report.principalLevyOfficer = reportData.principalLevyOfficer ?: report.principalLevyOfficer
+            report.reportDate = LocalDate.now()
+            standardLevyFactoryVisitReportRepository.save(report)
+            report.id?.let {
+                reportData.assistantManager?.let { it1 ->
+                    standardsLevyBpmn.slsvPrepareVisitReportComplete(
+                        it, it1
                     )
-                }?:1681 }
+                }
+            }
             return "redirect:/sl/manufacturer?manufacturerId=${manufacturerId}"
-        }?: throw InvalidInputException("Please enter a valid id")
+        } ?: throw InvalidInputException("Please enter a valid id")
     }
 
     @PostMapping("update-manufacturer")
-    fun updateManufacturerDetails(@RequestParam("manufacturerId") manufacturerId: Long, companyProfile: CompanyProfileEntity) : String{
-        KotlinLogging.logger {  }.info { "Company Details ===> "+manufacturerId  }
+    fun updateManufacturerDetails(
+        @RequestParam("manufacturerId") manufacturerId: Long,
+        companyProfile: CompanyProfileEntity
+    ): String {
+        KotlinLogging.logger { }.info { "Company Details ===> " + manufacturerId }
         commonDaoServices.findCompanyProfileWithID(manufacturerId).let { manufacturerDetails ->
             manufacturerDetails.ownership = companyProfile.ownership
             manufacturerDetails.closureOfOperations = companyProfile.closureOfOperations
@@ -77,38 +93,55 @@ class StandardLevy(
     }
 
     @PostMapping("assistance-manager-approval")
-    fun assistanceManagerApproval(@RequestParam("manufacturerId") manufacturerId : Long, reportData: StandardLevyFactoryVisitReportEntity) : String{
+    fun assistanceManagerApproval(
+        @RequestParam("manufacturerId") manufacturerId: Long,
+        reportData: StandardLevyFactoryVisitReportEntity
+    ): String {
         standardLevyFactoryVisitReportRepository.findByManufacturerEntity(manufacturerId)?.let { report ->
             report.assistantManagerApproval = 1
             report.assistanceManagerRemarks = reportData.assistanceManagerRemarks
+            report.slManager = reportData.slManager
             standardLevyFactoryVisitReportRepository.save(report)
             report.id?.let {
-                userRolesService.getUserId("SL_SECOND_APPROVE_VISIT_REPORT")?.let { it1 ->
-                    standardsLevyBpmn.slsvApproveReportAsstManagerComplete(it,
-                        it1, true)
-                }?:1769
+                reportData.slManager?.let { it1 ->
+                    standardsLevyBpmn.slsvApproveReportAsstManagerComplete(
+                        it,
+                        it1, true
+                    )
+                }
             }
             return "redirect:/sl/manufacturer?manufacturerId=${manufacturerId}"
-        }?: throw InvalidInputException("No Report found")
+        } ?: throw InvalidInputException("No Report found")
     }
 
 
     @PostMapping("manager-approval")
-    fun managerApproval(@RequestParam("manufacturerId") manufacturerId : Long, reportData: StandardLevyFactoryVisitReportEntity) : String{
+    fun managerApproval(
+        @RequestParam("manufacturerId") manufacturerId: Long,
+        reportData: StandardLevyFactoryVisitReportEntity
+    ): String {
         standardLevyFactoryVisitReportRepository.findByManufacturerEntity(manufacturerId)?.let { report ->
             report.managersApproval = 1
             report.cheifManagerRemarks = reportData.cheifManagerRemarks
+            report.principalLevyOfficer = reportData.principalLevyOfficer ?: report.principalLevyOfficer
             standardLevyFactoryVisitReportRepository.save(report)
-            report.id?.let { userRolesService.getUserId("SL_SCHEDULE_FACTORY_VISIT_MANUFACTURER")?.let { it1 ->
-                standardsLevyBpmn.slsvApproveReportManagerComplete(it,
-                    it1, true)
-            }?:1681  }
+            report.id?.let {
+                reportData.principalLevyOfficer?.let { it1 ->
+                    standardsLevyBpmn.slsvApproveReportManagerComplete(
+                        it,
+                        it1, true
+                    )
+                }
+            }
             return "redirect:/sl/manufacturer?manufacturerId=${manufacturerId}"
-        }?: throw InvalidInputException("No Report found")
+        } ?: throw InvalidInputException("No Report found")
     }
 
     @PostMapping("draft-feedback")
-    fun sendDraftFeedback(@RequestParam("manufacturerId") manufacturerId : Long, reportData: StandardLevyFactoryVisitReportEntity) : String{
+    fun sendDraftFeedback(
+        @RequestParam("manufacturerId") manufacturerId: Long,
+        reportData: StandardLevyFactoryVisitReportEntity
+    ): String {
         standardLevyFactoryVisitReportRepository.findByManufacturerEntity(manufacturerId)?.let { report ->
             report.managersApproval = 1
             report.feedBackRemarks = reportData.feedBackRemarks
@@ -118,7 +151,7 @@ class StandardLevy(
                 standardsLevyBpmn.endSlSiteVisitProcess(it)
             }
             return "redirect:/sl/manufacturer?manufacturerId=${manufacturerId}"
-        }?: throw InvalidInputException("No Report found")
+        } ?: throw InvalidInputException("No Report found")
     }
 
 }

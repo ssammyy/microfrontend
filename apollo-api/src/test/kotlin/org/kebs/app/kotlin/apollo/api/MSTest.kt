@@ -106,6 +106,12 @@ class MSTest {
         KotlinLogging.logger {  }.info { "This is userId ==>" +userId }
     }
 
+    @Test
+    fun testUsersReturned(){
+        val users = userRolesService.findAllUserWhoHaveRole(181)
+        KotlinLogging.logger {  }.info { "This is userId ==>" +users?.count() }
+    }
+
 
 
 

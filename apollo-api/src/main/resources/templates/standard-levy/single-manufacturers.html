@@ -413,26 +413,23 @@
                                 <div class="filter-title">Actions</div>
                             </div>
                             <div>
-
                                 <button th:if="${manufacturer.factoryVisitDate == null}" sec:authorize="hasAuthority('SL_MANUFACTURERS_VIEW') and hasAuthority('SL_SCHEDULE_FACTORY_VISIT_MANUFACTURER')" style="width: 270px;" type="button" class="btn btn-info" data-toggle="modal" data-target="#scheduleVisit">Schedule visit</button>
                                 <br><br>
 
                                 <button sec:authorize="hasAuthority('SL_MANUFACTURERS_VIEW') and hasAuthority('SL_SCHEDULE_FACTORY_VISIT_MANUFACTURER')" th:if="${manufacturer.factoryVisitDate != null} and ${visitReport} and ${visitReport.managersApproval == 1} and ${visitReport.officersFeedback == null} and ${visitReport.assistantManagerApproval == 1}" style="width: 270px;" type="button" class="btn btn-info" data-toggle="modal" data-target="#draftFeedback">Schedule visit</button>
                                 <br><br>
 
-                                <button th:if="${manufacturer.factoryVisitDate != null}" sec:authorize="hasAuthority('SL_MANUFACTURERS_VIEW') or hasAuthority('SL_SCHEDULE_FACTORY_VISIT_MANUFACTURER')" style="width: 270px;" type="button" class="btn btn-primary" data-toggle="modal" data-target="#industryVisitReport">Prepare report</button>
+                                <button th:if="${visitReport?.purpose == null }" sec:authorize="hasAuthority('SL_MANUFACTURERS_VIEW') or hasAuthority('SL_SCHEDULE_FACTORY_VISIT_MANUFACTURER')" style="width: 270px;" type="button" class="btn btn-primary" data-toggle="modal" data-target="#industryVisitReport">Prepare report</button>
                                 <br><br><br>
-                                <button th:if="${visitReport?.purpose != null}" sec:authorize="hasAuthority('SL_APPROVE_VISIT_REPORT')" style="width: 270px;" type="button" class="btn btn-primary" data-toggle="modal" data-target="#industryVisitReportApproval">Factory Visit Report Approval</button>
+                                <button th:if="${visitReport?.assistanceManagerRemarks == null}" sec:authorize="hasAuthority('SL_APPROVE_VISIT_REPORT')" style="width: 270px;" type="button" class="btn btn-primary" data-toggle="modal" data-target="#industryVisitReportApproval">Factory Visit Report Approval</button>
 
-                                <button th:if="${visitReport?.purpose != null}" sec:authorize="hasAuthority('SL_SECOND_APPROVE_VISIT_REPORT')" style="width: 270px;" type="button" class="btn btn-primary" data-toggle="modal" data-target="#industryVisitReportApprovalMager">Factory Visit Report Approval</button>
+                                <button th:if="${visitReport?.cheifManagerRemarks == null}" sec:authorize="hasAuthority('SL_SECOND_APPROVE_VISIT_REPORT')" style="width: 270px;" type="button" class="btn btn-primary" data-toggle="modal" data-target="#industryVisitReportApprovalMager">Factory Visit Report Approval</button>
                                 <br><br>
-                                <button th:if="${visitReport?.purpose != null}" sec:authorize="hasAuthority('SL_MANUFACTURERS_VIEW') or hasAuthority('SL_SCHEDULE_FACTORY_VISIT_MANUFACTURER')" style="width: 270px;" type="button" class="btn btn-primary" data-toggle="modal" data-target="#industryVisitReportApprovalDraft">Draft Feedback</button>
+                                <button th:if="${visitReport?.cheifManagerRemarks != null}" sec:authorize="hasAuthority('SL_MANUFACTURERS_VIEW') or hasAuthority('SL_SCHEDULE_FACTORY_VISIT_MANUFACTURER')" style="width: 270px;" type="button" class="btn btn-primary" data-toggle="modal" data-target="#industryVisitReportApprovalDraft">Draft Feedback</button>
                                 <br><br>
                                 <button type="button" class="btn btn-primary" style="width: 270px" data-toggle="modal" data-target="#updateManufacturerDetailsModal">
                                     Modify account details
                                 </button>
-
-
                             </div>
                         </div>
                     </div>
@@ -466,6 +463,13 @@
                                     <label for="remarks">Remarks</label>
                                     <textarea class="form-control" id="remarks" name="remarks" rows="3" th:name="remarks" ></textarea>
                                 </div>
+
+                                <div class="form-group">
+                                    <label class="fieldlabels" for="category">Assign To: *</label>
+                                    <select name="categories" id="category" class="form-control" th:field="*{assistantManager}">
+                                        <option  th:each="category : ${assistantLevyManagers}" th:text="${category.firstName}+' '+${category.lastName}" th:name="assistantManager" th:value="${category.id}"></option>
+                                    </select>
+                                </div>
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -490,6 +494,12 @@
                                     <label for="assistanceManagerRemarks">Assistance Manager Remarks</label>
                                     <textarea class="form-control" id="assistanceManagerRemarks" name="remarks" rows="3" th:name="assistanceManagerRemarks" ></textarea>
                                 </div>
+                                <div class="form-group">
+                                    <label class="fieldlabels" for="category">Assign To: *</label>
+                                    <select name="categories" id="category" class="form-control" th:field="*{slManager}">
+                                        <option  th:each="category : ${levyManagers}" th:text="${category.firstName}+' '+${category.lastName}" th:name="slManager" th:value="${category.id}"></option>
+                                    </select>
+                                </div>
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -513,6 +523,12 @@
                                 <div class="form-group">
                                     <label for="cheifManagerRemarks">Manager Remarks</label>
                                     <textarea class="form-control" id="cheifManagerRemarks" rows="3" th:name="cheifManagerRemarks" ></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label class="fieldlabels" for="category">Assign To: *</label>
+                                    <select name="categories" id="category" class="form-control" th:field="*{principalLevyOfficer}">
+                                        <option  th:each="category : ${princialLevyOfficers}" th:text="${category.firstName}+' '+${category.lastName}" th:name="principalLevyOfficer" th:value="${category.id}"></option>
+                                    </select>
                                 </div>
                             </div>
                             <div class="modal-footer">
