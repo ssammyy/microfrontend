@@ -241,30 +241,30 @@
                                         <div class="list-title-accordion">Completeness Remarks</div>
                                         <div class="list-text-accordion"><a class="btn btn-primary itemViewBtn" onclick="popUpRemarksFunction('permitRemarksCompleteness');">VIEW</a></div>
                                     </li>
-                                    <li class="list-item-accordion">
-                                        <div class="list-title-accordion">Broad Product Category</div>
-                                        <div class="list-text-accordion" th:text="${broadProductCategory?.category}"></div>
-                                    </li>
-                                    <li class="list-item-accordion">
-                                        <div class="list-title-accordion">Product Category</div>
-                                        <div class="list-text-accordion" th:text="${productCategory?.name}"></div>
-                                    </li>
-                                    <li class="list-item-accordion">
-                                        <div class="list-title-accordion">Product</div>
-                                        <div class="list-text-accordion" th:text="${product?.name}"></div>
-                                    </li>
-                                    <li class="list-item-accordion">
-                                        <div class="list-title-accordion">Product Sub-Category</div>
-                                        <div class="list-text-accordion" th:text="${productSubCategory?.name}"></div>
-                                    </li>
-                                    <li class="list-item-accordion">
-                                        <div class="list-title-accordion">KS Number</div>
-                                        <div class="list-text-accordion" th:text="${ksApplicable?.standardNumber}"></div>
-                                    </li>
-                                    <li class="list-item-accordion">
-                                        <div class="list-title-accordion">Title</div>
-                                        <div class="list-text-accordion" th:text="${ksApplicable?.standardTitle}"></div>
-                                    </li>
+<!--                                    <li class="list-item-accordion">-->
+<!--                                        <div class="list-title-accordion">Broad Product Category</div>-->
+<!--                                        <div class="list-text-accordion" th:text="${broadProductCategory?.category}"></div>-->
+<!--                                    </li>-->
+<!--                                    <li class="list-item-accordion">-->
+<!--                                        <div class="list-title-accordion">Product Category</div>-->
+<!--                                        <div class="list-text-accordion" th:text="${productCategory?.name}"></div>-->
+<!--                                    </li>-->
+<!--                                    <li class="list-item-accordion">-->
+<!--                                        <div class="list-title-accordion">Product</div>-->
+<!--                                        <div class="list-text-accordion" th:text="${product?.name}"></div>-->
+<!--                                    </li>-->
+<!--                                    <li class="list-item-accordion">-->
+<!--                                        <div class="list-title-accordion">Product Sub-Category</div>-->
+<!--                                        <div class="list-text-accordion" th:text="${productSubCategory?.name}"></div>-->
+<!--                                    </li>-->
+<!--                                    <li class="list-item-accordion">-->
+<!--                                        <div class="list-title-accordion">KS Number</div>-->
+<!--                                        <div class="list-text-accordion" th:text="${ksApplicable?.standardNumber}"></div>-->
+<!--                                    </li>-->
+<!--                                    <li class="list-item-accordion">-->
+<!--                                        <div class="list-title-accordion">Title</div>-->
+<!--                                        <div class="list-text-accordion" th:text="${ksApplicable?.standardTitle}"></div>-->
+<!--                                    </li>-->
                                 </ul>
                             </div>
 
@@ -427,8 +427,8 @@
                                        target='_blank' style="color: white" class="filter-link">FACTORY INSPECTION
                                         REPORT</a>
 
-                                    <a th:if="${permitDetails?.scfId != null}" th:href="@{/api/qa/kebs/view/attached(fileID=${permitDetails.scfId})}" target='_blank' class="filter-link">SAMPLE COLLECTION UPLOADED</a>
-                                    <a th:if="${permitDetails?.ssfId != null}" th:href="@{/api/qa/kebs/view/attached(fileID=${permitDetails.ssfId})}" target='_blank'class="filter-link">SAMPLE SUBMISSION UPLOADED</a>
+<!--                                    <a th:if="${permitDetails?.scfId != null}" th:href="@{/api/qa/kebs/view/attached(fileID=${permitDetails.scfId})}" target='_blank' class="filter-link">SAMPLE COLLECTION UPLOADED</a>-->
+<!--                                    <a th:if="${permitDetails?.ssfId != null}" th:href="@{/api/qa/kebs/view/attached(fileID=${permitDetails.ssfId})}" target='_blank'class="filter-link">SAMPLE SUBMISSION UPLOADED</a>-->
                                     <a th:if="${permitDetails?.testReportId != null}" th:href="@{/api/qa/kebs/view/attached(fileID=${permitDetails.testReportId})}" target='_blank' class="filter-link">LAB REPORT</a>
 
 
@@ -763,7 +763,7 @@
                                             <input type="hidden" id="description9" name="description" th:value="'Compliance status Was added Succesfull'">
 <!--                                            <input type="hidden" id="varField8" name="varField1" th:value="'Factory Inspection Report Rejected Succesfull'">-->
                                             <label for="attachedPlantId" class="col-form-label">View Report: </label>
-                                            <button><a th:href="@{/api/qa/kebs/view/attached(fileID=${permitDetails.testReportId})}" target='_blank' class="btn btn-primary itemViewBtn">view</a></button>
+                                            <button><a th:href="@{/api/qa/ssf-details(permitID=${permitDetails?.id})}" target='_blank' class="btn btn-primary itemViewBtn">view</a></button>
                                             <label for="attachedPlantId" class="col-form-label">Select Status:</label>
                                             <select id="compliantStatus" required class="select-field w-select" th:field="*{compliantStatus}">
                                                 <option th:text="'Select one.....'" th:value="null"></option>
@@ -848,7 +848,6 @@
                                 </div>
                                 <div class="modal-body">
                                     <div class="form-group">
-
 
                                         <div id="permitRemarksCompleteness">
                                             <label for="attachedPlantId" class="col-form-label">Completeness Status:</label>

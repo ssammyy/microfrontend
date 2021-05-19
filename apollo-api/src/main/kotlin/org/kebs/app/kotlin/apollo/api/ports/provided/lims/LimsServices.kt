@@ -83,7 +83,7 @@ class LimsServices(
     }
 
     @Throws(UnsupportedEncodingException::class)
-    private fun getPostDataString(params: HashMap<String, String>): String? {
+    private fun getPostDataString(params: HashMap<String, String>): String {
         val result = StringBuilder()
         var first = true
         for ((key, value) in params) {
@@ -107,6 +107,18 @@ class LimsServices(
             ?.forEach { testParam ->
                 limsTestParamsDetails(testParam)
             }
+    }
+
+    fun mainFunctionLims(bsNumber: String): Boolean{
+        var results = false
+        val hmap = HashMap<String, String>()
+        hmap["bsnumber"] = bsNumber
+        val myResults = performPostCall(hmap)
+        if (myResults != null) {
+            labResponseResults(myResults)
+            results= true
+        }
+        return results
     }
 
 

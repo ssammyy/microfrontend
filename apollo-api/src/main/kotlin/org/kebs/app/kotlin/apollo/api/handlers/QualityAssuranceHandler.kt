@@ -27,6 +27,7 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DestinationInspectionDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.InvoiceDaoService
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.QADaoServices
+import org.kebs.app.kotlin.apollo.api.ports.provided.lims.LimsServices
 import org.kebs.app.kotlin.apollo.common.dto.FmarkEntityDto
 import org.kebs.app.kotlin.apollo.common.dto.PermitEntityDto
 import org.kebs.app.kotlin.apollo.common.exceptions.*
@@ -63,6 +64,7 @@ class QualityAssuranceHandler(
     private val iLaboratoryRepo: ILaboratoryRepository,
     private val productSubCategoryRepo: IProductSubcategoryRepository,
     private val sampleStandardsRepository: ISampleStandardsRepository,
+    private val  limsServices: LimsServices,
     private val qaDaoServices: QADaoServices
 
 ) {
@@ -500,9 +502,12 @@ class QualityAssuranceHandler(
 
         val permitID = req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
         val permit = qaDaoServices.findPermitBYID(permitID)
+        val ssfDetails = qaDaoServices.findSampleSubmittedBYPermitID(permit.id?: throw ExpectedDataNotFound("MISSING PERMIT ID"))
 
-
-        req.attributes()["ssfDetails"] = qaDaoServices.findSampleSubmittedBYPermitID(permit.id?: throw ExpectedDataNotFound("MISSING PERMIT ID"))
+        req.attributes()["ssfDetails"] = ssfDetails
+        var labResultsParameters = qaDaoServices.findSampleLabTestResultsRepoBYBSNumber(ssfDetails.bsNumber?: throw ExpectedDataNotFound("MISSING BS NUMBER"))
+        KotlinLogging.logger { }.info { ssfDetails.bsNumber }
+        req.attributes()["LabResultsParameters"] = labResultsParameters
 
         return ok().render(qaSSFDetailesPage, req.attributes())
 

@@ -18,6 +18,8 @@ import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapPrope
 import org.kebs.app.kotlin.apollo.store.customdto.*
 import org.kebs.app.kotlin.apollo.store.model.*
 import org.kebs.app.kotlin.apollo.store.model.di.*
+import org.kebs.app.kotlin.apollo.store.model.qa.PermitApplicationsEntity
+import org.kebs.app.kotlin.apollo.store.model.qa.QaSampleSubmissionEntity
 import org.kebs.app.kotlin.apollo.store.repo.*
 import org.kebs.app.kotlin.apollo.store.repo.di.*
 import org.kebs.app.kotlin.apollo.store.repo.di.IConsignmentItemsRepository
@@ -25,6 +27,8 @@ import org.kebs.app.kotlin.apollo.store.repo.di.IDemandNoteRepository
 import org.kebs.app.kotlin.apollo.store.repo.di.IDestinationInspectionFeeRepository
 import org.kebs.app.kotlin.apollo.store.repo.di.ISampleCollectRepository
 import org.kebs.app.kotlin.apollo.store.repo.di.ISampleSubmitRepository
+import org.kebs.app.kotlin.apollo.store.repo.qa.IQaSampleCollectionRepository
+import org.kebs.app.kotlin.apollo.store.repo.qa.IQaSampleSubmissionRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.data.repository.findByIdOrNull
@@ -34,6 +38,8 @@ import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.multipart.MultipartFile
 import java.math.BigDecimal
 import java.sql.Date
+import java.sql.Timestamp
+import java.time.Instant
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -42,6 +48,9 @@ import java.time.format.DateTimeFormatter
 class DestinationInspectionDaoServices(
     private val applicationMapProperties: ApplicationMapProperties,
     private val commonDaoServices: CommonDaoServices,
+    private val SampleCollectionRepo: IQaSampleCollectionRepository,
+    private val SampleSubmissionRepo: IQaSampleSubmissionRepository,
+    private val serviceRequestsRepository: IServiceRequestsRepository,
     private val invoiceDaoService: InvoiceDaoService,
     private val notifications: Notifications,
     private val iCocItemRepository: ICocItemRepository,
@@ -222,6 +231,8 @@ class DestinationInspectionDaoServices(
         "$cdItemSampleSubmittedViewPageDetails=${itemDetails.uuid}&docType=${message}"
 
     fun viewCdItemPage(cdItemUuid: String) = "$cdItemViewPageDetails=$cdItemUuid"
+
+    fun viewCdItemSSFPage(cdItemUuid: String) = "$cdItemViewPageDetails=$cdItemUuid"
 
     fun viewCdPageDetails(cdUuid: String) = "$cdViewPageDetails=$cdUuid"
 
@@ -1176,7 +1187,7 @@ fun createLocalCoc(
 
                     //Generate Demand note number
                     demandNoteNumber =
-                        "${itemDetails.cdDocId?.cdType?.let { findCdTypeDetails(it).demandNotePrefix }}${
+                        "KIMS${itemDetails.cdDocId?.cdType?.let { findCdTypeDetails(it).demandNotePrefix }}${
                             generateRandomText(
                                 5,
                                 map.secureRandom,
@@ -1810,6 +1821,102 @@ fun createLocalCoc(
 
     fun findDeclarationByDclRefNum(dclRefNum: String): DeclarationDetailsEntity? {
         return declarationRepo.findByDeclarationRefNo(dclRefNum)
+    }
+
+    fun findSampleSubmittedBYCdItemID(cdItemID: Long): QaSampleSubmissionEntity {
+        SampleSubmissionRepo.findByCdItemId(cdItemID)?.let {
+            return it
+        } ?: throw ExpectedDataNotFound("No sample submission found with the following [cdItemID=$cdItemID]")
+    }
+
+    fun ssfSave(
+        cdItemDetails: CdItemDetailsEntity,
+        ssfDetails: QaSampleSubmissionEntity,
+        user: UsersEntity,
+        map: ServiceMapsEntity
+    ): Pair<ServiceRequestsEntity, QaSampleSubmissionEntity> {
+
+        var sr = commonDaoServices.createServiceRequest(map)
+        var saveSSF = ssfDetails
+        try {
+
+            with(saveSSF) {
+                cdItemId = cdItemDetails.id
+                status = map.activeStatus
+                labResultsStatus = map.inactiveStatus
+                createdBy = commonDaoServices.concatenateName(user)
+                createdOn = commonDaoServices.getTimestamp()
+            }
+
+
+            saveSSF = SampleSubmissionRepo.save(saveSSF)
+
+            sr.payload = "New SSF Saved [BRAND name${saveSSF.brandName} and ${saveSSF.id}]"
+            sr.names = "${saveSSF.brandName}"
+            sr.varField1 = cdItemDetails.id.toString()
+
+            sr.responseStatus = sr.serviceMapsId?.successStatusCode
+            sr.responseMessage = "Success ${sr.payload}"
+            sr.status = map.successStatus
+            sr = serviceRequestsRepository.save(sr)
+            sr.processingEndDate = Timestamp.from(Instant.now())
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message, e)
+//            KotlinLogging.logger { }.trace(e.message, e)
+            sr.status = sr.serviceMapsId?.exceptionStatus
+            sr.responseStatus = sr.serviceMapsId?.exceptionStatusCode
+            sr.responseMessage = e.message
+            sr = serviceRequestsRepository.save(sr)
+
+        }
+
+        KotlinLogging.logger { }.trace("${sr.id} ${sr.responseStatus}")
+        return Pair(sr, saveSSF)
+    }
+
+    fun ssfUpdateDetails(
+        cdItemDetails: CdItemDetailsEntity,
+        ssfDetails: QaSampleSubmissionEntity,
+        user: UsersEntity,
+        map: ServiceMapsEntity
+    ): Pair<ServiceRequestsEntity, QaSampleSubmissionEntity> {
+
+        var sr = commonDaoServices.createServiceRequest(map)
+        var saveSSF = findSampleSubmittedBYCdItemID(cdItemDetails.id ?: throw Exception("MISSING ITEM ID"))
+        try {
+
+            with(saveSSF) {
+                resultsAnalysis = ssfDetails.resultsAnalysis
+                modifiedBy = commonDaoServices.concatenateName(user)
+                modifiedOn = commonDaoServices.getTimestamp()
+            }
+
+
+            saveSSF = SampleSubmissionRepo.save(saveSSF)
+
+            sr.payload = "New SSF Saved [BRAND name${saveSSF.brandName} and ${saveSSF.id}]"
+            sr.names = "${saveSSF.brandName}"
+            sr.varField1 = cdItemDetails.id.toString()
+
+            sr.responseStatus = sr.serviceMapsId?.successStatusCode
+            sr.responseMessage = "Success ${sr.payload}"
+            sr.status = map.successStatus
+            sr = serviceRequestsRepository.save(sr)
+            sr.processingEndDate = Timestamp.from(Instant.now())
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message, e)
+//            KotlinLogging.logger { }.trace(e.message, e)
+            sr.status = sr.serviceMapsId?.exceptionStatus
+            sr.responseStatus = sr.serviceMapsId?.exceptionStatusCode
+            sr.responseMessage = e.message
+            sr = serviceRequestsRepository.save(sr)
+
+        }
+
+        KotlinLogging.logger { }.trace("${sr.id} ${sr.responseStatus}")
+        return Pair(sr, saveSSF)
     }
 
     fun updateCDDetailsWithCOCData(
