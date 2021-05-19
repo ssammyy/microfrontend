@@ -151,15 +151,21 @@
 
                         <div class="filter-block">
                             <div class="filter-block-title">
+                                <div class="filter-title">Document Details:</div>
+                            </div>
+                            <div>
+                                <a sec:authorize="hasAuthority('DI_INSPECTION_OFFICER_MODIFY') or hasAuthority('DI_OFFICER_CHARGE_MODIFY')" th:href="@{/api/di/motor-inspection-report(mvInspectionChecklistId=${mvInspectionChecklist?.id})}" class="filter-link " style="color: white">Motor Inspection Report</a>
+                                <a sec:authorize="hasAuthority('DI_INSPECTION_OFFICER_MODIFY')" th:if="${mvInspectionChecklist?.ministryReportSubmitStatus == activeStatus and mvInspectionChecklist?.ministryReportFile != null}" th:href="@{/api/di/ministry-inspection-report(motorVehicleInspectionChecklistId=${mvInspectionChecklist?.id})}" class="filter-link " style="color: white">Ministry Inspection Report</a>
+                            </div>
+
+                            <div class="filter-block-title">
                                 <div class="filter-title">Action:</div>
                             </div>
                             <div>
-                                <a sec:authorize="hasAuthority('DI_INSPECTION_OFFICER_MODIFY')" th:if="${item?.checkListTypeId.uuid == motorVehicleItemChecklist and item?.ministrySubmissionStatus != activeStatus}" th:href="@{/api/di/ministry-submission(cdItemUuid=${item?.uuid})}" class="filter-link " style="color: white">Ministry Submission</a>
-                                <a sec:authorize="hasAuthority('DI_INSPECTION_OFFICER_MODIFY')" th:if="${mvInspectionChecklist?.ministryReportSubmitStatus == activeStatus and mvInspectionChecklist?.ministryReportFile != null}" th:href="@{/api/di/ministry-inspection-report(motorVehicleInspectionChecklistId=${mvInspectionChecklist?.id})}" class="filter-link " style="color: white">Ministry Inspection Report</a>
+                                <a sec:authorize="hasAuthority('DI_INSPECTION_OFFICER_MODIFY')" th:if="${item?.checkListTypeId.uuid == motorVehicleItemChecklist and item?.ministrySubmissionStatus != activeStatus}" th:href="@{/api/di/ministry-submission(cdItemUuid=${item?.uuid})}" class="filter-link " style="color: white">Submit Vehicle To Ministry</a>
                                 <a sec:authorize="hasAuthority('DI_INSPECTION_OFFICER_MODIFY')" th:if="${mvInspectionChecklist?.ministryReportFile != null}" style="background-color: red" class="filter-link" onclick="popUpFunction('reinspectionRequest');">Request Re-Inspection</a>
-                                <a sec:authorize="hasAuthority('DI_INSPECTION_OFFICER_MODIFY')" th:if="${mvInspectionChecklist?.inspectionGeneral?.inspectionReportFile == null}" th:href="@{/api/di/motor-inspection-report(mvInspectionChecklistId=${mvInspectionChecklist?.id})}" class="filter-link " style="color: white">Generate Motor Inspection Report</a>
-                                <a sec:authorize="hasAuthority('DI_INSPECTION_OFFICER_MODIFY') or hasAuthority('DI_OFFICER_CHARGE_MODIFY')" th:if="${mvInspectionChecklist?.inspectionGeneral?.inspectionReportFile != null}" th:href="@{/api/di/final-motor-inspection-report(generalInspectionChecklist=${mvInspectionChecklist?.inspectionGeneral?.id})}" class="filter-link " style="color: white">Generate Motor Inspection Report</a>
-                                <a sec:authorize="hasAuthority('DI_INSPECTION_OFFICER_MODIFY')" th:if="${mvInspectionChecklist?.inspectionGeneral?.inspectionReportFile == null}" class="filter-link" style="color: white" onclick="popUpFunctionUpload('uploadBtn');">Upload Signed Motor Inspection Report</a>
+<!--                                <a sec:authorize="hasAuthority('DI_INSPECTION_OFFICER_MODIFY')" th:if="${mvInspectionChecklist?.inspectionGeneral?.inspectionReportFile == null}" th:href="@{/api/di/motor-inspection-report(mvInspectionChecklistId=${mvInspectionChecklist?.id})}" class="filter-link " style="color: white">Generate Motor Inspection Report</a>-->
+<!--                                <a sec:authorize="hasAuthority('DI_INSPECTION_OFFICER_MODIFY')" th:if="${mvInspectionChecklist?.inspectionGeneral?.inspectionReportFile == null}" class="filter-link" style="color: white" onclick="popUpFunctionUpload('uploadBtn');">Upload Signed Motor Inspection Report</a>-->
                                 <a sec:authorize="hasAuthority('DI_OFFICER_CHARGE_MODIFY')" th:if="${mvInspectionChecklist?.inspectionGeneral?.inspectionReportFile != null and mvInspectionChecklist?.inspectionGeneral?.inspectionReportApprovalStatus == null}"  class="filter-link" onclick="popUpFunction('approveReport');">Approve Report</a>
                                 <a sec:authorize="hasAuthority('DI_OFFICER_CHARGE_MODIFY')" th:if="${mvInspectionChecklist?.inspectionGeneral?.inspectionReportFile != null and mvInspectionChecklist?.inspectionGeneral?.inspectionReportApprovalStatus == null}" class="filter-link bgred" onclick="popUpFunction('dissaproveReport');">Disapprove Report</a>
                             </div>
