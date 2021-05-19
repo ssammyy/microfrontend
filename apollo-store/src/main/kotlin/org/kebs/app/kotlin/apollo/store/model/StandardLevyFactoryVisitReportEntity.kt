@@ -21,6 +21,18 @@ class StandardLevyFactoryVisitReportEntity : Serializable {
     @Basic
     var status: Int? = null
 
+    @Column(name = "PRINCIPAL_LEVY_OFFICER")
+    @Basic
+    var principalLevyOfficer : Long? = null
+
+    @Column(name = "ASSISTANT_MANAGER")
+    @Basic
+    var assistantManager : Long? = null
+
+    @Column(name = "SL_MANAGER")
+    @Basic
+    var slManager : Long? = null
+
     @Column(name = "ASSISTANT_MANAGER_APPROVAL")
     @Basic
     var assistantManagerApproval: Int? = null
@@ -156,7 +168,12 @@ class StandardLevyFactoryVisitReportEntity : Serializable {
         if (this === other) return true
         if (other == null || javaClass != other.javaClass) return false
         val that = other as StandardLevyFactoryVisitReportEntity
-        return id == that.id && status == that.status && assistantManagerApproval == that.assistantManagerApproval && managersApproval == that.managersApproval && purpose == that.purpose && personMet == that.personMet && actionTaken == that.actionTaken && remarks == that.remarks && officersFeedback == that.officersFeedback && varField1 == that.varField1 && varField2 == that.varField2 && varField3 == that.varField3 && varField4 == that.varField4 && varField5 == that.varField5 && varField6 == that.varField6 && varField7 == that.varField7 && varField8 == that.varField8 && varField9 == that.varField9 && varField10 == that.varField10 && createdBy == that.createdBy && createdOn == that.createdOn && modifiedBy == that.modifiedBy && modifiedOn == that.modifiedOn && deleteBy == that.deleteBy && deletedOn == that.deletedOn
+        return id == that.id && status == that.status
+                && assistantManagerApproval == that.assistantManagerApproval &&
+                 principalLevyOfficer == that.principalLevyOfficer &&
+                assistantManager == that.assistantManager &&
+                 slManager == that.slManager &&
+                managersApproval == that.managersApproval && purpose == that.purpose && personMet == that.personMet && actionTaken == that.actionTaken && remarks == that.remarks && officersFeedback == that.officersFeedback && varField1 == that.varField1 && varField2 == that.varField2 && varField3 == that.varField3 && varField4 == that.varField4 && varField5 == that.varField5 && varField6 == that.varField6 && varField7 == that.varField7 && varField8 == that.varField8 && varField9 == that.varField9 && varField10 == that.varField10 && createdBy == that.createdBy && createdOn == that.createdOn && modifiedBy == that.modifiedBy && modifiedOn == that.modifiedOn && deleteBy == that.deleteBy && deletedOn == that.deletedOn
     }
 
     override fun hashCode(): Int {
@@ -170,6 +187,9 @@ class StandardLevyFactoryVisitReportEntity : Serializable {
             actionTaken,
             remarks,
             officersFeedback,
+            slManager,
+            assistantManager,
+            principalLevyOfficer,
             varField1,
             varField2,
             varField3,
