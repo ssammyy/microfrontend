@@ -10,7 +10,9 @@ import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapPrope
 import org.kebs.app.kotlin.apollo.store.model.CdLocalCocEntity
 import org.kebs.app.kotlin.apollo.store.model.CdSampleCollectionEntity
 import org.kebs.app.kotlin.apollo.store.model.CdSampleSubmissionItemsEntity
+import org.kebs.app.kotlin.apollo.store.model.ServiceRequestsEntity
 import org.kebs.app.kotlin.apollo.store.model.di.*
+import org.kebs.app.kotlin.apollo.store.model.qa.QaSampleSubmissionEntity
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Controller
 import org.springframework.transaction.annotation.Propagation
@@ -495,6 +497,60 @@ class DestinationInspectionController(
                     }
             }
 
+    }
+
+    @PreAuthorize("hasAuthority('DI_OFFICER_CHARGE_MODIFY') or hasAuthority('DI_INSPECTION_OFFICER_MODIFY')")
+    @PostMapping("kebs/ssf-details-uploads")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun saveNewSSF(
+        @RequestParam("cdItemID") cdItemID: Long,
+        @ModelAttribute("SampleSubmissionDetails") sampleSubmissionDetails: QaSampleSubmissionEntity,
+        model: Model
+    ): String? {
+        val map = commonDaoServices.serviceMapDetails(appId)
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        var cdItem = daoServices.findItemWithItemID(cdItemID)
+
+        val result: ServiceRequestsEntity?
+
+
+        //updating of Details in DB
+        result = daoServices.ssfSave(cdItem,sampleSubmissionDetails,loggedInUser,map).first
+        with(cdItem){
+            sampleBsNumberStatus = map.activeStatus
+        }
+        cdItem = daoServices.updateCdItemDetailsInDB(cdItem,loggedInUser)
+
+        val sm = CommonDaoServices.MessageSuccessFailDTO()
+        sm.closeLink = "${applicationMapProperties.baseUrlValue}/di/inspection/ssf-details?cdItemID=${cdItem}"
+        sm.message = "You have Successful Filled Sample Submission Details"
+
+        return commonDaoServices.returnValues(result, map, sm)
+    }
+
+    @PreAuthorize("hasAuthority('DI_OFFICER_CHARGE_MODIFY') or hasAuthority('DI_INSPECTION_OFFICER_MODIFY')")
+    @PostMapping("kebs/lab-results-compliance-status/save")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun complianceStatusSSF(
+        @RequestParam("cdItemID") cdItemID: Long,
+        @ModelAttribute("SampleSubmissionDetails") sampleSubmissionDetails: QaSampleSubmissionEntity,
+        model: Model
+    ): String? {
+        val map = commonDaoServices.serviceMapDetails(appId)
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        var cdItem = daoServices.findItemWithItemID(cdItemID)
+
+        val result: ServiceRequestsEntity?
+
+
+        //updating of Details in DB
+        result = daoServices.ssfUpdateDetails(cdItem,sampleSubmissionDetails,loggedInUser,map).first
+
+        val sm = CommonDaoServices.MessageSuccessFailDTO()
+        sm.closeLink = "${applicationMapProperties.baseUrlValue}/di/inspection/ssf-details?cdItemID=${cdItem}"
+        sm.message = "You have Successful Filled Sample Submission Details"
+
+        return commonDaoServices.returnValues(result, map, sm)
     }
 
 

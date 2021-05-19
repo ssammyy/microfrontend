@@ -327,10 +327,11 @@
                                         <a sec:authorize="hasAuthority('DI_INSPECTION_OFFICER_MODIFY') or hasAuthority('DI_OFFICER_CHARGE_MODIFY')" th:if="${item?.checklistStatus == activeStatus and item?.checkListTypeId.uuid == motorVehicleItemChecklist}" th:href="@{/api/di/motor-vehicle-inspection-details(itemId=${item?.id}, docType=${motorVehicleInspectionDetailsName})}" class="filter-link " style="color: white">Motor Vehicle Inspection Details</a>
 <!--                                        <a sec:authorize="hasAuthority('DI_INSPECTION_OFFICER_MODIFY')" th:if="${item?.checkListTypeId.uuid == motorVehicleItemChecklist and item?.ministrySubmissionStatus != activeStatus}" th:href="@{/api/di/ministry-submission(itemID=${item?.id})}" class="filter-link " style="color: white">Ministry Submission</a>-->
 <!--                                        <a sec:authorize="hasAuthority('DI_INSPECTION_OFFICER_MODIFY')" th:if="${motorVehicleInspectionChecklist != null and motorVehicleInspectionChecklist?.ministryReportSubmitStatus == activeStatus}" th:href="@{/api/di/ministry-inspection-report(motorVehicleInspectionChecklistId=${motorVehicleInspectionChecklist?.id})}" class="filter-link " style="color: white">Ministry Inspection Report</a>-->
-                                        <a sec:authorize="hasAuthority('DI_INSPECTION_OFFICER_MODIFY')" th:if="${cor == null and item?.sampledCollectedStatus != activeStatus and item?.checklistStatus == activeStatus and item?.sampledStatus == activeStatus}" th:href="@{/api/di/inspection/sample-collection(cdItemUuid=${item?.uuid}, docType=${sampCollectName})}" class="filter-link " style="color: white">Sample Collection</a>
-                                        <a sec:authorize="hasAuthority('DI_INSPECTION_OFFICER_MODIFY')" th:if="${cor == null and item?.sampleSubmissionStatus != activeStatus and item?.sampledCollectedStatus == activeStatus}" th:href="@{/api/di/inspection/sample-submission(cdItemUuid=${item?.uuid}, docType=${sampSubmitName})}" class="filter-link " style="color: white">Sample Submission</a>
-                                        <a sec:authorize="hasAuthority('DI_INSPECTION_OFFICER_MODIFY')" th:if="${cor == null and item?.sampleSubmissionStatus == activeStatus and item?.sampledCollectedStatus == activeStatus and item?.sampleBsNumberStatus != activeStatus}" th:href="@{/api/di/inspection/sample-submission(cdItemUuid=${item?.uuid}, docType=${sampSubmitAddParamDetails})}" class="filter-link " style="color: white">Add Sample Submission Item</a>
-                                        <a sec:authorize="hasAuthority('DI_INSPECTION_OFFICER_MODIFY')" th:if="${cor == null and item?.sampleBsNumberStatus == activeStatus }" th:href="@{/api/di/inspection/sample-submission(cdItemUuid=${item?.uuid}, docType=${labResults})}" class="filter-link " style="color: white">LAB Results</a>
+<!--                                        <a sec:authorize="hasAuthority('DI_INSPECTION_OFFICER_MODIFY')" th:if="${cor == null and item?.sampledCollectedStatus != activeStatus and item?.checklistStatus == activeStatus and item?.sampledStatus == activeStatus}" th:href="@{/api/di/inspection/sample-collection(cdItemUuid=${item?.uuid}, docType=${sampCollectName})}" class="filter-link " style="color: white">Sample Collection</a>-->
+<!--                                        <a sec:authorize="hasAuthority('DI_INSPECTION_OFFICER_MODIFY')" th:if="${cor == null and item?.sampleSubmissionStatus != activeStatus and item?.sampledCollectedStatus == activeStatus}" th:href="@{/api/di/inspection/sample-submission(cdItemUuid=${item?.uuid}, docType=${sampSubmitName})}" class="filter-link " style="color: white">Sample Submission</a>-->
+                                        <a sec:authorize="hasAuthority('DI_INSPECTION_OFFICER_MODIFY')" th:if="${cor == null and item?.checklistStatus == activeStatus and  item?.sampleBsNumberStatus != activeStatus}" onclick="popUpSSFFunction('addSSFDetails');" class="filter-link " style="color: white">ADD SSF & BS NUMBER</a>
+                                        <a th:if="${item?.sampleBsNumberStatus == activeStatus}" class="filter-link" th:href="@{/api/di/inspection/ssf-details(cdItemID=${item?.id})}" style="color: white">VIEW SAMPLE DETAILS</a>
+<!--                                        <a sec:authorize="hasAuthority('DI_INSPECTION_OFFICER_MODIFY')" th:if="${cor == null and item?.sampleBsNumberStatus == activeStatus }" th:href="@{/api/di/inspection/sample-submission(cdItemUuid=${item?.uuid}, docType=${labResults})}" class="filter-link " style="color: white">LAB Results</a>-->
                                         <a sec:authorize="hasAuthority('DI_INSPECTION_OFFICER_MODIFY')" th:if="${cor == null and item?.allTestReportStatus == activeStatus and item?.inspectionReportStatus != activeStatus}" th:href="@{/api/di/inspection/item-report(cdItemUuid=${item?.uuid})}" class="filter-link " style="color: white">Generate Inspection Report</a>
                                         <a th:if="${cor == null and item?.inspectionReportStatus == activeStatus }" th:href="@{/api/di/inspection/item-report(cdItemUuid=${item?.uuid})}" class="filter-link " style="color: white">Inspection Report</a>
 <!--                                        <a sec:authorize="hasAuthority('DI_INSPECTION_OFFICER_MODIFY')" th:if="${cor == null and item?.sampleSubmissionStatus == activeStatus and item?.sampledCollectedStatus == activeStatus and item?.sampleSubmissionItemStatus == activeStatus}" th:href="@{/api/di/inspection/sample-submission(cdItemUuid=${item?.uuid}, docType=${sampSubmitAddParamDetails})}" class="filter-link " style="color: white">Add Sample Submission Item</a>-->
@@ -347,6 +348,48 @@
                             </div>
                         </div>
 
+                    </div>
+
+                    <div  class="qaSSFForm">
+                        <form id="qa-ssf-form"   name="qa-ssf-form" enctype="multipart/form-data" th:action="@{/api/di/kebs/ssf-details-uploads(cdItemID = ${item?.id})}" method="post" th:object="${SampleSubmissionDetails}">
+                            <div class="modal fade" id="qaSSFModal" tabindex="-1" role="dialog" aria-labelledby="qaSSFModalLabel" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 style="font-weight: bold; " class="modal-title" id="qaSSFModalLabel"><span id="spanSSFValue" >none</span></h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="form-group">
+
+
+                                                <div id="addSSFDetails">
+                                                    <input type="hidden" id="description8" name="description" th:value="'SSF was added sucessfull'">
+                                                    <!--                                            <input type="hidden" id="inspectionScheduledStatus" name="inspectionScheduledStatus" th:value="${activeStatus}">-->
+                                                    <label for="ssfNo" class="col-form-label">SSF No:</label>
+                                                    <input class="input-field w-input" type="text" max="20" id="ssfNo" name="ssfNo" th:field="*{ssfNo}" th:required="required">
+                                                    <label for="ssfSubmissionDate" class="col-form-label">SSF Submission Date:</label>
+                                                    <input class="input-field w-input" type="date" max="20" id="ssfSubmissionDate" name="ssfSubmissionDate" th:field="*{ssfSubmissionDate}" th:required="required">
+                                                    <label for="bsNumber" class="col-form-label">BS Number:</label>
+                                                    <input class="input-field w-input" type="text" max="20" id="bsNumber" name="bsNumber" th:field="*{bsNumber}" th:required="required">
+                                                    <label for="brandName" class="col-form-label">Brand Name:</label>
+                                                    <input class="input-field w-input" type="text" max="20" id="brandName" name="brandName" th:field="*{brandName}" th:required="required">
+                                                    <label for="productDescription" class="col-form-label">Product Description:</label>
+                                                    <input class="input-field w-input" type="text" max="20" id="productDescription" name="productDescription" th:field="*{productDescription}" th:required="required">
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button class="btn btn-secondary" data-dismiss="modal" onClick="refreshPage()" type="button">Close</button>
+                                            <input type="submit" id="saveSSfValue" class="btn btn-primary" value="Save"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
                     </div>
 
                     <div  class="CDItemForm">
@@ -534,6 +577,24 @@
         }
 
         $('.uploadForm #uploadModal').modal();
+    }
+
+    function popUpSSFFunction(eventAction) {
+        let arrHead = [ 'addSSFDetails'];
+        let arrHeadSave = [ 'Add SSF Details Below'];
+
+        for (let h = 0; h < arrHead.length; h++) {
+            if(eventAction !== arrHead[h]){
+                document.getElementById(arrHead[h]).remove();
+            }else {
+                if (eventAction === arrHead[h]) {
+                    document.getElementById('spanSSFValue').innerHTML = arrHeadSave[h];
+                    document.getElementById("saveSSfValue").value = 'Save';
+                }
+            }
+        }
+
+        $('.qaSSFForm #qaSSFModal').modal();
     }
 
     var check = function() {

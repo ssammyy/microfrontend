@@ -9,6 +9,7 @@ import org.junit.runner.RunWith
 import org.kebs.app.kotlin.apollo.api.notifications.Notifications
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.DestinationInspectionBpmn
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.*
+import org.kebs.app.kotlin.apollo.api.ports.provided.scheduler.SchedulerImpl
 import org.kebs.app.kotlin.apollo.api.ports.provided.sftp.UpAndDownLoad
 import org.kebs.app.kotlin.apollo.api.utils.Delimiters
 import org.kebs.app.kotlin.apollo.api.utils.XMLDocument
@@ -49,6 +50,9 @@ class DITest {
 
     @Autowired
     lateinit var invoiceDaoService: InvoiceDaoService
+
+    @Autowired
+    lateinit var schedulerImpl: SchedulerImpl
 
     @Autowired
     lateinit var applicationMapProperties: ApplicationMapProperties
@@ -611,6 +615,11 @@ class DITest {
         invoiceDaoService.updateOfInvoiceTables()
     }
 
+    @Test
+    fun checkLabResults() {
+        schedulerImpl.updateLabResultsWithDetails()
+    }
+
 
     @Test
     fun demandNoteCreationDetails() {
@@ -620,12 +629,20 @@ class DITest {
 
         usersRepo.findByUserName("kpaul7747@gmail.com")
             ?.let { loggedInUser ->
-//                for (i in 1..10) {
+//                for (i in 101 downTo 123) {
                     //                    val payload = "Assigned Inspection Officer [assignedStatus= 1, assignedRemarks= test]"
                     val map = commonDaoServices.serviceMapDetails(appId)
 //                    val demandNotes: MutableList<CdDemandNoteEntity> = mutableListOf()
+//                101
+//                102
+//                103
+//                121
+//                122
+//                123
+//                124
+//                125
 
-                    var itemDetails = destinationInspectionDaoServices.findItemWithItemID(155)
+                    var itemDetails = destinationInspectionDaoServices.findItemWithItemID(123)
                     with(itemDetails) {
                         paymentFeeIdSelected = iDIFeeDetailsRepo.findByIdOrNull(7)
                     }
@@ -670,8 +687,8 @@ class DITest {
                             }
                         }
                     }
-                }
-//            }
+//                }
+            }
 //        assertTrue { demandNoteNumber.isNotEmpty() }
     }
 

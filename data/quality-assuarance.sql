@@ -82,6 +82,11 @@ select * from DAT_KEBS_PERMIT_TRANSACTION
 -- where PERMIT_NUMBER = 'DM#0954A'
 order by id desc; 1522
 
+select * from cfg_kebs_qa_process_status
+-- where id = 350
+-- where PERMIT_NUMBER = 'DM#0954A'
+order by id desc; 1522
+
 SELECT * FROM
     DAT_KEBS_USER_VERIFICATION_TOKEN
 WHERE USER_ID = 1464
@@ -190,6 +195,10 @@ select * from CFG_ROLES_PRIVILEGES
 order by id desc;
 
 select * from CFG_USER_ROLES
+-- where  = 1393
+order by id desc;
+
+select * from DAT_KEBS_QA_SAMPLE_SUBMISSION
 -- where  = 1393
 order by id desc;
 
