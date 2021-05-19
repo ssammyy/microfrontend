@@ -7,7 +7,6 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.emailDTO.MvInspectionNotifi
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.common.utils.generateRandomText
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
-import org.kebs.app.kotlin.apollo.store.model.CdLocalCocEntity
 import org.kebs.app.kotlin.apollo.store.model.CdSampleCollectionEntity
 import org.kebs.app.kotlin.apollo.store.model.CdSampleSubmissionItemsEntity
 import org.kebs.app.kotlin.apollo.store.model.di.*
@@ -21,6 +20,12 @@ import org.springframework.web.bind.annotation.*
 import org.springframework.web.bind.support.SessionStatus
 import org.springframework.web.multipart.MultipartFile
 import org.springframework.web.servlet.mvc.support.RedirectAttributes
+import java.io.BufferedInputStream
+import java.io.ByteArrayInputStream
+import java.io.File
+import java.io.InputStream
+import java.lang.Exception
+import java.net.URLConnection
 import javax.servlet.http.HttpServletResponse
 
 
@@ -1238,5 +1243,35 @@ class DestinationInspectionController(
                 if (cdInspectionGeneralEntity.inspectionReportApprovalComments != null) cdInspectionGeneralEntity.inspectionReportApprovalComments else cdInspectionGeneralEntity.inspectionReportDisapprovalComments
         }
         return mvInspectionNotificationDTO
+    }
+
+    @GetMapping("/coc-certificate/view")
+    fun downloadCocCertificateFile(response: HttpServletResponse, @RequestParam("cocId") cocId: Long) {
+        daoServices.findCOCById(cocId)?.let { coc ->
+            coc.localCocFile?.let { file ->
+                //Create FileDTO Object
+                val fileDto: CommonDaoServices.FileDTO = CommonDaoServices.FileDTO()
+                fileDto.document = file
+                fileDto.fileType = "application/x-pdf"
+                fileDto.name = coc.localCocFileName
+
+                commonDaoServices.downloadFile(response, fileDto)
+            }
+        }
+    }
+
+    @GetMapping("/cor-certificate/view")
+    fun downloadCorCertificateFile(response: HttpServletResponse, @RequestParam("corId") corId: Long) {
+        daoServices.findCorById(corId)?.let { cor ->
+            cor.localCorFile?.let { file ->
+                //Create FileDTO Object
+                val fileDto: CommonDaoServices.FileDTO = CommonDaoServices.FileDTO()
+                fileDto.document = file
+                fileDto.fileType = "application/x-pdf"
+                fileDto.name = cor.localCorFileName
+
+                commonDaoServices.downloadFile(response, fileDto)
+            }
+        }
     }
 }

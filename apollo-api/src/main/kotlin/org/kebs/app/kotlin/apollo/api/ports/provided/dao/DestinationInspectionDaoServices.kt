@@ -378,7 +378,7 @@ fun createLocalCoc(
                                     true
                                 )
                             }".toUpperCase()
-                        idfNumber = consignmentDocumentDetailsEntity.ucrNumber?.let { findIdf(it)?.baseDocRefNo }
+                        idfNumber = consignmentDocumentDetailsEntity.ucrNumber?.let { findIdf(it)?.baseDocRefNo } ?: "UNKOWN"
                         rfiNumber = "UNKNOWN"
                         ucrNumber = consignmentDocumentDetailsEntity.ucrNumber
                         rfcDate = commonDaoServices.getTimestamp()
@@ -1882,6 +1882,14 @@ fun createLocalCoc(
                 return cocEntity
             }
             ?: throw Exception("COC Details with the following UCR NUMBER = ${ucrNumber}, does not Exist")
+    }
+
+    fun findCOCById(cocId: Long): CocsEntity? {
+        return cocRepo.findByIdOrNull(cocId)
+    }
+
+    fun findCorById(corId: Long): CorsBakEntity? {
+        return corsBakRepository.findByIdOrNull(corId)
     }
 
     fun findCocByUcrNumber(ucrNumber: String): CocsEntity? {

@@ -1129,10 +1129,24 @@ class DITest {
     @Test
     @Ignore
     fun testCocEmailAttachment() {
-        val consignmentDocumentEntity: ConsignmentDocumentDetailsEntity = destinationInspectionDaoServices.findCD(881)
-        reportsDaoService.generateLocalCoCReportWithDataSource(consignmentDocumentEntity, applicationMapProperties.mapReportLocalCocPath)?.let { file ->
-            notifications.processEmail("anthonykihagi@gmail.com","Test subject","Test Message",file.path)
-        }
+        val appId = applicationMapProperties.mapImportInspection
+        usersRepo.findByUserName("kpaul7747@gmail.com")
+            ?.let { loggedInUser ->
+                val map = commonDaoServices.serviceMapDetails(appId)
+                val consignmentDocumentEntity: ConsignmentDocumentDetailsEntity = destinationInspectionDaoServices.findCD(941)
+                val localCoc = destinationInspectionDaoServices.createLocalCoc(loggedInUser, consignmentDocumentEntity, map, "A")
+                consignmentDocumentEntity.cdStandard?.let { cdStd ->
+                    destinationInspectionDaoServices.updateCDStatus(
+                        cdStd,
+                        applicationMapProperties.mapDICdStatusTypeCOCGeneratedAndSendID
+                    )
+                }
+                KotlinLogging.logger { }.info { "localCoc = ${localCoc.id}" }
+                reportsDaoService.generateLocalCoCReportWithDataSource(consignmentDocumentEntity, applicationMapProperties.mapReportLocalCocPath)?.let { file ->
+//            notifications.processEmail("anthonykihagi@gmail.com","Test subject","Test Message",file.path)
+                    KotlinLogging.logger { }.info { " ::::::::::::: Success :::::::::::::::" }
+                }
+            }
     }
 
     @Test
@@ -1145,5 +1159,11 @@ class DITest {
                 importer.email?.let { destinationInspectionDaoServices.sendLocalCorReportEmail(it, file.path) }
             }
         }
+    }
+
+    @Test
+    @Ignore
+    fun testKebsEmailConfig() {
+        notifications.sendEmail("anthonykihagi@gmail.com","Test subject","Test Message")
     }
 }

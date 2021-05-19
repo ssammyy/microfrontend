@@ -361,15 +361,18 @@
                             </div>
 
                         </div>
-<!--                        <div class="filter-block">-->
-<!--                            <div class="filter-block-title">-->
-<!--                                <div class="filter-title">Action:</div>-->
-<!--                            </div>-->
-<!--                            <div>-->
-<!--                                <a class="filter-link inspectBtn"-->
-<!--                                   th:href="@{/api/di/back-view(close = ${session.certBack},id = ${session.coc.id},section = ${session.section.section})}">Close</a>-->
-<!--                            </div>-->
-<!--                        </div>-->
+                        <div class="filter-block">
+                            <div class="filter-block-title">
+                                <div class="filter-title">Action:</div>
+                            </div>
+                            <div></div>
+                            <div class="filter-block-title">
+                                <div class="filter-title">Document Details:</div>
+                            </div>
+                            <div>
+                                <a class="filter-link " target='_blank' th:href="@{/api/di/coc-certificate/view(cocId=${cocDetails.id})}">COC Certificate File</a>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
