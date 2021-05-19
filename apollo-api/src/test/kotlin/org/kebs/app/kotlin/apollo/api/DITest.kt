@@ -52,6 +52,9 @@ class DITest {
     lateinit var invoiceDaoService: InvoiceDaoService
 
     @Autowired
+    lateinit var qaDaoServices: QADaoServices
+
+    @Autowired
     lateinit var schedulerImpl: SchedulerImpl
 
     @Autowired
@@ -622,6 +625,20 @@ class DITest {
 
 
     @Test
+    fun generateQaRandomInvoice() {
+        val appId = applicationMapProperties.mapImportInspection
+       val loggedInUser =  usersRepo.findByUserName("0715668934")
+        val map = commonDaoServices.serviceMapDetails(appId)
+        val permit = qaDaoServices.findPermitBYID(2)
+        val permitType = qaDaoServices.findPermitType(2)
+        if (loggedInUser != null) {
+            qaDaoServices.permitInvoiceCalculation(map, loggedInUser,permit, permitType)
+        }
+//        schedulerImpl.updateLabResultsWithDetails()
+    }
+
+
+    @Test
     fun demandNoteCreationDetails() {
         val appId = applicationMapProperties.mapImportInspection
 
@@ -633,16 +650,8 @@ class DITest {
                     //                    val payload = "Assigned Inspection Officer [assignedStatus= 1, assignedRemarks= test]"
                     val map = commonDaoServices.serviceMapDetails(appId)
 //                    val demandNotes: MutableList<CdDemandNoteEntity> = mutableListOf()
-//                101
-//                102
-//                103
-//                121
-//                122
-//                123
-//                124
-//                125
 
-                    var itemDetails = destinationInspectionDaoServices.findItemWithItemID(123)
+                    var itemDetails = destinationInspectionDaoServices.findItemWithItemID(212)
                     with(itemDetails) {
                         paymentFeeIdSelected = iDIFeeDetailsRepo.findByIdOrNull(7)
                     }

@@ -1883,10 +1883,11 @@ fun createLocalCoc(
     ): Pair<ServiceRequestsEntity, QaSampleSubmissionEntity> {
 
         var sr = commonDaoServices.createServiceRequest(map)
-        var saveSSF = ssfDetails
+        var saveSSF = findSampleSubmittedBYCdItemID(cdItemDetails.id ?: throw Exception("MISSING ITEM ID"))
         try {
 
             with(saveSSF) {
+                resultsAnalysis = ssfDetails.resultsAnalysis
                 modifiedBy = commonDaoServices.concatenateName(user)
                 modifiedOn = commonDaoServices.getTimestamp()
             }

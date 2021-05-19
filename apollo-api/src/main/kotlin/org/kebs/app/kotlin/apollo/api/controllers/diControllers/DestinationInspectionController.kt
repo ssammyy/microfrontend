@@ -541,6 +541,9 @@ class DestinationInspectionController(
         var cdItem = daoServices.findItemWithItemID(cdItemID)
 
         val result: ServiceRequestsEntity?
+//        sampleSubmissionDetails.id = cdItem.id
+
+//        val ssf =commonDaoServices.updateDetails(sampleSubmissionDetails,daoServices.findSampleSubmittedBYCdItemID(cdItem.id?: throw Exception("MISSING ITEM ID"))) as QaSampleSubmissionEntity
 
 
         //updating of Details in DB

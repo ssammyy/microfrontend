@@ -226,7 +226,7 @@
                                 </div>
                                 <div class="modal-body">
                                     <div class="form-group">
-                                        <div id="addCommodityManufacturedDetails">
+                                        <div id="addComplianceStatusDetails">
                                             <label for="resultsAnalysis" class="col-form-label">Select a Compliance status:</label>
                                             <select id="resultsAnalysis" required class="select-field w-select" th:field="*{resultsAnalysis}">
                                                 <option th:text="'Select one.....'" th:value="null"></option>
@@ -380,8 +380,8 @@
                 document.getElementById(arrHead[h]).remove();
             } else {
                 if (eventAction === arrHead[h]) {
-                    document.getElementById('spanValueCompany').innerHTML = arrHeadSave[h];
-                    document.getElementById("spanValueCompany").value = 'Submit';
+                    document.getElementById('spanValueCommodity').innerHTML = arrHeadSave[h];
+                    document.getElementById("saveValueCommodity").value = 'Submit';
                 }
             }
         }
