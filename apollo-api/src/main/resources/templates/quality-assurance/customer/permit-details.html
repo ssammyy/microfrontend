@@ -929,9 +929,11 @@
                                             <label for="bsNumber" class="col-form-label">BS Number:</label>
                                             <input class="input-field w-input" type="text" max="20" id="bsNumber" name="bsNumber" th:field="*{bsNumber}" th:required="required">
                                             <label for="brandName" class="col-form-label">Brand Name:</label>
-                                            <input class="input-field w-input" type="text" max="20" id="brandName" name="brandName" th:field="*{brandName}" th:required="required">
+                                            <input id="brandName" name="brandName" th:value="${permitDetails?.tradeMark}" type="hidden">
+                                            <input class="input-field w-input" disabled type="text" max="20" id="brandName2" name="brandName" th:value="${permitDetails?.tradeMark}" th:required="required">
                                             <label for="productDescription" class="col-form-label">Product Description:</label>
-                                            <input class="input-field w-input" type="text" max="20" id="productDescription" name="productDescription" th:field="*{productDescription}" th:required="required">
+                                            <input id="productDescription" name="productDescription" th:value="${permitDetails?.commodityDescription}" type="hidden">
+                                            <input class="input-field w-input" disabled type="text" max="20" id="productDescription2" name="productDescription" th:value="${permitDetails?.commodityDescription}" th:required="required">
                                         </div>
 
                                     </div>
@@ -1159,8 +1161,8 @@
 </script>
 <script>
     function popUpFunction(eventAction) {
-        let arrHead = [ 'attachePlant', 'permitCompleteness', 'assignOfficer', 'scheduleInspectionDate', 'assignAssessor', 'scheduleAssessmentDate', 'approveInspectionReport', 'complianceStatus', 'addRecommendation', 'approveRecommendation', 'pscMemberApproval', 'pcmApproval', 'dmarkApplicationApproval'];
-        let arrHeadSave = [ 'Attach a Plant for manufacturing the product', 'Is The Permit Complete', 'Select An officer',' Set The Date of Inspection', 'Select An Assessor', 'Schedule Factory Assessment Date', 'Approve Or Reject the Factory Inspection Report', 'Select a suitable Compliance Status for the Lab Report', 'Add Recommendation', 'Approve / Reject Recommendation', 'Approve / Reject Awarding of Permit', 'Approve / Reject Awarding of Permit', 'Grant/Defer Application'];
+        let arrHead = [ 'attachePlant', 'permitCompleteness', 'assignOfficer', 'scheduleInspectionDate', 'assignAssessor', 'scheduleAssessmentDate', 'approveInspectionReport', 'complianceStatus', 'addRecommendation', 'approveRecommendation', 'pscMemberApproval', 'pcmApproval', 'dmarkApplicationApproval', 'hodApprovalAssessmentReport'];
+        let arrHeadSave = [ 'Attach a Plant for manufacturing the product', 'Is The Permit Complete', 'Select An officer',' Set The Date of Inspection', 'Select An Assessor', 'Schedule Factory Assessment Date', 'Approve Or Reject the Factory Inspection Report', 'Select a suitable Compliance Status for the Lab Report', 'Add Recommendation', 'Approve / Reject Recommendation', 'Approve / Reject Awarding of Permit', 'Approve / Reject Awarding of Permit', 'Grant/Defer Application', 'Approve / Reject Permit Review'];
         // let arrHead = [ 'attachePlant', 'permitCompleteness', 'assignOfficer', 'scheduleInspectionDate', 'assignAssessor', 'scheduleAssessmentDate', 'dmarkApplicationApproval'];
         // let arrHeadSave = [ 'Attach a Plant for manufacturing the product', 'Is The Permit Complete', 'Select An officer',' Set The Date of Inspection', 'Select An Assessor', 'Schedule Factory Assessment Date',
         // 'Grant/Defer Application'];

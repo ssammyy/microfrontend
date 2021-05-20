@@ -223,6 +223,10 @@ class QualityAssuranceController(
             permit.assignOfficerStatus != null -> {
                 if (permitDetails.permitType == applicationMapProperties.mapQAPermitTypeIdSmark){
                     qaDaoServices.permitInsertStatus(permitDetails,applicationMapProperties.mapQaStatusPFactoryVisitSchedule,loggedInUser)
+                }else if (permitDetails.permitType == applicationMapProperties.mapQAPermitTypeIdFmark){
+                    qaDaoServices.permitInsertStatus(permitDetails,applicationMapProperties.mapQaStatusPFactoryVisitSchedule,loggedInUser)
+                }else if (permitDetails.permitType==applicationMapProperties.mapQAPermitTypeIDDmark){
+                    qaDaoServices.permitInsertStatus(permitDetails,applicationMapProperties.mapQaStatusPfactoryInsForms,loggedInUser)
                 }
 
             }

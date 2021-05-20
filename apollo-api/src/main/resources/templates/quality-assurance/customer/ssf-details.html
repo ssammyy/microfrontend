@@ -172,7 +172,7 @@
                         <div>
 
                             <div sec:authorize="hasAuthority('QA_OFFICER_MODIFY')">
-                                <a th:if="${ssfDetails.resultsAnalysis == null}" onclick="popUpCompanyFunction('addComplianceStatusDetails');" class="filter-link" style="color: white">ADD COMPLIANCE DETAILS</a>
+                                <a th:if="${ssfDetails.resultsAnalysis == null and ssfDetails.labResultsStatus == 1}" onclick="popUpCompanyFunction('addComplianceStatusDetails');" class="filter-link" style="color: white">ADD COMPLIANCE DETAILS</a>
                             </div>
 
                         </div>
@@ -217,7 +217,7 @@
             </div>
 
             <div class="commodityDetailsForm" >
-                <form id="commodityDetails-Form" name="commodityDetails-Form" th:action="@{/api/qa/kebs/lab-results-compliance-status/save(permitID = ${ssfDetails?.cdItemId})}" method="post" th:object="${ssfDetails}">
+                <form id="commodityDetails-Form" name="commodityDetails-Form" th:action="@{/api/qa/kebs/lab-results-compliance-status/save(permitID = ${ssfDetails?.permitId})}" method="post" th:object="${ssfDetails}">
                     <div class="modal fade" id="commodityDetailsModal" tabindex="-1" role="dialog" aria-labelledby="commodityDetailsModalLable" aria-hidden="true">
                         <div class="modal-dialog" role="document">
                             <div class="modal-content">
