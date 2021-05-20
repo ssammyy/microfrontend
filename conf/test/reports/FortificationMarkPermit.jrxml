@@ -15,7 +15,7 @@
 	<parameter name="EmailAddress" class="java.lang.String"/>
 	<parameter name="StandardTitle" class="java.lang.String"/>
 	<parameter name="phoneNumber" class="java.lang.String"/>
-	<parameter name="SmarkLogo" class="java.lang.String"/>
+	<parameter name="FmarkLogo" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
@@ -36,7 +36,7 @@
 				<textElement>
 					<font fontName="SansSerif" size="14" isBold="true"/>
 				</textElement>
-				<text><![CDATA[PERMIT TO USE THE STANDARDAIZATION MARK OF QUALITY]]></text>
+				<text><![CDATA[PERMIT TO USE THE FORTIFICATION  MARK OF QUALITY]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="180" y="29" width="180" height="20" uuid="52c5994c-9f48-4878-9ee0-158b5df02158"/>
@@ -214,7 +214,7 @@
 				<textElement>
 					<font fontName="SansSerif" size="10"/>
 				</textElement>
-				<text><![CDATA[To use the standardization mark of quality specified in the row hereunder and upon and in respect of the commodity and brand specified in the second and third rows there of, which commodity, conform to the standard specification in the fourth row]]></text>
+				<text><![CDATA[To use the fortification mark of quality specified in the row hereunder and upon and in respect of the commodity and brand specified in the second and third rows there of, which commodity, conform to the standard specification in the fourth row]]></text>
 			</staticText>
 			<line>
 				<reportElement x="1" y="115" width="553" height="1" uuid="8954d644-2f98-43c6-81f5-55f5cb18b95a"/>
@@ -258,14 +258,14 @@
 				<textElement>
 					<font fontName="SansSerif" size="8"/>
 				</textElement>
-				<text><![CDATA[STANDARDIZATION MARK]]></text>
+				<text><![CDATA[FORTIFICATION MARK]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="30" y="138" width="152" height="34" uuid="11ff7889-5e9e-41e2-99ca-1207aa6d3bc5"/>
 				<textElement textAlignment="Left">
 					<font size="8"/>
 				</textElement>
-				<text><![CDATA[DESCRIPTION OF THE COMMODITY UPON WHICH THE STANDARDIZATION MARK IS TO BE USED]]></text>
+				<text><![CDATA[DESCRIPTION OF THE COMMODITY UPON WHICH THE FORTIFICATION MARK IS TO BE USED]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="30" y="201" width="146" height="22" uuid="6db1d72f-5e75-4e92-be86-270cfd386e50"/>
@@ -286,9 +286,9 @@
 				<textElement textAlignment="Justified">
 					<font fontName="SansSerif" size="9"/>
 				</textElement>
-				<text><![CDATA[1. EVERY STANDARDIZATION MARK HOLDER SHALL PAY AN ANNUAL  FEE IN RESPECT OF EACH PERMIT GRANTED OR RENEWED
+				<text><![CDATA[1. EVERY PERMIT HOLDER SHALL PAY AN ANNUAL  FEE IN RESPECT OF EACH PERMIT GRANTED OR RENEWED
 
-2. THIS PERMIT IS ISSUED SUBJECT TO THE CONDITIONS SET OUT IN THE  CONTRACT FOR USE OF THE STANDARDIZATION MARK OF QUALITY]]></text>
+2. THIS PERMIT IS ISSUED SUBJECT TO THE CONDITIONS SET OUT IN THE  CONTRACT FOR USE OF THE FORTIFICATION MARK OF QUALITY]]></text>
 			</staticText>
 			<line>
 				<reportElement x="332" y="352" width="221" height="1" uuid="70f37210-99de-472b-8746-3572c2361d21"/>
@@ -321,7 +321,7 @@ Standards]]></text>
 			</staticText>
 			<image>
 				<reportElement x="230" y="58" width="50" height="50" uuid="55ac87ae-248c-4aaf-98ea-7be3fb403701"/>
-				<imageExpression><![CDATA[$P{SmarkLogo}]]></imageExpression>
+				<imageExpression><![CDATA[$P{FmarkLogo}]]></imageExpression>
 			</image>
 			<textField textAdjust="StretchHeight">
 				<reportElement x="210" y="115" width="299" height="68" uuid="8dbacb9c-ec05-4a9c-b3b3-741d483637ff"/>

@@ -271,16 +271,6 @@ class QualityAssuranceController(
                 KotlinLogging.logger { }.info(":::::: Sending defer notification to assessor/qao :::::::")
 //                qaDaoServices.permitInsertStatus(permitDetails,applicationMapProperties.mapQaStatusP,loggedInUser)
             }
-            permit.compliantStatus != null -> {
-                //Send manufacturers notification
-                var complianceValue: String?= null
-                if (permit.compliantStatus==map.activeStatus){
-                    complianceValue= "COMPLIANT"
-                }else if (permit.compliantStatus==map.inactiveStatus){
-                    complianceValue= "NON-COMPLIANT"
-                }
-                qaDaoServices.sendComplianceStatusAndLabReport(permitDetails, complianceValue ?: throw ExpectedDataNotFound(" "))
-            }
             permit.hodApproveAssessmentStatus != null -> {
                 //Send manufacturers notification
                 //
@@ -533,8 +523,23 @@ class QualityAssuranceController(
 
         result = qaDaoServices.ssfUpdateDetails(permit,sampleSubmissionDetails,loggedInUser,map).first
 
+        if (sampleSubmissionDetails.resultsAnalysis != null){
+            permit.compliantStatus = sampleSubmissionDetails.resultsAnalysis
+            var complianceValue: String?= null
+            when (permit.compliantStatus) {
+                map.activeStatus -> {
+                    complianceValue= "COMPLIANT"
+                }
+                map.inactiveStatus -> {
+                    complianceValue= "NON-COMPLIANT"
+                }
+            }
+            qaDaoServices.permitInsertStatus(permit,applicationMapProperties.mapQaStatusPRecommendation,loggedInUser)
+            qaDaoServices.sendComplianceStatusAndLabReport(permit, complianceValue ?: throw ExpectedDataNotFound("INVALID VALUE"))
+        }
+
         val sm = CommonDaoServices.MessageSuccessFailDTO()
-        sm.closeLink = "${applicationMapProperties.baseUrlValue}/di/inspection/ssf-details?cdItemID=${permit.id}"
+        sm.closeLink = "${applicationMapProperties.baseUrlValue}/di/inspection/ssf-details?permitID=${permit.id}"
         sm.message = "You have Successful Filled Sample Submission Details"
 
         return commonDaoServices.returnValues(result, map, sm)
@@ -592,7 +597,7 @@ class QualityAssuranceController(
             permitStatus = applicationMapProperties.mapQaStatusPSubmission
         }
         //updating of Details in DB
-        result = qaDaoServices.permitUpdateDetails(commonDaoServices.updateDetails(updatePermit, permit) as PermitApplicationsEntity,map, loggedInUser).first
+        result = qaDaoServices.permitUpdateDetails(commonDaoServices.updateDetails( permit, updatePermit) as PermitApplicationsEntity,map, loggedInUser).first
 
         val sm = CommonDaoServices.MessageSuccessFailDTO()
         sm.closeLink =
@@ -601,6 +606,7 @@ class QualityAssuranceController(
 
         return commonDaoServices.returnValues(result, map, sm)
     }
+
 
     @PreAuthorize("hasAuthority('PERMIT_APPLICATION')")
     @PostMapping("/apply/new-sta10")

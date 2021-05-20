@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.16.0.final using JasperReports Library version 6.16.0-48579d909b7943b64690c65c71e07e0b80981928  -->
+<!-- Created with Jaspersoft Studio version 6.13.0.final using JasperReports Library version 6.13.0-46ada4d1be8f3c5985fd0b6146f3ed44caed6f05  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="DiamondMarkPermit" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="ed21babd-bc90-4f45-a015-31c53503a62e">
 	<parameter name="DmarkLogo" class="java.lang.String"/>
 	<parameter name="imagePath" class="java.lang.String"/>
@@ -119,7 +119,7 @@
 				<reportElement x="418" y="112" width="135" height="1" uuid="7c1983dd-6908-4b59-9157-f637265dad1a"/>
 			</line>
 			<staticText>
-				<reportElement x="0" y="131" width="120" height="18" uuid="f603b75b-0d4a-4af4-b0b1-3e7840375c3a"/>
+				<reportElement x="0" y="127" width="120" height="18" uuid="f603b75b-0d4a-4af4-b0b1-3e7840375c3a"/>
 				<textElement>
 					<font fontName="SansSerif"/>
 				</textElement>
@@ -131,16 +131,16 @@
 			<line>
 				<reportElement x="0" y="167" width="300" height="1" uuid="f16d1933-649d-4a4a-9ec3-7238226e5e36"/>
 			</line>
-			<textField textAdjust="StretchHeight">
-				<reportElement x="100" y="17" width="100" height="39" uuid="687c578a-3654-4d75-ad5d-304dd1643677"/>
+			<textField textAdjust="ScaleFont">
+				<reportElement x="1" y="40" width="298" height="14" uuid="687c578a-3654-4d75-ad5d-304dd1643677"/>
 				<textFieldExpression><![CDATA[$P{FirmName}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="424" y="16" width="100" height="24" uuid="07558563-4f33-44de-a603-467279f63912"/>
 				<textFieldExpression><![CDATA[$P{PermitNo}]]></textFieldExpression>
 			</textField>
-			<textField textAdjust="StretchHeight">
-				<reportElement x="140" y="68" width="160" height="45" uuid="84611ffb-2904-4fed-bb90-80ca8d565bbd"/>
+			<textField textAdjust="ScaleFont">
+				<reportElement x="10" y="86" width="290" height="23" uuid="84611ffb-2904-4fed-bb90-80ca8d565bbd"/>
 				<textFieldExpression><![CDATA[$P{PostalAddress}]]></textFieldExpression>
 			</textField>
 			<textField>
@@ -151,8 +151,10 @@
 				<reportElement x="429" y="98" width="100" height="20" uuid="9eccb848-a2b8-444b-aede-f879883e127e"/>
 				<textFieldExpression><![CDATA[$P{DateOfIssue}]]></textFieldExpression>
 			</textField>
-			<textField textAdjust="StretchHeight">
-				<reportElement x="142" y="127" width="100" height="22" uuid="739fb948-6fe1-41c7-8b75-9a0a838c15fe"/>
+			<textField textAdjust="ScaleFont">
+				<reportElement x="10" y="147" width="289" height="20" uuid="739fb948-6fe1-41c7-8b75-9a0a838c15fe">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
 				<textFieldExpression><![CDATA[$P{PhysicalAddress}]]></textFieldExpression>
 			</textField>
 			<textField>
