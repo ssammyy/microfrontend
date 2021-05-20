@@ -172,8 +172,29 @@ class StandardLevyHandler(
                                                     ok().render(allPayments, req.attributes())
                                                 }
                                         }
+                                        "load_levy_penalties" -> {
+                                            standardLevyPaymentsRepository.findAllByStatusOrderByIdDesc(2)
+                                                .let { payments ->
+                                                    KotlinLogging.logger { }
+                                                        .info("Records found ${payments?.count()}")
+                                                    KotlinLogging.logger { }.info("Records found ${payments?.count()}")
+                                                    req.attributes()["payments"] = payments
+                                                    req.attributes()["map"] = map
+                                                    ok().render(allPayments, req.attributes())
+                                                }
+                                        }
 
-
+                                        "load_levy_partial_payments" -> {
+                                            standardLevyPaymentsRepository.findAllByStatusOrderByIdDesc(3)
+                                                .let { payments ->
+                                                    KotlinLogging.logger { }
+                                                        .info("Records found ${payments?.count()}")
+                                                    KotlinLogging.logger { }.info("Records found ${payments?.count()}")
+                                                    req.attributes()["payments"] = payments
+                                                    req.attributes()["map"] = map
+                                                    ok().render(allPayments, req.attributes())
+                                                }
+                                        }
                                         else -> {
                                             redirectAttributes?.addFlashAttribute("error", "")
                                             ok().render("redirect:/sl", req.attributes())

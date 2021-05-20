@@ -55,11 +55,10 @@
                                     <thead>
                                     <tr>
                                         <th>REF No.</th>
-                                        <th>Manufacturer Ref No</th>
+                                        <th>Manufacturer Kra Pin</th>
                                         <th>Payment Date</th>
                                         <th>Payment Amount</th>
                                         <th>Visit Status</th>
-                                        <th>Assigned To</th>
                                         <!--                                        <th>View</th>-->
                                     </tr>
                                     </thead>
@@ -67,7 +66,7 @@
                                     <!--                                    <tr  class="list" th:if="${payments} and ${not #lists?.isEmpty(payments)} and ${type == 'load_levy_payments'}"  th:each="payment, iStat: ${payments}" style="cursor: pointer">-->
                                     <tr class="list" th:each="payment, iStat: ${payments}">
                                         <td th:text="${payment?.id}"></td>
-                                        <td th:text="${payment?.manufacturerEntity}"></td>
+                                        <td th:text="${payment?.kraPin}"></td>
                                         <td th:text="${#dates.format(payment?.paymentDate, 'dd/MM/yyyy')}"></td>
                                         <td th:text="${payment?.levyPayable} == null ? 'Pending Payment' : 'Ksh. ' + ${payment?.levyPayable}"></td>
                                         <td th:if="${payment?.visitStatus == 1}" th:text="Visited"></td>
