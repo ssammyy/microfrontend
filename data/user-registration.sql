@@ -79,7 +79,7 @@
 ***************************Table USED IN DI*****************************************
 select *
 from DAT_KEBS_USER_VERIFICATION_TOKEN
-where TOKEN =
+-- where TOKEN =
 ;
 select * from CFG_ROLES_PRIVILEGES --the role is 40 and prRole ID = 774
 -- where PRIVILEGE_ID =52425
@@ -109,7 +109,7 @@ order by id desc;--MS
 -- _MP_MODIFY MS_MP_READ AUTHORITIES_WRITE 29
 select *
 from CFG_ROLES_PRIVILEGES
-where ROLES_ID = 510
+-- where ROLES_ID = 510
 
 order by id desc;--MS_MP_MODIFY MS_MP_READ
 select *

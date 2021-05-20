@@ -1892,7 +1892,6 @@ fun createLocalCoc(
                 modifiedOn = commonDaoServices.getTimestamp()
             }
 
-
             saveSSF = SampleSubmissionRepo.save(saveSSF)
 
             sr.payload = "New SSF Saved [BRAND name${saveSSF.brandName} and ${saveSSF.id}]"

@@ -241,6 +241,10 @@
                                         <div class="list-title-accordion">Completeness Remarks</div>
                                         <div class="list-text-accordion"><a class="btn btn-primary itemViewBtn" onclick="popUpRemarksFunction('permitRemarksCompleteness');">VIEW</a></div>
                                     </li>
+                                    <li th:if="${permitDetails?.pcmApprovalStatus != null}" class="list-item-accordion">
+                                        <div class="list-title-accordion">PCM Review Remarks</div>
+                                        <div class="list-text-accordion"><a class="btn btn-primary itemViewBtn" onclick="popUpRemarksFunction('permitRemarksPCMReview');">VIEW</a></div>
+                                    </li>
 <!--                                    <li class="list-item-accordion">-->
 <!--                                        <div class="list-title-accordion">Broad Product Category</div>-->
 <!--                                        <div class="list-text-accordion" th:text="${broadProductCategory?.category}"></div>-->
@@ -460,6 +464,8 @@
 
                                         <a th:if="${permitDetails?.resubmitApplicationStatus == null and permitDetails?.hofQamCompletenessStatus == 0}"  th:href="@{/api/qa/kebs/resubmit/permit-details/save(permitID=${permitDetails?.id})}" class="filter-link" style="color: white">RESUBMIT PERMIT</a>
 
+
+
                                     </div>
 
                                     <div sec:authorize="hasAuthority('QA_MANAGER_ASSESSORS_MODIFY') or hasAuthority('QA_HOF_MODIFY') or hasAuthority('QA_HOD_MODIFY')">
@@ -482,7 +488,7 @@
 
 <!--                                        <a th:if="${permitDetails?.factoryInspectionReportApprovedRejectedStatus == 1 and permitDetails?.scfId != null and permitDetails?.ssfId != null and permitDetails?.bsNumber != null and permitDetails?.testReportId == null}" style="color: white" onclick="popUpUploadFunction('uploadLabResults');" class="filter-link">UPLOAD LAB RESULTS</a>-->
 
-                                        <a th:if="${permitDetails?.factoryInspectionReportApprovedRejectedStatus == 1 and permitDetails?.bsNumber != null  and permitDetails?.compliantStatus == null}" style="color: white" onclick="popUpFunction('complianceStatus');" class="filter-link">ASSIGN COMPLIANCE STATUS(Lab Report)</a>
+<!--                                        <a th:if="${permitDetails?.factoryInspectionReportApprovedRejectedStatus == 1 and permitDetails?.bsNumber != null  and permitDetails?.compliantStatus == null}" style="color: white" onclick="popUpFunction('complianceStatus');" class="filter-link">ASSIGN COMPLIANCE STATUS(Lab Report)</a>-->
                                     </div>
 
 
@@ -589,11 +595,22 @@
 
                                         <a th:if="${permitDetails?.generateSchemeStatus == 1 and permitDetails?.approvedRejectedScheme == null and permitType?.schemeGenerate == 1}" th:href="@{/api/qa/scheme-of-supervision(permitID=${permitDetails?.id})}" style="color: white" class="filter-link">APPROVE/REJECT GENERATED SCHEME FOR SUPERVISION AND CONTROL</a>
 
+                                        <a th:if="${permitDetails?.sendForPcmReview == 1 and permitDetails?.approvedRejectedScheme == null and permitType?.schemeGenerate == 1}" th:href="@{/api/qa/scheme-of-supervision(permitID=${permitDetails?.id})}" style="color: white" class="filter-link">APPROVE/REJECT GENERATED SCHEME FOR SUPERVISION AND CONTROL</a>
+
 
                                         <div th:if="${permitType?.st3Status == 1 and permitDetails?.sta3FilledStatus == 1 and permitDetails?.attachedPlantId != null}">
-                                            <a th:if="${permitDetails?.sendApplication != 1}"  th:href="@{/api/qa/new-permit-submit(permitID=${permitDetails?.id})}" class="filter-link" style="color: white">SUBMIT APPLICATION</a>
+                                            <a th:if="${permitDetails?.sendForPcmReview == null}"  th:href="@{/api/qa/new-permit-submit-review(permitID=${permitDetails?.id})}" class="filter-link" style="color: white">SUBMIT APPLICATION FOR REVIEW</a>
                                         </div>
 
+                                        <a th:if="${permitDetails?.resubmitApplicationStatus == null and permitDetails?.pcmApprovalStatus == 0}"  th:href="@{/api/qa/kebs/resubmit/permit-details/save(permitID=${permitDetails?.id})}" class="filter-link" style="color: white">RESUBMIT PERMIT</a>
+
+<!--                                        <div th:if="${permitType?.st3Status == 1 and permitDetails?.sta3FilledStatus == 1 and permitDetails?.attachedPlantId != null}">-->
+<!--                                            <a th:if="${permitDetails?.sendApplication != 1}"  th:href="@{/api/qa/new-permit-submit(permitID=${permitDetails?.id})}" class="filter-link" style="color: white">SUBMIT APPLICATION</a>-->
+<!--                                        </div>-->
+
+                                    </div>
+                                    <div sec:authorize="hasAuthority('QA_PCM_READ')" >
+                                        <a th:if="${ permitDetails?.pcmApprovalStatus == null and permitDetails?.sendForPcmReview == 1}" style="color: white" onclick="popUpFunction('pcmApproval');" class="filter-link">APPROVE/REJECT PERMIT REVIEW</a>
                                     </div>
 
                                     <div sec:authorize="hasAuthority('QA_HOD_MODIFY')">
@@ -854,6 +871,12 @@
                                             <input type="text" disabled class="form-control" maxlength="256" name="entryPoint" data-name="entry Point" id="entryPoint2" th:value="${permitDetails?.hofQamCompletenessStatus} ? 'COMPLETE' : 'IN-COMPLETE'" >
                                             <label for="hofQamCompletenessRemarks" class="col-form-label">Feedback for this Permit:</label>
                                             <textarea required name="name" disabled id="hofQamCompletenessRemarks" class="input-field w-input" cols="65" rows="5" th:text="${permitDetails?.hofQamCompletenessRemarks}"></textarea>
+                                        </div>
+                                        <div id="permitRemarksPCMReview">
+                                            <label for="pcmApprovalStatus" class="col-form-label">Review Status:</label>
+                                            <input type="text" disabled class="form-control" maxlength="256" name="entryPoint" data-name="entry Point" id="pcmApprovalStatus" th:value="${permitDetails?.pcmApprovalStatus} ? 'APPROVED' : 'REJECTED'" >
+                                            <label for="pcmApprovalRemarks" class="col-form-label">Feedback for this Permit:</label>
+                                            <textarea required name="name" disabled id="pcmApprovalRemarks" class="input-field w-input" cols="65" rows="5" th:text="${permitDetails?.pcmApprovalRemarks}"></textarea>
                                         </div>
 
                                     </div>

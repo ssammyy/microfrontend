@@ -11,6 +11,7 @@ import org.kebs.app.kotlin.apollo.common.exceptions.ServiceMapNotFoundException
 import org.kebs.app.kotlin.apollo.common.utils.generateRandomText
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.*
+import org.kebs.app.kotlin.apollo.store.model.di.CdItemDetailsEntity
 import org.kebs.app.kotlin.apollo.store.model.ms.ComplaintEntity
 import org.kebs.app.kotlin.apollo.store.model.qa.*
 import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileContractsUndertakenEntity
@@ -488,6 +489,51 @@ class QADaoServices(
             sr.payload = "New SSF Saved [BRAND name${saveSSF.brandName} and ${saveSSF.id}]"
             sr.names = "${saveSSF.brandName}"
             sr.varField1 = permits.id.toString()
+
+            sr.responseStatus = sr.serviceMapsId?.successStatusCode
+            sr.responseMessage = "Success ${sr.payload}"
+            sr.status = map.successStatus
+            sr = serviceRequestsRepository.save(sr)
+            sr.processingEndDate = Timestamp.from(Instant.now())
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message, e)
+//            KotlinLogging.logger { }.trace(e.message, e)
+            sr.status = sr.serviceMapsId?.exceptionStatus
+            sr.responseStatus = sr.serviceMapsId?.exceptionStatusCode
+            sr.responseMessage = e.message
+            sr = serviceRequestsRepository.save(sr)
+
+        }
+
+        KotlinLogging.logger { }.trace("${sr.id} ${sr.responseStatus}")
+        return Pair(sr, saveSSF)
+    }
+
+
+    fun ssfUpdateDetails(
+        permitDetails: PermitApplicationsEntity,
+        ssfDetails: QaSampleSubmissionEntity,
+        user: UsersEntity,
+        map: ServiceMapsEntity
+    ): Pair<ServiceRequestsEntity, QaSampleSubmissionEntity> {
+
+        var sr = commonDaoServices.createServiceRequest(map)
+        var saveSSF = findSampleSubmittedBYPermitID(permitDetails.id ?: throw Exception("MISSING ITEM ID"))
+        try {
+
+            with(saveSSF) {
+                resultsAnalysis = ssfDetails.resultsAnalysis
+                modifiedBy = commonDaoServices.concatenateName(user)
+                modifiedOn = commonDaoServices.getTimestamp()
+            }
+
+
+            saveSSF = SampleSubmissionRepo.save(saveSSF)
+
+            sr.payload = "New SSF Saved [BRAND name${saveSSF.brandName} and ${saveSSF.id}]"
+            sr.names = "${saveSSF.brandName}"
+            sr.varField1 = permitDetails.id.toString()
 
             sr.responseStatus = sr.serviceMapsId?.successStatusCode
             sr.responseMessage = "Success ${sr.payload}"
@@ -1010,6 +1056,24 @@ class QADaoServices(
             modifiedOn = commonDaoServices.getTimestamp()
         }
         return invoiceRepository.save(invoice)
+    }
+
+
+    fun pcmGenerateInvoice(
+        s: ServiceMapsEntity,
+                           user: UsersEntity,
+                           permit: PermitApplicationsEntity,
+                           permitTypeID: Long
+    ){
+        val permitType = findPermitType(permitTypeID)
+        val permitUser = commonDaoServices.findUserByID(permit.userId ?: throw ExpectedDataNotFound("Permit USER Id Not found"))
+        permitInvoiceCalculation(s, permitUser, permit, permitType)
+        with(permit) {
+            sendApplication = s.activeStatus
+            invoiceGenerated = s.activeStatus
+            permitStatus = applicationMapProperties.mapQaStatusPPayment
+        }
+        permitUpdateDetails(permit, s, user)
     }
 
     fun permitInvoiceCalculation(
@@ -1670,6 +1734,17 @@ class QADaoServices(
                 "\n " +
                 "The below permit has been DEFERRED due to the following reasons: ${permitDetails.pcmApprovalRemarks} \n" +
                 "Please do some correction and send it back for approval : ${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitDetails.id}\n"
+
+        manufacturer?.email?.let { notifications.sendEmail(it, subject, messageBody) }
+    }
+
+    fun sendNotificationForPermitReviewRejectedFromPCM(permitDetails: PermitApplicationsEntity) {
+        val manufacturer = permitDetails.userId?.let { commonDaoServices.findUserByID(it) }
+        val subject = "PERMIT REJECTED "
+        val messageBody = "Dear ${manufacturer?.let { commonDaoServices.concatenateName(it) }}: \n" +
+                "\n " +
+                "The below permit has been REJECTED due to the following reasons: ${permitDetails.pcmApprovalRemarks} \n" +
+                "Please do some correction and send it back for review again : ${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitDetails.id}\n"
 
         manufacturer?.email?.let { notifications.sendEmail(it, subject, messageBody) }
     }

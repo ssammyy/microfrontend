@@ -122,6 +122,7 @@ select * from CFG_KEBS_PERMIT_PAYMENT_UNITS
 order by id desc;
 
 select * from DAT_KEBS_COMPANY_PROFILE
+where REGISTRATION_NUMBER = 'PVT-9XUZXZB'
 -- where id = 2
 order by id desc;
 
@@ -219,7 +220,8 @@ order by id desc;--MS_MP_MODIFY MS_MP_READ
 
 select * from DAT_KEBS_USERS
 -- where USER_TYPE = 5
-where EMAIL = '254safaris@gmail.com'
+-- where EMAIL = '254safaris@gmail.com'
+where id = 1785
 order by id desc;
 
 select *

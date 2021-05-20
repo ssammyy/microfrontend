@@ -104,6 +104,10 @@ class PermitApplicationsEntity:Serializable {
     @Basic
     var compliantStatus: Int? = null
 
+    @Column(name = "SEND_FOR_PCM_REVIEW")
+    @Basic
+    var sendForPcmReview: Int? = null
+
     @Column(name = "JUSTIFICATION_REPORT_STATUS")
     @Basic
     var justificationReportStatus: Int? = null
@@ -579,6 +583,7 @@ class PermitApplicationsEntity:Serializable {
         if (pacDecisionRemarks != other.pacDecisionRemarks) return false
         if (hofQamCompletenessStatus != other.hofQamCompletenessStatus) return false
         if (compliantStatus != other.compliantStatus) return false
+        if (sendForPcmReview != other.sendForPcmReview) return false
         if (justificationReportStatus != other.justificationReportStatus) return false
         if (justificationReportRemarks != other.justificationReportRemarks) return false
         if (assessmentReportRemarks != other.assessmentReportRemarks) return false
@@ -705,6 +710,7 @@ class PermitApplicationsEntity:Serializable {
         result = 31 * result + (assignOfficerStatus ?: 0)
         result = 31 * result + (permitExpiredStatus ?: 0)
         result = 31 * result + (compliantStatus ?: 0)
+        result = 31 * result + (sendForPcmReview ?: 0)
         result = 31 * result + (assignAssessorStatus ?: 0)
         result = 31 * result + (resubmitApplicationStatus ?: 0)
         result = 31 * result + (justificationReportStatus ?: 0)
