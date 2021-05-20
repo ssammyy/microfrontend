@@ -90,11 +90,8 @@
                                         </li>
                                         <li class="list-item-accordion">
                                             <div class="list-title-accordion">Approval Date</div>
-                                            <div class="list-text-accordion"  th:text="${item?.cdDocId?.cdStandard?.approvalDate}"></div>
-                                        </li>
-                                        <li class="list-item-accordion">
-                                            <div class="list-title-accordion">Final Approval Date</div>
-                                            <div class="list-text-accordion" th:text="${item?.cdDocId?.cdStandard?.finalApprovalDate}"></div>
+                                            <div class="list-text-accordion"
+                                                 th:text="${#dates.format(cdDetails?.approveRejectCdDate, 'dd/MM/yyyy')}"></div>
                                         </li>
                                         <li class="list-item-accordion">
                                             <div class="list-title-accordion">Version No</div>

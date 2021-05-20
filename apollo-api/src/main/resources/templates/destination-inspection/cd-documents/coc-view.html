@@ -369,7 +369,7 @@
                             <div class="filter-block-title">
                                 <div class="filter-title">Document Details:</div>
                             </div>
-                            <div>
+                            <div th:if="${cocDetails?.localCocFile != null}">
                                 <a class="filter-link " target='_blank' th:href="@{/api/di/coc-certificate/view(cocId=${cocDetails.id})}">COC Certificate File</a>
                             </div>
                         </div>
