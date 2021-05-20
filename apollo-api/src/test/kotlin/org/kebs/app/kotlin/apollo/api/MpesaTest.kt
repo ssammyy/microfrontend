@@ -61,14 +61,12 @@ class MpesaTest {
 
     @Test
     fun hashString() {
-        val plainText = listOf("test")
+        val plainText = listOf("Kims@Kebs21")
 
         plainText.forEach {
             val hashed = jasyptStringEncryptor.encrypt(it)
             KotlinLogging.logger { }.info { "my hashed value =$it =  $hashed" }
         }
-
-
     }
 
     @Test

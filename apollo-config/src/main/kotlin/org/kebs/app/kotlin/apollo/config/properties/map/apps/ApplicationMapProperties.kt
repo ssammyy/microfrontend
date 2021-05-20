@@ -761,6 +761,27 @@ class ApplicationMapProperties {
     @Value("\${org.kebs.app.kotlin.apollo.application.map.cors.urls}")
     val mapCorsUrls: String = ""
 
+    @Value("\${org.kebs.app.kotlin.apollo.application.email.username}")
+    val mapApplicationEmailUsername: String = ""
+
+    @Value("\${org.kebs.app.kotlin.apollo.application.email.password}")
+    val mapApplicationEmailPassword: String = ""
+
+    @Value("\${org.kebs.app.kotlin.apollo.application.email.smtp.start.tls.enable}")
+    val mapApplicationEmailSmtpStartTlsEnable: String = ""
+
+    @Value("\${org.kebs.app.kotlin.apollo.application.email.smtp.host}")
+    val mapApplicationEmailSmtpHost: String = ""
+
+    @Value("\${org.kebs.app.kotlin.apollo.application.email.smtp.port}")
+    val mapApplicationEmailSmtpPort: String = ""
+
+    @Value("\${org.kebs.app.kotlin.apollo.application.email.smtp.auth}")
+    val mapApplicationEmailSmtpAuth: String = ""
+
+    @Value("\${org.kebs.app.kotlin.apollo.application.email.protocol}")
+    val mapApplicationEmailProtocol: String = ""
+
     val assigneeId: Long = 101
     val qaoAssigneeId: Long = 402
 
