@@ -651,7 +651,7 @@ class DITest {
                     val map = commonDaoServices.serviceMapDetails(appId)
 //                    val demandNotes: MutableList<CdDemandNoteEntity> = mutableListOf()
 
-                    var itemDetails = destinationInspectionDaoServices.findItemWithItemID(212)
+                    var itemDetails = destinationInspectionDaoServices.findItemWithItemID(284)
                     with(itemDetails) {
                         paymentFeeIdSelected = iDIFeeDetailsRepo.findByIdOrNull(7)
                     }
