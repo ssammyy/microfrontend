@@ -1003,67 +1003,67 @@ class QADaoServices(
             }
             savePermit = permitRepo.save(savePermit)
 
-            //make some values to be null for the oldest permit in here
-            with(oldPermit){
-                id = null
-                userId = null
-                permitType = null
-                permitNumber = null
-                enabled = null
-                versionNumber = null
-                endOfProductionStatus =null
-                status =null
-                createdBy = null
-                createdOn = null
-                oldPermitStatus = null
-                permitExpiredStatus = null
-                paidStatus = null
-                bsNumber = null
-                compliantRemarks = null
-                scfId = null
-                ssfId = null
-                testReportId = null
-                pscMemberId = null
-                dateOfIssue = null
-                dateOfExpiry = null
-                applicationSuspensionStatus = null
-                pscMemberApprovalStatus = null
-                pscMemberApprovalRemarks = null
-                pcmApprovalStatus = null
-                pcmApprovalRemarks = null
-                hodApproveAssessmentStatus = null
-                hodApproveAssessmentRemarks = null
-                assessmentCriteria = null
-                factoryInspectionReportApprovedRejectedStatus = null
-                factoryInspectionReportApprovedRejectedRemarks = null
-                paidStatus = null
-                recommendationApprovalStatus = null
-                recommendationRemarks = null
-                recommendationApprovalRemarks = null
-                hofQamCompletenessRemarks = null
-                pacDecisionRemarks = null
-                justificationReportRemarks = null
-                assessmentReportRemarks = null
-                permitExpiredStatus = null
-                compliantStatus = null
-                sendForPcmReview = null
-                assignAssessorStatus = null
-                resubmitApplicationStatus = null
-                justificationReportStatus = null
-                smeFormFilledStatus = null
-                invoiceGenerated = null
-                enabled = null
-                sendApplication = null
-                permitAwardStatus = null
-                fmarkGenerated = null
-                endOfProductionStatus = null
-                oldPermitStatus = null
-//                renewalStatus = null
-
-            }
-
-//            Update Permit renewed with new details
-            savePermit = permitUpdateDetails(commonDaoServices.updateDetails(savePermit, oldPermit) as PermitApplicationsEntity,s, user).second
+//            //make some values to be null for the oldest permit in here
+//            with(oldPermit){
+//                id = null
+//                userId = null
+//                permitType = null
+//                permitNumber = null
+//                enabled = null
+//                versionNumber = null
+//                endOfProductionStatus =null
+//                status =null
+//                createdBy = null
+//                createdOn = null
+//                oldPermitStatus = null
+//                permitExpiredStatus = null
+//                paidStatus = null
+//                bsNumber = null
+//                compliantRemarks = null
+//                scfId = null
+//                ssfId = null
+//                testReportId = null
+//                pscMemberId = null
+//                dateOfIssue = null
+//                dateOfExpiry = null
+//                applicationSuspensionStatus = null
+//                pscMemberApprovalStatus = null
+//                pscMemberApprovalRemarks = null
+//                pcmApprovalStatus = null
+//                pcmApprovalRemarks = null
+//                hodApproveAssessmentStatus = null
+//                hodApproveAssessmentRemarks = null
+//                assessmentCriteria = null
+//                factoryInspectionReportApprovedRejectedStatus = null
+//                factoryInspectionReportApprovedRejectedRemarks = null
+//                paidStatus = null
+//                recommendationApprovalStatus = null
+//                recommendationRemarks = null
+//                recommendationApprovalRemarks = null
+//                hofQamCompletenessRemarks = null
+//                pacDecisionRemarks = null
+//                justificationReportRemarks = null
+//                assessmentReportRemarks = null
+//                permitExpiredStatus = null
+//                compliantStatus = null
+//                sendForPcmReview = null
+//                assignAssessorStatus = null
+//                resubmitApplicationStatus = null
+//                justificationReportStatus = null
+//                smeFormFilledStatus = null
+//                invoiceGenerated = null
+//                enabled = null
+//                sendApplication = null
+//                permitAwardStatus = null
+//                fmarkGenerated = null
+//                endOfProductionStatus = null
+//                oldPermitStatus = null
+////                renewalStatus = null
+//
+//            }
+//
+////            Update Permit renewed with new details
+//            savePermit = permitUpdateDetails(commonDaoServices.updateDetails(savePermit, oldPermit) as PermitApplicationsEntity,s, user).second
 
 
             sr.payload = "Permit Renewed Updated [updatePermit= ${savePermit.id}]"
