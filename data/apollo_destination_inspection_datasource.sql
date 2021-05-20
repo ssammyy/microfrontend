@@ -192,6 +192,13 @@ from DAT_KEBS_COCS_BAK
 -- where id = 283
 order by ID desc;
 
+
+select *
+from DAT_KEBS_ITEM_DETAILS
+-- where UCR_NUMBER = 'UCR2100006345'
+-- where id = 283
+order by ID desc;
+
 select *
 from DAT_KEBS_COC_ITEMS
 -- where uuid = 401
@@ -226,7 +233,7 @@ order by ID desc;
 select *
 from DAT_KEBS_CONSIGNMENT_DOCUMENT_DETAILS
 -- where uuid = 'b8404c30-0286-46f6-9afb-c7347f11f701'
--- where UCR_number = 'UCR2100006339'
+where UCR_number = 'UCR202100127482'
 -- where id = 861
 order by ID desc;
 

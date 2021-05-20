@@ -259,11 +259,14 @@ data class OtpResponseDto(
 
 
 data class UserCompanyDto(
+    var id: Long? = null,
     var name: String? = null,
     var kraPin: String? = null,
     var userId: Long? = null,
     var registrationNumber: String? = null,
     var postalAddress: String? = null,
+    var physicalAddress: String? = null,
+    var plotNumber: String? = null,
     var companyEmail: String? = null,
     var companyTelephone: String? = null,
     var yearlyTurnover: BigDecimal? = null,
@@ -286,6 +289,8 @@ data class UserCompanyEntityDto(
     var profileType: Long? = null,
     var registrationNumber: String? = null,
     var postalAddress: String? = null,
+    var physicalAddress: String? = null,
+    var plotNumber: String? = null,
     var companyEmail: String? = null,
     var companyTelephone: String? = null,
     var yearlyTurnover: BigDecimal? = null,
@@ -418,6 +423,12 @@ data class UserRequestTypesEntityDto(
     var status: Boolean? = null
 )
 
+data class ManufactureSubmitEntityDto(
+    var closedCommodityManufactured: Int? = null,
+    var closedContractsUndertaken: Int? = null,
+    var submittedStatus: Int? = null,
+)
+
 data class UserRequestEntityDto(
     var id: Long? = null,
     var requestId: Long? = null,
@@ -426,6 +437,18 @@ data class UserRequestEntityDto(
     var requestStatus: Boolean? = null,
     var description: String? = null,
     var status: Boolean? = null
+)
+
+data class PermitEntityDto(
+    var id: Long? = null,
+    var firmName: String? = null,
+    var permitNumber: String? = null,
+    var productName: String? = null,
+    var tradeMark: String? = null,
+    var dateOfIssue: Date? = null,
+    var dateOfExpiry: Date? = null,
+    var permitStatus: String? = null,
+    var userId: Long? = null
 )
 
 data class UserRequestListEntityDto(
@@ -458,6 +481,9 @@ data class ProductsEntityDto(
     var name: String? = null,
     var status: Boolean? = null,
     var productCategoryId: Long? = null,
+)
+data class FmarkEntityDto(
+    var smarkPermitID: Long? = null,
 )
 
 data class ProductSubcategoryEntityDto(

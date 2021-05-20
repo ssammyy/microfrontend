@@ -28,6 +28,7 @@ class ActorSpringExtension(
             return Props.create(SpringActorProducer::class.java, applicationContext, actorBeanClass, parameters)
         }
 
+        //Todo Review common error
         fun props(actorBeanName: String): Props {
             return applicationContext.getType(actorBeanName)
                 ?.let { extractedType ->

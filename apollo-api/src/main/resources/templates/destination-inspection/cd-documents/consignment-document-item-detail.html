@@ -90,11 +90,8 @@
                                         </li>
                                         <li class="list-item-accordion">
                                             <div class="list-title-accordion">Approval Date</div>
-                                            <div class="list-text-accordion"  th:text="${item?.cdDocId?.cdStandard?.approvalDate}"></div>
-                                        </li>
-                                        <li class="list-item-accordion">
-                                            <div class="list-title-accordion">Final Approval Date</div>
-                                            <div class="list-text-accordion" th:text="${item?.cdDocId?.cdStandard?.finalApprovalDate}"></div>
+                                            <div class="list-text-accordion"
+                                                 th:text="${#dates.format(cdDetails?.approveRejectCdDate, 'dd/MM/yyyy')}"></div>
                                         </li>
                                         <li class="list-item-accordion">
                                             <div class="list-title-accordion">Version No</div>
@@ -111,9 +108,9 @@
                                         <div class="list-title-accordion">Item Status</div>
                                         <div class="list-text-accordion" th:text="${item?.itemStatus}"></div>
                                     </li>
-                                    <li th:if="${item.inspectionNotificationStatus == 1}" class="list-item-accordion">
+                                    <li th:if="${item?.cdDocId?.inspectionNotificationStatus == 1}" class="list-item-accordion">
                                         <div class="list-title-accordion">Item Inspection Date</div>
-                                        <div class="list-text-accordion" th:text="${#dates.format(item?.inspectionDate, 'dd/MM/yyyy')}"></div>
+                                        <div class="list-text-accordion" th:text="${#dates.format(item?.cdDocId?.inspectionDate, 'dd/MM/yyyy')}"></div>
                                     </li>
                                     <li class="list-item-accordion">
                                         <div class="list-title-accordion">Item Description</div>
@@ -273,26 +270,26 @@
                             <div>
                                 <div th:if="${cdType?.inspectionStatus == activeStatus and item?.cdDocId?.approveRejectCdStatusType == null}">
                                     <div sec:authorize="hasAuthority('DI_INSPECTION_OFFICER_MODIFY')">
-                                        <a class="filter-link" onclick="popUpFunction('approveItem');"
-                                           th:if="${cdType?.category != cdTypeVehiclesCategory and item.approveStatus != activeStatus}">Approve</a>
-                                        <a class="filter-link" onclick="popUpFunction('rejectItem');"
-                                           style="background-color: red"
-                                           th:if="${cdType?.category != cdTypeVehiclesCategory and item.rejectStatus != activeStatus}">Reject</a>
-                                        <a class="filter-link" onclick="popUpFunction('targetItem');"
-                                           style="background-color: red" th:if="${item.targetStatus != activeStatus}">Target</a>
-                                        <a class="filter-link" onclick="popUpFunction('targetItem');"
-                                           style="background-color: red" th:if="${item.targetStatus != activeStatus}">Notify
-                                            KRA</a>
+<!--                                        <a class="filter-link" onclick="popUpFunction('approveItem');"-->
+<!--                                           th:if="${cdType?.category != cdTypeVehiclesCategory and item.approveStatus != activeStatus}">Approve</a>-->
+<!--                                        <a class="filter-link" onclick="popUpFunction('rejectItem');"-->
+<!--                                           style="background-color: red"-->
+<!--                                           th:if="${cdType?.category != cdTypeVehiclesCategory and item.rejectStatus != activeStatus}">Reject</a>-->
+<!--                                        <a class="filter-link" onclick="popUpFunction('targetItem');"-->
+<!--                                           style="background-color: red" th:if="${item.targetStatus != activeStatus}">Target</a>-->
+<!--                                        <a class="filter-link" onclick="popUpFunction('targetItem');"-->
+<!--                                           style="background-color: red" th:if="${item.targetStatus != activeStatus}">Notify-->
+<!--                                            KRA</a>-->
                                     </div>
 
 
-                                    <div sec:authorize=" hasAuthority('DI_OFFICER_CHARGE_MODIFY')">
-                                        <a class="filter-link" onclick="popUpFunction('targetSupervisorItem');"
-                                           style="background-color: red" th:if="${item.targetStatus != activeStatus}">Target</a>
-                                        <a class="filter-link" onclick="popUpFunction('targetApproveItem');"
-                                           th:if="${item.targetApproveStatus != activeStatus and item.targetStatus == activeStatus}">Target
-                                            Approve</a>
-                                    </div>
+<!--                                    <div sec:authorize=" hasAuthority('DI_OFFICER_CHARGE_MODIFY')">-->
+<!--                                        <a class="filter-link" onclick="popUpFunction('targetSupervisorItem');"-->
+<!--                                           style="background-color: red" th:if="${item.targetStatus != activeStatus}">Target</a>-->
+<!--                                        <a class="filter-link" onclick="popUpFunction('targetApproveItem');"-->
+<!--                                           th:if="${item.targetApproveStatus != activeStatus and item.targetStatus == activeStatus}">Target-->
+<!--                                            Approve</a>-->
+<!--                                    </div>-->
 
                                     <!--                                <a sec:authorize="hasAuthority('DI_OFFICER_CHARGE_MODIFY')" th:if="${item.targetApproveStatus != 1 and item.targetStatus == 1}"  class="filter-link" onclick="popUpFunction('approveItem');">Approve</a>-->
 
@@ -302,30 +299,36 @@
                                            th:if="${item.cdDocId.localCoi == activeStatus and item.ownerPin == null}">Add
                                             Owner</a>
 
-                                        <a sec:authorize="hasAuthority('DI_INSPECTION_OFFICER_MODIFY')"
-                                           th:if="${item.paymentNeededStatus != activeStatus}" class="filter-link"
-                                           onclick="popUpFunction('paymentNeeded');">Payment Needed</a>
-
-                                        <a sec:authorize="hasAuthority('DI_INSPECTION_OFFICER_MODIFY')"
-                                           class="filter-link" style="color: white"
-                                           onclick="popUpFunctionUpload('uploadBtn');">Upload Attachments</a>
-
-                                        <div th:if="${demandNote != null and demandNote.paymentStatus == initStatus}">
+                                        <div th:if="${item.cdDocId?.targetStatus == activeStatus and item.cdDocId?.inspectionDateSetStatus == activeStatus}">
                                             <a sec:authorize="hasAuthority('DI_INSPECTION_OFFICER_MODIFY')"
-                                               th:if="${item?.checklistStatus != activeStatus}"
-                                               th:href="@{/api/di/inspection/check-list(cdItemUuid=${item?.uuid}, docType=${checkListName})}"
-                                               class="filter-link " style="color: white">Check List</a>
-                                        </div>
-                                        <div th:if="${demandNote == null}">
-                                            <a sec:authorize="hasAuthority('DI_INSPECTION_OFFICER_MODIFY')" th:if="${item?.checklistStatus != activeStatus}" th:href="@{/api/di/inspection/check-list(cdItemUuid=${item?.uuid}, docType=${checkListName})}" class="filter-link " style="color: white">Check List</a>
+                                               th:if="${item.paymentNeededStatus != activeStatus}" class="filter-link"
+                                               onclick="popUpFunction('paymentNeeded');">Payment Needed</a>
+
+                                            <a sec:authorize="hasAuthority('DI_INSPECTION_OFFICER_MODIFY')"
+                                               class="filter-link" style="color: white"
+                                               onclick="popUpFunctionUpload('uploadBtn');">Upload Attachments</a>
+
+                                            <div th:if="${demandNote != null and demandNote.paymentStatus == initStatus}">
+                                                <a sec:authorize="hasAuthority('DI_INSPECTION_OFFICER_MODIFY')"
+                                                   th:if="${item?.checklistStatus != activeStatus}"
+                                                   th:href="@{/api/di/inspection/check-list(cdItemUuid=${item?.uuid}, docType=${checkListName})}"
+                                                   class="filter-link " style="color: white">Check List</a>
+                                            </div>
+                                            <div th:if="${demandNote == null}">
+                                                <a sec:authorize="hasAuthority('DI_INSPECTION_OFFICER_MODIFY')"
+                                                   th:if="${item?.checklistStatus != activeStatus}"
+                                                   th:href="@{/api/di/inspection/check-list(cdItemUuid=${item?.uuid}, docType=${checkListName})}"
+                                                   class="filter-link " style="color: white">Check List</a>
+                                            </div>
                                         </div>
                                         <a sec:authorize="hasAuthority('DI_INSPECTION_OFFICER_MODIFY') or hasAuthority('DI_OFFICER_CHARGE_MODIFY')" th:if="${item?.checklistStatus == activeStatus and item?.checkListTypeId.uuid == motorVehicleItemChecklist}" th:href="@{/api/di/motor-vehicle-inspection-details(itemId=${item?.id}, docType=${motorVehicleInspectionDetailsName})}" class="filter-link " style="color: white">Motor Vehicle Inspection Details</a>
 <!--                                        <a sec:authorize="hasAuthority('DI_INSPECTION_OFFICER_MODIFY')" th:if="${item?.checkListTypeId.uuid == motorVehicleItemChecklist and item?.ministrySubmissionStatus != activeStatus}" th:href="@{/api/di/ministry-submission(itemID=${item?.id})}" class="filter-link " style="color: white">Ministry Submission</a>-->
 <!--                                        <a sec:authorize="hasAuthority('DI_INSPECTION_OFFICER_MODIFY')" th:if="${motorVehicleInspectionChecklist != null and motorVehicleInspectionChecklist?.ministryReportSubmitStatus == activeStatus}" th:href="@{/api/di/ministry-inspection-report(motorVehicleInspectionChecklistId=${motorVehicleInspectionChecklist?.id})}" class="filter-link " style="color: white">Ministry Inspection Report</a>-->
-                                        <a sec:authorize="hasAuthority('DI_INSPECTION_OFFICER_MODIFY')" th:if="${cor == null and item?.sampledCollectedStatus != activeStatus and item?.checklistStatus == activeStatus and item?.sampledStatus == activeStatus}" th:href="@{/api/di/inspection/sample-collection(cdItemUuid=${item?.uuid}, docType=${sampCollectName})}" class="filter-link " style="color: white">Sample Collection</a>
-                                        <a sec:authorize="hasAuthority('DI_INSPECTION_OFFICER_MODIFY')" th:if="${cor == null and item?.sampleSubmissionStatus != activeStatus and item?.sampledCollectedStatus == activeStatus}" th:href="@{/api/di/inspection/sample-submission(cdItemUuid=${item?.uuid}, docType=${sampSubmitName})}" class="filter-link " style="color: white">Sample Submission</a>
-                                        <a sec:authorize="hasAuthority('DI_INSPECTION_OFFICER_MODIFY')" th:if="${cor == null and item?.sampleSubmissionStatus == activeStatus and item?.sampledCollectedStatus == activeStatus and item?.sampleBsNumberStatus != activeStatus}" th:href="@{/api/di/inspection/sample-submission(cdItemUuid=${item?.uuid}, docType=${sampSubmitAddParamDetails})}" class="filter-link " style="color: white">Add Sample Submission Item</a>
-                                        <a sec:authorize="hasAuthority('DI_INSPECTION_OFFICER_MODIFY')" th:if="${cor == null and item?.sampleBsNumberStatus == activeStatus }" th:href="@{/api/di/inspection/sample-submission(cdItemUuid=${item?.uuid}, docType=${labResults})}" class="filter-link " style="color: white">LAB Results</a>
+<!--                                        <a sec:authorize="hasAuthority('DI_INSPECTION_OFFICER_MODIFY')" th:if="${cor == null and item?.sampledCollectedStatus != activeStatus and item?.checklistStatus == activeStatus and item?.sampledStatus == activeStatus}" th:href="@{/api/di/inspection/sample-collection(cdItemUuid=${item?.uuid}, docType=${sampCollectName})}" class="filter-link " style="color: white">Sample Collection</a>-->
+<!--                                        <a sec:authorize="hasAuthority('DI_INSPECTION_OFFICER_MODIFY')" th:if="${cor == null and item?.sampleSubmissionStatus != activeStatus and item?.sampledCollectedStatus == activeStatus}" th:href="@{/api/di/inspection/sample-submission(cdItemUuid=${item?.uuid}, docType=${sampSubmitName})}" class="filter-link " style="color: white">Sample Submission</a>-->
+                                        <a sec:authorize="hasAuthority('DI_INSPECTION_OFFICER_MODIFY')" th:if="${cor == null and item?.checklistStatus == activeStatus and  item?.sampleBsNumberStatus != activeStatus}" onclick="popUpSSFFunction('addSSFDetails');" class="filter-link " style="color: white">ADD SSF & BS NUMBER</a>
+                                        <a th:if="${item?.sampleBsNumberStatus == activeStatus}" class="filter-link" th:href="@{/api/di/inspection/ssf-details(cdItemID=${item?.id})}" style="color: white">VIEW SAMPLE DETAILS</a>
+<!--                                        <a sec:authorize="hasAuthority('DI_INSPECTION_OFFICER_MODIFY')" th:if="${cor == null and item?.sampleBsNumberStatus == activeStatus }" th:href="@{/api/di/inspection/sample-submission(cdItemUuid=${item?.uuid}, docType=${labResults})}" class="filter-link " style="color: white">LAB Results</a>-->
                                         <a sec:authorize="hasAuthority('DI_INSPECTION_OFFICER_MODIFY')" th:if="${cor == null and item?.allTestReportStatus == activeStatus and item?.inspectionReportStatus != activeStatus}" th:href="@{/api/di/inspection/item-report(cdItemUuid=${item?.uuid})}" class="filter-link " style="color: white">Generate Inspection Report</a>
                                         <a th:if="${cor == null and item?.inspectionReportStatus == activeStatus }" th:href="@{/api/di/inspection/item-report(cdItemUuid=${item?.uuid})}" class="filter-link " style="color: white">Inspection Report</a>
 <!--                                        <a sec:authorize="hasAuthority('DI_INSPECTION_OFFICER_MODIFY')" th:if="${cor == null and item?.sampleSubmissionStatus == activeStatus and item?.sampledCollectedStatus == activeStatus and item?.sampleSubmissionItemStatus == activeStatus}" th:href="@{/api/di/inspection/sample-submission(cdItemUuid=${item?.uuid}, docType=${sampSubmitAddParamDetails})}" class="filter-link " style="color: white">Add Sample Submission Item</a>-->
@@ -342,6 +345,48 @@
                             </div>
                         </div>
 
+                    </div>
+
+                    <div  class="qaSSFForm">
+                        <form id="qa-ssf-form"   name="qa-ssf-form" enctype="multipart/form-data" th:action="@{/api/di/kebs/ssf-details-uploads(cdItemID = ${item?.id})}" method="post" th:object="${SampleSubmissionDetails}">
+                            <div class="modal fade" id="qaSSFModal" tabindex="-1" role="dialog" aria-labelledby="qaSSFModalLabel" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 style="font-weight: bold; " class="modal-title" id="qaSSFModalLabel"><span id="spanSSFValue" >none</span></h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="form-group">
+
+
+                                                <div id="addSSFDetails">
+                                                    <input type="hidden" id="description8" name="description" th:value="'SSF was added sucessfull'">
+                                                    <!--                                            <input type="hidden" id="inspectionScheduledStatus" name="inspectionScheduledStatus" th:value="${activeStatus}">-->
+                                                    <label for="ssfNo" class="col-form-label">SSF No:</label>
+                                                    <input class="input-field w-input" type="text" max="20" id="ssfNo" name="ssfNo" th:field="*{ssfNo}" th:required="required">
+                                                    <label for="ssfSubmissionDate" class="col-form-label">SSF Submission Date:</label>
+                                                    <input class="input-field w-input" type="date" max="20" id="ssfSubmissionDate" name="ssfSubmissionDate" th:field="*{ssfSubmissionDate}" th:required="required">
+                                                    <label for="bsNumber" class="col-form-label">BS Number:</label>
+                                                    <input class="input-field w-input" type="text" max="20" id="bsNumber" name="bsNumber" th:field="*{bsNumber}" th:required="required">
+                                                    <label for="brandName" class="col-form-label">Brand Name:</label>
+                                                    <input class="input-field w-input" type="text" max="20" id="brandName" name="brandName" th:field="*{brandName}" th:required="required">
+                                                    <label for="productDescription" class="col-form-label">Product Description:</label>
+                                                    <input class="input-field w-input" type="text" max="20" id="productDescription" name="productDescription" th:field="*{productDescription}" th:required="required">
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button class="btn btn-secondary" data-dismiss="modal" onClick="refreshPage()" type="button">Close</button>
+                                            <input type="submit" id="saveSSfValue" class="btn btn-primary" value="Save"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
                     </div>
 
                     <div  class="CDItemForm">
@@ -384,46 +429,6 @@
                                                     </select>
                                                     <label for="paymentNeededRemarks" class="col-form-label">Please write, in detail, your feedback for this consignment Item:</label>
                                                     <textarea required name="name" id="paymentNeededRemarks" class="input-field w-input" cols="65" rows="5" th:field="*{paymentNeededRemarks}"></textarea>
-                                                </div>
-                                                <div id="targetItem">
-                                                    <input type="hidden" id="targetStatus" name="targetStatus" th:value="${activeStatus}">
-                                                    <input type="hidden"  id="targetDate"  name="targetDate" th:value="${currentDate}">
-                                                    <label for="targetReason" class="col-form-label">Please write, in detail, your feedback for this consignment:</label>
-                                                    <textarea required name="name" id="targetReason" class="input-field w-input" cols="65" rows="5" th:field="*{targetReason}"></textarea>
-                                                </div>
-                                                <div id="targetSupervisorItem">
-                                                    <input type="hidden" id="targetStatus" name="targetStatus" th:value="${activeStatus}">
-                                                    <input type="hidden"  id="targetDate"  name="targetDate" th:value="${currentDate}">
-                                                    <input id="inspectionNotificationStatus"
-                                                           name="inspectionNotificationStatus"
-                                                           th:value="${activeStatus}" type="hidden">
-                                                    <input type="hidden" id="targetApproveStatus" name="targetApproveStatus" th:value="${activeStatus}">
-                                                    <input type="hidden"  id="targetApproveDate"  name="targetApproveDate" th:value="${currentDate}">
-                                                    <input id="inspectionNotificationDate"
-                                                           name="inspectionNotificationDate" th:value="${currentDate}"
-                                                           type="hidden">
-                                                    <input type="hidden"  id="targetApproveRemarks"  name="targetApproveRemarks" th:value="null">
-                                                    <label for="targetReason" class="col-form-label">Please write, in
-                                                        detail, your feedback for this consignment:</label>
-                                                    <textarea required name="name" id="targetReason" onkeyup="check();"
-                                                              class="input-field w-input" cols="65" rows="5"
-                                                              th:field="*{targetReason}"></textarea>
-                                                </div>
-                                                <div id="targetApproveItem">
-                                                    <input type="hidden" id="targetApproveStatus"
-                                                           name="targetApproveStatus" th:value="${activeStatus}">
-                                                    <input type="hidden" id="inspectionNotificationStatus"
-                                                           name="inspectionNotificationStatus"
-                                                           th:value="${activeStatus}">
-                                                    <input type="hidden" id="inspectionNotificationDate"
-                                                           name="inspectionNotificationDate" th:value="${currentDate}">
-                                                    <input type="hidden" id="targetApproveDate" name="targetApproveDate"
-                                                           th:value="${currentDate}">
-                                                    <label for="targetApproveRemarks" class="col-form-label">Please
-                                                        write, in detail, your feedback for this consignment:</label>
-                                                    <textarea required name="name" id="targetApproveRemarks"
-                                                              class="input-field w-input" cols="65" rows="5"
-                                                              th:field="*{targetApproveRemarks}"></textarea>
                                                 </div>
                                                 <div id="addOwner">
                                                     <label class="col-form-label" for="ownerName">Owner Name:</label>
@@ -536,8 +541,8 @@
 </script>
 <script>
     function popUpFunction(eventAction) {
-        let arrHead = ['approveItem', 'rejectItem', 'addOwner', 'targetItem', 'targetApproveItem', 'targetSupervisorItem', 'paymentNeeded'];
-        let arrHeadSave = ['Approve Item', 'Reject Item', 'Add COI Owner Item Details', 'Target Item', 'Approve Targeting', 'Targeting Item', 'Payment Needed'];
+        let arrHead = ['approveItem', 'rejectItem', 'addOwner', 'paymentNeeded'];
+        let arrHeadSave = ['Approve Item', 'Reject Item', 'Add COI Owner Item Details', 'Payment Needed'];
 
         for (let h = 0; h < arrHead.length; h++) {
             if (eventAction !== arrHead[h]) {
@@ -569,6 +574,24 @@
         }
 
         $('.uploadForm #uploadModal').modal();
+    }
+
+    function popUpSSFFunction(eventAction) {
+        let arrHead = [ 'addSSFDetails'];
+        let arrHeadSave = [ 'Add SSF Details Below'];
+
+        for (let h = 0; h < arrHead.length; h++) {
+            if(eventAction !== arrHead[h]){
+                document.getElementById(arrHead[h]).remove();
+            }else {
+                if (eventAction === arrHead[h]) {
+                    document.getElementById('spanSSFValue').innerHTML = arrHeadSave[h];
+                    document.getElementById("saveSSfValue").value = 'Save';
+                }
+            }
+        }
+
+        $('.qaSSFForm #qaSSFModal').modal();
     }
 
     var check = function() {

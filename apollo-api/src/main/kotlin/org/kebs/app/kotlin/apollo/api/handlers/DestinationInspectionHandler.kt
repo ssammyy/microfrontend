@@ -24,16 +24,15 @@ package org.kebs.app.kotlin.apollo.api.handlers
 import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.DestinationInspectionBpmn
 import org.kebs.app.kotlin.apollo.api.ports.provided.createUserAlert
-import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
-import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DestinationInspectionDaoServices
-import org.kebs.app.kotlin.apollo.api.ports.provided.dao.ImporterDaoServices
-import org.kebs.app.kotlin.apollo.api.ports.provided.dao.RiskProfileDaoService
+import org.kebs.app.kotlin.apollo.api.ports.provided.dao.*
 import org.kebs.app.kotlin.apollo.common.exceptions.*
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.*
 import org.kebs.app.kotlin.apollo.store.model.di.*
+import org.kebs.app.kotlin.apollo.store.model.qa.QaSampleSubmissionEntity
 import org.kebs.app.kotlin.apollo.store.repo.di.*
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Component
 import org.springframework.web.servlet.function.ServerRequest
 import org.springframework.web.servlet.function.ServerResponse
@@ -41,13 +40,6 @@ import org.springframework.web.servlet.function.ServerResponse.ok
 import org.springframework.web.servlet.function.paramOrNull
 import java.sql.Date
 import org.springframework.web.servlet.support.RequestContextUtils
-import javax.servlet.http.HttpServletRequest
-
-
-
-
-
-
 
 
 @Component
@@ -55,6 +47,7 @@ class DestinationInspectionHandler(
     private val applicationMapProperties: ApplicationMapProperties,
     private val commonDaoServices: CommonDaoServices,
     private val daoServices: DestinationInspectionDaoServices,
+    private val qaDaoServices: QADaoServices,
     private val iDemandNoteRepo: IDemandNoteRepository,
     private val riskProfileDaoService: RiskProfileDaoService,
     private val importerDaoServices: ImporterDaoServices,
@@ -84,6 +77,7 @@ class DestinationInspectionHandler(
     private final val mvInspectionDetailsPage = "destination-inspection/cd-Inspection-documents/mv-inspection-details.html"
     private final val goodsInspectionDetailsPage = "destination-inspection/cd-Inspection-documents/cd-inspection-report.html"
     private final val cdItemDetailsPage = "destination-inspection/cd-documents/consignment-document-item-detail.html"
+    private final val diSSFDetailsPage = "destination-inspection/cd-Inspection-documents/ssf-details.html"
 
     //    private final val cdCocDetailsPage = "destination-inspection/cd-documents/consignment-document-item-detail.html"
     private final val cdCheckListPage = "destination-inspection/cd-Inspection-documents/cd-inspection-check-list.html"
@@ -141,8 +135,9 @@ class DestinationInspectionHandler(
                                     val userProfilesEntity = commonDaoServices.findUserProfileByUserID(usersEntity, map.activeStatus)
                                     userProfilesEntity.sectionId
                                             ?.let { sectionsEntity ->
-                                                req.attributes()["CDSAutoAssigned"] = daoServices.findAllCdWithPortOfEntry(sectionsEntity, cdType)
+                                                req.attributes()["CDSAutoAssigned"] = daoServices.findAllOngoingCdWithPortOfEntry(sectionsEntity, cdType)
                                                 req.attributes()["CDSManualAssign"] = daoServices.findAllCdWithNoPortOfEntry(cdType)
+                                                req.attributes()["CDCompleted"] = daoServices.findAllOngoingCdWithPortOfEntry(sectionsEntity, cdType)
                                                 ok().render(cdPageList, req.attributes())
                                             }
                                             ?: throw ExpectedDataNotFound("missing section id, check config")
@@ -152,6 +147,7 @@ class DestinationInspectionHandler(
                                     val userProfilesEntity = commonDaoServices.findUserProfileByUserID(usersEntity, map.activeStatus)
                                     req.attributes()["CDSAutoAssigned"] = daoServices.findAllCdWithAssignedIoID(usersEntity, cdType)
                                     req.attributes()["CDSManualAssign"] = userProfilesEntity.subSectionL2Id?.let { daoServices.findAllCdWithNoAssignedIoID(it, cdType) }
+                                    req.attributes()["CDCompleted"] = daoServices.findAllCompleteCdWithAssignedIoID(usersEntity, cdType)
                                     ok().render(cdPageList, req.attributes())
                                 }
                                 else -> throw SupervisorNotFoundException("can't access this page Due to Invalid authority")
@@ -229,6 +225,20 @@ class DestinationInspectionHandler(
                             req.attributes()["cdStatusTypeOnHoldCategory"] = daoServices.cdStatusTypeOnHoldCategory
                             req.attributes()["cdStatusTypeQuerydCategory"] = daoServices.cdStatusTypeQueryCategory
 
+                            //Check for flash attributes
+                            val request = req.servletRequest()
+                            val flashMap = RequestContextUtils.getInputFlashMap(request)
+                            if (flashMap != null) {
+                                if (flashMap.containsKey("success")) {
+                                    val success = flashMap["success"] as String?
+                                    req.attributes()["success"] = success
+                                    KotlinLogging.logger { }.info { "Success param = $success" }
+                                } else if (flashMap.containsKey("error")) {
+                                    val error = flashMap["error"] as String?
+                                    req.attributes()["error"] = error
+                                    KotlinLogging.logger { }.info { "Error param = $error" }
+                                }
+                            }
                             ok().render(cdDetailsView, req.attributes())
                         }
                         ?: throw ExpectedDataNotFound("Required uuid, check config")
@@ -646,6 +656,21 @@ class DestinationInspectionHandler(
                 createUserAlert(req, e)
             }
 
+
+    fun getSSfDetails(req: ServerRequest): ServerResponse {
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+
+        val cdItemID = req.paramOrNull("cdItemID")?.toLong() ?: throw ExpectedDataNotFound("Required cd Item ID, check config")
+        val item = daoServices.findItemWithItemID(cdItemID)
+        val ssfDetails = daoServices.findSampleSubmittedBYCdItemID(item.id?: throw ExpectedDataNotFound("MISSING CD ITEM ID"))
+
+        req.attributes()["ssfDetails"] = ssfDetails
+        req.attributes()["LabResultsParameters"] =  qaDaoServices.findSampleLabTestResultsRepoBYBSNumber(ssfDetails.bsNumber?: throw ExpectedDataNotFound("MISSING BS NUMBER"))
+
+        return ok().render(diSSFDetailsPage, req.attributes())
+
+    }
+
     fun submitMVInspectionRequestToMinistry(req: ServerRequest): ServerResponse =
             try {
                 val map = commonDaoServices.serviceMapDetails(appId)
@@ -884,6 +909,7 @@ class DestinationInspectionHandler(
 
                 Pair("sampleSubmit", CdSampleSubmissionItemsEntity()),
                 Pair("sampleCollect", CdSampleCollectionEntity()),
+                Pair("SampleSubmissionDetails", QaSampleSubmissionEntity()),
                 Pair("sampleParam", CdSampleSubmissionParamatersEntity()),
                 Pair("generalCheckList", CdInspectionGeneralEntity()),
                 Pair("agrochemItemInspectionChecklist", CdInspectionAgrochemItemChecklistEntity()),

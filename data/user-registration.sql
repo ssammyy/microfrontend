@@ -79,7 +79,7 @@
 ***************************Table USED IN DI*****************************************
 select *
 from DAT_KEBS_USER_VERIFICATION_TOKEN
-where TOKEN =
+-- where TOKEN =
 ;
 select * from CFG_ROLES_PRIVILEGES --the role is 40 and prRole ID = 774
 -- where PRIVILEGE_ID =52425
@@ -109,19 +109,36 @@ order by id desc;--MS
 -- _MP_MODIFY MS_MP_READ AUTHORITIES_WRITE 29
 select *
 from CFG_ROLES_PRIVILEGES
-where ROLES_ID = 510
+-- where ROLES_ID = 510
 
 order by id desc;--MS_MP_MODIFY MS_MP_READ
 select *
 from CFG_USER_ROLES_ASSIGNMENTS
-where USER_ID = 54
+-- where USER_ID = 54
 order by id desc;--MS_MP_MODIFY MS_MP_READ
 select *
 from DAT_KEBS_USER_VERIFICATION_TOKEN
 
+order by id desc;--
+
+select *
+from DAT_KEBS_NOTIFICATIONS
+
 order by id desc;--MS_MP_MODIFY MS_MP_READ
 
 select * from DAT_KEBS_USERS
+-- where ID = 1622
+
+-- where USER_TYPE = 5
+-- where EMAIL like '254saf'
+-- where USER_PIN_ID_NUMBER = '0715668934'
+order by id desc
+;
+SELECT * from CFG_TURNOVER_RATES;
+
+select * from DAT_KEBS_COMPANY_PROFILE
+-- where ID = 1622
+
 -- where USER_TYPE = 5
 -- where EMAIL like '254saf'
 -- where USER_NAME = '0715668934'
@@ -247,6 +264,150 @@ begin
 end;
 
 create index dat_user_requests_idx on dat_user_requests (status, REQUEST_ID, USER_ID, REQUEST_STATUS) TABLESPACE qaimssdb_idx;
+/
+
+create table dat_kebs_company_profile_commodities_manufacture
+(
+    ID                 NUMBER primary key,
+    company_profile_ID      NUMBER references dat_kebs_company_profile (id),
+    COMMODITY_NAME  VARCHAR2(200),
+    COMMODITY_DATE_COMMENCE  DATE,
+    DESCRIPTION        VARCHAR2(200),
+    status             NUMBER(2),
+    var_field_1        VARCHAR2(350 CHAR),
+    var_field_2        VARCHAR2(350 CHAR),
+    var_field_3        VARCHAR2(350 CHAR),
+    var_field_4        VARCHAR2(350 CHAR),
+    var_field_5        VARCHAR2(350 CHAR),
+    var_field_6        VARCHAR2(350 CHAR),
+    var_field_7        VARCHAR2(350 CHAR),
+    var_field_8        VARCHAR2(350 CHAR),
+    var_field_9        VARCHAR2(350 CHAR),
+    var_field_10       VARCHAR2(350 CHAR),
+    created_by         VARCHAR2(100 CHAR)          DEFAULT 'admin' NOT NULL ENABLE,
+    created_on         TIMESTAMP(6) WITH TIME ZONE DEFAULT sysdate NOT NULL ENABLE,
+    modified_by        VARCHAR2(100 CHAR)          DEFAULT 'admin',
+    modified_on        TIMESTAMP(6) WITH TIME ZONE DEFAULT sysdate,
+    delete_by          VARCHAR2(100 CHAR)          DEFAULT 'admin',
+    deleted_on         TIMESTAMP(6) WITH TIME ZONE
+) TABLESPACE qaimssdb_data;
+
+create sequence dat_kebs_company_profile_commodities_manufacture_seq minvalue 1 maxvalue 9999999999999999999999999999 increment by 1 start with 1 cache 20 noorder nocycle;
+
+create trigger dat_kebs_company_profile_commodities_manufacture_seq_trg
+    before
+        insert
+    on dat_user_requests
+    for each row
+begin
+    if inserting then
+        if :new.id is null then
+            select dat_kebs_company_profile_commodities_manufacture_seq.nextval
+            into :new.id
+            from dual;
+
+        end if;
+
+    end if;
+end;
+
+create index dat_kebs_company_profile_commodities_manufacture_idx on dat_kebs_company_profile_commodities_manufacture (status, company_profile_ID) TABLESPACE qaimssdb_idx;
+/
+
+create table dat_kebs_company_profile_contracts_undertaken
+(
+    ID                 NUMBER primary key,
+    company_profile_ID      NUMBER references dat_kebs_company_profile (id),
+    contracts_NAME  VARCHAR2(200),
+    contracts_DATE_COMMENCE  DATE,
+    DESCRIPTION        VARCHAR2(200),
+    status             NUMBER(2),
+    var_field_1        VARCHAR2(350 CHAR),
+    var_field_2        VARCHAR2(350 CHAR),
+    var_field_3        VARCHAR2(350 CHAR),
+    var_field_4        VARCHAR2(350 CHAR),
+    var_field_5        VARCHAR2(350 CHAR),
+    var_field_6        VARCHAR2(350 CHAR),
+    var_field_7        VARCHAR2(350 CHAR),
+    var_field_8        VARCHAR2(350 CHAR),
+    var_field_9        VARCHAR2(350 CHAR),
+    var_field_10       VARCHAR2(350 CHAR),
+    created_by         VARCHAR2(100 CHAR)          DEFAULT 'admin' NOT NULL ENABLE,
+    created_on         TIMESTAMP(6) WITH TIME ZONE DEFAULT sysdate NOT NULL ENABLE,
+    modified_by        VARCHAR2(100 CHAR)          DEFAULT 'admin',
+    modified_on        TIMESTAMP(6) WITH TIME ZONE DEFAULT sysdate,
+    delete_by          VARCHAR2(100 CHAR)          DEFAULT 'admin',
+    deleted_on         TIMESTAMP(6) WITH TIME ZONE
+) TABLESPACE qaimssdb_data;
+
+create sequence dat_kebs_company_profile_contracts_undertaken_seq minvalue 1 maxvalue 9999999999999999999999999999 increment by 1 start with 1 cache 20 noorder nocycle;
+
+create trigger dat_kebs_company_profile_contracts_undertaken_seq_trg
+    before
+        insert
+    on dat_user_requests
+    for each row
+begin
+    if inserting then
+        if :new.id is null then
+            select dat_kebs_company_profile_contracts_undertaken_seq.nextval
+            into :new.id
+            from dual;
+
+        end if;
+
+    end if;
+end;
+
+create index dat_kebs_company_profile_contracts_undertaken_idx on dat_kebs_company_profile_contracts_undertaken (status, company_profile_ID) TABLESPACE qaimssdb_idx;
+/
+
+create table dat_kebs_company_profile_directors
+(
+    ID                 NUMBER primary key,
+    company_profile_ID      NUMBER references dat_kebs_company_profile (id),
+    DIRECTOR_NAME  VARCHAR2(200),
+    DIRECTOR_ID  VARCHAR2(200),
+    DESCRIPTION        VARCHAR2(200),
+    status             NUMBER(2),
+    var_field_1        VARCHAR2(350 CHAR),
+    var_field_2        VARCHAR2(350 CHAR),
+    var_field_3        VARCHAR2(350 CHAR),
+    var_field_4        VARCHAR2(350 CHAR),
+    var_field_5        VARCHAR2(350 CHAR),
+    var_field_6        VARCHAR2(350 CHAR),
+    var_field_7        VARCHAR2(350 CHAR),
+    var_field_8        VARCHAR2(350 CHAR),
+    var_field_9        VARCHAR2(350 CHAR),
+    var_field_10       VARCHAR2(350 CHAR),
+    created_by         VARCHAR2(100 CHAR)          DEFAULT 'admin' NOT NULL ENABLE,
+    created_on         TIMESTAMP(6) WITH TIME ZONE DEFAULT sysdate NOT NULL ENABLE,
+    modified_by        VARCHAR2(100 CHAR)          DEFAULT 'admin',
+    modified_on        TIMESTAMP(6) WITH TIME ZONE DEFAULT sysdate,
+    delete_by          VARCHAR2(100 CHAR)          DEFAULT 'admin',
+    deleted_on         TIMESTAMP(6) WITH TIME ZONE
+) TABLESPACE qaimssdb_data;
+
+create sequence dat_kebs_company_profile_directors_seq minvalue 1 maxvalue 9999999999999999999999999999 increment by 1 start with 1 cache 20 noorder nocycle;
+
+create trigger dat_kebs_company_profile_directors_seq_trg
+    before
+        insert
+    on dat_user_requests
+    for each row
+begin
+    if inserting then
+        if :new.id is null then
+            select dat_kebs_company_profile_directors_seq.nextval
+            into :new.id
+            from dual;
+
+        end if;
+
+    end if;
+end;
+
+create index dat_kebs_company_profile_directors_idx on dat_kebs_company_profile_directors (status, company_profile_ID) TABLESPACE qaimssdb_idx;
 /
 
 create table cfg_user_request_types

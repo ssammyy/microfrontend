@@ -2,18 +2,16 @@ package org.kebs.app.kotlin.apollo.api.controllers.diControllers
 
 import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.DestinationInspectionBpmn
-import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
-import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DestinationInspectionDaoServices
-import org.kebs.app.kotlin.apollo.api.ports.provided.dao.InvoiceDaoService
-import org.kebs.app.kotlin.apollo.api.ports.provided.dao.RiskProfileDaoService
+import org.kebs.app.kotlin.apollo.api.ports.provided.dao.*
 import org.kebs.app.kotlin.apollo.api.ports.provided.emailDTO.MvInspectionNotificationDTO
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.common.utils.generateRandomText
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
-import org.kebs.app.kotlin.apollo.store.model.CdLocalCocEntity
 import org.kebs.app.kotlin.apollo.store.model.CdSampleCollectionEntity
 import org.kebs.app.kotlin.apollo.store.model.CdSampleSubmissionItemsEntity
+import org.kebs.app.kotlin.apollo.store.model.ServiceRequestsEntity
 import org.kebs.app.kotlin.apollo.store.model.di.*
+import org.kebs.app.kotlin.apollo.store.model.qa.QaSampleSubmissionEntity
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Controller
 import org.springframework.transaction.annotation.Propagation
@@ -24,6 +22,12 @@ import org.springframework.web.bind.annotation.*
 import org.springframework.web.bind.support.SessionStatus
 import org.springframework.web.multipart.MultipartFile
 import org.springframework.web.servlet.mvc.support.RedirectAttributes
+import java.io.BufferedInputStream
+import java.io.ByteArrayInputStream
+import java.io.File
+import java.io.InputStream
+import java.lang.Exception
+import java.net.URLConnection
 import javax.servlet.http.HttpServletResponse
 
 
@@ -36,6 +40,7 @@ class DestinationInspectionController(
     private val riskProfileDaoService: RiskProfileDaoService,
     private val commonDaoServices: CommonDaoServices,
     private val diBpmn: DestinationInspectionBpmn,
+    private val reportsDaoService: ReportsDaoService
 ) {
 
     final val appId = applicationMapProperties.mapImportInspection
@@ -53,7 +58,8 @@ class DestinationInspectionController(
         @ModelAttribute cdDetails: ConsignmentDocumentDetailsEntity,
         @RequestParam("cdUuid") cdUuid: String,
         model: Model,
-        result: BindingResult
+        result: BindingResult,
+        redirectAttributes: RedirectAttributes
     ): String {
         val processStages = commonDaoServices.findProcesses(appId)
         val map = commonDaoServices.serviceMapDetails(appId)
@@ -112,7 +118,7 @@ class DestinationInspectionController(
                 //Todo: Use the method for saving details
                 if (updatedCDDetails.cdType?.let { daoServices.findCdTypeDetails(it).uuid } == daoServices.noCorCdType) {
                     updatedCDDetails.id?.let {
-                        daoServices.loopAllItemsInCDToBeTargeted(it, updatedCDDetails, map, loggedInUser)
+//                        daoServices.loopAllItemsInCDToBeTargeted(it, updatedCDDetails, map, loggedInUser)
                     }
                 }
 
@@ -321,7 +327,7 @@ class DestinationInspectionController(
                                 }
                             }
                         }
-                        daoServices.loopAllItemsInCDToBeTargeted(cdID, updatedCDDetails, map, loggedInUser)
+//                        daoServices.loopAllItemsInCDToBeTargeted(cdID, updatedCDDetails, map, loggedInUser)
                         updatedCDDetails.blacklistApprovedRemarks?.let {
                             processStages.process1?.let { it1 ->
                                 daoServices.createCDTransactionLog(
@@ -367,23 +373,76 @@ class DestinationInspectionController(
                                         )
                                     }
                                     KotlinLogging.logger { }.info { "localCoc = ${localCoc.id}" }
-//                                    daoServices.localCocItems(updatedCDDetails, localCoc, loggedInUser, map)
-//                                    daoServices.sendLocalCoc(localCoc.id)
-                                    //Todo : How the Local coc will look like
+                                    //Generate PDF File & send to manufacturer
+                                    reportsDaoService.generateLocalCoCReportWithDataSource(updatedCDDetails, applicationMapProperties.mapReportLocalCocPath)?.let { file ->
+                                        updatedCDDetails.cdImporter?.let { daoServices.findCDImporterDetails(it)
+                                        }?.let { importer ->
+                                            importer.email?.let { daoServices.sendLocalCocReportEmail(it, file.path) }
+                                        }
+                                    }
                                 }
                             }
-
                         } else if (updatedCDDetails.cdType?.let { daoServices.findCdTypeDetails(it).localCorStatus } == map.activeStatus) {
-                            daoServices.generateCor(updatedCDDetails, map, loggedInUser).let {
-                                daoServices.submitCoRToKesWS(it)
+                            daoServices.generateCor(updatedCDDetails, map, loggedInUser).let { corDetails ->
+                                daoServices.submitCoRToKesWS(corDetails)
                                 updatedCDDetails.cdStandard?.let { cdStd ->
                                     daoServices.updateCDStatus(
                                         cdStd,
                                         applicationMapProperties.mapDICdStatusTypeCORGeneratedAndSendID
                                     )
                                 }
+                                //Send Cor to manufacturer
+                                reportsDaoService.generateLocalCoRReport(updatedCDDetails, applicationMapProperties.mapReportLocalCorPath)?.let { file ->
+                                    with(corDetails) {
+                                        localCorFile = file.readBytes()
+                                        localCorFileName = file.name
+                                    }
+                                    daoServices.saveCorDetails(corDetails)
+                                    //Send email
+                                    updatedCDDetails.cdImporter?.let { daoServices.findCDImporterDetails(it)
+                                    }?.let { importer ->
+                                        importer.email?.let { daoServices.sendLocalCorReportEmail(it, file.path) }
+                                    }
+                                }
                             }
                         }
+                    }
+
+                    //Targeting & Approval
+                    //If item targeted by IO, submit task to Supervisor for review
+//                    cdDetails.targetStatus == map.activeStatus && cdDetails.targetApproveStatus == null -> {
+//                        val cdDecision = "TARGET"
+//                        cdDetails?.id?.let { it1 ->
+//                            cdDetails.assigner?.id?.let { it2 ->
+//                                diBpmn.diCheckCdComplete(it1, it2, cdDecision)
+//                            }
+//                        }
+//                    }
+
+                    //If item target has been approved by Supervisor, update review target approval
+                    cdDetails.targetApproveStatus == map.activeStatus && cdDetails.inspectionNotificationStatus == map.activeStatus -> {
+                        KotlinLogging.logger { }.info { "::::::::::: Target approved ::::::::::" }
+                        /*
+                        Send verification request
+                         */
+                        //Get the declaration ref no
+                        val declaration: DeclarationDetailsEntity? =   updatedCDDetails.ucrNumber?.let { daoServices.findDeclaration(it) }
+                        if (declaration != null) {
+                            daoServices.submitCDStatusToKesWS("OH", "OH", updatedCDDetails.version.toString(), updatedCDDetails)
+                            //Update cd details
+                            updatedCDDetails.cdStandard?.let { cdStd ->
+                                daoServices.updateCDStatus(cdStd, applicationMapProperties.mapDIStatusTypeKraVerificationSendId)
+                            }
+                        } else {
+                            redirectAttributes.addFlashAttribute("error", "Could not send verification request. Declaration unavailable")
+                        }
+//                        cdDetails?.id?.let { it1 ->
+//                            cdDetails.assigner?.id?.let { it2 ->
+//                                updatedItemDetails.id?.let {
+//                                    diBpmn.diReviewTargetRequestComplete(it1, it2, true, it)
+//                                }
+//                            }
+//                        }
                     }
                 }
                 daoServices.updateCdDetailsInDB(updatedCDDetails, loggedInUser)
@@ -428,58 +487,8 @@ class DestinationInspectionController(
                                     ) as CdItemDetailsEntity, loggedInUser
                                 )
 
-                                if (item.targetApproveStatus == map.activeStatus && item.inspectionNotificationStatus == map.activeStatus) {
-                                    daoServices.notifyKRATargetedItem(updatedItemDetails, map, loggedInUser)
-                                }
-//                                            else if (item.confirmFeeIdSelected != null) {
-//                                                val demandNote = daoServices.generateDemandNote(updatedItemDetails, map, loggedInUser)
-//                                                //TODO: DemandNote Simulate payment Status
-//                                                demandNote.demandNoteNumber?.let {
-//                                                    invoiceDaoService.createBatchInvoiceDetails(loggedInUser, it)
-//                                                        .let { batchInvoiceDetail ->
-//                                                            invoiceDaoService.addInvoiceDetailsToBatchInvoice(demandNote, applicationMapProperties.mapInvoiceTransactionsForDemandNote, loggedInUser, batchInvoiceDetail)
-//                                                                .let { updateBatchInvoiceDetail ->
-//                                                                    //Todo: Payment selection
-//                                                                    val importerDetails = itemDetails.cdDocId?.cdImporter?.let { daoServices.findCDImporterDetails(it) }
-//                                                                    val myAccountDetails = InvoiceDaoService.InvoiceAccountDetails()
-//                                                                    with(myAccountDetails) {
-//                                                                        accountName = importerDetails?.name
-//                                                                        accountNumber = importerDetails?.pin
-//                                                                        currency = applicationMapProperties.mapInvoiceTransactionsLocalCurrencyPrefix
-//                                                                    }
-//                                                                    invoiceDaoService.createPaymentDetailsOnStgReconciliationTable(loggedInUser, updateBatchInvoiceDetail, myAccountDetails)
-//                                                                }
-//
-//                                                        }
-//                                                }
-//                                                daoServices.demandNotePayment(demandNote, map, loggedInUser)
-//
-//                                            }
-
                                 //Values after update of item Details
                                 when {
-                                    //If item targeted by IO, submit task to Supervisor for review
-                                    item.targetStatus == map.activeStatus && item.targetApproveStatus == null -> {
-                                        val cdDecision = "TARGET"
-                                        val cdDetails = updatedItemDetails.cdDocId
-                                        cdDetails?.id?.let { it1 ->
-                                            cdDetails.assigner?.id?.let { it2 ->
-                                                diBpmn.diCheckCdComplete(it1, it2, cdDecision)
-                                            }
-                                        }
-                                    }
-
-                                    //If item target has been approved by Supervisor, update review target approval
-                                    item.targetApproveStatus == map.activeStatus && item.inspectionNotificationStatus == map.activeStatus -> {
-                                        val cdDetails = updatedItemDetails.cdDocId
-                                        cdDetails?.id?.let { it1 ->
-                                            cdDetails.assigner?.id?.let { it2 ->
-                                                updatedItemDetails.id?.let {
-                                                    diBpmn.diReviewTargetRequestComplete(it1, it2, true, it)
-                                                }
-                                            }
-                                        }
-                                    }
 
                                     //If the item needs To be Paid For (Demand Note Generation)
                                     item.confirmFeeIdSelected != null -> {
@@ -488,46 +497,6 @@ class DestinationInspectionController(
                                             map,
                                             loggedInUser
                                         )
-                                        //TODO: DemandNote Simulate payment Status
-//                                                    demandNote.demandNoteNumber?.let {
-//                                                        invoiceDaoService.createBatchInvoiceDetails(loggedInUser, it)
-//                                                            .let { batchInvoiceDetail ->
-//                                                                invoiceDaoService.addInvoiceDetailsToBatchInvoice(demandNote, applicationMapProperties.mapInvoiceTransactionsForDemandNote, loggedInUser, batchInvoiceDetail)
-//                                                                    .let { updateBatchInvoiceDetail ->
-//                                                                        //Todo: Payment selection
-//                                                                        val importerDetails =
-//                                                                            itemDetails.cdDocId?.cdImporter?.let {
-//                                                                                daoServices.findCDImporterDetails(it)
-//                                                                            }
-//                                                                        val myAccountDetails =
-//                                                                            InvoiceDaoService.InvoiceAccountDetails()
-//                                                                        with(myAccountDetails) {
-//                                                                            accountName = importerDetails?.name
-//                                                                            accountNumber = importerDetails?.pin
-//                                                                            currency =
-//                                                                                applicationMapProperties.mapInvoiceTransactionsLocalCurrencyPrefix
-//                                                                        }
-//                                                                        invoiceDaoService.createPaymentDetailsOnStgReconciliationTable(
-//                                                                            loggedInUser,
-//                                                                            updateBatchInvoiceDetail,
-//                                                                            myAccountDetails
-//                                                                        )
-//                                                                        demandNote.id?.let { it1 ->
-////                                                                            daoServices.sendDemandNotGeneratedToKWIS(it1)
-//                                                                        }
-//                                                                            ?: throw Exception("Demand Note with ID= ${demandNote.id}, do not Exist")
-//                                                                    }
-//
-//                                                            }
-//                                                    }
-////                                                daoServices.demandNotePayment(demandNote, map, loggedInUser)
-//                                                    //Update BPM payment required task
-//                                                    val cdDetails = updatedItemDetails.cdDocId
-//                                                    cdDetails?.id?.let { it1 ->
-//                                                        cdDetails.assignedInspectionOfficer?.id?.let { it2 ->
-//                                                            diBpmn.diPaymentRequiredComplete(it1, it2, true)
-//                                                        }
-//                                                    }
                                     }
                                 }
 
@@ -536,6 +505,63 @@ class DestinationInspectionController(
                     }
             }
 
+    }
+
+    @PreAuthorize("hasAuthority('DI_OFFICER_CHARGE_MODIFY') or hasAuthority('DI_INSPECTION_OFFICER_MODIFY')")
+    @PostMapping("kebs/ssf-details-uploads")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun saveNewSSF(
+        @RequestParam("cdItemID") cdItemID: Long,
+        @ModelAttribute("SampleSubmissionDetails") sampleSubmissionDetails: QaSampleSubmissionEntity,
+        model: Model
+    ): String? {
+        val map = commonDaoServices.serviceMapDetails(appId)
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        var cdItem = daoServices.findItemWithItemID(cdItemID)
+
+        val result: ServiceRequestsEntity?
+
+
+        //updating of Details in DB
+        result = daoServices.ssfSave(cdItem,sampleSubmissionDetails,loggedInUser,map).first
+        with(cdItem){
+            sampleBsNumberStatus = map.activeStatus
+        }
+        cdItem = daoServices.updateCdItemDetailsInDB(cdItem,loggedInUser)
+
+        val sm = CommonDaoServices.MessageSuccessFailDTO()
+        sm.closeLink = "${applicationMapProperties.baseUrlValue}/di/inspection/ssf-details?cdItemID=${cdItem}"
+        sm.message = "You have Successful Filled Sample Submission Details"
+
+        return commonDaoServices.returnValues(result, map, sm)
+    }
+
+    @PreAuthorize("hasAuthority('DI_OFFICER_CHARGE_MODIFY') or hasAuthority('DI_INSPECTION_OFFICER_MODIFY')")
+    @PostMapping("kebs/lab-results-compliance-status/save")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun complianceStatusSSF(
+        @RequestParam("cdItemID") cdItemID: Long,
+        @ModelAttribute("SampleSubmissionDetails") sampleSubmissionDetails: QaSampleSubmissionEntity,
+        model: Model
+    ): String? {
+        val map = commonDaoServices.serviceMapDetails(appId)
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        var cdItem = daoServices.findItemWithItemID(cdItemID)
+
+        val result: ServiceRequestsEntity?
+//        sampleSubmissionDetails.id = cdItem.id
+
+//        val ssf =commonDaoServices.updateDetails(sampleSubmissionDetails,daoServices.findSampleSubmittedBYCdItemID(cdItem.id?: throw Exception("MISSING ITEM ID"))) as QaSampleSubmissionEntity
+
+
+        //updating of Details in DB
+        result = daoServices.ssfUpdateDetails(cdItem,sampleSubmissionDetails,loggedInUser,map).first
+
+        val sm = CommonDaoServices.MessageSuccessFailDTO()
+        sm.closeLink = "${applicationMapProperties.baseUrlValue}/di/inspection/ssf-details?cdItemID=${cdItem.id}"
+        sm.message = "You have Successful Filled Sample Submission Details"
+
+        return commonDaoServices.returnValues(result, map, sm)
     }
 
 
@@ -673,10 +699,13 @@ class DestinationInspectionController(
                         }
                         //BPM: Update fill inspection details workflow
                         val cdDetails = cdItem.cdDocId
-                        cdDetails?.id?.let { it1 ->
-                            cdDetails.assignedInspectionOfficer?.id?.let { it2 ->
-                                diBpmn.diFillInspectionForms(it1, it2)
-                            }
+//                        cdDetails?.id?.let { it1 ->
+//                            cdDetails.assignedInspectionOfficer?.id?.let { it2 ->
+//                                diBpmn.diFillInspectionForms(it1, it2)
+//                            }
+//                        }
+                        cdDetails?.cdStandard?.let { cdStd ->
+                            daoServices.updateCDStatus(cdStd, applicationMapProperties.mapDIStatusTypeInspectionChecklistId)
                         }
 
                         return daoServices.viewCdItemPage(cdItemUuid)
@@ -724,6 +753,7 @@ class DestinationInspectionController(
                                         }
                                     }
                                 }
+                                redirectAttributes.addFlashAttribute("success", "Report Submitted Successfully")
                                 return "$motorVehicleInspectionDetailsPage=${inspectionMotorVehicle.inspectionGeneral?.cdItemDetails?.id}&docType=${daoServices.motorVehicleMinistryInspectionChecklistName}"
                             } ?: throw ExpectedDataNotFound("No Motor Vehicle Inspection Checklist Found")
                     }
@@ -1272,5 +1302,35 @@ class DestinationInspectionController(
                 if (cdInspectionGeneralEntity.inspectionReportApprovalComments != null) cdInspectionGeneralEntity.inspectionReportApprovalComments else cdInspectionGeneralEntity.inspectionReportDisapprovalComments
         }
         return mvInspectionNotificationDTO
+    }
+
+    @GetMapping("/coc-certificate/view")
+    fun downloadCocCertificateFile(response: HttpServletResponse, @RequestParam("cocId") cocId: Long) {
+        daoServices.findCOCById(cocId)?.let { coc ->
+            coc.localCocFile?.let { file ->
+                //Create FileDTO Object
+                val fileDto: CommonDaoServices.FileDTO = CommonDaoServices.FileDTO()
+                fileDto.document = file
+                fileDto.fileType = "application/x-pdf"
+                fileDto.name = coc.localCocFileName
+
+                commonDaoServices.downloadFile(response, fileDto)
+            }
+        }
+    }
+
+    @GetMapping("/cor-certificate/view")
+    fun downloadCorCertificateFile(response: HttpServletResponse, @RequestParam("corId") corId: Long) {
+        daoServices.findCorById(corId)?.let { cor ->
+            cor.localCorFile?.let { file ->
+                //Create FileDTO Object
+                val fileDto: CommonDaoServices.FileDTO = CommonDaoServices.FileDTO()
+                fileDto.document = file
+                fileDto.fileType = "application/x-pdf"
+                fileDto.name = cor.localCorFileName
+
+                commonDaoServices.downloadFile(response, fileDto)
+            }
+        }
     }
 }

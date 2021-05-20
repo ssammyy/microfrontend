@@ -27,6 +27,9 @@ class ReportsController(
     final val sMarkImageResource = resourceLoader.getResource(applicationMapProperties.mapSmarkImagePath)
     val sMarkImageFile = sMarkImageResource.file.toString()
 
+    final val fMarkImageResource = resourceLoader.getResource(applicationMapProperties.mapFmarkImagePath)
+    val fMarkImageFile = fMarkImageResource.file.toString()
+
     @RequestMapping(value = ["pac_summary"], method = [RequestMethod.GET])
     @Throws(Exception::class)
     fun pacSummary(
@@ -84,6 +87,9 @@ class ReportsController(
         }else if (permit.permitType==applicationMapProperties.mapQAPermitTypeIdSmark){
             map["SmarkLogo"] = sMarkImageFile
             reportsDaoService.extractReportEmptyDataSource(map, response, applicationMapProperties.mapReportSmarkPermitReportPath)
+        }else if (permit.permitType==applicationMapProperties.mapQAPermitTypeIdFmark){
+            map["FmarkLogo"] = fMarkImageFile
+            reportsDaoService.extractReportEmptyDataSource(map, response, applicationMapProperties.mapReportFmarkPermitReportPath)
         }
 
     }

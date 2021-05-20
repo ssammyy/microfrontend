@@ -7,17 +7,20 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.BpmnCommonFunctions
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DestinationInspectionDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.QADaoServices
+import org.kebs.app.kotlin.apollo.api.ports.provided.lims.LimsServices
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
-import org.kebs.app.kotlin.apollo.store.model.CdDemandNoteEntity
 import org.kebs.app.kotlin.apollo.store.model.SchedulerEntity
 import org.kebs.app.kotlin.apollo.store.repo.ISchedulerRepository
 import org.kebs.app.kotlin.apollo.store.repo.IUserRepository
 import org.kebs.app.kotlin.apollo.store.repo.qa.IPermitApplicationsRepository
+import org.kebs.app.kotlin.apollo.store.repo.qa.IQaSampleSubmissionRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Lazy
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Propagation
+import org.springframework.transaction.annotation.Transactional
 import java.sql.Timestamp
 import java.time.Instant
 import java.util.*
@@ -29,6 +32,9 @@ class SchedulerImpl(
     private val bpmnCommonFunctions: BpmnCommonFunctions,
     private val userRepo: IUserRepository,
     private val applicationMapProperties: ApplicationMapProperties,
+    private val sampleSubmissionRepo: IQaSampleSubmissionRepository,
+    private val  limsServices: LimsServices,
+//    private val qaDaoServices: QADaoServices,
 //    private val diDaoServices: DestinationInspectionDaoServices,
     private val commonDaoServices: CommonDaoServices,
 ) {
@@ -200,6 +206,7 @@ class SchedulerImpl(
         return false
     }
 
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun updatePaidDemandNotesStatus(): Boolean {
         val map = commonDaoServices.serviceMapDetails(diAppId)
         diDaoServices.findAllDemandNotesWithPaidStatus(map.activeStatus)?.let { paidDemandNotesList ->
@@ -227,6 +234,7 @@ class SchedulerImpl(
         return false
     }
 
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun assignPermitApplicationAfterPayment() {
         val map = commonDaoServices.serviceMapDetails(diAppId)
         //Find all permits with Paid status
@@ -234,20 +242,57 @@ class SchedulerImpl(
         for (permit in paidPermits) {
             //Get permit type
             val user = permit.userId?.let { commonDaoServices.findUserByID(it) }
-             if (permit.permitType == applicationMapProperties.mapQAPermitTypeIDDmark) {
-
-                permit.hodId = qaDaoServices.assignNextOfficerAfterPayment(permit, map, applicationMapProperties.mapQADesignationIDForHODId)?.id
-
-             } else if (permit.permitType == applicationMapProperties.mapQAPermitTypeIdSmark) {
-                 permit.qamId = qaDaoServices.assignNextOfficerAfterPayment(permit, map, applicationMapProperties.mapQADesignationIDForQAMId)?.id
-             }
+            when (permit.permitType) {
+                applicationMapProperties.mapQAPermitTypeIDDmark -> {
+                    permit.hodId = qaDaoServices.assignNextOfficerAfterPayment(permit, map, applicationMapProperties.mapQADesignationIDForHODId)?.id
+                }
+                applicationMapProperties.mapQAPermitTypeIdSmark -> {
+                    permit.qamId = qaDaoServices.assignNextOfficerAfterPayment(permit, map, applicationMapProperties.mapQADesignationIDForQAMId)?.id
+                }
+                applicationMapProperties.mapQAPermitTypeIdFmark -> {
+                    permit.qamId = qaDaoServices.assignNextOfficerAfterPayment(permit, map, applicationMapProperties.mapQADesignationIDForQAMId)?.id
+                }
+            }
 
             permit.paidStatus = map.initStatus
+            permit.permitStatus = applicationMapProperties.mapQaStatusPApprovalCompletness
 
             if (user != null) {
                 qaDaoServices.permitUpdateDetails(permit,map,user)
             }
 //            permitRepo.save(permit)
+        }
+    }
+
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun updateLabResultsWithDetails() {
+        val map = commonDaoServices.serviceMapDetails(diAppId)
+        //Find all Sample with Lab results inactive
+        KotlinLogging.logger { }.info { "::::::::::::::::::::::::STARTED LAB RESULTS SCHEDULER::::::::::::::::::" }
+        var samples= 1
+        sampleSubmissionRepo.findByLabResultsStatus(map.inactiveStatus)?.forEach {
+            KotlinLogging.logger { }.info { "::::::::::::::::::::::::SAMPLES WITH NO RESULTS FOUND = ${samples++}::::::::::::::::::" }
+            when (it.bsNumber?.let { it1 -> limsServices.mainFunctionLims(it1) }) {
+                true -> {
+                    with(it){
+                        modifiedBy = "SYSTEM SCHEDULER"
+                        modifiedOn = commonDaoServices.getTimestamp()
+                        labResultsStatus = map.activeStatus
+                        resultsDate = commonDaoServices.getCurrentDate()
+                    }
+                    sampleSubmissionRepo.save(it)
+                    qaDaoServices.findPermitBYID(it.permitId?: throw Exception("PERMIT ID NOT FOUND")).let { pm->
+                        with(pm){
+                            permitStatus = applicationMapProperties.mapQaStatusPLABResultsCompletness
+                            modifiedBy = "SYSTEM SCHEDULER"
+                            modifiedOn = commonDaoServices.getTimestamp()
+                        }
+                        permitRepo.save(pm)
+                    }
+
+                }
+            }
+
         }
     }
  }

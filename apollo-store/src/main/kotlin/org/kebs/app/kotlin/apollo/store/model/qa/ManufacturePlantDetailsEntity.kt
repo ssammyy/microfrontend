@@ -10,13 +10,17 @@ import javax.persistence.*
 class ManufacturePlantDetailsEntity : Serializable {
     @Column(name = "ID")
     @Id
-    @SequenceGenerator(name = "DAT_KEBS_MANUFACTURE_PLANT_DETAILS_SEQ_GEN", sequenceName = "DAT_KEBS_MANUFACTURE_PLANT_DETAILS_SEQ", allocationSize = 1)
+    @SequenceGenerator(
+        name = "DAT_KEBS_MANUFACTURE_PLANT_DETAILS_SEQ_GEN",
+        sequenceName = "DAT_KEBS_MANUFACTURE_PLANT_DETAILS_SEQ",
+        allocationSize = 1
+    )
     @GeneratedValue(generator = "DAT_KEBS_MANUFACTURE_PLANT_DETAILS_SEQ_GEN", strategy = GenerationType.SEQUENCE)
     var id: Long = 0
 
     @Column(name = "MANUFACTURE_ID")
     @Basic
-    var manufactureId: Long? = null
+    var companyProfileId: Long? = null
 
     @Column(name = "COUNTY")
     @Basic
@@ -53,6 +57,26 @@ class ManufacturePlantDetailsEntity : Serializable {
     @Column(name = "TELEPHONE")
     @Basic
     var telephone: String? = null
+
+    @Column(name = "EMAIL_ADDRESS")
+    @Basic
+    var emailAddress: String? = null
+
+    @Column(name = "PHYSICAL_ADDRESS")
+    @Basic
+    var physicalAddress: String? = null
+
+    @Column(name = "FAX_NO")
+    @Basic
+    var faxNo: String? = null
+
+    @Column(name = "PLOT_NO")
+    @Basic
+    var plotNo: String? = null
+
+    @Column(name = "DESIGNATION")
+    @Basic
+    var designation: String? = null
 
     @Column(name = "CONTACT_PERSON")
     @Basic
@@ -161,9 +185,9 @@ class ManufacturePlantDetailsEntity : Serializable {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other == null || javaClass != other.javaClass) return false
-        val that = other  as ManufacturePlantDetailsEntity
+        val that = other as ManufacturePlantDetailsEntity
         return id == that.id &&
-                manufactureId == that.manufactureId &&
+                companyProfileId == that.companyProfileId &&
                 county == that.county &&
                 userId == that.userId &&
                 town == that.town &&
@@ -177,6 +201,11 @@ class ManufacturePlantDetailsEntity : Serializable {
                 Arrays.equals(attachedSketchMapDocument, that.attachedSketchMapDocument) &&
                 attachedSketchMapName == that.attachedSketchMapName &&
                 attachedSketchMapFileType == that.attachedSketchMapFileType &&
+                emailAddress == that.emailAddress &&
+                physicalAddress == that.physicalAddress &&
+                faxNo == that.faxNo &&
+                plotNo == that.plotNo &&
+                designation == that.designation &&
                 status == that.status &&
                 descriptions == that.descriptions &&
                 varField1 == that.varField1 &&
@@ -202,7 +231,49 @@ class ManufacturePlantDetailsEntity : Serializable {
     }
 
     override fun hashCode(): Int {
-        var result = Objects.hash(id, manufactureId, county,userId, town, location, street, buildingName, nearestLandMark, postalAddress, telephone, contactPerson, attachedSketchMapName, attachedSketchMapFileType, status, descriptions, varField1, varField2, varField3, varField4, varField5, varField6, varField7, varField8, varField9, varField10, createdBy, createdOn, lastModifiedBy, lastModifiedOn, updateBy, updatedOn, deleteBy, deletedOn, version, region)
+        var result = Objects.hash(
+            id,
+            companyProfileId,
+            emailAddress,
+            physicalAddress,
+            faxNo,
+            plotNo,
+            designation,
+            county,
+            userId,
+            town,
+            location,
+            street,
+            buildingName,
+            nearestLandMark,
+            postalAddress,
+            telephone,
+            contactPerson,
+            attachedSketchMapName,
+            attachedSketchMapFileType,
+            status,
+            descriptions,
+            varField1,
+            varField2,
+            varField3,
+            varField4,
+            varField5,
+            varField6,
+            varField7,
+            varField8,
+            varField9,
+            varField10,
+            createdBy,
+            createdOn,
+            lastModifiedBy,
+            lastModifiedOn,
+            updateBy,
+            updatedOn,
+            deleteBy,
+            deletedOn,
+            version,
+            region
+        )
         result = 31 * result + Arrays.hashCode(attachedSketchMapDocument)
         return result
     }

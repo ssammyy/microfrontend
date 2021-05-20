@@ -4,6 +4,8 @@ package org.kebs.app.kotlin.apollo.api.errors
 import io.jsonwebtoken.ExpiredJwtException
 import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
+import org.kebs.app.kotlin.apollo.common.exceptions.InvalidValueException
+import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
 import org.kebs.app.kotlin.apollo.common.exceptions.ServiceMapNotFoundException
 import org.springframework.core.Ordered
 import org.springframework.core.annotation.Order
@@ -46,6 +48,18 @@ class CustomExceptionHandler {
 
     }
 
+    @ExceptionHandler(InvalidValueException::class)
+    @Throws(Exception::class)
+    fun handleInvalidValueException(req: HttpServletRequest, exception: Exception): ModelAndView? {
+        return errorMessageAlert(req, exception, HttpStatus.BAD_REQUEST)
+    }
+
+    @ExceptionHandler(NullValueNotAllowedException::class)
+    @Throws(Exception::class)
+    fun handleNullValueNotAllowedException(req: HttpServletRequest, exception: Exception): ModelAndView? {
+        return errorMessageAlert(req, exception, HttpStatus.BAD_REQUEST)
+    }
+
     @ExceptionHandler(ExpectedDataNotFound::class)
     @Throws(Exception::class)
     fun handleErrorExpectedDataNotFound(req: HttpServletRequest, exception: Exception): ModelAndView? {
@@ -66,14 +80,14 @@ class CustomExceptionHandler {
     }
 
 
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(ServiceMapNotFoundException::class)
-    fun handleServiceMapNotFoundException(ex: Exception, request: WebRequest?): ResponseEntity<Any?> {
-        val details = mutableListOf<String?>()
-        details.add(ex.message)
-
-        val error = ErrorResponse("Configuration Issue", details)
-        return ResponseEntity(error, HttpStatus.BAD_REQUEST)
+    fun handleServiceMapNotFoundException(ex: Exception, request: HttpServletRequest): ModelAndView? {
+//        val details = mutableListOf<String?>()
+//        details.add(ex.message)
+//
+//        val error = ErrorResponse("Configuration Issue", details)
+//        return ResponseEntity(error, HttpStatus.BAD_REQUEST)
+        return errorMessageAlert(request, ex, HttpStatus.BAD_REQUEST)
     }
 
 

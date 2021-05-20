@@ -1301,3 +1301,28 @@ COMMIT;
 
 
 
+alter table DAT_STANDARD_LEVY_FACTORY_VISIT_REPORT
+    add SCHEDULED_VISIT_DATE date;
+
+select *
+from DAT_STANDARD_LEVY_FACTORY_VISIT_REPORT;
+
+select *
+from ACT_HI_TASKINST
+-- where
+order by START_TIME_ desc
+;
+commit;
+
+select *
+from ACT_HI_PROCINST
+where PROC_INST_ID_ = 'c926304b-b32f-11eb-8780-525400cb6639';
+
+select *
+from DAT_KEBS_COMPANY_PROFILE
+order by id
+;
+
+update DAT_KEBS_COMPANY_PROFILE
+set factory_visit_date = null
+where id = 42;

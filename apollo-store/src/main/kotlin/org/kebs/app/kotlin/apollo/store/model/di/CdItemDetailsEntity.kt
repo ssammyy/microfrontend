@@ -292,25 +292,25 @@ class CdItemDetailsEntity : Serializable {
     @Basic
     var approveReason: String? = null
 
-    @Column(name = "TARGET_REASON")
-    @Basic
-    var targetReason: String? = null
+//    @Column(name = "TARGET_REASON")
+//    @Basic
+//    var targetReason: String? = null
 
-    @Column(name = "TARGET_DATE")
-    @Basic
-    var targetDate: Date? = null
+//    @Column(name = "TARGET_DATE")
+//    @Basic
+//    var targetDate: Date? = null
 
-    @Column(name = "TARGET_STATUS")
-    @Basic
-    var targetStatus: Int? = null
+//    @Column(name = "TARGET_STATUS")
+//    @Basic
+//    var targetStatus: Int? = null
 
-    @Column(name = "TARGET_APPROVED_REMARKS")
-    @Basic
-    var targetApproveRemarks: String? = null
+//    @Column(name = "TARGET_APPROVED_REMARKS")
+//    @Basic
+//    var targetApproveRemarks: String? = null
 
-    @Column(name = "TARGET_APPROVED_DATE")
-    @Basic
-    var targetApproveDate: Date? = null
+//    @Column(name = "TARGET_APPROVED_DATE")
+//    @Basic
+//    var targetApproveDate: Date? = null
 
     @Column(name = "PAYMENT_MADE_STATUS")
     @Basic
@@ -328,29 +328,29 @@ class CdItemDetailsEntity : Serializable {
     @Basic
     var paymentNeededDate: Date? = null
 
-    @Column(name = "INSPECTION_DATE_SET_STATUS")
-    @Basic
-    var inspectionDateSetStatus: Int? = null
+//    @Column(name = "INSPECTION_DATE_SET_STATUS")
+//    @Basic
+//    var inspectionDateSetStatus: Int? = null
+//
+//    @Column(name = "INSPECTION_NOTIFICATION_STATUS")
+//    @Basic
+//    var inspectionNotificationStatus: Int? = null
+//
+//    @Column(name = "INSPECTION_REMARKS")
+//    @Basic
+//    var inspectionRemarks: String? = null
+//
+//    @Column(name = "INSPECTION_DATE")
+//    @Basic
+//    var inspectionDate: Date? = null
+//
+//    @Column(name = "INSPECTION_NOTIFICATION_DATE")
+//    @Basic
+//    var inspectionNotificationDate: Date? = null
 
-    @Column(name = "INSPECTION_NOTIFICATION_STATUS")
-    @Basic
-    var inspectionNotificationStatus: Int? = null
-
-    @Column(name = "INSPECTION_REMARKS")
-    @Basic
-    var inspectionRemarks: String? = null
-
-    @Column(name = "INSPECTION_DATE")
-    @Basic
-    var inspectionDate: Date? = null
-
-    @Column(name = "INSPECTION_NOTIFICATION_DATE")
-    @Basic
-    var inspectionNotificationDate: Date? = null
-
-    @Column(name = "TARGET_APPROVED_STATUS")
-    @Basic
-    var targetApproveStatus: Int? = null
+//    @Column(name = "TARGET_APPROVED_STATUS")
+//    @Basic
+//    var targetApproveStatus: Int? = null
 
     @Column(name = "CHASIS_NUMBER")
     @Basic
@@ -488,20 +488,20 @@ class CdItemDetailsEntity : Serializable {
                 rejectDate == that.rejectDate &&
                 rejectReason == that.rejectReason &&
                 approveReason == that.approveReason &&
-                targetReason == that.targetReason &&
-                targetDate == that.targetDate &&
-                targetStatus == that.targetStatus &&
-                targetApproveRemarks == that.targetApproveRemarks &&
-                targetApproveDate == that.targetApproveDate &&
-                targetApproveStatus == that.targetApproveStatus &&
+//                targetReason == that.targetReason &&
+//                targetDate == that.targetDate &&
+//                targetStatus == that.targetStatus &&
+//                targetApproveRemarks == that.targetApproveRemarks &&
+//                targetApproveDate == that.targetApproveDate &&
+//                targetApproveStatus == that.targetApproveStatus &&
                 chasisNumber == that.chasisNumber &&
                 sampledStatus == that.sampledStatus &&
                 sampledCollectedStatus == that.sampledCollectedStatus &&
-                inspectionDate == that.inspectionDate &&
-                inspectionNotificationDate == that.inspectionNotificationDate &&
-                inspectionDateSetStatus == that.inspectionDateSetStatus &&
-                inspectionRemarks == that.inspectionRemarks &&
-                inspectionNotificationStatus == that.inspectionNotificationStatus &&
+//                inspectionDate == that.inspectionDate &&
+//                inspectionNotificationDate == that.inspectionNotificationDate &&
+//                inspectionDateSetStatus == that.inspectionDateSetStatus &&
+//                inspectionRemarks == that.inspectionRemarks &&
+//                inspectionNotificationStatus == that.inspectionNotificationStatus &&
                 paymentMadeStatus == that.paymentMadeStatus &&
                 paymentNeededDate == that.paymentNeededDate &&
                 paymentNeededRemarks == that.paymentNeededRemarks &&
@@ -536,20 +536,20 @@ class CdItemDetailsEntity : Serializable {
             productClassCode,
             dnoteStatus,
             itemStatus,
-            targetApproveDate,
+//            targetApproveDate,
             sampleBsNumberStatus,
             confirmFeeIdSelected,
             paymentNeededRemarks,
             paymentNeededStatus,
             paymentNeededDate,
             sampledCollectedStatus,
-            inspectionNotificationStatus,
-            inspectionNotificationDate,
-            inspectionDate,
-            inspectionDateSetStatus,
-            inspectionRemarks,
-            targetApproveStatus,
-            targetApproveRemarks,
+//            inspectionNotificationStatus,
+//            inspectionNotificationDate,
+//            inspectionDate,
+//            inspectionDateSetStatus,
+//            inspectionRemarks,
+//            targetApproveStatus,
+//            targetApproveRemarks,
             marksAndContainers,
             itemNo,
             allTestReportStatus,
@@ -599,9 +599,9 @@ class CdItemDetailsEntity : Serializable {
             rejectDate,
             rejectReason,
             approveReason,
-            targetReason,
-            targetDate,
-            targetStatus,
+//            targetReason,
+//            targetDate,
+//            targetStatus,
             chasisNumber,
             paymentMadeStatus,
             sampledStatus,

@@ -13,7 +13,7 @@ class CDVerificationRequestXmlDTO {
     var cdVerificationRequestData: CdVerificationRequestData? = null
 }
 
-class CdVerificationRequestHeader {
+class CdVerificationRequestHeader(version: Int) {
 
     @JacksonXmlProperty(localName = "module")
     var module: String? = "KESWS_HLD_HOL"
@@ -31,10 +31,10 @@ class CdVerificationRequestHeader {
     var information: String? = "Request for Consignment verification"
 
     @JacksonXmlProperty(localName = "message_version")
-    var messageVersion: Int? = 1
+    var messageVersion: Int? = version
 
     @JacksonXmlProperty(localName = "message_date")
-    var messageDate: String? = "2021-03-19"
+    var messageDate: String? = "2021-05-04T13:37:45.970+03:00"
 }
 
 class CdVerificationRequestData {
@@ -47,13 +47,13 @@ class CdVerificationRequestDataIn {
     var cdVerificationRequestDataSAD: CdVerificationRequestDataSAD? = null
 }
 
-class CdVerificationRequestDataSAD {
+class CdVerificationRequestDataSAD(dclRefNo: String) {
 
     @JacksonXmlProperty(localName = "message_nature")
     var messageDate: Long? = 41
 
     @JacksonXmlProperty(localName = "sad_id")
-    var sadId: String? = "20NBOIM401638715"
+    var sadId: String? = dclRefNo
 
     @JacksonXmlProperty(localName = "version")
     var version: Int? = 1
@@ -62,5 +62,5 @@ class CdVerificationRequestDataSAD {
     var ogaIentification: String? = "KEBS"
 
     @JacksonXmlProperty(localName = "hold_detail")
-    var holdetail: String? = "Entry no. 20NBOIM401638715"
+    var holdetail: String? = "Request for Inspection"
 }

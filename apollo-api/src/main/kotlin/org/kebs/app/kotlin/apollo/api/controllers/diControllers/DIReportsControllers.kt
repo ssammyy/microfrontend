@@ -2,30 +2,23 @@ package org.kebs.app.kotlin.apollo.api.controllers.diControllers
 
 
 import mu.KotlinLogging
-import net.sf.jasperreports.engine.JREmptyDataSource
-import net.sf.jasperreports.engine.JasperCompileManager
-import net.sf.jasperreports.engine.JasperFillManager
-import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource
-import net.sf.jasperreports.engine.export.JRPdfExporter
-import net.sf.jasperreports.engine.xml.JRXmlLoader
-import net.sf.jasperreports.export.SimpleExporterInput
-import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.*
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
+import org.kebs.app.kotlin.apollo.store.model.CocsEntity
+import org.kebs.app.kotlin.apollo.store.model.di.CdItemDetailsEntity
 import org.kebs.app.kotlin.apollo.store.repo.*
 import org.kebs.app.kotlin.apollo.store.repo.di.*
 import org.springframework.core.io.ResourceLoader
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.security.access.prepost.PreAuthorize
-import org.springframework.util.ResourceUtils
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestMethod
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
-import java.io.ByteArrayOutputStream
 import java.sql.Timestamp
 import java.text.SimpleDateFormat
+import java.util.stream.Collectors
 import javax.servlet.http.HttpServletResponse
 
 
@@ -299,27 +292,27 @@ class DIReportsControllers(
         }
     }
 
-    /*
-    Get Local CoR report
-     */
-    @RequestMapping(value = ["/local-cor-report"], method = [RequestMethod.GET])
-    @Throws(Exception::class)
-    fun localCorReport(
-            response: HttpServletResponse,
-            @RequestParam(value = "cdUuid", required = false) consignmentDocUuid: String?
-    ) {
-        var map = hashMapOf<String, Any>()
-        val cdEntity = consignmentDocUuid?.let { daoServices.findCDWithUuid(it) }
-        KotlinLogging.logger {}.info { "The cdEntity found: ${cdEntity?.id}" }
-        cdEntity?.ucrNumber?.let {
-            daoServices.findLocalCorByUcrNumber(it).let {
-                KotlinLogging.logger {}.info { "The cdLocalCorEntity found: ${it.id}" }
-                map = daoServices.createLocalCorReportMap(it)
-                KotlinLogging.logger {}.info { "Final Map: ${map.values}" }
-            }
-        }
-        reportsDaoService.extractReportEmptyDataSource(map, response, applicationMapProperties.mapReportLocalCorPath)
-    }
+//    /*
+//    Get Local CoR report
+//     */
+//    @RequestMapping(value = ["/local-cor-report"], method = [RequestMethod.GET])
+//    @Throws(Exception::class)
+//    fun localCorReport(
+//            response: HttpServletResponse,
+//            @RequestParam(value = "cdUuid", required = false) consignmentDocUuid: String?
+//    ) {
+//        var map = hashMapOf<String, Any>()
+//        val cdEntity = consignmentDocUuid?.let { daoServices.findCDWithUuid(it) }
+//        KotlinLogging.logger {}.info { "The cdEntity found: ${cdEntity?.id}" }
+//        cdEntity?.ucrNumber?.let {
+//            daoServices.findLocalCorByUcrNumber(it).let {
+//                KotlinLogging.logger {}.info { "The cdLocalCorEntity found: ${it.id}" }
+//                map = daoServices.createLocalCorReportMap(it)
+//                KotlinLogging.logger {}.info { "Final Map: ${map.values}" }
+//            }
+//        }
+//        reportsDaoService.extractReportEmptyDataSource(map, response, applicationMapProperties.mapReportLocalCorPath)
+//    }
 }
 
 

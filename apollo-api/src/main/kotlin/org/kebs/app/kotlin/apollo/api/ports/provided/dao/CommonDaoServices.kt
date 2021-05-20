@@ -56,6 +56,7 @@ import org.jasypt.encryption.StringEncryptor
 import org.json.JSONObject
 import org.kebs.app.kotlin.apollo.api.notifications.Notifications
 import org.kebs.app.kotlin.apollo.api.ports.provided.emailDTO.RegistrationEmailDTO
+import org.kebs.app.kotlin.apollo.api.ports.provided.emailDTO.RegistrationForEntryNumberEmailDTO
 import org.kebs.app.kotlin.apollo.common.dto.HashedStringDto
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.common.exceptions.MissingConfigurationException
@@ -68,6 +69,8 @@ import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapPrope
 import org.kebs.app.kotlin.apollo.store.model.*
 import org.kebs.app.kotlin.apollo.store.model.di.CdLaboratoryEntity
 import org.kebs.app.kotlin.apollo.store.model.qa.ManufacturePlantDetailsEntity
+import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileCommoditiesManufactureEntity
+import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileContractsUndertakenEntity
 import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileEntity
 import org.kebs.app.kotlin.apollo.store.repo.*
 import org.kebs.app.kotlin.apollo.store.repo.di.ILaboratoryRepository
@@ -134,7 +137,9 @@ class CommonDaoServices(
         private val countiesRepo: ICountiesRepository,
         private val townsRepo: ITownsRepository,
         private val userTypesRepo: IUserTypesEntityRepository,
-
+        private val companyProfileDirectorsRepo: ICompanyProfileDirectorsRepository,
+        private val companyProfileCommoditiesManufactureRepo: ICompanyProfileCommoditiesManufactureRepository,
+        private val companyProfileContractsUndertakenRepo: ICompanyProfileContractsUndertakenRepository,
 
         private val countyRepo: ICountiesRepository,
         private val standardCategoryRepo: IStandardCategoryRepository,
@@ -328,6 +333,18 @@ class CommonDaoServices(
                 ?: throw ExpectedDataNotFound("Processes with [Service Map=${map}] , does not exist")
     }
 
+    fun findAllContractsUnderTakenDetails(companyProfileID: Long): List<CompanyProfileContractsUndertakenEntity> {
+        companyProfileContractsUndertakenRepo.findByCompanyProfileId(companyProfileID)?.let {
+            return it
+        } ?: throw ExpectedDataNotFound("Company Details Does not exist")
+    }
+
+    fun findAllCommoditiesDetails(companyProfileID: Long): List<CompanyProfileCommoditiesManufactureEntity> {
+        companyProfileCommoditiesManufactureRepo.findByCompanyProfileId(companyProfileID)?.let {
+            return it
+        } ?: throw ExpectedDataNotFound("Company Details Does not exist")
+    }
+
     fun findAllFreightStationOnPortOfArrival(sectionsEntity: SectionsEntity, status: Int): List<SubSectionsLevel2Entity> {
         iSubSectionsLevel2Repo.findBySectionIdAndStatus(sectionsEntity, status)
                 ?.let {
@@ -475,6 +492,19 @@ class CommonDaoServices(
             modifiedON = user.modifiedOn
             otpGenerated = if (token.isNullOrEmpty()) generateVerificationToken(sr, user, map)?.token else token
             otpGeneratedDate = getCurrentDate()
+
+        }
+
+        return dataValue
+    }
+
+    fun userRegisteredEntryNumberSuccessfulEmailCompose(companyProfile: CompanyProfileEntity, sr: ServiceRequestsEntity, map: ServiceMapsEntity, token: String?): RegistrationForEntryNumberEmailDTO {
+        val dataValue = RegistrationForEntryNumberEmailDTO()
+        with(dataValue) {
+            baseUrl = applicationMapProperties.baseUrlValue
+            fullName = concatenateName(findUserByID(companyProfile.userId?: throw ExpectedDataNotFound("USER ID NOT FOUND")))
+            entryNumber = companyProfile.entryNumber
+            dateSubmitted = getCurrentDate()
 
         }
 
@@ -703,6 +733,13 @@ class CommonDaoServices(
                 ?: throw ExpectedDataNotFound("Company Profile with [user ID= ${userID}], does not Exist")
     }
 
+    fun findCompanyProfileWithRegistrationNumber(registrationNumber: String): CompanyProfileEntity? {
+        return companyProfileRepo.findByRegistrationNumber(registrationNumber)
+//                ?.let { userCompanyDetails ->
+//                     userCompanyDetails
+//                }
+    }
+
     fun findCompanyProfileWhoAreManufactures(status: Int): List<CompanyProfileEntity> {
         companyProfileRepo.findByManufactureStatus(status)
                 ?.let { userCompanyDetails ->
@@ -718,6 +755,8 @@ class CommonDaoServices(
             }
             ?: throw ExpectedDataNotFound("Company Profile with [ ID= ${id}], does not Exist")
     }
+
+
 
     fun findAllUsers(): List<UsersEntity> {
         usersRepo.findAllByOrderByIdAsc()

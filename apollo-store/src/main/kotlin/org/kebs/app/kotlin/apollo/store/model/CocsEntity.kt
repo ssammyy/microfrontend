@@ -18,17 +18,17 @@ class CocsEntity : Serializable {
 
     var id: Long = 0
 
-    @NotEmpty(message = "Required field")
+    //@NotEmpty(message = "Required field")
     @Column(name = "COC_NUMBER", nullable = false, length = 50)
     @Basic
     var cocNumber: String? = null
 
-    @NotEmpty(message = "Required field")
+    //@NotEmpty(message = "Required field")
     @Column(name = "COI_NUMBER", nullable = false, length = 50)
     @Basic
     var coiNumber: String? = null
 
-    @NotEmpty(message = "Required field")
+//    @NotEmpty(message = "Required field")
     @Column(name = "IDF_NUMBER", nullable = false, length = 50)
     @Basic
     var idfNumber: String? = null
@@ -47,13 +47,13 @@ class CocsEntity : Serializable {
     @JsonFormat(shape= JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     var rfcDate: Timestamp? = null
 
-    @NotNull(message = "Required field")
+    //@NotNull(message = "Required field")
     @Column(name = "COC_ISSUE_DATE", nullable = false)
     @Basic
     @JsonFormat(shape= JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     var cocIssueDate: Timestamp? = null
 
-    @NotNull(message = "Required field")
+    //@NotNull(message = "Required field")
     @Column(name = "COI_ISSUE_DATE", nullable = false)
     @Basic
     @JsonFormat(shape= JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
@@ -64,12 +64,12 @@ class CocsEntity : Serializable {
     @Basic
     var clean: String? = null
 
-    @NotEmpty(message = "Required field")
+    //@NotEmpty(message = "Required field")
     @Column(name = "COC_REMARKS", nullable = false, length = 4000)
     @Basic
     var cocRemarks: String? = null
 
-    @NotEmpty(message = "Required field")
+    //@NotEmpty(message = "Required field")
     @Column(name = "COI_REMARKS", nullable = false, length = 4000)
     @Basic
     var coiRemarks: String? = null
@@ -265,6 +265,14 @@ class CocsEntity : Serializable {
     @Basic
     var cocType: String? = null
 
+    @Column(name = "LOCAL_COC_FILE")
+    @Lob
+    var localCocFile: ByteArray? = null
+
+    @Column(name = "LOCAL_COC_FILE_NAME", length = 200)
+    @Basic
+    var localCocFileName: String? = null
+
     @Column(name = "STATUS", nullable = true, precision = 0)
     @Basic
     var status: Long? = null
@@ -402,6 +410,8 @@ class CocsEntity : Serializable {
                 route == that.route &&
                 productCategory == that.productCategory &&
                 cocType == that.cocType &&
+                Arrays.equals(localCocFile, that.localCocFile) &&
+                localCocFileName == that.localCocFileName &&
                 status == that.status &&
                 varField1 == that.varField1 &&
                 varField2 == that.varField2 &&
@@ -426,7 +436,7 @@ class CocsEntity : Serializable {
     }
 
     override fun hashCode(): Int {
-        return Objects.hash(
+        var result =  Objects.hash(
             id,
             cocNumber,
             coiNumber,
@@ -477,6 +487,7 @@ class CocsEntity : Serializable {
             route,
             cocType,
             productCategory,
+            localCocFileName,
             status,
             varField1,
             varField2,
@@ -498,5 +509,7 @@ class CocsEntity : Serializable {
             pvocPartner,
             partner
         )
+        result = 31 * result + Arrays.hashCode(localCocFile)
+        return result
     }
 }

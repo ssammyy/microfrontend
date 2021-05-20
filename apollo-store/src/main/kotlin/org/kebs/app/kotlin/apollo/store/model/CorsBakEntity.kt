@@ -207,6 +207,14 @@ class CorsBakEntity : Serializable {
     @Basic
     var inspectionFeePaymentDate: Timestamp? = null
 
+    @Column(name = "LOCAL_COR_FILE")
+    @Lob
+    var localCorFile: ByteArray? = null
+
+    @Column(name = "LOCAL_COR_FILE_NAME", length = 200)
+    @Basic
+    var localCorFileName: String? = null
+
     @Column(name = "STATUS")
     @Basic
     var status: Int? = null
@@ -282,7 +290,7 @@ class CorsBakEntity : Serializable {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other == null || javaClass != other.javaClass) return false
-        val that = other as CorsEntity
+        val that = other as CorsBakEntity
         return id == that.id && tareWeight == that.tareWeight && loadCapacity == that.loadCapacity && grossWeight == that.grossWeight && numberOfAxles == that.numberOfAxles && numberOfPassangers == that.numberOfPassangers && inspectionFee == that.inspectionFee && inspectionFeeExchangeRate == that.inspectionFeeExchangeRate &&
                 corNumber == that.corNumber &&
                 corIssueDate == that.corIssueDate &&
@@ -314,7 +322,9 @@ class CorsBakEntity : Serializable {
                 approvalStatus == that.approvalStatus &&
                 inspectionFeeCurrency == that.inspectionFeeCurrency &&
                 inspectionFeePaymentDate == that.inspectionFeePaymentDate &&
-//              status == that.status &&
+                Arrays.equals(localCorFile, that.localCorFile) &&
+                localCorFileName == that.localCorFileName &&
+                status == that.status &&
                 varField1 == that.varField1 &&
                 varField2 == that.varField2 &&
                 varField3 == that.varField3 &&
@@ -334,7 +344,7 @@ class CorsBakEntity : Serializable {
     }
 
     override fun hashCode(): Int {
-        return Objects.hash(
+        var result = Objects.hash(
             id,
             corNumber,
             corIssueDate,
@@ -371,6 +381,7 @@ class CorsBakEntity : Serializable {
             inspectionFeeCurrency,
             inspectionFeeExchangeRate,
             inspectionFeePaymentDate,
+            localCorFileName,
             status,
             varField1,
             varField2,
@@ -389,5 +400,7 @@ class CorsBakEntity : Serializable {
             deleteBy,
             deletedOn
         )
+        result = 31 * result + Arrays.hashCode(localCorFile)
+        return result
     }
 }

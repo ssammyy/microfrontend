@@ -204,12 +204,12 @@ class SftpTest {
 
         val declarationNo = "DEC20210319BNZ"
 
-        val cdVerificationRequestDataSAD = CdVerificationRequestDataSAD()
+        val cdVerificationRequestDataSAD = CdVerificationRequestDataSAD(declarationNo)
         val cdVerificationRequestDataIn = CdVerificationRequestDataIn()
         cdVerificationRequestDataIn.cdVerificationRequestDataSAD = cdVerificationRequestDataSAD
         val cdVerificationRequestData = CdVerificationRequestData()
         cdVerificationRequestData.cdVerificationRequestDataIn = cdVerificationRequestDataIn
-        val cdVerificationRequestHeader = CdVerificationRequestHeader()
+        val cdVerificationRequestHeader = CdVerificationRequestHeader(1)
 
         val cdVerificationRequestXmlDTO = CDVerificationRequestXmlDTO()
         cdVerificationRequestXmlDTO.cdVerificationRequestHeader = cdVerificationRequestHeader
