@@ -173,8 +173,8 @@
 				<text><![CDATA[To use the Diamond mark of quality specified in the first column of the appendix hereunder and upon and in respect of the commodity and brand specified in the second and third column there of. which conform to the standard specification in the fourth column.]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="210" y="60" width="62" height="20" uuid="355f03f6-c577-43ab-a24b-07e8dddd6d1b"/>
-				<textElement>
+				<reportElement x="210" y="60" width="80" height="20" uuid="355f03f6-c577-43ab-a24b-07e8dddd6d1b"/>
+				<textElement textAlignment="Center">
 					<font size="11" isBold="true"/>
 				</textElement>
 				<text><![CDATA[APPENDIX]]></text>
@@ -287,7 +287,7 @@
 				<imageExpression><![CDATA[$P{imagePath}]]></imageExpression>
 			</image>
 			<staticText>
-				<reportElement x="386" y="459" width="88" height="29" forecolor="#1067E8" uuid="0e26ddaa-f30a-4fe3-a460-6f864191ad38"/>
+				<reportElement x="386" y="459" width="104" height="29" forecolor="#1067E8" uuid="0e26ddaa-f30a-4fe3-a460-6f864191ad38"/>
 				<textElement verticalAlignment="Top">
 					<font isBold="true"/>
 				</textElement>

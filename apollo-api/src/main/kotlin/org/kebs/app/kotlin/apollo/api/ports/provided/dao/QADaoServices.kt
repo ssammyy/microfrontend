@@ -973,13 +973,14 @@ class QADaoServices(
         }
 
 
-    fun permitUpdateNewWithSamePermitNumber(permitNo: String, s: ServiceMapsEntity, user: UsersEntity): Pair<ServiceRequestsEntity, PermitApplicationsEntity> {
+    fun permitUpdateNewWithSamePermitNumber(permitID: Long, s: ServiceMapsEntity, user: UsersEntity): Pair<ServiceRequestsEntity, PermitApplicationsEntity> {
 
         var sr = commonDaoServices.createServiceRequest(s)
         var savePermit = PermitApplicationsEntity()
         try {
-            var oldPermit = findPermitWithPermitNumberLatest(permitNo)
-            KotlinLogging.logger { }.info { "::::::::::::::::::PERMIT With PERMIT NUMBER = $permitNo, Exists::::::::::::::::::::: " }
+            val pm = findPermitBYID(permitID)
+            var oldPermit = findPermitWithPermitNumberLatest(pm.permitNumber?:throw Exception("INVALID PERMIT NUMBER"))
+            KotlinLogging.logger { }.info { "::::::::::::::::::PERMIT With PERMIT NUMBER = $pm.permitNumber, Exists::::::::::::::::::::: " }
             var versionNumberOld = oldPermit.versionNumber ?: throw ExpectedDataNotFound("Permit Version Number is Empty")
 
             oldPermit.oldPermitStatus = 1
@@ -990,6 +991,7 @@ class QADaoServices(
             with(savePermit) {
 //                renewalStatus = 1
                 userId = user.id
+                attachedPlantId = oldPermit.attachedPlantId
                 permitType = oldPermit.permitType
                 permitNumber = oldPermit.permitNumber
                 enabled = s.initStatus
@@ -1016,11 +1018,51 @@ class QADaoServices(
                 oldPermitStatus = null
                 permitExpiredStatus = null
                 paidStatus = null
+                bsNumber = null
+                compliantRemarks = null
+                scfId = null
+                ssfId = null
+                testReportId = null
+                pscMemberId = null
+                dateOfIssue = null
+                dateOfExpiry = null
+                applicationSuspensionStatus = null
+                pscMemberApprovalStatus = null
+                pscMemberApprovalRemarks = null
+                pcmApprovalStatus = null
+                pcmApprovalRemarks = null
+                hodApproveAssessmentStatus = null
+                hodApproveAssessmentRemarks = null
+                assessmentCriteria = null
+                factoryInspectionReportApprovedRejectedStatus = null
+                factoryInspectionReportApprovedRejectedRemarks = null
+                paidStatus = null
+                recommendationApprovalStatus = null
+                recommendationRemarks = null
+                recommendationApprovalRemarks = null
+                hofQamCompletenessRemarks = null
+                pacDecisionRemarks = null
+                justificationReportRemarks = null
+                assessmentReportRemarks = null
+                permitExpiredStatus = null
+                compliantStatus = null
+                sendForPcmReview = null
+                assignAssessorStatus = null
+                resubmitApplicationStatus = null
+                justificationReportStatus = null
+                smeFormFilledStatus = null
+                invoiceGenerated = null
+                enabled = null
+                sendApplication = null
+                permitAwardStatus = null
+                fmarkGenerated = null
+                endOfProductionStatus = null
+                oldPermitStatus = null
 //                renewalStatus = null
 
             }
 
-            //Update Permit renewed with new details
+//            Update Permit renewed with new details
             savePermit = permitUpdateDetails(commonDaoServices.updateDetails(savePermit, oldPermit) as PermitApplicationsEntity,s, user).second
 
 

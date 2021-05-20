@@ -443,10 +443,8 @@ class QualityAssuranceController(
     @GetMapping("/kebs/renew/permit-details/save")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun permitRenewDetails(
+        @RequestParam( "permitID") permitID: Long,
         model: Model,
-        @RequestParam( "permitNo") permitNo: String,
-        results: BindingResult,
-        redirectAttributes: RedirectAttributes
     ): String? {
 
         val map = commonDaoServices.serviceMapDetails(appId)
@@ -454,7 +452,7 @@ class QualityAssuranceController(
 
         var result: ServiceRequestsEntity?
 
-        var myRenewedPermit = qaDaoServices.permitUpdateNewWithSamePermitNumber(permitNo,map, loggedInUser)
+        var myRenewedPermit = qaDaoServices.permitUpdateNewWithSamePermitNumber(permitID,map, loggedInUser)
         val permit = myRenewedPermit.second
             result = qaDaoServices.permitInvoiceCalculation(map, loggedInUser, permit, qaDaoServices.findPermitType(permit.permitType!!))
 

@@ -460,7 +460,7 @@
 
                                         <a th:if="${permitDetails?.attachedPlantId == null}" style="color: white" onclick="popUpFunction('attachePlant');" class="filter-link">ATTACH PLANT</a>
 
-                                        <a th:if="${permitDetails?.permitExpiredStatus == 1}"  th:href="@{/api/qa/kebs/renew/permit-details/save(permitNo=${permitDetails?.permitNumber})}" class="filter-link" style="color: white">RENEW PERMIT</a>
+                                        <a th:if="${permitDetails?.permitExpiredStatus == 1}"  th:href="@{/api/qa/kebs/renew/permit-details/save(permitID=${permitDetails?.id})}" class="filter-link" style="color: white">RENEW PERMIT</a>
 
                                         <a th:if="${permitDetails?.resubmitApplicationStatus == null and permitDetails?.hofQamCompletenessStatus == 0}"  th:href="@{/api/qa/kebs/resubmit/permit-details/save(permitID=${permitDetails?.id})}" class="filter-link" style="color: white">RESUBMIT PERMIT</a>
 
