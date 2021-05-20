@@ -15,7 +15,7 @@ import {HomeComponent} from './components/home/home.component';
 import {DashboardComponent} from './components/home/dashboard/dashboard.component';
 import {ReportsComponent} from './components/home/reports/reports.component';
 import {CompanyProfileComponent} from './components/home/company-profile/company-profile.component';
-import {NgApexchartsModule} from 'ng-apexcharts';
+//import {NgApexchartsModule} from 'ng-apexcharts';
 import {ComplaintsFormPageComponent} from './components/market-surveillance/complaints-form-page/complaints-form-page.component';
 import {ComplaintsFormComponent} from './components/market-surveillance/complaints-form-page/complaints-form/complaints-form.component';
 import {MarketSurveillanceComponent} from './components/market-surveillance/market-surveillance.component';
@@ -48,48 +48,51 @@ import {UserDetailsComponent} from './components/administrator/user-details/user
 import {AddUserComponent} from './components/administrator/add-user/add-user.component';
 import {AccessControlComponent} from './components/administrator/access-control/access-control.component';
 import {NgxPaginationModule} from 'ngx-pagination';
-import { StandardsDevelopmentComponent } from './components/standards-development/standards-development.component';
-import { StandardRequestComponent } from './components/standards-development/standard-request/standard-request.component';
-import { UserProfileComponent } from './components/home/user-profile/user-profile.component';
-import { StandardTaskComponent } from './components/standards-development/standard-task/standard-task.component';
+import {StandardsDevelopmentComponent} from './components/standards-development/standards-development.component';
+import {StandardRequestComponent} from './components/standards-development/standard-request/standard-request.component';
+import {UserProfileComponent} from './components/home/user-profile/user-profile.component';
+import {StandardTaskComponent} from './components/standards-development/standard-task/standard-task.component';
 import {StdTscSecTasksComponent} from "./components/standards-development/std-tsc-sec-tasks/std-tsc-sec-tasks.component";
-import { StdTscTasksComponent } from './components/standards-development/std-tsc-tasks/std-tsc-tasks.component';
-import { RequestStandardFormComponent } from './components/standards-development/standard-request/request-standard-form/request-standard-form.component';
+import {StdTscTasksComponent} from './components/standards-development/std-tsc-tasks/std-tsc-tasks.component';
+import {RequestStandardFormComponent} from './components/standards-development/standard-request/request-standard-form/request-standard-form.component';
 import {FileUploadModule} from "ng2-file-upload";
-import { StdTcTasksComponent } from './components/standards-development/std-tc-tasks/std-tc-tasks.component';
-import { CompanyStandardRequestComponent } from './components/standards-development/company-standard-request/company-standard-request.component';
-import { CsRequestFormComponent } from './components/standards-development/company-standard-request/cs-request-form/cs-request-form.component';
-import { ComStdRequestListComponent } from './components/standards-development/com-std-request-list/com-std-request-list.component';
-import { NwaJustificationFormComponent } from './components/standards-development/nwa-justification-form/nwa-justification-form.component';
-import { NwaJustificationTasksComponent } from './components/standards-development/nwa-justification-tasks/nwa-justification-tasks.component';
-import { NwaKnwSecTasksComponent } from './components/standards-development/nwa-knw-sec-tasks/nwa-knw-sec-tasks.component';
-import { NwaDiSdtTasksComponent } from './components/standards-development/nwa-di-sdt-tasks/nwa-di-sdt-tasks.component';
-import { NwaHopTasksComponent } from './components/standards-development/nwa-hop-tasks/nwa-hop-tasks.component';
-import { SacSecTasksComponent } from './components/standards-development/sac-sec-tasks/sac-sec-tasks.component';
-import { NwaHoSicTasksComponent } from './components/standards-development/nwa-ho-sic-tasks/nwa-ho-sic-tasks.component';
-import { PreparePdComponent } from './components/standards-development/commitee/prepare-pd/prepare-pd.component';
-import { CommentPdComponent } from './components/standards-development/commitee/comment-pd/comment-pd.component';
-import { CommentCdComponent } from './components/standards-development/commitee/comment-cd/comment-cd.component';
-import { PdDetailsComponent } from './components/standards-development/commitee/pd-details/pd-details.component';
-import { PdListComponent } from './components/standards-development/commitee/pd-list/pd-list.component';
-import { NwiListComponent } from './components/standards-development/commitee/nwi-list/nwi-list.component';
-import { PrepareNwiComponent } from './components/standards-development/commitee/prepare-nwi/prepare-nwi.component';
-import { PrepareCdComponent } from './components/standards-development/commitee/prepare-cd/prepare-cd.component';
-import { CdListComponent } from './components/standards-development/commitee/cd-list/cd-list.component';
-import { ApproveNwiComponent } from './components/standards-development/commitee/approve-nwi/approve-nwi.component';
-import { ApproveCdComponent } from './components/standards-development/commitee/approve-cd/approve-cd.component';
-import { DivisionresponseComponent } from './components/standards-development/divisionresponse/divisionresponse.component';
-import { EnquiryComponent } from './components/standards-development/sd-national-enquiry-point/enquiry/enquiry.component';
-import { InformationcheckComponent } from './components/standards-development/informationcheck/informationcheck.component';
-import { SuccessComponent } from './components/standards-development/sd-national-enquiry-point/success/success.component';
-import { NepNotificationComponent } from './components/standards-development/nep-notification/nep-notification.component';
-import { ManagernotificationsComponent } from './components/standards-development/managernotifications/managernotifications.component';
-import { HodjoinrequestComponent } from './components/standards-development/hodjoinrequest/hodjoinrequest.component';
-import { SicjoinrequestComponent } from './components/standards-development/sicjoinrequest/sicjoinrequest.component';
-import { SicpaymentconfirmComponent } from './components/standards-development/sicpaymentconfirm/sicpaymentconfirm.component';
-import { SchememembershipComponent } from './components/standards-development/schememembership/schememembership/schememembership.component';
-
-
+import {StdTcTasksComponent} from './components/standards-development/std-tc-tasks/std-tc-tasks.component';
+import {CompanyStandardRequestComponent} from './components/standards-development/company-standard-request/company-standard-request.component';
+import {CsRequestFormComponent} from './components/standards-development/company-standard-request/cs-request-form/cs-request-form.component';
+import {ComStdRequestListComponent} from './components/standards-development/com-std-request-list/com-std-request-list.component';
+import {NwaJustificationFormComponent} from './components/standards-development/nwa-justification-form/nwa-justification-form.component';
+import {NwaJustificationTasksComponent} from './components/standards-development/nwa-justification-tasks/nwa-justification-tasks.component';
+import {NwaKnwSecTasksComponent} from './components/standards-development/nwa-knw-sec-tasks/nwa-knw-sec-tasks.component';
+import {NwaDiSdtTasksComponent} from './components/standards-development/nwa-di-sdt-tasks/nwa-di-sdt-tasks.component';
+import {NwaHopTasksComponent} from './components/standards-development/nwa-hop-tasks/nwa-hop-tasks.component';
+import {SacSecTasksComponent} from './components/standards-development/sac-sec-tasks/sac-sec-tasks.component';
+import {NwaHoSicTasksComponent} from './components/standards-development/nwa-ho-sic-tasks/nwa-ho-sic-tasks.component';
+import {PreparePdComponent} from './components/standards-development/commitee/prepare-pd/prepare-pd.component';
+import {CommentPdComponent} from './components/standards-development/commitee/comment-pd/comment-pd.component';
+import {CommentCdComponent} from './components/standards-development/commitee/comment-cd/comment-cd.component';
+import {PdDetailsComponent} from './components/standards-development/commitee/pd-details/pd-details.component';
+import {PdListComponent} from './components/standards-development/commitee/pd-list/pd-list.component';
+import {NwiListComponent} from './components/standards-development/commitee/nwi-list/nwi-list.component';
+import {PrepareNwiComponent} from './components/standards-development/commitee/prepare-nwi/prepare-nwi.component';
+import {PrepareCdComponent} from './components/standards-development/commitee/prepare-cd/prepare-cd.component';
+import {CdListComponent} from './components/standards-development/commitee/cd-list/cd-list.component';
+import {ApproveNwiComponent} from './components/standards-development/commitee/approve-nwi/approve-nwi.component';
+import {ApproveCdComponent} from './components/standards-development/commitee/approve-cd/approve-cd.component';
+import {DivisionresponseComponent} from './components/standards-development/divisionresponse/divisionresponse.component';
+import {EnquiryComponent} from './components/standards-development/sd-national-enquiry-point/enquiry/enquiry.component';
+import {InformationcheckComponent} from './components/standards-development/informationcheck/informationcheck.component';
+import {SuccessComponent} from './components/standards-development/sd-national-enquiry-point/success/success.component';
+import {NepNotificationComponent} from './components/standards-development/nep-notification/nep-notification.component';
+import {ManagernotificationsComponent} from './components/standards-development/managernotifications/managernotifications.component';
+import {HodjoinrequestComponent} from './components/standards-development/hodjoinrequest/hodjoinrequest.component';
+import {SicjoinrequestComponent} from './components/standards-development/sicjoinrequest/sicjoinrequest.component';
+import {SicpaymentconfirmComponent} from './components/standards-development/sicpaymentconfirm/sicpaymentconfirm.component';
+import {SchememembershipComponent} from './components/standards-development/schememembership/schememembership/schememembership.component';
+import {PreparePublicReviewComponent} from './components/standards-development/publicreview/prepare-public-review/prepare-public-review.component';
+import {ViewPublicReviewComponent} from './components/standards-development/publicreview/view-public-review/view-public-review.component';
+import {ViewPublicReviewCommentsComponent} from './components/standards-development/publicreview/view-public-review-comments/view-public-review-comments.component';
+import {NgApexchartsModule} from "ng-apexcharts";
+import {PreparePRCommentComponent} from './components/standards-development/publicreview/prepare-prcomment/prepare-prcomment.component';
 
 
 @NgModule({
@@ -167,9 +170,12 @@ import { SchememembershipComponent } from './components/standards-development/sc
     SicjoinrequestComponent,
     SicpaymentconfirmComponent,
     SchememembershipComponent,
+    PreparePublicReviewComponent,
+    ViewPublicReviewComponent,
+    ViewPublicReviewCommentsComponent,
+    PreparePRCommentComponent,
   ],
-  exports: [
-  ],
+  exports: [],
   imports: [
     BrowserModule,
     AppRoutingModule,
@@ -178,7 +184,7 @@ import { SchememembershipComponent } from './components/standards-development/sc
     ReactiveFormsModule,
     BrowserAnimationsModule,
     FontAwesomeModule,
-    NgApexchartsModule,
+    // NgApexchartsModule,
     NgxSpinnerModule,
     NgxPaginationModule,
     HttpClientModule,
@@ -188,10 +194,12 @@ import { SchememembershipComponent } from './components/standards-development/sc
       positionClass: 'toast-bottom-right',
       preventDuplicates: false,
     }),
+    NgApexchartsModule,
   ],
   providers: [{provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true},
     {provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true},
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+}

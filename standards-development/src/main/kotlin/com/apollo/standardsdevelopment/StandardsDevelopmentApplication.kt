@@ -8,7 +8,7 @@ import org.springframework.boot.runApplication
 @SpringBootApplication
 class StandardsDevelopmentApplication(val customerRespository: CustomerRespository) : CommandLineRunner {
     override fun run(vararg args: String?) {
-        var listCustomers   = customerRespository.findAll()
+        var listCustomers = customerRespository.findAll()
         for (element in listCustomers) {
             println(element.name)
         }
