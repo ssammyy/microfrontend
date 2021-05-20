@@ -384,6 +384,14 @@ class PermitApplicationsEntity:Serializable {
     @Basic
     var pacDecisionRemarks: String? = null
 
+    @Column(name = "HOD_APPROVE_ASSESSMENT_REMARKS")
+    @Basic
+    var hodApproveAssessmentRemarks: String? = null
+
+    @Column(name = "HOD_APPROVE_ASSESSMENT_STATUS")
+    @Basic
+    var hodApproveAssessmentStatus: Int? = null
+
     //A Declaration Form
 
     @Column(name = "TOTAL_COST")
@@ -577,6 +585,8 @@ class PermitApplicationsEntity:Serializable {
         if (pscMemberApprovalRemarks != other.pscMemberApprovalRemarks) return false
         if (pcmApprovalStatus != other.pcmApprovalStatus) return false
         if (pcmApprovalRemarks != other.pcmApprovalRemarks) return false
+        if (hodApproveAssessmentRemarks != other.hodApproveAssessmentRemarks) return false
+        if (hodApproveAssessmentStatus != other.hodApproveAssessmentStatus) return false
         if (factoryInspectionReportApprovedRejectedStatus != other.factoryInspectionReportApprovedRejectedStatus) return false
         if (factoryInspectionReportApprovedRejectedRemarks != other.factoryInspectionReportApprovedRejectedRemarks) return false
         if (assessmentCriteria != other.assessmentCriteria) return false
@@ -693,6 +703,9 @@ class PermitApplicationsEntity:Serializable {
         result = 31 * result + (pscMemberApprovalRemarks?.hashCode() ?: 0)
         result = 31 * result + (pcmApprovalStatus ?: 0)
         result = 31 * result + (pcmApprovalRemarks?.hashCode() ?: 0)
+        result = 31 * result + (hodApproveAssessmentStatus ?: 0)
+        result = 31 * result + (hodApproveAssessmentRemarks?.hashCode() ?: 0)
+        result = 31 * result + (assessmentCriteria?.hashCode() ?: 0)
         result = 31 * result + (factoryInspectionReportApprovedRejectedStatus ?: 0)
         result = 31 * result + (factoryInspectionReportApprovedRejectedRemarks?.hashCode() ?: 0)
         result = 31 * result + (attachedPlantRemarks?.hashCode() ?: 0)

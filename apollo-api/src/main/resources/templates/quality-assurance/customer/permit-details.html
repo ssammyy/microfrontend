@@ -617,6 +617,8 @@
                                         <a th:if="${permitDetails?.compliantStatus == 1}" th:href="@{/api/qa/product-quality-status(permitID=${permitDetails?.id})}" style="color: white" class="filter-link">Justification for Diamond Mark Assessment</a>
 
                                         <a th:if="${permitDetails?.justificationReportStatus == 1 and permitDetails?.assignAssessorStatus == null}" style="color: white" onclick="popUpFunction('assignAssessor');" class="filter-link">Assign Assessor</a>
+
+                                        <a th:if="${permitDetails?.assessmentScheduledStatus == 30 and permitDetails?.hodApproveAssessmentStatus == null}" style="color: white" onclick="popUpFunction('hodApprovalAssessmentReport');" class="filter-link">Approve/Reject Assessment Report</a>
                                     </div>
 
                                     <div sec:authorize="hasAuthority('QA_OFFICER_MODIFY')">
@@ -817,6 +819,17 @@
                                             </select>
                                             <label for="pscMemberApprovalRemarks" class="col-form-label">Please write, in detail, your feedback for this Approval/Rejection:</label>
                                             <textarea required name="name" id="pscMemberApprovalRemarks" class="input-field w-input" cols="65" rows="5" th:field="*{pscMemberApprovalRemarks}"></textarea>
+                                        </div>
+                                        <div id="hodApprovalAssessmentReport">
+                                            <input type="hidden" id="description14" name="description" th:value="'Permit Status Updated succesfull'">
+                                            <label for="hodApproveAssessmentStatus" class="col-form-label">Select Status:</label>
+                                            <select id="hodApproveAssessmentStatus" required class="select-field w-select" th:field="*{hodApproveAssessmentStatus}">
+                                                <option th:text="'Select one.....'" th:value="null"></option>
+                                                <option th:text="'APPROVE'" th:value="1"></option>
+                                                <option th:text="'REJECT'" th:value="0"></option>
+                                            </select>
+                                            <label for="hodApproveAssessmentRemarks" class="col-form-label">Please write, in detail, your feedback for this Approval/Rejection:</label>
+                                            <textarea required name="name" id="hodApproveAssessmentRemarks" class="input-field w-input" cols="65" rows="5" th:field="*{hodApproveAssessmentRemarks}"></textarea>
                                         </div>
                                         <div id="pcmApproval">
                                             <input type="hidden" id="description13" name="description" th:value="'Permit Status Updated succesfull'">

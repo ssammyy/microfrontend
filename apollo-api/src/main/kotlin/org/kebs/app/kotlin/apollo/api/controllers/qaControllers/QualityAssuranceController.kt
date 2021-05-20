@@ -240,11 +240,13 @@ class QualityAssuranceController(
                 //Send notification to assessor
                 val assessor = permitDetails.assessorId?.let { commonDaoServices.findUserByID(it) }
                 assessor?.email?.let { qaDaoServices.sendAppointAssessorNotificationEmail(it, permitDetails) }
+                qaDaoServices.permitInsertStatus(permitDetails,applicationMapProperties.mapQaStatusPFactoryVisitSchedule,loggedInUser)
             }
             permit.assessmentScheduledStatus == map.activeStatus -> {
                 //Send manufacturers notification
                 val manufacturer = permitDetails.userId?.let { commonDaoServices.findUserByID(it) }
                 manufacturer?.email?.let { qaDaoServices.sendScheduledFactoryAssessmentNotificationEmail(it, permitDetails) }
+                qaDaoServices.permitInsertStatus(permitDetails,applicationMapProperties.mapQaStatusPGenerationAssesmentReport,loggedInUser)
             }
             permit.permitAwardStatus == map.activeStatus -> {
                 val issueDate = commonDaoServices.getCurrentDate()
@@ -258,10 +260,12 @@ class QualityAssuranceController(
                 }
                 //Generate permit and forward to manufacturer
                 KotlinLogging.logger { }.info(":::::: Sending compliance status along with e-permit :::::::")
+                qaDaoServices.permitInsertStatus(permitDetails,applicationMapProperties.mapQaStatusPermitAwarded,loggedInUser)
             }
             permit.permitAwardStatus == map.inactiveStatus -> {
                 //Send defer notification
                 KotlinLogging.logger { }.info(":::::: Sending defer notification to assessor/qao :::::::")
+//                qaDaoServices.permitInsertStatus(permitDetails,applicationMapProperties.mapQaStatusP,loggedInUser)
             }
             permit.compliantStatus != null -> {
                 //Send manufacturers notification
@@ -272,6 +276,34 @@ class QualityAssuranceController(
                     complianceValue= "NON-COMPLIANT"
                 }
                 qaDaoServices.sendComplianceStatusAndLabReport(permitDetails, complianceValue ?: throw ExpectedDataNotFound(" "))
+            }
+            permit.hodApproveAssessmentStatus != null -> {
+                //Send manufacturers notification
+                //
+
+                var complianceValue: String?= null
+                if (permit.hodApproveAssessmentStatus==map.activeStatus){
+                    val pacSecList =  qaDaoServices.findOfficersList(permitDetails, map, applicationMapProperties.mapQADesignationIDForPacSecId)
+                    val appointedPacSec = pacSecList[0]
+
+                    with(permitDetails) {
+                        hodApproveAssessmentStatus = map.activeStatus
+                        hodApproveAssessmentRemarks = permit.hodApproveAssessmentRemarks
+                        pacSecId = appointedPacSec.userId?.id
+                    }
+                    qaDaoServices.permitUpdateDetails(permitDetails, map, loggedInUser)
+
+                    //Send notification to PAC secretary
+                    val pacSec = appointedPacSec.userId?.id?.let { commonDaoServices.findUserByID(it) }
+                    pacSec?.email?.let { qaDaoServices.sendPacDmarkAssessmentNotificationEmail(it, permitDetails) }
+
+                    qaDaoServices.permitInsertStatus(permitDetails,applicationMapProperties.mapQaStatusPPACSecretaryAwarding,loggedInUser)
+
+                }else if (permit.hodApproveAssessmentStatus==map.inactiveStatus){
+//                    complianceValue= "NON-COMPLIANT"
+//                    qaDaoServices.permitInsertStatus(permitDetails,applicationMapProperties.mapQaStatusRe,loggedInUser)
+                }
+//                qaDaoServices.sendComplianceStatusAndLabReport(permitDetails, complianceValue ?: throw ExpectedDataNotFound(" "))
             }
 
             permit.recommendationRemarks != null -> {
@@ -287,6 +319,8 @@ class QualityAssuranceController(
                     //updating of Details in DB
                     permitDetails = qaDaoServices.permitUpdateDetails(commonDaoServices.updateDetails(permit, permitDetails) as PermitApplicationsEntity, map, loggedInUser).second
                     qaDaoServices.sendNotificationPSCForAwardingPermit(permitDetails)
+
+                    qaDaoServices.permitInsertStatus(permitDetails,applicationMapProperties.mapQaStatusPPSCMembersAward,loggedInUser)
 
                 }else if (permit.recommendationApprovalStatus ==map.inactiveStatus){
                     with(permit){
@@ -306,6 +340,8 @@ class QualityAssuranceController(
                     //updating of Details in DB
                     permitDetails = qaDaoServices.permitUpdateDetails(commonDaoServices.updateDetails(permit, permitDetails) as PermitApplicationsEntity, map, loggedInUser).second
                     qaDaoServices.sendNotificationPCMForAwardingPermit(permitDetails)
+                    qaDaoServices.permitInsertStatus(permitDetails,applicationMapProperties.mapQaStatusPPCMAwarding,loggedInUser)
+
 
                 }else if (permit.pscMemberApprovalStatus ==map.inactiveStatus){
 //                    with(permit){
@@ -313,6 +349,7 @@ class QualityAssuranceController(
 //                        recommendationApprovalStatus =null
 //                    }
                     qaDaoServices.sendNotificationForDeferredPermitToQaoFromPSC(permitDetails)
+                    qaDaoServices.permitInsertStatus(permitDetails,applicationMapProperties.mapQaStatusDeferredPSCMembers,loggedInUser)
                 }
 
             }
@@ -347,6 +384,7 @@ class QualityAssuranceController(
                             KotlinLogging.logger { }.info(":::::: Sending compliance status along with e-permit :::::::")
                             //updating of Details in DB
                             permitDetails = qaDaoServices.permitUpdateDetails(commonDaoServices.updateDetails(permit, permitDetails) as PermitApplicationsEntity, map, loggedInUser).second
+                            qaDaoServices.permitInsertStatus(permitDetails,applicationMapProperties.mapQaStatusPermitAwarded,loggedInUser)
                             //                    qaDaoServices.sendNotificationPSCForAwardingPermit(permitDetails)
 
                         }
@@ -356,6 +394,7 @@ class QualityAssuranceController(
                             //                        recommendationApprovalStatus =null
                             //                    }
                             qaDaoServices.sendNotificationForDeferredPermitToQaoFromPCM(permitDetails)
+                            qaDaoServices.permitInsertStatus(permitDetails,applicationMapProperties.mapQaStatusDeferredPCM,loggedInUser)
                         }
                     }
                 }
@@ -949,19 +988,33 @@ class QualityAssuranceController(
 
         result = qaDaoServices.saveQaFileUploads(docFile, docFileName, loggedInUser, map, permitID, null).first
 
-        val pacSecList =  qaDaoServices.findOfficersList(permitDetails, map, applicationMapProperties.mapQADesignationIDForPacSecId)
-        val appointedPacSec = pacSecList[0]
+        val hodDetails =  qaDaoServices.assignNextOfficerAfterPayment(permitDetails, map, applicationMapProperties.mapQADesignationIDForHODId)
+
 
         with(permitDetails) {
             assessmentScheduledStatus = map.successStatus
             assessmentReportRemarks = assessmentRecommendations
-            pacSecId = appointedPacSec.userId?.id
+            hodId = hodDetails?.id
         }
         qaDaoServices.permitUpdateDetails(permitDetails, map, loggedInUser)
 
         //Send notification to PAC secretary
-        val pacSec = appointedPacSec.userId?.id?.let { commonDaoServices.findUserByID(it) }
-        pacSec?.email?.let { qaDaoServices.sendPacDmarkAssessmentNotificationEmail(it, permitDetails) }
+        val hodSec = hodDetails?.id?.let { commonDaoServices.findUserByID(it) }
+        hodSec?.email?.let { qaDaoServices.sendPacDmarkAssessmentNotificationEmail(it, permitDetails) }
+//
+//        val pacSecList =  qaDaoServices.findOfficersList(permitDetails, map, applicationMapProperties.mapQADesignationIDForPacSecId)
+//        val appointedPacSec = pacSecList[0]
+//
+//        with(permitDetails) {
+//            assessmentScheduledStatus = map.successStatus
+//            assessmentReportRemarks = assessmentRecommendations
+//            pacSecId = appointedPacSec.userId?.id
+//        }
+//        qaDaoServices.permitUpdateDetails(permitDetails, map, loggedInUser)
+//
+//        //Send notification to PAC secretary
+//        val pacSec = appointedPacSec.userId?.id?.let { commonDaoServices.findUserByID(it) }
+//        pacSec?.email?.let { qaDaoServices.sendPacDmarkAssessmentNotificationEmail(it, permitDetails) }
 
         val sm = CommonDaoServices.MessageSuccessFailDTO()
         sm.closeLink =
