@@ -110,11 +110,11 @@
 <!--                                                &lt;!&ndash;                                                    NOT ASSIGNED&ndash;&gt;-->
 <!--                                                &lt;!&ndash;                                                </div>&ndash;&gt;-->
 <!--                                            </li>-->
-                                            <li class="list-item-accordion">
+                                            <li th:if="${permitDetails?.assignOfficerStatus != null}" class="list-item-accordion">
                                                 <div class="list-title-accordion">Assigned Officer</div>
                                                 <div class="list-text-accordion" style="color: #0082f3" th:text="${permitDetails?.assignOfficerStatus} ? ${officerAssigned?.firstName}+ ' ' +${officerAssigned?.lastName} : 'NOT ASSIGNED'"></div>
                                             </li>
-                                            <li class="list-item-accordion">
+                                            <li th:if="${permitDetails?.assignAssessorStatus != null}"class="list-item-accordion">
                                                 <div class="list-title-accordion">Appointed Assessor</div>
                                                 <div class="list-text-accordion" style="color: #0082f3" th:text="${permitDetails?.assignAssessorStatus} ? ${assessorAssigned?.firstName}+ ' ' +${assessorAssigned?.lastName} : 'NOT ASSIGNED'"></div>
                                             </li>
@@ -144,9 +144,7 @@
                                             </li>
                                             <li th:if="${permitDetails?.fmarkGenerated == 1}" class="list-item-accordion">
                                                 <div class="list-title-accordion">FMARK VIEW</div>
-                                                <div class="list-text-accordion"><a class="btn btn-primary itemViewBtn"
-                                                                                    target='_blank'
-                                                                                    th:href="@{/api/qa/view/fmark-generated(smarkID=${permitDetails.id})}">view</a>
+                                                <div class="list-text-accordion"><a class="btn btn-primary itemViewBtn" target='_blank' th:href="@{/api/qa/view/fmark-generated(smarkID=${permitDetails.id})}">view</a>
                                                 </div>
                                             </li>
                                         </ul>

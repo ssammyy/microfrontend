@@ -319,9 +319,11 @@ class QualityAssuranceHandler(
         val loggedInUser = commonDaoServices.loggedInUserDetails()
 
         val permitID = req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
-        req.attributes()["permit"] =  loggedInUser.id?.let { qaDaoServices.findPermitBYUserIDAndId(permitID, it) }?: throw ExpectedDataNotFound("User Id required")
+        val permit = loggedInUser.id?.let { qaDaoServices.findPermitBYUserIDAndId(permitID, it) }?: throw ExpectedDataNotFound("User Id required")
+        req.attributes()["permit"] =  permit
         req.attributes()["counties"] = countyRepo.findByStatusOrderByCounty(map.activeStatus)
         req.attributes()["applicationDate"] = commonDaoServices.getCurrentDate()
+        req.attributes()["plantAttached"] = qaDaoServices.findPlantDetails(permit.attachedPlantId?: throw Exception("INVALID PLANT DETAILS"))
         req.attributes()["QaSta10Entity"] = QaSta10Entity()
         return ok().render(qaNewSta10Page, req.attributes())
 

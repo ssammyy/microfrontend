@@ -81,6 +81,11 @@ select *
 from DAT_KEBS_USER_VERIFICATION_TOKEN
 -- where TOKEN =
 ;
+
+select *
+from DAT_KEBS_NOTIFICATIONS
+-- where TOKEN =
+order by id desc;
 select * from CFG_ROLES_PRIVILEGES --the role is 40 and prRole ID = 774
 -- where PRIVILEGE_ID =52425
 order by id desc;
@@ -129,8 +134,8 @@ order by id desc;--MS_MP_MODIFY MS_MP_READ
 select * from DAT_KEBS_USERS
 -- where ID = 1622
 
--- where USER_TYPE = 5
--- where EMAIL like '254saf'
+where USER_PIN_ID_NUMBER = '13869968'
+-- where EMAIL = 'hassanabdi@kebs.org'
 -- where USER_PIN_ID_NUMBER = '0715668934'
 order by id desc
 ;
