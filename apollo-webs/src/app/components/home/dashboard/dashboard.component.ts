@@ -1,5 +1,5 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
-import {ApexOptions, ChartComponent} from 'ng-apexcharts';
+import {ApexOptions, ChartComponent} from 'ng-apexcharts/public_api';
 
 //
 // export type ChartOptions = {

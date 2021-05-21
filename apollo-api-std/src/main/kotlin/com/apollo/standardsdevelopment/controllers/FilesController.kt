@@ -22,6 +22,7 @@ import java.util.stream.Collectors
 class FilesController {
     @Autowired
     var storageService: FilesStorageService? = null
+
     @PostMapping("/upload")
     fun uploadFile(@RequestParam("file") file: MultipartFile): ResponseEntity<ResponseMessage> {
         var message = ""
@@ -36,12 +37,13 @@ class FilesController {
     }
 
     @GetMapping("/files")
-    fun getListFiles():ResponseEntity<List<FileInfo>> {
-        val fileInfos = storageService?.loadAll()?.map({ path->
-            val filename = path?.getFileName().toString()
+    fun getListFiles(): ResponseEntity<List<FileInfo>> {
+        val fileInfos = storageService?.loadAll()?.map { path ->
+            val filename = path?.fileName.toString()
             val url = MvcUriComponentsBuilder
-                .fromMethodName(this.javaClass, "getFile", path?.getFileName().toString()).build().toString()
-            FileInfo(filename, url) })?.collect(Collectors.toList())
+                .fromMethodName(this.javaClass, "getFile", path?.fileName.toString()).build().toString()
+            FileInfo(filename, url)
+        }?.collect(Collectors.toList())
         return ResponseEntity.status(HttpStatus.OK).body(fileInfos)
     }
 
