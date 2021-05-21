@@ -531,6 +531,21 @@ class QADaoServices(
 
             saveSSF = SampleSubmissionRepo.save(saveSSF)
 
+            
+                permitDetails.compliantStatus = saveSSF.resultsAnalysis
+                var complianceValue: String?= null
+                when (permitDetails.compliantStatus) {
+                    map.activeStatus -> {
+                        complianceValue= "COMPLIANT"
+                    }
+                    map.inactiveStatus -> {
+                        complianceValue= "NON-COMPLIANT"
+                    }
+                }
+                permitInsertStatus(permitDetails,applicationMapProperties.mapQaStatusPRecommendation,user)
+                sendComplianceStatusAndLabReport(permitDetails, complianceValue ?: throw ExpectedDataNotFound("INVALID VALUE"))
+            
+
             sr.payload = "New SSF Saved [BRAND name${saveSSF.brandName} and ${saveSSF.id}]"
             sr.names = "${saveSSF.brandName}"
             sr.varField1 = permitDetails.id.toString()
@@ -997,6 +1012,24 @@ class QADaoServices(
                 enabled = s.initStatus
                 versionNumber = versionNumberOld++
                 endOfProductionStatus = s.initStatus
+                commodityDescription =oldPermit.commodityDescription
+                firmName = oldPermit.firmName
+                postalAddress = oldPermit.postalAddress
+                telephoneNo = oldPermit.telephoneNo
+                email = oldPermit.email
+                physicalAddress = oldPermit.physicalAddress
+                faxNo = oldPermit.faxNo
+                plotNo = oldPermit.plotNo
+                designation = oldPermit.designation
+                tradeMark =oldPermit.tradeMark
+                divisionId =oldPermit.divisionId
+                sectionId =oldPermit.sectionId
+                standardCategory =oldPermit.standardCategory
+                broadProductCategory =oldPermit.broadProductCategory
+                productCategory =oldPermit.productCategory
+                product =oldPermit.product
+                productSubCategory =oldPermit.productSubCategory
+                permitForeignStatus =oldPermit.permitForeignStatus
                 status = s.activeStatus
                 createdBy = commonDaoServices.concatenateName(user)
                 createdOn = commonDaoServices.getTimestamp()

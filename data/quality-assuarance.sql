@@ -78,12 +78,19 @@
  */
 ***************************Table USED IN QA*****************************************
 select * from DAT_KEBS_PERMIT_TRANSACTION
-where id = 304
+where id = 384
+
 -- where PERMIT_NUMBER = 'DM#0954A'
 order by id desc; 1522
 
 select * from cfg_kebs_qa_process_status
 -- where id = 350
+-- where PERMIT_NUMBER = 'DM#0954A'
+order by id desc; 1522
+
+
+select * from DAT_KEBS_QA_SAMPLE_SUBMISSION
+where PERMIT_ID = 384
 -- where PERMIT_NUMBER = 'DM#0954A'
 order by id desc; 1522
 

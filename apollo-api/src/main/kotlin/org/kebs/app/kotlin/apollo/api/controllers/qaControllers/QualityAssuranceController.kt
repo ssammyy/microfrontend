@@ -521,20 +521,7 @@ class QualityAssuranceController(
 
         result = qaDaoServices.ssfUpdateDetails(permit,sampleSubmissionDetails,loggedInUser,map).first
 
-        if (sampleSubmissionDetails.resultsAnalysis != null){
-            permit.compliantStatus = sampleSubmissionDetails.resultsAnalysis
-            var complianceValue: String?= null
-            when (permit.compliantStatus) {
-                map.activeStatus -> {
-                    complianceValue= "COMPLIANT"
-                }
-                map.inactiveStatus -> {
-                    complianceValue= "NON-COMPLIANT"
-                }
-            }
-            qaDaoServices.permitInsertStatus(permit,applicationMapProperties.mapQaStatusPRecommendation,loggedInUser)
-            qaDaoServices.sendComplianceStatusAndLabReport(permit, complianceValue ?: throw ExpectedDataNotFound("INVALID VALUE"))
-        }
+
 
         val sm = CommonDaoServices.MessageSuccessFailDTO()
         sm.closeLink = "${applicationMapProperties.baseUrlValue}/di/inspection/ssf-details?permitID=${permit.id}"
