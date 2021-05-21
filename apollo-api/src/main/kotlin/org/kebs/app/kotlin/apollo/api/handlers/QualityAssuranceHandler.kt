@@ -172,7 +172,7 @@ class QualityAssuranceHandler(
             }
 
             if (permitType.id ==applicationMapProperties.mapQAPermitTypeIdFmark){
-                req.attributes()["mySmarkPermits"] = qaDaoServices.findAllUserPermitWithPermitType(loggedInUser, applicationMapProperties.mapQAPermitTypeIdSmark)
+                req.attributes()["mySmarkPermits"] = qaDaoServices.findAllUserPermitWithPermitTypeAwarded(loggedInUser, applicationMapProperties.mapQAPermitTypeIdSmark, map.activeStatus)
             }
 
             req.attributes().putAll(loadCommonUIComponents(map))

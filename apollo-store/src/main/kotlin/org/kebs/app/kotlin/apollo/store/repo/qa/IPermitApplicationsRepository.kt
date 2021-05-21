@@ -11,6 +11,7 @@ interface IPermitApplicationsRepository : HazelcastRepository<PermitApplications
     fun findByUserId(userId: Long): List<PermitApplicationsEntity>?
     fun findByUserIdAndPermitType(userId: Long, permitType: Long): List<PermitApplicationsEntity>?
     fun findByUserIdAndPermitTypeAndOldPermitStatusIsNull(userId: Long, permitType: Long): List<PermitApplicationsEntity>?
+    fun findByUserIdAndPermitTypeAndOldPermitStatusIsNullAndPermitAwardStatus(userId: Long, permitType: Long, permitAwardStatus: Int): List<PermitApplicationsEntity>?
     fun findByQamIdAndPermitType(userId: Long, permitType: Long): List<PermitApplicationsEntity>?
     fun findByQamIdAndPermitTypeAndOldPermitStatusIsNull(userId: Long, permitType: Long): List<PermitApplicationsEntity>?
     fun findByHodIdAndPermitType(userId: Long, permitType: Long): List<PermitApplicationsEntity>?

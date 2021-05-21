@@ -78,7 +78,7 @@
  */
 ***************************Table USED IN QA*****************************************
 select * from DAT_KEBS_PERMIT_TRANSACTION
-where id = 384
+where id = 362
 
 -- where PERMIT_NUMBER = 'DM#0954A'
 order by id desc; 1522
@@ -90,7 +90,7 @@ order by id desc; 1522
 
 
 select * from DAT_KEBS_QA_SAMPLE_SUBMISSION
-where PERMIT_ID = 384
+where PERMIT_ID = 362
 -- where PERMIT_NUMBER = 'DM#0954A'
 order by id desc; 1522
 
@@ -136,6 +136,11 @@ order by id desc;
 select * from DAT_KEBS_INVOICE
 -- where id = 2
 -- where PERMIT_ID = 285
+order by id desc;PVT-KAUQ22K
+
+select * from DAT_KEBS_COMPANY_PROFILE
+-- where id = 2
+where REGISTRATION_NUMBER = 'PVT-V7URGL2'
 order by id desc;
 
 alter table DAT_KEBS_QA_PRODUCT modify AVAILABLE NUMBER(2)/
