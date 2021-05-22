@@ -65,7 +65,7 @@ class ReportsController(
         val ksApplicable = sampleStandardsRepository.findBySubCategoryId(permit.productSubCategory)?.standardTitle
 
         map["FirmName"] = permit.firmName.toString()
-        map["PermitNo"] = permit.permitNumber.toString()
+        map["PermitNo"] = permit.awardedPermitNumber.toString()
         map["PostalAddress"] = permit.postalAddress.toString()
         map["PhysicalAddress"] = permit.physicalAddress.toString()
         map["DateOfIssue"] = permit.dateOfIssue?.let { commonDaoServices.convertDateToString(it, "dd-MM-YYYY") }!!

@@ -172,7 +172,7 @@ class QualityAssuranceHandler(
             }
 
             if (permitType.id ==applicationMapProperties.mapQAPermitTypeIdFmark){
-                req.attributes()["mySmarkPermits"] = qaDaoServices.findAllUserPermitWithPermitTypeAwarded(loggedInUser, applicationMapProperties.mapQAPermitTypeIdSmark, map.activeStatus)
+                req.attributes()["mySmarkPermits"] = qaDaoServices.findAllSmarkPermitWithNoFmarkGenerated(loggedInUser, applicationMapProperties.mapQAPermitTypeIdSmark, map.activeStatus, map.inactiveStatus)
             }
 
             req.attributes().putAll(loadCommonUIComponents(map))
@@ -234,7 +234,7 @@ class QualityAssuranceHandler(
         req.attributes()["plantAttached"] = plantAttached
         req.attributes()["plantsDetails"] = permit.userId?.let { qaDaoServices.findAllPlantDetails(it) } ?: throw ExpectedDataNotFound("Required User ID, from Permit Details")
 
-        req.attributes()["oldVersionList"] = permit.permitNumber?.let { qaDaoServices.findAllOldPermitWithPermitID(it) }
+        req.attributes()["oldVersionList"] = permit.permitRefNumber?.let { qaDaoServices.findAllOldPermitWithPermitID(it) }
 
         return ok().render(qaPermitDetailPage, req.attributes())
     }
@@ -279,7 +279,7 @@ class QualityAssuranceHandler(
         req.attributes()["permitDetails"] = permit
         req.attributes()["plantAttached"] = plantAttached
 
-        req.attributes()["oldVersionList"] = permit.permitNumber?.let { qaDaoServices.findAllOldPermitWithPermitID(it) }
+        req.attributes()["oldVersionList"] = permit.permitRefNumber?.let { qaDaoServices.findAllOldPermitWithPermitID(it) }
 
         return ok().render(qaPermitDetailPage, req.attributes())
     }

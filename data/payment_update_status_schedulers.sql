@@ -105,7 +105,7 @@ alter table DAT_KEBS_CD_DEMAND_NOTE
 
 select *
 from CFG_INTEGRATION_CONFIGURATION
-where ID = 25
+-- where ID = 25
 -- where INVOICE_ID = 'DN2021040521BBB'
 ;
 
@@ -148,7 +148,7 @@ print c;
 
 select *
 from STG_PAYMENT_RECONCILIATION --DN20210407C4C3D--DN20210331288A1
-where REFERENCE_CODE = 'KIMSSM#202105202F1'
+-- where REFERENCE_CODE = 'KIMSSM#202105202F1'
 --                            ||
 --                        'DN20210422E1513' ||
 --                        'DN202104229B7D1'

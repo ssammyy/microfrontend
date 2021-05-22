@@ -33,9 +33,9 @@ class PermitApplicationsEntity:Serializable {
     @Basic
     var position: String? = null
 
-    @Column(name = "PERMIT_NUMBER")
+    @Column(name = "PERMIT_REF_NUMBER")
     @Basic
-    var permitNumber: String? = null
+    var permitRefNumber: String? = null
 
     @Column(name = "COMMODITY_DESCRIPTION")
     @Basic
@@ -458,6 +458,10 @@ class PermitApplicationsEntity:Serializable {
     var attachedPlantId: Long? = null
 
 
+    @Column(name = "AWARDED_PERMIT_NUMBER")
+    @Basic
+    var awardedPermitNumber: String? = null
+
     @Column(name = "VAR_FIELD_1")
     @Basic
     var varField1: String? = null
@@ -531,7 +535,7 @@ class PermitApplicationsEntity:Serializable {
         if (id != other.id) return false
         if (applicantName != other.applicantName) return false
         if (firmName != other.firmName) return false
-        if (permitNumber != other.permitNumber) return false
+        if (permitRefNumber != other.permitRefNumber) return false
         if (description != other.description) return false
         if (postalAddress != other.postalAddress) return false
         if (position != other.position) return false
@@ -655,7 +659,7 @@ class PermitApplicationsEntity:Serializable {
         var result = id?.hashCode() ?: 0
         result = 31 * result + (applicantName?.hashCode() ?: 0)
         result = 31 * result + (firmName?.hashCode() ?: 0)
-        result = 31 * result + (permitNumber?.hashCode() ?: 0)
+        result = 31 * result + (permitRefNumber?.hashCode() ?: 0)
         result = 31 * result + (description?.hashCode() ?: 0)
         result = 31 * result + (postalAddress?.hashCode() ?: 0)
         result = 31 * result + (position?.hashCode() ?: 0)

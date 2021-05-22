@@ -88,6 +88,11 @@ select * from cfg_kebs_qa_process_status
 -- where PERMIT_NUMBER = 'DM#0954A'
 order by id desc; 1522
 
+select * from DAT_KEBS_SCHEMES_OF_SUPERVISION
+-- where id = 350
+-- where PERMIT_NUMBER = 'DM#0954A'
+order by id desc; 1522
+
 
 select * from DAT_KEBS_QA_SAMPLE_SUBMISSION
 where PERMIT_ID = 362
