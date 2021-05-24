@@ -43,7 +43,7 @@
                                         <ul class="w-list-unstyled">
                                             <li class="list-item-accordion">
                                                 <div class="list-title-accordion">Permit Ref No. </div>
-                                                <div class="list-text-accordion" th:text="${permitDetails?.permitNumber}"></div>
+                                                <div class="list-text-accordion" th:text="${permitDetails?.permitRefNumber}"></div>
                                             </li>
                                             <li class="list-item-accordion">
                                                 <div class="list-title-accordion">Name of firm </div>
@@ -243,6 +243,10 @@
                                         <div class="list-title-accordion">PCM Review Remarks</div>
                                         <div class="list-text-accordion"><a class="btn btn-primary itemViewBtn" onclick="popUpRemarksFunction('permitRemarksPCMReview');">VIEW</a></div>
                                     </li>
+                                    <li th:if="${permitDetails?.pcmApprovalStatus != null}" class="list-item-accordion">
+                                        <div class="list-title-accordion">PCM Review Remarks</div>
+                                        <div class="list-text-accordion"><a class="btn btn-primary itemViewBtn" onclick="popUpRemarksFunction('permitRemarksPCMReview');">VIEW</a></div>
+                                    </li>
 <!--                                    <li class="list-item-accordion">-->
 <!--                                        <div class="list-title-accordion">Broad Product Category</div>-->
 <!--                                        <div class="list-text-accordion" th:text="${broadProductCategory?.category}"></div>-->
@@ -330,56 +334,6 @@
                                     </table>
                                 </div>
                             </div>
-
-
-<!--                            <button class="accordion">Item Details</button>-->
-<!--                            <div class="panel">-->
-<!--                                <div class="row-table ">-->
-<!--                                    <table id="example" class="table table-striped table-bordered" style="width:100%">-->
-<!--                                        <thead>-->
-<!--                                        <tr>-->
-<!--                                            <th>Number</th>-->
-<!--                                            <th>Description</th>-->
-<!--                                            <th>HS Code</th>-->
-<!--                                            <th>Quantity</th>-->
-<!--                                            <th>Unit Quantity</th>-->
-<!--                                            <th>Country Of Origin</th>-->
-<!--                                            <th>Inspection Status</th>-->
-<!--                                            <th th:if="${cdDetails.localCoi == activeStatus}">Owner Status</th>-->
-<!--                                            <th>View</th>-->
-<!--                                        </tr>-->
-<!--                                        </thead>-->
-<!--                                        <tbody>-->
-<!--                                        <tr class="list" th:each="itemCD: ${itemsCD}" style="cursor: pointer">-->
-
-<!--                                            <td th:text="${itemCD.itemNo}"></td>-->
-<!--                                            <td th:text="${itemCD.itemDescription}"></td>-->
-<!--                                            <td th:text="${itemCD.itemHsCode}"></td>-->
-<!--                                            <td th:text="${itemCD.quantity}"></td>-->
-<!--                                            <td th:text="${itemCD.unitOfQuantity}"></td>-->
-<!--                                            <td th:text="${itemCD.countryOfOrgin}"></td>-->
-<!--                                            <td style="color: #f30014; font-weight: bold; "-->
-<!--                                                th:if="${itemCD?.inspectionNotificationStatus == 1}">YES-->
-<!--                                            </td>-->
-<!--                                            <td style="color: #20f300; font-weight: bold; "-->
-<!--                                                th:unless="${itemCD?.inspectionNotificationStatus == 1}">NO-->
-<!--                                            </td>-->
-<!--                                            <td style="color: #20f300; font-weight: bold; "-->
-<!--                                                th:if="${itemCD?.ownerPin != null and itemCD?.cdDocId?.localCoi == 1}">-->
-<!--                                                YES-->
-<!--                                            </td>-->
-<!--                                            <td style="color: #f30014; font-weight: bold; "-->
-<!--                                                th:if="${itemCD?.ownerPin == null and itemCD?.cdDocId?.localCoi == 1}">-->
-<!--                                                NO-->
-<!--                                            </td>-->
-<!--                                            <td><a th:href="@{/api/di/cd-item-details/(cdItemUuid=${itemCD.uuid})}"-->
-<!--                                                   class="btn btn-primary itemViewBtn">view</a></td>-->
-<!--                                        </tr>-->
-<!--                                        </tbody>-->
-<!--                                    </table>-->
-<!--                                </div>-->
-<!--                            </div>-->
-
 
                         </div>
 
@@ -642,40 +596,6 @@
                             </div>
 
                         </div>
-
-                        <!--                        <div sec:authorize="hasAuthority('DI_OFFICER_CHARGE_READ')" th:if="${userNumber == 0}"class="filter-block">-->
-                        <!--                            <div class="filter-block-title">-->
-                        <!--                                <div class="filter-title">Actions:</div>-->
-                        <!--                            </div>-->
-                        <!--                            <div th:if="${session?.docView == 'importerAgent'}">-->
-                        <!--                                <a  th:if="${cdDetails?.blacklistApproved != 1}" style="color: white" class="filter-link blacklistApproveBtn">Approve</a>-->
-                        <!--                                <a th:if="${cdDetails?.blacklistRejected != 1}" style="font-weight: bold;" class="filter-link bgred blacklistRejectBtn">Reject</a>-->
-                        <!--                            </div>-->
-
-                        <!--                            <div th:if="${session?.docView == 'targeting'}">-->
-                        <!--                                <a th:if="${cdDetails?.targetApproved != 1}" style="color: white" class="filter-link targetingApproveBtn">Approve</a>-->
-                        <!--                                <a th:if="${cdDetails?.targetingRejected != 1}" style="font-weight: bold;" class="filter-link bgred targetingRejectBtn">Reject</a>-->
-                        <!--                            </div>-->
-
-                        <!--                            <div th:if="${session?.docView == 'cocDetails'}">-->
-                        <!--                                <a th:if="${cdDetails?.assignedStatus != 1}"  style="color: white" class="filter-link assignBtn">Assign Officer</a>-->
-                        <!--                                <a th:if="${cdDetails?.assignedStatus == 1}" style="color: white" class="filter-link assignBtn">Re-assign Officer</a>-->
-                        <!--                                <a  style="color: white" class="filter-link addRemarksBtn">Add Remarks</a>-->
-                        <!--                                <a  style="color: white" class="filter-link approveBtn">Approve</a>-->
-                        <!--                                <a th:if="${cdDetails?.rejectedStatus != 1}" style="font-weight: bold;" class="filter-link bgred rejectBtn">Reject</a>-->
-                        <!--                                <a th:if="${cdDetails?.targetApproved != 1}" style="font-weight: bold;" class="filter-link bgred targetBtn">Target Inspection</a>-->
-                        <!--                                <a  th:if="${cdDetails?.blacklistStatus != 1}" style="font-weight: bold;" class="filter-link bgred blacklistBtn">Blacklist</a>-->
-                        <!--                            </div>-->
-                        <!--                            <div class="filter-block-title">-->
-                        <!--                                <div class="filter-title">Document Details:</div>-->
-                        <!--                            </div>-->
-                        <!--                            <div>-->
-                        <!--                                <a th:href="@{/api/di/documents-view/(doc = 'coc',certBack = 'cocDetails')}" class="filter-link cocBtn">Certificate of compliance</a>-->
-                        <!--                                <a th:href="@{/api/di/documents-view/(doc = 'remarks',certBack = 'cocDetails')}" class="filter-link cocBtn">View Remarks</a>-->
-                        <!--                                <a th:href="@{/api/di/documents-view/(doc = 'idf',certBack = 'cocDetails')}" class="filter-link cocBtn">IDF Document</a>-->
-                        <!--&lt;!&ndash;                                <a th:href="@{/api/di/manifest-view/{certBack}(certBack = 'cocDetailsSupervisor')}" class="filter-link cocBtn">Manifest Document</a>&ndash;&gt;-->
-                        <!--                            </div>-->
-                        <!--                        </div>-->
                     </div>
                 </div>
             </div>

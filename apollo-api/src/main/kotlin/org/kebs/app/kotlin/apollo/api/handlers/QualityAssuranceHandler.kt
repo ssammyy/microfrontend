@@ -507,7 +507,7 @@ class QualityAssuranceHandler(
         val ssfDetails = qaDaoServices.findSampleSubmittedBYPermitID(permit.id?: throw ExpectedDataNotFound("MISSING PERMIT ID"))
 
         req.attributes()["ssfDetails"] = ssfDetails
-        var labResultsParameters = qaDaoServices.findSampleLabTestResultsRepoBYBSNumber(ssfDetails.bsNumber?: throw ExpectedDataNotFound("MISSING BS NUMBER"))
+        val labResultsParameters = qaDaoServices.findSampleLabTestResultsRepoBYBSNumber(ssfDetails.bsNumber?: throw ExpectedDataNotFound("MISSING BS NUMBER"))
         KotlinLogging.logger { }.info { ssfDetails.bsNumber }
         req.attributes()["LabResultsParameters"] = labResultsParameters
 

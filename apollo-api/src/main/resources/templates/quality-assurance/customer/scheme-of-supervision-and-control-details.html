@@ -700,8 +700,8 @@
 
                                 <div sec:authorize="hasAuthority('PERMIT_APPLICATION')">
                                     <a th:if="${schemeFound?.acceptedRejectedStatus == null}" style="color: white" onclick="popUpFunction('acceptRejectScheme');" class="filter-link">ACCEPT/REJECT SCHEME</a>
-
                                 </div>
+                                <a th:if="${schemeFound?.acceptedRejectedStatus != null}" style="color: white" onclick="popUpRemarksFunction('acceptRejectReasonScheme');" class="filter-link">SCHEME REMARKS AFTER ACCEPTANCE/REJECTION</a>
 
                             </div>
 
@@ -775,6 +775,39 @@
                                             <div class="modal-footer">
                                                 <button class="btn btn-secondary" data-dismiss="modal" onClick="refreshPage()" type="button">Close</button>
                                                 <input type="submit" id="saveValue" class="btn btn-primary" value="Save"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div  class="qaApplicationRemarksForm">
+                            <form id="qa-application-remarks-form"   name="qa-application--remarks-form" th:action="@{/api/qa/apply/update-scheme-of-supervision(schemeID=${schemeFound.id})}" method="post" th:object="${schemeFound}">
+                                <div class="modal fade" id="qaApplicationRemarksModal" tabindex="-1" role="dialog" aria-labelledby="qaApplicationRemarksModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 style="font-weight: bold; " class="modal-title" id="qaApplicationRemarksModalLabel"><span id="spanValueRemarks" >none</span></h5>
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div class="form-group">
+
+                                                    <div id="acceptRejectReasonScheme">
+<!--                                                        <input type="hidden" id="acceptedRejectedBy" name="acceptedRejectedBy" th:value="${session.currentUser.firstName}+ ' ' +${session.currentUser.lastName}">-->
+                                                        <label for="acceptedRejectedStatus" class="col-form-label">ACCEPT/REJECT</label>
+                                                        <input type="text" disabled class="form-control" maxlength="256" name="acceptedRejectedStatus" data-name="entry Point" id="acceptedRejectedStatus2" th:value="${schemeFound?.acceptedRejectedStatus} ? 'ACCEPT' : 'REJECT'" >
+                                                        <label for="acceptedRejectedReason" class="col-form-label">Please write, in detail, the reason:</label>
+                                                        <textarea required name="acceptedRejectedReason" id="acceptedRejectedReason" class="input-field w-input" cols="65" rows="7"  disabled th:text="${schemeFound?.acceptedRejectedReason}"></textarea>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button class="btn btn-secondary" data-dismiss="modal" onClick="refreshPage()" type="button">Close</button>
+<!--                                                <input type="submit" id="saveValue" class="btn btn-primary" value="Save"/>-->
                                             </div>
                                         </div>
                                     </div>
@@ -938,6 +971,24 @@
         }
 
         $('.qaApplicationForm #qaApplicationModal').modal();
+    }
+
+    function popUpRemarksFunction(eventAction) {
+        let arrHead = ['acceptRejectReasonScheme'];
+        let arrHeadSave = ['Accept or reject Scheme Remarks '];
+
+        for (let h = 0; h < arrHead.length; h++) {
+            if (eventAction !== arrHead[h]) {
+                document.getElementById(arrHead[h]).remove();
+            } else {
+                if (eventAction === arrHead[h]) {
+                    document.getElementById('spanValueRemarks').innerHTML = arrHeadSave[h];
+                    // document.getElementById("saveValue").value = 'Save';
+                }
+            }
+        }
+
+        $('.qaApplicationRemarksForm #qaApplicationRemarksModal').modal();
     }
 
     function refreshPage() {

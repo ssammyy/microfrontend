@@ -442,7 +442,7 @@ class QADaoServices(
                 userId = user.id
                 productName = product?.let { commonDaoServices.findProductByID(it).name }
                 permitType = permitTypeDetails.id
-                permitRefNumber = "${permitTypeDetails.markNumber}${generateRandomText(5, map.secureRandom, map.messageDigestAlgorithm, false)}".toUpperCase()
+                permitRefNumber = "${permitTypeDetails.markNumber}${generateRandomText(5, map.secureRandom, map.messageDigestAlgorithm, true)}".toUpperCase()
                 enabled = map.initStatus
                 versionNumber = 1
                 endOfProductionStatus = map.initStatus
