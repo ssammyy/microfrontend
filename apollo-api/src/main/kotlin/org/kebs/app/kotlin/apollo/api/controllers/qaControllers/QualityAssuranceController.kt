@@ -304,6 +304,7 @@ class QualityAssuranceController(
 
             permit.recommendationRemarks != null -> {
                 //Send manufacturers notification
+                qaDaoServices.permitInsertStatus(permitDetails,applicationMapProperties.mapQaStatusPRecommendationApproval,loggedInUser)
                 qaDaoServices.sendNotificationForRecommendation(permitDetails)
             }
             permit.recommendationApprovalStatus != null -> {
@@ -319,10 +320,7 @@ class QualityAssuranceController(
                     qaDaoServices.permitInsertStatus(permitDetails,applicationMapProperties.mapQaStatusPPSCMembersAward,loggedInUser)
 
                 }else if (permit.recommendationApprovalStatus ==map.inactiveStatus){
-                    with(permit){
-                        recommendationRemarks= null
-                        recommendationApprovalStatus =null
-                    }
+                    permitDetails = qaDaoServices.permitInsertStatus(permitDetails,applicationMapProperties.mapQaStatusPRecommendation,loggedInUser)
                     qaDaoServices.sendNotificationForRecommendationCorrectness(permitDetails)
                 }
 
@@ -340,10 +338,6 @@ class QualityAssuranceController(
 
 
                 }else if (permit.pscMemberApprovalStatus ==map.inactiveStatus){
-//                    with(permit){
-//                        recommendationRemarks= null
-//                        recommendationApprovalStatus =null
-//                    }
                     qaDaoServices.sendNotificationForDeferredPermitToQaoFromPSC(permitDetails)
                     qaDaoServices.permitInsertStatus(permitDetails,applicationMapProperties.mapQaStatusDeferredPSCMembers,loggedInUser)
                 }
@@ -385,10 +379,6 @@ class QualityAssuranceController(
 
                         }
                         map.inactiveStatus -> {
-                            //                    with(permit){
-                            //                        recommendationRemarks= null
-                            //                        recommendationApprovalStatus =null
-                            //                    }
                             qaDaoServices.sendNotificationForDeferredPermitToQaoFromPCM(permitDetails)
                             qaDaoServices.permitInsertStatus(permitDetails,applicationMapProperties.mapQaStatusDeferredPCM,loggedInUser)
                         }
@@ -407,6 +397,58 @@ class QualityAssuranceController(
                 permitDetails
             ) as PermitApplicationsEntity, map, loggedInUser
         ).first
+
+
+        val sm = CommonDaoServices.MessageSuccessFailDTO()
+        sm.closeLink = "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitDetails.id}"
+        sm.message = "${permit.description}"
+
+        return commonDaoServices.returnValues(result, map, sm)
+    }
+
+    @PreAuthorize("hasAuthority('PERMIT_APPLICATION') or hasAuthority('QA_MANAGER_ASSESSORS_MODIFY') or hasAuthority('QA_HOF_MODIFY') " +
+            "or hasAuthority('QA_HOD_MODIFY') or hasAuthority('QA_OFFICER_MODIFY') or hasAuthority('QA_PAC_SECRETARY_MODIFY') or hasAuthority('QA_PSC_MEMBERS_MODIFY') or hasAuthority('QA_PCM_MODIFY') or hasAuthority('QA_ASSESSORS_MODIFY')")
+    @PostMapping("/apply/update-permit-resubmit")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun updateResubmitPermitDetails(
+        @ModelAttribute("permit") permit: PermitApplicationsEntity,
+        @RequestParam("permitID") permitID: Long,
+        model: Model
+    ): String? {
+
+        val map = commonDaoServices.serviceMapDetails(appId)
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+
+        var result: ServiceRequestsEntity?
+
+        //Find Permit with permit ID
+        var permitDetails = qaDaoServices.findPermitBYID(permitID)
+
+        //Add Permit ID THAT was Fetched so That it wont create a new record while updating with the methode
+        permit.id = permitDetails.id
+
+        //updating of Details in DB
+        val updateResults = qaDaoServices.permitUpdateDetails(commonDaoServices.updateDetails(permit, permitDetails) as PermitApplicationsEntity, map, loggedInUser)
+
+        result = updateResults.first
+
+        permitDetails = updateResults.second
+
+        when {
+
+            permit.recommendationRemarks != null -> {
+                with(permitDetails){
+                    recommendationApprovalStatus = null
+                    recommendationApprovalRemarks = null
+                }
+                qaDaoServices.permitInsertStatus(permitDetails,applicationMapProperties.mapQaStatusPRecommendationApproval,loggedInUser)
+                qaDaoServices.sendNotificationForRecommendation(permitDetails)
+            }
+
+        }
+
+        //updating of Details in DB
+        result = qaDaoServices.permitUpdateDetails(commonDaoServices.updateDetails(permit, permitDetails) as PermitApplicationsEntity, map, loggedInUser).first
 
 
         val sm = CommonDaoServices.MessageSuccessFailDTO()
