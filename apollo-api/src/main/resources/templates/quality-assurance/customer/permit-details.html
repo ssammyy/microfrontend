@@ -41,13 +41,13 @@
                                 <div class="applicant_details_container">
                                     <div class="detail-list application_details">
                                         <ul class="w-list-unstyled">
-                                            <li th:if="${permitType?.awardedPermitNumber != null}" class="list-item-accordion">
+                                            <li th:if="${permitDetails?.awardedPermitNumber != null}" class="list-item-accordion">
                                                 <div class="list-title-accordion">Permit Number. </div>
-                                                <div class="list-text-accordion" th:text="${permitDetails?.permitRefNumber}"></div>
+                                                <div class="list-text-accordion" th:text="${permitDetails?.awardedPermitNumber}"></div>
                                             </li>
                                             <li class="list-item-accordion">
                                                 <div class="list-title-accordion">Permit Ref No. </div>
-                                                <div class="list-text-accordion" th:text="${permitDetails?.awardedPermitNumber}"></div>
+                                                <div class="list-text-accordion" th:text="${permitDetails?.permitRefNumber}"></div>
                                             </li>
                                             <li class="list-item-accordion">
                                                 <div class="list-title-accordion">Name of firm </div>
@@ -331,6 +331,7 @@
                                            style="width:100%">
                                         <thead>
                                         <tr>
+                                            <th>Permit Ref Number</th>
                                             <th>Permit Number</th>
                                             <th>Version Number</th>
                                             <th>View</th>
@@ -340,7 +341,8 @@
                                         <tr class="list" style="cursor: pointer"
                                             th:each="olderVersion: ${oldVersionList}">
 
-                                            <td th:text="${olderVersion?.permitNumber}"></td>
+                                            <td th:text="${olderVersion?.permitRefNumber}"></td>
+                                            <td th:text="${olderVersion?.awardedPermitNumber}"></td>
                                             <td th:text="${olderVersion?.versionNumber}"></td>
                                             <td><a class="btn btn-primary itemViewBtn" target='_blank'
                                                    th:href="@{/api/qa/permit-details(permitID=${olderVersion.id},userID=${olderVersion?.userId})}">VIEW</a>
@@ -428,10 +430,11 @@
 
                                         <a th:if="${permitDetails?.attachedPlantId == null}" style="color: white" onclick="popUpFunction('attachePlant');" class="filter-link">ATTACH PLANT</a>
 
+                                        <a th:if="${permitDetails?.permitExpiredStatus == 1}" style="color: white" onclick="popUpFunction('updateBrandDetails');" class="filter-link">PERMIT UPDATE BRAND DETAILS</a>
+
                                         <a th:if="${permitDetails?.permitExpiredStatus == 1}"  th:href="@{/api/qa/kebs/renew/permit-details/save(permitID=${permitDetails?.id})}" class="filter-link" style="color: white">RENEW PERMIT</a>
 
                                         <a th:if="${permitDetails?.resubmitApplicationStatus == null and permitDetails?.hofQamCompletenessStatus == 0}"  th:href="@{/api/qa/kebs/resubmit/permit-details/save(permitID=${permitDetails?.id})}" class="filter-link" style="color: white">RESUBMIT PERMIT</a>
-
 
 
                                     </div>

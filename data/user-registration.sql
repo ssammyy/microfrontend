@@ -134,7 +134,7 @@ order by id desc;--MS_MP_MODIFY MS_MP_READ
 select * from DAT_KEBS_USERS
 -- where ID = 1622
 
-where USER_PIN_ID_NUMBER = '13869968'
+-- where USER_PIN_ID_NUMBER = '13869968'
 -- where EMAIL = 'hassanabdi@kebs.org'
 -- where USER_PIN_ID_NUMBER = '0715668934'
 order by id desc
@@ -186,7 +186,7 @@ order by id desc;
 
 select *
 from CFG_NOTIFICATIONS--122
-where SERVICE_MAP_ID = 127
+where SERVICE_MAP_ID = 208
 --     where UUID = '1b474c60-c7f4-4ccb-9cce-efca7ead8439'
 order by ID desc;
 

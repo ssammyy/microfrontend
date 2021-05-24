@@ -1026,7 +1026,7 @@ class QADaoServices(
                 permitType = oldPermit.permitType
                 permitRefNumber = oldPermit.permitRefNumber
                 enabled = s.initStatus
-                versionNumber = versionNumberOld++
+                versionNumber = versionNumberOld.plus(1)
                 endOfProductionStatus = s.initStatus
                 commodityDescription =oldPermit.commodityDescription
                 firmName = oldPermit.firmName
@@ -1047,6 +1047,7 @@ class QADaoServices(
                 productSubCategory =oldPermit.productSubCategory
                 permitForeignStatus =oldPermit.permitForeignStatus
                 awardedPermitNumber =oldPermit.awardedPermitNumber
+                permitStatus = applicationMapProperties.mapQaStatusPermitRenewalDraft
                 status = s.activeStatus
                 createdBy = commonDaoServices.concatenateName(user)
                 createdOn = commonDaoServices.getTimestamp()

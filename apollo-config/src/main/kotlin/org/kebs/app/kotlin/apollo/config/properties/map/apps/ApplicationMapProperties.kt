@@ -238,6 +238,12 @@ class ApplicationMapProperties {
     @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.status.permit_awarded}")
     val mapQaStatusPermitAwarded: Long = 0L
 
+    @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.status.permit_expired}")
+    val mapQaStatusPermitExpired: Long = 0L
+
+    @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.status.permit_renewal}")
+    val mapQaStatusPermitRenewalDraft: Long = 0L
+
     @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.status.pending_generation_of_justification_report}")
     val mapQaStatusPGeneJustCationReport: Long = 0L
 

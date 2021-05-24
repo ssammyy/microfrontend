@@ -222,12 +222,16 @@ class QualityAssuranceController(
             }
             //Permit inspection scheduled status
             permit.assignOfficerStatus != null -> {
-                if (permitDetails.permitType == applicationMapProperties.mapQAPermitTypeIdSmark){
-                    qaDaoServices.permitInsertStatus(permitDetails,applicationMapProperties.mapQaStatusPFactoryVisitSchedule,loggedInUser)
-                }else if (permitDetails.permitType == applicationMapProperties.mapQAPermitTypeIdFmark){
-                    qaDaoServices.permitInsertStatus(permitDetails,applicationMapProperties.mapQaStatusPFactoryVisitSchedule,loggedInUser)
-                }else if (permitDetails.permitType==applicationMapProperties.mapQAPermitTypeIDDmark){
-                    qaDaoServices.permitInsertStatus(permitDetails,applicationMapProperties.mapQaStatusPfactoryInsForms,loggedInUser)
+                when (permitDetails.permitType) {
+                    applicationMapProperties.mapQAPermitTypeIdSmark -> {
+                        qaDaoServices.permitInsertStatus(permitDetails,applicationMapProperties.mapQaStatusPFactoryVisitSchedule,loggedInUser)
+                    }
+                    applicationMapProperties.mapQAPermitTypeIdFmark -> {
+                        qaDaoServices.permitInsertStatus(permitDetails,applicationMapProperties.mapQaStatusPFactoryVisitSchedule,loggedInUser)
+                    }
+                    applicationMapProperties.mapQAPermitTypeIDDmark -> {
+                        qaDaoServices.permitInsertStatus(permitDetails,applicationMapProperties.mapQaStatusPfactoryInsForms,loggedInUser)
+                    }
                 }
 
             }
@@ -259,8 +263,9 @@ class QualityAssuranceController(
                 val expiryDate = permitType?.permitAwardYears?.let { commonDaoServices.addYearsToCurrentDate(it.toLong()) }
 
 
-                with(permit) {
+                with(permitDetails) {
                     awardedPermitNumber = "${permitType?.markNumber}${generateRandomText(6, map.secureRandom, map.messageDigestAlgorithm, false)}".toUpperCase()
+                    permitAwardStatus= map.activeStatus
                     dateOfIssue = issueDate
                     dateOfExpiry = expiryDate
                 }
@@ -366,6 +371,7 @@ class QualityAssuranceController(
 
 
                             with(permit) {
+                                awardedPermitNumber = "${permitType?.markNumber}${generateRandomText(6, map.secureRandom, map.messageDigestAlgorithm, false)}".toUpperCase()
                                 permitAwardStatus= map.activeStatus
                                 dateOfIssue = issueDate
                                 dateOfExpiry = expiryDate
@@ -498,7 +504,18 @@ class QualityAssuranceController(
 
         var myRenewedPermit = qaDaoServices.permitUpdateNewWithSamePermitNumber(permitID,map, loggedInUser)
         val permit = myRenewedPermit.second
-            result = qaDaoServices.permitInvoiceCalculation(map, loggedInUser, permit, qaDaoServices.findPermitType(permit.permitType!!))
+        result = myRenewedPermit.first
+//        if (permit.permitType==applicationMapProperties.mapQAPermitTypeIdSmark ){
+//
+//        }
+//            result = qaDaoServices.permitInvoiceCalculation(map, loggedInUser, permit, qaDaoServices.findPermitType(permit.permitType!!))
+//        with(permit) {
+//            sendApplication = map.activeStatus
+//            invoiceGenerated = map.activeStatus
+//            permitStatus = applicationMapProperties.mapQaStatusPPayment
+//
+//        }
+//        result = qaDaoServices.permitUpdateDetails(permit, map, loggedInUser).first
 
 
         val sm = CommonDaoServices.MessageSuccessFailDTO()
