@@ -508,7 +508,7 @@ class QualityAssuranceController(
 //        if (permit.permitType==applicationMapProperties.mapQAPermitTypeIdSmark ){
 //
 //        }
-//            result = qaDaoServices.permitInvoiceCalculation(map, loggedInUser, permit, qaDaoServices.findPermitType(permit.permitType!!))
+            result = qaDaoServices.permitInvoiceCalculation(map, loggedInUser, permit, qaDaoServices.findPermitType(permit.permitType!!))
 //        with(permit) {
 //            sendApplication = map.activeStatus
 //            invoiceGenerated = map.activeStatus
