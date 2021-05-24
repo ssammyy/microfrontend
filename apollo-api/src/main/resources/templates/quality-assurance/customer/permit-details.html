@@ -41,9 +41,13 @@
                                 <div class="applicant_details_container">
                                     <div class="detail-list application_details">
                                         <ul class="w-list-unstyled">
+                                            <li th:if="${permitType?.awardedPermitNumber != null}" class="list-item-accordion">
+                                                <div class="list-title-accordion">Permit Number. </div>
+                                                <div class="list-text-accordion" th:text="${permitDetails?.permitRefNumber}"></div>
+                                            </li>
                                             <li class="list-item-accordion">
                                                 <div class="list-title-accordion">Permit Ref No. </div>
-                                                <div class="list-text-accordion" th:text="${permitDetails?.permitRefNumber}"></div>
+                                                <div class="list-text-accordion" th:text="${permitDetails?.awardedPermitNumber}"></div>
                                             </li>
                                             <li class="list-item-accordion">
                                                 <div class="list-title-accordion">Name of firm </div>

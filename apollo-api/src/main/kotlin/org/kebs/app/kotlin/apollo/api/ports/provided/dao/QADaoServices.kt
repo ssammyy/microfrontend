@@ -1046,6 +1046,7 @@ class QADaoServices(
                 product =oldPermit.product
                 productSubCategory =oldPermit.productSubCategory
                 permitForeignStatus =oldPermit.permitForeignStatus
+                awardedPermitNumber =oldPermit.awardedPermitNumber
                 status = s.activeStatus
                 createdBy = commonDaoServices.concatenateName(user)
                 createdOn = commonDaoServices.getTimestamp()
@@ -1191,7 +1192,7 @@ class QADaoServices(
             val myAccountDetails = InvoiceDaoService.InvoiceAccountDetails()
             with(myAccountDetails) {
                 accountName = manufactureDetails.name
-                accountNumber = manufactureDetails.kraPin
+                accountNumber = manufactureDetails.registrationNumber
                 currency = applicationMapProperties.mapInvoiceTransactionsLocalCurrencyPrefix
             }
 
