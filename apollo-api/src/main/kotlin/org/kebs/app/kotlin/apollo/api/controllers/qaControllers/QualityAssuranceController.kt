@@ -565,10 +565,8 @@ class QualityAssuranceController(
 
         result = qaDaoServices.ssfUpdateDetails(permit,sampleSubmissionDetails,loggedInUser,map).first
 
-
-
         val sm = CommonDaoServices.MessageSuccessFailDTO()
-        sm.closeLink = "${applicationMapProperties.baseUrlValue}/di/inspection/ssf-details?permitID=${permit.id}"
+        sm.closeLink = "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permit.id}"
         sm.message = "You have Successful Filled Sample Submission Details"
 
         return commonDaoServices.returnValues(result, map, sm)
