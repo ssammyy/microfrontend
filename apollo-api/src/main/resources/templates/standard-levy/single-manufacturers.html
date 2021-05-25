@@ -9,34 +9,41 @@
     <th:block th:include="fragments/general-form.html :: headerfiles"/>
     <link rel="stylesheet" th:href="@{/css/accordion.css}"/>
     <style>
-        body{margin-top:20px;
-            background:#eee;
+        body {
+            margin-top: 20px;
+            background: #eee;
         }
+
         /* PROJECTS */
         .project-people,
         .project-actions {
             text-align: right;
             vertical-align: middle;
         }
+
         dd.project-people {
             text-align: left;
             margin-top: 5px;
         }
+
         .project-people img {
             width: 32px;
             height: 32px;
         }
+
         .project-title a {
             font-size: 14px;
             color: #676a6c;
             font-weight: 600;
         }
+
         .project-list table tr td {
             border-top: none;
             border-bottom: 1px solid #e7eaec;
             padding: 15px 10px;
             vertical-align: middle;
         }
+
         .project-manager .tag-list li a {
             font-size: 10px;
             background-color: white;
@@ -48,6 +55,7 @@
             margin-top: 5px;
             display: block;
         }
+
         .project-files li a {
             font-size: 11px;
             color: #676a6c;
@@ -59,45 +67,57 @@
         .profile-content {
             border-top: none !important;
         }
+
         .profile-stats {
             margin-right: 10px;
         }
+
         .profile-image {
             width: 120px;
             float: left;
         }
+
         .profile-image img {
             width: 96px;
             height: 96px;
         }
+
         .profile-info {
             margin-left: 120px;
         }
+
         .feed-activity-list .feed-element {
             border-bottom: 1px solid #e7eaec;
         }
+
         .feed-element:first-child {
             margin-top: 0;
         }
+
         .feed-element {
             padding-bottom: 15px;
         }
+
         .feed-element,
         .feed-element .media {
             margin-top: 15px;
         }
+
         .feed-element,
         .media-body {
             overflow: hidden;
         }
+
         .feed-element > .pull-left {
             margin-right: 10px;
         }
+
         .feed-element img.img-circle,
         .dropdown-messages-box img.img-circle {
             width: 38px;
             height: 38px;
         }
+
         .feed-element .well {
             border: 1px solid #e7eaec;
             box-shadow: none;
@@ -107,12 +127,15 @@
             font-size: 11px;
             line-height: 16px;
         }
+
         .feed-element .actions {
             margin-top: 10px;
         }
+
         .feed-element .photos {
             margin: 10px 0;
         }
+
         .feed-photo {
             max-height: 180px;
             border-radius: 4px;
@@ -120,6 +143,7 @@
             margin-right: 10px;
             margin-bottom: 10px;
         }
+
         .file-list li {
             padding: 5px 10px;
             font-size: 11px;
@@ -127,12 +151,15 @@
             border: 1px solid #e7eaec;
             margin-bottom: 5px;
         }
+
         .file-list li a {
             color: inherit;
         }
+
         .file-list li a:hover {
             color: #1ab394;
         }
+
         .user-friends img {
             width: 42px;
             height: 42px;
@@ -146,19 +173,24 @@
             margin-top: 0;
             padding: 0;
         }
+
         .ibox.collapsed .ibox-content {
             display: none;
         }
+
         .ibox.collapsed .fa.fa-chevron-up:before {
             content: "\f078";
         }
+
         .ibox.collapsed .fa.fa-chevron-down:before {
             content: "\f077";
         }
+
         .ibox:after,
         .ibox:before {
             display: table;
         }
+
         .ibox-title {
             -moz-border-bottom-colors: none;
             -moz-border-left-colors: none;
@@ -174,6 +206,7 @@
             padding: 14px 15px 7px;
             min-height: 48px;
         }
+
         .ibox-content {
             background-color: #ffffff;
             color: inherit;
@@ -183,6 +216,7 @@
             border-style: solid solid none;
             border-width: 1px 0;
         }
+
         .ibox-footer {
             color: inherit;
             border-top: 1px solid #e7eaec;
@@ -190,6 +224,7 @@
             background: #ffffff;
             padding: 10px 15px;
         }
+
         ul.notes li,
         ul.tag-list li {
             list-style: none;
@@ -207,7 +242,7 @@
             <div class="content-nav" th:replace="fragments/general-form.html :: content-navigation-bar"></div>
             <div class="content-wrap">
                 <div class="content-container">
-                    <div class="content-block" >
+                    <div class="content-block">
                         <div class="content-block-parent">
                             <div class="content-block-child---top">
                                 <div class="applicant-details" style="width: 550px">
@@ -220,10 +255,14 @@
                                                         <div class="row">
                                                             <div class="col-lg-5">
                                                                 <dl class="dl-horizontal">
-                                                                    <dt>Created by:</dt> <dd th:text="${manufacturer?.createdBy}"></dd>
-                                                                    <dt>KRA PIN:</dt> <dd th:text="${manufacturer?.kraPin}">  </dd>
-                                                                    <dt>Manufacturer Name:</dt> <dd><a href="#" class="text-navy" th:text="${manufacturer?.name}"> </a> </dd>
-                                                                    <dt>Business Registration No:</dt> <dd th:text="${manufacturer?.registrationNumber}">      </dd>
+                                                                    <dt>Created by:</dt>
+                                                                    <dd th:text="${manufacturer?.createdBy}"></dd>
+                                                                    <dt>KRA PIN:</dt>
+                                                                    <dd th:text="${manufacturer?.kraPin}"></dd>
+                                                                    <dt>Manufacturer Name:</dt>
+                                                                    <dd><a class="text-navy" href="#" th:text="${manufacturer?.name}"> </a></dd>
+                                                                    <dt>Business Registration No:</dt>
+                                                                    <dd th:text="${manufacturer?.registrationNumber}"></dd>
                                                                     <br><br>
                                                                 </dl>
                                                             </div>
@@ -248,7 +287,7 @@
                                     <br>
                                     <button class="accordion" style="flex: 0 50%">Manufacturer Contacts Details</button>
                                     <div class="panel">
-                                        <ul  style="width: 500px" class="w-list-unstyled">
+                                        <ul class="w-list-unstyled" style="width: 500px">
                                             <li class="list-item" th:if="${contacts?.contactPerson}">
                                                 <div class="list-title" style="color: #0166B1;">ContactPerson</div>
                                                 <div class="list-text" th:text="${contacts?.contactPerson}"></div>
@@ -263,35 +302,43 @@
                                                 <div class="list-title" style="color: #0166B1;">Email Address</div>
                                                 <div class="list-text" th:text="${manufacturer?.companyEmail}"></div>
                                             </li>
-                                            <br> <li class="list-item" th:if="${manufacturer?.ownership}">
+                                            <br>
+                                            <li class="list-item" th:if="${manufacturer?.ownership}">
                                                 <div class="list-title" style="color: #0166B1;">Company Ownership</div>
                                                 <div class="list-text" th:text="${manufacturer?.ownership}"></div>
                                             </li>
-                                            <br> <li class="list-item" th:if="${manufacturer?.postalAddress}">
+                                            <br>
+                                            <li class="list-item" th:if="${manufacturer?.postalAddress}">
                                                 <div class="list-title" style="color: #0166B1;">Postal Address</div>
                                                 <div class="list-text" th:text="${manufacturer?.postalAddress}"></div>
                                             </li>
-                                            <br> <li class="list-item" th:if="${manufacturer?.closureOfOperations}">
+                                            <br>
+                                            <li class="list-item" th:if="${manufacturer?.closureOfOperations}">
                                                 <div class="list-title" style="color: #0166B1;">Closure Of Operations</div>
                                                 <div class="list-text" th:text="${manufacturer?.closureOfOperations}"></div>
                                             </li>
-                                            <br> <li class="list-item" th:if="${manufacturer?.factoryVisitStatus}">
+                                            <br>
+                                            <li class="list-item" th:if="${manufacturer?.factoryVisitStatus}">
                                                 <div class="list-title" style="color: #0166B1;">Factory Visit Status</div>
                                                 <div class="list-text" th:text="${manufacturer?.factoryVisitStatus} == 1 ?'Scheduled': 'Wait To Be Scheduled'"></div>
                                             </li>
-                                            <br> <li class="list-item" th:if="${manufacturer?.factoryVisitDate}">
+                                            <br>
+                                            <li class="list-item" th:if="${manufacturer?.factoryVisitDate}">
                                                 <div class="list-title" style="color: #0166B1;">Factory Visit Date</div>
                                                 <div class="list-text" th:text="${manufacturer?.factoryVisitDate}"></div>
                                             </li>
-                                            <br> <li class="list-item" th:if="${manufacturer?.directorIdNumber}">
+                                            <br>
+                                            <li class="list-item" th:if="${manufacturer?.directorIdNumber}">
                                                 <div class="list-title" style="color: #0166B1;">Director Id Number</div>
                                                 <div class="list-text" th:text="${manufacturer?.directorIdNumber}"></div>
                                             </li>
-                                            <br> <li class="list-item" th:if="${manufacturer?.description}">
+                                            <br>
+                                            <li class="list-item" th:if="${manufacturer?.description}">
                                                 <div class="list-title" style="color: #0166B1;">Description</div>
                                                 <div class="list-text" th:text="${manufacturer?.description}"></div>
                                             </li>
-                                            <br> <li class="list-item" th:if="${manufacturer?.registrationNumber}">
+                                            <br>
+                                            <li class="list-item" th:if="${manufacturer?.registrationNumber}">
                                                 <div class="list-title" style="color: #0166B1;">Registration Number</div>
                                                 <div class="list-text" th:text="${manufacturer?.registrationNumber}"></div>
                                             </li>
@@ -317,7 +364,7 @@
                                                     <th>Levy Payable</th>
                                                     <th>Payment Date</th>
                                                     <th>Penalty Payment Date</th>
-<!--                                                    <th>View</th>-->
+                                                    <!--                                                    <th>View</th>-->
                                                     <!--                                        <th>View</th>-->
                                                 </tr>
                                                 </thead>
@@ -338,11 +385,11 @@
                                             </table>
                                         </div>
                                     </div>
-<!--                                     Load lab report on Lab user's page -->
+                                    <!--                                     Load lab report on Lab user's page -->
                                     <div th:if="${visitReport != null}">
                                         <button class="accordion" style="flex: 0 50%">Factory Visit Report</button>
                                         <div class="panel">
-                                            <ul  style="width: 500px" class="w-list-unstyled">
+                                            <ul class="w-list-unstyled" style="width: 500px">
                                                 <li class="list-item" th:if="${visitReport?.purpose}">
                                                     <div class="list-title" style="color: #0166B1;">Purpose of visit</div>
                                                     <div class="list-text" th:text="${visitReport?.purpose}"></div>
@@ -370,12 +417,12 @@
                                                 <br>
                                                 <li class="list-item">
                                                     <div class="list-title" style="color: #0166B1;">Assistant managers approval</div>
-                                                    <div th:text="${visitReport.assistantManagerApproval} == 1 ? 'Approved':'Pending Approval'" class="list-text" ></div>
+                                                    <div class="list-text" th:text="${visitReport.assistantManagerApproval} == 1 ? 'Approved':'Pending Approval'"></div>
                                                 </li>
                                                 <br>
                                                 <li class="list-item">
                                                     <div class="list-title" style="color: #0166B1;">Assistant Manager Remarks</div>
-                                                    <div th:text="${visitReport.assistanceManagerRemarks}" class="list-text" ></div>
+                                                    <div class="list-text" th:text="${visitReport.assistanceManagerRemarks}"></div>
                                                 </li>
                                                 <br>
                                                 <li class="list-item">
@@ -386,7 +433,10 @@
                                                 <div class="my-3 p-3 bg-white rounded shadow-sm">
                                                     <h6 class="border-bottom border-gray pb-2 mb-0"></h6>
                                                     <div class="media text-muted pt-3">
-                                                        <svg class="bd-placeholder-img mr-2 rounded" width="32" height="32" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: 32x32"><title>Placeholder</title><rect width="100%" height="100%" fill="#007bff"/><text x="50%" y="50%" fill="#007bff" dy=".3em">32x32</text></svg>
+                                                        <svg aria-label="Placeholder: 32x32" class="bd-placeholder-img mr-2 rounded" focusable="false" height="32" preserveAspectRatio="xMidYMid slice" role="img" width="32" xmlns="http://www.w3.org/2000/svg"><title>Placeholder</title>
+                                                            <rect fill="#007bff" height="100%" width="100%"/>
+                                                            <text dy=".3em" fill="#007bff" x="50%" y="50%">32x32</text>
+                                                        </svg>
                                                         <p class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
                                                             <strong class="d-block text-gray-dark" th:text="'Submitted by' + ' ' + ${visitReport?.createdBy}"></strong>
                                                             <span th:text="'on.' + ${visitReport?.createdOn}"></span>
@@ -418,17 +468,23 @@
                             </div>
                             <div>
 
-                                <button th:if="${manufacturer.factoryVisitDate == null}" sec:authorize="hasAuthority('SL_MANUFACTURERS_VIEW') and hasAuthority('SL_SCHEDULE_FACTORY_VISIT_MANUFACTURER')" style="width: 270px;" type="button" class="btn btn-info" data-toggle="modal" data-target="#scheduleVisit">Schedule visit</button>
+                                <button class="btn btn-info" data-target="#scheduleVisit" data-toggle="modal" sec:authorize="hasAuthority('SL_MANUFACTURERS_VIEW') and hasAuthority('SL_SCHEDULE_FACTORY_VISIT_MANUFACTURER')" style="width: 270px;" th:if="${manufacturer.factoryVisitDate == null}"
+                                        type="button">Schedule visit
+                                </button>
                                 <br><br>
 
-                                <button sec:authorize="hasAuthority('SL_MANUFACTURERS_VIEW') and hasAuthority('SL_SCHEDULE_FACTORY_VISIT_MANUFACTURER')" th:if="${manufacturer.factoryVisitDate != null} and ${visitReport} and ${visitReport.managersApproval == 1} and ${visitReport.officersFeedback == null} and ${visitReport.assistantManagerApproval == 1}" style="width: 270px;" type="button" class="btn btn-info" data-toggle="modal" data-target="#draftFeedback">Schedule visit</button>
+                                <button class="btn btn-info"
+                                        data-target="#draftFeedback" data-toggle="modal" sec:authorize="hasAuthority('SL_MANUFACTURERS_VIEW') and hasAuthority('SL_SCHEDULE_FACTORY_VISIT_MANUFACTURER')" style="width: 270px;"
+                                        th:if="${manufacturer.factoryVisitDate != null} and ${visitReport} and ${visitReport.managersApproval == 1} and ${visitReport.officersFeedback == null} and ${visitReport.assistantManagerApproval == 1}" type="button">Schedule visit
+                                </button>
                                 <br><br>
 
                                 <button th:if="${manufacturer.factoryVisitDate != null}" sec:authorize="hasAuthority('SL_MANUFACTURERS_VIEW')" style="width: 270px;" type="button" class="btn btn-primary" data-toggle="modal" data-target="#industryVisitReport">Prepare report</button>
                                 <br><br><br>
                                 <button th:if="${visitReport?.purpose != null}" sec:authorize="hasAuthority('SL_APPROVE_VISIT_REPORT')" style="width: 270px;" type="button" class="btn btn-primary" data-toggle="modal" data-target="#industryVisitReportApproval">Factory Visit Report Approval</button>
 
-                                <button th:if="${visitReport?.purpose != null}" sec:authorize="hasAuthority('SL_SECOND_APPROVE_VISIT_REPORT')" style="width: 270px;" type="button" class="btn btn-primary" data-toggle="modal" data-target="#industryVisitReportApproval">Factory Visit Report Approval</button>
+                                <button class="btn btn-primary" data-target="#industryVisitReportApproval" data-toggle="modal" sec:authorize="hasAuthority('SL_SECOND_APPROVE_VISIT_REPORT')" style="width: 270px;" th:if="${visitReport?.purpose != null}" type="button">Factory Visit Report Approval
+                                </button>
                                 <br><br>
                                 <button th:if="${visitReport?.purpose != null}" sec:authorize="hasAuthority('SL_MANUFACTURERS_VIEW')" style="width: 270px;" type="button" class="btn btn-primary" data-toggle="modal" data-target="#industryVisitReportApproval">Draft Feedback</button>
                                 <br><br>
@@ -444,7 +500,7 @@
             </div>
 
             <div class="modal fade" id="industryVisitReport" tabindex="-1" role="dialog" aria-labelledby="industryVisitReport" aria-hidden="true">
-                <form th:action="@{/api/sl/save-visit-report-data(manufacturerId=${manufacturer.id})}" method="post" th:object="${reportData}">
+                <form enctype="multipart/form-data" method="post" th:action="@{/api/sl/save-visit-report-data(manufacturerId=${manufacturer.id})}" th:object="${reportData}">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
@@ -455,20 +511,50 @@
                             </div>
                             <div class="modal-body">
                                 <div class="form-group">
-                                    <label for="purpose">Purpose of Visit</label>
-                                    <textarea class="form-control" id="purpose" name="purpose" rows="3" th:name="purpose" ></textarea>
+                                    <label for="visitDate">Scheduled Date</label>
+                                    <input class="form-control" id="scheduledVisitDate" name="scheduledVisitDate" readonly="readonly" th:field="*{scheduledVisitDate}" type="date">
                                 </div>
                                 <div class="form-group">
-                                    <label for="personMet">Person met</label>
-                                    <textarea class="form-control" id="personMet" name="personMet" rows="3" th:name="personMet" ></textarea>
+                                    <label for="visitDate">Visit Date</label>
+                                    <input class="form-control" id="visitDate" name="visitDate" th:field="*{visitDate}" type="date">
                                 </div>
                                 <div class="form-group">
                                     <label for="actionTaken">Action taken</label>
-                                    <textarea class="form-control" id="actionTaken" name="actionTaken" rows="3" th:name="actionTaken"></textarea>
+                                    <textarea class="form-control" id="actionTaken" name="actionTaken" rows="3" th:field="*{actionTaken}"></textarea>
                                 </div>
                                 <div class="form-group">
                                     <label for="remarks">Remarks</label>
-                                    <textarea class="form-control" id="remarks" name="remarks" rows="3" th:name="remarks" ></textarea>
+                                    <textarea class="form-control" id="remarks" name="remarks" rows="3" th:field="*{remarks}"></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <div th:if="${uploadedFiles!= null && uploadedFiles?.size > 0}">
+                                        <div class="row-table ">
+                                            <table class="table table-striped table-bordered" id="oldVersions"
+                                                   style="width:100%">
+                                                <thead>
+                                                <tr>
+                                                    <th>Visit Uploads</th>
+                                                    <th>View</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                <tr class="list" style="cursor: pointer"
+                                                    th:each="uploadedFile: ${uploadedFiles}">
+                                                    <td th:text="${uploadedFile?.name}"></td>
+                                                    <td><a class="btn btn-primary itemViewBtn" target='_blank'
+                                                           th:href="@{/api/sl/view/uploaded(fileID=${uploadedFile?.id})}">VIEW</a>
+                                                    </td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <div id="uploadAttachments">
+                                        <label class="col-form-label" for="docFileName">Description Of Attachment(s):</label>
+                                        <input class="input-field w-input" id="docFileName" max="20" name="docFileName">
+                                        <label for="docFile">Upload your Attachments</label>
+                                        <input class="form-control" data-name="docFile" id="docFile" multiple name="docFile" type="file">
+                                    </div>
                                 </div>
                             </div>
                             <div class="modal-footer">
@@ -492,7 +578,7 @@
                             <div class="modal-body">
                                 <div class="form-group">
                                     <label for="assistanceManagerRemarks">Assistance Manager Remarks</label>
-                                    <textarea class="form-control" id="assistanceManagerRemarks" name="remarks" rows="3" th:name="assistanceManagerRemarks" ></textarea>
+                                    <textarea class="form-control" id="assistanceManagerRemarks" name="remarks" rows="3" th:name="assistanceManagerRemarks"></textarea>
                                 </div>
                             </div>
                             <div class="modal-footer">
@@ -626,23 +712,24 @@
 <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-animate.js"></script>
 <script src="//angular-ui.github.io/bootstrap/ui-bootstrap-tpls-1.0.3.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.28//angular-route.min.js"></script>
-<!-- [if lte IE 9]><script src="https://cdnjs.cloudflare.com/ajax/libs/placeholders/3.0.2/placeholders.min.js"></script><![endif] -->
+<!-- [if lte IE 9]>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/placeholders/3.0.2/placeholders.min.js"></script><![endif] -->
 <script type="text/javascript" th:src="@{/js/sdl_js/App.js}"></script>
 <script type="text/javascript" th:src="@{/js/sdl_js/Sdl_Service.js}"></script>
 <script type="text/javascript" th:src="@{/js/sdl_js/Sdl_Controller.js}"></script>
 <script>
-    $(document).ready(function(){
-        $('#scheduleId').on('click',function (event) {
+    $(document).ready(function () {
+        $('#scheduleId').on('click', function (event) {
             $('.myForm #exampleModal').modal();
         });
-        $('#generateSchemeOfSupervisionId').on('click',function (event) {
+        $('#generateSchemeOfSupervisionId').on('click', function (event) {
             $('.scheme #schemeModal').modal();
         });
-        $('#fillFactoryInspection').on('click',function (event) {
+        $('#fillFactoryInspection').on('click', function (event) {
             $('.factoryInspectionForm #factoryInspectionFormModal').modal();
         });
 
-        $('#industryVisitReportApproval').on('click',function (event) {
+        $('#industryVisitReportApproval').on('click', function (event) {
             $('.factoryInspectionForm #industryVisitReportApproval').modal();
         });
     });
@@ -663,7 +750,7 @@
     var i;
 
     for (i = 0; i < acc.length; i++) {
-        acc[i].addEventListener("click", function() {
+        acc[i].addEventListener("click", function () {
             this.classList.toggle("active");
             this.style.border = "none";
             // this.style.position = "sticky"
@@ -679,7 +766,8 @@
     }
 </script>
 
-<!-- [if lte IE 9]><script src="https://cdnjs.cloudflare.com/ajax/libs/placeholders/3.0.2/placeholders.min.js"></script><![endif] -->
+<!-- [if lte IE 9]>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/placeholders/3.0.2/placeholders.min.js"></script><![endif] -->
 </body>
 </html>
 

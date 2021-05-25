@@ -1,5 +1,6 @@
 package org.kebs.app.kotlin.apollo.store.model
 
+import org.springframework.format.annotation.DateTimeFormat
 import java.io.Serializable
 import java.sql.Timestamp
 import java.time.LocalDate
@@ -54,8 +55,14 @@ class StandardLevyFactoryVisitReportEntity : Serializable {
     var manufacturerEntity: Long? = null
 
     @Column(name = "SCHEDULED_VISIT_DATE")
-    @Basic
+    @Temporal(TemporalType.DATE)
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     var scheduledVisitDate: Date? = null
+
+    @Column(name = "VISIT_DATE")
+    @Temporal(TemporalType.DATE)
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    var visitDate: Date? = null
 
     @Column(name = "REPORT_DATE")
     @Basic
