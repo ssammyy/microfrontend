@@ -22,7 +22,6 @@ import org.springframework.stereotype.Component
 import org.springframework.web.servlet.function.ServerRequest
 import org.springframework.web.servlet.function.ServerResponse
 import org.springframework.web.servlet.function.body
-import org.springframework.web.servlet.function.paramOrNull
 import java.sql.Date
 import java.sql.Timestamp
 import java.time.Instant
@@ -46,7 +45,7 @@ class ApiAuthenticationHandler(
                 ?.let { user ->
                     val otp = generateTransactionReference(8).toUpperCase()
                     val token = generateVerificationToken(otp, user)
-                    KotlinLogging.logger {  }.info { "Token: ${token.token}" }
+                    KotlinLogging.logger { }.info { "Token: ${token.token}" }
 
 //                    val response = sendOtpViaSMS(token)
                     val response = "Success"
@@ -59,7 +58,7 @@ class ApiAuthenticationHandler(
                     otpResponseDto.message = response
                     otpResponseDto.otp = token.token
 
-                   ServerResponse.ok().body(otpResponseDto)
+                    ServerResponse.ok().body(otpResponseDto)
                 }
         }
             ?: throw NullValueNotAllowedException("Incorrect username and/or password provided")
@@ -106,6 +105,7 @@ class ApiAuthenticationHandler(
     fun uiLogin(req: ServerRequest): ServerResponse =
         try {
             val loginRequest = req.body<LoginRequest>()
+            KotlinLogging.logger { }.info("username ${loginRequest.username} ${loginRequest.password}")
             val authentication = authenticationManager.authenticate(UsernamePasswordAuthenticationToken(loginRequest.username, loginRequest.password))
             authentication
                 ?.let { auth ->

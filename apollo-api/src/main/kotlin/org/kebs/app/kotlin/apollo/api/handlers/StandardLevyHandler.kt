@@ -38,6 +38,7 @@ class StandardLevyHandler(
     private val commonDaoServices: CommonDaoServices,
     private val companyProfileRepo: ICompanyProfileRepository,
     private val userRepo: IUserRepository,
+    private val townsRepo: ITownsRepository,
 
     ) {
 
@@ -227,11 +228,15 @@ class StandardLevyHandler(
                                                                     req.attributes()["paymentHistory"] = paymentHistory
 
                                                                 }
+
+
                                                             //                                                                                                        }
                                                             req.attributes()["reportData"] =
                                                                 StandardLevyFactoryVisitReportEntity()
                                                             req.attributes()["manufacturer"] = manufacturer
-                                                            req.attributes()["companyProfile"] = CompanyProfileEntity()
+                                                            req.attributes()["counties"] = commonDaoServices.findCountyListByStatus(map.activeStatus)
+                                                            req.attributes()["towns"] = townsRepo.findByStatusOrderByTown(map.activeStatus)
+//                                                            req.attributes()["companyProfile"] = CompanyProfileEntity()
                                                             req.attributes()["map"] = map
 
                                                             req.attributes()["turnover"] = manufacturer.yearlyTurnover
@@ -363,12 +368,12 @@ class StandardLevyHandler(
 
         }
 
-    fun actionSaveFactoryVisitReport(req: ServerRequest) : ServerResponse{
+    fun actionSaveFactoryVisitReport(req: ServerRequest): ServerResponse {
         commonDaoServices.getLoggedInUser().let { user ->
             val body = req.body<StandardLevyFactoryVisitReportEntity>()
             req.pathVariable("manufacturerId").toLongOrNull()?.let { manufacturerId ->
                 standardLevyFactoryVisitReportRepo.findByManufacturerEntity(manufacturerId)?.let { report ->
-                  report.purpose = body.purpose
+                    report.purpose = body.purpose
                     report.personMet = body.personMet
                     report.actionTaken = body.actionTaken
                     report.remarks = body.remarks
@@ -378,7 +383,7 @@ class StandardLevyHandler(
                         req.attributes()
                     )
                 }
-            }?: throw InvalidInputException("Please login")
+            } ?: throw InvalidInputException("Please login")
         }
     }
 

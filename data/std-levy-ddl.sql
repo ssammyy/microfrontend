@@ -1326,3 +1326,20 @@ order by id
 update DAT_KEBS_COMPANY_PROFILE
 set factory_visit_date = null
 where id = 42;
+
+
+select *
+from DAT_KEBS_COMPANY_PROFILE
+where id = 61;--town 365 county 30
+
+select *
+from CFG_KEBS_TOWNS
+where ID = 30;
+
+select *
+from CFG_KEBS_COUNTIES
+where id = 30;
+
+select *
+from DAT_KEBS_MANUFACTURE_PLANT_DETAILS
+where MANUFACTURE_ID = 62;

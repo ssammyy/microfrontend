@@ -9,10 +9,11 @@ import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileEntity
 import org.kebs.app.kotlin.apollo.store.repo.ICompanyProfileRepository
 import org.kebs.app.kotlin.apollo.store.repo.IStandardLevyFactoryVisitReportRepository
 import org.springframework.stereotype.Controller
-import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
+import java.sql.Timestamp
+import java.time.Instant
 import java.time.LocalDate
 
 
@@ -24,10 +25,6 @@ class StandardLevy(
     private val standardsLevyBpmn: StandardsLevyBpmn,
     private val companyProfileRepo: ICompanyProfileRepository
 ) {
-    @GetMapping("test")
-    fun testWorks() : String{
-        return "works"
-    }
 
     @PostMapping("/save-visit-report-data")
     fun saveFactoryVisitReport(@RequestParam("manufacturerId") manufacturerId : Long, reportData: StandardLevyFactoryVisitReportEntity) : String {
@@ -44,12 +41,18 @@ class StandardLevy(
     }
 
     @PostMapping("update-manufacturer")
-    fun updateManufacturerDetails(@RequestParam("manufacturerId") manufacturerId: Long, companyProfile: CompanyProfileEntity) : String{
-        KotlinLogging.logger {  }.info { "Company Details ===> "+manufacturerId  }
+    fun updateManufacturerDetails(@RequestParam("manufacturerId") manufacturerId: Long, manufacturer: CompanyProfileEntity): String {
+        KotlinLogging.logger { }.info { "Company Details ===> $manufacturerId" }
         commonDaoServices.findCompanyProfileWithID(manufacturerId).let { manufacturerDetails ->
-            manufacturerDetails.ownership = companyProfile.ownership
-            manufacturerDetails.closureOfOperations = companyProfile.closureOfOperations
-            manufacturerDetails.postalAddress = companyProfile.postalAddress
+            manufacturerDetails.ownership = manufacturer.ownership
+            manufacturerDetails.closureOfOperations = manufacturer.closureOfOperations
+            manufacturerDetails.postalAddress = manufacturer.postalAddress
+            manufacturerDetails.county = manufacturer.county
+            manufacturerDetails.town = manufacturer.town
+            manufacturerDetails.streetName = manufacturer.streetName
+            manufacturerDetails.buildingName = manufacturer.buildingName
+            manufacturerDetails.modifiedBy = commonDaoServices.checkLoggedInUser()
+            manufacturerDetails.modifiedOn = Timestamp.from(Instant.now())
             companyProfileRepo.save(manufacturerDetails)
             return "redirect:/sl/manufacturer?manufacturerId=${manufacturerId}"
         }
