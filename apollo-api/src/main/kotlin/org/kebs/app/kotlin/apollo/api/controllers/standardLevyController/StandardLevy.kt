@@ -3,20 +3,27 @@ package org.kebs.app.kotlin.apollo.api.controllers.standardLevyController
 import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.StandardsLevyBpmn
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
+import org.kebs.app.kotlin.apollo.api.service.FileStorageService
 import org.kebs.app.kotlin.apollo.api.service.UserRolesService
 import org.kebs.app.kotlin.apollo.common.exceptions.InvalidInputException
 import org.kebs.app.kotlin.apollo.store.model.StandardLevyFactoryVisitReportEntity
 import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileEntity
 import org.kebs.app.kotlin.apollo.store.repo.ICompanyProfileRepository
 import org.kebs.app.kotlin.apollo.store.repo.IStandardLevyFactoryVisitReportRepository
+import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Controller
+import org.springframework.transaction.annotation.Transactional
 import org.springframework.ui.Model
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
+import org.springframework.web.multipart.MultipartFile
+import java.lang.Exception
 import java.sql.Date
 import java.time.LocalDate
+
 
 
 @Controller
@@ -26,14 +33,9 @@ class StandardLevy(
     private val commonDaoServices: CommonDaoServices,
     private val standardsLevyBpmn: StandardsLevyBpmn,
     private val userRolesService: UserRolesService,
-    private val companyProfileRepo: ICompanyProfileRepository
+    private val companyProfileRepo: ICompanyProfileRepository,
+    private val storageService: FileStorageService
 ) {
-    @GetMapping("test")
-    fun testWorks() : String{
-        return "works"
-    }
-
-
     @GetMapping("filter-by-date-created")
     fun filterByDateCreated(
         @RequestParam("fromDate") fromDate: String,
@@ -53,8 +55,10 @@ class StandardLevy(
     }
 
     @PostMapping("/save-visit-report-data")
+//    @Transactional(readOnly = true)
     fun saveFactoryVisitReport(
         @RequestParam("manufacturerId") manufacturerId: Long,
+        @RequestParam("factoryReport") factoryReport: MultipartFile,
         reportData: StandardLevyFactoryVisitReportEntity
     ): String {
         standardLevyFactoryVisitReportRepository.findByManufacturerEntity(manufacturerId)?.let { report ->
@@ -65,6 +69,13 @@ class StandardLevy(
             report.assistantManager = reportData.assistantManager
             report.principalLevyOfficer = reportData.principalLevyOfficer ?: report.principalLevyOfficer
             report.reportDate = LocalDate.now()
+            report.id?.let { report.createdBy?.let { it1 ->
+                report.createdOn?.let { it2 ->
+                    storageService.store(factoryReport, it,
+                        it1, it2
+                    )
+                }
+            } }
             standardLevyFactoryVisitReportRepository.save(report)
             report.id?.let {
                 reportData.assistantManager?.let { it1 ->

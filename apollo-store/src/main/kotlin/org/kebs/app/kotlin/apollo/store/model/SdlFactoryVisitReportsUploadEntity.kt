@@ -1,111 +1,113 @@
 package org.kebs.app.kotlin.apollo.store.model
 
-import org.kebs.app.kotlin.apollo.store.model.DatKebsSdlFactoryVisitReportsUploadEntity
+import java.io.Serializable
 import java.sql.Timestamp
 import java.util.*
-import javax.persistence.Entity
-import javax.persistence.Table
+import javax.persistence.*
 
 @Entity
-@Table(name = "DAT_KEBS_SDL_FACTORY_VISIT_REPORTS_UPLOAD", schema = "APOLLO", catalog = "")
-class DatKebsSdlFactoryVisitReportsUploadEntity {
-    @get:Column(name = "ID")
-    @get:GeneratedValue
-    @get:Id
+@Table(name = "DAT_KEBS_SDL_FACTORY_VISIT_REPORTS_UPLOAD")
+class SdlFactoryVisitReportsUploadEntity : Serializable {
+
+    @Id
+    @SequenceGenerator(name = "DAT_KEBS_SDL_FACTORY_VISIT_REPORTS_UPLOAD_SEQ_GEN", sequenceName = "DAT_KEBS_SDL_FACTORY_VISIT_REPORTS_UPLOAD_SEQ", allocationSize = 1)
+    @GeneratedValue(generator = "DAT_KEBS_SDL_FACTORY_VISIT_REPORTS_UPLOAD_SEQ_GEN", strategy = GenerationType.SEQUENCE)
+    @Column(name = "ID")
     var id: Long? = null
         private set
 
-    @get:Column(name = "DATA")
-    @get:Basic
-    var data: ByteArray
+    @Column(name = "DATA")
+    @Basic
+    var data: ByteArray? = null
 
-    @get:Column(name = "NAME")
-    @get:Basic
+    @Column(name = "NAME")
+    @Basic
     var name: String? = null
 
-    @get:Column(name = "TYPE")
-    @get:Basic
+    @Column(name = "TYPE")
+    @Basic
     var type: String? = null
 
-    @get:Column(name = "REPORT_ID")
-    @get:Basic
+    @Column(name = "REPORT_ID")
+    @Basic
     var reportId: Long? = null
 
-    @get:Column(name = "VAR_FIELD_1")
-    @get:Basic
+    @Column(name = "VAR_FIELD_1")
+    @Basic
     var varField1: String? = null
 
-    @get:Column(name = "VAR_FIELD_2")
-    @get:Basic
+    @Column(name = "VAR_FIELD_2")
+    @Basic
     var varField2: String? = null
 
-    @get:Column(name = "VAR_FIELD_3")
-    @get:Basic
+    @Column(name = "VAR_FIELD_3")
+    @Basic
     var varField3: String? = null
 
-    @get:Column(name = "VAR_FIELD_4")
-    @get:Basic
+    @Column(name = "VAR_FIELD_4")
+    @Basic
     var varField4: String? = null
 
-    @get:Column(name = "VAR_FIELD_5")
-    @get:Basic
+    @Column(name = "VAR_FIELD_5")
+    @Basic
     var varField5: String? = null
 
-    @get:Column(name = "VAR_FIELD_6")
-    @get:Basic
+    @Column(name = "VAR_FIELD_6")
+    @Basic
     var varField6: String? = null
 
-    @get:Column(name = "VAR_FIELD_7")
-    @get:Basic
+    @Column(name = "VAR_FIELD_7")
+    @Basic
     var varField7: String? = null
 
-    @get:Column(name = "VAR_FIELD_8")
-    @get:Basic
+    @Column(name = "VAR_FIELD_8")
+    @Basic
     var varField8: String? = null
 
-    @get:Column(name = "VAR_FIELD_9")
-    @get:Basic
+    @Column(name = "VAR_FIELD_9")
+    @Basic
     var varField9: String? = null
 
-    @get:Column(name = "VAR_FIELD_10")
-    @get:Basic
+    @Column(name = "VAR_FIELD_10")
+    @Basic
     var varField10: String? = null
 
-    @get:Column(name = "CREATED_BY")
-    @get:Basic
+    @Column(name = "CREATED_BY")
+    @Basic
     var createdBy: String? = null
 
-    @get:Column(name = "CREATED_ON")
-    @get:Basic
+    @Column(name = "CREATED_ON")
+    @Basic
     var createdOn: Timestamp? = null
 
-    @get:Column(name = "LAST_MODIFIED_BY")
-    @get:Basic
+    @Column(name = "LAST_MODIFIED_BY")
+    @Basic
     var lastModifiedBy: String? = null
 
-    @get:Column(name = "LAST_MODIFIED_ON")
-    @get:Basic
+    @Column(name = "LAST_MODIFIED_ON")
+    @Basic
     var lastModifiedOn: Timestamp? = null
 
-    @get:Column(name = "UPDATE_BY")
-    @get:Basic
+    @Column(name = "UPDATE_BY")
+    @Basic
     var updateBy: String? = null
 
-    @get:Column(name = "UPDATED_ON")
-    @get:Basic
+    @Column(name = "UPDATED_ON")
+    @Basic
     var updatedOn: Timestamp? = null
 
-    @get:Column(name = "DELETE_BY")
-    @get:Basic
+    @Column(name = "DELETE_BY")
+    @Basic
     var deleteBy: String? = null
 
-    @get:Column(name = "DELETED_ON")
-    @get:Basic
+    @Column(name = "DELETED_ON")
+    @Basic
     var deletedOn: Timestamp? = null
 
-    @get:Column(name = "VERSION")
-    @get:Basic
+    @Column(name = "VERSION")
+    @Basic
     var version: Long? = null
+
     fun setId(id: Long) {
         this.id = id
     }
@@ -114,10 +116,10 @@ class DatKebsSdlFactoryVisitReportsUploadEntity {
         this.id = id
     }
 
-    override fun equals(o: Any?): Boolean {
-        if (this === o) return true
-        if (o == null || javaClass != o.javaClass) return false
-        val that = o as DatKebsSdlFactoryVisitReportsUploadEntity
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other == null || javaClass != other.javaClass) return false
+        val that = other as SdlFactoryVisitReportsUploadEntity
         return id == that.id && Arrays.equals(
             data,
             that.data
