@@ -430,7 +430,9 @@
 
                                         <a th:if="${permitDetails?.attachedPlantId == null}" style="color: white" onclick="popUpFunction('attachePlant');" class="filter-link">ATTACH PLANT</a>
 
-                                        <a th:if="${permitDetails?.permitExpiredStatus == 1}" style="color: white" onclick="popUpFunction('updateBrandDetails');" class="filter-link">PERMIT UPDATE BRAND DETAILS</a>
+                                        <a th:if="${permitDetails?.permitAwardStatus == 1}" style="color: white" onclick="popUpFunction('updateBrandDetails');" class="filter-link">PERMIT UPDATE DETAILS</a>
+
+                                        <a th:if="${permitDetails?.endOfProductionStatus != 1 and permitDetails?.permitAwardStatus == 1}" style="color: white" onclick="popUpFunction('permitStopProductionDetails');" class="filter-link">STOP PRODUCTION</a>
 
                                         <a th:if="${permitDetails?.permitExpiredStatus == 1}"  th:href="@{/api/qa/kebs/renew/permit-details/save(permitID=${permitDetails?.id})}" class="filter-link" style="color: white">RENEW PERMIT</a>
 
@@ -794,6 +796,16 @@
                                             </select>
                                             <label for="hofQamCompletenessRemarks" class="col-form-label">Please write, in detail, PAC decision/remarks:</label>
                                             <textarea required name="name" id="pacDecisionRemarks" class="input-field w-input" cols="65" rows="5" th:field="*{pacDecisionRemarks}"></textarea>
+                                        </div>
+                                        <div id="permitStopProductionDetails">
+                                            <input type="hidden" id="description17" name="description" th:value="'Permit status successfully updated'">
+                                            <label for="endOfProductionStatus" class="col-form-label">Select application status:</label>
+                                            <select id="endOfProductionStatus" required class="select-field w-select" th:field="*{endOfProductionStatus}">
+                                                <option th:text="'Select one.....'" th:value="null"></option>
+                                                <option th:text="'Yes'" th:value="1"></option>
+                                            </select>
+                                            <label for="endOfProductionRemarks" class="col-form-label">Please write, in detail, your remarks:</label>
+                                            <textarea required name="name" id="endOfProductionRemarks" class="input-field w-input" cols="65" rows="5" th:field="*{endOfProductionRemarks}"></textarea>
                                         </div>
                                     </div>
                                 </div>
@@ -1161,8 +1173,8 @@
 </script>
 <script>
     function popUpFunction(eventAction) {
-        let arrHead = [ 'attachePlant', 'permitCompleteness', 'assignOfficer', 'scheduleInspectionDate', 'assignAssessor', 'scheduleAssessmentDate', 'approveInspectionReport', 'complianceStatus', 'addRecommendation', 'approveRecommendation', 'pscMemberApproval', 'pcmApproval', 'dmarkApplicationApproval', 'hodApprovalAssessmentReport'];
-        let arrHeadSave = [ 'Attach a Plant for manufacturing the product', 'Is The Permit Complete', 'Select An officer',' Set The Date of Inspection', 'Select An Assessor', 'Schedule Factory Assessment Date', 'Approve Or Reject the Factory Inspection Report', 'Select a suitable Compliance Status for the Lab Report', 'Add Recommendation', 'Approve / Reject Recommendation', 'Approve / Reject Awarding of Permit', 'Approve / Reject Awarding of Permit', 'Grant/Defer Application', 'Approve / Reject Permit Review'];
+        let arrHead = [ 'attachePlant', 'permitCompleteness', 'assignOfficer', 'scheduleInspectionDate', 'assignAssessor', 'scheduleAssessmentDate', 'approveInspectionReport', 'complianceStatus', 'addRecommendation', 'approveRecommendation', 'pscMemberApproval', 'pcmApproval', 'dmarkApplicationApproval', 'hodApprovalAssessmentReport', 'permitStopProductionDetails'];
+        let arrHeadSave = [ 'Attach a Plant for manufacturing the product', 'Is The Permit Complete', 'Select An officer',' Set The Date of Inspection', 'Select An Assessor', 'Schedule Factory Assessment Date', 'Approve Or Reject the Factory Inspection Report', 'Select a suitable Compliance Status for the Lab Report', 'Add Recommendation', 'Approve / Reject Recommendation', 'Approve / Reject Awarding of Permit', 'Approve / Reject Awarding of Permit', 'Grant/Defer Application', 'Approve / Reject Permit Review', 'Stop Production'];
         // let arrHead = [ 'attachePlant', 'permitCompleteness', 'assignOfficer', 'scheduleInspectionDate', 'assignAssessor', 'scheduleAssessmentDate', 'dmarkApplicationApproval'];
         // let arrHeadSave = [ 'Attach a Plant for manufacturing the product', 'Is The Permit Complete', 'Select An officer',' Set The Date of Inspection', 'Select An Assessor', 'Schedule Factory Assessment Date',
         // 'Grant/Defer Application'];

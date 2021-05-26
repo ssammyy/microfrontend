@@ -181,11 +181,23 @@ class ApplicationMapProperties {
     @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.status.pending_generation_of_ssc}")
     val mapQaStatusPGenSSC: Long = 0L
 
+    @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.status.end_production}")
+    val mapQaStatusEndProduction: Long = 0L
+
     @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.status.pending_approval_of_ssc}")
     val mapQaStatusPApprSSC: Long = 0L
 
     @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.status.ssc_rejected}")
     val mapQaStatusSSCRejected: Long = 0L
+
+    @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.status.pending_request_approval}")
+    val mapQaStatusPRequestApproval: Long = 0L
+
+    @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.status.request_approved}")
+    val mapQaStatusRequestApproved: Long = 0L
+
+    @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.status.request_rejected}")
+    val mapQaStatusRequestRejected: Long = 0L
 
     @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.status.pending_factory_inspection_forms}")
     val mapQaStatusPfactoryInsForms: Long = 0L

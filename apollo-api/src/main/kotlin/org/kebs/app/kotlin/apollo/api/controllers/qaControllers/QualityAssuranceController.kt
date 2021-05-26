@@ -153,6 +153,31 @@ class QualityAssuranceController(
         return commonDaoServices.returnValues(result, map, sm)
     }
 
+    @PreAuthorize("hasAuthority('PERMIT_APPLICATION')")
+    @PostMapping("/apply/update-permit-request")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun permitRequestUpdates(
+        @ModelAttribute("permitRequest") permitRequest: PermitUpdateDetailsRequestsEntity,
+        @RequestParam( "permitID") permitID: Long,
+        model: Model)
+    : String? {
+        val result: ServiceRequestsEntity?
+        val map = commonDaoServices.serviceMapDetails(appId)
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+
+        result = qaDaoServices.permitRequests(permitRequest, permitID, loggedInUser,map).first
+        val permitDetails = qaDaoServices.findPermitBYID(result.varField1?.toLong() ?: throw ExpectedDataNotFound("MISSING PERMIT ID"))
+
+        qaDaoServices.permitInsertStatus(permitDetails,applicationMapProperties.mapQaStatusPRequestApproval,loggedInUser)
+
+
+        val sm = CommonDaoServices.MessageSuccessFailDTO()
+        sm.closeLink = "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${result.varField1}"
+        sm.message = "Your Request has been Successful Submitted"
+
+        return commonDaoServices.returnValues(result, map, sm)
+    }
+
     @PreAuthorize("hasAuthority('PERMIT_APPLICATION') or hasAuthority('QA_MANAGER_ASSESSORS_MODIFY') or hasAuthority('QA_HOF_MODIFY') " +
             "or hasAuthority('QA_HOD_MODIFY') or hasAuthority('QA_OFFICER_MODIFY') or hasAuthority('QA_PAC_SECRETARY_MODIFY') or hasAuthority('QA_PSC_MEMBERS_MODIFY') or hasAuthority('QA_PCM_MODIFY') or hasAuthority('QA_ASSESSORS_MODIFY')")
     @PostMapping("/apply/update-permit")

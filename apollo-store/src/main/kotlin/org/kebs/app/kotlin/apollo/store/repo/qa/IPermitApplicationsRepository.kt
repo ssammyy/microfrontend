@@ -56,6 +56,13 @@ interface IQaSchemeForSupervisionRepository : HazelcastRepository<QaSchemeForSup
 }
 
 @Repository
+interface IPermitUpdateDetailsRequestsRepository : HazelcastRepository<PermitUpdateDetailsRequestsEntity, Long> {
+    fun findByStatusAndId(status: Int, id: Long): PermitUpdateDetailsRequestsEntity?
+    fun findByPermitId(permitId: Long): PermitUpdateDetailsRequestsEntity?
+    fun findByPermitIdAndRequestStatus(permitId: Long, requestStatus: Int): PermitUpdateDetailsRequestsEntity?
+}
+
+@Repository
 interface IQaSampleSubmissionRepository : HazelcastRepository<QaSampleSubmissionEntity, Long> {
     fun findByStatusAndId(status: Int, id: Long): QaSampleSubmissionEntity?
     fun findByLabResultsStatus(labResultsStatus: Int): List<QaSampleSubmissionEntity>?

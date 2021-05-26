@@ -35,6 +35,7 @@ class QADaoServices(
     private val paymentUnitsRepository: ICfgKebsPermitPaymentUnitsRepository,
     private val serviceRequestsRepository: IServiceRequestsRepository,
     private val permitRepo: IPermitApplicationsRepository,
+    private val permitUpdateDetailsRequestsRepo: IPermitUpdateDetailsRequestsRepository,
     private val SampleCollectionRepo: IQaSampleCollectionRepository,
     private val SampleSubmissionRepo: IQaSampleSubmissionRepository,
     private val sampleLabTestResultsRepo: IQaSampleLabTestResultsRepository,
@@ -478,6 +479,51 @@ class QADaoServices(
 
         KotlinLogging.logger { }.trace("${sr.id} ${sr.responseStatus}")
         return Pair(sr, savePermit)
+    }
+
+    fun permitRequests(
+        permitsRequest: PermitUpdateDetailsRequestsEntity,
+        permitID: Long,
+        user: UsersEntity,
+        map: ServiceMapsEntity
+    ): Pair<ServiceRequestsEntity, PermitUpdateDetailsRequestsEntity >{
+
+        var sr = commonDaoServices.createServiceRequest(map)
+        var savePermitRequest = permitsRequest
+        try {
+
+            with(savePermitRequest) {
+                permitId = permitID
+                requestStatus = map.inactiveStatus
+                status = map.activeStatus
+                createdBy = commonDaoServices.concatenateName(user)
+                createdOn = commonDaoServices.getTimestamp()
+            }
+
+
+            savePermitRequest = permitUpdateDetailsRequestsRepo.save(savePermitRequest)
+
+            sr.payload = "New Permit request Saved [Firm name${savePermitRequest.permitId} and ${savePermitRequest.id}]"
+            sr.names = "${savePermitRequest.permitId}"
+            sr.varField1 = savePermitRequest.permitId.toString()
+
+            sr.responseStatus = sr.serviceMapsId?.successStatusCode
+            sr.responseMessage = "Success ${sr.payload}"
+            sr.status = map.successStatus
+            sr = serviceRequestsRepository.save(sr)
+            sr.processingEndDate = Timestamp.from(Instant.now())
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message, e)
+            sr.status = sr.serviceMapsId?.exceptionStatus
+            sr.responseStatus = sr.serviceMapsId?.exceptionStatusCode
+            sr.responseMessage = e.message
+            sr = serviceRequestsRepository.save(sr)
+
+        }
+
+        KotlinLogging.logger { }.trace("${sr.id} ${sr.responseStatus}")
+        return Pair(sr, savePermitRequest)
     }
 
     fun ssfSave(

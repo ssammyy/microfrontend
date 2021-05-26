@@ -652,6 +652,7 @@ class QualityAssuranceHandler(
             Pair("activeStatus", s.activeStatus),
             Pair("inActiveStatus", s.inactiveStatus),
             Pair("initStatus", s.initStatus),
+            Pair("permitRequest", PermitUpdateDetailsRequestsEntity()),
             Pair("fmarkEntityDto", FmarkEntityDto()),
             Pair("SampleSubmissionDetails", QaSampleSubmissionEntity()),
             Pair("fmarkPermit", applicationMapProperties.mapQAPermitTypeIdFmark),
