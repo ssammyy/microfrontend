@@ -95,18 +95,27 @@ class LimsServices(
         return result.toString()
     }
 
-    fun labResponseResults(response: String){
+    fun labResponseResults(response: String): Boolean {
         val resultsParam: RootTestResultsAndParameters = ObjectMapper().readValue(response, RootTestResultsAndParameters::class.java)
+        var myStatus : Boolean = false
         //Loop
-        resultsParam.test_result
-            ?.forEach { testResults ->
-                limsTestResultsDetails(testResults)
-            }
-        //Loop
-        resultsParam.test_parameter
-            ?.forEach { testParam ->
-                limsTestParamsDetails(testParam)
-            }
+        if (resultsParam.test_parameter?.isNullOrEmpty() == true) {
+            println("List is null or empty")
+            return !myStatus
+        }
+        else {
+            resultsParam.test_result
+                ?.forEach { testResults ->
+                    limsTestResultsDetails(testResults)
+                }
+            //Loop
+            resultsParam.test_parameter
+                ?.forEach { testParam ->
+                    limsTestParamsDetails(testParam)
+                }
+            return myStatus
+        }
+
     }
 
     fun mainFunctionLims(bsNumber: String): Boolean{
@@ -115,8 +124,7 @@ class LimsServices(
         hmap["bsnumber"] = bsNumber
         val myResults = performPostCall(hmap)
         if (myResults != null) {
-            labResponseResults(myResults)
-            results= true
+            results= labResponseResults(myResults)
         }
         return results
     }

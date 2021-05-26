@@ -108,6 +108,10 @@ class PermitApplicationsEntity:Serializable {
     @Basic
     var sendForPcmReview: Int? = null
 
+    @Column(name = "REQUEST_STATUS")
+    @Basic
+    var requestStatus: Int? = null
+
     @Column(name = "JUSTIFICATION_REPORT_STATUS")
     @Basic
     var justificationReportStatus: Int? = null
@@ -335,6 +339,10 @@ class PermitApplicationsEntity:Serializable {
     @Column(name = "RESUBMIT_APPLICATION_STATUS")
     @Basic
     var resubmitApplicationStatus: Int? = null
+
+    @Column(name = "END_OF_PRODUCTION_REMARKS")
+    @Basic
+    var endOfProductionRemarks: String? = null
 
     @Column(name = "TITLE")
     @Basic
@@ -599,6 +607,7 @@ class PermitApplicationsEntity:Serializable {
         if (compliantStatus != other.compliantStatus) return false
         if (sendForPcmReview != other.sendForPcmReview) return false
         if (justificationReportStatus != other.justificationReportStatus) return false
+        if (requestStatus != other.requestStatus) return false
         if (justificationReportRemarks != other.justificationReportRemarks) return false
         if (assessmentReportRemarks != other.assessmentReportRemarks) return false
         if (assignAssessorStatus != other.assignAssessorStatus) return false
@@ -629,6 +638,7 @@ class PermitApplicationsEntity:Serializable {
         if (enabled != other.enabled) return false
         if (smeFormFilledStatus != other.smeFormFilledStatus) return false
         if (title != other.title) return false
+        if (endOfProductionRemarks != other.endOfProductionRemarks) return false
         if (totalCost != other.totalCost) return false
         if (totalPayment != other.totalPayment) return false
         if (annualTurnOver != other.annualTurnOver) return false
@@ -731,6 +741,7 @@ class PermitApplicationsEntity:Serializable {
         result = 31 * result + (assignAssessorStatus ?: 0)
         result = 31 * result + (resubmitApplicationStatus ?: 0)
         result = 31 * result + (justificationReportStatus ?: 0)
+        result = 31 * result + (requestStatus ?: 0)
         result = 31 * result + (smeFormFilledStatus ?: 0)
         result = 31 * result + (invoiceGenerated ?: 0)
         result = 31 * result + (enabled ?: 0)
@@ -752,6 +763,7 @@ class PermitApplicationsEntity:Serializable {
         result = 31 * result + (inspectionDate?.hashCode() ?: 0)
         result = 31 * result + (assessmentDate?.hashCode() ?: 0)
         result = 31 * result + (title?.hashCode() ?: 0)
+        result = 31 * result + (endOfProductionRemarks?.hashCode() ?: 0)
         result = 31 * result + (totalCost?.hashCode() ?: 0)
         result = 31 * result + (totalPayment?.hashCode() ?: 0)
         result = 31 * result + (annualTurnOver?.hashCode() ?: 0)
