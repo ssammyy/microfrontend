@@ -75,6 +75,10 @@ class BpmnNotifications(
         notifications.sendEmailServiceTask(userId,notificationId)
     }
 
+    fun sendEmailServiceTask(userId: Long, notificationId: Int, isManufacturer:Boolean) {
+        notifications.sendEmailServiceTask(userId,notificationId,isManufacturer)
+    }
+
     fun sendEmailInvoice(email: String) {
         KotlinLogging.logger { }.info("Now sending email to $email.......")
     }

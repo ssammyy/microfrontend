@@ -292,7 +292,7 @@ class StandardLevyHandler(
                         val savedReport = standardLevyFactoryVisitReportRepo.save(factoryVisitReportEntity)
                         KotlinLogging.logger { }.info("New id ${savedReport.id}")
                         standardsLevyBpmn.startSlSiteVisitProcess(savedReport.id ?: throw NullValueNotAllowedException("Id should not be null"), commonDaoServices.getLoggedInUser()?.id ?: throw Exception("Please login"))
-                        standardsLevyBpmn.slSvQueryManufacturerDetailsComplete(savedReport.id ?: throw NullValueNotAllowedException("Id should not be null"))
+                        standardsLevyBpmn.slSvQueryManufacturerDetailsComplete(savedReport.id ?: throw NullValueNotAllowedException("Id should not be null"),manufacturerId)
                         standardsLevyBpmn.slSvScheduleVisitComplete(savedReport.id ?: throw NullValueNotAllowedException("Id should not be null"))
                         redirectAttributes?.addFlashAttribute(
                             "alert",
@@ -348,7 +348,7 @@ class StandardLevyHandler(
                                             userRepo.findByUserName(userName)
                                                 ?.let {
                                                     standardsLevyBpmn.startSlSiteVisitProcess(visit.id ?: throw NullValueNotAllowedException("Id should not be null"), it.id ?: throw ExpectedDataNotFound("Invalid user"))
-                                                    standardsLevyBpmn.slSvQueryManufacturerDetailsComplete(visit.id ?: throw NullValueNotAllowedException("Id should not be null"))
+                                                    standardsLevyBpmn.slSvQueryManufacturerDetailsComplete(visit.id ?: throw NullValueNotAllowedException("Id should not be null"),manufacturer.id.toString())
                                                     standardsLevyBpmn.slSvScheduleVisitComplete(visit.id ?: throw NullValueNotAllowedException("Id should not be null"))
                                                 }
                                                 ?: throw ExpectedDataNotFound("User not found")
