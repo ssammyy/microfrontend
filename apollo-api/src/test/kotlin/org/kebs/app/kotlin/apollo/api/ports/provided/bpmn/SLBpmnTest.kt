@@ -185,7 +185,7 @@ class SLBpmnTest {
         } ?: return
 
         //Draft feedback complete
-        standardsLevyBpmn.slsvDraftFeedbackComplete(standardsLevyReportId).let {
+        standardsLevyBpmn.slsvDraftFeedbackComplete(standardsLevyReportId, 1L).let {
             standardsLevyBpmn.fetchTaskByObjectId(standardsLevyReportId, slSiteVisitProcessDefinitionKey)?.let { taskDetails ->
                 println("Task details after process")
                 for (taskDetail in taskDetails) {

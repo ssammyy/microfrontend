@@ -11,5 +11,6 @@ interface ISl2PaymentsHeaderRepository : HazelcastRepository<Sl2PaymentsHeaderEn
 interface ISl2PaymentsDetailsRepository : HazelcastRepository<Sl2PaymentsDetailsEntity, Long>, JpaSpecificationExecutor<Sl2PaymentsDetailsEntity>
 interface ISlVisitUploadsRepository : HazelcastRepository<SlVisitUploadsEntity, Long>, JpaSpecificationExecutor<SlVisitUploadsEntity> {
     fun findAllByVisitIdOrderById(visitId: Long): List<SlVisitUploadsEntity>
+    fun findAllByVisitIdAndDocumentTypeIsNotNullOrderById(visitId: Long): List<SlVisitUploadsEntity>
 
 }

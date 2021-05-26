@@ -791,6 +791,12 @@ class ApplicationMapProperties {
     @Value("\${org.kebs.app.kotlin.apollo.application.email.protocol}")
     val mapApplicationEmailProtocol: String = ""
 
+    @Value("\${org.kebs.app.kotlin.apollo.sl.level.one.approval.authorityId}")
+    val slLevelOneApprovalAuthorityId: Long? = null
+
+    @Value("\${org.kebs.app.kotlin.apollo.sl.level.two.approval.authorityId}")
+    val slLevelTwoApprovalAuthorityId: Long? = null
+
     val assigneeId: Long = 101
     val qaoAssigneeId: Long = 402
 

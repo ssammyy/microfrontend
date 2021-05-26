@@ -9,8 +9,6 @@ import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
 import org.kebs.app.kotlin.apollo.common.exceptions.ServiceMapNotFoundException
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.StandardLevyFactoryVisitReportEntity
-import org.kebs.app.kotlin.apollo.store.model.UsersEntity
-import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileEntity
 import org.kebs.app.kotlin.apollo.store.repo.*
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.security.access.prepost.PreAuthorize
@@ -22,14 +20,13 @@ import org.springframework.web.servlet.function.ServerResponse.ok
 import org.springframework.web.servlet.function.body
 import org.springframework.web.servlet.function.paramOrNull
 import org.springframework.web.servlet.mvc.support.RedirectAttributes
-import java.math.BigDecimal
 import java.sql.Date
 import java.time.LocalDate
 
 
 @Component
 class StandardLevyHandler(
-    applicationMapProperties: ApplicationMapProperties,
+    private val applicationMapProperties: ApplicationMapProperties,
     private val serviceMapsRepository: IServiceMapsRepository,
     private val businessNatureRepository: IBusinessNatureRepository,
     private val standardLevyFactoryVisitReportRepo: IStandardLevyFactoryVisitReportRepository,
@@ -100,46 +97,22 @@ class StandardLevyHandler(
                                                 ?.let { userId ->
                                                     standardsLevyBpmn.fetchAllTasksByAssignee(userId)
                                                         ?.let { lstTaskDetails ->
-                                                            val tasks = mutableListOf<CompanyProfileEntity?>()
-                                                            lstTaskDetails.sortedByDescending { it.objectId }
-                                                                .forEach { details ->
-                                                                    if (standardLevyPaymentsRepository.findByIdOrNull(
-                                                                            details.objectId
-                                                                        ) == null
-                                                                    ) {
-                                                                        redirectAttributes?.addFlashAttribute(
-                                                                            "error",
-                                                                            "Caught an exception while loading your tasks"
-                                                                        )
-                                                                        req.attributes()["map"] = map
-                                                                        KotlinLogging.logger { }
-                                                                            .info { "there" }
-                                                                        req.attributes()["type"] = "load_tasks"
-//                                                                            ok().render(slAllManufacturers, req.attributes())
-                                                                    } else {
-                                                                        standardLevyPaymentsRepository.findByIdOrNull(
-                                                                            details.objectId
-                                                                        )
-                                                                            ?.let { paymentsEntity ->
-
-                                                                                companyProfileRepo.findByIdOrNull(paymentsEntity.manufacturerEntity)
-                                                                                    ?.let { tasks.add(it) }
-                                                                                    ?: throw ExpectedDataNotFound("INVALID MANUFACTURER ID")
-
-
-                                                                                req.attributes()["tasks"] =
-                                                                                    tasks
-                                                                                req.attributes()["map"] = map
-                                                                                KotlinLogging.logger { }
-                                                                                    .info { "here" }
-                                                                                redirectAttributes?.addFlashAttribute(
-                                                                                    "success",
-                                                                                    "View your tasks"
-                                                                                )
-                                                                            }
-                                                                            ?: throw ExpectedDataNotFound("No payment with id=${details.objectId}")
+                                                            val tasks = mutableListOf<SlTasksEntityDto?>()
+                                                            lstTaskDetails.forEach { task ->
+                                                                standardLevyFactoryVisitReportRepo.findBySlProcessInstanceId(task.task.processInstanceId)
+                                                                    ?.let { report ->
+                                                                        val dto = SlTasksEntityDto(report.manufacturerEntity, task.task.createTime, task.task.dueDate, task.task.processInstanceId, task.task.name)
+                                                                        tasks.add(dto)
                                                                     }
-                                                                }
+                                                                    ?: KotlinLogging.logger { }.info("SL Task not tied to a report")
+                                                            }
+                                                            KotlinLogging.logger { }.debug(" Found ${lstTaskDetails.count()} tasks")
+                                                            req.attributes()["map"] = map
+
+                                                            req.attributes()["type"] = "load_tasks"
+
+                                                            req.attributes()["tasks"] = tasks
+
                                                             ok().render(slAllManufacturers, req.attributes())
 
 
@@ -150,7 +123,7 @@ class StandardLevyHandler(
 
                                         }
                                         "load_levy_payments" -> {
-                                            standardLevyPaymentsRepository.findAllByStatusOrderByIdDesc(1)
+                                            standardLevyPaymentsRepository.findAllByOrderByIdDesc()
                                                 .let { payments ->
                                                     KotlinLogging.logger { }
                                                         .info("Records found ${payments?.count()}")
@@ -216,10 +189,23 @@ class StandardLevyHandler(
                                                     }
                                                     businessNatureRepository.findByIdOrNull(manufacturer.businessNatures)
                                                         .let { nature ->
-                                                            standardLevyFactoryVisitReportRepo.findByManufacturerEntity(manufacturer.id ?: throw ExpectedDataNotFound("INVALID ID"))
-                                                                .let {
-                                                                    req.attributes()["visitReport"] = it
+                                                            userRepo.getUsersWithAuthorizationId(applicationMapProperties.slLevelOneApprovalAuthorityId ?: throw InvalidInputException("No Authorization for Level One Approvals defined, aborting"))
+                                                                ?.let { u ->
+                                                                    req.attributes()["slLevelOneApprovals"] = u
                                                                 }
+                                                                ?: throw InvalidInputException("No Authorization for Level One Approvals defined, aborting")
+                                                            userRepo.getUsersWithAuthorizationId(applicationMapProperties.slLevelTwoApprovalAuthorityId ?: throw InvalidInputException("No Authorization for Level One Approvals defined, aborting"))
+                                                                ?.let { u ->
+                                                                    req.attributes()["slLevelTwoApprovals"] = u
+                                                                }
+                                                                ?: throw InvalidInputException("No Authorization for Level One Approvals defined, aborting")
+//                                                            standardLevyFactoryVisitReportRepo.findFirstByManufacturerEntityAndStatusOrderByIdDesc(manufacturer.id ?: throw ExpectedDataNotFound("INVALID ID"),0)
+//                                                                ?.let {
+//                                                                    req.attributes()["visitReport"] = it
+//                                                                }
+//                                                                ?: run{
+//                                                                    req.attributes()["visitReport"] = StandardLevyFactoryVisitReportEntity()
+//                                                                }
 
                                                             standardLevyPaymentsRepository.findByManufacturerEntity(
                                                                 manufacturer.id
@@ -240,17 +226,17 @@ class StandardLevyHandler(
                                                                 ?.let {
                                                                     standardLevyFactoryVisitReportRepo.findFirstByManufacturerEntityAndStatusOrderByIdDesc(it, 0)
                                                                         ?.let { reportEntity ->
-                                                                            req.attributes()["reportData"] = reportEntity
+                                                                            req.attributes()["visitReport"] = reportEntity
                                                                             /**
                                                                              * Are there any uploaded files
                                                                              */
-                                                                            slVisitsUploadRepo.findAllByVisitIdOrderById(reportEntity.id ?: -1L)
+                                                                            slVisitsUploadRepo.findAllByVisitIdAndDocumentTypeIsNotNullOrderById(reportEntity.id ?: -1L)
                                                                                 .let { uploadedFiles ->
                                                                                     req.attributes()["uploadedFiles"] = uploadedFiles
                                                                                 }
 
                                                                         }
-                                                                        ?: run { req.attributes()["reportData"] = StandardLevyFactoryVisitReportEntity() }
+                                                                        ?: run { req.attributes()["visitReport"] = StandardLevyFactoryVisitReportEntity() }
 
                                                                 }
                                                                 ?: throw InvalidInputException("Empty entry_number not allowed")
@@ -297,10 +283,11 @@ class StandardLevyHandler(
                         companyProfileRepo.save(manufacturerDetails)
                         val factoryVisitReportEntity = StandardLevyFactoryVisitReportEntity()
                         factoryVisitReportEntity.manufacturerEntity = manufacturerDetails.id
+                        factoryVisitReportEntity.status = 0
                         factoryVisitReportEntity.assistantManagerApproval = 0
                         factoryVisitReportEntity.managersApproval = 0
                         factoryVisitReportEntity.scheduledVisitDate = manufacturerDetails.factoryVisitDate as Date
-                        factoryVisitReportEntity.createdBy = "Admin"
+                        factoryVisitReportEntity.createdBy = commonDaoServices.checkLoggedInUser()
                         factoryVisitReportEntity.createdOn = commonDaoServices.getTimestamp()
                         val savedReport = standardLevyFactoryVisitReportRepo.save(factoryVisitReportEntity)
                         KotlinLogging.logger { }.info("New id ${savedReport.id}")
@@ -538,11 +525,11 @@ class StandardLevyHandler(
 
 }
 
-data class PaymentsEntityDto(
-    val id: Long?,
-    val manufacturer: String?,
-    val paymentDate: String?,
-    val paymentAmount: BigDecimal?,
-    val visitStatus: Long?,
-    val assignedTo: UsersEntity?
+class SlTasksEntityDto(
+    val manufacturerId: Long?,
+    val assignedDate: java.util.Date?,
+    val dueDate: java.util.Date?,
+    val taskId: String?,
+    val name: String?,
 )
+
