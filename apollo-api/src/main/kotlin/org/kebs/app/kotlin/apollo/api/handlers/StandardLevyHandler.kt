@@ -38,6 +38,9 @@ class StandardLevyHandler(
     private val commonDaoServices: CommonDaoServices,
     private val companyProfileRepo: ICompanyProfileRepository,
     private val userRepo: IUserRepository,
+    private val townsRepo: ITownsRepository,
+    private val slVisitsUploadRepo: ISlVisitUploadsRepository,
+
 
     ) {
 
@@ -227,11 +230,35 @@ class StandardLevyHandler(
                                                                     req.attributes()["paymentHistory"] = paymentHistory
 
                                                                 }
+
+
                                                             //                                                                                                        }
-                                                            req.attributes()["reportData"] =
-                                                                StandardLevyFactoryVisitReportEntity()
+                                                            /**
+                                                             * Check if a report exists that is not yet approved and load that
+                                                             */
+                                                            manufacturer.id
+                                                                ?.let {
+                                                                    standardLevyFactoryVisitReportRepo.findFirstByManufacturerEntityAndStatusOrderByIdDesc(it, 0)
+                                                                        ?.let { reportEntity ->
+                                                                            req.attributes()["reportData"] = reportEntity
+                                                                            /**
+                                                                             * Are there any uploaded files
+                                                                             */
+                                                                            slVisitsUploadRepo.findAllByVisitIdOrderById(reportEntity.id ?: -1L)
+                                                                                .let { uploadedFiles ->
+                                                                                    req.attributes()["uploadedFiles"] = uploadedFiles
+                                                                                }
+
+                                                                        }
+                                                                        ?: run { req.attributes()["reportData"] = StandardLevyFactoryVisitReportEntity() }
+
+                                                                }
+                                                                ?: throw InvalidInputException("Empty entry_number not allowed")
+
                                                             req.attributes()["manufacturer"] = manufacturer
-                                                            req.attributes()["companyProfile"] = CompanyProfileEntity()
+                                                            req.attributes()["counties"] = commonDaoServices.findCountyListByStatus(map.activeStatus)
+                                                            req.attributes()["towns"] = townsRepo.findByStatusOrderByTown(map.activeStatus)
+//                                                            req.attributes()["companyProfile"] = CompanyProfileEntity()
                                                             req.attributes()["map"] = map
 
                                                             req.attributes()["turnover"] = manufacturer.yearlyTurnover
@@ -363,12 +390,12 @@ class StandardLevyHandler(
 
         }
 
-    fun actionSaveFactoryVisitReport(req: ServerRequest) : ServerResponse{
+    fun actionSaveFactoryVisitReport(req: ServerRequest): ServerResponse {
         commonDaoServices.getLoggedInUser().let { user ->
             val body = req.body<StandardLevyFactoryVisitReportEntity>()
             req.pathVariable("manufacturerId").toLongOrNull()?.let { manufacturerId ->
                 standardLevyFactoryVisitReportRepo.findByManufacturerEntity(manufacturerId)?.let { report ->
-                  report.purpose = body.purpose
+                    report.purpose = body.purpose
                     report.personMet = body.personMet
                     report.actionTaken = body.actionTaken
                     report.remarks = body.remarks
@@ -378,7 +405,7 @@ class StandardLevyHandler(
                         req.attributes()
                     )
                 }
-            }?: throw InvalidInputException("Please login")
+            } ?: throw InvalidInputException("Please login")
         }
     }
 

@@ -22,7 +22,6 @@
 package org.kebs.app.kotlin.apollo.api.security.filters
 
 
-import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.security.bearer.AuthorizationPayloadExtractorService
 import org.kebs.app.kotlin.apollo.api.security.bearer.UsernamePasswordAuthenticationBearer
 import org.kebs.app.kotlin.apollo.api.security.jwt.JwtTokenService
@@ -30,7 +29,6 @@ import org.kebs.app.kotlin.apollo.config.properties.auth.AuthenticationPropertie
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpHeaders
 import org.springframework.security.core.context.SecurityContextHolder
-import org.springframework.stereotype.Component
 import org.springframework.web.filter.OncePerRequestFilter
 import java.io.IOException
 import javax.servlet.FilterChain
