@@ -13,6 +13,7 @@ import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileEntity
 import org.kebs.app.kotlin.apollo.store.repo.ICompanyProfileRepository
 import org.kebs.app.kotlin.apollo.store.repo.ISlVisitUploadsRepository
 import org.kebs.app.kotlin.apollo.store.repo.IStandardLevyFactoryVisitReportRepository
+import org.kebs.app.kotlin.apollo.store.repo.IUserRoleAssignmentsRepository
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Controller
@@ -35,12 +36,13 @@ import javax.servlet.http.HttpServletResponse
 @Controller
 @RequestMapping("/api/sl/")
 class StandardLevy(
-    applicationMapProperties: ApplicationMapProperties,
+    private val applicationMapProperties: ApplicationMapProperties,
     private val standardLevyFactoryVisitReportRepository: IStandardLevyFactoryVisitReportRepository,
     private val commonDaoServices: CommonDaoServices,
     private val standardsLevyBpmn: StandardsLevyBpmn,
     private val companyProfileRepo: ICompanyProfileRepository,
     private val slUploadsRepo: ISlVisitUploadsRepository,
+    private val userRolesRepo: IUserRoleAssignmentsRepository,
     @PersistenceContext
     private val entityManager: EntityManager,
 ) {
@@ -51,11 +53,24 @@ class StandardLevy(
         model: Model,
         @RequestParam("entryNo") entryNo: Long
     ): String {
-        val details = entityManager
-            .createNamedQuery(KraPaymentsEntityDto.FIND_ALL, KraPaymentsEntityDto::class.java)
-            .setParameter(1, entryNo)
-            .resultList
-        model.addAttribute("payments", details)
+        val userId = commonDaoServices.loggedInUserDetails().id ?: -3L
+        val isEmployee = userRolesRepo.findByUserIdAndRoleIdAndStatus(userId, applicationMapProperties.slEmployeeRoleId ?: throw NullValueNotAllowedException("Role definition for employees not done"), 1)?.id != null
+        if (isEmployee) {
+            val details = entityManager
+                .createNamedQuery(KraPaymentsEntityDto.FIND_ALL, KraPaymentsEntityDto::class.java)
+                .setParameter(1, entryNo)
+                .resultList
+            model.addAttribute("payments", details)
+        } else {
+            val manufacturerId = companyProfileRepo.findByUserId(userId)?.id ?: throw NullValueNotAllowedException("Invalid Request")
+            val details = entityManager
+                .createNamedQuery(KraPaymentsEntityDto.FIND_ALL, KraPaymentsEntityDto::class.java)
+                .setParameter(1, manufacturerId)
+                .resultList
+            model.addAttribute("payments", details)
+        }
+
+
         return "standard-levy/payments-details"
     }
 
@@ -253,7 +268,7 @@ class StandardLevy(
 
 
     @PostMapping("/submit/draft/feedback")
-//    @PreAuthorize("hasAuthority('SL_APPROVE_VISIT_REPORT')")
+    @PreAuthorize("hasAuthority('SL_SEND_FEEDBACK')")
     fun factoryVisitSubmitFeedback(
         redirectAttributes: RedirectAttributes,
         @RequestParam("feedback", required = true) feedback: String,

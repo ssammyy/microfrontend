@@ -293,7 +293,7 @@
                                 <button class="btn btn-primary" data-target="#industryVisitReportLevelTwoApproval" data-toggle="modal" sec:authorize="hasAuthority('SL_SECOND_APPROVE_VISIT_REPORT')" style="width: 270px;"
                                         th:if="${visitReport.assistantManagerApproval == 1 && visitReport.managersApproval != 1 }" type="button">Level Two Approval
                                 </button>
-                                <button class="btn btn-primary" data-target="#draftFeedback" data-toggle="modal" sec:authorize="hasAuthority('SL_MANUFACTURERS_VIEW')" style="width: 270px;"
+                                <button class="btn btn-primary" data-target="#draftFeedback" data-toggle="modal" sec:authorize="hasAuthority('SL_SEND_FEEDBACK')" style="width: 270px;"
                                         th:if="${visitReport?.scheduledVisitDate != null} and ${visitReport} and ${visitReport?.managersApproval == 1} and ${visitReport?.officersFeedback == null} and ${visitReport?.assistantManagerApproval == 1}" type="button">Submit Feedback
                                 </button>
                                 <br><br>

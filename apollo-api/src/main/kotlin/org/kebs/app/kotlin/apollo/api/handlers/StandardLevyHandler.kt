@@ -37,6 +37,7 @@ class StandardLevyHandler(
     private val userRepo: IUserRepository,
     private val townsRepo: ITownsRepository,
     private val slVisitsUploadRepo: ISlVisitUploadsRepository,
+    private val userRolesRepo: IUserRoleAssignmentsRepository,
 
 
     ) {
@@ -123,27 +124,32 @@ class StandardLevyHandler(
 
                                         }
                                         "load_levy_payments" -> {
-                                            standardLevyPaymentsRepository.findAllByOrderByIdDesc()
-                                                .let { payments ->
-                                                    KotlinLogging.logger { }
-                                                        .info("Records found ${payments?.count()}")
-                                                    KotlinLogging.logger { }.info("Records found ${payments?.count()}")
-                                                    req.attributes()["payments"] = payments
-                                                    req.attributes()["map"] = map
-                                                    ok().render(allPayments, req.attributes())
-                                                }
-                                        }
+                                            val userId = commonDaoServices.loggedInUserDetails().id ?: -3L
+                                            val isEmployee = userRolesRepo.findByUserIdAndRoleIdAndStatus(userId, applicationMapProperties.slEmployeeRoleId ?: throw NullValueNotAllowedException("Role definition for employees not done"), 1)?.id != null
 
-                                        "load_levy_no_payments" -> {
-                                            standardLevyPaymentsRepository.findAllByStatusOrderByIdDesc(0)
-                                                .let { payments ->
-                                                    KotlinLogging.logger { }
-                                                        .info("Records found ${payments?.count()}")
-                                                    KotlinLogging.logger { }.info("Records found ${payments?.count()}")
-                                                    req.attributes()["payments"] = payments
-                                                    req.attributes()["map"] = map
-                                                    ok().render(allPayments, req.attributes())
-                                                }
+
+
+                                            if (isEmployee) {
+                                                standardLevyPaymentsRepository.findAllByOrderByIdDesc()
+                                                    .let { payments ->
+                                                        KotlinLogging.logger { }
+                                                            .info("Records found ${payments?.count()}")
+                                                        KotlinLogging.logger { }.info("Records found ${payments?.count()}")
+                                                        req.attributes()["payments"] = payments
+
+                                                    }
+                                            } else {
+                                                standardLevyPaymentsRepository.findByManufacturerEntityOrderByIdDesc(companyProfileRepo.findByUserId(userId)?.id ?: throw NullValueNotAllowedException("Invalid Request"))
+                                                    .let { payments ->
+                                                        KotlinLogging.logger { }
+                                                            .info("Records found ${payments?.count()}")
+                                                        KotlinLogging.logger { }.info("Records found ${payments?.count()}")
+                                                        req.attributes()["payments"] = payments
+
+                                                    }
+                                            }
+                                            req.attributes()["map"] = map
+                                            ok().render(allPayments, req.attributes())
                                         }
 
 

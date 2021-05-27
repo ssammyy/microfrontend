@@ -815,6 +815,9 @@ class ApplicationMapProperties {
     @Value("\${org.kebs.app.kotlin.apollo.sl.level.two.approval.authorityId}")
     val slLevelTwoApprovalAuthorityId: Long? = null
 
+    @Value("\${org.kebs.app.kotlin.apollo.sl.employee.role.id}")
+    val slEmployeeRoleId: Long? = null
+
     val assigneeId: Long = 101
     val qaoAssigneeId: Long = 402
 
