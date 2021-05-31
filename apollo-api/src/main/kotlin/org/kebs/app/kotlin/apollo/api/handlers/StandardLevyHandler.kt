@@ -111,7 +111,7 @@ class StandardLevyHandler(
                                                             req.attributes()["map"] = map
 
                                                             req.attributes()["type"] = "load_tasks"
-
+                                                            tasks.sortBy { it?.assignedDate }
                                                             req.attributes()["tasks"] = tasks
 
                                                             ok().render(slAllManufacturers, req.attributes())

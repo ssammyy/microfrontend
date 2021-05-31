@@ -4,11 +4,7 @@
         <startEvent id="sLSvStart" name="Start"></startEvent>
         <userTask id="sLSvQueryManufacturerDetails" name="Query for Manufacturer Details"></userTask>
         <sequenceFlow id="flow1" sourceRef="sLSvStart" targetRef="sLSvQueryManufacturerDetails"></sequenceFlow>
-        <userTask id="sLsVScheduleVisit" name="Schedule Visit">
-            <extensionElements>
-                <activiti:taskListener event="assignment" expression="${bpmnNotifications.sendEmail(task)}"></activiti:taskListener>
-            </extensionElements>
-        </userTask>
+        <userTask id="sLsVScheduleVisit" name="Schedule Visit"></userTask>
         <sequenceFlow id="flow2" sourceRef="sLSvQueryManufacturerDetails" targetRef="sLsVScheduleVisit"></sequenceFlow>
         <userTask id="sLsVPrepareVisitReport" name="Prepare Visit Report">
             <extensionElements>
