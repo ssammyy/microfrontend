@@ -1,9 +1,9 @@
-package com.apollo.standardsdevelopment.services
+package org.kebs.app.kotlin.apollo.standardsdevelopment.services
 
-import com.apollo.standardsdevelopment.dto.ProcessInstanceResponse
-import com.apollo.standardsdevelopment.dto.TaskDetails
-import com.apollo.standardsdevelopment.models.NWAJustification
-import com.apollo.standardsdevelopment.repositories.NWAJustificationRepository
+import org.kebs.app.kotlin.apollo.standardsdevelopment.dto.ProcessInstanceResponse
+import org.kebs.app.kotlin.apollo.standardsdevelopment.dto.TaskDetails
+import org.kebs.app.kotlin.apollo.standardsdevelopment.models.NWAJustification
+import org.kebs.app.kotlin.apollo.standardsdevelopment.repositories.NWAJustificationRepository
 import org.flowable.engine.ProcessEngine
 import org.flowable.engine.RepositoryService
 import org.flowable.engine.RuntimeService

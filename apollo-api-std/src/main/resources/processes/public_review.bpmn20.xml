@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:flowable="http://flowable.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.flowable.org/processdef">
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:flowable="http://flowable.org/bpmn"
+             xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+             xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI"
+             typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath"
+             targetNamespace="http://www.flowable.org/processdef">
   <process id="publicreview" name="Public Review" isExecutable="true">
     <documentation>Standard Development Module Public Review</documentation>
     <startEvent id="startEvent1" flowable:formFieldValidation="true"/>
@@ -8,13 +12,13 @@
     <sequenceFlow id="sid-01C7E35F-DCC6-466F-B43E-42B27BC3F00D" sourceRef="startEvent1"
                   targetRef="PreparePublicReviewDraft"/>
     <serviceTask id="receive_notification_of_prd_hp" name="Receive Notification of PRD"
-                 flowable:class="com.apollo.standardsdevelopment.handlers.EmailHandler"/>
+                 flowable:class="org.kebs.app.kotlin.apollo.standardsdevelopment.handlers.EmailHandler"/>
     <serviceTask id="ReceiveNotificationofPRDNO" name="Receive Notification of PRD"
-                 flowable:class="com.apollo.standardsdevelopment.handlers.EmailHandler"/>
+                 flowable:class="org.kebs.app.kotlin.apollo.standardsdevelopment.handlers.EmailHandler"/>
     <serviceTask id="ReceiveNotificationofPRDICT" name="Receive Notification of PRD for posting on the website"
-                 flowable:class="com.apollo.standardsdevelopment.handlers.EmailHandler"/>
+                 flowable:class="org.kebs.app.kotlin.apollo.standardsdevelopment.handlers.EmailHandler"/>
     <serviceTask id="ReceiveNotificationofPRDDO" name="Receive Notification of PRD"
-                 flowable:class="com.apollo.standardsdevelopment.handlers.EmailHandler"/>
+                 flowable:class="org.kebs.app.kotlin.apollo.standardsdevelopment.handlers.EmailHandler"/>
     <sequenceFlow id="sid-3AD7A442-360F-4616-8AE6-72853C155751" sourceRef="PreparePublicReviewDraft"
                   targetRef="receive_notification_of_prd_hp"/>
     <sequenceFlow id="sid-64DC9F2C-FB21-46D3-AD9D-1AB65F171579" sourceRef="PreparePublicReviewDraft"
@@ -24,7 +28,7 @@
     <sequenceFlow id="sid-74409E86-3901-4BBF-BF90-C9332B3EF70A" sourceRef="PreparePublicReviewDraft"
                   targetRef="ReceiveNotificationofPRDDO"/>
     <serviceTask id="ReceiveNotificationOfComments" name="Receive Notification Of Comments"
-                 flowable:class="com.apollo.standardsdevelopment.handlers.EmailHandler"/>
+                 flowable:class="org.kebs.app.kotlin.apollo.standardsdevelopment.handlers.EmailHandler"/>
     <sequenceFlow id="sid-0A88D92F-FA2E-4804-AC01-41A4220C1DDD" sourceRef="receive_notification_of_prd_hp"
                   targetRef="ReceiveNotificationOfComments"/>
     <sequenceFlow id="sid-13CC3702-ADBA-4C44-AE76-64923201786E" sourceRef="ReceiveNotificationofPRDNO"
@@ -35,7 +39,7 @@
                   targetRef="ReceiveNotificationOfComments"/>
     <userTask id="ReviewDraft" name="Review Draft" flowable:candidateGroups="TC" flowable:formFieldValidation="true"/>
     <serviceTask id="NotificationOfRevisedPRD" name="Notification Of Revised PRD"
-                 flowable:class="com.apollo.standardsdevelopment.handlers.EmailHandler"/>
+                 flowable:class="org.kebs.app.kotlin.apollo.standardsdevelopment.handlers.EmailHandler"/>
     <userTask id="Balloting" name="Balloting" flowable:candidateGroups="TC-Sec" flowable:formFieldValidation="true"/>
     <endEvent id="sid-7D0CC7C6-1C04-47E0-BB94-2931464F3F97"/>
     <sequenceFlow id="sid-BF9670C4-F77A-4933-8BB0-049273E1E531" sourceRef="ReceiveNotificationOfComments"

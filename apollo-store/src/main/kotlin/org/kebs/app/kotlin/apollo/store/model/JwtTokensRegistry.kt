@@ -48,6 +48,10 @@ import javax.persistence.*
 class JwtTokensRegistry : Serializable {
 
 
+    var refreshTokenStatus: Int? = null
+    var refreshTokenExpiry: Timestamp?= null
+    var refreshToken: String?= null
+
     @Id
     @SequenceGenerator(name = "LOG_JWT_TOKENS_REGISTRY_SEQ_GEN", sequenceName = "LOG_JWT_TOKENS_REGISTRY_SEQ", allocationSize = 1)
     @GeneratedValue(generator = "LOG_JWT_TOKENS_REGISTRY_SEQ_GEN", strategy = GenerationType.SEQUENCE)

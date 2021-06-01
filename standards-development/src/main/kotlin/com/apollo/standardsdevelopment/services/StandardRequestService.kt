@@ -1,9 +1,9 @@
-package com.apollo.standardsdevelopment.services
+package org.kebs.app.kotlin.apollo.standardsdevelopment.services
 
-import com.apollo.standardsdevelopment.dto.ProcessInstanceResponse
-import com.apollo.standardsdevelopment.dto.TaskDetails
-import com.apollo.standardsdevelopment.models.*
-import com.apollo.standardsdevelopment.repositories.*
+import org.kebs.app.kotlin.apollo.standardsdevelopment.dto.ProcessInstanceResponse
+import org.kebs.app.kotlin.apollo.standardsdevelopment.dto.TaskDetails
+import org.kebs.app.kotlin.apollo.standardsdevelopment.models.*
+import org.kebs.app.kotlin.apollo.standardsdevelopment.repositories.*
 import org.flowable.engine.ProcessEngine
 import org.flowable.engine.RepositoryService
 import org.flowable.engine.RuntimeService
