@@ -9,9 +9,6 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.emailDTO.CustomerComplaintR
 import org.kebs.app.kotlin.apollo.api.ports.provided.emailDTO.CustomerComplaintRejectedWIthOGADTO
 import org.kebs.app.kotlin.apollo.api.ports.provided.emailDTO.CustomerComplaintSubmittedDTO
 import org.kebs.app.kotlin.apollo.api.ports.provided.spec.ComplaintSpecification
-import org.kebs.app.kotlin.apollo.api.ports.provided.spec.UserSpecification
-import org.kebs.app.kotlin.apollo.common.dto.UserEntityDto
-import org.kebs.app.kotlin.apollo.common.dto.UserSearchValues
 import org.kebs.app.kotlin.apollo.common.dto.ms.*
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.common.utils.generateRandomText

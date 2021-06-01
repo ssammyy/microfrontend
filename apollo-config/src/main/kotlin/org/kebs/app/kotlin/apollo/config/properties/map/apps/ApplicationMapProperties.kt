@@ -386,6 +386,9 @@ class ApplicationMapProperties {
     @Value("\${org.kebs.app.kotlin.apollo.resources.static.images.mpesa.logo.path}")
     val mapMPESALogoPath: String = ""
 
+    @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.manufacture.message.renew}")
+    val mapPermitRenewMessage: String = ""
+
     @Value("\${org.kebs.app.kotlin.apollo.application.map.user.registration.activation.notification}")
     val mapUserRegistrationActivationNotification: String = ""
 

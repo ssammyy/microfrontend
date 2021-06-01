@@ -71,6 +71,7 @@ import org.kebs.app.kotlin.apollo.store.model.di.CdLaboratoryEntity
 import org.kebs.app.kotlin.apollo.store.model.qa.ManufacturePlantDetailsEntity
 import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileCommoditiesManufactureEntity
 import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileContractsUndertakenEntity
+import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileDirectorsEntity
 import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileEntity
 import org.kebs.app.kotlin.apollo.store.repo.*
 import org.kebs.app.kotlin.apollo.store.repo.di.ILaboratoryRepository
@@ -264,10 +265,17 @@ class CommonDaoServices(
 
     fun findBatchJobDetails(batchJobID: Long): BatchJobDetails {
         batchJobRepository.findByIdOrNull(batchJobID)
-                ?.let {
-                    return it
-                }
-                ?: throw ExpectedDataNotFound("Batch Job Details With the following ID $batchJobID, does not exist")
+            ?.let {
+                return it
+            }
+            ?: throw ExpectedDataNotFound("Batch Job Details With the following ID $batchJobID, does not exist")
+    }
+
+    fun companyDirectorList(companyID: Long): List<CompanyProfileDirectorsEntity> {
+        companyProfileDirectorsRepo.findByCompanyProfileId(companyID)?.let {
+            return it
+        }
+            ?: throw ExpectedDataNotFound("Directors details for company with  ID $companyID, does not exist")
     }
 
     companion object {
@@ -278,7 +286,7 @@ class CommonDaoServices(
             oFactory.setProperty(WstxOutputProperties.P_OUTPUT_CDATA_AS_TEXT, true)
             val xf = XmlFactory(iFactory, oFactory)
             val xmlMapper: ObjectMapper = XmlMapper(xf)
-                    .registerModule(KotlinModule())
+                .registerModule(KotlinModule())
 //        xmlMapper.registerModule(JodaModule())
             xmlMapper.configure(SerializationFeature.WRITE_SELF_REFERENCES_AS_NULL, false)
             xmlMapper.configure(JsonGenerator.Feature.AUTO_CLOSE_TARGET, false)
