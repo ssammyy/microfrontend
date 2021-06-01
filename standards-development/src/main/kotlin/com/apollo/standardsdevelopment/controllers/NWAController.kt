@@ -1,9 +1,9 @@
-package com.apollo.standardsdevelopment.controllers
+package org.kebs.app.kotlin.apollo.standardsdevelopment.controllers
 
-import com.apollo.standardsdevelopment.dto.ProcessInstanceResponse
-import com.apollo.standardsdevelopment.dto.TaskDetails
-import com.apollo.standardsdevelopment.models.NWAJustification
-import com.apollo.standardsdevelopment.services.NWAService
+import org.kebs.app.kotlin.apollo.standardsdevelopment.dto.ProcessInstanceResponse
+import org.kebs.app.kotlin.apollo.standardsdevelopment.dto.TaskDetails
+import org.kebs.app.kotlin.apollo.standardsdevelopment.models.NWAJustification
+import org.kebs.app.kotlin.apollo.standardsdevelopment.services.NWAService
 import org.springframework.web.bind.annotation.*
 
 @RestController

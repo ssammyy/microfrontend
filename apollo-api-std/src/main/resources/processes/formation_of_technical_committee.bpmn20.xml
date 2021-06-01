@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:flowable="http://flowable.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.flowable.org/processdef">
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xmlns:flowable="http://flowable.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+             xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI"
+             typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath"
+             targetNamespace="http://www.flowable.org/processdef">
   <process id="sd_formation_of_technical_committee" name="Formation of technical committee" isExecutable="true">
     <startEvent id="startEvent" flowable:formFieldValidation="true"/>
     <userTask id="reviewJustification" name="Review justification" flowable:candidateGroups="SPC" flowable:formFieldValidation="true"/>
@@ -8,11 +12,11 @@
     <userTask id="reviewFeedbackFromSPC" name="Review feedback from SPC" flowable:candidateGroups="SAC" flowable:formFieldValidation="true"/>
     <exclusiveGateway id="decisionOnFeedback"/>
     <userTask id="feedbackOnRejection2" name="Feedback on rejection" flowable:candidateGroups="SAC" flowable:formFieldValidation="true"/>
-    <serviceTask id="generateTCNumber" name="Generate TC number and advertise position on site" flowable:class="com.apollo.standardsdevelopment.handlers.GenerateTCNumber"/>
-    <serviceTask id="sendNotificationForRecommendation1" name="Send notification for recommendation" flowable:class="com.apollo.standardsdevelopment.handlers.EmailHandler"/>
+    <serviceTask id="generateTCNumber" name="Generate TC number and advertise position on site" flowable:class="org.kebs.app.kotlin.apollo.standardsdevelopment.handlers.GenerateTCNumber"/>
+    <serviceTask id="sendNotificationForRecommendation1" name="Send notification for recommendation" flowable:class="org.kebs.app.kotlin.apollo.standardsdevelopment.handlers.EmailHandler"/>
     <userTask id="feedbackOnRejection" name="Feedback on rejection" flowable:candidateGroups="SPC" flowable:formFieldValidation="true"/>
-    <serviceTask id="sendNotificationFeedback2" name="Send notification and feedback" flowable:class="com.apollo.standardsdevelopment.handlers.EmailHandler"/>
-    <serviceTask id="sendFeedbackNotification" name="Send notification of feedback" flowable:class="com.apollo.standardsdevelopment.handlers.EmailHandler"/>
+    <serviceTask id="sendNotificationFeedback2" name="Send notification and feedback" flowable:class="org.kebs.app.kotlin.apollo.standardsdevelopment.handlers.EmailHandler"/>
+    <serviceTask id="sendFeedbackNotification" name="Send notification of feedback" flowable:class="org.kebs.app.kotlin.apollo.standardsdevelopment.handlers.EmailHandler"/>
     <sequenceFlow id="flow3" sourceRef="sendNotificationForRecommendation1" targetRef="reviewJustification"/>
     <sequenceFlow id="flow4" sourceRef="reviewJustification" targetRef="deceisionOnJustification"/>
     <sequenceFlow id="flow6" sourceRef="feedbackOnRejection" targetRef="sendNotificationFeedback2"/>

@@ -1,9 +1,9 @@
-package com.apollo.standardsdevelopment.controllers
+package org.kebs.app.kotlin.apollo.standardsdevelopment.controllers
 
-import com.apollo.standardsdevelopment.dto.ProcessInstanceResponse
-import com.apollo.standardsdevelopment.dto.TaskDetails
-import com.apollo.standardsdevelopment.models.*
-import com.apollo.standardsdevelopment.services.StandardRequestService
+import org.kebs.app.kotlin.apollo.standardsdevelopment.dto.ProcessInstanceResponse
+import org.kebs.app.kotlin.apollo.standardsdevelopment.dto.TaskDetails
+import org.kebs.app.kotlin.apollo.standardsdevelopment.models.*
+import org.kebs.app.kotlin.apollo.standardsdevelopment.services.StandardRequestService
 import org.springframework.web.bind.annotation.*
 
 @RestController

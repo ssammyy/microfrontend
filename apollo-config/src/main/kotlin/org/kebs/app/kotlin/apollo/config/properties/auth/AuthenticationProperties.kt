@@ -31,6 +31,21 @@ import org.springframework.context.annotation.Configuration
 @EncryptablePropertySource("file:\${CONFIG_PATH}/auth.properties")
 class AuthenticationProperties {
 
+
+    @Value("\${org.kebs.app.kotlin.apollo.config.auth.requires.no.authentication.post}")
+    var requiresNoAuthenticationPost: String? = null
+
+
+    @Value("\${org.kebs.app.kotlin.apollo.config.auth.jwt.refresh.token.expiration.ms}")
+    val refreshTokenExpirationMs: Long = 0
+
+
+    @Value("\${org.kebs.app.kotlin.apollo.config.auth.custom.refresh.token.header}")
+    val refreshTokenHeader: String? = null
+
+    @Value("\${org.kebs.app.kotlin.apollo.config.auth.jwt.expiry.padding}")
+    val jwtExpiryPadding: Long = 5L
+
     @Value("\${org.kebs.app.kotlin.apollo.auth.api.login.url}")
     val apiLoginUrl: String? = null
 

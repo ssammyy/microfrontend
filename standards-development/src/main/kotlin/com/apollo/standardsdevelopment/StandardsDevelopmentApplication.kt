@@ -1,6 +1,6 @@
-package com.apollo.standardsdevelopment
+package org.kebs.app.kotlin.apollo.standardsdevelopment
 
-import com.apollo.standardsdevelopment.repositories.CustomerRespository
+import org.kebs.app.kotlin.apollo.standardsdevelopment.repositories.CustomerRespository
 import org.springframework.boot.CommandLineRunner
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
