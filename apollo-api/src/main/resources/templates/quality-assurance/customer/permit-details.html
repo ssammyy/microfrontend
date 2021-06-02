@@ -430,15 +430,11 @@
 
                                         <a th:if="${permitDetails?.attachedPlantId == null}" style="color: white" onclick="popUpFunction('attachePlant');" class="filter-link">ATTACH PLANT</a>
 
-                                        <a th:if="${permitDetails?.permitAwardStatus == 1}" style="color: white"
-                                           onclick="popUpFunction('updateBrandDetails');" class="filter-link">PERMIT
-                                            BRAND DETAILS</a>
+                                        <a th:if="${permitDetails?.permitAwardStatus == 1}" style="color: white" onclick="popUpRequestFunction('updateBrandDetails');" class="filter-link">UPDATE PERMIT BRAND DETAILS</a>
 
-                                        <a th:if="${permitDetails?.endOfProductionStatus != 1 and permitDetails?.permitAwardStatus == 1}" style="color: white" onclick="popUpFunction('permitStopProductionDetails');" class="filter-link">STOP PRODUCTION</a>
+                                        <a th:if="${permitDetails?.endOfProductionStatus != 1 and permitDetails?.permitAwardStatus == 1}" style="color: white" onclick="popUpRequestFunction('permitStopProductionDetails');" class="filter-link">STOP PRODUCTION</a>
 
-                                        <a th:if="${permitDetails?.permitExpiredStatus == 1 and permitDetails?.oldPermitStatus != 1}"
-                                           th:href="@{/api/qa/kebs/renew/permit-details/save(permitID=${permitDetails?.id})}"
-                                           class="filter-link" style="color: white">RENEW PERMIT</a>
+                                        <a th:if="${permitDetails?.permitExpiredStatus == 1 and permitDetails?.oldPermitStatus != 1}" th:href="@{/api/qa/kebs/renew/permit-details/save(permitID=${permitDetails?.id})}" class="filter-link" style="color: white">RENEW PERMIT</a>
 
                                         <a th:if="${permitDetails?.resubmitApplicationStatus == null and permitDetails?.hofQamCompletenessStatus == 0}"  th:href="@{/api/qa/kebs/resubmit/permit-details/save(permitID=${permitDetails?.id})}" class="filter-link" style="color: white">RESUBMIT PERMIT</a>
 
@@ -830,16 +826,6 @@
                                             <label for="hofQamCompletenessRemarks" class="col-form-label">Please write, in detail, PAC decision/remarks:</label>
                                             <textarea required name="name" id="pacDecisionRemarks" class="input-field w-input" cols="65" rows="5" th:field="*{pacDecisionRemarks}"></textarea>
                                         </div>
-                                        <div id="permitStopProductionDetails">
-                                            <input type="hidden" id="description17" name="description" th:value="'Permit status successfully updated'">
-                                            <label for="endOfProductionStatus" class="col-form-label">Select application status:</label>
-                                            <select id="endOfProductionStatus" required class="select-field w-select" th:field="*{endOfProductionStatus}">
-                                                <option th:text="'Select one.....'" th:value="null"></option>
-                                                <option th:text="'Yes'" th:value="1"></option>
-                                            </select>
-                                            <label for="endOfProductionRemarks" class="col-form-label">Please write, in detail, your remarks:</label>
-                                            <textarea required name="name" id="endOfProductionRemarks" class="input-field w-input" cols="65" rows="5" th:field="*{endOfProductionRemarks}"></textarea>
-                                        </div>
                                     </div>
                                 </div>
                                 <div class="modal-footer">
@@ -986,6 +972,49 @@
                                 <div class="modal-footer">
                                     <button class="btn btn-secondary" data-dismiss="modal" onClick="refreshPage()" type="button">Close</button>
                                     <input type="submit" id="saveSSfValue" class="btn btn-primary" value="Save"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div  class="requestForm">
+                <form id="request-form"   name="request-form" enctype="multipart/form-data" th:action="@{/api/qa/kebs/request-update-details(permitID = ${permitDetails?.id})}" method="post" th:object="${requestDetails}">
+                    <div class="modal fade" id="requestModal" tabindex="-1" role="dialog" aria-labelledby="requestModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 style="font-weight: bold; " class="modal-title" id="requestModalLabel"><span id="spanRequestValue" >none</span></h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="form-group">
+                                        <div id="updateBrandDetails">
+                                            <input id="requestStatus" name="requestStatus" th:value="${activeStatus}" type="hidden">
+                                            <label for="brandName" class="col-form-label">New Brand Name:</label>
+                                            <input class="input-field w-input" type="text" max="20" id="brandName" name="brandName" th:field="*{brandName}" th:required="required">
+                                            <label for="description" class="col-form-label">Please write, in detail, your reason:</label>
+                                            <textarea required name="name" id="description" class="input-field w-input" cols="65" rows="5" th:field="*{description}"></textarea>
+                                        </div>
+                                        <div id="permitStopProductionDetails">
+                                            <input id="requestStatus" name="requestStatus" th:value="${activeStatus}" type="hidden">
+                                            <label for="endProduction" class="col-form-label">Select status:</label>
+                                            <select id="endProduction" required class="select-field w-select" th:field="*{endProduction}">
+                                                <option th:text="'Select one.....'" th:value="null"></option>
+                                                <option th:text="'Yes'" th:value="1"></option>
+                                            </select>
+                                            <label for="description" class="col-form-label">Please write, in detail, your reason:</label>
+                                            <textarea required name="name" id="description" class="input-field w-input" cols="65" rows="5" th:field="*{description}"></textarea>
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button class="btn btn-secondary" data-dismiss="modal" onClick="refreshPage()" type="button">Close</button>
+                                    <input type="submit" id="saveRequestValue" class="btn btn-primary" value="Save"/>
                                 </div>
                             </div>
                         </div>
@@ -1245,6 +1274,24 @@
         }
 
         $('.qaApplicationResubmitForm #qaApplicationResubmitModal').modal();
+    }
+
+    function popUpRequestFunction(eventAction) {
+        let arrHead = [ 'updateBrandDetails', 'permitStopProductionDetails'];
+        let arrHeadSave = ['Fill in the brand name Details for update', 'End product production'];
+
+        for (let h = 0; h < arrHead.length; h++) {
+            if(eventAction !== arrHead[h]){
+                document.getElementById(arrHead[h]).remove();
+            }else {
+                if (eventAction === arrHead[h]) {
+                    document.getElementById('spanRequestValue').innerHTML = arrHeadSave[h];
+                    document.getElementById("saveRequestValue").value = 'Submit';
+                }
+            }
+        }
+
+        $('.requestForm #requestModal').modal();
     }
 
 

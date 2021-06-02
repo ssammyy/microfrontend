@@ -121,10 +121,10 @@ class RegisterController(
 
         when {
             userPinIdNumberExists != null -> {
-                            throw ExpectedDataNotFound("The User PIN/PASSPORT/ID Number Already Exists")
+                            throw ExpectedDataNotFound("The User Already Exists")
                         }
             userEmailExists != null -> {
-                            throw ExpectedDataNotFound("The Email Already Exists")
+                            throw ExpectedDataNotFound("The User Already Exists")
                         }
                         else -> {
                             result = daoServices.registerUser(map, usersEntity, null)
