@@ -156,7 +156,7 @@ class DestinationInspectionHandler(
                                         )
                                     }
                                     req.attributes()["CDCompleted"] =
-                                        daoServices.findAllCompleteCdWithPortOfEntry(usersEntity, cdType)
+                                        daoServices.findAllCompleteCdWithAssignedIoID(usersEntity, cdType)
                                     ok().render(cdPageList, req.attributes())
                                 }
                                 else -> throw SupervisorNotFoundException("can't access this page Due to Invalid authority")
