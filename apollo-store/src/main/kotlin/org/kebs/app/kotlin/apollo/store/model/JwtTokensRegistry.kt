@@ -48,8 +48,13 @@ import javax.persistence.*
 class JwtTokensRegistry : Serializable {
 
 
+    @Transient
     var refreshTokenStatus: Int? = null
+
+    @Transient
     var refreshTokenExpiry: Timestamp?= null
+
+    @Transient
     var refreshToken: String?= null
 
     @Id
