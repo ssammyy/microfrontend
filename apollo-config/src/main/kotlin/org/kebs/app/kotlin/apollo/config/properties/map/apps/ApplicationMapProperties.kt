@@ -389,6 +389,9 @@ class ApplicationMapProperties {
     @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.manufacture.message.renew}")
     val mapPermitRenewMessage: String = ""
 
+    @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.manufacture.message.new}")
+    val mapPermitNewMessage: String = ""
+
     @Value("\${org.kebs.app.kotlin.apollo.application.map.user.registration.activation.notification}")
     val mapUserRegistrationActivationNotification: String = ""
 
