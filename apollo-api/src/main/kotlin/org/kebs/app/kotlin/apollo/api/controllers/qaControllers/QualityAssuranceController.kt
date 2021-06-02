@@ -614,6 +614,29 @@ class QualityAssuranceController(
         return commonDaoServices.returnValues(result, map, sm)
     }
 
+    @PreAuthorize("hasAuthority('PERMIT_APPLICATION') or hasAuthority('QA_MANAGER_ASSESSORS_MODIFY') or hasAuthority('QA_HOF_MODIFY') or hasAuthority('QA_HOD_MODIFY') or hasAuthority('QA_OFFICER_MODIFY') or hasAuthority('QA_PAC_SECRETARY_MODIFY') or hasAuthority('QA_PSC_MEMBERS_MODIFY') or hasAuthority('QA_PCM_MODIFY') or hasAuthority('QA_ASSESSORS_MODIFY')")
+    @PostMapping("/kebs/request-update-details")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun permitRequestForUpdates(
+        @RequestParam("permitID") permitID: Long,
+        @ModelAttribute("requestDetails") requestDetails: PermitUpdateDetailsRequestsEntity,
+        model: Model
+    ): String? {
+        val map = commonDaoServices.serviceMapDetails(appId)
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val permit = qaDaoServices.findPermitBYID(permitID)
+
+        val result: ServiceRequestsEntity?
+
+        result = qaDaoServices.requestUpdateDetails(permit,requestDetails,loggedInUser,map).first
+
+        val sm = CommonDaoServices.MessageSuccessFailDTO()
+        sm.closeLink = "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permit.id}"
+        sm.message = "Your request has been submitted Successful Details"
+
+        return commonDaoServices.returnValues(result, map, sm)
+    }
+
     @PreAuthorize("hasAuthority('PERMIT_APPLICATION')")
     @GetMapping("/new-permit-submit-review")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)

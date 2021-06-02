@@ -5,6 +5,7 @@ import java.io.Serializable
 import java.math.BigDecimal
 import java.sql.Date
 import java.sql.Timestamp
+import java.util.*
 import javax.persistence.*
 
 
@@ -470,6 +471,55 @@ class PermitApplicationsEntity:Serializable {
     @Basic
     var awardedPermitNumber: String? = null
 
+    @Column(name = "BRAND_NAME_REQUEST")
+    @Basic
+    var brandNameRequest: String? = null
+
+    @Column(name = "BRAND_NAME_REQUEST_STATUS")
+    @Basic
+    var brandNameRequestStatus: Long? = null
+
+    @Column(name = "BRAND_NAME_REQUEST_REMARKS")
+    @Basic
+    var brandNameRequestRemarks: String? = null
+
+    @Column(name = "BRAND_NAME_REQUEST_APPROVAL")
+    @Basic
+    var brandNameRequestApproval: String? = null
+
+    @Column(name = "BRAND_NAME_REQUEST_STATUS_APPROVAL")
+    @Basic
+    var brandNameRequestStatusApproval: Long? = null
+
+    @Column(name = "BRAND_NAME_REQUEST_REMARKS_APPROVAL")
+    @Basic
+    var brandNameRequestRemarksApproval: String? = null
+
+    @Column(name = "END_PRODUCTION_REQUEST")
+    @Basic
+    var endProductionRequest: String? = null
+
+    @Column(name = "END_PRODUCTION_REQUEST_STATUS")
+    @Basic
+    var endProductionRequestStatus: Long? = null
+
+    @Column(name = "END_PRODUCTION_REQUEST_REMARKS")
+    @Basic
+    var endProductionRequestRemarks: String? = null
+
+    @Column(name = "END_PRODUCTION_REQUEST_APPROVAL")
+    @Basic
+    var endProductionRequestApproval: String? = null
+
+    @Column(name = "END_PRODUCTION_REQUEST_STATUS_APPROVAL")
+    @Basic
+    var endProductionRequestStatusApproval: Long? = null
+
+    @Column(name = "END_PRODUCTION_REQUEST_REMARKS_APPROVAL")
+    @Basic
+    var endProductionRequestRemarksApproval: String? = null
+
+
     @Column(name = "VAR_FIELD_1")
     @Basic
     var varField1: String? = null
@@ -536,258 +586,144 @@ class PermitApplicationsEntity:Serializable {
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-
-        other as PermitApplicationsEntity
-
-        if (id != other.id) return false
-        if (applicantName != other.applicantName) return false
-        if (firmName != other.firmName) return false
-        if (permitRefNumber != other.permitRefNumber) return false
-        if (description != other.description) return false
-        if (postalAddress != other.postalAddress) return false
-        if (position != other.position) return false
-        if (telephoneNo != other.telephoneNo) return false
-        if (faxNo != other.faxNo) return false
-        if (email != other.email) return false
-        if (physicalAddress != other.physicalAddress) return false
-        if (plotNo != other.plotNo) return false
-        if (designation != other.designation) return false
-        if (vatNo != other.vatNo) return false
-        if (productCategory != other.productCategory) return false
-        if (broadProductCategory != other.broadProductCategory) return false
-        if (product != other.product) return false
-        if (versionNumber != other.versionNumber) return false
-        if (divisionId != other.divisionId) return false
-        if (inspectionReportId != other.inspectionReportId) return false
-        if (sectionId != other.sectionId) return false
-        if (standardCategory != other.standardCategory) return false
-        if (productStandard != other.productStandard) return false
-        if (productSubCategory != other.productSubCategory) return false
-        if (attachedPlantId != other.attachedPlantId) return false
-        if (attachedPlantId != other.attachedPlantId) return false
-        if (permitStatus != other.permitStatus) return false
-        if (userId != other.userId) return false
-        if (bsNumber != other.bsNumber) return false
-        if (compliantRemarks != other.compliantRemarks) return false
-        if (scfId != other.scfId) return false
-        if (ssfId != other.ssfId) return false
-        if (testReportId != other.testReportId) return false
-        if (pscMemberId != other.pscMemberId) return false
-        if (pcmId != other.pcmId) return false
-        if (qamId != other.qamId) return false
-        if (hodId != other.hodId) return false
-        if (rmId != other.rmId) return false
-        if (hofId != other.hofId) return false
-        if (qaoId != other.qaoId) return false
-        if (permitType != other.permitType) return false
-        if (ksNumber != other.ksNumber) return false
-        if (commodityDescription != other.commodityDescription) return false
-        if (dateOfIssue != other.dateOfIssue) return false
-        if (dateOfExpiry != other.dateOfExpiry) return false
-        if (applicationSuspensionStatus != other.applicationSuspensionStatus) return false
-        if (attachedPlantRemarks != other.attachedPlantRemarks) return false
-        if (productName != other.productName) return false
-        if (tradeMark != other.tradeMark) return false
-        if (recommendationApprovalStatus != other.recommendationApprovalStatus) return false
-        if (recommendationRemarks != other.recommendationRemarks) return false
-        if (recommendationApprovalRemarks != other.recommendationApprovalRemarks) return false
-        if (hofQamCompletenessRemarks != other.hofQamCompletenessRemarks) return false
-        if (pscMemberApprovalStatus != other.pscMemberApprovalStatus) return false
-        if (pscMemberApprovalRemarks != other.pscMemberApprovalRemarks) return false
-        if (pcmApprovalStatus != other.pcmApprovalStatus) return false
-        if (pcmApprovalRemarks != other.pcmApprovalRemarks) return false
-        if (hodApproveAssessmentRemarks != other.hodApproveAssessmentRemarks) return false
-        if (hodApproveAssessmentStatus != other.hodApproveAssessmentStatus) return false
-        if (factoryInspectionReportApprovedRejectedStatus != other.factoryInspectionReportApprovedRejectedStatus) return false
-        if (factoryInspectionReportApprovedRejectedRemarks != other.factoryInspectionReportApprovedRejectedRemarks) return false
-        if (assessmentCriteria != other.assessmentCriteria) return false
-        if (pacDecisionRemarks != other.pacDecisionRemarks) return false
-        if (hofQamCompletenessStatus != other.hofQamCompletenessStatus) return false
-        if (compliantStatus != other.compliantStatus) return false
-        if (sendForPcmReview != other.sendForPcmReview) return false
-        if (justificationReportStatus != other.justificationReportStatus) return false
-        if (requestStatus != other.requestStatus) return false
-        if (justificationReportRemarks != other.justificationReportRemarks) return false
-        if (assessmentReportRemarks != other.assessmentReportRemarks) return false
-        if (assignAssessorStatus != other.assignAssessorStatus) return false
-        if (resubmitApplicationStatus != other.resubmitApplicationStatus) return false
-        if (assessorId != other.assessorId) return false
-        if (pacSecId != other.pacSecId) return false
-        if (paidStatus != other.paidStatus) return false
-        if (assignOfficerStatus != other.assignOfficerStatus) return false
-        if (permitExpiredStatus != other.permitExpiredStatus) return false
-        if (permitForeignStatus != other.permitForeignStatus) return false
-        if (permitAwardStatus != other.permitAwardStatus) return false
-        if (status != other.status) return false
-        if (sta10FilledOfficerStatus != other.sta10FilledOfficerStatus) return false
-        if (generateSchemeStatus != other.generateSchemeStatus) return false
-        if (sta10FilledStatus != other.sta10FilledStatus) return false
-        if (oldPermitStatus != other.oldPermitStatus) return false
-        if (renewalStatus != other.renewalStatus) return false
-        if (approvedRejectedScheme != other.approvedRejectedScheme) return false
-        if (inspectionDate != other.inspectionDate) return false
-        if (assessmentDate != other.assessmentDate) return false
-        if (inspectionScheduledStatus != other.inspectionScheduledStatus) return false
-        if (assessmentScheduledStatus != other.assessmentScheduledStatus) return false
-        if (sta3FilledStatus != other.sta3FilledStatus) return false
-        if (sendApplication != other.sendApplication) return false
-        if (invoiceGenerated != other.invoiceGenerated) return false
-        if (fmarkGenerated != other.fmarkGenerated) return false
-        if (endOfProductionStatus != other.endOfProductionStatus) return false
-        if (enabled != other.enabled) return false
-        if (smeFormFilledStatus != other.smeFormFilledStatus) return false
-        if (title != other.title) return false
-        if (endOfProductionRemarks != other.endOfProductionRemarks) return false
-        if (totalCost != other.totalCost) return false
-        if (totalPayment != other.totalPayment) return false
-        if (annualTurnOver != other.annualTurnOver) return false
-        if (inspectorsRemark != other.inspectorsRemark) return false
-        if (inspectorsName != other.inspectorsName) return false
-        if (dateOfVisit != other.dateOfVisit) return false
-        if (varField1 != other.varField1) return false
-        if (varField2 != other.varField2) return false
-        if (varField3 != other.varField3) return false
-        if (varField4 != other.varField4) return false
-        if (varField5 != other.varField5) return false
-        if (varField6 != other.varField6) return false
-        if (varField7 != other.varField7) return false
-        if (varField8 != other.varField8) return false
-        if (varField9 != other.varField9) return false
-        if (varField10 != other.varField10) return false
-        if (createdBy != other.createdBy) return false
-        if (createdOn != other.createdOn) return false
-        if (modifiedBy != other.modifiedBy) return false
-        if (modifiedOn != other.modifiedOn) return false
-        if (deleteBy != other.deleteBy) return false
-        if (deletedOn != other.deletedOn) return false
-
-        return true
+        if (other == null || javaClass != other.javaClass) return false
+        val that = other as PermitApplicationsEntity
+                return id == that.id && designation == that.designation && email == that.email && faxNo == that.faxNo && firmName == that.firmName && applicantName == that.applicantName && physicalAddress == that.physicalAddress && plotNo == that.plotNo && position == that.position && postalAddress == that.postalAddress && region == that.region && telephoneNo == that.telephoneNo && vatNo == that.vatNo  && createdBy == that.createdBy && createdOn == that.createdOn && dateOfIssue == that.dateOfIssue && dateOfVisit == that.dateOfVisit && deleteBy == that.deleteBy && deletedOn == that.deletedOn && ksNumber == that.ksNumber && modifiedBy == that.modifiedBy && modifiedOn == that.modifiedOn && permitType == that.permitType && productName == that.productName && title == that.title && totalCost == that.totalCost && totalPayment == that.totalPayment && tradeMark == that.tradeMark && varField1 == that.varField1 && varField10 == that.varField10 && varField2 == that.varField2 && varField3 == that.varField3 && varField4 == that.varField4 && varField5 == that.varField5 && varField6 == that.varField6 && varField7 == that.varField7 && varField8 == that.varField8 && varField9 == that.varField9 && userId == that.userId && status == that.status && permitRefNumber == that.permitRefNumber && dateOfExpiry == that.dateOfExpiry && commodityDescription == that.commodityDescription && enabled == that.enabled && broadProductCategory == that.broadProductCategory && productCategory == that.productCategory && product == that.product && productSubCategory == that.productSubCategory && standardCategory == that.standardCategory && productStandard == that.productStandard && sta3FilledStatus == that.sta3FilledStatus && sta10FilledStatus == that.sta10FilledStatus && permitForeignStatus == that.permitForeignStatus && smeFormFilledStatus == that.smeFormFilledStatus && sendApplication == that.sendApplication && invoiceGenerated == that.invoiceGenerated && fmarkGenerated == that.fmarkGenerated && endOfProductionStatus == that.endOfProductionStatus && divisionId == that.divisionId && sectionId == that.sectionId && versionNumber == that.versionNumber && attachedPlantId == that.attachedPlantId && attachedPlantRemarks == that.attachedPlantRemarks && description == that.description && sta10FilledOfficerStatus == that.sta10FilledOfficerStatus && hofId == that.hofId && qamId == that.qamId && qaoId == that.qaoId && hofQamCompletenessRemarks == that.hofQamCompletenessRemarks && hofQamCompletenessStatus == that.hofQamCompletenessStatus && assignOfficerStatus == that.assignOfficerStatus && paidStatus == that.paidStatus && rmId == that.rmId && hodId == that.hodId && inspectionDate == that.inspectionDate && inspectionScheduledStatus == that.inspectionScheduledStatus && generateSchemeStatus == that.generateSchemeStatus && compliantStatus == that.compliantStatus && justificationReportStatus == that.justificationReportStatus && justificationReportRemarks == that.justificationReportRemarks && assignAssessorStatus == that.assignAssessorStatus && assessorId == that.assessorId && assessmentScheduledStatus == that.assessmentScheduledStatus && assessmentDate == that.assessmentDate && assessmentCriteria == that.assessmentCriteria && oldPermitStatus == that.oldPermitStatus && permitExpiredStatus == that.permitExpiredStatus && renewalStatus == that.renewalStatus && assessmentReportRemarks == that.assessmentReportRemarks && pacSecId == that.pacSecId && approvedRejectedScheme == that.approvedRejectedScheme && permitAwardStatus == that.permitAwardStatus && pacDecisionRemarks == that.pacDecisionRemarks && inspectionReportId == that.inspectionReportId && factoryInspectionReportApprovedRejectedStatus == that.factoryInspectionReportApprovedRejectedStatus && factoryInspectionReportApprovedRejectedRemarks == that.factoryInspectionReportApprovedRejectedRemarks && scfId == that.scfId && ssfId == that.ssfId && testReportId == that.testReportId && bsNumber == that.bsNumber && compliantRemarks == that.compliantRemarks && recommendationApprovalStatus == that.recommendationApprovalStatus && recommendationRemarks == that.recommendationRemarks && recommendationApprovalRemarks == that.recommendationApprovalRemarks && pscMemberId == that.pscMemberId && pcmId == that.pcmId && pscMemberApprovalStatus == that.pscMemberApprovalStatus && pscMemberApprovalRemarks == that.pscMemberApprovalRemarks && pcmApprovalStatus == that.pcmApprovalStatus && pcmApprovalRemarks == that.pcmApprovalRemarks && permitStatus == that.permitStatus && resubmitApplicationStatus == that.resubmitApplicationStatus && sendForPcmReview == that.sendForPcmReview && hodApproveAssessmentStatus == that.hodApproveAssessmentStatus && hodApproveAssessmentRemarks == that.hodApproveAssessmentRemarks && awardedPermitNumber == that.awardedPermitNumber && endOfProductionRemarks == that.endOfProductionRemarks && requestStatus == that.requestStatus && brandNameRequest == that.brandNameRequest && brandNameRequestStatus == that.brandNameRequestStatus && brandNameRequestRemarks == that.brandNameRequestRemarks && brandNameRequestApproval == that.brandNameRequestApproval && brandNameRequestStatusApproval == that.brandNameRequestStatusApproval && brandNameRequestRemarksApproval == that.brandNameRequestRemarksApproval && endProductionRequest == that.endProductionRequest && endProductionRequestStatus == that.endProductionRequestStatus && endProductionRequestRemarks == that.endProductionRequestRemarks && endProductionRequestApproval == that.endProductionRequestApproval && endProductionRequestStatusApproval == that.endProductionRequestStatusApproval && endProductionRequestRemarksApproval == that.endProductionRequestRemarksApproval
     }
 
     override fun hashCode(): Int {
-        var result = id?.hashCode() ?: 0
-        result = 31 * result + (applicantName?.hashCode() ?: 0)
-        result = 31 * result + (firmName?.hashCode() ?: 0)
-        result = 31 * result + (permitRefNumber?.hashCode() ?: 0)
-        result = 31 * result + (description?.hashCode() ?: 0)
-        result = 31 * result + (postalAddress?.hashCode() ?: 0)
-        result = 31 * result + (position?.hashCode() ?: 0)
-        result = 31 * result + (telephoneNo?.hashCode() ?: 0)
-        result = 31 * result + (faxNo?.hashCode() ?: 0)
-        result = 31 * result + (email?.hashCode() ?: 0)
-        result = 31 * result + (physicalAddress?.hashCode() ?: 0)
-        result = 31 * result + (plotNo?.hashCode() ?: 0)
-        result = 31 * result + (designation?.hashCode() ?: 0)
-        result = 31 * result + (vatNo?.hashCode() ?: 0)
-        result = 31 * result + (productCategory?.hashCode() ?: 0)
-        result = 31 * result + (broadProductCategory?.hashCode() ?: 0)
-        result = 31 * result + (product?.hashCode() ?: 0)
-        result = 31 * result + (versionNumber?.hashCode() ?: 0)
-        result = 31 * result + (inspectionReportId?.hashCode() ?: 0)
-        result = 31 * result + (divisionId?.hashCode() ?: 0)
-        result = 31 * result + (sectionId?.hashCode() ?: 0)
-        result = 31 * result + (attachedPlantId?.hashCode() ?: 0)
-        result = 31 * result + (standardCategory?.hashCode() ?: 0)
-        result = 31 * result + (productStandard?.hashCode() ?: 0)
-        result = 31 * result + (productSubCategory?.hashCode() ?: 0)
-        result = 31 * result + (region?.hashCode() ?: 0)
-        result = 31 * result + (permitStatus?.hashCode() ?: 0)
-        result = 31 * result + (userId?.hashCode() ?: 0)
-        result = 31 * result + (bsNumber?.hashCode() ?: 0)
-        result = 31 * result + (compliantRemarks?.hashCode() ?: 0)
-        result = 31 * result + (scfId?.hashCode() ?: 0)
-        result = 31 * result + (ssfId?.hashCode() ?: 0)
-        result = 31 * result + (testReportId?.hashCode() ?: 0)
-        result = 31 * result + (pscMemberId?.hashCode() ?: 0)
-        result = 31 * result + (pcmId?.hashCode() ?: 0)
-        result = 31 * result + (qamId?.hashCode() ?: 0)
-        result = 31 * result + (hofId?.hashCode() ?: 0)
-        result = 31 * result + (hodId?.hashCode() ?: 0)
-        result = 31 * result + (assessorId?.hashCode() ?: 0)
-        result = 31 * result + (pacSecId?.hashCode() ?: 0)
-        result = 31 * result + (rmId?.hashCode() ?: 0)
-        result = 31 * result + (qaoId?.hashCode() ?: 0)
-        result = 31 * result + (permitType?.hashCode() ?: 0)
-        result = 31 * result + (ksNumber?.hashCode() ?: 0)
-        result = 31 * result + (dateOfIssue?.hashCode() ?: 0)
-        result = 31 * result + (dateOfExpiry?.hashCode() ?: 0)
-        result = 31 * result + (applicationSuspensionStatus ?: 0)
-        result = 31 * result + (pscMemberApprovalStatus ?: 0)
-        result = 31 * result + (pscMemberApprovalRemarks?.hashCode() ?: 0)
-        result = 31 * result + (pcmApprovalStatus ?: 0)
-        result = 31 * result + (pcmApprovalRemarks?.hashCode() ?: 0)
-        result = 31 * result + (hodApproveAssessmentStatus ?: 0)
-        result = 31 * result + (hodApproveAssessmentRemarks?.hashCode() ?: 0)
-        result = 31 * result + (assessmentCriteria?.hashCode() ?: 0)
-        result = 31 * result + (factoryInspectionReportApprovedRejectedStatus ?: 0)
-        result = 31 * result + (factoryInspectionReportApprovedRejectedRemarks?.hashCode() ?: 0)
-        result = 31 * result + (attachedPlantRemarks?.hashCode() ?: 0)
-        result = 31 * result + (productName?.hashCode() ?: 0)
-        result = 31 * result + (commodityDescription?.hashCode() ?: 0)
-        result = 31 * result + (tradeMark?.hashCode() ?: 0)
-        result = 31 * result + (paidStatus?.hashCode() ?: 0)
-        result = 31 * result + (recommendationApprovalStatus?.hashCode() ?: 0)
-        result = 31 * result + (recommendationRemarks?.hashCode() ?: 0)
-        result = 31 * result + (recommendationApprovalRemarks?.hashCode() ?: 0)
-        result = 31 * result + (hofQamCompletenessRemarks?.hashCode() ?: 0)
-        result = 31 * result + (pacDecisionRemarks?.hashCode() ?: 0)
-        result = 31 * result + (justificationReportRemarks?.hashCode() ?: 0)
-        result = 31 * result + (assessmentReportRemarks?.hashCode() ?: 0)
-        result = 31 * result + (assignOfficerStatus ?: 0)
-        result = 31 * result + (permitExpiredStatus ?: 0)
-        result = 31 * result + (compliantStatus ?: 0)
-        result = 31 * result + (sendForPcmReview ?: 0)
-        result = 31 * result + (assignAssessorStatus ?: 0)
-        result = 31 * result + (resubmitApplicationStatus ?: 0)
-        result = 31 * result + (justificationReportStatus ?: 0)
-        result = 31 * result + (requestStatus ?: 0)
-        result = 31 * result + (smeFormFilledStatus ?: 0)
-        result = 31 * result + (invoiceGenerated ?: 0)
-        result = 31 * result + (enabled ?: 0)
-        result = 31 * result + (sendApplication ?: 0)
-        result = 31 * result + (permitAwardStatus ?: 0)
-        result = 31 * result + (fmarkGenerated ?: 0)
-        result = 31 * result + (endOfProductionStatus ?: 0)
-        result = 31 * result + (oldPermitStatus ?: 0)
-        result = 31 * result + (renewalStatus ?: 0)
-        result = 31 * result + (approvedRejectedScheme ?: 0)
-        result = 31 * result + (status ?: 0)
-        result = 31 * result + (generateSchemeStatus ?: 0)
-        result = 31 * result + (hofQamCompletenessStatus ?: 0)
-        result = 31 * result + (sta10FilledOfficerStatus ?: 0)
-        result = 31 * result + (inspectionScheduledStatus?: 0)
-        result = 31 * result + (assessmentScheduledStatus?: 0)
-        result = 31 * result + (sta10FilledStatus ?: 0)
-        result = 31 * result + (sta3FilledStatus ?: 0)
-        result = 31 * result + (inspectionDate?.hashCode() ?: 0)
-        result = 31 * result + (assessmentDate?.hashCode() ?: 0)
-        result = 31 * result + (title?.hashCode() ?: 0)
-        result = 31 * result + (endOfProductionRemarks?.hashCode() ?: 0)
-        result = 31 * result + (totalCost?.hashCode() ?: 0)
-        result = 31 * result + (totalPayment?.hashCode() ?: 0)
-        result = 31 * result + (annualTurnOver?.hashCode() ?: 0)
-        result = 31 * result + (inspectorsRemark?.hashCode() ?: 0)
-        result = 31 * result + (inspectorsName?.hashCode() ?: 0)
-        result = 31 * result + (dateOfVisit?.hashCode() ?: 0)
-        result = 31 * result + (varField1?.hashCode() ?: 0)
-        result = 31 * result + (varField2?.hashCode() ?: 0)
-        result = 31 * result + (varField3?.hashCode() ?: 0)
-        result = 31 * result + (varField4?.hashCode() ?: 0)
-        result = 31 * result + (varField5?.hashCode() ?: 0)
-        result = 31 * result + (varField6?.hashCode() ?: 0)
-        result = 31 * result + (varField7?.hashCode() ?: 0)
-        result = 31 * result + (varField8?.hashCode() ?: 0)
-        result = 31 * result + (varField9?.hashCode() ?: 0)
-        result = 31 * result + (varField10?.hashCode() ?: 0)
-        result = 31 * result + (createdBy?.hashCode() ?: 0)
-        result = 31 * result + (createdOn?.hashCode() ?: 0)
-        result = 31 * result + (modifiedBy?.hashCode() ?: 0)
-        result = 31 * result + (modifiedOn?.hashCode() ?: 0)
-        result = 31 * result + (deleteBy?.hashCode() ?: 0)
-        result = 31 * result + (deletedOn?.hashCode() ?: 0)
-        return result
+        return Objects.hash(
+            id,
+            designation,
+            email,
+            faxNo,
+            firmName,
+            applicantName,
+            physicalAddress,
+            plotNo,
+            position,
+            postalAddress,
+            region,
+            telephoneNo,
+            vatNo,
+            createdBy,
+            createdOn,
+            dateOfIssue,
+            dateOfVisit,
+            deleteBy,
+            deletedOn,
+            ksNumber,
+            modifiedBy,
+            modifiedOn,
+            permitType,
+            productName,
+            title,
+            totalCost,
+            totalPayment,
+            tradeMark,
+            varField1,
+            varField10,
+            varField2,
+            varField3,
+            varField4,
+            varField5,
+            varField6,
+            varField7,
+            varField8,
+            varField9,
+            userId,
+            status,
+            permitRefNumber,
+            dateOfExpiry,
+            commodityDescription,
+            enabled,
+            broadProductCategory,
+            productCategory,
+            product,
+            productSubCategory,
+            standardCategory,
+            productStandard,
+            sta3FilledStatus,
+            sta10FilledStatus,
+            permitForeignStatus,
+            smeFormFilledStatus,
+            sendApplication,
+            invoiceGenerated,
+            fmarkGenerated,
+            endOfProductionStatus,
+            divisionId,
+            sectionId,
+            versionNumber,
+            attachedPlantId,
+            attachedPlantRemarks,
+            description,
+            sta10FilledOfficerStatus,
+            hofId,
+            qamId,
+            qaoId,
+            hofQamCompletenessRemarks,
+            hofQamCompletenessStatus,
+            assignOfficerStatus,
+            paidStatus,
+            rmId,
+            hodId,
+            inspectionDate,
+            inspectionScheduledStatus,
+            generateSchemeStatus,
+            compliantStatus,
+            justificationReportStatus,
+            justificationReportRemarks,
+            assignAssessorStatus,
+            assessorId,
+            assessmentScheduledStatus,
+            assessmentDate,
+            assessmentCriteria,
+            oldPermitStatus,
+            permitExpiredStatus,
+            renewalStatus,
+            assessmentReportRemarks,
+            pacSecId,
+            approvedRejectedScheme,
+            permitAwardStatus,
+            pacDecisionRemarks,
+            inspectionReportId,
+            factoryInspectionReportApprovedRejectedStatus,
+            factoryInspectionReportApprovedRejectedRemarks,
+            scfId,
+            ssfId,
+            testReportId,
+            bsNumber,
+            compliantRemarks,
+            recommendationApprovalStatus,
+            recommendationRemarks,
+            recommendationApprovalRemarks,
+            pscMemberId,
+            pcmId,
+            pscMemberApprovalStatus,
+            pscMemberApprovalRemarks,
+            pcmApprovalStatus,
+            pcmApprovalRemarks,
+            permitStatus,
+            resubmitApplicationStatus,
+            sendForPcmReview,
+            hodApproveAssessmentStatus,
+            hodApproveAssessmentRemarks,
+            awardedPermitNumber,
+            endOfProductionRemarks,
+            requestStatus,
+            brandNameRequest,
+            brandNameRequestStatus,
+            brandNameRequestRemarks,
+            brandNameRequestApproval,
+            brandNameRequestStatusApproval,
+            brandNameRequestRemarksApproval,
+            endProductionRequest,
+            endProductionRequestStatus,
+            endProductionRequestRemarks,
+            endProductionRequestApproval,
+            endProductionRequestStatusApproval,
+            endProductionRequestRemarksApproval
+        )
     }
-
 
 }

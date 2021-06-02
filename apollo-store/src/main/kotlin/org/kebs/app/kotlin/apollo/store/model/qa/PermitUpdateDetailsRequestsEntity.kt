@@ -7,10 +7,17 @@ import javax.persistence.*
 
 @Entity
 @Table(name = "DAT_KEBS_QA_PERMIT_UPDATE_DETAILS_REQUESTS")
-class PermitUpdateDetailsRequestsEntity: Serializable {
+class PermitUpdateDetailsRequestsEntity : Serializable {
     @Column(name = "ID")
-    @SequenceGenerator(name = "DAT_KEBS_QA_PERMIT_UPDATE_DETAILS_REQUESTS_SEQ_GEN", allocationSize = 1, sequenceName = "DAT_KEBS_QA_PERMIT_UPDATE_DETAILS_REQUESTS_SEQ")
-    @GeneratedValue(generator = "DAT_KEBS_QA_PERMIT_UPDATE_DETAILS_REQUESTS_SEQ_GEN", strategy = GenerationType.SEQUENCE)
+    @SequenceGenerator(
+        name = "DAT_KEBS_QA_PERMIT_UPDATE_DETAILS_REQUESTS_SEQ_GEN",
+        allocationSize = 1,
+        sequenceName = "DAT_KEBS_QA_PERMIT_UPDATE_DETAILS_REQUESTS_SEQ"
+    )
+    @GeneratedValue(
+        generator = "DAT_KEBS_QA_PERMIT_UPDATE_DETAILS_REQUESTS_SEQ_GEN",
+        strategy = GenerationType.SEQUENCE
+    )
     @Id
     var id: Long? = 0
 
@@ -101,10 +108,11 @@ class PermitUpdateDetailsRequestsEntity: Serializable {
     @Column(name = "DELETED_ON")
     @Basic
     var deletedOn: Timestamp? = null
-    override fun equals(o: Any?): Boolean {
-        if (this === o) return true
-        if (o == null || javaClass != o.javaClass) return false
-        val that = o as PermitUpdateDetailsRequestsEntity
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other == null || javaClass != other.javaClass) return false
+        val that = other as PermitUpdateDetailsRequestsEntity
         return id == that.id && endProduction == that.endProduction && brandName == that.brandName && description == that.description && permitId == that.permitId && requestStatus == that.requestStatus && status == that.status && varField1 == that.varField1 && varField2 == that.varField2 && varField3 == that.varField3 && varField4 == that.varField4 && varField5 == that.varField5 && varField6 == that.varField6 && varField7 == that.varField7 && varField8 == that.varField8 && varField9 == that.varField9 && varField10 == that.varField10 && createdBy == that.createdBy && createdOn == that.createdOn && modifiedBy == that.modifiedBy && modifiedOn == that.modifiedOn && deleteBy == that.deleteBy && deletedOn == that.deletedOn
     }
 

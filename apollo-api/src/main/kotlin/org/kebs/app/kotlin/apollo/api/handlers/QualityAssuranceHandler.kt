@@ -206,16 +206,22 @@ class QualityAssuranceHandler(
 
         req.attributes().putAll(loadCommonUIComponents(map))
 
-        if (permit.hofQamCompletenessStatus == map.activeStatus && permit.assignOfficerStatus != map.activeStatus) {
-            req.attributes()["officers"] = qaDaoServices.findOfficersList(permit, map, applicationMapProperties.mapQADesignationIDForQAOId)
-        }else if (permit.assignOfficerStatus == map.activeStatus) {
-            req.attributes()["officerAssigned"] = permit.qaoId?.let { commonDaoServices.findUserByID(it) }
+        when {
+            permit.hofQamCompletenessStatus == map.activeStatus && permit.assignOfficerStatus != map.activeStatus -> {
+                req.attributes()["officers"] = qaDaoServices.findOfficersList(permit, map, applicationMapProperties.mapQADesignationIDForQAOId)
+            }
+            permit.assignOfficerStatus == map.activeStatus -> {
+                req.attributes()["officerAssigned"] = permit.qaoId?.let { commonDaoServices.findUserByID(it) }
+            }
         }
 
-        if (permit.justificationReportStatus == map.activeStatus && permit.assignAssessorStatus != map.activeStatus) {
-            req.attributes()["assessors"] = qaDaoServices.findOfficersList(permit, map, applicationMapProperties.mapQADesignationIDForAssessorId)
-        } else if (permit.assignAssessorStatus == map.activeStatus) {
-            req.attributes()["assessorAssigned"] = permit.assessorId?.let { commonDaoServices.findUserByID(it) }
+        when {
+            permit.justificationReportStatus == map.activeStatus && permit.assignAssessorStatus != map.activeStatus -> {
+                req.attributes()["assessors"] = qaDaoServices.findOfficersList(permit, map, applicationMapProperties.mapQADesignationIDForAssessorId)
+            }
+            permit.assignAssessorStatus == map.activeStatus -> {
+                req.attributes()["assessorAssigned"] = permit.assessorId?.let { commonDaoServices.findUserByID(it) }
+            }
         }
 
         req.attributes()["fileParameters"] = qaDaoServices.findAllUploadedFileBYPermitID(permitID)
@@ -232,6 +238,7 @@ class QualityAssuranceHandler(
         req.attributes()["townPlantValue"] = plantAttached?.town?.let { commonDaoServices.findTownEntityByTownId(it).town }
         req.attributes()["permitType"] = permit.permitType?.let { qaDaoServices.findPermitType(it) }
         req.attributes()["permitDetails"] = permit
+        req.attributes()["requestDetails"] = PermitUpdateDetailsRequestsEntity()
         req.attributes()["docFileName"] =  docFileName
         req.attributes()["statusName"] = permit.permitStatus?.let { qaDaoServices.findPermitStatus(it) }
         req.attributes()["plantAttached"] = plantAttached

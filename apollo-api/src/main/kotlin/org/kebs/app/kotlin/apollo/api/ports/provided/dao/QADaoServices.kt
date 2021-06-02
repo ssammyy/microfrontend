@@ -733,6 +733,50 @@ class QADaoServices(
         return Pair(sr, saveSSF)
     }
 
+    fun requestUpdateDetails(
+        permitDetails: PermitApplicationsEntity,
+        requestDetails: PermitUpdateDetailsRequestsEntity,
+        user: UsersEntity,
+        map: ServiceMapsEntity
+    ): Pair<ServiceRequestsEntity, PermitUpdateDetailsRequestsEntity> {
+
+        var sr = commonDaoServices.createServiceRequest(map)
+        var saveRequest = requestDetails
+        try {
+
+            with(saveRequest) {
+                permitId = permitDetails.id
+                status = map.inactiveStatus
+                createdBy = commonDaoServices.concatenateName(user)
+                createdOn = commonDaoServices.getTimestamp()
+            }
+
+            saveRequest = permitUpdateDetailsRequestsRepo.save(saveRequest)
+
+            sr.payload = "New Request Saved [BRAND NAME ${saveRequest.brandName} and ID = ${saveRequest.id}]"
+            sr.names = "${saveRequest.brandName}"
+            sr.varField1 = permitDetails.id.toString()
+
+            sr.responseStatus = sr.serviceMapsId?.successStatusCode
+            sr.responseMessage = "Success ${sr.payload}"
+            sr.status = map.successStatus
+            sr = serviceRequestsRepository.save(sr)
+            sr.processingEndDate = Timestamp.from(Instant.now())
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message, e)
+//            KotlinLogging.logger { }.trace(e.message, e)
+            sr.status = sr.serviceMapsId?.exceptionStatus
+            sr.responseStatus = sr.serviceMapsId?.exceptionStatusCode
+            sr.responseMessage = e.message
+            sr = serviceRequestsRepository.save(sr)
+
+        }
+
+        KotlinLogging.logger { }.trace("${sr.id} ${sr.responseStatus}")
+        return Pair(sr, saveRequest)
+    }
+
     fun newSchemeSupervisionSave(
         permits: PermitApplicationsEntity,
         schemeSupervision: QaSchemeForSupervisionEntity,
@@ -1253,68 +1297,6 @@ class QADaoServices(
                     sta3NewSave(savePermit.id ?: throw Exception("INVALID PERMIT ID"), newSta3, user, s)
                 }
             }
-
-//            //make some values to be null for the oldest permit in here
-//            with(oldPermit){
-//                id = null
-//                userId = null
-//                permitType = null
-//                permitRefNumber = null
-//                enabled = null
-//                versionNumber = null
-//                endOfProductionStatus =null
-//                status =null
-//                createdBy = null
-//                createdOn = null
-//                oldPermitStatus = null
-//                permitExpiredStatus = null
-//                paidStatus = null
-//                bsNumber = null
-//                compliantRemarks = null
-//                scfId = null
-//                ssfId = null
-//                testReportId = null
-//                pscMemberId = null
-//                dateOfIssue = null
-//                dateOfExpiry = null
-//                applicationSuspensionStatus = null
-//                pscMemberApprovalStatus = null
-//                pscMemberApprovalRemarks = null
-//                pcmApprovalStatus = null
-//                pcmApprovalRemarks = null
-//                hodApproveAssessmentStatus = null
-//                hodApproveAssessmentRemarks = null
-//                assessmentCriteria = null
-//                factoryInspectionReportApprovedRejectedStatus = null
-//                factoryInspectionReportApprovedRejectedRemarks = null
-//                paidStatus = null
-//                recommendationApprovalStatus = null
-//                recommendationRemarks = null
-//                recommendationApprovalRemarks = null
-//                hofQamCompletenessRemarks = null
-//                pacDecisionRemarks = null
-//                justificationReportRemarks = null
-//                assessmentReportRemarks = null
-//                permitExpiredStatus = null
-//                compliantStatus = null
-//                sendForPcmReview = null
-//                assignAssessorStatus = null
-//                resubmitApplicationStatus = null
-//                justificationReportStatus = null
-//                smeFormFilledStatus = null
-//                invoiceGenerated = null
-//                enabled = null
-//                sendApplication = null
-//                permitAwardStatus = null
-//                fmarkGenerated = null
-//                endOfProductionStatus = null
-//                oldPermitStatus = null
-////                renewalStatus = null
-//
-//            }
-//
-////            Update Permit renewed with new details
-//            savePermit = permitUpdateDetails(commonDaoServices.updateDetails(savePermit, oldPermit) as PermitApplicationsEntity,s, user).second
 
 
             sr.payload = "Permit Renewed Updated [updatePermit= ${savePermit.id}]"
