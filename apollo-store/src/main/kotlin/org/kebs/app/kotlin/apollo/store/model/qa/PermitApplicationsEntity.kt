@@ -203,8 +203,6 @@ class PermitApplicationsEntity:Serializable {
     var compliantRemarks: String? = null
 
 
-
-
     @Column(name = "RECOMMENDATION_APPROVAL_STATUS")
     @Basic
     var recommendationApprovalStatus: Int? = null

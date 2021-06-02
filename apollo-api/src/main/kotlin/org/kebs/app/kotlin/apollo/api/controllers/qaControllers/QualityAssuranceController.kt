@@ -733,18 +733,15 @@ class QualityAssuranceController(
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         val permit = loggedInUser.id?.let { qaDaoServices.findPermitBYUserIDAndId(permitID, it) }
             ?: throw ExpectedDataNotFound("User Id required")
-        when (myRenewPermit) {
-            applicationMapProperties.mapPermitRenewMessage -> {
-                val sta10 = qaDaoServices.findSTA10WithPermitIDBY(permitID)
-                qaDaoServices.sta10Update(
-                    commonDaoServices.updateDetails(QaSta10Entity, sta10) as QaSta10Entity,
-                    map,
-                    loggedInUser
-                )
-            }
-            else -> {
-                permit.id?.let { qaDaoServices.sta10NewSave(it, QaSta10Entity, loggedInUser, map) }
-            }
+        if (myRenewPermit == applicationMapProperties.mapPermitRenewMessage) {
+            val sta10 = qaDaoServices.findSTA10WithPermitIDBY(permitID)
+            qaDaoServices.sta10Update(
+                commonDaoServices.updateDetails(QaSta10Entity, sta10) as QaSta10Entity,
+                map,
+                loggedInUser
+            )
+        } else {
+            permit.id?.let { qaDaoServices.sta10NewSave(it, QaSta10Entity, loggedInUser, map) }
         }
 
         val result: ServiceRequestsEntity?

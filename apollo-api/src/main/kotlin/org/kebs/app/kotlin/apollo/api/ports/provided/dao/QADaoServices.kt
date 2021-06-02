@@ -1245,8 +1245,17 @@ class QADaoServices(
             //update last previous version permit old status
             oldPermit = permitUpdateDetails(oldPermit, s, user).second
 
+            val permitTypeDetails = findPermitType(oldPermit.permitType ?: throw Exception("MISSING PERMIT TYPE ID"))
 
             with(savePermit) {
+                permitRefNumber = "${permitTypeDetails.markNumber}${
+                    generateRandomText(
+                        5,
+                        s.secureRandom,
+                        s.messageDigestAlgorithm,
+                        true
+                    )
+                }".toUpperCase()
                 renewalStatus = s.activeStatus
                 userId = user.id
                 attachedPlantId = oldPermit.attachedPlantId
