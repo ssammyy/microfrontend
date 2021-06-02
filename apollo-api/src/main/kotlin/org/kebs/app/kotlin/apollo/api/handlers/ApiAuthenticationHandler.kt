@@ -4,6 +4,7 @@ import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.sms.SmsServiceImpl
 import org.kebs.app.kotlin.apollo.api.security.jwt.JwtTokenService
+import org.kebs.app.kotlin.apollo.api.security.service.CustomAuthenticationProvider
 import org.kebs.app.kotlin.apollo.common.dto.JwtResponse
 import org.kebs.app.kotlin.apollo.common.dto.LoginRequest
 import org.kebs.app.kotlin.apollo.common.dto.OtpRequestValuesDto
@@ -34,7 +35,8 @@ class ApiAuthenticationHandler(
     private val commonDaoServices: CommonDaoServices,
     private val usersRepo: IUserRepository,
     private val verificationTokensRepo: IUserVerificationTokensRepository,
-    private val smsService: SmsServiceImpl
+    private val smsService: SmsServiceImpl,
+    private val customAuthenticationProvider: CustomAuthenticationProvider
 ) {
 
     fun generateOtp(req: ServerRequest): ServerResponse {
@@ -105,29 +107,65 @@ class ApiAuthenticationHandler(
     fun uiLogin(req: ServerRequest): ServerResponse =
         try {
             val loginRequest = req.body<LoginRequest>()
-            KotlinLogging.logger { }.info("username ${loginRequest.username} ${loginRequest.password}")
-            val authentication = authenticationManager.authenticate(UsernamePasswordAuthenticationToken(loginRequest.username, loginRequest.password))
-            authentication
-                ?.let { auth ->
-                    SecurityContextHolder.getContext().authentication = auth
 
-                    usersRepo.findByUserName(auth.name)
-                        ?.let { user ->
+            val usernamePassAuth = UsernamePasswordAuthenticationToken(loginRequest.username, loginRequest.password)
 
-                            val request = ServletServerHttpRequest(req.servletRequest())
-                            val token = tokenService.tokenFromAuthentication(auth, commonDaoServices.concatenateName(user), request)
+            val auth = customAuthenticationProvider.authenticate(usernamePassAuth)
 
-                            val roles = tokenService.extractRolesFromToken(token)?.map { it.authority }
+            SecurityContextHolder.getContext().authentication = auth
 
-                            val response = JwtResponse(token, user.id, user.userName, user.email, commonDaoServices.concatenateName(user), roles)
-                            ServerResponse.ok().body(response)
-                        }
-                        ?: throw NullValueNotAllowedException("Empty authentication after authentication attempt")
+            usersRepo.findByUserName(auth.name)
+                ?.let { user ->
+                    val request = ServletServerHttpRequest(req.servletRequest())
+                    val token =
+                        tokenService.tokenFromAuthentication(auth, commonDaoServices.concatenateName(user), request)
+
+                    val roles = tokenService.extractRolesFromToken(token)?.map { it.authority }
+                    val response = JwtResponse(
+                        token,
+                        user.id,
+                        user.userName,
+                        user.email,
+                        commonDaoServices.concatenateName(user),
+                        roles
+                    )
+                    ServerResponse.ok().body(response)
                 }
                 ?: throw NullValueNotAllowedException("Empty authentication after authentication attempt")
+
         } catch (e: Exception) {
+            e.printStackTrace()
             KotlinLogging.logger { }.error(e.message, e)
-            KotlinLogging.logger { }.debug(e.message, e)
             ServerResponse.badRequest().body(e.message ?: "Unknown Error")
         }
+
+//    fun uiLogin(req: ServerRequest): ServerResponse =
+//        try {
+//            val loginRequest = req.body<LoginRequest>()
+//            KotlinLogging.logger { }.info("username ${loginRequest.username} ${loginRequest.password}")
+//            val authentication = authenticationManager.authenticate(UsernamePasswordAuthenticationToken(loginRequest.username, loginRequest.password))
+//            authentication
+//                ?.let { auth ->
+//                    SecurityContextHolder.getContext().authentication = auth
+//
+//                    usersRepo.findByUserName(auth.name)
+//                        ?.let { user ->
+//
+//                            val request = ServletServerHttpRequest(req.servletRequest())
+//                            val token = tokenService.tokenFromAuthentication(auth, commonDaoServices.concatenateName(user), request)
+//
+//                            val roles = tokenService.extractRolesFromToken(token)?.map { it.authority }
+//
+//                            val response = JwtResponse(token, user.id, user.userName, user.email, commonDaoServices.concatenateName(user), roles)
+//                            ServerResponse.ok().body(response)
+//                        }
+//                        ?: throw NullValueNotAllowedException("Empty authentication after authentication attempt")
+//                }
+//                ?: throw NullValueNotAllowedException("Empty authentication after authentication attempt")
+//        } catch (e: Exception) {
+//            KotlinLogging.logger { }.error(e.message, e)
+//            KotlinLogging.logger { }.debug(e.message, e)
+//            ServerResponse.badRequest().body(e.message ?: "Unknown Error")
+//        }
+
 }

@@ -102,7 +102,7 @@ class CustomUserDetailsService(
             ?: throw InvalidValueException("Token not found")
     }
 
-    private fun getAuthorities(roles: List<UserRoleAssignmentsEntity>): MutableCollection<GrantedAuthority> {
+     fun getAuthorities(roles: List<UserRoleAssignmentsEntity>): MutableCollection<GrantedAuthority> {
         val authorities = mutableListOf<GrantedAuthority>()
         return if (roles.isEmpty()) {
 
@@ -116,6 +116,10 @@ class CustomUserDetailsService(
                 ?.map { authorities.add(SimpleGrantedAuthority(it)) }
             return authorities
         }
+    }
+
+    fun getUserRoles(userId: Long): List<UserRoleAssignmentsEntity>? {
+        return assignmentsRepository.findUserRoleAssignments(userId, 1)
     }
 
 }
