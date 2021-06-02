@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-             xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:flowable="http://flowable.org/bpmn"
+             xmlns:flowable="http://flowable.org/bpmn"
              xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
              xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC"
              xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI"
@@ -16,21 +16,21 @@
         <userTask id="Uploadalldraftsanddocuments" name="Upload all drafts and documents from NWI discussion"
                   flowable:candidateGroups="TC-sec" flowable:formFieldValidation="true"/>
         <serviceTask id="ReceivenotificationofPD" name="Receive notification of PD"
-                     flowable:class="com.apollo.standardsdevelopment.handlers.EmailHandler"/>
+                     flowable:class="org.kebs.app.kotlin.apollo.standardsdevelopment.handlers.EmailHandler"/>
         <serviceTask id="ReceivenotificationofCommentsonPD" name="Receive notification of Comments on PD"
-                     flowable:class="com.apollo.standardsdevelopment.handlers.EmailHandler"/>
+                     flowable:class="org.kebs.app.kotlin.apollo.standardsdevelopment.handlers.EmailHandler"/>
         <userTask id="UploadalldraftsanddocumentsfromPDdiscussion"
                   name="Upload all drafts and documents from PD discussion" flowable:candidateGroups="TC-sec"
                   flowable:formFieldValidation="true"/>
         <serviceTask id="ReceivenotificationofCD" name="Receive notification of CD"
-                     flowable:class="com.apollo.standardsdevelopment.handlers.EmailHandler"/>
+                     flowable:class="org.kebs.app.kotlin.apollo.standardsdevelopment.handlers.EmailHandler"/>
         <serviceTask id="ReceivenotificationofComments" name="Receive notification of Comments"
-                     flowable:class="com.apollo.standardsdevelopment.handlers.EmailHandler"/>
+                     flowable:class="org.kebs.app.kotlin.apollo.standardsdevelopment.handlers.EmailHandler"/>
         <exclusiveGateway id="approveb"/>
         <sequenceFlow id="sid-3BE5B605-17BA-43E0-BA72-5408B18D3266" sourceRef="start" targetRef="prepareANWI"/>
         <endEvent id="end" name="End"/>
         <serviceTask id="NotificationofKSnumberassignment" name="Notification of KS number assignment"
-                     flowable:class="com.apollo.standardsdevelopment.handlers.EmailHandler"/>
+                     flowable:class="org.kebs.app.kotlin.apollo.standardsdevelopment.handlers.EmailHandler"/>
         <sequenceFlow id="sid-977BC954-7D4F-4AE3-832B-DB42CE7CA229" sourceRef="ReceivenotificationofComments"
                       targetRef="approveb"/>
         <sequenceFlow id="sid-2FA3031F-C470-4879-A131-578D6E9086F4" sourceRef="NotificationofKSnumberassignment"

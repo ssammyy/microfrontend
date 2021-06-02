@@ -533,7 +533,7 @@ class QualityAssuranceController(
 //        if (permit.permitType==applicationMapProperties.mapQAPermitTypeIdSmark ){
 //
 //        }
-            result = qaDaoServices.permitInvoiceCalculation(map, loggedInUser, permit, qaDaoServices.findPermitType(permit.permitType!!))
+//            result = qaDaoServices.permitInvoiceCalculation(map, loggedInUser, permit, qaDaoServices.findPermitType(permit.permitType!!))
 //        with(permit) {
 //            sendApplication = map.activeStatus
 //            invoiceGenerated = map.activeStatus
@@ -649,14 +649,29 @@ class QualityAssuranceController(
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun saveNewSta3(
         @RequestParam("permitID") permitID: Long,
+        @RequestParam("myRenewPermit") myRenewPermit: String?,
         @ModelAttribute("QaSta3Entity") QaSta3Entity: QaSta3Entity,
         model: Model
     ): String? {
         val map = commonDaoServices.serviceMapDetails(appId)
         val loggedInUser = commonDaoServices.loggedInUserDetails()
-        val permit = loggedInUser.id?.let { qaDaoServices.findPermitBYUserIDAndId(permitID, it) } ?: throw ExpectedDataNotFound("User Id required")
-        permit.id?.let { qaDaoServices.sta3NewSave(it, QaSta3Entity, loggedInUser, map) }
+        val permit = loggedInUser.id?.let { qaDaoServices.findPermitBYUserIDAndId(permitID, it) }
+            ?: throw ExpectedDataNotFound("User Id required")
 
+
+        when (myRenewPermit) {
+            applicationMapProperties.mapPermitRenewMessage -> {
+                val sta3 = qaDaoServices.findSTA3WithPermitIDBY(permitID)
+                qaDaoServices.sta3Update(
+                    commonDaoServices.updateDetails(QaSta3Entity, sta3) as QaSta3Entity,
+                    map,
+                    loggedInUser
+                )
+            }
+            else -> {
+                permit.id?.let { qaDaoServices.sta3NewSave(it, QaSta3Entity, loggedInUser, map) }
+            }
+        }
         val result: ServiceRequestsEntity?
 
         val updatePermit = PermitApplicationsEntity()
@@ -666,7 +681,12 @@ class QualityAssuranceController(
             permitStatus = applicationMapProperties.mapQaStatusPSubmission
         }
         //updating of Details in DB
-        result = qaDaoServices.permitUpdateDetails(commonDaoServices.updateDetails( permit, updatePermit) as PermitApplicationsEntity,map, loggedInUser).first
+        result = qaDaoServices.permitUpdateDetails(
+            commonDaoServices.updateDetails(
+                permit,
+                updatePermit
+            ) as PermitApplicationsEntity, map, loggedInUser
+        ).first
 
         val sm = CommonDaoServices.MessageSuccessFailDTO()
         sm.closeLink =
@@ -682,6 +702,7 @@ class QualityAssuranceController(
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun saveNewSta10(
         @RequestParam("permitID") permitID: Long,
+        @RequestParam("myRenewPermit") myRenewPermit: String?,
         @ModelAttribute("QaSta10Entity") QaSta10Entity: QaSta10Entity,
         model: Model
     ): String? {
@@ -689,7 +710,19 @@ class QualityAssuranceController(
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         val permit = loggedInUser.id?.let { qaDaoServices.findPermitBYUserIDAndId(permitID, it) }
             ?: throw ExpectedDataNotFound("User Id required")
-        permit.id?.let { qaDaoServices.sta10NewSave(it, QaSta10Entity, loggedInUser, map) }
+        when (myRenewPermit) {
+            applicationMapProperties.mapPermitRenewMessage -> {
+                val sta10 = qaDaoServices.findSTA10WithPermitIDBY(permitID)
+                qaDaoServices.sta10Update(
+                    commonDaoServices.updateDetails(QaSta10Entity, sta10) as QaSta10Entity,
+                    map,
+                    loggedInUser
+                )
+            }
+            else -> {
+                permit.id?.let { qaDaoServices.sta10NewSave(it, QaSta10Entity, loggedInUser, map) }
+            }
+        }
 
         val result: ServiceRequestsEntity?
 

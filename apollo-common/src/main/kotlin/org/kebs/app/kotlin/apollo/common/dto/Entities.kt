@@ -24,6 +24,7 @@ package org.kebs.app.kotlin.apollo.common.dto
 
 import java.math.BigDecimal
 import java.sql.Date
+import java.time.LocalDateTime
 import javax.validation.constraints.NotBlank
 import javax.validation.constraints.Size
 
@@ -512,8 +513,14 @@ class JwtResponse(
     val roles: List<String>?
 ) {
     var tokenType = "Bearer"
+    var expiry: LocalDateTime? = null
 
 }
 
 
 
+class CustomResponse {
+    var response: String? = null
+    var status: Int? = null
+    var payload: String? = null
+}

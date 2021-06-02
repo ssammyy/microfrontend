@@ -1,4 +1,4 @@
-package com.apollo.standardsdevelopment.handlers
+package org.kebs.app.kotlin.apollo.standardsdevelopment.handlers
 
 class NotificationHandler {
 }

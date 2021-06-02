@@ -1,4 +1,4 @@
-//package com.apollo.standardsdevelopment.models
+//package org.kebs.app.kotlin.apollo.standardsdevelopment.models
 //
 //
 //

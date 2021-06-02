@@ -1,4 +1,4 @@
-package com.apollo.standardsdevelopment.dto
+package org.kebs.app.kotlin.apollo.standardsdevelopment.dto
 
 import java.util.*
 import kotlin.collections.HashMap
