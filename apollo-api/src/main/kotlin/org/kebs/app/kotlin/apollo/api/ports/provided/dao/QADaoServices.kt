@@ -14,6 +14,7 @@ import org.kebs.app.kotlin.apollo.store.model.*
 import org.kebs.app.kotlin.apollo.store.model.qa.*
 import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileDirectorsEntity
 import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileEntity
+import org.kebs.app.kotlin.apollo.store.model.registration.UserRequestTypesEntity
 import org.kebs.app.kotlin.apollo.store.repo.*
 import org.kebs.app.kotlin.apollo.store.repo.di.ICfgMoneyTypeCodesRepository
 import org.kebs.app.kotlin.apollo.store.repo.qa.*
@@ -38,6 +39,7 @@ class QADaoServices(
     private val serviceRequestsRepository: IServiceRequestsRepository,
     private val permitRepo: IPermitApplicationsRepository,
     private val permitUpdateDetailsRequestsRepo: IPermitUpdateDetailsRequestsRepository,
+    private val userRequestsRepo: IUserRequestTypesRepository,
     private val SampleCollectionRepo: IQaSampleCollectionRepository,
     private val SampleSubmissionRepo: IQaSampleSubmissionRepository,
     private val sampleLabTestResultsRepo: IQaSampleLabTestResultsRepository,
@@ -270,6 +272,25 @@ class QADaoServices(
         permitRepo.findByIdAndUserId(id, userId)?.let {
             return it
         } ?: throw ExpectedDataNotFound("No Permit found with the following [ID=$id]")
+    }
+
+    fun findAllRequestByPermitID(permitId: Long): List<PermitUpdateDetailsRequestsEntity> {
+        permitUpdateDetailsRequestsRepo.findByPermitId(permitId)?.let {
+            return it
+        } ?: throw ExpectedDataNotFound("No Requests found  with Permit [ID=$permitId]")
+    }
+
+    fun findAllQaRequestTypes(status: Int): List<UserRequestTypesEntity> {
+        userRequestsRepo.findAllByQaRequests(status)?.let {
+            return it
+        } ?: throw ExpectedDataNotFound("No Requests Type found")
+    }
+
+
+    fun findRequestWithId(id: Long): PermitUpdateDetailsRequestsEntity {
+        permitUpdateDetailsRequestsRepo.findByIdOrNull(id)?.let {
+            return it
+        } ?: throw ExpectedDataNotFound("No Requests found  with  [ID=$id]")
     }
 
     fun findOldPermitBYPermitNumberAndVersion(permitNumber: String, versionNumber: Long): PermitApplicationsEntity {
@@ -747,8 +768,8 @@ class QADaoServices(
             with(saveRequest) {
                 permitId = permitDetails.id
                 status = map.inactiveStatus
-                createdBy = commonDaoServices.concatenateName(user)
-                createdOn = commonDaoServices.getTimestamp()
+                modifiedBy = commonDaoServices.concatenateName(user)
+                modifiedOn = commonDaoServices.getTimestamp()
             }
 
             saveRequest = permitUpdateDetailsRequestsRepo.save(saveRequest)

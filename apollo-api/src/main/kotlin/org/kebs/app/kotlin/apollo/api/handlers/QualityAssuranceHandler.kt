@@ -237,8 +237,10 @@ class QualityAssuranceHandler(
         req.attributes()["countyPlantValue"] = plantAttached?.county?.let { commonDaoServices.findCountiesEntityByCountyId(it, map.activeStatus).county }
         req.attributes()["townPlantValue"] = plantAttached?.town?.let { commonDaoServices.findTownEntityByTownId(it).town }
         req.attributes()["permitType"] = permit.permitType?.let { qaDaoServices.findPermitType(it) }
+        req.attributes()["myRequests"] = qaDaoServices.findAllRequestByPermitID(permitID)
         req.attributes()["permitDetails"] = permit
         req.attributes()["requestDetails"] = PermitUpdateDetailsRequestsEntity()
+        req.attributes()["userRequestTypes"] = qaDaoServices.findAllQaRequestTypes(map.activeStatus)
         req.attributes()["docFileName"] =  docFileName
         req.attributes()["statusName"] = permit.permitStatus?.let { qaDaoServices.findPermitStatus(it) }
         req.attributes()["plantAttached"] = plantAttached

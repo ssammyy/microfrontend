@@ -162,6 +162,7 @@ interface IUserRequestsRepository : HazelcastRepository<UserRequestsEntity, Long
 @Repository
 interface IUserRequestTypesRepository : HazelcastRepository<UserRequestTypesEntity, Long> {
     fun findByStatus(status: Int): List<UserRequestTypesEntity>?
+    fun findAllByQaRequests(qaRequests: Int): List<UserRequestTypesEntity>?
     fun findByStatusOrderByUserRequest(status: Int): List<UserRequestTypesEntity>?
 
 

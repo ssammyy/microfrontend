@@ -324,6 +324,35 @@
                                 </div>
                             </div>
 
+                            <button class="accordion" >Requests Details</button>
+                            <div class="panel">
+                                <div class="row-table ">
+                                    <table class="table table-striped">
+                                        <thead>
+                                        <tr>
+                                            <th>Request ID</th>
+                                            <th>Requested BY</th>
+                                            <th>Approved BY</th>
+                                            <th>Request Type</th>
+                                            <th>Request Status</th>
+                                            <th>View</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr class="list" th:each="req: ${myRequests}" style="cursor: pointer">
+
+                                            <td th:text="${req?.id}"></td>
+                                            <td th:text="${req?.createdBy}"></td>
+                                            <td th:text="${req?.modifiedBy}"></td>
+                                            <td th:text="${req?.requestType}"></td>
+                                            <td th:text="${req?.requestStatus} ? 'APPROVED' : 'REJECTED'"></td>
+                                            <td><a th:href="@{/api/qa/kebs/view/requests(requestID=${req.id})}" target='_blank' class="btn btn-primary itemViewBtn">view</a></td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
                             <button class="accordion">Other Version Details</button>
                             <div class="panel">
                                 <div class="row-table ">
@@ -992,12 +1021,15 @@
                                 </div>
                                 <div class="modal-body">
                                     <div class="form-group">
+                                        <label for="requestType" class="col-form-label">Select a request type:</label>
+                                        <select id="requestType" required class="select-field w-select" th:field="*{requestType}">
+                                            <option value="0">Select one...</option>
+                                            <option  th:each="request : ${userRequestTypes}" th:text="${request?.userRequest}" th:name="requestType" th:value="${request?.id}"></option>
+                                        </select>
                                         <div id="updateBrandDetails">
                                             <input id="requestStatus" name="requestStatus" th:value="${activeStatus}" type="hidden">
                                             <label for="brandName" class="col-form-label">New Brand Name:</label>
                                             <input class="input-field w-input" type="text" max="20" id="brandName" name="brandName" th:field="*{brandName}" th:required="required">
-                                            <label for="description" class="col-form-label">Please write, in detail, your reason:</label>
-                                            <textarea required name="name" id="description" class="input-field w-input" cols="65" rows="5" th:field="*{description}"></textarea>
                                         </div>
                                         <div id="permitStopProductionDetails">
                                             <input id="requestStatus" name="requestStatus" th:value="${activeStatus}" type="hidden">
@@ -1006,9 +1038,9 @@
                                                 <option th:text="'Select one.....'" th:value="null"></option>
                                                 <option th:text="'Yes'" th:value="1"></option>
                                             </select>
-                                            <label for="description" class="col-form-label">Please write, in detail, your reason:</label>
-                                            <textarea required name="name" id="description" class="input-field w-input" cols="65" rows="5" th:field="*{description}"></textarea>
                                         </div>
+                                        <label for="description" class="col-form-label">Please write, in detail, your reason:</label>
+                                        <textarea required name="name" id="description" class="input-field w-input" cols="65" rows="5" th:field="*{description}"></textarea>
 
                                     </div>
                                 </div>

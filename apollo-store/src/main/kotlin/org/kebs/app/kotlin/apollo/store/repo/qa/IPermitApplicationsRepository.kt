@@ -63,7 +63,7 @@ interface IQaSchemeForSupervisionRepository : HazelcastRepository<QaSchemeForSup
 @Repository
 interface IPermitUpdateDetailsRequestsRepository : HazelcastRepository<PermitUpdateDetailsRequestsEntity, Long> {
     fun findByStatusAndId(status: Int, id: Long): PermitUpdateDetailsRequestsEntity?
-    fun findByPermitId(permitId: Long): PermitUpdateDetailsRequestsEntity?
+    fun findByPermitId(permitId: Long): List<PermitUpdateDetailsRequestsEntity>?
     fun findByPermitIdAndRequestStatus(permitId: Long, requestStatus: Int): PermitUpdateDetailsRequestsEntity?
 }
 

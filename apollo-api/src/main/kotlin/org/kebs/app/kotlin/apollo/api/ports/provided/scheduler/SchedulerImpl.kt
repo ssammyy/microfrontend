@@ -271,7 +271,7 @@ class SchedulerImpl(
         KotlinLogging.logger { }.info { "::::::::::::::::::::::::STARTED LAB RESULTS SCHEDULER::::::::::::::::::" }
         var samples= 1
         sampleSubmissionRepo.findByLabResultsStatus(map.inactiveStatus)?.forEach {
-            KotlinLogging.logger { }.info { "::::::::::::::::::::::::SAMPLES WITH NO RESULTS FOUND = ${samples++}::::::::::::::::::" }
+            KotlinLogging.logger { }.info { "::::::::::::::::::::::::SAMPLES WITH RESULTS FOUND = ${samples++}::::::::::::::::::" }
             when (it.bsNumber?.let { it1 -> limsServices.mainFunctionLims(it1) }) {
                 true -> {
                     with(it){

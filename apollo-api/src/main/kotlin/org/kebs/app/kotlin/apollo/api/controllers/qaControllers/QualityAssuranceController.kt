@@ -816,7 +816,7 @@ class QualityAssuranceController(
 
         val result: ServiceRequestsEntity?
 
-        result = qaDaoServices.requestUpdateDetails(permit, requestDetails, loggedInUser, map).first
+        result = qaDaoServices.permitRequests(requestDetails, permitID, loggedInUser, map).first
 
         val sm = CommonDaoServices.MessageSuccessFailDTO()
         sm.closeLink = "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permit.id}"
