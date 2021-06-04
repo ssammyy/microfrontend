@@ -323,6 +323,7 @@ class ControllerRoutes {
             GET("/new-sta10-officer", handler::newSta10Officer)
             GET("/view-sta3", handler::viewSta3)
             GET("/view-sta10", handler::viewSta10)
+            GET("/view-request", handler::viewRequestDetails)
             GET("/new-sta10-submit", handler::submitSta10)
             GET("/new-scheme-of-supervision", handler::newSchemeSupervision)
             GET("/update-scheme-of-supervision", handler::updateSchemeSupervision)

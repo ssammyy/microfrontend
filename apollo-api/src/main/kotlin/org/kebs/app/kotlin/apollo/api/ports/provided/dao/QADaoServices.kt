@@ -755,19 +755,19 @@ class QADaoServices(
     }
 
     fun requestUpdateDetails(
-        permitDetails: PermitApplicationsEntity,
+        requestID: Long,
         requestDetails: PermitUpdateDetailsRequestsEntity,
         user: UsersEntity,
         map: ServiceMapsEntity
     ): Pair<ServiceRequestsEntity, PermitUpdateDetailsRequestsEntity> {
 
         var sr = commonDaoServices.createServiceRequest(map)
-        var saveRequest = requestDetails
+        val requestFound = findRequestWithId(requestID)
+        var saveRequest =
+            commonDaoServices.updateDetails(requestDetails, requestFound) as PermitUpdateDetailsRequestsEntity
         try {
 
             with(saveRequest) {
-                permitId = permitDetails.id
-                status = map.inactiveStatus
                 modifiedBy = commonDaoServices.concatenateName(user)
                 modifiedOn = commonDaoServices.getTimestamp()
             }
@@ -776,7 +776,7 @@ class QADaoServices(
 
             sr.payload = "New Request Saved [BRAND NAME ${saveRequest.brandName} and ID = ${saveRequest.id}]"
             sr.names = "${saveRequest.brandName}"
-            sr.varField1 = permitDetails.id.toString()
+            sr.varField1 = saveRequest.permitId.toString()
 
             sr.responseStatus = sr.serviceMapsId?.successStatusCode
             sr.responseMessage = "Success ${sr.payload}"
@@ -1625,6 +1625,29 @@ class QADaoServices(
 
         return invoiceRepository.save(invoice)
 
+
+    }
+
+    fun findFirmTypeById(firmTypeID: Long): TurnOverRatesEntity {
+        iTurnOverRatesRepository.findByIdOrNull(firmTypeID)?.let {
+            return it
+        } ?: throw ExpectedDataNotFound("No Firm type [Id = ${firmTypeID}]")
+    }
+
+    fun manufactureType(manufactureTurnOver: BigDecimal): TurnOverRatesEntity {
+        return when {
+            manufactureTurnOver > iTurnOverRatesRepository.findByIdOrNull(applicationMapProperties.mapQASmarkLargeFirmsTurnOverId)?.lowerLimit -> {
+                findFirmTypeById(applicationMapProperties.mapQASmarkLargeFirmsTurnOverId)
+            }
+            manufactureTurnOver < iTurnOverRatesRepository.findByIdOrNull(applicationMapProperties.mapQASmarkMediumTurnOverId)?.upperLimit && manufactureTurnOver > iTurnOverRatesRepository.findByIdOrNull(
+                applicationMapProperties.mapQASmarkMediumTurnOverId
+            )?.lowerLimit -> {
+                findFirmTypeById(applicationMapProperties.mapQASmarkLargeFirmsTurnOverId)
+            }
+            else -> {
+                findFirmTypeById(applicationMapProperties.mapQASmarkJuakaliTurnOverId)
+            }
+        }
 
     }
 

@@ -31,6 +31,7 @@ import java.time.Instant
 class SystemsAdminDaoService(
     private val privilegesRepo: IUserPrivilegesRepository,
     private val usersRepo: IUserRepository,
+    private val qaDaoServices: QADaoServices,
     private val userRequestTypesRepo: IUserRequestTypesRepository,
     private val usersCfsRepo: IUsersCfsAssignmentsRepository,
     private val userProfilesRepo: IUserProfilesRepository,
@@ -420,6 +421,9 @@ class SystemsAdminDaoService(
                         factoryVisitDate = dto.factoryVisitDate
                         factoryVisitStatus = dto.factoryVisitStatus
                         manufactureStatus = dto.manufactureStatus
+                        firmCategory = qaDaoServices.manufactureType(
+                            yearlyTurnover ?: throw Exception("INVALID YEARLY TURN OVER")
+                        ).id
                         status = 1
                         modifiedBy = loggedInUserDetails().userName
                         modifiedOn = Timestamp.from(Instant.now())
@@ -449,6 +453,8 @@ class SystemsAdminDaoService(
                     region = dto.region
                     county = dto.county
                     town = dto.town
+                    firmCategory =
+                        qaDaoServices.manufactureType(yearlyTurnover ?: throw Exception("INVALID YEARLY TURN OVER")).id
                     factoryVisitDate = dto.factoryVisitDate
                     factoryVisitStatus = dto.factoryVisitStatus
                     manufactureStatus = dto.manufactureStatus

@@ -175,8 +175,7 @@ class QualityAssuranceController(
         @ModelAttribute("permitRequest") permitRequest: PermitUpdateDetailsRequestsEntity,
         @RequestParam("permitID") permitID: Long,
         model: Model
-    )
-            : String? {
+    ): String? {
         val result: ServiceRequestsEntity?
         val map = commonDaoServices.serviceMapDetails(appId)
         val loggedInUser = commonDaoServices.loggedInUserDetails()
@@ -820,6 +819,31 @@ class QualityAssuranceController(
 
         val sm = CommonDaoServices.MessageSuccessFailDTO()
         sm.closeLink = "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permit.id}"
+        sm.message = "Your request has been submitted Successful Details"
+
+        return commonDaoServices.returnValues(result, map, sm)
+    }
+
+    @PreAuthorize("hasAuthority('PERMIT_APPLICATION') or hasAuthority('QA_MANAGER_ASSESSORS_MODIFY') or hasAuthority('QA_HOF_MODIFY') or hasAuthority('QA_HOD_MODIFY') or hasAuthority('QA_OFFICER_MODIFY') or hasAuthority('QA_PAC_SECRETARY_MODIFY') or hasAuthority('QA_PSC_MEMBERS_MODIFY') or hasAuthority('QA_PCM_MODIFY') or hasAuthority('QA_ASSESSORS_MODIFY')")
+    @PostMapping("/kebs/update-request-details")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun permitRequestUpdates(
+        @RequestParam("requestID") requestID: Long,
+        @ModelAttribute("requestDetails") requestDetails: PermitUpdateDetailsRequestsEntity,
+        model: Model
+    ): String? {
+        val map = commonDaoServices.serviceMapDetails(appId)
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+
+        val result: ServiceRequestsEntity?
+
+        val myResults = qaDaoServices.requestUpdateDetails(requestID, requestDetails, loggedInUser, map)
+
+        result = myResults.first
+
+        val sm = CommonDaoServices.MessageSuccessFailDTO()
+        sm.closeLink =
+            "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${myResults.second.permitId}"
         sm.message = "Your request has been submitted Successful Details"
 
         return commonDaoServices.returnValues(result, map, sm)
