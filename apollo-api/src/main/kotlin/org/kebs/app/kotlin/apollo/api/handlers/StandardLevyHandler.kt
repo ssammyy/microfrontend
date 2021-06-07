@@ -3,7 +3,6 @@ package org.kebs.app.kotlin.apollo.api.handlers
 import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.StandardsLevyBpmn
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
-import org.kebs.app.kotlin.apollo.api.service.UserRolesService
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.common.exceptions.InvalidInputException
 import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
@@ -39,8 +38,9 @@ class StandardLevyHandler(
     private val commonDaoServices: CommonDaoServices,
     private val companyProfileRepo: ICompanyProfileRepository,
     private val userRepo: IUserRepository,
-    private val userRolesService: UserRolesService,
-    private val userRoleAssignmentsRepository: IUserRoleAssignmentsRepository
+    private val townsRepo: ITownsRepository,
+    private val slVisitsUploadRepo: ISlVisitUploadsRepository,
+
 
     ) {
 
@@ -172,29 +172,8 @@ class StandardLevyHandler(
                                                     ok().render(allPayments, req.attributes())
                                                 }
                                         }
-                                        "load_levy_penalties" -> {
-                                            standardLevyPaymentsRepository.findAllByStatusOrderByIdDesc(2)
-                                                .let { payments ->
-                                                    KotlinLogging.logger { }
-                                                        .info("Records found ${payments?.count()}")
-                                                    KotlinLogging.logger { }.info("Records found ${payments?.count()}")
-                                                    req.attributes()["payments"] = payments
-                                                    req.attributes()["map"] = map
-                                                    ok().render(allPayments, req.attributes())
-                                                }
-                                        }
 
-                                        "load_levy_partial_payments" -> {
-                                            standardLevyPaymentsRepository.findAllByStatusOrderByIdDesc(3)
-                                                .let { payments ->
-                                                    KotlinLogging.logger { }
-                                                        .info("Records found ${payments?.count()}")
-                                                    KotlinLogging.logger { }.info("Records found ${payments?.count()}")
-                                                    req.attributes()["payments"] = payments
-                                                    req.attributes()["map"] = map
-                                                    ok().render(allPayments, req.attributes())
-                                                }
-                                        }
+
                                         else -> {
                                             redirectAttributes?.addFlashAttribute("error", "")
                                             ok().render("redirect:/sl", req.attributes())
@@ -251,13 +230,35 @@ class StandardLevyHandler(
                                                                     req.attributes()["paymentHistory"] = paymentHistory
 
                                                                 }
-                                                            req.attributes()["reportData"] =
-                                                                StandardLevyFactoryVisitReportEntity()
+
+
+                                                            //                                                                                                        }
+                                                            /**
+                                                             * Check if a report exists that is not yet approved and load that
+                                                             */
+                                                            manufacturer.id
+                                                                ?.let {
+                                                                    standardLevyFactoryVisitReportRepo.findFirstByManufacturerEntityAndStatusOrderByIdDesc(it, 0)
+                                                                        ?.let { reportEntity ->
+                                                                            req.attributes()["reportData"] = reportEntity
+                                                                            /**
+                                                                             * Are there any uploaded files
+                                                                             */
+                                                                            slVisitsUploadRepo.findAllByVisitIdOrderById(reportEntity.id ?: -1L)
+                                                                                .let { uploadedFiles ->
+                                                                                    req.attributes()["uploadedFiles"] = uploadedFiles
+                                                                                }
+
+                                                                        }
+                                                                        ?: run { req.attributes()["reportData"] = StandardLevyFactoryVisitReportEntity() }
+
+                                                                }
+                                                                ?: throw InvalidInputException("Empty entry_number not allowed")
+
                                                             req.attributes()["manufacturer"] = manufacturer
-                                                            req.attributes()["assistantLevyManagers"] =  userRolesService.findAllUserWhoHaveRole(182)
-                                                            req.attributes()["levyManagers"] = userRolesService.findAllUserWhoHaveRole(183)
-                                                            req.attributes()["princialLevyOfficers"] = userRolesService.findAllUserWhoHaveRole(181)
-                                                    req.attributes()["companyProfile"] = CompanyProfileEntity()
+                                                            req.attributes()["counties"] = commonDaoServices.findCountyListByStatus(map.activeStatus)
+                                                            req.attributes()["towns"] = townsRepo.findByStatusOrderByTown(map.activeStatus)
+//                                                            req.attributes()["companyProfile"] = CompanyProfileEntity()
                                                             req.attributes()["map"] = map
 
                                                             req.attributes()["turnover"] = manufacturer.yearlyTurnover
@@ -300,7 +301,6 @@ class StandardLevyHandler(
                         factoryVisitReportEntity.managersApproval = 0
                         factoryVisitReportEntity.scheduledVisitDate = manufacturerDetails.factoryVisitDate as Date
                         factoryVisitReportEntity.createdBy = "Admin"
-                        factoryVisitReportEntity.principalLevyOfficer = commonDaoServices.getLoggedInUser()?.id ?: throw Exception("Please login")
                         factoryVisitReportEntity.createdOn = commonDaoServices.getTimestamp()
                         val savedReport = standardLevyFactoryVisitReportRepo.save(factoryVisitReportEntity)
                         KotlinLogging.logger { }.info("New id ${savedReport.id}")
@@ -389,6 +389,26 @@ class StandardLevyHandler(
             throw e
 
         }
+
+    fun actionSaveFactoryVisitReport(req: ServerRequest): ServerResponse {
+        commonDaoServices.getLoggedInUser().let { user ->
+            val body = req.body<StandardLevyFactoryVisitReportEntity>()
+            req.pathVariable("manufacturerId").toLongOrNull()?.let { manufacturerId ->
+                standardLevyFactoryVisitReportRepo.findByManufacturerEntity(manufacturerId)?.let { report ->
+                    report.purpose = body.purpose
+                    report.personMet = body.personMet
+                    report.actionTaken = body.actionTaken
+                    report.remarks = body.remarks
+                    standardLevyFactoryVisitReportRepo.save(report)
+                    return ok().render(
+                        "redirect:/sl/manufacturer?manufacturerId=${manufacturerId}",
+                        req.attributes()
+                    )
+                }
+            } ?: throw InvalidInputException("Please login")
+        }
+    }
+
 
     fun generalActions(req: ServerRequest): ServerResponse =
         try {

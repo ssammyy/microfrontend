@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, NgForm, Validators} from "@angular/forms";
 import {
   KNWCommittee,
@@ -16,17 +16,19 @@ import {Router} from "@angular/router";
 })
 export class NwaJustificationFormComponent implements OnInit {
 
-  public nwaDepartments !: KNWDepartment[] ;
-  public nwaCommittees !: KNWCommittee[] ;
+  public nwaDepartments !: KNWDepartment[];
+  public nwaCommittees !: KNWCommittee[];
   public prepareJustificationFormGroup!: FormGroup;
-  public knwsectasks !: KnwSecTasks[] ;
+  public knwsectasks !: KnwSecTasks[];
+
   // knwsectasks: KnwSecTasks[] = [];
 
   constructor(
     private router: Router,
     private formBuilder: FormBuilder,
     private stdDevelopmentNwaService: StdDevelopmentNwaService
-  ) { }
+  ) {
+  }
 
   ngOnInit(): void {
     this.getKNWDepartments();
@@ -34,15 +36,15 @@ export class NwaJustificationFormComponent implements OnInit {
     this.knwtasks();
 
     this.prepareJustificationFormGroup = this.formBuilder.group({
-      meetingDate:['', Validators.required],
-      knw:['', Validators.required],
-      sl:['', Validators.required],
-      requestNumber:['', Validators.required],
-      department:['', Validators.required],
-      requestedBy:['', Validators.required],
-      issuesAddressed:['', Validators.required],
-      knwAcceptanceDate:['', Validators.required],
-      referenceMaterial:['', Validators.required],
+      meetingDate: ['', Validators.required],
+      knw: ['', Validators.required],
+      sl: ['', Validators.required],
+      requestNumber: ['', Validators.required],
+      department: ['', Validators.required],
+      requestedBy: ['', Validators.required],
+      issuesAddressed: ['', Validators.required],
+      knwAcceptanceDate: ['', Validators.required],
+      referenceMaterial: ['', Validators.required],
       taskId: ['', Validators.required],
       knwSecretary: ['', Validators.required]
       // postalAddress: ['', [Validators.required, Validators.pattern('P.O.BOX [0-9]{5}')]]
@@ -50,51 +52,51 @@ export class NwaJustificationFormComponent implements OnInit {
 
   }
 
-  get formPrepareJustification(): any{
+  get formPrepareJustification(): any {
     return this.prepareJustificationFormGroup.controls;
   }
 
-  public getKNWDepartments(): void{
+  public getKNWDepartments(): void {
     this.stdDevelopmentNwaService.getKNWDepartments().subscribe(
-      (response: KNWDepartment[])=> {
+      (response: KNWDepartment[]) => {
         this.nwaDepartments = response;
       },
-      (error: HttpErrorResponse)=>{
+      (error: HttpErrorResponse) => {
         alert(error.message);
       }
     );
   }
 
-  public getKNWCommittee(): void{
+  public getKNWCommittee(): void {
     this.stdDevelopmentNwaService.getKNWCommittee().subscribe(
-      (response: KNWCommittee[])=> {
+      (response: KNWCommittee[]) => {
         this.nwaCommittees = response;
       },
-      (error: HttpErrorResponse)=>{
+      (error: HttpErrorResponse) => {
         alert(error.message);
       }
     );
   }
 
-  saveJustification(): void{
+  saveJustification(): void {
 
     this.stdDevelopmentNwaService.prepareJustification(this.prepareJustificationFormGroup.value).subscribe(
-      (response:NWAJustification) =>{
+      (response: NWAJustification) => {
         console.log(response);
         this.prepareJustificationFormGroup.reset();
       },
-      (error:HttpErrorResponse) =>{
+      (error: HttpErrorResponse) => {
         alert(error.message);
       }
     );
   }
 
-  public knwtasks(): void{
+  public knwtasks(): void {
     this.stdDevelopmentNwaService.knwtasks().subscribe(
-      (response: KnwSecTasks[])=> {
+      (response: KnwSecTasks[]) => {
         this.knwsectasks = response;
       },
-      (error: HttpErrorResponse)=>{
+      (error: HttpErrorResponse) => {
         alert(error.message);
       }
     );
@@ -110,7 +112,6 @@ export class NwaJustificationFormComponent implements OnInit {
   //     }
   //   )
   // }
-
 
 
 }

@@ -1326,3 +1326,93 @@ order by id
 update DAT_KEBS_COMPANY_PROFILE
 set factory_visit_date = null
 where id = 42;
+
+
+select *
+from DAT_KEBS_COMPANY_PROFILE
+where id = 61;--town 365 county 30
+
+select *
+from CFG_KEBS_TOWNS
+where ID = 30;
+
+select *
+from CFG_KEBS_COUNTIES
+where id = 30;
+
+select *
+from DAT_KEBS_MANUFACTURE_PLANT_DETAILS
+where MANUFACTURE_ID = 62;
+
+
+create table dat_kebs_sl_visit_uploads
+(
+    id               NUMBER                                      not null PRIMARY KEY,
+    FILEPATH         VARCHAR2(200),
+    DESCRIPTION      VARCHAR2(200),
+    NAME             VARCHAR2(350),
+    FILE_TYPE        VARCHAR2(200),
+    DOCUMENT_TYPE    VARCHAR2(200),
+    DOCUMENT         BLOB,
+    TRANSACTION_DATE DATE                                        not null,
+    visit_ID         NUMBER                                      not null REFERENCES DAT_STANDARD_LEVY_FACTORY_VISIT_REPORT (ID),
+    status           NUMBER(2)                   default 0       not null,
+    var_field_1      VARCHAR2(350 CHAR),
+    var_field_2      VARCHAR2(350 CHAR),
+    var_field_3      VARCHAR2(350 CHAR),
+    var_field_4      VARCHAR2(350 CHAR),
+    var_field_5      VARCHAR2(350 CHAR),
+    var_field_6      VARCHAR2(350 CHAR),
+    var_field_7      VARCHAR2(350 CHAR),
+    var_field_8      VARCHAR2(350 CHAR),
+    var_field_9      VARCHAR2(350 CHAR),
+    var_field_10     VARCHAR2(350 CHAR),
+    created_by       VARCHAR2(100 CHAR)          DEFAULT 'admin' NOT NULL ENABLE,
+    created_on       TIMESTAMP(6) WITH TIME ZONE DEFAULT sysdate NOT NULL ENABLE,
+    modified_by      VARCHAR2(100 CHAR)          DEFAULT 'admin',
+    modified_on      TIMESTAMP(6) WITH TIME ZONE DEFAULT sysdate,
+    delete_by        VARCHAR2(100 CHAR)          DEFAULT 'admin',
+    deleted_on       TIMESTAMP(6) WITH TIME ZONE
+) TABLESPACE qaimssdb_data;
+
+create sequence dat_kebs_sl_visit_uploads_seq minvalue 1 maxvalue 9999999999999999999999999999 increment by 1 start with 1 cache 20 noorder nocycle;
+
+create or replace trigger dat_kebs_sl_visit_uploads_trg
+    before
+        insert
+    on dat_kebs_sl_visit_uploads
+    for each row
+begin
+    if inserting then
+        if :new.id is null then
+            select dat_kebs_sl_visit_uploads_seq.nextval
+            into :new.id
+            from dual;
+
+        end if;
+
+    end if;
+end;
+
+alter table DAT_KEBS_SL_VISIT_UPLOADS
+    modify FILEPATH VARCHAR2(350);
+
+alter table DAT_KEBS_SL_VISIT_UPLOADS
+    modify DESCRIPTION VARCHAR2(2000);
+
+alter table DAT_KEBS_SL_VISIT_UPLOADS
+    modify NAME VARCHAR2(350);
+
+alter table dat_kebs_sl_visit_uploads
+    move lob (DOCUMENT) store as (tablespace apollo_lobdata_ts);
+
+select *
+from dat_kebs_sl_visit_uploads;
+
+select *
+from DAT_STANDARD_LEVY_FACTORY_VISIT_REPORT
+order by ID
+;
+
+alter table DAT_STANDARD_LEVY_FACTORY_VISIT_REPORT
+    add visit_date date;

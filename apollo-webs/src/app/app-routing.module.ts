@@ -70,6 +70,10 @@ import {HodjoinrequestComponent} from "./components/standards-development/hodjoi
 import {SicjoinrequestComponent} from "./components/standards-development/sicjoinrequest/sicjoinrequest.component";
 import {SicpaymentconfirmComponent} from "./components/standards-development/sicpaymentconfirm/sicpaymentconfirm.component";
 import {SchememembershipComponent} from "./components/standards-development/schememembership/schememembership/schememembership.component";
+import {ViewPublicReviewComponent} from "./components/standards-development/publicreview/view-public-review/view-public-review.component";
+import {PreparePublicReviewComponent} from "./components/standards-development/publicreview/prepare-public-review/prepare-public-review.component";
+import {ViewPublicReviewCommentsComponent} from "./components/standards-development/publicreview/view-public-review-comments/view-public-review-comments.component";
+import {PreparePRCommentComponent} from "./components/standards-development/publicreview/prepare-prcomment/prepare-prcomment.component";
 
 
 const routes: Routes = [
@@ -292,7 +296,7 @@ const routes: Routes = [
     children: [{path: '', component: NwaHoSicTasksComponent}]
   },
 
-    {
+  {
     path: 'divisionresponse', component: StandardsDevelopmentComponent,
     children: [{path: '', component: DivisionresponseComponent}]
   },
@@ -320,9 +324,9 @@ const routes: Routes = [
     path: 'sicpayconfirm', component: StandardsDevelopmentComponent,
     children: [{path: '', component: SicpaymentconfirmComponent}]
   },
-  { path: 'enquire', component: EnquiryComponent },
-  { path: 'schemejoin', component: SchememembershipComponent },
-  { path: 'success', component: SuccessComponent },
+  {path: 'enquire', component: EnquiryComponent},
+  {path: 'schemejoin', component: SchememembershipComponent},
+  {path: 'success', component: SuccessComponent},
 
   /****************************************************************
    * END OF STANDARD DEVELOPMENT ROUTES
@@ -330,6 +334,31 @@ const routes: Routes = [
 
   /****************************************************************
    * STANDARD DEVELOPMENT - COMMITTEE MODULE ROUTES
+   ***************************************************************/
+
+  {
+    path: 'viewPr', component: StandardsDevelopmentComponent,
+    children: [{path: '', component: ViewPublicReviewComponent}]
+  },
+  {
+    path: 'preparepublicreview', component: StandardsDevelopmentComponent,
+    children: [{path: '', component: PreparePublicReviewComponent}]
+  },
+  {
+    path: 'viewPrComments', component: StandardsDevelopmentComponent,
+    children: [{path: '', component: ViewPublicReviewCommentsComponent}]
+  },
+  {
+    path: 'preparePrComment/:id', component: StandardsDevelopmentComponent,
+    children: [{path: '', component: PreparePRCommentComponent}]
+  },
+
+
+  /****************************************************************
+   * END OF STANDARD DEVELOPMENT - COMMITTEE MODULE ROUTES
+   ***************************************************************/
+  /****************************************************************
+   * STANDARD DEVELOPMENT - PUBLIC REVIEW MODULE ROUTES
    ***************************************************************/
 
   {path: 'preliminary_draft', component: PdListComponent},
@@ -344,11 +373,11 @@ const routes: Routes = [
   {path: 'comment_cd', component: CommentCdComponent},
 
 
-
   /****************************************************************
    * END OF STANDARD DEVELOPMENT - COMMITTEE MODULE ROUTES
    ***************************************************************/
 ];
+
 
 @NgModule({
   imports: [RouterModule.forRoot(routes, {

@@ -261,7 +261,7 @@ class ControllerRoutes {
         "/api/auth/signup".nest {
             GET(pattern = "/user", f = handler::signUpAllUsersView)
 //            GET(pattern = "/manufacturer", f = handler::signupManufacturerView)
-//            GET(pattern = "/employee", f = handler::signUpEmployeeView)
+            GET(pattern = "/employee", f = handler::signUpEmployeeView)
             GET(pattern = "/update-user-details", f = handler::updateUserView)
             GET("/new", handler::userNewFormView)
             "notification".nest {

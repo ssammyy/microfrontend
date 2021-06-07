@@ -172,7 +172,7 @@ class QualityAssuranceHandler(
             }
 
             if (permitType.id ==applicationMapProperties.mapQAPermitTypeIdFmark){
-                req.attributes()["mySmarkPermits"] = qaDaoServices.findAllUserPermitWithPermitType(loggedInUser, applicationMapProperties.mapQAPermitTypeIdSmark)
+                req.attributes()["mySmarkPermits"] = qaDaoServices.findAllSmarkPermitWithNoFmarkGenerated(loggedInUser, applicationMapProperties.mapQAPermitTypeIdSmark, map.activeStatus, map.inactiveStatus)
             }
 
             req.attributes().putAll(loadCommonUIComponents(map))
@@ -234,7 +234,7 @@ class QualityAssuranceHandler(
         req.attributes()["plantAttached"] = plantAttached
         req.attributes()["plantsDetails"] = permit.userId?.let { qaDaoServices.findAllPlantDetails(it) } ?: throw ExpectedDataNotFound("Required User ID, from Permit Details")
 
-        req.attributes()["oldVersionList"] = permit.permitNumber?.let { qaDaoServices.findAllOldPermitWithPermitID(it) }
+        req.attributes()["oldVersionList"] = permit.permitRefNumber?.let { qaDaoServices.findAllOldPermitWithPermitID(it) }
 
         return ok().render(qaPermitDetailPage, req.attributes())
     }
@@ -279,7 +279,7 @@ class QualityAssuranceHandler(
         req.attributes()["permitDetails"] = permit
         req.attributes()["plantAttached"] = plantAttached
 
-        req.attributes()["oldVersionList"] = permit.permitNumber?.let { qaDaoServices.findAllOldPermitWithPermitID(it) }
+        req.attributes()["oldVersionList"] = permit.permitRefNumber?.let { qaDaoServices.findAllOldPermitWithPermitID(it) }
 
         return ok().render(qaPermitDetailPage, req.attributes())
     }
@@ -319,9 +319,11 @@ class QualityAssuranceHandler(
         val loggedInUser = commonDaoServices.loggedInUserDetails()
 
         val permitID = req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
-        req.attributes()["permit"] =  loggedInUser.id?.let { qaDaoServices.findPermitBYUserIDAndId(permitID, it) }?: throw ExpectedDataNotFound("User Id required")
+        val permit = loggedInUser.id?.let { qaDaoServices.findPermitBYUserIDAndId(permitID, it) }?: throw ExpectedDataNotFound("User Id required")
+        req.attributes()["permit"] =  permit
         req.attributes()["counties"] = countyRepo.findByStatusOrderByCounty(map.activeStatus)
         req.attributes()["applicationDate"] = commonDaoServices.getCurrentDate()
+        req.attributes()["plantAttached"] = qaDaoServices.findPlantDetails(permit.attachedPlantId?: throw Exception("INVALID PLANT DETAILS"))
         req.attributes()["QaSta10Entity"] = QaSta10Entity()
         return ok().render(qaNewSta10Page, req.attributes())
 
@@ -410,7 +412,8 @@ class QualityAssuranceHandler(
 
     }
 
-    @PreAuthorize("hasAuthority('PERMIT_APPLICATION') or hasAuthority('QA_OFFICER_MODIFY')")
+    @PreAuthorize("hasAuthority('PERMIT_APPLICATION') or hasAuthority('QA_OFFICER_MODIFY') or hasAuthority('QA_HOD_READ') " +
+            "or hasAuthority('QA_MANAGER_ASSESSORS_READ') or hasAuthority('QA_HOF_READ') or hasAuthority('QA_ASSESSORS_READ') or hasAuthority('QA_PAC_SECRETARY_READ') or hasAuthority('QA_PSC_MEMBERS_READ') or hasAuthority('QA_PCM_READ')")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun generatedSchemeSupervision(req: ServerRequest): ServerResponse {
         val permitID = req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
@@ -505,7 +508,7 @@ class QualityAssuranceHandler(
         val ssfDetails = qaDaoServices.findSampleSubmittedBYPermitID(permit.id?: throw ExpectedDataNotFound("MISSING PERMIT ID"))
 
         req.attributes()["ssfDetails"] = ssfDetails
-        var labResultsParameters = qaDaoServices.findSampleLabTestResultsRepoBYBSNumber(ssfDetails.bsNumber?: throw ExpectedDataNotFound("MISSING BS NUMBER"))
+        val labResultsParameters = qaDaoServices.findSampleLabTestResultsRepoBYBSNumber(ssfDetails.bsNumber?: throw ExpectedDataNotFound("MISSING BS NUMBER"))
         KotlinLogging.logger { }.info { ssfDetails.bsNumber }
         req.attributes()["LabResultsParameters"] = labResultsParameters
 

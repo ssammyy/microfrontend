@@ -217,6 +217,9 @@ class ApplicationMapProperties {
     @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.status.pending_recommendation}")
     val mapQaStatusPRecommendation: Long = 0L
 
+    @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.status.pending_recommendation_approval}")
+    val mapQaStatusPRecommendationApproval: Long = 0L
+
     @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.status.pending_psc_members_awarding}")
     val mapQaStatusPPSCMembersAward: Long = 0L
 
@@ -359,6 +362,9 @@ class ApplicationMapProperties {
     @Value("\${org.kebs.app.kotlin.apollo.resources.static.images.smark.image.path}")
     val mapSmarkImagePath: String = ""
 
+    @Value("\${org.kebs.app.kotlin.apollo.resources.static.images.fmark.image.path}")
+    val mapFmarkImagePath: String = ""
+
     @Value("\${org.kebs.app.kotlin.apollo.resources.static.images.mpesa.logo.path}")
     val mapMPESALogoPath: String = ""
 
@@ -400,6 +406,9 @@ class ApplicationMapProperties {
 
     @Value("\${org.kebs.app.kotlin.apollo.resources.report.qa.smark.permit.report.path}")
     val mapReportSmarkPermitReportPath: String = ""
+
+    @Value("\${org.kebs.app.kotlin.apollo.resources.report.qa.fmark.permit.report.path}")
+    val mapReportFmarkPermitReportPath: String = ""
 
     @Value("\${destination.inspection.cd.status.type.coc.generated.and.send}")
     val mapDICdStatusTypeCOCGeneratedAndSendID: Long = 0L

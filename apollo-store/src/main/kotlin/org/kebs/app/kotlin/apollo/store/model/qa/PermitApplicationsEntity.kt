@@ -33,9 +33,9 @@ class PermitApplicationsEntity:Serializable {
     @Basic
     var position: String? = null
 
-    @Column(name = "PERMIT_NUMBER")
+    @Column(name = "PERMIT_REF_NUMBER")
     @Basic
-    var permitNumber: String? = null
+    var permitRefNumber: String? = null
 
     @Column(name = "COMMODITY_DESCRIPTION")
     @Basic
@@ -103,6 +103,10 @@ class PermitApplicationsEntity:Serializable {
     @Column(name = "COMPLIANT_STATUS")
     @Basic
     var compliantStatus: Int? = null
+
+    @Column(name = "SEND_FOR_PCM_REVIEW")
+    @Basic
+    var sendForPcmReview: Int? = null
 
     @Column(name = "JUSTIFICATION_REPORT_STATUS")
     @Basic
@@ -380,6 +384,14 @@ class PermitApplicationsEntity:Serializable {
     @Basic
     var pacDecisionRemarks: String? = null
 
+    @Column(name = "HOD_APPROVE_ASSESSMENT_REMARKS")
+    @Basic
+    var hodApproveAssessmentRemarks: String? = null
+
+    @Column(name = "HOD_APPROVE_ASSESSMENT_STATUS")
+    @Basic
+    var hodApproveAssessmentStatus: Int? = null
+
     //A Declaration Form
 
     @Column(name = "TOTAL_COST")
@@ -445,6 +457,10 @@ class PermitApplicationsEntity:Serializable {
     @Basic
     var attachedPlantId: Long? = null
 
+
+    @Column(name = "AWARDED_PERMIT_NUMBER")
+    @Basic
+    var awardedPermitNumber: String? = null
 
     @Column(name = "VAR_FIELD_1")
     @Basic
@@ -519,7 +535,7 @@ class PermitApplicationsEntity:Serializable {
         if (id != other.id) return false
         if (applicantName != other.applicantName) return false
         if (firmName != other.firmName) return false
-        if (permitNumber != other.permitNumber) return false
+        if (permitRefNumber != other.permitRefNumber) return false
         if (description != other.description) return false
         if (postalAddress != other.postalAddress) return false
         if (position != other.position) return false
@@ -573,12 +589,15 @@ class PermitApplicationsEntity:Serializable {
         if (pscMemberApprovalRemarks != other.pscMemberApprovalRemarks) return false
         if (pcmApprovalStatus != other.pcmApprovalStatus) return false
         if (pcmApprovalRemarks != other.pcmApprovalRemarks) return false
+        if (hodApproveAssessmentRemarks != other.hodApproveAssessmentRemarks) return false
+        if (hodApproveAssessmentStatus != other.hodApproveAssessmentStatus) return false
         if (factoryInspectionReportApprovedRejectedStatus != other.factoryInspectionReportApprovedRejectedStatus) return false
         if (factoryInspectionReportApprovedRejectedRemarks != other.factoryInspectionReportApprovedRejectedRemarks) return false
         if (assessmentCriteria != other.assessmentCriteria) return false
         if (pacDecisionRemarks != other.pacDecisionRemarks) return false
         if (hofQamCompletenessStatus != other.hofQamCompletenessStatus) return false
         if (compliantStatus != other.compliantStatus) return false
+        if (sendForPcmReview != other.sendForPcmReview) return false
         if (justificationReportStatus != other.justificationReportStatus) return false
         if (justificationReportRemarks != other.justificationReportRemarks) return false
         if (assessmentReportRemarks != other.assessmentReportRemarks) return false
@@ -640,7 +659,7 @@ class PermitApplicationsEntity:Serializable {
         var result = id?.hashCode() ?: 0
         result = 31 * result + (applicantName?.hashCode() ?: 0)
         result = 31 * result + (firmName?.hashCode() ?: 0)
-        result = 31 * result + (permitNumber?.hashCode() ?: 0)
+        result = 31 * result + (permitRefNumber?.hashCode() ?: 0)
         result = 31 * result + (description?.hashCode() ?: 0)
         result = 31 * result + (postalAddress?.hashCode() ?: 0)
         result = 31 * result + (position?.hashCode() ?: 0)
@@ -688,6 +707,9 @@ class PermitApplicationsEntity:Serializable {
         result = 31 * result + (pscMemberApprovalRemarks?.hashCode() ?: 0)
         result = 31 * result + (pcmApprovalStatus ?: 0)
         result = 31 * result + (pcmApprovalRemarks?.hashCode() ?: 0)
+        result = 31 * result + (hodApproveAssessmentStatus ?: 0)
+        result = 31 * result + (hodApproveAssessmentRemarks?.hashCode() ?: 0)
+        result = 31 * result + (assessmentCriteria?.hashCode() ?: 0)
         result = 31 * result + (factoryInspectionReportApprovedRejectedStatus ?: 0)
         result = 31 * result + (factoryInspectionReportApprovedRejectedRemarks?.hashCode() ?: 0)
         result = 31 * result + (attachedPlantRemarks?.hashCode() ?: 0)
@@ -705,6 +727,7 @@ class PermitApplicationsEntity:Serializable {
         result = 31 * result + (assignOfficerStatus ?: 0)
         result = 31 * result + (permitExpiredStatus ?: 0)
         result = 31 * result + (compliantStatus ?: 0)
+        result = 31 * result + (sendForPcmReview ?: 0)
         result = 31 * result + (assignAssessorStatus ?: 0)
         result = 31 * result + (resubmitApplicationStatus ?: 0)
         result = 31 * result + (justificationReportStatus ?: 0)

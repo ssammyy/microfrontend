@@ -2,6 +2,7 @@ package com.apollo.standardsdevelopment.services
 
 import com.apollo.standardsdevelopment.dto.ProcessInstanceResponse
 import com.apollo.standardsdevelopment.dto.TaskDetails
+import com.apollo.standardsdevelopment.exceptions.ResourceNotFoundException
 import com.apollo.standardsdevelopment.models.PublicReviewDraft
 import com.apollo.standardsdevelopment.models.PublicReviewDraftComments
 import com.apollo.standardsdevelopment.repositories.PublicReviewDraftCommentsRepository
@@ -12,7 +13,9 @@ import org.flowable.engine.RuntimeService
 import org.flowable.engine.TaskService
 import org.flowable.task.api.Task
 import org.springframework.beans.factory.annotation.Qualifier
+import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
+import org.springframework.web.bind.annotation.PathVariable
 import java.util.ArrayList
 
 @Service
@@ -25,7 +28,7 @@ class PublicReviewService(
     private val publicReviewDraftCommentsRepository: PublicReviewDraftCommentsRepository,
 
     ) {
-    val PROCESS_DEFINITION_KEY = "public_review_stage"
+    val PROCESS_DEFINITION_KEY = "publicreview"
     val TASK_CANDIDATE_GROUP_TC_SEC = "TC-sec"
     val TASK_CANDIDATE_GROUP_TC = "TC"
     val variable: MutableMap<String, Any> = HashMap()
@@ -39,8 +42,10 @@ class PublicReviewService(
     }
 
     fun preparePublicReview(publicReviewDraft: PublicReviewDraft): ProcessInstanceResponse {
-        publicReviewDraft.PrdName?.let { variable.put("PrdName", it) }
-        publicReviewDraft.PrdraftBy?.let { variable.put("PrdraftBy", it) }
+        publicReviewDraft.prdName?.let { variable.put("prdName", it) }
+        publicReviewDraft.prdraftBy?.let { variable.put("prdraftBy", it) }
+        publicReviewDraft.prdpath?.let { variable.put("prdpath", it) }
+
         print(publicReviewDraft.toString())
         publicReviewDraftRepository.save(publicReviewDraft)
         sendNotification(publicReviewDraft.id)
@@ -59,13 +64,30 @@ class PublicReviewService(
         publicReviewDraftComments.roleId?.let { variable.put("roleId", it) }
         publicReviewDraftComments.roleName?.let { variable.put("roleName", it) }
         publicReviewDraftComments.userId?.let { variable.put("userId", it) }
+        publicReviewDraftComments.title?.let { variable.put("title", it) }
         publicReviewDraftComments.comment?.let { variable.put("comment", it) }
-
+        publicReviewDraftComments.documentType?.let { variable.put("documentType", it) }
+        publicReviewDraftComments.circulationDate?.let { variable.put("circulationDate", it) }
+        publicReviewDraftComments.closingDate?.let { variable.put("closingDate", it) }
+        publicReviewDraftComments.organization?.let { variable.put("organization", it) }
+        publicReviewDraftComments.clause?.let { variable.put("clause", it) }
+        publicReviewDraftComments.commentType?.let { variable.put("commentType", it) }
+        publicReviewDraftComments.comment?.let { variable.put("comment", it) }
+        publicReviewDraftComments.proposedChange?.let { variable.put("proposedChange", it) }
+        publicReviewDraftComments.observations?.let { variable.put("observations", it) }
         print(publicReviewDraftComments.toString())
         publicReviewDraftCommentsRepository.save(publicReviewDraftComments)
         val processInstance = runtimeService.startProcessInstanceByKey(PROCESS_DEFINITION_KEY, variable)
         return ProcessInstanceResponse(processInstance.id, processInstance.isEnded)
 
+    }
+
+    fun getPrs(): MutableList<PublicReviewDraft> {
+        return publicReviewDraftRepository.findAll()
+    }
+
+    fun getPrComments(): MutableList<PublicReviewDraftComments> {
+        return publicReviewDraftCommentsRepository.findAll()
     }
 
     private fun getTaskDetails(tasks: List<Task>): List<TaskDetails> {
@@ -76,6 +98,7 @@ class PublicReviewService(
         }
         return taskDetails
     }
+
     fun approvePublicReview(taskId: String?, approved: Boolean) {
         val variables: MutableMap<String, Any> = java.util.HashMap()
         variables["approved"] = approved
@@ -98,5 +121,21 @@ class PublicReviewService(
             )
         }
 
+    }
+
+    //Return task details for TC
+    fun getTCTasks(): List<TaskDetails> {
+        val tasks = taskService.createTaskQuery().taskCandidateGroup(TASK_CANDIDATE_GROUP_TC)
+            .processDefinitionKey(PROCESS_DEFINITION_KEY).list()
+        return getTaskDetails(tasks)
+    }
+
+    //    fun getPublicReviewDrafts(id: Long): MutableList<PublicReviewDraft> {
+//        return publicReviewDraftRepository.findById(id)
+//    }
+    fun getPublicReviewDraftById(@PathVariable(value = "id") publicReviewId: Long): ResponseEntity<PublicReviewDraft?>? {
+        val employee: PublicReviewDraft = publicReviewDraftRepository.findById(publicReviewId)
+            .orElseThrow { ResourceNotFoundException("Employee not found for this id :: $publicReviewId") }
+        return ResponseEntity.ok().body<PublicReviewDraft?>(employee)
     }
 }

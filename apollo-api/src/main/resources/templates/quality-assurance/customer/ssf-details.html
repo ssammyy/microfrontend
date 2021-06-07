@@ -83,10 +83,9 @@
                                                 <div class="list-text-accordion"
                                                      th:text="${ssfDetails?.resultsDate}"></div>
                                             </li>
-                                            <li class="list-item-accordion">
+                                            <li th:if="${ssfDetails?.resultsAnalysis != null}" class="list-item-accordion">
                                                 <div class="list-title-accordion">RESULTS ANALYSIS:</div>
-                                                <div class="list-text-accordion"
-                                                     th:text="${ssfDetails?.resultsAnalysis}"></div>
+                                                <div class="list-text-accordion" th:text="${ssfDetails?.resultsAnalysis} ? 'COMPLIANT' : 'NOT-COMPLIANT'"></div>
                                             </li>
                                         </ul>
                                     </div>
@@ -171,8 +170,9 @@
                             <div class="filter-title">Action:</div>
                         </div>
                         <div>
-                            <div sec:authorize="hasAuthority('PERMIT_APPLICATION')">
-<!--                                <a th:if="${permit?.sta10FilledStatus != 1 and ssfDetails?.closedProduction == 1 and ssfDetails?.closedRawMaterials == 1 and ssfDetails?.closedMachineryPlants == 1 and ssfDetails?.closedManufacturingProcesses == 1 }"  th:href="@{/api/qa/new-sta10-submit(permitID=${permit?.id})}" class="filter-link" style="color: white">SUBMIT STA10</a>-->
+
+                            <div sec:authorize="hasAuthority('QA_OFFICER_MODIFY')">
+                                <a th:if="${ssfDetails.resultsAnalysis == null and ssfDetails.labResultsStatus == 1}" onclick="popUpCompanyFunction('addComplianceStatusDetails');" class="filter-link" style="color: white">ADD COMPLIANCE DETAILS</a>
                             </div>
 
                         </div>
@@ -216,6 +216,41 @@
                 </div>
             </div>
 
+            <div class="commodityDetailsForm" >
+                <form id="commodityDetails-Form" name="commodityDetails-Form" th:action="@{/api/qa/kebs/lab-results-compliance-status/save(permitID = ${ssfDetails?.permitId})}" method="post" th:object="${ssfDetails}">
+                    <div class="modal fade" id="commodityDetailsModal" tabindex="-1" role="dialog" aria-labelledby="commodityDetailsModalLable" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 style="font-weight: bold; " class="modal-title" id="commodityDetailsLable"><span id="spanValueCommodity">none</span></h5>
+                                    <button aria-label="Close" class="close" data-dismiss="modal" onClick="refreshPage()" type="button">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="form-group">
+                                        <div id="addComplianceStatusDetails">
+                                            <label for="resultsAnalysis" class="col-form-label">Select a Compliance status:</label>
+                                            <select id="resultsAnalysis" required class="select-field w-select" th:field="*{resultsAnalysis}">
+                                                <option th:text="'Select one.....'" th:value="null"></option>
+                                                <option th:text="'Compliant'" th:value="1"></option>
+                                                <option th:text="'Non-Compliant'" th:value="0"></option>
+                                            </select>
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button class="btn btn-secondary" data-dismiss="modal" onClick="refreshPage()"
+                                            type="button">Close
+                                    </button>
+                                    <input type="submit" id="saveValueCommodity" class="btn btn-primary" value="Save"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
 
         </div>
     </div>
@@ -336,6 +371,24 @@
         }
 
         $('.productsManufacturedForm #productsManufacturedModal').modal();
+    }
+
+    function popUpCompanyFunction(eventAction) {
+        let arrHead = ['addComplianceStatusDetails'];
+        let arrHeadSave = ['Add Compliance status'];
+
+        for (let h = 0; h < arrHead.length; h++) {
+            if (eventAction !== arrHead[h]) {
+                document.getElementById(arrHead[h]).remove();
+            } else {
+                if (eventAction === arrHead[h]) {
+                    document.getElementById('spanValueCommodity').innerHTML = arrHeadSave[h];
+                    document.getElementById("saveValueCommodity").value = 'Submit';
+                }
+            }
+        }
+
+        $('.commodityDetailsForm #commodityDetailsModal').modal();
     }
 
     function popUpFunctionAddRawMaterials(eventAction) {

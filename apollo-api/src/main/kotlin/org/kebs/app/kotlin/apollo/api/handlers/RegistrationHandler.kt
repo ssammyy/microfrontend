@@ -346,7 +346,7 @@ class RegistrationHandler(
                 req.attributes()["usersEntity"] = UsersEntity()
                 req.attributes()["map"] = map
 
-                return ok().render("/auth/employee-registration", req.attributes())
+                return ok().render("/admin/employee-registration", req.attributes())
             }
             ?: throw Exception("Missing application mapping for [id=$appId], recheck configuration")
 

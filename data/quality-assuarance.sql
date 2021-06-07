@@ -78,12 +78,24 @@
  */
 ***************************Table USED IN QA*****************************************
 select * from DAT_KEBS_PERMIT_TRANSACTION
--- where id = 350
+where id = 348
+
 -- where PERMIT_NUMBER = 'DM#0954A'
 order by id desc; 1522
 
 select * from cfg_kebs_qa_process_status
 -- where id = 350
+-- where PERMIT_NUMBER = 'DM#0954A'
+order by id desc; 1522
+
+select * from DAT_KEBS_SCHEMES_OF_SUPERVISION
+-- where id = 350
+-- where PERMIT_NUMBER = 'DM#0954A'
+order by id desc; 1522
+
+
+select * from DAT_KEBS_QA_SAMPLE_SUBMISSION
+where PERMIT_ID = 362
 -- where PERMIT_NUMBER = 'DM#0954A'
 order by id desc; 1522
 
@@ -122,12 +134,18 @@ select * from CFG_KEBS_PERMIT_PAYMENT_UNITS
 order by id desc;
 
 select * from DAT_KEBS_COMPANY_PROFILE
+where REGISTRATION_NUMBER = 'PVT-9XUZXZB'
 -- where id = 2
 order by id desc;
 
 select * from DAT_KEBS_INVOICE
 -- where id = 2
 -- where PERMIT_ID = 285
+order by id desc;PVT-KAUQ22K
+
+select * from DAT_KEBS_COMPANY_PROFILE
+-- where id = 2
+where REGISTRATION_NUMBER = 'PVT-V7URGL2'
 order by id desc;
 
 alter table DAT_KEBS_QA_PRODUCT modify AVAILABLE NUMBER(2)/
@@ -219,7 +237,8 @@ order by id desc;--MS_MP_MODIFY MS_MP_READ
 
 select * from DAT_KEBS_USERS
 -- where USER_TYPE = 5
-where EMAIL = '254safaris@gmail.com'
+-- where EMAIL = '254safaris@gmail.com'
+where id = 1785
 order by id desc;
 
 select *

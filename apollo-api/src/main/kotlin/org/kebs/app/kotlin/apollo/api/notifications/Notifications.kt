@@ -187,13 +187,13 @@ class Notifications(
         props.put("mail.smtp.port", applicationMapProperties.mapApplicationEmailSmtpPort);
         props.put("mail.smtp.auth", applicationMapProperties.mapApplicationEmailSmtpAuth);
         props.put("mail.smtp.user", applicationMapProperties.mapApplicationEmailUsername);
-        props.put("mail.smtp.password", "Kims@Kebs21");
+        props.put("mail.smtp.password", jasyptStringEncryptor.decrypt(applicationMapProperties.mapApplicationEmailPassword));
 
         //Establishing a session with required user details
         val session: Session = Session.getInstance(props, object : Authenticator() {
             override fun getPasswordAuthentication(): PasswordAuthentication {
                 //return new PasswordAuthentication(username, password);
-                return PasswordAuthentication(applicationMapProperties.mapApplicationEmailUsername, "Kims@Kebs21")
+                return PasswordAuthentication(applicationMapProperties.mapApplicationEmailUsername, jasyptStringEncryptor.decrypt(applicationMapProperties.mapApplicationEmailPassword))
             }
         })
 
@@ -205,7 +205,7 @@ class Notifications(
             msg.subject = subject
             msg.sentDate= Date()
             msg.setHeader("XPriority", "1")
-            msg.setFrom(InternetAddress(applicationMapProperties.mapApplicationEmailUsername, "Kims@Kebs21"))
+            msg.setFrom(InternetAddress(applicationMapProperties.mapApplicationEmailUsername, jasyptStringEncryptor.decrypt(applicationMapProperties.mapApplicationEmailPassword)))
             //val messageText = message
             var messageBodyPart: BodyPart = MimeBodyPart()
             messageBodyPart.setText(messageText)
@@ -224,7 +224,7 @@ class Notifications(
             msg.setContent(multipart)
             val transport: Transport = session.getTransport(applicationMapProperties.mapApplicationEmailProtocol)
             transport.connect(applicationMapProperties.mapApplicationEmailSmtpHost, applicationMapProperties.mapApplicationEmailUsername,
-                "Kims@Kebs21")
+                jasyptStringEncryptor.decrypt(applicationMapProperties.mapApplicationEmailPassword))
             //TODO: Add mail delivery check, update status if mail failed
             transport.sendMessage(msg, msg.allRecipients)
             KotlinLogging.logger { }.info("Mail has been sent successfully")

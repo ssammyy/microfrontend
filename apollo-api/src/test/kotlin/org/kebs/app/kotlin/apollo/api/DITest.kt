@@ -18,6 +18,7 @@ import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapPrope
 import org.kebs.app.kotlin.apollo.store.customdto.PvocReconciliationReportDto
 import org.kebs.app.kotlin.apollo.store.model.*
 import org.kebs.app.kotlin.apollo.store.model.di.*
+import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileEntity
 import org.kebs.app.kotlin.apollo.store.repo.*
 import org.kebs.app.kotlin.apollo.store.repo.di.ICountryTypeCodesRepository
 import org.kebs.app.kotlin.apollo.store.repo.di.IDestinationInspectionFeeRepository
@@ -47,6 +48,9 @@ class DITest {
 
     @Autowired
     lateinit var consignmentDocumentDaoService: ConsignmentDocumentDaoService
+
+    @Autowired
+    lateinit var registrationDaoServices: RegistrationDaoServices
 
     @Autowired
     lateinit var invoiceDaoService: InvoiceDaoService
@@ -651,7 +655,7 @@ class DITest {
                     val map = commonDaoServices.serviceMapDetails(appId)
 //                    val demandNotes: MutableList<CdDemandNoteEntity> = mutableListOf()
 
-                    var itemDetails = destinationInspectionDaoServices.findItemWithItemID(212)
+                    var itemDetails = destinationInspectionDaoServices.findItemWithItemID(284)
                     with(itemDetails) {
                         paymentFeeIdSelected = iDIFeeDetailsRepo.findByIdOrNull(7)
                     }
@@ -765,6 +769,19 @@ class DITest {
 
     @Test
     fun testUpdatingConsignmentDocument() {
+        val cdInString = String(consignmentDocumentDaoService.findSavedCDXmlFile(401L, 1))
+        consignmentDocumentDaoService.updateCDDetails(cdInString, "TEST101Status", "TEST101Date")
+    }
+
+    @Test
+    fun testBRSDetails() {
+       val cmp = CompanyProfileEntity()
+        var arrayList = arrayListOf<String>("4","7","12")
+        for(element in arrayList){
+            cmp.registrationNumber = element
+            registrationDaoServices.checkBrs(cmp)
+        }
+
         val cdInString = String(consignmentDocumentDaoService.findSavedCDXmlFile(401L, 1))
         consignmentDocumentDaoService.updateCDDetails(cdInString, "TEST101Status", "TEST101Date")
     }

@@ -442,9 +442,10 @@ data class UserRequestEntityDto(
 data class PermitEntityDto(
     var id: Long? = null,
     var firmName: String? = null,
-    var permitNumber: String? = null,
+    var permitRefNumber: String? = null,
     var productName: String? = null,
     var tradeMark: String? = null,
+    var awardedPermitNumber: String? = null,
     var dateOfIssue: Date? = null,
     var dateOfExpiry: Date? = null,
     var permitStatus: String? = null,

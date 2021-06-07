@@ -1350,6 +1350,7 @@ class RegistrationDaoServices(
                                         } else {
                                             r.records?.get(0)?.partners?.forEach {
                                                 if(!response) {
+                                                    KotlinLogging.logger { }.info { "COMPANY REG NO:  = ${cp.registrationNumber} == DIRECTOR ID ${it?.idNumber}" }
                                                     response = cp.directorIdNumber == it?.idNumber ?: 0
                                                     brsResults = r.records?.get(0)
                                                     KotlinLogging.logger { }.info { "MY UPDATED:  = ${cp.directorIdNumber} ======${it?.idNumber}" }

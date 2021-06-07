@@ -72,9 +72,9 @@ xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
         <div class="main-grid-side-navigation" id="w-node-d308c123a20f-c123a20d" th:fragment="side-navigation-bar">
 
 <!--            <a class="side-navigation-link" th:href="@{/api/ms/home}"><span class="font-awesome-span width">th</span>Dashboard</a>-->
-            <a class="side-navigation-link" th:href="@{/api/system/admin/home}"><span
-                    class="font-awesome-span width"></span>Settings</a>
-            <a class="side-navigation-link" sec:authorize="hasAuthority('PERMIT_APPLICATION') or hasAuthority('QA_OFFICER_MODIFY') or hasAuthority('QA_HOD_READ') or hasAuthority('SL_SCHEDULE_FACTORY_VISIT_MANUFACTURER') or hasAuthority('SL_APPROVE_VISIT_REPORT') or hasAuthority('SL_SECOND_APPROVE_VISIT_REPORT')  or hasAuthority('QA_ASSESSORS_READ') or hasAuthority('QA_PAC_SECRETARY_READ') or hasAuthority('QA_PSC_MEMBERS_READ') or hasAuthority('QA_PCM_READ')" th:href="@{/sl}"><span class="font-awesome-span width"></span>Standards Levy</a>
+            <a class="side-navigation-link" th:href="@{/api/system/admin/home}"><span class="font-awesome-span width"></span>Settings</a>
+            <a class="side-navigation-link" sec:authorize="hasAuthority('USER_MANAGEMENT_MODIFY')" th:href="@{/api/auth/signup/employee}"><span class="font-awesome-span width"></span>EMPLOYEE REGISTRATION</a>
+            <a class="side-navigation-link" sec:authorize="hasAuthority('PERMIT_APPLICATION') or hasAuthority('QA_OFFICER_MODIFY') or hasAuthority('QA_HOD_READ') or hasAuthority('QA_MANAGER_ASSESSORS_READ') or hasAuthority('QA_HOF_READ') or hasAuthority('QA_ASSESSORS_READ') or hasAuthority('QA_PAC_SECRETARY_READ') or hasAuthority('QA_PSC_MEMBERS_READ') or hasAuthority('QA_PCM_READ')" th:href="@{/sl}"><span class="font-awesome-span width"></span>Standards Levy</a>
             <a class="side-navigation-link" sec:authorize="hasAuthority('PERMIT_APPLICATION') or hasAuthority('QA_OFFICER_MODIFY') or hasAuthority('QA_HOD_READ') or hasAuthority('QA_MANAGER_ASSESSORS_READ') or hasAuthority('QA_HOF_READ') or hasAuthority('QA_ASSESSORS_READ') or hasAuthority('QA_PAC_SECRETARY_READ') or hasAuthority('QA_PSC_MEMBERS_READ') or hasAuthority('QA_PCM_READ')" th:href="@{/api/qa/home}"><span class="font-awesome-span width"></span>Quality Assurance</a>
 <!--            <a class="side-navigation-link" th:href="@{/api/ms/home}"><span class="font-awesome-span width"></span>Market Surveillance</a>-->
 

@@ -11,6 +11,8 @@ interface IPermitApplicationsRepository : HazelcastRepository<PermitApplications
     fun findByUserId(userId: Long): List<PermitApplicationsEntity>?
     fun findByUserIdAndPermitType(userId: Long, permitType: Long): List<PermitApplicationsEntity>?
     fun findByUserIdAndPermitTypeAndOldPermitStatusIsNull(userId: Long, permitType: Long): List<PermitApplicationsEntity>?
+    fun findByUserIdAndPermitTypeAndOldPermitStatusIsNullAndPermitAwardStatus(userId: Long, permitType: Long, permitAwardStatus: Int): List<PermitApplicationsEntity>?
+    fun findByUserIdAndPermitTypeAndOldPermitStatusIsNullAndPermitAwardStatusAndFmarkGenerated(userId: Long, permitType: Long, permitAwardStatus: Int, fmarkGenerated: Int): List<PermitApplicationsEntity>?
     fun findByQamIdAndPermitType(userId: Long, permitType: Long): List<PermitApplicationsEntity>?
     fun findByQamIdAndPermitTypeAndOldPermitStatusIsNull(userId: Long, permitType: Long): List<PermitApplicationsEntity>?
     fun findByHodIdAndPermitType(userId: Long, permitType: Long): List<PermitApplicationsEntity>?
@@ -27,8 +29,8 @@ interface IPermitApplicationsRepository : HazelcastRepository<PermitApplications
     fun findByPscMemberIdAndPermitTypeAndOldPermitStatusIsNull(userId: Long, permitType: Long): List<PermitApplicationsEntity>?
     fun findByIdAndUserId(id: Long, userId: Long): PermitApplicationsEntity?
     fun findAllByPaidStatus(paymentStatus: Int): List<PermitApplicationsEntity>?
-    fun findByPermitNumberAndOldPermitStatus(permitNumber: String, oldPermitStatus: Int): List<PermitApplicationsEntity>?
-    fun findTopByPermitNumberOrderByIdDesc(permitNumber: String): PermitApplicationsEntity?
+    fun findByPermitRefNumberAndOldPermitStatus(permitRefNumber: String, oldPermitStatus: Int): List<PermitApplicationsEntity>?
+    fun findTopByPermitRefNumberOrderByIdDesc(permitRefNumber: String): PermitApplicationsEntity?
 }
 
 

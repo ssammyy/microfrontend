@@ -31,8 +31,7 @@
                         <div th:if="${message}" th:with="myStatus=${message}">
                             <input type="hidden" th:value="${myStatus}" id="idStatus">
                         </div>
-                        <h5 style="font-weight: bold; color: #0082f3; font-size: 14px">STA 10: INITIAL/(ROUTINE) INSPECTION REPORTS
-                            FACTORY ASSESSMENT</h5>
+                        <h5 style="font-weight: bold; color: #0082f3; font-size: 14px">STA 10: INITIAL/(ROUTINE) INSPECTION REPORTS FACTORY ASSESSMENT</h5>
                         <form  id="sta3Form" class="needs-validation"  novalidate th:action="@{/api/qa/apply/new-sta10(permitID = ${permit.id})}" method="post">
                             <div th:object="${QaSta10Entity}" >
                                 <div class="form-row" >

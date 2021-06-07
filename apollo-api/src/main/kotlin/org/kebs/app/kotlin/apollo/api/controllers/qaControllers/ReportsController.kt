@@ -27,6 +27,9 @@ class ReportsController(
     final val sMarkImageResource = resourceLoader.getResource(applicationMapProperties.mapSmarkImagePath)
     val sMarkImageFile = sMarkImageResource.file.toString()
 
+    final val fMarkImageResource = resourceLoader.getResource(applicationMapProperties.mapFmarkImagePath)
+    val fMarkImageFile = fMarkImageResource.file.toString()
+
     @RequestMapping(value = ["pac_summary"], method = [RequestMethod.GET])
     @Throws(Exception::class)
     fun pacSummary(
@@ -62,7 +65,7 @@ class ReportsController(
         val ksApplicable = sampleStandardsRepository.findBySubCategoryId(permit.productSubCategory)?.standardTitle
 
         map["FirmName"] = permit.firmName.toString()
-        map["PermitNo"] = permit.permitNumber.toString()
+        map["PermitNo"] = permit.awardedPermitNumber.toString()
         map["PostalAddress"] = permit.postalAddress.toString()
         map["PhysicalAddress"] = permit.physicalAddress.toString()
         map["DateOfIssue"] = permit.dateOfIssue?.let { commonDaoServices.convertDateToString(it, "dd-MM-YYYY") }!!
@@ -84,6 +87,9 @@ class ReportsController(
         }else if (permit.permitType==applicationMapProperties.mapQAPermitTypeIdSmark){
             map["SmarkLogo"] = sMarkImageFile
             reportsDaoService.extractReportEmptyDataSource(map, response, applicationMapProperties.mapReportSmarkPermitReportPath)
+        }else if (permit.permitType==applicationMapProperties.mapQAPermitTypeIdFmark){
+            map["FmarkLogo"] = fMarkImageFile
+            reportsDaoService.extractReportEmptyDataSource(map, response, applicationMapProperties.mapReportFmarkPermitReportPath)
         }
 
     }
