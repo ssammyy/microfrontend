@@ -1,28 +1,22 @@
 package org.kebs.app.kotlin.apollo.api.controllers.diControllers.pvoc
 
 
-import io.ktor.util.*
-import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.common.exceptions.SupervisorNotFoundException
 import org.kebs.app.kotlin.apollo.store.model.*
 import org.kebs.app.kotlin.apollo.store.repo.*
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.repository.findByIdOrNull
-import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
 import org.springframework.web.bind.annotation.*
 import java.sql.Timestamp
-import java.sql.Date
 import java.time.Instant
 import java.time.LocalDate
 import java.time.Period
 import java.util.concurrent.ThreadLocalRandom
 import kotlin.streams.asSequence
-import java.text.SimpleDateFormat
-import java.time.format.DateTimeFormatter
 
 
 @Controller
@@ -267,8 +261,8 @@ class PvocMonitoringAgents(
                 model.addAttribute("penaltyInvoice", PvocPenaltyInvoicingEntity())
                 iUserRoleAssignmentsRepository.findByRoleIdAndStatus(role.id, 1)
                     ?.let { it ->
-                        val userList = mutableListOf<Long?>()
-                        it.map {userList.add(it.userId) }
+                        val userList = mutableListOf<Long>()
+                        it.map { it.userId?.let { it1 -> userList.add(it1) } }
                         model.addAttribute("pmvocs", iUserRepository.findAllByIdIn(userList))
                         model.addAttribute("users", UsersEntity())
                     }
@@ -296,8 +290,8 @@ class PvocMonitoringAgents(
                 model.addAttribute("enquires" , coc.cocNumber?.let { iPvocQuerriesRepository.findAllByCocNumber(it) })
                 iUserRoleAssignmentsRepository.findByRoleIdAndStatus(role.id, 1)
                         ?.let { it ->
-                            val userList = mutableListOf<Long?>()
-                            it.map {userList.add(it.userId) }
+                            val userList = mutableListOf<Long>()
+                            it.map { it.userId?.let { it1 -> userList.add(it1) } }
                             model.addAttribute("pmvocs", iUserRepository.findAllByIdIn(userList))
                             model.addAttribute("users", UsersEntity())
                         }

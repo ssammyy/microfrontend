@@ -23,6 +23,10 @@ class StandardLevyPaymentsEntity : Serializable {
     @Basic
     var manufacturerEntity: Long? = null
 
+    @Column(name = "KRA_PIN")
+    @Basic
+    var kraPin : String? = null
+
 
     @Column(name = "PAYMENT_DATE")
     @Basic
@@ -176,6 +180,7 @@ class StandardLevyPaymentsEntity : Serializable {
                 levyPayable == that.levyPayable &&
                 levyPenalties == that.levyPenalties &&
                 levyPenaltyPaymentDate == that.levyPenaltyPaymentDate &&
+                kraPin == that.kraPin &&
                 varField1 == that.varField1 &&
                 varField2 == that.varField2 &&
                 varField3 == that.varField3 &&
@@ -195,6 +200,9 @@ class StandardLevyPaymentsEntity : Serializable {
     }
 
     override fun hashCode(): Int {
+<<<<<<< HEAD
+        return Objects.hash(id, status, manufacturerEntity, paymentDate, paymentAmount, visitStatus, officerAssigned, levyPaid, levyPayable, levyPenalties, kraPin, levyPenaltyPaymentDate, varField1, varField2, varField3, varField4, varField5, varField6, varField7, varField8, varField9, varField10, createdBy, createdOn, modifiedBy, modifiedOn, deleteBy, deletedOn)
+=======
         return Objects.hash(
             id,
             status,
@@ -224,5 +232,6 @@ class StandardLevyPaymentsEntity : Serializable {
             deleteBy,
             deletedOn
         )
+>>>>>>> 39d2c4dec8ea7a6f90a079def9ac6fc3da52ce49
     }
 }
