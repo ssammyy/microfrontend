@@ -1411,8 +1411,100 @@ from dat_kebs_sl_visit_uploads;
 
 select *
 from DAT_STANDARD_LEVY_FACTORY_VISIT_REPORT
+where MANUFACTURER_ENTITY = 1
 order by ID
 ;
 
 alter table DAT_STANDARD_LEVY_FACTORY_VISIT_REPORT
     add visit_date date;
+
+select *
+from CFG_USER_PRIVILEGES
+where NAME = 'SL_SECOND_APPROVE_VISIT_REPORT'
+;--224
+
+select *
+from DAT_KEBS_USERS
+where USER_NAME = '33061352'
+; --1766
+
+select *
+from CFG_USER_ROLES_ASSIGNMENTS
+where USER_ID = 1766;
+
+select *
+from CFG_ROLES_PRIVILEGES
+where ROLES_ID = 182;
+
+
+select *
+from DAT_KEBS_SL_VISIT_UPLOADS
+order by id
+;
+
+
+select distinct u.*
+from CFG_ROLES_PRIVILEGES rp,
+     CFG_USER_PRIVILEGES p,
+     CFG_USER_ROLES_ASSIGNMENTS ra,
+     DAT_KEBS_USERS u
+where rp.ROLES_ID = ra.ROLE_ID
+  and ra.USER_ID = u.ID
+  and rp.PRIVILEGE_ID = 224
+;
+
+
+create unique index DAT_STANDARD_LEVY_FACTORY_VISIT_REPORT_MANUFACTURER_ENTITY_STATUS_IDX
+    on DAT_STANDARD_LEVY_FACTORY_VISIT_REPORT (MANUFACTURER_ENTITY, STATUS);
+
+drop index SYS_C009599 cascade constraints;
+
+update DAT_STANDARD_LEVY_FACTORY_VISIT_REPORT
+set STATUS = 0
+where STATUS is null;
+
+alter table DAT_STANDARD_LEVY_FACTORY_VISIT_REPORT
+    modify STATUS default 0 not null;
+
+select *
+from ACT_HI_TASKINST
+where PROC_INST_ID_ = 'd14e6a5d-b3bd-11eb-9b37-00090ffe0001'
+  and TASK_DEF_KEY_ like '%sLsVPrepareVisitReport%'
+;
+select *
+from ACT_HI_TASKINST
+where ASSIGNEE_ = 54
+  and TASK_DEF_KEY_ like '%sL%'
+;
+
+
+select *
+from DAT_STANDARD_LEVY_FACTORY_VISIT_REPORT
+where SL_PROCESS_INSTANCE_ID = '7322d88a-b806-11eb-9c89-0871908865ee'
+;
+
+select MANUFACTURER_ENTITY, KRA_PIN, LEVY_PAYABLE, LEVY_PENALTIES, LEVY_PAID, NET_LEVY_AMOUNT
+from DAT_KEBS_STG_STANDARD_LEVY_PAYMENTS
+order by ID;
+
+select *
+from DAT_KEBS_COMPANY_PROFILE
+where id = 13175;
+
+select distinct request_header_entry_No,
+                request_header_manufacturer_name,
+                request_header_kra_pin,
+                request_header_payment_Slip_No,
+                request_header_payment_Slip_date,
+                request_header_TOTAL_PAYMENT_AMT,
+                request_header_TOTAL_PENALTY_AMT,
+                request_header_TOTAL_DECL_AMT
+from LOG_SL2_PAYMENTS_HEADER
+where request_header_entry_No = 13091
+-- group by request_header_entry_No
+;
+
+select *
+from log_sl2_payments_details
+where header_ID = 6;
+

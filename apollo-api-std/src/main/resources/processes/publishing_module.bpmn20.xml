@@ -1,18 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:flowable="http://flowable.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.flowable.org/processdef">
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xmlns:flowable="http://flowable.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+             xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI"
+             typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath"
+             targetNamespace="http://www.flowable.org/processdef">
   <process id="sd_publishing" name="Publishing module" isExecutable="true">
     <startEvent id="startEvent" flowable:formFieldValidation="true"/>
-    <serviceTask id="sendNotificationOfStandard" name="Send notification of a standard for editing" flowable:class="com.apollo.standardsdevelopment.handlers.EmailHandler"/>
+    <serviceTask id="sendNotificationOfStandard" name="Send notification of a standard for editing" flowable:class="org.kebs.app.kotlin.apollo.standardsdevelopment.handlers.EmailHandler"/>
     <userTask id="reveiewKS" name="Approve or disapprove KS" flowable:candidateGroups="head_of_publishing" flowable:formFieldValidation="true"/>
     <exclusiveGateway id="decisionOnKS"/>
     <userTask id="rejectSendFeedback" name="Reject and send feedback" flowable:candidateGroups="head_of_publishing" flowable:formFieldValidation="true"/>
     <endEvent id="endEvent"/>
-    <serviceTask id="sendNotificationOfDraft" name="Send notification of draft standard to edit" flowable:class="com.apollo.standardsdevelopment.handlers.EmailHandler"/>
+    <serviceTask id="sendNotificationOfDraft" name="Send notification of draft standard to edit" flowable:class="org.kebs.app.kotlin.apollo.standardsdevelopment.handlers.EmailHandler"/>
     <userTask id="editDraftStandard" name="Edit draft standard" flowable:candidateGroups="editor" flowable:formFieldValidation="true"/>
-    <serviceTask id="sendNotificationProofreading" name="Send notification for proofreading" flowable:class="com.apollo.standardsdevelopment.handlers.EmailHandler"/>
+    <serviceTask id="sendNotificationProofreading" name="Send notification for proofreading" flowable:class="org.kebs.app.kotlin.apollo.standardsdevelopment.handlers.EmailHandler"/>
     <userTask id="proofRead" name="Proofread" flowable:candidateGroups="proofreader" flowable:formFieldValidation="true"/>
     <exclusiveGateway id="isThereNeedToProofread"/>
-    <serviceTask id="sendNotificationForDraught" name="Send notification for draughting" flowable:class="com.apollo.standardsdevelopment.handlers.EmailHandler"/>
+    <serviceTask id="sendNotificationForDraught" name="Send notification for draughting" flowable:class="org.kebs.app.kotlin.apollo.standardsdevelopment.handlers.EmailHandler"/>
     <userTask id="draught" name="Draught" flowable:candidateGroups="draughtsman" flowable:formFieldValidation="true"/>
     <userTask id="checkDraughtApproveChange" name="Check draught standard and approve change" flowable:candidateGroups="head_of_publishing" flowable:formFieldValidation="true"/>
     <sequenceFlow id="flow1" sourceRef="startEvent" targetRef="sendNotificationOfStandard"/>
@@ -29,9 +33,9 @@
     </sequenceFlow>
     <sequenceFlow id="flow16" sourceRef="sendNotificationForDraught" targetRef="draught"/>
     <sequenceFlow id="flow17" sourceRef="draught" targetRef="checkDraughtApproveChange"/>
-    <serviceTask id="sendNotificationOnFeedback" name="Send notification" flowable:class="com.apollo.standardsdevelopment.handlers.EmailHandler"/>
+    <serviceTask id="sendNotificationOnFeedback" name="Send notification" flowable:class="org.kebs.app.kotlin.apollo.standardsdevelopment.handlers.EmailHandler"/>
     <sequenceFlow id="flow80" sourceRef="rejectSendFeedback" targetRef="sendNotificationOnFeedback"/>
-    <serviceTask id="receiveNotificationEditedDraft" name="Receive notification of edited draft standard" flowable:class="com.apollo.standardsdevelopment.handlers.EmailHandler"/>
+    <serviceTask id="receiveNotificationEditedDraft" name="Receive notification of edited draft standard" flowable:class="org.kebs.app.kotlin.apollo.standardsdevelopment.handlers.EmailHandler"/>
     <sequenceFlow id="flow81" sourceRef="checkDraughtApproveChange" targetRef="receiveNotificationEditedDraft"/>
     <sequenceFlow id="flow82" sourceRef="receiveNotificationEditedDraft" targetRef="endEvent"/>
     <sequenceFlow id="flow15" sourceRef="isThereNeedToProofread" targetRef="checkDraughtApproveChange">

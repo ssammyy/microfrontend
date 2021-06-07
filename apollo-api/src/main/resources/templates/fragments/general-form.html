@@ -48,8 +48,9 @@ xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
     <link rel="shortcut icon" th:href="@{/images/favicon.ico}" type="image/x-icon">
     <link rel="apple-touch-icon" th:href="@{/images/kebs_favicon.png}">
     <link rel="stylesheet" th:href="@{/assets/bootstrap3/css/bootstrap.css}"/>
-<!--    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"-->
-<!--          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"/>-->
+    <link rel="stylesheet" th:href="@{/css/pageLoad.css}" type="text/css">
+    <link href="https://cdn.datatables.net/1.10.22/css/dataTables.bootstrap.min.css" rel="stylesheet"/>
+    <link href="https://cdn.datatables.net/buttons/1.6.4/css/buttons.bootstrap.min.css" rel="stylesheet"/>
 </head>
 <body>
 <div class="top-bar" th:fragment="top-bar">
@@ -71,20 +72,24 @@ xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
     <div class="w-layout-grid main-grid">
         <div class="main-grid-side-navigation" id="w-node-d308c123a20f-c123a20d" th:fragment="side-navigation-bar">
 
-<!--            <a class="side-navigation-link" th:href="@{/api/ms/home}"><span class="font-awesome-span width">th</span>Dashboard</a>-->
+            <!--            <a class="side-navigation-link" th:href="@{/api/ms/home}"><span class="font-awesome-span width">th</span>Dashboard</a>-->
             <a class="side-navigation-link" th:href="@{/api/system/admin/home}"><span class="font-awesome-span width"></span>Settings</a>
             <a class="side-navigation-link" sec:authorize="hasAuthority('USER_MANAGEMENT_MODIFY')" th:href="@{/api/auth/signup/employee}"><span class="font-awesome-span width"></span>EMPLOYEE REGISTRATION</a>
-            <a class="side-navigation-link" sec:authorize="hasAuthority('PERMIT_APPLICATION') or hasAuthority('QA_OFFICER_MODIFY') or hasAuthority('QA_HOD_READ') or hasAuthority('QA_MANAGER_ASSESSORS_READ') or hasAuthority('QA_HOF_READ') or hasAuthority('QA_ASSESSORS_READ') or hasAuthority('QA_PAC_SECRETARY_READ') or hasAuthority('QA_PSC_MEMBERS_READ') or hasAuthority('QA_PCM_READ')" th:href="@{/sl}"><span class="font-awesome-span width"></span>Standards Levy</a>
-            <a class="side-navigation-link" sec:authorize="hasAuthority('PERMIT_APPLICATION') or hasAuthority('QA_OFFICER_MODIFY') or hasAuthority('QA_HOD_READ') or hasAuthority('QA_MANAGER_ASSESSORS_READ') or hasAuthority('QA_HOF_READ') or hasAuthority('QA_ASSESSORS_READ') or hasAuthority('QA_PAC_SECRETARY_READ') or hasAuthority('QA_PSC_MEMBERS_READ') or hasAuthority('QA_PCM_READ')" th:href="@{/api/qa/home}"><span class="font-awesome-span width"></span>Quality Assurance</a>
-<!--            <a class="side-navigation-link" th:href="@{/api/ms/home}"><span class="font-awesome-span width"></span>Market Surveillance</a>-->
+            <a class="side-navigation-link"
+               sec:authorize="hasAuthority('PERMIT_APPLICATION') or hasAuthority('QA_OFFICER_MODIFY') or hasAuthority('QA_HOD_READ') or hasAuthority('QA_MANAGER_ASSESSORS_READ') or hasAuthority('QA_HOF_READ') or hasAuthority('SL_SCHEDULE_FACTORY_VISIT_MANUFACTURER') or hasAuthority('SL_MANUFACTURER_VIEW') or hasAuthority('SL_SECOND_APPROVE_VISIT_REPORT') or hasAuthority('SL_MANUFACTURERS_VIEW') or hasAuthority('SL_APPROVE_VISIT_REPORT')"
+               th:href="@{/sl}"><span class="font-awesome-span width"></span>Standards Levy</a>
+            <a class="side-navigation-link"
+               sec:authorize="hasAuthority('PERMIT_APPLICATION') or hasAuthority('QA_OFFICER_MODIFY') or hasAuthority('QA_HOD_READ') or hasAuthority('QA_MANAGER_ASSESSORS_READ') or hasAuthority('QA_HOF_READ') or hasAuthority('QA_ASSESSORS_READ') or hasAuthority('QA_PAC_SECRETARY_READ') or hasAuthority('QA_PSC_MEMBERS_READ') or hasAuthority('QA_PCM_READ')"
+               th:href="@{/api/qa/home}"><span class="font-awesome-span width"></span>Quality Assurance</a>
+            <!--            <a class="side-navigation-link" th:href="@{/api/ms/home}"><span class="font-awesome-span width"></span>Market Surveillance</a>-->
 
             <a class="side-navigation-link" sec:authorize="hasAuthority('DI_INSPECTION_OFFICER_READ')  or hasAuthority('DI_DIRECTOR_READ')
                      or hasAuthority('DI_WETC_CHAIR_READ')  or hasAuthority('DI_NSC_MEMBER_READ') or hasAuthority('DI_HOD_READ')
                     or hasAuthority('DI_NSC_SECRETARY_READ') or hasAuthority('DI_CLUSTER_SUPERVISOR_READ') or hasAuthority('DI_WETC_MEMBER_READ')
-                    or hasAuthority('DI_OFFICER_CHARGE_READ') or hasAuthority('DI_MANAGER_INSPECTION_READ') or hasAuthority('DI_EXEMPTION_COMMITTEE_CHAIR_READ')"  th:href="@{/api/di/home}"><span class="font-awesome-span width"></span>Import Inspection</a>
-<!--            <a class="side-navigation-link" th:href="@{/api/di/with/pvoc}"><span class="font-awesome-span width"></span>PVOC</a>-->
-            <a class="side-navigation-link" sec:authorize="hasAuthority('IMPORTER')"  th:href="@{/api/importer/home}"><span class="font-awesome-span width"></span>Importer</a>
-            <a class="side-navigation-link" sec:authorize="hasAuthority('MINISTRY_OF_TRANSPORT_READ') or hasAuthority('MINISTRY_OF_TRANSPORT_MODIFY')"  th:href="@{/api/di/ministry-inspection-home}"><span class="font-awesome-span width"></span>Motor Vehicle <br> Inspection</a>
+                    or hasAuthority('DI_OFFICER_CHARGE_READ') or hasAuthority('DI_MANAGER_INSPECTION_READ') or hasAuthority('DI_EXEMPTION_COMMITTEE_CHAIR_READ')" th:href="@{/api/di/home}"><span class="font-awesome-span width"></span>Import Inspection</a>
+            <!--            <a class="side-navigation-link" th:href="@{/api/di/with/pvoc}"><span class="font-awesome-span width"></span>PVOC</a>-->
+            <a class="side-navigation-link" sec:authorize="hasAuthority('IMPORTER')" th:href="@{/api/importer/home}"><span class="font-awesome-span width"></span>Importer</a>
+            <a class="side-navigation-link" sec:authorize="hasAuthority('MINISTRY_OF_TRANSPORT_READ') or hasAuthority('MINISTRY_OF_TRANSPORT_MODIFY')" th:href="@{/api/di/ministry-inspection-home}"><span class="font-awesome-span width"></span>Motor Vehicle <br> Inspection</a>
         </div>
     </div>
     <div class="main-content-div" id="w-node-d308c123a224-c123a20d">

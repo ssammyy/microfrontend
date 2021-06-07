@@ -1,6 +1,5 @@
 package org.kebs.app.kotlin.apollo.store.model
 
-import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileEntity
 import java.io.Serializable
 import java.math.BigDecimal
 import java.sql.Timestamp
@@ -9,7 +8,7 @@ import javax.persistence.*
 
 @Entity
 @Table(name = "DAT_KEBS_STG_STANDARD_LEVY_PAYMENTS")
-class StandardLevyPaymentsEntity: Serializable {
+class StandardLevyPaymentsEntity : Serializable {
     @Column(name = "ID")
     @Id
     @SequenceGenerator(name = "DAT_KEBS_STG_STANDARD_LEVY_PAYMENTS_SEQ_GEN", sequenceName = "DAT_KEBS_STG_STANDARD_LEVY_PAYMENTS_SEQ", allocationSize = 1)
@@ -33,6 +32,10 @@ class StandardLevyPaymentsEntity: Serializable {
     @Basic
     var paymentDate: String? = null
 
+    @Column(name = "KRA_PIN")
+    @Basic
+    var kraPin: String? = null
+
     @Column(name = "PAYMENT_AMOUNT")
     @Basic
     var paymentAmount: BigDecimal? = null
@@ -42,13 +45,17 @@ class StandardLevyPaymentsEntity: Serializable {
     var visitStatus: Long? = null
 
 
-    @Column(name="OFFICER_ASSIGNED")
+    @Column(name = "OFFICER_ASSIGNED")
     @Basic
     var officerAssigned: Long? = null
 
     @Column(name = "LEVY_PAID")
     @Basic
     var levyPaid: BigDecimal? = null
+
+    @Column(name = "NET_LEVY_AMOUNT")
+    @Basic
+    var netLevyAmount: BigDecimal? = null
 
     @Column(name = "LEVY_PAYABLE")
     @Basic
@@ -193,6 +200,38 @@ class StandardLevyPaymentsEntity: Serializable {
     }
 
     override fun hashCode(): Int {
+<<<<<<< HEAD
         return Objects.hash(id, status, manufacturerEntity, paymentDate, paymentAmount, visitStatus, officerAssigned, levyPaid, levyPayable, levyPenalties, kraPin, levyPenaltyPaymentDate, varField1, varField2, varField3, varField4, varField5, varField6, varField7, varField8, varField9, varField10, createdBy, createdOn, modifiedBy, modifiedOn, deleteBy, deletedOn)
+=======
+        return Objects.hash(
+            id,
+            status,
+            manufacturerEntity,
+            paymentDate,
+            paymentAmount,
+            visitStatus,
+            officerAssigned,
+            levyPaid,
+            levyPayable,
+            levyPenalties,
+            levyPenaltyPaymentDate,
+            varField1,
+            varField2,
+            varField3,
+            varField4,
+            varField5,
+            varField6,
+            varField7,
+            varField8,
+            varField9,
+            varField10,
+            createdBy,
+            createdOn,
+            modifiedBy,
+            modifiedOn,
+            deleteBy,
+            deletedOn
+        )
+>>>>>>> 39d2c4dec8ea7a6f90a079def9ac6fc3da52ce49
     }
 }

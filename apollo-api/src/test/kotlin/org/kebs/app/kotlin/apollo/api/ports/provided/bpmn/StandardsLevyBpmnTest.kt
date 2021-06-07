@@ -20,7 +20,7 @@ class StandardsLevyBpmnTest {
 
     @Test
     fun slQueryManufacturerDetailsCompleteTest() {
-        bpm.slSvQueryManufacturerDetailsComplete(86)
+        bpm.slSvQueryManufacturerDetailsComplete(86,"1")
     }
 
     @Test

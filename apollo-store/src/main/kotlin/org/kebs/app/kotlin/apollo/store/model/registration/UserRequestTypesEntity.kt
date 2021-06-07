@@ -22,6 +22,10 @@ class UserRequestTypesEntity : Serializable {
     @Basic
     var description: String? = null
 
+    @Column(name = "QA_REQUESTS")
+    @Basic
+    var qaRequests: Int? = null
+
     @Column(name = "STATUS")
     @Basic
     var status: Int? = null
@@ -96,6 +100,7 @@ class UserRequestTypesEntity : Serializable {
         val that = other as UserRequestTypesEntity
         return id == that.id &&
                 userRequest == that.userRequest &&
+                qaRequests == that.qaRequests &&
                 description == that.description &&
                 status == that.status &&
                 varField1 == that.varField1 &&
@@ -119,6 +124,7 @@ class UserRequestTypesEntity : Serializable {
     override fun hashCode(): Int {
         return Objects.hash(
             id,
+            qaRequests,
             userRequest,
             description,
             status,

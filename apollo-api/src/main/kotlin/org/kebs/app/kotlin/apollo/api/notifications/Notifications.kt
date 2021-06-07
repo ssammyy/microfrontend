@@ -7,7 +7,9 @@ import org.flowable.task.api.Task
 import org.flowable.task.service.delegate.DelegateTask
 import org.jasypt.encryption.StringEncryptor
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.BpmnCommonFunctions
+import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
+import org.kebs.app.kotlin.apollo.store.repo.ICompanyProfileRepository
 import org.kebs.app.kotlin.apollo.store.repo.IManufacturerRepository
 import org.kebs.app.kotlin.apollo.store.repo.INotificationsRepository
 import org.kebs.app.kotlin.apollo.store.repo.IUserRepository
@@ -29,13 +31,14 @@ import javax.mail.internet.MimeMultipart
 
 @Component
 class Notifications(
-        private val repositoryService: RepositoryService,
-        private val userRepo: IUserRepository,
-        val manufacturerRepo: IManufacturerRepository,
-        val notificationsRepo: INotificationsRepository,
-        val bpmnCommonFunctions: BpmnCommonFunctions,
-        val applicationMapProperties: ApplicationMapProperties,
-        val jasyptStringEncryptor: StringEncryptor
+    private val repositoryService: RepositoryService,
+    private val userRepo: IUserRepository,
+    val manufacturerRepo: IManufacturerRepository,
+    val notificationsRepo: INotificationsRepository,
+    val bpmnCommonFunctions: BpmnCommonFunctions,
+    val applicationMapProperties: ApplicationMapProperties,
+    val jasyptStringEncryptor: StringEncryptor,
+    val companyProfileRepo: ICompanyProfileRepository
 )
 {
 //    @Value("\${qa.bpmn.email.smtpStartTlsEnable}")
@@ -105,6 +108,34 @@ class Notifications(
             }
         }?: run{KotlinLogging.logger { }.info("No notification found with id $notificationId")}
         return false
+    }
+
+    fun sendEmailServiceTask(userId: Long, notificationId: Int, isManufacturer:Boolean) : Boolean{
+        //get the notification
+        if (isManufacturer) {
+            notificationsRepo.findByIdOrNull(notificationId)?.let { notifEntity ->
+                var message = notifEntity.description.toString().replace("\\n", System.getProperty("line.separator"), true)
+                companyProfileRepo.findByIdOrNull(userId)?.let { companyEntity ->
+                    message = message.replace("<company_name>", companyEntity.name.toString(), true)
+                    KotlinLogging.logger { }.info("Sending email below to ${companyEntity.companyEmail.toString()} \n ${notifEntity.subject.toString()} \n $message")
+                    processEmail(companyEntity.companyEmail.toString(), notifEntity.subject.toString(), message, null)
+                    return true
+                }
+            }?: run{KotlinLogging.logger { }.info("No notification found with id $notificationId")}
+            return false
+        } else {
+            notificationsRepo.findByIdOrNull(notificationId)?.let { notifEntity ->
+                var message = notifEntity.description.toString().replace("\\n", System.getProperty("line.separator"), true)
+                userRepo.findByIdOrNull(userId)?.let { usersEntity ->
+                    message = message.replace("<first_name>", usersEntity.firstName.toString(), true)
+                    message = message.replace("<last_name>", usersEntity.lastName.toString(), true)
+                    KotlinLogging.logger { }.info("Sending email below to ${usersEntity.email.toString()} \n ${notifEntity.subject.toString()} \n $message")
+                    processEmail(usersEntity.email.toString(), notifEntity.subject.toString(), message, null)
+                    return true
+                }
+            }?: run{KotlinLogging.logger { }.info("No notification found with id $notificationId")}
+            return false
+        }
     }
 
     fun sendEmailServiceTask(userId: Long, assigneeId:Long, notificationId: Int, task: Task?, messageBody:String?) : Boolean{

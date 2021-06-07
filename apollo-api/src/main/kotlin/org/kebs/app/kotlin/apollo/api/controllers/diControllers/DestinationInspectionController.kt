@@ -530,7 +530,7 @@ class DestinationInspectionController(
         cdItem = daoServices.updateCdItemDetailsInDB(cdItem,loggedInUser)
 
         val sm = CommonDaoServices.MessageSuccessFailDTO()
-        sm.closeLink = "${applicationMapProperties.baseUrlValue}/di/inspection/ssf-details?cdItemID=${cdItem}"
+        sm.closeLink = "${applicationMapProperties.baseUrlValue}/di/inspection/ssf-details?cdItemID=${cdItem.id}"
         sm.message = "You have Successful Filled Sample Submission Details"
 
         return commonDaoServices.returnValues(result, map, sm)

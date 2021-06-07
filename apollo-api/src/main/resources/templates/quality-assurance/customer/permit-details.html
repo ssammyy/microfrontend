@@ -41,13 +41,13 @@
                                 <div class="applicant_details_container">
                                     <div class="detail-list application_details">
                                         <ul class="w-list-unstyled">
-                                            <li th:if="${permitType?.awardedPermitNumber != null}" class="list-item-accordion">
+                                            <li th:if="${permitDetails?.awardedPermitNumber != null}" class="list-item-accordion">
                                                 <div class="list-title-accordion">Permit Number. </div>
-                                                <div class="list-text-accordion" th:text="${permitDetails?.permitRefNumber}"></div>
+                                                <div class="list-text-accordion" th:text="${permitDetails?.awardedPermitNumber}"></div>
                                             </li>
                                             <li class="list-item-accordion">
                                                 <div class="list-title-accordion">Permit Ref No. </div>
-                                                <div class="list-text-accordion" th:text="${permitDetails?.awardedPermitNumber}"></div>
+                                                <div class="list-text-accordion" th:text="${permitDetails?.permitRefNumber}"></div>
                                             </li>
                                             <li class="list-item-accordion">
                                                 <div class="list-title-accordion">Name of firm </div>
@@ -324,6 +324,42 @@
                                 </div>
                             </div>
 
+                            <button class="accordion" >Requests Details</button>
+                            <div class="panel">
+                                <div class="row-table ">
+                                    <table class="table table-striped">
+                                        <thead>
+                                        <tr>
+                                            <th>Request ID</th>
+                                            <th>Requested BY</th>
+                                            <th>Approved BY</th>
+                                            <th>Request Type</th>
+                                            <th>Request Status</th>
+                                            <th>View</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr class="list" th:each="req: ${myRequests}" style="cursor: pointer">
+
+                                            <td th:text="${req?.id}"></td>
+                                            <td th:text="${req?.createdBy}"></td>
+                                            <td th:text="${req?.modifiedBy}"></td>
+                                            <td th:text="${req?.requestType}"></td>
+                                            <td th:if="${req?.requestStatus == null}">PENDING APPROVAL</td>
+                                            <td th:unless="${req?.requestStatus != null}"
+                                                th:text="${req?.requestStatus} ? 'APPROVED' : 'REJECTED'"></td>
+                                            <td>
+                                                <button class="btn btn-primary" th:value="${req.id}"
+                                                        onclick="popUpFunctionView('viewRequest', this);" type="button">
+                                                    VIEW
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
                             <button class="accordion">Other Version Details</button>
                             <div class="panel">
                                 <div class="row-table ">
@@ -331,6 +367,7 @@
                                            style="width:100%">
                                         <thead>
                                         <tr>
+                                            <th>Permit Ref Number</th>
                                             <th>Permit Number</th>
                                             <th>Version Number</th>
                                             <th>View</th>
@@ -340,7 +377,8 @@
                                         <tr class="list" style="cursor: pointer"
                                             th:each="olderVersion: ${oldVersionList}">
 
-                                            <td th:text="${olderVersion?.permitNumber}"></td>
+                                            <td th:text="${olderVersion?.permitRefNumber}"></td>
+                                            <td th:text="${olderVersion?.awardedPermitNumber}"></td>
                                             <td th:text="${olderVersion?.versionNumber}"></td>
                                             <td><a class="btn btn-primary itemViewBtn" target='_blank'
                                                    th:href="@{/api/qa/permit-details(permitID=${olderVersion.id},userID=${olderVersion?.userId})}">VIEW</a>
@@ -428,10 +466,13 @@
 
                                         <a th:if="${permitDetails?.attachedPlantId == null}" style="color: white" onclick="popUpFunction('attachePlant');" class="filter-link">ATTACH PLANT</a>
 
-                                        <a th:if="${permitDetails?.permitExpiredStatus == 1}"  th:href="@{/api/qa/kebs/renew/permit-details/save(permitID=${permitDetails?.id})}" class="filter-link" style="color: white">RENEW PERMIT</a>
+                                        <a th:if="${permitDetails?.permitAwardStatus == 1}" style="color: white" onclick="popUpRequestFunction('updateBrandDetails');" class="filter-link">UPDATE PERMIT BRAND DETAILS</a>
+
+                                        <a th:if="${permitDetails?.endOfProductionStatus != 1 and permitDetails?.permitAwardStatus == 1}" style="color: white" onclick="popUpRequestFunction('permitStopProductionDetails');" class="filter-link">STOP PRODUCTION</a>
+
+                                        <a th:if="${permitDetails?.permitExpiredStatus == 1 and permitDetails?.oldPermitStatus != 1}" th:href="@{/api/qa/kebs/renew/permit-details/save(permitID=${permitDetails?.id})}" class="filter-link" style="color: white">RENEW PERMIT</a>
 
                                         <a th:if="${permitDetails?.resubmitApplicationStatus == null and permitDetails?.hofQamCompletenessStatus == 0}"  th:href="@{/api/qa/kebs/resubmit/permit-details/save(permitID=${permitDetails?.id})}" class="filter-link" style="color: white">RESUBMIT PERMIT</a>
-
 
 
                                     </div>
@@ -512,16 +553,30 @@
                                 <div th:if="${permitType?.id == smarkPermit}">
                                     <div sec:authorize="hasAuthority('PERMIT_APPLICATION')">
 
-                                        <a th:if="${permitType?.st10Status == 1 and permitDetails?.sta10FilledStatus == 0}" target='_blank' th:href="@{/api/qa/view-sta10(permitID=${permitDetails?.id}, userID=${permitDetails?.userId})}" class="filter-link" style="color: white">COMPLETE FILLING STA 10</a>
+                                        <a th:if="${permitType?.st10Status == 1 and permitDetails?.sta10FilledStatus == 0}"
+                                           target='_blank'
+                                           th:href="@{/api/qa/view-sta10(permitID=${permitDetails?.id}, userID=${permitDetails?.userId})}"
+                                           class="filter-link" style="color: white">COMPLETE FILLING STA 10</a>
 
-                                        <a th:if="${permitType?.st10Status == 1 and permitDetails?.sta10FilledStatus == null and permitDetails?.attachedPlantId != null}"  th:href="@{/api/qa/new-sta10(permitID=${permitDetails?.id})}" class="filter-link" style="color: white">Fill STA 10</a>
+                                        <a th:if="${permitType?.st10Status == 1 and permitDetails?.sta10FilledStatus == null and permitDetails?.attachedPlantId != null and permitDetails?.renewalStatus != 1}"
+                                           th:href="@{/api/qa/new-sta10(permitID=${permitDetails?.id})}"
+                                           class="filter-link" style="color: white">Fill STA 10</a>
 
-<!--                                        <a th:if="${permitType?.smeDeclarationForm == 1 and permitDetails?.smeFormFilledStatus == null}"  th:href="@{/api/qa/new-sme-declaration(permitID=${permitDetails?.id})}" class="filter-link" style="color: white">Fill SME DECLARATION</a>-->
+                                        <a th:if="${permitType?.st10Status == 1 and permitDetails?.sta10FilledStatus == null and permitDetails?.renewalStatus == 1 and permitDetails?.attachedPlantId != null}"
+                                           th:href="@{/api/qa/old-sta10(permitID=${permitDetails?.id})}"
+                                           class="filter-link" style="color: white">UPDATE STA 10</a>
 
-                                        <a th:if="${permitDetails?.generateSchemeStatus == 1 and permitDetails?.approvedRejectedScheme == null and permitType?.schemeGenerate == 1}" th:href="@{/api/qa/scheme-of-supervision(permitID=${permitDetails?.id})}" style="color: white" class="filter-link">APPROVE/REJECT GENERATED SCHEME FOR SUPERVISION AND CONTROL</a>
+                                        <!--                                        <a th:if="${permitType?.smeDeclarationForm == 1 and permitDetails?.smeFormFilledStatus == null}"  th:href="@{/api/qa/new-sme-declaration(permitID=${permitDetails?.id})}" class="filter-link" style="color: white">Fill SME DECLARATION</a>-->
+
+                                        <a th:if="${permitDetails?.generateSchemeStatus == 1 and permitDetails?.approvedRejectedScheme == null and permitType?.schemeGenerate == 1}"
+                                           th:href="@{/api/qa/scheme-of-supervision(permitID=${permitDetails?.id})}"
+                                           style="color: white" class="filter-link">APPROVE/REJECT GENERATED SCHEME FOR
+                                            SUPERVISION AND CONTROL</a>
 
                                         <div th:if="${permitType?.st10Status == 1 and permitDetails?.sta10FilledStatus == 1 and permitDetails?.attachedPlantId != null}">
-                                            <a th:if="${permitDetails?.sendApplication != 1}"  th:href="@{/api/qa/new-permit-submit(permitID=${permitDetails?.id})}" class="filter-link" style="color: white">SUBMIT APPLICATION</a>
+                                            <a th:if="${permitDetails?.sendApplication != 1}"
+                                               th:href="@{/api/qa/new-permit-submit(permitID=${permitDetails?.id})}"
+                                               class="filter-link" style="color: white">SUBMIT APPLICATION</a>
                                         </div>
                                     </div>
 
@@ -561,16 +616,31 @@
 
                                     <div sec:authorize="hasAuthority('PERMIT_APPLICATION')">
 
-                                        <a th:if="${permitType?.st3Status == 1 and permitDetails?.sta3FilledStatus == null and permitDetails?.attachedPlantId != null}"  th:href="@{/api/qa/new-sta3(permitID=${permitDetails?.id})}" class="filter-link" style="color: white">Fill STA 3</a>
+                                        <a th:if="${permitType?.st3Status == 1 and permitDetails?.sta3FilledStatus == null  and permitDetails?.renewalStatus != 1 and permitDetails?.attachedPlantId != null}"
+                                           th:href="@{/api/qa/new-sta3(permitID=${permitDetails?.id})}"
+                                           class="filter-link" style="color: white">Fill STA 3</a>
+
+                                        <a th:if="${permitType?.st3Status == 1 and permitDetails?.sta3FilledStatus == null and permitDetails?.renewalStatus == 1  and permitDetails?.attachedPlantId != null}"
+                                           th:href="@{/api/qa/old-sta3(permitID=${permitDetails?.id})}"
+                                           class="filter-link" style="color: white">UPDATE STA 3</a>
 
 
-                                        <a th:if="${permitDetails?.generateSchemeStatus == 1 and permitDetails?.approvedRejectedScheme == null and permitType?.schemeGenerate == 1}" th:href="@{/api/qa/scheme-of-supervision(permitID=${permitDetails?.id})}" style="color: white" class="filter-link">APPROVE/REJECT GENERATED SCHEME FOR SUPERVISION AND CONTROL</a>
+                                        <a th:if="${permitDetails?.generateSchemeStatus == 1 and permitDetails?.approvedRejectedScheme == null and permitType?.schemeGenerate == 1}"
+                                           th:href="@{/api/qa/scheme-of-supervision(permitID=${permitDetails?.id})}"
+                                           style="color: white" class="filter-link">APPROVE/REJECT GENERATED SCHEME FOR
+                                            SUPERVISION AND CONTROL</a>
 
-                                        <a th:if="${permitDetails?.sendForPcmReview == 1 and permitDetails?.approvedRejectedScheme == null and permitType?.schemeGenerate == 1}" th:href="@{/api/qa/scheme-of-supervision(permitID=${permitDetails?.id})}" style="color: white" class="filter-link">APPROVE/REJECT GENERATED SCHEME FOR SUPERVISION AND CONTROL</a>
+                                        <a th:if="${permitDetails?.sendForPcmReview == 1 and permitDetails?.approvedRejectedScheme == null and permitType?.schemeGenerate == 1}"
+                                           th:href="@{/api/qa/scheme-of-supervision(permitID=${permitDetails?.id})}"
+                                           style="color: white" class="filter-link">APPROVE/REJECT GENERATED SCHEME FOR
+                                            SUPERVISION AND CONTROL</a>
 
 
                                         <div th:if="${permitType?.st3Status == 1 and permitDetails?.sta3FilledStatus == 1 and permitDetails?.attachedPlantId != null}">
-                                            <a th:if="${permitDetails?.sendForPcmReview == null}"  th:href="@{/api/qa/new-permit-submit-review(permitID=${permitDetails?.id})}" class="filter-link" style="color: white">SUBMIT APPLICATION FOR REVIEW</a>
+                                            <a th:if="${permitDetails?.sendForPcmReview == null}"
+                                               th:href="@{/api/qa/new-permit-submit-review(permitID=${permitDetails?.id})}"
+                                               class="filter-link" style="color: white">SUBMIT APPLICATION FOR
+                                                REVIEW</a>
                                         </div>
 
                                         <a th:if="${permitDetails?.resubmitApplicationStatus == null and permitDetails?.pcmApprovalStatus == 0}"  th:href="@{/api/qa/kebs/resubmit/permit-details/save(permitID=${permitDetails?.id})}" class="filter-link" style="color: white">RESUBMIT PERMIT</a>
@@ -945,6 +1015,52 @@
                 </form>
             </div>
 
+            <div  class="requestForm">
+                <form id="request-form"   name="request-form" enctype="multipart/form-data" th:action="@{/api/qa/kebs/request-update-details(permitID = ${permitDetails?.id})}" method="post" th:object="${requestDetails}">
+                    <div class="modal fade" id="requestModal" tabindex="-1" role="dialog" aria-labelledby="requestModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 style="font-weight: bold; " class="modal-title" id="requestModalLabel"><span id="spanRequestValue" >none</span></h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="form-group">
+                                        <label for="requestType" class="col-form-label">Select a request type:</label>
+                                        <select id="requestType" required class="select-field w-select" th:field="*{requestType}">
+                                            <option value="0">Select one...</option>
+                                            <option  th:each="request : ${userRequestTypes}" th:text="${request?.userRequest}" th:name="requestType" th:value="${request?.id}"></option>
+                                        </select>
+                                        <div id="updateBrandDetails">
+                                            <input id="requestStatus" name="requestStatus" th:value="${activeStatus}" type="hidden">
+                                            <label for="brandName" class="col-form-label">New Brand Name:</label>
+                                            <input class="input-field w-input" type="text" max="20" id="brandName" name="brandName" th:field="*{brandName}" th:required="required">
+                                        </div>
+                                        <div id="permitStopProductionDetails">
+                                            <input id="requestStatus" name="requestStatus" th:value="${activeStatus}" type="hidden">
+                                            <label for="endProduction" class="col-form-label">Select status:</label>
+                                            <select id="endProduction" required class="select-field w-select" th:field="*{endProduction}">
+                                                <option th:text="'Select one.....'" th:value="null"></option>
+                                                <option th:text="'Yes'" th:value="1"></option>
+                                            </select>
+                                        </div>
+                                        <label for="description" class="col-form-label">Please write, in detail, your reason:</label>
+                                        <textarea required name="name" id="description" class="input-field w-input" cols="65" rows="5" th:field="*{description}"></textarea>
+
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button class="btn btn-secondary" data-dismiss="modal" onClick="refreshPage()" type="button">Close</button>
+                                    <input type="submit" id="saveRequestValue" class="btn btn-primary" value="Save"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
             <div class="uploadForm">
                 <form id="upload-form" enctype="multipart/form-data"  name="upload-form" th:action="@{/api/qa/kebs/add/new-upload(permitID = ${permitDetails?.id})}" method="post" >
                     <div class="modal fade" id="uploadModal" tabindex="-1" role="dialog" aria-labelledby="uploadModalLabel" aria-hidden="true">
@@ -1033,8 +1149,59 @@
                                     </div>
                                 </div>
                                 <div class="modal-footer">
-                                    <button class="btn btn-secondary" data-dismiss="modal" onClick="refreshPage()" type="button">Close</button>
+                                    <button class="btn btn-secondary" data-dismiss="modal" onClick="refreshPage()"
+                                            type="button">Close
+                                    </button>
                                     <input type="submit" id="upload-2" class="btn btn-primary" value="Save"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="viewRequestForm">
+                <form id="view-request-form" enctype="multipart/form-data" name="view-request-form"
+                      th:action="@{/api/qa/kebs/update-request-details}" method="post" th:object="${requestDetails}">
+                    <div class="modal fade" id="viewRequestModal" tabindex="-1" role="dialog"
+                         aria-labelledby="viewRequestModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 style="font-weight: bold; " class="modal-title" id="viewRequestModalLabel"><span
+                                            id="uploadSpan">none</span></h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="form-group">
+                                        <div id="viewNotification">
+                                            <input type="hidden" id="requestID" name="requestID">
+                                            <label for="description" class="col-form-label">REQUEST MESSAGE:</label>
+                                            <textarea readonly name="description" id="descriptionValue"
+                                                      class="input-field w-input" cols="65" rows="10"></textarea>
+                                            <label for="requestStatus" class="col-form-label">Select Status:</label>
+                                            <select id="requestStatus" required class="select-field w-select"
+                                                    th:field="*{requestStatus}">
+                                                <option th:text="'Select one.....'" th:value="null"></option>
+                                                <option th:text="'APPROVE'" th:value="1"></option>
+                                                <option th:text="'REJECT'" th:value="0"></option>
+                                            </select>
+                                            <label for="approvalRejectionReason" class="col-form-label">Please write, in
+                                                detail, your reason for approving/rejecting:</label>
+                                            <textarea required name="name" id="approvalRejectionReason"
+                                                      class="input-field w-input" cols="65" rows="5"
+                                                      th:field="*{approvalRejectionReason}"></textarea>
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button class="btn btn-secondary" data-dismiss="modal"
+                                            onClick="window.location.reload()" type="button">Close
+                                    </button>
+                                    <input type="submit" id="upload" class="btn btn-primary" value="Save"/>
                                 </div>
                             </div>
                         </div>
@@ -1157,15 +1324,79 @@
     });
 </script>
 <script>
+
+    function popUpFunctionView(eventAction, valueDescription, valueRequestID) {
+        let arrHead = ['viewNotification'];
+        let arrHeadSave = ['Notification'];
+        let paramValue = valueDescription.value
+        let paramID = valueRequestID.value
+
+        for (let h = 0; h < arrHead.length; h++) {
+            if (eventAction !== arrHead[h]) {
+                document.getElementById(arrHead[h]).remove();
+            } else {
+                if (eventAction === arrHead[h]) {
+                    var labParameters = getLabResultsPerParam(paramValue)
+                    document.getElementById('uploadSpan').innerHTML = arrHeadSave[h];
+                    document.getElementById('descriptionValue').value = paramValue;
+                    document.getElementById('requestID').value = paramID;
+                    // document.getElementById("upload").value = 'Done';
+
+
+                }
+            }
+        }
+
+        $('.viewRequestForm #viewRequestModal').modal();
+    }
+
+    // function getLabResultsPerParam (paramID) {
+    //     let paramValue = paramID
+    //     var myReturn = null
+    //     // console.log(categories.length)
+    //     $.ajax({
+    //         method: "GET",
+    //         url: `/api/qa/view-request?requestID=${paramValue}`,
+    //         success(response) {
+    //             console.log(response)
+    //             let s = '';
+    //             for (let i = 0; i < response.length; i++) {
+    //                 // response.push('Select one')
+    //
+    //                 document.getElementById("subject").value = response[i].description;
+    //                 document.getElementById("messageBody").value = response[i].messageBody;
+    //                 // document.getElementById("bsNumber").value = response[i].bsNumber;
+    //                 // document.getElementById("results").value = response[i].results;
+    //                 // document.getElementById("requirements").value = response[i].requirements;
+    //                 // document.getElementById("confirmParamId").value = response[i].id;
+    //                 // document.getElementById("testMethodNo").value = response[i].testMethodNo;
+    //                 // document.getElementById("lod").value = response[i].lod;
+    //                 // document.getElementById("upload").value = 'Save';
+    //
+    //                 // if (response[i].labResultCompleteStatus == 1){
+    //                 //     console.log(response[i].labResultCompleteStatus)
+    //                 //     $("#verificationID").remove()
+    //                 //     $("#labResultCompleteRemarks").remove()
+    //                 //     $("#upload").remove()
+    //                 // }
+    //             }
+    //             myReturn= s
+    //         }
+    //     })
+    //
+    //     return myReturn
+    // }
+
+
     function popUpFunction(eventAction) {
-        let arrHead = [ 'attachePlant', 'permitCompleteness', 'assignOfficer', 'scheduleInspectionDate', 'assignAssessor', 'scheduleAssessmentDate', 'approveInspectionReport', 'complianceStatus', 'addRecommendation', 'approveRecommendation', 'pscMemberApproval', 'pcmApproval', 'dmarkApplicationApproval', 'hodApprovalAssessmentReport'];
-        let arrHeadSave = [ 'Attach a Plant for manufacturing the product', 'Is The Permit Complete', 'Select An officer',' Set The Date of Inspection', 'Select An Assessor', 'Schedule Factory Assessment Date', 'Approve Or Reject the Factory Inspection Report', 'Select a suitable Compliance Status for the Lab Report', 'Add Recommendation', 'Approve / Reject Recommendation', 'Approve / Reject Awarding of Permit', 'Approve / Reject Awarding of Permit', 'Grant/Defer Application', 'Approve / Reject Permit Review'];
+        let arrHead = ['attachePlant', 'permitCompleteness', 'assignOfficer', 'scheduleInspectionDate', 'assignAssessor', 'scheduleAssessmentDate', 'approveInspectionReport', 'complianceStatus', 'addRecommendation', 'approveRecommendation', 'pscMemberApproval', 'pcmApproval', 'dmarkApplicationApproval', 'hodApprovalAssessmentReport', 'permitStopProductionDetails'];
+        let arrHeadSave = ['Attach a Plant for manufacturing the product', 'Is The Permit Complete', 'Select An officer', ' Set The Date of Inspection', 'Select An Assessor', 'Schedule Factory Assessment Date', 'Approve Or Reject the Factory Inspection Report', 'Select a suitable Compliance Status for the Lab Report', 'Add Recommendation', 'Approve / Reject Recommendation', 'Approve / Reject Awarding of Permit', 'Approve / Reject Awarding of Permit', 'Grant/Defer Application', 'Approve / Reject Permit Review', 'Stop Production'];
         // let arrHead = [ 'attachePlant', 'permitCompleteness', 'assignOfficer', 'scheduleInspectionDate', 'assignAssessor', 'scheduleAssessmentDate', 'dmarkApplicationApproval'];
         // let arrHeadSave = [ 'Attach a Plant for manufacturing the product', 'Is The Permit Complete', 'Select An officer',' Set The Date of Inspection', 'Select An Assessor', 'Schedule Factory Assessment Date',
         // 'Grant/Defer Application'];
 
         for (let h = 0; h < arrHead.length; h++) {
-            if(eventAction !== arrHead[h]){
+            if (eventAction !== arrHead[h]) {
                 document.getElementById(arrHead[h]).remove();
             }else {
                 if (eventAction === arrHead[h]) {
@@ -1197,6 +1428,24 @@
         }
 
         $('.qaApplicationResubmitForm #qaApplicationResubmitModal').modal();
+    }
+
+    function popUpRequestFunction(eventAction) {
+        let arrHead = [ 'updateBrandDetails', 'permitStopProductionDetails'];
+        let arrHeadSave = ['Fill in the brand name Details for update', 'End product production'];
+
+        for (let h = 0; h < arrHead.length; h++) {
+            if(eventAction !== arrHead[h]){
+                document.getElementById(arrHead[h]).remove();
+            }else {
+                if (eventAction === arrHead[h]) {
+                    document.getElementById('spanRequestValue').innerHTML = arrHeadSave[h];
+                    document.getElementById("saveRequestValue").value = 'Submit';
+                }
+            }
+        }
+
+        $('.requestForm #requestModal').modal();
     }
 
 

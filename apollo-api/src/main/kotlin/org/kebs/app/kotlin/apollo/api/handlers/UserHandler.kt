@@ -56,16 +56,17 @@ class UserHandler(
 
     final val appId: Int = applicationMapProperties.mapUserRegistration
 
-    private final val usersNotificationListPage = "auth/user-notifications"
-    private final val userProfilePage = "auth/user-profile"
+    private val usersNotificationListPage = "auth/user-notifications"
+    private val userProfilePage = "auth/user-profile"
 
     fun notificationList(req: ServerRequest): ServerResponse =
-            commonDaoServices.loggedInUserDetails()
-                    .let { userDetails ->
-                        req.attributes()["notifications"] = userDetails.email?.let { commonDaoServices.findAllUserNotification(it) }
-                        req.attributes()["notificationBuffer"] = NotificationsBufferEntity()
-                        return ok().render(usersNotificationListPage, req.attributes())
-                    }
+        commonDaoServices.loggedInUserDetails()
+            .let { userDetails ->
+                req.attributes()["notifications"] =
+                    userDetails.email?.let { commonDaoServices.findAllUserNotification(it) }
+                req.attributes()["notificationBuffer"] = NotificationsBufferEntity()
+                return ok().render(usersNotificationListPage, req.attributes())
+            }
 
     fun userProfile(req: ServerRequest): ServerResponse {
 
@@ -77,8 +78,11 @@ class UserHandler(
                 map.activeStatus -> {
                     val manufactureProfile= userDetails.id?.let { commonDaoServices.findCompanyProfile(it) } ?: throw ExpectedDataNotFound("Missing Manufacture Company Details, Fill The Details")
                     req.attributes()["manufactureProfile"] = manufactureProfile
-                    req.attributes()["directorsDetails"] = companyProfileDirectorsRepo.findByCompanyProfileId(manufactureProfile.id?: throw ExpectedDataNotFound("CompanyProfile ID Not Found"))
-                    req.attributes()["businessLineValue"] = manufactureProfile.businessLines?.let {  businessLinesRepository.findByIdOrNull(it)?.name}
+                    req.attributes()["directorsDetails"] = commonDaoServices.companyDirectorList(
+                        manufactureProfile.id ?: throw ExpectedDataNotFound("CompanyProfile ID Not Found")
+                    )
+                    req.attributes()["businessLineValue"] =
+                        manufactureProfile.businessLines?.let { businessLinesRepository.findByIdOrNull(it)?.name }
                     req.attributes()["businessNatureValue"] = manufactureProfile.businessNatures?.let {  businessNatureRepository.findByIdOrNull(it)}
                     req.attributes()["plantsDetails"] = qaDaoServices.findAllPlantDetails(userDetails.id!!)
                     req.attributes()["myContractUndertakenDetails"] = commonDaoServices.findAllContractsUnderTakenDetails(manufactureProfile.id?: throw ExpectedDataNotFound("CompanyProfile ID Not Found"))

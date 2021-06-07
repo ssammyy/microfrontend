@@ -352,6 +352,7 @@ class StandardsLevyBpmn(
                 variables["approvedAsstMgr"] = 0
                 variables["approvedMgr"] = 0
                 variables["principalOfficerId"] = 0
+                variables["manufacturerId"] = 0
 
                 bpmnCommonFunctions.startBpmnProcess(
                     slSiteVisitProcessDefinitionKey,
@@ -375,9 +376,10 @@ class StandardsLevyBpmn(
         return null
     }
 
-    fun slSvQueryManufacturerDetailsComplete(objectId: Long): Boolean {
+    fun slSvQueryManufacturerDetailsComplete(objectId: Long, manufacturerId:String): Boolean {
         KotlinLogging.logger { }.info("objectId : $objectId :  Query Manufacturer details complete")
         var currAssigneeId: Long = 0
+        updateTaskVariableByObjectIdAndKey(objectId, "sLSvQueryManufacturerDetails", slSiteVisitProcessDefinitionKey, "manufacturerId", manufacturerId)
         fetchTaskByObjectId(objectId, slSiteVisitProcessDefinitionKey)
             ?.let { taskDetails ->
                 if (taskDetails.isEmpty()) {
@@ -461,7 +463,7 @@ class StandardsLevyBpmn(
         return false
     }
 
-    fun slsvDraftFeedbackComplete(objectId: Long): Boolean {
+    fun slsvDraftFeedbackComplete(objectId: Long, manufactureUserId: Long): Boolean {
         KotlinLogging.logger { }.info("objectId : $objectId :  Draft feedback complete")
         slCompleteTask(objectId, "sLsVDraftFeedbackAndShare", slSiteVisitProcessDefinitionKey)?.let {
             return true

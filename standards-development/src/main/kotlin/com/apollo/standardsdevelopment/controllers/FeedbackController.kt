@@ -1,7 +1,7 @@
-//package com.apollo.standardsdevelopment.controllers
+//package org.kebs.app.kotlin.apollo.standardsdevelopment.controllers
 //
-//import com.apollo.standardsdevelopment.config.EmailConfig
-//import com.apollo.standardsdevelopment.models.Feedback
+//import org.kebs.app.kotlin.apollo.standardsdevelopment.config.EmailConfig
+//import org.kebs.app.kotlin.apollo.standardsdevelopment.models.Feedback
 //import org.springframework.mail.SimpleMailMessage
 //import org.springframework.mail.javamail.JavaMailSenderImpl
 //import org.springframework.validation.BindingResult

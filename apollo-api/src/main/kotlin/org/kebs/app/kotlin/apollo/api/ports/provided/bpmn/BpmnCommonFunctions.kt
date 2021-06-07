@@ -5,13 +5,11 @@ import org.flowable.engine.ManagementService
 import org.flowable.engine.RepositoryService
 import org.flowable.engine.RuntimeService
 import org.flowable.engine.TaskService
-import org.flowable.engine.delegate.DelegateExecution
-import org.flowable.engine.runtime.ProcessInstance
 import org.flowable.task.api.Task
-import org.flowable.task.service.delegate.DelegateTask
 import org.joda.time.DateTime
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.di.BpmnTaskDetails
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DestinationInspectionDaoServices
+import org.kebs.app.kotlin.apollo.common.exceptions.InvalidValueException
 import org.kebs.app.kotlin.apollo.store.repo.IUserRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
@@ -19,7 +17,6 @@ import org.springframework.context.annotation.Lazy
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import java.util.*
-import kotlin.collections.HashMap
 
 @Service
 class BpmnCommonFunctions(
@@ -31,7 +28,7 @@ class BpmnCommonFunctions(
     private val userRepo: IUserRepository
 //    private val destinationInspectionService: DestinationInspectionDaoServices,
 
-    ) {
+) {
     @Value("\${bpmn.task.default.duration}")
     lateinit var defaultDuration: Integer
 
@@ -44,10 +41,10 @@ class BpmnCommonFunctions(
 
 
     fun startBpmnProcess(
-            processDefinitionKey: String,
-            businessKey: String,
-            processTaskVariables: HashMap<String, Any>,
-            assigneeId: Long
+        processDefinitionKey: String,
+        businessKey: String,
+        processTaskVariables: HashMap<String, Any>,
+        assigneeId: Long
     ): HashMap<String, String>? {
         KotlinLogging.logger { }.info("Starting bpmn process $processDefinitionKey with key $businessKey")
         //var processInstanceId : String = ""
@@ -55,17 +52,17 @@ class BpmnCommonFunctions(
         try {
             var processInstanceId: String = ""
             //Start the process
-            runtimeService.startProcessInstanceByKey(processDefinitionKey, businessKey, processTaskVariables)?.let {processInstance ->
+            runtimeService.startProcessInstanceByKey(processDefinitionKey, businessKey, processTaskVariables)?.let { processInstance ->
                 processInstanceId = processInstance.processInstanceId
                 KotlinLogging.logger { }.info("bpmn process started with pid $processInstanceId")
-            }?: run{
+            } ?: run {
                 KotlinLogging.logger { }.info("unable to start bpmn process started with pid"); return null
             }
 
             Thread.sleep(timerBoundaryTaskDelay)
             //Fetch the task
             KotlinLogging.logger { }.info("Fetching taskId for pid $processInstanceId")
-            taskService.createTaskQuery().processInstanceId(processInstanceId).list()[0]?.let{task ->
+            taskService.createTaskQuery().processInstanceId(processInstanceId).list()[0]?.let { task ->
                 KotlinLogging.logger { }.info("pid $processInstanceId returned taskId ${task.id}")
                 //Populate map to return
                 returnMap["processInstanceId"] = processInstanceId
@@ -76,7 +73,7 @@ class BpmnCommonFunctions(
                 taskService.saveTask(task)
 
                 return returnMap
-            }?: run{
+            } ?: run {
                 KotlinLogging.logger { }
                     .info("unable to fetch task for bpmn process started with pid $processInstanceId"); return null
             }
@@ -104,8 +101,16 @@ class BpmnCommonFunctions(
 
     fun getTaskByTaskDefinitionKey(processInstanceId: String, taskDefinitionKey: String): Task? {
         try {
-            KotlinLogging.logger { }.info("Fetching task where processInstanceId = $processInstanceId and taskDefinitionKey like $taskDefinitionKey")
-            return taskService.createTaskQuery().processInstanceId(processInstanceId).taskDefinitionKeyLike(taskDefinitionKey).list()[0]
+            KotlinLogging.logger { }.debug("Fetching task where processInstanceId = $processInstanceId and taskDefinitionKey like $taskDefinitionKey")
+            val list = taskService.createTaskQuery().processInstanceId(processInstanceId).taskDefinitionKeyLike(taskDefinitionKey).list()
+            when {
+                list.isEmpty() -> {
+                    throw InvalidValueException("No tasks found matching processInstanceId = $processInstanceId and taskDefinitionKey like $taskDefinitionKey")
+                }
+                else -> {
+                    return list[0]
+                }
+            }
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message, e)
         }
@@ -121,6 +126,7 @@ class BpmnCommonFunctions(
         }
         return null
     }
+
     fun getTaskByProcessInstanceId(processInstanceId: String): Task? {
         try {
             KotlinLogging.logger { }.trace("Fetching task where processInstanceId = $processInstanceId")
@@ -131,9 +137,9 @@ class BpmnCommonFunctions(
         return null
     }
 
-    fun fetchAllTasksByAssignee(assigneeId: Long, pidPrefix:String): List<BpmnTaskDetails>? {
+    fun fetchAllTasksByAssignee(assigneeId: Long, pidPrefix: String): List<BpmnTaskDetails>? {
         try {
-            taskService.createTaskQuery().taskAssignee(assigneeId.toString()).processDefinitionKeyLikeIgnoreCase("$pidPrefix%").list()?.let{ tasks->
+            taskService.createTaskQuery().taskAssignee(assigneeId.toString()).processDefinitionKeyLikeIgnoreCase("$pidPrefix%").list()?.let { tasks ->
                 return generateTaskDetails(tasks)
             }
         } catch (e: Exception) {
@@ -142,9 +148,9 @@ class BpmnCommonFunctions(
         return null
     }
 
-    fun fetchAllTasks(pidPrefix:String): List<BpmnTaskDetails>? {
+    fun fetchAllTasks(pidPrefix: String): List<BpmnTaskDetails>? {
         try {
-            taskService.createTaskQuery().processDefinitionKeyLikeIgnoreCase("$pidPrefix%").list()?.let{ tasks->
+            taskService.createTaskQuery().processDefinitionKeyLikeIgnoreCase("$pidPrefix%").list()?.let { tasks ->
                 return generateTaskDetails(tasks)
             }
         } catch (e: Exception) {
@@ -184,7 +190,7 @@ class BpmnCommonFunctions(
         return null
     }
 
-    fun getOverdueTasks(dueDate:Date, processDefinitionKeyPrefix:String): List<Task>? {
+    fun getOverdueTasks(dueDate: Date, processDefinitionKeyPrefix: String): List<Task>? {
         try {
             KotlinLogging.logger { }.trace("Fetching task where due date <  $dueDate")
             return taskService.createTaskQuery().taskDueBefore(dueDate).processDefinitionKeyLikeIgnoreCase("$processDefinitionKeyPrefix%").list()
@@ -199,14 +205,14 @@ class BpmnCommonFunctions(
         try {
             KotlinLogging.logger { }.trace("Fetching jobs for $processInstanceId")
             println("Jobs--------------")
-            managementService.createJobQuery().processInstanceId(processInstanceId).list()?.let{ jobsList->
-                for(job in jobsList){
+            managementService.createJobQuery().processInstanceId(processInstanceId).list()?.let { jobsList ->
+                for (job in jobsList) {
                     KotlinLogging.logger { }.info("${job.createTime} -- ${job.id} -- ${job.processInstanceId} -- ${job.jobType}")
                 }
             }
             println("Timer Jobs--------------")
-            managementService.createTimerJobQuery().processInstanceId(processInstanceId).list()?.let{ jobsList->
-                for(job in jobsList){
+            managementService.createTimerJobQuery().processInstanceId(processInstanceId).list()?.let { jobsList ->
+                for (job in jobsList) {
                     KotlinLogging.logger { }.info("${job.createTime} -- ${job.id} -- ${job.processInstanceId} -- ${job.jobType}")
                 }
             }
@@ -238,7 +244,7 @@ class BpmnCommonFunctions(
         }
     }
 
-    fun completeTask(variables: HashMap<String, Any>,taskDefinitionKey: String) : HashMap<String, Any>? {
+    fun completeTask(variables: HashMap<String, Any>, taskDefinitionKey: String): HashMap<String, Any>? {
         try {
             getTaskByTaskDefinitionKey(variables["processInstanceId"].toString(), taskDefinitionKey)?.let { task ->
                 completeTask(task.id)
@@ -252,35 +258,35 @@ class BpmnCommonFunctions(
         return variables
     }
 
-    fun generateTaskDetails(tasks:List<Task>) : List<BpmnTaskDetails>{
+    fun generateTaskDetails(tasks: List<Task>): List<BpmnTaskDetails> {
         val taskList: MutableList<BpmnTaskDetails> = mutableListOf()
         for (task in tasks) {
             getTaskVariables(task.id)?.let { it ->
-                taskList.add(BpmnTaskDetails(it["objectId"].toString().toLong(),task))
+                taskList.add(BpmnTaskDetails(it["objectId"].toString().toLong(), task))
             }
         }
         return taskList
     }
 
-    fun assignTask(processInstanceId: String, taskDefinitionKey:String?, assigneeId: Long): Boolean {
+    fun assignTask(processInstanceId: String, taskDefinitionKey: String?, assigneeId: Long): Boolean {
         KotlinLogging.logger { }.info("Assign next task begin")
         try {
             var localAssigneeId: String = assigneeId.toString()
             var task: Task? = null
 
             //complaint.let {
-            taskDefinitionKey?.let{
-                task = getTaskByTaskDefinitionKey(processInstanceId,taskDefinitionKey)
-            }?: run {
-                task = getTasks("processInstanceId",processInstanceId)?.get(0)
+            taskDefinitionKey?.let {
+                task = getTaskByTaskDefinitionKey(processInstanceId, taskDefinitionKey)
+            } ?: run {
+                task = getTasks("processInstanceId", processInstanceId)?.get(0)
             }
 
-            task?.let {task->
+            task?.let { task ->
                 userRepo.findByIdOrNull(localAssigneeId.toLong())?.let { usersEntity ->
                     updateVariable(task.id, "email", usersEntity.email.toString())
                 }
                 //Refetch the task because we have updated the email variable
-                getTaskById(task.id)?.let { updatedTask->
+                getTaskById(task.id)?.let { updatedTask ->
                     updatedTask.assignee = localAssigneeId
                     taskService.saveTask(updatedTask)
                     KotlinLogging.logger { }.info("Task ${updatedTask.name} assigned to $localAssigneeId")
@@ -301,40 +307,40 @@ class BpmnCommonFunctions(
         KotlinLogging.logger { }.info("Generating BS Number............")
     }
 
-    fun submitQaDmAppReviewForAssessment(permitId:String) {
+    fun submitQaDmAppReviewForAssessment(permitId: String) {
         KotlinLogging.logger { }.info("Submitting permit $permitId for assessment............")
     }
 
-    fun autoPopulateApplication(permitId:String) {
+    fun autoPopulateApplication(permitId: String) {
         KotlinLogging.logger { }.info("Autopopulating application for permit $permitId............")
     }
 
-    fun computePayment(permitId:String) {
+    fun computePayment(permitId: String) {
         KotlinLogging.logger { }.info("Computing payment for application for permit $permitId............")
     }
 
-    fun checkIfRenewal(permitId:String) : String {
+    fun checkIfRenewal(permitId: String): String {
         KotlinLogging.logger { }.info("Checking if renewal $permitId............")
         return "0"
     }
 
-    fun updateCdStatusOnSw(cdId:String) : String {
+    fun updateCdStatusOnSw(cdId: String): String {
         KotlinLogging.logger { }.info("Updating CD status on SW for $cdId............")
         return "0"
     }
 
     //TODO: Implement KeSws request for inspection here
-    fun submitMotorVehicleInspectionRequest(cdItemId:String) {
+    fun submitMotorVehicleInspectionRequest(cdItemId: String) {
         KotlinLogging.logger { }.info("Submitting Motor Vehcle Item $cdItemId Inspection request to KeSWS............")
         //Update inspectionNotificationStatus & inspectionNotificationDate after request to KeSws
 //        destinationInspectionDaoServices.updateInspectionNotificationSent(cdItemId.toLong())
     }
 
-    fun sendSwPaymentDemandNote(cdId:String) {
+    fun sendSwPaymentDemandNote(cdId: String) {
         KotlinLogging.logger { }.info("Sending Demand Note for CD $cdId to KeSWS............")
     }
 
-    fun sendSwPaymentComplete(cdId:String) {
+    fun sendSwPaymentComplete(cdId: String) {
         KotlinLogging.logger { }.info("Sending Demand Note Payment Complete for CD $cdId to KeSWS............")
     }
 

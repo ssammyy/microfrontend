@@ -33,11 +33,12 @@ class SLBpmnTest {
 
     //val manufacturerId: Long = 2
     val standardsLevyId: Long = 2
-    val standardsLevyReportId: Long = 87
+    val standardsLevyReportId: Long = 86
     val assigneeId:Long = 101
     val principalOfficerId:Long = 101
     val asstManagerId:Long = 102
     val managerId:Long = 103
+    val manufacturerId:String = "1"
 
     @Test
     fun testSlRegistrationProcess() {
@@ -125,7 +126,7 @@ class SLBpmnTest {
         } ?: return
 
         //Query manufacturer details complete
-        standardsLevyBpmn.slSvQueryManufacturerDetailsComplete(standardsLevyReportId).let {
+        standardsLevyBpmn.slSvQueryManufacturerDetailsComplete(standardsLevyReportId,manufacturerId).let {
             standardsLevyBpmn.fetchTaskByObjectId(standardsLevyReportId, slSiteVisitProcessDefinitionKey)?.let { taskDetails ->
                 println("Task details after process")
                 for (taskDetail in taskDetails) {
@@ -185,7 +186,7 @@ class SLBpmnTest {
         } ?: return
 
         //Draft feedback complete
-        standardsLevyBpmn.slsvDraftFeedbackComplete(standardsLevyReportId).let {
+        standardsLevyBpmn.slsvDraftFeedbackComplete(standardsLevyReportId, 1L).let {
             standardsLevyBpmn.fetchTaskByObjectId(standardsLevyReportId, slSiteVisitProcessDefinitionKey)?.let { taskDetails ->
                 println("Task details after process")
                 for (taskDetail in taskDetails) {

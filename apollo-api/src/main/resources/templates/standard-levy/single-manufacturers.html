@@ -2,234 +2,12 @@
 <!--  This site was created in Webflow. http://www.webflow.com  -->
 <!--  Last Published: Wed Mar 18 2020 20:03:10 GMT+0000 (Coordinated Universal Time)  -->
 <html data-wf-page="5e7111dc08e6f973c676b3e3" data-wf-site="5e70fb3a565ebd99c1db37ce"
-      xmlns:th="http://www.thymeleaf.org">
+      lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8">
     <title th:text="'KIMS - ' + ${title}"></title>
     <th:block th:include="fragments/general-form.html :: headerfiles"/>
     <link rel="stylesheet" th:href="@{/css/accordion.css}"/>
-    <style>
-        body {
-            margin-top: 20px;
-            background: #eee;
-        }
-
-        /* PROJECTS */
-        .project-people,
-        .project-actions {
-            text-align: right;
-            vertical-align: middle;
-        }
-
-        dd.project-people {
-            text-align: left;
-            margin-top: 5px;
-        }
-
-        .project-people img {
-            width: 32px;
-            height: 32px;
-        }
-
-        .project-title a {
-            font-size: 14px;
-            color: #676a6c;
-            font-weight: 600;
-        }
-
-        .project-list table tr td {
-            border-top: none;
-            border-bottom: 1px solid #e7eaec;
-            padding: 15px 10px;
-            vertical-align: middle;
-        }
-
-        .project-manager .tag-list li a {
-            font-size: 10px;
-            background-color: white;
-            padding: 5px 12px;
-            color: inherit;
-            border-radius: 2px;
-            border: 1px solid #e7eaec;
-            margin-right: 5px;
-            margin-top: 5px;
-            display: block;
-        }
-
-        .project-files li a {
-            font-size: 11px;
-            color: #676a6c;
-            margin-left: 10px;
-            line-height: 22px;
-        }
-
-        /* PROFILE */
-        .profile-content {
-            border-top: none !important;
-        }
-
-        .profile-stats {
-            margin-right: 10px;
-        }
-
-        .profile-image {
-            width: 120px;
-            float: left;
-        }
-
-        .profile-image img {
-            width: 96px;
-            height: 96px;
-        }
-
-        .profile-info {
-            margin-left: 120px;
-        }
-
-        .feed-activity-list .feed-element {
-            border-bottom: 1px solid #e7eaec;
-        }
-
-        .feed-element:first-child {
-            margin-top: 0;
-        }
-
-        .feed-element {
-            padding-bottom: 15px;
-        }
-
-        .feed-element,
-        .feed-element .media {
-            margin-top: 15px;
-        }
-
-        .feed-element,
-        .media-body {
-            overflow: hidden;
-        }
-
-        .feed-element > .pull-left {
-            margin-right: 10px;
-        }
-
-        .feed-element img.img-circle,
-        .dropdown-messages-box img.img-circle {
-            width: 38px;
-            height: 38px;
-        }
-
-        .feed-element .well {
-            border: 1px solid #e7eaec;
-            box-shadow: none;
-            margin-top: 10px;
-            margin-bottom: 5px;
-            padding: 10px 20px;
-            font-size: 11px;
-            line-height: 16px;
-        }
-
-        .feed-element .actions {
-            margin-top: 10px;
-        }
-
-        .feed-element .photos {
-            margin: 10px 0;
-        }
-
-        .feed-photo {
-            max-height: 180px;
-            border-radius: 4px;
-            overflow: hidden;
-            margin-right: 10px;
-            margin-bottom: 10px;
-        }
-
-        .file-list li {
-            padding: 5px 10px;
-            font-size: 11px;
-            border-radius: 2px;
-            border: 1px solid #e7eaec;
-            margin-bottom: 5px;
-        }
-
-        .file-list li a {
-            color: inherit;
-        }
-
-        .file-list li a:hover {
-            color: #1ab394;
-        }
-
-        .user-friends img {
-            width: 42px;
-            height: 42px;
-            margin-bottom: 5px;
-            margin-right: 5px;
-        }
-
-        .ibox {
-            clear: both;
-            margin-bottom: 25px;
-            margin-top: 0;
-            padding: 0;
-        }
-
-        .ibox.collapsed .ibox-content {
-            display: none;
-        }
-
-        .ibox.collapsed .fa.fa-chevron-up:before {
-            content: "\f078";
-        }
-
-        .ibox.collapsed .fa.fa-chevron-down:before {
-            content: "\f077";
-        }
-
-        .ibox:after,
-        .ibox:before {
-            display: table;
-        }
-
-        .ibox-title {
-            -moz-border-bottom-colors: none;
-            -moz-border-left-colors: none;
-            -moz-border-right-colors: none;
-            -moz-border-top-colors: none;
-            background-color: #ffffff;
-            border-color: #e7eaec;
-            border-image: none;
-            border-style: solid solid none;
-            border-width: 3px 0 0;
-            color: inherit;
-            margin-bottom: 0;
-            padding: 14px 15px 7px;
-            min-height: 48px;
-        }
-
-        .ibox-content {
-            background-color: #ffffff;
-            color: inherit;
-            padding: 15px 20px 20px 20px;
-            border-color: #e7eaec;
-            border-image: none;
-            border-style: solid solid none;
-            border-width: 1px 0;
-        }
-
-        .ibox-footer {
-            color: inherit;
-            border-top: 1px solid #e7eaec;
-            font-size: 90%;
-            background: #ffffff;
-            padding: 10px 15px;
-        }
-
-        ul.notes li,
-        ul.tag-list li {
-            list-style: none;
-        }
-    </style>
     <link rel="stylesheet" th:href="@{/assets/bootstrap3/css/bootstrap.css}"/>
 </head>
 <body>
@@ -303,10 +81,12 @@
                                                 <div class="list-text" th:text="${manufacturer?.companyEmail}"></div>
                                             </li>
                                             <br>
+                                            <!--
                                             <li class="list-item" th:if="${manufacturer?.ownership}">
                                                 <div class="list-title" style="color: #0166B1;">Company Ownership</div>
                                                 <div class="list-text" th:text="${manufacturer?.ownership}"></div>
                                             </li>
+                                            -->
                                             <br>
                                             <li class="list-item" th:if="${manufacturer?.postalAddress}">
                                                 <div class="list-title" style="color: #0166B1;">Postal Address</div>
@@ -317,26 +97,17 @@
                                                 <div class="list-title" style="color: #0166B1;">Closure Of Operations</div>
                                                 <div class="list-text" th:text="${manufacturer?.closureOfOperations}"></div>
                                             </li>
-                                            <br>
-                                            <li class="list-item" th:if="${manufacturer?.factoryVisitStatus}">
-                                                <div class="list-title" style="color: #0166B1;">Factory Visit Status</div>
-                                                <div class="list-text" th:text="${manufacturer?.factoryVisitStatus} == 1 ?'Scheduled': 'Wait To Be Scheduled'"></div>
-                                            </li>
-                                            <br>
-                                            <li class="list-item" th:if="${manufacturer?.factoryVisitDate}">
-                                                <div class="list-title" style="color: #0166B1;">Factory Visit Date</div>
-                                                <div class="list-text" th:text="${manufacturer?.factoryVisitDate}"></div>
-                                            </li>
-                                            <br>
                                             <li class="list-item" th:if="${manufacturer?.directorIdNumber}">
                                                 <div class="list-title" style="color: #0166B1;">Director Id Number</div>
                                                 <div class="list-text" th:text="${manufacturer?.directorIdNumber}"></div>
                                             </li>
                                             <br>
+                                            <!--
                                             <li class="list-item" th:if="${manufacturer?.description}">
                                                 <div class="list-title" style="color: #0166B1;">Description</div>
                                                 <div class="list-text" th:text="${manufacturer?.description}"></div>
                                             </li>
+                                            -->
                                             <br>
                                             <li class="list-item" th:if="${manufacturer?.registrationNumber}">
                                                 <div class="list-title" style="color: #0166B1;">Registration Number</div>
@@ -390,6 +161,19 @@
                                         <button class="accordion" style="flex: 0 50%">Factory Visit Report</button>
                                         <div class="panel">
                                             <ul class="w-list-unstyled" style="width: 500px">
+                                                <li class="list-item" th:if="${visitReport?.status}">
+                                                    <div class="list-title" style="color: #0166B1;">Factory Visit Status</div>
+                                                    <div class="list-text" th:text="${visitReport?.status} == 0 ?'Scheduled': 'Completed'"></div>
+                                                </li>
+                                                <br>
+                                                <li class="list-item" th:if="${visitReport?.scheduledVisitDate}">
+                                                    <div class="list-title" style="color: #0166B1;">Scheduled Visit Date</div>
+                                                    <div class="list-text" th:text="${visitReport?.scheduledVisitDate}"></div>
+                                                </li>
+                                                <li class="list-item" th:if="${visitReport?.visitDate}">
+                                                    <div class="list-title" style="color: #0166B1;"> Factory Visit Date</div>
+                                                    <div class="list-text" th:text="${visitReport?.visitDate}"></div>
+                                                </li>
                                                 <li class="list-item" th:if="${visitReport?.purpose}">
                                                     <div class="list-title" style="color: #0166B1;">Purpose of visit</div>
                                                     <div class="list-text" th:text="${visitReport?.purpose}"></div>
@@ -414,20 +198,49 @@
                                                     <div class="list-title" style="color: #0166B1;">Officers Feedback</div>
                                                     <div class="list-text" th:text="${visitReport?.officersFeedback}"></div>
                                                 </li>
+                                                <li>
+                                                    <div th:if="${uploadedFiles!= null && uploadedFiles?.size > 0}">
+                                                        <div class="row-table ">
+                                                            <table class="table table-striped table-bordered" id="viewAttachments"
+                                                                   style="width:100%">
+                                                                <thead>
+                                                                <tr>
+                                                                    <th>Visit Uploads</th>
+                                                                    <th>View</th>
+                                                                </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                <tr class="list" style="cursor: pointer"
+                                                                    th:each="uploadedFile: ${uploadedFiles}">
+                                                                    <td th:text="${uploadedFile?.name}"></td>
+                                                                    <td><a class="btn btn-primary itemViewBtn" target='_blank'
+                                                                           th:href="@{/api/sl/view/uploaded(fileID=${uploadedFile?.id})}">VIEW</a>
+                                                                    </td>
+                                                                </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </li>
                                                 <br>
                                                 <li class="list-item">
-                                                    <div class="list-title" style="color: #0166B1;">Assistant managers approval</div>
+                                                    <div class="list-title" style="color: #0166B1;">Assistant Manager Approval</div>
                                                     <div class="list-text" th:text="${visitReport.assistantManagerApproval} == 1 ? 'Approved':'Pending Approval'"></div>
                                                 </li>
                                                 <br>
                                                 <li class="list-item">
-                                                    <div class="list-title" style="color: #0166B1;">Assistant Manager Remarks</div>
-                                                    <div class="list-text" th:text="${visitReport.assistanceManagerRemarks}"></div>
+                                                    <div class="list-title" style="color: #0166B1;">Assistant Manager Approval Remarks</div>
+                                                    <div class="list-text" th:text="${visitReport.assistantManagerRemarks}"></div>
                                                 </li>
                                                 <br>
                                                 <li class="list-item">
-                                                    <div class="list-title" style="color: #0166B1;">Chief Manager approval</div>
+                                                    <div class="list-title" style="color: #0166B1;">Manager Approval</div>
                                                     <div th:text="${visitReport.managersApproval} == 1 ? 'Approved' : 'Pending Approval' " class="list-text"></div>
+                                                </li>
+
+                                                <li class="list-item">
+                                                    <div class="list-title" style="color: #0166B1;">Manager Approval Remarks</div>
+                                                    <div class="list-text" th:text="${visitReport.cheifManagerRemarks}"></div>
                                                 </li>
                                                 <br>
                                                 <div class="my-3 p-3 bg-white rounded shadow-sm">
@@ -442,14 +255,14 @@
                                                             <span th:text="'on.' + ${visitReport?.createdOn}"></span>
                                                         </p>
                                                     </div>
-                                                    <small class="d-block text-right mt-3">
-                                                        <!--  Ass manager approval   -->
-                                                        <a sec:authorize="hasAuthority('SL_APPROVE_VISIT_REPORT')" th:href="@{/sl/general-actions(whereTo='assistant_manager_approval', manufacturerId=${manufacturer?.id}, kraId=${visitReport?.id}, approvalStatus = 1)}"
-                                                           th:if="${visitReport.assistantManagerApproval != 1}">Approve</a>
-                                                        <!--  Manager's approval   -->
-                                                        <a sec:authorize="hasAuthority('SL_SECOND_APPROVE_VISIT_REPORT')" th:href="@{/sl/general-actions(whereTo='manager_approval', manufacturerId=${manufacturer?.id}, kraId=${visitReport?.id}, approvalStatus = 1)}"
-                                                           th:if="${visitReport.assistantManagerApproval == 1} and ${visitReport.managersApproval != 1}">Approve</a>
-                                                    </small>
+                                                    <!--                                                    <small class="d-block text-right mt-3">-->
+                                                    <!--                                                        &lt;!&ndash;  Ass manager approval   &ndash;&gt;-->
+                                                    <!--                                                        <a sec:authorize="hasAuthority('SL_APPROVE_VISIT_REPORT')" th:href="@{/sl/general-actions(whereTo='assistant_manager_approval', manufacturerId=${manufacturer?.id}, kraId=${visitReport?.id}, approvalStatus = 1)}"-->
+                                                    <!--                                                           th:if="${visitReport.assistantManagerApproval != 1}">Approve</a>-->
+                                                    <!--                                                        &lt;!&ndash;  Manager's approval   &ndash;&gt;-->
+                                                    <!--                                                        <a sec:authorize="hasAuthority('SL_SECOND_APPROVE_VISIT_REPORT')" th:href="@{/sl/general-actions(whereTo='manager_approval', manufacturerId=${manufacturer?.id}, kraId=${visitReport?.id}, approvalStatus = 1)}"-->
+                                                    <!--                                                           th:if="${visitReport.assistantManagerApproval == 1} and ${visitReport.managersApproval != 1}">Approve</a>-->
+                                                    <!--                                                    </small>-->
                                                 </div>
 
                                             </ul>
@@ -468,26 +281,26 @@
                             </div>
                             <div>
 
-                                <button class="btn btn-info" data-target="#scheduleVisit" data-toggle="modal" sec:authorize="hasAuthority('SL_MANUFACTURERS_VIEW') and hasAuthority('SL_SCHEDULE_FACTORY_VISIT_MANUFACTURER')" style="width: 270px;" th:if="${manufacturer.factoryVisitDate == null}"
+                                <button class="btn btn-info" data-target="#scheduleVisit" data-toggle="modal" sec:authorize="hasAuthority('SL_MANUFACTURERS_VIEW') and hasAuthority('SL_SCHEDULE_FACTORY_VISIT_MANUFACTURER')" style="width: 270px;" th:if="${visitReport?.scheduledVisitDate == null}"
                                         type="button">Schedule visit
                                 </button>
-                                <br><br>
-
-                                <button class="btn btn-info"
-                                        data-target="#draftFeedback" data-toggle="modal" sec:authorize="hasAuthority('SL_MANUFACTURERS_VIEW') and hasAuthority('SL_SCHEDULE_FACTORY_VISIT_MANUFACTURER')" style="width: 270px;"
-                                        th:if="${manufacturer.factoryVisitDate != null} and ${visitReport} and ${visitReport.managersApproval == 1} and ${visitReport.officersFeedback == null} and ${visitReport.assistantManagerApproval == 1}" type="button">Schedule visit
+                                <br/><br/>
+                                <button class="btn btn-primary" data-target="#industryVisitReport" data-toggle="modal" sec:authorize="hasAuthority('SL_MANUFACTURERS_VIEW')" style="width: 270px;" th:if="${visitReport?.scheduledVisitDate != null && visitReport?.assistantManagerApproval == 0}"
+                                        type="button">Prepare/Modify report
                                 </button>
-                                <br><br>
-
-                                <button th:if="${manufacturer.factoryVisitDate != null}" sec:authorize="hasAuthority('SL_MANUFACTURERS_VIEW')" style="width: 270px;" type="button" class="btn btn-primary" data-toggle="modal" data-target="#industryVisitReport">Prepare report</button>
-                                <br><br><br>
-                                <button th:if="${visitReport?.purpose != null}" sec:authorize="hasAuthority('SL_APPROVE_VISIT_REPORT')" style="width: 270px;" type="button" class="btn btn-primary" data-toggle="modal" data-target="#industryVisitReportApproval">Factory Visit Report Approval</button>
-
-                                <button class="btn btn-primary" data-target="#industryVisitReportApproval" data-toggle="modal" sec:authorize="hasAuthority('SL_SECOND_APPROVE_VISIT_REPORT')" style="width: 270px;" th:if="${visitReport?.purpose != null}" type="button">Factory Visit Report Approval
+                                <br/><br/>
+                                <button class="btn btn-primary" data-target="#industryVisitReportLevelOneApproval" data-toggle="modal" sec:authorize="hasAuthority('SL_APPROVE_VISIT_REPORT')" style="width: 270px;" th:if="${visitReport?.purpose != null && visitReport.assistantManagerApproval != 1 }"
+                                        type="button">Approve
                                 </button>
-                                <br><br>
-                                <button th:if="${visitReport?.purpose != null}" sec:authorize="hasAuthority('SL_MANUFACTURERS_VIEW')" style="width: 270px;" type="button" class="btn btn-primary" data-toggle="modal" data-target="#industryVisitReportApproval">Draft Feedback</button>
-                                <br><br>
+                                <br/><br/>
+                                <button class="btn btn-primary" data-target="#industryVisitReportLevelTwoApproval" data-toggle="modal" sec:authorize="hasAuthority('SL_SECOND_APPROVE_VISIT_REPORT')" style="width: 270px;"
+                                        th:if="${visitReport.assistantManagerApproval == 1 && visitReport.managersApproval != 1 }" type="button">Approve
+                                </button>
+                                <br/><br/>
+                                <button class="btn btn-primary" data-target="#draftFeedback" data-toggle="modal" sec:authorize="hasAuthority('SL_SEND_FEEDBACK')" style="width: 270px;"
+                                        th:if="${visitReport?.scheduledVisitDate != null} and ${visitReport} and ${visitReport?.managersApproval == 1} and ${visitReport?.officersFeedback == null} and ${visitReport?.assistantManagerApproval == 1}" type="button">Submit Feedback
+                                </button>
+                                <br/><br/>
                                 <button type="button" class="btn btn-primary" style="width: 270px" data-toggle="modal" data-target="#updateManufacturerDetailsModal">
                                     Modify account details
                                 </button>
@@ -499,8 +312,8 @@
                 </div>
             </div>
 
-            <div class="modal fade" id="industryVisitReport" tabindex="-1" role="dialog" aria-labelledby="industryVisitReport" aria-hidden="true">
-                <form enctype="multipart/form-data" method="post" th:action="@{/api/sl/save-visit-report-data(manufacturerId=${manufacturer.id})}" th:object="${reportData}">
+            <div aria-hidden="true" aria-labelledby="industryVisitReport" class="modal fade" id="industryVisitReport" role="dialog" tabindex="-1" th:if="${visitReport != null}">
+                <form enctype="multipart/form-data" method="post" th:action="@{/api/sl/save-visit-report-data(manufacturerId=${manufacturer.id})}" th:object="${visitReport}">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
@@ -509,22 +322,29 @@
                                     <span aria-hidden="true">&times;</span>
                                 </button>
                             </div>
+                            <div class="form-group">
+                                <input th:field="${visitReport.id}" type="hidden">
+                            </div>
                             <div class="modal-body">
                                 <div class="form-group">
-                                    <label for="visitDate">Scheduled Date</label>
-                                    <input class="form-control" id="scheduledVisitDate" name="scheduledVisitDate" readonly="readonly" th:field="*{scheduledVisitDate}" type="date">
+                                    <label for="visitDate">Visit Date</label>
+                                    <input class="form-control" id="visitDate" name="visitDate" th:field="${visitReport.visitDate}" type="date">
                                 </div>
                                 <div class="form-group">
-                                    <label for="visitDate">Visit Date</label>
-                                    <input class="form-control" id="visitDate" name="visitDate" th:field="*{visitDate}" type="date">
+                                    <label for="purpose">Purpose of Visit</label>
+                                    <textarea class="form-control" id="purpose" name="purpose" rows="3" th:field="${visitReport.purpose}"></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label for="personMet">Person met</label>
+                                    <textarea class="form-control" id="personMet" name="personMet" rows="3" th:field="${visitReport.personMet}"></textarea>
                                 </div>
                                 <div class="form-group">
                                     <label for="actionTaken">Action taken</label>
-                                    <textarea class="form-control" id="actionTaken" name="actionTaken" rows="3" th:field="*{actionTaken}"></textarea>
+                                    <textarea class="form-control" id="actionTaken" name="actionTaken" rows="3" th:field="${visitReport.actionTaken}"></textarea>
                                 </div>
                                 <div class="form-group">
                                     <label for="remarks">Remarks</label>
-                                    <textarea class="form-control" id="remarks" name="remarks" rows="3" th:field="*{remarks}"></textarea>
+                                    <textarea class="form-control" id="remarks" name="remarks" rows="3" th:field="${visitReport.remarks}"></textarea>
                                 </div>
                                 <div class="form-group">
                                     <div th:if="${uploadedFiles!= null && uploadedFiles?.size > 0}">
@@ -556,6 +376,13 @@
                                         <input class="form-control" data-name="docFile" id="docFile" multiple name="docFile" type="file">
                                     </div>
                                 </div>
+                                <div class="form-group">
+                                    <label for="slLevelOneApproval">Select Report Approver</label>
+                                    <select class="select-field w-select" id="slLevelOneApproval" required="" th:name="slLevelOneApproval" th:required="required">
+                                        <option value="">Select Report Approver...</option>
+                                        <option th:each="i : ${slLevelOneApprovals}" th:text="|${i.firstName} ${i.lastName}|" th:value="${i.id}"></option>
+                                    </select>
+                                </div>
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -565,8 +392,8 @@
                     </div>
                 </form>
             </div>
-            <div class="modal fade" id="industryVisitReportApproval" tabindex="-1" role="dialog" aria-labelledby="industryVisitReportApproval" aria-hidden="true">
-                <form th:action="@{/api/sl/assistance-manager-approval(manufacturerId=${manufacturer.id})}" method="post" th:object="${reportData}">
+            <div aria-hidden="true" aria-labelledby="industryVisitReportLevelOneApproval" class="modal fade" id="industryVisitReportLevelOneApproval" role="dialog" tabindex="-1">
+                <form method="post" th:action="@{/api/sl/approval/level/one(manufacturerId=${manufacturer.id},visitId=${visitReport.id})}">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
@@ -577,8 +404,54 @@
                             </div>
                             <div class="modal-body">
                                 <div class="form-group">
-                                    <label for="assistanceManagerRemarks">Assistance Manager Remarks</label>
-                                    <textarea class="form-control" id="assistanceManagerRemarks" name="remarks" rows="3" th:name="assistanceManagerRemarks"></textarea>
+                                    <label for="levelOneRemarks">Remarks</label>
+                                    <textarea class="form-control" id="levelOneRemarks" name="levelOneRemarks" required="required" rows="3" th:name="levelOneRemarks"></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label for="slLevelTwoApproval">Select Report Approver</label>
+                                    <select class="select-field w-select" id="slLevelTwoApproval" required="" th:name="slLevelTwoApproval" th:required="required">
+                                        <option value="">Select One...</option>
+                                        <option th:each="i : ${slLevelTwoApprovals}" th:text="|${i.firstName} ${i.lastName}|" th:value="${i.id}"></option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="approval">Approve/Reject</label>
+                                    <select class="form-control" id="approval" name="approval" required="required" th:name="approval">
+                                        <option th:text="Approve" th:value="approve"></option>
+                                        <option th:text="Reject" th:value="reject"></option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button class="btn btn-secondary" data-dismiss="modal" type="button">Close</button>
+                                <button class="btn btn-primary" type="submit">Save</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div aria-hidden="true" aria-labelledby="industryVisitReportLevelTwoApproval" class="modal fade" id="industryVisitReportLevelTwoApproval" role="dialog" tabindex="-1">
+                <form method="post" th:action="@{/api/sl/approval/level/two(manufacturerId=${manufacturer.id},visitId=${visitReport.id})}">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="industryVisitReport">Approval With Remarks</h5>
+                                <button aria-label="Close" class="close" data-dismiss="modal" type="button">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="form-group">
+                                    <label for="levelTwoRemarks">Remarks</label>
+                                    <textarea class="form-control" id="levelTwoRemarks" name="levelTwoRemarks" required="required" rows="3" th:name="levelTwoRemarks"></textarea>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="approval">Approve/Reject</label>
+                                    <select class="form-control" id="approval" name="approval" required="required" th:name="approval">
+                                        <option th:text="Approve" th:value="approve"></option>
+                                        <option th:text="Reject" th:value="reject"></option>
+                                    </select>
                                 </div>
                             </div>
                             <div class="modal-footer">
@@ -601,7 +474,7 @@
                                 </button>
                             </div>
                             <div class="modal-body">
-                                <input type="date" name="scheduleDate" id="scheduleDate" class="form-control">
+                                <label for="scheduleDate">Select Date</label><input class="form-control" id="scheduleDate" name="scheduleDate" type="date">
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -612,7 +485,7 @@
                 </form>
             </div>
             <div class="modal fade" id="draftFeedback" tabindex="-1" role="dialog" aria-labelledby="draftFeedback" aria-hidden="true">
-                <form th:action="@{/sl/general-actions}" method="post">
+                <form method="post" th:action="@{/api/sl/submit/draft/feedback(visitId= ${visitReport.id})}">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
@@ -626,9 +499,6 @@
                                     <label for="feedback">Feedback</label>
                                     <textarea class="form-control" id="feedback" name="feedback" rows="3">Write your feedback here</textarea>
                                 </div>
-                                <input type="hidden" name="manufacturerId" th:value="${manufacturer.id}">
-                                <input type="hidden" name="kraId" th:value="${payment?.id}">
-                                <input type="hidden" name="whereTo" th:value="submit_feedback">
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>

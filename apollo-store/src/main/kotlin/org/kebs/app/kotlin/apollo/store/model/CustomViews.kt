@@ -1,7 +1,10 @@
 package org.kebs.app.kotlin.apollo.store.model
 
 import org.kebs.app.kotlin.apollo.store.model.RegionsCountyTownViewDto.Companion.FIND_ALL
+import org.springframework.format.annotation.DateTimeFormat
 import java.io.Serializable
+import java.math.BigDecimal
+import java.sql.Timestamp
 import javax.persistence.*
 
 @Entity
@@ -166,6 +169,51 @@ class DirectorateToSubSectionL2ViewDto : Serializable {
         const val RESULT_SET_MAPPING = "DirectorateToSubSectionL2ViewDtoMapping"
     }
 
+}
+
+@Entity
+@SqlResultSetMapping(
+    name = KraPaymentsEntityDto.RESULT_SET_MAPPING,
+    entities = [
+        EntityResult(
+            entityClass = KraPaymentsEntityDto::class,
+            fields = [
+                FieldResult(name = "entryNo", column = "REQUEST_HEADER_ENTRY_NO"),
+                FieldResult(name = "manufacturerName", column = "REQUEST_HEADER_MANUFACTURER_NAME"),
+                FieldResult(name = "requestHeaderKraPin", column = "REQUEST_HEADER_KRA_PIN"),
+                FieldResult(name = "requestHeaderPaymentSlipNo", column = "REQUEST_HEADER_PAYMENT_SLIP_NO"),
+                FieldResult(name = "requestHeaderPaymentSlipDate", column = "REQUEST_HEADER_PAYMENT_SLIP_DATE"),
+                FieldResult(name = "requestHeaderTotalPaymentAmt", column = "REQUEST_HEADER_TOTAL_PAYMENT_AMT"),
+                FieldResult(name = "requestHeaderTotalPenaltyAmt", column = "REQUEST_HEADER_TOTAL_PENALTY_AMT"),
+                FieldResult(name = "requestHeaderTotalDeclAmt", column = "REQUEST_HEADER_TOTAL_DECL_AMT")
+            ]
+
+        )
+    ]
+
+)
+@NamedNativeQuery(
+    name = KraPaymentsEntityDto.FIND_ALL,
+    query = "select distinct request_header_entry_No, request_header_manufacturer_name, request_header_kra_pin, request_header_payment_Slip_No, request_header_payment_Slip_date, request_header_TOTAL_PAYMENT_AMT, request_header_TOTAL_PENALTY_AMT, request_header_TOTAL_DECL_AMT from LOG_SL2_PAYMENTS_HEADER where request_header_entry_No = ?",
+    resultSetMapping = KraPaymentsEntityDto.RESULT_SET_MAPPING
+)
+class KraPaymentsEntityDto : Serializable {
+    @Id
+    var entryNo: Long? = null
+    var manufacturerName: String? = null
+    var requestHeaderKraPin: String? = null
+    var requestHeaderPaymentSlipNo: String? = null
+
+    @DateTimeFormat(pattern = "dd-MM-yyyy HH:mm:ss")
+    var requestHeaderPaymentSlipDate: Timestamp? = null
+    var requestHeaderTotalPaymentAmt: BigDecimal? = null
+    var requestHeaderTotalPenaltyAmt: BigDecimal? = null
+    var requestHeaderTotalDeclAmt: BigDecimal? = null
+
+    companion object {
+        const val FIND_ALL = "KraPaymentsEntityDto.findAll"
+        const val RESULT_SET_MAPPING = "KraPaymentsEntityDto"
+    }
 }
 
 

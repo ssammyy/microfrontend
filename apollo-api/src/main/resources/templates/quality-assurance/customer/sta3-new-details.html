@@ -28,13 +28,14 @@
             <div class="content-wrap">
                 <div class="content-row">
                     <div class="row">
-                        <div th:if="${message}" th:with="myStatus=${message}">
-                            <input type="hidden" th:value="${myStatus}" id="idStatus">
-                        </div>
                         <h5 style="font-weight: bold; color: #0082f3; font-size: 14px">STA 3: QUESTIONNAIRE FOR INITIAL
                             FACTORY ASSESSMENT</h5>
-                        <form  id="sta3Form" class="needs-validation"  novalidate th:action="@{/api/qa/apply/new-sta3(permitID = ${permit.id})}" method="post">
-                            <div th:object="${QaSta3Entity}" >
+                        <form id="sta3Form" class="needs-validation" novalidate
+                              th:action="@{/api/qa/apply/new-sta3(permitID = ${permit.id})}" method="post">
+                            <div th:if="${message}" th:with="myRenewPermit=${message}">
+                                <input type="hidden" th:value="${myRenewPermit}" id="permitViewType">
+                            </div>
+                            <div th:object="${QaSta3Entity}">
                                 <div class="form-row">
                                     <div class="col-md-12 mb-3">
                                         <p style="font-size: 20px">1. This document shall be completed by

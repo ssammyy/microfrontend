@@ -88,6 +88,10 @@ class CompanyProfileEntity : Serializable {
     @Basic
     var county: Long? = null
 
+    @Column(name = "FIRM_CATEGORY")
+    @Basic
+    var firmCategory: Long? = null
+
     @Column(name = "TOWN")
     @Basic
     var town: Long? = null
@@ -206,6 +210,7 @@ class CompanyProfileEntity : Serializable {
         val that = other as CompanyProfileEntity
         return id == that.id &&
                 name == that.name &&
+                firmCategory == that.firmCategory &&
                 physicalAddress == that.physicalAddress &&
                 userId == that.userId &&
                 kraPin == that.kraPin &&
@@ -257,6 +262,7 @@ class CompanyProfileEntity : Serializable {
             userId,
             kraPin,
             registrationNumber,
+            firmCategory,
             postalAddress,
             plotNumber,
             entryNumber,

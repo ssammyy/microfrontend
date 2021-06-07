@@ -28,6 +28,11 @@ interface IPermitApplicationsRepository : HazelcastRepository<PermitApplications
     fun findByPcmIdAndPermitTypeAndOldPermitStatusIsNull(userId: Long, permitType: Long): List<PermitApplicationsEntity>?
     fun findByPscMemberIdAndPermitTypeAndOldPermitStatusIsNull(userId: Long, permitType: Long): List<PermitApplicationsEntity>?
     fun findByIdAndUserId(id: Long, userId: Long): PermitApplicationsEntity?
+    fun findByAwardedPermitNumberAndVersionNumber(
+        awardedPermitNumber: String,
+        versionNumber: Long
+    ): PermitApplicationsEntity?
+
     fun findAllByPaidStatus(paymentStatus: Int): List<PermitApplicationsEntity>?
     fun findByPermitRefNumberAndOldPermitStatus(permitRefNumber: String, oldPermitStatus: Int): List<PermitApplicationsEntity>?
     fun findTopByPermitRefNumberOrderByIdDesc(permitRefNumber: String): PermitApplicationsEntity?
@@ -53,6 +58,13 @@ interface IQaProcessStatusRepository : HazelcastRepository<QaProcessStatusEntity
 interface IQaSchemeForSupervisionRepository : HazelcastRepository<QaSchemeForSupervisionEntity, Long> {
     fun findByStatusAndId(status: Int, id: Long): QaSchemeForSupervisionEntity?
     fun findByPermitId(permitId: Long): QaSchemeForSupervisionEntity?
+}
+
+@Repository
+interface IPermitUpdateDetailsRequestsRepository : HazelcastRepository<PermitUpdateDetailsRequestsEntity, Long> {
+    fun findByStatusAndId(status: Int, id: Long): PermitUpdateDetailsRequestsEntity?
+    fun findByPermitId(permitId: Long): List<PermitUpdateDetailsRequestsEntity>?
+    fun findByPermitIdAndRequestStatus(permitId: Long, requestStatus: Int): PermitUpdateDetailsRequestsEntity?
 }
 
 @Repository

@@ -42,6 +42,18 @@ class StandardLevyFactoryVisitReportEntity : Serializable {
     @Basic
     var managersApproval: Int? = null
 
+    @Column(name = "ASSISTANT_MANAGER")
+    @Basic
+    var assistantManager: Long? = null
+
+    @Column(name = "PRINCIPAL_LEVY_OFFICER")
+    @Basic
+    var principalLevyOfficer: Long? = null
+
+    @Column(name = "SL_MANAGER")
+    @Basic
+    var slManager: Long? = null
+
     @Column(name = "PURPOSE")
     @Basic
     var purpose: String? = null
@@ -142,7 +154,7 @@ class StandardLevyFactoryVisitReportEntity : Serializable {
 
     @Column(name = "ASSISTANCE_MANAGER_REMARKS")
     @Basic
-    var assistanceManagerRemarks: String? = null
+    var assistantManagerRemarks: String? = null
 
     @Column(name = "FEED_BACK_REMARKS")
     @Basic
