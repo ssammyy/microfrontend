@@ -495,6 +495,20 @@ data class ProductSubcategoryEntityDto(
     var productId: Long? = null,
 )
 
+/*
+Ministry Inspection table view details
+ */
+data class MinistryInspectionListResponseDto(
+    var cdId: Long = 0,
+    var cdUcr: String? = null,
+    var chassis: String? = null,
+    var used: String? = null,
+    var year: String? = null,
+    var model: String? = null,
+    var make: String? = null,
+    var cdItemDetailsId: Long? = null
+)
+
 class LoginRequest {
     @NotBlank
     var username: String? = null

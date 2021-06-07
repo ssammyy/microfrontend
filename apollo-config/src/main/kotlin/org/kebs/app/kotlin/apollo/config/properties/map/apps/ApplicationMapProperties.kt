@@ -581,6 +581,9 @@ class ApplicationMapProperties {
     @Value("\${destination.inspection.cd.status.type.inspection.checklist.id}")
     val mapDIStatusTypeInspectionChecklistId: Long = 0L
 
+    @Value("\${destination.inspection.cd.status.type.ministry.inspection.uploaded}")
+    val mapDIStatusTypeMinistryInspectionUploadedId: Long = 0L
+
     @Value("\${destination.inspection.cd.status.type.inspection.sample.collection.id}")
     val mapDIStatusTypeInspectionSampleCollectionId: Long = 0L
 
