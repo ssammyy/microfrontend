@@ -90,119 +90,119 @@ class StandardLevy(
             ?: KotlinLogging.logger { }.info("File not found")
     }
 
-    @PostMapping("/approval/level/two")
-    @PreAuthorize("hasAuthority('SL_SECOND_APPROVE_VISIT_REPORT')")
-    fun factoryVisitLevelTwoApproval(
-        redirectAttributes: RedirectAttributes,
-        @RequestParam("levelTwoRemarks", required = true) remarks: String,
-        @RequestParam("approval", required = true) approval: String,
-        @RequestParam("visitId", required = true) visitId: Long
-    ): String {
-<<<<<<< HEAD
-        standardLevyFactoryVisitReportRepository.findByManufacturerEntity(manufacturerId)?.let { report ->
-            report.remarks = reportData.remarks
-            report.purpose = reportData.purpose
-            report.actionTaken = reportData.actionTaken
-            report.personMet = reportData.personMet
-            report.visitDate = reportData.visitDate
-            report.status = 0
-            report.reportDate = LocalDate.now()
-            report.createdBy = commonDaoServices.checkLoggedInUser()
-            report.createdOn = Timestamp.from(Instant.now())
-            standardLevyFactoryVisitReportRepository.save(report)
-=======
-        try {
-            standardLevyFactoryVisitReportRepository.findByIdOrNull(visitId)
-                ?.let { report ->
-                    when (report.managersApproval) {
-                        1 -> {
-                            throw InvalidInputException("Attempt to approve an already approved report, aborting")
-                        }
-                        else -> {
-                            if (report.slManager != null && report.slManager != commonDaoServices.loggedInUserDetails().id) {
-                                throw InvalidInputException("Attempt to approve report but not the assignee")
-                            } else {
-                                when (approval) {
-                                    "approve" -> {
-                                        //Assistant manager approve complete
-                                        standardsLevyBpmn.slsvApproveReportManagerComplete(
-                                            report.id ?: throw NullValueNotAllowedException("Invalid Report ID"),
-                                            report.principalLevyOfficer ?: throw NullValueNotAllowedException("Invalid User for approval"),
-                                            true
-                                        )
-                                        report.managersApproval = 1
-                                        report.cheifManagerRemarks = remarks
-                                        report.slManager = commonDaoServices.loggedInUserDetails().id
-                                        report.modifiedBy = "${commonDaoServices.checkLoggedInUser()}|${report.modifiedBy}"
-                                        report.varField1 = "${report.modifiedOn}"
-                                        report.status = report.status ?: 0 + 1
-                                        report.slStatus = report.status
-                                        report.modifiedOn = Timestamp.from(Instant.now())
-
-                                        standardLevyFactoryVisitReportRepository.save(report)
-                                        redirectAttributes.addFlashAttribute(
-                                            "success",
-                                            "You have approved the report."
-                                        )
-                                        return "redirect:/sl/manufacturer?manufacturerId=${report.manufacturerEntity}&appId=${appId}"
-
-                                    }
-                                    else -> {
-                                        standardsLevyBpmn.slsvApproveReportManagerComplete(
-                                            report.id ?: throw NullValueNotAllowedException("Invalid Report ID"),
-                                            report.principalLevyOfficer ?: throw NullValueNotAllowedException("Invalid User for approval"),
-                                            false
-                                        )
-                                        report.cheifManagerRemarks = remarks
-                                        report.slManager = commonDaoServices.loggedInUserDetails().id
-                                        report.modifiedBy = "${commonDaoServices.checkLoggedInUser()}|${report.modifiedBy}"
-                                        report.varField1 = "${report.modifiedOn}"
-                                        report.status = report.status ?: 0 + 1
-                                        report.slStatus = report.status
-                                        report.modifiedOn = Timestamp.from(Instant.now())
-                                        redirectAttributes.addFlashAttribute(
-                                            "success",
-                                            "You have rejected the report."
-                                        )
-                                        /**
-                                         * DONE: send back the task to the creator
-                                         */
-                                        standardLevyFactoryVisitReportRepository.save(report)
->>>>>>> 39d2c4dec8ea7a6f90a079def9ac6fc3da52ce49
-
-                                        return "redirect:/sl/manufacturer?manufacturerId=${report.manufacturerEntity}&appId=${appId}"
-                                    }
-                                }
-
-                            }
-
-                        }
-                    }
-                }
-                ?: throw NullValueNotAllowedException("Invalid Visit Id")
-        } catch (e: Exception) {
-            KotlinLogging.logger { }.error(e.message)
-            KotlinLogging.logger { }.debug(e.message, e)
-            throw  e
-        }
-
-
-    }
-
-<<<<<<< HEAD
-            return "redirect:/sl/manufacturer?manufacturerId=${manufacturerId}"
-        } ?: throw InvalidInputException("Please enter a valid id")
-=======
-    @PostMapping("/approval/level/one")
-    @PreAuthorize("hasAuthority('SL_APPROVE_VISIT_REPORT')")
-    fun factoryVisitLevelOneApproval(
-        redirectAttributes: RedirectAttributes,
-        @RequestParam("levelOneRemarks", required = true) remarks: String,
-        @RequestParam("approval", required = true) approval: String,
-        @RequestParam("visitId", required = true) visitId: Long,
-        @RequestParam("slLevelTwoApproval", required = false) slLevelTwoApproval: Long?,
-    ): String {
-        try {
+//    @PostMapping("/approval/level/two")
+//    @PreAuthorize("hasAuthority('SL_SECOND_APPROVE_VISIT_REPORT')")
+//    fun factoryVisitLevelTwoApproval(
+//        redirectAttributes: RedirectAttributes,
+//        @RequestParam("levelTwoRemarks", required = true) remarks: String,
+//        @RequestParam("approval", required = true) approval: String,
+//        @RequestParam("visitId", required = true) visitId: Long
+//    ): String {
+//<<<<<<< HEAD
+//        standardLevyFactoryVisitReportRepository.findByManufacturerEntity(manufacturerId)?.let { report ->
+//            report.remarks = reportData.remarks
+//            report.purpose = reportData.purpose
+//            report.actionTaken = reportData.actionTaken
+//            report.personMet = reportData.personMet
+//            report.visitDate = reportData.visitDate
+//            report.status = 0
+//            report.reportDate = LocalDate.now()
+//            report.createdBy = commonDaoServices.checkLoggedInUser()
+//            report.createdOn = Timestamp.from(Instant.now())
+//            standardLevyFactoryVisitReportRepository.save(report)
+//=======
+//        try {
+//            standardLevyFactoryVisitReportRepository.findByIdOrNull(visitId)
+//                ?.let { report ->
+//                    when (report.managersApproval) {
+//                        1 -> {
+//                            throw InvalidInputException("Attempt to approve an already approved report, aborting")
+//                        }
+//                        else -> {
+//                            if (report.slManager != null && report.slManager != commonDaoServices.loggedInUserDetails().id) {
+//                                throw InvalidInputException("Attempt to approve report but not the assignee")
+//                            } else {
+//                                when (approval) {
+//                                    "approve" -> {
+//                                        //Assistant manager approve complete
+//                                        standardsLevyBpmn.slsvApproveReportManagerComplete(
+//                                            report.id ?: throw NullValueNotAllowedException("Invalid Report ID"),
+//                                            report.principalLevyOfficer ?: throw NullValueNotAllowedException("Invalid User for approval"),
+//                                            true
+//                                        )
+//                                        report.managersApproval = 1
+//                                        report.cheifManagerRemarks = remarks
+//                                        report.slManager = commonDaoServices.loggedInUserDetails().id
+//                                        report.modifiedBy = "${commonDaoServices.checkLoggedInUser()}|${report.modifiedBy}"
+//                                        report.varField1 = "${report.modifiedOn}"
+//                                        report.status = report.status ?: 0 + 1
+//                                        report.slStatus = report.status
+//                                        report.modifiedOn = Timestamp.from(Instant.now())
+//
+//                                        standardLevyFactoryVisitReportRepository.save(report)
+//                                        redirectAttributes.addFlashAttribute(
+//                                            "success",
+//                                            "You have approved the report."
+//                                        )
+//                                        return "redirect:/sl/manufacturer?manufacturerId=${report.manufacturerEntity}&appId=${appId}"
+//
+//                                    }
+//                                    else -> {
+//                                        standardsLevyBpmn.slsvApproveReportManagerComplete(
+//                                            report.id ?: throw NullValueNotAllowedException("Invalid Report ID"),
+//                                            report.principalLevyOfficer ?: throw NullValueNotAllowedException("Invalid User for approval"),
+//                                            false
+//                                        )
+//                                        report.cheifManagerRemarks = remarks
+//                                        report.slManager = commonDaoServices.loggedInUserDetails().id
+//                                        report.modifiedBy = "${commonDaoServices.checkLoggedInUser()}|${report.modifiedBy}"
+//                                        report.varField1 = "${report.modifiedOn}"
+//                                        report.status = report.status ?: 0 + 1
+//                                        report.slStatus = report.status
+//                                        report.modifiedOn = Timestamp.from(Instant.now())
+//                                        redirectAttributes.addFlashAttribute(
+//                                            "success",
+//                                            "You have rejected the report."
+//                                        )
+//                                        /**
+//                                         * DONE: send back the task to the creator
+//                                         */
+//                                        standardLevyFactoryVisitReportRepository.save(report)
+//>>>>>>> 39d2c4dec8ea7a6f90a079def9ac6fc3da52ce49
+//
+//                                        return "redirect:/sl/manufacturer?manufacturerId=${report.manufacturerEntity}&appId=${appId}"
+//                                    }
+//                                }
+//
+//                            }
+//
+//                        }
+//                    }
+//                }
+//                ?: throw NullValueNotAllowedException("Invalid Visit Id")
+//        } catch (e: Exception) {
+//            KotlinLogging.logger { }.error(e.message)
+//            KotlinLogging.logger { }.debug(e.message, e)
+//            throw  e
+//        }
+//
+//
+//    }
+//
+//<<<<<<< HEAD
+//            return "redirect:/sl/manufacturer?manufacturerId=${manufacturerId}"
+//        } ?: throw InvalidInputException("Please enter a valid id")
+//=======
+@PostMapping("/approval/level/one")
+@PreAuthorize("hasAuthority('SL_APPROVE_VISIT_REPORT')")
+fun factoryVisitLevelOneApproval(
+    redirectAttributes: RedirectAttributes,
+    @RequestParam("levelOneRemarks", required = true) remarks: String,
+    @RequestParam("approval", required = true) approval: String,
+    @RequestParam("visitId", required = true) visitId: Long,
+    @RequestParam("slLevelTwoApproval", required = false) slLevelTwoApproval: Long?,
+): String {
+    try {
             standardLevyFactoryVisitReportRepository.findByIdOrNull(visitId)
                 ?.let { report ->
                     when (report.assistantManagerApproval) {
@@ -361,7 +361,7 @@ class StandardLevy(
         } else {
             throw NullValueNotAllowedException("Attempt to prepare report before visit is scheduled not allowed")
         }
->>>>>>> 39d2c4dec8ea7a6f90a079def9ac6fc3da52ce49
+//>>>>>>> 39d2c4dec8ea7a6f90a079def9ac6fc3da52ce49
     }
 
     @PostMapping("update-manufacturer")

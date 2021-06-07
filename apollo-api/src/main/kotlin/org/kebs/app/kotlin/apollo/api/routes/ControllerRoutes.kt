@@ -331,14 +331,10 @@ class ControllerRoutes {
             GET("/product-quality-status", handler::generateProductQualityStatus)
             GET("/invoice-details", handler::getInvoiceDetails)
             GET("/ssf-details", handler::getSSfDetails)
-//
-//            "/inspection".nest {
-//                GET("/check-list", handler::inspectionDetails)
-//                GET("/sample-collection", handler::inspectionDetails)
-//                GET("/sample-submission", handler::inspectionDetails)
-//                GET("/item-report", handler::inspectionChecklistReportDetails)
-//                GET("/item/sample-Submit-param/bs-number", handler::inspectionDetails)
-//            }
+            "/workPlan".nest {
+                GET("/list", handler::allWorkPlanList)
+
+            }
         }
     }
 
@@ -383,7 +379,7 @@ class ControllerRoutes {
     @Bean
 //    @PreAuthorize("hasAuthority('MS_HOF_READ') or hasAuthority('MS_DIRECTOR_READ') or hasAuthority('MS_RM_READ') or hasAuthority('MS_HOD_READ') or hasAuthority('MS_IO_READ')")
     fun marketSurveillanceRoutes(handler: MarketSurveillanceHandler) = router {
-        "/api/v1/ms".nest {
+        "/api/ms".nest {
             GET("/home", handler::home)
             GET("/complaints/new", handler::complaintsNew)
             GET("/ms-list", handler::msList)

@@ -31,6 +31,7 @@ class QADaoServices(
     private val applicationMapProperties: ApplicationMapProperties,
     private val commonDaoServices: CommonDaoServices,
     private val productsRepo: IProductsRepository,
+    private val workPlanCreatedRepo: IWorkPlanCreatedRepository,
     private val iTurnOverRatesRepository: ITurnOverRatesRepository,
     private val iManufacturePaymentDetailsRepository: IManufacturerPaymentDetailsRepository,
     private val sampleStandardsRepository: ISampleStandardsRepository,
@@ -82,10 +83,25 @@ class QADaoServices(
 
     }
 
+    fun findCreatedWorkPlanWIthUuid(createdWorkPlanUuid: String): WorkPlanCreatedEntity {
+        workPlanCreatedRepo.findByUuid(createdWorkPlanUuid)
+            ?.let { createdWorkPlan ->
+                return createdWorkPlan
+            }
+            ?: throw ExpectedDataNotFound("Created Work Plan with the following [uuid = ${createdWorkPlanUuid}], does not Exist")
+    }
+
     fun findPermitStatus(statusID: Long): QaProcessStatusEntity {
         processStatusRepo.findByIdOrNull(statusID)?.let {
             return it
         } ?: throw ExpectedDataNotFound("No Status found with the following [ID =$statusID]")
+
+    }
+
+    fun findWorkPlanWithLoggedInUser(loggedInUser: UsersEntity): List<WorkPlanCreatedEntity> {
+        workPlanCreatedRepo.findByUserCreatedId(loggedInUser)?.let {
+            return it
+        } ?: throw ExpectedDataNotFound("Invalid User")
 
     }
 
@@ -261,6 +277,7 @@ class QADaoServices(
             return it
         } ?: throw ExpectedDataNotFound("No Sta3 found with the following [ID=$id]")
     }
+
 
     fun findSta10BYID(id: Long): QaSta10Entity {
         sta10Repo.findByIdOrNull(id)?.let {

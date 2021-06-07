@@ -105,19 +105,20 @@ import javax.xml.stream.XMLOutputFactory
 
 @Service
 class CommonDaoServices(
-        private val jasyptStringEncryptor: StringEncryptor,
-        private val usersRepo: IUserRepository,
-        private val companyProfileRepo: ICompanyProfileRepository,
-        private val manufacturePlantRepository: IManufacturePlantDetailsRepository,
-        private val batchJobRepository: IBatchJobDetailsRepository,
-        private val iSubSectionsLevel2Repo: ISubSectionsLevel2Repository,
-        private val iSubSectionsLevel1Repo: ISubSectionsLevel1Repository,
-        private val configurationRepository: IIntegrationConfigurationRepository,
-        private val workflowTransactionsRepository: IWorkflowTransactionsRepository,
-        private val iUserProfilesRepo: IUserProfilesRepository,
-        private val iImporterRepo: IImporterContactRepository,
-        private val serviceRequestsRepository: IServiceRequestsRepository,
-        private val verificationTokensRepo: IUserVerificationTokensRepository,
+    private val jasyptStringEncryptor: StringEncryptor,
+    private val usersRepo: IUserRepository,
+    private val companyProfileRepo: ICompanyProfileRepository,
+    private val workPlanYearsCodesRepo: IWorkplanYearsCodesRepository,
+    private val manufacturePlantRepository: IManufacturePlantDetailsRepository,
+    private val batchJobRepository: IBatchJobDetailsRepository,
+    private val iSubSectionsLevel2Repo: ISubSectionsLevel2Repository,
+    private val iSubSectionsLevel1Repo: ISubSectionsLevel1Repository,
+    private val configurationRepository: IIntegrationConfigurationRepository,
+    private val workflowTransactionsRepository: IWorkflowTransactionsRepository,
+    private val iUserProfilesRepo: IUserProfilesRepository,
+    private val iImporterRepo: IImporterContactRepository,
+    private val serviceRequestsRepository: IServiceRequestsRepository,
+    private val verificationTokensRepo: IUserVerificationTokensRepository,
         private val iUserRepository: IUserRepository,
         private val emailVerificationTokenEntityRepo: EmailVerificationTokenEntityRepo,
         private val serviceMapsRepository: IServiceMapsRepository,
@@ -218,15 +219,23 @@ class CommonDaoServices(
 
     fun convertISO8601DateToTimestamp(dateString: String): Timestamp? {
         try {
-        val formatter = DateTimeFormatterBuilder()
-            .append(DateTimeFormatter.ISO_DATE_TIME)
-            .toFormatter()
-        val instant = LocalDateTime.parse(dateString, formatter)
-        return Timestamp.valueOf(instant)
+            val formatter = DateTimeFormatterBuilder()
+                .append(DateTimeFormatter.ISO_DATE_TIME)
+                .toFormatter()
+            val instant = LocalDateTime.parse(dateString, formatter)
+            return Timestamp.valueOf(instant)
         } catch (e: Exception) {
             KotlinLogging.logger { }.error("Error occurred while converting ISO8601 to Timestamp", e)
         }
         return null
+    }
+
+    fun findWorkPlanYearsCodesEntity(currentYear: String, map: ServiceMapsEntity): WorkplanYearsCodesEntity {
+        workPlanYearsCodesRepo.findByYearNameAndStatus(currentYear, map.activeStatus)
+            ?.let {
+                return it
+            }
+            ?: throw ExpectedDataNotFound("Workplan Years Codes with [status=$map.activeStatus], do Not Exists")
     }
 
     fun convertStringAmountToBigDecimal(amount: String): BigDecimal? {
