@@ -109,9 +109,18 @@ order by id desc;
 
 select *
 from DAT_KEBS_QA_SAMPLE_SUBMISSION
-where PERMIT_ID = 362
+where BS_NUMBER = 'BS202117903'
+-- where PERMIT_ID = 362
 -- where PERMIT_NUMBER = 'DM#0954A'
-order by id desc; 1522
+order by id desc;
+1522
+select *
+from DAT_KEBS_QA_SAMPLE_LAB_TEST_PARAMETERS
+where ORDER_ID = 'BS202117903'
+-- where PERMIT_ID = 362
+-- where PERMIT_NUMBER = 'DM#0954A'
+order by id desc;
+1522
 
 SELECT *
 FROM DAT_KEBS_USER_VERIFICATION_TOKEN

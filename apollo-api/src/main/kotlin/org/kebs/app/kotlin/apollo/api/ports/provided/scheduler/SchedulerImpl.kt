@@ -269,45 +269,53 @@ class SchedulerImpl(
         val map = commonDaoServices.serviceMapDetails(diAppId)
         //Find all Sample with Lab results inactive
         KotlinLogging.logger { }.info { "::::::::::::::::::::::::STARTED LAB RESULTS SCHEDULER::::::::::::::::::" }
-        var samples= 1
-        sampleSubmissionRepo.findByLabResultsStatus(map.inactiveStatus)?.forEach {
+        var samples = 1
+        sampleSubmissionRepo.findByLabResultsStatus(map.inactiveStatus)?.forEach { ssfFound ->
             KotlinLogging.logger { }
                 .info { "::::::::::::::::::::::::SAMPLES WITH RESULTS FOUND = ${samples++}::::::::::::::::::" }
-            val bsNumber = it.bsNumber ?: throw Exception("DATA NOT FOUND")
-            if (limsServices.mainFunctionLims(bsNumber) == true) {
-                with(it) {
-                    modifiedBy = "SYSTEM SCHEDULER"
-                    modifiedOn = commonDaoServices.getTimestamp()
-                    labResultsStatus = map.activeStatus
-                    resultsDate = commonDaoServices.getCurrentDate()
-                }
-                sampleSubmissionRepo.save(it)
-                if (it.permitId != null) {
-                    qaDaoServices.findPermitBYID(it.permitId ?: throw Exception("PERMIT ID NOT FOUND")).let { pm ->
-                        with(pm) {
-                            permitStatus = applicationMapProperties.mapQaStatusPLABResultsCompletness
-                            modifiedBy = "SYSTEM SCHEDULER"
-                            modifiedOn = commonDaoServices.getTimestamp()
-                        }
-                        permitRepo.save(pm)
+            val bsNumber = ssfFound.bsNumber ?: throw Exception("DATA NOT FOUND")
+            when {
+                limsServices.mainFunctionLims(bsNumber) == true -> {
+                    with(ssfFound) {
+                        modifiedBy = "SYSTEM SCHEDULER"
+                        modifiedOn = commonDaoServices.getTimestamp()
+                        labResultsStatus = map.activeStatus
+                        resultsDate = commonDaoServices.getCurrentDate()
                     }
-                } else if (it.cdItemId != null) {
-                    diDaoServices.findItemWithItemID(it.cdItemId ?: throw Exception("CD ITEM ID NOT FOUND"))
-                        .let { cdItem ->
-                            diDaoServices.findCD(cdItem.cdDocId?.id ?: throw Exception("CD ID NOT FOUND"))
-                                .let { updatedCDDetails ->
-                                    updatedCDDetails.cdStandard?.let { cdStd ->
-                                        diDaoServices.updateCDStatus(
-                                            cdStd,
-                                            applicationMapProperties.mapDIStatusTypeInspectionSampleResultsReceivedId
-                                        )
+                    sampleSubmissionRepo.save(ssfFound)
+                    when {
+                        ssfFound.permitId != null -> {
+                            qaDaoServices.findPermitBYID(ssfFound.permitId ?: throw Exception("PERMIT ID NOT FOUND"))
+                                .let { pm ->
+                                    with(pm) {
+                                        permitStatus = applicationMapProperties.mapQaStatusPLABResultsCompletness
+                                        modifiedBy = "SYSTEM SCHEDULER"
+                                        modifiedOn = commonDaoServices.getTimestamp()
                                     }
+                                    permitRepo.save(pm)
                                 }
-
                         }
+                        ssfFound.cdItemId != null -> {
+                            diDaoServices.findItemWithItemID(
+                                ssfFound.cdItemId ?: throw Exception("CD ITEM ID NOT FOUND")
+                            )
+                                .let { cdItem ->
+                                    diDaoServices.findCD(cdItem.cdDocId?.id ?: throw Exception("CD ID NOT FOUND"))
+                                        .let { updatedCDDetails ->
+                                            updatedCDDetails.cdStandard?.let { cdStd ->
+                                                diDaoServices.updateCDStatus(
+                                                    cdStd,
+                                                    applicationMapProperties.mapDIStatusTypeInspectionSampleResultsReceivedId
+                                                )
+                                            }
+                                        }
+
+                                }
+                        }
+                    }
+
+
                 }
-
-
             }
 
         }

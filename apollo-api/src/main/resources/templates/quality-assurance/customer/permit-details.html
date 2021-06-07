@@ -350,8 +350,10 @@
                                                 th:text="${req?.requestStatus} ? 'APPROVED' : 'REJECTED'"></td>
                                             <td>
                                                 <button class="btn btn-primary" th:value="${req.id}"
-                                                        onclick="popUpFunctionView('viewRequest', this);" type="button">
-                                                    VIEW
+                                                        onclick="popUpFunctionView('viewRequest',th:text="
+                                                        ${req?.description}
+                                                ", this);" type="button">
+                                                VIEW
                                                 </button>
                                             </td>
                                         </tr>
@@ -1326,8 +1328,8 @@
 <script>
 
     function popUpFunctionView(eventAction, valueDescription, valueRequestID) {
-        let arrHead = ['viewNotification'];
-        let arrHeadSave = ['Notification'];
+        let arrHead = ['viewRequest'];
+        let arrHeadSave = ['Request Approval/Rejection'];
         let paramValue = valueDescription.value
         let paramID = valueRequestID.value
 
@@ -1336,7 +1338,7 @@
                 document.getElementById(arrHead[h]).remove();
             } else {
                 if (eventAction === arrHead[h]) {
-                    var labParameters = getLabResultsPerParam(paramValue)
+                    // var labParameters = getLabResultsPerParam(paramValue)
                     document.getElementById('uploadSpan').innerHTML = arrHeadSave[h];
                     document.getElementById('descriptionValue').value = paramValue;
                     document.getElementById('requestID').value = paramID;
