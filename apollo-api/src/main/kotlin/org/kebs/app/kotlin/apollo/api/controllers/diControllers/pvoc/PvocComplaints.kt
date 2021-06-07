@@ -19,7 +19,6 @@ import java.sql.Timestamp
 import java.time.Instant
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
-import kotlin.jvm.internal.Intrinsics
 
 @Controller
 @RequestMapping("/api/di/pvoc/")
@@ -107,7 +106,7 @@ class PvocComplaints(
 
     @GetMapping("complaint-details/{id}")
     fun complaintDetails(@PathVariable("id") id: Long, model: Model): String {
-        val usersIds = mutableListOf<Long?>()
+        val usersIds = mutableListOf<Long>()
         iPvocComplaintRepo.findByIdOrNull(id)?.let { complaint ->
             iUserRoleAssignmentsRepository.findByRoleIdAndStatus(261, 1)?.let { mpvocs ->
                 mpvocs.forEach { mpvoc ->

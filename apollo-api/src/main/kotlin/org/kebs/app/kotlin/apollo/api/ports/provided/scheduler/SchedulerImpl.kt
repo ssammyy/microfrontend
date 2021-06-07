@@ -269,26 +269,51 @@ class SchedulerImpl(
         val map = commonDaoServices.serviceMapDetails(diAppId)
         //Find all Sample with Lab results inactive
         KotlinLogging.logger { }.info { "::::::::::::::::::::::::STARTED LAB RESULTS SCHEDULER::::::::::::::::::" }
-        var samples= 1
-        sampleSubmissionRepo.findByLabResultsStatus(map.inactiveStatus)?.forEach {
-            KotlinLogging.logger { }.info { "::::::::::::::::::::::::SAMPLES WITH NO RESULTS FOUND = ${samples++}::::::::::::::::::" }
-            when (it.bsNumber?.let { it1 -> limsServices.mainFunctionLims(it1) }) {
-                true -> {
-                    with(it){
+        var samples = 1
+        sampleSubmissionRepo.findByLabResultsStatus(map.inactiveStatus)?.forEach { ssfFound ->
+            KotlinLogging.logger { }
+                .info { "::::::::::::::::::::::::SAMPLES WITH RESULTS FOUND = ${samples++}::::::::::::::::::" }
+            val bsNumber = ssfFound.bsNumber ?: throw Exception("DATA NOT FOUND")
+            when {
+                limsServices.mainFunctionLims(bsNumber) == true -> {
+                    with(ssfFound) {
                         modifiedBy = "SYSTEM SCHEDULER"
                         modifiedOn = commonDaoServices.getTimestamp()
                         labResultsStatus = map.activeStatus
                         resultsDate = commonDaoServices.getCurrentDate()
                     }
-                    sampleSubmissionRepo.save(it)
-                    qaDaoServices.findPermitBYID(it.permitId?: throw Exception("PERMIT ID NOT FOUND")).let { pm->
-                        with(pm){
-                            permitStatus = applicationMapProperties.mapQaStatusPLABResultsCompletness
-                            modifiedBy = "SYSTEM SCHEDULER"
-                            modifiedOn = commonDaoServices.getTimestamp()
+                    sampleSubmissionRepo.save(ssfFound)
+                    when {
+                        ssfFound.permitId != null -> {
+                            qaDaoServices.findPermitBYID(ssfFound.permitId ?: throw Exception("PERMIT ID NOT FOUND"))
+                                .let { pm ->
+                                    with(pm) {
+                                        permitStatus = applicationMapProperties.mapQaStatusPLABResultsCompletness
+                                        modifiedBy = "SYSTEM SCHEDULER"
+                                        modifiedOn = commonDaoServices.getTimestamp()
+                                    }
+                                    permitRepo.save(pm)
+                                }
                         }
-                        permitRepo.save(pm)
+                        ssfFound.cdItemId != null -> {
+                            diDaoServices.findItemWithItemID(
+                                ssfFound.cdItemId ?: throw Exception("CD ITEM ID NOT FOUND")
+                            )
+                                .let { cdItem ->
+                                    diDaoServices.findCD(cdItem.cdDocId?.id ?: throw Exception("CD ID NOT FOUND"))
+                                        .let { updatedCDDetails ->
+                                            updatedCDDetails.cdStandard?.let { cdStd ->
+                                                diDaoServices.updateCDStatus(
+                                                    cdStd,
+                                                    applicationMapProperties.mapDIStatusTypeInspectionSampleResultsReceivedId
+                                                )
+                                            }
+                                        }
+
+                                }
+                        }
                     }
+
 
                 }
             }

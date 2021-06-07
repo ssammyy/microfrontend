@@ -67,27 +67,28 @@ class DestinationInspectionHandler(
 
     final val appId = applicationMapProperties.mapImportInspection
 
-    private final val destinationInspectionHomePage = "destination-inspection/di-home"
-    private final val destinationInspectionMinistryHomePage = "destination-inspection/ministry-home"
-    private final val cdPageList = "destination-inspection/cd-documents/consignment-document-list"
-    private final val cdInvoicePageList = "destination-inspection/cd-documents/consignment-document-invoice-list"
-    private final val cdCocPage = "destination-inspection/cd-documents/coc-view"
-    private final val cdCorPage = "destination-inspection/cd-documents/cor-view"
-    private final val cdCoiPage = "destination-inspection/cd-documents/coi-view"
-    private final val cdIdfPage = "destination-inspection/cd-documents/idf-view"
-    private final val cdManifestPage = "destination-inspection/cd-documents/manifest-view"
-    private final val cdDeclarationPage = "destination-inspection/cd-documents/declaration-view"
-    private final val cdDetailsView = "destination-inspection/cd-documents/consignment-document-detail"
-    private final val mvInspectionChecklistDetailsPage = "destination-inspection/cd-Inspection-documents/mv-inspection-checklist-detail.html"
-    private final val mvInspectionDetailsPage = "destination-inspection/cd-Inspection-documents/mv-inspection-details.html"
-    private final val goodsInspectionDetailsPage = "destination-inspection/cd-Inspection-documents/cd-inspection-report.html"
-    private final val cdItemDetailsPage = "destination-inspection/cd-documents/consignment-document-item-detail.html"
-    private final val diSSFDetailsPage = "destination-inspection/cd-Inspection-documents/ssf-details.html"
+    private val destinationInspectionHomePage = "destination-inspection/di-home"
+    private val destinationInspectionMinistryHomePage = "destination-inspection/ministry-home"
+    private val cdPageList = "destination-inspection/cd-documents/consignment-document-list"
+    private val cdInvoicePageList = "destination-inspection/cd-documents/consignment-document-invoice-list"
+    private val cdCocPage = "destination-inspection/cd-documents/coc-view"
+    private val cdCorPage = "destination-inspection/cd-documents/cor-view"
+    private val cdCoiPage = "destination-inspection/cd-documents/coi-view"
+    private val cdIdfPage = "destination-inspection/cd-documents/idf-view"
+    private val cdManifestPage = "destination-inspection/cd-documents/manifest-view"
+    private val cdDeclarationPage = "destination-inspection/cd-documents/declaration-view"
+    private val cdDetailsView = "destination-inspection/cd-documents/consignment-document-detail"
+    private val mvInspectionChecklistDetailsPage =
+        "destination-inspection/cd-Inspection-documents/mv-inspection-checklist-detail.html"
+    private val mvInspectionDetailsPage = "destination-inspection/cd-Inspection-documents/mv-inspection-details.html"
+    private val goodsInspectionDetailsPage = "destination-inspection/cd-Inspection-documents/cd-inspection-report.html"
+    private val cdItemDetailsPage = "destination-inspection/cd-documents/consignment-document-item-detail.html"
+    private val diSSFDetailsPage = "destination-inspection/cd-Inspection-documents/ssf-details.html"
 
     //    private final val cdCocDetailsPage = "destination-inspection/cd-documents/consignment-document-item-detail.html"
-    private final val cdCheckListPage = "destination-inspection/cd-Inspection-documents/cd-inspection-check-list.html"
-    private final val cdSampleCollectPage = "destination-inspection/cd-Inspection-documents/cd-inspection-sample-collect.html"
-    private final val cdSampleSubmitPage = "destination-inspection/cd-Inspection-documents/cd-inspection-sample-submit.html"
+    private val cdCheckListPage = "destination-inspection/cd-Inspection-documents/cd-inspection-check-list.html"
+    private val cdSampleCollectPage = "destination-inspection/cd-Inspection-documents/cd-inspection-sample-collect.html"
+    private val cdSampleSubmitPage = "destination-inspection/cd-Inspection-documents/cd-inspection-sample-submit.html"
     private val cdItemViewPageDetails = "redirect:/api/di/cd-item-details?cdItemUuid"
 
     //    @PreAuthorize("hasAuthority('DI_INSPECTION_OFFICER_READ') or hasAuthority('DI_DIRECTOR_READ') or hasAuthority('DI_WETC_CHAIR_READ') " +
@@ -95,9 +96,9 @@ class DestinationInspectionHandler(
 //            "hasAuthority('DI_CLUSTER_SUPERVISOR_READ') or hasAuthority('DI_WETC_MEMBER_READ') or hasAuthority('DI_OFFICER_CHARGE_READ') " +
 //            "or hasAuthority('DI_MANAGER_INSPECTION_READ') or hasAuthority('DI_EXEMPTION_COMMITTEE_CHAIR_READ') or hasAuthority('IMPORTER') ")
     fun home(req: ServerRequest): ServerResponse =
-            try {
-                val map = commonDaoServices.serviceMapDetails(appId)
-                req.attributes()["cdTypes"] = cdTypesRepo.findByStatus(map.activeStatus)
+        try {
+            val map = commonDaoServices.serviceMapDetails(appId)
+            req.attributes()["cdTypes"] = cdTypesRepo.findByStatus(map.activeStatus)
                 req.attributes()["diApplicationsTypes"] = importerDaoServices.findDiApplicationTypes(map.activeStatus)
                 req.attributes()["map"] = map
                 ok().render(destinationInspectionHomePage, req.attributes())
@@ -151,8 +152,10 @@ class DestinationInspectionHandler(
                                     userProfilesEntity.sectionId
                                             ?.let { sectionsEntity ->
                                                 req.attributes()["CDSAutoAssigned"] = daoServices.findAllOngoingCdWithPortOfEntry(sectionsEntity, cdType)
-                                                req.attributes()["CDSManualAssign"] = daoServices.findAllCdWithNoPortOfEntry(cdType)
-                                                req.attributes()["CDCompleted"] = daoServices.findAllOngoingCdWithPortOfEntry(sectionsEntity, cdType)
+                                                req.attributes()["CDSManualAssign"] =
+                                                    daoServices.findAllCdWithNoPortOfEntry(cdType)
+                                                req.attributes()["CDCompleted"] =
+                                                    daoServices.findAllCompleteCdWithPortOfEntry(sectionsEntity, cdType)
                                                 ok().render(cdPageList, req.attributes())
                                             }
                                             ?: throw ExpectedDataNotFound("missing section id, check config")
@@ -161,8 +164,14 @@ class DestinationInspectionHandler(
                                     val usersEntity = commonDaoServices.findUserByUserName(auth.name)
                                     val userProfilesEntity = commonDaoServices.findUserProfileByUserID(usersEntity, map.activeStatus)
                                     req.attributes()["CDSAutoAssigned"] = daoServices.findAllCdWithAssignedIoID(usersEntity, cdType)
-                                    req.attributes()["CDSManualAssign"] = userProfilesEntity.subSectionL2Id?.let { daoServices.findAllCdWithNoAssignedIoID(it, cdType) }
-                                    req.attributes()["CDCompleted"] = daoServices.findAllCompleteCdWithAssignedIoID(usersEntity, cdType)
+                                    req.attributes()["CDSManualAssign"] = userProfilesEntity.subSectionL2Id?.let {
+                                        daoServices.findAllCdWithNoAssignedIoID(
+                                            it,
+                                            cdType
+                                        )
+                                    }
+                                    req.attributes()["CDCompleted"] =
+                                        daoServices.findAllCompleteCdWithAssignedIoID(usersEntity, cdType)
                                     ok().render(cdPageList, req.attributes())
                                 }
                                 else -> throw SupervisorNotFoundException("can't access this page Due to Invalid authority")

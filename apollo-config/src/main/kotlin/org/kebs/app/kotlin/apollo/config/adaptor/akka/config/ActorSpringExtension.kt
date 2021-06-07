@@ -50,7 +50,6 @@ class ActorSpringExtension(
                 ?: throw NullValueNotAllowedException("$actorBeanName is not a valid actor class, returns null type")
 
 
-//            return Props.create(SpringActorProducer::class.java, applicationContext, applicationContext.getType(actorBeanName) as Class<out Actor>)
         }
 
     }

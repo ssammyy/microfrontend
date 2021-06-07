@@ -142,4 +142,11 @@ div.sticky {
     cursor: pointer;
 }
 
-.buttonPop4 {border-radius: 12px;}
+.buttonPop4 {
+    border-radius: 12px;
+}
+
+
+[data-toggle="toggle"] {
+    display: none;
+}

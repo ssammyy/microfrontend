@@ -77,30 +77,53 @@
  *
  */
 ***************************Table USED IN QA*****************************************
-select * from DAT_KEBS_PERMIT_TRANSACTION
+select *
+from DAT_KEBS_PERMIT_TRANSACTION
 -- where id = 281
 
 -- where PERMIT_NUMBER = 'DM#0954A'
-order by id desc; 1522
+order by id desc;
+1522
 
-select * from cfg_kebs_qa_process_status
+select *
+from CFG_TURNOVER_RATES
 -- where id = 350
 -- where PERMIT_NUMBER = 'DM#0954A'
-order by id desc; 1522
+order by id desc;
+1522
 
-select * from DAT_KEBS_SCHEMES_OF_SUPERVISION
+select *
+from cfg_kebs_qa_process_status
 -- where id = 350
 -- where PERMIT_NUMBER = 'DM#0954A'
-order by id desc; 1522
+order by id desc;
+1522
 
-
-select * from DAT_KEBS_QA_SAMPLE_SUBMISSION
-where PERMIT_ID = 362
+select *
+from DAT_KEBS_SCHEMES_OF_SUPERVISION
+-- where id = 350
 -- where PERMIT_NUMBER = 'DM#0954A'
-order by id desc; 1522
+order by id desc;
+1522
 
-SELECT * FROM
-    DAT_KEBS_USER_VERIFICATION_TOKEN
+
+select *
+from DAT_KEBS_QA_SAMPLE_SUBMISSION
+where BS_NUMBER = 'BS202117903'
+-- where PERMIT_ID = 362
+-- where PERMIT_NUMBER = 'DM#0954A'
+order by id desc;
+1522
+select *
+from DAT_KEBS_QA_SAMPLE_LAB_TEST_PARAMETERS
+where ORDER_ID = 'BS202117903'
+-- where PERMIT_ID = 362
+-- where PERMIT_NUMBER = 'DM#0954A'
+order by id desc;
+1522
+
+SELECT *
+FROM DAT_KEBS_USER_VERIFICATION_TOKEN
 WHERE USER_ID = 1464
 ORDER BY ID DESC;
 -- /****************************
@@ -109,15 +132,20 @@ alter table DAT_KEBS_PERMIT_TRANSACTION
 /
 -- /***************************/
 
+alter table DAT_KEBS_COMPANY_PROFILE
+    add FIRM_CATEGORY NUMBER REFERENCES CFG_TURNOVER_RATES (ID)
+/
+
 alter table CFG_PERMIT_TYPES
     add SCHEME_GENERATE NUMBER(2)
 /
 
 alter table DAT_KEBS_PERMIT_TRANSACTION
-    add RM_ID NUMBER REFERENCES DAT_KEBS_USERS(ID)
+    add RM_ID NUMBER REFERENCES DAT_KEBS_USERS (ID)
 /
 
-select * from DAT_KEBS_QA_UPLOADS
+select *
+from DAT_KEBS_QA_UPLOADS
 -- where id = 2
 order by id desc;
 

@@ -324,6 +324,44 @@
                                 </div>
                             </div>
 
+                            <button class="accordion" >Requests Details</button>
+                            <div class="panel">
+                                <div class="row-table ">
+                                    <table class="table table-striped">
+                                        <thead>
+                                        <tr>
+                                            <th>Request ID</th>
+                                            <th>Requested BY</th>
+                                            <th>Approved BY</th>
+                                            <th>Request Type</th>
+                                            <th>Request Status</th>
+                                            <th>View</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr class="list" th:each="req: ${myRequests}" style="cursor: pointer">
+
+                                            <td th:text="${req?.id}"></td>
+                                            <td th:text="${req?.createdBy}"></td>
+                                            <td th:text="${req?.modifiedBy}"></td>
+                                            <td th:text="${req?.requestType}"></td>
+                                            <td th:if="${req?.requestStatus == null}">PENDING APPROVAL</td>
+                                            <td th:unless="${req?.requestStatus != null}"
+                                                th:text="${req?.requestStatus} ? 'APPROVED' : 'REJECTED'"></td>
+                                            <td>
+                                                <button class="btn btn-primary" th:value="${req.id}"
+                                                        onclick="popUpFunctionView('viewRequest',th:text="
+                                                        ${req?.description}
+                                                ", this);" type="button">
+                                                VIEW
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
                             <button class="accordion">Other Version Details</button>
                             <div class="panel">
                                 <div class="row-table ">
@@ -992,12 +1030,15 @@
                                 </div>
                                 <div class="modal-body">
                                     <div class="form-group">
+                                        <label for="requestType" class="col-form-label">Select a request type:</label>
+                                        <select id="requestType" required class="select-field w-select" th:field="*{requestType}">
+                                            <option value="0">Select one...</option>
+                                            <option  th:each="request : ${userRequestTypes}" th:text="${request?.userRequest}" th:name="requestType" th:value="${request?.id}"></option>
+                                        </select>
                                         <div id="updateBrandDetails">
                                             <input id="requestStatus" name="requestStatus" th:value="${activeStatus}" type="hidden">
                                             <label for="brandName" class="col-form-label">New Brand Name:</label>
                                             <input class="input-field w-input" type="text" max="20" id="brandName" name="brandName" th:field="*{brandName}" th:required="required">
-                                            <label for="description" class="col-form-label">Please write, in detail, your reason:</label>
-                                            <textarea required name="name" id="description" class="input-field w-input" cols="65" rows="5" th:field="*{description}"></textarea>
                                         </div>
                                         <div id="permitStopProductionDetails">
                                             <input id="requestStatus" name="requestStatus" th:value="${activeStatus}" type="hidden">
@@ -1006,9 +1047,9 @@
                                                 <option th:text="'Select one.....'" th:value="null"></option>
                                                 <option th:text="'Yes'" th:value="1"></option>
                                             </select>
-                                            <label for="description" class="col-form-label">Please write, in detail, your reason:</label>
-                                            <textarea required name="name" id="description" class="input-field w-input" cols="65" rows="5" th:field="*{description}"></textarea>
                                         </div>
+                                        <label for="description" class="col-form-label">Please write, in detail, your reason:</label>
+                                        <textarea required name="name" id="description" class="input-field w-input" cols="65" rows="5" th:field="*{description}"></textarea>
 
                                     </div>
                                 </div>
@@ -1110,8 +1151,59 @@
                                     </div>
                                 </div>
                                 <div class="modal-footer">
-                                    <button class="btn btn-secondary" data-dismiss="modal" onClick="refreshPage()" type="button">Close</button>
+                                    <button class="btn btn-secondary" data-dismiss="modal" onClick="refreshPage()"
+                                            type="button">Close
+                                    </button>
                                     <input type="submit" id="upload-2" class="btn btn-primary" value="Save"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="viewRequestForm">
+                <form id="view-request-form" enctype="multipart/form-data" name="view-request-form"
+                      th:action="@{/api/qa/kebs/update-request-details}" method="post" th:object="${requestDetails}">
+                    <div class="modal fade" id="viewRequestModal" tabindex="-1" role="dialog"
+                         aria-labelledby="viewRequestModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 style="font-weight: bold; " class="modal-title" id="viewRequestModalLabel"><span
+                                            id="uploadSpan">none</span></h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="form-group">
+                                        <div id="viewNotification">
+                                            <input type="hidden" id="requestID" name="requestID">
+                                            <label for="description" class="col-form-label">REQUEST MESSAGE:</label>
+                                            <textarea readonly name="description" id="descriptionValue"
+                                                      class="input-field w-input" cols="65" rows="10"></textarea>
+                                            <label for="requestStatus" class="col-form-label">Select Status:</label>
+                                            <select id="requestStatus" required class="select-field w-select"
+                                                    th:field="*{requestStatus}">
+                                                <option th:text="'Select one.....'" th:value="null"></option>
+                                                <option th:text="'APPROVE'" th:value="1"></option>
+                                                <option th:text="'REJECT'" th:value="0"></option>
+                                            </select>
+                                            <label for="approvalRejectionReason" class="col-form-label">Please write, in
+                                                detail, your reason for approving/rejecting:</label>
+                                            <textarea required name="name" id="approvalRejectionReason"
+                                                      class="input-field w-input" cols="65" rows="5"
+                                                      th:field="*{approvalRejectionReason}"></textarea>
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button class="btn btn-secondary" data-dismiss="modal"
+                                            onClick="window.location.reload()" type="button">Close
+                                    </button>
+                                    <input type="submit" id="upload" class="btn btn-primary" value="Save"/>
                                 </div>
                             </div>
                         </div>
@@ -1234,15 +1326,79 @@
     });
 </script>
 <script>
+
+    function popUpFunctionView(eventAction, valueDescription, valueRequestID) {
+        let arrHead = ['viewRequest'];
+        let arrHeadSave = ['Request Approval/Rejection'];
+        let paramValue = valueDescription.value
+        let paramID = valueRequestID.value
+
+        for (let h = 0; h < arrHead.length; h++) {
+            if (eventAction !== arrHead[h]) {
+                document.getElementById(arrHead[h]).remove();
+            } else {
+                if (eventAction === arrHead[h]) {
+                    // var labParameters = getLabResultsPerParam(paramValue)
+                    document.getElementById('uploadSpan').innerHTML = arrHeadSave[h];
+                    document.getElementById('descriptionValue').value = paramValue;
+                    document.getElementById('requestID').value = paramID;
+                    // document.getElementById("upload").value = 'Done';
+
+
+                }
+            }
+        }
+
+        $('.viewRequestForm #viewRequestModal').modal();
+    }
+
+    // function getLabResultsPerParam (paramID) {
+    //     let paramValue = paramID
+    //     var myReturn = null
+    //     // console.log(categories.length)
+    //     $.ajax({
+    //         method: "GET",
+    //         url: `/api/qa/view-request?requestID=${paramValue}`,
+    //         success(response) {
+    //             console.log(response)
+    //             let s = '';
+    //             for (let i = 0; i < response.length; i++) {
+    //                 // response.push('Select one')
+    //
+    //                 document.getElementById("subject").value = response[i].description;
+    //                 document.getElementById("messageBody").value = response[i].messageBody;
+    //                 // document.getElementById("bsNumber").value = response[i].bsNumber;
+    //                 // document.getElementById("results").value = response[i].results;
+    //                 // document.getElementById("requirements").value = response[i].requirements;
+    //                 // document.getElementById("confirmParamId").value = response[i].id;
+    //                 // document.getElementById("testMethodNo").value = response[i].testMethodNo;
+    //                 // document.getElementById("lod").value = response[i].lod;
+    //                 // document.getElementById("upload").value = 'Save';
+    //
+    //                 // if (response[i].labResultCompleteStatus == 1){
+    //                 //     console.log(response[i].labResultCompleteStatus)
+    //                 //     $("#verificationID").remove()
+    //                 //     $("#labResultCompleteRemarks").remove()
+    //                 //     $("#upload").remove()
+    //                 // }
+    //             }
+    //             myReturn= s
+    //         }
+    //     })
+    //
+    //     return myReturn
+    // }
+
+
     function popUpFunction(eventAction) {
-        let arrHead = [ 'attachePlant', 'permitCompleteness', 'assignOfficer', 'scheduleInspectionDate', 'assignAssessor', 'scheduleAssessmentDate', 'approveInspectionReport', 'complianceStatus', 'addRecommendation', 'approveRecommendation', 'pscMemberApproval', 'pcmApproval', 'dmarkApplicationApproval', 'hodApprovalAssessmentReport', 'permitStopProductionDetails'];
-        let arrHeadSave = [ 'Attach a Plant for manufacturing the product', 'Is The Permit Complete', 'Select An officer',' Set The Date of Inspection', 'Select An Assessor', 'Schedule Factory Assessment Date', 'Approve Or Reject the Factory Inspection Report', 'Select a suitable Compliance Status for the Lab Report', 'Add Recommendation', 'Approve / Reject Recommendation', 'Approve / Reject Awarding of Permit', 'Approve / Reject Awarding of Permit', 'Grant/Defer Application', 'Approve / Reject Permit Review', 'Stop Production'];
+        let arrHead = ['attachePlant', 'permitCompleteness', 'assignOfficer', 'scheduleInspectionDate', 'assignAssessor', 'scheduleAssessmentDate', 'approveInspectionReport', 'complianceStatus', 'addRecommendation', 'approveRecommendation', 'pscMemberApproval', 'pcmApproval', 'dmarkApplicationApproval', 'hodApprovalAssessmentReport', 'permitStopProductionDetails'];
+        let arrHeadSave = ['Attach a Plant for manufacturing the product', 'Is The Permit Complete', 'Select An officer', ' Set The Date of Inspection', 'Select An Assessor', 'Schedule Factory Assessment Date', 'Approve Or Reject the Factory Inspection Report', 'Select a suitable Compliance Status for the Lab Report', 'Add Recommendation', 'Approve / Reject Recommendation', 'Approve / Reject Awarding of Permit', 'Approve / Reject Awarding of Permit', 'Grant/Defer Application', 'Approve / Reject Permit Review', 'Stop Production'];
         // let arrHead = [ 'attachePlant', 'permitCompleteness', 'assignOfficer', 'scheduleInspectionDate', 'assignAssessor', 'scheduleAssessmentDate', 'dmarkApplicationApproval'];
         // let arrHeadSave = [ 'Attach a Plant for manufacturing the product', 'Is The Permit Complete', 'Select An officer',' Set The Date of Inspection', 'Select An Assessor', 'Schedule Factory Assessment Date',
         // 'Grant/Defer Application'];
 
         for (let h = 0; h < arrHead.length; h++) {
-            if(eventAction !== arrHead[h]){
+            if (eventAction !== arrHead[h]) {
                 document.getElementById(arrHead[h]).remove();
             }else {
                 if (eventAction === arrHead[h]) {

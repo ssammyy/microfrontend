@@ -29,6 +29,13 @@
                                 <table class="table table-striped table-bordered" id="slPaymentsMaster" style="width:100%">
                                     <thead>
                                     <tr>
+<<<<<<< HEAD
+                                        <th>REF No.</th>
+                                        <th>Manufacturer Kra Pin</th>
+                                        <th>Payment Date</th>
+                                        <th>Payment Amount</th>
+                                        <th>Visit Status</th>
+=======
                                         <th>Entry No.</th>
                                         <th>KRA PIN</th>
                                         <th>Levy Payable(KES)</th>
@@ -36,11 +43,22 @@
                                         <th>Levy Paid(KES)</th>
                                         <th>Total Outstanding(KES)</th>
                                         <th>Details</th>
+>>>>>>> 39d2c4dec8ea7a6f90a079def9ac6fc3da52ce49
                                         <!--                                        <th>View</th>-->
                                     </tr>
                                     </thead>
                                     <tbody>
                                     <tr class="list" th:each="payment, iStat: ${payments}">
+<<<<<<< HEAD
+                                        <td th:text="${payment?.id}"></td>
+                                        <td th:text="${payment?.kraPin}"></td>
+                                        <td th:text="${#dates.format(payment?.paymentDate, 'dd/MM/yyyy')}"></td>
+                                        <td th:text="${payment?.levyPayable} == null ? 'Pending Payment' : 'Ksh. ' + ${payment?.levyPayable}"></td>
+                                        <td th:if="${payment?.visitStatus == 1}" th:text="Visited"></td>
+                                        <td th:text="${payment?.visitStatus} == null ? 'Not Visited' : 'Pending Visit'"></td>
+<!--                                        <td th:text="${payment?.officerAssigned} == null ? 'Pending Assignment' :  ${payment?.officerAssigned?.lastName}"></td>-->
+                                        <!--                                        <td><a class="btn btn-info" th:href="@{/sl/manufacturer(manufacturerId = ${manufacturer.id}, appId=${map.id})}">view</a></td>-->
+=======
                                         <td th:text="${payment?.manufacturerEntity}"></td>
                                         <td th:text="${payment?.kraPin}"></td>
                                         <td th:text="${#numbers.formatDecimal(payment?.levyPayable,3,'COMMA',2,'POINT')}"></td>
@@ -52,10 +70,42 @@
                                                 <a class="btn btn-primary itemViewBtn" th:href="@{/api/sl/view/payment/details(entryNo=${payment?.manufacturerEntity})}">Details</a>
                                             </div>
                                         </td>
+>>>>>>> 39d2c4dec8ea7a6f90a079def9ac6fc3da52ce49
                                     </tr>
                                     </tbody>
                                 </table>
                             </div>
+<<<<<<< HEAD
+
+<!--                            <div class=class="pagenation-block" th:each="pageNumber : ${pageNumbers}"-->
+<!--                                 th:if="${totalPages > 0}">-->
+<!--                                <a class="button w-button"-->
+<!--                                   th:href="@{/sl/payments(whereTo='load_levy_payments', page=1,records=10,appId=199)}"-->
+<!--                                   th:text="${pageNumber}">Next</a>-->
+<!--                            </div>-->
+
+                            <!--                            <div>-->
+                            <!--                                <div class="exemption-application-list customer">-->
+                            <!--&lt;!&ndash;                                    <h4>REF No.</h4>&ndash;&gt;-->
+                            <!--                                    <h4>Permit Id</h4>-->
+                            <!--                                    <h4>Owner</h4>-->
+                            <!--                                    <h4>Assignee</h4>-->
+                            <!--                                    <h4>Action</h4>-->
+                            <!--                                </div>-->
+                            <!--                                <a th:each="my_task, iStat: ${tasks}" th:href="@{#}">-->
+                            <!--                                    <div class="exemption-application-list customer">-->
+                            <!--&lt;!&ndash;                                        <div style="color: black">1</div>&ndash;&gt;-->
+                            <!--                                        <td style="color: black" th:text="${my_task.permitId}"></td>-->
+                            <!--                                        <td style="color: black" th:text="${my_task.task.owner}"></td>-->
+                            <!--                                        <td style="color: black" th:text="${my_task.task.assignee}"></td>-->
+                            <!--                                    </div>-->
+                            <!--                                </a>-->
+
+                            <!--                            </div>-->
+                        </div>
+                        <div class="filter-block">
+=======
+>>>>>>> 39d2c4dec8ea7a6f90a079def9ac6fc3da52ce49
                         </div>
                     </div>
                 </div>

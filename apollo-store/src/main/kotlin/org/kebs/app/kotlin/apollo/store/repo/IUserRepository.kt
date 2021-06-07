@@ -45,6 +45,7 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.query.Param
 import org.springframework.stereotype.Repository
+import java.sql.Date
 
 
 @Repository
@@ -69,7 +70,7 @@ interface IUserRepository : HazelcastRepository<UsersEntity, Long>, JpaSpecifica
 
     @Query("SELECT DISTINCT u.* FROM CFG_USER_ROLES_ASSIGNMENTS cura, DAT_KEBS_USERS u where cura.ROLE_ID != 1 and cura.USER_ID = u.ID and u.STATUS = :status and cura.STATUS = 1", nativeQuery = true)
     fun findRbacUsersByStatus(@Param("status") status: Int): List<UsersEntity>?
-    fun findAllByIdIn(userList: MutableList<Long?>): List<UsersEntity>?
+    fun findAllByIdIn(userList: MutableList<Long>): List<UsersEntity>?
 
     @Query("SELECT u from UsersEntity u where u.userName = :userName or u.email = :email or u.firstName = :firstName or u.lastName= :lastName")
     fun findUsingSearchValues(
@@ -162,6 +163,7 @@ interface IUserRequestsRepository : HazelcastRepository<UserRequestsEntity, Long
 @Repository
 interface IUserRequestTypesRepository : HazelcastRepository<UserRequestTypesEntity, Long> {
     fun findByStatus(status: Int): List<UserRequestTypesEntity>?
+    fun findAllByQaRequests(qaRequests: Int): List<UserRequestTypesEntity>?
     fun findByStatusOrderByUserRequest(status: Int): List<UserRequestTypesEntity>?
 
 
@@ -174,6 +176,7 @@ interface ICompanyProfileRepository : HazelcastRepository<CompanyProfileEntity, 
     fun findByKraPin(kraPin: String): CompanyProfileEntity?
     fun findByUserId(userId: Long): CompanyProfileEntity?
     fun findByRegistrationNumber(registrationNumber: String): CompanyProfileEntity?
+    fun findAllByCreatedOnBetween(createdOn: Date, createdOn2: Date) : List<CompanyProfileEntity>?
     fun findByManufactureStatus(status: Int): List<CompanyProfileEntity>?
 
 }

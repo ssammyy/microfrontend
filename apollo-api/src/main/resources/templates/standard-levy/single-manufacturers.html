@@ -81,10 +81,12 @@
                                                 <div class="list-text" th:text="${manufacturer?.companyEmail}"></div>
                                             </li>
                                             <br>
+                                            <!--
                                             <li class="list-item" th:if="${manufacturer?.ownership}">
                                                 <div class="list-title" style="color: #0166B1;">Company Ownership</div>
                                                 <div class="list-text" th:text="${manufacturer?.ownership}"></div>
                                             </li>
+                                            -->
                                             <br>
                                             <li class="list-item" th:if="${manufacturer?.postalAddress}">
                                                 <div class="list-title" style="color: #0166B1;">Postal Address</div>
@@ -100,10 +102,12 @@
                                                 <div class="list-text" th:text="${manufacturer?.directorIdNumber}"></div>
                                             </li>
                                             <br>
+                                            <!--
                                             <li class="list-item" th:if="${manufacturer?.description}">
                                                 <div class="list-title" style="color: #0166B1;">Description</div>
                                                 <div class="list-text" th:text="${manufacturer?.description}"></div>
                                             </li>
+                                            -->
                                             <br>
                                             <li class="list-item" th:if="${manufacturer?.registrationNumber}">
                                                 <div class="list-title" style="color: #0166B1;">Registration Number</div>
@@ -280,20 +284,23 @@
                                 <button class="btn btn-info" data-target="#scheduleVisit" data-toggle="modal" sec:authorize="hasAuthority('SL_MANUFACTURERS_VIEW') and hasAuthority('SL_SCHEDULE_FACTORY_VISIT_MANUFACTURER')" style="width: 270px;" th:if="${visitReport?.scheduledVisitDate == null}"
                                         type="button">Schedule visit
                                 </button>
-
+                                <br/><br/>
                                 <button class="btn btn-primary" data-target="#industryVisitReport" data-toggle="modal" sec:authorize="hasAuthority('SL_MANUFACTURERS_VIEW')" style="width: 270px;" th:if="${visitReport?.scheduledVisitDate != null && visitReport?.assistantManagerApproval == 0}"
                                         type="button">Prepare/Modify report
                                 </button>
+                                <br/><br/>
                                 <button class="btn btn-primary" data-target="#industryVisitReportLevelOneApproval" data-toggle="modal" sec:authorize="hasAuthority('SL_APPROVE_VISIT_REPORT')" style="width: 270px;" th:if="${visitReport?.purpose != null && visitReport.assistantManagerApproval != 1 }"
                                         type="button">Approve
                                 </button>
+                                <br/><br/>
                                 <button class="btn btn-primary" data-target="#industryVisitReportLevelTwoApproval" data-toggle="modal" sec:authorize="hasAuthority('SL_SECOND_APPROVE_VISIT_REPORT')" style="width: 270px;"
                                         th:if="${visitReport.assistantManagerApproval == 1 && visitReport.managersApproval != 1 }" type="button">Approve
                                 </button>
+                                <br/><br/>
                                 <button class="btn btn-primary" data-target="#draftFeedback" data-toggle="modal" sec:authorize="hasAuthority('SL_SEND_FEEDBACK')" style="width: 270px;"
                                         th:if="${visitReport?.scheduledVisitDate != null} and ${visitReport} and ${visitReport?.managersApproval == 1} and ${visitReport?.officersFeedback == null} and ${visitReport?.assistantManagerApproval == 1}" type="button">Submit Feedback
                                 </button>
-                                <br/>
+                                <br/><br/>
                                 <button type="button" class="btn btn-primary" style="width: 270px" data-toggle="modal" data-target="#updateManufacturerDetailsModal">
                                     Modify account details
                                 </button>

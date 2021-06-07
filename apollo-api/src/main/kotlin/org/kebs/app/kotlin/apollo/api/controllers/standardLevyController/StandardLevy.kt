@@ -86,11 +86,8 @@ class StandardLevy(
                 dto.fileType = fileUploaded.fileType
                 dto.name = fileUploaded.name
                 commonDaoServices.downloadFile(response, dto)
-
             }
             ?: KotlinLogging.logger { }.info("File not found")
-
-
     }
 
     @PostMapping("/approval/level/two")
@@ -101,6 +98,19 @@ class StandardLevy(
         @RequestParam("approval", required = true) approval: String,
         @RequestParam("visitId", required = true) visitId: Long
     ): String {
+<<<<<<< HEAD
+        standardLevyFactoryVisitReportRepository.findByManufacturerEntity(manufacturerId)?.let { report ->
+            report.remarks = reportData.remarks
+            report.purpose = reportData.purpose
+            report.actionTaken = reportData.actionTaken
+            report.personMet = reportData.personMet
+            report.visitDate = reportData.visitDate
+            report.status = 0
+            report.reportDate = LocalDate.now()
+            report.createdBy = commonDaoServices.checkLoggedInUser()
+            report.createdOn = Timestamp.from(Instant.now())
+            standardLevyFactoryVisitReportRepository.save(report)
+=======
         try {
             standardLevyFactoryVisitReportRepository.findByIdOrNull(visitId)
                 ?.let { report ->
@@ -158,6 +168,7 @@ class StandardLevy(
                                          * DONE: send back the task to the creator
                                          */
                                         standardLevyFactoryVisitReportRepository.save(report)
+>>>>>>> 39d2c4dec8ea7a6f90a079def9ac6fc3da52ce49
 
                                         return "redirect:/sl/manufacturer?manufacturerId=${report.manufacturerEntity}&appId=${appId}"
                                     }
@@ -178,6 +189,10 @@ class StandardLevy(
 
     }
 
+<<<<<<< HEAD
+            return "redirect:/sl/manufacturer?manufacturerId=${manufacturerId}"
+        } ?: throw InvalidInputException("Please enter a valid id")
+=======
     @PostMapping("/approval/level/one")
     @PreAuthorize("hasAuthority('SL_APPROVE_VISIT_REPORT')")
     fun factoryVisitLevelOneApproval(
@@ -346,6 +361,7 @@ class StandardLevy(
         } else {
             throw NullValueNotAllowedException("Attempt to prepare report before visit is scheduled not allowed")
         }
+>>>>>>> 39d2c4dec8ea7a6f90a079def9ac6fc3da52ce49
     }
 
     @PostMapping("update-manufacturer")
@@ -377,7 +393,6 @@ class StandardLevy(
         } ?: throw InvalidInputException("No Report found")
     }
 
-
     @PostMapping("manager-approval")
     fun managerApproval(@RequestParam("manufacturerId") manufacturerId: Long, reportData: StandardLevyFactoryVisitReportEntity): String {
         standardLevyFactoryVisitReportRepository.findByManufacturerEntity(manufacturerId)?.let { report ->
@@ -388,6 +403,4 @@ class StandardLevy(
             return "redirect:/sl/manufacturer?manufacturerId=${manufacturerId}"
         } ?: throw InvalidInputException("No Report found")
     }
-
-
 }

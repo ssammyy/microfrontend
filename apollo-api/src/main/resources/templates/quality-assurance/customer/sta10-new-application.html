@@ -32,7 +32,7 @@
                         <form id="sta3Form" class="needs-validation" novalidate
                               th:action="@{/api/qa/apply/new-sta10(permitID = ${permit.id})}" method="post">
                             <div th:if="${message}" th:with="myRenewPermit=${message}">
-                                <input type="hidden" th:value="${myRenewPermit}" id="renewPermit">
+                                <input type="hidden" th:value="${myRenewPermit}" id="permitViewType">
                             </div>
                             <div th:object="${QaSta10Entity}">
                                 <div class="form-row">

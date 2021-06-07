@@ -56,7 +56,7 @@ class LimsServices(
             conn.requestMethod = "POST"
             conn.doInput = true
             conn.doOutput = true
-            conn.setRequestProperty  ("Authorization", "Basic $encoding");
+            conn.setRequestProperty("Authorization", "Basic $encoding")
             val os: OutputStream = conn.outputStream
             val writer = BufferedWriter(
                 OutputStreamWriter(os, "UTF-8")
@@ -101,9 +101,9 @@ class LimsServices(
         //Loop
         if (resultsParam.test_parameter?.isNullOrEmpty() == true) {
             println("List is null or empty")
-            return !myStatus
-        }
-        else {
+            return myStatus
+        } else {
+            myStatus = true
             resultsParam.test_result
                 ?.forEach { testResults ->
                     limsTestResultsDetails(testResults)
