@@ -741,6 +741,10 @@ class DestinationInspectionController(
                                 ).let { cdInspectionMVChecklist ->
                                     cdInspectionMVChecklist.inspectionGeneral?.cdItemDetails?.let { cdItemDetails ->
                                         cdItemDetails.cdDocId?.let { cdEntity ->
+                                            //Update status
+                                            cdEntity.cdStandard?.let { cdStd ->
+                                                daoServices.updateCDStatus(cdStd, applicationMapProperties.mapDIStatusTypeMinistryInspectionUploadedId)
+                                            }
                                             //daoServices.sendMinistryInspectionReportSubmittedEmail(it, cdItemDetails)
                                             //Complete Generate Ministry Inspection Report & Assign Review Ministry Inspection Report
                                             cdEntity.id?.let {

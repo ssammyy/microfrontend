@@ -9,6 +9,7 @@ import org.kebs.app.kotlin.apollo.api.notifications.Notifications
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.DestinationInspectionBpmn
 import org.kebs.app.kotlin.apollo.api.ports.provided.emailDTO.*
 import org.kebs.app.kotlin.apollo.api.ports.provided.sftp.SftpServiceImpl
+import org.kebs.app.kotlin.apollo.common.dto.MinistryInspectionListResponseDto
 import org.kebs.app.kotlin.apollo.common.dto.kesws.receive.DeclarationVerificationMessage
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.common.exceptions.InvalidInputException
@@ -2777,6 +2778,21 @@ fun createLocalCoc(
             ?: throw ExpectedDataNotFound("Ministry Inspection requests with status = $status, do not exist")
     }
 
+    fun findAllOngoingMinistryInspectionRequests(): List<CdItemDetailsEntity> {
+            iCdItemsRepo.findOngoingMinistrySubmissions()
+                ?.let { ministryInspectionItems ->
+                    return ministryInspectionItems
+                }
+                ?: throw ExpectedDataNotFound("Ongoing Ministry Inspection requests, do not exist")
+    }
+    fun findAllCompleteMinistryInspectionRequests(): List<CdItemDetailsEntity> {
+        iCdItemsRepo.findCompletedMinistrySubmissions()
+            ?.let { ministryInspectionItems ->
+                return ministryInspectionItems
+            }
+            ?: throw ExpectedDataNotFound("Complete Ministry Inspection requests, do not exist")
+    }
+
     fun updateCdInspectionMotorVehicleItemChecklistInDB(
         cdInspectionMotorVehicleItemChecklistEntity: CdInspectionMotorVehicleItemChecklistEntity,
         user: UsersEntity
@@ -3092,5 +3108,20 @@ fun createLocalCoc(
                     "Find attached the Local COR Certificate."
         notifications.sendEmail(recipientEmail, subject, messageBody, filePath)
         return true
+    }
+
+    fun convertCdItemDetailsToMinistryInspectionListResponseDto(cdItemDetails: CdItemDetailsEntity): MinistryInspectionListResponseDto {
+        var ministryInspectionItem  = MinistryInspectionListResponseDto()
+        ministryInspectionItem.cdId = cdItemDetails.cdDocId?.id!!
+        ministryInspectionItem.cdUcr = cdItemDetails.cdDocId?.ucrNumber
+        ministryInspectionItem.cdItemDetailsId = cdItemDetails.id
+        this.findCdItemNonStandardByItemID(cdItemDetails)?.let { cdItemNonStandard ->
+            ministryInspectionItem.chassis = cdItemNonStandard.chassisNo
+            ministryInspectionItem.used = cdItemNonStandard.usedIndicator
+            ministryInspectionItem.year = cdItemNonStandard.vehicleYear
+            ministryInspectionItem.model = cdItemNonStandard.vehicleModel
+            ministryInspectionItem.make = cdItemNonStandard.vehicleMake
+        }
+        return ministryInspectionItem
     }
 }

@@ -25,6 +25,7 @@ import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.DestinationInspectionBpmn
 import org.kebs.app.kotlin.apollo.api.ports.provided.createUserAlert
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.*
+import org.kebs.app.kotlin.apollo.common.dto.MinistryInspectionListResponseDto
 import org.kebs.app.kotlin.apollo.common.exceptions.*
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.*
@@ -40,6 +41,10 @@ import org.springframework.web.servlet.function.ServerResponse.ok
 import org.springframework.web.servlet.function.paramOrNull
 import java.sql.Date
 import org.springframework.web.servlet.support.RequestContextUtils
+import java.util.*
+import java.util.stream.Collectors
+import kotlin.Comparator
+import kotlin.collections.ArrayList
 
 
 @Component
@@ -104,16 +109,26 @@ class DestinationInspectionHandler(
     fun ministryInspectionHome(req: ServerRequest): ServerResponse =
             try {
                 val map = commonDaoServices.serviceMapDetails(appId)
-                val ministryInspectionItems = daoServices.findAllMinistryInspectionRequests(map.activeStatus)
-                val itemDetailsNonStd: MutableList<CdItemNonStandardEntity> = ArrayList()
-                if (ministryInspectionItems.isNotEmpty()) {
-                    for (item in ministryInspectionItems) {
-                        daoServices.findCdItemNonStandardByItemID(item)?.let {
-                            itemDetailsNonStd.add(it)
-                        }
+                val ministryInspectionItemsOngoing = daoServices.findAllOngoingMinistryInspectionRequests()
+                val ministryInspectionItemsComplete = daoServices.findAllCompleteMinistryInspectionRequests()
+                val ministryInspectionItemsViewListOngoing: MutableList<MinistryInspectionListResponseDto> = ArrayList()
+                val ministryInspectionItemsViewListComplete: MutableList<MinistryInspectionListResponseDto> = ArrayList()
+
+                if (!ministryInspectionItemsOngoing.isNullOrEmpty()) {
+                    for (item in ministryInspectionItemsOngoing) {
+                        val ministryInspectionItem =  daoServices.convertCdItemDetailsToMinistryInspectionListResponseDto(item)
+                        ministryInspectionItemsViewListOngoing.add(ministryInspectionItem)
                     }
                 }
-                req.attributes()["itemNonStd"] = itemDetailsNonStd
+                if (!ministryInspectionItemsComplete.isNullOrEmpty()) {
+                    for (item in ministryInspectionItemsComplete) {
+                        val ministryInspectionItem =  daoServices.convertCdItemDetailsToMinistryInspectionListResponseDto(item)
+                        ministryInspectionItemsViewListComplete.add(ministryInspectionItem)
+                    }
+                }
+
+                req.attributes()["ongoingMinistryInspectionItemsViewList"] = ministryInspectionItemsViewListOngoing
+                req.attributes()["completeMinistryInspectionItemsViewList"] = ministryInspectionItemsViewListComplete
                 req.attributes()["motorVehicleMinistryInspectionChecklistName"] = daoServices.motorVehicleMinistryInspectionChecklistName
                 req.attributes()["map"] = map
                 ok().render(destinationInspectionMinistryHomePage, req.attributes())

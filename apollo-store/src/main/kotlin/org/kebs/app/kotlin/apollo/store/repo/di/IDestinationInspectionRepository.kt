@@ -6,6 +6,8 @@ import org.kebs.app.kotlin.apollo.store.model.di.ConsignmentDocumentDetailsEntit
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.hazelcast.repository.HazelcastRepository
+import org.springframework.data.jpa.repository.Query
+import org.springframework.data.repository.query.Param
 import org.springframework.stereotype.Repository
 
 
@@ -410,6 +412,29 @@ interface IConsignmentItemsRepository : HazelcastRepository<CdItemDetailsEntity,
     fun findByCdDocIdAndDnoteStatus(cdDocId: ConsignmentDocumentDetailsEntity, dnoteStatus: Int): List<CdItemDetailsEntity>?
     fun findByUuid(uuid: String): CdItemDetailsEntity?
     fun findByMinistrySubmissionStatus(status: Int): List<CdItemDetailsEntity>?
+
+    @Query(
+        "SELECT DAT_KEBS_CD_ITEM_DETAILS.* FROM\n" +
+                "    DAT_KEBS_CD_ITEM_DETAILS\n" +
+                "        INNER JOIN DAT_KEBS_CD_INSPECTION_GENERAL ON DAT_KEBS_CD_ITEM_DETAILS.ID = DAT_KEBS_CD_INSPECTION_GENERAL.CD_ITEM_DETAILS_ID\n" +
+                "        INNER JOIN DAT_KEBS_CD_INSPECTION_MOTOR_VEHICLE_ITEM_CHECKLIST ON DAT_KEBS_CD_INSPECTION_GENERAL.ID = DAT_KEBS_CD_INSPECTION_MOTOR_VEHICLE_ITEM_CHECKLIST.INSPECTION_GENERAL_ID\n" +
+                "WHERE DAT_KEBS_CD_ITEM_DETAILS.MINISTRY_SUBMISSION_STATUS = 1 AND\n" +
+                "      DAT_KEBS_CD_INSPECTION_MOTOR_VEHICLE_ITEM_CHECKLIST.MINISTRY_REPORT_SUBMIT_STATUS = 1",
+        nativeQuery = true
+    )
+    fun findCompletedMinistrySubmissions(): List<CdItemDetailsEntity>?
+
+    @Query(
+        "SELECT DAT_KEBS_CD_ITEM_DETAILS.* FROM\n" +
+                "    DAT_KEBS_CD_ITEM_DETAILS\n" +
+                "        INNER JOIN DAT_KEBS_CD_INSPECTION_GENERAL ON DAT_KEBS_CD_ITEM_DETAILS.ID = DAT_KEBS_CD_INSPECTION_GENERAL.CD_ITEM_DETAILS_ID\n" +
+                "        INNER JOIN DAT_KEBS_CD_INSPECTION_MOTOR_VEHICLE_ITEM_CHECKLIST ON DAT_KEBS_CD_INSPECTION_GENERAL.ID = DAT_KEBS_CD_INSPECTION_MOTOR_VEHICLE_ITEM_CHECKLIST.INSPECTION_GENERAL_ID\n" +
+                "WHERE DAT_KEBS_CD_ITEM_DETAILS.MINISTRY_SUBMISSION_STATUS = 1 AND\n" +
+                "      DAT_KEBS_CD_INSPECTION_MOTOR_VEHICLE_ITEM_CHECKLIST.MINISTRY_REPORT_SUBMIT_STATUS IS NULL",
+        nativeQuery = true
+    )
+    fun findOngoingMinistrySubmissions(): List<CdItemDetailsEntity>?
+
 }
 
 @Repository
