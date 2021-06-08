@@ -44,3 +44,4 @@
 *.hprof
 
 **/uploads/
+package-lock.json

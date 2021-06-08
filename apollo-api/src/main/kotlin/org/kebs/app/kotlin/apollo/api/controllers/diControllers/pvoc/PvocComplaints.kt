@@ -19,6 +19,7 @@ import java.sql.Timestamp
 import java.time.Instant
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
+import kotlin.jvm.internal.Intrinsics
 
 @Controller
 @RequestMapping("/api/di/pvoc/")
@@ -68,45 +69,45 @@ class PvocComplaints(
     @PreAuthorize("hasAuthority('PVOC_APPLICATION_READ') or hasAuthority('PVOC_APPLICATION_PROCESS')")
     @GetMapping("complaints-list")
     fun complaintsList(
-            model: Model,
-            @RequestParam(value = "fromDate", required = false) fromDate: String,
-            @RequestParam(value = "toDate", required = false) toDate: String,
-            @RequestParam(value = "filter", required = false) filter: String,
-            @RequestParam(value = "currentPage", required = false) currentPage: Int,
-            @RequestParam(value = "pageSize", required = false) pageSize: Int): String {
+        model: Model,
+        @RequestParam(value = "fromDate", required = false) fromDate: String,
+        @RequestParam(value = "toDate", required = false) toDate: String,
+        @RequestParam(value = "filter", required = false) filter: String,
+        @RequestParam(value = "currentPage", required = false) currentPage: Int,
+        @RequestParam(value = "pageSize", required = false) pageSize: Int): String {
 
         val dateFrom = Date.valueOf(LocalDate.parse(fromDate, DateTimeFormatter.ofPattern("yyyy-MM-dd")))
         val dateTo = Date.valueOf(LocalDate.parse(toDate, DateTimeFormatter.ofPattern("yyyy-MM-dd")))
         PageRequest.of(currentPage, pageSize)
-                .let { page ->
-                    SecurityContextHolder.getContext().authentication
-                            ?.let { auth ->
-                                when {
-                                    auth.authorities.stream().anyMatch { authority -> authority.authority == "PVOC_APPLICATION_PROCESS" } -> {
-                                                when(filter){
-                                                    "filter" ->{
-                                                        iPvocComplaintRepo.findAllByStatusAndCreatedOnBetweenOrderByCreatedOnDesc(1, dateFrom, dateTo, page).let { complaints ->
-                                                            model.addAttribute("complaints", complaints)
-                                                        }
-                                                    }
-                                                    else ->{
-                                                        iPvocComplaintRepo.findAllByStatusOrderByCreatedOnDesc(1,  page).let { complaints ->
-                                                            model.addAttribute("complaints", complaints)
-                                                        }
-                                                    }
-
+            .let { page ->
+                SecurityContextHolder.getContext().authentication
+                    ?.let { auth ->
+                        when {
+                            auth.authorities.stream().anyMatch { authority -> authority.authority == "PVOC_APPLICATION_PROCESS" } -> {
+                                when(filter){
+                                    "filter" ->{
+                                        iPvocComplaintRepo.findAllByStatusAndCreatedOnBetweenOrderByCreatedOnDesc(1, dateFrom, dateTo, page).let { complaints ->
+                                            model.addAttribute("complaints", complaints)
                                         }
                                     }
-                                    else -> throw SupervisorNotFoundException("Only users with the following privilege PVOC Appliaction READ or PVOC APPLICATION PROCESS, can access this page")
+                                    else ->{
+                                        iPvocComplaintRepo.findAllByStatusOrderByCreatedOnDesc(1,  page).let { complaints ->
+                                            model.addAttribute("complaints", complaints)
+                                        }
+                                    }
+
                                 }
                             }
-                    return "destination-inspection/pvoc/complaint/ComplaintsList"
-                }
+                            else -> throw SupervisorNotFoundException("Only users with the following privilege PVOC Appliaction READ or PVOC APPLICATION PROCESS, can access this page")
+                        }
+                    }
+                return "destination-inspection/pvoc/complaint/ComplaintsList"
+            }
     }
 
     @GetMapping("complaint-details/{id}")
     fun complaintDetails(@PathVariable("id") id: Long, model: Model): String {
-        val usersIds = mutableListOf<Long>()
+        val usersIds = mutableListOf<Long?>()
         iPvocComplaintRepo.findByIdOrNull(id)?.let { complaint ->
             iUserRoleAssignmentsRepository.findByRoleIdAndStatus(261, 1)?.let { mpvocs ->
                 mpvocs.forEach { mpvoc ->
@@ -165,8 +166,8 @@ class PvocComplaints(
 
     @PostMapping("assign-mpvoc")
     fun assignMpvoc(
-            @RequestParam("userId", required=false) userId : Long,
-            @RequestParam("id", required = false) id: Long,
+        @RequestParam("userId", required=false) userId : Long,
+        @RequestParam("id", required = false) id: Long,
     ) : String {
         iPvocComplaintRepo.findByIdOrNull(id)?.let { complain ->
             iUserRepository.findByIdOrNull(userId)?.let { user ->
@@ -179,8 +180,8 @@ class PvocComplaints(
 
     @PostMapping("assign-hod")
     fun assignHod(
-            @RequestParam("userId", required=false) userId : Long,
-            @RequestParam("id", required = false) id: Long,
+        @RequestParam("userId", required=false) userId : Long,
+        @RequestParam("id", required = false) id: Long,
     ) : String {
         iPvocComplaintRepo.findByIdOrNull(id)?.let { complain ->
             iUserRepository.findByIdOrNull(userId)?.let { user ->

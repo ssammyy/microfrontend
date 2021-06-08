@@ -25,8 +25,8 @@ import javax.mail.internet.MimeMultipart
 
 @Component
 class BpmnNotifications(
-        private val notifications: Notifications,
-        private val schedulerImpl: SchedulerImpl
+    private val notifications: Notifications,
+    private val schedulerImpl: SchedulerImpl
 )
 {
     @Value("\${qa.bpmn.email.smtpStartTlsEnable}")
@@ -102,15 +102,15 @@ class BpmnNotifications(
     fun scheduleNotifications(delegateTask: DelegateTask?, notificationId:Int,interval:Int,count:Int){
         delegateTask?.let{ task->
             schedulerImpl.createScheduledAlert(
-                    task.processInstanceId,
-                    null,
-                    task.id,
-                    task.assignee.toLong(),
-                    null,
-                    interval,
-                    count,
-                    notificationId,
-                    task.taskDefinitionKey
+                task.processInstanceId,
+                null,
+                task.id,
+                task.assignee.toLong(),
+                null,
+                interval,
+                count,
+                notificationId,
+                task.taskDefinitionKey
             )
         }
 
@@ -119,8 +119,8 @@ class BpmnNotifications(
     fun cancelScheduledNotifications(delegateTask: DelegateTask?){
         delegateTask?.let{ task->
             schedulerImpl.cancelScheduledAlert(
-                    task.processInstanceId,
-                    task.taskDefinitionKey
+                task.processInstanceId,
+                task.taskDefinitionKey
             )
         }
 

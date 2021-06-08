@@ -211,24 +211,24 @@ class ControllerRoutes {
 
     @Bean
     fun tasksRoute(handler: BpmnTasksHandler) =
-            router {
-                "/api/user/tasks".nest {
-                    GET(pattern = "/list", f = handler::tasksListView)
-                    GET(pattern = "/task/{taskId}", f = handler::reviewTask)
-                    POST(pattern = "/task/{taskId}/claim", f = handler::claimTask)
-                    POST(pattern = "/task/{taskId}/complete/{taskStatus}", f = handler::completeTask)
-                }
+        router {
+            "/api/user/tasks".nest {
+                GET(pattern = "/list", f = handler::tasksListView)
+                GET(pattern = "/task/{taskId}", f = handler::reviewTask)
+                POST(pattern = "/task/{taskId}/claim", f = handler::claimTask)
+                POST(pattern = "/task/{taskId}/complete/{taskStatus}", f = handler::completeTask)
             }
+        }
 
     @Bean
     fun userRoute(handler: UserHandler) =
-            router {
-                "/api/user".nest {
-                    GET("/user-notifications", handler::notificationList)
-                    GET("/user-profile", handler::userProfile)
-                    GET("/add/plant-details/save", handler::userProfile)
-                }
+        router {
+            "/api/user".nest {
+                GET("/user-notifications", handler::notificationList)
+                GET("/user-profile", handler::userProfile)
+                GET("/add/plant-details/save", handler::userProfile)
             }
+        }
 
     @Bean
     fun registrationRoutes(handler: RegistrationHandler) = router {
@@ -323,7 +323,6 @@ class ControllerRoutes {
             GET("/new-sta10-officer", handler::newSta10Officer)
             GET("/view-sta3", handler::viewSta3)
             GET("/view-sta10", handler::viewSta10)
-            GET("/view-request", handler::viewRequestDetails)
             GET("/new-sta10-submit", handler::submitSta10)
             GET("/new-scheme-of-supervision", handler::newSchemeSupervision)
             GET("/update-scheme-of-supervision", handler::updateSchemeSupervision)
@@ -331,10 +330,14 @@ class ControllerRoutes {
             GET("/product-quality-status", handler::generateProductQualityStatus)
             GET("/invoice-details", handler::getInvoiceDetails)
             GET("/ssf-details", handler::getSSfDetails)
-            "/workPlan".nest {
-                GET("/list", handler::allWorkPlanList)
-
-            }
+//
+//            "/inspection".nest {
+//                GET("/check-list", handler::inspectionDetails)
+//                GET("/sample-collection", handler::inspectionDetails)
+//                GET("/sample-submission", handler::inspectionDetails)
+//                GET("/item-report", handler::inspectionChecklistReportDetails)
+//                GET("/item/sample-Submit-param/bs-number", handler::inspectionDetails)
+//            }
         }
     }
 
@@ -379,7 +382,7 @@ class ControllerRoutes {
     @Bean
 //    @PreAuthorize("hasAuthority('MS_HOF_READ') or hasAuthority('MS_DIRECTOR_READ') or hasAuthority('MS_RM_READ') or hasAuthority('MS_HOD_READ') or hasAuthority('MS_IO_READ')")
     fun marketSurveillanceRoutes(handler: MarketSurveillanceHandler) = router {
-        "/api/ms".nest {
+        "/api/v1/ms".nest {
             GET("/home", handler::home)
             GET("/complaints/new", handler::complaintsNew)
             GET("/ms-list", handler::msList)
@@ -561,6 +564,7 @@ class ControllerRoutes {
             GET("/schedule/{manufacturer}", handler::scheduleVisit)
             POST("/schedule", handler::actionScheduleVisit)
             GET("/general-actions", handler::generalActions)
+//            POST("/save-data/{manufacturerId}",  handler::actionSaveFactoryVisitReport)
         }
 
     }
