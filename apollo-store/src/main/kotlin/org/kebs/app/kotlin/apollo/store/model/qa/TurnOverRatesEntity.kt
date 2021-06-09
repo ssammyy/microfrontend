@@ -37,7 +37,7 @@ class TurnOverRatesEntity : Serializable {
 
     @Column(name = "TAX_RATE")
     @Basic
-    var taxRate: Long? = null
+    var taxRate: BigDecimal? = null
 
     @Column(name = "FIRM_TYPE")
     @Basic

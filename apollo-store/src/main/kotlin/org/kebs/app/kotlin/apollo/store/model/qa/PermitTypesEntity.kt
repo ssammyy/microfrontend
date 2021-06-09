@@ -30,6 +30,10 @@ class PermitTypesEntity : Serializable {
     @Basic
     var st10Status: Int? = null
 
+    @Column(name = "NUMBER_OF_YEARS")
+    @Basic
+    var numberOfYears: Long? = null
+
     @Column(name = "LOCAL_FOREIGN_STATUS")
     @Basic
     var localForeignStatus: Int? = null
@@ -142,6 +146,7 @@ class PermitTypesEntity : Serializable {
                 schemeGenerate == that.schemeGenerate &&
                 st3Status == that.st3Status &&
                 st10Status == that.st10Status &&
+                numberOfYears == that.numberOfYears &&
                 image == that.image &&
                 varField1 == that.varField1 &&
                 varField2 == that.varField2 &&
@@ -169,6 +174,7 @@ class PermitTypesEntity : Serializable {
             descriptions,
             smeDeclarationForm,
             typeName,
+            numberOfYears,
             permitAwardYears,
             localForeignStatus,
             st3Status,
