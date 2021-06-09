@@ -399,22 +399,24 @@ class QualityAssuranceController(
 
                 var complianceValue: String? = null
                 if (permit.hodApproveAssessmentStatus == map.activeStatus) {
-                    val pacSecList = qaDaoServices.findOfficersList(
-                        permitDetails,
-                        map,
-                        applicationMapProperties.mapQADesignationIDForPacSecId
-                    )
-                    val appointedPacSec = pacSecList[0]
+                    val pacSecList = permitDetails.attachedPlantId?.let {
+                        qaDaoServices.findOfficersList(
+                            it,
+                            map,
+                            applicationMapProperties.mapQADesignationIDForPacSecId
+                        )
+                    }
+                    val appointedPacSec = pacSecList?.get(0)
 
                     with(permitDetails) {
                         hodApproveAssessmentStatus = map.activeStatus
                         hodApproveAssessmentRemarks = permit.hodApproveAssessmentRemarks
-                        pacSecId = appointedPacSec.userId?.id
+                        pacSecId = appointedPacSec?.userId?.id
                     }
                     qaDaoServices.permitUpdateDetails(permitDetails, map, loggedInUser)
 
                     //Send notification to PAC secretary
-                    val pacSec = appointedPacSec.userId?.id?.let { commonDaoServices.findUserByID(it) }
+                    val pacSec = appointedPacSec?.userId?.id?.let { commonDaoServices.findUserByID(it) }
                     pacSec?.email?.let { qaDaoServices.sendPacDmarkAssessmentNotificationEmail(it, permitDetails) }
 
                     qaDaoServices.permitInsertStatus(

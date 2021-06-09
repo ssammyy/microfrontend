@@ -28,18 +28,20 @@
             <div class="content-wrap">
                 <div class="content-row">
                     <div class="row">
-                        <form class="needs-validation"  novalidate th:action="@{/api/qa/apply/new-permit(permitTypeID = ${permitType.id})}" method="post">
+                        <form id="myForm" class="needs-validation"  novalidate th:action="@{/api/qa/apply/new-permit(permitTypeID = ${permitType.id})}" method="post">
                             <div th:object="${permit}" >
                                 <div class="form-row" >
                                     <div class="col-md-12 mb-3">
                                         <p style="font-size: 20px">I/We the undersigned hereby apply for the grant/renewal of a permit/ the permit No………… to use the
-                                            standardization mark on the commodity specified here under:</p>
+                                            <span th:text="${permitType?.mark}"></span> on the commodity specified here under:</p>
                                     </div>
                                 </div>
                                 <div class="form-row">
                                     <div class="col-md-4 mb-3">
-                                        <label for="commodityDescription" class="field-label">APPLICATION FOR  PERMIT </label>
-                                        <input type="text" class="form-control"  disabled th:value="${permitType?.mark}"  >
+<!--                                        <label for="commodityDescription" class="field-label">APPLICATION FOR  PERMIT </label>-->
+                                        <img th:src="${permitType.image}" class="card-img-top"
+                                             style="width: 100px; height:100px;">
+<!--                                        <input type="text" class="form-control"  disabled th:value="${permitType?.mark}"  >-->
                                         <!--                                    <div class="valid-feedback">-->
                                         <!--                                        Looks good!-->
                                         <!--                                    </div>-->
@@ -80,80 +82,14 @@
                                     <div class="col-md-4 mb-3">
                                         <label for="divisionId" class="field-label" >Select Division:</label>
                                         <select id="divisionId" name="divisionId" required="required" class="form-control" th:field="*{divisionId}">
-                                            <option value="required">Select One...</option>
+                                            <option th:value="'NULL'">Select One...</option>
                                             <option th:each="divi : ${divisions}" th:text="${divi.division}" th:value="${divi.id}"></option>
                                         </select>
                                     </div>
-                                    <div class="col-md-4 mb-3">
-                                        <label for="sectionId" class="field-label" >Select Section</label>
-                                        <select reqiured="required" id="sectionId"  name="sectionId" th:field="*{sectionId}" class="form-control">
-                                            <option value="">Select one...</option>
-                                        </select>
-                                    </div>
-
-                                </div>
-                                <div class="form-row">
-                                    <div class="col-md-4 mb-3">
-                                        <label for="standardCategory" class="field-label" >Select Product Category:</label>
-                                        <select id="standardCategory" name="standardCategory" required="required" class="form-control" th:field="*{standardCategory}">
-                                            <option value="required">Select One...</option>
-                                            <option th:each="stdCat : ${standardCategory}" th:text="${stdCat.standardCategory}" th:value="${stdCat.id}"></option>
-                                        </select>
-                                        <!--                                        <label id="directorateId" th:text="${directorateId?.directorate}"></label>-->
-                                        <!--                                        <input type="text" class="form-control"  id="directorateId" th:value="${directorateId?.directorate}" placeholder="directorate" required="required" >-->
-                                        <!--                                    <div class="invalid-feedback">-->
-                                        <!--                                        Please provide a valid city.-->
-                                        <!--                                    </div>-->
-                                    </div>
-                                    <div class="col-md-4 mb-3">
-                                        <label for="broadCat" class="field-label" >Broad Product Category</label>
-                                        <select reqiured="required" id="broadCat" th:field="*{broadProductCategory}" class="form-control">
-                                            <option value="">Select one...</option>
-                                        </select>
-                                        <!--                                        <input type="text" class="form-control"  id="designationId" th:value="${designationId?.designationName}" placeholder="designation Name" required="required" >-->
-                                        <!--                                        <div class="invalid-feedback">-->
-                                        <!--                                            Please provide a valid state.-->
-                                        <!--                                        </div>-->
-                                    </div>
-                                    <div class="col-md-4 mb-3">
-                                        <label for="productCategories" class="field-label">Product Category</label>
-                                        <select reqiured="" id="productCategories" th:field="*{productCategory}" class="form-control">
-                                            <option value="">Select one...</option>
-                                            <!--                                        <option value="">Select one...</option>-->
-                                            <!--                                        <option  th:each="product : ${session.products}" th:value="${product.id}" th:text="${product.category}"></option>-->
-                                        </select>
-                                        <!--                                        <input type="text" class="form-control"  id="departmentId" th:value="${departmentId?.department}" placeholder="department" required="required" >-->
-                                        <!--                                        <div class="invalid-feedback">-->
-                                        <!--                                            Please provide a valid zip.-->
-                                        <!--                                        </div>-->
-                                    </div>
-                                </div>
-                                <div class="form-row">
-                                    <div class="col-md-4 mb-3">
-                                        <label for="product" class="field-label">Product</label>
-                                        <select reqiured="required" id="product" th:field="*{product}" class="form-control">
-                                            <option value="">Select one...</option>
-                                        </select>
-                                        <!--                                        <label id="directorateId" th:text="${directorateId?.directorate}"></label>-->
-                                        <!--                                        <input type="text" class="form-control"  id="directorateId" th:value="${directorateId?.directorate}" placeholder="directorate" required="required" >-->
-                                        <!--                                    <div class="invalid-feedback">-->
-                                        <!--                                        Please provide a valid city.-->
-                                        <!--                                    </div>-->
-                                    </div>
-                                    <div class="col-md-4 mb-3">
-                                        <label for="productsubcat" class="field-label">Product Sub-Category</label>
-                                        <select reqiured="required" id="productsubcat" th:field="*{productSubCategory}" class="form-control">
-                                            <option value="">Select one...</option>
-                                        </select>
-                                        <!--                                        <input type="text" class="form-control"  id="designationId" th:value="${designationId?.designationName}" placeholder="designation Name" required="required" >-->
-                                        <!--                                        <div class="invalid-feedback">-->
-                                        <!--                                            Please provide a valid state.-->
-                                        <!--                                        </div>-->
-                                    </div>
                                     <div th:if="${permitType?.localForeignStatus == 1}" class="col-md-4 mb-3">
                                         <label for="permitForeignStatus" class="field-label">APPLICATION TYPE</label>
-                                        <select class="form-control" id="permitForeignStatus" name="permitForeignStatus" th:field="*{permitForeignStatus}">
-                                            <option th:text="'Select one.....'" th:value="null"></option>
+                                        <select class="form-control" id="permitForeignStatus" name="permitForeignStatus" required="required" th:field="*{permitForeignStatus}">
+                                            <option th:text="'Select one.....'" th:value="'NULL'"></option>
                                             <option th:text="'FOREGIN'" th:value="1"></option>
                                             <option th:text="'DOMESTIC'" th:value="0"></option>
                                         </select>
@@ -161,17 +97,95 @@
                                     <div th:if="${permitType?.localForeignStatus == 0}" class="col-md-4 mb-3">
                                         <label for="createdOn"class="field-label" >Application Date</label>
                                         <input type="text" disabled class="form-control" id="createdOn"  th:value="${applicationDate}" required="required">
-<!--                                        <select reqiured="required" disabled id="productStandard" th:field="*{productStandard}" class="form-control">-->
+                                    </div>
+<!--                                    <div class="col-md-4 mb-3">-->
+<!--                                        <label for="sectionId" class="field-label" >Select Section</label>-->
+<!--                                        <select reqiured="required" id="sectionId"  name="sectionId" th:field="*{sectionId}" class="form-control">-->
+<!--                                            <option value="">Select one...</option>-->
+<!--                                        </select>-->
+<!--                                    </div>-->
+
+                                </div>
+<!--                                <div class="form-row">-->
+<!--                                    <div class="col-md-4 mb-3">-->
+<!--                                        <label for="standardCategory" class="field-label" >Select Product Category:</label>-->
+<!--                                        <select id="standardCategory" name="standardCategory" required="required" class="form-control" th:field="*{standardCategory}">-->
+<!--                                            <option value="required">Select One...</option>-->
+<!--                                            <option th:each="stdCat : ${standardCategory}" th:text="${stdCat.standardCategory}" th:value="${stdCat.id}"></option>-->
+<!--                                        </select>-->
+<!--                                        &lt;!&ndash;                                        <label id="directorateId" th:text="${directorateId?.directorate}"></label>&ndash;&gt;-->
+<!--                                        &lt;!&ndash;                                        <input type="text" class="form-control"  id="directorateId" th:value="${directorateId?.directorate}" placeholder="directorate" required="required" >&ndash;&gt;-->
+<!--                                        &lt;!&ndash;                                    <div class="invalid-feedback">&ndash;&gt;-->
+<!--                                        &lt;!&ndash;                                        Please provide a valid city.&ndash;&gt;-->
+<!--                                        &lt;!&ndash;                                    </div>&ndash;&gt;-->
+<!--                                    </div>-->
+<!--                                    <div class="col-md-4 mb-3">-->
+<!--                                        <label for="broadCat" class="field-label" >Broad Product Category</label>-->
+<!--                                        <select reqiured="required" id="broadCat" th:field="*{broadProductCategory}" class="form-control">-->
+<!--                                            <option value="">Select one...</option>-->
+<!--                                        </select>-->
+<!--                                        &lt;!&ndash;                                        <input type="text" class="form-control"  id="designationId" th:value="${designationId?.designationName}" placeholder="designation Name" required="required" >&ndash;&gt;-->
+<!--                                        &lt;!&ndash;                                        <div class="invalid-feedback">&ndash;&gt;-->
+<!--                                        &lt;!&ndash;                                            Please provide a valid state.&ndash;&gt;-->
+<!--                                        &lt;!&ndash;                                        </div>&ndash;&gt;-->
+<!--                                    </div>-->
+<!--                                    <div class="col-md-4 mb-3">-->
+<!--                                        <label for="productCategories" class="field-label">Product Category</label>-->
+<!--                                        <select reqiured="" id="productCategories" th:field="*{productCategory}" class="form-control">-->
 <!--                                            <option value="">Select one...</option>-->
 <!--                                            &lt;!&ndash;                                        <option value="">Select one...</option>&ndash;&gt;-->
 <!--                                            &lt;!&ndash;                                        <option  th:each="product : ${session.products}" th:value="${product.id}" th:text="${product.category}"></option>&ndash;&gt;-->
 <!--                                        </select>-->
-                                        <!--                                        <input type="text" class="form-control"  id="departmentId" th:value="${departmentId?.department}" placeholder="department" required="required" >-->
-                                        <!--                                        <div class="invalid-feedback">-->
-                                        <!--                                            Please provide a valid zip.-->
-                                        <!--                                        </div>-->
-                                    </div>
-                                </div>
+<!--                                        &lt;!&ndash;                                        <input type="text" class="form-control"  id="departmentId" th:value="${departmentId?.department}" placeholder="department" required="required" >&ndash;&gt;-->
+<!--                                        &lt;!&ndash;                                        <div class="invalid-feedback">&ndash;&gt;-->
+<!--                                        &lt;!&ndash;                                            Please provide a valid zip.&ndash;&gt;-->
+<!--                                        &lt;!&ndash;                                        </div>&ndash;&gt;-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                                <div class="form-row">-->
+<!--                                    <div class="col-md-4 mb-3">-->
+<!--                                        <label for="product" class="field-label">Product</label>-->
+<!--                                        <select reqiured="required" id="product" th:field="*{product}" class="form-control">-->
+<!--                                            <option value="">Select one...</option>-->
+<!--                                        </select>-->
+<!--                                        &lt;!&ndash;                                        <label id="directorateId" th:text="${directorateId?.directorate}"></label>&ndash;&gt;-->
+<!--                                        &lt;!&ndash;                                        <input type="text" class="form-control"  id="directorateId" th:value="${directorateId?.directorate}" placeholder="directorate" required="required" >&ndash;&gt;-->
+<!--                                        &lt;!&ndash;                                    <div class="invalid-feedback">&ndash;&gt;-->
+<!--                                        &lt;!&ndash;                                        Please provide a valid city.&ndash;&gt;-->
+<!--                                        &lt;!&ndash;                                    </div>&ndash;&gt;-->
+<!--                                    </div>-->
+<!--                                    <div class="col-md-4 mb-3">-->
+<!--                                        <label for="productsubcat" class="field-label">Product Sub-Category</label>-->
+<!--                                        <select reqiured="required" id="productsubcat" th:field="*{productSubCategory}" class="form-control">-->
+<!--                                            <option value="">Select one...</option>-->
+<!--                                        </select>-->
+<!--                                        &lt;!&ndash;                                        <input type="text" class="form-control"  id="designationId" th:value="${designationId?.designationName}" placeholder="designation Name" required="required" >&ndash;&gt;-->
+<!--                                        &lt;!&ndash;                                        <div class="invalid-feedback">&ndash;&gt;-->
+<!--                                        &lt;!&ndash;                                            Please provide a valid state.&ndash;&gt;-->
+<!--                                        &lt;!&ndash;                                        </div>&ndash;&gt;-->
+<!--                                    </div>-->
+<!--                                    <div th:if="${permitType?.localForeignStatus == 1}" class="col-md-4 mb-3">-->
+<!--                                        <label for="permitForeignStatus" class="field-label">APPLICATION TYPE</label>-->
+<!--                                        <select class="form-control" id="permitForeignStatus" name="permitForeignStatus" th:field="*{permitForeignStatus}">-->
+<!--                                            <option th:text="'Select one.....'" th:value="null"></option>-->
+<!--                                            <option th:text="'FOREGIN'" th:value="1"></option>-->
+<!--                                            <option th:text="'DOMESTIC'" th:value="0"></option>-->
+<!--                                        </select>-->
+<!--                                    </div>-->
+<!--                                    <div th:if="${permitType?.localForeignStatus == 0}" class="col-md-4 mb-3">-->
+<!--                                        <label for="createdOn"class="field-label" >Application Date</label>-->
+<!--                                        <input type="text" disabled class="form-control" id="createdOn"  th:value="${applicationDate}" required="required">-->
+<!--&lt;!&ndash;                                        <select reqiured="required" disabled id="productStandard" th:field="*{productStandard}" class="form-control">&ndash;&gt;-->
+<!--&lt;!&ndash;                                            <option value="">Select one...</option>&ndash;&gt;-->
+<!--&lt;!&ndash;                                            &lt;!&ndash;                                        <option value="">Select one...</option>&ndash;&gt;&ndash;&gt;-->
+<!--&lt;!&ndash;                                            &lt;!&ndash;                                        <option  th:each="product : ${session.products}" th:value="${product.id}" th:text="${product.category}"></option>&ndash;&gt;&ndash;&gt;-->
+<!--&lt;!&ndash;                                        </select>&ndash;&gt;-->
+<!--                                        &lt;!&ndash;                                        <input type="text" class="form-control"  id="departmentId" th:value="${departmentId?.department}" placeholder="department" required="required" >&ndash;&gt;-->
+<!--                                        &lt;!&ndash;                                        <div class="invalid-feedback">&ndash;&gt;-->
+<!--                                        &lt;!&ndash;                                            Please provide a valid zip.&ndash;&gt;-->
+<!--                                        &lt;!&ndash;                                        </div>&ndash;&gt;-->
+<!--                                    </div>-->
+<!--                                </div>-->
 <!--                                <div class="form-row" >-->
 <!--                                    <div class="col-md-4 mb-3">-->
 <!--                                        <label for="name" class="field-label">KS NUMBER</label>-->
@@ -271,7 +285,10 @@
                                 <div>
                                     <div class="form-group">
                                         <div class="col-md-4 mb-3">
-                                            <button class="btn btn-primary" type="submit">Submit form</button>
+                                            <button class="btn btn-primary" id="check" type="button">Validate form</button>
+                                        </div>
+                                        <div class="col-md-4 mb-3">
+                                            <button class="btn btn-primary" disabled id="mySubmit" type="submit">Submit form</button>
                                         </div>
                                     </div>
                                 </div>
@@ -299,6 +316,27 @@
 </script>
 <script>
     $(document).ready(function () {
+
+        $( "#check" ).click(function() {
+            let allAreFilled = true;
+            document.getElementById("myForm").querySelectorAll("[required]").forEach(function(i) {
+                if (!allAreFilled) return;
+                if (!i.value) allAreFilled = false;
+                if (i.type === "radio") {
+                    let radioValueCheck = false;
+                    document.getElementById("myForm").querySelectorAll(`[name=${i.name}]`).forEach(function(r) {
+                        if (r.checked) radioValueCheck = true;
+                    })
+                    allAreFilled = radioValueCheck;
+                }
+            })
+            if (!allAreFilled) {
+                alert('Fill all the fields');
+            }else {
+                $(this).attr("disabled", "disabled");
+                $("#mySubmit").removeAttr("disabled");
+            }
+        });
 
         $("#nonComplianceStatus_yes").click(function(){
             'use strict';

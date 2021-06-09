@@ -333,6 +333,7 @@ class ControllerRoutes {
             GET("/ssf-details", handler::getSSfDetails)
             "/workPlan".nest {
                 GET("/list", handler::allWorkPlanList)
+                GET("/details", handler::workPlanDetails)
 
             }
         }
