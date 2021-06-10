@@ -24,6 +24,7 @@ import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartFile
 import java.math.BigDecimal
+import java.sql.Date
 import java.sql.Timestamp
 import java.time.Instant
 import java.time.temporal.ChronoUnit
@@ -329,6 +330,17 @@ class QADaoServices(
         permitRepo.findByUserIdAndPermitTypeAndEndOfProductionStatusAndPermitAwardStatus(userId, permitTypeID, status, permitAwardedStatus)?.let {
             return it
         } ?: throw ExpectedDataNotFound("No Permit List found with the following user [ID=$userId]")
+    }
+
+    fun findAllProductManufactureINPlantWithID(
+        permitAwardedStatus: Int,
+        endProductionStatus: Int,
+        permitTypeID: Long,
+        plantID: Long
+    ): List<PermitApplicationsEntity> {
+        permitRepo.findByPermitTypeAndEndOfProductionStatusAndPermitAwardStatusAndAttachedPlantId(permitTypeID, endProductionStatus, permitAwardedStatus, plantID)?.let {
+            return it
+        } ?: throw ExpectedDataNotFound("No Product Being Manufacture List with the following plantID [ID=$plantID]")
     }
 
     fun findPermitInvoiceByPermitID(id: Long, userId: Long): InvoiceEntity {
@@ -1597,6 +1609,43 @@ class QADaoServices(
         return sr
     }
 
+    fun updatePlantDetails(
+        s: ServiceMapsEntity,
+        user: UsersEntity,
+        plantDetail: ManufacturePlantDetailsEntity
+    ): ServiceRequestsEntity {
+
+        var sr = commonDaoServices.createServiceRequest(s)
+        try {
+            with(plantDetail){
+               lastModifiedBy = commonDaoServices.concatenateName(user)
+                lastModifiedOn = commonDaoServices.getTimestamp()
+            }
+            manufacturePlantRepository.save(plantDetail)
+
+            sr.payload = "Plant Detail [id= ${plantDetail.id}]"
+            sr.names = "${plantDetail.buildingName}} ${plantDetail.lastModifiedOn}"
+
+            sr.responseStatus = sr.serviceMapsId?.successStatusCode
+            sr.responseMessage = "Success ${sr.payload}"
+            sr.status = s.successStatus
+            sr = serviceRequestsRepository.save(sr)
+            sr.processingEndDate = Timestamp.from(Instant.now())
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message, e)
+//            KotlinLogging.logger { }.trace(e.message, e)
+            sr.status = sr.serviceMapsId?.exceptionStatus
+            sr.responseStatus = sr.serviceMapsId?.exceptionStatusCode
+            sr.responseMessage = e.message
+            sr = serviceRequestsRepository.save(sr)
+
+        }
+
+        KotlinLogging.logger { }.trace("${sr.id} ${sr.responseStatus}")
+        return sr
+    }
+
     fun permitGenerateFmark(
         s: ServiceMapsEntity,
         user: UsersEntity,
@@ -1774,59 +1823,52 @@ class QADaoServices(
             applicationMapProperties.mapQAPermitTypeIdSmark -> {
                 when {
                     manufactureTurnOver != null -> {
-
+                        val turnOverValues = manufactureType(manufactureTurnOver)
+                        val taxRate = turnOverValues.taxRate?:throw Exception("INVALID TAX RATE")
                         when {
                             manufactureTurnOver > iTurnOverRatesRepository.findByIdOrNull(applicationMapProperties.mapQASmarkLargeFirmsTurnOverId)?.lowerLimit -> {
-                                val turnOverValues = manufactureType(manufactureTurnOver)
-                                val taxRate = turnOverValues.taxRate?:throw Exception("INVALID TAX RATE")
+
                                 m = mutableListForTurnOverAbove500KSmark(
                                     plantDetails,
                                     permitType,
                                     permit,
-                                    turnOverValues.fixedAmountToPay?.times(numberOfYears),
-                                    turnOverValues.variableAmountToPay?.times(numberOfYears),
+                                    turnOverValues.fixedAmountToPay?.times(numberOfYears)?:throw Exception("INVALID FIXED AMOUNT TO PAY"),
+                                    turnOverValues.variableAmountToPay?.times(numberOfYears)?:throw Exception("INVALID VARIABLE AMOUNT TO PAY"),
                                     taxRate,
+                                    map,
+                                    user,
+                                    commonDaoServices.getCurrentDate(),
                                     m
                                 )
 
                             }
-//                            manufactureTurnOver < iTurnOverRatesRepository.findByIdOrNull(applicationMapProperties.mapQASmarkMediumTurnOverId)?.upperLimit && manufactureTurnOver > iTurnOverRatesRepository.findByIdOrNull(applicationMapProperties.mapQASmarkMediumTurnOverId)?.lowerLimit -> {
-//                                m = mutableListForTurnOverBelow500kAndAbove200KSmark(
-//                                    user,
-//                                    map,
-//                                    applicationCost,
-//                                    permit,
-//                                    stgAmt,
-//                                    standardCost,
-//                                    inspectionCost,
-//                                    fmark,
-//                                    fmarkCost,
-//                                    taxAmount,
-//                                    taxRate,
-//                                    amountToPay,
-//                                    manufactureTurnOver,
-//                                    m
-//                                )
-//
-//                            }
-//                            else -> {
-//                                m = mutableListForTurOverBelow200KSmark(
-//                                    user,
-//                                    map,
-//                                    applicationCost,
-//                                    permit,
-//                                    stgAmt,
-//                                    standardCost,
-//                                    inspectionCost,
-//                                    fmark,
-//                                    fmarkCost,
-//                                    taxAmount,
-//                                    taxRate,
-//                                    amountToPay,
-//                                    manufactureTurnOver,
-//                                    m
-//                                )
-//                            }
+                            manufactureTurnOver < iTurnOverRatesRepository.findByIdOrNull(applicationMapProperties.mapQASmarkMediumTurnOverId)?.upperLimit && manufactureTurnOver > iTurnOverRatesRepository.findByIdOrNull(applicationMapProperties.mapQASmarkMediumTurnOverId)?.lowerLimit -> {
+                                m = mutableListForTurnOverBelow500kAndAbove200KSmark(
+                                    plantDetails,
+                                    permitType,
+                                    permit,
+                                    turnOverValues.fixedAmountToPay?.times(numberOfYears)?:throw Exception("INVALID FIXED AMOUNT TO PAY"),
+                                    turnOverValues.variableAmountToPay?.times(numberOfYears)?:throw Exception("INVALID VARIABLE AMOUNT TO PAY"),
+                                    turnOverValues.maxProduct?:throw Exception("INVALID PRODUCT MAX VALUE"),
+                                    taxRate,
+                                    map,
+                                    m
+                                )
+
+                            }
+                            else -> {
+                                m = mutableListForTurOverBelow200KSmark(
+                                    plantDetails,
+                                    permitType,
+                                    permit,
+                                    turnOverValues.fixedAmountToPay?.times(numberOfYears)?:throw Exception("INVALID FIXED AMOUNT TO PAY"),
+                                    turnOverValues.variableAmountToPay?.times(numberOfYears)?:throw Exception("INVALID VARIABLE AMOUNT TO PAY"),
+                                    turnOverValues.maxProduct?:throw Exception("INVALID PRODUCT MAX VALUE"),
+                                    taxRate,
+                                    map,
+                                    m
+                                )
+                            }
                         }
                     }
                     else -> {
@@ -1834,263 +1876,224 @@ class QADaoServices(
                     }
                 }
             }
-//            applicationMapProperties.mapQAPermitTypeIDDmark -> {
-//                when (permit.permitForeignStatus) {
-//                    applicationMapProperties.mapQaDmarkDomesticStatus -> {
-//                        applicationCost = applicationMapProperties.mapQaDmarkDomesticAmountToPay
-//                        stgAmt = standardCost?.plus(inspectionCost!!)?.let { applicationCost!!.plus(it) }
-//                        fmark = 0.toBigDecimal()
-//                        taxAmount = stgAmt?.let { taxRate.times(it) }
-//                        amountToPay = taxAmount?.let { stgAmt?.plus(it) }
-//
-//                        m = myReturPaymentValues(
-//                            m,
-//                            standardCost,
-//                            inspectionCost,
-//                            applicationCost,
-//                            amountToPay,
-//                            fmark,
-//                            fmarkCost,
-//                            taxAmount
-//                        )
-//                    }
-//                    applicationMapProperties.mapQaDmarkForeginStatus -> {
-//                        val foreignAmountCalculated =
-//                            iMoneyTypeCodesRepo.findByTypeCode(applicationMapProperties.mapUssRateName)?.typeCodeValue?.toBigDecimal()
-//                        applicationCost = foreignAmountCalculated?.let {
-//                            applicationMapProperties.mapQaDmarkForeginAmountToPay.times(it)
-//                        }
-//                        stgAmt = standardCost?.plus(inspectionCost!!)?.let { applicationCost?.plus(it) }
-//                        fmark = 0.toBigDecimal()
-//                        taxAmount = stgAmt?.let { taxRate.times(it) }
-//                        amountToPay = taxAmount?.let { stgAmt?.plus(it) }
-//
-//                        m = myReturPaymentValues(
-//                            m,
-//                            standardCost,
-//                            inspectionCost,
-//                            applicationCost,
-//                            amountToPay,
-//                            fmark,
-//                            fmarkCost,
-//                            taxAmount
-//                        )
-//                    }
-//                }
-//            }
-//            applicationMapProperties.mapQAPermitTypeIdFmark -> {
-//                applicationCost = applicationMapProperties.mapQaFmarkAmountToPay
-//                stgAmt = standardCost?.plus(inspectionCost!!)?.let { applicationCost.plus(it) }
-//                fmark = 0.toBigDecimal()
-//                taxAmount = stgAmt?.let { taxRate.times(it) }
-//                amountToPay = taxAmount?.let { stgAmt?.plus(it) }
-//
-//                m = myReturPaymentValues(
-//                    m,
-//                    standardCost,
-//                    inspectionCost,
-//                    applicationCost,
-//                    amountToPay,
-//                    fmark,
-//                    fmarkCost,
-//                    taxAmount
-//                )
-//            }
+            applicationMapProperties.mapQAPermitTypeIDDmark -> {
+                when (permit.permitForeignStatus) {
+                    applicationMapProperties.mapQaDmarkDomesticStatus -> {
+
+                        var stgAmt : BigDecimal? = null
+                        var taxAmount : BigDecimal? = null
+                        var amountToPay : BigDecimal? = null
+                        val inspectionCostValue : BigDecimal? = null
+                        val applicationCostValue = permitType.dmarkLocalAmount?.times(numberOfYears)
+
+                        stgAmt = applicationCostValue
+                        taxAmount = stgAmt?.let { permitType.taxRate?.times(it) }
+                        amountToPay = taxAmount?.let { stgAmt?.plus(it) }
+
+                        m =  myReturPaymentValues(
+                            m,
+                            inspectionCostValue,
+                            applicationCostValue,
+                            amountToPay,
+                            taxAmount
+                        )
+                    }
+                    applicationMapProperties.mapQaDmarkForeginStatus -> {
+                        val foreignAmountCalculated = iMoneyTypeCodesRepo.findByTypeCode(applicationMapProperties.mapUssRateName)?.typeCodeValue?.toBigDecimal()
+                        var stgAmt : BigDecimal? = null
+                        var taxAmount : BigDecimal? = null
+                        var amountToPay : BigDecimal? = null
+                        val inspectionCostValue : BigDecimal? = null
+                        val applicationCostValue = permitType.dmarkForeignAmount?.times(numberOfYears)?.times(foreignAmountCalculated?:throw Exception("INVALID AMOUNT CONVERSION RATE"))
+
+                        stgAmt = applicationCostValue
+                        taxAmount = stgAmt?.let { permitType.taxRate?.times(it) }
+                        amountToPay = taxAmount?.let { stgAmt?.plus(it) }
+
+                        m =  myReturPaymentValues(
+                            m,
+                            inspectionCostValue,
+                            applicationCostValue,
+                            amountToPay,
+                            taxAmount
+                        )
+                    }
+                }
+            }
+            applicationMapProperties.mapQAPermitTypeIdFmark -> {
+                var stgAmt : BigDecimal? = null
+                var taxAmount : BigDecimal? = null
+                var amountToPay : BigDecimal? = null
+                val inspectionCostValue : BigDecimal? = null
+                val applicationCostValue: BigDecimal? = permitType.fmarkAmount?.times(numberOfYears)
+
+
+                stgAmt = applicationCostValue
+                taxAmount = stgAmt?.let { permitType.taxRate?.times(it) }
+                amountToPay = taxAmount?.let { stgAmt?.plus(it) }
+
+                m =  myReturPaymentValues(
+                    m,
+                    inspectionCostValue,
+                    applicationCostValue,
+                    amountToPay,
+                    taxAmount
+                )
+            }
         }
 
         return m
     }
 
-//    private fun mutableListForTurOverBelow200KSmark(
-//        user: UsersEntity,
-//        map: ServiceMapsEntity,
-//        applicationCost: BigDecimal?,
-//        permit: PermitApplicationsEntity,
-//        stgAmt: BigDecimal?,
-//        standardCost: BigDecimal?,
-//        inspectionCost: BigDecimal?,
-//        fmark: BigDecimal?,
-//        fmarkCost: BigDecimal?,
-//        taxAmount: BigDecimal?,
-//        taxRate: BigDecimal,
-//        amountToPay: BigDecimal?,
-//        manufactureTurnOver: BigDecimal?,
-//        m: MutableList<BigDecimal?>
-//    ): MutableList<BigDecimal?> {
-//        var applicationCost1 = applicationCost
-//        var stgAmt1 = stgAmt
-//        var fmark1 = fmark
-//        var fmarkCost1 = fmarkCost
-//        var taxAmount1 = taxAmount
-//        var amountToPay1 = amountToPay
-//        var m1 = m
-//        KotlinLogging.logger { }.info { "Turnover is less than 200, 000" }
-//
-//        //                val noOf = sampleStandardsRepository.findBySubCategoryId(permit.productSubCategory?.id)?.noOfPages))
-//        val turnoverValues =
-//            iTurnOverRatesRepository.findByIdOrNull(applicationMapProperties.mapQASmarkJuakaliTurnOverId)
-//                ?: throw ExpectedDataNotFound("MISSING TURNOVER RATES FOR Medium Firm SMARK")
-//        val productList = user.id?.let {
-//            findPermitBYUserIDANDProductionStatus(
-//                map.inactiveStatus,
-//                applicationMapProperties.mapQAPermitTypeIdSmark,
-//                it
-//            )
-//        } ?: throw ExpectedDataNotFound("MISSING USER ID")
-//        val productSize = productList.size
-//        var remainingSize = 1.00.toBigDecimal()
-//        if (productSize > applicationMapProperties.mapQaSmarkJuakaliMaxProduct) {
-//            remainingSize = productSize.minus(applicationMapProperties.mapQaSmarkJuakaliMaxProduct).toBigDecimal()
-//        }
-//        var extraProductCost: BigDecimal? = 0.000.toBigDecimal()
-//        extraProductCost = turnoverValues.variableAmountToPay?.let { remainingSize.times(it) }
-//        applicationCost1 = extraProductCost?.let { turnoverValues.fixedAmountToPay?.plus(it) }
-////        if (permit.fmarkGenerated == 1) {
-////            stgAmt1 = applicationCost1?.let { standardCost?.plus(inspectionCost!!)?.plus(it) }
-////            fmark1 = 1.toBigDecimal()
-////            fmarkCost1 =
-////                standardCost?.plus(inspectionCost!!)?.let { applicationMapProperties.mapQaFmarkAmountToPay.plus(it) }
-////            //Todo : ask if foreign cost will also be added as vat
-////            taxAmount1 = fmarkCost1?.let { taxRate.times(it) }
-////            amountToPay1 = taxAmount1?.let { stgAmt1?.plus(it) }
-////        } else {
-//        KotlinLogging.logger { }.info { "second loop, ${permit.product}" }
-//        stgAmt1 = applicationCost1?.let { standardCost?.plus(inspectionCost!!)?.plus(it) }
-//        fmark1 = 0.toBigDecimal()
-//        taxAmount1 = stgAmt1?.let { taxRate.times(it) }
-//        amountToPay1 = taxAmount1?.let { stgAmt1?.plus(it) }
-////        }
-//        //                amountToPay = standardCost?.plus(inspectionCost!!)?.let { applicationCost?.plus(it) }
-//        KotlinLogging.logger { }.info { "Manufacturer turnover, $manufactureTurnOver" }
-//        KotlinLogging.logger { }.info { "Total Amount To Pay   = " + amountToPay1?.toDouble() }
-//
-//        m1 = myReturPaymentValues(
-//            m1,
-//            standardCost,
-//            inspectionCost,
-//            applicationCost1,
-//            amountToPay1,
-//            fmark1,
-//            fmarkCost1,
-//            taxAmount1
-//        )
-//        return m1
-//    }
+    private fun mutableListForTurOverBelow200KSmark(
+        plantDetail: ManufacturePlantDetailsEntity,
+        permitType: PermitTypesEntity,
+        permit: PermitApplicationsEntity,
+        inspectionCost: BigDecimal,
+        applicationCost: BigDecimal,
+        productMaximum: Long,
+        taxRate: BigDecimal,
+        map: ServiceMapsEntity,
+        m: MutableList<BigDecimal?>
+    ): MutableList<BigDecimal?> {
+        KotlinLogging.logger { }.info { "Turnover is less than 200, 000" }
 
-//    private fun mutableListForTurnOverBelow500kAndAbove200KSmark(
-//        user: UsersEntity,
-//        map: ServiceMapsEntity,
-//        applicationCost: BigDecimal?,
-//        permit: PermitApplicationsEntity,
-//        stgAmt: BigDecimal?,
-//        standardCost: BigDecimal?,
-//        inspectionCost: BigDecimal?,
-//        fmark: BigDecimal?,
-//        fmarkCost: BigDecimal?,
-//        taxAmount: BigDecimal?,
-//        taxRate: BigDecimal,
-//        amountToPay: BigDecimal?,
-//        manufactureTurnOver: BigDecimal?,
-//        m: MutableList<BigDecimal?>
-//    ): MutableList<BigDecimal?> {
-//        var applicationCost1 = applicationCost
-//        var stgAmt1 = stgAmt
-//        var fmark1 = fmark
-//        var fmarkCost1 = fmarkCost
-//        var taxAmount1 = taxAmount
-//        var amountToPay1 = amountToPay
-//        var m1 = m
-//        KotlinLogging.logger { }.info { "Turnover is less than 500, 000 but above 200, 000" }
-//        //                val noOf = sampleStandardsRepository.findBySubCategoryId(permit.productSubCategory?.id)?.noOfPages))
-//        val turnoverValues =
-//            iTurnOverRatesRepository.findByIdOrNull(applicationMapProperties.mapQASmarkMediumTurnOverId)
-//                ?: throw ExpectedDataNotFound("MISSING TURNOVER RATES FOR Medium Firm SMARK")
-//        val productList = user.id?.let {
-//            findPermitBYUserIDANDProductionStatus(
-//                map.activeStatus,
-//                map.inactiveStatus,
-//                applicationMapProperties.mapQAPermitTypeIdSmark,
-//                it
-//            )
-//        } ?: throw ExpectedDataNotFound("MISSING USER ID")
-//        val productSize = productList.size
-//        var remainingSize = 1.00.toBigDecimal()
-//        if (productSize > applicationMapProperties.mapQaSmarkMediumMaxProduct) {
-//            remainingSize = productSize.minus(applicationMapProperties.mapQaSmarkMediumMaxProduct).toBigDecimal()
-//        }
-//
-//        var extraProductCost: BigDecimal? = 0.000.toBigDecimal()
-//        extraProductCost = turnoverValues.variableAmountToPay?.let { remainingSize.times(it) }
-//        applicationCost1 = extraProductCost?.let { turnoverValues.fixedAmountToPay?.plus(it) }
-////        if (permit.fmarkGenerated == 1) {
-////            stgAmt1 = applicationCost1?.let { standardCost?.plus(inspectionCost!!)?.plus(it) }
-////            fmark1 = 1.toBigDecimal()
-////            fmarkCost1 =
-////                standardCost?.plus(inspectionCost!!)?.let { applicationMapProperties.mapQaFmarkAmountToPay.plus(it) }
-////            //Todo : ask if foreign cost will also be added as vat
-////            taxAmount1 = fmarkCost1?.let { taxRate.times(it) }
-////            amountToPay1 = taxAmount1?.let { stgAmt1?.plus(it) }
-////        } else {
-//        KotlinLogging.logger { }.info { "second loop, ${permit.product}" }
-//        stgAmt1 = applicationCost1?.let { standardCost?.plus(inspectionCost!!)?.plus(it) }
-//        fmark1 = 0.toBigDecimal()
-//        taxAmount1 = stgAmt1?.let { taxRate.times(it) }
-//        amountToPay1 = taxAmount1?.let { stgAmt1?.plus(it) }
-////        }
-//        //                amountToPay = standardCost?.plus(inspectionCost!!)?.let { applicationCost?.plus(it) }
-//        KotlinLogging.logger { }.info { "Manufacturer turnover, $manufactureTurnOver" }
-//        KotlinLogging.logger { }.info { "Total Amount To Pay   = " + amountToPay1?.toDouble() }
-//
-//        m1 = myReturPaymentValues(
-//            m1,
-//            standardCost,
-//            inspectionCost,
-//            applicationCost1,
-//            amountToPay1,
-//            fmark1,
-//            fmarkCost1,
-//            taxAmount1
-//        )
-//        return m1
-//    }
+        var stgAmt : BigDecimal? = null
+        var taxAmount : BigDecimal? = null
+        var amountToPay : BigDecimal? = null
+        var inspectionCostValue : BigDecimal? = inspectionCost
+        var applicationCostValue: BigDecimal?
+        var m1 = m
+
+        val productList = findAllProductManufactureINPlantWithID(map.activeStatus,map.inactiveStatus,permitType.id?:throw Exception("INVALID PERMIT TYPE ID"),plantDetail.id)
+        val productSize = productList.size
+        var remainingSize: BigDecimal
+        if (productSize > productMaximum) {
+            remainingSize = productSize.minus(productMaximum).toBigDecimal()
+            applicationCostValue = remainingSize.times(applicationCost)
+            stgAmt = applicationCostValue.plus(inspectionCostValue ?: throw Exception("INVALID INSPECTION COST VALUE"))
+        }else{
+            applicationCostValue = inspectionCostValue
+            inspectionCostValue = null
+            stgAmt = applicationCostValue
+        }
+
+        taxAmount =  taxRate.times(stgAmt?:throw Exception("INVALID STG AMOUNT"))
+        amountToPay = taxAmount.let { stgAmt.plus(it) }
+
+        KotlinLogging.logger { }.info { "Total Amount To Pay   = " + amountToPay.toDouble() }
+
+        m1 = myReturPaymentValues(
+            m1,
+            inspectionCostValue,
+            applicationCostValue,
+            amountToPay,
+            taxAmount
+        )
+        return m1
+    }
+
+    private fun mutableListForTurnOverBelow500kAndAbove200KSmark(
+        plantDetail: ManufacturePlantDetailsEntity,
+        permitType: PermitTypesEntity,
+        permit: PermitApplicationsEntity,
+        inspectionCost: BigDecimal,
+        applicationCost: BigDecimal,
+        productMaximum: Long,
+        taxRate: BigDecimal,
+        map: ServiceMapsEntity,
+        m: MutableList<BigDecimal?>
+    ): MutableList<BigDecimal?> {
+
+        KotlinLogging.logger { }.info { "Turnover is Below 500K And Above 200K" }
+        var stgAmt : BigDecimal? = null
+        var taxAmount : BigDecimal? = null
+        var amountToPay : BigDecimal? = null
+        var inspectionCostValue : BigDecimal? = inspectionCost
+        var applicationCostValue: BigDecimal?
+        var m1 = m
+
+        val productList = findAllProductManufactureINPlantWithID(map.activeStatus,map.inactiveStatus,permitType.id?:throw Exception("INVALID PERMIT TYPE ID"),plantDetail.id)
+        val productSize = productList.size
+        var remainingSize: BigDecimal
+        if (productSize > productMaximum) {
+            remainingSize = productSize.minus(productMaximum).toBigDecimal()
+            applicationCostValue = remainingSize.times(applicationCost)
+            stgAmt = applicationCostValue.plus(inspectionCostValue ?: throw Exception("INVALID INSPECTION COST VALUE"))
+        }else{
+            applicationCostValue = inspectionCostValue
+            inspectionCostValue = null
+            stgAmt = applicationCostValue
+        }
+
+        taxAmount =  taxRate.times(stgAmt?:throw Exception("INVALID STG AMOUNT"))
+        amountToPay = taxAmount.let { stgAmt.plus(it) }
+
+        KotlinLogging.logger { }.info { "Total Amount To Pay   = " + amountToPay.toDouble() }
+
+        m1 = myReturPaymentValues(
+            m1,
+            inspectionCostValue,
+            applicationCostValue,
+            amountToPay,
+            taxAmount
+        )
+        return m1
+    }
 
     private fun mutableListForTurnOverAbove500KSmark(
         plantDetail: ManufacturePlantDetailsEntity,
         permitType: PermitTypesEntity,
         permit: PermitApplicationsEntity,
-        inspectionCost: BigDecimal?,
-        applicationCost: BigDecimal?,
+        inspectionCost: BigDecimal,
+        applicationCost: BigDecimal,
         taxRate: BigDecimal,
+        map: ServiceMapsEntity,
+        user: UsersEntity,
+        currentDate: Date,
         m: MutableList<BigDecimal?>
     ): MutableList<BigDecimal?> {
         KotlinLogging.logger { }.info { "Turnover is above 500, 000" }
 
-//        if (){
-//
-//        }
-
         var stgAmt : BigDecimal? = null
         var taxAmount : BigDecimal? = null
         var amountToPay : BigDecimal? = null
+        var inspectionCostValue : BigDecimal? = inspectionCost
         var m1 = m
 
-        stgAmt = when (inspectionCost) {
-            null -> {
-                applicationCost
+        when {
+            currentDate > plantDetail.paidDate && currentDate < plantDetail.endingDate && plantDetail.inspectionFeeStatus == 1 -> {
+                stgAmt = applicationCost
+                inspectionCostValue = null
             }
             else -> {
-                applicationCost?.plus(inspectionCost)
+                stgAmt = applicationCost.plus(inspectionCostValue ?: throw Exception("INVALID INSPECTION COST VALUE"))
+                with(plantDetail) {
+                    inspectionFeeStatus = 1
+                    paidDate = commonDaoServices.getCurrentDate()
+                    endingDate = commonDaoServices.addYearsToCurrentDate(permitType.numberOfYears ?: throw Exception("INVALID NUMBER OF YEARS"))
+                }
+                updatePlantDetails(map, user, plantDetail)
             }
         }
 
-        taxAmount = stgAmt?.let { taxRate.times(it) }
-        amountToPay = taxAmount?.let { stgAmt?.plus(it) }
+//        stgAmt = when (inspectionCost) {
+//            null -> {
+//                applicationCost
+//            }
+//            else -> {
+//                applicationCost?.plus(inspectionCost)
+//            }
+//        }
 
-        KotlinLogging.logger { }.info { "Total Amount To Pay   = " + amountToPay?.toDouble() }
+        taxAmount = stgAmt.let { taxRate.times(it) }
+        amountToPay = taxAmount.let { stgAmt.plus(it) }
+
+        KotlinLogging.logger { }.info { "Total Amount To Pay   = " + amountToPay.toDouble() }
 
         m1 = myReturPaymentValues(
             m1,
-            inspectionCost,
+            inspectionCostValue,
             applicationCost,
             amountToPay,
             taxAmount

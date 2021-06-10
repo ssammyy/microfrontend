@@ -33,7 +33,7 @@ class ManufacturePlantDetailsEntity : Serializable {
 
     @Column(name = "INSPECTION_FEE_STATUS")
     @Basic
-    var inspectionFeeStatus: Long? = null
+    var inspectionFeeStatus: Int? = null
 
     @Column(name = "PAID_DATE")
     @Basic

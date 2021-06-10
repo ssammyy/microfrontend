@@ -43,6 +43,10 @@ class TurnOverRatesEntity : Serializable {
     @Basic
     var firmType: String? = null
 
+    @Column(name = "MAX_PRODUCT")
+    @Basic
+    var maxProduct: Long? = null
+
     @Column(name = "VAR_FIELD_1")
     @Basic
     var varField1: String? = null
@@ -119,6 +123,7 @@ class TurnOverRatesEntity : Serializable {
                 fixedAmountToPay == that.fixedAmountToPay &&
                 variableAmountToPay == that.variableAmountToPay &&
                 firmType == that.firmType &&
+                maxProduct == that.maxProduct &&
                 varField1 == that.varField1 &&
                 varField2 == that.varField2 &&
                 varField3 == that.varField3 &&
@@ -143,6 +148,7 @@ class TurnOverRatesEntity : Serializable {
             status,
             lowerLimit,
             taxRate,
+            maxProduct,
             upperLimit,
             fixedAmountToPay,
             variableAmountToPay,

@@ -1,6 +1,7 @@
 package org.kebs.app.kotlin.apollo.store.model.qa
 
 import java.io.Serializable
+import java.math.BigDecimal
 import java.sql.Timestamp
 import java.util.*
 import javax.persistence.*
@@ -34,6 +35,10 @@ class PermitTypesEntity : Serializable {
     @Basic
     var numberOfYears: Long? = null
 
+    @Column(name = "TAX_RATE")
+    @Basic
+    var taxRate: BigDecimal? = null
+
     @Column(name = "LOCAL_FOREIGN_STATUS")
     @Basic
     var localForeignStatus: Int? = null
@@ -49,6 +54,18 @@ class PermitTypesEntity : Serializable {
     @Column(name = "MARK")
     @Basic
     var mark: String? = null
+
+    @Column(name = "FMARK_AMOUNT")
+    @Basic
+    var fmarkAmount: BigDecimal? = null
+
+    @Column(name = "DMARK_FOREIGN_AMOUNT")
+    @Basic
+    var dmarkForeignAmount: BigDecimal? = null
+
+    @Column(name = "DMARK_LOCAL_AMOUNT")
+    @Basic
+    var dmarkLocalAmount: BigDecimal? = null
 
     @Column(name = "IMAGE")
     @Basic
@@ -136,6 +153,7 @@ class PermitTypesEntity : Serializable {
         val that = other as PermitTypesEntity
         return id == that.id &&
                 mark == that.mark &&
+                fmarkAmount == that.fmarkAmount &&
                 smeDeclarationForm == that.smeDeclarationForm &&
                 localForeignStatus == that.localForeignStatus &&
                 permitAwardYears == that.permitAwardYears &&
@@ -147,7 +165,10 @@ class PermitTypesEntity : Serializable {
                 st3Status == that.st3Status &&
                 st10Status == that.st10Status &&
                 numberOfYears == that.numberOfYears &&
+                taxRate == that.taxRate &&
                 image == that.image &&
+                dmarkForeignAmount == that.dmarkForeignAmount &&
+                dmarkLocalAmount == that.dmarkLocalAmount &&
                 varField1 == that.varField1 &&
                 varField2 == that.varField2 &&
                 varField3 == that.varField3 &&
@@ -170,10 +191,13 @@ class PermitTypesEntity : Serializable {
         return Objects.hash(
             id,
             status,
+            dmarkForeignAmount,
+            dmarkLocalAmount,
             schemeGenerate,
             descriptions,
             smeDeclarationForm,
             typeName,
+            taxRate,
             numberOfYears,
             permitAwardYears,
             localForeignStatus,
