@@ -1211,9 +1211,11 @@ class QADaoServices(
                 when {
                     manufactureNonStatus != 1 -> {
                         permitId = permitID
+                        ordinaryStatus = map.activeStatus
                     }
                 }
                 transactionDate = commonDaoServices.getCurrentDate()
+                versionNumber = 1
                 status = map.activeStatus
                 createdBy = commonDaoServices.concatenateName(user)
                 createdOn = commonDaoServices.getTimestamp()
@@ -1764,6 +1766,7 @@ class QADaoServices(
         val permitType = findPermitType(permit.permitType?:throw Exception("INVALID PERMIT TYPE ID"))
         val numberOfYears = permitType.numberOfYears?.toBigDecimal()?:throw Exception("INVALID NUMBER OF YEARS")
         val manufactureTurnOver = permit.userId?.let { commonDaoServices.findCompanyProfile(it).yearlyTurnover }
+        val plantDetails = findPlantDetails(permit.attachedPlantId?:throw Exception("INVALID PLANT ID"))
         var m = mutableListOf<BigDecimal?>()
 
 
@@ -1777,6 +1780,7 @@ class QADaoServices(
                                 val turnOverValues = manufactureType(manufactureTurnOver)
                                 val taxRate = turnOverValues.taxRate?:throw Exception("INVALID TAX RATE")
                                 m = mutableListForTurnOverAbove500KSmark(
+                                    plantDetails,
                                     permitType,
                                     permit,
                                     turnOverValues.fixedAmountToPay?.times(numberOfYears),
@@ -2051,6 +2055,7 @@ class QADaoServices(
 //    }
 
     private fun mutableListForTurnOverAbove500KSmark(
+        plantDetail: ManufacturePlantDetailsEntity,
         permitType: PermitTypesEntity,
         permit: PermitApplicationsEntity,
         inspectionCost: BigDecimal?,
@@ -2059,6 +2064,11 @@ class QADaoServices(
         m: MutableList<BigDecimal?>
     ): MutableList<BigDecimal?> {
         KotlinLogging.logger { }.info { "Turnover is above 500, 000" }
+
+//        if (){
+//
+//        }
+
         var stgAmt : BigDecimal? = null
         var taxAmount : BigDecimal? = null
         var amountToPay : BigDecimal? = null

@@ -27,6 +27,18 @@ class QaUploadsEntity : Serializable {
     @Basic
     var name: String? = null
 
+    @Column(name = "VERSION_NUMBER")
+    @Basic
+    var versionNumber: Long? = null
+
+    @Column(name = "SSC_STATUS")
+    @Basic
+    var sscStatus: Int? = null
+
+    @Column(name = "ORDINARY_STATUS")
+    @Basic
+    var ordinaryStatus: Int? = null
+
     @Column(name = "FILE_TYPE")
     @Basic
     var fileType: String? = null
@@ -125,6 +137,9 @@ class QaUploadsEntity : Serializable {
         val that = other as QaUploadsEntity
         return id == that.id &&
                 filepath == that.filepath &&
+                versionNumber == that.versionNumber &&
+                sscStatus == that.sscStatus &&
+                ordinaryStatus == that.ordinaryStatus &&
                 description == that.description &&
                 name == that.name &&
                 fileType == that.fileType &&
@@ -155,6 +170,9 @@ class QaUploadsEntity : Serializable {
     override fun hashCode(): Int {
         var result = Objects.hash(
             id,
+            versionNumber,
+                    sscStatus,
+                    ordinaryStatus,
             filepath,
             description,
             name,

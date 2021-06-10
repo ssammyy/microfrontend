@@ -1,6 +1,7 @@
 package org.kebs.app.kotlin.apollo.store.model.qa
 
 import java.io.Serializable
+import java.sql.Date
 import java.sql.Timestamp
 import java.util.*
 import javax.persistence.*
@@ -29,6 +30,18 @@ class ManufacturePlantDetailsEntity : Serializable {
     @Column(name = "TOWN")
     @Basic
     var town: Long? = null
+
+    @Column(name = "INSPECTION_FEE_STATUS")
+    @Basic
+    var inspectionFeeStatus: Long? = null
+
+    @Column(name = "PAID_DATE")
+    @Basic
+    var paidDate: Date? = null
+
+    @Column(name = "ENDING_DATE")
+    @Basic
+    var endingDate: Date? = null
 
     @Column(name = "USER_ID")
     @Basic
@@ -191,6 +204,9 @@ class ManufacturePlantDetailsEntity : Serializable {
                 county == that.county &&
                 userId == that.userId &&
                 town == that.town &&
+                inspectionFeeStatus == that.inspectionFeeStatus &&
+                paidDate == that.paidDate &&
+                endingDate == that.endingDate &&
                 location == that.location &&
                 street == that.street &&
                 buildingName == that.buildingName &&
