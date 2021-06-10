@@ -211,24 +211,24 @@ class ControllerRoutes {
 
     @Bean
     fun tasksRoute(handler: BpmnTasksHandler) =
-            router {
-                "/api/user/tasks".nest {
-                    GET(pattern = "/list", f = handler::tasksListView)
-                    GET(pattern = "/task/{taskId}", f = handler::reviewTask)
-                    POST(pattern = "/task/{taskId}/claim", f = handler::claimTask)
-                    POST(pattern = "/task/{taskId}/complete/{taskStatus}", f = handler::completeTask)
-                }
+        router {
+            "/api/user/tasks".nest {
+                GET(pattern = "/list", f = handler::tasksListView)
+                GET(pattern = "/task/{taskId}", f = handler::reviewTask)
+                POST(pattern = "/task/{taskId}/claim", f = handler::claimTask)
+                POST(pattern = "/task/{taskId}/complete/{taskStatus}", f = handler::completeTask)
             }
+        }
 
     @Bean
     fun userRoute(handler: UserHandler) =
-            router {
-                "/api/user".nest {
-                    GET("/user-notifications", handler::notificationList)
-                    GET("/user-profile", handler::userProfile)
-                    GET("/add/plant-details/save", handler::userProfile)
-                }
+        router {
+            "/api/user".nest {
+                GET("/user-notifications", handler::notificationList)
+                GET("/user-profile", handler::userProfile)
+                GET("/add/plant-details/save", handler::userProfile)
             }
+        }
 
     @Bean
     fun registrationRoutes(handler: RegistrationHandler) = router {
