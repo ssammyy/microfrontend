@@ -52,7 +52,6 @@ class StandardLevyHandler(
     private val singleManufacturerPage = "standard-levy/single-manufacturers"
     private val allPayments = "standard-levy/payments"
 
-    //var formatter = DateTimeFormatter.ofPattern("yyyy-mm-dd")
 
     @PreAuthorize("hasAuthority('SL_APPROVE_VISIT_REPORT') or hasAuthority('SL_SECOND_APPROVE_VISIT_REPORT') or hasAuthority('SL_MANUFACTURERS_VIEW')")
     fun home(req: ServerRequest): ServerResponse =
@@ -67,7 +66,7 @@ class StandardLevyHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            ServerResponse.badRequest().body(e.message ?: "Unknown error")
+            throw e
         }
 
 
@@ -125,7 +124,7 @@ class StandardLevyHandler(
                                         }
                                         "load_levy_payments" -> {
                                             val userId = commonDaoServices.loggedInUserDetails().id ?: -3L
-                                            val isEmployee = userRolesRepo.findByUserIdAndRoleIdAndStatus(userId, applicationMapProperties.slEmployeeRoleId ?: throw NullValueNotAllowedException("Role definition for employees not done"), 1)?.id != null
+                                            val isEmployee = userRolesRepo.findByUserIdAndRoleIdAndStatus(userId, applicationMapProperties.slEmployeeRoleId ?: throw ExpectedDataNotFound("Role definition for employees not done"), 1)?.id != null
 
 
 
@@ -139,7 +138,7 @@ class StandardLevyHandler(
 
                                                     }
                                             } else {
-                                                standardLevyPaymentsRepository.findByManufacturerEntityOrderByIdDesc(companyProfileRepo.findByUserId(userId)?.id ?: throw NullValueNotAllowedException("Invalid Request"))
+                                                standardLevyPaymentsRepository.findByManufacturerEntityOrderByIdDesc(companyProfileRepo.findByUserId(userId)?.id ?: throw ExpectedDataNotFound("Attempt to view payments without correct authorization restricted"))
                                                     .let { payments ->
                                                         KotlinLogging.logger { }
                                                             .info("Records found ${payments?.count()}")
@@ -168,7 +167,7 @@ class StandardLevyHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            ServerResponse.badRequest().body(e.message ?: "Unknown error")
+            throw e
 
         }
     }
@@ -272,7 +271,7 @@ class StandardLevyHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message, e)
             KotlinLogging.logger { }.debug(e.message, e)
-            ServerResponse.badRequest().body(e.message ?: "Unknown error")
+            throw e
         }
 
 
@@ -525,7 +524,6 @@ class StandardLevyHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-//            ServerResponse.badRequest().body(e.message ?: "Unknown error")
             throw e
         }
 
