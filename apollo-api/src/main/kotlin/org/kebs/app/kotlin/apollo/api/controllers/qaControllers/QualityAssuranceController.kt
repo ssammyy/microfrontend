@@ -953,6 +953,11 @@ class QualityAssuranceController(
                 val sta10 = qaDaoServices.findSTA10WithPermitIDBY(permitID)
                 with(QaSta10Entity){
                     id = sta10.id
+                    closedProduction=map.inactiveStatus
+                    closedRawMaterials=map.inactiveStatus
+                    closedMachineryPlants=map.inactiveStatus
+                    closedManufacturingProcesses=map.inactiveStatus
+
                 }
                 qaDaoServices.sta10Update(commonDaoServices.updateDetails(QaSta10Entity, sta10) as QaSta10Entity, map, loggedInUser)
             }
