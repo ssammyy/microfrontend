@@ -141,7 +141,7 @@ class ControllerRoutes(private val daoService: DaoService) {
 
                 }
                 "/idfsWithItems".nest {
-                    GET("/idfsWithItems/{country}", handler::getIdfsDataAndItems)
+                    GET("/{country}", handler::getIdfsDataAndItems)
                     POST("/", daoService::invalidGetOnPostUrl)
 
                 }

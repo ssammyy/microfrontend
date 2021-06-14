@@ -29,89 +29,33 @@
     <title>KEBS</title>
     <th:block th:include="fragments/general-form.html :: headerfiles"/>
     <link rel="stylesheet" th:href="@{/css/pageLoad.css}" type="text/css">
-    <style>
-        .container {
-            font-size: 14px;
-            color: #666666;
-            font-family: "Open Sans";
-        }
-        .card-custom {
-            overflow: hidden;
-            min-height: 450px;
-            box-shadow: 0 0 15px rgba(10, 10, 10, 0.3);
-        }
-
-        .card-custom-img {
-            height: 200px;
-            min-height: 200px;
-            background-repeat: no-repeat;
-            background-size: cover;
-            background-position: center;
-            border-color: inherit;
-        }
-
-        /* First border-left-width setting is a fallback */
-        .card-custom-img::after {
-            position: absolute;
-            content: '';
-            top: 161px;
-            left: 0;
-            width: 0;
-            height: 0;
-            border-style: solid;
-            border-top-width: 40px;
-            border-right-width: 0;
-            border-bottom-width: 0;
-            border-left-width: 545px;
-            border-left-width: calc(575px - 5vw);
-            border-top-color: transparent;
-            border-right-color: transparent;
-            border-bottom-color: transparent;
-            border-left-color: inherit;
-        }
-
-        .card-custom-avatar img {
-            border-radius: 50%;
-            box-shadow: 0 0 15px rgba(10, 10, 10, 0.3);
-            position: absolute;
-            top: 100px;
-            left: 1.25rem;
-            width: 100px;
-            height: 100px;
-        }
-
-    </style>
 </head>
 <body>
 <div id ="spinnerContainer"><div class="spinner"></div></div>
 <div class="top-bar" th:replace="fragments/general-form.html :: top-bar">
 
 </div>
-<div class="section">
-    <div class="w-layout-grid main-grid">
-        <div class="main-grid-side-navigation" id="w-node-d308c123a20f-c123a20d" th:replace="fragments/general-form.html ::side-navigation-bar"></div>
-        <div class="main-content-div" id="w-node-d308c123a224-c123a20d">
-            <div class="content-nav" th:replace="fragments/general-form.html :: content-navigation-bar"></div>
-            <div class="content-wrap">
-                <div class="content-row-top">
-                    <h2>Welcome to KEBS KIMS</h2>
-                </div>
-
-<!--                <div class="div-block-4">-->
-<!--                    <div class="card" style="width: 30rem;">-->
-<!--                        <img class="card-img-top" th:src="@{/images/petrol-station.jpg}" alt="Card image cap">-->
-<!--                        <div class="card-body">-->
-<!--                            <h5 class="card-title">Installation Inspection</h5>-->
-<!--                            <p class="card-text">All about fuel inspection and management</p>-->
-<!--                            <a style="width: 30rem" th:href="@{/ii(whereTo=all_tasks)}" class="btn btn-primary">Initiate an Inspection</a>-->
-<!--                        </div>-->
-<!--                    </div>-->
+        <div th:replace="fragments/general-form.html ::side-navigation-bar"></div>
+<!--        <div class="main-content-div" id="w-node-d308c123a224-c123a20d">-->
+<!--            <div class="content-nav" th:replace="fragments/general-form.html :: content-navigation-bar"></div>-->
+<!--            <div class="content-wrap">-->
+<!--                <div class="content-row-top">-->
+<!--                    <h2>Welcome to KEBS KIMS</h2>-->
 <!--                </div>-->
 
-            </div>
-        </div>
-    </div>
-</div>
+<!--&lt;!&ndash;                <div class="div-block-4">&ndash;&gt;-->
+<!--&lt;!&ndash;                    <div class="card" style="width: 30rem;">&ndash;&gt;-->
+<!--&lt;!&ndash;                        <img class="card-img-top" th:src="@{/images/petrol-station.jpg}" alt="Card image cap">&ndash;&gt;-->
+<!--&lt;!&ndash;                        <div class="card-body">&ndash;&gt;-->
+<!--&lt;!&ndash;                            <h5 class="card-title">Installation Inspection</h5>&ndash;&gt;-->
+<!--&lt;!&ndash;                            <p class="card-text">All about fuel inspection and management</p>&ndash;&gt;-->
+<!--&lt;!&ndash;                            <a style="width: 30rem" th:href="@{/ii(whereTo=all_tasks)}" class="btn btn-primary">Initiate an Inspection</a>&ndash;&gt;-->
+<!--&lt;!&ndash;                        </div>&ndash;&gt;-->
+<!--&lt;!&ndash;                    </div>&ndash;&gt;-->
+<!--&lt;!&ndash;                </div>&ndash;&gt;-->
+
+<!--            </div>-->
+<!--        </div>-->
 <script th:src="@{/js/spinner.js}" type="text/javascript"></script>
 
 <script>
