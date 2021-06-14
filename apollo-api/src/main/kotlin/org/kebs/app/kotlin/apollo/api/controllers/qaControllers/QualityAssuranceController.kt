@@ -951,11 +951,10 @@ class QualityAssuranceController(
         when (permitViewType) {
             applicationMapProperties.mapPermitRenewMessage -> {
                 val sta10 = qaDaoServices.findSTA10WithPermitIDBY(permitID)
-                qaDaoServices.sta10Update(
-                    commonDaoServices.updateDetails(QaSta10Entity, sta10) as QaSta10Entity,
-                    map,
-                    loggedInUser
-                )
+                with(QaSta10Entity){
+                    id = sta10.id
+                }
+                qaDaoServices.sta10Update(commonDaoServices.updateDetails(QaSta10Entity, sta10) as QaSta10Entity, map, loggedInUser)
             }
             applicationMapProperties.mapPermitNewMessage -> {
                 permit.id?.let { qaDaoServices.sta10NewSave(it, QaSta10Entity, loggedInUser, map) }

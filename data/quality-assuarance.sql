@@ -104,6 +104,13 @@ from cfg_kebs_qa_process_status
 -- where id = 350
 -- where PERMIT_NUMBER = 'DM#0954A'
 order by id desc;
+
+select *
+from DAT_KEBS_QA_STA10
+-- where id = 350
+where permit_id = 482
+-- where PERMIT_NUMBER = 'DM#0954A'
+order by id desc;
 1522
 
 select *
