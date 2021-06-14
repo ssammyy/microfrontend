@@ -205,7 +205,9 @@ class QualityAssuranceHandler(
         val permitID = req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
        val map = commonDaoServices.serviceMapDetails(appId)
         val permit = qaDaoServices.findPermitBYID(permitID)
+        val departmentEntity = commonDaoServices.findDepartmentByID(applicationMapProperties.mapQADepertmentId)
 
+        req.attributes()["sections"] = loadSectionDetails(departmentEntity, map, req)
         req.attributes().putAll(loadCommonUIComponents(map))
         req.attributes().putAll(loadCommonPermitComponents(map,permit))
         req.attributes()["permit"] = qaDaoServices.permitDetails(permit,null,map)
@@ -265,18 +267,36 @@ class QualityAssuranceHandler(
     @PreAuthorize("hasAuthority('PERMIT_APPLICATION')")
     fun newPermit(req: ServerRequest): ServerResponse {
         val map = commonDaoServices.serviceMapDetails(appId)
-        val permitTypeID = req.paramOrNull("permitTypeID")?.toLong()
-            ?: throw ExpectedDataNotFound("Required PermitType ID, check config")
+        val permitTypeID = req.paramOrNull("permitTypeID")?.toLong() ?: throw ExpectedDataNotFound("Required PermitType ID, check config")
         val permitType = qaDaoServices.findPermitType(permitTypeID)
         val departmentEntity = commonDaoServices.findDepartmentByID(applicationMapProperties.mapQADepertmentId)
 
+        req.attributes()["sections"] = loadSectionDetails(departmentEntity, map, req)
         req.attributes()["applicationDate"] = commonDaoServices.getCurrentDate()
         req.attributes()["permitType"] = permitType
         req.attributes()["permit"] = PermitApplicationsEntity()
-        req.attributes()["divisions"] = commonDaoServices.findDivisionByDepartmentId(departmentEntity, map.activeStatus)
+
+//        req.attributes()["divisions"] = commonDaoServices.findDivisionByDepartmentId(departmentEntity, map.activeStatus)
         req.attributes()["standardCategory"] = standardCategoryRepo.findByStatusOrderByStandardCategory(map.activeStatus)
         return ok().render(qaNewPermitPage, req.attributes())
 
+    }
+
+    private fun loadSectionDetails(
+        departmentEntity: DepartmentsEntity,
+        map: ServiceMapsEntity,
+        req: ServerRequest
+    ): MutableList<SectionsEntity> {
+        val divisions = commonDaoServices.findDivisionByDepartmentId(departmentEntity, map.activeStatus)
+        val sections = mutableListOf<SectionsEntity>()
+        divisions.forEach { div ->
+            val sectionFound = commonDaoServices.findAllSectionsListWithDivision(div, map.activeStatus)
+            sectionFound.forEach { sec ->
+                sections.add(sec)
+            }
+        }
+
+       return sections
     }
 
     @PreAuthorize("hasAuthority('PERMIT_APPLICATION')")
@@ -341,8 +361,7 @@ class QualityAssuranceHandler(
         req.attributes()["counties"] = countyRepo.findByStatusOrderByCounty(map.activeStatus)
         req.attributes()["applicationDate"] = commonDaoServices.getCurrentDate()
         req.attributes()["CommonPermitDto"] = qaDaoServices.companyDtoDetails(permit, map)
-        req.attributes()["QaSta10Entity"] =
-            qaDaoServices.findSTA10WithPermitIDBY(permit.id ?: throw Exception("INVALID PERMIT ID"))
+        req.attributes()["QaSta10Entity"] = qaDaoServices.findSTA10WithPermitIDBY(permit.id ?: throw Exception("INVALID PERMIT ID"))
         return ok().render(qaNewSta10Page, req.attributes())
 
     }

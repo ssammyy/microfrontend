@@ -562,7 +562,8 @@
 
                                         <a th:if="${permitDetails?.generateSchemeStatus == 1 and permitDetails?.approvedRejectedScheme == null and permitType?.schemeGenerate == 1}" th:href="@{/api/qa/scheme-of-supervision(permitID=${permitDetails?.id})}" style="color: white" class="filter-link">APPROVE/REJECT GENERATED SCHEME OF SUPERVISION AND CONTROL</a>
 
-                                        <div th:if="${permitDetails?.attachedPlantId != null}">
+                                        <div th:if="${permitDetails?.attachedPlantId != null}">permitEditApplication
+                                            <a th:if="${permitDetails?.sendApplication != 1}"  onclick="popUpUploadFunction('permitEditApplication');" class="filter-link" style="color: white">EDIT APPLICATION</a>
                                             <a th:if="${permitDetails?.sendApplication != 1}"  th:href="@{/api/qa/new-permit-submit(permitID=${permitDetails?.id})}" class="filter-link" style="color: white">SUBMIT APPLICATION</a>
                                         </div>
                                     </div>
@@ -621,9 +622,9 @@
                                             SUPERVISION AND CONTROL</a>
 
                                         <div th:if="${permitType?.st10Status == 1 and permitDetails?.sta10FilledStatus == 1 and permitDetails?.attachedPlantId != null}">
-                                            <a th:if="${permitDetails?.sendApplication != 1}"
-                                               th:href="@{/api/qa/new-permit-submit(permitID=${permitDetails?.id})}"
-                                               class="filter-link" style="color: white">SUBMIT APPLICATION</a>
+                                            <a th:if="${permitDetails?.sendApplication != 1}"  onclick="popUpFunction('permitEditApplication');" class="filter-link" style="color: white">EDIT APPLICATION</a>
+                                            <a th:if="${permitDetails?.sendApplication != 1}"   th:href="@{/api/qa/old-sta10(permitID=${permitDetails?.id})}" class="filter-link" style="color: white">UPDATE STA 10</a>
+                                            <a th:if="${permitDetails?.sendApplication != 1}" th:href="@{/api/qa/new-permit-submit(permitID=${permitDetails?.id})}" class="filter-link" style="color: white">SUBMIT APPLICATION</a>
                                         </div>
                                     </div>
 
@@ -908,6 +909,26 @@
                                             </select>
                                             <label for="hofQamCompletenessRemarks" class="col-form-label">Please write, in detail, PAC decision/remarks:</label>
                                             <textarea required name="name" id="pacDecisionRemarks" class="input-field w-input" cols="65" rows="5" th:field="*{pacDecisionRemarks}"></textarea>
+                                        </div>
+                                        <div id="permitEditApplication">
+                                            <input type="hidden" id="description16" name="description" th:value="'Permit Application successfully updated'">
+                                            <label for="commodityDescription" class="field-label">COMMODITY DESCRIPTION</label>
+                                            <input type="text" class="form-control"  id="commodityDescription" th:field="*{commodityDescription}"   required="required">
+                                            <label for="tradeMark" class="field-label">TRADE MARK</label>
+                                            <input type="text" class="form-control"  id="tradeMark" th:field="*{tradeMark}"  required="required">
+                                            <label for="sectionId" class="field-label" >Select Section</label>
+                                            <select reqiured="required" id="sectionId"  name="sectionId" th:field="*{sectionId}" class="form-control">
+                                                <option value="">Select one...</option>
+                                                <option th:each="section : ${sections}" th:text="${section.section}" th:value="${section.id}"></option>-->
+                                            </select>
+                                            <div th:if="${permitType?.localForeignStatus == 1}">
+                                                <label for="permitForeignStatus" class="field-label">Application Type</label>
+                                                <select class="form-control" id="permitForeignStatus" name="permitForeignStatus" required="required" th:field="*{permitForeignStatus}">
+                                                    <option th:text="'Select one.....'" th:value="'NULL'"></option>
+                                                    <option th:text="'FOREGIN'" th:value="1"></option>
+                                                    <option th:text="'DOMESTIC'" th:value="0"></option>
+                                                </select>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -1445,8 +1466,8 @@
 
 
     function popUpFunction(eventAction) {
-        let arrHead = ['attachePlant', 'permitCompleteness', 'assignOfficer', 'scheduleInspectionDate', 'assignAssessor', 'scheduleAssessmentDate', 'approveInspectionReport', 'complianceStatus', 'addRecommendation', 'approveRecommendation', 'pscMemberApproval', 'pcmApproval', 'dmarkApplicationApproval', 'hodApprovalAssessmentReport', 'permitStopProductionDetails'];
-        let arrHeadSave = ['Attach a Plant for manufacturing the product', 'Is The Permit Complete', 'Select An officer', ' Set The Date of Inspection', 'Select An Assessor', 'Schedule Factory Assessment Date', 'Approve Or Reject the Factory Inspection Report', 'Select a suitable Compliance Status for the Lab Report', 'Add Recommendation', 'Approve / Reject Recommendation', 'Approve / Reject Awarding of Permit', 'Approve / Reject Awarding of Permit', 'Grant/Defer Application', 'Approve / Reject Permit Review', 'Stop Production'];
+        let arrHead = ['attachePlant', 'permitCompleteness', 'assignOfficer', 'scheduleInspectionDate', 'assignAssessor', 'scheduleAssessmentDate', 'approveInspectionReport', 'complianceStatus', 'addRecommendation', 'approveRecommendation', 'pscMemberApproval', 'pcmApproval', 'dmarkApplicationApproval', 'hodApprovalAssessmentReport', 'permitStopProductionDetails', 'permitEditApplication'];
+        let arrHeadSave = ['Attach a Plant for manufacturing the product', 'Is The Permit Complete', 'Select An officer', ' Set The Date of Inspection', 'Select An Assessor', 'Schedule Factory Assessment Date', 'Approve Or Reject the Factory Inspection Report', 'Select a suitable Compliance Status for the Lab Report', 'Add Recommendation', 'Approve / Reject Recommendation', 'Approve / Reject Awarding of Permit', 'Approve / Reject Awarding of Permit', 'Grant/Defer Application', 'Approve / Reject Permit Review', 'Stop Production', 'Edit Permit Application'];
         // let arrHead = [ 'attachePlant', 'permitCompleteness', 'assignOfficer', 'scheduleInspectionDate', 'assignAssessor', 'scheduleAssessmentDate', 'dmarkApplicationApproval'];
         // let arrHeadSave = [ 'Attach a Plant for manufacturing the product', 'Is The Permit Complete', 'Select An officer',' Set The Date of Inspection', 'Select An Assessor', 'Schedule Factory Assessment Date',
         // 'Grant/Defer Application'];
