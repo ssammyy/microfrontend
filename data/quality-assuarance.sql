@@ -79,10 +79,14 @@
 ***************************Table USED IN QA*****************************************
 select *
 from DAT_KEBS_PERMIT_TRANSACTION
--- where id = 281
+where id = 482
 
 -- where PERMIT_NUMBER = 'DM#0954A'
 order by id desc;
+
+UPDATE DAT_KEBS_PERMIT_TRANSACTION
+SET SEND_APPLICATION = null, INVOICE_GENERATED= null
+WHERE id = 482;
 
 select *
 from CFG_PERMIT_TYPES

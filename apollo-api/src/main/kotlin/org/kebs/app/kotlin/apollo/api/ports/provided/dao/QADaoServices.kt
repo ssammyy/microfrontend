@@ -2062,6 +2062,15 @@ class QADaoServices(
         var m1 = m
 
         when {
+            plantDetail.paidDate== null && plantDetail.endingDate == null && plantDetail.inspectionFeeStatus == null -> {
+                stgAmt = applicationCost.plus(inspectionCostValue ?: throw Exception("INVALID INSPECTION COST VALUE"))
+                with(plantDetail) {
+                    inspectionFeeStatus = 1
+                    paidDate = commonDaoServices.getCurrentDate()
+                    endingDate = commonDaoServices.addYearsToCurrentDate(permitType.numberOfYears ?: throw Exception("INVALID NUMBER OF YEARS"))
+                }
+                updatePlantDetails(map, user, plantDetail)
+            }
             currentDate > plantDetail.paidDate && currentDate < plantDetail.endingDate && plantDetail.inspectionFeeStatus == 1 -> {
                 stgAmt = applicationCost
                 inspectionCostValue = null

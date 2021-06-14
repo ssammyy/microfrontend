@@ -957,7 +957,6 @@ class QualityAssuranceController(
                     closedRawMaterials=map.inactiveStatus
                     closedMachineryPlants=map.inactiveStatus
                     closedManufacturingProcesses=map.inactiveStatus
-
                 }
                 qaDaoServices.sta10Update(commonDaoServices.updateDetails(QaSta10Entity, sta10) as QaSta10Entity, map, loggedInUser)
             }
@@ -968,19 +967,14 @@ class QualityAssuranceController(
 
         val result: ServiceRequestsEntity?
 
-        val updatePermit = PermitApplicationsEntity()
-        with(updatePermit) {
+        with(permit) {
             id = permit.id
             sta10FilledStatus = map.inactiveStatus
             permitStatus = applicationMapProperties.mapQaStatusPSTA10Completion
         }
         //updating of Details in DB
-        result = qaDaoServices.permitUpdateDetails(
-            commonDaoServices.updateDetails(
-                permit,
-                updatePermit
-            ) as PermitApplicationsEntity, map, loggedInUser
-        ).first
+
+        result = qaDaoServices.permitUpdateDetails(permit, map, loggedInUser).first
 
         val sm = CommonDaoServices.MessageSuccessFailDTO()
         sm.closeLink =
