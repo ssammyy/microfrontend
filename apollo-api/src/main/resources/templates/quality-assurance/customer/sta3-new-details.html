@@ -31,10 +31,10 @@
                         <h5 style="font-weight: bold; color: #0082f3; font-size: 14px">STA 3: QUESTIONNAIRE FOR INITIAL
                             FACTORY ASSESSMENT</h5>
                         <form id="sta3Form" class="needs-validation" novalidate
-                              th:action="@{/api/qa/apply/new-sta3(permitID = ${permit.id})}" method="post">
-                            <div th:if="${message}" th:with="myRenewPermit=${message}">
-                                <input type="hidden" th:value="${myRenewPermit}" id="permitViewType">
-                            </div>
+                              th:action="@{/api/qa/apply/new-sta3(permitID = ${permit.id},  permitViewType=${message})}" method="post">
+<!--                            <div th:if="${message}" th:with="permitViewType=${message}">-->
+<!--                                <input type="hidden" th:value="${permitViewType}" id="permitViewType">-->
+<!--                            </div>-->
                             <div th:object="${QaSta3Entity}">
                                 <div class="form-row">
                                     <div class="col-md-12 mb-3">
@@ -333,7 +333,10 @@
                                 <div id="idSubmit">
                                     <div class="form-group">
                                         <div class="col-md-4 mb-3">
-                                            <button class="btn btn-primary" type="submit">Submit form</button>
+                                            <button class="btn btn-primary" id="check" type="button">Validate form</button>
+                                        </div>
+                                        <div class="col-md-4 mb-3">
+                                            <button class="btn btn-primary" disabled id="mySubmit" type="submit">Submit form</button>
                                         </div>
                                     </div>
                                 </div>
@@ -368,6 +371,34 @@
     //     });
     // });
 </script>
+<script>
+    $(document).ready(function(){
+
+        $( "#check" ).click(function() {
+            let allAreFilled = true;
+            document.getElementById("sta3Form").querySelectorAll("[required]").forEach(function(i) {
+                if (!allAreFilled) return;
+                if (!i.value) allAreFilled = false;
+                if (i.type === "radio") {
+                    let radioValueCheck = false;
+                    document.getElementById("sta3Form").querySelectorAll(`[name=${i.name}]`).forEach(function(r) {
+                        if (r.checked) radioValueCheck = true;
+                    })
+                    allAreFilled = radioValueCheck;
+                }
+            })
+            if (!allAreFilled) {
+                alert('Fill all the fields');
+            }else {
+                $(this).attr("disabled", "disabled");
+                $("#mySubmit").removeAttr("disabled");
+            }
+        });
+
+    });
+
+</script>
+
 <script>
     function hello () {
         let checkStatus = $("#idStatus").val();

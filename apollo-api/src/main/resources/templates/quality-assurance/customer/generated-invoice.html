@@ -221,7 +221,7 @@
                                             </tr>
                                             </thead>
                                             <tbody>
-                                            <tr th:if="${permit != null}">
+                                            <tr th:if="${invoice.inspectionCost != null} and ${permit != null}">
                                                 <td colspan="2">
                                                     Inspection cost
                                                     <br/><br>
@@ -231,13 +231,13 @@
                                                 <td class="text-center"
                                                     th:text="'KSH ' + ${invoice?.inspectionCost}"></td>
                                             </tr>
-                                            <tr th:if="${permit != null}" class="sub-total-row first">
-                                                <!--                              <td></td>-->
-                                                <td colspan="2">
-                                                    Cost of standard
-                                                    <br/><br>
-                                                <td th:text="'KSH ' + ${invoice?.standardCost}"></td>
-                                            </tr>
+<!--                                            <tr th:if="${permit != null}" class="sub-total-row first">-->
+<!--                                                &lt;!&ndash;                              <td></td>&ndash;&gt;-->
+<!--                                                <td colspan="2">-->
+<!--                                                    Cost of standard-->
+<!--                                                    <br/><br>-->
+<!--                                                <td th:text="'KSH ' + ${invoice?.standardCost}"></td>-->
+<!--                                            </tr>-->
                                             <tr th:if="${permit != null}">
                                                 <td colspan="2">
                                                     Permit cost

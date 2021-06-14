@@ -1,30 +1,37 @@
-package org.kebs.app.kotlin.apollo.store.model
+package org.kebs.app.kotlin.apollo.store.model.qa
 
 import java.io.Serializable
+import java.sql.Date
+import java.sql.Time
 import java.sql.Timestamp
 import java.util.*
 import javax.persistence.*
 
 @Entity
 @Table(name = "DAT_KEBS_QA_WORKPLAN")
-class QaWorkplanEntity: Serializable {
+class QaWorkplanEntity  : Serializable {
     @Column(name = "ID")
     @Id
     @SequenceGenerator(name = "DAT_KEBS_QA_WORKPLAN_SEQ_GEN", sequenceName = "DAT_KEBS_QA_WORKPLAN_SEQ", allocationSize = 1)
     @GeneratedValue(generator = "DAT_KEBS_QA_WORKPLAN_SEQ_GEN", strategy = GenerationType.SEQUENCE)
-    var id: Long = 0
+    var id: Long? = 0
+
 
     @Column(name = "STATUS")
     @Basic
     var status: Int? = null
 
-    @Column(name = "PERMITS")
+    @Column(name = "OFFICER_ID")
     @Basic
-    var permits: String? = null
+    var officerId: Long? = null
 
-    @JoinColumn(name = "USER_ID", referencedColumnName = "ID")
-    @ManyToOne
-    var userId: UsersEntity? = null
+    @Column(name = "REF_NUMBER")
+    @Basic
+    var refNumber: String? = null
+
+    @Column(name = "PERMIT_NUMBER")
+    @Basic
+    var permitNumber: String? = null
 
     @Column(name = "VAR_FIELD_1")
     @Basic
@@ -90,33 +97,51 @@ class QaWorkplanEntity: Serializable {
     @Basic
     var deletedOn: Timestamp? = null
 
+    @Column(name = "VERSION")
+    @Basic
+    var version: Long? = null
+
+    @Column(name = "VISITS_SCHEDULED")
+    @Basic
+    var visitsScheduled: Date? = null
+
+    @Column(name = "PERMIT_ID")
+    @Basic
+    var permitId: Long? = null
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other == null || javaClass != other.javaClass) return false
         val that = other as QaWorkplanEntity
-        return id == that.id &&
-                status == that.status &&
-                permits == that.permits &&
-                userId == that.userId &&
-                varField1 == that.varField1 &&
-                varField2 == that.varField2 &&
-                varField3 == that.varField3 &&
-                varField4 == that.varField4 &&
-                varField5 == that.varField5 &&
-                varField6 == that.varField6 &&
-                varField7 == that.varField7 &&
-                varField8 == that.varField8 &&
-                varField9 == that.varField9 &&
-                varField10 == that.varField10 &&
-                createdBy == that.createdBy &&
-                createdOn == that.createdOn &&
-                modifiedBy == that.modifiedBy &&
-                modifiedOn == that.modifiedOn &&
-                deleteBy == that.deleteBy &&
-                deletedOn == that.deletedOn
+        return id == that.id && status == that.status && permitNumber == that.permitNumber && refNumber == that.refNumber &&
+                officerId == that.officerId && varField1 == that.varField1 && varField2 == that.varField2 && varField3 == that.varField3 && varField4 == that.varField4 && varField5 == that.varField5 && varField6 == that.varField6 && varField7 == that.varField7 && varField8 == that.varField8 && varField9 == that.varField9 && varField10 == that.varField10 && createdBy == that.createdBy && createdOn == that.createdOn && modifiedBy == that.modifiedBy && modifiedOn == that.modifiedOn && deleteBy == that.deleteBy && deletedOn == that.deletedOn && version == that.version && visitsScheduled == that.visitsScheduled && permitId == that.permitId
     }
 
     override fun hashCode(): Int {
-        return Objects.hash(id, status, permits, userId, varField1, varField2, varField3, varField4, varField5, varField6, varField7, varField8, varField9, varField10, createdBy, createdOn, modifiedBy, modifiedOn, deleteBy, deletedOn)
+        return Objects.hash(
+            id,
+            status,
+            officerId,
+            refNumber,
+            permitNumber,
+            varField1,
+            varField2,
+            varField3,
+            varField4,
+            varField5,
+            varField6,
+            varField7,
+            varField8,
+            varField9,
+            varField10,
+            createdBy,
+            createdOn,
+            modifiedBy,
+            modifiedOn,
+            deleteBy,
+            deletedOn,
+            version,
+            visitsScheduled,
+            permitId
+        )
     }
 }

@@ -44,30 +44,33 @@
                                     <thead>
                                     <tr>
                                         <th>Reference Number</th>
-                                        <th>YEAR</th>
-                                        <th sec:authorize="hasAuthority('MS_HOD_READ') or hasAuthority('MS_RM_READ') or hasAuthority('MS_DIRECTOR_READ') or hasAuthority('MS_HOF_READ')">
-                                            Created By
-                                        </th>
-                                        <th>Creation Date</th>
-                                        <th>Finished Date</th>
-                                        <th>Status</th>
+                                        <th>Company Name</th>
+                                        <th>Physical Address</th>
+                                        <th>Town Name</th>
+                                        <th>Permit Number</th>
+                                        <th>Product Brand</th>
+                                        <th>Issue Date</th>
+                                        <th>Expiry Date</th>
+                                        <th>Visit Scheduled</th>
                                         <th>View Details</th>
                                     </tr>
                                     </thead>
                                     <tbody>
                                     <!--                <a th:each="coc, iStat: ${cocs}" th:href="@{/api/inspection/supervisor/coc-details/{id}(id=${coc.id})}" class="table-row w-inline-block">-->
-                                    <tr class="list" th:each="createdWorkPlan: ${createdWorkPlans}"
+                                    <tr class="list" th:each="createdWorkPlan: ${allWorkPlanCreated}"
                                         style="cursor: pointer">
-                                        <td th:text="${createdWorkPlan?.referenceNumber}"></td>
-                                        <td th:text="${createdWorkPlan?.yearNameId?.yearName}"></td>
-                                        <td sec:authorize="hasAuthority('MS_HOD_READ') or hasAuthority('MS_RM_READ') or hasAuthority('MS_DIRECTOR_READ') or hasAuthority('MS_HOF_READ')"
-                                            th:text="${createdWorkPlan?.userCreatedId?.firstName}+ ' ' +${createdWorkPlan?.userCreatedId?.lastName}"></td>
-                                        <td th:text="${#dates.format(createdWorkPlan?.createdDate, 'dd/MM/yyyy')}"></td>
-                                        <td th:text="${#dates.format(createdWorkPlan?.endedDate, 'dd/MM/yyyy')}"></td>
-                                        <td th:text="${createdWorkPlan?.workPlanStatus} ? 'APPROVED' : 'NOT APPROVED'"></td>
+                                        <td th:text="${createdWorkPlan?.refNumber}"></td>
+                                        <td th:text="${createdWorkPlan?.firmName}"></td>
+                                        <td th:text="${createdWorkPlan?.physicalAddress}"></td>
+                                        <td th:text="${createdWorkPlan?.town}"></td>
+                                        <td th:text="${createdWorkPlan?.permitNumber}"></td>
+                                        <td th:text="${createdWorkPlan?.productBrand}"></td>
+                                        <td th:text="${#dates.format(createdWorkPlan?.issueDate, 'dd/MM/yyyy')}"></td>
+                                        <td th:text="${#dates.format(createdWorkPlan?.expiryDate, 'dd/MM/yyyy')}"></td>
+                                        <td th:text="${#dates.format(createdWorkPlan?.visitsScheduled, 'MM/yyyy')}"></td>
                                         <!--                                        <td sec:authorize="hasAuthority('CD_SUPERVISOR_READ')" th:if="${coc?.assignedStatus == 1}"  th:text="${coc?.assignIoId?.firstName}  + ' ' + ${coc?.assignIoId?.lastName}"></td>-->
                                         <td>
-                                            <a th:href="@{/api/ms/ms-list-workPlans(createdWorkPlanUuid=${createdWorkPlan.uuid})}">view</a>
+                                            <a th:href="@{/api/qa/workPlan/details(refNumber=${createdWorkPlan.refNumber})}">VIEW</a>
                                         </td>
                                     </tr>
 

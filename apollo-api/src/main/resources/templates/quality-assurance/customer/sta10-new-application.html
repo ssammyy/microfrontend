@@ -30,10 +30,7 @@
                     <div class="row">
                         <h5 style="font-weight: bold; color: #0082f3; font-size: 14px">STA 10: INITIAL/(ROUTINE) INSPECTION REPORTS FACTORY ASSESSMENT</h5>
                         <form id="sta3Form" class="needs-validation" novalidate
-                              th:action="@{/api/qa/apply/new-sta10(permitID = ${permit.id})}" method="post">
-                            <div th:if="${message}" th:with="myRenewPermit=${message}">
-                                <input type="hidden" th:value="${myRenewPermit}" id="permitViewType">
-                            </div>
+                              th:action="@{/api/qa/apply/new-sta10(permitID = ${permit.id}, permitViewType=${message})}" method="post">
                             <div th:object="${QaSta10Entity}">
                                 <div class="form-row">
                                     <div class="col-md-12 mb-3">
@@ -64,7 +61,7 @@
                                                th:value="${CommonPermitDto?.directorList}" type="hidden">
                                         <textarea type="text" disabled class="form-control" style="font-size: 16px"
                                                   rows="2" id="ownerNameProprietorDirector2"
-                                                  th:value="${CommonPermitDto?.directorList}"
+                                                  th:text="${CommonPermitDto?.directorList}"
                                                   required="required"></textarea>
                                     </div>
                                 </div>
@@ -272,7 +269,10 @@
                                 <div id="idSubmit">
                                     <div class="form-group">
                                         <div class="col-md-4 mb-3">
-                                            <button class="btn btn-primary" type="submit">Submit form</button>
+                                            <button class="btn btn-primary" id="check" type="button">Validate form</button>
+                                        </div>
+                                        <div class="col-md-4 mb-3">
+                                            <button class="btn btn-primary" disabled id="mySubmit" type="submit">Submit form</button>
                                         </div>
                                     </div>
                                 </div>
@@ -310,6 +310,29 @@
 </script>
 <script>
     $(document).ready(function(){
+
+        $( "#check" ).click(function() {
+            let allAreFilled = true;
+            document.getElementById("sta3Form").querySelectorAll("[required]").forEach(function(i) {
+                if (!allAreFilled) return;
+                if (!i.value) allAreFilled = false;
+                if (i.type === "radio") {
+                    let radioValueCheck = false;
+                    document.getElementById("sta3Form").querySelectorAll(`[name=${i.name}]`).forEach(function(r) {
+                        if (r.checked) radioValueCheck = true;
+                    })
+                    allAreFilled = radioValueCheck;
+                }
+            })
+            if (!allAreFilled) {
+                alert('Fill all the fields');
+            }else {
+                $(this).attr("disabled", "disabled");
+                $("#mySubmit").removeAttr("disabled");
+            }
+        });
+
+
         $("#county").click(function () {
             // let methodId = $("#divisionId").children("option:selected").val()
             let countyId = $("#county").val()

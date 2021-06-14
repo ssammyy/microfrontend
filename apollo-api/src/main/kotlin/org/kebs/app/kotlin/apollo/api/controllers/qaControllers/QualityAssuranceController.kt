@@ -92,8 +92,7 @@ class QualityAssuranceController(
         @RequestParam("status") status: Int?,
         @RequestParam("schemeID") schemeID: Long?,
         model: Model
-    )
-            : String? {
+    ): String? {
         var result: ServiceRequestsEntity?
         val map = commonDaoServices.serviceMapDetails(appId)
         val loggedInUser = commonDaoServices.loggedInUserDetails()
@@ -399,22 +398,24 @@ class QualityAssuranceController(
 
                 var complianceValue: String? = null
                 if (permit.hodApproveAssessmentStatus == map.activeStatus) {
-                    val pacSecList = qaDaoServices.findOfficersList(
-                        permitDetails,
-                        map,
-                        applicationMapProperties.mapQADesignationIDForPacSecId
-                    )
-                    val appointedPacSec = pacSecList[0]
+                    val pacSecList = permitDetails.attachedPlantId?.let {
+                        qaDaoServices.findOfficersList(
+                            it,
+                            map,
+                            applicationMapProperties.mapQADesignationIDForPacSecId
+                        )
+                    }
+                    val appointedPacSec = pacSecList?.get(0)
 
                     with(permitDetails) {
                         hodApproveAssessmentStatus = map.activeStatus
                         hodApproveAssessmentRemarks = permit.hodApproveAssessmentRemarks
-                        pacSecId = appointedPacSec.userId?.id
+                        pacSecId = appointedPacSec?.userId?.id
                     }
                     qaDaoServices.permitUpdateDetails(permitDetails, map, loggedInUser)
 
                     //Send notification to PAC secretary
-                    val pacSec = appointedPacSec.userId?.id?.let { commonDaoServices.findUserByID(it) }
+                    val pacSec = appointedPacSec?.userId?.id?.let { commonDaoServices.findUserByID(it) }
                     pacSec?.email?.let { qaDaoServices.sendPacDmarkAssessmentNotificationEmail(it, permitDetails) }
 
                     qaDaoServices.permitInsertStatus(
@@ -1170,6 +1171,7 @@ class QualityAssuranceController(
         @RequestParam("permitID") permitID: Long,
         @RequestParam("manufactureNonStatus") manufactureNonStatus: Int,
         @RequestParam("inspectionReportStatus") inspectionReportStatus: Int?,
+        @RequestParam("sscUploadStatus") sscUploadStatus: Int?,
         @RequestParam("scfStatus") scfStatus: Int?,
         @RequestParam("ssfStatus") ssfStatus: Int?,
         @RequestParam("labResultsStatus") labResultsStatus: Int?,
@@ -1202,6 +1204,13 @@ class QualityAssuranceController(
                 permitDetails.scfId = uploadResults.second.id
                 permitDetails = qaDaoServices.permitUpdateDetails(permitDetails, map, loggedInUser).second
                 qaDaoServices.permitInsertStatus(permitDetails, applicationMapProperties.mapQaStatusPSSF, loggedInUser)
+
+            }
+            sscUploadStatus != null -> {
+                permitDetails.generateSchemeStatus = map.activeStatus
+                permitDetails.sscId = uploadResults.second.id
+                permitDetails = qaDaoServices.permitUpdateDetails(permitDetails, map, loggedInUser).second
+                qaDaoServices.permitInsertStatus(permitDetails, applicationMapProperties.mapQaStatusPApprSSC, loggedInUser)
 
             }
             ssfStatus != null -> {
