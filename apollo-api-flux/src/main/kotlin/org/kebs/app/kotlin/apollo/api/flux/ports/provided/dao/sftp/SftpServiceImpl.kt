@@ -3,16 +3,15 @@ package org.kebs.app.kotlin.apollo.api.ports.provided.sftp
 import com.google.common.io.Files
 import com.jcraft.jsch.Channel
 import com.jcraft.jsch.ChannelSftp
-import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
-import org.springframework.stereotype.Service
 import com.jcraft.jsch.JSch
 import com.jcraft.jsch.Session
+import jdk.internal.net.http.common.Log.channel
 import mu.KotlinLogging
 import org.apache.commons.io.FileUtils
-import org.apache.commons.io.FilenameUtils
 import org.jasypt.encryption.StringEncryptor
+import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
+import org.springframework.stereotype.Service
 import java.io.File
-import java.io.FileInputStream
 import java.io.IOException
 import java.io.InputStream
 import java.util.*
@@ -71,7 +70,9 @@ class SftpServiceImpl(
     fun disconnect(sftp: ChannelSftp) {
         try {
             if (sftp.isConnected) {
-                sftp.disconnect()
+                val session: Session = sftp.getSession()
+                sftp.exit()
+                session.disconnect()
             } else if (sftp.isClosed) {
                 KotlinLogging.logger { }.info("SFTP connection is already closed")
             }
