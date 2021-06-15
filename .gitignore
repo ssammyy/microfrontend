@@ -35,6 +35,7 @@
 **.kotlintest/
 .history/**
 **/build/
+**/bin/
 **/.gradle/
 **/out/
 **/logs/

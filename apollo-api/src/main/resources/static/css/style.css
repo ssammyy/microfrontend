@@ -566,12 +566,13 @@ label {
     "notification-title notification-content notification-details";
 }
 
-
-
 .form-inline {
     display: inline-block!important;
 }
 
 #example2_wrapper {
-    width: 100%!important;
+    width: 100% !important;
+}
+.fade {
+    opacity: 1;
 }
