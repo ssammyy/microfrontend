@@ -557,6 +557,10 @@ label {
 }
 
 a {
-    color: #ffffff!important;
-    text-decoration: none!important;
+    color: #ffffff !important;
+    text-decoration: none !important;
+}
+
+.fade {
+    opacity: 1;
 }
