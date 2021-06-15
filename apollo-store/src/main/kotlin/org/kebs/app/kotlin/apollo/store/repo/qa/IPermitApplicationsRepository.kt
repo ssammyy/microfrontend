@@ -147,8 +147,10 @@ interface ITurnOverRatesRepository : HazelcastRepository<TurnOverRatesEntity, Lo
 
 @Repository
 interface IQaUploadsRepository : HazelcastRepository<QaUploadsEntity, Long> {
-    fun findByPermitId(permitId: Long): List<QaUploadsEntity>?
+    fun findByPermitIdAndOrdinaryStatus(permitId: Long, ordinaryStatus: Int): List<QaUploadsEntity>?
     fun findByPermitIdAndDocumentType(permitId: Long, docType: String): QaUploadsEntity?
+    fun findByPermitIdAndCocStatus(permitId: Long, cocStatus: Int): List<QaUploadsEntity>?
+    fun findByPermitIdAndSscStatus(permitId: Long, sscStatus: Int): List<QaUploadsEntity>?
 }
 
 @Repository

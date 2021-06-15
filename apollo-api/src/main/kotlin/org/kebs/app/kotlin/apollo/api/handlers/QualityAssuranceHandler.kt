@@ -221,44 +221,18 @@ class QualityAssuranceHandler(
 
     @PreAuthorize("hasAuthority('PERMIT_APPLICATION') or hasAuthority('QA_OFFICER_MODIFY') or hasAuthority('QA_HOD_READ') or hasAuthority('QA_MANAGER_ASSESSORS_READ') or hasAuthority('QA_HOF_READ') or hasAuthority('QA_ASSESSORS_READ') or hasAuthority('QA_PSC_MEMBERS_READ') or hasAuthority('QA_PCM_READ')")
     fun permitViewSmarkDetails(req: ServerRequest): ServerResponse {
-        val smarkID = req.paramOrNull("smarkID")?.toLong() ?: throw ExpectedDataNotFound("Required Smark ID, check config")
-       val map = commonDaoServices.serviceMapDetails(appId)
+        val smarkID =
+            req.paramOrNull("smarkID")?.toLong() ?: throw ExpectedDataNotFound("Required Smark ID, check config")
+        val map = commonDaoServices.serviceMapDetails(appId)
         val fmarkID = qaDaoServices.findFmarkWithSmarkId(smarkID)
-        val permit = fmarkID.fmarkId?.let { qaDaoServices.findPermitBYID(it) } ?: throw ExpectedDataNotFound("Required Fmark ID MISSING")
+        val permit = fmarkID.fmarkId?.let { qaDaoServices.findPermitBYID(it) }
+            ?: throw ExpectedDataNotFound("Required Fmark ID MISSING")
         val plantAttached = permit.attachedPlantId?.let { qaDaoServices.findPlantDetails(it) }
 
 
-        req.attributes().putAll(commonDaoServices.loadCommonUIComponents(map))
-
-        if (permit.hofQamCompletenessStatus == map.activeStatus && permit.assignOfficerStatus != map.activeStatus) {
-            req.attributes()["officers"] = permit.attachedPlantId?.let { qaDaoServices.findOfficersList(it, map, applicationMapProperties.mapQADesignationIDForQAOId) }
-        }else if (permit.assignOfficerStatus == map.activeStatus) {
-            req.attributes()["officerAssigned"] = permit.qaoId?.let { commonDaoServices.findUserByID(it) }
-        }
-
-        if (permit.justificationReportStatus == map.activeStatus && permit.assignAssessorStatus != map.activeStatus) {
-            req.attributes()["assessors"] = permit.attachedPlantId?.let { qaDaoServices.findOfficersList(it, map, applicationMapProperties.mapQADesignationIDForAssessorId) }
-        } else if (permit.assignAssessorStatus == map.activeStatus) {
-            req.attributes()["assessorAssigned"] = permit.assessorId?.let { commonDaoServices.findUserByID(it) }
-        }
-
-        req.attributes()["fileParameters"] = qaDaoServices.findAllUploadedFileBYPermitID(smarkID)
-        req.attributes()["standardCategory"] = standardCategoryRepo.findByIdOrNull(permit.standardCategory)
-        req.attributes()["productCategory"] = productCategoriesRepository.findByIdOrNull(permit.productCategory)
-        req.attributes()["broadProductCategory"] = broadProductCategoryRepository.findByIdOrNull(permit.broadProductCategory)
-        req.attributes()["product"] = productsRepo.findByIdOrNull(permit.product)
-        req.attributes()["productSubCategory"] = productSubCategoryRepo.findByIdOrNull(permit.productSubCategory)
-        req.attributes()["ksApplicable"] = sampleStandardsRepository.findBySubCategoryId(permit.productSubCategory)
-        req.attributes()["sectionValue"] = permit.sectionId?.let { commonDaoServices.findSectionWIthId(it).section }
-        req.attributes()["divisionValue"] = permit.divisionId?.let { commonDaoServices.findDivisionWIthId(it).division }
-        req.attributes()["regionPlantValue"] = plantAttached?.region?.let { commonDaoServices.findRegionEntityByRegionID(it, map.activeStatus).region }
-        req.attributes()["countyPlantValue"] = plantAttached?.county?.let { commonDaoServices.findCountiesEntityByCountyId(it, map.activeStatus).county }
-        req.attributes()["townPlantValue"] = plantAttached?.town?.let { commonDaoServices.findTownEntityByTownId(it).town }
-        req.attributes()["permitType"] = permit.permitType?.let { qaDaoServices.findPermitType(it) }
-        req.attributes()["permitDetails"] = permit
-        req.attributes()["plantAttached"] = plantAttached
-
-        req.attributes()["oldVersionList"] = permit.permitRefNumber?.let { qaDaoServices.findAllOldPermitWithPermitID(it) }
+        req.attributes().putAll(loadCommonUIComponents(map))
+        req.attributes().putAll(loadCommonPermitComponents(map, permit))
+        req.attributes()["permit"] = qaDaoServices.permitDetails(permit, null, map)
 
         return ok().render(qaPermitDetailPage, req.attributes())
     }
@@ -526,6 +500,7 @@ class QualityAssuranceHandler(
     @PreAuthorize("hasAuthority('PERMIT_APPLICATION') or hasAuthority('QA_HOD_READ') or hasAuthority('QA_MANAGER_ASSESSORS_READ') or hasAuthority('QA_HOF_READ') or hasAuthority('QA_OFFICER_MODIFY') or hasAuthority('QA_PSC_MEMBERS_READ') or hasAuthority('QA_PCM_READ')")
     fun getInvoiceDetails(req: ServerRequest): ServerResponse {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val map = commonDaoServices.serviceMapDetails(appId)
 
         val permitID = req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
         val permit = qaDaoServices.findPermitBYID(permitID)
@@ -539,8 +514,10 @@ class QualityAssuranceHandler(
         req.attributes()["invoice"] = invoiceDetails
         req.attributes()["phoneNumber"] = permit.telephoneNo
         req.attributes()["applicationState"] = applicationState
-        req.attributes()["permit"] = permit
-        req.attributes()["invoiceBalanceDetails"] = invoiceDaoService.findInvoiceStgReconciliationDetails(invoiceDetails?.invoiceNumber?: throw ExpectedDataNotFound("INVALID REFERENCE CODE"))
+        req.attributes()["permit"] = qaDaoServices.permitDetails(permit, null, map)
+        req.attributes()["invoiceBalanceDetails"] = invoiceDaoService.findInvoiceStgReconciliationDetails(
+            invoiceDetails?.invoiceNumber ?: throw ExpectedDataNotFound("INVALID REFERENCE CODE")
+        )
         req.attributes()["product"] = permit.product?.let { commonDaoServices.findProductByID(it) }
         req.attributes()["permitType"] = permit.permitType?.let { qaDaoServices.findPermitType(it) }
         req.attributes()["mpesa"] = CdLaboratoryParametersEntity()
@@ -614,11 +591,12 @@ class QualityAssuranceHandler(
         )
     }
 
-    private fun loadCommonUIComponents(s: ServiceMapsEntity): MutableMap<String, Any> {
+    private fun loadCommonUIComponents(s: ServiceMapsEntity): MutableMap<String, Any?> {
         return mutableMapOf(
             Pair("activeStatus", s.activeStatus),
             Pair("inActiveStatus", s.inactiveStatus),
             Pair("initStatus", s.initStatus),
+            Pair("nullStatus", null),
             Pair("permitRequest", PermitUpdateDetailsRequestsEntity()),
             Pair("requestDetails", PermitUpdateDetailsRequestsEntity()),
             Pair("fmarkEntityDto", FmarkEntityDto()),
@@ -633,16 +611,63 @@ class QualityAssuranceHandler(
     private fun loadCommonPermitComponents(s: ServiceMapsEntity, permit: PermitApplicationsEntity): MutableMap<String, Any?> {
         return mutableMapOf(
 
-            Pair("oldVersionList", qaDaoServices.findAllOldPermitWithPermitID( permit.permitRefNumber?:throw Exception("INVALID PERMIT REF NUMBER"))),
-            Pair("permitType", qaDaoServices.findPermitType(permit.permitType?:throw Exception("INVALID PERMIT TYPE ID"))),
-            Pair("fileParameters", qaDaoServices.findAllUploadedFileBYPermitID(permit.id?:throw Exception("INVALID PERMIT ID"))),
+            Pair(
+                "oldVersionList",
+                qaDaoServices.findAllOldPermitWithPermitID(
+                    permit.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER")
+                )
+            ),
+            Pair(
+                "permitType",
+                qaDaoServices.findPermitType(permit.permitType ?: throw Exception("INVALID PERMIT TYPE ID"))
+            ),
+            Pair(
+                "fileParameters",
+                qaDaoServices.findAllUploadedFileBYPermitIDAndOrdinarStatus(
+                    permit.id ?: throw Exception("INVALID PERMIT ID"), s.activeStatus
+                )
+            ),
+            Pair(
+                "cocParameters",
+                qaDaoServices.findAllUploadedFileBYPermitIDAndCocStatus(
+                    permit.id ?: throw Exception("INVALID PERMIT ID"), s.activeStatus
+                )
+            ),
+            Pair(
+                "sscParameters",
+                qaDaoServices.findAllUploadedFileBYPermitIDAndSscStatus(
+                    permit.id ?: throw Exception("INVALID PERMIT ID"), s.activeStatus
+                )
+            ),
 //            Pair("statusName", qaDaoServices.findPermitStatus(permit.permitStatus?:throw Exception("INVALID PERMIT STATUS VALUE"))),
-            Pair("myRequests", qaDaoServices.findAllRequestByPermitID(permit.id?: throw Exception("INVALID PERMIT ID"))),
+            Pair(
+                "myRequests",
+                qaDaoServices.findAllRequestByPermitID(permit.id ?: throw Exception("INVALID PERMIT ID"))
+            ),
             Pair("userRequestTypes", qaDaoServices.findAllQaRequestTypes(s.activeStatus)),
             Pair("permitDetails", permit),
-            Pair("plantsDetails", permit.userId?.let { qaDaoServices.findAllPlantDetails(it) } ?: throw ExpectedDataNotFound("Required User ID, from Permit Details")),
-            Pair("officers", permit.attachedPlantId?.let { qaDaoServices.findOfficersList(it, s, applicationMapProperties.mapQADesignationIDForQAOId) }),
-            Pair("assessorAssigned", permit.attachedPlantId?.let { qaDaoServices.findOfficersList(it, s, applicationMapProperties.mapQADesignationIDForAssessorId) })
+            Pair(
+                "plantsDetails",
+                permit.userId?.let { qaDaoServices.findAllPlantDetails(it) }
+                    ?: throw ExpectedDataNotFound("Required User ID, from Permit Details")),
+            Pair(
+                "officers",
+                permit.attachedPlantId?.let {
+                    qaDaoServices.findOfficersList(
+                        it,
+                        s,
+                        applicationMapProperties.mapQADesignationIDForQAOId
+                    )
+                }),
+            Pair(
+                "assessorAssigned",
+                permit.attachedPlantId?.let {
+                    qaDaoServices.findOfficersList(
+                        it,
+                        s,
+                        applicationMapProperties.mapQADesignationIDForAssessorId
+                    )
+                })
         )
     }
 

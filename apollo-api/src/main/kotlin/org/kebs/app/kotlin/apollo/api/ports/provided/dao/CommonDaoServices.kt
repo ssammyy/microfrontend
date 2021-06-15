@@ -624,16 +624,47 @@ class CommonDaoServices(
     }
 
 
-    fun findUserProfileWithDesignationRegionDepartmentAndStatus(designationsEntity: DesignationsEntity, regionsEntity: RegionsEntity, departmentsEntity: DepartmentsEntity, status: Int): UserProfilesEntity {
-        iUserProfilesRepo.findByDesignationIdAndRegionIdAndDepartmentIdAndStatus(designationsEntity, regionsEntity, departmentsEntity, status)
-                ?.let { userProfile ->
-                    return userProfile
-                }
-                ?: throw ExpectedDataNotFound("No user Profile Matched the following details [designation id = ${designationsEntity.id}] and [region id = ${regionsEntity.id}]and [department id = ${departmentsEntity.id}] and [status = $status]")
+    fun findUserProfileWithDesignationRegionDepartmentAndStatus(
+        designationsEntity: DesignationsEntity,
+        regionsEntity: RegionsEntity,
+        departmentsEntity: DepartmentsEntity,
+        status: Int
+    ): UserProfilesEntity {
+        iUserProfilesRepo.findByDesignationIdAndRegionIdAndDepartmentIdAndStatus(
+            designationsEntity,
+            regionsEntity,
+            departmentsEntity,
+            status
+        )
+            ?.let { userProfile ->
+                return userProfile
+            }
+            ?: throw ExpectedDataNotFound("No user Profile Matched the following details [designation id = ${designationsEntity.id}] and [region id = ${regionsEntity.id}]and [department id = ${departmentsEntity.id}] and [status = $status]")
     }
 
-    fun findAllUsersWithDesignationRegionDepartmentAndStatus(designationsEntity: DesignationsEntity, regionsEntity: RegionsEntity, departmentsEntity: DepartmentsEntity, status: Int): List<UserProfilesEntity> {
-        iUserProfilesRepo.findAllByDesignationIdAndRegionIdAndDepartmentIdAndStatus(designationsEntity, regionsEntity, departmentsEntity, status)
+    fun findUserProfileWithDesignationAndStatus(
+        designationsEntity: DesignationsEntity,
+        status: Int
+    ): UserProfilesEntity {
+        iUserProfilesRepo.findByDesignationIdAndStatus(designationsEntity, status)
+            ?.let { userProfile ->
+                return userProfile
+            }
+            ?: throw ExpectedDataNotFound("No user Profile Matched the following details [designation id = ${designationsEntity.id}] and [status = $status]")
+    }
+
+    fun findAllUsersWithDesignationRegionDepartmentAndStatus(
+        designationsEntity: DesignationsEntity,
+        regionsEntity: RegionsEntity,
+        departmentsEntity: DepartmentsEntity,
+        status: Int
+    ): List<UserProfilesEntity> {
+        iUserProfilesRepo.findAllByDesignationIdAndRegionIdAndDepartmentIdAndStatus(
+            designationsEntity,
+            regionsEntity,
+            departmentsEntity,
+            status
+        )
             ?.let { users ->
                 return users
             }

@@ -93,10 +93,12 @@
 <!--                                    </div>-->
                                     <div th:if="${permitType?.localForeignStatus == 1}" class="col-md-4 mb-3">
                                         <label for="permitForeignStatus" class="field-label">APPLICATION TYPE</label>
-                                        <select class="form-control" id="permitForeignStatus" name="permitForeignStatus" required="required" th:field="*{permitForeignStatus}">
+                                        <select class="form-control" id="permitForeignStatus" name="permitForeignStatus"
+                                                required="required" th:field="*{permitForeignStatus}">
                                             <option th:text="'Select one.....'" th:value="'NULL'"></option>
-                                            <option th:text="'FOREGIN'" th:value="1"></option>
                                             <option th:text="'DOMESTIC'" th:value="0"></option>
+                                            <option th:text="'FOREGIN'" th:value="1"></option>
+
                                         </select>
                                     </div>
                                     <div th:if="${permitType?.localForeignStatus == 0}" class="col-md-4 mb-3">

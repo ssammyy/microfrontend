@@ -394,8 +394,20 @@ class QADaoServices(
             ?: throw ExpectedDataNotFound("No File found with the following details: [ permitId=$permitId], [ docType=$docType]")
     }
 
-    fun findAllUploadedFileBYPermitID(permitId: Long): List<QaUploadsEntity> {
-        qaUploadsRepo.findByPermitId(permitId)?.let {
+    fun findAllUploadedFileBYPermitIDAndOrdinarStatus(permitId: Long, status: Int): List<QaUploadsEntity> {
+        qaUploadsRepo.findByPermitIdAndOrdinaryStatus(permitId, status)?.let {
+            return it
+        } ?: throw ExpectedDataNotFound("No File found with the following [ id=$permitId]")
+    }
+
+    fun findAllUploadedFileBYPermitIDAndCocStatus(permitId: Long, status: Int): List<QaUploadsEntity> {
+        qaUploadsRepo.findByPermitIdAndCocStatus(permitId, status)?.let {
+            return it
+        } ?: throw ExpectedDataNotFound("No File found with the following [ id=$permitId]")
+    }
+
+    fun findAllUploadedFileBYPermitIDAndSscStatus(permitId: Long, status: Int): List<QaUploadsEntity> {
+        qaUploadsRepo.findByPermitIdAndSscStatus(permitId, status)?.let {
             return it
         } ?: throw ExpectedDataNotFound("No File found with the following [ id=$permitId]")
     }
@@ -614,6 +626,16 @@ class QADaoServices(
             department,
             map.activeStatus
         ).userId
+
+    }
+
+    fun assignNextOfficerWithDesignation(
+        permit: PermitApplicationsEntity,
+        map: ServiceMapsEntity,
+        designationID: Long
+    ): UsersEntity? {
+        val designation = commonDaoServices.findDesignationByID(designationID)
+        return commonDaoServices.findUserProfileWithDesignationAndStatus(designation, map.activeStatus).userId
 
     }
 
@@ -1205,29 +1227,23 @@ class QADaoServices(
         doc: String,
         user: UsersEntity,
         map: ServiceMapsEntity,
+        qaUploads: QaUploadsEntity,
         permitID: Long,
-        manufactureNonStatus: Int?
+        versionNumberAdded: Long,
+        manufactureNonStatus: Int?,
     ): Pair<ServiceRequestsEntity, QaUploadsEntity> {
 
         var sr = commonDaoServices.createServiceRequest(map)
-        var uploads = QaUploadsEntity()
+        var uploads = qaUploads
         try {
-
-
             with(uploads) {
                 name = commonDaoServices.saveDocuments(docFile)
                 fileType = docFile.contentType
                 documentType = doc
                 document = docFile.bytes
-                nonManufactureStatus = manufactureNonStatus
-                when {
-                    manufactureNonStatus != 1 -> {
-                        permitId = permitID
-                        ordinaryStatus = map.activeStatus
-                    }
-                }
+                permitId = permitID
                 transactionDate = commonDaoServices.getCurrentDate()
-                versionNumber = 1
+                versionNumber = versionNumberAdded
                 status = map.activeStatus
                 createdBy = commonDaoServices.concatenateName(user)
                 createdOn = commonDaoServices.getTimestamp()
