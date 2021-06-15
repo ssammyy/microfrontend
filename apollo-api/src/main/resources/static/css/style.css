@@ -282,6 +282,12 @@ p {
     align-items: center;
     margin-bottom: 30px;
 }
+
+.sidebar-items a {
+    color: #ffffff!important;
+    text-decoration: none!important;
+}
+
 .sidebar-icons {
     width: 25px;
     height: 25px;
@@ -289,6 +295,10 @@ p {
 .sidebar-icons-dashboard {
     width: 25px;
     height: 25px;
+}
+
+#myTab {
+    margin-bottom: 1%!important;
 }
 
 .selected-page {
@@ -556,7 +566,12 @@ label {
     "notification-title notification-content notification-details";
 }
 
-a {
-    color: #ffffff!important;
-    text-decoration: none!important;
+
+
+.form-inline {
+    display: inline-block!important;
+}
+
+#example2_wrapper {
+    width: 100%!important;
 }

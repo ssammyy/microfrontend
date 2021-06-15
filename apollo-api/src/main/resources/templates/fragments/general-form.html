@@ -28,16 +28,15 @@
     <title>KEBS</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
+    <link rel="stylesheet" th:href="@{/css/pageTabs.css}" type="text/css"/>
+    <link rel="stylesheet" th:href="@{/css/accordion.css}"/>
+
     <link rel="stylesheet" th:href="@{/css/normalize.css}" type="text/css">
     <link rel="stylesheet" th:href="@{/css/webflow.css}" type="text/css">
     <link rel="stylesheet" th:href="@{/css/kebs.webflow.css}" type="text/css">
     <link rel="stylesheet" th:href="@{/css/extra.css}" type="text/css">
     <link rel="stylesheet" th:href="@{/css/pageLoad.css}" type="text/css">
     <link rel="stylesheet" th:href="@{/assets/bootstrap3/css/bootstrap.css}"/>
-
-    <!-- Datatables CSS -->
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.22/css/dataTables.bootstrap.min.css"/>
-    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.6.4/css/buttons.bootstrap.min.css"/>
 
 <!--    <script src="https://code.jquery.com/jquery-3.5.1.js" type="text/javascript" ></script>-->
 <!--    <script src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js" type="text/javascript" ></script>-->
@@ -69,7 +68,10 @@
     <script src="https://angular-ui.github.io/bootstrap/ui-bootstrap-tpls-0.11.0.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular-route.js"></script>
 
-    <link rel="stylesheet" th:href="@{/css/accordion.css}"/>
+    <!-- Datatables CSS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.22/css/dataTables.bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.6.4/css/buttons.bootstrap.min.css"/>
+
     <link rel="stylesheet" th:href="@{/css/style.css}" media="screen" type="text/css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Nunito Sans">
@@ -120,15 +122,13 @@
                 </span>
         </div>
 
-        <div class="sidebar-items">
-            <img th:src="@{/images/assets/import_inspection.svg}" class="sidebar-icons-dashboard selected-page">
-            <span>
-                <a sec:authorize="hasAuthority('DI_INSPECTION_OFFICER_READ')  or hasAuthority('DI_DIRECTOR_READ')
+        <div class="sidebar-items" sec:authorize="hasAuthority('DI_INSPECTION_OFFICER_READ')  or hasAuthority('DI_DIRECTOR_READ')
                      or hasAuthority('DI_WETC_CHAIR_READ')  or hasAuthority('DI_NSC_MEMBER_READ') or hasAuthority('DI_HOD_READ')
                     or hasAuthority('DI_NSC_SECRETARY_READ') or hasAuthority('DI_CLUSTER_SUPERVISOR_READ') or hasAuthority('DI_WETC_MEMBER_READ')
-                    or hasAuthority('DI_OFFICER_CHARGE_READ') or hasAuthority('DI_MANAGER_INSPECTION_READ') or hasAuthority('DI_EXEMPTION_COMMITTEE_CHAIR_READ')"
-                   th:href="@{/api/di/home}"> Import Inspection</a>
-                </span>
+                    or hasAuthority('DI_OFFICER_CHARGE_READ') or hasAuthority('DI_MANAGER_INSPECTION_READ') or hasAuthority('DI_EXEMPTION_COMMITTEE_CHAIR_READ')">
+            <img th:src="@{/images/assets/import_inspection.svg}" class="sidebar-icons-dashboard selected-page">
+            <span>
+                <a th:href="@{/api/di/home}"> Import Inspection</a></span>
         </div>
 
         <div class="sidebar-items">
@@ -241,6 +241,24 @@
         <!--    </div>-->
     </div>
 </div>
+
+<!-- Scripts -->
+<div th:fragment="scripts">
+    <script src="https://code.jquery.com/jquery-3.5.1.js" type="text/javascript" ></script>
+    <script src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js" type="text/javascript" ></script>
+    <script src="https://cdn.datatables.net/1.10.22/js/dataTables.bootstrap.min.js" type="text/javascript" ></script>
+    <script src="https://cdn.datatables.net/buttons/1.6.4/js/dataTables.buttons.min.js" type="text/javascript" ></script>
+    <script src="https://cdn.datatables.net/buttons/1.6.4/js/buttons.bootstrap.min.js" ></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js" type="text/javascript" ></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js" type="text/javascript" ></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js" type="text/javascript" ></script>
+    <script src="https://cdn.datatables.net/buttons/1.6.4/js/buttons.html5.min.js" type="text/javascript" ></script>
+    <script src="https://cdn.datatables.net/buttons/1.6.4/js/buttons.print.min.js" type="text/javascript" ></script>
+    <script src="https://cdn.datatables.net/buttons/1.6.4/js/buttons.colVis.min.js" type="text/javascript" ></script>
+    <script src="../assets/js/webflow.js" type="text/javascript"></script>
+    <script th:src="@{/js/spinner.js}" type="text/javascript"></script>
+</div>
+
 </body>
 
 </html>
