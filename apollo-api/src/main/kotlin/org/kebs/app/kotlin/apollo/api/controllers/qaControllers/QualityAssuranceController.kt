@@ -7,6 +7,7 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.QADaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.QualityAssuranceDaoServices
 import org.kebs.app.kotlin.apollo.common.dto.FmarkEntityDto
+import org.kebs.app.kotlin.apollo.common.dto.qa.NewBatchInvoiceDto
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.common.exceptions.ServiceMapNotFoundException
 import org.kebs.app.kotlin.apollo.common.utils.generateRandomText
@@ -739,22 +740,31 @@ class QualityAssuranceController(
         var myRenewedPermit = qaDaoServices.permitUpdateNewWithSamePermitNumber(permitID, map, loggedInUser)
         val permit = myRenewedPermit.second
         result = myRenewedPermit.first
-//        if (permit.permitType==applicationMapProperties.mapQAPermitTypeIdSmark ){
-//
-//        }
-//            result = qaDaoServices.permitInvoiceCalculation(map, loggedInUser, permit, qaDaoServices.findPermitType(permit.permitType!!))
-//        with(permit) {
-//            sendApplication = map.activeStatus
-//            invoiceGenerated = map.activeStatus
-//            permitStatus = applicationMapProperties.mapQaStatusPPayment
-//
-//        }
-//        result = qaDaoServices.permitUpdateDetails(permit, map, loggedInUser).first
-
 
         val sm = CommonDaoServices.MessageSuccessFailDTO()
         sm.closeLink = "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${result.varField1}"
         sm.message = "You have Successful Renewed your Permit , Invoice has Been Generated"
+
+        return commonDaoServices.returnValues(result, map, sm)
+    }
+
+    @PostMapping("/kebs/invoice/create-batch-invoice/save")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun permitInvoiceBatchAddDetails(
+        @ModelAttribute("NewBatchInvoiceDto") NewBatchInvoiceDto: NewBatchInvoiceDto,
+        model: Model,
+    ): String? {
+
+        val map = commonDaoServices.serviceMapDetails(appId)
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+
+        val result: ServiceRequestsEntity?
+
+        result = qaDaoServices.permitMultipleInvoiceCalculation(map, loggedInUser, NewBatchInvoiceDto)
+
+        val sm = CommonDaoServices.MessageSuccessFailDTO()
+        sm.closeLink = "${applicationMapProperties.baseUrlValue}/qa/invoice/batch-details?batchID=${result.varField1}"
+        sm.message = "Batch Invoice has Been Generated"
 
         return commonDaoServices.returnValues(result, map, sm)
     }

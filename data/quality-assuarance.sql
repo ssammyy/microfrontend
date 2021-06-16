@@ -79,7 +79,15 @@
 ***************************Table USED IN QA*****************************************
 select *
 from DAT_KEBS_PERMIT_TRANSACTION
-where id = 503
+-- where id = 503
+
+where ATTACHED_PLANT_ID = 203
+-- where PERMIT_NUMBER = 'DM#0954A'
+order by id desc;
+
+select *
+from dat_kebs_qa_batch_invoice
+-- where id = 503
 
 -- where PERMIT_NUMBER = 'DM#0954A'
 order by id desc;

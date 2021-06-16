@@ -1,5 +1,6 @@
 package org.kebs.app.kotlin.apollo.common.dto.qa
 
+import java.math.BigDecimal
 import java.sql.Date
 import java.sql.Timestamp
 
@@ -45,6 +46,37 @@ data class WorkPlanDto(
         var issueDate: Date? = null,
         var expiryDate: Date? = null,
         var visitsScheduled: Date? = null,
+)
+
+data class InvoiceDto(
+        var batchID: Long? = null,
+        var firmName: String? = null,
+        var postalAddress: String? = null,
+        var physicalAddress: String? = null,
+        var contactPerson: String? = null,
+        var telephoneNo: String? = null,
+        var email: String? = null,
+        var invoiceNumber: String? = null,
+        var receiptNo: String? = null,
+        var paidDate: Timestamp? = null,
+        var totalAmount: BigDecimal? = null,
+        var paidStatus: Boolean? = null,
+        var plantId: Long? = null,
+)
+
+data class PermitInvoiceDto(
+        var permitID: Long? = null,
+        var invoiceNumber: String? = null,
+        var commodityDescription: String? = null,
+        var brandName: String? = null,
+        var totalAmount: BigDecimal? = null,
+        var paidStatus: Boolean? = null,
+)
+
+data class NewBatchInvoiceDto(
+        var batchID: Long = -1L,
+        var plantID: Long? = null,
+        var permitID: Long? = null,
 )
 
 data class PermitDetailsDto(

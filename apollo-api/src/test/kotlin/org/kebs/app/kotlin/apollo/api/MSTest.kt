@@ -100,6 +100,14 @@ class MSTest {
         KotlinLogging.logger { }.info { "complaint = $complaint " }
     }
 
+//    @Test
+//    fun complaintDetails() {
+//        val appId = applicationMapProperties.mapMarketSurveillance
+//        val map = commonDaoServices.serviceMapDetails(appId)
+//        val complaint =marketSurveillanceDaoServices.msComplaint("REF202101177E3528",map)
+//        KotlinLogging.logger { }.info { "complaint = $complaint " }
+//    }
+
     @Test
     fun testUserIdReturned(){
        val userId = userRolesService.getUserId("PVOC_APPLICATION_PROCESS_CHAIRMAN")
@@ -108,8 +116,8 @@ class MSTest {
 
     @Test
     fun testUsersReturned(){
-        val users = userRolesService.findAllUserWhoHaveRole(183)
-        KotlinLogging.logger {  }.info { "This is userId ==>" +users?.count() }
+//        val users = userRolesService.findAllUserWhoHaveRole(183)
+//        KotlinLogging.logger {  }.info { "This is userId ==>" +users?.count() }
     }
 
 

@@ -30,8 +30,7 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.dao.QADaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.lims.LimsServices
 import org.kebs.app.kotlin.apollo.common.dto.FmarkEntityDto
 import org.kebs.app.kotlin.apollo.common.dto.PermitEntityDto
-import org.kebs.app.kotlin.apollo.common.dto.qa.CommonPermitDto
-import org.kebs.app.kotlin.apollo.common.dto.qa.WorkPlanDto
+import org.kebs.app.kotlin.apollo.common.dto.qa.NewBatchInvoiceDto
 import org.kebs.app.kotlin.apollo.common.exceptions.*
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.*
@@ -48,7 +47,6 @@ import org.springframework.web.servlet.function.ServerRequest
 import org.springframework.web.servlet.function.ServerResponse
 import org.springframework.web.servlet.function.ServerResponse.ok
 import org.springframework.web.servlet.function.paramOrNull
-import java.sql.Date
 
 
 @Component
@@ -80,11 +78,13 @@ class QualityAssuranceHandler(
     private val qaEmployeesHomePage = "quality-assurance/employees-qa-home"
     private val qaCustomerHomePage = "quality-assurance/customer/customer-home"
     private val qaPermitListPage = "quality-assurance/permit-list"
+    private val qaPermitInvoiceListPage = "quality-assurance/permit-invoice-list.html"
     private val qaPermitDetailPage = "quality-assurance/customer/permit-details"
     private val qaSchemeDetailPage = "quality-assurance/customer/scheme-of-supervision-and-control-details"
     private val qaProductQualityStatusPage = "quality-assurance/product-quality-status"
     private val qaNewSchemeDetailPage = "quality-assurance/customer/new-scheme-of-supervision-details"
     private val qaNewPermitPage = "quality-assurance/customer/permit-application"
+    private val qaNewPermitInvoicePage = "quality-assurance/permit-batch-invoice-list"
     private val qaNewSta3Page = "quality-assurance/customer/sta3-new-details"
     private val qaNewSta10Page = "quality-assurance/customer/sta10-new-application"
     private val qaNewSta10OfficerPage = "quality-assurance/customer/sta10-new-application-officer"
@@ -136,8 +136,29 @@ class QualityAssuranceHandler(
             val auth = commonDaoServices.loggedInUserAuthentication()
             val loggedInUser = commonDaoServices.loggedInUserDetails()
             val map = commonDaoServices.serviceMapDetails(appId)
+//            var viewPage = qaPermitListPage
             val permitTypeID = req.paramOrNull("permitTypeID")?.toLong() ?: throw ExpectedDataNotFound("Required PermitType ID, check config")
             val permitType = qaDaoServices.findPermitType(permitTypeID)
+            req.attributes().putAll(loadCommonUIComponents(map))
+            req.attributes()["permitType"] = permitType
+
+            when (permitType.id) {
+                applicationMapProperties.mapQAPermitTypeIdFmark -> {
+                    req.attributes()["mySmarkPermits"] = qaDaoServices.findAllSmarkPermitWithNoFmarkGenerated(loggedInUser, applicationMapProperties.mapQAPermitTypeIdSmark, map.activeStatus, map.inactiveStatus)
+                }
+                applicationMapProperties.mapQAPermitTypeIdInvoices -> {
+//                    val plantsDetails = qaDaoServices.findAllPlantDetails(loggedInUser.id?:throw Exception("INVALID USER ID"))
+                    val allUnpaidInvoices= qaDaoServices.findALlPermitInvoicesCreatedByUserWithNoPaymentStatus(loggedInUser.id?:throw Exception("INVALID USER ID"), map.inactiveStatus)
+
+                    req.attributes()["NewBatchInvoiceDto"] = NewBatchInvoiceDto()
+//                    req.attributes()["plantsDetails"] = plantsDetails
+                    req.attributes()["allPermitInvoiceList"] = qaDaoServices.listPermitsInvoices(allUnpaidInvoices, null, map)
+                    req.attributes()["allBatchPermitInvoiceList"] = qaDaoServices.findALlBatchInvoicesWithUserID(loggedInUser.id?:throw Exception("INVALID USER ID"))
+                    return ok().render(qaPermitInvoiceListPage, req.attributes())
+//                    viewPage = qaDaoServices.batchInvoiceList
+                }
+            }
+
             var permitList : List<PermitEntityDto>? = null
             when {
                 auth.authorities.stream().anyMatch { authority -> authority.authority == "PERMIT_APPLICATION" } -> {
@@ -176,14 +197,7 @@ class QualityAssuranceHandler(
                 }
             }
 
-            when (permitType.id) {
-                applicationMapProperties.mapQAPermitTypeIdFmark -> {
-                    req.attributes()["mySmarkPermits"] = qaDaoServices.findAllSmarkPermitWithNoFmarkGenerated(loggedInUser, applicationMapProperties.mapQAPermitTypeIdSmark, map.activeStatus, map.inactiveStatus)
-                }
-            }
 
-            req.attributes().putAll(loadCommonUIComponents(map))
-            req.attributes()["permitType"] = permitType
             req.attributes()["permitList"] = permitList
             return ok().render(qaPermitListPage, req.attributes())
 
@@ -253,6 +267,67 @@ class QualityAssuranceHandler(
 //        req.attributes()["divisions"] = commonDaoServices.findDivisionByDepartmentId(departmentEntity, map.activeStatus)
         req.attributes()["standardCategory"] = standardCategoryRepo.findByStatusOrderByStandardCategory(map.activeStatus)
         return ok().render(qaNewPermitPage, req.attributes())
+
+    }
+
+    @PreAuthorize("hasAuthority('PERMIT_APPLICATION')")
+    fun batchInvoiceList(req: ServerRequest): ServerResponse {
+        val map = commonDaoServices.serviceMapDetails(appId)
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val plantsDetails = qaDaoServices.findAllPlantDetails(loggedInUser.id?:throw Exception("INVALID USER ID"))
+        val allUnpaidInvoices= qaDaoServices.findALlPermitInvoicesCreatedByUserWithNoPaymentStatus(loggedInUser.id?:throw Exception("INVALID USER ID"), map.inactiveStatus)
+
+        req.attributes()["QaBatchInvoiceEntity"] = QaBatchInvoiceEntity()
+        req.attributes()["plantsDetails"] = plantsDetails
+//        req.attributes()["allPermitInvoiceList"] = qaDaoServices.listPermitsInvoices(allUnpaidInvoices, map)
+        req.attributes()["allBatchPermitInvoiceList"] = qaDaoServices.findALlBatchInvoicesWithUserID(loggedInUser.id?:throw Exception("INVALID USER ID"))
+        return ok().render(qaPermitInvoiceListPage, req.attributes())
+
+    }
+
+    @PreAuthorize("hasAuthority('PERMIT_APPLICATION')")
+    fun permitInvoiceList(req: ServerRequest): ServerResponse {
+        val map = commonDaoServices.serviceMapDetails(appId)
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val plantID = req.pathVariable("plantID").toLong()
+        val allUnpaidInvoices= qaDaoServices.findALlPermitInvoicesCreatedByUserWithNoPaymentStatus(loggedInUser.id?:throw Exception("INVALID USER ID"), map.inactiveStatus )
+
+        val allPermitInvoiceList = qaDaoServices.listPermitsInvoices(allUnpaidInvoices,plantID, map)
+
+        return ok().body(allPermitInvoiceList)
+
+    }
+
+    @PreAuthorize("hasAuthority('PERMIT_APPLICATION')")
+    fun generatedInvoicePermit(req: ServerRequest): ServerResponse {
+        val map = commonDaoServices.serviceMapDetails(appId)
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val allUnpaidInvoices= qaDaoServices.findALlPermitInvoicesCreatedByUserWithNoPaymentStatus(loggedInUser.id?:throw Exception("INVALID USER ID"), map.inactiveStatus)
+//        val
+
+//        req.attributes()["InvoiceDetails"] = qaDaoServices.populateInvoiceDetails()
+//        req.attributes()["allPermitInvoiceList"] = qaDaoServices.listPermitsInvoices(allUnpaidInvoices, map)
+        return ok().render(qaNewPermitInvoicePage, req.attributes())
+
+    }
+
+    @PreAuthorize("hasAuthority('PERMIT_APPLICATION')")
+    fun batchInvoiceDetails(req: ServerRequest): ServerResponse {
+        val map = commonDaoServices.serviceMapDetails(appId)
+        val batchID = req.paramOrNull("batchID")?.toLong() ?: throw ExpectedDataNotFound("Required batch ID, check config")
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+
+        val batchInvoiceEntity = qaDaoServices.findBatchInvoicesWithID(batchID)
+//        val plantDetail = qaDaoServices.findPlantDetails(batchInvoiceEntity.plantId?:throw  Exception("INVALID PLANT ID FOUND"))
+        val companyProfile = commonDaoServices.findCompanyProfile(loggedInUser.id?:throw  Exception("INVALID USER ID FOUND"))
+        val allInvoicesInBatch= qaDaoServices.findALlInvoicesPermitWithBatchID(batchID)
+        val allUnpaidInvoices= qaDaoServices.findALlPermitInvoicesCreatedByUserWithNoPaymentStatus(loggedInUser.id?:throw Exception("INVALID USER ID"), map.inactiveStatus)
+
+        req.attributes()["NewBatchInvoiceDto"] = NewBatchInvoiceDto()
+        req.attributes()["InvoiceDetails"] = qaDaoServices.populateInvoiceDetails(companyProfile,batchInvoiceEntity, map)
+        req.attributes()["allBatchPermitInvoiceList"] = qaDaoServices.listPermitsInvoices(allInvoicesInBatch,null, map)
+        req.attributes()["allPermitInvoiceList"] = qaDaoServices.listPermitsInvoices(allUnpaidInvoices,null, map)
+        return ok().render(qaNewPermitInvoicePage, req.attributes())
 
     }
 
