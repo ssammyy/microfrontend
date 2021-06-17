@@ -54,28 +54,9 @@
   </div>
   <div class="login-form">
     <h2 class="welcome">
-      Welcome Back
+      Welcome
     </h2>
-    <p class="input-placeholder">
-      Email or Mobile Number
-    </p>
-    <input type="text" class="login-form-inputs">
-    <p class="input-placeholder">
-      Password
-    </p>
-    <input type="text" class="login-form-inputs">
-    <p></p>
-    <button type="button" value="" class="login-button">
-      <a routerLink="/dashboard2" class="login-ref">LOG IN</a></button>
-    <br>
-    <div>
-      <a href="http://" class="reset-credentials">Don't have an account?
-        <span style="text-decoration: underline">Signup here</span></a>
-    </div>
-    <div>
-      <a href="http://" class="reset-credentials">Forgot Username / Password?
-        <span style="text-decoration: underline">Reset</span></a>
-    </div>
+    <router-outlet></router-outlet>
   </div>
 </section>
 <section class="footer">
