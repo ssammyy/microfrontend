@@ -5,6 +5,7 @@ import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.*
 import org.kebs.app.kotlin.apollo.store.model.invoice.InvoiceBatchDetailsEntity
+import org.kebs.app.kotlin.apollo.store.model.qa.QaBatchInvoiceEntity
 import org.kebs.app.kotlin.apollo.store.repo.IPaymentMethodsRepository
 import org.kebs.app.kotlin.apollo.store.repo.IStagingPaymentReconciliationRepo
 import org.kebs.app.kotlin.apollo.store.repo.InvoiceBatchDetailsRepo
@@ -102,15 +103,15 @@ class InvoiceDaoService(
                 //Todo: Adding Function for Ms Fuel
             }
             applicationMapProperties.mapInvoiceTransactionsForPermit -> {
-                var invoiceNote = addDetails as InvoiceEntity
+                var invoiceNote = addDetails as QaBatchInvoiceEntity
                 with(invoiceNote) {
                     invoiceBatchNumberId = invoiceBatchDetails.id
 //                    invoiceNumber = invoiceBatchDetails.batchNumber
-                    paymentStatus = map.inactiveStatus
+                    paidStatus = map.inactiveStatus
                 }
-                invoiceNote = qaDaoServices.invoiceUpdateDetails(invoiceNote, user)
+                invoiceNote = qaDaoServices.qaInvoiceBatchUpdateDetails(invoiceNote, user)
 
-                totalAmount = invoiceNote.amount?.let { totalAmount.plus(it) }!!
+                totalAmount = invoiceNote.totalAmount?.let { totalAmount.plus(it) }!!
                 detailsDescription = "PERMIT INVOICE NUMBER:${invoiceNote.invoiceNumber}"
             }
         }

@@ -1598,6 +1598,15 @@ class QADaoServices(
         return invoiceRepository.save(invoice)
     }
 
+    fun qaInvoiceBatchUpdateDetails(invoice: QaBatchInvoiceEntity, user: UsersEntity): QaBatchInvoiceEntity {
+
+        with(invoice) {
+            modifiedBy = commonDaoServices.concatenateName(user)
+            modifiedOn = commonDaoServices.getTimestamp()
+        }
+        return invoiceBatchRepo.save(invoice)
+    }
+
 
     fun pcmGenerateInvoice(
         s: ServiceMapsEntity,
@@ -1695,6 +1704,123 @@ class QADaoServices(
         return sr
     }
 
+    fun permitMultipleInvoiceRemoveInvoice(
+        s: ServiceMapsEntity,
+        user: UsersEntity,
+        batchInvoiceDto: NewBatchInvoiceDto,
+    ): ServiceRequestsEntity {
+
+        var sr = commonDaoServices.createServiceRequest(s)
+        try {
+
+            val userID = user.id ?: throw Exception("INVALID USER ID")
+            var permitInvoiceFound =
+                findPermitInvoiceByPermitID(batchInvoiceDto.permitID ?: throw Exception("PERMIT ID REQUIRED"), userID)
+            var batchID: Long? = null
+            invoiceBatchRepo.findByIdOrNull(batchInvoiceDto.batchID)
+                ?.let { invoiceDetails ->
+
+                    with(invoiceDetails) {
+                        description = "${permitInvoiceFound.invoiceNumber},$description"
+                        totalAmount = totalAmount?.minus(permitInvoiceFound.amount ?: throw Exception("INVALID AMOUNT"))
+                    }
+                    batchID = invoiceBatchRepo.save(invoiceDetails).id
+
+                    with(permitInvoiceFound) {
+                        batchInvoiceNo = null
+                        modifiedBy = commonDaoServices.concatenateName(user)
+                        modifiedOn = commonDaoServices.getTimestamp()
+                    }
+                    permitInvoiceFound = invoiceRepository.save(permitInvoiceFound)
+
+                }
+
+            sr.payload = "permitInvoiceFound[id= ${permitInvoiceFound.userId}]"
+            sr.names = "${permitInvoiceFound.invoiceNumber} ${permitInvoiceFound.amount}"
+            sr.varField1 = batchID.toString()
+
+            sr.responseStatus = sr.serviceMapsId?.successStatusCode
+            sr.responseMessage = "Success ${sr.payload}"
+            sr.status = s.successStatus
+            sr = serviceRequestsRepository.save(sr)
+            sr.processingEndDate = Timestamp.from(Instant.now())
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message, e)
+//            KotlinLogging.logger { }.trace(e.message, e)
+            sr.status = sr.serviceMapsId?.exceptionStatus
+            sr.responseStatus = sr.serviceMapsId?.exceptionStatusCode
+            sr.responseMessage = e.message
+            sr = serviceRequestsRepository.save(sr)
+
+        }
+
+        KotlinLogging.logger { }.trace("${sr.id} ${sr.responseStatus}")
+        return sr
+    }
+
+    fun permitMultipleInvoiceSubmitInvoice(
+        s: ServiceMapsEntity,
+        user: UsersEntity,
+        batchInvoiceDto: NewBatchInvoiceDto,
+    ): ServiceRequestsEntity {
+
+        var sr = commonDaoServices.createServiceRequest(s)
+        try {
+
+            val userID = user.id ?: throw Exception("INVALID USER ID")
+            val invoiceDetails = findBatchInvoicesWithID(batchInvoiceDto.batchID)
+
+            val batchInvoiceDetail = invoiceDaoService.createBatchInvoiceDetails(
+                user,
+                invoiceDetails.invoiceNumber ?: throw Exception("MISSING INVOICE NUMBER")
+            )
+            val updateBatchInvoiceDetail = invoiceDaoService.addInvoiceDetailsToBatchInvoice(
+                invoiceDetails,
+                applicationMapProperties.mapInvoiceTransactionsForPermit,
+                user,
+                batchInvoiceDetail
+            )
+
+            //Todo: Payment selection
+            val manufactureDetails = commonDaoServices.findCompanyProfile(userID)
+            val myAccountDetails = InvoiceDaoService.InvoiceAccountDetails()
+            with(myAccountDetails) {
+                accountName = manufactureDetails.name
+                accountNumber = manufactureDetails.registrationNumber
+                currency = applicationMapProperties.mapInvoiceTransactionsLocalCurrencyPrefix
+            }
+
+            invoiceDaoService.createPaymentDetailsOnStgReconciliationTable(
+                user,
+                updateBatchInvoiceDetail,
+                myAccountDetails
+            )
+
+            sr.payload = "invoiceDetails FOUND[id= ${invoiceDetails.userId}]"
+            sr.names = "${invoiceDetails.invoiceNumber} ${invoiceDetails.totalAmount}"
+            sr.varField1 = invoiceDetails.id.toString()
+
+            sr.responseStatus = sr.serviceMapsId?.successStatusCode
+            sr.responseMessage = "Success ${sr.payload}"
+            sr.status = s.successStatus
+            sr = serviceRequestsRepository.save(sr)
+            sr.processingEndDate = Timestamp.from(Instant.now())
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message, e)
+//            KotlinLogging.logger { }.trace(e.message, e)
+            sr.status = sr.serviceMapsId?.exceptionStatus
+            sr.responseStatus = sr.serviceMapsId?.exceptionStatusCode
+            sr.responseMessage = e.message
+            sr = serviceRequestsRepository.save(sr)
+
+        }
+
+        KotlinLogging.logger { }.trace("${sr.id} ${sr.responseStatus}")
+        return sr
+    }
+
 
     fun permitInvoiceCalculation(
         s: ServiceMapsEntity,
@@ -1714,28 +1840,28 @@ class QADaoServices(
             val invoiceNumber = invoiceGenerated.invoiceNumber
                 ?: throw NullValueNotAllowedException("Invoice Number Is Missing For Invoice with [ID = ${invoiceGenerated.id}]")
 
-            val batchInvoiceDetail = invoiceDaoService.createBatchInvoiceDetails(user, invoiceNumber)
-            val updateBatchInvoiceDetail = invoiceDaoService.addInvoiceDetailsToBatchInvoice(
-                invoiceGenerated,
-                applicationMapProperties.mapInvoiceTransactionsForPermit,
-                user,
-                batchInvoiceDetail
-            )
-
-            //Todo: Payment selection
-            val manufactureDetails = commonDaoServices.findCompanyProfile(user.id!!)
-            val myAccountDetails = InvoiceDaoService.InvoiceAccountDetails()
-            with(myAccountDetails) {
-                accountName = manufactureDetails.name
-                accountNumber = manufactureDetails.registrationNumber
-                currency = applicationMapProperties.mapInvoiceTransactionsLocalCurrencyPrefix
-            }
-
-            invoiceDaoService.createPaymentDetailsOnStgReconciliationTable(
-                user,
-                updateBatchInvoiceDetail,
-                myAccountDetails
-            )
+//            val batchInvoiceDetail = invoiceDaoService.createBatchInvoiceDetails(user, invoiceNumber)
+//            val updateBatchInvoiceDetail = invoiceDaoService.addInvoiceDetailsToBatchInvoice(
+//                invoiceGenerated,
+//                applicationMapProperties.mapInvoiceTransactionsForPermit,
+//                user,
+//                batchInvoiceDetail
+//            )
+//
+//            //Todo: Payment selection
+//            val manufactureDetails = commonDaoServices.findCompanyProfile(user.id!!)
+//            val myAccountDetails = InvoiceDaoService.InvoiceAccountDetails()
+//            with(myAccountDetails) {
+//                accountName = manufactureDetails.name
+//                accountNumber = manufactureDetails.registrationNumber
+//                currency = applicationMapProperties.mapInvoiceTransactionsLocalCurrencyPrefix
+//            }
+//
+//            invoiceDaoService.createPaymentDetailsOnStgReconciliationTable(
+//                user,
+//                updateBatchInvoiceDetail,
+//                myAccountDetails
+//            )
 
             sr.payload = "User[id= ${userCompany.userId}]"
             sr.names = "${userCompany.name} ${userCompany.kraPin}"

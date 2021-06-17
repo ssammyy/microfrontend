@@ -40,6 +40,10 @@ class QaBatchInvoiceEntity : Serializable {
     @Basic
     var plantId: Long? = null
 
+    @Column(name = "INVOICE_BATCH_NUMBER_ID")
+    @Basic
+    var invoiceBatchNumberId: Long? = null
+
     @Column(name = "DESCRIPTION")
     @Basic
     var description: String? = null
@@ -130,6 +134,7 @@ class QaBatchInvoiceEntity : Serializable {
         val that = other as QaBatchInvoiceEntity
         return id == that.id && totalAmount == that.totalAmount
                 && userId == that.userId
+                && invoiceBatchNumberId == that.invoiceBatchNumberId
                 && plantId == that.plantId
                 && creationDate == that.creationDate
                 && paidDate == that.paidDate
@@ -141,6 +146,7 @@ class QaBatchInvoiceEntity : Serializable {
         return Objects.hash(
             id,
             paidDate,
+            invoiceBatchNumberId,
             creationDate,
             plantId,
             invoiceNumber,
