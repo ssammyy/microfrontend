@@ -15,8 +15,8 @@
 }
 
 .active, .accordion:hover {
-    background-color: #0082f3;
-    color: white;
+    /*background-color: #0082f3;*/
+    /*color: white;*/
     border-style: hidden;
     border: none;
 }
