@@ -4,13 +4,15 @@ import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.notifications.Notifications
 import org.kebs.app.kotlin.apollo.api.ports.provided.mpesa.MPesaService
 import org.kebs.app.kotlin.apollo.common.dto.PermitEntityDto
-import org.kebs.app.kotlin.apollo.common.dto.qa.CommonPermitDto
+import org.kebs.app.kotlin.apollo.common.dto.qa.*
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
 import org.kebs.app.kotlin.apollo.common.exceptions.ServiceMapNotFoundException
 import org.kebs.app.kotlin.apollo.common.utils.generateRandomText
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.*
+import org.kebs.app.kotlin.apollo.store.model.di.CdDemandNoteItemsDetailsEntity
+import org.kebs.app.kotlin.apollo.store.model.di.CdItemDetailsEntity
 import org.kebs.app.kotlin.apollo.store.model.qa.*
 import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileDirectorsEntity
 import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileEntity
@@ -22,6 +24,7 @@ import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartFile
 import java.math.BigDecimal
+import java.sql.Date
 import java.sql.Timestamp
 import java.time.Instant
 import java.time.temporal.ChronoUnit
@@ -31,7 +34,7 @@ class QADaoServices(
     private val applicationMapProperties: ApplicationMapProperties,
     private val commonDaoServices: CommonDaoServices,
     private val productsRepo: IProductsRepository,
-    private val workPlanCreatedRepo: IWorkPlanCreatedRepository,
+    private val workPlanCreatedRepo: IQaWorkplanRepository,
     private val iTurnOverRatesRepository: ITurnOverRatesRepository,
     private val iManufacturePaymentDetailsRepository: IManufacturerPaymentDetailsRepository,
     private val sampleStandardsRepository: ISampleStandardsRepository,
@@ -49,6 +52,7 @@ class QADaoServices(
     private val sta3Repo: IQaSta3EntityRepository,
     private val smarkFmarkRepo: IQaSmarkFmarkRepository,
     private val invoiceRepository: IInvoiceRepository,
+    private val invoiceBatchRepo: IQaBatchInvoiceRepository,
     private val sta10Repo: IQaSta10EntityRepository,
     private val productsManufactureSTA10Repo: IQaProductBrandEntityRepository,
     private val rawMaterialsSTA10Repo: IQaRawMaterialRepository,
@@ -68,6 +72,7 @@ class QADaoServices(
     val permitList = "redirect:/api/qa/permits-list?permitTypeID"
     val permitDetails = "redirect:/api/qa/permit-details?permitID"
     val sta10Details = "redirect:/api/qa/view-sta10?permitID"
+    val batchInvoiceList = "redirect:/api/qa/invoice/list-batch-invoices"
 
     fun findPermitTypesList(status: Int): List<PermitTypesEntity> {
         permitTypesRepo.findByStatus(status)?.let {
@@ -83,25 +88,58 @@ class QADaoServices(
 
     }
 
-    fun findCreatedWorkPlanWIthUuid(createdWorkPlanUuid: String): WorkPlanCreatedEntity {
-        workPlanCreatedRepo.findByUuid(createdWorkPlanUuid)
+    fun findALlCreatedWorkPlanWIthOfficerID(officerID: Long): List<QaWorkplanEntity> {
+        workPlanCreatedRepo.findByOfficerId(officerID)
             ?.let { createdWorkPlan ->
                 return createdWorkPlan
             }
-            ?: throw ExpectedDataNotFound("Created Work Plan with the following [uuid = ${createdWorkPlanUuid}], does not Exist")
+            ?: throw ExpectedDataNotFound("Created Work Plan with the following [USER ID = ${officerID}], does not Exist")
+    }
+
+    fun findALlPermitInvoicesCreatedByUserWithNoPaymentStatus(userID: Long, status: Int): List<InvoiceEntity> {
+        invoiceRepository.findAllByUserIdAndPaymentStatusAndBatchInvoiceNoIsNull(userID, status)
+            ?.let { it ->
+                return it
+            }
+            ?: throw ExpectedDataNotFound("Invoices With [USER ID = ${userID}] and [status = ${status}], does not Exist")
+    }
+
+    fun findALlInvoicesPermitWithBatchID(batchID: Long): List<InvoiceEntity> {
+        invoiceRepository.findAllByBatchInvoiceNo( batchID)
+            ?.let { it ->
+                return it
+            }
+            ?: throw ExpectedDataNotFound("Invoices With [BATCH ID = ${batchID}], does not Exist")
+    }
+
+    fun findALlBatchInvoicesWithUserID(userID: Long): List<QaBatchInvoiceEntity> {
+        invoiceBatchRepo.findByUserId(userID)
+            ?.let { it ->
+                return it
+            }
+            ?: throw ExpectedDataNotFound("Invoices With [USER ID = ${userID}], does not Exist")
+    }
+
+    fun findBatchInvoicesWithID(batchID: Long): QaBatchInvoiceEntity {
+        invoiceBatchRepo.findByIdOrNull(batchID)
+            ?.let { it ->
+                return it
+            }
+            ?: throw ExpectedDataNotFound("Invoices With [batch ID = ${batchID}], does not Exist")
+    }
+
+    fun findCreatedWorkPlanWIthOfficerID(officerID: Long, refNumber: String): QaWorkplanEntity {
+        workPlanCreatedRepo.findByOfficerIdAndRefNumber(officerID, refNumber)
+            ?.let { createdWorkPlan ->
+                return createdWorkPlan
+            }
+            ?: throw ExpectedDataNotFound("Created Work Plan with the following [USER ID = ${officerID} and REF Number = ${refNumber}], does not Exist")
     }
 
     fun findPermitStatus(statusID: Long): QaProcessStatusEntity {
         processStatusRepo.findByIdOrNull(statusID)?.let {
             return it
         } ?: throw ExpectedDataNotFound("No Status found with the following [ID =$statusID]")
-
-    }
-
-    fun findWorkPlanWithLoggedInUser(loggedInUser: UsersEntity): List<WorkPlanCreatedEntity> {
-        workPlanCreatedRepo.findByUserCreatedId(loggedInUser)?.let {
-            return it
-        } ?: throw ExpectedDataNotFound("Invalid User")
 
     }
 
@@ -247,6 +285,12 @@ class QADaoServices(
         } ?: throw ExpectedDataNotFound("No Permit found with the following [ID=$id]")
     }
 
+    fun findPermitBYIDAndBranchID(id: Long, plantID: Long): PermitApplicationsEntity {
+        permitRepo.findByIdAndAttachedPlantId(id,plantID)?.let {
+            return it
+        } ?: throw ExpectedDataNotFound("No Permit found with the following [ID=$id] and [PLANT ID = $plantID]")
+    }
+
 
     fun findSampleSubmittedBYPermitID(permitId: Long): QaSampleSubmissionEntity {
         SampleSubmissionRepo.findByPermitId(permitId)?.let {
@@ -318,19 +362,31 @@ class QADaoServices(
     }
 
     fun findPermitBYUserIDANDProductionStatus(
+        permitAwardedStatus: Int,
         status: Int,
         permitTypeID: Long,
         userId: Long
     ): List<PermitApplicationsEntity> {
-        permitRepo.findByUserIdAndPermitTypeAndEndOfProductionStatus(userId, permitTypeID, status)?.let {
+        permitRepo.findByUserIdAndPermitTypeAndEndOfProductionStatusAndPermitAwardStatus(userId, permitTypeID, status, permitAwardedStatus)?.let {
             return it
         } ?: throw ExpectedDataNotFound("No Permit List found with the following user [ID=$userId]")
     }
 
-    fun findPermitInvoiceByPermitID(id: Long, userId: Long): InvoiceEntity {
-        invoiceRepository.findByPermitIdAndUserId(id, userId)?.let {
+    fun findAllProductManufactureINPlantWithID(
+        permitAwardedStatus: Int,
+        endProductionStatus: Int,
+        permitTypeID: Long,
+        plantID: Long
+    ): List<PermitApplicationsEntity> {
+        permitRepo.findByPermitTypeAndEndOfProductionStatusAndPermitAwardStatusAndAttachedPlantId(permitTypeID, endProductionStatus, permitAwardedStatus, plantID)?.let {
             return it
-        } ?: throw ExpectedDataNotFound("No Invoice found with the following [PERMIT ID=$id  and LoggedIn User]")
+        } ?: throw ExpectedDataNotFound("No Product Being Manufacture List with the following plantID [ID=$plantID]")
+    }
+
+    fun findPermitInvoiceByPermitID(permitID: Long, userId: Long): InvoiceEntity {
+        invoiceRepository.findByPermitIdAndUserId(permitID, userId)?.let {
+            return it
+        } ?: throw ExpectedDataNotFound("No Invoice found with the following [PERMIT ID=$permitID  and LoggedIn User]")
     }
 
     fun findSTA3WithPermitIDBY(permitId: Long): QaSta3Entity {
@@ -378,8 +434,20 @@ class QADaoServices(
             ?: throw ExpectedDataNotFound("No File found with the following details: [ permitId=$permitId], [ docType=$docType]")
     }
 
-    fun findAllUploadedFileBYPermitID(permitId: Long): List<QaUploadsEntity> {
-        qaUploadsRepo.findByPermitId(permitId)?.let {
+    fun findAllUploadedFileBYPermitIDAndOrdinarStatus(permitId: Long, status: Int): List<QaUploadsEntity> {
+        qaUploadsRepo.findByPermitIdAndOrdinaryStatus(permitId, status)?.let {
+            return it
+        } ?: throw ExpectedDataNotFound("No File found with the following [ id=$permitId]")
+    }
+
+    fun findAllUploadedFileBYPermitIDAndCocStatus(permitId: Long, status: Int): List<QaUploadsEntity> {
+        qaUploadsRepo.findByPermitIdAndCocStatus(permitId, status)?.let {
+            return it
+        } ?: throw ExpectedDataNotFound("No File found with the following [ id=$permitId]")
+    }
+
+    fun findAllUploadedFileBYPermitIDAndSscStatus(permitId: Long, status: Int): List<QaUploadsEntity> {
+        qaUploadsRepo.findByPermitIdAndSscStatus(permitId, status)?.let {
             return it
         } ?: throw ExpectedDataNotFound("No File found with the following [ id=$permitId]")
     }
@@ -405,6 +473,20 @@ class QADaoServices(
         return permitRepo.findByPermitRefNumberAndOldPermitStatus(permitRefNumber, 1)
     }
 
+    fun companyDtoDetails(
+        permit: PermitApplicationsEntity,
+        map: ServiceMapsEntity
+    ): CommonPermitDto {
+        val plantAttached =
+            findPlantDetails(permit.attachedPlantId ?: throw Exception("INVALID PLANT DETAILS"))
+        val companyProfile = commonDaoServices.findCompanyProfileWithID(
+            plantAttached.companyProfileId ?: throw Exception("INVALID COMPANY ID DETAILS")
+        )
+        val directorList =
+            commonDaoServices.companyDirectorList(companyProfile.id ?: throw Exception("INVALID COMPANY ID DETAILS"))
+        return populateCommonPermitDetails(plantAttached, companyProfile, directorList, map)
+    }
+
 
     fun populateCommonPermitDetails(
         pd: ManufacturePlantDetailsEntity,
@@ -413,13 +495,13 @@ class QADaoServices(
         map: ServiceMapsEntity
     ): CommonPermitDto {
 
-        var directorsNames: String? = null
+        val directorsNames= mutableListOf<String>()
         d.forEach { dr ->
-            directorsNames = "${dr.directorName}, "
+            dr.directorName?.let { directorsNames.add(it) }
         }
         return CommonPermitDto(
             cp.name,
-            directorsNames,
+            directorsNames.joinToString(),
             pd.postalAddress,
             pd.physicalAddress,
             pd.contactPerson,
@@ -444,6 +526,31 @@ class QADaoServices(
         )
     }
 
+    fun populateInvoiceDetails(
+//        pd: ManufacturePlantDetailsEntity,
+        cp: CompanyProfileEntity,
+        invoice: QaBatchInvoiceEntity,
+        map: ServiceMapsEntity
+    ): InvoiceDto {
+
+        return InvoiceDto(
+            invoice.id,
+           cp.name,
+            cp.postalAddress,
+            cp.physicalAddress,
+            null,
+            cp.companyTelephone,
+            cp.companyEmail,
+            invoice.invoiceNumber,
+            invoice.receiptNo,
+            invoice.paidDate,
+            invoice.totalAmount,
+            invoice.paidStatus == 1,
+            null
+
+        )
+    }
+
     fun listPermits(permits: List<PermitApplicationsEntity>, map: ServiceMapsEntity): List<PermitEntityDto> {
         val permitsList = mutableListOf<PermitEntityDto>()
         permits.map { p ->
@@ -452,7 +559,7 @@ class QADaoServices(
                     p.id,
                     p.firmName,
                     p.permitRefNumber,
-                    p.productName,
+                    p.commodityDescription,
                     p.tradeMark,
                     p.awardedPermitNumber,
                     p.dateOfIssue,
@@ -465,14 +572,125 @@ class QADaoServices(
         return permitsList.sortedBy { it.id }
     }
 
+    fun listPermitsInvoices(permitInvoices: List<InvoiceEntity>,plantID:Long?, map: ServiceMapsEntity): List<PermitInvoiceDto> {
+        val permitsInvoiceList = mutableListOf<PermitInvoiceDto>()
+        permitInvoices.map { pi ->
+            val permitDetails = findPermitBYID(pi.permitId?:throw Exception("Invalid Permit ID"))
+            if (plantID!=null){
+                if(permitDetails.attachedPlantId == plantID){
+                    permitsInvoiceList.add(
+                        PermitInvoiceDto(
+                            pi.permitId,
+                            pi.invoiceNumber,
+                            permitDetails.commodityDescription,
+                            permitDetails.tradeMark,
+                            pi.amount,
+                            pi.paymentStatus == 1
+                        )
+                    )
+                }else{
+                    KotlinLogging.logger { }.info { "::::::::::::::::::::;NO PERMIT FOUND WITH PLANT ID  = $plantID:::::::::::::::::::::::::::" }
+                }
+            }else {
+                permitsInvoiceList.add(
+                    PermitInvoiceDto(
+                        pi.permitId,
+                        pi.invoiceNumber,
+                        permitDetails.commodityDescription,
+                        permitDetails.tradeMark,
+                        pi.amount,
+                        pi.paymentStatus == 1
+                    )
+                )
+            }
+
+        }
+        return permitsInvoiceList.sortedBy { it.permitID }
+    }
+
+    fun permitDetails(permit: PermitApplicationsEntity,ksApplicable: SampleStandardsEntity?, map: ServiceMapsEntity): PermitDetailsDto {
+        val plantAttached = permit.attachedPlantId?.let { findPlantDetails(it) }
+        val companyProfile = plantAttached?.companyProfileId?.let { commonDaoServices.findCompanyProfileWithID(it) }
+        val p = PermitDetailsDto()
+        with(p){
+            Id = permit.id
+            permitNumber =  permit.awardedPermitNumber
+            permitRefNumber =  permit.permitRefNumber
+            firmName = companyProfile?.name
+            postalAddress = plantAttached?.postalAddress
+            physicalAddress = plantAttached?.physicalAddress
+            contactPerson = plantAttached?.contactPerson
+            telephoneNo = plantAttached?.telephone
+            regionPlantValue = plantAttached?.region?.let { commonDaoServices.findRegionEntityByRegionID(it, map.activeStatus).region }
+            countyPlantValue = plantAttached?.county?.let { commonDaoServices.findCountiesEntityByCountyId(it, map.activeStatus).county }
+            townPlantValue = plantAttached?.town?.let { commonDaoServices.findTownEntityByTownId(it).town }
+            location = plantAttached?.location
+            street = plantAttached?.street
+            buildingName = plantAttached?.buildingName
+            nearestLandMark = plantAttached?.nearestLandMark
+            faxNo = plantAttached?.faxNo
+            plotNo = plantAttached?.plotNo
+            email = plantAttached?.emailAddress
+            createdOn = permit.createdOn
+            dateOfIssue = permit.dateOfIssue
+            dateOfExpiry = permit.dateOfExpiry
+            commodityDescription = permit.commodityDescription
+            brandName = permit.tradeMark
+            standardNumber = ksApplicable?.standardNumber
+            standardTitle = ksApplicable?.standardTitle
+            permitForeignStatus = permit.permitForeignStatus == 1
+            when (permit.assignOfficerStatus) {
+                map.activeStatus -> {
+                    assignOfficer = commonDaoServices.concatenateName(commonDaoServices.findUserByID(permit.qaoId?: throw Exception("INVALID QAO ID")))
+                }
+            }
+            when (permit.assignAssessorStatus) {
+                map.activeStatus -> {
+                    assignAssessor = commonDaoServices.concatenateName(commonDaoServices.findUserByID(permit.assessorId?: throw Exception("INVALID ASSESSOR ID")))
+                }
+            }
+
+            divisionValue = permit.divisionId?.let { commonDaoServices.findDivisionWIthId(it).division }
+            sectionValue = permit.sectionId?.let { commonDaoServices.findSectionWIthId(it).section }
+            inspectionDate = permit.inspectionDate
+            inspectionScheduledStatus = permit.inspectionScheduledStatus == 1
+            assessmentDate = permit.assessmentDate
+            assessmentScheduledStatus = permit.assessmentScheduledStatus == 1
+            processStatusName = permit.permitStatus?.let { findPermitStatus(it).processStatusName }
+            versionNumber = permit.versionNumber
+            fmarkGenerated = permit.fmarkGenerated == 1
+            recommendationRemarks = permit.recommendationRemarks
+        }
+        return p
+    }
+
+    fun listWorkPlan(workPlan: List<QaWorkplanEntity>, map: ServiceMapsEntity): List<WorkPlanDto> {
+        val permitsList = mutableListOf<WorkPlanDto>()
+        workPlan.map { wp ->
+            val permit =findPermitBYID(wp.permitId?:throw Exception("INVALID PERMIT ID"))
+            val permitDetailsCommon =  companyDtoDetails(permit, map)
+            permitsList.add(
+                WorkPlanDto(
+                    permitDetailsCommon.firmName,
+                    wp.refNumber,
+                    wp.permitNumber,
+                    permitDetailsCommon.physicalAddress,
+                    permitDetailsCommon.town,
+                    permit.commodityDescription,
+                    permit.dateOfIssue,
+                    permit.dateOfExpiry,
+                    wp.visitsScheduled
+                )
+            )
+        }
+        return permitsList.sortedBy { it.visitsScheduled }
+    }
+
     fun findOfficersList(
-        permit: PermitApplicationsEntity,
+        plantID: Long,
         map: ServiceMapsEntity,
         designationID: Long
     ): List<UserProfilesEntity> {
-        val plantID = permit.attachedPlantId
-            ?: throw ServiceMapNotFoundException("Atta ched Plant details For Permit with ID = ${permit.id}, is Empty")
-
         val plantAttached = findPlantDetails(plantID)
         val region = plantAttached.region?.let { commonDaoServices.findRegionEntityByRegionID(it, map.activeStatus) }
             ?: throw ExpectedDataNotFound("Plant attached Region Id is Empty, check config")
@@ -509,6 +727,16 @@ class QADaoServices(
             department,
             map.activeStatus
         ).userId
+
+    }
+
+    fun assignNextOfficerWithDesignation(
+        permit: PermitApplicationsEntity,
+        map: ServiceMapsEntity,
+        designationID: Long
+    ): UsersEntity? {
+        val designation = commonDaoServices.findDesignationByID(designationID)
+        return commonDaoServices.findUserProfileWithDesignationAndStatus(designation, map.activeStatus).userId
 
     }
 
@@ -570,16 +798,10 @@ class QADaoServices(
 
             with(savePermit) {
                 userId = user.id
-                productName = product?.let { commonDaoServices.findProductByID(it).name }
+                productName = permits.commodityDescription
+//                productName = product?.let { commonDaoServices.findProductByID(it).name }
                 permitType = permitTypeDetails.id
-                permitRefNumber = "${permitTypeDetails.markNumber}${
-                    generateRandomText(
-                        5,
-                        map.secureRandom,
-                        map.messageDigestAlgorithm,
-                        true
-                    )
-                }".toUpperCase()
+                permitRefNumber = "REF${permitTypeDetails.markNumber}${generateRandomText(5, map.secureRandom, map.messageDigestAlgorithm, true)}".toUpperCase()
                 enabled = map.initStatus
                 versionNumber = 1
                 endOfProductionStatus = map.initStatus
@@ -1106,27 +1328,23 @@ class QADaoServices(
         doc: String,
         user: UsersEntity,
         map: ServiceMapsEntity,
+        qaUploads: QaUploadsEntity,
         permitID: Long,
-        manufactureNonStatus: Int?
+        versionNumberAdded: Long,
+        manufactureNonStatus: Int?,
     ): Pair<ServiceRequestsEntity, QaUploadsEntity> {
 
         var sr = commonDaoServices.createServiceRequest(map)
-        var uploads = QaUploadsEntity()
+        var uploads = qaUploads
         try {
-
-
             with(uploads) {
                 name = commonDaoServices.saveDocuments(docFile)
                 fileType = docFile.contentType
                 documentType = doc
                 document = docFile.bytes
-                nonManufactureStatus = manufactureNonStatus
-                when {
-                    manufactureNonStatus != 1 -> {
-                        permitId = permitID
-                    }
-                }
+                permitId = permitID
                 transactionDate = commonDaoServices.getCurrentDate()
+                versionNumber = versionNumberAdded
                 status = map.activeStatus
                 createdBy = commonDaoServices.concatenateName(user)
                 createdOn = commonDaoServices.getTimestamp()
@@ -1399,6 +1617,85 @@ class QADaoServices(
         permitUpdateDetails(permit, s, user)
     }
 
+    fun permitMultipleInvoiceCalculation(
+        s: ServiceMapsEntity,
+        user: UsersEntity,
+        batchInvoiceDto: NewBatchInvoiceDto,
+    ): ServiceRequestsEntity {
+
+        var sr = commonDaoServices.createServiceRequest(s)
+        try {
+
+            val userID =user.id?:throw Exception("INVALID USER ID")
+            var permitInvoiceFound = findPermitInvoiceByPermitID(batchInvoiceDto.permitID?: throw Exception("PERMIT ID REQUIRED"), userID)
+            val permitType = findPermitType(applicationMapProperties.mapQAPermitTypeIdInvoices)
+            var batchID: Long?= null
+            invoiceBatchRepo.findByIdOrNull(batchInvoiceDto.batchID)
+                ?.let { invoiceDetails ->
+
+                    with(permitInvoiceFound){
+                        batchInvoiceNo = invoiceDetails.id
+                        modifiedBy = commonDaoServices.concatenateName(user)
+                        modifiedOn = commonDaoServices.getTimestamp()
+                    }
+                    permitInvoiceFound =invoiceRepository.save(permitInvoiceFound)
+
+                    with(invoiceDetails){
+                        description = "${permitInvoiceFound.invoiceNumber},$description"
+                        totalAmount = totalAmount?.plus(permitInvoiceFound.amount?:throw Exception("INVALID AMOUNT"))
+                    }
+                    batchID= invoiceBatchRepo.save(invoiceDetails).id
+                }
+                ?: kotlin.run {
+                    var batchInvoicePermit = QaBatchInvoiceEntity()
+                    with(batchInvoicePermit){
+                        invoiceNumber = "KIMS${permitType.markNumber}${generateRandomText(5, s.secureRandom, s.messageDigestAlgorithm, true)}".toUpperCase()
+                        userId = userID
+                        plantId = batchInvoiceDto.plantID
+                        status = s.activeStatus
+                        description = "${permitInvoiceFound.invoiceNumber}"
+                        totalAmount = permitInvoiceFound.amount
+                        createdBy = commonDaoServices.concatenateName(user)
+                        createdOn = commonDaoServices.getTimestamp()
+                    }
+                    batchInvoicePermit = invoiceBatchRepo.save(batchInvoicePermit)
+
+                    with(permitInvoiceFound){
+                        batchInvoiceNo = batchInvoicePermit.id
+                        modifiedBy = commonDaoServices.concatenateName(user)
+                        modifiedOn = commonDaoServices.getTimestamp()
+                    }
+                    permitInvoiceFound =invoiceRepository.save(permitInvoiceFound)
+
+                    batchID = batchInvoicePermit.id
+                }
+
+
+            sr.payload = "permitInvoiceFound[id= ${permitInvoiceFound.userId}]"
+            sr.names = "${permitInvoiceFound.invoiceNumber} ${permitInvoiceFound.amount}"
+            sr.varField1 = batchID.toString()
+
+            sr.responseStatus = sr.serviceMapsId?.successStatusCode
+            sr.responseMessage = "Success ${sr.payload}"
+            sr.status = s.successStatus
+            sr = serviceRequestsRepository.save(sr)
+            sr.processingEndDate = Timestamp.from(Instant.now())
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message, e)
+//            KotlinLogging.logger { }.trace(e.message, e)
+            sr.status = sr.serviceMapsId?.exceptionStatus
+            sr.responseStatus = sr.serviceMapsId?.exceptionStatusCode
+            sr.responseMessage = e.message
+            sr = serviceRequestsRepository.save(sr)
+
+        }
+
+        KotlinLogging.logger { }.trace("${sr.id} ${sr.responseStatus}")
+        return sr
+    }
+
+
     fun permitInvoiceCalculation(
         s: ServiceMapsEntity,
         user: UsersEntity,
@@ -1487,6 +1784,43 @@ class QADaoServices(
 
             sr.payload = "User[id= ${user.id}]"
             sr.names = "$phoneNumber} ${invoice.invoiceNumber}"
+
+            sr.responseStatus = sr.serviceMapsId?.successStatusCode
+            sr.responseMessage = "Success ${sr.payload}"
+            sr.status = s.successStatus
+            sr = serviceRequestsRepository.save(sr)
+            sr.processingEndDate = Timestamp.from(Instant.now())
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message, e)
+//            KotlinLogging.logger { }.trace(e.message, e)
+            sr.status = sr.serviceMapsId?.exceptionStatus
+            sr.responseStatus = sr.serviceMapsId?.exceptionStatusCode
+            sr.responseMessage = e.message
+            sr = serviceRequestsRepository.save(sr)
+
+        }
+
+        KotlinLogging.logger { }.trace("${sr.id} ${sr.responseStatus}")
+        return sr
+    }
+
+    fun updatePlantDetails(
+        s: ServiceMapsEntity,
+        user: UsersEntity,
+        plantDetail: ManufacturePlantDetailsEntity
+    ): ServiceRequestsEntity {
+
+        var sr = commonDaoServices.createServiceRequest(s)
+        try {
+            with(plantDetail){
+               lastModifiedBy = commonDaoServices.concatenateName(user)
+                lastModifiedOn = commonDaoServices.getTimestamp()
+            }
+            manufacturePlantRepository.save(plantDetail)
+
+            sr.payload = "Plant Detail [id= ${plantDetail.id}]"
+            sr.names = "${plantDetail.buildingName}} ${plantDetail.lastModifiedOn}"
 
             sr.responseStatus = sr.serviceMapsId?.successStatusCode
             sr.responseMessage = "Success ${sr.payload}"
@@ -1618,14 +1952,11 @@ class QADaoServices(
             signature = commonDaoServices.concatenateName(user)
             createdBy = commonDaoServices.concatenateName(user)
             val generatedPayments = permits.let { calculatePayment(it, map, user) }
-            amount = generatedPayments[3]
-            applicationCost = generatedPayments[2]
-            val cost: BigDecimal? = generatedPayments[0]
-            standardCost = cost
-            inspectionCost = generatedPayments[1]
-            fmarkStatus = generatedPayments[4]
-            fmarkCost = generatedPayments[5]
-            tax = generatedPayments[6]
+
+            inspectionCost = generatedPayments[0]
+            applicationCost = generatedPayments[1]
+            amount = generatedPayments[2]
+            tax = generatedPayments[3]
             businessName = entity.name
             permitId = permits.id
             userId = user.id
@@ -1675,93 +2006,62 @@ class QADaoServices(
         map: ServiceMapsEntity,
         user: UsersEntity
     ): MutableList<BigDecimal?> {
+
         KotlinLogging.logger { }.info { "ManufacturerId, ${permit.userId}" }
-        val manufactureId = permit.userId
-//        val manufactureTurnOver: BigDecimal? = manufactureId.let { it?.let { it1 -> iManufacturePaymentDetailsRepository.findByManufacturerIdAndStatus(it1, 1)?.turnOverAmount } }
+        val permitType = findPermitType(permit.permitType?:throw Exception("INVALID PERMIT TYPE ID"))
+        val numberOfYears = permitType.numberOfYears?.toBigDecimal()?:throw Exception("INVALID NUMBER OF YEARS")
         val manufactureTurnOver = permit.userId?.let { commonDaoServices.findCompanyProfile(it).yearlyTurnover }
-        KotlinLogging.logger { }.info { manufactureTurnOver }
-        var amountToPay: BigDecimal? = null
-        var taxAmount: BigDecimal? = null
-//        var inspectionCost: BigDecimal? = null
-
+        val plantDetails = findPlantDetails(permit.attachedPlantId?:throw Exception("INVALID PLANT ID"))
         var m = mutableListOf<BigDecimal?>()
-        var fmarkCost: BigDecimal? = null
-        val paymentUnits = paymentUnitsRepository.findByIdOrNull(2)
-        KotlinLogging.logger { }.info { paymentUnits?.standardStandardCost }
-        var fmark: BigDecimal? = null
-        var stgAmt: BigDecimal? = null
-        val taxRate = applicationMapProperties.mapKebsTaxRate
 
 
-        val noOf = permit.productSubCategory?.let { sampleStandardsRepository.findBySubCategoryId(it)?.noOfPages }
-        val standardCost: BigDecimal? = (paymentUnits?.standardStandardCost?.times(noOf!!))?.toBigDecimal()
-        //                val inspectionCost: BigDecimal? = permit.noOfSitesProducingTheBrand?.let { paymentUnits?.standardInspectionCost?.times(it)?.toBigDecimal() }
-        //Check if its a Renewal status
-//       if (permit.renewalStatus!=1){
-        val inspectionCost = paymentUnits?.standardInspectionCost?.toBigDecimal()
-//       }
-
-        var applicationCost: BigDecimal? = null
-
-        when (permit.permitType) {
+        when (permitType.id) {
             applicationMapProperties.mapQAPermitTypeIdSmark -> {
                 when {
                     manufactureTurnOver != null -> {
-
+                        val turnOverValues = manufactureType(manufactureTurnOver)
+                        val taxRate = turnOverValues.taxRate?:throw Exception("INVALID TAX RATE")
                         when {
                             manufactureTurnOver > iTurnOverRatesRepository.findByIdOrNull(applicationMapProperties.mapQASmarkLargeFirmsTurnOverId)?.lowerLimit -> {
+
                                 m = mutableListForTurnOverAbove500KSmark(
-                                    applicationCost,
+                                    plantDetails,
+                                    permitType,
                                     permit,
-                                    stgAmt,
-                                    standardCost,
-                                    inspectionCost,
-                                    fmark,
-                                    fmarkCost,
-                                    taxAmount,
+                                    turnOverValues.fixedAmountToPay?.times(numberOfYears)?:throw Exception("INVALID FIXED AMOUNT TO PAY"),
+                                    turnOverValues.variableAmountToPay?.times(numberOfYears)?:throw Exception("INVALID VARIABLE AMOUNT TO PAY"),
                                     taxRate,
-                                    amountToPay,
-                                    manufactureTurnOver,
+                                    map,
+                                    user,
+                                    commonDaoServices.getCurrentDate(),
                                     m
                                 )
 
                             }
-                            manufactureTurnOver < iTurnOverRatesRepository.findByIdOrNull(applicationMapProperties.mapQASmarkMediumTurnOverId)?.upperLimit && manufactureTurnOver > iTurnOverRatesRepository.findByIdOrNull(
-                                applicationMapProperties.mapQASmarkMediumTurnOverId
-                            )?.lowerLimit -> {
+                            manufactureTurnOver < iTurnOverRatesRepository.findByIdOrNull(applicationMapProperties.mapQASmarkMediumTurnOverId)?.upperLimit && manufactureTurnOver > iTurnOverRatesRepository.findByIdOrNull(applicationMapProperties.mapQASmarkMediumTurnOverId)?.lowerLimit -> {
                                 m = mutableListForTurnOverBelow500kAndAbove200KSmark(
-                                    user,
-                                    map,
-                                    applicationCost,
+                                    plantDetails,
+                                    permitType,
                                     permit,
-                                    stgAmt,
-                                    standardCost,
-                                    inspectionCost,
-                                    fmark,
-                                    fmarkCost,
-                                    taxAmount,
+                                    turnOverValues.fixedAmountToPay?.times(numberOfYears)?:throw Exception("INVALID FIXED AMOUNT TO PAY"),
+                                    turnOverValues.variableAmountToPay?.times(numberOfYears)?:throw Exception("INVALID VARIABLE AMOUNT TO PAY"),
+                                    turnOverValues.maxProduct?:throw Exception("INVALID PRODUCT MAX VALUE"),
                                     taxRate,
-                                    amountToPay,
-                                    manufactureTurnOver,
+                                    map,
                                     m
                                 )
 
                             }
                             else -> {
                                 m = mutableListForTurOverBelow200KSmark(
-                                    user,
-                                    map,
-                                    applicationCost,
+                                    plantDetails,
+                                    permitType,
                                     permit,
-                                    stgAmt,
-                                    standardCost,
-                                    inspectionCost,
-                                    fmark,
-                                    fmarkCost,
-                                    taxAmount,
+                                    turnOverValues.fixedAmountToPay?.times(numberOfYears)?:throw Exception("INVALID FIXED AMOUNT TO PAY"),
+                                    turnOverValues.variableAmountToPay?.times(numberOfYears)?:throw Exception("INVALID VARIABLE AMOUNT TO PAY"),
+                                    turnOverValues.maxProduct?:throw Exception("INVALID PRODUCT MAX VALUE"),
                                     taxRate,
-                                    amountToPay,
-                                    manufactureTurnOver,
+                                    map,
                                     m
                                 )
                             }
@@ -1775,62 +2075,64 @@ class QADaoServices(
             applicationMapProperties.mapQAPermitTypeIDDmark -> {
                 when (permit.permitForeignStatus) {
                     applicationMapProperties.mapQaDmarkDomesticStatus -> {
-                        applicationCost = applicationMapProperties.mapQaDmarkDomesticAmountToPay
-                        stgAmt = standardCost?.plus(inspectionCost!!)?.let { applicationCost!!.plus(it) }
-                        fmark = 0.toBigDecimal()
-                        taxAmount = stgAmt?.let { taxRate.times(it) }
+
+                        var stgAmt : BigDecimal? = null
+                        var taxAmount : BigDecimal? = null
+                        var amountToPay : BigDecimal? = null
+                        val inspectionCostValue : BigDecimal? = null
+                        val applicationCostValue = permitType.dmarkLocalAmount?.times(numberOfYears)
+
+                        stgAmt = applicationCostValue
+                        taxAmount = stgAmt?.let { permitType.taxRate?.times(it) }
                         amountToPay = taxAmount?.let { stgAmt?.plus(it) }
 
-                        m = myReturPaymentValues(
+                        m =  myReturPaymentValues(
                             m,
-                            standardCost,
-                            inspectionCost,
-                            applicationCost,
+                            inspectionCostValue,
+                            applicationCostValue,
                             amountToPay,
-                            fmark,
-                            fmarkCost,
                             taxAmount
                         )
                     }
                     applicationMapProperties.mapQaDmarkForeginStatus -> {
-                        val foreignAmountCalculated =
-                            iMoneyTypeCodesRepo.findByTypeCode(applicationMapProperties.mapUssRateName)?.typeCodeValue?.toBigDecimal()
-                        applicationCost = foreignAmountCalculated?.let {
-                            applicationMapProperties.mapQaDmarkForeginAmountToPay.times(it)
-                        }
-                        stgAmt = standardCost?.plus(inspectionCost!!)?.let { applicationCost?.plus(it) }
-                        fmark = 0.toBigDecimal()
-                        taxAmount = stgAmt?.let { taxRate.times(it) }
+                        val foreignAmountCalculated = iMoneyTypeCodesRepo.findByTypeCode(applicationMapProperties.mapUssRateName)?.typeCodeValue?.toBigDecimal()
+                        var stgAmt : BigDecimal? = null
+                        var taxAmount : BigDecimal? = null
+                        var amountToPay : BigDecimal? = null
+                        val inspectionCostValue : BigDecimal? = null
+                        val applicationCostValue = permitType.dmarkForeignAmount?.times(numberOfYears)?.times(foreignAmountCalculated?:throw Exception("INVALID AMOUNT CONVERSION RATE"))
+
+                        stgAmt = applicationCostValue
+                        taxAmount = stgAmt?.let { permitType.taxRate?.times(it) }
                         amountToPay = taxAmount?.let { stgAmt?.plus(it) }
 
-                        m = myReturPaymentValues(
+                        m =  myReturPaymentValues(
                             m,
-                            standardCost,
-                            inspectionCost,
-                            applicationCost,
+                            inspectionCostValue,
+                            applicationCostValue,
                             amountToPay,
-                            fmark,
-                            fmarkCost,
                             taxAmount
                         )
                     }
                 }
             }
             applicationMapProperties.mapQAPermitTypeIdFmark -> {
-                applicationCost = applicationMapProperties.mapQaFmarkAmountToPay
-                stgAmt = standardCost?.plus(inspectionCost!!)?.let { applicationCost.plus(it) }
-                fmark = 0.toBigDecimal()
-                taxAmount = stgAmt?.let { taxRate.times(it) }
+                var stgAmt : BigDecimal? = null
+                var taxAmount : BigDecimal? = null
+                var amountToPay : BigDecimal? = null
+                val inspectionCostValue : BigDecimal? = null
+                val applicationCostValue: BigDecimal? = permitType.fmarkAmount?.times(numberOfYears)
+
+
+                stgAmt = applicationCostValue
+                taxAmount = stgAmt?.let { permitType.taxRate?.times(it) }
                 amountToPay = taxAmount?.let { stgAmt?.plus(it) }
 
-                m = myReturPaymentValues(
+                m =  myReturPaymentValues(
                     m,
-                    standardCost,
-                    inspectionCost,
-                    applicationCost,
+                    inspectionCostValue,
+                    applicationCostValue,
                     amountToPay,
-                    fmark,
-                    fmarkCost,
                     taxAmount
                 )
             }
@@ -1840,232 +2142,180 @@ class QADaoServices(
     }
 
     private fun mutableListForTurOverBelow200KSmark(
-        user: UsersEntity,
-        map: ServiceMapsEntity,
-        applicationCost: BigDecimal?,
+        plantDetail: ManufacturePlantDetailsEntity,
+        permitType: PermitTypesEntity,
         permit: PermitApplicationsEntity,
-        stgAmt: BigDecimal?,
-        standardCost: BigDecimal?,
-        inspectionCost: BigDecimal?,
-        fmark: BigDecimal?,
-        fmarkCost: BigDecimal?,
-        taxAmount: BigDecimal?,
+        inspectionCost: BigDecimal,
+        applicationCost: BigDecimal,
+        productMaximum: Long,
         taxRate: BigDecimal,
-        amountToPay: BigDecimal?,
-        manufactureTurnOver: BigDecimal?,
+        map: ServiceMapsEntity,
         m: MutableList<BigDecimal?>
     ): MutableList<BigDecimal?> {
-        var applicationCost1 = applicationCost
-        var stgAmt1 = stgAmt
-        var fmark1 = fmark
-        var fmarkCost1 = fmarkCost
-        var taxAmount1 = taxAmount
-        var amountToPay1 = amountToPay
-        var m1 = m
         KotlinLogging.logger { }.info { "Turnover is less than 200, 000" }
 
-        //                val noOf = sampleStandardsRepository.findBySubCategoryId(permit.productSubCategory?.id)?.noOfPages))
-        val turnoverValues =
-            iTurnOverRatesRepository.findByIdOrNull(applicationMapProperties.mapQASmarkJuakaliTurnOverId)
-                ?: throw ExpectedDataNotFound("MISSING TURNOVER RATES FOR Medium Firm SMARK")
-        val productList = user.id?.let {
-            findPermitBYUserIDANDProductionStatus(
-                map.inactiveStatus,
-                applicationMapProperties.mapQAPermitTypeIdSmark,
-                it
-            )
-        } ?: throw ExpectedDataNotFound("MISSING USER ID")
+        var stgAmt : BigDecimal? = null
+        var taxAmount : BigDecimal? = null
+        var amountToPay : BigDecimal? = null
+        var inspectionCostValue : BigDecimal? = inspectionCost
+        var applicationCostValue: BigDecimal?
+        var m1 = m
+
+        val productList = findAllProductManufactureINPlantWithID(map.activeStatus,map.inactiveStatus,permitType.id?:throw Exception("INVALID PERMIT TYPE ID"),plantDetail.id)
         val productSize = productList.size
-        var remainingSize = 1.00.toBigDecimal()
-        if (productSize > applicationMapProperties.mapQaSmarkJuakaliMaxProduct) {
-            remainingSize = productSize.minus(applicationMapProperties.mapQaSmarkJuakaliMaxProduct).toBigDecimal()
+        var remainingSize: BigDecimal
+        if (productSize > productMaximum) {
+            remainingSize = productSize.minus(productMaximum).toBigDecimal()
+            applicationCostValue = remainingSize.times(applicationCost)
+            stgAmt = applicationCostValue.plus(inspectionCostValue ?: throw Exception("INVALID INSPECTION COST VALUE"))
+        }else{
+            applicationCostValue = inspectionCostValue
+            inspectionCostValue = null
+            stgAmt = applicationCostValue
         }
-        var extraProductCost: BigDecimal? = 0.000.toBigDecimal()
-        extraProductCost = turnoverValues.variableAmountToPay?.let { remainingSize.times(it) }
-        applicationCost1 = extraProductCost?.let { turnoverValues.fixedAmountToPay?.plus(it) }
-//        if (permit.fmarkGenerated == 1) {
-//            stgAmt1 = applicationCost1?.let { standardCost?.plus(inspectionCost!!)?.plus(it) }
-//            fmark1 = 1.toBigDecimal()
-//            fmarkCost1 =
-//                standardCost?.plus(inspectionCost!!)?.let { applicationMapProperties.mapQaFmarkAmountToPay.plus(it) }
-//            //Todo : ask if foreign cost will also be added as vat
-//            taxAmount1 = fmarkCost1?.let { taxRate.times(it) }
-//            amountToPay1 = taxAmount1?.let { stgAmt1?.plus(it) }
-//        } else {
-        KotlinLogging.logger { }.info { "second loop, ${permit.product}" }
-        stgAmt1 = applicationCost1?.let { standardCost?.plus(inspectionCost!!)?.plus(it) }
-        fmark1 = 0.toBigDecimal()
-        taxAmount1 = stgAmt1?.let { taxRate.times(it) }
-        amountToPay1 = taxAmount1?.let { stgAmt1?.plus(it) }
-//        }
-        //                amountToPay = standardCost?.plus(inspectionCost!!)?.let { applicationCost?.plus(it) }
-        KotlinLogging.logger { }.info { "Manufacturer turnover, $manufactureTurnOver" }
-        KotlinLogging.logger { }.info { "Total Amount To Pay   = " + amountToPay1?.toDouble() }
+
+        taxAmount =  taxRate.times(stgAmt?:throw Exception("INVALID STG AMOUNT"))
+        amountToPay = taxAmount.let { stgAmt.plus(it) }
+
+        KotlinLogging.logger { }.info { "Total Amount To Pay   = " + amountToPay.toDouble() }
 
         m1 = myReturPaymentValues(
             m1,
-            standardCost,
-            inspectionCost,
-            applicationCost1,
-            amountToPay1,
-            fmark1,
-            fmarkCost1,
-            taxAmount1
+            inspectionCostValue,
+            applicationCostValue,
+            amountToPay,
+            taxAmount
         )
         return m1
     }
 
     private fun mutableListForTurnOverBelow500kAndAbove200KSmark(
-        user: UsersEntity,
-        map: ServiceMapsEntity,
-        applicationCost: BigDecimal?,
+        plantDetail: ManufacturePlantDetailsEntity,
+        permitType: PermitTypesEntity,
         permit: PermitApplicationsEntity,
-        stgAmt: BigDecimal?,
-        standardCost: BigDecimal?,
-        inspectionCost: BigDecimal?,
-        fmark: BigDecimal?,
-        fmarkCost: BigDecimal?,
-        taxAmount: BigDecimal?,
+        inspectionCost: BigDecimal,
+        applicationCost: BigDecimal,
+        productMaximum: Long,
         taxRate: BigDecimal,
-        amountToPay: BigDecimal?,
-        manufactureTurnOver: BigDecimal?,
+        map: ServiceMapsEntity,
         m: MutableList<BigDecimal?>
     ): MutableList<BigDecimal?> {
-        var applicationCost1 = applicationCost
-        var stgAmt1 = stgAmt
-        var fmark1 = fmark
-        var fmarkCost1 = fmarkCost
-        var taxAmount1 = taxAmount
-        var amountToPay1 = amountToPay
+
+        KotlinLogging.logger { }.info { "Turnover is Below 500K And Above 200K" }
+        var stgAmt : BigDecimal? = null
+        var taxAmount : BigDecimal? = null
+        var amountToPay : BigDecimal? = null
+        var inspectionCostValue : BigDecimal? = inspectionCost
+        var applicationCostValue: BigDecimal?
         var m1 = m
-        KotlinLogging.logger { }.info { "Turnover is less than 500, 000 but above 200, 000" }
-        //                val noOf = sampleStandardsRepository.findBySubCategoryId(permit.productSubCategory?.id)?.noOfPages))
-        val turnoverValues =
-            iTurnOverRatesRepository.findByIdOrNull(applicationMapProperties.mapQASmarkMediumTurnOverId)
-                ?: throw ExpectedDataNotFound("MISSING TURNOVER RATES FOR Medium Firm SMARK")
-        val productList = user.id?.let {
-            findPermitBYUserIDANDProductionStatus(
-                map.inactiveStatus,
-                applicationMapProperties.mapQAPermitTypeIdSmark,
-                it
-            )
-        } ?: throw ExpectedDataNotFound("MISSING USER ID")
+
+        val productList = findAllProductManufactureINPlantWithID(map.activeStatus,map.inactiveStatus,permitType.id?:throw Exception("INVALID PERMIT TYPE ID"),plantDetail.id)
         val productSize = productList.size
-        var remainingSize = 1.00.toBigDecimal()
-        if (productSize > applicationMapProperties.mapQaSmarkMediumMaxProduct) {
-            remainingSize = productSize.minus(applicationMapProperties.mapQaSmarkMediumMaxProduct).toBigDecimal()
+        var remainingSize: BigDecimal
+        if (productSize > productMaximum) {
+            remainingSize = productSize.minus(productMaximum).toBigDecimal()
+            applicationCostValue = remainingSize.times(applicationCost)
+            stgAmt = applicationCostValue.plus(inspectionCostValue ?: throw Exception("INVALID INSPECTION COST VALUE"))
+        }else{
+            applicationCostValue = inspectionCostValue
+            inspectionCostValue = null
+            stgAmt = applicationCostValue
         }
 
-        var extraProductCost: BigDecimal? = 0.000.toBigDecimal()
-        extraProductCost = turnoverValues.variableAmountToPay?.let { remainingSize.times(it) }
-        applicationCost1 = extraProductCost?.let { turnoverValues.fixedAmountToPay?.plus(it) }
-//        if (permit.fmarkGenerated == 1) {
-//            stgAmt1 = applicationCost1?.let { standardCost?.plus(inspectionCost!!)?.plus(it) }
-//            fmark1 = 1.toBigDecimal()
-//            fmarkCost1 =
-//                standardCost?.plus(inspectionCost!!)?.let { applicationMapProperties.mapQaFmarkAmountToPay.plus(it) }
-//            //Todo : ask if foreign cost will also be added as vat
-//            taxAmount1 = fmarkCost1?.let { taxRate.times(it) }
-//            amountToPay1 = taxAmount1?.let { stgAmt1?.plus(it) }
-//        } else {
-        KotlinLogging.logger { }.info { "second loop, ${permit.product}" }
-        stgAmt1 = applicationCost1?.let { standardCost?.plus(inspectionCost!!)?.plus(it) }
-        fmark1 = 0.toBigDecimal()
-        taxAmount1 = stgAmt1?.let { taxRate.times(it) }
-        amountToPay1 = taxAmount1?.let { stgAmt1?.plus(it) }
-//        }
-        //                amountToPay = standardCost?.plus(inspectionCost!!)?.let { applicationCost?.plus(it) }
-        KotlinLogging.logger { }.info { "Manufacturer turnover, $manufactureTurnOver" }
-        KotlinLogging.logger { }.info { "Total Amount To Pay   = " + amountToPay1?.toDouble() }
+        taxAmount =  taxRate.times(stgAmt?:throw Exception("INVALID STG AMOUNT"))
+        amountToPay = taxAmount.let { stgAmt.plus(it) }
+
+        KotlinLogging.logger { }.info { "Total Amount To Pay   = " + amountToPay.toDouble() }
 
         m1 = myReturPaymentValues(
             m1,
-            standardCost,
-            inspectionCost,
-            applicationCost1,
-            amountToPay1,
-            fmark1,
-            fmarkCost1,
-            taxAmount1
+            inspectionCostValue,
+            applicationCostValue,
+            amountToPay,
+            taxAmount
         )
         return m1
     }
 
     private fun mutableListForTurnOverAbove500KSmark(
-        applicationCost: BigDecimal?,
+        plantDetail: ManufacturePlantDetailsEntity,
+        permitType: PermitTypesEntity,
         permit: PermitApplicationsEntity,
-        stgAmt: BigDecimal?,
-        standardCost: BigDecimal?,
-        inspectionCost: BigDecimal?,
-        fmark: BigDecimal?,
-        fmarkCost: BigDecimal?,
-        taxAmount: BigDecimal?,
+        inspectionCost: BigDecimal,
+        applicationCost: BigDecimal,
         taxRate: BigDecimal,
-        amountToPay: BigDecimal?,
-        manufactureTurnOver: BigDecimal?,
+        map: ServiceMapsEntity,
+        user: UsersEntity,
+        currentDate: Date,
         m: MutableList<BigDecimal?>
     ): MutableList<BigDecimal?> {
-        var applicationCost1 = applicationCost
-        var stgAmt1 = stgAmt
-        var fmark1 = fmark
-        var fmarkCost1 = fmarkCost
-        var taxAmount1 = taxAmount
-        var amountToPay1 = amountToPay
-        var m1 = m
         KotlinLogging.logger { }.info { "Turnover is above 500, 000" }
-        //                val noOf = sampleStandardsRepository.findBySubCategoryId(permit.productSubCategory?.id)?.noOfPages))
-        val turnoverValues =
-            iTurnOverRatesRepository.findByIdOrNull(applicationMapProperties.mapQASmarkLargeFirmsTurnOverId)
-                ?: throw ExpectedDataNotFound("MISSING TURNOVER RATES FOR Large Firm SMARK")
-        applicationCost1 = turnoverValues.variableAmountToPay?.let { turnoverValues.fixedAmountToPay?.plus(it) }
 
-//        if (permit.fmarkGenerated == 1) {
-//            stgAmt1 = applicationCost1?.let { standardCost?.plus(inspectionCost!!)?.plus(it) }
-//            fmark1 = 1.toBigDecimal()
-//            fmarkCost1 = standardCost?.plus(inspectionCost!!)?.let { applicationMapProperties.mapQaFmarkAmountToPay.plus(it) }
-//            //Todo : ask if foreign cost will also be added as vat
-//            taxAmount1 = fmarkCost1?.let { taxRate.times(it) }
-//            amountToPay1 = taxAmount1?.let { stgAmt1?.plus(it) }
-//        } else {
-        KotlinLogging.logger { }.info { "second loop, ${permit.product}" }
-        stgAmt1 = applicationCost1?.let { standardCost?.plus(inspectionCost!!)?.plus(it) }
-        fmark1 = 0.toBigDecimal()
-        taxAmount1 = stgAmt1?.let { taxRate.times(it) }
-        amountToPay1 = taxAmount1?.let { stgAmt1?.plus(it) }
+        var stgAmt : BigDecimal? = null
+        var taxAmount : BigDecimal? = null
+        var amountToPay : BigDecimal? = null
+        var inspectionCostValue : BigDecimal? = inspectionCost
+        var m1 = m
+
+        when {
+            plantDetail.paidDate== null && plantDetail.endingDate == null && plantDetail.inspectionFeeStatus == null -> {
+                stgAmt = applicationCost.plus(inspectionCostValue ?: throw Exception("INVALID INSPECTION COST VALUE"))
+                with(plantDetail) {
+                    inspectionFeeStatus = 1
+                    paidDate = commonDaoServices.getCurrentDate()
+                    endingDate = commonDaoServices.addYearsToCurrentDate(permitType.numberOfYears ?: throw Exception("INVALID NUMBER OF YEARS"))
+                }
+                updatePlantDetails(map, user, plantDetail)
+            }
+            currentDate > plantDetail.paidDate && currentDate < plantDetail.endingDate && plantDetail.inspectionFeeStatus == 1 -> {
+                stgAmt = applicationCost
+                inspectionCostValue = null
+            }
+            else -> {
+                stgAmt = applicationCost.plus(inspectionCostValue ?: throw Exception("INVALID INSPECTION COST VALUE"))
+                with(plantDetail) {
+                    inspectionFeeStatus = 1
+                    paidDate = commonDaoServices.getCurrentDate()
+                    endingDate = commonDaoServices.addYearsToCurrentDate(permitType.numberOfYears ?: throw Exception("INVALID NUMBER OF YEARS"))
+                }
+                updatePlantDetails(map, user, plantDetail)
+            }
+        }
+
+//        stgAmt = when (inspectionCost) {
+//            null -> {
+//                applicationCost
+//            }
+//            else -> {
+//                applicationCost?.plus(inspectionCost)
+//            }
 //        }
-        //                amountToPay = standardCost?.plus(inspectionCost!!)?.let { applicationCost?.plus(it) }
-        KotlinLogging.logger { }.info { "Manufacturer turnover, $manufactureTurnOver" }
-        KotlinLogging.logger { }.info { "Total Amount To Pay   = " + amountToPay1?.toDouble() }
+
+        taxAmount = stgAmt.let { taxRate.times(it) }
+        amountToPay = taxAmount.let { stgAmt.plus(it) }
+
+        KotlinLogging.logger { }.info { "Total Amount To Pay   = " + amountToPay.toDouble() }
 
         m1 = myReturPaymentValues(
             m1,
-            standardCost,
-            inspectionCost,
-            applicationCost1,
-            amountToPay1,
-            fmark1,
-            fmarkCost1,
-            taxAmount1
+            inspectionCostValue,
+            applicationCost,
+            amountToPay,
+            taxAmount
         )
         return m1
     }
 
     private fun myReturPaymentValues(
         m: MutableList<BigDecimal?>,
-        standardCost: BigDecimal?,
         inspectionCost: BigDecimal?,
         applicationCost: BigDecimal?,
         amountToPay: BigDecimal?,
-        fmark: BigDecimal?,
-        fmarkCost: BigDecimal?,
         taxAmount: BigDecimal?
     ): MutableList<BigDecimal?> {
-        m.add(standardCost)
         m.add(inspectionCost)
         m.add(applicationCost)
         m.add(amountToPay)
-        m.add(fmark)
-        m.add(fmarkCost)
         m.add(taxAmount)
 
         return m

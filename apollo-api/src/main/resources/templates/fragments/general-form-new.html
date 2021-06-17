@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+      xmlns:th="http://www.thymeleaf.org">>
+<head th:fragment="headerfiles">
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>KEBS</title>
+  <link rel="shortcut icon" th:href="@{/images/favicon.ico}" type="image/x-icon">
+  <link rel="apple-touch-icon" th:href="@{/images/kebs_favicon.png}">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" th:href="@{/css/style.css}" type="text/css" media="screen">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Nunito Sans">
+</head>
+<body>
+<div class="dashboard-page" th:fragment="top-bar">
+  <div class="dashboard-header">
+    <img th:src="@{/images/kebs_logo_white.png}" class="dashboard-header-logo" alt="kebs Logo" id="logo">
+  </div>
+<!--  <div class="loggedIn-user">-->
+<!--    <div class="user-details">-->
+<!--      <p>-->
+<!--        JKIA-->
+<!--      </p>-->
+<!--      <p>-->
+<!--        DI Ofﬁcer In Charge-->
+<!--      </p>-->
+<!--      <p>-->
+<!--        Randy Wabunge-->
+<!--      </p>-->
+<!--    </div>-->
+<!--    <div class="options-button">-->
+<!--      <button type="button" value="" class="option-button">Options</button>-->
+<!--    </div>-->
+<!--  </div>-->
+
+  <div class="loggedIn-user">
+    <div class="user-details">
+      <p>
+      <div sec:authorize="isAuthenticated()">
+                            <span class="div-block-2"
+                                  th:text="${session.section != null} ? ${#strings.toUpperCase(session.section.section)} : ''"></span>
+        <span class="div-block-2"
+              th:text="${session.region != null} ? ${#strings.toUpperCase(session.region.subRegion)} : ''"></span>
+        <p>
+                <span class="div-block-2"
+                      th:text="${session.designation != null} ? ${#strings.toUpperCase(session.designation.designationName)} : ''"></span>
+        </p>
+      </div>
+      </p>
+      <div sec:authorize="isAuthenticated()" th:object="${session.currentUser}">
+        <span th:text="*{firstName}">John</span> <span th:text="*{lastName}">Doe</span>
+      </div>
+    </div>
+    <div class="options-button">
+      <button type="button" value="" class="option-button">Options</button>
+    </div>
+  </div>
+
+</div>
+<!--<div class="dashboard-body">-->
+<!--  <div class="sidebar" th:fragment="side-navigation-bar">-->
+<!--    <div class="sidebar-items"><img th:src="@{/images/Dashboard.svg}" class="sidebar-icons-dashboard selected-page"><span class="selected-page">&nbsp; Dashboard</span></div>-->
+
+<!--    <a class="sidebar-items"-->
+<!--       sec:authorize="hasAuthority('PERMIT_APPLICATION') or hasAuthority('QA_OFFICER_MODIFY') or hasAuthority('QA_HOD_READ') or hasAuthority('QA_MANAGER_ASSESSORS_READ') or hasAuthority('QA_HOF_READ') or hasAuthority('QA_ASSESSORS_READ') or hasAuthority('QA_PAC_SECRETARY_READ') or hasAuthority('QA_PSC_MEMBERS_READ') or hasAuthority('QA_PCM_READ')"-->
+<!--       th:href="@{/api/qa/home}">-->
+<!--      <img th:src="@{/images/quality_assurance.svg}" class="sidebar-icons-dashboard selected-page">-->
+<!--      <span>&nbsp; Quality Assurance</span>-->
+<!--    </a>-->
+
+<!--    <a class="sidebar-items"-->
+<!--       sec:authorize="hasAuthority('DI_INSPECTION_OFFICER_READ')  or hasAuthority('DI_DIRECTOR_READ')-->
+<!--                     or hasAuthority('DI_WETC_CHAIR_READ')  or hasAuthority('DI_NSC_MEMBER_READ') or hasAuthority('DI_HOD_READ')-->
+<!--                    or hasAuthority('DI_NSC_SECRETARY_READ') or hasAuthority('DI_CLUSTER_SUPERVISOR_READ') or hasAuthority('DI_WETC_MEMBER_READ')-->
+<!--                    or hasAuthority('DI_OFFICER_CHARGE_READ') or hasAuthority('DI_MANAGER_INSPECTION_READ') or hasAuthority('DI_EXEMPTION_COMMITTEE_CHAIR_READ')"-->
+<!--       th:href="@{/api/di/home}">-->
+<!--      <img th:src="@{/images/import_inspection.svg}" class="sidebar-icons-dashboard selected-page">-->
+<!--      <span>&nbsp; Import Inspection</span>-->
+<!--    </a>-->
+
+<!--&lt;!&ndash;    <div class="sidebar-items">&ndash;&gt;-->
+<!--&lt;!&ndash;      <img src="./images/assets/Standards Levy.svg" class="sidebar-icons-dashboard selected-page">&ndash;&gt;-->
+<!--&lt;!&ndash;      <span>&ndash;&gt;-->
+<!--&lt;!&ndash;                    &nbsp; Standards Levy&ndash;&gt;-->
+<!--&lt;!&ndash;                </span>&ndash;&gt;-->
+<!--&lt;!&ndash;    </div>&ndash;&gt;-->
+
+<!--&lt;!&ndash;    <div class="sidebar-items">&ndash;&gt;-->
+<!--&lt;!&ndash;      <img src="./images/assets/Inspection.svg" class="sidebar-icons-dashboard selected-page">&ndash;&gt;-->
+<!--&lt;!&ndash;      <span>&ndash;&gt;-->
+<!--&lt;!&ndash;                    &nbsp; Market Surveillance&ndash;&gt;-->
+<!--&lt;!&ndash;                </span>&ndash;&gt;-->
+<!--&lt;!&ndash;    </div>&ndash;&gt;-->
+<!--&lt;!&ndash;    <div class="sidebar-items">&ndash;&gt;-->
+<!--&lt;!&ndash;      <img src="./images/assets/Standards Dev.svg" class="sidebar-icons-dashboard selected-page">&ndash;&gt;-->
+<!--&lt;!&ndash;      <span>&ndash;&gt;-->
+<!--&lt;!&ndash;                    &nbsp; Standards Dev & Trade&ndash;&gt;-->
+<!--&lt;!&ndash;                </span>&ndash;&gt;-->
+<!--&lt;!&ndash;    </div>&ndash;&gt;-->
+<!--  </div>-->
+<!--  <div class="main-area">-->
+<!--    <div class="top-section">-->
+<!--      <div class="dashboard-title">-->
+<!--        <h4 class="dashboard-title-content">-->
+<!--          Dashboard-->
+<!--        </h4>-->
+<!--      </div>-->
+<!--      <div class="logout">-->
+<!--        <button type="button" value="" class="logout-button"><a href="index.html" class="login-ref">LOGOUT</a></button>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--    <section class="dashboard-content"  th:fragment="content-navigation-bar">-->
+
+<!--      <div class="welcome-banner">-->
+<!--        <h1 class="banner-title-content">-->
+<!--          Welcome to KEBS KIMS-->
+<!--        </h1>-->
+<!--      </div>-->
+<!--      <div class="tabs">-->
+<!--        <div class="account">-->
+<!--          <i class="material-icons" style="font-size:15px;">how_to_reg</i>-->
+<!--          <span>-->
+<!--                            &nbsp; My Account-->
+<!--                        </span>-->
+<!--        </div>-->
+<!--        <div class="notifications">-->
+<!--          <a href="notification.html" class="link">-->
+<!--            <div class="notification-ref">-->
+<!--              <i class="material-icons notification-icon" style="font-size:15px;">-->
+<!--                add_alert-->
+<!--              </i>-->
+<!--              <span>-->
+<!--                                    &nbsp; Notifications-->
+<!--                                </span>-->
+<!--            </div>-->
+<!--          </a>-->
+
+<!--        </div>-->
+<!--        <div class="tasks">-->
+<!--          <i class="material-icons" style="font-size:15px;">event</i>-->
+<!--          <span>-->
+<!--                            &nbsp; Tasks-->
+<!--                        </span>-->
+<!--        </div>-->
+<!--        <div class="settings">-->
+<!--          <i class="material-icons" style="font-size:15px;">settings</i>-->
+<!--          <span>-->
+<!--                            &nbsp; Settings-->
+<!--                        </span>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--      <div class="dashboard-footer">-->
+<!--        <div class="dashboard-footer-logos">-->
+<!--          <div class="f-mark">-->
+<!--            <img th:src="@{/images/Fmark.png}" class="mark-image" alt="fortified Logo"-->
+<!--                 id="fortified">-->
+<!--          </div>-->
+<!--          <div class="d-mark">-->
+<!--            <img th:src="@{/images/Dmark.png}" class="mark-image" alt="d_mark Logo" id="d_mark">-->
+<!--          </div>-->
+<!--          <div class="n-mark">-->
+<!--            <img th:src="@{/images/Smark Logo.png}" class="mark-image" alt="quality Logo" id="quality">-->
+<!--          </div>-->
+<!--        </div>-->
+<!--        <div class="dashboard-footer-copyright">-->
+<!--          <p class="copyright-details">-->
+<!--            Copyright 2021 Kenya Bureau of Standards.-->
+<!--          </p>-->
+<!--          <p class="copyright-details push-middle">-->
+<!--            All Rights Reserved v1.0.0-->
+<!--          </p>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--    </section>-->
+<!--  </div>-->
+<!--</div>-->
+
+<div class="dashboard-body">
+  <div class="sidebar" th:fragment="side-navigation-bar">
+    <div class="sidebar-items">
+      <img src="./images/assets/Dashboard.svg" class="sidebar-icons-dashboard selected-page">
+      <span class="selected-page">
+                    &nbsp; Dashboard
+                </span>
+    </div>
+    <div class="sidebar-items">
+      <img src="./images/assets/Quality Assurance.svg" class="sidebar-icons-dashboard selected-page">
+      <span>
+                    &nbsp; Quality Assurance
+                </span>
+    </div>
+    <div class="sidebar-items">
+      <img src="./images/assets/Import Inspection.svg" class="sidebar-icons-dashboard selected-page">
+      <span>
+                    &nbsp; Import Inspection
+                </span>
+    </div>
+    <div class="sidebar-items">
+      <img src="./images/assets/Standards Levy.svg" class="sidebar-icons-dashboard selected-page">
+      <span>
+                    &nbsp; Standards Levy
+                </span>
+    </div>
+
+    <div class="sidebar-items">
+      <img src="./images/assets/Inspection.svg" class="sidebar-icons-dashboard selected-page">
+      <span>
+                    &nbsp; Market Surveillance
+                </span>
+    </div>
+    <div class="sidebar-items">
+      <img src="./images/assets/Standards Dev.svg" class="sidebar-icons-dashboard selected-page">
+      <span>
+                    &nbsp; Standards Dev & Trade
+                </span>
+    </div>
+  </div>
+  <div class="main-area">
+    <div class="top-section">
+      <div class="dashboard-title">
+        <h4 class="dashboard-title-content">
+          Dashboard
+        </h4>
+      </div>
+      <div class="logout">
+        <button type="button" value="" class="logout-button"><a href="index.html" class="login-ref">LOGOUT</a></button>
+      </div>
+    </div>
+    <section class="dashboard-content" th:fragment="content-navigation-bar">
+
+      <div class="welcome-banner">
+        <h1 class="banner-title-content">
+          Welcome to KEBS KIMS
+        </h1>
+      </div>
+      <div class="tabs">
+        <div class="account">
+          <i class="material-icons" style="font-size:15px;">how_to_reg</i>
+          <span>
+                            &nbsp; My Account
+                        </span>
+        </div>
+        <div class="notifications">
+          <a href="notification.html" class="link">
+            <div class="notification-ref">
+              <i class="material-icons notification-icon" style="font-size:15px;">
+                add_alert
+              </i>
+              <span>
+                                    &nbsp; Notifications
+                                </span>
+            </div>
+          </a>
+
+        </div>
+        <div class="tasks">
+          <i class="material-icons" style="font-size:15px;">event</i>
+          <span>
+                            &nbsp; Tasks
+                        </span>
+        </div>
+        <div class="settings">
+          <i class="material-icons" style="font-size:15px;">settings</i>
+          <span>
+                            &nbsp; Settings
+                        </span>
+        </div>
+      </div>
+      <div class="dashboard-footer">
+        <div class="dashboard-footer-logos">
+          <div class="f-mark">
+            <img src="./images/assets/Fmark.png" class="mark-image" alt="fortified Logo"
+                 id="fortified">
+          </div>
+          <div class="d-mark">
+            <img src="./images/assets/Dmark.png" class="mark-image" alt="d_mark Logo" id="d_mark">
+          </div>
+          <div class="n-mark">
+            <img src="./images/assets/Smark Logo.png" class="mark-image" alt="quality Logo" id="quality">
+          </div>
+        </div>
+        <div class="dashboard-footer-copyright">
+          <p class="copyright-details">
+            Copyright 2021 Kenya Bureau of Standards.
+          </p>
+          <p class="copyright-details push-middle">
+            All Rights Reserved v1.0.0
+          </p>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
+
+</body>
+</html>

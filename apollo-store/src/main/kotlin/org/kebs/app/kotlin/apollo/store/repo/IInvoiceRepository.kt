@@ -23,6 +23,11 @@ interface IInvoiceRepository : HazelcastRepository<InvoiceEntity, Long> {
     */
     fun findAllByManufacturer(manufacturer: Long, page: Pageable): Page<InvoiceEntity>?
     fun findAllByManufacturer(manufacturer: Long): List<InvoiceEntity>?
+    fun findAllByUserIdAndPaymentStatus(userId: Long, paymentStatus: Int): List<InvoiceEntity>?
+    fun findAllByUserIdAndPaymentStatusAndBatchInvoiceNoIsNull(userId: Long, paymentStatus: Int): List<InvoiceEntity>?
+    fun findAllByBatchInvoiceNo(
+        batchInvoiceNo: Long
+    ): List<InvoiceEntity>?
 
     fun findByInstallationInspectionId(installationInspectionId: PetroleumInstallationInspectionEntity): InvoiceEntity?
 }

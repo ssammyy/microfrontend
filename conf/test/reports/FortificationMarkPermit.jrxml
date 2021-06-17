@@ -66,28 +66,8 @@
 			<line>
 				<reportElement x="84" y="31" width="246" height="1" uuid="57854f74-ee06-496f-a69f-382de468b694"/>
 			</line>
-			<staticText>
-				<reportElement x="347" y="17" width="70" height="18" uuid="a586fa92-60de-4af9-b23a-3604bbdf3469"/>
-				<textElement>
-					<font fontName="SansSerif"/>
-				</textElement>
-				<text><![CDATA[MARK NO:]]></text>
-			</staticText>
-			<line>
-				<reportElement x="430" y="31" width="123" height="1" uuid="bea51ac1-ba34-4959-88e4-dccbd76ccc7b"/>
-			</line>
 			<line>
 				<reportElement x="0" y="50" width="330" height="1" uuid="24242b6f-d346-485a-b63f-532ce00701b4"/>
-			</line>
-			<staticText>
-				<reportElement x="347" y="43" width="106" height="18" uuid="f8962192-c8a5-434e-be27-cd27ccc367dc"/>
-				<textElement>
-					<font fontName="SansSerif"/>
-				</textElement>
-				<text><![CDATA[EFFECTIVE FROM:]]></text>
-			</staticText>
-			<line>
-				<reportElement x="456" y="60" width="98" height="1" uuid="45014502-dd63-448b-ba7a-48355408a907"/>
 			</line>
 			<staticText>
 				<reportElement x="0" y="55" width="120" height="18" uuid="ff753243-6f5e-477f-927a-7c8d5fa1861f"/>
@@ -99,28 +79,8 @@
 			<line>
 				<reportElement x="110" y="71" width="220" height="1" uuid="b5019cac-b4ec-45ad-98eb-fe4e2417c149"/>
 			</line>
-			<staticText>
-				<reportElement x="347" y="72" width="70" height="18" uuid="fff92383-315a-4727-8646-c5e3838263fe"/>
-				<textElement>
-					<font fontName="SansSerif"/>
-				</textElement>
-				<text><![CDATA[EXPIRES ON:]]></text>
-			</staticText>
-			<line>
-				<reportElement x="430" y="88" width="123" height="1" uuid="c88a8bbf-affc-4cea-a795-692e6943779b"/>
-			</line>
 			<line>
 				<reportElement x="0" y="90" width="330" height="1" uuid="66b5969d-81eb-4379-9168-89e09991a0c5"/>
-			</line>
-			<staticText>
-				<reportElement x="346" y="99" width="98" height="18" uuid="36e82ebd-1929-4d7f-a343-626e1253547d"/>
-				<textElement>
-					<font fontName="SansSerif"/>
-				</textElement>
-				<text><![CDATA[DATE OF ISSUE:]]></text>
-			</staticText>
-			<line>
-				<reportElement x="430" y="112" width="123" height="1" uuid="7c1983dd-6908-4b59-9157-f637265dad1a"/>
 			</line>
 			<staticText>
 				<reportElement x="0" y="97" width="120" height="18" uuid="f603b75b-0d4a-4af4-b0b1-3e7840375c3a"/>
@@ -139,29 +99,13 @@
 				<reportElement x="91" y="33" width="230" height="15" uuid="687c578a-3654-4d75-ad5d-304dd1643677"/>
 				<textFieldExpression><![CDATA[$P{FirmName}]]></textFieldExpression>
 			</textField>
-			<textField>
-				<reportElement x="424" y="10" width="116" height="21" uuid="07558563-4f33-44de-a603-467279f63912"/>
-				<textFieldExpression><![CDATA[$P{PermitNo}]]></textFieldExpression>
-			</textField>
 			<textField textAdjust="ScaleFont">
 				<reportElement x="130" y="72" width="200" height="18" uuid="84611ffb-2904-4fed-bb90-80ca8d565bbd"/>
 				<textFieldExpression><![CDATA[$P{PostalAddress}]]></textFieldExpression>
 			</textField>
-			<textField>
-				<reportElement x="432" y="68" width="100" height="20" uuid="13ae75fa-6dfa-4f5f-8a3b-ccf86687d702"/>
-				<textFieldExpression><![CDATA[$P{ExpiryDate}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="432" y="93" width="100" height="20" uuid="9eccb848-a2b8-444b-aede-f879883e127e"/>
-				<textFieldExpression><![CDATA[$P{DateOfIssue}]]></textFieldExpression>
-			</textField>
 			<textField textAdjust="ScaleFont">
 				<reportElement stretchType="ContainerHeight" x="110" y="115" width="222" height="16" uuid="739fb948-6fe1-41c7-8b75-9a0a838c15fe"/>
 				<textFieldExpression><![CDATA[$P{PhysicalAddress}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="453" y="43" width="100" height="17" uuid="9f9b36d3-7967-4d4b-a9f3-9eb4641dd5a3"/>
-				<textFieldExpression><![CDATA[$P{DateOfIssue}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="1" y="143" width="120" height="18" uuid="92fab6d7-eeba-4fda-9505-711e52cf8c97"/>
@@ -204,6 +148,66 @@
 			<textField textAdjust="ScaleFont">
 				<reportElement x="140" y="182" width="190" height="20" uuid="8fa67896-122a-459d-9165-e29e3c63fd23"/>
 				<textFieldExpression><![CDATA[$P{EmailAddress}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="400" y="12" width="152" height="21" uuid="ed9930b0-440d-4b5e-a122-7df9b1d63496"/>
+				<box>
+					<bottomPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$P{PermitNo}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="347" y="17" width="53" height="18" uuid="fc443ecd-8ebb-4860-951e-8808df91e03f"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif"/>
+				</textElement>
+				<text><![CDATA[MARK NO:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="347" y="43" width="93" height="18" uuid="2bcffaaa-08a2-44ca-9047-664c0502f1d9"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif"/>
+				</textElement>
+				<text><![CDATA[EFFECTIVE FROM:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="439" y="42" width="113" height="17" uuid="a5e65098-7ae8-4efe-b266-28efbe4d965a"/>
+				<box>
+					<bottomPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$P{DateOfIssue}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="415" y="68" width="135" height="20" uuid="3b248913-3f0c-4503-9ab6-9a750b4442a8"/>
+				<box>
+					<bottomPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$P{ExpiryDate}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="347" y="72" width="70" height="18" uuid="2e01e7aa-8df4-4353-9c66-04207aa55c41"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif"/>
+				</textElement>
+				<text><![CDATA[EXPIRES ON:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="346" y="99" width="86" height="18" uuid="ad49d548-c6db-4da7-a881-741fb6ad79d3"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif"/>
+				</textElement>
+				<text><![CDATA[DATE OF ISSUE:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="429" y="96" width="120" height="20" uuid="c5235c2e-7a46-4b72-9fda-a2ee58d890e1"/>
+				<box>
+					<bottomPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$P{DateOfIssue}]]></textFieldExpression>
 			</textField>
 		</band>
 	</columnHeader>

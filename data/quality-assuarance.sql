@@ -79,6 +79,27 @@
 ***************************Table USED IN QA*****************************************
 select *
 from DAT_KEBS_PERMIT_TRANSACTION
+-- where id = 503
+
+where ATTACHED_PLANT_ID = 203
+-- where PERMIT_NUMBER = 'DM#0954A'
+order by id desc;
+
+select *
+from dat_kebs_qa_batch_invoice
+-- where id = 503
+
+-- where PERMIT_NUMBER = 'DM#0954A'
+order by id desc;
+
+UPDATE DAT_KEBS_PERMIT_TRANSACTION
+SET RESUBMIT_APPLICATION_STATUS = 10,
+    SEND_FOR_PCM_REVIEW         = null,
+    PCM_APPROVAL_STATUS         = null
+WHERE id = 503;
+
+select *
+from CFG_PERMIT_TYPES
 -- where id = 281
 
 -- where PERMIT_NUMBER = 'DM#0954A'
@@ -95,6 +116,13 @@ order by id desc;
 select *
 from cfg_kebs_qa_process_status
 -- where id = 350
+-- where PERMIT_NUMBER = 'DM#0954A'
+order by id desc;
+
+select *
+from DAT_KEBS_QA_STA10
+-- where id = 350
+where permit_id = 482
 -- where PERMIT_NUMBER = 'DM#0954A'
 order by id desc;
 1522
@@ -141,7 +169,7 @@ alter table CFG_PERMIT_TYPES
 /
 
 alter table DAT_KEBS_PERMIT_TRANSACTION
-    add RM_ID NUMBER REFERENCES DAT_KEBS_USERS (ID)
+    add COC_ID NUMBER REFERENCES DAT_KEBS_QA_UPLOADS (ID)
 /
 
 select *
@@ -162,9 +190,20 @@ select * from CFG_KEBS_PERMIT_PAYMENT_UNITS
 order by id desc;
 
 select * from DAT_KEBS_COMPANY_PROFILE
-where REGISTRATION_NUMBER = 'PVT-9XUZXZB'
+-- where REGISTRATION_NUMBER = 'PVT-9XUZXZB'
+where  USER_ID= 1765
 -- where id = 2
 order by id desc;
+
+
+
+select * from DAT_KEBS_COMPANY_PROFILE_DIRECTORS
+-- where REGISTRATION_NUMBER = 'PVT-9XUZXZB'
+where  COMPANY_PROFILE_ID= 142
+-- where id = 2
+order by id desc;
+
+select * from LOG_SL2_PAYMENTS_HEADER;
 
 select * from DAT_KEBS_INVOICE
 -- where id = 2
@@ -190,7 +229,7 @@ alter table DAT_KEBS_PERMIT_TRANSACTION
 /
 
 alter table DAT_KEBS_PERMIT_TRANSACTION
-    add END_PRODUCTION_REQUEST_REMARKS_APPROVAL VARCHAR2(200)
+    add RESUBMIT_REMARKS VARCHAR2(200)
 /
 
 
@@ -205,6 +244,12 @@ alter table DAT_KEBS_QA_STA10
 /alter table DAT_KEBS_QA_STA10
     add PRODUCT_LABELED_MARKED_SPECIFY_1E VARCHAR2(200)
     /
+
+alter table DAT_KEBS_QA_WORKPLAN rename column PERMITS to PERMIT_NUMBER
+/
+
+alter table DAT_KEBS_QA_WORKPLAN modify PERMIT_NUMBER VARCHAR2(200)
+/
 
 select * from DAT_KEBS_QA_SCHEME_FOR_SUPERVISION
 -- where id = 43
@@ -628,6 +673,54 @@ begin
 end;
 
 create index dat_kebs_qa_permit_update_details_requests_idx on dat_kebs_qa_permit_update_details_requests (PERMIT_ID, REQUEST_STATUS, status) TABLESPACE qaimssdb_idx;
+/
+
+
+create table dat_kebs_qa_batch_invoice
+(
+    id               NUMBER PRIMARY KEY,
+    INVOICE_NUMBER   VARCHAR2(200) UNIQUE,
+    TOTAL_AMOUNT      NUMBER(38, 3) NOT NULL,
+    DESCRIPTION      VARCHAR2(200),
+    status           NUMBER(2),
+    var_field_1      VARCHAR2(350 CHAR),
+    var_field_2      VARCHAR2(350 CHAR),
+    var_field_3      VARCHAR2(350 CHAR),
+    var_field_4      VARCHAR2(350 CHAR),
+    var_field_5      VARCHAR2(350 CHAR),
+    var_field_6      VARCHAR2(350 CHAR),
+    var_field_7      VARCHAR2(350 CHAR),
+    var_field_8      VARCHAR2(350 CHAR),
+    var_field_9      VARCHAR2(350 CHAR),
+    var_field_10     VARCHAR2(350 CHAR),
+    created_by       VARCHAR2(100 CHAR)          DEFAULT 'admin' NOT NULL ENABLE,
+    created_on       TIMESTAMP(6) WITH TIME ZONE DEFAULT sysdate NOT NULL ENABLE,
+    modified_by      VARCHAR2(100 CHAR)          DEFAULT 'admin',
+    modified_on      TIMESTAMP(6) WITH TIME ZONE DEFAULT sysdate,
+    delete_by        VARCHAR2(100 CHAR)          DEFAULT 'admin',
+    deleted_on       TIMESTAMP(6) WITH TIME ZONE
+) TABLESPACE qaimssdb_data;
+
+create sequence dat_kebs_qa_batch_invoice_seq minvalue 1 maxvalue 9999999999999999999999999999 increment by 1 start with 1 cache 20 noorder nocycle;
+
+create or replace trigger dat_kebs_qa_batch_invoice_seq_trg
+    before
+        insert
+    on dat_kebs_qa_batch_invoice
+    for each row
+begin
+    if inserting then
+        if :new.id is null then
+            select dat_kebs_qa_batch_invoice_seq.nextval
+            into :new.id
+            from dual;
+
+        end if;
+
+    end if;
+end;
+
+create index dat_kebs_qa_batch_invoice_idx on dat_kebs_qa_batch_invoice (status) TABLESPACE qaimssdb_idx;
 /
 
 

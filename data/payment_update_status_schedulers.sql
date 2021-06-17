@@ -171,7 +171,8 @@ order by id desc;/
 /*Permit INVOICE*/
 select * from DAT_KEBS_INVOICE
 -- where id = 2
--- where INVOICE_NUMBER = 'DM#202104290CF'
+where PERMIT_ID = 462
+-- where INVOICE_NUMBER = 'KIMSDM#20210520A55'
 order by id desc;
 
 

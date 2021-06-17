@@ -193,8 +193,8 @@
                                         <div class="col-sm-5">
                                             <h3>Invoice for:</h3>
                                             <address th:if="${permit != null}"
-                                                     th:text="${permitType?.mark} + ' ' + ${applicationState} + ' for ' + ${product?.name}">
-                                                <div th:text="${invoice?.permitId?.postalAddress}"></div>
+                                                     th:text="${permitType?.mark} + ' ' + ${applicationState} + ' for ' + ${permit?.commodityDescription}">
+                                                <div th:text="${permit?.postalAddress}"></div>
                                                 <br>
                                                 <div th:text="'Product'"></div>
                                                 <div th:text="'Brand'"></div>
@@ -221,7 +221,7 @@
                                             </tr>
                                             </thead>
                                             <tbody>
-                                            <tr th:if="${permit != null}">
+                                            <tr th:if="${invoice.inspectionCost != null} and ${permit != null}">
                                                 <td colspan="2">
                                                     Inspection cost
                                                     <br/><br>
@@ -231,13 +231,13 @@
                                                 <td class="text-center"
                                                     th:text="'KSH ' + ${invoice?.inspectionCost}"></td>
                                             </tr>
-                                            <tr th:if="${permit != null}" class="sub-total-row first">
-                                                <!--                              <td></td>-->
-                                                <td colspan="2">
-                                                    Cost of standard
-                                                    <br/><br>
-                                                <td th:text="'KSH ' + ${invoice?.standardCost}"></td>
-                                            </tr>
+<!--                                            <tr th:if="${permit != null}" class="sub-total-row first">-->
+<!--                                                &lt;!&ndash;                              <td></td>&ndash;&gt;-->
+<!--                                                <td colspan="2">-->
+<!--                                                    Cost of standard-->
+<!--                                                    <br/><br>-->
+<!--                                                <td th:text="'KSH ' + ${invoice?.standardCost}"></td>-->
+<!--                                            </tr>-->
                                             <tr th:if="${permit != null}">
                                                 <td colspan="2">
                                                     Permit cost

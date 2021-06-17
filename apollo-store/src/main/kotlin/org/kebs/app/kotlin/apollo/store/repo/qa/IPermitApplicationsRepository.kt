@@ -1,8 +1,11 @@
 package org.kebs.app.kotlin.apollo.store.repo.qa
 
+import org.kebs.app.kotlin.apollo.store.model.UsersEntity
 import org.kebs.app.kotlin.apollo.store.model.importer.TemporaryImportApplicationsEntity
 import org.kebs.app.kotlin.apollo.store.model.importer.TemporaryImportApplicationsUploadsEntity
 import org.kebs.app.kotlin.apollo.store.model.qa.*
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.data.hazelcast.repository.HazelcastRepository
 import org.springframework.stereotype.Repository
 
@@ -23,6 +26,15 @@ interface IPermitApplicationsRepository : HazelcastRepository<PermitApplications
     fun findByAssessorIdAndPermitTypeAndOldPermitStatusIsNull(userId: Long, permitType: Long): List<PermitApplicationsEntity>?
     fun findByPacSecIdAndPermitTypeAndOldPermitStatusIsNull(userId: Long, permitType: Long): List<PermitApplicationsEntity>?
     fun findByUserIdAndPermitTypeAndEndOfProductionStatus(userId: Long, permitType: Long, endOfProductionStatus: Int): List<PermitApplicationsEntity>?
+    fun findByUserIdAndPermitTypeAndEndOfProductionStatusAndPermitAwardStatus(
+        userId: Long,
+        permitType: Long,
+        endOfProductionStatus: Int,
+        permitAwardStatus: Int
+    ): List<PermitApplicationsEntity>?
+    fun findByPermitTypeAndEndOfProductionStatusAndPermitAwardStatusAndAttachedPlantId(
+        permitType: Long, endOfProductionStatus: Int, permitAwardStatus: Int, attachedPlantId: Long
+    ): List<PermitApplicationsEntity>?
     fun findByUserIdAndPermitTypeAndEndOfProductionStatusAndOldPermitStatusIsNull(userId: Long, permitType: Long, endOfProductionStatus: Int): List<PermitApplicationsEntity>?
     fun findByIdAndUserIdAndPermitType(id: Long, userId: Long, permitType: Long): PermitApplicationsEntity?
     fun findByPcmIdAndPermitTypeAndOldPermitStatusIsNull(userId: Long, permitType: Long): List<PermitApplicationsEntity>?
@@ -36,6 +48,7 @@ interface IPermitApplicationsRepository : HazelcastRepository<PermitApplications
     fun findAllByPaidStatus(paymentStatus: Int): List<PermitApplicationsEntity>?
     fun findByPermitRefNumberAndOldPermitStatus(permitRefNumber: String, oldPermitStatus: Int): List<PermitApplicationsEntity>?
     fun findTopByPermitRefNumberOrderByIdDesc(permitRefNumber: String): PermitApplicationsEntity?
+    fun findByIdAndAttachedPlantId(id: Long, attachedPlantId: Long): PermitApplicationsEntity?
 }
 
 
@@ -135,12 +148,28 @@ interface ITurnOverRatesRepository : HazelcastRepository<TurnOverRatesEntity, Lo
 
 @Repository
 interface IQaUploadsRepository : HazelcastRepository<QaUploadsEntity, Long> {
-    fun findByPermitId(permitId: Long): List<QaUploadsEntity>?
+    fun findByPermitIdAndOrdinaryStatus(permitId: Long, ordinaryStatus: Int): List<QaUploadsEntity>?
     fun findByPermitIdAndDocumentType(permitId: Long, docType: String): QaUploadsEntity?
+    fun findByPermitIdAndCocStatus(permitId: Long, cocStatus: Int): List<QaUploadsEntity>?
+    fun findByPermitIdAndSscStatus(permitId: Long, sscStatus: Int): List<QaUploadsEntity>?
 }
 
 @Repository
 interface IQaSmarkFmarkRepository : HazelcastRepository<QaSmarkFmarkEntity, Long> {
     fun findByFmarkId(fmarkID: Long): QaSmarkFmarkEntity?
     fun findBySmarkId(smarkID: Long): QaSmarkFmarkEntity?
+}
+
+@Repository
+interface IQaWorkplanRepository: HazelcastRepository<QaWorkplanEntity, Long> {
+    fun findByPermitNumber(permitNumber: String): List<QaWorkplanEntity>?
+    fun findByOfficerId(officerId: Long): List<QaWorkplanEntity>?
+    fun findByOfficerIdAndRefNumber(officerId: Long, refNumber: String): QaWorkplanEntity?
+}
+
+@Repository
+interface IQaBatchInvoiceRepository: HazelcastRepository<QaBatchInvoiceEntity, Long> {
+    fun findByUserIdAndInvoiceNumber(userId: Long, refNumber: String): QaBatchInvoiceEntity?
+    fun findByUserIdAndInvoiceNumberAndPlantId(userId: Long, invoiceNumber: String, plantId: Long): QaBatchInvoiceEntity?
+    fun findByUserId(userId: Long): List<QaBatchInvoiceEntity>?
 }

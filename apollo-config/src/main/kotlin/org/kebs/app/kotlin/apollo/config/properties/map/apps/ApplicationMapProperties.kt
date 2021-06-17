@@ -93,6 +93,9 @@ class ApplicationMapProperties {
     @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.type.fmark.id}")
     val mapQAPermitTypeIdFmark: Long = 0L
 
+    @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.type.invoices.id}")
+    val mapQAPermitTypeIdInvoices: Long = 0L
+
     @Value("\${org.kebs.app.kotlin.apollo.application.map.importer.details}")
     val mapImporterDetails: Int = 0
 
@@ -187,6 +190,9 @@ class ApplicationMapProperties {
     @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.status.pending_approval_of_ssc}")
     val mapQaStatusPApprSSC: Long = 0L
 
+    @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.status.coc_uploaded}")
+    val mapQaStatusCocUploaded: Long = 0L
+
     @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.status.ssc_rejected}")
     val mapQaStatusSSCRejected: Long = 0L
 
@@ -249,6 +255,9 @@ class ApplicationMapProperties {
 
     @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.status.permit_awarded}")
     val mapQaStatusPermitAwarded: Long = 0L
+
+    @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.status.pending_correction}")
+    val mapQaStatusPendingCorrectionManf: Long = 0L
 
     @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.status.permit_expired}")
     val mapQaStatusPermitExpired: Long = 0L

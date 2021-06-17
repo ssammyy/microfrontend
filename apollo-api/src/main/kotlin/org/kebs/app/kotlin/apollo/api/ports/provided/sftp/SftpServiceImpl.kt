@@ -71,7 +71,9 @@ class SftpServiceImpl(
     fun disconnect(sftp: ChannelSftp) {
         try {
             if (sftp.isConnected) {
-                sftp.disconnect()
+                val session: Session = sftp.getSession()
+                sftp.exit()
+                session.disconnect()
             } else if (sftp.isClosed) {
                 KotlinLogging.logger { }.info("SFTP connection is already closed")
             }
@@ -102,23 +104,24 @@ class SftpServiceImpl(
     override fun downloadFilesByDocType(docType: String): List<File> {
         val sftp: ChannelSftp = this.createSftp()
         val filesList = mutableListOf<File>()
-//        try {
+        try {
             sftp.cd(applicationMapProperties.mapSftpDownloadRoot)
-//            KotlinLogging.logger { }.info(":::: Downloading file to: ${applicationMapProperties.mapSftpDownloadRoot} ::::")
 
             val allFiles = sftp.ls(applicationMapProperties.mapSftpDownloadRoot)
             for (file in allFiles) {
                 val entry: ChannelSftp.LsEntry = file as ChannelSftp.LsEntry
                 if (validateKeswsFileByDocType(entry.filename, docType)) {
-//                    KotlinLogging.logger { }.info(":::: File found: ${entry.filename} ::::")
                     filesList.add(convertInputstreamToFile(sftp.get(entry.filename), entry.filename))
                 }
             }
-            return filesList
-//        } catch (e: Exception) {
-//            KotlinLogging.logger { }.error("An error occurred while downloading sftp files", e)
-////            throw RuntimeException("An error occurred while downloading sftp files")
-//        }
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error("An error occurred while downloading sftp files", e)
+//            throw RuntimeException("An error occurred while downloading sftp files")
+        } finally {
+            KotlinLogging.logger { }.info(":::: Disconnect sftp after downloading ::::")
+            this.disconnect(sftp)
+        }
+        return filesList
     }
 
     fun moveFileToProcessedFolder(file: File, destinationFolder: String): Boolean {
