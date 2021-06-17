@@ -30,8 +30,10 @@ import java.math.BigDecimal
 @EncryptablePropertySource("file:\${CONFIG_PATH}/application-map.properties")
 class ApplicationMapProperties {
 
-//    @Value("\${org.kebs.app.kotlin.apollo.application.map.base.url.key}")
+    //    @Value("\${org.kebs.app.kotlin.apollo.application.map.base.url.key}")
 //    val baseUrlKey: String="BASE-URL"
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.manufacturer.admin.role.id}")
+    val manufacturerAdminRoleId: Long? = null
 
     @Value("\${org.kebs.app.kotlin.apollo.application.map.base.url.value}")
     val baseUrlValue: String = "https://127.0.0.1:8005/api"
@@ -148,7 +150,7 @@ class ApplicationMapProperties {
     val mapQaStatusDraft: Long = 0L
 
 
-     @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.status.resubmitted}")
+    @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.status.resubmitted}")
     val mapQaStatusResubmitted: Long = 0L
 
     @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.status.pending_sta_3}")

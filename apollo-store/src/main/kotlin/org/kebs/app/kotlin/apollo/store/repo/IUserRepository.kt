@@ -168,6 +168,9 @@ interface IUserRequestTypesRepository : HazelcastRepository<UserRequestTypesEnti
 
 }
 
+@Repository
+interface BranchDetailsRepository : HazelcastRepository<BranchDetailsEntity, Long>
+
 
 @Repository
 interface ICompanyProfileRepository : HazelcastRepository<CompanyProfileEntity, Long> {

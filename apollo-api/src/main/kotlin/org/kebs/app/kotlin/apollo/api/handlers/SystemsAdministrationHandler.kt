@@ -3,6 +3,7 @@ package org.kebs.app.kotlin.apollo.api.handlers
 import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.SystemsAdminDaoService
+import org.kebs.app.kotlin.apollo.api.ports.provided.validation.AbstractValidationHandler
 import org.kebs.app.kotlin.apollo.common.dto.*
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.common.exceptions.InvalidValueException
@@ -25,7 +26,7 @@ class SystemsAdministrationHandler(
     private val daoService: SystemsAdminDaoService,
     applicationMapProperties: ApplicationMapProperties,
     private val commonDaoServices: CommonDaoServices,
-) {
+) : AbstractValidationHandler() {
     final val appId: Int = applicationMapProperties.mapUserRegistration
 
     @PreAuthorize("hasAuthority('RBAC_USER_ROLES_VIEW')")

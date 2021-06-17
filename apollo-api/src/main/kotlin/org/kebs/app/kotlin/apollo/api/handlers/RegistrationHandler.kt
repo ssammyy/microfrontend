@@ -27,6 +27,8 @@ import org.kebs.app.kotlin.apollo.adaptor.kafka.producer.service.SendToKafkaQueu
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.RegistrationDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.SystemsAdminDaoService
+import org.kebs.app.kotlin.apollo.api.ports.provided.validation.AbstractValidationHandler
+import org.kebs.app.kotlin.apollo.common.dto.BrsConfirmationRequest
 import org.kebs.app.kotlin.apollo.common.dto.UserEntityDto
 import org.kebs.app.kotlin.apollo.common.dto.UserPasswordResetValuesDto
 import org.kebs.app.kotlin.apollo.common.dto.UserPasswordVerificationValuesDto
@@ -39,10 +41,14 @@ import org.kebs.app.kotlin.apollo.store.model.*
 import org.kebs.app.kotlin.apollo.store.repo.*
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.data.repository.findByIdOrNull
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler
 import org.springframework.stereotype.Component
+import org.springframework.validation.BeanPropertyBindingResult
+import org.springframework.validation.Errors
+import org.springframework.validation.Validator
 import org.springframework.web.servlet.function.ServerRequest
 import org.springframework.web.servlet.function.ServerResponse
 import org.springframework.web.servlet.function.ServerResponse.ok
@@ -79,8 +85,9 @@ class RegistrationHandler(
     private val usersRepo: IUserRepository,
     private val userProfilesRepo: IUserProfilesRepository,
     private val userVerificationTokensRepository: IUserVerificationTokensRepository,
-    private val daoServices: RegistrationDaoServices
-) {
+    private val daoServices: RegistrationDaoServices,
+    private val validator: Validator
+) : AbstractValidationHandler() {
     @Value("\${user.profile.employee.userTypeID}")
     lateinit var employeeUserTypeId: String
 
@@ -159,7 +166,13 @@ class RegistrationHandler(
             val dto = req.body<UserPasswordResetValuesDto>()
             val user = dto.emailUsername?.let { commonDaoServices.findUserByUserName(it) }
                 ?: throw NullValueNotAllowedException("User with user name ${dto.emailUsername} do not exist")
-            ok().body(systemsAdminDaoService.userRegistrationMailSending(user, null, applicationMapProperties.mapUserPasswordResetNotification))
+            ok().body(
+                systemsAdminDaoService.userRegistrationMailSending(
+                    user,
+                    null,
+                    applicationMapProperties.mapUserPasswordResetNotification
+                )
+            )
 
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message, e)
@@ -809,7 +822,8 @@ class RegistrationHandler(
                                          * */
                                         req.attributes().putAll(loadManufacturerUIComponents(map))
                                         req.attributes()["manufacturersEntity"] = ManufacturersEntity()
-                                        req.attributes()["stdLevyNotificationFormEntity"] = StdLevyNotificationFormEntity()
+                                        req.attributes()["stdLevyNotificationFormEntity"] =
+                                            StdLevyNotificationFormEntity()
                                         req.attributes()["manufacturerAddressesEntity"] = ManufacturerAddressesEntity()
                                         req.attributes()["manufacturerContactEntity"] = ManufacturerContactsEntity()
                                         req.attributes()["yearlyTurnoverEntity"] = ManufacturePaymentDetailsEntity()
@@ -825,6 +839,34 @@ class RegistrationHandler(
     fun signUpAllUsersView(req: ServerRequest): ServerResponse {
         req.attributes()["usersEntity"] = UsersEntity()
         return ok().render("/auth/user-registration", req.attributes())
+    }
+
+
+    @PreAuthorize("isAnonymous()")
+    fun validateAgainstBrs(req: ServerRequest): ServerResponse {
+        return try {
+            val body = req.body<BrsConfirmationRequest>()
+
+            val errors: Errors = BeanPropertyBindingResult(body, BrsConfirmationRequest::class.java.name)
+            validator.validate(body, errors)
+            when {
+                errors.allErrors.isEmpty() -> {
+                    systemsAdminDaoService.validateBrsNumber(body)
+                        ?.let { ok().body(it) }
+                        ?: onErrors("We could not process your request at the moment")
+
+                }
+                else -> {
+                    onValidationErrors(errors)
+                }
+            }
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.debug(e.message, e)
+            KotlinLogging.logger { }.error(e.message)
+            onErrors(e.message)
+        }
+
     }
 
 

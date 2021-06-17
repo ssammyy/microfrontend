@@ -116,7 +116,7 @@ class LookUpBusinessOnBrsService(
                                         brsLookUpResponse.records?.forEach { record ->
                                             brsLookupManufacturerDataEntity = BrsLookupManufacturerDataEntity()
                                             with(brsLookupManufacturerDataEntity) {
-                                                manufacturerId = m
+                                                manufacturerId = m?.id
                                                 transactionDate = Date(java.util.Date().time)
                                                 registrationNumber = record.registrationNumber
                                                 registrationDate = record.registrationDate?.time?.let { Date(it) }
@@ -138,7 +138,7 @@ class LookUpBusinessOnBrsService(
                                                 KotlinLogging.logger { }.trace { "working on ${partner.name}" }
                                                 brsLookupManufacturerPartnersEntity = BrsLookupManufacturerPartnersEntity()
                                                 with(brsLookupManufacturerPartnersEntity) {
-                                                    manufacturerId = brsLookupManufacturerDataEntity
+                                                    manufacturerId = brsLookupManufacturerDataEntity.id
                                                     transactionDate = Date(java.util.Date().time)
                                                     names = partner.name
                                                     idType = partner.idType

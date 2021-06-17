@@ -40,9 +40,6 @@ package org.kebs.app.kotlin.apollo.api.routes
 import org.kebs.app.kotlin.apollo.api.handlers.*
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.http.HttpHeaders
-import org.springframework.http.MediaType
-import org.springframework.web.servlet.function.RequestPredicate
 import org.springframework.web.servlet.function.router
 
 @Configuration
@@ -234,6 +231,7 @@ class ControllerRoutes {
     fun registrationRoutes(handler: RegistrationHandler) = router {
         "/api/v1/auth/signup".nest {
             POST("/user", handler::signUpAllUsers)
+            POST("/validate/brs", handler::signUpAllUsers)
             PUT("/authorize", handler::signUpAllUsersVerification)
             PUT("/forgot-password", handler::signUpUserRestPassword)
 

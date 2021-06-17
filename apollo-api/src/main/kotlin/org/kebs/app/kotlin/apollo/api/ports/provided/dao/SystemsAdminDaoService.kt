@@ -8,10 +8,11 @@ import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.common.exceptions.InvalidInputException
 import org.kebs.app.kotlin.apollo.common.exceptions.InvalidValueException
 import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
-import org.kebs.app.kotlin.apollo.common.utils.generateRandomText
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.*
 import org.kebs.app.kotlin.apollo.store.model.di.UsersCfsAssignmentsEntity
+import org.kebs.app.kotlin.apollo.store.model.qa.ManufacturePlantDetailsEntity
+import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileDirectorsEntity
 import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileEntity
 import org.kebs.app.kotlin.apollo.store.model.registration.UserRequestsEntity
 import org.kebs.app.kotlin.apollo.store.repo.*
@@ -20,6 +21,7 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.security.core.context.SecurityContextHolder
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
@@ -40,6 +42,9 @@ class SystemsAdminDaoService(
     private val businessLinesRepo: IBusinessLinesRepository,
     private val businessNatureRepo: IBusinessNatureRepository,
     private val companyProfileRepo: ICompanyProfileRepository,
+    private val brsLookupManufacturerDataRepo: IBrsLookupManufacturerDataRepository,
+    private val brsLookupManufacturerPartnerRepo: IBrsLookupManufacturerPartnersRepository,
+    private val manufacturePlantRepository: IManufacturePlantDetailsRepository,
     private val rolePrivilegesRepo: IUserRolesPrivilegesRepository,
     private val titlesRepo: ITitlesRepository,
     private val userTypesRepo: IUserTypesEntityRepository,
@@ -58,7 +63,8 @@ class SystemsAdminDaoService(
     private val applicationMapProperties: ApplicationMapProperties,
     private val countiesRepo: ICountiesRepository,
     private val townsRepo: ITownsRepository,
-    private val serviceRequestsRepository: IServiceRequestsRepository
+    private val serviceRequestsRepository: IServiceRequestsRepository,
+    private val companyProfileDirectorsRepo: ICompanyProfileDirectorsRepository,
 ) {
 
     final val appId: Int = applicationMapProperties.mapUserRegistration
@@ -891,7 +897,7 @@ class SystemsAdminDaoService(
             cp.county?.let { countiesRepo.findByIdOrNull(cp.county)?.county },
             cp.town?.let { townsRepo.findByIdOrNull(cp.town)?.town },
             cp.factoryVisitDate,
-                    cp.factoryVisitStatus
+            cp.factoryVisitStatus
         )
     }
 
@@ -1059,6 +1065,254 @@ class SystemsAdminDaoService(
             }
 
         return userList.sortedBy { it.id }
+
+    }
+
+    /**
+     * Send received registration number to BRS for validation
+     * @param request contains the business registration number to be validated
+     * @return if a valid company exists return the company details, if none throw and exception
+     */
+    fun validateBrsNumber(request: BrsConfirmationRequest): UserCompanyEntityDto? {
+        val profile = CompanyProfileEntity().apply {
+            registrationNumber = request.registrationNumber
+            directorIdNumber = request.directorIdNumber
+        }
+        commonDaoServices.findCompanyProfileWithRegistrationNumber(request.registrationNumber)
+            ?.let { throw ExpectedDataNotFound("The Company with this [Registration Number : ${request.registrationNumber}] already exist") }
+            ?: run {
+                val brsCheck = registrationDaoServices.checkBrs(profile)
+                if (brsCheck.first) {
+                    val brs = brsCheck.second
+                        ?: throw ExpectedDataNotFound("The Company Details Verification details could not be found")
+                    return UserCompanyEntityDto().apply {
+                        name = brs.businessName
+                        kraPin = brs.kraPin
+                        userId = null
+                        profileType = applicationMapProperties.mapUserRequestManufacture
+                        registrationNumber = brs.registrationNumber
+                        postalAddress = brs.postalAddress
+                        physicalAddress = brs.physicalAddress
+                        plotNumber = null
+                        companyEmail = brs.email
+                        companyTelephone = brs.phoneNumber
+                        yearlyTurnover = null
+                        businessLines = null
+                        businessNatures = null
+                        buildingName = null
+                        directorIdNumber = null
+                        streetName = null
+                        factoryVisitDate = null
+                        factoryVisitStatus = null
+                        county = null
+                        town = null
+                        region = null
+                        manufactureStatus = 1
+
+                    }
+
+                } else {
+                    throw ExpectedDataNotFound("The Company Details Verification failed Due to Invalid Registration Number or Director Id Failed")
+
+                }
+            }
+
+    }
+
+    /**
+     * Send OTP sms to the phone number provided so that we can validate that the user is holding the number
+     * @param request object containing the phone number to be validated
+     *
+     */
+    fun sendValidationTokenToCellphoneNumber(request: BrsConfirmationRequest): CustomResponse {
+        val result = CustomResponse()
+        try {
+            /**
+             * Generate token
+             */
+            val otp = commonDaoServices.generateTransactionReference(8).toUpperCase()
+            val token = commonDaoServices.generateVerificationToken(otp, request.registrationNumber)
+            commonDaoServices.sendOtpViaSMS(token)
+
+            result.apply {
+                payload = "Successfully Assigned"
+                status = 200
+                response = "00"
+            }
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.debug(e.message, e)
+            KotlinLogging.logger { }.error(e.message)
+            result.apply {
+                payload = e.message
+                status = 500
+                response = "99"
+            }
+        }
+
+        return result
+    }
+
+    /**
+     * Receive payload with OTP and Phone number and validate that it is valid
+     * @param request
+     */
+    fun validatePhoneNumberAndToken(request: ValidatePhoneNumberOtpRequestValuesDto): CustomResponse =
+        commonDaoServices.validateOTPToken(
+            request.token ?: throw NullValueNotAllowedException("Invalid Token provided"), request.phone
+        )
+
+
+    /**
+     * Save details provided to the Database, we expect that the organization, initial user and branch should be saved,
+     * I have adopted Head Office as the description of the main branch, the names of directors previously fetched from
+     * BRS are now persisted to the database
+     * @param dto contains the details provided by the registrant
+     * @return response indicating whether we were able to successful save the information
+     */
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun registerCompany(dto: RegistrationPayloadDto): CustomResponse {
+        val result = CustomResponse()
+        try {
+            commonDaoServices.findCompanyProfileWithRegistrationNumber(
+                dto.organization.registrationNumber
+                    ?: throw NullValueNotAllowedException("Registration Number is required")
+            )
+                ?.let { throw ExpectedDataNotFound("The Company with this [Registration Number : ${dto.organization.registrationNumber}] already exists") }
+                ?: run {
+
+                    val u = dto.user
+                    var user = UsersEntity().apply {
+                        firstName = u.firstName
+                        lastName = u.lastName
+                        email = u.email
+                        personalContactNumber =
+                            commonDaoServices.makeKenyanMSISDNFormat(dto.organization.companyTelephone)
+                        typeOfUser = 1
+                        title = u.title
+                        email = u.email
+                        userName = u.userName
+                        userRegNo = "KEBS${commonDaoServices.generateTransactionReference(5).toUpperCase()}"
+                        credentials = BCryptPasswordEncoder().encode(u.credentials)
+                        enabled = 1
+                        status = 1
+                        accountLocked = 1
+                        approvedDate = Timestamp.from(Instant.now())
+                    }
+
+                    user = usersRepo.save(user)
+
+
+                    /**
+                     * TODO: Create Manufacturer Id role
+                     */
+                    userRolesRepo.save(
+                        registrationDaoServices.userRoleAssignment(
+                            user,
+                            1,
+                            applicationMapProperties.manufacturerAdminRoleId
+                                ?: throw NullValueNotAllowedException("Manufacturer Admin role not defined")
+                        )
+                    )
+
+
+                    var companyProfileEntity = CompanyProfileEntity().apply {
+                        name = dto.organization.name
+                        kraPin = dto.organization.kraPin
+                        userId = user.id
+
+                        registrationNumber = dto.organization.registrationNumber
+                        postalAddress = dto.organization.postalAddress
+                        physicalAddress = dto.organization.physicalAddress
+                        plotNumber = dto.organization.plotNumber
+                        companyEmail = dto.organization.companyEmail
+                        companyTelephone = dto.organization.companyTelephone
+                        yearlyTurnover = dto.organization.yearlyTurnover
+                        businessLines = dto.organization.businessLines
+                        businessNatures = dto.organization.businessNatures
+                        buildingName = dto.organization.buildingName
+                        directorIdNumber = dto.organization.directorIdNumber
+                        streetName = dto.organization.streetName
+                        county = dto.organization.county
+                        town = dto.organization.town
+                        region = dto.organization.region
+                        manufactureStatus = 1
+                    }
+
+                    companyProfileEntity = companyProfileRepo.save(companyProfileEntity)
+
+                    brsLookupManufacturerDataRepo.findFirstByRegistrationNumberAndStatusOrderById(
+                        companyProfileEntity.registrationNumber
+                            ?: throw NullValueNotAllowedException("Invalid BRS Number"), 30
+                    )
+                        ?.let { record ->
+                            brsLookupManufacturerPartnerRepo.findBrsLookupManufacturerPartnersEntitiesByManufacturerIdAndStatus(
+                                record.id,
+                                30
+                            )
+                                ?.forEach { partner ->
+                                    companyProfileEntity.id?.let {
+
+                                        val companyDirectors = CompanyProfileDirectorsEntity().apply {
+                                            companyProfileId = companyProfileEntity.id
+                                            directorName = partner.names
+                                            directorId = partner.idNumber
+                                            userType = partner.idType
+                                            status = 1
+                                            createdOn = commonDaoServices.getTimestamp()
+                                            createdBy = commonDaoServices.concatenateName(user)
+                                        }
+
+                                        companyProfileDirectorsRepo.save(companyDirectors)
+
+
+                                    }
+                                }
+
+                        }
+                        ?: throw InvalidValueException("No record of look up found on the Datastore")
+
+                    val branch = ManufacturePlantDetailsEntity().apply {
+                        companyProfileId = companyProfileEntity.id
+                        town = dto.organization.town
+                        county = dto.organization.county
+                        physicalAddress = dto.organization.physicalAddress
+                        street = dto.organization.streetName
+                        buildingName = dto.organization.buildingName
+                        nearestLandMark = dto.organization.buildingName
+                        postalAddress = dto.organization.postalAddress
+                        telephone = dto.organization.companyTelephone
+                        emailAddress = dto.organization.companyEmail
+                        plotNo = dto.organization.plotNumber
+                        contactPerson = commonDaoServices.concatenateName(user)
+                        descriptions = "Head Office"
+                        region = dto.organization.region
+
+                        createdBy = companyProfileEntity.name
+                        createdOn = Timestamp.from(Instant.now())
+                        status = 1
+                    }
+                    manufacturePlantRepository.save(branch)
+
+                    result.apply {
+                        payload = "Successfully Created"
+                        status = 200
+                        response = "00"
+                    }
+
+
+                }
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.debug(e.message, e)
+            KotlinLogging.logger { }.error(e.message)
+            result.apply {
+                payload = e.message
+                status = 500
+                response = "99"
+            }
+        }
+        return result
 
     }
 
