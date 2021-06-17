@@ -74,8 +74,10 @@ import {ViewPublicReviewComponent} from "./components/standards-development/publ
 import {PreparePublicReviewComponent} from "./components/standards-development/publicreview/prepare-public-review/prepare-public-review.component";
 import {ViewPublicReviewCommentsComponent} from "./components/standards-development/publicreview/view-public-review-comments/view-public-review-comments.component";
 import {PreparePRCommentComponent} from "./components/standards-development/publicreview/prepare-prcomment/prepare-prcomment.component";
-import {RegistrationPageComponent} from "./components/registration-page/registration-page.component";
 import {DashboardPageComponent} from "./components/dashboard-page/dashboard-page.component";
+import {NewLoginSignupComponent} from "./components/new-login-signup/new-login-signup.component";
+import {LoginPageComponent} from "./components/new-login-signup/login-page/login-page.component";
+import {SignupPageComponent} from "./components/new-login-signup/signup-page/signup-page.component";
 
 
 const routes: Routes = [
@@ -90,7 +92,16 @@ const routes: Routes = [
   //   ]
   // },
 
-  {path: 'login2', component: RegistrationPageComponent},
+
+  {
+    path: 'login2', component: NewLoginSignupComponent,
+    children: [{path: '', component: LoginPageComponent}]
+  },
+  {
+    path: 'signup', component: NewLoginSignupComponent,
+    children: [{path: '', component: SignupPageComponent}]
+  },
+
   {path: 'dashboard2', component: DashboardPageComponent},
 
   /****************************************************************

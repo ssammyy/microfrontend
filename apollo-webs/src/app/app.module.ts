@@ -93,8 +93,10 @@ import {ViewPublicReviewComponent} from './components/standards-development/publ
 import {ViewPublicReviewCommentsComponent} from './components/standards-development/publicreview/view-public-review-comments/view-public-review-comments.component';
 import {NgApexchartsModule} from "ng-apexcharts";
 import {PreparePRCommentComponent} from './components/standards-development/publicreview/prepare-prcomment/prepare-prcomment.component';
-import { RegistrationPageComponent } from './components/registration-page/registration-page.component';
 import { DashboardPageComponent } from './components/dashboard-page/dashboard-page.component';
+import { NewLoginSignupComponent } from './components/new-login-signup/new-login-signup.component';
+import { LoginPageComponent } from './components/new-login-signup/login-page/login-page.component';
+import { SignupPageComponent } from './components/new-login-signup/signup-page/signup-page.component';
 
 
 @NgModule({
@@ -176,8 +178,10 @@ import { DashboardPageComponent } from './components/dashboard-page/dashboard-pa
     ViewPublicReviewComponent,
     ViewPublicReviewCommentsComponent,
     PreparePRCommentComponent,
-    RegistrationPageComponent,
     DashboardPageComponent,
+    NewLoginSignupComponent,
+    LoginPageComponent,
+    SignupPageComponent,
   ],
   exports: [],
   imports: [
