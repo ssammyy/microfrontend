@@ -74,6 +74,8 @@ import {ViewPublicReviewComponent} from "./components/standards-development/publ
 import {PreparePublicReviewComponent} from "./components/standards-development/publicreview/prepare-public-review/prepare-public-review.component";
 import {ViewPublicReviewCommentsComponent} from "./components/standards-development/publicreview/view-public-review-comments/view-public-review-comments.component";
 import {PreparePRCommentComponent} from "./components/standards-development/publicreview/prepare-prcomment/prepare-prcomment.component";
+import {RegistrationPageComponent} from "./components/registration-page/registration-page.component";
+import {DashboardPageComponent} from "./components/dashboard-page/dashboard-page.component";
 
 
 const routes: Routes = [
@@ -87,6 +89,9 @@ const routes: Routes = [
   //     {path: 'reports', component: ReportsComponent}
   //   ]
   // },
+
+  {path: 'login2', component: RegistrationPageComponent},
+  {path: 'dashboard2', component: DashboardPageComponent},
 
   /****************************************************************
    * USER ROUTES ONLY
