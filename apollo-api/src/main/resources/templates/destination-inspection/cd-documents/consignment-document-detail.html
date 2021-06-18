@@ -934,7 +934,7 @@
                                         <!--                                <a th:if="${coc.targetApproved != 1}" style="background-color: red" class="filter-link officerTargetBtn">Target Inspection</a>-->
                                         <!--                                <a th:if="${coc.blacklistStatus != 1}" style="background-color: red" class="filter-link officerBlacklistBtn">Blacklist</a>-->
                                         <div th:if="${cdDetails.assignedStatus == activeStatus}">
-                                            <div th:if="${cdType?.localCocStatus == activeStatus or cdType?.localCorStatus == activeStatus}">
+                                            <div th:if="${cdType?.localCocStatus == activeStatus}">
                                                 <a class="filter-link"
                                                    onclick="popUpFunction('compliant');"
                                                    sec:authorize="hasAuthority('DI_INSPECTION_OFFICER_MODIFY')"
@@ -945,6 +945,11 @@
                                                        sec:authorize="hasAuthority('DI_INSPECTION_OFFICER_MODIFY')"
                                                        th:if="${cdType?.localCocStatus == activeStatus}">GENERATE
                                                         LOCAL COC/COI</a>
+                                                </div>
+                                            </div>
+
+                                            <div th:if="${cdType?.localCorStatus == activeStatus}">
+                                                <div th:if="${cdDetails.localCocOrCorStatus != activeStatus and inspectionReportApproval == activeStatus}">
                                                     <a class="filter-link"
                                                        onclick="popUpFunction('generateLocalCor');"
                                                        sec:authorize="hasAuthority('DI_INSPECTION_OFFICER_MODIFY')"
@@ -1497,5 +1502,3 @@
 </script>
 </body>
 </html>
-
-

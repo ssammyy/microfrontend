@@ -233,6 +233,14 @@ class DestinationInspectionHandler(
                                 }
                             }
 
+                            daoServices.findCdItemsConsignmentDetailsOrNull(cdDetails)?.let { cdItemsList ->
+                                for (item in cdItemsList) {
+                                    daoServices.findInspectionGeneralWithItemDetailsOrNull(item)?.let { inspectionGeneral ->
+                                        req.attributes()["inspectionReportApproval"] = inspectionGeneral.inspectionReportApprovalStatus
+                                    }
+                                }
+                            }
+
                             req.attributes()["availableDemandNote"] =
                                 cdDetails.id?.let { iDemandNoteRepo.findByCdId(it) }
                             req.attributes()["blacklists"] = daoServices.findAllBlackListUsers(map.activeStatus)
