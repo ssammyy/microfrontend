@@ -1124,14 +1124,14 @@ class SystemsAdminDaoService(
      * @param request object containing the phone number to be validated
      *
      */
-    fun sendValidationTokenToCellphoneNumber(request: BrsConfirmationRequest): CustomResponse {
+    fun sendValidationTokenToCellphoneNumber(request: ValidatePhoneNumberRequestDto): CustomResponse? {
         val result = CustomResponse()
         try {
             /**
              * Generate token
              */
             val otp = commonDaoServices.generateTransactionReference(8).toUpperCase()
-            val token = commonDaoServices.generateVerificationToken(otp, request.registrationNumber)
+            val token = commonDaoServices.generateVerificationToken(otp, request.phone)
             commonDaoServices.sendOtpViaSMS(token)
 
             result.apply {
@@ -1157,7 +1157,7 @@ class SystemsAdminDaoService(
      * Receive payload with OTP and Phone number and validate that it is valid
      * @param request
      */
-    fun validatePhoneNumberAndToken(request: ValidatePhoneNumberOtpRequestValuesDto): CustomResponse =
+    fun validatePhoneNumberAndToken(request: ValidatePhoneNumberTokenRequestDto): CustomResponse? =
         commonDaoServices.validateOTPToken(
             request.token ?: throw NullValueNotAllowedException("Invalid Token provided"), request.phone
         )
@@ -1171,7 +1171,7 @@ class SystemsAdminDaoService(
      * @return response indicating whether we were able to successful save the information
      */
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
-    fun registerCompany(dto: RegistrationPayloadDto): CustomResponse {
+    fun registerCompany(dto: RegistrationPayloadDto): CustomResponse? {
         val result = CustomResponse()
         try {
             commonDaoServices.findCompanyProfileWithRegistrationNumber(

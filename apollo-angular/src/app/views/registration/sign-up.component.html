@@ -1,0 +1,64 @@
+<div [ngSwitch]="step">
+  <div *ngSwitchCase="0">
+    <form (ngSubmit)="onClickBrsLookup(stepZeroForm.valid)" [formGroup]="stepZeroForm" action=""
+          enctype="multipart/form-data" method="post">
+      <h2 class="welcome">
+        Enter details below to validate company
+      </h2>
+      <div>
+        <label class="input-placeholder" for="registrationNumber">
+          Company Registration Number
+        </label>
+        <br>
+        <input type="text" class="login-form-inputs" formControlName="registrationNumber" id="registrationNumber"
+               name="registrationNumber" placeholder="Company registration number">
+      </div>
+      <div>
+        <label class="input-placeholder" for="directorIdNumber">
+          Director's Id Number
+
+        </label>
+        <br>
+        <input type="text" class="login-form-inputs" formControlName="directorIdNumber" id="directorIdNumber"
+               name="directorIdNumber" placeholder="The id number of one director">
+      </div>
+      <div>
+        <button type="submit" class="login-button">VALIDATE</button>
+      </div>
+
+
+    </form>
+
+  </div>
+  <div *ngSwitchCase="1">
+    <form (ngSubmit)="onClickBrsLookup(stepOneForm.valid)" [formGroup]="stepOneForm" action=""
+          enctype="multipart/form-data" method="post">
+      <h2 class="welcome">
+        Enter details below to validate company
+      </h2>
+      <div>
+        <label class="input-placeholder" for="registrationNumber">
+          Company Registration Number
+        </label>
+        <br>
+        <input type="text" class="login-form-inputs" formControlName="registrationNumber" id="registrationNumber"
+               name="registrationNumber" placeholder="Company registration number">
+      </div>
+      <div>
+        <label class="input-placeholder" for="directorIdNumber">
+          Director's Id Number
+
+        </label>
+        <br>
+        <input type="text" class="login-form-inputs" formControlName="directorIdNumber" id="directorIdNumber"
+               name="directorIdNumber" placeholder="The id number of one director">
+      </div>
+      <div>
+        <button type="submit" class="login-button">VALIDATE</button>
+      </div>
+
+
+    </form>
+
+  </div>
+</div>

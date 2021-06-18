@@ -28,10 +28,7 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.RegistrationDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.SystemsAdminDaoService
 import org.kebs.app.kotlin.apollo.api.ports.provided.validation.AbstractValidationHandler
-import org.kebs.app.kotlin.apollo.common.dto.BrsConfirmationRequest
-import org.kebs.app.kotlin.apollo.common.dto.UserEntityDto
-import org.kebs.app.kotlin.apollo.common.dto.UserPasswordResetValuesDto
-import org.kebs.app.kotlin.apollo.common.dto.UserPasswordVerificationValuesDto
+import org.kebs.app.kotlin.apollo.common.dto.*
 import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
 import org.kebs.app.kotlin.apollo.common.exceptions.PasswordsMismatchException
 import org.kebs.app.kotlin.apollo.common.exceptions.ServiceMapNotFoundException
@@ -843,7 +840,7 @@ class RegistrationHandler(
 
 
     @PreAuthorize("isAnonymous()")
-    fun validateAgainstBrs(req: ServerRequest): ServerResponse {
+    fun handleValidateAgainstBrs(req: ServerRequest): ServerResponse {
         return try {
             val body = req.body<BrsConfirmationRequest>()
 
@@ -852,6 +849,85 @@ class RegistrationHandler(
             when {
                 errors.allErrors.isEmpty() -> {
                     systemsAdminDaoService.validateBrsNumber(body)
+                        ?.let { ok().body(it) }
+                        ?: onErrors("We could not process your request at the moment")
+
+                }
+                else -> {
+                    onValidationErrors(errors)
+                }
+            }
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.debug(e.message, e)
+            KotlinLogging.logger { }.error(e.message)
+            onErrors(e.message)
+        }
+
+    }
+
+    @PreAuthorize("isAnonymous()")
+    fun handleSendValidationTokenToCellphoneNumber(req: ServerRequest): ServerResponse {
+        return try {
+            val body = req.body<ValidatePhoneNumberRequestDto>()
+
+            val errors: Errors = BeanPropertyBindingResult(body, ValidatePhoneNumberRequestDto::class.java.name)
+            validator.validate(body, errors)
+            when {
+                errors.allErrors.isEmpty() -> {
+                    systemsAdminDaoService.sendValidationTokenToCellphoneNumber(body)
+                        ?.let { ok().body(it) }
+                        ?: onErrors("We could not process your request at the moment")
+
+                }
+                else -> {
+                    onValidationErrors(errors)
+                }
+            }
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.debug(e.message, e)
+            KotlinLogging.logger { }.error(e.message)
+            onErrors(e.message)
+        }
+
+    }
+    @PreAuthorize("isAnonymous()")
+    fun handleValidatePhoneNumberAndToken(req: ServerRequest): ServerResponse {
+        return try {
+            val body = req.body<ValidatePhoneNumberTokenRequestDto>()
+
+            val errors: Errors = BeanPropertyBindingResult(body, ValidatePhoneNumberTokenRequestDto::class.java.name)
+            validator.validate(body, errors)
+            when {
+                errors.allErrors.isEmpty() -> {
+                    systemsAdminDaoService.validatePhoneNumberAndToken(body)
+                        ?.let { ok().body(it) }
+                        ?: onErrors("We could not process your request at the moment")
+
+                }
+                else -> {
+                    onValidationErrors(errors)
+                }
+            }
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.debug(e.message, e)
+            KotlinLogging.logger { }.error(e.message)
+            onErrors(e.message)
+        }
+
+    }
+    @PreAuthorize("isAnonymous()")
+    fun handleRegisterCompany(req: ServerRequest): ServerResponse {
+        return try {
+            val body = req.body<RegistrationPayloadDto>()
+
+            val errors: Errors = BeanPropertyBindingResult(body, RegistrationPayloadDto::class.java.name)
+            validator.validate(body, errors)
+            when {
+                errors.allErrors.isEmpty() -> {
+                    systemsAdminDaoService.registerCompany(body)
                         ?.let { ok().body(it) }
                         ?: onErrors("We could not process your request at the moment")
 
