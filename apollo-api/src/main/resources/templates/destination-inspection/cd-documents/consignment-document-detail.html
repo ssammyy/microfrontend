@@ -946,7 +946,7 @@
                                         <!--                                <a th:if="${coc.targetApproved != 1}" style="background-color: red" class="filter-link officerTargetBtn">Target Inspection</a>-->
                                         <!--                                <a th:if="${coc.blacklistStatus != 1}" style="background-color: red" class="filter-link officerBlacklistBtn">Blacklist</a>-->
                                         <div th:if="${cdDetails.assignedStatus == activeStatus}">
-                                            <div th:if="${cdType?.localCocStatus == activeStatus or cdType?.localCorStatus == activeStatus}">
+                                            <div th:if="${cdType?.localCocStatus == activeStatus}">
                                                 <a class="filter-link"
                                                    onclick="popUpFunction('compliant');"
                                                    sec:authorize="hasAuthority('DI_INSPECTION_OFFICER_MODIFY')"
@@ -957,6 +957,11 @@
                                                        sec:authorize="hasAuthority('DI_INSPECTION_OFFICER_MODIFY')"
                                                        th:if="${cdType?.localCocStatus == activeStatus}">GENERATE
                                                         LOCAL COC/COI</a>
+                                                </div>
+                                            </div>
+
+                                            <div th:if="${cdType?.localCorStatus == activeStatus}">
+                                                <div th:if="${cdDetails.localCocOrCorStatus != activeStatus and inspectionReportApproval == activeStatus}">
                                                     <a class="filter-link"
                                                        onclick="popUpFunction('generateLocalCor');"
                                                        sec:authorize="hasAuthority('DI_INSPECTION_OFFICER_MODIFY')"
@@ -1188,29 +1193,29 @@
                                                       th:field="*{sendCoiRemarks}"></textarea>
                                         </div>
 
-<!--                                        <div id="consignmentQuery">-->
-<!--                                            <input id="approveRejectCdStatus" name="approveRejectCdStatus"-->
-<!--                                                   th:value="${activeStatus}" type="hidden">-->
-<!--                                            <input id="approveRejectCdDate" name="approveRejectCdDate"-->
-<!--                                                   th:value="${currentDate}"-->
-<!--                                                   type="hidden">-->
-<!--                                            <label class="col-form-label" for="approveRejectCdStatusType">Select-->
-<!--                                                Applicable Status:</label>-->
-<!--                                            <select class="select-field w-select" id="approveRejectCdStatusType"-->
-<!--                                                    th:field="*{confirmCdStatusTypeId}">-->
-<!--                                                <option value="0">Select one...</option>-->
-<!--                                                <option th:each="statusType : ${CDStatusTypes}"-->
-<!--                                                        th:if="${statusType.category == cdStatusTypeQuerydCategory}"-->
-<!--                                                        th:name="approveRejectCdStatusType"-->
-<!--                                                        th:text="${statusType.typeName}"-->
-<!--                                                        th:value="${statusType.id}"></option>-->
-<!--                                            </select>-->
-<!--                                            <label class="col-form-label" for="approveRejectCdRemarks">Please write, in-->
-<!--                                                detail, your feedback for this consignment:</label>-->
-<!--                                            <textarea class="input-field w-input" cols="65" id="approveRejectCdRemarks"-->
-<!--                                                      name="name" required rows="5"-->
-<!--                                                      th:field="*{approveRejectCdRemarks}"></textarea>-->
-<!--                                        </div>-->
+                                        <!--                                        <div id="consignmentQuery">-->
+                                        <!--                                            <input id="approveRejectCdStatus" name="approveRejectCdStatus"-->
+                                        <!--                                                   th:value="${activeStatus}" type="hidden">-->
+                                        <!--                                            <input id="approveRejectCdDate" name="approveRejectCdDate"-->
+                                        <!--                                                   th:value="${currentDate}"-->
+                                        <!--                                                   type="hidden">-->
+                                        <!--                                            <label class="col-form-label" for="approveRejectCdStatusType">Select-->
+                                        <!--                                                Applicable Status:</label>-->
+                                        <!--                                            <select class="select-field w-select" id="approveRejectCdStatusType"-->
+                                        <!--                                                    th:field="*{confirmCdStatusTypeId}">-->
+                                        <!--                                                <option value="0">Select one...</option>-->
+                                        <!--                                                <option th:each="statusType : ${CDStatusTypes}"-->
+                                        <!--                                                        th:if="${statusType.category == cdStatusTypeQuerydCategory}"-->
+                                        <!--                                                        th:name="approveRejectCdStatusType"-->
+                                        <!--                                                        th:text="${statusType.typeName}"-->
+                                        <!--                                                        th:value="${statusType.id}"></option>-->
+                                        <!--                                            </select>-->
+                                        <!--                                            <label class="col-form-label" for="approveRejectCdRemarks">Please write, in-->
+                                        <!--                                                detail, your feedback for this consignment:</label>-->
+                                        <!--                                            <textarea class="input-field w-input" cols="65" id="approveRejectCdRemarks"-->
+                                        <!--                                                      name="name" required rows="5"-->
+                                        <!--                                                      th:field="*{approveRejectCdRemarks}"></textarea>-->
+                                        <!--                                        </div>-->
 
                                         <div id="processRejection">
                                             <input type="hidden" id="processRejectionStatus"
@@ -1240,28 +1245,28 @@
                                                       th:field="*{compliantRemarks}"></textarea>
                                         </div>
 
-<!--                                        <div id="compliant">-->
-<!--                                            <input type="hidden" id="compliantStatus" name="compliantStatus"-->
-<!--                                                   th:value="${activeStatus}">-->
-<!--                                            <input type="hidden" id="compliantDate" name="compliantDate"-->
-<!--                                                   th:value="${currentDate}">-->
-<!--                                            <label for="compliantRemarks" class="col-form-label">Please write, in-->
-<!--                                                detail, your feedback for this consignment:</label>-->
-<!--                                            <textarea required name="name" id="compliantRemarks"-->
-<!--                                                      class="input-field w-input" cols="65" rows="5"-->
-<!--                                                      th:field="*{compliantRemarks}"></textarea>-->
-<!--                                        </div>-->
-<!--                                        <div id="notCompliant">-->
-<!--                                            <input type="hidden" id="compliantStatus" name="compliantStatus"-->
-<!--                                                   th:value="${inActiveStatus}">-->
-<!--                                            <input type="hidden" id="compliantDate" name="compliantDate"-->
-<!--                                                   th:value="${currentDate}">-->
-<!--                                            <label for="compliantRemarks" class="col-form-label">Please write, in-->
-<!--                                                detail, your feedback for this consignment:</label>-->
-<!--                                            <textarea required name="name" id="compliantRemarks"-->
-<!--                                                      class="input-field w-input" cols="65" rows="5"-->
-<!--                                                      th:field="*{compliantRemarks}"></textarea>-->
-<!--                                        </div>-->
+                                        <!--                                        <div id="compliant">-->
+                                        <!--                                            <input type="hidden" id="compliantStatus" name="compliantStatus"-->
+                                        <!--                                                   th:value="${activeStatus}">-->
+                                        <!--                                            <input type="hidden" id="compliantDate" name="compliantDate"-->
+                                        <!--                                                   th:value="${currentDate}">-->
+                                        <!--                                            <label for="compliantRemarks" class="col-form-label">Please write, in-->
+                                        <!--                                                detail, your feedback for this consignment:</label>-->
+                                        <!--                                            <textarea required name="name" id="compliantRemarks"-->
+                                        <!--                                                      class="input-field w-input" cols="65" rows="5"-->
+                                        <!--                                                      th:field="*{compliantRemarks}"></textarea>-->
+                                        <!--                                        </div>-->
+                                        <!--                                        <div id="notCompliant">-->
+                                        <!--                                            <input type="hidden" id="compliantStatus" name="compliantStatus"-->
+                                        <!--                                                   th:value="${inActiveStatus}">-->
+                                        <!--                                            <input type="hidden" id="compliantDate" name="compliantDate"-->
+                                        <!--                                                   th:value="${currentDate}">-->
+                                        <!--                                            <label for="compliantRemarks" class="col-form-label">Please write, in-->
+                                        <!--                                                detail, your feedback for this consignment:</label>-->
+                                        <!--                                            <textarea required name="name" id="compliantRemarks"-->
+                                        <!--                                                      class="input-field w-input" cols="65" rows="5"-->
+                                        <!--                                                      th:field="*{compliantRemarks}"></textarea>-->
+                                        <!--                                        </div>-->
                                         <div id="generateLocalCoc">
                                             <input type="hidden" id="localCocOrCorStatus" name="localCocOrCorStatus"
                                                    th:value="${activeStatus}">
@@ -1517,5 +1522,3 @@
 </script>
 </body>
 </html>
-
-

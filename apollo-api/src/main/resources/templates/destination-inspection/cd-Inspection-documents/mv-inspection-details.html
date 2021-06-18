@@ -164,10 +164,11 @@
                             <div>
                                 <a sec:authorize="hasAuthority('DI_INSPECTION_OFFICER_MODIFY')" th:if="${item?.checkListTypeId.uuid == motorVehicleItemChecklist and item?.ministrySubmissionStatus != activeStatus}" th:href="@{/api/di/ministry-submission(cdItemUuid=${item?.uuid})}" class="filter-link " style="color: white">Submit Vehicle To Ministry</a>
                                 <a sec:authorize="hasAuthority('DI_INSPECTION_OFFICER_MODIFY')" th:if="${mvInspectionChecklist?.ministryReportFile != null}" style="background-color: red" class="filter-link" onclick="popUpFunction('reinspectionRequest');">Request Ministry Re-Inspection</a>
-<!--                                <a sec:authorize="hasAuthority('DI_INSPECTION_OFFICER_MODIFY')" th:if="${mvInspectionChecklist?.inspectionGeneral?.inspectionReportFile == null}" th:href="@{/api/di/motor-inspection-report(mvInspectionChecklistId=${mvInspectionChecklist?.id})}" class="filter-link " style="color: white">Generate Motor Inspection Report</a>-->
-<!--                                <a sec:authorize="hasAuthority('DI_INSPECTION_OFFICER_MODIFY')" th:if="${mvInspectionChecklist?.inspectionGeneral?.inspectionReportFile == null}" class="filter-link" style="color: white" onclick="popUpFunctionUpload('uploadBtn');">Upload Signed Motor Inspection Report</a>-->
-                                <a sec:authorize="hasAuthority('DI_OFFICER_CHARGE_MODIFY')" th:if="${mvInspectionChecklist?.inspectionGeneral?.inspectionReportApprovalStatus == null}"  class="filter-link" onclick="popUpFunction('approveReport');">Approve Report</a>
-                                <a sec:authorize="hasAuthority('DI_OFFICER_CHARGE_MODIFY')" th:if="${mvInspectionChecklist?.inspectionGeneral?.inspectionReportApprovalStatus == null}" class="filter-link bgred" onclick="popUpFunction('dissaproveReport');">Disapprove Report</a>
+                                <!--                                <a sec:authorize="hasAuthority('DI_INSPECTION_OFFICER_MODIFY')" th:if="${mvInspectionChecklist?.inspectionGeneral?.inspectionReportFile == null}" th:href="@{/api/di/motor-inspection-report(mvInspectionChecklistId=${mvInspectionChecklist?.id})}" class="filter-link " style="color: white">Generate Motor Inspection Report</a>-->
+                                <a class="filter-link" onclick="popUpFunctionCompliance('compliance');" sec:authorize="hasAuthority('DI_INSPECTION_OFFICER_MODIFY')" th:if="${mvInspectionChecklist?.inspectionGeneral?.cdItemDetailscdItemDetails?.cdDocId?.compliantStatus == null}">COMPLIANCE STATUS</a>
+                                <!--                                <a sec:authorize="hasAuthority('DI_INSPECTION_OFFICER_MODIFY')" th:if="${mvInspectionChecklist?.inspectionGeneral?.inspectionReportFile == null}" class="filter-link" style="color: white" onclick="popUpFunctionUpload('uploadBtn');">Upload Signed Motor Inspection Report</a>-->
+                                <a sec:authorize="hasAuthority('DI_OFFICER_CHARGE_MODIFY')" th:if="${mvInspectionChecklist?.inspectionGeneral?.inspectionReportApprovalStatus == null and mvInspectionChecklist?.inspectionGeneral?.cdItemDetailscdItemDetails?.cdDocId?.compliantStatus != null}"  class="filter-link" onclick="popUpFunction('approveReport');">Approve Report</a>
+                                <a sec:authorize="hasAuthority('DI_OFFICER_CHARGE_MODIFY')" th:if="${mvInspectionChecklist?.inspectionGeneral?.inspectionReportApprovalStatus == null and mvInspectionChecklist?.inspectionGeneral?.cdItemDetailscdItemDetails?.cdDocId?.compliantStatus != null}" class="filter-link bgred" onclick="popUpFunction('dissaproveReport');">Disapprove Report</a>
                             </div>
 
                         </div>
@@ -214,33 +215,72 @@
                         </form>
                     </div>
 
-                    <div class="uploadForm">
-                        <form id="upload-form" enctype="multipart/form-data"  name="upload-form" th:action="@{/api/di/upload/motor-inspection-report(generalInspectionChecklistId = ${mvInspectionChecklist?.inspectionGeneral?.id})}" method="post">
-                            <div class="modal fade" id="uploadModal" tabindex="-1" role="dialog" aria-labelledby="uploadModalLabel" aria-hidden="true">
+                    <!--                    <div class="uploadForm">-->
+                    <!--                        <form id="upload-form" enctype="multipart/form-data"  name="upload-form" th:action="@{/api/di/upload/motor-inspection-report(generalInspectionChecklistId = ${mvInspectionChecklist?.inspectionGeneral?.id})}" method="post">-->
+                    <!--                            <div class="modal fade" id="uploadModal" tabindex="-1" role="dialog" aria-labelledby="uploadModalLabel" aria-hidden="true">-->
+                    <!--                                <div class="modal-dialog" role="document">-->
+                    <!--                                    <div class="modal-content">-->
+                    <!--                                        <div class="modal-header">-->
+                    <!--                                            <h5 style="font-weight: bold; " class="modal-title" id="uploadModalLabel"><span id="uploadSpan" >none</span></h5>-->
+                    <!--                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">-->
+                    <!--                                                <span aria-hidden="true">&times;</span>-->
+                    <!--                                            </button>-->
+                    <!--                                        </div>-->
+                    <!--                                        <div class="modal-body">-->
+                    <!--                                            <div class="form-group">-->
+                    <!--                                                <label for="compliance_status" class="col-form-label">Compliance status:</label>-->
+                    <!--                                                <select name="compliance_status" class="form-control select-inline" id="compliance_status">-->
+                    <!--                                                    <option value="default" selected="true">- SELECT -</option>-->
+                    <!--                                                    <option  th:value=1 th:text="Compliant"></option>-->
+                    <!--                                                    <option  th:value=0 th:text="Non-Compliant"></option>-->
+                    <!--                                                </select>-->
+                    <!--                                                <label for="docFile">Upload your Attachment</label>-->
+                    <!--                                                <input type="file"  multiple name="doc_file" data-name="doc_file" id="docFile" required="required" >-->
+                    <!--                                                <label for="compliance_recommendations" class="col-form-label">Please write, in detail, your compliance recommendations:</label>-->
+                    <!--                                                <textarea required name="compliance_recommendations" id="compliance_recommendations" class="input-field w-input" cols="65" rows="5"></textarea>-->
+                    <!--                                            </div>-->
+                    <!--                                        </div>-->
+                    <!--                                        <div class="modal-footer">-->
+                    <!--                                            <button class="btn btn-secondary" data-dismiss="modal" onClick="refreshPage()" type="button">Close</button>-->
+                    <!--                                            <input type="submit" id="upload" class="btn btn-primary" value="Save"/>-->
+                    <!--                                        </div>-->
+                    <!--                                    </div>-->
+                    <!--                                </div>-->
+                    <!--                            </div>-->
+                    <!--                        </form>-->
+                    <!--                    </div>-->
+
+                    <div class="inspectionForm">
+                        <form id="compliance-form" name="compliance-form" th:action="@{/api/di/motor-vehicle/compliance(generalInspectionChecklistId = ${mvInspectionChecklist?.inspectionGeneral?.id})}" method="post">
+                            <div class="modal fade" id="inspectionModal" tabindex="-1" role="dialog" aria-labelledby="inspectionModalLabel"
+                                 aria-hidden="true">
                                 <div class="modal-dialog" role="document">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <h5 style="font-weight: bold; " class="modal-title" id="uploadModalLabel"><span id="uploadSpan" >none</span></h5>
-                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <h5 style="font-weight: bold; " class="modal-title" id="inspectionModalLabel"><span id="uploadSpan">none</span></h5>
+                                            <button aria-label="Close" class="close" data-dismiss="modal" onClick="refreshPage()" type="button">
                                                 <span aria-hidden="true">&times;</span>
                                             </button>
                                         </div>
                                         <div class="modal-body">
                                             <div class="form-group">
-                                                <label for="compliance_status" class="col-form-label">Compliance status:</label>
-                                                <select name="compliance_status" class="form-control select-inline" id="compliance_status">
-                                                    <option value="default" selected="true">- SELECT -</option>
-                                                    <option  th:value=1 th:text="Compliant"></option>
-                                                    <option  th:value=0 th:text="Non-Compliant"></option>
-                                                </select>
-                                                <label for="docFile">Upload your Attachment</label>
-                                                <input type="file"  multiple name="doc_file" data-name="doc_file" id="docFile" required="required" >
-                                                <label for="compliance_recommendations" class="col-form-label">Please write, in detail, your compliance recommendations:</label>
-                                                <textarea required name="compliance_recommendations" id="compliance_recommendations" class="input-field w-input" cols="65" rows="5"></textarea>
+                                                <div id="complianceStatus">
+                                                    <label for="compliance_status" class="col-form-label">Compliance status:</label>
+                                                    <select name="compliance_status" class="form-control select-inline" id="compliance_status">
+                                                        <option value="default" selected="true">- SELECT -</option>
+                                                        <option  th:value=1 th:text="Compliant"></option>
+                                                        <option  th:value=0 th:text="Non-Compliant"></option>
+                                                    </select>
+                                                    <label for="compliance_recommendations" class="col-form-label">Please write, in detail, your compliance recommendations:</label>
+                                                    <textarea required name="compliance_recommendations" id="compliance_recommendations" class="input-field w-input" cols="65" rows="5"></textarea>
+                                                </div>
+
                                             </div>
                                         </div>
                                         <div class="modal-footer">
-                                            <button class="btn btn-secondary" data-dismiss="modal" onClick="refreshPage()" type="button">Close</button>
+                                            <button class="btn btn-secondary" data-dismiss="modal" onClick="refreshPage()"
+                                                    type="button">Close
+                                            </button>
                                             <input type="submit" id="upload" class="btn btn-primary" value="Save"/>
                                         </div>
                                     </div>
@@ -296,9 +336,9 @@
         $('.MvInspectionActionsForm #mvInspectionActionsModal').modal();
     }
 
-    function popUpFunctionUpload(eventAction) {
-        let arrHead = [ 'uploadBtn'];
-        let arrHeadSave = [ 'Upload Attachments'];
+    function popUpFunctionCompliance(eventAction) {
+        let arrHead = [ 'compliance'];
+        let arrHeadSave = [ 'Update Compliance Status'];
 
         for (let h = 0; h < arrHead.length; h++) {
             if(eventAction !== arrHead[h]){
@@ -311,7 +351,7 @@
             }
         }
 
-        $('.uploadForm #uploadModal').modal();
+        $('.inspectionForm #inspectionModal').modal();
     }
 
 </script>
