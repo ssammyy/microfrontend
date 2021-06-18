@@ -7,28 +7,16 @@
     <meta charset="utf-8">
     <title>KEBS</title>
     <th:block th:include="fragments/general-form.html:: headerfiles"/>
-    <link rel="stylesheet" th:href="@{/css/pageLoad.css}" type="text/css">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" th:href="@{/css/accordion.css}"/>
-    <link rel="stylesheet" th:href="@{/assets/bootstrap3/css/bootstrap.css}"/>
-    <!--    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.22/css/dataTables.bootstrap.min.css"/>-->
-    <!--    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.6.4/css/buttons.bootstrap.min.css"/>-->
-
-    <!--    &lt;!&ndash; Font Awesome &ndash;&gt;-->
-    <!--    <link href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" rel="stylesheet"/>-->
-    <!--    &lt;!&ndash; Google Fonts &ndash;&gt;-->
-    <!--    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" rel="stylesheet"/>-->
-    <!--    &lt;!&ndash; MDB &ndash;&gt;-->
-    <!--    <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/2.2.1/mdb.min.css" rel="stylesheet"/>-->
 </head>
 <body>
-<div class="top-bar" th:replace="fragments/general-form.html :: top-bar"></div>
-<div class="section">
-    <div class="w-layout-grid main-grid">
-        <div class="main-grid-side-navigation" id="w-node-d308c123a20f-c123a20d"
-             th:replace="fragments/general-form.html :: side-navigation-bar"></div>
-        <div id="w-node-27962c2db181-c676b3e3" class="main-content-div">
-            <div class="content-nav" th:replace="fragments/general-form.html :: content-navigation-bar"></div>
+<div id ="spinnerContainer"><div class="spinner"></div></div>
+<div th:replace="fragments/general-form.html :: dashboard-page" ></div>
+
+<div class="dashboard-body">
+    <div th:replace="fragments/general-form.html :: side-navigation-bar" ></div>
+    <div class="main-area">
+        <div th:replace="fragments/general-form.html :: content-navigation-bar"></div>
+        <section class="dashboard-content">
             <div class="content-wrap">
                 <div class="content-container">
                     <div class="alert alert-success" th:text="${success}" th:if="${success}"></div>
@@ -1050,7 +1038,6 @@
                 </div>
             </div>
 
-
             <div class="CDForm">
                 <form id="cd-form" name="cd-form" th:action="@{/api/di/cd-save/details(cdUuid=${cdDetails?.uuid})}"
                       method="post" th:object="${cdDetails}">
@@ -1188,29 +1175,29 @@
                                                       th:field="*{sendCoiRemarks}"></textarea>
                                         </div>
 
-<!--                                        <div id="consignmentQuery">-->
-<!--                                            <input id="approveRejectCdStatus" name="approveRejectCdStatus"-->
-<!--                                                   th:value="${activeStatus}" type="hidden">-->
-<!--                                            <input id="approveRejectCdDate" name="approveRejectCdDate"-->
-<!--                                                   th:value="${currentDate}"-->
-<!--                                                   type="hidden">-->
-<!--                                            <label class="col-form-label" for="approveRejectCdStatusType">Select-->
-<!--                                                Applicable Status:</label>-->
-<!--                                            <select class="select-field w-select" id="approveRejectCdStatusType"-->
-<!--                                                    th:field="*{confirmCdStatusTypeId}">-->
-<!--                                                <option value="0">Select one...</option>-->
-<!--                                                <option th:each="statusType : ${CDStatusTypes}"-->
-<!--                                                        th:if="${statusType.category == cdStatusTypeQuerydCategory}"-->
-<!--                                                        th:name="approveRejectCdStatusType"-->
-<!--                                                        th:text="${statusType.typeName}"-->
-<!--                                                        th:value="${statusType.id}"></option>-->
-<!--                                            </select>-->
-<!--                                            <label class="col-form-label" for="approveRejectCdRemarks">Please write, in-->
-<!--                                                detail, your feedback for this consignment:</label>-->
-<!--                                            <textarea class="input-field w-input" cols="65" id="approveRejectCdRemarks"-->
-<!--                                                      name="name" required rows="5"-->
-<!--                                                      th:field="*{approveRejectCdRemarks}"></textarea>-->
-<!--                                        </div>-->
+                                        <!--                                        <div id="consignmentQuery">-->
+                                        <!--                                            <input id="approveRejectCdStatus" name="approveRejectCdStatus"-->
+                                        <!--                                                   th:value="${activeStatus}" type="hidden">-->
+                                        <!--                                            <input id="approveRejectCdDate" name="approveRejectCdDate"-->
+                                        <!--                                                   th:value="${currentDate}"-->
+                                        <!--                                                   type="hidden">-->
+                                        <!--                                            <label class="col-form-label" for="approveRejectCdStatusType">Select-->
+                                        <!--                                                Applicable Status:</label>-->
+                                        <!--                                            <select class="select-field w-select" id="approveRejectCdStatusType"-->
+                                        <!--                                                    th:field="*{confirmCdStatusTypeId}">-->
+                                        <!--                                                <option value="0">Select one...</option>-->
+                                        <!--                                                <option th:each="statusType : ${CDStatusTypes}"-->
+                                        <!--                                                        th:if="${statusType.category == cdStatusTypeQuerydCategory}"-->
+                                        <!--                                                        th:name="approveRejectCdStatusType"-->
+                                        <!--                                                        th:text="${statusType.typeName}"-->
+                                        <!--                                                        th:value="${statusType.id}"></option>-->
+                                        <!--                                            </select>-->
+                                        <!--                                            <label class="col-form-label" for="approveRejectCdRemarks">Please write, in-->
+                                        <!--                                                detail, your feedback for this consignment:</label>-->
+                                        <!--                                            <textarea class="input-field w-input" cols="65" id="approveRejectCdRemarks"-->
+                                        <!--                                                      name="name" required rows="5"-->
+                                        <!--                                                      th:field="*{approveRejectCdRemarks}"></textarea>-->
+                                        <!--                                        </div>-->
 
                                         <div id="processRejection">
                                             <input type="hidden" id="processRejectionStatus"
@@ -1240,28 +1227,28 @@
                                                       th:field="*{compliantRemarks}"></textarea>
                                         </div>
 
-<!--                                        <div id="compliant">-->
-<!--                                            <input type="hidden" id="compliantStatus" name="compliantStatus"-->
-<!--                                                   th:value="${activeStatus}">-->
-<!--                                            <input type="hidden" id="compliantDate" name="compliantDate"-->
-<!--                                                   th:value="${currentDate}">-->
-<!--                                            <label for="compliantRemarks" class="col-form-label">Please write, in-->
-<!--                                                detail, your feedback for this consignment:</label>-->
-<!--                                            <textarea required name="name" id="compliantRemarks"-->
-<!--                                                      class="input-field w-input" cols="65" rows="5"-->
-<!--                                                      th:field="*{compliantRemarks}"></textarea>-->
-<!--                                        </div>-->
-<!--                                        <div id="notCompliant">-->
-<!--                                            <input type="hidden" id="compliantStatus" name="compliantStatus"-->
-<!--                                                   th:value="${inActiveStatus}">-->
-<!--                                            <input type="hidden" id="compliantDate" name="compliantDate"-->
-<!--                                                   th:value="${currentDate}">-->
-<!--                                            <label for="compliantRemarks" class="col-form-label">Please write, in-->
-<!--                                                detail, your feedback for this consignment:</label>-->
-<!--                                            <textarea required name="name" id="compliantRemarks"-->
-<!--                                                      class="input-field w-input" cols="65" rows="5"-->
-<!--                                                      th:field="*{compliantRemarks}"></textarea>-->
-<!--                                        </div>-->
+                                        <!--                                        <div id="compliant">-->
+                                        <!--                                            <input type="hidden" id="compliantStatus" name="compliantStatus"-->
+                                        <!--                                                   th:value="${activeStatus}">-->
+                                        <!--                                            <input type="hidden" id="compliantDate" name="compliantDate"-->
+                                        <!--                                                   th:value="${currentDate}">-->
+                                        <!--                                            <label for="compliantRemarks" class="col-form-label">Please write, in-->
+                                        <!--                                                detail, your feedback for this consignment:</label>-->
+                                        <!--                                            <textarea required name="name" id="compliantRemarks"-->
+                                        <!--                                                      class="input-field w-input" cols="65" rows="5"-->
+                                        <!--                                                      th:field="*{compliantRemarks}"></textarea>-->
+                                        <!--                                        </div>-->
+                                        <!--                                        <div id="notCompliant">-->
+                                        <!--                                            <input type="hidden" id="compliantStatus" name="compliantStatus"-->
+                                        <!--                                                   th:value="${inActiveStatus}">-->
+                                        <!--                                            <input type="hidden" id="compliantDate" name="compliantDate"-->
+                                        <!--                                                   th:value="${currentDate}">-->
+                                        <!--                                            <label for="compliantRemarks" class="col-form-label">Please write, in-->
+                                        <!--                                                detail, your feedback for this consignment:</label>-->
+                                        <!--                                            <textarea required name="name" id="compliantRemarks"-->
+                                        <!--                                                      class="input-field w-input" cols="65" rows="5"-->
+                                        <!--                                                      th:field="*{compliantRemarks}"></textarea>-->
+                                        <!--                                        </div>-->
                                         <div id="generateLocalCoc">
                                             <input type="hidden" id="localCocOrCorStatus" name="localCocOrCorStatus"
                                                    th:value="${activeStatus}">
@@ -1389,18 +1376,11 @@
                 </form>
             </div>
 
-
-        </div>
+        </section>
     </div>
 </div>
-<script src="https://d3e54v103j8qbb.cloudfront.net/js/jquery-3.4.1.min.220afd743d.js" type="text/javascript"
-        integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
-<script th:src="@{/assets/bootstrap3/js/bootstrap.js}" type="text/javascript"></script>
-<script src="../assets/js/webflow.js" type="text/javascript"></script>
 
-<!-- [if lte IE 9]>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/placeholders/3.0.2/placeholders.min.js"></script><![endif] -->
-<script th:src="@{/js/spinner.js}" type="text/javascript"></script>
+<div th:replace="fragments/general-form.html :: scripts"></div>
 
 <script>
     document.onreadystatechange = function () {
