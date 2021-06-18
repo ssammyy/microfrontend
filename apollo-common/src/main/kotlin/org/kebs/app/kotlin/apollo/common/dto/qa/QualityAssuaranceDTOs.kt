@@ -61,6 +61,7 @@ data class InvoiceDto(
         var paidDate: Timestamp? = null,
         var totalAmount: BigDecimal? = null,
         var paidStatus: Boolean? = null,
+        var submittedStatus: Int? = null,
         var plantId: Long? = null,
 )
 
