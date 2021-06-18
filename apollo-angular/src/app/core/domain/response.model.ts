@@ -1,5 +1,5 @@
-export class ApiResponse {
+export interface ApiResponse {
   payload: any;
-  response = '';
-  status = 0;
+  response: string;
+  status: number;
 }
