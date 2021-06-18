@@ -334,7 +334,12 @@ class ControllerRoutes {
             "/workPlan".nest {
                 GET("/list", handler::allWorkPlanList)
                 GET("/details", handler::workPlanDetails)
-
+            }
+            "/invoice".nest {
+                GET("/permit-invoice-list/{plantID}", handler::permitInvoiceList)
+                GET("/list-batch-invoices", handler::batchInvoiceList)
+                GET("/details", handler::workPlanDetails)
+                GET("/batch-details", handler::batchInvoiceDetails)
             }
         }
     }

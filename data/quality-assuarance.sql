@@ -79,14 +79,24 @@
 ***************************Table USED IN QA*****************************************
 select *
 from DAT_KEBS_PERMIT_TRANSACTION
-where id = 482
+-- where id = 503
+
+where ATTACHED_PLANT_ID = 203
+-- where PERMIT_NUMBER = 'DM#0954A'
+order by id desc;
+
+select *
+from dat_kebs_qa_batch_invoice
+-- where id = 503
 
 -- where PERMIT_NUMBER = 'DM#0954A'
 order by id desc;
 
 UPDATE DAT_KEBS_PERMIT_TRANSACTION
-SET SEND_APPLICATION = null, INVOICE_GENERATED= null
-WHERE id = 482;
+SET RESUBMIT_APPLICATION_STATUS = 10,
+    SEND_FOR_PCM_REVIEW         = null,
+    PCM_APPROVAL_STATUS         = null
+WHERE id = 503;
 
 select *
 from CFG_PERMIT_TYPES
@@ -159,7 +169,7 @@ alter table CFG_PERMIT_TYPES
 /
 
 alter table DAT_KEBS_PERMIT_TRANSACTION
-    add RM_ID NUMBER REFERENCES DAT_KEBS_USERS (ID)
+    add COC_ID NUMBER REFERENCES DAT_KEBS_QA_UPLOADS (ID)
 /
 
 select *
@@ -219,7 +229,7 @@ alter table DAT_KEBS_PERMIT_TRANSACTION
 /
 
 alter table DAT_KEBS_PERMIT_TRANSACTION
-    add END_PRODUCTION_REQUEST_REMARKS_APPROVAL VARCHAR2(200)
+    add RESUBMIT_REMARKS VARCHAR2(200)
 /
 
 

@@ -48,6 +48,7 @@ interface IPermitApplicationsRepository : HazelcastRepository<PermitApplications
     fun findAllByPaidStatus(paymentStatus: Int): List<PermitApplicationsEntity>?
     fun findByPermitRefNumberAndOldPermitStatus(permitRefNumber: String, oldPermitStatus: Int): List<PermitApplicationsEntity>?
     fun findTopByPermitRefNumberOrderByIdDesc(permitRefNumber: String): PermitApplicationsEntity?
+    fun findByIdAndAttachedPlantId(id: Long, attachedPlantId: Long): PermitApplicationsEntity?
 }
 
 
@@ -147,8 +148,10 @@ interface ITurnOverRatesRepository : HazelcastRepository<TurnOverRatesEntity, Lo
 
 @Repository
 interface IQaUploadsRepository : HazelcastRepository<QaUploadsEntity, Long> {
-    fun findByPermitId(permitId: Long): List<QaUploadsEntity>?
+    fun findByPermitIdAndOrdinaryStatus(permitId: Long, ordinaryStatus: Int): List<QaUploadsEntity>?
     fun findByPermitIdAndDocumentType(permitId: Long, docType: String): QaUploadsEntity?
+    fun findByPermitIdAndCocStatus(permitId: Long, cocStatus: Int): List<QaUploadsEntity>?
+    fun findByPermitIdAndSscStatus(permitId: Long, sscStatus: Int): List<QaUploadsEntity>?
 }
 
 @Repository
@@ -162,4 +165,11 @@ interface IQaWorkplanRepository: HazelcastRepository<QaWorkplanEntity, Long> {
     fun findByPermitNumber(permitNumber: String): List<QaWorkplanEntity>?
     fun findByOfficerId(officerId: Long): List<QaWorkplanEntity>?
     fun findByOfficerIdAndRefNumber(officerId: Long, refNumber: String): QaWorkplanEntity?
+}
+
+@Repository
+interface IQaBatchInvoiceRepository: HazelcastRepository<QaBatchInvoiceEntity, Long> {
+    fun findByUserIdAndInvoiceNumber(userId: Long, refNumber: String): QaBatchInvoiceEntity?
+    fun findByUserIdAndInvoiceNumberAndPlantId(userId: Long, invoiceNumber: String, plantId: Long): QaBatchInvoiceEntity?
+    fun findByUserId(userId: Long): List<QaBatchInvoiceEntity>?
 }

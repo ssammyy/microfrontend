@@ -1155,7 +1155,7 @@ fun createLocalCoc(
         return upDateDemandNoteWithUser(demandNote, user)
     }
 
-    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+
     fun generateDemandNoteWithItemList(
         itemDetails: CdItemDetailsEntity,
         map: ServiceMapsEntity,

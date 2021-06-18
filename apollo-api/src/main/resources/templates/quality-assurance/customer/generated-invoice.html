@@ -193,8 +193,8 @@
                                         <div class="col-sm-5">
                                             <h3>Invoice for:</h3>
                                             <address th:if="${permit != null}"
-                                                     th:text="${permitType?.mark} + ' ' + ${applicationState} + ' for ' + ${invoice?.permitId?.commodityDescription}">
-                                                <div th:text="${invoice?.permitId?.postalAddress}"></div>
+                                                     th:text="${permitType?.mark} + ' ' + ${applicationState} + ' for ' + ${permit?.commodityDescription}">
+                                                <div th:text="${permit?.postalAddress}"></div>
                                                 <br>
                                                 <div th:text="'Product'"></div>
                                                 <div th:text="'Brand'"></div>
