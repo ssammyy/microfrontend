@@ -545,7 +545,7 @@ class QADaoServices(
             invoice.receiptNo,
             invoice.paidDate,
             invoice.totalAmount,
-            invoice.paidStatus == 1,
+            invoice.paidStatus,
             invoice.submittedStatus,
             null
 

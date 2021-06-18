@@ -60,7 +60,7 @@ data class InvoiceDto(
         var receiptNo: String? = null,
         var paidDate: Timestamp? = null,
         var totalAmount: BigDecimal? = null,
-        var paidStatus: Boolean? = null,
+        var paidStatus: Int? = null,
         var submittedStatus: Int? = null,
         var plantId: Long? = null,
 )
