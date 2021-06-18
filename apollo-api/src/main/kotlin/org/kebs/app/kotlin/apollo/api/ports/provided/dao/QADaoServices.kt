@@ -546,6 +546,7 @@ class QADaoServices(
             invoice.paidDate,
             invoice.totalAmount,
             invoice.paidStatus == 1,
+            invoice.submittedStatus,
             null
 
         )
@@ -1769,7 +1770,11 @@ class QADaoServices(
         try {
 
             val userID = user.id ?: throw Exception("INVALID USER ID")
+            if (batchInvoiceDto.batchID == -1L) {
+                throw Exception("INVALID BATCH ID NUMBER")
+            }
             val invoiceDetails = findBatchInvoicesWithID(batchInvoiceDto.batchID)
+
 
             val batchInvoiceDetail = invoiceDaoService.createBatchInvoiceDetails(
                 user,
@@ -1796,6 +1801,11 @@ class QADaoServices(
                 updateBatchInvoiceDetail,
                 myAccountDetails
             )
+
+            with(invoiceDetails) {
+                submittedStatus = s.activeStatus
+            }
+            qaInvoiceBatchUpdateDetails(invoiceDetails, user)
 
             sr.payload = "invoiceDetails FOUND[id= ${invoiceDetails.userId}]"
             sr.names = "${invoiceDetails.invoiceNumber} ${invoiceDetails.totalAmount}"

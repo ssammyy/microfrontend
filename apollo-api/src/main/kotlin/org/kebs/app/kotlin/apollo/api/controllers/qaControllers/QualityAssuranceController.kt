@@ -800,7 +800,7 @@ class QualityAssuranceController(
     @PostMapping("/kebs/invoice/submit-invoice-detail/save")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun permitInvoiceBatchSubmitDetails(
-        @ModelAttribute("NewBatchInvoiceDto") batchDetailsRemover: NewBatchInvoiceDto,
+        @ModelAttribute("NewBatchInvoiceDto") NewBatchInvoiceDto: NewBatchInvoiceDto,
         model: Model,
     ): String? {
 
@@ -809,11 +809,11 @@ class QualityAssuranceController(
 
         val result: ServiceRequestsEntity?
 
-        result = qaDaoServices.permitMultipleInvoiceSubmitInvoice(map, loggedInUser, batchDetailsRemover)
+        result = qaDaoServices.permitMultipleInvoiceSubmitInvoice(map, loggedInUser, NewBatchInvoiceDto)
 
         val sm = CommonDaoServices.MessageSuccessFailDTO()
         sm.closeLink = "${applicationMapProperties.baseUrlValue}/qa/invoice/batch-details?batchID=${result.varField1}"
-        sm.message = "Batch Invoice has Been Updated"
+        sm.message = "Batch Invoice Submitted Successful"
 
         return commonDaoServices.returnValues(result, map, sm)
     }

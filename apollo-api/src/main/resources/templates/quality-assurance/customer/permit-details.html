@@ -873,7 +873,7 @@
                                                 </select>
                                                 <label for="attachedPlantRemarks" class="col-form-label">Please write,
                                                     in detail, your feedback for attaching the Plant above:</label>
-                                                <textarea required name="name" id="attachedPlantRemarks"
+                                                <textarea name="name" id="attachedPlantRemarks"
                                                           class="input-field w-input" cols="65" rows="5"
                                                           th:field="*{attachedPlantRemarks}"></textarea>
                                             </div>
@@ -895,7 +895,7 @@
                                                 </select>
                                                 <label for="hofQamCompletenessRemarks" class="col-form-label">Please
                                                     write, in detail, your feedback for this Permit:</label>
-                                                <textarea required name="name" id="hofQamCompletenessRemarks"
+                                                <textarea name="name" id="hofQamCompletenessRemarks"
                                                           class="input-field w-input" cols="65" rows="5"
                                                           th:field="*{hofQamCompletenessRemarks}"></textarea>
                                             </div>
@@ -931,7 +931,7 @@
                                                 </select>
                                                 <label for="compliantRemarks" class="col-form-label">Please write, in
                                                     detail, your feedback for this Lab Report report:</label>
-                                                <textarea required name="name" id="compliantRemarks"
+                                                <textarea name="name" id="compliantRemarks"
                                                           class="input-field w-input" cols="65" rows="5"
                                                           th:field="*{compliantRemarks}"></textarea>
                                             </div>
@@ -941,7 +941,7 @@
                                                 <!--                                            <input type="hidden" id="varField8" name="varField1" th:value="'Factory Inspection Report Rejected Succesfull'">-->
                                                 <label for="recommendationRemarks" class="col-form-label">Please write,
                                                     in detail, your Recommendation for this Permit:</label>
-                                                <textarea required name="name" id="recommendationRemarks"
+                                                <textarea name="name" id="recommendationRemarks"
                                                           class="input-field w-input" cols="65" rows="5"
                                                           th:field="*{recommendationRemarks}"></textarea>
                                             </div>
@@ -951,7 +951,7 @@
                                                        th:value="'Recommendation Status Updated succesfull'">
                                                 <label for="recommendationRemarks2" class="col-form-label">Recommendation
                                                     for this Permit Application:</label>
-                                                <textarea required name="name" disabled id="recommendationRemarks2"
+                                                <textarea name="name" disabled id="recommendationRemarks2"
                                                           class="input-field w-input" cols="65" rows="5"
                                                           th:text="${permitDetails?.recommendationRemarks}"></textarea>
                                                 <label for="recommendationApprovalStatus" class="col-form-label">Select
@@ -966,7 +966,7 @@
                                                 </select>
                                                 <label for="recommendationApprovalRemarks" class="col-form-label">Please
                                                     write, in detail, your feedback for this Approval/Rejection:</label>
-                                                <textarea required name="name" id="recommendationApprovalRemarks"
+                                                <textarea name="name" id="recommendationApprovalRemarks"
                                                           class="input-field w-input" cols="65" rows="5"
                                                           th:field="*{recommendationApprovalRemarks}"></textarea>
                                             </div>
@@ -985,7 +985,7 @@
                                                 </select>
                                                 <label for="pscMemberApprovalRemarks" class="col-form-label">Please
                                                     write, in detail, your feedback for this Approval/Rejection:</label>
-                                                <textarea required name="name" id="pscMemberApprovalRemarks"
+                                                <textarea name="name" id="pscMemberApprovalRemarks"
                                                           class="input-field w-input" cols="65" rows="5"
                                                           th:field="*{pscMemberApprovalRemarks}"></textarea>
                                             </div>
@@ -1004,7 +1004,7 @@
                                                 </select>
                                                 <label for="hodApproveAssessmentRemarks" class="col-form-label">Please
                                                     write, in detail, your feedback for this Approval/Rejection:</label>
-                                                <textarea required name="name" id="hodApproveAssessmentRemarks"
+                                                <textarea name="name" id="hodApproveAssessmentRemarks"
                                                           class="input-field w-input" cols="65" rows="5"
                                                           th:field="*{hodApproveAssessmentRemarks}"></textarea>
                                             </div>
@@ -1022,7 +1022,7 @@
                                                 </select>
                                                 <label for="pcmApprovalRemarks" class="col-form-label">Please write, in
                                                     detail, your feedback for this Approval/Rejection:</label>
-                                                <textarea required name="name" id="pcmApprovalRemarks"
+                                                <textarea name="name" id="pcmApprovalRemarks"
                                                           class="input-field w-input" cols="65" rows="5"
                                                           th:field="*{pcmApprovalRemarks}"></textarea>
                                             </div>
@@ -1040,7 +1040,7 @@
                                                 </select>
                                                 <label for="hofQamCompletenessRemarks" class="col-form-label">Please
                                                     write, in detail, PAC decision/remarks:</label>
-                                                <textarea required name="name" id="pacDecisionRemarks"
+                                                <textarea name="name" id="pacDecisionRemarks"
                                                           class="input-field w-input" cols="65" rows="5"
                                                           th:field="*{pacDecisionRemarks}"></textarea>
                                             </div>
@@ -1084,7 +1084,7 @@
                                                        th:value="${activeStatus}">
                                                 <label for="resubmitRemarks1" class="col-form-label">Please write, in
                                                     detail, your reason for this Permit:</label>
-                                                <textarea required name="name" id="resubmitRemarks1"
+                                                <textarea name="name" id="resubmitRemarks1"
                                                           class="input-field w-input" cols="65" rows="5"
                                                           th:field="*{resubmitRemarks}"></textarea>
                                             </div>
@@ -1096,7 +1096,7 @@
                                                 <!--                                            <input type="hidden" id="varField8" name="varField1" th:value="'Factory Inspection Report Rejected Succesfull'">-->
                                                 <label for="resubmitRemarks2" class="col-form-label">Please write, in
                                                     detail, your reason for this Permit:</label>
-                                                <textarea required name="name" id="resubmitRemarks2"
+                                                <textarea name="name" id="resubmitRemarks2"
                                                           class="input-field w-input" cols="65" rows="5"
                                                           th:field="*{resubmitRemarks}"></textarea>
                                             </div>
@@ -1138,7 +1138,7 @@
                                                 <!--                                            <input type="hidden" id="varField8" name="varField1" th:value="'Factory Inspection Report Rejected Succesfull'">-->
                                                 <label for="recommendationRemarks" class="col-form-label">Please write,
                                                     in detail, your Recommendation for this Permit:</label>
-                                                <textarea required name="name" id="recommendationRemarks"
+                                                <textarea name="name" id="recommendationRemarks"
                                                           class="input-field w-input" cols="65" rows="5"
                                                           th:field="*{recommendationRemarks}"></textarea>
                                             </div>
@@ -1182,7 +1182,7 @@
                                                        th:value="${permitDetails?.hofQamCompletenessStatus} ? 'COMPLETE' : 'IN-COMPLETE'">
                                                 <label for="hofQamCompletenessRemarks" class="col-form-label">Feedback
                                                     for this Permit:</label>
-                                                <textarea required name="name" disabled id="hofQamCompletenessRemarks"
+                                                <textarea name="name" disabled id="hofQamCompletenessRemarks"
                                                           class="input-field w-input" cols="65" rows="5"
                                                           th:text="${permitDetails?.hofQamCompletenessRemarks}"></textarea>
                                             </div>
@@ -1194,7 +1194,7 @@
                                                        th:value="${permitDetails?.pcmApprovalStatus} ? 'APPROVED' : 'REJECTED'">
                                                 <label for="pcmApprovalRemarks" class="col-form-label">Feedback for this
                                                     Permit:</label>
-                                                <textarea required name="name" disabled id="pcmApprovalRemarks"
+                                                <textarea name="name" disabled id="pcmApprovalRemarks"
                                                           class="input-field w-input" cols="65" rows="5"
                                                           th:text="${permitDetails?.pcmApprovalRemarks}"></textarea>
                                             </div>
@@ -1207,7 +1207,7 @@
                                                        th:value="${permitDetails?.pscMemberApprovalStatus} ? 'APPROVED' : 'REJECTED'">
                                                 <label for="pscMemberApprovalRemarks" class="col-form-label">Feedback
                                                     for this Permit:</label>
-                                                <textarea required name="name" disabled id="pscMemberApprovalRemarks"
+                                                <textarea name="name" disabled id="pscMemberApprovalRemarks"
                                                           class="input-field w-input" cols="65" rows="5"
                                                           th:text="${permitDetails?.pscMemberApprovalRemarks}"></textarea>
                                             </div>
@@ -1219,7 +1219,7 @@
                                                        th:value="${permitDetails?.pcmApprovalStatus} ? 'APPROVED' : 'REJECTED'">
                                                 <label for="pcmApprovalRemarks" class="col-form-label">Feedback for this
                                                     Permit:</label>
-                                                <textarea required name="name" disabled id="pcmApprovalRemarks"
+                                                <textarea name="name" disabled id="pcmApprovalRemarks"
                                                           class="input-field w-input" cols="65" rows="5"
                                                           th:text="${permitDetails?.pcmApprovalRemarks}"></textarea>
                                             </div>
@@ -1232,13 +1232,13 @@
                                                        th:value="${permitDetails?.justificationReportStatus} ? 'APPROVED' : 'REJECTED'">
                                                 <label for="justificationReportRemarks" class="col-form-label">Feedback
                                                     for this Permit:</label>
-                                                <textarea required name="name" disabled id="justificationReportRemarks"
+                                                <textarea name="name" disabled id="justificationReportRemarks"
                                                           class="input-field w-input" cols="65" rows="5"
                                                           th:text="${permitDetails?.justificationReportRemarks}"></textarea>
                                             </div>
                                             <div id="permitRemarksRecommendationReview">
                                                 <label for="recommendationRemarks" class="col-form-label">RECOMMENDATION:</label>
-                                                <textarea required name="name" disabled id="recommendationRemarks"
+                                                <textarea name="name" disabled id="recommendationRemarks"
                                                           class="input-field w-input" cols="65" rows="5"
                                                           th:text="${permitDetails?.recommendationRemarks}"></textarea>
                                                 <label for="recommendationApprovalStatus" class="col-form-label">Recommendation
@@ -1249,7 +1249,7 @@
                                                        th:value="${permitDetails?.recommendationApprovalStatus} ? 'APPROVED' : 'REJECTED'">
                                                 <label for="recommendationApprovalRemarks" class="col-form-label">Feedback
                                                     for this Permit:</label>
-                                                <textarea required name="name" disabled
+                                                <textarea name="name" disabled
                                                           id="recommendationApprovalRemarks" class="input-field w-input"
                                                           cols="65" rows="5"
                                                           th:text="${permitDetails?.recommendationApprovalRemarks}"></textarea>
@@ -1379,7 +1379,7 @@
                                             </div>
                                             <label for="description" class="col-form-label">Please write, in detail,
                                                 your reason:</label>
-                                            <textarea required name="name" id="description" class="input-field w-input"
+                                            <textarea name="name" id="description" class="input-field w-input"
                                                       cols="65" rows="5" th:field="*{description}"></textarea>
 
                                         </div>
@@ -1555,7 +1555,7 @@
                                         <div class="form-group">
                                             <label for="assessment_recommendations" class="col-form-label">Please write,
                                                 in detail, your recommendations:</label>
-                                            <textarea required name="assessment_recommendations"
+                                            <textarea name="assessment_recommendations"
                                                       id="assessment_recommendations" class="input-field w-input"
                                                       cols="65" rows="5"></textarea>
                                         </div>
@@ -1606,7 +1606,7 @@
                                                 <label for="approvalRejectionReason" class="col-form-label">Please
                                                     write, in
                                                     detail, your reason for approving/rejecting:</label>
-                                                <textarea required name="name" id="approvalRejectionReason"
+                                                <textarea name="name" id="approvalRejectionReason"
                                                           class="input-field w-input" cols="65" rows="5"
                                                           th:field="*{approvalRejectionReason}"></textarea>
                                             </div>

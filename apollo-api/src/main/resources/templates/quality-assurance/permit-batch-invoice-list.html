@@ -102,7 +102,7 @@
                                             <th>TOTAL AMOUNT</th>
                                             <th>PAID STATUS</th>
                                             <th>VIEW</th>
-                                            <th>ACTIONS</th>
+                                            <th th:if="${InvoiceDetails?.submittedStatus != 1}">ACTIONS</th>
                                             <!--                                        <th>View Details</th>-->
                                         </tr>
                                         </thead>
@@ -118,7 +118,7 @@
                                                    th:href="@{/api/qa/invoice-details(permitID=${invoice?.permitID})}">VIEW</a>
                                             </td>
                                             <!--                                            <td><a class="filter-link" th:href="@{/api/qa/kebs/invoice/remove-invoice-detail/save(permitID=${invoice?.permitID}, batchID=${InvoiceDetails?.batchID})}" style="color: white">REMOVE</a></td>-->
-                                            <td>
+                                            <td th:if="${InvoiceDetails?.submittedStatus != 1}">
                                                 <button sec:authorize="hasAuthority('PERMIT_APPLICATION')"
                                                         class="btn btn-primary" th:value="${invoice.permitID}"
                                                         onclick="popUpFunctionRemove('batchRemoveDetails', this);"
@@ -136,7 +136,7 @@
                             <div class="filter-block-title">
                                 <div class="filter-title">Action:</div>
                             </div>
-                            <div>
+                            <div th:if="${InvoiceDetails?.submittedStatus != 1}">
                                 <a sec:authorize="hasAuthority('PERMIT_APPLICATION')"
                                    onclick="popUpFunctionUpload('addParamBtn');" class="filter-link"
                                    style="color: white">ADD INVOICE</a>
@@ -165,7 +165,7 @@
                                                 <div class="form-group">
 
                                                     <div id="addParamBtn">
-                                                        <input type="hidden" id="batchID" name="batchID"
+                                                        <input type="hidden" id="batchID1" name="batchID"
                                                                th:value="${InvoiceDetails?.batchID}">
                                                         <label class="field-label" for="permitID1">Select
                                                             Permit:</label>
@@ -176,7 +176,11 @@
                                                                     th:text="${permitInvoice.brandName}+ '= KSH ' + ${permitInvoice.totalAmount}"
                                                                     th:value="${permitInvoice.permitID}"></option>
                                                         </select>
-
+                                                    </div>
+                                                    <div id="submitInvoice">
+                                                        <input type="hidden" id="batchID2" name="batchID"
+                                                               th:value="${InvoiceDetails?.batchID}">
+                                                        <p>By clicking Submit You will be submitting the invoice</p>
                                                     </div>
 
                                                 </div>
@@ -296,9 +300,17 @@
 </script>
 <script>
 
-    let arrHead = [ 'addParamBtn',];
-    let arrHeadSave = ['Please select applicable smark',];
-    let arrActionChange = ['/api/qa/kebs/invoice/create-batch-invoice/save',];
+    let arrHead = ['addParamBtn', 'submitInvoice'];
+    let arrHeadAndAction = [
+        {
+            "head": "Please select applicable smark",
+            "action": "/api/qa/kebs/invoice/create-batch-invoice/save",
+        },
+        {
+            "head": "Please click yes to submit invoice",
+            "action": "/api/qa/kebs/invoice/submit-invoice-detail/save",
+        }
+    ]
 
 
     function refreshPage() {
@@ -308,35 +320,19 @@
     function popUpFunctionUpload(eventAction) {
 
         for (let h = 0; h < arrHead.length; h++) {
-            if(eventAction !== arrHead[h]){
+            if (eventAction !== arrHead[h]) {
                 document.getElementById(arrHead[h]).remove();
             } else {
                 if (eventAction === arrHead[h]) {
-                    $('#upload-form').attr('action', arrActionChange[h]);
-                    document.getElementById('uploadSpan').innerHTML = arrHeadSave[h];
-                    document.getElementById("upload").value = 'Save';
+                    $('#upload-form').attr('action', arrHeadAndAction[h].action);
+                    document.getElementById('uploadSpan').innerHTML = arrHeadAndAction[h].head;
+                    document.getElementById("upload").value = 'Submit';
                 }
             }
         }
 
         $('.uploadForm #uploadModal').modal();
     }
-
-    // function popUpFunctionUpload(eventAction, paramID) {
-    //
-    //     for (let h = 0; h < arrHead.length; h++) {
-    //         if(eventAction !== arrHead[h]){
-    //             document.getElementById(arrHead[h]).remove();
-    //         }else {
-    //             if (eventAction === arrHead[h]) {
-    //                 document.getElementById('uploadSpan').innerHTML = arrHeadSave[h];
-    //                 document.getElementById("upload").value = 'Save';
-    //             }
-    //         }
-    //     }
-    //
-    //     $('.uploadForm #uploadModal').modal();
-    // }
 
 
     function popUpFunctionRemove(eventAction, paramID) {

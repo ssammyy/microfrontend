@@ -60,6 +60,10 @@ class QaBatchInvoiceEntity : Serializable {
     @Basic
     var paidStatus: Int? = null
 
+    @Column(name = "SUBMITTED_STATUS")
+    @Basic
+    var submittedStatus: Int? = null
+
     @Column(name = "RECEIPT_NO")
     @Basic
     var receiptNo: String? = null
@@ -138,6 +142,7 @@ class QaBatchInvoiceEntity : Serializable {
                 && plantId == that.plantId
                 && creationDate == that.creationDate
                 && paidDate == that.paidDate
+                && submittedStatus == that.submittedStatus
                 && paidStatus == that.paidStatus
                 && receiptNo == that.receiptNo && invoiceNumber == that.invoiceNumber && description == that.description && status == that.status && varField1 == that.varField1 && varField2 == that.varField2 && varField3 == that.varField3 && varField4 == that.varField4 && varField5 == that.varField5 && varField6 == that.varField6 && varField7 == that.varField7 && varField8 == that.varField8 && varField9 == that.varField9 && varField10 == that.varField10 && createdBy == that.createdBy && createdOn == that.createdOn && modifiedBy == that.modifiedBy && modifiedOn == that.modifiedOn && deleteBy == that.deleteBy && deletedOn == that.deletedOn
     }
@@ -150,6 +155,7 @@ class QaBatchInvoiceEntity : Serializable {
             creationDate,
             plantId,
             invoiceNumber,
+            submittedStatus,
             userId,
             paidStatus,
             receiptNo,
