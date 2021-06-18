@@ -3,10 +3,10 @@ import {ApiResponse} from "../../../domain/response.model";
 import * as actions from './response.actions';
 
 
-export const responseFeatureKey = 'response';
+export const responseFeatureKey = 'responses';
 
 export interface ResponseState {
-  data : ApiResponse;
+  data: ApiResponse;
 }
 
 export const initialResponseState: ResponseState = {
@@ -35,7 +35,7 @@ export const responseReducerInternal = createReducer(
   })
 );
 
-export function responseReducer(state: ResponseState | undefined, action: Action): ResponseState {
+export function responseReducer(state: ResponseState, action: Action): ResponseState {
   return responseReducerInternal(state, action);
 }
 

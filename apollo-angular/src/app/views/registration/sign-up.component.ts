@@ -9,7 +9,6 @@ import {
   User
 } from "../../core/store";
 import {Store} from "@ngrx/store";
-import {EntityOp} from "@ngrx/data";
 
 @Component({
   selector: 'app-sign-up',
@@ -17,6 +16,7 @@ import {EntityOp} from "@ngrx/data";
   styles: []
 })
 export class SignUpComponent implements OnInit {
+
 
   step = 0;
 
@@ -27,13 +27,14 @@ export class SignUpComponent implements OnInit {
   stepFourForm: FormGroup = new FormGroup({});
   companySoFar: Partial<Company> | undefined;
   userSoFar: Partial<User> | undefined;
+  // @ts-ignore
+  brsLookupRequest: BrsLookUpRequest;
 
 
   constructor(
     private service: RegistrationPayloadService,
     private lookUpService: BrsLookUpRequestService,
     private store$: Store<any>,
-    private brsLookupRequest: BrsLookUpRequest
   ) {
     service.getAll().subscribe();
   }
@@ -81,9 +82,13 @@ export class SignUpComponent implements OnInit {
   onClickBrsLookup(valid: boolean) {
     if (valid) {
       this.brsLookupRequest = this.stepZeroForm.value;
-
       console.log(`Sending ${JSON.stringify(this.brsLookupRequest)}`)
+      this.lookUpService.add({
+        registrationNumber: this.brsLookupRequest?.registrationNumber,
+        directorIdNumber: this.brsLookupRequest?.directorIdNumber
+      });
       this.step = 1;
+
 
     } else {
       this.store$.dispatch(loadResponsesFailure({

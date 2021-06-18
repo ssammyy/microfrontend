@@ -17,7 +17,7 @@ export class ApiEndpointService {
    * Map of domains for API endpoints.
    */
   public static DOMAIN = {
-    LOCAL_DEV: 'localhost:9026/'
+    LOCAL_DEV: 'localhost:9026'
   };
 
   /**
@@ -121,8 +121,8 @@ export class ApiEndpointService {
    */
   public static isAuthEndpoint(url: string = ''): boolean {
     return (
-      url.toLowerCase().indexOf(ApiEndpointService.AUTH_CONTEXT) > -1
-      || url.toLowerCase().indexOf(ApiEndpointService.INTEG_AUTH_CONTEXT) > -1
+      url.toLowerCase().indexOf(ApiEndpointService.ANONYMOUS_CONTEXT) > -1
+      || url.toLowerCase().indexOf(ApiEndpointService.AUTH_CONTEXT) > -1
     );
 
   }

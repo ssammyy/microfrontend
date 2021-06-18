@@ -10,6 +10,8 @@ import {SignUpComponent} from './views/registration/sign-up.component';
 import {LoginComponent} from "./views/registration/login.component";
 import {CoreModule} from "./core/core.module";
 import {ReactiveFormsModule} from "@angular/forms";
+import {ToastrModule} from "ngx-toastr";
+import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 
 
 @NgModule({
@@ -21,8 +23,14 @@ import {ReactiveFormsModule} from "@angular/forms";
   ],
   imports: [
     BrowserModule,
+    BrowserAnimationsModule,
     AppRoutingModule,
     CoreModule,
+    ToastrModule.forRoot({
+      timeOut: 10000,
+      positionClass: 'toast-top-right',
+      preventDuplicates: true,
+    }),
     ReactiveFormsModule
   ],
   providers: [
