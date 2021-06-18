@@ -264,10 +264,10 @@ class MasterDataHandler(
         try {
             val entity = req.body<StandardProductCategoryEntityDto>()
             daoService.updateStandardProductCategory(entity)
-                    ?.let {
-                        return ok().body(it)
-                    }
-                    ?: throw NullValueNotAllowedException("Update failed")
+                ?.let {
+                    return ok().body(it)
+                }
+                ?: throw NullValueNotAllowedException("Update failed")
 
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
@@ -278,15 +278,15 @@ class MasterDataHandler(
 
     }
 
-//    @PreAuthorize("hasAuthority('STANDARD_PRODUCT_CATEGORY_WRITE')")
+    //    @PreAuthorize("hasAuthority('STANDARD_PRODUCT_CATEGORY_WRITE')")
     fun userRequestTypeUpdate(req: ServerRequest): ServerResponse {
         try {
             val entity = req.body<UserRequestTypesEntityDto>()
             daoService.updateUserRequestType(entity)
-                    ?.let {
-                        return ok().body(it)
-                    }
-                    ?: throw NullValueNotAllowedException("Update failed")
+                ?.let {
+                    return ok().body(it)
+                }
+                ?: throw NullValueNotAllowedException("Update failed")
 
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
@@ -437,7 +437,7 @@ class MasterDataHandler(
 
     }
 
-    @PreAuthorize("hasAuthority('REGIONS_LIST')")
+    @PreAuthorize("isAnonymous()")
     fun regionsListing(req: ServerRequest): ServerResponse {
         try {
             val status = try {
@@ -613,7 +613,8 @@ class MasterDataHandler(
     }
 
 
-    @PreAuthorize("hasAuthority('COUNTIES_LIST')")
+    //    @PreAuthorize("hasAuthority('COUNTIES_LIST')")
+    @PreAuthorize("isAnonymous()")
     fun countiesListing(req: ServerRequest): ServerResponse {
         try {
             val status = try {
@@ -660,7 +661,8 @@ class MasterDataHandler(
             badRequest().body(e.message ?: "Unknown Error")
         }
 
-    @PreAuthorize("hasAuthority('TOWNS_LIST')")
+    //    @PreAuthorize("hasAuthority('TOWNS_LIST')")
+    @PreAuthorize("isAnonymous()")
     fun regionSubRegionListing(req: ServerRequest): ServerResponse =
         try {
             daoService.getRegionSubRegion()
@@ -696,7 +698,8 @@ class MasterDataHandler(
             badRequest().body(e.message ?: "Unknown Error")
         }
 
-    @PreAuthorize("hasAuthority('TOWNS_LIST')")
+//    @PreAuthorize("hasAuthority('TOWNS_LIST')")
+    @PreAuthorize("isAnonymous()")
     fun townsListing(req: ServerRequest): ServerResponse {
         try {
             val status = try {
@@ -732,7 +735,46 @@ class MasterDataHandler(
 
     }
 
-//    @PreAuthorize("hasAuthority('STANDARD_PRODUCT_CATEGORY_LIST')")
+    @PreAuthorize("isAnonymous()")
+    fun notSupported(req: ServerRequest):ServerResponse = badRequest().body("Invalid Request")
+
+    @PreAuthorize("isAnonymous()")
+    fun businessLinesListing(req: ServerRequest): ServerResponse {
+        try {
+            daoService.getAllBusinessLines()
+                ?.let {
+                    return ok().body(it)
+                }
+                ?: throw NullValueNotAllowedException("No records found")
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            return badRequest().body(e.message ?: "Unknown Error")
+        }
+
+
+    }
+
+    @PreAuthorize("isAnonymous()")
+    fun businessNaturesListing(req: ServerRequest): ServerResponse {
+        try {
+            daoService.getAllBusinessNatures()
+                ?.let {
+                    return ok().body(it)
+                }
+                ?: throw NullValueNotAllowedException("No records found")
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            return badRequest().body(e.message ?: "Unknown Error")
+        }
+
+
+    }
+
+    //    @PreAuthorize("hasAuthority('STANDARD_PRODUCT_CATEGORY_LIST')")
     fun standardProductCategoryListing(req: ServerRequest): ServerResponse {
         try {
             val status = try {
@@ -743,18 +785,18 @@ class MasterDataHandler(
             when {
                 status <= 1 -> {
                     daoService.getAllStandardProductCategory()
-                            ?.let {
-                                return ok().body(it)
-                            }
-                            ?: throw NullValueNotAllowedException("No records found")
+                        ?.let {
+                            return ok().body(it)
+                        }
+                        ?: throw NullValueNotAllowedException("No records found")
 
                 }
                 else -> {
                     daoService.getStandardProductCategoryByStatus(status)
-                            ?.let {
-                                return ok().body(it)
-                            }
-                            ?: throw NullValueNotAllowedException("No records found")
+                        ?.let {
+                            return ok().body(it)
+                        }
+                        ?: throw NullValueNotAllowedException("No records found")
 
                 }
             }
@@ -777,18 +819,18 @@ class MasterDataHandler(
             when {
                 status <= 1 -> {
                     daoService.getAllUserRequestTypes()
-                            ?.let {
-                                return ok().body(it)
-                            }
-                            ?: throw NullValueNotAllowedException("No records found")
+                        ?.let {
+                            return ok().body(it)
+                        }
+                        ?: throw NullValueNotAllowedException("No records found")
 
                 }
                 else -> {
                     daoService.getUserRequestTypesByStatus(status)
-                            ?.let {
-                                return ok().body(it)
-                            }
-                            ?: throw NullValueNotAllowedException("No records found")
+                        ?.let {
+                            return ok().body(it)
+                        }
+                        ?: throw NullValueNotAllowedException("No records found")
 
                 }
             }

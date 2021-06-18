@@ -205,6 +205,19 @@ data class RegionsEntityDto(
     var descriptions: String?,
     var status: Boolean?
 )
+data class BusinessLinesEntityDto(
+    var id: Long?,
+    var name: String?,
+    var descriptions: String?,
+    var status: Boolean?
+)
+data class BusinessNatureEntityDto(
+    var id: Long?,
+    var businessLinesId: Long?,
+    var name: String?,
+    var descriptions: String?,
+    var status: Boolean?
+)
 
 data class SubRegionsEntityDto(
     var id: Long?,
@@ -299,6 +312,16 @@ data class BrsConfirmationRequest(
     val registrationNumber: String,
     @NotEmpty(message = "is required")
     val directorIdNumber: String
+)
+data class ValidatePhoneNumberRequestDto(
+    @NotEmpty(message = "is required")
+    val phone: String
+)
+data class ValidatePhoneNumberTokenRequestDto(
+    @NotEmpty(message = "is required")
+    val phone: String,
+    @NotEmpty(message = "is required")
+    val token: String?
 )
 
 data class UserCompanyEntityDto(

@@ -32,6 +32,8 @@ class MasterDataDaoService(
     private val broadProductCategoryRepo: IBroadProductCategoryRepository,
     private val productSubCategoryRepo: IProductSubcategoryRepository,
     private val productsRepo: IProductsRepository,
+    private val businessLinesRepo:IBusinessLinesRepository,
+    private val businessNatureRepo:IBusinessNatureRepository,
     @PersistenceContext
     private val entityManager: EntityManager,
 //    private val sessionFactory: SessionFactory
@@ -106,6 +108,9 @@ class MasterDataDaoService(
 
     fun getAllRegions(): List<RegionsEntityDto>? = regionsRepo.findAll().sortedBy { it.id }.map { RegionsEntityDto(it.id, it.region, it.descriptions, it.status == 1) }.sortedBy { it.id }
     fun getRegionsByStatus(status: Int): List<RegionsEntityDto>? = regionsRepo.findByStatusOrderByRegion(status)?.map { RegionsEntityDto(it.id, it.region, it.descriptions, it.status == 1) }?.sortedBy { it.id }
+
+    fun getAllBusinessLines(): List<BusinessLinesEntityDto>?= businessLinesRepo.findAll().sortedBy { it.id }.map { BusinessLinesEntityDto(it.id, it.name, it.descriptions, it.status ==1) }
+    fun getAllBusinessNatures(): List<BusinessNatureEntityDto>?= businessNatureRepo.findAll().sortedBy { it.id }.map { BusinessNatureEntityDto(it.id, it.businessLinesId?.id, it.name, it.descriptions, it.status ==1) }
 
     fun getAllDesignations(): List<DesignationEntityDto>? = designationsRepo.findAll()
         .sortedBy { it.id }

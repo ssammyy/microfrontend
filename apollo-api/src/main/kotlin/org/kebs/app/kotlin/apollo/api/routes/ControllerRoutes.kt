@@ -45,6 +45,8 @@ import org.springframework.web.servlet.function.router
 @Configuration
 class ControllerRoutes {
 
+
+
     @Bean
     fun masterDataRoutes(handler: MasterDataHandler) = router {
         "/api/v1/system/admin".nest {
@@ -132,6 +134,24 @@ class ControllerRoutes {
                     PUT("/", handler::townsUpdate)
                     POST("/", handler::townsUpdate)
                 }
+                "/businessLines".nest {
+                    GET("", handler::businessLinesListing)
+                    POST("", handler::notSupported)
+                    "/{id}".nest {
+                        GET("", handler::notSupported)
+                        PUT("", handler::notSupported)
+                    }
+
+                }
+                "/businessNatures".nest {
+                    GET("", handler::businessNaturesListing)
+                    POST("", handler::notSupported)
+                    "/{id}".nest {
+                        GET("", handler::notSupported)
+                        PUT("", handler::notSupported)
+                    }
+
+                }
                 "/regionCountyTown".nest {
                     GET("/load", handler::regionCountyTownListing)
 
@@ -202,8 +222,6 @@ class ControllerRoutes {
             GET("api/di/pvoc/waivers-application")(handler::waiversForm)
         }
     }
-
-
 
 
     @Bean
@@ -302,7 +320,6 @@ class ControllerRoutes {
             GET("/rfc/finished/adding/item", handler::rfcDetails)
         }
     }
-
 
 
     @Bean
@@ -497,7 +514,10 @@ class ControllerRoutes {
                     POST("/role/assign/{userId}/{roleId}/{status}", handler::assignRoleToUser)
                     POST("/cfs/revoke/{userProfileId}/{cfsId}/{status}", handler::revokeCfsFromUser)
                     POST("/cfs/assign/{userProfileId}/{cfsId}/{status}", handler::assignCfsToUser)
-                    POST("/user/request/role/assign/{userId}/{roleId}/{status}/{requestID}", handler::assignRoleToUserThroughRequest)
+                    POST(
+                        "/user/request/role/assign/{userId}/{roleId}/{status}/{requestID}",
+                        handler::assignRoleToUserThroughRequest
+                    )
 //                    POST("/user/request/{userId}/{cfsId}/{status}", handler::assignCfsToUser)
 
 
@@ -568,7 +588,6 @@ class ControllerRoutes {
         }
 
     }
-
 
 
 }
