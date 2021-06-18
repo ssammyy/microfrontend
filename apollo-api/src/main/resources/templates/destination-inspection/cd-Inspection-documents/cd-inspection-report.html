@@ -5,28 +5,18 @@
     <meta charset="utf-8">
     <title>KEBS</title>
     <th:block th:include="fragments/general-form.html:: headerfiles"/>
-    <link rel="stylesheet" th:href="@{/css/pageLoad.css}" type="text/css">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" th:href="@{/css/accordion.css}"/>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"/>
-    <!--    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.22/css/dataTables.bootstrap.min.css"/>-->
-    <!--    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.6.4/css/buttons.bootstrap.min.css"/>-->
 
-    <!--    &lt;!&ndash; Font Awesome &ndash;&gt;-->
-    <!--    <link href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" rel="stylesheet"/>-->
-    <!--    &lt;!&ndash; Google Fonts &ndash;&gt;-->
-    <!--    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" rel="stylesheet"/>-->
-    <!--    &lt;!&ndash; MDB &ndash;&gt;-->
-    <!--    <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/2.2.1/mdb.min.css" rel="stylesheet"/>-->
 </head>
 <body>
 <div id ="spinnerContainer"><div class="spinner"></div></div>
-<div class="top-bar" th:replace="fragments/general-form.html :: top-bar"></div>
-<div class="section">
-    <div class="w-layout-grid main-grid">
-        <div class="main-grid-side-navigation" id="w-node-d308c123a20f-c123a20d" th:replace="fragments/general-form.html :: side-navigation-bar"></div>
-        <div id="w-node-27962c2db181-c676b3e3" class="main-content-div">
-            <div class="content-nav" th:replace="fragments/general-form.html :: content-navigation-bar"></div>
+<div th:replace="fragments/general-form.html :: dashboard-page" ></div>
+
+<div class="dashboard-body">
+    <div th:replace="fragments/general-form.html :: side-navigation-bar" ></div>
+    <div class="main-area">
+        <div th:replace="fragments/general-form.html :: content-navigation-bar"></div>
+        <section class="dashboard-content">
             <div class="content-wrap">
                 <div class="content-container">
                     <h4 class="h3-blue" style="color: #0082f3; font-weight: bold;">Inspection Report Details</h4>
@@ -213,18 +203,18 @@
                                             <div class="list-title-accordion">Documentation (heath/fumigation certificates e.t.c.):</div>
                                             <div class="list-text-accordion" th:text="${inspectionChecklist?.documentation}"></div>
                                         </li>
-<!--                                        <li class="list-item-accordion">-->
-<!--                                            <div class="list-title-accordion">Storage Condition:</div>-->
-<!--                                            <div class="list-text-accordion" th:text="${inspectionChecklist?.storageCondition}"></div>-->
-<!--                                        </li>-->
-<!--                                        <li class="list-item-accordion">-->
-<!--                                            <div class="list-title-accordion">Appearance (mouldy,infested,foreign matter e.t.c.):</div>-->
-<!--                                            <div class="list-text-accordion" th:text="${inspectionChecklist?.appearance}"></div>-->
-<!--                                        </li>-->
-<!--                                        <li class="list-item-accordion">-->
-<!--                                            <div class="list-title-accordion">Certification marks/pvoc documents:</div>-->
-<!--                                            <div class="list-text-accordion" th:text="${inspectionChecklist?.certMarksPvocDoc}"></div>-->
-<!--                                        </li>-->
+                                        <!--                                        <li class="list-item-accordion">-->
+                                        <!--                                            <div class="list-title-accordion">Storage Condition:</div>-->
+                                        <!--                                            <div class="list-text-accordion" th:text="${inspectionChecklist?.storageCondition}"></div>-->
+                                        <!--                                        </li>-->
+                                        <!--                                        <li class="list-item-accordion">-->
+                                        <!--                                            <div class="list-title-accordion">Appearance (mouldy,infested,foreign matter e.t.c.):</div>-->
+                                        <!--                                            <div class="list-text-accordion" th:text="${inspectionChecklist?.appearance}"></div>-->
+                                        <!--                                        </li>-->
+                                        <!--                                        <li class="list-item-accordion">-->
+                                        <!--                                            <div class="list-title-accordion">Certification marks/pvoc documents:</div>-->
+                                        <!--                                            <div class="list-text-accordion" th:text="${inspectionChecklist?.certMarksPvocDoc}"></div>-->
+                                        <!--                                        </li>-->
                                     </div>
                                     <li class="list-item-accordion">
                                         <div class="list-title-accordion">Sampled Yes/No:</div>
@@ -234,8 +224,8 @@
                                         <div class="list-title-accordion">Remarks:</div>
                                         <div class="list-text-accordion" th:text="${inspectionChecklist?.remarks}"></div>
                                     </li>
-                                </ul>
-                            </div>
+                                    </ul>
+                                </div>
 
                             </div>
 
@@ -266,7 +256,7 @@
                                 <a  th:if="${inspectionChecklist?.inspectionGeneral?.complianceStatus == null }"  sec:authorize="hasAuthority('DI_INSPECTION_OFFICER_MODIFY')" onclick="popUpFunctionUpload('addRecommendationBtn');" class="filter-link " style="color: white">Recommendation</a>
                                 <a  th:if="${inspectionChecklist?.inspectionGeneral?.inspectionReportApprovalStatus == null }" sec:authorize="hasAuthority('DI_OFFICER_CHARGE_MODIFY')" onclick="popUpFunctionUpload('approveBtn');" class="filter-link " style="color: white">Approve</a>
                                 <a  th:if="${inspectionChecklist?.inspectionGeneral?.inspectionReportApprovalStatus == null }" sec:authorize="hasAuthority('DI_OFFICER_CHARGE_MODIFY')" onclick="popUpFunctionUpload('disApproveBtn');" class="filter-link " style="background-color: red">Disapprove</a>
-<!--                                <a sec:authorize="hasAuthority('MINISTRY_OF_TRANSPORT_MODIFY')"  class="filter-link" style="color: white" onclick="popUpFunctionUpload('uploadBtn');">Upload Filled Report</a>-->
+                                <!--                                <a sec:authorize="hasAuthority('MINISTRY_OF_TRANSPORT_MODIFY')"  class="filter-link" style="color: white" onclick="popUpFunctionUpload('uploadBtn');">Upload Filled Report</a>-->
                             </div>
 
                         </div>
@@ -320,14 +310,11 @@
 
                 </div>
             </div>
-        </div>
+        </section>
     </div>
 </div>
-<script src="https://d3e54v103j8qbb.cloudfront.net/js/jquery-3.4.1.min.220afd743d.js" type="text/javascript" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
-<script th:src="@{/assets/bootstrap3/js/bootstrap.js}" type="text/javascript"></script>
-<script src="../assets/js/webflow.js" type="text/javascript"></script>
-<script th:src="@{/js/spinner.js}" type="text/javascript"></script>
 
+<div th:replace="fragments/general-form.html :: scripts"></div>
 <script>
     document.onreadystatechange = function(){
         showSpinnerOnLoad(document)
