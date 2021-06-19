@@ -39,7 +39,7 @@ import {EffectsModule} from "@ngrx/effects";
     StoreDevtoolsModule.instrument({
       name: 'Blog Store DevTools',
       logOnly: environment.production
-    })
+    }),
 
   ],
   providers: [

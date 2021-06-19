@@ -1,5 +1,3 @@
-import {User} from "../users";
-
 export interface Company {
   name: string;
   kraPin: string;
@@ -21,20 +19,4 @@ export interface Company {
 
 }
 
-export interface RegistrationPayload {
-  company: Company;
-  user: User;
-}
 
-export interface BrsLookUpRequest{
- registrationNumber: String;
-  directorIdNumber: String;
-}
-
-export interface SendTokenToPhone{
-  phone: string;
-}
-export interface ValidateTokenAndPhone{
-  phone: string;
-  token: string;
-}
