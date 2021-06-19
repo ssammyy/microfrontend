@@ -17,7 +17,7 @@ export class ApiEndpointService {
    * Map of domains for API endpoints.
    */
   public static DOMAIN = {
-    LOCAL_DEV: 'localhost:9026'
+    LOCAL_DEV: 'localhost:8006'
   };
 
   /**
@@ -29,7 +29,7 @@ export class ApiEndpointService {
    * Map of contexts for API endpoints.
    */
   public static AUTH_CONTEXT = 'auth';
-  public static ANONYMOUS_CONTEXT = '/api/vi/migration/anonymous';
+  public static ANONYMOUS_CONTEXT = '/api/v1/migration/anonymous';
   public static USER_CONTEXT = 'user';
   public static MASTERS_CONTEXT = 'api/masters/v1';
   public static ADMIN_CONTEXT = 'api/admin/v1';
@@ -52,6 +52,11 @@ export class ApiEndpointService {
     SEND_TOKEN: `${ApiEndpointService.ANONYMOUS_CONTEXT}/sendToken`,
     VALIDATE_TOKEN: `${ApiEndpointService.ANONYMOUS_CONTEXT}/validateToken`,
     REGISTER_COMPANY: `${ApiEndpointService.ANONYMOUS_CONTEXT}/registerCompany`,
+    REGIONS_LIST: `${ApiEndpointService.ANONYMOUS_CONTEXT}/regions`,
+    COUNTY_LIST: `${ApiEndpointService.ANONYMOUS_CONTEXT}/county`,
+    TOWN_LIST: `${ApiEndpointService.ANONYMOUS_CONTEXT}/towns`,
+    BUSINESS_LINES_LIST: `${ApiEndpointService.ANONYMOUS_CONTEXT}/businessLines`,
+    BUSINESS_NATURES_LIST: `${ApiEndpointService.ANONYMOUS_CONTEXT}/businessNatures`,
     COMPANY_DETAILS: `${ApiEndpointService.USER_CONTEXT}/company/details`,
     ADMIN_ROLES: `${ApiEndpointService.ADMIN_CONTEXT}/roles/`,
     ADMIN_ROLES_BY_STATUS: `${ApiEndpointService.ADMIN_CONTEXT}/access/roles`,

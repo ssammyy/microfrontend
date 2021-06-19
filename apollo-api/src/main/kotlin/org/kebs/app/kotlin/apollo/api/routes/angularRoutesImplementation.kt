@@ -10,12 +10,12 @@ import org.springframework.web.servlet.function.router
 @Configuration
 class AngularRoutes{
     @Bean
-    fun registrationRoutes(handler: RegistrationHandler, otherHandler:MasterDataHandler)= router {
-        "/api/vi/migration/".nest {
+    fun migrationRegistrationRoutes(handler: RegistrationHandler, otherHandler: MasterDataHandler) = router {
+        "/api/v1/migration/".nest {
             "anonymous".nest {
                 "/validateBrs".nest {
-                    GET("", handler::handleValidateAgainstBrs)
-                    POST("", otherHandler::notSupported)
+                    GET("", otherHandler::notSupported)
+                    POST("", handler::handleValidateAgainstBrs)
                     "/{id}".nest {
                         GET("", otherHandler::notSupported)
                         PUT("", otherHandler::notSupported)
@@ -23,8 +23,8 @@ class AngularRoutes{
 
                 }
                 "/sendToken".nest {
-                    GET("", handler::handleSendValidationTokenToCellphoneNumber)
-                    POST("", otherHandler::notSupported)
+                    GET("", otherHandler::notSupported)
+                    POST("", handler::handleSendValidationTokenToCellphoneNumber)
                     "/{id}".nest {
                         GET("", otherHandler::notSupported)
                         PUT("", otherHandler::notSupported)
@@ -32,8 +32,8 @@ class AngularRoutes{
 
                 }
                 "/validateToken".nest {
-                    GET("", handler::handleValidatePhoneNumberAndToken)
-                    POST("", otherHandler::notSupported)
+                    POST("", handler::handleValidatePhoneNumberAndToken)
+                    GET("", otherHandler::notSupported)
                     "/{id}".nest {
                         GET("", otherHandler::notSupported)
                         PUT("", otherHandler::notSupported)
@@ -41,8 +41,8 @@ class AngularRoutes{
 
                 }
                 "/registerCompany".nest {
-                    GET("", handler::handleRegisterCompany)
-                    POST("", otherHandler::notSupported)
+                    POST("", handler::handleRegisterCompany)
+                    GET("", otherHandler::notSupported)
                     "/{id}".nest {
                         GET("", otherHandler::notSupported)
                         PUT("", otherHandler::notSupported)
@@ -53,9 +53,10 @@ class AngularRoutes{
         }
 
     }
+
     @Bean
-    fun masterDataNgrxRoutes(handler: MasterDataHandler)= router {
-        "/api/vi/migration/anonymous".nest {
+    fun migrationMasterDataNgrxRoutes(handler: MasterDataHandler) = router {
+        "/api/v1/migration/anonymous".nest {
             "/regions".nest {
                 GET("", handler::regionsListing)
                 POST("", handler::notSupported)

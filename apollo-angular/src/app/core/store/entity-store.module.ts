@@ -17,6 +17,21 @@ export const entityMetadata: EntityMetadataMap = {
   ValidateTokenAndPhone: {
     filterFn: activeFilter,
   },
+  BusinessNatures: {
+    filterFn: activeFilter,
+  },
+  BusinessLines: {
+    filterFn: activeFilter,
+  },
+  Region: {
+    filterFn: activeFilter,
+  },
+  County: {
+    filterFn: activeFilter,
+  },
+  Town: {
+    filterFn: activeFilter,
+  },
 };
 
 export const entityConfig: EntityDataModuleConfig = {
@@ -42,6 +57,26 @@ export const defaultDataServiceConfig: DefaultDataServiceConfig = {
     ValidateTokenAndPhone: {
       entityResourceUrl: ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.VALIDATE_TOKEN),
       collectionResourceUrl: ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.VALIDATE_TOKEN)
+    },
+    BusinessNatures: {
+      entityResourceUrl: ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.BUSINESS_NATURES_LIST),
+      collectionResourceUrl: ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.BUSINESS_NATURES_LIST)
+    },
+    BusinessLines: {
+      entityResourceUrl: ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.BUSINESS_LINES_LIST),
+      collectionResourceUrl: ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.BUSINESS_LINES_LIST)
+    },
+    Region: {
+      entityResourceUrl: ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.REGIONS_LIST),
+      collectionResourceUrl: ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.REGIONS_LIST)
+    },
+    County: {
+      entityResourceUrl: ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.COUNTY_LIST),
+      collectionResourceUrl: ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.COUNTY_LIST)
+    },
+    Town: {
+      entityResourceUrl: ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.TOWN_LIST),
+      collectionResourceUrl: ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.TOWN_LIST)
     },
   }
 }
