@@ -1,0 +1,12 @@
+GET http://localhost:80/api/item?id=99
+Accept: application/json
+
+###
+
+POST https://localhost:8006/api/v1/migration/anonymous/validateBrs
+Content-Type: application/json
+
+{
+  "registrationNumber": "1232435",
+  "directorIdNumber": "12345556"
+}

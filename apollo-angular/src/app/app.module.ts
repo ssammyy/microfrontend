@@ -12,6 +12,7 @@ import {CoreModule} from "./core/core.module";
 import {ReactiveFormsModule} from "@angular/forms";
 import {ToastrModule} from "ngx-toastr";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
+import {SharedModule} from "./core/shared/shared.module";
 
 
 @NgModule({
@@ -31,7 +32,8 @@ import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
       positionClass: 'toast-top-right',
       preventDuplicates: true,
     }),
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    SharedModule
   ],
   providers: [
     {provide: APP_BASE_HREF, useValue: '/'}

@@ -1088,7 +1088,7 @@ class SystemsAdminDaoService(
                     return UserCompanyEntityDto().apply {
                         name = brs.businessName
                         kraPin = brs.kraPin
-                        userId = null
+                        directorIdNumber = request.directorIdNumber
                         profileType = applicationMapProperties.mapUserRequestManufacture
                         registrationNumber = brs.registrationNumber
                         postalAddress = brs.postalAddress
@@ -1102,12 +1102,9 @@ class SystemsAdminDaoService(
                         buildingName = null
                         directorIdNumber = null
                         streetName = null
-                        factoryVisitDate = null
-                        factoryVisitStatus = null
                         county = null
                         town = null
                         region = null
-                        manufactureStatus = 1
 
                     }
 

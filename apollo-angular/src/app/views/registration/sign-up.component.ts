@@ -2,15 +2,26 @@ import {Component, OnInit} from '@angular/core';
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {
   BrsLookUpRequest,
+  BusinessLines,
+  BusinessLinesService,
+  BusinessNatures,
+  BusinessNaturesService,
   Company,
+  County,
+  CountyService,
   loadBrsValidations,
   loadResponsesFailure,
+  Region,
+  RegionService,
   RegistrationPayloadService,
   selectBrsValidationCompany,
   selectBrsValidationStep,
+  Town,
+  TownService,
   User
 } from "../../core/store";
 import {select, Store} from "@ngrx/store";
+import {Observable} from "rxjs";
 
 @Component({
   selector: 'app-sign-up',
@@ -31,12 +42,39 @@ export class SignUpComponent implements OnInit {
   userSoFar: Partial<User> | undefined;
   // @ts-ignore
   brsLookupRequest: BrsLookUpRequest;
+  businessLines$: Observable<BusinessLines[]>;
+  businessNatures$: Observable<BusinessNatures[]>;
+  region$: Observable<Region[]>;
+  county$: Observable<County[]>;
+  town$: Observable<Town[]>;
+  selectedBusinessLine: number = 0;
+  selectedBusinessNature: number = 0;
+  selectedRegion: number = 0;
+  selectedCounty: number = 0;
+  selectedTown: number = 0;
 
 
   constructor(
     private service: RegistrationPayloadService,
+    private linesService: BusinessLinesService,
+    private naturesService: BusinessNaturesService,
+    private regionService: RegionService,
+    private countyService: CountyService,
+    private townService: TownService,
     private store$: Store<any>,
   ) {
+    this.businessNatures$ = naturesService.entities$;
+    this.businessLines$ = linesService.entities$;
+    this.region$ = regionService.entities$;
+    this.county$ = countyService.entities$;
+    this.town$ = townService.entities$
+    regionService.getAll().subscribe();
+    countyService.getAll().subscribe();
+    townService.getAll().subscribe();
+    naturesService.getAll().subscribe();
+    linesService.getAll().subscribe();
+
+
   }
 
   ngOnInit(): void {
@@ -45,7 +83,7 @@ export class SignUpComponent implements OnInit {
       directorIdNumber: new FormControl(),
     });
     this.stepOneForm = new FormGroup({
-      name: new FormControl(),
+      name: new FormControl('', [Validators.required]),
       registrationNumber: new FormControl('', [Validators.required]),
       kraPin: new FormControl('', [Validators.required]),
       yearlyTurnover: new FormControl('', [Validators.required]),
@@ -77,6 +115,27 @@ export class SignUpComponent implements OnInit {
       credentials: new FormControl('', [Validators.required]),
       confirmCredentials: new FormControl('', [Validators.required]),
     });
+
+  }
+
+  updateSelectedRegion() {
+    this.selectedRegion = this.stepOneForm?.get('region')?.value;
+  }
+
+  updateSelectedCounty() {
+    this.selectedCounty = this.stepOneForm?.get('county')?.value;
+  }
+
+  updateSelectedTown() {
+    this.selectedTown = this.stepOneForm?.get('town')?.value;
+  }
+
+  updateSelectedBusinessLine() {
+    this.selectedBusinessLine = this.stepOneForm?.get('businessLines')?.value;
+  }
+
+  updateSelectedBusinessNatures() {
+    this.selectedBusinessNature = this.stepOneForm?.get('businessNatures')?.value;
   }
 
   onClickBrsLookup(valid: boolean) {
@@ -111,6 +170,14 @@ export class SignUpComponent implements OnInit {
 
   }
 
+  onClickPrevious() {
+    if (this.step > 1) {
+      this.step = this.step - 1
+    } else {
+      this.step = 1
+    }
+  }
+
   onClickNext(valid: boolean) {
     if (valid) {
       switch (this.step) {
@@ -131,4 +198,6 @@ export class SignUpComponent implements OnInit {
     }
 
   }
+
+
 }

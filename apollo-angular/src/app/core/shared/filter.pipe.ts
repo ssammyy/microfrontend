@@ -5,7 +5,8 @@ import {Pipe, PipeTransform} from '@angular/core';
 })
 export class FilterPipe implements PipeTransform {
 
-  private static checkValue({item, key, value}: { item: any, key: any, value: any }): boolean {
+  // @ts-ignore
+  private static checkValue(item, key, value): boolean {
     if (!item || !key || !value || value === '') {
       return true;
     } else {
@@ -23,35 +24,34 @@ export class FilterPipe implements PipeTransform {
     // clean undefined object properties
     Object.keys(filter).forEach(key => !filter[key] && delete filter[key]);
 
-    return this.checkComplexType({values: items, filter: filter});
+    return this.checkComplexType(items, filter);
   }
 
-  private checkComplexType({values, filter}: { values: any, filter: any }): any {
+  // @ts-ignore
+  private checkComplexType(values, filter): any {
     if (!values || !filter || Object.entries(filter).length === 0) {
       return values;
     }
-    const result: any[] = [];
+    // @ts-ignore
+    const result = [];
 
     // find in all records
     // @ts-ignore
-    values.forEach((row: any) => {
+    values.forEach(row => {
       let match = false;
       // find in all filters in the object of filters
       for (const [key, value] of Object.entries(filter)) {
-        match = FilterPipe.checkValue({item: row, key: key, value: value});
+        match = FilterPipe.checkValue(row, key, value);
         if (!match) {
           return false;
-        }else{
-          return true;
         }
       }
       if (match) {
         result.push(row); // add row in return
-        return true;
       }
     });
 
+    // @ts-ignore
     return result;
   }
-
 }

@@ -736,7 +736,7 @@ class MasterDataHandler(
     }
 
     @PreAuthorize("isAnonymous()")
-    fun notSupported(req: ServerRequest):ServerResponse = badRequest().body("Invalid Request")
+    fun notSupported(req: ServerRequest): ServerResponse = badRequest().body("Invalid Request: Not supported")
 
     @PreAuthorize("isAnonymous()")
     fun businessLinesListing(req: ServerRequest): ServerResponse {
