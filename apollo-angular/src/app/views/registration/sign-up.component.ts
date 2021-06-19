@@ -2,13 +2,15 @@ import {Component, OnInit} from '@angular/core';
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {
   BrsLookUpRequest,
-  BrsLookUpRequestService,
   Company,
+  loadBrsValidations,
   loadResponsesFailure,
   RegistrationPayloadService,
+  selectBrsValidationCompany,
+  selectBrsValidationStep,
   User
 } from "../../core/store";
-import {Store} from "@ngrx/store";
+import {select, Store} from "@ngrx/store";
 
 @Component({
   selector: 'app-sign-up',
@@ -33,10 +35,8 @@ export class SignUpComponent implements OnInit {
 
   constructor(
     private service: RegistrationPayloadService,
-    private lookUpService: BrsLookUpRequestService,
     private store$: Store<any>,
   ) {
-    service.getAll().subscribe();
   }
 
   ngOnInit(): void {
@@ -83,13 +83,21 @@ export class SignUpComponent implements OnInit {
     if (valid) {
       this.brsLookupRequest = this.stepZeroForm.value;
       console.log(`Sending ${JSON.stringify(this.brsLookupRequest)}`)
-      this.lookUpService.add({
-        registrationNumber: this.brsLookupRequest?.registrationNumber,
-        directorIdNumber: this.brsLookupRequest?.directorIdNumber
+      this.store$.dispatch(loadBrsValidations({payload: this.brsLookupRequest}));
+      this.store$.pipe(select(selectBrsValidationStep)).subscribe((step: number) => {
+        console.log(`step inside is ${step}`)
+        return this.step = step;
       });
-      this.step = 1;
+      this.store$.pipe(
+        select(selectBrsValidationCompany)).subscribe((record: Company) => {
+        this.stepOneForm.patchValue(record);
+        this.stepTwoForm.patchValue(record);
+        this.stepThreeForm.patchValue(record);
+        this.stepFourForm.patchValue(record);
+        this.companySoFar = record;
+      });
 
-
+      console.log(`step after is ${this.step}`)
     } else {
       this.store$.dispatch(loadResponsesFailure({
         error: {
@@ -107,7 +115,7 @@ export class SignUpComponent implements OnInit {
     if (valid) {
       switch (this.step) {
         case 1:
-          this.companySoFar = this.stepOneForm?.value;
+          this.companySoFar = {...this.companySoFar, ...this.stepOneForm?.value};
           break;
         case 2:
           this.companySoFar = {...this.companySoFar, ...this.stepTwoForm?.value};
