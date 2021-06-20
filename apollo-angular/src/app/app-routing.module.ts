@@ -3,6 +3,7 @@ import {RouterModule, Routes} from '@angular/router';
 import {RegistrationComponent} from './views/registration.component';
 import {LoginComponent} from './views/registration/login.component';
 import {SignUpComponent} from './views/registration/sign-up.component';
+import {DashboardComponent} from "./views/dashboard/dashboard.component";
 
 
 const routes: Routes = [
@@ -29,10 +30,10 @@ const routes: Routes = [
     }
   },
   {
-    path: 'login',
-    component: LoginComponent,
+    path: 'dashboard',
+    component: DashboardComponent,
     data: {
-      title: 'Login Page'
+      title: 'KEBS: Home Page'
     }
   },
 

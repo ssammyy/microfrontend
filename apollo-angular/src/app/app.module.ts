@@ -13,6 +13,7 @@ import {ReactiveFormsModule} from "@angular/forms";
 import {ToastrModule} from "ngx-toastr";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {SharedModule} from "./core/shared/shared.module";
+import {DashboardComponent} from './views/dashboard/dashboard.component';
 
 
 @NgModule({
@@ -20,7 +21,8 @@ import {SharedModule} from "./core/shared/shared.module";
     AppComponent,
     LoginComponent,
     RegistrationComponent,
-    SignUpComponent
+    SignUpComponent,
+    DashboardComponent
   ],
   imports: [
     BrowserModule,

@@ -28,7 +28,7 @@ export class ApiEndpointService {
   /**
    * Map of contexts for API endpoints.
    */
-  public static AUTH_CONTEXT = 'auth';
+  public static AUTH_CONTEXT = '/api/v1/login';
   public static ANONYMOUS_CONTEXT = '/api/v1/migration/anonymous';
   public static USER_CONTEXT = 'user';
   public static MASTERS_CONTEXT = 'api/masters/v1';
@@ -46,7 +46,8 @@ export class ApiEndpointService {
     REQUEST_RESET: `${ApiEndpointService.AUTH_CONTEXT}/reset/request`,
     RESET: `${ApiEndpointService.AUTH_CONTEXT}/reset/do`,
     BEER: 'beer/',
-    USER_DETAILS: `${ApiEndpointService.USER_CONTEXT}/details`,
+    USER_DETAILS: `${ApiEndpointService.AUTH_CONTEXT}/details`,
+    LOGIN_PAGE: `${ApiEndpointService.AUTH_CONTEXT}`,
     VALIDATE_BRS: `${ApiEndpointService.ANONYMOUS_CONTEXT}/validateBrs`,
     HOME_PAGE: `${ApiEndpointService.ANONYMOUS_CONTEXT}`,
     SEND_TOKEN: `${ApiEndpointService.ANONYMOUS_CONTEXT}/sendToken`,

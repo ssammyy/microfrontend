@@ -1,17 +1,27 @@
 <h2 class="welcome">
-    Welcome Back
+  Welcome Back
 </h2>
-<p class="input-placeholder">
+<form (ngSubmit)="onClickLogin(loginForm.valid)" [formGroup]="loginForm" action="" class="form"
+      enctype="multipart/form-data" method="post">
+  <p class="input-placeholder">
     Email or Mobile Number
-</p>
-<input type="text" class="login-form-inputs">
-<p class="input-placeholder">
+  </p>
+  <input class="login-form-inputs" formControlName="username" id="username" name="username"
+         placeholder="The username"
+         required="required" type="text">
+  <p class="input-placeholder">
     Password
-</p>
-<input type="text" class="login-form-inputs">
-<p></p>
-<button type="button" value="" class="login-button"><a href="dashboard.html" class="login-ref">LOG IN</a></button>
+  </p>
+  <input class="login-form-inputs" formControlName="password" id="password" name="password"
+         required="required"
+         type="password">
+  <p></p>
+  <button class="login-button" type="submit" value="">LOG IN</button>
+
+
+</form>
+
 <br>
-<a href="http://" class="reset-credentials">Forgot Username / Password</a>
+<a class="reset-credentials" href="#">Forgot Username / Password</a>
 <br>
-<a href="/register" routerLink="/register" class="reset-credentials">Sign Up</a>
+<a class="reset-credentials" href="#" routerLink="/register">Sign Up</a>
