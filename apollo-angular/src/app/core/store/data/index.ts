@@ -6,3 +6,4 @@ export * from './region';
 export * from './county';
 export * from './town';
 export * from './route';
+export * from './auth';

@@ -1,4 +1,6 @@
 import {
+  AuthEffects,
+  authReducer,
   brsValidationReducer,
   RegistrationEffects,
   registrationReducer,
@@ -17,14 +19,16 @@ export const appReducer = {
   brsValidation: brsValidationReducer,
   sendTokenToPhone: sendTokenToPhoneReducer,
   validateTokenAndPhone: validateTokenAndPhoneReducer,
-  registration: registrationReducer
+  registration: registrationReducer,
+  auth: authReducer
 };
 
 export function localStorageSyncReducer(reducer: ActionReducer<any>): ActionReducer<any> {
   return localStorageSync({
     keys: [
       'responses',
-      'routes'
+      'routes',
+      'auth'
     ],
     rehydrate: true,
     storage: sessionStorage
@@ -33,4 +37,4 @@ export function localStorageSyncReducer(reducer: ActionReducer<any>): ActionRedu
 
 export const metaReducers: Array<MetaReducer<any, any>> = [localStorageSyncReducer];
 
-export const appEffects = [RegistrationEffects, RouterEffects];
+export const appEffects = [RegistrationEffects, RouterEffects, AuthEffects];
