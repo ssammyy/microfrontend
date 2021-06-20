@@ -218,6 +218,14 @@ class UsersEntity : Serializable {
     @Basic
     var title: Long? = null
 
+    @Column(name = "COMPANY_ID")
+    @Basic
+    var companyId: Long? = null
+
+    @Column(name = "PLANT_ID")
+    @Basic
+    var plantId: Long? = null
+
 //    override fun toString(): String {
 //
 //        return "UsersEntity(id=$id, userUuid=$userUuid,personalContactNumber=$personalContactNumber, workContactNumber=$workContactNumber,firstName=$firstName, lastName=$lastName, userName=$userName, confirmUserType=$confirmUserType, email=$email, enabled=$enabled, userProfileStatus=$userProfileStatus, accountExpired=$accountExpired, accountLocked=$accountLocked, credentialsExpired=$credentialsExpired, status=$status, registrationDate=$registrationDate, approvedDate=$approvedDate, varField1=$varField1, varField2=$varField2, varField3=$varField3, varField4=$varField4, varField5=$varField5, varField6=$varField6, varField7=$varField7, varField8=$varField8, varField9=$varField9, varField10=$varField10, createdBy=$createdBy, createdOn=$createdOn, modifiedBy=$modifiedBy, modifiedOn=$modifiedOn, deleteBy=$deleteBy, deletedOn=$deletedOn, userTypes=$userTypes, roleId=$roleId, title=$title)"

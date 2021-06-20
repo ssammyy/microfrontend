@@ -1,10 +1,11 @@
 import {createAction, props} from '@ngrx/store';
 import {ApiResponse} from "../../../../domain/response.model";
 import {Company} from "../company.model";
-import {BrsLookUpRequest, SendTokenToPhone, ValidateTokenAndPhone} from "./registration.models";
+import {BrsLookUpRequest, RegistrationPayload, SendTokenToPhone, ValidateTokenAndPhone} from "./registration.models";
 
 export const loadRegistrations = createAction(
-  '[Registration] Load Registrations'
+  '[Registration] doRegisterCompany',
+  props<{ payload: RegistrationPayload }>()
 );
 export const loadBrsValidations = createAction(
   '[BrsValidation] Load Brs Validations',
@@ -21,7 +22,7 @@ export const loadValidateTokenAndPhone = createAction(
 
 export const loadRegistrationsSuccess = createAction(
   '[Registration] Load Registrations Success',
-  props<{ data: ApiResponse }>()
+  props<{ data: ApiResponse, succeeded: boolean }>()
 );
 export const loadBrsValidationsSuccess = createAction(
   '[BrsValidation] Load Brs Validations Success',

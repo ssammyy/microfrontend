@@ -1381,7 +1381,7 @@ class RegistrationDaoServices(
                                             kraPin = record?.kraPin
                                             businessName = record?.businessName
                                             brsStatus = record?.status
-                                            status = 1
+                                            status = 30
                                             createdBy = log.transactionReference
                                             createdOn = Timestamp.from(Instant.now())
                                         }

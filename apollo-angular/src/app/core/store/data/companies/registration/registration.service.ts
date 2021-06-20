@@ -3,7 +3,7 @@ import {HttpClient, HttpErrorResponse} from "@angular/common/http";
 import {Observable, throwError} from "rxjs";
 import {ApiEndpointService} from "../../../../services/endpoints/api-endpoint.service";
 import {catchError, map} from "rxjs/operators";
-import {BrsLookUpRequest, SendTokenToPhone, ValidateTokenAndPhone} from "./registration.models";
+import {BrsLookUpRequest, RegistrationPayload, SendTokenToPhone, ValidateTokenAndPhone} from "./registration.models";
 import {Company} from "../company.model";
 import {ApiResponse} from "../../../../domain/response.model";
 
@@ -30,6 +30,19 @@ export class RegistrationService {
 
   public sendTokenToPhone(data: SendTokenToPhone): Observable<ApiResponse> {
     const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.SEND_TOKEN);
+    return this.http.post<ApiResponse>(url, data).pipe(
+      map(function (response: ApiResponse) {
+        return response;
+      }),
+      catchError((fault: HttpErrorResponse) => {
+        // console.warn(`getAllFault( ${fault.message} )`);
+        return throwError(fault);
+      })
+    );
+  }
+
+  public registerCompany(data: RegistrationPayload): Observable<ApiResponse> {
+    const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.REGISTER_COMPANY);
     return this.http.post<ApiResponse>(url, data).pipe(
       map(function (response: ApiResponse) {
         return response;

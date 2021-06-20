@@ -37,7 +37,7 @@ import {EffectsModule} from "@ngrx/effects";
      * See: https://github.com/zalmoxisus/redux-devtools-extension
      */
     StoreDevtoolsModule.instrument({
-      name: 'Blog Store DevTools',
+      name: 'KEBS KIMS Service Tool',
       logOnly: environment.production
     }),
 

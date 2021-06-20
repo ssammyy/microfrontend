@@ -4,6 +4,8 @@ import {Company} from "../company.model";
 import {
   loadBrsValidationsFailure,
   loadBrsValidationsSuccess,
+  loadRegistrationsFailure,
+  loadRegistrationsSuccess,
   loadSendTokenToPhoneFailure,
   loadSendTokenToPhoneSuccess,
   loadValidateTokenAndPhoneFailure,
@@ -15,6 +17,11 @@ export const registrationFeatureKey = 'registration';
 export const brsValidationStateFeatureKey = 'brsValidation';
 export const sendTokenToPhoneStateFeatureKey = 'sendTokenToPhone';
 export const validateTokenAndPhoneStateFeatureKey = 'validateTokenAndPhone';
+
+export interface RegistrationState {
+  response: ApiResponse;
+  succeeded: boolean
+}
 
 export interface BrsValidationState {
   response: ApiResponse;
@@ -33,6 +40,10 @@ export interface ValidateTokenAndPhoneState {
   validated: boolean;
 }
 
+export const initialRegistrationState: RegistrationState = {
+  response: {response: '', status: 0, payload: null},
+  succeeded: false
+}
 export const initialSendTokenToPhoneState: SendTokenToPhoneState = {
   response: {response: '', status: 0, payload: null},
   validated: false
@@ -67,6 +78,23 @@ export const initialBrsValidationState: BrsValidationState = {
   step: 0
 
 };
+
+const registrationReducerInternal = createReducer(
+  initialRegistrationState,
+  on(loadRegistrationsSuccess, (state, {data, succeeded}) => {
+    return {
+      ...state,
+      data,
+      succeeded
+    };
+  }),
+  on(loadRegistrationsFailure, (state, {error}) => {
+    return {
+      ...state,
+      error,
+    };
+  }),
+);
 
 const sendTokenToPhoneStateReducerInternal = createReducer(
   initialSendTokenToPhoneState,
@@ -119,6 +147,10 @@ const validateTokenAndPhoneReducerInternal = createReducer(
   }),
 );
 
+
+export function registrationReducer(state: RegistrationState, action: Action): RegistrationState {
+  return registrationReducerInternal(state, action);
+}
 
 export function brsValidationReducer(state: BrsValidationState, action: Action): BrsValidationState {
   return brsValidationReducerInternal(state, action);

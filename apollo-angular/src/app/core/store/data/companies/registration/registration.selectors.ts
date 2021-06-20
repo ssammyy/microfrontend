@@ -2,14 +2,19 @@ import {createFeatureSelector, createSelector} from '@ngrx/store';
 import {
   BrsValidationState,
   brsValidationStateFeatureKey,
+  registrationFeatureKey,
+  RegistrationState,
   SendTokenToPhoneState,
+  sendTokenToPhoneStateFeatureKey,
   ValidateTokenAndPhoneState,
   validateTokenAndPhoneStateFeatureKey
 } from "./registration.reducer";
 
+export const getRegistrationFeatureState = createFeatureSelector<RegistrationState>(registrationFeatureKey);
 export const getBrsValidationFeatureState = createFeatureSelector<BrsValidationState>(brsValidationStateFeatureKey);
 export const getValidateTokenAndPhoneFeatureState = createFeatureSelector<ValidateTokenAndPhoneState>(validateTokenAndPhoneStateFeatureKey);
-export const getSendTokenToPhoneFeatureState = createFeatureSelector<SendTokenToPhoneState>(validateTokenAndPhoneStateFeatureKey);
+export const getSendTokenToPhoneFeatureState = createFeatureSelector<SendTokenToPhoneState>(sendTokenToPhoneStateFeatureKey);
+
 export const selectBrsValidationCompany = createSelector(
   getBrsValidationFeatureState,
   (state: BrsValidationState) => state.data
@@ -34,5 +39,9 @@ export const selectSendTokenToPhoneStateResponse = createSelector(
 export const selectSendTokenToPhoneStateSent = createSelector(
   getSendTokenToPhoneFeatureState,
   (state: SendTokenToPhoneState) => state.validated
+)
+export const selectRegistrationStateSucceeded = createSelector(
+  getRegistrationFeatureState,
+  (state: RegistrationState) => state.succeeded
 )
 

@@ -5,6 +5,8 @@ import {Observable, of} from "rxjs";
 import {
   loadBrsValidations,
   loadBrsValidationsSuccess,
+  loadRegistrations,
+  loadRegistrationsSuccess,
   loadSendTokenToPhone,
   loadSendTokenToPhoneSuccess,
   loadValidateTokenAndPhone,
@@ -54,6 +56,38 @@ export class RegistrationEffects {
               if (data.status == 200) {
                 return [
                   loadSendTokenToPhoneSuccess({data: data, validated: true})
+                ];
+              } else {
+                return [
+                  loadResponsesFailure({error: data})
+                ];
+              }
+            }),
+            catchError(
+              (err: HttpErrorResponse) => of(loadResponsesFailure({
+                error: {
+                  payload: err.error,
+                  status: err.status,
+                  response: (err.error instanceof ErrorEvent) ? `Error: ${err.error.message}` : `Error Code: ${err.status},  Message: ${err.error}`
+                }
+              })))
+          )
+        )
+      ),
+    {dispatch: true}
+  );
+
+
+  doRegisterCompany: Observable<Action> = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(loadRegistrations),
+        switchMap((action) => this.service.registerCompany(action.payload)
+          .pipe(
+            mergeMap((data) => {
+              if (data.status == 200) {
+                return [
+                  loadRegistrationsSuccess({data: data, succeeded: true})
                 ];
               } else {
                 return [
