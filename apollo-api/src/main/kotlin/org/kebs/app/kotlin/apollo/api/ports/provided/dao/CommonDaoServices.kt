@@ -454,7 +454,7 @@ class CommonDaoServices(
     fun returnValues(
         result: ServiceRequestsEntity,
         map: ServiceMapsEntity,
-        sm: CommonDaoServices.MessageSuccessFailDTO
+        sm: MessageSuccessFailDTO
     ): String? {
         return when (result.status) {
             map.successStatus -> "${successLink}?message=${sm.message}&closeLink=${sm.closeLink}"
@@ -1558,7 +1558,7 @@ class CommonDaoServices(
     fun validateOTPToken(token: String, phoneNumber: String?): CustomResponse {
         val result = CustomResponse()
         try {
-            emailVerificationTokenEntityRepo.findFirstByTokenOrderByIdDesc(token)
+            emailVerificationTokenEntityRepo.findFirstByTokenAndStatusOrderByIdDesc(token, 10)
                 ?.let { verificationToken ->
                     if (verificationToken.email != phoneNumber) throw InvalidValueException("Invalid Token provided")
 
@@ -1590,13 +1590,18 @@ class CommonDaoServices(
                         }
                         ?: throw InvalidValueException("Verification Token without a valid expiry found")
                 }
-                ?: throw NullValueNotAllowedException("Invalid Token")
+                ?: throw NullValueNotAllowedException("Invalid Token, validation failed")
 
         } catch (e: Exception) {
+            KotlinLogging.logger { }.debug(e.message, e)
+            KotlinLogging.logger { }.error(e.message)
+            return CustomResponse().apply {
+                payload = e.message
+                status = 500
+                response = "99"
+            }
 
         }
-
-        return result
     }
 
     fun generateVerificationToken(input: String, phone: String): EmailVerificationTokenEntity {
@@ -1619,8 +1624,7 @@ class CommonDaoServices(
         try {
             val phone = token.email ?: throw NullValueNotAllowedException("Invalid phone number provided")
             val message = "Your verification code is ${token.token}"
-            var smsSent = false
-            smsSent = smsService.sendSms(phone, message)
+            val smsSent: Boolean = smsService.sendSms(phone, message)
             return if (smsSent) {
                 CustomResponse().apply {
                     payload = "OTP successfully sent"

@@ -1,17 +1,45 @@
 import {Action, createReducer, on} from '@ngrx/store';
 import {ApiResponse} from "../../../../domain/response.model";
 import {Company} from "../company.model";
-import {loadBrsValidationsFailure, loadBrsValidationsSuccess} from "./registration.actions";
+import {
+  loadBrsValidationsFailure,
+  loadBrsValidationsSuccess,
+  loadSendTokenToPhoneFailure,
+  loadSendTokenToPhoneSuccess,
+  loadValidateTokenAndPhoneFailure,
+  loadValidateTokenAndPhoneSuccess
+} from "./registration.actions";
 
 
 export const registrationFeatureKey = 'registration';
 export const brsValidationStateFeatureKey = 'brsValidation';
+export const sendTokenToPhoneStateFeatureKey = 'sendTokenToPhone';
+export const validateTokenAndPhoneStateFeatureKey = 'validateTokenAndPhone';
 
 export interface BrsValidationState {
   response: ApiResponse;
   data: Company;
   step: number;
 
+}
+
+export interface SendTokenToPhoneState {
+  response: ApiResponse;
+  validated: boolean;
+}
+
+export interface ValidateTokenAndPhoneState {
+  response: ApiResponse;
+  validated: boolean;
+}
+
+export const initialSendTokenToPhoneState: SendTokenToPhoneState = {
+  response: {response: '', status: 0, payload: null},
+  validated: false
+}
+export const initialValidateTokenAndPhoneState: ValidateTokenAndPhoneState = {
+  response: {response: '', status: 0, payload: null},
+  validated: false
 }
 
 
@@ -40,6 +68,22 @@ export const initialBrsValidationState: BrsValidationState = {
 
 };
 
+const sendTokenToPhoneStateReducerInternal = createReducer(
+  initialSendTokenToPhoneState,
+  on(loadSendTokenToPhoneSuccess, (state, {data, validated}) => {
+    return {
+      ...state,
+      data,
+      validated
+    };
+  }),
+  on(loadSendTokenToPhoneFailure, (state, {error}) => {
+    return {
+      ...state,
+      error,
+    };
+  }),
+);
 
 const brsValidationReducerInternal = createReducer(
   initialBrsValidationState,
@@ -58,8 +102,33 @@ const brsValidationReducerInternal = createReducer(
   }),
 );
 
+const validateTokenAndPhoneReducerInternal = createReducer(
+  initialValidateTokenAndPhoneState,
+  on(loadValidateTokenAndPhoneSuccess, (state, {data, validated}) => {
+    return {
+      ...state,
+      data,
+      validated
+    };
+  }),
+  on(loadValidateTokenAndPhoneFailure, (state, {error}) => {
+    return {
+      ...state,
+      error
+    };
+  }),
+);
+
 
 export function brsValidationReducer(state: BrsValidationState, action: Action): BrsValidationState {
   return brsValidationReducerInternal(state, action);
+}
+
+export function sendTokenToPhoneReducer(state: SendTokenToPhoneState, action: Action): SendTokenToPhoneState {
+  return sendTokenToPhoneStateReducerInternal(state, action);
+}
+
+export function validateTokenAndPhoneReducer(state: ValidateTokenAndPhoneState, action: Action): ValidateTokenAndPhoneState {
+  return validateTokenAndPhoneReducerInternal(state, action);
 }
 
