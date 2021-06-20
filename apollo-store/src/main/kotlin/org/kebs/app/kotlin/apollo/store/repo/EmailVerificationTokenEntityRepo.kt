@@ -5,4 +5,5 @@ import org.springframework.data.hazelcast.repository.HazelcastRepository
 
 interface EmailVerificationTokenEntityRepo : HazelcastRepository<EmailVerificationTokenEntity, Long> {
     fun findFirstByTokenOrderByIdDesc(token: String): EmailVerificationTokenEntity?
+    fun findFirstByTokenAndStatusOrderByIdDesc(token: String, status: Int): EmailVerificationTokenEntity?
 }

@@ -334,7 +334,7 @@
 
   </div>
   <div *ngSwitchCase="4">
-    <form (ngSubmit)="onClickNext(stepFourForm.valid)" [formGroup]="stepFourForm" action="" class="form"
+    <form (ngSubmit)="onClickRegisterCompany(stepFourForm.valid)" [formGroup]="stepFourForm" action="" class="form"
           enctype="multipart/form-data" method="post">
       <div class="container">
         <div class="row">
@@ -383,61 +383,50 @@
           </div>
           <div class="col">
             <div>
-              <label class="input-placeholder" for="region">
-                Region
+              <label class="input-placeholder" for="credentials">
+                Password
               </label>
               <br>
-              <ng-container *ngIf="region$ | async as apps">
-                <select (ngModelChange)="updateSelectedRegion()"
-                        formControlName="region" id="region"
-                        name="region" required="required">
-                  <option ngValue="null" selected>Please select</option>
-                  <option
-                    *ngFor="let app of apps| filterPipe: {status: true}"
-                    [ngValue]="app.id"
-                    class="dropdown-item">{{app.region}}</option>
-                </select>
-
-              </ng-container>
+              <input class="form-control two-column-input" formControlName="credentials" id="credentials"
+                     name="credentials"
+                     placeholder="enter password" required="required" type="password">
             </div>
             <div>
-              <label class="input-placeholder" for="county">
-                County
+              <label class="input-placeholder" for="confirmCredentials">
+                Confirm Password
               </label>
               <br>
-              <ng-container *ngIf="county$ | async as apps">
-                <select (ngModelChange)="updateSelectedBusinessLine()"
-                        formControlName="county" id="county"
-                        name="county" required="required">
-                  <option ngValue="null" selected>Please select</option>
-                  <option
-                    *ngFor="let app of apps| filterPipe: {status: true, regionId: selectedRegion}"
-                    [ngValue]="app.id"
-                    class="dropdown-item">{{app.county}}</option>
-                </select>
-
-              </ng-container>
+              <input class="form-control two-column-input" formControlName="confirmCredentials" id="confirmCredentials"
+                     name="confirmCredentials"
+                     placeholder="password confirmation" required="required" type="password">
             </div>
             <div>
-              <label class="input-placeholder" for="town">
-                Town
+              <label class="input-placeholder" for="cellphone">
+                Cellphone
               </label>
               <br>
-              <ng-container *ngIf="town$ | async as apps">
-                <select (ngModelChange)="updateSelectedBusinessLine()"
-                        formControlName="town" id="town"
-                        name="town" required="required">
-                  <option ngValue="null" selected>Please select</option>
-                  <option
-                    *ngFor="let app of apps| filterPipe: {status: true, countyId: selectedCounty}"
-                    [ngValue]="app.id"
-                    class="dropdown-item">{{app.town}}</option>
-                </select>
-
-              </ng-container>
+              <input class="form-control two-column-input" formControlName="cellphone" id="cellphone"
+                     name="cellphone"
+                     placeholder="The cellphone" required="required" type="tel">
+              <br>
+              <button (click)="onClickSendOtp()" class="login-button" type="button">Send OTP</button>
             </div>
+            <div>
+              <label class="input-placeholder" for="otp">
+                OTP
+              </label>
+              <br>
+              <input class="form-control two-column-input" formControlName="otp" id="otp"
+                     name="otp"
+                     placeholder="The OTP" required="required" type="text">
+              <br>
+              <button (click)="onClickValidateOtp()" class="login-button" type="button">Validate OTP</button>
+            </div>
+
 
           </div>
+
+
         </div>
         <br>
         <div class="row">
@@ -445,19 +434,18 @@
             <button (click)="onClickPrevious()" class="login-button" type="button">PREV</button>
           </div>
           <div class="col">
-            <button class="login-button" type="submit">NEXT</button>
+            <button class="login-button" type="submit">SAVE</button>
           </div>
 
 
         </div>
+
       </div>
-
-
     </form>
 
   </div>
   <br>
   <span class="input-placeholder">
-        Have an account? <a class="reset-credentials" href="/login" routerLink="/login">Login</a>
+        Have an account? <a class="reset-credentials" href="#" routerLink="/login">Login</a>
       </span>
 </div>

@@ -11,11 +11,15 @@ import {
   CountyService,
   loadBrsValidations,
   loadResponsesFailure,
+  loadSendTokenToPhone,
+  loadValidateTokenAndPhone,
   Region,
   RegionService,
   RegistrationPayloadService,
   selectBrsValidationCompany,
   selectBrsValidationStep,
+  selectSendTokenToPhoneStateSent,
+  selectValidateTokenAndPhoneValidated,
   Town,
   TownService,
   User
@@ -52,6 +56,9 @@ export class SignUpComponent implements OnInit {
   selectedRegion: number = 0;
   selectedCounty: number = 0;
   selectedTown: number = 0;
+  validationCellphone = '';
+  otpSent: boolean;
+  phoneValidated: boolean;
 
 
   constructor(
@@ -63,6 +70,8 @@ export class SignUpComponent implements OnInit {
     private townService: TownService,
     private store$: Store<any>,
   ) {
+    this.otpSent = false;
+    this.phoneValidated = false;
     this.businessNatures$ = naturesService.entities$;
     this.businessLines$ = linesService.entities$;
     this.region$ = regionService.entities$;
@@ -112,6 +121,7 @@ export class SignUpComponent implements OnInit {
       userName: new FormControl('', [Validators.required]),
       email: new FormControl('', [Validators.required]),
       cellphone: new FormControl('', [Validators.required]),
+      otp: new FormControl('', [Validators.required]),
       credentials: new FormControl('', [Validators.required]),
       confirmCredentials: new FormControl('', [Validators.required]),
     });
@@ -141,7 +151,7 @@ export class SignUpComponent implements OnInit {
   onClickBrsLookup(valid: boolean) {
     if (valid) {
       this.brsLookupRequest = this.stepZeroForm.value;
-      console.log(`Sending ${JSON.stringify(this.brsLookupRequest)}`)
+      // console.log(`Sending ${JSON.stringify(this.brsLookupRequest)}`)
       this.store$.dispatch(loadBrsValidations({payload: this.brsLookupRequest}));
       this.store$.pipe(select(selectBrsValidationStep)).subscribe((step: number) => {
         console.log(`step inside is ${step}`)
@@ -165,6 +175,78 @@ export class SignUpComponent implements OnInit {
           response: '05'
         }
       }));
+    }
+
+
+  }
+
+  onClickRegisterCompany(valid: boolean) {
+    if (valid) {
+      if (this.phoneValidated) {
+
+      } else {
+        this.store$.dispatch(loadResponsesFailure({
+          error: {
+            payload: 'Cellphone needs to be validated',
+            status: 100,
+            response: '05'
+          }
+        }));
+      }
+    } else {
+      this.store$.dispatch(loadResponsesFailure({
+        error: {
+          payload: 'Some required details are missing, kindly recheck',
+          status: 100,
+          response: '05'
+        }
+      }));
+
+    }
+
+  }
+
+  onClickValidateOtp() {
+    this.store$.dispatch(loadValidateTokenAndPhone({
+      payload: {
+        phone: this.stepFourForm?.get('cellphone')?.value,
+        token: this.stepFourForm?.get('otp')?.value,
+      }
+    }));
+    this.store$.pipe(select(selectValidateTokenAndPhoneValidated)).subscribe((d) => {
+      console.log(`status inside is ${d}`)
+      return this.phoneValidated = d;
+    });
+  }
+
+  onClickSendOtp() {
+    this.validationCellphone = this.stepFourForm?.get('cellphone')?.value
+
+    this.stepFourForm?.get('otp')?.reset()
+
+    if (
+      this.validationCellphone === '' ||
+      this.validationCellphone === null
+    ) {
+      this.store$.dispatch(loadResponsesFailure({
+        error: {
+          payload: 'Enter a valid cellphone number',
+          status: 100,
+          response: '05'
+        }
+      }));
+
+    } else {
+      this.store$.dispatch(loadSendTokenToPhone({
+        payload: {
+          phone: this.validationCellphone
+        }
+      }));
+
+      this.store$.pipe(select(selectSendTokenToPhoneStateSent)).subscribe((d) => {
+        console.log(`value of inside is ${d}`)
+        return this.otpSent = d;
+      });
     }
 
 
