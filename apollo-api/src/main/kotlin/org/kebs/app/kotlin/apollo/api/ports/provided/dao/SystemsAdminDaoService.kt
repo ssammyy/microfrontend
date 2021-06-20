@@ -1172,10 +1172,10 @@ class SystemsAdminDaoService(
         val result = CustomResponse()
         try {
             commonDaoServices.findCompanyProfileWithRegistrationNumber(
-                dto.organization.registrationNumber
+                dto.company.registrationNumber
                     ?: throw NullValueNotAllowedException("Registration Number is required")
             )
-                ?.let { throw ExpectedDataNotFound("The Company with this [Registration Number : ${dto.organization.registrationNumber}] already exists") }
+                ?.let { throw ExpectedDataNotFound("The Company with this [Registration Number : ${dto.company.registrationNumber}] already exists") }
                 ?: run {
 
                     val u = dto.user
@@ -1183,8 +1183,11 @@ class SystemsAdminDaoService(
                         firstName = u.firstName
                         lastName = u.lastName
                         email = u.email
-                        personalContactNumber =
-                            commonDaoServices.makeKenyanMSISDNFormat(dto.organization.companyTelephone)
+                        /**
+                         * TODO: Revisit number validation
+                         */
+                        personalContactNumber = dto.company.companyTelephone
+                        registrationDate = Date(java.util.Date().time)
                         typeOfUser = 1
                         title = u.title
                         email = u.email
@@ -1214,26 +1217,28 @@ class SystemsAdminDaoService(
 
 
                     var companyProfileEntity = CompanyProfileEntity().apply {
-                        name = dto.organization.name
-                        kraPin = dto.organization.kraPin
+                        name = dto.company.name
+                        kraPin = dto.company.kraPin
                         userId = user.id
 
-                        registrationNumber = dto.organization.registrationNumber
-                        postalAddress = dto.organization.postalAddress
-                        physicalAddress = dto.organization.physicalAddress
-                        plotNumber = dto.organization.plotNumber
-                        companyEmail = dto.organization.companyEmail
-                        companyTelephone = dto.organization.companyTelephone
-                        yearlyTurnover = dto.organization.yearlyTurnover
-                        businessLines = dto.organization.businessLines
-                        businessNatures = dto.organization.businessNatures
-                        buildingName = dto.organization.buildingName
-                        directorIdNumber = dto.organization.directorIdNumber
-                        streetName = dto.organization.streetName
-                        county = dto.organization.county
-                        town = dto.organization.town
-                        region = dto.organization.region
+                        registrationNumber = dto.company.registrationNumber
+                        postalAddress = dto.company.postalAddress
+                        physicalAddress = dto.company.physicalAddress
+                        plotNumber = dto.company.plotNumber
+                        companyEmail = dto.company.companyEmail
+                        companyTelephone = dto.company.companyTelephone
+                        yearlyTurnover = dto.company.yearlyTurnover
+                        businessLines = dto.company.businessLines
+                        businessNatures = dto.company.businessNatures
+                        buildingName = dto.company.buildingName
+                        directorIdNumber = dto.company.directorIdNumber
+                        streetName = dto.company.streetName
+                        county = dto.company.county
+                        town = dto.company.town
+                        region = dto.company.region
                         manufactureStatus = 1
+                        createdBy = user.userName
+                        createdOn = Timestamp.from(Instant.now())
                     }
 
                     companyProfileEntity = companyProfileRepo.save(companyProfileEntity)
@@ -1269,27 +1274,31 @@ class SystemsAdminDaoService(
                         }
                         ?: throw InvalidValueException("No record of look up found on the Datastore")
 
-                    val branch = ManufacturePlantDetailsEntity().apply {
+                    var branch = ManufacturePlantDetailsEntity().apply {
                         companyProfileId = companyProfileEntity.id
-                        town = dto.organization.town
-                        county = dto.organization.county
-                        physicalAddress = dto.organization.physicalAddress
-                        street = dto.organization.streetName
-                        buildingName = dto.organization.buildingName
-                        nearestLandMark = dto.organization.buildingName
-                        postalAddress = dto.organization.postalAddress
-                        telephone = dto.organization.companyTelephone
-                        emailAddress = dto.organization.companyEmail
-                        plotNo = dto.organization.plotNumber
+                        town = dto.company.town
+                        county = dto.company.county
+                        physicalAddress = dto.company.physicalAddress
+                        street = dto.company.streetName
+                        buildingName = dto.company.buildingName
+                        nearestLandMark = dto.company.buildingName
+                        postalAddress = dto.company.postalAddress
+                        telephone = dto.company.companyTelephone
+                        emailAddress = dto.company.companyEmail
+                        plotNo = dto.company.plotNumber
                         contactPerson = commonDaoServices.concatenateName(user)
                         descriptions = "Head Office"
-                        region = dto.organization.region
+                        region = dto.company.region
 
                         createdBy = companyProfileEntity.name
                         createdOn = Timestamp.from(Instant.now())
                         status = 1
                     }
-                    manufacturePlantRepository.save(branch)
+                    branch = manufacturePlantRepository.save(branch)
+
+                    user.companyId = companyProfileEntity.id
+                    user.plantId = branch.id
+                    usersRepo.save(user)
 
                     result.apply {
                         payload = "Successfully Created"
@@ -1302,7 +1311,7 @@ class SystemsAdminDaoService(
 
         } catch (e: Exception) {
             KotlinLogging.logger { }.debug(e.message, e)
-            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.error(e.message, e)
             result.apply {
                 payload = e.message
                 status = 500

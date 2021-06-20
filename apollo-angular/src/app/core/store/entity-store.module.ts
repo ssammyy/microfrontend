@@ -40,7 +40,7 @@ export const entityConfig: EntityDataModuleConfig = {
 
 export const defaultDataServiceConfig: DefaultDataServiceConfig = {
   root: ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.HOME_PAGE),
-  timeout: 3000, // request timeout
+  timeout: 15000, // request timeout
   entityHttpResourceUrls: {
     RegistrationPayload: {
       entityResourceUrl: ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.REGISTER_COMPANY),

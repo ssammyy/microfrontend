@@ -9,7 +9,9 @@ import {
   Company,
   County,
   CountyService,
+  Go,
   loadBrsValidations,
+  loadRegistrations,
   loadResponsesFailure,
   loadSendTokenToPhone,
   loadValidateTokenAndPhone,
@@ -18,6 +20,7 @@ import {
   RegistrationPayloadService,
   selectBrsValidationCompany,
   selectBrsValidationStep,
+  selectRegistrationStateSucceeded,
   selectSendTokenToPhoneStateSent,
   selectValidateTokenAndPhoneValidated,
   Town,
@@ -59,6 +62,10 @@ export class SignUpComponent implements OnInit {
   validationCellphone = '';
   otpSent: boolean;
   phoneValidated: boolean;
+  // @ts-ignore
+  company: Company;
+  // @ts-ignore
+  user: User;
 
 
   constructor(
@@ -72,6 +79,7 @@ export class SignUpComponent implements OnInit {
   ) {
     this.otpSent = false;
     this.phoneValidated = false;
+
     this.businessNatures$ = naturesService.entities$;
     this.businessLines$ = linesService.entities$;
     this.region$ = regionService.entities$;
@@ -183,7 +191,19 @@ export class SignUpComponent implements OnInit {
   onClickRegisterCompany(valid: boolean) {
     if (valid) {
       if (this.phoneValidated) {
+        this.company = {...this.company, ...this.companySoFar};
+        this.user = {...this.user, ...this.stepFourForm?.value}
 
+        this.store$.dispatch(loadRegistrations({
+          payload: {company: this.company, user: this.user}
+        }));
+
+        this.store$.pipe(select(selectRegistrationStateSucceeded)).subscribe((d) => {
+          console.log(`status inside is ${d}`)
+          if (d) {
+            return this.store$.dispatch(Go({payload: '', link: 'login'}));
+          }
+        });
       } else {
         this.store$.dispatch(loadResponsesFailure({
           error: {
