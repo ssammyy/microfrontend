@@ -9,12 +9,14 @@ import {RegistrationComponent} from './views/registration.component';
 import {SignUpComponent} from './views/registration/sign-up.component';
 import {LoginComponent} from "./views/registration/login.component";
 import {CoreModule} from "./core/core.module";
-import {ReactiveFormsModule} from "@angular/forms";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {ToastrModule} from "ngx-toastr";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {SharedModule} from "./core/shared/shared.module";
 import {DashboardComponent} from './views/dashboard/dashboard.component';
 import {AccountList} from "./views/dashboard/account/account.list";
+import {CompaniesList} from './views/dashboard/company/companies.list';
+import {NgxPaginationModule} from "ngx-pagination";
 
 
 @NgModule({
@@ -24,7 +26,8 @@ import {AccountList} from "./views/dashboard/account/account.list";
     RegistrationComponent,
     SignUpComponent,
     DashboardComponent,
-    AccountList
+    AccountList,
+    CompaniesList
   ],
   imports: [
     BrowserModule,
@@ -38,6 +41,8 @@ import {AccountList} from "./views/dashboard/account/account.list";
     }),
     ReactiveFormsModule,
     SharedModule,
+    FormsModule,
+    NgxPaginationModule,
   ],
   providers: [
     {provide: APP_BASE_HREF, useValue: '/'}

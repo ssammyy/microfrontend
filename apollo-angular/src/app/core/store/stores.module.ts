@@ -6,8 +6,9 @@ import {StoreRouterConnectingModule} from '@ngrx/router-store';
 import {environment} from "../../../environments/environment";
 import {StoreDevtoolsModule} from "@ngrx/store-devtools";
 import {defaultDataServiceConfig, entityConfig} from './entity-store.module';
-import {DefaultDataServiceConfig, EntityDataModule} from "@ngrx/data";
+import {DefaultDataServiceConfig, EntityDataModule, EntityDataService} from "@ngrx/data";
 import {EffectsModule} from "@ngrx/effects";
+import {BranchesCustomService} from "./data";
 
 
 @NgModule({
@@ -46,4 +47,12 @@ import {EffectsModule} from "@ngrx/effects";
     {provide: DefaultDataServiceConfig, useValue: defaultDataServiceConfig}
   ],
 })
-export class StoresModule { }
+export class StoresModule {
+  constructor(
+    entityDataService: EntityDataService,
+    customBranchesService: BranchesCustomService,
+  ) {
+    // Register custom EntityDataServices
+    entityDataService.registerService('Branches', customBranchesService);
+  }
+}

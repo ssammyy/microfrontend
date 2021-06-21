@@ -32,7 +32,13 @@ export const entityMetadata: EntityMetadataMap = {
   Town: {
     filterFn: activeFilter,
   },
+  Company: {
+    filterFn: activeFilter,
+  },
 };
+
+
+export const pluralNames = {Branches: 'branches'};
 
 export const entityConfig: EntityDataModuleConfig = {
   entityMetadata
@@ -77,6 +83,10 @@ export const defaultDataServiceConfig: DefaultDataServiceConfig = {
     Town: {
       entityResourceUrl: ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.TOWN_LIST),
       collectionResourceUrl: ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.TOWN_LIST)
+    },
+    Company: {
+      entityResourceUrl: ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.COMPANY_LIST),
+      collectionResourceUrl: ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.COMPANY_LIST)
     },
   }
 }
