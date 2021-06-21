@@ -19,6 +19,10 @@ class PermitTypesEntity : Serializable {
     @Basic
     var status: Int? = null
 
+    @Column(name = "FACTORY_VISIT_DATE")
+    @Basic
+    var factoryVisitDate: Int? = null
+
     @Column(name = "ST3_STATUS")
     @Basic
     var st3Status: Int? = null
@@ -163,6 +167,7 @@ class PermitTypesEntity : Serializable {
                 typeName == that.typeName &&
                 schemeGenerate == that.schemeGenerate &&
                 st3Status == that.st3Status &&
+                factoryVisitDate == that.factoryVisitDate &&
                 st10Status == that.st10Status &&
                 numberOfYears == that.numberOfYears &&
                 taxRate == that.taxRate &&
@@ -196,6 +201,7 @@ class PermitTypesEntity : Serializable {
             schemeGenerate,
             descriptions,
             smeDeclarationForm,
+            factoryVisitDate,
             typeName,
             taxRate,
             numberOfYears,

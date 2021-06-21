@@ -60,6 +60,9 @@ class ApplicationMapProperties {
     @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.type.smark.mediumFirm.max.products}")
     val mapQaSmarkMediumMaxProduct: Int = 0
 
+    @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.scheduled.date}")
+    val mapQaScheduledDate: Int = 0
+
     @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.type.smark.juakaliFirm.max.products}")
     val mapQaSmarkJuakaliMaxProduct: Int = 0
 
@@ -104,6 +107,9 @@ class ApplicationMapProperties {
 
     @Value("\${org.kebs.app.kotlin.apollo.application.map.permit.application}")
     val mapPermitApplication: Int = 0
+
+    @Value("\${org.kebs.app.kotlin.apollo.application.brs.configuration.id}")
+    val mapBRSconfigID: Long = 0L
 
     @Value("\${org.kebs.app.kotlin.apollo.application.map.fuel.inspection}")
     val mapQaFuelInspection: Int = 0

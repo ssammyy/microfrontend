@@ -102,6 +102,32 @@ interface IQaSta3EntityRepository : HazelcastRepository<QaSta3Entity, Long> {
 }
 
 @Repository
+interface IQaInspectionHaccpImplementationRepository :
+    HazelcastRepository<QaInspectionHaccpImplementationEntity, Long> {
+    fun findByStatusAndId(status: Int, id: Long): QaInspectionHaccpImplementationEntity?
+    fun findByPermitId(permitId: Long): QaInspectionHaccpImplementationEntity?
+}
+
+@Repository
+interface IQaInspectionReportRecommendationRepository :
+    HazelcastRepository<QaInspectionReportRecommendationEntity, Long> {
+    fun findByStatusAndId(status: Int, id: Long): QaInspectionReportRecommendationEntity?
+    fun findByPermitId(permitId: Long): QaInspectionReportRecommendationEntity?
+}
+
+@Repository
+interface IQaInspectionOpcEntityRepository : HazelcastRepository<QaInspectionOpcEntity, Long> {
+    fun findByStatusAndId(status: Int, id: Long): QaInspectionOpcEntity?
+    fun findByPermitId(permitId: Long): List<QaInspectionOpcEntity>?
+}
+
+@Repository
+interface IQaInspectionTechnicalRepository : HazelcastRepository<QaInspectionTechnicalEntity, Long> {
+    fun findByStatusAndId(status: Int, id: Long): QaInspectionTechnicalEntity?
+    fun findByPermitId(permitId: Long): QaInspectionTechnicalEntity?
+}
+
+@Repository
 interface IQaSta10EntityRepository : HazelcastRepository<QaSta10Entity, Long> {
     fun findByStatusAndId(status: Int, id: Long): QaSta10Entity?
     fun findByPermitId(permitId: Long): QaSta10Entity?
@@ -109,7 +135,7 @@ interface IQaSta10EntityRepository : HazelcastRepository<QaSta10Entity, Long> {
 
 @Repository
 interface IQaSampleLabTestResultsRepository : HazelcastRepository<QaSampleLabTestResultsEntity, Long> {
-//    fun findByOrderId(orderId: String): QaSampleLabTestResultsEntity?
+    //    fun findByOrderId(orderId: String): QaSampleLabTestResultsEntity?
     fun findByOrderId(orderId: String): List<QaSampleLabTestResultsEntity>?
 }
 

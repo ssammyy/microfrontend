@@ -5,7 +5,6 @@ import com.jcraft.jsch.Channel
 import com.jcraft.jsch.ChannelSftp
 import com.jcraft.jsch.JSch
 import com.jcraft.jsch.Session
-import jdk.internal.net.http.common.Log.channel
 import mu.KotlinLogging
 import org.apache.commons.io.FileUtils
 import org.jasypt.encryption.StringEncryptor
@@ -49,7 +48,7 @@ class SftpServiceImpl(
         KotlinLogging.logger { }.info(":::: SFTP session connected successfully ::::")
 
         val channel: Channel  = session.openChannel(applicationMapProperties.mapSftpClientProtocol)
-        channel.connect(applicationMapProperties.mapSftpChannelConnectedTimeout.toInt());
+        channel.connect(applicationMapProperties.mapSftpChannelConnectedTimeout.toInt())
         KotlinLogging.logger { }.info(":::: SFTP channel created successfully ::::")
 
         return  channel as ChannelSftp
@@ -70,7 +69,7 @@ class SftpServiceImpl(
     fun disconnect(sftp: ChannelSftp) {
         try {
             if (sftp.isConnected) {
-                val session: Session = sftp.getSession()
+                val session: Session = sftp.session
                 sftp.exit()
                 session.disconnect()
             } else if (sftp.isClosed) {
@@ -147,7 +146,7 @@ class SftpServiceImpl(
     fun convertInputstreamToFile(inputStream: InputStream, fileName: String): File {
         val targetFile = File(Files.createTempDir(), fileName)
 //        KotlinLogging.logger { }.info(":::: targetFile: ${targetFile.name} ::::")
-        targetFile.deleteOnExit();
+        targetFile.deleteOnExit()
         try {
             FileUtils.copyInputStreamToFile(inputStream, targetFile)
             return targetFile

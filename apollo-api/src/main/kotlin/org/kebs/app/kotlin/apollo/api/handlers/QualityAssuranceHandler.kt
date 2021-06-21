@@ -92,6 +92,7 @@ class QualityAssuranceHandler(
     private val qaInvoiceGenerated = "quality-assurance/customer/generated-invoice"
     private val qaSSFDetailesPage = "quality-assurance/customer/ssf-details"
     private val qaAllWorkPlanCreatedListPage = "quality-assurance/created-workPlan-list.html"
+    private val qaInspectionReportPage = "quality-assurance/customer/inspection-report-new-details"
 
     //Inspection details
     private val cdSampleCollectPage = "destination-inspection/cd-Inspection-documents/cd-inspection-sample-collect.html"
@@ -222,9 +223,10 @@ class QualityAssuranceHandler(
         val departmentEntity = commonDaoServices.findDepartmentByID(applicationMapProperties.mapQADepertmentId)
 
         req.attributes()["sections"] = loadSectionDetails(departmentEntity, map, req)
+        req.attributes()["standardsList"] = qaDaoServices.findALlStandardsDetails(map.activeStatus)
         req.attributes().putAll(loadCommonUIComponents(map))
         req.attributes().putAll(loadCommonPermitComponents(map,permit))
-        req.attributes()["permit"] = qaDaoServices.permitDetails(permit,null,map)
+        req.attributes()["permit"] = qaDaoServices.permitDetails(permit, map)
 
         return ok().render(qaPermitDetailPage, req.attributes())
     }
@@ -246,7 +248,7 @@ class QualityAssuranceHandler(
 
         req.attributes().putAll(loadCommonUIComponents(map))
         req.attributes().putAll(loadCommonPermitComponents(map, permit))
-        req.attributes()["permit"] = qaDaoServices.permitDetails(permit, null, map)
+        req.attributes()["permit"] = qaDaoServices.permitDetails(permit, map)
 
         return ok().render(qaPermitDetailPage, req.attributes())
     }
@@ -589,7 +591,7 @@ class QualityAssuranceHandler(
         req.attributes()["invoice"] = invoiceDetails
         req.attributes()["phoneNumber"] = permit.telephoneNo
         req.attributes()["applicationState"] = applicationState
-        req.attributes()["permit"] = qaDaoServices.permitDetails(permit, null, map)
+        req.attributes()["permit"] = qaDaoServices.permitDetails(permit, map)
         req.attributes()["invoiceBalanceDetails"] = invoiceDaoService.findInvoiceStgReconciliationDetails(
             invoiceDetails?.invoiceNumber ?: throw ExpectedDataNotFound("INVALID REFERENCE CODE")
         )
@@ -625,13 +627,70 @@ class QualityAssuranceHandler(
 
 /*:::::::::::::::::::::::::::::::::::::::::::::START OF WORKPLAN(SURVEILLANCE) FUNCTIONS:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
 
+    @PreAuthorize(" hasAuthority('QA_OFFICER_READ')")
+    fun inspectionReportDetails(req: ServerRequest): ServerResponse {
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val map = commonDaoServices.serviceMapDetails(appId)
+        val permitID =
+            req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
+        val permit = qaDaoServices.findPermitBYID(permitID)
+        val inspectionReportRecommendation = qaDaoServices.findQaInspectionReportRecommendationBYPermitID(permitID)
+
+        req.attributes()["OPCDetailsList"] = qaDaoServices.findAllQaInspectionOPCWithPermitID(permitID)
+        req.attributes()["QaInspectionTechnicalEntity"] = qaDaoServices.findQaInspectionTechnicalBYPermitID(permitID)
+        req.attributes()["QaInspectionReportRecommendationEntity"] = inspectionReportRecommendation
+
+        when (inspectionReportRecommendation.filledOpcStatus) {
+            map.activeStatus -> {
+                req.attributes()["QaInspectionOpcEntity"] = qaDaoServices.findQaInspectionOpcBYPermitID(permitID)
+            }
+            else -> {
+                req.attributes()["QaInspectionOpcEntity"] = QaInspectionOpcEntity()
+            }
+        }
+
+        when (inspectionReportRecommendation.filledHaccpImplementationStatus) {
+            map.activeStatus -> {
+                req.attributes()["QaInspectionHaccpImplementationEntity"] =
+                    qaDaoServices.findQaInspectionHaccpImplementationBYPermitID(permitID)
+            }
+            else -> {
+                req.attributes()["QaInspectionHaccpImplementationEntity"] = QaInspectionHaccpImplementationEntity()
+            }
+        }
+
+        req.attributes().putAll(loadCommonUIComponents(map))
+        req.attributes()["permit"] = qaDaoServices.permitDetails(permit, map)
+        return ok().render(qaInspectionReportPage, req.attributes())
+    }
+
+    @PreAuthorize(" hasAuthority('QA_OFFICER_READ')")
+    fun newInspectionReport(req: ServerRequest): ServerResponse {
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val map = commonDaoServices.serviceMapDetails(appId)
+        val permitID =
+            req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
+        val permit = qaDaoServices.findPermitBYID(permitID)
+
+        req.attributes()["OPCDetailsList"] = qaDaoServices.findAllQaInspectionOPCWithPermitID(permitID)
+        req.attributes()["QaInspectionHaccpImplementationEntity"] = QaInspectionHaccpImplementationEntity()
+        req.attributes()["QaInspectionReportRecommendationEntity"] = QaInspectionReportRecommendationEntity()
+        req.attributes()["QaInspectionOpcEntity"] = QaInspectionOpcEntity()
+        req.attributes()["QaInspectionTechnicalEntity"] = QaInspectionTechnicalEntity()
+        req.attributes()["permit"] = qaDaoServices.permitDetails(permit, map)
+        return ok().render(qaInspectionReportPage, req.attributes())
+    }
 
     @PreAuthorize(" hasAuthority('QA_OFFICER_READ')")
     fun allWorkPlanList(req: ServerRequest): ServerResponse {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         val map = commonDaoServices.serviceMapDetails(appId)
 
-        req.attributes()["allWorkPlanCreated"] = qaDaoServices.listWorkPlan(qaDaoServices.findALlCreatedWorkPlanWIthOfficerID(loggedInUser.id?:throw Exception("INVALID USER ID")), map)
+        req.attributes()["allWorkPlanCreated"] = qaDaoServices.listWorkPlan(
+            qaDaoServices.findALlCreatedWorkPlanWIthOfficerID(
+                loggedInUser.id ?: throw Exception("INVALID USER ID")
+            ), map
+        )
         return ok().render(qaAllWorkPlanCreatedListPage, req.attributes())
     }
 
@@ -647,7 +706,7 @@ class QualityAssuranceHandler(
 
         req.attributes().putAll(loadCommonUIComponents(map))
         req.attributes().putAll(loadCommonPermitComponents(map,permit))
-        req.attributes()["permit"] = qaDaoServices.permitDetails(permit,null,map)
+        req.attributes()["permit"] = qaDaoServices.permitDetails(permit, map)
 
         return ok().render(qaPermitDetailPage, req.attributes())
     }

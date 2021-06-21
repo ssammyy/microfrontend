@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<div th:replace="fragments/general-form.html :: headerfiles"></div>
+<div th:replace="fragments/general-form.html :: headerfiles" xmlns:sec="http://www.w3.org/1999/xhtml"></div>
 <body>
 <div th:replace="fragments/general-form.html :: dashboard-page"></div>
 <div class="dashboard-body">
@@ -96,31 +96,45 @@
                                             <ul class="w-list-unstyled">
                                                 <li th:if="${permit?.assignOfficer != null}" class="list-item-accordion">
                                                     <div class="list-title-accordion">Assigned Officer</div>
-                                                    <div class="list-text-accordion" style="color: #0082f3" th:text="${permit?.assignOfficer} ? ${officerAssigned?.assignOfficer} : 'NOT ASSIGNED'"></div>
+                                                    <div class="list-text-accordion" style="color: #0082f3"
+                                                         th:text="${permit?.assignOfficer} ? ${permit?.assignOfficer} : 'NOT ASSIGNED'"></div>
                                                 </li>
                                                 <li th:if="${permit?.assignAssessor != null}" class="list-item-accordion">
                                                     <div class="list-title-accordion">Appointed Assessor</div>
-                                                    <div class="list-text-accordion" style="color: #0082f3" th:text="${permit?.assignAssessor} ? ${assessorAssigned?.assignAssessor}: 'NOT ASSIGNED'"></div>
+                                                    <div class="list-text-accordion" style="color: #0082f3"
+                                                         th:text="${permit?.assignAssessor} ? ${permit?.assignAssessor}: 'NOT ASSIGNED'"></div>
                                                 </li>
                                                 <li class="list-item-accordion">
                                                     <div class="list-title-accordion">Division</div>
-                                                    <div class="list-text-accordion" th:text="${permit?.divisionValue}"></div>
+                                                    <div class="list-text-accordion"
+                                                         th:text="${permit?.divisionValue}"></div>
                                                 </li>
                                                 <li class="list-item-accordion">
                                                     <div class="list-title-accordion">Section</div>
-                                                    <div class="list-text-accordion" th:text="${permit?.sectionValue}"></div>
+                                                    <div class="list-text-accordion"
+                                                         th:text="${permit?.sectionValue}"></div>
                                                 </li>
-                                                <li th:if="${permit?.inspectionScheduledStatus == 1}" class="list-item-accordion">
+                                                <li th:if="${permit?.factoryVisit != null}" class="list-item-accordion">
+                                                    <div class="list-title-accordion">Factory Visit Date</div>
+                                                    <div class="list-text-accordion"
+                                                         th:text="${#dates.format(permit?.factoryVisit, 'dd/MM/yyyy')}"></div>
+                                                </li>
+                                                <li th:if="${permit?.inspectionScheduledStatus == true}"
+                                                    class="list-item-accordion">
                                                     <div class="list-title-accordion">Inspection Date</div>
-                                                    <div class="list-text-accordion" th:text="${#dates.format(permit?.inspectionDate, 'dd/MM/yyyy')}"></div>
+                                                    <div class="list-text-accordion"
+                                                         th:text="${#dates.format(permit?.inspectionDate, 'dd/MM/yyyy')}"></div>
                                                 </li>
-                                                <li th:if="${permit?.assessmentScheduledStatus == 1}" class="list-item-accordion">
+                                                <li th:if="${permit?.assessmentScheduledStatus == 1}"
+                                                    class="list-item-accordion">
                                                     <div class="list-title-accordion">Factory Assessment Date</div>
-                                                    <div class="list-text-accordion" th:text="${#dates.format(permit?.assessmentDate, 'dd/MM/yyyy')}"></div>
+                                                    <div class="list-text-accordion"
+                                                         th:text="${#dates.format(permit?.assessmentDate, 'dd/MM/yyyy')}"></div>
                                                 </li>
                                                 <li class="list-item-accordion">
                                                     <div class="list-title-accordion">Status</div>
-                                                    <div class="list-text-accordion" style="color: #0082f3" th:text="${permit?.processStatusName}"></div>
+                                                    <div class="list-text-accordion" style="color: #0082f3"
+                                                         th:text="${permit?.processStatusName}"></div>
                                                 </li>
                                                 <li class="list-item-accordion">
                                                     <div class="list-title-accordion">Version Number</div>
@@ -528,6 +542,9 @@
                                         </div>
 
                                         <div sec:authorize="hasAuthority('QA_MANAGER_ASSESSORS_MODIFY') or hasAuthority('QA_HOF_MODIFY') or hasAuthority('QA_HOD_MODIFY')">
+                                            <a style="color: white" onclick="popUpFunction('updateSection');"
+                                               class="filter-link">Update Section</a>
+
                                             <a th:if="${permitDetails?.hofQamCompletenessStatus == null}"
                                                style="color: white" onclick="popUpFunction('permitCompleteness');"
                                                class="filter-link">COMPLETE ?</a>
@@ -535,6 +552,11 @@
                                             <a th:if="${permitDetails?.hofQamCompletenessStatus == 1 and permitDetails?.assignOfficerStatus == null}"
                                                style="color: white" onclick="popUpFunction('assignOfficer');"
                                                class="filter-link">Assign Officer</a>
+
+                                            <a th:if="${permitDetails?.hofQamCompletenessStatus == 1 and permitDetails?.assignOfficerStatus == 1}"
+                                               style="color: white" onclick="popUpFunction('assignOfficer');"
+                                               class="filter-link">Reassign Officer</a>
+
 
                                             <a th:if="${permitDetails?.factoryInspectionReportApprovedRejectedStatus == null and permitDetails?.inspectionReportId != null}"
                                                style="color: white" onclick="popUpFunction('approveInspectionReport');"
@@ -552,6 +574,16 @@
                                             <a th:if="${permitDetails?.factoryInspectionReportApprovedRejectedStatus == 1  and permitDetails?.bsNumber == null}"
                                                style="color: white" onclick="popUpSSFFunction('addSSFDetails');"
                                                class="filter-link">ADD SSF & BS NUMBER</a>
+
+                                            <a th:if="${permitDetails?.productStandard == null}"
+                                               style="color: white" onclick="popUpFunction('addStandardsDetails');"
+                                               class="filter-link">ADD STANDARDS DETAILS</a>
+
+                                            <a th:if="${permitDetails?.productStandard != null}"
+                                               style="color: white" onclick="popUpFunction('addStandardsDetails');"
+                                               class="filter-link">UPDATE STANDARDS DETAILS</a>
+
+
                                         </div>
 
 
@@ -682,20 +714,29 @@
                                                style="color: white" onclick="popUpFunction('scheduleInspectionDate');"
                                                class="filter-link">SCHEDULE INSPECTION</a>
 
-                                            <a th:if="${ permitDetails?.inspectionScheduledStatus == 1 and permitDetails?.generateSchemeStatus == null and permitType?.schemeGenerate == 1}"
-                                               th:href="@{/api/qa/new-scheme-of-supervision(permitID=${permitDetails?.id})}"
-                                               style="color: white" class="filter-link">GENERATE SCHEME FOR SUPERVISION
-                                                AND CONTROL</a>
+                                            <a th:if="${ permitDetails?.inspectionReportId != null and permitDetails?.generateSchemeStatus == null and permitType?.schemeGenerate == 1}"
+                                               style="color: white" onclick="popUpUploadFunction('uploadSSC');"
+                                               class="filter-link">UPLOAD SCHEME OF SUPERVISION AND CONTROL</a>
 
                                             <a th:if="${permitDetails?.generateSchemeStatus == 0 and permitType?.schemeGenerate == 1}"
                                                th:href="@{/api/qa/update-scheme-of-supervision(permitID=${permitDetails?.id})}"
                                                style="color: white" class="filter-link">GENERATE NEW SCHEME OF
                                                 SUPERVISION AND CONTROL</a>
 
-                                            <a th:if="${permitDetails?.approvedRejectedScheme == 1 and permitDetails?.inspectionReportId == null}"
+                                            <!--                                            <a th:if="${permitDetails?.inspectionScheduledStatus == 1 and permitDetails?.inspectionReportId == null}"-->
+                                            <!--                                               style="color: white"-->
+                                            <!--                                               onclick="popUpUploadFunction('uploadInspectionReport');"-->
+                                            <!--                                               class="filter-link">UPLOAD INSPECTION REPORT</a>-->
+
+                                            <a th:if="${permitDetails?.inspectionScheduledStatus == 1 and permitDetails?.inspectionReportGenerated == null}"
                                                style="color: white"
-                                               onclick="popUpUploadFunction('uploadInspectionReport');"
-                                               class="filter-link">UPLOAD INSPECTION REPORT</a>
+                                               th:href="@{/api/qa/inspection/new-inspection-report(permitID=${permitDetails?.id})}"
+                                               class="filter-link">GENERATE INSPECTION REPORT </a>
+
+                                            <a th:if="${permitDetails?.inspectionReportGenerated == 1 }"
+                                               style="color: white"
+                                               th:href="@{/api/qa/inspection/inspection-report-details(permitID=${permitDetails?.id})}"
+                                               class="filter-link">GENERATED INSPECTION REPORT </a>
 
                                             <a th:if="${permitDetails?.recommendationRemarks == null and permitDetails?.compliantStatus == 1}"
                                                style="color: white" onclick="popUpFunction('addRecommendation');"
@@ -914,6 +955,86 @@
                                                             th:text="${officer.userId?.firstName} + ' ' + ${officer.userId?.lastName}"
                                                             th:name="qaoId" th:value="${officer.userId?.id}"></option>
                                                 </select>
+                                            </div>
+                                            <div id="scheduleInspectionDate">
+                                                <input type="hidden" id="description4" name="description"
+                                                       th:value="'Inspection Date set sucessfull'">
+                                                <input type="hidden" id="inspectionScheduledStatus"
+                                                       name="inspectionScheduledStatus" th:value="${activeStatus}">
+                                                <label for="qaoId" class="col-form-label">Inspection Date:</label>
+                                                <input class="input-field w-input" type="date" max="20"
+                                                       id="inspectionDate" name="inspectionDate" th:required="required">
+                                                <!--                                            <select id="qaoId" required class="select-field w-select" th:field="*{qaoId}">-->
+                                                <!--                                                <option value="0">Select one...</option>-->
+                                                <!--                                                <option th:each="officer : ${officers}" th:text="${officer.userId?.firstName} + ' ' + ${officer.userId?.lastName}" th:name="qaoId" th:value="${officer.userId?.id}"></option>-->
+                                                <!--                                            </select>-->
+                                                <!--                                            <label for="hofQamCompletenessRemarks" class="col-form-label">Please write, in detail, your feedback for this Permit:</label>-->
+                                                <!--                                            <textarea required name="name" id="hofQamCompletenessRemarks" class="input-field w-input" cols="65" rows="5" th:field="*{hofQamCompletenessRemarks}"></textarea>-->
+                                            </div>
+
+                                            <div id="assignAssessor">
+                                                <input type="hidden" id="description5" name="description"
+                                                       th:value="'Assessor successfully assigned'">
+                                                <input type="hidden" id="assignAssessorStatus"
+                                                       name="assignAssessorStatus" th:value="${activeStatus}">
+                                                <label for="assessorId" class="col-form-label">Select Officer:</label>
+                                                <select id="assessorId" required class="select-field w-select"
+                                                        th:field="*{assessorId}">
+                                                    <option value="0">Select one...</option>
+                                                    <option th:each="assessor : ${assessors}"
+                                                            th:text="${assessor.userId?.firstName} + ' ' + ${assessor.userId?.lastName}"
+                                                            th:name="assessorId"
+                                                            th:value="${assessor.userId?.id}"></option>
+                                                </select>
+                                            </div>
+                                            <div id="scheduleAssessmentDate">
+                                                <input type="hidden" id="description6" name="description"
+                                                       th:value="'Factory assessment date successfully created'">
+                                                <input type="hidden" id="assessmentScheduledStatus"
+                                                       name="assessmentScheduledStatus" th:value="${activeStatus}">
+                                                <label for="qaoId" class="col-form-label">Assessment Date:</label>
+                                                <input class="input-field w-input" type="date" max="20"
+                                                       id="assessmentDate" name="assessmentDate" th:required="required">
+                                                <label for="assessmentCriteria" class="col-form-label">Please write, in
+                                                    detail, the assessment criteria for the visit:</label>
+                                                <textarea required name="assessmentCriteria" id="assessmentCriteria"
+                                                          class="input-field w-input" cols="65" rows="5"
+                                                          th:field="*{assessmentCriteria}"></textarea>
+                                            </div>
+
+                                            <div id="approveInspectionReport">
+                                                <input type="hidden" id="description7" name="description"
+                                                       th:value="'Factory Inspection Report Approved Succesfull'">
+                                                <input type="hidden" id="varField7" name="varField1"
+                                                       th:value="'Factory Inspection Report Rejected Succesfull'">
+                                                <label for="attachedPlantId" class="col-form-label">View
+                                                    Report: </label>
+                                                <button><a
+                                                        th:href="@{/api/qa/kebs/view/attached(fileID=${permitDetails.inspectionReportId})}"
+                                                        target='_blank' class="btn btn-primary itemViewBtn">view</a>
+                                                </button>
+                                                <label for="attachedPlantId" class="col-form-label">Select
+                                                    Status:</label>
+                                                <select id="factoryInspectionReportApprovedRejectedStatus" required
+                                                        class="select-field w-select"
+                                                        th:field="*{factoryInspectionReportApprovedRejectedStatus}">
+                                                    <option th:text="'Select one.....'" th:value="null"></option>
+                                                    <option th:text="'Approve'" th:value="1"></option>
+                                                    <option th:text="'Reject'" th:value="0"></option>
+                                                </select>
+                                                <label for="factoryInspectionReportApprovedRejectedRemarks"
+                                                       class="col-form-label">Please write, in detail, your feedback for
+                                                    this Factory Inspection report:</label>
+                                                <textarea required name="name"
+                                                          id="factoryInspectionReportApprovedRejectedRemarks"
+                                                          class="input-field w-input" cols="65" rows="5"
+                                                          th:field="*{factoryInspectionReportApprovedRejectedRemarks}"></textarea>
+                                            </div>
+
+                                            <div id="complianceStatus">
+                                                <input type="hidden" id="description9" name="description"
+                                                       th:value="'Compliance status Was added Succesfull'">
+                                                <!--                                            <input type="hidden" id="varField8" name="varField1" th:value="'Factory Inspection Report Rejected Succesfull'">-->
                                                 <label for="attachedPlantId" class="col-form-label">View
                                                     Report: </label>
                                                 <button><a
@@ -924,14 +1045,13 @@
                                                     Status:</label>
                                                 <select id="compliantStatus" required class="select-field w-select"
                                                         th:field="*{compliantStatus}">
-                                                    <option th:text="'Select one.....'"
-                                                            th:value="${nullStatus}"></option>
+                                                    <option th:text="'Select one.....'" th:value="null"></option>
                                                     <option th:text="'Compliant'" th:value="1"></option>
                                                     <option th:text="'Non-Compliant'" th:value="0"></option>
                                                 </select>
                                                 <label for="compliantRemarks" class="col-form-label">Please write, in
                                                     detail, your feedback for this Lab Report report:</label>
-                                                <textarea name="name" id="compliantRemarks"
+                                                <textarea required name="name" id="compliantRemarks"
                                                           class="input-field w-input" cols="65" rows="5"
                                                           th:field="*{compliantRemarks}"></textarea>
                                             </div>
@@ -945,6 +1065,7 @@
                                                           class="input-field w-input" cols="65" rows="5"
                                                           th:field="*{recommendationRemarks}"></textarea>
                                             </div>
+
 
                                             <div id="approveRecommendation">
                                                 <input type="hidden" id="description11" name="description"
@@ -1060,12 +1181,10 @@
                                                     <option value="">Select one...</option>
                                                     <option th:each="section : ${sections}" th:text="${section.section}"
                                                             th:value="${section.id}"></option>
-                                                    -->
                                                 </select>
                                                 <div th:if="${permitType?.localForeignStatus == 1}">
                                                     <label for="permitForeignStatus" class="field-label">Select
-                                                        Application
-                                                        Type</label>
+                                                        Application Type</label>
                                                     <select class="form-control" id="permitForeignStatus"
                                                             name="permitForeignStatus" required="required"
                                                             th:field="*{permitForeignStatus}">
@@ -1084,9 +1203,8 @@
                                                        th:value="${activeStatus}">
                                                 <label for="resubmitRemarks1" class="col-form-label">Please write, in
                                                     detail, your reason for this Permit:</label>
-                                                <textarea name="name" id="resubmitRemarks1"
-                                                          class="input-field w-input" cols="65" rows="5"
-                                                          th:field="*{resubmitRemarks}"></textarea>
+                                                <textarea name="name" id="resubmitRemarks1" class="input-field w-input"
+                                                          cols="65" rows="5" th:field="*{resubmitRemarks}"></textarea>
                                             </div>
                                             <div id="permitResubmitApplication">
                                                 <input type="hidden" id="description18" name="description"
@@ -1096,10 +1214,36 @@
                                                 <!--                                            <input type="hidden" id="varField8" name="varField1" th:value="'Factory Inspection Report Rejected Succesfull'">-->
                                                 <label for="resubmitRemarks2" class="col-form-label">Please write, in
                                                     detail, your reason for this Permit:</label>
-                                                <textarea name="name" id="resubmitRemarks2"
-                                                          class="input-field w-input" cols="65" rows="5"
-                                                          th:field="*{resubmitRemarks}"></textarea>
+                                                <textarea name="name" id="resubmitRemarks2" class="input-field w-input"
+                                                          cols="65" rows="5" th:field="*{resubmitRemarks}"></textarea>
                                             </div>
+                                            <div id="updateSection">
+                                                <input type="hidden" id="description19" name="description"
+                                                       th:value="'Section Updated Succesful'">
+                                                <label for="sectionId" class="field-label">Select Section</label>
+                                                <select reqiured="required" id="sectionId" name="sectionId"
+                                                        th:field="*{sectionId}" class="form-control">
+                                                    <option value="">Select one...</option>
+                                                    <option th:each="section : ${sections}" th:text="${section.section}"
+                                                            th:value="${section.id}"></option>
+                                                    -->
+                                                </select>
+                                            </div>
+                                            <div id="addStandardsDetails">
+                                                <input type="hidden" id="description21" name="description"
+                                                       th:value="'Standards Details Added Succesful'">
+                                                <label for="sectionId" class="field-label">Select applicable
+                                                    Standard</label>
+                                                <select reqiured="required" id="productStandard" name="productStandard"
+                                                        th:field="*{productStandard}" class="form-control">
+                                                    <option value="">Select one...</option>
+                                                    <option th:each="standard : ${standardsList}"
+                                                            th:text="${standard.standardTitle}+ ': ' +${standard.standardNumber}"
+                                                            th:value="${standard.id}"></option>
+                                                    -->
+                                                </select>
+                                            </div>
+
                                         </div>
                                     </div>
                                     <div class="modal-footer">
@@ -1484,8 +1628,7 @@
                                             </div>
                                             <div id="uploadSSC">
                                                 <input type="hidden" id="manufactureNonStatus5"
-                                                       name="manufactureNonStatus"
-                                                       th:value="${inActiveStatus}">
+                                                       name="manufactureNonStatus" th:value="${inActiveStatus}">
                                                 <input type="hidden" id="ordinaryStatus6" name="ordinaryStatus"
                                                        th:value="${inActiveStatus}">
                                                 <input type="hidden" id="sscUploadStatus" name="sscUploadStatus"
@@ -1761,11 +1904,8 @@
     }
 
     function popUpFunction(eventAction) {
-        let arrHead = ['permitResubmitApplicationForReview', 'permitResubmitApplication', 'attachePlant', 'permitCompleteness', 'assignOfficer', 'scheduleInspectionDate', 'assignAssessor', 'scheduleAssessmentDate', 'approveInspectionReport', 'complianceStatus', 'addRecommendation', 'approveRecommendation', 'pscMemberApproval', 'pcmApproval', 'dmarkApplicationApproval', 'hodApprovalAssessmentReport', 'permitStopProductionDetails', 'permitEditApplication'];
-        let arrHeadSave = ['Resubmit Permit Your Application for Review', 'Resubmit Permit Application', 'Attach a Plant for manufacturing the product', 'Is The Permit Complete', 'Select An officer', ' Set The Date of Inspection', 'Select An Assessor', 'Schedule Factory Assessment Date', 'Approve Or Reject the Factory Inspection Report', 'Select a suitable Compliance Status for the Lab Report', 'Add Recommendation', 'Approve / Reject Recommendation', 'Approve / Reject Awarding of Permit', 'Approve / Reject Awarding of Permit', 'Grant/Defer Application', 'Approve / Reject Permit Review', 'Stop Production', 'Edit Permit Application'];
-        // let arrHead = [ 'attachePlant', 'permitCompleteness', 'assignOfficer', 'scheduleInspectionDate', 'assignAssessor', 'scheduleAssessmentDate', 'dmarkApplicationApproval'];
-        // let arrHeadSave = [ 'Attach a Plant for manufacturing the product', 'Is The Permit Complete', 'Select An officer',' Set The Date of Inspection', 'Select An Assessor', 'Schedule Factory Assessment Date',
-        // 'Grant/Defer Application'];
+        let arrHead = ['addStandardsDetails', 'updateSection', 'permitResubmitApplicationForReview', 'permitResubmitApplication', 'attachePlant', 'permitCompleteness', 'assignOfficer', 'scheduleInspectionDate', 'assignAssessor', 'scheduleAssessmentDate', 'approveInspectionReport', 'complianceStatus', 'addRecommendation', 'approveRecommendation', 'pscMemberApproval', 'pcmApproval', 'dmarkApplicationApproval', 'hodApprovalAssessmentReport', 'permitStopProductionDetails', 'permitEditApplication'];
+        let arrHeadSave = ['Add Standard details', 'Update Section', 'Resubmit Permit Your Application for Review', 'Resubmit Permit Application', 'Attach a Plant for manufacturing the product', 'Is The Permit Complete', 'Select An officer', ' Set The Date of Inspection', 'Select An Assessor', 'Schedule Factory Assessment Date', 'Approve Or Reject the Factory Inspection Report', 'Select a suitable Compliance Status for the Lab Report', 'Add Recommendation', 'Approve / Reject Recommendation', 'Approve / Reject Awarding of Permit', 'Approve / Reject Awarding of Permit', 'Grant/Defer Application', 'Approve / Reject Permit Review', 'Stop Production', 'Edit Permit Application'];
 
         for (let h = 0; h < arrHead.length; h++) {
             if (eventAction !== arrHead[h]) {

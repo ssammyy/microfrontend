@@ -1,0 +1,1091 @@
+<!DOCTYPE html>
+<!--  This site was created in Webflow. http://www.webflow.com  -->
+<!--  Last Published: Wed Mar 18 2020 20:03:10 GMT+0000 (Coordinated Universal Time)  -->
+<html data-wf-page="5e70fb3a565ebdc05ddb37cf" data-wf-site="5e70fb3a565ebd99c1db37ce"
+      xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <title>KEBS</title>
+    <th:block th:include="fragments/general-form.html:: headerfiles"/>
+</head>
+<body>
+<div id="spinnerContainer">
+    <div class="spinner"></div>
+</div>
+<div th:replace="fragments/general-form.html :: dashboard-page"></div>
+
+<div class="dashboard-body">
+    <div th:replace="fragments/general-form.html :: side-navigation-bar"></div>
+    <div class="main-area">
+        <div th:replace="fragments/general-form.html :: content-navigation-bar"></div>
+        <section class="dashboard-content">
+            <div class="content-wrap">
+                <div class="content-container">
+                    <h5 style="font-weight: bold; color: #0082f3; font-size: 14px"><u>FACTORY INSPECTION REPORT </u>
+                    </h5>
+                    <div th:if="${message}" th:with="myStatus=${message}">
+                        <input type="hidden" id="messageValue" name="messageValue" th:value="${myStatus}">
+                    </div>
+                    <input type="hidden" id="permitIDValue" name="permitIDValue" th:value="${permit?.Id}">
+                    <div class="content-block">
+                        <div class="content-block-parent" style="flex: 0 75%">
+
+                            <!--                            <div class="sticky" style="margin-bottom: 30px">-->
+                            <button class="accordion">1.0: GENERAL DETAILS</button>
+                            <div class="panel">
+                                <ul class="w-list-unstyled">
+                                    <li class="list-item-accordion">
+                                        <div class="list-title-accordion">Name of the Firm:</div>
+                                        <div class="list-text-accordion" th:text="${permit?.firmName}"></div>
+                                    </li>
+                                    <li class="list-item-accordion">
+                                        <div class="list-title-accordion">Postal Address:</div>
+                                        <div class="list-text-accordion" th:text="${permit?.postalAddress}"></div>
+                                    </li>
+
+                                    <li class="list-item-accordion">
+                                        <div class="list-title-accordion">Telephone number</div>
+                                        <div class="list-text-accordion" th:text="${permit?.telephoneNo}"></div>
+                                    </li>
+                                    <li class="list-item-accordion">
+                                        <div class="list-title-accordion">Product(s) covered</div>
+                                        <div class="list-text-accordion"
+                                             th:text="${permit?.commodityDescription}"></div>
+                                    </li>
+                                    <li class="list-item-accordion">
+                                        <div class="list-title-accordion">Brand(s)</div>
+                                        <div class="list-text-accordion" th:text="${permit?.brandName}"></div>
+                                    </li>
+                                    <li class="list-item-accordion">
+                                        <div class="list-title-accordion">Applicable standard(s)</div>
+                                        <div class="list-text-accordion" th:text="${permit?.standardNumber}"></div>
+                                    </li>
+                                </ul>
+                            </div>
+
+
+                            <button class="accordion">2.0: TECHNICAL :<br>QUALITY PROCEDURES, STANDARDS AND MANAGEMENT
+                                SYSTEMS
+                            </button>
+                            <div class="panel">
+                                <form id="myForm" class="needs-validation" novalidate
+                                      th:action="@{/api/qa/kebs/add/new-qpsms-details/save(permitID=${permit?.Id})}"
+                                      method="post" th:object="${QaInspectionTechnicalEntity}">
+                                    <div class="row-table ">
+                                        <input type="hidden" id="idTechnical" name="id"
+                                               th:value="${QaInspectionTechnicalEntity?.id}">
+                                        <table id="qpsms" class="table table-striped table-bordered" style="width:100%">
+                                            <thead>
+                                            <tr>
+                                                <th>S/No.</th>
+                                                <th>Aspects Checked</th>
+                                                <th>Details of Findings</th>
+                                                <th>Remarks</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr class="list" style="cursor: pointer">
+                                                <td>1.</td>
+                                                <td>Quality procedure</td>
+                                                <td><textarea name="name" id="qualityProcedure"
+                                                              class="input-field w-input" cols="10" rows="5"
+                                                              th:field="*{qualityProcedure}"></textarea></td>
+                                                <td><textarea name="name" id="qualityProcedureRemarks"
+                                                              class="input-field w-input" cols="10" rows="5"
+                                                              th:field="*{qualityProcedureRemarks}"></textarea></td>
+                                            </tr>
+                                            <tr class="list" style="cursor: pointer">
+                                                <td>2.</td>
+                                                <td>Availability of product standards and codes of practice</td>
+                                                <td><textarea name="name" id="availabilityProductStandardsCodesPractice"
+                                                              class="input-field w-input" cols="10" rows="5"
+                                                              th:field="*{availabilityProductStandardsCodesPractice}"></textarea>
+                                                </td>
+                                                <td><textarea name="name"
+                                                              id="availabilityProductStandardsCodesPracticeRemarks"
+                                                              class="input-field w-input" cols="10" rows="5"
+                                                              th:field="*{availabilityProductStandardsCodesPracticeRemarks}"></textarea>
+                                                </td>
+                                            </tr>
+                                            <tr class="list" style="cursor: pointer">
+                                                <td>3.</td>
+                                                <td>Quality management systems</td>
+                                                <td><textarea name="name" id="qualityManagementSystems"
+                                                              class="input-field w-input" cols="10" rows="5"
+                                                              th:field="*{qualityManagementSystems}"></textarea></td>
+                                                <td><textarea name="name" id="qualityManagementSystemsRemarks"
+                                                              class="input-field w-input" cols="10" rows="5"
+                                                              th:field="*{qualityManagementSystemsRemarks}"></textarea>
+                                                </td>
+                                            </tr>
+                                            <tr class="list" style="cursor: pointer">
+                                                <td>4.</td>
+                                                <td>HACCP (for food and feed products) See Annex II</td>
+                                                <td><textarea name="name" id="haccpSeeAnnexIi"
+                                                              class="input-field w-input" cols="10" rows="5"
+                                                              th:field="*{haccpSeeAnnexIi}"></textarea></td>
+                                                <td><textarea name="name" id="haccpSeeAnnexIiRemarks"
+                                                              class="input-field w-input" cols="10" rows="5"
+                                                              th:field="*{haccpSeeAnnexIiRemarks}"></textarea></td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div id="qpsmsBtn">
+                                        <div class="form-group">
+                                            <div class="col-md-4 mb-3">
+                                                <button class="btn btn-primary" id="check"
+                                                        onclick="validationFunction('validateQPAMSDetails');"
+                                                        type="button">Validate form
+                                                </button>
+                                            </div>
+                                            <div class="col-md-4 mb-3">
+                                                <button class="btn btn-primary" disabled id="mySubmit" type="submit">
+                                                    Submit form
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+
+                            <button class="accordion">INSPECTION AND TESTING</button>
+                            <div class="panel">
+                                <form id="myForm1" class="needs-validation" novalidate
+                                      th:action="@{/api/qa/kebs/add/new-qpsms-details/save(permitID=${permit?.Id})}"
+                                      method="post" th:object="${QaInspectionTechnicalEntity}">
+                                    <div class="row-table ">
+                                        <input type="hidden" id="idTechnical1" name="id"
+                                               th:value="${QaInspectionTechnicalEntity?.id}">
+                                        <table id="qpsms1" class="table table-striped table-bordered"
+                                               style="width:100%">
+                                            <thead>
+                                            <tr>
+                                                <th>S/No.</th>
+                                                <th>Aspects Checked</th>
+                                                <th>Details of Findings</th>
+                                                <th>Remarks</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr class="list" style="cursor: pointer">
+                                                <td>1.</td>
+                                                <td>Testing facility</td>
+                                                <td><textarea name="testingFacility" id="testingFacility"
+                                                              class="input-field w-input" cols="10" rows="5"
+                                                              th:field="*{testingFacility}"></textarea></td>
+                                                <td><textarea name="testingFacilityRemarks" id="testingFacilityRemarks"
+                                                              class="input-field w-input" cols="10" rows="5"
+                                                              th:field="*{testingFacilityRemarks}"></textarea></td>
+                                            </tr>
+                                            <tr class="list" style="cursor: pointer">
+                                                <td>2.</td>
+                                                <td>Quality Control personnel qualifications</td>
+                                                <td><textarea name="qualityControlPersonnelQualifications"
+                                                              id="qualityControlPersonnelQualifications"
+                                                              class="input-field w-input" cols="10" rows="5"
+                                                              th:field="*{qualityControlPersonnelQualifications}"></textarea>
+                                                </td>
+                                                <td><textarea name="qualityControlPersonnelQualificationsRemarks"
+                                                              id="qualityControlPersonnelQualificationsRemarks"
+                                                              class="input-field w-input" cols="10" rows="5"
+                                                              th:field="*{qualityControlPersonnelQualificationsRemarks}"></textarea>
+                                                </td>
+                                            </tr>
+                                            <tr class="list" style="cursor: pointer">
+                                                <td>3.</td>
+                                                <td>Equipment calibration</td>
+                                                <td><textarea name="equipmentCalibration" id="equipmentCalibration"
+                                                              class="input-field w-input" cols="10" rows="5"
+                                                              th:field="*{equipmentCalibration}"></textarea></td>
+                                                <td><textarea name="equipmentCalibrationRemarks"
+                                                              id="equipmentCalibrationRemarks"
+                                                              class="input-field w-input" cols="10" rows="5"
+                                                              th:field="*{equipmentCalibrationRemarks}"></textarea></td>
+                                            </tr>
+                                            <tr class="list" style="cursor: pointer">
+                                                <td>4.</td>
+                                                <td>Quality records</td>
+                                                <td><textarea name="qualityRecords" id="qualityRecords"
+                                                              class="input-field w-input" cols="10" rows="5"
+                                                              th:field="*{qualityRecords}"></textarea></td>
+                                                <td><textarea name="qualityRecordsRemarks" id="qualityRecordsRemarks"
+                                                              class="input-field w-input" cols="10" rows="5"
+                                                              th:field="*{qualityRecordsRemarks}"></textarea></td>
+                                            </tr>
+                                            <tr class="list" style="cursor: pointer">
+                                                <td>5.</td>
+                                                <td>Product labeling and identification</td>
+                                                <td><textarea name="productLabelingIdentification"
+                                                              id="productLabelingIdentification"
+                                                              class="input-field w-input" cols="10" rows="5"
+                                                              th:field="*{productLabelingIdentification}"></textarea>
+                                                </td>
+                                                <td><textarea name="productLabelingIdentificationRemarks"
+                                                              id="productLabelingIdentificationRemarks"
+                                                              class="input-field w-input" cols="10" rows="5"
+                                                              th:field="*{productLabelingIdentificationRemarks}"></textarea>
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div id="qpsmsBtn1">
+                                        <div class="form-group">
+                                            <div class="col-md-4 mb-3">
+                                                <button class="btn btn-primary" id="check1"
+                                                        onclick="validationFunction('validateISPTESTINGDetails');"
+                                                        type="button">Validate form
+                                                </button>
+                                            </div>
+                                            <div class="col-md-4 mb-3">
+                                                <button class="btn btn-primary" disabled id="mySubmit1" type="submit">
+                                                    Submit form
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+
+                            <button class="accordion">STANDARDIZATION MARK SCHEME</button>
+                            <div class="panel">
+                                <form id="myForm2" class="needs-validation" novalidate
+                                      th:action="@{/api/qa/kebs/add/new-qpsms-details/save(permitID=${permit?.Id})}"
+                                      method="post" th:object="${QaInspectionTechnicalEntity}">
+                                    <div class="row-table ">
+                                        <input type="hidden" id="idTechnical2" name="id"
+                                               th:value="${QaInspectionTechnicalEntity?.id}">
+                                        <table id="qpsms2" class="table table-striped table-bordered"
+                                               style="width:100%">
+                                            <thead>
+                                            <tr>
+                                                <th>S/No.</th>
+                                                <th>Aspects Checked</th>
+                                                <th>Details of Findings</th>
+                                                <th>Remarks</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr class="list" style="cursor: pointer">
+                                                <td>1.</td>
+                                                <td>Validity of S-Mark permit(s)</td>
+                                                <td><textarea name="validitySmarkPermit" id="validitySmarkPermit"
+                                                              class="input-field w-input" cols="10" rows="5"
+                                                              th:field="*{validitySmarkPermit}"></textarea></td>
+                                                <td><textarea name="validitySmarkPermitRemarks"
+                                                              id="validitySmarkPermitRemarks"
+                                                              class="input-field w-input" cols="10" rows="5"
+                                                              th:field="*{validitySmarkPermitRemarks}"></textarea></td>
+                                            </tr>
+                                            <tr class="list" style="cursor: pointer">
+                                                <td>2.</td>
+                                                <td>Use of the S-Mark</td>
+                                                <td><textarea name="useTheSmark" id="useTheSmark"
+                                                              class="input-field w-input" cols="10" rows="5"
+                                                              th:field="*{useTheSmark}"></textarea></td>
+                                                <td><textarea name="useTheSmarkRemarks" id="useTheSmarkRemarks"
+                                                              class="input-field w-input" cols="10" rows="5"
+                                                              th:field="*{useTheSmarkRemarks}"></textarea></td>
+                                            </tr>
+                                            <tr class="list" style="cursor: pointer">
+                                                <td>3.</td>
+                                                <td>Are there changes affecting product certification? If yes, give
+                                                    details
+                                                </td>
+                                                <td><textarea name="changesAffectingProductCertification"
+                                                              id="changesAffectingProductCertification"
+                                                              class="input-field w-input" cols="10" rows="5"
+                                                              th:field="*{changesAffectingProductCertification}"></textarea>
+                                                </td>
+                                                <td><textarea name="changesAffectingProductCertificationRemarks"
+                                                              id="changesAffectingProductCertificationRemarks"
+                                                              class="input-field w-input" cols="10" rows="5"
+                                                              th:field="*{changesAffectingProductCertificationRemarks}"></textarea>
+                                                </td>
+                                            </tr>
+                                            <tr class="list" style="cursor: pointer">
+                                                <td>4.</td>
+                                                <td>Have the changes been communicated to KEBS?</td>
+                                                <td><textarea name="changesBeenCommunicatedKebs"
+                                                              id="changesBeenCommunicatedKebs"
+                                                              class="input-field w-input" cols="10" rows="5"
+                                                              th:field="*{changesBeenCommunicatedKebs}"></textarea></td>
+                                                <td><textarea name="changesBeenCommunicatedKebsRemarks"
+                                                              id="changesBeenCommunicatedKebsRemarks"
+                                                              class="input-field w-input" cols="10" rows="5"
+                                                              th:field="*{changesBeenCommunicatedKebsRemarks}"></textarea>
+                                                </td>
+                                            </tr>
+                                            <tr class="list" style="cursor: pointer">
+                                                <td>5.</td>
+                                                <td>Samples drawn</td>
+                                                <td><textarea name="samplesDrawn" id="samplesDrawn"
+                                                              class="input-field w-input" cols="10" rows="5"
+                                                              th:field="*{samplesDrawn}"></textarea></td>
+                                                <td><textarea name="samplesDrawnRemarks" id="samplesDrawnRemarks"
+                                                              class="input-field w-input" cols="10" rows="5"
+                                                              th:field="*{samplesDrawnRemarks}"></textarea></td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div id="qpsmsBtn2">
+                                        <div class="form-group">
+                                            <div class="col-md-4 mb-3">
+                                                <button class="btn btn-primary" id="check2"
+                                                        onclick="validationFunction('validateSMSDetails');"
+                                                        type="button">Validate form
+                                                </button>
+                                            </div>
+                                            <div class="col-md-4 mb-3">
+                                                <button class="btn btn-primary" disabled id="mySubmit2" type="submit">
+                                                    Submit form
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+
+                            <button class="accordion">ANNEX I: OPERATION PROCESS AND CONTROLS</button>
+                            <div class="panel">
+                                &nbsp;
+                                <div id="qpsmsBtn3">
+                                    <div class="form-row">
+                                        <div class="col-md-6 mb-3">
+                                            <button id="addRawMaterials" class="btn btn-primary"
+                                                    onclick="popUpFunctionAddRawMaterials('addOPCDetails');"
+                                                    type="button">ADD DETAILS
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                &nbsp;
+                                <div class="row-table ">
+                                    <table id="qpsms3" class="table table-striped table-bordered" style="width:100%">
+                                        <thead>
+                                        <tr>
+                                            <!--                                            <th>S/NO.</th>-->
+                                            <th>PROCESS FLOW</th>
+                                            <th>OPERATIONS</th>
+                                            <th>QUALITY CHECKS</th>
+                                            <th>FREQUENCY</th>
+                                            <th>RECORDS</th>
+                                            <th>FINDINGS</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr class="list" th:each="OPCDetails: ${OPCDetailsList}"
+                                            style="cursor: pointer">
+
+                                            <td th:text="${OPCDetails.processFlow}"></td>
+                                            <td th:text="${OPCDetails.operations}"></td>
+                                            <td th:text="${OPCDetails.qualityChecks}"></td>
+                                            <td th:text="${OPCDetails.frequency}"></td>
+                                            <td th:text="${OPCDetails.records}"></td>
+                                            <td th:text="${OPCDetails.findings}"></td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                            </div>
+
+                            <button class="accordion">Annex II: HACCP IMPLEMENTATION</button>
+                            <div class="panel">
+                                <form id="myForm3" class="needs-validation" novalidate
+                                      th:action="@{/api/qa/kebs/add/new-haccp-implementation/save(permitID=${permit?.Id})}"
+                                      method="post">
+                                    <div class="row-table" th:object="${QaInspectionHaccpImplementationEntity}">
+                                        <input type="hidden" id="idTechnical3" name="id"
+                                               th:value="${QaInspectionHaccpImplementationEntity?.id}">
+                                        <table id="qpsms4" class="table table-striped table-bordered"
+                                               style="width:100%">
+                                            <thead>
+                                            <tr>
+                                                <th>S/No.</th>
+                                                <th>Aspects Checked</th>
+                                                <th>Details of Findings</th>
+                                                <th>Remarks</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr class="list" style="cursor: pointer">
+                                                <td>1.</td>
+                                                <td>Design & facilities-construction and layout of buildings and work
+                                                    space.
+                                                </td>
+                                                <td><textarea name="designFacilitiesConstructionLayout"
+                                                              id="designFacilitiesConstructionLayout"
+                                                              class="input-field w-input" cols="10" rows="5"
+                                                              th:field="*{designFacilitiesConstructionLayout}"></textarea>
+                                                </td>
+                                                <td><textarea name="designFacilitiesConstructionLayoutRemarks"
+                                                              id="designFacilitiesConstructionLayoutRemarks"
+                                                              class="input-field w-input" cols="10" rows="5"
+                                                              th:field="*{designFacilitiesConstructionLayoutRemarks}"></textarea>
+                                                </td>
+                                            </tr>
+                                            <tr class="list" style="cursor: pointer">
+                                                <td>2.</td>
+                                                <td>Control of operations</td>
+                                                <td><textarea name="controlOperations" id="controlOperations"
+                                                              class="input-field w-input" cols="10" rows="5"
+                                                              th:field="*{controlOperations}"></textarea></td>
+                                                <td><textarea name="controlOperationsRemarks"
+                                                              id="controlOperationsRemarks" class="input-field w-input"
+                                                              cols="10" rows="5"
+                                                              th:field="*{controlOperationsRemarks}"></textarea></td>
+                                            </tr>
+                                            <tr class="list" style="cursor: pointer">
+                                                <td>3.</td>
+                                                <td>Maintenance and sanitation- cleaning programs, pest control systems
+                                                    and waste management.
+                                                </td>
+                                                <td><textarea name="maintenanceSanitationCleaningPrograms"
+                                                              id="maintenanceSanitationCleaningPrograms"
+                                                              class="input-field w-input" cols="10" rows="5"
+                                                              th:field="*{maintenanceSanitationCleaningPrograms}"></textarea>
+                                                </td>
+                                                <td><textarea name="maintenanceSanitationCleaningProgramsRemarks"
+                                                              id="maintenanceSanitationCleaningProgramsRemarks"
+                                                              class="input-field w-input" cols="10" rows="5"
+                                                              th:field="*{maintenanceSanitationCleaningProgramsRemarks}"></textarea>
+                                                </td>
+                                            </tr>
+                                            <tr class="list" style="cursor: pointer">
+                                                <td>4.</td>
+                                                <td>Personnel hygiene</td>
+                                                <td><textarea name="personnelHygiene" id="personnelHygiene"
+                                                              class="input-field w-input" cols="10" rows="5"
+                                                              th:field="*{personnelHygiene}"></textarea></td>
+                                                <td><textarea name="personnelHygieneRemarks"
+                                                              id="personnelHygieneRemarks" class="input-field w-input"
+                                                              cols="10" rows="5"
+                                                              th:field="*{personnelHygieneRemarks}"></textarea></td>
+                                            </tr>
+                                            <tr class="list" style="cursor: pointer">
+                                                <td>5.</td>
+                                                <td>Transportation - conveyance & bulk container</td>
+                                                <td><textarea name="transportationConveyance"
+                                                              id="transportationConveyance" class="input-field w-input"
+                                                              cols="10" rows="5"
+                                                              th:field="*{transportationConveyance}"></textarea></td>
+                                                <td><textarea name="transportationConveyanceRemarks"
+                                                              id="transportationConveyanceRemarks"
+                                                              class="input-field w-input" cols="10" rows="5"
+                                                              th:field="*{transportationConveyanceRemarks}"></textarea>
+                                                </td>
+                                            </tr>
+                                            <tr class="list" style="cursor: pointer">
+                                                <td>6.</td>
+                                                <td>Product information- labelling</td>
+                                                <td><textarea name="productInformationLabelling"
+                                                              id="productInformationLabelling"
+                                                              class="input-field w-input" cols="10" rows="5"
+                                                              th:field="*{productInformationLabelling}"></textarea></td>
+                                                <td><textarea name="productInformationLabellingRemarks"
+                                                              id="productInformationLabellingRemarks"
+                                                              class="input-field w-input" cols="10" rows="5"
+                                                              th:field="*{productInformationLabellingRemarks}"></textarea>
+                                                </td>
+                                            </tr>
+                                            <tr class="list" style="cursor: pointer">
+                                                <td>7.</td>
+                                                <td>Training of management and employees on food safety</td>
+                                                <td><textarea name="trainingManagement" id="trainingManagement"
+                                                              class="input-field w-input" cols="10" rows="5"
+                                                              th:field="*{trainingManagement}"></textarea></td>
+                                                <td><textarea name="trainingManagementRemarks"
+                                                              id="trainingManagementRemarks" class="input-field w-input"
+                                                              cols="10" rows="5"
+                                                              th:field="*{trainingManagementRemarks}"></textarea></td>
+                                            </tr>
+                                            <tr class="list" style="cursor: pointer">
+                                                <td>8.</td>
+                                                <td>Use of appropriate sector Codes of Hygiene practice</td>
+                                                <td><textarea name="appropriateSectorHygienePractice"
+                                                              id="appropriateSectorHygienePractice"
+                                                              class="input-field w-input" cols="10" rows="5"
+                                                              th:field="*{appropriateSectorHygienePractice}"></textarea>
+                                                </td>
+                                                <td><textarea name="appropriateSectorHygienePracticeRemarks"
+                                                              id="appropriateSectorHygienePracticeRemarks"
+                                                              class="input-field w-input" cols="10" rows="5"
+                                                              th:field="*{appropriateSectorHygienePracticeRemarks}"></textarea>
+                                                </td>
+                                            </tr>
+                                            <tr class="list" style="cursor: pointer">
+                                                <td>9.</td>
+                                                <td>Establishment of HACCP Plan</td>
+                                                <td><textarea name="establishmentHaccpPlan" id="establishmentHaccpPlan"
+                                                              class="input-field w-input" cols="10" rows="5"
+                                                              th:field="*{establishmentHaccpPlan}"></textarea></td>
+                                                <td><textarea name="establishmentHaccpPlanRemarks"
+                                                              id="establishmentHaccpPlanRemarks"
+                                                              class="input-field w-input" cols="10" rows="5"
+                                                              th:field="*{establishmentHaccpPlanRemarks}"></textarea>
+                                                </td>
+                                            </tr>
+                                            <tr class="list" style="cursor: pointer">
+                                                <td>10.</td>
+                                                <td>Product flow diagram</td>
+                                                <td><textarea name="productFlowDiagram" id="productFlowDiagram"
+                                                              class="input-field w-input" cols="10" rows="5"
+                                                              th:field="*{productFlowDiagram}"></textarea></td>
+                                                <td><textarea name="productFlowDiagramRemarks"
+                                                              id="productFlowDiagramRemarks" class="input-field w-input"
+                                                              cols="10" rows="5"
+                                                              th:field="*{productFlowDiagramRemarks}"></textarea></td>
+                                            </tr>
+                                            <tr class="list" style="cursor: pointer">
+                                                <td>11.</td>
+                                                <td>Evidence of Hazard Analysis done at each step of production</td>
+                                                <td><textarea name="evidenceHazardAnalysis" id="evidenceHazardAnalysis"
+                                                              class="input-field w-input" cols="10" rows="5"
+                                                              th:field="*{evidenceHazardAnalysis}"></textarea></td>
+                                                <td><textarea name="evidenceHazardAnalysisRemarks"
+                                                              id="evidenceHazardAnalysisRemarks"
+                                                              class="input-field w-input" cols="10" rows="5"
+                                                              th:field="*{evidenceHazardAnalysisRemarks}"></textarea>
+                                                </td>
+                                            </tr>
+                                            <tr class="list" style="cursor: pointer">
+                                                <td>12.</td>
+                                                <td>Establishment Critical Control Points to address the hazards</td>
+                                                <td><textarea name="establishmentCriticalControlPoints"
+                                                              id="establishmentCriticalControlPoints"
+                                                              class="input-field w-input" cols="10" rows="5"
+                                                              th:field="*{establishmentCriticalControlPoints}"></textarea>
+                                                </td>
+                                                <td><textarea name="establishmentCriticalControlPointsRemarks"
+                                                              id="establishmentCriticalControlPointsRemarks"
+                                                              class="input-field w-input" cols="10" rows="5"
+                                                              th:field="*{establishmentCriticalControlPointsRemarks}"></textarea>
+                                                </td>
+                                            </tr>
+                                            <tr class="list" style="cursor: pointer">
+                                                <td>13.</td>
+                                                <td>Establishment of a Monitoring and control of the CCP's</td>
+                                                <td><textarea name="establishmentMonitoringControl"
+                                                              id="establishmentMonitoringControl"
+                                                              class="input-field w-input" cols="10" rows="5"
+                                                              th:field="*{establishmentMonitoringControl}"></textarea>
+                                                </td>
+                                                <td><textarea name="establishmentMonitoringControlRemarks"
+                                                              id="establishmentMonitoringControlRemarks"
+                                                              class="input-field w-input" cols="10" rows="5"
+                                                              th:field="*{establishmentMonitoringControlRemarks}"></textarea>
+                                                </td>
+                                            </tr>
+                                            <tr class="list" style="cursor: pointer">
+                                                <td>14.</td>
+                                                <td>Evidence of Corrective Actions for each CCP</td>
+                                                <td><textarea name="evidenceCorrectiveActions"
+                                                              id="evidenceCorrectiveActions" class="input-field w-input"
+                                                              cols="10" rows="5"
+                                                              th:field="*{evidenceCorrectiveActions}"></textarea></td>
+                                                <td><textarea name="evidenceCorrectiveActionsRemarks"
+                                                              id="evidenceCorrectiveActionsRemarks"
+                                                              class="input-field w-input" cols="10" rows="5"
+                                                              th:field="*{evidenceCorrectiveActionsRemarks}"></textarea>
+                                                </td>
+                                            </tr>
+                                            <tr class="list" style="cursor: pointer">
+                                                <td>15.</td>
+                                                <td>Evidence for verification to confirm HACCP system is working
+                                                    effectively
+                                                </td>
+                                                <td><textarea name="evidenceVerificationConfirmHaccp"
+                                                              id="evidenceVerificationConfirmHaccp"
+                                                              class="input-field w-input" cols="10" rows="5"
+                                                              th:field="*{evidenceVerificationConfirmHaccp}"></textarea>
+                                                </td>
+                                                <td><textarea name="evidenceVerificationConfirmHaccpRemarks"
+                                                              id="evidenceVerificationConfirmHaccpRemarks"
+                                                              class="input-field w-input" cols="10" rows="5"
+                                                              th:field="*{evidenceVerificationConfirmHaccpRemarks}"></textarea>
+                                                </td>
+                                            </tr>
+                                            <tr class="list" style="cursor: pointer">
+                                                <td>16.</td>
+                                                <td>Record keeping of documents appropriate to the principles e.g.
+                                                    monitoring records
+                                                </td>
+                                                <td><textarea name="recordKeepingDocumentsAppropriate"
+                                                              id="recordKeepingDocumentsAppropriate"
+                                                              class="input-field w-input" cols="10" rows="5"
+                                                              th:field="*{recordKeepingDocumentsAppropriate}"></textarea>
+                                                </td>
+                                                <td><textarea name="recordKeepingDocumentsAppropriateRemarks"
+                                                              id="recordKeepingDocumentsAppropriateRemarks"
+                                                              class="input-field w-input" cols="10" rows="5"
+                                                              th:field="*{recordKeepingDocumentsAppropriateRemarks}"></textarea>
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div id="qpsmsBtn4">
+                                        <div class="form-group">
+                                            <div class="col-md-4 mb-3">
+                                                <button class="btn btn-primary" id="check3"
+                                                        onclick="validationFunction('validateHACCPDetails');"
+                                                        type="button">Validate form
+                                                </button>
+                                            </div>
+                                            <div class="col-md-4 mb-3">
+                                                <button class="btn btn-primary" disabled id="mySubmit3" type="submit">
+                                                    Submit form
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+
+                            <button class="accordion">3.0: RECOMMENDATIONS</button>
+                            <div class="panel">
+                                <ul class="w-list-unstyled">
+                                    <li class="list-item-accordion">
+                                        <p><span
+                                                th:text="${QaInspectionReportRecommendationEntity?.recommendations}"></span>
+                                        </p>
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <button class="accordion">Inspector Details</button>
+                            <div class="panel">
+                                <ul class="w-list-unstyled">
+                                    <li class="list-item-accordion">
+                                        <div class="list-title-accordion">Inspector comments</div>
+                                    </li>
+                                    <li class="list-item-accordion">
+                                        <p><span
+                                                th:text="${QaInspectionReportRecommendationEntity?.inspectorComments}"></span>
+                                        </p>
+                                    </li>
+                                    <li class="list-item-accordion">
+                                        <div class="list-title-accordion">Inspector:</div>
+                                        <div class="list-text-accordion"
+                                             th:text="${QaInspectionReportRecommendationEntity?.inspectorName}"></div>
+                                    </li>
+                                    <li class="list-item-accordion">
+                                        <div class="list-title-accordion">Date:</div>
+                                        <div class="list-text-accordion"
+                                             th:text="${QaInspectionReportRecommendationEntity?.inspectorDate}"></div>
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <button class="accordion">Supervisor Details</button>
+                            <div class="panel">
+                                <ul class="w-list-unstyled">
+                                    <li class="list-item-accordion">
+                                        <div class="list-title-accordion">Supervisor comments</div>
+                                    </li>
+                                    <li class="list-item-accordion">
+                                        <p><span
+                                                th:text="${QaInspectionReportRecommendationEntity?.supervisorComments}"></span>
+                                        </p>
+                                    </li>
+                                    <li class="list-item-accordion">
+                                        <div class="list-title-accordion">Supervisor:</div>
+                                        <div class="list-text-accordion"
+                                             th:text="${QaInspectionReportRecommendationEntity?.supervisorName}"></div>
+                                    </li>
+                                    <li class="list-item-accordion">
+                                        <div class="list-title-accordion">Date:</div>
+                                        <div class="list-text-accordion"
+                                             th:text="${QaInspectionReportRecommendationEntity?.supervisorDate}"></div>
+                                    </li>
+                                </ul>
+                            </div>
+
+                        </div>
+
+                        <div class="filter-block">
+                            <div class="filter-block-title">
+                                <div class="filter-title">Document Details:</div>
+                            </div>
+                            <div>
+                                <!--                            <a th:if="${permitType?.st3Status == 1 and QaSta10Entity?.sta3FilledStatus == 1}" target='_blank' th:href="@{/api/qa/view-sta3(permitID=${QaSta10Entity?.id})}" class="filter-link" style="color: white">STA 3</a>-->
+                            </div>
+                            <div class="filter-block-title">
+                                <div class="filter-title">Action:</div>
+                            </div>
+                            <div>
+                                <div sec:authorize="hasAuthority('QA_OFFICER_MODIFY')">
+                                    <a th:if="${QaInspectionReportRecommendationEntity?.filledQpsmsStatus != null and QaInspectionReportRecommendationEntity?.submittedInspectionReportStatus == null}"
+                                       style="color: white"
+                                       onclick="popUpFunctionAddRawMaterials('addRecommendationDetails');"
+                                       class="filter-link">ADD RECOMMENDATION</a>
+                                    <!--                                    <a th:if="${permit?.sta10FilledStatus != 1 and QaSta10Entity?.closedProduction == 1 and QaSta10Entity?.closedRawMaterials == 1 and QaSta10Entity?.closedMachineryPlants == 1 and QaSta10Entity?.closedManufacturingProcesses == 1 }"  th:href="@{/api/qa/new-sta10-submit(permitID=${permit?.id})}" class="filter-link" style="color: white">SUBMIT STA10</a>-->
+                                </div>
+                                <div sec:authorize="hasAuthority('QA_MANAGER_ASSESSORS_MODIFY') or hasAuthority('QA_HOF_MODIFY') or hasAuthority('QA_HOD_MODIFY')">
+                                    <a th:if="${QaInspectionReportRecommendationEntity?.submittedInspectionReportStatus == 1 and QaInspectionReportRecommendationEntity?.supervisorFilledStatus == null}"
+                                       style="color: white"
+                                       onclick="popUpFunctionAddRawMaterials('addSupervisorDetails');"
+                                       class="filter-link">APPROVE/REJECT</a>
+                                    <!--                                    <a th:if="${permit?.sta10FilledStatus != 1 and QaSta10Entity?.closedProduction == 1 and QaSta10Entity?.closedRawMaterials == 1 and QaSta10Entity?.closedMachineryPlants == 1 and QaSta10Entity?.closedManufacturingProcesses == 1 }"  th:href="@{/api/qa/new-sta10-submit(permitID=${permit?.id})}" class="filter-link" style="color: white">SUBMIT STA10</a>-->
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div class="rawMaterialsForm">
+                            <form id="rawMaterialsForm-Form" name="rawMaterialsForm-Form" method="post">
+                                <div class="modal fade" id="rawMaterialsFormModal" tabindex="-1" role="dialog"
+                                     aria-labelledby="rawMaterialsFormLable"
+                                     aria-hidden="true">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 style="font-weight: bold; " class="modal-title"
+                                                    id="rawMaterialsFormLable"><span id="spanValueRM">none</span></h5>
+                                                <button aria-label="Close" class="close" data-dismiss="modal"
+                                                        onClick="refreshPage()" type="button"><span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div class="form-group">
+                                                    <div id="addOPCDetails" th:object="${QaInspectionOpcEntity}">
+                                                        <!--                                                        <input type="hidden" id="idOCP" name="id" th:value="${QaInspectionOpcEntity?.id}">-->
+                                                        <label for="processFlow" class="col-form-label">PROCESS
+                                                            FLOW</label>
+                                                        <textarea name="processFlow" id="processFlow"
+                                                                  class="input-field w-input" cols="10" rows="5"
+                                                                  th:field="*{processFlow}"></textarea>
+                                                        <label for="operations"
+                                                               class="col-form-label">OPERATIONS</label>
+                                                        <textarea name="operations" id="operations"
+                                                                  class="input-field w-input" cols="10" rows="5"
+                                                                  th:field="*{operations}"></textarea>
+                                                        <label for="qualityChecks" class="col-form-label">QUALITY
+                                                            CHECKS</label>
+                                                        <textarea name="qualityChecks" id="qualityChecks"
+                                                                  class="input-field w-input" cols="10" rows="5"
+                                                                  th:field="*{qualityChecks}"></textarea>
+                                                        <label for="frequency" class="col-form-label">FREQUENCY</label>
+                                                        <textarea name="frequency" id="frequency"
+                                                                  class="input-field w-input" cols="10" rows="5"
+                                                                  th:field="*{frequency}"></textarea>
+                                                        <label for="records" class="col-form-label">RECORDS</label>
+                                                        <textarea name="records" id="records"
+                                                                  class="input-field w-input" cols="10" rows="5"
+                                                                  th:field="*{records}"></textarea>
+                                                        <label for="findings" class="col-form-label">FINDINGS</label>
+                                                        <textarea name="findings" id="findings"
+                                                                  class="input-field w-input" cols="10" rows="5"
+                                                                  th:field="*{findings}"></textarea>
+                                                    </div>
+                                                    <div id="addRecommendationDetails"
+                                                         th:object="${QaInspectionReportRecommendationEntity}">
+                                                        <input type="hidden" id="idRecommendation" name="id"
+                                                               th:value="${QaInspectionReportRecommendationEntity?.id}">
+                                                        <input type="hidden" id="submittedInspectionReportStatus"
+                                                               name="submittedInspectionReportStatus"
+                                                               th:value="${activeStatus}">
+                                                        <label for="recommendations" class="col-form-label">RECOMMENDATIONS</label>
+                                                        <textarea name="recommendations" id="recommendations"
+                                                                  class="input-field w-input" cols="65" rows="5"
+                                                                  th:field="*{recommendations}"></textarea>
+                                                        <label for="inspectorComments" class="col-form-label">INSPECTOR
+                                                            COMMENTS</label>
+                                                        <textarea name="inspectorComments" id="inspectorComments"
+                                                                  class="input-field w-input" cols="65" rows="5"
+                                                                  th:field="*{inspectorComments}"></textarea>
+                                                        <label for="inspectorName" class="col-form-label">INSPECTOR
+                                                            NAME</label>
+                                                        <input type="hidden" id="inspectorName2" name="inspectorName"
+                                                               th:value="${session.currentUser.firstName}+ ' ' +${session.currentUser.lastName}">
+                                                        <input class="input-field w-input" max="20" id="inspectorName"
+                                                               name="inspectorName"
+                                                               th:value="${session.currentUser.firstName}+ ' ' +${session.currentUser.lastName}"
+                                                               disabled>
+                                                        <label for="inspectorName" class="col-form-label">DATE</label>
+                                                        <input type="hidden" id="inspectorDate2" name="inspectorDate"
+                                                               th:value="${currentDate}">
+                                                        <input class="input-field w-input" max="20" id="inspectorDate"
+                                                               name="inspectorDate" th:value="${currentDate}" disabled>
+                                                    </div>
+
+                                                    <div id="addSupervisorDetails"
+                                                         th:object="${QaInspectionReportRecommendationEntity}">
+                                                        <input type="hidden" id="idRecommendation2" name="id"
+                                                               th:value="${QaInspectionReportRecommendationEntity?.id}">
+                                                        <input type="hidden" id="supervisorFilledStatus"
+                                                               name="supervisorFilledStatus" th:value="${activeStatus}">
+                                                        <label for="supervisorComments" class="col-form-label">SUPERVISOR
+                                                            COMMENTS</label>
+                                                        <textarea name="supervisorComments" id="supervisorComments"
+                                                                  class="input-field w-input" cols="65" rows="5"
+                                                                  th:field="*{supervisorComments}"></textarea>
+                                                        <label for="supervisorName" class="col-form-label">SUPERVISOR
+                                                            NAME</label>
+                                                        <input type="hidden" id="supervisorName2" name="supervisorName"
+                                                               th:value="${session.currentUser.firstName}+ ' ' +${session.currentUser.lastName}">
+                                                        <input class="input-field w-input" max="20" id="supervisorName"
+                                                               name="supervisorName"
+                                                               th:value="${session.currentUser.firstName}+ ' ' +${session.currentUser.lastName}"
+                                                               disabled>
+                                                        <label for="supervisorDate" class="col-form-label">DATE</label>
+                                                        <input type="hidden" id="supervisorDate2" name="supervisorDate"
+                                                               th:value="${currentDate}">
+                                                        <input class="input-field w-input" max="20" id="supervisorDate"
+                                                               name="supervisorDate" th:value="${currentDate}" disabled>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button class="btn btn-secondary" data-dismiss="modal"
+                                                        onClick="refreshPage()"
+                                                        type="button">Close
+                                                </button>
+                                                <input type="submit" id="saveValueRM" class="btn btn-primary"
+                                                       value="Save"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+<div th:replace="fragments/general-form.html :: scripts"></div>
+<script>
+    document.onreadystatechange = function () {
+        showSpinnerOnLoad(document)
+    }
+
+    function loadSpinner() {
+        showSpinner(document)
+    }
+</script>
+<script>
+    var acc = document.getElementsByClassName("accordion");
+    // var btn = document.getElementsByClassName("button w-button eBtn");
+    var i;
+
+    for (i = 0; i < acc.length; i++) {
+        acc[i].addEventListener("click", function () {
+            this.classList.toggle("active");
+            this.style.border = "none";
+            // this.style.position = "sticky"
+            var panel = this.nextElementSibling;
+            if (panel.style.maxHeight) {
+                panel.style.maxHeight = null;
+            } else {
+                panel.style.maxHeight = panel.scrollHeight + "px";
+                // panel.style.position = "-webkit-sticky"
+                // panel.style.position = "sticky"
+            }
+        });
+    }
+
+
+</script>
+<script>
+    $(document).ready(function () {
+        var table = $('#example').DataTable({
+            lengthChange: false,
+            buttons: ['copy', 'excel', 'pdf', 'colvis']
+        });
+
+        table.buttons().container()
+            .appendTo('#example_wrapper .col-sm-6:eq(0)');
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        $("#check").click(function () {
+            let allAreFilled = true;
+            document.getElementById("myForm").querySelectorAll("[required]").forEach(function (i) {
+                if (!allAreFilled) return;
+                if (!i.value) allAreFilled = false;
+                if (i.type === "radio") {
+                    let radioValueCheck = false;
+                    document.getElementById("myForm").querySelectorAll(`[name=${i.name}]`).forEach(function (r) {
+                        if (r.checked) radioValueCheck = true;
+                    })
+                    allAreFilled = radioValueCheck;
+                }
+            })
+            if (!allAreFilled) {
+                alert('Fill all the fields');
+            } else {
+                $(this).attr("disabled", "disabled");
+                $("#mySubmit").removeAttr("disabled");
+            }
+        });
+
+
+        $("#portOfArrival").click(function () {
+            let sectionId = $("#portOfArrival").val()
+            // console.log(categories.length)
+            if (sectionId !== 0) {
+                $.ajax({
+                    method: "GET",
+                    url: `/api/auth/sub-section-l1-list/${sectionId}`,
+                    success(response) {
+                        console.log(response)
+                        var s = ''
+                        s += ' <option value="0">Select One...</option>';
+                        for (var i = 0; i < response.length; i++) {
+                            // response.push('Select one')
+                            s += '<option value="' + response[i].id + '">' + response[i].subSection + '</option>';
+                        }
+                        $("#clusterId").html(s);
+                    }
+                })
+            }
+
+        });
+
+        $("#clusterId").click(function () {
+            let subSectionL1Id = $("#clusterId").val()
+            // console.log(categories.length)
+            if (subSectionL1Id !== 0) {
+                $.ajax({
+                    method: "GET",
+                    url: `/api/auth/sub-section-l2-list/${subSectionL1Id}`,
+                    success(response) {
+                        console.log(response)
+                        let s = '';
+                        s += ' <option value="0">Select One...</option>';
+                        for (let i = 0; i < response.length; i++) {
+                            // response.push('Select one')
+                            s += '<option value="' + response[i].id + '">' + response[i].subSection + '</option>';
+                        }
+                        $("#freightStation").html(s);
+                    }
+                })
+            }
+
+        });
+    });
+</script>
+<script>
+    function validationFunction(eventAction) {
+
+        let arrHead = ['validateQPAMSDetails', 'validateISPTESTINGDetails', 'validateSMSDetails', 'validateHACCPDetails'];
+        let arrHeadValues = [
+            {
+                "myFormValue": "myForm",
+                "check": "#check",
+                "mySubmitValue": "#mySubmit",
+            },
+            {
+                "myFormValue": "myForm1",
+                "check": "#check1",
+                "mySubmitValue": "#mySubmit1",
+            },
+            {
+                "myFormValue": "myForm2",
+                "check": "#check2",
+                "mySubmitValue": "#mySubmit2",
+            },
+            {
+                "myFormValue": "myForm3",
+                "check": "#check3",
+                "mySubmitValue": "#mySubmit3",
+            },
+
+        ]
+        // let arrHead = ['validateQPAMSDetails', 'closeAddProducts'];
+        // let arrHeadSave = ['Add Products being manufactured', 'Close'];
+
+        for (let h = 0; h < arrHead.length; h++) {
+            if (eventAction === arrHead[h]) {
+                let allAreFilled = true;
+                document.getElementById(arrHeadValues[h].myFormValue).querySelectorAll("[required]").forEach(function (i) {
+                    if (!allAreFilled) return;
+                    if (!i.value) allAreFilled = false;
+                    if (i.type === "radio") {
+                        let radioValueCheck = false;
+                        document.getElementById(arrHeadValues[h].myFormValue).querySelectorAll(`[name=${i.name}]`).forEach(function (r) {
+                            if (r.checked) radioValueCheck = true;
+                        })
+                        allAreFilled = radioValueCheck;
+                    }
+                })
+                if (!allAreFilled) {
+                    alert('Fill all the fields');
+                } else {
+                    $(arrHeadValues[h].check).attr("disabled", "disabled");
+                    $(arrHeadValues[h].mySubmitValue).removeAttr("disabled");
+                }
+            }
+        }
+    }
+
+
+    function popUpFunctionAddRawMaterials(eventAction) {
+
+        let permitID = $("#permitIDValue").val();
+        let arrHead = ['addOPCDetails', 'addRecommendationDetails', 'addSupervisorDetails'];
+        let arrHeadAndAction = [
+            {
+                "head": "Attach duly filled Annexes here below as signed with the firm. Include the findings during inspection (See Annex I& II as appropriate):",
+                "action": `/api/qa/kebs/add/new-opc-details/save?permitID=${permitID}`,
+            },
+            {
+                "head": "Please fill the details below",
+                "action": `/api/qa/kebs/add/new-recommendation-details/save?permitID=${permitID}`,
+            },
+            {
+                "head": "Please fill the details below",
+                "action": `/api/qa/kebs/add/new-recommendation-details/save?permitID=${permitID}`,
+            }
+        ]
+
+
+        for (let h = 0; h < arrHead.length; h++) {
+            if (eventAction !== arrHead[h]) {
+                document.getElementById(arrHead[h]).remove();
+            } else {
+                if (eventAction === arrHead[h]) {
+                    $('#rawMaterialsForm-Form').attr('action', arrHeadAndAction[h].action);
+                    document.getElementById('spanValueRM').innerHTML = arrHeadAndAction[h].head;
+                    document.getElementById("saveValueRM").value = 'submit';
+                }
+            }
+        }
+
+        $('.rawMaterialsForm #rawMaterialsFormModal').modal();
+    }
+
+    function refreshPage() {
+        window.location.reload();
+    }
+
+    // function valueCheck () {
+    //     let checkStatus = $("#messageValue").val();
+    //     console.log(checkStatus)
+    //     if (checkStatus === 'sampSubmitAddParamDetails'){
+    //         $("#sampleForm :input").prop("readonly", true);
+    //         $("#idSubmit").remove()
+    //     }
+    //
+    // }
+    //
+    // window.onload = function () {
+    //     setTimeout(function () {
+    //         valueCheck();
+    //     }, 1000);
+    // }
+</script>
+</body>
+</html>
+
+

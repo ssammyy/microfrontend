@@ -135,8 +135,7 @@ class QualityAssuranceController(
         @ModelAttribute("schemeFound") schemeFound: QaSchemeForSupervisionEntity,
         @RequestParam("schemeID") schemeID: Long,
         model: Model
-    )
-            : String? {
+    ): String? {
         val result: ServiceRequestsEntity?
         val map = commonDaoServices.serviceMapDetails(appId)
         val loggedInUser = commonDaoServices.loggedInUserDetails()
@@ -217,6 +216,8 @@ class QualityAssuranceController(
 
         //Find Permit with permit ID
         var permitDetails = qaDaoServices.findPermitBYID(permitID)
+        val permitType =
+            qaDaoServices.findPermitType(permitDetails.permitType ?: throw Exception("MISSING PERMIT TYPE ID"))
 
         //Add Permit ID THAT was Fetched so That it wont create a new record while updating with the methode
         permit.id = permitDetails.id
@@ -236,6 +237,18 @@ class QualityAssuranceController(
                 faxNo = plantDetails.faxNo
                 plotNo = plantDetails.plotNo
                 designation = plantDetails.designation
+            }
+        } else if (permit.sectionId != null) {
+            with(permit) {
+                divisionId = commonDaoServices.findSectionWIthId(
+                    sectionId ?: throw Exception("SECTION ID IS MISSING")
+                ).divisionId?.id
+            }
+        } else if (permit.qaoId != null && permit.assignOfficerStatus == map.activeStatus) {
+            with(permit) {
+                factoryVisit = commonDaoServices.getCalculatedDate(
+                    permitType.factoryVisitDate ?: throw Exception("MISSING FACTORY INSPECTION DATE")
+                )
             }
         }
 
@@ -765,6 +778,118 @@ class QualityAssuranceController(
         val sm = CommonDaoServices.MessageSuccessFailDTO()
         sm.closeLink = "${applicationMapProperties.baseUrlValue}/qa/invoice/batch-details?batchID=${result.varField1}"
         sm.message = "Batch Invoice has Been Generated"
+
+        return commonDaoServices.returnValues(result, map, sm)
+    }
+
+    @PostMapping("/kebs/add/new-qpsms-details/save")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun permitAddInspectionReportDetails(
+        @ModelAttribute("QaInspectionTechnicalEntity") QaInspectionTechnicalEntity: QaInspectionTechnicalEntity,
+        @RequestParam("permitID") permitID: Long,
+        model: Model,
+    ): String? {
+
+        val map = commonDaoServices.serviceMapDetails(appId)
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+
+        val result: ServiceRequestsEntity?
+
+        result = qaDaoServices.permitAddNewInspectionReportDetailsTechnical(
+            map,
+            loggedInUser,
+            permitID,
+            QaInspectionTechnicalEntity
+        )
+
+        val sm = CommonDaoServices.MessageSuccessFailDTO()
+        sm.closeLink =
+            "${applicationMapProperties.baseUrlValue}/qa/inspection/inspection-report-details/inspection-report-details?permitID=${result.varField1}"
+        sm.message = "Inspection Report has Been Generated(DRAFT)"
+
+        return commonDaoServices.returnValues(result, map, sm)
+    }
+
+    @PostMapping("/kebs/add/new-recommendation-details/save")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun permitAddInspectionReportRecommendationDetails(
+        @ModelAttribute("QaInspectionReportRecommendationEntity") QaInspectionReportRecommendationEntity: QaInspectionReportRecommendationEntity,
+        @RequestParam("permitID") permitID: Long,
+        model: Model,
+    ): String? {
+
+        val map = commonDaoServices.serviceMapDetails(appId)
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+
+        val result: ServiceRequestsEntity?
+        val permitFound = qaDaoServices.findPermitBYID(permitID)
+        var qaInspectionReportRecommendation = qaDaoServices.findQaInspectionReportRecommendationBYPermitID(
+            permitFound.id ?: throw Exception("INVALID PERMIT ID FOUND")
+        )
+
+        qaInspectionReportRecommendation = commonDaoServices.updateDetails(
+            QaInspectionReportRecommendationEntity,
+            qaInspectionReportRecommendation
+        ) as QaInspectionReportRecommendationEntity
+
+        result = qaDaoServices.inspectionRecommendationUpdate(qaInspectionReportRecommendation, map, loggedInUser)
+
+        val sm = CommonDaoServices.MessageSuccessFailDTO()
+        sm.closeLink =
+            "${applicationMapProperties.baseUrlValue}/qa/inspection/inspection-report-details/inspection-report-details?permitID=${result.varField1}"
+        sm.message = "Inspection Report has Been Generated(DRAFT)"
+
+        return commonDaoServices.returnValues(result, map, sm)
+    }
+
+    @PostMapping("/kebs/add/new-haccp-implementation/save")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun permitAddInspectionReportHACCPImplimantationDetails(
+        @ModelAttribute("QaInspectionHaccpImplementationEntity") QaInspectionHaccpImplementationEntity: QaInspectionHaccpImplementationEntity,
+        @RequestParam("permitID") permitID: Long,
+        model: Model,
+    ): String? {
+
+        val map = commonDaoServices.serviceMapDetails(appId)
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+
+        val result: ServiceRequestsEntity?
+
+        result = qaDaoServices.permitAddNewInspectionReportDetailsHaccp(
+            map,
+            loggedInUser,
+            permitID,
+            QaInspectionHaccpImplementationEntity
+        )
+
+        val sm = CommonDaoServices.MessageSuccessFailDTO()
+        sm.closeLink =
+            "${applicationMapProperties.baseUrlValue}/qa/inspection/inspection-report-details/inspection-report-details?permitID=${result.varField1}"
+        sm.message = "Inspection Report Details have Been added Successful"
+
+        return commonDaoServices.returnValues(result, map, sm)
+    }
+
+    @PostMapping("/kebs/add/new-opc-details/save")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun permitAddInspectionReportOPCDetails(
+        @ModelAttribute("QaInspectionOpcEntity") QaInspectionOpcEntity: QaInspectionOpcEntity,
+        @RequestParam("permitID") permitID: Long,
+        model: Model,
+    ): String? {
+
+        val map = commonDaoServices.serviceMapDetails(appId)
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+
+        val result: ServiceRequestsEntity?
+
+        result =
+            qaDaoServices.permitAddNewInspectionReportDetailsOPC(map, loggedInUser, permitID, QaInspectionOpcEntity)
+
+        val sm = CommonDaoServices.MessageSuccessFailDTO()
+        sm.closeLink =
+            "${applicationMapProperties.baseUrlValue}/qa/inspection/inspection-report-details/inspection-report-details?permitID=${result.varField1}"
+        sm.message = "Inspection Report Details have Been added Successful"
 
         return commonDaoServices.returnValues(result, map, sm)
     }
