@@ -9,6 +9,7 @@ import {loadAuths, LoginCredentials} from "../../core/store";
   templateUrl: './login.component.html',
   styles: []
 })
+
 export class LoginComponent implements OnInit {
 
   loginForm: FormGroup;
