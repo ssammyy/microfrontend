@@ -2,100 +2,136 @@
 <html>
 
 <head>
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>KEBS</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- <link rel="stylesheet" type="text/css" media="screen" href="styles.css" /> -->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Nunito Sans">
+  <meta charset="utf-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>KEBS</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- <link rel="stylesheet" type="text/css" media="screen" href="styles.css" /> -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Nunito Sans">
 </head>
 
 <body>
-    <header>
-        <div class="header">
-            <div class="kebs-image">
-                <img src="assets/images/kebs_new_logo.png" class="logo-image" alt="kebs Logo" id="logo">
-            </div>
-            <div class="title">
-                <h3>
-                    Self-Service Portal
-                </h3>
-            </div>
-            <div class="vision-2030">
-                <img src="./assets/images/Vision2030_logo.svg" class="vision-image" alt="Vision2030_logo" id="logo">
-            </div>
-        </div>
-    </header>
-    <section class="infor">
-        <div class="about-us">
-            <div class="about-us-content">
-                <p class="content-title">
-                    Vision:
-                </p>
-                <p class="content-details">
-                    To be a global leader in standards based solutions that deliver quality and standards
-                </p>
-                <br>
-                <p class="content-title">
-                    Mission:
-                </p>
-                <p class="content-details">
-                    To provide standard based solutions that promote innovation, trade and quality life
-                </p>
-                <br>
-                <p class="content-title">
-                    Motto:
-                </p>
-                <p class="content-details">
-                    Standards for quality life
-                </p>
-            </div>
-        </div>
-        <div class="login-form">
-            <router-outlet></router-outlet>
-        </div>
+<header>
+  <div class="header">
+    <div class="kebs-image">
+      <img src="assets/images/kebs_new_logo.png" class="logo-image" alt="kebs Logo" id="logo">
+    </div>
+    <div class="title">
+      <h5>
+        Self-Service Portal
+      </h5>
+    </div>
+    <div class="vision-2030">
+      <img src="./assets/images/Vision2030_logo.svg" class="vision-image" alt="Vision2030_logo" id="logo">
+    </div>
+  </div>
+</header>
+
+<div class="row" style="background-color: #1B75BC">
+  <div class="col-lg-6">
+    <div class="about-us">
+      <div class="about-us-content">
+        <p class="content-title">
+          Vision:
+        </p>
+        <p class="content-details">
+          To be a global leader in standards based solutions that deliver quality and standards
+        </p>
+        <br>
+        <p class="content-title">
+          Mission:
+        </p>
+        <p class="content-details">
+          To provide standard based solutions that promote innovation, trade and quality life
+        </p>
+        <br>
+        <p class="content-title">
+          Motto:
+        </p>
+        <p class="content-details">
+          Standards for quality life
+        </p>
+      </div>
+    </div>
+
+  </div>
+  <div class="col-lg-6">
+    <div class="login-form">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+</div>
+
+<!--    <section class="infor">-->
+<!--        <div class="about-us">-->
+<!--            <div class="about-us-content">-->
+<!--                <p class="content-title">-->
+<!--                    Vision:-->
+<!--                </p>-->
+<!--                <p class="content-details">-->
+<!--                    To be a global leader in standards based solutions that deliver quality and standards-->
+<!--                </p>-->
+<!--                <br>-->
+<!--                <p class="content-title">-->
+<!--                    Mission:-->
+<!--                </p>-->
+<!--                <p class="content-details">-->
+<!--                    To provide standard based solutions that promote innovation, trade and quality life-->
+<!--                </p>-->
+<!--                <br>-->
+<!--                <p class="content-title">-->
+<!--                    Motto:-->
+<!--                </p>-->
+<!--                <p class="content-details">-->
+<!--                    Standards for quality life-->
+<!--                </p>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--        <div class="login-form">-->
+<!--            <router-outlet></router-outlet>-->
+<!--        </div>-->
 
 
-    </section>
-    <section class="footer">
-        <div class="location">
-            <p class="location-details">
-                Popo Road, Off Mombasa Road,
-            </p>
-            <p class="location-details">
-                Tel : + 254 (20) 694 8000
-            </p>
-            <p class="location-details">
-                Mobile : 0722 202 137 or 0734 600 471/2
-            </p>
-            <p class="location-details">
-                PVOC : 0724 255 242
-            </p>
-            <p class="location-details">
-                Email: info@kebs.org
-            </p>
-        </div>
-        <div class="standard-marks marks">
-            <div class="f-mark">
-                <img src="./assets/images/assets/Fmark.png" class="mark-image" alt="fortified Logo" id="fortified">
-            </div>
-            <div class="d-mark">
-                <img src="./assets/images/assets/Dmark.png" class="mark-image" alt="d_mark Logo" id="d_mark">
-            </div>
-            <div class="n-mark">
-                <img src="./assets/images/assets/Smark Logo.png" class="mark-image" alt="quality Logo" id="quality">
-            </div>
-        </div>
-        <div class="copyright">
-            <p class="copyright-details">
-                Copyright 2021 Kenya Bureau of Standards.
-            </p>
-            <p class="copyright-details push-middle">
-                All Rights Reserved v1.0.0.
-            </p>
-        </div>
-    </section>
+<!--    </section>-->
+<section class="footer">
+  <div class="location">
+    <p class="location-details">
+      Popo Road, Off Mombasa Road,
+    </p>
+    <p class="location-details">
+      Tel : + 254 (20) 694 8000
+    </p>
+    <p class="location-details">
+      Mobile : 0722 202 137 or 0734 600 471/2
+    </p>
+    <p class="location-details">
+      PVOC : 0724 255 242
+    </p>
+    <p class="location-details">
+      Email: info@kebs.org
+    </p>
+  </div>
+  <div class="standard-marks marks">
+    <div class="f-mark">
+      <img src="./assets/images/assets/Fmark.png" class="mark-image" alt="fortified Logo" id="fortified">
+    </div>
+    <div class="d-mark">
+      <img src="./assets/images/assets/Dmark.png" class="mark-image" alt="d_mark Logo" id="d_mark">
+    </div>
+    <div class="n-mark">
+      <img src="./assets/images/assets/Smark Logo.png" class="mark-image" alt="quality Logo" id="quality">
+    </div>
+  </div>
+  <div class="copyright">
+    <p class="copyright-details">
+      Copyright 2021 Kenya Bureau of Standards.
+    </p>
+    <p class="copyright-details push-middle">
+      All Rights Reserved v1.0.0.
+    </p>
+  </div>
+</section>
 </body>
 
 </html>

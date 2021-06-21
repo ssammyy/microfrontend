@@ -1,4 +1,4 @@
-import {APP_BASE_HREF} from '@angular/common';
+import {APP_BASE_HREF, CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
 
@@ -35,7 +35,9 @@ import {DashboardComponent} from './views/dashboard/dashboard.component';
       preventDuplicates: true,
     }),
     ReactiveFormsModule,
-    SharedModule
+    SharedModule,
+    CommonModule,
+    CommonModule
   ],
   providers: [
     {provide: APP_BASE_HREF, useValue: '/'}
