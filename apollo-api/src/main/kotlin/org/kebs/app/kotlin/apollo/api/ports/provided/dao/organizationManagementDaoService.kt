@@ -236,6 +236,7 @@ class RegistrationManagementDaoService(
             val entity = ManufacturePlantDetailsEntity().apply {
                 town = dto.town
                 county = dto.county
+                companyProfileId = dto.companyProfileId
                 physicalAddress = dto.physicalAddress
                 street = dto.street
                 buildingName = dto.buildingName
@@ -293,7 +294,7 @@ class RegistrationManagementDaoService(
      * @param companyId the primary key of the parent company
      * @param userId the currently logged-in user
      */
-    fun fetchBranchesByCompanyIdAndUserId(companyId: Long, userId: Long): List<PlantEntityDto> {
+    fun fetchBranchesByCompanyIdAndUserId(companyId: Long, userId: Long): List<PlantEntityDto>? {
         return companyRepo.findByIdOrNull(companyId)
             ?.let { entity ->
                 if (entity.userId != userId) {
@@ -315,11 +316,11 @@ class RegistrationManagementDaoService(
      * @param branchId the branch to fetch users by
      * @param userId the currently logged-in user
      */
-    fun fetchBranchesByCompanyIdAndBranchIdAndUserId(
+    fun fetchUsersByCompanyIdAndBranchIdAndUserId(
         companyProfileId: Long,
         branchId: Long,
         userId: Long
-    ): List<OrganizationUserEntityDto> {
+    ): List<OrganizationUserEntityDto>? {
         return companyRepo.findByIdOrNull(companyProfileId)
             ?.let { entity ->
                 if (entity.userId != userId) {
@@ -353,7 +354,7 @@ class RegistrationManagementDaoService(
      * @param companyId the primary key of the parent company
      * @param userId the currently logged-in user
      */
-    fun fetchDirectorsByCompanyIdAndUserId(companyId: Long, userId: Long): List<ProfileDirectorsEntityDto> {
+    fun fetchDirectorsByCompanyIdAndUserId(companyId: Long, userId: Long): List<ProfileDirectorsEntityDto>? {
         return companyRepo.findByIdOrNull(companyId)
             ?.let { entity ->
                 if (entity.userId != userId) {
@@ -374,7 +375,7 @@ class RegistrationManagementDaoService(
      * @param companyId the primary key of the parent company
      * @param userId the currently logged-in user
      */
-    fun fetchBranchesByIdAndUserId(companyId: Long, userId: Long): PlantEntityDto {
+    fun fetchBranchesByIdAndUserId(companyId: Long, userId: Long): PlantEntityDto? {
         return companyRepo.findByIdOrNull(companyId)
             ?.let { entity ->
                 if (entity.userId != userId) {
@@ -397,7 +398,7 @@ class RegistrationManagementDaoService(
      * @param companyId the primary key of the parent company
      * @param userId the currently logged-in user
      */
-    fun fetchDirectorsByIdAndUserId(companyId: Long, userId: Long): ProfileDirectorsEntityDto {
+    fun fetchDirectorsByIdAndUserId(companyId: Long, userId: Long): ProfileDirectorsEntityDto? {
         return companyRepo.findByIdOrNull(companyId)
             ?.let { entity ->
                 if (entity.userId != userId) {
@@ -421,7 +422,7 @@ class RegistrationManagementDaoService(
      * @param userId the currently logged-in user
      * @param id the primary key of the user
      */
-    fun fetchUserByIdAndUserId(companyProfileId: Long, userId: Long, id: Long): OrganizationUserEntityDto {
+    fun fetchUserByIdAndUserId(companyProfileId: Long, userId: Long, id: Long): OrganizationUserEntityDto? {
         return companyRepo.findByIdOrNull(companyProfileId)
             ?.let { entity ->
                 if (entity.userId != userId) {
@@ -522,7 +523,7 @@ class RegistrationManagementDaoService(
                         it.region,
                         it.county,
                         it.town
-                    )
+                    ).apply { id = it.id }
                 }
 
             }
@@ -557,31 +558,32 @@ class RegistrationManagementDaoService(
     /**
      * Fetch single company
      */
-    fun fetchCompanyById(id: Long, userId: Long): UserCompanyEntityDto? = companyRepo.findByIdOrNull(id)?.let {
-        if (it.userId == userId) {
-            UserCompanyEntityDto(
-                it.name,
-                it.kraPin,
-                it.userId,
-                null,
-                it.registrationNumber,
-                it.postalAddress,
-                it.physicalAddress,
-                it.plotNumber,
-                it.companyEmail,
-                it.companyTelephone,
-                it.yearlyTurnover,
-                it.businessLines,
-                it.businessNatures,
-                it.buildingName,
-                it.streetName,
-                it.directorIdNumber,
-                it.region,
-                it.county,
-                it.town
-            )
-        } else throw InvalidValueException("Attempt to fetch Organization rejected")
-    }
+    fun fetchCompanyById(identifier: Long, userId: Long): UserCompanyEntityDto? =
+        companyRepo.findByIdOrNull(identifier)?.let {
+            if (it.userId == userId) {
+                UserCompanyEntityDto(
+                    it.name,
+                    it.kraPin,
+                    it.userId,
+                    null,
+                    it.registrationNumber,
+                    it.postalAddress,
+                    it.physicalAddress,
+                    it.plotNumber,
+                    it.companyEmail,
+                    it.companyTelephone,
+                    it.yearlyTurnover,
+                    it.businessLines,
+                    it.businessNatures,
+                    it.buildingName,
+                    it.streetName,
+                    it.directorIdNumber,
+                    it.region,
+                    it.county,
+                    it.town
+                ).apply { id = it.id }
+            } else throw InvalidValueException("Attempt to fetch Organization rejected")
+        }
 
     fun updateCompanyDetails(dto: UserCompanyEntityDto, user: UsersEntity): UserCompanyEntityDto? {
         if ((dto.id ?: -2L) < 0) {
@@ -610,7 +612,8 @@ class RegistrationManagementDaoService(
                         county = dto.county
                         town = dto.town
                         region = dto.region
-                        manufactureStatus = 1
+                        manufactureStatus = applicationMapProperties.transactionActiveStatus
+                        status = applicationMapProperties.transactionActiveStatus
                         createdBy = user.userName
                         createdOn = Timestamp.from(Instant.now())
                     }

@@ -1,12 +1,16 @@
 import {
   AuthEffects,
   authReducer,
+  branchIdReducer,
   brsValidationReducer,
+  companyIdReducer,
+  directorIdReducer,
   RegistrationEffects,
   registrationReducer,
   responseReducer,
   RouterEffects,
   sendTokenToPhoneReducer,
+  userIdReducer,
   validateTokenAndPhoneReducer
 } from "./data";
 import {ActionReducer, MetaReducer} from "@ngrx/store";
@@ -20,7 +24,11 @@ export const appReducer = {
   sendTokenToPhone: sendTokenToPhoneReducer,
   validateTokenAndPhone: validateTokenAndPhoneReducer,
   registration: registrationReducer,
-  auth: authReducer
+  auth: authReducer,
+  companyId: companyIdReducer,
+  branchId: branchIdReducer,
+  userId: userIdReducer,
+  directorId: directorIdReducer,
 };
 
 export function localStorageSyncReducer(reducer: ActionReducer<any>): ActionReducer<any> {

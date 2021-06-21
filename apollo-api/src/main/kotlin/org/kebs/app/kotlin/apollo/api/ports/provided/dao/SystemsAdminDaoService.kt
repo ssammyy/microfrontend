@@ -581,7 +581,7 @@ class SystemsAdminDaoService(
 
     fun updateAuthorities(privilege: AuthoritiesEntityDto): AuthoritiesEntityDto? {
         when {
-            privilege.id ?: -1L < 1L -> {
+            (privilege.id ?: -1L) < 1L -> {
                 val r = UserPrivilegesEntity()
                 r.name = privilege.name
                 r.descriptions = privilege.descriptions
@@ -1188,15 +1188,15 @@ class SystemsAdminDaoService(
                          */
                         personalContactNumber = dto.company.companyTelephone
                         registrationDate = Date(java.util.Date().time)
-                        typeOfUser = 1
+                        typeOfUser = applicationMapProperties.transactionActiveStatus
                         title = u.title
                         email = u.email
                         userName = u.userName
                         userRegNo = "KEBS${commonDaoServices.generateTransactionReference(5).toUpperCase()}"
                         credentials = BCryptPasswordEncoder().encode(u.credentials)
-                        enabled = 1
-                        status = 1
-                        accountLocked = 1
+                        enabled = applicationMapProperties.transactionActiveStatus
+                        status = applicationMapProperties.transactionActiveStatus
+                        accountLocked = applicationMapProperties.transactionActiveStatus
                         approvedDate = Timestamp.from(Instant.now())
                     }
 
@@ -1236,7 +1236,8 @@ class SystemsAdminDaoService(
                         county = dto.company.county
                         town = dto.company.town
                         region = dto.company.region
-                        manufactureStatus = 1
+                        manufactureStatus = applicationMapProperties.transactionActiveStatus
+                        status = applicationMapProperties.transactionActiveStatus
                         createdBy = user.userName
                         createdOn = Timestamp.from(Instant.now())
                     }
@@ -1292,7 +1293,7 @@ class SystemsAdminDaoService(
 
                         createdBy = companyProfileEntity.name
                         createdOn = Timestamp.from(Instant.now())
-                        status = 1
+                        status = applicationMapProperties.transactionActiveStatus
                     }
                     branch = manufacturePlantRepository.save(branch)
 

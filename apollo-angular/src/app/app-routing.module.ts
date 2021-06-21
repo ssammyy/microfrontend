@@ -6,6 +6,7 @@ import {SignUpComponent} from './views/registration/sign-up.component';
 import {DashboardComponent} from "./views/dashboard/dashboard.component";
 import {RouteGuard} from "./core/route-guard/route.guard";
 import {AccountList} from "./views/dashboard/account/account.list";
+import {CompaniesList} from "./views/dashboard/company/companies.list";
 
 
 const routes: Routes = [
@@ -20,14 +21,24 @@ const routes: Routes = [
     children: [
       {
         path: '',
-        component: LoginComponent
+        component: SignUpComponent
       },
       {
         path: 'register',
         component: SignUpComponent
-      },
+      }
+
+    ],
+    data: {
+      title: 'KEBS'
+    }
+  },
+  {
+    path: 'login',
+    component: RegistrationComponent,
+    children: [
       {
-        path: 'login',
+        path: '',
         component: LoginComponent
       }
 
@@ -48,6 +59,10 @@ const routes: Routes = [
         path: 'account',
         component: AccountList,
         canActivate: [RouteGuard]
+      },
+      {
+        path: 'companies',
+        component: CompaniesList,
       },
     ]
   },
