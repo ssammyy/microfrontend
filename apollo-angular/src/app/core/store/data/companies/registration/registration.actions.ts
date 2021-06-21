@@ -1,6 +1,6 @@
 import {createAction, props} from '@ngrx/store';
 import {ApiResponse} from "../../../../domain/response.model";
-import {Company} from "../company.model";
+import {Company} from "../company";
 import {BrsLookUpRequest, RegistrationPayload, SendTokenToPhone, ValidateTokenAndPhone} from "./registration.models";
 
 export const loadRegistrations = createAction(

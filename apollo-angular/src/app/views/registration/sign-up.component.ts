@@ -201,7 +201,7 @@ export class SignUpComponent implements OnInit {
         this.store$.pipe(select(selectRegistrationStateSucceeded)).subscribe((d) => {
           console.log(`status inside is ${d}`)
           if (d) {
-            return this.store$.dispatch(Go({payload: '', link: 'login'}));
+            return this.store$.dispatch(Go({payload: '', link: 'login', redirectUrl: ''}));
           }
         });
       } else {

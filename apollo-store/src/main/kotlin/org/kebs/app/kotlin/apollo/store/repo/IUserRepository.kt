@@ -40,6 +40,7 @@ package org.kebs.app.kotlin.apollo.store.repo
 
 import org.kebs.app.kotlin.apollo.store.model.*
 import org.kebs.app.kotlin.apollo.store.model.registration.*
+import org.springframework.data.domain.Pageable
 import org.springframework.data.hazelcast.repository.HazelcastRepository
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor
 import org.springframework.data.jpa.repository.Query
@@ -67,7 +68,12 @@ interface IUserRepository : HazelcastRepository<UsersEntity, Long>, JpaSpecifica
     fun findFirstByIdAndStatus(id: Long, status: Int): UsersEntity?
     fun findAllById(supervisorId: Long?): MutableIterable<UsersEntity>
 
-    @Query("SELECT DISTINCT u.* FROM CFG_USER_ROLES_ASSIGNMENTS cura, DAT_KEBS_USERS u where cura.ROLE_ID != 1 and cura.USER_ID = u.ID and u.STATUS = :status and cura.STATUS = 1", nativeQuery = true)
+    fun findAllByCompanyIdAndPlantId(companyId: Long, plantId: Long): List<UsersEntity>
+
+    @Query(
+        "SELECT DISTINCT u.* FROM CFG_USER_ROLES_ASSIGNMENTS cura, DAT_KEBS_USERS u where cura.ROLE_ID != 1 and cura.USER_ID = u.ID and u.STATUS = :status and cura.STATUS = 1",
+        nativeQuery = true
+    )
     fun findRbacUsersByStatus(@Param("status") status: Int): List<UsersEntity>?
     fun findAllByIdIn(userList: MutableList<Long?>): List<UsersEntity>?
 
@@ -79,9 +85,17 @@ interface IUserRepository : HazelcastRepository<UsersEntity, Long>, JpaSpecifica
         @Param("lastName") lastName: String?
     ): List<UsersEntity>?
 
-    fun findAllByUserNameContainingIgnoreCaseOrEmailContainingIgnoreCaseOrFirstNameContainingIgnoreCaseOrLastNameContainingIgnoreCase(userName: String?, email: String?, firstName: String?, lastName: String?): List<UsersEntity>?
+    fun findAllByUserNameContainingIgnoreCaseOrEmailContainingIgnoreCaseOrFirstNameContainingIgnoreCaseOrLastNameContainingIgnoreCase(
+        userName: String?,
+        email: String?,
+        firstName: String?,
+        lastName: String?
+    ): List<UsersEntity>?
 
-    @Query("select distinct u.*from CFG_ROLES_PRIVILEGES rp, CFG_USER_PRIVILEGES p, CFG_USER_ROLES_ASSIGNMENTS ra, DAT_KEBS_USERS u where rp.ROLES_ID = ra.ROLE_ID and ra.USER_ID = u.ID and rp.PRIVILEGE_ID = :authorityId", nativeQuery = true)
+    @Query(
+        "select distinct u.*from CFG_ROLES_PRIVILEGES rp, CFG_USER_PRIVILEGES p, CFG_USER_ROLES_ASSIGNMENTS ra, DAT_KEBS_USERS u where rp.ROLES_ID = ra.ROLE_ID and ra.USER_ID = u.ID and rp.PRIVILEGE_ID = :authorityId",
+        nativeQuery = true
+    )
     fun getUsersWithAuthorizationId(@Param("authorityId") authorityId: Long): List<UsersEntity>?
 
 
@@ -93,10 +107,20 @@ interface IUserPrivilegesRepository : HazelcastRepository<UserPrivilegesEntity, 
         "SELECT DISTINCT CUP.* FROM CFG_ROLES_PRIVILEGES rp, CFG_USER_ROLES cur , CFG_USER_PRIVILEGES cup  WHERE CUP.ID = rp.PRIVILEGE_ID  AND CUR.ID = rp.ROLES_ID  AND rp.ROLES_ID  IN (:userRoles)  and rp.STATUS = :status",
         nativeQuery = true
     )
-    fun findAuthoritiesList(@Param("userRoles") userRoles: List<Long?>, @Param("status") status: Int): List<UserPrivilegesEntity>?
+    fun findAuthoritiesList(
+        @Param("userRoles") userRoles: List<Long?>,
+        @Param("status") status: Int
+    ): List<UserPrivilegesEntity>?
 
-    @Query(value = "SELECT CUP.* FROM CFG_ROLES_PRIVILEGES crp ,CFG_USER_PRIVILEGES cup WHERE crp.PRIVILEGE_ID  = CUP.ID AND crp.ROLES_ID  = :roleId AND crp.STATUS  = :rStatus", nativeQuery = true)
-    fun findPrivilegesForRole(@Param("roleId") roleId: Long, @Param("rStatus") rStatus: Int): List<UserPrivilegesEntity>?
+    @Query(
+        value = "SELECT CUP.* FROM CFG_ROLES_PRIVILEGES crp ,CFG_USER_PRIVILEGES cup WHERE crp.PRIVILEGE_ID  = CUP.ID AND crp.ROLES_ID  = :roleId AND crp.STATUS  = :rStatus",
+        nativeQuery = true
+    )
+    fun findPrivilegesForRole(
+        @Param("roleId") roleId: Long,
+        @Param("rStatus") rStatus: Int
+    ): List<UserPrivilegesEntity>?
+
     fun findByStatus(status: Int): List<UserPrivilegesEntity>?
 
     fun findByName(name: String): UserPrivilegesEntity
@@ -111,10 +135,21 @@ interface IUserRolesPrivilegesRepository : HazelcastRepository<RolesPrivilegesEn
     fun findByPrivilege(privilege: UserPrivilegesEntity): List<RolesPrivilegesEntity>?
 
 
-    @Query(value = "SELECT * FROM CFG_ROLES_PRIVILEGES p WHERE p.ROLES_ID  IN (:userRoles) and STATUS = :status", nativeQuery = true)
-    fun findSomeData(@Param("userRoles") userRoles: List<UserRolesEntity?>, @Param("status") status: Int): List<RolesPrivilegesEntity>?
+    @Query(
+        value = "SELECT * FROM CFG_ROLES_PRIVILEGES p WHERE p.ROLES_ID  IN (:userRoles) and STATUS = :status",
+        nativeQuery = true
+    )
+    fun findSomeData(
+        @Param("userRoles") userRoles: List<UserRolesEntity?>,
+        @Param("status") status: Int
+    ): List<RolesPrivilegesEntity>?
+
     fun findByStatus(status: Int): List<RolesPrivilegesEntity>?
-    fun findByUserRolesAndPrivilegeAndStatus(role: UserRolesEntity, privilege: UserPrivilegesEntity, status: Int): RolesPrivilegesEntity?
+    fun findByUserRolesAndPrivilegeAndStatus(
+        role: UserRolesEntity,
+        privilege: UserPrivilegesEntity,
+        status: Int
+    ): RolesPrivilegesEntity?
 }
 
 @Repository
@@ -123,10 +158,16 @@ interface IUserRolesRepository : HazelcastRepository<UserRolesEntity, Long> {
     fun findByDesignationIdAndStatus(designationId: Long, status: Int): UserRolesEntity?
     fun findByStatus(status: Int): List<UserRolesEntity>?
 
-    @Query(value = "SELECT DISTINCT CUR.*  FROM CFG_ROLES_PRIVILEGES p, CFG_USER_ROLES cur WHERE P.ROLES_ID = cur.ID and p.STATUS = :status AND cur.STATUS =:rStatus", nativeQuery = true)
+    @Query(
+        value = "SELECT DISTINCT CUR.*  FROM CFG_ROLES_PRIVILEGES p, CFG_USER_ROLES cur WHERE P.ROLES_ID = cur.ID and p.STATUS = :status AND cur.STATUS =:rStatus",
+        nativeQuery = true
+    )
     fun findOnlyDistinctRoles(@Param("status") status: Int, @Param("rStatus") rStatus: Int): List<UserRolesEntity>?
 
-    @Query("SELECT r.* FROM CFG_USER_ROLES_ASSIGNMENTS UR, CFG_USER_ROLES R WHERE UR.ROLE_ID = R.ID AND UR.STATUS = :status AND UR.USER_ID = :userId order by r.ID", nativeQuery = true)
+    @Query(
+        "SELECT r.* FROM CFG_USER_ROLES_ASSIGNMENTS UR, CFG_USER_ROLES R WHERE UR.ROLE_ID = R.ID AND UR.STATUS = :status AND UR.USER_ID = :userId order by r.ID",
+        nativeQuery = true
+    )
     fun findRbacRolesByUserId(@Param("userId") userId: Long, @Param("status") status: Int): List<UserRolesEntity>?
 }
 
@@ -138,8 +179,15 @@ interface IUserRoleAssignmentsRepository : HazelcastRepository<UserRoleAssignmen
     fun findByUserId(userId: Long): UserRoleAssignmentsEntity?
 
 
-    @Query("SELECT * FROM CFG_USER_ROLES_ASSIGNMENTS cura WHERE CURA.USER_ID = :userId AND STATUS = :status", nativeQuery = true)
-    fun findUserRoleAssignments(@Param("userId") userId: Long, @Param("status") status: Int): List<UserRoleAssignmentsEntity>?
+    @Query(
+        "SELECT * FROM CFG_USER_ROLES_ASSIGNMENTS cura WHERE CURA.USER_ID = :userId AND STATUS = :status",
+        nativeQuery = true
+    )
+    fun findUserRoleAssignments(
+        @Param("userId") userId: Long,
+        @Param("status") status: Int
+    ): List<UserRoleAssignmentsEntity>?
+
     fun findByUserIdAndRoleIdAndStatus(userId: Long, roleId: Long, status: Int): UserRoleAssignmentsEntity?
     fun findByUserIdAndRoleId(userId: Long, roleId: Long): UserRoleAssignmentsEntity?
 
@@ -154,7 +202,8 @@ interface IUserTypesEntityRepository : HazelcastRepository<UserTypesEntity, Long
 }
 
 @Repository
-interface IUserRequestsRepository : HazelcastRepository<UserRequestsEntity, Long>, JpaSpecificationExecutor<UsersEntity> {
+interface IUserRequestsRepository : HazelcastRepository<UserRequestsEntity, Long>,
+    JpaSpecificationExecutor<UsersEntity> {
     fun findByStatus(status: Int): List<UserRequestsEntity>?
     fun findByUserIdAndRequestId(userId: Long, requestId: Long): UserRequestsEntity?
 }
@@ -179,16 +228,20 @@ interface ICompanyProfileRepository : HazelcastRepository<CompanyProfileEntity, 
     fun findByUserId(userId: Long): CompanyProfileEntity?
     fun findByRegistrationNumber(registrationNumber: String): CompanyProfileEntity?
     fun findByManufactureStatus(status: Int): List<CompanyProfileEntity>?
+    fun findAllByOrderByIdDesc(pageable: Pageable): List<CompanyProfileEntity>?
+    fun findAllByUserId(userId: Long): List<CompanyProfileEntity>
 
 }
 
 @Repository
-interface ICompanyProfileCommoditiesManufactureRepository : HazelcastRepository<CompanyProfileCommoditiesManufactureEntity, Long> {
+interface ICompanyProfileCommoditiesManufactureRepository :
+    HazelcastRepository<CompanyProfileCommoditiesManufactureEntity, Long> {
     fun findByCompanyProfileId(companyProfileId: Long): List<CompanyProfileCommoditiesManufactureEntity>?
 }
 
 @Repository
-interface ICompanyProfileContractsUndertakenRepository : HazelcastRepository<CompanyProfileContractsUndertakenEntity, Long> {
+interface ICompanyProfileContractsUndertakenRepository :
+    HazelcastRepository<CompanyProfileContractsUndertakenEntity, Long> {
     fun findByCompanyProfileId(companyProfileId: Long): List<CompanyProfileContractsUndertakenEntity>?
 }
 
@@ -205,11 +258,22 @@ interface IUserProfilesRepository : HazelcastRepository<UserProfilesEntity, Long
 
     fun findBySectionIdAndStatus(sectionId: SectionsEntity, status: Int): List<UserProfilesEntity>?
 
-    fun findBySectionIdAndDesignationIdAndStatus(sectionId: SectionsEntity, designationId: DesignationsEntity, status: Int): List<UserProfilesEntity>?
+    fun findBySectionIdAndDesignationIdAndStatus(
+        sectionId: SectionsEntity,
+        designationId: DesignationsEntity,
+        status: Int
+    ): List<UserProfilesEntity>?
 
-    fun findByDesignationIdAndSectionIdAndStatus(designationId: DesignationsEntity, sectionId: SectionsEntity, status: Int): UserProfilesEntity?
+    fun findByDesignationIdAndSectionIdAndStatus(
+        designationId: DesignationsEntity,
+        sectionId: SectionsEntity,
+        status: Int
+    ): UserProfilesEntity?
 
-    fun findByRegionIdAndDesignationId(regionId: RegionsEntity, designationId: DesignationsEntity): List<UserProfilesEntity>?
+    fun findByRegionIdAndDesignationId(
+        regionId: RegionsEntity,
+        designationId: DesignationsEntity
+    ): List<UserProfilesEntity>?
 
     fun findBySubSectionL1IdAndStatus(subSectionL1Id: SubSectionsLevel1Entity, status: Int): List<UserProfilesEntity>?
 
@@ -218,17 +282,46 @@ interface IUserProfilesRepository : HazelcastRepository<UserProfilesEntity, Long
     fun findByDesignationIdAndStatus(designationId: DesignationsEntity, status: Int): UserProfilesEntity?
 
 
-    fun findByRegionIdAndStatusAndDesignationId(regionId: RegionsEntity, status: Int, designationId: DesignationsEntity): UserProfilesEntity?
+    fun findByRegionIdAndStatusAndDesignationId(
+        regionId: RegionsEntity,
+        status: Int,
+        designationId: DesignationsEntity
+    ): UserProfilesEntity?
 
-    fun findByDesignationIdAndRegionIdAndDepartmentIdAndStatus(designationId: DesignationsEntity, regionId: RegionsEntity, departmentId: DepartmentsEntity, status: Int): UserProfilesEntity?
+    fun findByDesignationIdAndRegionIdAndDepartmentIdAndStatus(
+        designationId: DesignationsEntity,
+        regionId: RegionsEntity,
+        departmentId: DepartmentsEntity,
+        status: Int
+    ): UserProfilesEntity?
 
-    fun findAllByDesignationIdAndRegionIdAndDepartmentIdAndStatus(designationId: DesignationsEntity, regionId: RegionsEntity, departmentId: DepartmentsEntity, status: Int): List<UserProfilesEntity>?
+    fun findAllByDesignationIdAndRegionIdAndDepartmentIdAndStatus(
+        designationId: DesignationsEntity,
+        regionId: RegionsEntity,
+        departmentId: DepartmentsEntity,
+        status: Int
+    ): List<UserProfilesEntity>?
 
-    fun findByRegionIdAndDesignationIdAndStatus(regionId: RegionsEntity, designationId: DesignationsEntity, status: Int): List<UserProfilesEntity>?
+    fun findByRegionIdAndDesignationIdAndStatus(
+        regionId: RegionsEntity,
+        designationId: DesignationsEntity,
+        status: Int
+    ): List<UserProfilesEntity>?
 
-    fun findByRegionIdAndDesignationIdAndDepartmentIdAndStatus(regionId: RegionsEntity, designationId: DesignationsEntity, departmentId: DepartmentsEntity, status: Int): List<UserProfilesEntity>?
+    fun findByRegionIdAndDesignationIdAndDepartmentIdAndStatus(
+        regionId: RegionsEntity,
+        designationId: DesignationsEntity,
+        departmentId: DepartmentsEntity,
+        status: Int
+    ): List<UserProfilesEntity>?
 
-    fun findByRegionIdAndDepartmentIdAndDivisionIdAndSectionIdAndStatus(regionId: RegionsEntity, departmentId: DepartmentsEntity, divisionId: DivisionsEntity, sectionId: SectionsEntity, status: Int): List<UserProfilesEntity>?
+    fun findByRegionIdAndDepartmentIdAndDivisionIdAndSectionIdAndStatus(
+        regionId: RegionsEntity,
+        departmentId: DepartmentsEntity,
+        divisionId: DivisionsEntity,
+        sectionId: SectionsEntity,
+        status: Int
+    ): List<UserProfilesEntity>?
 
     fun findAllByDivisionIdAndStatus(divisionId: DivisionsEntity, status: Int): List<UserProfilesEntity>?
 //    @Query("select p from UserProfilesEntity as p where p.userId.id = :usersId")
@@ -236,7 +329,11 @@ interface IUserProfilesRepository : HazelcastRepository<UserProfilesEntity, Long
 
 //    fun findByUserId_IdAndStatus(userId_id: Long, status: Int): UserProfilesEntity?
 
-    fun findByUserIdAndDesignationIdAndSubRegionId(userId: UsersEntity, designationId: DesignationsEntity, subRegionId: SubRegionsEntity): UserProfilesEntity?
+    fun findByUserIdAndDesignationIdAndSubRegionId(
+        userId: UsersEntity,
+        designationId: DesignationsEntity,
+        subRegionId: SubRegionsEntity
+    ): UserProfilesEntity?
 }
 
 @Repository
@@ -246,7 +343,10 @@ interface IDesignationsRepository : HazelcastRepository<DesignationsEntity, Long
     fun findByDesignationNameAndStatus(designationName: String, status: Int): DesignationsEntity?
     fun findByDirectorateIdAndStatus(directorateId: DirectoratesEntity, status: Int): List<DesignationsEntity>?
 
-    @Query("select * from CFG_KEBS_DESIGNATIONS des left outer join CFG_KEBS_DIRECTORATES dir on des.DIRECTORATE_ID = dir.ID where des.ID = :id", nativeQuery = true)
+    @Query(
+        "select * from CFG_KEBS_DESIGNATIONS des left outer join CFG_KEBS_DIRECTORATES dir on des.DIRECTORATE_ID = dir.ID where des.ID = :id",
+        nativeQuery = true
+    )
     fun findByIdExcludingJoin(@Param("id") id: Long?): DesignationsEntity?
 }
 

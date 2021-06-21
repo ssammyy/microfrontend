@@ -205,12 +205,14 @@ data class RegionsEntityDto(
     var descriptions: String?,
     var status: Boolean?
 )
+
 data class BusinessLinesEntityDto(
     var id: Long?,
     var name: String?,
     var descriptions: String?,
     var status: Boolean?
 )
+
 data class BusinessNatureEntityDto(
     var id: Long?,
     var businessLinesId: Long?,
@@ -313,10 +315,12 @@ data class BrsConfirmationRequest(
     @NotEmpty(message = "is required")
     val directorIdNumber: String
 )
+
 data class ValidatePhoneNumberRequestDto(
     @NotEmpty(message = "is required")
     val phone: String
 )
+
 data class ValidatePhoneNumberTokenRequestDto(
     @NotEmpty(message = "is required")
     val phone: String,
@@ -384,7 +388,9 @@ data class UserCompanyEntityDto(
     var factoryVisitStatus: Int? = null,
     var manufactureStatus: Int? = null,
 
-    )
+    ) {
+    var id: Long? = null
+}
 
 data class UserEntityDto(
 
@@ -646,7 +652,11 @@ data class OrganizationUserEntityDto(
     @JsonProperty("cellphone")
     @NotEmpty(message = "is mandatory")
     var cellphone: String?
-)
+) {
+    var companyId: Long? = null
+    var plantId: Long? = null
+
+}
 
 data class RegistrationPayloadDto(
     @Valid
@@ -654,3 +664,35 @@ data class RegistrationPayloadDto(
     @Valid
     val user: OrganizationUserEntityDto
 )
+
+
+class PlantEntityDto {
+    var id: Long? = null
+    var companyProfileId: Long? = null
+    var location: String? = null
+    var street: String? = null
+    var buildingName: String? = null
+    var nearestLandMark: String? = null
+    var postalAddress: String? = null
+    var telephone: String? = null
+    var emailAddress: String? = null
+    var physicalAddress: String? = null
+    var faxNo: String? = null
+    var plotNo: String? = null
+    var designation: String? = null
+    var contactPerson: String? = null
+    var status: Boolean = false
+    var descriptions: String? = null
+    var region: Long? = null
+    var county: Long? = null
+    var town: Long? = null
+}
+
+class ProfileDirectorsEntityDto {
+    var id: Long? = null
+    var companyProfileId: Long? = null
+    var directorName: String? = null
+    var directorId: String? = null
+    var description: String? = null
+    var status: Boolean = false
+}

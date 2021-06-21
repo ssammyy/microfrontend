@@ -2,13 +2,56 @@ package org.kebs.app.kotlin.apollo.api.routes
 
 import org.kebs.app.kotlin.apollo.api.handlers.MasterDataHandler
 import org.kebs.app.kotlin.apollo.api.handlers.RegistrationHandler
+import org.kebs.app.kotlin.apollo.api.handlers.RegistrationManagementHandler
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.web.servlet.function.router
 
 
 @Configuration
-class AngularRoutes{
+class AngularRoutes {
+
+    @Bean
+    fun organizationManagementRoutes(handler: RegistrationManagementHandler) = router {
+        "/api/v1/migration/".nest {
+            "company".nest {
+                GET("", handler::handleFetchCompaniesByUserId)
+                POST("", handler::handleUpdateCompanyDetails)
+                "/{companyId}".nest {
+                    PUT("", handler::handleUpdateCompanyDetails)
+                    GET("", handler::handleFetchCompanyById)
+                    "branches".nest {
+                        GET("", handler::handleFetchCompaniesByUserId)
+                        POST("", handler::handleUpdateCompanyDetails)
+                        "/{branchId}".nest {
+                            PUT("", handler::handleUpdateCompanyDetails)
+                            GET("", handler::handleFetchCompanyById)
+                            "users".nest {
+                                GET("", handler::handleFetchCompaniesByUserId)
+                                POST("", handler::handleUpdateCompanyDetails)
+                                "/{userId}".nest {
+                                    PUT("", handler::handleUpdateCompanyDetails)
+                                    GET("", handler::handleFetchCompanyById)
+
+                                }
+
+                            }
+                        }
+                    }
+                    "directors".nest {
+                        GET("", handler::handleFetchCompaniesByUserId)
+                        POST("", handler::handleUpdateCompanyDetails)
+                        "/{directorId}".nest {
+                            PUT("", handler::handleUpdateCompanyDetails)
+                            GET("", handler::handleFetchCompanyById)
+
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     @Bean
     fun migrationRegistrationRoutes(handler: RegistrationHandler, otherHandler: MasterDataHandler) = router {
         "/api/v1/migration/".nest {

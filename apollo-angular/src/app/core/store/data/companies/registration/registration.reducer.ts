@@ -1,6 +1,6 @@
 import {Action, createReducer, on} from '@ngrx/store';
 import {ApiResponse} from "../../../../domain/response.model";
-import {Company} from "../company.model";
+import {Company} from "../company";
 import {
   loadBrsValidationsFailure,
   loadBrsValidationsSuccess,

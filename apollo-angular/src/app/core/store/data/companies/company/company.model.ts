@@ -16,7 +16,6 @@ export interface Company {
   region: number;
   county: number;
   town: number;
-
 }
 
 

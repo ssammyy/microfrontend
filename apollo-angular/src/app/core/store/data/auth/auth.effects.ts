@@ -23,7 +23,7 @@ export class AuthEffects {
             mergeMap((data) => {
               return [
                 loadAuthsSuccess({profile: data, loggedIn: true}),
-                Go({payload: action.redirectUrl, link: action.redirectUrl})
+                Go({payload: action.redirectUrl, link: action.redirectUrl, redirectUrl: action.redirectUrl})
               ];
             }),
             catchError(

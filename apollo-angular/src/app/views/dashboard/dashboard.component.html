@@ -6,7 +6,6 @@
   <meta content="IE=edge" http-equiv="X-UA-Compatible">
   <title>KEBS</title>
   <meta content="width=device-width, initial-scale=1" name="viewport">
-  <!--  <link rel="stylesheet" type="text/css" media="screen" href="./css/style.css" />-->
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css?family=Nunito Sans" rel="stylesheet">
 </head>
@@ -88,7 +87,7 @@
         <div class="account">
           <i class="material-icons" style="font-size:15px;">how_to_reg</i>
           <span>
-                            &nbsp; My Account
+                            &nbsp; <a routerLink="account">My Account</a>
                         </span>
         </div>
         <div class="notifications">
@@ -116,6 +115,9 @@
                             &nbsp; Settings
                         </span>
         </div>
+      </div>
+      <div class="main-area">
+        <router-outlet></router-outlet>
       </div>
       <div class="dashboard-footer">
         <div class="dashboard-footer-logos">
