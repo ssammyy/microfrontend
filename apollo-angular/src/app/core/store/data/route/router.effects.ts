@@ -19,7 +19,7 @@ export class RouterEffects {
     map((action) => action),
     tap((data) => {
       // const extras: NavigationExtras = {state: data.payload};
-      this.router.navigate([data.link], {queryParams: {returnUrl: data.payload}});
+      this.router.navigate([data.link], {queryParams: {returnUrl: data.redirectUrl}});
     })
   ), {dispatch: false});
 

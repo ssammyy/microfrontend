@@ -14,6 +14,7 @@ import {ToastrModule} from "ngx-toastr";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {SharedModule} from "./core/shared/shared.module";
 import {DashboardComponent} from './views/dashboard/dashboard.component';
+import {AccountList} from "./views/dashboard/account/account.list";
 
 
 @NgModule({
@@ -22,7 +23,8 @@ import {DashboardComponent} from './views/dashboard/dashboard.component';
     LoginComponent,
     RegistrationComponent,
     SignUpComponent,
-    DashboardComponent
+    DashboardComponent,
+    AccountList
   ],
   imports: [
     BrowserModule,
@@ -35,7 +37,7 @@ import {DashboardComponent} from './views/dashboard/dashboard.component';
       preventDuplicates: true,
     }),
     ReactiveFormsModule,
-    SharedModule
+    SharedModule,
   ],
   providers: [
     {provide: APP_BASE_HREF, useValue: '/'}
