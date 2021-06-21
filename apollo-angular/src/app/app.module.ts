@@ -1,4 +1,4 @@
-import {APP_BASE_HREF} from '@angular/common';
+import {APP_BASE_HREF, CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
 
@@ -14,7 +14,6 @@ import {ToastrModule} from "ngx-toastr";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {SharedModule} from "./core/shared/shared.module";
 import {DashboardComponent} from './views/dashboard/dashboard.component';
-import {AccountList} from "./views/dashboard/account/account.list";
 
 
 @NgModule({
@@ -23,8 +22,7 @@ import {AccountList} from "./views/dashboard/account/account.list";
     LoginComponent,
     RegistrationComponent,
     SignUpComponent,
-    DashboardComponent,
-    AccountList
+    DashboardComponent
   ],
   imports: [
     BrowserModule,
@@ -38,6 +36,8 @@ import {AccountList} from "./views/dashboard/account/account.list";
     }),
     ReactiveFormsModule,
     SharedModule,
+    CommonModule,
+    CommonModule
   ],
   providers: [
     {provide: APP_BASE_HREF, useValue: '/'}
