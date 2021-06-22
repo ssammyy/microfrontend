@@ -24,14 +24,16 @@
     "@ngrx/router-store": "^11.1.1",
     "@ngrx/store": "^11.1.1",
     "@ngrx/store-devtools": "^11.1.1",
-    "angular-bootstrap-data-table": "^9.0.0",
     "bootstrap": "^5.0.1",
     "ngx-pagination": "^5.0.0",
     "ngrx-store-localstorage": "^12.0.0",
     "ngx-toastr": "^14.0.0",
     "rxjs": "~6.6.0",
     "tslib": "^2.1.0",
-    "zone.js": "~0.11.4"
+    "zone.js": "~0.11.4",
+    "angular-datatables": "^12.0.0",
+    "datatables.net": "^1.10.25",
+    "datatables.net-dt": "^1.1.0"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "~11.2.9",
@@ -46,6 +48,7 @@
     "karma-coverage": "~2.0.3",
     "karma-jasmine": "~4.0.0",
     "karma-jasmine-html-reporter": "^1.5.0",
-    "typescript": "~4.2.4"
+    "typescript": "~4.2.4",
+    "@types/datatables.net": "^1.10.19"
   }
 }

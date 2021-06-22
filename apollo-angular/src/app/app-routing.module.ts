@@ -7,14 +7,16 @@ import {DashboardComponent} from "./views/dashboard/dashboard.component";
 import {RouteGuard} from "./core/route-guard/route.guard";
 import {AccountList} from "./views/dashboard/account/account.list";
 import {CompaniesList} from "./views/dashboard/company/companies.list";
+import {BranchesList} from "./views/dashboard/company/branch/branches.list";
+import {DirectorsList} from "./views/dashboard/company/director/directors.list";
 
 
 const routes: Routes = [
-  {
-    path: '',
-    redirectTo: 'dashboard',
-    pathMatch: 'full',
-  },
+  // {
+  //   path: '',
+  //   redirectTo: 'dashboard',
+  //   pathMatch: 'prefix',
+  // },
   {
     path: 'register',
     component: RegistrationComponent,
@@ -63,6 +65,17 @@ const routes: Routes = [
       {
         path: 'companies',
         component: CompaniesList,
+        data: {title: 'Companies'}
+      },
+      {
+        path: 'branches',
+        component: BranchesList,
+        data: {title: 'Branches'}
+      },
+      {
+        path: 'directors',
+        component: DirectorsList,
+        data: {title: 'Directors'}
       },
     ]
   },
@@ -73,4 +86,5 @@ const routes: Routes = [
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule]
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {
+}

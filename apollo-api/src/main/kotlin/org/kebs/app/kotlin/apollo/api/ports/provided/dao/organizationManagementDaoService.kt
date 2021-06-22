@@ -523,7 +523,10 @@ class RegistrationManagementDaoService(
                         it.region,
                         it.county,
                         it.town
-                    ).apply { id = it.id }
+                    ).apply {
+                        id = it.id
+                        status = it.status == 1
+                    }
                 }
 
             }
@@ -549,7 +552,10 @@ class RegistrationManagementDaoService(
                         it.region,
                         it.county,
                         it.town
-                    )
+                    ).apply {
+                        id = it.id
+                        status = it.status == 1
+                    }
                 }
             }
         }
@@ -581,7 +587,10 @@ class RegistrationManagementDaoService(
                     it.region,
                     it.county,
                     it.town
-                ).apply { id = it.id }
+                ).apply {
+                    id = it.id
+                    status = it.status == 1
+                }
             } else throw InvalidValueException("Attempt to fetch Organization rejected")
         }
 
@@ -640,7 +649,11 @@ class RegistrationManagementDaoService(
                         companyProfileEntity.region,
                         companyProfileEntity.county,
                         companyProfileEntity.town
-                    ).apply { id = companyProfileEntity.id }
+                    ).apply {
+                        id = companyProfileEntity.id
+
+                        status = companyProfileEntity.status == 1
+                    }
 
                 }
                 ?: throw NullValueNotAllowedException("Record not found")
