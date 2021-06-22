@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8"/>
+  <meta content="IE=edge" http-equiv="X-UA-Compatible">
+  <title>KEBS</title>
+  <meta content="width=device-width, initial-scale=1" name="viewport">
+  <!--  <link rel="stylesheet" type="text/css" media="screen" href="./css/style.css" />-->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Nunito Sans" rel="stylesheet">
+</head>
+
+<body>
+<div class="dashboard-page">
+  <div class="dashboard-header">
+    <img alt="kebs Logo" class="dashboard-header-logo" id="logo" src="assets/images/kebs logo white.png">
+  </div>
+  <div class="loggedIn-user">
+    <div class="user-details">
+      <div *ngIf="fullName$" class="user-link">Welcome: {{ fullName$ | async }}</div>
+    </div>
+    <div class="options-button">
+      <button class="option-button" type="button" value="">Options</button>
+    </div>
+  </div>
+
+</div>
+<div class="dashboard-body">
+  <div class="sidebar">
+    <div class="sidebar-items">
+      <img class="sidebar-icons-dashboard selected-page" src="assets/images/assets/Dashboard.svg">
+      <span class="selected-page">
+                    &nbsp; Dashboard
+                </span>
+    </div>
+    <div class="sidebar-items">
+      <img class="sidebar-icons-dashboard selected-page" src="assets/images/assets/Quality Assurance.svg">
+      <span>
+                    &nbsp; Quality Assurance
+                </span>
+    </div>
+    <div class="sidebar-items">
+      <img class="sidebar-icons-dashboard selected-page" src="assets/images/assets/Import Inspection.svg">
+      <span>
+                    &nbsp; Import Inspection
+                </span>
+    </div>
+    <div class="sidebar-items">
+      <img class="sidebar-icons-dashboard selected-page" src="assets/images/assets/Standards Levy.svg">
+      <span>
+                    &nbsp; Standards Levy
+                </span>
+    </div>
+
+    <div class="sidebar-items">
+      <img class="sidebar-icons-dashboard selected-page" src="assets/images/assets/Inspection.svg">
+      <span>
+                    &nbsp; Market Surveillance
+                </span>
+    </div>
+    <div class="sidebar-items">
+      <img class="sidebar-icons-dashboard selected-page" src="assets/images/assets/Standards Dev.svg">
+      <span>
+                    &nbsp; Standards Dev & Trade
+                </span>
+    </div>
+  </div>
+  <div class="main-area">
+    <div class="top-section">
+      <div class="dashboard-title">
+        <h4 class="dashboard-title-content">
+          Dashboard
+        </h4>
+      </div>
+      <div class="logout">
+        <button class="logout-button" type="button" value=""><a class="login-ref" href="index.html">LOGOUT</a></button>
+      </div>
+    </div>
+    <section class="dashboard-content">
+
+      <div class="welcome-banner">
+        <h1 class="banner-title-content">
+          Welcome to KEBS KIMS
+        </h1>
+      </div>
+      <div class="tabs">
+        <div class="account">
+          <i class="material-icons" style="font-size:15px;">how_to_reg</i>
+          <span>
+                            &nbsp; My Account
+                        </span>
+        </div>
+        <div class="notifications">
+          <a class="link" href="notification.html">
+            <div class="notification-ref">
+              <i class="material-icons notification-icon" style="font-size:15px;">
+                add_alert
+              </i>
+              <span>
+                                    &nbsp; Notifications
+                                </span>
+            </div>
+          </a>
+
+        </div>
+        <div class="tasks">
+          <i class="material-icons" style="font-size:15px;">event</i>
+          <span>
+                            &nbsp; Tasks
+                        </span>
+        </div>
+        <div class="settings">
+          <i class="material-icons" style="font-size:15px;">settings</i>
+          <span>
+                            &nbsp; Settings
+                        </span>
+        </div>
+      </div>
+      <div class="container-fluid mt-5">
+        <router-outlet></router-outlet>
+
+      </div>
+      <div class="dashboard-footer">
+        <div class="dashboard-footer-logos">
+          <div class="f-mark">
+            <img alt="fortified Logo" class="mark-image" id="fortified"
+                 src="assets/images/assets/Fmark.png">
+          </div>
+          <div class="d-mark">
+            <img alt="d_mark Logo" class="mark-image" id="d_mark" src="assets/images/assets/Dmark.png">
+          </div>
+          <div class="n-mark">
+            <img alt="quality Logo" class="mark-image" id="quality" src="assets/images/assets/Smark Logo.png">
+          </div>
+        </div>
+        <div class="dashboard-footer-copyright">
+          <p class="copyright-details">
+            Copyright 2021 Kenya Bureau of Standards.
+          </p>
+          <p class="copyright-details push-middle">
+            All Rights Reserved v1.0.0
+          </p>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
+</body>
+
+</html>
