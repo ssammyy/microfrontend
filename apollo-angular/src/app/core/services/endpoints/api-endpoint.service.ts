@@ -52,6 +52,7 @@ export class ApiEndpointService {
     VALIDATE_TOKEN: `${ApiEndpointService.ANONYMOUS_CONTEXT}/validateToken`,
     REGISTER_COMPANY: `${ApiEndpointService.ANONYMOUS_CONTEXT}/registerCompany`,
     COMPANY_LIST: `${ApiEndpointService.MASTERS_CONTEXT}/company/`,
+    BRANCH_LIST: `${ApiEndpointService.MASTERS_CONTEXT}/{companyId}/branches/`,
     REGIONS_LIST: `${ApiEndpointService.ANONYMOUS_CONTEXT}/regions`,
     COUNTY_LIST: `${ApiEndpointService.ANONYMOUS_CONTEXT}/county`,
     TOWN_LIST: `${ApiEndpointService.ANONYMOUS_CONTEXT}/towns`,

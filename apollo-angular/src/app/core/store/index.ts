@@ -3,6 +3,7 @@ import {
   authReducer,
   branchIdReducer,
   brsValidationReducer,
+  CompaniesEffects,
   companyIdReducer,
   directorIdReducer,
   RegistrationEffects,
@@ -45,4 +46,4 @@ export function localStorageSyncReducer(reducer: ActionReducer<any>): ActionRedu
 
 export const metaReducers: Array<MetaReducer<any, any>> = [localStorageSyncReducer];
 
-export const appEffects = [RegistrationEffects, RouterEffects, AuthEffects];
+export const appEffects = [RegistrationEffects, RouterEffects, AuthEffects, CompaniesEffects];

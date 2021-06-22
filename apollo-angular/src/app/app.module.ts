@@ -20,6 +20,7 @@ import {NgxPaginationModule} from "ngx-pagination";
 import {BranchesList} from './views/dashboard/company/branch/branches.list';
 import {DirectorsList} from './views/dashboard/company/director/directors.list';
 import {DataTablesModule} from "angular-datatables";
+import {UsersList} from './views/dashboard/company/user/users.list';
 
 
 @NgModule({
@@ -32,7 +33,8 @@ import {DataTablesModule} from "angular-datatables";
     AccountList,
     CompaniesList,
     BranchesList,
-    DirectorsList
+    DirectorsList,
+    UsersList
   ],
   imports: [
     BrowserModule,

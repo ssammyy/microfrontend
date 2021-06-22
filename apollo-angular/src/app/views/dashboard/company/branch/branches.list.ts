@@ -1,14 +1,17 @@
 import {Component, OnInit} from '@angular/core';
-import {Observable} from "rxjs";
+import {Observable, Subject} from "rxjs";
 import {
   Branches,
   BranchesService,
-  Company,
   County,
   CountyService,
+  Go,
+  loadBranchId,
+  loadCompanyId,
   loadResponsesFailure,
   Region,
   RegionService,
+  selectCompanyIdData,
   Town,
   TownService
 } from "../../../../core/store";
@@ -38,6 +41,15 @@ export class BranchesList implements OnInit {
   selectedRegion: number = 0;
   selectedCounty: number = 0;
   selectedTown: number = 0;
+  selectedCompany: number = -1;
+
+  dtTrigger: Subject<any> = new Subject<any>();
+  dtOptions: DataTables.Settings = {
+    pagingType: 'full_numbers',
+    pageLength: 5,
+    paging: true,
+    processing: true
+  };
 
   constructor(
     private service: BranchesService,
@@ -87,6 +99,7 @@ export class BranchesList implements OnInit {
     });
     this.stepThreeForm = new FormGroup({
       companyProfileId: new FormControl(''),
+      id: new FormControl(''),
       status: new FormControl('', [Validators.required]),
       descriptions: new FormControl('', [Validators.required]),
       contactPerson: new FormControl('', [Validators.required]),
@@ -95,10 +108,14 @@ export class BranchesList implements OnInit {
       faxNo: new FormControl(''),
       designation: new FormControl('', [Validators.required])
     });
+
+    this.store$.select(selectCompanyIdData).subscribe((d) => {
+      return this.selectedCompany = d;
+    })
+
   }
 
-
-  editRecord(record: Company) {
+  editRecord(record: Branches) {
     this.stepTwoForm.patchValue(record);
     this.stepThreeForm.patchValue(record);
     this.branchSoFar = record;
@@ -131,11 +148,13 @@ export class BranchesList implements OnInit {
     if (valid) {
       this.branchSoFar = {...this.branchSoFar, ...this.stepThreeForm.value};
       this.branch = {...this.branch, ...this.branchSoFar};
-
-      // console.log(JSON.stringify(this.company))
-
-      this.service.update(this.branch);
-
+      // if (this.stepTwoForm?.get('id')?.value === null || this.stepTwoForm?.get('id')?.value === undefined) {
+      if (this.branch.id === null || this.branch.id === undefined) {
+        this.branch.companyProfileId = this.selectedCompany;
+        this.service.add(this.branch);
+      } else {
+        this.service.update(this.branch);
+      }
       this.step = 1;
       this.stepTwoForm.markAsPristine();
       this.stepTwoForm.reset();
@@ -152,7 +171,17 @@ export class BranchesList implements OnInit {
       }));
 
     }
-
   }
 
+  ngOnDestroy(): void {
+    // Do not forget to unsubscribe the event
+    this.dtTrigger.unsubscribe();
+  }
+
+  onClickUsers(record: Branches) {
+    this.store$.dispatch(loadCompanyId({payload: record.companyProfileId}));
+    this.store$.dispatch(loadBranchId({payload: record.id}));
+    this.store$.dispatch(Go({payload: null, redirectUrl: '', link: 'dashboard/branches/users'}));
+
+  }
 }

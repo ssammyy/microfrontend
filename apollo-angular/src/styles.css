@@ -114,8 +114,18 @@ p {
   color: #ffffff;
 }
 
+.welcome2 {
+  font-weight: 600;
+  color: #000000;
+}
+
 .input-placeholder {
   color: #ffffff;
+  font-size: 10px;
+}
+
+.input-placeholder2 {
+  color: #000000;
   font-size: 10px;
 }
 

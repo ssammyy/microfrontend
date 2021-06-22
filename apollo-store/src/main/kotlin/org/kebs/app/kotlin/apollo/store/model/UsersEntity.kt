@@ -78,7 +78,7 @@ class UsersEntity : Serializable {
 
     @Column(name = "CELL_PHONE")
     @Basic
-    val cellphone: String? = null
+    var cellphone: String? = null
 
     @Column(name = "ENABLED")
     @Basic

@@ -35,6 +35,12 @@ export const entityMetadata: EntityMetadataMap = {
   Company: {
     filterFn: activeFilter,
   },
+  Branches: {
+    filterFn: activeFilter,
+  },
+  User: {
+    filterFn: activeFilter,
+  },
 };
 
 
@@ -87,6 +93,10 @@ export const defaultDataServiceConfig: DefaultDataServiceConfig = {
     Company: {
       entityResourceUrl: ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.COMPANY_LIST),
       collectionResourceUrl: ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.COMPANY_LIST)
+    },
+    Branches: {
+      entityResourceUrl: ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.BRANCH_LIST),
+      collectionResourceUrl: ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.BRANCH_LIST)
     },
   }
 }

@@ -1,7 +1,7 @@
 import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {StoreModule} from "@ngrx/store";
-import {appEffects, appReducer, metaReducers} from "./index";
+import {appEffects, appReducer, metaReducers, UsersCustomService} from "./index";
 import {StoreRouterConnectingModule} from '@ngrx/router-store';
 import {environment} from "../../../environments/environment";
 import {StoreDevtoolsModule} from "@ngrx/store-devtools";
@@ -51,8 +51,10 @@ export class StoresModule {
   constructor(
     entityDataService: EntityDataService,
     customBranchesService: BranchesCustomService,
+    customUserService: UsersCustomService,
   ) {
     // Register custom EntityDataServices
     entityDataService.registerService('Branches', customBranchesService);
+    entityDataService.registerService('User', customUserService);
   }
 }

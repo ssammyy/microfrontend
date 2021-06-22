@@ -18,6 +18,7 @@ import org.kebs.app.kotlin.apollo.store.repo.IUserRepository
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.core.annotation.Order
+import org.springframework.http.HttpMethod
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity
@@ -67,10 +68,12 @@ class WebSecurityConfig {
         }
 
         override fun configure(http: HttpSecurity) {
-            http.cors().and().csrf().disable()
+            http.cors()
+                .and()
+                .csrf().disable()
                 .antMatcher("/api/v1/**")
                 .authorizeRequests()
-//                .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 /**
                  * TODO: Move to external configuration
                  */
