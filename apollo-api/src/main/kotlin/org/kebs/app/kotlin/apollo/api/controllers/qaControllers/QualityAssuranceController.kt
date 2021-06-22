@@ -1638,7 +1638,7 @@ class QualityAssuranceController(
     @GetMapping("/kebs/mpesa-stk-push")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun payPermitWithMpesa(
-        @RequestParam("permitID") permitID: Long,
+        @RequestParam("batchInvoiceID") batchInvoiceID: Long,
         @RequestParam("phoneNumber") phoneNumber: String,
         model: Model
     ): String? {
@@ -1647,14 +1647,11 @@ class QualityAssuranceController(
 
         val result: ServiceRequestsEntity?
 
-        val permit = loggedInUser.id?.let { qaDaoServices.findPermitBYUserIDAndId(permitID, it) }
-            ?: throw ExpectedDataNotFound("Required User ID, check config")
-        val invoiceEntity = qaDaoServices.findPermitInvoiceByPermitID(permitID, loggedInUser.id!!)
+        val invoiceEntity = qaDaoServices.findBatchInvoicesWithID(batchInvoiceID)
         result = qaDaoServices.permitInvoiceSTKPush(map, loggedInUser, phoneNumber, invoiceEntity)
 
         val sm = CommonDaoServices.MessageSuccessFailDTO()
-        sm.closeLink =
-            "${applicationMapProperties.baseUrlValue}/qa/invoice-details?permitID=${permit.id}"
+        sm.closeLink = "${applicationMapProperties.baseUrlValue}/qa/invoice/batch-details?batchID=${invoiceEntity.id}"
         sm.message =
             "Check You phone for an STK Push,If You can't see the push either pay with Bank or Normal Mpesa service"
 

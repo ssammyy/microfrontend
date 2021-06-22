@@ -2237,7 +2237,7 @@ class QADaoServices(
         s: ServiceMapsEntity,
         user: UsersEntity,
         phoneNumber: String,
-        invoice: InvoiceEntity
+        invoice: QaBatchInvoiceEntity
     ): ServiceRequestsEntity {
 
         var sr = commonDaoServices.createServiceRequest(s)
