@@ -1192,6 +1192,7 @@ class SystemsAdminDaoService(
                         title = u.title
                         email = u.email
                         userName = u.userName
+                        cellphone = u.cellphone
                         userRegNo = "KEBS${commonDaoServices.generateTransactionReference(5).toUpperCase()}"
                         credentials = BCryptPasswordEncoder().encode(u.credentials)
                         enabled = applicationMapProperties.transactionActiveStatus

@@ -9,6 +9,7 @@ import {AccountList} from "./views/dashboard/account/account.list";
 import {CompaniesList} from "./views/dashboard/company/companies.list";
 import {BranchesList} from "./views/dashboard/company/branch/branches.list";
 import {DirectorsList} from "./views/dashboard/company/director/directors.list";
+import {UsersList} from "./views/dashboard/company/user/users.list";
 
 
 const routes: Routes = [
@@ -71,6 +72,11 @@ const routes: Routes = [
         path: 'branches',
         component: BranchesList,
         data: {title: 'Branches'}
+      },
+      {
+        path: 'branches/users',
+        component: UsersList,
+        data: {title: 'Users'}
       },
       {
         path: 'directors',

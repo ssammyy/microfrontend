@@ -71,19 +71,23 @@ class RegistrationManagementHandler(
     fun handleUpdatePlantEntity(req: ServerRequest): ServerResponse {
         return try {
             val body = req.body<PlantEntityDto>()
-            val id = req.pathVariable("branchId").toLongOrNull()
+
             val companyId = req.pathVariable("companyId").toLongOrNull()
             val payloadId = body.id
-            if ((id ?: -1L) != (payloadId ?: -1L)) {
-                throw InvalidInputException("Request Denied, record mismatch detected")
+            if (body.id != null) {
+                val id = req.pathVariable("branchId").toLongOrNull()
+                if ((id ?: -1L) != (payloadId ?: -1L)) {
+                    throw InvalidInputException("Request Denied, record mismatch detected")
+                }
             }
+
 
             if ((companyId ?: -1L) != (body.companyProfileId ?: -1L)) {
                 throw InvalidInputException("Request Denied, record mismatch detected")
             }
 
 
-            val errors: Errors = BeanPropertyBindingResult(body, UserCompanyEntityDto::class.java.name)
+            val errors: Errors = BeanPropertyBindingResult(body, PlantEntityDto::class.java.name)
             validator.validate(body, errors)
             val user = service.loggedInUserDetails()
             when {
@@ -158,13 +162,17 @@ class RegistrationManagementHandler(
     fun handleUpdateBranchUsers(req: ServerRequest): ServerResponse {
         return try {
             val body = req.body<OrganizationUserEntityDto>()
-            val id = req.pathVariable("userId").toLongOrNull()
+
             val branchId = req.pathVariable("branchId").toLongOrNull()
             val companyId = req.pathVariable("companyId").toLongOrNull()
             val payloadId = body.id
-            if ((id ?: -1L) != (payloadId ?: -1L)) {
-                throw InvalidInputException("Request Denied, record mismatch detected")
+            if (body.id != null) {
+                val id = req.pathVariable("userId").toLongOrNull()
+                if ((id ?: -1L) != (payloadId ?: -1L)) {
+                    throw InvalidInputException("Request Denied, record mismatch detected")
+                }
             }
+
 
             if ((companyId ?: -1L) != (body.companyId ?: -1L)) {
                 throw InvalidInputException("Request Denied, record mismatch detected")

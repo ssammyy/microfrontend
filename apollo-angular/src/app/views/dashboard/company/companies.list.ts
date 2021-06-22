@@ -1,12 +1,11 @@
 import {Component, OnInit} from '@angular/core';
-import {CompanyService} from "../../../core/store/data/companies/company/company.service";
-import {Observable, Subject} from "rxjs";
 import {
   BusinessLines,
   BusinessLinesService,
   BusinessNatures,
   BusinessNaturesService,
   Company,
+  CompanyService,
   County,
   CountyService,
   Go,
@@ -17,6 +16,7 @@ import {
   Town,
   TownService
 } from "../../../core/store";
+import {Observable, Subject} from "rxjs";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {Store} from "@ngrx/store";
 
@@ -50,7 +50,12 @@ export class CompaniesList implements OnInit {
   selectedCounty: number = 0;
   selectedTown: number = 0;
   dtTrigger: Subject<any> = new Subject<any>();
-  dtOptions: DataTables.Settings = {};
+  dtOptions: DataTables.Settings = {
+    pagingType: 'full_numbers',
+    pageLength: 5,
+    paging: true,
+    processing: true
+  };
 
   constructor(
     private service: CompanyService,
@@ -102,16 +107,9 @@ export class CompaniesList implements OnInit {
       county: new FormControl('', [Validators.required]),
       town: new FormControl('', [Validators.required])
     });
-    this.dtOptions = {
-      pagingType: 'full_numbers',
-      pageLength: 5,
-      paging: true,
-      processing: true
-    };
   }
 
   updateSelectedRegion() {
-
     this.selectedRegion = this.stepThreeForm?.get('region')?.value;
     // console.log(`region set to ${this.selectedRegion}`)
   }
@@ -172,10 +170,7 @@ export class CompaniesList implements OnInit {
       this.companySoFar = {...this.companySoFar, ...this.stepThreeForm.value};
       this.company = {...this.company, ...this.companySoFar};
 
-      // console.log(JSON.stringify(this.company))
-
       this.service.update(this.company);
-
       this.step = 1;
       this.stepOneForm.markAsPristine();
       this.stepOneForm.reset();

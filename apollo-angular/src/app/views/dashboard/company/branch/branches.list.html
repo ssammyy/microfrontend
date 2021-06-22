@@ -1,1 +1,327 @@
-<p>branches works!</p>
+<section>
+  <div class="row">
+    <div class="col-md-8">
+      <div>
+        <h4 class="notifications-title">
+          <span>Organizations</span>
+        </h4>
+        <table [dtOptions]="dtOptions" class="table table-striped table-bordered table-sm row-border hover" datatable>
+          <thead>
+          <tr>
+            <th>ID#</th>
+            <th>NAME</th>
+            <th>STATUS</th>
+            <th>VIEW</th>
+            <th>USERS</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let theRecord of branches$ | async">
+            <td>{{ theRecord.id }}</td>
+            <td>{{ theRecord.buildingName }}</td>
+            <td>
+              <div *ngIf="theRecord.status;  then true_span else false_span">
+              </div>
+              <ng-template #true_span><span id="true">Active</span></ng-template>
+              <ng-template #false_span><span id="false">Inactive</span></ng-template>
+            </td>
+            <td>
+              <a (click)="editRecord(theRecord)" class="link-dark">VIEW
+              </a>
+            </td>
+            <td>
+              <a (click)="onClickUsers(theRecord)" class="link-dark">USERS
+              </a>
+            </td>
+
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div [ngSwitch]="step">
+
+
+        <div *ngSwitchCase="1">
+          <form (ngSubmit)="onClickNext(stepTwoForm.valid)" [formGroup]="stepTwoForm" action="" class="form"
+                enctype="multipart/form-data" method="post">
+            <div class="container">
+              <div class="row">
+                <h2 class="welcome2">
+                  Address & Contact Information
+                </h2>
+              </div>
+
+              <div class="row input-row">
+                <div class="col">
+                  <label class="input-placeholder2" for="buildingName">
+                    Building Name
+                  </label>
+                  <br>
+                  <input class="form-control two-column-input" formControlName="buildingName" id="buildingName"
+                         name="buildingName"
+                         placeholder="The buildingName" required="required" type="text">
+                </div>
+                <div class="col">
+                  <label class="input-placeholder2" for="physicalAddress">
+                    Physical Address
+                  </label>
+                  <br>
+                  <input class="form-control two-column-input" formControlName="physicalAddress" id="physicalAddress"
+                         name="physicalAddress"
+                         placeholder="The physical address" required="required" type="text">
+                </div>
+              </div>
+
+              <div class="row input-row">
+                <div class="col">
+                  <label class="input-placeholder2" for="location">
+                    Location
+                  </label>
+                  <br>
+                  <input class="form-control two-column-input" formControlName="location" id="location"
+                         name="location"
+                         placeholder="The location" required="required" type="text">
+                </div>
+                <div class="col">
+                  <label class="input-placeholder2" for="postalAddress">
+                    Postal Address
+                  </label>
+                  <br>
+                  <input class="form-control two-column-input" formControlName="postalAddress" id="postalAddress"
+                         name="postalAddress"
+                         placeholder="Company postal address" required="required" type="text">
+                </div>
+              </div>
+              <div class="row input-row">
+                <div class="col">
+                  <label class="input-placeholder2" for="plotNo">
+                    Plot Number
+                  </label>
+                  <br>
+                  <input class="form-control two-column-input" formControlName="plotNo" id="plotNo"
+                         name="plotNo"
+                         placeholder="The plot number" required="required" type="text">
+
+                </div>
+                <div class="col">
+
+                  <label class="input-placeholder2" for="street">
+                    street
+                  </label>
+                  <br>
+                  <input class="form-control two-column-input" formControlName="street" id="street"
+                         name="street"
+                         placeholder="The street" required="required" type="text">
+                </div>
+
+              </div>
+              <div class="row input-row">
+                <div class="col">
+                  <label class="input-placeholder2" for="nearestLandMark">
+                    Nearest LandMark
+                  </label>
+                  <br>
+                  <input class="form-control two-column-input" formControlName="nearestLandMark" id="nearestLandMark"
+                         name="nearestLandMark"
+                         placeholder="The nearestLandMark" required="required" type="text">
+
+                </div>
+                <div class="col">
+                  <label class="input-placeholder2" for="region">
+                    Region
+                  </label>
+                  <br>
+                  <ng-container *ngIf="region$ | async as apps">
+                    <select (ngModelChange)="updateSelectedRegion()"
+                            formControlName="region" id="region"
+                            name="region" required="required" style="width: 100%; height: 90%">
+                      <option ngValue="null" selected>Please select</option>
+                      <option
+                        *ngFor="let app of apps| filterPipe: {status: true}"
+                        [ngValue]="app.id"
+                        class="dropdown-item">{{app.region}}</option>
+                    </select>
+
+                  </ng-container>
+                </div>
+
+              </div>
+              <div class="row input-row">
+                <div class="col">
+                  <label class="input-placeholder2" for="county">
+                    County
+                  </label>
+                  <br>
+                  <ng-container *ngIf="county$ | async as apps">
+                    <select (ngModelChange)="updateSelectedCounty()"
+                            formControlName="county" id="county"
+                            name="county" required="required" style="width: 100%; height: 90%">
+                      <option ngValue="null" selected>Please select</option>
+                      <option
+                        *ngFor="let app of apps| filterPipe: {status: true, regionId: selectedRegion}"
+                        [ngValue]="app.id"
+                        class="dropdown-item">{{app.county}}</option>
+                    </select>
+
+                  </ng-container>
+                </div>
+                <div class="col">
+                  <label class="input-placeholder2" for="town">
+                    Town
+                  </label>
+                  <br>
+                  <ng-container *ngIf="town$ | async as apps">
+                    <select (ngModelChange)="updateSelectedTown()"
+                            formControlName="town" id="town"
+                            name="town" required="required" style="width: 48%; height: 90%">
+                      <option ngValue="null" selected>Please select</option>
+                      <option
+                        *ngFor="let app of apps| filterPipe: {status: true, countyId: selectedCounty}"
+                        [ngValue]="app.id"
+                        class="dropdown-item">{{app.town}}</option>
+                    </select>
+
+                  </ng-container>
+                </div>
+
+              </div>
+              <div class="row input-row">
+                <div class="col">
+                  <button (click)="onClickPrevious()" class="login-button" type="button">PREV</button>
+                </div>
+                <div class="col">
+                  <button class="login-button" type="submit">NEXT</button>
+                </div>
+
+              </div>
+            </div>
+
+
+          </form>
+
+        </div>
+
+        <div *ngSwitchCase="2">
+          <form (ngSubmit)="onClickSave(stepThreeForm.valid)" [formGroup]="stepThreeForm" action="" class="form"
+                enctype="multipart/form-data" method="post">
+            <div class="container">
+              <div class="row">
+                <h2 class="welcome2">
+                  Contact Information
+                </h2>
+              </div>
+              <div class="row input-row">
+                <div class="col">
+                  <label class="filter-inputs" for="contactPerson">
+                    contact Person
+                  </label>
+                  <br>
+                  <input class="form-control two-column-input" formControlName="contactPerson" id="contactPerson"
+                         name="contactPerson"
+                         placeholder="The contactPerson" required="required" type="text">
+
+                </div>
+                <div class="col">
+                  <label class="filter-inputs" for="designation">
+                    Designation
+                  </label>
+                  <br>
+                  <input class="form-control two-column-input" formControlName="designation" id="designation"
+                         name="designation"
+                         placeholder="The designation" required="required" type="text">
+
+                </div>
+              </div>
+              <div class="row input-row">
+                <div class="col">
+                  <label class="filter-inputs" for="descriptions">
+                    Description
+                  </label>
+                  <br>
+                  <input class="form-control two-column-input" formControlName="descriptions" id="descriptions"
+                         name="descriptions"
+                         placeholder="The descriptions" required="required" type="text">
+
+                </div>
+                <div class="col">
+                  <label class="filter-inputs" for="status">
+                    Active
+                  </label>
+                  <br>
+                  <input formControlName="status" id="status"
+                         name="status"
+                         placeholder="The status" required="required" type="checkbox">
+
+                </div>
+              </div>
+              <div class="row input-row">
+                <div class="col">
+                  <label class="filter-inputs" for="emailAddress">
+                    emailAddress
+                  </label>
+                  <br>
+                  <input class="form-control two-column-input" formControlName="emailAddress" id="emailAddress"
+                         name="emailAddress"
+                         placeholder="The emailAddress" required="required" type="email">
+
+                </div>
+                <div class="col">
+                  <label class="filter-inputs" for="telephone">
+                    Telephone
+                  </label>
+                  <br>
+                  <input class="form-control two-column-input" formControlName="telephone" id="telephone"
+                         name="telephone"
+                         placeholder="The telephone" required="required" type="text">
+
+                </div>
+              </div>
+              <div class="row input-row">
+                <div class="col">
+                  <label class="filter-inputs" for="faxNo">
+                    Fax No
+                  </label>
+                  <br>
+                  <input class="form-control two-column-input" formControlName="faxNo" id="faxNo"
+                         name="faxNo"
+                         placeholder="The faxNo" type="text">
+
+                </div>
+                <div class="col">
+
+                  <input class="form-control two-column-input" formControlName="companyProfileId" id="companyProfileId"
+                         name="companyProfileId"
+                         type="hidden">
+
+                  <input class="form-control two-column-input" formControlName="id" id="id"
+                         name="id"
+                         type="hidden">
+
+                </div>
+              </div>
+
+              <br>
+              <div class="row">
+                <div class="col">
+                  <button (click)="onClickPrevious()" class="login-button" type="button">PREV</button>
+                </div>
+                <div class="col">
+                  <button class="login-button" type="submit">SAVE</button>
+                </div>
+              </div>
+
+
+            </div>
+
+
+          </form>
+
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</section>

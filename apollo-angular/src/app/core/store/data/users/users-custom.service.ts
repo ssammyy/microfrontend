@@ -1,18 +1,18 @@
 import {Injectable} from '@angular/core';
 import {DefaultDataService, HttpUrlGenerator, Logger} from "@ngrx/data";
-import {Branches} from "./branches.model";
+import {selectBranchIdData, selectCompanyIdData} from "../companies";
+import {ApiEndpointService} from "../../../services/endpoints/api-endpoint.service";
 import {HttpClient, HttpErrorResponse} from "@angular/common/http";
 import {select, Store} from "@ngrx/store";
 import {Observable, throwError} from "rxjs";
-import {ApiEndpointService} from "../../../../services/endpoints/api-endpoint.service";
 import {catchError, map} from "rxjs/operators";
-import {selectCompanyIdData} from "../companies.selectors";
 import {Update} from "@ngrx/entity";
+import {User} from "./user.model";
 
 @Injectable({
   providedIn: 'root'
 })
-export class BranchesCustomService extends DefaultDataService<Branches> {
+export class UsersCustomService extends DefaultDataService<User> {
   baseUrl = `${ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.COMPANY_LIST)}`;
 
   constructor(http: HttpClient,
@@ -20,25 +20,30 @@ export class BranchesCustomService extends DefaultDataService<Branches> {
               logger: Logger,
               private store$: Store<any>
   ) {
-    super('Branches', http, httpUrlGenerator);
+    super('User', http, httpUrlGenerator);
   }
 
-  add(entity: Branches): Observable<Branches> {
+  add(entity: User): Observable<User> {
 
 
     let myUrl = '';
     let data = 0;
+    let branch = 0;
     this.store$.pipe(select(selectCompanyIdData)).subscribe(
       (d) => {
         if (d) return data = d; else return throwError('Invalid request, Company id is required inside');
       });
+    this.store$.pipe(select(selectBranchIdData)).subscribe(
+      (d) => {
+        if (d) return branch = d; else return throwError('Invalid request, Company id is required inside');
+      });
 
 
     if (data) {
-      myUrl = `${this.baseUrl}${data}/branches/`;
+      myUrl = `${this.baseUrl}${data}/branches/${branch}/users`;
       // console.log(`Revised url = ${baseUrl}${data}/branches/ `)
-      return this.http.post<Branches>(myUrl, entity).pipe(
-        map((response: Branches) => {
+      return this.http.post<User>(myUrl, entity).pipe(
+        map((response: User) => {
           super.add(response)
           return response;
         }),
@@ -48,22 +53,27 @@ export class BranchesCustomService extends DefaultDataService<Branches> {
     // return super.add(entity);
   }
 
-  update(update: Update<Branches>): Observable<Branches> {
+  update(update: Update<User>): Observable<User> {
 
 
     let myUrl = '';
     let data = 0;
+    let branch = 0;
     this.store$.pipe(select(selectCompanyIdData)).subscribe(
       (d) => {
         if (d) return data = d; else return throwError('Invalid request, Company id is required inside');
       });
+    this.store$.pipe(select(selectBranchIdData)).subscribe(
+      (d) => {
+        if (d) return branch = d; else return throwError('Invalid request, Company id is required inside');
+      });
 
 
     if (data) {
-      myUrl = `${this.baseUrl}${data}/branches/${update.id}`;
+      myUrl = `${this.baseUrl}${data}/branches/${branch}/users/${update.id}`;
       // console.log(`Revised url = ${baseUrl}${data}/branches/ `)
-      return this.http.put<Branches>(myUrl, update).pipe(
-        map((response: Branches) => {
+      return this.http.put<User>(myUrl, update).pipe(
+        map((response: User) => {
           update = {...update, ...response};
           super.update(update);
           return response;
@@ -76,22 +86,27 @@ export class BranchesCustomService extends DefaultDataService<Branches> {
   }
 
 
-  getAll(): Observable<Branches[]> {
+  getAll(): Observable<User[]> {
 
 
     let myUrl = '';
-    let data = 0;
+    let company = 0;
+    let branch = 0;
     this.store$.pipe(select(selectCompanyIdData)).subscribe(
       (d) => {
-        if (d) return data = d; else return throwError('Invalid request, Company id is required');
+        if (d) return company = d; else return throwError('Invalid request, Company id is required');
+      });
+    this.store$.pipe(select(selectBranchIdData)).subscribe(
+      (d) => {
+        if (d) return branch = d; else return throwError('Invalid request, Company id is required inside');
       });
 
 
-    if (data) {
-      myUrl = `${this.baseUrl}${data}/branches/`;
+    if (company) {
+      myUrl = `${this.baseUrl}${company}/branches/${branch}/users/`;
       // console.log(`Revised url = ${baseUrl}${data}/branches/ `)
-      return this.http.get<Branches[]>(myUrl).pipe(
-        map((response: Branches[]) => response),
+      return this.http.get<User[]>(myUrl).pipe(
+        map((response: User[]) => response),
         catchError((fault: HttpErrorResponse) => throwError(fault))
       );
     } else return throwError('Invalid request, Organization id is required');
