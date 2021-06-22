@@ -111,31 +111,60 @@ class SftpController(
                     val allFiles = sftpServiceImpl.downloadFilesByDocType(applicationMapProperties.mapKeswsManifestDoctype)
                     KotlinLogging.logger { }.info("No of Manifest Documents found in bucket: ${allFiles.size}")
                     for (file in allFiles) {
+                        var manifestDocumentMessage: ManifestDocumentMessage? = null
                         val xml = inputStreamToString(FileInputStream(file))
-                        val manifestDocumentMessage: ManifestDocumentMessage = commonDaoServices.deserializeFromXML(xml)
-                        val docSaved = manifestDaoService.mapManifestMessageToManifestEntity(manifestDocumentMessage)
-                        if (docSaved) { sftpServiceImpl.moveFileToProcessedFolder(file, processedRootFolder) }
+                        try {
+                            manifestDocumentMessage = commonDaoServices.deserializeFromXML(xml)
+                        } catch (e: Exception) {
+                            KotlinLogging.logger { }.error("An error occurred while deserializing ${file.name}", e)
+                            sftpServiceImpl.moveFileToProcessedFolder(file, unprocessableRootFolder)
+                        }
+                        if (manifestDocumentMessage != null) {
+                            val docSaved = manifestDaoService.mapManifestMessageToManifestEntity(manifestDocumentMessage)
+                            if (docSaved) { sftpServiceImpl.moveFileToProcessedFolder(file, processedRootFolder) }
+                        }
                     }
                 }
                 applicationMapProperties.mapKeswsAirManifestDoctype -> {
                     val allFiles = sftpServiceImpl.downloadFilesByDocType(applicationMapProperties.mapKeswsAirManifestDoctype)
                     KotlinLogging.logger { }.info("No of Air Manifest Documents found in bucket: ${allFiles.size}")
                     for (file in allFiles) {
+                        var manifestDocumentMessage: ManifestDocumentMessage? = null
                         val xml = inputStreamToString(FileInputStream(file))
-                        val manifestDocumentMessage: ManifestDocumentMessage = commonDaoServices.deserializeFromXML(xml)
-                        val docSaved = manifestDaoService.mapManifestMessageToManifestEntity(manifestDocumentMessage)
-                        if (docSaved) { sftpServiceImpl.moveFileToProcessedFolder(file, processedRootFolder) }
+                        try {
+                            manifestDocumentMessage = commonDaoServices.deserializeFromXML(xml)
+                        } catch (e: Exception) {
+                            KotlinLogging.logger { }.error("An error occurred while deserializing ${file.name}", e)
+                            sftpServiceImpl.moveFileToProcessedFolder(file, unprocessableRootFolder)
+                        }
+                        if (manifestDocumentMessage != null) {
+                            val docSaved = manifestDaoService.mapManifestMessageToManifestEntity(manifestDocumentMessage)
+                            if (docSaved) { sftpServiceImpl.moveFileToProcessedFolder(file, processedRootFolder) }
+                        }
                     }
                 }
                 applicationMapProperties.mapKeswsCdDoctype -> {
                     val allFiles = sftpServiceImpl.downloadFilesByDocType(applicationMapProperties.mapKeswsCdDoctype)
                     KotlinLogging.logger { }.info("No of Consignment Documents found in bucket: ${allFiles.size}")
                     for (file in allFiles) {
+                        var consignmentDoc: ConsignmentDocument? = null
                         val xml = inputStreamToString(FileInputStream(file))
                         val stringToExclude = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>"
-                        val consignmentDoc: ConsignmentDocument = commonDaoServices.deserializeFromXML(xml, stringToExclude)
-                        consignmentDocumentDaoService.insertConsignmentDetailsFromXml(consignmentDoc, xml.toByteArray())
-                        sftpServiceImpl.moveFileToProcessedFolder(file, processedRootFolder)
+                        try {
+                            consignmentDoc = commonDaoServices.deserializeFromXML(xml, stringToExclude)
+                        } catch (e: Exception) {
+                            KotlinLogging.logger { }.error("An error occurred while deserializing ${file.name}", e)
+                            sftpServiceImpl.moveFileToProcessedFolder(file, unprocessableRootFolder)
+                        }
+                        if (consignmentDoc != null) {
+                            try {
+                                consignmentDocumentDaoService.insertConsignmentDetailsFromXml(consignmentDoc, xml.toByteArray())
+                            } catch (e: Exception) {
+                                KotlinLogging.logger { }.error("An error occurred while saving CD details ${file.name}", e)
+                                sftpServiceImpl.moveFileToProcessedFolder(file, unprocessableRootFolder)
+                            }
+                            sftpServiceImpl.moveFileToProcessedFolder(file, processedRootFolder)
+                        }
                     }
                 }
                 applicationMapProperties.mapKeswsDeclarationVerificationDoctype -> {
