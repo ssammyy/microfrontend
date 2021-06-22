@@ -23,6 +23,7 @@ package org.kebs.app.kotlin.apollo.api.security.jwt
 
 import io.jsonwebtoken.*
 import mu.KotlinLogging
+import org.kebs.app.kotlin.apollo.common.dto.CustomResponse
 import org.kebs.app.kotlin.apollo.common.exceptions.InvalidValueException
 import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
 import org.kebs.app.kotlin.apollo.config.properties.auth.AuthenticationProperties
@@ -272,9 +273,39 @@ class JwtTokenService(
 //        return java.lang.String.join(authenticationProperties.bearerDelimiter, authenticationProperties.bearerPrefix, tokenFromAuthentication(authentication, request))
 //    }
 
-    fun tokenFromAuthentication(authentication: Authentication, fullName: String, request: ServerHttpRequest?): String? =
+    fun tokenFromAuthentication(
+        authentication: Authentication,
+        fullName: String,
+        request: ServerHttpRequest?
+    ): String? =
 //        runBlocking {
-            generateToken(authentication.name, authentication.credentials,
-                    fullName, authentication.authorities, request)
+        generateToken(
+            authentication.name, authentication.credentials,
+            fullName, authentication.authorities, request
+        )
 //    }
+
+    fun destroyTokenOnLogout(header: String?): CustomResponse? {
+        header
+            ?.let { h ->
+                val token = h.replace(authenticationProperties.bearerPrefix.toString(), "")
+                KotlinLogging.logger { }.trace(token)
+                tokenRegistryRepo.findByRawToken(token)
+                    ?.let {
+                        it.modifiedOn = Timestamp.from(Instant.now())
+                        it.modifiedBy = "Logout Process"
+                        it.status = 2
+
+                        tokenRegistryRepo.save(it)
+                        return CustomResponse().apply {
+                            payload = "Success"
+                            status = 200
+                            this.response = "00"
+                        }
+                    }
+                    ?: throw NullValueNotAllowedException("Token not found")
+            }
+            ?: throw NullValueNotAllowedException("Empty token not allowed")
+
+    }
 }

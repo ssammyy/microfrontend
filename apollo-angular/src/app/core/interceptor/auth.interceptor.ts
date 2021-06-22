@@ -67,7 +67,7 @@ export class AuthInterceptor implements HttpInterceptor {
               // TODO: revert to true when going live
               withCredentials: false
             });
-            console.warn(`addToken( Valid token used token "${token}" for endpoint: ${request.url} ).`);
+            // console.warn(`addToken( Valid token used token "${token}" for endpoint: ${request.url} ).`);
           }
           return of(request);
         })

@@ -12,7 +12,7 @@ export interface AuthState {
 }
 
 export const initialState: AuthState = {
-  profile: {id: 0, accessToken: '', email: '', fullName: '', roles: [], username: ''},
+  profile: {id: 0, accessToken: '', email: '', fullName: '', roles: [], username: '', expiry: Date()},
   loggedIn: false
 
 };
