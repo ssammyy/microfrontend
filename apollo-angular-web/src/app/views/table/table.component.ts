@@ -26,7 +26,7 @@ export class TableComponent implements OnInit, OnDestroy {
               public fetchDataService: DataService) {
   }
 
-  ngOnInit(): void {
+  ngOnInit() {
     this.dtOptions = {
       pagingType: 'full_numbers',
       pageLength: 5,
@@ -36,7 +36,7 @@ export class TableComponent implements OnInit, OnDestroy {
 
     this.fetchDataService.getAllPeopleData().subscribe(data => {
       this.persons = data;
-      this.dtTrigger.next();
+      // this.dtTrigger.next();
     });
 
   }
