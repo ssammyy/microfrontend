@@ -316,6 +316,12 @@ class QADaoServices(
         } ?: throw ExpectedDataNotFound("No sample submission found with the following [permitId=$permitId]")
     }
 
+    fun findSampleSubmittedBYBsNumber(bsNumber: String): QaSampleSubmissionEntity {
+        SampleSubmissionRepo.findByBsNumber(bsNumber)?.let {
+            return it
+        } ?: throw ExpectedDataNotFound("No sample submission found with the following [bsNumber=$bsNumber]")
+    }
+
     fun findQaInspectionHaccpImplementationBYPermitID(permitId: Long): QaInspectionHaccpImplementationEntity {
         qaInspectionHaccpImplementationRepo.findByPermitId(permitId)?.let {
             return it
@@ -509,6 +515,18 @@ class QADaoServices(
 
     fun findAllUploadedFileBYPermitIDAndSscStatus(permitId: Long, status: Int): List<QaUploadsEntity> {
         qaUploadsRepo.findByPermitIdAndSscStatus(permitId, status)?.let {
+            return it
+        } ?: throw ExpectedDataNotFound("No File found with the following [ id=$permitId]")
+    }
+
+    fun findAllUploadedFileBYPermitIDAndInspectionReportStatus(permitId: Long, status: Int): List<QaUploadsEntity> {
+        qaUploadsRepo.findByPermitIdAndInspectionReportStatus(permitId, status)?.let {
+            return it
+        } ?: throw ExpectedDataNotFound("No File found with the following [ id=$permitId]")
+    }
+
+    fun findAllUploadedFileBYPermitIDAndSta10Status(permitId: Long, status: Int): List<QaUploadsEntity> {
+        qaUploadsRepo.findByPermitIdAndSta10Status(permitId, status)?.let {
             return it
         } ?: throw ExpectedDataNotFound("No File found with the following [ id=$permitId]")
     }
@@ -1225,7 +1243,7 @@ class QADaoServices(
 
                     permitUpdate = permitUpdateDetails(permitUpdate, map, user).second
                     reasonValue = "ACCEPTED"
-                    schemeSendEmail(permitUpdate, reasonValue, foundSSC)
+//                    schemeSendEmail(permitUpdate, reasonValue, foundSSC)
                 }
                 schemeSupervision.acceptedRejectedStatus == map.inactiveStatus -> {
                     var permitUpdate = schemeUpdatePermit(foundSSC, map.inactiveStatus)
@@ -1233,7 +1251,7 @@ class QADaoServices(
                     permitUpdate = permitUpdateDetails(permitUpdate, map, user).second
                     reasonValue = "REJECTED"
 
-                    schemeSendEmail(permitUpdate, reasonValue, foundSSC)
+//                    schemeSendEmail(permitUpdate, reasonValue, foundSSC)
                 }
                 schemeSupervision.status == map.inactiveStatus -> {
                     var permitUpdate = schemeUpdatePermit(foundSSC, null)
@@ -1267,24 +1285,24 @@ class QADaoServices(
         return sr
     }
 
-    private fun schemeSendEmail(
+    fun schemeSendEmail(
         permitUpdate: PermitApplicationsEntity,
         reasonValue: String?,
-        foundSSC: QaSchemeForSupervisionEntity
     ) {
         //todo: for now lets work with this i will change it
         val userPermit = permitUpdate.userId?.let { commonDaoServices.findUserByID(it) }
         val subject = "SCHEME FOR SUPERVISION AND CONTROL (SSC)"
         val messageBody = "Dear ${userPermit?.let { commonDaoServices.concatenateName(it) }}: \n" +
                 "\n " +
-                "Scheme For Supervision And Control was ${reasonValue} due to the Following reason ${foundSSC.acceptedRejectedReason}:" +
+                "Scheme For Supervision And Control was ${reasonValue} " +
+//                "due to the Following reason ${foundSSC.acceptedRejectedReason}:" +
                 "\n " +
                 "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitUpdate.id}"
 
         userPermit?.email?.let { notifications.sendEmail(it, subject, messageBody) }
     }
 
-    private fun schemeUpdatePermit(
+    fun schemeUpdatePermit(
         foundSSC: QaSchemeForSupervisionEntity,
         status: Int?
     ): PermitApplicationsEntity {

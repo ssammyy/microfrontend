@@ -84,6 +84,7 @@ interface IPermitUpdateDetailsRequestsRepository : HazelcastRepository<PermitUpd
 interface IQaSampleSubmissionRepository : HazelcastRepository<QaSampleSubmissionEntity, Long> {
     fun findByStatusAndId(status: Int, id: Long): QaSampleSubmissionEntity?
     fun findByLabResultsStatus(labResultsStatus: Int): List<QaSampleSubmissionEntity>?
+    fun findByLabResultsStatusAndBsNumber(labResultsStatus: Int, bsNumber: String): QaSampleSubmissionEntity?
     fun findByPermitId(permitId: Long): QaSampleSubmissionEntity?
     fun findByCdItemId(cdItemId: Long): QaSampleSubmissionEntity?
     fun findByBsNumber(bsNumber: String): QaSampleSubmissionEntity?
@@ -178,6 +179,8 @@ interface IQaUploadsRepository : HazelcastRepository<QaUploadsEntity, Long> {
     fun findByPermitIdAndDocumentType(permitId: Long, docType: String): QaUploadsEntity?
     fun findByPermitIdAndCocStatus(permitId: Long, cocStatus: Int): List<QaUploadsEntity>?
     fun findByPermitIdAndSscStatus(permitId: Long, sscStatus: Int): List<QaUploadsEntity>?
+    fun findByPermitIdAndInspectionReportStatus(permitId: Long, inspectionReportStatus: Int): List<QaUploadsEntity>?
+    fun findByPermitIdAndSta10Status(permitId: Long, sta10Status: Int): List<QaUploadsEntity>?
 }
 
 @Repository

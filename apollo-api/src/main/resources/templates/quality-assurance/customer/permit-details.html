@@ -338,34 +338,39 @@
                                 </div>
 
 
-                                <button class="accordion">Scheme of Supervision Details</button>
-                                <div class="panel">
-                                    <div class="row-table ">
-                                        <table class="table table-striped">
-                                            <thead>
-                                            <tr>
-                                                <th>Document Description</th>
-                                                <th>File Name</th>
-                                                <th>File Type</th>
-                                                <th>Version Number</th>
-                                                <th>View</th>
-                                            </tr>
-                                            </thead>
-                                            <tbody>
-                                            <tr class="list" th:each="sscParam: ${sscParameters}"
-                                                style="cursor: pointer">
+                                <div sec:authorize="hasAuthority('QA_OFFICER_MODIFY')">
+                                    <button class="accordion">Scheme of Supervision Details</button>
+                                    <div class="panel">
+                                        <div class="row-table ">
+                                            <table class="table table-striped">
+                                                <thead>
+                                                <tr>
+                                                    <th>Document Description</th>
+                                                    <th>File Name</th>
+                                                    <th>File Type</th>
+                                                    <th>Version Number</th>
+                                                    <th>View</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                <tr class="list" th:each="sscParam: ${sscParameters}"
+                                                    style="cursor: pointer">
 
-                                                <td th:text="${sscParam.documentType}"></td>
-                                                <td th:text="${sscParam.name}"></td>
-                                                <td th:text="${sscParam.fileType}"></td>
-                                                <td th:text="${sscParam.versionNumber}"></td>
-                                                <td><a th:href="@{/api/qa/kebs/view/attached(fileID=${sscParam.id})}"
-                                                       target='_blank' class="btn btn-primary itemViewBtn">view</a></td>
-                                            </tr>
-                                            </tbody>
-                                        </table>
+                                                    <td th:text="${sscParam.documentType}"></td>
+                                                    <td th:text="${sscParam.name}"></td>
+                                                    <td th:text="${sscParam.fileType}"></td>
+                                                    <td th:text="${sscParam.versionNumber}"></td>
+                                                    <td>
+                                                        <a th:href="@{/api/qa/kebs/view/attached(fileID=${sscParam.id})}"
+                                                           target='_blank' class="btn btn-primary itemViewBtn">view</a>
+                                                    </td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
                                     </div>
                                 </div>
+
 
                                 <button class="accordion">Requests Details</button>
                                 <div class="panel">
@@ -461,30 +466,36 @@
                                        class="filter-link" style="color: white">GENERATED INVOICE</a>
 
 
-                                    <a th:if="${permitDetails?.factoryInspectionReportApprovedRejectedStatus == 1  and permitDetails?.bsNumber != null}"
-                                       target='_blank' class="filter-link"
-                                       th:href="@{/api/qa/ssf-details(permitID=${permitDetails?.id})}"
-                                       style="color: white">VIEW SAMPLE DETAILS</a>
-
+                                    <!--                                    <a th:if="${permitDetails?.factoryInspectionReportApprovedRejectedStatus == 1  and permitDetails?.bsNumber != null}"-->
+                                    <!--                                       target='_blank' class="filter-link"-->
+                                    <!--                                       th:href="@{/api/qa/inspection/ssf-details(permitID=${permitDetails?.id})}"-->
+                                    <!--                                       style="color: white">VIEW SAMPLE DETAILS</a>-->
 
                                     <a th:if="${permitDetails?.generateSchemeStatus == 1 and permitDetails?.approvedRejectedScheme == 1 and permitType?.schemeGenerate == 1}"
-                                       th:href="@{/api/qa/scheme-of-supervision(permitID=${permitDetails?.id})}"
-                                       style="color: white" target='_blank' class="filter-link">GENERATED SCHEME OF
-                                        SUPERVISION AND
-                                        CONTROL</a>
+                                       th:href="@{/api/qa/kebs/view/attached(fileID=${permitDetails.sscId})}"
+                                       target='_blank' style="color: white" class="filter-link">UPLOADED SCHEME OF
+                                        SUPERVISION AND CONTROL</a>
 
 
-                                    <a th:if="${permitDetails?.generateSchemeStatus == 1 and permitDetails?.approvedRejectedScheme == null  and permitType?.schemeGenerate == 1}"
-                                       th:href="@{/api/qa/scheme-of-supervision(permitID=${permitDetails?.id})}"
-                                       style="color: white" target='_blank' class="filter-link">GENERATED SCHEME OF
-                                        SUPERVISION AND
-                                        CONTROL</a>
+                                    <!--                                    <a th:if="${permitDetails?.generateSchemeStatus == 1 and permitDetails?.approvedRejectedScheme == 1 and permitType?.schemeGenerate == 1}"-->
+                                    <!--                                       th:href="@{/api/qa/scheme-of-supervision(permitID=${permitDetails?.id})}"-->
+                                    <!--                                       style="color: white" target='_blank' class="filter-link">GENERATED SCHEME OF-->
+                                    <!--                                        SUPERVISION AND-->
+                                    <!--                                        CONTROL</a>-->
 
-                                    <div sec:authorize="hasAuthority('QA_MANAGER_ASSESSORS_MODIFY') or hasAuthority('QA_HOF_READ') or hasAuthority('QA_HOD_READ') or hasAuthority('QA_OFFICER_MODIFY')">
-                                        <a th:if="${permitDetails?.factoryInspectionReportApprovedRejectedStatus == 1}"
-                                           th:href="@{/api/qa/kebs/view/attached(fileID=${permitDetails.inspectionReportId})}"
-                                           target='_blank' style="color: white" class="filter-link">FACTORY INSPECTION
-                                            REPORT</a>
+
+                                    <!--                                    <a th:if="${permitDetails?.generateSchemeStatus == 1 and permitDetails?.approvedRejectedScheme == null  and permitType?.schemeGenerate == 1}"-->
+                                    <!--                                       th:href="@{/api/qa/scheme-of-supervision(permitID=${permitDetails?.id})}"-->
+                                    <!--                                       style="color: white" target='_blank' class="filter-link">GENERATED SCHEME OF-->
+                                    <!--                                        SUPERVISION AND-->
+                                    <!--                                        CONTROL</a>-->
+
+                                    <div sec:authorize="hasAuthority('QA_OFFICER_MODIFY') or hasAuthority('QA_HOD_MODIFY') or hasAuthority('QA_MANAGER_ASSESSORS_MODIFY') or hasAuthority('QA_HOF_MODIFY') or hasAuthority('QA_ASSESSORS_MODIFY') or hasAuthority('QA_PAC_SECRETARY_MODIFY') or hasAuthority('QA_PSC_MEMBERS_MODIFY') or hasAuthority('QA_PCM_MODIFY')">
+
+                                        <a th:if="${permitDetails?.inspectionReportGenerated == 1 and permitDetails?.factoryInspectionReportApprovedRejectedStatus == 1  }"
+                                           style="color: white"
+                                           th:href="@{/api/qa/inspection/inspection-report-details(permitID=${permitDetails?.id})}"
+                                           class="filter-link">FACTORY INSPECTION REPORT</a>
 
                                         <a th:if="${permitDetails?.testReportId != null}"
                                            th:href="@{/api/qa/kebs/view/attached(fileID=${permitDetails.testReportId})}"
@@ -558,9 +569,9 @@
                                                class="filter-link">Reassign Officer</a>
 
 
-                                            <a th:if="${permitDetails?.factoryInspectionReportApprovedRejectedStatus == null and permitDetails?.inspectionReportId != null}"
-                                               style="color: white" onclick="popUpFunction('approveInspectionReport');"
-                                               class="filter-link">APPROVE/REJECT FACTORY INSPECTION REPORT</a>
+                                            <!--                                            <a th:if="${permitDetails?.factoryInspectionReportApprovedRejectedStatus == null and permitDetails?.inspectionReportId != null}"-->
+                                            <!--                                               style="color: white" onclick="popUpFunction('approveInspectionReport');"-->
+                                            <!--                                               class="filter-link">APPROVE/REJECT FACTORY INSPECTION REPORT</a>-->
 
 
                                             <!--                                        <a th:if="${ permitDetails?.recommendationRemarks != null and permitDetails?.recommendationApprovalStatus == null}" style="color: white" onclick="popUpFunction('approveRecommendation');" class="filter-link">APPROVE/REJECT RECOMMENDATION</a>-->
@@ -571,9 +582,6 @@
 
                                             <!--                                        <a th:if="${permitDetails?.factoryInspectionReportApprovedRejectedStatus == 1 and permitDetails?.scfId != null and permitDetails?.ssfId == null}" style="color: white" onclick="popUpUploadFunction('uploadSSF');" class="filter-link">UPLOAD SSF</a>-->
 
-                                            <a th:if="${permitDetails?.factoryInspectionReportApprovedRejectedStatus == 1  and permitDetails?.bsNumber == null}"
-                                               style="color: white" onclick="popUpSSFFunction('addSSFDetails');"
-                                               class="filter-link">ADD SSF & BS NUMBER</a>
 
                                             <a th:if="${permitDetails?.productStandard == null}"
                                                style="color: white" onclick="popUpFunction('addStandardsDetails');"
@@ -582,6 +590,15 @@
                                             <a th:if="${permitDetails?.productStandard != null}"
                                                style="color: white" onclick="popUpFunction('addStandardsDetails');"
                                                class="filter-link">UPDATE STANDARDS DETAILS</a>
+
+                                            <a th:if="${permitDetails?.factoryInspectionReportApprovedRejectedStatus == 1  and permitDetails?.bsNumber == null}"
+                                               style="color: white" onclick="popUpSSFFunction('addSSFDetails');"
+                                               class="filter-link">ADD SSF & BS NUMBER</a>
+
+                                            <a th:if="${permitDetails?.bsNumber != null and permitDetails?.testReportId == null }"
+                                               target='_blank' class="filter-link"
+                                               th:href="@{/api/qa/inspection/ssf-details(permitID=${permitDetails?.id})}"
+                                               style="color: white">CHECK SAMPLE SUBMITTED DETAILS</a>
 
 
                                         </div>
@@ -599,10 +616,11 @@
 
                                             <!--                                        <a th:if="${permitType?.smeDeclarationForm == 1 and permitDetails?.smeFormFilledStatus == null}"  th:href="@{/api/qa/new-sme-declaration(permitID=${permitDetails?.id})}" class="filter-link" style="color: white">Fill SME DECLARATION</a>-->
 
-                                            <a th:if="${permitDetails?.generateSchemeStatus == 1 and permitDetails?.approvedRejectedScheme == null and permitType?.schemeGenerate == 1}"
-                                               th:href="@{/api/qa/scheme-of-supervision(permitID=${permitDetails?.id})}"
-                                               style="color: white" class="filter-link">APPROVE/REJECT GENERATED SCHEME
-                                                OF SUPERVISION AND CONTROL</a>
+                                            < <a
+                                                th:if="${permitDetails?.generateSchemeStatus == 1 and permitDetails?.approvedRejectedScheme == null and permitType?.schemeGenerate == 1}"
+                                                onclick="popUpFunction('agreeTOSSC');"
+                                                style="color: white" class="filter-link">AGREE/CONSENT TO SCHEME OF
+                                            SUPERVISION AND CONTROL</a>
 
                                             <div th:if="${permitDetails?.attachedPlantId != null}">permitEditApplication
                                                 <a th:if="${permitDetails?.sendApplication != 1}"
@@ -620,6 +638,11 @@
                                                style="color: white" onclick="popUpFunction('approveRecommendation');"
                                                class="filter-link">APPROVE/REJECT RECOMMENDATION</a>
 
+                                            <a th:if="${permitDetails?.inspectionReportGenerated == 1 and permitDetails?.factoryInspectionReportApprovedRejectedStatus == null  }"
+                                               style="color: white"
+                                               th:href="@{/api/qa/inspection/inspection-report-details(permitID=${permitDetails?.id})}"
+                                               class="filter-link">ADD COMMENT ON GENERATED INSPECTION REPORT </a>
+
                                         </div>
 
                                         <div sec:authorize="hasAuthority('QA_OFFICER_MODIFY')">
@@ -627,18 +650,19 @@
                                                style="color: white" onclick="popUpFunction('scheduleInspectionDate');"
                                                class="filter-link">SCHEDULE INSPECTION</a>
 
-                                            <a th:if="${ permitDetails?.inspectionScheduledStatus == 1 and permitDetails?.generateSchemeStatus == null and permitType?.schemeGenerate == 1}"
+                                            <a th:if="${ permitDetails?.factoryInspectionReportApprovedRejectedStatus == 1 and permitDetails?.generateSchemeStatus == null and permitType?.schemeGenerate == 1}"
                                                style="color: white" onclick="popUpUploadFunction('uploadSSC');"
                                                class="filter-link">UPLOAD SCHEME OF SUPERVISION AND CONTROL</a>
 
-                                            <a th:if="${permitDetails?.generateSchemeStatus == 0 and permitType?.schemeGenerate == 1}"
-                                               style="color: white" onclick="popUpUploadFunction('uploadSSC');"
-                                               class="filter-link">UPLOAD NEW SCHEME OF SUPERVISION AND CONTROL</a>
-
-                                            <a th:if="${permitDetails?.approvedRejectedScheme == 1 and permitDetails?.inspectionReportId == null}"
+                                            <a th:if="${permitDetails?.inspectionScheduledStatus == 1 and permitDetails?.inspectionReportGenerated == null}"
                                                style="color: white"
-                                               onclick="popUpUploadFunction('uploadInspectionReport');"
-                                               class="filter-link">UPLOAD INSPECTION REPORT</a>
+                                               th:href="@{/api/qa/inspection/new-inspection-report(permitID=${permitDetails?.id})}"
+                                               class="filter-link">GENERATE INSPECTION REPORT </a>
+
+                                            <a th:if="${permitDetails?.inspectionReportGenerated == 1 and permitDetails?.factoryInspectionReportApprovedRejectedStatus == null }"
+                                               style="color: white"
+                                               th:href="@{/api/qa/inspection/inspection-report-details(permitID=${permitDetails?.id})}"
+                                               class="filter-link">GENERATED INSPECTION REPORT </a>
 
                                             <a th:if="${permitDetails?.recommendationRemarks == null and permitDetails?.compliantStatus == 1}"
                                                style="color: white" onclick="popUpFunction('addRecommendation');"
@@ -683,9 +707,8 @@
                                             <!--                                        <a th:if="${permitType?.smeDeclarationForm == 1 and permitDetails?.smeFormFilledStatus == null}"  th:href="@{/api/qa/new-sme-declaration(permitID=${permitDetails?.id})}" class="filter-link" style="color: white">Fill SME DECLARATION</a>-->
 
                                             <a th:if="${permitDetails?.generateSchemeStatus == 1 and permitDetails?.approvedRejectedScheme == null and permitType?.schemeGenerate == 1}"
-                                               th:href="@{/api/qa/scheme-of-supervision(permitID=${permitDetails?.id})}"
-                                               style="color: white" class="filter-link">APPROVE/REJECT GENERATED SCHEME
-                                                OF
+                                               onclick="popUpFunction('agreeTOSSC');"
+                                               style="color: white" class="filter-link">AGREE/CONSENT TO SCHEME OF
                                                 SUPERVISION AND CONTROL</a>
 
                                             <div th:if="${permitType?.st10Status == 1 and permitDetails?.sta10FilledStatus == 1 and permitDetails?.attachedPlantId != null}">
@@ -707,6 +730,11 @@
                                                style="color: white" onclick="popUpFunction('approveRecommendation');"
                                                class="filter-link">APPROVE/REJECT RECOMMENDATION</a>
 
+                                            <a th:if="${permitDetails?.inspectionReportGenerated == 1 and permitDetails?.factoryInspectionReportApprovedRejectedStatus == null  }"
+                                               style="color: white"
+                                               th:href="@{/api/qa/inspection/inspection-report-details(permitID=${permitDetails?.id})}"
+                                               class="filter-link">ADD COMMENT ON GENERATED INSPECTION REPORT </a>
+
                                         </div>
 
                                         <div sec:authorize="hasAuthority('QA_OFFICER_MODIFY')">
@@ -714,14 +742,14 @@
                                                style="color: white" onclick="popUpFunction('scheduleInspectionDate');"
                                                class="filter-link">SCHEDULE INSPECTION</a>
 
-                                            <a th:if="${ permitDetails?.inspectionReportId != null and permitDetails?.generateSchemeStatus == null and permitType?.schemeGenerate == 1}"
+                                            <a th:if="${ permitDetails?.factoryInspectionReportApprovedRejectedStatus == 1 and permitDetails?.generateSchemeStatus == null and permitType?.schemeGenerate == 1}"
                                                style="color: white" onclick="popUpUploadFunction('uploadSSC');"
                                                class="filter-link">UPLOAD SCHEME OF SUPERVISION AND CONTROL</a>
 
-                                            <a th:if="${permitDetails?.generateSchemeStatus == 0 and permitType?.schemeGenerate == 1}"
-                                               th:href="@{/api/qa/update-scheme-of-supervision(permitID=${permitDetails?.id})}"
-                                               style="color: white" class="filter-link">GENERATE NEW SCHEME OF
-                                                SUPERVISION AND CONTROL</a>
+                                            <!--                                            <a th:if="${permitDetails?.generateSchemeStatus == 0 and permitType?.schemeGenerate == 1}"-->
+                                            <!--                                               th:href="@{/api/qa/update-scheme-of-supervision(permitID=${permitDetails?.id})}"-->
+                                            <!--                                               style="color: white" class="filter-link">GENERATE NEW SCHEME OF-->
+                                            <!--                                                SUPERVISION AND CONTROL</a>-->
 
                                             <!--                                            <a th:if="${permitDetails?.inspectionScheduledStatus == 1 and permitDetails?.inspectionReportId == null}"-->
                                             <!--                                               style="color: white"-->
@@ -733,7 +761,7 @@
                                                th:href="@{/api/qa/inspection/new-inspection-report(permitID=${permitDetails?.id})}"
                                                class="filter-link">GENERATE INSPECTION REPORT </a>
 
-                                            <a th:if="${permitDetails?.inspectionReportGenerated == 1 }"
+                                            <a th:if="${permitDetails?.inspectionReportGenerated == 1 and permitDetails?.factoryInspectionReportApprovedRejectedStatus == null }"
                                                style="color: white"
                                                th:href="@{/api/qa/inspection/inspection-report-details(permitID=${permitDetails?.id})}"
                                                class="filter-link">GENERATED INSPECTION REPORT </a>
@@ -777,17 +805,17 @@
                                                class="filter-link" style="color: white">UPDATE STA 3</a>
 
 
-                                            <a th:if="${permitDetails?.generateSchemeStatus == 1 and permitDetails?.approvedRejectedScheme == null and permitType?.schemeGenerate == 1}"
-                                               th:href="@{/api/qa/scheme-of-supervision(permitID=${permitDetails?.id})}"
-                                               style="color: white" class="filter-link">APPROVE/REJECT GENERATED SCHEME
-                                                OF
-                                                SUPERVISION AND CONTROL</a>
+                                            <!--                                            <a th:if="${permitDetails?.generateSchemeStatus == 1 and permitDetails?.approvedRejectedScheme == null and permitType?.schemeGenerate == 1}"-->
+                                            <!--                                               th:href="@{/api/qa/scheme-of-supervision(permitID=${permitDetails?.id})}"-->
+                                            <!--                                               style="color: white" class="filter-link">APPROVE/REJECT GENERATED SCHEME-->
+                                            <!--                                                OF-->
+                                            <!--                                                SUPERVISION AND CONTROL</a>-->
 
-                                            <a th:if="${permitDetails?.sendForPcmReview == 1 and permitDetails?.approvedRejectedScheme == null and permitType?.schemeGenerate == 1}"
-                                               th:href="@{/api/qa/scheme-of-supervision(permitID=${permitDetails?.id})}"
-                                               style="color: white" class="filter-link">APPROVE/REJECT GENERATED SCHEME
-                                                OF
-                                                SUPERVISION AND CONTROL</a>
+                                            <!--                                            <a th:if="${permitDetails?.sendForPcmReview == 1 and permitDetails?.approvedRejectedScheme == null and permitType?.schemeGenerate == 1}"-->
+                                            <!--                                               th:href="@{/api/qa/scheme-of-supervision(permitID=${permitDetails?.id})}"-->
+                                            <!--                                               style="color: white" class="filter-link">APPROVE/REJECT GENERATED SCHEME-->
+                                            <!--                                                OF-->
+                                            <!--                                                SUPERVISION AND CONTROL</a>-->
 
                                             <a th:if="${permitDetails?.attachedPlantId != null and permitDetails?.cocId == null}"
                                                style="color: white" onclick="popUpUploadFunction('uploadCOC');"
@@ -846,9 +874,20 @@
                                         </div>
 
                                         <div sec:authorize="hasAuthority('QA_OFFICER_MODIFY')">
-                                            <a th:if="${permitDetails?.inspectionReportId == null}" style="color: white"
-                                               onclick="popUpUploadFunction('uploadInspectionReport');"
-                                               class="filter-link">UPLOAD INSPECTION REPORT</a>
+
+                                            <a th:if="${permitDetails?.inspectionScheduledStatus == 1 and permitDetails?.inspectionReportGenerated == null}"
+                                               style="color: white"
+                                               th:href="@{/api/qa/inspection/new-inspection-report(permitID=${permitDetails?.id})}"
+                                               class="filter-link">GENERATE INSPECTION REPORT </a>
+
+                                            <a th:if="${permitDetails?.inspectionReportGenerated == 1 and permitDetails?.factoryInspectionReportApprovedRejectedStatus == null }"
+                                               style="color: white"
+                                               th:href="@{/api/qa/inspection/inspection-report-details(permitID=${permitDetails?.id})}"
+                                               class="filter-link">GENERATED INSPECTION REPORT </a>
+
+                                            <!--                                            <a th:if="${permitDetails?.inspectionReportId == null}" style="color: white"-->
+                                            <!--                                               onclick="popUpUploadFunction('uploadInspectionReport');"-->
+                                            <!--                                               class="filter-link">UPLOAD INSPECTION REPORT</a>-->
 
                                             <a th:if="${permitDetails?.compliantStatus == 1}"
                                                th:href="@{/api/qa/product-quality-status(permitID=${permitDetails?.id})}"
@@ -1031,6 +1070,7 @@
                                                           th:field="*{factoryInspectionReportApprovedRejectedRemarks}"></textarea>
                                             </div>
 
+
                                             <div id="complianceStatus">
                                                 <input type="hidden" id="description9" name="description"
                                                        th:value="'Compliance status Was added Succesfull'">
@@ -1038,7 +1078,7 @@
                                                 <label for="attachedPlantId" class="col-form-label">View
                                                     Report: </label>
                                                 <button><a
-                                                        th:href="@{/api/qa/ssf-details(permitID=${permitDetails?.id})}"
+                                                        th:href="@{/api/qa/inspection/ssf-details(permitID=${permitDetails?.id})}"
                                                         target='_blank' class="btn btn-primary itemViewBtn">view</a>
                                                 </button>
                                                 <label for="attachedPlantId" class="col-form-label">Select
@@ -1242,6 +1282,28 @@
                                                             th:value="${standard.id}"></option>
                                                     -->
                                                 </select>
+                                            </div>
+                                            <div id="agreeTOSSC">
+                                                <input type="hidden" id="description22" name="description"
+                                                       th:value="'SSC Approved Succesfull'">
+                                                <input type="hidden" id="varField22" name="varField1"
+                                                       th:value="'SSC Rejected Succesfull'">
+                                                <label for="attachedPlantId" class="col-form-label">View SCC: </label>
+                                                <button><a
+                                                        th:href="@{/api/qa/kebs/view/attached(fileID=${permitDetails.sscId})}"
+                                                        target='_blank' class="btn btn-primary itemViewBtn">view</a>
+                                                </button>
+                                                <label for="approvedRejectedScheme" class="col-form-label">Select
+                                                    Status:</label>
+                                                <select id="approvedRejectedScheme" required
+                                                        class="select-field w-select"
+                                                        th:field="*{approvedRejectedScheme}">
+                                                    <option th:text="'Select one.....'" th:value="null"></option>
+                                                    <option th:text="'Approve'" th:value="1"></option>
+                                                    <option th:text="'Reject'" th:value="0"></option>
+                                                </select>
+                                                <!--                                                <label for="factoryInspectionReportApprovedRejectedRemarks" class="col-form-label">Please write, in detail, your feedback for this Factory Inspection report:</label>-->
+                                                <!--                                                <textarea required name="name" id="factoryInspectionReportApprovedRejectedRemarks" class="input-field w-input" cols="65" rows="5" th:field="*{factoryInspectionReportApprovedRejectedRemarks}"></textarea>-->
                                             </div>
 
                                         </div>
@@ -1904,8 +1966,8 @@
     }
 
     function popUpFunction(eventAction) {
-        let arrHead = ['addStandardsDetails', 'updateSection', 'permitResubmitApplicationForReview', 'permitResubmitApplication', 'attachePlant', 'permitCompleteness', 'assignOfficer', 'scheduleInspectionDate', 'assignAssessor', 'scheduleAssessmentDate', 'approveInspectionReport', 'complianceStatus', 'addRecommendation', 'approveRecommendation', 'pscMemberApproval', 'pcmApproval', 'dmarkApplicationApproval', 'hodApprovalAssessmentReport', 'permitStopProductionDetails', 'permitEditApplication'];
-        let arrHeadSave = ['Add Standard details', 'Update Section', 'Resubmit Permit Your Application for Review', 'Resubmit Permit Application', 'Attach a Plant for manufacturing the product', 'Is The Permit Complete', 'Select An officer', ' Set The Date of Inspection', 'Select An Assessor', 'Schedule Factory Assessment Date', 'Approve Or Reject the Factory Inspection Report', 'Select a suitable Compliance Status for the Lab Report', 'Add Recommendation', 'Approve / Reject Recommendation', 'Approve / Reject Awarding of Permit', 'Approve / Reject Awarding of Permit', 'Grant/Defer Application', 'Approve / Reject Permit Review', 'Stop Production', 'Edit Permit Application'];
+        let arrHead = ['agreeTOSSC', 'addStandardsDetails', 'updateSection', 'permitResubmitApplicationForReview', 'permitResubmitApplication', 'attachePlant', 'permitCompleteness', 'assignOfficer', 'scheduleInspectionDate', 'assignAssessor', 'scheduleAssessmentDate', 'approveInspectionReport', 'complianceStatus', 'addRecommendation', 'approveRecommendation', 'pscMemberApproval', 'pcmApproval', 'dmarkApplicationApproval', 'hodApprovalAssessmentReport', 'permitStopProductionDetails', 'permitEditApplication'];
+        let arrHeadSave = ['AGREE/CONSENT TO SSC', 'Add Standard details', 'Update Section', 'Resubmit Permit Your Application for Review', 'Resubmit Permit Application', 'Attach a Plant for manufacturing the product', 'Is The Permit Complete', 'Select An officer', ' Set The Date of Inspection', 'Select An Assessor', 'Schedule Factory Assessment Date', 'Approve Or Reject the Factory Inspection Report', 'Select a suitable Compliance Status for the Lab Report', 'Add Recommendation', 'Approve / Reject Recommendation', 'Approve / Reject Awarding of Permit', 'Approve / Reject Awarding of Permit', 'Grant/Defer Application', 'Approve / Reject Permit Review', 'Stop Production', 'Edit Permit Application'];
 
         for (let h = 0; h < arrHead.length; h++) {
             if (eventAction !== arrHead[h]) {
