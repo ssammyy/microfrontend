@@ -57,6 +57,7 @@ export const initialValidateTokenAndPhoneState: ValidateTokenAndPhoneState = {
 export const initialBrsValidationState: BrsValidationState = {
   response: {response: '', status: 0, payload: null},
   data: {
+    id: -1,
     buildingName: '',
     name: '',
     businessLines: 0,
@@ -73,7 +74,8 @@ export const initialBrsValidationState: BrsValidationState = {
     registrationNumber: '',
     streetName: '',
     town: 0,
-    yearlyTurnover: 0
+    yearlyTurnover: 0,
+    status: false
   },
   step: 0
 

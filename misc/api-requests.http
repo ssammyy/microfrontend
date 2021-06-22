@@ -86,3 +86,35 @@ GET https://localhost:8006/api/v1/migration/company
 Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJrem11aGlhQGdtYWlsLmNvbSIsImlzcyI6ImtpbXMua2Vicy5vcmciLCJpYXQiOjE2MjQyOTg0NDEsImV4cCI6MTYyNDMwNDQ0MSwiYWRkcmVzcyI6IjEyNy4wLjAuMSIsInVzZXJBZ2VudCI6IltBcGFjaGUtSHR0cENsaWVudC80LjUuMTMgKEphdmEvMTEuMC4xMSldIiwiZnVsbE5hbWUiOiJLZW5uZXRoIE11aGlhIiwicm9sZXMiOiJQRVJNSVRfQVBQTElDQVRJT04sUEVSTUlUX1JFTkVXQUwsUFZPQ19BUFBMSUNBVElPTl9SRUFELFNMX01BTlVGQUNUVVJFUl9WSUVXLExJU1RfQ09NUEFOWSxNT0RJRllfQ09NUEFOWSJ9.DIF1OgaIQiHPsfnGnrrRQpSc8ybzpyq38j5GRaW3egPlHLwYpgFlQbeJRSbmdRFvRYnHTnXFNXWVzYI7Bqh47Q
 
 
+
+#####
+PUT https://localhost:8006/api/v1/migration/company/245/
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJrem11aGlhQGdtYWlsLmNvbSIsImlzcyI6ImtpbXMua2Vicy5vcmciLCJpYXQiOjE2MjQzNDI5NTUsImV4cCI6MTYyNDM0ODk1NSwiYWRkcmVzcyI6IjEyNy4wLjAuMSIsInVzZXJBZ2VudCI6IltNb3ppbGxhLzUuMCAoWDExOyBGZWRvcmE7IExpbnV4IHg4Nl82NDsgcnY6ODkuMCkgR2Vja28vMjAxMDAxMDEgRmlyZWZveC84OS4wXSIsImZ1bGxOYW1lIjoiS2VubmV0aCBNdWhpYSIsInJvbGVzIjoiUEVSTUlUX0FQUExJQ0FUSU9OLFBFUk1JVF9SRU5FV0FMLFBWT0NfQVBQTElDQVRJT05fUkVBRCxTTF9NQU5VRkFDVFVSRVJfVklFVyxMSVNUX0NPTVBBTlksTU9ESUZZX0NPTVBBTlkifQ.ZRdRMK9p68dc_KjfmpAK_8KXcSq_uHKKTxpJGZbH0haKosjuI0S0OUNj6qh3y_UGaYJu9lBcNaRCvkVWV391gg
+Content-Type: application/json
+
+{
+  "name": "TECHNOVOZ LIMITED",
+  "kraPin": "123546547",
+  "userId": 1925,
+  "profileType": null,
+  "registrationNumber": "CPR/2011/53201",
+  "postalAddress": "22-90138",
+  "physicalAddress": "L.R. NO.209/8087, KPCU HOUSE HAILE SELASSIE AVENUE, NAIROBI",
+  "plotNumber": "12345",
+  "companyEmail": "1000  SHARES OF KSH 300",
+  "companyTelephone": "56360",
+  "yearlyTurnover": 121355,
+  "businessLines": 1,
+  "businessNatures": 1,
+  "buildingName": "trance",
+  "streetName": "Tom Mboya",
+  "directorIdNumber": "14402691",
+  "region": 1,
+  "county": 1,
+  "town": 2,
+  "factoryVisitDate": null,
+  "factoryVisitStatus": null,
+  "manufactureStatus": null,
+  "id": 245,
+  "status": true
+}

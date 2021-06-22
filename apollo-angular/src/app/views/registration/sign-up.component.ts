@@ -137,15 +137,17 @@ export class SignUpComponent implements OnInit {
   }
 
   updateSelectedRegion() {
-    this.selectedRegion = this.stepOneForm?.get('region')?.value;
+    this.selectedRegion = this.stepThreeForm?.get('region')?.value;
   }
 
   updateSelectedCounty() {
-    this.selectedCounty = this.stepOneForm?.get('county')?.value;
+    this.selectedCounty = this.stepThreeForm?.get('county')?.value;
+    console.log(`county set to ${this.selectedCounty}`)
   }
 
   updateSelectedTown() {
-    this.selectedTown = this.stepOneForm?.get('town')?.value;
+    this.selectedTown = this.stepThreeForm?.get('town')?.value;
+    console.log(`town set to ${this.selectedTown}`)
   }
 
   updateSelectedBusinessLine() {
