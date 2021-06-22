@@ -86,7 +86,8 @@
             </div>
         </div>
         <div class="options-button">
-            <button type="button" value="" class="option-button">Options</button>
+<!--            <button type="button" value="" class="option-button" >Logout</button>-->
+            <button type="button" value="" class="option-button"><a th:href="@{/auth/logout}">LOGOUT</a></button>
         </div>
     </div>
 
@@ -96,7 +97,7 @@
         <div class="sidebar-items">
             <img th:src="@{/images/assets/Dashboard.svg}" class="sidebar-icons-dashboard selected-page">
             <span class="selected-page">
-                    &nbsp; Dashboard
+                 <a th:href="@{/index}"> &nbsp; Dashboard</a>
                 </span>
         </div>
         <div sec:authorize="hasAuthority('PERMIT_APPLICATION') or hasAuthority('QA_OFFICER_MODIFY')
@@ -153,7 +154,7 @@
                 </h4>
             </div>
             <div class="logout">
-                <button type="button" value="" class="logout-button"><a th:href="@{/auth/logout}" class="login-ref">LOGOUT</a>
+                <button type="button" value="" class="logout-button"><a href="#" onclick="window.history.back()" class="login-ref">GO BACK</a>
                 </button>
             </div>
         </div>
