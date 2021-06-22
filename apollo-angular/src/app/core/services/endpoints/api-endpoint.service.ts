@@ -31,15 +31,13 @@ export class ApiEndpointService {
   public static AUTH_CONTEXT = '/api/v1/login';
   public static ANONYMOUS_CONTEXT = '/api/v1/migration/anonymous';
   public static USER_CONTEXT = 'user';
-  public static MASTERS_CONTEXT = 'api/masters/v1';
+  public static MASTERS_CONTEXT = '/api/v1/migration';
   public static ADMIN_CONTEXT = 'api/admin/v1';
-  public static INTEG_AUTH_CONTEXT = 'integ';
 
   /**
    * Map of API endpoints.
    */
   public static ENDPOINT = {
-    LOGIN: `${ApiEndpointService.INTEG_AUTH_CONTEXT}/login/`,
     LOGOUT: `${ApiEndpointService.USER_CONTEXT}/logout/`,
     REGISTER: `${ApiEndpointService.AUTH_CONTEXT}/signUp`,
     VALIDATE: `${ApiEndpointService.AUTH_CONTEXT}/activate`,
@@ -53,6 +51,7 @@ export class ApiEndpointService {
     SEND_TOKEN: `${ApiEndpointService.ANONYMOUS_CONTEXT}/sendToken`,
     VALIDATE_TOKEN: `${ApiEndpointService.ANONYMOUS_CONTEXT}/validateToken`,
     REGISTER_COMPANY: `${ApiEndpointService.ANONYMOUS_CONTEXT}/registerCompany`,
+    COMPANY_LIST: `${ApiEndpointService.MASTERS_CONTEXT}/company`,
     REGIONS_LIST: `${ApiEndpointService.ANONYMOUS_CONTEXT}/regions`,
     COUNTY_LIST: `${ApiEndpointService.ANONYMOUS_CONTEXT}/county`,
     TOWN_LIST: `${ApiEndpointService.ANONYMOUS_CONTEXT}/towns`,

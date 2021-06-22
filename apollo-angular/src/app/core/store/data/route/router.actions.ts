@@ -6,7 +6,7 @@ export const loadRouters = createAction(
 
 export const Go = createAction(
   '[Router] Go',
-  props<{ payload: any, link: string }>()
+  props<{ payload: any, link: string, redirectUrl: string }>()
 );
 
 

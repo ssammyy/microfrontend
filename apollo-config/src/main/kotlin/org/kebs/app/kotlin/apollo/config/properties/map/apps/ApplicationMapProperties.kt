@@ -30,8 +30,9 @@ import java.math.BigDecimal
 @EncryptablePropertySource("file:\${CONFIG_PATH}/application-map.properties")
 class ApplicationMapProperties {
 
-    //    @Value("\${org.kebs.app.kotlin.apollo.application.map.base.url.key}")
-//    val baseUrlKey: String="BASE-URL"
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.manufacturer.role.id}")
+    val manufacturerRoleId: Long? = null
+
     @Value("\${org.kebs.app.kotlin.apollo.application.map.manufacturer.admin.role.id}")
     val manufacturerAdminRoleId: Long? = null
 
@@ -837,6 +838,37 @@ class ApplicationMapProperties {
 
     @Value("\${org.kebs.app.kotlin.apollo.sl.employee.role.id}")
     val slEmployeeRoleId: Long? = null
+
+    @Value("\${org.kebs.app.kotlin.apollo.application.transaction.success.status}")
+    val transactionSuccessStatus: Int = 30
+
+    @Value("\${org.kebs.app.kotlin.apollo.application.transaction.active.status}")
+    val transactionActiveStatus: Int = 1
+
+    @Value("\${org.kebs.app.kotlin.apollo.application.transaction.test.status}")
+    val transactionTestStatus: Int = 2
+
+    @Value("\${org.kebs.app.kotlin.apollo.application.transaction.inactive.status}")
+    val transactionInactiveStatus: Int = 0
+
+    @Value("\${org.kebs.app.kotlin.apollo.application.transaction.success.status.response}")
+    val transactionSuccessStatusResponse: String = "00"
+
+    @Value("\${org.kebs.app.kotlin.apollo.application.transaction.failed.status}")
+    val transactionFailedStatus: Int = 25
+
+    @Value("\${org.kebs.app.kotlin.apollo.application.transaction.exception.status}")
+    val transactionExceptionStatus: Int = 99
+
+    @Value("\${org.kebs.app.kotlin.apollo.application.page.start}")
+    val pageStart: Int = 1
+
+    @Value("\${org.kebs.app.kotlin.apollo.application.page.records}")
+    val pageRecords: Int = 1
+
+    /**
+     * TODO: Why do we need this
+     */
 
     val assigneeId: Long = 101
     val qaoAssigneeId: Long = 402
