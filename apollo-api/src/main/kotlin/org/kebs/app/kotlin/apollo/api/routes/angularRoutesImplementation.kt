@@ -106,13 +106,13 @@ class AngularRoutes {
                 "/{companyId}".nest {
                     PUT("", handler::handleUpdateCompanyDetails)
                     GET("", handler::handleFetchCompanyById)
-                    "branches".nest {
+                    "/branches".nest {
                         GET("", handler::handleFetchBranchesByCompanyIdAndUserId)
                         POST("", handler::handleUpdatePlantEntity)
                         "/{branchId}".nest {
                             PUT("", handler::handleUpdatePlantEntity)
                             GET("", handler::handleFetchBranchesByIdAndUserId)
-                            "users".nest {
+                            "/users".nest {
                                 GET("", handler::handleFetchUsersByCompanyIdAndBranchIdAndUserId)
                                 POST("", handler::handleUpdateBranchUsers)
                                 "/{userId}".nest {
@@ -122,7 +122,7 @@ class AngularRoutes {
                             }
                         }
                     }
-                    "directors".nest {
+                    "/directors".nest {
                         GET("", handler::handleFetchDirectorsByCompanyIdAndUserId)
                         POST("", handler::handleUpdateProfileDirectors)
                         "/{directorId}".nest {

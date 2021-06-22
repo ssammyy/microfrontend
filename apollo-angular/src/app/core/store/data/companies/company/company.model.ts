@@ -1,7 +1,8 @@
 export interface Company {
+  id: number;
   name: string;
   kraPin: string;
-  status: number;
+  status: boolean;
   registrationNumber: string;
   postalAddress: string;
   physicalAddress: string;

@@ -1,3 +1,6 @@
+/*@import url("https://fonts.googleapis.com/icon?family=Material+Icons");*/
+/*@import url("https://fonts.googleapis.com/css?family=Nunito Sans");*/
+
 body {
   font-family: 'Nunito Sans';
   padding: 0;
@@ -643,3 +646,4 @@ label {
   grid-template-areas:
     "notification-title notification-content notification-details";
 }
+

@@ -17,6 +17,9 @@ import {DashboardComponent} from './views/dashboard/dashboard.component';
 import {AccountList} from "./views/dashboard/account/account.list";
 import {CompaniesList} from './views/dashboard/company/companies.list';
 import {NgxPaginationModule} from "ngx-pagination";
+import {BranchesList} from './views/dashboard/company/branch/branches.list';
+import {DirectorsList} from './views/dashboard/company/director/directors.list';
+import {DataTablesModule} from "angular-datatables";
 
 
 @NgModule({
@@ -27,7 +30,9 @@ import {NgxPaginationModule} from "ngx-pagination";
     SignUpComponent,
     DashboardComponent,
     AccountList,
-    CompaniesList
+    CompaniesList,
+    BranchesList,
+    DirectorsList
   ],
   imports: [
     BrowserModule,
@@ -43,6 +48,7 @@ import {NgxPaginationModule} from "ngx-pagination";
     SharedModule,
     FormsModule,
     NgxPaginationModule,
+    DataTablesModule,
   ],
   providers: [
     {provide: APP_BASE_HREF, useValue: '/'}

@@ -361,7 +361,7 @@ class RegistrationManagementHandler(
         return try {
 
             val user = service.loggedInUserDetails()
-            val branchId = req.pathVariable("branchId").toLongOrNull()
+
             val companyId = req.pathVariable("companyId").toLongOrNull()
 
             service.fetchDirectorsByIdAndUserId(
@@ -391,7 +391,6 @@ class RegistrationManagementHandler(
         return try {
 
             val user = service.loggedInUserDetails()
-            val branchId = req.pathVariable("branchId").toLongOrNull()
             val companyId = req.pathVariable("companyId").toLongOrNull()
 
             service.fetchBranchesByIdAndUserId(

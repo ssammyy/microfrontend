@@ -390,6 +390,7 @@ data class UserCompanyEntityDto(
 
     ) {
     var id: Long? = null
+    var status: Boolean = false
 }
 
 data class UserEntityDto(
