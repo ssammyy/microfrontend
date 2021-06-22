@@ -3,12 +3,13 @@ export interface LoginCredentials {
   password: string;
 }
 
-export interface LoggedInUser {
-  accessToken: string;
-  id: number;
-  username: string;
-  email: string;
-  fullName: string;
-  roles: string[];
+export class LoggedInUser {
+  accessToken = '';
+  id = 0;
+  username = '';
+  email = '';
+  fullName = '';
+  roles: string[] = [];
+  expiry = Date();
 }
 

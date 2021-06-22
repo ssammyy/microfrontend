@@ -100,6 +100,11 @@ class AngularRoutes {
     @Bean
     fun organizationManagementRoutes(handler: RegistrationManagementHandler) = router {
         "/api/v1/migration/".nest {
+            "/secure".nest {
+                "/logout".nest {
+                    POST("", handler::handleLogout)
+                }
+            }
             "/company".nest {
                 GET("", handler::handleFetchCompaniesByUserId)
                 POST("", handler::handleUpdateCompanyDetails)

@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {Observable} from "rxjs";
 import {select, Store} from "@ngrx/store";
-import {selectGetNames} from "../../core/store";
+import {loadLogout, selectGetNames} from "../../core/store";
 
 @Component({
   selector: 'app-dashboard',
@@ -20,4 +20,7 @@ export class DashboardComponent implements OnInit {
     this.fullName$ = this.store$.pipe(select(selectGetNames));
   }
 
+  onClickLogout() {
+    this.store$.dispatch(loadLogout({loginUrl: 'login'}));
+  }
 }

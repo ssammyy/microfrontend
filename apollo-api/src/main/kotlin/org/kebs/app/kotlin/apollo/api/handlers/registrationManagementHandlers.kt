@@ -9,6 +9,7 @@ import org.kebs.app.kotlin.apollo.common.dto.ProfileDirectorsEntityDto
 import org.kebs.app.kotlin.apollo.common.dto.UserCompanyEntityDto
 import org.kebs.app.kotlin.apollo.common.exceptions.InvalidInputException
 import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
+import org.kebs.app.kotlin.apollo.config.properties.auth.AuthenticationProperties
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Component
 import org.springframework.validation.BeanPropertyBindingResult
@@ -21,8 +22,27 @@ import org.springframework.web.servlet.function.body
 @Component
 class RegistrationManagementHandler(
     private val service: RegistrationManagementDaoService,
-    private val validator: Validator
+    private val validator: Validator,
+    private val authenticationProperties: AuthenticationProperties
 ) : AbstractValidationHandler() {
+
+    @PreAuthorize("isAuthenticated")
+    fun handleLogout(req: ServerRequest): ServerResponse {
+        return try {
+            val header = req.headers().header(authenticationProperties.authorizationHeader ?: "Authorization")[0]
+            KotlinLogging.logger { }.trace(header)
+            service.logout(header)
+                ?.let { ServerResponse.ok().body(it) }
+                ?: onErrors("We could not complete your request try again later")
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.debug(e.message, e)
+            KotlinLogging.logger { }.error(e.message)
+            onErrors(e.message)
+
+        }
+    }
+
     /**
      * Add or edit a company
      *

@@ -1,10 +1,8 @@
 package org.kebs.app.kotlin.apollo.api.ports.provided.dao
 
 import mu.KotlinLogging
-import org.kebs.app.kotlin.apollo.common.dto.OrganizationUserEntityDto
-import org.kebs.app.kotlin.apollo.common.dto.PlantEntityDto
-import org.kebs.app.kotlin.apollo.common.dto.ProfileDirectorsEntityDto
-import org.kebs.app.kotlin.apollo.common.dto.UserCompanyEntityDto
+import org.kebs.app.kotlin.apollo.api.security.jwt.JwtTokenService
+import org.kebs.app.kotlin.apollo.common.dto.*
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.common.exceptions.InvalidValueException
 import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
@@ -37,8 +35,18 @@ class RegistrationManagementDaoService(
     private val brsLookupManufacturerPartnerRepo: IBrsLookupManufacturerPartnersRepository,
     private val companyProfileDirectorsRepo: ICompanyProfileDirectorsRepository,
     private val manufacturePlantRepository: IManufacturePlantDetailsRepository,
-    private val usersRepo: IUserRepository
+    private val usersRepo: IUserRepository,
+    private val tokenService: JwtTokenService,
 ) {
+
+    /**
+     *  Render JWT invalid after receiving a logout request
+     * Token is extracted from the header and validated against set rules before the session userdetails are fetched
+     *  @param header the first Authorization header hopefully containing the Bearer JWT
+     *  @return the CustomResponse with the results of the logout process
+     *
+     */
+    fun logout(header: String?): CustomResponse? = tokenService.destroyTokenOnLogout(header)
 
 
     /**

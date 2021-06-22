@@ -6,7 +6,7 @@ export const getAuthFeatureState = createFeatureSelector<AuthState>(authFeatureK
 
 export const selectIsAuthenticated = createSelector(
   getAuthFeatureState,
-  (state: AuthState) => state.loggedIn
+  (state: AuthState) => state.loggedIn && new Date(state.profile.expiry).getTime() > Date.now()
 );
 export const selectUserInfo = createSelector(
   getAuthFeatureState,
