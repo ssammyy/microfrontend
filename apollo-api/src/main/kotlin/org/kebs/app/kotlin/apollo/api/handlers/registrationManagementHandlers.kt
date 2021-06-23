@@ -26,6 +26,13 @@ class RegistrationManagementHandler(
     private val authenticationProperties: AuthenticationProperties
 ) : AbstractValidationHandler() {
 
+
+    /**
+     * Invalidate Token and Logout
+     *
+     * @param req ServerRequest
+     * @return ServerResponse
+     */
     @PreAuthorize("isAuthenticated")
     fun handleLogout(req: ServerRequest): ServerResponse {
         return try {

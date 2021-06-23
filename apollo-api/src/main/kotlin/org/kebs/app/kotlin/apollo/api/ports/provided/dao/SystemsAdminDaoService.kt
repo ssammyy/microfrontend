@@ -1205,7 +1205,7 @@ class SystemsAdminDaoService(
 
 
                     /**
-                     * TODO: Create Manufacturer Id role
+                     * DONE: Create Manufacturer Id role
                      */
                     userRolesRepo.save(
                         registrationDaoServices.userRoleAssignment(

@@ -13,11 +13,11 @@ import {UsersList} from "./views/dashboard/company/user/users.list";
 
 
 const routes: Routes = [
-  // {
-  //   path: '',
-  //   redirectTo: 'dashboard',
-  //   pathMatch: 'prefix',
-  // },
+  {
+    path: 'migration',
+    redirectTo: 'register',
+    pathMatch: 'prefix',
+  },
   {
     path: 'register',
     component: RegistrationComponent,
