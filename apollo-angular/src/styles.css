@@ -396,12 +396,16 @@ p {
 
 .top-section {
   width: 100%;
-  display: grid;
+  display: flex;
   background-color: #E0E0E0;
   grid-template-columns: 1fr auto auto 1fr;
   grid-template-rows: auto;
   grid-template-areas:
     "dashboard-title . . logout";
+}
+
+.bredcrumb {
+  color: #121212!important;
 }
 
 .main-area {

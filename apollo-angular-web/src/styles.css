@@ -383,7 +383,7 @@ p {
 
 .top-section {
   width: 100%;
-  display: grid;
+  display: flex;
   background-color: #E0E0E0;
   grid-template-columns: 1fr auto auto 1fr;
   grid-template-rows: auto;
@@ -451,6 +451,10 @@ p {
   color: #ffffff;
   display: flex;
   align-items: center;
+}
+
+.bredcrumb {
+  color: #121212!important;
 }
 
 .link {
