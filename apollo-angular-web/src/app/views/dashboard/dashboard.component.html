@@ -72,10 +72,16 @@
         <h4 class="dashboard-title-content">
           Dashboard
         </h4>
+
       </div>
-      <div class="logout">
+      <div class="pt-3">
+        <p [innerHTML]="getBreadcrumbs()"></p>
+      </div>
+
+      <div class="logout ml-auto pr-3">
         <button class="logout-button" type="button" value=""><a class="login-ref" href="index.html">LOGOUT</a></button>
       </div>
+
     </div>
     <section class="dashboard-content">
 
@@ -148,4 +154,7 @@
 </div>
 </body>
 
+
 </html>
+
+
