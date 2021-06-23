@@ -1791,6 +1791,9 @@ class QADaoServices(
                         qaInspectionReportRecommendationRepo.save(qaInspectionReportRecommendation)
                 }
 
+            permitFound.inspectionReportGenerated = s.activeStatus
+            permitUpdateDetails(permitFound, s, user)
+
 
 
 

@@ -874,6 +874,9 @@
                                         </div>
 
                                         <div sec:authorize="hasAuthority('QA_OFFICER_MODIFY')">
+                                            <a th:if="${permitDetails?.inspectionScheduledStatus == null}"
+                                               style="color: white" onclick="popUpFunction('scheduleInspectionDate');"
+                                               class="filter-link">SCHEDULE INSPECTION</a>
 
                                             <a th:if="${permitDetails?.inspectionScheduledStatus == 1 and permitDetails?.inspectionReportGenerated == null}"
                                                style="color: white"

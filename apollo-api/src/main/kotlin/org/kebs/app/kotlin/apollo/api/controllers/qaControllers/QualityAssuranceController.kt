@@ -1635,7 +1635,7 @@ class QualityAssuranceController(
     }
 
     @PreAuthorize("hasAuthority('PERMIT_APPLICATION')")
-    @GetMapping("/kebs/mpesa-stk-push")
+    @PostMapping("/kebs/mpesa-stk-push")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun payPermitWithMpesa(
         @RequestParam("batchInvoiceID") batchInvoiceID: Long,
@@ -1653,7 +1653,7 @@ class QualityAssuranceController(
         val sm = CommonDaoServices.MessageSuccessFailDTO()
         sm.closeLink = "${applicationMapProperties.baseUrlValue}/qa/invoice/batch-details?batchID=${invoiceEntity.id}"
         sm.message =
-            "Check You phone for an STK Push,If You can't see the push either pay with Bank or Normal Mpesa service"
+            "Check You phone for an STK Push,If You can't see the push either pay with Bank or Normal MPesa service"
 
         return commonDaoServices.returnValues(result, map, sm)
     }

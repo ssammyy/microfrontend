@@ -243,7 +243,8 @@
                                             </tbody>
                                         </table>
                                     </div>
-                                    <div id="qpsmsBtn1">
+                                    <div id="qpsmsBtn1"
+                                         th:if="${QaInspectionReportRecommendationEntity?.filledQpsmsStatus == 1}">
                                         <div class="form-group">
                                             <div class="col-md-4 mb-3">
                                                 <button class="btn btn-primary" id="check1"
@@ -349,7 +350,8 @@
                                             </tbody>
                                         </table>
                                     </div>
-                                    <div id="qpsmsBtn2">
+                                    <div id="qpsmsBtn2"
+                                         th:if="${QaInspectionReportRecommendationEntity?.filledQpsmsStatus == 1}">
                                         <div class="form-group">
                                             <div class="col-md-4 mb-3">
                                                 <button class="btn btn-primary" id="check2"
@@ -370,7 +372,8 @@
                             <button class="accordion">ANNEX I: OPERATION PROCESS AND CONTROLS</button>
                             <div class="panel">
                                 &nbsp;
-                                <div id="qpsmsBtn3">
+                                <div id="qpsmsBtn3"
+                                     th:if="${QaInspectionReportRecommendationEntity?.filledQpsmsStatus == 1}">
                                     <div class="form-row">
                                         <div class="col-md-6 mb-3">
                                             <button id="addRawMaterials" class="btn btn-primary"
@@ -667,7 +670,8 @@
                                             </tbody>
                                         </table>
                                     </div>
-                                    <div id="qpsmsBtn4">
+                                    <div id="qpsmsBtn4"
+                                         th:if="${QaInspectionReportRecommendationEntity?.filledQpsmsStatus == 1}">
                                         <div class="form-group">
                                             <div class="col-md-4 mb-3">
                                                 <button class="btn btn-primary" id="check3"
@@ -787,11 +791,13 @@
                             </div>
                             <div>
                                 <div sec:authorize="hasAuthority('QA_OFFICER_MODIFY')">
-                                    <a th:if="${QaInspectionReportRecommendationEntity?.filledQpsmsStatus != null and QaInspectionReportRecommendationEntity?.submittedInspectionReportStatus == null}"
+                                    <a th:if="${QaInspectionReportRecommendationEntity?.filledQpsmsStatus == 1 and QaInspectionReportRecommendationEntity?.submittedInspectionReportStatus == null}"
                                        style="color: white"
                                        onclick="popUpFunctionAddRawMaterials('addRecommendationDetails');"
                                        class="filter-link">ADD RECOMMENDATION</a>
-                                    <a class="filter-link" onclick="popUpUploadFunction('uploadAttachments');"
+
+                                    <a th:if="${QaInspectionReportRecommendationEntity?.filledQpsmsStatus == 1}"
+                                       class="filter-link" onclick="popUpUploadFunction('uploadAttachments');"
                                        style="color: white">UPLOAD ATTACHMENTS</a>
                                     <!--                                    <a th:if="${permit?.sta10FilledStatus != 1 and QaSta10Entity?.closedProduction == 1 and QaSta10Entity?.closedRawMaterials == 1 and QaSta10Entity?.closedMachineryPlants == 1 and QaSta10Entity?.closedManufacturingProcesses == 1 }"  th:href="@{/api/qa/new-sta10-submit(permitID=${permit?.id})}" class="filter-link" style="color: white">SUBMIT STA10</a>-->
                                 </div>
