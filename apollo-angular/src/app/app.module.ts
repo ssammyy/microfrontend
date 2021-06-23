@@ -53,7 +53,7 @@ import {UsersList} from './views/dashboard/company/user/users.list';
     DataTablesModule,
   ],
   providers: [
-    {provide: APP_BASE_HREF, useValue: '/'}
+    {provide: APP_BASE_HREF, useValue: ''}
   ],
   bootstrap: [AppComponent]
 })

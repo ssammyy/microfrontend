@@ -37,7 +37,42 @@ class RegistrationManagementDaoService(
     private val manufacturePlantRepository: IManufacturePlantDetailsRepository,
     private val usersRepo: IUserRepository,
     private val tokenService: JwtTokenService,
+    private val commonDaoServices: CommonDaoServices,
 ) {
+    /**
+     * Send validation Token to the user's registered phone given the user's username
+     */
+    fun sendTokenToThePhone(request: SendTokenRequestDto): CustomResponse? {
+        val result = CustomResponse()
+        try {
+            usersRepo.findByUserName(request.username)
+                ?.let { user ->
+                    val otp = commonDaoServices.generateTransactionReference(8).toUpperCase()
+                    val token = commonDaoServices.generateVerificationToken(
+                        otp,
+                        user.cellphone ?: throw NullValueNotAllowedException("Valid Cellphone is required")
+                    )
+                    commonDaoServices.sendOtpViaSMS(token)
+
+                    return result.apply {
+                        payload = "Successfully Assigned"
+                        status = 200
+                        response = "00"
+                    }
+
+                }
+                ?: throw InvalidValueException("Invalid username")
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.debug(e.message, e)
+            KotlinLogging.logger { }.error(e.message)
+            return result.apply {
+                payload = e.message
+                status = 500
+                response = "99"
+            }
+
+        }
+    }
 
     /**
      *  Render JWT invalid after receiving a logout request

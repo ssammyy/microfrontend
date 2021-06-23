@@ -143,6 +143,7 @@ class WebSecurityConfig {
                     "/api/ms/complaints/new/save/**",
                     "/api/ms/complaints/new/**",
                     "/auth/**",
+                    "/migration/**",
                     "/accessDenied/**",
                     "/api/auth/**",
                     "/api/integ/login/*",
