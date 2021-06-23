@@ -26,6 +26,7 @@ import java.sql.Timestamp
 import java.util.*
 import javax.persistence.*
 import javax.validation.constraints.NotEmpty
+import javax.validation.constraints.NotNull
 import javax.validation.constraints.Size
 
 @Entity
@@ -33,12 +34,16 @@ import javax.validation.constraints.Size
 class UserPrivilegesEntity : Serializable {
     @Column(name = "ID")
     @Id
-    @SequenceGenerator(name = "CFG_USER_PRIVILEGES_SEQ_GEN", allocationSize = 1, sequenceName = "CFG_USER_PRIVILEGES_SEQ")
+    @SequenceGenerator(
+        name = "CFG_USER_PRIVILEGES_SEQ_GEN",
+        allocationSize = 1,
+        sequenceName = "CFG_USER_PRIVILEGES_SEQ"
+    )
     @GeneratedValue(generator = "CFG_USER_PRIVILEGES_SEQ_GEN", strategy = GenerationType.SEQUENCE)
     var id: Long? = null
 
-    @Size(max = 2, min = 1, message = "Invalid status")
-    @NotEmpty(message = "Status is required")
+    //    @Size(max = 2, min = 1, message = "Invalid status")
+    @NotNull(message = "Status is required")
     @Column(name = "STATUS")
     @Basic
     var status: Int? = null

@@ -78,7 +78,7 @@ class UsersEntity : Serializable {
 
     @Column(name = "CELL_PHONE")
     @Basic
-    val cellphone: String? = null
+    var cellphone: String? = null
 
     @Column(name = "ENABLED")
     @Basic
@@ -217,6 +217,14 @@ class UsersEntity : Serializable {
     @Column(name = "TITLE")
     @Basic
     var title: Long? = null
+
+    @Column(name = "COMPANY_ID")
+    @Basic
+    var companyId: Long? = null
+
+    @Column(name = "PLANT_ID")
+    @Basic
+    var plantId: Long? = null
 
 //    override fun toString(): String {
 //

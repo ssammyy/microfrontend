@@ -1,0 +1,38 @@
+.login-form-inputs {
+  width: 60%;
+  margin: 5px 0;
+  font-size: 24px;
+}
+
+label {
+  color: white;
+  font-size: 13px;
+}
+
+input {
+  border-radius: 0 !important;
+  font-size: 14px;
+}
+
+.login-button {
+  background-color: #0594FF;
+  color: #ffffff;
+  padding: 10px 40px;
+  border: none;
+  border-radius: 100px;
+  text-align: center;
+  margin-bottom: 15px;
+}
+
+.login-ref {
+  text-decoration: none;
+  cursor: pointer;
+  color: #ffffff!important;
+}
+
+.reset-credentials {
+  color: #ffffff!important;
+  font-size: 14px;
+  font-weight: 300;
+  margin-bottom: 10px;
+}

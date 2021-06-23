@@ -1,0 +1,141 @@
+<section>
+  <div class="row">
+    <div class="col-md-8">
+      <div>
+        <h4 class="notifications-title">
+          <span>Organizations</span>
+        </h4>
+        <table [dtOptions]="dtOptions" class="table table-striped table-bordered table-sm row-border hover" datatable>
+          <thead>
+          <tr>
+            <th>ID#</th>
+            <th>NAMES</th>
+            <th>USER</th>
+            <th>VIEW</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let theRecord of users$ | async">
+            <td>{{ theRecord.id }}</td>
+            <td>{{ theRecord.firstName + ' ' + theRecord.lastName}}</td>
+            <td>{{ theRecord.userName }}</td>
+            <td>
+              <a (click)="editRecord(theRecord)" class="link-dark">VIEW
+              </a>
+            </td>
+
+
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <form (ngSubmit)="onClickStep(stepOneForm.valid)" [formGroup]="stepOneForm" action="" class="form"
+            enctype="multipart/form-data" method="post">
+        <div class="container">
+          <div class="row">
+            <h2 class="welcome2">
+              Contact Person Information
+            </h2>
+          </div>
+
+          <div class="row input-row">
+            <div class="col">
+              <label class="input-placeholder22" for="firstName">
+                First Name
+              </label>
+              <br>
+              <input class="form-control two-column-input" formControlName="firstName" id="firstName"
+                     name="firstName"
+                     placeholder="" required="required" type="text">
+            </div>
+            <div class="col">
+              <label class="input-placeholder22" for="lastName">
+                Last Name
+              </label>
+              <br>
+              <input class="form-control two-column-input" formControlName="lastName" id="lastName"
+                     name="lastName"
+                     placeholder="" required="required" type="text">
+            </div>
+          </div>
+
+          <div class="row input-row">
+
+            <div class="col">
+              <label class="input-placeholder2" for="userName">
+                User Name
+              </label>
+              <br>
+              <input class="form-control two-column-input" formControlName="userName" id="userName"
+                     name="userName"
+                     placeholder="" required="required" type="text">
+            </div>
+            <div class="col">
+              <label class="input-placeholder2" for="email">
+                Email address
+              </label>
+              <br>
+              <input class="form-control two-column-input" formControlName="email" id="email"
+                     name="email"
+                     placeholder="" required="required" type="email">
+            </div>
+          </div>
+
+          <div class="row input-row">
+            <div class="col">
+              <label class="input-placeholder2" for="credentials">
+                Password
+              </label>
+              <br>
+              <input class="form-control two-column-input" formControlName="credentials" id="credentials"
+                     name="credentials"
+                     placeholder="enter password" required="required" type="password">
+            </div>
+            <div class="col">
+              <label class="input-placeholder2" for="confirmCredentials">
+                Confirm Password
+              </label>
+              <br>
+              <input class="form-control two-column-input" formControlName="confirmCredentials" id="confirmCredentials"
+                     name="confirmCredentials"
+                     placeholder="password confirmation" required="required" type="password">
+            </div>
+          </div>
+
+          <div class="row input-row">
+
+            <div class="col">
+              <label class="input-placeholder2" for="cellphone">
+                Cellphone
+              </label>
+              <br>
+              <input class="form-control two-column-input" formControlName="cellphone" id="cellphone"
+                     name="cellphone"
+                     placeholder="e.g 254xxxxxx" required="required" type="tel">
+              <br>
+            </div>
+            <div class="col">
+
+            </div>
+          </div>
+
+          <br>
+          <div class="row">
+            <div class="col">
+              <button class="btn btn-danger" type="reset">CANCEL</button>
+            </div>
+            <div class="col">
+              <button class="btn btn-primary" type="submit">SAVE</button>
+            </div>
+
+          </div>
+
+
+        </div>
+      </form>
+    </div>
+
+  </div>
+</section>
