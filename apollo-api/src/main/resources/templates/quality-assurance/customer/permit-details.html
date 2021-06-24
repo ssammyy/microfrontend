@@ -541,7 +541,7 @@
                                                onclick="popUpRequestFunction('permitStopProductionDetails');"
                                                class="filter-link">STOP PRODUCTION</a>
 
-                                            <a th:if="${permitDetails?.permitExpiredStatus == 1 and permitDetails?.oldPermitStatus != 1}"
+                                            <a th:if="${permitDetails?.permitAwardStatus == 1 and permitDetails?.oldPermitStatus != 1}"
                                                th:href="@{/api/qa/kebs/renew/permit-details/save(permitID=${permitDetails?.id})}"
                                                class="filter-link" style="color: white">RENEW PERMIT</a>
 

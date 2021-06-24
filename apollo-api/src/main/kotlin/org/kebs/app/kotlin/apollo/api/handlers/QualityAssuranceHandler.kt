@@ -595,14 +595,12 @@ class QualityAssuranceHandler(
                 "Renewal"
             }
         }
-        val batchPermitInvoiceDetails = invoiceBatchRepo.findByIdOrNull(invoiceDetails?.batchInvoiceNo)
+
 
         req.attributes()["invoice"] = invoiceDetails
         req.attributes()["phoneNumber"] = permit.telephoneNo
         req.attributes()["applicationState"] = applicationState
         req.attributes()["permit"] = qaDaoServices.permitDetails(permit, map)
-        req.attributes()["invoiceBalanceDetails"] =
-            batchPermitInvoiceDetails?.invoiceNumber?.let { invoiceDaoService.findInvoiceStgReconciliationDetails(it) }
         req.attributes()["product"] = permit.product?.let { commonDaoServices.findProductByID(it) }
         req.attributes()["permitType"] = permit.permitType?.let { qaDaoServices.findPermitType(it) }
         req.attributes()["mpesa"] = CdLaboratoryParametersEntity()

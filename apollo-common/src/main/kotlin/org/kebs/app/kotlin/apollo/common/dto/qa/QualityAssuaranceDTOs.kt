@@ -66,12 +66,12 @@ data class InvoiceDto(
 )
 
 data class PermitInvoiceDto(
-        var permitID: Long? = null,
-        var invoiceNumber: String? = null,
-        var commodityDescription: String? = null,
-        var brandName: String? = null,
-        var totalAmount: BigDecimal? = null,
-        var paidStatus: Boolean? = null,
+    var permitID: Long? = null,
+    var invoiceNumber: String? = null,
+    var commodityDescription: String? = null,
+    var brandName: String? = null,
+    var totalAmount: BigDecimal? = null,
+    var paidStatus: Int? = null,
 )
 
 data class NewBatchInvoiceDto(

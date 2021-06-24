@@ -669,7 +669,7 @@ class QADaoServices(
                             permitDetails.commodityDescription,
                             permitDetails.tradeMark,
                             pi.amount,
-                            pi.paymentStatus == 1
+                            pi.paymentStatus
                         )
                     )
                 } else {
@@ -684,7 +684,7 @@ class QADaoServices(
                         permitDetails.commodityDescription,
                         permitDetails.tradeMark,
                         pi.amount,
-                        pi.paymentStatus == 1
+                        pi.paymentStatus
                     )
                 )
             }

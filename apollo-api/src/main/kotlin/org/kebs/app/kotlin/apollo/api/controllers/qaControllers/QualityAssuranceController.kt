@@ -386,11 +386,11 @@ class QualityAssuranceController(
                     loggedInUser
                 )
             }
+            //Permit awarded scheduled
             permit.permitAwardStatus == map.activeStatus -> {
                 val issueDate = commonDaoServices.getCurrentDate()
                 val permitType = permitDetails.permitType?.let { qaDaoServices.findPermitType(it) }
-                val expiryDate =
-                    permitType?.permitAwardYears?.let { commonDaoServices.addYearsToCurrentDate(it.toLong()) }
+                val expiryDate = permitType?.numberOfYears?.let { commonDaoServices.addYearsToCurrentDate(it) }
 
 
                 with(permitDetails) {
@@ -836,7 +836,7 @@ class QualityAssuranceController(
 
         val sm = CommonDaoServices.MessageSuccessFailDTO()
         sm.closeLink =
-            "${applicationMapProperties.baseUrlValue}/qa/inspection/inspection-report-details/inspection-report-details?permitID=${result.varField1}"
+            "${applicationMapProperties.baseUrlValue}/qa/inspection/inspection-report-details?permitID=${result.varField1}"
         sm.message = "Inspection Report has Been Generated(DRAFT)"
 
         return commonDaoServices.returnValues(result, map, sm)
@@ -880,7 +880,7 @@ class QualityAssuranceController(
 
         val sm = CommonDaoServices.MessageSuccessFailDTO()
         sm.closeLink =
-            "${applicationMapProperties.baseUrlValue}/qa/inspection/inspection-report-details/inspection-report-details?permitID=${result.varField1}"
+            "${applicationMapProperties.baseUrlValue}/qa/inspection/inspection-report-details?permitID=${result.varField1}"
         sm.message = "Inspection Report has Been Generated(DRAFT)"
 
         return commonDaoServices.returnValues(result, map, sm)
@@ -908,7 +908,7 @@ class QualityAssuranceController(
 
         val sm = CommonDaoServices.MessageSuccessFailDTO()
         sm.closeLink =
-            "${applicationMapProperties.baseUrlValue}/qa/inspection/inspection-report-details/inspection-report-details?permitID=${result.varField1}"
+            "${applicationMapProperties.baseUrlValue}/qa/inspection/inspection-report-details?permitID=${result.varField1}"
         sm.message = "Inspection Report Details have Been added Successful"
 
         return commonDaoServices.returnValues(result, map, sm)
@@ -932,7 +932,7 @@ class QualityAssuranceController(
 
         val sm = CommonDaoServices.MessageSuccessFailDTO()
         sm.closeLink =
-            "${applicationMapProperties.baseUrlValue}/qa/inspection/inspection-report-details/inspection-report-details?permitID=${result.varField1}"
+            "${applicationMapProperties.baseUrlValue}/qa/inspection/inspection-report-details?permitID=${result.varField1}"
         sm.message = "Inspection Report Details have Been added Successful"
 
         return commonDaoServices.returnValues(result, map, sm)
