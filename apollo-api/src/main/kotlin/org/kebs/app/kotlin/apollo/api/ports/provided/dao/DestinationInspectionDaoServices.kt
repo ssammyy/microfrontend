@@ -334,6 +334,13 @@ class DestinationInspectionDaoServices(
         return result
     }
 
+    fun findInspectionGeneralWithItemDetailsOrNull(cdItemDetails: CdItemDetailsEntity): CdInspectionGeneralEntity? {
+        return iCdInspectionGeneralRepo.findFirstByCdItemDetails(cdItemDetails)
+    }
+
+    fun findCdItemsConsignmentDetailsOrNull(consignmentDocumentDetailsEntity: ConsignmentDocumentDetailsEntity): List<CdItemDetailsEntity>? {
+        return iCdItemsRepo.findByCdDocId(consignmentDocumentDetailsEntity)
+    }
 
 //    // save Applicant Details
 //    fun applicantCDDetails(cdApplicantDetailsEntity: CdApplicantDetailsEntity): CdApplicantDetailsEntity {

@@ -567,7 +567,7 @@ class RegistrationDaoServices(
                 buildingName = cp.buildingName
                 directorIdNumber = cp.directorIdNumber
                 streetName = cp.streetName
-                factoryVisitDate = cp.factoryVisitDate as Date?
+                factoryVisitDate = cp.factoryVisitDate
                 factoryVisitStatus = cp.factoryVisitStatus
                 county = cp.county
                 town = cp.town
@@ -584,8 +584,6 @@ class RegistrationDaoServices(
                     }
                 }
             }
-
-                ?: throw NullValueNotAllowedException("Registration failed")
 //            systemsAdminDaoService.assignRoleToUser(u.id?:throw NullValueNotAllowedException(""),applicationMapProperties.mapUserManufactureRoleID, s.activeStatus)
 
             val userAssignRole = u.id?.let { systemsAdminDaoService.assignRoleToUser(it, applicationMapProperties.mapUserManufactureRoleID, s.activeStatus) }
@@ -863,8 +861,8 @@ class RegistrationDaoServices(
 
             companyDirectors = companyProfileDirectorsRepo.save(companyDirectors)
 
-            sr.payload = "User company Directors [id= ${companyDirectors?.id}]"
-            sr.names = "${companyDirectors?.companyProfileId} ${companyDirectors?.directorName}"
+            sr.payload = "User company Directors [id= ${companyDirectors.id}]"
+            sr.names = "${companyDirectors.companyProfileId} ${companyDirectors.directorName}"
 
             sr.responseStatus = sr.serviceMapsId?.successStatusCode
             sr.responseMessage = "Success ${sr.payload}"
@@ -1329,7 +1327,7 @@ class RegistrationDaoServices(
         var brsResults: BrsLookUpRecords? = null
 //        user.id?.let {
 //            iCompanyProfileRepository.findByUserId(it)?.let { manufacturer ->
-                configurationRepository.findByIdOrNull(3L)
+        configurationRepository.findByIdOrNull(applicationMapProperties.mapBRSconfigID)
                     ?.let { config ->
                         config.createdOn = Timestamp.from(Instant.now())
                         config.modifiedOn = Timestamp.from(Instant.now())

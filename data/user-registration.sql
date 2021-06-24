@@ -90,19 +90,27 @@ select * from CFG_ROLES_PRIVILEGES --the role is 40 and prRole ID = 774
 -- where PRIVILEGE_ID =52425
 order by id desc;
 
-select * from CFG_KEBS_DESIGNATIONS --the role is 40 and prRole ID = 774
+select *
+from CFG_KEBS_DESIGNATIONS --the role is 40 and prRole ID = 774
 -- where PRIVILEGE_ID =52425
 order by id desc;
 
-select * from CFG_KEBS_REGIONS --the role is 40 and prRole ID = 774
+select *
+from CFG_KEBS_REGIONS --the role is 40 and prRole ID = 774
 where id = 4
 order by id desc;
 
-select * from DAT_KEBS_COMPANY_PROFILE --the role is 40 and prRole ID = 774
+
+select *
+from LOG_BRS_LOOKUP_MANUFACTURER_PARTNERS;
+
+select *
+from DAT_KEBS_COMPANY_PROFILE --the role is 40 and prRole ID = 774
 -- where PRIVILEGE_ID =52425
 order by id desc;
 
-select * from CFG_USER_ROLES--512
+select *
+from CFG_USER_ROLES--512
 --where id like '%5%'
 -- where ROLE_NAME = 'SYSADMIN_VIEW'
 order by id desc;

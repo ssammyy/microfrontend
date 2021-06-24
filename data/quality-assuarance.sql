@@ -81,8 +81,9 @@ select *
 from DAT_KEBS_PERMIT_TRANSACTION
 -- where id = 503
 
-where ATTACHED_PLANT_ID = 203
+-- where ATTACHED_PLANT_ID = 203
 -- where PERMIT_NUMBER = 'DM#0954A'
+where PERMIT_REF_NUMBER = 'REFSM#202106098701C'
 order by id desc;
 
 select *
@@ -224,8 +225,8 @@ alter table DAT_KEBS_PERMIT_TRANSACTION
     add END_PRODUCTION_REQUEST_APPROVAL VARCHAR2(200)
 /
 
-alter table DAT_KEBS_PERMIT_TRANSACTION
-    add END_PRODUCTION_REQUEST_STATUS_APPROVAL NUMBER(2)
+alter table DAT_KERBS_QA_INSPECTION_REPORT_RECOMMENDATION
+    add SUPERVISOR_FILLED_STATUS NUMBER(2)
 /
 
 alter table DAT_KEBS_PERMIT_TRANSACTION
@@ -237,33 +238,76 @@ alter table DAT_KEBS_QA_STA10
     add PRODUCT_LABELED_MARKED_SPECIFY_1A VARCHAR2(200)
 /alter table DAT_KEBS_QA_STA10
     add PRODUCT_LABELED_MARKED_SPECIFY_1B VARCHAR2(200)
-/alter table DAT_KEBS_QA_STA10
+/
+alter table DAT_KEBS_QA_STA10
     add PRODUCT_LABELED_MARKED_SPECIFY_1C VARCHAR2(200)
-/alter table DAT_KEBS_QA_STA10
+/
+alter table DAT_KEBS_QA_STA10
     add PRODUCT_LABELED_MARKED_SPECIFY_1D VARCHAR2(200)
-/alter table DAT_KEBS_QA_STA10
+/
+alter table DAT_KEBS_QA_STA10
     add PRODUCT_LABELED_MARKED_SPECIFY_1E VARCHAR2(200)
-    /
+/
 
 alter table DAT_KEBS_QA_WORKPLAN rename column PERMITS to PERMIT_NUMBER
 /
 
-alter table DAT_KEBS_QA_WORKPLAN modify PERMIT_NUMBER VARCHAR2(200)
+alter table DAT_KERBS_QA_INSPECTION_REPORT_RECOMMENDATION
+    add FILLED_QPSMS_STATUS NUMBER(2)
 /
 
-select * from DAT_KEBS_QA_SCHEME_FOR_SUPERVISION
+alter table DAT_KERBS_QA_INSPECTION_REPORT_RECOMMENDATION
+    add FILLED_INSPECTION_TESTING_STATUS NUMBER(2)
+/
+alter table DAT_KERBS_QA_INSPECTION_REPORT_RECOMMENDATION
+    add FILLED_STANDARDIZATION_MARK_SCHEME_STATUS NUMBER(2)
+/
+alter table DAT_KERBS_QA_INSPECTION_REPORT_RECOMMENDATION
+    add FILLED_HACCP_IMPLEMENTATION_STATUS NUMBER(2)
+/
+alter table DAT_KEBS_QA_UPLOADS
+    add STA10_STATUS NUMBER(2)
+/
+
+alter table DAT_KEBS_QA_WORKPLAN
+    modify PERMIT_NUMBER VARCHAR2(200)
+/
+
+select *
+from DAT_KEBS_QA_SCHEME_FOR_SUPERVISION
 -- where id = 43
 order by id desc;
 
-select * from DAT_KEBS_QA_STA3
+select *
+from DAT_KEBS_QA_INSPECTION_TECHNICAL
+-- where id = 43
+where PERMIT_ID = 462
+order by id desc;
+
+select *
+from DAT_KERBS_QA_INSPECTION_REPORT_RECOMMENDATION
+-- where id = 43
+where PERMIT_ID = 462
+order by id desc;
+
+select *
+from DAT_KEBS_QA_INSPECTION_HACCP_IMPLEMENTATION
+-- where id = 43
+where PERMIT_ID = 462
+order by id desc;
+
+select *
+from DAT_KEBS_QA_STA3
 -- where id = 43
 order by id desc;
 
-select * from LOG_SERVICE_REQUESTS
+select *
+from LOG_SERVICE_REQUESTS
 -- where id = 43
 order by id desc;
 
-select * from DAT_KEBS_MANUFACTURE_PLANT_DETAILS
+select *
+from DAT_KEBS_MANUFACTURE_PLANT_DETAILS
 where id = 81
 order by id desc;
 
@@ -627,43 +671,70 @@ end;
 create index dat_kebs_qa_uploads_idx on dat_kebs_qa_uploads (PERMIT_ID, status) TABLESPACE qaimssdb_idx;
 /
 
-create table dat_kebs_qa_permit_update_details_requests
+
+create table dat_kebs_qa_inspection_TECHNICAL
 (
-    id               NUMBER PRIMARY KEY,
-    BRAND_NAME         VARCHAR2(200),
-    DESCRIPTION      VARCHAR2(200),
-    PERMIT_ID      NUMBER REFERENCES DAT_KEBS_PERMIT_TRANSACTION (ID),
-    REQUEST_STATUS           NUMBER(2),
-    status           NUMBER(2),
-    var_field_1      VARCHAR2(350 CHAR),
-    var_field_2      VARCHAR2(350 CHAR),
-    var_field_3      VARCHAR2(350 CHAR),
-    var_field_4      VARCHAR2(350 CHAR),
-    var_field_5      VARCHAR2(350 CHAR),
-    var_field_6      VARCHAR2(350 CHAR),
-    var_field_7      VARCHAR2(350 CHAR),
-    var_field_8      VARCHAR2(350 CHAR),
-    var_field_9      VARCHAR2(350 CHAR),
-    var_field_10     VARCHAR2(350 CHAR),
-    created_by       VARCHAR2(100 CHAR)          DEFAULT 'admin' NOT NULL ENABLE,
-    created_on       TIMESTAMP(6) WITH TIME ZONE DEFAULT sysdate NOT NULL ENABLE,
-    modified_by      VARCHAR2(100 CHAR)          DEFAULT 'admin',
-    modified_on      TIMESTAMP(6) WITH TIME ZONE DEFAULT sysdate,
-    delete_by        VARCHAR2(100 CHAR)          DEFAULT 'admin',
-    deleted_on       TIMESTAMP(6) WITH TIME ZONE
+    id                                                    NUMBER PRIMARY KEY,
+    PERMIT_ID                                             NUMBER REFERENCES DAT_KEBS_PERMIT_TRANSACTION (ID),
+    QUALITY_PROCEDURE                                     VARCHAR2(200),
+    QUALITY_PROCEDURE_remarks                             VARCHAR2(200),
+    AVAILABILITY_PRODUCT_STANDARDS_CODES_PRACTICE         VARCHAR2(200),
+    AVAILABILITY_PRODUCT_STANDARDS_CODES_PRACTICE_remarks VARCHAR2(200),
+    QUALITY_MANAGEMENT_SYSTEMS                            VARCHAR2(200),
+    QUALITY_MANAGEMENT_SYSTEMS_remarks                    VARCHAR2(200),
+    haccp_see_annex_ii                                    VARCHAR2(200),
+    haccp_see_annex_ii_remarks                            VARCHAR2(200),
+    testing_facility                                      VARCHAR2(200),
+    testing_facility_remarks                              VARCHAR2(200),
+    quality_control_personnel_qualifications              VARCHAR2(200),
+    quality_control_personnel_qualifications_remarks      VARCHAR2(200),
+    equipment_calibration                                 VARCHAR2(200),
+    equipment_calibration_remarks                         VARCHAR2(200),
+    quality_records                                       VARCHAR2(200),
+    quality_records_remarks                               VARCHAR2(200),
+    product_labeling_identification                       VARCHAR2(200),
+    product_labeling_identification_remarks               VARCHAR2(200),
+    Validity_SMark_permit                                 VARCHAR2(200),
+    Validity_SMark_permit_remarks                         VARCHAR2(200),
+    use_the_smark                                         VARCHAR2(200),
+    use_the_smark_remarks                                 VARCHAR2(200),
+    changes_affecting_product_certification               VARCHAR2(200),
+    changes_affecting_product_certification_remarks       VARCHAR2(200),
+    changes_been_communicated_kebs                        VARCHAR2(200),
+    changes_been_communicated_kebs_remarks                VARCHAR2(200),
+    Samples_drawn                                         VARCHAR2(200),
+    Samples_drawn_remarks                                 VARCHAR2(200),
+    DESCRIPTION                                           VARCHAR2(200),
+    STATUS                                                NUMBER(2),
+    var_field_1                                           VARCHAR2(350 CHAR),
+    var_field_2                                           VARCHAR2(350 CHAR),
+    var_field_3                                           VARCHAR2(350 CHAR),
+    var_field_4                                           VARCHAR2(350 CHAR),
+    var_field_5                                           VARCHAR2(350 CHAR),
+    var_field_6                                           VARCHAR2(350 CHAR),
+    var_field_7                                           VARCHAR2(350 CHAR),
+    var_field_8                                           VARCHAR2(350 CHAR),
+    var_field_9                                           VARCHAR2(350 CHAR),
+    var_field_10                                          VARCHAR2(350 CHAR),
+    created_by                                            VARCHAR2(100 CHAR)          DEFAULT 'admin' NOT NULL ENABLE,
+    created_on                                            TIMESTAMP(6) WITH TIME ZONE DEFAULT sysdate NOT NULL ENABLE,
+    modified_by                                           VARCHAR2(100 CHAR)          DEFAULT 'admin',
+    modified_on                                           TIMESTAMP(6) WITH TIME ZONE DEFAULT sysdate,
+    delete_by                                             VARCHAR2(100 CHAR)          DEFAULT 'admin',
+    deleted_on                                            TIMESTAMP(6) WITH TIME ZONE
 ) TABLESPACE qaimssdb_data;
 
-create sequence dat_kebs_qa_permit_update_details_requests_seq minvalue 1 maxvalue 9999999999999999999999999999 increment by 1 start with 1 cache 20 noorder nocycle;
+create sequence dat_kebs_qa_inspection_TECHNICAL_seq minvalue 1 maxvalue 9999999999999999999999999999 increment by 1 start with 1 cache 20 noorder nocycle;
 
-create or replace trigger dat_kebs_qa_permit_update_details_requests_seq_trg
+create or replace trigger dat_kebs_qa_inspection_TECHNICAL_seq_trg
     before
         insert
-    on dat_kebs_qa_permit_update_details_requests
+    on dat_kebs_qa_inspection_TECHNICAL
     for each row
 begin
     if inserting then
         if :new.id is null then
-            select dat_kebs_qa_permit_update_details_requests_seq.nextval
+            select dat_kebs_qa_inspection_TECHNICAL_seq.nextval
             into :new.id
             from dual;
 
@@ -672,7 +743,194 @@ begin
     end if;
 end;
 
-create index dat_kebs_qa_permit_update_details_requests_idx on dat_kebs_qa_permit_update_details_requests (PERMIT_ID, REQUEST_STATUS, status) TABLESPACE qaimssdb_idx;
+/
+create index dat_kebs_qa_inspection_TECHNICAL_idx on dat_kebs_qa_inspection_TECHNICAL (PERMIT_ID, status) TABLESPACE qaimssdb_idx;
+
+create table dat_kebs_qa_inspection_haccp_implementation
+(
+    id                                               NUMBER PRIMARY KEY,
+    PERMIT_ID                                        NUMBER REFERENCES DAT_KEBS_PERMIT_TRANSACTION (ID),
+    Design_facilities_construction_layout            VARCHAR2(200),
+    Design_facilities_construction_layout_remarks    VARCHAR2(200),
+    Control_operations                               VARCHAR2(200),
+    Control_operations_REMARKS                       VARCHAR2(200),
+    Maintenance_sanitation_cleaning_programs         VARCHAR2(200),
+    Maintenance_sanitation_cleaning_programs_REMARKS VARCHAR2(200),
+    Personnel_hygiene                                VARCHAR2(200),
+    Personnel_hygiene_REMARKS                        VARCHAR2(200),
+    Transportation_conveyance                        VARCHAR2(200),
+    Transportation_conveyance_REMARKS                VARCHAR2(200),
+    Product_information_labelling                    VARCHAR2(200),
+    Product_information_labelling_REMARKS            VARCHAR2(200),
+    Training_management                              VARCHAR2(200),
+    Training_management_REMARKS                      VARCHAR2(200),
+    appropriate_sector_hygiene_practice              VARCHAR2(200),
+    appropriate_sector_hygiene_practice_remarks      VARCHAR2(200),
+    Establishment_HACCP_Plan                         VARCHAR2(200),
+    Establishment_HACCP_Plan_remarks                 VARCHAR2(200),
+    Product_flow_diagram                             VARCHAR2(200),
+    Product_flow_diagram_remarks                     VARCHAR2(200),
+    Evidence_Hazard_Analysis                         VARCHAR2(200),
+    Evidence_Hazard_Analysis_remarks                 VARCHAR2(200),
+    Establishment_Critical_Control_Points            VARCHAR2(200),
+    Establishment_Critical_Control_Points_remarks    VARCHAR2(200),
+    Establishment_Monitoring_control                 VARCHAR2(200),
+    Establishment_Monitoring_control_remarks         VARCHAR2(200),
+    Evidence_Corrective_Actions                      VARCHAR2(200),
+    Evidence_Corrective_Actions_remarks              VARCHAR2(200),
+    Evidence_verification_confirm_HACCP              VARCHAR2(200),
+    Evidence_verification_confirm_HACCP_REMARKS      VARCHAR2(200),
+    Record_keeping_documents_appropriate             VARCHAR2(200),
+    Record_keeping_documents_appropriate_remarks     VARCHAR2(200),
+    DESCRIPTION                                      VARCHAR2(200),
+    status                                           NUMBER(2),
+    var_field_1                                      VARCHAR2(350 CHAR),
+    var_field_2                                      VARCHAR2(350 CHAR),
+    var_field_3                                      VARCHAR2(350 CHAR),
+    var_field_4                                      VARCHAR2(350 CHAR),
+    var_field_5                                      VARCHAR2(350 CHAR),
+    var_field_6                                      VARCHAR2(350 CHAR),
+    var_field_7                                      VARCHAR2(350 CHAR),
+    var_field_8                                      VARCHAR2(350 CHAR),
+    var_field_9                                      VARCHAR2(350 CHAR),
+    var_field_10                                     VARCHAR2(350 CHAR),
+    created_by                                       VARCHAR2(100 CHAR)          DEFAULT 'admin' NOT NULL ENABLE,
+    created_on                                       TIMESTAMP(6) WITH TIME ZONE DEFAULT sysdate NOT NULL ENABLE,
+    modified_by                                      VARCHAR2(100 CHAR)          DEFAULT 'admin',
+    modified_on                                      TIMESTAMP(6) WITH TIME ZONE DEFAULT sysdate,
+    delete_by                                        VARCHAR2(100 CHAR)          DEFAULT 'admin',
+    deleted_on                                       TIMESTAMP(6) WITH TIME ZONE
+) TABLESPACE qaimssdb_data;
+
+
+create sequence dat_kebs_qa_inspection_haccp_implementation_seq minvalue 1 maxvalue 9999999999999999999999999999 increment by 1 start with 1 cache 20 noorder nocycle;
+create or replace trigger dat_kebs_qa_inspection_haccp_implementation_seq_trg
+    before
+        insert
+    on dat_kebs_qa_inspection_haccp_implementation
+    for each row
+begin
+    if inserting then
+        if :new.id is null then
+            select dat_kebs_qa_inspection_haccp_implementation_seq.nextval
+            into :new.id
+            from dual;
+
+        end if;
+
+    end if;
+end;
+
+create index dat_kebs_qa_inspection_haccp_implementation_idx on dat_kebs_qa_inspection_haccp_implementation (PERMIT_ID, status) TABLESPACE qaimssdb_idx;
+/
+
+
+
+create table dat_kebs_qa_inspection_OPC
+(
+    id             NUMBER PRIMARY KEY,
+    PROCESS_FLOW   VARCHAR2(200),
+    OPERATIONS     VARCHAR2(200),
+    QUALITY_CHECKS VARCHAR2(200),
+    FREQUENCY      VARCHAR2(200),
+    RECORDS        VARCHAR2(200),
+    FINDINGS       VARCHAR2(200),
+    DESCRIPTION    VARCHAR2(200),
+    PERMIT_ID      NUMBER REFERENCES DAT_KEBS_PERMIT_TRANSACTION (ID),
+    status         NUMBER(2),
+    var_field_1    VARCHAR2(350 CHAR),
+    var_field_2    VARCHAR2(350 CHAR),
+    var_field_3    VARCHAR2(350 CHAR),
+    var_field_4    VARCHAR2(350 CHAR),
+    var_field_5    VARCHAR2(350 CHAR),
+    var_field_6    VARCHAR2(350 CHAR),
+    var_field_7    VARCHAR2(350 CHAR),
+    var_field_8    VARCHAR2(350 CHAR),
+    var_field_9    VARCHAR2(350 CHAR),
+    var_field_10   VARCHAR2(350 CHAR),
+    created_by     VARCHAR2(100 CHAR)          DEFAULT 'admin' NOT NULL ENABLE,
+    created_on     TIMESTAMP(6) WITH TIME ZONE DEFAULT sysdate NOT NULL ENABLE,
+    modified_by    VARCHAR2(100 CHAR)          DEFAULT 'admin',
+    modified_on    TIMESTAMP(6) WITH TIME ZONE DEFAULT sysdate,
+    delete_by      VARCHAR2(100 CHAR)          DEFAULT 'admin',
+    deleted_on     TIMESTAMP(6) WITH TIME ZONE
+) TABLESPACE qaimssdb_data;
+
+create sequence dat_kebs_qa_inspection_OPC_seq minvalue 1 maxvalue 9999999999999999999999999999 increment by 1 start with 1 cache 20 noorder nocycle;
+
+create or replace trigger dat_kebs_qa_inspection_OPC_seq_trg
+    before
+        insert
+    on dat_kebs_qa_inspection_OPC
+    for each row
+begin
+    if inserting then
+        if :new.id is null then
+            select dat_kebs_qa_inspection_OPC_seq.nextval
+            into :new.id
+            from dual;
+
+        end if;
+
+    end if;
+end;
+
+create index dat_kebs_qa_inspection_OPC_idx on dat_kebs_qa_inspection_OPC (PERMIT_ID, status) TABLESPACE qaimssdb_idx;
+/
+
+
+
+create table dat_kerbs_qa_inspection_report_recommendation
+(
+    id                  NUMBER PRIMARY KEY,
+    RECOMMENDATIONS     VARCHAR2(200),
+    Inspector_comments  VARCHAR2(200),
+    Inspector_NAME      VARCHAR2(200),
+    inspector_Date      DATE,
+    Supervisor_comments VARCHAR2(200),
+    Supervisor_NAME     VARCHAR2(200),
+    Supervisor_Date     DATE,
+    DESCRIPTION         VARCHAR2(200),
+    PERMIT_ID           NUMBER REFERENCES DAT_KEBS_PERMIT_TRANSACTION (ID),
+    status              NUMBER(2),
+    var_field_1         VARCHAR2(350 CHAR),
+    var_field_2         VARCHAR2(350 CHAR),
+    var_field_3         VARCHAR2(350 CHAR),
+    var_field_4         VARCHAR2(350 CHAR),
+    var_field_5         VARCHAR2(350 CHAR),
+    var_field_6         VARCHAR2(350 CHAR),
+    var_field_7         VARCHAR2(350 CHAR),
+    var_field_8         VARCHAR2(350 CHAR),
+    var_field_9         VARCHAR2(350 CHAR),
+    var_field_10        VARCHAR2(350 CHAR),
+    created_by          VARCHAR2(100 CHAR)          DEFAULT 'admin' NOT NULL ENABLE,
+    created_on          TIMESTAMP(6) WITH TIME ZONE DEFAULT sysdate NOT NULL ENABLE,
+    modified_by         VARCHAR2(100 CHAR)          DEFAULT 'admin',
+    modified_on         TIMESTAMP(6) WITH TIME ZONE DEFAULT sysdate,
+    delete_by           VARCHAR2(100 CHAR)          DEFAULT 'admin',
+    deleted_on          TIMESTAMP(6) WITH TIME ZONE
+) TABLESPACE qaimssdb_data;
+
+create sequence dat_kerbs_qa_inspection_report_recommendation_seq minvalue 1 maxvalue 9999999999999999999999999999 increment by 1 start with 1 cache 20 noorder nocycle;
+
+create or replace trigger dat_kerbs_qa_inspection_report_recommendation_seq_trg
+    before
+        insert
+    on dat_kerbs_qa_inspection_report_recommendation
+    for each row
+begin
+    if inserting then
+        if :new.id is null then
+            select dat_kerbs_qa_inspection_report_recommendation_seq.nextval
+            into :new.id
+            from dual;
+
+        end if;
+
+    end if;
+end;
+
+create index dat_kerbs_qa_inspection_report_recommendation_idx on dat_kerbs_qa_inspection_report_recommendation (PERMIT_ID, status) TABLESPACE qaimssdb_idx;
 /
 
 
@@ -680,7 +938,7 @@ create table dat_kebs_qa_batch_invoice
 (
     id               NUMBER PRIMARY KEY,
     INVOICE_NUMBER   VARCHAR2(200) UNIQUE,
-    TOTAL_AMOUNT      NUMBER(38, 3) NOT NULL,
+    TOTAL_AMOUNT     NUMBER(38, 3) NOT NULL,
     DESCRIPTION      VARCHAR2(200),
     status           NUMBER(2),
     var_field_1      VARCHAR2(350 CHAR),

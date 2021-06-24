@@ -17,16 +17,22 @@ from log_stg_payment_reconciliation
 order by id desc;
 
 select *
+from DAT_KEBS_QA_BATCH_INVOICE
+where INVOICE_NUMBER = 'KIMSINVOICE#20210623F90B6'
+order by id desc;
+
+select *
 from STG_PAYMENT_RECONCILIATION
-where REFERENCE_CODE = 'DN20210408658D1'
-order by id desc;/
+where REFERENCE_CODE = 'KIMSINVOICE#20210623F90B6'
+order by id desc;
 
 select *
 from DAT_KEBS_INVOICE_BATCH_DETAILS
-where BATCH_NUMBER = 'DN20210408658D1'
-order by id desc;/
+where BATCH_NUMBER = 'KIMSINVOICE#20210623F90B6'
+order by id desc;
 
-select * from stg_payment_reconciliation
+select *
+from stg_payment_reconciliation
 order by ID desc;
 
 alter table CFG_PAYMENT_METHODS

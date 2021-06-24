@@ -1287,6 +1287,43 @@ class DestinationInspectionController(
             }
     }
 
+    @PreAuthorize("hasAuthority('DI_INSPECTION_OFFICER_MODIFY')")
+    @PostMapping("motor-vehicle/compliance")
+    fun updateMotorVehicleCompliance(
+        @RequestParam("generalInspectionChecklistId") generalInspectionChecklistId: Long,
+        @RequestParam("compliance_status") complianceStatus: Int,
+        @RequestParam("compliance_recommendations") complianceRecommendations: String,
+
+        redirectAttributes: RedirectAttributes
+    ): String {
+        KotlinLogging.logger { }.info {
+            "Params received \n generalInspectionChecklistId: ${generalInspectionChecklistId}, " +
+                    "compliance_status: $complianceStatus, compliance_recommendations: $complianceRecommendations"
+        }
+        commonDaoServices.serviceMapDetails(appId)
+            .let {
+                commonDaoServices.loggedInUserDetails()
+                    .let { loggedInUser ->
+                        KotlinLogging.logger { }.info { "generalInspectionChecklistId = $generalInspectionChecklistId" }
+
+                        daoServices.findInspectionGeneralById(generalInspectionChecklistId)
+                            ?.let { cdInspectionGeneralEntity ->
+                                cdInspectionGeneralEntity.cdItemDetails?.cdDocId?.let { consignmentDocumentDetailsEntity ->
+                                    consignmentDocumentDetailsEntity.compliantStatus = complianceStatus
+                                    consignmentDocumentDetailsEntity.compliantDate = commonDaoServices.getCurrentDate()
+                                    consignmentDocumentDetailsEntity.compliantRemarks = complianceRecommendations
+
+                                    daoServices.updateCdDetailsInDB(consignmentDocumentDetailsEntity, loggedInUser).let {
+                                        //TODO: Send notification to the supervisor
+                                    }
+                                    return "$motorVehicleInspectionDetailsPage=${cdInspectionGeneralEntity.cdItemDetails?.id}&docType=${daoServices.motorVehicleMinistryInspectionChecklistName}"
+                                } ?: throw ExpectedDataNotFound("No Consignment Document Found")
+
+                            } ?: throw ExpectedDataNotFound("No General Inspection Checklist Found")
+                    }
+            }
+    }
+
     fun createMvInspectionReportNotificationDTO(
         cdInspectionGeneralEntity: CdInspectionGeneralEntity,
         inspectionMotorVehicle: CdInspectionMotorVehicleItemChecklistEntity

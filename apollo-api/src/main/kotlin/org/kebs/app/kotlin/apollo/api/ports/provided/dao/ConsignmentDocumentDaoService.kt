@@ -78,94 +78,98 @@ class ConsignmentDocumentDaoService(
         val appId = applicationMapProperties.mapKesws
         val map = commonDaoServices.serviceMapDetails(appId)
         val loggedInUser = commonDaoServices.findUserByUserName(applicationMapProperties.mapSFTPUserName)
-        consignmentDoc.documentDetails?.consignmentDocDetails?.cdStandard?.ucrNumber?.let { ucr ->
-            val docSummary =
-                consignmentDoc.documentSummaryResponse ?: throw ExpectedDataNotFound("Document Summary, does not exist")
-            daoServices.findCdWithUcrNumberLatest(ucr).let { CDDocumentDetails ->
+        try {
+            consignmentDoc.documentDetails?.consignmentDocDetails?.cdStandard?.ucrNumber?.let { ucr ->
+                val docSummary =
+                    consignmentDoc.documentSummaryResponse ?: throw ExpectedDataNotFound("Document Summary, does not exist")
+                daoServices.findCdWithUcrNumberLatest(ucr).let { CDDocumentDetails ->
 
-                when (CDDocumentDetails) {
-                    null -> {
-                        KotlinLogging.logger { }
-                            .info { ":::::::::::::::::::::CD With UCR = $ucr, Does Not exist::::::::::::::::::::::::::: " }
-                        consignmentDoc.documentDetails?.consignmentDocDetails?.let { consignmentDocDetails ->
-                            mainCDFunction(
-                                consignmentDocDetails,
-                                docSummary,
-                                byteArray,
-                                loggedInUser,
-                                map,
-                                commonDaoServices.findProcesses(appId),
-                                1
-                            )
+                    when (CDDocumentDetails) {
+                        null -> {
+                            KotlinLogging.logger { }
+                                .info { ":::::::::::::::::::::CD With UCR = $ucr, Does Not exist::::::::::::::::::::::::::: " }
+                            consignmentDoc.documentDetails?.consignmentDocDetails?.let { consignmentDocDetails ->
+                                mainCDFunction(
+                                    consignmentDocDetails,
+                                    docSummary,
+                                    byteArray,
+                                    loggedInUser,
+                                    map,
+                                    commonDaoServices.findProcesses(appId),
+                                    1
+                                )
+                            }
+                        }
+                        else -> {
+                            var cdDetails = CDDocumentDetails
+                            KotlinLogging.logger { }
+                                .info { "::::::::::::::::::CD With UCR = $ucr, Exists::::::::::::::::::::: " }
+                            var versionNumber =
+                                cdDetails.version ?: throw ExpectedDataNotFound("CD Version Number is Empty")
+                            consignmentDoc.documentDetails?.consignmentDocDetails?.let { consignmentDocDetails ->
+                                val cdCreated = mainCDFunction(
+                                    consignmentDocDetails,
+                                    docSummary,
+                                    byteArray,
+                                    loggedInUser,
+                                    map,
+                                    commonDaoServices.findProcesses(appId),
+                                    versionNumber++
+                                )
+                                //Update Old CD with Status 1
+                                with(cdDetails) {
+                                    this?.oldCdStatus = map.activeStatus
+                                }
+                                cdDetails = daoServices.updateCdDetailsInDB(cdDetails!!, loggedInUser)
+
+                                //Remove Unnecessary data that wont be used
+                                with(cdDetails) {
+                                    //Todo: Check if the Importer or foregin details to pe checked
+                                    this?.portOfArrival = null
+                                    this?.clusterId = null
+                                    this?.freightStation = null
+                                    this?.cdStandard = null
+                                    this?.cdType = null
+                                    this?.uuid = null
+                                    this?.idfNumber = null
+                                    this?.cdImporter = null
+                                    this?.cdConsignee = null
+                                    this?.cdExporter = null
+                                    this?.cdConsignor = null
+                                    this?.cdTransport = null
+                                    this?.cdHeaderOne = null
+                                    this?.cdStandardsTwo = null
+                                    this?.cdPgaHeader = null
+                                    this?.cdHeaderTwo = null
+                                    this?.oldCdStatus = null
+                                    this?.version = null
+                                    this?.createdBy = null
+                                    this?.createdOn = null
+                                    this?.modifiedOn = null
+                                    this?.modifiedBy = null
+                                    this?.approveRejectCdStatus = null
+                                    this?.approveRejectCdDate = null
+                                    this?.approveRejectCdStatusType = null
+                                    this?.approveRejectCdRemarks = null
+                                    this?.issuedDateTime = null
+                                    this?.summaryPageURL = null
+                                }
+
+                                val updatedCDDetails = daoServices.updateCdDetailsInDB(
+                                    commonDaoServices.updateDetails(
+                                        cdCreated,
+                                        cdDetails!!
+                                    ) as ConsignmentDocumentDetailsEntity, loggedInUser
+                                )
+                            }
                         }
                     }
-                    else -> {
-                        var cdDetails = CDDocumentDetails
-                        KotlinLogging.logger { }
-                            .info { "::::::::::::::::::CD With UCR = $ucr, Exists::::::::::::::::::::: " }
-                        var versionNumber =
-                            cdDetails.version ?: throw ExpectedDataNotFound("CD Version Number is Empty")
-                        consignmentDoc.documentDetails?.consignmentDocDetails?.let { consignmentDocDetails ->
-                            val cdCreated = mainCDFunction(
-                                consignmentDocDetails,
-                                docSummary,
-                                byteArray,
-                                loggedInUser,
-                                map,
-                                commonDaoServices.findProcesses(appId),
-                                versionNumber++
-                            )
-                            //Update Old CD with Status 1
-                            with(cdDetails) {
-                                this?.oldCdStatus = map.activeStatus
-                            }
-                            cdDetails = daoServices.updateCdDetailsInDB(cdDetails!!, loggedInUser)
 
-                            //Remove Unnecessary data that wont be used
-                            with(cdDetails) {
-                                //Todo: Check if the Importer or foregin details to pe checked
-                                this?.portOfArrival = null
-                                this?.clusterId = null
-                                this?.freightStation = null
-                                this?.cdStandard = null
-                                this?.cdType = null
-                                this?.uuid = null
-                                this?.idfNumber = null
-                                this?.cdImporter = null
-                                this?.cdConsignee = null
-                                this?.cdExporter = null
-                                this?.cdConsignor = null
-                                this?.cdTransport = null
-                                this?.cdHeaderOne = null
-                                this?.cdStandardsTwo = null
-                                this?.cdPgaHeader = null
-                                this?.cdHeaderTwo = null
-                                this?.oldCdStatus = null
-                                this?.version = null
-                                this?.createdBy = null
-                                this?.createdOn = null
-                                this?.modifiedOn = null
-                                this?.modifiedBy = null
-                                this?.approveRejectCdStatus = null
-                                this?.approveRejectCdDate = null
-                                this?.approveRejectCdStatusType = null
-                                this?.approveRejectCdRemarks = null
-                                this?.issuedDateTime = null
-                                this?.summaryPageURL = null
-                            }
 
-                            val updatedCDDetails = daoServices.updateCdDetailsInDB(
-                                commonDaoServices.updateDetails(
-                                    cdCreated,
-                                    cdDetails!!
-                                ) as ConsignmentDocumentDetailsEntity, loggedInUser
-                            )
-                        }
-                    }
                 }
-
-
             }
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error("An error occurred while saving CD details", e)
         }
     }
 

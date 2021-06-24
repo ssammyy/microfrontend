@@ -40,6 +40,10 @@ class QaBatchInvoiceEntity : Serializable {
     @Basic
     var plantId: Long? = null
 
+    @Column(name = "INVOICE_BATCH_NUMBER_ID")
+    @Basic
+    var invoiceBatchNumberId: Long? = null
+
     @Column(name = "DESCRIPTION")
     @Basic
     var description: String? = null
@@ -55,6 +59,10 @@ class QaBatchInvoiceEntity : Serializable {
     @Column(name = "PAID_STATUS")
     @Basic
     var paidStatus: Int? = null
+
+    @Column(name = "SUBMITTED_STATUS")
+    @Basic
+    var submittedStatus: Int? = null
 
     @Column(name = "RECEIPT_NO")
     @Basic
@@ -130,9 +138,11 @@ class QaBatchInvoiceEntity : Serializable {
         val that = other as QaBatchInvoiceEntity
         return id == that.id && totalAmount == that.totalAmount
                 && userId == that.userId
+                && invoiceBatchNumberId == that.invoiceBatchNumberId
                 && plantId == that.plantId
                 && creationDate == that.creationDate
                 && paidDate == that.paidDate
+                && submittedStatus == that.submittedStatus
                 && paidStatus == that.paidStatus
                 && receiptNo == that.receiptNo && invoiceNumber == that.invoiceNumber && description == that.description && status == that.status && varField1 == that.varField1 && varField2 == that.varField2 && varField3 == that.varField3 && varField4 == that.varField4 && varField5 == that.varField5 && varField6 == that.varField6 && varField7 == that.varField7 && varField8 == that.varField8 && varField9 == that.varField9 && varField10 == that.varField10 && createdBy == that.createdBy && createdOn == that.createdOn && modifiedBy == that.modifiedBy && modifiedOn == that.modifiedOn && deleteBy == that.deleteBy && deletedOn == that.deletedOn
     }
@@ -141,9 +151,11 @@ class QaBatchInvoiceEntity : Serializable {
         return Objects.hash(
             id,
             paidDate,
+            invoiceBatchNumberId,
             creationDate,
             plantId,
             invoiceNumber,
+            submittedStatus,
             userId,
             paidStatus,
             receiptNo,

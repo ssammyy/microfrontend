@@ -1,317 +1,142 @@
 <!DOCTYPE html>
-<!--  This site was created in Webflow. http://www.webflow.com  -->
-<!--  Last Published: Wed Mar 18 2020 20:03:10 GMT+0000 (Coordinated Universal Time)  -->
-<html data-wf-page="5e7130c996c4ca37928b351f" data-wf-site="5e70fb3a565ebd99c1db37ce"
-      xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="utf-8">
-    <title>KEBS</title>
-    <th:block th:include="fragments/general-form.html :: headerfiles"/>
-
-    <link rel="stylesheet" th:href="@{/css/pageLoad.css}" type="text/css">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Font Awesome -->
-    <link href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" rel="stylesheet"/>
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" rel="stylesheet"/>
-    <!-- MDB -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/2.2.1/mdb.min.css" rel="stylesheet"/>
-</head>
+<div th:replace="fragments/general-form.html :: headerfiles"></div>
 <body>
-<div id ="spinnerContainer"><div class="spinner"></div></div>
-<div class="top-bar" th:replace="fragments/general-form.html :: top-bar"></div>
-<div class="section">
-    <div class="w-layout-grid main-grid">
-        <div class="main-grid-side-navigation" id="w-node-d308c123a20f-c123a20d" th:replace="fragments/general-form.html :: side-navigation-bar"></div>
-        <div id="w-node-27962c2db181-c676b3e3" class="main-content-div">
-            <div class="content-nav" th:replace="fragments/general-form.html :: content-navigation-bar"></div>
-            <div class="content-wrap">
-                <div class="content-row">
-                    <div class="row">
-                        <form id="myForm" class="needs-validation"  novalidate th:action="@{/api/qa/apply/new-permit(permitTypeID = ${permitType.id})}" method="post">
-                            <div th:object="${permit}" >
-                                <div class="form-row" >
-                                    <div class="col-md-12 mb-3">
-                                        <p style="font-size: 20px">I/We the undersigned hereby apply for the grant/renewal of a permit/ the permit No………… to use the
-                                            <span th:text="${permitType?.mark}"></span> on the commodity specified here under:</p>
+<div th:replace="fragments/general-form.html :: dashboard-page"></div>
+<div class="dashboard-body">
+    <div th:replace="fragments/general-form.html :: side-navigation-bar"></div>
+    <div class="main-area">
+        <div th:replace="fragments/general-form.html :: content-navigation-bar"></div>
+        <section class="dashboard-content">
+            <div id="w-node-27962c2db181-c676b3e3" class="main-content-div">
+                <div class="content-wrap">
+                    <div class="content-row">
+                        <div class="row">
+                            <form id="myForm" class="needs-validation" novalidate
+                                  th:action="@{/api/qa/apply/new-permit(permitTypeID = ${permitType.id})}"
+                                  method="post">
+                                <div th:object="${permit}">
+                                    <div class="form-row">
+                                        <div class="col-md-12 mb-3">
+                                            <p style="font-size: 20px">I/We the undersigned hereby apply for the
+                                                grant/renewal of a permit/ the permit No………… to use the
+                                                <span th:text="${permitType?.mark}"></span> on the commodity specified
+                                                here under:</p>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="form-row">
-                                    <div class="col-md-4 mb-3">
-<!--                                        <label for="commodityDescription" class="field-label">APPLICATION FOR  PERMIT </label>-->
-                                        <img th:src="${permitType.image}" class="card-img-top"
-                                             style="width: 100px; height:100px;">
-<!--                                        <input type="text" class="form-control"  disabled th:value="${permitType?.mark}"  >-->
-                                        <!--                                    <div class="valid-feedback">-->
-                                        <!--                                        Looks good!-->
-                                        <!--                                    </div>-->
-                                    </div>
-                                    <div class="col-md-4 mb-3">
-                                        <label for="commodityDescription" class="field-label">COMMODITY DESCRIPTION</label>
-                                        <input type="text" class="form-control"  id="commodityDescription" th:field="*{commodityDescription}"   required="required">
-                                        <!--                                    <div class="valid-feedback">-->
-                                        <!--                                        Looks good!-->
-                                        <!--                                    </div>-->
-                                    </div>
-                                    <div class="col-md-4 mb-3">
-                                        <label for="tradeMark" class="field-label">TRADE MARK</label>
-                                        <input type="text" class="form-control"  id="tradeMark" th:field="*{tradeMark}"  required="required">
-                                        <!--                                    <div class="valid-feedback">-->
-                                        <!--                                        Looks good!-->
-                                        <!--                                    </div>-->
-                                    </div>
-                                </div>
-                                <div class="form-row" >
-                                    <div class="col-md-12 mb-3">
-                                        <p style="font-size: 20px">
-                                            In connection with this application, I/We the undersigned hereby declare that the commodity referred to
-                                            in column 2 above and the process and practice which is or will be carried out by me/us in the
-                                            production of the commodity shall at all times comply with the standard specification bearing the
-                                            number
-                                        </p>
-                                    </div>
-                                </div>
-                                <div class="form-row">
-                                    <div class="col-md-4 mb-3">
-                                        <label for="applicantName" class="field-label">APPLICANT NAME</label>
-                                        <input id="applicantName2" name="applicantName" th:value="${session.currentUser.firstName}+ ' ' +${session.currentUser.lastName}" type="hidden">
-                                        <input required="required"  type="text" disabled class="form-control" maxlength="256" name="applicantName" data-name="lbIdAny Aomarking" id="applicantName"    th:value="${session.currentUser.firstName}+ ' ' +${session.currentUser.lastName}">
-                                    </div>
-                                    <div class="col-md-4 mb-3">
-                                        <label for="sectionId" class="field-label" >Select Section</label>
-                                        <select reqiured="required" id="sectionId"  name="sectionId" th:field="*{sectionId}" class="form-control">
-                                            <option value="">Select one...</option>
-                                            <option th:each="section : ${sections}" th:text="${section.section}" th:value="${section.id}"></option>-->
-                                        </select>
-                                    </div>
-<!--                                    <div class="col-md-4 mb-3">-->
-<!--                                        <label for="divisionId" class="field-label" >Select Division:</label>-->
-<!--                                        <select id="divisionId" name="divisionId" required="required" class="form-control" th:field="*{divisionId}">-->
-<!--                                            <option th:value="'NULL'">Select One...</option>-->
-<!--                                            <option th:each="divi : ${divisions}" th:text="${divi.division}" th:value="${divi.id}"></option>-->
-<!--                                        </select>-->
-<!--                                    </div>-->
-                                    <div th:if="${permitType?.localForeignStatus == 1}" class="col-md-4 mb-3">
-                                        <label for="permitForeignStatus" class="field-label">APPLICATION TYPE</label>
-                                        <select class="form-control" id="permitForeignStatus" name="permitForeignStatus"
-                                                required="required" th:field="*{permitForeignStatus}">
-                                            <option th:text="'Select one.....'" th:value="'NULL'"></option>
-                                            <option th:text="'DOMESTIC'" th:value="0"></option>
-                                            <option th:text="'FOREGIN'" th:value="1"></option>
-
-                                        </select>
-                                    </div>
-                                    <div th:if="${permitType?.localForeignStatus == 0}" class="col-md-4 mb-3">
-                                        <label for="createdOn"class="field-label" >Application Date</label>
-                                        <input type="text" disabled class="form-control" id="createdOn"  th:value="${applicationDate}" required="required">
-                                    </div>
-<!--                                    <div class="col-md-4 mb-3">-->
-<!--                                        <label for="sectionId" class="field-label" >Select Section</label>-->
-<!--                                        <select reqiured="required" id="sectionId"  name="sectionId" th:field="*{sectionId}" class="form-control">-->
-<!--                                            <option value="">Select one...</option>-->
-<!--                                        </select>-->
-<!--                                    </div>-->
-
-                                </div>
-<!--                                <div class="form-row">-->
-<!--                                    <div class="col-md-4 mb-3">-->
-<!--                                        <label for="standardCategory" class="field-label" >Select Product Category:</label>-->
-<!--                                        <select id="standardCategory" name="standardCategory" required="required" class="form-control" th:field="*{standardCategory}">-->
-<!--                                            <option value="required">Select One...</option>-->
-<!--                                            <option th:each="stdCat : ${standardCategory}" th:text="${stdCat.standardCategory}" th:value="${stdCat.id}"></option>-->
-<!--                                        </select>-->
-<!--                                        &lt;!&ndash;                                        <label id="directorateId" th:text="${directorateId?.directorate}"></label>&ndash;&gt;-->
-<!--                                        &lt;!&ndash;                                        <input type="text" class="form-control"  id="directorateId" th:value="${directorateId?.directorate}" placeholder="directorate" required="required" >&ndash;&gt;-->
-<!--                                        &lt;!&ndash;                                    <div class="invalid-feedback">&ndash;&gt;-->
-<!--                                        &lt;!&ndash;                                        Please provide a valid city.&ndash;&gt;-->
-<!--                                        &lt;!&ndash;                                    </div>&ndash;&gt;-->
-<!--                                    </div>-->
-<!--                                    <div class="col-md-4 mb-3">-->
-<!--                                        <label for="broadCat" class="field-label" >Broad Product Category</label>-->
-<!--                                        <select reqiured="required" id="broadCat" th:field="*{broadProductCategory}" class="form-control">-->
-<!--                                            <option value="">Select one...</option>-->
-<!--                                        </select>-->
-<!--                                        &lt;!&ndash;                                        <input type="text" class="form-control"  id="designationId" th:value="${designationId?.designationName}" placeholder="designation Name" required="required" >&ndash;&gt;-->
-<!--                                        &lt;!&ndash;                                        <div class="invalid-feedback">&ndash;&gt;-->
-<!--                                        &lt;!&ndash;                                            Please provide a valid state.&ndash;&gt;-->
-<!--                                        &lt;!&ndash;                                        </div>&ndash;&gt;-->
-<!--                                    </div>-->
-<!--                                    <div class="col-md-4 mb-3">-->
-<!--                                        <label for="productCategories" class="field-label">Product Category</label>-->
-<!--                                        <select reqiured="" id="productCategories" th:field="*{productCategory}" class="form-control">-->
-<!--                                            <option value="">Select one...</option>-->
-<!--                                            &lt;!&ndash;                                        <option value="">Select one...</option>&ndash;&gt;-->
-<!--                                            &lt;!&ndash;                                        <option  th:each="product : ${session.products}" th:value="${product.id}" th:text="${product.category}"></option>&ndash;&gt;-->
-<!--                                        </select>-->
-<!--                                        &lt;!&ndash;                                        <input type="text" class="form-control"  id="departmentId" th:value="${departmentId?.department}" placeholder="department" required="required" >&ndash;&gt;-->
-<!--                                        &lt;!&ndash;                                        <div class="invalid-feedback">&ndash;&gt;-->
-<!--                                        &lt;!&ndash;                                            Please provide a valid zip.&ndash;&gt;-->
-<!--                                        &lt;!&ndash;                                        </div>&ndash;&gt;-->
-<!--                                    </div>-->
-<!--                                </div>-->
-<!--                                <div class="form-row">-->
-<!--                                    <div class="col-md-4 mb-3">-->
-<!--                                        <label for="product" class="field-label">Product</label>-->
-<!--                                        <select reqiured="required" id="product" th:field="*{product}" class="form-control">-->
-<!--                                            <option value="">Select one...</option>-->
-<!--                                        </select>-->
-<!--                                        &lt;!&ndash;                                        <label id="directorateId" th:text="${directorateId?.directorate}"></label>&ndash;&gt;-->
-<!--                                        &lt;!&ndash;                                        <input type="text" class="form-control"  id="directorateId" th:value="${directorateId?.directorate}" placeholder="directorate" required="required" >&ndash;&gt;-->
-<!--                                        &lt;!&ndash;                                    <div class="invalid-feedback">&ndash;&gt;-->
-<!--                                        &lt;!&ndash;                                        Please provide a valid city.&ndash;&gt;-->
-<!--                                        &lt;!&ndash;                                    </div>&ndash;&gt;-->
-<!--                                    </div>-->
-<!--                                    <div class="col-md-4 mb-3">-->
-<!--                                        <label for="productsubcat" class="field-label">Product Sub-Category</label>-->
-<!--                                        <select reqiured="required" id="productsubcat" th:field="*{productSubCategory}" class="form-control">-->
-<!--                                            <option value="">Select one...</option>-->
-<!--                                        </select>-->
-<!--                                        &lt;!&ndash;                                        <input type="text" class="form-control"  id="designationId" th:value="${designationId?.designationName}" placeholder="designation Name" required="required" >&ndash;&gt;-->
-<!--                                        &lt;!&ndash;                                        <div class="invalid-feedback">&ndash;&gt;-->
-<!--                                        &lt;!&ndash;                                            Please provide a valid state.&ndash;&gt;-->
-<!--                                        &lt;!&ndash;                                        </div>&ndash;&gt;-->
-<!--                                    </div>-->
-<!--                                    <div th:if="${permitType?.localForeignStatus == 1}" class="col-md-4 mb-3">-->
-<!--                                        <label for="permitForeignStatus" class="field-label">APPLICATION TYPE</label>-->
-<!--                                        <select class="form-control" id="permitForeignStatus" name="permitForeignStatus" th:field="*{permitForeignStatus}">-->
-<!--                                            <option th:text="'Select one.....'" th:value="null"></option>-->
-<!--                                            <option th:text="'FOREGIN'" th:value="1"></option>-->
-<!--                                            <option th:text="'DOMESTIC'" th:value="0"></option>-->
-<!--                                        </select>-->
-<!--                                    </div>-->
-<!--                                    <div th:if="${permitType?.localForeignStatus == 0}" class="col-md-4 mb-3">-->
-<!--                                        <label for="createdOn"class="field-label" >Application Date</label>-->
-<!--                                        <input type="text" disabled class="form-control" id="createdOn"  th:value="${applicationDate}" required="required">-->
-<!--&lt;!&ndash;                                        <select reqiured="required" disabled id="productStandard" th:field="*{productStandard}" class="form-control">&ndash;&gt;-->
-<!--&lt;!&ndash;                                            <option value="">Select one...</option>&ndash;&gt;-->
-<!--&lt;!&ndash;                                            &lt;!&ndash;                                        <option value="">Select one...</option>&ndash;&gt;&ndash;&gt;-->
-<!--&lt;!&ndash;                                            &lt;!&ndash;                                        <option  th:each="product : ${session.products}" th:value="${product.id}" th:text="${product.category}"></option>&ndash;&gt;&ndash;&gt;-->
-<!--&lt;!&ndash;                                        </select>&ndash;&gt;-->
-<!--                                        &lt;!&ndash;                                        <input type="text" class="form-control"  id="departmentId" th:value="${departmentId?.department}" placeholder="department" required="required" >&ndash;&gt;-->
-<!--                                        &lt;!&ndash;                                        <div class="invalid-feedback">&ndash;&gt;-->
-<!--                                        &lt;!&ndash;                                            Please provide a valid zip.&ndash;&gt;-->
-<!--                                        &lt;!&ndash;                                        </div>&ndash;&gt;-->
-<!--                                    </div>-->
-<!--                                </div>-->
-<!--                                <div class="form-row" >-->
-<!--                                    <div class="col-md-4 mb-3">-->
-<!--                                        <label for="name" class="field-label">KS NUMBER</label>-->
-<!--                                        <input type="text" class="form-control" id="ksNumber"  th:field="*{ksNumber}"-->
-<!--                                               required="required">-->
-<!--                                        &lt;!&ndash;                                    <div class="valid-feedback">&ndash;&gt;-->
-<!--                                        &lt;!&ndash;                                        Looks good!&ndash;&gt;-->
-<!--                                        &lt;!&ndash;                                    </div>&ndash;&gt;-->
-<!--                                    </div>-->
-<!--                                    <div class="col-md-8 mb-3">-->
-<!--                                        <label for="firmName" class="field-label">TITLE</label>-->
-<!--                                        <input type="text" class="form-control"  id="title" th:field="*{title}"   required="required">-->
-<!--                                        &lt;!&ndash;                                    <div class="valid-feedback">&ndash;&gt;-->
-<!--                                        &lt;!&ndash;                                        Looks good!&ndash;&gt;-->
-<!--                                        &lt;!&ndash;                                    </div>&ndash;&gt;-->
-<!--                                    </div>-->
-<!--                                </div>-->
-<!--                                <div class="form-row" >-->
-<!--                                    <div class="col-md-4 mb-3">-->
-<!--                                        <label for="name" class="field-label">APPLICANT NAME</label>-->
-<!--                                        <input type="text" class="form-control" id="name"  th:field="*{applicantName}" required="required">-->
-<!--                                        &lt;!&ndash;                                    <div class="valid-feedback">&ndash;&gt;-->
-<!--                                        &lt;!&ndash;                                        Looks good!&ndash;&gt;-->
-<!--                                        &lt;!&ndash;                                    </div>&ndash;&gt;-->
-<!--                                    </div>-->
-<!--                                    <div class="col-md-4 mb-3">-->
-<!--                                        <label for="firmName" class="field-label">FIRM NAME</label>-->
-<!--                                        <input type="text" class="form-control"  id="firmName" th:field="*{firmName}"   required="required">-->
-<!--                                        &lt;!&ndash;                                    <div class="valid-feedback">&ndash;&gt;-->
-<!--                                        &lt;!&ndash;                                        Looks good!&ndash;&gt;-->
-<!--                                        &lt;!&ndash;                                    </div>&ndash;&gt;-->
-<!--                                    </div>-->
-<!--                                    <div class="col-md-4 mb-3">-->
-<!--                                        <label for="userName" class="field-label">POSTAL ADDRESS</label>-->
-<!--                                        <input type="text" class="form-control"  id="userName" th:field="*{postalAddress}"  required="required">-->
-<!--                                    </div>-->
-<!--                                </div>-->
-<!--                                <div class="form-row">-->
-<!--                                    <div class="col-md-4 mb-3">-->
-<!--                                        <label for="telephoneNo" class="field-label">TELEPHONE NUMBER</label>-->
-<!--                                        <input type="text" class="form-control"  id="telephoneNo" th:field="*{telephoneNo}"  required="required">-->
-<!--                                        &lt;!&ndash;                                    <div class="valid-feedback">&ndash;&gt;-->
-<!--                                        &lt;!&ndash;                                        Looks good!&ndash;&gt;-->
-<!--                                        &lt;!&ndash;                                    </div>&ndash;&gt;-->
-<!--                                    </div>-->
-<!--                                    <div class="col-md-4 mb-3">-->
-<!--                                        <label for="workContactNumber" class="field-label">EMAIL ADDRESS</label>-->
-<!--                                        <input type="text" class="form-control"  id="workContactNumber" th:field="*{email}"   required="required">-->
-<!--                                        &lt;!&ndash;                                    <div class="valid-feedback">&ndash;&gt;-->
-<!--                                        &lt;!&ndash;                                        Looks good!&ndash;&gt;-->
-<!--                                        &lt;!&ndash;                                    </div>&ndash;&gt;-->
-<!--                                    </div>-->
-<!--                                    <div class="col-md-4 mb-3">-->
-<!--                                        <label for="personalContactNumber" class="field-label">PHYSICAL ADDRESS</label>-->
-<!--                                        <input type="text" class="form-control"  id="personalContactNumber" th:field="*{physicalAddress}"   required="required">-->
-<!--                                        &lt;!&ndash;                                    <div class="valid-feedback">&ndash;&gt;-->
-<!--                                        &lt;!&ndash;                                        Looks good!&ndash;&gt;-->
-<!--                                        &lt;!&ndash;                                    </div>&ndash;&gt;-->
-<!--                                    </div>-->
-<!--                                </div>-->
-<!--                                <div class="form-row">-->
-<!--                                    <div class="col-md-4 mb-3">-->
-<!--                                        <label for="faxNo" class="field-label">FAX NUMBER</label>-->
-<!--                                        <input type="text" class="form-control"  id="faxNo" th:field="*{faxNo}"  required="required">-->
-<!--                                        &lt;!&ndash;                                    <div class="valid-feedback">&ndash;&gt;-->
-<!--                                        &lt;!&ndash;                                        Looks good!&ndash;&gt;-->
-<!--                                        &lt;!&ndash;                                    </div>&ndash;&gt;-->
-<!--                                    </div>-->
-<!--                                    <div class="col-md-4 mb-3">-->
-<!--                                        <label for="workContactNumber" class="field-label">PLOT NUMBER</label>-->
-<!--                                        <input type="text" class="form-control"  id="plotNo" th:field="*{plotNo}"   required="required">-->
-<!--                                        &lt;!&ndash;                                    <div class="valid-feedback">&ndash;&gt;-->
-<!--                                        &lt;!&ndash;                                        Looks good!&ndash;&gt;-->
-<!--                                        &lt;!&ndash;                                    </div>&ndash;&gt;-->
-<!--                                    </div>-->
-<!--                                    <div class="col-md-4 mb-3">-->
-<!--                                        <label for="personalContactNumber" class="field-label">DESIGNATION</label>-->
-<!--                                        <input type="text" class="form-control"  id="designation" th:field="*{designation}"  required="required">-->
-<!--                                        &lt;!&ndash;                                    <div class="valid-feedback">&ndash;&gt;-->
-<!--                                        &lt;!&ndash;                                        Looks good!&ndash;&gt;-->
-<!--                                        &lt;!&ndash;                                    </div>&ndash;&gt;-->
-<!--                                    </div>-->
-<!--                                </div>-->
-<!--                                <div>-->
-<!--                                    <div class="form-group">-->
-<!--                                        <div class="form-check">-->
-<!--                                            <input class="form-check-input" type="checkbox" value="" id="invalidCheck" required="required" >-->
-<!--                                            <label class="form-check-label" for="invalidCheck">-->
-<!--                                                Agree to terms and conditions-->
-<!--                                            </label>-->
-<!--                                            <div class="invalid-feedback">-->
-<!--                                                You must agree before submitting.-->
-<!--                                            </div>-->
-<!--                                        </div>-->
-<!--                                    </div>-->
-<!--                                </div>-->
-                                <div>
-                                    <div class="form-group">
+                                    <div class="form-row">
                                         <div class="col-md-4 mb-3">
-                                            <button class="btn btn-primary" id="check" type="button">Validate form</button>
+                                            <!--                                        <label for="commodityDescription" class="field-label">APPLICATION FOR  PERMIT </label>-->
+                                            <img th:src="${permitType.image}" class="card-img-top"
+                                                 style="width: 100px; height:100px;">
+                                            <!--                                        <input type="text" class="form-control"  disabled th:value="${permitType?.mark}"  >-->
+                                            <!--                                    <div class="valid-feedback">-->
+                                            <!--                                        Looks good!-->
+                                            <!--                                    </div>-->
                                         </div>
                                         <div class="col-md-4 mb-3">
-                                            <button class="btn btn-primary" disabled id="mySubmit" type="submit">Submit form</button>
+                                            <label for="commodityDescription" class="field-label">COMMODITY
+                                                DESCRIPTION</label>
+                                            <input type="text" class="form-control" id="commodityDescription"
+                                                   th:field="*{commodityDescription}" required="required">
+                                            <!--                                    <div class="valid-feedback">-->
+                                            <!--                                        Looks good!-->
+                                            <!--                                    </div>-->
+                                        </div>
+                                        <div class="col-md-4 mb-3">
+                                            <label for="tradeMark" class="field-label">TRADE MARK</label>
+                                            <input type="text" class="form-control" id="tradeMark"
+                                                   th:field="*{tradeMark}" required="required">
+                                            <!--                                    <div class="valid-feedback">-->
+                                            <!--                                        Looks good!-->
+                                            <!--                                    </div>-->
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="col-md-12 mb-3">
+                                            <p style="font-size: 20px">
+                                                In connection with this application, I/We the undersigned hereby declare
+                                                that the commodity referred to
+                                                in column 2 above and the process and practice which is or will be
+                                                carried out by me/us in the
+                                                production of the commodity shall at all times comply with the standard
+                                                specification bearing the
+                                                number
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="col-md-4 mb-3">
+                                            <label for="applicantName" class="field-label">APPLICANT NAME</label>
+                                            <input id="applicantName2" name="applicantName"
+                                                   th:value="${session.currentUser.firstName}+ ' ' +${session.currentUser.lastName}"
+                                                   type="hidden">
+                                            <input required="required" type="text" disabled class="form-control"
+                                                   maxlength="256" name="applicantName" data-name="lbIdAny Aomarking"
+                                                   id="applicantName"
+                                                   th:value="${session.currentUser.firstName}+ ' ' +${session.currentUser.lastName}">
+                                        </div>
+                                        <div class="col-md-4 mb-3">
+                                            <label for="sectionId" class="field-label">Select Section</label>
+                                            <select reqiured="required" id="sectionId" name="sectionId"
+                                                    th:field="*{sectionId}" class="form-control">
+                                                <option value="">Select one...</option>
+                                                <option th:each="section : ${sections}" th:text="${section.section}"
+                                                        th:value="${section.id}"></option>
+                                                -->
+                                            </select>
+                                        </div>
+                                        <!--                                    <div class="col-md-4 mb-3">-->
+                                        <!--                                        <label for="divisionId" class="field-label" >Select Division:</label>-->
+                                        <!--                                        <select id="divisionId" name="divisionId" required="required" class="form-control" th:field="*{divisionId}">-->
+                                        <!--                                            <option th:value="'NULL'">Select One...</option>-->
+                                        <!--                                            <option th:each="divi : ${divisions}" th:text="${divi.division}" th:value="${divi.id}"></option>-->
+                                        <!--                                        </select>-->
+                                        <!--                                    </div>-->
+                                        <div th:if="${permitType?.localForeignStatus == 1}" class="col-md-4 mb-3">
+                                            <label for="permitForeignStatus" class="field-label">APPLICATION
+                                                TYPE</label>
+                                            <select class="form-control" id="permitForeignStatus"
+                                                    name="permitForeignStatus"
+                                                    required="required" th:field="*{permitForeignStatus}">
+                                                <option th:text="'Select one.....'" th:value="'NULL'"></option>
+                                                <option th:text="'DOMESTIC'" th:value="0"></option>
+                                                <option th:text="'FOREGIN'" th:value="1"></option>
+
+                                            </select>
+                                        </div>
+                                        <div th:if="${permitType?.localForeignStatus == 0}" class="col-md-4 mb-3">
+                                            <label for="createdOn" class="field-label">Application Date</label>
+                                            <input type="text" disabled class="form-control" id="createdOn"
+                                                   th:value="${applicationDate}" required="required">
+                                        </div>
+
+                                    </div>
+
+                                    <div>
+                                        <div class="form-group">
+                                            <div class="col-md-4 mb-3">
+                                                <button class="btn btn-primary" id="check" type="button">Validate form
+                                                </button>
+                                            </div>
+                                            <div class="col-md-4 mb-3">
+                                                <button class="btn btn-primary" disabled id="mySubmit" type="submit">
+                                                    Submit form
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        </form>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+        </section>
     </div>
-</div>
-<script crossorigin="anonymous" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" src="https://d3e54v103j8qbb.cloudfront.net/js/jquery-3.4.1.min.220afd743d.js?site=5e70fb3a565ebd99c1db37ce" type="text/javascript"></script>
-<!-- MDB -->
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/2.2.1/mdb.min.js"></script>
-<script th:src="@{/js/spinner.js}" type="text/javascript"></script>
 
+
+</div>
+<div th:replace="fragments/general-form.html :: scripts"></div>
 <script>
     document.onreadystatechange = function(){
         showSpinnerOnLoad(document)
@@ -419,139 +244,139 @@
 </script>
 <script>
     $(document).ready(function() {
-        $("#standardCategory").click(function () {
-            let methodId = $("#standardCategory").val()
-            // let categories = $("#sth").val()
-            // console.log(categories.length)
-            $.ajax({
-                method: "GET",
-                url: `/api/auth/populate-broad-category/${methodId}`,
-                data: methodId,
-                success(response){
-                    console.log(response)
-                    let s = '';
-                    s +=  ' <option value="0">Select One...</option>';
-                    for(let i = 0; i < response.length; i++) {
-                        // response.push('Select one')
-                        s += '<option value="' + response[i].id + '">' + response[i].category + '</option>';
-                    }
-                    $("#broadCat").html(s);
-                }
-            })
-        });
-
-        $("#broadCat").click(function () {
-            let methodId2 = $("#broadCat").val()
-            // let categories = $("#sth").val()
-            // console.log(categories.length)
-            $.ajax({
-                method: "GET",
-                url: `/api/auth/populate-product-category/${methodId2}`,
-                data: methodId2,
-                success(response){
-                    console.log(response)
-                    var s = '';
-                    s +=  ' <option value="0">Select One...</option>';
-                    for(var i = 0; i < response.length; i++) {
-                        // response.push('Select one')
-                        s += '<option value="' + response[i].id + '">' + response[i].name + '</option>';
-                    }
-                    $("#productCategories").html(s);
-                }
-            })
-
-        });
-
-        $("#productCategories").click(function () {
-            let methodId3 = $("#productCategories").val()
-            // let categories = $("#sth").val()
-            // console.log(categories.length)
-            $.ajax({
-                method: "GET",
-                url: `/api/auth/populate-product-categories/${methodId3}`,
-                data: methodId3,
-                success(response){
-                    console.log(response)
-                    var s = '';
-                    s +=  ' <option value="0">Select One...</option>';
-                    for(var i = 0; i < response.length; i++) {
-                        // response.push('Select one')
-                        s += '<option value="' + response[i].id + '">' + response[i].name + '</option>';
-                    }
-                    $("#product").html(s);
-                }
-            })
-
-        });
-
-        $("#product").click(function () {
-            let methodId4 = $("#product").val()
-            // let categories = $("#sth").val()
-            // console.log(categories.length)
-            $.ajax({
-                method: "GET",
-                url: `/api/auth/populate-sub-category/${methodId4}`,
-                data: methodId4,
-                success(response){
-                    console.log(response)
-                    let s = '';
-                    s +=  ' <option value="0">Select One...</option>';
-                    for(let i = 0; i < response.length; i++) {
-                        // response.push('Select one')
-                        s += '<option value="' + response[i].id + '">' + response[i].name + '</option>';
-                    }
-                    $("#productsubcat").html(s);
-                }
-            })
-
-        });
-
-        $("#divisionId").click(function () {
-            let divisionId = $("#divisionId").val()
-            // console.log(categories.length)
-            if (divisionId!==0){
+            $("#standardCategory").click(function () {
+                let methodId = $("#standardCategory").val()
+                // let categories = $("#sth").val()
+                // console.log(categories.length)
                 $.ajax({
                     method: "GET",
-                    url: `/api/auth/section-list/${divisionId}`,
-                    success(response){
+                    url: `/api/auth/populate-broad-category/${methodId}`,
+                    data: methodId,
+                    success(response) {
                         console.log(response)
-                        var s = '';
-                        s +=  ' <option value="0">Select One...</option>';
-                        for(var i = 0; i < response.length; i++) {
+                        let s = '';
+                        s += ' <option value="0">Select One...</option>';
+                        for (let i = 0; i < response.length; i++) {
                             // response.push('Select one')
-                            s += '<option value="' + response[i].id + '">' + response[i].section + '</option>';
+                            s += '<option value="' + response[i].id + '">' + response[i].category + '</option>';
                         }
-                        $("#sectionId").html(s);
+                        $("#broadCat").html(s);
                     }
                 })
-            }
+            });
 
-        });
+            $("#broadCat").click(function () {
+                let methodId2 = $("#broadCat").val()
+                // let categories = $("#sth").val()
+                // console.log(categories.length)
+                $.ajax({
+                    method: "GET",
+                    url: `/api/auth/populate-product-category/${methodId2}`,
+                    data: methodId2,
+                    success(response) {
+                        console.log(response)
+                        var s = '';
+                        s += ' <option value="0">Select One...</option>';
+                        for (var i = 0; i < response.length; i++) {
+                            // response.push('Select one')
+                            s += '<option value="' + response[i].id + '">' + response[i].name + '</option>';
+                        }
+                        $("#productCategories").html(s);
+                    }
+                })
 
-        // $("#productsubcat").click(function () {
-        //     let methodId5 = $("#productsubcat").val()
-        //     // let categories = $("#sth").val()
-        //     // console.log(categories.length)
-        //     $.ajax({
-        //         method: "GET",
-        //         url: `/api/auth/populate-standards/${methodId5}`,
-        //         data: methodId5,
-        //         success(response){
-        //             console.log(response)
-        //             let s = '';
-        //             s +=  ' <option value="0">Select One...</option>';
-        //             for(let i = 0; i < response.length; i++) {
-        //                 // response.push('Select one')
-        //                 s += '<option value="' + response[i].id + '">' + response[i].name + '</option>';
-        //             }
-        //             $("#productStandard").html(s);
-        //         }
-        //     })
-        //
-        // });
+            });
+
+            $("#productCategories").click(function () {
+                let methodId3 = $("#productCategories").val()
+                // let categories = $("#sth").val()
+                // console.log(categories.length)
+                $.ajax({
+                    method: "GET",
+                    url: `/api/auth/populate-product-categories/${methodId3}`,
+                    data: methodId3,
+                    success(response) {
+                        console.log(response)
+                        var s = '';
+                        s += ' <option value="0">Select One...</option>';
+                        for (var i = 0; i < response.length; i++) {
+                            // response.push('Select one')
+                            s += '<option value="' + response[i].id + '">' + response[i].name + '</option>';
+                        }
+                        $("#product").html(s);
+                    }
+                })
+
+            });
+
+            $("#product").click(function () {
+                let methodId4 = $("#product").val()
+                // let categories = $("#sth").val()
+                // console.log(categories.length)
+                $.ajax({
+                    method: "GET",
+                    url: `/api/auth/populate-sub-category/${methodId4}`,
+                    data: methodId4,
+                    success(response) {
+                        console.log(response)
+                        let s = '';
+                        s += ' <option value="0">Select One...</option>';
+                        for (let i = 0; i < response.length; i++) {
+                            // response.push('Select one')
+                            s += '<option value="' + response[i].id + '">' + response[i].name + '</option>';
+                        }
+                        $("#productsubcat").html(s);
+                    }
+                })
+
+            });
+
+            $("#divisionId").click(function () {
+                let divisionId = $("#divisionId").val()
+                // console.log(categories.length)
+                if (divisionId !== 0) {
+                    $.ajax({
+                        method: "GET",
+                        url: `/api/auth/section-list/${divisionId}`,
+                        success(response) {
+                            console.log(response)
+                            var s = '';
+                            s += ' <option value="0">Select One...</option>';
+                            for (var i = 0; i < response.length; i++) {
+                                // response.push('Select one')
+                                s += '<option value="' + response[i].id + '">' + response[i].section + '</option>';
+                            }
+                            $("#sectionId").html(s);
+                        }
+                    })
+                }
+
+            });
+
+            // $("#productsubcat").click(function () {
+            //     let methodId5 = $("#productsubcat").val()
+            //     // let categories = $("#sth").val()
+            //     // console.log(categories.length)
+            //     $.ajax({
+            //         method: "GET",
+            //         url: `/api/auth/populate-standards/${methodId5}`,
+            //         data: methodId5,
+            //         success(response){
+            //             console.log(response)
+            //             let s = '';
+            //             s +=  ' <option value="0">Select One...</option>';
+            //             for(let i = 0; i < response.length; i++) {
+            //                 // response.push('Select one')
+            //                 s += '<option value="' + response[i].id + '">' + response[i].name + '</option>';
+            //             }
+            //             $("#productStandard").html(s);
+            //         }
+            //     })
+            //
+            // });
 
         }
     )
 </script>
 </body>
-</html>
+

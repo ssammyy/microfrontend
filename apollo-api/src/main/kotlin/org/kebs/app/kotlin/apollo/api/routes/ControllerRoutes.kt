@@ -330,9 +330,16 @@ class ControllerRoutes {
             GET("/scheme-of-supervision", handler::generatedSchemeSupervision)
             GET("/product-quality-status", handler::generateProductQualityStatus)
             GET("/invoice-details", handler::getInvoiceDetails)
-            GET("/ssf-details", handler::getSSfDetails)
+
             "/workPlan".nest {
                 GET("/list", handler::allWorkPlanList)
+                GET("/details", handler::workPlanDetails)
+            }
+            "/inspection".nest {
+                GET("/new-inspection-report", handler::newInspectionReport)
+                GET("/inspection-report-details", handler::inspectionReportDetails)
+                GET("/check-results", handler::checkLabResults)
+                GET("/ssf-details", handler::getSSfDetails)
                 GET("/details", handler::workPlanDetails)
             }
             "/invoice".nest {
