@@ -29,8 +29,8 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.dao.InvoiceDaoService
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.QADaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.lims.LimsServices
 import org.kebs.app.kotlin.apollo.common.dto.FmarkEntityDto
-import org.kebs.app.kotlin.apollo.common.dto.PermitEntityDto
 import org.kebs.app.kotlin.apollo.common.dto.qa.NewBatchInvoiceDto
+import org.kebs.app.kotlin.apollo.common.dto.qa.PermitEntityDto
 import org.kebs.app.kotlin.apollo.common.exceptions.*
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.*
