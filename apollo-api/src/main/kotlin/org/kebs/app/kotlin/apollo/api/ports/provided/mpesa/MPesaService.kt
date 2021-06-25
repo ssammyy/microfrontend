@@ -81,8 +81,7 @@ class MPesaService(
             config.token.let { headerParameters["Authorization"] = it }
             KotlinLogging.logger { }.info("$headerParameters")
 
-
-            var response = pushRequest(
+            val response = pushRequest(
                 pushUrl,
                 amount,
                 phoneNumber,
@@ -90,26 +89,11 @@ class MPesaService(
                 transactionRef,
                 config,
                 headerParameters
-            )
+            ).second
 
-            if (response.third?.status?.value == 401) {
-                config = loginRequest(loginUrl, transactionRef, config)
-                response = pushRequest(
-                    pushUrl,
-                    amount,
-                    phoneNumber,
-                    invoiceReference,
-                    transactionRef,
-                    config,
-                    headerParameters
-                )
-            }
-
-            val pushSuccess = response.second
-
-            pushSuccess?.merchantRequestID
+            response?.merchantRequestID
                 ?.let { merchantCode ->
-                    val checkOutCode = pushSuccess.checkoutRequestID.toString()
+                    val checkOutCode = response.checkoutRequestID.toString()
                     val mpesaTransaction = mpesaTransactionEntity(
                         invoiceReference,
                         invoiceSource,
@@ -192,10 +176,6 @@ class MPesaService(
 
         val log = daoService.createTransactionLog(0, "${transactionRef}_1")
         val resp = daoService.getHttpResponseFromPostCall(false, url, null, request, config, null, headerParameters)
-//        if (resp?.status?.value == 401){
-//            config = loginRequest(loginUrl, transactionRef, config)
-//            val resp = daoService.getHttpResponseFromPostCall(false, url, null, request, config, null, headerParameters)
-//        }
         return daoService.processResponses(resp, log, url, config)
     }
 
@@ -260,7 +240,7 @@ class MPesaService(
         var validPhoneNo: String? = "Fasle"
         val safaricom = "^(?:254|\\+254|0)?(7(?:(?:[129][0-9])|(?:0[0-9])|(?:6[8-9])|(?:5[7-9])|(?:4[5-6])|(?:4[8])|(4[0-3]))[0-9]{6})$"
         val telkom = "^(?:254|\\+254|0)?(7(?:(?:[7][0-9]))[0-9]{6})$"
-        val git sttairtel = "^(?:254|\\+254|0)?(7(?:(?:[3][0-9])|(?:5[0-6])|(?:6[2])|(8[0-9]))[0-9]{6})$"
+        val airtel = "^(?:254|\\+254|0)?(7(?:(?:[3][0-9])|(?:5[0-6])|(?:6[2])|(8[0-9]))[0-9]{6})$"
         var patt: Pattern
         var match: Matcher
         when {
