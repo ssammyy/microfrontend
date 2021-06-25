@@ -138,14 +138,16 @@
                                     </div>
                                     <div id="qpsmsBtn">
                                         <div class="form-group">
+                                            <!--                                            <div class="col-md-4 mb-3">-->
+                                            <!--                                                <button class="btn btn-primary" id="check"-->
+                                            <!--                                                        onclick="validationFunction('validateQPAMSDetails');"-->
+                                            <!--                                                        type="button">Validate form-->
+                                            <!--                                                </button>-->
+                                            <!--                                            </div>-->
                                             <div class="col-md-4 mb-3">
-                                                <button class="btn btn-primary" id="check"
+                                                <button class="btn btn-primary"
                                                         onclick="validationFunction('validateQPAMSDetails');"
-                                                        type="button">Validate form
-                                                </button>
-                                            </div>
-                                            <div class="col-md-4 mb-3">
-                                                <button class="btn btn-primary" disabled id="mySubmit" type="submit">
+                                                        id="mySubmit" type="submit">
                                                     Submit form
                                                 </button>
                                             </div>
@@ -246,14 +248,16 @@
                                     <div id="qpsmsBtn1"
                                          th:if="${QaInspectionReportRecommendationEntity?.filledQpsmsStatus == 1}">
                                         <div class="form-group">
+                                            <!--                                            <div class="col-md-4 mb-3">-->
+                                            <!--                                                <button class="btn btn-primary" id="check1"-->
+                                            <!--                                                        onclick="validationFunction('validateISPTESTINGDetails');"-->
+                                            <!--                                                        type="button">Validate form-->
+                                            <!--                                                </button>-->
+                                            <!--                                            </div>-->
                                             <div class="col-md-4 mb-3">
-                                                <button class="btn btn-primary" id="check1"
+                                                <button class="btn btn-primary"
                                                         onclick="validationFunction('validateISPTESTINGDetails');"
-                                                        type="button">Validate form
-                                                </button>
-                                            </div>
-                                            <div class="col-md-4 mb-3">
-                                                <button class="btn btn-primary" disabled id="mySubmit1" type="submit">
+                                                        id="mySubmit1" type="submit">
                                                     Submit form
                                                 </button>
                                             </div>
@@ -353,14 +357,16 @@
                                     <div id="qpsmsBtn2"
                                          th:if="${QaInspectionReportRecommendationEntity?.filledQpsmsStatus == 1}">
                                         <div class="form-group">
+                                            <!--                                            <div class="col-md-4 mb-3">-->
+                                            <!--                                                <button class="btn btn-primary" id="check2"-->
+                                            <!--                                                        onclick="validationFunction('validateSMSDetails');"-->
+                                            <!--                                                        type="button">Validate form-->
+                                            <!--                                                </button>-->
+                                            <!--                                            </div>-->
                                             <div class="col-md-4 mb-3">
-                                                <button class="btn btn-primary" id="check2"
+                                                <button class="btn btn-primary"
                                                         onclick="validationFunction('validateSMSDetails');"
-                                                        type="button">Validate form
-                                                </button>
-                                            </div>
-                                            <div class="col-md-4 mb-3">
-                                                <button class="btn btn-primary" disabled id="mySubmit2" type="submit">
+                                                        id="mySubmit2" type="submit">
                                                     Submit form
                                                 </button>
                                             </div>
@@ -674,13 +680,15 @@
                                          th:if="${QaInspectionReportRecommendationEntity?.filledQpsmsStatus == 1}">
                                         <div class="form-group">
                                             <div class="col-md-4 mb-3">
-                                                <button class="btn btn-primary" id="check3"
-                                                        onclick="validationFunction('validateHACCPDetails');"
-                                                        type="button">Validate form
-                                                </button>
+                                                <!--                                                <button class="btn btn-primary" id="check3"-->
+                                                <!--                                                        onclick="validationFunction('validateHACCPDetails');"-->
+                                                <!--                                                        type="button">Validate form-->
+                                                <!--                                                </button>-->
                                             </div>
                                             <div class="col-md-4 mb-3">
-                                                <button class="btn btn-primary" disabled id="mySubmit3" type="submit">
+                                                <button class="btn btn-primary"
+                                                        onclick="validationFunction('validateHACCPDetails');"
+                                                        id="mySubmit3" type="submit">
                                                     Submit form
                                                 </button>
                                             </div>
@@ -1108,6 +1116,54 @@
     });
 </script>
 <script>
+
+    $("#mySubmit").click(function () {
+        let allAreFilled = true;
+        document.getElementById("myForm").querySelectorAll("[required]").forEach(function (i) {
+            if (!allAreFilled) return;
+            let inputID = `#${i.id}`
+            if (!i.value) {
+                $(inputID).addClass('error');
+                allAreFilled = false;
+            }
+            if (i.value) {
+                $(inputID).removeClass('error');
+            }
+            if (i.type === "radio") {
+                let radioValueCheck = false;
+                document.getElementById("myForm").querySelectorAll(`[name=${i.name}]`).forEach(function (r) {
+                    if (r.checked) radioValueCheck = true;
+                })
+                allAreFilled = radioValueCheck;
+            }
+
+        })
+
+        if ($('#sectionId').val() == -1) {
+            $('#sectionId').addClass('error');
+            allAreFilled = false;
+            return false;
+        } else {
+            $('#sectionId').removeClass('error');
+            return true;
+        }
+
+        if ($('#permitForeignStatus').val() == -1) {
+            $('#permitForeignStatus').addClass('error');
+            allAreFilled = false;
+            return false;
+        } else {
+            $('#permitForeignStatus').removeClass('error');
+            return true;
+        }
+
+        if (!allAreFilled) {
+            // alert('Fill all the fields');
+        } else {
+            return true;
+        }
+    });
+
     function validationFunction(eventAction) {
 
         let arrHead = ['validateQPAMSDetails', 'validateISPTESTINGDetails', 'validateSMSDetails', 'validateHACCPDetails'];
@@ -1142,7 +1198,14 @@
                 let allAreFilled = true;
                 document.getElementById(arrHeadValues[h].myFormValue).querySelectorAll("[required]").forEach(function (i) {
                     if (!allAreFilled) return;
-                    if (!i.value) allAreFilled = false;
+                    let inputID = `#${i.id}`
+                    if (!i.value) {
+                        $(inputID).addClass('error');
+                        allAreFilled = false;
+                    }
+                    if (i.value) {
+                        $(inputID).removeClass('error');
+                    }
                     if (i.type === "radio") {
                         let radioValueCheck = false;
                         document.getElementById(arrHeadValues[h].myFormValue).querySelectorAll(`[name=${i.name}]`).forEach(function (r) {
@@ -1152,10 +1215,11 @@
                     }
                 })
                 if (!allAreFilled) {
-                    alert('Fill all the fields');
+                    // alert('Fill all the fields');
                 } else {
-                    $(arrHeadValues[h].check).attr("disabled", "disabled");
-                    $(arrHeadValues[h].mySubmitValue).removeAttr("disabled");
+                    return true;
+                    // $(arrHeadValues[h].check).attr("disabled", "disabled");
+                    // $(arrHeadValues[h].mySubmitValue).removeAttr("disabled");
                 }
             }
         }

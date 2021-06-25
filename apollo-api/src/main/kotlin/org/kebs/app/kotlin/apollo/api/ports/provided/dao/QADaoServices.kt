@@ -3,7 +3,6 @@ package org.kebs.app.kotlin.apollo.api.ports.provided.dao
 import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.notifications.Notifications
 import org.kebs.app.kotlin.apollo.api.ports.provided.mpesa.MPesaService
-import org.kebs.app.kotlin.apollo.common.dto.PermitEntityDto
 import org.kebs.app.kotlin.apollo.common.dto.qa.*
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
@@ -600,7 +599,9 @@ class QADaoServices(
             pd.id,
             pd.county,
             pd.town,
-            pd.region
+            pd.region,
+            cp.firmCategory,
+            cp.firmCategory?.let { findFirmTypeById(it).firmType }
 
         )
     }
@@ -634,6 +635,7 @@ class QADaoServices(
     fun listPermits(permits: List<PermitApplicationsEntity>, map: ServiceMapsEntity): List<PermitEntityDto> {
         val permitsList = mutableListOf<PermitEntityDto>()
         permits.map { p ->
+            val plantDetail = p.attachedPlantId?.let { findPlantDetails(it) }
             permitsList.add(
                 PermitEntityDto(
                     p.id,
@@ -645,8 +647,25 @@ class QADaoServices(
                     p.dateOfIssue,
                     p.dateOfExpiry,
                     p.permitStatus?.let { findPermitStatus(it).processStatusName },
-                    p.userId
-                )
+                    p.userId,
+                    p.createdOn,
+                    plantDetail?.county?.let {
+                        commonDaoServices.findCountiesEntityByCountyId(
+                            it,
+                            map.activeStatus
+                        ).county
+                    },
+                    plantDetail?.town?.let { commonDaoServices.findTownEntityByTownId(it).town },
+                    plantDetail?.region?.let {
+                        commonDaoServices.findRegionEntityByRegionID(
+                            it,
+                            map.activeStatus
+                        ).region
+                    },
+                    p.divisionId?.let { commonDaoServices.findDivisionWIthId(it).division },
+                    p.sectionId?.let { commonDaoServices.findSectionWIthId(it).section },
+
+                    )
             )
         }
         return permitsList.sortedBy { it.id }
@@ -768,6 +787,9 @@ class QADaoServices(
             fmarkGenerated = permit.fmarkGenerated == 1
             recommendationRemarks = permit.recommendationRemarks
             factoryVisit = permit.factoryVisit
+            firmTypeID = companyProfile?.firmCategory
+            firmTypeName = companyProfile?.firmCategory?.let { findFirmTypeById(it).firmType }
+
         }
         return p
     }
@@ -919,7 +941,7 @@ class QADaoServices(
                 }".toUpperCase()
                 enabled = map.initStatus
                 divisionId = commonDaoServices.findSectionWIthId(
-                    sectionId ?: throw Exception("SECTION ID IS MISSING")
+                    sectionId ?: throw ExpectedDataNotFound("SECTION ID IS MISSING")
                 ).divisionId?.id
                 versionNumber = 1
                 endOfProductionStatus = map.initStatus
@@ -1968,68 +1990,71 @@ class QADaoServices(
         var sr = commonDaoServices.createServiceRequest(s)
         try {
 
-            val userID = user.id ?: throw Exception("INVALID USER ID")
-            var permitInvoiceFound =
-                findPermitInvoiceByPermitID(batchInvoiceDto.permitID ?: throw Exception("PERMIT ID REQUIRED"), userID)
-            val permitType = findPermitType(applicationMapProperties.mapQAPermitTypeIdInvoices)
-            var batchID: Long? = null
-            invoiceBatchRepo.findByIdOrNull(batchInvoiceDto.batchID)
-                ?.let { invoiceDetails ->
+            var batchID = batchInvoiceDto.batchID
+            batchInvoiceDto.permitInvoicesID
+                ?.forEach { permitID ->
+                    val userID = user.id ?: throw Exception("INVALID USER ID")
+                    var permitInvoiceFound = findPermitInvoiceByPermitID(permitID, userID)
+                    val permitType = findPermitType(applicationMapProperties.mapQAPermitTypeIdInvoices)
 
-                    with(permitInvoiceFound) {
-                        batchInvoiceNo = invoiceDetails.id
-                        modifiedBy = commonDaoServices.concatenateName(user)
-                        modifiedOn = commonDaoServices.getTimestamp()
-                    }
-                    permitInvoiceFound = invoiceRepository.save(permitInvoiceFound)
+                    invoiceBatchRepo.findByIdOrNull(batchID)
+                        ?.let { invoiceDetails ->
 
-                    with(invoiceDetails) {
-                        description = "${permitInvoiceFound.invoiceNumber},$description"
-                        totalAmount = totalAmount?.plus(permitInvoiceFound.amount ?: throw Exception("INVALID AMOUNT"))
-                    }
-                    batchID = invoiceBatchRepo.save(invoiceDetails).id
+                            with(permitInvoiceFound) {
+                                batchInvoiceNo = invoiceDetails.id
+                                modifiedBy = commonDaoServices.concatenateName(user)
+                                modifiedOn = commonDaoServices.getTimestamp()
+                            }
+                            permitInvoiceFound = invoiceRepository.save(permitInvoiceFound)
+
+                            with(invoiceDetails) {
+                                description = "${permitInvoiceFound.invoiceNumber},$description"
+                                totalAmount =
+                                    totalAmount?.plus(permitInvoiceFound.amount ?: throw Exception("INVALID AMOUNT"))
+                            }
+                            batchID = invoiceBatchRepo.save(invoiceDetails).id!!
+                        }
+                        ?: kotlin.run {
+                            var batchInvoicePermit = QaBatchInvoiceEntity()
+                            with(batchInvoicePermit) {
+                                invoiceNumber = "KIMS${permitType.markNumber}${
+                                    generateRandomText(
+                                        5,
+                                        s.secureRandom,
+                                        s.messageDigestAlgorithm,
+                                        true
+                                    )
+                                }".toUpperCase()
+                                userId = userID
+                                plantId = batchInvoiceDto.plantID
+                                status = s.activeStatus
+                                description = "${permitInvoiceFound.invoiceNumber}"
+                                totalAmount = permitInvoiceFound.amount
+                                createdBy = commonDaoServices.concatenateName(user)
+                                createdOn = commonDaoServices.getTimestamp()
+                            }
+                            batchInvoicePermit = invoiceBatchRepo.save(batchInvoicePermit)
+
+                            with(permitInvoiceFound) {
+                                batchInvoiceNo = batchInvoicePermit.id
+                                modifiedBy = commonDaoServices.concatenateName(user)
+                                modifiedOn = commonDaoServices.getTimestamp()
+                            }
+                            permitInvoiceFound = invoiceRepository.save(permitInvoiceFound)
+
+                            batchID = batchInvoicePermit.id!!
+                        }
+
+                    sr.payload = "permitInvoiceFound[id= ${permitInvoiceFound.userId}]"
+                    sr.names = "${permitInvoiceFound.invoiceNumber} ${permitInvoiceFound.amount}"
+                    sr.varField1 = batchID.toString()
+
+                    sr.responseStatus = sr.serviceMapsId?.successStatusCode
+                    sr.responseMessage = "Success ${sr.payload}"
+                    sr.status = s.successStatus
+                    sr = serviceRequestsRepository.save(sr)
+                    sr.processingEndDate = Timestamp.from(Instant.now())
                 }
-                ?: kotlin.run {
-                    var batchInvoicePermit = QaBatchInvoiceEntity()
-                    with(batchInvoicePermit) {
-                        invoiceNumber = "KIMS${permitType.markNumber}${
-                            generateRandomText(
-                                5,
-                                s.secureRandom,
-                                s.messageDigestAlgorithm,
-                                true
-                            )
-                        }".toUpperCase()
-                        userId = userID
-                        plantId = batchInvoiceDto.plantID
-                        status = s.activeStatus
-                        description = "${permitInvoiceFound.invoiceNumber}"
-                        totalAmount = permitInvoiceFound.amount
-                        createdBy = commonDaoServices.concatenateName(user)
-                        createdOn = commonDaoServices.getTimestamp()
-                    }
-                    batchInvoicePermit = invoiceBatchRepo.save(batchInvoicePermit)
-
-                    with(permitInvoiceFound) {
-                        batchInvoiceNo = batchInvoicePermit.id
-                        modifiedBy = commonDaoServices.concatenateName(user)
-                        modifiedOn = commonDaoServices.getTimestamp()
-                    }
-                    permitInvoiceFound = invoiceRepository.save(permitInvoiceFound)
-
-                    batchID = batchInvoicePermit.id
-                }
-
-
-            sr.payload = "permitInvoiceFound[id= ${permitInvoiceFound.userId}]"
-            sr.names = "${permitInvoiceFound.invoiceNumber} ${permitInvoiceFound.amount}"
-            sr.varField1 = batchID.toString()
-
-            sr.responseStatus = sr.serviceMapsId?.successStatusCode
-            sr.responseMessage = "Success ${sr.payload}"
-            sr.status = s.successStatus
-            sr = serviceRequestsRepository.save(sr)
-            sr.processingEndDate = Timestamp.from(Instant.now())
 
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message, e)
@@ -2251,7 +2276,7 @@ class QADaoServices(
                 invoice.invoiceNumber?.let { it1 ->
                     mpesaServices.sanitizePhoneNumber(phoneNumber)?.let { it2 ->
                         mpesaServices.mainMpesaTransaction(
-                            "10",
+                            10.00.toBigDecimal(),
                             it2, it1, it, applicationMapProperties.mapInvoiceTransactionsForPermit
                         )
                     }

@@ -19,6 +19,7 @@ import io.ktor.http.*
 import mu.KotlinLogging
 import org.apache.http.conn.ssl.NoopHostnameVerifier
 import org.jasypt.encryption.StringEncryptor
+import org.kebs.app.kotlin.apollo.api.ports.provided.mpesa.response.MpesaPushResponse
 import org.kebs.app.kotlin.apollo.common.exceptions.InvalidValueException
 import org.kebs.app.kotlin.apollo.common.utils.generateRandomText
 import org.kebs.app.kotlin.apollo.config.security.ssl.SslContextFactory
@@ -104,37 +105,37 @@ class DaoService(
                     .format(now)
 
     final suspend inline fun <reified T : Any> processResponses(
-            response: HttpResponse?,
-            log: WorkflowTransactionsEntity,
-            url: String,
-            config: IntegrationConfigurationEntity,
-    ): Pair<WorkflowTransactionsEntity, T?> {
+        response: HttpResponse?,
+        log: WorkflowTransactionsEntity,
+        url: String,
+        config: IntegrationConfigurationEntity,
+    ): Triple<WorkflowTransactionsEntity, T?, HttpResponse?> {
         var res: T? = null
         try {
 
 
             response
-                    ?.let { r ->
-                        when {
-                            r.status.value >= config.okLower && r.status.value <= config.okUpper -> {
+                ?.let { r ->
+                    when {
+                        r.status.value >= config.okLower && r.status.value <= config.okUpper -> {
 
-                                val responseText = r.readText();
+                            val responseText = r.readText()
 
-                                KotlinLogging.logger { }.error(responseText)
+                            KotlinLogging.logger { }.error(responseText)
 
-                                log.integrationResponse = responseText;
-                                val message =
-                                        "Received [HttpStatus = ${r.status.value}, Text = ${r.status.description}, URL = $url]!"
-                                KotlinLogging.logger { }.info(message)
-                                res = mapper().readValue<T>(responseText)
+                            log.integrationResponse = responseText
+                            val message =
+                                "Received [HttpStatus = ${r.status.value}, Text = ${r.status.description}, URL = $url]!"
+                            KotlinLogging.logger { }.info(message)
+                            res = mapper().readValue<T>(responseText)
 
-                                log.responseMessage = log.responseMessage?.let { "${it}||$message" } ?: message
-                                log.responseStatus = config.successCode
+                            log.responseMessage = log.responseMessage?.let { "${it}||$message" } ?: message
+                            log.responseStatus = config.successCode
 
 
-                                log.transactionCompletedDate = Timestamp.from(Instant.now())
+                            log.transactionCompletedDate = Timestamp.from(Instant.now())
 
-                            }
+                        }
                             else -> {
                                 log.integrationResponse = r.readText()
                                 val message =
@@ -165,7 +166,7 @@ class DaoService(
         }
 
 
-        return Pair(log, res)
+        return Triple(log, res, response)
 
     }
 

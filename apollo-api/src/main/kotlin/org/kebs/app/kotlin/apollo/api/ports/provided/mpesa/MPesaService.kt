@@ -18,6 +18,7 @@ import org.kebs.app.kotlin.apollo.store.model.*
 import org.kebs.app.kotlin.apollo.store.repo.IIntegrationConfigurationRepository
 import org.kebs.app.kotlin.apollo.store.repo.IMpesaTransactionsRepository
 import org.springframework.stereotype.Service
+import java.math.BigDecimal
 import java.sql.Timestamp
 import java.time.Instant
 import java.util.regex.Matcher
@@ -37,7 +38,7 @@ class MPesaService(
 
 
     fun mainMpesaTransaction(
-        amount: String,
+        amount: BigDecimal,
         phoneNumber: String,
         invoiceReference: String,
         userName: String,
@@ -80,7 +81,8 @@ class MPesaService(
             config.token.let { headerParameters["Authorization"] = it }
             KotlinLogging.logger { }.info("$headerParameters")
 
-            val response = pushRequest(
+
+            var response = pushRequest(
                 pushUrl,
                 amount,
                 phoneNumber,
@@ -88,11 +90,26 @@ class MPesaService(
                 transactionRef,
                 config,
                 headerParameters
-            ).second
+            )
 
-            response?.merchantRequestID
+            if (response.third?.status?.value == 401) {
+                config = loginRequest(loginUrl, transactionRef, config)
+                response = pushRequest(
+                    pushUrl,
+                    amount,
+                    phoneNumber,
+                    invoiceReference,
+                    transactionRef,
+                    config,
+                    headerParameters
+                )
+            }
+
+            val pushSuccess = response.second
+
+            pushSuccess?.merchantRequestID
                 ?.let { merchantCode ->
-                    val checkOutCode = response.checkoutRequestID.toString()
+                    val checkOutCode = pushSuccess.checkoutRequestID.toString()
                     val mpesaTransaction = mpesaTransactionEntity(
                         invoiceReference,
                         invoiceSource,
@@ -160,13 +177,13 @@ class MPesaService(
 
     private suspend fun pushRequest(
         url: String,
-        amount: String,
+        amount: BigDecimal,
         phoneNumber: String,
         invoiceReference: String,
         transactionRef: String,
         config: IntegrationConfigurationEntity,
         headerParameters: MutableMap<String, String>
-    ): Pair<WorkflowTransactionsEntity, MpesaPushResponse?> {
+    ): Triple<WorkflowTransactionsEntity, MpesaPushResponse?, HttpResponse?> {
         val request = MpesaPushRequest()
         request.transactionReference = invoiceReference
         request.account = config.account
@@ -175,6 +192,10 @@ class MPesaService(
 
         val log = daoService.createTransactionLog(0, "${transactionRef}_1")
         val resp = daoService.getHttpResponseFromPostCall(false, url, null, request, config, null, headerParameters)
+//        if (resp?.status?.value == 401){
+//            config = loginRequest(loginUrl, transactionRef, config)
+//            val resp = daoService.getHttpResponseFromPostCall(false, url, null, request, config, null, headerParameters)
+//        }
         return daoService.processResponses(resp, log, url, config)
     }
 

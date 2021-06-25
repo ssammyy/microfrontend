@@ -465,15 +465,26 @@
                                                  viewbox="0 0 20 20"
                                                  width="20"
                                                  xmlns="http://www.w3.org/2000/svg"></svg>
-                                            <a class="filter-link " th:href="@{/api/qa/permit-details(permitID=${invoice.permitId},userID=${invoice.userId})}">
-                                                Close </a><br>
-<!--                                            <button class="back-button w-button" href="#" onclick="goBack()">go back</button>-->
-                                            <!--                        <a th:if="${invoice?.permitId?.permitType?.typeName == 'SMARK'}" th:href="@{/api/v1/permit/update/sta10/{id}/{invoiceId}(id = ${questionnairesta10?.id}, invoiceId = ${invoice.id})}" class="filter-link "> Edit questionnaire details </a><br>-->
-                                            <!--                            <a th:if="${invoice?.permitId?.permitType?.typeName == 'DMARK'}" th:href="@{/api/v1/permit/update/sta10/{id}/{invoiceId}(id = ${questionnairesta3?.id}, invoiceId = ${invoice.id})}" class="filter-link "> Edit questionnaire details </a><br>-->
-                                            <!--                            <a class="filter-link " th:href="@{/generated/invoice/pay/{id}/{permitId}(id = ${invoice.id}, permitId = ${invoice.permitId.id},appId=${appId})}"><i class="fas fa-shopping-cart"></i> Pay-->
-                                            <!--                            </a><br>-->
-                                            <!--                            <a class="filter-link " th:href="@{/generated/invoice/pay/{id}/{permitId}(id = ${invoice.id}, permitId = ${invoice.permitId.id},appId=${appId})}"><i class="fas fa-shopping-cart"></i> Pay-->
-                                            <!--                                 </a><br>-->
+                                            <a class="filter-link "
+                                               th:href="@{/api/qa/permit-details(permitID=${invoice.permitId},userID=${invoice.userId})}">Close </a><br>
+                                        </div>
+                                        <div class="button-icon w-embed">
+                                            <svg height="20"
+                                                 viewbox="0 0 20 20"
+                                                 width="20"
+                                                 xmlns="http://www.w3.org/2000/svg"></svg>
+                                            <a class="filter-link "
+                                               th:href="@{/api/qa/permits-list(permitTypeID = ${invoiceType})}">GO TO
+                                                PAYMENT</a><br>
+                                        </div>
+                                        <div class="button-icon w-embed">
+                                            <svg height="20"
+                                                 viewbox="0 0 20 20"
+                                                 width="20"
+                                                 xmlns="http://www.w3.org/2000/svg"></svg>
+                                            <a class="filter-link "
+                                               th:href="@{/api/qa/new-permit(permitTypeID=${permitType.id})}">APPLY
+                                                ANOTHER PERMIT</a><br>
                                         </div>
                                     </div>
                                 </div>

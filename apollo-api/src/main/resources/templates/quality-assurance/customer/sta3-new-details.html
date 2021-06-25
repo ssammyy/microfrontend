@@ -326,9 +326,9 @@
                                 <!--                                </div>-->
                                 <div id="idSubmit">
                                     <div class="form-group">
-                                        <div class="col-md-4 mb-3">
-                                            <button class="btn btn-primary" id="check" type="button">Validate form</button>
-                                        </div>
+                                        <!--                                        <div class="col-md-4 mb-3">-->
+                                        <!--                                            <button class="btn btn-primary" id="check" type="button">Validate form</button>-->
+                                        <!--                                        </div>-->
                                         <div class="col-md-4 mb-3">
                                             <button class="btn btn-primary" disabled id="mySubmit" type="submit">Submit form</button>
                                         </div>
@@ -361,27 +361,73 @@
 </script>
 <script>
     $(document).ready(function(){
-
-        $( "#check" ).click(function() {
+        $("#mySubmit").click(function () {
             let allAreFilled = true;
-            document.getElementById("sta3Form").querySelectorAll("[required]").forEach(function(i) {
+            document.getElementById("myForm").querySelectorAll("[required]").forEach(function (i) {
                 if (!allAreFilled) return;
-                if (!i.value) allAreFilled = false;
+                let inputID = `#${i.id}`
+                if (!i.value) {
+                    $(inputID).addClass('error');
+                    allAreFilled = false;
+                }
+                if (i.value) {
+                    $(inputID).removeClass('error');
+                }
                 if (i.type === "radio") {
                     let radioValueCheck = false;
-                    document.getElementById("sta3Form").querySelectorAll(`[name=${i.name}]`).forEach(function(r) {
+                    document.getElementById("myForm").querySelectorAll(`[name=${i.name}]`).forEach(function (r) {
                         if (r.checked) radioValueCheck = true;
                     })
                     allAreFilled = radioValueCheck;
                 }
+
             })
+
+            if ($('#sectionId').val() == -1) {
+                $('#sectionId').addClass('error');
+                allAreFilled = false;
+                return false;
+            } else {
+                $('#sectionId').removeClass('error');
+                return true;
+            }
+
+            if ($('#permitForeignStatus').val() == -1) {
+                $('#permitForeignStatus').addClass('error');
+                allAreFilled = false;
+                return false;
+            } else {
+                $('#permitForeignStatus').removeClass('error');
+                return true;
+            }
+
             if (!allAreFilled) {
-                alert('Fill all the fields');
-            }else {
-                $(this).attr("disabled", "disabled");
-                $("#mySubmit").removeAttr("disabled");
+                // alert('Fill all the fields');
+            } else {
+                return true;
             }
         });
+
+        // $( "#check" ).click(function() {
+        //     let allAreFilled = true;
+        //     document.getElementById("sta3Form").querySelectorAll("[required]").forEach(function(i) {
+        //         if (!allAreFilled) return;
+        //         if (!i.value) allAreFilled = false;
+        //         if (i.type === "radio") {
+        //             let radioValueCheck = false;
+        //             document.getElementById("sta3Form").querySelectorAll(`[name=${i.name}]`).forEach(function(r) {
+        //                 if (r.checked) radioValueCheck = true;
+        //             })
+        //             allAreFilled = radioValueCheck;
+        //         }
+        //     })
+        //     if (!allAreFilled) {
+        //         alert('Fill all the fields');
+        //     }else {
+        //         $(this).attr("disabled", "disabled");
+        //         $("#mySubmit").removeAttr("disabled");
+        //     }
+        // });
 
     });
 

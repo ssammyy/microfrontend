@@ -173,10 +173,11 @@
                                                     <div id="addParamBtn">
                                                         <input type="hidden" id="batchID1" name="batchID"
                                                                th:value="${InvoiceDetails?.batchID}">
-                                                        <label class="field-label" for="permitID1">Select
+                                                        <label class="field-label" for="select-state">Select
                                                             Permit:</label>
-                                                        <select id="permitID1" name="permitID"
-                                                                class="input-field w-input" th:field="*{permitID}">
+                                                        <select name="permitID"
+                                                                data-placeholder="Select multiple one after another..."
+                                                                id="select-state" th:field="*{permitInvoicesID}">
                                                             <option value="0">Select One...BRAND = KSH AMOUNT/=</option>
                                                             <option th:each="permitInvoice : ${allPermitInvoiceList}"
                                                                     th:text="${permitInvoice.brandName}+ '= KSH ' + ${permitInvoice.totalAmount}"
@@ -302,13 +303,18 @@
 </script>
 <script>
     $(document).ready(function() {
-        var table = $('#example').DataTable( {
+        $('select').selectize({
+            sortField: 'text'
+        });
+
+
+        var table = $('#example').DataTable({
             lengthChange: false,
-            buttons: [ 'copy', 'excel', 'pdf', 'colvis' ]
-        } );
+            buttons: ['copy', 'excel', 'pdf', 'colvis']
+        });
 
         table.buttons().container()
-            .appendTo( '#example_wrapper .col-sm-6:eq(0)' );
+            .appendTo('#example_wrapper .col-sm-6:eq(0)');
     } );
 </script>
 <script>

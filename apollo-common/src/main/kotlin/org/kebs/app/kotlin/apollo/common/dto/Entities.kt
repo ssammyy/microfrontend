@@ -531,19 +531,6 @@ data class UserRequestEntityDto(
     var status: Boolean? = null
 )
 
-data class PermitEntityDto(
-    var id: Long? = null,
-    var firmName: String? = null,
-    var permitRefNumber: String? = null,
-    var productName: String? = null,
-    var tradeMark: String? = null,
-    var awardedPermitNumber: String? = null,
-    var dateOfIssue: Date? = null,
-    var dateOfExpiry: Date? = null,
-    var permitStatus: String? = null,
-    var userId: Long? = null
-)
-
 data class UserRequestListEntityDto(
     var id: Long? = null,
     var requestName: String? = null,

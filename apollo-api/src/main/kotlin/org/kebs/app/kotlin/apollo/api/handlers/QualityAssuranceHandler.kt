@@ -606,6 +606,7 @@ class QualityAssuranceHandler(
         req.attributes()["mpesa"] = CdLaboratoryParametersEntity()
         req.attributes()["paymentMethods"] = paymentMethodsRepository.findAll()
         req.attributes()["appId"] = appId
+        req.attributes().putAll(loadCommonUIComponents(map))
 
         return ok().render(qaInvoiceGenerated, req.attributes())
 
@@ -773,6 +774,7 @@ class QualityAssuranceHandler(
             Pair("fmarkPermit", applicationMapProperties.mapQAPermitTypeIdFmark),
             Pair("dmarkPermit", applicationMapProperties.mapQAPermitTypeIDDmark),
             Pair("smarkPermit", applicationMapProperties.mapQAPermitTypeIdSmark),
+            Pair("invoiceType", applicationMapProperties.mapQAPermitTypeIdInvoices),
             Pair("currentDate", commonDaoServices.getCurrentDate())
         )
     }

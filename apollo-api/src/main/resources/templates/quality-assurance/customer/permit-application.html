@@ -11,8 +11,7 @@
                 <div class="content-wrap">
                     <div class="content-row">
                         <div class="row">
-                            <form id="myForm" class="needs-validation" novalidate
-                                  th:action="@{/api/qa/apply/new-permit(permitTypeID = ${permitType.id})}"
+                            <form id="myForm" th:action="@{/api/qa/apply/new-permit(permitTypeID = ${permitType.id})}"
                                   method="post">
                                 <div th:object="${permit}">
                                     <div class="form-row">
@@ -34,7 +33,7 @@
                                             <!--                                    </div>-->
                                         </div>
                                         <div class="col-md-4 mb-3">
-                                            <label for="commodityDescription" class="field-label">COMMODITY
+                                            <label for="commodityDescription" class="field-label">* COMMODITY
                                                 DESCRIPTION</label>
                                             <input type="text" class="form-control" id="commodityDescription"
                                                    th:field="*{commodityDescription}" required="required">
@@ -43,7 +42,7 @@
                                             <!--                                    </div>-->
                                         </div>
                                         <div class="col-md-4 mb-3">
-                                            <label for="tradeMark" class="field-label">TRADE MARK</label>
+                                            <label for="tradeMark" class="field-label">* TRADE MARK</label>
                                             <input type="text" class="form-control" id="tradeMark"
                                                    th:field="*{tradeMark}" required="required">
                                             <!--                                    <div class="valid-feedback">-->
@@ -76,10 +75,10 @@
                                                    th:value="${session.currentUser.firstName}+ ' ' +${session.currentUser.lastName}">
                                         </div>
                                         <div class="col-md-4 mb-3">
-                                            <label for="sectionId" class="field-label">Select Section</label>
+                                            <label for="sectionId" class="field-label">* Select Section</label>
                                             <select reqiured="required" id="sectionId" name="sectionId"
                                                     th:field="*{sectionId}" class="form-control">
-                                                <option value="">Select one...</option>
+                                                <option value="-1">Select one...</option>
                                                 <option th:each="section : ${sections}" th:text="${section.section}"
                                                         th:value="${section.id}"></option>
                                                 -->
@@ -93,12 +92,12 @@
                                         <!--                                        </select>-->
                                         <!--                                    </div>-->
                                         <div th:if="${permitType?.localForeignStatus == 1}" class="col-md-4 mb-3">
-                                            <label for="permitForeignStatus" class="field-label">APPLICATION
+                                            <label for="permitForeignStatus" class="field-label">*APPLICATION
                                                 TYPE</label>
                                             <select class="form-control" id="permitForeignStatus"
                                                     name="permitForeignStatus"
                                                     required="required" th:field="*{permitForeignStatus}">
-                                                <option th:text="'Select one.....'" th:value="'NULL'"></option>
+                                                <option th:text="'Select one.....'" th:value="-1"></option>
                                                 <option th:text="'DOMESTIC'" th:value="0"></option>
                                                 <option th:text="'FOREGIN'" th:value="1"></option>
 
@@ -114,12 +113,12 @@
 
                                     <div>
                                         <div class="form-group">
+                                            <!--                                            <div class="col-md-4 mb-3">-->
+                                            <!--                                                <button class="btn btn-primary" id="check" type="button">Validate form-->
+                                            <!--                                                </button>-->
+                                            <!--                                            </div>-->
                                             <div class="col-md-4 mb-3">
-                                                <button class="btn btn-primary" id="check" type="button">Validate form
-                                                </button>
-                                            </div>
-                                            <div class="col-md-4 mb-3">
-                                                <button class="btn btn-primary" disabled id="mySubmit" type="submit">
+                                                <button class="btn btn-primary" id="mySubmit" type="submit">
                                                     Submit form
                                                 </button>
                                             </div>
@@ -149,24 +148,50 @@
 <script>
     $(document).ready(function () {
 
-        $( "#check" ).click(function() {
+        $("#mySubmit").click(function () {
             let allAreFilled = true;
-            document.getElementById("myForm").querySelectorAll("[required]").forEach(function(i) {
+            document.getElementById("myForm").querySelectorAll("[required]").forEach(function (i) {
                 if (!allAreFilled) return;
-                if (!i.value) allAreFilled = false;
+                let inputID = `#${i.id}`
+                if (!i.value) {
+                    $(inputID).addClass('error');
+                    allAreFilled = false;
+                }
+                if (i.value) {
+                    $(inputID).removeClass('error');
+                }
                 if (i.type === "radio") {
                     let radioValueCheck = false;
-                    document.getElementById("myForm").querySelectorAll(`[name=${i.name}]`).forEach(function(r) {
+                    document.getElementById("myForm").querySelectorAll(`[name=${i.name}]`).forEach(function (r) {
                         if (r.checked) radioValueCheck = true;
                     })
                     allAreFilled = radioValueCheck;
                 }
+
             })
+
+            if ($('#sectionId').val() == -1) {
+                $('#sectionId').addClass('error');
+                allAreFilled = false;
+                return false;
+            } else {
+                $('#sectionId').removeClass('error');
+                return true;
+            }
+
+            if ($('#permitForeignStatus').val() == -1) {
+                $('#permitForeignStatus').addClass('error');
+                allAreFilled = false;
+                return false;
+            } else {
+                $('#permitForeignStatus').removeClass('error');
+                return true;
+            }
+
             if (!allAreFilled) {
-                alert('Fill all the fields');
-            }else {
-                $(this).attr("disabled", "disabled");
-                $("#mySubmit").removeAttr("disabled");
+                // alert('Fill all the fields');
+            } else {
+                return true;
             }
         });
 

@@ -31,18 +31,26 @@
                                                          th:text="${permit?.permitRefNumber}"></div>
                                                 </li>
                                                 <li class="list-item-accordion">
-                                                    <div class="list-title-accordion">Name of firm </div>
-                                                    <div class="list-text-accordion" th:text="${permit?.firmName}"></div>
+                                                    <div class="list-title-accordion">Name of firm</div>
+                                                    <div class="list-text-accordion"
+                                                         th:text="${permit?.firmName}"></div>
+                                                </li>
+                                                <li class="list-item-accordion">
+                                                    <div class="list-title-accordion">Firm type</div>
+                                                    <div class="list-text-accordion"
+                                                         th:text="${permit?.firmTypeName}"></div>
                                                 </li>
 
                                                 <li class="list-item-accordion">
-                                                    <div class="list-title-accordion">Postal address </div>
-                                                    <div class="list-text-accordion" th:text="${permit?.postalAddress}"></div>
+                                                    <div class="list-title-accordion">Postal address</div>
+                                                    <div class="list-text-accordion"
+                                                         th:text="${permit?.postalAddress}"></div>
                                                 </li>
 
                                                 <li class="list-item-accordion">
-                                                    <div class="list-title-accordion">Physical address </div>
-                                                    <div class="list-text-accordion" th:text="${permit?.physicalAddress}"></div>
+                                                    <div class="list-title-accordion">Physical address</div>
+                                                    <div class="list-text-accordion"
+                                                         th:text="${permit?.physicalAddress}"></div>
                                                 </li>
 
                                                 <li class="list-item-accordion">
@@ -591,7 +599,7 @@
                                                style="color: white" onclick="popUpFunction('addStandardsDetails');"
                                                class="filter-link">UPDATE STANDARDS DETAILS</a>
 
-                                            <a th:if="${permitDetails?.factoryInspectionReportApprovedRejectedStatus == 1  and permitDetails?.bsNumber == null}"
+                                            <a th:if="${permitDetails?.inspectionReportGenerated == 1  and permitDetails?.bsNumber == null}"
                                                style="color: white" onclick="popUpSSFFunction('addSSFDetails');"
                                                class="filter-link">ADD SSF & BS NUMBER</a>
 
@@ -742,7 +750,7 @@
                                                style="color: white" onclick="popUpFunction('scheduleInspectionDate');"
                                                class="filter-link">SCHEDULE INSPECTION</a>
 
-                                            <a th:if="${ permitDetails?.factoryInspectionReportApprovedRejectedStatus == 1 and permitDetails?.generateSchemeStatus == null and permitType?.schemeGenerate == 1}"
+                                            <a th:if="${ permitDetails?.inspectionReportGenerated == 1 and permitDetails?.generateSchemeStatus == null and permitType?.schemeGenerate == 1}"
                                                style="color: white" onclick="popUpUploadFunction('uploadSSC');"
                                                class="filter-link">UPLOAD SCHEME OF SUPERVISION AND CONTROL</a>
 
@@ -1277,7 +1285,8 @@
                                                        th:value="'Standards Details Added Succesful'">
                                                 <label for="sectionId" class="field-label">Select applicable
                                                     Standard</label>
-                                                <select reqiured="required" id="productStandard" name="productStandard"
+                                                <select reqiured="required" id="select-state" name="productStandard"
+                                                        data-placeholder="Begin typing a name to filter..."
                                                         th:field="*{productStandard}" class="form-control">
                                                     <option value="">Select one...</option>
                                                     <option th:each="standard : ${standardsList}"
@@ -1889,6 +1898,13 @@
         //     document.getElementById("upload-1").value = "submit";
         //     $('.uploadForm #uploadModal').modal();
         // });
+        // $(".chosen-select").chosen({
+        //     no_results_text: "Oops, nothing found!"
+        // });
+
+        $('select').selectize({
+            sortField: 'text'
+        });
 
         $('.filter-block .uploadAssessmentReportBtn').on('click', function (event) {
             document.getElementById('uploadSpan-2').innerHTML = 'Upload factory assessment report'
@@ -1969,8 +1985,44 @@
     }
 
     function popUpFunction(eventAction) {
-        let arrHead = ['agreeTOSSC', 'addStandardsDetails', 'updateSection', 'permitResubmitApplicationForReview', 'permitResubmitApplication', 'attachePlant', 'permitCompleteness', 'assignOfficer', 'scheduleInspectionDate', 'assignAssessor', 'scheduleAssessmentDate', 'approveInspectionReport', 'complianceStatus', 'addRecommendation', 'approveRecommendation', 'pscMemberApproval', 'pcmApproval', 'dmarkApplicationApproval', 'hodApprovalAssessmentReport', 'permitStopProductionDetails', 'permitEditApplication'];
-        let arrHeadSave = ['AGREE/CONSENT TO SSC', 'Add Standard details', 'Update Section', 'Resubmit Permit Your Application for Review', 'Resubmit Permit Application', 'Attach a Plant for manufacturing the product', 'Is The Permit Complete', 'Select An officer', ' Set The Date of Inspection', 'Select An Assessor', 'Schedule Factory Assessment Date', 'Approve Or Reject the Factory Inspection Report', 'Select a suitable Compliance Status for the Lab Report', 'Add Recommendation', 'Approve / Reject Recommendation', 'Approve / Reject Awarding of Permit', 'Approve / Reject Awarding of Permit', 'Grant/Defer Application', 'Approve / Reject Permit Review', 'Stop Production', 'Edit Permit Application'];
+        let arrHead = ['agreeTOSSC',
+            'addStandardsDetails',
+            'updateSection',
+            'permitResubmitApplicationForReview',
+            'permitResubmitApplication',
+            'attachePlant',
+            'permitCompleteness',
+            'assignOfficer',
+            'scheduleInspectionDate',
+            'assignAssessor',
+            'scheduleAssessmentDate',
+            'approveInspectionReport',
+            'complianceStatus',
+            'addRecommendation',
+            'approveRecommendation',
+            'pscMemberApproval',
+            'pcmApproval',
+            'dmarkApplicationApproval',
+            'hodApprovalAssessmentReport', 'permitEditApplication'];
+        let arrHeadSave = ['AGREE/CONSENT TO SSC',
+            'Add Standard details',
+            'Update Section',
+            'Resubmit Permit Your Application for Review',
+            'Resubmit Permit Application',
+            'Attach a Plant for manufacturing the product',
+            'Is The Permit Complete',
+            'Select An officer',
+            ' Set The Date of Inspection',
+            'Select An Assessor',
+            'Schedule Factory Assessment Date',
+            'Approve Or Reject the Factory Inspection Report',
+            'Select a suitable Compliance Status for the Lab Report',
+            'Add Recommendation',
+            'Approve / Reject Recommendation',
+            'Approve / Reject Awarding of Permit',
+            'Approve / Reject Awarding of Permit',
+            'Grant/Defer Application',
+            'Approve / Reject Permit Review', 'Edit Permit Application'];
 
         for (let h = 0; h < arrHead.length; h++) {
             if (eventAction !== arrHead[h]) {

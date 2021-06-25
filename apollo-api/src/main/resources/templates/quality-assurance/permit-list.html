@@ -31,11 +31,14 @@
                                     <tr>
                                         <th>Permit Ref No</th>
                                         <th>Firm Name</th>
+                                        <th>Application Date</th>
                                         <th>Product</th>
                                         <th>Brand Name</th>
                                         <th>Permit Number</th>
                                         <th>Issue Date</th>
                                         <th>Expiry Date</th>
+                                        <th>Section</th>
+                                        <th>Region</th>
                                         <th>Status</th>
                                         <th>View Details</th>
                                     </tr>
@@ -44,11 +47,14 @@
                                     <tr class="list" th:each="permit: ${permitList}" style="cursor: pointer">
                                         <td th:text="${permit?.permitRefNumber}"></td>
                                         <td th:text="${permit?.firmName}"></td>
+                                        <td th:text="${#dates.format(permit?.createdOn, 'dd/MM/yyyy')}"></td>
                                         <td th:text="${permit?.productName}"></td>
                                         <td th:text="${permit?.tradeMark}"></td>
                                         <td th:text="${permit?.awardedPermitNumber}"></td>
                                         <td th:text="${#dates.format(permit?.dateOfIssue, 'dd/MM/yyyy')}"></td>
                                         <td th:text="${#dates.format(permit?.dateOfExpiry, 'dd/MM/yyyy')}"></td>
+                                        <td th:text="${permit?.sectionValue}"></td>
+                                        <td th:text="${permit?.region}"></td>
                                         <td style="color: #0082f3" th:text="${permit?.permitStatus}"></td>
 
                                         <td><a class="filter-link"
