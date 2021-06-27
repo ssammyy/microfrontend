@@ -15,8 +15,49 @@
                                 th:text="${permitType?.mark}"></span> Permit</u></h5>
                         <div class="content-block">
                             <div class="content-block-parent" style="flex: 0 75%">
-                                <button class="accordion">Permit Details</button>
-                                <div class="panel">
+                                <p>Click on the buttons inside the tabbed menu:</p>
+                                <div class="tab">
+                                    <button class="tablinks" onclick="openTabsDetails(event, 'permitDetailsOpen')">
+                                        Permit Details
+                                    </button>
+                                    <button class="tablinks" onclick="openTabsDetails(event, 'plantDetailsOpen')">Plant
+                                        Attached Details
+                                    </button>
+                                    <button class="tablinks" onclick="openTabsDetails(event, 'remarksDetailsOpen')">
+                                        Remarks Details
+                                    </button>
+                                    <button class="tablinks"
+                                            onclick="openTabsDetails(event, 'recommendationDetailsOpen')">Recommendation
+                                        Details
+                                    </button>
+                                    <button class="tablinks" onclick="openTabsDetails(event, 'documentsDetailsOpen')">
+                                        Documents Attached Details
+                                    </button>
+
+                                    <div th:if="${permitType?.id == dmarkPermit}">
+                                        <button class="tablinks" onclick="openTabsDetails(event, 'cocDetailsOpen')">COC
+                                            Attached Details
+                                        </button>
+                                    </div>
+
+
+                                    <div sec:authorize="hasAuthority('QA_OFFICER_MODIFY')">
+                                        <button class="tablinks" onclick="openTabsDetails(event, 'sscDetailsOpen')">
+                                            Scheme of Supervision Details
+                                        </button>
+                                    </div>
+                                    >
+                                    <button class="tablinks" onclick="openTabsDetails(event, 'requestDetailsOpen')">
+                                        Requests Details
+                                    </button>
+                                    <button class="tablinks" onclick="openTabsDetails(event, 'otherDetailsOpen')">Other
+                                        Version Details
+                                    </button>
+
+                                </div>
+
+
+                                <div id="permitDetailsOpen" class="tabcontent">
                                     <div class="applicant_details_container">
                                         <div class="detail-list application_details">
                                             <ul class="w-list-unstyled">
@@ -161,8 +202,8 @@
                                     </div>
                                 </div>
 
-                                <button class="accordion">Plant Attached Details</button>
-                                <div class="panel">
+
+                                <div id="plantDetailsOpen" class="tabcontent">
                                     <ul class="w-list-unstyled">
                                         <li class="list-item-accordion">
                                             <div class="list-title-accordion">REGION</div>
@@ -214,8 +255,8 @@
                                     </ul>
                                 </div>
 
-                                <button class="accordion">Remarks Details</button>
-                                <div class="panel">
+
+                                <div id="remarksDetailsOpen" class="tabcontent">
                                     <ul class="w-list-unstyled">
                                         <li th:if="${permitDetails?.hofQamCompletenessStatus != null}"
                                             class="list-item-accordion">
@@ -263,8 +304,8 @@
                                     </ul>
                                 </div>
 
-                                <button class="accordion">Recommendation Details</button>
-                                <div class="panel">
+
+                                <div id="recommendationDetailsOpen" class="tabcontent">
                                     <ul class="w-list-unstyled">
                                         <li class="list-item-accordion">
                                             <p><span th:text="${permit?.recommendationRemarks}"></span></p>
@@ -272,8 +313,7 @@
                                     </ul>
                                 </div>
 
-                                <button class="accordion">Documents Attached Details</button>
-                                <div class="panel">
+                                <div id="documentsDetailsOpen" class="tabcontent">
                                     <div class="row-table ">
                                         <table class="table table-striped">
                                             <thead>
@@ -302,8 +342,7 @@
                                 </div>
 
                                 <div th:if="${permitType?.id == dmarkPermit}">
-                                    <button class="accordion">COC Attached Details</button>
-                                    <div class="panel">
+                                    <div id="cocDetailsOpen" class="tabcontent">
                                         <div th:if="${permitDetails?.cocId != null and permitDetails?.sendForPcmReview == null}"
                                              id="idButtons">
                                             <div class="form-row">
@@ -347,8 +386,8 @@
 
 
                                 <div sec:authorize="hasAuthority('QA_OFFICER_MODIFY')">
-                                    <button class="accordion">Scheme of Supervision Details</button>
-                                    <div class="panel">
+
+                                    <div id="sscDetailsOpen" class="tabcontent">
                                         <div class="row-table ">
                                             <table class="table table-striped">
                                                 <thead>
@@ -380,8 +419,7 @@
                                 </div>
 
 
-                                <button class="accordion">Requests Details</button>
-                                <div class="panel">
+                                <div id="requestDetailsOpen" class="tabcontent">
                                     <div class="row-table ">
                                         <table class="table table-striped">
                                             <thead>
@@ -418,8 +456,7 @@
                                     </div>
                                 </div>
 
-                                <button class="accordion">Other Version Details</button>
-                                <div class="panel">
+                                <div id="otherDetailsOpen" class="tabcontent">
                                     <div class="row-table ">
                                         <table class="table table-striped table-bordered" id="oldVersions"
                                                style="width:100%">
@@ -624,13 +661,13 @@
 
                                             <!--                                        <a th:if="${permitType?.smeDeclarationForm == 1 and permitDetails?.smeFormFilledStatus == null}"  th:href="@{/api/qa/new-sme-declaration(permitID=${permitDetails?.id})}" class="filter-link" style="color: white">Fill SME DECLARATION</a>-->
 
-                                            < <a
-                                                th:if="${permitDetails?.generateSchemeStatus == 1 and permitDetails?.approvedRejectedScheme == null and permitType?.schemeGenerate == 1}"
-                                                onclick="popUpFunction('agreeTOSSC');"
-                                                style="color: white" class="filter-link">AGREE/CONSENT TO SCHEME OF
-                                            SUPERVISION AND CONTROL</a>
+                                            <a
+                                                    th:if="${permitDetails?.generateSchemeStatus == 1 and permitDetails?.approvedRejectedScheme == null and permitType?.schemeGenerate == 1}"
+                                                    onclick="popUpFunction('agreeTOSSC');"
+                                                    style="color: white" class="filter-link">AGREE/CONSENT TO SCHEME OF
+                                                SUPERVISION AND CONTROL</a>
 
-                                            <div th:if="${permitDetails?.attachedPlantId != null}">permitEditApplication
+                                            <div th:if="${permitDetails?.attachedPlantId != null}">
                                                 <a th:if="${permitDetails?.sendApplication != 1}"
                                                    onclick="popUpUploadFunction('permitEditApplication');"
                                                    class="filter-link" style="color: white">EDIT APPLICATION</a>
@@ -1890,6 +1927,21 @@
         table.buttons().container()
             .appendTo('#example_wrapper .col-sm-6:eq(0)');
     });
+</script>
+<script>
+    function openTabsDetails(evt, cityName) {
+        var i, tabcontent, tablinks;
+        tabcontent = document.getElementsByClassName("tabcontent");
+        for (i = 0; i < tabcontent.length; i++) {
+            tabcontent[i].style.display = "none";
+        }
+        tablinks = document.getElementsByClassName("tablinks");
+        for (i = 0; i < tablinks.length; i++) {
+            tablinks[i].className = tablinks[i].className.replace(" active", "");
+        }
+        document.getElementById(cityName).style.display = "block";
+        evt.currentTarget.className += " active";
+    }
 </script>
 <script>
     $(document).ready(function () {

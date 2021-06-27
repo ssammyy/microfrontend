@@ -72,6 +72,33 @@ class ApplicationMapProperties {
     @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.type.dmark.id}")
     val mapQAPermitTypeIDDmark: Long = 0L
 
+    @Value("\${org.kebs.app.kotlin.apollo.user.task.name.ID.for.MANUFACTURE}")
+    val mapUserTaskNameMANUFACTURE: Long = 0L
+
+    @Value("\${org.kebs.app.kotlin.apollo.user.task.name.ID.for.QAO}")
+    val mapUserTaskNameQAO: Long = 0L
+
+    @Value("\${org.kebs.app.kotlin.apollo.user.task.name.ID.for.QAM}")
+    val mapUserTaskNameQAM: Long = 0L
+
+    @Value("\${org.kebs.app.kotlin.apollo.user.task.name.ID.for.HOD}")
+    val mapUserTaskNameHOD: Long = 0L
+
+    @Value("\${org.kebs.app.kotlin.apollo.user.task.name.ID.for.HOF}")
+    val mapUserTaskNameHOF: Long = 0L
+
+    @Value("\${org.kebs.app.kotlin.apollo.user.task.name.ID.for.PCM}")
+    val mapUserTaskNamePCM: Long = 0L
+
+    @Value("\${org.kebs.app.kotlin.apollo.user.task.name.ID.for.ASSESSORS}")
+    val mapUserTaskNameASSESSORS: Long = 0L
+
+    @Value("\${org.kebs.app.kotlin.apollo.user.task.name.ID.for.PSC}")
+    val mapUserTaskNamePSC: Long = 0L
+
+    @Value("\${org.kebs.app.kotlin.apollo.user.task.name.ID.for.PAC_SECRETARY}")
+    val mapUserTaskNamePACSECRETARY: Long = 0L
+
     @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.department.id.for.users}")
     val mapQADepertmentId: Long = 0L
 

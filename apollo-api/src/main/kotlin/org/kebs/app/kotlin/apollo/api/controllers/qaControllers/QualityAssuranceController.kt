@@ -295,6 +295,7 @@ class QualityAssuranceController(
                         )
                     }
                     map.inactiveStatus -> {
+                        permitDetails.userTaskId = applicationMapProperties.mapUserTaskNameMANUFACTURE
                         qaDaoServices.permitInsertStatus(
                             permitDetails,
                             applicationMapProperties.mapQaStatusIncompleteAppl,
@@ -305,6 +306,7 @@ class QualityAssuranceController(
             }
             //Permit assigned officer
             permit.assignOfficerStatus != null -> {
+                permitDetails.userTaskId = applicationMapProperties.mapUserTaskNameQAO
                 when (permitDetails.permitType) {
                     applicationMapProperties.mapQAPermitTypeIdSmark -> {
                         qaDaoServices.permitInsertStatus(
@@ -364,6 +366,7 @@ class QualityAssuranceController(
                 //Send notification to assessor
                 val assessor = permitDetails.assessorId?.let { commonDaoServices.findUserByID(it) }
                 assessor?.email?.let { qaDaoServices.sendAppointAssessorNotificationEmail(it, permitDetails) }
+                permitDetails.userTaskId = applicationMapProperties.mapUserTaskNameASSESSORS
                 qaDaoServices.permitInsertStatus(
                     permitDetails,
                     applicationMapProperties.mapQaStatusPFactoryVisitSchedule,
@@ -439,6 +442,7 @@ class QualityAssuranceController(
                             hodApproveAssessmentStatus = map.activeStatus
                             hodApproveAssessmentRemarks = permit.hodApproveAssessmentRemarks
                             pacSecId = appointedPacSec?.userId?.id
+                            userTaskId = applicationMapProperties.mapUserTaskNamePACSECRETARY
                         }
                         qaDaoServices.permitUpdateDetails(permitDetails, map, loggedInUser)
 
@@ -462,6 +466,7 @@ class QualityAssuranceController(
             }
             permit.recommendationRemarks != null -> {
                 //Send manufacturers notification
+//                permitDetails.userTaskId = applicationMapProperties.mapUserTaskNameHOF
                 qaDaoServices.permitInsertStatus(
                     permitDetails,
                     applicationMapProperties.mapQaStatusPRecommendationApproval,

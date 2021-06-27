@@ -176,6 +176,33 @@ class QADaoServices(
             ?: throw ExpectedDataNotFound("No Permit Found for the following user with USERNAME = ${user.userName}")
     }
 
+    fun findAllUserPermitWithPermitTypeAwardedStatusIsNull(
+        user: UsersEntity,
+        permitType: Long
+    ): List<PermitApplicationsEntity> {
+        val userId = user.id ?: throw ExpectedDataNotFound("No USER ID Found")
+        permitRepo.findByUserIdAndPermitTypeAndOldPermitStatusIsNullAndPermitAwardStatusIsNotNull(userId, permitType)
+            ?.let { permitList ->
+                return permitList
+            }
+
+            ?: throw ExpectedDataNotFound("No Permit Found for the following user with USERNAME = ${user.userName}")
+    }
+
+    fun findAllUserPermitWithPermitTypeAwardedStatusIsNullAndTaskID(
+        user: UsersEntity,
+        permitType: Long,
+        taskID: Long
+    ): List<PermitApplicationsEntity> {
+        val userId = user.id ?: throw ExpectedDataNotFound("No USER ID Found")
+        permitRepo.findByUserIdAndPermitTypeAndOldPermitStatusIsNullAndUserTaskId(userId, permitType, taskID)
+            ?.let { permitList ->
+                return permitList
+            }
+
+            ?: throw ExpectedDataNotFound("No Permit Found for the following user with USERNAME = ${user.userName}")
+    }
+
     fun findAllUserPermitWithPermitTypeAwarded(
         user: UsersEntity,
         permitType: Long,
@@ -220,9 +247,63 @@ class QADaoServices(
             ?: throw ExpectedDataNotFound("No Permit Found for the following user with USERNAME = ${user.userName}")
     }
 
+    fun findAllQAMPermitListWithPermitTypeAwardedStatusIsNotNull(
+        user: UsersEntity,
+        permitType: Long
+    ): List<PermitApplicationsEntity> {
+        val userId = user.id ?: throw ExpectedDataNotFound("No USER ID Found")
+        permitRepo.findByQamIdAndPermitTypeAndOldPermitStatusIsNullAndPermitAwardStatusIsNotNull(userId, permitType)
+            ?.let { permitList ->
+                return permitList
+            }
+
+            ?: throw ExpectedDataNotFound("No Permit Found for the following user with USERNAME = ${user.userName}")
+    }
+
+    fun findAllQAMPermitListWithPermitTypeAwardedStatusIsNotNullTaskID(
+        user: UsersEntity,
+        permitType: Long,
+        taskID: Long
+    ): List<PermitApplicationsEntity> {
+        val userId = user.id ?: throw ExpectedDataNotFound("No USER ID Found")
+        permitRepo.findByQamIdAndPermitTypeAndOldPermitStatusIsNullAndUserTaskId(userId, permitType, taskID)
+            ?.let { permitList ->
+                return permitList
+            }
+
+            ?: throw ExpectedDataNotFound("No Permit Found for the following user with USERNAME = ${user.userName}")
+    }
+
     fun findAllHODPermitListWithPermitType(user: UsersEntity, permitType: Long): List<PermitApplicationsEntity> {
         val userId = user.id ?: throw ExpectedDataNotFound("No USER ID Found")
         permitRepo.findByHodIdAndPermitTypeAndOldPermitStatusIsNull(userId, permitType)
+            ?.let { permitList ->
+                return permitList
+            }
+
+            ?: throw ExpectedDataNotFound("No Permit Found for the following user with USERNAME = ${user.userName}")
+    }
+
+    fun findAllHODPermitListWithPermitTypeTaskID(
+        user: UsersEntity,
+        permitType: Long,
+        taskID: Long
+    ): List<PermitApplicationsEntity> {
+        val userId = user.id ?: throw ExpectedDataNotFound("No USER ID Found")
+        permitRepo.findByHodIdAndPermitTypeAndOldPermitStatusIsNullAndUserTaskId(userId, permitType, taskID)
+            ?.let { permitList ->
+                return permitList
+            }
+
+            ?: throw ExpectedDataNotFound("No Permit Found for the following user with USERNAME = ${user.userName}")
+    }
+
+    fun findAllHODPermitListWithPermitTypeAwardedStatusIsNotNull(
+        user: UsersEntity,
+        permitType: Long
+    ): List<PermitApplicationsEntity> {
+        val userId = user.id ?: throw ExpectedDataNotFound("No USER ID Found")
+        permitRepo.findByHodIdAndPermitTypeAndOldPermitStatusIsNullAndPermitAwardStatusIsNotNull(userId, permitType)
             ?.let { permitList ->
                 return permitList
             }
@@ -248,9 +329,64 @@ class QADaoServices(
             ?: throw ExpectedDataNotFound("No Permit Found for the following user with USERNAME = ${user.userName}")
     }
 
+    fun findAllQAOPermitListWithPermitTypeTaskID(
+        user: UsersEntity,
+        permitType: Long,
+        taskID: Long
+    ): List<PermitApplicationsEntity> {
+        val userId = user.id ?: throw ExpectedDataNotFound("No USER ID Found")
+        permitRepo.findByQaoIdAndPermitTypeAndOldPermitStatusIsNullAndUserTaskId(userId, permitType, taskID)
+            ?.let { permitList ->
+                return permitList
+            }
+
+            ?: throw ExpectedDataNotFound("No Permit Found for the following user with USERNAME = ${user.userName}")
+    }
+
+    fun findAllQAOPermitListWithPermitTypeAwardedStatusIsNotNull(
+        user: UsersEntity,
+        permitType: Long
+    ): List<PermitApplicationsEntity> {
+        val userId = user.id ?: throw ExpectedDataNotFound("No USER ID Found")
+        permitRepo.findByQaoIdAndPermitTypeAndOldPermitStatusIsNullAndPermitAwardStatusIsNotNull(userId, permitType)
+            ?.let { permitList ->
+                return permitList
+            }
+
+            ?: throw ExpectedDataNotFound("No Permit Found for the following user with USERNAME = ${user.userName}")
+    }
+
     fun findAllAssessorPermitListWithPermitType(user: UsersEntity, permitType: Long): List<PermitApplicationsEntity> {
         val userId = user.id ?: throw ExpectedDataNotFound("No USER ID Found")
         permitRepo.findByAssessorIdAndPermitTypeAndOldPermitStatusIsNull(userId, permitType)
+            ?.let { permitList ->
+                return permitList
+            }
+            ?: throw ExpectedDataNotFound("No Permit Found for the following user with USERNAME = ${user.userName}")
+    }
+
+    fun findAllAssessorPermitListWithPermitTypeTaskID(
+        user: UsersEntity,
+        permitType: Long,
+        taskID: Long
+    ): List<PermitApplicationsEntity> {
+        val userId = user.id ?: throw ExpectedDataNotFound("No USER ID Found")
+        permitRepo.findByAssessorIdAndPermitTypeAndOldPermitStatusIsNullAndUserTaskId(userId, permitType, taskID)
+            ?.let { permitList ->
+                return permitList
+            }
+            ?: throw ExpectedDataNotFound("No Permit Found for the following user with USERNAME = ${user.userName}")
+    }
+
+    fun findAllAssessorPermitListWithPermitTypeAwardedStatusIsNotNull(
+        user: UsersEntity,
+        permitType: Long
+    ): List<PermitApplicationsEntity> {
+        val userId = user.id ?: throw ExpectedDataNotFound("No USER ID Found")
+        permitRepo.findByAssessorIdAndPermitTypeAndOldPermitStatusIsNullAndPermitAwardStatusIsNotNull(
+            userId,
+            permitType
+        )
             ?.let { permitList ->
                 return permitList
             }
@@ -266,6 +402,44 @@ class QADaoServices(
             ?: throw ExpectedDataNotFound("No Permit Found for the following user with USERNAME = ${user.userName}")
     }
 
+    fun findAllPacSecPermitListWithPermitTypeTaskID(
+        user: UsersEntity,
+        permitType: Long,
+        taskID: Long
+    ): List<PermitApplicationsEntity> {
+        val userId = user.id ?: throw ExpectedDataNotFound("No USER ID Found")
+        permitRepo.findByPacSecIdAndPermitTypeAndOldPermitStatusIsNullAndUserTaskId(userId, permitType, taskID)
+            ?.let { permitList ->
+                return permitList
+            }
+            ?: throw ExpectedDataNotFound("No Permit Found for the following user with USERNAME = ${user.userName}")
+    }
+
+    fun findAllPacSecPermitListWithPermitTypeAwardedStatusIsNotNull(
+        user: UsersEntity,
+        permitType: Long
+    ): List<PermitApplicationsEntity> {
+        val userId = user.id ?: throw ExpectedDataNotFound("No USER ID Found")
+        permitRepo.findByPacSecIdAndPermitTypeAndOldPermitStatusIsNullAndPermitAwardStatusIsNotNull(userId, permitType)
+            ?.let { permitList ->
+                return permitList
+            }
+            ?: throw ExpectedDataNotFound("No Permit Found for the following user with USERNAME = ${user.userName}")
+    }
+
+    fun findAllPCMPermitListWithPermitTypeTaskID(
+        user: UsersEntity,
+        permitType: Long,
+        taskID: Long
+    ): List<PermitApplicationsEntity> {
+        val userId = user.id ?: throw ExpectedDataNotFound("No USER ID Found")
+        permitRepo.findByPcmIdAndPermitTypeAndOldPermitStatusIsNullAndUserTaskId(userId, permitType, taskID)
+            ?.let { permitList ->
+                return permitList
+            }
+            ?: throw ExpectedDataNotFound("No Permit Found for the following user with USERNAME = ${user.userName}")
+    }
+
     fun findAllPCMPermitListWithPermitType(user: UsersEntity, permitType: Long): List<PermitApplicationsEntity> {
         val userId = user.id ?: throw ExpectedDataNotFound("No USER ID Found")
         permitRepo.findByPcmIdAndPermitTypeAndOldPermitStatusIsNull(userId, permitType)
@@ -275,9 +449,49 @@ class QADaoServices(
             ?: throw ExpectedDataNotFound("No Permit Found for the following user with USERNAME = ${user.userName}")
     }
 
+    fun findAllPCMPermitListWithPermitTypeAwardedStatusIsNotNull(
+        user: UsersEntity,
+        permitType: Long
+    ): List<PermitApplicationsEntity> {
+        val userId = user.id ?: throw ExpectedDataNotFound("No USER ID Found")
+        permitRepo.findByPcmIdAndPermitTypeAndOldPermitStatusIsNullAndPermitAwardStatusIsNotNull(userId, permitType)
+            ?.let { permitList ->
+                return permitList
+            }
+            ?: throw ExpectedDataNotFound("No Permit Found for the following user with USERNAME = ${user.userName}")
+    }
+
     fun findAllPSCPermitListWithPermitType(user: UsersEntity, permitType: Long): List<PermitApplicationsEntity> {
         val userId = user.id ?: throw ExpectedDataNotFound("No USER ID Found")
         permitRepo.findByPscMemberIdAndPermitTypeAndOldPermitStatusIsNull(userId, permitType)
+            ?.let { permitList ->
+                return permitList
+            }
+            ?: throw ExpectedDataNotFound("No Permit Found for the following user with USERNAME = ${user.userName}")
+    }
+
+    fun findAllPSCPermitListWithPermitTypeTaskID(
+        user: UsersEntity,
+        permitType: Long,
+        taskID: Long
+    ): List<PermitApplicationsEntity> {
+        val userId = user.id ?: throw ExpectedDataNotFound("No USER ID Found")
+        permitRepo.findByPscMemberIdAndPermitTypeAndOldPermitStatusIsNullAndUserTaskId(userId, permitType, taskID)
+            ?.let { permitList ->
+                return permitList
+            }
+            ?: throw ExpectedDataNotFound("No Permit Found for the following user with USERNAME = ${user.userName}")
+    }
+
+    fun findAllPSCPermitListWithPermitTypeAwardedStatusIsNotNull(
+        user: UsersEntity,
+        permitType: Long
+    ): List<PermitApplicationsEntity> {
+        val userId = user.id ?: throw ExpectedDataNotFound("No USER ID Found")
+        permitRepo.findByPscMemberIdAndPermitTypeAndOldPermitStatusIsNullAndPermitAwardStatusIsNotNull(
+            userId,
+            permitType
+        )
             ?.let { permitList ->
                 return permitList
             }
@@ -947,7 +1161,9 @@ class QADaoServices(
                 endOfProductionStatus = map.initStatus
                 status = map.activeStatus
                 fmarkGenerated = map.inactiveStatus
+                attachedPlantId = user.plantId
                 permitStatus = applicationMapProperties.mapQaStatusDraft
+                userTaskId = applicationMapProperties.mapUserTaskNameMANUFACTURE
                 createdBy = commonDaoServices.concatenateName(user)
                 createdOn = commonDaoServices.getTimestamp()
             }
@@ -2375,6 +2591,7 @@ class QADaoServices(
                 faxNo = permit.faxNo
                 plotNo = permit.plotNo
                 designation = permit.designation
+                userTaskId = applicationMapProperties.mapUserTaskNameMANUFACTURE
                 attachedPlantId = permit.attachedPlantId
                 attachedPlantRemarks = permit.attachedPlantRemarks
             }

@@ -155,44 +155,194 @@ class QualityAssuranceHandler(
 
                     req.attributes()["NewBatchInvoiceDto"] = NewBatchInvoiceDto()
 //                    req.attributes()["plantsDetails"] = plantsDetails
-                    req.attributes()["allPermitInvoiceList"] = qaDaoServices.listPermitsInvoices(allUnpaidInvoices, null, map)
-                    req.attributes()["allBatchPermitInvoiceList"] = qaDaoServices.findALlBatchInvoicesWithUserID(loggedInUser.id?:throw Exception("INVALID USER ID"))
+                    req.attributes()["allPermitInvoiceList"] =
+                        qaDaoServices.listPermitsInvoices(allUnpaidInvoices, null, map)
+                    req.attributes()["allBatchPermitInvoiceList"] = qaDaoServices.findALlBatchInvoicesWithUserID(
+                        loggedInUser.id ?: throw Exception("INVALID USER ID")
+                    )
                     return ok().render(qaPermitInvoiceListPage, req.attributes())
 //                    viewPage = qaDaoServices.batchInvoiceList
                 }
             }
 
-            var permitList : List<PermitEntityDto>? = null
+            var permitListAllApplications: List<PermitEntityDto>? = null
+            var permitListMyTasks: List<PermitEntityDto>? = null
+            var permitListAllComplete: List<PermitEntityDto>? = null
             when {
                 auth.authorities.stream().anyMatch { authority -> authority.authority == "PERMIT_APPLICATION" } -> {
-                    permitList = qaDaoServices.listPermits(qaDaoServices.findAllUserPermitWithPermitType(loggedInUser, permitTypeID), map)
+                    permitListAllApplications = qaDaoServices.listPermits(
+                        qaDaoServices.findAllUserPermitWithPermitType(
+                            loggedInUser,
+                            permitTypeID
+                        ), map
+                    )
+                    permitListAllComplete = qaDaoServices.listPermits(
+                        qaDaoServices.findAllUserPermitWithPermitTypeAwardedStatusIsNull(
+                            loggedInUser,
+                            permitTypeID
+                        ), map
+                    )
+                    permitListMyTasks = qaDaoServices.listPermits(
+                        qaDaoServices.findAllUserPermitWithPermitTypeAwardedStatusIsNullAndTaskID(
+                            loggedInUser,
+                            permitTypeID,
+                            applicationMapProperties.mapUserTaskNameMANUFACTURE
+                        ), map
+                    )
                 }
-                auth.authorities.stream().anyMatch { authority -> authority.authority == "QA_MANAGER_ASSESSORS_READ" } -> {
-                    permitList = qaDaoServices.listPermits(qaDaoServices.findAllQAMPermitListWithPermitType(loggedInUser, permitTypeID), map)
+                auth.authorities.stream()
+                    .anyMatch { authority -> authority.authority == "QA_MANAGER_ASSESSORS_READ" } -> {
+                    permitListAllApplications = qaDaoServices.listPermits(
+                        qaDaoServices.findAllQAMPermitListWithPermitType(
+                            loggedInUser,
+                            permitTypeID
+                        ), map
+                    )
+                    permitListAllComplete = qaDaoServices.listPermits(
+                        qaDaoServices.findAllQAMPermitListWithPermitTypeAwardedStatusIsNotNull(
+                            loggedInUser,
+                            permitTypeID
+                        ), map
+                    )
+                    permitListMyTasks = qaDaoServices.listPermits(
+                        qaDaoServices.findAllQAMPermitListWithPermitTypeAwardedStatusIsNotNullTaskID(
+                            loggedInUser,
+                            permitTypeID,
+                            applicationMapProperties.mapUserTaskNameQAM
+                        ), map
+                    )
 
                 }
                 auth.authorities.stream().anyMatch { authority -> authority.authority == "QA_HOD_READ" } -> {
-                    permitList = qaDaoServices.listPermits(qaDaoServices.findAllHODPermitListWithPermitType(loggedInUser, permitTypeID), map)
+                    permitListAllApplications = qaDaoServices.listPermits(
+                        qaDaoServices.findAllHODPermitListWithPermitType(
+                            loggedInUser,
+                            permitTypeID
+                        ), map
+                    )
+                    permitListAllComplete = qaDaoServices.listPermits(
+                        qaDaoServices.findAllHODPermitListWithPermitTypeAwardedStatusIsNotNull(
+                            loggedInUser,
+                            permitTypeID
+                        ), map
+                    )
+                    permitListMyTasks = qaDaoServices.listPermits(
+                        qaDaoServices.findAllHODPermitListWithPermitTypeTaskID(
+                            loggedInUser,
+                            permitTypeID,
+                            applicationMapProperties.mapUserTaskNameHOD
+                        ), map
+                    )
 
                 }
                 auth.authorities.stream().anyMatch { authority -> authority.authority == "QA_OFFICER_READ" } -> {
-                    permitList = qaDaoServices.listPermits(qaDaoServices.findAllQAOPermitListWithPermitType(loggedInUser, permitTypeID), map)
+                    permitListAllApplications = qaDaoServices.listPermits(
+                        qaDaoServices.findAllQAOPermitListWithPermitType(
+                            loggedInUser,
+                            permitTypeID
+                        ), map
+                    )
+                    permitListAllComplete = qaDaoServices.listPermits(
+                        qaDaoServices.findAllQAOPermitListWithPermitTypeAwardedStatusIsNotNull(
+                            loggedInUser,
+                            permitTypeID
+                        ), map
+                    )
+                    permitListMyTasks = qaDaoServices.listPermits(
+                        qaDaoServices.findAllQAOPermitListWithPermitTypeTaskID(
+                            loggedInUser,
+                            permitTypeID,
+                            applicationMapProperties.mapUserTaskNameQAO
+                        ), map
+                    )
 
                 }
                 auth.authorities.stream().anyMatch { authority -> authority.authority == "QA_ASSESSORS_READ" } -> {
-                    permitList = qaDaoServices.listPermits(qaDaoServices.findAllAssessorPermitListWithPermitType(loggedInUser, permitTypeID), map)
+                    permitListAllApplications = qaDaoServices.listPermits(
+                        qaDaoServices.findAllAssessorPermitListWithPermitType(
+                            loggedInUser,
+                            permitTypeID
+                        ), map
+                    )
+                    permitListAllComplete = qaDaoServices.listPermits(
+                        qaDaoServices.findAllAssessorPermitListWithPermitTypeAwardedStatusIsNotNull(
+                            loggedInUser,
+                            permitTypeID
+                        ), map
+                    )
+                    permitListMyTasks = qaDaoServices.listPermits(
+                        qaDaoServices.findAllAssessorPermitListWithPermitTypeTaskID(
+                            loggedInUser,
+                            permitTypeID,
+                            applicationMapProperties.mapUserTaskNameASSESSORS
+                        ), map
+                    )
 
                 }
                 auth.authorities.stream().anyMatch { authority -> authority.authority == "QA_PAC_SECRETARY_READ" } -> {
-                    permitList = qaDaoServices.listPermits(qaDaoServices.findAllPacSecPermitListWithPermitType(loggedInUser, permitTypeID), map)
+                    permitListAllApplications = qaDaoServices.listPermits(
+                        qaDaoServices.findAllPacSecPermitListWithPermitType(
+                            loggedInUser,
+                            permitTypeID
+                        ), map
+                    )
+                    permitListAllComplete = qaDaoServices.listPermits(
+                        qaDaoServices.findAllPacSecPermitListWithPermitTypeAwardedStatusIsNotNull(
+                            loggedInUser,
+                            permitTypeID
+                        ), map
+                    )
+                    permitListMyTasks = qaDaoServices.listPermits(
+                        qaDaoServices.findAllPacSecPermitListWithPermitTypeTaskID(
+                            loggedInUser,
+                            permitTypeID,
+                            applicationMapProperties.mapUserTaskNamePACSECRETARY
+                        ), map
+                    )
 
                 }
                 auth.authorities.stream().anyMatch { authority -> authority.authority == "QA_PCM_READ" } -> {
-                    permitList = qaDaoServices.listPermits(qaDaoServices.findAllPCMPermitListWithPermitType(loggedInUser, permitTypeID), map)
+                    permitListAllApplications = qaDaoServices.listPermits(
+                        qaDaoServices.findAllPCMPermitListWithPermitType(
+                            loggedInUser,
+                            permitTypeID
+                        ), map
+                    )
+                    permitListAllComplete = qaDaoServices.listPermits(
+                        qaDaoServices.findAllPCMPermitListWithPermitTypeAwardedStatusIsNotNull(
+                            loggedInUser,
+                            permitTypeID
+                        ), map
+                    )
+                    permitListMyTasks = qaDaoServices.listPermits(
+                        qaDaoServices.findAllPCMPermitListWithPermitTypeTaskID(
+                            loggedInUser,
+                            permitTypeID,
+                            applicationMapProperties.mapUserTaskNamePCM
+                        ), map
+                    )
 
                 }
                 auth.authorities.stream().anyMatch { authority -> authority.authority == "QA_PSC_MEMBERS_READ" } -> {
-                    permitList = qaDaoServices.listPermits(qaDaoServices.findAllPSCPermitListWithPermitType(loggedInUser, permitTypeID), map)
+                    permitListAllApplications = qaDaoServices.listPermits(
+                        qaDaoServices.findAllPSCPermitListWithPermitType(
+                            loggedInUser,
+                            permitTypeID
+                        ), map
+                    )
+                    permitListAllComplete = qaDaoServices.listPermits(
+                        qaDaoServices.findAllPSCPermitListWithPermitTypeAwardedStatusIsNotNull(
+                            loggedInUser,
+                            permitTypeID
+                        ), map
+                    )
+                    permitListMyTasks = qaDaoServices.listPermits(
+                        qaDaoServices.findAllPSCPermitListWithPermitTypeTaskID(
+                            loggedInUser,
+                            permitTypeID,
+                            applicationMapProperties.mapUserTaskNamePSC
+                        ), map
+                    )
 
                 }
                 else -> {
@@ -201,7 +351,9 @@ class QualityAssuranceHandler(
             }
 
 
-            req.attributes()["permitList"] = permitList
+            req.attributes()["permitListAllApplications"] = permitListAllApplications
+            req.attributes()["permitListAllComplete"] = permitListAllComplete
+            req.attributes()["permitListMyTasks"] = permitListMyTasks
             return ok().render(qaPermitListPage, req.attributes())
 
         } catch (e: Exception) {
