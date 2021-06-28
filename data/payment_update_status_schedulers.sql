@@ -735,7 +735,7 @@ begin
 
 
 --             end loop;
-    return 'successfuly processed ';
+return 'successfuly processed ';
 EXCEPTION
     WHEN NO_DATA_FOUND THEN
         RETURN 'Failed processing';
@@ -744,3 +744,17 @@ EXCEPTION
 
 end;
 /
+
+
+update DAT_KEBS_QA_BATCH_INVOICE ss
+set ss.PAID_STATUS = 10,
+    ss.STATUS      = 1
+where ss.id in (SELECT s.id FROM DAT_KEBS_QA_BATCH_INVOICE s where s.PAID_STATUS in (PAID_STATUS));
+
+select *
+from DAT_KEBS_QA_BATCH_INVOICE ss
+where ss.id in (SELECT s.id FROM DAT_KEBS_QA_BATCH_INVOICE s where s.PAID_STATUS in (0));;
+
+SELECT *
+FROM DAT_KEBS_QA_BATCH_INVOICE s
+where s.PAID_STATUS in (PAID_STATUS_VALUE);

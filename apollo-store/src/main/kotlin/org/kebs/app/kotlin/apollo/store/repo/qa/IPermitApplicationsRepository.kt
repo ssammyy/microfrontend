@@ -13,32 +13,175 @@ import org.springframework.stereotype.Repository
 interface IPermitApplicationsRepository : HazelcastRepository<PermitApplicationsEntity, Long> {
     fun findByUserId(userId: Long): List<PermitApplicationsEntity>?
     fun findByUserIdAndPermitType(userId: Long, permitType: Long): List<PermitApplicationsEntity>?
-    fun findByUserIdAndPermitTypeAndOldPermitStatusIsNull(userId: Long, permitType: Long): List<PermitApplicationsEntity>?
-    fun findByUserIdAndPermitTypeAndOldPermitStatusIsNullAndPermitAwardStatus(userId: Long, permitType: Long, permitAwardStatus: Int): List<PermitApplicationsEntity>?
-    fun findByUserIdAndPermitTypeAndOldPermitStatusIsNullAndPermitAwardStatusAndFmarkGenerated(userId: Long, permitType: Long, permitAwardStatus: Int, fmarkGenerated: Int): List<PermitApplicationsEntity>?
+    fun findByUserIdAndPermitTypeAndOldPermitStatusIsNullAndPermitAwardStatusIsNotNull(
+        userId: Long,
+        permitType: Long
+    ): List<PermitApplicationsEntity>?
+
+    fun findByUserIdAndPermitTypeAndOldPermitStatusIsNull(
+        userId: Long,
+        permitType: Long
+    ): List<PermitApplicationsEntity>?
+
+    fun findByUserIdAndPermitTypeAndOldPermitStatusIsNullAndPermitAwardStatus(
+        userId: Long,
+        permitType: Long,
+        permitAwardStatus: Int
+    ): List<PermitApplicationsEntity>?
+
+    fun findByUserIdAndPermitTypeAndOldPermitStatusIsNullAndUserTaskId(
+        userId: Long,
+        permitType: Long,
+        userTaskId: Long
+    ): List<PermitApplicationsEntity>?
+
+    fun findByUserIdAndPermitTypeAndOldPermitStatusIsNullAndPermitAwardStatusAndFmarkGenerated(
+        userId: Long,
+        permitType: Long,
+        permitAwardStatus: Int,
+        fmarkGenerated: Int
+    ): List<PermitApplicationsEntity>?
+
     fun findByQamIdAndPermitType(userId: Long, permitType: Long): List<PermitApplicationsEntity>?
-    fun findByQamIdAndPermitTypeAndOldPermitStatusIsNull(userId: Long, permitType: Long): List<PermitApplicationsEntity>?
+    fun findByQamIdAndPermitTypeAndOldPermitStatusIsNull(
+        userId: Long,
+        permitType: Long
+    ): List<PermitApplicationsEntity>?
+
+    fun findByQamIdAndPermitTypeAndOldPermitStatusIsNullAndUserTaskId(
+        qamId: Long,
+        permitType: Long,
+        userTaskId: Long
+    ): List<PermitApplicationsEntity>?
+
+    fun findByQamIdAndPermitTypeAndOldPermitStatusIsNullAndPermitAwardStatusIsNotNull(
+        userId: Long,
+        permitType: Long
+    ): List<PermitApplicationsEntity>?
+
     fun findByHodIdAndPermitType(userId: Long, permitType: Long): List<PermitApplicationsEntity>?
-    fun findByHodIdAndPermitTypeAndOldPermitStatusIsNull(userId: Long, permitType: Long): List<PermitApplicationsEntity>?
+    fun findByHodIdAndPermitTypeAndOldPermitStatusIsNull(
+        userId: Long,
+        permitType: Long
+    ): List<PermitApplicationsEntity>?
+
+    fun findByHodIdAndPermitTypeAndOldPermitStatusIsNullAndUserTaskId(
+        hodId: Long,
+        permitType: Long,
+        userTaskId: Long
+    ): List<PermitApplicationsEntity>?
+
+    fun findByHodIdAndPermitTypeAndOldPermitStatusIsNullAndPermitAwardStatusIsNotNull(
+        userId: Long,
+        permitType: Long
+    ): List<PermitApplicationsEntity>?
+
     fun findByQaoIdAndPermitType(userId: Long, permitType: Long): List<PermitApplicationsEntity>?
-    fun findByQaoIdAndPermitTypeAndOldPermitStatusIsNull(userId: Long, permitType: Long): List<PermitApplicationsEntity>?
+    fun findByQaoIdAndPermitTypeAndOldPermitStatusIsNull(
+        userId: Long,
+        permitType: Long
+    ): List<PermitApplicationsEntity>?
+
+    fun findByQaoIdAndPermitTypeAndOldPermitStatusIsNullAndUserTaskId(
+        qaoId: Long,
+        permitType: Long,
+        userTaskId: Long
+    ): List<PermitApplicationsEntity>?
+
+    fun findByQaoIdAndPermitTypeAndOldPermitStatusIsNullAndPermitAwardStatusIsNotNull(
+        userId: Long,
+        permitType: Long
+    ): List<PermitApplicationsEntity>?
+
     fun findByAssessorIdAndPermitType(userId: Long, permitType: Long): List<PermitApplicationsEntity>?
-    fun findByAssessorIdAndPermitTypeAndOldPermitStatusIsNull(userId: Long, permitType: Long): List<PermitApplicationsEntity>?
-    fun findByPacSecIdAndPermitTypeAndOldPermitStatusIsNull(userId: Long, permitType: Long): List<PermitApplicationsEntity>?
-    fun findByUserIdAndPermitTypeAndEndOfProductionStatus(userId: Long, permitType: Long, endOfProductionStatus: Int): List<PermitApplicationsEntity>?
+    fun findByAssessorIdAndPermitTypeAndOldPermitStatusIsNull(
+        userId: Long,
+        permitType: Long
+    ): List<PermitApplicationsEntity>?
+
+    fun findByAssessorIdAndPermitTypeAndOldPermitStatusIsNullAndUserTaskId(
+        assessorId: Long,
+        permitType: Long,
+        userTaskId: Long
+    ): List<PermitApplicationsEntity>?
+
+    fun findByAssessorIdAndPermitTypeAndOldPermitStatusIsNullAndPermitAwardStatusIsNotNull(
+        userId: Long,
+        permitType: Long
+    ): List<PermitApplicationsEntity>?
+
+    fun findByPacSecIdAndPermitTypeAndOldPermitStatusIsNull(
+        userId: Long,
+        permitType: Long
+    ): List<PermitApplicationsEntity>?
+
+    fun findByPacSecIdAndPermitTypeAndOldPermitStatusIsNullAndUserTaskId(
+        pacSecId: Long,
+        permitType: Long,
+        userTaskId: Long
+    ): List<PermitApplicationsEntity>?
+
+    fun findByPacSecIdAndPermitTypeAndOldPermitStatusIsNullAndPermitAwardStatusIsNotNull(
+        userId: Long,
+        permitType: Long
+    ): List<PermitApplicationsEntity>?
+
+    fun findByUserIdAndPermitTypeAndEndOfProductionStatus(
+        userId: Long,
+        permitType: Long,
+        endOfProductionStatus: Int
+    ): List<PermitApplicationsEntity>?
+
     fun findByUserIdAndPermitTypeAndEndOfProductionStatusAndPermitAwardStatus(
         userId: Long,
         permitType: Long,
         endOfProductionStatus: Int,
         permitAwardStatus: Int
     ): List<PermitApplicationsEntity>?
+
     fun findByPermitTypeAndEndOfProductionStatusAndPermitAwardStatusAndAttachedPlantId(
         permitType: Long, endOfProductionStatus: Int, permitAwardStatus: Int, attachedPlantId: Long
     ): List<PermitApplicationsEntity>?
-    fun findByUserIdAndPermitTypeAndEndOfProductionStatusAndOldPermitStatusIsNull(userId: Long, permitType: Long, endOfProductionStatus: Int): List<PermitApplicationsEntity>?
+
+    fun findByUserIdAndPermitTypeAndEndOfProductionStatusAndOldPermitStatusIsNull(
+        userId: Long,
+        permitType: Long,
+        endOfProductionStatus: Int
+    ): List<PermitApplicationsEntity>?
+
     fun findByIdAndUserIdAndPermitType(id: Long, userId: Long, permitType: Long): PermitApplicationsEntity?
-    fun findByPcmIdAndPermitTypeAndOldPermitStatusIsNull(userId: Long, permitType: Long): List<PermitApplicationsEntity>?
-    fun findByPscMemberIdAndPermitTypeAndOldPermitStatusIsNull(userId: Long, permitType: Long): List<PermitApplicationsEntity>?
+    fun findByPcmIdAndPermitTypeAndOldPermitStatusIsNull(
+        userId: Long,
+        permitType: Long
+    ): List<PermitApplicationsEntity>?
+
+    fun findByPcmIdAndPermitTypeAndOldPermitStatusIsNullAndUserTaskId(
+        pcmId: Long,
+        permitType: Long,
+        userTaskId: Long
+    ): List<PermitApplicationsEntity>?
+
+    fun findByPcmIdAndPermitTypeAndOldPermitStatusIsNullAndPermitAwardStatusIsNotNull(
+        userId: Long,
+        permitType: Long
+    ): List<PermitApplicationsEntity>?
+
+    fun findByPscMemberIdAndPermitTypeAndOldPermitStatusIsNull(
+        userId: Long,
+        permitType: Long
+    ): List<PermitApplicationsEntity>?
+
+    fun findByPscMemberIdAndPermitTypeAndOldPermitStatusIsNullAndUserTaskId(
+        pscMemberId: Long,
+        permitType: Long,
+        userTaskId: Long
+    ): List<PermitApplicationsEntity>?
+
+    fun findByPscMemberIdAndPermitTypeAndOldPermitStatusIsNullAndPermitAwardStatusIsNotNull(
+        userId: Long,
+        permitType: Long
+    ): List<PermitApplicationsEntity>?
+
     fun findByIdAndUserId(id: Long, userId: Long): PermitApplicationsEntity?
     fun findByAwardedPermitNumberAndVersionNumber(
         awardedPermitNumber: String,
@@ -46,7 +189,11 @@ interface IPermitApplicationsRepository : HazelcastRepository<PermitApplications
     ): PermitApplicationsEntity?
 
     fun findAllByPaidStatus(paymentStatus: Int): List<PermitApplicationsEntity>?
-    fun findByPermitRefNumberAndOldPermitStatus(permitRefNumber: String, oldPermitStatus: Int): List<PermitApplicationsEntity>?
+    fun findByPermitRefNumberAndOldPermitStatus(
+        permitRefNumber: String,
+        oldPermitStatus: Int
+    ): List<PermitApplicationsEntity>?
+
     fun findTopByPermitRefNumberOrderByIdDesc(permitRefNumber: String): PermitApplicationsEntity?
     fun findByIdAndAttachedPlantId(id: Long, attachedPlantId: Long): PermitApplicationsEntity?
 }
@@ -84,6 +231,7 @@ interface IPermitUpdateDetailsRequestsRepository : HazelcastRepository<PermitUpd
 interface IQaSampleSubmissionRepository : HazelcastRepository<QaSampleSubmissionEntity, Long> {
     fun findByStatusAndId(status: Int, id: Long): QaSampleSubmissionEntity?
     fun findByLabResultsStatus(labResultsStatus: Int): List<QaSampleSubmissionEntity>?
+    fun findByLabResultsStatusAndBsNumber(labResultsStatus: Int, bsNumber: String): QaSampleSubmissionEntity?
     fun findByPermitId(permitId: Long): QaSampleSubmissionEntity?
     fun findByCdItemId(cdItemId: Long): QaSampleSubmissionEntity?
     fun findByBsNumber(bsNumber: String): QaSampleSubmissionEntity?
@@ -178,6 +326,8 @@ interface IQaUploadsRepository : HazelcastRepository<QaUploadsEntity, Long> {
     fun findByPermitIdAndDocumentType(permitId: Long, docType: String): QaUploadsEntity?
     fun findByPermitIdAndCocStatus(permitId: Long, cocStatus: Int): List<QaUploadsEntity>?
     fun findByPermitIdAndSscStatus(permitId: Long, sscStatus: Int): List<QaUploadsEntity>?
+    fun findByPermitIdAndInspectionReportStatus(permitId: Long, inspectionReportStatus: Int): List<QaUploadsEntity>?
+    fun findByPermitIdAndSta10Status(permitId: Long, sta10Status: Int): List<QaUploadsEntity>?
 }
 
 @Repository

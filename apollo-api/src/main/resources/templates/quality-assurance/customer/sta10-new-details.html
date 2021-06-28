@@ -451,6 +451,35 @@
                                 </ul>
                             </div>
 
+                            <button class="accordion">Documents Attached Details</button>
+                            <div class="panel">
+                                <div class="row-table ">
+                                    <table class="table table-striped">
+                                        <thead>
+                                        <tr>
+                                            <th>File Name</th>
+                                            <th>File Type</th>
+                                            <th>Document Description</th>
+                                            <th>Version Number</th>
+                                            <th>View</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr class="list" th:each="fileParam: ${fileParameters}"
+                                            style="cursor: pointer">
+
+                                            <td th:text="${fileParam.name}"></td>
+                                            <td th:text="${fileParam.fileType}"></td>
+                                            <td th:text="${fileParam.documentType}"></td>
+                                            <td th:text="${fileParam.versionNumber}"></td>
+                                            <td><a th:href="@{/api/qa/kebs/view/attached(fileID=${fileParam.id})}"
+                                                   target='_blank' class="btn btn-primary itemViewBtn">view</a></td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
                         </div>
 
                         <div class="filter-block">
@@ -465,7 +494,12 @@
                             </div>
                             <div>
                                 <div sec:authorize="hasAuthority('PERMIT_APPLICATION')">
-                                    <a th:if="${permit?.sta10FilledStatus != 1 and QaSta10Entity?.closedProduction == 1 and QaSta10Entity?.closedRawMaterials == 1 and QaSta10Entity?.closedMachineryPlants == 1 and QaSta10Entity?.closedManufacturingProcesses == 1 }"  th:href="@{/api/qa/new-sta10-submit(permitID=${permit?.id})}" class="filter-link" style="color: white">SUBMIT STA10</a>
+                                    <a class="filter-link" onclick="popUpUploadFunction('uploadAttachments');"
+                                       style="color: white">UPLOAD ATTACHMENTS</a>
+                                    <a th:if="${permit?.sta10FilledStatus != 1 and QaSta10Entity?.closedProduction == 1 and QaSta10Entity?.closedRawMaterials == 1 and QaSta10Entity?.closedMachineryPlants == 1 and QaSta10Entity?.closedManufacturingProcesses == 1 }"
+                                       th:href="@{/api/qa/new-sta10-submit(permitID=${permit?.id})}" class="filter-link"
+                                       style="color: white">SUBMIT STA10</a>
+
                                 </div>
 
                             </div>
@@ -677,10 +711,58 @@
                                                 </div>
                                             </div>
                                             <div class="modal-footer">
-                                                <button class="btn btn-secondary" data-dismiss="modal" onClick="refreshPage()"
+                                                <button class="btn btn-secondary" data-dismiss="modal"
+                                                        onClick="refreshPage()"
                                                         type="button">Close
                                                 </button>
-                                                <input type="submit" id="saveValueMFP" class="btn btn-primary" value="Save"/>
+                                                <input type="submit" id="saveValueMFP" class="btn btn-primary"
+                                                       value="Save"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+
+                        <div class="uploadForm">
+                            <form id="upload-form" enctype="multipart/form-data" name="upload-form"
+                                  th:action="@{/api/qa/kebs/add/new-upload(permitID = ${permit?.id})}" method="post">
+                                <div class="modal fade" id="uploadModal" tabindex="-1" role="dialog"
+                                     aria-labelledby="uploadModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 style="font-weight: bold; " class="modal-title"
+                                                    id="uploadModalLabel"><span id="spanValueUpload">none</span></h5>
+                                                <button type="button" class="close" data-dismiss="modal"
+                                                        aria-label="Close"><span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div class="form-group">
+                                                    <div id="uploadAttachments">
+                                                        <input type="hidden" id="manufactureNonStatus"
+                                                               name="manufactureNonStatus" th:value="${inActiveStatus}">
+                                                        <input type="hidden" id="ordinaryStatus1" name="ordinaryStatus"
+                                                               th:value="${inActiveStatus}">
+                                                        <input type="hidden" id="sta10Status1" name="sta10Status"
+                                                               th:value="${activeStatus}">
+                                                        <label for="docFileName" class="col-form-label">Description Of
+                                                            Attachment(s):</label>
+                                                        <input class="input-field w-input" max="20" id="docFileName"
+                                                               name="docFileName" th:required="required">
+                                                        <label for="doc_file">Upload your Attachments</label>
+                                                        <input type="file" class="form-control" multiple name="doc_file"
+                                                               data-name="doc_file" id="doc_file" required="required">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button class="btn btn-secondary" data-dismiss="modal"
+                                                        onClick="refreshPage()" type="button">Close
+                                                </button>
+                                                <input type="submit" id="upload-1" class="btn btn-primary"
+                                                       value="Save"/>
                                             </div>
                                         </div>
                                     </div>
@@ -855,6 +937,24 @@
         }
 
         $('.manufacturingProcessForm #manufacturingProcessFormModal').modal();
+    }
+
+    function popUpUploadFunction(eventAction) {
+        let arrHead = ['uploadAttachments'];
+        let arrHeadSave = ['Upload document And Give The Name'];
+
+        for (let h = 0; h < arrHead.length; h++) {
+            if (eventAction !== arrHead[h]) {
+                document.getElementById(arrHead[h]).remove();
+            } else {
+                if (eventAction === arrHead[h]) {
+                    document.getElementById('spanValueUpload').innerHTML = arrHeadSave[h];
+                    document.getElementById("upload-1").value = 'Save';
+                }
+            }
+        }
+
+        $('.uploadForm #uploadModal').modal();
     }
 
     function refreshPage() {

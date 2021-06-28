@@ -23,7 +23,6 @@ package org.kebs.app.kotlin.apollo.store.repo
 
 import org.kebs.app.kotlin.apollo.store.model.*
 import org.kebs.app.kotlin.apollo.store.model.qa.ManufacturePlantDetailsEntity
-import org.kebs.app.kotlin.apollo.store.model.qa.QaProcessStatusEntity
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.hazelcast.repository.HazelcastRepository
@@ -117,7 +116,10 @@ interface IBrsLookupManufacturerDataRepository : HazelcastRepository<BrsLookupMa
 
 @Repository
 interface IBrsLookupManufacturerPartnersRepository : HazelcastRepository<BrsLookupManufacturerPartnersEntity, Long> {
-    fun findBrsLookupManufacturerPartnersEntitiesByManufacturerIdAndStatus(manufacturerId: BrsLookupManufacturerDataEntity, status: Int): Collection<BrsLookupManufacturerPartnersEntity>?
+    fun findBrsLookupManufacturerPartnersEntitiesByManufacturerIdAndStatus(
+        manufacturerId: Long,
+        status: Int
+    ): Collection<BrsLookupManufacturerPartnersEntity>?
 }
 
 

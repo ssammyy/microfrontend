@@ -26,7 +26,7 @@
                         <div class="content-block-parent" style="flex: 0 75%">
 
                             <div class="sticky" style="margin-bottom: 30px">
-                                <h6 class="h3-blue" style="font-weight: bold; font-size: 16px">SSF DETAILS</h6>
+<!--                                <h6 class="h3-blue" style="font-weight: bold; color: #0082f3; font-size: 16px">SSF DETAILS</h6>-->
                                 <div class="applicant_details_container">
                                     <div class="detail-list application_details">
                                         <ul class="w-list-unstyled">
@@ -159,6 +159,9 @@
                             <div>
 
                                 <div sec:authorize="hasAuthority('QA_OFFICER_MODIFY')">
+                                    <a th:if="${ssfDetails.labResultsStatus == 0}"
+                                       th:href="@{/api/qa/inspection/check-results(bsNumber=${ssfDetails?.bsNumber})}"
+                                       class="filter-link" style="color: white">CHECK RESULTS</a>
                                     <a th:if="${ssfDetails.resultsAnalysis == null and ssfDetails.labResultsStatus == 1}" onclick="popUpCompanyFunction('addComplianceStatusDetails');" class="filter-link" style="color: white">ADD COMPLIANCE DETAILS</a>
                                 </div>
 

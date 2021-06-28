@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>KEBS</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!--  <link rel="stylesheet" type="text/css" media="screen" href="./css/style.css"/>-->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Nunito Sans">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+</head>
+
+<body>
+<div class="dashboard-page">
+  <div class="dashboard-header">
+    <img src="assets/project-images/kebs logo white.png" class="dashboard-header-logo" alt="kebs Logo" id="logo">
+  </div>
+  <div class="loggedIn-user">
+    <div class="user-details">
+      <p>
+        JKIA
+      </p>
+      <p>
+        DI Ofﬁcer In Charge
+      </p>
+      <p>
+        Randy Wabunge
+      </p>
+    </div>
+    <div class="options-button">
+      <button type="button" value="" class="option-button">Options</button>
+    </div>
+  </div>
+
+</div>
+<div class="dashboard-body">
+  <div class="sidebar">
+    <div class="sidebar-items">
+      <img src="assets/project-images/Dashboard.svg" class="sidebar-icons-dashboard selected-page">
+      <a href="#"><span class="selected-page">&nbsp;Dashboard</span></a>
+    </div>
+    <div class="sidebar-items">
+      <img src="assets/project-images/Quality Assurance.svg" class="sidebar-icons-dashboard selected-page">
+      &nbsp;<a href="#"><span>&nbsp;Quality Assurance</span></a>
+    </div>
+    <div class="sidebar-items">
+      <img src="assets/project-images/Import Inspection.svg" class="sidebar-icons-dashboard selected-page">
+      &nbsp;<a href="#"><span>&nbsp;Import Inspection</span></a>
+    </div>
+    <div class="sidebar-items">
+      <img src="assets/project-images/Standards Levy.svg" class="sidebar-icons-dashboard selected-page">
+      &nbsp;<a href="#"><span>&nbsp;Standards Levy</span></a>
+    </div>
+
+    <div class="sidebar-items">
+      <img src="assets/project-images/Inspection.svg" class="sidebar-icons-dashboard selected-page">
+      &nbsp;<a href="#"><span>&nbsp;Market Surveillance</span></a>
+    </div>
+    <div class="sidebar-items">
+      &nbsp;
+      <img src="assets/project-images/Standards Dev.svg" class="sidebar-icons-dashboard selected-page">
+      <a href="#">
+        <span>&nbsp;Standards Dev & Trade</span>
+      </a>
+    </div>
+  </div>
+  <div class="main-area">
+
+    <div class="top-section">
+      <div class="dashboard-title">
+        <h4 class="dashboard-title-content">
+          <a href="#index.html" style="color: #222222" onclick="getBreadcrumbs()">Dashboard</a></h4>
+        <p id="demo"></p>
+      </div>
+      <div class="logout">
+        <button type="button" value="" class="logout-button"><a href="index.html" class="login-ref">LOGOUT</a>
+        </button>
+      </div>
+    </div>
+
+    <section class="dashboard-content">
+
+      <div class="welcome-banner">
+        <h1 class="banner-title-content">
+          Welcome to KEBS KIMS
+        </h1>
+      </div>
+      <div class="tabs">
+        <div class="account">
+          <i class="material-icons" style="font-size:15px;">how_to_reg</i>
+          <span>
+                            &nbsp; My Account
+                        </span>
+        </div>
+        <div class="notifications">
+          <a href="notification.html" class="link">
+            <div class="notification-ref">
+              <i class="material-icons notification-icon" style="font-size:15px;">
+                add_alert
+              </i>
+              <span>
+                                    &nbsp; Notifications
+                                </span>
+            </div>
+          </a>
+
+        </div>
+        <div class="tasks">
+          <i class="material-icons" style="font-size:15px;">event</i>
+          <span>
+                            &nbsp; Tasks
+                        </span>
+        </div>
+        <div class="settings">
+          <i class="material-icons" style="font-size:15px;">settings</i>
+          <span>
+                            &nbsp; Settings
+                        </span>
+        </div>
+      </div>
+      <div class="dashboard-footer">
+        <div class="dashboard-footer-logos">
+          <div class="f-mark">
+            <img src="assets/project-images/Fmark.png" class="mark-image" alt="fortified Logo"
+                 id="fortified">
+          </div>
+          <div class="d-mark">
+            <img src="assets/project-images/Dmark.png" class="mark-image" alt="d_mark Logo" id="d_mark">
+          </div>
+          <div class="n-mark">
+            <img src="assets/project-images//Smark Logo.png" class="mark-image" alt="quality Logo" id="quality">
+          </div>
+        </div>
+        <div class="dashboard-footer-copyright">
+          <p class="copyright-details">
+            Copyright 2021 Kenya Bureau of Standards.
+          </p>
+          <p class="copyright-details push-middle">
+            All Rights Reserved v1.0.0
+          </p>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
+</body>
+
+<script type="text/javascript">
+
+  // $('.sidebar a').on('click', function () {
+  //     //selecting the class
+  //     $select = $('<div class="dashboard-title"></div>');
+  //     $(this).parents('div').each(function (n, div) {
+  //         //Adding / to each anchor tag of li
+  //         $select.prepend('/', $(div).children('a').clone());
+  //     });
+  //     // Displaying the hierarchical order of pages.
+  //     $('.dashboard-title').html(
+  //         $select.prepend('<a href="#main-anchor">Home</a>'));
+  // })
+
+  function getBreadcrumbs() {
+    const here = location.href.split('/').slice(3);
+    // console.log(here)
+    const parts = [{"text": 'Home', "link": '/'}];
+    // console.log(parts)
+
+    for (let i = 0; i < here.length; i++) {
+      const part = here[i];
+      // console.log(part)
+      const text = decodeURIComponent(part).toUpperCase().split('.')[0];
+      // console.log(text)
+      const link = '/' + here.slice(0, i + 1).join('/');
+      console.log(link)
+      parts.push({"text": text, "link": link});
+      // console.log(parts)
+    }
+    return parts.map((part) => {
+      return "<a href=\"" + part.link + "\">" + part.text + "</a>"
+    }).join('<span style="padding: 5px">/</span>')
+  }
+
+  document.getElementById("demo").innerHTML = getBreadcrumbs();
+
+</script>
+
+
+</html>

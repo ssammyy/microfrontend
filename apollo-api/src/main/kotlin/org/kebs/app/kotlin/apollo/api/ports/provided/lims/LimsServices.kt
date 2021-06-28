@@ -1,13 +1,17 @@
 package org.kebs.app.kotlin.apollo.api.ports.provided.lims
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import mu.KotlinLogging
 import org.apache.commons.codec.binary.Base64
 import org.jasypt.encryption.StringEncryptor
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DaoService
+import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DestinationInspectionDaoServices
+import org.kebs.app.kotlin.apollo.api.ports.provided.dao.QADaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.lims.response.RootTestResultsAndParameters
 import org.kebs.app.kotlin.apollo.api.ports.provided.lims.response.TestParameter
 import org.kebs.app.kotlin.apollo.api.ports.provided.lims.response.TestResult
+import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.ServiceMapsEntity
 import org.kebs.app.kotlin.apollo.store.model.UsersEntity
@@ -15,9 +19,15 @@ import org.kebs.app.kotlin.apollo.store.model.di.CdRiskDetailsActionDetailsEntit
 import org.kebs.app.kotlin.apollo.store.model.qa.QaSampleLabTestParametersEntity
 import org.kebs.app.kotlin.apollo.store.model.qa.QaSampleLabTestResultsEntity
 import org.kebs.app.kotlin.apollo.store.repo.IIntegrationConfigurationRepository
+import org.kebs.app.kotlin.apollo.store.repo.qa.IPermitApplicationsRepository
 import org.kebs.app.kotlin.apollo.store.repo.qa.IQaSampleLabTestParametersRepository
 import org.kebs.app.kotlin.apollo.store.repo.qa.IQaSampleLabTestResultsRepository
+import org.kebs.app.kotlin.apollo.store.repo.qa.IQaSampleSubmissionRepository
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.context.annotation.Lazy
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Propagation
+import org.springframework.transaction.annotation.Transactional
 import java.io.*
 import java.net.HttpURLConnection
 import java.net.URL
@@ -33,8 +43,23 @@ class LimsServices(
     private val applicationMapProperties: ApplicationMapProperties,
     private val sampleLabTestResults: IQaSampleLabTestResultsRepository,
     private val sampleLabTestParameters: IQaSampleLabTestParametersRepository,
+    private val sampleSubmissionRepo: IQaSampleSubmissionRepository,
+    private val permitRepo: IPermitApplicationsRepository,
     private val configurationRepository: IIntegrationConfigurationRepository
 ) {
+
+    @Lazy
+    @Autowired
+    lateinit var diDaoServices: DestinationInspectionDaoServices
+
+    @Lazy
+    @Autowired
+    lateinit var qaDaoServices: QADaoServices
+
+//    @Autowired
+//    lateinit var permitRepo: IPermitApplicationsRepository
+
+    val appId = applicationMapProperties.mapLimsTransactions
 
     fun performPostCall(
         postDataParams: HashMap<String, String>
@@ -42,9 +67,10 @@ class LimsServices(
         val url: URL
         var response: String? = ""
         try {
-            val appId = applicationMapProperties.mapLimsTransactions
+
             val map = commonDaoServices.serviceMapDetails(appId)
-            val config = commonDaoServices.findIntegrationConfigurationEntity(applicationMapProperties.mapLimsConfigIntegration)
+            val config =
+                commonDaoServices.findIntegrationConfigurationEntity(applicationMapProperties.mapLimsConfigIntegration)
 
             url = URL(config.url)
             val b = Base64()
@@ -101,7 +127,8 @@ class LimsServices(
         //Loop
         if (resultsParam.test_parameter?.isNullOrEmpty() == true) {
             println("List is null or empty")
-            return myStatus
+            throw ExpectedDataNotFound("NO RESULTS FOUND")
+//            return myStatus
         } else {
             myStatus = true
             resultsParam.test_result
@@ -216,14 +243,75 @@ class LimsServices(
             bottleType =testParams.bottleType
             storageLocation =testParams.storageLocation
             sampleDetailsUser1 =testParams.sampleDetails_User1
-            sampleDetailsUser2 =testParams.sampleDetails_User2
-            sampleDetailsUser3 =testParams.sampleDetails_User3
-            sampleDetailsUser4 =testParams.sampleDetails_User4
-            ts =testParams.ts
+            sampleDetailsUser2 = testParams.sampleDetails_User2
+            sampleDetailsUser3 = testParams.sampleDetails_User3
+            sampleDetailsUser4 = testParams.sampleDetails_User4
+            ts = testParams.ts
             status = 1
             createdBy = "ADMIN"
             createdOn = commonDaoServices.getTimestamp()
         }
         return sampleLabTestParameters.save(testParamsDetails)
+    }
+
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun updateLabResultsWithDetails(bsNumber: String, status: Int) {
+        val map = commonDaoServices.serviceMapDetails(appId)
+        //Find all Sample with Lab results inactive
+        KotlinLogging.logger { }.info { "::::::::::::::::::::::::STARTED LAB RESULTS SCHEDULER::::::::::::::::::" }
+        var samples = 1
+        sampleSubmissionRepo.findByLabResultsStatusAndBsNumber(status, bsNumber)
+            ?.let { ssfFound ->
+                KotlinLogging.logger { }
+                    .info { "::::::::::::::::::::::::SAMPLES WITH RESULTS FOUND = ${samples++}::::::::::::::::::" }
+                when {
+                    mainFunctionLims(bsNumber) -> {
+                        with(ssfFound) {
+                            modifiedBy = "SYSTEM SCHEDULER"
+                            modifiedOn = commonDaoServices.getTimestamp()
+                            labResultsStatus = map.activeStatus
+                            resultsDate = commonDaoServices.getCurrentDate()
+                        }
+                        sampleSubmissionRepo.save(ssfFound)
+                        when {
+                            ssfFound.permitId != null -> {
+                                qaDaoServices.findPermitBYID(
+                                    ssfFound.permitId ?: throw Exception("PERMIT ID NOT FOUND")
+                                )
+                                    .let { pm ->
+                                        with(pm) {
+                                            permitStatus = applicationMapProperties.mapQaStatusPLABResultsCompletness
+                                            modifiedBy = "SYSTEM SCHEDULER"
+                                            modifiedOn = commonDaoServices.getTimestamp()
+                                        }
+                                        permitRepo.save(pm)
+                                    }
+                            }
+                            ssfFound.cdItemId != null -> {
+                                diDaoServices.findItemWithItemID(
+                                    ssfFound.cdItemId ?: throw Exception("CD ITEM ID NOT FOUND")
+                                )
+                                    .let { cdItem ->
+                                        diDaoServices.findCD(cdItem.cdDocId?.id ?: throw Exception("CD ID NOT FOUND"))
+                                            .let { updatedCDDetails ->
+                                                updatedCDDetails.cdStandard?.let { cdStd ->
+                                                    diDaoServices.updateCDStatus(
+                                                        cdStd,
+                                                        applicationMapProperties.mapDIStatusTypeInspectionSampleResultsReceivedId
+                                                    )
+                                                }
+                                            }
+
+                                    }
+                            }
+                            else -> throw ExpectedDataNotFound("INVALID SSF DETAILS WITH MISSING PERMIT/CD ITEM DETAILS")
+                        }
+
+
+                    }
+                    else -> throw ExpectedDataNotFound("NO RESULTS FOUND")
+                }
+
+            }
     }
 }

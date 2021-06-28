@@ -35,9 +35,17 @@ class QaUploadsEntity : Serializable {
     @Basic
     var sscStatus: Int? = null
 
+    @Column(name = "STA10_STATUS")
+    @Basic
+    var sta10Status: Int? = null
+
     @Column(name = "COC_STATUS")
     @Basic
     var cocStatus: Int? = null
+
+    @Column(name = "INSPECTION_REPORT_STATUS")
+    @Basic
+    var inspectionReportStatus: Int? = null
 
     @Column(name = "ORDINARY_STATUS")
     @Basic
@@ -144,10 +152,12 @@ class QaUploadsEntity : Serializable {
                 versionNumber == that.versionNumber &&
                 sscStatus == that.sscStatus &&
                 cocStatus == that.cocStatus &&
+                inspectionReportStatus == that.inspectionReportStatus &&
                 ordinaryStatus == that.ordinaryStatus &&
                 description == that.description &&
                 name == that.name &&
                 fileType == that.fileType &&
+                sta10Status == that.sta10Status &&
                 documentType == that.documentType &&
                 Arrays.equals(document, that.document) &&
                 transactionDate == that.transactionDate &&
@@ -177,7 +187,9 @@ class QaUploadsEntity : Serializable {
             id,
             versionNumber,
             cocStatus,
+            sta10Status,
             sscStatus,
+            inspectionReportStatus,
             ordinaryStatus,
             filepath,
             description,

@@ -61,7 +61,7 @@ class MpesaTest {
 
     @Test
     fun hashString() {
-        val plainText = listOf("Kims@Kebs21")
+        val plainText = listOf("alertz@123")
 
         plainText.forEach {
             val hashed = jasyptStringEncryptor.encrypt(it)
@@ -79,20 +79,20 @@ class MpesaTest {
 
     }
 
-    @Test
-    fun mpesaTestPushAndStaging() {
-//        usersRepo.findByUserName("kpaul7747@gmail.com")
-//            ?.let { loggedInUser ->
-        mpesaServices.mainMpesaTransaction(
-            "1",
-            "254715668934",
-            "DN2021040521BBB",
-            "kpaul7747@gmail.com",
-            applicationMapProperties.mapInvoiceTransactionsForDemandNote
-        )
-//            }
-
-    }
+//    @Test
+//    fun mpesaTestPushAndStaging() {
+////        usersRepo.findByUserName("kpaul7747@gmail.com")
+////            ?.let { loggedInUser ->
+//        mpesaServices.mainMpesaTransaction(
+//            10,
+//            "254715668934",
+//            "DN2021040521BBB",
+//            "kpaul7747@gmail.com",
+//            applicationMapProperties.mapInvoiceTransactionsForDemandNote
+//        )
+////            }
+//
+//    }
 
     @Test
     fun limsTestResults() {

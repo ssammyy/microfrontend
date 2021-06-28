@@ -132,8 +132,12 @@ class LookUpBrsConsumerService(
                                                                                                     with(req){
                                                                                                         responseMessage = "Details match"
                                                                                                         with(brsLookupManufacturerDataEntity) {
-                                                                                                            manufacturerId = man
-                                                                                                            transactionDate = Date(Date().time)
+                                                                                                            manufacturerId =
+                                                                                                                man.id
+                                                                                                            transactionDate =
+                                                                                                                Date(
+                                                                                                                    Date().time
+                                                                                                                )
                                                                                                             registrationNumber = record.registrationNumber
                                                                                                             registrationDate = record.registrationDate?.time?.let { Date(it) }
                                                                                                             postalAddress = record.postalAddress
@@ -155,8 +159,12 @@ class LookUpBrsConsumerService(
                                                                                                         record.partners.forEach { partner ->
                                                                                                             brsLookupManufacturerPartnersEntity = BrsLookupManufacturerPartnersEntity()
                                                                                                             with(brsLookupManufacturerPartnersEntity) {
-                                                                                                                manufacturerId = brsLookupManufacturerDataEntity
-                                                                                                                transactionDate = Date(Date().time)
+                                                                                                                manufacturerId =
+                                                                                                                    brsLookupManufacturerDataEntity.manufacturerId
+                                                                                                                transactionDate =
+                                                                                                                    Date(
+                                                                                                                        Date().time
+                                                                                                                    )
                                                                                                                 names = partner.name
                                                                                                                 idType = partner.idType
                                                                                                                 idNumber = partner.idNumber

@@ -73,6 +73,7 @@ import org.springframework.transaction.annotation.Transactional
 import java.math.BigDecimal
 import java.sql.Date
 import java.sql.Timestamp
+import java.text.SimpleDateFormat
 import java.time.Instant
 import java.time.temporal.ChronoUnit
 import java.util.*
@@ -126,7 +127,9 @@ class RegistrationDaoServices(
     private val bufferRepo: INotificationsBufferRepository,
     private val yearlyTurnoverRepo: IManufacturerPaymentDetailsRepository,
     private val standardLevyPaymentsRepository: IStandardLevyPaymentsRepository,
-    private val standardsLevyBpmn: StandardsLevyBpmn
+    private val standardsLevyBpmn: StandardsLevyBpmn,
+    private val brsLookupManufacturerDataRepo: IBrsLookupManufacturerDataRepository,
+    private val brsLookupManufacturerPartnerRepo: IBrsLookupManufacturerPartnersRepository,
 ) {
 
 
@@ -577,22 +580,28 @@ class RegistrationDaoServices(
             }
             val userCompany = systemsAdminDaoService.updateUserCompanyDetails(userCompanyDetails)
 
-            brs.partners.forEach { partner->
+            brs.partners.forEach { partner ->
                 userCompany.id?.let {
                     if (partner != null) {
-                        addCompanyDirectorsDetails(s,u, it,partner)
+                        addCompanyDirectorsDetails(s, u, it, partner)
                     }
                 }
             }
 //            systemsAdminDaoService.assignRoleToUser(u.id?:throw NullValueNotAllowedException(""),applicationMapProperties.mapUserManufactureRoleID, s.activeStatus)
 
-            val userAssignRole = u.id?.let { systemsAdminDaoService.assignRoleToUser(it, applicationMapProperties.mapUserManufactureRoleID, s.activeStatus) }
+            val userAssignRole = u.id?.let {
+                systemsAdminDaoService.assignRoleToUser(
+                    it,
+                    applicationMapProperties.mapUserManufactureRoleID,
+                    s.activeStatus
+                )
+            }
 
             var userUpdated = u.id?.let { commonDaoServices.findUserByID(it) }
             userUpdated?.manufactureProfile = s.activeStatus
 
             when {
-                userUpdated!=null -> {
+                userUpdated != null -> {
                     userUpdated = usersRepo.save(userUpdated)
                 }
             }
@@ -629,7 +638,7 @@ class RegistrationDaoServices(
         var sr = commonDaoServices.createServiceRequest(s)
         try {
 
-           val userRequest = systemsAdminDaoService.userRequest(dto)
+            val userRequest = systemsAdminDaoService.userRequest(dto)
 
             sr.payload = "User Request [id= ${userRequest?.id}]"
             sr.names = "${userRequest?.userId} ${userRequest?.userRoleAssigned}"
@@ -663,11 +672,11 @@ class RegistrationDaoServices(
         var sr = commonDaoServices.createServiceRequest(s)
         try {
 
-           var cp = commonDaoServices.findCompanyProfile(u.id?: throw ExpectedDataNotFound("MISSING USER ID"))
+            var cp = commonDaoServices.findCompanyProfile(u.id ?: throw ExpectedDataNotFound("MISSING USER ID"))
 
-            with(cp){
-                closedCommodityManufactured =dto.closedCommodityManufactured
-                closedContractsUndertaken =dto.closedContractsUndertaken
+            with(cp) {
+                closedCommodityManufactured = dto.closedCommodityManufactured
+                closedContractsUndertaken = dto.closedContractsUndertaken
                 status = dto.submittedStatus
                 modifiedBy = commonDaoServices.concatenateName(u)
                 modifiedOn = commonDaoServices.getTimestamp()
@@ -706,9 +715,9 @@ class RegistrationDaoServices(
         var sr = commonDaoServices.createServiceRequest(s)
         try {
 
-           var cp = commonDaoServices.findCompanyProfile(u.id?: throw ExpectedDataNotFound("MISSING USER ID"))
+            var cp = commonDaoServices.findCompanyProfile(u.id ?: throw ExpectedDataNotFound("MISSING USER ID"))
 
-            with(cp){
+            with(cp) {
                 entryNumber = generateRandomText(5, s.secureRandom, s.messageDigestAlgorithm, true).toUpperCase()
                 modifiedBy = commonDaoServices.concatenateName(u)
                 modifiedOn = commonDaoServices.getTimestamp()
@@ -719,7 +728,13 @@ class RegistrationDaoServices(
             val payload = "${cp.name} ${cp.registrationNumber}"
             sr = commonDaoServices.mapServiceRequestForSuccess(s, payload, u)
             val emailEntity = commonDaoServices.userRegisteredEntryNumberSuccessfulEmailCompose(cp, sr, s, null)
-            commonDaoServices.sendEmailAfterCompose(u, applicationMapProperties.mapUserEntryNumberNotification, emailEntity, appId, payload)
+            commonDaoServices.sendEmailAfterCompose(
+                u,
+                applicationMapProperties.mapUserEntryNumberNotification,
+                emailEntity,
+                appId,
+                payload
+            )
 
             sr.payload = "Company Profile Updated [id= ${cp.id}]"
             sr.names = "UPDATED BY USER = ID ${cp.userId} USER NAME = ${commonDaoServices.concatenateName(u)}"
@@ -755,10 +770,10 @@ class RegistrationDaoServices(
         var sr = commonDaoServices.createServiceRequest(s)
         try {
 
-           var commodity = commodityDetails
-            with(commodity){
-                companyProfileId =cPId
-                commodityName =commodityDetails.commodityName
+            var commodity = commodityDetails
+            with(commodity) {
+                companyProfileId = cPId
+                commodityName = commodityDetails.commodityName
                 commodityDateCommence = commodityDetails.commodityDateCommence
                 status = s.activeStatus
                 createdOn = commonDaoServices.getTimestamp()
@@ -791,7 +806,6 @@ class RegistrationDaoServices(
     }
 
 
-
     fun addContractorsCompanyDetails(
         s: ServiceMapsEntity,
         u: UsersEntity,
@@ -802,10 +816,10 @@ class RegistrationDaoServices(
         var sr = commonDaoServices.createServiceRequest(s)
         try {
 
-           var contructUnderTaken = contractorUndertakenDetails
-            with(contructUnderTaken){
-                companyProfileId =cPId
-                contractsName =contractorUndertakenDetails.contractsName
+            var contructUnderTaken = contractorUndertakenDetails
+            with(contructUnderTaken) {
+                companyProfileId = cPId
+                contractsName = contractorUndertakenDetails.contractsName
                 contractsDateCommence = contractorUndertakenDetails.contractsDateCommence
                 status = s.activeStatus
                 createdOn = commonDaoServices.getTimestamp()
@@ -848,8 +862,8 @@ class RegistrationDaoServices(
         var sr = commonDaoServices.createServiceRequest(s)
         try {
 
-           var companyDirectors = CompanyProfileDirectorsEntity()
-            with(companyDirectors){
+            var companyDirectors = CompanyProfileDirectorsEntity()
+            with(companyDirectors) {
                 companyProfileId = companyProfileID
                 directorName = brsPartners.name
                 directorId = brsPartners.idNumber
@@ -1322,44 +1336,101 @@ class RegistrationDaoServices(
     /**
      * Check BRS
      */
-    fun checkBrs(cp: CompanyProfileEntity): Pair<Boolean, BrsLookUpRecords?>{
+    fun checkBrs(cp: CompanyProfileEntity): Pair<Boolean, BrsLookUpRecords?> {
         var response = false
         var brsResults: BrsLookUpRecords? = null
 //        user.id?.let {
 //            iCompanyProfileRepository.findByUserId(it)?.let { manufacturer ->
-        configurationRepository.findByIdOrNull(applicationMapProperties.mapBRSconfigID)
-                    ?.let { config ->
-                        config.createdOn = Timestamp.from(Instant.now())
-                        config.modifiedOn = Timestamp.from(Instant.now())
-                        configurationRepository.save(config)
-                        runBlocking {
-                            config.url?.let { url ->
-                                val log = daoService.createTransactionLog(0, "integ")
-                                val params = mapOf(Pair("registration_number", cp.registrationNumber))
-                                log.integrationRequest = "$params"
-                                val resp = daoService.getHttpResponseFromGetCall(true, url, config, null, params, null)
-                                val data = daoService.processResponses<BrsLookUpResponse>(resp, log, url, config)
-                                logsRepo.save(data.first)
-                                val brsResponse = data.second
-                                brsResponse
-                                    ?.let { r ->
-                                        if (r.count ?: 0 < 1) {
-                                            response = false
-                                        } else {
-                                            r.records?.get(0)?.partners?.forEach {
-                                                if(!response) {
-                                                    KotlinLogging.logger { }.info { "COMPANY REG NO:  = ${cp.registrationNumber} == DIRECTOR ID ${it?.idNumber}" }
-                                                    response = cp.directorIdNumber == it?.idNumber ?: 0
-                                                    brsResults = r.records?.get(0)
-                                                    KotlinLogging.logger { }.info { "MY UPDATED:  = ${cp.directorIdNumber} ======${it?.idNumber}" }
-                                                }
-                                            }
+        configurationRepository.findByIdOrNull(3L)
+            ?.let { config ->
+                config.createdOn = Timestamp.from(Instant.now())
+                config.modifiedOn = Timestamp.from(Instant.now())
+                configurationRepository.save(config)
+                runBlocking {
+                    config.url?.let { url ->
+                        val log = daoService.createTransactionLog(0, "integ")
+                        val params = mapOf(Pair("registration_number", cp.registrationNumber))
+                        log.integrationRequest = "$params"
+                        val resp = daoService.getHttpResponseFromGetCall(true, url, config, null, params, null)
+                        val data = daoService.processResponses<BrsLookUpResponse>(resp, log, url, config)
+                        logsRepo.save(data.first)
+                        val brsResponse = data.second
+                        brsResponse
+                            ?.let { r ->
+                                if ((r.count ?: 0) < 1) {
+                                    response = false
+                                } else {
+                                    var brsLookupManufacturerDataEntity: BrsLookupManufacturerDataEntity
+                                    r.records?.forEach { record ->
+                                        brsLookupManufacturerDataEntity = BrsLookupManufacturerDataEntity()
+                                        val date = try {
+                                            Date(SimpleDateFormat("D MMM YYYY").parse(record?.registrationDate).time)
+                                        } catch (e: Exception) {
+                                            Date(Date().time)
                                         }
-                                        //
-                                    } ?: throw Exception("No Response")
-                            } ?: throw Exception("Pass a valid endpoint")
-                        }
-                    } ?: throw Exception("Company Does not exist")
+                                        with(brsLookupManufacturerDataEntity) {
+                                            manufacturerId = 1L
+                                            transactionDate = Date(Date().time)
+                                            registrationNumber = record?.registrationNumber
+                                            registrationDate = date
+                                            postalAddress = record?.postalAddress
+                                            physicalAddress = record?.physicalAddress
+                                            phoneNumber = record?.phoneNumber
+                                            brsId = record?.id
+                                            email = record?.email
+                                            kraPin = record?.kraPin
+                                            businessName = record?.businessName
+                                            brsStatus = record?.status
+                                            status = 30
+                                            createdBy = log.transactionReference
+                                            createdOn = Timestamp.from(Instant.now())
+                                        }
+                                        try {
+                                            var brsLookupManufacturerPartnersEntity: BrsLookupManufacturerPartnersEntity
+                                            brsLookupManufacturerDataEntity =
+                                                brsLookupManufacturerDataRepo.save(brsLookupManufacturerDataEntity)
+                                            record?.partners?.forEach { partner ->
+                                                KotlinLogging.logger { }.trace { "working on ${partner?.name}" }
+                                                brsLookupManufacturerPartnersEntity =
+                                                    BrsLookupManufacturerPartnersEntity()
+                                                with(brsLookupManufacturerPartnersEntity) {
+                                                    manufacturerId = brsLookupManufacturerDataEntity.id
+                                                    transactionDate = Date(Date().time)
+                                                    names = partner?.name
+                                                    idType = partner?.idType
+                                                    idNumber = partner?.idNumber
+                                                    status = 30
+                                                    createdBy = cp.registrationNumber
+                                                    createdOn = Timestamp.from(Instant.now())
+                                                }
+                                                brsLookupManufacturerPartnersEntity =
+                                                    brsLookupManufacturerPartnerRepo.save(
+                                                        brsLookupManufacturerPartnersEntity
+                                                    )
+
+                                            }
+                                        } catch (e: Exception) {
+                                            KotlinLogging.logger { }.error(e.message, e)
+                                        }
+
+
+                                    }
+                                    r.records?.get(0)?.partners?.forEach {
+                                        if (!response) {
+                                            KotlinLogging.logger { }
+                                                .info { "COMPANY REG NO:  = ${cp.registrationNumber} == DIRECTOR ID ${it?.idNumber}" }
+                                            response = cp.directorIdNumber == (it?.idNumber ?: 0)
+                                            brsResults = r.records?.get(0)
+                                            KotlinLogging.logger { }
+                                                .info { "MY UPDATED:  = ${cp.directorIdNumber} ======${it?.idNumber}" }
+                                        }
+                                    }
+                                }
+                                //
+                            } ?: throw Exception("No Response")
+                    } ?: throw Exception("Pass a valid endpoint")
+                }
+            } ?: throw Exception("Company Does not exist")
 //                sr.varField3 = user.id.toString()
 //                serviceRequestRepo.save(sr)
 //            } ?: throw Exception("Company not found")
@@ -1691,5 +1762,6 @@ class RegistrationDaoServices(
 
 
     }
+
 
 }

@@ -244,13 +244,28 @@ class SchedulerImpl(
             val user = permit.userId?.let { commonDaoServices.findUserByID(it) }
             when (permit.permitType) {
                 applicationMapProperties.mapQAPermitTypeIDDmark -> {
-                    permit.hodId = qaDaoServices.assignNextOfficerAfterPayment(permit, map, applicationMapProperties.mapQADesignationIDForHODId)?.id
+                    permit.userTaskId = applicationMapProperties.mapUserTaskNameHOD
+                    permit.hodId = qaDaoServices.assignNextOfficerAfterPayment(
+                        permit,
+                        map,
+                        applicationMapProperties.mapQADesignationIDForHODId
+                    )?.id
                 }
                 applicationMapProperties.mapQAPermitTypeIdSmark -> {
-                    permit.qamId = qaDaoServices.assignNextOfficerAfterPayment(permit, map, applicationMapProperties.mapQADesignationIDForQAMId)?.id
+                    permit.userTaskId = applicationMapProperties.mapUserTaskNameQAM
+                    permit.qamId = qaDaoServices.assignNextOfficerAfterPayment(
+                        permit,
+                        map,
+                        applicationMapProperties.mapQADesignationIDForQAMId
+                    )?.id
                 }
                 applicationMapProperties.mapQAPermitTypeIdFmark -> {
-                    permit.qamId = qaDaoServices.assignNextOfficerAfterPayment(permit, map, applicationMapProperties.mapQADesignationIDForQAMId)?.id
+                    permit.userTaskId = applicationMapProperties.mapUserTaskNameQAM
+                    permit.qamId = qaDaoServices.assignNextOfficerAfterPayment(
+                        permit,
+                        map,
+                        applicationMapProperties.mapQADesignationIDForQAMId
+                    )?.id
                 }
             }
 

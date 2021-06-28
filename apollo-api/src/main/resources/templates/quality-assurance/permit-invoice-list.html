@@ -69,7 +69,9 @@
                             </div>
                             <div>
                                 <!--                                <a sec:authorize="hasAuthority('PERMIT_APPLICATION')" th:href="@{/api/qa/invoice/new-invoice(permitTypeID=${permitType.id})}" class="filter-link" style="color: white">NEW INVOICE</a>-->
-                                <a sec:authorize="hasAuthority('PERMIT_APPLICATION')" onclick="popUpFunctionUpload('addParamBtn');" class="filter-link" style="color: white">NEW INVOICE</a>
+                                <a sec:authorize="hasAuthority('PERMIT_APPLICATION')"
+                                   onclick="popUpFunctionUpload('addParamBtn');" class="filter-link"
+                                   style="color: white">CONSOLIDATE INVOICES</a>
                                 <!--                                <button id="addParam" class="btn btn-primary"  type="button">ADD PLANT DETAILS</button>-->
                             </div>
                         </div>
@@ -96,10 +98,14 @@
                                                         <!--                                                            <option value="0">Select one...</option>-->
                                                         <!--                                                            <option  th:each="plant : ${plantsDetails}" th:text="${plant?.buildingName}" th:name="attachedPlantId" th:value="${plant?.id}"></option>-->
                                                         <!--                                                        </select>-->
-                                                        <label class="field-label" for="permitID">Select Permit:</label>
-                                                        <select id="permitID" name="permitID" class="input-field w-input" th:field="*{permitID}">
-                                                            <option value="0">Select One...Brand.....=..KSH...Amount/=</option>
-                                                            <option th:each="permitInvoice : ${allPermitInvoiceList}" th:text="${permitInvoice.brandName}+ '= KSH ' + ${permitInvoice.totalAmount}" th:value="${permitInvoice.permitID}"></option>
+                                                        <label class="field-label" for="select-state">Select
+                                                            Permit:</label>
+                                                        <select name="permitInvoicesID" multiple
+                                                                data-placeholder="Select multiple one after another..."
+                                                                id="select-state" th:field="*{permitInvoicesID}">
+                                                            <option th:each="permitInvoice : ${allPermitInvoiceList}"
+                                                                    th:text="${permitInvoice.brandName}+ '= KSH ' + ${permitInvoice.totalAmount}"
+                                                                    th:value="${permitInvoice.permitID}"></option>
                                                             <!--                                        <option th:each="subRegion : ${subRegions}" th:text="${subRegion.subRegion}" th:value="${subRegion.id}"></option>-->
                                                         </select>
 
@@ -147,6 +153,12 @@
 </script>
 <script>
     $(document).ready(function () {
+
+        $('select').selectize({
+            sortField: 'text'
+        });
+
+
         $("#plantID").click(function () {
             // let methodId = $("#divisionId").children("option:selected").val()
             let plantID = $("#plantID").val()

@@ -18,6 +18,7 @@ import org.kebs.app.kotlin.apollo.store.model.*
 import org.kebs.app.kotlin.apollo.store.repo.IIntegrationConfigurationRepository
 import org.kebs.app.kotlin.apollo.store.repo.IMpesaTransactionsRepository
 import org.springframework.stereotype.Service
+import java.math.BigDecimal
 import java.sql.Timestamp
 import java.time.Instant
 import java.util.regex.Matcher
@@ -37,7 +38,7 @@ class MPesaService(
 
 
     fun mainMpesaTransaction(
-        amount: String,
+        amount: BigDecimal,
         phoneNumber: String,
         invoiceReference: String,
         userName: String,
@@ -160,13 +161,13 @@ class MPesaService(
 
     private suspend fun pushRequest(
         url: String,
-        amount: String,
+        amount: BigDecimal,
         phoneNumber: String,
         invoiceReference: String,
         transactionRef: String,
         config: IntegrationConfigurationEntity,
         headerParameters: MutableMap<String, String>
-    ): Pair<WorkflowTransactionsEntity, MpesaPushResponse?> {
+    ): Triple<WorkflowTransactionsEntity, MpesaPushResponse?, HttpResponse?> {
         val request = MpesaPushRequest()
         request.transactionReference = invoiceReference
         request.account = config.account

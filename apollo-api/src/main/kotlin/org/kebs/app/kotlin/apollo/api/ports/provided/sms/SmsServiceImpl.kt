@@ -3,20 +3,28 @@ package org.kebs.app.kotlin.apollo.api.ports.provided.sms
 import mu.KotlinLogging
 import org.jasypt.encryption.StringEncryptor
 import org.kebs.app.kotlin.apollo.api.errors.GenericRuntimeException
-import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
+import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
+import org.kebs.app.kotlin.apollo.store.repo.IIntegrationConfigurationRepository
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.*
 import org.springframework.stereotype.Service
 import org.springframework.util.LinkedMultiValueMap
-import org.springframework.web.client.*
+import org.springframework.web.client.HttpClientErrorException
+import org.springframework.web.client.HttpServerErrorException
+import org.springframework.web.client.RestTemplate
+import org.springframework.web.client.UnknownHttpStatusCodeException
 
 @Service
-class SmsServiceImpl(private val applicationMapProperties: ApplicationMapProperties,
-                     private val commonDaoServices: CommonDaoServices,
-                     private val jasyptStringEncryptor: StringEncryptor): ISmsService {
+class SmsServiceImpl(
+    private val applicationMapProperties: ApplicationMapProperties,
+    private val jasyptStringEncryptor: StringEncryptor,
+    private val configurationRepository: IIntegrationConfigurationRepository
+) : ISmsService {
 
-    final var config =
-        commonDaoServices.findIntegrationConfigurationEntity(applicationMapProperties.mapSmsConfigIntegration)
+    final var config = configurationRepository.findByIdOrNull(applicationMapProperties.mapSmsConfigIntegration)
+        ?: throw ExpectedDataNotFound("Configuration With the following ID ${applicationMapProperties.mapSmsConfigIntegration}, does not exist")
+
 
     val url = config.url.toString()
     val username = jasyptStringEncryptor.decrypt(config.username)
@@ -29,7 +37,7 @@ class SmsServiceImpl(private val applicationMapProperties: ApplicationMapPropert
         val password = password
         val headers = HttpHeaders()
         headers.setBasicAuth(username, password)
-        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED)
+        headers.contentType = MediaType.APPLICATION_FORM_URLENCODED
         //Add params
         val map = LinkedMultiValueMap<Any, Any>()
         map.add("txtMobile", phone)
