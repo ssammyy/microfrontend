@@ -7,22 +7,18 @@
     <meta charset="utf-8">
     <title>KEBS</title>
     <th:block th:include="fragments/general-form.html:: headerfiles"/>
-    <link rel="stylesheet" th:href="@{/css/pageLoad.css}" type="text/css">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" th:href="@{/css/accordion.css}"/>
-    <link rel="stylesheet" th:href="@{/assets/bootstrap3/css/bootstrap.css}"/>
 </head>
 <body>
 <div id="spinnerContainer">
     <div class="spinner"></div>
 </div>
-<div class="top-bar" th:replace="fragments/general-form.html :: top-bar"></div>
-<div class="section">
-    <div class="w-layout-grid main-grid">
-        <div class="main-grid-side-navigation" id="w-node-d308c123a20f-c123a20d"
-             th:replace="fragments/general-form.html :: side-navigation-bar"></div>
-        <div id="w-node-27962c2db181-c676b3e3" class="main-content-div">
-            <div class="content-nav" th:replace="fragments/general-form.html :: content-navigation-bar"></div>
+<div th:replace="fragments/general-form.html :: dashboard-page" ></div>
+
+<div class="dashboard-body">
+    <div th:replace="fragments/general-form.html :: side-navigation-bar" ></div>
+    <div class="main-area">
+        <div th:replace="fragments/general-form.html :: content-navigation-bar"></div>
+        <section class="dashboard-content">
             <div class="content-wrap">
                 <div class="content-container">
                     <h5 style="font-weight: bold; color: #0082f3; font-size: 14px"><u>USER PROFILE DETAIL</u></h5>
@@ -66,31 +62,31 @@
                                     </div>
                                     <div class="application_reports">
                                         <ul class="w-list-unstyled">
-<!--                                            <li class="list-item-accordion">-->
-<!--                                                <div class="list-title-accordion">Total No. of Personnel:</div>-->
-<!--                                                <div class="list-text-accordion"-->
-<!--                                                     th:text="${QaSta10Entity?.totalNumberPersonnel}"></div>-->
-<!--                                            </li>-->
-<!--                                            <li class="list-item-accordion">-->
-<!--                                                <div class="list-title-accordion">Total No. of Female:</div>-->
-<!--                                                <div class="list-text-accordion"-->
-<!--                                                     th:text="${QaSta10Entity?.totalNumberFemale}"></div>-->
-<!--                                            </li>-->
-<!--                                            <li class="list-item-accordion">-->
-<!--                                                <div class="list-title-accordion">Total No. of Male:</div>-->
-<!--                                                <div class="list-text-accordion"-->
-<!--                                                     th:text="${QaSta10Entity?.totalNumberMale}"></div>-->
-<!--                                            </li>-->
-<!--                                            <li class="list-item-accordion">-->
-<!--                                                <div class="list-title-accordion">No. of Permanent Employees:</div>-->
-<!--                                                <div class="list-text-accordion"-->
-<!--                                                     th:text="${QaSta10Entity?.totalNumberPermanentEmployees}"></div>-->
-<!--                                            </li>-->
-<!--                                            <li class="list-item-accordion">-->
-<!--                                                <div class="list-title-accordion">No of Casual Employee:</div>-->
-<!--                                                <div class="list-text-accordion"-->
-<!--                                                     th:text="${QaSta10Entity?.totalNumberCasualEmployees}"></div>-->
-<!--                                            </li>-->
+                                            <!--                                            <li class="list-item-accordion">-->
+                                            <!--                                                <div class="list-title-accordion">Total No. of Personnel:</div>-->
+                                            <!--                                                <div class="list-text-accordion"-->
+                                            <!--                                                     th:text="${QaSta10Entity?.totalNumberPersonnel}"></div>-->
+                                            <!--                                            </li>-->
+                                            <!--                                            <li class="list-item-accordion">-->
+                                            <!--                                                <div class="list-title-accordion">Total No. of Female:</div>-->
+                                            <!--                                                <div class="list-text-accordion"-->
+                                            <!--                                                     th:text="${QaSta10Entity?.totalNumberFemale}"></div>-->
+                                            <!--                                            </li>-->
+                                            <!--                                            <li class="list-item-accordion">-->
+                                            <!--                                                <div class="list-title-accordion">Total No. of Male:</div>-->
+                                            <!--                                                <div class="list-text-accordion"-->
+                                            <!--                                                     th:text="${QaSta10Entity?.totalNumberMale}"></div>-->
+                                            <!--                                            </li>-->
+                                            <!--                                            <li class="list-item-accordion">-->
+                                            <!--                                                <div class="list-title-accordion">No. of Permanent Employees:</div>-->
+                                            <!--                                                <div class="list-text-accordion"-->
+                                            <!--                                                     th:text="${QaSta10Entity?.totalNumberPermanentEmployees}"></div>-->
+                                            <!--                                            </li>-->
+                                            <!--                                            <li class="list-item-accordion">-->
+                                            <!--                                                <div class="list-title-accordion">No of Casual Employee:</div>-->
+                                            <!--                                                <div class="list-text-accordion"-->
+                                            <!--                                                     th:text="${QaSta10Entity?.totalNumberCasualEmployees}"></div>-->
+                                            <!--                                            </li>-->
                                             <!--                                            <li class="list-item-accordion">-->
                                             <!--                                                <div class="list-title-accordion">Physical Location (attach Google-->
                                             <!--                                                    Map)-->
@@ -246,8 +242,8 @@
                                                 <td th:text="${itemParam.contactPerson}"></td>
                                                 <td th:text="${itemParam.emailAddress}"></td>
                                                 <td th:text="${itemParam.telephone}"></td>
-<!--                                                <td><button class="btn btn-primary" th:value="${itemParam.id}" onclick="popUpPlantFunction('viewPlantsDetails', this);" type="button">VIEW</button></td>-->
-<!--                                                <td><a class="filter-link" onclick="popUpPlantFunction('addPlantsDetails', ${itemParam.id});">view</a></td>-->
+                                                <!--                                                <td><button class="btn btn-primary" th:value="${itemParam.id}" onclick="popUpPlantFunction('viewPlantsDetails', this);" type="button">VIEW</button></td>-->
+                                                <!--                                                <td><a class="filter-link" onclick="popUpPlantFunction('addPlantsDetails', ${itemParam.id});">view</a></td>-->
                                             </tr>
                                             </tbody>
                                         </table>
@@ -371,8 +367,6 @@
                     </div>
                 </div>
             </div>
-
-
 
             <div class="companyDetailsForm">
                 <form id="companyDetails-Form" name="companyDetails-Form" th:action="@{/api/auth/kebs/add/manufacture-details/save}" method="post" th:object="${companyProfileEntity}">
@@ -586,16 +580,11 @@
                 </form>
             </div>
 
-        </div>
+        </section>
     </div>
 </div>
-<script src="https://d3e54v103j8qbb.cloudfront.net/js/jquery-3.4.1.min.220afd743d.js" type="text/javascript" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
-<script th:src="@{/assets/bootstrap3/js/bootstrap.js}" type="text/javascript"></script>
-<script src="../assets/js/webflow.js" type="text/javascript"></script>
 
-<!-- [if lte IE 9]>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/placeholders/3.0.2/placeholders.min.js"></script><![endif] -->
-<script th:src="@{/js/spinner.js}" type="text/javascript"></script>
+<div th:replace="fragments/general-form.html :: scripts"></div>
 
 <script>
     document.onreadystatechange = function () {
