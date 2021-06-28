@@ -204,10 +204,16 @@
                         </span>
                 </div>
                 <div class="settings">
-                    <i class="material-icons" style="font-size:15px;">settings</i>
-                    <span>
-                            &nbsp; Settings
-                        </span>
+                    <a th:href="@{/api/system/admin/home}" class="link">
+                        <div class="notification-ref">
+                            <i class="material-icons" style="font-size:15px;">
+                                settings
+                            </i>
+                            <span>
+                                    &nbsp; Settings
+                                </span>
+                        </div>
+                    </a>
                 </div>
             </div>
             <div class="dashboard-footer" th:fragment="dashboard-footer">
