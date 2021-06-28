@@ -167,10 +167,16 @@
             </div>
             <div class="tabs">
                 <div class="account">
-                    <i class="material-icons" style="font-size:15px;">how_to_reg</i>
-                    <span>
-                            &nbsp; My Account
-                        </span>
+                    <a th:href="@{/api/user/user-profile}" class="link">
+                        <div class="notification-ref">
+                            <i class="material-icons" style="font-size:15px;">
+                                how_to_reg
+                            </i>
+                            <span>
+                                    &nbsp; My Account
+                                </span>
+                        </div>
+                    </a>
                 </div>
                 <div class="notifications">
                     <a href="notification.html" class="link">
@@ -183,7 +189,6 @@
                                 </span>
                         </div>
                     </a>
-
                 </div>
                 <div class="tasks">
                     <i class="material-icons" style="font-size:15px;">event</i>
