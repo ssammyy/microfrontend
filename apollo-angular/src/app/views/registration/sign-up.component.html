@@ -17,21 +17,17 @@
 
       <div style="margin-top: 3%" class="form-group">
         <label class="input-placeholder" for="directorIdNumber">
-          *Director's Id Number
-
+          Director's Id Number
         </label>
         <br>
         <input [class.is-invalid]="formStepZeroForm.directorIdNumber.invalid && formStepZeroForm.directorIdNumber.touched"
           class="form-control two-column-input" formControlName="directorIdNumber" id="directorIdNumber" type="text"
                name="directorIdNumber" placeholder="The id number of one director" style="width: 60%" >
-<!--        <div *ngIf="submitted && formStepZeroForm.directorIdNumber.errors" class="invalid-feedback">-->
-<!--          <div  *ngIf = "stepZeroForm.controls['directorIdNumber']?.errors.required" >Mobile Number is required</div>-->
-<!--        </div>-->
 
       </div>
       <br>
       <div>
-        <button type="submit"  class="login-button">VALIDATE</button>
+        <button type="submit" [disabled]="!stepZeroForm.valid" class="login-button">VALIDATE</button>
       </div>
 
     </form>

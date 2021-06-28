@@ -185,10 +185,6 @@ export class SignUpComponent implements OnInit {
   }
 
   onClickBrsLookup(valid: boolean) {
-    // stop here if form is invalid
-    if (this.stepZeroForm.invalid) {
-      return;
-    }
     if (valid) {
       this.step = 0
       this.brsLookupRequest = this.stepZeroForm.value;
