@@ -7,28 +7,29 @@
       </h2>
       <div style="margin-top: 3%">
         <label class="input-placeholder" for="registrationNumber">
-          Company Registration Number
+          *Company Registration Number
         </label>
         <br>
-        <input class="form-control two-column-input" formControlName="registrationNumber" id="registrationNumber"
-               type="text"
+        <input [class.is-invalid]="formStepZeroForm.registrationNumber.invalid && formStepZeroForm.registrationNumber.touched"
+          class="form-control two-column-input" formControlName="registrationNumber" id="registrationNumber" type="text"
                name="registrationNumber" placeholder="Company registration number" style="width: 60%">
       </div>
+
       <div style="margin-top: 3%">
         <label class="input-placeholder" for="directorIdNumber">
-          Director's Id Number
+          *Director's Id Number
 
         </label>
         <br>
-        <input class="form-control two-column-input" formControlName="directorIdNumber" id="directorIdNumber"
+        <input [class.is-invalid]="formStepZeroForm.directorIdNumber.invalid && formStepZeroForm.directorIdNumber.touched"
+          class="form-control two-column-input" formControlName="directorIdNumber" id="directorIdNumber"
                type="text"
                name="directorIdNumber" placeholder="The id number of one director" style="width: 60%">
       </div>
       <br>
       <div>
-        <button type="submit" class="login-button">VALIDATE</button>
+        <button type="submit" [disabled]="!stepZeroForm.valid" class="login-button">VALIDATE</button>
       </div>
-
 
     </form>
 
@@ -50,7 +51,8 @@
               Company Registration Number
             </label>
             <br>
-            <input class="form-control two-column-input" formControlName="registrationNumber" id="registrationNumber"
+            <input [class.is-invalid]="formStepOneForm.registrationNumber.invalid && formStepOneForm.registrationNumber.touched"
+              class="form-control two-column-input" formControlName="registrationNumber" id="registrationNumber"
                    name="registrationNumber"
                    placeholder="Company registration number" required="required" type="text">
           </div>
@@ -60,7 +62,8 @@
               Director's Id Number
             </label>
             <br>
-            <input class="form-control two-column-input" formControlName="directorIdNumber" id="directorIdNumber"
+            <input [class.is-invalid]="formStepOneForm.directorIdNumber.invalid && formStepOneForm.directorIdNumber.touched"
+              class="form-control two-column-input" formControlName="directorIdNumber" id="directorIdNumber"
                    name="directorIdNumber"
                    placeholder="The id number of one director" required="required" type="text">
           </div>
@@ -74,7 +77,8 @@
               Company Name
             </label>
             <br>
-            <input class="form-control two-column-input" formControlName="name" id="name" name="name"
+            <input [class.is-invalid]="formStepOneForm.name.invalid && formStepOneForm.name.touched"
+              class="form-control two-column-input" formControlName="name" id="name" name="name"
                    placeholder="The Company name" required="required" type="text">
           </div>
 
@@ -83,7 +87,8 @@
               KRA Pin
             </label>
             <br>
-            <input class="form-control two-column-input" formControlName="kraPin" id="kraPin" name="kraPin"
+            <input [class.is-invalid]="formStepOneForm.kraPin.invalid && formStepOneForm.kraPin.touched"
+              class="form-control two-column-input" formControlName="kraPin" id="kraPin" name="kraPin"
                    placeholder="The kraPin" required="required" type="text">
           </div>
 
@@ -96,7 +101,8 @@
               Yearly Turnover
             </label>
             <br>
-            <input class="form-control two-column-input" formControlName="yearlyTurnover" id="yearlyTurnover"
+            <input [class.is-invalid]="formStepOneForm.yearlyTurnover.invalid && formStepOneForm.yearlyTurnover.touched"
+              class="form-control two-column-input" formControlName="yearlyTurnover" id="yearlyTurnover"
                    name="yearlyTurnover"
                    placeholder="The yearly Turnover" required="required" type="number">
           </div>
@@ -107,7 +113,8 @@
             </label>
             <br>
             <ng-container *ngIf="businessLines$ | async as apps">
-              <select (ngModelChange)="updateSelectedBusinessLine()"
+              <select [class.is-invalid]="formStepOneForm.businessLines.invalid && formStepOneForm.businessLines.touched"
+                (ngModelChange)="updateSelectedBusinessLine()"
                       formControlName="businessLines" id="businessLines"
                       name="businessLines" required="required" style="width: 100%; height: 75%">
                 <option ngValue="null" selected>Please select</option>
@@ -128,7 +135,8 @@
             <br>
             <ng-container
               *ngIf="businessNatures$ | async as apps">
-              <select (ngModelChange)="updateSelectedBusinessNatures()"
+              <select [class.is-invalid]="formStepOneForm.businessNatures.invalid && formStepOneForm.businessNatures.touched"
+                (ngModelChange)="updateSelectedBusinessNatures()"
                       formControlName="businessNatures" id="businessNatures"
                       name="businessNatures" required="required" style="width: 48%; height: 100%">
                 <option ngValue="null" selected>Please select</option>
@@ -149,7 +157,7 @@
             <button (click)="onClickPrevious()" class="login-button" type="button">PREV</button>
           </div>
           <div class="col">
-            <button class="login-button" type="submit">NEXT</button>
+            <button class="login-button" [disabled]="!stepOneForm.valid" type="submit">NEXT</button>
           </div>
 
 
@@ -177,7 +185,8 @@
               Postal Address
             </label>
             <br>
-            <input class="form-control two-column-input" formControlName="postalAddress" id="postalAddress"
+            <input  [class.is-invalid]="formStepTwoForm.postalAddress.invalid && formStepTwoForm.postalAddress.touched"
+              class="form-control two-column-input" formControlName="postalAddress" id="postalAddress"
                    name="postalAddress"
                    placeholder="Company postal address" required="required" type="text">
           </div>
@@ -187,7 +196,8 @@
               Physical Address
             </label>
             <br>
-            <input class="form-control two-column-input" formControlName="physicalAddress" id="physicalAddress"
+            <input [class.is-invalid]="formStepTwoForm.physicalAddress.invalid && formStepTwoForm.physicalAddress.touched"
+              class="form-control two-column-input" formControlName="physicalAddress" id="physicalAddress"
                    name="physicalAddress"
                    placeholder="The physical address" required="required" type="text">
           </div>
@@ -201,7 +211,8 @@
               Plot Number
             </label>
             <br>
-            <input class="form-control two-column-input" formControlName="plotNumber" id="plotNumber"
+            <input [class.is-invalid]="formStepTwoForm.plotNumber.invalid && formStepTwoForm.plotNumber.touched"
+              class="form-control two-column-input" formControlName="plotNumber" id="plotNumber"
                    name="plotNumber"
                    placeholder="The plot number" required="required" type="text">
 
@@ -212,7 +223,8 @@
               Company Email
             </label>
             <br>
-            <input class="form-control two-column-input" formControlName="companyEmail" id="companyEmail"
+            <input [class.is-invalid]="formStepTwoForm.companyEmail.invalid && formStepTwoForm.companyEmail.touched"
+              class="form-control two-column-input" formControlName="companyEmail" id="companyEmail"
                    name="companyEmail"
                    placeholder="The company email address" required="required" type="text">
           </div>
@@ -226,7 +238,8 @@
               Company Phone
             </label>
             <br>
-            <input class="form-control two-column-input" formControlName="companyTelephone" id="companyTelephone"
+            <input [class.is-invalid]="formStepTwoForm.companyTelephone.invalid && formStepTwoForm.companyTelephone.touched"
+              class="form-control two-column-input" formControlName="companyTelephone" id="companyTelephone"
                    name="companyTelephone"
                    placeholder="The company phone number" required="required" type="text">
 
@@ -238,7 +251,7 @@
             <button (click)="onClickPrevious()" class="login-button" type="button">PREV</button>
           </div>
           <div class="col">
-            <button class="login-button" type="submit">NEXT</button>
+            <button class="login-button" [disabled]="!stepTwoForm.valid" type="submit">NEXT</button>
           </div>
 
         </div>

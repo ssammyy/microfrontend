@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {FormControl, FormGroup, Validators} from "@angular/forms";
+import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {
   BrsLookUpRequest,
   BusinessLines,
@@ -40,11 +40,11 @@ export class SignUpComponent implements OnInit {
 
   step = 0;
 
-  stepZeroForm: FormGroup = new FormGroup({});
-  stepOneForm: FormGroup = new FormGroup({});
-  stepTwoForm: FormGroup = new FormGroup({});
-  stepThreeForm: FormGroup = new FormGroup({});
-  stepFourForm: FormGroup = new FormGroup({});
+  stepZeroForm!: FormGroup;
+  stepOneForm!: FormGroup;
+  stepTwoForm!: FormGroup;
+  stepThreeForm!: FormGroup;
+  stepFourForm!: FormGroup;
   companySoFar: Partial<Company> | undefined;
   userSoFar: Partial<User> | undefined;
   // @ts-ignore
@@ -75,6 +75,7 @@ export class SignUpComponent implements OnInit {
     private regionService: RegionService,
     private countyService: CountyService,
     private townService: TownService,
+    private formBuilder: FormBuilder,
     private store$: Store<any>,
   ) {
     this.otpSent = false;
@@ -96,8 +97,8 @@ export class SignUpComponent implements OnInit {
 
   ngOnInit(): void {
     this.stepZeroForm = new FormGroup({
-      registrationNumber: new FormControl(),
-      directorIdNumber: new FormControl(),
+      registrationNumber: new FormControl('',[Validators.required]),
+      directorIdNumber: new FormControl('',[Validators.required]),
     });
     this.stepOneForm = new FormGroup({
       name: new FormControl('', [Validators.required]),
@@ -135,6 +136,12 @@ export class SignUpComponent implements OnInit {
     });
 
   }
+
+  get formStepZeroForm(): any {return this.stepZeroForm.controls;}
+  get formStepOneForm(): any {return this.stepOneForm.controls;}
+  get formStepTwoForm(): any {return this.stepTwoForm.controls;}
+  get formStepThreeForm(): any {return this.stepThreeForm.controls;}
+  get formStepFourForm(): any {return this.stepFourForm.controls;}
 
   updateSelectedRegion() {
     this.selectedRegion = this.stepThreeForm?.get('region')?.value;
