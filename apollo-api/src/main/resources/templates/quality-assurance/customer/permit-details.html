@@ -15,49 +15,9 @@
                                 th:text="${permitType?.mark}"></span> Permit</u></h5>
                         <div class="content-block">
                             <div class="content-block-parent" style="flex: 0 75%">
-                                <p>Click on the buttons inside the tabbed menu:</p>
-                                <div class="tab">
-                                    <button class="tablinks" onclick="openTabsDetails(event, 'permitDetailsOpen')">
-                                        Permit Details
-                                    </button>
-                                    <button class="tablinks" onclick="openTabsDetails(event, 'plantDetailsOpen')">Plant
-                                        Attached Details
-                                    </button>
-                                    <button class="tablinks" onclick="openTabsDetails(event, 'remarksDetailsOpen')">
-                                        Remarks Details
-                                    </button>
-                                    <button class="tablinks"
-                                            onclick="openTabsDetails(event, 'recommendationDetailsOpen')">Recommendation
-                                        Details
-                                    </button>
-                                    <button class="tablinks" onclick="openTabsDetails(event, 'documentsDetailsOpen')">
-                                        Documents Attached Details
-                                    </button>
 
-                                    <div th:if="${permitType?.id == dmarkPermit}">
-                                        <button class="tablinks" onclick="openTabsDetails(event, 'cocDetailsOpen')">COC
-                                            Attached Details
-                                        </button>
-                                    </div>
-
-
-                                    <div sec:authorize="hasAuthority('QA_OFFICER_MODIFY')">
-                                        <button class="tablinks" onclick="openTabsDetails(event, 'sscDetailsOpen')">
-                                            Scheme of Supervision Details
-                                        </button>
-                                    </div>
-                                    >
-                                    <button class="tablinks" onclick="openTabsDetails(event, 'requestDetailsOpen')">
-                                        Requests Details
-                                    </button>
-                                    <button class="tablinks" onclick="openTabsDetails(event, 'otherDetailsOpen')">Other
-                                        Version Details
-                                    </button>
-
-                                </div>
-
-                                <button class="accordion">A: FIRM DETAILS</button>
-                                <div id="permitDetailsOpen" class="tabcontent">
+                                <button class="accordion">Permit Details</button>
+                                <div class="panel">
                                     <div class="applicant_details_container">
                                         <div class="detail-list application_details">
                                             <ul class="w-list-unstyled">
@@ -203,7 +163,8 @@
                                 </div>
 
 
-                                <div id="plantDetailsOpen" class="tabcontent">
+                                <button class="accordion">Plant Attached Details</button>
+                                <div class="panel">
                                     <ul class="w-list-unstyled">
                                         <li class="list-item-accordion">
                                             <div class="list-title-accordion">REGION</div>
@@ -256,7 +217,8 @@
                                 </div>
 
 
-                                <div id="remarksDetailsOpen" class="tabcontent">
+                                <button class="accordion">Remarks Details</button>
+                                <div class="panel">
                                     <ul class="w-list-unstyled">
                                         <li th:if="${permitDetails?.hofQamCompletenessStatus != null}"
                                             class="list-item-accordion">
@@ -305,7 +267,8 @@
                                 </div>
 
 
-                                <div id="recommendationDetailsOpen" class="tabcontent">
+                                <button class="accordion">Recommendation Details</button>
+                                <div class="panel">
                                     <ul class="w-list-unstyled">
                                         <li class="list-item-accordion">
                                             <p><span th:text="${permit?.recommendationRemarks}"></span></p>
@@ -313,7 +276,8 @@
                                     </ul>
                                 </div>
 
-                                <div id="documentsDetailsOpen" class="tabcontent">
+                                <button class="accordion">Documents Attached Details</button>
+                                <div class="panel">
                                     <div class="row-table ">
                                         <table class="table table-striped">
                                             <thead>
@@ -342,7 +306,8 @@
                                 </div>
 
                                 <div th:if="${permitType?.id == dmarkPermit}">
-                                    <div id="cocDetailsOpen" class="tabcontent">
+                                    <button class="accordion">COC Attached Details</button>
+                                    <div class="panel">
                                         <div th:if="${permitDetails?.cocId != null and permitDetails?.sendForPcmReview == null}"
                                              id="idButtons">
                                             <div class="form-row">
@@ -387,7 +352,8 @@
 
                                 <div sec:authorize="hasAuthority('QA_OFFICER_MODIFY')">
 
-                                    <div id="sscDetailsOpen" class="tabcontent">
+                                    <button class="accordion">Scheme of Supervision Details</button>
+                                    <div class="panel">
                                         <div class="row-table ">
                                             <table class="table table-striped">
                                                 <thead>
@@ -419,7 +385,8 @@
                                 </div>
 
 
-                                <div id="requestDetailsOpen" class="tabcontent">
+                                <button class="accordion">Requests Details</button>
+                                <div class="panel">
                                     <div class="row-table ">
                                         <table class="table table-striped">
                                             <thead>
@@ -454,7 +421,8 @@
                                     </div>
                                 </div>
 
-                                <div id="otherDetailsOpen" class="tabcontent">
+                                <button class="accordion">Other Version Details</button>
+                                <div class="panel">
                                     <div class="row-table ">
                                         <table class="table table-striped table-bordered" id="oldVersions"
                                                style="width:100%">

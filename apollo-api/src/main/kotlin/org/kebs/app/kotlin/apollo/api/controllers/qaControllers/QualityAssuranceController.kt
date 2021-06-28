@@ -620,14 +620,16 @@ class QualityAssuranceController(
 
 
                             with(permit) {
-                                awardedPermitNumber = "${permitType?.markNumber}${
-                                    generateRandomText(
-                                        6,
-                                        map.secureRandom,
-                                        map.messageDigestAlgorithm,
-                                        false
-                                    )
-                                }".toUpperCase()
+                                if (renewalStatus != map.activeStatus) {
+                                    awardedPermitNumber = "${permitType?.markNumber}${
+                                        generateRandomText(
+                                            6,
+                                            map.secureRandom,
+                                            map.messageDigestAlgorithm,
+                                            false
+                                        )
+                                    }".toUpperCase()
+                                }
                                 permitAwardStatus = map.activeStatus
                                 dateOfIssue = issueDate
                                 dateOfExpiry = expiryDate
