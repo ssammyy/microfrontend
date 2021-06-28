@@ -10,8 +10,6 @@ import org.kebs.app.kotlin.apollo.common.exceptions.ServiceMapNotFoundException
 import org.kebs.app.kotlin.apollo.common.utils.generateRandomText
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.*
-import org.kebs.app.kotlin.apollo.store.model.di.CdDemandNoteItemsDetailsEntity
-import org.kebs.app.kotlin.apollo.store.model.di.CdItemDetailsEntity
 import org.kebs.app.kotlin.apollo.store.model.qa.*
 import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileDirectorsEntity
 import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileEntity
@@ -311,7 +309,7 @@ class QADaoServices(
             ?: throw ExpectedDataNotFound("No Permit Found for the following user with USERNAME = ${user.userName}")
     }
 
-    fun findPermitWithPermitNumberLatest(permitRefNumber: String): PermitApplicationsEntity {
+    fun findPermitWithPermitRefNumberLatest(permitRefNumber: String): PermitApplicationsEntity {
         permitRepo.findTopByPermitRefNumberOrderByIdDesc(permitRefNumber)
             ?.let {
                 return it
@@ -1846,9 +1844,9 @@ class QADaoServices(
         try {
             val pm = findPermitBYID(permitID)
             var oldPermit =
-                findPermitWithPermitNumberLatest(pm.awardedPermitNumber ?: throw Exception("INVALID PERMIT NUMBER"))
+                findPermitWithPermitRefNumberLatest(pm.permitRefNumber ?: throw Exception("INVALID PERMIT NUMBER"))
             KotlinLogging.logger { }
-                .info { "::::::::::::::::::PERMIT With PERMIT NUMBER = ${pm.awardedPermitNumber}, DOES Exists::::::::::::::::::::: " }
+                .info { "::::::::::::::::::PERMIT With PERMIT NUMBER = ${pm.permitRefNumber}, DOES Exists::::::::::::::::::::: " }
             val versionNumberOld =
                 oldPermit.versionNumber ?: throw ExpectedDataNotFound("Permit Version Number is Empty")
 
@@ -1869,6 +1867,7 @@ class QADaoServices(
                     )
                 }".toUpperCase()
                 renewalStatus = s.activeStatus
+                userTaskId = applicationMapProperties.mapUserTaskNameMANUFACTURE
                 userId = user.id
                 attachedPlantId = oldPermit.attachedPlantId
                 permitType = oldPermit.permitType
