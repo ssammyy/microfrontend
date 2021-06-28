@@ -60,9 +60,11 @@ class LimsServices(
 //    lateinit var permitRepo: IPermitApplicationsRepository
 
     val appId = applicationMapProperties.mapLimsTransactions
+    val appIdPDF = applicationMapProperties.mapLimsTransactions
 
     fun performPostCall(
-        postDataParams: HashMap<String, String>
+        postDataParams: HashMap<String, String>,
+        applicationMapID: Long
     ): String? {
         val url: URL
         var response: String? = ""
@@ -149,7 +151,7 @@ class LimsServices(
         var results = false
         val hmap = HashMap<String, String>()
         hmap["bsnumber"] = bsNumber
-        val myResults = performPostCall(hmap)
+        val myResults = performPostCall(hmap, applicationMapProperties.mapLimsConfigIntegration)
         if (myResults != null) {
             results= labResponseResults(myResults)
         }

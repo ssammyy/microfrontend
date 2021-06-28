@@ -663,6 +663,25 @@ class CommonDaoServices(
             ?: throw ExpectedDataNotFound("No user Profile Matched the following details [designation id = ${designationsEntity.id}] and [region id = ${regionsEntity.id}]and [department id = ${departmentsEntity.id}] and [status = $status]")
     }
 
+    fun findUserProfileWithDesignationRegionDepartmentAndStatusAndSection(
+        designationsEntity: DesignationsEntity,
+        sectionsEntity: SectionsEntity,
+        regionsEntity: RegionsEntity,
+        departmentsEntity: DepartmentsEntity,
+        status: Int
+    ): UserProfilesEntity {
+        iUserProfilesRepo.findByRegionIdAndDepartmentIdAndStatusAndSectionIdAndDesignationId(
+            regionsEntity,
+            departmentsEntity,
+            status,
+            sectionsEntity,
+            designationsEntity
+        )?.let { userProfile ->
+            return userProfile
+        }
+            ?: throw ExpectedDataNotFound("No user Profile Matched the following details [sections name = ${sectionsEntity.section}] and [region name = ${regionsEntity.region}]and [department id = ${departmentsEntity.department}] and [status = $status]")
+    }
+
     fun findUserProfileWithDesignationAndStatus(
         designationsEntity: DesignationsEntity,
         status: Int
@@ -685,6 +704,26 @@ class CommonDaoServices(
             regionsEntity,
             departmentsEntity,
             status
+        )
+            ?.let { users ->
+                return users
+            }
+            ?: throw ExpectedDataNotFound("No users Profile Matched the following details [designation id = ${designationsEntity.id}] and [region id = ${regionsEntity.id}]and [department id = ${departmentsEntity.id}] and [status = $status]")
+    }
+
+    fun findAllUsersWithDesignationRegionDepartmentSectionAndStatus(
+        designationsEntity: DesignationsEntity,
+        regionsEntity: RegionsEntity,
+        sectionsEntity: SectionsEntity,
+        departmentsEntity: DepartmentsEntity,
+        status: Int
+    ): List<UserProfilesEntity> {
+        iUserProfilesRepo.findAllByDesignationIdAndRegionIdAndDepartmentIdAndStatusAndSectionId(
+            designationsEntity,
+            regionsEntity,
+            departmentsEntity,
+            status,
+            sectionsEntity
         )
             ?.let { users ->
                 return users

@@ -253,12 +253,12 @@
 </script>
 <script>
     $(document).ready(function () {
-        var table1 = $('#example1').DataTable({
+        var table = $('#example1').DataTable({
             lengthChange: false,
             buttons: ['copy', 'excel', 'pdf', 'colvis']
         });
 
-        table1.buttons().container()
+        table.buttons().container()
             .appendTo('#example_wrapper .col-sm-6:eq(0)');
 
         var table2 = $('#example2').DataTable({

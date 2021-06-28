@@ -23,8 +23,9 @@
                 <div class="content-row">
                     <div class="row">
                         <h5 style="font-weight: bold; color: #0082f3; font-size: 14px">STA 10: INITIAL/(ROUTINE) INSPECTION REPORTS FACTORY ASSESSMENT</h5>
-                        <form id="sta3Form" class="needs-validation" novalidate
-                              th:action="@{/api/qa/apply/new-sta10(permitID = ${permit.id}, permitViewType=${message})}" method="post">
+                        <form id="sta3Form"
+                              th:action="@{/api/qa/apply/new-sta10(permitID = ${permit.id}, permitViewType=${message})}"
+                              method="post">
                             <div th:object="${QaSta10Entity}">
                                 <div class="form-row">
                                     <div class="col-md-12 mb-3">
@@ -305,7 +306,7 @@
 
         $("#mySubmit").click(function () {
             let allAreFilled = true;
-            document.getElementById("myForm").querySelectorAll("[required]").forEach(function (i) {
+            document.getElementById("sta3Form").querySelectorAll("[required]").forEach(function (i) {
                 if (!allAreFilled) return;
                 let inputID = `#${i.id}`
                 if (!i.value) {

@@ -434,6 +434,7 @@ class QualityAssuranceController(
                         val pacSecList = permitDetails.attachedPlantId?.let {
                             qaDaoServices.findOfficersList(
                                 it,
+                                permitDetails,
                                 map,
                                 applicationMapProperties.mapQADesignationIDForPacSecId
                             )
@@ -460,6 +461,17 @@ class QualityAssuranceController(
 
                     }
                     map.inactiveStatus -> {
+//                        var reasonValue: String? = null
+//                        reasonValue = "REJECTED"
+//                        with(permitDetails) {
+//                            hodApproveAssessmentStatus = null
+//                        }
+//                        qaDaoServices.permitInsertStatus(
+//                            permitDetails,
+//                            applicationMapProperties.mapQaStatusRejectedJustCationReport,
+//                            loggedInUser
+//                        )
+//                        qaDaoServices.justificationReportSendEmail(permitDetails, reasonValue)
                         //                    complianceValue= "NON-COMPLIANT"
                         //                    qaDaoServices.permitInsertStatus(permitDetails,applicationMapProperties.mapQaStatusRe,loggedInUser)
                     }
@@ -572,6 +584,34 @@ class QualityAssuranceController(
                             loggedInUser
                         )
                         qaDaoServices.schemeSendEmail(permitDetails, reasonValue)
+                    }
+                }
+
+            }
+            permit.justificationReportStatus != null -> {
+                //Send notification
+                var reasonValue: String? = null
+                when (permit.justificationReportStatus) {
+                    map.activeStatus -> {
+                        reasonValue = "ACCEPTED"
+                        qaDaoServices.justificationReportSendEmail(permitDetails, reasonValue)
+                        qaDaoServices.permitInsertStatus(
+                            permitDetails,
+                            applicationMapProperties.mapQaStatusPAssesorAssigning,
+                            loggedInUser
+                        )
+                    }
+                    map.inactiveStatus -> {
+                        reasonValue = "REJECTED"
+                        with(permitDetails) {
+                            justificationReportStatus = null
+                        }
+                        qaDaoServices.permitInsertStatus(
+                            permitDetails,
+                            applicationMapProperties.mapQaStatusRejectedJustCationReport,
+                            loggedInUser
+                        )
+                        qaDaoServices.justificationReportSendEmail(permitDetails, reasonValue)
                     }
                 }
 
@@ -1163,8 +1203,9 @@ class QualityAssuranceController(
         when (permitViewType) {
             applicationMapProperties.mapPermitRenewMessage -> {
                 val sta3 = qaDaoServices.findSTA3WithPermitIDBY(permitID)
+                QaSta3Entity.id = sta3.id
                 qaDaoServices.sta3Update(
-                    commonDaoServices.updateDetails(QaSta3Entity, sta3) as QaSta3Entity,
+                    commonDaoServices.updateDetails(sta3, QaSta3Entity) as QaSta3Entity,
                     map,
                     loggedInUser
                 )
@@ -1435,9 +1476,11 @@ class QualityAssuranceController(
         @RequestParam("scfStatus") scfStatus: Int?,
         @RequestParam("ssfStatus") ssfStatus: Int?,
         @RequestParam("cocStatus") cocStatus: Int?,
+        @RequestParam("assessmentReportStatus") assessmentReportStatus: Int?,
         @RequestParam("labResultsStatus") labResultsStatus: Int?,
         @RequestParam("docFileName") docFileName: String,
         @RequestParam("doc_file") docFile: MultipartFile,
+        @RequestParam("assessment_recommendations") assessmentRecommendations: String?,
         model: Model
     ): String? {
         val map = commonDaoServices.serviceMapDetails(appId)
@@ -1517,6 +1560,52 @@ class QualityAssuranceController(
                         )
 
                     }
+                    assessmentReportStatus != null -> {
+                        uploads.assessmentReportStatus = assessmentReportStatus
+                        versionNumber = qaDaoServices.findAllUploadedFileBYPermitIDAndAssessmentReportStatus(
+                            permitID,
+                            map.activeStatus
+                        ).size.toLong().plus(versionNumber)
+                        uploadResults = qaDaoServices.saveQaFileUploads(
+                            docFile,
+                            docFileName,
+                            loggedInUser,
+                            map,
+                            uploads,
+                            permitID,
+                            versionNumber,
+                            manufactureNonStatus
+                        )
+
+                        val hodDetails = qaDaoServices.assignNextOfficerAfterPayment(
+                            permitDetails,
+                            map,
+                            applicationMapProperties.mapQADesignationIDForHODId
+                        )
+
+
+                        with(permitDetails) {
+                            assessmentScheduledStatus = map.successStatus
+                            assessmentReportRemarks = assessmentRecommendations
+                            hodId = hodDetails?.id
+                            permitStatus = applicationMapProperties.mapQaStatusPApprovalAssesmentReport
+                        }
+                        qaDaoServices.permitUpdateDetails(permitDetails, map, loggedInUser)
+
+                        //Send notification to PAC secretary
+                        val hodSec = hodDetails?.id?.let { commonDaoServices.findUserByID(it) }
+                        hodSec?.email?.let { qaDaoServices.sendPacDmarkAssessmentNotificationEmail(it, permitDetails) }
+
+//                        permitDetails.generateSchemeStatus = map.activeStatus
+//                        permitDetails.sscId = uploadResults.second.id
+//                        permitDetails = qaDaoServices.permitUpdateDetails(permitDetails, map, loggedInUser).second
+//                        qaDaoServices.permitInsertStatus(
+//                            permitDetails,
+//                            applicationMapProperties.mapQaStatusPApprSSC,
+//                            loggedInUser
+//                        )
+
+                    }
                     inspectionReportStatus != null -> {
                         uploads.inspectionReportStatus = inspectionReportStatus
 //                        versionNumber = qaDaoServices.findAllUploadedFileBYPermitIDAndSscStatus(permitID, map.activeStatus).size.toLong().plus(versionNumber)
@@ -1536,7 +1625,7 @@ class QualityAssuranceController(
 //                        qaDaoServices.permitInsertStatus(permitDetails, applicationMapProperties.mapQaStatusPApprSSC, loggedInUser)
 
                     }
-                    inspectionReportStatus != null -> {
+                    sta10Status != null -> {
                         uploads.sta10Status = sta10Status
 //                        versionNumber = qaDaoServices.findAllUploadedFileBYPermitIDAndSscStatus(permitID, map.activeStatus).size.toLong().plus(versionNumber)
                         uploadResults = qaDaoServices.saveQaFileUploads(
@@ -1555,6 +1644,7 @@ class QualityAssuranceController(
 //                        qaDaoServices.permitInsertStatus(permitDetails, applicationMapProperties.mapQaStatusPApprSSC, loggedInUser)
 
                     }
+
                 }
             }
         }
@@ -1682,8 +1772,15 @@ class QualityAssuranceController(
 
         with(permit) {
             justificationReportStatus = map.initStatus
+            permitStatus = applicationMapProperties.mapQaStatusPApprovalustCationReport
         }
         result = qaDaoServices.permitUpdateDetails(permit, map, loggedInUser).first
+
+//        qaDaoServices.permitInsertStatus(
+//            permitDetails,
+//            applicationMapProperties.mapQaStatusPendingCorrectionManf,
+//            loggedInUser
+//        )
 
         //Send notification to HOD for permit approval
 
@@ -1735,6 +1832,7 @@ class QualityAssuranceController(
             assessmentScheduledStatus = map.successStatus
             assessmentReportRemarks = assessmentRecommendations
             hodId = hodDetails?.id
+            permitStatus = applicationMapProperties.mapQaStatusPApprovalAssesmentReport
         }
         qaDaoServices.permitUpdateDetails(permitDetails, map, loggedInUser)
 
@@ -1757,8 +1855,7 @@ class QualityAssuranceController(
 //        pacSec?.email?.let { qaDaoServices.sendPacDmarkAssessmentNotificationEmail(it, permitDetails) }
 
         val sm = CommonDaoServices.MessageSuccessFailDTO()
-        sm.closeLink =
-            "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitDetails.id}"
+        sm.closeLink = "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitDetails.id}"
         sm.message = "Factory Assessment report successfully uploaded"
 
         return commonDaoServices.returnValues(result, map, sm)

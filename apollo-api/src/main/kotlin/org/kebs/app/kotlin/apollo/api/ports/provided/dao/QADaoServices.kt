@@ -724,6 +724,12 @@ class QADaoServices(
         } ?: throw ExpectedDataNotFound("No File found with the following [ id=$permitId]")
     }
 
+    fun findAllUploadedFileBYPermitIDAndAssessmentReportStatus(permitId: Long, status: Int): List<QaUploadsEntity> {
+        qaUploadsRepo.findByPermitIdAndAssessmentReportStatus(permitId, status)?.let {
+            return it
+        } ?: throw ExpectedDataNotFound("No File found with the following [ id=$permitId]")
+    }
+
     fun findAllUploadedFileBYPermitIDAndSscStatus(permitId: Long, status: Int): List<QaUploadsEntity> {
         qaUploadsRepo.findByPermitIdAndSscStatus(permitId, status)?.let {
             return it
@@ -969,6 +975,7 @@ class QADaoServices(
             }
 
             permitForeignStatus = permit.permitForeignStatus == 1
+
             when (permit.assignOfficerStatus) {
                 map.activeStatus -> {
                     assignOfficer = commonDaoServices.concatenateName(
@@ -1030,6 +1037,7 @@ class QADaoServices(
 
     fun findOfficersList(
         plantID: Long,
+        permit: PermitApplicationsEntity,
         map: ServiceMapsEntity,
         designationID: Long
     ): List<UserProfilesEntity> {
@@ -1038,11 +1046,15 @@ class QADaoServices(
             ?: throw ExpectedDataNotFound("Plant attached Region Id is Empty, check config")
         val department = commonDaoServices.findDepartmentByID(applicationMapProperties.mapQADepertmentId)
         val designation = commonDaoServices.findDesignationByID(designationID)
+        val section = commonDaoServices.findSectionWIthId(
+            permit.sectionId ?: throw ExpectedDataNotFound("SECTION VALUE IS MISSING")
+        )
 
         //return commonDaoServices.findAllUsersWithinRegionDepartmentDivisionSectionId(region, department, division, section, map.activeStatus)
-        return commonDaoServices.findAllUsersWithDesignationRegionDepartmentAndStatus(
+        return commonDaoServices.findAllUsersWithDesignationRegionDepartmentSectionAndStatus(
             designation,
             region,
+            section,
             department,
             map.activeStatus
         )
@@ -1065,6 +1077,34 @@ class QADaoServices(
 
         return commonDaoServices.findUserProfileWithDesignationRegionDepartmentAndStatus(
             designation,
+            region,
+            department,
+            map.activeStatus
+        ).userId
+
+    }
+
+    fun assignNextOfficerBasedOnSection(
+        permit: PermitApplicationsEntity,
+        map: ServiceMapsEntity,
+        designationID: Long
+    ): UsersEntity? {
+        val plantID = permit.attachedPlantId
+            ?: throw ServiceMapNotFoundException("Attached Plant details For Permit with ID = ${permit.id}, is Empty")
+
+        val plantAttached = findPlantDetails(plantID)
+        val designation = commonDaoServices.findDesignationByID(designationID)
+        val section = commonDaoServices.findSectionWIthId(
+            permit.sectionId ?: throw ExpectedDataNotFound("SECTION VALUE IS MISSING")
+        )
+        val region = plantAttached.region?.let { commonDaoServices.findRegionEntityByRegionID(it, map.activeStatus) }
+            ?: throw ExpectedDataNotFound("Plant attached Region Id is Empty, check config")
+        val department = commonDaoServices.findDepartmentByID(applicationMapProperties.mapQADepertmentId)
+
+
+        return commonDaoServices.findUserProfileWithDesignationRegionDepartmentAndStatusAndSection(
+            designation,
+            section,
             region,
             department,
             map.activeStatus
@@ -1316,7 +1356,12 @@ class QADaoServices(
                     complianceValue = "NON-COMPLIANT"
                 }
             }
-            permitInsertStatus(permitDetails, applicationMapProperties.mapQaStatusPRecommendation, user)
+            if (permitDetails.permitType == applicationMapProperties.mapQAPermitTypeIDDmark) {
+                permitInsertStatus(permitDetails, applicationMapProperties.mapQaStatusPGeneJustCationReport, user)
+            } else {
+                permitInsertStatus(permitDetails, applicationMapProperties.mapQaStatusPRecommendation, user)
+            }
+
             sendComplianceStatusAndLabReport(
                 permitDetails,
                 complianceValue ?: throw ExpectedDataNotFound("INVALID VALUE")
@@ -1531,6 +1576,23 @@ class QADaoServices(
         val messageBody = "Dear ${userPermit?.let { commonDaoServices.concatenateName(it) }}: \n" +
                 "\n " +
                 "Scheme For Supervision And Control was ${reasonValue} " +
+//                "due to the Following reason ${foundSSC.acceptedRejectedReason}:" +
+                "\n " +
+                "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitUpdate.id}"
+
+        userPermit?.email?.let { notifications.sendEmail(it, subject, messageBody) }
+    }
+
+    fun justificationReportSendEmail(
+        permitUpdate: PermitApplicationsEntity,
+        reasonValue: String?,
+    ) {
+        //todo: for now lets work with this i will change it
+        val userPermit = permitUpdate.userId?.let { commonDaoServices.findUserByID(it) }
+        val subject = "JUSTIFICATION REPORT"
+        val messageBody = "Dear ${userPermit?.let { commonDaoServices.concatenateName(it) }}: \n" +
+                "\n " +
+                "Justification report was ${reasonValue} " +
 //                "due to the Following reason ${foundSSC.acceptedRejectedReason}:" +
                 "\n " +
                 "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitUpdate.id}"
@@ -2841,6 +2903,7 @@ class QADaoServices(
                             taxAmount
                         )
                     }
+                    else -> throw ExpectedDataNotFound("MISSING DMARK APPLICATION TYPE ")
                 }
             }
             applicationMapProperties.mapQAPermitTypeIdFmark -> {

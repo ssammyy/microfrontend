@@ -978,6 +978,7 @@ class QualityAssuranceHandler(
                 permit.attachedPlantId?.let {
                     qaDaoServices.findOfficersList(
                         it,
+                        permit,
                         s,
                         applicationMapProperties.mapQADesignationIDForQAOId
                     )
@@ -987,6 +988,7 @@ class QualityAssuranceHandler(
                 permit.attachedPlantId?.let {
                     qaDaoServices.findOfficersList(
                         it,
+                        permit,
                         s,
                         applicationMapProperties.mapQADesignationIDForAssessorId
                     )

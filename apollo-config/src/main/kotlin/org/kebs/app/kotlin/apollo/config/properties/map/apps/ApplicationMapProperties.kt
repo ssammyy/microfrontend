@@ -307,6 +307,9 @@ class ApplicationMapProperties {
     @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.status.pending_generation_of_justification_report}")
     val mapQaStatusPGeneJustCationReport: Long = 0L
 
+    @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.status.rejected_justification_report}")
+    val mapQaStatusRejectedJustCationReport: Long = 0L
+
     @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.status.pending_approval_of_justification_report}")
     val mapQaStatusPApprovalustCationReport: Long = 0L
 
@@ -403,6 +406,9 @@ class ApplicationMapProperties {
 
     @Value("\${org.kebs.app.kotlin.apollo.application.map.lims.config.integration}")
     val mapLimsConfigIntegration: Long = 0L
+
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.lims.config.integration.pdf}")
+    val mapLimsConfigIntegrationPDF: Long = 0L
 
     @Value("\${org.kebs.app.kotlin.apollo.application.map.sms.config.integration}")
     val mapSmsConfigIntegration: Long = 0L

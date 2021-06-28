@@ -31,6 +31,10 @@ class QaUploadsEntity : Serializable {
     @Basic
     var versionNumber: Long? = null
 
+    @Column(name = "ASSESSMENT_REPORT_STATUS")
+    @Basic
+    var assessmentReportStatus: Int? = null
+
     @Column(name = "SSC_STATUS")
     @Basic
     var sscStatus: Int? = null
@@ -163,6 +167,7 @@ class QaUploadsEntity : Serializable {
                 transactionDate == that.transactionDate &&
                 permitId == that.permitId &&
                 nonManufactureStatus == that.nonManufactureStatus &&
+                assessmentReportStatus == that.assessmentReportStatus &&
                 status == that.status &&
                 varField1 == that.varField1 &&
                 varField2 == that.varField2 &&
@@ -185,6 +190,7 @@ class QaUploadsEntity : Serializable {
     override fun hashCode(): Int {
         var result = Objects.hash(
             id,
+            assessmentReportStatus,
             versionNumber,
             cocStatus,
             sta10Status,
