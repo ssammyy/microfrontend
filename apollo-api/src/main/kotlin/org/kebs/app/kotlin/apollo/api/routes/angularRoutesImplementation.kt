@@ -105,7 +105,14 @@ class AngularRoutes {
                     POST("", handler::handleLogout)
                 }
             }
-
+            "anonymous".nest {
+                "/sendTokenForUser".nest {
+                    POST("", handler::handleSendTokenToThePhone)
+                }
+                "/validateTokenFromThePhone".nest {
+                    POST("", handler::handleValidateTokenFromThePhone)
+                }
+            }
             "/company".nest {
                 GET("", handler::handleFetchCompaniesByUserId)
                 POST("", handler::handleUpdateCompanyDetails)
@@ -128,7 +135,6 @@ class AngularRoutes {
                             }
                         }
                     }
-
                     "/directors".nest {
                         GET("", handler::handleFetchDirectorsByCompanyIdAndUserId)
                         POST("", handler::handleUpdateProfileDirectors)
@@ -206,6 +212,7 @@ class AngularRoutes {
                 "/{id}".nest {
                     GET("", handler::notSupported)
                     PUT("", handler::notSupported)
+                    GET("/towns", handler::townsListingByCountyId)
                 }
 
             }

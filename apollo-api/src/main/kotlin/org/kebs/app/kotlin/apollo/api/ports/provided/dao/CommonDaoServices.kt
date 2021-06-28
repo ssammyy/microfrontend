@@ -1573,7 +1573,7 @@ class CommonDaoServices(
                                     emailVerificationTokenEntityRepo.save(verificationToken)
                                     return CustomResponse().apply {
                                         response = "00"
-                                        payload = "Successfully activated"
+                                        payload = "Success, valid OTP received"
                                         status = 200
                                     }
 

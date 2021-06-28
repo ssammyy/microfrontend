@@ -41,6 +41,18 @@ class RegistrationManagementDaoService(
 ) {
     /**
      * Send validation Token to the user's registered phone given the user's username
+     * @param request the Http payload of SendTokenRequestDto
+     * @return CustomResponse
+     */
+    fun validateTokenFromThePhone(request: ValidateTokenRequestDto): CustomResponse? =
+        commonDaoServices.validateOTPToken(
+            request.token ?: throw NullValueNotAllowedException("Invalid Token provided"), request.username
+        )
+
+    /**
+     * Send validation Token to the user's registered phone given the user's username
+     * @param request the Http payload of SendTokenRequestDto
+     * @return CustomResponse
      */
     fun sendTokenToThePhone(request: SendTokenRequestDto): CustomResponse? {
         val result = CustomResponse()

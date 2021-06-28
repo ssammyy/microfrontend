@@ -20,6 +20,7 @@
 **/node_modules/
 
 
+
 ### NetBeans ###
 /nbproject/private/
 /nbbuild/
@@ -46,3 +47,5 @@
 
 **/uploads/
 package-lock.json
+/apollo-angular/yarn-error.log
+/apollo-angular/yarn.lock

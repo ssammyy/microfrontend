@@ -5,12 +5,14 @@ import {
   brsValidationReducer,
   CompaniesEffects,
   companyIdReducer,
+  countyIdReducer,
   directorIdReducer,
   RegistrationEffects,
   registrationReducer,
   responseReducer,
   RouterEffects,
   sendTokenToPhoneReducer,
+  TownEffects,
   userIdReducer,
   validateTokenAndPhoneReducer
 } from "./data";
@@ -27,6 +29,7 @@ export const appReducer = {
   registration: registrationReducer,
   auth: authReducer,
   companyId: companyIdReducer,
+  countyId: countyIdReducer,
   branchId: branchIdReducer,
   userId: userIdReducer,
   directorId: directorIdReducer,
@@ -46,4 +49,4 @@ export function localStorageSyncReducer(reducer: ActionReducer<any>): ActionRedu
 
 export const metaReducers: Array<MetaReducer<any, any>> = [localStorageSyncReducer];
 
-export const appEffects = [RegistrationEffects, RouterEffects, AuthEffects, CompaniesEffects];
+export const appEffects = [RegistrationEffects, RouterEffects, AuthEffects, CompaniesEffects, TownEffects];

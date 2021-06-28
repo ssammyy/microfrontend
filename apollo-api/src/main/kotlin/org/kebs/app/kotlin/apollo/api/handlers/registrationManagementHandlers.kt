@@ -3,10 +3,7 @@ package org.kebs.app.kotlin.apollo.api.handlers
 import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.RegistrationManagementDaoService
 import org.kebs.app.kotlin.apollo.api.ports.provided.validation.AbstractValidationHandler
-import org.kebs.app.kotlin.apollo.common.dto.OrganizationUserEntityDto
-import org.kebs.app.kotlin.apollo.common.dto.PlantEntityDto
-import org.kebs.app.kotlin.apollo.common.dto.ProfileDirectorsEntityDto
-import org.kebs.app.kotlin.apollo.common.dto.UserCompanyEntityDto
+import org.kebs.app.kotlin.apollo.common.dto.*
 import org.kebs.app.kotlin.apollo.common.exceptions.InvalidInputException
 import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
 import org.kebs.app.kotlin.apollo.config.properties.auth.AuthenticationProperties
@@ -25,6 +22,54 @@ class RegistrationManagementHandler(
     private val validator: Validator,
     private val authenticationProperties: AuthenticationProperties
 ) : AbstractValidationHandler() {
+
+    /**
+     * Validate the received payload of ValidateTokenRequestDto and send it to backend service for validation
+     * @param req ServerRequest
+     * @return ServerResponse
+     *
+     */
+    @PreAuthorize("isAnonymous")
+    fun handleValidateTokenFromThePhone(req: ServerRequest): ServerResponse {
+        return try {
+            val body = req.body<ValidateTokenRequestDto>()
+            val errors: Errors = BeanPropertyBindingResult(body, ValidateTokenRequestDto::class.java.name)
+            validator.validate(body, errors)
+            service.validateTokenFromThePhone(body)
+                ?.let { ServerResponse.ok().body(it) }
+                ?: onErrors("We could not complete your request try again later")
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.debug(e.message, e)
+            KotlinLogging.logger { }.error(e.message)
+            onErrors(e.message)
+
+        }
+    }
+
+    /**
+     * Send OTP given the username as payload
+     * @param req ServerRequest
+     * @return ServerResponse
+     *
+     */
+    @PreAuthorize("isAnonymous")
+    fun handleSendTokenToThePhone(req: ServerRequest): ServerResponse {
+        return try {
+            val body = req.body<SendTokenRequestDto>()
+            val errors: Errors = BeanPropertyBindingResult(body, SendTokenRequestDto::class.java.name)
+            validator.validate(body, errors)
+            service.sendTokenToThePhone(body)
+                ?.let { ServerResponse.ok().body(it) }
+                ?: onErrors("We could not complete your request try again later")
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.debug(e.message, e)
+            KotlinLogging.logger { }.error(e.message)
+            onErrors(e.message)
+
+        }
+    }
 
 
     /**

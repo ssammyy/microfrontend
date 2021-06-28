@@ -23,6 +23,8 @@ package org.kebs.app.kotlin.apollo.store.repo
 
 import org.kebs.app.kotlin.apollo.store.model.*
 import org.springframework.data.hazelcast.repository.HazelcastRepository
+import org.springframework.data.jpa.repository.Query
+import org.springframework.data.repository.query.Param
 import org.springframework.stereotype.Repository
 
 @Repository
@@ -54,6 +56,9 @@ interface IRegionsRepository : HazelcastRepository<RegionsEntity, Long> {
 interface ITownsRepository : HazelcastRepository<TownsEntity, Long> {
     fun findByStatusOrderByTown(status: Int): List<TownsEntity>?
     fun findByCountiesAndStatus(counties: CountiesEntity, status: Int): List<TownsEntity>?
+
+    @Query("select * from CFG_KEBS_TOWNS where COUNTY_ID = :countyId and status = :status", nativeQuery = true)
+    fun findByCountyIdAndStatus(@Param("countyId") countyId: Long, @Param("status") status: Int): List<TownsEntity>?
     fun findByIdAndStatus(id: Long, status: Int): TownsEntity?
 }
 

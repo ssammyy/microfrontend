@@ -3,7 +3,7 @@ import {Observable, throwError} from "rxjs";
 import {ApiEndpointService} from "../../../services/endpoints/api-endpoint.service";
 import {catchError, map} from "rxjs/operators";
 import {HttpClient, HttpErrorResponse} from "@angular/common/http";
-import {LoggedInUser, LoginCredentials} from "./auth.model";
+import {LoggedInUser, LoginCredentials, SendTokenRequestDto, ValidateTokenRequestDto} from "./auth.model";
 import {ApiResponse} from "../../../domain/response.model";
 
 @Injectable({
@@ -12,6 +12,22 @@ import {ApiResponse} from "../../../domain/response.model";
 export class AuthService {
 
   constructor(private http: HttpClient) {
+  }
+
+  public sendTokenForUser(payload: SendTokenRequestDto): Observable<ApiResponse> {
+    const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.SEND_TOKEN_FOR_USER);
+    return this.http.post<ApiResponse>(url, payload).pipe(
+      map((r: ApiResponse): ApiResponse => r),
+      catchError((fault: HttpErrorResponse) => throwError(fault))
+    );
+  }
+
+  public validateTokenForUser(payload: ValidateTokenRequestDto): Observable<ApiResponse> {
+    const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.VALIDATE_TOKEN_FOR_USER);
+    return this.http.post<ApiResponse>(url, payload).pipe(
+      map((r: ApiResponse): ApiResponse => r),
+      catchError((fault: HttpErrorResponse) => throwError(fault))
+    );
   }
 
   public logout(): Observable<ApiResponse> {

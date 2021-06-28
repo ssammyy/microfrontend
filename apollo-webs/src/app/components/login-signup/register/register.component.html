@@ -79,7 +79,7 @@
 
       <div *ngIf="selectedType == 0" class="form-group">
         <label><b>ID/Passport Number</b></label>
-        <input [ngClass]="{ 'is-invalid': submitted && formRegister.userPinIdNumber.errors }"
+        <input
                aria-describedby="inputGroup-sizing-sm" aria-label="Small"
                class="form-control one-column-input " formControlName="userPinIdNumber" name="userPinIdNumber"
                placeholder="0000000000" type="text">
@@ -91,7 +91,7 @@
 
 
       <div style="margin: 3em 0 2em 0">
-        <button [disabled]="!registerForm.valid" class="submit-button" type="submit">REGISTER</button>
+        <button  class="submit-button" type="submit">REGISTER</button>
       </div>
 
       <!--      <div>-->

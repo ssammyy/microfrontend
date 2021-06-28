@@ -93,24 +93,45 @@ class MasterDataDaoService(
         subRegionsRepo.findByStatusOrderBySubRegion(status)?.sortedBy { it.id }?.map { SubRegionsEntityDto(it.id, it.subRegion, it.descriptions, it.regionId?.id, it.status == 1) }
 
     fun getAllSections(): List<SectionsEntityDto>? = sectionsRepo.findAll().sortedBy { it.id }.map { SectionsEntityDto(it.id, it.section, it.divisionId?.id, it.descriptions, it.status == 1) }
-    fun getSectionsByStatus(status: Int): List<SectionsEntityDto>? = sectionsRepo.findByStatusOrderBySection(status)?.map { SectionsEntityDto(it.id, it.section, it.divisionId?.id, it.descriptions, it.status == 1) }
+    fun getSectionsByStatus(status: Int): List<SectionsEntityDto>? = sectionsRepo.findByStatusOrderBySection(status)
+        ?.map { SectionsEntityDto(it.id, it.section, it.divisionId?.id, it.descriptions, it.status == 1) }
 
-    fun getAllSubSectionsL1(): List<SubSectionsL1EntityDto>? = subSectionsL1Repo.findAll().sortedBy { it.id }.map { SubSectionsL1EntityDto(it.id, it.subSection, it.sectionId?.id, it.status == 1) }
+    fun getAllSubSectionsL1(): List<SubSectionsL1EntityDto>? = subSectionsL1Repo.findAll().sortedBy { it.id }
+        .map { SubSectionsL1EntityDto(it.id, it.subSection, it.sectionId?.id, it.status == 1) }
+
     fun getSubSectionsL1ByStatus(status: Int): List<SubSectionsL1EntityDto>? =
-        subSectionsL1Repo.findByStatusOrderBySubSection(status)?.sortedBy { it.id }?.map { SubSectionsL1EntityDto(it.id, it.subSection, it.sectionId?.id, it.status == 1) }
+        subSectionsL1Repo.findByStatusOrderBySubSection(status)?.sortedBy { it.id }
+            ?.map { SubSectionsL1EntityDto(it.id, it.subSection, it.sectionId?.id, it.status == 1) }
 
-    fun getAllSubSectionsL2(): List<SubSectionsL2EntityDto>? = subSectionsL2Repo.findAll().sortedBy { it.id }.map { SubSectionsL2EntityDto(it.id, it.subSection, it.subSectionLevel1Id?.id, it.status == 1) }
-    fun getSubSectionsL2ByStatus(status: Int): List<SubSectionsLevel2Entity>? = subSectionsL2Repo.findByStatusOrderBySubSection(status)
+    fun getAllSubSectionsL2(): List<SubSectionsL2EntityDto>? = subSectionsL2Repo.findAll().sortedBy { it.id }
+        .map { SubSectionsL2EntityDto(it.id, it.subSection, it.subSectionLevel1Id?.id, it.status == 1) }
 
-    fun getAllTowns(): List<TownsEntityDto>? = townsRepo.findAll().sortedBy { it.id }.map { TownsEntityDto(it.id, it.town, it.counties?.id, it.status == 1) }
-    fun getTownsByStatus(status: Int): List<TownsEntityDto>? = townsRepo.findByStatusOrderByTown(status)?.sortedBy { it.id }?.map { TownsEntityDto(it.id, it.town, it.counties?.id, it.status == 1) }
+    fun getSubSectionsL2ByStatus(status: Int): List<SubSectionsLevel2Entity>? =
+        subSectionsL2Repo.findByStatusOrderBySubSection(status)
+
+    fun getAllTowns(): List<TownsEntityDto>? =
+        townsRepo.findAll().sortedBy { it.id }.map { TownsEntityDto(it.id, it.town, it.counties?.id, it.status == 1) }
+
+    fun getAllTownsByCountyId(countyId: Long, status: Int): List<TownsEntityDto>? =
+        townsRepo.findByCountyIdAndStatus(countyId, status)?.sortedBy { it.id }
+            ?.map { TownsEntityDto(it.id, it.town, it.counties?.id, it.status == 1) }
+
+    fun getTownsByStatus(status: Int): List<TownsEntityDto>? =
+        townsRepo.findByStatusOrderByTown(status)?.sortedBy { it.id }
+            ?.map { TownsEntityDto(it.id, it.town, it.counties?.id, it.status == 1) }
 
 
-    fun getAllRegions(): List<RegionsEntityDto>? = regionsRepo.findAll().sortedBy { it.id }.map { RegionsEntityDto(it.id, it.region, it.descriptions, it.status == 1) }.sortedBy { it.id }
-    fun getRegionsByStatus(status: Int): List<RegionsEntityDto>? = regionsRepo.findByStatusOrderByRegion(status)?.map { RegionsEntityDto(it.id, it.region, it.descriptions, it.status == 1) }?.sortedBy { it.id }
+    fun getAllRegions(): List<RegionsEntityDto>? = regionsRepo.findAll().sortedBy { it.id }
+        .map { RegionsEntityDto(it.id, it.region, it.descriptions, it.status == 1) }.sortedBy { it.id }
 
-    fun getAllBusinessLines(): List<BusinessLinesEntityDto>?= businessLinesRepo.findAll().sortedBy { it.id }.map { BusinessLinesEntityDto(it.id, it.name, it.descriptions, it.status ==1) }
-    fun getAllBusinessNatures(): List<BusinessNatureEntityDto>?= businessNatureRepo.findAll().sortedBy { it.id }.map { BusinessNatureEntityDto(it.id, it.businessLinesId?.id, it.name, it.descriptions, it.status ==1) }
+    fun getRegionsByStatus(status: Int): List<RegionsEntityDto>? = regionsRepo.findByStatusOrderByRegion(status)
+        ?.map { RegionsEntityDto(it.id, it.region, it.descriptions, it.status == 1) }?.sortedBy { it.id }
+
+    fun getAllBusinessLines(): List<BusinessLinesEntityDto>? = businessLinesRepo.findAll().sortedBy { it.id }
+        .map { BusinessLinesEntityDto(it.id, it.name, it.descriptions, it.status == 1) }
+
+    fun getAllBusinessNatures(): List<BusinessNatureEntityDto>? = businessNatureRepo.findAll().sortedBy { it.id }
+        .map { BusinessNatureEntityDto(it.id, it.businessLinesId?.id, it.name, it.descriptions, it.status == 1) }
 
     fun getAllDesignations(): List<DesignationEntityDto>? = designationsRepo.findAll()
         .sortedBy { it.id }

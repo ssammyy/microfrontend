@@ -21,6 +21,7 @@ import {BranchesList} from './views/dashboard/company/branch/branches.list';
 import {DirectorsList} from './views/dashboard/company/director/directors.list';
 import {DataTablesModule} from "angular-datatables";
 import {UsersList} from './views/dashboard/company/user/users.list';
+import {ResetCredentialsComponent} from './views/registration/reset-credentials.component';
 
 
 @NgModule({
@@ -34,7 +35,8 @@ import {UsersList} from './views/dashboard/company/user/users.list';
     CompaniesList,
     BranchesList,
     DirectorsList,
-    UsersList
+    UsersList,
+    ResetCredentialsComponent
   ],
   imports: [
     BrowserModule,
@@ -53,7 +55,7 @@ import {UsersList} from './views/dashboard/company/user/users.list';
     DataTablesModule,
   ],
   providers: [
-    {provide: APP_BASE_HREF, useValue: ''}
+    {provide: APP_BASE_HREF, useValue: '/migration/'}
   ],
   bootstrap: [AppComponent]
 })

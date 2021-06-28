@@ -50,13 +50,15 @@ export class ApiEndpointService {
     VALIDATE_BRS: `${ApiEndpointService.ANONYMOUS_CONTEXT}/validateBrs`,
     HOME_PAGE: `${ApiEndpointService.ANONYMOUS_CONTEXT}`,
     SEND_TOKEN: `${ApiEndpointService.ANONYMOUS_CONTEXT}/sendToken`,
+    SEND_TOKEN_FOR_USER: `${ApiEndpointService.ANONYMOUS_CONTEXT}/sendTokenForUser`,
+    VALIDATE_TOKEN_FOR_USER: `${ApiEndpointService.ANONYMOUS_CONTEXT}/validateTokenFromThePhone`,
     VALIDATE_TOKEN: `${ApiEndpointService.ANONYMOUS_CONTEXT}/validateToken`,
     REGISTER_COMPANY: `${ApiEndpointService.ANONYMOUS_CONTEXT}/registerCompany`,
     COMPANY_LIST: `${ApiEndpointService.MASTERS_CONTEXT}/company/`,
     LOGOUT_URL: `${ApiEndpointService.MASTERS_CONTEXT}/secure/logout`,
     BRANCH_LIST: `${ApiEndpointService.MASTERS_CONTEXT}/{companyId}/branches/`,
     REGIONS_LIST: `${ApiEndpointService.ANONYMOUS_CONTEXT}/regions`,
-    COUNTY_LIST: `${ApiEndpointService.ANONYMOUS_CONTEXT}/county`,
+    COUNTY_LIST: `${ApiEndpointService.ANONYMOUS_CONTEXT}/county/`,
     TOWN_LIST: `${ApiEndpointService.ANONYMOUS_CONTEXT}/towns`,
     BUSINESS_LINES_LIST: `${ApiEndpointService.ANONYMOUS_CONTEXT}/businessLines`,
     BUSINESS_NATURES_LIST: `${ApiEndpointService.ANONYMOUS_CONTEXT}/businessNatures`,
@@ -97,6 +99,8 @@ export class ApiEndpointService {
     MASTERS_TITLES: `${ApiEndpointService.MASTERS_CONTEXT}/titles/`,
     MASTERS_COUNTRIES: `${ApiEndpointService.MASTERS_CONTEXT}/countries/`,
     MASTERS_CURRENCIES: `${ApiEndpointService.MASTERS_CONTEXT}/currencies/`,
+
+
   };
 
   /**
