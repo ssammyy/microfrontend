@@ -327,6 +327,13 @@ data class SendTokenRequestDto(
     val username: String
 )
 
+data class ValidateTokenRequestDto(
+    @NotEmpty(message = "is required")
+    val username: String,
+    @NotEmpty(message = "is required")
+    val token: String?
+)
+
 data class ValidatePhoneNumberTokenRequestDto(
     @NotEmpty(message = "is required")
     val phone: String,

@@ -10,11 +10,12 @@ import {CompaniesList} from "./views/dashboard/company/companies.list";
 import {BranchesList} from "./views/dashboard/company/branch/branches.list";
 import {DirectorsList} from "./views/dashboard/company/director/directors.list";
 import {UsersList} from "./views/dashboard/company/user/users.list";
+import {ResetCredentialsComponent} from "./views/registration/reset-credentials.component";
 
 
 const routes: Routes = [
   {
-    path: 'migration',
+    path: '',
     redirectTo: 'register',
     pathMatch: 'prefix',
   },
@@ -43,6 +44,10 @@ const routes: Routes = [
       {
         path: '',
         component: LoginComponent
+      },
+      {
+        path: 'reset',
+        component: ResetCredentialsComponent
       }
 
     ],
@@ -89,7 +94,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
+  imports: [RouterModule.forRoot(routes, {useHash: true})],
   exports: [RouterModule]
 })
 export class AppRoutingModule {

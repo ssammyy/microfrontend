@@ -1083,12 +1083,13 @@ class SystemsAdminDaoService(
             ?: run {
                 val brsCheck = registrationDaoServices.checkBrs(profile)
                 if (brsCheck.first) {
+//                    KotlinLogging.logger {  }.info("${profile.directorIdNumber} ${request.directorIdNumber}")
                     val brs = brsCheck.second
                         ?: throw ExpectedDataNotFound("The Company Details Verification details could not be found")
                     return UserCompanyEntityDto().apply {
                         name = brs.businessName
                         kraPin = brs.kraPin
-                        directorIdNumber = request.directorIdNumber
+                        directorIdNumber = profile.directorIdNumber
                         profileType = applicationMapProperties.mapUserRequestManufacture
                         registrationNumber = brs.registrationNumber
                         postalAddress = brs.postalAddress
@@ -1100,16 +1101,16 @@ class SystemsAdminDaoService(
                         businessLines = null
                         businessNatures = null
                         buildingName = null
-                        directorIdNumber = null
                         streetName = null
                         county = null
                         town = null
                         region = null
+                        status = true
 
                     }
 
                 } else {
-                    throw ExpectedDataNotFound("The Company Details Verification failed Due to Invalid Registration Number or Director Id Failed")
+                    throw ExpectedDataNotFound("The Company Details Verification failed Due to Invalid Registration Number and/or Director Id")
 
                 }
             }
@@ -1132,7 +1133,7 @@ class SystemsAdminDaoService(
             commonDaoServices.sendOtpViaSMS(token)
 
             result.apply {
-                payload = "Successfully Assigned"
+                payload = "Success, check your phone for the SMS"
                 status = 200
                 response = "00"
             }

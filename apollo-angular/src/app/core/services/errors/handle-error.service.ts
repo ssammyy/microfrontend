@@ -1,5 +1,4 @@
 import {Injectable} from '@angular/core';
-import * as fromResponseActions from '../../store';
 import {Actions} from "@ngrx/effects";
 import {ToastrService} from 'ngx-toastr';
 import {Store} from "@ngrx/store";
@@ -25,17 +24,18 @@ export class HandleErrorService {
       errorMessage = `An error occurred: ${err.error.message}`;
     } else {
       // The backend returned an unsuccessful response code.
-      errorMessage = `Error Code: ${err.status},  Message: ${err.message}`;
+      // errorMessage = `Error Code: ${err.status},  Message: ${err.error}`;
+      errorMessage = `Message: ${err.error}`;
     }
-    this.store$.dispatch(
-      fromResponseActions.loadResponsesFailure({
-        error: {
-          payload: err.error,
-          status: err.status,
-          response: (err.error instanceof ErrorEvent) ? `Error: ${err.error.message}` : `Error Code: ${err.status},  Message: ${err.error}`
-        }
-      })
-    );
+    // this.store$.dispatch(
+    //   fromResponseActions.loadResponsesFailure({
+    //     error: {
+    //       payload: err.error,
+    //       status: err.status,
+    //       response: (err.error instanceof ErrorEvent) ? `Error: ${err.error.message}` : `Error Code: ${err.status},  Message: ${err.error}`
+    //     }
+    //   })
+    // );
 
     this.toastrService.error(errorMessage);
   }

@@ -328,7 +328,7 @@
             <ng-container *ngIf="town$ | async as apps">
               <select (ngModelChange)="updateSelectedTown()"
                       formControlName="town" id="town"
-                      name="town" required="required" style="width: 48%; height: 90%">
+                      name="town" required="required" style="width: 100%; height: 90%">
                 <option ngValue="null" selected>Please select</option>
                 <option
                   *ngFor="let app of apps| filterPipe: {status: true, countyId: selectedCounty}"
@@ -433,7 +433,7 @@
 
         <div class="row input-row">
 
-        <div class="col">
+          <div class="col">
             <label class="input-placeholder" for="cellphone">
               Cellphone
             </label>
@@ -442,14 +442,19 @@
                    name="cellphone"
                    placeholder="e.g 254xxxxxx" required="required" type="tel">
             <br>
-        </div>
+          </div>
           <div class="col">
-            <button (click)="onClickSendOtp()" class="login-button mt-2" type="button">Send OTP</button>
+            <button (click)="onClickSendOtp()" [disabled]="otpSent" [hidden]="stepFourForm.get('cellphone')?.invalid"
+                    class="login-button mt-2"
+                    type="button"
+
+            >Send OTP
+            </button>
           </div>
         </div>
         <div class="row input-row">
 
-        <div class="col">
+          <div class="col">
             <label class="input-placeholder" for="otp">
               OTP
             </label>
@@ -458,9 +463,12 @@
                    name="otp"
                    placeholder="The OTP" required="required" type="text">
             <br>
-        </div>
+          </div>
           <div class="col">
-            <button (click)="onClickValidateOtp()" class="login-button mt-2" type="button">Validate OTP</button>
+            <button (click)="onClickValidateOtp()" [hidden]="stepFourForm.get('otp')?.invalid" class="login-button mt-2"
+                    type="button"
+            >Validate OTP
+            </button>
           </div>
 
         </div>

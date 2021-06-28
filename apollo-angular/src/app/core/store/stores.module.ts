@@ -9,6 +9,7 @@ import {defaultDataServiceConfig, entityConfig} from './entity-store.module';
 import {DefaultDataServiceConfig, EntityDataModule, EntityDataService} from "@ngrx/data";
 import {EffectsModule} from "@ngrx/effects";
 import {BranchesCustomService} from "./data";
+import {TownCustomService} from "./data/town/town-custom.service";
 
 
 @NgModule({
@@ -52,9 +53,11 @@ export class StoresModule {
     entityDataService: EntityDataService,
     customBranchesService: BranchesCustomService,
     customUserService: UsersCustomService,
+    customTownService: TownCustomService,
   ) {
     // Register custom EntityDataServices
     entityDataService.registerService('Branches', customBranchesService);
     entityDataService.registerService('User', customUserService);
+    entityDataService.registerService('Town', customTownService);
   }
 }

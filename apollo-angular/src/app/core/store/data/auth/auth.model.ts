@@ -13,3 +13,14 @@ export class LoggedInUser {
   expiry = Date();
 }
 
+export class SendTokenRequestDto {
+  username = '';
+}
+
+export class ValidateTokenRequestDto {
+  username = '';
+  token = '';
+}
+
+
+

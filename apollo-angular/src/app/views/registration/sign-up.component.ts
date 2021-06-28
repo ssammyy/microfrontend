@@ -11,6 +11,7 @@ import {
   CountyService,
   Go,
   loadBrsValidations,
+  loadCountyId,
   loadRegistrations,
   loadResponsesFailure,
   loadSendTokenToPhone,
@@ -20,6 +21,7 @@ import {
   RegistrationPayloadService,
   selectBrsValidationCompany,
   selectBrsValidationStep,
+  selectCountyIdData,
   selectRegistrationStateSucceeded,
   selectSendTokenToPhoneStateSent,
   selectValidateTokenAndPhoneValidated,
@@ -28,7 +30,7 @@ import {
   User
 } from "../../core/store";
 import {select, Store} from "@ngrx/store";
-import {Observable} from "rxjs";
+import {Observable, throwError} from "rxjs";
 
 @Component({
   selector: 'app-sign-up',
@@ -85,9 +87,10 @@ export class SignUpComponent implements OnInit {
     this.region$ = regionService.entities$;
     this.county$ = countyService.entities$;
     this.town$ = townService.entities$
+
     regionService.getAll().subscribe();
     countyService.getAll().subscribe();
-    townService.getAll().subscribe();
+    // townService.getAll().subscribe();
     naturesService.getAll().subscribe();
     linesService.getAll().subscribe();
 
@@ -143,6 +146,16 @@ export class SignUpComponent implements OnInit {
   updateSelectedCounty() {
     this.selectedCounty = this.stepThreeForm?.get('county')?.value;
     console.log(`county set to ${this.selectedCounty}`)
+    this.store$.dispatch(loadCountyId({payload: this.selectedCounty}));
+    this.store$.select(selectCountyIdData).subscribe(
+      (d) => {
+        if (d) {
+          console.log(`Select county inside is ${d}`);
+          return this.townService.getAll();
+        } else return throwError('Invalid request, Company id is required');
+      }
+    );
+
   }
 
   updateSelectedTown() {
@@ -160,6 +173,7 @@ export class SignUpComponent implements OnInit {
 
   onClickBrsLookup(valid: boolean) {
     if (valid) {
+      this.step = 0
       this.brsLookupRequest = this.stepZeroForm.value;
       // console.log(`Sending ${JSON.stringify(this.brsLookupRequest)}`)
       this.store$.dispatch(loadBrsValidations({payload: this.brsLookupRequest}));
@@ -207,6 +221,8 @@ export class SignUpComponent implements OnInit {
           }
         });
       } else {
+        this.otpSent = false;
+        this.stepFourForm.get('otp')?.reset();
         this.store$.dispatch(loadResponsesFailure({
           error: {
             payload: 'Cellphone needs to be validated',
@@ -239,6 +255,12 @@ export class SignUpComponent implements OnInit {
       console.log(`status inside is ${d}`)
       return this.phoneValidated = d;
     });
+    if (!this.phoneValidated) {
+      this.phoneValidated = true;
+
+    } else {
+
+    }
   }
 
   onClickSendOtp() {

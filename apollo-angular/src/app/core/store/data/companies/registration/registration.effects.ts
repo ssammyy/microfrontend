@@ -14,7 +14,7 @@ import {
 } from "./registration.actions";
 import {catchError, mergeMap, switchMap} from "rxjs/operators";
 import {RegistrationService} from "./registration.service";
-import {loadResponsesFailure} from "../../response";
+import {loadResponsesFailure, loadResponsesSuccess} from "../../response";
 import {HttpErrorResponse} from "@angular/common/http";
 import {ApiResponse} from "../../../../domain/response.model";
 
@@ -29,9 +29,25 @@ export class RegistrationEffects {
         ofType(loadBrsValidations),
         switchMap((action) => this.service.brsValidation(action.payload)
           .pipe(
-            mergeMap((data) => [
-              loadBrsValidationsSuccess({data: data, step: 1})
-            ]),
+            mergeMap((data) => {
+              if (data.status) {
+                return [
+                  loadBrsValidationsSuccess({data: data, step: 1})
+                ];
+              } else {
+                return [
+                  loadResponsesFailure({
+                    error: {
+                      payload: null,
+                      response: 'BRS Validation failed, try again later',
+                      status: 500
+                    }
+                  })
+                ];
+              }
+
+
+            }),
             catchError(
               (err: HttpErrorResponse) => of(loadResponsesFailure({
                 error: {
@@ -55,7 +71,8 @@ export class RegistrationEffects {
             mergeMap((data) => {
               if (data.status == 200) {
                 return [
-                  loadSendTokenToPhoneSuccess({data: data, validated: true})
+                  loadSendTokenToPhoneSuccess({data: data, validated: true}),
+                  loadResponsesSuccess({message: data})
                 ];
               } else {
                 return [
@@ -87,7 +104,8 @@ export class RegistrationEffects {
             mergeMap((data) => {
               if (data.status == 200) {
                 return [
-                  loadRegistrationsSuccess({data: data, succeeded: true})
+                  loadRegistrationsSuccess({data: data, succeeded: true}),
+                  loadResponsesSuccess({message: data})
                 ];
               } else {
                 return [

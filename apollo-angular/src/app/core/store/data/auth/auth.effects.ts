@@ -1,6 +1,15 @@
 import {Injectable} from '@angular/core';
 import {Actions, createEffect, ofType} from '@ngrx/effects';
-import {loadAuths, loadAuthsSuccess, loadLogout, loadLogoutSuccess} from "./auth.actions";
+import {
+  doSendTokenForUser,
+  doSendTokenForUserSuccess,
+  doValidateTokenForUser,
+  doValidateTokenForUserSuccess,
+  loadAuths,
+  loadAuthsSuccess,
+  loadLogout,
+  loadLogoutSuccess
+} from "./auth.actions";
 import {Observable, of} from "rxjs";
 import {Action} from "@ngrx/store";
 import {HttpErrorResponse} from "@angular/common/http";
@@ -12,6 +21,66 @@ import {loadResponsesFailure} from "../response";
 
 @Injectable()
 export class AuthEffects {
+
+  doSendTokenForUser: Observable<Action> = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(doSendTokenForUser),
+        switchMap((action) => this.service.sendTokenForUser(action.payload)
+          .pipe(
+            mergeMap((data) => {
+              return [
+                doSendTokenForUserSuccess({data: data}),
+              ];
+            }),
+            catchError(
+              (err: HttpErrorResponse) => {
+                return of(loadResponsesFailure({
+                  error: {
+                    payload: err.error,
+                    status: err.status,
+                    response: (err.error instanceof ErrorEvent) ? `Error: ${err.error.message}` : `Error Code: ${err.status},  Message: ${err.error}`
+                  }
+                }));
+              })
+          )
+        )
+      ),
+    {dispatch: true}
+  );
+
+  doValidateTokenForUser: Observable<Action> = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(doValidateTokenForUser),
+        switchMap((action) => this.service.validateTokenForUser(action.payload)
+          .pipe(
+            mergeMap((data) => {
+              if (data.status == 200) {
+                return [
+                  doValidateTokenForUserSuccess({data: data, validated: true})
+                ];
+              } else {
+                return [
+                  loadResponsesFailure({error: data})
+                ];
+              }
+            }),
+            catchError(
+              (err: HttpErrorResponse) => {
+                return of(loadResponsesFailure({
+                  error: {
+                    payload: err.error,
+                    status: err.status,
+                    response: (err.error instanceof ErrorEvent) ? `Error: ${err.error.message}` : `Error Code: ${err.status},  Message: ${err.error}`
+                  }
+                }));
+              })
+          )
+        )
+      ),
+    {dispatch: true}
+  );
 
   doLogout: Observable<Action> = createEffect(
     () =>
