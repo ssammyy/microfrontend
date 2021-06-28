@@ -164,12 +164,8 @@ class BrsLookupManufacturerDataEntity : Serializable {
     @Basic
     var version: Long? = null
 
-    @JoinColumn(name = "MANUFACTURER_ID", referencedColumnName = "ID")
-    @ManyToOne
-    var manufacturerId: ManufacturersEntity? = null
-
-    @OneToMany(mappedBy = "manufacturerId")
-    var brsLookupManufacturerPartners: Collection<BrsLookupManufacturerPartnersEntity>? = null
+    @Column(name = "MANUFACTURER_ID")
+    var manufacturerId: Long? = null
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

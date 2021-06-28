@@ -307,7 +307,10 @@ class PersistPortalPayloadToDataStore(
                                     manufacturer.registrationNumber?.let { registrationNumber ->
                                         brsLookupManufacturerDataRepo.findFirstByRegistrationNumberAndStatusOrderById(registrationNumber, successStatus)
                                                 ?.let { brsLookupData ->
-                                                    brsLookupManufacturerPartnerRepo.findBrsLookupManufacturerPartnersEntitiesByManufacturerIdAndStatus(brsLookupData, successStatus)
+                                                    brsLookupManufacturerPartnerRepo.findBrsLookupManufacturerPartnersEntitiesByManufacturerIdAndStatus(
+                                                        brsLookupData.id,
+                                                        successStatus
+                                                    )
                                                             ?.let { directors ->
                                                                 var partnerList = ""
                                                                 directors.forEach {

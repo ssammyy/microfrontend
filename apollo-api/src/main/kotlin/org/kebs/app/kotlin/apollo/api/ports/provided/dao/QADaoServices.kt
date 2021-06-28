@@ -3,7 +3,6 @@ package org.kebs.app.kotlin.apollo.api.ports.provided.dao
 import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.notifications.Notifications
 import org.kebs.app.kotlin.apollo.api.ports.provided.mpesa.MPesaService
-import org.kebs.app.kotlin.apollo.common.dto.PermitEntityDto
 import org.kebs.app.kotlin.apollo.common.dto.qa.*
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
@@ -11,8 +10,6 @@ import org.kebs.app.kotlin.apollo.common.exceptions.ServiceMapNotFoundException
 import org.kebs.app.kotlin.apollo.common.utils.generateRandomText
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.*
-import org.kebs.app.kotlin.apollo.store.model.di.CdDemandNoteItemsDetailsEntity
-import org.kebs.app.kotlin.apollo.store.model.di.CdItemDetailsEntity
 import org.kebs.app.kotlin.apollo.store.model.qa.*
 import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileDirectorsEntity
 import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileEntity
@@ -177,6 +174,33 @@ class QADaoServices(
             ?: throw ExpectedDataNotFound("No Permit Found for the following user with USERNAME = ${user.userName}")
     }
 
+    fun findAllUserPermitWithPermitTypeAwardedStatusIsNull(
+        user: UsersEntity,
+        permitType: Long
+    ): List<PermitApplicationsEntity> {
+        val userId = user.id ?: throw ExpectedDataNotFound("No USER ID Found")
+        permitRepo.findByUserIdAndPermitTypeAndOldPermitStatusIsNullAndPermitAwardStatusIsNotNull(userId, permitType)
+            ?.let { permitList ->
+                return permitList
+            }
+
+            ?: throw ExpectedDataNotFound("No Permit Found for the following user with USERNAME = ${user.userName}")
+    }
+
+    fun findAllUserPermitWithPermitTypeAwardedStatusIsNullAndTaskID(
+        user: UsersEntity,
+        permitType: Long,
+        taskID: Long
+    ): List<PermitApplicationsEntity> {
+        val userId = user.id ?: throw ExpectedDataNotFound("No USER ID Found")
+        permitRepo.findByUserIdAndPermitTypeAndOldPermitStatusIsNullAndUserTaskId(userId, permitType, taskID)
+            ?.let { permitList ->
+                return permitList
+            }
+
+            ?: throw ExpectedDataNotFound("No Permit Found for the following user with USERNAME = ${user.userName}")
+    }
+
     fun findAllUserPermitWithPermitTypeAwarded(
         user: UsersEntity,
         permitType: Long,
@@ -221,6 +245,33 @@ class QADaoServices(
             ?: throw ExpectedDataNotFound("No Permit Found for the following user with USERNAME = ${user.userName}")
     }
 
+    fun findAllQAMPermitListWithPermitTypeAwardedStatusIsNotNull(
+        user: UsersEntity,
+        permitType: Long
+    ): List<PermitApplicationsEntity> {
+        val userId = user.id ?: throw ExpectedDataNotFound("No USER ID Found")
+        permitRepo.findByQamIdAndPermitTypeAndOldPermitStatusIsNullAndPermitAwardStatusIsNotNull(userId, permitType)
+            ?.let { permitList ->
+                return permitList
+            }
+
+            ?: throw ExpectedDataNotFound("No Permit Found for the following user with USERNAME = ${user.userName}")
+    }
+
+    fun findAllQAMPermitListWithPermitTypeAwardedStatusIsNotNullTaskID(
+        user: UsersEntity,
+        permitType: Long,
+        taskID: Long
+    ): List<PermitApplicationsEntity> {
+        val userId = user.id ?: throw ExpectedDataNotFound("No USER ID Found")
+        permitRepo.findByQamIdAndPermitTypeAndOldPermitStatusIsNullAndUserTaskId(userId, permitType, taskID)
+            ?.let { permitList ->
+                return permitList
+            }
+
+            ?: throw ExpectedDataNotFound("No Permit Found for the following user with USERNAME = ${user.userName}")
+    }
+
     fun findAllHODPermitListWithPermitType(user: UsersEntity, permitType: Long): List<PermitApplicationsEntity> {
         val userId = user.id ?: throw ExpectedDataNotFound("No USER ID Found")
         permitRepo.findByHodIdAndPermitTypeAndOldPermitStatusIsNull(userId, permitType)
@@ -231,7 +282,34 @@ class QADaoServices(
             ?: throw ExpectedDataNotFound("No Permit Found for the following user with USERNAME = ${user.userName}")
     }
 
-    fun findPermitWithPermitNumberLatest(permitRefNumber: String): PermitApplicationsEntity {
+    fun findAllHODPermitListWithPermitTypeTaskID(
+        user: UsersEntity,
+        permitType: Long,
+        taskID: Long
+    ): List<PermitApplicationsEntity> {
+        val userId = user.id ?: throw ExpectedDataNotFound("No USER ID Found")
+        permitRepo.findByHodIdAndPermitTypeAndOldPermitStatusIsNullAndUserTaskId(userId, permitType, taskID)
+            ?.let { permitList ->
+                return permitList
+            }
+
+            ?: throw ExpectedDataNotFound("No Permit Found for the following user with USERNAME = ${user.userName}")
+    }
+
+    fun findAllHODPermitListWithPermitTypeAwardedStatusIsNotNull(
+        user: UsersEntity,
+        permitType: Long
+    ): List<PermitApplicationsEntity> {
+        val userId = user.id ?: throw ExpectedDataNotFound("No USER ID Found")
+        permitRepo.findByHodIdAndPermitTypeAndOldPermitStatusIsNullAndPermitAwardStatusIsNotNull(userId, permitType)
+            ?.let { permitList ->
+                return permitList
+            }
+
+            ?: throw ExpectedDataNotFound("No Permit Found for the following user with USERNAME = ${user.userName}")
+    }
+
+    fun findPermitWithPermitRefNumberLatest(permitRefNumber: String): PermitApplicationsEntity {
         permitRepo.findTopByPermitRefNumberOrderByIdDesc(permitRefNumber)
             ?.let {
                 return it
@@ -249,9 +327,64 @@ class QADaoServices(
             ?: throw ExpectedDataNotFound("No Permit Found for the following user with USERNAME = ${user.userName}")
     }
 
+    fun findAllQAOPermitListWithPermitTypeTaskID(
+        user: UsersEntity,
+        permitType: Long,
+        taskID: Long
+    ): List<PermitApplicationsEntity> {
+        val userId = user.id ?: throw ExpectedDataNotFound("No USER ID Found")
+        permitRepo.findByQaoIdAndPermitTypeAndOldPermitStatusIsNullAndUserTaskId(userId, permitType, taskID)
+            ?.let { permitList ->
+                return permitList
+            }
+
+            ?: throw ExpectedDataNotFound("No Permit Found for the following user with USERNAME = ${user.userName}")
+    }
+
+    fun findAllQAOPermitListWithPermitTypeAwardedStatusIsNotNull(
+        user: UsersEntity,
+        permitType: Long
+    ): List<PermitApplicationsEntity> {
+        val userId = user.id ?: throw ExpectedDataNotFound("No USER ID Found")
+        permitRepo.findByQaoIdAndPermitTypeAndOldPermitStatusIsNullAndPermitAwardStatusIsNotNull(userId, permitType)
+            ?.let { permitList ->
+                return permitList
+            }
+
+            ?: throw ExpectedDataNotFound("No Permit Found for the following user with USERNAME = ${user.userName}")
+    }
+
     fun findAllAssessorPermitListWithPermitType(user: UsersEntity, permitType: Long): List<PermitApplicationsEntity> {
         val userId = user.id ?: throw ExpectedDataNotFound("No USER ID Found")
         permitRepo.findByAssessorIdAndPermitTypeAndOldPermitStatusIsNull(userId, permitType)
+            ?.let { permitList ->
+                return permitList
+            }
+            ?: throw ExpectedDataNotFound("No Permit Found for the following user with USERNAME = ${user.userName}")
+    }
+
+    fun findAllAssessorPermitListWithPermitTypeTaskID(
+        user: UsersEntity,
+        permitType: Long,
+        taskID: Long
+    ): List<PermitApplicationsEntity> {
+        val userId = user.id ?: throw ExpectedDataNotFound("No USER ID Found")
+        permitRepo.findByAssessorIdAndPermitTypeAndOldPermitStatusIsNullAndUserTaskId(userId, permitType, taskID)
+            ?.let { permitList ->
+                return permitList
+            }
+            ?: throw ExpectedDataNotFound("No Permit Found for the following user with USERNAME = ${user.userName}")
+    }
+
+    fun findAllAssessorPermitListWithPermitTypeAwardedStatusIsNotNull(
+        user: UsersEntity,
+        permitType: Long
+    ): List<PermitApplicationsEntity> {
+        val userId = user.id ?: throw ExpectedDataNotFound("No USER ID Found")
+        permitRepo.findByAssessorIdAndPermitTypeAndOldPermitStatusIsNullAndPermitAwardStatusIsNotNull(
+            userId,
+            permitType
+        )
             ?.let { permitList ->
                 return permitList
             }
@@ -267,6 +400,44 @@ class QADaoServices(
             ?: throw ExpectedDataNotFound("No Permit Found for the following user with USERNAME = ${user.userName}")
     }
 
+    fun findAllPacSecPermitListWithPermitTypeTaskID(
+        user: UsersEntity,
+        permitType: Long,
+        taskID: Long
+    ): List<PermitApplicationsEntity> {
+        val userId = user.id ?: throw ExpectedDataNotFound("No USER ID Found")
+        permitRepo.findByPacSecIdAndPermitTypeAndOldPermitStatusIsNullAndUserTaskId(userId, permitType, taskID)
+            ?.let { permitList ->
+                return permitList
+            }
+            ?: throw ExpectedDataNotFound("No Permit Found for the following user with USERNAME = ${user.userName}")
+    }
+
+    fun findAllPacSecPermitListWithPermitTypeAwardedStatusIsNotNull(
+        user: UsersEntity,
+        permitType: Long
+    ): List<PermitApplicationsEntity> {
+        val userId = user.id ?: throw ExpectedDataNotFound("No USER ID Found")
+        permitRepo.findByPacSecIdAndPermitTypeAndOldPermitStatusIsNullAndPermitAwardStatusIsNotNull(userId, permitType)
+            ?.let { permitList ->
+                return permitList
+            }
+            ?: throw ExpectedDataNotFound("No Permit Found for the following user with USERNAME = ${user.userName}")
+    }
+
+    fun findAllPCMPermitListWithPermitTypeTaskID(
+        user: UsersEntity,
+        permitType: Long,
+        taskID: Long
+    ): List<PermitApplicationsEntity> {
+        val userId = user.id ?: throw ExpectedDataNotFound("No USER ID Found")
+        permitRepo.findByPcmIdAndPermitTypeAndOldPermitStatusIsNullAndUserTaskId(userId, permitType, taskID)
+            ?.let { permitList ->
+                return permitList
+            }
+            ?: throw ExpectedDataNotFound("No Permit Found for the following user with USERNAME = ${user.userName}")
+    }
+
     fun findAllPCMPermitListWithPermitType(user: UsersEntity, permitType: Long): List<PermitApplicationsEntity> {
         val userId = user.id ?: throw ExpectedDataNotFound("No USER ID Found")
         permitRepo.findByPcmIdAndPermitTypeAndOldPermitStatusIsNull(userId, permitType)
@@ -276,9 +447,49 @@ class QADaoServices(
             ?: throw ExpectedDataNotFound("No Permit Found for the following user with USERNAME = ${user.userName}")
     }
 
+    fun findAllPCMPermitListWithPermitTypeAwardedStatusIsNotNull(
+        user: UsersEntity,
+        permitType: Long
+    ): List<PermitApplicationsEntity> {
+        val userId = user.id ?: throw ExpectedDataNotFound("No USER ID Found")
+        permitRepo.findByPcmIdAndPermitTypeAndOldPermitStatusIsNullAndPermitAwardStatusIsNotNull(userId, permitType)
+            ?.let { permitList ->
+                return permitList
+            }
+            ?: throw ExpectedDataNotFound("No Permit Found for the following user with USERNAME = ${user.userName}")
+    }
+
     fun findAllPSCPermitListWithPermitType(user: UsersEntity, permitType: Long): List<PermitApplicationsEntity> {
         val userId = user.id ?: throw ExpectedDataNotFound("No USER ID Found")
         permitRepo.findByPscMemberIdAndPermitTypeAndOldPermitStatusIsNull(userId, permitType)
+            ?.let { permitList ->
+                return permitList
+            }
+            ?: throw ExpectedDataNotFound("No Permit Found for the following user with USERNAME = ${user.userName}")
+    }
+
+    fun findAllPSCPermitListWithPermitTypeTaskID(
+        user: UsersEntity,
+        permitType: Long,
+        taskID: Long
+    ): List<PermitApplicationsEntity> {
+        val userId = user.id ?: throw ExpectedDataNotFound("No USER ID Found")
+        permitRepo.findByPscMemberIdAndPermitTypeAndOldPermitStatusIsNullAndUserTaskId(userId, permitType, taskID)
+            ?.let { permitList ->
+                return permitList
+            }
+            ?: throw ExpectedDataNotFound("No Permit Found for the following user with USERNAME = ${user.userName}")
+    }
+
+    fun findAllPSCPermitListWithPermitTypeAwardedStatusIsNotNull(
+        user: UsersEntity,
+        permitType: Long
+    ): List<PermitApplicationsEntity> {
+        val userId = user.id ?: throw ExpectedDataNotFound("No USER ID Found")
+        permitRepo.findByPscMemberIdAndPermitTypeAndOldPermitStatusIsNullAndPermitAwardStatusIsNotNull(
+            userId,
+            permitType
+        )
             ?.let { permitList ->
                 return permitList
             }
@@ -600,7 +811,9 @@ class QADaoServices(
             pd.id,
             pd.county,
             pd.town,
-            pd.region
+            pd.region,
+            cp.firmCategory,
+            cp.firmCategory?.let { findFirmTypeById(it).firmType }
 
         )
     }
@@ -634,6 +847,7 @@ class QADaoServices(
     fun listPermits(permits: List<PermitApplicationsEntity>, map: ServiceMapsEntity): List<PermitEntityDto> {
         val permitsList = mutableListOf<PermitEntityDto>()
         permits.map { p ->
+            val plantDetail = p.attachedPlantId?.let { findPlantDetails(it) }
             permitsList.add(
                 PermitEntityDto(
                     p.id,
@@ -645,8 +859,25 @@ class QADaoServices(
                     p.dateOfIssue,
                     p.dateOfExpiry,
                     p.permitStatus?.let { findPermitStatus(it).processStatusName },
-                    p.userId
-                )
+                    p.userId,
+                    p.createdOn,
+                    plantDetail?.county?.let {
+                        commonDaoServices.findCountiesEntityByCountyId(
+                            it,
+                            map.activeStatus
+                        ).county
+                    },
+                    plantDetail?.town?.let { commonDaoServices.findTownEntityByTownId(it).town },
+                    plantDetail?.region?.let {
+                        commonDaoServices.findRegionEntityByRegionID(
+                            it,
+                            map.activeStatus
+                        ).region
+                    },
+                    p.divisionId?.let { commonDaoServices.findDivisionWIthId(it).division },
+                    p.sectionId?.let { commonDaoServices.findSectionWIthId(it).section },
+
+                    )
             )
         }
         return permitsList.sortedBy { it.id }
@@ -669,7 +900,7 @@ class QADaoServices(
                             permitDetails.commodityDescription,
                             permitDetails.tradeMark,
                             pi.amount,
-                            pi.paymentStatus == 1
+                            pi.paymentStatus
                         )
                     )
                 } else {
@@ -684,7 +915,7 @@ class QADaoServices(
                         permitDetails.commodityDescription,
                         permitDetails.tradeMark,
                         pi.amount,
-                        pi.paymentStatus == 1
+                        pi.paymentStatus
                     )
                 )
             }
@@ -768,6 +999,9 @@ class QADaoServices(
             fmarkGenerated = permit.fmarkGenerated == 1
             recommendationRemarks = permit.recommendationRemarks
             factoryVisit = permit.factoryVisit
+            firmTypeID = companyProfile?.firmCategory
+            firmTypeName = companyProfile?.firmCategory?.let { findFirmTypeById(it).firmType }
+
         }
         return p
     }
@@ -919,13 +1153,15 @@ class QADaoServices(
                 }".toUpperCase()
                 enabled = map.initStatus
                 divisionId = commonDaoServices.findSectionWIthId(
-                    sectionId ?: throw Exception("SECTION ID IS MISSING")
+                    sectionId ?: throw ExpectedDataNotFound("SECTION ID IS MISSING")
                 ).divisionId?.id
                 versionNumber = 1
                 endOfProductionStatus = map.initStatus
                 status = map.activeStatus
                 fmarkGenerated = map.inactiveStatus
+                attachedPlantId = user.plantId
                 permitStatus = applicationMapProperties.mapQaStatusDraft
+                userTaskId = applicationMapProperties.mapUserTaskNameMANUFACTURE
                 createdBy = commonDaoServices.concatenateName(user)
                 createdOn = commonDaoServices.getTimestamp()
             }
@@ -1608,9 +1844,9 @@ class QADaoServices(
         try {
             val pm = findPermitBYID(permitID)
             var oldPermit =
-                findPermitWithPermitNumberLatest(pm.awardedPermitNumber ?: throw Exception("INVALID PERMIT NUMBER"))
+                findPermitWithPermitRefNumberLatest(pm.permitRefNumber ?: throw Exception("INVALID PERMIT NUMBER"))
             KotlinLogging.logger { }
-                .info { "::::::::::::::::::PERMIT With PERMIT NUMBER = ${pm.awardedPermitNumber}, DOES Exists::::::::::::::::::::: " }
+                .info { "::::::::::::::::::PERMIT With PERMIT NUMBER = ${pm.permitRefNumber}, DOES Exists::::::::::::::::::::: " }
             val versionNumberOld =
                 oldPermit.versionNumber ?: throw ExpectedDataNotFound("Permit Version Number is Empty")
 
@@ -1631,6 +1867,7 @@ class QADaoServices(
                     )
                 }".toUpperCase()
                 renewalStatus = s.activeStatus
+                userTaskId = applicationMapProperties.mapUserTaskNameMANUFACTURE
                 userId = user.id
                 attachedPlantId = oldPermit.attachedPlantId
                 permitType = oldPermit.permitType
@@ -1968,68 +2205,71 @@ class QADaoServices(
         var sr = commonDaoServices.createServiceRequest(s)
         try {
 
-            val userID = user.id ?: throw Exception("INVALID USER ID")
-            var permitInvoiceFound =
-                findPermitInvoiceByPermitID(batchInvoiceDto.permitID ?: throw Exception("PERMIT ID REQUIRED"), userID)
-            val permitType = findPermitType(applicationMapProperties.mapQAPermitTypeIdInvoices)
-            var batchID: Long? = null
-            invoiceBatchRepo.findByIdOrNull(batchInvoiceDto.batchID)
-                ?.let { invoiceDetails ->
+            var batchID = batchInvoiceDto.batchID
+            batchInvoiceDto.permitInvoicesID
+                ?.forEach { permitID ->
+                    val userID = user.id ?: throw Exception("INVALID USER ID")
+                    var permitInvoiceFound = findPermitInvoiceByPermitID(permitID, userID)
+                    val permitType = findPermitType(applicationMapProperties.mapQAPermitTypeIdInvoices)
 
-                    with(permitInvoiceFound) {
-                        batchInvoiceNo = invoiceDetails.id
-                        modifiedBy = commonDaoServices.concatenateName(user)
-                        modifiedOn = commonDaoServices.getTimestamp()
-                    }
-                    permitInvoiceFound = invoiceRepository.save(permitInvoiceFound)
+                    invoiceBatchRepo.findByIdOrNull(batchID)
+                        ?.let { invoiceDetails ->
 
-                    with(invoiceDetails) {
-                        description = "${permitInvoiceFound.invoiceNumber},$description"
-                        totalAmount = totalAmount?.plus(permitInvoiceFound.amount ?: throw Exception("INVALID AMOUNT"))
-                    }
-                    batchID = invoiceBatchRepo.save(invoiceDetails).id
+                            with(permitInvoiceFound) {
+                                batchInvoiceNo = invoiceDetails.id
+                                modifiedBy = commonDaoServices.concatenateName(user)
+                                modifiedOn = commonDaoServices.getTimestamp()
+                            }
+                            permitInvoiceFound = invoiceRepository.save(permitInvoiceFound)
+
+                            with(invoiceDetails) {
+                                description = "${permitInvoiceFound.invoiceNumber},$description"
+                                totalAmount =
+                                    totalAmount?.plus(permitInvoiceFound.amount ?: throw Exception("INVALID AMOUNT"))
+                            }
+                            batchID = invoiceBatchRepo.save(invoiceDetails).id!!
+                        }
+                        ?: kotlin.run {
+                            var batchInvoicePermit = QaBatchInvoiceEntity()
+                            with(batchInvoicePermit) {
+                                invoiceNumber = "KIMS${permitType.markNumber}${
+                                    generateRandomText(
+                                        5,
+                                        s.secureRandom,
+                                        s.messageDigestAlgorithm,
+                                        true
+                                    )
+                                }".toUpperCase()
+                                userId = userID
+                                plantId = batchInvoiceDto.plantID
+                                status = s.activeStatus
+                                description = "${permitInvoiceFound.invoiceNumber}"
+                                totalAmount = permitInvoiceFound.amount
+                                createdBy = commonDaoServices.concatenateName(user)
+                                createdOn = commonDaoServices.getTimestamp()
+                            }
+                            batchInvoicePermit = invoiceBatchRepo.save(batchInvoicePermit)
+
+                            with(permitInvoiceFound) {
+                                batchInvoiceNo = batchInvoicePermit.id
+                                modifiedBy = commonDaoServices.concatenateName(user)
+                                modifiedOn = commonDaoServices.getTimestamp()
+                            }
+                            permitInvoiceFound = invoiceRepository.save(permitInvoiceFound)
+
+                            batchID = batchInvoicePermit.id!!
+                        }
+
+                    sr.payload = "permitInvoiceFound[id= ${permitInvoiceFound.userId}]"
+                    sr.names = "${permitInvoiceFound.invoiceNumber} ${permitInvoiceFound.amount}"
+                    sr.varField1 = batchID.toString()
+
+                    sr.responseStatus = sr.serviceMapsId?.successStatusCode
+                    sr.responseMessage = "Success ${sr.payload}"
+                    sr.status = s.successStatus
+                    sr = serviceRequestsRepository.save(sr)
+                    sr.processingEndDate = Timestamp.from(Instant.now())
                 }
-                ?: kotlin.run {
-                    var batchInvoicePermit = QaBatchInvoiceEntity()
-                    with(batchInvoicePermit) {
-                        invoiceNumber = "KIMS${permitType.markNumber}${
-                            generateRandomText(
-                                5,
-                                s.secureRandom,
-                                s.messageDigestAlgorithm,
-                                true
-                            )
-                        }".toUpperCase()
-                        userId = userID
-                        plantId = batchInvoiceDto.plantID
-                        status = s.activeStatus
-                        description = "${permitInvoiceFound.invoiceNumber}"
-                        totalAmount = permitInvoiceFound.amount
-                        createdBy = commonDaoServices.concatenateName(user)
-                        createdOn = commonDaoServices.getTimestamp()
-                    }
-                    batchInvoicePermit = invoiceBatchRepo.save(batchInvoicePermit)
-
-                    with(permitInvoiceFound) {
-                        batchInvoiceNo = batchInvoicePermit.id
-                        modifiedBy = commonDaoServices.concatenateName(user)
-                        modifiedOn = commonDaoServices.getTimestamp()
-                    }
-                    permitInvoiceFound = invoiceRepository.save(permitInvoiceFound)
-
-                    batchID = batchInvoicePermit.id
-                }
-
-
-            sr.payload = "permitInvoiceFound[id= ${permitInvoiceFound.userId}]"
-            sr.names = "${permitInvoiceFound.invoiceNumber} ${permitInvoiceFound.amount}"
-            sr.varField1 = batchID.toString()
-
-            sr.responseStatus = sr.serviceMapsId?.successStatusCode
-            sr.responseMessage = "Success ${sr.payload}"
-            sr.status = s.successStatus
-            sr = serviceRequestsRepository.save(sr)
-            sr.processingEndDate = Timestamp.from(Instant.now())
 
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message, e)
@@ -2251,7 +2491,7 @@ class QADaoServices(
                 invoice.invoiceNumber?.let { it1 ->
                     mpesaServices.sanitizePhoneNumber(phoneNumber)?.let { it2 ->
                         mpesaServices.mainMpesaTransaction(
-                            "10",
+                            10.00.toBigDecimal(),
                             it2, it1, it, applicationMapProperties.mapInvoiceTransactionsForPermit
                         )
                     }
@@ -2350,6 +2590,7 @@ class QADaoServices(
                 faxNo = permit.faxNo
                 plotNo = permit.plotNo
                 designation = permit.designation
+                userTaskId = applicationMapProperties.mapUserTaskNameMANUFACTURE
                 attachedPlantId = permit.attachedPlantId
                 attachedPlantRemarks = permit.attachedPlantRemarks
             }

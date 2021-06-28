@@ -66,16 +66,19 @@
             <p class="input-placeholder">
                 Password
             </p>
-            <input type="password" class="login-form-inputs"  placeholder="" id="password" name="password" required>
+            <input type="password" class="login-form-inputs" placeholder="" id="password" name="password" required>
 
             <p><input type="text" class="login-form-small-inputs" placeholder="" id="otp" name="otp" required>
-                <button type="button" class="login-button" onClick="getOTPCodeBtn(this)" id="verificationCode">GET OTP</button>
+                <button type="button" class="login-button" onClick="getOTPCodeBtn(this)" id="verificationCode">GET OTP
+                </button>
             </p>
 
             <p></p>
             <button type="submit" value="" class="login-button" id="login-btn" style="display:none;">LOG IN</button>
             <br>
             <a th:href="@{/api/auth/signup/forgot-password}" class="reset-credentials">Forgot Username / Password</a>
+            <br>
+            <a class="reset-credentials" href="/migration/index.html">Sign Up</a>
         </form>
     </div>
 </section>

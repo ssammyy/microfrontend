@@ -269,7 +269,7 @@ class LimsServices(
                         with(ssfFound) {
                             modifiedBy = "SYSTEM SCHEDULER"
                             modifiedOn = commonDaoServices.getTimestamp()
-//                        labResultsStatus = map.activeStatus
+                            labResultsStatus = map.activeStatus
                             resultsDate = commonDaoServices.getCurrentDate()
                         }
                         sampleSubmissionRepo.save(ssfFound)

@@ -311,7 +311,7 @@
                                                 <td></td>
                                                 <td></td>
                                                 <td>Balance</td>
-                                                <td th:text="'KSH ' + ${invoiceBalanceDetails?.invoiceAmount}"></td>
+                                                <td th:text="${invoice?.paymentStatus} ? 'KSH: 0' : ${invoice?.amount}"></td>
                                             </tr>
                                             </tbody>
                                         </table>
@@ -326,97 +326,97 @@
                                         class="panel panel-sidebar panel-payment"
                                         style="background-color: #0166B1;"
                                 >
-                                    <div  class="panel-body" data-role="paymethod-info">
-                                        <div class="total">
-                                            <span class="total-text">Total Due</span>
-                                            <span class="total-price"
-                                                  th:text="'KSH ' + ${invoiceBalanceDetails?.invoiceAmount}"><i
-                                                    class="ls ls-exclamation-circle"></i
-                                            ></span>
-                                        </div>
-                                        <label>Payment Method:</label>
-                                        <form
-                                                method="post"
-                                                action="#"
-                                        >
-                                            <div class="form-group">
-                                                <input
-                                                        type="hidden"
-                                                        name="token"
-                                                        value="28a018a90daa0c5e579e53c5272b8a8f656f8cbe"
-                                                /><select name="gateway" class="form-control select-inline"
-                                                          id="selectPaymentMethodId"
-                                            >
-                                                <option value="default" selected="true">- SELECT -</option>
-                                                <option th:each="i : ${paymentMethods}" th:value="${i?.id}"
-                                                        th:text="${i?.method}"></option>
-                                            </select>
-                                            </div>
-                                        </form>
-                                        <span class="small-text"></span>
-                                        <div
-                                                class="payment-form payment-btn-container"
-                                                data-btntext="Make Payment"
-                                                data-btnsubscribetext="Subscribe"
-                                        ><strong>Payment Instructions </strong><br/>
-                                            <div id="dataRow" style="display: none">
+                                    <!--                                    <div  class="panel-body" data-role="paymethod-info">-->
+                                    <!--                                        <div class="total">-->
+                                    <!--                                            <span class="total-text">Total Due</span>-->
+                                    <!--                                            <span class="total-price"-->
+                                    <!--                                                  th:text="'KSH ' + ${invoiceBalanceDetails?.invoiceAmount}"><i-->
+                                    <!--                                                    class="ls ls-exclamation-circle"></i-->
+                                    <!--                                            ></span>-->
+                                    <!--                                        </div>-->
+                                    <!--                                        <label>Payment Method:</label>-->
+                                    <!--                                        <form-->
+                                    <!--                                                method="post"-->
+                                    <!--                                                action="#"-->
+                                    <!--                                        >-->
+                                    <!--                                            <div class="form-group">-->
+                                    <!--                                                <input-->
+                                    <!--                                                        type="hidden"-->
+                                    <!--                                                        name="token"-->
+                                    <!--                                                        value="28a018a90daa0c5e579e53c5272b8a8f656f8cbe"-->
+                                    <!--                                                /><select name="gateway" class="form-control select-inline"-->
+                                    <!--                                                          id="selectPaymentMethodId"-->
+                                    <!--                                            >-->
+                                    <!--                                                <option value="default" selected="true">- SELECT -</option>-->
+                                    <!--                                                <option th:each="i : ${paymentMethods}" th:value="${i?.id}"-->
+                                    <!--                                                        th:text="${i?.method}"></option>-->
+                                    <!--                                            </select>-->
+                                    <!--                                            </div>-->
+                                    <!--                                        </form>-->
+                                    <!--                                        <span class="small-text"></span>-->
+                                    <!--&lt;!&ndash;                                        <div&ndash;&gt;-->
+                                    <!--&lt;!&ndash;                                                class="payment-form payment-btn-container"&ndash;&gt;-->
+                                    <!--&lt;!&ndash;                                                data-btntext="Make Payment"&ndash;&gt;-->
+                                    <!--&lt;!&ndash;                                                data-btnsubscribetext="Subscribe"&ndash;&gt;-->
+                                    <!--&lt;!&ndash;                                        ><strong>Payment Instructions </strong><br/>&ndash;&gt;-->
+                                    <!--&lt;!&ndash;                                            <div id="dataRow" style="display: none">&ndash;&gt;-->
 
 
-                                                <!--                            style="visibility:hidden"-->
-                                                <br/>
+                                    <!--&lt;!&ndash;                                                &lt;!&ndash;                            style="visibility:hidden"&ndash;&gt;&ndash;&gt;-->
+                                    <!--&lt;!&ndash;                                                <br/>&ndash;&gt;-->
 
-                                                1. Go to M-Pesa menu <br/>
-                                                2. Click on Lipa na M-Pesa <br/>
-                                                3. Click on Buy Goods and Services <br/>
-                                                4. Enter till no <strong>804700</strong><br/>
-                                                5. Enter amount <strong th:text="${invoice?.amount}"></strong><br/>
-                                                6. Wait for the M-Pesa message<br/>
-                                                <!--                            7. Click Pay Now.<br />-->
-                                                <div th:text="'Reference Number ' + ${invoice?.id}"></div>
-                                                <br>
-                                                <!--                              <form id="regForm"  th:object="${mpesa}" th:action="@{/mpesa-stkpush/{id}(id=${invoice?.id})}" method="post">-->
-                                                <!--                                  <input id="parameters" name="parameters" th:value="${phoneNumber}" type="hidden">-->
-                                                <!--                                  <input id="laboratoryId" name="laboratoryId" th:value="${invoice?.amount}" type="hidden">-->
+                                    <!--&lt;!&ndash;                                                1. Go to M-Pesa menu <br/>&ndash;&gt;-->
+                                    <!--&lt;!&ndash;                                                2. Click on Lipa na M-Pesa <br/>&ndash;&gt;-->
+                                    <!--&lt;!&ndash;                                                3. Click on Buy Goods and Services <br/>&ndash;&gt;-->
+                                    <!--&lt;!&ndash;                                                4. Enter till no <strong>804700</strong><br/>&ndash;&gt;-->
+                                    <!--&lt;!&ndash;                                                5. Enter amount <strong th:text="${invoice?.amount}"></strong><br/>&ndash;&gt;-->
+                                    <!--&lt;!&ndash;                                                6. Wait for the M-Pesa message<br/>&ndash;&gt;-->
+                                    <!--&lt;!&ndash;                                                &lt;!&ndash;                            7. Click Pay Now.<br />&ndash;&gt;&ndash;&gt;-->
+                                    <!--&lt;!&ndash;                                                <div th:text="'Reference Number ' + ${invoice?.id}"></div>&ndash;&gt;-->
+                                    <!--&lt;!&ndash;                                                <br>&ndash;&gt;-->
+                                    <!--&lt;!&ndash;                                                &lt;!&ndash;                              <form id="regForm"  th:object="${mpesa}" th:action="@{/mpesa-stkpush/{id}(id=${invoice?.id})}" method="post">&ndash;&gt;&ndash;&gt;-->
+                                    <!--&lt;!&ndash;                                                &lt;!&ndash;                                  <input id="parameters" name="parameters" th:value="${phoneNumber}" type="hidden">&ndash;&gt;&ndash;&gt;-->
+                                    <!--&lt;!&ndash;                                                &lt;!&ndash;                                  <input id="laboratoryId" name="laboratoryId" th:value="${invoice?.amount}" type="hidden">&ndash;&gt;&ndash;&gt;-->
 
-                                                <!--                                  <input type="text" class="w-input" maxlength="256" name="serialNumber" data-name="clearing Agent" id="serialNumber"   th:field="*{parameters}">-->
-                                                <!--                                  <input type="text" class="w-input" maxlength="256" name="brand" data-name="brand" id="brand"   th:field="*{laboratoryId}">-->
-                                                <!--                                                <button id="assignBtn" type="button" style="-->
-                                                <!--                                color: green;-->
-                                                <!--                                border-radius: 5px;-->
-                                                <!--                                -moz-border-radius: 5px;-->
-                                                <!--                                padding: 5px;-->
-                                                <!--                                margin-left: 10px;-->
-                                                <!--                                width: 200px;">Pay Now-->
-                                                <!--                                                </button>-->
+                                    <!--&lt;!&ndash;                                                &lt;!&ndash;                                  <input type="text" class="w-input" maxlength="256" name="serialNumber" data-name="clearing Agent" id="serialNumber"   th:field="*{parameters}">&ndash;&gt;&ndash;&gt;-->
+                                    <!--&lt;!&ndash;                                                &lt;!&ndash;                                  <input type="text" class="w-input" maxlength="256" name="brand" data-name="brand" id="brand"   th:field="*{laboratoryId}">&ndash;&gt;&ndash;&gt;-->
+                                    <!--&lt;!&ndash;                                                &lt;!&ndash;                                                <button id="assignBtn" type="button" style="&ndash;&gt;&ndash;&gt;-->
+                                    <!--&lt;!&ndash;                                                &lt;!&ndash;                                color: green;&ndash;&gt;&ndash;&gt;-->
+                                    <!--&lt;!&ndash;                                                &lt;!&ndash;                                border-radius: 5px;&ndash;&gt;&ndash;&gt;-->
+                                    <!--&lt;!&ndash;                                                &lt;!&ndash;                                -moz-border-radius: 5px;&ndash;&gt;&ndash;&gt;-->
+                                    <!--&lt;!&ndash;                                                &lt;!&ndash;                                padding: 5px;&ndash;&gt;&ndash;&gt;-->
+                                    <!--&lt;!&ndash;                                                &lt;!&ndash;                                margin-left: 10px;&ndash;&gt;&ndash;&gt;-->
+                                    <!--&lt;!&ndash;                                                &lt;!&ndash;                                width: 200px;">Pay Now&ndash;&gt;&ndash;&gt;-->
+                                    <!--&lt;!&ndash;                                                &lt;!&ndash;                                                </button>&ndash;&gt;&ndash;&gt;-->
 
 
-                                                <!--                              </form>-->
+                                    <!--&lt;!&ndash;                                                &lt;!&ndash;                              </form>&ndash;&gt;&ndash;&gt;-->
 
-                                            </div>
+                                    <!--&lt;!&ndash;                                            </div>&ndash;&gt;-->
 
-                                            <div id="dataRowBank" style="display: none">
-                                                <br/>
+                                    <!--&lt;!&ndash;                                            <div id="dataRowBank" style="display: none">&ndash;&gt;-->
+                                    <!--&lt;!&ndash;                                                <br/>&ndash;&gt;-->
 
-                                                Bank Name: Equity Bank <br/>
-                                                Account Name: Kebs <br/>
-                                                Account Number:456 567 678 670 <br/>
-                                                Branch: Juja<br/>
-                                                <div th:text="'Reference Number ' + ${invoice?.id}"></div>
-                                                <!--                            Reference Number: 68525<br />-->
-                                            </div>
+                                    <!--&lt;!&ndash;                                                Bank Name: Equity Bank <br/>&ndash;&gt;-->
+                                    <!--&lt;!&ndash;                                                Account Name: Kebs <br/>&ndash;&gt;-->
+                                    <!--&lt;!&ndash;                                                Account Number:456 567 678 670 <br/>&ndash;&gt;-->
+                                    <!--&lt;!&ndash;                                                Branch: Juja<br/>&ndash;&gt;-->
+                                    <!--&lt;!&ndash;                                                <div th:text="'Reference Number ' + ${invoice?.id}"></div>&ndash;&gt;-->
+                                    <!--&lt;!&ndash;                                                &lt;!&ndash;                            Reference Number: 68525<br />&ndash;&gt;&ndash;&gt;-->
+                                    <!--&lt;!&ndash;                                            </div>&ndash;&gt;-->
 
-                                        </div>
-<!--                                        <button th:if="${invoice.status == 0}"  type="button" id="paymentBtn" style="-->
-<!--                                            color: blue;-->
-<!--                                            border-radius: 5px;-->
-<!--                                            -moz-border-radius: 5px;-->
-<!--                                            padding: 5px;-->
-<!--                                            margin-left: 10px;-->
-<!--                                            width: 200px;">-->
-<!--                                            CHECK BALANCE?-->
-<!--                                        </button>-->
-                                        <div th:replace="fragments/general-form.html :: alerts-bar"></div>
-                                    </div>
+                                    <!--&lt;!&ndash;                                        </div>&ndash;&gt;-->
+                                    <!--&lt;!&ndash;                                        <button th:if="${invoice.status == 0}"  type="button" id="paymentBtn" style="&ndash;&gt;-->
+                                    <!--&lt;!&ndash;                                            color: blue;&ndash;&gt;-->
+                                    <!--&lt;!&ndash;                                            border-radius: 5px;&ndash;&gt;-->
+                                    <!--&lt;!&ndash;                                            -moz-border-radius: 5px;&ndash;&gt;-->
+                                    <!--&lt;!&ndash;                                            padding: 5px;&ndash;&gt;-->
+                                    <!--&lt;!&ndash;                                            margin-left: 10px;&ndash;&gt;-->
+                                    <!--&lt;!&ndash;                                            width: 200px;">&ndash;&gt;-->
+                                    <!--&lt;!&ndash;                                            CHECK BALANCE?&ndash;&gt;-->
+                                    <!--&lt;!&ndash;                                        </button>&ndash;&gt;-->
+                                    <!--                                        <div th:replace="fragments/general-form.html :: alerts-bar"></div>-->
+                                    <!--                                    </div>-->
 
                                 </div>
 
@@ -465,15 +465,26 @@
                                                  viewbox="0 0 20 20"
                                                  width="20"
                                                  xmlns="http://www.w3.org/2000/svg"></svg>
-                                            <a class="filter-link " th:href="@{/api/qa/permit-details(permitID=${invoice.permitId},userID=${invoice.userId})}">
-                                                Close </a><br>
-<!--                                            <button class="back-button w-button" href="#" onclick="goBack()">go back</button>-->
-                                            <!--                        <a th:if="${invoice?.permitId?.permitType?.typeName == 'SMARK'}" th:href="@{/api/v1/permit/update/sta10/{id}/{invoiceId}(id = ${questionnairesta10?.id}, invoiceId = ${invoice.id})}" class="filter-link "> Edit questionnaire details </a><br>-->
-                                            <!--                            <a th:if="${invoice?.permitId?.permitType?.typeName == 'DMARK'}" th:href="@{/api/v1/permit/update/sta10/{id}/{invoiceId}(id = ${questionnairesta3?.id}, invoiceId = ${invoice.id})}" class="filter-link "> Edit questionnaire details </a><br>-->
-                                            <!--                            <a class="filter-link " th:href="@{/generated/invoice/pay/{id}/{permitId}(id = ${invoice.id}, permitId = ${invoice.permitId.id},appId=${appId})}"><i class="fas fa-shopping-cart"></i> Pay-->
-                                            <!--                            </a><br>-->
-                                            <!--                            <a class="filter-link " th:href="@{/generated/invoice/pay/{id}/{permitId}(id = ${invoice.id}, permitId = ${invoice.permitId.id},appId=${appId})}"><i class="fas fa-shopping-cart"></i> Pay-->
-                                            <!--                                 </a><br>-->
+                                            <a class="filter-link "
+                                               th:href="@{/api/qa/permit-details(permitID=${invoice.permitId},userID=${invoice.userId})}">Close </a><br>
+                                        </div>
+                                        <div class="button-icon w-embed">
+                                            <svg height="20"
+                                                 viewbox="0 0 20 20"
+                                                 width="20"
+                                                 xmlns="http://www.w3.org/2000/svg"></svg>
+                                            <a class="filter-link "
+                                               th:href="@{/api/qa/permits-list(permitTypeID = ${invoiceType})}">GO TO
+                                                PAYMENT</a><br>
+                                        </div>
+                                        <div class="button-icon w-embed">
+                                            <svg height="20"
+                                                 viewbox="0 0 20 20"
+                                                 width="20"
+                                                 xmlns="http://www.w3.org/2000/svg"></svg>
+                                            <a class="filter-link "
+                                               th:href="@{/api/qa/permits-list(permitTypeID=${permitType.id})}">APPLY
+                                                ANOTHER PERMIT</a><br>
                                         </div>
                                     </div>
                                 </div>

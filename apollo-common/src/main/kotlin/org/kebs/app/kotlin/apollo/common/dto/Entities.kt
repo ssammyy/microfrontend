@@ -22,10 +22,17 @@
 package org.kebs.app.kotlin.apollo.common.dto
 
 
+import com.fasterxml.jackson.annotation.JsonFormat
+import com.fasterxml.jackson.annotation.JsonProperty
+import com.fasterxml.jackson.databind.PropertyNamingStrategies
+import com.fasterxml.jackson.databind.annotation.JsonNaming
 import java.math.BigDecimal
 import java.sql.Date
 import java.time.LocalDateTime
+import javax.validation.Valid
+import javax.validation.constraints.Email
 import javax.validation.constraints.NotBlank
+import javax.validation.constraints.NotEmpty
 import javax.validation.constraints.Size
 
 open class BaseRequest(
@@ -200,6 +207,21 @@ data class RegionsEntityDto(
     var status: Boolean?
 )
 
+data class BusinessLinesEntityDto(
+    var id: Long?,
+    var name: String?,
+    var descriptions: String?,
+    var status: Boolean?
+)
+
+data class BusinessNatureEntityDto(
+    var id: Long?,
+    var businessLinesId: Long?,
+    var name: String?,
+    var descriptions: String?,
+    var status: Boolean?
+)
+
 data class SubRegionsEntityDto(
     var id: Long?,
     var subRegion: String?,
@@ -253,6 +275,11 @@ data class OtpRequestValuesDto(
     var password: String? = null
 )
 
+data class ValidatePhoneNumberOtpRequestValuesDto(
+    var phone: String? = null,
+    var token: String? = null
+)
+
 data class OtpResponseDto(
     var message: String? = null,
     var otp: String? = null
@@ -283,31 +310,94 @@ data class UserCompanyDto(
     var manufactureStatus: Int? = null,
 )
 
+data class BrsConfirmationRequest(
+    @NotEmpty(message = "is required")
+    val registrationNumber: String,
+    @NotEmpty(message = "is required")
+    val directorIdNumber: String
+)
+
+data class ValidatePhoneNumberRequestDto(
+    @NotEmpty(message = "is required")
+    val phone: String
+)
+
+data class SendTokenRequestDto(
+    @NotEmpty(message = "is required")
+    val username: String
+)
+
+data class ValidatePhoneNumberTokenRequestDto(
+    @NotEmpty(message = "is required")
+    val phone: String,
+    @NotEmpty(message = "is required")
+    val token: String?
+)
+
 data class UserCompanyEntityDto(
+    @JsonProperty("name")
+    @NotEmpty(message = "is mandatory")
     var name: String? = null,
+    @JsonProperty("kraPin")
+    @NotEmpty(message = "is mandatory")
     var kraPin: String? = null,
+
     var userId: Long? = null,
     var profileType: Long? = null,
+    @JsonProperty("registrationNumber")
+    @NotEmpty(message = "is mandatory")
     var registrationNumber: String? = null,
+    @JsonProperty("postalAddress")
     var postalAddress: String? = null,
+
+    @JsonProperty("physicalAddress")
+    @NotEmpty(message = "is mandatory")
     var physicalAddress: String? = null,
     var plotNumber: String? = null,
+    @JsonProperty("companyEmail")
+    @NotEmpty(message = "is mandatory")
+    @Email(message = "Email format is not valid")
     var companyEmail: String? = null,
+    @JsonProperty("companyTelephone")
+    @NotEmpty(message = "is mandatory")
+    @Size(min = 9, message = "Phone Number must start with 254")
     var companyTelephone: String? = null,
+    @JsonProperty("yearlyTurnover")
+    @NotBlank(message = "is mandatory")
+//    @Pattern(regexp = "/(\\d{0,3},)?(\\d{3},)?\\d{0,3}/", message = "must be numeric")
     var yearlyTurnover: BigDecimal? = null,
+    @JsonProperty("businessLines")
+    @NotBlank(message = "is mandatory")
     var businessLines: Long? = null,
+    @JsonProperty("businessNatures")
+    @NotBlank(message = "is mandatory")
     var businessNatures: Long? = null,
+    @JsonProperty("buildingName")
+    @NotEmpty(message = "is mandatory")
     var buildingName: String? = null,
+    @JsonProperty("streetName")
+    @NotEmpty(message = "is mandatory")
     var streetName: String? = null,
+    @JsonProperty("directorIdNumber")
+    @NotEmpty(message = "is mandatory")
     var directorIdNumber: String? = null,
+    @JsonProperty("region")
+    @NotBlank(message = "is mandatory")
     var region: Long? = null,
+    @JsonProperty("county")
+    @NotBlank(message = "is mandatory")
     var county: Long? = null,
+    @JsonProperty("town")
+    @NotBlank(message = "is mandatory")
     var town: Long? = null,
     var factoryVisitDate: Date? = null,
     var factoryVisitStatus: Int? = null,
     var manufactureStatus: Int? = null,
 
-    )
+    ) {
+    var id: Long? = null
+    var status: Boolean = false
+}
 
 data class UserEntityDto(
 
@@ -341,6 +431,7 @@ data class UserEntityDto(
     var town: Long? = null,
     var subRegion: Long? = null,
 )
+
 
 data class UserDetailsDto(
 
@@ -440,19 +531,6 @@ data class UserRequestEntityDto(
     var status: Boolean? = null
 )
 
-data class PermitEntityDto(
-    var id: Long? = null,
-    var firmName: String? = null,
-    var permitRefNumber: String? = null,
-    var productName: String? = null,
-    var tradeMark: String? = null,
-    var awardedPermitNumber: String? = null,
-    var dateOfIssue: Date? = null,
-    var dateOfExpiry: Date? = null,
-    var permitStatus: String? = null,
-    var userId: Long? = null
-)
-
 data class UserRequestListEntityDto(
     var id: Long? = null,
     var requestName: String? = null,
@@ -484,6 +562,7 @@ data class ProductsEntityDto(
     var status: Boolean? = null,
     var productCategoryId: Long? = null,
 )
+
 data class FmarkEntityDto(
     var smarkPermitID: Long? = null,
 )
@@ -527,14 +606,89 @@ class JwtResponse(
     val roles: List<String>?
 ) {
     var tokenType = "Bearer"
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss.SSS")
     var expiry: LocalDateTime? = null
 
 }
-
 
 
 class CustomResponse {
     var response: String? = null
     var status: Int? = null
     var payload: String? = null
+}
+
+@JsonNaming(PropertyNamingStrategies.LowerCamelCaseStrategy::class)
+data class OrganizationUserEntityDto(
+    var id: Long?,
+    @JsonProperty("firstName")
+    @NotEmpty(message = "is mandatory")
+    var firstName: String?,
+    @JsonProperty("lastName")
+    @NotEmpty(message = "is mandatory")
+    var lastName: String?,
+    @JsonProperty("userName")
+    @NotEmpty(message = "is mandatory")
+    var userName: String?,
+    @Email(regexp = ".+@.+\\..+")
+    @NotEmpty(message = "is mandatory and should be in the correct format")
+    @JsonProperty("email")
+    var email: String?,
+    @JsonProperty("enabled")
+    var enabled: Boolean = false,
+    @JsonProperty("status")
+    var status: Boolean = false,
+    @JsonProperty("title")
+    var title: Long?,
+    @JsonProperty("credentials")
+    @NotEmpty(message = "Password is mandatory")
+    @Size(min = 8, max = 25)
+    var credentials: String?,
+    @JsonProperty("cellphone")
+    @NotEmpty(message = "is mandatory")
+    var cellphone: String?
+) {
+    var companyId: Long? = null
+    var plantId: Long? = null
+
+}
+
+data class RegistrationPayloadDto(
+    @Valid
+    val company: UserCompanyEntityDto,
+    @Valid
+    val user: OrganizationUserEntityDto
+)
+
+
+class PlantEntityDto {
+    var id: Long? = null
+    var companyProfileId: Long? = null
+    var location: String? = null
+    var street: String? = null
+    var buildingName: String? = null
+    var nearestLandMark: String? = null
+    var postalAddress: String? = null
+    var telephone: String? = null
+    var emailAddress: String? = null
+    var physicalAddress: String? = null
+    var faxNo: String? = null
+    var plotNo: String? = null
+    var designation: String? = null
+    var contactPerson: String? = null
+    var status: Boolean = false
+    var descriptions: String? = null
+    var region: Long? = null
+    var county: Long? = null
+    var town: Long? = null
+}
+
+class ProfileDirectorsEntityDto {
+    var id: Long? = null
+    var companyProfileId: Long? = null
+    var directorName: String? = null
+    var directorId: String? = null
+    var description: String? = null
+    var status: Boolean = false
 }

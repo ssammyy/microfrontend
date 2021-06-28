@@ -18,22 +18,24 @@ data class ST10Dto(
 )
 
 data class CommonPermitDto(
-        var firmName: String? = null,
-        var directorList: String? = null,
-        var postalAddress: String? = null,
-        var physicalAddress: String? = null,
-        var contactPerson: String? = null,
-        var telephoneNo: String? = null,
-        var email: String? = null,
-        var fax: String? = null,
-        var county: String? = null,
-        var town: String? = null,
-        var region: String? = null,
-        var companyID: Long? = null,
-        var plantID: Long? = null,
-        var countyID: Long? = null,
-        var townID: Long? = null,
-        var regionID: Long? = null,
+    var firmName: String? = null,
+    var directorList: String? = null,
+    var postalAddress: String? = null,
+    var physicalAddress: String? = null,
+    var contactPerson: String? = null,
+    var telephoneNo: String? = null,
+    var email: String? = null,
+    var fax: String? = null,
+    var county: String? = null,
+    var town: String? = null,
+    var region: String? = null,
+    var companyID: Long? = null,
+    var plantID: Long? = null,
+    var countyID: Long? = null,
+    var townID: Long? = null,
+    var regionID: Long? = null,
+    var firmTypeID: Long? = null,
+    var firmTypeName: String? = null,
 )
 
 data class WorkPlanDto(
@@ -66,18 +68,64 @@ data class InvoiceDto(
 )
 
 data class PermitInvoiceDto(
-        var permitID: Long? = null,
-        var invoiceNumber: String? = null,
-        var commodityDescription: String? = null,
-        var brandName: String? = null,
-        var totalAmount: BigDecimal? = null,
-        var paidStatus: Boolean? = null,
+    var permitID: Long? = null,
+    var invoiceNumber: String? = null,
+    var commodityDescription: String? = null,
+    var brandName: String? = null,
+    var totalAmount: BigDecimal? = null,
+    var paidStatus: Int? = null,
 )
 
 data class NewBatchInvoiceDto(
-        var batchID: Long = -1L,
-        var plantID: Long? = null,
-        var permitID: Long? = null,
+    var batchID: Long = -1L,
+    var plantID: Long? = null,
+    var permitID: Long? = null,
+    var permitInvoicesID: Array<Long>? = null
+) {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as NewBatchInvoiceDto
+
+        if (batchID != other.batchID) return false
+        if (plantID != other.plantID) return false
+        if (permitID != other.permitID) return false
+        if (permitInvoicesID != null) {
+            if (other.permitInvoicesID == null) return false
+            if (!permitInvoicesID.contentEquals(other.permitInvoicesID)) return false
+        } else if (other.permitInvoicesID != null) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = batchID.hashCode()
+        result = 31 * result + (plantID?.hashCode() ?: 0)
+        result = 31 * result + (permitID?.hashCode() ?: 0)
+        result = 31 * result + (permitInvoicesID?.contentHashCode() ?: 0)
+        return result
+    }
+
+}
+
+data class PermitEntityDto(
+    var id: Long? = null,
+    var firmName: String? = null,
+    var permitRefNumber: String? = null,
+    var productName: String? = null,
+    var tradeMark: String? = null,
+    var awardedPermitNumber: String? = null,
+    var dateOfIssue: Date? = null,
+    var dateOfExpiry: Date? = null,
+    var permitStatus: String? = null,
+    var userId: Long? = null,
+    var createdOn: Timestamp? = null,
+    var county: String? = null,
+    var town: String? = null,
+    var region: String? = null,
+    var divisionValue: String? = null,
+    var sectionValue: String? = null,
 )
 
 data class PermitDetailsDto(
@@ -120,6 +168,8 @@ data class PermitDetailsDto(
     var fmarkGenerated: Boolean? = null,
     var recommendationRemarks: String? = null,
     var factoryVisit: Date? = null,
+    var firmTypeID: Long? = null,
+    var firmTypeName: String? = null,
 )
 
 

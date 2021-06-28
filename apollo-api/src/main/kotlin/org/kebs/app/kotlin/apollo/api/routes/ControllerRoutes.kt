@@ -40,13 +40,12 @@ package org.kebs.app.kotlin.apollo.api.routes
 import org.kebs.app.kotlin.apollo.api.handlers.*
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.http.HttpHeaders
-import org.springframework.http.MediaType
-import org.springframework.web.servlet.function.RequestPredicate
 import org.springframework.web.servlet.function.router
 
 @Configuration
 class ControllerRoutes {
+
+
 
     @Bean
     fun masterDataRoutes(handler: MasterDataHandler) = router {
@@ -135,6 +134,24 @@ class ControllerRoutes {
                     PUT("/", handler::townsUpdate)
                     POST("/", handler::townsUpdate)
                 }
+                "/businessLines".nest {
+                    GET("", handler::businessLinesListing)
+                    POST("", handler::notSupported)
+                    "/{id}".nest {
+                        GET("", handler::notSupported)
+                        PUT("", handler::notSupported)
+                    }
+
+                }
+                "/businessNatures".nest {
+                    GET("", handler::businessNaturesListing)
+                    POST("", handler::notSupported)
+                    "/{id}".nest {
+                        GET("", handler::notSupported)
+                        PUT("", handler::notSupported)
+                    }
+
+                }
                 "/regionCountyTown".nest {
                     GET("/load", handler::regionCountyTownListing)
 
@@ -207,8 +224,6 @@ class ControllerRoutes {
     }
 
 
-
-
     @Bean
     fun tasksRoute(handler: BpmnTasksHandler) =
         router {
@@ -234,6 +249,7 @@ class ControllerRoutes {
     fun registrationRoutes(handler: RegistrationHandler) = router {
         "/api/v1/auth/signup".nest {
             POST("/user", handler::signUpAllUsers)
+            POST("/validate/brs", handler::signUpAllUsers)
             PUT("/authorize", handler::signUpAllUsersVerification)
             PUT("/forgot-password", handler::signUpUserRestPassword)
 
@@ -304,7 +320,6 @@ class ControllerRoutes {
             GET("/rfc/finished/adding/item", handler::rfcDetails)
         }
     }
-
 
 
     @Bean
@@ -506,7 +521,10 @@ class ControllerRoutes {
                     POST("/role/assign/{userId}/{roleId}/{status}", handler::assignRoleToUser)
                     POST("/cfs/revoke/{userProfileId}/{cfsId}/{status}", handler::revokeCfsFromUser)
                     POST("/cfs/assign/{userProfileId}/{cfsId}/{status}", handler::assignCfsToUser)
-                    POST("/user/request/role/assign/{userId}/{roleId}/{status}/{requestID}", handler::assignRoleToUserThroughRequest)
+                    POST(
+                        "/user/request/role/assign/{userId}/{roleId}/{status}/{requestID}",
+                        handler::assignRoleToUserThroughRequest
+                    )
 //                    POST("/user/request/{userId}/{cfsId}/{status}", handler::assignCfsToUser)
 
 
@@ -577,7 +595,6 @@ class ControllerRoutes {
         }
 
     }
-
 
 
 }

@@ -33,7 +33,6 @@ import org.springframework.security.web.authentication.LoginUrlAuthenticationEnt
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher
-import org.springframework.web.servlet.config.annotation.CorsRegistry
 
 
 @EnableWebSecurity
@@ -69,12 +68,22 @@ class WebSecurityConfig {
         }
 
         override fun configure(http: HttpSecurity) {
-            http.cors().and().csrf().disable()
+            http.cors()
+                .and()
+                .csrf().disable()
                 .antMatcher("/api/v1/**")
                 .authorizeRequests()
-//                .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                /**
+                 * TODO: Move to external configuration
+                 */
                 .antMatchers(
-                    "/api/v1/login", "/api/v1/otp", "/api/v1/sftp/kesws/download", "/api/v1/auth/**", "/api/v1/otp"
+                    "/api/v1/login",
+                    "/api/v1/otp",
+                    "/api/v1/sftp/kesws/download",
+                    "/api/v1/auth/**",
+                    "/api/v1/otp",
+                    "/api/v1/migration/anonymous/**"
                 )
                 .permitAll()
                 .anyRequest().authenticated()
@@ -134,6 +143,7 @@ class WebSecurityConfig {
                     "/api/ms/complaints/new/save/**",
                     "/api/ms/complaints/new/**",
                     "/auth/**",
+                    "/migration/**",
                     "/accessDenied/**",
                     "/api/auth/**",
                     "/api/integ/login/*",

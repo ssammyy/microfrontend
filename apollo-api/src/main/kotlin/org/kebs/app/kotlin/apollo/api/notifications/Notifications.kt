@@ -214,17 +214,24 @@ class Notifications(
 
         val props = Properties()
         props.put("mail.smtp.starttls.enable", applicationMapProperties.mapApplicationEmailSmtpStartTlsEnable)
-        props.put("mail.smtp.host", applicationMapProperties.mapApplicationEmailSmtpHost);
-        props.put("mail.smtp.port", applicationMapProperties.mapApplicationEmailSmtpPort);
-        props.put("mail.smtp.auth", applicationMapProperties.mapApplicationEmailSmtpAuth);
-        props.put("mail.smtp.user", applicationMapProperties.mapApplicationEmailUsername);
-        props.put("mail.smtp.password", jasyptStringEncryptor.decrypt(applicationMapProperties.mapApplicationEmailPassword));
+        props.put("mail.smtp.host", applicationMapProperties.mapApplicationEmailSmtpHost)
+        props.put("mail.smtp.port", applicationMapProperties.mapApplicationEmailSmtpPort)
+        props.put("mail.smtp.ssl.trust", applicationMapProperties.mapApplicationEmailSmtpHost)
+        props.put("mail.smtp.auth", applicationMapProperties.mapApplicationEmailSmtpAuth)
+        props.put("mail.smtp.user", applicationMapProperties.mapApplicationEmailUsername)
+        props.put(
+            "mail.smtp.password",
+            jasyptStringEncryptor.decrypt(applicationMapProperties.mapApplicationEmailPassword)
+        )
 
         //Establishing a session with required user details
         val session: Session = Session.getInstance(props, object : Authenticator() {
             override fun getPasswordAuthentication(): PasswordAuthentication {
                 //return new PasswordAuthentication(username, password);
-                return PasswordAuthentication(applicationMapProperties.mapApplicationEmailUsername, jasyptStringEncryptor.decrypt(applicationMapProperties.mapApplicationEmailPassword))
+                return PasswordAuthentication(
+                    applicationMapProperties.mapApplicationEmailUsername,
+                    jasyptStringEncryptor.decrypt(applicationMapProperties.mapApplicationEmailPassword)
+                )
             }
         })
 
