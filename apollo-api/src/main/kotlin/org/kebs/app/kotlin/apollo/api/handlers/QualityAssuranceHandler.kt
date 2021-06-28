@@ -694,7 +694,7 @@ class QualityAssuranceHandler(
         val permitID = req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
         val permit = qaDaoServices.findPermitBYID(permitID)
 
-        req.attributes()["product"] = productsRepo.findByIdOrNull(permit.product)
+//        req.attributes()["product"] = productsRepo.findByIdOrNull(permit.product)
         req.attributes()["permitDetails"] = permit
 
         return ok().render(qaProductQualityStatusPage, req.attributes())

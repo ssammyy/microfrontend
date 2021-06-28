@@ -192,7 +192,7 @@ order by id desc;
 
 select * from DAT_KEBS_COMPANY_PROFILE
 -- where REGISTRATION_NUMBER = 'PVT-9XUZXZB'
-where  USER_ID= 1765
+-- where  USER_ID= 1765
 -- where id = 2
 order by id desc;
 

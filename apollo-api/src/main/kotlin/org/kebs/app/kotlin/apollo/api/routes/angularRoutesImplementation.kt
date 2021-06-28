@@ -105,6 +105,7 @@ class AngularRoutes {
                     POST("", handler::handleLogout)
                 }
             }
+
             "/company".nest {
                 GET("", handler::handleFetchCompaniesByUserId)
                 POST("", handler::handleUpdateCompanyDetails)
@@ -127,6 +128,7 @@ class AngularRoutes {
                             }
                         }
                     }
+
                     "/directors".nest {
                         GET("", handler::handleFetchDirectorsByCompanyIdAndUserId)
                         POST("", handler::handleUpdateProfileDirectors)

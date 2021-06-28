@@ -629,6 +629,8 @@ class QualityAssuranceController(
                                             false
                                         )
                                     }".toUpperCase()
+                                } else {
+
                                 }
                                 permitAwardStatus = map.activeStatus
                                 dateOfIssue = issueDate

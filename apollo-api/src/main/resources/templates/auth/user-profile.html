@@ -201,28 +201,28 @@
                                 <button class="accordion">Plants / Branch Details</button>
                                 <div class="panel">
                                     &nbsp;
-                                    <div id="idButtons2">
-                                        <div class="form-row">
-                                            <div class="col-md-12 mb-3">
-                                                <button id="addParam" class="btn btn-primary"
-                                                        onclick="popUpPlantFunction('addPlantsDetails');" type="button">ADD PLANT DETAIL
-                                                </button>
-                                            </div>
-                                            <!--                                        <div class="col-md-6 mb-3">-->
-                                            <!--                                            <button id="closeADD" class="btn btn-primary"-->
-                                            <!--                                                    onclick="popUpFunction('closeAddProducts');" type="button">CLOSE ADD-->
-                                            <!--                                            </button>-->
-                                            <!--                                        </div>-->
-                                            <!--                                <div class="col-md-4 mb-3">-->
-                                            <!--                                        <label for="cocNumber" >16. C.O.C. No</label>-->
-                                            <!--                                        <input id="cocNumber" name="cocNumber" th:value="${session.coc?.cocId?.cocNumber}" type="hidden">-->
-                                            <!--                                        <input class="form-control" data-name="coc Number" disabled id="cocNumber2" maxlength="256" name="cocNumber" th:value="${session.coc?.cocId?.cocNumber}" required="required">-->
-                                            <!--                                    <div class="valid-feedback">-->
-                                            <!--                                        Looks good!-->
-                                            <!--                                    </div>-->
-                                            <!--                                </div>-->
-                                        </div>
-                                    </div>
+                                    <!--                                    <div id="idButtons2">-->
+                                    <!--                                        <div class="form-row">-->
+                                    <!--                                            <div class="col-md-12 mb-3">-->
+                                    <!--                                                <button id="addParam" class="btn btn-primary"-->
+                                    <!--                                                        onclick="popUpPlantFunction('addPlantsDetails');" type="button">ADD PLANT DETAIL-->
+                                    <!--                                                </button>-->
+                                    <!--                                            </div>-->
+                                    <!--                                            &lt;!&ndash;                                        <div class="col-md-6 mb-3">&ndash;&gt;-->
+                                    <!--                                            &lt;!&ndash;                                            <button id="closeADD" class="btn btn-primary"&ndash;&gt;-->
+                                    <!--                                            &lt;!&ndash;                                                    onclick="popUpFunction('closeAddProducts');" type="button">CLOSE ADD&ndash;&gt;-->
+                                    <!--                                            &lt;!&ndash;                                            </button>&ndash;&gt;-->
+                                    <!--                                            &lt;!&ndash;                                        </div>&ndash;&gt;-->
+                                    <!--                                            &lt;!&ndash;                                <div class="col-md-4 mb-3">&ndash;&gt;-->
+                                    <!--                                            &lt;!&ndash;                                        <label for="cocNumber" >16. C.O.C. No</label>&ndash;&gt;-->
+                                    <!--                                            &lt;!&ndash;                                        <input id="cocNumber" name="cocNumber" th:value="${session.coc?.cocId?.cocNumber}" type="hidden">&ndash;&gt;-->
+                                    <!--                                            &lt;!&ndash;                                        <input class="form-control" data-name="coc Number" disabled id="cocNumber2" maxlength="256" name="cocNumber" th:value="${session.coc?.cocId?.cocNumber}" required="required">&ndash;&gt;-->
+                                    <!--                                            &lt;!&ndash;                                    <div class="valid-feedback">&ndash;&gt;-->
+                                    <!--                                            &lt;!&ndash;                                        Looks good!&ndash;&gt;-->
+                                    <!--                                            &lt;!&ndash;                                    </div>&ndash;&gt;-->
+                                    <!--                                            &lt;!&ndash;                                </div>&ndash;&gt;-->
+                                    <!--                                        </div>-->
+                                    <!--                                    </div>-->
                                     &nbsp
                                     <div class="row-table ">
                                         <table id="plantDetails" class="table table-striped table-bordered" style="width:100%">
@@ -259,26 +259,26 @@
                                 <button class="accordion">Commodity Manufactured Details</button>
                                 <div class="panel">
                                     &nbsp;
-                                    <div id="idButtonsCommodity" th:if="${manufactureProfile.closedCommodityManufactured != 1 }">
-                                        <div class="form-row">
-                                            <div class="col-md-6 mb-3">
-                                                <button id="addCommodityParam" class="btn btn-primary"
-                                                        onclick="popUpManufacturedFunction('addCommodityManufacturedDetails');" type="button">ADD DETAILS
-                                                </button>
-                                            </div>
-                                            <div class="col-md-6 mb-3">
-                                                <a id="closeManufacturedADD" class="btn btn-primary" th:href="@{/api/auth/close-commodity-manufacture(companyProfileID=${manufactureProfile.id})}" type="button">CLOSE ADD</a>
-                                            </div>
-                                            <!--                                <div class="col-md-4 mb-3">-->
-                                            <!--                                        <label for="cocNumber" >16. C.O.C. No</label>-->
-                                            <!--                                        <input id="cocNumber" name="cocNumber" th:value="${session.coc?.cocId?.cocNumber}" type="hidden">-->
-                                            <!--                                        <input class="form-control" data-name="coc Number" disabled id="cocNumber2" maxlength="256" name="cocNumber" th:value="${session.coc?.cocId?.cocNumber}" required="required">-->
-                                            <!--                                    <div class="valid-feedback">-->
-                                            <!--                                        Looks good!-->
-                                            <!--                                    </div>-->
-                                            <!--                                </div>-->
-                                        </div>
-                                    </div>
+                                    <!--                                    <div id="idButtonsCommodity" th:if="${manufactureProfile.closedCommodityManufactured != 1 }">-->
+                                    <!--                                        <div class="form-row">-->
+                                    <!--                                            <div class="col-md-6 mb-3">-->
+                                    <!--                                                <button id="addCommodityParam" class="btn btn-primary"-->
+                                    <!--                                                        onclick="popUpManufacturedFunction('addCommodityManufacturedDetails');" type="button">ADD DETAILS-->
+                                    <!--                                                </button>-->
+                                    <!--                                            </div>-->
+                                    <!--                                            <div class="col-md-6 mb-3">-->
+                                    <!--                                                <a id="closeManufacturedADD" class="btn btn-primary" th:href="@{/api/auth/close-commodity-manufacture(companyProfileID=${manufactureProfile.id})}" type="button">CLOSE ADD</a>-->
+                                    <!--                                            </div>-->
+                                    <!--                                            &lt;!&ndash;                                <div class="col-md-4 mb-3">&ndash;&gt;-->
+                                    <!--                                            &lt;!&ndash;                                        <label for="cocNumber" >16. C.O.C. No</label>&ndash;&gt;-->
+                                    <!--                                            &lt;!&ndash;                                        <input id="cocNumber" name="cocNumber" th:value="${session.coc?.cocId?.cocNumber}" type="hidden">&ndash;&gt;-->
+                                    <!--                                            &lt;!&ndash;                                        <input class="form-control" data-name="coc Number" disabled id="cocNumber2" maxlength="256" name="cocNumber" th:value="${session.coc?.cocId?.cocNumber}" required="required">&ndash;&gt;-->
+                                    <!--                                            &lt;!&ndash;                                    <div class="valid-feedback">&ndash;&gt;-->
+                                    <!--                                            &lt;!&ndash;                                        Looks good!&ndash;&gt;-->
+                                    <!--                                            &lt;!&ndash;                                    </div>&ndash;&gt;-->
+                                    <!--                                            &lt;!&ndash;                                </div>&ndash;&gt;-->
+                                    <!--                                        </div>-->
+                                    <!--                                    </div>-->
                                     &nbsp;
                                     <div class="row-table ">
                                         <table id="commodityTable" class="table table-striped table-bordered" style="width:100%">
@@ -303,26 +303,26 @@
                                 <button class="accordion">Contracts Undertaken Details</button>
                                 <div class="panel">
                                     &nbsp;
-                                    <div id="idButtonsContracts" th:if="${manufactureProfile.closedContractsUndertaken != 1 }">
-                                        <div class="form-row">
-                                            <div class="col-md-6 mb-3">
-                                                <button id="addContractsParam" class="btn btn-primary"
-                                                        onclick="popUpContractsFunction('addContractsDetails');" type="button">ADD DETAILS
-                                                </button>
-                                            </div>
-                                            <div class="col-md-6 mb-3">
-                                                <a  id="closeContractADD" class="btn btn-primary" th:href="@{/api/auth/close-contracts-underTaken(companyProfileID=${manufactureProfile.id})}" type="button">CLOSE ADD</a>
-                                            </div>
-                                            <!--                                <div class="col-md-4 mb-3">-->
-                                            <!--                                        <label for="cocNumber" >16. C.O.C. No</label>-->
-                                            <!--                                        <input id="cocNumber" name="cocNumber" th:value="${session.coc?.cocId?.cocNumber}" type="hidden">-->
-                                            <!--                                        <input class="form-control" data-name="coc Number" disabled id="cocNumber2" maxlength="256" name="cocNumber" th:value="${session.coc?.cocId?.cocNumber}" required="required">-->
-                                            <!--                                    <div class="valid-feedback">-->
-                                            <!--                                        Looks good!-->
-                                            <!--                                    </div>-->
-                                            <!--                                </div>-->
-                                        </div>
-                                    </div>
+                                    <!--                                    <div id="idButtonsContracts" th:if="${manufactureProfile.closedContractsUndertaken != 1 }">-->
+                                    <!--                                        <div class="form-row">-->
+                                    <!--                                            <div class="col-md-6 mb-3">-->
+                                    <!--                                                <button id="addContractsParam" class="btn btn-primary"-->
+                                    <!--                                                        onclick="popUpContractsFunction('addContractsDetails');" type="button">ADD DETAILS-->
+                                    <!--                                                </button>-->
+                                    <!--                                            </div>-->
+                                    <!--                                            <div class="col-md-6 mb-3">-->
+                                    <!--                                                <a  id="closeContractADD" class="btn btn-primary" th:href="@{/api/auth/close-contracts-underTaken(companyProfileID=${manufactureProfile.id})}" type="button">CLOSE ADD</a>-->
+                                    <!--                                            </div>-->
+                                    <!--                                            &lt;!&ndash;                                <div class="col-md-4 mb-3">&ndash;&gt;-->
+                                    <!--                                            &lt;!&ndash;                                        <label for="cocNumber" >16. C.O.C. No</label>&ndash;&gt;-->
+                                    <!--                                            &lt;!&ndash;                                        <input id="cocNumber" name="cocNumber" th:value="${session.coc?.cocId?.cocNumber}" type="hidden">&ndash;&gt;-->
+                                    <!--                                            &lt;!&ndash;                                        <input class="form-control" data-name="coc Number" disabled id="cocNumber2" maxlength="256" name="cocNumber" th:value="${session.coc?.cocId?.cocNumber}" required="required">&ndash;&gt;-->
+                                    <!--                                            &lt;!&ndash;                                    <div class="valid-feedback">&ndash;&gt;-->
+                                    <!--                                            &lt;!&ndash;                                        Looks good!&ndash;&gt;-->
+                                    <!--                                            &lt;!&ndash;                                    </div>&ndash;&gt;-->
+                                    <!--                                            &lt;!&ndash;                                </div>&ndash;&gt;-->
+                                    <!--                                        </div>-->
+                                    <!--                                    </div>-->
                                     &nbsp;
                                     <div class="row-table ">
                                         <table id="contractsTable" class="table table-striped table-bordered" style="width:100%">
@@ -357,11 +357,11 @@
                             </div>
                             <div>
                                 <div sec:authorize="hasAuthority('USER')">
-                                    <a th:if="${usersEntity.manufactureProfile != 1}" onclick="popUpCompanyFunction('addCompanyDetails');" class="filter-link" style="color: white">ADD COMPANY DETAILS</a>
+                                    <!--                                    <a th:if="${usersEntity.manufactureProfile != 1}" onclick="popUpCompanyFunction('addCompanyDetails');" class="filter-link" style="color: white">ADD COMPANY DETAILS</a>-->
 
-                                    <div th:if="${usersEntity.manufactureProfile == 1}">
-                                        <a th:if="${manufactureProfile.status == 0 and manufactureProfile.closedCommodityManufactured == 1 or manufactureProfile.closedContractsUndertaken == 1}" th:href="@{/api/auth/submit-registration-manufacture(companyProfileID=${manufactureProfile.id})}" class="filter-link" style="color: white">SUBMIT DETAILS</a>
-                                    </div>
+                                    <!--                                    <div th:if="${usersEntity.manufactureProfile == 1}">-->
+                                    <!--                                        <a th:if="${manufactureProfile.status == 0 and manufactureProfile.closedCommodityManufactured == 1 or manufactureProfile.closedContractsUndertaken == 1}" th:href="@{/api/auth/submit-registration-manufacture(companyProfileID=${manufactureProfile.id})}" class="filter-link" style="color: white">SUBMIT DETAILS</a>-->
+                                    <!--                                    </div>-->
 
                                 </div>
 

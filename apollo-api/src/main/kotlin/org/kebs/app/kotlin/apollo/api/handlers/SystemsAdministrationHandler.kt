@@ -656,7 +656,7 @@ class SystemsAdministrationHandler(
         try {
             val map = commonDaoServices.serviceMapDetails(appId)
             val dto = req.body<UserEntityDto>()
-            dto.userName = dto.userPinIdNumber
+            dto.userName = dto.email
             dto.userRegNo =
                 "KEBS#EMP${generateRandomText(5, map.secureRandom, map.messageDigestAlgorithm, true).toUpperCase()}"
             daoService.updateUserDetails(dto)?.let {
