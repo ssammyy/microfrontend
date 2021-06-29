@@ -8,7 +8,8 @@ import {
   loadAuths,
   loadAuthsSuccess,
   loadLogout,
-  loadLogoutSuccess
+  loadLogoutSuccess,
+  loadResetAuths
 } from "./auth.actions";
 import {Observable, of} from "rxjs";
 import {Action} from "@ngrx/store";
@@ -16,12 +17,46 @@ import {HttpErrorResponse} from "@angular/common/http";
 import {catchError, mergeMap, switchMap} from "rxjs/operators";
 import {Go} from "../route";
 import {AuthService} from "./auth.service";
-import {loadResponsesFailure} from "../response";
+import {loadResponsesFailure, loadResponsesSuccess} from "../response";
 
 
 @Injectable()
 export class AuthEffects {
 
+  loadResetAuths: Observable<Action> = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(loadResetAuths),
+        switchMap((action) => this.service.resetUserCredentials(action.payload)
+          .pipe(
+            mergeMap((data) => {
+              if (data.status == 200) {
+                return [
+                  loadResponsesSuccess({message: data}),
+                  Go({payload: null, link: 'login', redirectUrl: action.redirectUrl})
+                ];
+              } else {
+                return [
+                  loadResponsesFailure({error: data})
+                ];
+              }
+
+            }),
+            catchError(
+              (err: HttpErrorResponse) => {
+                return of(loadResponsesFailure({
+                  error: {
+                    payload: err.error,
+                    status: err.status,
+                    response: (err.error instanceof ErrorEvent) ? `Error: ${err.error.message}` : `Error Code: ${err.status},  Message: ${err.error}`
+                  }
+                }));
+              })
+          )
+        )
+      ),
+    {dispatch: true}
+  );
   doSendTokenForUser: Observable<Action> = createEffect(
     () =>
       this.actions$.pipe(
@@ -29,9 +64,17 @@ export class AuthEffects {
         switchMap((action) => this.service.sendTokenForUser(action.payload)
           .pipe(
             mergeMap((data) => {
-              return [
-                doSendTokenForUserSuccess({data: data}),
-              ];
+              if (data.status == 200) {
+                return [
+                  doSendTokenForUserSuccess({data: data, otpSent: true}),
+                  loadResponsesSuccess({message: data})
+                ];
+              } else {
+                return [
+                  loadResponsesFailure({error: data})
+                ];
+              }
+
             }),
             catchError(
               (err: HttpErrorResponse) => {
@@ -58,7 +101,8 @@ export class AuthEffects {
             mergeMap((data) => {
               if (data.status == 200) {
                 return [
-                  doValidateTokenForUserSuccess({data: data, validated: true})
+                  doValidateTokenForUserSuccess({data: data, validated: true}),
+                  loadResponsesSuccess({message: data})
                 ];
               } else {
                 return [

@@ -12,6 +12,8 @@ import {
   responseReducer,
   RouterEffects,
   sendTokenToPhoneReducer,
+  tokenSentStateReducer,
+  tokenValidatedStateReducer,
   TownEffects,
   userIdReducer,
   validateTokenAndPhoneReducer
@@ -33,6 +35,8 @@ export const appReducer = {
   branchId: branchIdReducer,
   userId: userIdReducer,
   directorId: directorIdReducer,
+  tokenSent: tokenSentStateReducer,
+  tokenValidated: tokenValidatedStateReducer
 };
 
 export function localStorageSyncReducer(reducer: ActionReducer<any>): ActionReducer<any> {

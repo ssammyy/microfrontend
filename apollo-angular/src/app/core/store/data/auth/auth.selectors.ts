@@ -1,8 +1,16 @@
 import {createFeatureSelector, createSelector} from '@ngrx/store';
-import {authFeatureKey, AuthState, TokenValidatedState} from "./auth.reducer";
+import {
+  authFeatureKey,
+  AuthState,
+  tokenSentFeatureKey,
+  TokenSentState,
+  tokenValidatedFeatureKey,
+  TokenValidatedState
+} from "./auth.reducer";
 
 export const getAuthFeatureState = createFeatureSelector<AuthState>(authFeatureKey);
-export const getTokenFeatureState = createFeatureSelector<TokenValidatedState>(authFeatureKey);
+export const getTokenFeatureState = createFeatureSelector<TokenValidatedState>(tokenValidatedFeatureKey);
+export const getTokenSentFeatureState = createFeatureSelector<TokenSentState>(tokenSentFeatureKey);
 
 
 export const selectIsAuthenticated = createSelector(
@@ -22,4 +30,8 @@ export const selectGetNames = createSelector(
 export const selectTokenValidatedStateValidated = createSelector(
   getTokenFeatureState,
   (state: TokenValidatedState) => state.validated
+)
+export const selectTokenSentStateOtpSent = createSelector(
+  getTokenSentFeatureState,
+  (state: TokenSentState) => state.otpSent
 )

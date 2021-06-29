@@ -1,13 +1,14 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import {NgModule} from '@angular/core';
+import {CommonModule} from '@angular/common';
 import {FilterPipe} from "./filter.pipe";
-
+import {PreventDoubleClickDirective} from './prevent-double-click.directive';
 
 
 @NgModule({
-  declarations: [FilterPipe],
+  declarations: [FilterPipe, PreventDoubleClickDirective],
   exports: [
-    FilterPipe
+    FilterPipe,
+    PreventDoubleClickDirective
   ],
   imports: [
     CommonModule

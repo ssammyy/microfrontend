@@ -112,6 +112,9 @@ class AngularRoutes {
                 "/validateTokenFromThePhone".nest {
                     POST("", handler::handleValidateTokenFromThePhone)
                 }
+                "/reset".nest {
+                    POST("", handler::handleResetUserCredentials)
+                }
             }
             "/company".nest {
                 GET("", handler::handleFetchCompaniesByUserId)

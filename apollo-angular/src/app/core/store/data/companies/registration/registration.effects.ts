@@ -32,7 +32,15 @@ export class RegistrationEffects {
             mergeMap((data) => {
               if (data.status) {
                 return [
-                  loadBrsValidationsSuccess({data: data, step: 1})
+                  loadBrsValidationsSuccess({data: data, step: 1}),
+                  loadResponsesSuccess({
+                    message: {
+                      response: 'Success - Continuing to registration',
+                      status: 200,
+                      payload: null
+                    }
+                  })
+
                 ];
               } else {
                 return [

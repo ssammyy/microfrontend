@@ -256,6 +256,9 @@ export class SignUpComponent implements OnInit {
       return this.phoneValidated = d;
     });
     if (!this.phoneValidated) {
+      this.otpSent = false;
+      this.stepFourForm?.get('otp')?.reset();
+
       this.phoneValidated = true;
 
     } else {
@@ -264,6 +267,7 @@ export class SignUpComponent implements OnInit {
   }
 
   onClickSendOtp() {
+    this.otpSent = true;
     this.validationCellphone = this.stepFourForm?.get('cellphone')?.value
 
     this.stepFourForm?.get('otp')?.reset()

@@ -14,6 +14,14 @@ export class AuthService {
   constructor(private http: HttpClient) {
   }
 
+  public resetUserCredentials(payload: LoginCredentials): Observable<ApiResponse> {
+    const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.RESET);
+    return this.http.post<ApiResponse>(url, payload).pipe(
+      map((r: ApiResponse): ApiResponse => r),
+      catchError((fault: HttpErrorResponse) => throwError(fault))
+    );
+  }
+
   public sendTokenForUser(payload: SendTokenRequestDto): Observable<ApiResponse> {
     const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.SEND_TOKEN_FOR_USER);
     return this.http.post<ApiResponse>(url, payload).pipe(
