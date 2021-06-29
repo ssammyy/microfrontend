@@ -350,7 +350,7 @@
                                 </div>
 
 
-                                <div sec:authorize="hasAuthority('QA_OFFICER_MODIFY')">
+                                <div sec:authorize="or hasAuthority('QA_OFFICER_MODIFY') or hasAuthority('QA_HOD_MODIFY') or hasAuthority('QA_MANAGER_ASSESSORS_MODIFY') or hasAuthority('QA_HOF_MODIFY') or hasAuthority('QA_ASSESSORS_MODIFY') or hasAuthority('QA_PAC_SECRETARY_MODIFY') or hasAuthority('QA_PSC_MEMBERS_MODIFY') or hasAuthority('QA_PCM_MODIFY')">
 
                                     <button class="accordion">Scheme of Supervision Details</button>
                                     <div class="panel">
@@ -375,6 +375,38 @@
                                                     <td th:text="${sscParam.versionNumber}"></td>
                                                     <td>
                                                         <a th:href="@{/api/qa/kebs/view/attached(fileID=${sscParam.id})}"
+                                                           target='_blank' class="btn btn-primary itemViewBtn">view</a>
+                                                    </td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+
+                                    <button class="accordion">Assessment Report Attached Details</button>
+                                    <div class="panel">
+
+                                        <div class="row-table ">
+                                            <table class="table table-striped">
+                                                <thead>
+                                                <tr>
+                                                    <th>File Name</th>
+                                                    <th>File Type</th>
+                                                    <th>Document Description</th>
+                                                    <th>Version Number</th>
+                                                    <th>View</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                <tr class="list" th:each="apParam: ${assessmentReportParameters}"
+                                                    style="cursor: pointer">
+
+                                                    <td th:text="${apParam.name}"></td>
+                                                    <td th:text="${apParam.fileType}"></td>
+                                                    <td th:text="${apParam.documentType}"></td>
+                                                    <td th:text="${apParam.versionNumber}"></td>
+                                                    <td>
+                                                        <a th:href="@{/api/qa/kebs/view/attached(fileID=${apParam.id})}"
                                                            target='_blank' class="btn btn-primary itemViewBtn">view</a>
                                                     </td>
                                                 </tr>
@@ -857,7 +889,7 @@
                                                 <a th:if="${permitDetails?.sendApplication != 1}"
                                                    th:href="@{/api/qa/old-sta3(permitID=${permitDetails?.id})}"
                                                    class="filter-link" style="color: white">UPDATE STA 3</a>
-                                                <a th:if="${permitDetails?.sendApplication != 1}"
+                                                <a th:if="${permitDetails?.sendApplication != 1 and permitDetails?.cocId != null}"
                                                    th:href="@{/api/qa/new-permit-submit(permitID=${permitDetails?.id})}"
                                                    class="filter-link" style="color: white">SUBMIT APPLICATION</a>
                                             </div>
@@ -870,7 +902,7 @@
                                         </div>
 
                                         <div sec:authorize="hasAuthority('QA_HOD_MODIFY')">
-                                            <a th:if="${permitDetails?.compliantStatus == 1}"
+                                            <a th:if="${permitDetails?.compliantStatus == 1 and permitDetails?.justificationReportStatus == 10}"
                                                th:href="@{/api/qa/product-quality-status(permitID=${permitDetails?.id})}"
                                                style="color: white" target='_blank' class="filter-link">Justification
                                                 for Diamond Mark Assessment</a>
@@ -904,7 +936,7 @@
                                             <!--                                               onclick="popUpUploadFunction('uploadInspectionReport');"-->
                                             <!--                                               class="filter-link">UPLOAD INSPECTION REPORT</a>-->
 
-                                            <a th:if="${permitDetails?.compliantStatus == 1}"
+                                            <a th:if="${permitDetails?.compliantStatus == 1 and permitDetails?.justificationReportStatus == null}"
                                                th:href="@{/api/qa/product-quality-status(permitID=${permitDetails?.id})}"
                                                style="color: white" class="filter-link">Justification for Diamond Mark
                                                 Assessment</a>
@@ -917,7 +949,9 @@
                                                class="filter-link">SCHEDULE ASSESSMENT</a>
 
                                             <a th:if="${permitDetails?.assessmentScheduledStatus == 1}"
-                                               class="filter-link uploadAssessmentReportBtn" style="color: white">UPLOAD
+                                               style="color: white"
+                                               onclick="popUpUploadFunction('uploadAssessmetReport');"
+                                               class="filter-link">UPLOAD
                                                 ASSESSMENT REPORT</a>
                                         </div>
 
@@ -959,7 +993,7 @@
                                                        th:value="'Plant attached sucessfull'">
                                                 <label for="attachedPlantId" class="col-form-label">Select a
                                                     Plant:</label>
-                                                <select id="attachedPlantId" required class="select-field w-select"
+                                                <select id="attachedPlantId" required class="form-control"
                                                         th:field="*{attachedPlantId}">
                                                     <option value="0">Select one...</option>
                                                     <option th:each="plant : ${plantsDetails}"
@@ -981,7 +1015,7 @@
                                                 <label for="attachedPlantId" class="col-form-label">Select a
                                                     completeness status:</label>
                                                 <select id="hofQamCompletenessStatus" required
-                                                        class="select-field w-select"
+                                                        class="form-control"
                                                         th:field="*{hofQamCompletenessStatus}">
                                                     <option th:text="'Select one.....'"
                                                             th:value="${nullStatus}"></option>
@@ -1002,7 +1036,7 @@
                                                 <input type="hidden" id="assignOfficerStatus" name="assignOfficerStatus"
                                                        th:value="${activeStatus}">
                                                 <label for="qaoId" class="col-form-label">Select Officer:</label>
-                                                <select id="qaoId" required class="select-field w-select"
+                                                <select id="qaoId" required class="form-control"
                                                         th:field="*{qaoId}">
                                                     <option value="0">Select one...</option>
                                                     <option th:each="officer : ${officers}"
@@ -1018,7 +1052,7 @@
                                                 <label for="qaoId" class="col-form-label">Inspection Date:</label>
                                                 <input class="input-field w-input" type="date" max="20"
                                                        id="inspectionDate" name="inspectionDate" th:required="required">
-                                                <!--                                            <select id="qaoId" required class="select-field w-select" th:field="*{qaoId}">-->
+                                                <!--                                            <select id="qaoId" required class="form-control" th:field="*{qaoId}">-->
                                                 <!--                                                <option value="0">Select one...</option>-->
                                                 <!--                                                <option th:each="officer : ${officers}" th:text="${officer.userId?.firstName} + ' ' + ${officer.userId?.lastName}" th:name="qaoId" th:value="${officer.userId?.id}"></option>-->
                                                 <!--                                            </select>-->
@@ -1032,7 +1066,7 @@
                                                 <input type="hidden" id="assignAssessorStatus"
                                                        name="assignAssessorStatus" th:value="${activeStatus}">
                                                 <label for="assessorId" class="col-form-label">Select Officer:</label>
-                                                <select id="assessorId" required class="select-field w-select"
+                                                <select id="assessorId" required class="form-control"
                                                         th:field="*{assessorId}">
                                                     <option value="0">Select one...</option>
                                                     <option th:each="assessor : ${assessors}"
@@ -1070,7 +1104,7 @@
                                                 <label for="attachedPlantId" class="col-form-label">Select
                                                     Status:</label>
                                                 <select id="factoryInspectionReportApprovedRejectedStatus" required
-                                                        class="select-field w-select"
+                                                        class="form-control"
                                                         th:field="*{factoryInspectionReportApprovedRejectedStatus}">
                                                     <option th:text="'Select one.....'" th:value="null"></option>
                                                     <option th:text="'Approve'" th:value="1"></option>
@@ -1098,7 +1132,7 @@
                                                 </button>
                                                 <label for="attachedPlantId" class="col-form-label">Select
                                                     Status:</label>
-                                                <select id="compliantStatus" required class="select-field w-select"
+                                                <select id="compliantStatus" required class="form-control"
                                                         th:field="*{compliantStatus}">
                                                     <option th:text="'Select one.....'" th:value="null"></option>
                                                     <option th:text="'Compliant'" th:value="1"></option>
@@ -1133,7 +1167,7 @@
                                                 <label for="recommendationApprovalStatus" class="col-form-label">Select
                                                     Status:</label>
                                                 <select id="recommendationApprovalStatus" required
-                                                        class="select-field w-select"
+                                                        class="form-control"
                                                         th:field="*{recommendationApprovalStatus}">
                                                     <option th:text="'Select one.....'"
                                                             th:value="${nullStatus}"></option>
@@ -1152,7 +1186,7 @@
                                                 <label for="pscMemberApprovalStatus" class="col-form-label">Select
                                                     Status:</label>
                                                 <select id="pscMemberApprovalStatus" required
-                                                        class="select-field w-select"
+                                                        class="form-control"
                                                         th:field="*{pscMemberApprovalStatus}">
                                                     <option th:text="'Select one.....'"
                                                             th:value="${nullStatus}"></option>
@@ -1171,7 +1205,7 @@
                                                 <label for="hodApproveAssessmentStatus" class="col-form-label">Select
                                                     Status:</label>
                                                 <select id="hodApproveAssessmentStatus" required
-                                                        class="select-field w-select"
+                                                        class="form-control"
                                                         th:field="*{hodApproveAssessmentStatus}">
                                                     <option th:text="'Select one.....'"
                                                             th:value="${nullStatus}"></option>
@@ -1189,7 +1223,7 @@
                                                        th:value="'Permit Status Updated succesfull'">
                                                 <label for="pcmApprovalStatus" class="col-form-label">Select
                                                     Status:</label>
-                                                <select id="pcmApprovalStatus" required class="select-field w-select"
+                                                <select id="pcmApprovalStatus" required class="form-control"
                                                         th:field="*{pcmApprovalStatus}">
                                                     <option th:text="'Select one.....'"
                                                             th:value="${nullStatus}"></option>
@@ -1207,7 +1241,7 @@
                                                        th:value="'Permit status successfully updated'">
                                                 <label for="attachedPlantId" class="col-form-label">Select application
                                                     status:</label>
-                                                <select id="permitAwardStatus" required class="select-field w-select"
+                                                <select id="permitAwardStatus" required class="form-control"
                                                         th:field="*{permitAwardStatus}">
                                                     <option th:text="'Select one.....'"
                                                             th:value="${nullStatus}"></option>
@@ -1312,7 +1346,7 @@
                                                 <label for="approvedRejectedScheme" class="col-form-label">Select
                                                     Status:</label>
                                                 <select id="approvedRejectedScheme" required
-                                                        class="select-field w-select"
+                                                        class="form-control"
                                                         th:field="*{approvedRejectedScheme}">
                                                     <option th:text="'Select one.....'" th:value="null"></option>
                                                     <option th:text="'Approve'" th:value="1"></option>
@@ -1574,7 +1608,7 @@
                                         <div class="form-group">
                                             <label for="requestType" class="col-form-label">Select a request
                                                 type:</label>
-                                            <select id="requestType" required class="select-field w-select"
+                                            <select id="requestType" required class="form-control"
                                                     th:field="*{requestType}">
                                                 <option value="0">Select one...</option>
                                                 <option th:each="request : ${userRequestTypes}"
@@ -1592,7 +1626,7 @@
                                                 <input id="requestStatus" name="requestStatus"
                                                        th:value="${activeStatus}" type="hidden">
                                                 <label for="endProduction" class="col-form-label">Select status:</label>
-                                                <select id="endProduction" required class="select-field w-select"
+                                                <select id="endProduction" required class="form-control"
                                                         th:field="*{endProduction}">
                                                     <option th:text="'Select one.....'"
                                                             th:value="${nullStatus}"></option>
@@ -1720,6 +1754,7 @@
                                                 <input type="file" class="form-control" multiple name="doc_file"
                                                        data-name="doc_file" id="doc_file1" required="required">
                                             </div>
+
                                             <div id="uploadCOC">
                                                 <input type="hidden" id="manufactureNonStatus6"
                                                        name="manufactureNonStatus"
@@ -1734,6 +1769,31 @@
                                                 <label for="doc_file">Upload your Certificate of Conformity</label>
                                                 <input type="file" class="form-control" multiple name="doc_file"
                                                        data-name="doc_file" id="doc_file6" required="required">
+                                            </div>
+
+                                            <div id="uploadAssessmetReport">
+                                                <input type="hidden" id="manufactureNonStatus7"
+                                                       name="manufactureNonStatus" th:value="${inActiveStatus}">
+                                                <input type="hidden" id="ordinaryStatus7" name="ordinaryStatus"
+                                                       th:value="${inActiveStatus}">
+                                                <input type="hidden" id="assessmentReportStatus"
+                                                       name="assessmentReportStatus"
+                                                       th:value="${activeStatus}">
+                                                <!--                                            <label for="docFileName" class="col-form-label">Description Of Attachment(s):</label>-->
+                                                <input type="hidden" id="docFileName7" name="docFileName"
+                                                       th:value="FACTORY_ASSESSMENT_REPORT">
+                                                <label for="doc_file">Upload The Factory Assessment Report</label>
+                                                <input type="file" class="form-control" multiple name="doc_file"
+                                                       data-name="doc_file" id="doc_file7" required="required">
+                                                <div class="form-group">
+                                                    <label for="assessment_recommendations" class="col-form-label">Please
+                                                        write,
+                                                        in detail, your recommendations:</label>
+                                                    <textarea name="assessment_recommendations"
+                                                              id="assessment_recommendations"
+                                                              class="input-field w-input"
+                                                              cols="65" rows="5"></textarea>
+                                                </div>
                                             </div>
 
                                         </div>
@@ -1817,7 +1877,7 @@
                                                 <textarea readonly name="description" id="descriptionValue"
                                                           class="input-field w-input" cols="65" rows="10"></textarea>
                                                 <label for="requestStatus" class="col-form-label">Select Status:</label>
-                                                <select id="requestStatus" required class="select-field w-select"
+                                                <select id="requestStatus" required class="form-control"
                                                         th:field="*{requestStatus}">
                                                     <option th:text="'Select one.....'"
                                                             th:value="${nullStatus}"></option>
@@ -2023,6 +2083,7 @@
             'pcmApproval',
             'dmarkApplicationApproval',
             'hodApprovalAssessmentReport', 'permitEditApplication'];
+
         let arrHeadSave = ['AGREE/CONSENT TO SSC',
             'Add Standard details',
             'Update Section',
@@ -2134,8 +2195,8 @@
     }
 
     function popUpUploadFunction(eventAction) {
-        let arrHead = ['uploadAttachments', 'uploadSSC', 'uploadCOC', 'uploadInspectionReport', 'uploadSCF', 'uploadSSF', 'uploadLabResults'];
-        let arrHeadSave = ['Upload document And Give The Name', 'Upload scheme of supervision', 'Upload Certificate of Conformity', 'Upload A Generated Inspection Report', 'Upload filled and signed sample collection form', 'Upload filled and signed sample submission form', 'Upload Final Lab Results Report'];
+        let arrHead = ['uploadAssessmetReport', 'uploadAttachments', 'uploadSSC', 'uploadCOC', 'uploadInspectionReport', 'uploadSCF', 'uploadSSF', 'uploadLabResults'];
+        let arrHeadSave = ['Upload assessment report', 'Upload document And Give The Name', 'Upload scheme of supervision', 'Upload Certificate of Conformity', 'Upload A Generated Inspection Report', 'Upload filled and signed sample collection form', 'Upload filled and signed sample submission form', 'Upload Final Lab Results Report'];
 
         for (let h = 0; h < arrHead.length; h++) {
             if (eventAction !== arrHead[h]) {

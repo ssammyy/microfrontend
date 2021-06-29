@@ -61,7 +61,7 @@ class MpesaTest {
 
     @Test
     fun hashString() {
-        val plainText = listOf("alertz@123")
+        val plainText = listOf("Alartz@123")
 
         plainText.forEach {
             val hashed = jasyptStringEncryptor.encrypt(it)
@@ -104,7 +104,7 @@ class MpesaTest {
         /*Adding elements to HashMap*/
 
         /*Adding elements to HashMap*/hmap["bsnumber"] = "BS202108613"
-        val myResults = limsServices.performPostCall(hmap)
+        val myResults = limsServices.performPostCall(hmap, applicationMapProperties.mapLimsConfigIntegrationPDF)
 
         KotlinLogging.logger { }.info { myResults }
 

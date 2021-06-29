@@ -12,7 +12,7 @@ class QaSta3Entity : Serializable {
     @SequenceGenerator(name = "DAT_KEBS_QA_STA3_SEQ_GEN", allocationSize = 1, sequenceName = "DAT_KEBS_QA_STA3_SEQ")
     @GeneratedValue(generator = "DAT_KEBS_QA_STA3_SEQ_GEN", strategy = GenerationType.SEQUENCE)
     @Id
-    var id: Long? = 0
+    var id: Long? = null
 
     @Column(name = "PERMIT_ID")
     @Basic

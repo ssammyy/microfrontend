@@ -101,6 +101,15 @@
 </div>
 <div class="dashboard-body">
     <div class="sidebar" th:fragment="side-navigation-bar">
+        <div sec:authorize="hasAuthority('PERMIT_APPLICATION')">
+            <div class="sidebar-items">
+                <img th:src="@{/images/assets/Dashboard.svg}" class="sidebar-icons-dashboard selected-page">
+                <span class="selected-page">
+                 <a th:href="@{/api/system/admin/home}">&nbsp;Settings</a>
+                </span>
+            </div>
+        </div>
+
         <div class="sidebar-items">
             <img th:src="@{/images/assets/Dashboard.svg}" class="sidebar-icons-dashboard selected-page">
             <span class="selected-page">
@@ -133,25 +142,25 @@
 
         </div>
 
-        <div class="sidebar-items">
-            <img th:src="@{/images/assets/standards_levy.svg}" class="sidebar-icons-dashboard selected-page">
-            <span>
-                <a th:href="@{/sl}"> Standards Levy</a>
-                </span>
-        </div>
+        <!--        <div class="sidebar-items">-->
+        <!--            <img th:src="@{/images/assets/standards_levy.svg}" class="sidebar-icons-dashboard selected-page">-->
+        <!--            <span>-->
+        <!--                <a th:href="@{/sl}"> Standards Levy</a>-->
+        <!--                </span>-->
+        <!--        </div>-->
 
-        <div class="sidebar-items">
-            <img th:src="@{/images/assets/inspection.svg}" class="sidebar-icons-dashboard selected-page">
-            <span>
-                    &nbsp; Market Surveillance
-                </span>
-        </div>
-        <div class="sidebar-items">
-            <img th:src="@{/images/assets/standards_dev.svg}" class="sidebar-icons-dashboard selected-page">
-            <span>
-                    &nbsp; Standards Dev & Trade
-                </span>
-        </div>
+        <!--        <div class="sidebar-items">-->
+        <!--            <img th:src="@{/images/assets/inspection.svg}" class="sidebar-icons-dashboard selected-page">-->
+        <!--            <span>-->
+        <!--                    &nbsp; Market Surveillance-->
+        <!--                </span>-->
+        <!--        </div>-->
+        <!--        <div class="sidebar-items">-->
+        <!--            <img th:src="@{/images/assets/standards_dev.svg}" class="sidebar-icons-dashboard selected-page">-->
+        <!--            <span>-->
+        <!--                    &nbsp; Standards Dev & Trade-->
+        <!--                </span>-->
+        <!--        </div>-->
     </div>
     <div class="main-area">
         <div class="top-section" th:fragment="content-navigation-bar">

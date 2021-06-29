@@ -295,11 +295,27 @@ interface IUserProfilesRepository : HazelcastRepository<UserProfilesEntity, Long
         status: Int
     ): UserProfilesEntity?
 
+    fun findByRegionIdAndDepartmentIdAndStatusAndSectionIdAndDesignationId(
+        regionId: RegionsEntity,
+        departmentId: DepartmentsEntity,
+        status: Int,
+        sectionId: SectionsEntity,
+        designationId: DesignationsEntity
+    ): UserProfilesEntity?
+
     fun findAllByDesignationIdAndRegionIdAndDepartmentIdAndStatus(
         designationId: DesignationsEntity,
         regionId: RegionsEntity,
         departmentId: DepartmentsEntity,
         status: Int
+    ): List<UserProfilesEntity>?
+
+    fun findAllByDesignationIdAndRegionIdAndDepartmentIdAndStatusAndSectionId(
+        designationId: DesignationsEntity,
+        regionId: RegionsEntity,
+        departmentId: DepartmentsEntity,
+        status: Int,
+        sectionId: SectionsEntity
     ): List<UserProfilesEntity>?
 
     fun findByRegionIdAndDesignationIdAndStatus(

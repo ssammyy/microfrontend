@@ -76,6 +76,14 @@
  *  *
  *
  */
+***************************TODO USED IN QA*****************************************
+
+
+
+alter table DAT_KEBS_QA_UPLOADS
+    add "ASSESSMENT_REPORT_STATUS " NUMBER(2)
+/
+
 ***************************Table USED IN QA*****************************************
 select *
 from DAT_KEBS_PERMIT_TRANSACTION
@@ -124,6 +132,13 @@ select *
 from DAT_KEBS_QA_STA10
 -- where id = 350
 where permit_id = 482
+-- where PERMIT_NUMBER = 'DM#0954A'
+order by id desc;
+
+select *
+from DAT_KEBS_QA_STA3
+-- where id = 350
+where permit_id = 587
 -- where PERMIT_NUMBER = 'DM#0954A'
 order by id desc;
 1522
@@ -192,7 +207,7 @@ order by id desc;
 
 select * from DAT_KEBS_COMPANY_PROFILE
 -- where REGISTRATION_NUMBER = 'PVT-9XUZXZB'
-where  USER_ID= 1765
+-- where  USER_ID= 1765
 -- where id = 2
 order by id desc;
 

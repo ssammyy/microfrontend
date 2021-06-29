@@ -180,13 +180,13 @@
 				<textFieldExpression><![CDATA[$P{DateOfIssue}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="415" y="68" width="135" height="20" uuid="3b248913-3f0c-4503-9ab6-9a750b4442a8"/>
-				<box>
-					<bottomPen lineWidth="1.0"/>
-				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[$P{ExpiryDate}]]></textFieldExpression>
-			</textField>
+                <reportElement x="415" y="69" width="135" height="20" uuid="3b248913-3f0c-4503-9ab6-9a750b4442a8"/>
+                <box>
+                    <bottomPen lineWidth="1.0"/>
+                </box>
+                <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                <textFieldExpression><![CDATA[$P{ExpiryDate}]]></textFieldExpression>
+            </textField>
 			<staticText>
 				<reportElement x="347" y="72" width="70" height="18" uuid="2e01e7aa-8df4-4353-9c66-04207aa55c41"/>
 				<textElement verticalAlignment="Middle">

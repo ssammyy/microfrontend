@@ -407,7 +407,7 @@ class ControllerRoutes {
     @Bean
 //    @PreAuthorize("hasAuthority('MS_HOF_READ') or hasAuthority('MS_DIRECTOR_READ') or hasAuthority('MS_RM_READ') or hasAuthority('MS_HOD_READ') or hasAuthority('MS_IO_READ')")
     fun marketSurveillanceRoutes(handler: MarketSurveillanceHandler) = router {
-        "/api/ms".nest {
+        "/api/v1/ms".nest {
             GET("/home", handler::home)
             GET("/complaints/new", handler::complaintsNew)
             GET("/ms-list", handler::msList)

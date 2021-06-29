@@ -139,17 +139,31 @@ from DAT_KEBS_NOTIFICATIONS
 
 order by id desc;--MS_MP_MODIFY MS_MP_READ
 
-select * from DAT_KEBS_USERS
+select *
+from DAT_KEBS_USERS
 -- where ID = 1622
 
 -- where USER_PIN_ID_NUMBER = '13869968'
--- where EMAIL = 'hassanabdi@kebs.org'
+where EMAIL = 'omarh@kebs.org'
+-- where USER_NAME = 'muriukij@kebs.org'
 -- where USER_PIN_ID_NUMBER = '0715668934'
 order by id desc
 ;
-SELECT * from CFG_TURNOVER_RATES;
 
-select * from DAT_KEBS_COMPANY_PROFILE
+select *
+from DAT_KEBS_USER_PROFILES
+where USER_ID = 1522
+
+-- where USER_PIN_ID_NUMBER = '13869968'
+-- where EMAIL = 'njinei@kebs.org'
+-- where USER_PIN_ID_NUMBER = '0715668934'
+order by id desc
+;
+SELECT *
+from CFG_TURNOVER_RATES;
+
+select *
+from DAT_KEBS_COMPANY_PROFILE
 -- where ID = 1622
 
 -- where USER_TYPE = 5

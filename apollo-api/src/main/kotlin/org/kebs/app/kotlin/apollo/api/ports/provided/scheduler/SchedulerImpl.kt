@@ -245,7 +245,7 @@ class SchedulerImpl(
             when (permit.permitType) {
                 applicationMapProperties.mapQAPermitTypeIDDmark -> {
                     permit.userTaskId = applicationMapProperties.mapUserTaskNameHOD
-                    permit.hodId = qaDaoServices.assignNextOfficerAfterPayment(
+                    permit.hodId = qaDaoServices.assignNextOfficerBasedOnSection(
                         permit,
                         map,
                         applicationMapProperties.mapQADesignationIDForHODId
@@ -253,7 +253,7 @@ class SchedulerImpl(
                 }
                 applicationMapProperties.mapQAPermitTypeIdSmark -> {
                     permit.userTaskId = applicationMapProperties.mapUserTaskNameQAM
-                    permit.qamId = qaDaoServices.assignNextOfficerAfterPayment(
+                    permit.qamId = qaDaoServices.assignNextOfficerBasedOnSection(
                         permit,
                         map,
                         applicationMapProperties.mapQADesignationIDForQAMId

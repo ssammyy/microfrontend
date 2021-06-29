@@ -437,7 +437,7 @@ class MasterDataHandler(
 
     }
 
-    @PreAuthorize("isAnonymous()")
+//    @PreAuthorize("isAnonymous()")
     fun regionsListing(req: ServerRequest): ServerResponse {
         try {
             val status = try {
