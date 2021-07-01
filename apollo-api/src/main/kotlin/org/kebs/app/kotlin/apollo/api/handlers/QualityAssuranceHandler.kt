@@ -957,6 +957,12 @@ class QualityAssuranceHandler(
                 )
             ),
             Pair(
+                "assessmentReportParameters",
+                qaDaoServices.findAllUploadedFileBYPermitIDAndAssessmentReportStatus(
+                    permit.id ?: throw Exception("INVALID PERMIT ID"), s.activeStatus
+                )
+            ),
+            Pair(
                 "sscParameters",
                 qaDaoServices.findAllUploadedFileBYPermitIDAndSscStatus(
                     permit.id ?: throw Exception("INVALID PERMIT ID"), s.activeStatus

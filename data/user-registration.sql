@@ -144,8 +144,8 @@ from DAT_KEBS_USERS
 -- where ID = 1622
 
 -- where USER_PIN_ID_NUMBER = '13869968'
-where EMAIL = 'omarh@kebs.org'
--- where USER_NAME = 'muriukij@kebs.org'
+-- where EMAIL = 'omarh@kebs.org'
+-- where USER_NAME = 'Muriithig'
 -- where USER_PIN_ID_NUMBER = '0715668934'
 order by id desc
 ;

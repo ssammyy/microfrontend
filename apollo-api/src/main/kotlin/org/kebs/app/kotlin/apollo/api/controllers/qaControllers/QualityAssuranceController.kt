@@ -431,26 +431,32 @@ class QualityAssuranceController(
                 var complianceValue: String? = null
                 when (permit.hodApproveAssessmentStatus) {
                     map.activeStatus -> {
-                        val pacSecList = permitDetails.attachedPlantId?.let {
-                            qaDaoServices.findOfficersList(
-                                it,
-                                permitDetails,
-                                map,
-                                applicationMapProperties.mapQADesignationIDForPacSecId
-                            )
-                        }
-                        val appointedPacSec = pacSecList?.get(0)
+//                        val pacSecList = permitDetails.attachedPlantId?.let {
+//                            qaDaoServices.findOfficersList(
+//                                it,
+//                                permitDetails,
+//                                map,
+//                                applicationMapProperties.mapQADesignationIDForPacSecId
+//                            )
+//                        }
+//                        val appointedPacSec = pacSecList?.get(0)
+
+                        val appointedPacSec = qaDaoServices.assignNextOfficerWithDesignation(
+                            permitDetails,
+                            map,
+                            applicationMapProperties.mapQADesignationIDForPacSecId
+                        )
 
                         with(permitDetails) {
                             hodApproveAssessmentStatus = map.activeStatus
                             hodApproveAssessmentRemarks = permit.hodApproveAssessmentRemarks
-                            pacSecId = appointedPacSec?.userId?.id
+                            pacSecId = appointedPacSec?.id
                             userTaskId = applicationMapProperties.mapUserTaskNamePACSECRETARY
                         }
                         qaDaoServices.permitUpdateDetails(permitDetails, map, loggedInUser)
 
                         //Send notification to PAC secretary
-                        val pacSec = appointedPacSec?.userId?.id?.let { commonDaoServices.findUserByID(it) }
+                        val pacSec = appointedPacSec?.id?.let { commonDaoServices.findUserByID(it) }
                         pacSec?.email?.let { qaDaoServices.sendPacDmarkAssessmentNotificationEmail(it, permitDetails) }
 
                         qaDaoServices.permitInsertStatus(
@@ -523,6 +529,7 @@ class QualityAssuranceController(
                 }
 
             }
+            //Permit awarded pcm review
             permit.pscMemberApprovalStatus != null -> {
                 //Send notification
                 if (permit.pscMemberApprovalStatus == map.activeStatus) {
@@ -549,12 +556,13 @@ class QualityAssuranceController(
 
 
                 } else if (permit.pscMemberApprovalStatus == map.inactiveStatus) {
-                    qaDaoServices.sendNotificationForDeferredPermitToQaoFromPSC(permitDetails)
                     qaDaoServices.permitInsertStatus(
                         permitDetails,
                         applicationMapProperties.mapQaStatusDeferredPSCMembers,
                         loggedInUser
                     )
+                    qaDaoServices.sendNotificationForDeferredPermitToQaoFromPSC(permitDetails)
+
                 }
 
             }
@@ -831,9 +839,9 @@ class QualityAssuranceController(
         val map = commonDaoServices.serviceMapDetails(appId)
         val loggedInUser = commonDaoServices.loggedInUserDetails()
 
-        var result: ServiceRequestsEntity?
+        val result: ServiceRequestsEntity?
 
-        var myRenewedPermit = qaDaoServices.permitUpdateNewWithSamePermitNumber(permitID, map, loggedInUser)
+        val myRenewedPermit = qaDaoServices.permitUpdateNewWithSamePermitNumber(permitID, map, loggedInUser)
         val permit = myRenewedPermit.second
         result = myRenewedPermit.first
 
@@ -918,7 +926,11 @@ class QualityAssuranceController(
         result = qaDaoServices.inspectionRecommendationUpdate(qaInspectionReportRecommendation, map, loggedInUser)
 
         if (QaInspectionReportRecommendationEntity.submittedInspectionReportStatus == 1) {
-//            permitFound.inspectionReportGenerated=map.activeStatus
+            if (permitFound.permitType == applicationMapProperties.mapQAPermitTypeIDDmark) {
+                permitFound.userTaskId = applicationMapProperties.mapUserTaskNameHOD
+            } else {
+                permitFound.userTaskId = applicationMapProperties.mapUserTaskNameQAM
+            }
             qaDaoServices.permitInsertStatus(
                 permitFound,
                 applicationMapProperties.mapQaStatusPInspectionReportApproval,
@@ -926,7 +938,13 @@ class QualityAssuranceController(
             )
         } else if (QaInspectionReportRecommendationEntity.supervisorFilledStatus == 1) {
             permitFound.factoryInspectionReportApprovedRejectedStatus = map.activeStatus
-            qaDaoServices.permitInsertStatus(permitFound, applicationMapProperties.mapQaStatusPGenSSC, loggedInUser)
+            permitFound.userTaskId = applicationMapProperties.mapUserTaskNameQAO
+            if (permitFound.permitType == applicationMapProperties.mapQAPermitTypeIDDmark) {
+                qaDaoServices.permitInsertStatus(permitFound, applicationMapProperties.mapQaStatusPSSF, loggedInUser)
+            } else {
+                qaDaoServices.permitInsertStatus(permitFound, applicationMapProperties.mapQaStatusPGenSSC, loggedInUser)
+            }
+
         }
 
         val sm = CommonDaoServices.MessageSuccessFailDTO()
@@ -1173,6 +1191,7 @@ class QualityAssuranceController(
                 applicationMapProperties.mapQADesignationIDForPCMId
             )?.id
             permitStatus = applicationMapProperties.mapQaStatusPPCMAwarding
+            userTaskId = applicationMapProperties.mapUserTaskNamePCM
         }
 
         result = qaDaoServices.permitUpdateDetails(permit, map, loggedInUser).first
@@ -1589,6 +1608,7 @@ class QualityAssuranceController(
                             assessmentReportRemarks = assessmentRecommendations
                             hodId = hodDetails?.id
                             permitStatus = applicationMapProperties.mapQaStatusPApprovalAssesmentReport
+                            userTaskId = applicationMapProperties.mapUserTaskNameHOD
                         }
                         qaDaoServices.permitUpdateDetails(permitDetails, map, loggedInUser)
 
@@ -1773,6 +1793,7 @@ class QualityAssuranceController(
         with(permit) {
             justificationReportStatus = map.initStatus
             permitStatus = applicationMapProperties.mapQaStatusPApprovalustCationReport
+            userTaskId = applicationMapProperties.mapUserTaskNameHOD
         }
         result = qaDaoServices.permitUpdateDetails(permit, map, loggedInUser).first
 

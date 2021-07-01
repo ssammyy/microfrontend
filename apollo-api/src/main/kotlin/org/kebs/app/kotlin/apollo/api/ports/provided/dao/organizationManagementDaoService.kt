@@ -133,7 +133,7 @@ class RegistrationManagementDaoService(
                             credentials = BCryptPasswordEncoder().encode(u.credentials)
                             enabled = applicationMapProperties.transactionActiveStatus
                             status = applicationMapProperties.transactionActiveStatus
-                            accountLocked = applicationMapProperties.transactionActiveStatus
+                            accountLocked = applicationMapProperties.transactionInactiveStatus
                             plantId = u.plantId
                             companyId = u.companyId
                             approvedDate = Timestamp.from(Instant.now())

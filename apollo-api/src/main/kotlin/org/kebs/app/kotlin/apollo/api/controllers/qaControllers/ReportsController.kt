@@ -59,37 +59,66 @@ class ReportsController(
         @RequestParam(value = "permit_id") id: Long
     ) {
         var map = hashMapOf<String, Any>()
+        val appId: Int = applicationMapProperties.mapQualityAssurance
+        val s = commonDaoServices.serviceMapDetails(appId)
         val permit = qaDaoServices.findPermitBYID(id)
 
-        val standardNo = sampleStandardsRepository.findBySubCategoryId(permit.productSubCategory)?.standardNumber
-        val ksApplicable = sampleStandardsRepository.findBySubCategoryId(permit.productSubCategory)?.standardTitle
+        val foundPermitDetails = qaDaoServices.permitDetails(permit, s)
 
-        map["FirmName"] = permit.firmName.toString()
-        map["PermitNo"] = permit.awardedPermitNumber.toString()
-        map["PostalAddress"] = permit.postalAddress.toString()
-        map["PhysicalAddress"] = permit.physicalAddress.toString()
-        map["DateOfIssue"] = permit.dateOfIssue?.let { commonDaoServices.convertDateToString(it, "dd-MM-YYYY") }!!
-        map["ExpiryDate"] = permit.dateOfExpiry?.let { commonDaoServices.convertDateToString(it, "dd-MM-YYYY") }!!
+//        val standardNo = sampleStandardsRepository.findBySubCategoryId(permit.productSubCategory)?.standardNumber
+//        val ksApplicable = sampleStandardsRepository.findBySubCategoryId(permit.productSubCategory)?.standardTitle
 
-        map["FirmName"] = permit.firmName.toString()
-        map["CommodityDesc"] = permit.commodityDescription.toString()
-        map["TradeMark"] = permit.tradeMark.toString()
-        map["StandardTitle"] = "$standardNo".plus(" $ksApplicable")
+//        val standardsDetails = qaDaoServices.findStandardsByID(
+//            permit.productStandard
+//                ?: throw Exception("INVALID STANDARDS NUMBER [ID = ${permit.productStandard}]")
+//        )
+//        val standardNo = standardsDetails.standardNumber
+//        val ksApplicable = standardsDetails.standardTitle
 
-        map["faxNumber"] = permit.faxNo.toString()
-        map["EmailAddress"] =  permit.email.toString()
-        map["phoneNumber"] =  permit.telephoneNo.toString()
+        map["FirmName"] = foundPermitDetails.firmName.toString()
+        map["PermitNo"] = foundPermitDetails.permitNumber.toString()
+        map["PostalAddress"] = foundPermitDetails.postalAddress.toString()
+        map["PhysicalAddress"] = foundPermitDetails.physicalAddress.toString()
+        map["DateOfIssue"] =
+            foundPermitDetails.dateOfIssue?.let { commonDaoServices.convertDateToString(it, "dd-MM-YYYY") }!!
+        map["ExpiryDate"] =
+            foundPermitDetails.dateOfExpiry?.let { commonDaoServices.convertDateToString(it, "dd-MM-YYYY") }!!
+
+//        map["FirmName"] = foundPermitDetails.firmName.toString()
+        map["CommodityDesc"] = foundPermitDetails.commodityDescription.toString()
+        map["TradeMark"] = foundPermitDetails.brandName.toString()
+        map["StandardTitle"] = "${foundPermitDetails.standardNumber}".plus(" ${foundPermitDetails.standardTitle}")
+
+        map["faxNumber"] = foundPermitDetails.faxNo.toString()
+        map["EmailAddress"] = foundPermitDetails.email.toString()
+        map["phoneNumber"] = foundPermitDetails.telephoneNo.toString()
 
 
-        if (permit.permitType==applicationMapProperties.mapQAPermitTypeIDDmark){
-            map["DmarkLogo"] = dMarkImageFile
-            reportsDaoService.extractReportEmptyDataSource(map, response, applicationMapProperties.mapReportDmarkPermitReportPath)
-        }else if (permit.permitType==applicationMapProperties.mapQAPermitTypeIdSmark){
-            map["SmarkLogo"] = sMarkImageFile
-            reportsDaoService.extractReportEmptyDataSource(map, response, applicationMapProperties.mapReportSmarkPermitReportPath)
-        }else if (permit.permitType==applicationMapProperties.mapQAPermitTypeIdFmark){
-            map["FmarkLogo"] = fMarkImageFile
-            reportsDaoService.extractReportEmptyDataSource(map, response, applicationMapProperties.mapReportFmarkPermitReportPath)
+        when (foundPermitDetails.permitTypeID) {
+            applicationMapProperties.mapQAPermitTypeIDDmark -> {
+                map["DmarkLogo"] = dMarkImageFile
+                reportsDaoService.extractReportEmptyDataSource(
+                    map,
+                    response,
+                    applicationMapProperties.mapReportDmarkPermitReportPath
+                )
+            }
+            applicationMapProperties.mapQAPermitTypeIdSmark -> {
+                map["SmarkLogo"] = sMarkImageFile
+                reportsDaoService.extractReportEmptyDataSource(
+                    map,
+                    response,
+                    applicationMapProperties.mapReportSmarkPermitReportPath
+                )
+            }
+            applicationMapProperties.mapQAPermitTypeIdFmark -> {
+                map["FmarkLogo"] = fMarkImageFile
+                reportsDaoService.extractReportEmptyDataSource(
+                    map,
+                    response,
+                    applicationMapProperties.mapReportFmarkPermitReportPath
+                )
+            }
         }
 
     }

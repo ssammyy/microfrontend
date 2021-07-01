@@ -1198,7 +1198,7 @@ class SystemsAdminDaoService(
                         credentials = BCryptPasswordEncoder().encode(u.credentials)
                         enabled = applicationMapProperties.transactionActiveStatus
                         status = applicationMapProperties.transactionActiveStatus
-                        accountLocked = applicationMapProperties.transactionActiveStatus
+                        accountLocked = applicationMapProperties.transactionInactiveStatus
                         approvedDate = Timestamp.from(Instant.now())
                     }
 
@@ -1214,6 +1214,13 @@ class SystemsAdminDaoService(
                             1,
                             applicationMapProperties.manufacturerAdminRoleId
                                 ?: throw NullValueNotAllowedException("Manufacturer Admin role not defined")
+                        )
+                    )
+                    userRolesRepo.save(
+                        registrationDaoServices.userRoleAssignment(
+                            user,
+                            1,
+                            applicationMapProperties.mapUserManufactureRoleID
                         )
                     )
 

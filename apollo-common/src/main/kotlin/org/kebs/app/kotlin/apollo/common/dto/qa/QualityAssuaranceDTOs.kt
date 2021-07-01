@@ -170,6 +170,8 @@ data class PermitDetailsDto(
     var factoryVisit: Date? = null,
     var firmTypeID: Long? = null,
     var firmTypeName: String? = null,
+    var permitTypeName: String? = null,
+    var permitTypeID: Long? = null,
 )
 
 

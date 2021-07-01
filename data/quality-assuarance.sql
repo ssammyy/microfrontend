@@ -81,7 +81,7 @@
 
 
 alter table DAT_KEBS_QA_UPLOADS
-    add "ASSESSMENT_REPORT_STATUS " NUMBER(2)
+    add "ASSESSMENT_REPORT_STATUS" NUMBER(2)
 /
 
 ***************************Table USED IN QA*****************************************

@@ -932,6 +932,7 @@ class QADaoServices(
 
     fun permitDetails(permit: PermitApplicationsEntity, map: ServiceMapsEntity): PermitDetailsDto {
         val plantAttached = permit.attachedPlantId?.let { findPlantDetails(it) }
+        val permitType = findPermitType(permit.permitType ?: throw Exception("Permit TYPE ID IS MISSING"))
         val companyProfile = plantAttached?.companyProfileId?.let { commonDaoServices.findCompanyProfileWithID(it) }
         val p = PermitDetailsDto()
         with(p) {
@@ -1008,6 +1009,8 @@ class QADaoServices(
             factoryVisit = permit.factoryVisit
             firmTypeID = companyProfile?.firmCategory
             firmTypeName = companyProfile?.firmCategory?.let { findFirmTypeById(it).firmType }
+            permitTypeName = permitType.typeName
+            permitTypeID = permitType.id
 
         }
         return p
@@ -1894,6 +1897,115 @@ class QADaoServices(
         return Pair(sr, updatePermit)
     }
 
+    fun permitRejectedVersionCreation(
+        permitID: Long,
+        s: ServiceMapsEntity,
+        user: UsersEntity
+    ): Pair<ServiceRequestsEntity, PermitApplicationsEntity> {
+
+        var sr = commonDaoServices.createServiceRequest(s)
+        var savePermit = PermitApplicationsEntity()
+        try {
+            val pm = findPermitBYID(permitID)
+            var oldPermit =
+                findPermitWithPermitRefNumberLatest(pm.permitRefNumber ?: throw Exception("INVALID PERMIT NUMBER"))
+            KotlinLogging.logger { }
+                .info { "::::::::::::::::::PERMIT With PERMIT NUMBER = ${pm.permitRefNumber}, DOES Exists::::::::::::::::::::: " }
+            val versionNumberOld =
+                oldPermit.versionNumber ?: throw ExpectedDataNotFound("Permit Version Number is Empty")
+
+            oldPermit.oldPermitStatus = 1
+//            oldPermit.renewalStatus = s.activeStatus
+            //update last previous version permit old status
+            oldPermit = permitUpdateDetails(oldPermit, s, user).second
+
+            val permitTypeDetails = findPermitType(oldPermit.permitType ?: throw Exception("MISSING PERMIT TYPE ID"))
+
+            with(savePermit) {
+                permitRefNumber = "${permitTypeDetails.markNumber}${
+                    generateRandomText(
+                        5,
+                        s.secureRandom,
+                        s.messageDigestAlgorithm,
+                        true
+                    )
+                }".toUpperCase()
+                renewalStatus = s.activeStatus
+                userTaskId = applicationMapProperties.mapUserTaskNameMANUFACTURE
+                userId = user.id
+                attachedPlantId = oldPermit.attachedPlantId
+                permitType = oldPermit.permitType
+                permitRefNumber = oldPermit.permitRefNumber
+                enabled = s.initStatus
+                versionNumber = versionNumberOld.plus(1)
+                endOfProductionStatus = s.initStatus
+                commodityDescription = oldPermit.commodityDescription
+                firmName = oldPermit.firmName
+                postalAddress = oldPermit.postalAddress
+                telephoneNo = oldPermit.telephoneNo
+                email = oldPermit.email
+                physicalAddress = oldPermit.physicalAddress
+                faxNo = oldPermit.faxNo
+                plotNo = oldPermit.plotNo
+                designation = oldPermit.designation
+                tradeMark = oldPermit.tradeMark
+                divisionId = oldPermit.divisionId
+                sectionId = oldPermit.sectionId
+                standardCategory = oldPermit.standardCategory
+                broadProductCategory = oldPermit.broadProductCategory
+                productCategory = oldPermit.productCategory
+                product = oldPermit.product
+                productSubCategory = oldPermit.productSubCategory
+                permitForeignStatus = oldPermit.permitForeignStatus
+                awardedPermitNumber = oldPermit.awardedPermitNumber
+                permitStatus = applicationMapProperties.mapQaStatusPermitRenewalDraft
+                status = s.activeStatus
+                createdBy = commonDaoServices.concatenateName(user)
+                createdOn = commonDaoServices.getTimestamp()
+            }
+            savePermit = permitRepo.save(savePermit)
+
+            when (oldPermit.permitType) {
+                applicationMapProperties.mapQAPermitTypeIdSmark -> {
+                    val sta10 = findSTA10WithPermitIDBY(oldPermit.id ?: throw Exception("INVALID PERMIT ID"))
+                    var newSta10 = QaSta10Entity()
+                    newSta10 = commonDaoServices.updateDetails(sta10, newSta10) as QaSta10Entity
+                    newSta10.id = null
+                    sta10NewSave(savePermit.id ?: throw Exception("INVALID PERMIT ID"), newSta10, user, s)
+                }
+                applicationMapProperties.mapQAPermitTypeIDDmark -> {
+                    val sta3 = findSTA3WithPermitIDBY(oldPermit.id ?: throw Exception("INVALID PERMIT ID"))
+                    var newSta3 = QaSta3Entity()
+                    newSta3 = commonDaoServices.updateDetails(sta3, newSta3) as QaSta3Entity
+                    newSta3.id = null
+                    sta3NewSave(savePermit.id ?: throw Exception("INVALID PERMIT ID"), newSta3, user, s)
+                }
+            }
+
+
+            sr.payload = "Permit Renewed Updated [updatePermit= ${savePermit.id}]"
+            sr.names = "${savePermit.permitRefNumber}} ${savePermit.userId}"
+            sr.varField1 = "${savePermit.id}"
+
+            sr.responseStatus = sr.serviceMapsId?.successStatusCode
+            sr.responseMessage = "Success ${sr.payload}"
+            sr.status = s.successStatus
+            sr = serviceRequestsRepository.save(sr)
+            sr.processingEndDate = Timestamp.from(Instant.now())
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message, e)
+//            KotlinLogging.logger { }.trace(e.message, e)
+            sr.status = sr.serviceMapsId?.exceptionStatus
+            sr.responseStatus = sr.serviceMapsId?.exceptionStatusCode
+            sr.responseMessage = e.message
+            sr = serviceRequestsRepository.save(sr)
+
+        }
+
+        KotlinLogging.logger { }.trace("${sr.id} ${sr.responseStatus}")
+        return Pair(sr, savePermit)
+    }
 
     fun permitUpdateNewWithSamePermitNumber(
         permitID: Long,
