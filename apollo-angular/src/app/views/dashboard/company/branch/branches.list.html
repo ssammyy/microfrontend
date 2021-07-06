@@ -44,9 +44,9 @@
 
 
         <div *ngSwitchCase="1">
-          <form (ngSubmit)="onClickNext(stepTwoForm.valid)" [formGroup]="stepTwoForm" action="" class="form"
-                enctype="multipart/form-data" method="post">
-            <div class="container">
+          <form (ngSubmit)="onClickNext(stepTwoForm.valid)" [formGroup]="stepTwoForm" action="" class="form" enctype="multipart/form-data" method="post">
+            <div class="form-body">
+              <div class="container">
               <div class="row">
                 <h2 class="welcome2">
                   Address & Contact Information
@@ -55,22 +55,30 @@
 
               <div class="row input-row">
                 <div class="col">
-                  <label class="input-placeholder2" for="buildingName">
-                    Building Name
-                  </label>
-                  <br>
-                  <input class="form-control two-column-input" formControlName="buildingName" id="buildingName"
-                         name="buildingName"
-                         placeholder="The buildingName" required="required" type="text">
+                  <div class="form-group">
+                    <label class="input-placeholder2" for="buildingName">Building Name</label>
+                    <br>
+                    <input [ngClass]="{ 'is-invalid': submitted && formStepTwoForm.buildingName.errors }"
+                           aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                           class="form-control two-column-input" formControlName="buildingName" id="buildingName"
+                           name="buildingName" placeholder="The building Name" type="text">
+                    <div *ngIf="submitted && formStepTwoForm.buildingName.errors" class="invalid-feedback">
+                      <div *ngIf="formStepTwoForm.buildingName.errors.required">The building Name is required</div>
+                    </div>
+                  </div>
                 </div>
+
                 <div class="col">
                   <label class="input-placeholder2" for="physicalAddress">
                     Physical Address
                   </label>
                   <br>
-                  <input class="form-control two-column-input" formControlName="physicalAddress" id="physicalAddress"
-                         name="physicalAddress"
-                         placeholder="The physical address" required="required" type="text">
+                  <input [ngClass]="{ 'is-invalid': submitted && formStepTwoForm.physicalAddress.errors }"
+                    class="form-control two-column-input" formControlName="physicalAddress" id="physicalAddress"
+                         name="physicalAddress" placeholder="The physical address" required="required" type="text">
+                  <div *ngIf="submitted && formStepTwoForm.physicalAddress.errors" class="invalid-feedback">
+                    <div *ngIf="formStepTwoForm.physicalAddress.errors.required">The physical address is required</div>
+                  </div>
                 </div>
               </div>
 
@@ -198,8 +206,7 @@
 
               </div>
             </div>
-
-
+            </div>
           </form>
 
         </div>

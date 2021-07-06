@@ -18,7 +18,7 @@ import {
   TownService
 } from "../../../../core/store";
 import {Store} from "@ngrx/store";
-import {FormControl, FormGroup, Validators} from "@angular/forms";
+import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 
 @Component({
   selector: 'app-branches',
@@ -31,8 +31,8 @@ export class BranchesList implements OnInit {
   p = 1;
   step = 1;
 
-  stepTwoForm: FormGroup = new FormGroup({});
-  stepThreeForm: FormGroup = new FormGroup({});
+  stepTwoForm!: FormGroup;
+  stepThreeForm!: FormGroup;
 
   branchSoFar: Partial<Branches> | undefined;
   // @ts-ignore
@@ -44,6 +44,7 @@ export class BranchesList implements OnInit {
   selectedCounty: number = 0;
   selectedTown: number = 0;
   selectedCompany: number = -1;
+  submitted = false;
 
   dtTrigger: Subject<any> = new Subject<any>();
   dtOptions: DataTables.Settings = {
@@ -58,6 +59,7 @@ export class BranchesList implements OnInit {
     private regionService: RegionService,
     private countyService: CountyService,
     private townService: TownService,
+    private formBuilder: FormBuilder,
     private store$: Store<any>,
   ) {
     this.branches$ = service.entities$;
@@ -133,6 +135,10 @@ export class BranchesList implements OnInit {
     this.branchSoFar = record;
 
   }
+
+  get formStepTwoForm(): any {return this.stepTwoForm.controls;}
+  get formStepThreeForm(): any {return this.stepThreeForm.controls;}
+
 
   onClickPrevious() {
     if (this.step > 1) {
