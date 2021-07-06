@@ -20,7 +20,7 @@
             <td>{{ theRecord.firstName + ' ' + theRecord.lastName}}</td>
             <td>{{ theRecord.userName }}</td>
             <td>
-              <a (click)="editRecord(theRecord)" class="link-dark">VIEW
+              <a (click)="editRecord(theRecord)" class="details-button">VIEW
               </a>
             </td>
 
@@ -42,7 +42,7 @@
 
           <div class="row input-row">
             <div class="col">
-              <label class="input-placeholder22" for="firstName">
+              <label class="input-placeholder-required" for="firstName">
                 First Name
               </label>
               <br>
@@ -51,7 +51,7 @@
                      placeholder="" required="required" type="text">
             </div>
             <div class="col">
-              <label class="input-placeholder22" for="lastName">
+              <label class="input-placeholder-required" for="lastName">
                 Last Name
               </label>
               <br>
@@ -64,7 +64,7 @@
           <div class="row input-row">
 
             <div class="col">
-              <label class="input-placeholder2" for="userName">
+              <label class="input-placeholder-required" for="userName">
                 User Name
               </label>
               <br>
@@ -73,7 +73,7 @@
                      placeholder="" required="required" type="text">
             </div>
             <div class="col">
-              <label class="input-placeholder2" for="email">
+              <label class="input-placeholder-required" for="email">
                 Email address
               </label>
               <br>
@@ -85,7 +85,7 @@
 
           <div class="row input-row">
             <div class="col">
-              <label class="input-placeholder2" for="credentials">
+              <label class="input-placeholder-required" for="credentials">
                 Password
               </label>
               <br>
@@ -94,7 +94,7 @@
                      placeholder="enter password" required="required" type="password">
             </div>
             <div class="col">
-              <label class="input-placeholder2" for="confirmCredentials">
+              <label class="input-placeholder-required" for="confirmCredentials">
                 Confirm Password
               </label>
               <br>
@@ -107,7 +107,7 @@
           <div class="row input-row">
 
             <div class="col">
-              <label class="input-placeholder2" for="cellphone">
+              <label class="input-placeholder-required" for="cellphone">
                 Cellphone
               </label>
               <br>

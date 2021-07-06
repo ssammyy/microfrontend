@@ -42,6 +42,8 @@ export class SignUpComponent implements OnInit {
 
   step = 0;
 
+  public clicked = false;
+
   stepZeroForm!: FormGroup;
   stepOneForm!: FormGroup;
   stepTwoForm!: FormGroup;

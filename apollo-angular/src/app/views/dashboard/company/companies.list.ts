@@ -32,7 +32,7 @@ export class CompaniesList implements OnInit {
   companies$: Observable<Company[]>;
   filterName: string;
   p = 1;
-  step = 1;
+  step = 2;
 
   stepOneForm: FormGroup = new FormGroup({});
   stepTwoForm: FormGroup = new FormGroup({});

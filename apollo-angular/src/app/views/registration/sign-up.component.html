@@ -306,7 +306,7 @@
       <div class="container">
         <div class="row">
           <h2 class="welcome">
-            Geo-Spatial Information
+            PHysical Location Information
           </h2>
         </div>
         <div class="row input-row">
@@ -534,7 +534,8 @@
             <br>
           </div>
           <div class="col">
-            <button (click)="onClickSendOtp()" [disabled]="otpSent" [hidden]="stepFourForm.get('cellphone')?.invalid"
+            <button (click)="onClickSendOtp(); clicked=true;" [disabled]="clicked"
+                    [hidden]="stepFourForm.get('cellphone')?.invalid"
                     class="login-button mt-2"
                     type="button"
 

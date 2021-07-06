@@ -12,7 +12,7 @@
             <th>COMPANY</th>
             <th>STATUS</th>
             <th>VIEW</th>
-            <th>PLANT DETAILS</th>
+            <th>PLANT/BRANCH DETAILS</th>
             <th>DIRECTORS</th>
           </tr>
           </thead>
@@ -31,7 +31,7 @@
               </a>
             </td>
             <td>
-              <a (click)="onClickPlantDetails(theRecord)" class="details-button">PLANTS
+              <a (click)="onClickPlantDetails(theRecord)" class="details-button">ADD PLANTS/BRANCHES
               </a>
             </td>
             <td>
@@ -58,7 +58,7 @@
               <div class="row input-row">
 
                 <div class="col">
-                  <label class="input-placeholder2" for="registrationNumber">
+                  <label class="input-placeholder-required" for="registrationNumber">
                     Company Registration Number
                   </label>
                   <br>
@@ -69,7 +69,7 @@
                 </div>
 
                 <div class="col">
-                  <label class="input-placeholder2" for="directorIdNumber">
+                  <label class="input-placeholder-required" for="directorIdNumber">
                     Director's Id Number
                   </label>
                   <br>
@@ -83,21 +83,21 @@
               <div class="row input-row">
 
                 <div class="col">
-                  <label class="input-placeholder2" for="name">
+                  <label class="input-placeholder-required" for="name">
                     Company Name
                   </label>
                   <br>
                   <input class="form-control two-column-input" formControlName="name" id="name" name="name"
-                         placeholder="The Company name" required="required" type="text">
+                         placeholder="The company name" required="required" type="text">
                 </div>
 
                 <div class="col">
-                  <label class="input-placeholder2" for="kraPin">
+                  <label class="input-placeholder-required" for="kraPin">
                     KRA Pin
                   </label>
                   <br>
                   <input class="form-control two-column-input" formControlName="kraPin" id="kraPin" name="kraPin"
-                         placeholder="The kraPin" required="required" type="text">
+                         placeholder="Company KRA pin" required="required" type="text">
                 </div>
 
               </div>
@@ -105,17 +105,17 @@
               <div class="row input-row">
 
                 <div class="col">
-                  <label class="input-placeholder2" for="yearlyTurnover">
+                  <label class="input-placeholder-required" for="yearlyTurnover">
                     Yearly Turnover
                   </label>
                   <br>
                   <input class="form-control two-column-input" formControlName="yearlyTurnover" id="yearlyTurnover"
                          name="yearlyTurnover"
-                         placeholder="The yearly Turnover" required="required" type="number">
+                         placeholder="Company yearly turnover" required="required" type="number">
                 </div>
 
                 <div class="col">
-                  <label class="input-placeholder2" for="businessLines">
+                  <label class="input-placeholder-required" for="businessLines">
                     Line Of Business
                   </label>
                   <br>
@@ -135,7 +135,7 @@
               </div>
               <div class="row input-row">
                 <div class="col">
-                  <label class="input-placeholder2" for="businessNatures">
+                  <label class="input-placeholder-required" for="businessNatures">
                     Nature of Business
                   </label>
                   <br>
@@ -184,7 +184,7 @@
               <div class="row input-row">
 
                 <div class="col">
-                  <label class="input-placeholder2" for="postalAddress">
+                  <label class="input-placeholder-required" for="postalAddress">
                     Postal Address
                   </label>
                   <br>
@@ -194,13 +194,13 @@
                 </div>
 
                 <div class="col">
-                  <label class="input-placeholder2" for="physicalAddress">
+                  <label class="input-placeholder-required" for="physicalAddress">
                     Physical Address
                   </label>
                   <br>
                   <input class="form-control two-column-input" formControlName="physicalAddress" id="physicalAddress"
                          name="physicalAddress"
-                         placeholder="The physical address" required="required" type="text">
+                         placeholder="Company physical address" required="required" type="text">
                 </div>
 
               </div>
@@ -208,24 +208,24 @@
               <div class="row input-row">
 
                 <div class="col">
-                  <label class="input-placeholder2" for="plotNumber">
+                  <label class="input-placeholder-required" for="plotNumber">
                     Plot Number
                   </label>
                   <br>
                   <input class="form-control two-column-input" formControlName="plotNumber" id="plotNumber"
                          name="plotNumber"
-                         placeholder="The plot number" required="required" type="text">
+                         placeholder="Plot number" required="required" type="text">
 
                 </div>
                 <div class="col">
 
-                  <label class="input-placeholder2" for="companyEmail">
+                  <label class="input-placeholder-required" for="companyEmail">
                     Company Email
                   </label>
                   <br>
                   <input class="form-control two-column-input" formControlName="companyEmail" id="companyEmail"
                          name="companyEmail"
-                         placeholder="The company email address" required="required" type="text">
+                         placeholder="Company email address" required="required" type="text">
                 </div>
 
               </div>
@@ -233,13 +233,13 @@
               <div class="row input-row">
 
                 <div class="col">
-                  <label class="input-placeholder2" for="companyTelephone">
+                  <label class="input-placeholder-required" for="companyTelephone">
                     Company Phone
                   </label>
                   <br>
                   <input class="form-control two-column-input" formControlName="companyTelephone" id="companyTelephone"
                          name="companyTelephone"
-                         placeholder="The company phone number" required="required" type="text">
+                         placeholder="Company phone number" required="required" type="text">
 
                 </div>
                 <div class="col"></div>
@@ -266,12 +266,12 @@
             <div class="container">
               <div class="row">
                 <h2 class="welcome2">
-                  Geo-Spatial Information
+                  Physical Location Information
                 </h2>
               </div>
               <div class="row input-row">
                 <div class="col">
-                  <label class="input-placeholder2" for="postalAddress">
+                  <label class="input-placeholder-required" for="postalAddress">
                     Building Name
                   </label>
                   <br>
@@ -281,19 +281,19 @@
                 </div>
 
                 <div class="col">
-                  <label class="input-placeholder2" for="streetName">
+                  <label class="input-placeholder-required" for="streetName">
                     Street Name
                   </label>
                   <br>
                   <input class="form-control two-column-input" formControlName="streetName" id="streetName"
                          name="streetName"
-                         placeholder="The street name" required="required" type="text">
+                         placeholder="Street name" required="required" type="text">
                 </div>
 
               </div>
               <div class="row input-row">
                 <div class="col">
-                  <label class="input-placeholder2" for="region">
+                  <label class="input-placeholder-required" for="region">
                     Region
                   </label>
                   <br>
@@ -311,7 +311,7 @@
                   </ng-container>
                 </div>
                 <div class="col">
-                  <label class="input-placeholder2" for="county">
+                  <label class="input-placeholder-required" for="county">
                     County
                   </label>
                   <br>
@@ -324,6 +324,7 @@
                         *ngFor="let app of apps| filterPipe: {status: true, regionId: selectedRegion}"
                         [ngValue]="app.id"
                         class="dropdown-item">{{app.county}}</option>
+
                     </select>
 
                   </ng-container>
@@ -332,7 +333,7 @@
               <div class="row input-row">
 
                 <div class="col">
-                  <label class="input-placeholder2" for="town">
+                  <label class="input-placeholder-required" for="town">
                     Town
                   </label>
                   <br>
