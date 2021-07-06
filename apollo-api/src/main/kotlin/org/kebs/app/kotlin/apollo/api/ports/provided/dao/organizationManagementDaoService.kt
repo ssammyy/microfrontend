@@ -40,15 +40,66 @@ class RegistrationManagementDaoService(
     private val commonDaoServices: CommonDaoServices,
     private val qaDaoServices: QADaoServices,
 ) {
+
+    /**
+     * Reset credentials given the username and password and confirmation
+     * @param request {"username": "", "password": "" }
+     * @return CustomResponse
+     */
+    fun resetUserCredentials(request: LoginRequest): CustomResponse? {
+        val result = CustomResponse()
+        try {
+            usersRepo.findByUserName(request.username ?: throw NullValueNotAllowedException("Provide a valid username"))
+                ?.let { u ->
+                    u.apply {
+                        credentials = BCryptPasswordEncoder().encode(request.password)
+                        confirmCredentials = BCryptPasswordEncoder().encode("")
+                        modifiedBy = request.username
+                        modifiedOn = Timestamp.from(Instant.now())
+                        accountExpired = applicationMapProperties.transactionInactiveStatus
+                        accountLocked = applicationMapProperties.transactionInactiveStatus
+                        credentialsExpired = applicationMapProperties.transactionInactiveStatus
+                        status = applicationMapProperties.transactionActiveStatus
+                    }
+                    usersRepo.save(u)
+                    return result.apply {
+                        payload = "Success, proceed to login"
+                        status = 200
+                        response = "00"
+                    }
+
+
+                }
+                ?: throw InvalidValueException("Invalid request")
+
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.debug(e.message, e)
+            KotlinLogging.logger { }.error(e.message)
+            return result.apply {
+                payload = e.message
+                status = 500
+                response = "99"
+            }
+
+        }
+    }
+
     /**
      * Send validation Token to the user's registered phone given the user's username
      * @param request the Http payload of SendTokenRequestDto
      * @return CustomResponse
      */
     fun validateTokenFromThePhone(request: ValidateTokenRequestDto): CustomResponse? =
-        commonDaoServices.validateOTPToken(
-            request.token ?: throw NullValueNotAllowedException("Invalid Token provided"), request.username
-        )
+        usersRepo.findByUserName(request.username)
+            ?.let { u ->
+                commonDaoServices.validateOTPToken(
+                    request.token ?: throw NullValueNotAllowedException("Invalid Token provided"),
+                    u.cellphone ?: throw NullValueNotAllowedException("Valid Cellphone is required")
+                )
+            }
+            ?: throw NullValueNotAllowedException("")
+
 
     /**
      * Send validation Token to the user's registered phone given the user's username
@@ -68,7 +119,7 @@ class RegistrationManagementDaoService(
                     commonDaoServices.sendOtpViaSMS(token)
 
                     return result.apply {
-                        payload = "Successfully Assigned"
+                        payload = "Success, check your phone for the OTP"
                         status = 200
                         response = "00"
                     }

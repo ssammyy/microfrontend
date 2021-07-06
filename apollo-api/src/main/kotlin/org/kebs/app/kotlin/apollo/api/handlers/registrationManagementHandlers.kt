@@ -30,6 +30,30 @@ class RegistrationManagementHandler(
      *
      */
     @PreAuthorize("isAnonymous")
+    fun handleResetUserCredentials(req: ServerRequest): ServerResponse {
+        return try {
+            val body = req.body<LoginRequest>()
+            val errors: Errors = BeanPropertyBindingResult(body, LoginRequest::class.java.name)
+            validator.validate(body, errors)
+            service.resetUserCredentials(body)
+                ?.let { ServerResponse.ok().body(it) }
+                ?: onErrors("We could not complete your request try again later")
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.debug(e.message, e)
+            KotlinLogging.logger { }.error(e.message)
+            onErrors(e.message)
+
+        }
+    }
+
+    /**
+     * Validate the received payload of ValidateTokenRequestDto and send it to backend service for validation
+     * @param req ServerRequest
+     * @return ServerResponse
+     *
+     */
+    @PreAuthorize("isAnonymous")
     fun handleValidateTokenFromThePhone(req: ServerRequest): ServerResponse {
         return try {
             val body = req.body<ValidateTokenRequestDto>()

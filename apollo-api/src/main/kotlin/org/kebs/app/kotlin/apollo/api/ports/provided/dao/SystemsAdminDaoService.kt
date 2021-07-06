@@ -252,7 +252,7 @@ class SystemsAdminDaoService(
     fun updateUserDetails(dto: UserEntityDto): UserEntityDto? {
 
         when {
-            dto.id ?: -1L < 1L -> {
+            (dto.id ?: -1L) < 1L -> {
                 var user = UsersEntity()
                 user.title = dto.title
                 user.firstName = dto.firstName
@@ -467,7 +467,7 @@ class SystemsAdminDaoService(
                     userId = dto.userId
                     status = 0
                     createdBy = loggedInUserDetails().userName
-                    createdOn = java.sql.Timestamp.from(java.time.Instant.now())
+                    createdOn = Timestamp.from(Instant.now())
                 }
 
                 companyProfile = companyProfileRepo.save(companyProfile)
@@ -548,7 +548,7 @@ class SystemsAdminDaoService(
 
     fun updateRole(role: RolesEntityDto): RolesEntityDto? {
         when {
-            role.id ?: 0L < 1L -> {
+            (role.id ?: 0L) < 1L -> {
                 val r = UserRolesEntity()
                 r.roleName = role.roleName
                 r.descriptions = role.descriptions
@@ -613,7 +613,7 @@ class SystemsAdminDaoService(
 
     fun updateTitle(entity: TitlesEntityDto): TitlesEntityDto? {
         when {
-            entity.id ?: 0L < 1L -> {
+            (entity.id ?: 0L) < 1L -> {
                 val r = TitlesEntity()
                 r.title = entity.title
                 r.remarks = entity.remarks
@@ -646,7 +646,7 @@ class SystemsAdminDaoService(
 
     fun updateUserType(entity: UserTypesEntityDto): UserTypesEntityDto? {
         when {
-            entity.id ?: 0L < 1L -> {
+            (entity.id ?: 0L) < 1L -> {
                 val r = UserTypesEntity()
                 r.typeName = entity.typeName
                 if (entity.status == true) r.status = 1 else r.status = 0
@@ -914,7 +914,7 @@ class SystemsAdminDaoService(
                                         userRoleAssigned = userRequestDto.userRoleAssigned
                                         status = 1
                                         modifiedBy = loggedInUserDetails().userName
-                                        modifiedOn = java.sql.Timestamp.from(java.time.Instant.now())
+                                        modifiedOn = Timestamp.from(Instant.now())
                                         varField1 = "$status"
                                     }
                                     val request = userRequestRepo.save(usersRequestDetails)
@@ -1196,6 +1196,7 @@ class SystemsAdminDaoService(
                         cellphone = u.cellphone
                         userRegNo = "KEBS${commonDaoServices.generateTransactionReference(5).toUpperCase()}"
                         credentials = BCryptPasswordEncoder().encode(u.credentials)
+                        confirmCredentials = BCryptPasswordEncoder().encode(u.credentials)
                         enabled = applicationMapProperties.transactionActiveStatus
                         status = applicationMapProperties.transactionActiveStatus
                         accountLocked = applicationMapProperties.transactionInactiveStatus

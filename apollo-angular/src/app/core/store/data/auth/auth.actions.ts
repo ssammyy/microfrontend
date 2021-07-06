@@ -12,7 +12,7 @@ export const doSendTokenForUser = createAction(
 )
 export const doSendTokenForUserSuccess = createAction(
   '[Auth] doSendTokenForUserSuccess',
-  props<{ data: ApiResponse }>()
+  props<{ data: ApiResponse, otpSent: boolean }>()
 )
 export const doValidateTokenForUser = createAction(
   '[Auth] doValidateTokenForUser',
@@ -32,6 +32,10 @@ export const loadLogoutFailure = createAction(
   props<{ error: ApiResponse }>()
 );
 
+export const loadResetAuths = createAction(
+  '[Auth] loadResetAuths',
+  props<{ payload: LoginCredentials, redirectUrl: string }>()
+);
 export const loadAuths = createAction(
   '[Auth] Load Auths',
   props<{ payload: LoginCredentials, redirectUrl: string }>()
@@ -41,8 +45,16 @@ export const loadAuthsSuccess = createAction(
   '[Auth] Load Auths Success',
   props<{ profile: LoggedInUser, loggedIn: boolean; }>()
 );
+export const loadResetAuthsSuccess = createAction(
+  '[Auth] Load loadResetAuths Success',
+  props<{ profile: LoggedInUser, loggedIn: boolean; }>()
+);
 
 export const loadAuthsFailure = createAction(
   '[Auth] Load Auths Failure',
+  props<{ error: ApiResponse }>()
+);
+export const loadResetAuthsFailure = createAction(
+  '[Auth] loadResetAuths Failure',
   props<{ error: ApiResponse }>()
 );
