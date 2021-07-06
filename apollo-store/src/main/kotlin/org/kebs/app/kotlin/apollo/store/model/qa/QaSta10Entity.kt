@@ -20,6 +20,10 @@ class QaSta10Entity : Serializable {
     @Basic
     var permitId: Long? = null
 
+    @Column(name = "PERMIT_REF_NUMBER")
+    @Basic
+    var permitRefNumber: String? = null
+
     @Column(name = "FIRM_NAME")
     @Basic
     var firmName: String? = null
@@ -364,6 +368,7 @@ class QaSta10Entity : Serializable {
                 officialFillDate == that.officialFillDate &&
                 description == that.description &&
                 closedProduction == that.closedProduction &&
+                permitRefNumber == that.permitRefNumber &&
                 status == that.status &&
                 varField1 == that.varField1 &&
                 varField2 == that.varField2 &&
@@ -392,6 +397,7 @@ class QaSta10Entity : Serializable {
             ownerNameProprietorDirector,
             postalAddress,
             telephone,
+             permitRefNumber,
             productLabeledMarkedSpecify1a,
             productLabeledMarkedSpecify1b,
             productLabeledMarkedSpecify1c,

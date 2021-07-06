@@ -59,6 +59,10 @@ class QaInspectionReportRecommendationEntity : Serializable {
     @Basic
     var permitId: Long? = null
 
+    @Column(name = "PERMIT_REF_NUMBER")
+    @Basic
+    var permitRefNumber: String? = null
+
     @Column(name = "FILLED_QPSMS_STATUS")
     @Basic
     var filledQpsmsStatus: Int? = null
@@ -165,6 +169,7 @@ class QaInspectionReportRecommendationEntity : Serializable {
                 && filledHaccpImplementationStatus == that.filledHaccpImplementationStatus
                 && supervisorFilledStatus == that.supervisorFilledStatus
                 && filledOpcStatus == that.filledOpcStatus
+                && permitRefNumber == that.permitRefNumber
                 && submittedInspectionReportStatus == that.submittedInspectionReportStatus && inspectorComments == that.inspectorComments && inspectorName == that.inspectorName && inspectorDate == that.inspectorDate && supervisorComments == that.supervisorComments && supervisorName == that.supervisorName && supervisorDate == that.supervisorDate && description == that.description && permitId == that.permitId && status == that.status && varField1 == that.varField1 && varField2 == that.varField2 && varField3 == that.varField3 && varField4 == that.varField4 && varField5 == that.varField5 && varField6 == that.varField6 && varField7 == that.varField7 && varField8 == that.varField8 && varField9 == that.varField9 && varField10 == that.varField10 && createdBy == that.createdBy && createdOn == that.createdOn && modifiedBy == that.modifiedBy && modifiedOn == that.modifiedOn && deleteBy == that.deleteBy && deletedOn == that.deletedOn
     }
 
@@ -173,6 +178,7 @@ class QaInspectionReportRecommendationEntity : Serializable {
             id,
             supervisorFilledStatus,
             filledQpsmsStatus,
+             permitRefNumber,
             filledInspectionTestingStatus,
             filledStandardizationMarkSchemeStatus,
             filledOpcStatus,

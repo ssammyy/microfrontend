@@ -181,7 +181,7 @@
                                                             <option value="0">Select One...BRAND = KSH AMOUNT/=</option>
                                                             <option th:each="permitInvoice : ${allPermitInvoiceList}"
                                                                     th:text="${permitInvoice.brandName}+ '= KSH ' + ${permitInvoice.totalAmount}"
-                                                                    th:value="${permitInvoice.permitID}"></option>
+                                                                    th:value="${permitInvoice.permitRefNumber}"></option>
                                                         </select>
                                                     </div>
                                                     <div id="submitInvoice">

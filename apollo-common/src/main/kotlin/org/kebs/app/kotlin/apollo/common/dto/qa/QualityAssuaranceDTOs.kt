@@ -79,8 +79,8 @@ data class PermitInvoiceDto(
 data class NewBatchInvoiceDto(
     var batchID: Long = -1L,
     var plantID: Long? = null,
-    var permitID: Long? = null,
-    var permitInvoicesID: Array<Long>? = null
+    var permitRefNumber: String? = null,
+    var permitInvoicesID: Array<String>? = null
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -90,7 +90,7 @@ data class NewBatchInvoiceDto(
 
         if (batchID != other.batchID) return false
         if (plantID != other.plantID) return false
-        if (permitID != other.permitID) return false
+        if (permitRefNumber != other.permitRefNumber) return false
         if (permitInvoicesID != null) {
             if (other.permitInvoicesID == null) return false
             if (!permitInvoicesID.contentEquals(other.permitInvoicesID)) return false
@@ -102,11 +102,10 @@ data class NewBatchInvoiceDto(
     override fun hashCode(): Int {
         var result = batchID.hashCode()
         result = 31 * result + (plantID?.hashCode() ?: 0)
-        result = 31 * result + (permitID?.hashCode() ?: 0)
+        result = 31 * result + (permitRefNumber?.hashCode() ?: 0)
         result = 31 * result + (permitInvoicesID?.contentHashCode() ?: 0)
         return result
     }
-
 }
 
 data class PermitEntityDto(

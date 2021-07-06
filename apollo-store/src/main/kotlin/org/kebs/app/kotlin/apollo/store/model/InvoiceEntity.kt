@@ -85,6 +85,10 @@ class InvoiceEntity: Serializable {
     @Basic
     var permitId: Long? = null
 
+    @Column(name = "PERMIT_REF_NUMBER")
+    @Basic
+    var permitRefNumber: String? = null
+
     @Column(name = "USER_ID")
     @Basic
     var userId: Long? = null
@@ -206,6 +210,7 @@ class InvoiceEntity: Serializable {
         return id == that.id &&
                 batchInvoiceNo == that.batchInvoiceNo &&
                 inspectionCost == that.inspectionCost &&
+                permitRefNumber == that.permitRefNumber &&
                 applicationCost == that.applicationCost &&
                 paymentStatus == that.paymentStatus &&
                 receiptNo == that.receiptNo &&
@@ -249,6 +254,6 @@ class InvoiceEntity: Serializable {
     }
 
     override fun hashCode(): Int {
-        return Objects.hash(id, status,batchInvoiceNo, receiptNo, invoiceNumber,paymentStatus, invoiceBatchNumberId, userId, paidOn, phone, fmarkCost, amountPaid, fuelInspectionCost, installationInspectionId, tax, standardCost, fmarkStatus, inspectionCost, applicationCost, expiryDate, manufacturer, businessName, goods, conditions, signature, varField1, varField2, varField3, varField4, varField5, varField6, varField7, varField8, varField9, varField10, createdBy, createdOn, modifiedBy, modifiedOn, deleteBy, deletedOn, amount, permitId)
+        return Objects.hash(id, status,batchInvoiceNo, permitRefNumber, receiptNo, invoiceNumber,paymentStatus, invoiceBatchNumberId, userId, paidOn, phone, fmarkCost, amountPaid, fuelInspectionCost, installationInspectionId, tax, standardCost, fmarkStatus, inspectionCost, applicationCost, expiryDate, manufacturer, businessName, goods, conditions, signature, varField1, varField2, varField3, varField4, varField5, varField6, varField7, varField8, varField9, varField10, createdBy, createdOn, modifiedBy, modifiedOn, deleteBy, deletedOn, amount, permitId)
     }
 }

@@ -50,13 +50,14 @@ class QualityAssuranceController(
         val result: ServiceRequestsEntity?
         val map = commonDaoServices.serviceMapDetails(appId)
         val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val auth = commonDaoServices.loggedInUserAuthentication()
         val permitType = qaDaoServices.findPermitType(permitTypeID)
 
-        result = qaDaoServices.permitSave(permit, permitType, loggedInUser, map).first
+        result = qaDaoServices.permitSave(permit, permitType, loggedInUser, map, auth).first
 
         val sm = CommonDaoServices.MessageSuccessFailDTO()
         sm.closeLink = "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${result.varField1}"
-        sm.message = "You have Successful Filled STA 1 , Complete your application"
+        sm.message = "You have Successful Filled STA 1, Complete your application"
 
         return commonDaoServices.returnValues(result, map, sm)
     }
@@ -71,11 +72,12 @@ class QualityAssuranceController(
         val result: ServiceRequestsEntity?
         val map = commonDaoServices.serviceMapDetails(appId)
         val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val auth = commonDaoServices.loggedInUserAuthentication()
         val permitDetails = qaDaoServices.findPermitBYID(
             fmarkEntityDto.smarkPermitID ?: throw ExpectedDataNotFound("Smark Permit id not found")
         )
 
-        result = qaDaoServices.permitGenerateFmark(map, loggedInUser, permitDetails)
+        result = qaDaoServices.permitGenerateFmark(map, loggedInUser, permitDetails, auth)
 
         val sm = CommonDaoServices.MessageSuccessFailDTO()
         sm.closeLink = "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${result.varField1}"
@@ -629,26 +631,17 @@ class QualityAssuranceController(
                 if (permitDetails.permitType == applicationMapProperties.mapQAPermitTypeIDDmark) {
                     when (permit.pcmApprovalStatus) {
                         map.activeStatus -> {
-                            KotlinLogging.logger { }
-                                .info(":::::: Sending compliance status along with e-permit :::::::")
-                            permitDetails = qaDaoServices.permitUpdateDetails(
-                                commonDaoServices.updateDetails(
-                                    permit,
-                                    permitDetails
-                                ) as PermitApplicationsEntity, map, loggedInUser
-                            ).second
-                            qaDaoServices.pcmGenerateInvoice(
-                                map,
-                                loggedInUser,
-                                permitDetails,
-                                permitDetails.permitType ?: throw Exception("ID NOT FOUND")
-                            )
+                            KotlinLogging.logger { }.info(":::::: Sending compliance status along with e-permit :::::::")
+                            permitDetails.userTaskId = applicationMapProperties.mapUserTaskNameMANUFACTURE
+                            permitDetails = qaDaoServices.permitUpdateDetails(commonDaoServices.updateDetails(permit, permitDetails) as PermitApplicationsEntity, map, loggedInUser).second
+                            qaDaoServices.pcmGenerateInvoice(map, loggedInUser, permitDetails, permitDetails.permitType ?: throw Exception("ID NOT FOUND"))
                         }
                         map.inactiveStatus -> {
                             with(permitDetails) {
                                 resubmitApplicationStatus = map.initStatus
                                 sendForPcmReview = null
                                 pcmApprovalStatus = null
+                                userTaskId = applicationMapProperties.mapUserTaskNameMANUFACTURE
                             }
                             qaDaoServices.permitInsertStatus(
                                 permitDetails,
@@ -719,12 +712,7 @@ class QualityAssuranceController(
         }
 
         //updating of Details in DB
-        result = qaDaoServices.permitUpdateDetails(
-            commonDaoServices.updateDetails(
-                permit,
-                permitDetails
-            ) as PermitApplicationsEntity, map, loggedInUser
-        ).first
+        result = qaDaoServices.permitUpdateDetails(commonDaoServices.updateDetails(permit, permitDetails) as PermitApplicationsEntity, map, loggedInUser).first
 
 
         val sm = CommonDaoServices.MessageSuccessFailDTO()
@@ -734,8 +722,7 @@ class QualityAssuranceController(
         return commonDaoServices.returnValues(result, map, sm)
     }
 
-    @PreAuthorize(
-        "hasAuthority('PERMIT_APPLICATION') or hasAuthority('QA_MANAGER_ASSESSORS_MODIFY') or hasAuthority('QA_HOF_MODIFY') " +
+    @PreAuthorize("hasAuthority('PERMIT_APPLICATION') or hasAuthority('QA_MANAGER_ASSESSORS_MODIFY') or hasAuthority('QA_HOF_MODIFY') " +
                 "or hasAuthority('QA_HOD_MODIFY') or hasAuthority('QA_OFFICER_MODIFY') or hasAuthority('QA_PAC_SECRETARY_MODIFY') or hasAuthority('QA_PSC_MEMBERS_MODIFY') or hasAuthority('QA_PCM_MODIFY') or hasAuthority('QA_ASSESSORS_MODIFY')"
     )
     @PostMapping("/apply/update-permit-resubmit")
@@ -914,8 +901,8 @@ class QualityAssuranceController(
 
         val result: ServiceRequestsEntity?
         val permitFound = qaDaoServices.findPermitBYID(permitID)
-        var qaInspectionReportRecommendation = qaDaoServices.findQaInspectionReportRecommendationBYPermitID(
-            permitFound.id ?: throw Exception("INVALID PERMIT ID FOUND")
+        var qaInspectionReportRecommendation = qaDaoServices.findQaInspectionReportRecommendationBYPermitRefNumber(
+            permitFound.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER FOUND")
         )
 
         qaInspectionReportRecommendation = commonDaoServices.updateDetails(
@@ -1215,13 +1202,12 @@ class QualityAssuranceController(
     ): String? {
         val map = commonDaoServices.serviceMapDetails(appId)
         val loggedInUser = commonDaoServices.loggedInUserDetails()
-        val permit = loggedInUser.id?.let { qaDaoServices.findPermitBYUserIDAndId(permitID, it) }
-            ?: throw ExpectedDataNotFound("User Id required")
+        val permit = loggedInUser.id?.let { qaDaoServices.findPermitBYUserIDAndId(permitID, it) } ?: throw ExpectedDataNotFound("User Id required")
 
 
         when (permitViewType) {
             applicationMapProperties.mapPermitRenewMessage -> {
-                val sta3 = qaDaoServices.findSTA3WithPermitIDBY(permitID)
+                val sta3 = qaDaoServices.findSTA3WithPermitRefNumber(permit.permitRefNumber?: throw Exception("INVALID PERMIT REF NUMBER"))
                 QaSta3Entity.id = sta3.id
                 qaDaoServices.sta3Update(
                     commonDaoServices.updateDetails(sta3, QaSta3Entity) as QaSta3Entity,
@@ -1230,7 +1216,7 @@ class QualityAssuranceController(
                 )
             }
             applicationMapProperties.mapPermitNewMessage -> {
-                permit.id?.let { qaDaoServices.sta3NewSave(it, QaSta3Entity, loggedInUser, map) }
+                 qaDaoServices.sta3NewSave(permit.permitRefNumber?: throw Exception("INVALID PERMIT REF NUMBER"), QaSta3Entity, loggedInUser, map)
             }
         }
         val result: ServiceRequestsEntity?
@@ -1249,7 +1235,7 @@ class QualityAssuranceController(
         val sm = CommonDaoServices.MessageSuccessFailDTO()
         sm.closeLink =
             "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitID}"
-        sm.message = "You have Successful Filled STA 3 and has been submitted sucessful , Submit your application"
+        sm.message = "You have Successful Filled STA 3 and has been submitted successful , Submit your application"
 
         return commonDaoServices.returnValues(result, map, sm)
     }
@@ -1270,7 +1256,7 @@ class QualityAssuranceController(
             ?: throw ExpectedDataNotFound("User Id required")
         when (permitViewType) {
             applicationMapProperties.mapPermitRenewMessage -> {
-                val sta10 = qaDaoServices.findSTA10WithPermitIDBY(permitID)
+                val sta10 = qaDaoServices.findSTA10WithPermitRefNumberBY(permit.permitRefNumber?: throw Exception("INVALID PERMIT REF NUMBER"))
                 with(QaSta10Entity){
                     id = sta10.id
                     closedProduction=map.inactiveStatus
@@ -1281,7 +1267,7 @@ class QualityAssuranceController(
                 qaDaoServices.sta10Update(commonDaoServices.updateDetails(QaSta10Entity, sta10) as QaSta10Entity, map, loggedInUser)
             }
             applicationMapProperties.mapPermitNewMessage -> {
-                permit.id?.let { qaDaoServices.sta10NewSave(it, QaSta10Entity, loggedInUser, map) }
+              qaDaoServices.sta10NewSave(permit.permitRefNumber?: throw Exception("INVALID PERMIT REF NUMBER"), QaSta10Entity, loggedInUser, map)
             }
         }
 
@@ -1520,7 +1506,7 @@ class QualityAssuranceController(
                     loggedInUser,
                     map,
                     uploads,
-                    permitID,
+                    permitDetails.permitRefNumber?: throw Exception("INVALID PERMIT REF NUMBER"),
                     versionNumber,
                     manufactureNonStatus
                 )
@@ -1530,8 +1516,8 @@ class QualityAssuranceController(
                 when {
                     cocStatus != null -> {
                         uploads.cocStatus = cocStatus
-                        versionNumber = qaDaoServices.findAllUploadedFileBYPermitIDAndCocStatus(
-                            permitID,
+                        versionNumber = qaDaoServices.findAllUploadedFileBYPermitRefNumberAndCocStatus(
+                            permitDetails.permitRefNumber?: throw Exception("INVALID PERMIT REF NUMBER"),
                             map.activeStatus
                         ).size.toLong().plus(versionNumber)
                         uploadResults = qaDaoServices.saveQaFileUploads(
@@ -1540,7 +1526,7 @@ class QualityAssuranceController(
                             loggedInUser,
                             map,
                             uploads,
-                            permitID,
+                            permitDetails.permitRefNumber?: throw Exception("INVALID PERMIT REF NUMBER"),
                             versionNumber,
                             manufactureNonStatus
                         )
@@ -1555,8 +1541,8 @@ class QualityAssuranceController(
                     }
                     sscUploadStatus != null -> {
                         uploads.sscStatus = sscUploadStatus
-                        versionNumber = qaDaoServices.findAllUploadedFileBYPermitIDAndSscStatus(
-                            permitID,
+                        versionNumber = qaDaoServices.findAllUploadedFileBYPermitRefNumberAndSscStatus(
+                            permitDetails.permitRefNumber?: throw Exception("INVALID PERMIT REF NUMBER"),
                             map.activeStatus
                         ).size.toLong().plus(versionNumber)
                         uploadResults = qaDaoServices.saveQaFileUploads(
@@ -1565,7 +1551,7 @@ class QualityAssuranceController(
                             loggedInUser,
                             map,
                             uploads,
-                            permitID,
+                            permitDetails.permitRefNumber?: throw Exception("INVALID PERMIT REF NUMBER"),
                             versionNumber,
                             manufactureNonStatus
                         )
@@ -1581,8 +1567,8 @@ class QualityAssuranceController(
                     }
                     assessmentReportStatus != null -> {
                         uploads.assessmentReportStatus = assessmentReportStatus
-                        versionNumber = qaDaoServices.findAllUploadedFileBYPermitIDAndAssessmentReportStatus(
-                            permitID,
+                        versionNumber = qaDaoServices.findAllUploadedFileBYPermitRefNumberAndAssessmentReportStatus(
+                            permitDetails.permitRefNumber?: throw Exception("INVALID PERMIT REF NUMBER"),
                             map.activeStatus
                         ).size.toLong().plus(versionNumber)
                         uploadResults = qaDaoServices.saveQaFileUploads(
@@ -1591,7 +1577,7 @@ class QualityAssuranceController(
                             loggedInUser,
                             map,
                             uploads,
-                            permitID,
+                            permitDetails.permitRefNumber?: throw Exception("INVALID PERMIT REF NUMBER"),
                             versionNumber,
                             manufactureNonStatus
                         )
@@ -1635,7 +1621,7 @@ class QualityAssuranceController(
                             loggedInUser,
                             map,
                             uploads,
-                            permitID,
+                            permitDetails.permitRefNumber?: throw Exception("INVALID PERMIT REF NUMBER"),
                             versionNumber,
                             manufactureNonStatus
                         )
@@ -1654,7 +1640,7 @@ class QualityAssuranceController(
                             loggedInUser,
                             map,
                             uploads,
-                            permitID,
+                            permitDetails.permitRefNumber?: throw Exception("INVALID PERMIT REF NUMBER"),
                             versionNumber,
                             manufactureNonStatus
                         )
@@ -1712,12 +1698,9 @@ class QualityAssuranceController(
     fun getFactoryAssesmentReport(response: HttpServletResponse, @RequestParam("permitID") permitID: Long) {
         val permit = qaDaoServices.findPermitBYID(permitID)
 
-        val fileUploaded =
-            permit.id?.let { qaDaoServices.findUploadedFileByPermitIdAndDocType(it, "FACTORY_ASSESSMENT_REPORT") }
-        val mappedFileClass = fileUploaded?.let { commonDaoServices.mapClass(it) }
-        if (mappedFileClass != null) {
-            commonDaoServices.downloadFile(response, mappedFileClass)
-        }
+        val fileUploaded = qaDaoServices.findUploadedFileByPermitRefNumberAndDocType(permit.permitRefNumber?: throw Exception("INVALID PERMIT REF NUMBER"), "FACTORY_ASSESSMENT_REPORT")
+        val mappedFileClass = fileUploaded.let { commonDaoServices.mapClass(it) }
+        commonDaoServices.downloadFile(response, mappedFileClass)
     }
 
 
@@ -1733,10 +1716,8 @@ class QualityAssuranceController(
 
         var result: ServiceRequestsEntity?
 
-        val permit = loggedInUser.id?.let { qaDaoServices.findPermitBYUserIDAndId(permitID, it) }
-            ?: throw ExpectedDataNotFound("Required User ID, check config")
-        val permitType = permit.permitType?.let { qaDaoServices.findPermitType(it) }
-            ?: throw ExpectedDataNotFound("PermitType Id Not found")
+        val permit = loggedInUser.id?.let { qaDaoServices.findPermitBYUserIDAndId(permitID, it) } ?: throw ExpectedDataNotFound("Required User ID, check config")
+        val permitType = permit.permitType?.let { qaDaoServices.findPermitType(it) } ?: throw ExpectedDataNotFound("PermitType Id Not found")
 
         result = qaDaoServices.permitInvoiceCalculation(map, loggedInUser, permit, permitType)
         with(permit) {
@@ -1837,7 +1818,7 @@ class QualityAssuranceController(
             loggedInUser,
             map,
             uploads,
-            permitID,
+            permitDetails.permitRefNumber?: throw Exception("INVALID PERMIT REF NUMBER"),
             versionNumber,
             null
         ).first
