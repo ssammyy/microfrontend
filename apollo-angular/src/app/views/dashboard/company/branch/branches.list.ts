@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {Observable, Subject} from "rxjs";
+import {Observable, Subject, throwError} from "rxjs";
 import {
   Branches,
   BranchesService,
@@ -8,10 +8,12 @@ import {
   Go,
   loadBranchId,
   loadCompanyId,
+  loadCountyId,
   loadResponsesFailure,
   Region,
   RegionService,
   selectCompanyIdData,
+  selectCountyIdData,
   Town,
   TownService
 } from "../../../../core/store";
@@ -65,22 +67,32 @@ export class BranchesList implements OnInit {
     this.town$ = townService.entities$
     regionService.getAll().subscribe();
     countyService.getAll().subscribe();
-    townService.getAll().subscribe();
+    // townService.getAll().subscribe();
 
   }
 
   updateSelectedRegion() {
-    this.selectedRegion = this.stepThreeForm?.get('region')?.value;
-    // console.log(`region set to ${this.selectedRegion}`)
+    this.selectedRegion = this.stepTwoForm?.get('region')?.value;
+    console.log(`region set to ${this.selectedRegion}`)
   }
 
   updateSelectedCounty() {
-    this.selectedCounty = this.stepThreeForm?.get('county')?.value;
     // console.log(`county set to ${this.selectedCounty}`)
+    this.selectedCounty = this.stepTwoForm?.get('county')?.value;
+    // console.log(`county set to ${this.selectedCounty}`)
+    this.store$.dispatch(loadCountyId({payload: this.selectedCounty}));
+    this.store$.select(selectCountyIdData).subscribe(
+      (d) => {
+        if (d) {
+          // console.log(`Select county inside is ${d}`);
+          return this.townService.getAll();
+        } else return throwError('Invalid request, Company id is required');
+      }
+    );
   }
 
   updateSelectedTown() {
-    this.selectedTown = this.stepThreeForm?.get('town')?.value;
+    this.selectedTown = this.stepTwoForm?.get('town')?.value;
     // console.log(`town set to ${this.selectedTown}`)
   }
 

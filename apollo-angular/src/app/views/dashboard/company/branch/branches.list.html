@@ -155,9 +155,10 @@
                   </label>
                   <br>
                   <ng-container *ngIf="county$ | async as apps">
-                    <select (ngModelChange)="updateSelectedCounty()"
-                            formControlName="county" id="county"
-                            name="county" required="required" style="width: 100%; height: 90%">
+                    <select
+                      (ngModelChange)="updateSelectedCounty()"
+                      formControlName="county" id="county"
+                      name="county" required="required" style="width: 100%; height: 90%">
                       <option ngValue="null" selected>Please select</option>
                       <option
                         *ngFor="let app of apps| filterPipe: {status: true, regionId: selectedRegion}"
