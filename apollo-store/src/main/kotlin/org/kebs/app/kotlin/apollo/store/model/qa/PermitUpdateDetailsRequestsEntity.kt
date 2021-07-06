@@ -37,6 +37,10 @@ class PermitUpdateDetailsRequestsEntity : Serializable {
     @Basic
     var permitId: Long? = null
 
+    @Column(name = "PERMIT_REF_NUMBER")
+    @Basic
+    var permitRefNumber: String? = null
+
     @Column(name = "REQUEST_TYPE")
     @Basic
     var requestType: Long? = null
@@ -121,13 +125,16 @@ class PermitUpdateDetailsRequestsEntity : Serializable {
         if (this === other) return true
         if (other == null || javaClass != other.javaClass) return false
         val that = other as PermitUpdateDetailsRequestsEntity
-        return id == that.id && approvalRejectionReason == that.approvalRejectionReason && brandName == that.brandName && description == that.description && permitId == that.permitId && requestType == that.requestType && endProduction == that.endProduction && requestStatus == that.requestStatus && status == that.status && varField1 == that.varField1 && varField2 == that.varField2 && varField3 == that.varField3 && varField4 == that.varField4 && varField5 == that.varField5 && varField6 == that.varField6 && varField7 == that.varField7 && varField8 == that.varField8 && varField9 == that.varField9 && varField10 == that.varField10 && createdBy == that.createdBy && createdOn == that.createdOn && modifiedBy == that.modifiedBy && modifiedOn == that.modifiedOn && deleteBy == that.deleteBy && deletedOn == that.deletedOn
+        return id == that.id && approvalRejectionReason == that.approvalRejectionReason
+                && permitRefNumber == that.permitRefNumber
+                && brandName == that.brandName && description == that.description && permitId == that.permitId && requestType == that.requestType && endProduction == that.endProduction && requestStatus == that.requestStatus && status == that.status && varField1 == that.varField1 && varField2 == that.varField2 && varField3 == that.varField3 && varField4 == that.varField4 && varField5 == that.varField5 && varField6 == that.varField6 && varField7 == that.varField7 && varField8 == that.varField8 && varField9 == that.varField9 && varField10 == that.varField10 && createdBy == that.createdBy && createdOn == that.createdOn && modifiedBy == that.modifiedBy && modifiedOn == that.modifiedOn && deleteBy == that.deleteBy && deletedOn == that.deletedOn
     }
 
     override fun hashCode(): Int {
         return Objects.hash(
             id,
             brandName,
+            permitRefNumber,
             approvalRejectionReason,
             description,
             permitId,

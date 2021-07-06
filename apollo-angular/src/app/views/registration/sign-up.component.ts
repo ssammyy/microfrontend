@@ -184,8 +184,13 @@ export class SignUpComponent implements OnInit {
     this.selectedBusinessNature = this.stepOneForm?.get('businessNatures')?.value;
   }
 
-  onClickBrsLookup(valid: boolean) {
-    if (valid) {
+  onClickBrsLookup() {
+  this.submitted = true;
+    // stop here if form is invalid
+    if (this.stepZeroForm.invalid) {
+      return;
+    }
+    if (this.submitted) {
       this.step = 0
       this.brsLookupRequest = this.stepZeroForm.value;
       // console.log(`Sending ${JSON.stringify(this.brsLookupRequest)}`)

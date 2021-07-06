@@ -350,7 +350,7 @@
                                 </div>
 
 
-                                <div sec:authorize="or hasAuthority('QA_OFFICER_MODIFY') or hasAuthority('QA_HOD_MODIFY') or hasAuthority('QA_MANAGER_ASSESSORS_MODIFY') or hasAuthority('QA_HOF_MODIFY') or hasAuthority('QA_ASSESSORS_MODIFY') or hasAuthority('QA_PAC_SECRETARY_MODIFY') or hasAuthority('QA_PSC_MEMBERS_MODIFY') or hasAuthority('QA_PCM_MODIFY')">
+                                <div sec:authorize="hasAuthority('QA_OFFICER_MODIFY') or hasAuthority('QA_HOD_MODIFY') or hasAuthority('QA_MANAGER_ASSESSORS_MODIFY') or hasAuthority('QA_HOF_MODIFY') or hasAuthority('QA_ASSESSORS_MODIFY') or hasAuthority('QA_PAC_SECRETARY_MODIFY') or hasAuthority('QA_PSC_MEMBERS_MODIFY') or hasAuthority('QA_PCM_MODIFY')">
 
                                     <button class="accordion">Scheme of Supervision Details</button>
                                     <div class="panel">
@@ -902,6 +902,11 @@
                                         </div>
 
                                         <div sec:authorize="hasAuthority('QA_HOD_MODIFY')">
+                                            <a th:if="${permitDetails?.inspectionReportGenerated == 1 and permitDetails?.factoryInspectionReportApprovedRejectedStatus == null  }"
+                                               style="color: white"
+                                               th:href="@{/api/qa/inspection/inspection-report-details(permitID=${permitDetails?.id})}"
+                                               class="filter-link">APPROVE/REJECT GENERATED INSPECTION REPORT </a>
+
                                             <a th:if="${permitDetails?.compliantStatus == 1 and permitDetails?.justificationReportStatus == 10}"
                                                th:href="@{/api/qa/product-quality-status(permitID=${permitDetails?.id})}"
                                                style="color: white" target='_blank' class="filter-link">Justification
@@ -1069,7 +1074,7 @@
                                                 <select id="assessorId" required class="form-control"
                                                         th:field="*{assessorId}">
                                                     <option value="0">Select one...</option>
-                                                    <option th:each="assessor : ${assessors}"
+                                                    <option th:each="assessor : ${assessorAssigned}"
                                                             th:text="${assessor.userId?.firstName} + ' ' + ${assessor.userId?.lastName}"
                                                             th:name="assessorId"
                                                             th:value="${assessor.userId?.id}"></option>

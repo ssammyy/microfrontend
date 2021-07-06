@@ -9,7 +9,11 @@ import javax.persistence.*
 @Table(name = "DAT_KEBS_QA_SMARK_FMARK")
 class QaSmarkFmarkEntity : Serializable {
     @Column(name = "ID")
-    @SequenceGenerator(name = "DAT_KEBS_QA_SMARK_FMARK_SEQ_GEN", allocationSize = 1, sequenceName = "DAT_KEBS_QA_SMARK_FMARK_SEQ")
+    @SequenceGenerator(
+        name = "DAT_KEBS_QA_SMARK_FMARK_SEQ_GEN",
+        allocationSize = 1,
+        sequenceName = "DAT_KEBS_QA_SMARK_FMARK_SEQ"
+    )
     @GeneratedValue(generator = "DAT_KEBS_QA_SMARK_FMARK_SEQ_GEN", strategy = GenerationType.SEQUENCE)
     @Id
     var id: Long? = 0
@@ -17,6 +21,14 @@ class QaSmarkFmarkEntity : Serializable {
     @Column(name = "SMARK_ID")
     @Basic
     var smarkId: Long? = null
+
+    @Column(name = "SMARK_PERMIT_REF_NUMBER")
+    @Basic
+    var smarkPermitRefNumber: String? = null
+
+    @Column(name = "FMARK_PERMIT_REF_NUMBER")
+    @Basic
+    var fmarkPermitRefNumber: String? = null
 
     @Column(name = "FMARK_ID")
     @Basic
@@ -100,6 +112,8 @@ class QaSmarkFmarkEntity : Serializable {
         return id == that.id &&
                 smarkId == that.smarkId &&
                 fmarkId == that.fmarkId &&
+                smarkPermitRefNumber == that.smarkPermitRefNumber &&
+                fmarkPermitRefNumber == that.fmarkPermitRefNumber &&
                 description == that.description &&
                 status == that.status &&
                 varField1 == that.varField1 &&
@@ -125,6 +139,8 @@ class QaSmarkFmarkEntity : Serializable {
             id,
             smarkId,
             fmarkId,
+            smarkPermitRefNumber,
+            fmarkPermitRefNumber,
             description,
             status,
             varField1,

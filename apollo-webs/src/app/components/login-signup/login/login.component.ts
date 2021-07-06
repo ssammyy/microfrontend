@@ -124,7 +124,7 @@ export class LoginComponent implements OnInit {
     }
 
     this.loading = true;
-    console.log(this.loginForm.value)
+    console.log(this.loginForm.value);
     this.accountService.login(this.loginForm.value)
       .pipe(first())
       .subscribe(

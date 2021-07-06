@@ -18,6 +18,10 @@ class QaSta3Entity : Serializable {
     @Basic
     var permitId: Long? = null
 
+    @Column(name = "PERMIT_REF_NUMBER")
+    @Basic
+    var permitRefNumber: String? = null
+
     @Column(name = "PRODUCE_ORDERS_OR_STOCK")
     @Basic
     var produceOrdersOrStock: String? = null
@@ -236,6 +240,7 @@ class QaSta3Entity : Serializable {
                 levelClaimsComplaints == that.levelClaimsComplaints &&
                 independentTests == that.independentTests &&
                 indicateStageManufacture == that.indicateStageManufacture &&
+                permitRefNumber == that.permitRefNumber &&
                 description == that.description &&
                 status == that.status &&
                 varField1 == that.varField1 &&
@@ -260,6 +265,7 @@ class QaSta3Entity : Serializable {
         return Objects.hash(
             id,
             permitId,
+             permitRefNumber,
             produceOrdersOrStock,
             issueWorkOrderOrEquivalent,
             identifyBatchAsSeparate,

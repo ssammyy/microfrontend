@@ -38,6 +38,7 @@ class RegistrationManagementDaoService(
     private val usersRepo: IUserRepository,
     private val tokenService: JwtTokenService,
     private val commonDaoServices: CommonDaoServices,
+    private val qaDaoServices: QADaoServices,
 ) {
 
     /**
@@ -713,7 +714,6 @@ class RegistrationManagementDaoService(
                         name = dto.name
                         kraPin = dto.kraPin
                         userId = user.id
-
                         registrationNumber = dto.registrationNumber
                         postalAddress = dto.postalAddress
                         physicalAddress = dto.physicalAddress
@@ -729,6 +729,7 @@ class RegistrationManagementDaoService(
                         county = dto.county
                         town = dto.town
                         region = dto.region
+                        firmCategory = qaDaoServices.manufactureType(yearlyTurnover ?: throw NullValueNotAllowedException("Invalid Record") ).id
                         manufactureStatus = applicationMapProperties.transactionActiveStatus
                         status = applicationMapProperties.transactionActiveStatus
                         createdBy = user.userName
