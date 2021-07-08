@@ -105,7 +105,7 @@
                                                                 id="select-state" th:field="*{permitInvoicesID}">
                                                             <option th:each="permitInvoice : ${allPermitInvoiceList}"
                                                                     th:text="${permitInvoice.brandName}+ '= KSH ' + ${permitInvoice.totalAmount}"
-                                                                    th:value="${permitInvoice.permitID}"></option>
+                                                                    th:value="${permitInvoice.permitRefNumber}"></option>
                                                             <!--                                        <option th:each="subRegion : ${subRegions}" th:text="${subRegion.subRegion}" th:value="${subRegion.id}"></option>-->
                                                         </select>
 

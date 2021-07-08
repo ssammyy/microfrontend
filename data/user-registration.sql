@@ -112,7 +112,7 @@ order by id desc;
 select *
 from CFG_USER_ROLES--512
 --where id like '%5%'
--- where ROLE_NAME = 'SYSADMIN_VIEW'
+-- where id = 9
 order by id desc;
 
 select * from CFG_USER_PRIVILEGES--QA_OFFICER_READ
@@ -122,7 +122,7 @@ order by id desc;--MS
 -- _MP_MODIFY MS_MP_READ AUTHORITIES_WRITE 29
 select *
 from CFG_ROLES_PRIVILEGES
--- where ROLES_ID = 510
+where ROLES_ID = 9
 
 order by id desc;--MS_MP_MODIFY MS_MP_READ
 select *
@@ -144,8 +144,8 @@ from DAT_KEBS_USERS
 -- where ID = 1622
 
 -- where USER_PIN_ID_NUMBER = '13869968'
-where EMAIL = 'omarh@kebs.org'
--- where USER_NAME = 'muriukij@kebs.org'
+-- where EMAIL = 'omarh@kebs.org'
+-- where USER_NAME = 'Muriithig'
 -- where USER_PIN_ID_NUMBER = '0715668934'
 order by id desc
 ;

@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {Observable, Subject} from "rxjs";
+import {Observable, Subject, throwError} from "rxjs";
 import {
   Branches,
   BranchesService,
@@ -8,15 +8,17 @@ import {
   Go,
   loadBranchId,
   loadCompanyId,
+  loadCountyId,
   loadResponsesFailure,
   Region,
   RegionService,
   selectCompanyIdData,
+  selectCountyIdData,
   Town,
   TownService
 } from "../../../../core/store";
 import {Store} from "@ngrx/store";
-import {FormControl, FormGroup, Validators} from "@angular/forms";
+import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 
 @Component({
   selector: 'app-branches',
@@ -29,8 +31,8 @@ export class BranchesList implements OnInit {
   p = 1;
   step = 1;
 
-  stepTwoForm: FormGroup = new FormGroup({});
-  stepThreeForm: FormGroup = new FormGroup({});
+  stepTwoForm!: FormGroup;
+  stepThreeForm!: FormGroup;
 
   branchSoFar: Partial<Branches> | undefined;
   // @ts-ignore
@@ -42,6 +44,7 @@ export class BranchesList implements OnInit {
   selectedCounty: number = 0;
   selectedTown: number = 0;
   selectedCompany: number = -1;
+  submitted = false;
 
   dtTrigger: Subject<any> = new Subject<any>();
   dtOptions: DataTables.Settings = {
@@ -56,6 +59,7 @@ export class BranchesList implements OnInit {
     private regionService: RegionService,
     private countyService: CountyService,
     private townService: TownService,
+    private formBuilder: FormBuilder,
     private store$: Store<any>,
   ) {
     this.branches$ = service.entities$;
@@ -65,22 +69,32 @@ export class BranchesList implements OnInit {
     this.town$ = townService.entities$
     regionService.getAll().subscribe();
     countyService.getAll().subscribe();
-    townService.getAll().subscribe();
+    // townService.getAll().subscribe();
 
   }
 
   updateSelectedRegion() {
-    this.selectedRegion = this.stepThreeForm?.get('region')?.value;
-    // console.log(`region set to ${this.selectedRegion}`)
+    this.selectedRegion = this.stepTwoForm?.get('region')?.value;
+    console.log(`region set to ${this.selectedRegion}`)
   }
 
   updateSelectedCounty() {
-    this.selectedCounty = this.stepThreeForm?.get('county')?.value;
     // console.log(`county set to ${this.selectedCounty}`)
+    this.selectedCounty = this.stepTwoForm?.get('county')?.value;
+    // console.log(`county set to ${this.selectedCounty}`)
+    this.store$.dispatch(loadCountyId({payload: this.selectedCounty}));
+    this.store$.select(selectCountyIdData).subscribe(
+      (d) => {
+        if (d) {
+          // console.log(`Select county inside is ${d}`);
+          return this.townService.getAll();
+        } else return throwError('Invalid request, Company id is required');
+      }
+    );
   }
 
   updateSelectedTown() {
-    this.selectedTown = this.stepThreeForm?.get('town')?.value;
+    this.selectedTown = this.stepTwoForm?.get('town')?.value;
     // console.log(`town set to ${this.selectedTown}`)
   }
 
@@ -121,6 +135,15 @@ export class BranchesList implements OnInit {
     this.branchSoFar = record;
 
   }
+
+  get formStepTwoForm(): any {
+    return this.stepTwoForm.controls;
+  }
+
+  get formStepThreeForm(): any {
+    return this.stepThreeForm.controls;
+  }
+
 
   onClickPrevious() {
     if (this.step > 1) {

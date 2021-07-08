@@ -50,7 +50,7 @@ export class UsersList implements OnInit {
       userName: new FormControl('', [Validators.required]),
       email: new FormControl('', [Validators.required]),
       cellphone: new FormControl('', [Validators.required]),
-      otp: new FormControl('', [Validators.required]),
+      otp: new FormControl('',),
       credentials: new FormControl('', [Validators.required]),
       confirmCredentials: new FormControl('', [Validators.required]),
     });

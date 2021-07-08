@@ -18,7 +18,7 @@
           <tbody>
           <tr *ngFor="let theRecord of branches$ | async">
             <td>{{ theRecord.id }}</td>
-            <td>{{ theRecord.buildingName }}</td>
+            <td>{{ theRecord.buildingName | titlecase}}</td>
             <td>
               <div *ngIf="theRecord.status;  then true_span else false_span">
               </div>
@@ -26,11 +26,11 @@
               <ng-template #false_span><span id="false">Inactive</span></ng-template>
             </td>
             <td>
-              <a (click)="editRecord(theRecord)" class="link-dark">VIEW
+              <a (click)="editRecord(theRecord)" class="details-button">VIEW
               </a>
             </td>
             <td>
-              <a (click)="onClickUsers(theRecord)" class="link-dark">USERS
+              <a (click)="onClickUsers(theRecord)" class="details-button">USERS
               </a>
             </td>
 
@@ -55,37 +55,37 @@
 
               <div class="row input-row">
                 <div class="col">
-                  <label class="input-placeholder2" for="buildingName">
+                  <label class="input-placeholder-required" for="buildingName">
                     Building Name
                   </label>
                   <br>
                   <input class="form-control two-column-input" formControlName="buildingName" id="buildingName"
                          name="buildingName"
-                         placeholder="The buildingName" required="required" type="text">
+                         placeholder="Company building name" required="required" type="text">
                 </div>
                 <div class="col">
-                  <label class="input-placeholder2" for="physicalAddress">
+                  <label class="input-placeholder-required" for="physicalAddress">
                     Physical Address
                   </label>
                   <br>
                   <input class="form-control two-column-input" formControlName="physicalAddress" id="physicalAddress"
                          name="physicalAddress"
-                         placeholder="The physical address" required="required" type="text">
+                         placeholder="Company physical address" required="required" type="text">
                 </div>
               </div>
 
               <div class="row input-row">
                 <div class="col">
-                  <label class="input-placeholder2" for="location">
+                  <label class="input-placeholder-required" for="location">
                     Location
                   </label>
                   <br>
                   <input class="form-control two-column-input" formControlName="location" id="location"
                          name="location"
-                         placeholder="The location" required="required" type="text">
+                         placeholder="Company location" required="required" type="text">
                 </div>
                 <div class="col">
-                  <label class="input-placeholder2" for="postalAddress">
+                  <label class="input-placeholder-required" for="postalAddress">
                     Postal Address
                   </label>
                   <br>
@@ -96,40 +96,40 @@
               </div>
               <div class="row input-row">
                 <div class="col">
-                  <label class="input-placeholder2" for="plotNo">
+                  <label class="input-placeholder-required" for="plotNo">
                     Plot Number
                   </label>
                   <br>
                   <input class="form-control two-column-input" formControlName="plotNo" id="plotNo"
                          name="plotNo"
-                         placeholder="The plot number" required="required" type="text">
+                         placeholder="Plot number" required="required" type="text">
 
                 </div>
                 <div class="col">
 
-                  <label class="input-placeholder2" for="street">
-                    street
+                  <label class="input-placeholder-required" for="street">
+                    Street
                   </label>
                   <br>
                   <input class="form-control two-column-input" formControlName="street" id="street"
                          name="street"
-                         placeholder="The street" required="required" type="text">
+                         placeholder="Street name" required="required" type="text">
                 </div>
 
               </div>
               <div class="row input-row">
                 <div class="col">
-                  <label class="input-placeholder2" for="nearestLandMark">
+                  <label class="input-placeholder-required" for="nearestLandMark">
                     Nearest LandMark
                   </label>
                   <br>
                   <input class="form-control two-column-input" formControlName="nearestLandMark" id="nearestLandMark"
                          name="nearestLandMark"
-                         placeholder="The nearestLandMark" required="required" type="text">
+                         placeholder="Nearest LandMark" required="required" type="text">
 
                 </div>
                 <div class="col">
-                  <label class="input-placeholder2" for="region">
+                  <label class="input-placeholder-required" for="region">
                     Region
                   </label>
                   <br>
@@ -150,14 +150,15 @@
               </div>
               <div class="row input-row">
                 <div class="col">
-                  <label class="input-placeholder2" for="county">
+                  <label class="input-placeholder-required" for="county">
                     County
                   </label>
                   <br>
                   <ng-container *ngIf="county$ | async as apps">
-                    <select (ngModelChange)="updateSelectedCounty()"
-                            formControlName="county" id="county"
-                            name="county" required="required" style="width: 100%; height: 90%">
+                    <select
+                      (ngModelChange)="updateSelectedCounty()"
+                      formControlName="county" id="county"
+                      name="county" required="required" style="width: 100%; height: 90%">
                       <option ngValue="null" selected>Please select</option>
                       <option
                         *ngFor="let app of apps| filterPipe: {status: true, regionId: selectedRegion}"
@@ -168,7 +169,7 @@
                   </ng-container>
                 </div>
                 <div class="col">
-                  <label class="input-placeholder2" for="town">
+                  <label class="input-placeholder-required" for="town">
                     Town
                   </label>
                   <br>
@@ -187,7 +188,7 @@
                 </div>
 
               </div>
-              <div class="row input-row">
+              <div class="row mt-5">
                 <div class="col">
                   <button (click)="onClickPrevious()" class="login-button" type="button">PREV</button>
                 </div>
@@ -215,7 +216,7 @@
               <div class="row input-row">
                 <div class="col">
                   <label class="filter-inputs" for="contactPerson">
-                    contact Person
+                    Contact Person
                   </label>
                   <br>
                   <input class="form-control two-column-input" formControlName="contactPerson" id="contactPerson"
@@ -236,7 +237,7 @@
               </div>
               <div class="row input-row">
                 <div class="col">
-                  <label class="filter-inputs" for="descriptions">
+                  <label class="filter-inputs-not-required" for="descriptions">
                     Description
                   </label>
                   <br>
@@ -259,7 +260,7 @@
               <div class="row input-row">
                 <div class="col">
                   <label class="filter-inputs" for="emailAddress">
-                    emailAddress
+                    Email Address
                   </label>
                   <br>
                   <input class="form-control two-column-input" formControlName="emailAddress" id="emailAddress"
@@ -280,7 +281,7 @@
               </div>
               <div class="row input-row">
                 <div class="col">
-                  <label class="filter-inputs" for="faxNo">
+                  <label class="filter-inputs-not-required" for="faxNo">
                     Fax No
                   </label>
                   <br>

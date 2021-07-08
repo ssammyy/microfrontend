@@ -71,8 +71,7 @@ class LimsServices(
         try {
 
             val map = commonDaoServices.serviceMapDetails(appId)
-            val config =
-                commonDaoServices.findIntegrationConfigurationEntity(applicationMapProperties.mapLimsConfigIntegration)
+            val config = commonDaoServices.findIntegrationConfigurationEntity(applicationMapID)
 
             url = URL(config.url)
             val b = Base64()
@@ -96,6 +95,7 @@ class LimsServices(
             val responseCode: Int = conn.responseCode
             if (responseCode == HttpsURLConnection.HTTP_OK) {
                 var line: String?
+                System.out.println("::::::::::::::::::::::::CONNECTION MADE::::::::::::::::")
                 val br = BufferedReader(InputStreamReader(conn.inputStream))
                 while (br.readLine().also { line = it } != null) {
                     response += line

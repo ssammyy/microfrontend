@@ -37,7 +37,7 @@ export class DashboardComponent implements OnInit {
       const text = decodeURIComponent(part).split('.')[0];
       // console.log(text)
       const link = '/' + here.slice(0, i + 1).join('/');
-      console.log(link)
+      // console.log(link)
       parts.push({"text": text, "link": link});
       // console.log(parts)
     }

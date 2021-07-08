@@ -148,7 +148,7 @@
                                                 <button class="btn btn-primary"
                                                         onclick="validationFunction('validateQPAMSDetails');"
                                                         id="mySubmit" type="submit">
-                                                    Submit form
+                                                    Save
                                                 </button>
                                             </div>
                                         </div>
@@ -258,7 +258,7 @@
                                                 <button class="btn btn-primary"
                                                         onclick="validationFunction('validateISPTESTINGDetails');"
                                                         id="mySubmit1" type="submit">
-                                                    Submit form
+                                                    Save
                                                 </button>
                                             </div>
                                         </div>
@@ -367,7 +367,7 @@
                                                 <button class="btn btn-primary"
                                                         onclick="validationFunction('validateSMSDetails');"
                                                         id="mySubmit2" type="submit">
-                                                    Submit form
+                                                    Save
                                                 </button>
                                             </div>
                                         </div>
@@ -689,7 +689,7 @@
                                                 <button class="btn btn-primary"
                                                         onclick="validationFunction('validateHACCPDetails');"
                                                         id="mySubmit3" type="submit">
-                                                    Submit form
+                                                   Save
                                                 </button>
                                             </div>
                                         </div>
@@ -875,6 +875,8 @@
                                                         <input type="hidden" id="submittedInspectionReportStatus"
                                                                name="submittedInspectionReportStatus"
                                                                th:value="${activeStatus}">
+                                                        <input type="hidden" id="description2" name="description"
+                                                               th:value="'Recommendation was added successfull and was send'">
                                                         <label for="recommendations" class="col-form-label">RECOMMENDATIONS</label>
                                                         <textarea required="required" name="recommendations"
                                                                   id="recommendations" class="input-field w-input"
@@ -907,6 +909,8 @@
                                                                th:value="${QaInspectionReportRecommendationEntity?.id}">
                                                         <input type="hidden" id="supervisorFilledStatus"
                                                                name="supervisorFilledStatus" th:value="${activeStatus}">
+                                                        <input type="hidden" id="description" name="description"
+                                                               th:value="'Comments added succesful'">
                                                         <!--                                                        <label for="approvedRejectedStatus" class="col-form-label">APPROVE/REJECT</label>-->
                                                         <!--                                                        <select id="approvedRejectedStatus" required name="approvedRejectedStatus" class="select-field w-select" th:field="*{approvedRejectedStatus}">-->
                                                         <!--                                                            <option th:text="'Select one.....'" th:value="null"></option>-->

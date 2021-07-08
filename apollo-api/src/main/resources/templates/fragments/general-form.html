@@ -101,15 +101,6 @@
 </div>
 <div class="dashboard-body">
     <div class="sidebar" th:fragment="side-navigation-bar">
-        <div sec:authorize="hasAuthority('PERMIT_APPLICATION')">
-            <div class="sidebar-items">
-                <img th:src="@{/images/assets/Dashboard.svg}" class="sidebar-icons-dashboard selected-page">
-                <span class="selected-page">
-                 <a th:href="@{/api/system/admin/home}">&nbsp;Settings</a>
-                </span>
-            </div>
-        </div>
-
         <div class="sidebar-items">
             <img th:src="@{/images/assets/Dashboard.svg}" class="sidebar-icons-dashboard selected-page">
             <span class="selected-page">

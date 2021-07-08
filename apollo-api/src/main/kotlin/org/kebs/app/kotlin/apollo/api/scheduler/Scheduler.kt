@@ -40,7 +40,7 @@ class Scheduler (
         }
     }
 
-    @Scheduled(fixedRate = 100 * 1000)
+    @Scheduled(fixedDelay = 300000)
     fun runSchedulerAfterEveryFiveMin() {
         schedulerImpl.updatePaidDemandNotesStatus()
         schedulerImpl.assignPermitApplicationAfterPayment()

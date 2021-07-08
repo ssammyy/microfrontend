@@ -350,7 +350,7 @@
                                 </div>
 
 
-                                <div sec:authorize="or hasAuthority('QA_OFFICER_MODIFY') or hasAuthority('QA_HOD_MODIFY') or hasAuthority('QA_MANAGER_ASSESSORS_MODIFY') or hasAuthority('QA_HOF_MODIFY') or hasAuthority('QA_ASSESSORS_MODIFY') or hasAuthority('QA_PAC_SECRETARY_MODIFY') or hasAuthority('QA_PSC_MEMBERS_MODIFY') or hasAuthority('QA_PCM_MODIFY')">
+                                <div sec:authorize="hasAuthority('QA_OFFICER_MODIFY') or hasAuthority('QA_HOD_MODIFY') or hasAuthority('QA_MANAGER_ASSESSORS_MODIFY') or hasAuthority('QA_HOF_MODIFY') or hasAuthority('QA_ASSESSORS_MODIFY') or hasAuthority('QA_PAC_SECRETARY_MODIFY') or hasAuthority('QA_PSC_MEMBERS_MODIFY') or hasAuthority('QA_PCM_MODIFY')">
 
                                     <button class="accordion">Scheme of Supervision Details</button>
                                     <div class="panel">
@@ -572,7 +572,7 @@
 
                                         <div sec:authorize="hasAuthority('PERMIT_APPLICATION')">
 
-                                            <a th:if="${permitDetails?.attachedPlantId == null}" style="color: white"
+                                            <a sec:authorize="hasAuthority('MODIFY_COMPANY')" th:if="${permitDetails?.attachedPlantId == null}" style="color: white"
                                                onclick="popUpFunction('attachePlant');" class="filter-link">ATTACH
                                                 PLANT</a>
 
@@ -861,7 +861,7 @@
                                             <!--                                                OF-->
                                             <!--                                                SUPERVISION AND CONTROL</a>-->
 
-                                            <a th:if="${permitDetails?.attachedPlantId != null and permitDetails?.cocId == null}"
+                                            <a th:if="${permitDetails?.permitForeignStatus == 1 and permitDetails?.attachedPlantId != null and permitDetails?.cocId == null}"
                                                style="color: white" onclick="popUpUploadFunction('uploadCOC');"
                                                class="filter-link">UPLOAD COC</a>
 
@@ -889,7 +889,7 @@
                                                 <a th:if="${permitDetails?.sendApplication != 1}"
                                                    th:href="@{/api/qa/old-sta3(permitID=${permitDetails?.id})}"
                                                    class="filter-link" style="color: white">UPDATE STA 3</a>
-                                                <a th:if="${permitDetails?.sendApplication != 1 and permitDetails?.cocId != null}"
+                                                <a th:if="${permitDetails?.sendApplication != 1}"
                                                    th:href="@{/api/qa/new-permit-submit(permitID=${permitDetails?.id})}"
                                                    class="filter-link" style="color: white">SUBMIT APPLICATION</a>
                                             </div>
@@ -902,6 +902,11 @@
                                         </div>
 
                                         <div sec:authorize="hasAuthority('QA_HOD_MODIFY')">
+                                            <a th:if="${permitDetails?.inspectionReportGenerated == 1 and permitDetails?.factoryInspectionReportApprovedRejectedStatus == null  }"
+                                               style="color: white"
+                                               th:href="@{/api/qa/inspection/inspection-report-details(permitID=${permitDetails?.id})}"
+                                               class="filter-link">APPROVE/REJECT GENERATED INSPECTION REPORT </a>
+
                                             <a th:if="${permitDetails?.compliantStatus == 1 and permitDetails?.justificationReportStatus == 10}"
                                                th:href="@{/api/qa/product-quality-status(permitID=${permitDetails?.id})}"
                                                style="color: white" target='_blank' class="filter-link">Justification
@@ -1069,7 +1074,7 @@
                                                 <select id="assessorId" required class="form-control"
                                                         th:field="*{assessorId}">
                                                     <option value="0">Select one...</option>
-                                                    <option th:each="assessor : ${assessors}"
+                                                    <option th:each="assessor : ${assessorAssigned}"
                                                             th:text="${assessor.userId?.firstName} + ' ' + ${assessor.userId?.lastName}"
                                                             th:name="assessorId"
                                                             th:value="${assessor.userId?.id}"></option>

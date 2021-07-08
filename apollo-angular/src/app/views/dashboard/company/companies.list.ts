@@ -10,13 +10,15 @@ import {
   CountyService,
   Go,
   loadCompanyId,
+  loadCountyId,
   loadResponsesFailure,
   Region,
   RegionService,
+  selectCountyIdData,
   Town,
   TownService
 } from "../../../core/store";
-import {Observable, Subject} from "rxjs";
+import {Observable, Subject, throwError} from "rxjs";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {Store} from "@ngrx/store";
 
@@ -30,7 +32,7 @@ export class CompaniesList implements OnInit {
   companies$: Observable<Company[]>;
   filterName: string;
   p = 1;
-  step = 1;
+  step = 2;
 
   stepOneForm: FormGroup = new FormGroup({});
   stepTwoForm: FormGroup = new FormGroup({});
@@ -111,12 +113,22 @@ export class CompaniesList implements OnInit {
 
   updateSelectedRegion() {
     this.selectedRegion = this.stepThreeForm?.get('region')?.value;
-    // console.log(`region set to ${this.selectedRegion}`)
+    console.log(`region set to ${this.selectedRegion}`)
   }
 
   updateSelectedCounty() {
+
     this.selectedCounty = this.stepThreeForm?.get('county')?.value;
     // console.log(`county set to ${this.selectedCounty}`)
+    this.store$.dispatch(loadCountyId({payload: this.selectedCounty}));
+    this.store$.select(selectCountyIdData).subscribe(
+      (d) => {
+        if (d) {
+          // console.log(`Select county inside is ${d}`);
+          return this.townService.getAll();
+        } else return throwError('Invalid request, Company id is required');
+      }
+    );
   }
 
   updateSelectedTown() {
