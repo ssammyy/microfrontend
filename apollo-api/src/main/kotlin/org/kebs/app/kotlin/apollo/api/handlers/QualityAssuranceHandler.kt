@@ -155,8 +155,7 @@ class QualityAssuranceHandler(
 
                     req.attributes()["NewBatchInvoiceDto"] = NewBatchInvoiceDto()
 //                    req.attributes()["plantsDetails"] = plantsDetails
-                    req.attributes()["allPermitInvoiceList"] =
-                        qaDaoServices.listPermitsInvoices(allUnpaidInvoices, null, map)
+                    req.attributes()["allPermitInvoiceList"] = qaDaoServices.listPermitsInvoices(allUnpaidInvoices, null, map)
                     req.attributes()["allBatchPermitInvoiceList"] = qaDaoServices.findALlBatchInvoicesWithUserID(
                         loggedInUser.id ?: throw Exception("INVALID USER ID")
                     )
@@ -231,17 +230,19 @@ class QualityAssuranceHandler(
 
     }
 
-
-
-
     @PreAuthorize("hasAuthority('PERMIT_APPLICATION') or hasAuthority('QA_OFFICER_MODIFY') or hasAuthority('QA_HOD_READ') " +
             "or hasAuthority('QA_MANAGER_ASSESSORS_READ') or hasAuthority('QA_HOF_READ') or hasAuthority('QA_ASSESSORS_READ') or hasAuthority('QA_PAC_SECRETARY_READ') or hasAuthority('QA_PSC_MEMBERS_READ') or hasAuthority('QA_PCM_READ')")
     fun permitDetails(req: ServerRequest): ServerResponse {
         val permitID = req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
         val map = commonDaoServices.serviceMapDetails(appId)
+        val auth = commonDaoServices.loggedInUserAuthentication()
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
         val permit = qaDaoServices.findPermitBYID(permitID)
         val departmentEntity = commonDaoServices.findDepartmentByID(applicationMapProperties.mapQADepertmentId)
 
+        if (auth.authorities.stream().anyMatch { authority -> authority.authority == "MODIFY_COMPANY" }) {
+            req.attributes()["plantsDetails"] = qaDaoServices.findAllPlantDetailsWithCompanyID(loggedInUser.companyId?:throw ExpectedDataNotFound("Missing COMPANY ID"))
+        }
         req.attributes()["sections"] = loadSectionDetails(departmentEntity, map, req)
         req.attributes()["standardsList"] = qaDaoServices.findALlStandardsDetails(map.activeStatus)
         req.attributes().putAll(loadCommonUIComponents(map))
@@ -829,10 +830,7 @@ class QualityAssuranceHandler(
             ),
             Pair("userRequestTypes", qaDaoServices.findAllQaRequestTypes(s.activeStatus)),
             Pair("permitDetails", permit),
-            Pair(
-                "plantsDetails",
-                permit.userId?.let { qaDaoServices.findAllPlantDetails(it) }
-                    ?: throw ExpectedDataNotFound("Required User ID, from Permit Details")),
+
             Pair(
                 "officers",
                 permit.attachedPlantId?.let {
