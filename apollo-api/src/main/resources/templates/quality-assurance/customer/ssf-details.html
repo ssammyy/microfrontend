@@ -182,12 +182,19 @@
                                             <div class="modal-body">
                                                 <div class="form-group">
                                                     <div id="addComplianceStatusDetails">
-                                                        <label for="resultsAnalysis" class="col-form-label">Select a Compliance status:</label>
-                                                        <select id="resultsAnalysis" required class="select-field w-select" th:field="*{resultsAnalysis}">
-                                                            <option th:text="'Select one.....'" th:value="null"></option>
+                                                        <label for="resultsAnalysis" class="col-form-label">Select a
+                                                            Compliance status:</label>
+                                                        <select id="resultsAnalysis" required
+                                                                class="select-field w-select"
+                                                                th:field="*{resultsAnalysis}">
+                                                            <option th:text="'Select one.....'"
+                                                                    th:value="null"></option>
                                                             <option th:text="'Compliant'" th:value="1"></option>
                                                             <option th:text="'Non-Compliant'" th:value="0"></option>
-                                                        </select>
+                                                        </select>complianceRemarks
+                                                        <textarea name="complianceRemarks" id="complianceRemarks"
+                                                                  class="input-field w-input" cols="65" rows="5"
+                                                                  th:field="*{complianceRemarks}"></textarea>
                                                     </div>
 
                                                 </div>

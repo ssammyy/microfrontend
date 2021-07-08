@@ -423,7 +423,11 @@ class QualityAssuranceController(
             permit.permitAwardStatus == map.inactiveStatus -> {
                 //Send defer notification
                 KotlinLogging.logger { }.info(":::::: Sending defer notification to assessor/qao :::::::")
-//                qaDaoServices.permitInsertStatus(permitDetails,applicationMapProperties.mapQaStatusP,loggedInUser)
+                qaDaoServices.permitInsertStatus(
+                    permitDetails,
+                    applicationMapProperties.mapQaStatusDeferredByPACSecretary,
+                    loggedInUser
+                )
             }
             permit.hodApproveAssessmentStatus != null -> {
                 //Send manufacturers notification
@@ -656,7 +660,7 @@ class QualityAssuranceController(
                             val issueDate = commonDaoServices.getCurrentDate()
                             val permitType = permitDetails.permitType?.let { qaDaoServices.findPermitType(it) }
                             val expiryDate =
-                                permitType?.permitAwardYears?.let { commonDaoServices.addYearsToCurrentDate(it.toLong()) }
+                                permitType?.numberOfYears?.let { commonDaoServices.addYearsToCurrentDate(it.toLong()) }
 
 
                             with(permit) {

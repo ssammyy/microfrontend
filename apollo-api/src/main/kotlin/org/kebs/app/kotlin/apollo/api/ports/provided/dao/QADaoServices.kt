@@ -1364,20 +1364,28 @@ class QADaoServices(
             when (permitDetails.compliantStatus) {
                 map.activeStatus -> {
                     complianceValue = "COMPLIANT"
+                    if (permitDetails.permitType == applicationMapProperties.mapQAPermitTypeIDDmark) {
+                        permitInsertStatus(
+                            permitDetails,
+                            applicationMapProperties.mapQaStatusPGeneJustCationReport,
+                            user
+                        )
+                    } else {
+                        permitInsertStatus(permitDetails, applicationMapProperties.mapQaStatusPRecommendation, user)
+                    }
                 }
                 map.inactiveStatus -> {
                     complianceValue = "NON-COMPLIANT"
+                    permitDetails.userTaskId = applicationMapProperties.mapUserTaskNameMANUFACTURE
+                    permitInsertStatus(permitDetails, applicationMapProperties.mapQaStatusPendingCorrectionManf, user)
                 }
             }
-            if (permitDetails.permitType == applicationMapProperties.mapQAPermitTypeIDDmark) {
-                permitInsertStatus(permitDetails, applicationMapProperties.mapQaStatusPGeneJustCationReport, user)
-            } else {
-                permitInsertStatus(permitDetails, applicationMapProperties.mapQaStatusPRecommendation, user)
-            }
+
 
             sendComplianceStatusAndLabReport(
                 permitDetails,
-                complianceValue ?: throw ExpectedDataNotFound("INVALID VALUE")
+                complianceValue ?: throw ExpectedDataNotFound("MISSING COMPLIANCE STATUS"),
+                saveSSF.complianceRemarks ?: throw ExpectedDataNotFound("MISSING COMPLIANCE REMARKS")
             )
 
 
@@ -3211,14 +3219,18 @@ class QADaoServices(
         return sr
     }
 
-    fun sendComplianceStatusAndLabReport(permitDetails: PermitApplicationsEntity, compliantStatus: String) {
+    fun sendComplianceStatusAndLabReport(
+        permitDetails: PermitApplicationsEntity,
+        compliantStatus: String,
+        compliantRemarks: String
+    ) {
         val manufacturer = permitDetails.userId?.let { commonDaoServices.findUserByID(it) }
         val subject = "LAB REPORT AND COMPLIANCE STATUS "
         val messageBody = "Dear ${manufacturer?.let { commonDaoServices.concatenateName(it) }}: \n" +
                 "\n " +
                 "The lab test report are available  at ${applicationMapProperties.baseUrlValue}/qa/kebs/view/attached?fileID=${permitDetails.testReportId}: \n" +
                 " with the following compliance status  $compliantStatus" +
-                "\n " +
+                "\n  and  the Following Remarks  $compliantRemarks" +
                 "for the following permit : ${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitDetails.id}"
 
         manufacturer?.email?.let { notifications.sendEmail(it, subject, messageBody) }
