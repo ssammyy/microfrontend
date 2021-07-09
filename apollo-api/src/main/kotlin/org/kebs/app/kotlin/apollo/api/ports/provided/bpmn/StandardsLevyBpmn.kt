@@ -6,8 +6,10 @@ import org.flowable.task.api.Task
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.di.BpmnTaskDetails
 import org.kebs.app.kotlin.apollo.common.exceptions.InvalidValueException
 import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
+import org.kebs.app.kotlin.apollo.store.model.SlUpdatecompanyDetailsEntity
 import org.kebs.app.kotlin.apollo.store.model.StandardLevyFactoryVisitReportEntity
 import org.kebs.app.kotlin.apollo.store.model.StandardLevyPaymentsEntity
+import org.kebs.app.kotlin.apollo.store.repo.ISlUpdatecompanyDetailsEntityRepository
 import org.kebs.app.kotlin.apollo.store.repo.IStandardLevyFactoryVisitReportRepository
 import org.kebs.app.kotlin.apollo.store.repo.IStandardLevyPaymentsRepository
 import org.kebs.app.kotlin.apollo.store.repo.IUserRepository
@@ -23,6 +25,7 @@ class StandardsLevyBpmn(
     private val userRepo: IUserRepository,
     private val slPaymentsRepo: IStandardLevyPaymentsRepository,
     private val slFactoryVisitReportRepo: IStandardLevyFactoryVisitReportRepository,
+    private val slUpdatecompanyDetailsRepo: ISlUpdatecompanyDetailsEntityRepository,
     private val bpmnCommonFunctions: BpmnCommonFunctions
 ) {
     @Value("\${bpmn.sl.registration.process.definition.key}")
@@ -36,6 +39,12 @@ class StandardsLevyBpmn(
 
     @Value("\${bpmn.sl.site.visit..business.key}")
     lateinit var slSiteVisitBusinessKey: String
+
+    @Value("\${bpmn.sl.update.company.details.process.definition.key}")
+    lateinit var slUpdateCompanyDetailsProcessDefinitionKey: String
+
+    @Value("\${bpmn.sl.update.company.details.business.key}")
+    lateinit var slUpdateCompanyDetailsBusinessKey: String
 
     val successMessage: String = "success"
     val processStarted: Int = 1
@@ -481,6 +490,87 @@ class StandardsLevyBpmn(
             }
         } catch (e: Exception) {
             KotlinLogging.logger { }.error("$objectId : Unable to complete SL Site Visit process")
+        }
+    }
+
+    /*
+    ***********************************************************************************
+    * STANDARDS UPDATE MANUFACTURER DETAILS PROCESS
+    ***********************************************************************************
+     */
+    //Start the SL Site visit process
+    fun startSlUmdProcess(objectId: Long, assigneeId: Long): HashMap<String, String>? {
+        var variables: HashMap<String, Any> = HashMap()
+        KotlinLogging.logger { }.info("objectId : $objectId : Starting SL Update Company Details process")
+        try {
+            //Remember to start by setting email and assignee to manufacturer
+            checkStartProcessInputs(objectId, assigneeId, slUpdateCompanyDetailsProcessDefinitionKey)?.let { checkVariables ->
+                val slUpdatecompanyDetails: SlUpdatecompanyDetailsEntity =
+                    checkVariables["slUpdateCompanyDetails"] as SlUpdatecompanyDetailsEntity
+                variables["objectId"] = slUpdatecompanyDetails.id ?: throw NullValueNotAllowedException("Id should not be null")
+                variables["approvedAsstMgr"] = 0
+                variables["manufacturerId"] = 0
+
+                bpmnCommonFunctions.startBpmnProcess(
+                    slUpdateCompanyDetailsProcessDefinitionKey,
+                    slUpdateCompanyDetailsBusinessKey,
+                    variables,
+                    assigneeId
+                )?.let {
+                    slUpdatecompanyDetails.slUpdateProcessInstanceId = it["processInstanceId"]
+                    slUpdatecompanyDetails.slUpdateStartedOn = Timestamp.from(Instant.now())
+                    slUpdatecompanyDetails.slUpdateStatus = processStarted
+                    slUpdatecompanyDetailsRepo.save(slUpdatecompanyDetails)
+                    KotlinLogging.logger { }.info("objectId : $objectId : Successfully started SL Update Company process")
+                    return it
+                } ?: run {
+                    KotlinLogging.logger { }.info("$objectId : Unable to start SL Update Company Details process")
+                }
+            }
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message, e)
+        }
+        return null
+    }
+
+    fun slUmdOfficerUpdateDetailsComplete(objectId: Long, assistantManagerId: Long): Boolean {
+        KotlinLogging.logger { }.info("objectId : $objectId :  Officer update manufacturer details complete")
+        slCompleteTask(objectId, "slUmdOfficerUpdate", slUpdateCompanyDetailsProcessDefinitionKey)?.let {
+            return slAssignTask(it["processInstanceId"].toString(), "slUmdAssistantManagerApprove", assistantManagerId)
+        }
+        return false
+    }
+
+    fun slUmdApproveAsstManagerComplete(objectId: Long, managerId: Long, approvedAsstMgr: Boolean): Boolean {
+        KotlinLogging.logger { }.info("objectId : $objectId :  Assistant manager approve complete")
+        updateTaskVariableByObjectIdAndKey(
+            objectId,
+            "slUmdAssistantManagerApprove",
+            slUpdateCompanyDetailsProcessDefinitionKey,
+            "approvedAsstMgr",
+            bpmnCommonFunctions.booleanToInt(approvedAsstMgr).toString()
+        )
+
+        slCompleteTask(objectId, "slUmdAssistantManagerApprove", slUpdateCompanyDetailsProcessDefinitionKey)?.let {
+            return if (approvedAsstMgr) {   //Approved by assistant manager
+                slAssignTask(it["processInstanceId"].toString(), "slUmdManagerApprove", managerId)
+            } else {
+                return true
+            }
+        }
+        return false
+    }
+
+    fun endSlUpdateCompanyDetailsProcess(objectId: String) {
+        KotlinLogging.logger { }.info("End SL Update Company Details for object $objectId............")
+        try {
+            slUpdatecompanyDetailsRepo.findByIdOrNull(objectId.toLong())?.let { slUpdateCompanyDetails ->
+                slUpdateCompanyDetails.slUpdateCompletedOn = Timestamp.from(Instant.now())
+                slUpdateCompanyDetails.slUpdateStatus = processCompleted
+                slUpdatecompanyDetailsRepo.save(slUpdateCompanyDetails)
+            }
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error("$objectId : Unable to complete SL Update Company Details process")
         }
     }
 }

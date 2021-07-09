@@ -274,7 +274,7 @@ class QABpmnTest{
     @Test
     @Ignore
     fun testQaAppReview() {
-        val permitId: Long = 311
+        val permitId: Long = 161
 
         //Start the process
         qualityAssuranceBpmn.startQAAppReviewProcess(permitId, hofAssigneeId)?.let {
@@ -354,7 +354,7 @@ class QABpmnTest{
     @Test
     @Ignore
     fun testQaSFMarkInspection() {
-        val permitId: Long = 311
+        val permitId: Long = 161
 
         //Start the process
         qualityAssuranceBpmn.startQASFMarkInspectionProcess(permitId, qaoAssigneeId)?.let {
@@ -506,7 +506,7 @@ class QABpmnTest{
     @Test
     @Ignore
     fun testQaDmAppReview() {
-        val permitId: Long = 311
+        val permitId: Long = 161
 
         //Start the process
         qualityAssuranceBpmn.startQADMApplicationReviewProcess(permitId, hofAssigneeId)?.let {
@@ -716,9 +716,9 @@ class QABpmnTest{
     }
 
     @Test
-    //@Ignore
+    @Ignore
     fun testSfAppPaymentProcess() {
-        val permitId: Long = 5222
+        val permitId: Long = 161
 
         //Start the process
         qualityAssuranceBpmn.startQASFApplicationPaymentProcess(permitId, 0)?.let {
@@ -785,7 +785,7 @@ class QABpmnTest{
     @Test
     @Ignore
     fun testSfPermitAwardProcess() {
-        val permitId: Long = 311
+        val permitId: Long = 161
 
         //Start the process
         qualityAssuranceBpmn.startQASFPermitAwardProcess(permitId, pscAssigneeId)?.let {
@@ -962,7 +962,7 @@ class QABpmnTest{
     @Test
     @Ignore
     fun testQaDmAssessmentProcess() {
-        val permitId: Long = 311
+        val permitId: Long = 161
 
         //Start the process
         qualityAssuranceBpmn.startQADmAssessmentProcess(permitId, qaoAssigneeId)?.let {
