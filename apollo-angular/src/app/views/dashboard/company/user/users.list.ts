@@ -9,6 +9,8 @@ import {
 } from "../../../../core/store";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {Store} from "@ngrx/store";
+import {Location} from "@angular/common";
+import {faArrowLeft} from "@fortawesome/free-solid-svg-icons";
 
 @Component({
   selector: 'app-users',
@@ -16,6 +18,9 @@ import {Store} from "@ngrx/store";
   styles: []
 })
 export class UsersList implements OnInit {
+
+  backIcon = faArrowLeft;
+
   users$: Observable<User[]>;
 
   stepOneForm: FormGroup = new FormGroup({});
@@ -38,6 +43,7 @@ export class UsersList implements OnInit {
   constructor(
     private service: UsersService,
     private store$: Store<any>,
+    private location: Location
   ) {
     this.users$ = service.entities$;
     service.getAll().subscribe();
@@ -95,4 +101,9 @@ export class UsersList implements OnInit {
 
 
   }
+
+  public goBack(): void {
+    this.location.back();
+  }
+
 }

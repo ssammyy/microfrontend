@@ -8,7 +8,9 @@ import org.joda.time.DateTime
 import org.kebs.app.kotlin.apollo.api.ports.provided.scheduler.SchedulerImpl
 import org.kebs.app.kotlin.apollo.store.model.PermitApplicationEntity
 import org.kebs.app.kotlin.apollo.store.model.PetroleumInstallationInspectionEntity
+import org.kebs.app.kotlin.apollo.store.model.qa.PermitApplicationsEntity
 import org.kebs.app.kotlin.apollo.store.repo.*
+import org.kebs.app.kotlin.apollo.store.repo.qa.IPermitApplicationsRepository
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
@@ -21,15 +23,16 @@ import kotlin.collections.HashMap
 @Service
 class QualityAssuranceBpmn(
 
-        private val taskService: TaskService,
-        private val runtimeService: RuntimeService,
-        private val permitRepo: IPermitRepository,
-        private val userRepo: IUserRepository,
-        private val permitRemarksRepository: IPermitApplicationRemarksRepository,
-        private val manufacturerRepo: IManufacturerRepository,
-        private val petroleumIIRepo: IPetroleumInstallationInspectionRepository,
-        private val bpmnCommonFunctions: BpmnCommonFunctions,
-        private val schedulerImpl: SchedulerImpl
+    private val taskService: TaskService,
+        //private val runtimeService: RuntimeService,
+    private val permitRepo: IPermitRepository,
+    private val permitsRepo: IPermitApplicationsRepository,
+    private val userRepo: IUserRepository,
+        //private val permitRemarksRepository: IPermitApplicationRemarksRepository,
+    private val manufacturerRepo: IManufacturerRepository,
+    private val petroleumIIRepo: IPetroleumInstallationInspectionRepository,
+    private val bpmnCommonFunctions: BpmnCommonFunctions,
+    private val schedulerImpl: SchedulerImpl
 ) {
 
     @Value("\${bpmn.qa.app.review.process.definition.key}")
@@ -124,7 +127,7 @@ class QualityAssuranceBpmn(
                 }
                 KotlinLogging.logger { }.info("ObjectId : $objectId : No object found")
             } else {
-                permitRepo.findByIdOrNull(objectId)?.let { permit ->//Check that the permit is valid
+                permitsRepo.findByIdOrNull(objectId)?.let { permit ->//Check that the permit is valid
                     KotlinLogging.logger { }.trace("PermitId : $objectId : Valid permit found")
                     if (process == qaAppReviewProcessDefinitionKey) {
                         processInstanceId = permit.appReviewProcessInstanceId.toString()
@@ -234,7 +237,7 @@ class QualityAssuranceBpmn(
         return null
     }
 
-    fun qaAssignTask(permit: PermitApplicationEntity?, processInstanceId: String, taskDefinitionKey: String?, assigneeId: Long, useManufacturer: Boolean): Boolean {
+    fun qaAssignTask(permit: PermitApplicationsEntity?, processInstanceId: String, taskDefinitionKey: String?, assigneeId: Long, useManufacturer: Boolean): Boolean {
         KotlinLogging.logger { }.info("Assign next task begin")
         try {
             var localAssigneeId: String = assigneeId.toString()
@@ -248,8 +251,8 @@ class QualityAssuranceBpmn(
 
             permit?.let {
                 if (useManufacturer) {
-                    permit.userId?.let { usersEntity->
-                        localAssigneeId = usersEntity.id.toString()
+                    permit.userId?.let { userId->
+                        localAssigneeId = userId.toString()
                     }
 
                 }
@@ -303,7 +306,7 @@ class QualityAssuranceBpmn(
                 }  ?: run { KotlinLogging.logger { }.info("objectId : $objectId : No petroleum inspection object found for id $objectId"); return null }
             } else {
                 //Check that the permit is valid
-                permitRepo.findByIdOrNull(objectId)?.let { //Check that the permit is valid
+                permitsRepo.findByIdOrNull(objectId)?.let { //Check that the permit is valid
                     pm ->
                     variables["permit"] = pm
 
@@ -362,10 +365,11 @@ class QualityAssuranceBpmn(
                         }
                     }
                     //Check that the manufacturer is valid
-                    pm.manufacturerId?.let { manufacturerId ->
-                        manufacturerRepo.findByIdOrNull(manufacturerId)?.let { manufacturersEntity ->
-                            variables["manufacturerEmail"] = manufacturersEntity.companyEmail.toString()
-                            variables["assigneeEmail"] = manufacturersEntity.companyEmail.toString()
+                    KotlinLogging.logger { }.info("--------------- ${pm.userId}")
+                    pm.userId?.let { manufacturerId ->
+                        userRepo.findByIdOrNull(manufacturerId)?.let { usersEntity ->
+                            variables["manufacturerEmail"] = usersEntity.email.toString()
+                            variables["assigneeEmail"] = usersEntity.email.toString()
                         }
                     } ?: run { KotlinLogging.logger { }.info("objectId : $objectId : Permit has no manufacturer Id"); return null; }
 
@@ -399,7 +403,7 @@ class QualityAssuranceBpmn(
             var processInstanceId: String = parameterValue
             if (parameterType == "permitId") { //get the process instance Id
                 try {
-                    processInstanceId = permitRepo.findById(parameterValue.toLong()).get().appReviewProcessInstanceId.toString()
+                    processInstanceId = permitsRepo.findById(parameterValue.toLong()).get().appReviewProcessInstanceId.toString()
                 } catch (e: Exception) {
                     KotlinLogging.logger { }.info(e.message); return null
                 }
@@ -454,7 +458,7 @@ class QualityAssuranceBpmn(
         KotlinLogging.logger { }.info("permitId : $permitId : Starting QA app review process")
         try {
             checkStartProcessInputs(permitId, assigneeId, false, qaAppReviewProcessDefinitionKey)?.let { checkVariables ->
-                val permit: PermitApplicationEntity = checkVariables["permit"] as PermitApplicationEntity
+                val permit: PermitApplicationsEntity = checkVariables["permit"] as PermitApplicationsEntity
                 variables["permitId"] = permit.id.toString()
                 variables["applicationComplete"] = 0
                 variables["email"] = checkVariables["assigneeEmail"].toString()
@@ -463,7 +467,7 @@ class QualityAssuranceBpmn(
                     permit.appReviewProcessInstanceId = it["processInstanceId"]
                     permit.appReviewStartedOn = Timestamp.from(Instant.now())
                     permit.appReviewStatus = processStarted
-                    permitRepo.save(permit)
+                    permitsRepo.save(permit)
                     KotlinLogging.logger { }.info("permitId : $permitId : Successfully started QA app review process for permit")
                     return it
                 } ?: run {
@@ -485,9 +489,9 @@ class QualityAssuranceBpmn(
         updateTaskVariableByObjectIdAndKey(permitId, "qaHOFCheckIfComplete", qaAppReviewProcessDefinitionKey, "applicationComplete", applicationComplete.toString())
         qaCompleteTask(permitId, "qaHOFCheckIfComplete", qaAppReviewProcessDefinitionKey)?.let {
             return if (applicationComplete==1) {   //application is complete
-                qaAssignTask(it["permit"] as PermitApplicationEntity, it["processInstanceId"].toString(), "qaAllocateFileToQAO", currAssigneeId, false)
+                qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "qaAllocateFileToQAO", currAssigneeId, false)
             } else {
-                qaAssignTask(it["permit"] as PermitApplicationEntity, it["processInstanceId"].toString(), "qaCorrectApplication", currAssigneeId, true)
+                qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "qaCorrectApplication", currAssigneeId, true)
             }
         }
         return false
@@ -496,7 +500,7 @@ class QualityAssuranceBpmn(
     fun qaAppReviewAllocateToQAO(permitId: Long, qaoAssigneeId: Long): Boolean {
         KotlinLogging.logger { }.info("PermitId : $permitId :  Allocate to QAO begin")
         qaCompleteTask(permitId, "qaAllocateFileToQAO", qaAppReviewProcessDefinitionKey)?.let {
-            return qaAssignTask(it["permit"] as PermitApplicationEntity, it["processInstanceId"].toString(), "qaPlanFactoryVisit", qaoAssigneeId, false)
+            return qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "qaPlanFactoryVisit", qaoAssigneeId, false)
         }
         return false
     }
@@ -516,7 +520,7 @@ class QualityAssuranceBpmn(
             currAssigneeId = taskDetails[0].task.assignee.toLong()
         }
         qaCompleteTask(permitId, "qaCorrectApplication", qaAppReviewProcessDefinitionKey)?.let {
-            return qaAssignTask(it["permit"] as PermitApplicationEntity, it["processInstanceId"].toString(), "qaResubmitApplication", currAssigneeId, true)
+            return qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "qaResubmitApplication", currAssigneeId, true)
         }
         return false
         //return qaCompleteAndAssign(qaAppReviewProcessDefinitionKey,permitId, 0, true, false)
@@ -542,7 +546,7 @@ class QualityAssuranceBpmn(
         try {
             //Remember to start by setting email and assignee to manufacturer
             checkStartProcessInputs(permitId, assigneeId, false, qaSfMarkInspectionProcessDefinitionKey)?.let { checkVariables ->
-                val permit: PermitApplicationEntity = checkVariables["permit"] as PermitApplicationEntity
+                val permit: PermitApplicationsEntity = checkVariables["permit"] as PermitApplicationsEntity
                 variables["permitId"] = permit.id.toString()
                 variables["applicationComplete"] = 0
                 variables["email"] = checkVariables["assigneeEmail"].toString()
@@ -557,10 +561,10 @@ class QualityAssuranceBpmn(
 
                 bpmnCommonFunctions.startBpmnProcess(qaSfMarkInspectionProcessDefinitionKey, qaSfMarkInspectionBusinessKey, variables, assigneeId)?.let {
                     permit.sfMarkInspectionProcessInstanceId = it["processInstanceId"]
-                    permit.sfMarkInspectionTaskId = it["taskId"]
+                    //permit.sfMarkInspectionTaskId = it["taskId"]
                     permit.sfMarkInspectionStartedOn = Timestamp.from(Instant.now())
                     permit.sfMarkInspectionStatus = 1
-                    permitRepo.save(permit)
+                    permitsRepo.save(permit)
                     KotlinLogging.logger { }.info("permitId : $permitId : Successfully started QA Sf Mark inspection process for permit")
                     return it
                 } ?: run {
@@ -576,7 +580,7 @@ class QualityAssuranceBpmn(
     fun qaSfMIGenSupervisionSchemeComplete(permitId: Long, assigneeId: Long): Boolean {
         KotlinLogging.logger { }.info("PermitId : $permitId :  Generate supervision scheme")
         qaCompleteTask(permitId, "qaSfmiGenSupervisionScheme", qaSfMarkInspectionProcessDefinitionKey)?.let {
-            return qaAssignTask(it["permit"] as PermitApplicationEntity, it["processInstanceId"].toString(), "qaSfmiAcceptSupervisionScheme", assigneeId, true)
+            return qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "qaSfmiAcceptSupervisionScheme", assigneeId, true)
         }
         return false
     }
@@ -585,7 +589,7 @@ class QualityAssuranceBpmn(
         KotlinLogging.logger { }.info("PermitId : $permitId :  Accept supervision scheme")
         updateTaskVariableByObjectIdAndKey(permitId, "qaSfmiAcceptSupervisionScheme", qaSfMarkInspectionProcessDefinitionKey, "supervisionSchemeAccepted", bpmnCommonFunctions.booleanToInt(supervisionSchemeAccepted).toString())
         qaCompleteTask(permitId, "qaSfmiAcceptSupervisionScheme", qaSfMarkInspectionProcessDefinitionKey)?.let {
-            return qaAssignTask(it["permit"] as PermitApplicationEntity, it["processInstanceId"].toString(), null, assigneeId, false)
+            return qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), null, assigneeId, false)
         }
         return false
     }
@@ -595,10 +599,10 @@ class QualityAssuranceBpmn(
         KotlinLogging.logger { }.info("PermitId : $permitId :  Fill factory inspection forms")
         qaCompleteTask(permitId, "qaSfmiFillFactoryInspectionForms", qaSfMarkInspectionProcessDefinitionKey)?.let {
             //We then have 2 assignments to do - Generate inspection report and lab
-            qaAssignTask(it["permit"] as PermitApplicationEntity, it["processInstanceId"].toString(), "qaSfmiGenerateInspectionReport", qaoAssigneeId, false).let { assignStatus ->
+            qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "qaSfmiGenerateInspectionReport", qaoAssigneeId, false).let { assignStatus ->
                 result = assignStatus
             }
-            qaAssignTask(it["permit"] as PermitApplicationEntity, it["processInstanceId"].toString(), "qaSfmiReceiveSSF", labAssigneeId, false).let { assignStatus ->
+            qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "qaSfmiReceiveSSF", labAssigneeId, false).let { assignStatus ->
                 result = assignStatus
             }
         }
@@ -616,7 +620,7 @@ class QualityAssuranceBpmn(
     fun qaSfMIReceiveSSFComplete(permitId: Long, assigneeId: Long): Boolean {
         KotlinLogging.logger { }.info("PermitId : $permitId :  Receive the SSF")
         qaCompleteTask(permitId, "qaSfmiReceiveSSF", qaSfMarkInspectionProcessDefinitionKey)?.let {
-            return qaAssignTask(it["permit"] as PermitApplicationEntity, it["processInstanceId"].toString(), "qaSfmiSubmitSamples", assigneeId, false)
+            return qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "qaSfmiSubmitSamples", assigneeId, false)
         }
         return false
     }
@@ -624,7 +628,7 @@ class QualityAssuranceBpmn(
     fun qaSfMISubmitSamplesComplete(permitId: Long, assigneeId: Long): Boolean {
         KotlinLogging.logger { }.info("PermitId : $permitId :  Submit the samples")
         qaCompleteTask(permitId, "qaSfmiSubmitSamples", qaSfMarkInspectionProcessDefinitionKey)?.let {
-            return qaAssignTask(it["permit"] as PermitApplicationEntity, it["processInstanceId"].toString(), "qaSfmiAnalyzeSamples", assigneeId, false)
+            return qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "qaSfmiAnalyzeSamples", assigneeId, false)
         }
         return false
     }
@@ -632,7 +636,7 @@ class QualityAssuranceBpmn(
     fun qaSfMIAnalyzeSamplesComplete(permitId: Long, assigneeId: Long): Boolean {
         KotlinLogging.logger { }.info("PermitId : $permitId :  Analyze the samples")
         qaCompleteTask(permitId, "qaSfmiAnalyzeSamples", qaSfMarkInspectionProcessDefinitionKey)?.let {
-            return qaAssignTask(it["permit"] as PermitApplicationEntity, it["processInstanceId"].toString(), "qaSfmiCheckLabReport", assigneeId, false)
+            return qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "qaSfmiCheckLabReport", assigneeId, false)
         }
         return false
     }
@@ -642,9 +646,9 @@ class QualityAssuranceBpmn(
         updateTaskVariableByObjectIdAndKey(permitId, "qaSfmiCheckLabReport", qaSfMarkInspectionProcessDefinitionKey, "labReportStatus", bpmnCommonFunctions.booleanToInt(labReportStatus).toString())
         qaCompleteTask(permitId, "qaSfmiCheckLabReport", qaSfMarkInspectionProcessDefinitionKey)?.let {
             return if (labReportStatus) {   //lab report ok
-                qaAssignTask(it["permit"] as PermitApplicationEntity, it["processInstanceId"].toString(), "qaSfmiAssignComplianceStatus", qaoAssigneeId, false)
+                qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "qaSfmiAssignComplianceStatus", qaoAssigneeId, false)
             } else {
-                qaAssignTask(it["permit"] as PermitApplicationEntity, it["processInstanceId"].toString(), "qaSfmiAnalyzeSamples", labAssigneeId, false)
+                qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "qaSfmiAnalyzeSamples", labAssigneeId, false)
             }
         }
         return false
@@ -658,9 +662,9 @@ class QualityAssuranceBpmn(
         }
         qaCompleteTask(permitId, "qaSfmiAssignComplianceStatus", qaSfMarkInspectionProcessDefinitionKey)?.let {
             return if (complianceStatus) {   //compliance status ok
-                qaAssignTask(it["permit"] as PermitApplicationEntity, it["processInstanceId"].toString(), "qaSfmiApprovePermitRecommendation", hofAssigneeId, false)
+                qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "qaSfmiApprovePermitRecommendation", hofAssigneeId, false)
             } else {
-                qaAssignTask(it["permit"] as PermitApplicationEntity, it["processInstanceId"].toString(), "qaSfmiPerformCorrectiveAction", hofAssigneeId, true)
+                qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "qaSfmiPerformCorrectiveAction", hofAssigneeId, true)
             }
         }
         return false
@@ -669,7 +673,7 @@ class QualityAssuranceBpmn(
     fun qaSfMIPerformCorrectiveActionComplete(permitId: Long, qaoAssigneeId: Long): Boolean {
         KotlinLogging.logger { }.info("PermitId : $permitId :  Perform Corrective action complete")
         qaCompleteTask(permitId, "qaSfmiPerformCorrectiveAction", qaSfMarkInspectionProcessDefinitionKey)?.let {
-            return qaAssignTask(it["permit"] as PermitApplicationEntity, it["processInstanceId"].toString(), "qaSfmiFillFactoryInspectionForms", qaoAssigneeId, false)
+            return qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "qaSfmiFillFactoryInspectionForms", qaoAssigneeId, false)
         }
         return false
     }
@@ -680,7 +684,7 @@ class QualityAssuranceBpmn(
             return if (permitRecommendationApproval) {   //permit approval ok
                 true
             } else {
-                qaAssignTask(it["permit"] as PermitApplicationEntity, it["processInstanceId"].toString(), "qaSfmiPermitSurveillance", qaoAssigneeId, false)
+                qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "qaSfmiPermitSurveillance", qaoAssigneeId, false)
             }
         }
         return false
@@ -690,7 +694,7 @@ class QualityAssuranceBpmn(
         KotlinLogging.logger { }.info("PermitId : $permitId :  Check if permit surveillance will be done")
         qaCompleteTask(permitId, "qaSfmiPermitSurveillance", qaSfMarkInspectionProcessDefinitionKey)?.let {
             return if (permitSurveillance) {   //There will be factory surveillance
-                qaAssignTask(it["permit"] as PermitApplicationEntity, it["processInstanceId"].toString(), "qaSfmiGenerateReportDuePermits", qaoAssigneeId, false)
+                qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "qaSfmiGenerateReportDuePermits", qaoAssigneeId, false)
             } else {
                 true
             }
@@ -701,7 +705,7 @@ class QualityAssuranceBpmn(
     fun qaSfMIFactorySurveillancePlanComplete(permitId: Long, assigneeId: Long): Boolean {
         KotlinLogging.logger { }.info("PermitId : $permitId :  Factory Surveillance Generate Report of Due Permits and Workplan")
         qaCompleteTask(permitId, "qaSfmiGenerateReportDuePermits", qaSfMarkInspectionProcessDefinitionKey)?.let {
-            return qaAssignTask(it["permit"] as PermitApplicationEntity, it["processInstanceId"].toString(), "qaSfmiGenSupervisionScheme", assigneeId, false)
+            return qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "qaSfmiGenSupervisionScheme", assigneeId, false)
         }
         return false
     }
@@ -718,7 +722,7 @@ class QualityAssuranceBpmn(
         try {
             //Remember to start by setting email and assignee to manufacturer
             checkStartProcessInputs(permitId, assigneeId, false, qaDmApplicationReviewProcessDefinitionKey)?.let { checkVariables ->
-                val permit: PermitApplicationEntity = checkVariables["permit"] as PermitApplicationEntity
+                val permit: PermitApplicationsEntity = checkVariables["permit"] as PermitApplicationsEntity
                 variables["permitId"] = permit.id.toString()
                 variables["email"] = checkVariables["assigneeEmail"].toString()
                 variables["manufacturerEmail"] = checkVariables["manufacturerEmail"].toString()
@@ -734,7 +738,7 @@ class QualityAssuranceBpmn(
                     //permit.sfMarkInspectionTaskId = it["taskId"]
                     permit.dmAppReviewStartedOn = Timestamp.from(Instant.now())
                     permit.dmAppReviewStatus = 1
-                    permitRepo.save(permit)
+                    permitsRepo.save(permit)
                     KotlinLogging.logger { }.info("permitId : $permitId : Successfully started QA DM application review process for permit")
                     return it
                 } ?: run {
@@ -752,9 +756,9 @@ class QualityAssuranceBpmn(
         updateTaskVariableByObjectIdAndKey(permitId, "qaDmarCheckApplication", qaDmApplicationReviewProcessDefinitionKey, "applicationComplete", bpmnCommonFunctions.booleanToInt(applicationComplete).toString())
         qaCompleteTask(permitId, "qaDmarCheckApplication", qaDmApplicationReviewProcessDefinitionKey)?.let {
             return if (applicationComplete) {   //application is complete
-                qaAssignTask(it["permit"] as PermitApplicationEntity, it["processInstanceId"].toString(), "qaDmarAllocatetoQAO", hofAssigneeId, false)
+                qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "qaDmarAllocatetoQAO", hofAssigneeId, false)
             } else {
-                qaAssignTask(it["permit"] as PermitApplicationEntity, it["processInstanceId"].toString(), "qaSfmiAnalyzeSamples", hofAssigneeId, true)
+                qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "qaSfmiAnalyzeSamples", hofAssigneeId, true)
             }
         }
         return false
@@ -775,7 +779,7 @@ class QualityAssuranceBpmn(
             updateTaskVariableByObjectIdAndKey(permitId, "qaDmarAllocatetoQAO", qaDmApplicationReviewProcessDefinitionKey, "email", usersEntity.email.toString())
         }
         qaCompleteTask(permitId, "qaDmarAllocatetoQAO", qaDmApplicationReviewProcessDefinitionKey)?.let {
-            qaAssignTask(it["permit"] as PermitApplicationEntity, it["processInstanceId"].toString(), "qaDmarFactoryInspection", qaoAssigneeId, false)
+            qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "qaDmarFactoryInspection", qaoAssigneeId, false)
         }
         return false
     }
@@ -783,7 +787,7 @@ class QualityAssuranceBpmn(
     fun qaDmARFactoryInspectionComplete(permitId: Long, qaoAssigneeId: Long): Boolean {
         KotlinLogging.logger { }.info("PermitId : $permitId :  Factory inspection complete")
         qaCompleteTask(permitId, "qaDmarFactoryInspection", qaDmApplicationReviewProcessDefinitionKey)?.let {
-            qaAssignTask(it["permit"] as PermitApplicationEntity, it["processInstanceId"].toString(), "qaDmarGenerateInspectionReport", qaoAssigneeId, false)
+            qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "qaDmarGenerateInspectionReport", qaoAssigneeId, false)
         }
         return false
     }
@@ -795,7 +799,7 @@ class QualityAssuranceBpmn(
             updateTaskVariableByObjectIdAndKey(permitId, "qaDmarGenerateInspectionReport", qaDmApplicationReviewProcessDefinitionKey, "email", usersEntity.email.toString())
         }
         qaCompleteTask(permitId, "qaDmarGenerateInspectionReport", qaDmApplicationReviewProcessDefinitionKey)?.let {
-            qaAssignTask(it["permit"] as PermitApplicationEntity, it["processInstanceId"].toString(), "qaDmarApproveInspectionReport", hofAssigneeId, false)
+            qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "qaDmarApproveInspectionReport", hofAssigneeId, false)
         }
         return false
     }
@@ -805,9 +809,9 @@ class QualityAssuranceBpmn(
         updateTaskVariableByObjectIdAndKey(permitId, "qaDmarApproveInspectionReport", qaDmApplicationReviewProcessDefinitionKey, "inspectionReportApproved", bpmnCommonFunctions.booleanToInt(inspectionReportApproved).toString())
         qaCompleteTask(permitId, "qaDmarApproveInspectionReport", qaDmApplicationReviewProcessDefinitionKey)?.let {
             return if (inspectionReportApproved) {   //inspection report approved
-                qaAssignTask(it["permit"] as PermitApplicationEntity, it["processInstanceId"].toString(), "qaDmarTestReportsAvailable", qaoAssigneeId, false)
+                qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "qaDmarTestReportsAvailable", qaoAssigneeId, false)
             } else {
-                qaAssignTask(it["permit"] as PermitApplicationEntity, it["processInstanceId"].toString(), "qaDmarGenerateInspectionReport", qaoAssigneeId, false)
+                qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "qaDmarGenerateInspectionReport", qaoAssigneeId, false)
             }
         }
         return false
@@ -818,9 +822,9 @@ class QualityAssuranceBpmn(
         updateTaskVariableByObjectIdAndKey(permitId, "qaDmarTestReportsAvailable", qaDmApplicationReviewProcessDefinitionKey, "testReportsAvailable", bpmnCommonFunctions.booleanToInt(testReportsAvailable).toString())
         qaCompleteTask(permitId, "qaDmarTestReportsAvailable", qaDmApplicationReviewProcessDefinitionKey)?.let {
             return if (testReportsAvailable) {   //test reports available
-                qaAssignTask(it["permit"] as PermitApplicationEntity, it["processInstanceId"].toString(), "qaDmarTestReportsCompliant", qaoAssigneeId, false)
+                qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "qaDmarTestReportsCompliant", qaoAssigneeId, false)
             } else {
-                qaAssignTask(it["permit"] as PermitApplicationEntity, it["processInstanceId"].toString(), "qaDmarFillSSF", qaoAssigneeId, false)
+                qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "qaDmarFillSSF", qaoAssigneeId, false)
             }
         }
         return false
@@ -839,7 +843,7 @@ class QualityAssuranceBpmn(
                 }
                 true
             } else {
-                qaAssignTask(it["permit"] as PermitApplicationEntity, it["processInstanceId"].toString(), "qaDmarFillSSF", qaoAssigneeId, false)
+                qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "qaDmarFillSSF", qaoAssigneeId, false)
             }
         }
         return false
@@ -848,7 +852,7 @@ class QualityAssuranceBpmn(
     fun qaDmARFillSSFComplete(permitId: Long, labAssigneeId: Long): Boolean {
         KotlinLogging.logger { }.info("PermitId : $permitId :  Fill the SSF complete")
         qaCompleteTask(permitId, "qaDmarFillSSF", qaDmApplicationReviewProcessDefinitionKey)?.let {
-            return qaAssignTask(it["permit"] as PermitApplicationEntity, it["processInstanceId"].toString(), "qaDmarReceiveSSF", labAssigneeId, false)
+            return qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "qaDmarReceiveSSF", labAssigneeId, false)
         }
         return false
     }
@@ -856,7 +860,7 @@ class QualityAssuranceBpmn(
     fun qaDmARReceiveSSFComplete(permitId: Long, qaoAssigneeId: Long): Boolean {
         KotlinLogging.logger { }.info("PermitId : $permitId :  Receive the SSF complete")
         qaCompleteTask(permitId, "qaDmarReceiveSSF", qaDmApplicationReviewProcessDefinitionKey)?.let {
-            return qaAssignTask(it["permit"] as PermitApplicationEntity, it["processInstanceId"].toString(), "qaDmarSubmitSamples", qaoAssigneeId, false)
+            return qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "qaDmarSubmitSamples", qaoAssigneeId, false)
         }
         return false
     }
@@ -864,7 +868,7 @@ class QualityAssuranceBpmn(
     fun qaDmARSubmitSamplesComplete(permitId: Long, labAssigneeId: Long): Boolean {
         KotlinLogging.logger { }.info("PermitId : $permitId :  Submit the samples complete")
         qaCompleteTask(permitId, "qaDmarSubmitSamples", qaDmApplicationReviewProcessDefinitionKey)?.let {
-            return qaAssignTask(it["permit"] as PermitApplicationEntity, it["processInstanceId"].toString(), "qaDmarAnalyzeSamples", labAssigneeId, false)
+            return qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "qaDmarAnalyzeSamples", labAssigneeId, false)
         }
         return false
     }
@@ -875,7 +879,7 @@ class QualityAssuranceBpmn(
             updateTaskVariableByObjectIdAndKey(permitId, "qaDmarAnalyzeSamples", qaDmApplicationReviewProcessDefinitionKey, "email", usersEntity.email.toString())
         }
         qaCompleteTask(permitId, "qaDmarAnalyzeSamples", qaDmApplicationReviewProcessDefinitionKey)?.let {
-            return qaAssignTask(it["permit"] as PermitApplicationEntity, it["processInstanceId"].toString(), "qaDmarLabReportCorrect", qaoAssigneeId, false)
+            return qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "qaDmarLabReportCorrect", qaoAssigneeId, false)
         }
         return false
     }
@@ -885,9 +889,9 @@ class QualityAssuranceBpmn(
         updateTaskVariableByObjectIdAndKey(permitId, "qaDmarLabReportCorrect", qaDmApplicationReviewProcessDefinitionKey, "labReportStatus", bpmnCommonFunctions.booleanToInt(labReportStatus).toString())
         qaCompleteTask(permitId, "qaDmarLabReportCorrect", qaDmApplicationReviewProcessDefinitionKey)?.let {
             return if (labReportStatus) {   //test reports available
-                qaAssignTask(it["permit"] as PermitApplicationEntity, it["processInstanceId"].toString(), "qaDmarAssignComplianceStatus", qaoAssigneeId, false)
+                qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "qaDmarAssignComplianceStatus", qaoAssigneeId, false)
             } else {
-                qaAssignTask(it["permit"] as PermitApplicationEntity, it["processInstanceId"].toString(), "qaDmarAnalyzeSamples", labAssigneeId, false)
+                qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "qaDmarAnalyzeSamples", labAssigneeId, false)
             }
         }
         return false
@@ -911,7 +915,7 @@ class QualityAssuranceBpmn(
                 }
                 true //process ends here
             } else {
-                qaAssignTask(it["permit"] as PermitApplicationEntity, it["processInstanceId"].toString(), "qaoAssigneeId", qaoAssigneeId, false)
+                qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "qaoAssigneeId", qaoAssigneeId, false)
             }
         }
         return false
@@ -929,18 +933,18 @@ class QualityAssuranceBpmn(
         try {
             //Remember to start by setting email and assignee to manufacturer
             checkStartProcessInputs(permitId, assigneeId, true, qaSfApplicationPaymentProcessDefinitionKey)?.let { checkVariables ->
-                val permit: PermitApplicationEntity = checkVariables["permit"] as PermitApplicationEntity
+                val permit: PermitApplicationsEntity = checkVariables["permit"] as PermitApplicationsEntity
                 variables["permitId"] = permit.id.toString()
                 variables["email"] = checkVariables["assigneeEmail"].toString()
                 variables["manufacturerEmail"] = checkVariables["manufacturerEmail"].toString()
                 variables["renewal"] = 0
                 variables["approvalStatus"] = 0
-                permit.manufacturerId?.let { manufacturerId ->
+                permit.userId?.let { manufacturerId ->
                     bpmnCommonFunctions.startBpmnProcess(qaSfApplicationPaymentProcessDefinitionKey, qaSfApplicationPaymentBusinessKey, variables, manufacturerId)?.let {
                         permit.sfAppPaymentProcessInstanceId = it["processInstanceId"]
                         permit.sfAppPaymentStartedOn = Timestamp.from(Instant.now())
                         permit.sfAppPaymentStatus = 1
-                        permitRepo.save(permit)
+                        permitsRepo.save(permit)
                         KotlinLogging.logger { }.info("permitId : $permitId : Successfully started QA SF application payment process for permit")
                         return it
                     } ?: run {
@@ -959,7 +963,7 @@ class QualityAssuranceBpmn(
     fun qaSfAPSelectMarkComplete(permitId: Long): Boolean {
         KotlinLogging.logger { }.info("PermitId : $permitId :  Select mark complete")
         qaCompleteTask(permitId, "qaSfapSelectMark", qaSfApplicationPaymentProcessDefinitionKey)?.let {
-            return qaAssignTask(it["permit"] as PermitApplicationEntity, it["processInstanceId"].toString(), null, 0, true)
+            return qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), null, 0, true)
         }
         return false
     }
@@ -987,7 +991,7 @@ class QualityAssuranceBpmn(
     fun qaSfAPFillAndSubmitComplete(permitId: Long, hofAssigneeId: Long): Boolean {
         KotlinLogging.logger { }.info("PermitId : $permitId :  Fill and submit complete")
         qaCompleteTask(permitId, "qaSfapFillAndSubmit", qaSfApplicationPaymentProcessDefinitionKey)?.let {
-            return qaAssignTask(it["permit"] as PermitApplicationEntity, it["processInstanceId"].toString(), "qaSfapReviewApplication", hofAssigneeId, false)
+            return qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "qaSfapReviewApplication", hofAssigneeId, false)
         }
         return false
     }
@@ -997,7 +1001,7 @@ class QualityAssuranceBpmn(
         updateTaskVariableByObjectIdAndKey(permitId, "qaSfapReviewApplication", qaSfApplicationPaymentProcessDefinitionKey, "approvalStatus", bpmnCommonFunctions.booleanToInt(approvalStatus).toString())
         qaCompleteTask(permitId, "qaSfapReviewApplication", qaSfApplicationPaymentProcessDefinitionKey)?.let {
             return if (approvalStatus) {
-                qaAssignTask(it["permit"] as PermitApplicationEntity, it["processInstanceId"].toString(), "qaSfapMakePayment", 0, true)
+                qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "qaSfapMakePayment", 0, true)
             } else {
                 true
             }
@@ -1025,7 +1029,7 @@ class QualityAssuranceBpmn(
         try {
             //Remember to start by setting email and assignee to manufacturer
             checkStartProcessInputs(permitId, assigneeId, false, qaSfPermitAwardProcessDefinitionKey)?.let { checkVariables ->
-                val permit: PermitApplicationEntity = checkVariables["permit"] as PermitApplicationEntity
+                val permit: PermitApplicationsEntity = checkVariables["permit"] as PermitApplicationsEntity
                 variables["permitId"] = permit.id.toString()
                 variables["email"] = checkVariables["assigneeEmail"].toString()
                 variables["manufacturerEmail"] = checkVariables["manufacturerEmail"].toString()
@@ -1036,7 +1040,7 @@ class QualityAssuranceBpmn(
                     permit.sfPermitAwardProcessInstanceId = it["processInstanceId"]
                     permit.sfPermitAwardStartedOn = Timestamp.from(Instant.now())
                     permit.sfPermitAwardStatus = processStarted
-                    permitRepo.save(permit)
+                    permitsRepo.save(permit)
                     KotlinLogging.logger { }.info("permitId : $permitId : Successfully started QA SF permit award process for permit")
                     return it
                 } ?: run {
@@ -1064,7 +1068,7 @@ class QualityAssuranceBpmn(
 
         qaCompleteTask(permitId, "qaSfpaPscApproval", qaSfPermitAwardProcessDefinitionKey)?.let {
             return if (permitApproved) {
-                qaAssignTask(it["permit"] as PermitApplicationEntity, it["processInstanceId"].toString(), "qaSfpaPCMPermitAward", pcmAssigneeId, false)
+                qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "qaSfpaPCMPermitAward", pcmAssigneeId, false)
             } else {
                 true
             }
@@ -1306,7 +1310,7 @@ class QualityAssuranceBpmn(
         KotlinLogging.logger { }.info("permitId : $permitId : Starting QA DM assessment process")
         try {
             checkStartProcessInputs(permitId, assigneeId, false, qaDmAssessmentProcessDefinitionKey)?.let { checkVariables ->
-                val permit: PermitApplicationEntity = checkVariables["permit"] as PermitApplicationEntity
+                val permit: PermitApplicationsEntity = checkVariables["permit"] as PermitApplicationsEntity
                 variables["permitId"] = permit.id.toString()
                 variables["email"] = checkVariables["assigneeEmail"].toString()
                 variables["manufacturerEmail"] = checkVariables["manufacturerEmail"].toString()
@@ -1321,7 +1325,7 @@ class QualityAssuranceBpmn(
                     permit.dmAssessmentProcessInstanceId = it["processInstanceId"]
                     permit.dmAssessmentStartedOn = Timestamp.from(Instant.now())
                     permit.dmAssessmentStatus = processStarted
-                    permitRepo.save(permit)
+                    permitsRepo.save(permit)
                     KotlinLogging.logger { }.info("permitId : $permitId : Successfully started QA DM assessment process for permit")
                     return it
                 } ?: run {
@@ -1337,7 +1341,7 @@ class QualityAssuranceBpmn(
     fun qaDmasGenJustificationRptComplete(permitId: Long, hodAssigneeId: Long): Boolean {
         KotlinLogging.logger { }.info("PermitId : $permitId : QA DM Assessment Generate justification report complete")
         qaCompleteTask(permitId, "qaDmasGenJustificationRpt", qaDmAssessmentProcessDefinitionKey)?.let {
-            return qaAssignTask(it["permit"] as PermitApplicationEntity, it["processInstanceId"].toString(), "qaDmasApproveJustificationRpt", hodAssigneeId, false)
+            return qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "qaDmasApproveJustificationRpt", hodAssigneeId, false)
         }
         return false
     }
@@ -1357,9 +1361,9 @@ class QualityAssuranceBpmn(
 
         qaCompleteTask(permitId, "qaDmasApproveJustificationRpt", qaDmAssessmentProcessDefinitionKey)?.let {
             return if (justificationReportApproved) {
-                qaAssignTask(it["permit"] as PermitApplicationEntity, it["processInstanceId"].toString(), "qaDmasAppointAssessor", currAssigneeId, false)
+                qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "qaDmasAppointAssessor", currAssigneeId, false)
             } else {
-                qaAssignTask(it["permit"] as PermitApplicationEntity, it["processInstanceId"].toString(), "qaDmasGenJustificationRpt", qaoAssigneeId, false)
+                qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "qaDmasGenJustificationRpt", qaoAssigneeId, false)
             }
         }
         return false
@@ -1371,7 +1375,7 @@ class QualityAssuranceBpmn(
             updateTaskVariableByObjectIdAndKey(permitId, "qaDmasAppointAssessor", qaDmAssessmentProcessDefinitionKey, "email", usersEntity.email.toString())
         }
         qaCompleteTask(permitId, "qaDmasAppointAssessor", qaDmAssessmentProcessDefinitionKey)?.let {
-            return qaAssignTask(it["permit"] as PermitApplicationEntity, it["processInstanceId"].toString(), "qaDmasScheduleFactoryVisit", assessorAssigneeId, false)
+            return qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "qaDmasScheduleFactoryVisit", assessorAssigneeId, false)
         }
         return false
     }
@@ -1379,7 +1383,7 @@ class QualityAssuranceBpmn(
     fun qaScheduleFactoryVisitComplete(permitId: Long, assessorAssigneeId: Long): Boolean {
         KotlinLogging.logger { }.info("PermitId : $permitId : QA DM Appoint Assessor complete")
         qaCompleteTask(permitId, "qaDmasScheduleFactoryVisit", qaDmAssessmentProcessDefinitionKey)?.let {
-            return qaAssignTask(it["permit"] as PermitApplicationEntity, it["processInstanceId"].toString(), "qaDmasGenAssessmentRpt", assessorAssigneeId, false)
+            return qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "qaDmasGenAssessmentRpt", assessorAssigneeId, false)
         }
         return false
     }
@@ -1387,7 +1391,7 @@ class QualityAssuranceBpmn(
     fun qaDmasGenerateAssessmentRptComplete(permitId: Long, hodAssigneeId: Long): Boolean {
         KotlinLogging.logger { }.info("PermitId : $permitId : QA DM Generate assessment report complete")
         qaCompleteTask(permitId, "qaDmasGenAssessmentRpt", qaDmAssessmentProcessDefinitionKey)?.let {
-            return qaAssignTask(it["permit"] as PermitApplicationEntity, it["processInstanceId"].toString(), "qaDmasApproveAssessmentReport", hodAssigneeId, false)
+            return qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "qaDmasApproveAssessmentReport", hodAssigneeId, false)
         }
         return false
     }
@@ -1409,9 +1413,9 @@ class QualityAssuranceBpmn(
 
         qaCompleteTask(permitId, "qaDmasApproveAssessmentReport", qaDmAssessmentProcessDefinitionKey)?.let {
             return if (assessmentReportApproved) {
-                qaAssignTask(it["permit"] as PermitApplicationEntity, it["processInstanceId"].toString(), "qaDmasCheckReportCompliant", currAssigneeId, false)
+                qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "qaDmasCheckReportCompliant", currAssigneeId, false)
             } else {
-                qaAssignTask(it["permit"] as PermitApplicationEntity, it["processInstanceId"].toString(), "qaDmasGenAssessmentRpt", assessorAssigneeId, false)
+                qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "qaDmasGenAssessmentRpt", assessorAssigneeId, false)
             }
         }
         return false
@@ -1422,9 +1426,9 @@ class QualityAssuranceBpmn(
         updateTaskVariableByObjectIdAndKey(permitId, "qaDmasCheckReportCompliant", qaDmAssessmentProcessDefinitionKey, "reportCompliant", bpmnCommonFunctions.booleanToInt(reportCompliant).toString())
         qaCompleteTask(permitId, "qaDmasCheckReportCompliant", qaDmAssessmentProcessDefinitionKey)?.let {
             return if (reportCompliant) {
-                qaAssignTask(it["permit"] as PermitApplicationEntity, it["processInstanceId"].toString(), "qaDmasPacApproval", pacAssigneeId, false)
+                qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "qaDmasPacApproval", pacAssigneeId, false)
             } else {
-                qaAssignTask(it["permit"] as PermitApplicationEntity, it["processInstanceId"].toString(), "qaDmasCorrectiveAction", 0, true)
+                qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "qaDmasCorrectiveAction", 0, true)
             }
         }
         return false
@@ -1433,7 +1437,7 @@ class QualityAssuranceBpmn(
     fun qaDmasCorrectiveActionComplete(permitId: Long, assessorAssigneeId: Long): Boolean {
         KotlinLogging.logger { }.info("PermitId : $permitId : QA DM Corrective action complete")
         qaCompleteTask(permitId, "qaDmasCorrectiveAction", qaDmAssessmentProcessDefinitionKey)?.let {
-            return qaAssignTask(it["permit"] as PermitApplicationEntity, it["processInstanceId"].toString(), "qaDmasScheduleFactoryVisit", assessorAssigneeId, false)
+            return qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "qaDmasScheduleFactoryVisit", assessorAssigneeId, false)
         }
         return false
     }
@@ -1452,7 +1456,7 @@ class QualityAssuranceBpmn(
 
         qaCompleteTask(permitId, "qaDmasPacApproval", qaDmAssessmentProcessDefinitionKey)?.let {
             return if (pacApproval) {
-                qaAssignTask(it["permit"] as PermitApplicationEntity, it["processInstanceId"].toString(), "qaDmasSurveillanceWorkplan", 0, true)
+                qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "qaDmasSurveillanceWorkplan", 0, true)
             } else {
                 return true
             }
@@ -1479,7 +1483,7 @@ class QualityAssuranceBpmn(
         KotlinLogging.logger { }.info("permitId : $permitId : Starting QA DM app payment process")
         try {
             checkStartProcessInputs(permitId, assigneeId, false, qaDmAppPaymentProcessDefinitionKey)?.let { checkVariables ->
-                val permit: PermitApplicationEntity = checkVariables["permit"] as PermitApplicationEntity
+                val permit: PermitApplicationsEntity = checkVariables["permit"] as PermitApplicationsEntity
                 variables["permitId"] = permit.id.toString()
                 variables["email"] = checkVariables["assigneeEmail"].toString()
                 variables["manufacturerEmail"] = checkVariables["manufacturerEmail"].toString()
@@ -1487,12 +1491,12 @@ class QualityAssuranceBpmn(
                 variables["isDomestic"] = 0
                 variables["applicationComplete"] = 0
                 //In this case the first assignee is the manufacturer
-                permit.manufacturerId?.let { manufacturerId ->
+                permit.userId?.let { manufacturerId ->
                     bpmnCommonFunctions.startBpmnProcess(qaDmAppPaymentProcessDefinitionKey, qaDmAppPaymentBusinessKey, variables, manufacturerId)?.let {
                         permit.dmAppPaymentProcessInstanceId = it["processInstanceId"]
                         permit.dmAppPaymentStartedOn = Timestamp.from(Instant.now())
                         permit.dmAppPaymentStatus = processStarted
-                        permitRepo.save(permit)
+                        permitsRepo.save(permit)
                         KotlinLogging.logger { }.info("permitId : $permitId : Successfully started QA DM app payment process for permit")
                         return it
                     } ?: run {
@@ -1510,7 +1514,7 @@ class QualityAssuranceBpmn(
     fun qaDmappSelectDmarkComplete(permitId: Long): Boolean {
         KotlinLogging.logger { }.info("PermitId : $permitId : QA DM App Payment select dmark complete")
         qaCompleteTask(permitId, "qaDmappSelectDmark", qaDmAppPaymentProcessDefinitionKey)?.let {
-            return qaAssignTask(it["permit"] as PermitApplicationEntity, it["processInstanceId"].toString(), null, 0, true)
+            return qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), null, 0, true)
         }
         return false
     }
@@ -1525,9 +1529,9 @@ class QualityAssuranceBpmn(
         updateTaskVariableByObjectIdAndKey(permitId, "qaDmappCheckDomestic", qaDmAppPaymentProcessDefinitionKey, "isDomestic", bpmnCommonFunctions.booleanToInt(isDomestic).toString())
         qaCompleteTask(permitId, "qaDmappCheckDomestic", qaDmAppPaymentProcessDefinitionKey)?.let {
             return if (isDomestic) {
-                qaAssignTask(it["permit"] as PermitApplicationEntity, it["processInstanceId"].toString(), "qaDmappFillDomesticApplication", 0, true)
+                qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "qaDmappFillDomesticApplication", 0, true)
             } else {
-                qaAssignTask(it["permit"] as PermitApplicationEntity, it["processInstanceId"].toString(), "qaDmappFillForeignApplication", 0, true)
+                qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "qaDmappFillForeignApplication", 0, true)
             }
         }
         return false
@@ -1536,7 +1540,7 @@ class QualityAssuranceBpmn(
     fun qaDmappFillDomesticAppComplete(permitId: Long): Boolean {
         KotlinLogging.logger { }.info("PermitId : $permitId : QA DM App Payment fill domestic application complete")
         qaCompleteTask(permitId, "qaDmappFillDomesticApplication", qaDmAppPaymentProcessDefinitionKey)?.let {
-            return qaAssignTask(it["permit"] as PermitApplicationEntity, it["processInstanceId"].toString(), null, 0, true)
+            return qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), null, 0, true)
         }
         return false
     }
@@ -1544,7 +1548,7 @@ class QualityAssuranceBpmn(
     fun qaDmappFillForeignAppComplete(permitId: Long, pcmAssigneeId: Long): Boolean {
         KotlinLogging.logger { }.info("PermitId : $permitId : QA DM App Payment fill foreign application complete")
         qaCompleteTask(permitId, "qaDmappFillForeignApplication", qaDmAppPaymentProcessDefinitionKey)?.let {
-            return qaAssignTask(it["permit"] as PermitApplicationEntity, it["processInstanceId"].toString(), "qaDmappPCMCheckApplicationComplete", pcmAssigneeId, false)
+            return qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "qaDmappPCMCheckApplicationComplete", pcmAssigneeId, false)
         }
         return false
     }
@@ -1553,7 +1557,7 @@ class QualityAssuranceBpmn(
         KotlinLogging.logger { }.info("PermitId : $permitId : QA DM App Payment check if application complete")
         updateTaskVariableByObjectIdAndKey(permitId, "qaDmappPCMCheckApplicationComplete", qaDmAppPaymentProcessDefinitionKey, "applicationComplete", bpmnCommonFunctions.booleanToInt(applicationComplete).toString())
         qaCompleteTask(permitId, "qaDmappPCMCheckApplicationComplete", qaDmAppPaymentProcessDefinitionKey)?.let {
-            return qaAssignTask(it["permit"] as PermitApplicationEntity, it["processInstanceId"].toString(), null, 0, true)
+            return qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), null, 0, true)
         }
         return false
     }
@@ -1561,7 +1565,7 @@ class QualityAssuranceBpmn(
     fun qaDmappManufacturerCorrectionComplete(permitId: Long): Boolean {
         KotlinLogging.logger { }.info("PermitId : $permitId : QA DM App Payment manufacturer correction complete")
         qaCompleteTask(permitId, "qaDmappManufacturerCorrection", qaDmAppPaymentProcessDefinitionKey)?.let {
-            return qaAssignTask(it["permit"] as PermitApplicationEntity, it["processInstanceId"].toString(), null, 0, true)
+            return qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), null, 0, true)
         }
         return false
     }
