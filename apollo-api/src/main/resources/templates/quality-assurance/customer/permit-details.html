@@ -572,7 +572,7 @@
 
                                         <div sec:authorize="hasAuthority('PERMIT_APPLICATION')">
 
-                                            <a th:if="${permitDetails?.attachedPlantId == null}" style="color: white"
+                                            <a sec:authorize="hasAuthority('MODIFY_COMPANY')" th:if="${permitDetails?.attachedPlantId == null}" style="color: white"
                                                onclick="popUpFunction('attachePlant');" class="filter-link">ATTACH
                                                 PLANT</a>
 
@@ -861,7 +861,7 @@
                                             <!--                                                OF-->
                                             <!--                                                SUPERVISION AND CONTROL</a>-->
 
-                                            <a th:if="${permitDetails?.attachedPlantId != null and permitDetails?.cocId == null}"
+                                            <a th:if="${permitDetails?.permitForeignStatus == 1 and permitDetails?.attachedPlantId != null and permitDetails?.cocId == null}"
                                                style="color: white" onclick="popUpUploadFunction('uploadCOC');"
                                                class="filter-link">UPLOAD COC</a>
 
@@ -889,7 +889,7 @@
                                                 <a th:if="${permitDetails?.sendApplication != 1}"
                                                    th:href="@{/api/qa/old-sta3(permitID=${permitDetails?.id})}"
                                                    class="filter-link" style="color: white">UPDATE STA 3</a>
-                                                <a th:if="${permitDetails?.sendApplication != 1 and permitDetails?.cocId != null}"
+                                                <a th:if="${permitDetails?.sendApplication != 1}"
                                                    th:href="@{/api/qa/new-permit-submit(permitID=${permitDetails?.id})}"
                                                    class="filter-link" style="color: white">SUBMIT APPLICATION</a>
                                             </div>

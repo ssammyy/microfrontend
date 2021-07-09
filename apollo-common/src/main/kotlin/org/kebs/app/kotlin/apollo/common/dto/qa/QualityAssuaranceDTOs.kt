@@ -74,6 +74,7 @@ data class PermitInvoiceDto(
     var brandName: String? = null,
     var totalAmount: BigDecimal? = null,
     var paidStatus: Int? = null,
+    var permitRefNumber: String? = null,
 )
 
 data class NewBatchInvoiceDto(

@@ -680,6 +680,12 @@ class QADaoServices(
         } ?: throw ExpectedDataNotFound("No Plant details found with the following [user id=$userId]")
     }
 
+    fun findAllPlantDetailsWithCompanyID(companyID: Long): List<ManufacturePlantDetailsEntity> {
+        manufacturePlantRepository.findByCompanyProfileId(companyID)?.let {
+            return it
+        } ?: throw ExpectedDataNotFound("No Plant details found with the following [COMPANY ID =$companyID]")
+    }
+
 
     fun findPlantDetails(plantID: Long): ManufacturePlantDetailsEntity {
         manufacturePlantRepository.findByIdOrNull(plantID)?.let {
@@ -908,7 +914,8 @@ class QADaoServices(
                             permitDetails.commodityDescription,
                             permitDetails.tradeMark,
                             pi.amount,
-                            pi.paymentStatus
+                            pi.paymentStatus,
+                            pi.permitRefNumber
                         )
                     )
                 } else {
@@ -923,7 +930,8 @@ class QADaoServices(
                         permitDetails.commodityDescription,
                         permitDetails.tradeMark,
                         pi.amount,
-                        pi.paymentStatus
+                        pi.paymentStatus,
+                        pi.permitRefNumber
                     )
                 )
             }
@@ -2765,6 +2773,7 @@ class QADaoServices(
              * Get rid of hard coded data
              */
             conditions = "Must be paid in 30 days"
+            permitRefNumber = permits.permitRefNumber
             createdOn = Timestamp.from(Instant.now())
             status = 0
             map.tokenExpiryHours?.let { expiryDate = Timestamp.from(Instant.now().plus(it, ChronoUnit.HOURS)) }
@@ -2807,10 +2816,10 @@ class QADaoServices(
             manufactureTurnOver > iTurnOverRatesRepository.findByIdOrNull(applicationMapProperties.mapQASmarkLargeFirmsTurnOverId)?.lowerLimit -> {
                 findFirmTypeById(applicationMapProperties.mapQASmarkLargeFirmsTurnOverId)
             }
-            manufactureTurnOver < iTurnOverRatesRepository.findByIdOrNull(applicationMapProperties.mapQASmarkMediumTurnOverId)?.upperLimit && manufactureTurnOver > iTurnOverRatesRepository.findByIdOrNull(
+            manufactureTurnOver <= iTurnOverRatesRepository.findByIdOrNull(applicationMapProperties.mapQASmarkMediumTurnOverId)?.upperLimit && manufactureTurnOver >= iTurnOverRatesRepository.findByIdOrNull(
                 applicationMapProperties.mapQASmarkMediumTurnOverId
             )?.lowerLimit -> {
-                findFirmTypeById(applicationMapProperties.mapQASmarkLargeFirmsTurnOverId)
+                findFirmTypeById(applicationMapProperties.mapQASmarkMediumTurnOverId)
             }
             else -> {
                 findFirmTypeById(applicationMapProperties.mapQASmarkJuakaliTurnOverId)
@@ -2848,10 +2857,8 @@ class QADaoServices(
                                     plantDetails,
                                     permitType,
                                     permit,
-                                    turnOverValues.fixedAmountToPay?.times(numberOfYears)
-                                        ?: throw Exception("INVALID FIXED AMOUNT TO PAY"),
-                                    turnOverValues.variableAmountToPay?.times(numberOfYears)
-                                        ?: throw Exception("INVALID VARIABLE AMOUNT TO PAY"),
+                                    turnOverValues.fixedAmountToPay?.times(numberOfYears) ?: throw Exception("INVALID FIXED AMOUNT TO PAY"),
+                                    turnOverValues.variableAmountToPay?.times(numberOfYears) ?: throw Exception("INVALID VARIABLE AMOUNT TO PAY"),
                                     taxRate,
                                     map,
                                     user,
@@ -2860,17 +2867,15 @@ class QADaoServices(
                                 )
 
                             }
-                            manufactureTurnOver < iTurnOverRatesRepository.findByIdOrNull(applicationMapProperties.mapQASmarkMediumTurnOverId)?.upperLimit && manufactureTurnOver > iTurnOverRatesRepository.findByIdOrNull(
+                            manufactureTurnOver <= iTurnOverRatesRepository.findByIdOrNull(applicationMapProperties.mapQASmarkMediumTurnOverId)?.upperLimit && manufactureTurnOver >= iTurnOverRatesRepository.findByIdOrNull(
                                 applicationMapProperties.mapQASmarkMediumTurnOverId
                             )?.lowerLimit -> {
                                 m = mutableListForTurnOverBelow500kAndAbove200KSmark(
                                     plantDetails,
                                     permitType,
                                     permit,
-                                    turnOverValues.fixedAmountToPay?.times(numberOfYears)
-                                        ?: throw Exception("INVALID FIXED AMOUNT TO PAY"),
-                                    turnOverValues.variableAmountToPay?.times(numberOfYears)
-                                        ?: throw Exception("INVALID VARIABLE AMOUNT TO PAY"),
+                                    turnOverValues.fixedAmountToPay?.times(numberOfYears) ?: throw Exception("INVALID FIXED AMOUNT TO PAY"),
+                                    turnOverValues.variableAmountToPay?.times(numberOfYears) ?: throw Exception("INVALID VARIABLE AMOUNT TO PAY"),
                                     turnOverValues.maxProduct ?: throw Exception("INVALID PRODUCT MAX VALUE"),
                                     taxRate,
                                     map,
