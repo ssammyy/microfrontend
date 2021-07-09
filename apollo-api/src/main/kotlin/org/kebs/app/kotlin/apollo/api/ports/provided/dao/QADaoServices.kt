@@ -3,6 +3,8 @@ package org.kebs.app.kotlin.apollo.api.ports.provided.dao
 import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.notifications.Notifications
 import org.kebs.app.kotlin.apollo.api.ports.provided.mpesa.MPesaService
+import org.kebs.app.kotlin.apollo.common.dto.SectionsDto
+import org.kebs.app.kotlin.apollo.common.dto.SectionsEntityDto
 import org.kebs.app.kotlin.apollo.common.dto.qa.*
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
@@ -104,6 +106,14 @@ class QADaoServices(
                 return it
             }
             ?: throw ExpectedDataNotFound("Invoices With [USER ID = ${userID}] and [status = ${status}], does not Exist")
+    }
+
+    fun findALlInvoicesCreatedByUser(userID: Long): List<InvoiceEntity> {
+        invoiceRepository.findAllByManufacturer(userID)
+            ?.let { it ->
+                return it
+            }
+            ?: throw ExpectedDataNotFound("Invoices With [USER ID = ${userID}], does not Exist")
     }
 
     fun findALlInvoicesPermitWithBatchID(batchID: Long): List<InvoiceEntity> {
@@ -859,42 +869,85 @@ class QADaoServices(
     }
 
     fun listPermits(permits: List<PermitApplicationsEntity>, map: ServiceMapsEntity): List<PermitEntityDto> {
-        val permitsList = mutableListOf<PermitEntityDto>()
-        permits.map { p ->
-            val plantDetail = p.attachedPlantId?.let { findPlantDetails(it) }
-            permitsList.add(
-                PermitEntityDto(
-                    p.id,
-                    p.firmName,
-                    p.permitRefNumber,
-                    p.commodityDescription,
-                    p.tradeMark,
-                    p.awardedPermitNumber,
-                    p.dateOfIssue,
-                    p.dateOfExpiry,
-                    p.permitStatus?.let { findPermitStatus(it).processStatusName },
-                    p.userId,
-                    p.createdOn,
-                    plantDetail?.county?.let {
-                        commonDaoServices.findCountiesEntityByCountyId(
-                            it,
-                            map.activeStatus
-                        ).county
-                    },
-                    plantDetail?.town?.let { commonDaoServices.findTownEntityByTownId(it).town },
-                    plantDetail?.region?.let {
-                        commonDaoServices.findRegionEntityByRegionID(
-                            it,
-                            map.activeStatus
-                        ).region
-                    },
-                    p.divisionId?.let { commonDaoServices.findDivisionWIthId(it).division },
-                    p.sectionId?.let { commonDaoServices.findSectionWIthId(it).section },
-
-                    )
+        return permits.map { p ->
+            PermitEntityDto(
+                p.id,
+                p.firmName,
+                p.permitRefNumber,
+                p.commodityDescription,
+                p.tradeMark,
+                p.awardedPermitNumber,
+                p.dateOfIssue,
+                p.dateOfExpiry,
+                p.permitStatus?.let { findPermitStatus(it).processStatusName },
+                p.userId,
+                p.createdOn,
+                p.attachedPlantId?.let {
+                    commonDaoServices.findCountiesEntityByCountyId(
+                        findPlantDetails(it).county ?: -1L, map.activeStatus
+                    ).county
+                },
+                p.attachedPlantId?.let {
+                    commonDaoServices.findTownEntityByTownId(
+                        findPlantDetails(it).town ?: -1L
+                    ).town
+                },
+                p.attachedPlantId?.let {
+                    commonDaoServices.findRegionEntityByRegionID(
+                        findPlantDetails(it).region ?: -1L, map.activeStatus
+                    ).region
+                },
+                p.divisionId?.let { commonDaoServices.findDivisionWIthId(it).division },
+                p.sectionId?.let { commonDaoServices.findSectionWIthId(it).section },
+                p.permitAwardStatus == 1,
             )
         }
-        return permitsList.sortedBy { it.id }
+    }
+
+    fun listSTA10Product(sta10Products: List<QaProductManufacturedEntity>): List<STA10ProductsManufactureDto> {
+        return sta10Products.map { p ->
+            STA10ProductsManufactureDto(
+                p.productName,
+                p.productBrand,
+                p.productStandardNumber,
+                p.available == 1,
+                p.permitNo,
+            )
+        }
+    }
+
+    fun listSTA10RawMaterials(qaRawMaterialEntity: List<QaRawMaterialEntity>): List<STA10RawMaterialsDto> {
+        return qaRawMaterialEntity.map { p ->
+            STA10RawMaterialsDto(
+                p.name,
+                p.origin,
+                p.specifications,
+                p.qualityChecksTestingRecords,
+            )
+        }
+    }
+
+    fun listSTA10MachinePlants(machinePlantsDetails: List<QaMachineryEntity>): List<STA10MachineryAndPlantDto> {
+        return machinePlantsDetails.map { p ->
+            STA10MachineryAndPlantDto(
+                p.machineName,
+                p.typeModel,
+                p.countryOfOrigin,
+            )
+        }
+    }
+
+
+    fun listSTA10ManufacturingProcess(manufacturingProcessDetails: List<QaManufacturingProcessEntity>): List<STA10ManufacturingProcessDto> {
+        return manufacturingProcessDetails.map { p ->
+            STA10ManufacturingProcessDto(
+                p.processFlowOfProduction,
+                p.operations,
+                p.criticalProcessParametersMonitored,
+                p.frequency,
+                p.processMonitoringRecords,
+            )
+        }
     }
 
     fun listPermitsInvoices(
@@ -938,6 +991,22 @@ class QADaoServices(
 
         }
         return permitsInvoiceList.sortedBy { it.permitID }
+    }
+
+
+    fun permitsInvoiceDTO(
+        permitInvoices: InvoiceEntity,
+        permitDetails: PermitApplicationsEntity,
+    ): PermitInvoiceDto {
+        return PermitInvoiceDto(
+            permitInvoices.permitId,
+            permitInvoices.invoiceNumber,
+            permitDetails.commodityDescription,
+            permitDetails.tradeMark,
+            permitInvoices.amount,
+            permitInvoices.paymentStatus,
+            permitInvoices.permitRefNumber
+        )
     }
 
     fun permitDetails(permit: PermitApplicationsEntity, map: ServiceMapsEntity): PermitDetailsDto {
@@ -1024,6 +1093,23 @@ class QADaoServices(
 
         }
         return p
+    }
+
+    fun mapAllPermitDetailsTogether(permit: PermitApplicationsEntity, map: ServiceMapsEntity): AllPermitDetailsDto {
+        return AllPermitDetailsDto(
+            permitDetails(permit, map),
+            commonDaoServices.userListDto(
+                findOfficersList(
+                    permit.attachedPlantId ?: throw Exception("MISSING PLANT ID"),
+                    permit,
+                    map,
+                    applicationMapProperties.mapQADesignationIDForQAOId
+                )
+            ),
+            findAllOldPermitWithPermitRefNumber(
+                permit.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER")
+            )?.let { listPermits(it, map) }
+        )
     }
 
     fun listWorkPlan(workPlan: List<QaWorkplanEntity>, map: ServiceMapsEntity): List<WorkPlanDto> {
@@ -1184,8 +1270,7 @@ class QADaoServices(
         permits: PermitApplicationsEntity,
         permitTypeDetails: PermitTypesEntity,
         user: UsersEntity,
-        map: ServiceMapsEntity,
-        auth: Authentication
+        map: ServiceMapsEntity
     ): Pair<ServiceRequestsEntity, PermitApplicationsEntity> {
 
         var sr = commonDaoServices.createServiceRequest(map)
@@ -1195,7 +1280,6 @@ class QADaoServices(
             with(savePermit) {
                 userId = user.id
                 productName = permits.commodityDescription
-//                productName = product?.let { commonDaoServices.findProductByID(it).name }
                 permitType = permitTypeDetails.id
                 permitRefNumber = "REF${permitTypeDetails.markNumber}${generateRandomText(5, map.secureRandom, map.messageDigestAlgorithm, true)}".toUpperCase()
                 enabled = map.initStatus
@@ -1204,14 +1288,6 @@ class QADaoServices(
                 endOfProductionStatus = map.initStatus
                 status = map.activeStatus
                 fmarkGenerated = map.inactiveStatus
-                attachedPlantId = when {
-                    auth.authorities.stream().anyMatch { authority -> authority.authority == "MODIFY_COMPANY" } -> {
-                        null
-                    }
-                    else -> {
-                        user.plantId
-                    }
-                }
                 permitStatus = applicationMapProperties.mapQaStatusDraft
                 userTaskId = applicationMapProperties.mapUserTaskNameMANUFACTURE
                 createdBy = commonDaoServices.concatenateName(user)
@@ -1659,7 +1735,6 @@ class QADaoServices(
             town = town?.let { commonDaoServices.findTownEntityByTownId(it).id }
             county = county?.let { commonDaoServices.findCountiesEntityByCountyId(it, map.activeStatus).id }
             region = county?.let { commonDaoServices.findCountiesEntityByCountyId(it, map.activeStatus).regionId }
-//            permitId = permitNewID
             permitRefNumber = permitNewRefNumber
             applicationDate = commonDaoServices.getCurrentDate()
             status = map.activeStatus
@@ -2319,9 +2394,10 @@ class QADaoServices(
         s: ServiceMapsEntity,
         user: UsersEntity,
         batchInvoiceDto: NewBatchInvoiceDto,
-    ): ServiceRequestsEntity {
+    ): Pair<ServiceRequestsEntity, QaBatchInvoiceEntity> {
 
         var sr = commonDaoServices.createServiceRequest(s)
+        var invoiceBatchDetails: QaBatchInvoiceEntity? = null
         try {
 
             var batchID = batchInvoiceDto.batchID
@@ -2346,7 +2422,7 @@ class QADaoServices(
                                 totalAmount =
                                     totalAmount?.plus(permitInvoiceFound.amount ?: throw Exception("INVALID AMOUNT"))
                             }
-                            batchID = invoiceBatchRepo.save(invoiceDetails).id!!
+                            invoiceBatchDetails = invoiceBatchRepo.save(invoiceDetails)
                         }
                         ?: kotlin.run {
                             var batchInvoicePermit = QaBatchInvoiceEntity()
@@ -2376,12 +2452,12 @@ class QADaoServices(
                             }
                             permitInvoiceFound = invoiceRepository.save(permitInvoiceFound)
 
-                            batchID = batchInvoicePermit.id!!
+                            invoiceBatchDetails = batchInvoicePermit
                         }
 
                     sr.payload = "permitInvoiceFound[id= ${permitInvoiceFound.userId}]"
                     sr.names = "${permitInvoiceFound.invoiceNumber} ${permitInvoiceFound.amount}"
-                    sr.varField1 = batchID.toString()
+                    sr.varField1 = invoiceBatchDetails?.id.toString()
 
                     sr.responseStatus = sr.serviceMapsId?.successStatusCode
                     sr.responseMessage = "Success ${sr.payload}"
@@ -2401,38 +2477,39 @@ class QADaoServices(
         }
 
         KotlinLogging.logger { }.trace("${sr.id} ${sr.responseStatus}")
-        return sr
+        return Pair(sr, invoiceBatchDetails ?: throw Exception("INVALID BATCH INVOICE DETAILS"))
     }
 
     fun permitMultipleInvoiceRemoveInvoice(
         s: ServiceMapsEntity,
         user: UsersEntity,
         batchInvoiceDto: NewBatchInvoiceDto,
-    ): ServiceRequestsEntity {
+    ): Pair<ServiceRequestsEntity, QaBatchInvoiceEntity> {
 
         var sr = commonDaoServices.createServiceRequest(s)
+        var invoiceDetails = invoiceBatchRepo.findByIdOrNull(batchInvoiceDto.batchID)
+            ?: throw Exception("INVOICE BATCH WITH [ID=${batchInvoiceDto.batchID}],DOES NOT EXIXT ")
         try {
 
             val userID = user.id ?: throw Exception("INVALID USER ID")
-            var permitInvoiceFound = findPermitInvoiceByPermitRefNumber(batchInvoiceDto.permitRefNumber ?: throw Exception("PERMIT REF NUMBER REQUIRED"), userID)
+            var permitInvoiceFound = findPermitInvoiceByPermitRefNumber(
+                batchInvoiceDto.permitRefNumber ?: throw Exception("PERMIT REF NUMBER REQUIRED"), userID
+            )
             var batchID: Long? = null
-            invoiceBatchRepo.findByIdOrNull(batchInvoiceDto.batchID)
-                ?.let { invoiceDetails ->
 
-                    with(invoiceDetails) {
-                        description = "${permitInvoiceFound.invoiceNumber},$description"
-                        totalAmount = totalAmount?.minus(permitInvoiceFound.amount ?: throw Exception("INVALID AMOUNT"))
-                    }
-                    batchID = invoiceBatchRepo.save(invoiceDetails).id
 
-                    with(permitInvoiceFound) {
-                        batchInvoiceNo = null
-                        modifiedBy = commonDaoServices.concatenateName(user)
-                        modifiedOn = commonDaoServices.getTimestamp()
-                    }
-                    permitInvoiceFound = invoiceRepository.save(permitInvoiceFound)
+            with(invoiceDetails) {
+                description = "${permitInvoiceFound.invoiceNumber},$description"
+                totalAmount = totalAmount?.minus(permitInvoiceFound.amount ?: throw Exception("INVALID AMOUNT"))
+            }
+            batchID = invoiceBatchRepo.save(invoiceDetails).id
 
-                }
+            with(permitInvoiceFound) {
+                batchInvoiceNo = null
+                modifiedBy = commonDaoServices.concatenateName(user)
+                modifiedOn = commonDaoServices.getTimestamp()
+            }
+            permitInvoiceFound = invoiceRepository.save(permitInvoiceFound)
 
             sr.payload = "permitInvoiceFound[id= ${permitInvoiceFound.userId}]"
             sr.names = "${permitInvoiceFound.invoiceNumber} ${permitInvoiceFound.amount}"
@@ -2455,23 +2532,24 @@ class QADaoServices(
         }
 
         KotlinLogging.logger { }.trace("${sr.id} ${sr.responseStatus}")
-        return sr
+        return Pair(sr, invoiceDetails)
     }
 
     fun permitMultipleInvoiceSubmitInvoice(
         s: ServiceMapsEntity,
         user: UsersEntity,
         batchInvoiceDto: NewBatchInvoiceDto,
-    ): ServiceRequestsEntity {
+    ): Pair<ServiceRequestsEntity, QaBatchInvoiceEntity> {
 
         var sr = commonDaoServices.createServiceRequest(s)
+        var invoiceDetails: QaBatchInvoiceEntity? = null
         try {
 
             val userID = user.id ?: throw Exception("INVALID USER ID")
             if (batchInvoiceDto.batchID == -1L) {
                 throw Exception("INVALID BATCH ID NUMBER")
             }
-            val invoiceDetails = findBatchInvoicesWithID(batchInvoiceDto.batchID)
+            invoiceDetails = findBatchInvoicesWithID(batchInvoiceDto.batchID)
 
 
             val batchInvoiceDetail = invoiceDaoService.createBatchInvoiceDetails(
@@ -2503,7 +2581,7 @@ class QADaoServices(
             with(invoiceDetails) {
                 submittedStatus = s.activeStatus
             }
-            qaInvoiceBatchUpdateDetails(invoiceDetails, user)
+            invoiceDetails = qaInvoiceBatchUpdateDetails(invoiceDetails, user)
 
             sr.payload = "invoiceDetails FOUND[id= ${invoiceDetails.userId}]"
             sr.names = "${invoiceDetails.invoiceNumber} ${invoiceDetails.totalAmount}"
@@ -2526,7 +2604,7 @@ class QADaoServices(
         }
 
         KotlinLogging.logger { }.trace("${sr.id} ${sr.responseStatus}")
-        return sr
+        return Pair(sr, invoiceDetails ?: throw Exception("INVALID DETAILS"))
     }
 
 
@@ -2713,7 +2791,7 @@ class QADaoServices(
                 attachedPlantId = permit.attachedPlantId
                 attachedPlantRemarks = permit.attachedPlantRemarks
             }
-            fmarkPermit = permitSave(fmarkPermit, permitType, user, s, auth).second
+            fmarkPermit = permitSave(fmarkPermit, permitType, user, s).second
 
             val savedSmarkFmarkId = generateSmarkFmarkEntity(permit, fmarkPermit, user)
 
@@ -2782,6 +2860,7 @@ class QADaoServices(
              */
             conditions = "Must be paid in 30 days"
             permitRefNumber = permits.permitRefNumber
+            permitId = permits.id
             createdOn = Timestamp.from(Instant.now())
             status = 0
             map.tokenExpiryHours?.let { expiryDate = Timestamp.from(Instant.now().plus(it, ChronoUnit.HOURS)) }
@@ -3313,4 +3392,233 @@ class QADaoServices(
         manufacturer?.email?.let { notifications.sendEmail(it, subject, messageBody) }
     }
 
+
+    fun mapDtoSTA3AndQaSta3Entity(sta3Dto: STA3Dto): QaSta3Entity {
+        val sta3 = QaSta3Entity()
+        with(sta3) {
+            produceOrdersOrStock = sta3Dto.produceOrdersOrStock
+            issueWorkOrderOrEquivalent = sta3Dto.issueWorkOrderOrEquivalent
+            identifyBatchAsSeparate = sta3Dto.identifyBatchAsSeparate
+            productsContainersCarryWorksOrder = sta3Dto.productsContainersCarryWorksOrder
+            isolatedCaseDoubtfulQuality = sta3Dto.isolatedCaseDoubtfulQuality
+            headQaQualificationsTraining = sta3Dto.headQaQualificationsTraining
+            reportingTo = sta3Dto.reportingTo
+            separateQcid = sta3Dto.separateQcid
+            testsRelevantStandard = sta3Dto.testsRelevantStandard
+            spoComingMaterials = sta3Dto.spoComingMaterials
+            spoProcessOperations = sta3Dto.spoProcessOperations
+            spoFinalProducts = sta3Dto.spoFinalProducts
+            monitoredQcs = sta3Dto.monitoredQcs
+            qauditChecksCarried = sta3Dto.qauditChecksCarried
+            informationQcso = sta3Dto.informationQcso
+            mainMaterialsPurchasedSpecification = sta3Dto.mainMaterialsPurchasedSpecification
+            adoptedReceiptMaterials = sta3Dto.adoptedReceiptMaterials
+            storageFacilitiesExist = sta3Dto.storageFacilitiesExist
+            stepsManufacture = sta3Dto.stepsManufacture
+            maintenanceSystem = sta3Dto.maintenanceSystem
+            qcsSupplement = sta3Dto.qcsSupplement
+            qmInstructions = sta3Dto.qmInstructions
+            testEquipmentUsed = sta3Dto.testEquipmentUsed
+            indicateExternalArrangement = sta3Dto.indicateExternalArrangement
+            levelDefectivesFound = sta3Dto.levelDefectivesFound
+            levelClaimsComplaints = sta3Dto.levelClaimsComplaints
+            independentTests = sta3Dto.independentTests
+            indicateStageManufacture = sta3Dto.indicateStageManufacture
+        }
+
+        return sta3
+    }
+
+    fun mapDtoSTA3View(sta3: QaSta3Entity): STA3Dto {
+        val sta3ViewDto = STA3Dto()
+        with(sta3ViewDto) {
+            produceOrdersOrStock = sta3.produceOrdersOrStock
+            issueWorkOrderOrEquivalent = sta3.issueWorkOrderOrEquivalent
+            identifyBatchAsSeparate = sta3.identifyBatchAsSeparate
+            productsContainersCarryWorksOrder = sta3.productsContainersCarryWorksOrder
+            isolatedCaseDoubtfulQuality = sta3.isolatedCaseDoubtfulQuality
+            headQaQualificationsTraining = sta3.headQaQualificationsTraining
+            reportingTo = sta3.reportingTo
+            separateQcid = sta3.separateQcid
+            testsRelevantStandard = sta3.testsRelevantStandard
+            spoComingMaterials = sta3.spoComingMaterials
+            spoProcessOperations = sta3.spoProcessOperations
+            spoFinalProducts = sta3.spoFinalProducts
+            monitoredQcs = sta3.monitoredQcs
+            qauditChecksCarried = sta3.qauditChecksCarried
+            informationQcso = sta3.informationQcso
+            mainMaterialsPurchasedSpecification = sta3.mainMaterialsPurchasedSpecification
+            adoptedReceiptMaterials = sta3.adoptedReceiptMaterials
+            storageFacilitiesExist = sta3.storageFacilitiesExist
+            stepsManufacture = sta3.stepsManufacture
+            maintenanceSystem = sta3.maintenanceSystem
+            qcsSupplement = sta3.qcsSupplement
+            qmInstructions = sta3.qmInstructions
+            testEquipmentUsed = sta3.testEquipmentUsed
+            indicateExternalArrangement = sta3.indicateExternalArrangement
+            levelDefectivesFound = sta3.levelDefectivesFound
+            levelClaimsComplaints = sta3.levelClaimsComplaints
+            independentTests = sta3.independentTests
+            indicateStageManufacture = sta3.indicateStageManufacture
+        }
+
+        return sta3ViewDto
+    }
+
+    fun mapDtoSTA10SectionAAndQaSta10Entity(sta10SectionADto: STA10SectionADto): QaSta10Entity {
+        val sta10 = QaSta10Entity()
+        with(sta10) {
+            firmName = sta10SectionADto.firmName
+            statusCompanyBusinessRegistration = sta10SectionADto.statusCompanyBusinessRegistration
+            ownerNameProprietorDirector = sta10SectionADto.ownerNameProprietorDirector
+            postalAddress = sta10SectionADto.postalAddress
+            contactPerson = sta10SectionADto.contactPerson
+            telephone = sta10SectionADto.telephone
+            emailAddress = sta10SectionADto.emailAddress
+            physicalLocationMap = sta10SectionADto.physicalLocationMap
+            county = sta10SectionADto.county
+            town = sta10SectionADto.town
+            totalNumberFemale = sta10SectionADto.totalNumberFemale
+            totalNumberMale = sta10SectionADto.totalNumberMale
+            totalNumberPermanentEmployees = sta10SectionADto.totalNumberPermanentEmployees
+            totalNumberCasualEmployees = sta10SectionADto.totalNumberCasualEmployees
+            averageVolumeProductionMonth = sta10SectionADto.averageVolumeProductionMonth
+            handledManufacturingProcessRawMaterials = sta10SectionADto.handledManufacturingProcessRawMaterials
+            handledManufacturingProcessInprocessProducts = sta10SectionADto.handledManufacturingProcessInprocessProducts
+            handledManufacturingProcessFinalProduct = sta10SectionADto.handledManufacturingProcessFinalProduct
+            strategyInplaceRecallingProducts = sta10SectionADto.strategyInplaceRecallingProducts
+            stateFacilityConditionsRawMaterials = sta10SectionADto.stateFacilityConditionsRawMaterials
+            stateFacilityConditionsEndProduct = sta10SectionADto.stateFacilityConditionsEndProduct
+            testingFacilitiesExistSpecifyEquipment = sta10SectionADto.testingFacilitiesExistSpecifyEquipment
+            testingFacilitiesExistStateParametersTested = sta10SectionADto.testingFacilitiesExistStateParametersTested
+            testingFacilitiesSpecifyParametersTested = sta10SectionADto.testingFacilitiesSpecifyParametersTested
+            calibrationEquipmentLastCalibrated = sta10SectionADto.calibrationEquipmentLastCalibrated
+            handlingConsumerComplaints = sta10SectionADto.handlingConsumerComplaints
+            companyRepresentative = sta10SectionADto.companyRepresentative
+            applicationDate = sta10SectionADto.applicationDate
+        }
+
+        return sta10
+    }
+
+    fun mapDtoSTA10SectionAAndQaSta10View(qasta10entity: QaSta10Entity): STA10SectionADto {
+        val sta10 = STA10SectionADto()
+        with(sta10) {
+            firmName = qasta10entity.firmName
+            statusCompanyBusinessRegistration = qasta10entity.statusCompanyBusinessRegistration
+            ownerNameProprietorDirector = qasta10entity.ownerNameProprietorDirector
+            postalAddress = qasta10entity.postalAddress
+            contactPerson = qasta10entity.contactPerson
+            telephone = qasta10entity.telephone
+            emailAddress = qasta10entity.emailAddress
+            physicalLocationMap = qasta10entity.physicalLocationMap
+            county = qasta10entity.county
+            town = qasta10entity.town
+            totalNumberFemale = qasta10entity.totalNumberFemale
+            totalNumberMale = qasta10entity.totalNumberMale
+            totalNumberPermanentEmployees = qasta10entity.totalNumberPermanentEmployees
+            totalNumberCasualEmployees = qasta10entity.totalNumberCasualEmployees
+            averageVolumeProductionMonth = qasta10entity.averageVolumeProductionMonth
+            handledManufacturingProcessRawMaterials = qasta10entity.handledManufacturingProcessRawMaterials
+            handledManufacturingProcessInprocessProducts = qasta10entity.handledManufacturingProcessInprocessProducts
+            handledManufacturingProcessFinalProduct = qasta10entity.handledManufacturingProcessFinalProduct
+            strategyInplaceRecallingProducts = qasta10entity.strategyInplaceRecallingProducts
+            stateFacilityConditionsRawMaterials = qasta10entity.stateFacilityConditionsRawMaterials
+            stateFacilityConditionsEndProduct = qasta10entity.stateFacilityConditionsEndProduct
+            testingFacilitiesExistSpecifyEquipment = qasta10entity.testingFacilitiesExistSpecifyEquipment
+            testingFacilitiesExistStateParametersTested = qasta10entity.testingFacilitiesExistStateParametersTested
+            testingFacilitiesSpecifyParametersTested = qasta10entity.testingFacilitiesSpecifyParametersTested
+            calibrationEquipmentLastCalibrated = qasta10entity.calibrationEquipmentLastCalibrated
+            handlingConsumerComplaints = qasta10entity.handlingConsumerComplaints
+            companyRepresentative = qasta10entity.companyRepresentative
+            applicationDate = qasta10entity.applicationDate
+        }
+
+        return sta10
+    }
+
+    fun mapDtoSTA10SectionBAndQaProductManufacturedEntity(sta10SectionBPDto: STA10ProductsManufactureDto): QaProductManufacturedEntity {
+        val sta10p = QaProductManufacturedEntity()
+        with(sta10p) {
+            productName = sta10SectionBPDto.productName
+            productBrand = sta10SectionBPDto.productBrand
+            productStandardNumber = sta10SectionBPDto.productStandardNumber
+            available = if (sta10SectionBPDto.available == true) 1 else 0
+            permitNo = sta10SectionBPDto.permitNo
+        }
+        return sta10p
+    }
+
+    fun mapDtoSTA10SectionBAndQaRawMaterialsEntity(sta10rawmaterialsdto: STA10RawMaterialsDto): QaRawMaterialEntity {
+        val sta10p = QaRawMaterialEntity()
+        with(sta10p) {
+            name = sta10rawmaterialsdto.name
+            origin = sta10rawmaterialsdto.origin
+            specifications = sta10rawmaterialsdto.specifications
+            qualityChecksTestingRecords = sta10rawmaterialsdto.qualityChecksTestingRecords
+        }
+        return sta10p
+    }
+
+    fun mapDtoSTA10SectionBAndMachineryAndPlantEntity(machineryAndPlantDto: STA10MachineryAndPlantDto): QaMachineryEntity {
+        val sta10p = QaMachineryEntity()
+        with(sta10p) {
+            machineName = machineryAndPlantDto.machineName
+            typeModel = machineryAndPlantDto.typeModel
+            countryOfOrigin = machineryAndPlantDto.countryOfOrigin
+        }
+        return sta10p
+    }
+
+    fun mapDtoSTA10SectionBAndManufacturingProcessEntity(manufacturingProcessDto: STA10ManufacturingProcessDto): QaManufacturingProcessEntity {
+        val sta10p = QaManufacturingProcessEntity()
+        with(sta10p) {
+            processFlowOfProduction = manufacturingProcessDto.processFlowOfProduction
+            operations = manufacturingProcessDto.operations
+            criticalProcessParametersMonitored = manufacturingProcessDto.criticalProcessParametersMonitored
+            frequency = manufacturingProcessDto.frequency
+            processMonitoringRecords = manufacturingProcessDto.processMonitoringRecords
+        }
+        return sta10p
+    }
+
+    fun mapBatchInvoiceDetails(
+        batchInvoiceEntity: QaBatchInvoiceEntity,
+        loggedInUser: UsersEntity,
+        map: ServiceMapsEntity
+    ): BatchInvoiceDto {
+        val allInvoicesInBatch =
+            findALlInvoicesPermitWithBatchID(batchInvoiceEntity.id ?: throw Exception("MISSING INVOICE BATCH ID"))
+        val companyProfile =
+            commonDaoServices.findCompanyProfile(loggedInUser.id ?: throw  Exception("MISSING USER ID FOUND"))
+
+        return BatchInvoiceDto(
+            populateInvoiceDetails(companyProfile, batchInvoiceEntity, map),
+            listPermitsInvoices(allInvoicesInBatch, null, map)
+        )
+    }
+
+    fun mapBatchInvoiceList(batchInvoiceList: List<QaBatchInvoiceEntity>): List<ConsolidatedInvoiceDto> {
+
+        return batchInvoiceList.map { p ->
+            ConsolidatedInvoiceDto(
+                p.invoiceNumber,
+                p.totalAmount,
+                p.paidDate,
+                p.paidStatus == 1,
+                p.submittedStatus == 1,
+                p.receiptNo,
+            )
+        }
+    }
+
+    fun mapAllStandardsTogether(standards: List<SampleStandardsEntity>): List<StandardsDto> {
+        return standards.map {
+            StandardsDto(
+                it.id,
+                it.standardTitle,
+                it.standardNumber,
+            )
+        }
+    }
 }
