@@ -541,6 +541,10 @@ class PermitApplicationsEntity:Serializable {
     @Basic
     var endProductionRequestStatusApproval: Long? = null
 
+    @Column(name = "COMPANY_ID")
+    @Basic
+    var companyId: Long? = null
+
     @Column(name = "END_PRODUCTION_REQUEST_REMARKS_APPROVAL")
     @Basic
     var endProductionRequestRemarksApproval: String? = null
@@ -761,6 +765,7 @@ class PermitApplicationsEntity:Serializable {
         val that = other as PermitApplicationsEntity
         return id == that.id && cocId == that.cocId
                 && factoryVisit == that.factoryVisit
+                && companyId == that.companyId
                 && userTaskId == that.userTaskId
                 && inspectionReportGenerated == that.inspectionReportGenerated
                 && permitRejectedCreatedVersion == that.permitRejectedCreatedVersion
@@ -770,6 +775,7 @@ class PermitApplicationsEntity:Serializable {
     override fun hashCode(): Int {
         return Objects.hash(
             id,
+            companyId,
             permitRejectedCreatedVersion,
             designation,
             userTaskId,

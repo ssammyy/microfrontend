@@ -151,11 +151,35 @@ data class STA10RawMaterialsDto(
     var qualityChecksTestingRecords: String? = null,
 )
 
+data class STA10PersonnelDto(
+    var id: Long? = null,
+    var personnelName: String? = null,
+    var qualificationInstitution: String? = null,
+    var dateOfEmployment: Date? = null,
+)
+
 data class STA10MachineryAndPlantDto(
     var machineName: String? = null,
     var typeModel: String? = null,
     var countryOfOrigin: String? = null,
 )
+//
+//data class PermitUploads(
+//    var permitID: Long?= null,
+//    var manufactureNonStatus: Int,
+//    var ordinaryStatus: Int?= null,
+//    var inspectionReportStatus: Int?= null,
+//    var sta10Status: Int?= null,
+//    var sscUploadStatus: Int?= null,
+//    var scfStatus: Int?= null,
+//    var ssfStatus: Int?= null,
+//    var cocStatus: Int?= null,
+//    var assessmentReportStatus: Int?= null,
+//    var labResultsStatus: Int?= null,
+//    var docFileName: String,
+//    var docFile: MultipartFile,
+//    var assessmentRecommendations: String?= null,
+//)
 
 data class STA10ManufacturingProcessDto(
     var processFlowOfProduction: String? = null,
@@ -246,7 +270,9 @@ data class PermitEntityDto(
     var sectionValue: String? = null,
     var permitAwardStatus: Boolean? = null,
     var permitExpiredStatus: Boolean? = null,
-    var taskID: Int? = null,
+    var taskID: Long? = null,
+    var companyId: Long? = null,
+    var permitType: Long? = null,
 )
 
 data class PermitDetailsDto(

@@ -23,6 +23,10 @@ interface IPermitApplicationsRepository : HazelcastRepository<PermitApplications
         permitType: Long
     ): List<PermitApplicationsEntity>?
 
+    fun findByCompanyIdAndOldPermitStatusIsNull(
+        companyID: Long
+    ): List<PermitApplicationsEntity>?
+
     fun findByUserIdAndPermitTypeAndOldPermitStatusIsNullAndPermitAwardStatus(
         userId: Long,
         permitType: Long,
@@ -246,6 +250,11 @@ interface IQaSampleCollectionRepository : HazelcastRepository<QaSampleCollection
     fun findByStatusAndId(status: Int, id: Long): QaSampleCollectionEntity?
     fun findByPermitId(permitId: Long): QaSampleCollectionEntity?
 //    fun findByPermitRefNumber(permitId: Long): QaSampleCollectionEntity?
+}
+
+@Repository
+interface IQaPersonnelInchargeEntityRepository : HazelcastRepository<QaPersonnelInchargeEntity, Long> {
+    fun findBySta10Id(sta10Id: Long): List<QaPersonnelInchargeEntity>?
 }
 
 @Repository
