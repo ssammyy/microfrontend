@@ -1,0 +1,513 @@
+<div class="main-content">
+<div class="container-fluid">
+<div class="row">
+<div class="col-md-12">
+<div class="card">
+<div class="card-header card-header-primary card-header-icon">
+<div class="card-icon">
+<i class="material-icons">assignment</i>
+</div>
+<h4 class="card-title">ST10 Form</h4>
+</div>
+<div class="card-body">
+<div class="toolbar">
+
+</div>
+<div class="material-datatables">
+<section class="wizard-section">
+<div class="row no-gutters">
+<div class="col-lg-12 col-md-12 col-sm-12">
+<div class="form-wizard">
+<form action="" method="post" role="form">
+<div class="form-wizard-header">
+<p>Fill all form field to go next step</p>
+<ul class="list-unstyled form-wizard-steps clearfix">
+<li class="active"><span>1</span></li>
+<li><span>2</span></li>
+<li><span>3</span></li>
+<li><span>4</span></li>
+</ul>
+</div>
+<fieldset class="wizard-fieldset show">
+<h3>Firm details</h3>
+<div class="row">
+    <div class="form-group col-6">
+        <label for="formGroupExampleInput">Name of Firm</label>
+        <input type="text" class="form-control" id="formGroupExampleInput" placeholder="Name of Firm">
+    </div>
+    <div class="form-group col-6">
+        <label for="formGroupExampleInput2">Status of Company or Business</label>
+        <input type="text" class="form-control" id="formGroupExampleInput2" placeholder="Status of Company or Business">
+    </div>
+
+</div>
+    <div class="form-group col-12">
+        <div id="repeater">
+            <div class="items" data-group="test">
+                <div class="item-content">
+                    <div class="row">
+                        <div id="repeatingOwners" class="col-xs-12 col-sm-12 col-lg-12">
+                            <div class="entry input-group form-group form-default ">
+                                <input type="text" name=" " class="form-control" id="focus_area" placeholder="Name of the Owner(s) / Proprietor(s) / Director(s)" >
+                                <span class="input-group-btn">
+<button type="button" class="btn btn-success btn-sm btn-add-owner">
+<span class="fa fa-plus" aria-hidden="true"></span>
+</button>
+</span>
+                                <br><br>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="form-group col-6">
+            <label for="formGroupExampleInput3">Postal Address</label>
+            <input type="text" class="form-control" id="formGroupExampleInput3" placeholder="Postal Address">
+        </div>
+        <div class="form-group col-6">
+            <label for="formGroupExampleInput4">Telephone</label>
+            <input type="text" class="form-control" id="formGroupExampleInput4" placeholder="Telephone">
+        </div>
+    </div>
+    <div class="row">
+        <div class="form-group col-6">
+            <label for="formGroupExampleInput5">Contact Person</label>
+            <input type="text" class="form-control" id="formGroupExampleInput5" placeholder="Contact Person">
+        </div>
+        <div class="form-group col-6">
+            <label for="formGroupExampleInput6">E-Mail Address</label>
+            <input type="text" class="form-control" id="formGroupExampleInput6" placeholder="E-Mail Address">
+        </div>
+    </div>
+
+    <div class="row">
+
+        <div class="form-group col-6">
+            <label for="formGroupExampleInput7">Postal Address</label>
+            <input type="text" class="form-control" id="formGroupExampleInput7" placeholder="Physical Location">
+        </div>
+
+        <div class=" col-6">
+            <label >Attach Sketch map</label>
+            <input type="file" class="form-control"  placeholder="Attach Sketch map">
+        </div>
+
+    </div>
+
+
+    <div class="row">
+        <div class="form-group col-6">
+            <label for="formGroupExampleInput8">Town</label>
+            <input type="text" class="form-control" id="formGroupExampleInput8" placeholder="Town">
+        </div>
+        <div class="form-group col-6">
+            <label for="formGroupExampleInput9">Total Number of Personnel</label>
+            <input type="text" class="form-control" id="formGroupExampleInput9" placeholder="Total Number of Personnel">
+        </div>
+
+    </div>
+    <div class="row">
+        <div class="form-group col-6">
+            <label for="formGroupExampleInput10">Male</label>
+            <input type="text" class="form-control" id="formGroupExampleInput10" placeholder="Male">
+        </div>
+        <div class="form-group col-6">
+            <label for="formGroupExampleInput11">Female</label>
+            <input type="text" class="form-control" id="formGroupExampleInput11" placeholder="Female">
+        </div>
+
+    </div>
+    <div class="row">
+        <div class="form-group col-6">
+            <label for="formGroupExampleInput12">No. of Permanent Employees</label>
+            <input type="text" class="form-control" id="formGroupExampleInput12" placeholder="No. of Permanent Employees">
+        </div>
+        <div class="form-group col-6">
+            <label for="formGroupExampleInput13">No of Casual Employee</label>
+            <input type="text" class="form-control" id="formGroupExampleInput13" placeholder="No of Casual Employee">
+        </div>
+
+    </div>
+
+    <h4><b>Competency of key personnel in charge of (Production and Quality Control) </b></h4>
+    <div id="repeaterCom">
+        <div class="items" data-group="test">
+            <div class="item-content">
+                <div class="row">
+                    <div id="repeatingCompetency" class="col-xs-12 col-sm-12 col-lg-12">
+                        <div class="entry input-group form-group form-default ">
+                            <div class="col-4">
+                                <input type="text" name=" " class="form-control"  placeholder="Name" >
+                            </div>
+                            <div class="col-3">
+                                <input type="text" name=" " class="form-control"  placeholder="Qualification Evidence" >
+                            </div>
+                            <div class="col-3">
+                                <input type="date" name=" " class="form-control"  placeholder="Date of Employment" >
+                            </div>
+                            <span class="input-group-btn">
+<button type="button" class="btn btn-success btn-sm btn-add-competency">
+<span class="fa fa-plus" aria-hidden="true"></span>
+</button>
+</span>
+                            <br><br>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+<div class="form-group clearfix">
+<a href="javascript:;" class="form-wizard-next-btn float-right">Next</a>
+</div>
+</fieldset>
+<fieldset class="wizard-fieldset">
+<h3>Production</h3>
+    <h4><b>Products being manufactured/ Brands </b></h4>
+    <div id="repeaterBrands">
+        <div class="items" data-group="test">
+            <div class="item-content">
+                <div class="row">
+                    <div id="repeatingBrands" class="col-xs-12 col-sm-12 col-lg-12">
+                        <div class="entry  ">
+                            <div class="row col-12 input-group form-group form-default">
+                            <div class="col-6">
+                                <input type="text" name=" " class="form-control"  placeholder="Product Name " >
+                            </div>
+                            <div class="col-6">
+                                <input type="text" name=" " class="form-control"  placeholder="Brand Name " >
+                            </div>
+                            </div>
+                            <div class="row col-12 input-group form-group form-default">
+                            <div class="col-3">
+                                <input type="text" name=" " class="form-control"  placeholder="Applicable Product
+Standard number" >
+                            </div>
+                            <div class="col-3">
+                                <input type="text" name=" " class="form-control"  placeholder="Available
+(YES/NO)" >
+                            </div>
+                                <div class="col-3">
+                                    <input type="text" name=" " class="form-control"  placeholder="KEBS Permit NO.
+(if applicable)." >
+                            </div>
+                                <span class="input-group-btn">
+<button type="button" class="btn btn-success btn-sm btn-add-brand">
+<span class="fa fa-plus" aria-hidden="true"></span>
+</button>
+</span>
+                            </div>
+
+                            <br><br>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div class="col-12 mr-auto">
+        <mat-form-field class="example-full-width">
+            <input matInput placeholder="What is the average Volume of production per Month" type="text">
+        </mat-form-field>
+    </div>
+    <h4><b>Raw material</b></h4>
+    <h5><b>   Specify the type of materials and origin (attach their specification where applicable): </b></h5>
+    <div id="repeaterMaterials">
+        <div class="items" data-group="test">
+            <div class="item-content">
+                <div class="row">
+                    <div id="repeatingMaterials" class="col-xs-12 col-sm-12 col-lg-12">
+                        <div class="entry  ">
+                            <div class="row col-12 input-group form-group form-default">
+                                <div class="col-6">
+                                    <input type="text" name=" " class="form-control"  placeholder="Raw material  " >
+                                </div>
+                                <div class="col-6">
+                                    <input type="text" name=" " class="form-control"  placeholder="origin " >
+                                </div>
+                            </div>
+                            <div class="row col-12 input-group form-group form-default">
+                                <div class="col-5">
+                                    <input type="text" name=" " class="form-control"  placeholder="Specifications" >
+                                </div>
+                                <div class="col-5">
+                                    <input type="text" name=" " class="form-control"  placeholder="Quality checks/testing
+records" >
+                                </div>
+                                <span class="input-group-btn">
+<button type="button" class="btn btn-success btn-sm btn-add-mat">
+<span class="fa fa-plus" aria-hidden="true"></span>
+</button>
+</span>
+                            </div>
+
+                            <br><br>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <h5><b>   Machinery and Plant </b></h5>
+    <div id="repeaterMachinery">
+        <div class="items" data-group="test">
+            <div class="item-content">
+                <div class="row">
+                    <div id="repeatingMachinery" class="col-xs-12 col-sm-12 col-lg-12">
+                        <div class="entry  ">
+                            <div class="row col-12 input-group form-group form-default">
+                                <div class="col-6">
+                                    <input type="text" name=" " class="form-control"  placeholder="Raw material  " >
+                                </div>
+                                <div class="col-6">
+                                    <input type="text" name=" " class="form-control"  placeholder="origin " >
+                                </div>
+                            </div>
+                            <div class="row col-12 input-group form-group form-default">
+                                <div class="col-5">
+                                    <input type="text" name=" " class="form-control"  placeholder="Specifications" >
+                                </div>
+                                <div class="col-5">
+                                    <input type="text" name=" " class="form-control"  placeholder="Quality checks/testing
+records" >
+                                </div>
+                                <span class="input-group-btn">
+<button type="button" class="btn btn-success btn-sm btn-add-mat">
+<span class="fa fa-plus" aria-hidden="true"></span>
+</button>
+</span>
+                            </div>
+
+                            <br><br>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <h5><b> Manufacturing process  </b></h5>
+    <div id="repeaterManufacturing">
+        <div class="items" data-group="test">
+            <div class="item-content">
+                <div class="row">
+                    <div id="repeatingManufacturing" class="col-xs-12 col-sm-12 col-lg-12">
+                        <div class="entry  ">
+                            <div class="row col-12 input-group form-group form-default">
+                                <div class="col-6">
+                                    <input type="text" name=" " class="form-control"  placeholder="Process Flow of
+Production
+  " >
+                                </div>
+                                <div class="col-6">
+                                    <input type="text" name=" " class="form-control"  placeholder="Operations  " >
+                                </div>
+                            </div>
+                            <div class="row col-12 input-group form-group form-default">
+                                <div class="col-5">
+                                    <input type="text" name=" " class="form-control"  placeholder="Critical Process
+parameters
+Monitored" >
+                                </div>
+                                <div class="col-5">
+                                    <input type="text" name=" " class="form-control"  placeholder="Frequency" >
+                                </div>
+                                <span class="input-group-btn">
+<button type="button" class="btn btn-success btn-sm btn-add-man">
+<span class="fa fa-plus" aria-hidden="true"></span>
+</button>
+</span>
+                            </div>
+
+                            <br><br>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+<div class="form-group clearfix">
+<a href="javascript:;" class="form-wizard-previous-btn float-left">Previous</a>
+<a href="javascript:;" class="form-wizard-next-btn float-right">Next</a>
+</div>
+</fieldset>
+<fieldset class="wizard-fieldset">
+<h5>Bank Information</h5>
+<div class="form-group">
+<input type="text" class="form-control wizard-required" id="bname">
+<label for="bname" class="wizard-form-text-label">Bank Name*</label>
+<div class="wizard-form-error"></div>
+</div>
+<div class="form-group">
+<input type="text" class="form-control wizard-required" id="brname">
+<label for="brname" class="wizard-form-text-label">Branch Name*</label>
+<div class="wizard-form-error"></div>
+</div>
+<div class="form-group">
+<input type="text" class="form-control wizard-required" id="acname">
+<label for="acname" class="wizard-form-text-label">Account Name*</label>
+<div class="wizard-form-error"></div>
+</div>
+<div class="form-group">
+<input type="text" class="form-control wizard-required" id="acon">
+<label for="acon" class="wizard-form-text-label">Account Number*</label>
+<div class="wizard-form-error"></div>
+</div>
+<div class="form-group clearfix">
+<a href="javascript:;" class="form-wizard-previous-btn float-left">Previous</a>
+<a href="javascript:;" class="form-wizard-next-btn float-right">Next</a>
+</div>
+</fieldset>
+<fieldset class="wizard-fieldset">
+<h5>Payment Information</h5>
+<div class="form-group">
+Payment Type
+<div class="wizard-form-radio">
+<input name="radio-name" id="mastercard" type="radio">
+<label for="mastercard">Master Card</label>
+</div>
+<div class="wizard-form-radio">
+<input name="radio-name" id="visacard" type="radio">
+<label for="visacard">Visa Card</label>
+</div>
+</div>
+<div class="form-group">
+<input type="text" class="form-control wizard-required" id="honame">
+<label for="honame" class="wizard-form-text-label">Holder Name*</label>
+<div class="wizard-form-error"></div>
+</div>
+<div class="row">
+<div class="col-lg-6 col-md-6 col-sm-6">
+<div class="form-group">
+<input type="text" class="form-control wizard-required" id="cardname">
+<label for="cardname" class="wizard-form-text-label">Card Number*</label>
+<div class="wizard-form-error"></div>
+</div>
+</div>
+<div class="col-lg-6 col-md-6 col-sm-6">
+<div class="form-group">
+<input type="text" class="form-control wizard-required" id="cvc">
+<label for="cvc" class="wizard-form-text-label">CVC*</label>
+<div class="wizard-form-error"></div>
+</div>
+</div>
+</div>
+<div class="row">
+<div class="col-12">Expiry Date</div>
+<div class="col-lg-4 col-md-4 col-sm-4">
+<div class="form-group">
+<select class="form-control">
+<option value="">Date</option>
+<option value="">1</option>
+<option value="">2</option>
+<option value="">3</option>
+<option value="">4</option>
+<option value="">5</option>
+<option value="">6</option>
+<option value="">7</option>
+<option value="">8</option>
+<option value="">9</option>
+<option value="">10</option>
+<option value="">11</option>
+<option value="">12</option>
+<option value="">13</option>
+<option value="">14</option>
+<option value="">15</option>
+<option value="">16</option>
+<option value="">17</option>
+<option value="">18</option>
+<option value="">19</option>
+<option value="">20</option>
+<option value="">21</option>
+<option value="">22</option>
+<option value="">23</option>
+<option value="">24</option>
+<option value="">25</option>
+<option value="">26</option>
+<option value="">27</option>
+<option value="">28</option>
+<option value="">29</option>
+<option value="">30</option>
+<option value="">31</option>
+</select>
+</div>
+</div>
+<div class="col-lg-4 col-md-4 col-sm-4">
+<div class="form-group">
+<select class="form-control">
+<option value="">Month</option>
+<option value="">jan</option>
+<option value="">Feb</option>
+<option value="">March</option>
+<option value="">April</option>
+<option value="">May</option>
+<option value="">June</option>
+<option value="">Jully</option>
+<option value="">August</option>
+<option value="">Sept</option>
+<option value="">Oct</option>
+<option value="">Nov</option>
+<option value="">Dec</option>
+</select>
+</div>
+</div>
+<div class="col-lg-4 col-md-4 col-sm-4">
+<div class="form-group">
+<select class="form-control">
+<option value="">Years</option>
+<option value="">2019</option>
+<option value="">2020</option>
+<option value="">2021</option>
+<option value="">2022</option>
+<option value="">2023</option>
+<option value="">2024</option>
+<option value="">2025</option>
+<option value="">2026</option>
+<option value="">2027</option>
+<option value="">2028</option>
+<option value="">2029</option>
+<option value="">2030</option>
+<option value="">2031</option>
+<option value="">2032</option>
+<option value="">2033</option>
+<option value="">2034</option>
+<option value="">2035</option>
+<option value="">2036</option>
+<option value="">2037</option>
+<option value="">2038</option>
+<option value="">2039</option>
+<option value="">2040</option>
+</select>
+</div>
+</div>
+</div>
+<div class="form-group clearfix">
+<a href="javascript:;" class="form-wizard-previous-btn float-left">Previous</a>
+<a href="javascript:;" class="form-wizard-submit float-right">Submit</a>
+</div>
+</fieldset>
+</form>
+</div>
+</div>
+</div>
+</section>
+</div>
+</div>
+<!-- end content-->
+</div>
+<!--  end card  -->
+</div>
+<!-- end col-md-12 -->
+</div>
+<!-- end row -->
+</div>
+</div>
