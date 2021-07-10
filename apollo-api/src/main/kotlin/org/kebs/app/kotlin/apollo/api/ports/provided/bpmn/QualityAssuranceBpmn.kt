@@ -764,10 +764,10 @@ class QualityAssuranceBpmn(
         return false
     }
 
-    fun qaDmARManufacturerCorrectionComplete(permitId: Long): Boolean {
+    fun qaDmARManufacturerCorrectionComplete(permitId: Long, hofAssigneeId: Long): Boolean {
         KotlinLogging.logger { }.info("PermitId : $permitId :  manufacturer correction complete")
         qaCompleteTask(permitId, "qaDmarManufacturerCorrection", qaDmApplicationReviewProcessDefinitionKey)?.let {
-            return true //process ends here
+            qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "qaDmarCheckApplication", hofAssigneeId, false)
         }
         return false
     }

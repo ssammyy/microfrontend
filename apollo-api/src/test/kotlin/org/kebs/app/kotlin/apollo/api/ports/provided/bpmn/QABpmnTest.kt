@@ -1215,7 +1215,7 @@ class QABpmnTest{
 
 
     @Test
-    //@Ignore
+    @Ignore
     fun testDmAppPaymentProcessLocal() {
         val permitId: Long = 285
         //Start the process
@@ -1312,6 +1312,65 @@ class QABpmnTest{
                 }
             }
         } ?: return
+    }
+
+    @Test
+    //@Ignore
+    fun testQaDmAppReviewApplicationIncomplete() {
+        val permitId: Long = 303
+
+        //Start the process
+        qualityAssuranceBpmn.startQADMApplicationReviewProcess(permitId, hofAssigneeId)?.let {
+            qualityAssuranceBpmn.fetchTaskByPermitId(permitId, qaDmApplicationReviewProcessDefinitionKey)
+                ?.let { taskDetails ->
+                    println("Task details after starting the process")
+                    for (taskDetail in taskDetails) {
+                        taskDetail.task.let { task ->
+                            println("${taskDetail.permitId} -- ${task.id} -- ${task.name} -- ${task.assignee} -- ${task.processInstanceId} -- ${task.taskDefinitionKey} ")
+                        }
+                    }
+                }
+        } ?: return
+
+        //Check if application complete -- false
+        qualityAssuranceBpmn.qaDmARCheckApplicationComplete(permitId, hofAssigneeId, false).let {
+            qualityAssuranceBpmn.fetchTaskByPermitId(permitId, qaDmApplicationReviewProcessDefinitionKey)
+                ?.let { taskDetails ->
+                    println("Task details after checking if the application is complete -- false")
+                    for (taskDetail in taskDetails) {
+                        taskDetail.task.let { task ->
+                            println("${taskDetail.permitId} -- ${task.id} -- ${task.name} -- ${task.assignee} -- ${task.processInstanceId} -- ${task.taskDefinitionKey} ")
+                        }
+                    }
+                }
+        } ?: return
+
+        //Manufacturer corrects the application
+        qualityAssuranceBpmn.qaDmARManufacturerCorrectionComplete(permitId, hofAssigneeId).let {
+            qualityAssuranceBpmn.fetchTaskByPermitId(permitId, qaDmApplicationReviewProcessDefinitionKey)
+                ?.let { taskDetails ->
+                    println("Task details after manugfacturer correct application is complete")
+                    for (taskDetail in taskDetails) {
+                        taskDetail.task.let { task ->
+                            println("${taskDetail.permitId} -- ${task.id} -- ${task.name} -- ${task.assignee} -- ${task.processInstanceId} -- ${task.taskDefinitionKey} ")
+                        }
+                    }
+                }
+        } ?: return
+
+        //Check if application complete -- true
+        qualityAssuranceBpmn.qaDmARCheckApplicationComplete(permitId, hofAssigneeId, true).let {
+            qualityAssuranceBpmn.fetchTaskByPermitId(permitId, qaDmApplicationReviewProcessDefinitionKey)
+                ?.let { taskDetails ->
+                    println("Task details after checking if the application is complete -- true")
+                    for (taskDetail in taskDetails) {
+                        taskDetail.task.let { task ->
+                            println("${taskDetail.permitId} -- ${task.id} -- ${task.name} -- ${task.assignee} -- ${task.processInstanceId} -- ${task.taskDefinitionKey} ")
+                        }
+                    }
+                }
+        } ?: return
+
     }
 
     @Test

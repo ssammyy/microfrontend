@@ -18,8 +18,6 @@
                 <activiti:taskListener event="assignment" expression="${bpmnNotifications.sendEmail(task)}"></activiti:taskListener>
             </extensionElements>
         </userTask>
-        <endEvent id="qaDmarEndIncompleteApplication" name="End Incomplete Applucation"></endEvent>
-        <sequenceFlow id="flow7" sourceRef="qaDmarManufacturerCorrection" targetRef="qaDmarEndIncompleteApplication"></sequenceFlow>
         <userTask id="qaDmarFactoryInspection" name="Factory Inspection">
             <extensionElements>
                 <activiti:taskListener event="assignment" expression="${bpmnNotifications.sendEmail(task)}"></activiti:taskListener>
@@ -114,6 +112,7 @@
         <serviceTask id="servicetask1" name="Generate BS Number" activiti:expression="${bpmnCommonFunctions.generateBSNumber()}"></serviceTask>
         <serviceTask id="servicetask2" name="Submit application for assessment" activiti:expression="${bpmnCommonFunctions.submitQaDmAppReviewForAssessment(permitId)}"></serviceTask>
         <serviceTask id="servicetask3" name="Notiify Manufacturer of Test Results" activiti:expression="${bpmnNotifications.sendEmailPlain(email)}"></serviceTask>
+        <sequenceFlow id="flow43" sourceRef="qaDmarManufacturerCorrection" targetRef="qaDmarCheckApplication"></sequenceFlow>
     </process>
     <bpmndi:BPMNDiagram id="BPMNDiagram_qaDmAppReviewProcess">
         <bpmndi:BPMNPlane bpmnElement="qaDmAppReviewProcess" id="BPMNPlane_qaDmAppReviewProcess">
@@ -130,10 +129,7 @@
                 <omgdc:Bounds height="70.0" width="113.0" x="544.0" y="164.0"></omgdc:Bounds>
             </bpmndi:BPMNShape>
             <bpmndi:BPMNShape bpmnElement="qaDmarManufacturerCorrection" id="BPMNShape_qaDmarManufacturerCorrection">
-                <omgdc:Bounds height="65.0" width="125.0" x="764.0" y="67.0"></omgdc:Bounds>
-            </bpmndi:BPMNShape>
-            <bpmndi:BPMNShape bpmnElement="qaDmarEndIncompleteApplication" id="BPMNShape_qaDmarEndIncompleteApplication">
-                <omgdc:Bounds height="35.0" width="35.0" x="1037.0" y="82.0"></omgdc:Bounds>
+                <omgdc:Bounds height="65.0" width="125.0" x="670.0" y="0.0"></omgdc:Bounds>
             </bpmndi:BPMNShape>
             <bpmndi:BPMNShape bpmnElement="qaDmarFactoryInspection" id="BPMNShape_qaDmarFactoryInspection">
                 <omgdc:Bounds height="71.0" width="106.0" x="774.0" y="163.0"></omgdc:Bounds>
@@ -211,10 +207,6 @@
             <bpmndi:BPMNEdge bpmnElement="flow5" id="BPMNEdge_flow5">
                 <omgdi:waypoint x="600.0" y="119.0"></omgdi:waypoint>
                 <omgdi:waypoint x="600.0" y="164.0"></omgdi:waypoint>
-            </bpmndi:BPMNEdge>
-            <bpmndi:BPMNEdge bpmnElement="flow7" id="BPMNEdge_flow7">
-                <omgdi:waypoint x="889.0" y="99.0"></omgdi:waypoint>
-                <omgdi:waypoint x="1037.0" y="99.0"></omgdi:waypoint>
             </bpmndi:BPMNEdge>
             <bpmndi:BPMNEdge bpmnElement="flow10" id="BPMNEdge_flow10">
                 <omgdi:waypoint x="880.0" y="198.0"></omgdi:waypoint>
@@ -323,8 +315,8 @@
                 <omgdi:waypoint x="774.0" y="198.0"></omgdi:waypoint>
             </bpmndi:BPMNEdge>
             <bpmndi:BPMNEdge bpmnElement="flow40" id="BPMNEdge_flow40">
-                <omgdi:waypoint x="620.0" y="99.0"></omgdi:waypoint>
-                <omgdi:waypoint x="764.0" y="99.0"></omgdi:waypoint>
+                <omgdi:waypoint x="600.0" y="79.0"></omgdi:waypoint>
+                <omgdi:waypoint x="732.0" y="65.0"></omgdi:waypoint>
             </bpmndi:BPMNEdge>
             <bpmndi:BPMNEdge bpmnElement="flow41" id="BPMNEdge_flow41">
                 <omgdi:waypoint x="1116.0" y="198.0"></omgdi:waypoint>
@@ -334,6 +326,10 @@
                 <omgdi:waypoint x="385.0" y="364.0"></omgdi:waypoint>
                 <omgdi:waypoint x="277.0" y="364.0"></omgdi:waypoint>
                 <omgdi:waypoint x="277.0" y="442.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow43" id="BPMNEdge_flow43">
+                <omgdi:waypoint x="670.0" y="32.0"></omgdi:waypoint>
+                <omgdi:waypoint x="447.0" y="62.0"></omgdi:waypoint>
             </bpmndi:BPMNEdge>
         </bpmndi:BPMNPlane>
     </bpmndi:BPMNDiagram>
