@@ -255,9 +255,9 @@ class AngularRoutes {
             "/permit".nest {
                 GET("/list", handler::permitListMigration)
                 "/apply".nest {
-                    POST("/STA1", handler::permitApplySTA1Migration)
+                    POST("/sta1", handler::permitApplySTA1Migration)
                     POST("/submit-application", handler::permitSubmitApplicationMigration)
-                    POST("/STA3", handler::permitApplySTA3Migration)
+                    POST("/sta3", handler::permitApplySTA3Migration)
                     "/sta10".nest {
                         POST("/firm_details", handler::permitApplySTA10FirmDetailsMigration)
                         POST(
@@ -276,7 +276,7 @@ class AngularRoutes {
                 }
                 "/view".nest {
                     GET("/details", handler::permitDetailsMigration)
-                    GET("/STA3", handler::permitViewSTA3Migration)
+                    GET("/sta3", handler::permitViewSTA3Migration)
                     GET("/invoice-permit", handler::permitViewInvoiceDetailsMigration)
                     "/sta10".nest {
                         GET("/firm-details", handler::permitViewSTA10FirmDetailsMigration)

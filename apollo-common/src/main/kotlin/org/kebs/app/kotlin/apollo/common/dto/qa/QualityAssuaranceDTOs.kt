@@ -245,7 +245,8 @@ data class PermitEntityDto(
     var divisionValue: String? = null,
     var sectionValue: String? = null,
     var permitAwardStatus: Boolean? = null,
-//    var taskID: Boolean? = null,
+    var permitExpiredStatus: Boolean? = null,
+    var taskID: Int? = null,
 )
 
 data class PermitDetailsDto(
