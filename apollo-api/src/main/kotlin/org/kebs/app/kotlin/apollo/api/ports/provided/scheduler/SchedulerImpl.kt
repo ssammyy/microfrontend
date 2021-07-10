@@ -34,7 +34,7 @@ class SchedulerImpl(
     private val bpmnCommonFunctions: BpmnCommonFunctions,
     private val userRepo: IUserRepository,
     private val applicationMapProperties: ApplicationMapProperties,
-    private val qualityAssuranceBpmn: QualityAssuranceBpmn,
+//    private val qualityAssuranceBpmn: QualityAssuranceBpmn,
     private val sampleSubmissionRepo: IQaSampleSubmissionRepository,
     private val limsServices: LimsServices,
 //    private val qaDaoServices: QADaoServices,
@@ -45,6 +45,10 @@ class SchedulerImpl(
     @Lazy
     @Autowired
     lateinit var diDaoServices: DestinationInspectionDaoServices
+
+    @Lazy
+    @Autowired
+    lateinit var qualityAssuranceBpmn: QualityAssuranceBpmn
 
     @Autowired
     lateinit var qaDaoServices: QADaoServices
