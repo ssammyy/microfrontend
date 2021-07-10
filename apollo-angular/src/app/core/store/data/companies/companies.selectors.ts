@@ -20,9 +20,18 @@ export const selectCompanyIdData = createSelector(
   companyIdFeatureSelector,
   (state: CompanyIdState) => state.companyId
 );
+export const selectCompanyData = createSelector(
+  companyIdFeatureSelector,
+  (state: CompanyIdState) => state.company
+);
+
 export const selectBranchIdData = createSelector(
   branchIdFeatureSelector,
   (state: BranchIdState) => state.branchId
+);
+export const selectBranchData = createSelector(
+  branchIdFeatureSelector,
+  (state: BranchIdState) => state.branch
 );
 export const selectDirectorIdData = createSelector(
   directorIdFeatureSelector,

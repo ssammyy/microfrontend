@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
+import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {
   BrsLookUpRequest,
   BusinessLines,
@@ -28,9 +28,9 @@ import {
   Town,
   TownService,
   User
-} from "../../core/store";
-import {select, Store} from "@ngrx/store";
-import {Observable, throwError} from "rxjs";
+} from '../../core/store';
+import {select, Store} from '@ngrx/store';
+import {Observable, throwError} from 'rxjs';
 
 @Component({
   selector: 'app-sign-up',
@@ -64,7 +64,7 @@ export class SignUpComponent implements OnInit {
   selectedCounty: number = 0;
   selectedTown: number = 0;
   validationCellphone = '';
-  otpSent= false;
+  otpSent = false;
   phoneValidated = false;
   // @ts-ignore
   company: Company;
@@ -89,7 +89,7 @@ export class SignUpComponent implements OnInit {
     this.businessLines$ = linesService.entities$;
     this.region$ = regionService.entities$;
     this.county$ = countyService.entities$;
-    this.town$ = townService.entities$
+    this.town$ = townService.entities$;
 
     regionService.getAll().subscribe();
     countyService.getAll().subscribe();
@@ -147,11 +147,11 @@ export class SignUpComponent implements OnInit {
 
   }
 
-  get formStepZeroForm(): any {return this.stepZeroForm.controls;}
-  get formStepOneForm(): any {return this.stepOneForm.controls;}
-  get formStepTwoForm(): any {return this.stepTwoForm.controls;}
-  get formStepThreeForm(): any {return this.stepThreeForm.controls;}
-  get formStepFourForm(): any {return this.stepFourForm.controls;}
+  get formStepZeroForm(): any {return this.stepZeroForm.controls; }
+  get formStepOneForm(): any {return this.stepOneForm.controls; }
+  get formStepTwoForm(): any {return this.stepTwoForm.controls; }
+  get formStepThreeForm(): any {return this.stepThreeForm.controls; }
+  get formStepFourForm(): any {return this.stepFourForm.controls; }
 
   updateSelectedRegion() {
     this.selectedRegion = this.stepThreeForm?.get('region')?.value;
@@ -159,14 +159,14 @@ export class SignUpComponent implements OnInit {
 
   updateSelectedCounty() {
     this.selectedCounty = this.stepThreeForm?.get('county')?.value;
-    console.log(`county set to ${this.selectedCounty}`)
+    console.log(`county set to ${this.selectedCounty}`);
     this.store$.dispatch(loadCountyId({payload: this.selectedCounty}));
     this.store$.select(selectCountyIdData).subscribe(
       (d) => {
         if (d) {
           console.log(`Select county inside is ${d}`);
           return this.townService.getAll();
-        } else return throwError('Invalid request, Company id is required');
+        } else { return throwError('Invalid request, Company id is required'); }
       }
     );
 
@@ -174,7 +174,7 @@ export class SignUpComponent implements OnInit {
 
   updateSelectedTown() {
     this.selectedTown = this.stepThreeForm?.get('town')?.value;
-    console.log(`town set to ${this.selectedTown}`)
+    console.log(`town set to ${this.selectedTown}`);
   }
 
   updateSelectedBusinessLine() {
@@ -192,12 +192,12 @@ export class SignUpComponent implements OnInit {
       return;
     }
     if (this.submitted) {
-      this.step = 0
+      this.step = 0;
       this.brsLookupRequest = this.stepZeroForm.value;
       // console.log(`Sending ${JSON.stringify(this.brsLookupRequest)}`)
       this.store$.dispatch(loadBrsValidations({payload: this.brsLookupRequest}));
       this.store$.pipe(select(selectBrsValidationStep)).subscribe((step: number) => {
-        console.log(`step inside is ${step}`)
+        console.log(`step inside is ${step}`);
         return this.step = step;
       });
       this.store$.pipe(
@@ -209,7 +209,7 @@ export class SignUpComponent implements OnInit {
         this.companySoFar = record;
       });
 
-      console.log(`step after is ${this.step}`)
+      console.log(`step after is ${this.step}`);
     } else {
       this.store$.dispatch(loadResponsesFailure({
         error: {
@@ -227,14 +227,14 @@ export class SignUpComponent implements OnInit {
     if (valid) {
       if (this.phoneValidated) {
         this.company = {...this.company, ...this.companySoFar};
-        this.user = {...this.user, ...this.stepFourForm?.value}
+        this.user = {...this.user, ...this.stepFourForm?.value};
 
         this.store$.dispatch(loadRegistrations({
           payload: {company: this.company, user: this.user}
         }));
 
         this.store$.pipe(select(selectRegistrationStateSucceeded)).subscribe((d) => {
-          console.log(`status inside is ${d}`)
+          console.log(`status inside is ${d}`);
           if (d) {
             return this.store$.dispatch(Go({payload: '', link: 'login', redirectUrl: ''}));
           }
@@ -279,8 +279,8 @@ export class SignUpComponent implements OnInit {
         return this.phoneValidated = d;
       } else {
         this.otpSent = false;
-        this.stepFourForm?.get('otp')?.reset()
-        return throwError("Could not validate token");
+        this.stepFourForm?.get('otp')?.reset();
+        return throwError('Could not validate token');
 
       }
     });
@@ -289,9 +289,9 @@ export class SignUpComponent implements OnInit {
 
   onClickSendOtp() {
     this.otpSent = true;
-    this.validationCellphone = this.stepFourForm?.get('cellphone')?.value
+    this.validationCellphone = this.stepFourForm?.get('cellphone')?.value;
 
-    this.stepFourForm?.get('otp')?.reset()
+    this.stepFourForm?.get('otp')?.reset();
 
     if (
       this.validationCellphone === '' ||
@@ -313,11 +313,11 @@ export class SignUpComponent implements OnInit {
       }));
 
       this.store$.pipe(select(selectTokenSentStateOtpSent)).subscribe((d) => {
-        console.log(`value of inside is ${d}`)
+        console.log(`value of inside is ${d}`);
         if (d) {
           return this.otpSent = d;
         } else {
-          return throwError("Unable to send token");
+          return throwError('Unable to send token');
         }
       });
     }
@@ -327,9 +327,9 @@ export class SignUpComponent implements OnInit {
 
   onClickPrevious() {
     if (this.step > 1) {
-      this.step = this.step - 1
+      this.step = this.step - 1;
     } else {
-      this.step = 1
+      this.step = 1;
     }
   }
 

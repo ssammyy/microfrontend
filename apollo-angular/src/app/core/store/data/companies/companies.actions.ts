@@ -1,13 +1,15 @@
 import {createAction, props} from '@ngrx/store';
-import {ApiResponse} from "../../../domain/response.model";
+import {ApiResponse} from '../../../domain/response.model';
+import {Branches} from './branch';
+import {Company} from './company';
 
 export const loadCompanyId = createAction(
   '[Companies] loadCompanyId',
-  props<{ payload: number }>()
+  props<{ payload: number, company: Company|undefined }>()
 );
 export const loadBranchId = createAction(
   '[Companies] loadBranchId',
-  props<{ payload: number }>()
+  props<{ payload: number, branch: Branches }>()
 );
 
 export const loadDirectorId = createAction(
@@ -22,7 +24,7 @@ export const loadUserId = createAction(
 
 export const loadCompanyIdSuccess = createAction(
   '[Request] Load loadCompanyId Success',
-  props<{ companyId: number }>()
+  props<{ companyId: number, company: Company|undefined }>()
 );
 export const loadUserIdSuccess = createAction(
   '[Request] Load loadUserId Success',
@@ -32,7 +34,7 @@ export const loadUserIdSuccess = createAction(
 
 export const loadBranchIdSuccess = createAction(
   '[Request] Load loadBranchId Success',
-  props<{ branchId: number }>()
+  props<{ branchId: number, branch: Branches }>()
 );
 
 

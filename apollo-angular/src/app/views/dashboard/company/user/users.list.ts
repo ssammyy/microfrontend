@@ -1,16 +1,17 @@
 import {Component, OnInit} from '@angular/core';
-import {Observable, Subject} from "rxjs";
+import {Observable, Subject} from 'rxjs';
 import {
-  loadResponsesFailure,
+  Branches,
+  loadResponsesFailure, selectBranchData,
   selectBranchIdData,
   selectCompanyIdData,
   User,
   UsersService
-} from "../../../../core/store";
-import {FormControl, FormGroup, Validators} from "@angular/forms";
-import {Store} from "@ngrx/store";
-import {Location} from "@angular/common";
-import {faArrowLeft} from "@fortawesome/free-solid-svg-icons";
+} from '../../../../core/store';
+import {FormControl, FormGroup, Validators} from '@angular/forms';
+import {Store} from '@ngrx/store';
+import {Location} from '@angular/common';
+import {faArrowLeft} from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-users',
@@ -31,6 +32,7 @@ export class UsersList implements OnInit {
 
   selectedCompany: number = -1;
   selectedBranch: number = -1;
+  selectedBranches$: Branches | undefined;
 
   dtTrigger: Subject<any> = new Subject<any>();
   dtOptions: DataTables.Settings = {
@@ -47,6 +49,7 @@ export class UsersList implements OnInit {
   ) {
     this.users$ = service.entities$;
     service.getAll().subscribe();
+
   }
 
   ngOnInit(): void {
@@ -56,17 +59,20 @@ export class UsersList implements OnInit {
       userName: new FormControl('', [Validators.required]),
       email: new FormControl('', [Validators.required]),
       cellphone: new FormControl('', [Validators.required]),
-      otp: new FormControl('',),
+      otp: new FormControl('', ),
       credentials: new FormControl('', [Validators.required]),
       confirmCredentials: new FormControl('', [Validators.required]),
     });
 
     this.store$.select(selectCompanyIdData).subscribe((d) => {
       return this.selectedCompany = d;
-    })
+    });
     this.store$.select(selectBranchIdData).subscribe((d) => {
       return this.selectedBranch = d;
-    })
+    });
+    this.store$.select(selectBranchData).subscribe((d) => {
+      return this.selectedBranches$ = d;
+    });
   }
 
   editRecord(record: User) {
@@ -104,6 +110,12 @@ export class UsersList implements OnInit {
 
   public goBack(): void {
     this.location.back();
+  }
+
+  onClickReset() {
+    this.stepOneForm.markAsPristine();
+    this.stepOneForm.reset();
+    this.user = new User();
   }
 
 }

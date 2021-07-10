@@ -1,8 +1,8 @@
 import {Injectable} from '@angular/core';
 import {Actions, createEffect, ofType} from '@ngrx/effects';
-import {Observable} from "rxjs";
-import {Action} from "@ngrx/store";
-import {switchMap} from "rxjs/operators";
+import {Observable} from 'rxjs';
+import {Action} from '@ngrx/store';
+import {switchMap} from 'rxjs/operators';
 import {
   loadBranchId,
   loadBranchIdSuccess,
@@ -12,7 +12,7 @@ import {
   loadDirectorIdSuccess,
   loadUserId,
   loadUserIdSuccess
-} from "./companies.actions";
+} from './companies.actions';
 
 
 @Injectable()
@@ -25,7 +25,7 @@ export class CompaniesEffects {
         ofType(loadCompanyId),
         switchMap((action) => {
             return [
-              loadCompanyIdSuccess({companyId: action.payload})
+              loadCompanyIdSuccess({companyId: action.payload, company: action.company})
             ];
           }
         )
@@ -38,7 +38,7 @@ export class CompaniesEffects {
         ofType(loadBranchId),
         switchMap((action) => {
             return [
-              loadBranchIdSuccess({branchId: action.payload})
+              loadBranchIdSuccess({branchId: action.payload, branch: action.branch})
             ];
           }
         )

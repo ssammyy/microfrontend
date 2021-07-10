@@ -1,9 +1,8 @@
 import {Component, OnInit} from '@angular/core';
-import {Observable, Subject, throwError} from "rxjs";
+import {Observable, Subject, throwError} from 'rxjs';
 import {
   Branches,
-  BranchesService,
-  County,
+  BranchesService, Company, County,
   CountyService,
   Go,
   loadBranchId,
@@ -11,16 +10,17 @@ import {
   loadCountyId,
   loadResponsesFailure,
   Region,
-  RegionService,
+  RegionService, selectCompanyData,
   selectCompanyIdData,
   selectCountyIdData,
   Town,
   TownService
-} from "../../../../core/store";
-import {Store} from "@ngrx/store";
-import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
-import {Location} from "@angular/common";
-import {faArrowLeft} from "@fortawesome/free-solid-svg-icons";
+} from '../../../../core/store';
+import {Store} from '@ngrx/store';
+import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
+import {Location} from '@angular/common';
+import {faArrowLeft} from '@fortawesome/free-solid-svg-icons';
+import {faPlus} from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-branches',
@@ -31,9 +31,10 @@ export class BranchesList implements OnInit {
   branches$: Observable<Branches[]>;
   filterName = '';
   p = 1;
-  step = 1;
+  step = 0;
 
   backIcon = faArrowLeft;
+  addIcon = faPlus;
 
   stepTwoForm!: FormGroup;
   stepThreeForm!: FormGroup;
@@ -41,6 +42,7 @@ export class BranchesList implements OnInit {
   branchSoFar: Partial<Branches> | undefined;
   // @ts-ignore
   branch: Branches;
+  company$: Company| undefined;
   region$: Observable<Region[]>;
   county$: Observable<County[]>;
   town$: Observable<Town[]>;
@@ -71,7 +73,7 @@ export class BranchesList implements OnInit {
     service.getAll().subscribe();
     this.region$ = regionService.entities$;
     this.county$ = countyService.entities$;
-    this.town$ = townService.entities$
+    this.town$ = townService.entities$;
     regionService.getAll().subscribe();
     countyService.getAll().subscribe();
     // townService.getAll().subscribe();
@@ -80,7 +82,7 @@ export class BranchesList implements OnInit {
 
   updateSelectedRegion() {
     this.selectedRegion = this.stepTwoForm?.get('region')?.value;
-    console.log(`region set to ${this.selectedRegion}`)
+    console.log(`region set to ${this.selectedRegion}`);
   }
 
   updateSelectedCounty() {
@@ -93,7 +95,9 @@ export class BranchesList implements OnInit {
         if (d) {
           // console.log(`Select county inside is ${d}`);
           return this.townService.getAll();
-        } else return throwError('Invalid request, Company id is required');
+        } else {
+          return throwError('Invalid request, Company id is required');
+        }
       }
     );
   }
@@ -130,7 +134,11 @@ export class BranchesList implements OnInit {
 
     this.store$.select(selectCompanyIdData).subscribe((d) => {
       return this.selectedCompany = d;
-    })
+    });
+
+    this.store$.select(selectCompanyData).subscribe((d) => {
+      return this.company$ = d;
+    });
 
   }
 
@@ -138,6 +146,7 @@ export class BranchesList implements OnInit {
     this.stepTwoForm.patchValue(record);
     this.stepThreeForm.patchValue(record);
     this.branchSoFar = record;
+    this.step = 1;
 
   }
 
@@ -152,9 +161,9 @@ export class BranchesList implements OnInit {
 
   onClickPrevious() {
     if (this.step > 1) {
-      this.step = this.step - 1
+      this.step = this.step - 1;
     } else {
-      this.step = 1
+      this.step = 1;
     }
   }
 
@@ -188,6 +197,7 @@ export class BranchesList implements OnInit {
       this.stepTwoForm.reset();
       this.stepThreeForm.markAsPristine();
       this.stepThreeForm.reset();
+      this.step = 0;
 
     } else {
       this.store$.dispatch(loadResponsesFailure({
@@ -207,13 +217,18 @@ export class BranchesList implements OnInit {
   }
 
   onClickUsers(record: Branches) {
-    this.store$.dispatch(loadCompanyId({payload: record.companyProfileId}));
-    this.store$.dispatch(loadBranchId({payload: record.id}));
+    this.store$.dispatch(loadCompanyId({payload: record.companyProfileId, company: this?.company$}));
+
+    this.store$.dispatch(loadBranchId({payload: record.id, branch: record}));
     this.store$.dispatch(Go({payload: null, redirectUrl: '', link: 'dashboard/branches/users'}));
 
   }
 
   public goBack(): void {
     this.location.back();
+  }
+
+  onClickAddBranch() {
+    this.step = 1;
   }
 }

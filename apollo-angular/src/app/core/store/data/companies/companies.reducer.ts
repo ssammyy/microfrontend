@@ -5,7 +5,9 @@ import {
   loadCompanyIdSuccess,
   loadDirectorIdSuccess,
   loadUserIdSuccess
-} from "./companies.actions";
+} from './companies.actions';
+import {Branches} from './branch';
+import {Company} from './company';
 
 
 export const companyIdFeatureKey = 'companyId';
@@ -14,29 +16,31 @@ export const branchIdFeatureKey = 'branchId';
 export const directorIdFeatureKey = 'directorId';
 
 export interface CompanyIdState {
-  companyId: number
+  companyId: number;
+  company?: Company;
 }
 
 export interface UserIdState {
-  userId: number
+  userId: number;
 }
 
 export interface BranchIdState {
-  branchId: number
+  branchId: number;
+  branch?: Branches;
 }
 
 export interface DirectorIdState {
-  directorId: number
+  directorId: number;
 }
 
 export const initialCompanyIdState: CompanyIdState = {
-  companyId: -1
+  companyId: -1, company: undefined
 };
 export const initialUserIdState: UserIdState = {
   userId: -1
 };
 export const initialBranchIdState: BranchIdState = {
-  branchId: -1
+  branchId: -1, branch: undefined
 };
 export const initialDirectorIdState: DirectorIdState = {
   directorId: -1
@@ -45,10 +49,11 @@ export const initialDirectorIdState: DirectorIdState = {
 
 export const internalCompanyIdReducer = createReducer(
   initialCompanyIdState,
-  on(loadCompanyIdSuccess, (state, {companyId}) => {
+  on(loadCompanyIdSuccess, (state, {companyId, company}) => {
     return {
       ...state,
-      companyId
+      companyId,
+      company
     };
   }),
   on(loadCompanyIdFailure, (state, {error}) => {
@@ -78,10 +83,11 @@ const internalUserIdReducer = createReducer(
 
 export const internalBranchIdReducer = createReducer(
   initialBranchIdState,
-  on(loadBranchIdSuccess, (state, {branchId}) => {
+  on(loadBranchIdSuccess, (state, {branchId, branch}) => {
     return {
       ...state,
-      branchId
+      branchId,
+      branch
     };
   }),
   on(loadCompanyIdFailure, (state, {error}) => {

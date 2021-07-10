@@ -17,10 +17,10 @@ import {
   selectCountyIdData,
   Town,
   TownService
-} from "../../../core/store";
-import {Observable, Subject, throwError} from "rxjs";
-import {FormControl, FormGroup, Validators} from "@angular/forms";
-import {Store} from "@ngrx/store";
+} from '../../../core/store';
+import {Observable, Subject, throwError} from 'rxjs';
+import {FormControl, FormGroup, Validators} from '@angular/forms';
+import {Store} from '@ngrx/store';
 
 
 @Component({
@@ -76,7 +76,7 @@ export class CompaniesList implements OnInit {
     this.businessLines$ = linesService.entities$;
     this.region$ = regionService.entities$;
     this.county$ = countyService.entities$;
-    this.town$ = townService.entities$
+    this.town$ = townService.entities$;
     regionService.getAll().subscribe();
     countyService.getAll().subscribe();
     townService.getAll().subscribe();
@@ -113,7 +113,7 @@ export class CompaniesList implements OnInit {
 
   updateSelectedRegion() {
     this.selectedRegion = this.stepThreeForm?.get('region')?.value;
-    console.log(`region set to ${this.selectedRegion}`)
+    console.log(`region set to ${this.selectedRegion}`);
   }
 
   updateSelectedCounty() {
@@ -126,7 +126,7 @@ export class CompaniesList implements OnInit {
         if (d) {
           // console.log(`Select county inside is ${d}`);
           return this.townService.getAll();
-        } else return throwError('Invalid request, Company id is required');
+        } else { return throwError('Invalid request, Company id is required'); }
       }
     );
   }
@@ -155,9 +155,9 @@ export class CompaniesList implements OnInit {
 
   onClickPrevious() {
     if (this.step > 1) {
-      this.step = this.step - 1
+      this.step = this.step - 1;
     } else {
-      this.step = 1
+      this.step = 1;
     }
   }
 
@@ -206,20 +206,17 @@ export class CompaniesList implements OnInit {
   }
 
   onClickPlantDetails(record: Company) {
-    this.store$.dispatch(loadCompanyId({payload: record.id}));
+    this.store$.dispatch(loadCompanyId({payload: record.id, company: record}));
     this.store$.dispatch(Go({payload: null, redirectUrl: '', link: 'dashboard/branches'}));
   }
 
   onClickDirectors(record: Company) {
-    this.store$.dispatch(loadCompanyId({payload: record.id}));
+    this.store$.dispatch(loadCompanyId({payload: record.id, company: record}));
     this.store$.dispatch(Go({payload: null, redirectUrl: '', link: 'dashboard/directors'}));
   }
 
-  onClickClose() {
-    this.store$.dispatch(loadCompanyId({payload: -1}));
-    this.store$.dispatch(Go({payload: null, redirectUrl: '', link: 'dashboard'}));
-  }
 
+  // tslint:disable-next-line:use-lifecycle-interface
   ngOnDestroy(): void {
     // Do not forget to unsubscribe the event
     this.dtTrigger.unsubscribe();
