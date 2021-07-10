@@ -46,10 +46,6 @@ class SchedulerImpl(
     @Autowired
     lateinit var diDaoServices: DestinationInspectionDaoServices
 
-    @Lazy
-    @Autowired
-    lateinit var qualityAssuranceBpmn: QualityAssuranceBpmn
-
     @Autowired
     lateinit var qaDaoServices: QADaoServices
 
@@ -241,62 +237,7 @@ class SchedulerImpl(
         return false
     }
 
-    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
-    fun assignPermitApplicationAfterPayment() {
-        val map = commonDaoServices.serviceMapDetails(diAppId)
-        //Find all permits with Paid status
-        val paidPermits = qaDaoServices.findAllQAOPermitListWithPaymentStatus(map.activeStatus)
-        for (permit in paidPermits) {
-            //Get permit type
-            val user = permit.userId?.let { commonDaoServices.findUserByID(it) }
-            when (permit.permitType) {
-                applicationMapProperties.mapQAPermitTypeIDDmark -> {
-                    permit.userTaskId = applicationMapProperties.mapUserTaskNameHOD
-                    permit.hodId = qaDaoServices.assignNextOfficerBasedOnSection(
-                        permit,
-                        map,
-                        applicationMapProperties.mapQADesignationIDForHODId
-                    )?.id
-                    qualityAssuranceBpmn.startQAAppReviewProcess(
-                        permit.id ?: throw ExpectedDataNotFound("Permit Id Not found"),
-                        permit.hodId ?: throw ExpectedDataNotFound("HOD Not found")
-                    )
-                }
-                applicationMapProperties.mapQAPermitTypeIdSmark -> {
-                    permit.userTaskId = applicationMapProperties.mapUserTaskNameQAM
-                    permit.qamId = qaDaoServices.assignNextOfficerBasedOnSection(
-                        permit,
-                        map,
-                        applicationMapProperties.mapQADesignationIDForQAMId
-                    )?.id
-                    qualityAssuranceBpmn.startQAAppReviewProcess(
-                        permit.id ?: throw ExpectedDataNotFound("Permit Id Not found"),
-                        permit.qamId ?: throw ExpectedDataNotFound("QAM Not found")
-                    )
-                }
-                applicationMapProperties.mapQAPermitTypeIdFmark -> {
-                    permit.userTaskId = applicationMapProperties.mapUserTaskNameQAM
-                    permit.qamId = qaDaoServices.assignNextOfficerAfterPayment(
-                        permit,
-                        map,
-                        applicationMapProperties.mapQADesignationIDForQAMId
-                    )?.id
-                    qualityAssuranceBpmn.startQAAppReviewProcess(
-                        permit.id ?: throw ExpectedDataNotFound("Permit Id Not found"),
-                        permit.qamId ?: throw ExpectedDataNotFound("QAM Not found")
-                    )
-                }
-            }
 
-            permit.paidStatus = map.initStatus
-            permit.permitStatus = applicationMapProperties.mapQaStatusPApprovalCompletness
-
-            if (user != null) {
-                qaDaoServices.permitUpdateDetails(permit,map,user)
-            }
-//            permitRepo.save(permit)
-        }
-    }
 
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun updateLabResultsWithDetails() {

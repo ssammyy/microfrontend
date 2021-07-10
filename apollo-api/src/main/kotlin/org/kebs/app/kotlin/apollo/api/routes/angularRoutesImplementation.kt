@@ -250,6 +250,7 @@ class AngularRoutes {
     fun migrationQualityAssuranceRoutes(handler: QualityAssuranceHandler) = router {
         "/api/v1/migration/qa".nest {
             GET("/sections-list", handler::sectionListMigration)
+            GET("/branch-list", handler::branchListMigration)
             GET("/standards-list", handler::standardsListMigration)
             "/permit".nest {
                 GET("/list", handler::permitListMigration)

@@ -2,6 +2,7 @@ package org.kebs.app.kotlin.apollo.api.ports.provided.dao
 
 import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.notifications.Notifications
+import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.QualityAssuranceBpmn
 import org.kebs.app.kotlin.apollo.api.ports.provided.mpesa.MPesaService
 import org.kebs.app.kotlin.apollo.common.dto.SectionsDto
 import org.kebs.app.kotlin.apollo.common.dto.SectionsEntityDto
@@ -22,6 +23,8 @@ import org.kebs.app.kotlin.apollo.store.repo.qa.*
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.security.core.Authentication
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Propagation
+import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.multipart.MultipartFile
 import java.math.BigDecimal
 import java.sql.Date
@@ -34,6 +37,7 @@ class QADaoServices(
     private val applicationMapProperties: ApplicationMapProperties,
     private val commonDaoServices: CommonDaoServices,
     private val productsRepo: IProductsRepository,
+    private val qualityAssuranceBpmn: QualityAssuranceBpmn,
     private val workPlanCreatedRepo: IQaWorkplanRepository,
     private val iTurnOverRatesRepository: ITurnOverRatesRepository,
     private val iManufacturePaymentDetailsRepository: IManufacturerPaymentDetailsRepository,
@@ -654,6 +658,63 @@ class QADaoServices(
         )?.let {
             return it
         } ?: throw ExpectedDataNotFound("No Permit List found with the following user [ID=$userId]")
+    }
+
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun assignPermitApplicationAfterPayment() {
+        val map = commonDaoServices.serviceMapDetails(appId)
+        //Find all permits with Paid status
+        val paidPermits = findAllQAOPermitListWithPaymentStatus(map.activeStatus)
+        for (permit in paidPermits) {
+            //Get permit type
+            val user = permit.userId?.let { commonDaoServices.findUserByID(it) }
+            when (permit.permitType) {
+                applicationMapProperties.mapQAPermitTypeIDDmark -> {
+                    permit.userTaskId = applicationMapProperties.mapUserTaskNameHOD
+                    permit.hodId = assignNextOfficerBasedOnSection(
+                        permit,
+                        map,
+                        applicationMapProperties.mapQADesignationIDForHODId
+                    )?.id
+                    qualityAssuranceBpmn.startQAAppReviewProcess(
+                        permit.id ?: throw ExpectedDataNotFound("Permit Id Not found"),
+                        permit.hodId ?: throw ExpectedDataNotFound("HOD Not found")
+                    )
+                }
+                applicationMapProperties.mapQAPermitTypeIdSmark -> {
+                    permit.userTaskId = applicationMapProperties.mapUserTaskNameQAM
+                    permit.qamId = assignNextOfficerBasedOnSection(
+                        permit,
+                        map,
+                        applicationMapProperties.mapQADesignationIDForQAMId
+                    )?.id
+                    qualityAssuranceBpmn.startQAAppReviewProcess(
+                        permit.id ?: throw ExpectedDataNotFound("Permit Id Not found"),
+                        permit.qamId ?: throw ExpectedDataNotFound("QAM Not found")
+                    )
+                }
+                applicationMapProperties.mapQAPermitTypeIdFmark -> {
+                    permit.userTaskId = applicationMapProperties.mapUserTaskNameQAM
+                    permit.qamId = assignNextOfficerAfterPayment(
+                        permit,
+                        map,
+                        applicationMapProperties.mapQADesignationIDForQAMId
+                    )?.id
+                    qualityAssuranceBpmn.startQAAppReviewProcess(
+                        permit.id ?: throw ExpectedDataNotFound("Permit Id Not found"),
+                        permit.qamId ?: throw ExpectedDataNotFound("QAM Not found")
+                    )
+                }
+            }
+
+            permit.paidStatus = map.initStatus
+            permit.permitStatus = applicationMapProperties.mapQaStatusPApprovalCompletness
+
+            if (user != null) {
+                permitUpdateDetails(permit, map, user)
+            }
+//            permitRepo.save(permit)
+        }
     }
 
     fun findAllProductManufactureINPlantWithID(
@@ -3621,4 +3682,30 @@ class QADaoServices(
             )
         }
     }
+
+    fun mapAllPlantsTogether(
+        plants: List<ManufacturePlantDetailsEntity>,
+        map: ServiceMapsEntity
+    ): List<PlantsDetailsDto> {
+        return plants.map { p ->
+            PlantsDetailsDto(
+                p.id,
+                p.companyProfileId,
+                commonDaoServices.findCountiesEntityByCountyId(p.county ?: -1L, map.activeStatus).county,
+                commonDaoServices.findTownEntityByTownId(p.town ?: -1L).town,
+                p.street,
+                p.buildingName,
+                p.nearestLandMark,
+                p.postalAddress,
+                p.telephone,
+                p.emailAddress,
+                p.physicalAddress,
+                p.faxNo,
+                p.plotNo,
+                p.designation,
+                p.contactPerson,
+            )
+        }
+    }
+
 }

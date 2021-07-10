@@ -934,6 +934,27 @@ class QualityAssuranceHandler(
 
     }
 
+    @PreAuthorize("hasAuthority('PERMIT_APPLICATION') or hasAuthority('QA_OFFICER_READ') or hasAuthority('QA_HOD_READ') or hasAuthority('QA_MANAGER_ASSESSORS_READ')")
+    fun branchListMigration(req: ServerRequest): ServerResponse {
+        try {
+            val loggedInUser = commonDaoServices.loggedInUserDetails()
+            val map = commonDaoServices.serviceMapDetails(appId)
+            qaDaoServices.mapAllPlantsTogether(
+                qaDaoServices.findAllPlantDetailsWithCompanyID(
+                    loggedInUser.companyId ?: throw ExpectedDataNotFound("Missing COMPANY ID")
+                ), map
+            ).let {
+                return ok().body(it)
+            }
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            return ServerResponse.badRequest().body(e.message ?: "Unknown Error")
+        }
+
+    }
+
     @PreAuthorize(
         "hasAuthority('PERMIT_APPLICATION') or hasAuthority('QA_OFFICER_READ') or hasAuthority('QA_HOD_READ') or hasAuthority('QA_MANAGER_ASSESSORS_READ')" +
                 " or hasAuthority('QA_HOF_READ') or hasAuthority('QA_ASSESSORS_READ') or hasAuthority('QA_PAC_SECRETARY_READ') or hasAuthority('QA_PSC_MEMBERS_READ') or hasAuthority('QA_PCM_READ')"

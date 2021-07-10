@@ -307,6 +307,25 @@ data class StandardsDto(
     var standardNumber: String? = null,
 )
 
+data class PlantsDetailsDto(
+    var id: Long? = null,
+    var companyProfileId: Long? = null,
+    var county: String? = null,
+    var town: String? = null,
+    var location: String? = null,
+    var street: String? = null,
+    var buildingName: String? = null,
+    var nearestLandMark: String? = null,
+    var postalAddress: String? = null,
+    var telephone: String? = null,
+    var emailAddress: String? = null,
+    var physicalAddress: String? = null,
+    var faxNo: String? = null,
+    var plotNo: String? = null,
+    var designation: String? = null,
+    var contactPerson: String? = null,
+)
+
 
 
 
