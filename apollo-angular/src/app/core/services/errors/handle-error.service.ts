@@ -1,8 +1,8 @@
 import {Injectable} from '@angular/core';
-import {Actions} from "@ngrx/effects";
+import {Actions} from '@ngrx/effects';
 import {ToastrService} from 'ngx-toastr';
-import {Store} from "@ngrx/store";
-import {HttpErrorResponse} from "@angular/common/http";
+import {Store} from '@ngrx/store';
+import {HttpErrorResponse} from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
@@ -27,29 +27,20 @@ export class HandleErrorService {
       // errorMessage = `Error Code: ${err.status},  Message: ${err.error}`;
       errorMessage = `Message: ${err.error}`;
     }
-    // this.store$.dispatch(
-    //   fromResponseActions.loadResponsesFailure({
-    //     error: {
-    //       payload: err.error,
-    //       status: err.status,
-    //       response: (err.error instanceof ErrorEvent) ? `Error: ${err.error.message}` : `Error Code: ${err.status},  Message: ${err.error}`
-    //     }
-    //   })
-    // );
-
     this.toastrService.error(errorMessage);
   }
 
   public handleMessaging(message: string, code: number) {
     if (
       message
-    ){
+    ) {
       if (
+        message === 'null' ||
         message.trim().length < 1 ||
         message === ''
-      ){
-        console.warn("No toastr for empty messages")
-      }else{
+      ) {
+        console.warn('No toastr for empty messages');
+      } else {
         if (code === 200) {
           this.toastrService.info(message);
         } else {
@@ -58,8 +49,8 @@ export class HandleErrorService {
 
       }
 
-    }else{
-      console.warn("No toastr for null messages")
+    } else {
+      console.warn('No toastr for null messages');
     }
   }
 }

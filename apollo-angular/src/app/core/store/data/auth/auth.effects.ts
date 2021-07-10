@@ -30,7 +30,7 @@ export class AuthEffects {
         switchMap((action) => this.service.resetUserCredentials(action.payload)
           .pipe(
             mergeMap((data) => {
-              if (data.status == 200) {
+              if (data.status === 200) {
                 return [
                   loadResponsesSuccess({message: data}),
                   Go({payload: null, link: 'login', redirectUrl: action.redirectUrl})
