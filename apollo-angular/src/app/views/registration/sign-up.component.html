@@ -534,8 +534,9 @@
             <br>
           </div>
           <div class="col">
-            <button (click)="onClickSendOtp(); clicked=true;" [disabled]="clicked"
+            <button (throttledClick)="onClickSendOtp()"  [disabled]="otpSent"
                     [hidden]="stepFourForm.get('cellphone')?.invalid"
+                    [throttleTime]="5000" appPreventDoubleClick
                     class="login-button mt-2"
                     type="button"
 

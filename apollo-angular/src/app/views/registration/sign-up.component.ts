@@ -23,7 +23,7 @@ import {
   selectBrsValidationStep,
   selectCountyIdData,
   selectRegistrationStateSucceeded,
-  selectSendTokenToPhoneStateSent,
+  selectTokenSentStateOtpSent,
   selectValidateTokenAndPhoneValidated,
   Town,
   TownService,
@@ -64,8 +64,8 @@ export class SignUpComponent implements OnInit {
   selectedCounty: number = 0;
   selectedTown: number = 0;
   validationCellphone = '';
-  otpSent: boolean;
-  phoneValidated: boolean;
+  otpSent= false;
+  phoneValidated = false;
   // @ts-ignore
   company: Company;
   // @ts-ignore
@@ -83,8 +83,7 @@ export class SignUpComponent implements OnInit {
     private formBuilder: FormBuilder,
     private store$: Store<any>,
   ) {
-    this.otpSent = false;
-    this.phoneValidated = false;
+
 
     this.businessNatures$ = naturesService.entities$;
     this.businessLines$ = linesService.entities$;
@@ -265,6 +264,7 @@ export class SignUpComponent implements OnInit {
   }
 
   onClickValidateOtp() {
+    this.phoneValidated = true;
     this.store$.dispatch(loadValidateTokenAndPhone({
       payload: {
         phone: this.stepFourForm?.get('cellphone')?.value,
@@ -272,18 +272,19 @@ export class SignUpComponent implements OnInit {
       }
     }));
     this.store$.pipe(select(selectValidateTokenAndPhoneValidated)).subscribe((d) => {
-      console.log(`status inside is ${d}`)
-      return this.phoneValidated = d;
+      // console.log(`status inside is ${d}`)
+      if (d) {
+        this.otpSent = true;
+        // this.stepFourForm?.get('otp')?.reset();
+        return this.phoneValidated = d;
+      } else {
+        this.otpSent = false;
+        this.stepFourForm?.get('otp')?.reset()
+        return throwError("Could not validate token");
+
+      }
     });
-    if (!this.phoneValidated) {
-      this.otpSent = false;
-      this.stepFourForm?.get('otp')?.reset();
 
-      this.phoneValidated = true;
-
-    } else {
-
-    }
   }
 
   onClickSendOtp() {
@@ -311,9 +312,13 @@ export class SignUpComponent implements OnInit {
         }
       }));
 
-      this.store$.pipe(select(selectSendTokenToPhoneStateSent)).subscribe((d) => {
+      this.store$.pipe(select(selectTokenSentStateOtpSent)).subscribe((d) => {
         console.log(`value of inside is ${d}`)
-        return this.otpSent = d;
+        if (d) {
+          return this.otpSent = d;
+        } else {
+          return throwError("Unable to send token");
+        }
       });
     }
 

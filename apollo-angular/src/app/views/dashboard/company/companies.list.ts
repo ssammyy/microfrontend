@@ -32,7 +32,7 @@ export class CompaniesList implements OnInit {
   companies$: Observable<Company[]>;
   filterName: string;
   p = 1;
-  step = 2;
+  step = 0;
 
   stepOneForm: FormGroup = new FormGroup({});
   stepTwoForm: FormGroup = new FormGroup({});
@@ -149,6 +149,7 @@ export class CompaniesList implements OnInit {
     this.stepTwoForm.patchValue(record);
     this.stepThreeForm.patchValue(record);
     this.companySoFar = record;
+    this.step = 1;
 
   }
 

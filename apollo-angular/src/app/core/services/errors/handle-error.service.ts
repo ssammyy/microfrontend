@@ -11,7 +11,7 @@ export class HandleErrorService {
 
   constructor(actions$: Actions,
               private toastrService: ToastrService,
-              private store$: Store<any>) {
+  ) {
   }
 
   /**
@@ -41,10 +41,25 @@ export class HandleErrorService {
   }
 
   public handleMessaging(message: string, code: number) {
-    if (code === 200) {
-      this.toastrService.info(message);
-    } else {
-      this.toastrService.error(message);
+    if (
+      message
+    ){
+      if (
+        message.trim().length < 1 ||
+        message === ''
+      ){
+        console.warn("No toastr for empty messages")
+      }else{
+        if (code === 200) {
+          this.toastrService.info(message);
+        } else {
+          this.toastrService.error(message);
+        }
+
+      }
+
+    }else{
+      console.warn("No toastr for null messages")
     }
   }
 }

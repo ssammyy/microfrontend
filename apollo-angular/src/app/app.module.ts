@@ -45,6 +45,10 @@ import {ResetCredentialsComponent} from './views/registration/reset-credentials.
     CoreModule,
     ToastrModule.forRoot({
       timeOut: 10000,
+      enableHtml: true,
+      newestOnTop: false,
+      maxOpened: 1,
+      autoDismiss: false,
       positionClass: 'toast-top-right',
       preventDuplicates: true,
     }),

@@ -108,6 +108,8 @@ export class ResetCredentialsComponent implements OnInit {
         this.step = 1;
         return this.tokenValidated = d;
       } else {
+        this.otpSent = false;
+        this.stepZeroForm?.get('otp')?.reset()
         return throwError("Could not validate token");
       }
 

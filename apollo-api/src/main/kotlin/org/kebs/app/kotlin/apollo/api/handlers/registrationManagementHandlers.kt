@@ -262,7 +262,7 @@ class RegistrationManagementHandler(
             val branchId = req.pathVariable("branchId").toLongOrNull()
             val companyId = req.pathVariable("companyId").toLongOrNull()
             val payloadId = body.id
-            if (body.id != null) {
+            if ((body.id ?: -1L) > 0L) {
                 val id = req.pathVariable("userId").toLongOrNull()
                 if ((id ?: -1L) != (payloadId ?: -1L)) {
                     throw InvalidInputException("Request Denied, record mismatch detected")
