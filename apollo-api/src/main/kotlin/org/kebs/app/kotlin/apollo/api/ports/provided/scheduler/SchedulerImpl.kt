@@ -4,10 +4,12 @@ import mu.KotlinLogging
 import org.joda.time.DateTime
 import org.kebs.app.kotlin.apollo.api.notifications.Notifications
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.BpmnCommonFunctions
+import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.QualityAssuranceBpmn
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DestinationInspectionDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.QADaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.lims.LimsServices
+import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.SchedulerEntity
 import org.kebs.app.kotlin.apollo.store.repo.ISchedulerRepository
@@ -32,8 +34,9 @@ class SchedulerImpl(
     private val bpmnCommonFunctions: BpmnCommonFunctions,
     private val userRepo: IUserRepository,
     private val applicationMapProperties: ApplicationMapProperties,
+    private val qualityAssuranceBpmn: QualityAssuranceBpmn,
     private val sampleSubmissionRepo: IQaSampleSubmissionRepository,
-    private val  limsServices: LimsServices,
+    private val limsServices: LimsServices,
 //    private val qaDaoServices: QADaoServices,
 //    private val diDaoServices: DestinationInspectionDaoServices,
     private val commonDaoServices: CommonDaoServices,
@@ -250,6 +253,10 @@ class SchedulerImpl(
                         map,
                         applicationMapProperties.mapQADesignationIDForHODId
                     )?.id
+                    qualityAssuranceBpmn.startQAAppReviewProcess(
+                        permit.id ?: throw ExpectedDataNotFound("Permit Id Not found"),
+                        permit.hodId ?: throw ExpectedDataNotFound("HOD Not found")
+                    )
                 }
                 applicationMapProperties.mapQAPermitTypeIdSmark -> {
                     permit.userTaskId = applicationMapProperties.mapUserTaskNameQAM
@@ -258,6 +265,10 @@ class SchedulerImpl(
                         map,
                         applicationMapProperties.mapQADesignationIDForQAMId
                     )?.id
+                    qualityAssuranceBpmn.startQAAppReviewProcess(
+                        permit.id ?: throw ExpectedDataNotFound("Permit Id Not found"),
+                        permit.qamId ?: throw ExpectedDataNotFound("QAM Not found")
+                    )
                 }
                 applicationMapProperties.mapQAPermitTypeIdFmark -> {
                     permit.userTaskId = applicationMapProperties.mapUserTaskNameQAM
@@ -266,6 +277,10 @@ class SchedulerImpl(
                         map,
                         applicationMapProperties.mapQADesignationIDForQAMId
                     )?.id
+                    qualityAssuranceBpmn.startQAAppReviewProcess(
+                        permit.id ?: throw ExpectedDataNotFound("Permit Id Not found"),
+                        permit.qamId ?: throw ExpectedDataNotFound("QAM Not found")
+                    )
                 }
             }
 

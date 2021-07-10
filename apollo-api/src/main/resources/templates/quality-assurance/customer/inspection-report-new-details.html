@@ -68,7 +68,7 @@
                                 SYSTEMS
                             </button>
                             <div class="panel">
-                                <form id="myForm" class="needs-validation" novalidate
+                                <form id="myForm"
                                       th:action="@{/api/qa/kebs/add/new-qpsms-details/save(permitID=${permit?.Id})}"
                                       method="post" th:object="${QaInspectionTechnicalEntity}">
                                     <div class="row-table ">
@@ -88,11 +88,11 @@
                                                 <td>1.</td>
                                                 <td>Quality procedure</td>
                                                 <td><textarea name="name" required="required" id="qualityProcedure"
-                                                              class="input-field w-input" cols="10" rows="5"
+                                                              class="input-field w-input" rows="5"
                                                               th:field="*{qualityProcedure}"></textarea></td>
-                                                <td><textarea name="name" required="required"
+                                                <td><textarea name="name"
                                                               id="qualityProcedureRemarks" class="input-field w-input"
-                                                              cols="10" rows="5"
+                                                              rows="5"
                                                               th:field="*{qualityProcedureRemarks}"></textarea></td>
                                             </tr>
                                             <tr class="list" style="cursor: pointer">
@@ -100,12 +100,12 @@
                                                 <td>Availability of product standards and codes of practice</td>
                                                 <td><textarea name="name" required="required"
                                                               id="availabilityProductStandardsCodesPractice"
-                                                              class="input-field w-input" cols="10" rows="5"
+                                                              class="input-field w-input" rows="5"
                                                               th:field="*{availabilityProductStandardsCodesPractice}"></textarea>
                                                 </td>
-                                                <td><textarea name="name" required="required"
+                                                <td><textarea name="name"
                                                               id="availabilityProductStandardsCodesPracticeRemarks"
-                                                              class="input-field w-input" cols="10" rows="5"
+                                                              class="input-field w-input" rows="5"
                                                               th:field="*{availabilityProductStandardsCodesPracticeRemarks}"></textarea>
                                                 </td>
                                             </tr>
@@ -114,11 +114,11 @@
                                                 <td>Quality management systems</td>
                                                 <td><textarea name="name" required="required"
                                                               id="qualityManagementSystems"
-                                                              class="input-field w-input" cols="10" rows="5"
+                                                              class="input-field w-input" rows="5"
                                                               th:field="*{qualityManagementSystems}"></textarea></td>
-                                                <td><textarea name="name" required="required"
+                                                <td><textarea name="name"
                                                               id="qualityManagementSystemsRemarks"
-                                                              class="input-field w-input" cols="10" rows="5"
+                                                              class="input-field w-input" rows="5"
                                                               th:field="*{qualityManagementSystemsRemarks}"></textarea>
                                                 </td>
                                             </tr>
@@ -126,11 +126,11 @@
                                                 <td>4.</td>
                                                 <td>HACCP (for food and feed products) See Annex II</td>
                                                 <td><textarea name="name" required="required" id="haccpSeeAnnexIi"
-                                                              class="input-field w-input" cols="10" rows="5"
+                                                              class="input-field w-input" rows="5"
                                                               th:field="*{haccpSeeAnnexIi}"></textarea></td>
-                                                <td><textarea name="name" required="required"
+                                                <td><textarea name="name"
                                                               id="haccpSeeAnnexIiRemarks"
-                                                              class="input-field w-input" cols="10" rows="5"
+                                                              class="input-field w-input" rows="5"
                                                               th:field="*{haccpSeeAnnexIiRemarks}"></textarea></td>
                                             </tr>
                                             </tbody>
@@ -147,7 +147,7 @@
                                             <div class="col-md-4 mb-3">
                                                 <button class="btn btn-primary"
                                                         onclick="validationFunction('validateQPAMSDetails');"
-                                                        id="mySubmit" type="submit">
+                                                        type="submit">
                                                     Save
                                                 </button>
                                             </div>
@@ -158,7 +158,7 @@
 
                             <button class="accordion">INSPECTION AND TESTING</button>
                             <div class="panel">
-                                <form id="myForm1" class="needs-validation" novalidate
+                                <form id="myForm1"
                                       th:action="@{/api/qa/kebs/add/new-qpsms-details/save(permitID=${permit?.Id})}"
                                       method="post" th:object="${QaInspectionTechnicalEntity}">
                                     <div class="row-table ">
@@ -180,11 +180,11 @@
                                                 <td>Testing facility</td>
                                                 <td><textarea required="required" name="testingFacility"
                                                               id="testingFacility"
-                                                              class="input-field w-input" cols="10" rows="5"
+                                                              class="input-field w-input" rows="5"
                                                               th:field="*{testingFacility}"></textarea></td>
-                                                <td><textarea required="required" name="testingFacilityRemarks"
+                                                <td><textarea name="testingFacilityRemarks"
                                                               id="testingFacilityRemarks"
-                                                              class="input-field w-input" cols="10" rows="5"
+                                                              class="input-field w-input" rows="5"
                                                               th:field="*{testingFacilityRemarks}"></textarea></td>
                                             </tr>
                                             <tr class="list" style="cursor: pointer">
@@ -193,14 +193,14 @@
                                                 <td><textarea required="required"
                                                               name="qualityControlPersonnelQualifications"
                                                               id="qualityControlPersonnelQualifications"
-                                                              class="input-field w-input" cols="10" rows="5"
+                                                              class="input-field w-input" rows="5"
                                                               th:field="*{qualityControlPersonnelQualifications}"></textarea>
                                                 </td>
-                                                <td><textarea required="required"
-                                                              name="qualityControlPersonnelQualificationsRemarks"
-                                                              id="qualityControlPersonnelQualificationsRemarks"
-                                                              class="input-field w-input" cols="10" rows="5"
-                                                              th:field="*{qualityControlPersonnelQualificationsRemarks}"></textarea>
+                                                <td><textarea
+                                                        name="qualityControlPersonnelQualificationsRemarks"
+                                                        id="qualityControlPersonnelQualificationsRemarks"
+                                                        class="input-field w-input" rows="5"
+                                                        th:field="*{qualityControlPersonnelQualificationsRemarks}"></textarea>
                                                 </td>
                                             </tr>
                                             <tr class="list" style="cursor: pointer">
@@ -208,11 +208,11 @@
                                                 <td>Equipment calibration</td>
                                                 <td><textarea required="required" name="equipmentCalibration"
                                                               id="equipmentCalibration"
-                                                              class="input-field w-input" cols="10" rows="5"
+                                                              class="input-field w-input" rows="5"
                                                               th:field="*{equipmentCalibration}"></textarea></td>
-                                                <td><textarea required="required" name="equipmentCalibrationRemarks"
+                                                <td><textarea name="equipmentCalibrationRemarks"
                                                               id="equipmentCalibrationRemarks"
-                                                              class="input-field w-input" cols="10" rows="5"
+                                                              class="input-field w-input" rows="5"
                                                               th:field="*{equipmentCalibrationRemarks}"></textarea></td>
                                             </tr>
                                             <tr class="list" style="cursor: pointer">
@@ -220,11 +220,11 @@
                                                 <td>Quality records</td>
                                                 <td><textarea required="required" name="qualityRecords"
                                                               id="qualityRecords"
-                                                              class="input-field w-input" cols="10" rows="5"
+                                                              class="input-field w-input" rows="5"
                                                               th:field="*{qualityRecords}"></textarea></td>
-                                                <td><textarea required="required" name="qualityRecordsRemarks"
+                                                <td><textarea name="qualityRecordsRemarks"
                                                               id="qualityRecordsRemarks"
-                                                              class="input-field w-input" cols="10" rows="5"
+                                                              class="input-field w-input" rows="5"
                                                               th:field="*{qualityRecordsRemarks}"></textarea></td>
                                             </tr>
                                             <tr class="list" style="cursor: pointer">
@@ -232,14 +232,14 @@
                                                 <td>Product labeling and identification</td>
                                                 <td><textarea required="required" name="productLabelingIdentification"
                                                               id="productLabelingIdentification"
-                                                              class="input-field w-input" cols="10" rows="5"
+                                                              class="input-field w-input" rows="5"
                                                               th:field="*{productLabelingIdentification}"></textarea>
                                                 </td>
-                                                <td><textarea required="required"
-                                                              name="productLabelingIdentificationRemarks"
-                                                              id="productLabelingIdentificationRemarks"
-                                                              class="input-field w-input" cols="10" rows="5"
-                                                              th:field="*{productLabelingIdentificationRemarks}"></textarea>
+                                                <td><textarea
+                                                        name="productLabelingIdentificationRemarks"
+                                                        id="productLabelingIdentificationRemarks"
+                                                        class="input-field w-input" rows="5"
+                                                        th:field="*{productLabelingIdentificationRemarks}"></textarea>
                                                 </td>
                                             </tr>
                                             </tbody>
@@ -268,7 +268,7 @@
 
                             <button class="accordion">STANDARDIZATION MARK SCHEME</button>
                             <div class="panel">
-                                <form id="myForm2" class="needs-validation" novalidate
+                                <form id="myForm2"
                                       th:action="@{/api/qa/kebs/add/new-qpsms-details/save(permitID=${permit?.Id})}"
                                       method="post" th:object="${QaInspectionTechnicalEntity}">
                                     <div class="row-table ">
@@ -290,22 +290,22 @@
                                                 <td>Validity of S-Mark permit(s)</td>
                                                 <td><textarea required="required" name="validitySmarkPermit"
                                                               id="validitySmarkPermit"
-                                                              class="input-field w-input" cols="10" rows="5"
+                                                              class="input-field w-input" rows="5"
                                                               th:field="*{validitySmarkPermit}"></textarea></td>
-                                                <td><textarea required="required" name="validitySmarkPermitRemarks"
+                                                <td><textarea name="validitySmarkPermitRemarks"
                                                               id="validitySmarkPermitRemarks"
-                                                              class="input-field w-input" cols="10" rows="5"
+                                                              class="input-field w-input" rows="5"
                                                               th:field="*{validitySmarkPermitRemarks}"></textarea></td>
                                             </tr>
                                             <tr class="list" style="cursor: pointer">
                                                 <td>2.</td>
                                                 <td>Use of the S-Mark</td>
                                                 <td><textarea required="required" name="useTheSmark" id="useTheSmark"
-                                                              class="input-field w-input" cols="10" rows="5"
+                                                              class="input-field w-input" rows="5"
                                                               th:field="*{useTheSmark}"></textarea></td>
-                                                <td><textarea required="required" name="useTheSmarkRemarks"
+                                                <td><textarea name="useTheSmarkRemarks"
                                                               id="useTheSmarkRemarks"
-                                                              class="input-field w-input" cols="10" rows="5"
+                                                              class="input-field w-input" rows="5"
                                                               th:field="*{useTheSmarkRemarks}"></textarea></td>
                                             </tr>
                                             <tr class="list" style="cursor: pointer">
@@ -316,14 +316,14 @@
                                                 <td><textarea required="required"
                                                               name="changesAffectingProductCertification"
                                                               id="changesAffectingProductCertification"
-                                                              class="input-field w-input" cols="10" rows="5"
+                                                              class="input-field w-input" rows="5"
                                                               th:field="*{changesAffectingProductCertification}"></textarea>
                                                 </td>
-                                                <td><textarea required="required"
-                                                              name="changesAffectingProductCertificationRemarks"
-                                                              id="changesAffectingProductCertificationRemarks"
-                                                              class="input-field w-input" cols="10" rows="5"
-                                                              th:field="*{changesAffectingProductCertificationRemarks}"></textarea>
+                                                <td><textarea
+                                                        name="changesAffectingProductCertificationRemarks"
+                                                        id="changesAffectingProductCertificationRemarks"
+                                                        class="input-field w-input" rows="5"
+                                                        th:field="*{changesAffectingProductCertificationRemarks}"></textarea>
                                                 </td>
                                             </tr>
                                             <tr class="list" style="cursor: pointer">
@@ -331,24 +331,24 @@
                                                 <td>Have the changes been communicated to KEBS?</td>
                                                 <td><textarea required="required" name="changesBeenCommunicatedKebs"
                                                               id="changesBeenCommunicatedKebs"
-                                                              class="input-field w-input" cols="10" rows="5"
+                                                              class="input-field w-input" rows="5"
                                                               th:field="*{changesBeenCommunicatedKebs}"></textarea></td>
-                                                <td><textarea required="required"
-                                                              name="changesBeenCommunicatedKebsRemarks"
-                                                              id="changesBeenCommunicatedKebsRemarks"
-                                                              class="input-field w-input" cols="10" rows="5"
-                                                              th:field="*{changesBeenCommunicatedKebsRemarks}"></textarea>
+                                                <td><textarea
+                                                        name="changesBeenCommunicatedKebsRemarks"
+                                                        id="changesBeenCommunicatedKebsRemarks"
+                                                        class="input-field w-input" rows="5"
+                                                        th:field="*{changesBeenCommunicatedKebsRemarks}"></textarea>
                                                 </td>
                                             </tr>
                                             <tr class="list" style="cursor: pointer">
                                                 <td>5.</td>
                                                 <td>Samples drawn</td>
                                                 <td><textarea required="required" name="samplesDrawn" id="samplesDrawn"
-                                                              class="input-field w-input" cols="10" rows="5"
+                                                              class="input-field w-input" rows="5"
                                                               th:field="*{samplesDrawn}"></textarea></td>
-                                                <td><textarea required="required" name="samplesDrawnRemarks"
+                                                <td><textarea name="samplesDrawnRemarks"
                                                               id="samplesDrawnRemarks"
-                                                              class="input-field w-input" cols="10" rows="5"
+                                                              class="input-field w-input" rows="5"
                                                               th:field="*{samplesDrawnRemarks}"></textarea></td>
                                             </tr>
                                             </tbody>
@@ -422,7 +422,7 @@
 
                             <button class="accordion">Annex II: HACCP IMPLEMENTATION</button>
                             <div class="panel">
-                                <form id="myForm3" class="needs-validation" novalidate
+                                <form id="myForm3"
                                       th:action="@{/api/qa/kebs/add/new-haccp-implementation/save(permitID=${permit?.Id})}"
                                       method="post">
                                     <div class="row-table" th:object="${QaInspectionHaccpImplementationEntity}">
@@ -447,13 +447,13 @@
                                                 <td><textarea required="required"
                                                               name="designFacilitiesConstructionLayout"
                                                               id="designFacilitiesConstructionLayout"
-                                                              class="input-field w-input" cols="10" rows="5"
+                                                              class="input-field w-input" rows="5"
                                                               th:field="*{designFacilitiesConstructionLayout}"></textarea>
                                                 </td>
                                                 <td><textarea required="required"
                                                               name="designFacilitiesConstructionLayoutRemarks"
                                                               id="designFacilitiesConstructionLayoutRemarks"
-                                                              class="input-field w-input" cols="10" rows="5"
+                                                              class="input-field w-input" rows="5"
                                                               th:field="*{designFacilitiesConstructionLayoutRemarks}"></textarea>
                                                 </td>
                                             </tr>
@@ -462,11 +462,11 @@
                                                 <td>Control of operations</td>
                                                 <td><textarea required="required" name="controlOperations"
                                                               id="controlOperations"
-                                                              class="input-field w-input" cols="10" rows="5"
+                                                              class="input-field w-input" rows="5"
                                                               th:field="*{controlOperations}"></textarea></td>
                                                 <td><textarea required="required" name="controlOperationsRemarks"
                                                               id="controlOperationsRemarks" class="input-field w-input"
-                                                              cols="10" rows="5"
+                                                              rows="5"
                                                               th:field="*{controlOperationsRemarks}"></textarea></td>
                                             </tr>
                                             <tr class="list" style="cursor: pointer">
@@ -477,13 +477,13 @@
                                                 <td><textarea required="required"
                                                               name="maintenanceSanitationCleaningPrograms"
                                                               id="maintenanceSanitationCleaningPrograms"
-                                                              class="input-field w-input" cols="10" rows="5"
+                                                              class="input-field w-input" rows="5"
                                                               th:field="*{maintenanceSanitationCleaningPrograms}"></textarea>
                                                 </td>
                                                 <td><textarea required="required"
                                                               name="maintenanceSanitationCleaningProgramsRemarks"
                                                               id="maintenanceSanitationCleaningProgramsRemarks"
-                                                              class="input-field w-input" cols="10" rows="5"
+                                                              class="input-field w-input" rows="5"
                                                               th:field="*{maintenanceSanitationCleaningProgramsRemarks}"></textarea>
                                                 </td>
                                             </tr>
@@ -492,11 +492,11 @@
                                                 <td>Personnel hygiene</td>
                                                 <td><textarea required="required" name="personnelHygiene"
                                                               id="personnelHygiene"
-                                                              class="input-field w-input" cols="10" rows="5"
+                                                              class="input-field w-input" rows="5"
                                                               th:field="*{personnelHygiene}"></textarea></td>
                                                 <td><textarea required="required" name="personnelHygieneRemarks"
                                                               id="personnelHygieneRemarks" class="input-field w-input"
-                                                              cols="10" rows="5"
+                                                              rows="5"
                                                               th:field="*{personnelHygieneRemarks}"></textarea></td>
                                             </tr>
                                             <tr class="list" style="cursor: pointer">
@@ -504,11 +504,11 @@
                                                 <td>Transportation - conveyance & bulk container</td>
                                                 <td><textarea required="required" name="transportationConveyance"
                                                               id="transportationConveyance" class="input-field w-input"
-                                                              cols="10" rows="5"
+                                                              rows="5"
                                                               th:field="*{transportationConveyance}"></textarea></td>
                                                 <td><textarea required="required" name="transportationConveyanceRemarks"
                                                               id="transportationConveyanceRemarks"
-                                                              class="input-field w-input" cols="10" rows="5"
+                                                              class="input-field w-input" rows="5"
                                                               th:field="*{transportationConveyanceRemarks}"></textarea>
                                                 </td>
                                             </tr>
@@ -517,12 +517,12 @@
                                                 <td>Product information- labelling</td>
                                                 <td><textarea required="required" name="productInformationLabelling"
                                                               id="productInformationLabelling"
-                                                              class="input-field w-input" cols="10" rows="5"
+                                                              class="input-field w-input" rows="5"
                                                               th:field="*{productInformationLabelling}"></textarea></td>
                                                 <td><textarea required="required"
                                                               name="productInformationLabellingRemarks"
                                                               id="productInformationLabellingRemarks"
-                                                              class="input-field w-input" cols="10" rows="5"
+                                                              class="input-field w-input" rows="5"
                                                               th:field="*{productInformationLabellingRemarks}"></textarea>
                                                 </td>
                                             </tr>
@@ -531,11 +531,11 @@
                                                 <td>Training of management and employees on food safety</td>
                                                 <td><textarea required="required" name="trainingManagement"
                                                               id="trainingManagement"
-                                                              class="input-field w-input" cols="10" rows="5"
+                                                              class="input-field w-input" rows="5"
                                                               th:field="*{trainingManagement}"></textarea></td>
                                                 <td><textarea required="required" name="trainingManagementRemarks"
                                                               id="trainingManagementRemarks" class="input-field w-input"
-                                                              cols="10" rows="5"
+                                                              rows="5"
                                                               th:field="*{trainingManagementRemarks}"></textarea></td>
                                             </tr>
                                             <tr class="list" style="cursor: pointer">
@@ -544,13 +544,13 @@
                                                 <td><textarea required="required"
                                                               name="appropriateSectorHygienePractice"
                                                               id="appropriateSectorHygienePractice"
-                                                              class="input-field w-input" cols="10" rows="5"
+                                                              class="input-field w-input" rows="5"
                                                               th:field="*{appropriateSectorHygienePractice}"></textarea>
                                                 </td>
                                                 <td><textarea required="required"
                                                               name="appropriateSectorHygienePracticeRemarks"
                                                               id="appropriateSectorHygienePracticeRemarks"
-                                                              class="input-field w-input" cols="10" rows="5"
+                                                              class="input-field w-input" rows="5"
                                                               th:field="*{appropriateSectorHygienePracticeRemarks}"></textarea>
                                                 </td>
                                             </tr>
@@ -559,11 +559,11 @@
                                                 <td>Establishment of HACCP Plan</td>
                                                 <td><textarea required="required" name="establishmentHaccpPlan"
                                                               id="establishmentHaccpPlan"
-                                                              class="input-field w-input" cols="10" rows="5"
+                                                              class="input-field w-input" rows="5"
                                                               th:field="*{establishmentHaccpPlan}"></textarea></td>
                                                 <td><textarea required="required" name="establishmentHaccpPlanRemarks"
                                                               id="establishmentHaccpPlanRemarks"
-                                                              class="input-field w-input" cols="10" rows="5"
+                                                              class="input-field w-input" rows="5"
                                                               th:field="*{establishmentHaccpPlanRemarks}"></textarea>
                                                 </td>
                                             </tr>
@@ -572,11 +572,11 @@
                                                 <td>Product flow diagram</td>
                                                 <td><textarea required="required" name="productFlowDiagram"
                                                               id="productFlowDiagram"
-                                                              class="input-field w-input" cols="10" rows="5"
+                                                              class="input-field w-input" rows="5"
                                                               th:field="*{productFlowDiagram}"></textarea></td>
                                                 <td><textarea required="required" name="productFlowDiagramRemarks"
                                                               id="productFlowDiagramRemarks" class="input-field w-input"
-                                                              cols="10" rows="5"
+                                                              rows="5"
                                                               th:field="*{productFlowDiagramRemarks}"></textarea></td>
                                             </tr>
                                             <tr class="list" style="cursor: pointer">
@@ -584,11 +584,11 @@
                                                 <td>Evidence of Hazard Analysis done at each step of production</td>
                                                 <td><textarea required="required" name="evidenceHazardAnalysis"
                                                               id="evidenceHazardAnalysis"
-                                                              class="input-field w-input" cols="10" rows="5"
+                                                              class="input-field w-input" rows="5"
                                                               th:field="*{evidenceHazardAnalysis}"></textarea></td>
                                                 <td><textarea required="required" name="evidenceHazardAnalysisRemarks"
                                                               id="evidenceHazardAnalysisRemarks"
-                                                              class="input-field w-input" cols="10" rows="5"
+                                                              class="input-field w-input" rows="5"
                                                               th:field="*{evidenceHazardAnalysisRemarks}"></textarea>
                                                 </td>
                                             </tr>
@@ -598,13 +598,13 @@
                                                 <td><textarea required="required"
                                                               name="establishmentCriticalControlPoints"
                                                               id="establishmentCriticalControlPoints"
-                                                              class="input-field w-input" cols="10" rows="5"
+                                                              class="input-field w-input" rows="5"
                                                               th:field="*{establishmentCriticalControlPoints}"></textarea>
                                                 </td>
                                                 <td><textarea required="required"
                                                               name="establishmentCriticalControlPointsRemarks"
                                                               id="establishmentCriticalControlPointsRemarks"
-                                                              class="input-field w-input" cols="10" rows="5"
+                                                              class="input-field w-input" rows="5"
                                                               th:field="*{establishmentCriticalControlPointsRemarks}"></textarea>
                                                 </td>
                                             </tr>
@@ -613,13 +613,13 @@
                                                 <td>Establishment of a Monitoring and control of the CCP's</td>
                                                 <td><textarea required="required" name="establishmentMonitoringControl"
                                                               id="establishmentMonitoringControl"
-                                                              class="input-field w-input" cols="10" rows="5"
+                                                              class="input-field w-input" rows="5"
                                                               th:field="*{establishmentMonitoringControl}"></textarea>
                                                 </td>
                                                 <td><textarea required="required"
                                                               name="establishmentMonitoringControlRemarks"
                                                               id="establishmentMonitoringControlRemarks"
-                                                              class="input-field w-input" cols="10" rows="5"
+                                                              class="input-field w-input" rows="5"
                                                               th:field="*{establishmentMonitoringControlRemarks}"></textarea>
                                                 </td>
                                             </tr>
@@ -628,12 +628,12 @@
                                                 <td>Evidence of Corrective Actions for each CCP</td>
                                                 <td><textarea required="required" name="evidenceCorrectiveActions"
                                                               id="evidenceCorrectiveActions" class="input-field w-input"
-                                                              cols="10" rows="5"
+                                                              rows="5"
                                                               th:field="*{evidenceCorrectiveActions}"></textarea></td>
                                                 <td><textarea required="required"
                                                               name="evidenceCorrectiveActionsRemarks"
                                                               id="evidenceCorrectiveActionsRemarks"
-                                                              class="input-field w-input" cols="10" rows="5"
+                                                              class="input-field w-input" rows="5"
                                                               th:field="*{evidenceCorrectiveActionsRemarks}"></textarea>
                                                 </td>
                                             </tr>
@@ -645,13 +645,13 @@
                                                 <td><textarea required="required"
                                                               name="evidenceVerificationConfirmHaccp"
                                                               id="evidenceVerificationConfirmHaccp"
-                                                              class="input-field w-input" cols="10" rows="5"
+                                                              class="input-field w-input" rows="5"
                                                               th:field="*{evidenceVerificationConfirmHaccp}"></textarea>
                                                 </td>
                                                 <td><textarea required="required"
                                                               name="evidenceVerificationConfirmHaccpRemarks"
                                                               id="evidenceVerificationConfirmHaccpRemarks"
-                                                              class="input-field w-input" cols="10" rows="5"
+                                                              class="input-field w-input" rows="5"
                                                               th:field="*{evidenceVerificationConfirmHaccpRemarks}"></textarea>
                                                 </td>
                                             </tr>
@@ -663,13 +663,13 @@
                                                 <td><textarea required="required"
                                                               name="recordKeepingDocumentsAppropriate"
                                                               id="recordKeepingDocumentsAppropriate"
-                                                              class="input-field w-input" cols="10" rows="5"
+                                                              class="input-field w-input" rows="5"
                                                               th:field="*{recordKeepingDocumentsAppropriate}"></textarea>
                                                 </td>
                                                 <td><textarea required="required"
                                                               name="recordKeepingDocumentsAppropriateRemarks"
                                                               id="recordKeepingDocumentsAppropriateRemarks"
-                                                              class="input-field w-input" cols="10" rows="5"
+                                                              class="input-field w-input" rows="5"
                                                               th:field="*{recordKeepingDocumentsAppropriateRemarks}"></textarea>
                                                 </td>
                                             </tr>
@@ -847,25 +847,25 @@
                                                         <label for="operations"
                                                                class="col-form-label">OPERATIONS</label>
                                                         <textarea required="required" name="operations" id="operations"
-                                                                  class="input-field w-input" cols="10" rows="5"
+                                                                  class="input-field w-input" rows="5"
                                                                   th:field="*{operations}"></textarea>
                                                         <label for="qualityChecks" class="col-form-label">QUALITY
                                                             CHECKS</label>
                                                         <textarea required="required" name="qualityChecks"
                                                                   id="qualityChecks" class="input-field w-input"
-                                                                  cols="10" rows="5"
+                                                                  rows="5"
                                                                   th:field="*{qualityChecks}"></textarea>
                                                         <label for="frequency" class="col-form-label">FREQUENCY</label>
                                                         <textarea required="required" name="frequency" id="frequency"
-                                                                  class="input-field w-input" cols="10" rows="5"
+                                                                  class="input-field w-input" rows="5"
                                                                   th:field="*{frequency}"></textarea>
                                                         <label for="records" class="col-form-label">RECORDS</label>
                                                         <textarea required="required" name="records" id="records"
-                                                                  class="input-field w-input" cols="10" rows="5"
+                                                                  class="input-field w-input" rows="5"
                                                                   th:field="*{records}"></textarea>
                                                         <label for="findings" class="col-form-label">FINDINGS</label>
                                                         <textarea required="required" name="findings" id="findings"
-                                                                  class="input-field w-input" cols="10" rows="5"
+                                                                  class="input-field w-input" rows="5"
                                                                   th:field="*{findings}"></textarea>
                                                     </div>
                                                     <div id="addRecommendationDetails"
@@ -1052,6 +1052,20 @@
 </script>
 <script>
     $(document).ready(function () {
+        var textarea = document.querySelector('textarea');
+
+        textarea.addEventListener('keydown', autosize);
+
+        function autosize() {
+            var el = this;
+            setTimeout(function () {
+                el.style.cssText = 'height:auto; padding:0';
+                // for box-sizing other than "content-box" use:
+                // el.style.cssText = '-moz-box-sizing:content-box';
+                el.style.cssText = 'height:' + el.scrollHeight + 'px';
+            }, 0);
+        }
+
         $("#check").click(function () {
             let allAreFilled = true;
             document.getElementById("myForm").querySelectorAll("[required]").forEach(function (i) {
@@ -1194,13 +1208,12 @@
             },
 
         ]
-        // let arrHead = ['validateQPAMSDetails', 'closeAddProducts'];
-        // let arrHeadSave = ['Add Products being manufactured', 'Close'];
 
         for (let h = 0; h < arrHead.length; h++) {
             if (eventAction === arrHead[h]) {
                 let allAreFilled = true;
                 document.getElementById(arrHeadValues[h].myFormValue).querySelectorAll("[required]").forEach(function (i) {
+                    console.log(arrHeadValues[h].myFormValue)
                     if (!allAreFilled) return;
                     let inputID = `#${i.id}`
                     if (!i.value) {

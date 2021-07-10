@@ -156,6 +156,14 @@ data class SectionsEntityDto(
     var status: Boolean?
 )
 
+data class SectionsDto(
+    var id: Long? = null,
+    var section: String? = null,
+    var divisionId: Long? = null,
+    var descriptions: String? = null,
+    var status: Boolean? = null
+)
+
 data class SubSectionsL1EntityDto(
     var id: Long?,
     var subSection: String?,

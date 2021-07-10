@@ -1,5 +1,6 @@
 package org.kebs.app.kotlin.apollo.common.dto.qa
 
+import org.kebs.app.kotlin.apollo.common.dto.UserEntityDto
 import java.math.BigDecimal
 import java.sql.Date
 import java.sql.Timestamp
@@ -67,6 +68,15 @@ data class InvoiceDto(
         var plantId: Long? = null,
 )
 
+data class ConsolidatedInvoiceDto(
+    var invoiceNumber: String? = null,
+    var totalAmount: BigDecimal? = null,
+    var paidDate: Timestamp? = null,
+    var paidStatus: Boolean? = null,
+    var submittedStatus: Boolean? = null,
+    var receiptNo: String? = null,
+)
+
 data class PermitInvoiceDto(
     var permitID: Long? = null,
     var invoiceNumber: String? = null,
@@ -74,7 +84,7 @@ data class PermitInvoiceDto(
     var brandName: String? = null,
     var totalAmount: BigDecimal? = null,
     var paidStatus: Int? = null,
-    var permitRefNumber: String? = null,
+    var permitRefNumber: String? = null
 )
 
 data class NewBatchInvoiceDto(
@@ -109,6 +119,114 @@ data class NewBatchInvoiceDto(
     }
 }
 
+
+data class BatchInvoiceDto(
+    var batchDetails: InvoiceDto? = null,
+    var AllRelatedBatchInvoices: List<PermitInvoiceDto>? = null,
+
+    )
+
+
+data class STA1Dto(
+    var commodityDescription: String? = null,
+    var tradeMark: String? = null,
+    var applicantName: String? = null,
+    var sectionId: Long? = null,
+    var permitForeignStatus: Int? = null,
+    var attachedPlant: Long? = null
+)
+
+data class STA10ProductsManufactureDto(
+    var productName: String? = null,
+    var productBrand: String? = null,
+    var productStandardNumber: String? = null,
+    var available: Boolean? = null,
+    var permitNo: String? = null,
+)
+
+data class STA10RawMaterialsDto(
+    var name: String? = null,
+    var origin: String? = null,
+    var specifications: String? = null,
+    var qualityChecksTestingRecords: String? = null,
+)
+
+data class STA10MachineryAndPlantDto(
+    var machineName: String? = null,
+    var typeModel: String? = null,
+    var countryOfOrigin: String? = null,
+)
+
+data class STA10ManufacturingProcessDto(
+    var processFlowOfProduction: String? = null,
+    var operations: String? = null,
+    var criticalProcessParametersMonitored: String? = null,
+    var frequency: String? = null,
+    var processMonitoringRecords: String? = null,
+)
+
+data class STA10SectionADto(
+    var firmName: String? = null,
+    var statusCompanyBusinessRegistration: String? = null,
+    var ownerNameProprietorDirector: String? = null,
+    var postalAddress: String? = null,
+    var contactPerson: String? = null,
+    var telephone: String? = null,
+    var emailAddress: String? = null,
+    var physicalLocationMap: String? = null,
+    var county: Long? = null,
+    var town: Long? = null,
+    var totalNumberFemale: Long? = null,
+    var totalNumberMale: Long? = null,
+    var totalNumberPermanentEmployees: Long? = null,
+    var totalNumberCasualEmployees: Long? = null,
+    var averageVolumeProductionMonth: String? = null,
+    var handledManufacturingProcessRawMaterials: String? = null,
+    var handledManufacturingProcessInprocessProducts: String? = null,
+    var handledManufacturingProcessFinalProduct: String? = null,
+    var strategyInplaceRecallingProducts: String? = null,
+    var stateFacilityConditionsRawMaterials: String? = null,
+    var stateFacilityConditionsEndProduct: String? = null,
+    var testingFacilitiesExistSpecifyEquipment: String? = null,
+    var testingFacilitiesExistStateParametersTested: String? = null,
+    var testingFacilitiesSpecifyParametersTested: String? = null,
+    var calibrationEquipmentLastCalibrated: String? = null,
+    var handlingConsumerComplaints: String? = null,
+    var companyRepresentative: String? = null,
+    var applicationDate: Date? = null,
+)
+
+data class STA3Dto(
+    var produceOrdersOrStock: String? = null,
+    var issueWorkOrderOrEquivalent: String? = null,
+    var identifyBatchAsSeparate: String? = null,
+    var productsContainersCarryWorksOrder: String? = null,
+    var isolatedCaseDoubtfulQuality: String? = null,
+    var headQaQualificationsTraining: String? = null,
+    var reportingTo: String? = null,
+    var separateQcid: String? = null,
+    var testsRelevantStandard: String? = null,
+    var spoComingMaterials: String? = null,
+    var spoProcessOperations: String? = null,
+    var spoFinalProducts: String? = null,
+    var monitoredQcs: String? = null,
+    var qauditChecksCarried: String? = null,
+    var informationQcso: String? = null,
+    var mainMaterialsPurchasedSpecification: String? = null,
+    var adoptedReceiptMaterials: String? = null,
+    var storageFacilitiesExist: String? = null,
+    var stepsManufacture: String? = null,
+    var maintenanceSystem: String? = null,
+    var qcsSupplement: String? = null,
+    var qmInstructions: String? = null,
+    var testEquipmentUsed: String? = null,
+    var indicateExternalArrangement: String? = null,
+    var levelDefectivesFound: String? = null,
+    var levelClaimsComplaints: String? = null,
+    var independentTests: String? = null,
+    var indicateStageManufacture: String? = null
+)
+
 data class PermitEntityDto(
     var id: Long? = null,
     var firmName: String? = null,
@@ -126,6 +244,8 @@ data class PermitEntityDto(
     var region: String? = null,
     var divisionValue: String? = null,
     var sectionValue: String? = null,
+    var permitAwardStatus: Boolean? = null,
+//    var taskID: Boolean? = null,
 )
 
 data class PermitDetailsDto(
@@ -172,6 +292,19 @@ data class PermitDetailsDto(
     var firmTypeName: String? = null,
     var permitTypeName: String? = null,
     var permitTypeID: Long? = null,
+)
+
+data class AllPermitDetailsDto(
+    var permitDetails: PermitDetailsDto? = null,
+//    var standardList: List<UserEntityDto>? = null,
+    var officerList: List<UserEntityDto>? = null,
+    var oldVersionList: List<PermitEntityDto>? = null
+)
+
+data class StandardsDto(
+    var id: Long? = null,
+    var standardTitle: String? = null,
+    var standardNumber: String? = null,
 )
 
 

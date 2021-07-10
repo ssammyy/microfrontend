@@ -60,6 +60,8 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.emailDTO.RegistrationForEnt
 import org.kebs.app.kotlin.apollo.api.ports.provided.sms.SmsServiceImpl
 import org.kebs.app.kotlin.apollo.common.dto.CustomResponse
 import org.kebs.app.kotlin.apollo.common.dto.HashedStringDto
+import org.kebs.app.kotlin.apollo.common.dto.SectionsDto
+import org.kebs.app.kotlin.apollo.common.dto.UserEntityDto
 import org.kebs.app.kotlin.apollo.common.exceptions.*
 import org.kebs.app.kotlin.apollo.common.utils.composeUsingSpel
 import org.kebs.app.kotlin.apollo.common.utils.generateRandomText
@@ -1321,6 +1323,36 @@ class CommonDaoServices(
                 return designation
             }
             ?: throw ExpectedDataNotFound("Designation with ID  = ${id}, does not Exist")
+    }
+
+    fun mapAllSectionsTogether(sections: List<SectionsEntity>): List<SectionsDto> {
+        return sections.map {
+            SectionsDto(it.id, it.section, it.divisionId?.id, it.descriptions, it.status == 1)
+        }
+    }
+
+    fun userListDto(userList: List<UserProfilesEntity>): List<UserEntityDto> {
+        return userList.map { u ->
+            UserEntityDto(
+                u.userId?.id,
+                u.userId?.firstName,
+                u.userId?.lastName,
+                u.userId?.userName,
+                u.userId?.userPinIdNumber,
+                u.userId?.personalContactNumber,
+                u.userId?.typeOfUser,
+                u.userId?.email,
+                u.userId?.userRegNo,
+                u.userId?.enabled == 1,
+                u.userId?.accountExpired == 1,
+                u.userId?.accountLocked == 1,
+                u.userId?.credentialsExpired == 1,
+                u.userId?.status == 1,
+                u.userId?.registrationDate,
+                u.userId?.userTypes,
+                u.userId?.title,
+            )
+        }
     }
 
     fun findDepartmentByID(departmentId: Long): DepartmentsEntity {

@@ -3,18 +3,35 @@
 </h2>
 <form (ngSubmit)="onClickLogin(loginForm.valid)" [formGroup]="loginForm" action="" class="form"
       enctype="multipart/form-data" method="post">
-  <p class="input-placeholder">
-    Email or Mobile Number
-  </p>
-  <input class="login-form-inputs" formControlName="username" id="username" name="username"
-         placeholder="The username"
-         required="required" type="text">
-  <p class="input-placeholder">
-    Password
-  </p>
-  <input class="login-form-inputs" formControlName="password" id="password" name="password"
-         required="required"
-         type="password">
+  <div class="form-body">
+    <div class="form-group">
+
+      <p class="input-placeholder"><b>Username</b></p>
+
+      <input class="login-form-inputs" formControlName="username" id="username" name="username"
+             placeholder="The username"
+             required="required" type="text">
+    </div>
+
+
+    <div class="row input-row">
+
+      <div class="col">
+        <label class="input-placeholder" for="password">
+          Password
+        </label>
+        <br>
+        <input class="form-control two-column-input" formControlName="password" id="password"
+               name="password" required="required" type="password">
+        <br>
+      </div>
+      <div class="col">
+        <button class="login-button" style="margin-top: 5%" type="button">
+          Send OTP
+        </button>
+      </div>
+    </div>
+  </div>
   <p></p>
   <button class="login-button" type="submit" value="">LOG IN</button>
 

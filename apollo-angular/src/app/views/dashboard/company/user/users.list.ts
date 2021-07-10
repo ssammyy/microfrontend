@@ -9,6 +9,8 @@ import {
 } from "../../../../core/store";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {Store} from "@ngrx/store";
+import {Location} from "@angular/common";
+import {faArrowLeft} from "@fortawesome/free-solid-svg-icons";
 
 @Component({
   selector: 'app-users',
@@ -16,12 +18,16 @@ import {Store} from "@ngrx/store";
   styles: []
 })
 export class UsersList implements OnInit {
+
+  backIcon = faArrowLeft;
+
   users$: Observable<User[]>;
 
   stepOneForm: FormGroup = new FormGroup({});
 
   // branchSoFar: Partial<User> | undefined;
-  user: User = new User();
+  // @ts-ignore
+  user: User;
 
   selectedCompany: number = -1;
   selectedBranch: number = -1;
@@ -37,6 +43,7 @@ export class UsersList implements OnInit {
   constructor(
     private service: UsersService,
     private store$: Store<any>,
+    private location: Location
   ) {
     this.users$ = service.entities$;
     service.getAll().subscribe();
@@ -49,7 +56,7 @@ export class UsersList implements OnInit {
       userName: new FormControl('', [Validators.required]),
       email: new FormControl('', [Validators.required]),
       cellphone: new FormControl('', [Validators.required]),
-      // otp: new FormControl('',),
+      otp: new FormControl('',),
       credentials: new FormControl('', [Validators.required]),
       confirmCredentials: new FormControl('', [Validators.required]),
     });
@@ -71,17 +78,10 @@ export class UsersList implements OnInit {
   onClickStep(valid: boolean) {
     if (valid) {
       this.user = this.stepOneForm.value;
-      this.user.id = -1;
-      if (
-        this.user.id === null ||
-        this.user.id < 1 ||
-        this.user.id === undefined
-      ) {
+      if (this.user.id === null || this.user.id === undefined) {
         this.user.companyId = this.selectedCompany;
         this.user.plantId = this.selectedBranch;
-        if (this.user) {
-          this.service.add(this.user);
-        }
+        this.service.add(this.user);
       } else {
         this.service.update(this.user);
       }
@@ -102,9 +102,8 @@ export class UsersList implements OnInit {
 
   }
 
-  onClickReset() {
-    this.stepOneForm.markAsPristine();
-    this.stepOneForm.reset();
-    this.user = new User();
+  public goBack(): void {
+    this.location.back();
   }
+
 }

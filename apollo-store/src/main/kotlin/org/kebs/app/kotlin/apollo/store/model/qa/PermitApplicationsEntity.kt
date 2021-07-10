@@ -610,6 +610,151 @@ class PermitApplicationsEntity:Serializable {
     @Basic
     var deletedOn: Timestamp? = null
 
+    @Column(name = "APP_REVIEW_PROCESS_INSTANCE_ID")
+    @Basic
+    var appReviewProcessInstanceId: String? = null
+
+    @Column(name = "APP_REVIEW_STATUS")
+    @Basic
+    var appReviewStatus: Int? = null
+
+    @Column(name = "APP_REVIEW_STARTED_ON")
+    @Basic
+    var appReviewStartedOn: Timestamp? = null
+
+    @Column(name = "APP_REVIEW_COMPLETED_ON")
+    @Basic
+    var appReviewCompletedOn: Timestamp? = null
+
+    @Column(name = "SF_MARK_INSPECTION_PROCESS_INSTANCE_ID")
+    @Basic
+    var sfMarkInspectionProcessInstanceId: String? = null
+
+    @Column(name = "SF_MARK_INSPECTION_STATUS")
+    @Basic
+    var sfMarkInspectionStatus: Int? = null
+
+    @Column(name = "SF_MARK_INSPECTION_STARTED_ON")
+    @Basic
+    var sfMarkInspectionStartedOn: Timestamp? = null
+
+    @Column(name = "SF_MARK_INSPECTION_COMPLETED_ON")
+    @Basic
+    var sfMarkInspectionCompletedOn: Timestamp? = null
+
+    @Column(name = "DM_APP_REVIEW_STATUS")
+    @Basic
+    var dmAppReviewStatus: Int? = null
+
+    @Column(name = "DM_APP_REVIEW_STARTED_ON")
+    @Basic
+    var dmAppReviewStartedOn: Timestamp? = null
+
+    @Column(name = "DM_APP_REVIEW_COMPLETED_ON")
+    @Basic
+    var dmAppReviewCompletedOn: Timestamp? = null
+
+    @Column(name = "DM_APP_REVIEW_PROCESS_INSTANCE_ID")
+    @Basic
+    var dmAppReviewProcessInstanceId: String? = null
+
+    @Column(name = "SF_APP_PAYMENT_STATUS")
+    @Basic
+    var sfAppPaymentStatus: Int? = null
+
+    @Column(name = "SF_APP_PAYMENT_STARTED_ON")
+    @Basic
+    var sfAppPaymentStartedOn: Timestamp? = null
+
+    @Column(name = "SF_APP_PAYMENT_COMPLETED_ON")
+    @Basic
+    var sfAppPaymentCompletedOn: Timestamp? = null
+
+    @Column(name = "SF_APP_PAYMENT_PROCESS_INSTANCE_ID")
+    @Basic
+    var sfAppPaymentProcessInstanceId: String? = null
+
+    @Column(name = "SF_PERMIT_AWARD_STATUS")
+    @Basic
+    var sfPermitAwardStatus: Int? = null
+
+    @Column(name = "SF_PERMIT_AWARD_STARTED_ON")
+    @Basic
+    var sfPermitAwardStartedOn: Timestamp? = null
+
+    @Column(name = "SF_PERMIT_AWARD_COMPLETED_ON")
+    @Basic
+    var sfPermitAwardCompletedOn: Timestamp? = null
+
+    @Column(name = "SF_PERMIT_AWARD_PROCESS_INSTANCE_ID")
+    @Basic
+    var sfPermitAwardProcessInstanceId: String? = null
+
+    @Column(name = "II_SCHEDULE_STATUS")
+    @Basic
+    var iiScheduleStatus: Int? = null
+
+    @Column(name = "II_SCHEDULE_STARTED_ON")
+    @Basic
+    var iiScheduleStartedOn: Timestamp? = null
+
+    @Column(name = "II_SCHEDULE_COMPLETED_ON")
+    @Basic
+    var iiScheduleCompletedOn: Timestamp? = null
+
+    @Column(name = "II_SCHEDULE_PROCESS_INSTANCE_ID")
+    @Basic
+    var iiScheduleProcessInstanceId: String? = null
+
+    @Column(name = "II_REPORTING_STATUS")
+    @Basic
+    var iiReportingStatus: Int? = null
+
+    @Column(name = "II_REPORTING_STARTED_ON")
+    @Basic
+    var iiReportingStartedOn: Timestamp? = null
+
+    @Column(name = "II_REPORTING_COMPLETED_ON")
+    @Basic
+    var iiReportingCompletedOn: Timestamp? = null
+
+
+    @Column(name = "II_REPORTING_PROCESS_INSTANCE_ID")
+    @Basic
+    var iiReportingProcessInstanceId: String? = null
+
+    @Column(name = "DM_ASSESSMENT_STATUS")
+    @Basic
+    var dmAssessmentStatus: Int? = null
+
+    @Column(name = "DM_ASSESSMENT_STARTED_ON")
+    @Basic
+    var dmAssessmentStartedOn: Timestamp? = null
+
+    @Column(name = "DM_ASSESSMENT_COMPLETED_ON")
+    @Basic
+    var dmAssessmentCompletedOn: Timestamp? = null
+
+    @Column(name = "DM_ASSESSMENT_PROCESS_INSTANCE_ID")
+    @Basic
+    var dmAssessmentProcessInstanceId: String? = null
+
+    @Column(name = "DM_APP_PAYMENT_STATUS")
+    @Basic
+    var dmAppPaymentStatus: Int? = null
+
+    @Column(name = "DM_APP_PAYMENT_STARTED_ON")
+    @Basic
+    var dmAppPaymentStartedOn: Timestamp? = null
+
+    @Column(name = "DM_APP_PAYMENT_COMPLETED_ON")
+    @Basic
+    var dmAppPaymentCompletedOn: Timestamp? = null
+
+    @Column(name = "DM_APP_PAYMENT_PROCESS_INSTANCE_ID")
+    @Basic
+    var dmAppPaymentProcessInstanceId: String? = null
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other == null || javaClass != other.javaClass) return false

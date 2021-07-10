@@ -24,6 +24,10 @@ class QaSampleSubmissionEntity : Serializable {
     @Basic
     var permitRefNumber: String? = null
 
+    @Column(name = "COMPLIANCE_REMARKS")
+    @Basic
+    var complianceRemarks: String? = null
+
     @Column(name = "CD_ITEM_ID")
     @Basic
     var cdItemId: Long? = null
@@ -143,6 +147,7 @@ class QaSampleSubmissionEntity : Serializable {
         return id == that.id &&
                 permitId == that.permitId &&
                 permitRefNumber == that.permitRefNumber &&
+                complianceRemarks == that.complianceRemarks &&
                 cdItemId == that.cdItemId &&
                 ssfNo == that.ssfNo &&
                 ssfSubmissionDate == that.ssfSubmissionDate &&
@@ -177,7 +182,8 @@ class QaSampleSubmissionEntity : Serializable {
         return Objects.hash(
             id,
             permitId,
-             permitRefNumber,
+            permitRefNumber,
+            complianceRemarks,
             cdItemId,
             ssfNo,
             ssfSubmissionDate,

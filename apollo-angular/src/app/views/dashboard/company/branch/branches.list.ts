@@ -19,6 +19,8 @@ import {
 } from "../../../../core/store";
 import {Store} from "@ngrx/store";
 import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
+import {Location} from "@angular/common";
+import {faArrowLeft} from "@fortawesome/free-solid-svg-icons";
 
 @Component({
   selector: 'app-branches',
@@ -30,6 +32,8 @@ export class BranchesList implements OnInit {
   filterName = '';
   p = 1;
   step = 1;
+
+  backIcon = faArrowLeft;
 
   stepTwoForm!: FormGroup;
   stepThreeForm!: FormGroup;
@@ -61,6 +65,7 @@ export class BranchesList implements OnInit {
     private townService: TownService,
     private formBuilder: FormBuilder,
     private store$: Store<any>,
+    public location: Location
   ) {
     this.branches$ = service.entities$;
     service.getAll().subscribe();
@@ -206,5 +211,9 @@ export class BranchesList implements OnInit {
     this.store$.dispatch(loadBranchId({payload: record.id}));
     this.store$.dispatch(Go({payload: null, redirectUrl: '', link: 'dashboard/branches/users'}));
 
+  }
+
+  public goBack(): void {
+    this.location.back();
   }
 }

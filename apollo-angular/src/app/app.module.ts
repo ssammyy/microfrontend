@@ -22,6 +22,7 @@ import {DirectorsList} from './views/dashboard/company/director/directors.list';
 import {DataTablesModule} from "angular-datatables";
 import {UsersList} from './views/dashboard/company/user/users.list';
 import {ResetCredentialsComponent} from './views/registration/reset-credentials.component';
+import {FontAwesomeModule} from "@fortawesome/angular-fontawesome";
 
 
 @NgModule({
@@ -57,6 +58,7 @@ import {ResetCredentialsComponent} from './views/registration/reset-credentials.
     FormsModule,
     NgxPaginationModule,
     DataTablesModule,
+    FontAwesomeModule,
   ],
   providers: [
     {provide: APP_BASE_HREF, useValue: '/migration/'}
