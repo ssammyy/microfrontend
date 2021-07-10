@@ -299,7 +299,7 @@ class AngularRoutes {
 
                 }
                 "/attach".nest {
-                    POST("/ordinary", handler::permitDetailsMigration)
+                    POST("/ordinary", handler::permitAttachUploadOrdinaryMigration)
                 }
             }
         }
