@@ -1,8 +1,8 @@
 import {Component, OnInit} from '@angular/core';
-import {Observable, Subject} from 'rxjs';
+import {Observable, of, Subject} from 'rxjs';
 import {
   Branches,
-  loadResponsesFailure, selectBranchData,
+  loadResponsesFailure, loadResponsesSuccess, selectBranchData,
   selectBranchIdData,
   selectCompanyIdData,
   User,
@@ -12,6 +12,8 @@ import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {Store} from '@ngrx/store';
 import {Location} from '@angular/common';
 import {faArrowLeft} from '@fortawesome/free-solid-svg-icons';
+import {catchError, map} from "rxjs/operators";
+import {HttpErrorResponse} from "@angular/common/http";
 
 @Component({
   selector: 'app-users',
@@ -87,13 +89,42 @@ export class UsersList implements OnInit {
       if (this.user.id === null || this.user.id === undefined) {
         this.user.companyId = this.selectedCompany;
         this.user.plantId = this.selectedBranch;
-        this.service.add(this.user);
+        this.service.add(this.user).pipe(
+          map((a) => {
+            this.stepOneForm.markAsPristine();
+            this.stepOneForm.reset();
+            return of(loadResponsesSuccess({message: {response: '00', payload: 'Successfully saved', status: 200}}));
+        }),
+          catchError(
+            (err: HttpErrorResponse) => {
+              return of(loadResponsesFailure({
+                error: {
+                  payload: err.error,
+                  status: err.status,
+                  response: (err.error instanceof ErrorEvent) ? `Error: ${err.error.message}` : `Error Code: ${err.status},  Message: ${err.error}`
+                }
+              }));
+            }));
       } else {
-        this.service.update(this.user);
+        this.service.update(this.user).pipe(
+          map((a) => {
+              this.stepOneForm.markAsPristine();
+              this.stepOneForm.reset();
+            return of(loadResponsesSuccess({message: {response: '00', payload: 'Successfully saved', status: 200}}));
+          }),
+          catchError(
+            (err: HttpErrorResponse) => {
+              return of(loadResponsesFailure({
+                error: {
+                  payload: err.error,
+                  status: err.status,
+                  response: (err.error instanceof ErrorEvent) ? `Error: ${err.error.message}` : `Error Code: ${err.status},  Message: ${err.error}`
+                }
+              }));
+            }));
       }
 
-      this.stepOneForm.markAsPristine();
-      this.stepOneForm.reset();
+
 
     } else {
       this.store$.dispatch(loadResponsesFailure({

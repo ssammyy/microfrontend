@@ -11,16 +11,18 @@ import {
   Go,
   loadCompanyId,
   loadCountyId,
-  loadResponsesFailure,
+  loadResponsesFailure, loadResponsesSuccess,
   Region,
   RegionService,
   selectCountyIdData,
   Town,
   TownService
 } from '../../../core/store';
-import {Observable, Subject, throwError} from 'rxjs';
+import {Observable, of, Subject, throwError} from 'rxjs';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {Store} from '@ngrx/store';
+import {catchError, map} from 'rxjs/operators';
+import {HttpErrorResponse} from '@angular/common/http';
 
 
 @Component({
@@ -126,7 +128,9 @@ export class CompaniesList implements OnInit {
         if (d) {
           // console.log(`Select county inside is ${d}`);
           return this.townService.getAll();
-        } else { return throwError('Invalid request, Company id is required'); }
+        } else {
+          return throwError('Invalid request, Company id is required');
+        }
       }
     );
   }
@@ -183,15 +187,27 @@ export class CompaniesList implements OnInit {
       this.companySoFar = {...this.companySoFar, ...this.stepThreeForm.value};
       this.company = {...this.company, ...this.companySoFar};
 
-      this.service.update(this.company);
-      this.step = 1;
-      this.stepOneForm.markAsPristine();
-      this.stepOneForm.reset();
-      this.stepTwoForm.markAsPristine();
-      this.stepTwoForm.reset();
-      this.stepThreeForm.markAsPristine();
-      this.stepThreeForm.reset();
-
+      this.service.update(this.company).pipe(
+        map((a) => {
+            this.stepOneForm.markAsPristine();
+            this.stepOneForm.reset();
+            this.stepTwoForm.markAsPristine();
+            this.stepTwoForm.reset();
+            this.stepThreeForm.markAsPristine();
+            this.stepThreeForm.reset();
+            this.step = 0;
+            return of(loadResponsesSuccess({message: {response: '00', payload: 'Successfully saved', status: 200}}));
+        }),
+        catchError(
+          (err: HttpErrorResponse) => {
+            return of(loadResponsesFailure({
+              error: {
+                payload: err.error,
+                status: err.status,
+                response: (err.error instanceof ErrorEvent) ? `Error: ${err.error.message}` : `Error Code: ${err.status},  Message: ${err.error}`
+              }
+            }));
+          }));
     } else {
       this.store$.dispatch(loadResponsesFailure({
         error: {

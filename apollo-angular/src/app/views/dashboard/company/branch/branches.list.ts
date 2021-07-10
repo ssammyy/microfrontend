@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {Observable, Subject, throwError} from 'rxjs';
+import {Observable, of, Subject, throwError} from 'rxjs';
 import {
   Branches,
   BranchesService, Company, County,
@@ -8,7 +8,7 @@ import {
   loadBranchId,
   loadCompanyId,
   loadCountyId,
-  loadResponsesFailure,
+  loadResponsesFailure, loadResponsesSuccess,
   Region,
   RegionService, selectCompanyData,
   selectCompanyIdData,
@@ -21,6 +21,8 @@ import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {Location} from '@angular/common';
 import {faArrowLeft} from '@fortawesome/free-solid-svg-icons';
 import {faPlus} from '@fortawesome/free-solid-svg-icons';
+import {catchError, map} from 'rxjs/operators';
+import {HttpErrorResponse} from '@angular/common/http';
 
 @Component({
   selector: 'app-branches',
@@ -42,7 +44,7 @@ export class BranchesList implements OnInit {
   branchSoFar: Partial<Branches> | undefined;
   // @ts-ignore
   branch: Branches;
-  company$: Company| undefined;
+  company$: Company | undefined;
   region$: Observable<Region[]>;
   county$: Observable<County[]>;
   town$: Observable<Town[]>;
@@ -188,16 +190,47 @@ export class BranchesList implements OnInit {
       // if (this.stepTwoForm?.get('id')?.value === null || this.stepTwoForm?.get('id')?.value === undefined) {
       if (this.branch.id === null || this.branch.id === undefined) {
         this.branch.companyProfileId = this.selectedCompany;
-        this.service.add(this.branch);
+        this.service.add(this.branch).pipe(
+          map((a) => {
+              this.stepTwoForm.markAsPristine();
+              this.stepTwoForm.reset();
+              this.stepThreeForm.markAsPristine();
+              this.stepThreeForm.reset();
+              this.step = 0;
+            return of(loadResponsesSuccess({message: {response: '00', payload: 'Successfully saved', status: 200}}));
+          }),
+          catchError(
+            (err: HttpErrorResponse) => {
+              return of(loadResponsesFailure({
+                error: {
+                  payload: err.error,
+                  status: err.status,
+                  response: (err.error instanceof ErrorEvent) ? `Error: ${err.error.message}` : `Error Code: ${err.status},  Message: ${err.error}`
+                }
+              }));
+            }));
       } else {
-        this.service.update(this.branch);
+        this.service.update(this.branch).pipe(
+          map((a) => {
+              this.stepTwoForm.markAsPristine();
+              this.stepTwoForm.reset();
+              this.stepThreeForm.markAsPristine();
+              this.stepThreeForm.reset();
+              this.step = 0;
+            return of(loadResponsesSuccess({message: {response: '00', payload: 'Successfully saved', status: 200}}));
+          }),
+          catchError(
+            (err: HttpErrorResponse) => {
+              return of(loadResponsesFailure({
+                error: {
+                  payload: err.error,
+                  status: err.status,
+                  response: (err.error instanceof ErrorEvent) ? `Error: ${err.error.message}` : `Error Code: ${err.status},  Message: ${err.error}`
+                }
+              }));
+            }));
       }
-      this.step = 1;
-      this.stepTwoForm.markAsPristine();
-      this.stepTwoForm.reset();
-      this.stepThreeForm.markAsPristine();
-      this.stepThreeForm.reset();
-      this.step = 0;
+
 
     } else {
       this.store$.dispatch(loadResponsesFailure({
