@@ -19,6 +19,7 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.core.annotation.Order
 import org.springframework.http.HttpMethod
+import org.springframework.http.HttpStatus
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity
@@ -29,10 +30,15 @@ import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.AuthenticationEntryPoint
+import org.springframework.security.web.authentication.HttpStatusEntryPoint
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher
+import org.springframework.web.cors.CorsConfiguration
+import org.springframework.web.cors.CorsConfigurationSource
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource
+import java.util.*
 
 
 @EnableWebSecurity
@@ -67,8 +73,24 @@ class WebSecurityConfig {
                 .passwordEncoder(passwordEncoder)
         }
 
+        @Bean
+        fun corsConfigurationSource(): CorsConfigurationSource? {
+            val configuration = CorsConfiguration()
+            configuration.allowedOrigins = listOf(
+                "http://localhost:4200",
+                "https://kimsint.kebs.org:8006"
+            )
+            configuration.allowedMethods = listOf("*")
+            configuration.allowedHeaders = listOf("*")
+            configuration.allowCredentials = true
+            val source = UrlBasedCorsConfigurationSource()
+            source.registerCorsConfiguration("/**", configuration)
+            return source
+        }
+
         override fun configure(http: HttpSecurity) {
-            http.cors()
+            http
+                .cors().configurationSource(corsConfigurationSource())
                 .and()
                 .csrf().disable()
                 .antMatcher("/api/v1/**")
@@ -89,6 +111,11 @@ class WebSecurityConfig {
                 .anyRequest().authenticated()
                 .and()
                 .exceptionHandling()
+                .authenticationEntryPoint(HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
+                .accessDeniedHandler { _, response, accessDeniedException ->
+                    response?.status = HttpStatus.UNAUTHORIZED.value()
+                    response?.outputStream?.println("message: ${accessDeniedException.message}, timestamp: ${Calendar.getInstance().time}")
+                }
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             http
@@ -190,7 +217,10 @@ class WebSecurityConfig {
 //            .logoutSuccessHandler(logoutSuccessHandler())
                 .and()
                 .exceptionHandling()
-                .defaultAuthenticationEntryPointFor(mainAuthenticationEntryPoint("/auth/login"), AntPathRequestMatcher("/"))
+                .defaultAuthenticationEntryPointFor(
+                    mainAuthenticationEntryPoint("/auth/login"),
+                    AntPathRequestMatcher("/")
+                )
                 .accessDeniedPage("/accessDenied")
                 .accessDeniedHandler(accessDeniedHandler())
 

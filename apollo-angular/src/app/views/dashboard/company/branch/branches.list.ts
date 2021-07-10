@@ -187,17 +187,24 @@ export class BranchesList implements OnInit {
     if (valid) {
       this.branchSoFar = {...this.branchSoFar, ...this.stepThreeForm.value};
       this.branch = {...this.branch, ...this.branchSoFar};
+      this.branch.companyProfileId = this.selectedCompany
       // if (this.stepTwoForm?.get('id')?.value === null || this.stepTwoForm?.get('id')?.value === undefined) {
       if (this.branch.id === null || this.branch.id === undefined) {
         this.branch.companyProfileId = this.selectedCompany;
         this.service.add(this.branch).pipe(
           map((a) => {
-              this.stepTwoForm.markAsPristine();
-              this.stepTwoForm.reset();
-              this.stepThreeForm.markAsPristine();
-              this.stepThreeForm.reset();
-              this.step = 0;
-            return of(loadResponsesSuccess({message: {response: '00', payload: 'Successfully saved', status: 200}}));
+            this.stepTwoForm.markAsPristine();
+            this.stepTwoForm.reset();
+            this.stepThreeForm.markAsPristine();
+            this.stepThreeForm.reset();
+            this.step = 0;
+            return of(loadResponsesSuccess({
+              message: {
+                response: '00',
+                payload: `Successfully saved ${a.buildingName}`,
+                status: 200
+              }
+            }));
           }),
           catchError(
             (err: HttpErrorResponse) => {
@@ -212,12 +219,18 @@ export class BranchesList implements OnInit {
       } else {
         this.service.update(this.branch).pipe(
           map((a) => {
-              this.stepTwoForm.markAsPristine();
-              this.stepTwoForm.reset();
-              this.stepThreeForm.markAsPristine();
-              this.stepThreeForm.reset();
-              this.step = 0;
-            return of(loadResponsesSuccess({message: {response: '00', payload: 'Successfully saved', status: 200}}));
+            this.stepTwoForm.markAsPristine();
+            this.stepTwoForm.reset();
+            this.stepThreeForm.markAsPristine();
+            this.stepThreeForm.reset();
+            this.step = 0;
+            return of(loadResponsesSuccess({
+              message: {
+                response: '00',
+                payload: `Successfully saved ${a.buildingName}`,
+                status: 200
+              }
+            }));
           }),
           catchError(
             (err: HttpErrorResponse) => {

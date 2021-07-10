@@ -166,14 +166,18 @@ class RegistrationManagementDaoService(
                     throw ExpectedDataNotFound("Authorization failed")
                 } else {
                     if ((u.id ?: -2L) < 0) {
-                        usersRepo.findByUserName(u.userName?: throw NullValueNotAllowedException("Username is required"))
-                            ?.let{
+                        usersRepo.findByUserName(
+                            u.userName ?: throw NullValueNotAllowedException("Username is required")
+                        )
+                            ?.let {
                                 throw InvalidValueException("Selected username is already in use")
                             }
-                            ?: run{
-                                usersRepo.findByEmail(u.email?: throw NullValueNotAllowedException("Email is required"))
+                            ?: run {
+                                usersRepo.findByEmail(
+                                    u.email ?: throw NullValueNotAllowedException("Email is required")
+                                )
                                     ?.let { throw InvalidValueException("Selected email is already in use") }
-                                    ?: run{
+                                    ?: run {
 
                                         var entity = UsersEntity().apply {
                                             firstName = u.firstName
@@ -360,7 +364,7 @@ class RegistrationManagementDaoService(
                 physicalAddress = dto.physicalAddress
                 street = dto.street
                 buildingName = dto.buildingName
-                nearestLandMark = dto.buildingName
+                nearestLandMark = dto.nearestLandMark
                 postalAddress = dto.postalAddress
                 telephone = dto.telephone
                 emailAddress = dto.emailAddress
@@ -386,7 +390,7 @@ class RegistrationManagementDaoService(
                         physicalAddress = dto.physicalAddress
                         street = dto.street
                         buildingName = dto.buildingName
-                        nearestLandMark = dto.buildingName
+                        nearestLandMark = dto.nearestLandMark
                         postalAddress = dto.postalAddress
                         telephone = dto.telephone
                         emailAddress = dto.emailAddress
@@ -740,7 +744,9 @@ class RegistrationManagementDaoService(
                         county = dto.county
                         town = dto.town
                         region = dto.region
-                        firmCategory = qaDaoServices.manufactureType(yearlyTurnover ?: throw NullValueNotAllowedException("Invalid Record") ).id
+                        firmCategory = qaDaoServices.manufactureType(
+                            yearlyTurnover ?: throw NullValueNotAllowedException("Invalid Record")
+                        ).id
                         manufactureStatus = applicationMapProperties.transactionActiveStatus
                         status = applicationMapProperties.transactionActiveStatus
                         createdBy = user.userName

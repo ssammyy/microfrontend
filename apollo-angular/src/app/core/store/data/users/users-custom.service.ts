@@ -72,7 +72,7 @@ export class UsersCustomService extends DefaultDataService<User> {
     if (data) {
       myUrl = `${this.baseUrl}${data}/branches/${branch}/users/${update.id}`;
       // console.log(`Revised url = ${baseUrl}${data}/branches/ `)
-      return this.http.put<User>(myUrl, update).pipe(
+      return this.http.put<User>(myUrl, update.changes).pipe(
         map((response: User) => {
           update = {...update, ...response};
           super.update(update);

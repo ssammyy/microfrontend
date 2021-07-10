@@ -62,7 +62,7 @@ export class BranchesCustomService extends DefaultDataService<Branches> {
     if (data) {
       myUrl = `${this.baseUrl}${data}/branches/${update.id}`;
       // console.log(`Revised url = ${baseUrl}${data}/branches/ `)
-      return this.http.put<Branches>(myUrl, update).pipe(
+      return this.http.put<Branches>(myUrl, update.changes).pipe(
         map((response: Branches) => {
           update = {...update, ...response};
           super.update(update);
