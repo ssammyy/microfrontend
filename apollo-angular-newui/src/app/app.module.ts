@@ -66,6 +66,9 @@ import {RegistrationComponent} from "./views/registration.component";
 import {SignUpComponent} from "./views/registration/sign-up.component";
 import {ResetCredentialsComponent} from "./views/registration/reset-credentials.component";
 import {LoginComponent} from "./views/registration/login.component";
+import {NewDmarkPermitComponent} from "./apollowebs/new-dmark-permit/new-dmark-permit.component";
+import {PermitReportComponent} from "./apollowebs/permit-report/permit-report.component";
+import { NewSmarkPermitComponent } from './apollowebs/new-smark-permit/new-smark-permit.component';
 
 @NgModule({
     exports: [
@@ -108,7 +111,22 @@ import {LoginComponent} from "./views/registration/login.component";
         ReactiveFormsModule,
         RouterModule
     ],
-    declarations: [LoginComponent, ResetCredentialsComponent, SignUpComponent,RegistrationComponent,DashboardComponent, InvoiceComponent, FmarkComponent, DmarkComponent, SmarkComponent, St10FormComponent, FmarkallappsComponent]
+    declarations: [
+        LoginComponent,
+        ResetCredentialsComponent,
+        SignUpComponent,
+        RegistrationComponent,
+        DashboardComponent,
+        InvoiceComponent,
+        FmarkComponent,
+        DmarkComponent,
+        SmarkComponent,
+        St10FormComponent,
+        FmarkallappsComponent,
+        NewDmarkPermitComponent,
+        PermitReportComponent,
+        NewSmarkPermitComponent
+    ]
 })
 export class MaterialModule {}
 

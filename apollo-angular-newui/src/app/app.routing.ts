@@ -11,6 +11,9 @@ import {SignUpComponent} from "./views/registration/sign-up.component";
 import {ResetCredentialsComponent} from "./views/registration/reset-credentials.component";
 import {RouteGuard} from "./core/route-guard/route.guard";
 import {LoginComponent} from "./views/registration/login.component";
+import {PermitReportComponent} from "./apollowebs/permit-report/permit-report.component";
+import {NewDmarkPermitComponent} from "./apollowebs/new-dmark-permit/new-dmark-permit.component";
+import {NewSmarkPermitComponent} from "./apollowebs/new-smark-permit/new-smark-permit.component";
 
 // export const AppRoutes: Routes = [
 //     {
@@ -124,7 +127,20 @@ const routes: Routes = [
     {
         path: 'st10Form', component: AdminLayoutComponent,
         children: [{path: '', component: St10FormComponent}]
+    },
+    {
+        path: 'permitReport', component: AdminLayoutComponent,
+        children: [{path: '', component: PermitReportComponent}]
+    },
+    {
+        path: 'newSmarkPermit', component: AdminLayoutComponent,
+        children: [{path: '', component: NewSmarkPermitComponent}]
+    },
+    {
+        path: 'newDmarkPermit', component: AdminLayoutComponent,
+        children: [{path: '', component: NewDmarkPermitComponent}]
     }
+
 ];
 
 
