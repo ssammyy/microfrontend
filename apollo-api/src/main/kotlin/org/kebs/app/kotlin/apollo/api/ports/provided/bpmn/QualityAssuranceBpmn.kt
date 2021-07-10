@@ -1489,7 +1489,9 @@ class QualityAssuranceBpmn(
                 variables["manufacturerEmail"] = checkVariables["manufacturerEmail"].toString()
                 variables["isRenewal"] = 0
                 variables["isDomestic"] = 0
-                variables["applicationComplete"] = 0
+                variables["foreignApplicationComplete"] = 0
+                variables["domesticApplicationComplete"] = 0
+                variables["pcmId"] = 0
                 //In this case the first assignee is the manufacturer
                 permit.userId?.let { manufacturerId ->
                     bpmnCommonFunctions.startBpmnProcess(qaDmAppPaymentProcessDefinitionKey, qaDmAppPaymentBusinessKey, variables, manufacturerId)?.let {
@@ -1537,35 +1539,52 @@ class QualityAssuranceBpmn(
         return false
     }
 
-    fun qaDmappFillDomesticAppComplete(permitId: Long): Boolean {
-        KotlinLogging.logger { }.info("PermitId : $permitId : QA DM App Payment fill domestic application complete")
-        qaCompleteTask(permitId, "qaDmappFillDomesticApplication", qaDmAppPaymentProcessDefinitionKey)?.let {
-            return qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), null, 0, true)
-        }
-        return false
-    }
-
     fun qaDmappFillForeignAppComplete(permitId: Long, pcmAssigneeId: Long): Boolean {
         KotlinLogging.logger { }.info("PermitId : $permitId : QA DM App Payment fill foreign application complete")
         qaCompleteTask(permitId, "qaDmappFillForeignApplication", qaDmAppPaymentProcessDefinitionKey)?.let {
-            return qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "qaDmappPCMCheckApplicationComplete", pcmAssigneeId, false)
+            return qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "qaDmappPCMCheckApplicationCompleForeign", pcmAssigneeId, false)
         }
         return false
     }
 
-    fun qaDmappCheckAppComplete(permitId: Long, applicationComplete: Boolean): Boolean {
-        KotlinLogging.logger { }.info("PermitId : $permitId : QA DM App Payment check if application complete")
-        updateTaskVariableByObjectIdAndKey(permitId, "qaDmappPCMCheckApplicationComplete", qaDmAppPaymentProcessDefinitionKey, "applicationComplete", bpmnCommonFunctions.booleanToInt(applicationComplete).toString())
-        qaCompleteTask(permitId, "qaDmappPCMCheckApplicationComplete", qaDmAppPaymentProcessDefinitionKey)?.let {
+    fun qaDmappCheckAppCompleteForeign(permitId: Long, foreignApplicationComplete: Boolean): Boolean {
+        KotlinLogging.logger { }.info("PermitId : $permitId : QA DM App Payment check if foreign application complete")
+        updateTaskVariableByObjectIdAndKey(permitId, "qaDmappPCMCheckApplicationCompleForeign", qaDmAppPaymentProcessDefinitionKey, "foreignApplicationComplete", bpmnCommonFunctions.booleanToInt(foreignApplicationComplete).toString())
+        qaCompleteTask(permitId, "qaDmappPCMCheckApplicationCompleForeign", qaDmAppPaymentProcessDefinitionKey)?.let {
             return qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), null, 0, true)
         }
         return false
     }
 
-    fun qaDmappManufacturerCorrectionComplete(permitId: Long): Boolean {
+    fun qaDmappManufacturerCorrectionCompleteForeign(permitId: Long, pcmAssigneeId: Long): Boolean {
         KotlinLogging.logger { }.info("PermitId : $permitId : QA DM App Payment manufacturer correction complete")
-        qaCompleteTask(permitId, "qaDmappManufacturerCorrection", qaDmAppPaymentProcessDefinitionKey)?.let {
+        qaCompleteTask(permitId, "qaDmappManufacturerCorrectionForeign", qaDmAppPaymentProcessDefinitionKey)?.let {
+            return qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), null, pcmAssigneeId, false)
+        }
+        return false
+    }
+
+    fun qaDmappFillDomesticAppComplete(permitId: Long, pcmAssigneeId: Long): Boolean {
+        KotlinLogging.logger { }.info("PermitId : $permitId : QA DM App Payment fill domestic application complete")
+        qaCompleteTask(permitId, "qaDmappFillDomesticApplication", qaDmAppPaymentProcessDefinitionKey)?.let {
+            return qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "qaDmappPCMCheckApplicationCompleDomestic", pcmAssigneeId, false)
+        }
+        return false
+    }
+
+    fun qaDmappCheckAppCompleteDomestic(permitId: Long, domesticApplicationComplete: Boolean): Boolean {
+        KotlinLogging.logger { }.info("PermitId : $permitId : QA DM App Payment check if domestic application complete")
+        updateTaskVariableByObjectIdAndKey(permitId, "qaDmappPCMCheckApplicationCompleDomestic", qaDmAppPaymentProcessDefinitionKey, "domesticApplicationComplete", bpmnCommonFunctions.booleanToInt(domesticApplicationComplete).toString())
+        qaCompleteTask(permitId, "qaDmappPCMCheckApplicationCompleDomestic", qaDmAppPaymentProcessDefinitionKey)?.let {
             return qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), null, 0, true)
+        }
+        return false
+    }
+
+    fun qaDmappManufacturerCorrectionCompleteDomestic(permitId: Long, pcmAssigneeId: Long): Boolean {
+        KotlinLogging.logger { }.info("PermitId : $permitId : QA DM App Payment manufacturer correction domestic")
+        qaCompleteTask(permitId, "qaDmappManufacturerCorrectionDomestic", qaDmAppPaymentProcessDefinitionKey)?.let {
+            return qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), null, pcmAssigneeId, false)
         }
         return false
     }
