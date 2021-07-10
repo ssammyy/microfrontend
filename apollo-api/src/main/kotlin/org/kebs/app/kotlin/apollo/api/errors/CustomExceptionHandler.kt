@@ -19,9 +19,11 @@ import org.springframework.web.bind.annotation.ResponseBody
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.context.request.WebRequest
 import org.springframework.web.servlet.ModelAndView
+import java.io.IOException
 import java.time.Instant
 import javax.servlet.http.HttpServletRequest
 import javax.validation.ConstraintViolationException
+
 
 @Order(Ordered.HIGHEST_PRECEDENCE)
 @ControllerAdvice
@@ -66,6 +68,12 @@ class CustomExceptionHandler {
         return errorMessageAlert(req, exception, HttpStatus.BAD_REQUEST)
     }
 
+    @ExceptionHandler(value = [org.springframework.security.access.AccessDeniedException::class])
+    @Throws(Exception::class)
+    fun handleErrorAccessDeniedException(req: HttpServletRequest, exception: Exception): ModelAndView? {
+        return errorMessageAlert(req, InvalidValueException("You are not authorized to access  this page"), HttpStatus.UNAUTHORIZED)
+    }
+
     private fun errorMessageAlert(req: HttpServletRequest, exception: Exception, status: HttpStatus): ModelAndView {
         KotlinLogging.logger { }.error("Request: " + req.requestURI + " raised " + exception.message, exception)
         KotlinLogging.logger { }.debug("Request: " + req.requestURI + " raised " + exception.message, exception)
@@ -74,7 +82,7 @@ class CustomExceptionHandler {
         mav.addObject("message", exception.message)
         mav.addObject("path", req.requestURL)
         mav.addObject("timestamp", Instant.now())
-        mav.addObject("status", 500)
+        mav.addObject("status", status)
         mav.viewName = "error"
         return mav
     }

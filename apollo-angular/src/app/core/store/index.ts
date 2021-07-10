@@ -44,7 +44,11 @@ export function localStorageSyncReducer(reducer: ActionReducer<any>): ActionRedu
     keys: [
       'responses',
       'routes',
-      'auth'
+      'auth',
+      'companyId',
+      'userId',
+      'branchId'
+
     ],
     rehydrate: true,
     storage: sessionStorage

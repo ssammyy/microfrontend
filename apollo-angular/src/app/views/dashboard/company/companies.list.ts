@@ -189,14 +189,20 @@ export class CompaniesList implements OnInit {
 
       this.service.update(this.company).pipe(
         map((a) => {
-            this.stepOneForm.markAsPristine();
-            this.stepOneForm.reset();
-            this.stepTwoForm.markAsPristine();
-            this.stepTwoForm.reset();
-            this.stepThreeForm.markAsPristine();
-            this.stepThreeForm.reset();
-            this.step = 0;
-            return of(loadResponsesSuccess({message: {response: '00', payload: 'Successfully saved', status: 200}}));
+          this.stepOneForm.markAsPristine();
+          this.stepOneForm.reset();
+          this.stepTwoForm.markAsPristine();
+          this.stepTwoForm.reset();
+          this.stepThreeForm.markAsPristine();
+          this.stepThreeForm.reset();
+          this.step = 0;
+          return of(loadResponsesSuccess({
+            message: {
+              response: '00',
+              payload: `Successfully saved ${a.name}`,
+              status: 200
+            }
+          }));
         }),
         catchError(
           (err: HttpErrorResponse) => {
@@ -232,7 +238,7 @@ export class CompaniesList implements OnInit {
   }
 
 
-  // tslint:disable-next-line:use-lifecycle-interface
+  // eslint-disable-next-line @angular-eslint/use-lifecycle-interface
   ngOnDestroy(): void {
     // Do not forget to unsubscribe the event
     this.dtTrigger.unsubscribe();
