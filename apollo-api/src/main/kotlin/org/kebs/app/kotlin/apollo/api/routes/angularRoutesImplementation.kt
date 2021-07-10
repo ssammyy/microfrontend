@@ -254,16 +254,15 @@ class AngularRoutes {
             GET("/standards-list", handler::standardsListMigration)
             "/permit".nest {
                 GET("/list", handler::permitListMigration)
+                GET("/firm-list", handler::firmPermitListMigration)
                 "/apply".nest {
                     POST("/sta1", handler::permitApplySTA1Migration)
                     POST("/submit-application", handler::permitSubmitApplicationMigration)
                     POST("/sta3", handler::permitApplySTA3Migration)
                     "/sta10".nest {
                         POST("/firm_details", handler::permitApplySTA10FirmDetailsMigration)
-                        POST(
-                            "/products_being_manufactured",
-                            handler::permitApplySTA10ProductsBeingManufacturedMigration
-                        )
+                        POST("/personnel_details", handler::permitApplySTA10PersonnelMigration)
+                        POST("/products_being_manufactured", handler::permitApplySTA10ProductsBeingManufacturedMigration)
                         POST("/raw_material", handler::permitApplySTA10RawMaterialsMigration)
                         POST("/machinery_plant", handler::permitApplySTA10MachineryAndPlantMigration)
                         POST("/manufacturing_process", handler::permitApplySTA10ManufacturingProcessMigration)
@@ -280,6 +279,7 @@ class AngularRoutes {
                     GET("/invoice-permit", handler::permitViewInvoiceDetailsMigration)
                     "/sta10".nest {
                         GET("/firm-details", handler::permitViewSTA10FirmDetailsMigration)
+                        GET("/personnel_details", handler::permitViewSTA10PersonnelMigration)
                         GET("/products-being-manufactured", handler::permitViewSTA10ProductsBeingManufacturedMigration)
                         GET("/raw-material", handler::permitViewSTA10RawMaterialsMigration)
                         GET("/machinery-plant", handler::permitViewSTA10MachineryAndPlantMigration)
@@ -291,6 +291,15 @@ class AngularRoutes {
                         GET("/batch-invoice-list", handler::invoiceBatchListMigration)
 
                     }
+                }
+                "/invoice".nest {
+                    GET("/list", handler::invoiceListMigration)
+                    GET("/list-no-batch-Id", handler::invoiceListNoBatchIDMigration)
+                    GET("/batch-invoice-list", handler::invoiceBatchListMigration)
+
+                }
+                "/attach".nest {
+                    POST("/ordinary", handler::permitDetailsMigration)
                 }
             }
         }

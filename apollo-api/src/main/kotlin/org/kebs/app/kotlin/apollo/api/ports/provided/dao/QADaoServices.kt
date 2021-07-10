@@ -1,6 +1,7 @@
 package org.kebs.app.kotlin.apollo.api.ports.provided.dao
 
 import mu.KotlinLogging
+import org.kebs.app.kotlin.apollo.api.controllers.qaControllers.QualityAssuranceController
 import org.kebs.app.kotlin.apollo.api.notifications.Notifications
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.QualityAssuranceBpmn
 import org.kebs.app.kotlin.apollo.api.ports.provided.mpesa.MPesaService
@@ -20,6 +21,8 @@ import org.kebs.app.kotlin.apollo.store.model.registration.UserRequestTypesEntit
 import org.kebs.app.kotlin.apollo.store.repo.*
 import org.kebs.app.kotlin.apollo.store.repo.di.ICfgMoneyTypeCodesRepository
 import org.kebs.app.kotlin.apollo.store.repo.qa.*
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.context.annotation.Lazy
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.security.core.Authentication
 import org.springframework.stereotype.Service
@@ -37,7 +40,7 @@ class QADaoServices(
     private val applicationMapProperties: ApplicationMapProperties,
     private val commonDaoServices: CommonDaoServices,
     private val productsRepo: IProductsRepository,
-    private val qualityAssuranceBpmn: QualityAssuranceBpmn,
+//    private val qualityAssuranceBpmn: QualityAssuranceBpmn,
     private val workPlanCreatedRepo: IQaWorkplanRepository,
     private val iTurnOverRatesRepository: ITurnOverRatesRepository,
     private val iManufacturePaymentDetailsRepository: IManufacturerPaymentDetailsRepository,
@@ -46,6 +49,7 @@ class QADaoServices(
     private val paymentUnitsRepository: ICfgKebsPermitPaymentUnitsRepository,
     private val serviceRequestsRepository: IServiceRequestsRepository,
     private val qaInspectionOPCRepo: IQaInspectionOpcEntityRepository,
+    private val qaPersonnelInchargeRepo: IQaPersonnelInchargeEntityRepository,
     private val qaInspectionTechnicalRepo: IQaInspectionTechnicalRepository,
     private val qaInspectionReportRecommendationRepo: IQaInspectionReportRecommendationRepository,
     private val qaInspectionHaccpImplementationRepo: IQaInspectionHaccpImplementationRepository,
@@ -74,6 +78,12 @@ class QADaoServices(
     private val mpesaServices: MPesaService,
     private val notifications: Notifications,
 ) {
+
+
+    @Lazy
+    @Autowired
+    lateinit var qualityAssuranceBpmn: QualityAssuranceBpmn
+
 
     final var appId = applicationMapProperties.mapQualityAssurance
 
@@ -187,6 +197,16 @@ class QADaoServices(
             }
 
             ?: throw ExpectedDataNotFound("No Permit Found for the following user with USERNAME = ${user.userName}")
+    }
+
+    fun findAllFirmPermits(companyID: Long): List<PermitApplicationsEntity> {
+
+        permitRepo.findByCompanyIdAndOldPermitStatusIsNull(companyID)
+            ?.let { permitList ->
+                return permitList
+            }
+
+            ?: throw ExpectedDataNotFound("No Permits Found for the following COMPANY ID = ${companyID}")
     }
 
     fun findAllUserPermitWithPermitTypeAwardedStatusIsNull(
@@ -836,6 +856,10 @@ class QADaoServices(
         return rawMaterialsSTA10Repo.findBySta10Id(sta10Id)
     }
 
+    fun findPersonnelWithSTA10ID(sta10Id: Long): List<QaPersonnelInchargeEntity>? {
+        return qaPersonnelInchargeRepo.findBySta10Id(sta10Id)
+    }
+
     fun findMachinePlantsWithSTA10ID(sta10Id: Long): List<QaMachineryEntity>? {
         return machinePlantsSTA10Repo.findBySta10Id(sta10Id)
     }
@@ -961,6 +985,10 @@ class QADaoServices(
                 p.divisionId?.let { commonDaoServices.findDivisionWIthId(it).division },
                 p.sectionId?.let { commonDaoServices.findSectionWIthId(it).section },
                 p.permitAwardStatus == 1,
+                p.permitExpiredStatus == 1,
+                p.userTaskId,
+                p.companyId,
+                p.permitType,
             )
         }
     }
@@ -984,6 +1012,18 @@ class QADaoServices(
                 p.origin,
                 p.specifications,
                 p.qualityChecksTestingRecords,
+            )
+        }
+    }
+
+
+   fun listSTA10Personnel(qaPersonnelIncharge: List<QaPersonnelInchargeEntity>): List<STA10PersonnelDto> {
+        return qaPersonnelIncharge.map { p ->
+            STA10PersonnelDto(
+                p.id,
+                        p.personnelName,
+                        p.qualificationInstitution,
+                        p.dateOfEmployment,
             )
         }
     }
@@ -1155,6 +1195,171 @@ class QADaoServices(
         }
         return p
     }
+
+//    fun QualityAssuranceController(
+//        map: ServiceMapsEntity,
+//        loggedInUser: UsersEntity,
+//        uploadsQa: PermitUploads,
+//        permitDetails: PermitApplicationsEntity
+//    ) {
+//
+//        val uploads = QaUploadsEntity()
+//        var versionNumber: Long = 1
+//        var uploadResults: Pair<ServiceRequestsEntity, QaUploadsEntity>? = null
+//
+//        when (uploadsQa.ordinaryStatus) {
+//            map.activeStatus -> {
+//                uploads.ordinaryStatus = uploadsQa.ordinaryStatus
+//                uploadResults = saveQaFileUploads(
+//                    uploadsQa.docFile,
+//                    uploadsQa.docFileName,
+//                    loggedInUser,
+//                    map,
+//                    uploads,
+//                    permitDetails.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"),
+//                    versionNumber,
+//                    uploadsQa.manufactureNonStatus
+//                )
+//            }
+//            map.inactiveStatus -> {
+//                uploads.ordinaryStatus = uploadsQa.ordinaryStatus
+//                when {
+//                    uploadsQa.cocStatus != null -> {
+//                        uploads.cocStatus = uploadsQa.cocStatus
+//                        versionNumber = findAllUploadedFileBYPermitRefNumberAndCocStatus(
+//                            permitDetails.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"),
+//                            map.activeStatus
+//                        ).size.toLong().plus(versionNumber)
+//                        uploadResults = saveQaFileUploads(
+//                            uploadsQa.docFile,
+//                            uploadsQa.docFileName,
+//                            loggedInUser,
+//                            map,
+//                            uploads,
+//                            permitDetails.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"),
+//                            versionNumber,
+//                            uploadsQa.manufactureNonStatus
+//                        )
+//                        permitDetails.cocId = uploadResults.second.id
+//                       val permitDetails2 = permitUpdateDetails(permitDetails, map, loggedInUser).second
+//                        permitInsertStatus(
+//                            permitDetails2,
+//                            applicationMapProperties.mapQaStatusCocUploaded,
+//                            loggedInUser
+//                        )
+//
+//                    }
+//                    uploadsQa.sscUploadStatus != null -> {
+//                        uploads.sscStatus = uploadsQa.sscUploadStatus
+//                        versionNumber = findAllUploadedFileBYPermitRefNumberAndSscStatus(
+//                            permitDetails.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"),
+//                            map.activeStatus
+//                        ).size.toLong().plus(versionNumber)
+//                        uploadResults = saveQaFileUploads(
+//                            uploadsQa.docFile,
+//                            uploadsQa.docFileName,
+//                            loggedInUser,
+//                            map,
+//                            uploads,
+//                            permitDetails.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"),
+//                            versionNumber,
+//                            uploadsQa.manufactureNonStatus
+//                        )
+//                        permitDetails.generateSchemeStatus = map.activeStatus
+//                        permitDetails.sscId = uploadResults.second.id
+//                        val permitDetails2 = permitUpdateDetails(permitDetails, map, loggedInUser).second
+//                        permitInsertStatus(
+//                            permitDetails2,
+//                            applicationMapProperties.mapQaStatusPApprSSC,
+//                            loggedInUser
+//                        )
+//
+//                    }
+//                    uploadsQa.assessmentReportStatus != null -> {
+//                        uploads.assessmentReportStatus = uploadsQa.assessmentReportStatus
+//                        versionNumber = findAllUploadedFileBYPermitRefNumberAndAssessmentReportStatus(
+//                            permitDetails.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"),
+//                            map.activeStatus
+//                        ).size.toLong().plus(versionNumber)
+//                        uploadResults = saveQaFileUploads(
+//                            uploadsQa.docFile,
+//                            uploadsQa.docFileName,
+//                            loggedInUser,
+//                            map,
+//                            uploads,
+//                            permitDetails.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"),
+//                            versionNumber,
+//                            uploadsQa.manufactureNonStatus
+//                        )
+//
+//                        val hodDetails = assignNextOfficerAfterPayment(
+//                            permitDetails,
+//                            map,
+//                            applicationMapProperties.mapQADesignationIDForHODId
+//                        )
+//
+//
+//                        with(permitDetails) {
+//                            assessmentScheduledStatus = map.successStatus
+//                            assessmentReportRemarks = uploadsQa.assessmentRecommendations
+//                            hodId = hodDetails?.id
+//                            permitStatus = applicationMapProperties.mapQaStatusPApprovalAssesmentReport
+//                            userTaskId = applicationMapProperties.mapUserTaskNameHOD
+//                        }
+//                        permitUpdateDetails(permitDetails, map, loggedInUser)
+//
+//                        //Send notification to PAC secretary
+//                        val hodSec = hodDetails?.id?.let { commonDaoServices.findUserByID(it) }
+//                        hodSec?.email?.let { sendPacDmarkAssessmentNotificationEmail(it, permitDetails) }
+//
+//                    }
+//                    uploadsQa.inspectionReportStatus != null -> {
+//                        uploads.inspectionReportStatus = uploadsQa.inspectionReportStatus
+//                        //                        versionNumber = qaDaoServices.findAllUploadedFileBYPermitIDAndSscStatus(permitID, map.activeStatus).size.toLong().plus(versionNumber)
+//                        uploadResults = saveQaFileUploads(
+//                            uploadsQa.docFile,
+//                            uploadsQa.docFileName,
+//                            loggedInUser,
+//                            map,
+//                            uploads,
+//                            permitDetails.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"),
+//                            versionNumber,
+//                            uploadsQa.manufactureNonStatus
+//                        )
+//                        //                        permitDetails.generateSchemeStatus = map.activeStatus
+//                        //                        permitDetails.sscId = uploadResults.second.id
+//                        //TODO()
+////                        val permitDetails3 = permitUpdateDetails(permitDetails, map, loggedInUser).second
+//                        //                        qaDaoServices.permitInsertStatus(permitDetails, applicationMapProperties.mapQaStatusPApprSSC, loggedInUser)
+//
+//                    }
+//                    uploadsQa.sta10Status != null -> {
+//                        uploads.sta10Status = uploadsQa.sta10Status
+//                        //                        versionNumber = qaDaoServices.findAllUploadedFileBYPermitIDAndSscStatus(permitID, map.activeStatus).size.toLong().plus(versionNumber)
+//                        uploadResults = saveQaFileUploads(
+//                            uploadsQa.docFile,
+//                            uploadsQa.docFileName,
+//                            loggedInUser,
+//                            map,
+//                            uploads,
+//                            permitDetails.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"),
+//                            versionNumber,
+//                            uploadsQa.manufactureNonStatus
+//                        )
+//                        //                        permitDetails.generateSchemeStatus = map.activeStatus
+//                        //                        permitDetails.sscId = uploadResults.second.id
+////                        val permitDetails4 = permitUpdateDetails(permitDetails, map, loggedInUser).second
+//                        //                        qaDaoServices.permitInsertStatus(permitDetails, applicationMapProperties.mapQaStatusPApprSSC, loggedInUser)
+//
+//                    }
+//
+//                }
+//            }
+//        }
+//
+////        result1 = uploadResults?.first
+////        return Pair(permitDetails, result1)
+//    }
 
     fun mapAllPermitDetailsTogether(permit: PermitApplicationsEntity, map: ServiceMapsEntity): AllPermitDetailsDto {
         return AllPermitDetailsDto(
@@ -1347,6 +1552,7 @@ class QADaoServices(
                 divisionId = commonDaoServices.findSectionWIthId(sectionId ?: throw ExpectedDataNotFound("SECTION ID IS MISSING")).divisionId?.id
                 versionNumber = 1
                 endOfProductionStatus = map.initStatus
+                companyId = user.companyId
                 status = map.activeStatus
                 fmarkGenerated = map.inactiveStatus
                 permitStatus = applicationMapProperties.mapQaStatusDraft
@@ -2429,6 +2635,67 @@ class QADaoServices(
 
             sr.payload = "GENERATED INSPECTION REPORT OCP [id= ${opcAddedDetails.id}]"
             sr.varField1 = opcAddedDetails.permitId.toString()
+
+            sr.responseStatus = sr.serviceMapsId?.successStatusCode
+            sr.responseMessage = "Success ${sr.payload}"
+            sr.status = s.successStatus
+            sr = serviceRequestsRepository.save(sr)
+            sr.processingEndDate = Timestamp.from(Instant.now())
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message, e)
+//            KotlinLogging.logger { }.trace(e.message, e)
+            sr.status = sr.serviceMapsId?.exceptionStatus
+            sr.responseStatus = sr.serviceMapsId?.exceptionStatusCode
+            sr.responseMessage = e.message
+            sr = serviceRequestsRepository.save(sr)
+
+        }
+
+        KotlinLogging.logger { }.trace("${sr.id} ${sr.responseStatus}")
+        return sr
+    }
+
+
+    fun sta10PersonnelDetailsDetails(
+        s: ServiceMapsEntity,
+        user: UsersEntity,
+        sta10ID: Long,
+        personel: QaPersonnelInchargeEntity,
+    ): ServiceRequestsEntity {
+
+        var sr = commonDaoServices.createServiceRequest(s)
+        try {
+
+            val sta10Found = findSta10BYID(sta10ID)
+            var personelDetails = personel
+
+            qaPersonnelInchargeRepo.findByIdOrNull(personel.id ?: -1L)
+                ?.let { foundPersonelDetails ->
+
+                    personelDetails = commonDaoServices.updateDetails(personel, foundPersonelDetails) as QaPersonnelInchargeEntity
+
+                    with(personelDetails) {
+                        modifiedBy = commonDaoServices.concatenateName(user)
+                        modifiedOn = commonDaoServices.getTimestamp()
+                    }
+                    personelDetails = qaPersonnelInchargeRepo.save(personelDetails)
+                }
+                ?: kotlin.run {
+
+                    with(personelDetails) {
+                        sta10Id = sta10Found.id
+                        status = s.activeStatus
+                        createdBy = commonDaoServices.concatenateName(user)
+                        createdOn = commonDaoServices.getTimestamp()
+                    }
+                    personelDetails = qaPersonnelInchargeRepo.save(personelDetails)
+
+                }
+
+
+            sr.payload = "GENERATED PERSONNEL DETAILS [id= ${personelDetails.id}]"
+            sr.varField1 = personelDetails.sta10Id.toString()
 
             sr.responseStatus = sr.serviceMapsId?.successStatusCode
             sr.responseMessage = "Success ${sr.payload}"
@@ -3617,6 +3884,18 @@ class QADaoServices(
             origin = sta10rawmaterialsdto.origin
             specifications = sta10rawmaterialsdto.specifications
             qualityChecksTestingRecords = sta10rawmaterialsdto.qualityChecksTestingRecords
+        }
+        return sta10p
+    }
+
+
+    fun mapDtoSTA10SectionBAndPersonnelEntity(sta10Personneldto: STA10PersonnelDto): QaPersonnelInchargeEntity {
+        val sta10p = QaPersonnelInchargeEntity()
+        with(sta10p) {
+            id = sta10Personneldto.id
+            personnelName = sta10Personneldto.personnelName
+            qualificationInstitution = sta10Personneldto.qualificationInstitution
+            dateOfEmployment = sta10Personneldto.dateOfEmployment
         }
         return sta10p
     }
