@@ -1981,13 +1981,20 @@ class QADaoServices(
         map: ServiceMapsEntity
     ): QaSta3Entity {
 
-        with(qaSta3Details) {
-            permitRefNumber = permitNewRefNumber
-            status = map.activeStatus
-            createdBy = commonDaoServices.concatenateName(user)
-            createdOn = commonDaoServices.getTimestamp()
+        var sta3Upadted: QaSta3Entity? = null
+        sta3Repo.findByPermitRefNumber(permitNewRefNumber)?.let {
+            sta3Upadted = sta3Update(qaSta3Details, map, user)
+        } ?: kotlin.run {
+            with(qaSta3Details) {
+                permitRefNumber = permitNewRefNumber
+                status = map.activeStatus
+                createdBy = commonDaoServices.concatenateName(user)
+                createdOn = commonDaoServices.getTimestamp()
+            }
+            sta3Upadted = sta3Repo.save(qaSta3Details)
         }
-        return sta3Repo.save(qaSta3Details)
+        return sta3Upadted ?: throw ExpectedDataNotFound("STA 3 cannot be null")
+
     }
 
     fun sta10NewSave(

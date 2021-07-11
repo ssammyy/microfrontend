@@ -17,8 +17,8 @@ export class ApiEndpointService {
    * Map of domains for API endpoints.
    */
   public static DOMAIN = {
-    // LOCAL_DEV: 'localhost:8006'
-    LOCAL_DEV: 'kimsint.kebs.org:8006'
+      LOCAL_DEV: 'localhost:8006'
+      // LOCAL_DEV: 'kimsint.kebs.org:8006'
   };
 
   /**
@@ -94,16 +94,21 @@ export class ApiEndpointService {
     MASTERS_ACCOUNT_MASTER: `${ApiEndpointService.ADMIN_CONTEXT}/account/master/`,
     MASTERS_ACCOUNT_TYPE: `${ApiEndpointService.ADMIN_CONTEXT}/account/type/`,
     MASTERS_ACCOUNTING_SIDE: `${ApiEndpointService.ADMIN_CONTEXT}/accounting/side/`,
-    MASTERS_ACCOUNTING_PERIOD: `${ApiEndpointService.ADMIN_CONTEXT}/accounting/period/`,
-    ADMIN_USER_DETAILS: `${ApiEndpointService.ADMIN_CONTEXT}/users/`,
-    MASTERS: `${ApiEndpointService.MASTERS_CONTEXT}`,
-    MASTERS_TITLES: `${ApiEndpointService.MASTERS_CONTEXT}/titles/`,
-    MASTERS_COUNTRIES: `${ApiEndpointService.MASTERS_CONTEXT}/countries/`,
-    MASTERS_CURRENCIES: `${ApiEndpointService.MASTERS_CONTEXT}/currencies/`,
-    // tslint:disable-next-line:max-line-length
-    /*::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::QA ENDPOINTS:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
-    FIRM_PERMIT_LIST: `${ApiEndpointService.QA_CONTEXT}/permit/firm-list`,
-    PERMIT_LIST: `${ApiEndpointService.QA_CONTEXT}/permit/list`,
+      MASTERS_ACCOUNTING_PERIOD: `${ApiEndpointService.ADMIN_CONTEXT}/accounting/period/`,
+      ADMIN_USER_DETAILS: `${ApiEndpointService.ADMIN_CONTEXT}/users/`,
+      MASTERS: `${ApiEndpointService.MASTERS_CONTEXT}`,
+      MASTERS_TITLES: `${ApiEndpointService.MASTERS_CONTEXT}/titles/`,
+      MASTERS_COUNTRIES: `${ApiEndpointService.MASTERS_CONTEXT}/countries/`,
+      MASTERS_CURRENCIES: `${ApiEndpointService.MASTERS_CONTEXT}/currencies/`,
+      // tslint:disable-next-line:max-line-length
+      /*::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::QA ENDPOINTS:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
+      FIRM_PERMIT_LIST: `${ApiEndpointService.QA_CONTEXT}/permit/firm-list`,
+      PERMIT_LIST: `${ApiEndpointService.QA_CONTEXT}/permit/list`,
+      PLANT_LIST: `${ApiEndpointService.QA_CONTEXT}/branch-list`,
+      SECTION_LIST: `${ApiEndpointService.QA_CONTEXT}/sections-list`,
+      PERMIT_APPLY_STA1: `${ApiEndpointService.QA_CONTEXT}/permit/apply/sta1`,
+      PERMIT_APPLY_STA3: `${ApiEndpointService.QA_CONTEXT}/permit/apply/sta3`,
+      PERMIT_UPDATE_STA3: `${ApiEndpointService.QA_CONTEXT}/permit/apply/sta3-update`,
 
   };
 

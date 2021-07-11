@@ -305,6 +305,7 @@ export class AddUserComponent implements OnInit {
         console.log(data);
         this.router.navigate(['/users-list']);
       },
+
       (error: { error: { message: any; }; }) => {
         this.alertService.error(error.error.message, 'Access Denied');
         // this.notificationService.showError(error.error.message, 'Access Denied');
