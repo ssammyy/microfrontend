@@ -22,6 +22,7 @@ export class DmarkApplicationsAllComponent implements OnInit {
       this.qaService.loadDMARKPermitList('1').subscribe(
           (data: any) => {
             this.allPermitData = data;
+            //this.allPermitData = this.Object.json().results;
             console.log(data);
           }
       );
@@ -34,6 +35,8 @@ export class DmarkApplicationsAllComponent implements OnInit {
         // ['REFFM#202107095913D', 'Andrew Mike', '09/07/2021', 'Dassani', 'Water', '']
 
     };
+
+    console.log(this.dataTable);
   }
   ngAfterViewInit() {
     $('#datatables').DataTable({
