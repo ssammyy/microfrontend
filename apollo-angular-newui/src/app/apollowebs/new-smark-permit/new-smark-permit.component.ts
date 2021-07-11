@@ -5,20 +5,16 @@ import {Store} from "@ngrx/store";
 import {ActivatedRoute} from "@angular/router";
 
 @Component({
-  selector: 'app-st10-form',
-  templateUrl: './st10-form.component.html',
-  styleUrls: ['./st10-form.component.css']
+  selector: 'app-new-smark-permit',
+  templateUrl: './new-smark-permit.component.html',
+  styleUrls: ['./new-smark-permit.component.css']
 })
-export class St10FormComponent implements OnInit {
+export class NewSmarkPermitComponent implements OnInit {
   loginForm: FormGroup;
   public credential: LoginCredentials;
   returnUrl: string;
-
-
-  constructor(  private store$: Store<any>,
-                private route: ActivatedRoute) { }
-
-
+  constructor(private store$: Store<any>,
+              private route: ActivatedRoute) { }
 
   ngOnInit(): void {
     this.loginForm = new FormGroup(
@@ -29,6 +25,7 @@ export class St10FormComponent implements OnInit {
     );
     this.returnUrl = this.route.snapshot.queryParams[`returnUrl`] || `/dashboard`;
   }
+
   public onClickLogin(valid: Boolean) {
     if (valid) {
       this.credential = this.loginForm.value;

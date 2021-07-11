@@ -33,6 +33,7 @@ export class ApiEndpointService {
   public static ANONYMOUS_CONTEXT = '/api/v1/migration/anonymous';
   public static USER_CONTEXT = 'user';
   public static MASTERS_CONTEXT = '/api/v1/migration';
+  public static QA_CONTEXT = '/api/v1/migration/qa';
   public static ADMIN_CONTEXT = 'api/admin/v1';
 
   /**
@@ -99,7 +100,10 @@ export class ApiEndpointService {
     MASTERS_TITLES: `${ApiEndpointService.MASTERS_CONTEXT}/titles/`,
     MASTERS_COUNTRIES: `${ApiEndpointService.MASTERS_CONTEXT}/countries/`,
     MASTERS_CURRENCIES: `${ApiEndpointService.MASTERS_CONTEXT}/currencies/`,
-
+    // tslint:disable-next-line:max-line-length
+    /*::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::QA ENDPOINTS:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
+    FIRM_PERMIT_LIST: `${ApiEndpointService.QA_CONTEXT}/permit/firm-list`,
+    PERMIT_LIST: `${ApiEndpointService.QA_CONTEXT}/permit/list`,
 
   };
 

@@ -163,23 +163,23 @@ data class STA10MachineryAndPlantDto(
     var typeModel: String? = null,
     var countryOfOrigin: String? = null,
 )
-//
-//data class PermitUploads(
-//    var permitID: Long?= null,
-//    var manufactureNonStatus: Int,
-//    var ordinaryStatus: Int?= null,
-//    var inspectionReportStatus: Int?= null,
-//    var sta10Status: Int?= null,
-//    var sscUploadStatus: Int?= null,
-//    var scfStatus: Int?= null,
-//    var ssfStatus: Int?= null,
-//    var cocStatus: Int?= null,
-//    var assessmentReportStatus: Int?= null,
-//    var labResultsStatus: Int?= null,
-//    var docFileName: String,
+
+data class PermitUploads(
+    var permitID: Long?= null,
+    var manufactureNonStatus: Int,
+    var ordinaryStatus: Int?= null,
+    var inspectionReportStatus: Int?= null,
+    var sta10Status: Int?= null,
+    var sscUploadStatus: Int?= null,
+    var scfStatus: Int?= null,
+    var ssfStatus: Int?= null,
+    var cocStatus: Int?= null,
+    var assessmentReportStatus: Int?= null,
+    var labResultsStatus: Int?= null,
+    var docFileName: String,
 //    var docFile: MultipartFile,
-//    var assessmentRecommendations: String?= null,
-//)
+    var assessmentRecommendations: String?= null,
+)
 
 data class STA10ManufacturingProcessDto(
     var processFlowOfProduction: String? = null,

@@ -2,6 +2,7 @@ import {AfterViewInit, Component, OnInit} from '@angular/core';
 import {TableData} from '../../md/md-table/md-table.component';
 
 import * as Chartist from 'chartist';
+import {QaService} from "../../core/store/data/qa/qa.service";
 
 declare const $: any;
 
@@ -68,8 +69,13 @@ export class DashboardComponent implements OnInit, AfterViewInit {
 
     seq2 = 0;
   }
-  // constructor(private navbarTitleService: NavbarTitleService) { }
+
+  // constructor(private qaService: QaService) {
+  // }
+
   public ngOnInit() {
+    // Load all PermitList Details
+    // this.qaService.loadFirmPermitList(this.)
   }
 
   ngAfterViewInit() {
