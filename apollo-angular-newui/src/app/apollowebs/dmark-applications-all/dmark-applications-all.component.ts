@@ -1,6 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {QaService} from "../../core/store/data/qa/qa.service";
 import {PermitEntityDto} from "../../core/store/data/qa/qa.model";
+import {Subject} from "rxjs";
+
 declare interface DataTable {
   headerRow: string[];
   footerRow: string[];
@@ -15,24 +17,27 @@ declare const $: any;
 export class DmarkApplicationsAllComponent implements OnInit {
   public dataTable: DataTable;
   public allPermitData: PermitEntityDto[];
+  allUsers: any = [];
+  dtTrigger: Subject<any> = new Subject<any>();
 
   constructor(private  qaService:QaService) { }
   ngOnInit(): void {
 
-      this.qaService.loadDMARKPermitList('1').subscribe(
-          (data: any) => {
-            this.allPermitData = data;
-            //this.allPermitData = this.Object.json().results;
-            console.log(data);
-          }
-      );
+    this.qaService.loadDMARKPermitList('1').subscribe(
+        (data: any) => {
+          this.allPermitData = data;
+          this.allUsers = data.data;
+          //this.allPermitData = this.Object.json().results;
+          console.log(data);
+        }
+    );
 
     this.dataTable = {
-      headerRow: ['Permit Ref No', 'Application Date', 'Product', 'Brand Name', 'Permit Number', 'Issue Date','Expiry Date', 'Section','Status', 'Actions'],
-      footerRow: ['Permit Ref No', 'Application Date', 'Product', 'Brand Name', 'Permit Number', 'Issue Date','Expiry Date', 'Section','Status', 'Actions'],
+      headerRow: ['Permit Ref No', 'Application Date', 'Product', 'Brand Name', 'Permit Number', 'Issue Date', 'Expiry Date', 'Section', 'Status', 'Actions'],
+      footerRow: ['Permit Ref No', 'Application Date', 'Product', 'Brand Name', 'Permit Number', 'Issue Date', 'Expiry Date', 'Section', 'Status', 'Actions'],
       dataRows:
-        this.allPermitData
-        // ['REFFM#202107095913D', 'Andrew Mike', '09/07/2021', 'Dassani', 'Water', '']
+      this.allPermitData
+      // ['REFFM#202107095913D', 'Andrew Mike', '09/07/2021', 'Dassani', 'Water', '']
 
     };
 
