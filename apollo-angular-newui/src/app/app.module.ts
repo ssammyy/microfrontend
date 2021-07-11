@@ -66,6 +66,7 @@ import {PermitReportComponent} from './apollowebs/permit-report/permit-report.co
 import { NewSmarkPermitComponent } from './apollowebs/new-smark-permit/new-smark-permit.component';
 import {NewDmarkPermitComponent} from './apollowebs/new-dmark-permit/new-dmark-permit.component';
 import {DmarkApplicationsAllComponent} from './apollowebs/dmark-applications-all/dmark-applications-all.component';
+import { InvoiceDetailsComponent } from './apollowebs/invoice-details/invoice-details.component';
 
 @NgModule({
     exports: [
@@ -125,7 +126,8 @@ import {DmarkApplicationsAllComponent} from './apollowebs/dmark-applications-all
         NewDmarkPermitComponent,
         PermitReportComponent,
         NewSmarkPermitComponent,
-        DmarkApplicationsAllComponent
+        DmarkApplicationsAllComponent,
+        InvoiceDetailsComponent
     ]
 
 })

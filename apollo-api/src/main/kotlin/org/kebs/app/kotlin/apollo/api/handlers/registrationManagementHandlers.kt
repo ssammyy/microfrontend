@@ -1,12 +1,14 @@
 package org.kebs.app.kotlin.apollo.api.handlers
 
 import mu.KotlinLogging
+import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.RegistrationManagementDaoService
 import org.kebs.app.kotlin.apollo.api.ports.provided.validation.AbstractValidationHandler
 import org.kebs.app.kotlin.apollo.common.dto.*
 import org.kebs.app.kotlin.apollo.common.exceptions.InvalidInputException
 import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
 import org.kebs.app.kotlin.apollo.config.properties.auth.AuthenticationProperties
+import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Component
 import org.springframework.validation.BeanPropertyBindingResult
@@ -20,8 +22,12 @@ import org.springframework.web.servlet.function.body
 class RegistrationManagementHandler(
     private val service: RegistrationManagementDaoService,
     private val validator: Validator,
+    private val commonDaoServices: CommonDaoServices,
+    private val applicationMapProperties: ApplicationMapProperties,
     private val authenticationProperties: AuthenticationProperties
 ) : AbstractValidationHandler() {
+
+    final val appId: Int = applicationMapProperties.mapUserRegistration
 
     /**
      * Validate the received payload of ValidateTokenRequestDto and send it to backend service for validation
@@ -128,6 +134,7 @@ class RegistrationManagementHandler(
     @PreAuthorize("hasAuthority('MODIFY_COMPANY')")
     fun handleUpdateCompanyDetails(req: ServerRequest): ServerResponse {
         return try {
+            val map = commonDaoServices.serviceMapDetails(appId)
             val body = req.body<UserCompanyEntityDto>()
             val id = req.pathVariable("companyId").toLongOrNull()
             val payloadId = body.id
@@ -140,7 +147,7 @@ class RegistrationManagementHandler(
             val user = service.loggedInUserDetails()
             when {
                 errors.allErrors.isEmpty() -> {
-                    service.updateCompanyDetails(body, user)
+                    service.updateCompanyDetails(body, user, map)
                         ?.let { ServerResponse.ok().body(it) }
                         ?: onErrors("We could not process your request at the moment")
 

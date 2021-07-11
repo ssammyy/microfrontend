@@ -67,7 +67,7 @@ export const ROUTES: RouteInfo[] = [
             {path: 'panels', title: 'Complete Applications', ab: 'CA'}
         ]
     }, {
-        path: '/invoices',
+        path: '/invoice',
         title: 'Invoices',
         type: 'link',
         icontype: 'content_paste'
