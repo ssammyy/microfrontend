@@ -1,5 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import PerfectScrollbar from 'perfect-scrollbar';
+import {Store} from '@ngrx/store';
+import {loadLogout, selectUserInfo} from '../core/store';
 
 declare const $: any;
 
@@ -28,7 +30,18 @@ export const ROUTES: RouteInfo[] = [
         type: 'link',
         icontype: 'dashboard'
     },
-
+    {
+        path: '/company',
+        title: 'My Companies',
+        type: 'sub',
+        icontype: 'book',
+        collapse: 'fmark',
+        children: [
+            {path: '', title: 'View Companies', ab: 'VC'},
+            {path: 'branches', title: 'View Branches ', ab: 'VB'},
+            {path: 'branches/users', title: 'View Users ', ab: 'VU'}
+        ]
+    },
 
     {
         path: '/fmark',
@@ -73,6 +86,7 @@ export const ROUTES: RouteInfo[] = [
         icontype: 'content_paste'
     }
 ];
+
 @Component({
     selector: 'app-sidebar-cmp',
     templateUrl: 'sidebar.component.html',
@@ -81,6 +95,13 @@ export const ROUTES: RouteInfo[] = [
 export class SidebarComponent implements OnInit {
     public menuItems: any[];
     ps: any;
+    fullname = '';
+
+    constructor(
+        private store$: Store<any>
+    ) {
+    }
+
     isMobileMenu() {
         if ($(window).width() > 991) {
             return false;
@@ -94,17 +115,26 @@ export class SidebarComponent implements OnInit {
             const elemSidebar = <HTMLElement>document.querySelector('.sidebar .sidebar-wrapper');
             this.ps = new PerfectScrollbar(elemSidebar);
         }
+        this.store$.select(selectUserInfo).pipe().subscribe((u) => {
+            return this.fullname = u.fullName;
+        });
     }
-    updatePS(): void  {
+
+    updatePS(): void {
         if (window.matchMedia(`(min-width: 960px)`).matches && !this.isMac()) {
             this.ps.update();
         }
     }
+
     isMac(): boolean {
         let bool = false;
         if (navigator.platform.toUpperCase().indexOf('MAC') >= 0 || navigator.platform.toUpperCase().indexOf('IPAD') >= 0) {
             bool = true;
         }
         return bool;
+    }
+
+    onClickLogout() {
+        this.store$.dispatch(loadLogout({loginUrl: 'login'}));
     }
 }
