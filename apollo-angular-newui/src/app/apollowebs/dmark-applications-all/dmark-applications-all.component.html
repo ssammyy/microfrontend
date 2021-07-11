@@ -47,17 +47,16 @@
                                 </tr>
                                 </tfoot>
                                 <tbody>
-                                <tr *ngFor="let row of dataTable.dataRows">
-                                    <td>{{row[0]}}</td>
-                                    <td>{{row[1]}}</td>
-                                    <td>{{row[2]}}</td>
-                                    <td>{{row[3]}}</td>
-                                    <td>{{row[4]}}</td>
-                                    <td>{{row[2]}}</td>
-                                    <td>{{row[1]}}</td>
-                                    <td>{{row[2]}}</td>
-                                    <td>{{row[3]}}</td>
-                                    <td>{{row[4]}}</td>
+                                <tr *ngFor="let row of allPermitData">
+                                    <td>{{row.permitRefNumber}}</td>
+                                    <td>{{row.createdOn}}</td>
+                                    <td>{{row.productName}}</td>
+                                    <td>{{row.tradeMark}}</td>
+                                    <td>{{row.awardedPermitNumber}}</td>
+                                    <td>{{row.dateOfIssue}}</td>
+                                    <td>{{row.dateOfExpiry}}</td>
+                                    <td>{{row.sectionValue}}</td>
+                                    <td>{{row.permitStatus}}</td>
                                     <td class="text-right">
                                         <a href="javascript:void(0)" class="btn btn-link btn-info btn-just-icon view"><i class="material-icons">remove_red_eye</i></a>
                                         <a href="javascript:void(0)" class="btn btn-link btn-warning btn-just-icon edit"><i class="material-icons">dvr</i></a>

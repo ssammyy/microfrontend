@@ -111,7 +111,7 @@ import {DmarkApplicationsAllComponent} from "./apollowebs/dmark-applications-all
         EntityDataModule.forRoot(entityConfig),
         ReactiveFormsModule,
         RouterModule,
-        SharedModule
+        // CoreModule
     ],
     declarations: [
         LoginComponent,
