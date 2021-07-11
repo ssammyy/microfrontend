@@ -1,12 +1,10 @@
-import {Component, OnInit} from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import {QaService} from "../../core/store/data/qa/qa.service";
 import {PermitEntityDto} from "../../core/store/data/qa/qa.model";
-import {Subject} from "rxjs";
-
 declare interface DataTable {
   headerRow: string[];
   footerRow: string[];
-  dataRows: PermitEntityDto[];
+  dataRows: string[];
 }
 declare const $: any;
 @Component({
@@ -17,33 +15,39 @@ declare const $: any;
 export class DmarkApplicationsAllComponent implements OnInit {
   public dataTable: DataTable;
   public allPermitData: PermitEntityDto[];
-  allUsers: any = [];
-  dtTrigger: Subject<any> = new Subject<any>();
+  //public formattedArray: any[];
 
-  constructor(private qaService: QaService) {
+
+  constructor(private  qaService:QaService) {
+
   }
-
   ngOnInit(): void {
+    var formattedArray = [];
+      this.qaService.loadDMARKPermitList('1').subscribe(
+          (data: any) => {
 
-    this.qaService.loadDMARKPermitList('1').subscribe(
-        (data: any) => {
-          this.allPermitData = data;
-          this.allUsers = data.data;
-          // this.allPermitData = this.Object.json().results;
-          console.log(data);
-        }
-    );
+            this.allPermitData = data;
+            formattedArray = data.map(i => [i.permitRefNumber, i.createdOn, i.productName, i.tradeMark, i.awardedPermitNumber,i.dateOfIssue,i.dateOfExpiry,i.sectionValue,i.permitStatus]);
 
-    this.dataTable = {
-      headerRow: ['Permit Ref No', 'Application Date', 'Product', 'Brand Name', 'Permit Number', 'Issue Date', 'Expiry Date', 'Section', 'Status', 'Actions'],
-      footerRow: ['Permit Ref No', 'Application Date', 'Product', 'Brand Name', 'Permit Number', 'Issue Date', 'Expiry Date', 'Section', 'Status', 'Actions'],
-      dataRows:
-      this.allPermitData
-      // ['REFFM#202107095913D', 'Andrew Mike', '09/07/2021', 'Dassani', 'Water', '']
+            this.dataTable = {
+              headerRow: ['Permit Ref No', 'Application Date', 'Product', 'Brand Name', 'Permit Number', 'Issue Date','Expiry Date', 'Section','Status', 'Actions'],
+              footerRow: ['Permit Ref No', 'Application Date', 'Product', 'Brand Name', 'Permit Number', 'Issue Date','Expiry Date', 'Section','Status', 'Actions'],
+              dataRows: formattedArray
 
-    };
 
-    console.log(this.dataTable);
+              // ['REFFM#202107095913D', 'Andrew Mike', '09/07/2021', 'Dassani', 'Water', '']
+
+            };
+            console.log(this.dataTable);
+            //this.allPermitData = this.Object.json().results;
+         // console.log(formattedArray);
+
+          }
+      );
+
+
+
+  //
   }
   ngAfterViewInit() {
     $('#datatables').DataTable({
