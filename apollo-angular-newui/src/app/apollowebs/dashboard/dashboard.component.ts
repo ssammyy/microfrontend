@@ -70,8 +70,8 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     seq2 = 0;
   }
 
-  constructor(private qaService: QaService) {
-  }
+  // constructor(private qaService: QaService) {
+  // }
 
   public ngOnInit() {
     // Load all PermitList Details
