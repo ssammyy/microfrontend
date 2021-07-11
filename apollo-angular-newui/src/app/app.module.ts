@@ -107,8 +107,9 @@ import {DmarkApplicationsAllComponent} from "./apollowebs/dmark-applications-all
     imports: [
         MdModule,
         CommonModule,
-        EffectsModule.forRoot([]),
-        EntityDataModule.forRoot(entityConfig),
+        // TODO: Discuss as it seems to kill sending of requests to backend
+        // EffectsModule.forRoot([]),
+        // EntityDataModule.forRoot(entityConfig),
         ReactiveFormsModule,
         RouterModule,
         CoreModule
@@ -160,7 +161,6 @@ export class MaterialModule {}
             preventDuplicates: true,
         }),
         ReactiveFormsModule,
-        SharedModule,
         FormsModule,
         NgxPaginationModule,
         FontAwesomeModule,
