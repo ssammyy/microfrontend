@@ -208,7 +208,7 @@ class RegistrationManagementDaoService(
                                          */
                                         userRolesRepo.save(
                                             UserRoleAssignmentsEntity().apply {
-                                                userId = user.id
+                                                userId = entity.id
                                                 roleId = applicationMapProperties.manufacturerRoleId
                                                 status = applicationMapProperties.transactionActiveStatus
                                                 createdBy = "${user.userName}"
@@ -262,7 +262,7 @@ class RegistrationManagementDaoService(
                                  */
                                 userRolesRepo.save(
                                     UserRoleAssignmentsEntity().apply {
-                                        userId = user.id
+                                        userId = userEntity.id
                                         roleId = applicationMapProperties.manufacturerRoleId
                                         status = applicationMapProperties.transactionActiveStatus
                                         createdBy = "${user.userName}"

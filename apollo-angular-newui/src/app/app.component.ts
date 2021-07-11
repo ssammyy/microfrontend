@@ -1,6 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, NavigationEnd, NavigationStart } from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
+import {select, Store} from '@ngrx/store';
+import {HandleErrorService} from './core/services/errors/handle-error.service';
+import {selectResponseData} from './core/store/data/response/response.selectors';
+import {ApiResponse} from './core/domain/response.model';
 
 @Component({
     selector: 'app-my-app',
@@ -10,7 +14,16 @@ import { Subscription } from 'rxjs/Subscription';
 export class AppComponent implements OnInit {
   private _router: Subscription;
 
-  constructor( private router: Router ) {
+  constructor(
+      private router: Router,
+      private store$: Store<any>,
+      private errorsService: HandleErrorService
+  ) {
+    this.store$.pipe(select(selectResponseData)).subscribe((errors: ApiResponse) => {
+      if (errors) {
+        this.errorsService.handleMessaging(JSON.stringify(errors.payload), errors.status);
+      }
+    });
   }
 
     ngOnInit() {

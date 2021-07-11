@@ -291,7 +291,12 @@
             async : false,
             dataType : 'json',
             error : function(request) {
-                alert("Connection error");
+                // console.log(`${JSON.stringify(request)} Messages:${request.responseJSON.message}`);
+                if(request?.responseJSON?.message){
+                    alert(`Message:${request.responseJSON.message}`);
+                }else{
+                    alert("Connection error");
+                }
             },
             success :function(json){
                 console.log(json);
