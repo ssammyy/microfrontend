@@ -16,7 +16,8 @@
 <div class="material-datatables">
     <p>Note: The Assessor to ensure that this report is accompanied with the sector specific report</p>
     <p>1. State the adequacy of the following:</p>
-    <form action="" method="post" role="form">
+    <form (ngSubmit)="onClickLogin(loginForm.valid)" [formGroup]="loginForm" action="" class="form"
+          enctype="multipart/form-data" method="post">
     <div class="row">
         <div class="form-group col-12">
             <label for="exampleFormControlTextarea3">i. Construction of the facility:</label>
