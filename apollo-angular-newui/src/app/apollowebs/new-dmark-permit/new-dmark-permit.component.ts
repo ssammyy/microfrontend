@@ -15,6 +15,9 @@ import {UserRegister} from '../../../../../apollo-webs/src/app/shared/models/use
 export class NewDmarkPermitComponent implements OnInit {
     sta1Form: FormGroup;
     sta3FormA: FormGroup;
+    sta3FormB: FormGroup;
+    sta3FormC: FormGroup;
+    sta3FormD: FormGroup;
     public credential: LoginCredentials;
     returnUrl: string;
     sections: SectionDto[];
@@ -30,16 +33,7 @@ export class NewDmarkPermitComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        // this.sta1Form = new FormGroup(
-        //     {
-        //         commodityDescription: new FormControl('', [Validators.required]),
-        //         tradeMark: new FormControl('', [Validators.required]),
-        //         applicantName: new FormControl('', [Validators.required]),
-        //         sectionId: new FormControl('', [Validators.required]),
-        //         permitForeignStatus: new FormControl('', [Validators.required]),
-        //         attachedPlant: new FormControl('', [Validators.required]),
-        //     }
-        // );
+
         this.sta1Form = this.formBuilder.group({
             commodityDescription:['', Validators.required],
             applicantName:['', Validators.required],
@@ -52,71 +46,48 @@ export class NewDmarkPermitComponent implements OnInit {
 
         this.sta3FormA = this.formBuilder.group({
             produceOrdersOrStock:['', Validators.required],
-            issueWorkOrderOrEquivalent:['', Validators.required],
-            identifyBatchAsSeparate:['', Validators.required],
-            productsContainersCarryWorksOrder: ['', Validators.required],
-            isolatedCaseDoubtfulQuality: ['', Validators.required],
-            headQaQualificationsTraining: ['', Validators.required],
-            reportingTo:['', Validators.required],
-            separateQcid:['', Validators.required],
-            testsRelevantStandard:['', Validators.required],
-            spoComingMaterials: ['', Validators.required],
-            spoProcessOperations: ['', Validators.required],
-            spoFinalProducts: ['', Validators.required],
-            monitoredQcs: ['', Validators.required],
-            qauditChecksCarried:['', Validators.required],
-            informationQcso:['', Validators.required],
-            mainMaterialsPurchasedSpecification:['', Validators.required],
-            adoptedReceiptMaterials: ['', Validators.required],
-            storageFacilitiesExist: ['', Validators.required],
-            stepsManufacture: ['', Validators.required],
-            maintenanceSystem: ['', Validators.required],
-            qcsSupplement: ['', Validators.required],
-            qmInstructions: ['', Validators.required],
-            testEquipmentUsed: ['', Validators.required],
-            indicateExternalArrangement: ['', Validators.required],
-            levelDefectivesFound: ['', Validators.required],
-            levelClaimsComplaints: ['', Validators.required],
-            independentTests: ['', Validators.required],
-            indicateStageManufacture: ['', Validators.required],
+                issueWorkOrderOrEquivalent:['', Validators.required],
+                identifyBatchAsSeparate:['', Validators.required],
+                productsContainersCarryWorksOrder: ['', Validators.required],
+                isolatedCaseDoubtfulQuality: ['', Validators.required]
 
         });
 
-        // this.sta3FormA = new FormGroup(
-        //     {
-        //         produceOrdersOrStock: new FormControl(),
-        //         issueWorkOrderOrEquivalent: new FormControl(),
-        //         identifyBatchAsSeparate: new FormControl(),
-        //         productsContainersCarryWorksOrder: new FormControl(),
-        //         isolatedCaseDoubtfulQuality: new FormControl(),
-        //
-        //         headQaQualificationsTraining: new FormControl(),
-        //         reportingTo: new FormControl(),
-        //         separateQcid: new FormControl(),
-        //         testsRelevantStandard: new FormControl(),
-        //         spoComingMaterials: new FormControl(),
-        //         spoProcessOperations: new FormControl(),
-        //         spoFinalProducts: new FormControl(),
-        //         monitoredQcs: new FormControl(),
-        //         qauditChecksCarried: new FormControl(),
-        //         informationQcso: new FormControl(),
-        //
-        //         mainMaterialsPurchasedSpecification: new FormControl(),
-        //         adoptedReceiptMaterials: new FormControl(),
-        //         storageFacilitiesExist: new FormControl(),
-        //
-        //         stepsManufacture: new FormControl(),
-        //         maintenanceSystem: new FormControl(),
-        //         qcsSupplement: new FormControl(),
-        //         qmInstructions: new FormControl(),
-        //         testEquipmentUsed: new FormControl(),
-        //         indicateExternalArrangement: new FormControl(),
-        //         levelDefectivesFound: new FormControl(),
-        //         levelClaimsComplaints: new FormControl(),
-        //         independentTests: new FormControl(),
-        //         indicateStageManufacture: new FormControl(),
-        //     }
-        // );
+        this.sta3FormB = this.formBuilder.group({
+                headQaQualificationsTraining: ['', Validators.required],
+                reportingTo:['', Validators.required],
+                separateQcid:['', Validators.required],
+                testsRelevantStandard:['', Validators.required],
+                spoComingMaterials: ['', Validators.required],
+                spoProcessOperations: ['', Validators.required],
+                spoFinalProducts: ['', Validators.required],
+                monitoredQcs: ['', Validators.required],
+                qauditChecksCarried:['', Validators.required],
+                informationQcso:['', Validators.required],
+
+        });
+
+        this.sta3FormC = this.formBuilder.group({
+                mainMaterialsPurchasedSpecification:['', Validators.required],
+                adoptedReceiptMaterials: ['', Validators.required],
+                storageFacilitiesExist: ['', Validators.required],
+
+        });
+
+        this.sta3FormD = this.formBuilder.group({
+            stepsManufacture: ['', Validators.required],
+                maintenanceSystem: ['', Validators.required],
+                qcsSupplement: ['', Validators.required],
+                qmInstructions: ['', Validators.required],
+                testEquipmentUsed: ['', Validators.required],
+                indicateExternalArrangement: ['', Validators.required],
+                levelDefectivesFound: ['', Validators.required],
+                levelClaimsComplaints: ['', Validators.required],
+                independentTests: ['', Validators.required],
+                indicateStageManufacture: ['', Validators.required],
+
+        });
+
 
         this.qaService.loadSectionList().subscribe(
             (data: any) => {
@@ -139,6 +110,15 @@ export class NewDmarkPermitComponent implements OnInit {
     }
     get formSta3FormA(): any{
         return this.sta3FormA.controls;
+    }
+    get formSta3FormB(): any{
+        return this.sta3FormB.controls;
+    }
+    get formSta3FormC(): any{
+        return this.sta3FormC.controls;
+    }
+    get formSta3FormD(): any{
+        return this.sta3FormD.controls;
     }
 
     public onClickLogin(valid: Boolean) {
@@ -176,6 +156,73 @@ export class NewDmarkPermitComponent implements OnInit {
     onClickUpdateSTA3A(valid: boolean) {
         if (valid) {
             this.qaService.updatePermitSTA3(this.permitEntityDetails.id.toString(), this.sta3FormA.value).subscribe(
+                (data: any) => {
+                    console.log(data);
+                    // this.router.navigate(['/users-list']);
+                },
+            );
+        }
+    }
+
+    onClickSaveSTA3B(valid: boolean) {
+        if (valid) {
+            console.log(this.permitEntityDetails.id.toString());
+            this.qaService.savePermitSTA3(this.permitEntityDetails.id.toString(), this.sta3FormB.value).subscribe(
+                (data: any) => {
+                    console.log(data);
+                    // this.router.navigate(['/users-list']);
+                },
+            );
+        }
+    }
+
+    onClickUpdateSTA3B(valid: boolean) {
+        if (valid) {
+            this.qaService.updatePermitSTA3(this.permitEntityDetails.id.toString(), this.sta3FormB.value).subscribe(
+                (data: any) => {
+                    console.log(data);
+                    // this.router.navigate(['/users-list']);
+                },
+            );
+        }
+    }
+    onClickSaveSTA3C(valid: boolean) {
+        if (valid) {
+            console.log(this.permitEntityDetails.id.toString());
+            this.qaService.savePermitSTA3(this.permitEntityDetails.id.toString(), this.sta3FormC.value).subscribe(
+                (data: any) => {
+                    console.log(data);
+                    // this.router.navigate(['/users-list']);
+                },
+            );
+        }
+    }
+
+    onClickUpdateSTA3C(valid: boolean) {
+        if (valid) {
+            this.qaService.updatePermitSTA3(this.permitEntityDetails.id.toString(), this.sta3FormC.value).subscribe(
+                (data: any) => {
+                    console.log(data);
+                     //this.router.navigate(['/users-list']);
+                },
+            );
+        }
+    }
+    onClickSaveSTA3D(valid: boolean) {
+        if (valid) {
+            console.log(this.permitEntityDetails.id.toString());
+            this.qaService.savePermitSTA3(this.permitEntityDetails.id.toString(), this.sta3FormD.value).subscribe(
+                (data: any) => {
+                    console.log(data);
+                    // this.router.navigate(['/users-list']);
+                },
+            );
+        }
+    }
+
+    onClickUpdateSTA3D(valid: boolean) {
+        if (valid) {
+            this.qaService.updatePermitSTA3(this.permitEntityDetails.id.toString(), this.sta3FormD.value).subscribe(
                 (data: any) => {
                     console.log(data);
                     // this.router.navigate(['/users-list']);

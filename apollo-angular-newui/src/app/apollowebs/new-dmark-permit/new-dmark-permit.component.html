@@ -161,13 +161,13 @@ placeholder="" [class.is-invalid]="formSta3FormA.isolatedCaseDoubtfulQuality.inv
 </div>
 <div class="form-group clearfix">
 <a href="javascript:" class="form-wizard-previous-btn float-left">Previous</a>
-<button type="submit" class="form-wizard-next-btn float-right"  >Next</button>
+<button type="submit" class="form-wizard-next-btn float-right" [disabled]="!sta3FormA.valid"  >Next</button>
 </div>
 </form>
 </fieldset>
 
 <fieldset class="wizard-fieldset">
-<form (ngSubmit)="onClickUpdateSTA3A(sta3FormA.valid)" [formGroup]="sta3FormA" action="" class="form"
+<form (ngSubmit)="onClickSaveSTA3B(sta3FormB.valid)" [formGroup]="sta3FormB" action="" class="form"
 enctype="multipart/form-data" method="post">
 <h3>QUALITY CONTROL/INSPECTION STAFF</h3>
 <h4><b>Please give the following information on factory QC staff organization:</b></h4>
@@ -178,7 +178,7 @@ etc.</label>
 <textarea class="form-control" id="headQaQualificationsTraining"
 formControlName="headQaQualificationsTraining" name="headQaQualificationsTraining"
 rows="3" placeholder=""
-          [class.is-invalid]="formSta3FormA.headQaQualificationsTraining.invalid && formSta3FormA.headQaQualificationsTraining.touched"></textarea>
+          [class.is-invalid]="formSta3FormB.headQaQualificationsTraining.invalid && formSta3FormB.headQaQualificationsTraining.touched"></textarea>
 </div>
 
 </div>
@@ -187,7 +187,7 @@ rows="3" placeholder=""
 <label for="reportingTo">Reporting to:</label>
 <textarea class="form-control" id="reportingTo" formControlName="reportingTo" name="reportingTo"
 rows="3" placeholder=""
-          [class.is-invalid]="formSta3FormA.reportingTo.invalid && formSta3FormA.reportingTo.touched"></textarea>
+          [class.is-invalid]="formSta3FormB.reportingTo.invalid && formSta3FormB.reportingTo.touched"></textarea>
 </div>
 
 </div>
@@ -196,7 +196,7 @@ rows="3" placeholder=""
 <label for="separateQcid">Is there a separate Quality Control Inspection Department?</label>
 <textarea class="form-control" id="separateQcid" formControlName="separateQcid" name="separateQcid"
 rows="3" placeholder=""
-          [class.is-invalid]="formSta3FormA.separateQcid.invalid && formSta3FormA.separateQcid.touched"></textarea>
+          [class.is-invalid]="formSta3FormB.separateQcid.invalid && formSta3FormB.separateQcid.touched"></textarea>
 </div>
 </div>
 <div class="row">
@@ -205,7 +205,7 @@ rows="3" placeholder=""
 standard(s)</label>
 <textarea class="form-control" id="testsRelevantStandard" formControlName="testsRelevantStandard"
 name="testsRelevantStandard" rows="3" placeholder=""
-          [class.is-invalid]="formSta3FormA.testsRelevantStandard.invalid && formSta3FormA.testsRelevantStandard.touched"></textarea>
+          [class.is-invalid]="formSta3FormB.testsRelevantStandard.invalid && formSta3FormB.testsRelevantStandard.touched"></textarea>
 </div>
 </div>
 <p><b>Please give the following information on factory QC staff organization:</b></p>
@@ -214,7 +214,7 @@ name="testsRelevantStandard" rows="3" placeholder=""
 <label for="spoComingMaterials">i). In-coming materials?</label>
 <textarea class="form-control" id="spoComingMaterials" formControlName="spoComingMaterials"
 name="spoComingMaterials" rows="3" placeholder=""
-          [class.is-invalid]="formSta3FormA.spoComingMaterials.invalid && formSta3FormA.spoComingMaterials.touched"></textarea>
+          [class.is-invalid]="formSta3FormB.spoComingMaterials.invalid && formSta3FormB.spoComingMaterials.touched"></textarea>
 </div>
 
 </div>
@@ -223,7 +223,7 @@ name="spoComingMaterials" rows="3" placeholder=""
 <label for="spoProcessOperations">ii). In process operations?</label>
 <textarea class="form-control" id="spoProcessOperations" formControlName="spoProcessOperations"
 name="spoProcessOperations" rows="3" placeholder=""
-          [class.is-invalid]="formSta3FormA.spoProcessOperations.invalid && formSta3FormA.spoProcessOperations.touched"></textarea>
+          [class.is-invalid]="formSta3FormB.spoProcessOperations.invalid && formSta3FormB.spoProcessOperations.touched"></textarea>
 </div>
 
 </div>
@@ -232,7 +232,7 @@ name="spoProcessOperations" rows="3" placeholder=""
 <label for="spoFinalProducts">iii). Final Products? </label>
 <textarea class="form-control" id="spoFinalProducts" formControlName="spoFinalProducts"
 name="spoFinalProducts" rows="3" placeholder=""
-          [class.is-invalid]="formSta3FormA.spoFinalProducts.invalid && formSta3FormA.spoFinalProducts.touched"></textarea>
+          [class.is-invalid]="formSta3FormB.spoFinalProducts.invalid && formSta3FormB.spoFinalProducts.touched"></textarea>
 </div>
 
 </div>
@@ -241,7 +241,7 @@ name="spoFinalProducts" rows="3" placeholder=""
 <label for="monitoredQcs">if so are they monitored by Quality Control Staff? </label>
 <textarea class="form-control" id="monitoredQcs" formControlName="monitoredQcs" name="monitoredQcs"
 rows="3" placeholder=""
-          [class.is-invalid]="formSta3FormA.monitoredQcs.invalid && formSta3FormA.monitoredQcs.touched"></textarea>
+          [class.is-invalid]="formSta3FormB.monitoredQcs.invalid && formSta3FormB.monitoredQcs.touched"></textarea>
 </div>
 
 </div>
@@ -250,7 +250,7 @@ rows="3" placeholder=""
 <label for="qauditChecksCarried">Are Quality Audit checks carried out and by whom? </label>
 <textarea class="form-control" id="qauditChecksCarried" formControlName="qauditChecksCarried"
 name="qauditChecksCarried" rows="3" placeholder=""
-          [class.is-invalid]="formSta3FormA.qauditChecksCarried.invalid && formSta3FormA.qauditChecksCarried.touched"></textarea>
+          [class.is-invalid]="formSta3FormB.qauditChecksCarried.invalid && formSta3FormB.qauditChecksCarried.touched"></textarea>
 </div>
 
 </div>
@@ -260,19 +260,19 @@ name="qauditChecksCarried" rows="3" placeholder=""
 Organization </label>
 <textarea class="form-control" id="informationQcso" formControlName="informationQcso"
 name="informationQcso" rows="3" placeholder=""
-          [class.is-invalid]="formSta3FormA.informationQcso.invalid && formSta3FormA.informationQcso.touched"></textarea>
+          [class.is-invalid]="formSta3FormB.informationQcso.invalid && formSta3FormB.informationQcso.touched"></textarea>
 </div>
 
 </div>
 
 <div class="form-group clearfix">
 <a href="javascript:" class="form-wizard-previous-btn float-left">Previous</a>
-<button type="submit" class="form-wizard-next-btn float-right">Next</button>
+<button type="submit" class="form-wizard-next-btn float-right" [disabled]="!sta3FormB.valid" >Next</button>
 </div>
 </form>
 </fieldset>
 <fieldset class="wizard-fieldset">
-<form (ngSubmit)="onClickUpdateSTA3A(sta3FormA.valid)" [formGroup]="sta3FormA" action="" class="form"
+<form (ngSubmit)="onClickSaveSTA3C(sta3FormC.valid)" [formGroup]="sta3FormC" action="" class="form"
 enctype="multipart/form-data" method="post">
 <h3>MATERIALS OR COMPONENTS:</h3>
 <h4>PURCHASE SPECIFICATION/MATERIALS QUALITY ASSURANCE</h4>
@@ -284,7 +284,7 @@ specification(s) used and major supplies involved. </label>
 <textarea class="form-control" id="mainMaterialsPurchasedSpecification"
 formControlName="mainMaterialsPurchasedSpecification"
 name="mainMaterialsPurchasedSpecification" rows="3" placeholder=""
-          [class.is-invalid]="formSta3FormA.mainMaterialsPurchasedSpecification.invalid && formSta3FormA.mainMaterialsPurchasedSpecification.touched"></textarea>
+          [class.is-invalid]="formSta3FormC.mainMaterialsPurchasedSpecification.invalid && formSta3FormC.mainMaterialsPurchasedSpecification.touched"></textarea>
 </div>
 
 </div>
@@ -295,7 +295,7 @@ materials, or components indicating action taken on rejects</label>
 <textarea class="form-control" id="adoptedReceiptMaterials"
 formControlName="adoptedReceiptMaterials" name="adoptedReceiptMaterials" rows="3"
 placeholder=""
-          [class.is-invalid]="formSta3FormA.adoptedReceiptMaterials.invalid && formSta3FormA.adoptedReceiptMaterials.touched"></textarea>
+          [class.is-invalid]="formSta3FormC.adoptedReceiptMaterials.invalid && formSta3FormC.adoptedReceiptMaterials.touched"></textarea>
 </div>
 
 </div>
@@ -305,18 +305,18 @@ placeholder=""
 finished products? </label>
 <textarea class="form-control" id="storageFacilitiesExist" formControlName="storageFacilitiesExist"
 name="storageFacilitiesExist" rows="3" placeholder=""
-          [class.is-invalid]="formSta3FormA.storageFacilitiesExist.invalid && formSta3FormA.storageFacilitiesExist.touched"></textarea>
+          [class.is-invalid]="formSta3FormC.storageFacilitiesExist.invalid && formSta3FormC.storageFacilitiesExist.touched"></textarea>
 </div>
 
 </div>
 <div class="form-group clearfix">
 <a href="javascript:" class="form-wizard-previous-btn float-left">Previous</a>
-<button type="submit" class="form-wizard-next-btn float-right">Next</button>
+<button type="submit" class="form-wizard-next-btn float-right" [disabled]="!sta3FormC.valid" >Next</button>
 </div>
 </form>
 </fieldset>
 <fieldset class="wizard-fieldset">
-<form (ngSubmit)="onClickUpdateSTA3A(sta3FormA.valid)" [formGroup]="sta3FormA" action="" class="form"
+<form (ngSubmit)="onClickSaveSTA3D(sta3FormD.valid)" [formGroup]="sta3FormD" action="" class="form"
 enctype="multipart/form-data" method="post">
 <h3>MANUFACTURE</h3>
 <h4>SYSTEM</h4>
@@ -326,7 +326,7 @@ enctype="multipart/form-data" method="post">
 /or supplement in chart form showing stages, which may be advantageous </label>
 <textarea class="form-control" id="stepsManufacture" formControlName="stepsManufacture"
 name="stepsManufacture" rows="3" placeholder=""
-          [class.is-invalid]="formSta3FormA.stepsManufacture.invalid && formSta3FormA.stepsManufacture.touched"></textarea>
+          [class.is-invalid]="formSta3FormD.stepsManufacture.invalid && formSta3FormD.stepsManufacture.touched"></textarea>
 </div>
 
 </div>
@@ -336,7 +336,7 @@ name="stepsManufacture" rows="3" placeholder=""
 <label for="maintenanceSystem">What maintenance system is in operation? </label>
 <textarea class="form-control" id="maintenanceSystem" formControlName="maintenanceSystem"
 name="maintenanceSystem" rows="3" placeholder=""
-          [class.is-invalid]="formSta3FormA.maintenanceSystem.invalid && formSta3FormA.maintenanceSystem.touched"></textarea>
+          [class.is-invalid]="formSta3FormD.maintenanceSystem.invalid && formSta3FormD.maintenanceSystem.touched"></textarea>
 </div>
 
 </div>
@@ -351,7 +351,7 @@ in
 3.1 is advantageous</label>
 <textarea class="form-control" id="qcsSupplement" formControlName="qcsSupplement" name="qcsSupplement"
 rows="3" placeholder=""
-          [class.is-invalid]="formSta3FormA.qcsSupplement.invalid && formSta3FormA.qcsSupplement.touched"></textarea>
+          [class.is-invalid]="formSta3FormD.qcsSupplement.invalid && formSta3FormD.qcsSupplement.touched"></textarea>
 </div>
 
 </div>
@@ -361,7 +361,7 @@ rows="3" placeholder=""
 Control issued to staff.</label>
 <textarea class="form-control" id="qmInstructions" formControlName="qmInstructions"
 name="qmInstructions" rows="3" placeholder=""
-          [class.is-invalid]="formSta3FormA.qmInstructions.invalid && formSta3FormA.qmInstructions.touched"></textarea>
+          [class.is-invalid]="formSta3FormD.qmInstructions.invalid && formSta3FormD.qmInstructions.touched"></textarea>
 </div>
 
 </div>
@@ -372,7 +372,7 @@ name="qmInstructions" rows="3" placeholder=""
 equipment are calibrated?</label>
 <textarea class="form-control" id="testEquipmentUsed" formControlName="testEquipmentUsed"
 name="testEquipmentUsed" rows="3" placeholder=""
-          [class.is-invalid]="formSta3FormA.testEquipmentUsed.invalid && formSta3FormA.testEquipmentUsed.touched"></textarea>
+          [class.is-invalid]="formSta3FormD.testEquipmentUsed.invalid && formSta3FormD.testEquipmentUsed.touched"></textarea>
 </div>
 
 </div>
@@ -382,7 +382,7 @@ name="testEquipmentUsed" rows="3" placeholder=""
 <textarea class="form-control" id="indicateExternalArrangement"
 formControlName="indicateExternalArrangement" name="indicateExternalArrangement" rows="3"
 placeholder=""
-          [class.is-invalid]="formSta3FormA.indicateExternalArrangement.invalid && formSta3FormA.indicateExternalArrangement.touched"></textarea>
+          [class.is-invalid]="formSta3FormD.indicateExternalArrangement.invalid && formSta3FormD.indicateExternalArrangement.touched"></textarea>
 </div>
 
 </div>
@@ -395,7 +395,7 @@ in accordance with the relevant
 standard(s) have already been carried out attach copies of test reports if available. </label>
 <textarea class="form-control" id="levelDefectivesFound" formControlName="levelDefectivesFound"
 name="levelDefectivesFound" rows="3" placeholder=""
-          [class.is-invalid]="formSta3FormA.levelDefectivesFound.invalid && formSta3FormA.levelDefectivesFound.touched"></textarea>
+          [class.is-invalid]="formSta3FormD.levelDefectivesFound.invalid && formSta3FormD.levelDefectivesFound.touched"></textarea>
 </div>
 
 </div>
@@ -406,7 +406,7 @@ warranty and/or otherwise and also give as a
 percentage of total out put. </label>
 <textarea class="form-control" id="levelClaimsComplaints" formControlName="levelClaimsComplaints"
 name="levelClaimsComplaints" rows="3" placeholder=""
-          [class.is-invalid]="formSta3FormA.levelClaimsComplaints.invalid && formSta3FormA.levelClaimsComplaints.touched"></textarea>
+          [class.is-invalid]="formSta3FormD.levelClaimsComplaints.invalid && formSta3FormD.levelClaimsComplaints.touched"></textarea>
 </div>
 
 </div>
@@ -417,7 +417,7 @@ standard? By whom? Please attach
 copies if available. </label>
 <textarea class="form-control" id="independentTests" formControlName="independentTests"
 name="independentTests" rows="3" placeholder=""
-          [class.is-invalid]="formSta3FormA.independentTests.invalid && formSta3FormA.independentTests.touched"></textarea>
+          [class.is-invalid]="formSta3FormD.independentTests.invalid && formSta3FormD.independentTests.touched"></textarea>
 </div>
 
 </div>
@@ -432,14 +432,14 @@ will be affixed.</label>
 <textarea class="form-control" id="indicateStageManufacture"
 formControlName="indicateStageManufacture" name="indicateStageManufacture" rows="3"
 placeholder=""
-          [class.is-invalid]="formSta3FormA.indicateStageManufacture.invalid && formSta3FormA.indicateStageManufacture.touched"></textarea>
+          [class.is-invalid]="formSta3FormD.indicateStageManufacture.invalid && formSta3FormD.indicateStageManufacture.touched"></textarea>
 </div>
 
 </div>
 
 <div class="form-group clearfix">
 <a href="javascript:" class="form-wizard-previous-btn float-left">Previous</a>
-<button type="submit" class="form-wizard-submit float-right">Submit</button>
+<button type="submit" class="form-wizard-submit float-right" [disabled]="!sta3FormD.valid" >Submit</button>
 </div>
 </form>
 </fieldset>
