@@ -213,7 +213,6 @@ class RegistrationManagementDaoService(
                                                 status = applicationMapProperties.transactionActiveStatus
                                                 createdBy = "${user.userName}"
                                                 createdOn = Timestamp.from(Instant.now())
-
                                             }
                                         )
                                         return OrganizationUserEntityDto(

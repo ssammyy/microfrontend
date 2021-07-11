@@ -32,6 +32,7 @@ import {
 import {select, Store} from '@ngrx/store';
 import {interval, Observable, PartialObserver, Subject, throwError} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
+import {ConfirmedValidator} from "../../core/shared/confirmed.validator";
 
 @Component({
   selector: 'app-sign-up',
@@ -155,15 +156,16 @@ export class SignUpComponent implements OnInit {
       county: new FormControl('', [Validators.required]),
       town: new FormControl('', [Validators.required])
     });
-    this.stepFourForm = new FormGroup({
-      firstName: new FormControl(),
-      lastName: new FormControl('', [Validators.required]),
-      userName: new FormControl('', [Validators.required]),
-      email: new FormControl('', [Validators.required]),
-      cellphone: new FormControl('', [Validators.required]),
-      otp: new FormControl('', [Validators.required]),
-      credentials: new FormControl('', [Validators.required]),
-      confirmCredentials: new FormControl('', [Validators.required]),
+    this.stepFourForm = this.formBuilder.group({
+      firstName: [],
+      lastName: ['', Validators.required],
+      userName: ['', Validators.required],
+      email: ['', Validators.required],
+      cellphone: ['', Validators.required],
+      otp: ['', Validators.required],
+      credentials: ['', Validators.required],
+      confirmCredentials:  ['', [Validators.required]]},
+        {validators: ConfirmedValidator('credentials','confirmCredentials')
     });
 
   }
@@ -300,7 +302,7 @@ export class SignUpComponent implements OnInit {
         return this.phoneValidated = d;
       } else {
         this.otpSent = false;
-        this.stepFourForm?.get('otp')?.reset();
+        // this.stepFourForm?.get('otp')?.reset();
         return throwError('Could not validate token');
 
       }
