@@ -2,7 +2,7 @@ import {NgModule} from '@angular/core';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {RouterModule} from '@angular/router';
 import {HttpClientModule} from '@angular/common/http';
-import {APP_BASE_HREF, CommonModule} from '@angular/common';
+import {CommonModule} from '@angular/common';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 
 import {MatNativeDateModule} from '@angular/material/core';
@@ -54,22 +54,18 @@ import {DmarkComponent} from './apollowebs/dmark/dmark.component';
 import {SmarkComponent} from './apollowebs/smark/smark.component';
 import {FmarkallappsComponent} from './apollowebs/fmarkallapps/fmarkallapps.component';
 import {St10FormComponent} from './apollowebs/st10-form/st10-form.component';
-import {EffectsModule} from '@ngrx/effects';
-import {EntityDataModule} from '@ngrx/data';
-import {entityConfig} from './entity-metadata';
-import {FontAwesomeModule} from "@fortawesome/angular-fontawesome";
-import {NgxPaginationModule} from "ngx-pagination";
-import {SharedModule} from "./core/shared/shared.module";
-import {CoreModule} from "./core/core.module";
-import {ToastrModule} from "ngx-toastr";
-import {RegistrationComponent} from "./views/registration.component";
-import {SignUpComponent} from "./views/registration/sign-up.component";
-import {ResetCredentialsComponent} from "./views/registration/reset-credentials.component";
-import {LoginComponent} from "./views/registration/login.component";
-import {PermitReportComponent} from "./apollowebs/permit-report/permit-report.component";
+import {FontAwesomeModule} from '@fortawesome/angular-fontawesome';
+import {NgxPaginationModule} from 'ngx-pagination';
+import {CoreModule} from './core/core.module';
+import {ToastrModule} from 'ngx-toastr';
+import {RegistrationComponent} from './views/registration.component';
+import {SignUpComponent} from './views/registration/sign-up.component';
+import {ResetCredentialsComponent} from './views/registration/reset-credentials.component';
+import {LoginComponent} from './views/registration/login.component';
+import {PermitReportComponent} from './apollowebs/permit-report/permit-report.component';
 import { NewSmarkPermitComponent } from './apollowebs/new-smark-permit/new-smark-permit.component';
-import {NewDmarkPermitComponent} from "./apollowebs/new-dmark-permit/new-dmark-permit.component";
-import {DmarkApplicationsAllComponent} from "./apollowebs/dmark-applications-all/dmark-applications-all.component";
+import {NewDmarkPermitComponent} from './apollowebs/new-dmark-permit/new-dmark-permit.component';
+import {DmarkApplicationsAllComponent} from './apollowebs/dmark-applications-all/dmark-applications-all.component';
 
 @NgModule({
     exports: [
