@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { NewPermitComponent } from './new-permit.component';
+import { NewSmarkPermitComponent } from './new-smark-permit.component';
 
-describe('NewPermitComponent', () => {
-  let component: NewPermitComponent;
-  let fixture: ComponentFixture<NewPermitComponent>;
+describe('NewSmarkPermitComponent', () => {
+  let component: NewSmarkPermitComponent;
+  let fixture: ComponentFixture<NewSmarkPermitComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ NewPermitComponent ]
+      declarations: [ NewSmarkPermitComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(NewPermitComponent);
+    fixture = TestBed.createComponent(NewSmarkPermitComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -66,6 +66,8 @@ import {RegistrationComponent} from "./views/registration.component";
 import {SignUpComponent} from "./views/registration/sign-up.component";
 import {ResetCredentialsComponent} from "./views/registration/reset-credentials.component";
 import {LoginComponent} from "./views/registration/login.component";
+import {PermitReportComponent} from "./apollowebs/permit-report/permit-report.component";
+import { NewSmarkPermitComponent } from './apollowebs/new-smark-permit/new-smark-permit.component';
 import {NewDmarkPermitComponent} from "./apollowebs/new-dmark-permit/new-dmark-permit.component";
 import {DmarkApplicationsAllComponent} from "./apollowebs/dmark-applications-all/dmark-applications-all.component";
 
@@ -111,7 +113,6 @@ import {DmarkApplicationsAllComponent} from "./apollowebs/dmark-applications-all
         RouterModule
     ],
     declarations: [
-        NewDmarkPermitComponent,
         LoginComponent,
         ResetCredentialsComponent,
         SignUpComponent,
@@ -122,7 +123,13 @@ import {DmarkApplicationsAllComponent} from "./apollowebs/dmark-applications-all
         DmarkComponent,
         SmarkComponent,
         St10FormComponent,
-        FmarkallappsComponent]
+        FmarkallappsComponent,
+        NewDmarkPermitComponent,
+        PermitReportComponent,
+        NewSmarkPermitComponent,
+        DmarkApplicationsAllComponent
+    ]
+
 })
 export class MaterialModule {}
 

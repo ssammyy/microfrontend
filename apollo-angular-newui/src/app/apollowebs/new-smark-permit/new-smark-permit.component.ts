@@ -5,15 +5,14 @@ import {Store} from "@ngrx/store";
 import {ActivatedRoute} from "@angular/router";
 
 @Component({
-  selector: 'app-permit-report',
-  templateUrl: './permit-report.component.html',
-  styleUrls: ['./permit-report.component.css']
+  selector: 'app-new-smark-permit',
+  templateUrl: './new-smark-permit.component.html',
+  styleUrls: ['./new-smark-permit.component.css']
 })
-export class PermitReportComponent implements OnInit {
+export class NewSmarkPermitComponent implements OnInit {
   loginForm: FormGroup;
   public credential: LoginCredentials;
   returnUrl: string;
-
   constructor(private store$: Store<any>,
               private route: ActivatedRoute) { }
 
@@ -26,6 +25,7 @@ export class PermitReportComponent implements OnInit {
     );
     this.returnUrl = this.route.snapshot.queryParams[`returnUrl`] || `/dashboard`;
   }
+
   public onClickLogin(valid: Boolean) {
     if (valid) {
       this.credential = this.loginForm.value;
