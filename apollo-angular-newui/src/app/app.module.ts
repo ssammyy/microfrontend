@@ -106,7 +106,8 @@ import {LoginComponent} from "./views/registration/login.component";
         EffectsModule.forRoot([]),
         EntityDataModule.forRoot(entityConfig),
         ReactiveFormsModule,
-        RouterModule
+        RouterModule,
+        CoreModule
     ],
     declarations: [LoginComponent, ResetCredentialsComponent, SignUpComponent,RegistrationComponent,DashboardComponent, InvoiceComponent, FmarkComponent, DmarkComponent, SmarkComponent, St10FormComponent, FmarkallappsComponent]
 })
