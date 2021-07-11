@@ -6,7 +6,7 @@ import {
   TokenSentState,
   tokenValidatedFeatureKey,
   TokenValidatedState
-} from "./auth.reducer";
+} from './auth.reducer';
 
 export const getAuthFeatureState = createFeatureSelector<AuthState>(authFeatureKey);
 export const getTokenFeatureState = createFeatureSelector<TokenValidatedState>(tokenValidatedFeatureKey);
