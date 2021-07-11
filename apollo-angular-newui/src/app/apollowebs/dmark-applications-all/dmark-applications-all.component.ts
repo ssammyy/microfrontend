@@ -38,7 +38,7 @@ export class DmarkApplicationsAllComponent implements OnInit {
               // ['REFFM#202107095913D', 'Andrew Mike', '09/07/2021', 'Dassani', 'Water', '']
 
             };
-            console.log(this.dataTable);
+           // console.log(this.dataTable);
             //this.allPermitData = this.Object.json().results;
          // console.log(formattedArray);
 
