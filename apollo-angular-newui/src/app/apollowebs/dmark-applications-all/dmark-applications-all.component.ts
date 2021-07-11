@@ -20,14 +20,16 @@ export class DmarkApplicationsAllComponent implements OnInit {
   allUsers: any = [];
   dtTrigger: Subject<any> = new Subject<any>();
 
-  constructor(private  qaService:QaService) { }
+  constructor(private qaService: QaService) {
+  }
+
   ngOnInit(): void {
 
     this.qaService.loadDMARKPermitList('1').subscribe(
         (data: any) => {
           this.allPermitData = data;
           this.allUsers = data.data;
-          //this.allPermitData = this.Object.json().results;
+          // this.allPermitData = this.Object.json().results;
           console.log(data);
         }
     );
