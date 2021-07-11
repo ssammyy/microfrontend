@@ -110,7 +110,8 @@ import {DmarkApplicationsAllComponent} from "./apollowebs/dmark-applications-all
         EffectsModule.forRoot([]),
         EntityDataModule.forRoot(entityConfig),
         ReactiveFormsModule,
-        RouterModule
+        RouterModule,
+        SharedModule
     ],
     declarations: [
         LoginComponent,
