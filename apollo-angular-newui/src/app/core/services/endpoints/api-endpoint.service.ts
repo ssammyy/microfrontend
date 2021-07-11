@@ -98,19 +98,20 @@ export class ApiEndpointService {
       MASTERS_ACCOUNTING_PERIOD: `${ApiEndpointService.ADMIN_CONTEXT}/accounting/period/`,
       ADMIN_USER_DETAILS: `${ApiEndpointService.ADMIN_CONTEXT}/users/`,
       MASTERS: `${ApiEndpointService.MASTERS_CONTEXT}`,
-    MASTERS_TITLES: `${ApiEndpointService.MASTERS_CONTEXT}/titles/`,
-    MASTERS_COUNTRIES: `${ApiEndpointService.MASTERS_CONTEXT}/countries/`,
-    MASTERS_CURRENCIES: `${ApiEndpointService.MASTERS_CONTEXT}/currencies/`,
-    // tslint:disable-next-line:max-line-length
-    /*::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::QA ENDPOINTS:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
-    FIRM_PERMIT_LIST: `${ApiEndpointService.QA_CONTEXT}/permit/firm-list`,
-    PERMIT_LIST: `${ApiEndpointService.QA_CONTEXT}/permit/list`,
-    PLANT_LIST: `${ApiEndpointService.QA_CONTEXT}/branch-list`,
-    SECTION_LIST: `${ApiEndpointService.QA_CONTEXT}/sections-list`,
-    PERMIT_APPLY_STA1: `${ApiEndpointService.QA_CONTEXT}/permit/apply/sta1`,
-    PERMIT_UPDATE_STA1: `${ApiEndpointService.QA_CONTEXT}/permit/apply/sta1-update`,
-    PERMIT_APPLY_STA3: `${ApiEndpointService.QA_CONTEXT}/permit/apply/sta3`,
-    PERMIT_UPDATE_STA3: `${ApiEndpointService.QA_CONTEXT}/permit/apply/sta3-update`,
+      MASTERS_TITLES: `${ApiEndpointService.MASTERS_CONTEXT}/titles/`,
+      MASTERS_COUNTRIES: `${ApiEndpointService.MASTERS_CONTEXT}/countries/`,
+      MASTERS_CURRENCIES: `${ApiEndpointService.MASTERS_CONTEXT}/currencies/`,
+      // tslint:disable-next-line:max-line-length
+      /*::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::QA ENDPOINTS:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
+      FIRM_PERMIT_LIST: `${ApiEndpointService.QA_CONTEXT}/permit/firm-list`,
+      PERMIT_LIST: `${ApiEndpointService.QA_CONTEXT}/permit/list`,
+      PERMIT_VIEW_DETAILS: `${ApiEndpointService.QA_CONTEXT}/permit/view/details`,
+      PLANT_LIST: `${ApiEndpointService.QA_CONTEXT}/branch-list`,
+      SECTION_LIST: `${ApiEndpointService.QA_CONTEXT}/sections-list`,
+      PERMIT_APPLY_STA1: `${ApiEndpointService.QA_CONTEXT}/permit/apply/sta1`,
+      PERMIT_UPDATE_STA1: `${ApiEndpointService.QA_CONTEXT}/permit/apply/sta1-update`,
+      PERMIT_APPLY_STA3: `${ApiEndpointService.QA_CONTEXT}/permit/apply/sta3`,
+      PERMIT_UPDATE_STA3: `${ApiEndpointService.QA_CONTEXT}/permit/apply/sta3-update`,
 
   };
 

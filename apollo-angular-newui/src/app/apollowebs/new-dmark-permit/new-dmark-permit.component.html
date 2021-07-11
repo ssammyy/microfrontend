@@ -167,17 +167,17 @@ placeholder="" [class.is-invalid]="formSta3FormA.isolatedCaseDoubtfulQuality.inv
 </fieldset>
 
 <fieldset class="wizard-fieldset">
-<form (ngSubmit)="onClickUpdateSTA3A(sta3FormA.valid)" [formGroup]="sta3FormA" action="" class="form"
-enctype="multipart/form-data" method="post">
-<h3>QUALITY CONTROL/INSPECTION STAFF</h3>
-<h4><b>Please give the following information on factory QC staff organization:</b></h4>
-<div class="row">
-<div class="form-group col-12">
-<label for="headQaQualificationsTraining">Head of Quality Assurance, Qualifications, Training
-etc.</label>
-<textarea class="form-control" id="headQaQualificationsTraining"
-formControlName="headQaQualificationsTraining" name="headQaQualificationsTraining"
-rows="3" placeholder=""
+<form (ngSubmit)="onClickUpdateSTA3A(sta3FormB.valid)" [formGroup]="sta3FormA" action="" class="form"
+      enctype="multipart/form-data" method="post">
+    <h3>QUALITY CONTROL/INSPECTION STAFF</h3>
+    <h4><b>Please give the following information on factory QC staff organization:</b></h4>
+    <div class="row">
+        <div class="form-group col-12">
+            <label for="headQaQualificationsTraining">Head of Quality Assurance, Qualifications, Training
+                etc.</label>
+            <textarea class="form-control" id="headQaQualificationsTraining"
+                      formControlName="headQaQualificationsTraining" name="headQaQualificationsTraining"
+                      rows="3" placeholder=""
           [class.is-invalid]="formSta3FormA.headQaQualificationsTraining.invalid && formSta3FormA.headQaQualificationsTraining.touched"></textarea>
 </div>
 
@@ -272,17 +272,17 @@ name="informationQcso" rows="3" placeholder=""
 </form>
 </fieldset>
 <fieldset class="wizard-fieldset">
-<form (ngSubmit)="onClickUpdateSTA3A(sta3FormA.valid)" [formGroup]="sta3FormA" action="" class="form"
-enctype="multipart/form-data" method="post">
-<h3>MATERIALS OR COMPONENTS:</h3>
-<h4>PURCHASE SPECIFICATION/MATERIALS QUALITY ASSURANCE</h4>
+    <form (ngSubmit)="onClickUpdateSTA3A(sta3FormB.valid)" [formGroup]="sta3FormA" action="" class="form"
+          enctype="multipart/form-data" method="post">
+        <h3>MATERIALS OR COMPONENTS:</h3>
+        <h4>PURCHASE SPECIFICATION/MATERIALS QUALITY ASSURANCE</h4>
 
-<div class="row">
-<div class="form-group col-12">
-<label for="mainMaterialsPurchasedSpecification">Please detail main materials purchased,
-specification(s) used and major supplies involved. </label>
-<textarea class="form-control" id="mainMaterialsPurchasedSpecification"
-formControlName="mainMaterialsPurchasedSpecification"
+        <div class="row">
+            <div class="form-group col-12">
+                <label for="mainMaterialsPurchasedSpecification">Please detail main materials purchased,
+                    specification(s) used and major supplies involved. </label>
+                <textarea class="form-control" id="mainMaterialsPurchasedSpecification"
+                          formControlName="mainMaterialsPurchasedSpecification"
 name="mainMaterialsPurchasedSpecification" rows="3" placeholder=""
           [class.is-invalid]="formSta3FormA.mainMaterialsPurchasedSpecification.invalid && formSta3FormA.mainMaterialsPurchasedSpecification.touched"></textarea>
 </div>
@@ -316,17 +316,17 @@ name="storageFacilitiesExist" rows="3" placeholder=""
 </form>
 </fieldset>
 <fieldset class="wizard-fieldset">
-<form (ngSubmit)="onClickUpdateSTA3A(sta3FormA.valid)" [formGroup]="sta3FormA" action="" class="form"
-enctype="multipart/form-data" method="post">
-<h3>MANUFACTURE</h3>
-<h4>SYSTEM</h4>
-<div class="row">
-<div class="form-group col-12">
-<label for="stepsManufacture">Please detail various steps in manufacture – A production schedule and
-/or supplement in chart form showing stages, which may be advantageous </label>
-<textarea class="form-control" id="stepsManufacture" formControlName="stepsManufacture"
-name="stepsManufacture" rows="3" placeholder=""
-          [class.is-invalid]="formSta3FormA.stepsManufacture.invalid && formSta3FormA.stepsManufacture.touched"></textarea>
+    <form (ngSubmit)="onClickUpdateSTA3A(sta3FormB.valid)" [formGroup]="sta3FormB" action="" class="form"
+          enctype="multipart/form-data" method="post">
+        <h3>MANUFACTURE</h3>
+        <h4>SYSTEM</h4>
+        <div class="row">
+            <div class="form-group col-12">
+                <label for="stepsManufacture">Please detail various steps in manufacture – A production schedule and
+                    /or supplement in chart form showing stages, which may be advantageous </label>
+                <textarea class="form-control" id="stepsManufacture" formControlName="stepsManufacture"
+                          name="stepsManufacture" rows="3" placeholder=""
+                          [class.is-invalid]="formSta3FormA.stepsManufacture.invalid && formSta3FormA.stepsManufacture.touched"></textarea>
 </div>
 
 </div>

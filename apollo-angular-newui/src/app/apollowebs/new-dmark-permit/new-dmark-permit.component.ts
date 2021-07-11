@@ -41,9 +41,9 @@ export class NewDmarkPermitComponent implements OnInit {
         //     }
         // );
         this.sta1Form = this.formBuilder.group({
-            commodityDescription:['', Validators.required],
-            applicantName:['', Validators.required],
-            sectionId:['', Validators.required],
+            commodityDescription: ['', Validators.required],
+            applicantName: ['', Validators.required],
+            sectionId: ['', Validators.required],
             permitForeignStatus: ['', Validators.required],
             attachedPlant: ['', Validators.required],
             tradeMark: ['', Validators.required]
