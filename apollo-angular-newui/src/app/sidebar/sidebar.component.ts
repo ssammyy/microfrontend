@@ -29,6 +29,7 @@ export const ROUTES: RouteInfo[] = [
         icontype: 'dashboard'
     },
 
+
     {
         path: '/fmark',
         title: 'Fortification Mark',
@@ -42,15 +43,15 @@ export const ROUTES: RouteInfo[] = [
             {path: 'panels', title: 'Complete Applications', ab: 'CA'}
         ]
     }, {
-        path: '/forms',
+        path: '/dmark',
         title: 'Diamond Mark',
         type: 'sub',
         icontype: 'wysiwyg',
         collapse: 'forms',
         children: [
-            {path: 'buttons', title: 'Make Application', ab: 'MA'},
+            {path: 'newDmarkPermit', title: 'Make Application', ab: 'MA'},
             {path: 'sweet-alert', title: 'My Tasks ', ab: 'MT'},
-            {path: 'grid', title: 'All My Applications', ab: 'AMA'},
+            {path: 'all_dmark', title: 'All My Applications', ab: 'AMA'},
             {path: 'panels', title: 'Complete Applications', ab: 'CA'}
         ]
     }, {

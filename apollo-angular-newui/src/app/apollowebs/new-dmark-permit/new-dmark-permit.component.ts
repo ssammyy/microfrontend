@@ -90,7 +90,7 @@ export class NewDmarkPermitComponent implements OnInit {
             }
         );
 
-        this.returnUrl = this.route.snapshot.queryParams[`returnUrl`] || `/dashboard`;
+        this.returnUrl = this.route.snapshot.queryParams[`returnUrl`] || `/dmark`;
     }
 
     public onClickLogin(valid: Boolean) {

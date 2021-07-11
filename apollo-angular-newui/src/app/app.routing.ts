@@ -138,11 +138,11 @@ const routes: Routes = [
         children: [{path: '', component: NewSmarkPermitComponent}]
     },
     {
-        path: 'newDmarkPermit', component: AdminLayoutComponent,
+        path: 'dmark/newDmarkPermit', component: AdminLayoutComponent,
         children: [{path: '', component: NewDmarkPermitComponent}]
     },
     {
-        path: 'all_dmark', component: AdminLayoutComponent,
+        path: 'dmark/all_dmark', component: AdminLayoutComponent,
         children: [{path: '', component: DmarkApplicationsAllComponent}]
     }
 ];
