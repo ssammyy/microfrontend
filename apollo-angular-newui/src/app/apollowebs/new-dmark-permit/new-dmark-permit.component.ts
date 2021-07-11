@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {FormControl, FormGroup, Validators} from '@angular/forms';
+import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {loadAuths, LoginCredentials} from '../../core/store';
 import {Store} from '@ngrx/store';
 import {ActivatedRoute} from '@angular/router';
@@ -24,57 +24,99 @@ export class NewDmarkPermitComponent implements OnInit {
 
     constructor(private store$: Store<any>,
                 private route: ActivatedRoute,
-                private qaService: QaService
+                private qaService: QaService,
+                private formBuilder: FormBuilder,
     ) {
     }
 
     ngOnInit(): void {
-        this.sta1Form = new FormGroup(
-            {
-                commodityDescription: new FormControl('', [Validators.required]),
-                tradeMark: new FormControl('', [Validators.required]),
-                applicantName: new FormControl('', [Validators.required]),
-                sectionId: new FormControl('', [Validators.required]),
-                permitForeignStatus: new FormControl('', [Validators.required]),
-                attachedPlant: new FormControl('', [Validators.required]),
-            }
-        );
+        // this.sta1Form = new FormGroup(
+        //     {
+        //         commodityDescription: new FormControl('', [Validators.required]),
+        //         tradeMark: new FormControl('', [Validators.required]),
+        //         applicantName: new FormControl('', [Validators.required]),
+        //         sectionId: new FormControl('', [Validators.required]),
+        //         permitForeignStatus: new FormControl('', [Validators.required]),
+        //         attachedPlant: new FormControl('', [Validators.required]),
+        //     }
+        // );
+        this.sta1Form = this.formBuilder.group({
+            commodityDescription:['', Validators.required],
+            applicantName:['', Validators.required],
+            sectionId:['', Validators.required],
+            permitForeignStatus: ['', Validators.required],
+            attachedPlant: ['', Validators.required],
+            tradeMark: ['', Validators.required]
 
-        this.sta3FormA = new FormGroup(
-            {
-                produceOrdersOrStock: new FormControl(),
-                issueWorkOrderOrEquivalent: new FormControl(),
-                identifyBatchAsSeparate: new FormControl(),
-                productsContainersCarryWorksOrder: new FormControl(),
-                isolatedCaseDoubtfulQuality: new FormControl(),
+        });
 
-                headQaQualificationsTraining: new FormControl(),
-                reportingTo: new FormControl(),
-                separateQcid: new FormControl(),
-                testsRelevantStandard: new FormControl(),
-                spoComingMaterials: new FormControl(),
-                spoProcessOperations: new FormControl(),
-                spoFinalProducts: new FormControl(),
-                monitoredQcs: new FormControl(),
-                qauditChecksCarried: new FormControl(),
-                informationQcso: new FormControl(),
+        this.sta3FormA = this.formBuilder.group({
+            produceOrdersOrStock:['', Validators.required],
+            issueWorkOrderOrEquivalent:['', Validators.required],
+            identifyBatchAsSeparate:['', Validators.required],
+            productsContainersCarryWorksOrder: ['', Validators.required],
+            isolatedCaseDoubtfulQuality: ['', Validators.required],
+            headQaQualificationsTraining: ['', Validators.required],
+            reportingTo:['', Validators.required],
+            separateQcid:['', Validators.required],
+            testsRelevantStandard:['', Validators.required],
+            spoComingMaterials: ['', Validators.required],
+            spoProcessOperations: ['', Validators.required],
+            spoFinalProducts: ['', Validators.required],
+            monitoredQcs: ['', Validators.required],
+            qauditChecksCarried:['', Validators.required],
+            informationQcso:['', Validators.required],
+            mainMaterialsPurchasedSpecification:['', Validators.required],
+            adoptedReceiptMaterials: ['', Validators.required],
+            storageFacilitiesExist: ['', Validators.required],
+            stepsManufacture: ['', Validators.required],
+            maintenanceSystem: ['', Validators.required],
+            qcsSupplement: ['', Validators.required],
+            qmInstructions: ['', Validators.required],
+            testEquipmentUsed: ['', Validators.required],
+            indicateExternalArrangement: ['', Validators.required],
+            levelDefectivesFound: ['', Validators.required],
+            levelClaimsComplaints: ['', Validators.required],
+            independentTests: ['', Validators.required],
+            indicateStageManufacture: ['', Validators.required],
 
-                mainMaterialsPurchasedSpecification: new FormControl(),
-                adoptedReceiptMaterials: new FormControl(),
-                storageFacilitiesExist: new FormControl(),
+        });
 
-                stepsManufacture: new FormControl(),
-                maintenanceSystem: new FormControl(),
-                qcsSupplement: new FormControl(),
-                qmInstructions: new FormControl(),
-                testEquipmentUsed: new FormControl(),
-                indicateExternalArrangement: new FormControl(),
-                levelDefectivesFound: new FormControl(),
-                levelClaimsComplaints: new FormControl(),
-                independentTests: new FormControl(),
-                indicateStageManufacture: new FormControl(),
-            }
-        );
+        // this.sta3FormA = new FormGroup(
+        //     {
+        //         produceOrdersOrStock: new FormControl(),
+        //         issueWorkOrderOrEquivalent: new FormControl(),
+        //         identifyBatchAsSeparate: new FormControl(),
+        //         productsContainersCarryWorksOrder: new FormControl(),
+        //         isolatedCaseDoubtfulQuality: new FormControl(),
+        //
+        //         headQaQualificationsTraining: new FormControl(),
+        //         reportingTo: new FormControl(),
+        //         separateQcid: new FormControl(),
+        //         testsRelevantStandard: new FormControl(),
+        //         spoComingMaterials: new FormControl(),
+        //         spoProcessOperations: new FormControl(),
+        //         spoFinalProducts: new FormControl(),
+        //         monitoredQcs: new FormControl(),
+        //         qauditChecksCarried: new FormControl(),
+        //         informationQcso: new FormControl(),
+        //
+        //         mainMaterialsPurchasedSpecification: new FormControl(),
+        //         adoptedReceiptMaterials: new FormControl(),
+        //         storageFacilitiesExist: new FormControl(),
+        //
+        //         stepsManufacture: new FormControl(),
+        //         maintenanceSystem: new FormControl(),
+        //         qcsSupplement: new FormControl(),
+        //         qmInstructions: new FormControl(),
+        //         testEquipmentUsed: new FormControl(),
+        //         indicateExternalArrangement: new FormControl(),
+        //         levelDefectivesFound: new FormControl(),
+        //         levelClaimsComplaints: new FormControl(),
+        //         independentTests: new FormControl(),
+        //         indicateStageManufacture: new FormControl(),
+        //     }
+        // );
 
         this.qaService.loadSectionList().subscribe(
             (data: any) => {
@@ -91,6 +133,12 @@ export class NewDmarkPermitComponent implements OnInit {
         );
 
         this.returnUrl = this.route.snapshot.queryParams[`returnUrl`] || `/dmark`;
+    }
+    get formSta1Form(): any{
+        return this.sta1Form.controls;
+    }
+    get formSta3FormA(): any{
+        return this.sta3FormA.controls;
     }
 
     onClickSaveSTA1(valid: boolean) {
