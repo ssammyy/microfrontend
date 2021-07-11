@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {QaService} from '../../core/store/data/qa/qa.service';
 import {PermitEntityDto} from '../../core/store/data/qa/qa.model';
+import {Router} from '@angular/router';
 
 declare interface DataTable {
     headerRow: string[];
@@ -16,13 +17,16 @@ declare const $: any;
     styleUrls: ['./dmark-applications-all.component.css']
 })
 export class DmarkApplicationsAllComponent implements OnInit {
-  public dataTable: DataTable;
-  public allPermitData: PermitEntityDto[];
+    public dataTable: DataTable;
+    public allPermitData: PermitEntityDto[];
 
     // public formattedArray: any[];
 
 
-    constructor(private qaService: QaService) {
+    constructor(
+        private qaService: QaService,
+        private router: Router,
+    ) {
 
     }
 
@@ -32,6 +36,7 @@ export class DmarkApplicationsAllComponent implements OnInit {
             (data: any) => {
 
                 this.allPermitData = data;
+                // tslint:disable-next-line:max-line-length
                 formattedArray = data.map(i => [i.permitRefNumber, i.createdOn, i.productName, i.tradeMark, i.awardedPermitNumber, i.dateOfIssue, i.dateOfExpiry, i.permitStatus, i.id]);
 
             this.dataTable = {
@@ -83,14 +88,18 @@ export class DmarkApplicationsAllComponent implements OnInit {
     // Delete a record
     table.on('click', '.remove', function (e) {
       const $tr = $(this).closest('tr');
-      table.row($tr).remove().draw();
-      e.preventDefault();
+        table.row($tr).remove().draw();
+        e.preventDefault();
     });
-    // Like record
-    table.on('click', '.like', function (e) {
-      alert('You clicked on Like button');
-      e.preventDefault();
-    });
-    $('.card .material-datatables label').addClass('form-group');
+      // Like record
+      table.on('click', '.like', function (e) {
+          alert('You clicked on Like button');
+          e.preventDefault();
+      });
+      $('.card .material-datatables label').addClass('form-group');
   }
+
+    onSelect(rowElement: string) {
+        this.router.navigate(['/dmark'], {fragment: rowElement});
+    }
 }

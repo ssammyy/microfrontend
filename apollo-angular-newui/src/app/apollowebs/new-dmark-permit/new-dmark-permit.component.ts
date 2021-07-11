@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {loadAuths, LoginCredentials} from '../../core/store';
 import {Store} from '@ngrx/store';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {QaService} from '../../core/store/data/qa/qa.service';
 import {PermitEntityDetails, PlantDetailsDto, SectionDto} from '../../core/store/data/qa/qa.model';
 import {UserRegister} from '../../../../../apollo-webs/src/app/shared/models/user';
@@ -26,6 +26,7 @@ export class NewDmarkPermitComponent implements OnInit {
 
 
     constructor(private store$: Store<any>,
+                private router: Router,
                 private route: ActivatedRoute,
                 private qaService: QaService,
                 private formBuilder: FormBuilder,
@@ -187,7 +188,7 @@ export class NewDmarkPermitComponent implements OnInit {
             this.qaService.updatePermitSTA3(this.permitEntityDetails.id.toString(), this.sta3FormD.value).subscribe(
                 (data: any) => {
                     console.log(data);
-                    // this.router.navigate(['/users-list']);
+                    this.router.navigate(['/dmark'], {fragment: this.permitEntityDetails.id.toString()});
                 },
             );
         }

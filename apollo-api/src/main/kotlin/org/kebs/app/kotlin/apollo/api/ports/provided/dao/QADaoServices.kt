@@ -966,7 +966,9 @@ class QADaoServices(
                 p.dateOfExpiry,
                 p.permitStatus?.let { findPermitStatus(it).processStatusName },
                 p.userId,
-                p.createdOn,
+                commonDaoServices.convertTimestampToKeswsValidDate(
+                    p.createdOn ?: throw Exception("CREATION DATE MISSING")
+                ),
                 p.attachedPlantId?.let {
                     commonDaoServices.findCountiesEntityByCountyId(
                         findPlantDetails(it).county ?: -1L, map.activeStatus
@@ -1191,6 +1193,11 @@ class QADaoServices(
             firmTypeName = companyProfile?.firmCategory?.let { findFirmTypeById(it).firmType }
             permitTypeName = permitType.typeName
             permitTypeID = permitType.id
+            permitAwardStatus = permit.permitAwardStatus == 1
+            invoiceGenerated = permit.invoiceGenerated == 1
+            approvedRejectedScheme = permit.approvedRejectedScheme == 1
+            sendForPcmReview = permit.sendForPcmReview == 1
+            sendApplication = permit.sendApplication == 1
 
         }
         return p
@@ -3193,7 +3200,7 @@ class QADaoServices(
             /**
              * Get rid of hard coded data
              */
-            conditions = "Must be paid in 30 days"
+            conditions = "PER"
             permitRefNumber = permits.permitRefNumber
             permitId = permits.id
             createdOn = Timestamp.from(Instant.now())
@@ -3210,6 +3217,7 @@ class QADaoServices(
             tax = generatedPayments[3]
             businessName = entity.name
             permitId = permits.id
+            goods = permits.tradeMark
             userId = user.id
             paymentStatus = 0
             invoiceNumber = "KIMS${permitType.markNumber}${

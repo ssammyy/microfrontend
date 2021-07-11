@@ -1,3 +1,5 @@
+import {UserEntityDto} from '../users';
+
 export class Qa {
 }
 
@@ -12,7 +14,7 @@ export class PermitEntityDto {
     dateOfExpiry: Date;
     permitStatus: string;
     userId: bigint;
-    createdOn: Date;
+    createdOn: string;
     county: string;
     town: string;
     region: string;
@@ -79,6 +81,11 @@ export class PermitEntityDetails {
     firmTypeName: string;
     permitTypeName: string;
     permitTypeID: bigint;
+    permitAwardStatus: boolean;
+    invoiceGenerated: boolean;
+    approvedRejectedScheme: boolean;
+    sendForPcmReview: boolean;
+    sendApplication: boolean;
 }
 
 
@@ -119,6 +126,12 @@ export class SectionDto {
     divisionId: bigint;
     descriptions: string;
     status: boolean;
+}
+
+export class AllPermitDetailsDto {
+    permitDetails: PermitEntityDetails;
+    officerList: UserEntityDto[];
+    oldVersionList: PermitEntityDto[];
 }
 
 export class PlantDetailsDto {

@@ -146,11 +146,11 @@ export class QaService {
         );
     }
 
-    public submitPermitForReview(permitID: string, data: STA3): Observable<any> {
-        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.PERMIT_APPLY_STA3);
+    public submitPermitForReview(permitID: string): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.PERMIT_SUBMIT_DETAILS_FOR_REVIEW);
         const params = new HttpParams()
             .set('permitID', permitID);
-        return this.http.post<any>(url, data, {params}).pipe(
+        return this.http.post<any>(url, null, {params}).pipe(
             map(function (response: any) {
                 return response;
             }),

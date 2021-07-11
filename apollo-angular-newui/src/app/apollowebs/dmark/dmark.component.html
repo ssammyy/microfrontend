@@ -64,7 +64,7 @@
                                           </td>
                                           <td><strong>
                                               Permit Ref No.</strong></td>
-                                          <td>REFFM#202107095913D</td>
+                                          <td>{{allPermitDetails.permitDetails.permitRefNumber}} </td>
                                       </tr>
                                       <tr>
                                           <td>
@@ -72,7 +72,9 @@
                                           </td>
                                           <td><strong>Name of firm
                                              </strong></td>
-                                          <td>ST.KIZITO UTAWALA TRAINING CENTRE <LIMITED></LIMITED></td>
+                                          <td>{{allPermitDetails.permitDetails.firmName}}
+                                              <LIMITED></LIMITED>
+                                          </td>
                                       </tr>
                                       <tr>
                                           <td>
@@ -89,7 +91,7 @@
                                           <td><strong>Postal address
                                           </strong></td>
                                           <td>
-                                              Chege Kibiro Road</td>
+                                              {{allPermitDetails.permitDetails.postalAddress}}</td>
                                       </tr>
                                       <tr>
                                           <td>
@@ -97,7 +99,7 @@
                                           </td>
                                           <td><strong>Physical address
                                           </strong></td>
-                                          <td>Chege Kibiro Road</td>
+                                          <td>{{allPermitDetails.permitDetails.physicalAddress}}</td>
                                       </tr>
                                       <tr>
                                           <td>
@@ -105,7 +107,7 @@
                                           </td>
                                           <td><strong>Telephone number
                                           </strong></td>
-                                          <td>0700000000</td>
+                                          <td>{{allPermitDetails.permitDetails.telephoneNo}}</td>
                                       </tr>
                                       <tr>
                                           <td>
@@ -113,7 +115,7 @@
                                           </td>
                                           <td><strong>Fax No.
                                           </strong></td>
-                                          <td></td>
+                                          <td>{{allPermitDetails.permitDetails.faxNo}}</td>
                                       </tr>
                                       <tr>
                                           <td>
@@ -121,7 +123,7 @@
                                           </td>
                                           <td><strong>Email address
                                           </strong></td>
-                                          <td>johndoe@gmail.com</td>
+                                          <td>{{allPermitDetails.permitDetails.email}}</td>
                                       </tr>
                                       <tr>
                                           <td>
@@ -129,7 +131,7 @@
                                           </td>
                                           <td><strong>Date of Application
                                           </strong></td>
-                                          <td>09/07/2021</td>
+                                          <td>{{allPermitDetails.permitDetails.createdOn}}</td>
                                       </tr>
                                       <tr>
                                           <td>
@@ -137,7 +139,7 @@
                                           </td>
                                           <td><strong>Date of Issue
                                           </strong></td>
-                                          <td></td>
+                                          <td>{{allPermitDetails.permitDetails.dateOfIssue}}</td>
                                       </tr>
                                       <tr>
                                           <td>
@@ -145,7 +147,7 @@
                                           </td>
                                           <td><strong>Date of Expiry
                                           </strong></td>
-                                          <td></td>
+                                          <td>{{allPermitDetails.permitDetails.dateOfExpiry}}</td>
                                       </tr>
                                       <tr>
                                           <td>
@@ -153,7 +155,7 @@
                                           </td>
                                           <td><strong>Description of commodity
                                           </strong></td>
-                                          <td>Dassani</td>
+                                          <td>{{allPermitDetails.permitDetails.commodityDescription}}</td>
                                       </tr>
                                       <tr>
                                           <td>
@@ -161,7 +163,7 @@
                                           </td>
                                           <td><strong>Trade Mark
                                           </strong></td>
-                                          <td>Water</td>
+                                          <td>{{allPermitDetails.permitDetails.brandName}}</td>
                                       </tr>
                                       <tr>
                                           <td>
@@ -169,7 +171,7 @@
                                           </td>
                                           <td><strong>KS Number
                                           </strong></td>
-                                          <td></td>
+                                          <td>{{allPermitDetails.permitDetails.standardNumber}}</td>
                                       </tr>
                                       <tr>
                                           <td>
@@ -177,7 +179,7 @@
                                           </td>
                                           <td><strong>Title
                                           </strong></td>
-                                          <td></td>
+                                          <td>{{allPermitDetails.permitDetails.standardTitle}}</td>
                                       </tr>
                                       </tbody>
                                   </table>
@@ -190,22 +192,24 @@
                                           <tr>
                                               <td><strong>
                                                   Division</strong></td>
-                                              <td>Agro-chemical</td>
+                                              <td>{{allPermitDetails.permitDetails.divisionValue}}</td>
                                           </tr>
                                           <tr>
                                               <td><strong>
                                                   Section</strong></td>
-                                              <td>Food</td>
+                                              <td>{{allPermitDetails.permitDetails.sectionValue}}</td>
                                           </tr>
                                           <tr>
                                               <td><strong>
                                                   Status</strong></td>
-                                              <td><span class="badge badge-primary">PENDING PAYMENT</span></td>
+                                              <td><span
+                                                      class="badge badge-primary">{{allPermitDetails.permitDetails.processStatusName}}</span>
+                                              </td>
                                           </tr>
                                           <tr>
                                               <td><strong>
                                                   Version Number</strong></td>
-                                              <td>1</td>
+                                              <td>{{allPermitDetails.permitDetails.versionNumber}}</td>
                                           </tr>
                                           </tbody>
                                       </table>
@@ -225,7 +229,7 @@
                                     </td>
                                     <td><strong>
                                         REGION</strong></td>
-                                    <td>NAIROBI REGION</td>
+                                    <td>{{allPermitDetails.permitDetails.regionPlantValue}}</td>
                                 </tr>
                                 <tr>
                                     <td>
@@ -233,7 +237,7 @@
                                     </td>
                                     <td><strong>COUNTY
                                     </strong></td>
-                                    <td>NAIROBI</td>
+                                    <td>{{allPermitDetails.permitDetails.countyPlantValue}}</td>
                                 </tr>
                                 <tr>
                                     <td>
@@ -241,7 +245,7 @@
                                     </td>
                                     <td><strong>TOWN
                                     </strong></td>
-                                    <td>MIRITINI</td>
+                                    <td>{{allPermitDetails.permitDetails.townPlantValue}}</td>
                                 </tr>
                                 <tr>
                                     <td>
@@ -250,7 +254,7 @@
                                     <td><strong>LOCATION
                                     </strong></td>
                                     <td>
-                                        Makadara</td>
+                                        {{allPermitDetails.permitDetails.location}}</td>
                                 </tr>
                                 <tr>
                                     <td>
@@ -258,7 +262,7 @@
                                     </td>
                                     <td><strong>STREET
                                     </strong></td>
-                                    <td>Chege Kibiro Road</td>
+                                    <td>{{allPermitDetails.permitDetails.street}}</td>
                                 </tr>
                                 <tr>
                                     <td>
@@ -266,7 +270,7 @@
                                     </td>
                                     <td><strong>BUILDING NAME
                                     </strong></td>
-                                    <td>POSTA BUILDING</td>
+                                    <td>{{allPermitDetails.permitDetails.buildingName}}</td>
                                 </tr>
                                 <tr>
                                     <td>
@@ -274,7 +278,7 @@
                                     </td>
                                     <td><strong>NEAREST LAND MARK
                                     </strong></td>
-                                    <td>POSTA BUILDING</td>
+                                    <td>{{allPermitDetails.permitDetails.nearestLandMark}}</td>
                                 </tr>
                                 <tr>
                                     <td>
@@ -282,7 +286,7 @@
                                     </td>
                                     <td><strong>POSTAL ADDRESS
                                     </strong></td>
-                                    <td>johndoe@gmail.com</td>
+                                    <td>{{allPermitDetails.permitDetails.postalAddress}}</td>
                                 </tr>
                                 <tr>
                                     <td>
@@ -290,7 +294,7 @@
                                     </td>
                                     <td><strong>CONTACT PERSON
                                     </strong></td>
-                                    <td>09/07/2021</td>
+                                    <td>{{allPermitDetails.permitDetails.contactPerson}}</td>
                                 </tr>
                                 <tr>
                                     <td>
@@ -298,7 +302,7 @@
                                     </td>
                                     <td><strong>TELEPHONE
                                     </strong></td>
-                                    <td>0700876354</td>
+                                    <td>{{allPermitDetails.permitDetails.telephoneNo}}</td>
                                 </tr>
                                 <tr>
                                     <td>
@@ -306,7 +310,7 @@
                                     </td>
                                     <td><strong>EMAIL ADDRESS
                                     </strong></td>
-                                    <td>test@mail.com</td>
+                                    <td>{{allPermitDetails.permitDetails.email}}</td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -366,8 +370,22 @@
                     </h4>
                 </div>
                 <div class="card-body ">
-                    <button mat-raised-button="" class="btn btn-kebs mat-raised-button mat-button-base"><span class="mat-button-wrapper">Generated Invoice </span><div matripple="" class="mat-ripple mat-button-ripple"></div><div class="mat-button-focus-overlay"></div></button>
-                    <button mat-raised-button="" class="btn btn-kebs mat-raised-button mat-button-base"><span class="mat-button-wrapper">Upload Attachments </span><div matripple="" class="mat-ripple mat-button-ripple"></div><div class="mat-button-focus-overlay"></div></button>
+                    <button *ngIf="allPermitDetails.permitDetails.invoiceGenerated == true" mat-raised-button=""
+                            class="btn btn-kebs mat-raised-button mat-button-base"><span class="mat-button-wrapper">Generated Invoice </span>
+                        <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                        <div class="mat-button-focus-overlay"></div>
+                    </button>
+                    <button *ngIf="allPermitDetails.permitDetails.sendForPcmReview == false"
+                            (click)="submitApplication()" mat-raised-button=""
+                            class="btn btn-kebs mat-raised-button mat-button-base"><span class="mat-button-wrapper">SUBMIT APPLICATION</span>
+                        <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                        <div class="mat-button-focus-overlay"></div>
+                    </button>
+                    <button mat-raised-button="" class="btn btn-kebs mat-raised-button mat-button-base"><span
+                            class="mat-button-wrapper">Upload Attachments </span>
+                        <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                        <div class="mat-button-focus-overlay"></div>
+                    </button>
                 </div>
             </div>
     </div>

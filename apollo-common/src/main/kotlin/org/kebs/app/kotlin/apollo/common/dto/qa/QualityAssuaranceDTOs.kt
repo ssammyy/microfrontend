@@ -262,7 +262,7 @@ data class PermitEntityDto(
     var dateOfExpiry: Date? = null,
     var permitStatus: String? = null,
     var userId: Long? = null,
-    var createdOn: Date? = null,
+    var createdOn: String? = null,
     var county: String? = null,
     var town: String? = null,
     var region: String? = null,
@@ -319,6 +319,11 @@ data class PermitDetailsDto(
     var firmTypeName: String? = null,
     var permitTypeName: String? = null,
     var permitTypeID: Long? = null,
+    var permitAwardStatus: Boolean? = null,
+    var invoiceGenerated: Boolean? = null,
+    var approvedRejectedScheme: Boolean? = null,
+    var sendForPcmReview: Boolean? = null,
+    var sendApplication: Boolean? = null,
 )
 
 data class AllPermitDetailsDto(
