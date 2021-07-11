@@ -17,6 +17,8 @@ import {NewDmarkPermitComponent} from './apollowebs/new-dmark-permit/new-dmark-p
 import {DmarkApplicationsAllComponent} from './apollowebs/dmark-applications-all/dmark-applications-all.component';
 import {InvoiceComponent} from './apollowebs/invoice/invoice.component';
 import {InvoiceDetailsComponent} from './apollowebs/invoice-details/invoice-details.component';
+import {CompaniesList} from './apollowebs/company/companies.list';
+import {CompanyComponent} from './apollowebs/company/company.component';
 
 // export const AppRoutes: Routes = [
 //     {
@@ -117,7 +119,12 @@ const routes: Routes = [
         path: 'dashboard', component: AdminLayoutComponent,
         canActivate: [RouteGuard]
         ,
-        children: [{path: '', component: DashboardComponent}]
+        children: [
+            {path: '', component: DashboardComponent},
+            {path: 'companies', component: CompaniesList},
+            {path: 'company', component: CompanyComponent}
+        ]
+
     },
 
     {

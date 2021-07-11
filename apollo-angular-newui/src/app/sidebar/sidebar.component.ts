@@ -31,15 +31,15 @@ export const ROUTES: RouteInfo[] = [
         icontype: 'dashboard'
     },
     {
-        path: '/company',
+        path: '/dashboard',
         title: 'My Companies',
         type: 'sub',
         icontype: 'book',
-        collapse: 'fmark',
+        collapse: 'company',
         children: [
-            {path: '', title: 'View Companies', ab: 'VC'},
+            {path: 'companies', title: 'View Companies', ab: 'VC'},
             {path: 'branches', title: 'View Branches ', ab: 'VB'},
-            {path: 'branches/users', title: 'View Users ', ab: 'VU'}
+            {path: 'users', title: 'View Users ', ab: 'VU'}
         ]
     },
 
