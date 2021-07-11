@@ -122,3 +122,10 @@ Content-Type: application/json
 ####
 
 GET https://localhost:8006/api/v1/migration/anonymous/county/1/towns/
+
+
+###
+POST https://kimsint.kebs.org:8006/api/v1/migration/company/245/branches/304/users
+
+
+{"firstName":"Second","lastName":"user","userName":"seconduser@technovoz.com","email":"seconduser@technovoz.com","cellphone":"254733814627","otp":null,"credentials":"password","confirmCredentials":"password","companyId":245,"plantId":304}

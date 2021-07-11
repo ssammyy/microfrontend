@@ -27,18 +27,18 @@ export class DmarkApplicationsAllComponent implements OnInit {
           (data: any) => {
 
             this.allPermitData = data;
-            formattedArray = data.map(i => [i.permitRefNumber, i.createdOn, i.productName, i.tradeMark, i.awardedPermitNumber,i.dateOfIssue,i.dateOfExpiry,i.sectionValue,i.permitStatus]);
+            formattedArray = data.map(i => [i.permitRefNumber, i.createdOn, i.productName, i.tradeMark, i.awardedPermitNumber,i.dateOfIssue,i.dateOfExpiry,i.permitStatus]);
 
             this.dataTable = {
-              headerRow: ['Permit Ref No', 'Application Date', 'Product', 'Brand Name', 'Permit Number', 'Issue Date','Expiry Date', 'Section','Status', 'Actions'],
-              footerRow: ['Permit Ref No', 'Application Date', 'Product', 'Brand Name', 'Permit Number', 'Issue Date','Expiry Date', 'Section','Status', 'Actions'],
+              headerRow: ['Permit Ref No', 'Application Date', 'Product', 'Brand Name', 'Permit Number', 'Issue Date','Expiry Date', 'Status', 'Actions'],
+              footerRow: ['Permit Ref No', 'Application Date', 'Product', 'Brand Name', 'Permit Number', 'Issue Date','Expiry Date', 'Status', 'Actions'],
               dataRows: formattedArray
 
 
               // ['REFFM#202107095913D', 'Andrew Mike', '09/07/2021', 'Dassani', 'Water', '']
 
             };
-            console.log(this.dataTable);
+           // console.log(this.dataTable);
             //this.allPermitData = this.Object.json().results;
          // console.log(formattedArray);
 
