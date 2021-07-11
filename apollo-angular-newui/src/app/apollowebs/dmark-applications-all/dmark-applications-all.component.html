@@ -27,8 +27,7 @@
                                     <th>{{ dataTable.headerRow[6] }}</th>
                                     <th>{{ dataTable.headerRow[7] }}</th>
                                     <th>{{ dataTable.headerRow[8] }}</th>
-                                    <th>{{ dataTable.headerRow[9] }}</th>
-                                    <th class="disabled-sorting text-right">{{ dataTable.headerRow[10] }}</th>
+                                    <th class="disabled-sorting text-right">{{ dataTable.headerRow[9] }}</th>
                                 </tr>
                                 </thead>
                                 <tfoot>
@@ -42,22 +41,20 @@
                                     <th>{{ dataTable.footerRow[6] }}</th>
                                     <th>{{ dataTable.footerRow[7] }}</th>
                                     <th>{{ dataTable.footerRow[8] }}</th>
-                                    <th>{{ dataTable.footerRow[9] }}</th>
-                                    <th class="text-right">{{ dataTable.footerRow[10] }}</th>
+                                    <th class="text-right">{{ dataTable.footerRow[9] }}</th>
                                 </tr>
                                 </tfoot>
                                 <tbody>
                                 <tr *ngFor="let row of dataTable.dataRows">
-                                    <td>{{row.permitRefNumber}}</td>
-                                    <td>{{row.permitRefNumber}}</td>
-                                    <td>{{row.permitRefNumber}}</td>
-                                    <td>{{row.permitRefNumber}}</td>
-                                    <td>{{row.permitRefNumber}}</td>
-                                    <td>{{row.permitRefNumber}}</td>
-                                    <td>{{row.permitRefNumber}}</td>
-                                    <td>{{row.permitRefNumber}}</td>
-                                    <td>{{row.permitRefNumber}}</td>
-                                    <td>{{row.permitRefNumber}}</td>
+                                    <td>{{row[0]}}</td>
+                                    <td>{{row[1]}}</td>
+                                    <td>{{row[2]}}</td>
+                                    <td>{{row[3]}}</td>
+                                    <td>{{row[4]}}</td>
+                                    <td>{{row[5]}}</td>
+                                    <td>{{row[6]}}</td>
+                                    <td>{{row[7]}}</td>
+                                    <td>{{row[8]}}</td>
                                     <td class="text-right">
                                         <a href="javascript:void(0)" class="btn btn-link btn-info btn-just-icon view"><i class="material-icons">remove_red_eye</i></a>
                                         <a href="javascript:void(0)" class="btn btn-link btn-warning btn-just-icon edit"><i class="material-icons">dvr</i></a>
