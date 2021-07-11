@@ -4,7 +4,7 @@ import {PermitEntityDto} from "../../core/store/data/qa/qa.model";
 declare interface DataTable {
   headerRow: string[];
   footerRow: string[];
-  dataRows: PermitEntityDto[];
+  dataRows: string[];
 }
 declare const $: any;
 @Component({
@@ -15,28 +15,39 @@ declare const $: any;
 export class DmarkApplicationsAllComponent implements OnInit {
   public dataTable: DataTable;
   public allPermitData: PermitEntityDto[];
+  //public formattedArray: any[];
 
-  constructor(private  qaService:QaService) { }
+
+  constructor(private  qaService:QaService) {
+
+  }
   ngOnInit(): void {
-
+    var formattedArray = [];
       this.qaService.loadDMARKPermitList('1').subscribe(
           (data: any) => {
+
             this.allPermitData = data;
+            formattedArray = data.map(i => [i.permitRefNumber, i.createdOn, i.productName, i.tradeMark, i.awardedPermitNumber,i.dateOfIssue,i.dateOfExpiry,i.sectionValue,i.permitStatus]);
+
+            this.dataTable = {
+              headerRow: ['Permit Ref No', 'Application Date', 'Product', 'Brand Name', 'Permit Number', 'Issue Date','Expiry Date', 'Section','Status', 'Actions'],
+              footerRow: ['Permit Ref No', 'Application Date', 'Product', 'Brand Name', 'Permit Number', 'Issue Date','Expiry Date', 'Section','Status', 'Actions'],
+              dataRows: formattedArray
+
+
+              // ['REFFM#202107095913D', 'Andrew Mike', '09/07/2021', 'Dassani', 'Water', '']
+
+            };
+            console.log(this.dataTable);
             //this.allPermitData = this.Object.json().results;
-            console.log(data);
+         // console.log(formattedArray);
+
           }
       );
 
-    this.dataTable = {
-      headerRow: ['Permit Ref No', 'Application Date', 'Product', 'Brand Name', 'Permit Number', 'Issue Date','Expiry Date', 'Section','Status', 'Actions'],
-      footerRow: ['Permit Ref No', 'Application Date', 'Product', 'Brand Name', 'Permit Number', 'Issue Date','Expiry Date', 'Section','Status', 'Actions'],
-      dataRows:
-        this.allPermitData
-        // ['REFFM#202107095913D', 'Andrew Mike', '09/07/2021', 'Dassani', 'Water', '']
 
-    };
 
-    console.log(this.dataTable);
+  //
   }
   ngAfterViewInit() {
     $('#datatables').DataTable({
