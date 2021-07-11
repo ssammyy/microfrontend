@@ -8,6 +8,7 @@ import org.kebs.app.kotlin.apollo.common.exceptions.InvalidValueException
 import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
 import org.kebs.app.kotlin.apollo.common.utils.generateRandomText
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
+import org.kebs.app.kotlin.apollo.store.model.ServiceMapsEntity
 import org.kebs.app.kotlin.apollo.store.model.UserRoleAssignmentsEntity
 import org.kebs.app.kotlin.apollo.store.model.UsersEntity
 import org.kebs.app.kotlin.apollo.store.model.qa.ManufacturePlantDetailsEntity
@@ -37,6 +38,7 @@ class RegistrationManagementDaoService(
     private val manufacturePlantRepository: IManufacturePlantDetailsRepository,
     private val usersRepo: IUserRepository,
     private val tokenService: JwtTokenService,
+    private val registrationDaoServices: RegistrationDaoServices,
     private val commonDaoServices: CommonDaoServices,
     private val qaDaoServices: QADaoServices,
 ) {
@@ -717,9 +719,13 @@ class RegistrationManagementDaoService(
             } else throw InvalidValueException("Attempt to fetch Organization rejected")
         }
 
-    fun updateCompanyDetails(dto: UserCompanyEntityDto, user: UsersEntity): UserCompanyEntityDto? {
+    fun updateCompanyDetails(
+        dto: UserCompanyEntityDto,
+        user: UsersEntity,
+        map: ServiceMapsEntity,
+    ): UserCompanyEntityDto? {
         if ((dto.id ?: -2L) < 0) {
-            return registerCompany(dto, user)
+            return registerCompany(dto, user, map)
 
         } else {
             companyRepo.findByIdOrNull(dto.id ?: throw NullValueNotAllowedException("Invalid Record"))
@@ -795,7 +801,7 @@ class RegistrationManagementDaoService(
      * @return response indicating whether we were able to successful save the information
      */
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
-    fun registerCompany(dto: UserCompanyEntityDto, user: UsersEntity): UserCompanyEntityDto? {
+    fun registerCompany(dto: UserCompanyEntityDto, user: UsersEntity, map: ServiceMapsEntity): UserCompanyEntityDto? {
         try {
             companyRepo.findByRegistrationNumber(
                 dto.registrationNumber
@@ -885,6 +891,11 @@ class RegistrationManagementDaoService(
                     }
                     manufacturePlantRepository.save(branch)
 
+                    /*****
+                     ****Todo: ADD ORIGINAL SEQUENCE OF ENTRY NUMBER FROM KEBS
+                     ****
+                     ***/
+                    registrationDaoServices.generateEntryNumberDetails(map, user)
 
                     return UserCompanyEntityDto(
                         companyProfileEntity.name,
