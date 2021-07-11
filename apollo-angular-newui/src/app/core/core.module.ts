@@ -8,23 +8,23 @@ import {RouteGuardModule} from "./route-guard/route-guard.module";
 import {SharedModule} from "./shared/shared.module";
 
 const MODULES = [
-  HttpClientModule,
-  CommonModule,
-  StoresModule,
-  ServiceModule,
-    SharedModule,
-  HttpInterceptorModule,
-  RouteGuardModule
+    HttpClientModule,
+    CommonModule,
+    StoresModule,
+    ServiceModule,
+    HttpInterceptorModule,
+    RouteGuardModule,
+    SharedModule
 ]
 let PROVIDERS: any[];
 PROVIDERS = [];
 
 
 @NgModule({
-  declarations: [
-  ],
-  imports: MODULES,
-  exports: MODULES,
-  providers: PROVIDERS
+    declarations: [],
+    imports: MODULES,
+    exports: MODULES,
+    providers: PROVIDERS
 })
-export class CoreModule { }
+export class CoreModule {
+}

@@ -58,11 +58,11 @@ export class SignUpComponent implements OnInit {
   region$: Observable<Region[]>;
   county$: Observable<County[]>;
   town$: Observable<Town[]>;
-  selectedBusinessLine: number = 0;
-  selectedBusinessNature: number = 0;
-  selectedRegion: number = 0;
-  selectedCounty: number = 0;
-  selectedTown: number = 0;
+  selectedBusinessLine = 0;
+  selectedBusinessNature = 0;
+  selectedRegion = 0;
+  selectedCounty = 0;
+  selectedTown = 0;
   validationCellphone = '';
   otpSent = false;
   phoneValidated = false;
@@ -279,6 +279,7 @@ export class SignUpComponent implements OnInit {
         return this.phoneValidated = d;
       } else {
         this.otpSent = false;
+        this.phoneValidated = false;
         this.stepFourForm?.get('otp')?.reset();
         return throwError('Could not validate token');
 
