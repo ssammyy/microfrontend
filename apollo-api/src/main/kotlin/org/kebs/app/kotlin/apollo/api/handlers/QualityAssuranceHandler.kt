@@ -1038,6 +1038,7 @@ class QualityAssuranceHandler(
             val auth = commonDaoServices.loggedInUserAuthentication()
             val permitTypeID = req.paramOrNull("permitTypeID")?.toLong() ?: throw ExpectedDataNotFound("Required PermitType ID, check config")
             val permitType = qaDaoServices.findPermitType(permitTypeID)
+
             val dto = req.body<STA1Dto>()
             val permit = PermitApplicationsEntity()
             with(permit) {
@@ -1059,6 +1060,56 @@ class QualityAssuranceHandler(
             val createdPermit = qaDaoServices.permitSave(permit, permitType, loggedInUser, map)
 
             qaDaoServices.permitDetails(createdPermit.second, map).let {
+                return ok().body(it)
+            }
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            return ServerResponse.badRequest().body(e.message ?: "Unknown Error")
+        }
+
+    }
+
+    @PreAuthorize("hasAuthority('PERMIT_APPLICATION')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun permitUpdateSTA1Migration(req: ServerRequest): ServerResponse {
+        try {
+            val loggedInUser = commonDaoServices.loggedInUserDetails()
+            val map = commonDaoServices.serviceMapDetails(appId)
+            val auth = commonDaoServices.loggedInUserAuthentication()
+            val permitID = req.paramOrNull("permitID")?.toLong()
+                ?: throw ExpectedDataNotFound("Required PermitType ID, check config")
+            val permitDetails = qaDaoServices.findPermitBYID(permitID)
+
+            val dto = req.body<STA1Dto>()
+            val permit = PermitApplicationsEntity()
+            with(permit) {
+                id = permitDetails.id
+                commodityDescription = dto.commodityDescription
+                tradeMark = dto.tradeMark
+                applicantName = dto.applicantName
+                sectionId = dto.sectionId
+                permitForeignStatus = dto.permitForeignStatus
+                attachedPlantId = when {
+                    auth.authorities.stream().anyMatch { authority -> authority.authority == "MODIFY_COMPANY" } -> {
+                        dto.attachedPlant
+                    }
+                    else -> {
+                        loggedInUser.plantId
+                    }
+                }
+            }
+
+            //updating of Details in DB
+            val updateResults = qaDaoServices.permitUpdateDetails(
+                commonDaoServices.updateDetails(
+                    permit,
+                    permitDetails
+                ) as PermitApplicationsEntity, map, loggedInUser
+            )
+
+            qaDaoServices.permitDetails(updateResults.second, map).let {
                 return ok().body(it)
             }
 
