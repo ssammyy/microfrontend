@@ -8,12 +8,13 @@ import {
   User,
   UsersService
 } from '../../../../core/store';
-import {FormControl, FormGroup, Validators} from '@angular/forms';
+import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {Store} from '@ngrx/store';
 import {Location} from '@angular/common';
 import {faArrowLeft} from '@fortawesome/free-solid-svg-icons';
 import {catchError, map} from "rxjs/operators";
 import {HttpErrorResponse} from "@angular/common/http";
+import {ConfirmedValidator} from "../../../../core/shared/confirmed.validator";
 
 @Component({
   selector: 'app-users',
@@ -47,6 +48,7 @@ export class UsersList implements OnInit {
   constructor(
     private service: UsersService,
     private store$: Store<any>,
+    private formBuilder: FormBuilder,
     private location: Location
   ) {
     this.users$ = service.entities$;
@@ -55,16 +57,17 @@ export class UsersList implements OnInit {
   }
 
   ngOnInit(): void {
-    this.stepOneForm = new FormGroup({
-      firstName: new FormControl(),
-      lastName: new FormControl('', [Validators.required]),
-      userName: new FormControl('', [Validators.required]),
-      email: new FormControl('', [Validators.required]),
-      cellphone: new FormControl('', [Validators.required]),
-      otp: new FormControl('', ),
-      credentials: new FormControl('', [Validators.required]),
-      confirmCredentials: new FormControl('', [Validators.required]),
-    });
+    this.stepOneForm = this.formBuilder.group({
+      firstName:  ['', Validators.required],
+      lastName: ['', Validators.required],
+      userName: ['', Validators.required],
+      email: ['', Validators.required],
+      cellphone: ['', Validators.required],
+      // otp: new FormControl('', ),
+        credentials: ['', Validators.required],
+        confirmCredentials:  ['', [Validators.required]]},
+      {validators: ConfirmedValidator('credentials','confirmCredentials')
+      });
 
     this.store$.select(selectCompanyIdData).subscribe((d) => {
       return this.selectedCompany = d;

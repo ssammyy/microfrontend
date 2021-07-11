@@ -306,7 +306,7 @@
       <div class="container">
         <div class="row">
           <h2 class="welcome">
-            PHysical Location Information
+            Physical Location Information
           </h2>
         </div>
         <div class="row input-row">
@@ -534,13 +534,13 @@
             <br>
           </div>
           <div class="col">
-            <button (throttledClick)="onClickSendOtp()"  [disabled]="otpSent"
+            <button (throttledClick)="onClickSendOtp()" [disabled]="otpSent"
                     [hidden]="stepFourForm.get('cellphone')?.invalid"
                     [throttleTime]="5000" appPreventDoubleClick
                     class="login-button mt-2"
                     type="button"
 
-            >Send OTP
+            >Send OTP {{secondsToHms(time)}}
             </button>
           </div>
         </div>

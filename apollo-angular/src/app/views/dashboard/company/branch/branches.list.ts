@@ -123,14 +123,14 @@ export class BranchesList implements OnInit {
       town: new FormControl('', [Validators.required]),
     });
     this.stepThreeForm = new FormGroup({
-      companyProfileId: new FormControl(''),
-      id: new FormControl(''),
-      status: new FormControl('', [Validators.required]),
-      descriptions: new FormControl('', [Validators.required]),
+      companyProfileId: new FormControl(),
+      id: new FormControl(),
+      status: new FormControl(false, [Validators.required]),
+      descriptions: new FormControl(),
       contactPerson: new FormControl('', [Validators.required]),
       emailAddress: new FormControl('', [Validators.required]),
       telephone: new FormControl('', [Validators.required]),
-      faxNo: new FormControl(''),
+      faxNo: new FormControl(),
       designation: new FormControl('', [Validators.required])
     });
 

@@ -30,7 +30,9 @@ import {
   User
 } from '../../core/store';
 import {select, Store} from '@ngrx/store';
-import {Observable, throwError} from 'rxjs';
+import {interval, Observable, PartialObserver, Subject, throwError} from 'rxjs';
+import {takeUntil} from 'rxjs/operators';
+import {ConfirmedValidator} from "../../core/shared/confirmed.validator";
 
 @Component({
   selector: 'app-sign-up',
@@ -38,6 +40,10 @@ import {Observable, throwError} from 'rxjs';
   styles: []
 })
 export class SignUpComponent implements OnInit {
+  ispause = new Subject();
+  time = 120;
+  timer!: Observable<number>;
+  timerObserver!: PartialObserver<number>;
 
 
   step = 0;
@@ -101,6 +107,22 @@ export class SignUpComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.timer = interval(1000)
+        .pipe(
+            takeUntil(this.ispause)
+        );
+
+    this.timerObserver = {
+
+      next: (_: number) => {
+        if (this.time == 0) {
+          this.ispause.next;
+        }
+        this.time -= 1;
+      }
+    };
+
+
     this.stepZeroForm = this.formBuilder.group({
       registrationNumber: ['', Validators.required],
       directorIdNumber: ['', Validators.required]
@@ -134,15 +156,16 @@ export class SignUpComponent implements OnInit {
       county: new FormControl('', [Validators.required]),
       town: new FormControl('', [Validators.required])
     });
-    this.stepFourForm = new FormGroup({
-      firstName: new FormControl(),
-      lastName: new FormControl('', [Validators.required]),
-      userName: new FormControl('', [Validators.required]),
-      email: new FormControl('', [Validators.required]),
-      cellphone: new FormControl('', [Validators.required]),
-      otp: new FormControl('', [Validators.required]),
-      credentials: new FormControl('', [Validators.required]),
-      confirmCredentials: new FormControl('', [Validators.required]),
+    this.stepFourForm = this.formBuilder.group({
+      firstName: [],
+      lastName: ['', Validators.required],
+      userName: ['', Validators.required],
+      email: ['', Validators.required],
+      cellphone: ['', Validators.required],
+      otp: ['', Validators.required],
+      credentials: ['', Validators.required],
+      confirmCredentials:  ['', [Validators.required]]},
+        {validators: ConfirmedValidator('credentials','confirmCredentials')
     });
 
   }
@@ -279,7 +302,7 @@ export class SignUpComponent implements OnInit {
         return this.phoneValidated = d;
       } else {
         this.otpSent = false;
-        this.stepFourForm?.get('otp')?.reset();
+        // this.stepFourForm?.get('otp')?.reset();
         return throwError('Could not validate token');
 
       }
@@ -287,14 +310,25 @@ export class SignUpComponent implements OnInit {
 
   }
 
+  secondsToHms(d: number) {
+    d = Number(d);
+    const m = Math.floor(d % 3600 / 60);
+    const s = Math.floor(d % 3600 % 60);
+
+    const mDisplay = m > 0 ? m + (m == 1 ? ": " : " : ") : "00";
+    const sDisplay = s > 0 ? s + (s == 1 ? "" : "") : "00";
+    return mDisplay + sDisplay;
+  }
+
   onClickSendOtp() {
     this.otpSent = true;
+    this.timer.subscribe(this.timerObserver);
     this.validationCellphone = this.stepFourForm?.get('cellphone')?.value;
 
     this.stepFourForm?.get('otp')?.reset();
 
     if (
-      this.validationCellphone === '' ||
+        this.validationCellphone === '' ||
       this.validationCellphone === null
     ) {
       this.store$.dispatch(loadResponsesFailure({
