@@ -14,6 +14,8 @@ import {LoginComponent} from "./views/registration/login.component";
 import {PermitReportComponent} from "./apollowebs/permit-report/permit-report.component";
 import {NewDmarkPermitComponent} from "./apollowebs/new-dmark-permit/new-dmark-permit.component";
 import {NewSmarkPermitComponent} from "./apollowebs/new-smark-permit/new-smark-permit.component";
+import {NewDmarkPermitComponent} from "./apollowebs/new-dmark-permit/new-dmark-permit.component";
+import {DmarkApplicationsAllComponent} from "./apollowebs/dmark-applications-all/dmark-applications-all.component";
 
 // export const AppRoutes: Routes = [
 //     {
@@ -139,8 +141,15 @@ const routes: Routes = [
     {
         path: 'newDmarkPermit', component: AdminLayoutComponent,
         children: [{path: '', component: NewDmarkPermitComponent}]
+    },
+    {
+        path: 'newDmarkPermit', component: AdminLayoutComponent,
+        children: [{path: '', component: NewDmarkPermitComponent}]
+    },
+    {
+        path: 'all_dmark', component: AdminLayoutComponent,
+        children: [{path: '', component: DmarkApplicationsAllComponent}]
     }
-
 ];
 
 
