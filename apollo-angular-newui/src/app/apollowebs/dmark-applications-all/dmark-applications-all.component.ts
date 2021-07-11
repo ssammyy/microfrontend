@@ -4,7 +4,7 @@ import {PermitEntityDto} from "../../core/store/data/qa/qa.model";
 declare interface DataTable {
   headerRow: string[];
   footerRow: string[];
-  dataRows: PermitEntityDto[];
+  dataRows: PermitEntityDto[][];
 }
 declare const $: any;
 @Component({
@@ -14,14 +14,16 @@ declare const $: any;
 })
 export class DmarkApplicationsAllComponent implements OnInit {
   public dataTable: DataTable;
-  public allPermitData: PermitEntityDto[];
+  public allPermitData: PermitEntityDto[][];
 
   constructor(private  qaService:QaService) { }
   ngOnInit(): void {
 
       this.qaService.loadDMARKPermitList('1').subscribe(
           (data: any) => {
+
             this.allPermitData = data;
+
             console.log(data);
           }
       );
@@ -34,6 +36,7 @@ export class DmarkApplicationsAllComponent implements OnInit {
         // ['REFFM#202107095913D', 'Andrew Mike', '09/07/2021', 'Dassani', 'Water', '']
 
     };
+    console.log(this.dataTable);
   }
   ngAfterViewInit() {
     $('#datatables').DataTable({
