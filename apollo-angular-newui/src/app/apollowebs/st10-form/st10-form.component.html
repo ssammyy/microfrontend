@@ -18,8 +18,9 @@
 <div class="row no-gutters">
 <div class="col-lg-12 col-md-12 col-sm-12">
 <div class="form-wizard">
-<form action="" method="post" role="form">
-<div class="form-wizard-header">
+    <form (ngSubmit)="onClickLogin(loginForm.valid)" [formGroup]="loginForm" action="" class="form"
+          enctype="multipart/form-data" method="post"
+    ><div class="form-wizard-header">
 <p>Fill all form field to go next step</p>
 <ul class="list-unstyled form-wizard-steps clearfix">
 <li class="active"><span>1</span></li>
