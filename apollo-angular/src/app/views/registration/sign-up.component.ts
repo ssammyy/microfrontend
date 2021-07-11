@@ -30,7 +30,8 @@ import {
   User
 } from '../../core/store';
 import {select, Store} from '@ngrx/store';
-import {Observable, throwError} from 'rxjs';
+import {interval, Observable, PartialObserver, Subject, throwError} from 'rxjs';
+import {takeUntil} from 'rxjs/operators';
 
 @Component({
   selector: 'app-sign-up',
@@ -38,6 +39,10 @@ import {Observable, throwError} from 'rxjs';
   styles: []
 })
 export class SignUpComponent implements OnInit {
+  ispause = new Subject();
+  time = 120;
+  timer!: Observable<number>;
+  timerObserver!: PartialObserver<number>;
 
 
   step = 0;
@@ -101,6 +106,22 @@ export class SignUpComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.timer = interval(1000)
+        .pipe(
+            takeUntil(this.ispause)
+        );
+
+    this.timerObserver = {
+
+      next: (_: number) => {
+        if (this.time == 0) {
+          this.ispause.next;
+        }
+        this.time -= 1;
+      }
+    };
+
+
     this.stepZeroForm = this.formBuilder.group({
       registrationNumber: ['', Validators.required],
       directorIdNumber: ['', Validators.required]
@@ -287,14 +308,25 @@ export class SignUpComponent implements OnInit {
 
   }
 
+  secondsToHms(d: number) {
+    d = Number(d);
+    const m = Math.floor(d % 3600 / 60);
+    const s = Math.floor(d % 3600 % 60);
+
+    const mDisplay = m > 0 ? m + (m == 1 ? ": " : " : ") : "00";
+    const sDisplay = s > 0 ? s + (s == 1 ? "" : "") : "00";
+    return mDisplay + sDisplay;
+  }
+
   onClickSendOtp() {
     this.otpSent = true;
+    this.timer.subscribe(this.timerObserver);
     this.validationCellphone = this.stepFourForm?.get('cellphone')?.value;
 
     this.stepFourForm?.get('otp')?.reset();
 
     if (
-      this.validationCellphone === '' ||
+        this.validationCellphone === '' ||
       this.validationCellphone === null
     ) {
       this.store$.dispatch(loadResponsesFailure({
