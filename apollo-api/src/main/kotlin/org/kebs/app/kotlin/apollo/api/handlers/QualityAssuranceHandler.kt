@@ -1175,6 +1175,7 @@ class QualityAssuranceHandler(
             val dto = req.body<STA3Dto>()
             val sta3 = qaDaoServices.mapDtoSTA3AndQaSta3Entity(dto)
 
+
             //Save the sta3 details first
             val savedSta3 = qaDaoServices.sta3NewSave(
                 permit.permitRefNumber ?: throw Exception("MISSING PERMIT REF NUMBER"),
@@ -1201,6 +1202,62 @@ class QualityAssuranceHandler(
 
 
             qaDaoServices.mapDtoSTA3View(savedSta3).let {
+                return ok().body(it)
+            }
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            return ServerResponse.badRequest().body(e.message ?: "Unknown Error")
+        }
+
+    }
+
+
+    @PreAuthorize("hasAuthority('PERMIT_APPLICATION')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun permitUpdateSTA3Migration(req: ServerRequest): ServerResponse {
+        try {
+            val loggedInUser = commonDaoServices.loggedInUserDetails()
+            val map = commonDaoServices.serviceMapDetails(appId)
+            val permitID =
+                req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
+            val permit = qaDaoServices.findPermitBYUserIDAndId(
+                permitID,
+                loggedInUser.id ?: throw ExpectedDataNotFound("MISSING USER ID")
+            )
+            val dto = req.body<STA3Dto>()
+            val sta3 = qaDaoServices.mapDtoSTA3AndQaSta3Entity(dto)
+
+            //Update the sta3 details first
+            var sta3Found = qaDaoServices.findSTA3WithPermitRefNumber(
+                permit.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER")
+            )
+            sta3.id = sta3Found.id
+            sta3Found = qaDaoServices.sta3Update(
+                commonDaoServices.updateDetails(sta3Found, sta3) as QaSta3Entity,
+                map,
+                loggedInUser
+            )
+
+            //create an entity that will update the permit transaction to the latest status
+            var updatePermit = PermitApplicationsEntity()
+            with(updatePermit) {
+                id = permit.id
+                sta3FilledStatus = map.activeStatus
+                permitStatus = applicationMapProperties.mapQaStatusPSubmission
+            }
+
+            //update the permit with the created entity values
+            updatePermit = qaDaoServices.permitUpdateDetails(
+                commonDaoServices.updateDetails(
+                    updatePermit,
+                    permit
+                ) as PermitApplicationsEntity, map, loggedInUser
+            ).second
+
+
+            qaDaoServices.mapDtoSTA3View(sta3Found).let {
                 return ok().body(it)
             }
 
