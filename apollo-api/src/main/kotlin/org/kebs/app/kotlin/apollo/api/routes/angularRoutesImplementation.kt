@@ -257,6 +257,7 @@ class AngularRoutes {
                 GET("/firm-list", handler::firmPermitListMigration)
                 "/apply".nest {
                     POST("/sta1", handler::permitApplySTA1Migration)
+                    PUT("/sta1-update", handler::permitUpdateSTA1Migration)
                     POST("/submit-application", handler::permitSubmitApplicationMigration)
                     POST("/sta3", handler::permitApplySTA3Migration)
                     PUT("/sta3-update", handler::permitUpdateSTA3Migration)

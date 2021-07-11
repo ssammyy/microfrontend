@@ -121,23 +121,25 @@ export class NewDmarkPermitComponent implements OnInit {
         return this.sta3FormD.controls;
     }
 
-    public onClickLogin(valid: Boolean) {
-        if (valid) {
-            this.credential = this.sta1Form.value;
-            this.store$.dispatch(loadAuths({payload: this.credential, redirectUrl: this.returnUrl}));
-        }
-
-    }
-
     onClickSaveSTA1(valid: boolean) {
         if (valid) {
-            this.qaService.savePermitSTA1('1', this.sta1Form.value).subscribe(
-                (data: PermitEntityDetails) => {
-                    this.permitEntityDetails = data;
-                    console.log(data);
-                    // this.router.navigate(['/users-list']);
-                },
-            );
+            if (this.permitEntityDetails == null) {
+                this.qaService.savePermitSTA1('1', this.sta1Form.value).subscribe(
+                    (data: PermitEntityDetails) => {
+                        this.permitEntityDetails = data;
+                        console.log(data);
+                        // this.router.navigate(['/users-list']);
+                    },
+                );
+            } else {
+                this.qaService.updatePermitSTA1(String(this.permitEntityDetails.id), this.sta1Form.value).subscribe(
+                    (data: PermitEntityDetails) => {
+                        this.permitEntityDetails = data;
+                        console.log(data);
+                        // this.router.navigate(['/users-list']);
+                    },
+                );
+            }
         }
     }
 

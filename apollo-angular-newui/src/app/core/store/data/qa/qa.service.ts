@@ -86,6 +86,21 @@ export class QaService {
         );
     }
 
+    public updatePermitSTA1(permitID: string, data: STA1): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.PERMIT_UPDATE_STA1);
+        const params = new HttpParams()
+            .set('permitID', permitID);
+        return this.http.put<any>(url, data, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
+
     public savePermitSTA3(permitID: string, data: STA3): Observable<any> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.PERMIT_APPLY_STA3);
         const params = new HttpParams()
