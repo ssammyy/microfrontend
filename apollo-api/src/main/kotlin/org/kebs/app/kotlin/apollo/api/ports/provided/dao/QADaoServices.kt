@@ -966,9 +966,7 @@ class QADaoServices(
                 p.dateOfExpiry,
                 p.permitStatus?.let { findPermitStatus(it).processStatusName },
                 p.userId,
-                commonDaoServices.convertTimestampToKeswsValidDate(
-                    p.createdOn ?: throw Exception("CREATION DATE MISSING")
-                ),
+                p.createdOn,
                 p.attachedPlantId?.let {
                     commonDaoServices.findCountiesEntityByCountyId(
                         findPlantDetails(it).county ?: -1L, map.activeStatus
