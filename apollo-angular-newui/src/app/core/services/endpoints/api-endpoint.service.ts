@@ -116,6 +116,13 @@ export class ApiEndpointService {
     PERMIT_UPDATE_STA3: `${ApiEndpointService.QA_CONTEXT}/permit/apply/sta3-update`,
     INVOICE_LIST_DETAILS: `${ApiEndpointService.QA_CONTEXT}/permit/invoice/batch-invoice-list`,
     INVOICE_DETAILS: `${ApiEndpointService.QA_CONTEXT}/report/proforma-invoice-with-Item`,
+    PERMIT_APPLY_STA10_FIRM_DETAILS: `${ApiEndpointService.QA_CONTEXT}/permit/apply/sta10/firm_details`,
+    PERMIT_APPLY_STA10_PERSONNEL_DETAILS: `${ApiEndpointService.QA_CONTEXT}/permit/apply/sta10/personnel_details`,
+    PERMIT_APPLY_STA10_PRODUCTS_BEING_MANUFACTURED: `${ApiEndpointService.QA_CONTEXT}/permit/apply/sta10/products_being_manufactured`,
+    PERMIT_APPLY_STA10_RAW_MATERIAL: `${ApiEndpointService.QA_CONTEXT}/permit/apply/sta10/raw_material`,
+    PERMIT_APPLY_STA10_MACHINERY_PLANT: `${ApiEndpointService.QA_CONTEXT}/permit/apply/sta10/machinery_plant`,
+    PERMIT_APPLY_STA10_MANUFACTURING_PROCESS: `${ApiEndpointService.QA_CONTEXT}/permit/apply/sta10/manufacturing_process`,
+
 
   };
 
