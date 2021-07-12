@@ -78,6 +78,7 @@ class WebSecurityConfig {
             val configuration = CorsConfiguration()
             configuration.allowedOrigins = listOf(
                 "http://localhost:4200",
+                "https://kimsint.kebs.org",
                 "https://kimsint.kebs.org:8006"
             )
             configuration.allowedMethods = listOf("*")
@@ -260,7 +261,7 @@ class WebSecurityConfig {
         }
 
         fun failureHandler(): SimpleUrlAuthenticationFailureHandler? {
-            return SimpleUrlAuthenticationFailureHandler("/login?error=true")
+            return SimpleUrlAuthenticationFailureHandler("/auth/login?error=true")
         }
 
 

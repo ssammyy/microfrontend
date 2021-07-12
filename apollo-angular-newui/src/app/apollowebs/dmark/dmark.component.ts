@@ -2,6 +2,7 @@ import {AfterViewInit, Component, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {QaService} from '../../core/store/data/qa/qa.service';
 import {AllPermitDetailsDto} from '../../core/store/data/qa/qa.model';
+import swal from "sweetalert2";
 
 declare interface DataTable {
     headerRow: string[];
@@ -110,13 +111,16 @@ export class DmarkComponent implements OnInit, AfterViewInit {
         this.qaService.submitPermitForReview(this.permitID).subscribe(
             (data: AllPermitDetailsDto) => {
                 this.allPermitDetails = data;
+                swal.fire({
+                    title: 'DMARK SUBMITTED SUCCESSFULLY PENDING REVIEW FROM PCM!',
+                    buttonsStyling: false,
+                    customClass: {
+                        confirmButton: 'btn btn-success form-wizard-next-btn ',
+                    },
+                    icon: 'success'
+                });
                 // this.onUpdateReturnToList();
             },
-            // tslint:disable-next-line:max-line-length
-            // (error: { error: { message: any; }; }) => {
-            //   this.notificationService.showError(error.error.message, 'Access Denied');
-            //   this.spinner.hide();
-            // }
         );
     }
 }

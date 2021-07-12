@@ -1,4 +1,5 @@
 import {UserEntityDto} from '../users';
+import {Timestamp} from "rxjs";
 
 export class Qa {
 }
@@ -25,6 +26,16 @@ export class PermitEntityDto {
     taskID: bigint;
     companyId: bigint;
     permitType: bigint;
+}
+
+export class ConsolidatedInvoiceDto {
+    id: bigint;
+    invoiceNumber: string;
+    totalAmount: string;
+    paidDate: Date;
+    paidStatus: boolean;
+    submittedStatus: boolean;
+    receiptNo: string;
 }
 
 export class STA1 {
@@ -151,5 +162,36 @@ export class PlantDetailsDto {
     plotNo: string;
     designation: string;
     contactPerson: string;
+}
+
+export class sta10Dto {
+    firmName: string;
+    statusCompanyBusinessRegistration: string;
+    ownerNameProprietorDirector: string;
+    postalAddress: string;
+    contactPerson: string;
+    telephone: string;
+    emailAddress: string;
+    physicalLocationMap: string;
+    county: string;
+    town: string;
+    totalNumberFemale: string;
+    totalNumberMale: string;
+    totalNumberPermanentEmployees: string;
+    totalNumberCasualEmployees: string;
+    averageVolumeProductionMonth: string;
+    handledManufacturingProcessRawMaterials: string;
+    handledManufacturingProcessInprocessProducts: string;
+    handledManufacturingProcessFinalProduct: string;
+    strategyInplaceRecallingProducts: string;
+    stateFacilityConditionsRawMaterials: string;
+    stateFacilityConditionsEndProduct: string;
+    testingFacilitiesExistSpecifyEquipment: string;
+    testingFacilitiesExistStateParametersTested: string;
+    testingFacilitiesSpecifyParametersTested: string;
+    calibrationEquipmentLastCalibrated: string;
+    handlingConsumerComplaints: string;
+    companyRepresentative: string;
+    applicationDate: string;
 }
 

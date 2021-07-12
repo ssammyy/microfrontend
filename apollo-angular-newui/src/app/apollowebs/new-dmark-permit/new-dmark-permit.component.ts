@@ -6,6 +6,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {QaService} from '../../core/store/data/qa/qa.service';
 import {PermitEntityDetails, PlantDetailsDto, SectionDto} from '../../core/store/data/qa/qa.model';
 import {UserRegister} from '../../../../../apollo-webs/src/app/shared/models/user';
+import swal from 'sweetalert2';
 
 @Component({
     selector: 'app-new-dmark-permit',
@@ -23,6 +24,9 @@ export class NewDmarkPermitComponent implements OnInit {
     sections: SectionDto[];
     plants: PlantDetailsDto[];
     permitEntityDetails: PermitEntityDetails;
+    stepSoFar: | undefined;
+    step = 1;
+    currBtn = 'A';
 
 
     constructor(private store$: Store<any>,
@@ -106,6 +110,115 @@ export class NewDmarkPermitComponent implements OnInit {
 
         this.returnUrl = this.route.snapshot.queryParams[`returnUrl`] || `/dmark`;
     }
+    onClickPrevious() {
+        if (this.step > 1) {
+            this.step = this.step - 1;
+        } else {
+            this.step = 1;
+        }
+    }
+    onClickNext(valid: boolean) {
+        if (valid) {
+            switch (this.step) {
+                case 1:
+                    this.stepSoFar = {...this.sta1Form?.value};
+                    break;
+                case 2:
+                    this.stepSoFar = {...this.sta3FormA?.value};
+                    break;
+                case 3:
+                    this.stepSoFar = {...this.sta3FormB?.value};
+                    break;
+                case 4:
+                    this.stepSoFar = {...this.sta3FormC?.value};
+                    break;
+                case 5:
+                    this.stepSoFar = {...this.sta3FormD?.value};
+                    break;
+                case 6:
+                    this.stepSoFar = {...this.sta3FormD?.value};
+                    break;
+            }
+            this.step += 1;
+            console.log(`Clicked and step = ${this.step}`);
+        }
+    }
+    selectStepOneClass(step: number): string {
+        if (step === 1) {
+            return 'active';
+        } else {
+            return '';
+        }
+    }
+    selectStepTwoClass(step: number): string {
+        console.log(`${step}`);
+        if (step === 1) {
+            return 'active';
+        }if (step === 2) {
+            return 'activated';
+        } else {
+            return '';
+        }
+    }
+    selectStepThreeClass(step: number): string {
+        if (step === 1) {
+            return 'active';
+        }if (step === 2) {
+            return 'activated';
+        }if (step === 3) {
+            return 'activated';
+        } else {
+            return '';
+        }
+    }
+
+    selectStepFourClass(step: number): string {
+        if (step === 1) {
+            return 'active';
+        }if (step === 2) {
+            return 'activated';
+        }if (step === 3) {
+            return 'activated';
+        }if (step === 4) {
+            return 'activated';
+        } else {
+            return '';
+        }
+    }
+    selectStepFiveClass(step: number): string {
+        if (step === 1) {
+            return 'active';
+        }if (step === 2) {
+            return 'activated';
+        }if (step === 3) {
+            return 'activated';
+        }if (step === 4) {
+            return 'activated';
+        }if (step === 5) {
+            return 'activated';
+        }if (step === 6) {
+            return 'activated';
+        } else {
+            return '';
+        }
+    }
+    selectStepSixClass(step: number): string {
+        if (step === 1) {
+            return 'active';
+        }if (step === 2) {
+            return 'activated';
+        }if (step === 3) {
+            return 'activated';
+        }if (step === 4) {
+            return 'activated';
+        }if (step === 5) {
+            return 'activated';
+        }if (step === 6) {
+            return 'activated';
+        } else {
+            return '';
+        }
+    }
 
     get formSta1Form(): any {
         return this.sta1Form.controls;
@@ -134,15 +247,34 @@ export class NewDmarkPermitComponent implements OnInit {
                     (data: PermitEntityDetails) => {
                         this.permitEntityDetails = data;
                         console.log(data);
-                        // this.router.navigate(['/users-list']);
+                        this.step += 1;
+                        this.currBtn = 'B';
+                        swal.fire({
+                            title: 'STA1 Form saved!',
+                            buttonsStyling: false,
+                            customClass: {
+                                confirmButton: 'btn btn-success form-wizard-next-btn ',
+                            },
+                            icon: 'success'
+                        });
+// this.router.navigate(['/users-list']);
                     },
                 );
             } else {
                 this.qaService.updatePermitSTA1(String(this.permitEntityDetails.id), this.sta1Form.value).subscribe(
                     (data: PermitEntityDetails) => {
                         this.permitEntityDetails = data;
+                        this.step += 1;
                         console.log(data);
-                        // this.router.navigate(['/users-list']);
+                        swal.fire({
+                            title: 'STA1 Form updated!',
+                            buttonsStyling: false,
+                            customClass: {
+                                confirmButton: 'btn btn-success form-wizard-next-btn ',
+                            },
+                            icon: 'success'
+                        });
+// this.router.navigate(['/users-list']);
                     },
                 );
             }
@@ -155,7 +287,16 @@ export class NewDmarkPermitComponent implements OnInit {
             this.qaService.savePermitSTA3(this.permitEntityDetails.id.toString(), this.sta3FormA.value).subscribe(
                 (data: any) => {
                     console.log(data);
-                    // this.router.navigate(['/users-list']);
+                    this.step += 1;
+                    swal.fire({
+                        title: 'STA3 Form saved!',
+                        buttonsStyling: false,
+                        customClass: {
+                            confirmButton: 'btn btn-success form-wizard-next-btn ',
+                        },
+                        icon: 'success'
+                    });
+// this.router.navigate(['/users-list']);
                 },
             );
         }
@@ -166,7 +307,16 @@ export class NewDmarkPermitComponent implements OnInit {
             this.qaService.updatePermitSTA3(this.permitEntityDetails.id.toString(), this.sta3FormB.value).subscribe(
                 (data: any) => {
                     console.log(data);
-                    // this.router.navigate(['/users-list']);
+                    this.step += 1;
+                    swal.fire({
+                        title: 'STA3 Form updated!',
+                        buttonsStyling: false,
+                        customClass: {
+                            confirmButton: 'btn btn-success form-wizard-next-btn ',
+                        },
+                        icon: 'success'
+                    });
+// this.router.navigate(['/users-list']);
                 },
             );
         }
@@ -177,7 +327,16 @@ export class NewDmarkPermitComponent implements OnInit {
             this.qaService.updatePermitSTA3(this.permitEntityDetails.id.toString(), this.sta3FormC.value).subscribe(
                 (data: any) => {
                     console.log(data);
-                    // this.router.navigate(['/users-list']);
+                    this.step += 1;
+                    swal.fire({
+                        title: 'STA3 Form updated!',
+                        buttonsStyling: false,
+                        customClass: {
+                            confirmButton: 'btn btn-success form-wizard-next-btn ',
+                        },
+                        icon: 'success'
+                    });
+// this.router.navigate(['/users-list']);
                 },
             );
         }
@@ -188,6 +347,15 @@ export class NewDmarkPermitComponent implements OnInit {
             this.qaService.updatePermitSTA3(this.permitEntityDetails.id.toString(), this.sta3FormD.value).subscribe(
                 (data: any) => {
                     console.log(data);
+                    this.step += 1;
+                    swal.fire({
+                        title: 'STA3 Form updated!',
+                        buttonsStyling: false,
+                        customClass: {
+                            confirmButton: 'btn btn-success form-wizard-next-btn ',
+                        },
+                        icon: 'success'
+                    });
                     this.router.navigate(['/dmark'], {fragment: this.permitEntityDetails.id.toString()});
                 },
             );

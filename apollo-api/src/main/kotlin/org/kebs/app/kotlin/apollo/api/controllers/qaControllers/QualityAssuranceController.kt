@@ -743,7 +743,8 @@ class QualityAssuranceController(
 
 
         val sm = CommonDaoServices.MessageSuccessFailDTO()
-        sm.closeLink = "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitDetails.id}"
+        sm.closeLink =
+            "${applicationMapProperties.baseUrlValue}/qa/permits-list?permitTypeID=${permitDetails.permitType}"
         sm.message = "${permit.description}"
 
         return commonDaoServices.returnValues(result, map, sm)
@@ -810,7 +811,8 @@ class QualityAssuranceController(
 
 
         val sm = CommonDaoServices.MessageSuccessFailDTO()
-        sm.closeLink = "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitDetails.id}"
+        sm.closeLink =
+            "${applicationMapProperties.baseUrlValue}/qa/permits-list?permitTypeID=${permitDetails.permitType}"
         sm.message = "${permit.description}"
 
         return commonDaoServices.returnValues(result, map, sm)
@@ -860,7 +862,7 @@ class QualityAssuranceController(
         result = myRenewedPermit.first
 
         val sm = CommonDaoServices.MessageSuccessFailDTO()
-        sm.closeLink = "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${result.varField1}"
+        sm.closeLink = "${applicationMapProperties.baseUrlValue}/qa/permits-list?permitTypeID=${permit.permitType}"
         sm.message = "You have Successful Renewed your Permit , Invoice has Been Generated"
 
         return commonDaoServices.returnValues(result, map, sm)
@@ -1105,7 +1107,7 @@ class QualityAssuranceController(
         result = qaDaoServices.permitUpdateDetails(permit, map, loggedInUser).first
 
         val sm = CommonDaoServices.MessageSuccessFailDTO()
-        sm.closeLink = "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${result.varField1}"
+        sm.closeLink = "${applicationMapProperties.baseUrlValue}/qa/permits-list?permitTypeID=${permit.permitType}"
         sm.message = "You have Successful resubmitted your Permit for approval"
 
         return commonDaoServices.returnValues(result, map, sm)
@@ -1211,7 +1213,7 @@ class QualityAssuranceController(
         result = qaDaoServices.permitUpdateDetails(permit, map, loggedInUser).first
 
         val sm = CommonDaoServices.MessageSuccessFailDTO()
-        sm.closeLink = "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${result.varField1}"
+        sm.closeLink = "${applicationMapProperties.baseUrlValue}/qa/permits-list?permitTypeID=${permit.permitType}"
         sm.message = "You have Successful submitted your Permit for review"
 
         return commonDaoServices.returnValues(result, map, sm)
@@ -1756,7 +1758,7 @@ class QualityAssuranceController(
         result = qaDaoServices.permitUpdateDetails(permit, map, loggedInUser).first
 
         val sm = CommonDaoServices.MessageSuccessFailDTO()
-        sm.closeLink = "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permit.id}"
+        sm.closeLink = "${applicationMapProperties.baseUrlValue}/qa/permits-list?permitTypeID=${permit.permitType}"
         sm.message =
             "You have successful Submitted Your Application, an invoice has been generated, check Your permit detail and pay for the Invoice"
 

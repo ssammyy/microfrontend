@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController
 import javax.servlet.http.HttpServletResponse
 
 @RestController
-@RequestMapping("/api/kebs/qa/")
+@RequestMapping("/api/v1/migration/qa/")
 //@RequestMapping("/api/v1/migration/qa/")
 class ReportsController(
     private val applicationMapProperties: ApplicationMapProperties,

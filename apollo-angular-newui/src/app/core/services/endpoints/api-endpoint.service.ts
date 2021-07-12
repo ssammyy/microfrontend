@@ -17,9 +17,10 @@ export class ApiEndpointService {
    * Map of domains for API endpoints.
    */
   public static DOMAIN = {
-    LOCAL_DEV: 'localhost:8006'
-      // LOCAL_DEV: '41.72.209.58:8006'
-      // LOCAL_DEV: 'kimsint.kebs.org:8006'
+    // LOCAL_DEV: 'localhost:8006'
+    // LOCAL_DEV: '12:8006'
+    // LOCAL_DEV: '41.72.209.58:8006'
+    LOCAL_DEV: 'kimsint.kebs.org:8006'
   };
 
   /**
@@ -103,16 +104,18 @@ export class ApiEndpointService {
       MASTERS_CURRENCIES: `${ApiEndpointService.MASTERS_CONTEXT}/currencies/`,
       // tslint:disable-next-line:max-line-length
       /*::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::QA ENDPOINTS:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
-      FIRM_PERMIT_LIST: `${ApiEndpointService.QA_CONTEXT}/permit/firm-list`,
-      PERMIT_LIST: `${ApiEndpointService.QA_CONTEXT}/permit/list`,
-      PERMIT_VIEW_DETAILS: `${ApiEndpointService.QA_CONTEXT}/permit/view/details`,
-      PERMIT_SUBMIT_DETAILS_FOR_REVIEW: `${ApiEndpointService.QA_CONTEXT}/permit/apply/submit-application-review`,
-      PLANT_LIST: `${ApiEndpointService.QA_CONTEXT}/branch-list`,
-      SECTION_LIST: `${ApiEndpointService.QA_CONTEXT}/sections-list`,
-      PERMIT_APPLY_STA1: `${ApiEndpointService.QA_CONTEXT}/permit/apply/sta1`,
-      PERMIT_UPDATE_STA1: `${ApiEndpointService.QA_CONTEXT}/permit/apply/sta1-update`,
-      PERMIT_APPLY_STA3: `${ApiEndpointService.QA_CONTEXT}/permit/apply/sta3`,
-      PERMIT_UPDATE_STA3: `${ApiEndpointService.QA_CONTEXT}/permit/apply/sta3-update`,
+    FIRM_PERMIT_LIST: `${ApiEndpointService.QA_CONTEXT}/permit/firm-list`,
+    PERMIT_LIST: `${ApiEndpointService.QA_CONTEXT}/permit/list`,
+    PERMIT_VIEW_DETAILS: `${ApiEndpointService.QA_CONTEXT}/permit/view/details`,
+    PERMIT_SUBMIT_DETAILS_FOR_REVIEW: `${ApiEndpointService.QA_CONTEXT}/permit/apply/submit-application-review`,
+    PLANT_LIST: `${ApiEndpointService.QA_CONTEXT}/branch-list`,
+    SECTION_LIST: `${ApiEndpointService.QA_CONTEXT}/sections-list`,
+    PERMIT_APPLY_STA1: `${ApiEndpointService.QA_CONTEXT}/permit/apply/sta1`,
+    PERMIT_UPDATE_STA1: `${ApiEndpointService.QA_CONTEXT}/permit/apply/sta1-update`,
+    PERMIT_APPLY_STA3: `${ApiEndpointService.QA_CONTEXT}/permit/apply/sta3`,
+    PERMIT_UPDATE_STA3: `${ApiEndpointService.QA_CONTEXT}/permit/apply/sta3-update`,
+    INVOICE_LIST_DETAILS: `${ApiEndpointService.QA_CONTEXT}/permit/invoice/batch-invoice-list`,
+    INVOICE_DETAILS: `${ApiEndpointService.QA_CONTEXT}/report/proforma-invoice-with-Item`,
 
   };
 

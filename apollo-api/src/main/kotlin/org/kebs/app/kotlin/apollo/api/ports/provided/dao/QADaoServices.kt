@@ -2111,7 +2111,7 @@ class QADaoServices(
     ): Pair<ServiceRequestsEntity, PermitApplicationsEntity> {
 
         var sr = commonDaoServices.createServiceRequest(s)
-        var savePermit = PermitApplicationsEntity()
+        var savePermit: PermitApplicationsEntity? = null
         try {
             val pm = findPermitBYID(permitID)
             var oldPermit =
@@ -2126,14 +2126,7 @@ class QADaoServices(
             //update last previous version permit old status
             oldPermit = permitUpdateDetails(oldPermit, s, user).second
 
-            with(savePermit) {
-                status = s.activeStatus
-                createdBy = commonDaoServices.concatenateName(user)
-                createdOn = commonDaoServices.getTimestamp()
-            }
-            savePermit = permitRepo.save(savePermit)
-
-            savePermit = commonDaoServices.updateDetails(oldPermit, savePermit) as PermitApplicationsEntity
+            savePermit = oldPermit
 
             with(savePermit) {
                 id = null
@@ -2141,7 +2134,7 @@ class QADaoServices(
                 versionNumber = versionNumberOld.plus(1)
             }
 
-            savePermit = permitUpdateDetails(savePermit, s, user).second
+            savePermit = permitRepo.save(savePermit)
 
             sr.payload = "Permit Renewed Updated [updatePermit= ${savePermit.id}]"
             sr.names = "${savePermit.permitRefNumber}} ${savePermit.userId}"
@@ -2164,7 +2157,7 @@ class QADaoServices(
         }
 
         KotlinLogging.logger { }.trace("${sr.id} ${sr.responseStatus}")
-        return Pair(sr, savePermit)
+        return Pair(sr, savePermit ?: throw ExpectedDataNotFound("MISSING SAVED PERMIT"))
     }
 
     fun permitUpdateNewWithSamePermitNumber(
@@ -3808,6 +3801,7 @@ class QADaoServices(
 
         return batchInvoiceList.map { p ->
             ConsolidatedInvoiceDto(
+                p.id,
                 p.invoiceNumber,
                 p.totalAmount,
                 p.paidDate,
