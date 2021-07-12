@@ -121,7 +121,8 @@
                 <a th:href="@{/api/di/home}"> Import Inspection</a></span>
         </div>
 
-        <div class="sidebar-items" sec:authorize="hasAuthority('MINISTRY_OF_TRANSPORT_READ') or hasAuthority('MINISTRY_OF_TRANSPORT_MODIFY')">
+        <div class="sidebar-items"
+             sec:authorize="hasAuthority('MINISTRY_OF_TRANSPORT_READ') or hasAuthority('MINISTRY_OF_TRANSPORT_MODIFY')">
             <img th:src="@{/images/assets/import_inspection.svg}" class="sidebar-icons-dashboard selected-page">
             <span>
                 <a th:href="@{/api/di/ministry-inspection-home}"> Motor Vehicle Inspection</a></span>

@@ -52,7 +52,7 @@ class QAControllerTest {
 
         val allUnpaidInvoices= qaDaoServices.findALlPermitInvoicesCreatedByUserWithNoPaymentStatus(1765, map.inactiveStatus)
         val complaint = qaDaoServices.listPermitsInvoices(allUnpaidInvoices,203, map)
-        KotlinLogging.logger { }.info { "complaint = ${complaint.toString()} " }
+        KotlinLogging.logger { }.info { "complaint = $complaint " }
     }
 
     @Test
@@ -60,10 +60,20 @@ class QAControllerTest {
         val appId = applicationMapProperties.mapMarketSurveillance
         val map = commonDaoServices.serviceMapDetails(appId)
 
-        val allUnpaidInvoices= qaDaoServices.calculatePayment(qaDaoServices.findPermitBYID(705),map,commonDaoServices.findUserByID(2046))
+        val allUnpaidInvoices =
+            qaDaoServices.calculatePayment(qaDaoServices.findPermitBYID(705), map, commonDaoServices.findUserByID(2046))
 //        KotlinLogging.logger { }.info { "complaint = ${complaint.toString()} " }
     }
 
+    @Test
+    fun permitDetails() {
+        val appId = applicationMapProperties.mapMarketSurveillance
+        val map = commonDaoServices.serviceMapDetails(appId)
+
+        val allUnpaidInvoices =
+            qaDaoServices.permitRejectedVersionCreation(842, map, commonDaoServices.findUserByID(2046))
+//        KotlinLogging.logger { }.info { "complaint = ${complaint.toString()} " }
+    }
 
 
 }

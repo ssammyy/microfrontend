@@ -3,6 +3,7 @@ package org.kebs.app.kotlin.apollo.api.controllers.qaControllers
 
 import org.kebs.app.kotlin.apollo.api.notifications.Notifications
 import mu.KotlinLogging
+import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.QualityAssuranceBpmn
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.QADaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.QualityAssuranceDaoServices
@@ -33,6 +34,7 @@ import javax.servlet.http.HttpServletResponse
 class QualityAssuranceController(
     private val applicationMapProperties: ApplicationMapProperties,
     private val qaDaoServices: QADaoServices,
+    private val qualityAssuranceBpmn: QualityAssuranceBpmn,
     private val notifications: Notifications,
     private val commonDaoServices: CommonDaoServices,
 ) {
@@ -636,21 +638,44 @@ class QualityAssuranceController(
                             KotlinLogging.logger { }.info(":::::: Sending compliance status along with e-permit :::::::")
                             permitDetails.userTaskId = applicationMapProperties.mapUserTaskNameMANUFACTURE
                             permitDetails = qaDaoServices.permitUpdateDetails(commonDaoServices.updateDetails(permit, permitDetails) as PermitApplicationsEntity, map, loggedInUser).second
-                            qaDaoServices.pcmGenerateInvoice(map, loggedInUser, permitDetails, permitDetails.permitType ?: throw Exception("ID NOT FOUND"))
+                            qaDaoServices.pcmGenerateInvoice(
+                                map,
+                                loggedInUser,
+                                permitDetails,
+                                permitDetails.permitType ?: throw Exception("ID NOT FOUND")
+                            )
+                            qualityAssuranceBpmn.qaDmARCheckApplicationComplete(
+                                permitDetails.id ?: throw Exception("MISSING PERMIT ID"),
+                                permitDetails.userId ?: throw Exception("MISSING USER ID"),
+                                true
+                            )
                         }
                         map.inactiveStatus -> {
+
+                            qaDaoServices.permitInsertStatus(
+                                permitDetails,
+                                applicationMapProperties.mapQaStatusPendingCorrectionManf,
+                                loggedInUser
+                            )
+                            //Rejected Permit creates a new version
+                            permitDetails = qaDaoServices.permitRejectedVersionCreation(
+                                permitDetails.id ?: throw ExpectedDataNotFound("MISSING PERMIT ID"), map, loggedInUser
+                            ).second
+
                             with(permitDetails) {
                                 resubmitApplicationStatus = map.initStatus
                                 sendForPcmReview = null
                                 pcmApprovalStatus = null
                                 userTaskId = applicationMapProperties.mapUserTaskNameMANUFACTURE
                             }
-                            qaDaoServices.permitInsertStatus(
-                                permitDetails,
-                                applicationMapProperties.mapQaStatusPendingCorrectionManf,
-                                loggedInUser
-                            )
+
                             qaDaoServices.sendNotificationForPermitReviewRejectedFromPCM(permitDetails)
+                            qualityAssuranceBpmn.qaDmARCheckApplicationComplete(
+                                permitDetails.id ?: throw Exception("MISSING PERMIT ID"),
+                                permitDetails.userId ?: throw Exception("MISSING USER ID"),
+                                false
+                            )
+
                         }
                     }
                 } else {

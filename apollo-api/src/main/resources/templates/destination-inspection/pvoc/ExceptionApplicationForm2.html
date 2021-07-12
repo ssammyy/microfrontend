@@ -7,15 +7,15 @@
     <th:block th:include="fragments/general-form.html:: headerfiles"/>
     <link th:href="@{/assets2/exemption.css}" rel="stylesheet" type="text/css">
     <link th:href="@{/assets2/CustomStyles.css}" rel="stylesheet" type="text/css">
-<!--    <link th:href="@{/assets2/bootstrap-4.5.3-dist/css/bootstrap.css}" rel="stylesheet">-->
+    <!--    <link th:href="@{/assets2/bootstrap-4.5.3-dist/css/bootstrap.css}" rel="stylesheet">-->
     <link rel="stylesheet" th:href="@{/js/exception/jquery-ui-1.12.1.custom/jquery-ui.css}" />
-<!--    <link rel="stylesheet" th:href="@{/assets2/font-awesome-4.7.0/css/font-awesome.css}">-->
+    <!--    <link rel="stylesheet" th:href="@{/assets2/font-awesome-4.7.0/css/font-awesome.css}">-->
 </head>
 <body>
-<div th:replace="fragments/general-form.html :: dashboard-page" ></div>
+<div th:replace="fragments/general-form.html :: dashboard-page"></div>
 
 <div class="dashboard-body">
-    <div th:replace="fragments/general-form.html :: side-navigation-bar" ></div>
+    <div th:replace="fragments/general-form.html :: side-navigation-bar"></div>
     <div class="main-area">
         <div th:replace="fragments/general-form.html :: content-navigation-bar"></div>
         <section class="dashboard-content">
@@ -49,7 +49,8 @@
                                             <label><b>Postal Address</b></label>
                                             <input type="text" class="form-control one-column-input" aria-label="Small"
                                                    aria-describedby="inputGroup-sizing-sm"
-                                                   name="postalAddress" ng-model="details.postalAadress" readonly required>
+                                                   name="postalAddress" ng-model="details.postalAadress" readonly
+                                                   required>
 
                                         </div>
 
@@ -57,7 +58,7 @@
                                             <label><b>Telephone No.</b></label>
                                             <input type="text" class="form-control one-column-input" aria-label="Small"
                                                    aria-describedby="inputGroup-sizing-sm"
-                                                   name="telephoneNo" ng-model="details.telephoneNo" readonly  required>
+                                                   name="telephoneNo" ng-model="details.telephoneNo" readonly required>
 
                                         </div>
 
@@ -65,7 +66,7 @@
                                             <label><b>Email Address</b></label>
                                             <input type="text" class="form-control one-column-input" aria-label="Small"
                                                    aria-describedby="inputGroup-sizing-sm"
-                                                   name="businessName" ng-model="details.email" readonly  required>
+                                                   name="businessName" ng-model="details.email" readonly required>
 
                                         </div>
 
@@ -73,14 +74,16 @@
                                             <label><b>Physical Location</b></label>
                                             <input type="text" class="form-control one-column-input" aria-label="Small"
                                                    aria-describedby="inputGroup-sizing-sm"
-                                                   name="physicalLocation" ng-model="details.physicalLocation" readonly required>
+                                                   name="physicalLocation" ng-model="details.physicalLocation" readonly
+                                                   required>
 
                                         </div>
                                         <div class="form-group">
                                             <label><b>Contact Person</b></label>
                                             <input type="text" class="form-control one-column-input" aria-label="Small"
                                                    aria-describedby="inputGroup-sizing-sm"
-                                                   name="contactPerson" ng-model="details.contactPersorn" readonly required>
+                                                   name="contactPerson" ng-model="details.contactPersorn" readonly
+                                                   required>
 
                                         </div>
                                         <!--                            <div style="float:right;">-->
@@ -89,8 +92,11 @@
                                     </div>
                                     <div class="mb-1" style="overflow:auto;">
                                         <div style="float:right;">
-                                            <button type="button"  ng-click="saveExemptionAppPartial()" id="saveBtn">Save As Draft</button>
-                                            <button type="button"  name="next" class="next button">SAVE AND PROCEED</button>
+                                            <button type="button" ng-click="saveExemptionAppPartial()" id="saveBtn">Save
+                                                As Draft
+                                            </button>
+                                            <button type="button" name="next" class="next button">SAVE AND PROCEED
+                                            </button>
                                         </div>
                                     </div>
                                 </fieldset>
@@ -105,21 +111,25 @@
                                         <th>Expiry Date</th>
                                         </thead>
                                         <tbody>
-                                        <tr ng-repeat ="fields in products">
-                                            <td><input type="checkbox" ng-click="selectedProduct(fields)" />&nbsp;</td>
-                                            <td><input type="text" class="form-control one-column-input" aria-label="Small"
+                                        <tr ng-repeat="fields in products">
+                                            <td><input type="checkbox" ng-click="selectedProduct(fields)"/>&nbsp;</td>
+                                            <td><input type="text" class="form-control one-column-input"
+                                                       aria-label="Small"
                                                        aria-describedby="inputGroup-sizing-sm"
                                                        name="productName" ng-model="fields.productName" required>
                                             </td>
-                                            <td><input type="text" class="form-control one-column-input" aria-label="Small"
+                                            <td><input type="text" class="form-control one-column-input"
+                                                       aria-label="Small"
                                                        aria-describedby="inputGroup-sizing-sm"
                                                        name="brand" ng-model="fields.brandName" required>
                                             </td>
-                                            <td><input type="text" class="form-control one-column-input" aria-label="Small"
+                                            <td><input type="text" class="form-control one-column-input"
+                                                       aria-label="Small"
                                                        aria-describedby="inputGroup-sizing-sm"
                                                        name="permitNumber" ng-model="fields.permitNumber" required>
                                             </td>
-                                            <td><input type="text" class="form-control one-column-input" aria-label="Small"
+                                            <td><input type="text" class="form-control one-column-input"
+                                                       aria-label="Small"
                                                        aria-describedby="inputGroup-sizing-sm"
                                                        name="expiryDate" ng-model="fields.expriryDate" required>
                                             </td>
@@ -130,8 +140,10 @@
                                     <div class="mb-1" style="overflow:auto;">
                                         <button type="button" name="previous" class="previous prevBtn">PREVIOUS</button>
                                         <div style="float:right;">
-                                            <button type="button" ng-click="saveExemptionAppPartial()">Save As Draft</button>
-                                            <button type="button"  name="next" class="next button">SAVE AND PROCEED</button>
+                                            <button type="button" ng-click="saveExemptionAppPartial()">Save As Draft
+                                            </button>
+                                            <button type="button" name="next" class="next button">SAVE AND PROCEED
+                                            </button>
                                         </div>
                                     </div>
                                 </fieldset>
@@ -140,14 +152,21 @@
                                         <h5 class="mb-4">Step 3/4: Select Exemptions to Apply For</h5>
                                         <div class="row">
                                             <div class="col">
-                                                <p>To apply for exemptions, you can either:<br> 1. Download the template, fill it in and
+                                                <p>To apply for exemptions, you can either:<br> 1. Download the
+                                                    template, fill it in and
                                                     upload the filled application., or<br>
                                                     2. Select one or more exemptions below and fill in the form
                                             </div>
                                             <div class="col" style="text-align: right">
-                                                <a href="https://kims.kebs.org:8006/file"><button type="button" class="download-button mr-3">DOWNLOAD EXCEL TEMPLATE</button></a>
+                                                <a href="https://kims.kebs.org:8006/file">
+                                                    <button type="button" class="download-button mr-3">DOWNLOAD EXCEL
+                                                        TEMPLATE
+                                                    </button>
+                                                </a>
                                                 <!--                                            <a href="https://localhost:8006/file"><button type="button" class="download-button mr-3">DOWNLOAD EXCEL TEMPLATE</button></a>-->
-                                                <button type="button"  data-toggle="modal" data-target="#myModal">UPLOAD FILLED APPLICATION</button>
+                                                <button type="button" data-toggle="modal" data-target="#myModal">UPLOAD
+                                                    FILLED APPLICATION
+                                                </button>
                                             </div>
                                         </div>
 
@@ -166,16 +185,21 @@
                                         <div class="box" style="display: none">
                                             <div class="alert alert-success" id="success-alert">
                                                 <button type="button" class="close" data-dismiss="alert">x</button>
-                                                <strong>Success! </strong> Raw Material exemption have been added to your added Raw Materials list.
+                                                <strong>Success! </strong> Raw Material exemption have been added to
+                                                your added Raw Materials list.
                                             </div>
                                             <div class="form-group">
                                                 <label><b>HS CODE</b></label>
-                                                <input type="text" name="hsCode" ng-model="hsCode" required uib-typeahead="state.hscode +' => '+ state.hscodeDesc for state in states | filter:$viewValue | limitTo:8" class="form-control one-column-input">
+                                                <input type="text" name="hsCode" ng-model="hsCode" required
+                                                       uib-typeahead="state.hscode +' => '+ state.hscodeDesc for state in states | filter:$viewValue | limitTo:8"
+                                                       class="form-control one-column-input">
                                             </div>
                                             <div class="form-group">
                                                 <label><b>Raw Material Description</b></label>
-                                                <input type="text" class="form-control one-column-input" aria-label="Small"
-                                                       aria-describedby="inputGroup-sizing-sm" ng-model="rawMaterialDesc"
+                                                <input type="text" class="form-control one-column-input"
+                                                       aria-label="Small"
+                                                       aria-describedby="inputGroup-sizing-sm"
+                                                       ng-model="rawMaterialDesc"
                                                        name="rawMaterialDesc" required>
 
                                             </div>
@@ -211,13 +235,15 @@
                                                 </div>
                                             </div>
                                             <div style="float:right;" class="mb-2">
-                                                <button type="button" id="rawM" ng-click="addRawMaterial()">ADD RAW MATERIAL</button>
+                                                <button type="button" id="rawM" ng-click="addRawMaterial()">ADD RAW
+                                                    MATERIAL
+                                                </button>
                                             </div>
                                         </div>
 
                                         <details>
                                             <summary>Added Raw Materials</summary>
-                                            <table width="100%" id="rawMaterialTable" >
+                                            <table width="100%" id="rawMaterialTable">
                                                 <thead>
                                                 <th>SN</th>
                                                 <th>HS CODE</th>
@@ -228,13 +254,10 @@
                                                 <th>Actions</th>
                                                 </thead>
                                                 <tbody>
-                                                <tr ng-repeat ="fields in rawMaterials" ng-include="getTemplate(fields)">
+                                                <tr ng-repeat="fields in rawMaterials" ng-include="getTemplate(fields)">
                                                 </tr>
                                                 </tbody>
                                             </table>
-
-
-
 
 
                                             <script type="text/ng-template" id="display">
@@ -244,16 +267,21 @@
                                                 <td>{{ fields.endProduct }}</td>
                                                 <td>{{ fields.dutyRate }}</td>
                                                 <td>{{ fields.countryOfOrigin }}</td>
-                                                <td><i id="editBtn" ng-click="editRowMaterial(fields)" class="mr-4 text-primary fa fa-edit" data-toggle="modal" data-target="#editModal"></i><i ng-click="removeRowMaterial(fields.sn)" class="fa fa-trash text-danger" id="deleteBtn"></i></td>
+                                                <td><i id="editBtn" ng-click="editRowMaterial(fields)"
+                                                       class="mr-4 text-primary fa fa-edit" data-toggle="modal"
+                                                       data-target="#editModal"></i><i
+                                                        ng-click="removeRowMaterial(fields.sn)"
+                                                        class="fa fa-trash text-danger" id="deleteBtn"></i></td>
                                             </script>
                                             <script type="text/ng-template" id="edit">
-                                                <td><input type="text" ng-model="selected.sn" /></td>
-                                                <td><input type="text" ng-model="selected.hsCode" /></td>
-                                                <td><input type="text" ng-model="selected.rawMaterialDescription" /></td>
-                                                <td><input type="text" ng-model="selected.endProduct" /></td>
-                                                <td><input type="text" ng-model="selected.dutyRate" /></td>
-                                                <td><input type="text" ng-model="selected.countryOfOrigin" /></td>
-                                                <td><i class="fa fa-save" ng-click="saveRawMaterial($index)">Save</i><i class="fa fa-window-close" ng-click="reset()">Cancel</i></td>
+                                                <td><input type="text" ng-model="selected.sn"/></td>
+                                                <td><input type="text" ng-model="selected.hsCode"/></td>
+                                                <td><input type="text" ng-model="selected.rawMaterialDescription"/></td>
+                                                <td><input type="text" ng-model="selected.endProduct"/></td>
+                                                <td><input type="text" ng-model="selected.dutyRate"/></td>
+                                                <td><input type="text" ng-model="selected.countryOfOrigin"/></td>
+                                                <td><i class="fa fa-save" ng-click="saveRawMaterial($index)">Save</i><i
+                                                        class="fa fa-window-close" ng-click="reset()">Cancel</i></td>
                                             </script>
                                         </details>
                                     </div>
@@ -270,23 +298,28 @@
                                         <div class="box" style="display: none">
                                             <div class="alert alert-success" id="success-machine">
                                                 <button type="button" class="close" data-dismiss="alert">x</button>
-                                                <strong>Success! </strong> Main Machinery exemption have been added to your Added Main Machinery list.
+                                                <strong>Success! </strong> Main Machinery exemption have been added to
+                                                your Added Main Machinery list.
                                             </div>
                                             <div class="form-group">
                                                 <label><b>HS Code</b></label>
-                                                <input type="text" name="hsCodeM" ng-model="hsCodeM" required uib-typeahead="state.hscode +' => '+ state.hscodeDesc for state in states | filter:$viewValue | limitTo:8" class="form-control one-column-input">
+                                                <input type="text" name="hsCodeM" ng-model="hsCodeM" required
+                                                       uib-typeahead="state.hscode +' => '+ state.hscodeDesc for state in states | filter:$viewValue | limitTo:8"
+                                                       class="form-control one-column-input">
 
                                             </div>
                                             <div class="form-group">
                                                 <label><b>Machine Description</b></label>
-                                                <input type="text" class="form-control one-column-input" aria-label="Small"
+                                                <input type="text" class="form-control one-column-input"
+                                                       aria-label="Small"
                                                        aria-describedby="inputGroup-sizing-sm"
                                                        name="machineDesc" ng-model="machineDesc" required>
 
                                             </div>
                                             <div class="form-group">
                                                 <label><b>Make and Model</b></label>
-                                                <input type="text" class="form-control one-column-input" aria-label="Small"
+                                                <input type="text" class="form-control one-column-input"
+                                                       aria-label="Small"
                                                        aria-describedby="inputGroup-sizing-sm"
                                                        name="makeModel" ng-model="makeModel" required>
 
@@ -305,7 +338,9 @@
                                                 </div>
                                             </div>
                                             <div style="float:right;" class="mb-2">
-                                                <button ng-click="addRawMachine()" type="button" id="AddMachine">ADD MACHINERY</button>
+                                                <button ng-click="addRawMachine()" type="button" id="AddMachine">ADD
+                                                    MACHINERY
+                                                </button>
                                             </div>
 
                                         </div>
@@ -322,7 +357,8 @@
                                                 <th>Actions</th>
                                                 </thead>
                                                 <tbody>
-                                                <tr ng-repeat ="fields in mainMachinaries" ng-include="getTemplateM(fields)">
+                                                <tr ng-repeat="fields in mainMachinaries"
+                                                    ng-include="getTemplateM(fields)">
                                                 </tr>
                                                 </tbody>
                                             </table>
@@ -334,17 +370,20 @@
                                                 <td>{{fields.machineDescription}}</td>
                                                 <td>{{fields.makeModel}}</td>
                                                 <td>{{fields.countryOfOrigin}}</td>
-                                                <td><a class="mr-4"><i ng-click="editMachine(fields)" class="fa fa-edit text-primary"></i></a> <a><i
+                                                <td><a class="mr-4"><i ng-click="editMachine(fields)"
+                                                                       class="fa fa-edit text-primary"></i></a> <a><i
                                                         ng-click="removeMachine(fields.sn)"
                                                         class="fa fa-trash text-danger"></i></a></td>
                                             </script>
                                             <script type="text/ng-template" id="editMachineV">
-                                                <td><input type="text" ng-model="selectedMachine.sn" /></td>
-                                                <td><input type="text" ng-model="selectedMachine.hsCode" /></td>
-                                                <td><input type="text" ng-model="selectedMachine.machineDescription" /></td>
-                                                <td><input type="text" ng-model="selectedMachine.makeModel" /></td>
-                                                <td><input type="text" ng-model="selectedMachine.countryOfOrigin" /></td>
-                                                <td><i class="fa fa-save" ng-click="saveMachine($index)">Save</i><i class="fa fa-window-close" ng-click="reset()">Cancel</i></td>
+                                                <td><input type="text" ng-model="selectedMachine.sn"/></td>
+                                                <td><input type="text" ng-model="selectedMachine.hsCode"/></td>
+                                                <td><input type="text" ng-model="selectedMachine.machineDescription"/>
+                                                </td>
+                                                <td><input type="text" ng-model="selectedMachine.makeModel"/></td>
+                                                <td><input type="text" ng-model="selectedMachine.countryOfOrigin"/></td>
+                                                <td><i class="fa fa-save" ng-click="saveMachine($index)">Save</i><i
+                                                        class="fa fa-window-close" ng-click="reset()">Cancel</i></td>
                                             </script>
                                         </details>
                                     </div>
@@ -361,24 +400,29 @@
                                         <div class="box" style="display: none">
                                             <div class="alert alert-success" id="success-spare">
                                                 <button type="button" class="close" data-dismiss="alert">x</button>
-                                                <strong>Success! </strong> Spare exemption have been added to your Added Industrial Spares list.
+                                                <strong>Success! </strong> Spare exemption have been added to your Added
+                                                Industrial Spares list.
                                             </div>
                                             <div class="form-group">
                                                 <label><b>HS Code</b></label>
-                                                <input type="text" name="hsCodeS" ng-model="hsCodeS" required uib-typeahead="state.hscode +' => '+ state.hscodeDesc for state in states | filter:$viewValue | limitTo:8" class="form-control one-column-input">
+                                                <input type="text" name="hsCodeS" ng-model="hsCodeS" required
+                                                       uib-typeahead="state.hscode +' => '+ state.hscodeDesc for state in states | filter:$viewValue | limitTo:8"
+                                                       class="form-control one-column-input">
 
                                             </div>
 
                                             <div class="form-group">
                                                 <label><b>Industrial Spares</b></label>
-                                                <input type="text" class="form-control one-column-input" aria-label="Small"
+                                                <input type="text" class="form-control one-column-input"
+                                                       aria-label="Small"
                                                        aria-describedby="inputGroup-sizing-sm"
                                                        name="industrialS" ng-model="industrialS" required>
 
                                             </div>
                                             <div class="form-group">
                                                 <label><b>Machines to be Fitted</b></label>
-                                                <input type="text" class="form-control one-column-input" aria-label="Small"
+                                                <input type="text" class="form-control one-column-input"
+                                                       aria-label="Small"
                                                        aria-describedby="inputGroup-sizing-sm"
                                                        name="machineToFit" ng-model="machineToFit" required>
 
@@ -396,7 +440,8 @@
 
                                             </div>
                                             <div style="float:right;" class="mb-2">
-                                                <button ng-click="addSpare()" type="button" id="sparesBtn">ADD SPARE</button>
+                                                <button ng-click="addSpare()" type="button" id="sparesBtn">ADD SPARE
+                                                </button>
                                             </div>
 
                                         </div>
@@ -413,7 +458,7 @@
                                                 <th>Actions</th>
                                                 </thead>
                                                 <tbody>
-                                                <tr ng-repeat ="fields in spares" ng-include="getTemplateS(fields)">
+                                                <tr ng-repeat="fields in spares" ng-include="getTemplateS(fields)">
                                                 </tr>
                                                 </tbody>
                                             </table>
@@ -424,25 +469,31 @@
                                                 <td>{{fields.industrialSpares}}</td>
                                                 <td>{{fields.machineToFit}}</td>
                                                 <td>{{fields.countryOfOrigin}}</td>
-                                                <td><a class="mr-4"><i ng-click="editSpare(fields)" class="fa fa-edit text-primary"></i></a> <a><i
+                                                <td><a class="mr-4"><i ng-click="editSpare(fields)"
+                                                                       class="fa fa-edit text-primary"></i></a> <a><i
                                                         ng-click="removeSpare(fields.sn)"
                                                         class="fa fa-trash text-danger"></i></a></td>
                                             </script>
                                             <script type="text/ng-template" id="editSpareV">
-                                                <td><input type="text" ng-model="selectedSpare.sn" /></td>
-                                                <td><input type="text" ng-model="selectedSpare.hsCode" /></td>
-                                                <td><input type="text" ng-model="selectedSpare.industrialSpares" /></td>
-                                                <td><input type="text" ng-model="selectedSpare.machineToFit" /></td>
-                                                <td><input type="text" ng-model="selectedSpare.countryOfOrigin" /></td>
-                                                <td><i class="fa fa-save" ng-click="saveSpare($index)">Save</i><i class="fa fa-window-close" ng-click="reset()">Cancel</i></td>
+                                                <td><input type="text" ng-model="selectedSpare.sn"/></td>
+                                                <td><input type="text" ng-model="selectedSpare.hsCode"/></td>
+                                                <td><input type="text" ng-model="selectedSpare.industrialSpares"/></td>
+                                                <td><input type="text" ng-model="selectedSpare.machineToFit"/></td>
+                                                <td><input type="text" ng-model="selectedSpare.countryOfOrigin"/></td>
+                                                <td><i class="fa fa-save" ng-click="saveSpare($index)">Save</i><i
+                                                        class="fa fa-window-close" ng-click="reset()">Cancel</i></td>
                                             </script>
                                         </details>
                                     </div>
                                     <div class="mb-1" style="overflow:auto;">
-                                        <button type="button" name="previous" class="previous prevBtn action-button-previous">PREVIOUS</button>
+                                        <button type="button" name="previous"
+                                                class="previous prevBtn action-button-previous">PREVIOUS
+                                        </button>
                                         <div style="float:right;">
-                                            <button type="button" ng-click="saveExemptionAppPartial()">Save As Draft</button>
-                                            <button type="button"  name="next" class="next button">SAVE AND PROCEED</button>
+                                            <button type="button" ng-click="saveExemptionAppPartial()">Save As Draft
+                                            </button>
+                                            <button type="button" name="next" class="next button">SAVE AND PROCEED
+                                            </button>
                                         </div>
                                     </div>
                                 </fieldset>
@@ -484,7 +535,8 @@
                                                 </tbody>
                                             </table>
 
-                                            <h6 class="details-title">Selected Goods Manufactured - ({{products.length}})</h6>
+                                            <h6 class="details-title">Selected Goods Manufactured -
+                                                ({{products.length}})</h6>
 
                                             <table class="mb-4 table-review">
                                                 <thead>
@@ -496,7 +548,7 @@
                                                 </tr>
                                                 </thead>
                                                 <tbody>
-                                                <tr ng-repeat ="fields in products">
+                                                <tr ng-repeat="fields in products">
                                                     <td>
                                                         {{fields.productName}}
                                                     </td>
@@ -514,7 +566,8 @@
                                                 </tbody>
                                             </table>
 
-                                            <h6 class="details-title">Exemptions Applied For Raw Materials - ({{rawMaterials.length}})</h6>
+                                            <h6 class="details-title">Exemptions Applied For Raw Materials -
+                                                ({{rawMaterials.length}})</h6>
                                             <table class="mb-4 table-review">
                                                 <thead>
                                                 <tr>
@@ -526,7 +579,7 @@
                                                 </tr>
                                                 </thead>
                                                 <tbody>
-                                                <tr ng-repeat ="fields in rawMaterials">
+                                                <tr ng-repeat="fields in rawMaterials">
                                                     <td>{{ fields.sn }}</td>
                                                     <td>{{ fields.hsCode }}</td>
                                                     <td>{{ fields.rawMaterialDescription }}</td>
@@ -535,7 +588,8 @@
                                                 </tr>
                                                 </tbody>
                                             </table>
-                                            <h6 class="details-title">Exemptions Applied For Main Machinary - ({{mainMachinaries.length}})</h6>
+                                            <h6 class="details-title">Exemptions Applied For Main Machinary -
+                                                ({{mainMachinaries.length}})</h6>
                                             <table class="mb-4 table-review">
                                                 <thead>
                                                 <tr>
@@ -547,7 +601,7 @@
                                                 </tr>
                                                 </thead>
                                                 <tbody>
-                                                <tr ng-repeat ="fields in mainMachinaries" >
+                                                <tr ng-repeat="fields in mainMachinaries">
                                                     <td>{{fields.sn}}</td>
                                                     <td>{{fields.hsCode}}</td>
                                                     <td>{{fields.machineDescription}}</td>
@@ -557,7 +611,8 @@
                                                 </tbody>
                                             </table>
 
-                                            <h6 class="details-title">Exemptions Applied For Spares - ({{spares.length}})</h6>
+                                            <h6 class="details-title">Exemptions Applied For Spares -
+                                                ({{spares.length}})</h6>
                                             <table class="mb-4 table-review">
                                                 <thead>
                                                 <tr>
@@ -569,7 +624,7 @@
                                                 </tr>
                                                 </thead>
                                                 <tbody>
-                                                <tr ng-repeat ="fields in spares" >
+                                                <tr ng-repeat="fields in spares">
                                                     <td>{{fields.sn}}</td>
                                                     <td>{{fields.hsCode}}</td>
                                                     <td>{{fields.industrialSpares}}</td>
@@ -581,17 +636,22 @@
                                         </div>
                                         <div class="col-lg-4">
                                             <h5>Terms and Conditions</h5>
-                                            <p>In the spirit of coming together, Gondwana Ke takes on a open air setting for the first
-                                                time and inviting South Africa’s iconic and electrifying dynamic duo Black Motion to
+                                            <p>In the spirit of coming together, Gondwana Ke takes on a open air setting
+                                                for the first
+                                                time and inviting South Africa’s iconic and electrifying dynamic duo
+                                                Black Motion to
                                                 debut our first day out!<br><br>
 
-                                                A ten year and counting career that has seen 6 studio albums and countless epic
-                                                performances makes Black Motion Africa’s gold gem & we couldn’t be more excited to host
+                                                A ten year and counting career that has seen 6 studio albums and
+                                                countless epic
+                                                performances makes Black Motion Africa’s gold gem & we couldn’t be more
+                                                excited to host
                                                 them at one of Nairobi’s history venue - Carnivore Grounds. </p>
                                             <div class="checkbox mt-5">
                                                 <label for="termsAndConditions"
                                                        style="width: 100%; display: inline-flex; align-items: center;">
-                                                    <input class="checkboxes" id="termsAndConditions" type="checkbox" ng-model="termsAccept"
+                                                    <input class="checkboxes" id="termsAndConditions" type="checkbox"
+                                                           ng-model="termsAccept"
                                                            style="width: 20px"
                                                            value="">I agree to the terms and conditions </label>
                                             </div>
@@ -599,11 +659,17 @@
                                     </div>
 
                                     <div class="mb-1" style="overflow:auto;">
-                                        <button type="button" name="previous" class="previous prevBtn action-button-previous" >PREVIOUS</button>
+                                        <button type="button" name="previous"
+                                                class="previous prevBtn action-button-previous">PREVIOUS
+                                        </button>
 
                                         <div style="float:right;">
-                                            <button type="button" ng-click="saveExemptionAppPartial()" onclick="" >Save As Draft</button>
-                                            <button type="button" ng-click="saveExemptionApp()" id="save_exemption" ng-show="termsAccept" name="next" class="button" >Submit Application</button>
+                                            <button type="button" ng-click="saveExemptionAppPartial()" onclick="">Save
+                                                As Draft
+                                            </button>
+                                            <button type="button" ng-click="saveExemptionApp()" id="save_exemption"
+                                                    ng-show="termsAccept" name="next" class="button">Submit Application
+                                            </button>
                                         </div>
                                     </div>
 
@@ -632,15 +698,20 @@
                                         <div class="modal-body">
                                             <div class="form-group">
                                                 <label for="myFileField">Select Exemption Exel:</label>
-                                                <input type="file" name="uploadedfile" demo-file-model="myFile"  class="form-control" id="myFileField">
+                                                <input type="file" name="uploadedfile" demo-file-model="myFile"
+                                                       class="form-control" id="myFileField">
                                             </div>
                                             <div class="form-group">
-                                                <button id="modalBtn" class="btn btn-block btn-success">Upload Excel File</button>
+                                                <button id="modalBtn" class="btn btn-block btn-success">Upload Excel
+                                                    File
+                                                </button>
                                             </div>
                                         </div>
                                         <!-- Modal footer -->
                                         <div class="modal-footer">
-                                            <button type="button" ng-click="uploadExceptions()" class="btn btn-danger" data-dismiss="modal">Close</button>
+                                            <button type="button" ng-click="uploadExceptions()" class="btn btn-danger"
+                                                    data-dismiss="modal">Close
+                                            </button>
                                         </div>
                                     </div>
                                 </div>

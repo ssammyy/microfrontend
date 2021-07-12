@@ -319,6 +319,11 @@ data class PermitDetailsDto(
     var firmTypeName: String? = null,
     var permitTypeName: String? = null,
     var permitTypeID: Long? = null,
+    var permitAwardStatus: Boolean? = null,
+    var invoiceGenerated: Boolean? = null,
+    var approvedRejectedScheme: Boolean? = null,
+    var sendForPcmReview: Boolean? = null,
+    var sendApplication: Boolean? = null,
 )
 
 data class AllPermitDetailsDto(
