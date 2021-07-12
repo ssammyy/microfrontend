@@ -59,8 +59,8 @@ placeholder="Applicant Name" required="">
 </div>
 
 <div class="form-group col-6">
-<label for="inputState">Select Section</label>
-<select id="inputState"  class="form-control" formControlName="sectionId" name="sectionId"
+<label for="sectionId">Select Section</label>
+    <select id="sectionId"  class="form-control" formControlName="sectionId" name="sectionId"
         [class.is-invalid]="formSta1Form.sectionId.invalid && formSta1Form.sectionId.touched">
 <option selected>Select Section</option>
 <option *ngFor="let section of sections"
