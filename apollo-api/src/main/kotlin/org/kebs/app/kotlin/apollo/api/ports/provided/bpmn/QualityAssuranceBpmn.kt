@@ -577,23 +577,6 @@ class QualityAssuranceBpmn(
         return null
     }
 
-    fun qaSfMIGenSupervisionSchemeComplete(permitId: Long, assigneeId: Long): Boolean {
-        KotlinLogging.logger { }.info("PermitId : $permitId :  Generate supervision scheme")
-        qaCompleteTask(permitId, "qaSfmiGenSupervisionScheme", qaSfMarkInspectionProcessDefinitionKey)?.let {
-            return qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "qaSfmiAcceptSupervisionScheme", assigneeId, true)
-        }
-        return false
-    }
-
-    fun qaSfMIAcceptSupervisionScheme(permitId: Long, assigneeId: Long, supervisionSchemeAccepted: Boolean): Boolean {
-        KotlinLogging.logger { }.info("PermitId : $permitId :  Accept supervision scheme")
-        updateTaskVariableByObjectIdAndKey(permitId, "qaSfmiAcceptSupervisionScheme", qaSfMarkInspectionProcessDefinitionKey, "supervisionSchemeAccepted", bpmnCommonFunctions.booleanToInt(supervisionSchemeAccepted).toString())
-        qaCompleteTask(permitId, "qaSfmiAcceptSupervisionScheme", qaSfMarkInspectionProcessDefinitionKey)?.let {
-            return qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), null, assigneeId, false)
-        }
-        return false
-    }
-
     fun qaSfMIFillFactoryInspectionForms(permitId: Long, qaoAssigneeId: Long, labAssigneeId: Long): Boolean {
         var result = false
         KotlinLogging.logger { }.info("PermitId : $permitId :  Fill factory inspection forms")
@@ -616,6 +599,29 @@ class QualityAssuranceBpmn(
         }
         return false
     }
+
+    fun qaSfMIGenSupervisionSchemeComplete(permitId: Long, assigneeId: Long): Boolean {
+        KotlinLogging.logger { }.info("PermitId : $permitId :  Generate supervision scheme")
+        qaCompleteTask(permitId, "qaSfmiGenSupervisionScheme", qaSfMarkInspectionProcessDefinitionKey)?.let {
+            return qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "qaSfmiAcceptSupervisionScheme", assigneeId, true)
+        }
+        return false
+    }
+
+    fun qaSfMIAcceptSupervisionScheme(permitId: Long, assigneeId: Long, supervisionSchemeAccepted: Boolean): Boolean {
+        KotlinLogging.logger { }.info("PermitId : $permitId :  Accept supervision scheme")
+        updateTaskVariableByObjectIdAndKey(permitId, "qaSfmiAcceptSupervisionScheme", qaSfMarkInspectionProcessDefinitionKey, "supervisionSchemeAccepted", bpmnCommonFunctions.booleanToInt(supervisionSchemeAccepted).toString())
+        qaCompleteTask(permitId, "qaSfmiAcceptSupervisionScheme", qaSfMarkInspectionProcessDefinitionKey)?.let {
+            if (!supervisionSchemeAccepted){
+                //return to sender
+                return qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "qaSfmiGenSupervisionScheme", assigneeId, false)
+            } else {
+                return true //process ends
+            }
+        }
+        return false
+    }
+
 
     fun qaSfMIReceiveSSFComplete(permitId: Long, assigneeId: Long): Boolean {
         KotlinLogging.logger { }.info("PermitId : $permitId :  Receive the SSF")
@@ -732,6 +738,7 @@ class QualityAssuranceBpmn(
                 variables["testReportsCompliant"] = 0
                 variables["labReportStatus"] = 0
                 variables["complianceStatus"] = 0
+                variables["supervisionSchemeAccepted"] = 0
 
                 bpmnCommonFunctions.startBpmnProcess(qaDmApplicationReviewProcessDefinitionKey, qaDmApplicationReviewBusinessKey, variables, assigneeId)?.let {
                     permit.dmAppReviewProcessInstanceId = it["processInstanceId"]
@@ -808,10 +815,33 @@ class QualityAssuranceBpmn(
         KotlinLogging.logger { }.info("PermitId : $permitId :  Approve the inspection report complete")
         updateTaskVariableByObjectIdAndKey(permitId, "qaDmarApproveInspectionReport", qaDmApplicationReviewProcessDefinitionKey, "inspectionReportApproved", bpmnCommonFunctions.booleanToInt(inspectionReportApproved).toString())
         qaCompleteTask(permitId, "qaDmarApproveInspectionReport", qaDmApplicationReviewProcessDefinitionKey)?.let {
+            qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "qaDmarGenerateSupervisionScheme", qaoAssigneeId, false)
             return if (inspectionReportApproved) {   //inspection report approved
                 qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "qaDmarTestReportsAvailable", qaoAssigneeId, false)
             } else {
                 qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "qaDmarGenerateInspectionReport", qaoAssigneeId, false)
+            }
+        }
+        return false
+    }
+
+    fun qaDmARGenSupervisionSchemeComplete(permitId: Long, assigneeId: Long): Boolean {
+        KotlinLogging.logger { }.info("PermitId : $permitId :  Generate supervision scheme")
+        qaCompleteTask(permitId, "qaDmarGenerateSupervisionScheme" , qaDmApplicationReviewProcessDefinitionKey)?.let {
+            return qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "qaDmarAcceptSupervisionScheme", assigneeId, true)
+        }
+        return false
+    }
+
+    fun qaDmARAcceptSupervisionScheme(permitId: Long, assigneeId: Long, supervisionSchemeAccepted: Boolean): Boolean {
+        KotlinLogging.logger { }.info("PermitId : $permitId :  Accept supervision scheme")
+        updateTaskVariableByObjectIdAndKey(permitId, "qaDmarAcceptSupervisionScheme", qaDmApplicationReviewProcessDefinitionKey, "supervisionSchemeAccepted", bpmnCommonFunctions.booleanToInt(supervisionSchemeAccepted).toString())
+        qaCompleteTask(permitId, "qaDmarAcceptSupervisionScheme", qaDmApplicationReviewProcessDefinitionKey)?.let {
+            if (!supervisionSchemeAccepted){
+                //return to sender
+                return qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "qaDmarGenerateSupervisionScheme", assigneeId, false)
+            } else {
+                return true //process ends
             }
         }
         return false
