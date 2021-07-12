@@ -69,6 +69,7 @@ data class InvoiceDto(
 )
 
 data class ConsolidatedInvoiceDto(
+    var id: Long? = null,
     var invoiceNumber: String? = null,
     var totalAmount: BigDecimal? = null,
     var paidDate: Timestamp? = null,

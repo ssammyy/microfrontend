@@ -1,4 +1,5 @@
 import {UserEntityDto} from '../users';
+import {Timestamp} from "rxjs";
 
 export class Qa {
 }
@@ -25,6 +26,16 @@ export class PermitEntityDto {
     taskID: bigint;
     companyId: bigint;
     permitType: bigint;
+}
+
+export class ConsolidatedInvoiceDto {
+    id: bigint;
+    invoiceNumber: string;
+    totalAmount: string;
+    paidDate: Date;
+    paidStatus: boolean;
+    submittedStatus: boolean;
+    receiptNo: string;
 }
 
 export class STA1 {

@@ -312,12 +312,12 @@ export class SignUpComponent implements OnInit {
 
   secondsToHms(d: number) {
     d = Number(d);
-    const m = Math.floor(d % 3600 / 60);
+    // const m = Math.floor(d % 3600 / 60);
     const s = Math.floor(d % 3600 % 60);
 
-    const mDisplay = m > 0 ? m + (m == 1 ? ": " : " : ") : "00";
-    const sDisplay = s > 0 ? s + (s == 1 ? "" : "") : "00";
-    return mDisplay + sDisplay;
+    // const mDisplay = m > 0 ? m + (m == 1 ? ": " : " : ") : "00";
+    // const sDisplay = s > 0 ? s + (s == 1 ? "" : "") : "00";
+    return s > 0 ? s + (s == 1 ? "" : "") : "00";
   }
 
   onClickSendOtp() {

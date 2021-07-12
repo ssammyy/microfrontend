@@ -44,7 +44,8 @@
                                     <td>{{row[3]}}</td>
                                     <td>{{row[4]}}</td>
                                     <td class="text-right">
-                                        <a href="invoiceDetails" class="btn btn-link btn-info btn-just-icon view"><i
+                                        <a (click)="onSelect(row[5])" target="_blank"
+                                           class="btn btn-link btn-info btn-just-icon view"><i
                                                 class="material-icons">remove_red_eye</i></a>
                                     </td>
                                 </tr>
