@@ -6,6 +6,7 @@ import {ActivatedRoute} from '@angular/router';
 import {QaService} from '../../core/store/data/qa/qa.service';
 import {PermitEntityDetails, PlantDetailsDto, SectionDto} from '../../core/store/data/qa/qa.model';
 import {UserRegister} from '../../../../../apollo-webs/src/app/shared/models/user';
+import swal from 'sweetalert2';
 
 @Component({
     selector: 'app-new-dmark-permit',
@@ -128,6 +129,14 @@ export class NewDmarkPermitComponent implements OnInit {
                     (data: PermitEntityDetails) => {
                         this.permitEntityDetails = data;
                         console.log(data);
+                        swal.fire({
+                            title: "STA1 Form saved!",
+                            buttonsStyling: false,
+                            customClass:{
+                                confirmButton: "btn btn-success form-wizard-next-btn ",
+                            },
+                            icon: "success"
+                        });
                         // this.router.navigate(['/users-list']);
                     },
                 );
@@ -136,6 +145,14 @@ export class NewDmarkPermitComponent implements OnInit {
                     (data: PermitEntityDetails) => {
                         this.permitEntityDetails = data;
                         console.log(data);
+                        swal.fire({
+                            title: "STA1 Form updated!",
+                            buttonsStyling: false,
+                            customClass:{
+                                confirmButton: "btn btn-success form-wizard-next-btn ",
+                            },
+                            icon: "success"
+                        });
                         // this.router.navigate(['/users-list']);
                     },
                 );
@@ -149,6 +166,14 @@ export class NewDmarkPermitComponent implements OnInit {
             this.qaService.savePermitSTA3(this.permitEntityDetails.id.toString(), this.sta3FormA.value).subscribe(
                 (data: any) => {
                     console.log(data);
+                    swal.fire({
+                        title: "STA3 Form saved!",
+                        buttonsStyling: false,
+                        customClass:{
+                            confirmButton: "btn btn-success form-wizard-next-btn ",
+                        },
+                        icon: "success"
+                    });
                     // this.router.navigate(['/users-list']);
                 },
             );
@@ -171,6 +196,14 @@ export class NewDmarkPermitComponent implements OnInit {
             console.log(this.permitEntityDetails.id.toString());
             this.qaService.savePermitSTA3(this.permitEntityDetails.id.toString(), this.sta3FormB.value).subscribe(
                 (data: any) => {
+                    swal.fire({
+                        title: "STA3 Form saved!",
+                        buttonsStyling: false,
+                        customClass:{
+                            confirmButton: "btn btn-success form-wizard-next-btn ",
+                        },
+                        icon: "success"
+                    });
                     console.log(data);
                     // this.router.navigate(['/users-list']);
                 },
@@ -193,6 +226,14 @@ export class NewDmarkPermitComponent implements OnInit {
             console.log(this.permitEntityDetails.id.toString());
             this.qaService.savePermitSTA3(this.permitEntityDetails.id.toString(), this.sta3FormC.value).subscribe(
                 (data: any) => {
+                    swal.fire({
+                        title: "STA3 Form saved!",
+                        buttonsStyling: false,
+                        customClass:{
+                            confirmButton: "btn btn-success form-wizard-next-btn ",
+                        },
+                        icon: "success"
+                    });
                     console.log(data);
                     // this.router.navigate(['/users-list']);
                 },
@@ -215,6 +256,14 @@ export class NewDmarkPermitComponent implements OnInit {
             console.log(this.permitEntityDetails.id.toString());
             this.qaService.savePermitSTA3(this.permitEntityDetails.id.toString(), this.sta3FormD.value).subscribe(
                 (data: any) => {
+                    swal.fire({
+                        title: "STA3 Form saved!",
+                        buttonsStyling: false,
+                        customClass:{
+                            confirmButton: "btn btn-success form-wizard-next-btn ",
+                        },
+                        icon: "success"
+                    });
                     console.log(data);
                     // this.router.navigate(['/users-list']);
                 },
