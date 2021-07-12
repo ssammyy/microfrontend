@@ -38,7 +38,7 @@ export class CompanyComponent implements OnInit {
     selectedRegion = 0;
     selectedCounty = 0;
     selectedTown = 0;
-    step = 0;
+    step = 1;
 
     constructor(
         private service: CompanyService,
@@ -156,6 +156,7 @@ export class CompanyComponent implements OnInit {
                     break;
             }
             this.step += 1;
+            console.log(`Clicked and step = ${this.step}`);
         }
     }
 
@@ -204,4 +205,26 @@ export class CompanyComponent implements OnInit {
 
     }
 
+    selectStepOneClass(step: number): string {
+        if (step === 1) {
+            return 'active';
+        } else {
+            return '';
+        }
+    }
+    selectStepTwoClass(step: number): string {
+        console.log(`${step}`);
+        if (step >= 1) {
+            return 'active';
+        } else {
+            return '';
+        }
+    }
+    selectStepThreeClass(step: number): string {
+        if (step >= 2) {
+            return 'active';
+        } else {
+            return '';
+        }
+    }
 }
