@@ -36,7 +36,7 @@
     <link rel="stylesheet" th:href="@{/css/kebs.webflow.css}" type="text/css">
     <link rel="stylesheet" th:href="@{/css/extra.css}" type="text/css">
     <link rel="stylesheet" th:href="@{/css/pageLoad.css}" type="text/css">
-    <link rel="stylesheet" th:href="@{/assets/bootstrap3/css/bootstrap.css}"/>
+<!--    <link rel="stylesheet" th:href="@{/assets/bootstrap3/css/bootstrap.css}"/>-->
 
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 
@@ -49,19 +49,14 @@
           href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/css/selectize.bootstrap3.min.css"
           integrity="sha256-ze/OEYGcFbPRmvCnrSeKbRTtjG4vGLHXgOqsyLFTRjg=" crossorigin="anonymous"/>
 
-
-    <!-- Latest compiled JavaScript -->
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
-    <!--    Angular JS bootstrap-->
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
-    <link href="https://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://angular-ui.github.io/bootstrap/ui-bootstrap-tpls-0.11.0.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular-route.js"></script>
-
     <!-- Datatables CSS -->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.22/css/dataTables.bootstrap.min.css"/>
     <link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.6.4/css/buttons.bootstrap.min.css"/>
+
+    <!-- Jquery Steps Wizard CSS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.js" type="text/javascript"></script>
+    <script th:src="@{/js/jquery.steps.js}"></script>
+    <link rel="stylesheet" th:href="@{/css/jquery.steps.css}" type="text/css">
 
     <link rel="stylesheet" th:href="@{/css/style.css}" media="screen" type="text/css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
@@ -126,11 +121,18 @@
                 <a th:href="@{/api/di/home}"> Import Inspection</a></span>
         </div>
 
-        <div class="sidebar-items" sec:authorize="hasAuthority('MINISTRY_OF_TRANSPORT_READ') or hasAuthority('MINISTRY_OF_TRANSPORT_MODIFY')">
+        <div class="sidebar-items"
+             sec:authorize="hasAuthority('MINISTRY_OF_TRANSPORT_READ') or hasAuthority('MINISTRY_OF_TRANSPORT_MODIFY')">
             <img th:src="@{/images/assets/import_inspection.svg}" class="sidebar-icons-dashboard selected-page">
             <span>
                 <a th:href="@{/api/di/ministry-inspection-home}"> Motor Vehicle Inspection</a></span>
 
+        </div>
+
+        <div class="sidebar-items">
+            <img th:src="@{/images/assets/inspection.svg}" class="sidebar-icons-dashboard selected-page">
+            <span>
+                <a th:href="@{/api/di/with/pvoc}"> PVOC</a></span>
         </div>
 
         <!--        <div class="sidebar-items">-->
@@ -257,9 +259,17 @@
 
 <!-- Scripts -->
 <div th:fragment="scripts">
-    <script src="https://code.jquery.com/jquery-3.5.1.js" type="text/javascript"></script>
 
-    <script th:src="@{/assets/bootstrap3/js/bootstrap.js}" type="text/javascript"></script>
+    <script th:src="@{/js/exception/jquery-ui-1.12.1.custom/jquery-ui.js}"></script>
+
+    <!-- Bootstrap JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <!--    Angular JS bootstrap-->
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-animate.js"></script>
+    <script src="https://angular-ui.github.io/bootstrap/ui-bootstrap-tpls-0.11.0.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular-route.js"></script>
 
     <script src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js" type="text/javascript"></script>
     <script src="https://cdn.datatables.net/1.10.22/js/dataTables.bootstrap.min.js" type="text/javascript"></script>

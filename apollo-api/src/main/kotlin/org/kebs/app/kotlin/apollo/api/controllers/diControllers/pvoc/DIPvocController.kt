@@ -138,6 +138,7 @@ class DIPvocController(
     @PreAuthorize("hasAuthority('PVOC_APPLICATION_READ')")
     fun applicationForm(model: Model): String {
         return "destination-inspection/pvoc/ExceptionApplicationForm2"
+//        return "destination-inspection/pvoc/exemption-application"
     }
 
     //    @PreAuthorize("hasAuthority('PVOC_APPLICATION_READ') or hasAuthority('PVOC_APPLICATION_PROCESS')")

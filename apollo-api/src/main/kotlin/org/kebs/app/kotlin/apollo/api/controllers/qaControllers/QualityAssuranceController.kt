@@ -651,23 +651,31 @@ class QualityAssuranceController(
                             )
                         }
                         map.inactiveStatus -> {
+
+                            qaDaoServices.permitInsertStatus(
+                                permitDetails,
+                                applicationMapProperties.mapQaStatusPendingCorrectionManf,
+                                loggedInUser
+                            )
+                            //Rejected Permit creates a new version
+                            permitDetails = qaDaoServices.permitRejectedVersionCreation(
+                                permitDetails.id ?: throw ExpectedDataNotFound("MISSING PERMIT ID"), map, loggedInUser
+                            ).second
+
                             with(permitDetails) {
                                 resubmitApplicationStatus = map.initStatus
                                 sendForPcmReview = null
                                 pcmApprovalStatus = null
                                 userTaskId = applicationMapProperties.mapUserTaskNameMANUFACTURE
                             }
-                            qaDaoServices.permitInsertStatus(
-                                permitDetails,
-                                applicationMapProperties.mapQaStatusPendingCorrectionManf,
-                                loggedInUser
-                            )
+
                             qaDaoServices.sendNotificationForPermitReviewRejectedFromPCM(permitDetails)
                             qualityAssuranceBpmn.qaDmARCheckApplicationComplete(
                                 permitDetails.id ?: throw Exception("MISSING PERMIT ID"),
                                 permitDetails.userId ?: throw Exception("MISSING USER ID"),
                                 false
                             )
+
                         }
                     }
                 } else {
