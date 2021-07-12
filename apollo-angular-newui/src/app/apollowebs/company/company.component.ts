@@ -214,15 +214,21 @@ export class CompanyComponent implements OnInit {
     }
     selectStepTwoClass(step: number): string {
         console.log(`${step}`);
-        if (step >= 1) {
+        if (step === 1) {
             return 'active';
+        }if (step === 2) {
+            return 'activated';
         } else {
             return '';
         }
     }
     selectStepThreeClass(step: number): string {
-        if (step >= 2) {
+        if (step === 1) {
             return 'active';
+        }if (step === 2) {
+            return 'activated';
+        }if (step === 3) {
+            return 'activated';
         } else {
             return '';
         }
