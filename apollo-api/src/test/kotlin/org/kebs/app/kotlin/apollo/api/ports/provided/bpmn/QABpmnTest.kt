@@ -525,7 +525,7 @@ class QABpmnTest{
     }
 
     @Test
-    //@Ignore
+    @Ignore
     fun testQaDmAppReview() {
         val permitId: Long = 263
 
@@ -1005,9 +1005,9 @@ class QABpmnTest{
     }
 
     @Test
-    @Ignore
+    //@Ignore
     fun testQaDmAssessmentProcess() {
-        val permitId: Long = 161
+        val permitId: Long = 324
 
         //Start the process
         qualityAssuranceBpmn.startQADmAssessmentProcess(permitId, qaoAssigneeId)?.let {
@@ -1099,9 +1099,20 @@ class QABpmnTest{
             }
         } ?: return
 
-        qualityAssuranceBpmn.qaDmasPacApprovalComplete(permitId, assessorAssigneeId,qaoAssigneeId,true).let {
+        qualityAssuranceBpmn.qaDmasPacApprovalComplete(permitId, assessorAssigneeId,qaoAssigneeId,pcmAssigneeId,true).let {
             qualityAssuranceBpmn.fetchTaskByPermitId(permitId, qaDmAssessmentProcessDefinitionKey)?.let { taskDetails ->
                 println("Task details after pac approval complete")
+                for (taskDetail in taskDetails) {
+                    taskDetail.task.let { task ->
+                        println("${taskDetail.permitId} -- ${task.id} -- ${task.name} -- ${task.assignee} -- ${task.processInstanceId} -- ${task.taskDefinitionKey} ")
+                    }
+                }
+            }
+        } ?: return
+
+        qualityAssuranceBpmn.qaDmasPcmApprovalComplete(permitId, assessorAssigneeId,qaoAssigneeId,true).let {
+            qualityAssuranceBpmn.fetchTaskByPermitId(permitId, qaDmAssessmentProcessDefinitionKey)?.let { taskDetails ->
+                println("Task details after pcm approval complete")
                 for (taskDetail in taskDetails) {
                     taskDetail.task.let { task ->
                         println("${taskDetail.permitId} -- ${task.id} -- ${task.name} -- ${task.assignee} -- ${task.processInstanceId} -- ${task.taskDefinitionKey} ")

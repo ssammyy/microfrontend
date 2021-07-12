@@ -1350,6 +1350,7 @@ class QualityAssuranceBpmn(
                 variables["assessmentReportApproved"] = 0
                 variables["reportCompliant"] = 0
                 variables["pacApproval"] = 0
+                variables["pcmApproval"] = 0
 
                 bpmnCommonFunctions.startBpmnProcess(qaDmAssessmentProcessDefinitionKey, qaDmAssessmentBusinessKey, variables, assigneeId)?.let {
                     permit.dmAssessmentProcessInstanceId = it["processInstanceId"]
@@ -1472,7 +1473,7 @@ class QualityAssuranceBpmn(
         return false
     }
 
-    fun qaDmasPacApprovalComplete(permitId: Long, assessorAssigneeId: Long, qaoAssigneeId: Long, pacApproval: Boolean): Boolean {
+    fun qaDmasPacApprovalComplete(permitId: Long, assessorAssigneeId: Long, qaoAssigneeId: Long, pcmAssigneeId: Long,pacApproval: Boolean): Boolean {
         KotlinLogging.logger { }.info("PermitId : $permitId :  QA DM Assessment PAC Approval complete")
         if (!pacApproval) {
             userRepo.findByIdOrNull(assessorAssigneeId)?.let { usersEntity ->
@@ -1486,6 +1487,28 @@ class QualityAssuranceBpmn(
 
         qaCompleteTask(permitId, "qaDmasPacApproval", qaDmAssessmentProcessDefinitionKey)?.let {
             return if (pacApproval) {
+                qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "qaDmasPcmApproval", pcmAssigneeId, true)
+            } else {
+                return true
+            }
+        }
+        return false
+    }
+
+    fun qaDmasPcmApprovalComplete(permitId: Long, assessorAssigneeId: Long, qaoAssigneeId: Long, pcmApproval: Boolean): Boolean {
+        KotlinLogging.logger { }.info("PermitId : $permitId :  QA DM Assessment PAC Approval complete")
+        if (!pcmApproval) {
+            userRepo.findByIdOrNull(assessorAssigneeId)?.let { usersEntity ->
+                updateTaskVariableByObjectIdAndKey(permitId, "qaDmasPcmApproval", qaDmAssessmentProcessDefinitionKey, "assessorEmail", usersEntity.email.toString())
+            }
+            userRepo.findByIdOrNull(qaoAssigneeId)?.let { usersEntity ->
+                updateTaskVariableByObjectIdAndKey(permitId, "qaDmasPcmApproval", qaDmAssessmentProcessDefinitionKey, "qaoEmail", usersEntity.email.toString())
+            }
+        }
+        updateTaskVariableByObjectIdAndKey(permitId, "qaDmasPcmApproval", qaDmAssessmentProcessDefinitionKey, "pcmApproval", bpmnCommonFunctions.booleanToInt(pcmApproval).toString())
+
+        qaCompleteTask(permitId, "qaDmasPcmApproval", qaDmAssessmentProcessDefinitionKey)?.let {
+            return if (pcmApproval) {
                 qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "qaDmasSurveillanceWorkplan", 0, true)
             } else {
                 return true
