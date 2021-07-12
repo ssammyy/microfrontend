@@ -14,7 +14,6 @@ class QaRawMaterialEntity : Serializable {
     @GeneratedValue(generator = "DAT_KEBS_QA_RAW_MATERIAL_SEQ_GEN", strategy = GenerationType.SEQUENCE)
     var id: Long? = 0
 
-
     @Column(name = "DESCRIPTIONS")
     @Basic
     var descriptions: String? = null

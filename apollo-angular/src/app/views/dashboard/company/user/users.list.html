@@ -2,9 +2,15 @@
   <div class="row">
     <div class="col-md-8">
       <div>
-        <h4 class="notifications-title">
-          <span>Organizations</span>
+        <div (click)="goBack()" style="cursor: pointer">
+          <span><fa-icon [icon]="backIcon"></fa-icon></span>
+          <span style="font-size: 20px"> Go back</span>
+        </div>
+
+        <h4 class="notifications-title mt-4">
+          <span>Users: {{selectedBranches$?.buildingName}} Branch</span>
         </h4>
+
         <table [dtOptions]="dtOptions" class="table table-striped table-bordered table-sm row-border hover" datatable>
           <thead>
           <tr>
@@ -20,7 +26,7 @@
             <td>{{ theRecord.firstName + ' ' + theRecord.lastName}}</td>
             <td>{{ theRecord.userName }}</td>
             <td>
-              <a (click)="editRecord(theRecord)" class="link-dark">VIEW
+              <a (click)="editRecord(theRecord)" class="details-button">EDIT USER
               </a>
             </td>
 
@@ -42,7 +48,7 @@
 
           <div class="row input-row">
             <div class="col">
-              <label class="input-placeholder22" for="firstName">
+              <label class="input-placeholder-required" for="firstName">
                 First Name
               </label>
               <br>
@@ -51,7 +57,7 @@
                      placeholder="" required="required" type="text">
             </div>
             <div class="col">
-              <label class="input-placeholder22" for="lastName">
+              <label class="input-placeholder-required" for="lastName">
                 Last Name
               </label>
               <br>
@@ -64,7 +70,7 @@
           <div class="row input-row">
 
             <div class="col">
-              <label class="input-placeholder2" for="userName">
+              <label class="input-placeholder-required" for="userName">
                 User Name
               </label>
               <br>
@@ -73,7 +79,7 @@
                      placeholder="" required="required" type="text">
             </div>
             <div class="col">
-              <label class="input-placeholder2" for="email">
+              <label class="input-placeholder-required" for="email">
                 Email address
               </label>
               <br>
@@ -85,7 +91,7 @@
 
           <div class="row input-row">
             <div class="col">
-              <label class="input-placeholder2" for="credentials">
+              <label class="input-placeholder-required" for="credentials">
                 Password
               </label>
               <br>
@@ -94,7 +100,7 @@
                      placeholder="enter password" required="required" type="password">
             </div>
             <div class="col">
-              <label class="input-placeholder2" for="confirmCredentials">
+              <label class="input-placeholder-required" for="confirmCredentials">
                 Confirm Password
               </label>
               <br>
@@ -107,7 +113,7 @@
           <div class="row input-row">
 
             <div class="col">
-              <label class="input-placeholder2" for="cellphone">
+              <label class="input-placeholder-required" for="cellphone">
                 Cellphone
               </label>
               <br>
@@ -124,7 +130,7 @@
           <br>
           <div class="row">
             <div class="col">
-              <button class="btn btn-danger" type="reset">CANCEL</button>
+              <button class="btn btn-danger" type="button" (click)="onClickReset()">CANCEL</button>
             </div>
             <div class="col">
               <button class="btn btn-primary" type="submit">SAVE</button>

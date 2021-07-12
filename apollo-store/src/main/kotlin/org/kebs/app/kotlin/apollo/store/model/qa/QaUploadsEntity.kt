@@ -19,6 +19,10 @@ class QaUploadsEntity : Serializable {
     @Basic
     var filepath: String? = null
 
+    @Column(name = "PERMIT_REF_NUMBER")
+    @Basic
+    var permitRefNumber: String? = null
+
     @Column(name = "DESCRIPTION")
     @Basic
     var description: String? = null
@@ -169,6 +173,7 @@ class QaUploadsEntity : Serializable {
                 nonManufactureStatus == that.nonManufactureStatus &&
                 assessmentReportStatus == that.assessmentReportStatus &&
                 status == that.status &&
+                permitRefNumber == that.permitRefNumber &&
                 varField1 == that.varField1 &&
                 varField2 == that.varField2 &&
                 varField3 == that.varField3 &&
@@ -200,6 +205,7 @@ class QaUploadsEntity : Serializable {
             filepath,
             description,
             name,
+            permitRefNumber,
             fileType,
             documentType,
             transactionDate,

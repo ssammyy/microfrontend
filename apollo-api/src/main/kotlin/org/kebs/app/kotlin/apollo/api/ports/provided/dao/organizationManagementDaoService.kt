@@ -8,6 +8,7 @@ import org.kebs.app.kotlin.apollo.common.exceptions.InvalidValueException
 import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
 import org.kebs.app.kotlin.apollo.common.utils.generateRandomText
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
+import org.kebs.app.kotlin.apollo.store.model.ServiceMapsEntity
 import org.kebs.app.kotlin.apollo.store.model.UserRoleAssignmentsEntity
 import org.kebs.app.kotlin.apollo.store.model.UsersEntity
 import org.kebs.app.kotlin.apollo.store.model.qa.ManufacturePlantDetailsEntity
@@ -37,7 +38,9 @@ class RegistrationManagementDaoService(
     private val manufacturePlantRepository: IManufacturePlantDetailsRepository,
     private val usersRepo: IUserRepository,
     private val tokenService: JwtTokenService,
+    private val registrationDaoServices: RegistrationDaoServices,
     private val commonDaoServices: CommonDaoServices,
+    private val qaDaoServices: QADaoServices,
 ) {
 
     /**
@@ -165,59 +168,73 @@ class RegistrationManagementDaoService(
                     throw ExpectedDataNotFound("Authorization failed")
                 } else {
                     if ((u.id ?: -2L) < 0) {
-
-                        var entity = UsersEntity().apply {
-                            firstName = u.firstName
-                            lastName = u.lastName
-                            email = u.email
-                            /**
-                             * TODO: Revisit number validation
-                             */
-                            personalContactNumber = u.cellphone
-                            registrationDate = Date(Date().time)
-                            typeOfUser = applicationMapProperties.transactionActiveStatus
-                            title = u.title
-                            email = u.email
-                            userName = u.userName
-                            cellphone = u.cellphone
-                            userRegNo = "KEBS${generateTransactionReference(5).toUpperCase()}"
-                            credentials = BCryptPasswordEncoder().encode(u.credentials)
-                            enabled = applicationMapProperties.transactionActiveStatus
-                            status = applicationMapProperties.transactionActiveStatus
-                            accountLocked = applicationMapProperties.transactionInactiveStatus
-                            plantId = u.plantId
-                            companyId = u.companyId
-                            approvedDate = Timestamp.from(Instant.now())
-                        }
-                        entity = usersRepo.save(entity)
-                        /**
-                         * TODO: Create Manufacturer Id role
-                         */
-                        userRolesRepo.save(
-                            UserRoleAssignmentsEntity().apply {
-                                userId = user.id
-                                roleId = applicationMapProperties.manufacturerRoleId
-                                status = applicationMapProperties.transactionActiveStatus
-                                createdBy = "${user.userName}"
-                                createdOn = Timestamp.from(Instant.now())
-
-                            }
+                        usersRepo.findByUserName(
+                            u.userName ?: throw NullValueNotAllowedException("Username is required")
                         )
-                        return OrganizationUserEntityDto(
-                            entity.id,
-                            entity.firstName,
-                            entity.lastName,
-                            entity.userName,
-                            entity.email,
-                            entity.enabled == 1,
-                            entity.status == 1,
-                            entity.title,
-                            null,
-                            entity.cellphone
-                        ).apply {
-                            plantId = entity.plantId
-                            companyId = entity.companyId
-                        }
+                            ?.let {
+                                throw InvalidValueException("Selected username is already in use")
+                            }
+                            ?: run {
+                                usersRepo.findByEmail(
+                                    u.email ?: throw NullValueNotAllowedException("Email is required")
+                                )
+                                    ?.let { throw InvalidValueException("Selected email is already in use") }
+                                    ?: run {
+
+                                        var entity = UsersEntity().apply {
+                                            firstName = u.firstName
+                                            lastName = u.lastName
+                                            email = u.email
+                                            /**
+                                             * TODO: Revisit number validation
+                                             */
+                                            personalContactNumber = u.cellphone
+                                            registrationDate = Date(Date().time)
+                                            typeOfUser = applicationMapProperties.transactionActiveStatus
+                                            title = u.title
+                                            email = u.email
+                                            userName = u.userName
+                                            cellphone = u.cellphone
+                                            userRegNo = "KEBS${generateTransactionReference(5).toUpperCase()}"
+                                            credentials = BCryptPasswordEncoder().encode(u.credentials)
+                                            enabled = applicationMapProperties.transactionActiveStatus
+                                            status = applicationMapProperties.transactionActiveStatus
+                                            accountLocked = applicationMapProperties.transactionInactiveStatus
+                                            plantId = u.plantId
+                                            companyId = u.companyId
+                                            approvedDate = Timestamp.from(Instant.now())
+                                        }
+                                        entity = usersRepo.save(entity)
+                                        /**
+                                         * TODO: Create Manufacturer Id role
+                                         */
+                                        userRolesRepo.save(
+                                            UserRoleAssignmentsEntity().apply {
+                                                userId = entity.id
+                                                roleId = applicationMapProperties.manufacturerRoleId
+                                                status = applicationMapProperties.transactionActiveStatus
+                                                createdBy = "${user.userName}"
+                                                createdOn = Timestamp.from(Instant.now())
+                                            }
+                                        )
+                                        return OrganizationUserEntityDto(
+                                            entity.id,
+                                            entity.firstName,
+                                            entity.lastName,
+                                            entity.userName,
+                                            entity.email,
+                                            entity.enabled == 1,
+                                            entity.status == 1,
+                                            entity.title,
+                                            null,
+                                            entity.cellphone
+                                        ).apply {
+                                            plantId = entity.plantId
+                                            companyId = entity.companyId
+                                        }
+
+                                    }
+                            }
 
                     } else {
                         usersRepo.findByIdOrNull(u.id ?: throw NullValueNotAllowedException("Invalid Record"))
@@ -246,7 +263,7 @@ class RegistrationManagementDaoService(
                                  */
                                 userRolesRepo.save(
                                     UserRoleAssignmentsEntity().apply {
-                                        userId = user.id
+                                        userId = userEntity.id
                                         roleId = applicationMapProperties.manufacturerRoleId
                                         status = applicationMapProperties.transactionActiveStatus
                                         createdBy = "${user.userName}"
@@ -348,7 +365,7 @@ class RegistrationManagementDaoService(
                 physicalAddress = dto.physicalAddress
                 street = dto.street
                 buildingName = dto.buildingName
-                nearestLandMark = dto.buildingName
+                nearestLandMark = dto.nearestLandMark
                 postalAddress = dto.postalAddress
                 telephone = dto.telephone
                 emailAddress = dto.emailAddress
@@ -374,7 +391,7 @@ class RegistrationManagementDaoService(
                         physicalAddress = dto.physicalAddress
                         street = dto.street
                         buildingName = dto.buildingName
-                        nearestLandMark = dto.buildingName
+                        nearestLandMark = dto.nearestLandMark
                         postalAddress = dto.postalAddress
                         telephone = dto.telephone
                         emailAddress = dto.emailAddress
@@ -702,9 +719,13 @@ class RegistrationManagementDaoService(
             } else throw InvalidValueException("Attempt to fetch Organization rejected")
         }
 
-    fun updateCompanyDetails(dto: UserCompanyEntityDto, user: UsersEntity): UserCompanyEntityDto? {
+    fun updateCompanyDetails(
+        dto: UserCompanyEntityDto,
+        user: UsersEntity,
+        map: ServiceMapsEntity,
+    ): UserCompanyEntityDto? {
         if ((dto.id ?: -2L) < 0) {
-            return registerCompany(dto, user)
+            return registerCompany(dto, user, map)
 
         } else {
             companyRepo.findByIdOrNull(dto.id ?: throw NullValueNotAllowedException("Invalid Record"))
@@ -713,7 +734,6 @@ class RegistrationManagementDaoService(
                         name = dto.name
                         kraPin = dto.kraPin
                         userId = user.id
-
                         registrationNumber = dto.registrationNumber
                         postalAddress = dto.postalAddress
                         physicalAddress = dto.physicalAddress
@@ -729,6 +749,9 @@ class RegistrationManagementDaoService(
                         county = dto.county
                         town = dto.town
                         region = dto.region
+                        firmCategory = qaDaoServices.manufactureType(
+                            yearlyTurnover ?: throw NullValueNotAllowedException("Invalid Record")
+                        ).id
                         manufactureStatus = applicationMapProperties.transactionActiveStatus
                         status = applicationMapProperties.transactionActiveStatus
                         createdBy = user.userName
@@ -778,7 +801,7 @@ class RegistrationManagementDaoService(
      * @return response indicating whether we were able to successful save the information
      */
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
-    fun registerCompany(dto: UserCompanyEntityDto, user: UsersEntity): UserCompanyEntityDto? {
+    fun registerCompany(dto: UserCompanyEntityDto, user: UsersEntity, map: ServiceMapsEntity): UserCompanyEntityDto? {
         try {
             companyRepo.findByRegistrationNumber(
                 dto.registrationNumber
@@ -868,6 +891,11 @@ class RegistrationManagementDaoService(
                     }
                     manufacturePlantRepository.save(branch)
 
+                    /*****
+                     ****Todo: ADD ORIGINAL SEQUENCE OF ENTRY NUMBER FROM KEBS
+                     ****
+                     ***/
+                    registrationDaoServices.generateEntryNumberDetails(map, user)
 
                     return UserCompanyEntityDto(
                         companyProfileEntity.name,

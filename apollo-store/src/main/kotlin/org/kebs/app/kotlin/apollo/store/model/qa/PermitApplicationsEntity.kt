@@ -133,6 +133,10 @@ class PermitApplicationsEntity:Serializable {
     @Basic
     var renewalStatus: Int? = null
 
+    @Column(name = "PERMIT_REJECTED_CREATED_VERSION")
+    @Basic
+    var permitRejectedCreatedVersion: Int? = null
+
     @Column(name = "APPROVED_REJECTED_SCHEME")
     @Basic
     var approvedRejectedScheme: Int? = null
@@ -537,6 +541,10 @@ class PermitApplicationsEntity:Serializable {
     @Basic
     var endProductionRequestStatusApproval: Long? = null
 
+    @Column(name = "COMPANY_ID")
+    @Basic
+    var companyId: Long? = null
+
     @Column(name = "END_PRODUCTION_REQUEST_REMARKS_APPROVAL")
     @Basic
     var endProductionRequestRemarksApproval: String? = null
@@ -606,20 +614,169 @@ class PermitApplicationsEntity:Serializable {
     @Basic
     var deletedOn: Timestamp? = null
 
+    @Column(name = "APP_REVIEW_PROCESS_INSTANCE_ID")
+    @Basic
+    var appReviewProcessInstanceId: String? = null
+
+    @Column(name = "APP_REVIEW_STATUS")
+    @Basic
+    var appReviewStatus: Int? = null
+
+    @Column(name = "APP_REVIEW_STARTED_ON")
+    @Basic
+    var appReviewStartedOn: Timestamp? = null
+
+    @Column(name = "APP_REVIEW_COMPLETED_ON")
+    @Basic
+    var appReviewCompletedOn: Timestamp? = null
+
+    @Column(name = "SF_MARK_INSPECTION_PROCESS_INSTANCE_ID")
+    @Basic
+    var sfMarkInspectionProcessInstanceId: String? = null
+
+    @Column(name = "SF_MARK_INSPECTION_STATUS")
+    @Basic
+    var sfMarkInspectionStatus: Int? = null
+
+    @Column(name = "SF_MARK_INSPECTION_STARTED_ON")
+    @Basic
+    var sfMarkInspectionStartedOn: Timestamp? = null
+
+    @Column(name = "SF_MARK_INSPECTION_COMPLETED_ON")
+    @Basic
+    var sfMarkInspectionCompletedOn: Timestamp? = null
+
+    @Column(name = "DM_APP_REVIEW_STATUS")
+    @Basic
+    var dmAppReviewStatus: Int? = null
+
+    @Column(name = "DM_APP_REVIEW_STARTED_ON")
+    @Basic
+    var dmAppReviewStartedOn: Timestamp? = null
+
+    @Column(name = "DM_APP_REVIEW_COMPLETED_ON")
+    @Basic
+    var dmAppReviewCompletedOn: Timestamp? = null
+
+    @Column(name = "DM_APP_REVIEW_PROCESS_INSTANCE_ID")
+    @Basic
+    var dmAppReviewProcessInstanceId: String? = null
+
+    @Column(name = "SF_APP_PAYMENT_STATUS")
+    @Basic
+    var sfAppPaymentStatus: Int? = null
+
+    @Column(name = "SF_APP_PAYMENT_STARTED_ON")
+    @Basic
+    var sfAppPaymentStartedOn: Timestamp? = null
+
+    @Column(name = "SF_APP_PAYMENT_COMPLETED_ON")
+    @Basic
+    var sfAppPaymentCompletedOn: Timestamp? = null
+
+    @Column(name = "SF_APP_PAYMENT_PROCESS_INSTANCE_ID")
+    @Basic
+    var sfAppPaymentProcessInstanceId: String? = null
+
+    @Column(name = "SF_PERMIT_AWARD_STATUS")
+    @Basic
+    var sfPermitAwardStatus: Int? = null
+
+    @Column(name = "SF_PERMIT_AWARD_STARTED_ON")
+    @Basic
+    var sfPermitAwardStartedOn: Timestamp? = null
+
+    @Column(name = "SF_PERMIT_AWARD_COMPLETED_ON")
+    @Basic
+    var sfPermitAwardCompletedOn: Timestamp? = null
+
+    @Column(name = "SF_PERMIT_AWARD_PROCESS_INSTANCE_ID")
+    @Basic
+    var sfPermitAwardProcessInstanceId: String? = null
+
+    @Column(name = "II_SCHEDULE_STATUS")
+    @Basic
+    var iiScheduleStatus: Int? = null
+
+    @Column(name = "II_SCHEDULE_STARTED_ON")
+    @Basic
+    var iiScheduleStartedOn: Timestamp? = null
+
+    @Column(name = "II_SCHEDULE_COMPLETED_ON")
+    @Basic
+    var iiScheduleCompletedOn: Timestamp? = null
+
+    @Column(name = "II_SCHEDULE_PROCESS_INSTANCE_ID")
+    @Basic
+    var iiScheduleProcessInstanceId: String? = null
+
+    @Column(name = "II_REPORTING_STATUS")
+    @Basic
+    var iiReportingStatus: Int? = null
+
+    @Column(name = "II_REPORTING_STARTED_ON")
+    @Basic
+    var iiReportingStartedOn: Timestamp? = null
+
+    @Column(name = "II_REPORTING_COMPLETED_ON")
+    @Basic
+    var iiReportingCompletedOn: Timestamp? = null
+
+
+    @Column(name = "II_REPORTING_PROCESS_INSTANCE_ID")
+    @Basic
+    var iiReportingProcessInstanceId: String? = null
+
+    @Column(name = "DM_ASSESSMENT_STATUS")
+    @Basic
+    var dmAssessmentStatus: Int? = null
+
+    @Column(name = "DM_ASSESSMENT_STARTED_ON")
+    @Basic
+    var dmAssessmentStartedOn: Timestamp? = null
+
+    @Column(name = "DM_ASSESSMENT_COMPLETED_ON")
+    @Basic
+    var dmAssessmentCompletedOn: Timestamp? = null
+
+    @Column(name = "DM_ASSESSMENT_PROCESS_INSTANCE_ID")
+    @Basic
+    var dmAssessmentProcessInstanceId: String? = null
+
+    @Column(name = "DM_APP_PAYMENT_STATUS")
+    @Basic
+    var dmAppPaymentStatus: Int? = null
+
+    @Column(name = "DM_APP_PAYMENT_STARTED_ON")
+    @Basic
+    var dmAppPaymentStartedOn: Timestamp? = null
+
+    @Column(name = "DM_APP_PAYMENT_COMPLETED_ON")
+    @Basic
+    var dmAppPaymentCompletedOn: Timestamp? = null
+
+    @Column(name = "DM_APP_PAYMENT_PROCESS_INSTANCE_ID")
+    @Basic
+    var dmAppPaymentProcessInstanceId: String? = null
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other == null || javaClass != other.javaClass) return false
         val that = other as PermitApplicationsEntity
         return id == that.id && cocId == that.cocId
                 && factoryVisit == that.factoryVisit
+                && companyId == that.companyId
                 && userTaskId == that.userTaskId
                 && inspectionReportGenerated == that.inspectionReportGenerated
+                && permitRejectedCreatedVersion == that.permitRejectedCreatedVersion
                 && designation == that.designation && resubmitRemarks == that.resubmitRemarks && email == that.email && faxNo == that.faxNo && sscId == that.sscId && firmName == that.firmName && applicantName == that.applicantName && physicalAddress == that.physicalAddress && plotNo == that.plotNo && position == that.position && postalAddress == that.postalAddress && region == that.region && telephoneNo == that.telephoneNo && vatNo == that.vatNo && createdBy == that.createdBy && createdOn == that.createdOn && dateOfIssue == that.dateOfIssue && dateOfVisit == that.dateOfVisit && deleteBy == that.deleteBy && deletedOn == that.deletedOn && ksNumber == that.ksNumber && modifiedBy == that.modifiedBy && modifiedOn == that.modifiedOn && permitType == that.permitType && productName == that.productName && title == that.title && totalCost == that.totalCost && totalPayment == that.totalPayment && tradeMark == that.tradeMark && varField1 == that.varField1 && varField10 == that.varField10 && varField2 == that.varField2 && varField3 == that.varField3 && varField4 == that.varField4 && varField5 == that.varField5 && varField6 == that.varField6 && varField7 == that.varField7 && varField8 == that.varField8 && varField9 == that.varField9 && userId == that.userId && status == that.status && permitRefNumber == that.permitRefNumber && dateOfExpiry == that.dateOfExpiry && commodityDescription == that.commodityDescription && enabled == that.enabled && broadProductCategory == that.broadProductCategory && productCategory == that.productCategory && product == that.product && productSubCategory == that.productSubCategory && standardCategory == that.standardCategory && productStandard == that.productStandard && sta3FilledStatus == that.sta3FilledStatus && sta10FilledStatus == that.sta10FilledStatus && permitForeignStatus == that.permitForeignStatus && smeFormFilledStatus == that.smeFormFilledStatus && sendApplication == that.sendApplication && invoiceGenerated == that.invoiceGenerated && fmarkGenerated == that.fmarkGenerated && endOfProductionStatus == that.endOfProductionStatus && divisionId == that.divisionId && sectionId == that.sectionId && versionNumber == that.versionNumber && attachedPlantId == that.attachedPlantId && attachedPlantRemarks == that.attachedPlantRemarks && description == that.description && sta10FilledOfficerStatus == that.sta10FilledOfficerStatus && hofId == that.hofId && qamId == that.qamId && qaoId == that.qaoId && hofQamCompletenessRemarks == that.hofQamCompletenessRemarks && hofQamCompletenessStatus == that.hofQamCompletenessStatus && assignOfficerStatus == that.assignOfficerStatus && paidStatus == that.paidStatus && rmId == that.rmId && hodId == that.hodId && inspectionDate == that.inspectionDate && inspectionScheduledStatus == that.inspectionScheduledStatus && generateSchemeStatus == that.generateSchemeStatus && compliantStatus == that.compliantStatus && justificationReportStatus == that.justificationReportStatus && justificationReportRemarks == that.justificationReportRemarks && assignAssessorStatus == that.assignAssessorStatus && assessorId == that.assessorId && assessmentScheduledStatus == that.assessmentScheduledStatus && assessmentDate == that.assessmentDate && assessmentCriteria == that.assessmentCriteria && oldPermitStatus == that.oldPermitStatus && permitExpiredStatus == that.permitExpiredStatus && renewalStatus == that.renewalStatus && assessmentReportRemarks == that.assessmentReportRemarks && pacSecId == that.pacSecId && approvedRejectedScheme == that.approvedRejectedScheme && permitAwardStatus == that.permitAwardStatus && pacDecisionRemarks == that.pacDecisionRemarks && inspectionReportId == that.inspectionReportId && factoryInspectionReportApprovedRejectedStatus == that.factoryInspectionReportApprovedRejectedStatus && factoryInspectionReportApprovedRejectedRemarks == that.factoryInspectionReportApprovedRejectedRemarks && scfId == that.scfId && ssfId == that.ssfId && testReportId == that.testReportId && bsNumber == that.bsNumber && compliantRemarks == that.compliantRemarks && recommendationApprovalStatus == that.recommendationApprovalStatus && recommendationRemarks == that.recommendationRemarks && recommendationApprovalRemarks == that.recommendationApprovalRemarks && pscMemberId == that.pscMemberId && pcmId == that.pcmId && pscMemberApprovalStatus == that.pscMemberApprovalStatus && pscMemberApprovalRemarks == that.pscMemberApprovalRemarks && pcmApprovalStatus == that.pcmApprovalStatus && pcmApprovalRemarks == that.pcmApprovalRemarks && permitStatus == that.permitStatus && resubmitApplicationStatus == that.resubmitApplicationStatus && sendForPcmReview == that.sendForPcmReview && hodApproveAssessmentStatus == that.hodApproveAssessmentStatus && hodApproveAssessmentRemarks == that.hodApproveAssessmentRemarks && awardedPermitNumber == that.awardedPermitNumber && endOfProductionRemarks == that.endOfProductionRemarks && requestStatus == that.requestStatus && brandNameRequest == that.brandNameRequest && brandNameRequestStatus == that.brandNameRequestStatus && brandNameRequestRemarks == that.brandNameRequestRemarks && brandNameRequestApproval == that.brandNameRequestApproval && brandNameRequestStatusApproval == that.brandNameRequestStatusApproval && brandNameRequestRemarksApproval == that.brandNameRequestRemarksApproval && endProductionRequest == that.endProductionRequest && endProductionRequestStatus == that.endProductionRequestStatus && endProductionRequestRemarks == that.endProductionRequestRemarks && endProductionRequestApproval == that.endProductionRequestApproval && endProductionRequestStatusApproval == that.endProductionRequestStatusApproval && endProductionRequestRemarksApproval == that.endProductionRequestRemarksApproval
     }
 
     override fun hashCode(): Int {
         return Objects.hash(
             id,
+            companyId,
+            permitRejectedCreatedVersion,
             designation,
             userTaskId,
             factoryVisit,

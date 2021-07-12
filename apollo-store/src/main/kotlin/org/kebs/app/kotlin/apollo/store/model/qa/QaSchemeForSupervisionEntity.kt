@@ -20,6 +20,10 @@ class QaSchemeForSupervisionEntity : Serializable {
     @Basic
     var permitId: Long? = null
 
+    @Column(name = "PERMIT_REF_NUMBER")
+    @Basic
+    var permitRefNumber: String? = null
+
     @Column(name = "PROCESS_FLOW_RAW_MATERIALS_INTAKE")
     @Basic
     var processFlowRawMaterialsIntake: String? = null
@@ -268,6 +272,7 @@ class QaSchemeForSupervisionEntity : Serializable {
                 acceptedRejectedDate == that.acceptedRejectedDate &&
                 acceptedRejectedReason == that.acceptedRejectedReason &&
                 acceptedRejectedBy == that.acceptedRejectedBy &&
+                permitRefNumber == that.permitRefNumber &&
                 description == that.description &&
                 status == that.status &&
                 varField1 == that.varField1 &&
@@ -292,6 +297,7 @@ class QaSchemeForSupervisionEntity : Serializable {
         return Objects.hash(
             id,
             permitId,
+             permitRefNumber,
             processFlowRawMaterialsIntake,
             operationsRawMaterialsIntake,
             qualityChecksRawMaterialsIntake,

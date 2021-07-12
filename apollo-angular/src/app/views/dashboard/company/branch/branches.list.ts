@@ -1,22 +1,28 @@
 import {Component, OnInit} from '@angular/core';
-import {Observable, Subject} from "rxjs";
+import {Observable, of, Subject, throwError} from 'rxjs';
 import {
   Branches,
-  BranchesService,
-  County,
+  BranchesService, Company, County,
   CountyService,
   Go,
   loadBranchId,
   loadCompanyId,
-  loadResponsesFailure,
+  loadCountyId,
+  loadResponsesFailure, loadResponsesSuccess,
   Region,
-  RegionService,
+  RegionService, selectCompanyData,
   selectCompanyIdData,
+  selectCountyIdData,
   Town,
   TownService
-} from "../../../../core/store";
-import {Store} from "@ngrx/store";
-import {FormControl, FormGroup, Validators} from "@angular/forms";
+} from '../../../../core/store';
+import {Store} from '@ngrx/store';
+import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
+import {Location} from '@angular/common';
+import {faArrowLeft} from '@fortawesome/free-solid-svg-icons';
+import {faPlus} from '@fortawesome/free-solid-svg-icons';
+import {catchError, map} from 'rxjs/operators';
+import {HttpErrorResponse} from '@angular/common/http';
 
 @Component({
   selector: 'app-branches',
@@ -27,14 +33,18 @@ export class BranchesList implements OnInit {
   branches$: Observable<Branches[]>;
   filterName = '';
   p = 1;
-  step = 1;
+  step = 0;
 
-  stepTwoForm: FormGroup = new FormGroup({});
-  stepThreeForm: FormGroup = new FormGroup({});
+  backIcon = faArrowLeft;
+  addIcon = faPlus;
+
+  stepTwoForm!: FormGroup;
+  stepThreeForm!: FormGroup;
 
   branchSoFar: Partial<Branches> | undefined;
   // @ts-ignore
   branch: Branches;
+  company$: Company | undefined;
   region$: Observable<Region[]>;
   county$: Observable<County[]>;
   town$: Observable<Town[]>;
@@ -42,6 +52,7 @@ export class BranchesList implements OnInit {
   selectedCounty: number = 0;
   selectedTown: number = 0;
   selectedCompany: number = -1;
+  submitted = false;
 
   dtTrigger: Subject<any> = new Subject<any>();
   dtOptions: DataTables.Settings = {
@@ -56,31 +67,45 @@ export class BranchesList implements OnInit {
     private regionService: RegionService,
     private countyService: CountyService,
     private townService: TownService,
+    private formBuilder: FormBuilder,
     private store$: Store<any>,
+    public location: Location
   ) {
     this.branches$ = service.entities$;
     service.getAll().subscribe();
     this.region$ = regionService.entities$;
     this.county$ = countyService.entities$;
-    this.town$ = townService.entities$
+    this.town$ = townService.entities$;
     regionService.getAll().subscribe();
     countyService.getAll().subscribe();
-    townService.getAll().subscribe();
+    // townService.getAll().subscribe();
 
   }
 
   updateSelectedRegion() {
-    this.selectedRegion = this.stepThreeForm?.get('region')?.value;
-    // console.log(`region set to ${this.selectedRegion}`)
+    this.selectedRegion = this.stepTwoForm?.get('region')?.value;
+    console.log(`region set to ${this.selectedRegion}`);
   }
 
   updateSelectedCounty() {
-    this.selectedCounty = this.stepThreeForm?.get('county')?.value;
     // console.log(`county set to ${this.selectedCounty}`)
+    this.selectedCounty = this.stepTwoForm?.get('county')?.value;
+    // console.log(`county set to ${this.selectedCounty}`)
+    this.store$.dispatch(loadCountyId({payload: this.selectedCounty}));
+    this.store$.select(selectCountyIdData).subscribe(
+      (d) => {
+        if (d) {
+          // console.log(`Select county inside is ${d}`);
+          return this.townService.getAll();
+        } else {
+          return throwError('Invalid request, Company id is required');
+        }
+      }
+    );
   }
 
   updateSelectedTown() {
-    this.selectedTown = this.stepThreeForm?.get('town')?.value;
+    this.selectedTown = this.stepTwoForm?.get('town')?.value;
     // console.log(`town set to ${this.selectedTown}`)
   }
 
@@ -98,20 +123,24 @@ export class BranchesList implements OnInit {
       town: new FormControl('', [Validators.required]),
     });
     this.stepThreeForm = new FormGroup({
-      companyProfileId: new FormControl(''),
-      id: new FormControl(''),
-      status: new FormControl('', [Validators.required]),
-      descriptions: new FormControl('', [Validators.required]),
+      companyProfileId: new FormControl(),
+      id: new FormControl(),
+      status: new FormControl(false, [Validators.required]),
+      descriptions: new FormControl(),
       contactPerson: new FormControl('', [Validators.required]),
       emailAddress: new FormControl('', [Validators.required]),
       telephone: new FormControl('', [Validators.required]),
-      faxNo: new FormControl(''),
+      faxNo: new FormControl(),
       designation: new FormControl('', [Validators.required])
     });
 
     this.store$.select(selectCompanyIdData).subscribe((d) => {
       return this.selectedCompany = d;
-    })
+    });
+
+    this.store$.select(selectCompanyData).subscribe((d) => {
+      return this.company$ = d;
+    });
 
   }
 
@@ -119,14 +148,24 @@ export class BranchesList implements OnInit {
     this.stepTwoForm.patchValue(record);
     this.stepThreeForm.patchValue(record);
     this.branchSoFar = record;
+    this.step = 1;
 
   }
 
+  get formStepTwoForm(): any {
+    return this.stepTwoForm.controls;
+  }
+
+  get formStepThreeForm(): any {
+    return this.stepThreeForm.controls;
+  }
+
+
   onClickPrevious() {
     if (this.step > 1) {
-      this.step = this.step - 1
+      this.step = this.step - 1;
     } else {
-      this.step = 1
+      this.step = 1;
     }
   }
 
@@ -148,18 +187,63 @@ export class BranchesList implements OnInit {
     if (valid) {
       this.branchSoFar = {...this.branchSoFar, ...this.stepThreeForm.value};
       this.branch = {...this.branch, ...this.branchSoFar};
+      this.branch.companyProfileId = this.selectedCompany
       // if (this.stepTwoForm?.get('id')?.value === null || this.stepTwoForm?.get('id')?.value === undefined) {
       if (this.branch.id === null || this.branch.id === undefined) {
         this.branch.companyProfileId = this.selectedCompany;
-        this.service.add(this.branch);
+        this.service.add(this.branch).pipe(
+          map((a) => {
+            this.stepTwoForm.markAsPristine();
+            this.stepTwoForm.reset();
+            this.stepThreeForm.markAsPristine();
+            this.stepThreeForm.reset();
+            this.step = 0;
+            return of(loadResponsesSuccess({
+              message: {
+                response: '00',
+                payload: `Successfully saved ${a.buildingName}`,
+                status: 200
+              }
+            }));
+          }),
+          catchError(
+            (err: HttpErrorResponse) => {
+              return of(loadResponsesFailure({
+                error: {
+                  payload: err.error,
+                  status: err.status,
+                  response: (err.error instanceof ErrorEvent) ? `Error: ${err.error.message}` : `Error Code: ${err.status},  Message: ${err.error}`
+                }
+              }));
+            }));
       } else {
-        this.service.update(this.branch);
+        this.service.update(this.branch).pipe(
+          map((a) => {
+            this.stepTwoForm.markAsPristine();
+            this.stepTwoForm.reset();
+            this.stepThreeForm.markAsPristine();
+            this.stepThreeForm.reset();
+            this.step = 0;
+            return of(loadResponsesSuccess({
+              message: {
+                response: '00',
+                payload: `Successfully saved ${a.buildingName}`,
+                status: 200
+              }
+            }));
+          }),
+          catchError(
+            (err: HttpErrorResponse) => {
+              return of(loadResponsesFailure({
+                error: {
+                  payload: err.error,
+                  status: err.status,
+                  response: (err.error instanceof ErrorEvent) ? `Error: ${err.error.message}` : `Error Code: ${err.status},  Message: ${err.error}`
+                }
+              }));
+            }));
       }
-      this.step = 1;
-      this.stepTwoForm.markAsPristine();
-      this.stepTwoForm.reset();
-      this.stepThreeForm.markAsPristine();
-      this.stepThreeForm.reset();
+
 
     } else {
       this.store$.dispatch(loadResponsesFailure({
@@ -179,9 +263,18 @@ export class BranchesList implements OnInit {
   }
 
   onClickUsers(record: Branches) {
-    this.store$.dispatch(loadCompanyId({payload: record.companyProfileId}));
-    this.store$.dispatch(loadBranchId({payload: record.id}));
+    this.store$.dispatch(loadCompanyId({payload: record.companyProfileId, company: this?.company$}));
+
+    this.store$.dispatch(loadBranchId({payload: record.id, branch: record}));
     this.store$.dispatch(Go({payload: null, redirectUrl: '', link: 'dashboard/branches/users'}));
 
+  }
+
+  public goBack(): void {
+    this.location.back();
+  }
+
+  onClickAddBranch() {
+    this.step = 1;
   }
 }

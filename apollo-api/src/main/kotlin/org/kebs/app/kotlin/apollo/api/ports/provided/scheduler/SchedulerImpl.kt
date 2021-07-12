@@ -4,10 +4,12 @@ import mu.KotlinLogging
 import org.joda.time.DateTime
 import org.kebs.app.kotlin.apollo.api.notifications.Notifications
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.BpmnCommonFunctions
+import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.QualityAssuranceBpmn
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DestinationInspectionDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.QADaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.lims.LimsServices
+import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.SchedulerEntity
 import org.kebs.app.kotlin.apollo.store.repo.ISchedulerRepository
@@ -32,8 +34,9 @@ class SchedulerImpl(
     private val bpmnCommonFunctions: BpmnCommonFunctions,
     private val userRepo: IUserRepository,
     private val applicationMapProperties: ApplicationMapProperties,
+//    private val qualityAssuranceBpmn: QualityAssuranceBpmn,
     private val sampleSubmissionRepo: IQaSampleSubmissionRepository,
-    private val  limsServices: LimsServices,
+    private val limsServices: LimsServices,
 //    private val qaDaoServices: QADaoServices,
 //    private val diDaoServices: DestinationInspectionDaoServices,
     private val commonDaoServices: CommonDaoServices,
@@ -234,50 +237,7 @@ class SchedulerImpl(
         return false
     }
 
-    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
-    fun assignPermitApplicationAfterPayment() {
-        val map = commonDaoServices.serviceMapDetails(diAppId)
-        //Find all permits with Paid status
-        val paidPermits = qaDaoServices.findAllQAOPermitListWithPaymentStatus(map.activeStatus)
-        for (permit in paidPermits) {
-            //Get permit type
-            val user = permit.userId?.let { commonDaoServices.findUserByID(it) }
-            when (permit.permitType) {
-                applicationMapProperties.mapQAPermitTypeIDDmark -> {
-                    permit.userTaskId = applicationMapProperties.mapUserTaskNameHOD
-                    permit.hodId = qaDaoServices.assignNextOfficerBasedOnSection(
-                        permit,
-                        map,
-                        applicationMapProperties.mapQADesignationIDForHODId
-                    )?.id
-                }
-                applicationMapProperties.mapQAPermitTypeIdSmark -> {
-                    permit.userTaskId = applicationMapProperties.mapUserTaskNameQAM
-                    permit.qamId = qaDaoServices.assignNextOfficerBasedOnSection(
-                        permit,
-                        map,
-                        applicationMapProperties.mapQADesignationIDForQAMId
-                    )?.id
-                }
-                applicationMapProperties.mapQAPermitTypeIdFmark -> {
-                    permit.userTaskId = applicationMapProperties.mapUserTaskNameQAM
-                    permit.qamId = qaDaoServices.assignNextOfficerAfterPayment(
-                        permit,
-                        map,
-                        applicationMapProperties.mapQADesignationIDForQAMId
-                    )?.id
-                }
-            }
 
-            permit.paidStatus = map.initStatus
-            permit.permitStatus = applicationMapProperties.mapQaStatusPApprovalCompletness
-
-            if (user != null) {
-                qaDaoServices.permitUpdateDetails(permit,map,user)
-            }
-//            permitRepo.save(permit)
-        }
-    }
 
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun updateLabResultsWithDetails() {

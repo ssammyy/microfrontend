@@ -21,19 +21,18 @@
         <sequenceFlow id="flow7" sourceRef="exclusivegateway2" targetRef="qaDmappFillForeignApplication">
             <conditionExpression xsi:type="tFormalExpression"><![CDATA[${isDomestic==0}]]></conditionExpression>
         </sequenceFlow>
-        <userTask id="qaDmappPCMCheckApplicationComplete" name="PCM Check if foreign application complete">
+        <userTask id="qaDmappPCMCheckApplicationCompleForeign" name="PCM Check if foreign application complete">
             <extensionElements>
                 <activiti:taskListener event="assignment" expression="${bpmnNotifications.sendEmail(task)}"></activiti:taskListener>
             </extensionElements>
         </userTask>
         <exclusiveGateway id="exclusivegateway3" name="Exclusive Gateway"></exclusiveGateway>
-        <sequenceFlow id="flow10" sourceRef="qaDmappPCMCheckApplicationComplete" targetRef="exclusivegateway3"></sequenceFlow>
-        <userTask id="qaDmappManufacturerCorrection" name="Manufacturer Correction" activiti:category="manufacturer">
+        <sequenceFlow id="flow10" sourceRef="qaDmappPCMCheckApplicationCompleForeign" targetRef="exclusivegateway3"></sequenceFlow>
+        <userTask id="qaDmappManufacturerCorrectionForeign" name="Manufacturer Correction Foreign" activiti:category="manufacturer">
             <extensionElements>
                 <activiti:taskListener event="assignment" expression="${bpmnNotifications.sendEmail(task)}"></activiti:taskListener>
             </extensionElements>
         </userTask>
-        <sequenceFlow id="flow13" sourceRef="qaDmappManufacturerCorrection" targetRef="qaDmappFillForeignApplication"></sequenceFlow>
         <userTask id="qaDmappPayment" name="Payment" activiti:category="manufacturer">
             <extensionElements>
                 <activiti:taskListener event="assignment" expression="${bpmnNotifications.sendEmail(task)}"></activiti:taskListener>
@@ -43,18 +42,30 @@
         <endEvent id="endevent1" name="End"></endEvent>
         <sequenceFlow id="flow17" sourceRef="qaDmappPaymentConfirmation" targetRef="endevent1"></sequenceFlow>
         <serviceTask id="qaDmappCheckiIfRenewal" name="Check Renewal" activiti:expression="${qualityAssuranceBpmn.qaDmappCheckIfRenewal(permitId)}"></serviceTask>
-        <sequenceFlow id="flow20" sourceRef="qaDmappFillForeignApplication" targetRef="qaDmappPCMCheckApplicationComplete"></sequenceFlow>
-        <sequenceFlow id="flow21" sourceRef="exclusivegateway3" targetRef="qaDmappManufacturerCorrection">
-            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${applicationComplete==0}]]></conditionExpression>
+        <sequenceFlow id="flow20" sourceRef="qaDmappFillForeignApplication" targetRef="qaDmappPCMCheckApplicationCompleForeign"></sequenceFlow>
+        <sequenceFlow id="flow21" sourceRef="exclusivegateway3" targetRef="qaDmappManufacturerCorrectionForeign">
+            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${foreignApplicationComplete==0}]]></conditionExpression>
         </sequenceFlow>
         <serviceTask id="qaDmappPaymentConfirmation" name="Payment Confirmation" activiti:expression="${bpmnNotifications.sendEmailServiceTask(manufacturerEmail)}"></serviceTask>
         <sequenceFlow id="flow22" sourceRef="exclusivegateway1" targetRef="qaDmappPayment">
             <conditionExpression xsi:type="tFormalExpression"><![CDATA[${isRenewal==1}]]></conditionExpression>
         </sequenceFlow>
-        <sequenceFlow id="flow23" sourceRef="qaDmappFillDomesticApplication" targetRef="qaDmappPayment"></sequenceFlow>
         <sequenceFlow id="flow24" sourceRef="exclusivegateway3" targetRef="qaDmappPayment">
-            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${applicationComplete==1}]]></conditionExpression>
+            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${foreignApplicationComplete==1}]]></conditionExpression>
         </sequenceFlow>
+        <userTask id="qaDmappPCMCheckApplicationCompleDomestic" name="PCM Check Domestic Application Complete"></userTask>
+        <sequenceFlow id="flow25" sourceRef="qaDmappFillDomesticApplication" targetRef="qaDmappPCMCheckApplicationCompleDomestic"></sequenceFlow>
+        <exclusiveGateway id="exclusivegateway4" name="Exclusive Gateway"></exclusiveGateway>
+        <sequenceFlow id="flow26" sourceRef="qaDmappPCMCheckApplicationCompleDomestic" targetRef="exclusivegateway4"></sequenceFlow>
+        <userTask id="qaDmappManufacturerCorrectionDomestic" name="Manufacturer Correction Domestic"></userTask>
+        <sequenceFlow id="flow27" sourceRef="exclusivegateway4" targetRef="qaDmappManufacturerCorrectionDomestic">
+            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${domesticApplicationComplete==0}]]></conditionExpression>
+        </sequenceFlow>
+        <sequenceFlow id="flow28" sourceRef="exclusivegateway4" targetRef="qaDmappPayment">
+            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${domesticApplicationComplete==1}]]></conditionExpression>
+        </sequenceFlow>
+        <sequenceFlow id="flow29" sourceRef="qaDmappManufacturerCorrectionDomestic" targetRef="qaDmappPCMCheckApplicationCompleDomestic"></sequenceFlow>
+        <sequenceFlow id="flow30" sourceRef="qaDmappManufacturerCorrectionForeign" targetRef="qaDmappPCMCheckApplicationCompleForeign"></sequenceFlow>
     </process>
     <bpmndi:BPMNDiagram id="BPMNDiagram_qaDmAppPaymentProcess">
         <bpmndi:BPMNPlane bpmnElement="qaDmAppPaymentProcess" id="BPMNPlane_qaDmAppPaymentProcess">
@@ -79,26 +90,35 @@
             <bpmndi:BPMNShape bpmnElement="qaDmappFillForeignApplication" id="BPMNShape_qaDmappFillForeignApplication">
                 <omgdc:Bounds height="64.0" width="111.0" x="920.0" y="68.0"></omgdc:Bounds>
             </bpmndi:BPMNShape>
-            <bpmndi:BPMNShape bpmnElement="qaDmappPCMCheckApplicationComplete" id="BPMNShape_qaDmappPCMCheckApplicationComplete">
+            <bpmndi:BPMNShape bpmnElement="qaDmappPCMCheckApplicationCompleForeign" id="BPMNShape_qaDmappPCMCheckApplicationCompleForeign">
                 <omgdc:Bounds height="69.0" width="121.0" x="1160.0" y="65.0"></omgdc:Bounds>
             </bpmndi:BPMNShape>
             <bpmndi:BPMNShape bpmnElement="exclusivegateway3" id="BPMNShape_exclusivegateway3">
                 <omgdc:Bounds height="40.0" width="40.0" x="1203.0" y="205.0"></omgdc:Bounds>
             </bpmndi:BPMNShape>
-            <bpmndi:BPMNShape bpmnElement="qaDmappManufacturerCorrection" id="BPMNShape_qaDmappManufacturerCorrection">
+            <bpmndi:BPMNShape bpmnElement="qaDmappManufacturerCorrectionForeign" id="BPMNShape_qaDmappManufacturerCorrectionForeign">
                 <omgdc:Bounds height="63.0" width="118.0" x="917.0" y="194.0"></omgdc:Bounds>
             </bpmndi:BPMNShape>
             <bpmndi:BPMNShape bpmnElement="qaDmappPayment" id="BPMNShape_qaDmappPayment">
-                <omgdc:Bounds height="55.0" width="105.0" x="673.0" y="320.0"></omgdc:Bounds>
+                <omgdc:Bounds height="55.0" width="105.0" x="668.0" y="476.0"></omgdc:Bounds>
             </bpmndi:BPMNShape>
             <bpmndi:BPMNShape bpmnElement="endevent1" id="BPMNShape_endevent1">
-                <omgdc:Bounds height="35.0" width="35.0" x="1025.0" y="440.0"></omgdc:Bounds>
+                <omgdc:Bounds height="35.0" width="35.0" x="958.0" y="583.0"></omgdc:Bounds>
             </bpmndi:BPMNShape>
             <bpmndi:BPMNShape bpmnElement="qaDmappCheckiIfRenewal" id="BPMNShape_qaDmappCheckiIfRenewal">
                 <omgdc:Bounds height="55.0" width="105.0" x="320.0" y="70.0"></omgdc:Bounds>
             </bpmndi:BPMNShape>
             <bpmndi:BPMNShape bpmnElement="qaDmappPaymentConfirmation" id="BPMNShape_qaDmappPaymentConfirmation">
-                <omgdc:Bounds height="61.0" width="112.0" x="670.0" y="427.0"></omgdc:Bounds>
+                <omgdc:Bounds height="61.0" width="112.0" x="665.0" y="570.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="qaDmappPCMCheckApplicationCompleDomestic" id="BPMNShape_qaDmappPCMCheckApplicationCompleDomestic">
+                <omgdc:Bounds height="55.0" width="153.0" x="649.0" y="290.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="exclusivegateway4" id="BPMNShape_exclusivegateway4">
+                <omgdc:Bounds height="40.0" width="40.0" x="700.0" y="380.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="qaDmappManufacturerCorrectionDomestic" id="BPMNShape_qaDmappManufacturerCorrectionDomestic">
+                <omgdc:Bounds height="55.0" width="105.0" x="511.0" y="290.0"></omgdc:Bounds>
             </bpmndi:BPMNShape>
             <bpmndi:BPMNEdge bpmnElement="flow1" id="BPMNEdge_flow1">
                 <omgdi:waypoint x="125.0" y="97.0"></omgdi:waypoint>
@@ -132,17 +152,13 @@
                 <omgdi:waypoint x="1220.0" y="134.0"></omgdi:waypoint>
                 <omgdi:waypoint x="1223.0" y="205.0"></omgdi:waypoint>
             </bpmndi:BPMNEdge>
-            <bpmndi:BPMNEdge bpmnElement="flow13" id="BPMNEdge_flow13">
-                <omgdi:waypoint x="976.0" y="194.0"></omgdi:waypoint>
-                <omgdi:waypoint x="975.0" y="132.0"></omgdi:waypoint>
-            </bpmndi:BPMNEdge>
             <bpmndi:BPMNEdge bpmnElement="flow16" id="BPMNEdge_flow16">
-                <omgdi:waypoint x="725.0" y="375.0"></omgdi:waypoint>
-                <omgdi:waypoint x="726.0" y="427.0"></omgdi:waypoint>
+                <omgdi:waypoint x="720.0" y="531.0"></omgdi:waypoint>
+                <omgdi:waypoint x="721.0" y="570.0"></omgdi:waypoint>
             </bpmndi:BPMNEdge>
             <bpmndi:BPMNEdge bpmnElement="flow17" id="BPMNEdge_flow17">
-                <omgdi:waypoint x="782.0" y="457.0"></omgdi:waypoint>
-                <omgdi:waypoint x="1025.0" y="457.0"></omgdi:waypoint>
+                <omgdi:waypoint x="777.0" y="600.0"></omgdi:waypoint>
+                <omgdi:waypoint x="958.0" y="600.0"></omgdi:waypoint>
             </bpmndi:BPMNEdge>
             <bpmndi:BPMNEdge bpmnElement="flow20" id="BPMNEdge_flow20">
                 <omgdi:waypoint x="1031.0" y="100.0"></omgdi:waypoint>
@@ -154,17 +170,38 @@
             </bpmndi:BPMNEdge>
             <bpmndi:BPMNEdge bpmnElement="flow22" id="BPMNEdge_flow22">
                 <omgdi:waypoint x="490.0" y="118.0"></omgdi:waypoint>
-                <omgdi:waypoint x="490.0" y="347.0"></omgdi:waypoint>
-                <omgdi:waypoint x="673.0" y="347.0"></omgdi:waypoint>
-            </bpmndi:BPMNEdge>
-            <bpmndi:BPMNEdge bpmnElement="flow23" id="BPMNEdge_flow23">
-                <omgdi:waypoint x="726.0" y="261.0"></omgdi:waypoint>
-                <omgdi:waypoint x="725.0" y="320.0"></omgdi:waypoint>
+                <omgdi:waypoint x="490.0" y="503.0"></omgdi:waypoint>
+                <omgdi:waypoint x="668.0" y="503.0"></omgdi:waypoint>
             </bpmndi:BPMNEdge>
             <bpmndi:BPMNEdge bpmnElement="flow24" id="BPMNEdge_flow24">
                 <omgdi:waypoint x="1223.0" y="245.0"></omgdi:waypoint>
-                <omgdi:waypoint x="1222.0" y="347.0"></omgdi:waypoint>
-                <omgdi:waypoint x="778.0" y="347.0"></omgdi:waypoint>
+                <omgdi:waypoint x="1223.0" y="503.0"></omgdi:waypoint>
+                <omgdi:waypoint x="773.0" y="503.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow25" id="BPMNEdge_flow25">
+                <omgdi:waypoint x="726.0" y="261.0"></omgdi:waypoint>
+                <omgdi:waypoint x="725.0" y="290.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow26" id="BPMNEdge_flow26">
+                <omgdi:waypoint x="725.0" y="345.0"></omgdi:waypoint>
+                <omgdi:waypoint x="720.0" y="380.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow27" id="BPMNEdge_flow27">
+                <omgdi:waypoint x="700.0" y="400.0"></omgdi:waypoint>
+                <omgdi:waypoint x="563.0" y="400.0"></omgdi:waypoint>
+                <omgdi:waypoint x="563.0" y="345.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow28" id="BPMNEdge_flow28">
+                <omgdi:waypoint x="720.0" y="420.0"></omgdi:waypoint>
+                <omgdi:waypoint x="720.0" y="476.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow29" id="BPMNEdge_flow29">
+                <omgdi:waypoint x="616.0" y="317.0"></omgdi:waypoint>
+                <omgdi:waypoint x="649.0" y="317.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow30" id="BPMNEdge_flow30">
+                <omgdi:waypoint x="976.0" y="194.0"></omgdi:waypoint>
+                <omgdi:waypoint x="1220.0" y="134.0"></omgdi:waypoint>
             </bpmndi:BPMNEdge>
         </bpmndi:BPMNPlane>
     </bpmndi:BPMNDiagram>

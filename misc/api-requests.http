@@ -26,7 +26,7 @@ Content-Type: application/json
 
 {
   "username": "kzmuhia@gmail.com",
-  "password": "password"
+  "password": "password01"
 }
 
 ####
@@ -89,7 +89,7 @@ Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJrem11aGlhQGdtYWlsLmNvbSIsI
 
 #####
 PUT https://localhost:8006/api/v1/migration/company/245/
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJrem11aGlhQGdtYWlsLmNvbSIsImlzcyI6ImtpbXMua2Vicy5vcmciLCJpYXQiOjE2MjQzNDI5NTUsImV4cCI6MTYyNDM0ODk1NSwiYWRkcmVzcyI6IjEyNy4wLjAuMSIsInVzZXJBZ2VudCI6IltNb3ppbGxhLzUuMCAoWDExOyBGZWRvcmE7IExpbnV4IHg4Nl82NDsgcnY6ODkuMCkgR2Vja28vMjAxMDAxMDEgRmlyZWZveC84OS4wXSIsImZ1bGxOYW1lIjoiS2VubmV0aCBNdWhpYSIsInJvbGVzIjoiUEVSTUlUX0FQUExJQ0FUSU9OLFBFUk1JVF9SRU5FV0FMLFBWT0NfQVBQTElDQVRJT05fUkVBRCxTTF9NQU5VRkFDVFVSRVJfVklFVyxMSVNUX0NPTVBBTlksTU9ESUZZX0NPTVBBTlkifQ.ZRdRMK9p68dc_KjfmpAK_8KXcSq_uHKKTxpJGZbH0haKosjuI0S0OUNj6qh3y_UGaYJu9lBcNaRCvkVWV391gg
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJrem11aGlhQGdtYWlsLmNvbSIsImlzcyI6ImtpbXMua2Vicy5vcmciLCJpYXQiOjE2MjU5MjQ1MTYsImV4cCI6MTYyNTkzMDUxNiwiYWRkcmVzcyI6IjEyNy4wLjAuMSIsInVzZXJBZ2VudCI6IltNb3ppbGxhLzUuMCAoV2luZG93cyBOVCAxMC4wOyBXaW42NDsgeDY0OyBydjo4OS4wKSBHZWNrby8yMDEwMDEwMSBGaXJlZm94Lzg5LjBdIiwiZnVsbE5hbWUiOiJLZW5uZXRoIE11aGlhIiwicm9sZXMiOiJQRVJNSVRfQVBQTElDQVRJT04sUEVSTUlUX1JFTkVXQUwsUFZPQ19BUFBMSUNBVElPTl9SRUFELExJU1RfQ09NUEFOWSxNT0RJRllfQ09NUEFOWSJ9.z1C_KPNJ90HxSlmJPsIUn-oSYhJnDbuyFV2CHPTrLvP9kleqbaWdKi0vWAOzL1lnVdpaOnphVUndULT8xZtPYg
 Content-Type: application/json
 
 {
@@ -122,3 +122,10 @@ Content-Type: application/json
 ####
 
 GET https://localhost:8006/api/v1/migration/anonymous/county/1/towns/
+
+
+###
+POST https://kimsint.kebs.org:8006/api/v1/migration/company/245/branches/304/users
+
+
+{"firstName":"Second","lastName":"user","userName":"seconduser@technovoz.com","email":"seconduser@technovoz.com","cellphone":"254733814627","otp":null,"credentials":"password","confirmCredentials":"password","companyId":245,"plantId":304}

@@ -1,0 +1,363 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">assignment</i>
+                        </div>
+                        <h4 class="card-title">Review Company Details</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="toolbar">
+
+                        </div>
+                        <div class="material-datatables">
+                            <section class="wizard-section">
+                                <div class="row no-gutters">
+                                    <div class="col-lg-12 col-md-12 col-sm-12">
+                                        <div class="form-wizard">
+
+                                            <div class="form-wizard-header">
+                                                <p>Fill all the fields to go next step</p>
+                                                <ul class="list-unstyled form-wizard-steps clearfix">
+                                                    <li class="active"><span>1</span></li>
+                                                    <li><span>2</span></li>
+                                                    <li><span>3</span></li>
+                                                </ul>
+                                            </div>
+                                            <fieldset class="wizard-fieldset show">
+                                                <form (ngSubmit)="onClickNext(stepOneForm.valid)" [formGroup]="stepOneForm" action="" class="form"
+                                                      enctype="multipart/form-data" method="post">
+                                                    <div class="container-fluid">
+                                                        <div class="row">
+                                                            <h2 class="welcome2">
+                                                                General Company Information
+                                                            </h2>
+                                                        </div>
+                                                        <div class="row input-row">
+
+                                                            <div class="col">
+                                                                <label class="input-placeholder-required" for="registrationNumber">
+                                                                    Company Registration Number
+                                                                </label>
+                                                                <br>
+                                                                <input class="form-control two-column-input" formControlName="registrationNumber"
+                                                                       id="registrationNumber"
+                                                                       name="registrationNumber"
+                                                                       placeholder="Company registration number" required="required" type="text">
+                                                            </div>
+
+                                                            <div class="col">
+                                                                <label class="input-placeholder-required" for="directorIdNumber">
+                                                                    Director's Id Number
+                                                                </label>
+                                                                <br>
+                                                                <input class="form-control two-column-input" formControlName="directorIdNumber" id="directorIdNumber"
+                                                                       name="directorIdNumber"
+                                                                       placeholder="The id number of one director" required="required" type="text">
+                                                            </div>
+
+                                                        </div>
+
+                                                        <div class="row input-row">
+
+                                                            <div class="col">
+                                                                <label class="input-placeholder-required" for="name">
+                                                                    Company Name
+                                                                </label>
+                                                                <br>
+                                                                <input class="form-control two-column-input" formControlName="name" id="name" name="name"
+                                                                       placeholder="The company name" required="required" type="text">
+                                                            </div>
+
+                                                            <div class="col">
+                                                                <label class="input-placeholder-required" for="kraPin">
+                                                                    KRA Pin
+                                                                </label>
+                                                                <br>
+                                                                <input class="form-control two-column-input" formControlName="kraPin" id="kraPin" name="kraPin"
+                                                                       placeholder="Company KRA pin" required="required" type="text">
+                                                            </div>
+
+                                                        </div>
+
+                                                        <div class="row input-row">
+
+                                                            <div class="col">
+                                                                <label class="input-placeholder-required" for="yearlyTurnover">
+                                                                    Yearly Turnover
+                                                                </label>
+                                                                <br>
+                                                                <input class="form-control two-column-input" formControlName="yearlyTurnover" id="yearlyTurnover"
+                                                                       name="yearlyTurnover"
+                                                                       placeholder="Company yearly turnover" required="required" type="number">
+                                                            </div>
+
+                                                            <div class="col">
+                                                                <label class="input-placeholder-required" for="businessLines">
+                                                                    Line Of Business
+                                                                </label>
+                                                                <br>
+                                                                <ng-container *ngIf="businessLines$ | async as apps">
+                                                                    <select (ngModelChange)="updateSelectedBusinessLine()"
+                                                                            formControlName="businessLines" id="businessLines"
+                                                                            name="businessLines" required="required" style="width: 100%; height: 75%">
+                                                                        <option ngValue="null" selected>Please select</option>
+                                                                        <option
+                                                                                *ngFor="let app of apps| filterPipe: {status: true}"
+                                                                                [ngValue]="app.id"
+                                                                                class="dropdown-item">{{app.name}}</option>
+                                                                    </select>
+
+                                                                </ng-container>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row input-row">
+                                                            <div class="col">
+                                                                <label class="input-placeholder-required" for="businessNatures">
+                                                                    Nature of Business
+                                                                </label>
+                                                                <br>
+                                                                <ng-container
+                                                                        *ngIf="businessNatures$ | async as apps">
+                                                                    <select (ngModelChange)="updateSelectedBusinessNatures()"
+                                                                            formControlName="businessNatures" id="businessNatures"
+                                                                            name="businessNatures" required="required" style="width: 48%; height: 100%">
+                                                                        <option ngValue="null" selected>Please select</option>
+                                                                        <option
+                                                                                *ngFor="let app of apps| filterPipe:{status: true, businessLinesId:selectedBusinessLine }"
+                                                                                [ngValue]="app.id"
+                                                                                class="dropdown-item">{{app.name}}</option>
+                                                                    </select>
+
+                                                                </ng-container>
+
+                                                            </div>
+                                                        </div>
+
+
+                                                        <div class="row mt-5 ml-5">
+                                                            <div class="col">
+                                                                <button (click)="onClickPrevious()" href="javascript:" class="form-wizard-previous-btn float-left" type="button">PREV</button>
+                                                            </div>
+                                                            <div class="col">
+                                                                <button class="form-wizard-next-btn float-right"  [disabled]="!stepOneForm.valid" type="submit">NEXT</button>
+                                                            </div>
+
+
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                            </fieldset>
+
+
+                                            <fieldset class="wizard-fieldset ">
+                                                <form (ngSubmit)="onClickNext(stepTwoForm.valid)" [formGroup]="stepTwoForm" action="" class="form"
+                                                      enctype="multipart/form-data" method="post">
+                                                    <div class="container">
+                                                        <div class="row">
+                                                            <h2 class="welcome2">
+                                                                Address & Contact Information
+                                                            </h2>
+                                                        </div>
+
+                                                        <div class="row input-row">
+
+                                                            <div class="col">
+                                                                <label class="input-placeholder-required" for="postalAddress">
+                                                                    Postal Address
+                                                                </label>
+                                                                <br>
+                                                                <input class="form-control two-column-input" formControlName="postalAddress" id="postalAddress"
+                                                                       name="postalAddress"
+                                                                       placeholder="Company postal address" required="required" type="text">
+                                                            </div>
+
+                                                            <div class="col">
+                                                                <label class="input-placeholder-required" for="physicalAddress">
+                                                                    Physical Address
+                                                                </label>
+                                                                <br>
+                                                                <input class="form-control two-column-input" formControlName="physicalAddress" id="physicalAddress"
+                                                                       name="physicalAddress"
+                                                                       placeholder="Company physical address" required="required" type="text">
+                                                            </div>
+
+                                                        </div>
+
+                                                        <div class="row input-row">
+
+                                                            <div class="col">
+                                                                <label class="input-placeholder-required" for="plotNumber">
+                                                                    Plot Number
+                                                                </label>
+                                                                <br>
+                                                                <input class="form-control two-column-input" formControlName="plotNumber" id="plotNumber"
+                                                                       name="plotNumber"
+                                                                       placeholder="Plot number" required="required" type="text">
+
+                                                            </div>
+                                                            <div class="col">
+
+                                                                <label class="input-placeholder-required" for="companyEmail">
+                                                                    Company Email
+                                                                </label>
+                                                                <br>
+                                                                <input class="form-control two-column-input" formControlName="companyEmail" id="companyEmail"
+                                                                       name="companyEmail"
+                                                                       placeholder="Company email address" required="required" type="text">
+                                                            </div>
+
+                                                        </div>
+
+                                                        <div class="row input-row">
+
+                                                            <div class="col">
+                                                                <label class="input-placeholder-required" for="companyTelephone">
+                                                                    Company Phone
+                                                                </label>
+                                                                <br>
+                                                                <input class="form-control two-column-input" formControlName="companyTelephone" id="companyTelephone"
+                                                                       name="companyTelephone"
+                                                                       placeholder="Company phone number" required="required" type="text">
+
+                                                            </div>
+                                                            <div class="col"></div>
+                                                        </div>
+                                                        <div class="row input-row">
+                                                            <div class="col">
+                                                                <button (click)="onClickPrevious()" class="login-button" type="button">PREV</button>
+                                                            </div>
+                                                            <div class="col">
+                                                                <button class="login-button" type="submit">NEXT</button>
+                                                            </div>
+
+                                                        </div>
+                                                    </div>
+
+
+                                                </form>
+                                            </fieldset>
+
+                                            <fieldset class="wizard-fieldset">
+                                                <form (ngSubmit)="onClickSave(stepThreeForm.valid)" [formGroup]="stepThreeForm" action="" class="form"
+                                                      enctype="multipart/form-data" method="post">
+                                                    <div class="container">
+                                                        <div class="row">
+                                                            <h2 class="welcome2">
+                                                                Physical Location Information
+                                                            </h2>
+                                                        </div>
+                                                        <div class="row input-row">
+                                                            <div class="col">
+                                                                <label class="input-placeholder-required" for="postalAddress">
+                                                                    Building Name
+                                                                </label>
+                                                                <br>
+                                                                <input class="form-control two-column-input" formControlName="buildingName" id="buildingName"
+                                                                       name="buildingName"
+                                                                       placeholder="Building Name" required="required" type="text">
+                                                            </div>
+
+                                                            <div class="col">
+                                                                <label class="input-placeholder-required" for="streetName">
+                                                                    Street Name
+                                                                </label>
+                                                                <br>
+                                                                <input class="form-control two-column-input" formControlName="streetName" id="streetName"
+                                                                       name="streetName"
+                                                                       placeholder="Street name" required="required" type="text">
+                                                            </div>
+
+                                                        </div>
+                                                        <div class="row input-row">
+                                                            <div class="col">
+                                                                <label class="input-placeholder-required" for="region">
+                                                                    Region
+                                                                </label>
+                                                                <br>
+                                                                <ng-container *ngIf="region$ | async as apps">
+                                                                    <select (ngModelChange)="updateSelectedRegion()"
+                                                                            formControlName="region" id="region"
+                                                                            name="region" required="required" style="width: 100%; height: 90%">
+                                                                        <option ngValue="null" selected>Please select</option>
+                                                                        <option
+                                                                                *ngFor="let app of apps| filterPipe: {status: true}"
+                                                                                [ngValue]="app.id"
+                                                                                class="dropdown-item">{{app.region}}</option>
+                                                                    </select>
+
+                                                                </ng-container>
+                                                            </div>
+                                                            <div class="col">
+                                                                <label class="input-placeholder-required" for="county">
+                                                                    County
+                                                                </label>
+                                                                <br>
+                                                                <ng-container *ngIf="county$ | async as apps">
+                                                                    <select (ngModelChange)="updateSelectedCounty()"
+                                                                            formControlName="county" id="county"
+                                                                            name="county" required="required" style="width: 100%; height: 90%">
+                                                                        <option ngValue="null" selected>Please select</option>
+                                                                        <option
+                                                                                *ngFor="let app of apps| filterPipe: {status: true, regionId: selectedRegion}"
+                                                                                [ngValue]="app.id"
+                                                                                class="dropdown-item">{{app.county}}</option>
+
+                                                                    </select>
+
+                                                                </ng-container>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row input-row">
+
+                                                            <div class="col">
+                                                                <label class="input-placeholder-required" for="town">
+                                                                    Town
+                                                                </label>
+                                                                <br>
+                                                                <ng-container *ngIf="town$ | async as apps">
+                                                                    <select (ngModelChange)="updateSelectedTown()"
+                                                                            formControlName="town" id="town"
+                                                                            name="town" required="required" style="width: 48%; height: 90%">
+                                                                        <option ngValue="null" selected>Please select</option>
+                                                                        <option
+                                                                                *ngFor="let app of apps| filterPipe: {status: true, countyId: selectedCounty}"
+                                                                                [ngValue]="app.id"
+                                                                                class="dropdown-item">{{app.town}}</option>
+                                                                    </select>
+
+                                                                </ng-container>
+                                                            </div>
+
+                                                        </div>
+                                                        <br>
+                                                        <div class="row">
+                                                            <div class="col">
+                                                                <button (click)="onClickPrevious()" class="login-button" type="button">PREV</button>
+                                                            </div>
+                                                            <div class="col">
+                                                                <button class="login-button" type="submit">SAVE</button>
+                                                            </div>
+                                                        </div>
+
+
+                                                    </div>
+
+
+                                                </form>
+                                            </fieldset>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

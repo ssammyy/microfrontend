@@ -492,7 +492,7 @@ class ControllerRoutes {
 
     @Bean
     fun systemsAdministrationRoutes(handler: SystemsAdministrationHandler) = router {
-        "/api/system/admin".nest {
+        "/api/v1/system/admin".nest {
             GET("/home", handler::sysadminHome)
             "/ui".nest {
                 GET("/rbac-user-roles", handler::rbacUserRoles)

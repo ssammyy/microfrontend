@@ -10,15 +10,19 @@ import {
   CountyService,
   Go,
   loadCompanyId,
-  loadResponsesFailure,
+  loadCountyId,
+  loadResponsesFailure, loadResponsesSuccess,
   Region,
   RegionService,
+  selectCountyIdData,
   Town,
   TownService
-} from "../../../core/store";
-import {Observable, Subject} from "rxjs";
-import {FormControl, FormGroup, Validators} from "@angular/forms";
-import {Store} from "@ngrx/store";
+} from '../../../core/store';
+import {Observable, of, Subject, throwError} from 'rxjs';
+import {FormControl, FormGroup, Validators} from '@angular/forms';
+import {Store} from '@ngrx/store';
+import {catchError, map} from 'rxjs/operators';
+import {HttpErrorResponse} from '@angular/common/http';
 
 
 @Component({
@@ -30,7 +34,7 @@ export class CompaniesList implements OnInit {
   companies$: Observable<Company[]>;
   filterName: string;
   p = 1;
-  step = 1;
+  step = 0;
 
   stepOneForm: FormGroup = new FormGroup({});
   stepTwoForm: FormGroup = new FormGroup({});
@@ -74,7 +78,7 @@ export class CompaniesList implements OnInit {
     this.businessLines$ = linesService.entities$;
     this.region$ = regionService.entities$;
     this.county$ = countyService.entities$;
-    this.town$ = townService.entities$
+    this.town$ = townService.entities$;
     regionService.getAll().subscribe();
     countyService.getAll().subscribe();
     townService.getAll().subscribe();
@@ -111,12 +115,24 @@ export class CompaniesList implements OnInit {
 
   updateSelectedRegion() {
     this.selectedRegion = this.stepThreeForm?.get('region')?.value;
-    // console.log(`region set to ${this.selectedRegion}`)
+    console.log(`region set to ${this.selectedRegion}`);
   }
 
   updateSelectedCounty() {
+
     this.selectedCounty = this.stepThreeForm?.get('county')?.value;
     // console.log(`county set to ${this.selectedCounty}`)
+    this.store$.dispatch(loadCountyId({payload: this.selectedCounty}));
+    this.store$.select(selectCountyIdData).subscribe(
+      (d) => {
+        if (d) {
+          // console.log(`Select county inside is ${d}`);
+          return this.townService.getAll();
+        } else {
+          return throwError('Invalid request, Company id is required');
+        }
+      }
+    );
   }
 
   updateSelectedTown() {
@@ -137,14 +153,15 @@ export class CompaniesList implements OnInit {
     this.stepTwoForm.patchValue(record);
     this.stepThreeForm.patchValue(record);
     this.companySoFar = record;
+    this.step = 1;
 
   }
 
   onClickPrevious() {
     if (this.step > 1) {
-      this.step = this.step - 1
+      this.step = this.step - 1;
     } else {
-      this.step = 1
+      this.step = 1;
     }
   }
 
@@ -170,15 +187,33 @@ export class CompaniesList implements OnInit {
       this.companySoFar = {...this.companySoFar, ...this.stepThreeForm.value};
       this.company = {...this.company, ...this.companySoFar};
 
-      this.service.update(this.company);
-      this.step = 1;
-      this.stepOneForm.markAsPristine();
-      this.stepOneForm.reset();
-      this.stepTwoForm.markAsPristine();
-      this.stepTwoForm.reset();
-      this.stepThreeForm.markAsPristine();
-      this.stepThreeForm.reset();
-
+      this.service.update(this.company).pipe(
+        map((a) => {
+          this.stepOneForm.markAsPristine();
+          this.stepOneForm.reset();
+          this.stepTwoForm.markAsPristine();
+          this.stepTwoForm.reset();
+          this.stepThreeForm.markAsPristine();
+          this.stepThreeForm.reset();
+          this.step = 0;
+          return of(loadResponsesSuccess({
+            message: {
+              response: '00',
+              payload: `Successfully saved ${a.name}`,
+              status: 200
+            }
+          }));
+        }),
+        catchError(
+          (err: HttpErrorResponse) => {
+            return of(loadResponsesFailure({
+              error: {
+                payload: err.error,
+                status: err.status,
+                response: (err.error instanceof ErrorEvent) ? `Error: ${err.error.message}` : `Error Code: ${err.status},  Message: ${err.error}`
+              }
+            }));
+          }));
     } else {
       this.store$.dispatch(loadResponsesFailure({
         error: {
@@ -193,20 +228,17 @@ export class CompaniesList implements OnInit {
   }
 
   onClickPlantDetails(record: Company) {
-    this.store$.dispatch(loadCompanyId({payload: record.id}));
+    this.store$.dispatch(loadCompanyId({payload: record.id, company: record}));
     this.store$.dispatch(Go({payload: null, redirectUrl: '', link: 'dashboard/branches'}));
   }
 
   onClickDirectors(record: Company) {
-    this.store$.dispatch(loadCompanyId({payload: record.id}));
+    this.store$.dispatch(loadCompanyId({payload: record.id, company: record}));
     this.store$.dispatch(Go({payload: null, redirectUrl: '', link: 'dashboard/directors'}));
   }
 
-  onClickClose() {
-    this.store$.dispatch(loadCompanyId({payload: -1}));
-    this.store$.dispatch(Go({payload: null, redirectUrl: '', link: 'dashboard'}));
-  }
 
+  // eslint-disable-next-line @angular-eslint/use-lifecycle-interface
   ngOnDestroy(): void {
     // Do not forget to unsubscribe the event
     this.dtTrigger.unsubscribe();

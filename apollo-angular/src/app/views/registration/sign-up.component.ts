@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
+import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {
   BrsLookUpRequest,
   BusinessLines,
@@ -23,14 +23,16 @@ import {
   selectBrsValidationStep,
   selectCountyIdData,
   selectRegistrationStateSucceeded,
-  selectSendTokenToPhoneStateSent,
+  selectTokenSentStateOtpSent,
   selectValidateTokenAndPhoneValidated,
   Town,
   TownService,
   User
-} from "../../core/store";
-import {select, Store} from "@ngrx/store";
-import {Observable, throwError} from "rxjs";
+} from '../../core/store';
+import {select, Store} from '@ngrx/store';
+import {interval, Observable, PartialObserver, Subject, throwError} from 'rxjs';
+import {takeUntil} from 'rxjs/operators';
+import {ConfirmedValidator} from "../../core/shared/confirmed.validator";
 
 @Component({
   selector: 'app-sign-up',
@@ -38,9 +40,15 @@ import {Observable, throwError} from "rxjs";
   styles: []
 })
 export class SignUpComponent implements OnInit {
+  ispause = new Subject();
+  time = 120;
+  timer!: Observable<number>;
+  timerObserver!: PartialObserver<number>;
 
 
   step = 0;
+
+  public clicked = false;
 
   stepZeroForm!: FormGroup;
   stepOneForm!: FormGroup;
@@ -62,8 +70,8 @@ export class SignUpComponent implements OnInit {
   selectedCounty: number = 0;
   selectedTown: number = 0;
   validationCellphone = '';
-  otpSent: boolean;
-  phoneValidated: boolean;
+  otpSent = false;
+  phoneValidated = false;
   // @ts-ignore
   company: Company;
   // @ts-ignore
@@ -81,14 +89,13 @@ export class SignUpComponent implements OnInit {
     private formBuilder: FormBuilder,
     private store$: Store<any>,
   ) {
-    this.otpSent = false;
-    this.phoneValidated = false;
+
 
     this.businessNatures$ = naturesService.entities$;
     this.businessLines$ = linesService.entities$;
     this.region$ = regionService.entities$;
     this.county$ = countyService.entities$;
-    this.town$ = townService.entities$
+    this.town$ = townService.entities$;
 
     regionService.getAll().subscribe();
     countyService.getAll().subscribe();
@@ -100,6 +107,22 @@ export class SignUpComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.timer = interval(1000)
+        .pipe(
+            takeUntil(this.ispause)
+        );
+
+    this.timerObserver = {
+
+      next: (_: number) => {
+        if (this.time == 0) {
+          this.ispause.next;
+        }
+        this.time -= 1;
+      }
+    };
+
+
     this.stepZeroForm = this.formBuilder.group({
       registrationNumber: ['', Validators.required],
       directorIdNumber: ['', Validators.required]
@@ -133,24 +156,25 @@ export class SignUpComponent implements OnInit {
       county: new FormControl('', [Validators.required]),
       town: new FormControl('', [Validators.required])
     });
-    this.stepFourForm = new FormGroup({
-      firstName: new FormControl(),
-      lastName: new FormControl('', [Validators.required]),
-      userName: new FormControl('', [Validators.required]),
-      email: new FormControl('', [Validators.required]),
-      cellphone: new FormControl('', [Validators.required]),
-      otp: new FormControl('', [Validators.required]),
-      credentials: new FormControl('', [Validators.required]),
-      confirmCredentials: new FormControl('', [Validators.required]),
+    this.stepFourForm = this.formBuilder.group({
+      firstName: [],
+      lastName: ['', Validators.required],
+      userName: ['', Validators.required],
+      email: ['', Validators.required],
+      cellphone: ['', Validators.required],
+      otp: ['', Validators.required],
+      credentials: ['', Validators.required],
+      confirmCredentials:  ['', [Validators.required]]},
+        {validators: ConfirmedValidator('credentials','confirmCredentials')
     });
 
   }
 
-  get formStepZeroForm(): any {return this.stepZeroForm.controls;}
-  get formStepOneForm(): any {return this.stepOneForm.controls;}
-  get formStepTwoForm(): any {return this.stepTwoForm.controls;}
-  get formStepThreeForm(): any {return this.stepThreeForm.controls;}
-  get formStepFourForm(): any {return this.stepFourForm.controls;}
+  get formStepZeroForm(): any {return this.stepZeroForm.controls; }
+  get formStepOneForm(): any {return this.stepOneForm.controls; }
+  get formStepTwoForm(): any {return this.stepTwoForm.controls; }
+  get formStepThreeForm(): any {return this.stepThreeForm.controls; }
+  get formStepFourForm(): any {return this.stepFourForm.controls; }
 
   updateSelectedRegion() {
     this.selectedRegion = this.stepThreeForm?.get('region')?.value;
@@ -158,14 +182,14 @@ export class SignUpComponent implements OnInit {
 
   updateSelectedCounty() {
     this.selectedCounty = this.stepThreeForm?.get('county')?.value;
-    console.log(`county set to ${this.selectedCounty}`)
+    console.log(`county set to ${this.selectedCounty}`);
     this.store$.dispatch(loadCountyId({payload: this.selectedCounty}));
     this.store$.select(selectCountyIdData).subscribe(
       (d) => {
         if (d) {
           console.log(`Select county inside is ${d}`);
           return this.townService.getAll();
-        } else return throwError('Invalid request, Company id is required');
+        } else { return throwError('Invalid request, Company id is required'); }
       }
     );
 
@@ -173,7 +197,7 @@ export class SignUpComponent implements OnInit {
 
   updateSelectedTown() {
     this.selectedTown = this.stepThreeForm?.get('town')?.value;
-    console.log(`town set to ${this.selectedTown}`)
+    console.log(`town set to ${this.selectedTown}`);
   }
 
   updateSelectedBusinessLine() {
@@ -184,14 +208,19 @@ export class SignUpComponent implements OnInit {
     this.selectedBusinessNature = this.stepOneForm?.get('businessNatures')?.value;
   }
 
-  onClickBrsLookup(valid: boolean) {
-    if (valid) {
-      this.step = 0
+  onClickBrsLookup() {
+  this.submitted = true;
+    // stop here if form is invalid
+    if (this.stepZeroForm.invalid) {
+      return;
+    }
+    if (this.submitted) {
+      this.step = 0;
       this.brsLookupRequest = this.stepZeroForm.value;
       // console.log(`Sending ${JSON.stringify(this.brsLookupRequest)}`)
       this.store$.dispatch(loadBrsValidations({payload: this.brsLookupRequest}));
       this.store$.pipe(select(selectBrsValidationStep)).subscribe((step: number) => {
-        console.log(`step inside is ${step}`)
+        console.log(`step inside is ${step}`);
         return this.step = step;
       });
       this.store$.pipe(
@@ -203,7 +232,7 @@ export class SignUpComponent implements OnInit {
         this.companySoFar = record;
       });
 
-      console.log(`step after is ${this.step}`)
+      console.log(`step after is ${this.step}`);
     } else {
       this.store$.dispatch(loadResponsesFailure({
         error: {
@@ -221,14 +250,14 @@ export class SignUpComponent implements OnInit {
     if (valid) {
       if (this.phoneValidated) {
         this.company = {...this.company, ...this.companySoFar};
-        this.user = {...this.user, ...this.stepFourForm?.value}
+        this.user = {...this.user, ...this.stepFourForm?.value};
 
         this.store$.dispatch(loadRegistrations({
           payload: {company: this.company, user: this.user}
         }));
 
         this.store$.pipe(select(selectRegistrationStateSucceeded)).subscribe((d) => {
-          console.log(`status inside is ${d}`)
+          console.log(`status inside is ${d}`);
           if (d) {
             return this.store$.dispatch(Go({payload: '', link: 'login', redirectUrl: ''}));
           }
@@ -258,6 +287,7 @@ export class SignUpComponent implements OnInit {
   }
 
   onClickValidateOtp() {
+    this.phoneValidated = true;
     this.store$.dispatch(loadValidateTokenAndPhone({
       payload: {
         phone: this.stepFourForm?.get('cellphone')?.value,
@@ -265,28 +295,40 @@ export class SignUpComponent implements OnInit {
       }
     }));
     this.store$.pipe(select(selectValidateTokenAndPhoneValidated)).subscribe((d) => {
-      console.log(`status inside is ${d}`)
-      return this.phoneValidated = d;
+      // console.log(`status inside is ${d}`)
+      if (d) {
+        this.otpSent = true;
+        // this.stepFourForm?.get('otp')?.reset();
+        return this.phoneValidated = d;
+      } else {
+        this.otpSent = false;
+        // this.stepFourForm?.get('otp')?.reset();
+        return throwError('Could not validate token');
+
+      }
     });
-    if (!this.phoneValidated) {
-      this.otpSent = false;
-      this.stepFourForm?.get('otp')?.reset();
 
-      this.phoneValidated = true;
+  }
 
-    } else {
+  secondsToHms(d: number) {
+    d = Number(d);
+    const m = Math.floor(d % 3600 / 60);
+    const s = Math.floor(d % 3600 % 60);
 
-    }
+    const mDisplay = m > 0 ? m + (m == 1 ? ": " : " : ") : "00";
+    const sDisplay = s > 0 ? s + (s == 1 ? "" : "") : "00";
+    return mDisplay + sDisplay;
   }
 
   onClickSendOtp() {
     this.otpSent = true;
-    this.validationCellphone = this.stepFourForm?.get('cellphone')?.value
+    this.timer.subscribe(this.timerObserver);
+    this.validationCellphone = this.stepFourForm?.get('cellphone')?.value;
 
-    this.stepFourForm?.get('otp')?.reset()
+    this.stepFourForm?.get('otp')?.reset();
 
     if (
-      this.validationCellphone === '' ||
+        this.validationCellphone === '' ||
       this.validationCellphone === null
     ) {
       this.store$.dispatch(loadResponsesFailure({
@@ -304,9 +346,13 @@ export class SignUpComponent implements OnInit {
         }
       }));
 
-      this.store$.pipe(select(selectSendTokenToPhoneStateSent)).subscribe((d) => {
-        console.log(`value of inside is ${d}`)
-        return this.otpSent = d;
+      this.store$.pipe(select(selectTokenSentStateOtpSent)).subscribe((d) => {
+        console.log(`value of inside is ${d}`);
+        if (d) {
+          return this.otpSent = d;
+        } else {
+          return throwError('Unable to send token');
+        }
       });
     }
 
@@ -315,9 +361,9 @@ export class SignUpComponent implements OnInit {
 
   onClickPrevious() {
     if (this.step > 1) {
-      this.step = this.step - 1
+      this.step = this.step - 1;
     } else {
-      this.step = 1
+      this.step = 1;
     }
   }
 

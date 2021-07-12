@@ -22,6 +22,10 @@ class QaInspectionTechnicalEntity : Serializable {
     @Basic
     var permitId: Long? = null
 
+    @Column(name = "PERMIT_REF_NUMBER")
+    @Basic
+    var permitRefNumber: String? = null
+
     @Column(name = "QUALITY_PROCEDURE")
     @Basic
     var qualityProcedure: String? = null
@@ -209,13 +213,16 @@ class QaInspectionTechnicalEntity : Serializable {
         if (this === other) return true
         if (other == null || javaClass != other.javaClass) return false
         val that = other as QaInspectionTechnicalEntity
-        return id == that.id && permitId == that.permitId && qualityProcedure == that.qualityProcedure && qualityProcedureRemarks == that.qualityProcedureRemarks && availabilityProductStandardsCodesPractice == that.availabilityProductStandardsCodesPractice && availabilityProductStandardsCodesPracticeRemarks == that.availabilityProductStandardsCodesPracticeRemarks && qualityManagementSystems == that.qualityManagementSystems && qualityManagementSystemsRemarks == that.qualityManagementSystemsRemarks && haccpSeeAnnexIi == that.haccpSeeAnnexIi && haccpSeeAnnexIiRemarks == that.haccpSeeAnnexIiRemarks && testingFacility == that.testingFacility && testingFacilityRemarks == that.testingFacilityRemarks && qualityControlPersonnelQualifications == that.qualityControlPersonnelQualifications && qualityControlPersonnelQualificationsRemarks == that.qualityControlPersonnelQualificationsRemarks && equipmentCalibration == that.equipmentCalibration && equipmentCalibrationRemarks == that.equipmentCalibrationRemarks && qualityRecords == that.qualityRecords && qualityRecordsRemarks == that.qualityRecordsRemarks && productLabelingIdentification == that.productLabelingIdentification && productLabelingIdentificationRemarks == that.productLabelingIdentificationRemarks && validitySmarkPermit == that.validitySmarkPermit && validitySmarkPermitRemarks == that.validitySmarkPermitRemarks && useTheSmark == that.useTheSmark && useTheSmarkRemarks == that.useTheSmarkRemarks && changesAffectingProductCertification == that.changesAffectingProductCertification && changesAffectingProductCertificationRemarks == that.changesAffectingProductCertificationRemarks && changesBeenCommunicatedKebs == that.changesBeenCommunicatedKebs && changesBeenCommunicatedKebsRemarks == that.changesBeenCommunicatedKebsRemarks && samplesDrawn == that.samplesDrawn && samplesDrawnRemarks == that.samplesDrawnRemarks && description == that.description && status == that.status && varField1 == that.varField1 && varField2 == that.varField2 && varField3 == that.varField3 && varField4 == that.varField4 && varField5 == that.varField5 && varField6 == that.varField6 && varField7 == that.varField7 && varField8 == that.varField8 && varField9 == that.varField9 && varField10 == that.varField10 && createdBy == that.createdBy && createdOn == that.createdOn && modifiedBy == that.modifiedBy && modifiedOn == that.modifiedOn && deleteBy == that.deleteBy && deletedOn == that.deletedOn
+        return id == that.id &&
+                permitRefNumber == that.permitRefNumber &&
+                permitId == that.permitId && qualityProcedure == that.qualityProcedure && qualityProcedureRemarks == that.qualityProcedureRemarks && availabilityProductStandardsCodesPractice == that.availabilityProductStandardsCodesPractice && availabilityProductStandardsCodesPracticeRemarks == that.availabilityProductStandardsCodesPracticeRemarks && qualityManagementSystems == that.qualityManagementSystems && qualityManagementSystemsRemarks == that.qualityManagementSystemsRemarks && haccpSeeAnnexIi == that.haccpSeeAnnexIi && haccpSeeAnnexIiRemarks == that.haccpSeeAnnexIiRemarks && testingFacility == that.testingFacility && testingFacilityRemarks == that.testingFacilityRemarks && qualityControlPersonnelQualifications == that.qualityControlPersonnelQualifications && qualityControlPersonnelQualificationsRemarks == that.qualityControlPersonnelQualificationsRemarks && equipmentCalibration == that.equipmentCalibration && equipmentCalibrationRemarks == that.equipmentCalibrationRemarks && qualityRecords == that.qualityRecords && qualityRecordsRemarks == that.qualityRecordsRemarks && productLabelingIdentification == that.productLabelingIdentification && productLabelingIdentificationRemarks == that.productLabelingIdentificationRemarks && validitySmarkPermit == that.validitySmarkPermit && validitySmarkPermitRemarks == that.validitySmarkPermitRemarks && useTheSmark == that.useTheSmark && useTheSmarkRemarks == that.useTheSmarkRemarks && changesAffectingProductCertification == that.changesAffectingProductCertification && changesAffectingProductCertificationRemarks == that.changesAffectingProductCertificationRemarks && changesBeenCommunicatedKebs == that.changesBeenCommunicatedKebs && changesBeenCommunicatedKebsRemarks == that.changesBeenCommunicatedKebsRemarks && samplesDrawn == that.samplesDrawn && samplesDrawnRemarks == that.samplesDrawnRemarks && description == that.description && status == that.status && varField1 == that.varField1 && varField2 == that.varField2 && varField3 == that.varField3 && varField4 == that.varField4 && varField5 == that.varField5 && varField6 == that.varField6 && varField7 == that.varField7 && varField8 == that.varField8 && varField9 == that.varField9 && varField10 == that.varField10 && createdBy == that.createdBy && createdOn == that.createdOn && modifiedBy == that.modifiedBy && modifiedOn == that.modifiedOn && deleteBy == that.deleteBy && deletedOn == that.deletedOn
     }
 
     override fun hashCode(): Int {
         return Objects.hash(
             id,
             permitId,
+             permitRefNumber,
             qualityProcedure,
             qualityProcedureRemarks,
             availabilityProductStandardsCodesPractice,
