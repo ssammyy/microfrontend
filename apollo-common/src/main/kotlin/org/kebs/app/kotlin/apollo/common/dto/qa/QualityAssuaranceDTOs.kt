@@ -262,7 +262,7 @@ data class PermitEntityDto(
     var dateOfExpiry: Date? = null,
     var permitStatus: String? = null,
     var userId: Long? = null,
-    var createdOn: Date? = null,
+    var createdOn: Timestamp? = null,
     var county: String? = null,
     var town: String? = null,
     var region: String? = null,

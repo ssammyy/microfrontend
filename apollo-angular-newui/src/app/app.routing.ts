@@ -115,6 +115,7 @@ const routes: Routes = [
             title: 'KEBS'
         }
     },
+    // {path: '**', component: AdminLayoutComponent},
     {
         path: 'dashboard', component: AdminLayoutComponent,
         canActivate: [RouteGuard]
