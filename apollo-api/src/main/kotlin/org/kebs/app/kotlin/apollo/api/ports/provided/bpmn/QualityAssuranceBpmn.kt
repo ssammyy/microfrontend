@@ -513,14 +513,14 @@ class QualityAssuranceBpmn(
         return false
     }
 
-    fun qaAppReviewCorrectApplication(permitId: Long): Boolean {
+    fun qaAppReviewCorrectApplication(permitId: Long,hofAssigneeId: Long): Boolean {
         KotlinLogging.logger { }.info("PermitId : $permitId :  Correct application begin")
         var currAssigneeId: Long = 0
         fetchTaskByPermitId(permitId, qaAppReviewProcessDefinitionKey)?.let { taskDetails ->
             currAssigneeId = taskDetails[0].task.assignee.toLong()
         }
         qaCompleteTask(permitId, "qaCorrectApplication", qaAppReviewProcessDefinitionKey)?.let {
-            return qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "qaResubmitApplication", currAssigneeId, true)
+            return qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "qaHOFCheckIfComplete", currAssigneeId, false)
         }
         return false
         //return qaCompleteAndAssign(qaAppReviewProcessDefinitionKey,permitId, 0, true, false)
