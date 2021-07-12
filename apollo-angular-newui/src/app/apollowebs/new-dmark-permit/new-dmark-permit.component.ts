@@ -26,7 +26,7 @@ export class NewDmarkPermitComponent implements OnInit {
     permitEntityDetails: PermitEntityDetails;
     stepSoFar: | undefined;
     step = 1;
-    currBtn: string = 'A';
+    currBtn = 'A';
 
 
     constructor(private store$: Store<any>,
@@ -250,12 +250,12 @@ export class NewDmarkPermitComponent implements OnInit {
                         this.step += 1;
                         this.currBtn = 'B';
                         swal.fire({
-                            title: "STA1 Form saved!",
+                            title: 'STA1 Form saved!',
                             buttonsStyling: false,
-                            customClass:{
-                                confirmButton: "btn btn-success form-wizard-next-btn ",
+                            customClass: {
+                                confirmButton: 'btn btn-success form-wizard-next-btn ',
                             },
-                            icon: "success"
+                            icon: 'success'
                         });
 // this.router.navigate(['/users-list']);
                     },
@@ -267,12 +267,12 @@ export class NewDmarkPermitComponent implements OnInit {
                         this.step += 1;
                         console.log(data);
                         swal.fire({
-                            title: "STA1 Form updated!",
+                            title: 'STA1 Form updated!',
                             buttonsStyling: false,
-                            customClass:{
-                                confirmButton: "btn btn-success form-wizard-next-btn ",
+                            customClass: {
+                                confirmButton: 'btn btn-success form-wizard-next-btn ',
                             },
-                            icon: "success"
+                            icon: 'success'
                         });
 // this.router.navigate(['/users-list']);
                     },
@@ -289,12 +289,12 @@ export class NewDmarkPermitComponent implements OnInit {
                     console.log(data);
                     this.step += 1;
                     swal.fire({
-                        title: "STA3 Form saved!",
+                        title: 'STA3 Form saved!',
                         buttonsStyling: false,
-                        customClass:{
-                            confirmButton: "btn btn-success form-wizard-next-btn ",
+                        customClass: {
+                            confirmButton: 'btn btn-success form-wizard-next-btn ',
                         },
-                        icon: "success"
+                        icon: 'success'
                     });
 // this.router.navigate(['/users-list']);
                 },
@@ -309,12 +309,12 @@ export class NewDmarkPermitComponent implements OnInit {
                     console.log(data);
                     this.step += 1;
                     swal.fire({
-                        title: "STA3 Form updated!",
+                        title: 'STA3 Form updated!',
                         buttonsStyling: false,
-                        customClass:{
-                            confirmButton: "btn btn-success form-wizard-next-btn ",
+                        customClass: {
+                            confirmButton: 'btn btn-success form-wizard-next-btn ',
                         },
-                        icon: "success"
+                        icon: 'success'
                     });
 // this.router.navigate(['/users-list']);
                 },
@@ -329,12 +329,12 @@ export class NewDmarkPermitComponent implements OnInit {
                     console.log(data);
                     this.step += 1;
                     swal.fire({
-                        title: "STA3 Form updated!",
+                        title: 'STA3 Form updated!',
                         buttonsStyling: false,
-                        customClass:{
-                            confirmButton: "btn btn-success form-wizard-next-btn ",
+                        customClass: {
+                            confirmButton: 'btn btn-success form-wizard-next-btn ',
                         },
-                        icon: "success"
+                        icon: 'success'
                     });
 // this.router.navigate(['/users-list']);
                 },
@@ -349,12 +349,12 @@ export class NewDmarkPermitComponent implements OnInit {
                     console.log(data);
                     this.step += 1;
                     swal.fire({
-                        title: "STA3 Form updated!",
+                        title: 'STA3 Form updated!',
                         buttonsStyling: false,
-                        customClass:{
-                            confirmButton: "btn btn-success form-wizard-next-btn ",
+                        customClass: {
+                            confirmButton: 'btn btn-success form-wizard-next-btn ',
                         },
-                        icon: "success"
+                        icon: 'success'
                     });
                     this.router.navigate(['/dmark'], {fragment: this.permitEntityDetails.id.toString()});
                 },
