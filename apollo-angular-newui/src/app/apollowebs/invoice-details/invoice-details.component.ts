@@ -68,7 +68,7 @@ export class InvoiceDetailsComponent implements OnInit, AfterViewInit {
 
     }
 
-    ngAfterViewInit() {
+    ngAfterViewInit = () => {
         $('#datatables').DataTable({
             'pagingType': 'full_numbers',
             'lengthMenu': [
@@ -113,5 +113,5 @@ export class InvoiceDetailsComponent implements OnInit, AfterViewInit {
         });
 
         $('.card .material-datatables label').addClass('form-group');
-    }
+    };
 }

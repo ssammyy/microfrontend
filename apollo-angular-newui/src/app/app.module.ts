@@ -66,9 +66,11 @@ import {PermitReportComponent} from './apollowebs/permit-report/permit-report.co
 import {NewSmarkPermitComponent} from './apollowebs/new-smark-permit/new-smark-permit.component';
 import {NewDmarkPermitComponent} from './apollowebs/new-dmark-permit/new-dmark-permit.component';
 import {DmarkApplicationsAllComponent} from './apollowebs/dmark-applications-all/dmark-applications-all.component';
-import { InvoiceDetailsComponent } from './apollowebs/invoice-details/invoice-details.component';
-import { CompaniesList } from './apollowebs/company/companies.list';
-import { CompanyComponent } from './apollowebs/company/company.component';
+import {InvoiceDetailsComponent} from './apollowebs/invoice-details/invoice-details.component';
+import {CompaniesList} from './apollowebs/company/companies.list';
+import {CompanyComponent} from './apollowebs/company/company.component';
+import {NgxSpinnerModule} from "ngx-spinner";
+
 import { BranchComponent } from './apollowebs/company/branch/branch.component';
 import { BranchList } from './apollowebs/company/branch/branch.list';
 import { UserComponent } from './apollowebs/company/branch/users/user.component';
