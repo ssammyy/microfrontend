@@ -25,6 +25,7 @@ export class CompaniesList implements OnInit {
         this.filterName = '';
         this.companies$ = service.entities$;
         service.getAll().subscribe();
+
     }
 
     ngOnInit(): void {
@@ -39,7 +40,7 @@ export class CompaniesList implements OnInit {
 
     onClickPlantDetails(record: Company) {
         this.store$.dispatch(loadCompanyId({payload: record.id, company: record}));
-        this.store$.dispatch(Go({payload: null, redirectUrl: '', link: 'dashboard/branches'}));
+        this.store$.dispatch(Go({payload: null, redirectUrl: '', link: 'dashboard/companies/branches'}));
     }
 
     onClickDirectors(record: Company) {

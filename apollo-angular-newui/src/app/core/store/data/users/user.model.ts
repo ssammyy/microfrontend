@@ -1,11 +1,11 @@
 export class User {
-  id:number = -1;
-  firstName='';
-  lastName='';
-  userName='';
-  email='';
-  credentials='';
-  cellphone='';
-  companyId?:number = -1;
-  plantId?:number= -1;
+  id = -1;
+  firstName = '';
+  lastName = '';
+  userName = '';
+  email = '';
+  credentials = '';
+  cellphone = '';
+  companyId = -1;
+  plantId = -1;
 }

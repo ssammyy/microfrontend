@@ -22,9 +22,9 @@
                                             <div class="form-wizard-header">
                                                 <p>Fill all the fields to go next step</p>
                                                 <ul class="list-unstyled form-wizard-steps clearfix">
-                                                    <li [ngClass]="selectStepOneClass(step)"><span>1</span></li>
-                                                    <li><span [ngClass]="selectStepTwoClass(step)">2</span></li>
-                                                    <li><span [ngClass]="selectStepThreeClass(step)">3</span></li>
+                                                    <li [ngClass]="step >= 0? 'active': ''"><span>1</span></li>
+                                                    <li><span [ngClass]="step === 2? 'active': ''">2</span></li>
+                                                    <li><span [ngClass]="step === 3? 'active': ''">3</span></li>
                                                 </ul>
                                             </div>
                                             <div [ngSwitch]="step">
@@ -279,8 +279,10 @@
                                                                     <div class="col"></div>
                                                                 </div>
                                                                 <div class="form-group clearfix">
-                                                                    <a href="javascript:"
-                                                                       class="form-wizard-previous-btn float-left">Previous</a>
+                                                                    <button (click)="onClickPrevious()"
+                                                                            class="form-wizard-previous-btn float-left">
+                                                                        Previous
+                                                                    </button>
                                                                     <button type="submit"
                                                                             class="form-wizard-next-btn float-right"
                                                                             [disabled]="!stepTwoForm.valid">Next
@@ -345,14 +347,14 @@
                                                                             <select (ngModelChange)="updateSelectedRegion()"
                                                                                     formControlName="region" id="region"
                                                                                     name="region" required="required"
-                                                                                    style="width: 100%; height: 90%">
+                                                                                    class="form-control">
                                                                                 <option ngValue="null" selected>Please
                                                                                     select
                                                                                 </option>
                                                                                 <option
                                                                                         *ngFor="let app of apps| filterPipe: {status: true}"
                                                                                         [ngValue]="app.id"
-                                                                                        class="dropdown-item">{{app.region}}</option>
+                                                                                        >{{app.region}}</option>
                                                                             </select>
 
                                                                         </ng-container>
@@ -367,20 +369,21 @@
                                                                             <select (ngModelChange)="updateSelectedCounty()"
                                                                                     formControlName="county" id="county"
                                                                                     name="county" required="required"
-                                                                                    style="width: 100%; height: 90%">
+                                                                                    class="form-control">
                                                                                 <option ngValue="null" selected>Please
                                                                                     select
                                                                                 </option>
                                                                                 <option
                                                                                         *ngFor="let app of apps| filterPipe: {status: true, regionId: selectedRegion}"
                                                                                         [ngValue]="app.id"
-                                                                                        class="dropdown-item">{{app.county}}</option>
+                                                                                        >{{app.county}}</option>
 
                                                                             </select>
 
                                                                         </ng-container>
                                                                     </div>
                                                                 </div>
+                                                                <br>
                                                                 <div class="row input-row">
 
                                                                     <div class="col">
@@ -393,14 +396,14 @@
                                                                             <select (ngModelChange)="updateSelectedTown()"
                                                                                     formControlName="town" id="town"
                                                                                     name="town" required="required"
-                                                                                    style="width: 48%; height: 90%">
+                                                                                    class="form-control">
                                                                                 <option ngValue="null" selected>Please
                                                                                     select
                                                                                 </option>
                                                                                 <option
                                                                                         *ngFor="let app of apps| filterPipe: {status: true, countyId: selectedCounty}"
                                                                                         [ngValue]="app.id"
-                                                                                        class="dropdown-item">{{app.town}}</option>
+                                                                                        >{{app.town}}</option>
                                                                             </select>
 
                                                                         </ng-container>
@@ -409,8 +412,10 @@
                                                                 </div>
                                                                 <br>
                                                                 <div class="form-group clearfix">
-                                                                    <a href="javascript:"
-                                                                       class="form-wizard-previous-btn float-left">Previous</a>
+                                                                    <button (click)="onClickPrevious()"
+                                                                            class="form-wizard-previous-btn float-left">
+                                                                        Previous
+                                                                    </button>
                                                                     <button type="submit"
                                                                             class="form-wizard-next-btn float-right"
                                                                             [disabled]="!stepThreeForm.valid">Save

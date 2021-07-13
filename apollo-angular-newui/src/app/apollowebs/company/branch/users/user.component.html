@@ -1,0 +1,181 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">assignment</i>
+                        </div>
+                        <h4 class="card-title">Review Plant/Branch User Details</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="toolbar">
+
+                        </div>
+                        <div class="material-datatables">
+                            <section class="wizard-section">
+                                <div class="row no-gutters">
+                                    <div class="col-lg-12 col-md-12 col-sm-12">
+                                        <div class="form-wizard">
+
+                                            <div class="form-wizard-header">
+                                                <p>Fill all the fields to go next step</p>
+                                                <ul class="list-unstyled form-wizard-steps clearfix">
+                                                    <li [ngClass]="step >= 0? 'active': ''"><span>1</span></li>
+                                                </ul>
+                                            </div>
+                                            <div [ngSwitch]="step">
+
+                                                <div *ngSwitchCase="1">
+                                                    <fieldset class="wizard-fieldset show">
+                                                        <form (ngSubmit)="onClickSave(stepOneForm.valid)"
+                                                              [formGroup]="stepOneForm" action="" class="form"
+                                                              enctype="multipart/form-data" method="post">
+                                                            <div class="container">
+                                                                <div class="row">
+                                                                    <h2 class="welcome2">
+                                                                        Contact Person Information
+                                                                    </h2>
+                                                                </div>
+
+                                                                <div class="row input-row">
+                                                                    <div class="col">
+                                                                        <label class="input-placeholder-required"
+                                                                               for="firstName">
+                                                                            First Name
+                                                                        </label>
+                                                                        <br>
+                                                                        <input class="form-control two-column-input"
+                                                                               formControlName="firstName"
+                                                                               id="firstName"
+                                                                               name="firstName"
+                                                                               placeholder="" required="required"
+                                                                               type="text">
+                                                                    </div>
+                                                                    <div class="col">
+                                                                        <label class="input-placeholder-required"
+                                                                               for="lastName">
+                                                                            Last Name
+                                                                        </label>
+                                                                        <br>
+                                                                        <input class="form-control two-column-input"
+                                                                               formControlName="lastName" id="lastName"
+                                                                               name="lastName"
+                                                                               placeholder="" required="required"
+                                                                               type="text">
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="row input-row">
+
+                                                                    <div class="col">
+                                                                        <label class="input-placeholder-required"
+                                                                               for="userName">
+                                                                            User Name
+                                                                        </label>
+                                                                        <br>
+                                                                        <input class="form-control two-column-input"
+                                                                               formControlName="userName" id="userName"
+                                                                               name="userName"
+                                                                               placeholder="" required="required"
+                                                                               type="text">
+                                                                    </div>
+                                                                    <div class="col">
+                                                                        <label class="input-placeholder-required"
+                                                                               for="email">
+                                                                            Email address
+                                                                        </label>
+                                                                        <br>
+                                                                        <input class="form-control two-column-input"
+                                                                               formControlName="email" id="email"
+                                                                               name="email"
+                                                                               placeholder="" required="required"
+                                                                               type="email">
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="row input-row">
+                                                                    <div class="col">
+                                                                        <label class="input-placeholder-required"
+                                                                               for="credentials">
+                                                                            Password
+                                                                        </label>
+                                                                        <br>
+                                                                        <input class="form-control two-column-input"
+                                                                               formControlName="credentials"
+                                                                               id="credentials"
+                                                                               name="credentials"
+                                                                               placeholder="enter password"
+                                                                               required="required" type="password">
+                                                                    </div>
+                                                                    <div class="col">
+                                                                        <label class="input-placeholder-required"
+                                                                               for="confirmCredentials">
+                                                                            Confirm Password
+                                                                        </label>
+                                                                        <br>
+                                                                        <input class="form-control two-column-input"
+                                                                               formControlName="confirmCredentials"
+                                                                               id="confirmCredentials"
+                                                                               name="confirmCredentials"
+                                                                               placeholder="password confirmation"
+                                                                               required="required" type="password">
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="row input-row">
+
+                                                                    <div class="col">
+                                                                        <label class="input-placeholder-required"
+                                                                               for="cellphone">
+                                                                            Cellphone
+                                                                        </label>
+                                                                        <br>
+                                                                        <input class="form-control two-column-input"
+                                                                               formControlName="cellphone"
+                                                                               id="cellphone"
+                                                                               name="cellphone"
+                                                                               placeholder="e.g 254xxxxxx"
+                                                                               required="required" type="tel">
+                                                                        <br>
+                                                                    </div>
+                                                                    <div class="col">
+
+                                                                    </div>
+                                                                </div>
+
+                                                                <br>
+                                                                <div class="form-group clearfix">
+
+                                                                        <button class="form-wizard-next-btn float-left" type="reset">
+                                                                            CANCEL
+                                                                        </button>
+
+
+                                                                        <button class="form-wizard-next-btn float-right" type="submit">
+                                                                            SAVE
+                                                                        </button>
+
+
+                                                                </div>
+
+
+                                                            </div>
+                                                        </form>
+                                                    </fieldset>
+                                                </div>
+                                            </div>
+
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

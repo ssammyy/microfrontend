@@ -8,6 +8,7 @@ import {
 } from './companies.actions';
 import {Branches} from './branch';
 import {Company} from './company';
+import {User} from '../users';
 
 
 export const companyIdFeatureKey = 'companyId';
@@ -22,6 +23,7 @@ export interface CompanyIdState {
 
 export interface UserIdState {
   userId: number;
+  user?: User;
 }
 
 export interface BranchIdState {
@@ -37,7 +39,7 @@ export const initialCompanyIdState: CompanyIdState = {
   companyId: -1, company: undefined
 };
 export const initialUserIdState: UserIdState = {
-  userId: -1
+  userId: -1, user: undefined
 };
 export const initialBranchIdState: BranchIdState = {
   branchId: -1, branch: undefined
@@ -66,10 +68,11 @@ export const internalCompanyIdReducer = createReducer(
 
 const internalUserIdReducer = createReducer(
   initialUserIdState,
-  on(loadUserIdSuccess, (state, {userId}) => {
+  on(loadUserIdSuccess, (state, {userId, user}) => {
     return {
       ...state,
-      userId
+      userId,
+      user
     };
   }),
   on(loadCompanyIdFailure, (state, {error}) => {

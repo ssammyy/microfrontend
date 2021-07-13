@@ -69,6 +69,10 @@ import {DmarkApplicationsAllComponent} from './apollowebs/dmark-applications-all
 import { InvoiceDetailsComponent } from './apollowebs/invoice-details/invoice-details.component';
 import { CompaniesList } from './apollowebs/company/companies.list';
 import { CompanyComponent } from './apollowebs/company/company.component';
+import { BranchComponent } from './apollowebs/company/branch/branch.component';
+import { BranchList } from './apollowebs/company/branch/branch.list';
+import { UserComponent } from './apollowebs/company/branch/users/user.component';
+import { UserList } from './apollowebs/company/branch/users/user.list';
 
 @NgModule({
     exports: [
@@ -132,7 +136,11 @@ import { CompanyComponent } from './apollowebs/company/company.component';
         DmarkApplicationsAllComponent,
         InvoiceDetailsComponent,
         CompaniesList,
-        CompanyComponent
+        CompanyComponent,
+        BranchComponent,
+        BranchList,
+        UserComponent,
+        UserList
     ]
 
 })
