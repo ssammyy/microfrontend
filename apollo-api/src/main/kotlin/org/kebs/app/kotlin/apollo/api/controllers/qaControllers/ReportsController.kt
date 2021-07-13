@@ -1,6 +1,8 @@
 package org.kebs.app.kotlin.apollo.api.controllers.qaControllers
 
-import org.kebs.app.kotlin.apollo.api.ports.provided.dao.*
+import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
+import org.kebs.app.kotlin.apollo.api.ports.provided.dao.QADaoServices
+import org.kebs.app.kotlin.apollo.api.ports.provided.dao.ReportsDaoService
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.InvoiceEntity
@@ -13,8 +15,7 @@ import org.springframework.web.bind.annotation.RestController
 import javax.servlet.http.HttpServletResponse
 
 @RestController
-@RequestMapping("/api/v1/migration/qa/")
-//@RequestMapping("/api/v1/migration/qa/")
+@RequestMapping("/api/qa/report/")
 class ReportsController(
     private val applicationMapProperties: ApplicationMapProperties,
     private val qaDaoServices: QADaoServices,
@@ -157,6 +158,7 @@ class ReportsController(
         map["faxNumber"] = foundPermitDetails.faxNo.toString()
         map["EmailAddress"] = foundPermitDetails.email.toString()
         map["phoneNumber"] = foundPermitDetails.telephoneNo.toString()
+        map["QrCode"] = foundPermitDetails.permitNumber.toString()
 
 
         when (foundPermitDetails.permitTypeID) {
