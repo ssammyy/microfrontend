@@ -1,7 +1,7 @@
 import {createFeatureSelector, createSelector} from '@ngrx/store';
 import {
   authFeatureKey,
-  AuthState,
+  AuthState, CompanyInfoDtoState, companyInfoDtoStateFeatureKey,
   tokenSentFeatureKey,
   TokenSentState,
   tokenValidatedFeatureKey,
@@ -11,6 +11,7 @@ import {
 export const getAuthFeatureState = createFeatureSelector<AuthState>(authFeatureKey);
 export const getTokenFeatureState = createFeatureSelector<TokenValidatedState>(tokenValidatedFeatureKey);
 export const getTokenSentFeatureState = createFeatureSelector<TokenSentState>(tokenSentFeatureKey);
+export const getCompanyInfoDtoState = createFeatureSelector<CompanyInfoDtoState>(companyInfoDtoStateFeatureKey);
 
 
 export const selectIsAuthenticated = createSelector(
@@ -30,8 +31,15 @@ export const selectGetNames = createSelector(
 export const selectTokenValidatedStateValidated = createSelector(
   getTokenFeatureState,
   (state: TokenValidatedState) => state.validated
-)
+);
+
 export const selectTokenSentStateOtpSent = createSelector(
   getTokenSentFeatureState,
   (state: TokenSentState) => state.otpSent
-)
+);
+
+export const selectCompanyInfoDtoStateData = createSelector(
+  getCompanyInfoDtoState,
+  (state: CompanyInfoDtoState) => state.data
+);
+

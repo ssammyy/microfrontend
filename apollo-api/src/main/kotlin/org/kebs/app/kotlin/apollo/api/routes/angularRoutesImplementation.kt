@@ -3,6 +3,7 @@ package org.kebs.app.kotlin.apollo.api.routes
 import org.kebs.app.kotlin.apollo.api.handlers.*
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.web.servlet.function.ServerResponse
 import org.springframework.web.servlet.function.router
 
 
@@ -101,6 +102,21 @@ class AngularRoutes {
                 "/logout".nest {
                     POST("", handler::handleLogout)
                 }
+                "/companyDetails".nest {
+                    POST("", handler::handleProvideCompanyDetailsForUser)
+                }
+                "/user".nest {
+                    "/details".nest {
+                        GET("") { ServerResponse.badRequest().body("Invalid Request: Feature currently not supported") }
+                        POST("") {
+                            ServerResponse.badRequest().body("Invalid Request: Feature currently not supported")
+                        }
+                        "/{userId}".nest {
+                            PUT("", handler::handleUpdateLoggedInUserUserEntityDtoDetails)
+                            GET("", handler::handleLoggedInUserUserEntityDtoDetails)
+                        }
+                    }
+                }
             }
             "anonymous".nest {
                 "/sendTokenForUser".nest {
@@ -195,6 +211,21 @@ class AngularRoutes {
     }
 
     @Bean
+    fun migrationUserAdminNgrxRoutes(handler: SystemsAdministrationHandler)= router{
+        "/api/v1/migration/anonymous".nest {
+            "/titles".nest {
+                GET("", handler::titlesListing)
+                POST("") { ServerResponse.badRequest().body("Invalid Request: Feature currently not supported") }
+                "/{id}".nest {
+                    GET("") { ServerResponse.badRequest().body("Invalid Request: Feature currently not supported") }
+                    PUT("") { ServerResponse.badRequest().body("Invalid Request: Feature currently not supported") }
+                }
+
+            }
+        }
+    }
+
+    @Bean
     fun migrationMasterDataNgrxRoutes(handler: MasterDataHandler) = router {
         "/api/v1/migration/anonymous".nest {
             "/regions".nest {
@@ -243,6 +274,7 @@ class AngularRoutes {
                 }
 
             }
+
         }
     }
 

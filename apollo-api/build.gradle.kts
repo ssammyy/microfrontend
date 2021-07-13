@@ -82,6 +82,12 @@ dependencies {
     implementation("com.lowagie:itext:2.1.7")
 //    implementation("com.lowagie:itext:2.1.7.js4")
     /**
+     * QR Code
+     */
+    implementation("com.google.zxing:core:3.4.1")
+    implementation("com.google.zxing:javase:3.4.1")
+
+    /**
      * Mapper reports
      */
     implementation("net.sf.jasperreports:jasperreports:6.13.0")

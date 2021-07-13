@@ -567,7 +567,7 @@ label {
 }
 
 .form-inline {
-    display: inline-block!important;
+    display: block!important;
 }
 
 #example2_wrapper {

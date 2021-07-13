@@ -755,7 +755,7 @@
 
 </style>
 <h2 class="welcome">
-  Welcome Back
+  Welcome
 </h2>
 <form (ngSubmit)="onClickLogin(loginForm.valid)" [formGroup]="loginForm" action="" class="form"
       enctype="multipart/form-data" method="post">
@@ -764,9 +764,11 @@
 
       <p class="input-placeholder"><b>Username</b></p>
 
-      <input class="login-form-inputs" formControlName="username" id="username" name="username"
-             placeholder="The username"
-             required="required" type="text">
+      <label for="username">
+
+      </label><input style="color: white;font-size: 20px;" class="form-control two-column-input" formControlName="username" id="username" name="username"
+                     placeholder="Please Enter Your Username"
+                     required="required" type="text">
     </div>
 
 
@@ -777,7 +779,8 @@
           Password
         </label>
         <br>
-        <input class="form-control two-column-input" formControlName="password" id="password"
+        <input style="color: white;font-size: 20px;" class="form-control two-column-input" formControlName="password" id="password"
+               placeholder="Please Enter Your Password"
                name="password" required="required" type="password">
         <br>
       </div>

@@ -15,20 +15,21 @@
                         </div>
                         <div class="material-datatables" >
                             <div class="table-responsive">
-                                <table  id="datatables"
-                                       class="table table-striped table-no-bordered table-hover"
+                                <table id="datatables"
+                                       class="table table-striped table-bordered table-hover"
                                        >
                                     <thead>
                                     <tr>
-                                        <th>{{ dataTable.headerRow[0] }}</th>
-                                        <th>{{ dataTable.headerRow[1] }}</th>
-                                        <th>{{ dataTable.headerRow[2] }}</th>
-                                        <th>{{ dataTable.headerRow[3] }}</th>
-                                        <th>{{ dataTable.headerRow[4] }}</th>
-                                        <th>{{ dataTable.headerRow[5] }}</th>
-                                        <th>{{ dataTable.headerRow[6] }}</th>
-                                        <th>{{ dataTable.headerRow[7] }}</th>
-                                        <th class="disabled-sorting text-right">{{ dataTable.headerRow[8] }}</th>
+                                        <th><strong>{{ dataTable.headerRow[0] }}</strong></th>
+                                        <th><strong>{{ dataTable.headerRow[1] }}</strong></th>
+                                        <th><strong>{{ dataTable.headerRow[2] }}</strong></th>
+                                        <th><strong>{{ dataTable.headerRow[3] }}</strong></th>
+                                        <th><strong>{{ dataTable.headerRow[4] }}</strong></th>
+                                        <th><strong>{{ dataTable.headerRow[5] }}</strong></th>
+                                        <th><strong>{{ dataTable.headerRow[6] }}</strong></th>
+                                        <th><strong>{{ dataTable.headerRow[7] }}</strong></th>
+                                        <th class="disabled-sorting text-right">
+                                            <strong>{{ dataTable.headerRow[8] }}</strong></th>
                                     </tr>
                                     </thead>
                                     <tfoot>
@@ -58,12 +59,12 @@
                                             <a (click)="onSelect(row[8])"
                                                class="btn btn-link btn-info btn-just-icon view"><i
                                                     class="material-icons">remove_red_eye</i></a>
-                                            <a href="javascript:void(0)"
-                                               class="btn btn-link btn-warning btn-just-icon edit"><i
-                                                    class="material-icons">dvr</i></a>
-                                            <a href="javascript:void(0)"
-                                               class="btn btn-link btn-danger btn-just-icon remove"><i
-                                                    class="material-icons">close</i></a>
+                                            <!--                                            <a href="javascript:void(0)"-->
+                                            <!--                                               class="btn btn-link btn-warning btn-just-icon edit"><i-->
+                                            <!--                                                    class="material-icons">dvr</i></a>-->
+                                            <!--                                            <a href="javascript:void(0)"-->
+                                            <!--                                               class="btn btn-link btn-danger btn-just-icon remove"><i-->
+                                            <!--                                                    class="material-icons">close</i></a>-->
                                         </td>
                                     </tr>
                                     </tbody>

@@ -208,6 +208,14 @@ class QADaoServices(
             ?: throw ExpectedDataNotFound("No Permit Found for the following user with USERNAME = ${user.userName}")
     }
 
+    fun findAllUserPermits(user: UsersEntity): List<PermitApplicationsEntity>? {
+        val userId = user.id ?: throw ExpectedDataNotFound("No USER ID Found")
+        permitRepo.findByUserId(userId)?.let { permitList ->
+                return permitList
+            }
+        return null
+    }
+
     fun findAllFirmPermits(companyID: Long): List<PermitApplicationsEntity> {
 
         permitRepo.findByCompanyIdAndOldPermitStatusIsNull(companyID)
@@ -2089,6 +2097,7 @@ class QADaoServices(
         var sr = commonDaoServices.createServiceRequest(s)
         var updatePermit = permits
         try {
+
             with(updatePermit) {
                 modifiedBy = commonDaoServices.concatenateName(user)
                 modifiedOn = commonDaoServices.getTimestamp()
@@ -3109,7 +3118,7 @@ class QADaoServices(
             /**
              * Get rid of hard coded data
              */
-            conditions = "PER"
+            conditions = "Must be paid in 30 days"
             permitRefNumber = permits.permitRefNumber
             permitId = permits.id
             createdOn = Timestamp.from(Instant.now())
