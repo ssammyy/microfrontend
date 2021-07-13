@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, OnInit} from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import {PermitEntityDto} from "../../core/store/data/qa/qa.model";
 import {QaService} from "../../core/store/data/qa/qa.service";
 import {Router} from "@angular/router";
@@ -12,11 +12,11 @@ declare interface DataTable {
 declare const $: any;
 
 @Component({
-  selector: 'app-fmarkallapps',
-  templateUrl: './fmarkallapps.component.html',
-  styleUrls: ['./fmarkallapps.component.css']
+  selector: 'app-smark-applications-all',
+  templateUrl: './smark-applications-all.component.html',
+  styleUrls: ['./smark-applications-all.component.css']
 })
-export class FmarkallappsComponent implements OnInit, AfterViewInit {
+export class SmarkApplicationsAllComponent implements OnInit {
   public dataTable: DataTable;
   public allPermitData: PermitEntityDto[];
 
@@ -29,7 +29,7 @@ export class FmarkallappsComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
     let formattedArray = [];
-    this.qaService.loadPermitList('3').subscribe(
+    this.qaService.loadPermitList('2').subscribe(
         (data: any) => {
 
           this.allPermitData = data;
@@ -78,4 +78,5 @@ export class FmarkallappsComponent implements OnInit, AfterViewInit {
   onSelect(rowElement: string) {
     this.router.navigate(['/dmark'], {fragment: rowElement});
   }
+
 }

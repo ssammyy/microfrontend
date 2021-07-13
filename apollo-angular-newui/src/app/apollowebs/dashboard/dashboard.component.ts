@@ -3,6 +3,7 @@ import {TableData} from '../../md/md-table/md-table.component';
 
 import * as Chartist from 'chartist';
 import {QaService} from "../../core/store/data/qa/qa.service";
+import {Router} from "@angular/router";
 
 declare const $: any;
 
@@ -70,8 +71,9 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     seq2 = 0;
   }
 
-  // constructor(private qaService: QaService) {
-  // }
+
+  constructor(private router: Router) {
+  }
 
   public ngOnInit() {
     // Load all PermitList Details
@@ -106,5 +108,10 @@ export class DashboardComponent implements OnInit, AfterViewInit {
         });
       });
     }
+  }
+  gotoDMarkApplication()
+  {
+    this.router.navigate(['/dmark/newDmarkPermit']);
+
   }
 }

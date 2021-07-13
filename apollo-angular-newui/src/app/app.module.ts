@@ -69,11 +69,13 @@ import {DmarkApplicationsAllComponent} from './apollowebs/dmark-applications-all
 import { InvoiceDetailsComponent } from './apollowebs/invoice-details/invoice-details.component';
 import { CompaniesList } from './apollowebs/company/companies.list';
 import { CompanyComponent } from './apollowebs/company/company.component';
+import {NgxSpinnerModule} from "ngx-spinner";
 import { BranchComponent } from './apollowebs/company/branch/branch.component';
 import { BranchList } from './apollowebs/company/branch/branch.list';
 import { UserComponent } from './apollowebs/company/branch/users/user.component';
 import { UserList } from './apollowebs/company/branch/users/user.list';
 import { UserProfileComponent } from './apollowebs/company/branch/users/user-profile.component';
+import { SmarkApplicationsAllComponent } from './apollowebs/smark-applications-all/smark-applications-all.component';
 
 @NgModule({
     exports: [
@@ -142,7 +144,8 @@ import { UserProfileComponent } from './apollowebs/company/branch/users/user-pro
         BranchList,
         UserComponent,
         UserList,
-        UserProfileComponent
+        UserProfileComponent,
+        SmarkApplicationsAllComponent
     ]
 
 })

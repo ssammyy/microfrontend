@@ -1,5 +1,5 @@
 import {AfterViewInit, Component, OnInit} from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {QaService} from '../../core/store/data/qa/qa.service';
 import {AllPermitDetailsDto} from '../../core/store/data/qa/qa.model';
 import swal from "sweetalert2";
@@ -26,6 +26,7 @@ export class DmarkComponent implements OnInit, AfterViewInit {
 
     constructor(
         private route: ActivatedRoute,
+        private router: Router,
         private qaService: QaService
     ) {
     }
@@ -108,19 +109,40 @@ export class DmarkComponent implements OnInit, AfterViewInit {
     }
 
     submitApplication(): void {
-        this.qaService.submitPermitForReview(this.permitID).subscribe(
-            (data: AllPermitDetailsDto) => {
-                this.allPermitDetails = data;
-                swal.fire({
-                    title: 'DMARK SUBMITTED SUCCESSFULLY PENDING REVIEW FROM PCM!',
-                    buttonsStyling: false,
-                    customClass: {
-                        confirmButton: 'btn btn-success form-wizard-next-btn ',
-                    },
-                    icon: 'success'
-                });
-                // this.onUpdateReturnToList();
-            },
-        );
+        if (this.allPermitDetails.permitDetails.permitForeignStatus === true) {
+            this.qaService.submitPermitForReview(this.permitID).subscribe(
+                (data: AllPermitDetailsDto) => {
+                    this.allPermitDetails = data;
+                    swal.fire({
+                        title: 'DMARK SUBMITTED SUCCESSFULLY FOR REVIEW FROM PCM!',
+                        buttonsStyling: false,
+                        customClass: {
+                            confirmButton: 'btn btn-success form-wizard-next-btn ',
+                        },
+                        icon: 'success'
+                    });
+
+                    // this.onUpdateReturnToList();
+                },
+            );
+        } else {
+            this.qaService.submitPermitApplication(this.permitID).subscribe(
+                (data: AllPermitDetailsDto) => {
+                    this.allPermitDetails = data;
+                    swal.fire({
+                        title: 'DMARK SUBMITTED SUCCESSFULLY PENDING PAYMENT!',
+                        buttonsStyling: false,
+                        customClass: {
+                            confirmButton: 'btn btn-success form-wizard-next-btn ',
+                        },
+                        icon: 'success'
+                    });
+
+                    this.router.navigate(['/invoiceDetails'], {fragment: this.allPermitDetails.batchID.toString()});
+
+                    // this.onUpdateReturnToList();
+                },
+            );
+        }
     }
 }

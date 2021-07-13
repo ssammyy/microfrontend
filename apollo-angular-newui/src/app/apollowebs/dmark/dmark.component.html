@@ -192,24 +192,28 @@
                                           <tr>
                                               <td><strong>
                                                   Division</strong></td>
-                                              <td>{{allPermitDetails.permitDetails.divisionValue}}</td>
+                                              <td style="word-wrap: break-word;min-width: 160px;max-width: 160px;  text-align: justify;
+  text-justify: inter-word;">{{allPermitDetails.permitDetails.divisionValue}}</td>
                                           </tr>
                                           <tr>
                                               <td><strong>
                                                   Section</strong></td>
-                                              <td>{{allPermitDetails.permitDetails.sectionValue}}</td>
+                                              <td style="word-wrap: break-word;min-width: 160px;max-width: 160px;  text-align: justify;
+  text-justify: inter-word;">{{allPermitDetails.permitDetails.sectionValue}}</td>
                                           </tr>
                                           <tr>
                                               <td><strong>
                                                   Status</strong></td>
-                                              <td><span
-                                                      class="badge badge-primary">{{allPermitDetails.permitDetails.processStatusName}}</span>
+                                              <td style="word-wrap: break-word;min-width: 160px;max-width: 160px;  text-align: justify;
+  text-justify: inter-word;"><mark style="  background-color: #0066b5;
+  color: #ffffff;"><strong>{{allPermitDetails.permitDetails.processStatusName}}</strong></mark>
                                               </td>
                                           </tr>
                                           <tr>
                                               <td><strong>
                                                   Version Number</strong></td>
-                                              <td>{{allPermitDetails.permitDetails.versionNumber}}</td>
+                                              <td style="word-wrap: break-word;min-width: 160px;max-width: 160px;  text-align: justify;
+  text-justify: inter-word;">{{allPermitDetails.permitDetails.versionNumber}}</td>
                                           </tr>
                                           </tbody>
                                       </table>
@@ -375,17 +379,17 @@
                         <div matripple="" class="mat-ripple mat-button-ripple"></div>
                         <div class="mat-button-focus-overlay"></div>
                     </button>
-                    <button *ngIf="allPermitDetails.permitDetails.sendForPcmReview == false"
+                    <button *ngIf="allPermitDetails.permitDetails.sendApplication == false"
                             (click)="submitApplication()" mat-raised-button=""
                             class="btn btn-kebs mat-raised-button mat-button-base"><span class="mat-button-wrapper">SUBMIT APPLICATION</span>
                         <div matripple="" class="mat-ripple mat-button-ripple"></div>
                         <div class="mat-button-focus-overlay"></div>
                     </button>
-                    <button mat-raised-button="" class="btn btn-kebs mat-raised-button mat-button-base"><span
-                            class="mat-button-wrapper">Upload Attachments </span>
-                        <div matripple="" class="mat-ripple mat-button-ripple"></div>
-                        <div class="mat-button-focus-overlay"></div>
-                    </button>
+                    <!--                    <button mat-raised-button="" class="btn btn-kebs mat-raised-button mat-button-base"><span-->
+                    <!--                            class="mat-button-wrapper">Upload Attachments </span>-->
+                    <!--                        <div matripple="" class="mat-ripple mat-button-ripple"></div>-->
+                    <!--                        <div class="mat-button-focus-overlay"></div>-->
+                    <!--                    </button>-->
                 </div>
             </div>
     </div>

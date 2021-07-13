@@ -1,7 +1,9 @@
 package org.kebs.app.kotlin.apollo.api.ports.provided.dao
 
 import mu.KotlinLogging
+import org.kebs.app.kotlin.apollo.api.controllers.msControllers.MSReportsControllers
 import org.kebs.app.kotlin.apollo.api.controllers.qaControllers.QualityAssuranceController
+import org.kebs.app.kotlin.apollo.api.controllers.qaControllers.ReportsController
 import org.kebs.app.kotlin.apollo.api.notifications.Notifications
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.QualityAssuranceBpmn
 import org.kebs.app.kotlin.apollo.api.ports.provided.mpesa.MPesaService
@@ -28,6 +30,7 @@ import org.springframework.security.core.Authentication
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
+import org.springframework.util.ResourceUtils
 import org.springframework.web.multipart.MultipartFile
 import java.math.BigDecimal
 import java.sql.Date
@@ -76,6 +79,8 @@ class QADaoServices(
     private val processStatusRepo: IQaProcessStatusRepository,
     private val iMoneyTypeCodesRepo: ICfgMoneyTypeCodesRepository,
     private val mpesaServices: MPesaService,
+    private val msReportsControllers: MSReportsControllers,
+//    private val reportsControllers: ReportsController,
     private val notifications: Notifications,
 ) {
 
@@ -83,6 +88,10 @@ class QADaoServices(
     @Lazy
     @Autowired
     lateinit var qualityAssuranceBpmn: QualityAssuranceBpmn
+
+    @Lazy
+    @Autowired
+    lateinit var reportsControllers: ReportsController
 
 
     final var appId = applicationMapProperties.mapQualityAssurance
@@ -756,7 +765,8 @@ class QADaoServices(
     fun findPermitInvoiceByPermitRefNumber(permitRefNumber: String, userId: Long): InvoiceEntity {
         invoiceRepository.findByPermitRefNumberAndUserId(permitRefNumber, userId)?.let {
             return it
-        } ?: throw ExpectedDataNotFound("No Invoice found with the following [PERMIT REF NO =$permitRefNumber  and LoggedIn User]")
+        }
+            ?: throw ExpectedDataNotFound("No Invoice found with the following [PERMIT REF NO =${permitRefNumber}  and LoggedIn User]")
     }
 
     fun findSTA3WithPermitRefNumber(permitRefNumber: String): QaSta3Entity {
@@ -1201,7 +1211,11 @@ class QADaoServices(
         return p
     }
 
-    fun mapAllPermitDetailsTogether(permit: PermitApplicationsEntity, map: ServiceMapsEntity): AllPermitDetailsDto {
+    fun mapAllPermitDetailsTogether(
+        permit: PermitApplicationsEntity,
+        batchID: Long?,
+        map: ServiceMapsEntity
+    ): AllPermitDetailsDto {
         return AllPermitDetailsDto(
             permitDetails(permit, map),
             commonDaoServices.userListDto(
@@ -1214,7 +1228,8 @@ class QADaoServices(
             ),
             findAllOldPermitWithPermitRefNumber(
                 permit.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER")
-            )?.let { listPermits(it, map) }
+            )?.let { listPermits(it, map) },
+            batchID
         )
     }
 
@@ -2260,6 +2275,39 @@ class QADaoServices(
 
         KotlinLogging.logger { }.trace("${sr.id} ${sr.responseStatus}")
         return Pair(sr, savePermit)
+    }
+
+    fun invoiceCreationPDF(
+        batchID: Long,
+        senderEmail: String,
+        loggedInUser: UsersEntity
+    ) {
+
+        val myDetails = reportsControllers.createInvoicePdf(batchID)
+
+//        val imagePath = ResourceUtils.getFile("classpath:static/images/KEBS_SMARK.png").toString()
+//        val map = hashMapOf<String, Any>()
+//        map["imagePath"] = imagePath
+        msReportsControllers.extractAndSaveReport(
+            myDetails.first,
+            applicationMapProperties.mapReportProfomaInvoiceWithItemsPath,
+            "Remediation-Invoice",
+            myDetails.second
+        )
+        sendEmailWithProforma(
+            senderEmail,
+            ResourceUtils.getFile("classpath:templates/TestPdf/Remediation-Invoice.pdf").toString()
+        )
+    }
+
+    fun sendEmailWithProforma(recipient: String, attachment: String?): Boolean {
+        val subject = "PRO FORMA INVOICE"
+        val messageBody = "Check The attached Proforma Invoices for payment"
+
+//        notifications.sendEmail(recipient, subject, messageBody)
+        notifications.processEmail(recipient, subject, messageBody, attachment)
+
+        return true
     }
 
 

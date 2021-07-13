@@ -21,6 +21,16 @@
                                         <i class="material-icons">assignment_turned_in</i> Invoices Attached Details
                                     </a>
                                 </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" data-toggle="tab" href="#link11" role="tablist">
+                                        <i class="material-icons">assignment_turned_in</i> Bank Details
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" data-toggle="tab" href="#link13" role="tablist">
+                                        <i class="material-icons">assignment_turned_in</i>OTHER PAYMENT Details
+                                    </a>
+                                </li>
                                 <!-- -->
 
                             </ul>
@@ -40,7 +50,7 @@
                                                     </td>
                                                     <td><strong>
                                                         Invoice Number</strong></td>
-                                                    <td>KIMSINVOICE#20210629CDA8B</td>
+                                                    <td>{{allBatchInvoiceDetails.batchDetails.invoiceNumber}}</td>
                                                 </tr>
                                                 <tr>
                                                     <td>
@@ -48,14 +58,14 @@
                                                     </td>
                                                     <td><strong>Name of firm
                                                     </strong></td>
-                                                    <td>ST.KIZITO UTAWALA TRAINING CENTRE LIMITED</td>
+                                                    <td>{{allBatchInvoiceDetails.batchDetails.firmName}}</td>
                                                 </tr>
                                                 <tr>
                                                     <td>
                                                         <i class="material-icons">room_preferences</i>
                                                     </td>
                                                     <td><strong>Postal address</strong></td>
-                                                    <td>18827 - 00500
+                                                    <td>{{allBatchInvoiceDetails.batchDetails.postalAddress}}
                                                     </td>
                                                 </tr>
                                                 <tr>
@@ -64,7 +74,7 @@
                                                     </td>
                                                     <td><strong>Physical address
                                                     </strong></td>
-                                                    <td>EMBAKASI UTAWALA MIHANGO WARD PLOT NUMBER FIVE HUNDRED AND NINETY THREE, Eastern by pass via Msa Rd, Fl: GROUND FLOOR, Room/Door: ROOM 4, EMBAKASI UTAWALA MIHANGO WARD PLOT NUMBER FIVE HUNDRED AND NINETY THREE, Eastern by pass via Msa Rd</td>
+                                                    <td>{{allBatchInvoiceDetails.batchDetails.physicalAddress}}</td>
                                                 </tr>
                                                 <tr>
                                                     <td>
@@ -72,7 +82,7 @@
                                                     </td>
                                                     <td><strong>Telephone number
                                                     </strong></td>
-                                                    <td>+254729937128
+                                                    <td>{{allBatchInvoiceDetails.batchDetails.telephoneNo}}
                                                     </td>
                                                 </tr>
                                                 <tr>
@@ -81,7 +91,7 @@
                                                     </td>
                                                     <td><strong>Email address
                                                     </strong></td>
-                                                    <td>nico.kimuli@gmail.com</td>
+                                                    <td>{{allBatchInvoiceDetails.batchDetails.email}}</td>
                                                 </tr>
 
                                                 </tbody>
@@ -94,23 +104,25 @@
                                                     <tbody>
                                                     <tr>
                                                         <td><strong>Receipt No</strong></td>
-                                                        <td>KIMSINVOICE#20210629CDA8B</td>
+                                                        <td>{{allBatchInvoiceDetails.batchDetails.receiptNo}}</td>
                                                     </tr>
                                                     <tr>
                                                         <td><strong>
                                                             Paid Date</strong></td>
-                                                        <td>28/08/2019</td>
+                                                        <td>{{allBatchInvoiceDetails.batchDetails.paidDate}}</td>
                                                     </tr>
                                                     <tr>
                                                         <td><strong>
                                                             Total Amount
                                                         </strong></td>
-                                                        <td>Ksh 382800</td>
+                                                        <td>{{allBatchInvoiceDetails.batchDetails.totalAmount}}</td>
                                                     </tr>
                                                     <tr>
                                                         <td><strong>
                                                             Status</strong></td>
-                                                        <td><span class="badge badge-primary">PAID</span></td>
+                                                        <td><span
+                                                                class="badge badge-primary">{{allBatchInvoiceDetails.batchDetails.paidStatus}}</span>
+                                                        </td>
                                                     </tr>
 
                                                     </tbody>
@@ -151,15 +163,185 @@
                                                 <td>{{row[3]}}</td>
                                                 <td>{{row[4]}}</td>
                                                 <td class="text-right">
-                                                    <a href="javascript:void(0)" class="btn btn-link btn-info btn-just-icon like"><i class="material-icons">download</i></a>
+                                                    <!--                                                    <a href="javascript:void(0)" class="btn btn-link btn-info btn-just-icon like"><i class="material-icons">download</i></a>-->
                                                 </td>
                                             </tr>
                                             </tbody>
                                         </table>
                                     </div>
                                 </div>
+                                <div class="tab-pane" id="link11">
+                                    <h3>Bank Details</h3>
+                                    <div class="row">
+                                        <div class="col-md-7">
+                                            <br>
+                                            <table class="table">
+                                                <tbody>
+                                                <tr>
+                                                    <td>
+                                                        <i class="material-icons">toc</i>
+                                                    </td>
+                                                    <td><strong>Name of Bank
+                                                    </strong></td>
+                                                    <td>Co-operative Bank Of Kenya</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <i class="material-icons">location_city</i>
+                                                    </td>
+                                                    <td><strong>Branch</strong></td>
+                                                    <td>Mombasa Road Branch
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <i class="material-icons">domain</i>
+                                                    </td>
+                                                    <td><strong>KES A/C No</strong></td>
+                                                    <td>01-141-504-454-700
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <i class="material-icons">vpn_key</i>
+                                                    </td>
+                                                    <td><strong>Bank Code</strong></td>
+                                                    <td>1100
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <i class="material-icons">room_preferences</i>
+                                                    </td>
+                                                    <td><strong>Branch Code</strong></td>
+                                                    <td>11127
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <i class="material-icons">password</i>
+                                                    </td>
+                                                    <td><strong>SWIFT CODE</strong></td>
+                                                    <td>KCOOKENA
+                                                    </td>
+                                                </tr>
 
+
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <!--                                        <div class = "col-md-5">-->
+                                        <!--                                            <div class="alert alert-info alert-with-icon" data-notify="container" style="background-color: #1b75bc1f; ">-->
+                                        <!--                                                <i class="material-icons" data-notify="icon">push_pin</i>-->
+                                        <!--                                                <table class="table">-->
+                                        <!--                                                    <tbody>-->
+                                        <!--                                                    <tr>-->
+                                        <!--                                                        <td><strong>Receipt No</strong></td>-->
+                                        <!--                                                        <td>{{allBatchInvoiceDetails.batchDetails.receiptNo}}</td>-->
+                                        <!--                                                    </tr>-->
+                                        <!--                                                    <tr>-->
+                                        <!--                                                        <td><strong>-->
+                                        <!--                                                            Paid Date</strong></td>-->
+                                        <!--                                                        <td>{{allBatchInvoiceDetails.batchDetails.paidDate}}</td>-->
+                                        <!--                                                    </tr>-->
+                                        <!--                                                    <tr>-->
+                                        <!--                                                        <td><strong>-->
+                                        <!--                                                            Total Amount-->
+                                        <!--                                                        </strong></td>-->
+                                        <!--                                                        <td>{{allBatchInvoiceDetails.batchDetails.totalAmount}}</td>-->
+                                        <!--                                                    </tr>-->
+                                        <!--                                                    <tr>-->
+                                        <!--                                                        <td><strong>-->
+                                        <!--                                                            Status</strong></td>-->
+                                        <!--                                                        <td><span class="badge badge-primary">{{allBatchInvoiceDetails.batchDetails.paidStatus}}</span></td>-->
+                                        <!--                                                    </tr>-->
+
+                                        <!--                                                    </tbody>-->
+                                        <!--                                                </table>-->
+                                        <!--                                            </div>-->
+                                        <!--                                        </div>-->
+
+                                    </div>
                                 </div>
+                                <div class="tab-pane" id="link13">
+                                    <h3>OTHER Payment Details</h3>
+                                    <div class="row">
+                                        <div class="col-md-7">
+                                            <br>
+                                            <table class="table">
+                                                <tbody>
+                                                <tr>
+                                                    <td>
+                                                        <i class="material-icons">pin</i>
+                                                    </td>
+                                                    <td><strong>PAYBILL No</strong></td>
+                                                    <td>804700
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <i class="material-icons">tag</i>
+                                                    </td>
+                                                    <td><strong>A/C No</strong></td>
+                                                    <td>10060
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <i class="material-icons">room_preferences</i>
+                                                    </td>
+                                                    <td><strong>VAT No</strong></td>
+                                                    <td>0130253A
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <i class="material-icons">password</i>
+                                                    </td>
+                                                    <td><strong>PIN No</strong></td>
+                                                    <td>PO51092837Y
+                                                    </td>
+                                                </tr>
+
+
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <!--                                        <div class = "col-md-5">-->
+                                        <!--                                            <div class="alert alert-info alert-with-icon" data-notify="container" style="background-color: #1b75bc1f; ">-->
+                                        <!--                                                <i class="material-icons" data-notify="icon">push_pin</i>-->
+                                        <!--                                                <table class="table">-->
+                                        <!--                                                    <tbody>-->
+                                        <!--                                                    <tr>-->
+                                        <!--                                                        <td><strong>Receipt No</strong></td>-->
+                                        <!--                                                        <td>{{allBatchInvoiceDetails.batchDetails.receiptNo}}</td>-->
+                                        <!--                                                    </tr>-->
+                                        <!--                                                    <tr>-->
+                                        <!--                                                        <td><strong>-->
+                                        <!--                                                            Paid Date</strong></td>-->
+                                        <!--                                                        <td>{{allBatchInvoiceDetails.batchDetails.paidDate}}</td>-->
+                                        <!--                                                    </tr>-->
+                                        <!--                                                    <tr>-->
+                                        <!--                                                        <td><strong>-->
+                                        <!--                                                            Total Amount-->
+                                        <!--                                                        </strong></td>-->
+                                        <!--                                                        <td>{{allBatchInvoiceDetails.batchDetails.totalAmount}}</td>-->
+                                        <!--                                                    </tr>-->
+                                        <!--                                                    <tr>-->
+                                        <!--                                                        <td><strong>-->
+                                        <!--                                                            Status</strong></td>-->
+                                        <!--                                                        <td><span class="badge badge-primary">{{allBatchInvoiceDetails.batchDetails.paidStatus}}</span></td>-->
+                                        <!--                                                    </tr>-->
+
+                                        <!--                                                    </tbody>-->
+                                        <!--                                                </table>-->
+                                        <!--                                            </div>-->
+                                        <!--                                        </div>-->
+
+                                    </div>
+                                </div>
+
+                            </div>
                             </div>
                         </div>
                     </div>
