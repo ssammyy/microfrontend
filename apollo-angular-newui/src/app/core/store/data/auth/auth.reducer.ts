@@ -6,7 +6,9 @@ import {
     loadAuthsFailure,
     loadAuthsSuccess,
     loadResetAuthsFailure,
-    loadResetAuthsSuccess, loadUserCompanyInfoFailure, loadUserCompanyInfoSuccess
+    loadResetAuthsSuccess,
+    loadUserCompanyInfoFailure,
+    loadUserCompanyInfoSuccess
 } from './auth.actions';
 import {ApiResponse} from '../../../domain/response.model';
 
@@ -37,12 +39,23 @@ export interface CompanyInfoDtoState {
 }
 
 export const initialState: AuthState = {
-    profile: {id: 0, accessToken: '', email: '', fullName: '', roles: [], username: '', expiry: Date()},
+    profile: {
+        id: 0,
+        accessToken: '',
+        email: '',
+        fullName: '',
+        roles: [],
+        username: '',
+        expiry: Date(),
+        // companyID: 0,
+        // branchID: 0,
+        // turnover: 0
+    },
     loggedIn: false
 
 };
 export const initialCompanyInfoDtoState: CompanyInfoDtoState = {
-    data: {branchCount: 0, branchId: 0, companyId: 0, userId: 0}
+    data: {branchCount: 0, branchId: 0, companyId: 0, userId: 0, turnOver: 0}
 
 };
 

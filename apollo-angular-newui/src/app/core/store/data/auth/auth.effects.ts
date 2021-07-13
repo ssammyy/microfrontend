@@ -9,10 +9,12 @@ import {
     loadAuthsSuccess,
     loadLogout,
     loadLogoutSuccess,
-    loadResetAuths, loadUserCompanyInfo, loadUserCompanyInfoSuccess
+    loadResetAuths,
+    loadUserCompanyInfo,
+    loadUserCompanyInfoSuccess
 } from './auth.actions';
 import {Observable, of} from 'rxjs';
-import {Action} from '@ngrx/store';
+import {Action, Store} from '@ngrx/store';
 import {HttpErrorResponse} from '@angular/common/http';
 import {catchError, mergeMap, switchMap} from 'rxjs/operators';
 import {Go} from '../route';
@@ -127,7 +129,7 @@ export class AuthEffects {
         () =>
             this.actions$.pipe(
                 ofType(loadUserCompanyInfo),
-                switchMap((action) => this.service.fetchCompanyDetails()
+                switchMap(() => this.service.fetchCompanyDetails()
                     .pipe(
                         mergeMap((data) => {
                             if (data.companyId != null) {
@@ -136,7 +138,13 @@ export class AuthEffects {
                                 ];
                             } else {
                                 return [
-                                    loadResponsesFailure({error: {status: 500, payload: 'No data returned', response: '99'}})
+                                    loadResponsesFailure({
+                                        error: {
+                                            status: 500,
+                                            payload: 'No data returned',
+                                            response: '99'
+                                        }
+                                    })
                                 ];
                             }
                         }),
@@ -173,7 +181,7 @@ export class AuthEffects {
                                         expiry: Date(),
                                         roles: [],
                                         id: 0,
-                                        username: ''
+                                        username: '',
                                     }, loggedIn: false
                                 }),
                                 Go({payload: null, link: action.loginUrl, redirectUrl: ''})
@@ -199,6 +207,7 @@ export class AuthEffects {
                         mergeMap((data) => {
                             return [
                                 loadAuthsSuccess({profile: data, loggedIn: true}),
+                                loadUserCompanyInfo(),
                                 Go({
                                     payload: action.redirectUrl,
                                     link: action.redirectUrl,
@@ -222,7 +231,8 @@ export class AuthEffects {
 
     constructor(
         private actions$: Actions,
-        private service: AuthService
+        private service: AuthService,
+        private store$: Store<any>,
     ) {
     }
 

@@ -2,10 +2,9 @@ import {AfterViewInit, Component, OnInit} from '@angular/core';
 import {TableData} from '../../md/md-table/md-table.component';
 
 import * as Chartist from 'chartist';
-import {QaService} from "../../core/store/data/qa/qa.service";
-import {Router} from "@angular/router";
-import {Store} from "@ngrx/store";
-import {loadUserCompanyInfo, selectCompanyInfoDtoStateData} from "../../core/store";
+import {Router} from '@angular/router';
+import {Store} from '@ngrx/store';
+import {loadBranchId, loadCompanyId, selectCompanyInfoDtoStateData} from 'src/app/core/store';
 
 declare const $: any;
 
@@ -17,6 +16,8 @@ declare const $: any;
 export class DashboardComponent implements OnInit, AfterViewInit {
     // constructor(private navbarTitleService: NavbarTitleService, private notificationService: NotificationService) { }
     public tableData: TableData;
+    turnOver = 0;
+    branchCount = 0;
 
     startAnimationForLineChart(chart: any) {
         let seq: any, delays: any, durations: any;
@@ -77,16 +78,20 @@ export class DashboardComponent implements OnInit, AfterViewInit {
 
 
     constructor(private router: Router,
-                private store$: Store<any>) {
+                private store$: Store<any>
+    ) {
     }
 
     public ngOnInit() {
         // Load all PermitList Details
         // this.qaService.loadFirmPermitList(this.)
-        this.store$.dispatch(loadUserCompanyInfo());
-
         this.store$.select(selectCompanyInfoDtoStateData).subscribe(
             (d) => {
+                console.log(`${d.companyId} and ${d.branchId}`);
+                this.store$.dispatch(loadCompanyId({payload: d.companyId, company: null}));
+                this.store$.dispatch(loadBranchId({payload: d.branchId, branch: null}));
+                this.branchCount = d.branchCount;
+                this.turnOver = d.turnover;
             }
         );
     }
@@ -125,6 +130,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
         this.router.navigate(['/dmark/newDmarkPermit']);
 
     }
+
     gotoSMarkApplication() {
         this.router.navigate(['/smark/newSmarkPermit']);
 

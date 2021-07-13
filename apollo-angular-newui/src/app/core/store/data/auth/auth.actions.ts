@@ -69,10 +69,10 @@ export const loadUserCompanyInfo  = createAction(
     '[Auth] loadUserCompanyInfo'
 );
 export const loadUserCompanyInfoSuccess  = createAction(
-    '[Auth] loadUserCompanyInfo',
-    props<{data: CompanyInfoDto}>()
+    '[Auth] loadUserCompanyInfo Success',
+    props<{ data: CompanyInfoDto }>()
 );
 export const loadUserCompanyInfoFailure  = createAction(
-    '[Auth] loadUserCompanyInfo',
+    '[Auth] loadUserCompanyInfo Failure',
     props<{ error: ApiResponse }>()
 );
