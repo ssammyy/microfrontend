@@ -1235,7 +1235,8 @@ class QualityAssuranceHandler(
             //Start DMARK PROCESS
             qualityAssuranceBpmn.startQADMApplicationReviewProcess(
                 permit.id ?: throw Exception("MISSING PERMIT ID"),
-                permit.pcmId ?: throw Exception("MISSING PCM ID")
+                permit.pcmId ?: throw Exception("MISSING PCM ID"),
+                false
             )
 
             qaDaoServices.mapAllPermitDetailsTogether(permit, null, map).let {
