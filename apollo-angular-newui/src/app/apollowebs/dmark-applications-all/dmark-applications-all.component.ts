@@ -79,6 +79,6 @@ export class DmarkApplicationsAllComponent implements OnInit {
 }
 
     onSelect(rowElement: string) {
-        this.router.navigate(['/dmark'], {fragment: rowElement});
+        this.router.navigate(['/permitdetails'], {fragment: rowElement});
     }
 }
