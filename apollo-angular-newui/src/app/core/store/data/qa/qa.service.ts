@@ -30,6 +30,19 @@ export class QaService {
         );
     }
 
+    public loadInvoiceBatchList(): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.INVOICE_LIST_DETAILS);
+        return this.http.get<any>(url).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
+
     public loadDMARKPermitList(permitTypeID: string): Observable<any> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.PERMIT_LIST);
         const params = new HttpParams()
@@ -47,7 +60,7 @@ export class QaService {
 
     public loadPlantList(): Observable<any> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.PLANT_LIST);
-        return this.http.get<any>(url,).pipe(
+        return this.http.get<any>(url).pipe(
             map(function (response: any) {
                 return response;
             }),
@@ -60,7 +73,37 @@ export class QaService {
 
     public loadSectionList(): Observable<any> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.SECTION_LIST);
-        return this.http.get<any>(url,).pipe(
+        return this.http.get<any>(url).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
+
+    public loadPermitDetails(permitID: string): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.PERMIT_VIEW_DETAILS);
+        const params = new HttpParams()
+            .set('permitID', permitID);
+        return this.http.get<any>(url, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
+
+    public loadInvoiceDetails(ID: string): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.INVOICE_DETAILS);
+        const params = new HttpParams()
+            .set('ID', ID);
+        return this.http.get<any>(url, {params}).pipe(
             map(function (response: any) {
                 return response;
             }),
@@ -121,6 +164,21 @@ export class QaService {
         const params = new HttpParams()
             .set('permitID', permitID);
         return this.http.put<any>(url, data, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
+
+    public submitPermitForReview(permitID: string): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.PERMIT_SUBMIT_DETAILS_FOR_REVIEW);
+        const params = new HttpParams()
+            .set('permitID', permitID);
+        return this.http.post<any>(url, null, {params}).pipe(
             map(function (response: any) {
                 return response;
             }),

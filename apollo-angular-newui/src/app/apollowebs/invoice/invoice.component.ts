@@ -1,4 +1,7 @@
 import {AfterViewInit, Component, OnInit} from '@angular/core';
+import {QaService} from "../../core/store/data/qa/qa.service";
+import {Router} from "@angular/router";
+import {AllPermitDetailsDto, ConsolidatedInvoiceDto, PermitEntityDto} from "../../core/store/data/qa/qa.model";
 
 declare interface DataTable {
   headerRow: string[];
@@ -7,6 +10,7 @@ declare interface DataTable {
 }
 
 declare const $: any;
+
 @Component({
   selector: 'app-invoice',
   templateUrl: './invoice.component.html',
@@ -14,17 +18,48 @@ declare const $: any;
 })
 export class InvoiceComponent implements OnInit, AfterViewInit {
   public dataTable: DataTable;
+  public allInvoiceData: ConsolidatedInvoiceDto[];
+
+
+  constructor(
+      private qaService: QaService,
+      private router: Router,
+  ) {
+
+  }
 
   ngOnInit() {
-    this.dataTable = {
-      headerRow: ['Invoice No', 'Receipt No', 'Date', 'Total Amount', ' Status', 'Actions'],
-      footerRow: ['Invoice No', 'Receipt No', 'Date', 'Total Amount', ' Status', 'Actions'],
+    let formattedArray = [];
+    this.qaService.loadInvoiceBatchList().subscribe(
+        (data: any) => {
+          this.allInvoiceData = data;
+          // tslint:disable-next-line:max-line-length
+          formattedArray = data.map(i => [i.invoiceNumber, i.receiptNo, i.paidDate, i.totalAmount, i.paidStatus, i.id]);
 
-      dataRows: [
-        ['KIMSINVOICE#20210629CDA8B', 'KIMSINVOICE#20210629CDA8B', '09/07/2021', '382800', 'Paid', '']
-      ]
-    };
+          this.dataTable = {
+            headerRow: ['Invoice No', 'Receipt No', 'Date', 'Total Amount', ' Status', 'Actions'],
+            footerRow: ['Invoice No', 'Receipt No', 'Date', 'Total Amount', ' Status', 'Actions'],
+            dataRows: formattedArray
 
+
+            // ['REFFM#202107095913D', 'Andrew Mike', '09/07/2021', 'Dassani', 'Water', '']
+
+          };
+
+        }
+    );
+
+  }
+
+  onSelect(rowElement: string) {
+
+    this.qaService.loadInvoiceDetails(rowElement).subscribe(
+        (data: any) => {
+          // this.allPermitDetails = data;
+          // this.onSelectL1SubSubSection(this.userDetails?.employeeProfile?.l1SubSubSection);
+
+        },
+    );
   }
 
   ngAfterViewInit() {
@@ -73,4 +108,5 @@ export class InvoiceComponent implements OnInit, AfterViewInit {
 
     $('.card .material-datatables label').addClass('form-group');
   }
+
 }

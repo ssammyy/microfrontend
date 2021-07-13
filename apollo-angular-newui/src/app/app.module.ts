@@ -63,7 +63,7 @@ import {SignUpComponent} from './views/registration/sign-up.component';
 import {ResetCredentialsComponent} from './views/registration/reset-credentials.component';
 import {LoginComponent} from './views/registration/login.component';
 import {PermitReportComponent} from './apollowebs/permit-report/permit-report.component';
-import { NewSmarkPermitComponent } from './apollowebs/new-smark-permit/new-smark-permit.component';
+import {NewSmarkPermitComponent} from './apollowebs/new-smark-permit/new-smark-permit.component';
 import {NewDmarkPermitComponent} from './apollowebs/new-dmark-permit/new-dmark-permit.component';
 import {DmarkApplicationsAllComponent} from './apollowebs/dmark-applications-all/dmark-applications-all.component';
 import { InvoiceDetailsComponent } from './apollowebs/invoice-details/invoice-details.component';

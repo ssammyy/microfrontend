@@ -35,6 +35,7 @@
                                         <th>TOTAL AMOUNT</th>
                                         <th>PAID STATUS</th>
                                         <th>View Details</th>
+                                        <th>View PDF</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -57,6 +58,9 @@
                                         <!--                                        <td sec:authorize="hasAuthority('CD_SUPERVISOR_READ')" th:if="${coc?.assignedStatus == 1}"  th:text="${coc?.assignIoId?.firstName}  + ' ' + ${coc?.assignIoId?.lastName}"></td>-->
                                         <td><a class="filter-link"
                                                th:href="@{/api/qa/invoice/batch-details(batchID=${invoice?.id})}">VIEW</a>
+                                        </td>
+                                        <td><a class="filter-link"
+                                               th:href="@{/api/kebs/qa/report/proforma-invoice-with-Item(ID=${invoice?.id})}">VIEW</a>
                                         </td>
                                     </tr>
                                     </tbody>

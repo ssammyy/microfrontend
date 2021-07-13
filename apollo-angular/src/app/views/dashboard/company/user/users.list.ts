@@ -12,7 +12,7 @@ import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {Store} from '@ngrx/store';
 import {Location} from '@angular/common';
 import {faArrowLeft} from '@fortawesome/free-solid-svg-icons';
-import {catchError, map} from "rxjs/operators";
+import {catchError, first, map} from "rxjs/operators";
 import {HttpErrorResponse} from "@angular/common/http";
 import {ConfirmedValidator} from "../../../../core/shared/confirmed.validator";
 
@@ -92,12 +92,18 @@ export class UsersList implements OnInit {
       if (this.user.id === null || this.user.id === undefined) {
         this.user.companyId = this.selectedCompany;
         this.user.plantId = this.selectedBranch;
-        this.service.add(this.user).pipe(
-          map((a) => {
+        this.service.add(this.user).pipe(map((a) => {
             this.stepOneForm.markAsPristine();
-            this.stepOneForm.reset();
-            return of(loadResponsesSuccess({message: {response: '00', payload: 'Successfully saved', status: 200}}));
-        }),
+            this.store$.dispatch(loadResponsesSuccess({
+              message: {
+                response: '00',
+                payload: 'Successfully saved',
+                status: 200
+              }
+            }));
+            return this.stepOneForm.reset();
+            // return of(loadResponsesSuccess({message: {response: '00', payload: 'Successfully saved', status: 200}}));
+          }),
           catchError(
             (err: HttpErrorResponse) => {
               return of(loadResponsesFailure({

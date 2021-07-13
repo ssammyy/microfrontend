@@ -59,7 +59,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 @SpringBootApplication(scanBasePackages = ["org.kebs.app.kotlin.apollo"])
 class ApiApplication : SpringBootServletInitializer( ) {
 
-
     override fun configure(application: SpringApplicationBuilder): SpringApplicationBuilder {
         return application.sources(ApiApplication::class.java)
     }

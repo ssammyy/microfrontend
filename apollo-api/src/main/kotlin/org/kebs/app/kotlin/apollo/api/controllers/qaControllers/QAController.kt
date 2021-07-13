@@ -404,7 +404,7 @@ class QAController(
 //                }
 //            }
             2 -> {
-                qualityAssuranceBpmn.qaAppReviewCorrectApplication(permitId)
+                qualityAssuranceBpmn.qaAppReviewCorrectApplication(permitId,104)
                     .let {
                         qualityAssuranceBpmn.qaAppReviewResubmitApplication(permitId)
                             .let {

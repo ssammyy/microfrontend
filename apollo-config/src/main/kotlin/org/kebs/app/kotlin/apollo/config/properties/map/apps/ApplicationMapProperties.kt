@@ -476,6 +476,9 @@ class ApplicationMapProperties {
     @Value("\${org.kebs.app.kotlin.apollo.resources.report.demand.note.with.item.path}")
     val mapReportDemandNoteWithItemsPath: String = ""
 
+    @Value("\${org.kebs.app.kotlin.apollo.resources.report.proforma.invoice.with.item.path}")
+    val mapReportProfomaInvoiceWithItemsPath: String = ""
+
     @Value("\${org.kebs.app.kotlin.apollo.resources.report.pac.summary.report.path}")
     val mapReportPacSummaryReportPath: String = ""
 

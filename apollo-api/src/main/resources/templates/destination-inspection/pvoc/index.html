@@ -9,25 +9,31 @@
     <th:block th:include="fragments/general-form.html:: headerfiles"/>
 </head>
 <body>
-<div th:replace="fragments/general-form.html :: dashboard-page" ></div>
+<div th:replace="fragments/general-form.html :: dashboard-page"></div>
 
 <div class="dashboard-body">
-    <div th:replace="fragments/general-form.html :: side-navigation-bar" ></div>
+    <div th:replace="fragments/general-form.html :: side-navigation-bar"></div>
     <div class="main-area">
         <div th:replace="fragments/general-form.html :: content-navigation-bar"></div>
         <section class="dashboard-content">
             <div class="content-wrap">
                 <div class="content-row-top">
                     <h2>PVOC Home</h2><br>
-                    <a class="content-button" th:href="@{/api/di/exceptions-index}"><span class="font-awesome-span"></span>Exemptions</a>
-                    <a class="content-button" th:href="@{/api/di/waivers-index}"><span class="font-awesome-span"></span>Waivers</a>
-                    <a class="content-button" th:href="@{/api/di/monitoring-index}"><span class="font-awesome-span"></span>Monitoring</a>
-                    <a class="content-button" th:href="@{/api/di/complaints-index}"><span class="font-awesome-span"></span>PVOC Complains</a>
-                    <a class="content-button" th:href="@{/api/di/pvoc/auditing-index}"><span class="font-awesome-span"></span>PVOC Auditing</a>
-                    <a class="content-button" th:href="@{/api/di/reconsiliations-index}"> <span class="font-awesome-span"></span>Reconciliation</a>
+                    <a class="content-button" th:href="@{/api/di/exceptions-index}"><span
+                            class="font-awesome-span"></span>Exemptions</a>
+                    <a class="content-button" th:href="@{/api/di/waivers-index}"><span
+                            class="font-awesome-span"></span>Waivers</a>
+                    <a class="content-button" th:href="@{/api/di/monitoring-index}"><span
+                            class="font-awesome-span"></span>Monitoring</a>
+                    <a class="content-button" th:href="@{/api/di/complaints-index}"><span
+                            class="font-awesome-span"></span>PVOC Complains</a>
+                    <a class="content-button" th:href="@{/api/di/pvoc/auditing-index}"><span
+                            class="font-awesome-span"></span>PVOC Auditing</a>
+                    <a class="content-button" th:href="@{/api/di/reconsiliations-index}"> <span
+                            class="font-awesome-span"></span>Reconciliation</a>
                 </div>
                 <div class="div-block-4">
-                    <a class="content-button" ><span class="font-awesome-span"></span>Notifications</a>
+                    <a class="content-button"><span class="font-awesome-span"></span>Notifications</a>
                     <!-- <a class="content-button" th:href="@{/api/v1/permit/customer}"><span class="font-awesome-span"></span>Customer</a> -->
                 </div>
             </div>
