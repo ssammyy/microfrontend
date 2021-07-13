@@ -2296,7 +2296,7 @@ class QADaoServices(
         )
         sendEmailWithProforma(
             senderEmail,
-            ResourceUtils.getFile("classpath:templates/TestPdf/Remediation-Invoice.pdf").toString()
+            applicationMapProperties.mapPDFProfomaInvoiceWithItemsPath,
         )
     }
 
@@ -2377,6 +2377,7 @@ class QADaoServices(
 
                     with(inspectionTechnicalDetails) {
                         permitId = permitFound.id
+                        permitRefNumber = permitFound.permitRefNumber
                         status = s.activeStatus
                         createdBy = commonDaoServices.concatenateName(user)
                         createdOn = commonDaoServices.getTimestamp()
@@ -2386,6 +2387,7 @@ class QADaoServices(
                     var qaInspectionReportRecommendation = QaInspectionReportRecommendationEntity()
                     with(qaInspectionReportRecommendation) {
                         permitId = permitFound.id
+                        permitRefNumber = permitFound.permitRefNumber
                         filledQpsmsStatus = s.activeStatus
                         status = s.activeStatus
                         createdBy = commonDaoServices.concatenateName(user)
@@ -2456,6 +2458,7 @@ class QADaoServices(
 
                     with(haccpAddedDetails) {
                         permitId = permitFound.id
+                        permitRefNumber = permitFound.permitRefNumber
                         status = s.activeStatus
                         createdBy = commonDaoServices.concatenateName(user)
                         createdOn = commonDaoServices.getTimestamp()
@@ -2495,6 +2498,45 @@ class QADaoServices(
         return sr
     }
 
+
+    fun consolidateInvoiceAndSendMail(
+        permitID: Long,
+        map: ServiceMapsEntity,
+        loggedInUser: UsersEntity
+    ): Pair<QaBatchInvoiceEntity, PermitApplicationsEntity> {
+        //Consolidate invoice now first
+        var permit = findPermitBYID(permitID)
+        val newBatchInvoiceDto = NewBatchInvoiceDto()
+        with(newBatchInvoiceDto) {
+            permitInvoicesID = arrayOf(permit.permitRefNumber.toString())
+        }
+        var batchInvoice = permitMultipleInvoiceCalculation(map, loggedInUser, newBatchInvoiceDto).second
+
+        // submit invoice to get way
+        with(newBatchInvoiceDto) {
+            batchID = batchInvoice.id!!
+        }
+
+        batchInvoice = permitMultipleInvoiceSubmitInvoice(map, loggedInUser, newBatchInvoiceDto).second
+
+        //Update Permit Details
+        with(permit) {
+            sendApplication = map.activeStatus
+            invoiceGenerated = map.activeStatus
+            permitStatus = applicationMapProperties.mapQaStatusPPayment
+        }
+        permit = permitUpdateDetails(permit, map, loggedInUser).second
+
+        //Send email with attached Invoice details
+        invoiceCreationPDF(
+            batchInvoice.id ?: throw ExpectedDataNotFound("MISSING BATCH INVOICE ID"),
+            commonDaoServices.findUserByID(permit.userId ?: throw ExpectedDataNotFound("MISSING USER ID")).email
+                ?: throw ExpectedDataNotFound("MISSING USER ID"),
+            loggedInUser
+        )
+        return Pair(batchInvoice, permit)
+    }
+
     fun permitAddNewInspectionReportDetailsOPC(
         s: ServiceMapsEntity,
         user: UsersEntity,
@@ -2523,6 +2565,7 @@ class QADaoServices(
 
                     with(opcAddedDetails) {
                         permitId = permitFound.id
+                        permitRefNumber = permitFound.permitRefNumber
                         status = s.activeStatus
                         createdBy = commonDaoServices.concatenateName(user)
                         createdOn = commonDaoServices.getTimestamp()
@@ -2688,6 +2731,8 @@ class QADaoServices(
 
                             invoiceBatchDetails = batchInvoicePermit
                         }
+
+                    batchID = invoiceBatchDetails?.id!!
 
                     sr.payload = "permitInvoiceFound[id= ${permitInvoiceFound.userId}]"
                     sr.names = "${permitInvoiceFound.invoiceNumber} ${permitInvoiceFound.amount}"

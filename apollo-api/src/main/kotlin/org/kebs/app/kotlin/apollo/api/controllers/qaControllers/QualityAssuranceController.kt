@@ -635,15 +635,30 @@ class QualityAssuranceController(
                 if (permitDetails.permitType == applicationMapProperties.mapQAPermitTypeIDDmark) {
                     when (permit.pcmApprovalStatus) {
                         map.activeStatus -> {
-                            KotlinLogging.logger { }.info(":::::: Sending compliance status along with e-permit :::::::")
+                            KotlinLogging.logger { }
+                                .info(":::::: Sending compliance status along with e-permit :::::::")
                             permitDetails.userTaskId = applicationMapProperties.mapUserTaskNameMANUFACTURE
-                            permitDetails = qaDaoServices.permitUpdateDetails(commonDaoServices.updateDetails(permit, permitDetails) as PermitApplicationsEntity, map, loggedInUser).second
+                            permitDetails = qaDaoServices.permitUpdateDetails(
+                                commonDaoServices.updateDetails(
+                                    permit,
+                                    permitDetails
+                                ) as PermitApplicationsEntity, map, loggedInUser
+                            ).second
                             qaDaoServices.pcmGenerateInvoice(
                                 map,
                                 loggedInUser,
                                 permitDetails,
                                 permitDetails.permitType ?: throw Exception("ID NOT FOUND")
                             )
+
+                            qaDaoServices.permitInvoiceCalculation(map, loggedInUser, permit, permitType)
+                            val pair = qaDaoServices.consolidateInvoiceAndSendMail(
+                                permit.id ?: throw ExpectedDataNotFound("MISSING PERMIT ID"), map, loggedInUser
+                            )
+                            var batchInvoice =
+                                pair.first
+                            permitDetails = pair.second
+
                             qualityAssuranceBpmn.qaDmARCheckApplicationComplete(
                                 permitDetails.id ?: throw Exception("MISSING PERMIT ID"),
                                 permitDetails.userId ?: throw Exception("MISSING USER ID"),
