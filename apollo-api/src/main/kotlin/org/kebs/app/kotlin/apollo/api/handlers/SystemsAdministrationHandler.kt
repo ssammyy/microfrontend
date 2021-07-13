@@ -607,7 +607,7 @@ class SystemsAdministrationHandler(
 
     }
 
-    @PreAuthorize("hasAuthority('TITLES_LIST')")
+//    @PreAuthorize("hasAuthority('TITLES_LIST')")
     fun titlesListing(req: ServerRequest): ServerResponse {
         try {
             daoService.listTitles(1)

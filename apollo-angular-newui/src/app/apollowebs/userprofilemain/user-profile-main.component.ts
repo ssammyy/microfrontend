@@ -4,7 +4,6 @@ import {loadResponsesFailure, selectUserInfo, UserEntityDto, UserEntityService} 
 import {Observable, of} from "rxjs";
 import {Titles, TitlesService} from "../../core/store/data/title";
 import {Store} from "@ngrx/store";
-import {ConfirmedValidator} from "../../core/shared/confirmed.validator";
 import {catchError} from "rxjs/operators";
 import {HttpErrorResponse} from "@angular/common/http";
 
@@ -47,12 +46,15 @@ export class UserProfileMainComponent implements OnInit {
                 title: ['', Validators.required],
             },
             {
-                validators: ConfirmedValidator('credentials', 'confirmCredentials')
+                // validators: ConfirmedValidator('credentials', 'confirmCredentials')
             });
         this.store$.select(selectUserInfo).subscribe(
             (l) => {
-                return this.service.getByKey(l.id).subscribe(
+                console.log(`The id is ${l.id}`);
+                return this.service.getByKey(`${l.id}/`).subscribe(
                     (u) => {
+                        console.log(`The id is ${l.id} vs ${u.id}`);
+                        this.stepOneForm.patchValue(u);
                         return this.user = u;
                     }, catchError((err: HttpErrorResponse) => {
                         console.log((err.error instanceof ErrorEvent) ? `Error: ${err.error.message}` : `Error Code: ${err.status},  Message: ${err.error}`);
@@ -67,7 +69,7 @@ export class UserProfileMainComponent implements OnInit {
                 );
             }
         );
-        this.stepOneForm.patchValue(this.user);
+
 
     }
 

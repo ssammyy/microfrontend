@@ -17,10 +17,10 @@ export class ApiEndpointService {
    * Map of domains for API endpoints.
    */
   public static DOMAIN = {
-    // LOCAL_DEV: 'localhost:8006'
+    LOCAL_DEV: 'localhost:8006'
     // LOCAL_DEV: '12:8006'
     // LOCAL_DEV: '41.72.209.58:8006'
-    LOCAL_DEV: 'kimsint.kebs.org:8006'
+    // LOCAL_DEV: 'kimsint.kebs.org:8006'
   };
 
   /**
@@ -58,12 +58,12 @@ export class ApiEndpointService {
     VALIDATE_TOKEN: `${ApiEndpointService.ANONYMOUS_CONTEXT}/validateToken`,
     REGISTER_COMPANY: `${ApiEndpointService.ANONYMOUS_CONTEXT}/registerCompany`,
     COMPANY_LIST: `${ApiEndpointService.MASTERS_CONTEXT}/company/`,
-    USER_DETAILS: `${ApiEndpointService.MASTERS_CONTEXT}/secure/user/details`,
+    USER_DETAILS: `${ApiEndpointService.MASTERS_CONTEXT}/secure/user/details/`,
     LOGOUT_URL: `${ApiEndpointService.MASTERS_CONTEXT}/secure/logout`,
     COMPANY_DETAIL_URL: `${ApiEndpointService.MASTERS_CONTEXT}/secure/companyDetails`,
     BRANCH_LIST: `${ApiEndpointService.MASTERS_CONTEXT}/{companyId}/branches/`,
     REGIONS_LIST: `${ApiEndpointService.ANONYMOUS_CONTEXT}/regions`,
-    TITLES_LIST: `${ApiEndpointService.ANONYMOUS_CONTEXT}/titles`,
+    TITLES_LIST: `${ApiEndpointService.ANONYMOUS_CONTEXT}/titles/`,
     COUNTY_LIST: `${ApiEndpointService.ANONYMOUS_CONTEXT}/county/`,
     TOWN_LIST: `${ApiEndpointService.ANONYMOUS_CONTEXT}/towns`,
     BUSINESS_LINES_LIST: `${ApiEndpointService.ANONYMOUS_CONTEXT}/businessLines`,

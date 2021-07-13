@@ -129,3 +129,8 @@ POST https://kimsint.kebs.org:8006/api/v1/migration/company/245/branches/304/use
 
 
 {"firstName":"Second","lastName":"user","userName":"seconduser@technovoz.com","email":"seconduser@technovoz.com","cellphone":"254733814627","otp":null,"credentials":"password","confirmCredentials":"password","companyId":245,"plantId":304}
+
+
+###
+GET https://localhost:8006/api/v1/migration/secure/user/details/1925/
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJrem11aGlhQGdtYWlsLmNvbSIsImlzcyI6ImtpbXMua2Vicy5vcmciLCJpYXQiOjE2MjYxOTk3OTksImV4cCI6MTYyNjIwNTc5OSwiYWRkcmVzcyI6IjEyNy4wLjAuMSIsInVzZXJBZ2VudCI6IltBcGFjaGUtSHR0cENsaWVudC80LjUuMTMgKEphdmEvMTEuMC4xMSldIiwiZnVsbE5hbWUiOiJLZW5uZXRoIE11aGlhIiwicm9sZXMiOiJQRVJNSVRfQVBQTElDQVRJT04sUEVSTUlUX1JFTkVXQUwsUFZPQ19BUFBMSUNBVElPTl9SRUFELExJU1RfQ09NUEFOWSxNT0RJRllfQ09NUEFOWSJ9.s_wmQVMKoV0MdDJoJcoPs5ANIEDGZpIbheKBtbY9FWL5I8cyCjSiaPaEdjF6SSWxabCq2aqaaOG0J99pHGWwWg
