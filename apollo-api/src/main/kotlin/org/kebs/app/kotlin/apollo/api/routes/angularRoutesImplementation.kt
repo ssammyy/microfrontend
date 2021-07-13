@@ -297,6 +297,7 @@ class AngularRoutes {
                     PUT("/sta3-update", handler::permitUpdateSTA3Migration)
                     "/sta10".nest {
                         POST("/firm_details", handler::permitApplySTA10FirmDetailsMigration)
+                        PUT("/firm_details-update", handler::permitApplySTA10FirmDetailsMigration)
                         POST("/personnel_details", handler::permitApplySTA10PersonnelMigration)
                         POST(
                             "/products_being_manufactured",

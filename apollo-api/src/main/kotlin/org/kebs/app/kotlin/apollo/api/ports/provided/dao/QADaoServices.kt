@@ -1861,18 +1861,18 @@ class QADaoServices(
     }
 
     fun sta10NewSave(
-        permitNewRefNumber: String,
+        permit: PermitApplicationsEntity,
         qaSta10Details: QaSta10Entity,
         user: UsersEntity,
         map: ServiceMapsEntity
     ): QaSta10Entity {
-
+        val plantAttached = findPlantDetails(permit.attachedPlantId ?: throw ExpectedDataNotFound("MISSING PLANT ID"))
         with(qaSta10Details) {
             totalNumberPersonnel = totalNumberMale?.let { totalNumberFemale?.plus(it) }
-            town = town?.let { commonDaoServices.findTownEntityByTownId(it).id }
-            county = county?.let { commonDaoServices.findCountiesEntityByCountyId(it, map.activeStatus).id }
-            region = county?.let { commonDaoServices.findCountiesEntityByCountyId(it, map.activeStatus).regionId }
-            permitRefNumber = permitNewRefNumber
+            town = plantAttached.town
+            county = plantAttached.county
+            region = plantAttached.region
+            permitRefNumber = permit.permitRefNumber
             applicationDate = commonDaoServices.getCurrentDate()
             status = map.activeStatus
             createdBy = commonDaoServices.concatenateName(user)
@@ -2250,7 +2250,7 @@ class QADaoServices(
                     var newSta10 = QaSta10Entity()
                     newSta10 = commonDaoServices.updateDetails(sta10, newSta10) as QaSta10Entity
                     newSta10.id = null
-                    sta10NewSave(savePermit.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"), newSta10, user, s)
+                    sta10NewSave(savePermit, newSta10, user, s)
                 }
                 applicationMapProperties.mapQAPermitTypeIDDmark -> {
                     val sta3 = findSTA3WithPermitRefNumber(oldPermit.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"))
@@ -3765,6 +3765,7 @@ class QADaoServices(
     fun mapDtoSTA10SectionAAndQaSta10View(qasta10entity: QaSta10Entity): STA10SectionADto {
         val sta10 = STA10SectionADto()
         with(sta10) {
+            id = qasta10entity.id
             firmName = qasta10entity.firmName
             statusCompanyBusinessRegistration = qasta10entity.statusCompanyBusinessRegistration
             ownerNameProprietorDirector = qasta10entity.ownerNameProprietorDirector

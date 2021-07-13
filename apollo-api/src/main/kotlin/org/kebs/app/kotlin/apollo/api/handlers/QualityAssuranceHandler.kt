@@ -1471,16 +1471,20 @@ class QualityAssuranceHandler(
         try {
             val loggedInUser = commonDaoServices.loggedInUserDetails()
             val map = commonDaoServices.serviceMapDetails(appId)
-            val permitID = req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
-            val permit = qaDaoServices.findPermitBYUserIDAndId(permitID, loggedInUser.id ?: throw ExpectedDataNotFound("MISSING USER ID"))
-            val qaSta10Entity = qaDaoServices.findSTA10WithPermitRefNumberBY(permit.permitRefNumber ?: throw ExpectedDataNotFound("INVALID PERMIT REF NUMBER"))
+            val permitID =
+                req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
+            val permit = qaDaoServices.findPermitBYUserIDAndId(
+                permitID,
+                loggedInUser.id ?: throw ExpectedDataNotFound("MISSING USER ID")
+            )
+//            val qaSta10Entity = qaDaoServices.findSTA10WithPermitRefNumberBY(permit.permitRefNumber ?: throw ExpectedDataNotFound("INVALID PERMIT REF NUMBER"))
 
             val dto = req.body<STA10SectionADto>()
-            val sta10 = qaDaoServices.mapDtoSTA10SectionAAndQaSta10Entity(dto)
+            var sta10 = qaDaoServices.mapDtoSTA10SectionAAndQaSta10Entity(dto)
 
             //Save the sta10 details first
-            qaDaoServices.sta10NewSave(
-                permit.permitRefNumber ?: throw Exception("MISSING PERMIT REF NUMBER"),
+            sta10 = qaDaoServices.sta10NewSave(
+                permit,
                 sta10,
                 loggedInUser,
                 map
@@ -1502,7 +1506,7 @@ class QualityAssuranceHandler(
                 ) as PermitApplicationsEntity, map, loggedInUser
             ).second
 
-            qaDaoServices.permitDetails(updatePermit, map).let {
+            qaDaoServices.mapDtoSTA10SectionAAndQaSta10View(sta10).let {
                 return ok().body(it)
             }
 
