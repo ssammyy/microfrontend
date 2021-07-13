@@ -331,7 +331,8 @@ data class AllPermitDetailsDto(
     var permitDetails: PermitDetailsDto? = null,
 //    var standardList: List<UserEntityDto>? = null,
     var officerList: List<UserEntityDto>? = null,
-    var oldVersionList: List<PermitEntityDto>? = null
+    var oldVersionList: List<PermitEntityDto>? = null,
+    var batchID: Long? = null
 )
 
 data class StandardsDto(

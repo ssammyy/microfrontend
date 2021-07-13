@@ -91,7 +91,7 @@ export class PermitEntityDetails {
     firmTypeID: bigint;
     firmTypeName: string;
     permitTypeName: string;
-    permitTypeID: bigint;
+    permitTypeID: number;
     permitAwardStatus: boolean;
     invoiceGenerated: boolean;
     approvedRejectedScheme: boolean;
@@ -143,6 +143,7 @@ export class AllPermitDetailsDto {
     permitDetails: PermitEntityDetails;
     officerList: UserEntityDto[];
     oldVersionList: PermitEntityDto[];
+    batchID: bigint;
 }
 
 export class PlantDetailsDto {
@@ -164,7 +165,41 @@ export class PlantDetailsDto {
     contactPerson: string;
 }
 
-export class sta10Dto {
+
+export class InvoiceDto {
+    batchID: bigint;
+    firmName: string;
+    postalAddress: string;
+    physicalAddress: string;
+    contactPerson: string;
+    telephoneNo: string;
+    email: string;
+    invoiceNumber: string;
+    receiptNo: string;
+    paidDate: Date;
+    totalAmount: any;
+    paidStatus: boolean;
+    submittedStatus: boolean;
+    plantId: bigint;
+}
+
+
+export class PermitInvoiceDto {
+    permitID: bigint;
+    invoiceNumber: string;
+    commodityDescription: string;
+    brandName: string;
+    totalAmount: any;
+    paidStatus: boolean;
+    permitRefNumber: string;
+}
+
+export class AllBatchInvoiceDetailsDto {
+    batchDetails: InvoiceDto;
+    allRelatedBatchInvoices: PermitInvoiceDto[];
+}
+
+export class Sta10Dto {
     firmName: string;
     statusCompanyBusinessRegistration: string;
     ownerNameProprietorDirector: string;

@@ -296,6 +296,7 @@ class AngularRoutes {
                         GET("/list", handler::invoiceListMigration)
                         GET("/list-no-batch-Id", handler::invoiceListNoBatchIDMigration)
                         GET("/batch-invoice-list", handler::invoiceBatchListMigration)
+                        GET("/batch-invoice-details", handler::invoiceBatchDetailsMigration)
 
                     }
                 }

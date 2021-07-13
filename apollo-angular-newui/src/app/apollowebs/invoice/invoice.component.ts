@@ -52,14 +52,7 @@ export class InvoiceComponent implements OnInit, AfterViewInit {
   }
 
   onSelect(rowElement: string) {
-
-    this.qaService.loadInvoiceDetails(rowElement).subscribe(
-        (data: any) => {
-          // this.allPermitDetails = data;
-          // this.onSelectL1SubSubSection(this.userDetails?.employeeProfile?.l1SubSubSection);
-
-        },
-    );
+    this.router.navigate(['/invoiceDetails'], {fragment: rowElement});
   }
 
   ngAfterViewInit() {

@@ -1180,6 +1180,22 @@ class QualityAssuranceHandler(
             //Calculate Invoice Details
             qaDaoServices.permitInvoiceCalculation(map, loggedInUser, permit, permitType)
 
+            //Consolidate invoice now first
+            val newBatchInvoiceDto = NewBatchInvoiceDto()
+            with(newBatchInvoiceDto) {
+                permitInvoicesID = arrayOf(permit.permitRefNumber.toString())
+            }
+            var batchInvoice =
+                qaDaoServices.permitMultipleInvoiceCalculation(map, loggedInUser, newBatchInvoiceDto).second
+
+            // submit invoice to get way
+            with(newBatchInvoiceDto) {
+                batchID = batchInvoice.id!!
+            }
+
+            batchInvoice =
+                qaDaoServices.permitMultipleInvoiceSubmitInvoice(map, loggedInUser, newBatchInvoiceDto).second
+
             //Update Permit Details
             with(permit) {
                 sendApplication = map.activeStatus
@@ -1188,7 +1204,19 @@ class QualityAssuranceHandler(
             }
             permit = qaDaoServices.permitUpdateDetails(permit, map, loggedInUser).second
 
-            qaDaoServices.mapAllPermitDetailsTogether(permit, map).let {
+            //Send email with attached Invoice details
+            qaDaoServices.invoiceCreationPDF(
+                batchInvoice.id ?: throw ExpectedDataNotFound("MISSING BATCH INVOICE ID"),
+                commonDaoServices.findUserByID(permit.userId ?: throw ExpectedDataNotFound("MISSING USER ID")).email
+                    ?: throw ExpectedDataNotFound("MISSING USER ID"),
+                loggedInUser
+            )
+
+            qaDaoServices.mapAllPermitDetailsTogether(
+                permit,
+                batchInvoice.id ?: throw ExpectedDataNotFound("MISSING BATCH INVOICE ID"),
+                map
+            ).let {
                 return ok().body(it)
             }
 
@@ -1232,7 +1260,7 @@ class QualityAssuranceHandler(
                 permit.pcmId ?: throw Exception("MISSING PCM ID")
             )
 
-            qaDaoServices.mapAllPermitDetailsTogether(permit, map).let {
+            qaDaoServices.mapAllPermitDetailsTogether(permit, null, map).let {
                 return ok().body(it)
             }
 
@@ -1258,7 +1286,7 @@ class QualityAssuranceHandler(
                 loggedInUser.id ?: throw ExpectedDataNotFound("MISSING USER ID")
             )
 
-            qaDaoServices.mapAllPermitDetailsTogether(permit, map).let {
+            qaDaoServices.mapAllPermitDetailsTogether(permit, null, map).let {
                 return ok().body(it)
             }
 
@@ -1283,7 +1311,7 @@ class QualityAssuranceHandler(
                 loggedInUser.id ?: throw ExpectedDataNotFound("MISSING USER ID")
             )
 
-            qaDaoServices.mapAllPermitDetailsTogether(permit, map).let {
+            qaDaoServices.mapAllPermitDetailsTogether(permit, null, map).let {
                 return ok().body(it)
             }
 
@@ -1937,6 +1965,28 @@ class QualityAssuranceHandler(
 
             val batchInvoiceDetails = qaDaoServices.permitMultipleInvoiceCalculation(map, loggedInUser, dto).second
 
+            qaDaoServices.mapBatchInvoiceDetails(batchInvoiceDetails, loggedInUser, map).let {
+                return ok().body(it)
+            }
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            return ServerResponse.badRequest().body(e.message ?: "Unknown Error")
+        }
+
+    }
+
+    @PreAuthorize("hasAuthority('PERMIT_APPLICATION')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun invoiceBatchDetailsMigration(req: ServerRequest): ServerResponse {
+        try {
+            val loggedInUser = commonDaoServices.loggedInUserDetails()
+            val map = commonDaoServices.serviceMapDetails(appId)
+            val batchID =
+                req.paramOrNull("batchID")?.toLong() ?: throw ExpectedDataNotFound("Required batch ID, check config")
+            val batchInvoiceDetails = qaDaoServices.findBatchInvoicesWithID(batchID)
+            KotlinLogging.logger { }.info(":::::: BATCH INVOICE :::::::")
             qaDaoServices.mapBatchInvoiceDetails(batchInvoiceDetails, loggedInUser, map).let {
                 return ok().body(it)
             }

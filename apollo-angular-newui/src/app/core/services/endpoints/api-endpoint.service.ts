@@ -17,10 +17,10 @@ export class ApiEndpointService {
    * Map of domains for API endpoints.
    */
   public static DOMAIN = {
-    // LOCAL_DEV: 'localhost:8006'
+    LOCAL_DEV: 'localhost:8006'
     // LOCAL_DEV: '12:8006'
-    // LOCAL_DEV: '41.72.209.58:8006'
-    LOCAL_DEV: 'kimsint.kebs.org:8006'
+      // LOCAL_DEV: '41.72.209.58:8006'
+      // LOCAL_DEV: 'kimsint.kebs.org:8006'
   };
 
   /**
@@ -104,24 +104,26 @@ export class ApiEndpointService {
       MASTERS_CURRENCIES: `${ApiEndpointService.MASTERS_CONTEXT}/currencies/`,
       // tslint:disable-next-line:max-line-length
       /*::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::QA ENDPOINTS:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
-    FIRM_PERMIT_LIST: `${ApiEndpointService.QA_CONTEXT}/permit/firm-list`,
-    PERMIT_LIST: `${ApiEndpointService.QA_CONTEXT}/permit/list`,
-    PERMIT_VIEW_DETAILS: `${ApiEndpointService.QA_CONTEXT}/permit/view/details`,
-    PERMIT_SUBMIT_DETAILS_FOR_REVIEW: `${ApiEndpointService.QA_CONTEXT}/permit/apply/submit-application-review`,
-    PLANT_LIST: `${ApiEndpointService.QA_CONTEXT}/branch-list`,
-    SECTION_LIST: `${ApiEndpointService.QA_CONTEXT}/sections-list`,
-    PERMIT_APPLY_STA1: `${ApiEndpointService.QA_CONTEXT}/permit/apply/sta1`,
-    PERMIT_UPDATE_STA1: `${ApiEndpointService.QA_CONTEXT}/permit/apply/sta1-update`,
-    PERMIT_APPLY_STA3: `${ApiEndpointService.QA_CONTEXT}/permit/apply/sta3`,
-    PERMIT_UPDATE_STA3: `${ApiEndpointService.QA_CONTEXT}/permit/apply/sta3-update`,
-    INVOICE_LIST_DETAILS: `${ApiEndpointService.QA_CONTEXT}/permit/invoice/batch-invoice-list`,
-    INVOICE_DETAILS: `${ApiEndpointService.QA_CONTEXT}/report/proforma-invoice-with-Item`,
-    PERMIT_APPLY_STA10_FIRM_DETAILS: `${ApiEndpointService.QA_CONTEXT}/permit/apply/sta10/firm_details`,
-    PERMIT_APPLY_STA10_PERSONNEL_DETAILS: `${ApiEndpointService.QA_CONTEXT}/permit/apply/sta10/personnel_details`,
-    PERMIT_APPLY_STA10_PRODUCTS_BEING_MANUFACTURED: `${ApiEndpointService.QA_CONTEXT}/permit/apply/sta10/products_being_manufactured`,
-    PERMIT_APPLY_STA10_RAW_MATERIAL: `${ApiEndpointService.QA_CONTEXT}/permit/apply/sta10/raw_material`,
-    PERMIT_APPLY_STA10_MACHINERY_PLANT: `${ApiEndpointService.QA_CONTEXT}/permit/apply/sta10/machinery_plant`,
-    PERMIT_APPLY_STA10_MANUFACTURING_PROCESS: `${ApiEndpointService.QA_CONTEXT}/permit/apply/sta10/manufacturing_process`,
+      FIRM_PERMIT_LIST: `${ApiEndpointService.QA_CONTEXT}/permit/firm-list`,
+      PERMIT_LIST: `${ApiEndpointService.QA_CONTEXT}/permit/list`,
+      PERMIT_VIEW_DETAILS: `${ApiEndpointService.QA_CONTEXT}/permit/view/details`,
+      PERMIT_SUBMIT_DETAILS_FOR_REVIEW: `${ApiEndpointService.QA_CONTEXT}/permit/apply/submit-application-review`,
+      PERMIT_SUBMIT_APPLICATION: `${ApiEndpointService.QA_CONTEXT}/permit/apply/submit-application`,
+      PLANT_LIST: `${ApiEndpointService.QA_CONTEXT}/branch-list`,
+      SECTION_LIST: `${ApiEndpointService.QA_CONTEXT}/sections-list`,
+      PERMIT_APPLY_STA1: `${ApiEndpointService.QA_CONTEXT}/permit/apply/sta1`,
+      PERMIT_UPDATE_STA1: `${ApiEndpointService.QA_CONTEXT}/permit/apply/sta1-update`,
+      PERMIT_APPLY_STA3: `${ApiEndpointService.QA_CONTEXT}/permit/apply/sta3`,
+      PERMIT_UPDATE_STA3: `${ApiEndpointService.QA_CONTEXT}/permit/apply/sta3-update`,
+      INVOICE_LIST_DETAILS: `${ApiEndpointService.QA_CONTEXT}/permit/view/invoice/batch-invoice-list`,
+      INVOICE_DETAILS: `${ApiEndpointService.QA_CONTEXT}/permit/view/invoice/batch-invoice-details`,
+      INVOICE_DETAILS_PDF: `${ApiEndpointService.QA_CONTEXT}/report/proforma-invoice-with-Item`,
+      PERMIT_APPLY_STA10_FIRM_DETAILS: `${ApiEndpointService.QA_CONTEXT}/permit/apply/sta10/firm_details`,
+      PERMIT_APPLY_STA10_PERSONNEL_DETAILS: `${ApiEndpointService.QA_CONTEXT}/permit/apply/sta10/personnel_details`,
+      PERMIT_APPLY_STA10_PRODUCTS_BEING_MANUFACTURED: `${ApiEndpointService.QA_CONTEXT}/permit/apply/sta10/products_being_manufactured`,
+      PERMIT_APPLY_STA10_RAW_MATERIAL: `${ApiEndpointService.QA_CONTEXT}/permit/apply/sta10/raw_material`,
+      PERMIT_APPLY_STA10_MACHINERY_PLANT: `${ApiEndpointService.QA_CONTEXT}/permit/apply/sta10/machinery_plant`,
+      PERMIT_APPLY_STA10_MANUFACTURING_PROCESS: `${ApiEndpointService.QA_CONTEXT}/permit/apply/sta10/manufacturing_process`,
 
 
   };
