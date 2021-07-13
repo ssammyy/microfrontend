@@ -69,7 +69,6 @@ import {DmarkApplicationsAllComponent} from './apollowebs/dmark-applications-all
 import { InvoiceDetailsComponent } from './apollowebs/invoice-details/invoice-details.component';
 import { CompaniesList } from './apollowebs/company/companies.list';
 import { CompanyComponent } from './apollowebs/company/company.component';
-import {NgxSpinnerModule} from "ngx-spinner";
 import { BranchComponent } from './apollowebs/company/branch/branch.component';
 import { BranchList } from './apollowebs/company/branch/branch.list';
 import { UserComponent } from './apollowebs/company/branch/users/user.component';

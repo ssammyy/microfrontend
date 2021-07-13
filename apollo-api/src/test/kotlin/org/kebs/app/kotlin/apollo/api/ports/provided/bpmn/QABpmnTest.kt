@@ -122,6 +122,7 @@ class QABpmnTest{
     val hodAssigneeId:Long = 110
     val assessorAssigneeId:Long = 111
     val pacAssigneeId:Long = 112
+    val assesorAssigneeId:Long = 113
     val customerEmail = "james.mantu@gmal.com"
 
     /*
@@ -530,7 +531,7 @@ class QABpmnTest{
         val permitId: Long = 263
 
         //Start the process
-        qualityAssuranceBpmn.startQADMApplicationReviewProcess(permitId, hofAssigneeId)?.let {
+        qualityAssuranceBpmn.startQADMApplicationReviewProcess(permitId, hofAssigneeId,false)?.let {
             qualityAssuranceBpmn.fetchTaskByPermitId(permitId, qaDmApplicationReviewProcessDefinitionKey)?.let { taskDetails ->
                 println("Task details after starting the process")
                 for (taskDetail in taskDetails){
@@ -554,7 +555,7 @@ class QABpmnTest{
         }?: return
 
         //Assign to QAO
-        qualityAssuranceBpmn.qaDmARAllocateToQAOComplete(permitId, qaoAssigneeId).let {
+        qualityAssuranceBpmn.qaDmARAllocateQAOComplete(permitId, qaoAssigneeId).let {
             qualityAssuranceBpmn.fetchTaskByPermitId(permitId,qaDmApplicationReviewProcessDefinitionKey)?.let { taskDetails ->
                 println("Task details after assign to QAO is complete")
                 for (taskDetail in taskDetails){
@@ -1005,7 +1006,7 @@ class QABpmnTest{
     }
 
     @Test
-    //@Ignore
+    @Ignore
     fun testQaDmAssessmentProcess() {
         val permitId: Long = 324
 
@@ -1376,7 +1377,7 @@ class QABpmnTest{
         val permitId: Long = 303
 
         //Start the process
-        qualityAssuranceBpmn.startQADMApplicationReviewProcess(permitId, hofAssigneeId)?.let {
+        qualityAssuranceBpmn.startQADMApplicationReviewProcess(permitId, hofAssigneeId,false)?.let {
             qualityAssuranceBpmn.fetchTaskByPermitId(permitId, qaDmApplicationReviewProcessDefinitionKey)
                 ?.let { taskDetails ->
                     println("Task details after starting the process")
@@ -1426,6 +1427,201 @@ class QABpmnTest{
                     }
                 }
         } ?: return
+
+    }
+
+    @Test
+    //@Ignore
+    fun testQaDmAppReviewApplicationLocal() {
+        val permitId: Long = 267
+
+        //Start the process -- foreign dmark = false
+        qualityAssuranceBpmn.startQADMApplicationReviewProcess(permitId, hofAssigneeId,false)?.let {
+            qualityAssuranceBpmn.fetchTaskByPermitId(permitId, qaDmApplicationReviewProcessDefinitionKey)?.let { taskDetails ->
+                println("Task details after starting the process")
+                for (taskDetail in taskDetails){
+                    taskDetail.task.let{ task->
+                        println("${taskDetail.permitId} -- ${task.id} -- ${task.name} -- ${task.assignee} -- ${task.processInstanceId} -- ${task.taskDefinitionKey} " )
+                    }
+                }
+            }
+        } ?: return
+
+        //Check if application complete
+        qualityAssuranceBpmn.qaDmARCheckApplicationComplete(permitId, hofAssigneeId,true).let {
+            qualityAssuranceBpmn.fetchTaskByPermitId(permitId,qaDmApplicationReviewProcessDefinitionKey)?.let { taskDetails ->
+                println("Task details after checking if the application is complete")
+                for (taskDetail in taskDetails){
+                    taskDetail.task.let{ task->
+                        println("${taskDetail.permitId} -- ${task.id} -- ${task.name} -- ${task.assignee} -- ${task.processInstanceId} -- ${task.taskDefinitionKey} " )
+                    }
+                }
+            }
+        }?: return
+
+        //Assign to QAO
+        qualityAssuranceBpmn.qaDmARAllocateQAOComplete(permitId, qaoAssigneeId).let {
+            qualityAssuranceBpmn.fetchTaskByPermitId(permitId,qaDmApplicationReviewProcessDefinitionKey)?.let { taskDetails ->
+                println("Task details after assign to QAO is complete")
+                for (taskDetail in taskDetails){
+                    taskDetail.task.let{ task->
+                        println("${taskDetail.permitId} -- ${task.id} -- ${task.name} -- ${task.assignee} -- ${task.processInstanceId} -- ${task.taskDefinitionKey} " )
+                    }
+                }
+            }
+        }?: return
+
+        //Factory inspection
+        qualityAssuranceBpmn.qaDmARFactoryInspectionComplete(permitId, qaoAssigneeId).let {
+            qualityAssuranceBpmn.fetchTaskByPermitId(permitId,qaDmApplicationReviewProcessDefinitionKey)?.let { taskDetails ->
+                println("Task details after factory inspection complete")
+                for (taskDetail in taskDetails){
+                    taskDetail.task.let{ task->
+                        println("${taskDetail.permitId} -- ${task.id} -- ${task.name} -- ${task.assignee} -- ${task.processInstanceId} -- ${task.taskDefinitionKey} " )
+                    }
+                }
+            }
+        }?: return
+
+        //Generate inspection report complete
+        qualityAssuranceBpmn.qaDmARGenerateInspectionReportComplete(permitId, hofAssigneeId).let {
+            qualityAssuranceBpmn.fetchTaskByPermitId(permitId,qaDmApplicationReviewProcessDefinitionKey)?.let { taskDetails ->
+                println("Task details after generate inspection report complete")
+                for (taskDetail in taskDetails){
+                    taskDetail.task.let{ task->
+                        println("${taskDetail.permitId} -- ${task.id} -- ${task.name} -- ${task.assignee} -- ${task.processInstanceId} -- ${task.taskDefinitionKey} " )
+                    }
+                }
+            }
+        }?: return
+
+    }
+
+    @Test
+    @Ignore
+    fun testQaDmAppReviewApplicationForeign() {
+        val permitId: Long = 266
+
+        //Start the process -- foreign dmark = true
+        qualityAssuranceBpmn.startQADMApplicationReviewProcess(permitId, hofAssigneeId,true)?.let {
+            qualityAssuranceBpmn.fetchTaskByPermitId(permitId, qaDmApplicationReviewProcessDefinitionKey)?.let { taskDetails ->
+                println("Task details after starting the process")
+                for (taskDetail in taskDetails){
+                    taskDetail.task.let{ task->
+                        println("${taskDetail.permitId} -- ${task.id} -- ${task.name} -- ${task.assignee} -- ${task.processInstanceId} -- ${task.taskDefinitionKey} " )
+                    }
+                }
+            }
+        } ?: return
+
+        //Check if application complete
+        qualityAssuranceBpmn.qaDmARCheckApplicationComplete(permitId, hofAssigneeId,true).let {
+            qualityAssuranceBpmn.fetchTaskByPermitId(permitId,qaDmApplicationReviewProcessDefinitionKey)?.let { taskDetails ->
+                println("Task details after checking if the application is complete")
+                for (taskDetail in taskDetails){
+                    taskDetail.task.let{ task->
+                        println("${taskDetail.permitId} -- ${task.id} -- ${task.name} -- ${task.assignee} -- ${task.processInstanceId} -- ${task.taskDefinitionKey} " )
+                    }
+                }
+            }
+        }?: return
+
+        //Assign to QAO
+        qualityAssuranceBpmn.qaDmARAllocateQAOComplete(permitId, qaoAssigneeId).let {
+            qualityAssuranceBpmn.fetchTaskByPermitId(permitId,qaDmApplicationReviewProcessDefinitionKey)?.let { taskDetails ->
+                println("Task details after assign to QAO is complete")
+                for (taskDetail in taskDetails){
+                    taskDetail.task.let{ task->
+                        println("${taskDetail.permitId} -- ${task.id} -- ${task.name} -- ${task.assignee} -- ${task.processInstanceId} -- ${task.taskDefinitionKey} " )
+                    }
+                }
+            }
+        }?: return
+
+        //Generate justification report
+        qualityAssuranceBpmn.qaDmARGenerateJustificationReportComplete(permitId, qaoAssigneeId).let {
+            qualityAssuranceBpmn.fetchTaskByPermitId(permitId,qaDmApplicationReviewProcessDefinitionKey)?.let { taskDetails ->
+                println("Task details after generate justification report is complete")
+                for (taskDetail in taskDetails){
+                    taskDetail.task.let{ task->
+                        println("${taskDetail.permitId} -- ${task.id} -- ${task.name} -- ${task.assignee} -- ${task.processInstanceId} -- ${task.taskDefinitionKey} " )
+                    }
+                }
+            }
+        }?: return
+
+        //Approve justification report -- false
+        qualityAssuranceBpmn.qaDmARApproveJustificationReportComplete(permitId, qaoAssigneeId, false).let {
+            qualityAssuranceBpmn.fetchTaskByPermitId(permitId,qaDmApplicationReviewProcessDefinitionKey)?.let { taskDetails ->
+                println("Task details after approve justification report is complete")
+                for (taskDetail in taskDetails){
+                    taskDetail.task.let{ task->
+                        println("${taskDetail.permitId} -- ${task.id} -- ${task.name} -- ${task.assignee} -- ${task.processInstanceId} -- ${task.taskDefinitionKey} " )
+                    }
+                }
+            }
+        }?: return
+
+        //Generate justification report
+        qualityAssuranceBpmn.qaDmARGenerateJustificationReportComplete(permitId, qaoAssigneeId).let {
+            qualityAssuranceBpmn.fetchTaskByPermitId(permitId,qaDmApplicationReviewProcessDefinitionKey)?.let { taskDetails ->
+                println("Task details after generate justification report is complete")
+                for (taskDetail in taskDetails){
+                    taskDetail.task.let{ task->
+                        println("${taskDetail.permitId} -- ${task.id} -- ${task.name} -- ${task.assignee} -- ${task.processInstanceId} -- ${task.taskDefinitionKey} " )
+                    }
+                }
+            }
+        }?: return
+
+        //Approve justification report -- true
+        qualityAssuranceBpmn.qaDmARApproveJustificationReportComplete(permitId, qaoAssigneeId, true).let {
+            qualityAssuranceBpmn.fetchTaskByPermitId(permitId,qaDmApplicationReviewProcessDefinitionKey)?.let { taskDetails ->
+                println("Task details after approve justification report is complete")
+                for (taskDetail in taskDetails){
+                    taskDetail.task.let{ task->
+                        println("${taskDetail.permitId} -- ${task.id} -- ${task.name} -- ${task.assignee} -- ${task.processInstanceId} -- ${task.taskDefinitionKey} " )
+                    }
+                }
+            }
+        }?: return
+
+        //Assign assesor -- true
+        qualityAssuranceBpmn.qaDmARAssignAssessorComplete(permitId, assesorAssigneeId).let {
+            qualityAssuranceBpmn.fetchTaskByPermitId(permitId,qaDmApplicationReviewProcessDefinitionKey)?.let { taskDetails ->
+                println("Task details after assign is complete")
+                for (taskDetail in taskDetails){
+                    taskDetail.task.let{ task->
+                        println("${taskDetail.permitId} -- ${task.id} -- ${task.name} -- ${task.assignee} -- ${task.processInstanceId} -- ${task.taskDefinitionKey} " )
+                    }
+                }
+            }
+        }?: return
+
+
+        //Factory inspection
+        qualityAssuranceBpmn.qaDmARFactoryInspectionComplete(permitId, qaoAssigneeId).let {
+            qualityAssuranceBpmn.fetchTaskByPermitId(permitId,qaDmApplicationReviewProcessDefinitionKey)?.let { taskDetails ->
+                println("Task details after factory inspection complete")
+                for (taskDetail in taskDetails){
+                    taskDetail.task.let{ task->
+                        println("${taskDetail.permitId} -- ${task.id} -- ${task.name} -- ${task.assignee} -- ${task.processInstanceId} -- ${task.taskDefinitionKey} " )
+                    }
+                }
+            }
+        }?: return
+
+        //Generate inspection report complete
+        qualityAssuranceBpmn.qaDmARGenerateInspectionReportComplete(permitId, hofAssigneeId).let {
+            qualityAssuranceBpmn.fetchTaskByPermitId(permitId,qaDmApplicationReviewProcessDefinitionKey)?.let { taskDetails ->
+                println("Task details after generate inspection report complete")
+                for (taskDetail in taskDetails){
+                    taskDetail.task.let{ task->
+                        println("${taskDetail.permitId} -- ${task.id} -- ${task.name} -- ${task.assignee} -- ${task.processInstanceId} -- ${task.taskDefinitionKey} " )
+                    }
+                }
+            }
+        }?: return
 
     }
 

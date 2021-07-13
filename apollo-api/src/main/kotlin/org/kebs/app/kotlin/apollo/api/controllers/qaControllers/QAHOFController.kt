@@ -268,7 +268,7 @@ class QAHOFController(
                         if(permit.permitType == 1L) {
                             qualityAssuranceBpmn.qaDmARCheckApplicationComplete(id, hodId, true)
                                     .let {
-                                        qualityAssuranceBpmn.qaDmARAllocateToQAOComplete(id, qaoAssigneeId)
+                                        qualityAssuranceBpmn.qaDmARAllocateQAOComplete(id, qaoAssigneeId)
                                         redirectAttributes.addFlashAttribute("alert", "You have marked the application as complete. The task has been passed to the selected QAO")
                                     }
                         } else {

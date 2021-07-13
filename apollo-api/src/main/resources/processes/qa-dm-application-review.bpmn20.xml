@@ -9,8 +9,8 @@
         </userTask>
         <exclusiveGateway id="exclusivegateway1" name="Exclusive Gateway"></exclusiveGateway>
         <sequenceFlow id="flow3" sourceRef="qaDmarCheckApplication" targetRef="exclusivegateway1"></sequenceFlow>
-        <userTask id="qaDmarAllocatetoQAO" name="Allocate to QAO"></userTask>
-        <sequenceFlow id="flow5" sourceRef="exclusivegateway1" targetRef="qaDmarAllocatetoQAO">
+        <userTask id="qaDmarAllocateQAO" name="Allocate QAO"></userTask>
+        <sequenceFlow id="flow5" sourceRef="exclusivegateway1" targetRef="qaDmarAllocateQAO">
             <conditionExpression xsi:type="tFormalExpression"><![CDATA[${applicationComplete==1}]]></conditionExpression>
         </sequenceFlow>
         <userTask id="qaDmarManufacturerCorrection" name="Application correction" activiti:category="manufacturer">
@@ -102,7 +102,6 @@
         <endEvent id="qaDmarEndManufacturerTestResults" name="End Manufacturer Test Results"></endEvent>
         <sequenceFlow id="flow37" sourceRef="servicetask3" targetRef="qaDmarEndManufacturerTestResults"></sequenceFlow>
         <sequenceFlow id="flow38" sourceRef="qaDmarStart" targetRef="qaDmarCheckApplication"></sequenceFlow>
-        <sequenceFlow id="flow39" sourceRef="qaDmarAllocatetoQAO" targetRef="qaDmarFactoryInspection"></sequenceFlow>
         <sequenceFlow id="flow40" sourceRef="exclusivegateway1" targetRef="qaDmarManufacturerCorrection">
             <conditionExpression xsi:type="tFormalExpression"><![CDATA[${applicationComplete==0}]]></conditionExpression>
         </sequenceFlow>
@@ -128,6 +127,27 @@
         <sequenceFlow id="flow51" sourceRef="exclusivegateway7" targetRef="endevent1">
             <conditionExpression xsi:type="tFormalExpression"><![CDATA[${supervisionSchemeAccepted==1}]]></conditionExpression>
         </sequenceFlow>
+        <userTask id="qaDmarGenerateJustificationReport" name="Generate Justification Report"></userTask>
+        <userTask id="qaDmarApproveJustificationReport" name="Approve Justification Report"></userTask>
+        <sequenceFlow id="flow53" sourceRef="qaDmarGenerateJustificationReport" targetRef="qaDmarApproveJustificationReport"></sequenceFlow>
+        <exclusiveGateway id="exclusivegateway8" name="Exclusive Gateway"></exclusiveGateway>
+        <sequenceFlow id="flow54" sourceRef="qaDmarApproveJustificationReport" targetRef="exclusivegateway8"></sequenceFlow>
+        <userTask id="qaDmarAssignAssessor" name="Assign Assessor"></userTask>
+        <sequenceFlow id="flow55" sourceRef="exclusivegateway8" targetRef="qaDmarAssignAssessor">
+            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${justificationReportApproved==1}]]></conditionExpression>
+        </sequenceFlow>
+        <exclusiveGateway id="exclusivegateway9" name="Exclusive Gateway"></exclusiveGateway>
+        <sequenceFlow id="flow56" sourceRef="qaDmarAllocateQAO" targetRef="exclusivegateway9"></sequenceFlow>
+        <sequenceFlow id="flow57" sourceRef="exclusivegateway9" targetRef="qaDmarGenerateJustificationReport">
+            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${foreignDmark==1}]]></conditionExpression>
+        </sequenceFlow>
+        <sequenceFlow id="flow58" sourceRef="exclusivegateway9" targetRef="qaDmarFactoryInspection">
+            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${foreignDmark==0}]]></conditionExpression>
+        </sequenceFlow>
+        <sequenceFlow id="flow59" sourceRef="qaDmarAssignAssessor" targetRef="qaDmarFactoryInspection"></sequenceFlow>
+        <sequenceFlow id="flow60" sourceRef="exclusivegateway8" targetRef="qaDmarGenerateJustificationReport">
+            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${justificationReportApproved==0}]]></conditionExpression>
+        </sequenceFlow>
     </process>
     <bpmndi:BPMNDiagram id="BPMNDiagram_qaDmAppReviewProcess">
         <bpmndi:BPMNPlane bpmnElement="qaDmAppReviewProcess" id="BPMNPlane_qaDmAppReviewProcess">
@@ -140,8 +160,8 @@
             <bpmndi:BPMNShape bpmnElement="exclusivegateway1" id="BPMNShape_exclusivegateway1">
                 <omgdc:Bounds height="40.0" width="40.0" x="580.0" y="79.0"></omgdc:Bounds>
             </bpmndi:BPMNShape>
-            <bpmndi:BPMNShape bpmnElement="qaDmarAllocatetoQAO" id="BPMNShape_qaDmarAllocatetoQAO">
-                <omgdc:Bounds height="70.0" width="113.0" x="544.0" y="164.0"></omgdc:Bounds>
+            <bpmndi:BPMNShape bpmnElement="qaDmarAllocateQAO" id="BPMNShape_qaDmarAllocateQAO">
+                <omgdc:Bounds height="70.0" width="113.0" x="613.0" y="128.0"></omgdc:Bounds>
             </bpmndi:BPMNShape>
             <bpmndi:BPMNShape bpmnElement="qaDmarManufacturerCorrection" id="BPMNShape_qaDmarManufacturerCorrection">
                 <omgdc:Bounds height="65.0" width="125.0" x="670.0" y="0.0"></omgdc:Bounds>
@@ -230,13 +250,28 @@
             <bpmndi:BPMNShape bpmnElement="exclusivegateway7" id="BPMNShape_exclusivegateway7">
                 <omgdc:Bounds height="40.0" width="40.0" x="1193.0" y="134.0"></omgdc:Bounds>
             </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="qaDmarGenerateJustificationReport" id="BPMNShape_qaDmarGenerateJustificationReport">
+                <omgdc:Bounds height="55.0" width="105.0" x="360.0" y="171.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="qaDmarApproveJustificationReport" id="BPMNShape_qaDmarApproveJustificationReport">
+                <omgdc:Bounds height="55.0" width="105.0" x="190.0" y="171.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="exclusivegateway8" id="BPMNShape_exclusivegateway8">
+                <omgdc:Bounds height="40.0" width="40.0" x="222.0" y="260.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="qaDmarAssignAssessor" id="BPMNShape_qaDmarAssignAssessor">
+                <omgdc:Bounds height="55.0" width="105.0" x="343.0" y="253.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="exclusivegateway9" id="BPMNShape_exclusivegateway9">
+                <omgdc:Bounds height="40.0" width="40.0" x="540.0" y="220.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
             <bpmndi:BPMNEdge bpmnElement="flow3" id="BPMNEdge_flow3">
                 <omgdi:waypoint x="515.0" y="98.0"></omgdi:waypoint>
                 <omgdi:waypoint x="580.0" y="99.0"></omgdi:waypoint>
             </bpmndi:BPMNEdge>
             <bpmndi:BPMNEdge bpmnElement="flow5" id="BPMNEdge_flow5">
-                <omgdi:waypoint x="600.0" y="119.0"></omgdi:waypoint>
-                <omgdi:waypoint x="600.0" y="164.0"></omgdi:waypoint>
+                <omgdi:waypoint x="620.0" y="99.0"></omgdi:waypoint>
+                <omgdi:waypoint x="669.0" y="128.0"></omgdi:waypoint>
             </bpmndi:BPMNEdge>
             <bpmndi:BPMNEdge bpmnElement="flow10" id="BPMNEdge_flow10">
                 <omgdi:waypoint x="880.0" y="198.0"></omgdi:waypoint>
@@ -336,10 +371,6 @@
                 <omgdi:waypoint x="135.0" y="97.0"></omgdi:waypoint>
                 <omgdi:waypoint x="380.0" y="98.0"></omgdi:waypoint>
             </bpmndi:BPMNEdge>
-            <bpmndi:BPMNEdge bpmnElement="flow39" id="BPMNEdge_flow39">
-                <omgdi:waypoint x="657.0" y="199.0"></omgdi:waypoint>
-                <omgdi:waypoint x="774.0" y="198.0"></omgdi:waypoint>
-            </bpmndi:BPMNEdge>
             <bpmndi:BPMNEdge bpmnElement="flow40" id="BPMNEdge_flow40">
                 <omgdi:waypoint x="600.0" y="79.0"></omgdi:waypoint>
                 <omgdi:waypoint x="732.0" y="65.0"></omgdi:waypoint>
@@ -385,6 +416,41 @@
             <bpmndi:BPMNEdge bpmnElement="flow51" id="BPMNEdge_flow51">
                 <omgdi:waypoint x="1213.0" y="134.0"></omgdi:waypoint>
                 <omgdi:waypoint x="1067.0" y="95.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow53" id="BPMNEdge_flow53">
+                <omgdi:waypoint x="360.0" y="198.0"></omgdi:waypoint>
+                <omgdi:waypoint x="295.0" y="198.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow54" id="BPMNEdge_flow54">
+                <omgdi:waypoint x="242.0" y="226.0"></omgdi:waypoint>
+                <omgdi:waypoint x="242.0" y="260.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow55" id="BPMNEdge_flow55">
+                <omgdi:waypoint x="262.0" y="280.0"></omgdi:waypoint>
+                <omgdi:waypoint x="343.0" y="280.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow56" id="BPMNEdge_flow56">
+                <omgdi:waypoint x="613.0" y="163.0"></omgdi:waypoint>
+                <omgdi:waypoint x="560.0" y="169.0"></omgdi:waypoint>
+                <omgdi:waypoint x="560.0" y="220.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow57" id="BPMNEdge_flow57">
+                <omgdi:waypoint x="540.0" y="240.0"></omgdi:waypoint>
+                <omgdi:waypoint x="412.0" y="226.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow58" id="BPMNEdge_flow58">
+                <omgdi:waypoint x="580.0" y="240.0"></omgdi:waypoint>
+                <omgdi:waypoint x="714.0" y="239.0"></omgdi:waypoint>
+                <omgdi:waypoint x="774.0" y="198.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow59" id="BPMNEdge_flow59">
+                <omgdi:waypoint x="448.0" y="280.0"></omgdi:waypoint>
+                <omgdi:waypoint x="826.0" y="281.0"></omgdi:waypoint>
+                <omgdi:waypoint x="827.0" y="234.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow60" id="BPMNEdge_flow60">
+                <omgdi:waypoint x="242.0" y="260.0"></omgdi:waypoint>
+                <omgdi:waypoint x="412.0" y="226.0"></omgdi:waypoint>
             </bpmndi:BPMNEdge>
         </bpmndi:BPMNPlane>
     </bpmndi:BPMNDiagram>
