@@ -42,20 +42,21 @@ export class NewSmarkPermitComponent implements OnInit {
 
         });
       this.sta10Form = this.formBuilder.group({
-          firmName: ['', Validators.required],
-          statusCompanyBusinessRegistration: ['', Validators.required],
-          ownerNameProprietorDirector: ['', Validators.required],
-          postalAddress: ['', Validators.required],
-          contactPerson: ['', Validators.required],
-          telephone: ['', Validators.required],
-          emailAddress: ['', Validators.required],
-          physicalLocationMap: ['', Validators.required],
-          county: ['', Validators.required],
-          town: ['', Validators.required],
+          //firmName: ['', Validators.required],
+          //statusCompanyBusinessRegistration: ['', Validators.required],
+          //ownerNameProprietorDirector: ['', Validators.required],
+          //postalAddress: ['', Validators.required],
+          //contactPerson: ['', Validators.required],
+          //telephone: ['', Validators.required],
+          //emailAddress: ['', Validators.required],
+          //physicalLocationMap: ['', Validators.required],
+          //county: ['', Validators.required],
+          //town: ['', Validators.required],
           totalNumberFemale: ['', Validators.required],
           totalNumberMale: ['', Validators.required],
           totalNumberPermanentEmployees: ['', Validators.required],
-          totalNumberCasualEmployees: ['', Validators.required]
+          totalNumberCasualEmployees: ['', Validators.required],
+          averageVolumeProductionMonth:['', Validators.required]
 
       });
       this.sta10FormA = this.formBuilder.group({
@@ -85,7 +86,19 @@ export class NewSmarkPermitComponent implements OnInit {
 
       });
       this.sta10FormC = this.formBuilder.group({
-
+          handledManufacturingProcessRawMaterials: ['', Validators.required],
+          handledManufacturingProcessInprocessProducts: ['', Validators.required],
+          handledManufacturingProcessFinalProduct: ['', Validators.required],
+          strategyInplaceRecallingProducts: ['', Validators.required],
+          stateFacilityConditionsRawMaterials: ['', Validators.required],
+          stateFacilityConditionsEndProduct: ['', Validators.required],
+          testingFacilitiesExistSpecifyEquipment: ['', Validators.required],
+          testingFacilitiesExistStateParametersTested: ['', Validators.required],
+          testingFacilitiesSpecifyParametersTested: ['', Validators.required],
+          calibrationEquipmentLastCalibrated: ['', Validators.required],
+          handlingConsumerComplaints: ['', Validators.required],
+          companyRepresentative: ['', Validators.required],
+          applicationDate: ['', Validators.required]
       });
 
     this.qaService.loadSectionList().subscribe(
@@ -162,8 +175,21 @@ export class NewSmarkPermitComponent implements OnInit {
             return '';
         }
     }
-
     selectStepFourClass(step: number): string {
+        if (step === 1) {
+            return 'active';
+        }if (step === 2) {
+            return 'activated';
+        }if (step === 3) {
+            return 'activated';
+        }if (step === 4) {
+            return 'activated';
+        }else {
+            return '';
+        }
+    }
+
+    selectStepFiveClass(step: number): string {
         if (step === 1) {
             return 'active';
         }if (step === 2) {
@@ -236,7 +262,7 @@ export class NewSmarkPermitComponent implements OnInit {
     onClickSaveSTA10(valid: boolean) {
         if (valid) {
             console.log(this.permitEntityDetails.id.toString());
-            this.qaService.savePermitSTA3(this.permitEntityDetails.id.toString(), this.sta10Form.value).subscribe(
+            this.qaService.saveFirmDetailsSta10(this.permitEntityDetails.id.toString(), this.sta10Form.value).subscribe(
                 (data: any) => {
                     console.log(data);
                     this.step += 1;
