@@ -27,6 +27,7 @@ export class NewDmarkPermitComponent implements OnInit {
     stepSoFar: | undefined;
     step = 1;
     currBtn = 'A';
+    checkN: number;
 
 
     constructor(private store$: Store<any>,
@@ -140,85 +141,11 @@ export class NewDmarkPermitComponent implements OnInit {
                     break;
             }
             this.step += 1;
-            console.log(`Clicked and step = ${this.step}`);
-        }
-    }
-    selectStepOneClass(step: number): string {
-        if (step === 1) {
-            return 'active';
-        } else {
-            return '';
-        }
-    }
-    selectStepTwoClass(step: number): string {
-        console.log(`${step}`);
-        if (step === 1) {
-            return 'active';
-        }if (step === 2) {
-            return 'activated';
-        } else {
-            return '';
-        }
-    }
-    selectStepThreeClass(step: number): string {
-        if (step === 1) {
-            return 'active';
-        }if (step === 2) {
-            return 'activated';
-        }if (step === 3) {
-            return 'activated';
-        } else {
-            return '';
+            //console.log(`Clicked and step = ${this.step}`);
         }
     }
 
-    selectStepFourClass(step: number): string {
-        if (step === 1) {
-            return 'active';
-        }if (step === 2) {
-            return 'activated';
-        }if (step === 3) {
-            return 'activated';
-        }if (step === 4) {
-            return 'activated';
-        } else {
-            return '';
-        }
-    }
-    selectStepFiveClass(step: number): string {
-        if (step === 1) {
-            return 'active';
-        }if (step === 2) {
-            return 'activated';
-        }if (step === 3) {
-            return 'activated';
-        }if (step === 4) {
-            return 'activated';
-        }if (step === 5) {
-            return 'activated';
-        }if (step === 6) {
-            return 'activated';
-        } else {
-            return '';
-        }
-    }
-    selectStepSixClass(step: number): string {
-        if (step === 1) {
-            return 'active';
-        }if (step === 2) {
-            return 'activated';
-        }if (step === 3) {
-            return 'activated';
-        }if (step === 4) {
-            return 'activated';
-        }if (step === 5) {
-            return 'activated';
-        }if (step === 6) {
-            return 'activated';
-        } else {
-            return '';
-        }
-    }
+
 
     get formSta1Form(): any {
         return this.sta1Form.controls;
@@ -356,7 +283,7 @@ export class NewDmarkPermitComponent implements OnInit {
                         },
                         icon: 'success'
                     });
-                    this.router.navigate(['/dmark'], {fragment: this.permitEntityDetails.id.toString()});
+                   // this.router.navigate(['/dmark'], {fragment: this.permitEntityDetails.id.toString()});
                 },
             );
         }

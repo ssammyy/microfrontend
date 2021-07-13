@@ -7,7 +7,7 @@
 <div class="card-icon">
 <i class="material-icons">assignment</i>
 </div>
-<h4 class="card-title">New Diamond Mark Permit</h4>
+    <h4 class="card-title"><b>New Diamond Mark Permit</b></h4>
 </div>
 <div class="card-body">
 <div class="toolbar">
@@ -19,25 +19,13 @@
 <div class="col-lg-12 col-md-12 col-sm-12">
 <div class="form-wizard">
 
-<div class="form-wizard-header">
-<p>Fill all form field to go next step</p>
-<ul class="list-unstyled form-wizard-steps clearfix">
-    <ul class="list-unstyled form-wizard-steps clearfix">
-        <li [ngClass]="selectStepOneClass(step)"><span>1</span></li>
-        <li><span [ngClass]="selectStepTwoClass(step)">2</span></li>
-        <li><span [ngClass]="selectStepThreeClass(step)">3</span></li>
-        <li><span [ngClass]="selectStepFourClass(step)">4</span></li>
-        <li><span [ngClass]="selectStepFiveClass(step)">5</span></li>
-        <li><span [ngClass]="selectStepSixClass(step)">6</span></li>
-    </ul>
-</ul>
-</div>
-    <div [ngSwitch]="step">
+    <div [ngSwitch]="step" >
         <div *ngSwitchCase="1">
+            <h2 style="text-align: center"><b style="color: #0d47a1">Step</b> <b style="color: #d50000"> 1</b><b style="color: #0d0505"> of</b> <b style="color: #0d47a1"> 6</b></h2>
             <fieldset class="wizard-fieldset show">
 <form (ngSubmit)="onClickSaveSTA1(sta1Form.valid)" [formGroup]="sta1Form" class="form"
 enctype="multipart/form-data" >
-<h5>ST1 Form</h5>
+    <h4><b>ST1 Form</b></h4>
 <p>I/We the undersigned hereby apply for the grant/renewal of a permit/ the permit No………… to use the
 standardization mark on the commodity specified here under:
 </p>
@@ -108,6 +96,7 @@ class="dropdown-item">{{plant.buildingName}}</option>
 </fieldset>
         </div>
         <div *ngSwitchCase="2">
+            <h2 style="text-align: center"><b style="color: #0d47a1">Step</b> <b style="color: #d50000"> 2</b><b style="color: #0d0505"> of</b> <b style="color: #0d47a1"> 6</b></h2>
             <fieldset class="wizard-fieldset show">
 <form (ngSubmit)="onClickSaveSTA3A(sta3FormA.valid)" [formGroup]="sta3FormA" action="" class="form"
 enctype="multipart/form-data" method="post">
@@ -174,6 +163,7 @@ placeholder="" [class.is-invalid]="formSta3FormA.isolatedCaseDoubtfulQuality.inv
 </fieldset>
         </div>
         <div *ngSwitchCase="3">
+            <h2 style="text-align: center"><b style="color: #0d47a1">Step</b> <b style="color: #d50000"> 3</b><b style="color: #0d0505"> of</b> <b style="color: #0d47a1"> 6</b></h2>
             <fieldset class="wizard-fieldset show">
 <form (ngSubmit)="onClickUpdateSTA3B(sta3FormB.valid)" [formGroup]="sta3FormB" action="" class="form"
 enctype="multipart/form-data" method="post">
@@ -283,6 +273,7 @@ name="informationQcso" rows="3" placeholder=""
 </fieldset>
         </div>
         <div *ngSwitchCase="4">
+            <h2 style="text-align: center"><b style="color: #0d47a1">Step</b> <b style="color: #d50000"> 4</b><b style="color: #0d0505"> of</b> <b style="color: #0d47a1"> 6</b></h2>
 <fieldset class="wizard-fieldset show">
 <form (ngSubmit)="onClickUpdateSTA3C(sta3FormC.valid)" [formGroup]="sta3FormC" action="" class="form"
 enctype="multipart/form-data" method="post">
@@ -332,6 +323,7 @@ name="storageFacilitiesExist" rows="3" placeholder=""
 </fieldset>
         </div>
         <div *ngSwitchCase="5">
+            <h2 style="text-align: center"><b style="color: #0d47a1">Step</b> <b style="color: #d50000"> 5</b><b style="color: #0d0505"> of</b> <b style="color: #0d47a1"> 6</b></h2>
             <fieldset class="wizard-fieldset show">
 <form (ngSubmit)="onClickUpdateSTA3D(sta3FormD.valid)" [formGroup]="sta3FormD" action="" class="form"
 enctype="multipart/form-data" method="post">
@@ -465,6 +457,7 @@ placeholder=""
 </fieldset>
         </div>
         <div *ngSwitchCase="6">
+            <h2 style="text-align: center"><b style="color: #0d47a1">Step</b> <b style="color: #08e53f"> 6</b><b style="color: #0d0505"> of</b> <b style="color: #0d47a1"> 6</b></h2>
 
 
             <fieldset class="wizard-fieldset show">
