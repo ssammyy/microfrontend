@@ -76,6 +76,7 @@ import { UserList } from './apollowebs/company/branch/users/user.list';
 import { UserProfileComponent } from './apollowebs/company/branch/users/user-profile.component';
 import { SmarkApplicationsAllComponent } from './apollowebs/smark-applications-all/smark-applications-all.component';
 import { UserProfileMainComponent } from './apollowebs/userprofilemain/user-profile-main.component';
+import {NgxSpinnerModule} from "ngx-spinner";
 
 @NgModule({
     exports: [
@@ -181,6 +182,7 @@ export class MaterialModule {}
         FormsModule,
         NgxPaginationModule,
         FontAwesomeModule,
+        NgxSpinnerModule,
     ],
     declarations: [
         AppComponent,

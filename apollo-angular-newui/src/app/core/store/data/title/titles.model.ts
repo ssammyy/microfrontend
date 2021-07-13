@@ -1,6 +1,6 @@
 export class Titles {
     id: number;
-    region: string;
-    descriptions: string;
-    status: boolean;
+    title: string;
+    remarks: string;
+    status: string;
 }

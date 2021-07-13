@@ -7,6 +7,7 @@ import {Store} from "@ngrx/store";
 import {catchError} from "rxjs/operators";
 import {HttpErrorResponse} from "@angular/common/http";
 
+
 @Component({
     selector: 'app-userprofilemain',
     templateUrl: './user-profile-main.component.html',
@@ -15,9 +16,11 @@ import {HttpErrorResponse} from "@angular/common/http";
 
 
 export class UserProfileMainComponent implements OnInit {
+
     user: UserEntityDto;
     title$: Observable<Titles[]>;
     stepOneForm: FormGroup = new FormGroup({});
+
 
     constructor(private store$: Store<any>,
                 private service: UserEntityService,
@@ -28,6 +31,8 @@ export class UserProfileMainComponent implements OnInit {
     }
 
     ngOnInit(): void {
+
+
         this.stepOneForm = this.formBuilder.group({
                 id: [''],
                 firstName: ['', Validators.required],

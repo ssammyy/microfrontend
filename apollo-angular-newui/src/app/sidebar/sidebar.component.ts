@@ -31,6 +31,7 @@ export const ROUTES: RouteInfo[] = [
         type: 'link',
         icontype: 'dashboard'
     },
+
     {
         path: '/dashboard',
         title: 'My Companies',
@@ -104,10 +105,8 @@ export class SidebarComponent implements OnInit {
     }
 
     isMobileMenu() {
-        if ($(window).width() > 991) {
-            return false;
-        }
-        return true;
+        return $(window).width() <= 991;
+
     }
 
     ngOnInit() {
