@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import PerfectScrollbar from 'perfect-scrollbar';
 import {Store} from '@ngrx/store';
 import {loadLogout, selectUserInfo} from '../core/store';
+import {Router} from "@angular/router";
 
 declare const $: any;
 
@@ -68,15 +69,15 @@ export const ROUTES: RouteInfo[] = [
             {path: 'panels', title: 'Complete Applications', ab: 'CA'}
         ]
     }, {
-        path: '/tables',
+        path: '/smark',
         title: 'Standardization Mark',
         type: 'sub',
         icontype: 'class',
         collapse: 'tables',
         children: [
-            {path: 'buttons', title: 'Make Application', ab: 'MA'},
+            {path: 'newSmarkPermit', title: 'Make Application', ab: 'MA'},
             {path: 'sweet-alert', title: 'My Tasks ', ab: 'MT'},
-            {path: 'grid', title: 'All My Applications', ab: 'AMA'},
+            {path: 'all_smark', title: 'All My Applications', ab: 'AMA'},
             {path: 'panels', title: 'Complete Applications', ab: 'CA'}
         ]
     }, {
@@ -98,7 +99,7 @@ export class SidebarComponent implements OnInit {
     fullname = '';
 
     constructor(
-        private store$: Store<any>
+        private store$: Store<any>, private router: Router
     ) {
     }
 
@@ -136,5 +137,9 @@ export class SidebarComponent implements OnInit {
 
     onClickLogout() {
         this.store$.dispatch(loadLogout({loginUrl: 'login'}));
+    }
+
+    onClickGoToProfilePage() {
+        this.router.navigate(['/profile']);
     }
 }

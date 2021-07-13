@@ -46,6 +46,14 @@ class RegistrationManagementDaoService(
 ) {
 
     /**
+     * Provide users company and branch
+     */
+    fun provideCompanyDetailsForUser(): UserCompanyDetailsDto?{
+        val user = commonDaoServices.loggedInUserDetails()
+        val counter = manufacturePlantRepository.countByCompanyProfileId(user.companyId?: throw NullValueNotAllowedException("User does not have a company flag"))
+        return UserCompanyDetailsDto(user.companyId, user.plantId, counter, user.id)
+    }
+    /**
      * CRUD For users, will start with managing the currently logged in user
      * Update the profile of the logged in user
      */

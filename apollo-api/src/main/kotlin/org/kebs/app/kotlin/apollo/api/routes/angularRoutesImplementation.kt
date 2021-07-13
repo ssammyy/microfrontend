@@ -102,6 +102,9 @@ class AngularRoutes {
                 "/logout".nest {
                     POST("", handler::handleLogout)
                 }
+                "/companyDetails".nest {
+                    POST("", handler::handleProvideCompanyDetailsForUser)
+                }
                 "/user".nest {
                     "/details".nest {
                         GET("") { ServerResponse.badRequest().body("Invalid Request: Feature currently not supported") }
@@ -294,6 +297,7 @@ class AngularRoutes {
                     PUT("/sta3-update", handler::permitUpdateSTA3Migration)
                     "/sta10".nest {
                         POST("/firm_details", handler::permitApplySTA10FirmDetailsMigration)
+                        PUT("/firm_details-update", handler::permitApplySTA10FirmDetailsMigration)
                         POST("/personnel_details", handler::permitApplySTA10PersonnelMigration)
                         POST(
                             "/products_being_manufactured",
@@ -304,7 +308,8 @@ class AngularRoutes {
                         POST("/manufacturing_process", handler::permitApplySTA10ManufacturingProcessMigration)
                     }
                     "/invoice".nest {
-                        POST("/batch-invoice-create", handler::invoiceBatchSubmitMigration)
+                        POST("/batch-invoice-submit", handler::invoiceBatchSubmitMigration)
+//                        POST("/batch-invoice-create", handler::invoiceBatchSubmitMigration)
                         PUT("/batch-invoice-add", handler::invoiceBatchAddMigration)
                         PUT("/batch-invoice-remove", handler::invoiceBatchRemoveMigration)
                     }

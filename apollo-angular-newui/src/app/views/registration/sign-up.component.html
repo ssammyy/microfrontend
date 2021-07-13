@@ -1203,8 +1203,7 @@
                                     formControlName="town" id="town"
                                     name="town" required="required" style="width: 100%; height: 60%">
                                 <option ngValue="null" selected>Please select</option>
-                                <option
-                                        *ngFor="let app of apps| filterPipe: {status: true, countyId: selectedCounty}"
+                                <option *ngFor="let app of apps| filterPipe: {status: true, countyId: selectedCounty}"
                                         [ngValue]="app.id"
                                         class="dropdown-item">{{app.town}}</option>
                             </select>
@@ -1356,7 +1355,7 @@
                                 class="login-button mt-2"
                                 type="button"
 
-                        >Send OTP
+                        >Send OTP {{secondsToHms(time)}}
                         </button>
                     </div>
                 </div>

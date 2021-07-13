@@ -1861,18 +1861,18 @@ class QADaoServices(
     }
 
     fun sta10NewSave(
-        permitNewRefNumber: String,
+        permit: PermitApplicationsEntity,
         qaSta10Details: QaSta10Entity,
         user: UsersEntity,
         map: ServiceMapsEntity
     ): QaSta10Entity {
-
+        val plantAttached = findPlantDetails(permit.attachedPlantId ?: throw ExpectedDataNotFound("MISSING PLANT ID"))
         with(qaSta10Details) {
             totalNumberPersonnel = totalNumberMale?.let { totalNumberFemale?.plus(it) }
-            town = town?.let { commonDaoServices.findTownEntityByTownId(it).id }
-            county = county?.let { commonDaoServices.findCountiesEntityByCountyId(it, map.activeStatus).id }
-            region = county?.let { commonDaoServices.findCountiesEntityByCountyId(it, map.activeStatus).regionId }
-            permitRefNumber = permitNewRefNumber
+            town = plantAttached.town
+            county = plantAttached.county
+            region = plantAttached.region
+            permitRefNumber = permit.permitRefNumber
             applicationDate = commonDaoServices.getCurrentDate()
             status = map.activeStatus
             createdBy = commonDaoServices.concatenateName(user)
@@ -2250,7 +2250,7 @@ class QADaoServices(
                     var newSta10 = QaSta10Entity()
                     newSta10 = commonDaoServices.updateDetails(sta10, newSta10) as QaSta10Entity
                     newSta10.id = null
-                    sta10NewSave(savePermit.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"), newSta10, user, s)
+                    sta10NewSave(savePermit, newSta10, user, s)
                 }
                 applicationMapProperties.mapQAPermitTypeIDDmark -> {
                     val sta3 = findSTA3WithPermitRefNumber(oldPermit.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"))
@@ -2294,18 +2294,15 @@ class QADaoServices(
 
         val myDetails = reportsControllers.createInvoicePdf(batchID)
 
-//        val imagePath = ResourceUtils.getFile("classpath:static/images/KEBS_SMARK.png").toString()
-//        val map = hashMapOf<String, Any>()
-//        map["imagePath"] = imagePath
         msReportsControllers.extractAndSaveReport(
             myDetails.first,
             applicationMapProperties.mapReportProfomaInvoiceWithItemsPath,
-            "Remediation-Invoice",
+            "Pro forma invoice",
             myDetails.second
         )
         sendEmailWithProforma(
             senderEmail,
-            ResourceUtils.getFile("classpath:templates/TestPdf/Remediation-Invoice.pdf").toString()
+            applicationMapProperties.mapPDFProfomaInvoiceWithItemsPath,
         )
     }
 
@@ -2386,6 +2383,7 @@ class QADaoServices(
 
                     with(inspectionTechnicalDetails) {
                         permitId = permitFound.id
+                        permitRefNumber = permitFound.permitRefNumber
                         status = s.activeStatus
                         createdBy = commonDaoServices.concatenateName(user)
                         createdOn = commonDaoServices.getTimestamp()
@@ -2395,6 +2393,7 @@ class QADaoServices(
                     var qaInspectionReportRecommendation = QaInspectionReportRecommendationEntity()
                     with(qaInspectionReportRecommendation) {
                         permitId = permitFound.id
+                        permitRefNumber = permitFound.permitRefNumber
                         filledQpsmsStatus = s.activeStatus
                         status = s.activeStatus
                         createdBy = commonDaoServices.concatenateName(user)
@@ -2465,6 +2464,7 @@ class QADaoServices(
 
                     with(haccpAddedDetails) {
                         permitId = permitFound.id
+                        permitRefNumber = permitFound.permitRefNumber
                         status = s.activeStatus
                         createdBy = commonDaoServices.concatenateName(user)
                         createdOn = commonDaoServices.getTimestamp()
@@ -2504,6 +2504,46 @@ class QADaoServices(
         return sr
     }
 
+
+    fun consolidateInvoiceAndSendMail(
+        permitID: Long,
+        map: ServiceMapsEntity,
+        loggedInUser: UsersEntity
+    ): Pair<QaBatchInvoiceEntity, PermitApplicationsEntity> {
+        //Consolidate invoice now first
+        var permit = findPermitBYID(permitID)
+        val newBatchInvoiceDto = NewBatchInvoiceDto()
+        with(newBatchInvoiceDto) {
+            permitInvoicesID = arrayOf(permit.permitRefNumber.toString())
+        }
+        var batchInvoice = permitMultipleInvoiceCalculation(map, loggedInUser, newBatchInvoiceDto).second
+
+        // submit invoice to get way
+        with(newBatchInvoiceDto) {
+            batchID = batchInvoice.id!!
+        }
+
+        batchInvoice = permitMultipleInvoiceSubmitInvoice(map, loggedInUser, newBatchInvoiceDto).second
+
+        //Update Permit Details
+        with(permit) {
+            sendApplication = map.activeStatus
+            invoiceGenerated = map.activeStatus
+            permitStatus = applicationMapProperties.mapQaStatusPPayment
+        }
+        permit = permitUpdateDetails(permit, map, loggedInUser).second
+
+//        //Send email with attached Invoice details
+//        invoiceCreationPDF(
+//            batchInvoice.id ?: throw ExpectedDataNotFound("MISSING BATCH INVOICE ID"),
+//            commonDaoServices.findUserByID(permit.userId ?: throw ExpectedDataNotFound("MISSING USER ID")).email
+//                ?: throw ExpectedDataNotFound("MISSING USER ID"),
+//            loggedInUser
+//        )
+
+        return Pair(batchInvoice, permit)
+    }
+
     fun permitAddNewInspectionReportDetailsOPC(
         s: ServiceMapsEntity,
         user: UsersEntity,
@@ -2532,6 +2572,7 @@ class QADaoServices(
 
                     with(opcAddedDetails) {
                         permitId = permitFound.id
+                        permitRefNumber = permitFound.permitRefNumber
                         status = s.activeStatus
                         createdBy = commonDaoServices.concatenateName(user)
                         createdOn = commonDaoServices.getTimestamp()
@@ -2697,6 +2738,8 @@ class QADaoServices(
 
                             invoiceBatchDetails = batchInvoicePermit
                         }
+
+                    batchID = invoiceBatchDetails?.id!!
 
                     sr.payload = "permitInvoiceFound[id= ${permitInvoiceFound.userId}]"
                     sr.names = "${permitInvoiceFound.invoiceNumber} ${permitInvoiceFound.amount}"
@@ -2865,32 +2908,6 @@ class QADaoServices(
                 ?: throw NullValueNotAllowedException("Company Details For User with [ID = ${user.id}] , does Not exist")
 
             val invoiceGenerated = invoiceGen(permit, userCompany, user, permitType)
-
-            val invoiceNumber = invoiceGenerated.invoiceNumber
-                ?: throw NullValueNotAllowedException("Invoice Number Is Missing For Invoice with [ID = ${invoiceGenerated.id}]")
-
-//            val batchInvoiceDetail = invoiceDaoService.createBatchInvoiceDetails(user, invoiceNumber)
-//            val updateBatchInvoiceDetail = invoiceDaoService.addInvoiceDetailsToBatchInvoice(
-//                invoiceGenerated,
-//                applicationMapProperties.mapInvoiceTransactionsForPermit,
-//                user,
-//                batchInvoiceDetail
-//            )
-//
-//            //Todo: Payment selection
-//            val manufactureDetails = commonDaoServices.findCompanyProfile(user.id!!)
-//            val myAccountDetails = InvoiceDaoService.InvoiceAccountDetails()
-//            with(myAccountDetails) {
-//                accountName = manufactureDetails.name
-//                accountNumber = manufactureDetails.registrationNumber
-//                currency = applicationMapProperties.mapInvoiceTransactionsLocalCurrencyPrefix
-//            }
-//
-//            invoiceDaoService.createPaymentDetailsOnStgReconciliationTable(
-//                user,
-//                updateBatchInvoiceDetail,
-//                myAccountDetails
-//            )
 
             sr.payload = "User[id= ${userCompany.userId}]"
             sr.names = "${userCompany.name} ${userCompany.kraPin}"
@@ -3748,6 +3765,7 @@ class QADaoServices(
     fun mapDtoSTA10SectionAAndQaSta10View(qasta10entity: QaSta10Entity): STA10SectionADto {
         val sta10 = STA10SectionADto()
         with(sta10) {
+            id = qasta10entity.id
             firmName = qasta10entity.firmName
             statusCompanyBusinessRegistration = qasta10entity.statusCompanyBusinessRegistration
             ownerNameProprietorDirector = qasta10entity.ownerNameProprietorDirector

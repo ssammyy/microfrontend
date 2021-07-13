@@ -20,36 +20,41 @@ import {
   RegionService,
   RegistrationPayloadService,
   selectBrsValidationCompany,
-  selectBrsValidationStep,
-  selectCountyIdData,
-  selectRegistrationStateSucceeded,
-  selectTokenSentStateOtpSent,
-  selectValidateTokenAndPhoneValidated,
-  Town,
-  TownService,
-  User
+    selectBrsValidationStep,
+    selectCountyIdData,
+    selectRegistrationStateSucceeded,
+    selectTokenSentStateOtpSent,
+    selectValidateTokenAndPhoneValidated,
+    Town,
+    TownService,
+    User
 } from '../../core/store';
 import {select, Store} from '@ngrx/store';
-import {Observable, throwError} from 'rxjs';
+import {interval, Observable, PartialObserver, Subject, throwError} from 'rxjs';
+import {ConfirmedValidator} from '../../core/shared/confirmed.validator';
+import {takeUntil} from 'rxjs/operators';
 
 @Component({
-  selector: 'app-sign-up',
-  templateUrl: './sign-up.component.html',
-  styles: []
+    selector: 'app-sign-up',
+    templateUrl: './sign-up.component.html',
+    styles: []
 })
 export class SignUpComponent implements OnInit {
 
+    ispause = new Subject();
+    time = 30;
+    timer!: Observable<number>;
+    timerObserver!: PartialObserver<number>;
+    step = 0;
 
-  step = 0;
+    public clicked = false;
 
-  public clicked = false;
-
-  stepZeroForm!: FormGroup;
-  stepOneForm!: FormGroup;
-  stepTwoForm!: FormGroup;
-  stepThreeForm!: FormGroup;
-  stepFourForm!: FormGroup;
-  companySoFar: Partial<Company> | undefined;
+    stepZeroForm!: FormGroup;
+    stepOneForm!: FormGroup;
+    stepTwoForm!: FormGroup;
+    stepThreeForm!: FormGroup;
+    stepFourForm!: FormGroup;
+    companySoFar: Partial<Company> | undefined;
   userSoFar: Partial<User> | undefined;
   // @ts-ignore
   brsLookupRequest: BrsLookUpRequest;
@@ -101,15 +106,32 @@ export class SignUpComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.stepZeroForm = this.formBuilder.group({
-      registrationNumber: ['', Validators.required],
-      directorIdNumber: ['', Validators.required]
-    });
+      this.timer = interval(1000)
+          .pipe(
+              takeUntil(this.ispause)
+          );
 
-    // this.stepZeroForm = new FormGroup({
-    //   registrationNumber: new FormControl('',[Validators.required]),
-    //   directorIdNumber: new FormControl('',[Validators.required]),
-    // });
+      this.timerObserver = {
+
+          next: (_: number) => {
+              if (this.time === 0) {
+                  // tslint:disable-next-line:no-unused-expression
+                  this.ispause.next;
+                  this.time = 30;
+              }
+              this.time -= 1;
+          }
+      };
+
+      this.stepZeroForm = this.formBuilder.group({
+          registrationNumber: ['', Validators.required],
+          directorIdNumber: ['', Validators.required]
+      });
+
+      // this.stepZeroForm = new FormGroup({
+      //   registrationNumber: new FormControl('',[Validators.required]),
+      //   directorIdNumber: new FormControl('',[Validators.required]),
+      // });
     this.stepOneForm = new FormGroup({
       name: new FormControl('', [Validators.required]),
       registrationNumber: new FormControl('', [Validators.required]),
@@ -124,26 +146,29 @@ export class SignUpComponent implements OnInit {
       postalAddress: new FormControl(),
       physicalAddress: new FormControl('', [Validators.required]),
       plotNumber: new FormControl('', [Validators.required]),
-      companyEmail: new FormControl('', [Validators.required]),
-      companyTelephone: new FormControl('', [Validators.required])
+        companyEmail: new FormControl('', [Validators.required]),
+        companyTelephone: new FormControl('', [Validators.required])
     });
-    this.stepThreeForm = new FormGroup({
-      buildingName: new FormControl(),
-      streetName: new FormControl('', [Validators.required]),
-      region: new FormControl('', [Validators.required]),
-      county: new FormControl('', [Validators.required]),
-      town: new FormControl('', [Validators.required])
-    });
-    this.stepFourForm = new FormGroup({
-      firstName: new FormControl(),
-      lastName: new FormControl('', [Validators.required]),
-      userName: new FormControl('', [Validators.required]),
-      email: new FormControl('', [Validators.required]),
-      cellphone: new FormControl('', [Validators.required]),
-      otp: new FormControl('', [Validators.required]),
-      credentials: new FormControl('', [Validators.required]),
-      confirmCredentials: new FormControl('', [Validators.required]),
-    });
+      this.stepThreeForm = new FormGroup({
+          buildingName: new FormControl(),
+          streetName: new FormControl('', [Validators.required]),
+          region: new FormControl('', [Validators.required]),
+          county: new FormControl('', [Validators.required]),
+          town: new FormControl('', [Validators.required])
+      });
+      this.stepFourForm = this.formBuilder.group({
+              firstName: [],
+              lastName: ['', Validators.required],
+              userName: ['', Validators.required],
+              email: ['', Validators.required],
+              cellphone: ['', Validators.required],
+              otp: ['', Validators.required],
+              credentials: ['', Validators.required],
+              confirmCredentials: ['', [Validators.required]]
+          },
+          {
+              validators: ConfirmedValidator('credentials', 'confirmCredentials')
+          });
 
   }
 
@@ -278,24 +303,36 @@ export class SignUpComponent implements OnInit {
         // this.stepFourForm?.get('otp')?.reset();
         return this.phoneValidated = d;
       } else {
-        this.otpSent = false;
-        this.phoneValidated = false;
-        this.stepFourForm?.get('otp')?.reset();
-        return throwError('Could not validate token');
+          this.otpSent = false;
+          this.phoneValidated = false;
+          this.stepFourForm?.get('otp')?.reset();
+          return throwError('Could not validate token');
 
       }
     });
 
   }
 
-  onClickSendOtp() {
-    this.otpSent = true;
-    this.validationCellphone = this.stepFourForm?.get('cellphone')?.value;
+    secondsToHms(d: number) {
+        d = Number(d);
+        // const m = Math.floor(d % 3600 / 60);
+        const s = Math.floor(d % 3600 % 60);
 
-    this.stepFourForm?.get('otp')?.reset();
+        // const mDisplay = m > 0 ? m + (m == 1 ? ": " : " : ") : "00";
+        // const sDisplay = s > 0 ? s + (s == 1 ? "" : "") : "00";
+        // tslint:disable-next-line:triple-equals
+        return s > 0 ? s + (s == 1 ? '' : '') : '00';
+    }
 
-    if (
-      this.validationCellphone === '' ||
+    onClickSendOtp() {
+        this.otpSent = true;
+        this.timer.subscribe(this.timerObserver);
+        this.validationCellphone = this.stepFourForm?.get('cellphone')?.value;
+
+        this.stepFourForm?.get('otp')?.reset();
+
+        if (
+            this.validationCellphone === '' ||
       this.validationCellphone === null
     ) {
       this.store$.dispatch(loadResponsesFailure({

@@ -21,9 +21,10 @@ import {CompaniesList} from './apollowebs/company/companies.list';
 import {CompanyComponent} from './apollowebs/company/company.component';
 import {BranchComponent} from './apollowebs/company/branch/branch.component';
 import {BranchList} from './apollowebs/company/branch/branch.list';
-import { UserComponent } from './apollowebs/company/branch/users/user.component';
-import { UserList } from './apollowebs/company/branch/users/user.list';
-import {SmarkApplicationsAllComponent} from "./apollowebs/smark-applications-all/smark-applications-all.component";
+import {UserComponent} from './apollowebs/company/branch/users/user.component';
+import {UserList} from './apollowebs/company/branch/users/user.list';
+import {SmarkApplicationsAllComponent} from './apollowebs/smark-applications-all/smark-applications-all.component';
+import {UserProfileMainComponent} from './apollowebs/userprofilemain/user-profile-main.component';
 
 // export const AppRoutes: Routes = [
 //     {
@@ -138,7 +139,7 @@ const routes: Routes = [
     },
 
     {
-        path: 'dmark', component: AdminLayoutComponent,
+        path: 'permitdetails', component: AdminLayoutComponent,
         children: [{path: '', component: DmarkComponent}]
     },
     {
@@ -162,7 +163,7 @@ const routes: Routes = [
         children: [{path: '', component: PermitReportComponent}]
     },
     {
-        path: 'newSmarkPermit', component: AdminLayoutComponent,
+        path: 'smark/newSmarkPermit', component: AdminLayoutComponent,
         children: [{path: '', component: NewSmarkPermitComponent}]
     },
     {
@@ -172,6 +173,10 @@ const routes: Routes = [
     {
         path: 'dmark/all_dmark', component: AdminLayoutComponent,
         children: [{path: '', component: DmarkApplicationsAllComponent}]
+    },
+    {
+        path: 'profile', component: AdminLayoutComponent,
+        children: [{path: '', component: UserProfileMainComponent}]
     },
     {
         path: 'smark/all_smark', component: AdminLayoutComponent,

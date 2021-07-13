@@ -1180,37 +1180,13 @@ class QualityAssuranceHandler(
             //Calculate Invoice Details
             qaDaoServices.permitInvoiceCalculation(map, loggedInUser, permit, permitType)
 
-            //Consolidate invoice now first
-            val newBatchInvoiceDto = NewBatchInvoiceDto()
-            with(newBatchInvoiceDto) {
-                permitInvoicesID = arrayOf(permit.permitRefNumber.toString())
-            }
-            var batchInvoice =
-                qaDaoServices.permitMultipleInvoiceCalculation(map, loggedInUser, newBatchInvoiceDto).second
 
-            // submit invoice to get way
-            with(newBatchInvoiceDto) {
-                batchID = batchInvoice.id!!
-            }
-
-            batchInvoice =
-                qaDaoServices.permitMultipleInvoiceSubmitInvoice(map, loggedInUser, newBatchInvoiceDto).second
-
-            //Update Permit Details
-            with(permit) {
-                sendApplication = map.activeStatus
-                invoiceGenerated = map.activeStatus
-                permitStatus = applicationMapProperties.mapQaStatusPPayment
-            }
-            permit = qaDaoServices.permitUpdateDetails(permit, map, loggedInUser).second
-
-            //Send email with attached Invoice details
-            qaDaoServices.invoiceCreationPDF(
-                batchInvoice.id ?: throw ExpectedDataNotFound("MISSING BATCH INVOICE ID"),
-                commonDaoServices.findUserByID(permit.userId ?: throw ExpectedDataNotFound("MISSING USER ID")).email
-                    ?: throw ExpectedDataNotFound("MISSING USER ID"),
-                loggedInUser
+            val pair = qaDaoServices.consolidateInvoiceAndSendMail(
+                permit.id ?: throw ExpectedDataNotFound("MISSING PERMIT ID"), map, loggedInUser
             )
+
+            val batchInvoice = pair.first
+            permit = pair.second
 
             qaDaoServices.mapAllPermitDetailsTogether(
                 permit,
@@ -1223,10 +1199,12 @@ class QualityAssuranceHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            return ServerResponse.badRequest().body(e.message ?: "Unknown Error")
+            throw  e
+//            return ServerResponse.badRequest().body(e.message ?: "Unknown Error")
         }
 
     }
+
 
     @PreAuthorize("hasAuthority('PERMIT_APPLICATION')")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
@@ -1257,7 +1235,8 @@ class QualityAssuranceHandler(
             //Start DMARK PROCESS
             qualityAssuranceBpmn.startQADMApplicationReviewProcess(
                 permit.id ?: throw Exception("MISSING PERMIT ID"),
-                permit.pcmId ?: throw Exception("MISSING PCM ID")
+                permit.pcmId ?: throw Exception("MISSING PCM ID"),
+                false
             )
 
             qaDaoServices.mapAllPermitDetailsTogether(permit, null, map).let {
@@ -1493,16 +1472,20 @@ class QualityAssuranceHandler(
         try {
             val loggedInUser = commonDaoServices.loggedInUserDetails()
             val map = commonDaoServices.serviceMapDetails(appId)
-            val permitID = req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
-            val permit = qaDaoServices.findPermitBYUserIDAndId(permitID, loggedInUser.id ?: throw ExpectedDataNotFound("MISSING USER ID"))
-            val qaSta10Entity = qaDaoServices.findSTA10WithPermitRefNumberBY(permit.permitRefNumber ?: throw ExpectedDataNotFound("INVALID PERMIT REF NUMBER"))
+            val permitID =
+                req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
+            val permit = qaDaoServices.findPermitBYUserIDAndId(
+                permitID,
+                loggedInUser.id ?: throw ExpectedDataNotFound("MISSING USER ID")
+            )
+//            val qaSta10Entity = qaDaoServices.findSTA10WithPermitRefNumberBY(permit.permitRefNumber ?: throw ExpectedDataNotFound("INVALID PERMIT REF NUMBER"))
 
             val dto = req.body<STA10SectionADto>()
-            val sta10 = qaDaoServices.mapDtoSTA10SectionAAndQaSta10Entity(dto)
+            var sta10 = qaDaoServices.mapDtoSTA10SectionAAndQaSta10Entity(dto)
 
             //Save the sta10 details first
-            qaDaoServices.sta10NewSave(
-                permit.permitRefNumber ?: throw Exception("MISSING PERMIT REF NUMBER"),
+            sta10 = qaDaoServices.sta10NewSave(
+                permit,
                 sta10,
                 loggedInUser,
                 map
@@ -1524,7 +1507,7 @@ class QualityAssuranceHandler(
                 ) as PermitApplicationsEntity, map, loggedInUser
             ).second
 
-            qaDaoServices.permitDetails(updatePermit, map).let {
+            qaDaoServices.mapDtoSTA10SectionAAndQaSta10View(sta10).let {
                 return ok().body(it)
             }
 

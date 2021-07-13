@@ -5,7 +5,7 @@ import {Observable, throwError} from 'rxjs';
 import {ApiEndpointService} from '../../../services/endpoints/api-endpoint.service';
 import {catchError, map} from 'rxjs/operators';
 import {BrsLookUpRequest, Company} from "../companies";
-import {STA1, STA3} from "./qa.model";
+import {STA1, Sta10Dto, STA3} from "./qa.model";
 
 @Injectable({
     providedIn: 'root'
@@ -174,7 +174,7 @@ export class QaService {
         );
     }
 
-    public saveFirmDetailsSta10(permitID: string, data: STA3): Observable<any> {
+    public saveFirmDetailsSta10(permitID: string, data: Sta10Dto): Observable<any> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.PERMIT_APPLY_STA10_FIRM_DETAILS);
         const params = new HttpParams()
             .set('permitID', permitID);
@@ -188,7 +188,20 @@ export class QaService {
             })
         );
     }
-
+    public updateFirmDetailsSta10(permitID: string, data: Sta10Dto): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.PERMIT_APPLY_STA10_FIRM_DETAILS);
+        const params = new HttpParams()
+            .set('permitID', permitID);
+        return this.http.put<any>(url, data, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
     public updatePermitSTA3(permitID: string, data: STA3): Observable<any> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.PERMIT_UPDATE_STA3);
         const params = new HttpParams()

@@ -8,6 +8,7 @@ import {NavbarComponent} from '../../shared/navbar/navbar.component';
 import PerfectScrollbar from 'perfect-scrollbar';
 import {LoadingService} from "../../core/services/loader/loadingservice.service";
 import {delay} from "rxjs/operators";
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 declare const $: any;
 

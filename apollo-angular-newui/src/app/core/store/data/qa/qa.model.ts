@@ -208,13 +208,14 @@ export class Sta10Dto {
     telephone: string;
     emailAddress: string;
     physicalLocationMap: string;
-    county: string;
-    town: string;
+    county: number;
+    town: number;
     totalNumberFemale: string;
     totalNumberMale: string;
     totalNumberPermanentEmployees: string;
     totalNumberCasualEmployees: string;
     averageVolumeProductionMonth: string;
+
     handledManufacturingProcessRawMaterials: string;
     handledManufacturingProcessInprocessProducts: string;
     handledManufacturingProcessFinalProduct: string;

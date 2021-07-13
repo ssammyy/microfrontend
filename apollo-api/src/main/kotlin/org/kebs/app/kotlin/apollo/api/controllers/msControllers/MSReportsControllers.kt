@@ -9,6 +9,7 @@ import net.sf.jasperreports.engine.export.JRPdfExporter
 import net.sf.jasperreports.engine.xml.JRXmlLoader
 import net.sf.jasperreports.export.SimpleExporterInput
 import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput
+import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.repo.*
 import org.kebs.app.kotlin.apollo.store.repo.di.*
 import org.kebs.app.kotlin.apollo.store.repo.ms.*
@@ -26,14 +27,15 @@ import javax.servlet.http.HttpServletResponse
 @RestController
 @RequestMapping("/api/ms/")
 class MSReportsControllers(
-        private val iLaboratoryRepo: ILaboratoryRepository,
-        private val destinationInspectionRepo: IDestinationInspectionRepository,
-        private val iSampleCollectRepo: ISampleCollectRepository,
-        private val iCheckListRepo: ICheckListRepository,
-        private val iFuelRemediationInvoiceRepo: IFuelRemediationInvoiceRepository,
-        private val iSampleCollectViewRepo: ISampleCollectionViewRepository,
-        private val iFuelInspectionRepo: IFuelInspectionRepository,
-        private val iSampleSubmitRepo: ISampleSubmitRepository
+    private val iLaboratoryRepo: ILaboratoryRepository,
+    private val applicationMapProperties: ApplicationMapProperties,
+    private val destinationInspectionRepo: IDestinationInspectionRepository,
+    private val iSampleCollectRepo: ISampleCollectRepository,
+    private val iCheckListRepo: ICheckListRepository,
+    private val iFuelRemediationInvoiceRepo: IFuelRemediationInvoiceRepository,
+    private val iSampleCollectViewRepo: ISampleCollectionViewRepository,
+    private val iFuelInspectionRepo: IFuelInspectionRepository,
+    private val iSampleSubmitRepo: ISampleSubmitRepository
 ) {
 
 
@@ -151,7 +153,8 @@ class MSReportsControllers(
                                                     .let { jasperReport ->
                                                         JasperFillManager.fillReport(jasperReport, map, dataSource)
                                                                 .let { jasperPrint ->
-                                                                    val exportPath = ResourceUtils.getFile("classpath:templates/TestPdf/$fileName.pdf").toString()
+                                                                    val exportPath =
+                                                                        applicationMapProperties.mapPDFProfomaInvoiceWithItemsPath
                                                                     JasperExportManager.exportReportToPdfFile(jasperPrint, exportPath)
                                                                     KotlinLogging.logger { }.info { "Report Generated Successfully Ready for attachment"}
                                                                 }
