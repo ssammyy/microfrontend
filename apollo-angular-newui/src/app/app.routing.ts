@@ -23,8 +23,8 @@ import {BranchComponent} from './apollowebs/company/branch/branch.component';
 import {BranchList} from './apollowebs/company/branch/branch.list';
 import {UserComponent} from './apollowebs/company/branch/users/user.component';
 import {UserList} from './apollowebs/company/branch/users/user.list';
-import {SmarkApplicationsAllComponent} from "./apollowebs/smark-applications-all/smark-applications-all.component";
-import {UserProfileMainComponent} from "./apollowebs/userprofilemain/user-profile-main.component";
+import {SmarkApplicationsAllComponent} from './apollowebs/smark-applications-all/smark-applications-all.component';
+import {UserProfileMainComponent} from './apollowebs/userprofilemain/user-profile-main.component';
 
 // export const AppRoutes: Routes = [
 //     {

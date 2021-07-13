@@ -32,7 +32,7 @@ import {
 import {select, Store} from '@ngrx/store';
 import {interval, Observable, PartialObserver, Subject, throwError} from 'rxjs';
 import {ConfirmedValidator} from '../../core/shared/confirmed.validator';
-import {takeUntil} from "rxjs/operators";
+import {takeUntil} from 'rxjs/operators';
 
 @Component({
     selector: 'app-sign-up',

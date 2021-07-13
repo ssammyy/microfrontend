@@ -2533,13 +2533,13 @@ class QADaoServices(
         }
         permit = permitUpdateDetails(permit, map, loggedInUser).second
 
-        //Send email with attached Invoice details
-        invoiceCreationPDF(
-            batchInvoice.id ?: throw ExpectedDataNotFound("MISSING BATCH INVOICE ID"),
-            commonDaoServices.findUserByID(permit.userId ?: throw ExpectedDataNotFound("MISSING USER ID")).email
-                ?: throw ExpectedDataNotFound("MISSING USER ID"),
-            loggedInUser
-        )
+//        //Send email with attached Invoice details
+//        invoiceCreationPDF(
+//            batchInvoice.id ?: throw ExpectedDataNotFound("MISSING BATCH INVOICE ID"),
+//            commonDaoServices.findUserByID(permit.userId ?: throw ExpectedDataNotFound("MISSING USER ID")).email
+//                ?: throw ExpectedDataNotFound("MISSING USER ID"),
+//            loggedInUser
+//        )
 
         return Pair(batchInvoice, permit)
     }

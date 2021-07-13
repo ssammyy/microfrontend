@@ -283,7 +283,7 @@ export class NewDmarkPermitComponent implements OnInit {
                         },
                         icon: 'success'
                     });
-                   // this.router.navigate(['/dmark'], {fragment: this.permitEntityDetails.id.toString()});
+                    this.router.navigate(['/permitdetails'], {fragment: this.permitEntityDetails.id.toString()});
                 },
             );
         }
