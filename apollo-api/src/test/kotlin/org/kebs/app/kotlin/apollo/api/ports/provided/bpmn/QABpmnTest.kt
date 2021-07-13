@@ -327,7 +327,7 @@ class QABpmnTest{
     }
 
     @Test
-    //@Ignore
+    @Ignore
     fun testQaAppReviewNegative() {
         val permitId: Long = 325
 
@@ -408,49 +408,13 @@ class QABpmnTest{
 
     @Test
     @Ignore
-    fun testQaSFMarkInspection() {
-        val permitId: Long = 161
+    fun testQaSFMarkInspectionNegative() {
+        val permitId: Long = 382
 
         //Start the process
         qualityAssuranceBpmn.startQASFMarkInspectionProcess(permitId, qaoAssigneeId)?.let {
             qualityAssuranceBpmn.fetchTaskByPermitId(permitId,qaSfMarkInspectionProcessDefinitionKey)?.let { taskDetails ->
                 println("Task details after starting the process")
-                for (taskDetail in taskDetails){
-                    taskDetail.task.let{ task->
-                        println("${taskDetail.permitId} -- ${task.id} -- ${task.name} -- ${task.assignee} -- ${task.processInstanceId} -- ${task.taskDefinitionKey} " )
-                    }
-                }
-            }
-        }?: return
-
-        //Generate the supervisory scheme
-        qualityAssuranceBpmn.qaSfMIGenSupervisionSchemeComplete(permitId, qaoAssigneeId).let {
-            qualityAssuranceBpmn.fetchTaskByPermitId(permitId,qaSfMarkInspectionProcessDefinitionKey)?.let { taskDetails ->
-                println("Task details after generating the supervisory scheme")
-                for (taskDetail in taskDetails){
-                    taskDetail.task.let{ task->
-                        println("${taskDetail.permitId} -- ${task.id} -- ${task.name} -- ${task.assignee} -- ${task.processInstanceId} -- ${task.taskDefinitionKey} " )
-                    }
-                }
-            }
-        }?: return
-
-        //Generate the supervisory scheme
-        qualityAssuranceBpmn.qaSfMIGenSupervisionSchemeComplete(permitId, qaoAssigneeId).let {
-            qualityAssuranceBpmn.fetchTaskByPermitId(permitId,qaSfMarkInspectionProcessDefinitionKey)?.let { taskDetails ->
-                println("Task details after generating the supervisory scheme")
-                for (taskDetail in taskDetails){
-                    taskDetail.task.let{ task->
-                        println("${taskDetail.permitId} -- ${task.id} -- ${task.name} -- ${task.assignee} -- ${task.processInstanceId} -- ${task.taskDefinitionKey} " )
-                    }
-                }
-            }
-        }?: return
-
-        //Accept the supervisory scheme
-        qualityAssuranceBpmn.qaSfMIAcceptSupervisionScheme(permitId, qaoAssigneeId, true).let {
-            qualityAssuranceBpmn.fetchTaskByPermitId(permitId,qaSfMarkInspectionProcessDefinitionKey)?.let { taskDetails ->
-                println("Task details after accepting the supervisory scheme")
                 for (taskDetail in taskDetails){
                     taskDetail.task.let{ task->
                         println("${taskDetail.permitId} -- ${task.id} -- ${task.name} -- ${task.assignee} -- ${task.processInstanceId} -- ${task.taskDefinitionKey} " )
@@ -471,7 +435,6 @@ class QABpmnTest{
             }
         }?: return
 
-
         //Generate the inspection report
         qualityAssuranceBpmn.qaSfMIGenerateInspectionReport(permitId, hofAssigneeId).let {
             qualityAssuranceBpmn.fetchTaskByPermitId(permitId,qaSfMarkInspectionProcessDefinitionKey)?.let { taskDetails ->
@@ -483,6 +446,57 @@ class QABpmnTest{
                 }
             }
         }?: return
+
+        //Generate the supervisory scheme
+        qualityAssuranceBpmn.qaSfMIGenSupervisionSchemeComplete(permitId, qaoAssigneeId).let {
+            qualityAssuranceBpmn.fetchTaskByPermitId(permitId,qaSfMarkInspectionProcessDefinitionKey)?.let { taskDetails ->
+                println("Task details after generating the supervisory scheme")
+                for (taskDetail in taskDetails){
+                    taskDetail.task.let{ task->
+                        println("${taskDetail.permitId} -- ${task.id} -- ${task.name} -- ${task.assignee} -- ${task.processInstanceId} -- ${task.taskDefinitionKey} " )
+                    }
+                }
+            }
+        }?: return
+
+
+        //Accept the supervisory scheme -- false
+        qualityAssuranceBpmn.qaSfMIAcceptSupervisionScheme(permitId, qaoAssigneeId, false).let {
+            qualityAssuranceBpmn.fetchTaskByPermitId(permitId,qaSfMarkInspectionProcessDefinitionKey)?.let { taskDetails ->
+                println("Task details after accepting the supervisory scheme")
+                for (taskDetail in taskDetails){
+                    taskDetail.task.let{ task->
+                        println("${taskDetail.permitId} -- ${task.id} -- ${task.name} -- ${task.assignee} -- ${task.processInstanceId} -- ${task.taskDefinitionKey} " )
+                    }
+                }
+            }
+        }?: return
+
+        //Generate the supervisory scheme
+        qualityAssuranceBpmn.qaSfMIGenSupervisionSchemeComplete(permitId, qaoAssigneeId).let {
+            qualityAssuranceBpmn.fetchTaskByPermitId(permitId,qaSfMarkInspectionProcessDefinitionKey)?.let { taskDetails ->
+                println("Task details after generating the supervisory scheme")
+                for (taskDetail in taskDetails){
+                    taskDetail.task.let{ task->
+                        println("${taskDetail.permitId} -- ${task.id} -- ${task.name} -- ${task.assignee} -- ${task.processInstanceId} -- ${task.taskDefinitionKey} " )
+                    }
+                }
+            }
+        }?: return
+
+
+        //Accept the supervisory scheme -- false
+        qualityAssuranceBpmn.qaSfMIAcceptSupervisionScheme(permitId, qaoAssigneeId, true).let {
+            qualityAssuranceBpmn.fetchTaskByPermitId(permitId,qaSfMarkInspectionProcessDefinitionKey)?.let { taskDetails ->
+                println("Task details after accepting the supervisory scheme")
+                for (taskDetail in taskDetails){
+                    taskDetail.task.let{ task->
+                        println("${taskDetail.permitId} -- ${task.id} -- ${task.name} -- ${task.assignee} -- ${task.processInstanceId} -- ${task.taskDefinitionKey} " )
+                    }
+                }
+            }
+        }?: return
+
 
         //Receive the SSF
         qualityAssuranceBpmn.qaSfMIReceiveSSFComplete(permitId, qaoAssigneeId).let {
@@ -507,61 +521,13 @@ class QABpmnTest{
                 }
             }
         }?: return
-        /*
-        //Analyze the samples
-        qualityAssuranceBpmn.qaSfMIAnalyzeSamplesComplete(permitId, qaoAssigneeId).let {
-            qualityAssuranceBpmn.fetchTaskByPermitId(permitId,qaSfMarkInspectionProcessDefinitionKey)?.let { taskDetails ->
-                println("Task details after analyzing the samples")
-                for (taskDetail in taskDetails){
-                    taskDetail.task.let{ task->
-                        println("${taskDetail.permitId} -- ${task.id} -- ${task.name} -- ${task.assignee} -- ${task.processInstanceId} -- ${task.taskDefinitionKey} " )
-                    }
-                }
-            }
-        }?: return
 
-        //Check the lab report - Lab report ok
-        qualityAssuranceBpmn.qaSfMICheckLabReportComplete(permitId, qaoAssigneeId, labAssigneeId,true).let {
-            qualityAssuranceBpmn.fetchTaskByPermitId(permitId,qaSfMarkInspectionProcessDefinitionKey)?.let { taskDetails ->
-                println("Task details after checking the lab report")
-                for (taskDetail in taskDetails){
-                    taskDetail.task.let{ task->
-                        println("${taskDetail.permitId} -- ${task.id} -- ${task.name} -- ${task.assignee} -- ${task.processInstanceId} -- ${task.taskDefinitionKey} " )
-                    }
-                }
-            }
-        }?: return
-
-        //Assign compliance status - Compliance status ok
-        qualityAssuranceBpmn.qaSfMIAssignComplianceStatusComplete(permitId, hofAssigneeId,true).let {
-            qualityAssuranceBpmn.fetchTaskByPermitId(permitId,qaSfMarkInspectionProcessDefinitionKey)?.let { taskDetails ->
-                println("Task details after checking the compliance status")
-                for (taskDetail in taskDetails){
-                    taskDetail.task.let{ task->
-                        println("${taskDetail.permitId} -- ${task.id} -- ${task.name} -- ${task.assignee} -- ${task.processInstanceId} -- ${task.taskDefinitionKey} " )
-                    }
-                }
-            }
-        }?: return
-
-        //Approve permit recommendation - Permit recommendation ok
-        qualityAssuranceBpmn.qaSfMIApprovePermitRecommendationComplete(permitId, qaoAssigneeId,true).let {
-            qualityAssuranceBpmn.fetchTaskByPermitId(permitId,qaSfMarkInspectionProcessDefinitionKey)?.let { taskDetails ->
-                println("Task details after the permit recommendation")
-                for (taskDetail in taskDetails){
-                    taskDetail.task.let{ task->
-                        println("${taskDetail.permitId} -- ${task.id} -- ${task.name} -- ${task.assignee} -- ${task.processInstanceId} -- ${task.taskDefinitionKey} " )
-                    }
-                }
-            }
-        }?: return
-        */
     }
 
     @Test
     @Ignore
     fun testQaDmAppReview() {
-        val permitId: Long = 161
+        val permitId: Long = 263
 
         //Start the process
         qualityAssuranceBpmn.startQADMApplicationReviewProcess(permitId, hofAssigneeId)?.let {
@@ -586,19 +552,6 @@ class QABpmnTest{
                 }
             }
         }?: return
-
-        //Manufacturer corrects the application - this will apply where application incomplete
-        /*
-        qualityAssuranceBpmn.qaDmARManufacturerCorrectionComplete(permitId)?.let {
-            qualityAssuranceBpmn.fetchTaskByPermitId(permitId,qaDmApplicationReviewProcessDefinitionKey)?.let { taskDetails ->
-                println("Task details after manufacturer corrects the application")
-                taskDetails.tasks?.forEach{ task ->
-                    println(task.id + " -- " + task.taskDefinitionKey +
-                            " -- " + taskDetails.permitId + " -- " + task.assignee)
-                }
-            }
-        }?: return;
-         */
 
         //Assign to QAO
         qualityAssuranceBpmn.qaDmARAllocateToQAOComplete(permitId, qaoAssigneeId).let {
@@ -636,18 +589,6 @@ class QABpmnTest{
             }
         }?: return
 
-        /*
-        //Approve inspection report complete - negative approval
-        qualityAssuranceBpmn.qaDmARApproveInspectionReportComplete(permitId, qaoAssigneeId,false)?.let {
-            qualityAssuranceBpmn.fetchTaskByPermitId(permitId,qaDmApplicationReviewProcessDefinitionKey)?.let { taskDetails ->
-                println("Task details after generate inspection report complete")
-                taskDetails.tasks?.forEach{ task ->
-                    println(task.id + " -- " + task.taskDefinitionKey +
-                            " -- " + taskDetails.permitId + " -- " + task.assignee)
-                }
-            }
-        }?: return;
-        */
         //Approve inspection report complete - positive approval
         qualityAssuranceBpmn.qaDmARApproveInspectionReportComplete(permitId, qaoAssigneeId,true).let {
             qualityAssuranceBpmn.fetchTaskByPermitId(permitId,qaDmApplicationReviewProcessDefinitionKey)?.let { taskDetails ->
@@ -659,6 +600,55 @@ class QABpmnTest{
                 }
             }
         }?: return
+
+        //Generate supervision scheme complete
+        qualityAssuranceBpmn.qaDmARGenSupervisionSchemeComplete(permitId, qaoAssigneeId).let {
+            qualityAssuranceBpmn.fetchTaskByPermitId(permitId,qaDmApplicationReviewProcessDefinitionKey)?.let { taskDetails ->
+                println("Task details after generate supervision scheme complete")
+                for (taskDetail in taskDetails){
+                    taskDetail.task.let{ task->
+                        println("${taskDetail.permitId} -- ${task.id} -- ${task.name} -- ${task.assignee} -- ${task.processInstanceId} -- ${task.taskDefinitionKey} " )
+                    }
+                }
+            }
+        }?: return
+
+        //Accept supervision scheme complete --negative
+        qualityAssuranceBpmn.qaDmARAcceptSupervisionScheme(permitId, hofAssigneeId,false).let {
+            qualityAssuranceBpmn.fetchTaskByPermitId(permitId,qaDmApplicationReviewProcessDefinitionKey)?.let { taskDetails ->
+                println("Task details after accept supervision scheme complete")
+                for (taskDetail in taskDetails){
+                    taskDetail.task.let{ task->
+                        println("${taskDetail.permitId} -- ${task.id} -- ${task.name} -- ${task.assignee} -- ${task.processInstanceId} -- ${task.taskDefinitionKey} " )
+                    }
+                }
+            }
+        }?: return
+
+        //Generate supervision scheme complete
+        qualityAssuranceBpmn.qaDmARGenSupervisionSchemeComplete(permitId, qaoAssigneeId).let {
+            qualityAssuranceBpmn.fetchTaskByPermitId(permitId,qaDmApplicationReviewProcessDefinitionKey)?.let { taskDetails ->
+                println("Task details after generate supervision scheme complete")
+                for (taskDetail in taskDetails){
+                    taskDetail.task.let{ task->
+                        println("${taskDetail.permitId} -- ${task.id} -- ${task.name} -- ${task.assignee} -- ${task.processInstanceId} -- ${task.taskDefinitionKey} " )
+                    }
+                }
+            }
+        }?: return
+
+        //Accept supervision scheme complete --true
+        qualityAssuranceBpmn.qaDmARAcceptSupervisionScheme(permitId, hofAssigneeId,true).let {
+            qualityAssuranceBpmn.fetchTaskByPermitId(permitId,qaDmApplicationReviewProcessDefinitionKey)?.let { taskDetails ->
+                println("Task details after accept supervision scheme complete")
+                for (taskDetail in taskDetails){
+                    taskDetail.task.let{ task->
+                        println("${taskDetail.permitId} -- ${task.id} -- ${task.name} -- ${task.assignee} -- ${task.processInstanceId} -- ${task.taskDefinitionKey} " )
+                    }
+                }
+            }
+        }?: return
+
 
         //Check test reports - positive
         qualityAssuranceBpmn.qaDmARCheckTestReportsComplete(permitId, qaoAssigneeId,true).let {
@@ -1015,9 +1005,9 @@ class QABpmnTest{
     }
 
     @Test
-    @Ignore
+    //@Ignore
     fun testQaDmAssessmentProcess() {
-        val permitId: Long = 161
+        val permitId: Long = 324
 
         //Start the process
         qualityAssuranceBpmn.startQADmAssessmentProcess(permitId, qaoAssigneeId)?.let {
@@ -1109,9 +1099,20 @@ class QABpmnTest{
             }
         } ?: return
 
-        qualityAssuranceBpmn.qaDmasPacApprovalComplete(permitId, assessorAssigneeId,qaoAssigneeId,true).let {
+        qualityAssuranceBpmn.qaDmasPacApprovalComplete(permitId, assessorAssigneeId,qaoAssigneeId,pcmAssigneeId,true).let {
             qualityAssuranceBpmn.fetchTaskByPermitId(permitId, qaDmAssessmentProcessDefinitionKey)?.let { taskDetails ->
                 println("Task details after pac approval complete")
+                for (taskDetail in taskDetails) {
+                    taskDetail.task.let { task ->
+                        println("${taskDetail.permitId} -- ${task.id} -- ${task.name} -- ${task.assignee} -- ${task.processInstanceId} -- ${task.taskDefinitionKey} ")
+                    }
+                }
+            }
+        } ?: return
+
+        qualityAssuranceBpmn.qaDmasPcmApprovalComplete(permitId, assessorAssigneeId,qaoAssigneeId,true).let {
+            qualityAssuranceBpmn.fetchTaskByPermitId(permitId, qaDmAssessmentProcessDefinitionKey)?.let { taskDetails ->
+                println("Task details after pcm approval complete")
                 for (taskDetail in taskDetails) {
                     taskDetail.task.let { task ->
                         println("${taskDetail.permitId} -- ${task.id} -- ${task.name} -- ${task.assignee} -- ${task.processInstanceId} -- ${task.taskDefinitionKey} ")
