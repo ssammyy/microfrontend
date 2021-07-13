@@ -66,15 +66,16 @@ import {PermitReportComponent} from './apollowebs/permit-report/permit-report.co
 import {NewSmarkPermitComponent} from './apollowebs/new-smark-permit/new-smark-permit.component';
 import {NewDmarkPermitComponent} from './apollowebs/new-dmark-permit/new-dmark-permit.component';
 import {DmarkApplicationsAllComponent} from './apollowebs/dmark-applications-all/dmark-applications-all.component';
-import {InvoiceDetailsComponent} from './apollowebs/invoice-details/invoice-details.component';
-import {CompaniesList} from './apollowebs/company/companies.list';
-import {CompanyComponent} from './apollowebs/company/company.component';
-import {NgxSpinnerModule} from "ngx-spinner";
-
+import { InvoiceDetailsComponent } from './apollowebs/invoice-details/invoice-details.component';
+import { CompaniesList } from './apollowebs/company/companies.list';
+import { CompanyComponent } from './apollowebs/company/company.component';
 import { BranchComponent } from './apollowebs/company/branch/branch.component';
 import { BranchList } from './apollowebs/company/branch/branch.list';
 import { UserComponent } from './apollowebs/company/branch/users/user.component';
 import { UserList } from './apollowebs/company/branch/users/user.list';
+import { UserProfileComponent } from './apollowebs/company/branch/users/user-profile.component';
+import { SmarkApplicationsAllComponent } from './apollowebs/smark-applications-all/smark-applications-all.component';
+import { UserProfileMainComponent } from './apollowebs/userprofilemain/user-profile-main.component';
 
 @NgModule({
     exports: [
@@ -142,7 +143,10 @@ import { UserList } from './apollowebs/company/branch/users/user.list';
         BranchComponent,
         BranchList,
         UserComponent,
-        UserList
+        UserList,
+        UserProfileComponent,
+        SmarkApplicationsAllComponent,
+        UserProfileMainComponent
     ]
 
 })

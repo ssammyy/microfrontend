@@ -32,7 +32,7 @@ export class DmarkApplicationsAllComponent implements OnInit {
 
     ngOnInit() {
         let formattedArray = [];
-        this.qaService.loadDMARKPermitList('1').subscribe(
+        this.qaService.loadPermitList('1').subscribe(
             (data: any) => {
 
                 this.allPermitData = data;
@@ -79,6 +79,6 @@ export class DmarkApplicationsAllComponent implements OnInit {
 }
 
     onSelect(rowElement: string) {
-        this.router.navigate(['/dmark'], {fragment: rowElement});
+        this.router.navigate(['/permitdetails'], {fragment: rowElement});
     }
 }

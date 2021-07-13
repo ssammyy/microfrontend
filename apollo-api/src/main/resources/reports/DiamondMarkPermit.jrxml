@@ -12,6 +12,7 @@
 	<parameter name="CommodityDesc" class="java.lang.String"/>
 	<parameter name="TradeMark" class="java.lang.String"/>
 	<parameter name="StandardTitle" class="java.lang.String"/>
+	<parameter name="qrCode" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
@@ -162,7 +163,7 @@
 		</band>
 	</columnHeader>
 	<detail>
-		<band height="503" splitType="Stretch">
+		<band height="508" splitType="Stretch">
 			<staticText>
 				<reportElement x="0" y="10" width="552" height="40" uuid="f03e6f7c-5b57-4e87-bd99-760d258fb2fe"/>
 				<textElement>
@@ -311,6 +312,15 @@ Standards]]></text>
 				<textElement textAlignment="Center" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$P{StandardTitle}]]></textFieldExpression>
 			</textField>
+			<image>
+				<reportElement x="10" y="448" width="50" height="50" uuid="5088fb95-1e31-4d04-8698-a07a83218423"/>
+				<imageExpression><![CDATA[com.google.zxing.client.j2se.MatrixToImageWriter.toBufferedImage(
+    new com.google.zxing.qrcode.QRCodeWriter().encode(
+        $P{qrCode},
+        com.google.zxing.BarcodeFormat.QR_CODE, 300, 300
+    )
+)]]></imageExpression>
+			</image>
 		</band>
 	</detail>
 </jasperReport>

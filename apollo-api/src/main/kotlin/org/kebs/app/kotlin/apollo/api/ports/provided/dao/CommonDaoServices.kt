@@ -211,7 +211,6 @@ class CommonDaoServices(
     fun convertTimestampToKeswsValidDate(timestamp: Timestamp): String {
         val sdf = SimpleDateFormat("dd/MM/yyyy")
         val date = sdf.format(timestamp)
-        KotlinLogging.logger { }.info(":::::: Formatted datetime: $date :::::::")
         return date
     }
 

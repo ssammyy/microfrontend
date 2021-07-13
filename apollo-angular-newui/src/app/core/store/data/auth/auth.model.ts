@@ -22,5 +22,12 @@ export class ValidateTokenRequestDto {
   token = '';
 }
 
+export class CompanyInfoDto {
+  companyId = 0;
+  branchId = 0;
+  branchCount = 0;
+  userId = 0;
+}
+
 
 

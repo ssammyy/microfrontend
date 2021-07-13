@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.13.0.final using JasperReports Library version 6.13.0-46ada4d1be8f3c5985fd0b6146f3ed44caed6f05  -->
+<!-- Created with Jaspersoft Studio version 6.16.0.final using JasperReports Library version 6.16.0-48579d909b7943b64690c65c71e07e0b80981928  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="DiamondMarkPermit" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="ed21babd-bc90-4f45-a015-31c53503a62e">
 	<parameter name="DmarkLogo" class="java.lang.String"/>
 	<parameter name="imagePath" class="java.lang.String"/>
@@ -16,6 +16,7 @@
 	<parameter name="StandardTitle" class="java.lang.String"/>
 	<parameter name="phoneNumber" class="java.lang.String"/>
 	<parameter name="FmarkLogo" class="java.lang.String"/>
+	<parameter name="QrCode" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
@@ -180,13 +181,13 @@
 				<textFieldExpression><![CDATA[$P{DateOfIssue}]]></textFieldExpression>
 			</textField>
 			<textField>
-                <reportElement x="415" y="69" width="135" height="20" uuid="3b248913-3f0c-4503-9ab6-9a750b4442a8"/>
-                <box>
-                    <bottomPen lineWidth="1.0"/>
-                </box>
-                <textElement textAlignment="Center" verticalAlignment="Middle"/>
-                <textFieldExpression><![CDATA[$P{ExpiryDate}]]></textFieldExpression>
-            </textField>
+				<reportElement x="415" y="69" width="135" height="20" uuid="3b248913-3f0c-4503-9ab6-9a750b4442a8"/>
+				<box>
+					<bottomPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$P{ExpiryDate}]]></textFieldExpression>
+			</textField>
 			<staticText>
 				<reportElement x="347" y="72" width="70" height="18" uuid="2e01e7aa-8df4-4353-9c66-04207aa55c41"/>
 				<textElement verticalAlignment="Middle">
@@ -212,7 +213,7 @@
 		</band>
 	</columnHeader>
 	<detail>
-		<band height="482" splitType="Stretch">
+		<band height="498" splitType="Stretch">
 			<staticText>
 				<reportElement x="0" y="12" width="552" height="40" uuid="f03e6f7c-5b57-4e87-bd99-760d258fb2fe"/>
 				<textElement>
@@ -342,6 +343,15 @@ Standards]]></text>
 				<textElement textAlignment="Center" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$P{StandardTitle}]]></textFieldExpression>
 			</textField>
+			<image>
+				<reportElement x="0" y="430" width="60" height="60" uuid="d4eefd96-de1a-4bc6-b838-281d72098d9a"/>
+				<imageExpression><![CDATA[com.google.zxing.client.j2se.MatrixToImageWriter.toBufferedImage(
+    new com.google.zxing.qrcode.QRCodeWriter().encode(
+        $P{QrCode},
+        com.google.zxing.BarcodeFormat.QR_CODE, 300, 300
+    )
+)]]></imageExpression>
+			</image>
 		</band>
 	</detail>
 </jasperReport>

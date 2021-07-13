@@ -46,10 +46,12 @@ interface IManufacturerProductRepository : HazelcastRepository<ManufactureProduc
 
 @Repository
 interface IManufacturePlantDetailsRepository : HazelcastRepository<ManufacturePlantDetailsEntity, Long> {
-//    fun findByProductName(productName: String): ManufacturePlantDetailsEntity?
+    //    fun findByProductName(productName: String): ManufacturePlantDetailsEntity?
     fun findByUserId(manufactureId: Long): List<ManufacturePlantDetailsEntity>?
     fun findByCompanyProfileId(manufactureId: Long): List<ManufacturePlantDetailsEntity>?
     fun findByCompanyProfileIdAndStatus(manufactureId: Long, status: Int): List<ManufacturePlantDetailsEntity>?
+    fun countByCompanyProfileId(companyProfileId: Long): Long?
+
 }
 
 @Repository
@@ -88,8 +90,15 @@ interface IBusinessNatureRepository : HazelcastRepository<BusinessNatureEntity, 
 
 @Repository
 interface IManufacturerAddressRepository : HazelcastRepository<ManufacturerAddressesEntity, Long> {
-    fun findFirstByManufacturerIdAndStatusOrderByVersions(manufacturerId: ManufacturersEntity, status: Int): ManufacturerAddressesEntity?
-    fun findByManufacturerIdAndStatusOrderByVersions(manufacturerId: ManufacturersEntity, status: Int): Collection<ManufacturerAddressesEntity>?
+    fun findFirstByManufacturerIdAndStatusOrderByVersions(
+        manufacturerId: ManufacturersEntity,
+        status: Int
+    ): ManufacturerAddressesEntity?
+
+    fun findByManufacturerIdAndStatusOrderByVersions(
+        manufacturerId: ManufacturersEntity,
+        status: Int
+    ): Collection<ManufacturerAddressesEntity>?
 }
 
 @Repository
@@ -99,7 +108,7 @@ interface IStdLevyNotificationFormRepository : HazelcastRepository<StdLevyNotifi
 }
 
 @Repository
-interface IManufacturerContactsRepository : HazelcastRepository<ManufacturerContactsEntity, Long>{
+interface IManufacturerContactsRepository : HazelcastRepository<ManufacturerContactsEntity, Long> {
     fun findByManufacturerId(manufacturerId: ManufacturersEntity): ManufacturerContactsEntity?
 }
 
@@ -111,7 +120,10 @@ interface IManufacturerDepartmentsRepository : HazelcastRepository<ManufacturerD
 
 @Repository
 interface IBrsLookupManufacturerDataRepository : HazelcastRepository<BrsLookupManufacturerDataEntity, Long> {
-    fun findFirstByRegistrationNumberAndStatusOrderById(registrationNumber: String, status: Int): BrsLookupManufacturerDataEntity?
+    fun findFirstByRegistrationNumberAndStatusOrderById(
+        registrationNumber: String,
+        status: Int
+    ): BrsLookupManufacturerDataEntity?
 }
 
 @Repository
