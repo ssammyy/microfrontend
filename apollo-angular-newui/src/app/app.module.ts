@@ -75,6 +75,7 @@ import { BranchComponent } from './apollowebs/company/branch/branch.component';
 import { BranchList } from './apollowebs/company/branch/branch.list';
 import { UserComponent } from './apollowebs/company/branch/users/user.component';
 import { UserList } from './apollowebs/company/branch/users/user.list';
+import { SmarkApplicationsAllComponent } from './apollowebs/smark-applications-all/smark-applications-all.component';
 
 @NgModule({
     exports: [
@@ -142,7 +143,8 @@ import { UserList } from './apollowebs/company/branch/users/user.list';
         BranchComponent,
         BranchList,
         UserComponent,
-        UserList
+        UserList,
+        SmarkApplicationsAllComponent
     ]
 
 })

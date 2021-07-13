@@ -23,6 +23,7 @@ import {BranchComponent} from './apollowebs/company/branch/branch.component';
 import {BranchList} from './apollowebs/company/branch/branch.list';
 import { UserComponent } from './apollowebs/company/branch/users/user.component';
 import { UserList } from './apollowebs/company/branch/users/user.list';
+import {SmarkApplicationsAllComponent} from "./apollowebs/smark-applications-all/smark-applications-all.component";
 
 // export const AppRoutes: Routes = [
 //     {
@@ -171,6 +172,10 @@ const routes: Routes = [
     {
         path: 'dmark/all_dmark', component: AdminLayoutComponent,
         children: [{path: '', component: DmarkApplicationsAllComponent}]
+    },
+    {
+        path: 'smark/all_smark', component: AdminLayoutComponent,
+        children: [{path: '', component: SmarkApplicationsAllComponent}]
     }
 ];
 

@@ -58,7 +58,7 @@ export class QaService {
         );
     }
 
-    public loadDMARKPermitList(permitTypeID: string): Observable<any> {
+    public loadPermitList(permitTypeID: string): Observable<any> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.PERMIT_LIST);
         const params = new HttpParams()
             .set('permitTypeID', permitTypeID);
