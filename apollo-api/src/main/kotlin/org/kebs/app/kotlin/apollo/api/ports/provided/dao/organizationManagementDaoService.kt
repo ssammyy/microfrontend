@@ -4,6 +4,7 @@ import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.security.jwt.JwtTokenService
 import org.kebs.app.kotlin.apollo.common.dto.*
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
+import org.kebs.app.kotlin.apollo.common.exceptions.InvalidInputException
 import org.kebs.app.kotlin.apollo.common.exceptions.InvalidValueException
 import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
 import org.kebs.app.kotlin.apollo.common.utils.generateRandomText
@@ -37,11 +38,95 @@ class RegistrationManagementDaoService(
     private val companyProfileDirectorsRepo: ICompanyProfileDirectorsRepository,
     private val manufacturePlantRepository: IManufacturePlantDetailsRepository,
     private val usersRepo: IUserRepository,
+    private val userProfileRepo: IUserProfilesRepository,
     private val tokenService: JwtTokenService,
     private val registrationDaoServices: RegistrationDaoServices,
     private val commonDaoServices: CommonDaoServices,
     private val qaDaoServices: QADaoServices,
 ) {
+
+    /**
+     * CRUD For users, will start with managing the currently logged in user
+     * Update the profile of the logged in user
+     */
+    fun updateLoggedInUserUserEntityDtoDetails(dto: UserEntityDto): UserEntityDto? {
+        SecurityContextHolder.getContext().authentication
+            ?.name
+            ?.let { user ->
+                usersRepo.findByUserName(user)
+                    ?.let {
+
+                        if (it.id != dto.id) throw InvalidInputException("Attempt to perform unauthorized action")
+                        it.apply {
+                            firstName = dto.firstName
+                            lastName = dto.lastName
+                            cellphone = dto.personalContactNumber
+                            email = dto.email
+                            status = if (dto.enabled)  1 else 0
+                            title = dto.title
+                        }
+
+                        val entity = usersRepo.save(it)
+                        return userEntityToDto(entity)
+                    }
+                    ?: throw NullValueNotAllowedException("Invalid User provided")
+            }
+            ?: throw NullValueNotAllowedException("Your request could not be processed at the moment")
+    }
+
+    /**
+     * CRUD For users, will start with managing the currently logged in user
+     * So lets project to receive the user id and use that to fetch the user
+     */
+    fun getLoggedInUserUserEntityDtoDetails(userId: Long): UserEntityDto? {
+        SecurityContextHolder.getContext().authentication
+            ?.name
+            ?.let { user ->
+                usersRepo.findByUserName(user)
+                    ?.let {
+                        if (it.id != userId) throw InvalidInputException("Attempt to perform unauthorized action")
+                        return userEntityToDto(it)
+                    }
+                    ?: throw NullValueNotAllowedException("Invalid User provided")
+            }
+            ?: throw NullValueNotAllowedException("Your request could not be processed at the moment")
+    }
+
+    private fun userEntityToDto(it: UsersEntity): UserEntityDto {
+        val profile = userProfileRepo.findByUserId(it)
+
+        return UserEntityDto(
+            id = it.id,
+            firstName = it.firstName,
+            lastName = it.lastName,
+            userName = it.userName,
+            userPinIdNumber = it.userPinIdNumber,
+            personalContactNumber = it.personalContactNumber,
+            typeOfUser = it.typeOfUser,
+            email = it.email,
+            userRegNo = it.userRegNo,
+            enabled = it.enabled == 1,
+            accountExpired = it.accountExpired == 0,
+            accountLocked = it.accountLocked == 0,
+            credentialsExpired = it.credentialsExpired == 0,
+            status = it.status == 1,
+            registrationDate = it.registrationDate,
+            userType = it.userTypes,
+            title = it.title,
+            directorate = profile?.directorateId?.id,
+            department = profile?.departmentId?.id,
+            division = profile?.divisionId?.id,
+            section = profile?.sectionId?.id,
+            l1SubSubSection = profile?.subSectionL1Id?.id,
+            l2SubSubSection = profile?.subSectionL2Id?.id,
+            designation = profile?.designationId?.id,
+            profileId = profile?.id,
+            region = profile?.regionId?.id,
+            county = profile?.countyID?.id,
+            town = profile?.townID?.id,
+            subRegion = profile?.subRegionId?.id
+        )
+    }
 
     /**
      * Reset credentials given the username and password and confirmation

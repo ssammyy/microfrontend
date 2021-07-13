@@ -48,7 +48,6 @@ export class ApiEndpointService {
     REQUEST_RESET: `${ApiEndpointService.ANONYMOUS_CONTEXT}/reset`,
     RESET: `${ApiEndpointService.ANONYMOUS_CONTEXT}/reset/`,
     BEER: 'beer/',
-    USER_DETAILS: `${ApiEndpointService.AUTH_CONTEXT}/details`,
     LOGIN_PAGE: `${ApiEndpointService.AUTH_CONTEXT}`,
     VALIDATE_BRS: `${ApiEndpointService.ANONYMOUS_CONTEXT}/validateBrs`,
     HOME_PAGE: `${ApiEndpointService.ANONYMOUS_CONTEXT}`,
@@ -58,9 +57,11 @@ export class ApiEndpointService {
     VALIDATE_TOKEN: `${ApiEndpointService.ANONYMOUS_CONTEXT}/validateToken`,
     REGISTER_COMPANY: `${ApiEndpointService.ANONYMOUS_CONTEXT}/registerCompany`,
     COMPANY_LIST: `${ApiEndpointService.MASTERS_CONTEXT}/company/`,
+    USER_DETAILS: `${ApiEndpointService.MASTERS_CONTEXT}/secure/user/details`,
     LOGOUT_URL: `${ApiEndpointService.MASTERS_CONTEXT}/secure/logout`,
     BRANCH_LIST: `${ApiEndpointService.MASTERS_CONTEXT}/{companyId}/branches/`,
     REGIONS_LIST: `${ApiEndpointService.ANONYMOUS_CONTEXT}/regions`,
+    TITLES_LIST: `${ApiEndpointService.ANONYMOUS_CONTEXT}/titles`,
     COUNTY_LIST: `${ApiEndpointService.ANONYMOUS_CONTEXT}/county/`,
     TOWN_LIST: `${ApiEndpointService.ANONYMOUS_CONTEXT}/towns`,
     BUSINESS_LINES_LIST: `${ApiEndpointService.ANONYMOUS_CONTEXT}/businessLines`,
@@ -124,6 +125,8 @@ export class ApiEndpointService {
       PERMIT_APPLY_STA10_RAW_MATERIAL: `${ApiEndpointService.QA_CONTEXT}/permit/apply/sta10/raw_material`,
       PERMIT_APPLY_STA10_MACHINERY_PLANT: `${ApiEndpointService.QA_CONTEXT}/permit/apply/sta10/machinery_plant`,
       PERMIT_APPLY_STA10_MANUFACTURING_PROCESS: `${ApiEndpointService.QA_CONTEXT}/permit/apply/sta10/manufacturing_process`,
+
+
 
 
   };

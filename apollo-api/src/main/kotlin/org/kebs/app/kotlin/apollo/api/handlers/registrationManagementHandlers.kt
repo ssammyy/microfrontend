@@ -6,6 +6,7 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.dao.RegistrationManagementD
 import org.kebs.app.kotlin.apollo.api.ports.provided.validation.AbstractValidationHandler
 import org.kebs.app.kotlin.apollo.common.dto.*
 import org.kebs.app.kotlin.apollo.common.exceptions.InvalidInputException
+import org.kebs.app.kotlin.apollo.common.exceptions.InvalidValueException
 import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
 import org.kebs.app.kotlin.apollo.config.properties.auth.AuthenticationProperties
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
@@ -23,7 +24,7 @@ class RegistrationManagementHandler(
     private val service: RegistrationManagementDaoService,
     private val validator: Validator,
     private val commonDaoServices: CommonDaoServices,
-    private val applicationMapProperties: ApplicationMapProperties,
+    applicationMapProperties: ApplicationMapProperties,
     private val authenticationProperties: AuthenticationProperties
 ) : AbstractValidationHandler() {
 
@@ -116,6 +117,65 @@ class RegistrationManagementHandler(
             service.logout(header)
                 ?.let { ServerResponse.ok().body(it) }
                 ?: onErrors("We could not complete your request try again later")
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.debug(e.message, e)
+            KotlinLogging.logger { }.error(e.message)
+            onErrors(e.message)
+
+        }
+    }
+    /**
+     * Fetch  the details of the user that has logged in, so as to provide for the user profile updates
+     *
+     * @param req ServerRequest
+     * @return ServerResponse
+     */
+    @PreAuthorize("isAuthenticated")
+    fun handleLoggedInUserUserEntityDtoDetails(req: ServerRequest): ServerResponse {
+        return try {
+            val header = req.headers().header(authenticationProperties.authorizationHeader ?: "Authorization")[0]
+            val userId = req.pathVariable("userId").toLongOrNull()
+            KotlinLogging.logger { }.trace(header)
+            service.getLoggedInUserUserEntityDtoDetails(userId?: throw NullValueNotAllowedException("Required id is missing"))
+                ?.let { ServerResponse.ok().body(it) }
+                ?: onErrors("We could not complete your request try again later")
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.debug(e.message, e)
+            KotlinLogging.logger { }.error(e.message)
+            onErrors(e.message)
+
+        }
+    }
+    /**
+     * Fetch  the details of the user that has logged in, so as to provide for the user profile updates
+     *
+     * @param req ServerRequest
+     * @return ServerResponse
+     */
+    @PreAuthorize("isAuthenticated")
+    fun handleUpdateLoggedInUserUserEntityDtoDetails(req: ServerRequest): ServerResponse {
+        return try {
+            val body = req.body<UserEntityDto>()
+            val header = req.headers().header(authenticationProperties.authorizationHeader ?: "Authorization")[0]
+            val userId = req.pathVariable("userId").toLongOrNull()
+            if (userId!= body.id) throw InvalidValueException("Attempt to perform an operation that is not authorized")
+            KotlinLogging.logger { }.trace(header)
+            val errors: Errors = BeanPropertyBindingResult(body, UserEntityDto::class.java.name)
+            validator.validate(body, errors)
+            when {
+                errors.allErrors.isEmpty() -> {
+                    service.updateLoggedInUserUserEntityDtoDetails(body)
+                        ?.let { ServerResponse.ok().body(it) }
+                        ?: onErrors("We could not complete your request try again later")
+
+                }
+                else -> {
+                    onValidationErrors(errors)
+                }
+            }
+
 
         } catch (e: Exception) {
             KotlinLogging.logger { }.debug(e.message, e)
