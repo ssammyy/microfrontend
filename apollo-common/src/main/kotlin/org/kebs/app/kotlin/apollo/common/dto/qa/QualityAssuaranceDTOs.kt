@@ -205,7 +205,9 @@ data class STA10SectionADto(
     var totalNumberMale: Long? = null,
     var totalNumberPermanentEmployees: Long? = null,
     var totalNumberCasualEmployees: Long? = null,
+
     var averageVolumeProductionMonth: String? = null,
+
     var handledManufacturingProcessRawMaterials: String? = null,
     var handledManufacturingProcessInprocessProducts: String? = null,
     var handledManufacturingProcessFinalProduct: String? = null,

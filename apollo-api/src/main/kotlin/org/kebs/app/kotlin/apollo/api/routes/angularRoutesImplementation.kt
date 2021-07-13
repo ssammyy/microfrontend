@@ -275,7 +275,8 @@ class AngularRoutes {
                         POST("/manufacturing_process", handler::permitApplySTA10ManufacturingProcessMigration)
                     }
                     "/invoice".nest {
-                        POST("/batch-invoice-create", handler::invoiceBatchSubmitMigration)
+                        POST("/batch-invoice-submit", handler::invoiceBatchSubmitMigration)
+//                        POST("/batch-invoice-create", handler::invoiceBatchSubmitMigration)
                         PUT("/batch-invoice-add", handler::invoiceBatchAddMigration)
                         PUT("/batch-invoice-remove", handler::invoiceBatchRemoveMigration)
                     }

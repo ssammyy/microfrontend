@@ -1179,9 +1179,12 @@ class QualityAssuranceHandler(
 
             //Calculate Invoice Details
             qaDaoServices.permitInvoiceCalculation(map, loggedInUser, permit, permitType)
+
+
             val pair = qaDaoServices.consolidateInvoiceAndSendMail(
                 permit.id ?: throw ExpectedDataNotFound("MISSING PERMIT ID"), map, loggedInUser
             )
+
             val batchInvoice = pair.first
             permit = pair.second
 
@@ -1196,7 +1199,8 @@ class QualityAssuranceHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            return ServerResponse.badRequest().body(e.message ?: "Unknown Error")
+            throw  e
+//            return ServerResponse.badRequest().body(e.message ?: "Unknown Error")
         }
 
     }

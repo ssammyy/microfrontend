@@ -2285,13 +2285,10 @@ class QADaoServices(
 
         val myDetails = reportsControllers.createInvoicePdf(batchID)
 
-//        val imagePath = ResourceUtils.getFile("classpath:static/images/KEBS_SMARK.png").toString()
-//        val map = hashMapOf<String, Any>()
-//        map["imagePath"] = imagePath
         msReportsControllers.extractAndSaveReport(
             myDetails.first,
             applicationMapProperties.mapReportProfomaInvoiceWithItemsPath,
-            "Remediation-Invoice",
+            "Pro forma invoice",
             myDetails.second
         )
         sendEmailWithProforma(
@@ -2534,6 +2531,7 @@ class QADaoServices(
                 ?: throw ExpectedDataNotFound("MISSING USER ID"),
             loggedInUser
         )
+
         return Pair(batchInvoice, permit)
     }
 
@@ -2901,32 +2899,6 @@ class QADaoServices(
                 ?: throw NullValueNotAllowedException("Company Details For User with [ID = ${user.id}] , does Not exist")
 
             val invoiceGenerated = invoiceGen(permit, userCompany, user, permitType)
-
-            val invoiceNumber = invoiceGenerated.invoiceNumber
-                ?: throw NullValueNotAllowedException("Invoice Number Is Missing For Invoice with [ID = ${invoiceGenerated.id}]")
-
-//            val batchInvoiceDetail = invoiceDaoService.createBatchInvoiceDetails(user, invoiceNumber)
-//            val updateBatchInvoiceDetail = invoiceDaoService.addInvoiceDetailsToBatchInvoice(
-//                invoiceGenerated,
-//                applicationMapProperties.mapInvoiceTransactionsForPermit,
-//                user,
-//                batchInvoiceDetail
-//            )
-//
-//            //Todo: Payment selection
-//            val manufactureDetails = commonDaoServices.findCompanyProfile(user.id!!)
-//            val myAccountDetails = InvoiceDaoService.InvoiceAccountDetails()
-//            with(myAccountDetails) {
-//                accountName = manufactureDetails.name
-//                accountNumber = manufactureDetails.registrationNumber
-//                currency = applicationMapProperties.mapInvoiceTransactionsLocalCurrencyPrefix
-//            }
-//
-//            invoiceDaoService.createPaymentDetailsOnStgReconciliationTable(
-//                user,
-//                updateBatchInvoiceDetail,
-//                myAccountDetails
-//            )
 
             sr.payload = "User[id= ${userCompany.userId}]"
             sr.names = "${userCompany.name} ${userCompany.kraPin}"
