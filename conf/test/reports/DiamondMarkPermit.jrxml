@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.13.0.final using JasperReports Library version 6.13.0-46ada4d1be8f3c5985fd0b6146f3ed44caed6f05  -->
+<!-- Created with Jaspersoft Studio version 6.16.0.final using JasperReports Library version 6.16.0-48579d909b7943b64690c65c71e07e0b80981928  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="DiamondMarkPermit" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="ed21babd-bc90-4f45-a015-31c53503a62e">
 	<parameter name="DmarkLogo" class="java.lang.String"/>
 	<parameter name="imagePath" class="java.lang.String"/>
@@ -12,6 +12,7 @@
 	<parameter name="CommodityDesc" class="java.lang.String"/>
 	<parameter name="TradeMark" class="java.lang.String"/>
 	<parameter name="StandardTitle" class="java.lang.String"/>
+	<parameter name="QrCode" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
@@ -69,13 +70,22 @@
 				</textElement>
 				<text><![CDATA[PERMIT NO:]]></text>
 			</staticText>
+			<line>
+				<reportElement x="404" y="30" width="149" height="1" uuid="bea51ac1-ba34-4959-88e4-dccbd76ccc7b"/>
+			</line>
+			<line>
+				<reportElement x="0" y="56" width="300" height="1" uuid="24242b6f-d346-485a-b63f-532ce00701b4"/>
+			</line>
 			<staticText>
-                <reportElement x="330" y="49" width="109" height="18" uuid="f8962192-c8a5-434e-be27-cd27ccc367dc"/>
-                <textElement>
-                    <font fontName="SansSerif"/>
-                </textElement>
-                <text><![CDATA[EFFECTIVE FROM]]></text>
-            </staticText>
+				<reportElement x="333" y="49" width="106" height="18" uuid="f8962192-c8a5-434e-be27-cd27ccc367dc"/>
+				<textElement>
+					<font fontName="SansSerif"/>
+				</textElement>
+				<text><![CDATA[EFFECTIVE FROM]]></text>
+			</staticText>
+			<line>
+				<reportElement x="433" y="57" width="121" height="1" uuid="45014502-dd63-448b-ba7a-48355408a907"/>
+			</line>
 			<staticText>
 				<reportElement x="0" y="75" width="120" height="18" uuid="ff753243-6f5e-477f-927a-7c8d5fa1861f"/>
 				<textElement>
@@ -86,22 +96,31 @@
 			<line>
 				<reportElement x="110" y="83" width="190" height="1" uuid="b5019cac-b4ec-45ad-98eb-fe4e2417c149"/>
 			</line>
-            <staticText>
-                <reportElement x="330" y="77" width="72" height="18" uuid="fff92383-315a-4727-8646-c5e3838263fe"/>
-                <textElement>
-                    <font fontName="SansSerif"/>
-                </textElement>
-                <text><![CDATA[EXPIRES ON]]></text>
-            </staticText>
-            <staticText>
-                <reportElement x="329" y="105" width="98" height="18" uuid="36e82ebd-1929-4d7f-a343-626e1253547d"/>
-                <textElement>
-                    <font fontName="SansSerif"/>
-                </textElement>
-                <text><![CDATA[DATE OF ISSUE]]></text>
-            </staticText>
 			<staticText>
-				<reportElement x="0" y="127" width="120" height="18" uuid="f603b75b-0d4a-4af4-b0b1-3e7840375c3a"/>
+				<reportElement x="332" y="77" width="70" height="18" uuid="fff92383-315a-4727-8646-c5e3838263fe"/>
+				<textElement>
+					<font fontName="SansSerif"/>
+				</textElement>
+				<text><![CDATA[EXPIRES ON]]></text>
+			</staticText>
+			<line>
+				<reportElement x="404" y="84" width="149" height="1" uuid="c88a8bbf-affc-4cea-a795-692e6943779b"/>
+			</line>
+			<line>
+				<reportElement x="0" y="112" width="300" height="1" uuid="66b5969d-81eb-4379-9168-89e09991a0c5"/>
+			</line>
+			<staticText>
+				<reportElement x="332" y="105" width="98" height="18" uuid="36e82ebd-1929-4d7f-a343-626e1253547d"/>
+				<textElement>
+					<font fontName="SansSerif"/>
+				</textElement>
+				<text><![CDATA[DATE OF ISSUE]]></text>
+			</staticText>
+			<line>
+				<reportElement x="418" y="112" width="135" height="1" uuid="7c1983dd-6908-4b59-9157-f637265dad1a"/>
+			</line>
+			<staticText>
+				<reportElement x="0" y="131" width="120" height="18" uuid="f603b75b-0d4a-4af4-b0b1-3e7840375c3a"/>
 				<textElement>
 					<font fontName="SansSerif"/>
 				</textElement>
@@ -110,68 +129,41 @@
 			<line>
 				<reportElement x="118" y="141" width="182" height="1" uuid="95c9d26b-2791-46e6-9554-7f0ca539fe9a"/>
 			</line>
-            <textField textAdjust="ScaleFont">
-                <reportElement x="1" y="40" width="298" height="26" uuid="687c578a-3654-4d75-ad5d-304dd1643677"/>
-                <box>
-                    <bottomPen lineWidth="1.0"/>
-                </box>
-                <textElement verticalAlignment="Middle"/>
-                <textFieldExpression><![CDATA[$P{FirmName}]]></textFieldExpression>
-            </textField>
-            <textField>
-                <reportElement x="401" y="16" width="138" height="24" uuid="07558563-4f33-44de-a603-467279f63912"/>
-                <box>
-                    <bottomPen lineWidth="1.0"/>
-                </box>
-                <textElement verticalAlignment="Middle"/>
-                <textFieldExpression><![CDATA[$P{PermitNo}]]></textFieldExpression>
-            </textField>
-            <textField textAdjust="ScaleFont">
-                <reportElement x="1" y="93" width="299" height="23" uuid="84611ffb-2904-4fed-bb90-80ca8d565bbd"/>
-                <box>
-                    <bottomPen lineWidth="1.0"/>
-                </box>
-                <textElement verticalAlignment="Middle"/>
-                <textFieldExpression><![CDATA[$P{PostalAddress}]]></textFieldExpression>
-            </textField>
-            <textField>
-                <reportElement x="401" y="75" width="138" height="20" uuid="13ae75fa-6dfa-4f5f-8a3b-ccf86687d702"/>
-                <box>
-                    <bottomPen lineWidth="1.0"/>
-                </box>
-                <textElement verticalAlignment="Middle"/>
-                <textFieldExpression><![CDATA[$P{ExpiryDate}]]></textFieldExpression>
-            </textField>
-            <textField>
-                <reportElement x="426" y="103" width="113" height="20" uuid="9eccb848-a2b8-444b-aede-f879883e127e"/>
-                <box>
-                    <bottomPen lineWidth="1.0"/>
-                </box>
-                <textElement verticalAlignment="Middle"/>
-                <textFieldExpression><![CDATA[$P{DateOfIssue}]]></textFieldExpression>
-            </textField>
-            <textField textAdjust="ScaleFont">
-                <reportElement x="1" y="148" width="298" height="20" uuid="739fb948-6fe1-41c7-8b75-9a0a838c15fe">
-                    <property name="com.jaspersoft.studio.unit.height" value="px"/>
-                </reportElement>
-                <box>
-                    <bottomPen lineWidth="1.0"/>
-                </box>
-                <textElement verticalAlignment="Middle"/>
-                <textFieldExpression><![CDATA[$P{PhysicalAddress}]]></textFieldExpression>
-            </textField>
-            <textField>
-                <reportElement x="439" y="49" width="100" height="17" uuid="9f9b36d3-7967-4d4b-a9f3-9eb4641dd5a3"/>
-                <box>
-                    <bottomPen lineWidth="1.0"/>
-                </box>
-                <textElement verticalAlignment="Middle"/>
-                <textFieldExpression><![CDATA[$P{DateOfIssue}]]></textFieldExpression>
-            </textField>
+			<line>
+				<reportElement x="0" y="167" width="300" height="1" uuid="f16d1933-649d-4a4a-9ec3-7238226e5e36"/>
+			</line>
+			<textField textAdjust="StretchHeight">
+				<reportElement x="100" y="17" width="100" height="39" uuid="687c578a-3654-4d75-ad5d-304dd1643677"/>
+				<textFieldExpression><![CDATA[$P{FirmName}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="424" y="16" width="100" height="24" uuid="07558563-4f33-44de-a603-467279f63912"/>
+				<textFieldExpression><![CDATA[$P{PermitNo}]]></textFieldExpression>
+			</textField>
+			<textField textAdjust="StretchHeight">
+				<reportElement x="140" y="68" width="160" height="45" uuid="84611ffb-2904-4fed-bb90-80ca8d565bbd"/>
+				<textFieldExpression><![CDATA[$P{PostalAddress}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="417" y="71" width="100" height="20" uuid="13ae75fa-6dfa-4f5f-8a3b-ccf86687d702"/>
+				<textFieldExpression><![CDATA[$P{ExpiryDate}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="429" y="98" width="100" height="20" uuid="9eccb848-a2b8-444b-aede-f879883e127e"/>
+				<textFieldExpression><![CDATA[$P{DateOfIssue}]]></textFieldExpression>
+			</textField>
+			<textField textAdjust="StretchHeight">
+				<reportElement x="142" y="127" width="100" height="22" uuid="739fb948-6fe1-41c7-8b75-9a0a838c15fe"/>
+				<textFieldExpression><![CDATA[$P{PhysicalAddress}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="439" y="43" width="100" height="17" uuid="9f9b36d3-7967-4d4b-a9f3-9eb4641dd5a3"/>
+				<textFieldExpression><![CDATA[$P{DateOfIssue}]]></textFieldExpression>
+			</textField>
 		</band>
 	</columnHeader>
 	<detail>
-		<band height="503" splitType="Stretch">
+		<band height="508" splitType="Stretch">
 			<staticText>
 				<reportElement x="0" y="10" width="552" height="40" uuid="f03e6f7c-5b57-4e87-bd99-760d258fb2fe"/>
 				<textElement>
@@ -180,8 +172,8 @@
 				<text><![CDATA[To use the Diamond mark of quality specified in the first column of the appendix hereunder and upon and in respect of the commodity and brand specified in the second and third column there of. which conform to the standard specification in the fourth column.]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="210" y="60" width="80" height="20" uuid="355f03f6-c577-43ab-a24b-07e8dddd6d1b"/>
-				<textElement textAlignment="Center">
+				<reportElement x="210" y="60" width="62" height="20" uuid="355f03f6-c577-43ab-a24b-07e8dddd6d1b"/>
+				<textElement>
 					<font size="11" isBold="true"/>
 				</textElement>
 				<text><![CDATA[APPENDIX]]></text>
@@ -294,7 +286,7 @@
 				<imageExpression><![CDATA[$P{imagePath}]]></imageExpression>
 			</image>
 			<staticText>
-				<reportElement x="386" y="459" width="104" height="29" forecolor="#1067E8" uuid="0e26ddaa-f30a-4fe3-a460-6f864191ad38"/>
+				<reportElement x="386" y="459" width="88" height="29" forecolor="#1067E8" uuid="0e26ddaa-f30a-4fe3-a460-6f864191ad38"/>
 				<textElement verticalAlignment="Top">
 					<font isBold="true"/>
 				</textElement>
@@ -320,6 +312,15 @@ Standards]]></text>
 				<textElement textAlignment="Center" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$P{StandardTitle}]]></textFieldExpression>
 			</textField>
+			<image>
+				<reportElement x="0" y="448" width="65" height="60" uuid="5088fb95-1e31-4d04-8698-a07a83218423"/>
+				<imageExpression><![CDATA[com.google.zxing.client.j2se.MatrixToImageWriter.toBufferedImage(
+    new com.google.zxing.qrcode.QRCodeWriter().encode(
+        $P{QrCode},
+        com.google.zxing.BarcodeFormat.QR_CODE, 300, 300
+    )
+)]]></imageExpression>
+			</image>
 		</band>
 	</detail>
 </jasperReport>

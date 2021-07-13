@@ -4,7 +4,9 @@ import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.PvocBpmn
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.PvocDaoServices
+import org.kebs.app.kotlin.apollo.api.ports.provided.dao.QADaoServices
 import org.kebs.app.kotlin.apollo.api.service.UserRolesService
+import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
 import org.kebs.app.kotlin.apollo.common.exceptions.PvocRemarksNotFoundException
 import org.kebs.app.kotlin.apollo.common.exceptions.SupervisorNotFoundException
@@ -105,6 +107,7 @@ class DIPvocController(
     iPvocExceptionApplicationStatusEntityRepo: IPvocExceptionApplicationStatusEntityRepo,
     private val pvocBpmn: PvocBpmn,
     private val commonDaoServices: CommonDaoServices,
+    private val qaDaoServices: QADaoServices,
     private val pvocDaoServices: PvocDaoServices,
     private val iPvocExceptionIndustrialSparesCategoryEntityRepo: IPvocExceptionIndustrialSparesCategoryEntityRepo,
     private val iPvocExceptionMainMachineryCategoryEntityRepo: IPvocExceptionMainMachineryCategoryEntityRepo,
@@ -137,8 +140,16 @@ class DIPvocController(
     @GetMapping("application")
     @PreAuthorize("hasAuthority('PVOC_APPLICATION_READ')")
     fun applicationForm(model: Model): String {
-        return "destination-inspection/pvoc/ExceptionApplicationForm2"
-//        return "destination-inspection/pvoc/exemption-application"
+        commonDaoServices.loggedInUserDetails().let { user ->
+            user.companyId?.let { commonDaoServices.findCompanyProfileWithID(it).let { companyProfileEntity ->
+                model.addAttribute("companyProfile", companyProfileEntity) }
+            } ?: throw ExpectedDataNotFound("INVALID MANUFACTURER")
+            qaDaoServices.findAllUserPermits(user)?.let { permits ->
+                model.addAttribute("products", permits)
+            }
+        }
+//        return "destination-inspection/pvoc/ExceptionApplicationForm2"
+        return "destination-inspection/pvoc/exemption-application"
     }
 
     //    @PreAuthorize("hasAuthority('PVOC_APPLICATION_READ') or hasAuthority('PVOC_APPLICATION_PROCESS')")

@@ -1,12 +1,9 @@
 package org.kebs.app.kotlin.apollo.api.ports.provided.dao
 
 import mu.KotlinLogging
-import org.kebs.app.kotlin.apollo.api.controllers.qaControllers.QualityAssuranceController
 import org.kebs.app.kotlin.apollo.api.notifications.Notifications
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.QualityAssuranceBpmn
 import org.kebs.app.kotlin.apollo.api.ports.provided.mpesa.MPesaService
-import org.kebs.app.kotlin.apollo.common.dto.SectionsDto
-import org.kebs.app.kotlin.apollo.common.dto.SectionsEntityDto
 import org.kebs.app.kotlin.apollo.common.dto.qa.*
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
@@ -197,6 +194,14 @@ class QADaoServices(
             }
 
             ?: throw ExpectedDataNotFound("No Permit Found for the following user with USERNAME = ${user.userName}")
+    }
+
+    fun findAllUserPermits(user: UsersEntity): List<PermitApplicationsEntity>? {
+        val userId = user.id ?: throw ExpectedDataNotFound("No USER ID Found")
+        permitRepo.findByUserId(userId)?.let { permitList ->
+                return permitList
+            }
+        return null
     }
 
     fun findAllFirmPermits(companyID: Long): List<PermitApplicationsEntity> {
@@ -966,7 +971,9 @@ class QADaoServices(
                 p.dateOfExpiry,
                 p.permitStatus?.let { findPermitStatus(it).processStatusName },
                 p.userId,
-                p.createdOn,
+                commonDaoServices.convertTimestampToKeswsValidDate(
+                    p.createdOn ?: throw Exception("CREATION DATE MISSING")
+                ),
                 p.attachedPlantId?.let {
                     commonDaoServices.findCountiesEntityByCountyId(
                         findPlantDetails(it).county ?: -1L, map.activeStatus

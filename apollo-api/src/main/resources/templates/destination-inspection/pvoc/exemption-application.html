@@ -26,31 +26,80 @@
                 <fieldset>
                   <legend>Step 1/4: Manufacturer Details</legend>
 
-                  <label for="companyName">Company Name</label>
-                  <input type="text" disabled name="companyName" id="companyName" th:value="${details?.companyName}">
-
-                  <label for="kraPin">Company KRA Pin</label>
-                  <input type="text" disabled name="kraPin" id="kraPin" th:value="${details?.companyPinNo}">
-
-                  <label for="postalAddress">Postal Address</label>
-                  <input type="text" disabled name="postalAddress" id="postalAddress" th:value="${details?.postalAddress}">
-
-                  <label for="postalAddress">Telephone No.</label>
-                  <input type="text" disabled name="telephoneNo" id="telephoneNo" th:value="${details?.telephoneNo}">
-
-                  <label for="emailAddress">Email Address</label>
-                  <input type="text" disabled name="emailAddress" id="emailAddress" th:value="${details?.email}">
-
-                  <label for="emailAddress">Physical Location</label>
-                  <input type="text" disabled name="physicalLocation" id="physicalLocation" th:value="${details?.physicalLocation}">
-
-                  <label for="contactPerson">Contact Person</label>
-                  <input type="text" disabled name="contactPerson" id="contactPerson" th:value="${details?.contactPerson}">
+                  <div class="row">
+                    <div class="col-lg-12">
+                      <div class="form-group">
+                        <label for="companyName">Company Name</label>
+                        <input id="companyName" name="companyName" type="text" disabled class="form-control" th:value="${companyProfile?.name}">
+                      </div>
+                    </div>
+                    <div class="col-lg-12">
+                      <div class="form-group">
+                        <label for="kraPin">Company KRA Pin</label>
+                        <input id="kraPin" name="kraPin" type="text" disabled class="form-control" th:value="${companyProfile?.kraPin}">
+                      </div>
+                    </div>
+                    <div class="col-lg-12">
+                      <div class="form-group">
+                        <label for="postalAddress">Postal Address</label>
+                        <input id="postalAddress" name="postalAddress" type="text" disabled class="form-control" th:value="${companyProfile?.postalAddress}">
+                      </div>
+                    </div>
+                    <div class="col-lg-12">
+                      <div class="form-group">
+                        <label for="telephoneNo">Telephone No.</label>
+                        <input id="telephoneNo" name="telephoneNo" type="text" disabled class="form-control" th:value="${companyProfile?.companyTelephone}">
+                      </div>
+                    </div>
+                    <div class="col-lg-12">
+                      <div class="form-group">
+                        <label for="emailAddress">Email Address</label>
+                        <input id="emailAddress" name="emailAddress" type="text" disabled class="form-control" th:value="${companyProfile?.companyEmail}">
+                      </div>
+                    </div>
+                    <div class="col-lg-12">
+                      <div class="form-group">
+                        <label for="emailAddress">Building Name</label>
+                        <input id="buildingName" name="buildingName" type="text" disabled class="form-control" th:value="${companyProfile?.buildingName}">
+                      </div>
+                    </div>
+                    <div class="col-lg-12">
+                      <div class="form-group">
+                        <label for="streetName">Street Name</label>
+                        <input id="streetName" name="streetName" type="text" disabled class="form-control" th:value="${companyProfile?.streetName}">
+                      </div>
+                    </div>
+                  </div>
                 </fieldset>
 
                 <h3>Goods</h3>
                 <fieldset>
                   <legend>Step 2/4: Select Goods Manufactured</legend>
+
+                  <div class="row-table">
+                    <div class="col-lg-12">
+                      <table  id="example" class="table table-striped" style="width:100%">
+                        <thead>
+                        <tr>
+                          <th>SN</th>
+                          <th>Product Name</th>
+                          <th>Brand</th>
+                          <th>Permit Number</th>
+                          <th>Expiry Date</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr class="list" th:each="product: ${products}" style="cursor: pointer">
+                          <td th:text="${product.id}"></td>
+                          <td th:text="${product.productName}"></td>
+                          <td th:text="${product.tradeMark}"></td>
+                          <td th:text="${product.permitRefNumber}"></td>
+                          <td th:text="${product.dateOfExpiry}"></td>
+                        </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
                 </fieldset>
 
               </form>
@@ -77,6 +126,16 @@
     bodyTag: "fieldset",
     transitionEffect: "slideLeft",
     autoFocus: true
+  });
+</script>
+<script>
+  $(document).ready(function () {
+    var table = $('#example').DataTable({
+      lengthChange: false
+    });
+
+    table.buttons().container()
+            .appendTo('#example_wrapper .col-sm-6:eq(0)');
   });
 </script>
 

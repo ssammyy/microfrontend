@@ -16,6 +16,7 @@
 	<parameter name="StandardTitle" class="java.lang.String"/>
 	<parameter name="phoneNumber" class="java.lang.String"/>
 	<parameter name="SmarkLogo" class="java.lang.String"/>
+	<parameter name="QrCode" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
@@ -208,7 +209,7 @@
 		</band>
 	</columnHeader>
 	<detail>
-		<band height="482" splitType="Stretch">
+		<band height="488" splitType="Stretch">
 			<staticText>
 				<reportElement x="0" y="12" width="552" height="40" uuid="f03e6f7c-5b57-4e87-bd99-760d258fb2fe"/>
 				<textElement>
@@ -338,6 +339,15 @@ Standards]]></text>
 				<textElement textAlignment="Center" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$P{StandardTitle}]]></textFieldExpression>
 			</textField>
+			<image>
+				<reportElement x="0" y="420" width="59" height="58" uuid="5cb99f08-4d36-4519-be4a-39862fd5fc20"/>
+				<imageExpression><![CDATA[com.google.zxing.client.j2se.MatrixToImageWriter.toBufferedImage(
+    new com.google.zxing.qrcode.QRCodeWriter().encode(
+        $P{QrCode},
+        com.google.zxing.BarcodeFormat.QR_CODE, 300, 300
+    )
+)]]></imageExpression>
+			</image>
 		</band>
 	</detail>
 </jasperReport>
