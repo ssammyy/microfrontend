@@ -1,12 +1,12 @@
-import {Injectable} from '@angular/core';
+import { Injectable } from '@angular/core';
 import {EntityCollectionServiceBase, EntityCollectionServiceElementsFactory} from '@ngrx/data';
-import {User} from './user.model';
+import {Titles} from './titles.model';
 
 @Injectable({
   providedIn: 'root'
 })
-export class UsersService extends EntityCollectionServiceBase<User> {
+export class TitlesService extends EntityCollectionServiceBase<Titles> {
   constructor(serviceElementsFactory: EntityCollectionServiceElementsFactory) {
-    super('User', serviceElementsFactory);
+    super('Titles', serviceElementsFactory);
   }
 }

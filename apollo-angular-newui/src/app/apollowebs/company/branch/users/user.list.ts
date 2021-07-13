@@ -22,7 +22,7 @@ import {Store} from '@ngrx/store';
 export class UserList implements OnInit {
 
 
-    users$: Observable<User[]>;
+     users$: Observable<User[]>;
 
     user: User;
 
