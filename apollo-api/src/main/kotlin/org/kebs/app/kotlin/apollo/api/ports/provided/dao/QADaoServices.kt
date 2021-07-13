@@ -1,9 +1,14 @@
 package org.kebs.app.kotlin.apollo.api.ports.provided.dao
 
 import mu.KotlinLogging
+import org.kebs.app.kotlin.apollo.api.controllers.msControllers.MSReportsControllers
+import org.kebs.app.kotlin.apollo.api.controllers.qaControllers.QualityAssuranceController
+import org.kebs.app.kotlin.apollo.api.controllers.qaControllers.ReportsController
 import org.kebs.app.kotlin.apollo.api.notifications.Notifications
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.QualityAssuranceBpmn
 import org.kebs.app.kotlin.apollo.api.ports.provided.mpesa.MPesaService
+import org.kebs.app.kotlin.apollo.common.dto.SectionsDto
+import org.kebs.app.kotlin.apollo.common.dto.SectionsEntityDto
 import org.kebs.app.kotlin.apollo.common.dto.qa.*
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
@@ -25,6 +30,7 @@ import org.springframework.security.core.Authentication
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
+import org.springframework.util.ResourceUtils
 import org.springframework.web.multipart.MultipartFile
 import java.math.BigDecimal
 import java.sql.Date
@@ -73,6 +79,8 @@ class QADaoServices(
     private val processStatusRepo: IQaProcessStatusRepository,
     private val iMoneyTypeCodesRepo: ICfgMoneyTypeCodesRepository,
     private val mpesaServices: MPesaService,
+    private val msReportsControllers: MSReportsControllers,
+//    private val reportsControllers: ReportsController,
     private val notifications: Notifications,
 ) {
 
@@ -80,6 +88,10 @@ class QADaoServices(
     @Lazy
     @Autowired
     lateinit var qualityAssuranceBpmn: QualityAssuranceBpmn
+
+    @Lazy
+    @Autowired
+    lateinit var reportsControllers: ReportsController
 
 
     final var appId = applicationMapProperties.mapQualityAssurance
@@ -761,7 +773,8 @@ class QADaoServices(
     fun findPermitInvoiceByPermitRefNumber(permitRefNumber: String, userId: Long): InvoiceEntity {
         invoiceRepository.findByPermitRefNumberAndUserId(permitRefNumber, userId)?.let {
             return it
-        } ?: throw ExpectedDataNotFound("No Invoice found with the following [PERMIT REF NO =$permitRefNumber  and LoggedIn User]")
+        }
+            ?: throw ExpectedDataNotFound("No Invoice found with the following [PERMIT REF NO =${permitRefNumber}  and LoggedIn User]")
     }
 
     fun findSTA3WithPermitRefNumber(permitRefNumber: String): QaSta3Entity {
@@ -971,9 +984,7 @@ class QADaoServices(
                 p.dateOfExpiry,
                 p.permitStatus?.let { findPermitStatus(it).processStatusName },
                 p.userId,
-                commonDaoServices.convertTimestampToKeswsValidDate(
-                    p.createdOn ?: throw Exception("CREATION DATE MISSING")
-                ),
+                p.createdOn,
                 p.attachedPlantId?.let {
                     commonDaoServices.findCountiesEntityByCountyId(
                         findPlantDetails(it).county ?: -1L, map.activeStatus
@@ -1198,177 +1209,21 @@ class QADaoServices(
             firmTypeName = companyProfile?.firmCategory?.let { findFirmTypeById(it).firmType }
             permitTypeName = permitType.typeName
             permitTypeID = permitType.id
+            permitAwardStatus = permit.permitAwardStatus == 1
+            invoiceGenerated = permit.invoiceGenerated == 1
+            approvedRejectedScheme = permit.approvedRejectedScheme == 1
+            sendForPcmReview = permit.sendForPcmReview == 1
+            sendApplication = permit.sendApplication == 1
 
         }
         return p
     }
 
-//    fun QualityAssuranceController(
-//        map: ServiceMapsEntity,
-//        loggedInUser: UsersEntity,
-//        uploadsQa: PermitUploads,
-//        permitDetails: PermitApplicationsEntity
-//    ) {
-//
-//        val uploads = QaUploadsEntity()
-//        var versionNumber: Long = 1
-//        var uploadResults: Pair<ServiceRequestsEntity, QaUploadsEntity>? = null
-//
-//        when (uploadsQa.ordinaryStatus) {
-//            map.activeStatus -> {
-//                uploads.ordinaryStatus = uploadsQa.ordinaryStatus
-//                uploadResults = saveQaFileUploads(
-//                    uploadsQa.docFile,
-//                    uploadsQa.docFileName,
-//                    loggedInUser,
-//                    map,
-//                    uploads,
-//                    permitDetails.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"),
-//                    versionNumber,
-//                    uploadsQa.manufactureNonStatus
-//                )
-//            }
-//            map.inactiveStatus -> {
-//                uploads.ordinaryStatus = uploadsQa.ordinaryStatus
-//                when {
-//                    uploadsQa.cocStatus != null -> {
-//                        uploads.cocStatus = uploadsQa.cocStatus
-//                        versionNumber = findAllUploadedFileBYPermitRefNumberAndCocStatus(
-//                            permitDetails.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"),
-//                            map.activeStatus
-//                        ).size.toLong().plus(versionNumber)
-//                        uploadResults = saveQaFileUploads(
-//                            uploadsQa.docFile,
-//                            uploadsQa.docFileName,
-//                            loggedInUser,
-//                            map,
-//                            uploads,
-//                            permitDetails.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"),
-//                            versionNumber,
-//                            uploadsQa.manufactureNonStatus
-//                        )
-//                        permitDetails.cocId = uploadResults.second.id
-//                       val permitDetails2 = permitUpdateDetails(permitDetails, map, loggedInUser).second
-//                        permitInsertStatus(
-//                            permitDetails2,
-//                            applicationMapProperties.mapQaStatusCocUploaded,
-//                            loggedInUser
-//                        )
-//
-//                    }
-//                    uploadsQa.sscUploadStatus != null -> {
-//                        uploads.sscStatus = uploadsQa.sscUploadStatus
-//                        versionNumber = findAllUploadedFileBYPermitRefNumberAndSscStatus(
-//                            permitDetails.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"),
-//                            map.activeStatus
-//                        ).size.toLong().plus(versionNumber)
-//                        uploadResults = saveQaFileUploads(
-//                            uploadsQa.docFile,
-//                            uploadsQa.docFileName,
-//                            loggedInUser,
-//                            map,
-//                            uploads,
-//                            permitDetails.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"),
-//                            versionNumber,
-//                            uploadsQa.manufactureNonStatus
-//                        )
-//                        permitDetails.generateSchemeStatus = map.activeStatus
-//                        permitDetails.sscId = uploadResults.second.id
-//                        val permitDetails2 = permitUpdateDetails(permitDetails, map, loggedInUser).second
-//                        permitInsertStatus(
-//                            permitDetails2,
-//                            applicationMapProperties.mapQaStatusPApprSSC,
-//                            loggedInUser
-//                        )
-//
-//                    }
-//                    uploadsQa.assessmentReportStatus != null -> {
-//                        uploads.assessmentReportStatus = uploadsQa.assessmentReportStatus
-//                        versionNumber = findAllUploadedFileBYPermitRefNumberAndAssessmentReportStatus(
-//                            permitDetails.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"),
-//                            map.activeStatus
-//                        ).size.toLong().plus(versionNumber)
-//                        uploadResults = saveQaFileUploads(
-//                            uploadsQa.docFile,
-//                            uploadsQa.docFileName,
-//                            loggedInUser,
-//                            map,
-//                            uploads,
-//                            permitDetails.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"),
-//                            versionNumber,
-//                            uploadsQa.manufactureNonStatus
-//                        )
-//
-//                        val hodDetails = assignNextOfficerAfterPayment(
-//                            permitDetails,
-//                            map,
-//                            applicationMapProperties.mapQADesignationIDForHODId
-//                        )
-//
-//
-//                        with(permitDetails) {
-//                            assessmentScheduledStatus = map.successStatus
-//                            assessmentReportRemarks = uploadsQa.assessmentRecommendations
-//                            hodId = hodDetails?.id
-//                            permitStatus = applicationMapProperties.mapQaStatusPApprovalAssesmentReport
-//                            userTaskId = applicationMapProperties.mapUserTaskNameHOD
-//                        }
-//                        permitUpdateDetails(permitDetails, map, loggedInUser)
-//
-//                        //Send notification to PAC secretary
-//                        val hodSec = hodDetails?.id?.let { commonDaoServices.findUserByID(it) }
-//                        hodSec?.email?.let { sendPacDmarkAssessmentNotificationEmail(it, permitDetails) }
-//
-//                    }
-//                    uploadsQa.inspectionReportStatus != null -> {
-//                        uploads.inspectionReportStatus = uploadsQa.inspectionReportStatus
-//                        //                        versionNumber = qaDaoServices.findAllUploadedFileBYPermitIDAndSscStatus(permitID, map.activeStatus).size.toLong().plus(versionNumber)
-//                        uploadResults = saveQaFileUploads(
-//                            uploadsQa.docFile,
-//                            uploadsQa.docFileName,
-//                            loggedInUser,
-//                            map,
-//                            uploads,
-//                            permitDetails.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"),
-//                            versionNumber,
-//                            uploadsQa.manufactureNonStatus
-//                        )
-//                        //                        permitDetails.generateSchemeStatus = map.activeStatus
-//                        //                        permitDetails.sscId = uploadResults.second.id
-//                        //TODO()
-////                        val permitDetails3 = permitUpdateDetails(permitDetails, map, loggedInUser).second
-//                        //                        qaDaoServices.permitInsertStatus(permitDetails, applicationMapProperties.mapQaStatusPApprSSC, loggedInUser)
-//
-//                    }
-//                    uploadsQa.sta10Status != null -> {
-//                        uploads.sta10Status = uploadsQa.sta10Status
-//                        //                        versionNumber = qaDaoServices.findAllUploadedFileBYPermitIDAndSscStatus(permitID, map.activeStatus).size.toLong().plus(versionNumber)
-//                        uploadResults = saveQaFileUploads(
-//                            uploadsQa.docFile,
-//                            uploadsQa.docFileName,
-//                            loggedInUser,
-//                            map,
-//                            uploads,
-//                            permitDetails.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"),
-//                            versionNumber,
-//                            uploadsQa.manufactureNonStatus
-//                        )
-//                        //                        permitDetails.generateSchemeStatus = map.activeStatus
-//                        //                        permitDetails.sscId = uploadResults.second.id
-////                        val permitDetails4 = permitUpdateDetails(permitDetails, map, loggedInUser).second
-//                        //                        qaDaoServices.permitInsertStatus(permitDetails, applicationMapProperties.mapQaStatusPApprSSC, loggedInUser)
-//
-//                    }
-//
-//                }
-//            }
-//        }
-//
-////        result1 = uploadResults?.first
-////        return Pair(permitDetails, result1)
-//    }
-
-    fun mapAllPermitDetailsTogether(permit: PermitApplicationsEntity, map: ServiceMapsEntity): AllPermitDetailsDto {
+    fun mapAllPermitDetailsTogether(
+        permit: PermitApplicationsEntity,
+        batchID: Long?,
+        map: ServiceMapsEntity
+    ): AllPermitDetailsDto {
         return AllPermitDetailsDto(
             permitDetails(permit, map),
             commonDaoServices.userListDto(
@@ -1381,7 +1236,8 @@ class QADaoServices(
             ),
             findAllOldPermitWithPermitRefNumber(
                 permit.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER")
-            )?.let { listPermits(it, map) }
+            )?.let { listPermits(it, map) },
+            batchID
         )
     }
 
@@ -2279,18 +2135,30 @@ class QADaoServices(
     ): Pair<ServiceRequestsEntity, PermitApplicationsEntity> {
 
         var sr = commonDaoServices.createServiceRequest(s)
-        var savePermit = PermitApplicationsEntity()
+        var savePermit: PermitApplicationsEntity? = null
         try {
             val pm = findPermitBYID(permitID)
-            val oldPermit = findPermitWithPermitRefNumberLatest(pm.permitRefNumber ?: throw Exception("INVALID PERMIT NUMBER"))
-            KotlinLogging.logger { }.info { "::::::::::::::::::PERMIT With PERMIT NUMBER = ${pm.permitRefNumber}, DOES Exists::::::::::::::::::::: " }
-            val versionNumberOld = oldPermit.versionNumber ?: throw ExpectedDataNotFound("Permit Version Number is Empty")
-
-            savePermit = commonDaoServices.updateDetails(oldPermit, savePermit) as PermitApplicationsEntity
-            savePermit = permitUpdateDetails(savePermit, s, user).second
+            var oldPermit =
+                findPermitWithPermitRefNumberLatest(pm.permitRefNumber ?: throw Exception("INVALID PERMIT NUMBER"))
+            KotlinLogging.logger { }
+                .info { "::::::::::::::::::PERMIT With PERMIT NUMBER = ${pm.permitRefNumber}, DOES Exists::::::::::::::::::::: " }
+            val versionNumberOld =
+                oldPermit.versionNumber ?: throw ExpectedDataNotFound("Permit Version Number is Empty")
 
             oldPermit.oldPermitStatus = 1
-            permitUpdateDetails(oldPermit, s, user).second
+//            oldPermit.renewalStatus = s.activeStatus
+            //update last previous version permit old status
+            oldPermit = permitUpdateDetails(oldPermit, s, user).second
+
+            savePermit = oldPermit
+
+            with(savePermit) {
+                id = null
+                oldPermitStatus = null
+                versionNumber = versionNumberOld.plus(1)
+            }
+
+            savePermit = permitRepo.save(savePermit)
 
             sr.payload = "Permit Renewed Updated [updatePermit= ${savePermit.id}]"
             sr.names = "${savePermit.permitRefNumber}} ${savePermit.userId}"
@@ -2313,7 +2181,7 @@ class QADaoServices(
         }
 
         KotlinLogging.logger { }.trace("${sr.id} ${sr.responseStatus}")
-        return Pair(sr, savePermit)
+        return Pair(sr, savePermit ?: throw ExpectedDataNotFound("MISSING SAVED PERMIT"))
     }
 
     fun permitUpdateNewWithSamePermitNumber(
@@ -2416,6 +2284,39 @@ class QADaoServices(
 
         KotlinLogging.logger { }.trace("${sr.id} ${sr.responseStatus}")
         return Pair(sr, savePermit)
+    }
+
+    fun invoiceCreationPDF(
+        batchID: Long,
+        senderEmail: String,
+        loggedInUser: UsersEntity
+    ) {
+
+        val myDetails = reportsControllers.createInvoicePdf(batchID)
+
+//        val imagePath = ResourceUtils.getFile("classpath:static/images/KEBS_SMARK.png").toString()
+//        val map = hashMapOf<String, Any>()
+//        map["imagePath"] = imagePath
+        msReportsControllers.extractAndSaveReport(
+            myDetails.first,
+            applicationMapProperties.mapReportProfomaInvoiceWithItemsPath,
+            "Remediation-Invoice",
+            myDetails.second
+        )
+        sendEmailWithProforma(
+            senderEmail,
+            ResourceUtils.getFile("classpath:templates/TestPdf/Remediation-Invoice.pdf").toString()
+        )
+    }
+
+    fun sendEmailWithProforma(recipient: String, attachment: String?): Boolean {
+        val subject = "PRO FORMA INVOICE"
+        val messageBody = "Check The attached Proforma Invoices for payment"
+
+//        notifications.sendEmail(recipient, subject, messageBody)
+        notifications.processEmail(recipient, subject, messageBody, attachment)
+
+        return true
     }
 
 
@@ -3217,6 +3118,7 @@ class QADaoServices(
             tax = generatedPayments[3]
             businessName = entity.name
             permitId = permits.id
+            goods = permits.tradeMark
             userId = user.id
             paymentStatus = 0
             invoiceNumber = "KIMS${permitType.markNumber}${
@@ -3956,6 +3858,7 @@ class QADaoServices(
 
         return batchInvoiceList.map { p ->
             ConsolidatedInvoiceDto(
+                p.id,
                 p.invoiceNumber,
                 p.totalAmount,
                 p.paidDate,

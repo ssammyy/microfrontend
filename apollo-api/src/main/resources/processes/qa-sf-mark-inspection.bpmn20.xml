@@ -32,7 +32,6 @@
                 <activiti:taskListener event="assignment" expression="${bpmnNotifications.sendEmail(task)}"></activiti:taskListener>
             </extensionElements>
         </userTask>
-        <exclusiveGateway id="qaSfmiGwAcceptSupervisionScheme" name="Gateway Accept Supervision Scheme"></exclusiveGateway>
         <userTask id="qaSfmiAssignComplianceStatus" name="Assign Compliance Status">
             <documentation>Description</documentation>
         </userTask>
@@ -75,16 +74,7 @@
         </endEvent>
         <exclusiveGateway id="exclusivegateway4" name="Exclusive Gateway"></exclusiveGateway>
         <exclusiveGateway id="exclusivegateway5" name="Exclusive Gateway"></exclusiveGateway>
-        <sequenceFlow id="flow1" sourceRef="qaSfmiStart" targetRef="qaSfmiGenSupervisionScheme"></sequenceFlow>
         <sequenceFlow id="flow8" sourceRef="qaSfmiGenerateInspectionReport" targetRef="qaSfmiInspectionReportNotif"></sequenceFlow>
-        <sequenceFlow id="flow9" sourceRef="qaSfmiInspectionReportNotif" targetRef="endNotificationReportSent"></sequenceFlow>
-        <sequenceFlow id="flowSupervisionSchemeFailed" sourceRef="qaSfmiGwAcceptSupervisionScheme" targetRef="qaSfmiGenSupervisionScheme">
-            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${supervisionSchemeAccepted==0}]]></conditionExpression>
-        </sequenceFlow>
-        <sequenceFlow id="flow11" sourceRef="qaSfmiAcceptSupervisionScheme" targetRef="qaSfmiGwAcceptSupervisionScheme"></sequenceFlow>
-        <sequenceFlow id="flowSupervisionSchemeSuccess" sourceRef="qaSfmiGwAcceptSupervisionScheme" targetRef="qaSfmiFillFactoryInspectionForms">
-            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${supervisionSchemeAccepted==1}]]></conditionExpression>
-        </sequenceFlow>
         <sequenceFlow id="flow13" sourceRef="qaSfmiFillFactoryInspectionForms" targetRef="parallelgateway1"></sequenceFlow>
         <sequenceFlow id="flow14" sourceRef="parallelgateway1" targetRef="qaSfmiGenerateInspectionReport">
             <conditionExpression xsi:type="tFormalExpression"><![CDATA[${factoryInspectionFormsComplete==0}]]></conditionExpression>
@@ -111,7 +101,6 @@
         <sequenceFlow id="flow33" sourceRef="exclusivegateway5" targetRef="qaSfmiGenerateReportDuePermits">
             <conditionExpression xsi:type="tFormalExpression"><![CDATA[${permitSurveillance==1}]]></conditionExpression>
         </sequenceFlow>
-        <sequenceFlow id="flow34" sourceRef="qaSfmiGenerateReportDuePermits" targetRef="qaSfmiGenSupervisionScheme"></sequenceFlow>
         <sequenceFlow id="flow35" sourceRef="exclusivegateway4" targetRef="endFinalEvent">
             <conditionExpression xsi:type="tFormalExpression"><![CDATA[${permitRecommendationApproval==1}]]></conditionExpression>
         </sequenceFlow>
@@ -130,13 +119,24 @@
         </sequenceFlow>
         <parallelGateway id="parallelgateway2" name="Inclusive Gateway"></parallelGateway>
         <sequenceFlow id="flow42" sourceRef="qaSfmiSendLabReport" targetRef="endLabReportSent"></sequenceFlow>
-        <sequenceFlow id="flow43" sourceRef="qaSfmiGenSupervisionScheme" targetRef="qaSfmiAcceptSupervisionScheme"></sequenceFlow>
         <sequenceFlow id="flow44" sourceRef="qaSfmiAnalyzeSamples" targetRef="qaSfmiCheckLabReport"></sequenceFlow>
         <sequenceFlow id="flow45" sourceRef="exclusivegateway3" targetRef="qaSfmiApprovePermitRecommendation">
             <conditionExpression xsi:type="tFormalExpression"><![CDATA[${complianceStatus==1}]]></conditionExpression>
         </sequenceFlow>
         <serviceTask id="qaSfmiInspectionReportNotif" name="Inspection Report Notification" activiti:expression="${bpmnNotifications.sendEmailServiceTask(email)}"></serviceTask>
         <serviceTask id="qaSfmiSendLabReport" name="Send The Lab Report" activiti:expression="${bpmnNotifications.sendEmailServiceTask(email)}"></serviceTask>
+        <sequenceFlow id="flow46" sourceRef="qaSfmiStart" targetRef="qaSfmiFillFactoryInspectionForms"></sequenceFlow>
+        <sequenceFlow id="flow47" sourceRef="qaSfmiInspectionReportNotif" targetRef="qaSfmiGenSupervisionScheme"></sequenceFlow>
+        <sequenceFlow id="flow48" sourceRef="qaSfmiGenSupervisionScheme" targetRef="qaSfmiAcceptSupervisionScheme"></sequenceFlow>
+        <sequenceFlow id="flow49" sourceRef="qaSfmiAcceptSupervisionScheme" targetRef="endNotificationReportSent">
+            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${supervisionSchemeAccepted==1}]]></conditionExpression>
+        </sequenceFlow>
+        <sequenceFlow id="flow50" sourceRef="qaSfmiGenerateReportDuePermits" targetRef="qaSfmiGenerateInspectionReport"></sequenceFlow>
+        <exclusiveGateway id="exclusivegateway6" name="Exclusive Gateway"></exclusiveGateway>
+        <sequenceFlow id="flow51" sourceRef="qaSfmiAcceptSupervisionScheme" targetRef="exclusivegateway6">
+            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${supervisionSchemeAccepted==0}]]></conditionExpression>
+        </sequenceFlow>
+        <sequenceFlow id="flow52" sourceRef="exclusivegateway6" targetRef="qaSfmiGenSupervisionScheme"></sequenceFlow>
     </process>
     <bpmndi:BPMNDiagram id="BPMNDiagram_qaSFMarkInspectionProcess">
         <bpmndi:BPMNPlane bpmnElement="qaSFMarkInspectionProcess" id="BPMNPlane_qaSFMarkInspectionProcess">
@@ -144,10 +144,10 @@
                 <omgdc:Bounds height="35.0" width="35.0" x="30.0" y="65.0"></omgdc:Bounds>
             </bpmndi:BPMNShape>
             <bpmndi:BPMNShape bpmnElement="qaSfmiGenSupervisionScheme" id="BPMNShape_qaSfmiGenSupervisionScheme">
-                <omgdc:Bounds height="61.0" width="111.0" x="125.0" y="52.0"></omgdc:Bounds>
+                <omgdc:Bounds height="61.0" width="111.0" x="520.0" y="59.0"></omgdc:Bounds>
             </bpmndi:BPMNShape>
             <bpmndi:BPMNShape bpmnElement="qaSfmiFillFactoryInspectionForms" id="BPMNShape_qaSfmiFillFactoryInspectionForms">
-                <omgdc:Bounds height="81.0" width="121.0" x="760.0" y="160.0"></omgdc:Bounds>
+                <omgdc:Bounds height="81.0" width="121.0" x="190.0" y="160.0"></omgdc:Bounds>
             </bpmndi:BPMNShape>
             <bpmndi:BPMNShape bpmnElement="qaSfmiGenerateInspectionReport" id="BPMNShape_qaSfmiGenerateInspectionReport">
                 <omgdc:Bounds height="68.0" width="125.0" x="928.0" y="55.0"></omgdc:Bounds>
@@ -166,9 +166,6 @@
             </bpmndi:BPMNShape>
             <bpmndi:BPMNShape bpmnElement="qaSfmiCheckLabReport" id="BPMNShape_qaSfmiCheckLabReport">
                 <omgdc:Bounds height="55.0" width="105.0" x="768.0" y="300.0"></omgdc:Bounds>
-            </bpmndi:BPMNShape>
-            <bpmndi:BPMNShape bpmnElement="qaSfmiGwAcceptSupervisionScheme" id="BPMNShape_qaSfmiGwAcceptSupervisionScheme">
-                <omgdc:Bounds height="40.0" width="40.0" x="603.0" y="180.0"></omgdc:Bounds>
             </bpmndi:BPMNShape>
             <bpmndi:BPMNShape bpmnElement="qaSfmiAssignComplianceStatus" id="BPMNShape_qaSfmiAssignComplianceStatus">
                 <omgdc:Bounds height="61.0" width="115.0" x="571.0" y="409.0"></omgdc:Bounds>
@@ -195,13 +192,13 @@
                 <omgdc:Bounds height="75.0" width="151.0" x="105.0" y="521.0"></omgdc:Bounds>
             </bpmndi:BPMNShape>
             <bpmndi:BPMNShape bpmnElement="qaSfmiAcceptSupervisionScheme" id="BPMNShape_qaSfmiAcceptSupervisionScheme">
-                <omgdc:Bounds height="70.0" width="115.0" x="566.0" y="48.0"></omgdc:Bounds>
+                <omgdc:Bounds height="70.0" width="115.0" x="286.0" y="55.0"></omgdc:Bounds>
             </bpmndi:BPMNShape>
             <bpmndi:BPMNShape bpmnElement="parallelgateway1" id="BPMNShape_parallelgateway1">
                 <omgdc:Bounds height="40.0" width="40.0" x="970.0" y="180.0"></omgdc:Bounds>
             </bpmndi:BPMNShape>
             <bpmndi:BPMNShape bpmnElement="endNotificationReportSent" id="BPMNShape_endNotificationReportSent">
-                <omgdc:Bounds height="35.0" width="35.0" x="1370.0" y="71.0"></omgdc:Bounds>
+                <omgdc:Bounds height="35.0" width="35.0" x="166.0" y="72.0"></omgdc:Bounds>
             </bpmndi:BPMNShape>
             <bpmndi:BPMNShape bpmnElement="endLabReportSent" id="BPMNShape_endLabReportSent">
                 <omgdc:Bounds height="35.0" width="35.0" x="990.0" y="541.0"></omgdc:Bounds>
@@ -216,38 +213,20 @@
                 <omgdc:Bounds height="40.0" width="40.0" x="472.0" y="419.0"></omgdc:Bounds>
             </bpmndi:BPMNShape>
             <bpmndi:BPMNShape bpmnElement="qaSfmiInspectionReportNotif" id="BPMNShape_qaSfmiInspectionReportNotif">
-                <omgdc:Bounds height="70.0" width="121.0" x="1140.0" y="54.0"></omgdc:Bounds>
+                <omgdc:Bounds height="70.0" width="121.0" x="721.0" y="55.0"></omgdc:Bounds>
             </bpmndi:BPMNShape>
             <bpmndi:BPMNShape bpmnElement="qaSfmiSendLabReport" id="BPMNShape_qaSfmiSendLabReport">
                 <omgdc:Bounds height="65.0" width="121.0" x="781.0" y="526.0"></omgdc:Bounds>
             </bpmndi:BPMNShape>
-            <bpmndi:BPMNEdge bpmnElement="flow1" id="BPMNEdge_flow1">
-                <omgdi:waypoint x="65.0" y="82.0"></omgdi:waypoint>
-                <omgdi:waypoint x="125.0" y="82.0"></omgdi:waypoint>
-            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNShape bpmnElement="exclusivegateway6" id="BPMNShape_exclusivegateway6">
+                <omgdc:Bounds height="40.0" width="40.0" x="418.0" y="150.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
             <bpmndi:BPMNEdge bpmnElement="flow8" id="BPMNEdge_flow8">
-                <omgdi:waypoint x="1053.0" y="89.0"></omgdi:waypoint>
-                <omgdi:waypoint x="1140.0" y="89.0"></omgdi:waypoint>
-            </bpmndi:BPMNEdge>
-            <bpmndi:BPMNEdge bpmnElement="flow9" id="BPMNEdge_flow9">
-                <omgdi:waypoint x="1261.0" y="89.0"></omgdi:waypoint>
-                <omgdi:waypoint x="1370.0" y="88.0"></omgdi:waypoint>
-            </bpmndi:BPMNEdge>
-            <bpmndi:BPMNEdge bpmnElement="flowSupervisionSchemeFailed" id="BPMNEdge_flowSupervisionSchemeFailed">
-                <omgdi:waypoint x="603.0" y="200.0"></omgdi:waypoint>
-                <omgdi:waypoint x="358.0" y="200.0"></omgdi:waypoint>
-                <omgdi:waypoint x="180.0" y="113.0"></omgdi:waypoint>
-            </bpmndi:BPMNEdge>
-            <bpmndi:BPMNEdge bpmnElement="flow11" id="BPMNEdge_flow11">
-                <omgdi:waypoint x="623.0" y="118.0"></omgdi:waypoint>
-                <omgdi:waypoint x="623.0" y="180.0"></omgdi:waypoint>
-            </bpmndi:BPMNEdge>
-            <bpmndi:BPMNEdge bpmnElement="flowSupervisionSchemeSuccess" id="BPMNEdge_flowSupervisionSchemeSuccess">
-                <omgdi:waypoint x="643.0" y="200.0"></omgdi:waypoint>
-                <omgdi:waypoint x="760.0" y="200.0"></omgdi:waypoint>
+                <omgdi:waypoint x="928.0" y="89.0"></omgdi:waypoint>
+                <omgdi:waypoint x="842.0" y="90.0"></omgdi:waypoint>
             </bpmndi:BPMNEdge>
             <bpmndi:BPMNEdge bpmnElement="flow13" id="BPMNEdge_flow13">
-                <omgdi:waypoint x="881.0" y="200.0"></omgdi:waypoint>
+                <omgdi:waypoint x="311.0" y="200.0"></omgdi:waypoint>
                 <omgdi:waypoint x="970.0" y="200.0"></omgdi:waypoint>
             </bpmndi:BPMNEdge>
             <bpmndi:BPMNEdge bpmnElement="flow14" id="BPMNEdge_flow14">
@@ -277,7 +256,7 @@
             </bpmndi:BPMNEdge>
             <bpmndi:BPMNEdge bpmnElement="flow23" id="BPMNEdge_flow23">
                 <omgdi:waypoint x="623.0" y="300.0"></omgdi:waypoint>
-                <omgdi:waypoint x="820.0" y="241.0"></omgdi:waypoint>
+                <omgdi:waypoint x="250.0" y="241.0"></omgdi:waypoint>
             </bpmndi:BPMNEdge>
             <bpmndi:BPMNEdge bpmnElement="flowLabReportStatusSuccess" id="BPMNEdge_flowLabReportStatusSuccess">
                 <omgdi:waypoint x="800.0" y="440.0"></omgdi:waypoint>
@@ -302,10 +281,6 @@
             <bpmndi:BPMNEdge bpmnElement="flow33" id="BPMNEdge_flow33">
                 <omgdi:waypoint x="180.0" y="661.0"></omgdi:waypoint>
                 <omgdi:waypoint x="180.0" y="596.0"></omgdi:waypoint>
-            </bpmndi:BPMNEdge>
-            <bpmndi:BPMNEdge bpmnElement="flow34" id="BPMNEdge_flow34">
-                <omgdi:waypoint x="180.0" y="521.0"></omgdi:waypoint>
-                <omgdi:waypoint x="180.0" y="113.0"></omgdi:waypoint>
             </bpmndi:BPMNEdge>
             <bpmndi:BPMNEdge bpmnElement="flow35" id="BPMNEdge_flow35">
                 <omgdi:waypoint x="623.0" y="701.0"></omgdi:waypoint>
@@ -337,10 +312,6 @@
                 <omgdi:waypoint x="902.0" y="558.0"></omgdi:waypoint>
                 <omgdi:waypoint x="990.0" y="558.0"></omgdi:waypoint>
             </bpmndi:BPMNEdge>
-            <bpmndi:BPMNEdge bpmnElement="flow43" id="BPMNEdge_flow43">
-                <omgdi:waypoint x="236.0" y="82.0"></omgdi:waypoint>
-                <omgdi:waypoint x="566.0" y="83.0"></omgdi:waypoint>
-            </bpmndi:BPMNEdge>
             <bpmndi:BPMNEdge bpmnElement="flow44" id="BPMNEdge_flow44">
                 <omgdi:waypoint x="1200.0" y="412.0"></omgdi:waypoint>
                 <omgdi:waypoint x="1200.0" y="327.0"></omgdi:waypoint>
@@ -350,6 +321,36 @@
                 <omgdi:waypoint x="420.0" y="459.0"></omgdi:waypoint>
                 <omgdi:waypoint x="420.0" y="560.0"></omgdi:waypoint>
                 <omgdi:waypoint x="568.0" y="562.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow46" id="BPMNEdge_flow46">
+                <omgdi:waypoint x="47.0" y="100.0"></omgdi:waypoint>
+                <omgdi:waypoint x="47.0" y="200.0"></omgdi:waypoint>
+                <omgdi:waypoint x="190.0" y="200.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow47" id="BPMNEdge_flow47">
+                <omgdi:waypoint x="721.0" y="90.0"></omgdi:waypoint>
+                <omgdi:waypoint x="631.0" y="89.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow48" id="BPMNEdge_flow48">
+                <omgdi:waypoint x="520.0" y="89.0"></omgdi:waypoint>
+                <omgdi:waypoint x="401.0" y="90.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow49" id="BPMNEdge_flow49">
+                <omgdi:waypoint x="286.0" y="90.0"></omgdi:waypoint>
+                <omgdi:waypoint x="201.0" y="89.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow50" id="BPMNEdge_flow50">
+                <omgdi:waypoint x="180.0" y="521.0"></omgdi:waypoint>
+                <omgdi:waypoint x="319.0" y="334.0"></omgdi:waypoint>
+                <omgdi:waypoint x="990.0" y="123.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow51" id="BPMNEdge_flow51">
+                <omgdi:waypoint x="343.0" y="125.0"></omgdi:waypoint>
+                <omgdi:waypoint x="438.0" y="150.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow52" id="BPMNEdge_flow52">
+                <omgdi:waypoint x="438.0" y="150.0"></omgdi:waypoint>
+                <omgdi:waypoint x="575.0" y="120.0"></omgdi:waypoint>
             </bpmndi:BPMNEdge>
         </bpmndi:BPMNPlane>
     </bpmndi:BPMNDiagram>

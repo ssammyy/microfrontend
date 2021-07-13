@@ -1,4 +1,7 @@
 import {AfterViewInit, Component, OnInit} from '@angular/core';
+import {PermitEntityDto} from "../../core/store/data/qa/qa.model";
+import {QaService} from "../../core/store/data/qa/qa.service";
+import {Router} from "@angular/router";
 
 declare interface DataTable {
   headerRow: string[];
@@ -15,19 +18,45 @@ declare const $: any;
 })
 export class FmarkallappsComponent implements OnInit, AfterViewInit {
   public dataTable: DataTable;
+  public allPermitData: PermitEntityDto[];
 
-  ngOnInit() {
-    this.dataTable = {
-      headerRow: ['Permit Ref No', 'Firm Name', 'Application Date', 'Product', 'Brand Name', 'Actions'],
-      footerRow: ['Permit Ref No', 'Firm Name', 'Application Date', 'Product', 'Brand Name', 'Actions'],
-
-      dataRows: [
-        ['REFFM#202107095913D', 'Andrew Mike', '09/07/2021', 'Dassani', 'Water', '']
-      ]
-    };
+  constructor(
+      private qaService: QaService,
+      private router: Router,
+  ) {
 
   }
 
+  ngOnInit() {
+    let formattedArray = [];
+    this.qaService.loadPermitList('3').subscribe(
+        (data: any) => {
+
+          this.allPermitData = data;
+          // tslint:disable-next-line:max-line-length
+          formattedArray = data.map(i => [i.permitRefNumber, i.createdOn, i.productName, i.tradeMark, i.awardedPermitNumber, i.dateOfIssue, i.dateOfExpiry, i.permitStatus, i.id]);
+
+          this.dataTable = {
+            headerRow: ['Permit Ref No', 'Application Date', 'Product', 'Brand Name', 'Permit Number', 'Issue Date', 'Expiry Date', 'Status', 'Actions'],
+            footerRow: ['Permit Ref No', 'Application Date', 'Product', 'Brand Name', 'Permit Number', 'Issue Date', 'Expiry Date', 'Status', 'Actions'],
+            dataRows: formattedArray
+
+
+            // ['REFFM#202107095913D', 'Andrew Mike', '09/07/2021', 'Dassani', 'Water', '']
+
+          }
+        });
+    // console.log(this.dataTable);
+    // this.allPermitData = this.Object.json().results;
+    // console.log(formattedArray);
+
+
+
+
+
+
+    //
+  }
   ngAfterViewInit() {
     $('#datatables').DataTable({
       'pagingType': 'full_numbers',
@@ -40,38 +69,13 @@ export class FmarkallappsComponent implements OnInit, AfterViewInit {
         search: '_INPUT_',
         searchPlaceholder: 'Search records',
       }
-
     });
-
     let table: any;
     table = $(`#datatables`).DataTable();
 
-    // Edit record
-    table.on('click', '.edit', function (e) {
-      let $tr = $(this).closest('tr');
-      if ($($tr).hasClass('child')) {
-        $tr = $tr.prev('.parent');
-      }
+  }
 
-      let data: any;
-      data = table.row($tr).data();
-      alert('You press on Row: ' + data[0] + ' ' + data[1] + ' ' + data[2] + '\'s row.');
-      e.preventDefault();
-    });
-
-    // Delete a record
-    table.on('click', '.remove', function (e) {
-      const $tr = $(this).closest('tr');
-      table.row($tr).remove().draw();
-      e.preventDefault();
-    });
-
-    // Like record
-    table.on('click', '.like', function (e) {
-      alert('You clicked on Like button');
-      e.preventDefault();
-    });
-
-    $('.card .material-datatables label').addClass('form-group');
+  onSelect(rowElement: string) {
+    this.router.navigate(['/dmark'], {fragment: rowElement});
   }
 }

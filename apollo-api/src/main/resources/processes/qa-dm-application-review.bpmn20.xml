@@ -31,7 +31,6 @@
             </extensionElements>
         </userTask>
         <exclusiveGateway id="exclusivegateway2" name="Exclusive Gateway"></exclusiveGateway>
-        <sequenceFlow id="flow13" sourceRef="qaDmarApproveInspectionReport" targetRef="exclusivegateway2"></sequenceFlow>
         <userTask id="qaDmarTestReportsAvailable" name="QAO check if test reports available"></userTask>
         <sequenceFlow id="flow14" sourceRef="exclusivegateway2" targetRef="qaDmarTestReportsAvailable">
             <conditionExpression xsi:type="tFormalExpression"><![CDATA[${inspectionReportApproved==1}]]></conditionExpression>
@@ -113,6 +112,22 @@
         <serviceTask id="servicetask2" name="Submit application for assessment" activiti:expression="${bpmnCommonFunctions.submitQaDmAppReviewForAssessment(permitId)}"></serviceTask>
         <serviceTask id="servicetask3" name="Notiify Manufacturer of Test Results" activiti:expression="${bpmnNotifications.sendEmailPlain(email)}"></serviceTask>
         <sequenceFlow id="flow43" sourceRef="qaDmarManufacturerCorrection" targetRef="qaDmarCheckApplication"></sequenceFlow>
+        <sequenceFlow id="flow44" sourceRef="qaDmarApproveInspectionReport" targetRef="parallelgateway2"></sequenceFlow>
+        <parallelGateway id="parallelgateway2" name="Exclusive Gateway"></parallelGateway>
+        <sequenceFlow id="flow45" sourceRef="parallelgateway2" targetRef="exclusivegateway2"></sequenceFlow>
+        <userTask id="qaDmarGenerateSupervisionScheme" name="Generate Supervision Scheme"></userTask>
+        <sequenceFlow id="flow46" sourceRef="parallelgateway2" targetRef="qaDmarGenerateSupervisionScheme"></sequenceFlow>
+        <userTask id="qaDmarAcceptSupervisionScheme" name="Accept Supervision Scheme"></userTask>
+        <sequenceFlow id="flow47" sourceRef="qaDmarGenerateSupervisionScheme" targetRef="qaDmarAcceptSupervisionScheme"></sequenceFlow>
+        <endEvent id="endevent1" name="End"></endEvent>
+        <exclusiveGateway id="exclusivegateway7" name="Exclusive Gateway"></exclusiveGateway>
+        <sequenceFlow id="flow49" sourceRef="qaDmarAcceptSupervisionScheme" targetRef="exclusivegateway7"></sequenceFlow>
+        <sequenceFlow id="flow50" sourceRef="exclusivegateway7" targetRef="qaDmarGenerateSupervisionScheme">
+            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${supervisionSchemeAccepted==0}]]></conditionExpression>
+        </sequenceFlow>
+        <sequenceFlow id="flow51" sourceRef="exclusivegateway7" targetRef="endevent1">
+            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${supervisionSchemeAccepted==1}]]></conditionExpression>
+        </sequenceFlow>
     </process>
     <bpmndi:BPMNDiagram id="BPMNDiagram_qaDmAppReviewProcess">
         <bpmndi:BPMNPlane bpmnElement="qaDmAppReviewProcess" id="BPMNPlane_qaDmAppReviewProcess">
@@ -200,6 +215,21 @@
             <bpmndi:BPMNShape bpmnElement="servicetask3" id="BPMNShape_servicetask3">
                 <omgdc:Bounds height="71.0" width="122.0" x="640.0" y="566.0"></omgdc:Bounds>
             </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="parallelgateway2" id="BPMNShape_parallelgateway2">
+                <omgdc:Bounds height="40.0" width="40.0" x="1496.0" y="180.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="qaDmarGenerateSupervisionScheme" id="BPMNShape_qaDmarGenerateSupervisionScheme">
+                <omgdc:Bounds height="55.0" width="105.0" x="1341.0" y="50.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="qaDmarAcceptSupervisionScheme" id="BPMNShape_qaDmarAcceptSupervisionScheme">
+                <omgdc:Bounds height="55.0" width="105.0" x="1157.0" y="50.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="endevent1" id="BPMNShape_endevent1">
+                <omgdc:Bounds height="35.0" width="35.0" x="1050.0" y="60.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="exclusivegateway7" id="BPMNShape_exclusivegateway7">
+                <omgdc:Bounds height="40.0" width="40.0" x="1193.0" y="134.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
             <bpmndi:BPMNEdge bpmnElement="flow3" id="BPMNEdge_flow3">
                 <omgdi:waypoint x="515.0" y="98.0"></omgdi:waypoint>
                 <omgdi:waypoint x="580.0" y="99.0"></omgdi:waypoint>
@@ -211,10 +241,6 @@
             <bpmndi:BPMNEdge bpmnElement="flow10" id="BPMNEdge_flow10">
                 <omgdi:waypoint x="880.0" y="198.0"></omgdi:waypoint>
                 <omgdi:waypoint x="993.0" y="198.0"></omgdi:waypoint>
-            </bpmndi:BPMNEdge>
-            <bpmndi:BPMNEdge bpmnElement="flow13" id="BPMNEdge_flow13">
-                <omgdi:waypoint x="1393.0" y="233.0"></omgdi:waypoint>
-                <omgdi:waypoint x="1393.0" y="260.0"></omgdi:waypoint>
             </bpmndi:BPMNEdge>
             <bpmndi:BPMNEdge bpmnElement="flow14" id="BPMNEdge_flow14">
                 <omgdi:waypoint x="1393.0" y="300.0"></omgdi:waypoint>
@@ -330,6 +356,35 @@
             <bpmndi:BPMNEdge bpmnElement="flow43" id="BPMNEdge_flow43">
                 <omgdi:waypoint x="670.0" y="32.0"></omgdi:waypoint>
                 <omgdi:waypoint x="447.0" y="62.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow44" id="BPMNEdge_flow44">
+                <omgdi:waypoint x="1451.0" y="199.0"></omgdi:waypoint>
+                <omgdi:waypoint x="1496.0" y="200.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow45" id="BPMNEdge_flow45">
+                <omgdi:waypoint x="1516.0" y="220.0"></omgdi:waypoint>
+                <omgdi:waypoint x="1515.0" y="279.0"></omgdi:waypoint>
+                <omgdi:waypoint x="1413.0" y="280.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow46" id="BPMNEdge_flow46">
+                <omgdi:waypoint x="1516.0" y="180.0"></omgdi:waypoint>
+                <omgdi:waypoint x="1393.0" y="105.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow47" id="BPMNEdge_flow47">
+                <omgdi:waypoint x="1341.0" y="77.0"></omgdi:waypoint>
+                <omgdi:waypoint x="1262.0" y="77.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow49" id="BPMNEdge_flow49">
+                <omgdi:waypoint x="1209.0" y="105.0"></omgdi:waypoint>
+                <omgdi:waypoint x="1213.0" y="134.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow50" id="BPMNEdge_flow50">
+                <omgdi:waypoint x="1213.0" y="134.0"></omgdi:waypoint>
+                <omgdi:waypoint x="1393.0" y="105.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow51" id="BPMNEdge_flow51">
+                <omgdi:waypoint x="1213.0" y="134.0"></omgdi:waypoint>
+                <omgdi:waypoint x="1067.0" y="95.0"></omgdi:waypoint>
             </bpmndi:BPMNEdge>
         </bpmndi:BPMNPlane>
     </bpmndi:BPMNDiagram>

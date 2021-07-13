@@ -258,19 +258,7 @@ class RegistrationManagementDaoService(
                                     approvedDate = Timestamp.from(Instant.now())
                                 }
                                 val userEntity = usersRepo.save(entity)
-                                /**
-                                 * TODO: Create Manufacturer Id role
-                                 */
-                                userRolesRepo.save(
-                                    UserRoleAssignmentsEntity().apply {
-                                        userId = userEntity.id
-                                        roleId = applicationMapProperties.manufacturerRoleId
-                                        status = applicationMapProperties.transactionActiveStatus
-                                        createdBy = "${user.userName}"
-                                        createdOn = Timestamp.from(Instant.now())
 
-                                    }
-                                )
                                 return OrganizationUserEntityDto(
                                     userEntity.id,
                                     userEntity.firstName,
@@ -364,6 +352,7 @@ class RegistrationManagementDaoService(
                 companyProfileId = dto.companyProfileId
                 physicalAddress = dto.physicalAddress
                 street = dto.street
+                location = dto.location
                 buildingName = dto.buildingName
                 nearestLandMark = dto.nearestLandMark
                 postalAddress = dto.postalAddress
@@ -400,6 +389,7 @@ class RegistrationManagementDaoService(
                         designation = dto.designation
                         descriptions = "Head Office"
                         region = dto.region
+                        location = dto.location
 
                         lastModifiedBy = user.userName
                         lastModifiedOn = Timestamp.from(Instant.now())

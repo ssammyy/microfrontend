@@ -6,13 +6,13 @@ import {
     BusinessNatures, BusinessNaturesService,
     Company,
     CompanyService,
-    County, CountyService, loadCountyId, loadResponsesFailure, loadResponsesSuccess,
+    County, CountyService, Go, loadCountyId, loadResponsesFailure, loadResponsesSuccess,
     Region, RegionService, selectCompanyData, selectCountyIdData,
     Town, TownService
 } from '../../core/store';
 import {Observable, of, throwError} from 'rxjs';
 import {Store} from '@ngrx/store';
-import {catchError, map} from 'rxjs/operators';
+import {catchError} from 'rxjs/operators';
 import {HttpErrorResponse} from '@angular/common/http';
 
 @Component({
@@ -38,7 +38,7 @@ export class CompanyComponent implements OnInit {
     selectedRegion = 0;
     selectedCounty = 0;
     selectedTown = 0;
-    step = 0;
+    step = 1;
 
     constructor(
         private service: CompanyService,
@@ -156,6 +156,7 @@ export class CompanyComponent implements OnInit {
                     break;
             }
             this.step += 1;
+            console.log(`Clicked and step = ${this.step}`);
         }
     }
 
@@ -164,23 +165,26 @@ export class CompanyComponent implements OnInit {
             this.companySoFar = {...this.companySoFar, ...this.stepThreeForm.value};
             this.company = {...this.company, ...this.companySoFar};
 
-            this.service.update(this.company).pipe(
-                map((a) => {
-                    this.stepOneForm.markAsPristine();
-                    this.stepOneForm.reset();
-                    this.stepTwoForm.markAsPristine();
-                    this.stepTwoForm.reset();
-                    this.stepThreeForm.markAsPristine();
-                    this.stepThreeForm.reset();
-                    this.step = 0;
-                    return of(loadResponsesSuccess({
-                        message: {
-                            response: '00',
-                            payload: `Successfully saved ${a.name}`,
-                            status: 200
-                        }
+            this.service.update(this.company).subscribe(
+                (a) => {
+
+                    this.store$.dispatch(
+                        loadResponsesSuccess({
+                            message: {
+                                response: '00',
+                                payload: `Successfully saved ${a.name}`,
+                                status: 200
+                            }
+                        })
+                    );
+                    return this.store$.dispatch(Go({
+                        payload: null,
+                        link: 'dashboard/companies',
+                        redirectUrl: 'dashboard/companies'
                     }));
-                }),
+
+
+                },
                 catchError(
                     (err: HttpErrorResponse) => {
                         return of(loadResponsesFailure({
@@ -190,7 +194,7 @@ export class CompanyComponent implements OnInit {
                                 response: (err.error instanceof ErrorEvent) ? `Error: ${err.error.message}` : `Error Code: ${err.status},  Message: ${err.error}`
                             }
                         }));
-                    })).subscribe();
+                    }));
         } else {
             this.store$.dispatch(loadResponsesFailure({
                 error: {
@@ -204,4 +208,34 @@ export class CompanyComponent implements OnInit {
 
     }
 
+    selectStepOneClass(step: number): string {
+        if (step === 1) {
+            return 'active';
+        } else {
+            return '';
+        }
+    }
+
+    selectStepTwoClass(step: number): string {
+        console.log(`${step}`);
+        if (step === 1) {
+            return 'active';
+        }if (step === 2) {
+            return 'activated';
+        } else {
+            return '';
+        }
+    }
+
+    selectStepThreeClass(step: number): string {
+        if (step === 1) {
+            return 'active';
+        }if (step === 2) {
+            return 'activated';
+        }if (step === 3) {
+            return 'activated';
+        } else {
+            return '';
+        }
+    }
 }

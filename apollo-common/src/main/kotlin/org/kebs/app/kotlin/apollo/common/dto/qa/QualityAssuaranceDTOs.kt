@@ -69,6 +69,7 @@ data class InvoiceDto(
 )
 
 data class ConsolidatedInvoiceDto(
+    var id: Long? = null,
     var invoiceNumber: String? = null,
     var totalAmount: BigDecimal? = null,
     var paidDate: Timestamp? = null,
@@ -262,7 +263,7 @@ data class PermitEntityDto(
     var dateOfExpiry: Date? = null,
     var permitStatus: String? = null,
     var userId: Long? = null,
-    var createdOn: String? = null,
+    var createdOn: Timestamp? = null,
     var county: String? = null,
     var town: String? = null,
     var region: String? = null,
@@ -319,13 +320,19 @@ data class PermitDetailsDto(
     var firmTypeName: String? = null,
     var permitTypeName: String? = null,
     var permitTypeID: Long? = null,
+    var permitAwardStatus: Boolean? = null,
+    var invoiceGenerated: Boolean? = null,
+    var approvedRejectedScheme: Boolean? = null,
+    var sendForPcmReview: Boolean? = null,
+    var sendApplication: Boolean? = null,
 )
 
 data class AllPermitDetailsDto(
     var permitDetails: PermitDetailsDto? = null,
 //    var standardList: List<UserEntityDto>? = null,
     var officerList: List<UserEntityDto>? = null,
-    var oldVersionList: List<PermitEntityDto>? = null
+    var oldVersionList: List<PermitEntityDto>? = null,
+    var batchID: Long? = null
 )
 
 data class StandardsDto(

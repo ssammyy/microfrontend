@@ -5,6 +5,8 @@ import {select, Store} from '@ngrx/store';
 import {HandleErrorService} from './core/services/errors/handle-error.service';
 import {selectResponseData} from './core/store/data/response/response.selectors';
 import {ApiResponse} from './core/domain/response.model';
+import {LoadingService} from "./core/services/loader/loadingservice.service";
+import {delay} from "rxjs/operators";
 
 @Component({
     selector: 'app-my-app',
@@ -13,11 +15,14 @@ import {ApiResponse} from './core/domain/response.model';
 
 export class AppComponent implements OnInit {
   private _router: Subscription;
+  loading: boolean = false;
 
   constructor(
       private router: Router,
       private store$: Store<any>,
-      private errorsService: HandleErrorService
+      private errorsService: HandleErrorService,
+      private _loading: LoadingService
+
   ) {
     this.store$.pipe(select(selectResponseData)).subscribe((errors: ApiResponse) => {
       if (errors) {
@@ -35,5 +40,14 @@ export class AppComponent implements OnInit {
           modalBackdrop.remove();
         }
       });
+      this.listenToLoading();
+
     }
+  listenToLoading(): void {
+    this._loading.loadingSub
+        .pipe(delay(0)) // This prevents a ExpressionChangedAfterItHasBeenCheckedError for subsequent requests
+        .subscribe((loading) => {
+          this.loading = loading;
+        });
+  }
 }

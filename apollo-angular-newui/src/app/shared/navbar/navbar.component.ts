@@ -1,6 +1,6 @@
-import { Component, OnInit, Renderer2, ViewChild, ElementRef, Directive } from '@angular/core';
-import { ROUTES } from '../../sidebar/sidebar.component';
-import { Router, ActivatedRoute, NavigationEnd, NavigationStart } from '@angular/router';
+import {Component, OnInit, Renderer2, ViewChild, ElementRef, Directive} from '@angular/core';
+import {ROUTES} from '../../sidebar/sidebar.component';
+import {Router, ActivatedRoute, NavigationEnd, NavigationStart} from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
 import { Location, LocationStrategy, PathLocationStrategy } from '@angular/common';
 const misc: any = {
@@ -26,47 +26,49 @@ export class NavbarComponent implements OnInit {
 
     @ViewChild('app-navbar-cmp', {static: false}) button: any;
 
-    constructor(location: Location, private renderer: Renderer2, private element: ElementRef, private router: Router, ) {
+    constructor(location: Location, private renderer: Renderer2, private element: ElementRef, private router: Router,) {
         this.location = location;
         this.nativeElement = element.nativeElement;
         this.sidebarVisible = false;
     }
+
     minimizeSidebar() {
-      const body = document.getElementsByTagName('body')[0];
+        const body = document.getElementsByTagName('body')[0];
 
-      if (misc.sidebar_mini_active === true) {
-          body.classList.remove('sidebar-mini');
-          misc.sidebar_mini_active = false;
+        if (misc.sidebar_mini_active === true) {
+            body.classList.remove('sidebar-mini');
+            misc.sidebar_mini_active = false;
 
-      } else {
-          setTimeout(function() {
-              body.classList.add('sidebar-mini');
+        } else {
+            setTimeout(function () {
+                body.classList.add('sidebar-mini');
 
               misc.sidebar_mini_active = true;
           }, 300);
       }
 
-      // we simulate the window Resize so the charts will get updated in realtime.
-      const simulateWindowResize = setInterval(function() {
-          window.dispatchEvent(new Event('resize'));
-      }, 180);
+        // we simulate the window Resize so the charts will get updated in realtime.
+        const simulateWindowResize = setInterval(function () {
+            window.dispatchEvent(new Event('resize'));
+        }, 180);
 
-      // we stop the simulation of Window Resize after the animations are completed
-      setTimeout(function() {
-          clearInterval(simulateWindowResize);
-      }, 1000);
+        // we stop the simulation of Window Resize after the animations are completed
+        setTimeout(function () {
+            clearInterval(simulateWindowResize);
+        }, 1000);
     }
-    hideSidebar() {
-      const body = document.getElementsByTagName('body')[0];
-      const sidebar = document.getElementsByClassName('sidebar')[0];
 
-      if (misc.hide_sidebar_active === true) {
-          setTimeout(function() {
-              body.classList.remove('hide-sidebar');
-              misc.hide_sidebar_active = false;
-          }, 300);
-          setTimeout(function () {
-              sidebar.classList.remove('animation');
+    hideSidebar() {
+        const body = document.getElementsByTagName('body')[0];
+        const sidebar = document.getElementsByClassName('sidebar')[0];
+
+        if (misc.hide_sidebar_active === true) {
+            setTimeout(function () {
+                body.classList.remove('hide-sidebar');
+                misc.hide_sidebar_active = false;
+            }, 300);
+            setTimeout(function () {
+                sidebar.classList.remove('animation');
           }, 600);
           sidebar.classList.add('animation');
 
@@ -117,10 +119,10 @@ export class NavbarComponent implements OnInit {
       return true;
     }
     sidebarOpen() {
-      const $toggle = document.getElementsByClassName('navbar-toggler')[0];
+        const $toggle = document.getElementsByClassName('navbar-toggler')[0];
         const toggleButton = this.toggleButton;
         const body = document.getElementsByTagName('body')[0];
-        setTimeout(function() {
+        setTimeout(function () {
             toggleButton.classList.add('toggled');
         }, 500);
         body.classList.add('nav-open');
@@ -142,16 +144,16 @@ export class NavbarComponent implements OnInit {
             $layer.classList.add('visible');
         }, 100);
 
-        $layer.onclick = function() { // asign a function
-          body.classList.remove('nav-open');
-          this.mobile_menu_visible = 0;
-          this.sidebarVisible = false;
+        $layer.onclick = function () { // asign a function
+            body.classList.remove('nav-open');
+            this.mobile_menu_visible = 0;
+            this.sidebarVisible = false;
 
-          $layer.classList.remove('visible');
-          setTimeout(function() {
-              $layer.remove();
-              $toggle.classList.remove('toggled');
-          }, 400);
+            $layer.classList.remove('visible');
+            setTimeout(function () {
+                $layer.remove();
+                $toggle.classList.remove('toggled');
+            }, 400);
         }.bind(this);
 
         body.classList.add('nav-open');
@@ -159,7 +161,7 @@ export class NavbarComponent implements OnInit {
         this.sidebarVisible = true;
     }
     sidebarClose() {
-      const $toggle = document.getElementsByClassName('navbar-toggler')[0];
+        const $toggle = document.getElementsByClassName('navbar-toggler')[0];
         const body = document.getElementsByTagName('body')[0];
         this.toggleButton.classList.remove('toggled');
         const $layer = document.createElement('div');
@@ -188,10 +190,10 @@ export class NavbarComponent implements OnInit {
     }
 
     getTitle() {
-      let titlee = this.location.prepareExternalUrl(this.location.path());
-      if (titlee.charAt(0) === '#') {
-          titlee = titlee.slice( 1 );
-      }
+        let titlee = this.location.prepareExternalUrl(this.location.path());
+        if (titlee.charAt(0) === '#') {
+            titlee = titlee.slice(1);
+        }
         for (let i = 0; i < this.listTitles.length; i++) {
             if (this.listTitles[i].type === 'link' && this.listTitles[i].path === titlee) {
                 return this.listTitles[i].title;

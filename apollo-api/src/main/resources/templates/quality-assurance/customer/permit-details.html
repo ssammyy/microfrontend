@@ -895,7 +895,7 @@
                                                 <a th:if="${permitDetails?.sendApplication != 1}"
                                                    th:href="@{/api/qa/old-sta3(permitID=${permitDetails?.id})}"
                                                    class="filter-link" style="color: white">UPDATE STA 3</a>
-                                                <a th:if="${permitDetails?.sendApplication != 1}"
+                                                <a th:if="${permitDetails?.sendApplication != true}"
                                                    th:href="@{/api/qa/new-permit-submit(permitID=${permitDetails?.id})}"
                                                    class="filter-link" style="color: white">SUBMIT APPLICATION</a>
                                             </div>

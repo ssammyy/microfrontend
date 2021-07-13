@@ -253,18 +253,23 @@ class AngularRoutes {
             GET("/branch-list", handler::branchListMigration)
             GET("/standards-list", handler::standardsListMigration)
             "/permit".nest {
+                GET("/task-list", handler::permitTaskListMigration)
                 GET("/list", handler::permitListMigration)
                 GET("/firm-list", handler::firmPermitListMigration)
                 "/apply".nest {
                     POST("/sta1", handler::permitApplySTA1Migration)
                     PUT("/sta1-update", handler::permitUpdateSTA1Migration)
-                    POST("/submit-application", handler::permitSubmitApplicationMigration)
+                    POST("/submit-application", handler::permitSubmitApplicationInvoiceMigration)
+                    POST("/submit-application-review", handler::permitSubmitApplicationReviewMigration)
                     POST("/sta3", handler::permitApplySTA3Migration)
                     PUT("/sta3-update", handler::permitUpdateSTA3Migration)
                     "/sta10".nest {
                         POST("/firm_details", handler::permitApplySTA10FirmDetailsMigration)
                         POST("/personnel_details", handler::permitApplySTA10PersonnelMigration)
-                        POST("/products_being_manufactured", handler::permitApplySTA10ProductsBeingManufacturedMigration)
+                        POST(
+                            "/products_being_manufactured",
+                            handler::permitApplySTA10ProductsBeingManufacturedMigration
+                        )
                         POST("/raw_material", handler::permitApplySTA10RawMaterialsMigration)
                         POST("/machinery_plant", handler::permitApplySTA10MachineryAndPlantMigration)
                         POST("/manufacturing_process", handler::permitApplySTA10ManufacturingProcessMigration)
@@ -291,6 +296,7 @@ class AngularRoutes {
                         GET("/list", handler::invoiceListMigration)
                         GET("/list-no-batch-Id", handler::invoiceListNoBatchIDMigration)
                         GET("/batch-invoice-list", handler::invoiceBatchListMigration)
+                        GET("/batch-invoice-details", handler::invoiceBatchDetailsMigration)
 
                     }
                 }

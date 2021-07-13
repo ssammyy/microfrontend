@@ -173,6 +173,7 @@ export class UserDetailsComponent implements OnInit {
         }
       );
     });
+
     this.route.paramMap.subscribe(params => {
        const r = params.get('requestID');
        const rn = params.get('requestNAME');

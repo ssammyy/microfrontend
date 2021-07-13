@@ -44,9 +44,6 @@ import org.springframework.web.servlet.function.router
 
 @Configuration
 class ControllerRoutes {
-
-
-
     @Bean
     fun masterDataRoutes(handler: MasterDataHandler) = router {
         "/api/v1/system/admin".nest {

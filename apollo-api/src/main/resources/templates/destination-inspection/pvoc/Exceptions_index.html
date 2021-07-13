@@ -9,10 +9,10 @@
     <th:block th:include="fragments/general-form.html:: headerfiles"/>
 </head>
 <body>
-<div th:replace="fragments/general-form.html :: dashboard-page" ></div>
+<div th:replace="fragments/general-form.html :: dashboard-page"></div>
 
 <div class="dashboard-body">
-    <div th:replace="fragments/general-form.html :: side-navigation-bar" ></div>
+    <div th:replace="fragments/general-form.html :: side-navigation-bar"></div>
     <div class="main-area">
         <div th:replace="fragments/general-form.html :: content-navigation-bar"></div>
         <section class="dashboard-content">
@@ -36,9 +36,12 @@
                        th:href="@{/api/di/pvoc/officer(currentPage=0,pageSize=20, filter=0, fromDate=${#dates.format(#dates.createNow(), 'yyyy-MM-dd')}, toDate=${#dates.format(#dates.createNow(),'yyyy-MM-dd')})}"
                     ><span
                             class="font-awesome-span"></span>Exemption Applications</a>
-                    <a sec:authorize="hasAuthority('PVOC_APPLICATION_READ')"  class="content-button" th:href="@{/api/di/pvoc/application}"><span class="font-awesome-span"></span>Apply for  Exemption</a>
-                    <a sec:authorize="hasAuthority('PVOC_APPLICATION_READ')" class="content-button" th:href="@{/api/di/pvoc/application/unfinished}"><span class="font-awesome-span"></span>Save Draft Applications</a>
-                    <a class="content-button" ><span class="font-awesome-span"></span>Notifications</a>
+                    <a sec:authorize="hasAuthority('PVOC_APPLICATION_READ')" class="content-button"
+                       th:href="@{/api/di/pvoc/application}"><span class="font-awesome-span"></span>Apply for Exemption</a>
+                    <a sec:authorize="hasAuthority('PVOC_APPLICATION_READ')" class="content-button"
+                       th:href="@{/api/di/pvoc/application/unfinished}"><span class="font-awesome-span"></span>Save
+                        Draft Applications</a>
+                    <a class="content-button"><span class="font-awesome-span"></span>Notifications</a>
                     <!--                    <a sec:authorize="hasAuthority('MAKE_WAIVER_APPLICATION')" class="content-button" th:href="@{/api/di/pvoc/waivers-application}"><span class="font-awesome-span"></span>Application for Waiver</a>-->
                     <!--                    <a sec:authorize="hasAuthority('MAKE_WAIVER_APPLICATION') or hasAuthority('WAIVERS_APPLICATION_REVIEW') or hasAuthority('WAIVERS_APPLICATION_REVIEW') or hasAuthority('WAIVERS_APPLICATION_REPORT_GENERATE')" class="content-button" th:href="@{/api/di/pvoc/all-waivers-applications-list(currentPage=0,pageSize=10,filter=0, fromDate=${#dates.format(#dates.createNow(), 'yyyy-MM-dd')}, toDate=${#dates.format(#dates.createNow(),'yyyy-MM-dd')})}"><span class="font-awesome-span"></span>Waiver Applications</a>-->
                     <!--                    <a class="content-button" th:href="@{/api/di/officer}"><span class="font-awesome-span"></span>Officer</a>-->

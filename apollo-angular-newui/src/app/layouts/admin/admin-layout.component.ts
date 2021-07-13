@@ -1,17 +1,19 @@
-import { Component, OnInit, OnDestroy, ViewChild, HostListener, AfterViewInit } from '@angular/core';
-import { Router, NavigationEnd, NavigationStart } from '@angular/router';
-import { NavItem, NavItemType } from '../../md/md.module';
-import { Subscription } from 'rxjs/Subscription';
-import { Location, LocationStrategy, PathLocationStrategy, PopStateEvent } from '@angular/common';
+import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
+import {NavigationEnd, NavigationStart, Router} from '@angular/router';
+import {NavItem, NavItemType} from '../../md/md.module';
+import {Subscription} from 'rxjs/Subscription';
+import {Location, PopStateEvent} from '@angular/common';
 import 'rxjs/add/operator/filter';
-import { NavbarComponent } from '../../shared/navbar/navbar.component';
+import {NavbarComponent} from '../../shared/navbar/navbar.component';
 import PerfectScrollbar from 'perfect-scrollbar';
+import {LoadingService} from "../../core/services/loader/loadingservice.service";
+import {delay} from "rxjs/operators";
 
 declare const $: any;
 
 @Component({
-  selector: 'app-layout',
-  templateUrl: './admin-layout.component.html'
+    selector: 'app-layout',
+    templateUrl: './admin-layout.component.html'
 })
 
 export class AdminLayoutComponent implements OnInit, AfterViewInit {
@@ -21,29 +23,36 @@ export class AdminLayoutComponent implements OnInit, AfterViewInit {
     private yScrollStack: number[] = [];
     url: string;
     location: Location;
+    loading: boolean = false;
+
 
     @ViewChild('sidebar', {static: false}) sidebar: any;
     @ViewChild(NavbarComponent, {static: false}) navbar: NavbarComponent;
-    constructor( private router: Router, location: Location ) {
-      this.location = location;
+
+    constructor
+    (private router: Router, location: Location, private _loading: LoadingService
+    ) {
+        this.location = location;
     }
+
     ngOnInit() {
+        this.listenToLoading();
         const elemMainPanel = <HTMLElement>document.querySelector('.main-panel');
         const elemSidebar = <HTMLElement>document.querySelector('.sidebar .sidebar-wrapper');
         this.location.subscribe((ev: PopStateEvent) => {
             this.lastPoppedUrl = ev.url;
         });
-         this.router.events.subscribe((event: any) => {
+        this.router.events.subscribe((event: any) => {
             if (event instanceof NavigationStart) {
                 // tslint:disable-next-line:triple-equals
-               if (event.url != this.lastPoppedUrl) {
-                   this.yScrollStack.push(window.scrollY);
-               }
-           } else if (event instanceof NavigationEnd) {
+                if (event.url != this.lastPoppedUrl) {
+                    this.yScrollStack.push(window.scrollY);
+                }
+            } else if (event instanceof NavigationEnd) {
                 // tslint:disable-next-line:triple-equals
-               if (event.url == this.lastPoppedUrl) {
-                   this.lastPoppedUrl = undefined;
-                   window.scrollTo(0, this.yScrollStack.pop());
+                if (event.url == this.lastPoppedUrl) {
+                    this.lastPoppedUrl = undefined;
+                    window.scrollTo(0, this.yScrollStack.pop());
                } else {
                    window.scrollTo(0, 0);
                }
@@ -139,5 +148,12 @@ export class AdminLayoutComponent implements OnInit, AfterViewInit {
             bool = true;
         }
         return bool;
+    }
+    listenToLoading(): void {
+        this._loading.loadingSub
+            .pipe(delay(0)) // This prevents a ExpressionChangedAfterItHasBeenCheckedError for subsequent requests
+            .subscribe((loading) => {
+                this.loading = loading;
+            });
     }
 }

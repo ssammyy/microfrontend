@@ -19,6 +19,11 @@ import {InvoiceComponent} from './apollowebs/invoice/invoice.component';
 import {InvoiceDetailsComponent} from './apollowebs/invoice-details/invoice-details.component';
 import {CompaniesList} from './apollowebs/company/companies.list';
 import {CompanyComponent} from './apollowebs/company/company.component';
+import {BranchComponent} from './apollowebs/company/branch/branch.component';
+import {BranchList} from './apollowebs/company/branch/branch.list';
+import { UserComponent } from './apollowebs/company/branch/users/user.component';
+import { UserList } from './apollowebs/company/branch/users/user.list';
+import {SmarkApplicationsAllComponent} from "./apollowebs/smark-applications-all/smark-applications-all.component";
 
 // export const AppRoutes: Routes = [
 //     {
@@ -115,6 +120,7 @@ const routes: Routes = [
             title: 'KEBS'
         }
     },
+    // {path: '**', component: AdminLayoutComponent},
     {
         path: 'dashboard', component: AdminLayoutComponent,
         canActivate: [RouteGuard]
@@ -122,7 +128,11 @@ const routes: Routes = [
         children: [
             {path: '', component: DashboardComponent},
             {path: 'companies', component: CompaniesList},
-            {path: 'company', component: CompanyComponent}
+            {path: 'company', component: CompanyComponent},
+            {path: 'companies/branches', component: BranchList},
+            {path: 'companies/branch', component: BranchComponent},
+            {path: 'companies/branches/users', component: UserList},
+            {path: 'companies/branches/user', component: UserComponent}
         ]
 
     },
@@ -162,6 +172,10 @@ const routes: Routes = [
     {
         path: 'dmark/all_dmark', component: AdminLayoutComponent,
         children: [{path: '', component: DmarkApplicationsAllComponent}]
+    },
+    {
+        path: 'smark/all_smark', component: AdminLayoutComponent,
+        children: [{path: '', component: SmarkApplicationsAllComponent}]
     }
 ];
 

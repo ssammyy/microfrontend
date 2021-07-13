@@ -1,3 +1,6 @@
+import {UserEntityDto} from '../users';
+import {Timestamp} from "rxjs";
+
 export class Qa {
 }
 
@@ -12,7 +15,7 @@ export class PermitEntityDto {
     dateOfExpiry: Date;
     permitStatus: string;
     userId: bigint;
-    createdOn: Date;
+    createdOn: string;
     county: string;
     town: string;
     region: string;
@@ -23,6 +26,16 @@ export class PermitEntityDto {
     taskID: bigint;
     companyId: bigint;
     permitType: bigint;
+}
+
+export class ConsolidatedInvoiceDto {
+    id: bigint;
+    invoiceNumber: string;
+    totalAmount: string;
+    paidDate: Date;
+    paidStatus: boolean;
+    submittedStatus: boolean;
+    receiptNo: string;
 }
 
 export class STA1 {
@@ -78,7 +91,12 @@ export class PermitEntityDetails {
     firmTypeID: bigint;
     firmTypeName: string;
     permitTypeName: string;
-    permitTypeID: bigint;
+    permitTypeID: number;
+    permitAwardStatus: boolean;
+    invoiceGenerated: boolean;
+    approvedRejectedScheme: boolean;
+    sendForPcmReview: boolean;
+    sendApplication: boolean;
 }
 
 
@@ -121,6 +139,13 @@ export class SectionDto {
     status: boolean;
 }
 
+export class AllPermitDetailsDto {
+    permitDetails: PermitEntityDetails;
+    officerList: UserEntityDto[];
+    oldVersionList: PermitEntityDto[];
+    batchID: bigint;
+}
+
 export class PlantDetailsDto {
     id: bigint;
     companyProfileId: bigint;
@@ -138,5 +163,70 @@ export class PlantDetailsDto {
     plotNo: string;
     designation: string;
     contactPerson: string;
+}
+
+
+export class InvoiceDto {
+    batchID: bigint;
+    firmName: string;
+    postalAddress: string;
+    physicalAddress: string;
+    contactPerson: string;
+    telephoneNo: string;
+    email: string;
+    invoiceNumber: string;
+    receiptNo: string;
+    paidDate: Date;
+    totalAmount: any;
+    paidStatus: boolean;
+    submittedStatus: boolean;
+    plantId: bigint;
+}
+
+
+export class PermitInvoiceDto {
+    permitID: bigint;
+    invoiceNumber: string;
+    commodityDescription: string;
+    brandName: string;
+    totalAmount: any;
+    paidStatus: boolean;
+    permitRefNumber: string;
+}
+
+export class AllBatchInvoiceDetailsDto {
+    batchDetails: InvoiceDto;
+    allRelatedBatchInvoices: PermitInvoiceDto[];
+}
+
+export class Sta10Dto {
+    firmName: string;
+    statusCompanyBusinessRegistration: string;
+    ownerNameProprietorDirector: string;
+    postalAddress: string;
+    contactPerson: string;
+    telephone: string;
+    emailAddress: string;
+    physicalLocationMap: string;
+    county: string;
+    town: string;
+    totalNumberFemale: string;
+    totalNumberMale: string;
+    totalNumberPermanentEmployees: string;
+    totalNumberCasualEmployees: string;
+    averageVolumeProductionMonth: string;
+    handledManufacturingProcessRawMaterials: string;
+    handledManufacturingProcessInprocessProducts: string;
+    handledManufacturingProcessFinalProduct: string;
+    strategyInplaceRecallingProducts: string;
+    stateFacilityConditionsRawMaterials: string;
+    stateFacilityConditionsEndProduct: string;
+    testingFacilitiesExistSpecifyEquipment: string;
+    testingFacilitiesExistStateParametersTested: string;
+    testingFacilitiesSpecifyParametersTested: string;
+    calibrationEquipmentLastCalibrated: string;
+    handlingConsumerComplaints: string;
+    companyRepresentative: string;
+    applicationDate: string;
 }
 

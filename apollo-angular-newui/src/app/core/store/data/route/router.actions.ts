@@ -9,6 +9,14 @@ export const Go = createAction(
   props<{ payload: any, link: string, redirectUrl: string }>()
 );
 
+export const Back = createAction(
+  '[Router] Back'
+);
+
+export const Forward = createAction(
+  '[Router] Forward'
+);
+
 
 
 
