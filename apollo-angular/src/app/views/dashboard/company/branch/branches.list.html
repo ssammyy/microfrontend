@@ -12,7 +12,7 @@
         </div>
 
         <h4 class="notifications-title mt-4">
-          <span>Plants/Branches for ({{company$?.name}})</span>
+          <span>Plants/Branches for {{company$?.name}}</span>
         </h4>
         <table [dtOptions]="dtOptions" class="table table-striped table-bordered table-sm row-border hover" datatable>
           <thead>
@@ -20,7 +20,7 @@
             <th>ID#</th>
             <th>NAME</th>
             <th>STATUS</th>
-            <th>VIEW</th>
+            <th>EDIT BRANCHES</th>
             <th>USERS</th>
           </tr>
           </thead>
@@ -145,7 +145,7 @@
                   <ng-container *ngIf="region$ | async as apps">
                     <select (ngModelChange)="updateSelectedRegion()"
                             formControlName="region" id="region"
-                            name="region" required="required" style="width: 100%; height: 90%">
+                            name="region" required="required" style="width: 100%; height: 60%">
                       <option ngValue="null" selected>Please select</option>
                       <option
                         *ngFor="let app of apps| filterPipe: {status: true}"

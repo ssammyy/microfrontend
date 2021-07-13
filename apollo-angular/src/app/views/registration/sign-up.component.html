@@ -311,7 +311,7 @@
         </div>
         <div class="row input-row">
           <div class="col">
-            <div style="margin-top: 3%" class="form-group">
+            <div class="form-group">
               <label class="input-placeholder"><b>Building Name</b></label>
               <input [ngClass]="{ 'is-invalid': submitted && formStepThreeForm.buildingName.errors }"
                      aria-describedby="inputGroup-sizing-sm" aria-label="Small"
@@ -337,17 +337,18 @@
         </div>
         <div class="row input-row">
           <div class="col">
-            <div style="margin-top: 3%" class="form-group">
+            <div class="form-group">
               <label class="input-placeholder"><b>Region</b></label>
-            <br>
-            <ng-container *ngIf="region$ | async as apps">
-              <select [ngClass]="{ 'is-invalid': submitted && formStepThreeForm.region.errors }"
-                (ngModelChange)="updateSelectedRegion()"
-                      formControlName="region" id="region"
-                      name="region" required="required" style="width: 100%; height: 90%">
-                <option ngValue="null" selected>Please select</option>
-                <option *ngFor="let app of apps| filterPipe: {status: true}" [ngValue]="app.id" class="dropdown-item">{{app.region}}</option>
-              </select>
+              <br>
+              <ng-container *ngIf="region$ | async as apps">
+                <select [ngClass]="{ 'is-invalid': submitted && formStepThreeForm.region.errors }"
+                        (ngModelChange)="updateSelectedRegion()"
+                        formControlName="region" id="region"
+                        name="region" required="required" style="width: 100%; height: 50%">
+                  <option ngValue="null" selected>Please select</option>
+                  <option *ngFor="let app of apps| filterPipe: {status: true}" [ngValue]="app.id"
+                          class="dropdown-item">{{app.region}}</option>
+                </select>
               <div *ngIf="submitted && formStepThreeForm.region.errors" class="invalid-feedback">
                 <div *ngIf="formStepThreeForm.region.errors.required">The Region is required</div>
               </div>
@@ -355,20 +356,20 @@
           </div>
           </div>
           <div class="col">
-            <div style="margin-top: 3%" class="form-group">
+            <div class="form-group">
               <label class="input-placeholder"><b>County</b></label>
-            <br>
-            <ng-container *ngIf="county$ | async as apps">
-              <select [ngClass]="{ 'is-invalid': submitted && formStepThreeForm.county.errors }"
-                (ngModelChange)="updateSelectedCounty()"
-                      formControlName="county" id="county"
-                      name="county" required="required" style="width: 100%; height: 90%">
-                <option ngValue="null" selected>Please select</option>
-                <option
-                  *ngFor="let app of apps| filterPipe: {status: true, regionId: selectedRegion}"
-                  [ngValue]="app.id"
-                  class="dropdown-item">{{app.county}}</option>
-              </select>
+              <br>
+              <ng-container *ngIf="county$ | async as apps">
+                <select [ngClass]="{ 'is-invalid': submitted && formStepThreeForm.county.errors }"
+                        (ngModelChange)="updateSelectedCounty()"
+                        formControlName="county" id="county"
+                        name="county" required="required" style="width: 100%; height: 50%">
+                  <option ngValue="null" selected>Please select</option>
+                  <option
+                    *ngFor="let app of apps| filterPipe: {status: true, regionId: selectedRegion}"
+                    [ngValue]="app.id"
+                    class="dropdown-item">{{app.county}}</option>
+                </select>
               <div *ngIf="submitted && formStepThreeForm.county.errors" class="invalid-feedback">
                 <div *ngIf="formStepThreeForm.county.errors.required">The County is required</div>
               </div>
@@ -385,9 +386,9 @@
             <br>
             <ng-container *ngIf="town$ | async as apps">
               <select [ngClass]="{ 'is-invalid': submitted && formStepThreeForm.town.errors }"
-                (ngModelChange)="updateSelectedTown()"
+                      (ngModelChange)="updateSelectedTown()"
                       formControlName="town" id="town"
-                      name="town" required="required" style="width: 100%; height: 90%">
+                      name="town" required="required" style="width: 100%; height: 70%">
                 <option ngValue="null" selected>Please select</option>
                 <option
                   *ngFor="let app of apps| filterPipe: {status: true, countyId: selectedCounty}"
@@ -403,7 +404,7 @@
 
         </div>
         <br>
-        <div class="row">
+        <div class="row mt-5">
           <div class="col">
             <button (click)="onClickPrevious()" class="login-button" type="button">PREV</button>
           </div>
