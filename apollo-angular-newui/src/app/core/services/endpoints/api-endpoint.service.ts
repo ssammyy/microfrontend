@@ -59,6 +59,7 @@ export class ApiEndpointService {
     COMPANY_LIST: `${ApiEndpointService.MASTERS_CONTEXT}/company/`,
     USER_DETAILS: `${ApiEndpointService.MASTERS_CONTEXT}/secure/user/details`,
     LOGOUT_URL: `${ApiEndpointService.MASTERS_CONTEXT}/secure/logout`,
+    COMPANY_DETAIL_URL: `${ApiEndpointService.MASTERS_CONTEXT}/secure/companyDetails`,
     BRANCH_LIST: `${ApiEndpointService.MASTERS_CONTEXT}/{companyId}/branches/`,
     REGIONS_LIST: `${ApiEndpointService.ANONYMOUS_CONTEXT}/regions`,
     TITLES_LIST: `${ApiEndpointService.ANONYMOUS_CONTEXT}/titles`,

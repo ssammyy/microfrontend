@@ -102,6 +102,9 @@ class AngularRoutes {
                 "/logout".nest {
                     POST("", handler::handleLogout)
                 }
+                "/companyDetails".nest {
+                    POST("", handler::handleProvideCompanyDetailsForUser)
+                }
                 "/user".nest {
                     "/details".nest {
                         GET("") { ServerResponse.badRequest().body("Invalid Request: Feature currently not supported") }

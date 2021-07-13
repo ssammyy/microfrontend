@@ -9,7 +9,7 @@ import {
     loadAuthsSuccess,
     loadLogout,
     loadLogoutSuccess,
-    loadResetAuths
+    loadResetAuths, loadUserCompanyInfo, loadUserCompanyInfoSuccess
 } from './auth.actions';
 import {Observable, of} from 'rxjs';
 import {Action} from '@ngrx/store';
@@ -103,6 +103,40 @@ export class AuthEffects {
                             } else {
                                 return [
                                     loadResponsesFailure({error: data})
+                                ];
+                            }
+                        }),
+                        catchError(
+                            (err: HttpErrorResponse) => {
+                                return of(loadResponsesFailure({
+                                    error: {
+                                        payload: err.error,
+                                        status: err.status,
+                                        response: (err.error instanceof ErrorEvent) ? `Error: ${err.error.message}` : `Error Code: ${err.status},  Message: ${err.error}`
+                                    }
+                                }));
+                            })
+                    )
+                )
+            ),
+        {dispatch: true}
+    );
+
+
+    loadUserCompanyInfo: Observable<Action> = createEffect(
+        () =>
+            this.actions$.pipe(
+                ofType(loadUserCompanyInfo),
+                switchMap((action) => this.service.fetchCompanyDetails()
+                    .pipe(
+                        mergeMap((data) => {
+                            if (data.companyId != null) {
+                                return [
+                                    loadUserCompanyInfoSuccess({data: data}),
+                                ];
+                            } else {
+                                return [
+                                    loadResponsesFailure({error: {status: 500, payload: 'No data returned', response: '99'}})
                                 ];
                             }
                         }),

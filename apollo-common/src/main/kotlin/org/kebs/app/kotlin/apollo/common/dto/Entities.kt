@@ -707,3 +707,14 @@ class ProfileDirectorsEntityDto {
     var description: String? = null
     var status: Boolean = false
 }
+
+data class UserCompanyDetailsDto(
+    @JsonProperty("companyId")
+    val companyId: Long? = null,
+    @JsonProperty("branchId")
+    val branchId: Long? = null,
+    @JsonProperty("branchCount")
+    val branchCount: Long? = null,
+    @JsonProperty("userId")
+    val userId: Long? = null
+)
