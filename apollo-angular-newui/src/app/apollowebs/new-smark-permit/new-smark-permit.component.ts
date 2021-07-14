@@ -336,23 +336,6 @@ export class NewSmarkPermitComponent implements OnInit {
                     });
                 },
             );
-            // } else {
-            //     this.qaService.updatePersonnelDetailsSta10(this.Sta10Details.id.toString(), this.sta10Form.value).subscribe(
-            //         (data) => {
-            //             this.sta10PersonnelDetails = data;
-            //             console.log(data);
-            //             this.step += 1;
-            //             swal.fire({
-            //                 title: 'STA10 Form Personnel Details Updated!',
-            //                 buttonsStyling: false,
-            //                 customClass: {
-            //                     confirmButton: 'btn btn-success form-wizard-next-btn ',
-            //                 },
-            //                 icon: 'success'
-            //             });
-            //         },
-            //     );
-            // }
         }
     }
 

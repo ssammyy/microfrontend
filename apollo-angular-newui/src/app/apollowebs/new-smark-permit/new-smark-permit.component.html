@@ -177,13 +177,13 @@ enctype="multipart/form-data" >
 <div class="row">
 <div class="form-group col-6">
 <label for="totalNumberMale">Male</label>
-<input type="number" [class.is-invalid]="formSta10Form.totalNumberMale.invalid && formSta10Form.totalNumberMale.touched"
+<input type="text" [class.is-invalid]="formSta10Form.totalNumberMale.invalid && formSta10Form.totalNumberMale.touched"
        type="text" class="form-control" id="totalNumberMale" formControlName="totalNumberMale"
        name="totalNumberMale" class="form-control" placeholder="Male">
 </div>
 <div class="form-group col-6">
 <label for="totalNumberFemale">Female</label>
-    <input type="number"
+    <input type="text"
            [class.is-invalid]="formSta10Form.totalNumberFemale.invalid && formSta10Form.totalNumberFemale.touched"
            type="text" class="form-control" id="totalNumberFemale" formControlName="totalNumberFemale"
            name="totalNumberFemale" class="form-control" placeholder="Female">
@@ -193,7 +193,7 @@ enctype="multipart/form-data" >
 <div class="row">
 <div class="form-group col-6">
 <label for="totalNumberPermanentEmployees">No. of Permanent Employees</label>
-    <input type="number"
+    <input type="text"
            [class.is-invalid]="formSta10Form.totalNumberPermanentEmployees.invalid && formSta10Form.totalNumberPermanentEmployees.touched"
            type="text" class="form-control" id="totalNumberPermanentEmployees"
            formControlName="totalNumberPermanentEmployees"
@@ -201,7 +201,7 @@ enctype="multipart/form-data" >
 </div>
 <div class="form-group col-6">
 <label for="totalNumberCasualEmployees">No of Casual Employee</label>
-    <input type="number"
+    <input type="text"
            [class.is-invalid]="formSta10Form.totalNumberCasualEmployees.invalid && formSta10Form.totalNumberCasualEmployees.touched"
            type="text" class="form-control" id="totalNumberCasualEmployees" formControlName="totalNumberCasualEmployees"
            name="totalNumberCasualEmployees" class="form-control" placeholder="No of Casual Employee">
@@ -230,21 +230,22 @@ class="form-wizard-next-btn float-right"
 <h2 style="text-align: center"><b style="color: #0d47a1">Step</b> <b style="color: #d50000"> 3</b><b style="color: #0d0505"> of</b> <b style="color: #0d47a1"> 6</b></h2>
 
 <fieldset class="wizard-fieldset show">
-<form (ngSubmit)="onClickSaveSTAPersonnel(sta10FormA.valid)" [formGroup]="sta10FormA" class="form"
-      enctype="multipart/form-data">
-    <h4><b>Competency of key personnel in charge of (Production and Quality Control) </b></h4>
-
-    <div id="repeaterCom">
-        <div class="items" data-group="test">
-            <div class="item-content">
-                <div class="row">
-                    <div id="repeatingCompetency" class="col-xs-12 col-sm-12 col-lg-12">
-                        <div class="entry input-group form-group form-default ">
-                            <div class="col-4">
-<input type="text" [class.is-invalid]="formSta10FormA.personnelName.invalid && formSta10FormA.personnelName.touched" type="text" class="form-control" formControlName="personnelName"
-       name="personnelName" class="form-control" placeholder="Name">
-                            </div>
-                            <div class="col-3">
+    <form (ngSubmit)="onClickSaveSTAPersonnel(sta10FormA.valid)" [formGroup]="sta10FormA" class="form"
+          enctype="multipart/form-data">
+        <h4><b>Competency of key personnel in charge of (Production and Quality Control) </b></h4>
+        <div id="repeaterCom">
+            <div class="items" data-group="test">
+                <div class="item-content">
+                    <div class="row">
+                        <div id="repeatingCompetency" class="col-xs-12 col-sm-12 col-lg-12">
+                            <div class="entry input-group form-group form-default ">
+                                <div class="col-4">
+                                    <input type="text"
+                                           [class.is-invalid]="formSta10FormA.personnelName.invalid && formSta10FormA.personnelName.touched"
+                                           type="text" class="form-control" formControlName="personnelName"
+                                           name="personnelName" class="form-control" placeholder="Name">
+                                </div>
+                                <div class="col-3">
                                 <input type="text"
                                        [class.is-invalid]="formSta10FormA.qualificationInstitution.invalid && formSta10FormA.qualificationInstitution.touched"
                                        type="text" class="form-control" formControlName="qualificationInstitution"
@@ -260,9 +261,8 @@ class="form-wizard-next-btn float-right"
 
                             <div>
 <span class="input-group-btn">
-<button (click)="onClickAddPersonnel()"
-        type="button" class="btn btn-success btn-sm">
-<span class="" aria-hidden="true">ADD</span>
+<button type="button" class="btn btn-success btn-sm btn-add-brand">
+<span class="fa fa-plus" aria-hidden="true"></span>
 </button>
 </span>
 
@@ -275,27 +275,8 @@ class="form-wizard-next-btn float-right"
 
             </div>
 
-            <div>
-                <table>
-                    <thead>
-                    <tr>
-                        <th>Personnel Name</th>
-                        <th>Qualification Institution</th>
-                        <th>Date Of Employment</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr *ngFor="let r of sta10PersonnelDetails">
-                        <td>{{r.personnelName}}</td>
-                        <td>{{r.qualificationInstitution}}</td>
-                        <td>{{r.dateOfEmployment}}</td>
-                    </tr>
-                    </tbody>
-                </table>
+
             </div>
-
-
-        </div>
 </div>
 <div class="form-group clearfix">
 <button (click)="onClickPrevious()" class="btn btn-sm btn-danger">Previous</button>
