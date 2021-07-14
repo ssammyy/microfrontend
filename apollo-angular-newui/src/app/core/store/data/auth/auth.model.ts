@@ -31,6 +31,8 @@ export class CompanyInfoDto {
     branchCount = 0;
     userId = 0;
     turnover = 0;
+    countAwarded = 0;
+    countExpired = 0;
 }
 
 

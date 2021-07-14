@@ -721,5 +721,9 @@ data class UserCompanyDetailsDto(
     @JsonProperty("turnover")
     val turnover: BigDecimal? = null,
     @JsonProperty("userId")
-    val userId: Long? = null
+    val userId: Long? = null,
+    @JsonProperty("countAwarded")
+    val countAwarded: Long? = null,
+    @JsonProperty("countExpired")
+    val countExpired: Long? = null
 )
