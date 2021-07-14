@@ -177,26 +177,34 @@ enctype="multipart/form-data" >
 <div class="row">
 <div class="form-group col-6">
 <label for="totalNumberMale">Male</label>
-<input type="text" [class.is-invalid]="formSta10Form.totalNumberMale.invalid && formSta10Form.totalNumberMale.touched" type="text" class="form-control" id="totalNumberMale" formControlName="totalNumberMale"
-name="totalNumberMale" class="form-control" placeholder="Male">
+<input type="number" [class.is-invalid]="formSta10Form.totalNumberMale.invalid && formSta10Form.totalNumberMale.touched"
+       type="text" class="form-control" id="totalNumberMale" formControlName="totalNumberMale"
+       name="totalNumberMale" class="form-control" placeholder="Male">
 </div>
 <div class="form-group col-6">
 <label for="totalNumberFemale">Female</label>
-<input type="text" [class.is-invalid]="formSta10Form.totalNumberFemale.invalid && formSta10Form.totalNumberFemale.touched" type="text" class="form-control" id="totalNumberFemale" formControlName="totalNumberFemale"
-name="totalNumberFemale" class="form-control" placeholder="Female">
+    <input type="number"
+           [class.is-invalid]="formSta10Form.totalNumberFemale.invalid && formSta10Form.totalNumberFemale.touched"
+           type="text" class="form-control" id="totalNumberFemale" formControlName="totalNumberFemale"
+           name="totalNumberFemale" class="form-control" placeholder="Female">
 </div>
 
 </div>
 <div class="row">
 <div class="form-group col-6">
 <label for="totalNumberPermanentEmployees">No. of Permanent Employees</label>
-<input type="text" [class.is-invalid]="formSta10Form.totalNumberPermanentEmployees.invalid && formSta10Form.totalNumberPermanentEmployees.touched" type="text" class="form-control" id="totalNumberPermanentEmployees" formControlName="totalNumberPermanentEmployees"
-name="totalNumberPermanentEmployees" class="form-control" placeholder="No. of Permanent Employees">
+    <input type="number"
+           [class.is-invalid]="formSta10Form.totalNumberPermanentEmployees.invalid && formSta10Form.totalNumberPermanentEmployees.touched"
+           type="text" class="form-control" id="totalNumberPermanentEmployees"
+           formControlName="totalNumberPermanentEmployees"
+           name="totalNumberPermanentEmployees" class="form-control" placeholder="No. of Permanent Employees">
 </div>
 <div class="form-group col-6">
 <label for="totalNumberCasualEmployees">No of Casual Employee</label>
-<input type="text" [class.is-invalid]="formSta10Form.totalNumberCasualEmployees.invalid && formSta10Form.totalNumberCasualEmployees.touched" type="text" class="form-control" id="totalNumberCasualEmployees" formControlName="totalNumberCasualEmployees"
-name="totalNumberCasualEmployees" class="form-control" placeholder="No of Casual Employee">
+    <input type="number"
+           [class.is-invalid]="formSta10Form.totalNumberCasualEmployees.invalid && formSta10Form.totalNumberCasualEmployees.touched"
+           type="text" class="form-control" id="totalNumberCasualEmployees" formControlName="totalNumberCasualEmployees"
+           name="totalNumberCasualEmployees" class="form-control" placeholder="No of Casual Employee">
 </div>
 
 </div>

@@ -320,39 +320,39 @@ export class NewSmarkPermitComponent implements OnInit {
     onClickSaveSTAPersonnel(valid: boolean) {
         if (valid) {
             console.log(this.Sta10Details.id.toString());
-            if (this.sta10PersonnelDetails == null) {
-                this.qaService.savePersonnelDetailsSta10(this.Sta10Details.id.toString(), this.sta10Form.value).subscribe(
-                    (data) => {
-                        this.sta10PersonnelDetails = data;
-                        console.log(data);
-                        this.step += 1;
-                        swal.fire({
-                            title: 'STA10 Form Personnel Details saved!',
-                            buttonsStyling: false,
-                            customClass: {
-                                confirmButton: 'btn btn-success form-wizard-next-btn ',
-                            },
-                            icon: 'success'
-                        });
-                    },
-                );
-            } else {
-                this.qaService.updatePersonnelDetailsSta10(this.Sta10Details.id.toString(), this.sta10Form.value).subscribe(
-                    (data) => {
-                        this.sta10PersonnelDetails = data;
-                        console.log(data);
-                        this.step += 1;
-                        swal.fire({
-                            title: 'STA10 Form Personnel Details Updated!',
-                            buttonsStyling: false,
-                            customClass: {
-                                confirmButton: 'btn btn-success form-wizard-next-btn ',
-                            },
-                            icon: 'success'
-                        });
-                    },
-                );
-            }
+            // if (this.sta10PersonnelDetails == null) {
+            this.qaService.savePersonnelDetailsSta10(this.Sta10Details.id.toString(), this.sta10PersonnelDetails).subscribe(
+                (data) => {
+                    this.sta10PersonnelDetails = data;
+                    console.log(data);
+                    this.step += 1;
+                    swal.fire({
+                        title: 'STA10 Form Personnel Details saved!',
+                        buttonsStyling: false,
+                        customClass: {
+                            confirmButton: 'btn btn-success form-wizard-next-btn ',
+                        },
+                        icon: 'success'
+                    });
+                },
+            );
+            // } else {
+            //     this.qaService.updatePersonnelDetailsSta10(this.Sta10Details.id.toString(), this.sta10Form.value).subscribe(
+            //         (data) => {
+            //             this.sta10PersonnelDetails = data;
+            //             console.log(data);
+            //             this.step += 1;
+            //             swal.fire({
+            //                 title: 'STA10 Form Personnel Details Updated!',
+            //                 buttonsStyling: false,
+            //                 customClass: {
+            //                     confirmButton: 'btn btn-success form-wizard-next-btn ',
+            //                 },
+            //                 icon: 'success'
+            //             });
+            //         },
+            //     );
+            // }
         }
     }
 
