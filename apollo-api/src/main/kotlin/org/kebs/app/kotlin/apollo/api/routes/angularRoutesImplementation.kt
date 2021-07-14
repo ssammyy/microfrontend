@@ -112,8 +112,8 @@ class AngularRoutes {
                             ServerResponse.badRequest().body("Invalid Request: Feature currently not supported")
                         }
                         "/{userId}".nest {
-                            PUT("", handler::handleUpdateLoggedInUserUserEntityDtoDetails)
-                            GET("", handler::handleLoggedInUserUserEntityDtoDetails)
+                            PUT("/", handler::handleUpdateLoggedInUserUserEntityDtoDetails)
+                            GET("/", handler::handleLoggedInUserUserEntityDtoDetails)
                         }
                     }
                 }

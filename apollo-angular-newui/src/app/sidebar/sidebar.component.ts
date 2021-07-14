@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import PerfectScrollbar from 'perfect-scrollbar';
 import {Store} from '@ngrx/store';
 import {loadLogout, selectUserInfo} from '../core/store';
-import {Router} from "@angular/router";
+import {Router} from '@angular/router';
 
 declare const $: any;
 
@@ -31,6 +31,7 @@ export const ROUTES: RouteInfo[] = [
         type: 'link',
         icontype: 'dashboard'
     },
+
     {
         path: '/dashboard',
         title: 'My Companies',
@@ -39,8 +40,8 @@ export const ROUTES: RouteInfo[] = [
         collapse: 'company',
         children: [
             {path: 'companies', title: 'View Companies', ab: 'VC'},
-            {path: 'companies/branches', title: 'View Branches ', ab: 'VB'},
-            {path: 'companies/branches/users', title: 'View Users ', ab: 'VU'}
+            {path: 'branches', title: 'View Branches ', ab: 'VB'},
+            {path: 'users', title: 'View Users ', ab: 'VU'}
         ]
     },
 
@@ -104,10 +105,8 @@ export class SidebarComponent implements OnInit {
     }
 
     isMobileMenu() {
-        if ($(window).width() > 991) {
-            return false;
-        }
-        return true;
+        return $(window).width() <= 991;
+
     }
 
     ngOnInit() {

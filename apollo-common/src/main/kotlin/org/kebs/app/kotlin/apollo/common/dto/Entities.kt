@@ -624,6 +624,9 @@ class JwtResponse(
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss.SSS")
     var expiry: LocalDateTime? = null
+    var companyID: Long? = null
+    var branchID: Long? = null
+    var turnover: BigDecimal? = null
 
 }
 
@@ -715,6 +718,8 @@ data class UserCompanyDetailsDto(
     val branchId: Long? = null,
     @JsonProperty("branchCount")
     val branchCount: Long? = null,
+    @JsonProperty("turnover")
+    val turnover: BigDecimal? = null,
     @JsonProperty("userId")
     val userId: Long? = null
 )

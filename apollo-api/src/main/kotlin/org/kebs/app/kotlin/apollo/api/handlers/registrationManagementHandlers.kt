@@ -36,7 +36,7 @@ class RegistrationManagementHandler(
      * @return ServerResponse
      *
      */
-    @PreAuthorize("isAnonymous")
+    @PreAuthorize("isAuthenticated")
     fun handleProvideCompanyDetailsForUser(req: ServerRequest): ServerResponse {
         return try {
             service.provideCompanyDetailsForUser()

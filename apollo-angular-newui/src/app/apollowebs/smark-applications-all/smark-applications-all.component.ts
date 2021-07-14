@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {PermitEntityDto} from "../../core/store/data/qa/qa.model";
 import {QaService} from "../../core/store/data/qa/qa.service";
 import {Router} from "@angular/router";
@@ -29,6 +29,8 @@ export class SmarkApplicationsAllComponent implements OnInit {
 
   ngOnInit() {
     let formattedArray = [];
+    this.dataTable;
+
     this.qaService.loadPermitList('2').subscribe(
         (data: any) => {
 
@@ -45,14 +47,22 @@ export class SmarkApplicationsAllComponent implements OnInit {
             // ['REFFM#202107095913D', 'Andrew Mike', '09/07/2021', 'Dassani', 'Water', '']
 
           }
+
         });
+
+
+    // this.dataTable = {
+    //   headerRow: ['Permit Ref No', 'Application Date', 'Product', 'Brand Name', 'Permit Number', 'Issue Date', 'Expiry Date', 'Status', 'Actions'],
+    //   footerRow: ['Permit Ref No', 'Application Date', 'Product', 'Brand Name', 'Permit Number', 'Issue Date', 'Expiry Date', 'Status', 'Actions'],
+    //   dataRows: []
+    //
+    //
+    //   // ['REFFM#202107095913D', 'Andrew Mike', '09/07/2021', 'Dassani', 'Water', '']
+    //
+    // }
     // console.log(this.dataTable);
     // this.allPermitData = this.Object.json().results;
     // console.log(formattedArray);
-
-
-
-
 
 
     //

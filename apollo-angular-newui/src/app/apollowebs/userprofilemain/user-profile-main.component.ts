@@ -1,12 +1,12 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {loadResponsesFailure, selectUserInfo, UserEntityDto, UserEntityService} from "../../core/store";
-import {Observable, of} from "rxjs";
-import {Titles, TitlesService} from "../../core/store/data/title";
-import {Store} from "@ngrx/store";
-import {ConfirmedValidator} from "../../core/shared/confirmed.validator";
-import {catchError} from "rxjs/operators";
-import {HttpErrorResponse} from "@angular/common/http";
+import {loadResponsesFailure, selectUserInfo, UserEntityDto, UserEntityService} from '../../core/store';
+import {Observable, of} from 'rxjs';
+import {Titles, TitlesService} from '../../core/store/data/title';
+import {Store} from '@ngrx/store';
+import {catchError} from 'rxjs/operators';
+import {HttpErrorResponse} from '@angular/common/http';
+
 
 @Component({
     selector: 'app-userprofilemain',
@@ -16,9 +16,11 @@ import {HttpErrorResponse} from "@angular/common/http";
 
 
 export class UserProfileMainComponent implements OnInit {
+
     user: UserEntityDto;
     title$: Observable<Titles[]>;
     stepOneForm: FormGroup = new FormGroup({});
+
 
     constructor(private store$: Store<any>,
                 private service: UserEntityService,
@@ -29,6 +31,8 @@ export class UserProfileMainComponent implements OnInit {
     }
 
     ngOnInit(): void {
+
+
         this.stepOneForm = this.formBuilder.group({
                 id: [''],
                 firstName: ['', Validators.required],
@@ -37,22 +41,25 @@ export class UserProfileMainComponent implements OnInit {
                 userPinIdNumber: ['', Validators.required],
                 personalContactNumber: ['', Validators.required],
                 email: ['', Validators.required],
-                userRegNo: ['', Validators.required],
-                enabled: ['', Validators.required],
-                accountExpired: ['', Validators.required],
-                accountLocked: ['', Validators.required],
-                credentialsExpired: ['', Validators.required],
-                status: ['', Validators.required],
-                registrationDate: ['', Validators.required],
-                title: ['', Validators.required],
+                userRegNo: [''],
+                enabled: [''],
+                accountExpired: [''],
+                accountLocked: [''],
+                credentialsExpired: [''],
+                status: [''],
+                registrationDate: [''],
+                title: [''],
             },
             {
-                validators: ConfirmedValidator('credentials', 'confirmCredentials')
+                // validators: ConfirmedValidator('credentials', 'confirmCredentials')
             });
         this.store$.select(selectUserInfo).subscribe(
             (l) => {
-                return this.service.getByKey(l.id).subscribe(
+                console.log(`The id is ${l.id}`);
+                return this.service.getByKey(`${l.id}/`).subscribe(
                     (u) => {
+                        console.log(`The id is ${l.id} vs ${u.id}`);
+                        this.stepOneForm.patchValue(u);
                         return this.user = u;
                     }, catchError((err: HttpErrorResponse) => {
                         console.log((err.error instanceof ErrorEvent) ? `Error: ${err.error.message}` : `Error Code: ${err.status},  Message: ${err.error}`);
@@ -67,7 +74,7 @@ export class UserProfileMainComponent implements OnInit {
                 );
             }
         );
-        this.stepOneForm.patchValue(this.user);
+
 
     }
 

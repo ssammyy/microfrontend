@@ -1,0 +1,19 @@
+
+###
+GET https://localhost:8006/api/v1/migration/anonymous/titles/
+
+###
+GET https://localhost:8006/api/v1/migration/secure/user/details/2046
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJJYW5fS2lwcm9ubyIsImlzcyI6ImtpbXMua2Vicy5vcmciLCJpYXQiOjE2MjYxOTc0MTMsImV4cCI6MTYyNjIwMzQxMywiYWRkcmVzcyI6IjEyNy4wLjAuMSIsInVzZXJBZ2VudCI6IltNb3ppbGxhLzUuMCAoTWFjaW50b3NoOyBJbnRlbCBNYWMgT1MgWCAxMC4xNTsgcnY6ODkuMCkgR2Vja28vMjAxMDAxMDEgRmlyZWZveC84OS4wXSIsImZ1bGxOYW1lIjoiSWFuIEtpcHJvbm8iLCJyb2xlcyI6IlBFUk1JVF9BUFBMSUNBVElPTixQRVJNSVRfUkVORVdBTCxQVk9DX0FQUExJQ0FUSU9OX1JFQUQsTElTVF9DT01QQU5ZLE1PRElGWV9DT01QQU5ZIn0.A3yA7X_01DmKJbh6_US5EReLvP6wggupI8HpO0wvsn_FeHKrjLMeyV97IoiHG1UG_QBiya6ZV0Fc9n7v897DIw
+
+###
+POST https://127.0.0.1:8006/api/v1/login
+Content-Type: application/json
+
+{
+  "username": "Ian_Kiprono",
+  "password": "password"}
+
+> {%
+    client.global.set("auth_token", response.headers.valuesOf('accessToken')[0]);
+%}

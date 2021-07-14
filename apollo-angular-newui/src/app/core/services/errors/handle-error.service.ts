@@ -1,7 +1,6 @@
 import {Injectable} from '@angular/core';
 import {Actions} from '@ngrx/effects';
 import {ToastrService} from 'ngx-toastr';
-import {Store} from '@ngrx/store';
 import {HttpErrorResponse} from '@angular/common/http';
 
 @Injectable({
@@ -44,7 +43,7 @@ export class HandleErrorService {
         if (code === 200) {
           this.toastrService.info(message);
         } else {
-          this.toastrService.error(message);
+          this.toastrService.error(JSON.stringify(message));
         }
 
       }

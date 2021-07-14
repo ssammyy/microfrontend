@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
-import { Router, NavigationEnd, NavigationStart } from '@angular/router';
-import { Subscription } from 'rxjs/Subscription';
+import {Component, OnInit} from '@angular/core';
+import {NavigationEnd, Router} from '@angular/router';
+import {Subscription} from 'rxjs/Subscription';
 import {select, Store} from '@ngrx/store';
 import {HandleErrorService} from './core/services/errors/handle-error.service';
 import {selectResponseData} from './core/store/data/response/response.selectors';

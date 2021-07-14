@@ -131,8 +131,10 @@ const routes: Routes = [
             {path: 'companies', component: CompaniesList},
             {path: 'company', component: CompanyComponent},
             {path: 'companies/branches', component: BranchList},
+            {path: 'branches', component: BranchList},
             {path: 'companies/branch', component: BranchComponent},
             {path: 'companies/branches/users', component: UserList},
+            {path: 'users', component: UserList},
             {path: 'companies/branches/user', component: UserComponent}
         ]
 
