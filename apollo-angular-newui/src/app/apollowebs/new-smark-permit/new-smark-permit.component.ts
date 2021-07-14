@@ -26,6 +26,7 @@ export class NewSmarkPermitComponent implements OnInit {
     sta10FormD: FormGroup;
     sta10FormE: FormGroup;
     sta10FormF: FormGroup;
+    sta10FormG: FormGroup;
     sections: SectionDto[];
     plants: PlantDetailsDto[];
     permitEntityDetails: PermitEntityDetails;
@@ -115,6 +116,9 @@ export class NewSmarkPermitComponent implements OnInit {
             criticalProcessParametersMonitored: ['', Validators.required],
             frequency: ['', Validators.required],
             processMonitoringRecords: ['', Validators.required]
+        });
+        this.sta10FormG = this.formBuilder.group({
+
         });
 
         this.sta10FormF = this.formBuilder.group({
