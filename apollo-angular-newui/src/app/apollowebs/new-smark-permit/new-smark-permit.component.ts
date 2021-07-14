@@ -245,25 +245,40 @@ export class NewSmarkPermitComponent implements OnInit {
     get formSta10Form(): any {
         return this.sta10Form.controls;
     }
+
     get formSta10FormA(): any {
         return this.sta10FormA.controls;
     }
+
     get formSta10FormB(): any {
         return this.sta10FormB.controls;
     }
+
     get formSta10FormC(): any {
         return this.sta10FormC.controls;
     }
 
+    get formSta10FormD(): any {
+        return this.sta10FormD.controls;
+    }
+
+    get formSta10FormE(): any {
+        return this.sta10FormE.controls;
+    }
+
+    get formSta10FormF(): any {
+        return this.sta10FormF.controls;
+    }
+
     onClickSaveSTA1(valid: boolean) {
-    if (valid) {
-      if (this.permitEntityDetails == null) {
-        this.qaService.savePermitSTA1('2', this.sta1Form.value).subscribe(
-            (data: PermitEntityDetails) => {
-              this.permitEntityDetails = data;
-              console.log(data);
-                this.step += 1;
-              this.currBtn = 'B';
+        if (valid) {
+            if (this.permitEntityDetails == null) {
+                this.qaService.savePermitSTA1('2', this.sta1Form.value).subscribe(
+                    (data: PermitEntityDetails) => {
+                        this.permitEntityDetails = data;
+                        console.log(data);
+                        this.step += 1;
+                        this.currBtn = 'B';
               swal.fire({
                   title: 'STA1 Form saved!',
                   buttonsStyling: false,
