@@ -335,7 +335,7 @@ export class NewSmarkPermitComponent implements OnInit {
                     },
                 );
             } else {
-                this.qaService.updateFirmDetailsSta10(this.permitEntityDetails.id.toString(), this.sta10Form.value).subscribe(
+                this.qaService.updateFirmDetailsSta10(`${this.permitEntityDetails.id}`, this.sta10FormF.value).subscribe(
                     (data) => {
                         this.Sta10Details = data;
                         console.log(data);
@@ -348,10 +348,32 @@ export class NewSmarkPermitComponent implements OnInit {
                             },
                             icon: 'success'
                         });
-// this.router.navigate(['/users-list']);
                     },
                 );
             }
+        }
+    }
+
+    onClickSaveSTA10F(valid: boolean) {
+        if (valid) {
+            console.log(this.permitEntityDetails.id.toString());
+
+                this.qaService.updateFirmDetailsSta10(this.permitEntityDetails.id.toString(), this.sta10FormF.value).subscribe(
+                    (data) => {
+                        this.Sta10Details = data;
+                        console.log(data);
+                        this.step += 1;
+                        swal.fire({
+                            title: 'STA10 Form Updated!',
+                            buttonsStyling: false,
+                            customClass: {
+                                confirmButton: 'btn btn-success form-wizard-next-btn ',
+                            },
+                            icon: 'success'
+                        });
+                        this.router.navigate(['/permitdetails'], {fragment: this.permitEntityDetails.id.toString()});
+                    },
+                );
         }
     }
 
