@@ -27,12 +27,12 @@ export class LoginComponent implements OnInit {
 
   ngOnInit(): void {
     this.loginForm = new FormGroup(
-      {
-        username: new FormControl('', [Validators.required]),
-        password: new FormControl('', [Validators.required]),
-      }
+        {
+          username: new FormControl('', [Validators.required]),
+          password: new FormControl('', [Validators.required]),
+        }
     );
-    this.returnUrl = this.route.snapshot.queryParams[`returnUrl`] || `/dashboard`;
+    this.returnUrl = this.route.snapshot.queryParams[`returnUrl`] || `login/otp`;
   }
 
   public onClickLogin(valid: Boolean) {

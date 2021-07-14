@@ -78,6 +78,7 @@ import { SmarkApplicationsAllComponent } from './apollowebs/smark-applications-a
 import { UserProfileMainComponent } from './apollowebs/userprofilemain/user-profile-main.component';
 import {NgxSpinnerModule} from "ngx-spinner";
 import { AddBranchComponent } from './apollowebs/company/branch/add-branch/add-branch.component';
+import { OtpComponent } from './views/registration/otp/otp.component';
 
 @NgModule({
     exports: [
@@ -149,7 +150,8 @@ import { AddBranchComponent } from './apollowebs/company/branch/add-branch/add-b
         UserProfileComponent,
         SmarkApplicationsAllComponent,
         UserProfileMainComponent,
-        AddBranchComponent
+        AddBranchComponent,
+        OtpComponent
     ]
 
 })

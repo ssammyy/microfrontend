@@ -1,11 +1,10 @@
 import {Component, OnInit} from '@angular/core';
-import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
-import {loadAuths, LoginCredentials} from '../../core/store';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {LoginCredentials} from '../../core/store';
 import {Store} from '@ngrx/store';
 import {ActivatedRoute, Router} from '@angular/router';
 import {QaService} from '../../core/store/data/qa/qa.service';
 import {PermitEntityDetails, PlantDetailsDto, SectionDto} from '../../core/store/data/qa/qa.model';
-import {UserRegister} from '../../../../../apollo-webs/src/app/shared/models/user';
 import swal from 'sweetalert2';
 
 @Component({
@@ -216,7 +215,7 @@ export class NewDmarkPermitComponent implements OnInit {
                     console.log(data);
                     this.step += 1;
                     swal.fire({
-                        title: 'STA3 Form saved!',
+                        title: 'STA3: Factory Organisation Details saved!',
                         buttonsStyling: false,
                         customClass: {
                             confirmButton: 'btn btn-success form-wizard-next-btn ',
@@ -236,7 +235,7 @@ export class NewDmarkPermitComponent implements OnInit {
                     console.log(data);
                     this.step += 1;
                     swal.fire({
-                        title: 'STA3 Form updated!',
+                        title: 'STA3: Factory Organisation Details updated!',
                         buttonsStyling: false,
                         customClass: {
                             confirmButton: 'btn btn-success form-wizard-next-btn ',
@@ -256,7 +255,7 @@ export class NewDmarkPermitComponent implements OnInit {
                     console.log(data);
                     this.step += 1;
                     swal.fire({
-                        title: 'STA3 Form updated!',
+                        title: 'STA3: Quality Control/Inspection Staff Details saved!',
                         buttonsStyling: false,
                         customClass: {
                             confirmButton: 'btn btn-success form-wizard-next-btn ',
@@ -276,7 +275,7 @@ export class NewDmarkPermitComponent implements OnInit {
                     console.log(data);
                     this.step += 1;
                     swal.fire({
-                        title: 'STA3 Form updated! proceed to submit application',
+                        title: 'STA3 Form Completed! Proceed to submit application.',
                         buttonsStyling: false,
                         customClass: {
                             confirmButton: 'btn btn-success form-wizard-next-btn ',
