@@ -1,11 +1,8 @@
 package org.kebs.app.kotlin.apollo.api.controllers.qaControllers
 
-import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
-import org.kebs.app.kotlin.apollo.api.ports.provided.dao.QADaoServices
-import org.kebs.app.kotlin.apollo.api.ports.provided.dao.ReportsDaoService
+import org.kebs.app.kotlin.apollo.api.ports.provided.dao.*
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
-import org.kebs.app.kotlin.apollo.store.model.InvoiceEntity
 import org.kebs.app.kotlin.apollo.store.repo.ISampleStandardsRepository
 import org.springframework.core.io.ResourceLoader
 import org.springframework.web.bind.annotation.RequestMapping
@@ -15,7 +12,8 @@ import org.springframework.web.bind.annotation.RestController
 import javax.servlet.http.HttpServletResponse
 
 @RestController
-@RequestMapping("/api/qa/report/")
+@RequestMapping("/api/v1/migration/qa/")
+//@RequestMapping("/api/v1/migration/qa/")
 class ReportsController(
     private val applicationMapProperties: ApplicationMapProperties,
     private val qaDaoServices: QADaoServices,
@@ -61,27 +59,14 @@ class ReportsController(
     /*
     GetDemand Note with all list of Items In It
      */
-    @RequestMapping(value = ["proforma-invoice-with-Item"], method = [RequestMethod.GET])
+    @RequestMapping(value = ["report/proforma-invoice-with-Item"], method = [RequestMethod.GET])
     @Throws(Exception::class)
     fun proformaInvoiceWithMoreItems(
         response: HttpServletResponse,
         @RequestParam(value = "ID") ID: Long
     ) {
-        val pair = createInvoicePdf(ID)
-        var map = pair.first
-        val batchInvoiceList = pair.second
-
-        reportsDaoService.extractReport(
-            map,
-            response,
-            applicationMapProperties.mapReportProfomaInvoiceWithItemsPath,
-            batchInvoiceList
-        )
-    }
-
-    fun createInvoicePdf(ID: Long): Pair<HashMap<String, Any>, List<InvoiceEntity>> {
         var map = hashMapOf<String, Any>()
-        //        val cdItemDetailsEntity = daoServices.findItemWithItemID(id)
+//        val cdItemDetailsEntity = daoServices.findItemWithItemID(id)
         val batchInvoice = qaDaoServices.findBatchInvoicesWithID(ID)
         val batchInvoiceList = qaDaoServices.findALlInvoicesPermitWithBatchID(
             batchInvoice.id ?: throw ExpectedDataNotFound("MISSING BATCH INVOICE ID")
@@ -100,19 +85,25 @@ class ReportsController(
         map["companyName"] = companyProfile.name.toString()
         map["companyAddress"] = companyProfile.postalAddress.toString()
         map["companyTelephone"] = companyProfile.companyTelephone.toString()
-        //        map["productName"] = demandNote?.product.toString()
-        //        map["cfValue"] = demandNote?.cfvalue.toString()
-        //        map["rate"] = demandNote?.rate.toString()
-        //        map["amountPayable"] = demandNote?.amountPayable.toString()
+//        map["productName"] = demandNote?.product.toString()
+//        map["cfValue"] = demandNote?.cfvalue.toString()
+//        map["rate"] = demandNote?.rate.toString()
+//        map["amountPayable"] = demandNote?.amountPayable.toString()
         map["customerNo"] = companyProfile.entryNumber.toString()
         map["totalAmount"] = batchInvoice.totalAmount.toString()
         //Todo: config for amount in words
 
-        //                    map["amountInWords"] = demandNote?.
+//                    map["amountInWords"] = demandNote?.
         map["receiptNo"] = batchInvoice.receiptNo.toString()
 
         map = reportsDaoService.addBankAndMPESADetails(map)
-        return Pair(map, batchInvoiceList)
+
+        reportsDaoService.extractReport(
+            map,
+            response,
+            applicationMapProperties.mapReportProfomaInvoiceWithItemsPath,
+            batchInvoiceList
+        )
     }
 
     /*
@@ -158,7 +149,6 @@ class ReportsController(
         map["faxNumber"] = foundPermitDetails.faxNo.toString()
         map["EmailAddress"] = foundPermitDetails.email.toString()
         map["phoneNumber"] = foundPermitDetails.telephoneNo.toString()
-        map["QrCode"] = foundPermitDetails.permitNumber.toString()
 
 
         when (foundPermitDetails.permitTypeID) {

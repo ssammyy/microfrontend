@@ -115,15 +115,15 @@ class ReportsDaoService(
         pdfExporter.exporterOutput = SimpleOutputStreamExporterOutput(pdfReportStream)
         pdfExporter.exportReport()
         response.contentType = "text/html"
-        response.contentType = "application/pdf"
+//        response.contentType = "application/pdf"
         response.setHeader("Content-Length", pdfReportStream.size().toString())
-        response.addHeader("Content-Dispostion", "inline; filename=jasper.pdf;")
+        response.addHeader("Content-Dispostion", "inline; filename=jasper.html;")
         response.outputStream
-                .let { responseOutputStream ->
-                    responseOutputStream.write(pdfReportStream.toByteArray())
-                    responseOutputStream.close()
-                    pdfReportStream.close()
-                }
+            .let { responseOutputStream ->
+                responseOutputStream.write(pdfReportStream.toByteArray())
+                responseOutputStream.close()
+                pdfReportStream.close()
+            }
 
 
     }

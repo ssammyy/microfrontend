@@ -38,6 +38,14 @@ export class ConsolidatedInvoiceDto {
     receiptNo: string;
 }
 
+export class GenerateInvoiceDto {
+    batchID: bigint;
+    plantID: bigint;
+    permitRefNumber: string;
+    permitInvoicesID: string[];
+}
+
+
 export class STA1 {
     id: bigint;
     commodityDescription: string;
@@ -194,6 +202,7 @@ export class PermitInvoiceDto {
     totalAmount: any;
     paidStatus: boolean;
     permitRefNumber: string;
+    batchID: bigint;
 }
 
 export class AllBatchInvoiceDetailsDto {

@@ -139,6 +139,12 @@ export class QaService {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.INVOICE_DETAILS_PDF);
         const params = new HttpParams()
             .set('ID', ID);
+
+        const httpOptions = {
+            responseType: 'arraybuffer' as 'json'
+        };
+
+        // return this.httpService.get<any>(`${this.baseUrl}/get/pdf/${fileName}`, { responseType: 'arraybuffer' as 'json' });
         return this.http.get<any>(url, {params}).pipe(
             map(function (response: any) {
                 return response;

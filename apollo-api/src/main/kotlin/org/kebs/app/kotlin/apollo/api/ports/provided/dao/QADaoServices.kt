@@ -2389,20 +2389,20 @@ class QADaoServices(
         loggedInUser: UsersEntity
     ) {
 
-        val myDetails = reportsControllers.createInvoicePdf(batchID)
+//        val myDetails = reportsControllers.createInvoicePdf(batchID)
 
 //        val invoicePDFCreated = reportsDaoService.generateEmailPDFReport()
 
-        msReportsControllers.extractAndSaveReport(
-            myDetails.first,
-            applicationMapProperties.mapReportProfomaInvoiceWithItemsPath,
-            "Pro forma invoice",
-            myDetails.second
-        )
-        sendEmailWithProforma(
-            senderEmail,
-            applicationMapProperties.mapPDFProfomaInvoiceWithItemsPath,
-        )
+//        msReportsControllers.extractAndSaveReport(
+//            myDetails.first,
+//            applicationMapProperties.mapReportProfomaInvoiceWithItemsPath,
+//            "Pro forma invoice",
+//            myDetails.second
+//        )
+//        sendEmailWithProforma(
+//            senderEmail,
+//            applicationMapProperties.mapPDFProfomaInvoiceWithItemsPath,
+//        )
     }
 
     fun sendEmailWithProforma(recipient: String, attachment: String?): Boolean {
@@ -4014,6 +4014,7 @@ class QADaoServices(
             ?.forEach { t ->
                 t.permitId
                 t.task.name
+                t.task.createTime
                 t.task.createTime
             }
 
