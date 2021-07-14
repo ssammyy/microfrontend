@@ -79,6 +79,7 @@ import { UserProfileMainComponent } from './apollowebs/userprofilemain/user-prof
 import {NgxSpinnerModule} from "ngx-spinner";
 import { AddBranchComponent } from './apollowebs/company/branch/add-branch/add-branch.component';
 import { OtpComponent } from './views/registration/otp/otp.component';
+import {FileUploadModule} from "@iplab/ngx-file-upload";
 
 @NgModule({
     exports: [
@@ -122,6 +123,8 @@ import { OtpComponent } from './views/registration/otp/otp.component';
         ReactiveFormsModule,
         RouterModule,
         CoreModule,
+        FileUploadModule,
+        FormsModule,
         // CoreModule
     ],
     declarations: [
