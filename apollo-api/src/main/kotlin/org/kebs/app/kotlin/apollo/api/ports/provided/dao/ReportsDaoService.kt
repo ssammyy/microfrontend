@@ -221,5 +221,21 @@ class ReportsDaoService(
         return targetFile
     }
 
+    fun generateEmailPDFReport(fileName: String, map: HashMap<String, Any>, filePath: String): File? {
+
+        val file = ResourceUtils.getFile(filePath)
+        val design = JRXmlLoader.load(file)
+        val jasperReport = JasperCompileManager.compileReport(design)
+
+        val jasperPrint = JasperFillManager.fillReport(jasperReport, map, JREmptyDataSource())
+
+        val targetFile = File(Files.createTempDir(), fileName)
+        targetFile.deleteOnExit()
+
+        JasperExportManager.exportReportToPdfFile(jasperPrint, targetFile.absolutePath)
+
+        return targetFile
+    }
+
 }
 

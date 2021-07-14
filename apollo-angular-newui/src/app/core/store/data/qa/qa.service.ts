@@ -255,7 +255,7 @@ export class QaService {
         );
     }
 
-    public saveProductsManufacturedDetailsSta10(qaSta10ID: string, data: STA10PersonnelDto[]): Observable<STA10ProductsManufactureDto[]> {
+    public saveProductsManufacturedDetailsSta10(qaSta10ID: string, data: STA10ProductsManufactureDto[]): Observable<STA10ProductsManufactureDto[]> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.PERMIT_APPLY_STA10_PRODUCTS_BEING_MANUFACTURED);
         const params = new HttpParams()
             .set('qaSta10ID', qaSta10ID);

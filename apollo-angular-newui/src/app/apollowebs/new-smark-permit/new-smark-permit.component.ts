@@ -380,7 +380,7 @@ export class NewSmarkPermitComponent implements OnInit {
     onClickSaveSTAProductsManufactured(valid: boolean) {
         if (valid) {
             console.log(this.Sta10Details.id.toString());
-            this.qaService.saveProductsManufacturedDetailsSta10(this.Sta10Details.id.toString(), this.sta10Form.value).subscribe(
+            this.qaService.saveProductsManufacturedDetailsSta10(this.Sta10Details.id.toString(), this.sta10ProductsManufactureDetails).subscribe(
                 (data) => {
                     this.sta10ProductsManufactureDetails = data;
                     console.log(data);
@@ -401,7 +401,7 @@ export class NewSmarkPermitComponent implements OnInit {
     onClickSaveSTARawMaterials(valid: boolean) {
         if (valid) {
             console.log(this.Sta10Details.id.toString());
-            this.qaService.saveRawMaterialsDetailsSta10(this.Sta10Details.id.toString(), this.sta10Form.value).subscribe(
+            this.qaService.saveRawMaterialsDetailsSta10(this.Sta10Details.id.toString(), this.sta10RawMaterialsDetails).subscribe(
                 (data) => {
                     this.sta10RawMaterialsDetails = data;
                     console.log(data);
@@ -422,7 +422,7 @@ export class NewSmarkPermitComponent implements OnInit {
     onClickSaveSTAMachineryPlant(valid: boolean) {
         if (valid) {
             console.log(this.Sta10Details.id.toString());
-            this.qaService.saveMachineryPlantDetailsSta10(this.Sta10Details.id.toString(), this.sta10Form.value).subscribe(
+            this.qaService.saveMachineryPlantDetailsSta10(this.Sta10Details.id.toString(), this.sta10MachineryAndPlantDetails).subscribe(
                 (data) => {
                     this.sta10MachineryAndPlantDetails = data;
                     console.log(data);
@@ -443,7 +443,7 @@ export class NewSmarkPermitComponent implements OnInit {
     onClickSaveSTAManufacturingProcess(valid: boolean) {
         if (valid) {
             console.log(this.Sta10Details.id.toString());
-            this.qaService.saveManufacturingProcessDetailsSta10(this.Sta10Details.id.toString(), this.sta10Form.value).subscribe(
+            this.qaService.saveManufacturingProcessDetailsSta10(this.Sta10Details.id.toString(), this.sta10ManufacturingProcessDetails).subscribe(
                 (data) => {
                     this.sta10ManufacturingProcessDetails = data;
                     console.log(data);

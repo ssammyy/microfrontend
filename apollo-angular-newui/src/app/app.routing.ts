@@ -26,6 +26,7 @@ import {UserList} from './apollowebs/company/branch/users/user.list';
 import {SmarkApplicationsAllComponent} from './apollowebs/smark-applications-all/smark-applications-all.component';
 import {UserProfileMainComponent} from './apollowebs/userprofilemain/user-profile-main.component';
 import {AddBranchComponent} from "./apollowebs/company/branch/add-branch/add-branch.component";
+import {OtpComponent} from "./views/registration/otp/otp.component";
 
 // export const AppRoutes: Routes = [
 //     {
@@ -115,6 +116,11 @@ const routes: Routes = [
             {
                 path: 'reset',
                 component: ResetCredentialsComponent
+            },
+            {
+                path: 'otp',
+                component: OtpComponent
+
             }
 
         ],
