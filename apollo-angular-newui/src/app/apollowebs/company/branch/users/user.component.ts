@@ -80,7 +80,7 @@ export class UserComponent implements OnInit {
     editRecord(record: User) {
 
         this.store$.dispatch(loadUserId({payload: record.id, user: record}));
-        this.store$.dispatch(Go({payload: null, redirectUrl: '', link: 'dashboard/companies/branches/users'}));
+        this.store$.dispatch(Go({payload: null, redirectUrl: '', link: 'companies/branches/users'}));
 
     }
 

@@ -7,7 +7,7 @@
                         <div class="card-icon">
                             <i class="material-icons">assignment</i>
                         </div>
-                        <h4 class="card-title">Organizations: All My Branches</h4>
+                        <h4 class="card-title">Organizations: All My Users</h4>
                     </div>
                     <div class="card-body">
                         <div class="toolbar">
@@ -26,14 +26,7 @@
                                         <th class="disabled-sorting text-right">Actions</th>
                                     </tr>
                                     </thead>
-                                    <tfoot>
-                                    <tr>
-                                        <th>ID#</th>
-                                        <th>Names</th>
-                                        <th>Username</th>
-                                        <th class="disabled-sorting text-right">Actions</th>
-                                    </tr>
-                                    </tfoot>
+
                                     <tbody>
                                     <tr *ngFor="let theRecord of users$ | async">
                                         <td>{{ theRecord.id }}</td>
@@ -42,8 +35,8 @@
 
                                         <td class="text-right">
                                             <a (click)="editRecord(theRecord)"
-                                               class="btn btn-link btn-info btn-just-icon view"><i
-                                                    class="material-icons">remove_red_eye</i></a>
+                                               class="btn btn-link btn-info"><i
+                                                    class="material-icons">remove_red_eye</i>View Details</a>
                                         </td>
 
                                     </tr>

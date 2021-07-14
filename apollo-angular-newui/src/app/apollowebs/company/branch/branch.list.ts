@@ -1,15 +1,19 @@
-import { Component, OnInit } from '@angular/core';
-import { FormGroup } from '@angular/forms';
-import { Observable } from 'rxjs';
+import {Component, OnInit} from '@angular/core';
+import {FormGroup} from '@angular/forms';
+import {Observable} from 'rxjs';
 import {
   Back,
   Branches,
   BranchesService,
-  Company, Go, loadBranchId, loadCompanyId,
+  Company,
+  Go,
+  loadBranchId,
+  loadCompanyId,
   selectCompanyData,
   selectCompanyIdData
 } from 'src/app/core/store';
 import {Store} from '@ngrx/store';
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-branch',
@@ -32,6 +36,7 @@ export class BranchList implements OnInit {
   constructor(
       private service: BranchesService,
       private store$: Store<any>,
+      private router: Router
   ) {
     this.branches$ = service.entities$;
     service.getAll().subscribe();
@@ -51,7 +56,7 @@ export class BranchList implements OnInit {
   editRecord(record: Branches) {
 
     this.store$.dispatch(loadBranchId({payload: record.id, branch: record}));
-    this.store$.dispatch(Go({payload: null, redirectUrl: '', link: 'dashboard/companies/branch'}));
+    this.store$.dispatch(Go({payload: null, redirectUrl: '', link: 'companies/branch'}));
 
   }
 
@@ -66,8 +71,14 @@ export class BranchList implements OnInit {
   onClickUsers(record: Branches) {
     this.store$.dispatch(loadCompanyId({payload: record.companyProfileId, company: this?.company$}));
     this.store$.dispatch(loadBranchId({payload: record.id, branch: record}));
-    this.store$.dispatch(Go({payload: null, redirectUrl: '', link: 'dashboard/companies/branches/users'}));
+    this.store$.dispatch(Go({payload: null, redirectUrl: '', link: 'companies/branches/users'}));
 
+  }
+
+  addBranches() {
+    // this.store$.dispatch(Go({payload: null, redirectUrl: '', link: 'dashboard/companies/branch'}));
+
+    this.router.navigate(['branches/add_branch']);
   }
 
   public goBack(): void {

@@ -1,42 +1,45 @@
 import {Component, OnInit} from '@angular/core';
-import {Observable, of, Subject, throwError} from 'rxjs';
+
+
 import {
   Branches,
-  BranchesService, Company, County,
+  BranchesService,
+  Company,
+  County,
   CountyService,
   Go,
   loadBranchId,
   loadCompanyId,
   loadCountyId,
-  loadResponsesFailure, loadResponsesSuccess,
+  loadResponsesFailure,
+  loadResponsesSuccess,
   Region,
-  RegionService, selectCompanyData,
+  RegionService,
+  selectCompanyData,
   selectCompanyIdData,
   selectCountyIdData,
   Town,
   TownService
-} from '../../../../core/store';
-import {Store} from '@ngrx/store';
+} from 'src/app/core/store';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
-import {Location} from '@angular/common';
-import {faArrowLeft} from '@fortawesome/free-solid-svg-icons';
-import {faPlus} from '@fortawesome/free-solid-svg-icons';
-import {catchError, map} from 'rxjs/operators';
-import {HttpErrorResponse} from '@angular/common/http';
+import {Store} from '@ngrx/store';
+import {Observable, of, Subject, throwError} from "rxjs";
+import {catchError} from "rxjs/internal/operators/catchError";
+import {HttpErrorResponse} from "@angular/common/http";
+import swal from "sweetalert2";
 
 @Component({
-  selector: 'app-branches',
-  templateUrl: './branches.list.html',
-  styles: []
+  selector: 'app-add-branch',
+  templateUrl: './add-branch.component.html',
+  styleUrls: ['../../company.component.css']
 })
-export class BranchesList implements OnInit {
+export class AddBranchComponent implements OnInit {
+
+
   branches$: Observable<Branches[]>;
   filterName = '';
   p = 1;
-  step = 0;
-
-  backIcon = faArrowLeft;
-  addIcon = faPlus;
+  step = 1;
 
   stepTwoForm!: FormGroup;
   stepThreeForm!: FormGroup;
@@ -48,28 +51,21 @@ export class BranchesList implements OnInit {
   region$: Observable<Region[]>;
   county$: Observable<County[]>;
   town$: Observable<Town[]>;
-  selectedRegion: number = 0;
-  selectedCounty: number = 0;
-  selectedTown: number = 0;
-  selectedCompany: number = -1;
+  selectedRegion = 0;
+  selectedCounty = 0;
+  selectedTown = 0;
+  selectedCompany = -1;
   submitted = false;
 
   dtTrigger: Subject<any> = new Subject<any>();
-  dtOptions: DataTables.Settings = {
-    pagingType: 'full_numbers',
-    pageLength: 5,
-    paging: true,
-    processing: true
-  };
 
   constructor(
-    private service: BranchesService,
-    private regionService: RegionService,
-    private countyService: CountyService,
-    private townService: TownService,
-    private formBuilder: FormBuilder,
-    private store$: Store<any>,
-    public location: Location
+      private service: BranchesService,
+      private regionService: RegionService,
+      private countyService: CountyService,
+      private townService: TownService,
+      private formBuilder: FormBuilder,
+      private store$: Store<any>,
   ) {
     this.branches$ = service.entities$;
     service.getAll().subscribe();
@@ -93,14 +89,14 @@ export class BranchesList implements OnInit {
     // console.log(`county set to ${this.selectedCounty}`)
     this.store$.dispatch(loadCountyId({payload: this.selectedCounty}));
     this.store$.select(selectCountyIdData).subscribe(
-      (d) => {
-        if (d) {
-          // console.log(`Select county inside is ${d}`);
-          return this.townService.getAll();
-        } else {
-          return throwError('Invalid request, Company id is required');
+        (d) => {
+          if (d) {
+            // console.log(`Select county inside is ${d}`);
+            return this.townService.getAll();
+          } else {
+            return throwError('Invalid request, Company id is required');
+          }
         }
-      }
     );
   }
 
@@ -141,6 +137,7 @@ export class BranchesList implements OnInit {
     this.store$.select(selectCompanyData).subscribe((d) => {
       return this.company$ = d;
     });
+
 
   }
 
@@ -187,61 +184,91 @@ export class BranchesList implements OnInit {
     if (valid) {
       this.branchSoFar = {...this.branchSoFar, ...this.stepThreeForm.value};
       this.branch = {...this.branch, ...this.branchSoFar};
-      this.branch.companyProfileId = this.selectedCompany
+      this.branch.companyProfileId = this.selectedCompany;
       // if (this.stepTwoForm?.get('id')?.value === null || this.stepTwoForm?.get('id')?.value === undefined) {
-      if (this.branch.id === null || this.branch.id === undefined) {
+      if (this.branch.id === null) {
         this.branch.companyProfileId = this.selectedCompany;
-        this.service.add(this.branch).pipe(
-          map((a) => {
-            this.stepTwoForm.markAsPristine();
-            this.stepTwoForm.reset();
-            this.stepThreeForm.markAsPristine();
-            this.stepThreeForm.reset();
-            this.step = 0;
-            return of(loadResponsesSuccess({
-              message: {
-                response: '00',
-                payload: `Successfully saved ${a.buildingName}`,
-                status: 200
-              }
-            }));
-          }),
-          catchError(
-            (err: HttpErrorResponse) => {
-              return of(loadResponsesFailure({
-                error: {
-                  payload: err.error,
-                  status: err.status,
-                  response: (err.error instanceof ErrorEvent) ? `Error: ${err.error.message}` : `Error Code: ${err.status},  Message: ${err.error}`
+        this.service.add(this.branch).subscribe(
+            (a) => {
+              this.stepTwoForm.markAsPristine();
+              this.stepTwoForm.reset();
+              this.stepThreeForm.markAsPristine();
+              this.stepThreeForm.reset();
+              this.step = 0;
+              return of(loadResponsesSuccess({
+                message: {
+                  response: '00',
+                  payload: `Successfully saved ${a.buildingName}`,
+                  status: 200
                 }
               }));
-            }));
+            },
+            catchError(
+                (err: HttpErrorResponse) => {
+                  return of(loadResponsesFailure({
+                    error: {
+                      payload: err.error,
+                      status: err.status,
+                      response: (err.error instanceof ErrorEvent) ? `Error: ${err.error.message}` : `Error Code: ${err.status},  Message: ${err.error}`
+                    }
+                  }));
+                }));
+      } else if (this.branch.id === undefined) {
+        this.branch.companyProfileId = this.selectedCompany;
+        this.service.add(this.branch).subscribe(
+            (a) => {
+              this.store$.dispatch(loadResponsesSuccess({
+                message: {
+                  response: '00',
+                  payload: `Successfully saved ${a.buildingName}`,
+                  status: 200
+                }
+              }));
+              return this.store$.dispatch(Go({
+                payload: null,
+                link: 'company/companies/branches',
+                redirectUrl: 'company/companies/branches'
+              }));
+            },
+            catchError(
+                (err: HttpErrorResponse) => {
+                  return of(loadResponsesFailure({
+                    error: {
+                      payload: err.error,
+                      status: err.status,
+                      response: (err.error instanceof ErrorEvent) ? `Error: ${err.error.message}` : `Error Code: ${err.status},  Message: ${err.error}`
+                    }
+                  }));
+                }));
       } else {
-        this.service.update(this.branch).pipe(
-          map((a) => {
-            this.stepTwoForm.markAsPristine();
-            this.stepTwoForm.reset();
-            this.stepThreeForm.markAsPristine();
-            this.stepThreeForm.reset();
-            this.step = 0;
-            return of(loadResponsesSuccess({
-              message: {
-                response: '00',
-                payload: `Successfully saved ${a.buildingName}`,
-                status: 200
-              }
-            }));
-          }),
-          catchError(
-            (err: HttpErrorResponse) => {
-              return of(loadResponsesFailure({
-                error: {
-                  payload: err.error,
-                  status: err.status,
-                  response: (err.error instanceof ErrorEvent) ? `Error: ${err.error.message}` : `Error Code: ${err.status},  Message: ${err.error}`
+        this.service.update(this.branch).subscribe(
+            (a) => {
+              this.store$.dispatch(loadResponsesSuccess({
+                message: {
+                  response: '00',
+                  payload: `Successfully saved ${a.buildingName}`,
+                  status: 200
                 }
               }));
-            }));
+              swal.fire('Thank you...', 'New Branch Successfully Added', 'success').then(r =>
+                  this.store$.dispatch(Go({
+                    payload: null,
+                    link: 'company/companies/branches',
+                    redirectUrl: 'company/companies/branches'
+                  }))
+              )
+              ;
+            },
+            catchError(
+                (err: HttpErrorResponse) => {
+                  return of(loadResponsesFailure({
+                    error: {
+                      payload: err.error,
+                      status: err.status,
+                      response: (err.error instanceof ErrorEvent) ? `Error: ${err.error.message}` : `Error Code: ${err.status},  Message: ${err.error}`
+                    }
+                  }));
+                }));
       }
 
 
@@ -257,24 +284,30 @@ export class BranchesList implements OnInit {
     }
   }
 
-  ngOnDestroy(): void {
-    // Do not forget to unsubscribe the event
-    this.dtTrigger.unsubscribe();
-  }
 
   onClickUsers(record: Branches) {
     this.store$.dispatch(loadCompanyId({payload: record.companyProfileId, company: this?.company$}));
 
     this.store$.dispatch(loadBranchId({payload: record.id, branch: record}));
-    this.store$.dispatch(Go({payload: null, redirectUrl: '', link: 'company/branches/users'}));
+    this.store$.dispatch(Go({payload: null, redirectUrl: '', link: 'dashboard/branches/users'}));
 
   }
 
   public goBack(): void {
-    this.location.back();
+    // this.store$.dispatch(Back());
   }
 
   onClickAddBranch() {
     this.step = 1;
   }
+
+  showsuccess() {
+    swal.fire('Thank you...', 'New Branch Successfully Added', 'success')
+  }
+
 }
+
+
+
+
+

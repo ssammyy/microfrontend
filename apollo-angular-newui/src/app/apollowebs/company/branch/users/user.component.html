@@ -7,7 +7,7 @@
                         <div class="card-icon">
                             <i class="material-icons">assignment</i>
                         </div>
-                        <h4 class="card-title">Review Plant/Branch User Details</h4>
+                        <h4 class="card-title">View/Edit User Details</h4>
                     </div>
                     <div class="card-body">
                         <div class="toolbar">
@@ -20,10 +20,7 @@
                                         <div class="form-wizard">
 
                                             <div class="form-wizard-header">
-                                                <p>Fill all the fields to go next step</p>
-                                                <ul class="list-unstyled form-wizard-steps clearfix">
-                                                    <li [ngClass]="step >= 0? 'active': ''"><span>1</span></li>
-                                                </ul>
+
                                             </div>
                                             <div [ngSwitch]="step">
 
@@ -50,7 +47,7 @@
                                                                                formControlName="firstName"
                                                                                id="firstName"
                                                                                name="firstName"
-                                                                               placeholder="" required="required"
+                                                                               placeholder="" readonly required="required"
                                                                                type="text">
                                                                     </div>
                                                                     <div class="col">
@@ -62,7 +59,7 @@
                                                                         <input class="form-control two-column-input"
                                                                                formControlName="lastName" id="lastName"
                                                                                name="lastName"
-                                                                               placeholder="" required="required"
+                                                                               placeholder="" readonly required="required"
                                                                                type="text">
                                                                     </div>
                                                                 </div>
@@ -78,7 +75,7 @@
                                                                         <input class="form-control two-column-input"
                                                                                formControlName="userName" id="userName"
                                                                                name="userName"
-                                                                               placeholder="" required="required"
+                                                                               placeholder="" readonly required="required"
                                                                                type="text">
                                                                     </div>
                                                                     <div class="col">
@@ -119,7 +116,7 @@
                                                                                formControlName="confirmCredentials"
                                                                                id="confirmCredentials"
                                                                                name="confirmCredentials"
-                                                                               placeholder="password confirmation"
+                                                                               placeholder="Password Confirmation"
                                                                                required="required" type="password">
                                                                     </div>
                                                                 </div>
