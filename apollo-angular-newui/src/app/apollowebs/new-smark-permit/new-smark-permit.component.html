@@ -349,6 +349,7 @@ Standard number" >
 (if applicable)." >
         </div>
         <div class="form-group col-6">
+            <label style="visibility: hidden">Available (YES/NO)</label>
           <span class="input-group-btn">
 <button (click)="onClickAddProductsManufacture()"
         type="button" class="btn btn-success btn-sm">
@@ -409,26 +410,31 @@ class="form-wizard-next-btn float-right"
 
                 <div class="row">
                     <div class="col-6">
+                        <label for="name">Raw material.</label>
                         <input type="text" [class.is-invalid]="formSta10FormC.name.invalid && formSta10FormC.name.touched" type="text"   formControlName="name"
-                               name="name" class="form-control" placeholder="Raw material  " >
+                               name="name" id="name" class="form-control" placeholder="Raw material  " >
                     </div>
                     <div class="col-6">
+                        <label for="origin">Origin.</label>
                         <input type="text" [class.is-invalid]="formSta10FormC.origin.invalid && formSta10FormC.origin.touched" type="text"   formControlName="origin"
-                               name="origin" class="form-control"  placeholder="Origin " >
+                               name="origin" id="origin" class="form-control"  placeholder="Origin " >
                     </div>
                 </div>
 
                         <div class="row">
                             <div class="col-5">
+                                <label for="specifications">Specifications.</label>
                                 <input type="text" [class.is-invalid]="formSta10FormC.specifications.invalid && formSta10FormC.specifications.touched" type="text"   formControlName="specifications"
-                                       name="specifications" class="form-control"  placeholder="Specifications" >
+                                       name="specifications" id="specifications" class="form-control"  placeholder="Specifications" >
                             </div>
                             <div class="col-5">
+                                <label for="qualityChecksTestingRecords">Quality checks/testing.</label>
                                 <input type="text" [class.is-invalid]="formSta10FormC.qualityChecksTestingRecords.invalid && formSta10FormC.qualityChecksTestingRecords.touched" type="text"   formControlName="qualityChecksTestingRecords"
-                                       name="qualityChecksTestingRecords" class="form-control"  placeholder="Quality checks/testing
+                                       name="qualityChecksTestingRecords" id="qualityChecksTestingRecords" class="form-control"  placeholder="Quality checks/testing
 records" >
                             </div>
                             <div class=" col-2">
+                                <label style="visibility: hidden">Origin.</label>
                                 <span class="input-group-btn">
 <button (click)="onClickAddRawMaterials()"
         type="button" class="btn btn-success btn-sm">
@@ -482,12 +488,14 @@ records" >
                 <h4><b>Machinery and Plant</b></h4>
                 <div class="row">
                     <div class="col-6">
+                        <label for="machineName">Machine</label>
                         <input type="text" [class.is-invalid]="formSta10FormD.machineName.invalid && formSta10FormD.machineName.touched" type="text"  formControlName="machineName"
-                               name="machineName" class="form-control"  placeholder="Machine  " >
+                               name="machineName" id="machineName" class="form-control"  placeholder="Machine  " >
                     </div>
                     <div class="col-6">
+                        <label for="typeModel">ype/Model.</label>
                         <input type="text" [class.is-invalid]="formSta10FormD.typeModel.invalid && formSta10FormD.typeModel.touched" type="text"   formControlName="typeModel"
-                               name="typeModel" class="form-control"  placeholder="Type/Model " >
+                               name="typeModel" id="typeModel" class="form-control"  placeholder="Type/Model " >
                     </div>
                     <div>
                         <div class="row">
@@ -500,6 +508,7 @@ records" >
                                 </select>
                             </div>
                             <div class="col-2">
+                                <label style="visibility: hidden">Origin.</label>
                                <span class="input-group-btn">
 <button (click)="onClickAddMachineryAndPlant()"
         type="button" class="btn btn-success btn-sm">
@@ -556,40 +565,51 @@ records" >
                 <h5><b> Manufacturing process  </b></h5>
                 <div class="row">
                     <div class="col-6">
+                        <label for="processFlowOfProduction">Process Flow of Production.</label>
                         <input type="text" [class.is-invalid]="formSta10FormE.processFlowOfProduction.invalid && formSta10FormE.processFlowOfProduction.touched" type="text"   formControlName="processFlowOfProduction"
-                               name="processFlowOfProduction" class="form-control"  placeholder="Process Flow of
+                               name="processFlowOfProduction" id="processFlowOfProduction" class="form-control"  placeholder="Process Flow of
 Production
 " >
                     </div>
                     <div class="col-6">
+                        <label for="operations">Operations</label>
                         <input type="text" [class.is-invalid]="formSta10FormE.operations.invalid && formSta10FormE.operations.touched" type="text"   formControlName="operations"
-                               name="operations" class="form-control"  placeholder="Operations  " >
+                               name="operations" id="operations" class="form-control"  placeholder="Operations  " >
                     </div>
                     <div>
                         <div class="row">
-                            <div class="col-3">
+                            <div class="col-6">
+                                <label for="criticalProcessParametersMonitored">Critical Process parameters Monitored.</label>
                                 <input type="text" [class.is-invalid]="formSta10FormE.criticalProcessParametersMonitored.invalid && formSta10FormE.criticalProcessParametersMonitored.touched" type="text"   formControlName="criticalProcessParametersMonitored"
-                                       name="criticalProcessParametersMonitored" class="form-control"  placeholder="Critical Process
+                                       name="criticalProcessParametersMonitored" id="criticalProcessParametersMonitored" class="form-control"  placeholder="Critical Process
 parameters Monitored" >
                             </div>
-                            <div class="col-3">
+                            <div class="col-6">
+                                <label for="processMonitoringRecords">Process Monitoring Reports.</label>
                                 <input type="text" [class.is-invalid]="formSta10FormE.processMonitoringRecords.invalid && formSta10FormE.processMonitoringRecords.touched" type="text"   formControlName="processMonitoringRecords"
-                                       name="processMonitoringRecords" class="form-control"  placeholder="Process Monitoring Reports" >
+                                      id="processMonitoringRecords" name="processMonitoringRecords" class="form-control"  placeholder="Process Monitoring Reports" >
                             </div>
-                            <div class="col-5">
+                        </div>
+                        <div class="row">
+                            <div class="col-6">
+                                <label for="qualityChecksTestingRecords">Quality checks/testing.</label>
                                 <input type="text" [class.is-invalid]="formSta10FormE.frequency.invalid && formSta10FormE.frequency.touched" type="text"   formControlName="frequency"
                                        name="frequency" class="form-control"  placeholder="Frequency" >
                             </div>
-
-                        </div>
-
-
-                        <span class="input-group-btn">
+                            <div class="col-5">
+                                <label for="" style="visibility: hidden">Quality checks/testing.</label>
+                                   <span class="input-group-btn">
 <button (click)="onClickAddManufacturingProcess()"
         type="button" class="btn btn-success btn-sm">
 <span class="" aria-hidden="true">ADD</span>
 </button>
 </span>
+                            </div>
+
+                        </div>
+
+
+
 
                         <br><br>
                     </div>
