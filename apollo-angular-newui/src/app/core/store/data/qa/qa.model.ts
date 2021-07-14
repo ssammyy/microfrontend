@@ -39,6 +39,7 @@ export class ConsolidatedInvoiceDto {
 }
 
 export class STA1 {
+    id: bigint;
     commodityDescription: string;
     tradeMark: string;
     applicantName: string;
@@ -101,6 +102,7 @@ export class PermitEntityDetails {
 
 
 export class STA3 {
+    id: bigint;
     produceOrdersOrStock: string;
     issueWorkOrderOrEquivalent: string;
     identifyBatchAsSeparate: string;
@@ -200,6 +202,7 @@ export class AllBatchInvoiceDetailsDto {
 }
 
 export class Sta10Dto {
+    id: bigint;
     firmName: string;
     statusCompanyBusinessRegistration: string;
     ownerNameProprietorDirector: string;
@@ -229,5 +232,45 @@ export class Sta10Dto {
     handlingConsumerComplaints: string;
     companyRepresentative: string;
     applicationDate: string;
+}
+
+export class STA10ProductsManufactureDto {
+    id: bigint;
+    productName: string;
+    productBrand: string;
+    productStandardNumber: string;
+    available: boolean;
+    permitNo: string;
+}
+
+export class STA10RawMaterialsDto {
+    id: bigint;
+    name: string;
+    origin: string;
+    specifications: string;
+    qualityChecksTestingRecords: string;
+}
+
+export class STA10PersonnelDto {
+    id: bigint;
+    personnelName: string;
+    qualificationInstitution: string;
+    dateOfEmployment: Date;
+}
+
+export class STA10MachineryAndPlantDto {
+    id: bigint;
+    machineName: string;
+    typeModel: string;
+    countryOfOrigin: string;
+}
+
+export class STA10ManufacturingProcessDto {
+    id: bigint;
+    processFlowOfProduction: string;
+    operations: string;
+    criticalProcessParametersMonitored: string;
+    frequency: string;
+    processMonitoringRecords: string;
 }
 

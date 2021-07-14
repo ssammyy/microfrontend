@@ -1422,12 +1422,12 @@ class QualityAssuranceController(
             qaDaoServices.sta10Update(qaSta10, map, loggedInUser)
         } else {
             qaSta10.id?.let {
-                qaDaoServices.sta10ManufactureProductNewSave(
-                    it,
-                    QaProductManufacturedEntity,
-                    loggedInUser,
-                    map
-                )
+//                qaDaoServices.sta10ManufactureProductNewSave(
+//                    it,
+//                    QaProductManufacturedEntity,
+//                    loggedInUser,
+//                    map
+//                )
             }
         }
 
@@ -1441,7 +1441,7 @@ class QualityAssuranceController(
     fun saveNewSta10RawMaterials(
         @RequestParam("closeStatus") closeStatus: Int?,
         @RequestParam("qaSta10ID") qaSta10ID: Long,
-        @ModelAttribute("QaRawMaterialEntity") QaRawMaterialEntity: QaRawMaterialEntity,
+        @ModelAttribute("QaRawMaterialEntity") QaRawMaterialEntity: List<QaRawMaterialEntity>,
         model: Model,
         result: BindingResult
     ): String? {
@@ -1475,7 +1475,7 @@ class QualityAssuranceController(
             qaSta10.closedMachineryPlants = map.activeStatus
             qaDaoServices.sta10Update(qaSta10, map, loggedInUser)
         } else {
-            qaSta10.id?.let { qaDaoServices.sta10MachinePlantNewSave(it, QaMachineryEntity, loggedInUser, map) }
+//            qaSta10.id?.let { qaDaoServices.sta10MachinePlantNewSave(it, QaMachineryEntity, loggedInUser, map) }
         }
         return "${qaDaoServices.sta10Details}=${qaSta10.permitId}"
     }
@@ -1486,7 +1486,7 @@ class QualityAssuranceController(
     fun saveNewSta10MachinePlant(
         @RequestParam("closeStatus") closeStatus: Int?,
         @RequestParam("qaSta10ID") qaSta10ID: Long,
-        @ModelAttribute("QaManufacturingProcessEntity") QaManufacturingProcessEntity: QaManufacturingProcessEntity,
+        @ModelAttribute("QaManufacturingProcessEntity") QaManufacturingProcessEntity: List<QaManufacturingProcessEntity>,
         model: Model,
         result: BindingResult
     ): String? {

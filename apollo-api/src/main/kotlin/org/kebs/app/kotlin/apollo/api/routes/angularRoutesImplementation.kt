@@ -297,15 +297,23 @@ class AngularRoutes {
                     PUT("/sta3-update", handler::permitUpdateSTA3Migration)
                     "/sta10".nest {
                         POST("/firm_details", handler::permitApplySTA10FirmDetailsMigration)
-                        PUT("/firm_details-update", handler::permitApplySTA10FirmDetailsMigration)
+                        PUT("/firm_details_update", handler::permitUpdateSTA10FirmDetailsMigration)
                         POST("/personnel_details", handler::permitApplySTA10PersonnelMigration)
+                        PUT("/personnel_details_update", handler::permitApplySTA10PersonnelMigration)
                         POST(
                             "/products_being_manufactured",
                             handler::permitApplySTA10ProductsBeingManufacturedMigration
                         )
+                        PUT(
+                            "/products_being_manufactured_update",
+                            handler::permitApplySTA10ProductsBeingManufacturedMigration
+                        )
                         POST("/raw_material", handler::permitApplySTA10RawMaterialsMigration)
+                        PUT("/raw_material_update", handler::permitApplySTA10RawMaterialsMigration)
                         POST("/machinery_plant", handler::permitApplySTA10MachineryAndPlantMigration)
+                        PUT("/machinery_plant_update", handler::permitApplySTA10MachineryAndPlantMigration)
                         POST("/manufacturing_process", handler::permitApplySTA10ManufacturingProcessMigration)
+                        PUT("/manufacturing_process_update", handler::permitApplySTA10ManufacturingProcessMigration)
                     }
                     "/invoice".nest {
                         POST("/batch-invoice-submit", handler::invoiceBatchSubmitMigration)
