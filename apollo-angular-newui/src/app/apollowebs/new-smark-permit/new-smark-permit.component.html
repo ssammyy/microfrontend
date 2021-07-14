@@ -36,7 +36,7 @@ standardization mark on the commodity specified here under:
 <div class="form-group col-6">
 <label for="commodityDescription">Commodity Description</label>
 <input [class.is-invalid]="formSta1Form.commodityDescription.invalid && formSta1Form.commodityDescription.touched" type="text" class="form-control" id="commodityDescription" formControlName="commodityDescription"
-name="commodityDescription" placeholder="Commodity Description" required="">
+name="commodityDescription" placeholder="Commodity Description" required="" matTooltip="Please enter the commodity description! (Required)" [matTooltipPosition]="'above'">
 
 </div>
 <!--    <div class="form-group row">-->
