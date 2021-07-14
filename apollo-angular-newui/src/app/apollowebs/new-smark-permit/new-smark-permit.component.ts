@@ -51,7 +51,8 @@ export class NewSmarkPermitComponent implements OnInit {
           sectionId: ['', Validators.required],
           permitForeignStatus: [],
           attachedPlant: ['', Validators.required],
-          tradeMark: ['', Validators.required]
+          tradeMark: ['', Validators.required],
+            //inputCountryCode: ['', Validators.required,Validators.pattern("[0-9 ]{11}")]
 
         });
       this.sta10Form = this.formBuilder.group({
