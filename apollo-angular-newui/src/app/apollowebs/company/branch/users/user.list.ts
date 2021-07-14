@@ -54,7 +54,7 @@ export class UserList implements OnInit {
 
     editRecord(record: User) {
         this.store$.dispatch(loadUserId({payload: record.id, user: record}));
-        this.store$.dispatch(Go({payload: null, redirectUrl: '', link: 'dashboard/companies/branches/user'}));
+        this.store$.dispatch(Go({payload: null, redirectUrl: '', link: 'companies/branches/user'}));
 
     }
 

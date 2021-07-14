@@ -4,7 +4,8 @@ import {Observable, of, Subject, throwError} from 'rxjs';
 import {catchError} from 'rxjs/internal/operators/catchError';
 import {
     Branches,
-    BranchesService, Company,
+    BranchesService,
+    Company,
     County,
     CountyService,
     Go,
@@ -14,14 +15,17 @@ import {
     loadResponsesFailure,
     loadResponsesSuccess,
     Region,
-    RegionService, selectBranchData,
+    RegionService,
+    selectBranchData,
     selectCompanyData,
     selectCompanyIdData,
-    selectCountyIdData, Town,
+    selectCountyIdData,
+    Town,
     TownService
 } from 'src/app/core/store';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {Store} from '@ngrx/store';
+import swal from "sweetalert2";
 
 @Component({
     selector: 'app-branch',
@@ -225,8 +229,8 @@ export class BranchComponent implements OnInit {
                         }));
                         return this.store$.dispatch(Go({
                             payload: null,
-                            link: 'dashboard/companies/branches',
-                            redirectUrl: 'dashboard/companies/branches'
+                            link: 'company/companies/branches',
+                            redirectUrl: 'company/companies/branches'
                         }));
                     },
                     catchError(
@@ -251,8 +255,8 @@ export class BranchComponent implements OnInit {
                         }));
                         return this.store$.dispatch(Go({
                             payload: null,
-                            link: 'dashboard/companies/branches',
-                            redirectUrl: 'dashboard/companies/branches'
+                            link: 'company/companies/branches',
+                            redirectUrl: 'company/companies/branches'
                         }));
                     },
                     catchError(
@@ -285,7 +289,7 @@ export class BranchComponent implements OnInit {
         this.store$.dispatch(loadCompanyId({payload: record.companyProfileId, company: this?.company$}));
 
         this.store$.dispatch(loadBranchId({payload: record.id, branch: record}));
-        this.store$.dispatch(Go({payload: null, redirectUrl: '', link: 'dashboard/branches/users'}));
+        this.store$.dispatch(Go({payload: null, redirectUrl: '', link: 'company/branches/users'}));
 
     }
 

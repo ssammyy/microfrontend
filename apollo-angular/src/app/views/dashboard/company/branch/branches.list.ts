@@ -266,7 +266,7 @@ export class BranchesList implements OnInit {
     this.store$.dispatch(loadCompanyId({payload: record.companyProfileId, company: this?.company$}));
 
     this.store$.dispatch(loadBranchId({payload: record.id, branch: record}));
-    this.store$.dispatch(Go({payload: null, redirectUrl: '', link: 'dashboard/branches/users'}));
+    this.store$.dispatch(Go({payload: null, redirectUrl: '', link: 'company/branches/users'}));
 
   }
 

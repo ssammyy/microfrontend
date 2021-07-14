@@ -11,7 +11,8 @@ import {
   Go,
   loadCompanyId,
   loadCountyId,
-  loadResponsesFailure, loadResponsesSuccess,
+  loadResponsesFailure,
+  loadResponsesSuccess,
   Region,
   RegionService,
   selectCountyIdData,
@@ -229,12 +230,12 @@ export class CompaniesList implements OnInit {
 
   onClickPlantDetails(record: Company) {
     this.store$.dispatch(loadCompanyId({payload: record.id, company: record}));
-    this.store$.dispatch(Go({payload: null, redirectUrl: '', link: 'dashboard/branches'}));
+    this.store$.dispatch(Go({payload: null, redirectUrl: '', link: 'company/branches'}));
   }
 
   onClickDirectors(record: Company) {
     this.store$.dispatch(loadCompanyId({payload: record.id, company: record}));
-    this.store$.dispatch(Go({payload: null, redirectUrl: '', link: 'dashboard/directors'}));
+    this.store$.dispatch(Go({payload: null, redirectUrl: '', link: 'company/directors'}));
   }
 
 

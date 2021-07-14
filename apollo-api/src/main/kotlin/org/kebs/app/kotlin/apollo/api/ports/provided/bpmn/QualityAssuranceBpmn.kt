@@ -437,9 +437,9 @@ class QualityAssuranceBpmn(
         val taskList: MutableList<TaskDetails> = mutableListOf()
         for (task in tasks) {
             try{
-                taskList.add(TaskDetails(task.processVariables["permitId"].toString().toLong(), 0,task))
+                taskList.add(TaskDetails(task.processVariables["permitId"].toString().toLong(), 0,task,task.processVariables["permitRefNo"].toString()))
             } catch (e:Exception){
-                taskList.add(TaskDetails(0,task.processVariables["objectId"].toString().toLong(), task))
+                taskList.add(TaskDetails(0,task.processVariables["objectId"].toString().toLong(), task,""))
             }
         }
         return taskList
@@ -460,6 +460,7 @@ class QualityAssuranceBpmn(
             checkStartProcessInputs(permitId, assigneeId, false, qaAppReviewProcessDefinitionKey)?.let { checkVariables ->
                 val permit: PermitApplicationsEntity = checkVariables["permit"] as PermitApplicationsEntity
                 variables["permitId"] = permit.id.toString()
+                variables["permitRefNo"] = permit.permitRefNumber.toString()
                 variables["applicationComplete"] = 0
                 variables["email"] = checkVariables["assigneeEmail"].toString()
                 variables["manufacturerEmail"] = checkVariables["manufacturerEmail"].toString()
@@ -548,6 +549,7 @@ class QualityAssuranceBpmn(
             checkStartProcessInputs(permitId, assigneeId, false, qaSfMarkInspectionProcessDefinitionKey)?.let { checkVariables ->
                 val permit: PermitApplicationsEntity = checkVariables["permit"] as PermitApplicationsEntity
                 variables["permitId"] = permit.id.toString()
+                variables["permitRefNo"] = permit.permitRefNumber.toString()
                 variables["applicationComplete"] = 0
                 variables["email"] = checkVariables["assigneeEmail"].toString()
                 variables["manufacturerEmail"] = checkVariables["manufacturerEmail"].toString()
@@ -730,6 +732,7 @@ class QualityAssuranceBpmn(
             checkStartProcessInputs(permitId, assigneeId, false, qaDmApplicationReviewProcessDefinitionKey)?.let { checkVariables ->
                 val permit: PermitApplicationsEntity = checkVariables["permit"] as PermitApplicationsEntity
                 variables["permitId"] = permit.id.toString()
+                variables["permitRefNo"] = permit.permitRefNumber.toString()
                 variables["email"] = checkVariables["assigneeEmail"].toString()
                 variables["manufacturerEmail"] = checkVariables["manufacturerEmail"].toString()
                 variables["applicationComplete"] = 0
@@ -1006,6 +1009,7 @@ class QualityAssuranceBpmn(
             checkStartProcessInputs(permitId, assigneeId, true, qaSfApplicationPaymentProcessDefinitionKey)?.let { checkVariables ->
                 val permit: PermitApplicationsEntity = checkVariables["permit"] as PermitApplicationsEntity
                 variables["permitId"] = permit.id.toString()
+                variables["permitRefNo"] = permit.permitRefNumber.toString()
                 variables["email"] = checkVariables["assigneeEmail"].toString()
                 variables["manufacturerEmail"] = checkVariables["manufacturerEmail"].toString()
                 variables["renewal"] = 0
@@ -1102,6 +1106,7 @@ class QualityAssuranceBpmn(
             checkStartProcessInputs(permitId, assigneeId, false, qaSfPermitAwardProcessDefinitionKey)?.let { checkVariables ->
                 val permit: PermitApplicationsEntity = checkVariables["permit"] as PermitApplicationsEntity
                 variables["permitId"] = permit.id.toString()
+                variables["permitRefNo"] = permit.permitRefNumber.toString()
                 variables["email"] = checkVariables["assigneeEmail"].toString()
                 variables["manufacturerEmail"] = checkVariables["manufacturerEmail"].toString()
                 variables["permitApproved"] = 0
@@ -1383,6 +1388,7 @@ class QualityAssuranceBpmn(
             checkStartProcessInputs(permitId, assigneeId, false, qaDmAssessmentProcessDefinitionKey)?.let { checkVariables ->
                 val permit: PermitApplicationsEntity = checkVariables["permit"] as PermitApplicationsEntity
                 variables["permitId"] = permit.id.toString()
+                variables["permitRefNo"] = permit.permitRefNumber.toString()
                 variables["email"] = checkVariables["assigneeEmail"].toString()
                 variables["manufacturerEmail"] = checkVariables["manufacturerEmail"].toString()
                 variables["assessorEmail"] = ""
@@ -1579,6 +1585,7 @@ class QualityAssuranceBpmn(
             checkStartProcessInputs(permitId, assigneeId, false, qaDmAppPaymentProcessDefinitionKey)?.let { checkVariables ->
                 val permit: PermitApplicationsEntity = checkVariables["permit"] as PermitApplicationsEntity
                 variables["permitId"] = permit.id.toString()
+                variables["permitRefNo"] = permit.permitRefNumber.toString()
                 variables["email"] = checkVariables["assigneeEmail"].toString()
                 variables["manufacturerEmail"] = checkVariables["manufacturerEmail"].toString()
                 variables["isRenewal"] = 0

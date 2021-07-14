@@ -16,6 +16,7 @@ import org.kebs.app.kotlin.apollo.store.model.qa.ManufacturePlantDetailsEntity
 import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileDirectorsEntity
 import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileEntity
 import org.kebs.app.kotlin.apollo.store.repo.*
+import org.kebs.app.kotlin.apollo.store.repo.qa.IPermitApplicationsRepository
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.security.core.context.SecurityContextHolder
@@ -32,6 +33,7 @@ import java.util.*
 class RegistrationManagementDaoService(
     private val applicationMapProperties: ApplicationMapProperties,
     private val companyRepo: ICompanyProfileRepository,
+    private val permitRepo: IPermitApplicationsRepository,
     private val userRolesRepo: IUserRoleAssignmentsRepository,
     private val brsLookupManufacturerDataRepo: IBrsLookupManufacturerDataRepository,
     private val brsLookupManufacturerPartnerRepo: IBrsLookupManufacturerPartnersRepository,
@@ -48,13 +50,27 @@ class RegistrationManagementDaoService(
     /**
      * Provide users company and branch
      */
-    fun provideCompanyDetailsForUser(): UserCompanyDetailsDto?{
+    fun provideCompanyDetailsForUser(): UserCompanyDetailsDto? {
         val user = commonDaoServices.loggedInUserDetails()
         val counter = manufacturePlantRepository.countByCompanyProfileId(
             user.companyId ?: throw NullValueNotAllowedException("User does not have a company flag")
         )
         val turnOver = companyRepo.findByIdOrNull(user.companyId)?.yearlyTurnover
-        return UserCompanyDetailsDto(user.companyId, user.plantId, counter, turnOver, user.id)
+        val countAwarded = permitRepo.countByCompanyIdAndPermitAwardStatus(
+            user.companyId ?: throw NullValueNotAllowedException("User does not have a company flag"), 1
+        )
+        val countExpired = permitRepo.countByCompanyIdAndPermitAwardStatusAndPermitExpiredStatus(
+            user.companyId ?: throw NullValueNotAllowedException("User does not have a company flag"), 1, 1
+        )
+        return UserCompanyDetailsDto(
+            user.companyId,
+            user.plantId,
+            counter,
+            turnOver,
+            user.id,
+            countAwarded,
+            countExpired
+        )
     }
     /**
      * CRUD For users, will start with managing the currently logged in user

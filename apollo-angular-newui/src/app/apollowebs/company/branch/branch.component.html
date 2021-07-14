@@ -21,14 +21,16 @@
 
                                             <div class="form-wizard-header">
                                                 <p>Fill all the fields to go next step</p>
-                                                <ul class="list-unstyled form-wizard-steps clearfix">
-                                                    <li [ngClass]="step >= 0? 'active': ''"><span>1</span></li>
-                                                    <li><span [ngClass]="step === 2? 'active': ''">2</span></li>
-                                                </ul>
+<!--                                                <ul class="list-unstyled form-wizard-steps clearfix">-->
+<!--                                                    <li [ngClass]="step >= 0? 'active': ''"><span>1</span></li>-->
+<!--                                                    <li><span [ngClass]="step === 2? 'active': ''">2</span></li>-->
+<!--                                                </ul>-->
                                             </div>
                                             <div [ngSwitch]="step">
 
                                                 <div *ngSwitchCase="1">
+                                                    <h2 style="text-align: center"><b>Step</b> <b> 1</b><b> of</b> <b> 2</b></h2>
+
                                                     <fieldset class="wizard-fieldset show">
                                                         <form (ngSubmit)="onClickNext(stepTwoForm.valid)" [formGroup]="stepTwoForm" action="" class="form"
                                                               enctype="multipart/form-data" method="post">
@@ -187,6 +189,8 @@
                                                     </fieldset>
                                                 </div>
                                                 <div *ngSwitchCase="2">
+                                                    <h2 style="text-align: center"><b>Step</b> <b> 2</b><b> of</b> <b> 2</b></h2>
+
                                                     <fieldset class="wizard-fieldset show">
                                                         <form (ngSubmit)="onClickSave(stepThreeForm.valid)" [formGroup]="stepThreeForm" action="" class="form"
                                                               enctype="multipart/form-data" method="post">

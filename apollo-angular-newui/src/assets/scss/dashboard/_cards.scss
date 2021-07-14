@@ -174,6 +174,16 @@
         float: left;
       }
 
+    .card-icon-right,
+    .card-text-right{
+      border-radius: $border-radius-base;
+      background-color: $gray-color;
+      padding: 15px;
+      margin-top: -20px;
+      margin-right: 15px;
+      float: right;
+    }
+
       .card-text{
         float: none;
         display: inline-block;
