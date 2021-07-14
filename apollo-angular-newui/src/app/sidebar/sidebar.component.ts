@@ -33,7 +33,7 @@ export const ROUTES: RouteInfo[] = [
     },
 
     {
-        path: '/dashboard',
+        path: '/company',
         title: 'My Companies',
         type: 'sub',
         icontype: 'book',

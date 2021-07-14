@@ -24,9 +24,11 @@ export class HandleErrorService {
     } else {
       // The backend returned an unsuccessful response code.
       // errorMessage = `Error Code: ${err.status},  Message: ${err.error}`;
-      errorMessage = `Message: ${err.error}`;
+      errorMessage = `Message: No Network Connection`;
+
+      console.log(`Message: ${err.error}`)
     }
-    this.toastrService.error(errorMessage);
+    this.toastrService.warning(errorMessage);
   }
 
   public handleMessaging(message: string, code: number) {
@@ -43,7 +45,7 @@ export class HandleErrorService {
         if (code === 200) {
           this.toastrService.info(message);
         } else {
-          this.toastrService.error(JSON.stringify(message));
+          this.toastrService.warning(JSON.stringify(message));
         }
 
       }

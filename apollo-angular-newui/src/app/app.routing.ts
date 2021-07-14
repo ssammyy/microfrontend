@@ -25,6 +25,7 @@ import {UserComponent} from './apollowebs/company/branch/users/user.component';
 import {UserList} from './apollowebs/company/branch/users/user.list';
 import {SmarkApplicationsAllComponent} from './apollowebs/smark-applications-all/smark-applications-all.component';
 import {UserProfileMainComponent} from './apollowebs/userprofilemain/user-profile-main.component';
+import {AddBranchComponent} from "./apollowebs/company/branch/add-branch/add-branch.component";
 
 // export const AppRoutes: Routes = [
 //     {
@@ -128,17 +129,51 @@ const routes: Routes = [
         ,
         children: [
             {path: '', component: DashboardComponent},
-            {path: 'companies', component: CompaniesList},
-            {path: 'company', component: CompanyComponent},
-            {path: 'companies/branches', component: BranchList},
-            {path: 'branches', component: BranchList},
-            {path: 'companies/branch', component: BranchComponent},
-            {path: 'companies/branches/users', component: UserList},
-            {path: 'users', component: UserList},
-            {path: 'companies/branches/user', component: UserComponent}
+
+
         ]
 
     },
+    {
+        path: 'company/companies', component: AdminLayoutComponent,
+        children: [{path: '', component: CompaniesList}]
+
+    },
+    {
+        path: 'company', component: AdminLayoutComponent,
+        children: [{path: '', component: CompanyComponent}]
+    },
+    {
+        path: 'company/branches', component: AdminLayoutComponent,
+        children: [{path: '', component: BranchList}]
+    },
+    {
+        path: 'branches', component: AdminLayoutComponent,
+        children: [{path: '', component: BranchList}]
+
+    },
+    {
+        path: 'branches/add_branch', component: AdminLayoutComponent,
+        children: [{path: '', component: AddBranchComponent}]
+    },
+
+    {
+        path: 'companies/branch', component: AdminLayoutComponent,
+        children: [{path: '', component: BranchComponent}]
+    },
+    {
+        path: 'companies/branches/users', component: AdminLayoutComponent,
+        children: [{path: '', component: UserList}]
+    },
+    {
+        path: 'company/users', component: AdminLayoutComponent,
+        children: [{path: '', component: UserList}]
+    },
+    {
+        path: 'companies/branches/user', component: AdminLayoutComponent,
+        children: [{path: '', component: UserComponent}]
+    },
+
 
     {
         path: 'permitdetails', component: AdminLayoutComponent,
