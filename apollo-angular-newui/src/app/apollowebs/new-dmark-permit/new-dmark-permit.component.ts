@@ -1,11 +1,12 @@
 import {Component, OnInit} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {LoginCredentials} from '../../core/store';
 import {Store} from '@ngrx/store';
 import {ActivatedRoute, Router} from '@angular/router';
 import {QaService} from '../../core/store/data/qa/qa.service';
 import {PermitEntityDetails, PlantDetailsDto, SectionDto} from '../../core/store/data/qa/qa.model';
 import swal from 'sweetalert2';
+import {FileUploadValidators} from "@iplab/ngx-file-upload";
 
 @Component({
     selector: 'app-new-dmark-permit',
@@ -27,7 +28,15 @@ export class NewDmarkPermitComponent implements OnInit {
     step = 1;
     currBtn = 'A';
     checkN: number;
+    public uploadedFiles: Array<File> = [];
+    public animation: boolean = false;
+    public multiple: boolean = false;
 
+    private filesControl = new FormControl(null, FileUploadValidators.filesLimit(2));
+
+    public demoForm = new FormGroup({
+        files: this.filesControl
+    });
 
     constructor(private store$: Store<any>,
                 private router: Router,
@@ -282,9 +291,10 @@ export class NewDmarkPermitComponent implements OnInit {
                         },
                         icon: 'success'
                     });
-                    this.router.navigate(['/permitdetails'], {fragment: this.permitEntityDetails.id.toString()});
+                    // this.router.navigate(['/permitdetails'], {fragment: this.permitEntityDetails.id.toString()});
                 },
             );
         }
     }
+
 }
