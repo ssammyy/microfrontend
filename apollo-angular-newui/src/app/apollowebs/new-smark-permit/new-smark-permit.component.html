@@ -314,17 +314,19 @@ class="form-wizard-next-btn float-right"
 <h2 style="text-align: center"><b style="color: #0d47a1">Step</b> <b style="color: #d50000"> 4</b><b style="color: #0d0505"> of</b> <b style="color: #0d47a1"> 9</b></h2>
 
 <fieldset class="wizard-fieldset show">
-<form (ngSubmit)="onClickSaveSTAPersonnel(sta10FormB.valid)" [formGroup]="sta10FormB" class="form"
-enctype="multipart/form-data">
-<h3>Production</h3>
-<h4><b>Products being manufactured/ Brands </b></h4>
+<form (ngSubmit)="onClickSaveSTAProductsManufactured(sta10FormB.valid)" [formGroup]="sta10FormB" class="form"
+      enctype="multipart/form-data">
+    <h3>Production</h3>
+    <h4><b>Products being manufactured/ Brands </b></h4>
 
-<div class="row">
-    <div class="col-6">
-        <input type="text" [class.is-invalid]="formSta10FormB.productName.invalid && formSta10FormB.productName.touched" type="text"   formControlName="productName"
-               name="productName" class="form-control"  placeholder="Product Name " >
-    </div>
-    <div class="col-6">
+    <div class="row">
+        <div class="col-6">
+            <input type="text"
+                   [class.is-invalid]="formSta10FormB.productName.invalid && formSta10FormB.productName.touched"
+                   type="text" formControlName="productName"
+                   name="productName" class="form-control" placeholder="Product Name ">
+        </div>
+        <div class="col-6">
         <input type="text" [class.is-invalid]="formSta10FormB.productBrand.invalid && formSta10FormB.productBrand.touched" type="text" formControlName="productBrand"
                name="productBrand" class="form-control"  placeholder="Brand Name " >
     </div>
@@ -388,10 +390,9 @@ class="table table-striped table-bordered table-hover"
 
 <div class="form-group clearfix">
 <button (click)="onClickPrevious()" class="btn btn-sm btn-danger">Previous</button>
-<button
-class="form-wizard-next-btn float-right"
-[disabled]="!sta10FormB.valid">Next
-</button>
+    <button class="form-wizard-next-btn float-right"
+            [disabled]="!sta10FormB.valid">Next
+    </button>
 </div>
 </form>
 </fieldset>
@@ -400,15 +401,18 @@ class="form-wizard-next-btn float-right"
         <h2 style="text-align: center"><b style="color: #0d47a1">Step</b> <b style="color: #d50000"> 5</b><b style="color: #0d0505"> of</b> <b style="color: #0d47a1"> 9</b></h2>
 
         <fieldset class="wizard-fieldset show">
-            <form (ngSubmit)="onClickSaveSTAPersonnel(sta10FormC.valid)" [formGroup]="sta10FormC" class="form"
+            <form (ngSubmit)="onClickSaveSTARawMaterials(sta10FormC.valid)" [formGroup]="sta10FormC" class="form"
                   enctype="multipart/form-data">
                 <h4><b>Raw material</b></h4>
-                <h5><b>   Specify the type of materials and origin (attach their specification where applicable): </b></h5>
+                <h5><b> Specify the type of materials and origin (attach their specification where applicable): </b>
+                </h5>
 
                 <div class="row">
                     <div class="col-6">
-                        <input type="text" [class.is-invalid]="formSta10FormC.name.invalid && formSta10FormC.name.touched" type="text"   formControlName="name"
-                               name="name" class="form-control" placeholder="Raw material  " >
+                        <input type="text"
+                               [class.is-invalid]="formSta10FormC.name.invalid && formSta10FormC.name.touched"
+                               type="text" formControlName="name"
+                               name="name" class="form-control" placeholder="Raw material  ">
                     </div>
                     <div class="col-6">
                         <input type="text" [class.is-invalid]="formSta10FormC.origin.invalid && formSta10FormC.origin.touched" type="text"   formControlName="origin"
@@ -474,26 +478,29 @@ records" >
         <h2 style="text-align: center"><b style="color: #0d47a1">Step</b> <b style="color: #d50000"> 6</b><b style="color: #0d0505"> of</b> <b style="color: #0d47a1"> 9</b></h2>
 
         <fieldset class="wizard-fieldset show">
-            <form (ngSubmit)="onClickSaveSTAPersonnel(sta10FormD.valid)" [formGroup]="sta10FormD" class="form"
+            <form (ngSubmit)="onClickSaveSTAMachineryPlant(sta10FormD.valid)" [formGroup]="sta10FormD" class="form"
                   enctype="multipart/form-data">
                 <h4><b>Machinery and Plant</b></h4>
                 <div class="row">
                     <div class="col-3">
-                        <input type="text" [class.is-invalid]="formSta10FormD.machineName.invalid && formSta10FormD.machineName.touched" type="text"  formControlName="machineName"
-                               name="machineName" class="form-control"  placeholder="Machine  " >
+                        <input type="text"
+                               [class.is-invalid]="formSta10FormD.machineName.invalid && formSta10FormD.machineName.touched"
+                               type="text" formControlName="machineName"
+                               name="machineName" class="form-control" placeholder="Machine  ">
                     </div>
                     <div class="col-3">
-                        <input type="text" [class.is-invalid]="formSta10FormD.typeModel.invalid && formSta10FormD.typeModel.touched" type="text"   formControlName="typeModel"
-                               name="typeModel" class="form-control"  placeholder="Type/Model " >
+                        <input type="text"
+                               [class.is-invalid]="formSta10FormD.typeModel.invalid && formSta10FormD.typeModel.touched"
+                               type="text" formControlName="typeModel"
+                               name="typeModel" class="form-control" placeholder="Type/Model ">
                     </div>
                     <div class="col-3">
-                        <select id="countryOfOrigin" class="form-control" formControlName="countryOfOrigin" name="countryOfOrigin"
-                                [class.is-invalid]="formSta10FormD.countryOfOrigin.invalid && formSta10FormD.countryOfOrigin.touched">
-                            <option selected>Select Country of Origin</option>
-                            <option>...</option>
-                            <option>...</option>
-                        </select>
+                        <input type="text"
+                               [class.is-invalid]="formSta10FormD.countryOfOrigin.invalid && formSta10FormD.countryOfOrigin.touched"
+                               type="text" formControlName="countryOfOrigin"
+                               name="countryOfOrigin" class="form-control" placeholder="Type/Model ">
                     </div>
+
                     <div>
 
 
@@ -542,15 +549,18 @@ records" >
         <h2 style="text-align: center"><b style="color: #0d47a1">Step</b> <b style="color: #d50000"> 6</b><b style="color: #0d0505"> of</b> <b style="color: #0d47a1"> 9</b></h2>
 
         <fieldset class="wizard-fieldset show">
-            <form (ngSubmit)="onClickSaveSTAPersonnel(sta10FormE.valid)" [formGroup]="sta10FormE" class="form"
+            <form (ngSubmit)="onClickSaveSTAManufacturingProcess(sta10FormE.valid)" [formGroup]="sta10FormE"
+                  class="form"
                   enctype="multipart/form-data">
-                <h5><b> Manufacturing process  </b></h5>
+                <h5><b> Manufacturing process </b></h5>
                 <div class="row">
                     <div class="col-6">
-                        <input type="text" [class.is-invalid]="formSta10FormE.processFlowOfProduction.invalid && formSta10FormE.processFlowOfProduction.touched" type="text"   formControlName="processFlowOfProduction"
-                               name="processFlowOfProduction" class="form-control"  placeholder="Process Flow of
+                        <input type="text"
+                               [class.is-invalid]="formSta10FormE.processFlowOfProduction.invalid && formSta10FormE.processFlowOfProduction.touched"
+                               type="text" formControlName="processFlowOfProduction"
+                               name="processFlowOfProduction" class="form-control" placeholder="Process Flow of
 Production
-" >
+">
                     </div>
                     <div class="col-6">
                         <input type="text" [class.is-invalid]="formSta10FormE.operations.invalid && formSta10FormE.operations.touched" type="text"   formControlName="operations"
