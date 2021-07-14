@@ -53,6 +53,8 @@ export class NewSmarkPermitComponent implements OnInit {
     }
 
     ngOnInit(): void {
+
+
         this.sta1Form = this.formBuilder.group({
           commodityDescription: ['', Validators.required],
           applicantName: ['', Validators.required],
@@ -60,7 +62,7 @@ export class NewSmarkPermitComponent implements OnInit {
           permitForeignStatus: [],
           attachedPlant: ['', Validators.required],
           tradeMark: ['', Validators.required],
-            //inputCountryCode: ['', Validators.required,Validators.pattern("[0-9 ]{11}")]
+            // inputCountryCode: ['', Validators.required,Validators.pattern("[0-9 ]{11}")]
 
         });
       this.sta10Form = this.formBuilder.group({

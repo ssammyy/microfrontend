@@ -274,3 +274,5 @@ export class STA10ManufacturingProcessDto {
     processMonitoringRecords: string;
 }
 
+
+

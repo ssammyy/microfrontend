@@ -18,6 +18,8 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     public tableData: TableData;
     turnOver = 0;
     branchCount = 0;
+    countAwarded = 0;
+    countExpired = 0;
 
     startAnimationForLineChart(chart: any) {
         let seq: any, delays: any, durations: any;
@@ -92,6 +94,8 @@ export class DashboardComponent implements OnInit, AfterViewInit {
                 this.store$.dispatch(loadBranchId({payload: d.branchId, branch: null}));
                 this.branchCount = d.branchCount;
                 this.turnOver = d.turnover;
+                this.countAwarded = d.countAwarded;
+                this.countExpired = d.countExpired;
             }
         );
     }

@@ -94,6 +94,19 @@ export class QaService {
         );
     }
 
+    public loadCountryList(): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.MASTERS_COUNTRIES);
+        return this.http.get<any>(url).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
+
     public loadSectionList(): Observable<any> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.SECTION_LIST);
         return this.http.get<any>(url).pipe(

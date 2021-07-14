@@ -312,7 +312,7 @@ class="form-wizard-next-btn float-right"
 <h2 style="text-align: center"><b style="color: #0d47a1">Step</b> <b style="color: #d50000"> 4</b><b style="color: #0d0505"> of</b> <b style="color: #0d47a1"> 9</b></h2>
 
 <fieldset class="wizard-fieldset show">
-<form (ngSubmit)="onClickSaveSTAPersonnel(sta10FormB.valid)" [formGroup]="sta10FormB" class="form"
+<form (ngSubmit)="onClickSaveSTAProductsManufactured(sta10FormB.valid)" [formGroup]="sta10FormB" class="form"
 enctype="multipart/form-data">
 <h3>Production</h3>
 <h4><b>Products being manufactured/ Brands </b></h4>
@@ -399,7 +399,7 @@ class="form-wizard-next-btn float-right"
         <h2 style="text-align: center"><b style="color: #0d47a1">Step</b> <b style="color: #d50000"> 5</b><b style="color: #0d0505"> of</b> <b style="color: #0d47a1"> 9</b></h2>
 
         <fieldset class="wizard-fieldset show">
-            <form (ngSubmit)="onClickSaveSTAPersonnel(sta10FormC.valid)" [formGroup]="sta10FormC" class="form"
+            <form (ngSubmit)="onClickSaveSTARawMaterials(sta10FormC.valid)" [formGroup]="sta10FormC" class="form"
                   enctype="multipart/form-data">
                 <h4><b>Raw material</b></h4>
                 <h5><b>   Specify the type of materials and origin (attach their specification where applicable): </b></h5>
@@ -473,7 +473,7 @@ records" >
         <h2 style="text-align: center"><b style="color: #0d47a1">Step</b> <b style="color: #d50000"> 6</b><b style="color: #0d0505"> of</b> <b style="color: #0d47a1"> 9</b></h2>
 
         <fieldset class="wizard-fieldset show">
-            <form (ngSubmit)="onClickSaveSTAPersonnel(sta10FormD.valid)" [formGroup]="sta10FormD" class="form"
+            <form (ngSubmit)="onClickSaveSTAMachineryPlant(sta10FormD.valid)" [formGroup]="sta10FormD" class="form"
                   enctype="multipart/form-data">
                 <h4><b>Machinery and Plant</b></h4>
                 <div class="row">
@@ -541,7 +541,8 @@ records" >
         <h2 style="text-align: center"><b style="color: #0d47a1">Step</b> <b style="color: #d50000"> 6</b><b style="color: #0d0505"> of</b> <b style="color: #0d47a1"> 9</b></h2>
 
         <fieldset class="wizard-fieldset show">
-            <form (ngSubmit)="onClickSaveSTAPersonnel(sta10FormE.valid)" [formGroup]="sta10FormE" class="form"
+            <form (ngSubmit)="onClickSaveSTAManufacturingProcess(sta10FormE.valid)" [formGroup]="sta10FormE"
+                  class="form"
                   enctype="multipart/form-data">
                 <h5><b> Manufacturing process  </b></h5>
                 <div class="row">

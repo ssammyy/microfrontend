@@ -12,6 +12,14 @@ import org.springframework.stereotype.Repository
 @Repository
 interface IPermitApplicationsRepository : HazelcastRepository<PermitApplicationsEntity, Long> {
     fun findByUserId(userId: Long): List<PermitApplicationsEntity>?
+
+    fun countByCompanyIdAndPermitAwardStatus(companyId: Long, permitAwardStatus: Int): Long
+    fun countByCompanyIdAndPermitAwardStatusAndPermitExpiredStatus(
+        companyId: Long,
+        permitAwardStatus: Int,
+        permitExpiredStatus: Int
+    ): Long
+
     fun findByUserIdAndPermitType(userId: Long, permitType: Long): List<PermitApplicationsEntity>?
     fun findByUserIdAndPermitTypeAndOldPermitStatusIsNullAndPermitAwardStatusIsNotNull(
         userId: Long,
