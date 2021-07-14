@@ -20,7 +20,7 @@
 <div class="form-wizard">
 <div [ngSwitch]="step">
 <div *ngSwitchCase="1">
-<h2 style="text-align: center"><b style="color: #0d47a1">Step</b> <b style="color: #d50000"> 1</b><b style="color: #0d0505"> of</b> <b style="color: #0d47a1"> 9</b></h2>
+<h2 style="text-align: center"><b >Step</b> <b > 1</b><b > of</b> <b > 9</b></h2>
 
 <fieldset class="wizard-fieldset show">
 <form (ngSubmit)="onClickSaveSTA1(sta1Form.valid)" [formGroup]="sta1Form" class="form"
@@ -107,7 +107,7 @@ class="form-wizard-next-btn float-right"
 </fieldset>
 </div>
 <div *ngSwitchCase="2">
-<h2 style="text-align: center"><b style="color: #0d47a1">Step</b> <b style="color: #d50000"> 2</b><b style="color: #0d0505"> of</b> <b style="color: #0d47a1"> 9</b></h2>
+<h2 style="text-align: center"><b >Step</b> <b > 2</b><b > of</b> <b > 9</b></h2>
 
 <fieldset class="wizard-fieldset show">
 <h3>Firm details</h3>
@@ -236,7 +236,7 @@ class="form-wizard-next-btn float-right"
 </fieldset>
 </div>
 <div *ngSwitchCase="3">
-<h2 style="text-align: center"><b style="color: #0d47a1">Step</b> <b style="color: #d50000"> 3</b><b style="color: #0d0505"> of</b> <b style="color: #0d47a1"> 9</b></h2>
+<h2 style="text-align: center"><b >Step</b> <b > 3</b><b > of</b> <b > 9</b></h2>
 
 <fieldset class="wizard-fieldset show">
 <form (ngSubmit)="onClickSaveSTAPersonnel(sta10FormA.valid)" [formGroup]="sta10FormA" class="form"
@@ -309,7 +309,7 @@ class="form-wizard-next-btn float-right"
 </div>
 
 <div *ngSwitchCase="4">
-<h2 style="text-align: center"><b style="color: #0d47a1">Step</b> <b style="color: #d50000"> 4</b><b style="color: #0d0505"> of</b> <b style="color: #0d47a1"> 9</b></h2>
+<h2 style="text-align: center"><b >Step</b> <b > 4</b><b > of</b> <b> 9</b></h2>
 
 <fieldset class="wizard-fieldset show">
 <form (ngSubmit)="onClickSaveSTAProductsManufactured(sta10FormB.valid)" [formGroup]="sta10FormB" class="form"
@@ -349,7 +349,7 @@ Standard number" >
 (if applicable)." >
         </div>
         <div class="form-group col-6">
-            <label style="visibility: hidden">Available (YES/NO)</label>
+            <label style="color: transparent">Available (YES/NO)</label>
           <span class="input-group-btn">
 <button (click)="onClickAddProductsManufacture()"
         type="button" class="btn btn-success btn-sm">
@@ -400,7 +400,7 @@ class="form-wizard-next-btn float-right"
 </fieldset>
 </div>
     <div *ngSwitchCase="5">
-        <h2 style="text-align: center"><b style="color: #0d47a1">Step</b> <b style="color: #d50000"> 5</b><b style="color: #0d0505"> of</b> <b style="color: #0d47a1"> 9</b></h2>
+        <h2 style="text-align: center"><b >Step</b> <b> 5</b><b > of</b> <b > 9</b></h2>
 
         <fieldset class="wizard-fieldset show">
             <form (ngSubmit)="onClickSaveSTARawMaterials(sta10FormC.valid)" [formGroup]="sta10FormC" class="form"
@@ -434,7 +434,7 @@ class="form-wizard-next-btn float-right"
 records" >
                             </div>
                             <div class=" col-2">
-                                <label style="visibility: hidden">Origin.</label>
+                                <label style="color: transparent">Origin.</label>
                                 <span class="input-group-btn">
 <button (click)="onClickAddRawMaterials()"
         type="button" class="btn btn-success btn-sm">
@@ -480,7 +480,7 @@ records" >
         </fieldset>
     </div>
     <div *ngSwitchCase="6">
-        <h2 style="text-align: center"><b style="color: #0d47a1">Step</b> <b style="color: #d50000"> 6</b><b style="color: #0d0505"> of</b> <b style="color: #0d47a1"> 9</b></h2>
+        <h2 style="text-align: center"><b >Step</b> <b > 6</b><b > of</b> <b > 9</b></h2>
 
         <fieldset class="wizard-fieldset show">
             <form (ngSubmit)="onClickSaveSTAMachineryPlant(sta10FormD.valid)" [formGroup]="sta10FormD" class="form"
@@ -508,7 +508,7 @@ records" >
                                 </select>
                             </div>
                             <div class="col-2">
-                                <label style="visibility: hidden">Origin.</label>
+                                <label style="color: transparent">Origin.</label>
                                <span class="input-group-btn">
 <button (click)="onClickAddMachineryAndPlant()"
         type="button" class="btn btn-success btn-sm">
@@ -556,7 +556,7 @@ records" >
         </fieldset>
     </div>
     <div *ngSwitchCase="7">
-        <h2 style="text-align: center"><b style="color: #0d47a1">Step</b> <b style="color: #d50000"> 6</b><b style="color: #0d0505"> of</b> <b style="color: #0d47a1"> 9</b></h2>
+        <h2 style="text-align: center"><b >Step</b> <b > 6</b><b > of</b> <b > 9</b></h2>
 
         <fieldset class="wizard-fieldset show">
             <form (ngSubmit)="onClickSaveSTAManufacturingProcess(sta10FormE.valid)" [formGroup]="sta10FormE"
@@ -597,7 +597,7 @@ parameters Monitored" >
                                        name="frequency" class="form-control"  placeholder="Frequency" >
                             </div>
                             <div class="col-5">
-                                <label for="" style="visibility: hidden">Quality checks/testing.</label>
+                                <label  style="color: transparent">Quality checks/testing.</label>
                                    <span class="input-group-btn">
 <button (click)="onClickAddManufacturingProcess()"
         type="button" class="btn btn-success btn-sm">
@@ -652,7 +652,7 @@ parameters Monitored" >
     </div>
 
 <div *ngSwitchCase="8">
-<h2 style="text-align: center"><b style="color: #0d47a1">Step</b> <b style="color: #d50000"> 5</b><b style="color: #0d0505"> of</b> <b style="color: #0d47a1"> 9</b></h2>
+<h2 style="text-align: center"><b >Step</b> <b > 5</b><b > of</b> <b > 9</b></h2>
 
 <fieldset class="wizard-fieldset show">
 <form (ngSubmit)="onClickSaveSTA10(sta10FormF.valid)" [formGroup]="sta10FormF" class="form"
@@ -761,7 +761,7 @@ class="form-wizard-next-btn float-right"
 </fieldset>
 </div>
 <div *ngSwitchCase="9">
-<h2 style="text-align: center"><b style="color: #0d47a1">Step</b> <b style="color: #08e53f"> 6</b><b style="color: #0d0505"> of</b> <b style="color: #0d47a1"> 9</b></h2>
+<h2 style="text-align: center"><b >Step</b> <b > 6</b><b > of</b> <b > 9</b></h2>
 
 <fieldset class="wizard-fieldset show">
 <form (ngSubmit)="onClickSaveSTA10(sta10FormG.valid)" [formGroup]="sta10FormG" class="form"
