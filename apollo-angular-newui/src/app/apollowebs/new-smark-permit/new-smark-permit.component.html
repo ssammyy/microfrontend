@@ -37,7 +37,18 @@ standardization mark on the commodity specified here under:
 <label for="commodityDescription">Commodity Description</label>
 <input [class.is-invalid]="formSta1Form.commodityDescription.invalid && formSta1Form.commodityDescription.touched" type="text" class="form-control" id="commodityDescription" formControlName="commodityDescription"
 name="commodityDescription" placeholder="Commodity Description" required="">
+
 </div>
+<!--    <div class="form-group row">-->
+<!--        <input type="text" class="form-control" appPhoneMask placeholder="Mobile Number" autocomplete="off"-->
+<!--               [ngClass]="{ 'is-invalid': (formSta1Form.inputCountryCode.errors ) }"-->
+<!--               formControlName="inputCountryCode">-->
+<!--        <div *ngIf="(formSta1Form.inputCountryCode.invalid ) || (formSta1Form.inputCountryCode.invalid && (formSta1Form.inputCountryCode.dirty || formSta1Form.inputCountryCode.touched))"-->
+<!--             class="invalid-feedback">-->
+<!--            <div *ngIf="formSta1Form.inputCountryCode.errors.required">This field is required.</div>-->
+<!--            <div *ngIf="formSta1Form.inputCountryCode.errors.pattern">Invalid phone number.</div>-->
+<!--        </div>-->
+<!--    </div>-->
 <div class="form-group col-6">
 <label for="tradeMark">Trade Mark</label>
 <input type="text" [class.is-invalid]="formSta1Form.tradeMark.invalid && formSta1Form.tradeMark.touched" class="form-control" id="tradeMark" formControlName="tradeMark" name="tradeMark"
@@ -234,12 +245,9 @@ class="form-wizard-next-btn float-right"
       enctype="multipart/form-data">
     <h4><b>Competency of key personnel in charge of (Production and Quality Control) </b></h4>
 
-    <div id="repeaterCom">
-        <div class="items" data-group="test">
-            <div class="item-content">
-                <div class="row">
-                    <div id="repeatingCompetency" class="col-xs-12 col-sm-12 col-lg-12">
-                        <div class="entry input-group form-group form-default ">
+
+
+                        <div class="row">
                             <div class="col-4">
 <input type="text" [class.is-invalid]="formSta10FormA.personnelName.invalid && formSta10FormA.personnelName.touched" type="text" class="form-control" formControlName="personnelName"
        name="personnelName" class="form-control" placeholder="Name">
@@ -254,10 +262,9 @@ class="form-wizard-next-btn float-right"
                             <div class="col-3">
                                 <input type="date"
                                        [class.is-invalid]="formSta10FormA.dateOfEmployment.invalid && formSta10FormA.dateOfEmployment.touched"
-                                       type="text" class="form-control" formControlName="dateOfEmployment"
+                                       type="date" class="form-control" formControlName="dateOfEmployment"
                                        name="dateOfEmployment" class="form-control" placeholder="Date of Employment">
                             </div>
-
                             <div>
 <span class="input-group-btn">
 <button (click)="onClickAddPersonnel()"
@@ -266,17 +273,14 @@ class="form-wizard-next-btn float-right"
 </button>
 </span>
 
-
                                 <br><br>
                             </div>
                         </div>
-                    </div>
-                </div>
-
-            </div>
-
-            <div>
-                <table>
+    <div class="material-datatables" >
+        <div class="table-responsive">
+            <table id="datatables"
+                   class="table table-striped table-bordered table-hover"
+            >
                     <thead>
                     <tr>
                         <th>Personnel Name</th>
@@ -292,14 +296,12 @@ class="form-wizard-next-btn float-right"
                     </tr>
                     </tbody>
                 </table>
-            </div>
-
-
         </div>
-</div>
+    </div>
+
 <div class="form-group clearfix">
 <button (click)="onClickPrevious()" class="btn btn-sm btn-danger">Previous</button>
-<button type="submit"
+<button
 class="form-wizard-next-btn float-right"
 [disabled]="!sta10FormA.valid">Next
 </button>
