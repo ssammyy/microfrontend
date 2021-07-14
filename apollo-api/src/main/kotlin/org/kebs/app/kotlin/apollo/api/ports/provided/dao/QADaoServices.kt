@@ -76,6 +76,7 @@ class QADaoServices(
     private val iMoneyTypeCodesRepo: ICfgMoneyTypeCodesRepository,
     private val mpesaServices: MPesaService,
     private val msReportsControllers: MSReportsControllers,
+    private val reportsDaoService: ReportsDaoService,
 //    private val reportsControllers: ReportsController,
     private val notifications: Notifications,
 ) {
@@ -1939,7 +1940,7 @@ class QADaoServices(
                 ?.let { foundProductsManufactured ->
 
                     productsManufacturedDetsils = commonDaoServices.updateDetails(
-                        productsManufactured,
+                        productsManufacturedDetsils,
                         foundProductsManufactured
                     ) as QaProductManufacturedEntity
 
@@ -2390,6 +2391,8 @@ class QADaoServices(
 
         val myDetails = reportsControllers.createInvoicePdf(batchID)
 
+//        val invoicePDFCreated = reportsDaoService.generateEmailPDFReport()
+
         msReportsControllers.extractAndSaveReport(
             myDetails.first,
             applicationMapProperties.mapReportProfomaInvoiceWithItemsPath,
@@ -2630,7 +2633,8 @@ class QADaoServices(
         permit = permitUpdateDetails(permit, map, loggedInUser).second
 
 //        //Send email with attached Invoice details
-//        invoiceCreationPDF(
+//        invoiceCreationPDF
+//        (
 //            batchInvoice.id ?: throw ExpectedDataNotFound("MISSING BATCH INVOICE ID"),
 //            commonDaoServices.findUserByID(permit.userId ?: throw ExpectedDataNotFound("MISSING USER ID")).email
 //                ?: throw ExpectedDataNotFound("MISSING USER ID"),
