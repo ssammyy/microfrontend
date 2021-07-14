@@ -319,34 +319,42 @@ enctype="multipart/form-data">
     <div class="row">
         <div class="form-group col-6">
             <label for="productName">Product Name</label>
-            <input type="text" [class.is-invalid]="formSta10FormB.productName.invalid && formSta10FormB.productName.touched" type="text"   formControlName="productName"
-                   name="productName" id="productName" class="form-control"  placeholder="Product Name " >
+            <input type="text"
+                   [class.is-invalid]="formSta10FormB.productName.invalid && formSta10FormB.productName.touched"
+                   formControlName="productName"
+                   name="productName" id="productName" class="form-control" placeholder="Product Name ">
         </div>
         <div class="form-group col-6">
             <label for="productBrand">Brand Name</label>
-            <input type="text" [class.is-invalid]="formSta10FormB.productBrand.invalid && formSta10FormB.productBrand.touched" type="text" formControlName="productBrand"
-                   name="productBrand" id="productBrand" class="form-control"  placeholder="Brand Name " >
+            <input type="text"
+                   [class.is-invalid]="formSta10FormB.productBrand.invalid && formSta10FormB.productBrand.touched"
+                   formControlName="productBrand"
+                   name="productBrand" id="productBrand" class="form-control" placeholder="Brand Name ">
         </div>
     </div>
     <div class="row">
         <div class="form-group col-6">
             <label for="productStandardNumber">Applicable Product Standard number</label>
-            <input type="text" [class.is-invalid]="formSta10FormB.productStandardNumber.invalid && formSta10FormB.productStandardNumber.touched" type="text"   formControlName="productStandardNumber"
-                   name="productStandardNumber" id="productStandardNumber" class="form-control"  placeholder="Applicable Product
-Standard number" >
+            <input [class.is-invalid]="formSta10FormB.productStandardNumber.invalid && formSta10FormB.productStandardNumber.touched"
+                   type="text" formControlName="productStandardNumber"
+                   name="productStandardNumber" id="productStandardNumber" class="form-control" placeholder="Applicable Product
+Standard number">
         </div>
         <div class="form-group col-6">
             <label for="available">Available (YES/NO)</label>
-            <input type="text" [class.is-invalid]="formSta10FormB.available.invalid && formSta10FormB.available.touched" type="text"   formControlName="available"
-                   name="available" id="available" class="form-control"  placeholder="Available (YES/NO)" >
+            <input type="checkbox"
+                   [class.is-invalid]="formSta10FormB.available.invalid && formSta10FormB.available.touched"
+                   formControlName="available"
+                   name="available" id="available" class="form-control" placeholder="Available (YES/NO)">
         </div>
     </div>
     <div class="row">
         <div class="form-group col-6">
             <label for="permitNo">KEBS Permit NO. (if applicable).</label>
-            <input type="text" [class.is-invalid]="formSta10FormB.permitNo.invalid && formSta10FormB.permitNo.touched" type="text"   formControlName="permitNo"
-                   name="permitNo" id="permitNo" class="form-control"  placeholder="KEBS Permit NO.
-(if applicable)." >
+            <input [class.is-invalid]="formSta10FormB.permitNo.invalid && formSta10FormB.permitNo.touched" type="text"
+                   formControlName="permitNo"
+                   name="permitNo" id="permitNo" class="form-control" placeholder="KEBS Permit NO.
+(if applicable).">
         </div>
         <div class="form-group col-6">
             <label style="color: transparent">Available (YES/NO)</label>
