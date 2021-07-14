@@ -3828,6 +3828,7 @@ class QADaoServices(
     fun mapDtoSTA10SectionAAndQaSta10Entity(sta10SectionADto: STA10SectionADto): QaSta10Entity {
         val sta10 = QaSta10Entity()
         with(sta10) {
+            id = sta10SectionADto.id
             firmName = sta10SectionADto.firmName
             statusCompanyBusinessRegistration = sta10SectionADto.statusCompanyBusinessRegistration
             ownerNameProprietorDirector = sta10SectionADto.ownerNameProprietorDirector

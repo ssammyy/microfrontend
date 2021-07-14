@@ -7,7 +7,7 @@ import {QaService} from '../../core/store/data/qa/qa.service';
 import {
     PermitEntityDetails,
     PlantDetailsDto,
-    SectionDto, STA10MachineryAndPlantDto, STA10ManufacturingProcessDto, STA10PersonnelDto,
+    SectionDto, Sta10Dto, STA10MachineryAndPlantDto, STA10ManufacturingProcessDto, STA10PersonnelDto,
     STA10ProductsManufactureDto, STA10RawMaterialsDto
 } from '../../core/store/data/qa/qa.model';
 import swal from 'sweetalert2';
@@ -26,11 +26,13 @@ export class NewSmarkPermitComponent implements OnInit {
     sections: SectionDto[];
     plants: PlantDetailsDto[];
     permitEntityDetails: PermitEntityDetails;
-    sta10ProductsManufactureDetails: STA10ProductsManufactureDto;
-    sta10RawMaterialsDetails: STA10RawMaterialsDto;
-    sta10PersonnelDetails: STA10PersonnelDto;
-    sta10MachineryAndPlantDetails: STA10MachineryAndPlantDto;
-    sta10ManufacturingProcessDetails: STA10ManufacturingProcessDto;
+    Sta10Details: Sta10Dto;
+    sta10ProductsManufactureDetails: STA10ProductsManufactureDto[];
+    sta10RawMaterialsDetails: STA10RawMaterialsDto[];
+    sta10PersonnelDetails: STA10PersonnelDto[] = [];
+    sta10PersonnelDetail: STA10PersonnelDto;
+    sta10MachineryAndPlantDetails: STA10MachineryAndPlantDto[];
+    sta10ManufacturingProcessDetails: STA10ManufacturingProcessDto[];
     currBtn = 'A';
     stepSoFar: | undefined;
     step = 1;
@@ -253,7 +255,6 @@ export class NewSmarkPermitComponent implements OnInit {
                   },
                   icon: 'success'
               });
-// this.router.navigate(['/users-list']);
             },
         );
       } else {
@@ -269,7 +270,6 @@ export class NewSmarkPermitComponent implements OnInit {
                   },
                   icon: 'success'
               });
-// this.router.navigate(['/users-list']);
             },
         );
       }
@@ -279,23 +279,242 @@ export class NewSmarkPermitComponent implements OnInit {
     onClickSaveSTA10(valid: boolean) {
         if (valid) {
             console.log(this.permitEntityDetails.id.toString());
-            this.qaService.saveFirmDetailsSta10(this.permitEntityDetails.id.toString(), this.sta10Form.value).subscribe(
-                (data: any) => {
-                    console.log(data);
-                    this.step += 1;
-                    swal.fire({
-                        title: 'STA10 Form saved!',
-                        buttonsStyling: false,
-                        customClass: {
-                            confirmButton: 'btn btn-success form-wizard-next-btn ',
-                        },
-                        icon: 'success'
-                    });
+            if (this.Sta10Details == null) {
+                this.qaService.saveFirmDetailsSta10(this.permitEntityDetails.id.toString(), this.sta10Form.value).subscribe(
+                    (data) => {
+                        this.Sta10Details = data;
+                        console.log(data);
+                        this.step += 1;
+                        swal.fire({
+                            title: 'STA10 Form saved!',
+                            buttonsStyling: false,
+                            customClass: {
+                                confirmButton: 'btn btn-success form-wizard-next-btn ',
+                            },
+                            icon: 'success'
+                        });
 // this.router.navigate(['/users-list']);
-                },
-            );
+                    },
+                );
+            } else {
+                this.qaService.updateFirmDetailsSta10(this.permitEntityDetails.id.toString(), this.sta10Form.value).subscribe(
+                    (data) => {
+                        this.Sta10Details = data;
+                        console.log(data);
+                        this.step += 1;
+                        swal.fire({
+                            title: 'STA10 Form Updated!',
+                            buttonsStyling: false,
+                            customClass: {
+                                confirmButton: 'btn btn-success form-wizard-next-btn ',
+                            },
+                            icon: 'success'
+                        });
+// this.router.navigate(['/users-list']);
+                    },
+                );
+            }
+        }
+    }
+
+    onClickSaveSTAPersonnel(valid: boolean) {
+        if (valid) {
+            console.log(this.Sta10Details.id.toString());
+            if (this.sta10PersonnelDetails == null) {
+                this.qaService.savePersonnelDetailsSta10(this.Sta10Details.id.toString(), this.sta10Form.value).subscribe(
+                    (data) => {
+                        this.sta10PersonnelDetails = data;
+                        console.log(data);
+                        this.step += 1;
+                        swal.fire({
+                            title: 'STA10 Form Personnel Details saved!',
+                            buttonsStyling: false,
+                            customClass: {
+                                confirmButton: 'btn btn-success form-wizard-next-btn ',
+                            },
+                            icon: 'success'
+                        });
+                    },
+                );
+            } else {
+                this.qaService.updatePersonnelDetailsSta10(this.Sta10Details.id.toString(), this.sta10Form.value).subscribe(
+                    (data) => {
+                        this.sta10PersonnelDetails = data;
+                        console.log(data);
+                        this.step += 1;
+                        swal.fire({
+                            title: 'STA10 Form Personnel Details Updated!',
+                            buttonsStyling: false,
+                            customClass: {
+                                confirmButton: 'btn btn-success form-wizard-next-btn ',
+                            },
+                            icon: 'success'
+                        });
+                    },
+                );
+            }
+        }
+    }
+
+    onClickSaveSTAProductsManufactured(valid: boolean) {
+        if (valid) {
+            console.log(this.Sta10Details.id.toString());
+            if (this.sta10ProductsManufactureDetails == null) {
+                this.qaService.saveProductsManufacturedDetailsSta10(this.Sta10Details.id.toString(), this.sta10Form.value).subscribe(
+                    (data) => {
+                        this.sta10ProductsManufactureDetails = data;
+                        console.log(data);
+                        this.step += 1;
+                        swal.fire({
+                            title: 'STA10 Form Products Manufactured Details saved!',
+                            buttonsStyling: false,
+                            customClass: {
+                                confirmButton: 'btn btn-success form-wizard-next-btn ',
+                            },
+                            icon: 'success'
+                        });
+                    },
+                );
+            } else {
+                this.qaService.updateProductsManufacturedDetailsSta10(this.Sta10Details.id.toString(), this.sta10Form.value).subscribe(
+                    (data) => {
+                        this.sta10ProductsManufactureDetails = data;
+                        console.log(data);
+                        this.step += 1;
+                        swal.fire({
+                            title: 'STA10 Form Products Manufactured Details Updated!',
+                            buttonsStyling: false,
+                            customClass: {
+                                confirmButton: 'btn btn-success form-wizard-next-btn ',
+                            },
+                            icon: 'success'
+                        });
+                    },
+                );
+            }
+        }
+    }
+
+    onClickSaveSTARawMaterials(valid: boolean) {
+        if (valid) {
+            console.log(this.Sta10Details.id.toString());
+            if (this.sta10ProductsManufactureDetails == null) {
+                this.qaService.saveRawMaterialsDetailsSta10(this.Sta10Details.id.toString(), this.sta10Form.value).subscribe(
+                    (data) => {
+                        this.sta10RawMaterialsDetails = data;
+                        console.log(data);
+                        this.step += 1;
+                        swal.fire({
+                            title: 'STA10 Form Raw Materials Details saved!',
+                            buttonsStyling: false,
+                            customClass: {
+                                confirmButton: 'btn btn-success form-wizard-next-btn ',
+                            },
+                            icon: 'success'
+                        });
+                    },
+                );
+            } else {
+                this.qaService.updateRawMaterialsDetailsSta10(this.Sta10Details.id.toString(), this.sta10Form.value).subscribe(
+                    (data) => {
+                        this.sta10RawMaterialsDetails = data;
+                        console.log(data);
+                        this.step += 1;
+                        swal.fire({
+                            title: 'STA10 Form Raw Materials Details Updated!',
+                            buttonsStyling: false,
+                            customClass: {
+                                confirmButton: 'btn btn-success form-wizard-next-btn ',
+                            },
+                            icon: 'success'
+                        });
+                    },
+                );
+            }
+        }
+    }
+
+    onClickSaveSTAMachineryPlant(valid: boolean) {
+        if (valid) {
+            console.log(this.Sta10Details.id.toString());
+            if (this.sta10MachineryAndPlantDetails == null) {
+                this.qaService.saveMachineryPlantDetailsSta10(this.Sta10Details.id.toString(), this.sta10Form.value).subscribe(
+                    (data) => {
+                        this.sta10MachineryAndPlantDetails = data;
+                        console.log(data);
+                        this.step += 1;
+                        swal.fire({
+                            title: 'STA10 Form RMachinery And Plant Details saved!',
+                            buttonsStyling: false,
+                            customClass: {
+                                confirmButton: 'btn btn-success form-wizard-next-btn ',
+                            },
+                            icon: 'success'
+                        });
+                    },
+                );
+            } else {
+                this.qaService.updateMachineryPlantDetailsSta10(this.Sta10Details.id.toString(), this.sta10Form.value).subscribe(
+                    (data) => {
+                        this.sta10MachineryAndPlantDetails = data;
+                        console.log(data);
+                        this.step += 1;
+                        swal.fire({
+                            title: 'STA10 Form Machinery And Plant Details Updated!',
+                            buttonsStyling: false,
+                            customClass: {
+                                confirmButton: 'btn btn-success form-wizard-next-btn ',
+                            },
+                            icon: 'success'
+                        });
+                    },
+                );
+            }
+        }
+    }
+
+    onClickSaveSTAManufacturingProcess(valid: boolean) {
+        if (valid) {
+            console.log(this.Sta10Details.id.toString());
+            if (this.sta10ManufacturingProcessDetails == null) {
+                this.qaService.saveManufacturingProcessDetailsSta10(this.Sta10Details.id.toString(), this.sta10Form.value).subscribe(
+                    (data) => {
+                        this.sta10ManufacturingProcessDetails = data;
+                        console.log(data);
+                        this.step += 1;
+                        swal.fire({
+                            title: 'STA10 Form Manufacturing Process Details saved!',
+                            buttonsStyling: false,
+                            customClass: {
+                                confirmButton: 'btn btn-success form-wizard-next-btn ',
+                            },
+                            icon: 'success'
+                        });
+                    },
+                );
+            } else {
+                this.qaService.updateManufacturingProcessDetailsSta10(this.Sta10Details.id.toString(), this.sta10Form.value).subscribe(
+                    (data) => {
+                        this.sta10ManufacturingProcessDetails = data;
+                        console.log(data);
+                        this.step += 1;
+                        swal.fire({
+                            title: 'STA10 Form Manufacturing Process Details Updated!',
+                            buttonsStyling: false,
+                            customClass: {
+                                confirmButton: 'btn btn-success form-wizard-next-btn ',
+                            },
+                            icon: 'success'
+                        });
+                    },
+                );
+            }
         }
     }
 
 
+    onClickAddPersonnel() {
+        this.sta10PersonnelDetail = this.sta10FormA.value;
+        this.sta10PersonnelDetails.push(this.sta10PersonnelDetail);
+    }
 }
