@@ -17,6 +17,7 @@
 *.iws
 *.iml
 *.ipr
+*.log
 **/node_modules/
 
 
