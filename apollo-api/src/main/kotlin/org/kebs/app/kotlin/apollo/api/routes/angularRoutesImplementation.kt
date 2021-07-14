@@ -281,6 +281,7 @@ class AngularRoutes {
     @Bean
     fun migrationQualityAssuranceRoutes(handler: QualityAssuranceHandler) = router {
         "/api/v1/migration/qa".nest {
+            GET("/my-task-list", handler::sectionListMigration)
             GET("/sections-list", handler::sectionListMigration)
             GET("/branch-list", handler::branchListMigration)
             GET("/standards-list", handler::standardsListMigration)

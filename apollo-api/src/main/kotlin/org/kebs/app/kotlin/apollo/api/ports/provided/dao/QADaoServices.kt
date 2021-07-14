@@ -4005,6 +4005,17 @@ class QADaoServices(
         }
     }
 
+    fun getTaskListPermit(userID: Long) {
+        qualityAssuranceBpmn.fetchAllTasksByAssignee(userID)
+            ?.forEach { t ->
+                t.permitId
+                t.task.name
+                t.task.createTime
+            }
+
+    }
+
+
     fun mapAllPlantsTogether(
         plants: List<ManufacturePlantDetailsEntity>,
         map: ServiceMapsEntity

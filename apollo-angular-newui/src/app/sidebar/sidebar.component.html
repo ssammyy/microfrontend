@@ -11,8 +11,10 @@
         </div>
         <div class="user-info">
             <a data-toggle="collapse" href="#collapseExample" class="collapsed">
-                        <span>
+                        <span style="font-size: 15px;">
+                            <strong>
                             {{fullname}}
+                                </strong>
                             <b class="caret"></b>
                         </span>
             </a>
@@ -99,13 +101,13 @@
             <!--If is a single link-->
             <a [routerLink]="[menuitem.path]" *ngIf="menuitem.type === 'link'" class="nav-link">
                 <i class="material-icons">{{menuitem.icontype}}</i>
-                <p>{{menuitem.title}}</p>
+                <p style="font-size: 15px"><strong>{{menuitem.title}}</strong></p>
             </a>
             <!--If it have a submenu-->
             <a data-toggle="collapse" href="#{{menuitem.collapse}}" *ngIf="menuitem.type === 'sub'" (click)="updatePS()"
                class="nav-link">
                 <i class="material-icons">{{menuitem.icontype}}</i>
-                <p>{{menuitem.title}}<b class="caret"></b></p>
+                <p style="font-size: 15px"><strong>{{menuitem.title}}<b class="caret"></b></strong></p>
             </a>
 
             <!--Display the submenu items-->

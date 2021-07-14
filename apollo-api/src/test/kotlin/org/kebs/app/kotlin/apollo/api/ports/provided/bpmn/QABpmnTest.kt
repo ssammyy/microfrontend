@@ -1431,7 +1431,7 @@ class QABpmnTest{
     }
 
     @Test
-    //@Ignore
+    @Ignore
     fun testQaDmAppReviewApplicationLocal() {
         val permitId: Long = 267
 
@@ -1626,12 +1626,12 @@ class QABpmnTest{
     }
 
     @Test
-    @Ignore
+    //@Ignore
     fun getAllTasksByAssignee(){
-        qualityAssuranceBpmn.fetchAllTasksByAssignee(419)?.let{ taskDetails->
+        qualityAssuranceBpmn.fetchAllTasksByAssignee(2046)?.let{ taskDetails->
             for (taskDetail in taskDetails){
                 taskDetail.task.let{ task->
-                    println("${taskDetail.permitId} -- ${task.id} -- ${task.name} -- ${task.assignee} -- ${task.processInstanceId} -- ${task.taskDefinitionKey} " )
+                    println("${taskDetail.permitId} -- ${task.id} -- ${task.name} -- ${task.assignee} -- ${task.processInstanceId} -- ${task.taskDefinitionKey} -- ${taskDetail.permitRefNo}" )
                 }
             }
         }

@@ -20,14 +20,14 @@ import {
   RegionService,
   RegistrationPayloadService,
   selectBrsValidationCompany,
-    selectBrsValidationStep,
-    selectCountyIdData,
-    selectRegistrationStateSucceeded,
-    selectTokenSentStateOtpSent,
-    selectValidateTokenAndPhoneValidated,
-    Town,
-    TownService,
-    User
+  selectBrsValidationStep,
+  selectCountyIdData,
+  selectRegistrationStateSucceeded,
+  selectTokenSentStateOtpSent,
+  selectValidateTokenAndPhoneValidated,
+  Town,
+  TownService,
+  User
 } from '../../core/store';
 import {select, Store} from '@ngrx/store';
 import {interval, Observable, PartialObserver, Subject, throwError} from 'rxjs';
@@ -35,26 +35,28 @@ import {ConfirmedValidator} from '../../core/shared/confirmed.validator';
 import {takeUntil} from 'rxjs/operators';
 
 @Component({
-    selector: 'app-sign-up',
-    templateUrl: './sign-up.component.html',
-    styles: []
+  selector: 'app-sign-up',
+  templateUrl: './sign-up.component.html',
+  styles: []
 })
 export class SignUpComponent implements OnInit {
 
-    ispause = new Subject();
-    time = 30;
-    timer!: Observable<number>;
-    timerObserver!: PartialObserver<number>;
-    step = 0;
+  ispause = new Subject();
+  time = 30;
+  timer!: Observable<number>;
+  timerObserver!: PartialObserver<number>;
+  step = 0;
 
-    public clicked = false;
+  public clicked = false;
 
-    stepZeroForm!: FormGroup;
-    stepOneForm!: FormGroup;
-    stepTwoForm!: FormGroup;
-    stepThreeForm!: FormGroup;
-    stepFourForm!: FormGroup;
-    companySoFar: Partial<Company> | undefined;
+  stepZeroForm!: FormGroup;
+  stepOneForm!: FormGroup;
+  stepTwoForm!: FormGroup;
+  stepThreeForm!: FormGroup;
+  stepFourForm!: FormGroup;
+  stepFiveForm!: FormGroup;
+
+  companySoFar: Partial<Company> | undefined;
   userSoFar: Partial<User> | undefined;
   // @ts-ignore
   brsLookupRequest: BrsLookUpRequest;
@@ -106,10 +108,7 @@ export class SignUpComponent implements OnInit {
   }
 
   ngOnInit(): void {
-      this.timer = interval(1000)
-          .pipe(
-              takeUntil(this.ispause)
-          );
+      this.timer = interval(1000).pipe(takeUntil(this.ispause));
 
       this.timerObserver = {
 
@@ -117,7 +116,6 @@ export class SignUpComponent implements OnInit {
               if (this.time === 0) {
                   // tslint:disable-next-line:no-unused-expression
                   this.ispause.next;
-                  this.time = 30;
               }
               this.time -= 1;
           }
@@ -146,37 +144,63 @@ export class SignUpComponent implements OnInit {
       postalAddress: new FormControl(),
       physicalAddress: new FormControl('', [Validators.required]),
       plotNumber: new FormControl('', [Validators.required]),
-        companyEmail: new FormControl('', [Validators.required]),
-        companyTelephone: new FormControl('', [Validators.required])
+      companyEmail: new FormControl('', [Validators.required]),
+      companyTelephone: new FormControl('', [Validators.required])
     });
-      this.stepThreeForm = new FormGroup({
-          buildingName: new FormControl(),
-          streetName: new FormControl('', [Validators.required]),
-          region: new FormControl('', [Validators.required]),
-          county: new FormControl('', [Validators.required]),
-          town: new FormControl('', [Validators.required])
-      });
-      this.stepFourForm = this.formBuilder.group({
-              firstName: [],
-              lastName: ['', Validators.required],
-              userName: ['', Validators.required],
-              email: ['', Validators.required],
-              cellphone: ['', Validators.required],
-              otp: ['', Validators.required],
-              credentials: ['', Validators.required],
-              confirmCredentials: ['', [Validators.required]]
-          },
-          {
-              validators: ConfirmedValidator('credentials', 'confirmCredentials')
-          });
+    this.stepThreeForm = new FormGroup({
+      buildingName: new FormControl(),
+      streetName: new FormControl('', [Validators.required]),
+      region: new FormControl('', [Validators.required]),
+      county: new FormControl('', [Validators.required]),
+      town: new FormControl('', [Validators.required])
+    });
+    this.stepFourForm = this.formBuilder.group({
+          firstName: [],
+          lastName: ['', Validators.required],
+          userName: ['', Validators.required],
+          email: ['', Validators.required],
+
+        },
+        {
+          validators: ConfirmedValidator('credentials', 'confirmCredentials')
+        });
+
+    this.stepFiveForm = this.formBuilder.group({
+
+          cellphone: ['', Validators.required],
+          otp: ['', Validators.required],
+          credentials: ['', Validators.required],
+          confirmCredentials: ['', [Validators.required]]
+        },
+        {
+          validators: ConfirmedValidator('credentials', 'confirmCredentials')
+        });
 
   }
 
-  get formStepZeroForm(): any {return this.stepZeroForm.controls; }
-  get formStepOneForm(): any {return this.stepOneForm.controls; }
-  get formStepTwoForm(): any {return this.stepTwoForm.controls; }
-  get formStepThreeForm(): any {return this.stepThreeForm.controls; }
-  get formStepFourForm(): any {return this.stepFourForm.controls; }
+  get formStepZeroForm(): any {
+    return this.stepZeroForm.controls;
+  }
+
+  get formStepOneForm(): any {
+    return this.stepOneForm.controls;
+  }
+
+  get formStepTwoForm(): any {
+    return this.stepTwoForm.controls;
+  }
+
+  get formStepThreeForm(): any {
+    return this.stepThreeForm.controls;
+  }
+
+  get formStepFourForm(): any {
+    return this.stepFourForm.controls;
+  }
+
+  get formStepFiveForm(): any {
+    return this.stepFiveForm.controls;
+  }
 
   updateSelectedRegion() {
     this.selectedRegion = this.stepThreeForm?.get('region')?.value;
@@ -231,6 +255,8 @@ export class SignUpComponent implements OnInit {
         this.stepTwoForm.patchValue(record);
         this.stepThreeForm.patchValue(record);
         this.stepFourForm.patchValue(record);
+        this.stepFiveForm.patchValue(record);
+
         this.companySoFar = record;
       });
 
@@ -252,7 +278,7 @@ export class SignUpComponent implements OnInit {
     if (valid) {
       if (this.phoneValidated) {
         this.company = {...this.company, ...this.companySoFar};
-        this.user = {...this.user, ...this.stepFourForm?.value};
+        this.user = {...this.user, ...this.stepFiveForm?.value};
 
         this.store$.dispatch(loadRegistrations({
           payload: {company: this.company, user: this.user}
@@ -266,7 +292,7 @@ export class SignUpComponent implements OnInit {
         });
       } else {
         this.otpSent = false;
-        this.stepFourForm.get('otp')?.reset();
+        this.stepFiveForm.get('otp')?.reset();
         this.store$.dispatch(loadResponsesFailure({
           error: {
             payload: 'Cellphone needs to be validated',
@@ -292,8 +318,8 @@ export class SignUpComponent implements OnInit {
     this.phoneValidated = true;
     this.store$.dispatch(loadValidateTokenAndPhone({
       payload: {
-        phone: this.stepFourForm?.get('cellphone')?.value,
-        token: this.stepFourForm?.get('otp')?.value,
+        phone: this.stepFiveForm?.get('cellphone')?.value,
+        token: this.stepFiveForm?.get('otp')?.value,
       }
     }));
     this.store$.pipe(select(selectValidateTokenAndPhoneValidated)).subscribe((d) => {
@@ -304,8 +330,8 @@ export class SignUpComponent implements OnInit {
         return this.phoneValidated = d;
       } else {
           this.otpSent = false;
-          this.phoneValidated = false;
-          this.stepFourForm?.get('otp')?.reset();
+        this.phoneValidated = false;
+        this.stepFiveForm?.get('otp')?.reset();
           return throwError('Could not validate token');
 
       }
@@ -326,10 +352,11 @@ export class SignUpComponent implements OnInit {
 
     onClickSendOtp() {
         this.otpSent = true;
-        this.timer.subscribe(this.timerObserver);
-        this.validationCellphone = this.stepFourForm?.get('cellphone')?.value;
+        this.time = 30;
+      this.timer.subscribe(this.timerObserver);
+      this.validationCellphone = this.stepFiveForm?.get('cellphone')?.value;
 
-        this.stepFourForm?.get('otp')?.reset();
+      this.stepFiveForm?.get('otp')?.reset();
 
         if (
             this.validationCellphone === '' ||
@@ -384,7 +411,10 @@ export class SignUpComponent implements OnInit {
           this.companySoFar = {...this.companySoFar, ...this.stepThreeForm?.value};
           break;
         case 4:
-          this.userSoFar = this.stepFourForm?.value;
+          this.companySoFar = {...this.companySoFar, ...this.stepFourForm?.value};
+          break;
+        case 5:
+          this.userSoFar = this.stepFiveForm?.value;
           break;
       }
       this.step += 1;
