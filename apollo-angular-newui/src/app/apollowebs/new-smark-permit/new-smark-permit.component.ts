@@ -1,37 +1,48 @@
-import { Component, OnInit } from '@angular/core';
-import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
-import {Company, loadAuths, LoginCredentials} from "../../core/store";
-import {Store} from "@ngrx/store";
-import {ActivatedRoute, Router} from "@angular/router";
-import {QaService} from "../../core/store/data/qa/qa.service";
-import {PermitEntityDetails, PlantDetailsDto, SectionDto} from "../../core/store/data/qa/qa.model";
-import swal from "sweetalert2";
+import {Component, OnInit} from '@angular/core';
+import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
+import {Company, loadAuths, LoginCredentials} from '../../core/store';
+import {Store} from '@ngrx/store';
+import {ActivatedRoute, Router} from '@angular/router';
+import {QaService} from '../../core/store/data/qa/qa.service';
+import {
+    PermitEntityDetails,
+    PlantDetailsDto,
+    SectionDto, STA10MachineryAndPlantDto, STA10ManufacturingProcessDto, STA10PersonnelDto,
+    STA10ProductsManufactureDto, STA10RawMaterialsDto
+} from '../../core/store/data/qa/qa.model';
+import swal from 'sweetalert2';
 
 @Component({
-  selector: 'app-new-smark-permit',
-  templateUrl: './new-smark-permit.component.html',
-  styleUrls: ['./new-smark-permit.component.css']
+    selector: 'app-new-smark-permit',
+    templateUrl: './new-smark-permit.component.html',
+    styleUrls: ['./new-smark-permit.component.css']
 })
 export class NewSmarkPermitComponent implements OnInit {
-  sta1Form: FormGroup;
-  sta10Form: FormGroup;
+    sta1Form: FormGroup;
+    sta10Form: FormGroup;
     sta10FormA: FormGroup;
     sta10FormB: FormGroup;
     sta10FormC: FormGroup;
-  sections: SectionDto[];
-  plants: PlantDetailsDto[];
-  permitEntityDetails: PermitEntityDetails;
-  currBtn: string = 'A';
+    sections: SectionDto[];
+    plants: PlantDetailsDto[];
+    permitEntityDetails: PermitEntityDetails;
+    sta10ProductsManufactureDetails: STA10ProductsManufactureDto;
+    sta10RawMaterialsDetails: STA10RawMaterialsDto;
+    sta10PersonnelDetails: STA10PersonnelDto;
+    sta10MachineryAndPlantDetails: STA10MachineryAndPlantDto;
+    sta10ManufacturingProcessDetails: STA10ManufacturingProcessDto;
+    currBtn = 'A';
     stepSoFar: | undefined;
     step = 1;
 
-  constructor(private store$: Store<any>,
-              private router: Router,
-              private qaService: QaService,
-              private formBuilder: FormBuilder,
-              private route: ActivatedRoute) { }
+    constructor(private store$: Store<any>,
+                private router: Router,
+                private qaService: QaService,
+                private formBuilder: FormBuilder,
+                private route: ActivatedRoute) {
+    }
 
-  ngOnInit(): void {
+    ngOnInit(): void {
         this.sta1Form = this.formBuilder.group({
           commodityDescription: ['', Validators.required],
           applicantName: ['', Validators.required],
@@ -42,29 +53,31 @@ export class NewSmarkPermitComponent implements OnInit {
 
         });
       this.sta10Form = this.formBuilder.group({
-          //firmName: ['', Validators.required],
-          //statusCompanyBusinessRegistration: ['', Validators.required],
-          //ownerNameProprietorDirector: ['', Validators.required],
-          //postalAddress: ['', Validators.required],
-          //contactPerson: ['', Validators.required],
-          //telephone: ['', Validators.required],
-          //emailAddress: ['', Validators.required],
-          //physicalLocationMap: ['', Validators.required],
-          //county: ['', Validators.required],
-          //town: ['', Validators.required],
+          // firmName: ['', Validators.required],
+          // statusCompanyBusinessRegistration: ['', Validators.required],
+          // ownerNameProprietorDirector: ['', Validators.required],
+          // postalAddress: ['', Validators.required],
+          // contactPerson: ['', Validators.required],
+          // telephone: ['', Validators.required],
+          // emailAddress: ['', Validators.required],
+          // physicalLocationMap: ['', Validators.required],
+          // county: ['', Validators.required],
+          // town: ['', Validators.required],
           totalNumberFemale: ['', Validators.required],
           totalNumberMale: ['', Validators.required],
           totalNumberPermanentEmployees: ['', Validators.required],
           totalNumberCasualEmployees: ['', Validators.required],
-          averageVolumeProductionMonth:['', Validators.required]
+          averageVolumeProductionMonth: ['', Validators.required]
 
       });
+
       this.sta10FormA = this.formBuilder.group({
           personnelName: ['', Validators.required],
           qualificationInstitution: ['', Validators.required],
           dateOfEmployment: ['', Validators.required]
 
       });
+
       this.sta10FormB = this.formBuilder.group({
           productName: ['', Validators.required],
           productBrand: ['', Validators.required],
@@ -83,8 +96,8 @@ export class NewSmarkPermitComponent implements OnInit {
           criticalProcessParametersMonitored: ['', Validators.required],
           frequency: ['', Validators.required],
           processMonitoringRecords: ['', Validators.required]
-
       });
+
       this.sta10FormC = this.formBuilder.group({
           handledManufacturingProcessRawMaterials: ['', Validators.required],
           handledManufacturingProcessInprocessProducts: ['', Validators.required],
@@ -180,11 +193,13 @@ export class NewSmarkPermitComponent implements OnInit {
             return 'active';
         }if (step === 2) {
             return 'activated';
-        }if (step === 3) {
+        }
+        if (step === 3) {
             return 'activated';
-        }if (step === 4) {
+        }
+        if (step === 4) {
             return 'activated';
-        }else {
+        } else {
             return '';
         }
     }
@@ -220,7 +235,8 @@ export class NewSmarkPermitComponent implements OnInit {
     get formSta10FormC(): any {
         return this.sta10FormC.controls;
     }
-  onClickSaveSTA1(valid: boolean) {
+
+    onClickSaveSTA1(valid: boolean) {
     if (valid) {
       if (this.permitEntityDetails == null) {
         this.qaService.savePermitSTA1('2', this.sta1Form.value).subscribe(
@@ -230,12 +246,12 @@ export class NewSmarkPermitComponent implements OnInit {
                 this.step += 1;
               this.currBtn = 'B';
               swal.fire({
-                title: "STA1 Form saved!",
-                buttonsStyling: false,
-                customClass:{
-                  confirmButton: "btn btn-success form-wizard-next-btn ",
-                },
-                icon: "success"
+                  title: 'STA1 Form saved!',
+                  buttonsStyling: false,
+                  customClass: {
+                      confirmButton: 'btn btn-success form-wizard-next-btn ',
+                  },
+                  icon: 'success'
               });
 // this.router.navigate(['/users-list']);
             },
@@ -246,12 +262,12 @@ export class NewSmarkPermitComponent implements OnInit {
               this.permitEntityDetails = data;
               console.log(data);
               swal.fire({
-                title: "STA1 Form updated!",
-                buttonsStyling: false,
-                customClass:{
-                  confirmButton: "btn btn-success form-wizard-next-btn ",
-                },
-                icon: "success"
+                  title: 'STA1 Form updated!',
+                  buttonsStyling: false,
+                  customClass: {
+                      confirmButton: 'btn btn-success form-wizard-next-btn ',
+                  },
+                  icon: 'success'
               });
 // this.router.navigate(['/users-list']);
             },
@@ -259,6 +275,7 @@ export class NewSmarkPermitComponent implements OnInit {
       }
     }
   }
+
     onClickSaveSTA10(valid: boolean) {
         if (valid) {
             console.log(this.permitEntityDetails.id.toString());

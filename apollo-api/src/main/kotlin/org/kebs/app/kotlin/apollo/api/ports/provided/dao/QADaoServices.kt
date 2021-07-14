@@ -2,13 +2,10 @@ package org.kebs.app.kotlin.apollo.api.ports.provided.dao
 
 import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.controllers.msControllers.MSReportsControllers
-import org.kebs.app.kotlin.apollo.api.controllers.qaControllers.QualityAssuranceController
 import org.kebs.app.kotlin.apollo.api.controllers.qaControllers.ReportsController
 import org.kebs.app.kotlin.apollo.api.notifications.Notifications
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.QualityAssuranceBpmn
 import org.kebs.app.kotlin.apollo.api.ports.provided.mpesa.MPesaService
-import org.kebs.app.kotlin.apollo.common.dto.SectionsDto
-import org.kebs.app.kotlin.apollo.common.dto.SectionsEntityDto
 import org.kebs.app.kotlin.apollo.common.dto.qa.*
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
@@ -30,7 +27,6 @@ import org.springframework.security.core.Authentication
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
-import org.springframework.util.ResourceUtils
 import org.springframework.web.multipart.MultipartFile
 import java.math.BigDecimal
 import java.sql.Date
@@ -1014,6 +1010,7 @@ class QADaoServices(
     fun listSTA10Product(sta10Products: List<QaProductManufacturedEntity>): List<STA10ProductsManufactureDto> {
         return sta10Products.map { p ->
             STA10ProductsManufactureDto(
+                p.id,
                 p.productName,
                 p.productBrand,
                 p.productStandardNumber,
@@ -1026,6 +1023,7 @@ class QADaoServices(
     fun listSTA10RawMaterials(qaRawMaterialEntity: List<QaRawMaterialEntity>): List<STA10RawMaterialsDto> {
         return qaRawMaterialEntity.map { p ->
             STA10RawMaterialsDto(
+                p.id,
                 p.name,
                 p.origin,
                 p.specifications,
@@ -1049,6 +1047,7 @@ class QADaoServices(
     fun listSTA10MachinePlants(machinePlantsDetails: List<QaMachineryEntity>): List<STA10MachineryAndPlantDto> {
         return machinePlantsDetails.map { p ->
             STA10MachineryAndPlantDto(
+                p.id,
                 p.machineName,
                 p.typeModel,
                 p.countryOfOrigin,
@@ -1060,6 +1059,7 @@ class QADaoServices(
     fun listSTA10ManufacturingProcess(manufacturingProcessDetails: List<QaManufacturingProcessEntity>): List<STA10ManufacturingProcessDto> {
         return manufacturingProcessDetails.map { p ->
             STA10ManufacturingProcessDto(
+                p.id,
                 p.processFlowOfProduction,
                 p.operations,
                 p.criticalProcessParametersMonitored,
@@ -1926,50 +1926,122 @@ class QADaoServices(
 
     fun sta10ManufactureProductNewSave(
         qaSta10ID: Long,
-        productManufacturedDetails: QaProductManufacturedEntity,
+        productManufacturedDetailsList: List<QaProductManufacturedEntity>,
         user: UsersEntity,
         map: ServiceMapsEntity
-    ): QaProductManufacturedEntity {
+    ) {
 
-        with(productManufacturedDetails) {
-            sta10Id = qaSta10ID
-            status = map.activeStatus
-            createdBy = commonDaoServices.concatenateName(user)
-            createdOn = commonDaoServices.getTimestamp()
+        val sta10Found = findSta10BYID(qaSta10ID)
+
+        productManufacturedDetailsList.forEach { productsManufactured ->
+            var productsManufacturedDetsils = productsManufactured
+            productsManufactureSTA10Repo.findByIdOrNull(productsManufactured.id ?: -1L)
+                ?.let { foundProductsManufactured ->
+
+                    productsManufacturedDetsils = commonDaoServices.updateDetails(
+                        productsManufactured,
+                        foundProductsManufactured
+                    ) as QaProductManufacturedEntity
+
+                    with(productsManufacturedDetsils) {
+                        modifiedBy = commonDaoServices.concatenateName(user)
+                        modifiedOn = commonDaoServices.getTimestamp()
+                    }
+
+                    productsManufacturedDetsils = productsManufactureSTA10Repo.save(productsManufacturedDetsils)
+                }
+                ?: kotlin.run {
+
+                    with(productsManufacturedDetsils) {
+                        sta10Id = qaSta10ID
+                        status = map.activeStatus
+                        createdBy = commonDaoServices.concatenateName(user)
+                        createdOn = commonDaoServices.getTimestamp()
+                    }
+                    productsManufacturedDetsils = productsManufactureSTA10Repo.save(productsManufacturedDetsils)
+
+                }
         }
-        return productsManufactureSTA10Repo.save(productManufacturedDetails)
     }
 
     fun sta10RawMaterialsNewSave(
         qaSta10ID: Long,
-        rawMaterialsDetails: QaRawMaterialEntity,
+        rawMaterialsDetails: List<QaRawMaterialEntity>,
         user: UsersEntity,
         map: ServiceMapsEntity
-    ): QaRawMaterialEntity {
+    ) {
 
-        with(rawMaterialsDetails) {
-            sta10Id = qaSta10ID
-            status = map.activeStatus
-            createdBy = commonDaoServices.concatenateName(user)
-            createdOn = commonDaoServices.getTimestamp()
+
+        val sta10Found = findSta10BYID(qaSta10ID)
+
+        rawMaterialsDetails.forEach { rawMaterialsDetails ->
+            var rawMaterialsDetails = rawMaterialsDetails
+            rawMaterialsSTA10Repo.findByIdOrNull(rawMaterialsDetails.id ?: -1L)
+                ?.let { foundRawMaterial ->
+
+                    rawMaterialsDetails =
+                        commonDaoServices.updateDetails(rawMaterialsDetails, foundRawMaterial) as QaRawMaterialEntity
+
+                    with(rawMaterialsDetails) {
+                        modifiedBy = commonDaoServices.concatenateName(user)
+                        modifiedOn = commonDaoServices.getTimestamp()
+                    }
+
+                    rawMaterialsDetails = rawMaterialsSTA10Repo.save(rawMaterialsDetails)
+                }
+                ?: kotlin.run {
+
+                    with(rawMaterialsDetails) {
+                        sta10Id = qaSta10ID
+                        status = map.activeStatus
+                        createdBy = commonDaoServices.concatenateName(user)
+                        createdOn = commonDaoServices.getTimestamp()
+                    }
+                    rawMaterialsDetails = rawMaterialsSTA10Repo.save(rawMaterialsDetails)
+
+                }
         }
-        return rawMaterialsSTA10Repo.save(rawMaterialsDetails)
     }
 
     fun sta10MachinePlantNewSave(
         qaSta10ID: Long,
-        machinePlantsDetails: QaMachineryEntity,
+        machinePlantsDetails: List<QaMachineryEntity>,
         user: UsersEntity,
         map: ServiceMapsEntity
-    ): QaMachineryEntity {
+    ) {
 
-        with(machinePlantsDetails) {
-            sta10Id = qaSta10ID
-            status = map.activeStatus
-            createdBy = commonDaoServices.concatenateName(user)
-            createdOn = commonDaoServices.getTimestamp()
+        val sta10Found = findSta10BYID(qaSta10ID)
+
+        machinePlantsDetails.forEach { machinePlantsDetails ->
+            var machinePlantsDetails = machinePlantsDetails
+            machinePlantsSTA10Repo.findByIdOrNull(machinePlantsDetails.id ?: -1L)
+                ?.let { foundMachinePlantsDetails ->
+
+                    machinePlantsDetails = commonDaoServices.updateDetails(
+                        machinePlantsDetails,
+                        foundMachinePlantsDetails
+                    ) as QaMachineryEntity
+
+                    with(machinePlantsDetails) {
+                        modifiedBy = commonDaoServices.concatenateName(user)
+                        modifiedOn = commonDaoServices.getTimestamp()
+                    }
+
+                    machinePlantsDetails = machinePlantsSTA10Repo.save(machinePlantsDetails)
+                }
+                ?: kotlin.run {
+
+                    with(machinePlantsDetails) {
+                        sta10Id = qaSta10ID
+                        status = map.activeStatus
+                        createdBy = commonDaoServices.concatenateName(user)
+                        createdOn = commonDaoServices.getTimestamp()
+                    }
+                    machinePlantsDetails = machinePlantsSTA10Repo.save(machinePlantsDetails)
+
+                }
         }
-        return machinePlantsSTA10Repo.save(machinePlantsDetails)
+
     }
 
 
@@ -2027,18 +2099,42 @@ class QADaoServices(
 
     fun sta10ManufacturingProcessNewSave(
         qaSta10ID: Long,
-        manufacturingProcessDetails: QaManufacturingProcessEntity,
+        manufacturingProcessDetails: List<QaManufacturingProcessEntity>,
         user: UsersEntity,
         map: ServiceMapsEntity
-    ): QaManufacturingProcessEntity {
+    ) {
 
-        with(manufacturingProcessDetails) {
-            sta10Id = qaSta10ID
-            status = map.activeStatus
-            createdBy = commonDaoServices.concatenateName(user)
-            createdOn = commonDaoServices.getTimestamp()
+        val sta10Found = findSta10BYID(qaSta10ID)
+
+        manufacturingProcessDetails.forEach { manufacturingProcessDetails ->
+            var manufacturingProcessDetails = manufacturingProcessDetails
+            manufacturingProcessSTA10Repo.findByIdOrNull(manufacturingProcessDetails.id ?: -1L)
+                ?.let { foundManufacturingProcessDetails ->
+
+                    manufacturingProcessDetails = commonDaoServices.updateDetails(
+                        manufacturingProcessDetails,
+                        foundManufacturingProcessDetails
+                    ) as QaManufacturingProcessEntity
+
+                    with(manufacturingProcessDetails) {
+                        modifiedBy = commonDaoServices.concatenateName(user)
+                        modifiedOn = commonDaoServices.getTimestamp()
+                    }
+
+                    manufacturingProcessDetails = manufacturingProcessSTA10Repo.save(manufacturingProcessDetails)
+                }
+                ?: kotlin.run {
+
+                    with(manufacturingProcessDetails) {
+                        sta10Id = qaSta10ID
+                        status = map.activeStatus
+                        createdBy = commonDaoServices.concatenateName(user)
+                        createdOn = commonDaoServices.getTimestamp()
+                    }
+                    manufacturingProcessDetails = manufacturingProcessSTA10Repo.save(manufacturingProcessDetails)
+
+                }
         }
-        return manufacturingProcessSTA10Repo.save(manufacturingProcessDetails)
     }
 
 
@@ -2617,47 +2713,50 @@ class QADaoServices(
         s: ServiceMapsEntity,
         user: UsersEntity,
         sta10ID: Long,
-        personel: QaPersonnelInchargeEntity,
+        personnelList: List<QaPersonnelInchargeEntity>,
     ): ServiceRequestsEntity {
 
         var sr = commonDaoServices.createServiceRequest(s)
         try {
 
             val sta10Found = findSta10BYID(sta10ID)
-            var personelDetails = personel
+            personnelList.forEach { personnel ->
+                var personnelDetails = personnel
+                qaPersonnelInchargeRepo.findByIdOrNull(personnel.id ?: -1L)
+                    ?.let { foundPersonnelDetails ->
 
-            qaPersonnelInchargeRepo.findByIdOrNull(personel.id ?: -1L)
-                ?.let { foundPersonelDetails ->
+                        personnelDetails = commonDaoServices.updateDetails(
+                            personnel,
+                            foundPersonnelDetails
+                        ) as QaPersonnelInchargeEntity
 
-                    personelDetails = commonDaoServices.updateDetails(personel, foundPersonelDetails) as QaPersonnelInchargeEntity
-
-                    with(personelDetails) {
-                        modifiedBy = commonDaoServices.concatenateName(user)
-                        modifiedOn = commonDaoServices.getTimestamp()
+                        with(personnelDetails) {
+                            modifiedBy = commonDaoServices.concatenateName(user)
+                            modifiedOn = commonDaoServices.getTimestamp()
+                        }
+                        personnelDetails = qaPersonnelInchargeRepo.save(personnelDetails)
                     }
-                    personelDetails = qaPersonnelInchargeRepo.save(personelDetails)
-                }
-                ?: kotlin.run {
+                    ?: kotlin.run {
 
-                    with(personelDetails) {
-                        sta10Id = sta10Found.id
-                        status = s.activeStatus
-                        createdBy = commonDaoServices.concatenateName(user)
-                        createdOn = commonDaoServices.getTimestamp()
+                        with(personnelDetails) {
+                            sta10Id = sta10Found.id
+                            status = s.activeStatus
+                            createdBy = commonDaoServices.concatenateName(user)
+                            createdOn = commonDaoServices.getTimestamp()
+                        }
+                        personnelDetails = qaPersonnelInchargeRepo.save(personnelDetails)
+
                     }
-                    personelDetails = qaPersonnelInchargeRepo.save(personelDetails)
 
-                }
+                sr.payload = "GENERATED PERSONNEL DETAILS [id= ${personnelDetails.id}]"
+                sr.varField1 = personnelDetails.sta10Id.toString()
 
-
-            sr.payload = "GENERATED PERSONNEL DETAILS [id= ${personelDetails.id}]"
-            sr.varField1 = personelDetails.sta10Id.toString()
-
-            sr.responseStatus = sr.serviceMapsId?.successStatusCode
-            sr.responseMessage = "Success ${sr.payload}"
-            sr.status = s.successStatus
-            sr = serviceRequestsRepository.save(sr)
-            sr.processingEndDate = Timestamp.from(Instant.now())
+                sr.responseStatus = sr.serviceMapsId?.successStatusCode
+                sr.responseMessage = "Success ${sr.payload}"
+                sr.status = s.successStatus
+                sr = serviceRequestsRepository.save(sr)
+                sr.processingEndDate = Timestamp.from(Instant.now())
+            }
 
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message, e)
@@ -3799,61 +3898,69 @@ class QADaoServices(
         return sta10
     }
 
-    fun mapDtoSTA10SectionBAndQaProductManufacturedEntity(sta10SectionBPDto: STA10ProductsManufactureDto): QaProductManufacturedEntity {
-        val sta10p = QaProductManufacturedEntity()
-        with(sta10p) {
-            productName = sta10SectionBPDto.productName
-            productBrand = sta10SectionBPDto.productBrand
-            productStandardNumber = sta10SectionBPDto.productStandardNumber
-            available = if (sta10SectionBPDto.available == true) 1 else 0
-            permitNo = sta10SectionBPDto.permitNo
+    fun mapDtoSTA10SectionBAndQaProductManufacturedEntity(sta10SectionBPDto: List<STA10ProductsManufactureDto>): List<QaProductManufacturedEntity> {
+        return sta10SectionBPDto.map { p ->
+            QaProductManufacturedEntity().apply {
+                id = p.id
+                productName = p.productName
+                productBrand = p.productBrand
+                productStandardNumber = p.productStandardNumber
+                available = if (p.available == true) 1 else 0
+                permitNo = p.permitNo
+            }
         }
-        return sta10p
     }
 
-    fun mapDtoSTA10SectionBAndQaRawMaterialsEntity(sta10rawmaterialsdto: STA10RawMaterialsDto): QaRawMaterialEntity {
-        val sta10p = QaRawMaterialEntity()
-        with(sta10p) {
-            name = sta10rawmaterialsdto.name
-            origin = sta10rawmaterialsdto.origin
-            specifications = sta10rawmaterialsdto.specifications
-            qualityChecksTestingRecords = sta10rawmaterialsdto.qualityChecksTestingRecords
+    fun mapDtoSTA10SectionBAndQaRawMaterialsEntity(sta10rawmaterialsdto: List<STA10RawMaterialsDto>): List<QaRawMaterialEntity> {
+        return sta10rawmaterialsdto.map { p ->
+            QaRawMaterialEntity().apply {
+                id = p.id
+                name = p.name
+                origin = p.origin
+                specifications = p.specifications
+                qualityChecksTestingRecords = p.qualityChecksTestingRecords
+            }
         }
-        return sta10p
+
     }
 
 
-    fun mapDtoSTA10SectionBAndPersonnelEntity(sta10Personneldto: STA10PersonnelDto): QaPersonnelInchargeEntity {
-        val sta10p = QaPersonnelInchargeEntity()
-        with(sta10p) {
-            id = sta10Personneldto.id
-            personnelName = sta10Personneldto.personnelName
-            qualificationInstitution = sta10Personneldto.qualificationInstitution
-            dateOfEmployment = sta10Personneldto.dateOfEmployment
+    fun mapDtoSTA10SectionBAndPersonnelEntity(sta10Personneldto: List<STA10PersonnelDto>): List<QaPersonnelInchargeEntity> {
+        return sta10Personneldto.map { p ->
+            QaPersonnelInchargeEntity().apply {
+                id = p.id
+                personnelName = p.personnelName
+                qualificationInstitution = p.qualificationInstitution
+                dateOfEmployment = p.dateOfEmployment
+            }
         }
-        return sta10p
+
+
     }
 
-    fun mapDtoSTA10SectionBAndMachineryAndPlantEntity(machineryAndPlantDto: STA10MachineryAndPlantDto): QaMachineryEntity {
-        val sta10p = QaMachineryEntity()
-        with(sta10p) {
-            machineName = machineryAndPlantDto.machineName
-            typeModel = machineryAndPlantDto.typeModel
-            countryOfOrigin = machineryAndPlantDto.countryOfOrigin
+    fun mapDtoSTA10SectionBAndMachineryAndPlantEntity(machineryAndPlantDto: List<STA10MachineryAndPlantDto>): List<QaMachineryEntity> {
+        return machineryAndPlantDto.map { p ->
+            QaMachineryEntity().apply {
+                id = p.id
+                machineName = p.machineName
+                typeModel = p.typeModel
+                countryOfOrigin = p.countryOfOrigin
+            }
         }
-        return sta10p
+
     }
 
-    fun mapDtoSTA10SectionBAndManufacturingProcessEntity(manufacturingProcessDto: STA10ManufacturingProcessDto): QaManufacturingProcessEntity {
-        val sta10p = QaManufacturingProcessEntity()
-        with(sta10p) {
-            processFlowOfProduction = manufacturingProcessDto.processFlowOfProduction
-            operations = manufacturingProcessDto.operations
-            criticalProcessParametersMonitored = manufacturingProcessDto.criticalProcessParametersMonitored
-            frequency = manufacturingProcessDto.frequency
-            processMonitoringRecords = manufacturingProcessDto.processMonitoringRecords
+    fun mapDtoSTA10SectionBAndManufacturingProcessEntity(manufacturingProcessDto: List<STA10ManufacturingProcessDto>): List<QaManufacturingProcessEntity> {
+        return manufacturingProcessDto.map { p ->
+            QaManufacturingProcessEntity().apply {
+                id = p.id
+                processFlowOfProduction = p.processFlowOfProduction
+                operations = p.operations
+                criticalProcessParametersMonitored = p.criticalProcessParametersMonitored
+                frequency = p.frequency
+                processMonitoringRecords = p.processMonitoringRecords
+            }
         }
-        return sta10p
     }
 
     fun mapBatchInvoiceDetails(

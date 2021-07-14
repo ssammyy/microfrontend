@@ -131,7 +131,7 @@ class QualityAssuranceHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            return ServerResponse.badRequest().body(e.message ?: "Unknown Error")
+             throw e
         }
     }
 
@@ -228,7 +228,7 @@ class QualityAssuranceHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            return ServerResponse.badRequest().body(e.message ?: "Unknown Error")
+            throw e
         }
 
     }
@@ -911,7 +911,7 @@ class QualityAssuranceHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            return ServerResponse.badRequest().body(e.message ?: "Unknown Error")
+            throw e
         }
 
     }
@@ -932,7 +932,7 @@ class QualityAssuranceHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            return ServerResponse.badRequest().body(e.message ?: "Unknown Error")
+            throw e
         }
 
     }
@@ -954,7 +954,7 @@ class QualityAssuranceHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            return ServerResponse.badRequest().body(e.message ?: "Unknown Error")
+            throw e
         }
 
     }
@@ -993,7 +993,7 @@ class QualityAssuranceHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            return ServerResponse.badRequest().body(e.message ?: "Unknown Error")
+            throw e
         }
 
     }
@@ -1032,7 +1032,7 @@ class QualityAssuranceHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            return ServerResponse.badRequest().body(e.message ?: "Unknown Error")
+            throw e
         }
 
     }
@@ -1064,7 +1064,7 @@ class QualityAssuranceHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            return ServerResponse.badRequest().body(e.message ?: "Unknown Error")
+            throw e
         }
 
     }
@@ -1106,7 +1106,7 @@ class QualityAssuranceHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            return ServerResponse.badRequest().body(e.message ?: "Unknown Error")
+            throw e
         }
 
     }
@@ -1156,7 +1156,7 @@ class QualityAssuranceHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            return ServerResponse.badRequest().body(e.message ?: "Unknown Error")
+            throw e
         }
 
     }
@@ -1200,7 +1200,7 @@ class QualityAssuranceHandler(
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
             throw  e
-//            return ServerResponse.badRequest().body(e.message ?: "Unknown Error")
+//             throw e
         }
 
     }
@@ -1246,7 +1246,7 @@ class QualityAssuranceHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            return ServerResponse.badRequest().body(e.message ?: "Unknown Error")
+            throw e
         }
 
     }
@@ -1272,7 +1272,7 @@ class QualityAssuranceHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            return ServerResponse.badRequest().body(e.message ?: "Unknown Error")
+            throw e
         }
 
     }
@@ -1297,7 +1297,7 @@ class QualityAssuranceHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            return ServerResponse.badRequest().body(e.message ?: "Unknown Error")
+            throw e
         }
 
     }
@@ -1350,7 +1350,7 @@ class QualityAssuranceHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            return ServerResponse.badRequest().body(e.message ?: "Unknown Error")
+            throw e
         }
 
     }
@@ -1406,7 +1406,7 @@ class QualityAssuranceHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            return ServerResponse.badRequest().body(e.message ?: "Unknown Error")
+            throw e
         }
 
     }
@@ -1433,7 +1433,7 @@ class QualityAssuranceHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            return ServerResponse.badRequest().body(e.message ?: "Unknown Error")
+            throw e
         }
 
     }
@@ -1461,7 +1461,7 @@ class QualityAssuranceHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            return ServerResponse.badRequest().body(e.message ?: "Unknown Error")
+            throw e
         }
 
     }
@@ -1514,7 +1514,66 @@ class QualityAssuranceHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            return ServerResponse.badRequest().body(e.message ?: "Unknown Error")
+            throw e
+        }
+
+    }
+
+    @PreAuthorize("hasAuthority('PERMIT_APPLICATION')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun permitUpdateSTA10FirmDetailsMigration(req: ServerRequest): ServerResponse {
+        try {
+            val loggedInUser = commonDaoServices.loggedInUserDetails()
+            val map = commonDaoServices.serviceMapDetails(appId)
+            val permitID =
+                req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
+            val permit = qaDaoServices.findPermitBYUserIDAndId(
+                permitID,
+                loggedInUser.id ?: throw ExpectedDataNotFound("MISSING USER ID")
+            )
+            val qaSta10Entity = qaDaoServices.findSTA10WithPermitRefNumberBY(
+                permit.permitRefNumber ?: throw ExpectedDataNotFound("INVALID PERMIT REF NUMBER")
+            )
+
+            val dto = req.body<STA10SectionADto>()
+            var sta10 = qaDaoServices.mapDtoSTA10SectionAAndQaSta10Entity(dto)
+
+            with(sta10) {
+                id = sta10.id
+                closedProduction = map.inactiveStatus
+                closedRawMaterials = map.inactiveStatus
+                closedMachineryPlants = map.inactiveStatus
+                closedManufacturingProcesses = map.inactiveStatus
+            }
+            sta10 = commonDaoServices.updateDetails(sta10, qaSta10Entity) as QaSta10Entity
+
+            //Save the sta10 details first
+            sta10 = qaDaoServices.sta10Update(sta10, map, loggedInUser)
+
+            //create an entity that will update the permit transaction to the latest status
+            var updatePermit = PermitApplicationsEntity()
+            with(updatePermit) {
+                id = permit.id
+                sta10FilledStatus = map.inactiveStatus
+                permitStatus = applicationMapProperties.mapQaStatusPSTA10Completion
+            }
+
+            //update the permit with the created entity values
+            updatePermit = qaDaoServices.permitUpdateDetails(
+                commonDaoServices.updateDetails(
+                    updatePermit,
+                    permit
+                ) as PermitApplicationsEntity, map, loggedInUser
+            ).second
+
+            qaDaoServices.mapDtoSTA10SectionAAndQaSta10View(sta10).let {
+                return ok().body(it)
+            }
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            throw e
         }
 
     }
@@ -1541,7 +1600,7 @@ class QualityAssuranceHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            return ServerResponse.badRequest().body(e.message ?: "Unknown Error")
+            throw e
         }
 
     }
@@ -1555,7 +1614,7 @@ class QualityAssuranceHandler(
             val qaSta10ID = req.paramOrNull("qaSta10ID")?.toLong()
                 ?: throw ExpectedDataNotFound("Required QA Sta10 ID, check config")
             val qaSta10 = qaDaoServices.findSta10BYID(qaSta10ID)
-            val dto = req.body<STA10ProductsManufactureDto>()
+            val dto = req.body<List<STA10ProductsManufactureDto>>()
             val sta10ProductManufacture = qaDaoServices.mapDtoSTA10SectionBAndQaProductManufacturedEntity(dto)
 
             //Save the sta10 details first
@@ -1572,7 +1631,7 @@ class QualityAssuranceHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            return ServerResponse.badRequest().body(e.message ?: "Unknown Error")
+            throw e
         }
 
     }
@@ -1599,7 +1658,7 @@ class QualityAssuranceHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            return ServerResponse.badRequest().body(e.message ?: "Unknown Error")
+            throw e
         }
 
     }
@@ -1613,7 +1672,7 @@ class QualityAssuranceHandler(
             val qaSta10ID = req.paramOrNull("qaSta10ID")?.toLong()
                 ?: throw ExpectedDataNotFound("Required QA Sta10 ID, check config")
             val qaSta10 = qaDaoServices.findSta10BYID(qaSta10ID)
-            val dto = req.body<STA10RawMaterialsDto>()
+            val dto = req.body<List<STA10RawMaterialsDto>>()
             val sta10RawMaterials = qaDaoServices.mapDtoSTA10SectionBAndQaRawMaterialsEntity(dto)
 
             //Save the sta10 raw materials details first
@@ -1630,7 +1689,7 @@ class QualityAssuranceHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            return ServerResponse.badRequest().body(e.message ?: "Unknown Error")
+            throw e
         }
 
     }
@@ -1641,16 +1700,18 @@ class QualityAssuranceHandler(
         try {
             val loggedInUser = commonDaoServices.loggedInUserDetails()
             val map = commonDaoServices.serviceMapDetails(appId)
-            val qaSta10ID = req.paramOrNull("qaSta10ID")?.toLong() ?: throw ExpectedDataNotFound("Required QA Sta10 ID, check config")
+            val qaSta10ID = req.paramOrNull("qaSta10ID")?.toLong()
+                ?: throw ExpectedDataNotFound("Required QA Sta10 ID, check config")
             val qaSta10 = qaDaoServices.findSta10BYID(qaSta10ID)
-            val dto = req.body<STA10PersonnelDto>()
-            val sta10RawMaterials = qaDaoServices.mapDtoSTA10SectionBAndPersonnelEntity(dto)
+            val dto = req.body<List<STA10PersonnelDto>>()
+            var sta10Personnel = qaDaoServices.mapDtoSTA10SectionBAndPersonnelEntity(dto)
 
             //Save the sta10 personnel in charge details first
-            qaDaoServices.sta10PersonnelDetailsDetails(map,loggedInUser,qaSta10ID, sta10RawMaterials)
+            qaDaoServices.sta10PersonnelDetailsDetails(map, loggedInUser, qaSta10ID, sta10Personnel)
 
             //Find all sta 10 personnel in charge  add
-            val sta10Personnel = qaDaoServices.findPersonnelWithSTA10ID(qaSta10ID) ?: throw ExpectedDataNotFound("EMPTY RESULTS")
+            sta10Personnel =
+                qaDaoServices.findPersonnelWithSTA10ID(qaSta10ID) ?: throw ExpectedDataNotFound("EMPTY RESULTS")
 
             qaDaoServices.listSTA10Personnel(sta10Personnel).let {
                 return ok().body(it)
@@ -1659,7 +1720,7 @@ class QualityAssuranceHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            return ServerResponse.badRequest().body(e.message ?: "Unknown Error")
+            throw e
         }
 
     }
@@ -1684,7 +1745,7 @@ class QualityAssuranceHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            return ServerResponse.badRequest().body(e.message ?: "Unknown Error")
+            throw e
         }
 
     }
@@ -1711,7 +1772,7 @@ class QualityAssuranceHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            return ServerResponse.badRequest().body(e.message ?: "Unknown Error")
+            throw e
         }
 
     }
@@ -1725,7 +1786,8 @@ class QualityAssuranceHandler(
             val qaSta10ID = req.paramOrNull("qaSta10ID")?.toLong()
                 ?: throw ExpectedDataNotFound("Required QA Sta10 ID, check config")
             val qaSta10 = qaDaoServices.findSta10BYID(qaSta10ID)
-            val dto = req.body<STA10MachineryAndPlantDto>()
+            val dto = req.body<List<STA10MachineryAndPlantDto>>()
+
             val machinePlantsDetails = qaDaoServices.mapDtoSTA10SectionBAndMachineryAndPlantEntity(dto)
 
             //Save the sta10 Machine plant details first
@@ -1742,7 +1804,7 @@ class QualityAssuranceHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            return ServerResponse.badRequest().body(e.message ?: "Unknown Error")
+            throw e
         }
 
     }
@@ -1768,7 +1830,7 @@ class QualityAssuranceHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            return ServerResponse.badRequest().body(e.message ?: "Unknown Error")
+            throw e
         }
 
     }
@@ -1782,7 +1844,7 @@ class QualityAssuranceHandler(
             val qaSta10ID = req.paramOrNull("qaSta10ID")?.toLong()
                 ?: throw ExpectedDataNotFound("Required QA Sta10 ID, check config")
             val qaSta10 = qaDaoServices.findSta10BYID(qaSta10ID)
-            val dto = req.body<STA10ManufacturingProcessDto>()
+            val dto = req.body<List<STA10ManufacturingProcessDto>>()
             val manufacturingProcessDetails = qaDaoServices.mapDtoSTA10SectionBAndManufacturingProcessEntity(dto)
 
             //Save the sta10 Manufacturing Process details first
@@ -1799,7 +1861,7 @@ class QualityAssuranceHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            return ServerResponse.badRequest().body(e.message ?: "Unknown Error")
+            throw e
         }
 
     }
@@ -1825,7 +1887,7 @@ class QualityAssuranceHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            return ServerResponse.badRequest().body(e.message ?: "Unknown Error")
+            throw e
         }
 
     }
@@ -1847,7 +1909,7 @@ class QualityAssuranceHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            return ServerResponse.badRequest().body(e.message ?: "Unknown Error")
+            throw e
         }
 
     }
@@ -1869,7 +1931,7 @@ class QualityAssuranceHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            return ServerResponse.badRequest().body(e.message ?: "Unknown Error")
+            throw e
         }
 
     }
@@ -1889,7 +1951,7 @@ class QualityAssuranceHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            return ServerResponse.badRequest().body(e.message ?: "Unknown Error")
+            throw e
         }
 
     }
@@ -1911,7 +1973,7 @@ class QualityAssuranceHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            return ServerResponse.badRequest().body(e.message ?: "Unknown Error")
+            throw e
         }
 
     }
@@ -1933,7 +1995,7 @@ class QualityAssuranceHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            return ServerResponse.badRequest().body(e.message ?: "Unknown Error")
+            throw e
         }
 
     }
@@ -1955,7 +2017,7 @@ class QualityAssuranceHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            return ServerResponse.badRequest().body(e.message ?: "Unknown Error")
+            throw e
         }
 
     }
@@ -1977,7 +2039,7 @@ class QualityAssuranceHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            return ServerResponse.badRequest().body(e.message ?: "Unknown Error")
+            throw e
         }
 
     }

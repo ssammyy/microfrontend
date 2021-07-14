@@ -138,6 +138,7 @@ data class STA1Dto(
 )
 
 data class STA10ProductsManufactureDto(
+    var id: Long? = null,
     var productName: String? = null,
     var productBrand: String? = null,
     var productStandardNumber: String? = null,
@@ -146,6 +147,7 @@ data class STA10ProductsManufactureDto(
 )
 
 data class STA10RawMaterialsDto(
+    var id: Long? = null,
     var name: String? = null,
     var origin: String? = null,
     var specifications: String? = null,
@@ -160,6 +162,7 @@ data class STA10PersonnelDto(
 )
 
 data class STA10MachineryAndPlantDto(
+    var id: Long? = null,
     var machineName: String? = null,
     var typeModel: String? = null,
     var countryOfOrigin: String? = null,
@@ -183,6 +186,7 @@ data class PermitUploads(
 )
 
 data class STA10ManufacturingProcessDto(
+    var id: Long? = null,
     var processFlowOfProduction: String? = null,
     var operations: String? = null,
     var criticalProcessParametersMonitored: String? = null,
