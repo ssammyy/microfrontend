@@ -297,4 +297,10 @@ export class NewDmarkPermitComponent implements OnInit {
         }
     }
 
+    goToPermit()
+    {
+        this.router.navigate(['/permitdetails'], {fragment: this.permitEntityDetails.id.toString()});
+
+    }
+
 }
