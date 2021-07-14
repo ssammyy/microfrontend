@@ -34,13 +34,13 @@ export class CompaniesList implements OnInit {
 
     editRecord(record: Company) {
         this.store$.dispatch(loadCompanyId({payload: record.id, company: record}));
-        this.store$.dispatch(Go({payload: null, redirectUrl: '', link: 'company/company'}));
+        this.store$.dispatch(Go({payload: null, redirectUrl: '', link: 'company'}));
     }
 
 
     onClickPlantDetails(record: Company) {
         this.store$.dispatch(loadCompanyId({payload: record.id, company: record}));
-        this.store$.dispatch(Go({payload: null, redirectUrl: '', link: 'company/companies/branches'}));
+        this.store$.dispatch(Go({payload: null, redirectUrl: '', link: 'company/branches'}));
     }
 
     onClickDirectors(record: Company) {
