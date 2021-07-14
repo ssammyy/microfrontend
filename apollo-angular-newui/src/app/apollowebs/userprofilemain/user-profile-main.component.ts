@@ -1,11 +1,11 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {loadResponsesFailure, selectUserInfo, UserEntityDto, UserEntityService} from "../../core/store";
-import {Observable, of} from "rxjs";
-import {Titles, TitlesService} from "../../core/store/data/title";
-import {Store} from "@ngrx/store";
-import {catchError} from "rxjs/operators";
-import {HttpErrorResponse} from "@angular/common/http";
+import {loadResponsesFailure, selectUserInfo, UserEntityDto, UserEntityService} from '../../core/store';
+import {Observable, of} from 'rxjs';
+import {Titles, TitlesService} from '../../core/store/data/title';
+import {Store} from '@ngrx/store';
+import {catchError} from 'rxjs/operators';
+import {HttpErrorResponse} from '@angular/common/http';
 
 
 @Component({
@@ -41,14 +41,14 @@ export class UserProfileMainComponent implements OnInit {
                 userPinIdNumber: ['', Validators.required],
                 personalContactNumber: ['', Validators.required],
                 email: ['', Validators.required],
-                userRegNo: ['', Validators.required],
-                enabled: ['', Validators.required],
-                accountExpired: ['', Validators.required],
-                accountLocked: ['', Validators.required],
-                credentialsExpired: ['', Validators.required],
-                status: ['', Validators.required],
-                registrationDate: ['', Validators.required],
-                title: ['', Validators.required],
+                userRegNo: [''],
+                enabled: [''],
+                accountExpired: [''],
+                accountLocked: [''],
+                credentialsExpired: [''],
+                status: [''],
+                registrationDate: [''],
+                title: [''],
             },
             {
                 // validators: ConfirmedValidator('credentials', 'confirmCredentials')

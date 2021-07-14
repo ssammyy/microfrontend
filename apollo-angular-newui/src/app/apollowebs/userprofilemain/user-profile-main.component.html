@@ -30,6 +30,7 @@
                                         <input class="form-control" formControlName="userName"
                                                id="userName"
                                                name="userName"
+                                               readonly
                                                required="required" type="text">
                                     </div>
                                 </div>
@@ -80,6 +81,7 @@
                                         <input class="form-control" formControlName="userRegNo"
                                                id="userRegNo"
                                                name="userRegNo"
+                                               readonly
                                                required="required" type="text">
                                     </div>
                                 </div>
@@ -126,7 +128,7 @@
             <div class="col-md-4">
                 <div class="card card-profile">
                     <div class="card-avatar">
-                        <img class="img" src="./assets/img/faces/user.png"/>
+                        <img alt="The User" class="img" src="./assets/img/faces/user.png"/>
                     </div>
                     <div class="card-body">
                         <h6 class="card-category text-gray">{{user?.firstName}}</h6>
