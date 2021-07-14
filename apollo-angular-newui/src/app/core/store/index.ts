@@ -42,18 +42,19 @@ export const appReducer = {
 };
 
 export function localStorageSyncReducer(reducer: ActionReducer<any>): ActionReducer<any> {
-  return localStorageSync({
-    keys: [
-      'routes',
-      'auth',
-      'companyId',
-      'userId',
-      'branchId'
+    return localStorageSync({
+        keys: [
+            'routes',
+            'auth',
+            'companyId',
+            'userId',
+            'branchId',
+            'companyInfoDtoState'
 
-    ],
-    rehydrate: true,
-    storage: sessionStorage
-  })(reducer);
+        ],
+        rehydrate: true,
+        storage: sessionStorage
+    })(reducer);
 }
 
 export const metaReducers: Array<MetaReducer<any, any>> = [localStorageSyncReducer];
