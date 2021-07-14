@@ -106,10 +106,7 @@ export class SignUpComponent implements OnInit {
   }
 
   ngOnInit(): void {
-      this.timer = interval(1000)
-          .pipe(
-              takeUntil(this.ispause)
-          );
+      this.timer = interval(1000).pipe(takeUntil(this.ispause));
 
       this.timerObserver = {
 
@@ -117,7 +114,6 @@ export class SignUpComponent implements OnInit {
               if (this.time === 0) {
                   // tslint:disable-next-line:no-unused-expression
                   this.ispause.next;
-                  this.time = 30;
               }
               this.time -= 1;
           }
@@ -326,6 +322,7 @@ export class SignUpComponent implements OnInit {
 
     onClickSendOtp() {
         this.otpSent = true;
+        this.time = 30;
         this.timer.subscribe(this.timerObserver);
         this.validationCellphone = this.stepFourForm?.get('cellphone')?.value;
 
