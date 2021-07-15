@@ -54,8 +54,6 @@ export class SignUpComponent implements OnInit {
   stepTwoForm!: FormGroup;
   stepThreeForm!: FormGroup;
   stepFourForm!: FormGroup;
-  stepFiveForm!: FormGroup;
-
   companySoFar: Partial<Company> | undefined;
   userSoFar: Partial<User> | undefined;
   // @ts-ignore
@@ -81,14 +79,14 @@ export class SignUpComponent implements OnInit {
 
 
   constructor(
-    private service: RegistrationPayloadService,
-    private linesService: BusinessLinesService,
-    private naturesService: BusinessNaturesService,
-    private regionService: RegionService,
-    private countyService: CountyService,
-    private townService: TownService,
-    private formBuilder: FormBuilder,
-    private store$: Store<any>,
+      private service: RegistrationPayloadService,
+      private linesService: BusinessLinesService,
+      private naturesService: BusinessNaturesService,
+      private regionService: RegionService,
+      private countyService: CountyService,
+      private townService: TownService,
+      private formBuilder: FormBuilder,
+      private store$: Store<any>,
   ) {
 
 
@@ -108,28 +106,28 @@ export class SignUpComponent implements OnInit {
   }
 
   ngOnInit(): void {
-      this.timer = interval(1000).pipe(takeUntil(this.ispause));
+    this.timer = interval(1000).pipe(takeUntil(this.ispause));
 
-      this.timerObserver = {
+    this.timerObserver = {
 
-          next: (_: number) => {
-              if (this.time === 0) {
-                  // tslint:disable-next-line:no-unused-expression
-                  this.ispause.next;
-              }
-              this.time -= 1;
-          }
-      };
+      next: (_: number) => {
+        if (this.time === 0) {
+          // tslint:disable-next-line:no-unused-expression
+          this.ispause.next;
+        }
+        this.time -= 1;
+      }
+    };
 
-      this.stepZeroForm = this.formBuilder.group({
-          registrationNumber: ['', Validators.required],
-          directorIdNumber: ['', Validators.required]
-      });
+    this.stepZeroForm = this.formBuilder.group({
+      registrationNumber: ['', Validators.required],
+      directorIdNumber: ['', Validators.required]
+    });
 
-      // this.stepZeroForm = new FormGroup({
-      //   registrationNumber: new FormControl('',[Validators.required]),
-      //   directorIdNumber: new FormControl('',[Validators.required]),
-      // });
+    // this.stepZeroForm = new FormGroup({
+    //   registrationNumber: new FormControl('',[Validators.required]),
+    //   directorIdNumber: new FormControl('',[Validators.required]),
+    // });
     this.stepOneForm = new FormGroup({
       name: new FormControl('', [Validators.required]),
       registrationNumber: new FormControl('', [Validators.required]),
@@ -159,14 +157,6 @@ export class SignUpComponent implements OnInit {
           lastName: ['', Validators.required],
           userName: ['', Validators.required],
           email: ['', Validators.required],
-
-        },
-        {
-          validators: ConfirmedValidator('credentials', 'confirmCredentials')
-        });
-
-    this.stepFiveForm = this.formBuilder.group({
-
           cellphone: ['', Validators.required],
           otp: ['', Validators.required],
           credentials: ['', Validators.required],
@@ -178,29 +168,11 @@ export class SignUpComponent implements OnInit {
 
   }
 
-  get formStepZeroForm(): any {
-    return this.stepZeroForm.controls;
-  }
-
-  get formStepOneForm(): any {
-    return this.stepOneForm.controls;
-  }
-
-  get formStepTwoForm(): any {
-    return this.stepTwoForm.controls;
-  }
-
-  get formStepThreeForm(): any {
-    return this.stepThreeForm.controls;
-  }
-
-  get formStepFourForm(): any {
-    return this.stepFourForm.controls;
-  }
-
-  get formStepFiveForm(): any {
-    return this.stepFiveForm.controls;
-  }
+  get formStepZeroForm(): any {return this.stepZeroForm.controls; }
+  get formStepOneForm(): any {return this.stepOneForm.controls; }
+  get formStepTwoForm(): any {return this.stepTwoForm.controls; }
+  get formStepThreeForm(): any {return this.stepThreeForm.controls; }
+  get formStepFourForm(): any {return this.stepFourForm.controls; }
 
   updateSelectedRegion() {
     this.selectedRegion = this.stepThreeForm?.get('region')?.value;
@@ -211,12 +183,12 @@ export class SignUpComponent implements OnInit {
     console.log(`county set to ${this.selectedCounty}`);
     this.store$.dispatch(loadCountyId({payload: this.selectedCounty}));
     this.store$.select(selectCountyIdData).subscribe(
-      (d) => {
-        if (d) {
-          console.log(`Select county inside is ${d}`);
-          return this.townService.getAll();
-        } else { return throwError('Invalid request, Company id is required'); }
-      }
+        (d) => {
+          if (d) {
+            console.log(`Select county inside is ${d}`);
+            return this.townService.getAll();
+          } else { return throwError('Invalid request, Company id is required'); }
+        }
     );
 
   }
@@ -235,7 +207,7 @@ export class SignUpComponent implements OnInit {
   }
 
   onClickBrsLookup() {
-  this.submitted = true;
+    this.submitted = true;
     // stop here if form is invalid
     if (this.stepZeroForm.invalid) {
       return;
@@ -250,13 +222,11 @@ export class SignUpComponent implements OnInit {
         return this.step = step;
       });
       this.store$.pipe(
-        select(selectBrsValidationCompany)).subscribe((record: Company) => {
+          select(selectBrsValidationCompany)).subscribe((record: Company) => {
         this.stepOneForm.patchValue(record);
         this.stepTwoForm.patchValue(record);
         this.stepThreeForm.patchValue(record);
         this.stepFourForm.patchValue(record);
-        this.stepFiveForm.patchValue(record);
-
         this.companySoFar = record;
       });
 
@@ -278,7 +248,7 @@ export class SignUpComponent implements OnInit {
     if (valid) {
       if (this.phoneValidated) {
         this.company = {...this.company, ...this.companySoFar};
-        this.user = {...this.user, ...this.stepFiveForm?.value};
+        this.user = {...this.user, ...this.stepFourForm?.value};
 
         this.store$.dispatch(loadRegistrations({
           payload: {company: this.company, user: this.user}
@@ -292,7 +262,7 @@ export class SignUpComponent implements OnInit {
         });
       } else {
         this.otpSent = false;
-        this.stepFiveForm.get('otp')?.reset();
+        this.stepFourForm.get('otp')?.reset();
         this.store$.dispatch(loadResponsesFailure({
           error: {
             payload: 'Cellphone needs to be validated',
@@ -318,8 +288,8 @@ export class SignUpComponent implements OnInit {
     this.phoneValidated = true;
     this.store$.dispatch(loadValidateTokenAndPhone({
       payload: {
-        phone: this.stepFiveForm?.get('cellphone')?.value,
-        token: this.stepFiveForm?.get('otp')?.value,
+        phone: this.stepFourForm?.get('cellphone')?.value,
+        token: this.stepFourForm?.get('otp')?.value,
       }
     }));
     this.store$.pipe(select(selectValidateTokenAndPhoneValidated)).subscribe((d) => {
@@ -329,38 +299,38 @@ export class SignUpComponent implements OnInit {
         // this.stepFourForm?.get('otp')?.reset();
         return this.phoneValidated = d;
       } else {
-          this.otpSent = false;
+        this.otpSent = false;
         this.phoneValidated = false;
-        this.stepFiveForm?.get('otp')?.reset();
-          return throwError('Could not validate token');
+        this.stepFourForm?.get('otp')?.reset();
+        return throwError('Could not validate token');
 
       }
     });
 
   }
 
-    secondsToHms(d: number) {
-        d = Number(d);
-        // const m = Math.floor(d % 3600 / 60);
-        const s = Math.floor(d % 3600 % 60);
+  secondsToHms(d: number) {
+    d = Number(d);
+    // const m = Math.floor(d % 3600 / 60);
+    const s = Math.floor(d % 3600 % 60);
 
-        // const mDisplay = m > 0 ? m + (m == 1 ? ": " : " : ") : "00";
-        // const sDisplay = s > 0 ? s + (s == 1 ? "" : "") : "00";
-        // tslint:disable-next-line:triple-equals
-        return s > 0 ? s + (s == 1 ? '' : '') : '00';
-    }
+    // const mDisplay = m > 0 ? m + (m == 1 ? ": " : " : ") : "00";
+    // const sDisplay = s > 0 ? s + (s == 1 ? "" : "") : "00";
+    // tslint:disable-next-line:triple-equals
+    return s > 0 ? s + (s == 1 ? '' : '') : '00';
+  }
 
-    onClickSendOtp() {
-        this.otpSent = true;
-        this.time = 30;
-      this.timer.subscribe(this.timerObserver);
-      this.validationCellphone = this.stepFiveForm?.get('cellphone')?.value;
+  onClickSendOtp() {
+    this.otpSent = true;
+    this.time = 30;
+    this.timer.subscribe(this.timerObserver);
+    this.validationCellphone = this.stepFourForm?.get('cellphone')?.value;
 
-      this.stepFiveForm?.get('otp')?.reset();
+    this.stepFourForm?.get('otp')?.reset();
 
-        if (
-            this.validationCellphone === '' ||
-      this.validationCellphone === null
+    if (
+        this.validationCellphone === '' ||
+        this.validationCellphone === null
     ) {
       this.store$.dispatch(loadResponsesFailure({
         error: {
@@ -411,10 +381,7 @@ export class SignUpComponent implements OnInit {
           this.companySoFar = {...this.companySoFar, ...this.stepThreeForm?.value};
           break;
         case 4:
-          this.companySoFar = {...this.companySoFar, ...this.stepFourForm?.value};
-          break;
-        case 5:
-          this.userSoFar = this.stepFiveForm?.value;
+          this.userSoFar = this.stepFourForm?.value;
           break;
       }
       this.step += 1;

@@ -882,7 +882,7 @@
                                        name="kraPin"
                                        placeholder="The kraPin" required="required" type="text">
                                 <div *ngIf="submitted && formStepOneForm.kraPin.errors" class="invalid-feedback">
-                                    <div *ngIf="formStepOneForm.kraPin.errors.required">The KRA Pin is required</div>
+                                    <div *ngIf="formStepOneForm.kraPin.errors.required">The Company name required</div>
                                 </div>
                             </div>
                         </div>
@@ -894,7 +894,7 @@
                         <div class="col">
 
                             <div class="form-group">
-                                <label class="input-placeholder"><b>Yearly Turnover(KES)</b></label>
+                                <label class="input-placeholder"><b>Yearly Turnover</b></label>
                                 <input [ngClass]="{ 'is-invalid': submitted && formStepOneForm.yearlyTurnover.errors }"
                                        aria-describedby="inputGroup-sizing-sm" aria-label="Small"
                                        class="form-control two-column-input" formControlName="yearlyTurnover"
@@ -931,7 +931,8 @@
 
                                 </ng-container>
                                 <div *ngIf="submitted && formStepOneForm.businessLines.errors" class="invalid-feedback">
-                                    <div *ngIf="formStepOneForm.businessLines.errors.required">Line Of Business Required
+                                    <div *ngIf="formStepOneForm.businessLines.errors.required">The Business Lines
+                                        required
                                     </div>
                                 </div>
                             </div>
@@ -1331,6 +1332,54 @@
                     </div>
                 </div>
 
+                <div class="row input-row">
+
+                    <div class="col">
+                        <label class="input-placeholder" for="cellphone">
+                            Cellphone
+                        </label>
+                        <br>
+                        <input [ngClass]="{ 'is-invalid': submitted && formStepFourForm.cellphone.errors }"
+                               class="form-control two-column-input" formControlName="cellphone" id="cellphone"
+                               name="cellphone"
+                               placeholder="e.g 254xxxxxx" required="required" type="tel">
+                        <div *ngIf="submitted && formStepFourForm.cellphone.errors" class="invalid-feedback">
+                            <div *ngIf="formStepFourForm.cellphone.errors.required">The cell phone is required</div>
+                        </div>
+                        <br>
+                    </div>
+                    <div class="col">
+                        <button (throttledClick)="onClickSendOtp()" [disabled]="otpSent"
+                                [hidden]="stepFourForm.get('cellphone')?.invalid"
+                                [throttleTime]="5000" appPreventDoubleClick
+                                class="login-button mt-2"
+                                type="button"
+
+                        >Send OTP {{secondsToHms(time)}}
+                        </button>
+                    </div>
+                </div>
+                <div class="row input-row">
+
+                    <div class="col">
+                        <label class="input-placeholder" for="otp">
+                            OTP
+                        </label>
+                        <br>
+                        <input class="form-control two-column-input" formControlName="otp" id="otp"
+                               name="otp"
+                               placeholder="The OTP" required="required" type="text">
+                        <br>
+                    </div>
+                    <div class="col">
+                        <button (click)="onClickValidateOtp()" [hidden]="stepFourForm.get('otp')?.invalid"
+                                class="login-button mt-2"
+                                type="button"
+                        >Validate OTP
+                        </button>
+                    </div>
+
+                </div>
 
                 <br>
                 <div class="row">
@@ -1338,7 +1387,7 @@
                         <button (click)="onClickPrevious()" class="login-button" type="button">PREV</button>
                     </div>
                     <div class="col">
-                        <button class="login-button" [disabled]="!stepFourForm.valid" type="submit">NEXT</button>
+                        <button class="login-button" type="submit">SAVE</button>
                     </div>
 
                 </div>
@@ -1348,59 +1397,6 @@
         </form>
 
     </div>
-
-
-    <div *ngSwitchCase="5">
-        <div class="row input-row">
-
-            <div class="col">
-                <label class="input-placeholder" for="cellphone">
-                    Cellphone
-                </label>
-                <br>
-                <input [ngClass]="{ 'is-invalid': submitted && formStepFiveForm.cellphone.errors }"
-                       class="form-control two-column-input" formControlName="cellphone" id="cellphone"
-                       name="cellphone"
-                       placeholder="e.g 254xxxxxx" required="required" type="tel">
-                <div *ngIf="submitted && formStepFiveForm.cellphone.errors" class="invalid-feedback">
-                    <div *ngIf="formStepFiveForm.cellphone.errors.required">The cell phone is required</div>
-                </div>
-                <br>
-            </div>
-            <div class="col">
-                <button (throttledClick)="onClickSendOtp()" [disabled]="otpSent"
-                        [hidden]="stepFourForm.get('cellphone')?.invalid"
-                        [throttleTime]="5000" appPreventDoubleClick
-                        class="login-button mt-2"
-                        type="button"
-
-                >Send OTP {{secondsToHms(time)}}
-                </button>
-            </div>
-        </div>
-        <div class="row input-row">
-
-            <div class="col">
-                <label class="input-placeholder" for="otp">
-                    OTP
-                </label>
-                <br>
-                <input class="form-control two-column-input" formControlName="otp" id="otp"
-                       name="otp"
-                       placeholder="The OTP" required="required" type="text">
-                <br>
-            </div>
-            <div class="col">
-                <button (click)="onClickValidateOtp()" [hidden]="stepFourForm.get('otp')?.invalid"
-                        class="login-button mt-2"
-                        type="button"
-                >Validate OTP
-                </button>
-            </div>
-
-        </div>
-    </div>
-
 
 </div>
 <br>
