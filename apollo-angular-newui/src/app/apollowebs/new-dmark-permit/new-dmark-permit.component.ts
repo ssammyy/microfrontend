@@ -4,9 +4,9 @@ import {LoginCredentials} from '../../core/store';
 import {Store} from '@ngrx/store';
 import {ActivatedRoute, Router} from '@angular/router';
 import {QaService} from '../../core/store/data/qa/qa.service';
-import {PermitEntityDetails, PlantDetailsDto, SectionDto} from '../../core/store/data/qa/qa.model';
+import {PermitEntityDetails, PlantDetailsDto, SectionDto, UploadsDtoSTA3} from '../../core/store/data/qa/qa.model';
 import swal from 'sweetalert2';
-import {FileUploadValidators} from "@iplab/ngx-file-upload";
+import {FileUploadValidators} from '@iplab/ngx-file-upload';
 
 @Component({
     selector: 'app-new-dmark-permit',
@@ -28,9 +28,9 @@ export class NewDmarkPermitComponent implements OnInit {
     step = 1;
     currBtn = 'A';
     checkN: number;
-    public uploadedFiles: Array<File> = [];
-    public animation: boolean = false;
-    public multiple: boolean = false;
+    public uploadedFiles: File[] = [];
+    public animation = true;
+    public multiple = true;
 
     private filesControl = new FormControl(null, FileUploadValidators.filesLimit(2));
 
@@ -149,7 +149,7 @@ export class NewDmarkPermitComponent implements OnInit {
                     break;
             }
             this.step += 1;
-            //console.log(`Clicked and step = ${this.step}`);
+            // console.log(`Clicked and step = ${this.step}`);
         }
     }
 
@@ -284,7 +284,7 @@ export class NewDmarkPermitComponent implements OnInit {
                     console.log(data);
                     this.step += 1;
                     swal.fire({
-                        title: 'STA3 Form Completed! Proceed to submit application.',
+                        title: 'STA3 Form Completed! Proceed to Upload attachments.',
                         buttonsStyling: false,
                         customClass: {
                             confirmButton: 'btn btn-success form-wizard-next-btn ',
@@ -297,8 +297,26 @@ export class NewDmarkPermitComponent implements OnInit {
         }
     }
 
-    goToPermit()
-    {
+    goToPermit(valid: boolean) {
+        if (valid) {
+            // let UploadsDtoSTA3 = UploadsDtoSTA3
+            // UploadsDtoSTA3.uploadedFiles
+            this.qaService.uploadSTA3File(this.permitEntityDetails.id.toString(), this.uploadedFiles).subscribe(
+                (data: any) => {
+                    console.log(data);
+                    this.step += 1;
+                    swal.fire({
+                        title: 'STA3 Form Completed! Proceed to submit application.',
+                        buttonsStyling: false,
+                        customClass: {
+                            confirmButton: 'btn btn-success form-wizard-next-btn ',
+                        },
+                        icon: 'success'
+                    });
+                    // this.router.navigate(['/permitdetails'], {fragment: this.permitEntityDetails.id.toString()});
+                },
+            );
+        }
         this.router.navigate(['/permitdetails'], {fragment: this.permitEntityDetails.id.toString()});
 
     }

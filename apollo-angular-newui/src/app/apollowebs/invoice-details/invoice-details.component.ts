@@ -1,11 +1,11 @@
 import {AfterViewInit, Component, OnInit} from '@angular/core';
+import {ActivatedRoute} from '@angular/router';
 import {
     AllBatchInvoiceDetailsDto,
     PermitInvoiceDto,
     AllPermitDetailsDto,
     PermitEntityDto
 } from '../../core/store/data/qa/qa.model';
-import {ActivatedRoute} from '@angular/router';
 import {QaService} from '../../core/store/data/qa/qa.service';
 
 declare interface DataTable {
@@ -23,10 +23,13 @@ declare const $: any;
 })
 export class InvoiceDetailsComponent implements OnInit, AfterViewInit {
 
+
     public dataTable: DataTable;
     public batchID!: string;
     public allPermitData: PermitInvoiceDto[];
     public allBatchInvoiceDetails!: AllBatchInvoiceDetailsDto;
+    // pdfSources = "https://s23.q4cdn.com/202968100/files/doc_downloads/test.pdf";
+    pdfSources: any;
 
     constructor(
         private route: ActivatedRoute,
@@ -62,6 +65,12 @@ export class InvoiceDetailsComponent implements OnInit, AfterViewInit {
                     };
                     // this.onSelectL1SubSubSection(this.userDetails?.employeeProfile?.l1SubSubSection);
 
+                },
+            );
+
+            this.qaService.loadInvoiceDetailsPDF(this.batchID).subscribe(
+                (data: any) => {
+                    this.pdfSources = data
                 },
             );
         });

@@ -71,15 +71,19 @@ import { CompaniesList } from './apollowebs/company/companies.list';
 import { CompanyComponent } from './apollowebs/company/company.component';
 import { BranchComponent } from './apollowebs/company/branch/branch.component';
 import { BranchList } from './apollowebs/company/branch/branch.list';
-import { UserComponent } from './apollowebs/company/branch/users/user.component';
-import { UserList } from './apollowebs/company/branch/users/user.list';
-import { UserProfileComponent } from './apollowebs/company/branch/users/user-profile.component';
-import { SmarkApplicationsAllComponent } from './apollowebs/smark-applications-all/smark-applications-all.component';
-import { UserProfileMainComponent } from './apollowebs/userprofilemain/user-profile-main.component';
-import {NgxSpinnerModule} from "ngx-spinner";
-import { AddBranchComponent } from './apollowebs/company/branch/add-branch/add-branch.component';
-import { OtpComponent } from './views/registration/otp/otp.component';
-import {FileUploadModule} from "@iplab/ngx-file-upload";
+import {UserComponent} from './apollowebs/company/branch/users/user.component';
+import {UserList} from './apollowebs/company/branch/users/user.list';
+import {UserProfileComponent} from './apollowebs/company/branch/users/user-profile.component';
+import {SmarkApplicationsAllComponent} from './apollowebs/smark-applications-all/smark-applications-all.component';
+import {UserProfileMainComponent} from './apollowebs/userprofilemain/user-profile-main.component';
+import {NgxSpinnerModule} from 'ngx-spinner';
+import {AddBranchComponent} from './apollowebs/company/branch/add-branch/add-branch.component';
+import {OtpComponent} from './views/registration/otp/otp.component';
+import {InvoiceConsolidateComponent} from './apollowebs/invoice-consolidate/invoice-consolidate.component';
+import {PdfViewComponent} from './pdf-view/pdf-view.component';
+import {PdfViewerModule} from 'ng2-pdf-viewer';
+import {BrowserModule} from '@angular/platform-browser';
+import {NgxExtendedPdfViewerModule} from 'ngx-extended-pdf-viewer';
 
 @NgModule({
     exports: [
@@ -117,14 +121,16 @@ import {FileUploadModule} from "@iplab/ngx-file-upload";
     imports: [
         MdModule,
         CommonModule,
+        BrowserModule,
         // TODO: Discuss as it seems to kill sending of requests to backend
         // EffectsModule.forRoot([]),
         // EntityDataModule.forRoot(entityConfig),
         ReactiveFormsModule,
         RouterModule,
         CoreModule,
-        FileUploadModule,
         FormsModule,
+        PdfViewerModule,
+        NgxExtendedPdfViewerModule,
         // CoreModule
     ],
     declarations: [
@@ -154,7 +160,9 @@ import {FileUploadModule} from "@iplab/ngx-file-upload";
         SmarkApplicationsAllComponent,
         UserProfileMainComponent,
         AddBranchComponent,
-        OtpComponent
+        OtpComponent,
+        InvoiceConsolidateComponent,
+        PdfViewComponent
     ]
 
 })
@@ -165,6 +173,7 @@ export class MaterialModule {}
         CommonModule,
         BrowserAnimationsModule,
         FormsModule,
+        PdfViewerModule,
         // RouterModule.forRoot(routes, {
         //     useHash: true
         // }),

@@ -1,7 +1,11 @@
 import {UserEntityDto} from '../users';
-import {Timestamp} from "rxjs";
 
 export class Qa {
+}
+
+export class UploadsDtoSTA3 {
+    uploadedFiles: File[];
+    sta3Status: boolean;
 }
 
 export class PermitEntityDto {
@@ -26,6 +30,8 @@ export class PermitEntityDto {
     taskID: bigint;
     companyId: bigint;
     permitType: bigint;
+    processStep: number;
+    processStepName: string;
 }
 
 export class ConsolidatedInvoiceDto {
@@ -37,6 +43,14 @@ export class ConsolidatedInvoiceDto {
     submittedStatus: boolean;
     receiptNo: string;
 }
+
+export class GenerateInvoiceDto {
+    batchID: bigint;
+    plantID: bigint;
+    permitRefNumber: string;
+    permitInvoicesID: string[];
+}
+
 
 export class STA1 {
     id: bigint;
@@ -194,11 +208,19 @@ export class PermitInvoiceDto {
     totalAmount: any;
     paidStatus: boolean;
     permitRefNumber: string;
+    batchID: bigint;
 }
 
 export class AllBatchInvoiceDetailsDto {
     batchDetails: InvoiceDto;
     allRelatedBatchInvoices: PermitInvoiceDto[];
+}
+
+export class TaskDto {
+    permitId: bigint;
+    taskName: String;
+    taskCreateTime: Date;
+    permitRefNo: String;
 }
 
 export class Sta10Dto {
