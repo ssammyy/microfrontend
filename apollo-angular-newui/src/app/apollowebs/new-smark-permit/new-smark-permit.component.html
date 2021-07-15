@@ -110,6 +110,7 @@ class="form-wizard-next-btn float-right"
 <h2 style="text-align: center"><b >Step</b> <b > 2</b><b > of</b> <b > 9</b></h2>
 
 <fieldset class="wizard-fieldset show">
+    <h2>STA10 FORM</h2>
 <h3>Firm details</h3>
 <form (ngSubmit)="onClickSaveSTA10(sta10Form.valid)" [formGroup]="sta10Form" class="form"
 enctype="multipart/form-data" >
@@ -347,7 +348,7 @@ Standard number" >
     <div class="row">
         <div class="form-group col-6">
             <label for="permitNo">KEBS Permit NO. (if applicable).</label>
-            <input type="text" [class.is-invalid]="formSta10FormB.permitNo.invalid && formSta10FormB.permitNo.touched"    formControlName="permitNo"
+            <input type="text"    formControlName="permitNo"
                    name="permitNo" id="permitNo" class="form-control"  placeholder="KEBS Permit NO.
 (if applicable)." >
         </div>
@@ -776,9 +777,13 @@ class="form-wizard-next-btn float-right"
 <h2 style="text-align: center"><b >Step</b> <b > 9</b><b > of</b> <b > 9</b></h2>
 
 <fieldset class="wizard-fieldset show">
-<form (ngSubmit)="onClickSaveSTA10(sta10FormG.valid)" [formGroup]="sta10FormG" class="form"
+<form (ngSubmit)="onClickSaveSTA10G(sta10FormG.valid)" [formGroup]="sta10FormG" class="form"
 enctype="multipart/form-data" >
 
+    <h3>Upload all of the required documents</h3>
+    <form #demoForm="ngForm">
+        <file-upload [(ngModel)]="uploadedFiles" name="files" fileslimit="2"></file-upload>
+    </form>
 <div class="form-group clearfix">
 <button (click)="onClickPrevious()" class="btn btn-sm btn-danger">Previous</button>
 <button type="submit"
