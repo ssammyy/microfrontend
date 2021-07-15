@@ -84,6 +84,7 @@ import { PdfViewComponent } from './pdf-view/pdf-view.component';
 import {PdfViewerModule} from "ng2-pdf-viewer";
 import {BrowserModule} from "@angular/platform-browser";
 import {NgxExtendedPdfViewerModule} from "ngx-extended-pdf-viewer";
+import { TaskManagerComponent } from './apollowebs/task-manager/task-manager.component';
 
 @NgModule({
     exports: [
@@ -162,7 +163,8 @@ import {NgxExtendedPdfViewerModule} from "ngx-extended-pdf-viewer";
         AddBranchComponent,
         OtpComponent,
         InvoiceConsolidateComponent,
-        PdfViewComponent
+        PdfViewComponent,
+        TaskManagerComponent
     ]
 
 })

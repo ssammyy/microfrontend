@@ -12,7 +12,7 @@ import {
     STA10PersonnelDto,
     STA10ProductsManufactureDto,
     STA10RawMaterialsDto,
-    STA3
+    STA3, TaskDto
 } from "./qa.model";
 
 @Injectable({
@@ -126,6 +126,19 @@ export class QaService {
             .set('permitID', permitID);
         return this.http.get<any>(url, {params}).pipe(
             map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
+
+    public taskListFind(): Observable<TaskDto> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.MY_TASK_LIST);
+        return this.http.get<TaskDto>(url).pipe(
+            map(function (response: TaskDto) {
                 return response;
             }),
             catchError((fault: HttpErrorResponse) => {
