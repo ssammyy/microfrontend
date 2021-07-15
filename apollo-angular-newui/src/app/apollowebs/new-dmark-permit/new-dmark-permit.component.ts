@@ -6,8 +6,9 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {QaService} from '../../core/store/data/qa/qa.service';
 import {PermitEntityDetails, PlantDetailsDto, SectionDto} from '../../core/store/data/qa/qa.model';
 import swal from 'sweetalert2';
-import {FileUploadValidators} from '@iplab/ngx-file-upload';
+import {FileUploadValidators} from "@iplab/ngx-file-upload";
 
+declare const $: any;
 @Component({
     selector: 'app-new-dmark-permit',
     templateUrl: './new-dmark-permit.component.html',
@@ -28,7 +29,8 @@ export class NewDmarkPermitComponent implements OnInit {
     step = 1;
     currBtn = 'A';
     checkN: number;
-    public uploadedFiles: File[] = [];
+    public uploadedFile: File;
+    public uploadedFiles: FileList;
     public animation = true;
     public multiple = true;
 
@@ -284,7 +286,7 @@ export class NewDmarkPermitComponent implements OnInit {
                     console.log(data);
                     this.step += 1;
                     swal.fire({
-                        title: 'STA3 Form Completed! Proceed to submit application.',
+                        title: 'STA3 Form Completed! Proceed to Upload attachments.',
                         buttonsStyling: false,
                         customClass: {
                             confirmButton: 'btn btn-success form-wizard-next-btn ',
@@ -298,8 +300,72 @@ export class NewDmarkPermitComponent implements OnInit {
     }
 
     goToPermit() {
-        this.router.navigate(['/permitdetails'], {fragment: this.permitEntityDetails.id.toString()});
+        if (this.uploadedFiles.length > 0) {
+            const file = this.uploadedFiles;
+            const formData = new FormData();
+            for (let i = 0; i < file.length; i++) {
+                console.log(file[i]);
+                formData.append('docFile', file[i], file[i].name);
+            }
+            //
+            // const headers = new Headers();
+            // // It is very important to leave the Content-Type empty
+            // // do not use headers.append('Content-Type', 'multipart/form-data');
+            // headers.append('Authorization', 'Bearer ' + 'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9....');
+            // const options = new RequestOptions({headers: headers});
+            // this.http.post('https://api.mysite.com/uploadfile', formData, options)
+            //     .map(res => res.json())
+            //     .catch(error => Observable.throw(error))
+            //     .subscribe(
+            //         data => console.log('success'),
+            //         error => console.log(error)
+            //     );
+
+            this.qaService.uploadSTA3File(this.permitEntityDetails.id.toString(), formData).subscribe(
+                (data: any) => {
+                    console.log(data);
+                    this.step += 1;
+                    swal.fire({
+                        title: 'STA3 Form Completed! Proceed to submit application.',
+                        buttonsStyling: false,
+                        customClass: {
+                            confirmButton: 'btn btn-success form-wizard-next-btn ',
+                        },
+                        icon: 'success'
+                    });
+                    // this.router.navigate(['/permitdetails'], {fragment: this.permitEntityDetails.id.toString()});
+                },
+            );
+            this.router.navigate(['/permitdetails'], {fragment: this.permitEntityDetails.id.toString()});
+        }
 
     }
 
+    showNotification(from: any, align: any) {
+        const type = ['', 'info', 'success', 'warning', 'danger', 'rose', 'primary'];
+
+        const color = Math.floor((Math.random() * 6) + 1);
+
+        $.notify({
+            icon: 'notifications',
+            message: 'Welcome to <b>Material Dashboard</b> - a beautiful dashboard for every web developer.'
+        }, {
+            type: type[color],
+            timer: 3000,
+            placement: {
+                from: from,
+                align: align
+            },
+            template: '<div data-notify="container" class="col-xs-11 col-sm-3 alert alert-{0} alert-with-icon" role="alert">' +
+                '<button mat-raised-button type="button" aria-hidden="true" class="close" data-notify="dismiss">  <i class="material-icons">close</i></button>' +
+                '<i class="material-icons" data-notify="icon">notifications</i> ' +
+                '<span data-notify="title"></span> ' +
+                '<span data-notify="message">Ensure all required fields are items have been filled</span>' +
+                '<div class="progress" data-notify="progressbar">' +
+                '<div class="progress-bar progress-bar-{0}" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;"></div>' +
+                '</div>' +
+                '<a href="{3}" target="{4}" data-notify="url"></a>' +
+                '</div>'
+        });
+    }
 }

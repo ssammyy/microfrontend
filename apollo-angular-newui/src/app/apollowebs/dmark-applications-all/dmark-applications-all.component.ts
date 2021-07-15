@@ -61,7 +61,7 @@ export class DmarkApplicationsAllComponent implements OnInit {
   //
   }
   ngAfterViewInit() {
-    $('#datatables').DataTable({
+    $('#datatablesd').DataTable({
       'pagingType': 'full_numbers',
 
         responsive: true,

@@ -85,6 +85,21 @@ import {PdfViewerModule} from "ng2-pdf-viewer";
 import {BrowserModule} from "@angular/platform-browser";
 import {NgxExtendedPdfViewerModule} from "ngx-extended-pdf-viewer";
 import { TaskManagerComponent } from './apollowebs/task-manager/task-manager.component';
+import {UserComponent} from './apollowebs/company/branch/users/user.component';
+import {UserList} from './apollowebs/company/branch/users/user.list';
+import {UserProfileComponent} from './apollowebs/company/branch/users/user-profile.component';
+import {SmarkApplicationsAllComponent} from './apollowebs/smark-applications-all/smark-applications-all.component';
+import {UserProfileMainComponent} from './apollowebs/userprofilemain/user-profile-main.component';
+import {NgxSpinnerModule} from 'ngx-spinner';
+import {AddBranchComponent} from './apollowebs/company/branch/add-branch/add-branch.component';
+import {OtpComponent} from './views/registration/otp/otp.component';
+import {InvoiceConsolidateComponent} from './apollowebs/invoice-consolidate/invoice-consolidate.component';
+import {PdfViewComponent} from './pdf-view/pdf-view.component';
+import {PdfViewerModule} from 'ng2-pdf-viewer';
+import {BrowserModule} from '@angular/platform-browser';
+import {NgxExtendedPdfViewerModule} from 'ngx-extended-pdf-viewer';
+import {FileUploadModule} from "@iplab/ngx-file-upload";
+import { AddUserComponent } from './apollowebs/company/branch/add-user/add-user.component';
 
 @NgModule({
     exports: [
@@ -132,6 +147,7 @@ import { TaskManagerComponent } from './apollowebs/task-manager/task-manager.com
         FormsModule,
         PdfViewerModule,
         NgxExtendedPdfViewerModule,
+        FileUploadModule,
         // CoreModule
     ],
     declarations: [
@@ -165,6 +181,8 @@ import { TaskManagerComponent } from './apollowebs/task-manager/task-manager.com
         InvoiceConsolidateComponent,
         PdfViewComponent,
         TaskManagerComponent
+        PdfViewComponent,
+        AddUserComponent
     ]
 
 })

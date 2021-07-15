@@ -50,6 +50,7 @@ import org.springframework.web.servlet.function.ServerResponse
 import org.springframework.web.servlet.function.ServerResponse.ok
 import org.springframework.web.servlet.function.body
 import org.springframework.web.servlet.function.paramOrNull
+import java.io.File
 
 
 @Component
@@ -1375,8 +1376,8 @@ class QualityAssuranceHandler(
             val sta3 = qaDaoServices.findSTA3WithPermitRefNumber(
                 permit.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER")
             )
-            val dto = req.body<UploadsDtoSTA3>()
-            dto.uploadedFiles?.forEach { u ->
+            val dto = req.body<List<File>>()
+            dto.forEach { u ->
                 val upload = QaUploadsEntity()
                 with(upload) {
                     sta3Status = 1
