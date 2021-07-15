@@ -6,7 +6,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {QaService} from '../../core/store/data/qa/qa.service';
 import {PermitEntityDetails, PlantDetailsDto, SectionDto} from '../../core/store/data/qa/qa.model';
 import swal from 'sweetalert2';
-import {FileUploadValidators} from "@iplab/ngx-file-upload";
+import {FileUploadValidators} from '@iplab/ngx-file-upload';
 
 @Component({
     selector: 'app-new-dmark-permit',
@@ -28,9 +28,9 @@ export class NewDmarkPermitComponent implements OnInit {
     step = 1;
     currBtn = 'A';
     checkN: number;
-    public uploadedFiles: Array<File> = [];
-    public animation: boolean = false;
-    public multiple: boolean = false;
+    public uploadedFiles: File[] = [];
+    public animation = true;
+    public multiple = true;
 
     private filesControl = new FormControl(null, FileUploadValidators.filesLimit(2));
 
@@ -149,7 +149,7 @@ export class NewDmarkPermitComponent implements OnInit {
                     break;
             }
             this.step += 1;
-            //console.log(`Clicked and step = ${this.step}`);
+            // console.log(`Clicked and step = ${this.step}`);
         }
     }
 
@@ -297,8 +297,7 @@ export class NewDmarkPermitComponent implements OnInit {
         }
     }
 
-    goToPermit()
-    {
+    goToPermit() {
         this.router.navigate(['/permitdetails'], {fragment: this.permitEntityDetails.id.toString()});
 
     }
