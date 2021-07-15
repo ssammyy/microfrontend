@@ -11,6 +11,7 @@ import {
     STA10ProductsManufactureDto, STA10RawMaterialsDto
 } from '../../core/store/data/qa/qa.model';
 import swal from 'sweetalert2';
+import {FileUploadValidators} from "@iplab/ngx-file-upload";
 
 @Component({
     selector: 'app-new-smark-permit',
@@ -44,6 +45,16 @@ export class NewSmarkPermitComponent implements OnInit {
     currBtn = 'A';
     stepSoFar: | undefined;
     step = 1;
+
+    public uploadedFiles: Array<File> = [];
+    public animation: boolean = false;
+    public multiple: boolean = false;
+
+    private filesControl = new FormControl(null, FileUploadValidators.filesLimit(2));
+
+    public demoForm = new FormGroup({
+        files: this.filesControl
+    });
 
     constructor(private store$: Store<any>,
                 private router: Router,
@@ -96,7 +107,7 @@ export class NewSmarkPermitComponent implements OnInit {
             productBrand: ['', Validators.required],
             productStandardNumber: ['', Validators.required],
             available: ['', Validators.required],
-            permitNo: ['', Validators.required]
+            permitNo: []
         });
 
         this.sta10FormC = this.formBuilder.group({
@@ -324,7 +335,7 @@ export class NewSmarkPermitComponent implements OnInit {
                         console.log(data);
                         this.step += 1;
                         swal.fire({
-                            title: 'STA10 Form saved!',
+                            title: 'Firm Details Saved!',
                             buttonsStyling: false,
                             customClass: {
                                 confirmButton: 'btn btn-success form-wizard-next-btn ',
@@ -335,7 +346,7 @@ export class NewSmarkPermitComponent implements OnInit {
                     },
                 );
             } else {
-                this.qaService.updateFirmDetailsSta10(this.permitEntityDetails.id.toString(), this.sta10Form.value).subscribe(
+                this.qaService.updateFirmDetailsSta10(`${this.permitEntityDetails.id}`, this.sta10FormF.value).subscribe(
                     (data) => {
                         this.Sta10Details = data;
                         console.log(data);
@@ -348,10 +359,41 @@ export class NewSmarkPermitComponent implements OnInit {
                             },
                             icon: 'success'
                         });
-// this.router.navigate(['/users-list']);
                     },
                 );
             }
+        }
+    }
+
+    onClickSaveSTA10F(valid: boolean) {
+        if (valid) {
+            console.log(this.permitEntityDetails.id.toString());
+
+                this.qaService.updateFirmDetailsSta10(this.permitEntityDetails.id.toString(), this.sta10FormF.value).subscribe(
+                    (data) => {
+                        this.Sta10Details = data;
+                        console.log(data);
+                        this.step += 1;
+                        swal.fire({
+                            title: 'Nonconforming Products Manufacturing Process saved!',
+                            buttonsStyling: false,
+                            customClass: {
+                                confirmButton: 'btn btn-success form-wizard-next-btn ',
+                            },
+                            icon: 'success'
+                        });
+                        //this.router.navigate(['/permitdetails'], {fragment: this.permitEntityDetails.id.toString()});
+                    },
+                );
+        }
+    }
+    onClickSaveSTA10G(valid: boolean) {
+        if (valid) {
+            console.log(this.permitEntityDetails.id.toString());
+
+            this.router.navigate(['/permitdetails'], {fragment: this.permitEntityDetails.id.toString()});
+
+
         }
     }
 
@@ -365,7 +407,7 @@ export class NewSmarkPermitComponent implements OnInit {
                     console.log(data);
                     this.step += 1;
                     swal.fire({
-                        title: 'STA10 Form Personnel Details saved!',
+                        title: 'Key Personnel Details Saved!',
                         buttonsStyling: false,
                         customClass: {
                             confirmButton: 'btn btn-success form-wizard-next-btn ',
@@ -380,13 +422,13 @@ export class NewSmarkPermitComponent implements OnInit {
     onClickSaveSTAProductsManufactured(valid: boolean) {
         if (valid) {
             console.log(this.Sta10Details.id.toString());
-            this.qaService.saveProductsManufacturedDetailsSta10(this.Sta10Details.id.toString(), this.sta10Form.value).subscribe(
+            this.qaService.saveProductsManufacturedDetailsSta10(this.Sta10Details.id.toString(), this.sta10ProductsManufactureDetails).subscribe(
                 (data) => {
                     this.sta10ProductsManufactureDetails = data;
                     console.log(data);
                     this.step += 1;
                     swal.fire({
-                        title: 'STA10 Form Products Manufactured Details saved!',
+                        title: 'Products being Manufactured Saved!',
                         buttonsStyling: false,
                         customClass: {
                             confirmButton: 'btn btn-success form-wizard-next-btn ',
@@ -401,13 +443,13 @@ export class NewSmarkPermitComponent implements OnInit {
     onClickSaveSTARawMaterials(valid: boolean) {
         if (valid) {
             console.log(this.Sta10Details.id.toString());
-            this.qaService.saveRawMaterialsDetailsSta10(this.Sta10Details.id.toString(), this.sta10Form.value).subscribe(
+            this.qaService.saveRawMaterialsDetailsSta10(this.Sta10Details.id.toString(), this.sta10RawMaterialsDetails).subscribe(
                 (data) => {
                     this.sta10RawMaterialsDetails = data;
                     console.log(data);
                     this.step += 1;
                     swal.fire({
-                        title: 'STA10 Form Raw Materials Details saved!',
+                        title: 'Raw Materials Details saved!',
                         buttonsStyling: false,
                         customClass: {
                             confirmButton: 'btn btn-success form-wizard-next-btn ',
@@ -422,13 +464,13 @@ export class NewSmarkPermitComponent implements OnInit {
     onClickSaveSTAMachineryPlant(valid: boolean) {
         if (valid) {
             console.log(this.Sta10Details.id.toString());
-            this.qaService.saveMachineryPlantDetailsSta10(this.Sta10Details.id.toString(), this.sta10Form.value).subscribe(
+            this.qaService.saveMachineryPlantDetailsSta10(this.Sta10Details.id.toString(), this.sta10MachineryAndPlantDetails).subscribe(
                 (data) => {
                     this.sta10MachineryAndPlantDetails = data;
                     console.log(data);
                     this.step += 1;
                     swal.fire({
-                        title: 'STA10 Form RMachinery And Plant Details saved!',
+                        title: 'Machinery And Plant Details saved!',
                         buttonsStyling: false,
                         customClass: {
                             confirmButton: 'btn btn-success form-wizard-next-btn ',
@@ -443,13 +485,13 @@ export class NewSmarkPermitComponent implements OnInit {
     onClickSaveSTAManufacturingProcess(valid: boolean) {
         if (valid) {
             console.log(this.Sta10Details.id.toString());
-            this.qaService.saveManufacturingProcessDetailsSta10(this.Sta10Details.id.toString(), this.sta10Form.value).subscribe(
+            this.qaService.saveManufacturingProcessDetailsSta10(this.Sta10Details.id.toString(), this.sta10ManufacturingProcessDetails).subscribe(
                 (data) => {
                     this.sta10ManufacturingProcessDetails = data;
                     console.log(data);
                     this.step += 1;
                     swal.fire({
-                        title: 'STA10 Form Manufacturing Process Details saved!',
+                        title: 'Manufacturing Process Details saved!',
                         buttonsStyling: false,
                         customClass: {
                             confirmButton: 'btn btn-success form-wizard-next-btn ',

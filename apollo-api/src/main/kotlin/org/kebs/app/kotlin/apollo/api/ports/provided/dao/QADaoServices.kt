@@ -28,6 +28,7 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.multipart.MultipartFile
+import java.io.File
 import java.math.BigDecimal
 import java.sql.Date
 import java.sql.Timestamp
@@ -76,6 +77,7 @@ class QADaoServices(
     private val iMoneyTypeCodesRepo: ICfgMoneyTypeCodesRepository,
     private val mpesaServices: MPesaService,
     private val msReportsControllers: MSReportsControllers,
+    private val reportsDaoService: ReportsDaoService,
 //    private val reportsControllers: ReportsController,
     private val notifications: Notifications,
 ) {
@@ -1003,6 +1005,8 @@ class QADaoServices(
                 p.userTaskId,
                 p.companyId,
                 p.permitType,
+                p.processStep,
+                p.processStepName,
             )
         }
     }
@@ -1939,7 +1943,7 @@ class QADaoServices(
                 ?.let { foundProductsManufactured ->
 
                     productsManufacturedDetsils = commonDaoServices.updateDetails(
-                        productsManufactured,
+                        productsManufacturedDetsils,
                         foundProductsManufactured
                     ) as QaProductManufacturedEntity
 
@@ -2095,6 +2099,31 @@ class QADaoServices(
 
         KotlinLogging.logger { }.trace("${sr.id} ${sr.responseStatus}")
         return Pair(sr, uploads)
+    }
+
+    fun uploadQaFile(
+        uploads: QaUploadsEntity,
+        docFile: File,
+        doc: String,
+        permitRefNUMBER: String,
+        user: UsersEntity
+    ): QaUploadsEntity {
+
+        with(uploads) {
+            ordinaryStatus = 1
+            name = docFile.name
+            fileType = docFile.extension
+            documentType = doc
+            document = docFile.readBytes()
+            permitRefNumber = permitRefNUMBER
+            transactionDate = commonDaoServices.getCurrentDate()
+            versionNumber = 1
+            status = 1
+            createdBy = commonDaoServices.concatenateName(user)
+            createdOn = commonDaoServices.getTimestamp()
+        }
+
+        return qaUploadsRepo.save(uploads)
     }
 
     fun sta10ManufacturingProcessNewSave(
@@ -2382,6 +2411,18 @@ class QADaoServices(
         return Pair(sr, savePermit)
     }
 
+    fun getFileInvoicePDFForm(batchID: Long): File {
+        val myDetails = reportsControllers.createInvoicePdf(batchID)
+        reportsDaoService.generateEmailPDFReportWithDataSource(
+            "Proforma-Invoice-${myDetails.first.getValue("demandNoteNo")}.pdf",
+            myDetails.first,
+            applicationMapProperties.mapReportProfomaInvoiceWithItemsPath,
+            myDetails.second
+        )?.let {
+            return it
+        } ?: throw ExpectedDataNotFound("MISSING FILE")
+    }
+
     fun invoiceCreationPDF(
         batchID: Long,
         senderEmail: String,
@@ -2390,15 +2431,25 @@ class QADaoServices(
 
         val myDetails = reportsControllers.createInvoicePdf(batchID)
 
-        msReportsControllers.extractAndSaveReport(
+        val invoicePDFCreated = reportsDaoService.generateEmailPDFReportWithDataSource(
+            "Proforma-Invoice-${myDetails.first.getValue("demandNoteNo")}.pdf",
             myDetails.first,
             applicationMapProperties.mapReportProfomaInvoiceWithItemsPath,
-            "Pro forma invoice",
             myDetails.second
         )
+
+        val upload = QaUploadsEntity()
+        uploadQaFile(
+            upload,
+            invoicePDFCreated ?: throw ExpectedDataNotFound("MISSING FILE"),
+            "PERMIT INVOICE",
+            myDetails.first.getValue("demandNoteNo").toString(),
+            loggedInUser
+        )
+
         sendEmailWithProforma(
             senderEmail,
-            applicationMapProperties.mapPDFProfomaInvoiceWithItemsPath,
+            invoicePDFCreated.path,
         )
     }
 
@@ -2406,7 +2457,6 @@ class QADaoServices(
         val subject = "PRO FORMA INVOICE"
         val messageBody = "Check The attached Proforma Invoices for payment"
 
-//        notifications.sendEmail(recipient, subject, messageBody)
         notifications.processEmail(recipient, subject, messageBody, attachment)
 
         return true
@@ -2629,13 +2679,13 @@ class QADaoServices(
         }
         permit = permitUpdateDetails(permit, map, loggedInUser).second
 
-//        //Send email with attached Invoice details
-//        invoiceCreationPDF(
-//            batchInvoice.id ?: throw ExpectedDataNotFound("MISSING BATCH INVOICE ID"),
-//            commonDaoServices.findUserByID(permit.userId ?: throw ExpectedDataNotFound("MISSING USER ID")).email
-//                ?: throw ExpectedDataNotFound("MISSING USER ID"),
-//            loggedInUser
-//        )
+        //Send email with attached Invoice details
+        invoiceCreationPDF(
+            batchInvoice.id ?: throw ExpectedDataNotFound("MISSING BATCH INVOICE ID"),
+            commonDaoServices.findUserByID(permit.userId ?: throw ExpectedDataNotFound("MISSING USER ID")).email
+                ?: throw ExpectedDataNotFound("MISSING USER ID"),
+            loggedInUser
+        )
 
         return Pair(batchInvoice, permit)
     }
@@ -4005,13 +4055,15 @@ class QADaoServices(
         }
     }
 
-    fun getTaskListPermit(userID: Long) {
-        qualityAssuranceBpmn.fetchAllTasksByAssignee(userID)
-            ?.forEach { t ->
-                t.permitId
-                t.task.name
-                t.task.createTime
-            }
+    fun getTaskListPermit(userID: Long): List<TaskDto>? {
+        return qualityAssuranceBpmn.fetchAllTasksByAssignee(userID)?.map { t ->
+            TaskDto(
+                t.permitId,
+                t.task.name,
+                t.task.createTime,
+                t.permitRefNo
+            )
+        }
 
     }
 

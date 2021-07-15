@@ -1,12 +1,12 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
-import {loadAuths, LoginCredentials} from '../../core/store';
+import {LoginCredentials} from '../../core/store';
 import {Store} from '@ngrx/store';
 import {ActivatedRoute, Router} from '@angular/router';
 import {QaService} from '../../core/store/data/qa/qa.service';
 import {PermitEntityDetails, PlantDetailsDto, SectionDto} from '../../core/store/data/qa/qa.model';
-import {UserRegister} from '../../../../../apollo-webs/src/app/shared/models/user';
 import swal from 'sweetalert2';
+import {FileUploadValidators} from '@iplab/ngx-file-upload';
 
 @Component({
     selector: 'app-new-dmark-permit',
@@ -28,7 +28,15 @@ export class NewDmarkPermitComponent implements OnInit {
     step = 1;
     currBtn = 'A';
     checkN: number;
+    public uploadedFiles: File[] = [];
+    public animation = true;
+    public multiple = true;
 
+    private filesControl = new FormControl(null, FileUploadValidators.filesLimit(2));
+
+    public demoForm = new FormGroup({
+        files: this.filesControl
+    });
 
     constructor(private store$: Store<any>,
                 private router: Router,
@@ -141,7 +149,7 @@ export class NewDmarkPermitComponent implements OnInit {
                     break;
             }
             this.step += 1;
-            //console.log(`Clicked and step = ${this.step}`);
+            // console.log(`Clicked and step = ${this.step}`);
         }
     }
 
@@ -216,7 +224,7 @@ export class NewDmarkPermitComponent implements OnInit {
                     console.log(data);
                     this.step += 1;
                     swal.fire({
-                        title: 'STA3 Form saved!',
+                        title: 'STA3: Factory Organisation Details saved!',
                         buttonsStyling: false,
                         customClass: {
                             confirmButton: 'btn btn-success form-wizard-next-btn ',
@@ -236,7 +244,7 @@ export class NewDmarkPermitComponent implements OnInit {
                     console.log(data);
                     this.step += 1;
                     swal.fire({
-                        title: 'STA3 Form updated!',
+                        title: 'STA3: Factory Organisation Details updated!',
                         buttonsStyling: false,
                         customClass: {
                             confirmButton: 'btn btn-success form-wizard-next-btn ',
@@ -256,7 +264,7 @@ export class NewDmarkPermitComponent implements OnInit {
                     console.log(data);
                     this.step += 1;
                     swal.fire({
-                        title: 'STA3 Form updated!',
+                        title: 'STA3: Quality Control/Inspection Staff Details saved!',
                         buttonsStyling: false,
                         customClass: {
                             confirmButton: 'btn btn-success form-wizard-next-btn ',
@@ -276,16 +284,22 @@ export class NewDmarkPermitComponent implements OnInit {
                     console.log(data);
                     this.step += 1;
                     swal.fire({
-                        title: 'STA3 Form updated! proceed to submit application',
+                        title: 'STA3 Form Completed! Proceed to submit application.',
                         buttonsStyling: false,
                         customClass: {
                             confirmButton: 'btn btn-success form-wizard-next-btn ',
                         },
                         icon: 'success'
                     });
-                    this.router.navigate(['/permitdetails'], {fragment: this.permitEntityDetails.id.toString()});
+                    // this.router.navigate(['/permitdetails'], {fragment: this.permitEntityDetails.id.toString()});
                 },
             );
         }
     }
+
+    goToPermit() {
+        this.router.navigate(['/permitdetails'], {fragment: this.permitEntityDetails.id.toString()});
+
+    }
+
 }

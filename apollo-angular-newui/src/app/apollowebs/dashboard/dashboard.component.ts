@@ -21,6 +21,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     countAwarded = 0;
     countExpired = 0;
 
+
     startAnimationForLineChart(chart: any) {
         let seq: any, delays: any, durations: any;
         seq = 0;

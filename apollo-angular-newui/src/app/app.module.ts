@@ -78,6 +78,12 @@ import { SmarkApplicationsAllComponent } from './apollowebs/smark-applications-a
 import { UserProfileMainComponent } from './apollowebs/userprofilemain/user-profile-main.component';
 import {NgxSpinnerModule} from "ngx-spinner";
 import { AddBranchComponent } from './apollowebs/company/branch/add-branch/add-branch.component';
+import { OtpComponent } from './views/registration/otp/otp.component';
+import { InvoiceConsolidateComponent } from './apollowebs/invoice-consolidate/invoice-consolidate.component';
+import { PdfViewComponent } from './pdf-view/pdf-view.component';
+import {PdfViewerModule} from "ng2-pdf-viewer";
+import {BrowserModule} from "@angular/platform-browser";
+import {NgxExtendedPdfViewerModule} from "ngx-extended-pdf-viewer";
 
 @NgModule({
     exports: [
@@ -115,12 +121,16 @@ import { AddBranchComponent } from './apollowebs/company/branch/add-branch/add-b
     imports: [
         MdModule,
         CommonModule,
+        BrowserModule,
         // TODO: Discuss as it seems to kill sending of requests to backend
         // EffectsModule.forRoot([]),
         // EntityDataModule.forRoot(entityConfig),
         ReactiveFormsModule,
         RouterModule,
         CoreModule,
+        FormsModule,
+        PdfViewerModule,
+        NgxExtendedPdfViewerModule,
         // CoreModule
     ],
     declarations: [
@@ -149,7 +159,10 @@ import { AddBranchComponent } from './apollowebs/company/branch/add-branch/add-b
         UserProfileComponent,
         SmarkApplicationsAllComponent,
         UserProfileMainComponent,
-        AddBranchComponent
+        AddBranchComponent,
+        OtpComponent,
+        InvoiceConsolidateComponent,
+        PdfViewComponent
     ]
 
 })
@@ -160,6 +173,7 @@ export class MaterialModule {}
         CommonModule,
         BrowserAnimationsModule,
         FormsModule,
+        PdfViewerModule,
         // RouterModule.forRoot(routes, {
         //     useHash: true
         // }),

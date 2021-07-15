@@ -1,11 +1,11 @@
 import {AfterViewInit, Component, OnInit} from '@angular/core';
+import {ActivatedRoute} from '@angular/router';
 import {
     AllBatchInvoiceDetailsDto,
     PermitInvoiceDto,
     AllPermitDetailsDto,
     PermitEntityDto
 } from '../../core/store/data/qa/qa.model';
-import {ActivatedRoute} from '@angular/router';
 import {QaService} from '../../core/store/data/qa/qa.service';
 
 declare interface DataTable {
@@ -23,10 +23,12 @@ declare const $: any;
 })
 export class InvoiceDetailsComponent implements OnInit, AfterViewInit {
 
+
     public dataTable: DataTable;
     public batchID!: string;
     public allPermitData: PermitInvoiceDto[];
     public allBatchInvoiceDetails!: AllBatchInvoiceDetailsDto;
+    pdfSources = "https://vadimdez.github.io/ng2-pdf-viewer/assets/pdf-test.pdf";
 
     constructor(
         private route: ActivatedRoute,

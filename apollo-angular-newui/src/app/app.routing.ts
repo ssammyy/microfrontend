@@ -26,6 +26,9 @@ import {UserList} from './apollowebs/company/branch/users/user.list';
 import {SmarkApplicationsAllComponent} from './apollowebs/smark-applications-all/smark-applications-all.component';
 import {UserProfileMainComponent} from './apollowebs/userprofilemain/user-profile-main.component';
 import {AddBranchComponent} from "./apollowebs/company/branch/add-branch/add-branch.component";
+import {OtpComponent} from "./views/registration/otp/otp.component";
+import {InvoiceConsolidateComponent} from "./apollowebs/invoice-consolidate/invoice-consolidate.component";
+import {PdfViewComponent} from "./pdf-view/pdf-view.component";
 
 // export const AppRoutes: Routes = [
 //     {
@@ -115,6 +118,11 @@ const routes: Routes = [
             {
                 path: 'reset',
                 component: ResetCredentialsComponent
+            },
+            {
+                path: 'otp',
+                component: OtpComponent
+
             }
 
         ],
@@ -218,6 +226,13 @@ const routes: Routes = [
     {
         path: 'smark/all_smark', component: AdminLayoutComponent,
         children: [{path: '', component: SmarkApplicationsAllComponent}]
+    },
+    {
+        path: 'consolidate_invoice', component: AdminLayoutComponent,
+        children: [{path: '', component: InvoiceConsolidateComponent}]
+    },
+    {
+        path: 'invoice_test', component: PdfViewComponent
     }
 ];
 

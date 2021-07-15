@@ -20,7 +20,7 @@
 <div class="form-wizard">
 <div [ngSwitch]="step">
 <div *ngSwitchCase="1">
-<h2 style="text-align: center"><b style="color: #0d47a1">Step</b> <b style="color: #d50000"> 1</b><b style="color: #0d0505"> of</b> <b style="color: #0d47a1"> 9</b></h2>
+<h2 style="text-align: center"><b >Step</b> <b > 1</b><b > of</b> <b > 9</b></h2>
 
 <fieldset class="wizard-fieldset show">
 <form (ngSubmit)="onClickSaveSTA1(sta1Form.valid)" [formGroup]="sta1Form" class="form"
@@ -32,7 +32,7 @@ standardization mark on the commodity specified here under:
 
 <div class="row">
 <div class="form-group col-6">
-<label for="commodityDescription">Commodity Description</label>
+    <label for="commodityDescription">Commodity Description <span style="font-size: xx-small; color: red;">(*)Required</span></label>
 <input [class.is-invalid]="formSta1Form.commodityDescription.invalid && formSta1Form.commodityDescription.touched" type="text" class="form-control" id="commodityDescription" formControlName="commodityDescription"
 name="commodityDescription" placeholder="Commodity Description" required="">
 
@@ -48,20 +48,20 @@ name="commodityDescription" placeholder="Commodity Description" required="">
 <!--        </div>-->
 <!--    </div>-->
 <div class="form-group col-6">
-<label for="tradeMark">Trade Mark</label>
+<label for="tradeMark">Trade Mark <span style="font-size: xx-small; color: red;">(*)Required</span></label>
 <input type="text" [class.is-invalid]="formSta1Form.tradeMark.invalid && formSta1Form.tradeMark.touched" class="form-control" id="tradeMark" formControlName="tradeMark" name="tradeMark"
 placeholder="Trade Mark" required="">
 </div>
 </div>
 <div class="row">
 <div class="form-group col-6">
-<label for="applicantName">Applicant Name</label>
+<label for="applicantName">Applicant Name <span style="font-size: xx-small; color: red;">(*)Required</span></label>
 <input type="text" [class.is-invalid]="formSta1Form.applicantName.invalid && formSta1Form.applicantName.touched" class="form-control" id="applicantName" formControlName="applicantName" name="applicantName"
 placeholder="Applicant Name" required="">
 </div>
 
 <div class="form-group col-6">
-<label for="inputState">Select Section</label>
+<label for="inputState">Select Section <span style="font-size: xx-small; color: red;">(*)Select One</span></label>
 <select id="inputState" class="form-control" formControlName="sectionId" name="sectionId"
 [class.is-invalid]="formSta1Form.sectionId.invalid && formSta1Form.sectionId.touched">
 <option selected>Select Section</option>
@@ -83,7 +83,7 @@ class="dropdown-item">{{section.section}}</option>
 <!--                        </select>-->
 <!--                    </div>-->
 <div class="form-group col-6">
-<label for="attachedPlant">Attach Plant</label>
+<label for="attachedPlant">Attach Plant <span style="font-size: xx-small; color: red;">(*)Select One</span></label>
 <select id="attachedPlant" class="form-control" formControlName="attachedPlant" name="attachedPlant"
 [class.is-invalid]="formSta1Form.attachedPlant.invalid && formSta1Form.attachedPlant.touched">
 <option selected>Select Plant</option>
@@ -107,9 +107,10 @@ class="form-wizard-next-btn float-right"
 </fieldset>
 </div>
 <div *ngSwitchCase="2">
-<h2 style="text-align: center"><b style="color: #0d47a1">Step</b> <b style="color: #d50000"> 2</b><b style="color: #0d0505"> of</b> <b style="color: #0d47a1"> 9</b></h2>
+<h2 style="text-align: center"><b >Step</b> <b > 2</b><b > of</b> <b > 9</b></h2>
 
 <fieldset class="wizard-fieldset show">
+    <h2>STA10 FORM</h2>
 <h3>Firm details</h3>
 <form (ngSubmit)="onClickSaveSTA10(sta10Form.valid)" [formGroup]="sta10Form" class="form"
 enctype="multipart/form-data" >
@@ -236,7 +237,7 @@ class="form-wizard-next-btn float-right"
 </fieldset>
 </div>
 <div *ngSwitchCase="3">
-<h2 style="text-align: center"><b style="color: #0d47a1">Step</b> <b style="color: #d50000"> 3</b><b style="color: #0d0505"> of</b> <b style="color: #0d47a1"> 9</b></h2>
+<h2 style="text-align: center"><b >Step</b> <b > 3</b><b > of</b> <b > 9</b></h2>
 
 <fieldset class="wizard-fieldset show">
 <form (ngSubmit)="onClickSaveSTAPersonnel(sta10FormA.valid)" [formGroup]="sta10FormA" class="form"
@@ -309,7 +310,7 @@ class="form-wizard-next-btn float-right"
 </div>
 
 <div *ngSwitchCase="4">
-<h2 style="text-align: center"><b style="color: #0d47a1">Step</b> <b style="color: #d50000"> 4</b><b style="color: #0d0505"> of</b> <b style="color: #0d47a1"> 9</b></h2>
+<h2 style="text-align: center"><b >Step</b> <b > 4</b><b > of</b> <b> 9</b></h2>
 
 <fieldset class="wizard-fieldset show">
 <form (ngSubmit)="onClickSaveSTAProductsManufactured(sta10FormB.valid)" [formGroup]="sta10FormB" class="form"
@@ -319,37 +320,40 @@ enctype="multipart/form-data">
     <div class="row">
         <div class="form-group col-6">
             <label for="productName">Product Name</label>
-            <input type="text" [class.is-invalid]="formSta10FormB.productName.invalid && formSta10FormB.productName.touched" type="text"   formControlName="productName"
+            <input type="text" [class.is-invalid]="formSta10FormB.productName.invalid && formSta10FormB.productName.touched"   formControlName="productName"
                    name="productName" id="productName" class="form-control"  placeholder="Product Name " >
         </div>
         <div class="form-group col-6">
             <label for="productBrand">Brand Name</label>
-            <input type="text" [class.is-invalid]="formSta10FormB.productBrand.invalid && formSta10FormB.productBrand.touched" type="text" formControlName="productBrand"
+            <input type="text" [class.is-invalid]="formSta10FormB.productBrand.invalid && formSta10FormB.productBrand.touched"  formControlName="productBrand"
                    name="productBrand" id="productBrand" class="form-control"  placeholder="Brand Name " >
         </div>
     </div>
     <div class="row">
         <div class="form-group col-6">
             <label for="productStandardNumber">Applicable Product Standard number</label>
-            <input type="text" [class.is-invalid]="formSta10FormB.productStandardNumber.invalid && formSta10FormB.productStandardNumber.touched" type="text"   formControlName="productStandardNumber"
+            <input type="text" [class.is-invalid]="formSta10FormB.productStandardNumber.invalid && formSta10FormB.productStandardNumber.touched"   formControlName="productStandardNumber"
                    name="productStandardNumber" id="productStandardNumber" class="form-control"  placeholder="Applicable Product
 Standard number" >
         </div>
         <div class="form-group col-6">
             <label for="available">Available (YES/NO)</label>
-            <input type="text" [class.is-invalid]="formSta10FormB.available.invalid && formSta10FormB.available.touched" type="text"   formControlName="available"
-                   name="available" id="available" class="form-control"  placeholder="Available (YES/NO)" >
+            <input type="checkbox" [class.is-invalid]="formSta10FormB.available.invalid && formSta10FormB.available.touched"   formControlName="available"
+                   name="available" id="available" class="form-control"  >
+
+
+
         </div>
     </div>
     <div class="row">
         <div class="form-group col-6">
             <label for="permitNo">KEBS Permit NO. (if applicable).</label>
-            <input type="text" [class.is-invalid]="formSta10FormB.permitNo.invalid && formSta10FormB.permitNo.touched" type="text"   formControlName="permitNo"
+            <input type="text"    formControlName="permitNo"
                    name="permitNo" id="permitNo" class="form-control"  placeholder="KEBS Permit NO.
 (if applicable)." >
         </div>
         <div class="form-group col-6">
-            <label style="visibility: hidden">Available (YES/NO)</label>
+            <label style="color: transparent">Button</label>
           <span class="input-group-btn">
 <button (click)="onClickAddProductsManufacture()"
         type="button" class="btn btn-success btn-sm">
@@ -400,7 +404,7 @@ class="form-wizard-next-btn float-right"
 </fieldset>
 </div>
     <div *ngSwitchCase="5">
-        <h2 style="text-align: center"><b style="color: #0d47a1">Step</b> <b style="color: #d50000"> 5</b><b style="color: #0d0505"> of</b> <b style="color: #0d47a1"> 9</b></h2>
+        <h2 style="text-align: center"><b >Step</b> <b> 5</b><b > of</b> <b > 9</b></h2>
 
         <fieldset class="wizard-fieldset show">
             <form (ngSubmit)="onClickSaveSTARawMaterials(sta10FormC.valid)" [formGroup]="sta10FormC" class="form"
@@ -408,13 +412,15 @@ class="form-wizard-next-btn float-right"
                 <h4><b>Raw material</b></h4>
                 <h5><b>   Specify the type of materials and origin (attach their specification where applicable): </b></h5>
 
+
+
                 <div class="row">
-                    <div class="col-6">
+                    <div class="form-group col-6">
                         <label for="name">Raw material.</label>
                         <input type="text" [class.is-invalid]="formSta10FormC.name.invalid && formSta10FormC.name.touched" type="text"   formControlName="name"
                                name="name" id="name" class="form-control" placeholder="Raw material  " >
                     </div>
-                    <div class="col-6">
+                    <div class="form-group col-6">
                         <label for="origin">Origin.</label>
                         <input type="text" [class.is-invalid]="formSta10FormC.origin.invalid && formSta10FormC.origin.touched" type="text"   formControlName="origin"
                                name="origin" id="origin" class="form-control"  placeholder="Origin " >
@@ -422,19 +428,19 @@ class="form-wizard-next-btn float-right"
                 </div>
 
                         <div class="row">
-                            <div class="col-5">
+                            <div class="form-group col-6">
                                 <label for="specifications">Specifications.</label>
-                                <input type="text" [class.is-invalid]="formSta10FormC.specifications.invalid && formSta10FormC.specifications.touched" type="text"   formControlName="specifications"
+                                <input type="text" [class.is-invalid]="formSta10FormC.specifications.invalid && formSta10FormC.specifications.touched"   formControlName="specifications"
                                        name="specifications" id="specifications" class="form-control"  placeholder="Specifications" >
                             </div>
-                            <div class="col-5">
+                            <div class="form-group col-5">
                                 <label for="qualityChecksTestingRecords">Quality checks/testing.</label>
-                                <input type="text" [class.is-invalid]="formSta10FormC.qualityChecksTestingRecords.invalid && formSta10FormC.qualityChecksTestingRecords.touched" type="text"   formControlName="qualityChecksTestingRecords"
+                                <input type="text" [class.is-invalid]="formSta10FormC.qualityChecksTestingRecords.invalid && formSta10FormC.qualityChecksTestingRecords.touched"    formControlName="qualityChecksTestingRecords"
                                        name="qualityChecksTestingRecords" id="qualityChecksTestingRecords" class="form-control"  placeholder="Quality checks/testing
 records" >
                             </div>
-                            <div class=" col-2">
-                                <label style="visibility: hidden">Origin.</label>
+                            <div class="form-group col-1">
+                                <label style="color: transparent">Origin.</label>
                                 <span class="input-group-btn">
 <button (click)="onClickAddRawMaterials()"
         type="button" class="btn btn-success btn-sm">
@@ -480,43 +486,44 @@ records" >
         </fieldset>
     </div>
     <div *ngSwitchCase="6">
-        <h2 style="text-align: center"><b style="color: #0d47a1">Step</b> <b style="color: #d50000"> 6</b><b style="color: #0d0505"> of</b> <b style="color: #0d47a1"> 9</b></h2>
+        <h2 style="text-align: center"><b >Step</b> <b > 6</b><b > of</b> <b > 9</b></h2>
 
         <fieldset class="wizard-fieldset show">
             <form (ngSubmit)="onClickSaveSTAMachineryPlant(sta10FormD.valid)" [formGroup]="sta10FormD" class="form"
                   enctype="multipart/form-data">
                 <h4><b>Machinery and Plant</b></h4>
                 <div class="row">
-                    <div class="col-6">
+                    <div class="form-group col-6">
                         <label for="machineName">Machine</label>
                         <input type="text" [class.is-invalid]="formSta10FormD.machineName.invalid && formSta10FormD.machineName.touched" type="text"  formControlName="machineName"
                                name="machineName" id="machineName" class="form-control"  placeholder="Machine  " >
                     </div>
-                    <div class="col-6">
-                        <label for="typeModel">ype/Model.</label>
-                        <input type="text" [class.is-invalid]="formSta10FormD.typeModel.invalid && formSta10FormD.typeModel.touched" type="text"   formControlName="typeModel"
+                    <div class="form-group col-6">
+                        <label for="typeModel">Type/Model.</label>
+                        <input type="text" [class.is-invalid]="formSta10FormD.typeModel.invalid && formSta10FormD.typeModel.touched"    formControlName="typeModel"
                                name="typeModel" id="typeModel" class="form-control"  placeholder="Type/Model " >
                     </div>
+                </div>
                     <div>
+
                         <div class="row">
-                            <div class="col-6">
-                                <select id="countryOfOrigin" class="form-control" formControlName="countryOfOrigin" name="countryOfOrigin"
-                                        [class.is-invalid]="formSta10FormD.countryOfOrigin.invalid && formSta10FormD.countryOfOrigin.touched">
-                                    <option selected>Select Country of Origin</option>
-                                    <option>...</option>
-                                    <option>...</option>
-                                </select>
+                            <div class="form-group col-6">
+                                <label for="countryOfOrigin">Country of Origin</label>
+                                <input type="text" [class.is-invalid]="formSta10FormD.countryOfOrigin.invalid && formSta10FormD.countryOfOrigin.touched"   formControlName="countryOfOrigin"
+                                       name="countryOfOrigin" id="countryOfOrigin" class="form-control"  placeholder="Country of Origin " >
                             </div>
                             <div class="col-2">
-                                <label style="visibility: hidden">Origin.</label>
-                               <span class="input-group-btn">
+                                <label style="color: transparent">Origin.</label>
+                                <span class="input-group-btn">
 <button (click)="onClickAddMachineryAndPlant()"
         type="button" class="btn btn-success btn-sm">
 <span class="" aria-hidden="true">ADD</span>
 </button>
 </span>
                             </div>
-                        </div>
+                            <div>
+
+
 
 
 
@@ -552,11 +559,12 @@ records" >
                             [disabled]="!sta10FormD.valid">Next
                     </button>
                 </div>
+                    </div>
             </form>
         </fieldset>
     </div>
     <div *ngSwitchCase="7">
-        <h2 style="text-align: center"><b style="color: #0d47a1">Step</b> <b style="color: #d50000"> 6</b><b style="color: #0d0505"> of</b> <b style="color: #0d47a1"> 9</b></h2>
+        <h2 style="text-align: center"><b >Step</b> <b > 7</b><b > of</b> <b > 9</b></h2>
 
         <fieldset class="wizard-fieldset show">
             <form (ngSubmit)="onClickSaveSTAManufacturingProcess(sta10FormE.valid)" [formGroup]="sta10FormE"
@@ -566,54 +574,56 @@ records" >
                 <div class="row">
                     <div class="col-6">
                         <label for="processFlowOfProduction">Process Flow of Production.</label>
-                        <input type="text" [class.is-invalid]="formSta10FormE.processFlowOfProduction.invalid && formSta10FormE.processFlowOfProduction.touched" type="text"   formControlName="processFlowOfProduction"
+                        <input type="text" [class.is-invalid]="formSta10FormE.processFlowOfProduction.invalid && formSta10FormE.processFlowOfProduction.touched"   formControlName="processFlowOfProduction"
                                name="processFlowOfProduction" id="processFlowOfProduction" class="form-control"  placeholder="Process Flow of
 Production
 " >
                     </div>
                     <div class="col-6">
                         <label for="operations">Operations</label>
-                        <input type="text" [class.is-invalid]="formSta10FormE.operations.invalid && formSta10FormE.operations.touched" type="text"   formControlName="operations"
+                        <input type="text" [class.is-invalid]="formSta10FormE.operations.invalid && formSta10FormE.operations.touched"   formControlName="operations"
                                name="operations" id="operations" class="form-control"  placeholder="Operations  " >
                     </div>
-                    <div>
-                        <div class="row">
+                </div>
+
+                <div class="row">
                             <div class="col-6">
                                 <label for="criticalProcessParametersMonitored">Critical Process parameters Monitored.</label>
-                                <input type="text" [class.is-invalid]="formSta10FormE.criticalProcessParametersMonitored.invalid && formSta10FormE.criticalProcessParametersMonitored.touched" type="text"   formControlName="criticalProcessParametersMonitored"
+                                <input type="text" [class.is-invalid]="formSta10FormE.criticalProcessParametersMonitored.invalid && formSta10FormE.criticalProcessParametersMonitored.touched"   formControlName="criticalProcessParametersMonitored"
                                        name="criticalProcessParametersMonitored" id="criticalProcessParametersMonitored" class="form-control"  placeholder="Critical Process
 parameters Monitored" >
                             </div>
                             <div class="col-6">
                                 <label for="processMonitoringRecords">Process Monitoring Reports.</label>
-                                <input type="text" [class.is-invalid]="formSta10FormE.processMonitoringRecords.invalid && formSta10FormE.processMonitoringRecords.touched" type="text"   formControlName="processMonitoringRecords"
-                                      id="processMonitoringRecords" name="processMonitoringRecords" class="form-control"  placeholder="Process Monitoring Reports" >
+                                <input type="text" [class.is-invalid]="formSta10FormE.processMonitoringRecords.invalid && formSta10FormE.processMonitoringRecords.touched"   formControlName="processMonitoringRecords"
+                                       id="processMonitoringRecords" name="processMonitoringRecords" class="form-control"  placeholder="Process Monitoring Reports" >
                             </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-6">
-                                <label for="qualityChecksTestingRecords">Quality checks/testing.</label>
-                                <input type="text" [class.is-invalid]="formSta10FormE.frequency.invalid && formSta10FormE.frequency.touched" type="text"   formControlName="frequency"
-                                       name="frequency" class="form-control"  placeholder="Frequency" >
                             </div>
-                            <div class="col-5">
-                                <label for="" style="visibility: hidden">Quality checks/testing.</label>
-                                   <span class="input-group-btn">
+
+
+                                <div class="row">
+                                    <div class="col-6">
+                                        <label for="qualityChecksTestingRecords">Quality checks/testing.</label>
+                                        <input type="text" [class.is-invalid]="formSta10FormE.frequency.invalid && formSta10FormE.frequency.touched"   formControlName="frequency"
+                                               name="frequency" class="form-control"  placeholder="Frequency" >
+                                    </div>
+
+                                    <div class="col-6">
+                                        <label  style="color: transparent">Quality checks/testing.</label>
+                                        <span class="input-group-btn">
 <button (click)="onClickAddManufacturingProcess()"
         type="button" class="btn btn-success btn-sm">
+
 <span class="" aria-hidden="true">ADD</span>
 </button>
 </span>
-                            </div>
-
-                        </div>
+                                    </div>
+                                </div>
 
 
 
 
                         <br><br>
-                    </div>
-                </div>
                 <div class="material-datatables" >
                     <div class="table-responsive">
                         <table id="manufacturing" class="table table-striped table-bordered table-hover">
@@ -647,15 +657,16 @@ parameters Monitored" >
                             [disabled]="!sta10FormE.valid">Next
                     </button>
                 </div>
+
             </form>
         </fieldset>
     </div>
 
 <div *ngSwitchCase="8">
-<h2 style="text-align: center"><b style="color: #0d47a1">Step</b> <b style="color: #d50000"> 5</b><b style="color: #0d0505"> of</b> <b style="color: #0d47a1"> 9</b></h2>
+<h2 style="text-align: center"><b >Step</b> <b > 8</b><b > of</b> <b > 9</b></h2>
 
 <fieldset class="wizard-fieldset show">
-<form (ngSubmit)="onClickSaveSTA10(sta10FormF.valid)" [formGroup]="sta10FormF" class="form"
+<form (ngSubmit)="onClickSaveSTA10F(sta10FormF.valid)" [formGroup]="sta10FormF" class="form"
 enctype="multipart/form-data" >
 <h5>How are nonconforming products handled at the following stages of the manufacturing process: </h5>
 <div class="row">
@@ -737,10 +748,12 @@ and have an effect on Health, Safety and Environment?</label>
 </div>
 
 </div>
+
 <div class="row">
 <div class="form-group col-6">
 <label for="companyRepresentative">Company Representative</label>
 <input [class.is-invalid]="formSta10FormF.companyRepresentative.invalid && formSta10FormF.companyRepresentative.touched" type="text"  id="companyRepresentative" formControlName="companyRepresentative" name="companyRepresentative" class="form-control"  placeholder="">
+</div>
 <div class="form-group col-6">
 <label for="applicationDate">Date</label>
 <input [class.is-invalid]="formSta10FormF.applicationDate.invalid && formSta10FormF.applicationDate.touched" type="date"  id="applicationDate" formControlName="applicationDate" name="applicationDate" class="form-control"  placeholder="">
@@ -756,22 +769,26 @@ and have an effect on Health, Safety and Environment?</label>
 class="form-wizard-next-btn float-right"
 [disabled]="!sta10FormF.valid">Next
 </button>
-</div></div>
+</div>
 </form>
 </fieldset>
 </div>
 <div *ngSwitchCase="9">
-<h2 style="text-align: center"><b style="color: #0d47a1">Step</b> <b style="color: #08e53f"> 6</b><b style="color: #0d0505"> of</b> <b style="color: #0d47a1"> 9</b></h2>
+<h2 style="text-align: center"><b >Step</b> <b > 9</b><b > of</b> <b > 9</b></h2>
 
 <fieldset class="wizard-fieldset show">
-<form (ngSubmit)="onClickSaveSTA10(sta10FormG.valid)" [formGroup]="sta10FormG" class="form"
+<form (ngSubmit)="onClickSaveSTA10G(sta10FormG.valid)" [formGroup]="sta10FormG" class="form"
 enctype="multipart/form-data" >
 
+    <h3>Upload all of the required documents</h3>
+    <form #demoForm="ngForm">
+        <file-upload [(ngModel)]="uploadedFiles" name="files" fileslimit="2"></file-upload>
+    </form>
 <div class="form-group clearfix">
 <button (click)="onClickPrevious()" class="btn btn-sm btn-danger">Previous</button>
 <button type="submit"
 class="form-wizard-next-btn float-right"
-[disabled]="!sta10FormG.valid">Next
+[disabled]="!sta10FormG.valid">Finish
 </button>
 </div>
 </form>
