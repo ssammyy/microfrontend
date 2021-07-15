@@ -4,7 +4,7 @@ import {LoggedInUser, LoginCredentials} from '../auth';
 import {Observable, throwError} from 'rxjs';
 import {ApiEndpointService} from '../../../services/endpoints/api-endpoint.service';
 import {catchError, map} from 'rxjs/operators';
-import {BrsLookUpRequest, Company} from "../companies";
+import {BrsLookUpRequest, Company} from '../companies';
 import {
     STA1,
     Sta10Dto,
@@ -12,8 +12,8 @@ import {
     STA10PersonnelDto,
     STA10ProductsManufactureDto,
     STA10RawMaterialsDto,
-    STA3
-} from "./qa.model";
+    STA3, UploadsDtoSTA3
+} from './qa.model';
 
 @Injectable({
     providedIn: 'root'
@@ -140,7 +140,7 @@ export class QaService {
         const params = new HttpParams()
             .set('ID', ID);
         // return this.httpService.get<any>(`${this.baseUrl}/get/pdf/${fileName}`, { responseType: 'arraybuffer' as 'json' });
-        return this.http.get<any>(url, {params}).pipe(
+        return this.http.get<any>(url, {params, responseType: 'arraybuffer' as 'json'}).pipe(
             map(function (response: any) {
                 return response;
             }),
@@ -171,6 +171,21 @@ export class QaService {
         const params = new HttpParams()
             .set('permitID', permitID);
         return this.http.put<any>(url, data, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
+
+    public uploadSTA3File(permitID: string, data: File[]): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.UPLOAD_FILE_STA3);
+        const params = new HttpParams()
+            .set('permitID', permitID);
+        return this.http.post<any>(url, data, {params}).pipe(
             map(function (response: any) {
                 return response;
             }),

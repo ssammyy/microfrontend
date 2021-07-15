@@ -121,7 +121,8 @@ export class ApiEndpointService {
     PERMIT_APPLY_STA1: `${ApiEndpointService.QA_CONTEXT_APPLY}/sta1`,
     PERMIT_UPDATE_STA1: `${ApiEndpointService.QA_CONTEXT_APPLY}/sta1-update`,
     PERMIT_APPLY_STA3: `${ApiEndpointService.QA_CONTEXT_APPLY}/sta3`,
-    PERMIT_UPDATE_STA3: `${ApiEndpointService.QA_CONTEXT_APPLY}/sta3-update`,
+
+    UPLOAD_FILE_STA3: `${ApiEndpointService.QA_CONTEXT_APPLY}/sta3-update-upload`,
 
 
     INVOICE_CONSOLIDATE_SUBMIT: `${ApiEndpointService.QA_CONTEXT}/permit/view/invoice/batch-invoice-submit`,
