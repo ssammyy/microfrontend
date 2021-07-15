@@ -180,7 +180,7 @@ import { AddUserComponent } from './apollowebs/company/branch/add-user/add-user.
         OtpComponent,
         InvoiceConsolidateComponent,
         PdfViewComponent,
-        TaskManagerComponent
+        TaskManagerComponent,
         PdfViewComponent,
         AddUserComponent
     ]
