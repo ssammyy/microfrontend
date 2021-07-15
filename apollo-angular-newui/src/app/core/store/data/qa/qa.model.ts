@@ -3,6 +3,11 @@ import {UserEntityDto} from '../users';
 export class Qa {
 }
 
+export class UploadsDtoSTA3 {
+    uploadedFiles: File[];
+    sta3Status: boolean;
+}
+
 export class PermitEntityDto {
     id: bigint;
     firmName: string;

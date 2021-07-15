@@ -2102,12 +2102,13 @@ class QADaoServices(
     }
 
     fun uploadQaFile(
+        uploads: QaUploadsEntity,
         docFile: File,
         doc: String,
         permitRefNUMBER: String,
         user: UsersEntity
     ): QaUploadsEntity {
-        val uploads = QaUploadsEntity()
+
         with(uploads) {
             ordinaryStatus = 1
             name = docFile.name
@@ -2437,7 +2438,9 @@ class QADaoServices(
             myDetails.second
         )
 
+        val upload = QaUploadsEntity()
         uploadQaFile(
+            upload,
             invoicePDFCreated ?: throw ExpectedDataNotFound("MISSING FILE"),
             "PERMIT INVOICE",
             myDetails.first.getValue("demandNoteNo").toString(),

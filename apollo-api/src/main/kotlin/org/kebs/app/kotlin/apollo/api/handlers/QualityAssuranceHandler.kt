@@ -1362,11 +1362,12 @@ class QualityAssuranceHandler(
 
     @PreAuthorize("hasAuthority('PERMIT_APPLICATION')")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
-    fun permituploadSTA3Migration(req: ServerRequest): ServerResponse {
+    fun permitUploadSTA3Migration(req: ServerRequest): ServerResponse {
         try {
             val loggedInUser = commonDaoServices.loggedInUserDetails()
             val permitID =
                 req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
+
             val permit = qaDaoServices.findPermitBYUserIDAndId(
                 permitID,
                 loggedInUser.id ?: throw ExpectedDataNotFound("MISSING USER ID")
@@ -1374,10 +1375,24 @@ class QualityAssuranceHandler(
             val sta3 = qaDaoServices.findSTA3WithPermitRefNumber(
                 permit.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER")
             )
-
-            qaDaoServices.mapDtoSTA3View(sta3).let {
-                return ok().body(it)
+            val dto = req.body<UploadsDtoSTA3>()
+            dto.uploadedFiles?.forEach { u ->
+                val upload = QaUploadsEntity()
+                with(upload) {
+                    sta3Status = 1
+                    ordinaryStatus = 0
+                }
+                qaDaoServices.uploadQaFile(
+                    upload,
+                    u,
+                    "STA3-UPLOADS",
+                    permit.permitRefNumber ?: throw Exception("MISSING PERMIT REF NUMBER"),
+                    loggedInUser
+                )
             }
+
+            return ok().body("UPLOAD SUCCESSFULLY")
+
 
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
