@@ -23,10 +23,12 @@ declare const $: any;
 })
 export class InvoiceDetailsComponent implements OnInit, AfterViewInit {
 
+
     public dataTable: DataTable;
     public batchID!: string;
     public allPermitData: PermitInvoiceDto[];
     public allBatchInvoiceDetails!: AllBatchInvoiceDetailsDto;
+    pdfSources = "https://vadimdez.github.io/ng2-pdf-viewer/assets/pdf-test.pdf";
 
     constructor(
         private route: ActivatedRoute,

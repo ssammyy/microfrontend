@@ -10,9 +10,6 @@
                         <h4 class="card-title">Standardisation Mark: All My Applications</h4>
                     </div>
                     <div class="card-body">
-                        <div class="toolbar">
-                            <!--        Here you can write extra buttons/actions for the toolbar              -->
-                        </div>
                         <div class="material-datatables" >
                             <div class="table-responsive">
                                 <table id="datatables"
@@ -48,7 +45,7 @@
                                     <tbody>
                                     <tr *ngFor="let row of dataTable.dataRows">
                                         <td>{{row[0]}}</td>
-                                        <td>{{row[1]}}</td>
+                                        <td>{{row[1] | date}}</td>
                                         <td>{{row[2]}}</td>
                                         <td>{{row[3]}}</td>
                                         <td>{{row[4]}}</td>
