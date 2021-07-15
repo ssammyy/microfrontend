@@ -13,6 +13,8 @@ import {
 import swal from 'sweetalert2';
 import {FileUploadValidators} from "@iplab/ngx-file-upload";
 
+declare const $: any;
+
 @Component({
     selector: 'app-new-smark-permit',
     templateUrl: './new-smark-permit.component.html',
@@ -95,40 +97,41 @@ export class NewSmarkPermitComponent implements OnInit {
 
       });
 
+
       this.sta10FormA = this.formBuilder.group({
-          personnelName: ['', Validators.required],
-          qualificationInstitution: ['', Validators.required],
-          dateOfEmployment: ['', Validators.required]
+          personnelName: [],
+          qualificationInstitution: [],
+          dateOfEmployment: []
 
       });
 
         this.sta10FormB = this.formBuilder.group({
-            productName: ['', Validators.required],
-            productBrand: ['', Validators.required],
-            productStandardNumber: ['', Validators.required],
-            available: ['', Validators.required],
+            productName: [],
+            productBrand: [],
+            productStandardNumber: [],
+            available: [],
             permitNo: []
         });
 
         this.sta10FormC = this.formBuilder.group({
-            name: ['', Validators.required],
-            origin: ['', Validators.required],
-            specifications: ['', Validators.required],
-            qualityChecksTestingRecords: ['', Validators.required]
+            name: [],
+            origin: [],
+            specifications: [],
+            qualityChecksTestingRecords: []
         });
 
         this.sta10FormD = this.formBuilder.group({
-            machineName: ['', Validators.required],
-            typeModel: ['', Validators.required],
-            countryOfOrigin: ['', Validators.required],
+            typeModel: [],
+            machineName: [],
+            countryOfOrigin: [],
         });
 
         this.sta10FormE = this.formBuilder.group({
-            processFlowOfProduction: ['', Validators.required],
-            operations: ['', Validators.required],
-            criticalProcessParametersMonitored: ['', Validators.required],
-            frequency: ['', Validators.required],
-            processMonitoringRecords: ['', Validators.required]
+            processFlowOfProduction: [],
+            operations: [],
+            criticalProcessParametersMonitored: [],
+            frequency: [],
+            processMonitoringRecords: []
         });
         this.sta10FormG = this.formBuilder.group({
 
@@ -390,7 +393,14 @@ export class NewSmarkPermitComponent implements OnInit {
     onClickSaveSTA10G(valid: boolean) {
         if (valid) {
             console.log(this.permitEntityDetails.id.toString());
-
+            swal.fire({
+                title: 'STA3 Form Completed! Proceed to submit application.!',
+                buttonsStyling: false,
+                customClass: {
+                    confirmButton: 'btn btn-success form-wizard-next-btn ',
+                },
+                icon: 'success'
+            });
             this.router.navigate(['/permitdetails'], {fragment: this.permitEntityDetails.id.toString()});
 
 
@@ -507,25 +517,76 @@ export class NewSmarkPermitComponent implements OnInit {
     onClickAddPersonnel() {
         this.sta10PersonnelDetail = this.sta10FormA.value;
         this.sta10PersonnelDetails.push(this.sta10PersonnelDetail);
+        this.sta10FormA?.get('personnelName')?.reset();
+        this.sta10FormA?.get('qualificationInstitution')?.reset();
+        this.sta10FormA?.get('dateOfEmployment')?.reset();
+        //this.sta10FormAA.reset();
     }
 
     onClickAddProductsManufacture() {
         this.sta10ProductsManufactureDetail = this.sta10FormB.value;
         this.sta10ProductsManufactureDetails.push(this.sta10ProductsManufactureDetail);
+        this.sta10FormB?.get('productName')?.reset();
+        this.sta10FormB?.get('productBrand')?.reset();
+        this.sta10FormB?.get('productStandardNumber')?.reset();
+        this.sta10FormB?.get('available')?.reset();
+        this.sta10FormB?.get('permitNo')?.reset();
     }
+
 
     onClickAddRawMaterials() {
         this.sta10RawMaterialsDetail = this.sta10FormC.value;
         this.sta10RawMaterialsDetails.push(this.sta10RawMaterialsDetail);
+        this.sta10FormC?.get('name')?.reset();
+        this.sta10FormC?.get('origin')?.reset();
+        this.sta10FormC?.get('specifications')?.reset();
+        this.sta10FormC?.get('qualityChecksTestingRecords')?.reset();
     }
 
     onClickAddMachineryAndPlant() {
         this.sta10MachineryAndPlantDetail = this.sta10FormD.value;
         this.sta10MachineryAndPlantDetails.push(this.sta10MachineryAndPlantDetail);
+        this.sta10FormD?.get('typeModel')?.reset();
+        this.sta10FormD?.get('machineName')?.reset();
+        this.sta10FormD?.get('countryOfOrigin')?.reset();
     }
+
 
     onClickAddManufacturingProcess() {
         this.sta10ManufacturingProcessDetail = this.sta10FormE.value;
         this.sta10ManufacturingProcessDetails.push(this.sta10ManufacturingProcessDetail);
+        this.sta10FormE?.get('processFlowOfProduction')?.reset();
+        this.sta10FormE?.get('operations')?.reset();
+        this.sta10FormE?.get('criticalProcessParametersMonitored')?.reset();
+        this.sta10FormE?.get('frequency')?.reset();
+        this.sta10FormE?.get('processMonitoringRecords')?.reset();
+    }
+
+    showNotification(from: any, align: any) {
+        const type = ['', 'info', 'success', 'warning', 'danger', 'rose', 'primary'];
+
+        const color = Math.floor((Math.random() * 6) + 1);
+
+        $.notify({
+            icon: 'notifications',
+            message: 'Welcome to <b>Material Dashboard</b> - a beautiful dashboard for every web developer.'
+        }, {
+            type: type[color],
+            timer: 3000,
+            placement: {
+                from: from,
+                align: align
+            },
+            template: '<div data-notify="container" class="col-xs-11 col-sm-3 alert alert-{0} alert-with-icon" role="alert">' +
+                '<button mat-raised-button type="button" aria-hidden="true" class="close" data-notify="dismiss">  <i class="material-icons">close</i></button>' +
+                '<i class="material-icons" data-notify="icon">notifications</i> ' +
+                '<span data-notify="title"></span> ' +
+                '<span data-notify="message">Ensure all required fields are items have been filled</span>' +
+                '<div class="progress" data-notify="progressbar">' +
+                '<div class="progress-bar progress-bar-{0}" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;"></div>' +
+                '</div>' +
+                '<a href="{3}" target="{4}" data-notify="url"></a>' +
+                '</div>'
+        });
     }
 }
