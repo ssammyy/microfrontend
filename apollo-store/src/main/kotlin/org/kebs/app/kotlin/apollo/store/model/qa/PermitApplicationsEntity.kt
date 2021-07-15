@@ -26,6 +26,14 @@ class PermitApplicationsEntity:Serializable {
     @Basic
     var firmName: String? = null
 
+    @Column(name = "PROCESS_STEP")
+    @Basic
+    var processStep: Int? = null
+
+    @Column(name = "PROCESS_STEP_NAME")
+    @Basic
+    var processStepName: String? = null
+
     @Column(name = "POSTAL_ADDRESS")
     @Basic
     var postalAddress: String? = null
@@ -765,6 +773,8 @@ class PermitApplicationsEntity:Serializable {
         val that = other as PermitApplicationsEntity
         return id == that.id && cocId == that.cocId
                 && factoryVisit == that.factoryVisit
+                && processStep == that.processStep
+                && processStepName == that.processStepName
                 && companyId == that.companyId
                 && userTaskId == that.userTaskId
                 && inspectionReportGenerated == that.inspectionReportGenerated
@@ -779,6 +789,8 @@ class PermitApplicationsEntity:Serializable {
             permitRejectedCreatedVersion,
             designation,
             userTaskId,
+            processStep,
+            processStepName,
             factoryVisit,
             inspectionReportGenerated,
             cocId,

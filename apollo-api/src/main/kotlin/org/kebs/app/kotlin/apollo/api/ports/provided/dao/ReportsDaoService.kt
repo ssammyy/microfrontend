@@ -115,15 +115,15 @@ class ReportsDaoService(
         pdfExporter.exporterOutput = SimpleOutputStreamExporterOutput(pdfReportStream)
         pdfExporter.exportReport()
         response.contentType = "text/html"
-        response.contentType = "application/pdf"
+//        response.contentType = "application/pdf"
         response.setHeader("Content-Length", pdfReportStream.size().toString())
-        response.addHeader("Content-Dispostion", "inline; filename=jasper.pdf;")
+        response.addHeader("Content-Dispostion", "inline; filename=jasper.html;")
         response.outputStream
-                .let { responseOutputStream ->
-                    responseOutputStream.write(pdfReportStream.toByteArray())
-                    responseOutputStream.close()
-                    pdfReportStream.close()
-                }
+            .let { responseOutputStream ->
+                responseOutputStream.write(pdfReportStream.toByteArray())
+                responseOutputStream.close()
+                pdfReportStream.close()
+            }
 
 
     }
@@ -221,11 +221,34 @@ class ReportsDaoService(
         return targetFile
     }
 
-    fun generateEmailPDFReport(fileName: String, map: HashMap<String, Any>, filePath: String): File? {
+    fun generateEmailPDFReportWithDataSource(
+        fileName: String,
+        map: HashMap<String, Any>,
+        filePath: String,
+        dataSourceList: List<Any>
+    ): File? {
 
         val file = ResourceUtils.getFile(filePath)
         val design = JRXmlLoader.load(file)
         val jasperReport = JasperCompileManager.compileReport(design)
+        val dataSource = JRBeanCollectionDataSource(dataSourceList)
+
+        val jasperPrint = JasperFillManager.fillReport(jasperReport, map, dataSource)
+
+        val targetFile = File(Files.createTempDir(), fileName)
+        targetFile.deleteOnExit()
+
+        JasperExportManager.exportReportToPdfFile(jasperPrint, targetFile.absolutePath)
+
+        return targetFile
+    }
+
+    fun generateEmailPDFReportWithNoDataSource(fileName: String, map: HashMap<String, Any>, filePath: String): File? {
+
+        val file = ResourceUtils.getFile(filePath)
+        val design = JRXmlLoader.load(file)
+        val jasperReport = JasperCompileManager.compileReport(design)
+
 
         val jasperPrint = JasperFillManager.fillReport(jasperReport, map, JREmptyDataSource())
 

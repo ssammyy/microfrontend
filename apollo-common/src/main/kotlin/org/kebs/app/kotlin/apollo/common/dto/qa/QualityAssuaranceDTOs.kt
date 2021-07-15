@@ -1,6 +1,7 @@
 package org.kebs.app.kotlin.apollo.common.dto.qa
 
 import org.kebs.app.kotlin.apollo.common.dto.UserEntityDto
+import java.io.File
 import java.math.BigDecimal
 import java.sql.Date
 import java.sql.Timestamp
@@ -127,6 +128,10 @@ data class BatchInvoiceDto(
 
     )
 
+data class UploadsDtoSTA3(
+    var uploadedFiles: List<File>? = null,
+    var sta3Status: Boolean? = null
+)
 
 data class STA1Dto(
     var commodityDescription: String? = null,
@@ -281,6 +286,8 @@ data class PermitEntityDto(
     var taskID: Long? = null,
     var companyId: Long? = null,
     var permitType: Long? = null,
+    var processStep: Int? = null,
+    var processStepName: String? = null,
 )
 
 data class PermitDetailsDto(
@@ -347,6 +354,14 @@ data class StandardsDto(
     var standardTitle: String? = null,
     var standardNumber: String? = null,
 )
+
+data class TaskDto(
+    var permitId: Long? = null,
+    var taskName: String? = null,
+    var taskCreateTime: java.util.Date? = null,
+    var permitRefNo: String? = null,
+)
+
 
 data class PlantsDetailsDto(
     var id: Long? = null,
