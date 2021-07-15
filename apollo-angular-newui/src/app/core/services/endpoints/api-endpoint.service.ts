@@ -17,10 +17,10 @@ export class ApiEndpointService {
    * Map of domains for API endpoints.
    */
   public static DOMAIN = {
-    //LOCAL_DEV: 'localhost:8006'
+    LOCAL_DEV: 'localhost:8006'
     // LOCAL_DEV: '12:8006'
     // LOCAL_DEV: '41.72.209.58:8006'
-    LOCAL_DEV: 'kimsint.kebs.org:8006'
+    // LOCAL_DEV: 'kimsint.kebs.org:8006'
   };
 
   /**
@@ -121,6 +121,7 @@ export class ApiEndpointService {
     PERMIT_APPLY_STA1: `${ApiEndpointService.QA_CONTEXT_APPLY}/sta1`,
     PERMIT_UPDATE_STA1: `${ApiEndpointService.QA_CONTEXT_APPLY}/sta1-update`,
     PERMIT_APPLY_STA3: `${ApiEndpointService.QA_CONTEXT_APPLY}/sta3`,
+    PERMIT_UPDATE_STA3: `${ApiEndpointService.QA_CONTEXT_APPLY}/sta3-update`,
 
     UPLOAD_FILE_STA3: `${ApiEndpointService.QA_CONTEXT_APPLY}/sta3-update-upload`,
 
