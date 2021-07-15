@@ -7,12 +7,9 @@
           <i class="material-icons design_bullet-list-67 visible-on-sidebar-mini">view_list</i>
         </button>
       </div>
-<!--      <div *ngIf="router.url == '/profile';else templateName">-->
-<!--        <a class="navbar-brand" href="profile"> Profile</a>-->
-<!--      </div>-->
-      <ng-template #templateName>
+      <div *ngIf="router.url == '/profile';else templateName">
         <a class="navbar-brand" href="profile"> Profile</a>
-      </ng-template>
+      </div>
 
 
       <ng-template #templateName>

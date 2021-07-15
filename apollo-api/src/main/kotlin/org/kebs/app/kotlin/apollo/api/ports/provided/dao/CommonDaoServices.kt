@@ -462,7 +462,7 @@ class CommonDaoServices(
         }
     }
 
-    fun convert(file: MultipartFile): File? {
+    fun convertMultipartFileToFile(file: MultipartFile): File {
         val convFile = File(file.originalFilename)
         convFile.createNewFile()
         val fos = FileOutputStream(convFile)

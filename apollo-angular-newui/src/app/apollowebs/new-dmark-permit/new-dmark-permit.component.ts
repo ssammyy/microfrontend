@@ -29,9 +29,10 @@ export class NewDmarkPermitComponent implements OnInit {
     step = 1;
     currBtn = 'A';
     checkN: number;
-    public uploadedFiles: Array<File> = [];
-    public animation: boolean = false;
-    public multiple: boolean = false;
+    public uploadedFile: File;
+    public uploadedFiles: FileList;
+    public animation = true;
+    public multiple = true;
 
     private filesControl = new FormControl(null, FileUploadValidators.filesLimit(2));
 
@@ -150,7 +151,7 @@ export class NewDmarkPermitComponent implements OnInit {
                     break;
             }
             this.step += 1;
-            //console.log(`Clicked and step = ${this.step}`);
+            // console.log(`Clicked and step = ${this.step}`);
         }
     }
 
@@ -285,7 +286,7 @@ export class NewDmarkPermitComponent implements OnInit {
                     console.log(data);
                     this.step += 1;
                     swal.fire({
-                        title: 'STA3 Form Completed! Proceed to submit application.',
+                        title: 'STA3 Form Completed! Proceed to Upload attachments.',
                         buttonsStyling: false,
                         customClass: {
                             confirmButton: 'btn btn-success form-wizard-next-btn ',
@@ -298,17 +299,45 @@ export class NewDmarkPermitComponent implements OnInit {
         }
     }
 
-    goToPermit()
-    {
-        swal.fire({
-            title: 'STA3 Form Completed! Proceed to submit application.',
-            buttonsStyling: false,
-            customClass: {
-                confirmButton: 'btn btn-success form-wizard-next-btn ',
-            },
-            icon: 'success'
-        });
-        this.router.navigate(['/permitdetails'], {fragment: this.permitEntityDetails.id.toString()});
+    goToPermit() {
+        if (this.uploadedFiles.length > 0) {
+            const file = this.uploadedFiles;
+            const formData = new FormData();
+            for (let i = 0; i < file.length; i++) {
+                console.log(file[i]);
+                formData.append('docFile', file[i], file[i].name);
+            }
+            //
+            // const headers = new Headers();
+            // // It is very important to leave the Content-Type empty
+            // // do not use headers.append('Content-Type', 'multipart/form-data');
+            // headers.append('Authorization', 'Bearer ' + 'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9....');
+            // const options = new RequestOptions({headers: headers});
+            // this.http.post('https://api.mysite.com/uploadfile', formData, options)
+            //     .map(res => res.json())
+            //     .catch(error => Observable.throw(error))
+            //     .subscribe(
+            //         data => console.log('success'),
+            //         error => console.log(error)
+            //     );
+
+            this.qaService.uploadSTA3File(this.permitEntityDetails.id.toString(), formData).subscribe(
+                (data: any) => {
+                    console.log(data);
+                    this.step += 1;
+                    swal.fire({
+                        title: 'STA3 Form Completed! Proceed to submit application.',
+                        buttonsStyling: false,
+                        customClass: {
+                            confirmButton: 'btn btn-success form-wizard-next-btn ',
+                        },
+                        icon: 'success'
+                    });
+                    // this.router.navigate(['/permitdetails'], {fragment: this.permitEntityDetails.id.toString()});
+                },
+            );
+            this.router.navigate(['/permitdetails'], {fragment: this.permitEntityDetails.id.toString()});
+        }
 
     }
 

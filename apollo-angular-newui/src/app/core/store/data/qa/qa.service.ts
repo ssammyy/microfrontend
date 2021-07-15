@@ -12,7 +12,7 @@ import {
     STA10PersonnelDto,
     STA10ProductsManufactureDto,
     STA10RawMaterialsDto,
-    STA3, UploadsDtoSTA3
+    STA3, TaskDto, UploadsDtoSTA3
 } from './qa.model';
 
 @Injectable({
@@ -135,6 +135,19 @@ export class QaService {
         );
     }
 
+    public taskListFind(): Observable<TaskDto> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.MY_TASK_LIST);
+        return this.http.get<TaskDto>(url).pipe(
+            map(function (response: TaskDto) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
+
     public viewSTA1Details(permitID: string): Observable<any> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.PERMIT_VIEW_DETAILS);
         const params = new HttpParams()
@@ -196,11 +209,15 @@ export class QaService {
         );
     }
 
-    public uploadSTA3File(permitID: string, data: File[]): Observable<any> {
+    public uploadSTA3File(permitID: string, data: FormData): Observable<any> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.UPLOAD_FILE_STA3);
-        const params = new HttpParams()
-            .set('permitID', permitID);
-        return this.http.post<any>(url, data, {params}).pipe(
+        // const params = new HttpParams()
+        //     .set('permitID', permitID);
+        return this.http.post<any>(url, data, {
+            headers: {
+                'enctype': 'multipart/form-data'
+            }, params: {'permitID': permitID}
+        }).pipe(
             map(function (response: any) {
                 return response;
             }),

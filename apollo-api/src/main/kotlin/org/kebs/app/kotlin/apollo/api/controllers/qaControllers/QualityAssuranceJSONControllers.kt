@@ -38,6 +38,41 @@ class QualityAssuranceJSONControllers(
 
     final val appId: Int = applicationMapProperties.mapQualityAssurance
 
+    @PostMapping("/permit/apply/sta3-update-upload")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun uploadFilesQAPermit(
+        @RequestParam("permitID") permitID: Long,
+        @RequestParam("docFile") docFile: List<MultipartFile>,
+        model: Model
+    ): CommonDaoServices.MessageSuccessFailDTO {
+        val map = commonDaoServices.serviceMapDetails(appId)
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        var permitDetails = qaDaoServices.findPermitBYID(permitID)
+
+        docFile.forEach { u ->
+            val upload = QaUploadsEntity()
+            with(upload) {
+                sta3Status = 1
+                ordinaryStatus = 0
+            }
+            qaDaoServices.uploadQaFile(
+                upload,
+                commonDaoServices.convertMultipartFileToFile(u),
+                "STA3-UPLOADS",
+                permitDetails.permitRefNumber ?: throw Exception("MISSING PERMIT REF NUMBER"),
+                loggedInUser
+            )
+        }
+
+        val sm = CommonDaoServices.MessageSuccessFailDTO()
+//        sm.closeLink = "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitDetails.id}"
+        sm.message = "Document Uploaded successful"
+
+        return sm
+//        return commonDaoServices.returnValues(result ?: throw Exception("invalid results"), map, sm)
+    }
+
+
     @PostMapping("/kebs/add/new-upload")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun uploadFilesQA(
@@ -75,7 +110,7 @@ class QualityAssuranceJSONControllers(
                     loggedInUser,
                     map,
                     uploads,
-                    permitDetails.permitRefNumber?: throw Exception("INVALID PERMIT REF NUMBER"),
+                    permitDetails.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"),
                     versionNumber,
                     manufactureNonStatus
                 )
@@ -86,7 +121,7 @@ class QualityAssuranceJSONControllers(
                     cocStatus != null -> {
                         uploads.cocStatus = cocStatus
                         versionNumber = qaDaoServices.findAllUploadedFileBYPermitRefNumberAndCocStatus(
-                            permitDetails.permitRefNumber?: throw Exception("INVALID PERMIT REF NUMBER"),
+                            permitDetails.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"),
                             map.activeStatus
                         ).size.toLong().plus(versionNumber)
                         uploadResults = qaDaoServices.saveQaFileUploads(
@@ -95,7 +130,7 @@ class QualityAssuranceJSONControllers(
                             loggedInUser,
                             map,
                             uploads,
-                            permitDetails.permitRefNumber?: throw Exception("INVALID PERMIT REF NUMBER"),
+                            permitDetails.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"),
                             versionNumber,
                             manufactureNonStatus
                         )
@@ -111,7 +146,7 @@ class QualityAssuranceJSONControllers(
                     sscUploadStatus != null -> {
                         uploads.sscStatus = sscUploadStatus
                         versionNumber = qaDaoServices.findAllUploadedFileBYPermitRefNumberAndSscStatus(
-                            permitDetails.permitRefNumber?: throw Exception("INVALID PERMIT REF NUMBER"),
+                            permitDetails.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"),
                             map.activeStatus
                         ).size.toLong().plus(versionNumber)
                         uploadResults = qaDaoServices.saveQaFileUploads(
@@ -120,7 +155,7 @@ class QualityAssuranceJSONControllers(
                             loggedInUser,
                             map,
                             uploads,
-                            permitDetails.permitRefNumber?: throw Exception("INVALID PERMIT REF NUMBER"),
+                            permitDetails.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"),
                             versionNumber,
                             manufactureNonStatus
                         )
@@ -137,7 +172,7 @@ class QualityAssuranceJSONControllers(
                     assessmentReportStatus != null -> {
                         uploads.assessmentReportStatus = assessmentReportStatus
                         versionNumber = qaDaoServices.findAllUploadedFileBYPermitRefNumberAndAssessmentReportStatus(
-                            permitDetails.permitRefNumber?: throw Exception("INVALID PERMIT REF NUMBER"),
+                            permitDetails.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"),
                             map.activeStatus
                         ).size.toLong().plus(versionNumber)
                         uploadResults = qaDaoServices.saveQaFileUploads(
@@ -146,7 +181,7 @@ class QualityAssuranceJSONControllers(
                             loggedInUser,
                             map,
                             uploads,
-                            permitDetails.permitRefNumber?: throw Exception("INVALID PERMIT REF NUMBER"),
+                            permitDetails.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"),
                             versionNumber,
                             manufactureNonStatus
                         )
@@ -190,7 +225,7 @@ class QualityAssuranceJSONControllers(
                             loggedInUser,
                             map,
                             uploads,
-                            permitDetails.permitRefNumber?: throw Exception("INVALID PERMIT REF NUMBER"),
+                            permitDetails.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"),
                             versionNumber,
                             manufactureNonStatus
                         )
@@ -209,7 +244,7 @@ class QualityAssuranceJSONControllers(
                             loggedInUser,
                             map,
                             uploads,
-                            permitDetails.permitRefNumber?: throw Exception("INVALID PERMIT REF NUMBER"),
+                            permitDetails.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"),
                             versionNumber,
                             manufactureNonStatus
                         )
