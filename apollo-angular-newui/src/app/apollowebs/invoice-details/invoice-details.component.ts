@@ -28,7 +28,8 @@ export class InvoiceDetailsComponent implements OnInit, AfterViewInit {
     public batchID!: string;
     public allPermitData: PermitInvoiceDto[];
     public allBatchInvoiceDetails!: AllBatchInvoiceDetailsDto;
-    pdfSources = "https://vadimdez.github.io/ng2-pdf-viewer/assets/pdf-test.pdf";
+    // pdfSources = "https://s23.q4cdn.com/202968100/files/doc_downloads/test.pdf";
+    pdfSources: any;
 
     constructor(
         private route: ActivatedRoute,
@@ -64,6 +65,12 @@ export class InvoiceDetailsComponent implements OnInit, AfterViewInit {
                     };
                     // this.onSelectL1SubSubSection(this.userDetails?.employeeProfile?.l1SubSubSection);
 
+                },
+            );
+
+            this.qaService.loadInvoiceDetailsPDF(this.batchID).subscribe(
+                (data: any) => {
+                    this.pdfSources = data
                 },
             );
         });
