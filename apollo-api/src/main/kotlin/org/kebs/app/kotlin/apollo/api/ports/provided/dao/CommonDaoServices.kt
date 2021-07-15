@@ -51,6 +51,7 @@ import com.fasterxml.jackson.dataformat.xml.XmlMapper
 import com.fasterxml.jackson.module.kotlin.KotlinModule
 import com.google.common.io.Files
 import com.google.gson.Gson
+import jdk.jfr.ContentType
 import mu.KotlinLogging
 import org.jasypt.encryption.StringEncryptor
 import org.json.JSONObject
@@ -85,9 +86,7 @@ import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Service
 import org.springframework.util.StringUtils
 import org.springframework.web.multipart.MultipartFile
-import java.io.ByteArrayInputStream
-import java.io.File
-import java.io.FileWriter
+import java.io.*
 import java.math.BigDecimal
 import java.net.URLConnection
 import java.sql.Date
@@ -462,6 +461,16 @@ class CommonDaoServices(
             else -> map.failureNotificationUrl
         }
     }
+
+    fun convert(file: MultipartFile): File? {
+        val convFile = File(file.originalFilename)
+        convFile.createNewFile()
+        val fos = FileOutputStream(convFile)
+        fos.write(file.bytes)
+        fos.close()
+        return convFile
+    }
+
 
     fun concatenateName(user: UsersEntity): String {
         return "${user.firstName} ${user.lastName}"

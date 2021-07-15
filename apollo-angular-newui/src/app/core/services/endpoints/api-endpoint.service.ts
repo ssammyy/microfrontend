@@ -116,7 +116,7 @@ export class ApiEndpointService {
     PERMIT_SUBMIT_APPLICATION: `${ApiEndpointService.QA_CONTEXT_APPLY}/submit-application`,
     PLANT_LIST: `${ApiEndpointService.QA_CONTEXT}/branch-list`,
     SECTION_LIST: `${ApiEndpointService.QA_CONTEXT}/sections-list`,
-    MY_TASK_LIST: `${ApiEndpointService.QA_CONTEXT}/sta1`,
+    MY_TASK_LIST: `${ApiEndpointService.QA_CONTEXT}/permit/task-list`,
 
     PERMIT_APPLY_STA1: `${ApiEndpointService.QA_CONTEXT_APPLY}/sta1`,
     PERMIT_UPDATE_STA1: `${ApiEndpointService.QA_CONTEXT_APPLY}/sta1-update`,
@@ -130,6 +130,7 @@ export class ApiEndpointService {
     INVOICE_LIST_DETAILS: `${ApiEndpointService.QA_CONTEXT}/permit/view/invoice/batch-invoice-list`,
     INVOICE_DETAILS: `${ApiEndpointService.QA_CONTEXT}/permit/view/invoice/batch-invoice-details`,
     INVOICE_DETAILS_PDF: `${ApiEndpointService.QA_CONTEXT}/report/proforma-invoice-with-Item`,
+    // INVOICE_DETAILS_PDF: `${ApiEndpointService.QA_CONTEXT}/permit/view/invoice/batch-invoice-pdf-details`,
 
     PERMIT_APPLY_STA10_FIRM_DETAILS: `${ApiEndpointService.QA_CONTEXT_APPLY}/sta10/firm_details`,
     PERMIT_APPLY_STA10_PERSONNEL_DETAILS: `${ApiEndpointService.QA_CONTEXT_APPLY}/sta10/personnel_details`,

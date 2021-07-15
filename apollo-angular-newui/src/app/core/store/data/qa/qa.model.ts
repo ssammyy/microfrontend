@@ -1,5 +1,4 @@
 import {UserEntityDto} from '../users';
-import {Timestamp} from "rxjs";
 
 export class Qa {
 }
@@ -26,6 +25,8 @@ export class PermitEntityDto {
     taskID: bigint;
     companyId: bigint;
     permitType: bigint;
+    processStep: number;
+    processStepName: string;
 }
 
 export class ConsolidatedInvoiceDto {
@@ -208,6 +209,13 @@ export class PermitInvoiceDto {
 export class AllBatchInvoiceDetailsDto {
     batchDetails: InvoiceDto;
     allRelatedBatchInvoices: PermitInvoiceDto[];
+}
+
+export class TaskDto {
+    permitId: bigint;
+    taskName: String;
+    taskCreateTime: Date;
+    permitRefNo: String;
 }
 
 export class Sta10Dto {

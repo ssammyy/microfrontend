@@ -221,11 +221,34 @@ class ReportsDaoService(
         return targetFile
     }
 
-    fun generateEmailPDFReport(fileName: String, map: HashMap<String, Any>, filePath: String): File? {
+    fun generateEmailPDFReportWithDataSource(
+        fileName: String,
+        map: HashMap<String, Any>,
+        filePath: String,
+        dataSourceList: List<Any>
+    ): File? {
 
         val file = ResourceUtils.getFile(filePath)
         val design = JRXmlLoader.load(file)
         val jasperReport = JasperCompileManager.compileReport(design)
+        val dataSource = JRBeanCollectionDataSource(dataSourceList)
+
+        val jasperPrint = JasperFillManager.fillReport(jasperReport, map, dataSource)
+
+        val targetFile = File(Files.createTempDir(), fileName)
+        targetFile.deleteOnExit()
+
+        JasperExportManager.exportReportToPdfFile(jasperPrint, targetFile.absolutePath)
+
+        return targetFile
+    }
+
+    fun generateEmailPDFReportWithNoDataSource(fileName: String, map: HashMap<String, Any>, filePath: String): File? {
+
+        val file = ResourceUtils.getFile(filePath)
+        val design = JRXmlLoader.load(file)
+        val jasperReport = JasperCompileManager.compileReport(design)
+
 
         val jasperPrint = JasperFillManager.fillReport(jasperReport, map, JREmptyDataSource())
 

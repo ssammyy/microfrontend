@@ -281,6 +281,8 @@ data class PermitEntityDto(
     var taskID: Long? = null,
     var companyId: Long? = null,
     var permitType: Long? = null,
+    var processStep: Int? = null,
+    var processStepName: String? = null,
 )
 
 data class PermitDetailsDto(
@@ -347,6 +349,14 @@ data class StandardsDto(
     var standardTitle: String? = null,
     var standardNumber: String? = null,
 )
+
+data class TaskDto(
+    var permitId: Long? = null,
+    var taskName: String? = null,
+    var taskCreateTime: java.util.Date? = null,
+    var permitRefNo: String? = null,
+)
+
 
 data class PlantsDetailsDto(
     var id: Long? = null,
