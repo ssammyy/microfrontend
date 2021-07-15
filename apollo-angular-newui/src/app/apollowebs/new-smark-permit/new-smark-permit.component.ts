@@ -11,6 +11,7 @@ import {
     STA10ProductsManufactureDto, STA10RawMaterialsDto
 } from '../../core/store/data/qa/qa.model';
 import swal from 'sweetalert2';
+import {FileUploadValidators} from "@iplab/ngx-file-upload";
 
 @Component({
     selector: 'app-new-smark-permit',
@@ -44,6 +45,16 @@ export class NewSmarkPermitComponent implements OnInit {
     currBtn = 'A';
     stepSoFar: | undefined;
     step = 1;
+
+    public uploadedFiles: Array<File> = [];
+    public animation: boolean = false;
+    public multiple: boolean = false;
+
+    private filesControl = new FormControl(null, FileUploadValidators.filesLimit(2));
+
+    public demoForm = new FormGroup({
+        files: this.filesControl
+    });
 
     constructor(private store$: Store<any>,
                 private router: Router,
@@ -96,7 +107,7 @@ export class NewSmarkPermitComponent implements OnInit {
             productBrand: ['', Validators.required],
             productStandardNumber: ['', Validators.required],
             available: ['', Validators.required],
-            permitNo: ['', Validators.required]
+            permitNo: []
         });
 
         this.sta10FormC = this.formBuilder.group({
@@ -324,7 +335,7 @@ export class NewSmarkPermitComponent implements OnInit {
                         console.log(data);
                         this.step += 1;
                         swal.fire({
-                            title: 'STA10 Form saved!',
+                            title: 'Firm Details Saved!',
                             buttonsStyling: false,
                             customClass: {
                                 confirmButton: 'btn btn-success form-wizard-next-btn ',
@@ -364,16 +375,25 @@ export class NewSmarkPermitComponent implements OnInit {
                         console.log(data);
                         this.step += 1;
                         swal.fire({
-                            title: 'STA10 Form Updated!',
+                            title: 'Nonconforming Products Manufacturing Process saved!',
                             buttonsStyling: false,
                             customClass: {
                                 confirmButton: 'btn btn-success form-wizard-next-btn ',
                             },
                             icon: 'success'
                         });
-                        this.router.navigate(['/permitdetails'], {fragment: this.permitEntityDetails.id.toString()});
+                        //this.router.navigate(['/permitdetails'], {fragment: this.permitEntityDetails.id.toString()});
                     },
                 );
+        }
+    }
+    onClickSaveSTA10G(valid: boolean) {
+        if (valid) {
+            console.log(this.permitEntityDetails.id.toString());
+
+            this.router.navigate(['/permitdetails'], {fragment: this.permitEntityDetails.id.toString()});
+
+
         }
     }
 
@@ -387,7 +407,7 @@ export class NewSmarkPermitComponent implements OnInit {
                     console.log(data);
                     this.step += 1;
                     swal.fire({
-                        title: 'STA10 Form Personnel Details saved!',
+                        title: 'Key Personnel Details Saved!',
                         buttonsStyling: false,
                         customClass: {
                             confirmButton: 'btn btn-success form-wizard-next-btn ',
@@ -408,7 +428,7 @@ export class NewSmarkPermitComponent implements OnInit {
                     console.log(data);
                     this.step += 1;
                     swal.fire({
-                        title: 'STA10 Form Products Manufactured Details saved!',
+                        title: 'Products being Manufactured Saved!',
                         buttonsStyling: false,
                         customClass: {
                             confirmButton: 'btn btn-success form-wizard-next-btn ',
@@ -429,7 +449,7 @@ export class NewSmarkPermitComponent implements OnInit {
                     console.log(data);
                     this.step += 1;
                     swal.fire({
-                        title: 'STA10 Form Raw Materials Details saved!',
+                        title: 'Raw Materials Details saved!',
                         buttonsStyling: false,
                         customClass: {
                             confirmButton: 'btn btn-success form-wizard-next-btn ',
@@ -450,7 +470,7 @@ export class NewSmarkPermitComponent implements OnInit {
                     console.log(data);
                     this.step += 1;
                     swal.fire({
-                        title: 'STA10 Form RMachinery And Plant Details saved!',
+                        title: 'Machinery And Plant Details saved!',
                         buttonsStyling: false,
                         customClass: {
                             confirmButton: 'btn btn-success form-wizard-next-btn ',
@@ -471,7 +491,7 @@ export class NewSmarkPermitComponent implements OnInit {
                     console.log(data);
                     this.step += 1;
                     swal.fire({
-                        title: 'STA10 Form Manufacturing Process Details saved!',
+                        title: 'Manufacturing Process Details saved!',
                         buttonsStyling: false,
                         customClass: {
                             confirmButton: 'btn btn-success form-wizard-next-btn ',

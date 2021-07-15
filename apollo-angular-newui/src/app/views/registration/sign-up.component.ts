@@ -301,7 +301,7 @@ export class SignUpComponent implements OnInit {
       } else {
         this.otpSent = false;
         this.phoneValidated = false;
-        this.stepFourForm?.get('otp')?.reset();
+        // this.stepFourForm?.get('otp')?.reset();
         return throwError('Could not validate token');
 
       }
