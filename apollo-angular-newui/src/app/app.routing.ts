@@ -29,6 +29,7 @@ import {AddBranchComponent} from "./apollowebs/company/branch/add-branch/add-bra
 import {OtpComponent} from "./views/registration/otp/otp.component";
 import {InvoiceConsolidateComponent} from "./apollowebs/invoice-consolidate/invoice-consolidate.component";
 import {PdfViewComponent} from "./pdf-view/pdf-view.component";
+import {AddUserComponent} from "./apollowebs/company/branch/add-user/add-user.component";
 
 // export const AppRoutes: Routes = [
 //     {
@@ -164,7 +165,10 @@ const routes: Routes = [
         path: 'branches/add_branch', component: AdminLayoutComponent,
         children: [{path: '', component: AddBranchComponent}]
     },
-
+    {
+        path: 'users/add_users', component: AdminLayoutComponent,
+        children: [{path: '', component: AddUserComponent}]
+    },
     {
         path: 'companies/branch', component: AdminLayoutComponent,
         children: [{path: '', component: BranchComponent}]

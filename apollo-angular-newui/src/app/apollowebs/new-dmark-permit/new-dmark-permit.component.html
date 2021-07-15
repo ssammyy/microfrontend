@@ -86,11 +86,11 @@ class="dropdown-item">{{plant.buildingName}}</option>
 </div>
 
 </div>
-    <div class="form-group clearfix">
-        <button type="submit"
-                class="form-wizard-next-btn btn-sm float-right"
-                [disabled]="!sta1Form.valid">Next
-        </button>
+    <div *ngIf="sta1Form.valid" class="form-group clearfix">
+        <button type="submit" class="form-wizard-next-btn btn-sm float-right">Next</button>
+    </div>
+    <div *ngIf="!sta1Form.valid" class="form-group clearfix">
+        <button  class="btn btn-sm btn-primary float-right" (click)="showNotification('top','right')">Next</button>
     </div>
 </form>
 </fieldset>
@@ -100,6 +100,7 @@ class="dropdown-item">{{plant.buildingName}}</option>
             <fieldset class="wizard-fieldset show">
 <form (ngSubmit)="onClickSaveSTA3A(sta3FormA.valid)" [formGroup]="sta3FormA" action="" class="form"
 enctype="multipart/form-data" method="post">
+    <h2>STA3 Form</h2>
 <h3>1.Factory Organization</h3>
 <h4>1.1 PROCEDURES/PAPER WORK</h4>
 <h5>Please give the following information</h5>
@@ -152,12 +153,13 @@ placeholder="" [class.is-invalid]="formSta3FormA.isolatedCaseDoubtfulQuality.inv
 </div>
 
 </div>
-    <div class="form-group clearfix">
+    <div *ngIf="sta3FormA.valid" class="form-group clearfix">
         <button (click)="onClickPrevious()" class="btn btn-sm btn-danger form-wizard-previous-btn">Previous</button>
-        <button type="submit"
-                class="form-wizard-next-btn float-right"
-                [disabled]="!sta3FormA.valid">Next
-        </button>
+        <button type="submit" class="form-wizard-next-btn btn-sm float-right">Next</button>
+    </div>
+    <div *ngIf="!sta3FormA.valid" class="form-group clearfix">
+        <button (click)="onClickPrevious()" class="btn btn-sm btn-danger form-wizard-previous-btn">Previous</button>
+        <button  class="btn btn-sm btn-primary float-right" (click)="showNotification('top','right')">Next</button>
     </div>
 </form>
 </fieldset>
@@ -262,13 +264,15 @@ name="informationQcso" rows="3" placeholder=""
 </div>
 
 </div>
-    <div class="form-group clearfix">
-        <button (click)="onClickPrevious()" class="btn btn-sm btn-danger">Previous</button>
-        <button type="submit"
-                class="form-wizard-next-btn btn-sm float-right"
-                [disabled]="!sta3FormB.valid">Next
-        </button>
+    <div *ngIf="sta3FormB.valid" class="form-group clearfix">
+        <button (click)="onClickPrevious()" class="btn btn-sm btn-danger form-wizard-previous-btn">Previous</button>
+        <button type="submit" class="form-wizard-next-btn btn-sm float-right">Next</button>
     </div>
+    <div *ngIf="!sta3FormB.valid" class="form-group clearfix">
+        <button (click)="onClickPrevious()" class="btn btn-sm btn-danger form-wizard-previous-btn">Previous</button>
+        <button  class="btn btn-sm btn-primary float-right" (click)="showNotification('top','right')">Next</button>
+    </div>
+
 </form>
 </fieldset>
         </div>
@@ -312,12 +316,13 @@ name="storageFacilitiesExist" rows="3" placeholder=""
 </div>
 
 </div>
-    <div class="form-group clearfix">
-        <button (click)="onClickPrevious()" class="btn btn-sm btn-danger">Previous</button>
-        <button type="submit"
-                class="form-wizard-next-btn btn-sm float-right"
-                [disabled]="!sta3FormC.valid">Next
-        </button>
+    <div *ngIf="sta3FormC.valid" class="form-group clearfix">
+        <button (click)="onClickPrevious()" class="btn btn-sm btn-danger form-wizard-previous-btn">Previous</button>
+        <button type="submit" class="form-wizard-next-btn btn-sm float-right">Next</button>
+    </div>
+    <div *ngIf="!sta3FormC.valid" class="form-group clearfix">
+        <button (click)="onClickPrevious()" class="btn btn-sm btn-danger form-wizard-previous-btn">Previous</button>
+        <button  class="btn btn-sm btn-primary float-right" (click)="showNotification('top','right')">Next</button>
     </div>
 </form>
 </fieldset>
@@ -445,12 +450,13 @@ placeholder=""
 </div>
 
 </div>
-    <div class="form-group clearfix">
-        <button (click)="onClickPrevious()" class="btn btn-sm btn-danger">Previous</button>
-        <button type="submit"
-                class="form-wizard-next-btn btn-sm float-right"
-                [disabled]="!sta3FormD.valid">Next
-        </button>
+    <div *ngIf="sta3FormD.valid" class="form-group clearfix">
+        <button (click)="onClickPrevious()" class="btn btn-sm btn-danger form-wizard-previous-btn">Previous</button>
+        <button type="submit" class="form-wizard-next-btn btn-sm float-right">Next</button>
+    </div>
+    <div *ngIf="!sta3FormD.valid" class="form-group clearfix">
+        <button (click)="onClickPrevious()" class="btn btn-sm btn-danger form-wizard-previous-btn">Previous</button>
+        <button  class="btn btn-sm btn-primary float-right" (click)="showNotification('top','right')">Next</button>
     </div>
 
 </form>
@@ -463,7 +469,6 @@ placeholder=""
                 <form #demoForm="ngForm">
                     <file-upload [(ngModel)]="uploadedFiles" name="files" fileslimit="2"></file-upload>
                 </form>
-                `
 
                 <div class="form-group clearfix">
                     <button (click)="onClickPrevious()" class="btn btn-sm btn-danger">Previous</button>

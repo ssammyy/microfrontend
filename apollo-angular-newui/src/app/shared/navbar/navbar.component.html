@@ -10,6 +10,8 @@
       <div *ngIf="router.url == '/profile';else templateName">
         <a class="navbar-brand" href="profile"> Profile</a>
       </div>
+
+
       <ng-template #templateName>
         <a class="navbar-brand" href="{{getPath()}}"> {{getTitle()}}</a>
       </ng-template>

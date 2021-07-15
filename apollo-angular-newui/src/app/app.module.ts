@@ -85,6 +85,7 @@ import {PdfViewerModule} from 'ng2-pdf-viewer';
 import {BrowserModule} from '@angular/platform-browser';
 import {NgxExtendedPdfViewerModule} from 'ngx-extended-pdf-viewer';
 import {FileUploadModule} from "@iplab/ngx-file-upload";
+import { AddUserComponent } from './apollowebs/company/branch/add-user/add-user.component';
 
 @NgModule({
     exports: [
@@ -164,7 +165,8 @@ import {FileUploadModule} from "@iplab/ngx-file-upload";
         AddBranchComponent,
         OtpComponent,
         InvoiceConsolidateComponent,
-        PdfViewComponent
+        PdfViewComponent,
+        AddUserComponent
     ]
 
 })

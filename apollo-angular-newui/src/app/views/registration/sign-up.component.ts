@@ -42,7 +42,7 @@ import {takeUntil} from 'rxjs/operators';
 export class SignUpComponent implements OnInit {
 
   ispause = new Subject();
-  time = 30;
+  time = 59;
   timer!: Observable<number>;
   timerObserver!: PartialObserver<number>;
   step = 0;
@@ -54,6 +54,7 @@ export class SignUpComponent implements OnInit {
   stepTwoForm!: FormGroup;
   stepThreeForm!: FormGroup;
   stepFourForm!: FormGroup;
+  stepFiveForm!: FormGroup;
   companySoFar: Partial<Company> | undefined;
   userSoFar: Partial<User> | undefined;
   // @ts-ignore
@@ -152,13 +153,12 @@ export class SignUpComponent implements OnInit {
       county: new FormControl('', [Validators.required]),
       town: new FormControl('', [Validators.required])
     });
+
     this.stepFourForm = this.formBuilder.group({
           firstName: [],
           lastName: ['', Validators.required],
           userName: ['', Validators.required],
           email: ['', Validators.required],
-          cellphone: ['', Validators.required],
-          otp: ['', Validators.required],
           credentials: ['', Validators.required],
           confirmCredentials: ['', [Validators.required]]
         },
@@ -166,13 +166,37 @@ export class SignUpComponent implements OnInit {
           validators: ConfirmedValidator('credentials', 'confirmCredentials')
         });
 
+    this.stepFiveForm = this.formBuilder.group({
+      cellphone: ['', Validators.required],
+      otp: ['', Validators.required]
+    });
+
+
   }
 
-  get formStepZeroForm(): any {return this.stepZeroForm.controls; }
-  get formStepOneForm(): any {return this.stepOneForm.controls; }
-  get formStepTwoForm(): any {return this.stepTwoForm.controls; }
-  get formStepThreeForm(): any {return this.stepThreeForm.controls; }
-  get formStepFourForm(): any {return this.stepFourForm.controls; }
+  get formStepZeroForm(): any {
+    return this.stepZeroForm.controls;
+  }
+
+  get formStepOneForm(): any {
+    return this.stepOneForm.controls;
+  }
+
+  get formStepTwoForm(): any {
+    return this.stepTwoForm.controls;
+  }
+
+  get formStepThreeForm(): any {
+    return this.stepThreeForm.controls;
+  }
+
+  get formStepFourForm(): any {
+    return this.stepFourForm.controls;
+  }
+
+  get formStepFiveForm(): any {
+    return this.stepFiveForm.controls;
+  }
 
   updateSelectedRegion() {
     this.selectedRegion = this.stepThreeForm?.get('region')?.value;
@@ -227,7 +251,10 @@ export class SignUpComponent implements OnInit {
         this.stepTwoForm.patchValue(record);
         this.stepThreeForm.patchValue(record);
         this.stepFourForm.patchValue(record);
+        this.stepFiveForm.patchValue(record);
         this.companySoFar = record;
+        this.userSoFar = record;
+
       });
 
       console.log(`step after is ${this.step}`);
@@ -246,31 +273,31 @@ export class SignUpComponent implements OnInit {
 
   onClickRegisterCompany(valid: boolean) {
     if (valid) {
-      if (this.phoneValidated) {
-        this.company = {...this.company, ...this.companySoFar};
-        this.user = {...this.user, ...this.stepFourForm?.value};
-
-        this.store$.dispatch(loadRegistrations({
-          payload: {company: this.company, user: this.user}
-        }));
-
-        this.store$.pipe(select(selectRegistrationStateSucceeded)).subscribe((d) => {
-          console.log(`status inside is ${d}`);
-          if (d) {
-            return this.store$.dispatch(Go({payload: '', link: 'login', redirectUrl: ''}));
-          }
-        });
-      } else {
-        this.otpSent = false;
-        this.stepFourForm.get('otp')?.reset();
-        this.store$.dispatch(loadResponsesFailure({
-          error: {
-            payload: 'Cellphone needs to be validated',
-            status: 100,
-            response: '05'
-          }
-        }));
-      }
+      // if (this.phoneValidated) {
+      //   this.company = {...this.company, ...this.companySoFar};
+      //   this.user = {...this.user, ...this.userSoFar};
+      //
+      //   this.store$.dispatch(loadRegistrations({
+      //     payload: {company: this.company, user: this.user}
+      //   }));
+      //
+      //   this.store$.pipe(select(selectRegistrationStateSucceeded)).subscribe((d) => {
+      //     console.log(`status inside is ${d}`);
+      //     if (d) {
+      //       return this.store$.dispatch(Go({payload: '', link: 'login', redirectUrl: ''}));
+      //     }
+      //   });
+      // } else {
+      //   this.otpSent = false;
+      //   this.stepFiveForm.get('otp')?.reset();
+      //   this.store$.dispatch(loadResponsesFailure({
+      //     error: {
+      //       payload: 'Cellphone needs to be validated',
+      //       status: 100,
+      //       response: '05'
+      //     }
+      //   }));
+      // }
     } else {
       this.store$.dispatch(loadResponsesFailure({
         error: {
@@ -288,8 +315,8 @@ export class SignUpComponent implements OnInit {
     this.phoneValidated = true;
     this.store$.dispatch(loadValidateTokenAndPhone({
       payload: {
-        phone: this.stepFourForm?.get('cellphone')?.value,
-        token: this.stepFourForm?.get('otp')?.value,
+        phone: this.stepFiveForm?.get('cellphone')?.value,
+        token: this.stepFiveForm?.get('otp')?.value,
       }
     }));
     this.store$.pipe(select(selectValidateTokenAndPhoneValidated)).subscribe((d) => {
@@ -297,7 +324,33 @@ export class SignUpComponent implements OnInit {
       if (d) {
         this.otpSent = true;
         // this.stepFourForm?.get('otp')?.reset();
-        return this.phoneValidated = d;
+        this.phoneValidated = d;
+        if (this.phoneValidated) {
+          this.company = {...this.company, ...this.companySoFar};
+          this.user = {...this.user, ...this.userSoFar};
+
+          this.store$.dispatch(loadRegistrations({
+            payload: {company: this.company, user: this.user}
+          }));
+
+          this.store$.pipe(select(selectRegistrationStateSucceeded)).subscribe((d) => {
+            console.log(`status inside is ${d}`);
+            if (d) {
+              return this.store$.dispatch(Go({payload: '', link: 'login', redirectUrl: ''}));
+            }
+          });
+        } else {
+          this.otpSent = false;
+          this.stepFiveForm.get('otp')?.reset();
+          this.store$.dispatch(loadResponsesFailure({
+            error: {
+              payload: 'Cellphone needs to be validated',
+              status: 100,
+              response: '05'
+            }
+          }));
+        }
+
       } else {
         this.otpSent = false;
         this.phoneValidated = false;
@@ -322,11 +375,11 @@ export class SignUpComponent implements OnInit {
 
   onClickSendOtp() {
     this.otpSent = true;
-    this.time = 30;
+    this.time = 59;
     this.timer.subscribe(this.timerObserver);
-    this.validationCellphone = this.stepFourForm?.get('cellphone')?.value;
+    this.validationCellphone = this.stepFiveForm?.get('cellphone')?.value;
 
-    this.stepFourForm?.get('otp')?.reset();
+    this.stepFiveForm?.get('otp')?.reset();
 
     if (
         this.validationCellphone === '' ||
@@ -381,9 +434,14 @@ export class SignUpComponent implements OnInit {
           this.companySoFar = {...this.companySoFar, ...this.stepThreeForm?.value};
           break;
         case 4:
-          this.userSoFar = this.stepFourForm?.value;
+          this.userSoFar = {...this.userSoFar, ...this.stepFourForm?.value};
+          break;
+        case 5:
+          this.userSoFar = this.stepFiveForm?.value;
           break;
       }
+
+
       this.step += 1;
     }
 
