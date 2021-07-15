@@ -61,7 +61,7 @@ class ReportsController(
     /*
     GetDemand Note with all list of Items In It
      */
-    @RequestMapping(value = ["report/proforma-invoice-with-Item"], method = [RequestMethod.GET])
+    @RequestMapping(value = ["proforma-invoice-with-Item"], method = [RequestMethod.GET])
     @Throws(Exception::class)
     fun proformaInvoiceWithMoreItems(
         response: HttpServletResponse,

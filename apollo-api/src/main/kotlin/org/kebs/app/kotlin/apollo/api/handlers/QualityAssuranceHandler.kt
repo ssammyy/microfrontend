@@ -1651,7 +1651,7 @@ class QualityAssuranceHandler(
             }
 
         } catch (e: Exception) {
-            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.error(e.message, e)
             KotlinLogging.logger { }.debug(e.message, e)
             throw e
         }

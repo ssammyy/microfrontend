@@ -24,7 +24,7 @@ export class HandleErrorService {
     } else {
       // The backend returned an unsuccessful response code.
       // errorMessage = `Error Code: ${err.status},  Message: ${err.error}`;
-      errorMessage = `Message: No Network Connection`;
+      errorMessage = `Message: ${err.error}`;
 
       console.log(`Message: ${err.error}`)
     }
