@@ -140,7 +140,7 @@ export class QaService {
         const params = new HttpParams()
             .set('ID', ID);
         // return this.httpService.get<any>(`${this.baseUrl}/get/pdf/${fileName}`, { responseType: 'arraybuffer' as 'json' });
-        return this.http.get<any>(url, {params}).pipe(
+        return this.http.get<any>(url, {params, responseType: 'arraybuffer' as 'json'}).pipe(
             map(function (response: any) {
                 return response;
             }),
