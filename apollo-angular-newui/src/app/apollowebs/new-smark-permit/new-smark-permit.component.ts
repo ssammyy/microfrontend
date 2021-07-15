@@ -390,6 +390,7 @@ export class NewSmarkPermitComponent implements OnInit {
     onClickSaveSTA10G(valid: boolean) {
         if (valid) {
             console.log(this.permitEntityDetails.id.toString());
+
             this.router.navigate(['/permitdetails'], {fragment: this.permitEntityDetails.id.toString()});
 
 
