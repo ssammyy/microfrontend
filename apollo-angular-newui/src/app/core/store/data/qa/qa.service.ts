@@ -135,6 +135,19 @@ export class QaService {
         );
     }
 
+    public taskListFind(): Observable<TaskDto> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.MY_TASK_LIST);
+        return this.http.get<TaskDto>(url).pipe(
+            map(function (response: TaskDto) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
+
     public loadInvoiceDetailsPDF(ID: string): Observable<any> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.INVOICE_DETAILS_PDF);
         const params = new HttpParams()

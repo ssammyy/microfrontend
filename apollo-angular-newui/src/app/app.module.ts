@@ -71,6 +71,20 @@ import { CompaniesList } from './apollowebs/company/companies.list';
 import { CompanyComponent } from './apollowebs/company/company.component';
 import { BranchComponent } from './apollowebs/company/branch/branch.component';
 import { BranchList } from './apollowebs/company/branch/branch.list';
+import { UserComponent } from './apollowebs/company/branch/users/user.component';
+import { UserList } from './apollowebs/company/branch/users/user.list';
+import { UserProfileComponent } from './apollowebs/company/branch/users/user-profile.component';
+import { SmarkApplicationsAllComponent } from './apollowebs/smark-applications-all/smark-applications-all.component';
+import { UserProfileMainComponent } from './apollowebs/userprofilemain/user-profile-main.component';
+import {NgxSpinnerModule} from "ngx-spinner";
+import { AddBranchComponent } from './apollowebs/company/branch/add-branch/add-branch.component';
+import { OtpComponent } from './views/registration/otp/otp.component';
+import { InvoiceConsolidateComponent } from './apollowebs/invoice-consolidate/invoice-consolidate.component';
+import { PdfViewComponent } from './pdf-view/pdf-view.component';
+import {PdfViewerModule} from "ng2-pdf-viewer";
+import {BrowserModule} from "@angular/platform-browser";
+import {NgxExtendedPdfViewerModule} from "ngx-extended-pdf-viewer";
+import { TaskManagerComponent } from './apollowebs/task-manager/task-manager.component';
 import {UserComponent} from './apollowebs/company/branch/users/user.component';
 import {UserList} from './apollowebs/company/branch/users/user.list';
 import {UserProfileComponent} from './apollowebs/company/branch/users/user-profile.component';
@@ -165,6 +179,8 @@ import { AddUserComponent } from './apollowebs/company/branch/add-user/add-user.
         AddBranchComponent,
         OtpComponent,
         InvoiceConsolidateComponent,
+        PdfViewComponent,
+        TaskManagerComponent,
         PdfViewComponent,
         AddUserComponent
     ]
