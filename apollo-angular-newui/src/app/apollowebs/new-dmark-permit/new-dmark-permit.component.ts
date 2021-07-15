@@ -28,7 +28,8 @@ export class NewDmarkPermitComponent implements OnInit {
     step = 1;
     currBtn = 'A';
     checkN: number;
-    public uploadedFiles: File[] = [];
+    public uploadedFile: File;
+    public uploadedFiles: FileList;
     public animation = true;
     public multiple = true;
 
@@ -297,11 +298,29 @@ export class NewDmarkPermitComponent implements OnInit {
         }
     }
 
-    goToPermit(valid: boolean) {
-        if (valid) {
-            // let UploadsDtoSTA3 = UploadsDtoSTA3
-            // UploadsDtoSTA3.uploadedFiles
-            this.qaService.uploadSTA3File(this.permitEntityDetails.id.toString(), this.uploadedFiles).subscribe(
+    goToPermit() {
+        if (this.uploadedFiles.length > 0) {
+            const file = this.uploadedFiles;
+            const formData = new FormData();
+            for (let i = 0; i < file.length; i++) {
+                console.log(file[i]);
+                formData.append('docFile', file[i], file[i].name);
+            }
+            //
+            // const headers = new Headers();
+            // // It is very important to leave the Content-Type empty
+            // // do not use headers.append('Content-Type', 'multipart/form-data');
+            // headers.append('Authorization', 'Bearer ' + 'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9....');
+            // const options = new RequestOptions({headers: headers});
+            // this.http.post('https://api.mysite.com/uploadfile', formData, options)
+            //     .map(res => res.json())
+            //     .catch(error => Observable.throw(error))
+            //     .subscribe(
+            //         data => console.log('success'),
+            //         error => console.log(error)
+            //     );
+
+            this.qaService.uploadSTA3File(this.permitEntityDetails.id.toString(), formData).subscribe(
                 (data: any) => {
                     console.log(data);
                     this.step += 1;
@@ -316,8 +335,8 @@ export class NewDmarkPermitComponent implements OnInit {
                     // this.router.navigate(['/permitdetails'], {fragment: this.permitEntityDetails.id.toString()});
                 },
             );
+            this.router.navigate(['/permitdetails'], {fragment: this.permitEntityDetails.id.toString()});
         }
-        this.router.navigate(['/permitdetails'], {fragment: this.permitEntityDetails.id.toString()});
 
     }
 

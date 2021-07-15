@@ -782,7 +782,7 @@ enctype="multipart/form-data" >
 
     <h3>Upload all of the required documents</h3>
     <form #demoForm="ngForm">
-        <file-upload [(ngModel)]="uploadedFiles" name="files" fileslimit="2"></file-upload>
+        <file-upload [(ngModel)]="uploadedFiles" name="files" fileslimit="2" accept=".pdf, .doc, .docx"></file-upload>
     </form>
 <div class="form-group clearfix">
 <button (click)="onClickPrevious()" class="btn btn-sm btn-danger">Previous</button>
