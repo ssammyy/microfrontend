@@ -291,6 +291,7 @@ export class DmarkComponent implements OnInit, AfterViewInit {
             );
         }
     }
+
     onClickSaveSTA1(valid: boolean) {
         if (valid) {
             if (this.permitEntityDetails == null) {
