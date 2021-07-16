@@ -86,7 +86,7 @@ export class SmarkApplicationsAllComponent implements OnInit {
   }
 
   onSelect(rowElement: string) {
-    this.router.navigate(['/permitdetails'], {fragment: rowElement});
+    this.router.navigate(['/smarkpermitdetails'], {fragment: rowElement});
   }
 
 }

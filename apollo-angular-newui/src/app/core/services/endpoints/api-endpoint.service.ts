@@ -17,11 +17,11 @@ export class ApiEndpointService {
    * Map of domains for API endpoints.
    */
   public static DOMAIN = {
-   // LOCAL_DEV: 'localhost:8006'
+    //LOCAL_DEV: 'localhost:8006'
     // LOCAL_DEV: '12:8006'
     // LOCAL_DEV: '41.72.209.58:8006'
      LOCAL_DEV: 'kimsint.kebs.org:8006'
-    //  LOCAL_DEV: 'kims.kebs.org:8006'
+    // LOCAL_DEV: 'kims.kebs.org:8006'
   };
 
   /**
@@ -148,6 +148,7 @@ export class ApiEndpointService {
     INVOICE_CONSOLIDATE_ADD: `${ApiEndpointService.QA_CONTEXT}/permit/view/invoice/batch-invoice-add`,
     INVOICE_CONSOLIDATE_REMOVE: `${ApiEndpointService.QA_CONTEXT}/permit/view/invoice/batch-invoice-remove`,
     INVOICE_LIST_DETAILS: `${ApiEndpointService.QA_CONTEXT}/permit/view/invoice/batch-invoice-list`,
+    INVOICE_LIST_NO_DETAILS: `${ApiEndpointService.QA_CONTEXT}/permit/invoice/list-no-batch-Id`,
     INVOICE_DETAILS: `${ApiEndpointService.QA_CONTEXT}/permit/view/invoice/batch-invoice-details`,
     INVOICE_DETAILS_PDF: `${ApiEndpointService.QA_CONTEXT}/report/proforma-invoice-with-Item`,
     // INVOICE_DETAILS_PDF: `${ApiEndpointService.QA_CONTEXT}/permit/view/invoice/batch-invoice-pdf-details`,

@@ -153,7 +153,10 @@ export class SmarkComponent implements OnInit {
           console.log(data);
         }
     );
+
+
   }
+
   get formSta1Form(): any {
     return this.sta1Form.controls;
   }
