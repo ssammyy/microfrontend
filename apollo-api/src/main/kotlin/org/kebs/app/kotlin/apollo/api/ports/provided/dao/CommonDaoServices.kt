@@ -703,6 +703,17 @@ class CommonDaoServices(
             ?: throw ExpectedDataNotFound("No user Profile Matched the following details [designation id = ${designationsEntity.id}] and [status = $status]")
     }
 
+    fun findAllUsersProfileWithDesignationAndStatus(
+        designationsEntity: DesignationsEntity,
+        status: Int
+    ): List<UserProfilesEntity> {
+        iUserProfilesRepo.findAllByDesignationIdAndStatus(designationsEntity, status)
+            ?.let { users ->
+                return users
+            }
+            ?: throw ExpectedDataNotFound("No user Profile Matched the following details [designation id = ${designationsEntity.id}] and [status = $status]")
+    }
+
     fun findAllUsersWithDesignationRegionDepartmentAndStatus(
         designationsEntity: DesignationsEntity,
         regionsEntity: RegionsEntity,
