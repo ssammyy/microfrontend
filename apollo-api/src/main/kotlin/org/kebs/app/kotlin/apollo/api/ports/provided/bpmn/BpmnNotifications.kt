@@ -1,34 +1,26 @@
 package org.kebs.app.kotlin.apollo.api.ports.provided.bpmn
 
 import mu.KotlinLogging
-import org.flowable.engine.RepositoryService
-import org.flowable.engine.RuntimeService
-import org.flowable.engine.TaskService
 import org.flowable.engine.delegate.DelegateExecution
 import org.flowable.task.service.delegate.DelegateTask
 import org.kebs.app.kotlin.apollo.api.notifications.Notifications
+import org.kebs.app.kotlin.apollo.api.ports.provided.dao.QADaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.scheduler.SchedulerImpl
-import org.kebs.app.kotlin.apollo.store.repo.IManufacturerRepository
-import org.kebs.app.kotlin.apollo.store.repo.IUserRepository
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Component
-import java.io.UnsupportedEncodingException
-import java.lang.Double.parseDouble
-import java.util.*
-import javax.mail.*
-import javax.mail.internet.InternetAddress
-import javax.mail.internet.MimeBodyPart
-import javax.mail.internet.MimeMessage
-import javax.mail.internet.MimeMultipart
 
 
 @Component
 class BpmnNotifications(
     private val notifications: Notifications,
-    private val schedulerImpl: SchedulerImpl
+    private val schedulerImpl: SchedulerImpl,
+    private val qaDaoServices: QADaoServices
 )
 {
+
+    @Value("\${bpmn.candidate.group.pcm}")
+    lateinit var pcmCandidateGroup: String
+
     @Value("\${qa.bpmn.email.smtpStartTlsEnable}")
     lateinit var smtpStartTlsEnable: String
     @Value("\${qa.bpmn.email.smtpHost}")
@@ -125,4 +117,17 @@ class BpmnNotifications(
         }
 
     }
+
+    fun sendEmailToCandidateGroup(candidateGroup: String) {
+        KotlinLogging.logger { }.info("Submitting Emails to Candidate Group: $candidateGroup............")
+        when (candidateGroup) {
+            pcmCandidateGroup -> {
+                val pcmUserList = qaDaoServices.findAllPcmOfficers()
+                for (user in pcmUserList) {
+                    user.email?.let { this.sendEmail(it) }
+                }
+            }
+        }
+    }
+
 }

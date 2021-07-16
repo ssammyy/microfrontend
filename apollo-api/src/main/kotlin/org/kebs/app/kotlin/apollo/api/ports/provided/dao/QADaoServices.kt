@@ -34,6 +34,10 @@ import java.sql.Date
 import java.sql.Timestamp
 import java.time.Instant
 import java.time.temporal.ChronoUnit
+import java.util.stream.Collectors
+
+
+
 
 @Service
 class QADaoServices(
@@ -1373,6 +1377,24 @@ class QADaoServices(
         val designation = commonDaoServices.findDesignationByID(designationID)
         return commonDaoServices.findUserProfileWithDesignationAndStatus(designation, map.activeStatus).userId
 
+    }
+
+    fun findAllUsersByDesignation(
+        map: ServiceMapsEntity,
+        designationID: Long
+    ):List<UserProfilesEntity> {
+        val designation = commonDaoServices.findDesignationByID(designationID)
+        return commonDaoServices.findAllUsersProfileWithDesignationAndStatus(designation, map.activeStatus)
+    }
+
+    fun findAllPcmOfficers(): List<UsersEntity> {
+        val map = commonDaoServices.serviceMapDetails(appId)
+        val pcmUserProfiles = this.findAllUsersByDesignation(map, applicationMapProperties.mapQADesignationIDForPCMId)
+
+        return pcmUserProfiles
+            .stream()
+            .map { x -> x.userId?.id?.let { commonDaoServices.findUserByID(it) } }
+            .collect(Collectors.toList())
     }
 
     fun sendAppointAssessorNotificationEmail(recipientEmail: String, permit: PermitApplicationsEntity): Boolean {

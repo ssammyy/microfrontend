@@ -299,6 +299,36 @@ class BpmnCommonFunctions(
         return false
     }
 
+    fun claimTask(processInstanceId: String, taskDefinitionKey: String?, assigneeId: Long): Boolean {
+        KotlinLogging.logger { }.info(":::::::::: Claim task begin ::::::::::::")
+        try {
+            var localAssigneeId: String = assigneeId.toString()
+            var task: Task? = null
+
+            taskDefinitionKey?.let {
+                task = getTaskByTaskDefinitionKey(processInstanceId, taskDefinitionKey)
+            } ?: run {
+                task = getTasks("processInstanceId", processInstanceId)?.get(0)
+            }
+
+            task?.let { task ->
+                userRepo.findByIdOrNull(localAssigneeId.toLong())?.let { usersEntity ->
+                    updateVariable(task.id, "email", usersEntity.email.toString())
+                }
+                getTaskById(task.id)?.let { updatedTask ->
+//                    updatedTask.assignee = localAssigneeId
+//                    taskService.saveTask(updatedTask)
+                    taskService.claim(updatedTask.id, localAssigneeId)
+                    KotlinLogging.logger { }.info("Task ${updatedTask.name} claimed by $localAssigneeId")
+                    return true
+                }
+            }
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message, e)
+        }
+        return false
+    }
+
     fun booleanToInt(b: Boolean): Int {
         return if (b) 1 else 0
     }
