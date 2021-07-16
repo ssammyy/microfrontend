@@ -242,7 +242,7 @@ const routes: Routes = [
         children: [{path: '', component: TaskManagerComponent}]
     },
     {
-        path: 'fmark/appplication', component: AdminLayoutComponent,
+        path: 'fmark/application', component: AdminLayoutComponent,
         children: [{path: '', component: FmarkApplicationComponent}]
     },
     {

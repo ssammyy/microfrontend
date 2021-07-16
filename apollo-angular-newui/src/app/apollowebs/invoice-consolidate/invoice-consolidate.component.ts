@@ -19,6 +19,7 @@ declare const $: any;
 export class InvoiceConsolidateComponent implements OnInit {
   public dataTable: DataTable;
   public allInvoiceData: ConsolidatedInvoiceDto[];
+  
 
   constructor(
       private qaService: QaService,
