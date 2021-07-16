@@ -9,15 +9,15 @@
       </div>
 
 
-      <!--      <ng-template [ngIf]="router.url == '/branches/add_branch'">-->
-      <!--        <a class="navbar-brand" href="branches/add_branch"> Add Branch</a>-->
-      <!--      </ng-template>-->
-      <!--      <ng-template [ngIf]="router.url == 'users/add_users'">-->
-      <!--        <a class="navbar-brand" href="users/add_users"> Add Users</a>-->
-      <!--      </ng-template>-->
-      <!--      <ng-template [ngIf]="router.url == '/company'">-->
-      <!--        <a class="navbar-brand" href="company"> Add Organisation</a>-->
-      <!--      </ng-template>-->
+            <ng-template [ngIf]="router.url == '/branches/add_branch'">
+              <a class="navbar-brand" href="branches/add_branch"> Add Branch</a>
+            </ng-template>
+            <ng-template [ngIf]="router.url == 'users/add_users'">
+              <a class="navbar-brand" href="users/add_users"> Add Users</a>
+            </ng-template>
+            <ng-template [ngIf]="router.url == '/company'">
+              <a class="navbar-brand" href="company"> Add Organisation</a>
+            </ng-template>
       <div *ngIf="router.url == '/profile';else templateName">
         <a class="navbar-brand" href="profile"> Profile</a>
       </div>
