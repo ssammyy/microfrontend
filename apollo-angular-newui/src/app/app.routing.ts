@@ -274,9 +274,8 @@ const routes: Routes = [
         children: [{path: '', component: SmarkApplicationsAllComponent}]
     },
     {
-        path: 'consolidate_invoice', component: AdminLayoutComponent,
+        path: 'invoice/consolidate_invoice', component: AdminLayoutComponent,
         canActivate: [RouteGuard],
-
         children: [{path: '', component: InvoiceConsolidateComponent}]
     },
     {

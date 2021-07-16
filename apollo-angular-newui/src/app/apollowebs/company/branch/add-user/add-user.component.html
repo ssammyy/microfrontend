@@ -146,10 +146,9 @@
                                                                             <mat-select id="branch" multiple
                                                                                         placeholder="Select Branch">
                                                                                 <mat-option
-                                                                                        *ngFor="let city of branches$ | async"
-                                                                                        [value]="city.id">
-                                                                                    {{ city.buildingName }}
-
+                                                                                        *ngFor="let branch of branches$ | async"
+                                                                                        [value]="branch.id">
+                                                                                    {{ branch.buildingName }}
                                                                                 </mat-option>
                                                                             </mat-select>
                                                                         </mat-form-field>
