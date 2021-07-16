@@ -39,19 +39,14 @@
 package org.kebs.app.kotlin.apollo.api.ports.provided.bpmn
 
 
-import org.flowable.engine.TaskService
 import org.junit.Ignore
+import org.junit.jupiter.api.Test
 import org.junit.runner.RunWith
 import org.kebs.app.kotlin.apollo.api.notifications.Notifications
-import org.kebs.app.kotlin.apollo.store.repo.IManufacturerRepository
-import org.kebs.app.kotlin.apollo.store.repo.IPermitApplicationRemarksRepository
-import org.kebs.app.kotlin.apollo.store.repo.IPermitRepository
-import org.kebs.app.kotlin.apollo.store.repo.IUserRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.junit4.SpringRunner
-import kotlin.test.Test
 
 
 @SpringBootTest
@@ -117,7 +112,7 @@ class QABpmnTest{
     val custAssigneeId: Long = 105
     val labAssigneeId:Long = 106
     val pscAssigneeId:Long=107
-    val pcmAssigneeId:Long=108
+    val pcmAssigneeId:Long=1605
     val pmAssigneeId:Long = 109
     val hodAssigneeId:Long = 110
     val assessorAssigneeId:Long = 111
@@ -1150,32 +1145,11 @@ class QABpmnTest{
         }
     }
 
-    /*
     @Test
-    @Ignore
-    fun testMultipleTaskFetch() {
-        println("Starting processes")
-        qualityAssuranceBpmn.startQAAppReviewProcess(311, 100)
-        qualityAssuranceBpmn.startQAAppReviewProcess(312, 100)
-        qualityAssuranceBpmn.startQAAppReviewProcess(318, 100)
-        qualityAssuranceBpmn.startQAAppReviewProcess(319, 100)
-        qualityAssuranceBpmn.startQAAppReviewProcess(319, 100)
-        println("Fetching tasks")
-        qualityAssuranceBpmn.fetchQaAppReviewTasks(100)?.let { lstTaskDetails->
-            for (taskDetails in lstTaskDetails){
-                taskDetails.task.let{task->
-                    println("${taskDetails.permitId} -- ${task.id} -- ${task.name} -- ${task.assignee} -- ${task.processInstanceId} -- ${task.taskDefinitionKey} " )
-                }
-            }
-        }
-    }
-    */
-    @Test
-    @Ignore
     fun testDmAppPaymentProcessForeign() {
-        val permitId: Long = 283
+        val permitId: Long = 1094
         //Start the process
-        qualityAssuranceBpmn.startQADmAppPaymentProcess(permitId, qaoAssigneeId)?.let {
+        qualityAssuranceBpmn.startQADmAppPaymentProcess(permitId, null)?.let {
             qualityAssuranceBpmn.fetchTaskByPermitId(permitId, qaDmAppPaymentProcessDefinitionKey)?.let { taskDetails ->
                 println("Task details after starting the process")
                 for (taskDetail in taskDetails){
@@ -1186,8 +1160,8 @@ class QABpmnTest{
             }
         } ?: return
 
-        //Select Dmark complete
-        qualityAssuranceBpmn.qaDmappSelectDmarkComplete(permitId).let {
+        //Submit DMARK application
+        qualityAssuranceBpmn.qaDmSubmitApplicationComplete(permitId, false, false).let {
             qualityAssuranceBpmn.fetchTaskByPermitId(permitId, qaDmAppPaymentProcessDefinitionKey)?.let { taskDetails ->
                 println("Task details after select dmark complete")
                 for (taskDetail in taskDetails){
@@ -1198,10 +1172,18 @@ class QABpmnTest{
             }
         } ?: return
 
-        //Check domestic complete
-        qualityAssuranceBpmn.qaDmappCheckDomesticComplete(permitId, false).let {
+        //Check list of tasks for candidate group
+        qualityAssuranceBpmn.getallPCMTasks().let { bpmnTaskDetails ->
+            println("Task details for PCM")
+        }
+
+        //Claim task by PCM
+        qualityAssuranceBpmn.claimPermitApplicationCheckTask(permitId, pcmAssigneeId)
+
+        //Check application complete
+        qualityAssuranceBpmn.qaDmCheckApplicationComplete(permitId, false).let {
             qualityAssuranceBpmn.fetchTaskByPermitId(permitId, qaDmAppPaymentProcessDefinitionKey)?.let { taskDetails ->
-                println("Task details after check domestic complete")
+                println("Task details after check application complete")
                 for (taskDetail in taskDetails){
                     taskDetail.task.let{ task->
                         println("${taskDetail.permitId} -- ${task.id} -- ${task.name} -- ${task.assignee} -- ${task.processInstanceId} -- ${task.taskDefinitionKey} " )
@@ -1210,10 +1192,10 @@ class QABpmnTest{
             }
         } ?: return
 
-        //Fill foreign application complete
-        qualityAssuranceBpmn.qaDmappFillForeignAppComplete(permitId,pcmAssigneeId).let {
+        //Manufacturer correct application
+        qualityAssuranceBpmn.qaDmManufacturerCorrectionComplete(permitId, pcmAssigneeId).let {
             qualityAssuranceBpmn.fetchTaskByPermitId(permitId, qaDmAppPaymentProcessDefinitionKey)?.let { taskDetails ->
-                println("Task details after fill foreign application complete")
+                println("Task details after manufacturer correct application complete")
                 for (taskDetail in taskDetails){
                     taskDetail.task.let{ task->
                         println("${taskDetail.permitId} -- ${task.id} -- ${task.name} -- ${task.assignee} -- ${task.processInstanceId} -- ${task.taskDefinitionKey} " )
@@ -1222,10 +1204,10 @@ class QABpmnTest{
             }
         } ?: return
 
-        //Check application complete -- false
-        qualityAssuranceBpmn.qaDmappCheckAppCompleteForeign(permitId,false).let {
+        //Check application complete
+        qualityAssuranceBpmn.qaDmCheckApplicationComplete(permitId, true).let {
             qualityAssuranceBpmn.fetchTaskByPermitId(permitId, qaDmAppPaymentProcessDefinitionKey)?.let { taskDetails ->
-                println("Task details after check foreign application complete")
+                println("Task details after check application complete")
                 for (taskDetail in taskDetails){
                     taskDetail.task.let{ task->
                         println("${taskDetail.permitId} -- ${task.id} -- ${task.name} -- ${task.assignee} -- ${task.processInstanceId} -- ${task.taskDefinitionKey} " )
@@ -1234,134 +1216,10 @@ class QABpmnTest{
             }
         } ?: return
 
-        //Manufacturer correct foreign application
-        qualityAssuranceBpmn.qaDmappManufacturerCorrectionCompleteForeign(permitId,pcmAssigneeId).let {
+        //Trigger Payment Received task
+        qualityAssuranceBpmn.diReceivePaymentComplete(permitId).let {
             qualityAssuranceBpmn.fetchTaskByPermitId(permitId, qaDmAppPaymentProcessDefinitionKey)?.let { taskDetails ->
-                println("Task details after correct foreign application complete")
-                for (taskDetail in taskDetails){
-                    taskDetail.task.let{ task->
-                        println("${taskDetail.permitId} -- ${task.id} -- ${task.name} -- ${task.assignee} -- ${task.processInstanceId} -- ${task.taskDefinitionKey} " )
-                    }
-                }
-            }
-        } ?: return
-
-        //Check application complete -- true
-        qualityAssuranceBpmn.qaDmappCheckAppCompleteForeign(permitId,true).let {
-            qualityAssuranceBpmn.fetchTaskByPermitId(permitId, qaDmAppPaymentProcessDefinitionKey)?.let { taskDetails ->
-                println("Task details after check foreign application complete")
-                for (taskDetail in taskDetails){
-                    taskDetail.task.let{ task->
-                        println("${taskDetail.permitId} -- ${task.id} -- ${task.name} -- ${task.assignee} -- ${task.processInstanceId} -- ${task.taskDefinitionKey} " )
-                    }
-                }
-            }
-        } ?: return
-
-        qualityAssuranceBpmn.qaDmappPaymentComplete(permitId).let {
-            qualityAssuranceBpmn.fetchTaskByPermitId(permitId, qaDmAppPaymentProcessDefinitionKey)?.let { taskDetails ->
-                println("Task details after payment complete")
-                for (taskDetail in taskDetails){
-                    taskDetail.task.let{ task->
-                        println("${taskDetail.permitId} -- ${task.id} -- ${task.name} -- ${task.assignee} -- ${task.processInstanceId} -- ${task.taskDefinitionKey} " )
-                    }
-                }
-            }
-        } ?: return
-    }
-
-
-    @Test
-    @Ignore
-    fun testDmAppPaymentProcessLocal() {
-        val permitId: Long = 285
-        //Start the process
-        qualityAssuranceBpmn.startQADmAppPaymentProcess(permitId, qaoAssigneeId)?.let {
-            qualityAssuranceBpmn.fetchTaskByPermitId(permitId, qaDmAppPaymentProcessDefinitionKey)?.let { taskDetails ->
-                println("Task details after starting the process")
-                for (taskDetail in taskDetails){
-                    taskDetail.task.let{ task->
-                        println("${taskDetail.permitId} -- ${task.id} -- ${task.name} -- ${task.assignee} -- ${task.processInstanceId} -- ${task.taskDefinitionKey} " )
-                    }
-                }
-            }
-        } ?: return
-
-        //Select Dmark complete
-        qualityAssuranceBpmn.qaDmappSelectDmarkComplete(permitId).let {
-            qualityAssuranceBpmn.fetchTaskByPermitId(permitId, qaDmAppPaymentProcessDefinitionKey)?.let { taskDetails ->
-                println("Task details after select dmark complete")
-                for (taskDetail in taskDetails){
-                    taskDetail.task.let{ task->
-                        println("${taskDetail.permitId} -- ${task.id} -- ${task.name} -- ${task.assignee} -- ${task.processInstanceId} -- ${task.taskDefinitionKey} " )
-                    }
-                }
-            }
-        } ?: return
-
-        //Check domestic complete
-        qualityAssuranceBpmn.qaDmappCheckDomesticComplete(permitId, true).let {
-            qualityAssuranceBpmn.fetchTaskByPermitId(permitId, qaDmAppPaymentProcessDefinitionKey)?.let { taskDetails ->
-                println("Task details after check domestic complete")
-                for (taskDetail in taskDetails){
-                    taskDetail.task.let{ task->
-                        println("${taskDetail.permitId} -- ${task.id} -- ${task.name} -- ${task.assignee} -- ${task.processInstanceId} -- ${task.taskDefinitionKey} " )
-                    }
-                }
-            }
-        } ?: return
-
-        //Fill domestic application complete
-        qualityAssuranceBpmn.qaDmappFillDomesticAppComplete(permitId,pcmAssigneeId).let {
-            qualityAssuranceBpmn.fetchTaskByPermitId(permitId, qaDmAppPaymentProcessDefinitionKey)?.let { taskDetails ->
-                println("Task details after fill domestic application complete")
-                for (taskDetail in taskDetails){
-                    taskDetail.task.let{ task->
-                        println("${taskDetail.permitId} -- ${task.id} -- ${task.name} -- ${task.assignee} -- ${task.processInstanceId} -- ${task.taskDefinitionKey} " )
-                    }
-                }
-            }
-        } ?: return
-
-        //Check application complete -- false
-        qualityAssuranceBpmn.qaDmappCheckAppCompleteDomestic(permitId,false).let {
-            qualityAssuranceBpmn.fetchTaskByPermitId(permitId, qaDmAppPaymentProcessDefinitionKey)?.let { taskDetails ->
-                println("Task details after check domestic application complete")
-                for (taskDetail in taskDetails){
-                    taskDetail.task.let{ task->
-                        println("${taskDetail.permitId} -- ${task.id} -- ${task.name} -- ${task.assignee} -- ${task.processInstanceId} -- ${task.taskDefinitionKey} " )
-                    }
-                }
-            }
-        } ?: return
-
-        //Manufacturer correct domestic application
-        qualityAssuranceBpmn.qaDmappManufacturerCorrectionCompleteDomestic(permitId,pcmAssigneeId).let {
-            qualityAssuranceBpmn.fetchTaskByPermitId(permitId, qaDmAppPaymentProcessDefinitionKey)?.let { taskDetails ->
-                println("Task details after correct domestic application complete")
-                for (taskDetail in taskDetails){
-                    taskDetail.task.let{ task->
-                        println("${taskDetail.permitId} -- ${task.id} -- ${task.name} -- ${task.assignee} -- ${task.processInstanceId} -- ${task.taskDefinitionKey} " )
-                    }
-                }
-            }
-        } ?: return
-
-        //Check application complete -- true
-        qualityAssuranceBpmn.qaDmappCheckAppCompleteDomestic(permitId,true).let {
-            qualityAssuranceBpmn.fetchTaskByPermitId(permitId, qaDmAppPaymentProcessDefinitionKey)?.let { taskDetails ->
-                println("Task details after check domestic application complete")
-                for (taskDetail in taskDetails){
-                    taskDetail.task.let{ task->
-                        println("${taskDetail.permitId} -- ${task.id} -- ${task.name} -- ${task.assignee} -- ${task.processInstanceId} -- ${task.taskDefinitionKey} " )
-                    }
-                }
-            }
-        } ?: return
-
-        qualityAssuranceBpmn.qaDmappPaymentComplete(permitId).let {
-            qualityAssuranceBpmn.fetchTaskByPermitId(permitId, qaDmAppPaymentProcessDefinitionKey)?.let { taskDetails ->
-                println("Task details after payment complete")
+                println("Task details after payment received task complete")
                 for (taskDetail in taskDetails){
                     taskDetail.task.let{ task->
                         println("${taskDetail.permitId} -- ${task.id} -- ${task.name} -- ${task.assignee} -- ${task.processInstanceId} -- ${task.taskDefinitionKey} " )

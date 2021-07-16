@@ -7,7 +7,6 @@ import org.flowable.task.api.Task
 import org.flowable.task.service.delegate.DelegateTask
 import org.jasypt.encryption.StringEncryptor
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.BpmnCommonFunctions
-import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.repo.ICompanyProfileRepository
 import org.kebs.app.kotlin.apollo.store.repo.IManufacturerRepository
@@ -16,17 +15,25 @@ import org.kebs.app.kotlin.apollo.store.repo.IUserRepository
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Component
-import java.io.UnsupportedEncodingException
 import java.lang.Double
 import java.util.*
 import javax.activation.DataHandler
-import javax.activation.DataSource
 import javax.activation.FileDataSource
 import javax.mail.*
 import javax.mail.internet.InternetAddress
 import javax.mail.internet.MimeBodyPart
 import javax.mail.internet.MimeMessage
 import javax.mail.internet.MimeMultipart
+import kotlin.Any
+import kotlin.Array
+import kotlin.Boolean
+import kotlin.Exception
+import kotlin.Int
+import kotlin.Long
+import kotlin.String
+import kotlin.let
+import kotlin.run
+import kotlin.toString
 
 
 @Component
@@ -173,6 +180,7 @@ class Notifications(
             notificationsRepo.findByIdOrNull(notificationId)?.let { notifEntity ->
                 message = notifEntity.description.toString().replace("\\n", System.getProperty("line.separator"), true)
                 task?.let{ task ->
+
                     val variables:Map<String, Any>? = bpmnCommonFunctions.getTaskVariables(task.id)
 
                     emailAddress?.let{
