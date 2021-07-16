@@ -33,7 +33,7 @@ standardization mark on the commodity specified here under:
 
 <div class="row">
 <div class="form-group col-6">
-    <label for="commodityDescription">Commodity Description <span style="font-size: xx-small; color: red;">(*)Required</span></label>
+<label for="commodityDescription">Commodity Description <span style="font-size: xx-small; color: red;">(*)Required</span></label>
 <input [class.is-invalid]="formSta1Form.commodityDescription.invalid && formSta1Form.commodityDescription.touched" type="text" class="form-control" id="commodityDescription" formControlName="commodityDescription"
 name="commodityDescription" placeholder="Commodity Description" required="">
 
@@ -98,12 +98,12 @@ class="dropdown-item">{{plant.buildingName}}</option>
 </div>
 
 </div>
-    <div *ngIf="sta1Form.valid" class="form-group clearfix">
-        <button type="submit" class="form-wizard-next-btn btn-sm float-right">Next</button>
-    </div>
-    <div *ngIf="!sta1Form.valid" class="form-group clearfix">
-        <button  class="btn btn-sm btn-primary float-right" (click)="showNotification('top','right')">Next</button>
-    </div>
+<div *ngIf="sta1Form.valid" class="form-group clearfix">
+<button type="submit" class="form-wizard-next-btn btn-sm float-right">Next</button>
+</div>
+<div *ngIf="!sta1Form.valid" class="form-group clearfix">
+<button  class="btn btn-sm btn-primary float-right" (click)="showNotification('top','right')">Next</button>
+</div>
 
 </form>
 
@@ -114,7 +114,7 @@ class="dropdown-item">{{plant.buildingName}}</option>
 <h2 style="text-align: center"><b >Step</b> <b > 2</b><b > of</b> <b > 9</b></h2>
 
 <fieldset class="wizard-fieldset show">
-    <h2>STA10 FORM</h2>
+<h2>STA10 FORM</h2>
 <h3>Firm details</h3>
 <form (ngSubmit)="onClickSaveSTA10(sta10Form.valid)" [formGroup]="sta10Form" class="form"
 enctype="multipart/form-data" >
@@ -192,51 +192,51 @@ enctype="multipart/form-data" >
 <div class="form-group col-6">
 <label for="totalNumberMale">Total Number of Male</label>
 <input type="number" [class.is-invalid]="formSta10Form.totalNumberMale.invalid && formSta10Form.totalNumberMale.touched"
-       class="form-control" id="totalNumberMale" formControlName="totalNumberMale"
-       name="totalNumberMale" class="form-control" placeholder="Male">
+class="form-control" id="totalNumberMale" formControlName="totalNumberMale"
+name="totalNumberMale" class="form-control" placeholder="Male">
 </div>
 <div class="form-group col-6">
 <label for="totalNumberFemale">Total Number of Female</label>
-    <input type="number"
-           [class.is-invalid]="formSta10Form.totalNumberFemale.invalid && formSta10Form.totalNumberFemale.touched"
-           class="form-control" id="totalNumberFemale" formControlName="totalNumberFemale"
-           name="totalNumberFemale" class="form-control" placeholder="Female">
+<input type="number"
+[class.is-invalid]="formSta10Form.totalNumberFemale.invalid && formSta10Form.totalNumberFemale.touched"
+class="form-control" id="totalNumberFemale" formControlName="totalNumberFemale"
+name="totalNumberFemale" class="form-control" placeholder="Female">
 </div>
 
 </div>
 <div class="row">
 <div class="form-group col-6">
 <label for="totalNumberPermanentEmployees">No. of Permanent Employees</label>
-    <input type="number"
-           [class.is-invalid]="formSta10Form.totalNumberPermanentEmployees.invalid && formSta10Form.totalNumberPermanentEmployees.touched"
-            class="form-control" id="totalNumberPermanentEmployees"
-           formControlName="totalNumberPermanentEmployees"
-           name="totalNumberPermanentEmployees" class="form-control" placeholder="No. of Permanent Employees">
+<input type="number"
+[class.is-invalid]="formSta10Form.totalNumberPermanentEmployees.invalid && formSta10Form.totalNumberPermanentEmployees.touched"
+class="form-control" id="totalNumberPermanentEmployees"
+formControlName="totalNumberPermanentEmployees"
+name="totalNumberPermanentEmployees" class="form-control" placeholder="No. of Permanent Employees">
 </div>
 <div class="form-group col-6">
 <label for="totalNumberCasualEmployees">No of Casual Employee</label>
-    <input type="number"
-           [class.is-invalid]="formSta10Form.totalNumberCasualEmployees.invalid && formSta10Form.totalNumberCasualEmployees.touched"
-            class="form-control" id="totalNumberCasualEmployees" formControlName="totalNumberCasualEmployees"
-           name="totalNumberCasualEmployees" class="form-control" placeholder="No of Casual Employee">
+<input type="number"
+[class.is-invalid]="formSta10Form.totalNumberCasualEmployees.invalid && formSta10Form.totalNumberCasualEmployees.touched"
+class="form-control" id="totalNumberCasualEmployees" formControlName="totalNumberCasualEmployees"
+name="totalNumberCasualEmployees" class="form-control" placeholder="No of Casual Employee">
 </div>
 
 </div>
-    <div class="row">
-        <div class="form-group col-6">
-            <label for="averageVolumeProductionMonth">Average Volume Production Month</label>
-            <input [class.is-invalid]="formSta10Form.averageVolumeProductionMonth.invalid && formSta10Form.averageVolumeProductionMonth.touched" type="text" class="form-control" id="averageVolumeProductionMonth" formControlName="averageVolumeProductionMonth"
-                   name="averageVolumeProductionMonth" placeholder="Average Volume Production Month" required="">
-        </div>
-    </div>
-    <div *ngIf="sta10Form.valid" class="form-group clearfix">
-        <button (click)="onClickPrevious()" class="btn btn-sm btn-danger form-wizard-previous-btn">Previous</button>
-        <button type="submit" class="form-wizard-next-btn btn-sm float-right">Next</button>
-    </div>
-    <div *ngIf="!sta10Form.valid" class="form-group clearfix">
-        <button (click)="onClickPrevious()" class="btn btn-sm btn-danger form-wizard-previous-btn">Previous</button>
-        <button  class="btn btn-sm btn-primary float-right" (click)="showNotification('top','right')">Next</button>
-    </div>
+<div class="row">
+<div class="form-group col-6">
+<label for="averageVolumeProductionMonth">Average Volume Production Month</label>
+<input [class.is-invalid]="formSta10Form.averageVolumeProductionMonth.invalid && formSta10Form.averageVolumeProductionMonth.touched" type="text" class="form-control" id="averageVolumeProductionMonth" formControlName="averageVolumeProductionMonth"
+name="averageVolumeProductionMonth" placeholder="Average Volume Production Month" required="">
+</div>
+</div>
+<div *ngIf="sta10Form.valid" class="form-group clearfix">
+<button (click)="onClickPrevious()" class="btn btn-sm btn-danger form-wizard-previous-btn">Previous</button>
+<button type="submit" class="form-wizard-next-btn btn-sm float-right">Next</button>
+</div>
+<div *ngIf="!sta10Form.valid" class="form-group clearfix">
+<button (click)="onClickPrevious()" class="btn btn-sm btn-danger form-wizard-previous-btn">Previous</button>
+<button  class="btn btn-sm btn-primary float-right" (click)="showNotification('top','right')">Next</button>
+</div>
 
 
 </form>
@@ -247,68 +247,68 @@ enctype="multipart/form-data" >
 
 <fieldset class="wizard-fieldset show">
 <form (ngSubmit)="onClickSaveSTAPersonnel(sta10FormA.valid)" [formGroup]="sta10FormA" class="form"
-      enctype="multipart/form-data">
-    <h4><b>Competency of key personnel in charge of (Production and Quality Control) </b></h4>
+enctype="multipart/form-data">
+<h4><b>Competency of key personnel in charge of (Production and Quality Control) </b></h4>
 
 
 
-                        <div class="row">
-                            <div class="col-4">
+<div class="row">
+<div class="col-4">
 <input type="text"  class="form-control" formControlName="personnelName"
-       name="personnelName" class="form-control" placeholder="Name">
-                            </div>
-                            <div class="col-3">
-                                <input type="text"
-                                        class="form-control" formControlName="qualificationInstitution"
-                                       name="qualificationInstitution" class="form-control"
-                                       placeholder="Qualification Evidence">
-                            </div>
-                            <div class="col-3">
-                                <input type="date"
-                                        class="form-control" formControlName="dateOfEmployment"
-                                       name="dateOfEmployment" class="form-control" placeholder="Date of Employment">
-                            </div>
-                            <div>
+name="personnelName" class="form-control" placeholder="Name">
+</div>
+<div class="col-3">
+<input type="text"
+class="form-control" formControlName="qualificationInstitution"
+name="qualificationInstitution" class="form-control"
+placeholder="Qualification Evidence">
+</div>
+<div class="col-3">
+<input type="date"
+class="form-control" formControlName="dateOfEmployment"
+name="dateOfEmployment" class="form-control" placeholder="Date of Employment">
+</div>
+<div>
 <span class="input-group-btn">
 <button (click)="onClickAddPersonnel()"
-        type="button" class="btn btn-success btn-sm">
+type="button" class="btn btn-success btn-sm">
 <span class="" aria-hidden="true">ADD</span>
 </button>
 </span>
 
-                                <br><br>
-                            </div>
-                        </div>
-    <div class="material-datatables" >
-        <div class="table-responsive">
-            <table id="datatables"
-                   class="table table-striped table-bordered table-hover"
-            >
-                    <thead>
-                    <tr>
-                        <th>Personnel Name</th>
-                        <th>Qualification Institution</th>
-                        <th>Date Of Employment</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr *ngFor="let r of sta10PersonnelDetails">
-                        <td>{{r.personnelName}}</td>
-                        <td>{{r.qualificationInstitution}}</td>
-                        <td>{{r.dateOfEmployment}}</td>
-                    </tr>
-                    </tbody>
-                </table>
-        </div>
-    </div>
-    <div *ngIf="sta10PersonnelDetails.length >= 1" class="form-group clearfix">
-        <button (click)="onClickPrevious()" class="btn btn-sm btn-danger form-wizard-previous-btn">Previous</button>
-        <button type="submit" class="form-wizard-next-btn btn-sm float-right">Next</button>
-    </div>
-    <div *ngIf="sta10PersonnelDetails.length < 1" class="form-group clearfix">
-        <button (click)="onClickPrevious()" class="btn btn-sm btn-danger form-wizard-previous-btn">Previous</button>
-        <button  class="btn btn-sm btn-primary float-right" (click)="showNotification('top','right')">Next</button>
-    </div>
+<br><br>
+</div>
+</div>
+<div class="material-datatables" >
+<div class="table-responsive">
+<table id="datatables"
+class="table table-striped table-bordered table-hover"
+>
+<thead>
+<tr>
+<th>Personnel Name</th>
+<th>Qualification Institution</th>
+<th>Date Of Employment</th>
+</tr>
+</thead>
+<tbody>
+<tr *ngFor="let r of sta10PersonnelDetails">
+<td>{{r.personnelName}}</td>
+<td>{{r.qualificationInstitution}}</td>
+<td>{{r.dateOfEmployment}}</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div *ngIf="sta10PersonnelDetails.length >= 1" class="form-group clearfix">
+<button (click)="onClickPrevious()" class="btn btn-sm btn-danger form-wizard-previous-btn">Previous</button>
+<button type="submit" class="form-wizard-next-btn btn-sm float-right">Next</button>
+</div>
+<div *ngIf="sta10PersonnelDetails.length < 1" class="form-group clearfix">
+<button (click)="onClickPrevious()" class="btn btn-sm btn-danger form-wizard-previous-btn">Previous</button>
+<button  class="btn btn-sm btn-primary float-right" (click)="showNotification('top','right')">Next</button>
+</div>
 
 </form>
 </fieldset>
@@ -322,54 +322,51 @@ enctype="multipart/form-data" >
 enctype="multipart/form-data">
 <h3>Production</h3>
 <h4><b>Products being manufactured/ Brands </b></h4>
-    <div class="row">
-        <div class="form-group col-6">
-            <label for="productName">Product Name</label>
-            <input type="text"   formControlName="productName"
-                   name="productName" id="productName" class="form-control"  placeholder="Product Name " >
-        </div>
-        <div class="form-group col-6">
-            <label for="productBrand">Brand Name</label>
-            <input type="text"  formControlName="productBrand"
-                   name="productBrand" id="productBrand" class="form-control"  placeholder="Brand Name " >
-        </div>
-    </div>
-    <div class="row">
-        <div class="form-group col-6">
-            <label for="productStandardNumber">Applicable Product Standard number</label>
-            <input type="text"    formControlName="productStandardNumber"
-                   name="productStandardNumber" id="productStandardNumber" class="form-control"  placeholder="Applicable Product
+<div class="row">
+<div class="form-group col-6">
+<label for="productName">Product Name</label>
+<input type="text"   formControlName="productName"
+name="productName" id="productName" class="form-control"  placeholder="Product Name " >
+</div>
+<div class="form-group col-6">
+<label for="productBrand">Brand Name</label>
+<input type="text"  formControlName="productBrand"
+name="productBrand" id="productBrand" class="form-control"  placeholder="Brand Name " >
+</div>
+</div>
+<div class="row">
+<div class="form-group col-6">
+<label for="productStandardNumber">Applicable Product Standard number</label>
+<input type="text"    formControlName="productStandardNumber"
+name="productStandardNumber" id="productStandardNumber" class="form-control"  placeholder="Applicable Product
 Standard number" >
-        </div>
-        <div class="form-group col-6">
-            <label for="available">Available (YES/NO)</label>
-            <input type="checkbox"   formControlName="available"
-                   name="available" id="available" class="form-control"  >
+</div>
+<div class="form-group col-6">
+<label for="available">Available (YES/NO)</label>
+<input type="checkbox"   formControlName="available"
+name="available" id="available" class="form-control"  >
 
 
 
-        </div>
-    </div>
-    <div class="row">
-        <div class="form-group col-6">
-            <label for="permitNo">KEBS Permit NO. (if applicable).</label>
-            <input type="text"    formControlName="permitNo"
-                   name="permitNo" id="permitNo" class="form-control"  placeholder="KEBS Permit NO.
+</div>
+</div>
+<div class="row">
+<div class="form-group col-6">
+<label for="permitNo">KEBS Permit NO. (if applicable).</label>
+<input type="text"    formControlName="permitNo"
+name="permitNo" id="permitNo" class="form-control"  placeholder="KEBS Permit NO.
 (if applicable)." >
-        </div>
-        <div class="form-group col-6">
-            <label style="color: transparent">Button</label>
-          <span class="input-group-btn">
+</div>
+<div class="form-group col-6">
+<label style="color: transparent">Button</label>
+<span class="input-group-btn">
 <button (click)="onClickAddProductsManufacture()"
-        type="button" class="btn btn-success btn-sm">
+type="button" class="btn btn-success btn-sm">
 <span class="" aria-hidden="true">ADD</span>
 </button>
 </span>
-        </div>
-    </div>
-
-
-
+</div>
+</div>
 <br><br>
 <div class="material-datatables" >
 <div class="table-responsive">
@@ -381,8 +378,8 @@ class="table table-striped table-bordered table-hover"
 <th>Product Name</th>
 <th>Brand Name</th>
 <th>Applicable Product Standard number</th>
-    <th>Available (YES/NO)</th>
-    <th>KEBS Permit NO. (if applicable).</th>
+<th>Available (YES/NO)</th>
+<th>KEBS Permit NO. (if applicable).</th>
 </tr>
 </thead>
 <tbody>
@@ -390,534 +387,522 @@ class="table table-striped table-bordered table-hover"
 <td>{{r.productName}}</td>
 <td>{{r.productBrand}}</td>
 <td>{{r.productStandardNumber}}</td>
-    <td>{{r.available}}</td>
-    <td>{{r.permitNo}}</td>
+<td>{{r.available}}</td>
+<td>{{r.permitNo}}</td>
 </tr>
 </tbody>
 </table>
 </div>
 </div>
-    <div *ngIf="sta10ProductsManufactureDetails.length >= 1" class="form-group clearfix">
-        <button (click)="onClickPrevious()" class="btn btn-sm btn-danger form-wizard-previous-btn">Previous</button>
-        <button type="submit" class="form-wizard-next-btn btn-sm float-right">Next</button>
-    </div>
-    <div *ngIf="sta10ProductsManufactureDetails.length < 1" class="form-group clearfix">
-        <button (click)="onClickPrevious()" class="btn btn-sm btn-danger form-wizard-previous-btn">Previous</button>
-        <button  class="btn btn-sm btn-primary float-right" (click)="showNotification('top','right')">Next</button>
-    </div>
+<div *ngIf="sta10ProductsManufactureDetails.length >= 1" class="form-group clearfix">
+<button (click)="onClickPrevious()" class="btn btn-sm btn-danger form-wizard-previous-btn">Previous</button>
+<button type="submit" class="form-wizard-next-btn btn-sm float-right">Next</button>
+</div>
+<div *ngIf="sta10ProductsManufactureDetails.length < 1" class="form-group clearfix">
+<button (click)="onClickPrevious()" class="btn btn-sm btn-danger form-wizard-previous-btn">Previous</button>
+<button  class="btn btn-sm btn-primary float-right" (click)="showNotification('top','right')">Next</button>
+</div>
 
 </form>
 </fieldset>
 </div>
-    <div *ngSwitchCase="5">
-        <h2 style="text-align: center"><b >Step</b> <b> 5</b><b > of</b> <b > 9</b></h2>
+<div *ngSwitchCase="5">
+<h2 style="text-align: center"><b >Step</b> <b> 5</b><b > of</b> <b > 9</b></h2>
 
-        <fieldset class="wizard-fieldset show">
-            <form (ngSubmit)="onClickSaveSTARawMaterials(sta10FormC.valid)" [formGroup]="sta10FormC" class="form"
-                  enctype="multipart/form-data">
-                <h4><b>Raw material</b></h4>
-                <h5><b>   Specify the type of materials and origin (attach their specification where applicable): </b></h5>
+<fieldset class="wizard-fieldset show">
+<form (ngSubmit)="onClickSaveSTARawMaterials(sta10FormC.valid)" [formGroup]="sta10FormC" class="form"
+enctype="multipart/form-data">
+<h4><b>Raw material</b></h4>
+<h5><b>   Specify the type of materials and origin (attach their specification where applicable): </b></h5>
 
 
 
-                <div class="row">
-                    <div class="form-group col-6">
-                        <label for="name">Raw material.</label>
-                        <input type="text"    formControlName="name"
-                               name="name" id="name" class="form-control" placeholder="Raw material  " >
-                    </div>
-                    <div class="form-group col-6">
-                        <label for="origin">Origin.</label>
-                        <input type="text"   formControlName="origin"
-                               name="origin" id="origin" class="form-control"  placeholder="Origin " >
-                    </div>
-                </div>
-
-                        <div class="row">
-                            <div class="form-group col-6">
-                                <label for="specifications">Specifications.</label>
-                                <input type="text"    formControlName="specifications"
-                                       name="specifications" id="specifications" class="form-control"  placeholder="Specifications" >
-                            </div>
-                            <div class="form-group col-5">
-                                <label for="qualityChecksTestingRecords">Quality checks/testing.</label>
-                                <input type="text"     formControlName="qualityChecksTestingRecords"
-                                       name="qualityChecksTestingRecords" id="qualityChecksTestingRecords" class="form-control"  placeholder="Quality checks/testing
+<div class="row">
+<div class="form-group col-6">
+<label for="name">Raw material.</label>
+<input type="text"    formControlName="name"
+name="name" id="name" class="form-control" placeholder="Raw material  " >
+</div>
+<div class="form-group col-6">
+<label for="origin">Origin.</label>
+<input type="text"   formControlName="origin"
+name="origin" id="origin" class="form-control"  placeholder="Origin " >
+</div>
+</div>
+<div class="row">
+<div class="form-group col-6">
+<label for="specifications">Specifications.</label>
+<input type="text"    formControlName="specifications"
+name="specifications" id="specifications" class="form-control"  placeholder="Specifications" >
+</div>
+<div class="form-group col-5">
+<label for="qualityChecksTestingRecords">Quality checks/testing.</label>
+<input type="text"     formControlName="qualityChecksTestingRecords"
+name="qualityChecksTestingRecords" id="qualityChecksTestingRecords" class="form-control"  placeholder="Quality checks/testing
 records" >
-                            </div>
-                            <div class="form-group col-1">
-                                <label style="color: transparent">Origin.</label>
-                                <span class="input-group-btn">
+</div>
+<div class="form-group col-1">
+<label style="color: transparent">Origin.</label>
+<span class="input-group-btn">
 <button (click)="onClickAddRawMaterials()"
-        type="button" class="btn btn-success btn-sm">
+type="button" class="btn btn-success btn-sm">
 <span class="" aria-hidden="true">ADD</span>
 </button>
 </span>
-                            </div>
-                        </div>
+</div>
+</div>
+<br><br>
+<div class="material-datatables" >
+<div class="table-responsive">
+<table id="tt" class="table table-striped table-bordered table-hover">
+<thead>
+<tr>
+<th>Raw material</th>
+<th>Origin</th>
+<th>Specifications</th>
+<th>Quality checks/testing records</th>
+</tr>
+</thead>
+<tbody>
+<tr *ngFor="let r of sta10RawMaterialsDetails">
+<td>{{r.name}}</td>
+<td>{{r.origin}}</td>
+<td>{{r.specifications}}</td>
+<td>{{r.qualityChecksTestingRecords}}</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div *ngIf="sta10RawMaterialsDetails.length >= 1" class="form-group clearfix">
+<button (click)="onClickPrevious()" class="btn btn-sm btn-danger form-wizard-previous-btn">Previous</button>
+<button type="submit" class="form-wizard-next-btn btn-sm float-right">Next</button>
+</div>
+<div *ngIf="sta10RawMaterialsDetails.length < 1" class="form-group clearfix">
+<button (click)="onClickPrevious()" class="btn btn-sm btn-danger form-wizard-previous-btn">Previous</button>
+<button  class="btn btn-sm btn-primary float-right" (click)="showNotification('top','right')">Next</button>
+</div>
 
-                        <br><br>
+</form>
+</fieldset>
+</div>
+<div *ngSwitchCase="6">
+<h2 style="text-align: center"><b >Step</b> <b > 6</b><b > of</b> <b > 9</b></h2>
 
-                <div class="material-datatables" >
-                    <div class="table-responsive">
-                        <table id="tt" class="table table-striped table-bordered table-hover">
-                            <thead>
-                            <tr>
-                                <th>Raw material</th>
-                                <th>Origin</th>
-                                <th>Specifications</th>
-                                <th>Quality checks/testing records</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr *ngFor="let r of sta10RawMaterialsDetails">
-                                <td>{{r.name}}</td>
-                                <td>{{r.origin}}</td>
-                                <td>{{r.specifications}}</td>
-                                <td>{{r.qualityChecksTestingRecords}}</td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                <div *ngIf="sta10RawMaterialsDetails.length >= 1" class="form-group clearfix">
-                    <button (click)="onClickPrevious()" class="btn btn-sm btn-danger form-wizard-previous-btn">Previous</button>
-                    <button type="submit" class="form-wizard-next-btn btn-sm float-right">Next</button>
-                </div>
-                <div *ngIf="sta10RawMaterialsDetails.length < 1" class="form-group clearfix">
-                    <button (click)="onClickPrevious()" class="btn btn-sm btn-danger form-wizard-previous-btn">Previous</button>
-                    <button  class="btn btn-sm btn-primary float-right" (click)="showNotification('top','right')">Next</button>
-                </div>
+<fieldset class="wizard-fieldset show">
+<form (ngSubmit)="onClickSaveSTAMachineryPlant(sta10FormD.valid)" [formGroup]="sta10FormD" class="form"
+enctype="multipart/form-data">
+<h4><b>Machinery and Plant</b></h4>
+<div class="row">
+<div class="form-group col-6">
+<label for="machineName">Machine</label>
+<input type="text"   formControlName="machineName"
+name="machineName" id="machineName" class="form-control"  placeholder="Machine  " >
+</div>
+<div class="form-group col-6">
+<label for="typeModel">Type/Model.</label>
+<input type="text"  formControlName="typeModel"
+name="typeModel" id="typeModel" class="form-control"  placeholder="Type/Model " >
+</div>
+</div>
+<div>
+<div class="row">
+<div class="form-group col-6">
+<label for="countryOfOrigin">Country of Origin</label>
+<select id="countryOfOrigin" class="form-control selectpicker" formControlName="countryOfOrigin" name="countryOfOrigin"
+data-live-search="true"    >
+<option value="Afghanistan">Afghanistan</option>
+<option value="Åland Islands">Åland Islands</option>
+<option value="Albania">Albania</option>
+<option value="Algeria">Algeria</option>
+<option value="American Samoa">American Samoa</option>
+<option value="Andorra">Andorra</option>
+<option value="Angola">Angola</option>
+<option value="Anguilla">Anguilla</option>
+<option value="Antarctica">Antarctica</option>
+<option value="Antigua and Barbuda">Antigua and Barbuda</option>
+<option value="Argentina">Argentina</option>
+<option value="Armenia">Armenia</option>
+<option value="Aruba">Aruba</option>
+<option value="Australia">Australia</option>
+<option value="Austria">Austria</option>
+<option value="Azerbaijan">Azerbaijan</option>
+<option value="Bahamas">Bahamas</option>
+<option value="Bahrain">Bahrain</option>
+<option value="Bangladesh">Bangladesh</option>
+<option value="Barbados">Barbados</option>
+<option value="Belarus">Belarus</option>
+<option value="Belgium">Belgium</option>
+<option value="Belize">Belize</option>
+<option value="Benin">Benin</option>
+<option value="Bermuda">Bermuda</option>
+<option value="Bhutan">Bhutan</option>
+<option value="Bolivia">Bolivia</option>
+<option value="Bosnia and Herzegovina">Bosnia and Herzegovina</option>
+<option value="Botswana">Botswana</option>
+<option value="Bouvet Island">Bouvet Island</option>
+<option value="Brazil">Brazil</option>
+<option value="British Indian Ocean Territory">British Indian Ocean Territory</option>
+<option value="Brunei Darussalam">Brunei Darussalam</option>
+<option value="Bulgaria">Bulgaria</option>
+<option value="Burkina Faso">Burkina Faso</option>
+<option value="Burundi">Burundi</option>
+<option value="Cambodia">Cambodia</option>
+<option value="Cameroon">Cameroon</option>
+<option value="Canada">Canada</option>
+<option value="Cape Verde">Cape Verde</option>
+<option value="Cayman Islands">Cayman Islands</option>
+<option value="Central African Republic">Central African Republic</option>
+<option value="Chad">Chad</option>
+<option value="Chile">Chile</option>
+<option value="China">China</option>
+<option value="Christmas Island">Christmas Island</option>
+<option value="Cocos (Keeling) Islands">Cocos (Keeling) Islands</option>
+<option value="Colombia">Colombia</option>
+<option value="Comoros">Comoros</option>
+<option value="Congo">Congo</option>
+<option value="Congo, The Democratic Republic of The">Congo, The Democratic Republic of The</option>
+<option value="Cook Islands">Cook Islands</option>
+<option value="Costa Rica">Costa Rica</option>
+<option value="Cote D'ivoire">Cote D'ivoire</option>
+<option value="Croatia">Croatia</option>
+<option value="Cuba">Cuba</option>
+<option value="Cyprus">Cyprus</option>
+<option value="Czech Republic">Czech Republic</option>
+<option value="Denmark">Denmark</option>
+<option value="Djibouti">Djibouti</option>
+<option value="Dominica">Dominica</option>
+<option value="Dominican Republic">Dominican Republic</option>
+<option value="Ecuador">Ecuador</option>
+<option value="Egypt">Egypt</option>
+<option value="El Salvador">El Salvador</option>
+<option value="Equatorial Guinea">Equatorial Guinea</option>
+<option value="Eritrea">Eritrea</option>
+<option value="Estonia">Estonia</option>
+<option value="Ethiopia">Ethiopia</option>
+<option value="Falkland Islands (Malvinas)">Falkland Islands (Malvinas)</option>
+<option value="Faroe Islands">Faroe Islands</option>
+<option value="Fiji">Fiji</option>
+<option value="Finland">Finland</option>
+<option value="France">France</option>
+<option value="French Guiana">French Guiana</option>
+<option value="French Polynesia">French Polynesia</option>
+<option value="French Southern Territories">French Southern Territories</option>
+<option value="Gabon">Gabon</option>
+<option value="Gambia">Gambia</option>
+<option value="Georgia">Georgia</option>
+<option value="Germany">Germany</option>
+<option value="Ghana">Ghana</option>
+<option value="Gibraltar">Gibraltar</option>
+<option value="Greece">Greece</option>
+<option value="Greenland">Greenland</option>
+<option value="Grenada">Grenada</option>
+<option value="Guadeloupe">Guadeloupe</option>
+<option value="Guam">Guam</option>
+<option value="Guatemala">Guatemala</option>
+<option value="Guernsey">Guernsey</option>
+<option value="Guinea">Guinea</option>
+<option value="Guinea-bissau">Guinea-bissau</option>
+<option value="Guyana">Guyana</option>
+<option value="Haiti">Haiti</option>
+<option value="Heard Island and Mcdonald Islands">Heard Island and Mcdonald Islands</option>
+<option value="Holy See (Vatican City State)">Holy See (Vatican City State)</option>
+<option value="Honduras">Honduras</option>
+<option value="Hong Kong">Hong Kong</option>
+<option value="Hungary">Hungary</option>
+<option value="Iceland">Iceland</option>
+<option value="India">India</option>
+<option value="Indonesia">Indonesia</option>
+<option value="Iran, Islamic Republic of">Iran, Islamic Republic of</option>
+<option value="Iraq">Iraq</option>
+<option value="Ireland">Ireland</option>
+<option value="Isle of Man">Isle of Man</option>
+<option value="Israel">Israel</option>
+<option value="Italy">Italy</option>
+<option value="Jamaica">Jamaica</option>
+<option value="Japan">Japan</option>
+<option value="Jersey">Jersey</option>
+<option value="Jordan">Jordan</option>
+<option value="Kazakhstan">Kazakhstan</option>
+<option value="Kenya">Kenya</option>
+<option value="Kiribati">Kiribati</option>
+<option value="Korea, Democratic People's Republic of">Korea, Democratic People's Republic of</option>
+<option value="Korea, Republic of">Korea, Republic of</option>
+<option value="Kuwait">Kuwait</option>
+<option value="Kyrgyzstan">Kyrgyzstan</option>
+<option value="Lao People's Democratic Republic">Lao People's Democratic Republic</option>
+<option value="Latvia">Latvia</option>
+<option value="Lebanon">Lebanon</option>
+<option value="Lesotho">Lesotho</option>
+<option value="Liberia">Liberia</option>
+<option value="Libyan Arab Jamahiriya">Libyan Arab Jamahiriya</option>
+<option value="Liechtenstein">Liechtenstein</option>
+<option value="Lithuania">Lithuania</option>
+<option value="Luxembourg">Luxembourg</option>
+<option value="Macao">Macao</option>
+<option value="Macedonia, The Former Yugoslav Republic of">Macedonia, The Former Yugoslav Republic of</option>
+<option value="Madagascar">Madagascar</option>
+<option value="Malawi">Malawi</option>
+<option value="Malaysia">Malaysia</option>
+<option value="Maldives">Maldives</option>
+<option value="Mali">Mali</option>
+<option value="Malta">Malta</option>
+<option value="Marshall Islands">Marshall Islands</option>
+<option value="Martinique">Martinique</option>
+<option value="Mauritania">Mauritania</option>
+<option value="Mauritius">Mauritius</option>
+<option value="Mayotte">Mayotte</option>
+<option value="Mexico">Mexico</option>
+<option value="Micronesia, Federated States of">Micronesia, Federated States of</option>
+<option value="Moldova, Republic of">Moldova, Republic of</option>
+<option value="Monaco">Monaco</option>
+<option value="Mongolia">Mongolia</option>
+<option value="Montenegro">Montenegro</option>
+<option value="Montserrat">Montserrat</option>
+<option value="Morocco">Morocco</option>
+<option value="Mozambique">Mozambique</option>
+<option value="Myanmar">Myanmar</option>
+<option value="Namibia">Namibia</option>
+<option value="Nauru">Nauru</option>
+<option value="Nepal">Nepal</option>
+<option value="Netherlands">Netherlands</option>
+<option value="Netherlands Antilles">Netherlands Antilles</option>
+<option value="New Caledonia">New Caledonia</option>
+<option value="New Zealand">New Zealand</option>
+<option value="Nicaragua">Nicaragua</option>
+<option value="Niger">Niger</option>
+<option value="Nigeria">Nigeria</option>
+<option value="Niue">Niue</option>
+<option value="Norfolk Island">Norfolk Island</option>
+<option value="Northern Mariana Islands">Northern Mariana Islands</option>
+<option value="Norway">Norway</option>
+<option value="Oman">Oman</option>
+<option value="Pakistan">Pakistan</option>
+<option value="Palau">Palau</option>
+<option value="Palestinian Territory, Occupied">Palestinian Territory, Occupied</option>
+<option value="Panama">Panama</option>
+<option value="Papua New Guinea">Papua New Guinea</option>
+<option value="Paraguay">Paraguay</option>
+<option value="Peru">Peru</option>
+<option value="Philippines">Philippines</option>
+<option value="Pitcairn">Pitcairn</option>
+<option value="Poland">Poland</option>
+<option value="Portugal">Portugal</option>
+<option value="Puerto Rico">Puerto Rico</option>
+<option value="Qatar">Qatar</option>
+<option value="Reunion">Reunion</option>
+<option value="Romania">Romania</option>
+<option value="Russian Federation">Russian Federation</option>
+<option value="Rwanda">Rwanda</option>
+<option value="Saint Helena">Saint Helena</option>
+<option value="Saint Kitts and Nevis">Saint Kitts and Nevis</option>
+<option value="Saint Lucia">Saint Lucia</option>
+<option value="Saint Pierre and Miquelon">Saint Pierre and Miquelon</option>
+<option value="Saint Vincent and The Grenadines">Saint Vincent and The Grenadines</option>
+<option value="Samoa">Samoa</option>
+<option value="San Marino">San Marino</option>
+<option value="Sao Tome and Principe">Sao Tome and Principe</option>
+<option value="Saudi Arabia">Saudi Arabia</option>
+<option value="Senegal">Senegal</option>
+<option value="Serbia">Serbia</option>
+<option value="Seychelles">Seychelles</option>
+<option value="Sierra Leone">Sierra Leone</option>
+<option value="Singapore">Singapore</option>
+<option value="Slovakia">Slovakia</option>
+<option value="Slovenia">Slovenia</option>
+<option value="Solomon Islands">Solomon Islands</option>
+<option value="Somalia">Somalia</option>
+<option value="South Africa">South Africa</option>
+<option value="South Georgia and The South Sandwich Islands">South Georgia and The South Sandwich Islands</option>
+<option value="Spain">Spain</option>
+<option value="Sri Lanka">Sri Lanka</option>
+<option value="Sudan">Sudan</option>
+<option value="Suriname">Suriname</option>
+<option value="Svalbard and Jan Mayen">Svalbard and Jan Mayen</option>
+<option value="Swaziland">Swaziland</option>
+<option value="Sweden">Sweden</option>
+<option value="Switzerland">Switzerland</option>
+<option value="Syrian Arab Republic">Syrian Arab Republic</option>
+<option value="Taiwan">Taiwan</option>
+<option value="Tajikistan">Tajikistan</option>
+<option value="Tanzania, United Republic of">Tanzania, United Republic of</option>
+<option value="Thailand">Thailand</option>
+<option value="Timor-leste">Timor-leste</option>
+<option value="Togo">Togo</option>
+<option value="Tokelau">Tokelau</option>
+<option value="Tonga">Tonga</option>
+<option value="Trinidad and Tobago">Trinidad and Tobago</option>
+<option value="Tunisia">Tunisia</option>
+<option value="Turkey">Turkey</option>
+<option value="Turkmenistan">Turkmenistan</option>
+<option value="Turks and Caicos Islands">Turks and Caicos Islands</option>
+<option value="Tuvalu">Tuvalu</option>
+<option value="Uganda">Uganda</option>
+<option value="Ukraine">Ukraine</option>
+<option value="United Arab Emirates">United Arab Emirates</option>
+<option value="United Kingdom">United Kingdom</option>
+<option value="United States">United States</option>
+<option value="United States Minor Outlying Islands">United States Minor Outlying Islands</option>
+<option value="Uruguay">Uruguay</option>
+<option value="Uzbekistan">Uzbekistan</option>
+<option value="Vanuatu">Vanuatu</option>
+<option value="Venezuela">Venezuela</option>
+<option value="Viet Nam">Viet Nam</option>
+<option value="Virgin Islands, British">Virgin Islands, British</option>
+<option value="Virgin Islands, U.S.">Virgin Islands, U.S.</option>
+<option value="Wallis and Futuna">Wallis and Futuna</option>
+<option value="Western Sahara">Western Sahara</option>
+<option value="Yemen">Yemen</option>
+<option value="Zambia">Zambia</option>
+<option value="Zimbabwe">Zimbabwe</option>
+</select>
 
-            </form>
-        </fieldset>
-    </div>
-    <div *ngSwitchCase="6">
-        <h2 style="text-align: center"><b >Step</b> <b > 6</b><b > of</b> <b > 9</b></h2>
-
-        <fieldset class="wizard-fieldset show">
-            <form (ngSubmit)="onClickSaveSTAMachineryPlant(sta10FormD.valid)" [formGroup]="sta10FormD" class="form"
-                  enctype="multipart/form-data">
-                <h4><b>Machinery and Plant</b></h4>
-                <div class="row">
-                    <div class="form-group col-6">
-                        <label for="machineName">Machine</label>
-                        <input type="text"   formControlName="machineName"
-                               name="machineName" id="machineName" class="form-control"  placeholder="Machine  " >
-                    </div>
-                    <div class="form-group col-6">
-                        <label for="typeModel">Type/Model.</label>
-                        <input type="text"  formControlName="typeModel"
-                               name="typeModel" id="typeModel" class="form-control"  placeholder="Type/Model " >
-                    </div>
-                </div>
-                    <div>
-
-                        <div class="row">
-                            <div class="form-group col-6">
-                                <label for="countryOfOrigin">Country of Origin</label>
-                                <select id="countryOfOrigin" class="form-control selectpicker" formControlName="countryOfOrigin" name="countryOfOrigin"
-                                        data-live-search="true"    >
-                                    <option value="Afghanistan">Afghanistan</option>
-                                    <option value="Åland Islands">Åland Islands</option>
-                                    <option value="Albania">Albania</option>
-                                    <option value="Algeria">Algeria</option>
-                                    <option value="American Samoa">American Samoa</option>
-                                    <option value="Andorra">Andorra</option>
-                                    <option value="Angola">Angola</option>
-                                    <option value="Anguilla">Anguilla</option>
-                                    <option value="Antarctica">Antarctica</option>
-                                    <option value="Antigua and Barbuda">Antigua and Barbuda</option>
-                                    <option value="Argentina">Argentina</option>
-                                    <option value="Armenia">Armenia</option>
-                                    <option value="Aruba">Aruba</option>
-                                    <option value="Australia">Australia</option>
-                                    <option value="Austria">Austria</option>
-                                    <option value="Azerbaijan">Azerbaijan</option>
-                                    <option value="Bahamas">Bahamas</option>
-                                    <option value="Bahrain">Bahrain</option>
-                                    <option value="Bangladesh">Bangladesh</option>
-                                    <option value="Barbados">Barbados</option>
-                                    <option value="Belarus">Belarus</option>
-                                    <option value="Belgium">Belgium</option>
-                                    <option value="Belize">Belize</option>
-                                    <option value="Benin">Benin</option>
-                                    <option value="Bermuda">Bermuda</option>
-                                    <option value="Bhutan">Bhutan</option>
-                                    <option value="Bolivia">Bolivia</option>
-                                    <option value="Bosnia and Herzegovina">Bosnia and Herzegovina</option>
-                                    <option value="Botswana">Botswana</option>
-                                    <option value="Bouvet Island">Bouvet Island</option>
-                                    <option value="Brazil">Brazil</option>
-                                    <option value="British Indian Ocean Territory">British Indian Ocean Territory</option>
-                                    <option value="Brunei Darussalam">Brunei Darussalam</option>
-                                    <option value="Bulgaria">Bulgaria</option>
-                                    <option value="Burkina Faso">Burkina Faso</option>
-                                    <option value="Burundi">Burundi</option>
-                                    <option value="Cambodia">Cambodia</option>
-                                    <option value="Cameroon">Cameroon</option>
-                                    <option value="Canada">Canada</option>
-                                    <option value="Cape Verde">Cape Verde</option>
-                                    <option value="Cayman Islands">Cayman Islands</option>
-                                    <option value="Central African Republic">Central African Republic</option>
-                                    <option value="Chad">Chad</option>
-                                    <option value="Chile">Chile</option>
-                                    <option value="China">China</option>
-                                    <option value="Christmas Island">Christmas Island</option>
-                                    <option value="Cocos (Keeling) Islands">Cocos (Keeling) Islands</option>
-                                    <option value="Colombia">Colombia</option>
-                                    <option value="Comoros">Comoros</option>
-                                    <option value="Congo">Congo</option>
-                                    <option value="Congo, The Democratic Republic of The">Congo, The Democratic Republic of The</option>
-                                    <option value="Cook Islands">Cook Islands</option>
-                                    <option value="Costa Rica">Costa Rica</option>
-                                    <option value="Cote D'ivoire">Cote D'ivoire</option>
-                                    <option value="Croatia">Croatia</option>
-                                    <option value="Cuba">Cuba</option>
-                                    <option value="Cyprus">Cyprus</option>
-                                    <option value="Czech Republic">Czech Republic</option>
-                                    <option value="Denmark">Denmark</option>
-                                    <option value="Djibouti">Djibouti</option>
-                                    <option value="Dominica">Dominica</option>
-                                    <option value="Dominican Republic">Dominican Republic</option>
-                                    <option value="Ecuador">Ecuador</option>
-                                    <option value="Egypt">Egypt</option>
-                                    <option value="El Salvador">El Salvador</option>
-                                    <option value="Equatorial Guinea">Equatorial Guinea</option>
-                                    <option value="Eritrea">Eritrea</option>
-                                    <option value="Estonia">Estonia</option>
-                                    <option value="Ethiopia">Ethiopia</option>
-                                    <option value="Falkland Islands (Malvinas)">Falkland Islands (Malvinas)</option>
-                                    <option value="Faroe Islands">Faroe Islands</option>
-                                    <option value="Fiji">Fiji</option>
-                                    <option value="Finland">Finland</option>
-                                    <option value="France">France</option>
-                                    <option value="French Guiana">French Guiana</option>
-                                    <option value="French Polynesia">French Polynesia</option>
-                                    <option value="French Southern Territories">French Southern Territories</option>
-                                    <option value="Gabon">Gabon</option>
-                                    <option value="Gambia">Gambia</option>
-                                    <option value="Georgia">Georgia</option>
-                                    <option value="Germany">Germany</option>
-                                    <option value="Ghana">Ghana</option>
-                                    <option value="Gibraltar">Gibraltar</option>
-                                    <option value="Greece">Greece</option>
-                                    <option value="Greenland">Greenland</option>
-                                    <option value="Grenada">Grenada</option>
-                                    <option value="Guadeloupe">Guadeloupe</option>
-                                    <option value="Guam">Guam</option>
-                                    <option value="Guatemala">Guatemala</option>
-                                    <option value="Guernsey">Guernsey</option>
-                                    <option value="Guinea">Guinea</option>
-                                    <option value="Guinea-bissau">Guinea-bissau</option>
-                                    <option value="Guyana">Guyana</option>
-                                    <option value="Haiti">Haiti</option>
-                                    <option value="Heard Island and Mcdonald Islands">Heard Island and Mcdonald Islands</option>
-                                    <option value="Holy See (Vatican City State)">Holy See (Vatican City State)</option>
-                                    <option value="Honduras">Honduras</option>
-                                    <option value="Hong Kong">Hong Kong</option>
-                                    <option value="Hungary">Hungary</option>
-                                    <option value="Iceland">Iceland</option>
-                                    <option value="India">India</option>
-                                    <option value="Indonesia">Indonesia</option>
-                                    <option value="Iran, Islamic Republic of">Iran, Islamic Republic of</option>
-                                    <option value="Iraq">Iraq</option>
-                                    <option value="Ireland">Ireland</option>
-                                    <option value="Isle of Man">Isle of Man</option>
-                                    <option value="Israel">Israel</option>
-                                    <option value="Italy">Italy</option>
-                                    <option value="Jamaica">Jamaica</option>
-                                    <option value="Japan">Japan</option>
-                                    <option value="Jersey">Jersey</option>
-                                    <option value="Jordan">Jordan</option>
-                                    <option value="Kazakhstan">Kazakhstan</option>
-                                    <option value="Kenya">Kenya</option>
-                                    <option value="Kiribati">Kiribati</option>
-                                    <option value="Korea, Democratic People's Republic of">Korea, Democratic People's Republic of</option>
-                                    <option value="Korea, Republic of">Korea, Republic of</option>
-                                    <option value="Kuwait">Kuwait</option>
-                                    <option value="Kyrgyzstan">Kyrgyzstan</option>
-                                    <option value="Lao People's Democratic Republic">Lao People's Democratic Republic</option>
-                                    <option value="Latvia">Latvia</option>
-                                    <option value="Lebanon">Lebanon</option>
-                                    <option value="Lesotho">Lesotho</option>
-                                    <option value="Liberia">Liberia</option>
-                                    <option value="Libyan Arab Jamahiriya">Libyan Arab Jamahiriya</option>
-                                    <option value="Liechtenstein">Liechtenstein</option>
-                                    <option value="Lithuania">Lithuania</option>
-                                    <option value="Luxembourg">Luxembourg</option>
-                                    <option value="Macao">Macao</option>
-                                    <option value="Macedonia, The Former Yugoslav Republic of">Macedonia, The Former Yugoslav Republic of</option>
-                                    <option value="Madagascar">Madagascar</option>
-                                    <option value="Malawi">Malawi</option>
-                                    <option value="Malaysia">Malaysia</option>
-                                    <option value="Maldives">Maldives</option>
-                                    <option value="Mali">Mali</option>
-                                    <option value="Malta">Malta</option>
-                                    <option value="Marshall Islands">Marshall Islands</option>
-                                    <option value="Martinique">Martinique</option>
-                                    <option value="Mauritania">Mauritania</option>
-                                    <option value="Mauritius">Mauritius</option>
-                                    <option value="Mayotte">Mayotte</option>
-                                    <option value="Mexico">Mexico</option>
-                                    <option value="Micronesia, Federated States of">Micronesia, Federated States of</option>
-                                    <option value="Moldova, Republic of">Moldova, Republic of</option>
-                                    <option value="Monaco">Monaco</option>
-                                    <option value="Mongolia">Mongolia</option>
-                                    <option value="Montenegro">Montenegro</option>
-                                    <option value="Montserrat">Montserrat</option>
-                                    <option value="Morocco">Morocco</option>
-                                    <option value="Mozambique">Mozambique</option>
-                                    <option value="Myanmar">Myanmar</option>
-                                    <option value="Namibia">Namibia</option>
-                                    <option value="Nauru">Nauru</option>
-                                    <option value="Nepal">Nepal</option>
-                                    <option value="Netherlands">Netherlands</option>
-                                    <option value="Netherlands Antilles">Netherlands Antilles</option>
-                                    <option value="New Caledonia">New Caledonia</option>
-                                    <option value="New Zealand">New Zealand</option>
-                                    <option value="Nicaragua">Nicaragua</option>
-                                    <option value="Niger">Niger</option>
-                                    <option value="Nigeria">Nigeria</option>
-                                    <option value="Niue">Niue</option>
-                                    <option value="Norfolk Island">Norfolk Island</option>
-                                    <option value="Northern Mariana Islands">Northern Mariana Islands</option>
-                                    <option value="Norway">Norway</option>
-                                    <option value="Oman">Oman</option>
-                                    <option value="Pakistan">Pakistan</option>
-                                    <option value="Palau">Palau</option>
-                                    <option value="Palestinian Territory, Occupied">Palestinian Territory, Occupied</option>
-                                    <option value="Panama">Panama</option>
-                                    <option value="Papua New Guinea">Papua New Guinea</option>
-                                    <option value="Paraguay">Paraguay</option>
-                                    <option value="Peru">Peru</option>
-                                    <option value="Philippines">Philippines</option>
-                                    <option value="Pitcairn">Pitcairn</option>
-                                    <option value="Poland">Poland</option>
-                                    <option value="Portugal">Portugal</option>
-                                    <option value="Puerto Rico">Puerto Rico</option>
-                                    <option value="Qatar">Qatar</option>
-                                    <option value="Reunion">Reunion</option>
-                                    <option value="Romania">Romania</option>
-                                    <option value="Russian Federation">Russian Federation</option>
-                                    <option value="Rwanda">Rwanda</option>
-                                    <option value="Saint Helena">Saint Helena</option>
-                                    <option value="Saint Kitts and Nevis">Saint Kitts and Nevis</option>
-                                    <option value="Saint Lucia">Saint Lucia</option>
-                                    <option value="Saint Pierre and Miquelon">Saint Pierre and Miquelon</option>
-                                    <option value="Saint Vincent and The Grenadines">Saint Vincent and The Grenadines</option>
-                                    <option value="Samoa">Samoa</option>
-                                    <option value="San Marino">San Marino</option>
-                                    <option value="Sao Tome and Principe">Sao Tome and Principe</option>
-                                    <option value="Saudi Arabia">Saudi Arabia</option>
-                                    <option value="Senegal">Senegal</option>
-                                    <option value="Serbia">Serbia</option>
-                                    <option value="Seychelles">Seychelles</option>
-                                    <option value="Sierra Leone">Sierra Leone</option>
-                                    <option value="Singapore">Singapore</option>
-                                    <option value="Slovakia">Slovakia</option>
-                                    <option value="Slovenia">Slovenia</option>
-                                    <option value="Solomon Islands">Solomon Islands</option>
-                                    <option value="Somalia">Somalia</option>
-                                    <option value="South Africa">South Africa</option>
-                                    <option value="South Georgia and The South Sandwich Islands">South Georgia and The South Sandwich Islands</option>
-                                    <option value="Spain">Spain</option>
-                                    <option value="Sri Lanka">Sri Lanka</option>
-                                    <option value="Sudan">Sudan</option>
-                                    <option value="Suriname">Suriname</option>
-                                    <option value="Svalbard and Jan Mayen">Svalbard and Jan Mayen</option>
-                                    <option value="Swaziland">Swaziland</option>
-                                    <option value="Sweden">Sweden</option>
-                                    <option value="Switzerland">Switzerland</option>
-                                    <option value="Syrian Arab Republic">Syrian Arab Republic</option>
-                                    <option value="Taiwan">Taiwan</option>
-                                    <option value="Tajikistan">Tajikistan</option>
-                                    <option value="Tanzania, United Republic of">Tanzania, United Republic of</option>
-                                    <option value="Thailand">Thailand</option>
-                                    <option value="Timor-leste">Timor-leste</option>
-                                    <option value="Togo">Togo</option>
-                                    <option value="Tokelau">Tokelau</option>
-                                    <option value="Tonga">Tonga</option>
-                                    <option value="Trinidad and Tobago">Trinidad and Tobago</option>
-                                    <option value="Tunisia">Tunisia</option>
-                                    <option value="Turkey">Turkey</option>
-                                    <option value="Turkmenistan">Turkmenistan</option>
-                                    <option value="Turks and Caicos Islands">Turks and Caicos Islands</option>
-                                    <option value="Tuvalu">Tuvalu</option>
-                                    <option value="Uganda">Uganda</option>
-                                    <option value="Ukraine">Ukraine</option>
-                                    <option value="United Arab Emirates">United Arab Emirates</option>
-                                    <option value="United Kingdom">United Kingdom</option>
-                                    <option value="United States">United States</option>
-                                    <option value="United States Minor Outlying Islands">United States Minor Outlying Islands</option>
-                                    <option value="Uruguay">Uruguay</option>
-                                    <option value="Uzbekistan">Uzbekistan</option>
-                                    <option value="Vanuatu">Vanuatu</option>
-                                    <option value="Venezuela">Venezuela</option>
-                                    <option value="Viet Nam">Viet Nam</option>
-                                    <option value="Virgin Islands, British">Virgin Islands, British</option>
-                                    <option value="Virgin Islands, U.S.">Virgin Islands, U.S.</option>
-                                    <option value="Wallis and Futuna">Wallis and Futuna</option>
-                                    <option value="Western Sahara">Western Sahara</option>
-                                    <option value="Yemen">Yemen</option>
-                                    <option value="Zambia">Zambia</option>
-                                    <option value="Zimbabwe">Zimbabwe</option>
-                                </select>
-
-                            </div>
-                            <div class="col-2">
-                                <label style="color: transparent">Origin.</label>
-                                <span class="input-group-btn">
+</div>
+<div class="col-2">
+<label style="color: transparent">Origin.</label>
+<span class="input-group-btn">
 <button (click)="onClickAddMachineryAndPlant()"
-        type="button" class="btn btn-success btn-sm">
+type="button" class="btn btn-success btn-sm">
 <span class="" aria-hidden="true">ADD</span>
 </button>
 </span>
-                            </div>
-                            <div>
+</div>
+<div>
 
 
 
 
 
 
-                        <br><br>
-                    </div>
-                </div>
-                <div class="material-datatables" >
-                    <div class="table-responsive">
-                        <table id="machinery" class="table table-striped table-bordered table-hover">
-                            <thead>
-                            <tr>
-                                <th>Machine</th>
-                                <th>Type/model </th>
-                                <th>Country of Origin</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr *ngFor="let r of sta10MachineryAndPlantDetails">
-                                <td>{{r.machineName}}</td>
-                                <td>{{r.typeModel}}</td>
-                                <td>{{r.countryOfOrigin}}</td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                        <div *ngIf="sta10MachineryAndPlantDetails.length >= 1" class="form-group clearfix">
-                            <button (click)="onClickPrevious()" class="btn btn-sm btn-danger form-wizard-previous-btn">Previous</button>
-                            <button type="submit" class="form-wizard-next-btn btn-sm float-right">Next</button>
-                        </div>
-                        <div *ngIf="sta10MachineryAndPlantDetails.length < 1" class="form-group clearfix">
-                            <button (click)="onClickPrevious()" class="btn btn-sm btn-danger form-wizard-previous-btn">Previous</button>
-                            <button  class="btn btn-sm btn-primary float-right" (click)="showNotification('top','right')">Next</button>
-                        </div>
+<br><br>
+</div>
+</div>
+<div class="material-datatables" >
+<div class="table-responsive">
+<table id="machinery" class="table table-striped table-bordered table-hover">
+<thead>
+<tr>
+<th>Machine</th>
+<th>Type/model </th>
+<th>Country of Origin</th>
+</tr>
+</thead>
+<tbody>
+<tr *ngFor="let r of sta10MachineryAndPlantDetails">
+<td>{{r.machineName}}</td>
+<td>{{r.typeModel}}</td>
+<td>{{r.countryOfOrigin}}</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div *ngIf="sta10MachineryAndPlantDetails.length >= 1" class="form-group clearfix">
+<button (click)="onClickPrevious()" class="btn btn-sm btn-danger form-wizard-previous-btn">Previous</button>
+<button type="submit" class="form-wizard-next-btn btn-sm float-right">Next</button>
+</div>
+<div *ngIf="sta10MachineryAndPlantDetails.length < 1" class="form-group clearfix">
+<button (click)="onClickPrevious()" class="btn btn-sm btn-danger form-wizard-previous-btn">Previous</button>
+<button  class="btn btn-sm btn-primary float-right" (click)="showNotification('top','right')">Next</button>
+</div>
 
 
-                    </div>
-            </form>
-        </fieldset>
-    </div>
-    <div *ngSwitchCase="7">
-        <h2 style="text-align: center"><b >Step</b> <b > 7</b><b > of</b> <b > 9</b></h2>
+</div>
+</form>
+</fieldset>
+</div>
+<div *ngSwitchCase="7">
+<h2 style="text-align: center"><b >Step</b> <b > 7</b><b > of</b> <b > 9</b></h2>
 
-        <fieldset class="wizard-fieldset show">
-            <form (ngSubmit)="onClickSaveSTAManufacturingProcess(sta10FormE.valid)" [formGroup]="sta10FormE"
-                  class="form"
-                  enctype="multipart/form-data">
-                <h5><b> Manufacturing process  </b></h5>
-                <div class="row">
-                    <div class="col-6">
-                        <label for="processFlowOfProduction">Process Flow of Production.</label>
-                        <input type="text"  formControlName="processFlowOfProduction"
-                               name="processFlowOfProduction" id="processFlowOfProduction" class="form-control"  placeholder="Process Flow of
+<fieldset class="wizard-fieldset show">
+<form (ngSubmit)="onClickSaveSTAManufacturingProcess(sta10FormE.valid)" [formGroup]="sta10FormE"
+class="form"
+enctype="multipart/form-data">
+<h5><b> Manufacturing process  </b></h5>
+<div class="row">
+<div class="col-6">
+<label for="processFlowOfProduction">Process Flow of Production.</label>
+<input type="text"  formControlName="processFlowOfProduction"
+name="processFlowOfProduction" id="processFlowOfProduction" class="form-control"  placeholder="Process Flow of
 Production
 " >
-                    </div>
-                    <div class="col-6">
-                        <label for="operations">Operations</label>
-                        <input type="text"    formControlName="operations"
-                               name="operations" id="operations" class="form-control"  placeholder="Operations  " >
-                    </div>
-                </div>
-
-                <div class="row">
-                            <div class="col-6">
-                                <label for="criticalProcessParametersMonitored">Critical Process parameters Monitored.</label>
-                                <input type="text"   formControlName="criticalProcessParametersMonitored"
-                                       name="criticalProcessParametersMonitored" id="criticalProcessParametersMonitored" class="form-control"  placeholder="Critical Process
+</div>
+<div class="col-6">
+<label for="operations">Operations</label>
+<input type="text"    formControlName="operations"
+name="operations" id="operations" class="form-control"  placeholder="Operations  " >
+</div>
+</div>
+<div class="row">
+<div class="col-6">
+<label for="criticalProcessParametersMonitored">Critical Process parameters Monitored.</label>
+<input type="text"   formControlName="criticalProcessParametersMonitored"
+name="criticalProcessParametersMonitored" id="criticalProcessParametersMonitored" class="form-control"  placeholder="Critical Process
 parameters Monitored" >
-                            </div>
-                            <div class="col-6">
-                                <label for="processMonitoringRecords">Process Monitoring Reports.</label>
-                                <input type="text"   formControlName="processMonitoringRecords"
-                                       id="processMonitoringRecords" name="processMonitoringRecords" class="form-control"  placeholder="Process Monitoring Reports" >
-                            </div>
-                            </div>
-
-
-                                <div class="row">
-                                    <div class="col-6">
-                                        <label for="qualityChecksTestingRecords">Quality checks/testing.</label>
-                                        <input type="text"    formControlName="frequency"
-                                               name="frequency" class="form-control"  placeholder="Frequency" >
-                                    </div>
-
-                                    <div class="col-6">
-                                        <label  style="color: transparent">Quality checks/testing.</label>
-                                        <span class="input-group-btn">
+</div>
+<div class="col-6">
+<label for="processMonitoringRecords">Process Monitoring Reports.</label>
+<input type="text"   formControlName="processMonitoringRecords"
+id="processMonitoringRecords" name="processMonitoringRecords" class="form-control"  placeholder="Process Monitoring Reports" >
+</div>
+</div>
+<div class="row">
+<div class="col-6">
+<label for="qualityChecksTestingRecords">Quality checks/testing.</label>
+<input type="text"    formControlName="frequency"
+name="frequency" class="form-control"  placeholder="Frequency" >
+</div>
+<div class="col-6">
+<label  style="color: transparent">Quality checks/testing.</label>
+<span class="input-group-btn">
 <button (click)="onClickAddManufacturingProcess()"
-        type="button" class="btn btn-success btn-sm">
+type="button" class="btn btn-success btn-sm">
 
 <span class="" aria-hidden="true">ADD</span>
 </button>
 </span>
-                                    </div>
-                                </div>
+</div>
+</div>
+<br><br>
+<div class="material-datatables" >
+<div class="table-responsive">
+<table id="manufacturing" class="table table-striped table-bordered table-hover">
+<thead>
+<tr>
+<th>Process Flow of Production</th>
+<th>Operations </th>
+<th>Critical Process parameters Monitored</th>
+<th>Frequency</th>
+<th>Process monitoring records
+</th>
+</tr>
+</thead>
+<tbody>
+<tr *ngFor="let r of sta10ManufacturingProcessDetails">
+<td>{{r.processFlowOfProduction}}</td>
+<td>{{r.operations}}</td>
+<td>{{r.criticalProcessParametersMonitored}}</td>
+<td>{{r.frequency}}</td>
+<td>{{r.processMonitoringRecords}}</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div *ngIf="sta10ManufacturingProcessDetails.length >= 1" class="form-group clearfix">
+<button (click)="onClickPrevious()" class="btn btn-sm btn-danger form-wizard-previous-btn">Previous</button>
+<button type="submit" class="form-wizard-next-btn btn-sm float-right">Next</button>
+</div>
+<div *ngIf="sta10ManufacturingProcessDetails.length < 1" class="form-group clearfix">
+<button (click)="onClickPrevious()" class="btn btn-sm btn-danger form-wizard-previous-btn">Previous</button>
+<button  class="btn btn-sm btn-primary float-right" (click)="showNotification('top','right')">Next</button>
+</div>
 
 
 
-
-                        <br><br>
-                <div class="material-datatables" >
-                    <div class="table-responsive">
-                        <table id="manufacturing" class="table table-striped table-bordered table-hover">
-                            <thead>
-                            <tr>
-                                <th>Process Flow of Production</th>
-                                <th>Operations </th>
-                                <th>Critical Process parameters Monitored</th>
-                                <th>Frequency</th>
-                                <th>Process monitoring records
-                                </th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr *ngFor="let r of sta10ManufacturingProcessDetails">
-                                <td>{{r.processFlowOfProduction}}</td>
-                                <td>{{r.operations}}</td>
-                                <td>{{r.criticalProcessParametersMonitored}}</td>
-                                <td>{{r.frequency}}</td>
-                                <td>{{r.processMonitoringRecords}}</td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                <div *ngIf="sta10ManufacturingProcessDetails.length >= 1" class="form-group clearfix">
-                    <button (click)="onClickPrevious()" class="btn btn-sm btn-danger form-wizard-previous-btn">Previous</button>
-                    <button type="submit" class="form-wizard-next-btn btn-sm float-right">Next</button>
-                </div>
-                <div *ngIf="sta10ManufacturingProcessDetails.length < 1" class="form-group clearfix">
-                    <button (click)="onClickPrevious()" class="btn btn-sm btn-danger form-wizard-previous-btn">Previous</button>
-                    <button  class="btn btn-sm btn-primary float-right" (click)="showNotification('top','right')">Next</button>
-                </div>
-
-
-
-            </form>
-        </fieldset>
-    </div>
+</form>
+</fieldset>
+</div>
 
 <div *ngSwitchCase="8">
 <h2 style="text-align: center"><b >Step</b> <b > 8</b><b > of</b> <b > 9</b></h2>
@@ -966,7 +951,6 @@ and have an effect on Health, Safety and Environment?</label>
 </div>
 
 </div>
-
 <h5>What testing facilities exist on the premises (if any)?
 </h5>
 <div class="row">
@@ -1005,7 +989,6 @@ and have an effect on Health, Safety and Environment?</label>
 </div>
 
 </div>
-
 <div class="row">
 <div class="form-group col-6">
 <label for="companyRepresentative">Company Representative</label>
@@ -1017,14 +1000,14 @@ and have an effect on Health, Safety and Environment?</label>
 
 </div>
 </div>
-    <div *ngIf="sta10FormF.valid" class="form-group clearfix">
-        <button (click)="onClickPrevious()" class="btn btn-sm btn-danger form-wizard-previous-btn">Previous</button>
-        <button type="submit" class="form-wizard-next-btn btn-sm float-right">Next</button>
-    </div>
-    <div *ngIf="!sta10FormF.valid" class="form-group clearfix">
-        <button (click)="onClickPrevious()" class="btn btn-sm btn-danger form-wizard-previous-btn">Previous</button>
-        <button  class="btn btn-sm btn-primary float-right" (click)="showNotification('top','right')">Next</button>
-    </div>
+<div *ngIf="sta10FormF.valid" class="form-group clearfix">
+<button (click)="onClickPrevious()" class="btn btn-sm btn-danger form-wizard-previous-btn">Previous</button>
+<button type="submit" class="form-wizard-next-btn btn-sm float-right">Next</button>
+</div>
+<div *ngIf="!sta10FormF.valid" class="form-group clearfix">
+<button (click)="onClickPrevious()" class="btn btn-sm btn-danger form-wizard-previous-btn">Previous</button>
+<button  class="btn btn-sm btn-primary float-right" (click)="showNotification('top','right')">Next</button>
+</div>
 
 
 </form>
@@ -1037,19 +1020,19 @@ and have an effect on Health, Safety and Environment?</label>
 <form (ngSubmit)="onClickSaveSTA10G(sta10FormG.valid)" [formGroup]="sta10FormG" class="form"
 enctype="multipart/form-data" >
 
-    <h3>Upload all of the required documents</h3>
-    <form #demoForm="ngForm">
-        <file-upload [(ngModel)]="uploadedFiles" name="files" fileslimit="2" accept=".pdf, .doc, .docx"></file-upload>
-    </form>
+<h3>Upload all of the required documents</h3>
+<form #demoForm="ngForm">
+<file-upload [(ngModel)]="uploadedFiles" name="files" fileslimit="2" accept=".pdf, .doc, .docx"></file-upload>
+</form>
 
-    <div *ngIf="sta10FormG.valid" class="form-group clearfix">
-        <button (click)="onClickPrevious()" class="btn btn-sm btn-danger form-wizard-previous-btn">Previous</button>
-        <button type="submit" class="form-wizard-next-btn btn-sm float-right">Finish</button>
-    </div>
-    <div *ngIf="!sta10FormG.valid" class="form-group clearfix">
-        <button (click)="onClickPrevious()" class="btn btn-sm btn-danger form-wizard-previous-btn">Previous</button>
-        <button  class="btn btn-sm btn-primary float-right" (click)="showNotification('top','right')">Finish</button>
-    </div>
+<div *ngIf="sta10FormG.valid" class="form-group clearfix">
+<button (click)="onClickPrevious()" class="btn btn-sm btn-danger form-wizard-previous-btn">Previous</button>
+<button type="submit" class="form-wizard-next-btn btn-sm float-right">Finish</button>
+</div>
+<div *ngIf="!sta10FormG.valid" class="form-group clearfix">
+<button (click)="onClickPrevious()" class="btn btn-sm btn-danger form-wizard-previous-btn">Previous</button>
+<button  class="btn btn-sm btn-primary float-right" (click)="showNotification('top','right')">Finish</button>
+</div>
 
 </form>
 </fieldset>
