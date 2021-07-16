@@ -2856,6 +2856,7 @@ class QADaoServices(
                                 totalAmount =
                                     totalAmount?.plus(permitInvoiceFound.amount ?: throw Exception("INVALID AMOUNT"))
                             }
+
                             invoiceBatchDetails = invoiceBatchRepo.save(invoiceDetails)
                         }
                         ?: kotlin.run {

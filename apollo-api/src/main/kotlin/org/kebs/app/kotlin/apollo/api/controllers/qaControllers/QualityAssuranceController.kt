@@ -630,6 +630,7 @@ class QualityAssuranceController(
                 }
 
             }
+
             permit.pcmApprovalStatus != null -> {
                 //Send notification
                 if (permitDetails.permitType == applicationMapProperties.mapQAPermitTypeIDDmark) {
@@ -651,12 +652,13 @@ class QualityAssuranceController(
                                 permitDetails.permitType ?: throw Exception("ID NOT FOUND")
                             )
 
-                            qaDaoServices.permitInvoiceCalculation(map, loggedInUser, permit, permitType)
-                            val pair = qaDaoServices.consolidateInvoiceAndSendMail(
-                                permit.id ?: throw ExpectedDataNotFound("MISSING PERMIT ID"), map, loggedInUser
+                            val permitUser = commonDaoServices.findUserByID(
+                                permit.userId ?: throw ExpectedDataNotFound("Permit USER Id Not found")
                             )
-                            var batchInvoice =
-                                pair.first
+                            val pair = qaDaoServices.consolidateInvoiceAndSendMail(
+                                permit.id ?: throw ExpectedDataNotFound("MISSING PERMIT ID"), map, permitUser
+                            )
+                            var batchInvoice = pair.first
                             permitDetails = pair.second
 
                             qualityAssuranceBpmn.qaDmARCheckApplicationComplete(
@@ -1233,6 +1235,41 @@ class QualityAssuranceController(
 
         return commonDaoServices.returnValues(result, map, sm)
     }
+
+//    @PreAuthorize("hasAuthority('PERMIT_APPLICATION')")
+//    @GetMapping("/kebs/new-permit-submit-review-")
+//    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+//    fun permitDmarkPCMForeginReviewDetails(
+//        @RequestParam("permitID") permitID: Long,
+//        model: Model
+//    ): String? {
+//
+//        val map = commonDaoServices.serviceMapDetails(appId)
+//        val loggedInUser = commonDaoServices.loggedInUserDetails()
+//        val permit = loggedInUser.id?.let { qaDaoServices.findPermitBYUserIDAndId(permitID, it) }
+//            ?: throw ExpectedDataNotFound("User Id required")
+//
+//        val result: ServiceRequestsEntity?
+//
+//        with(permit) {
+//            sendForPcmReview = map.activeStatus
+//            pcmId = qaDaoServices.assignNextOfficerWithDesignation(
+//                permit,
+//                map,
+//                applicationMapProperties.mapQADesignationIDForPCMId
+//            )?.id
+//            permitStatus = applicationMapProperties.mapQaStatusPPCMAwarding
+//            userTaskId = applicationMapProperties.mapUserTaskNamePCM
+//        }
+//
+//        result = qaDaoServices.permitUpdateDetails(permit, map, loggedInUser).first
+//
+//        val sm = CommonDaoServices.MessageSuccessFailDTO()
+//        sm.closeLink = "${applicationMapProperties.baseUrlValue}/qa/permits-list?permitTypeID=${permit.permitType}"
+//        sm.message = "You have Successful submitted your Permit for review"
+//
+//        return commonDaoServices.returnValues(result, map, sm)
+//    }
 
 
     @PreAuthorize("hasAuthority('PERMIT_APPLICATION')")

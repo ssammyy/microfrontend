@@ -9,12 +9,16 @@ import swal from 'sweetalert2';
 import {FileUploadValidators} from "@iplab/ngx-file-upload";
 
 declare const $: any;
+
 @Component({
     selector: 'app-new-dmark-permit',
     templateUrl: './new-dmark-permit.component.html',
     styleUrls: ['./new-dmark-permit.component.css']
 })
 export class NewDmarkPermitComponent implements OnInit {
+
+    public isLoading = true;
+
     sta1Form: FormGroup;
     sta3FormA: FormGroup;
     sta3FormB: FormGroup;
@@ -121,6 +125,7 @@ export class NewDmarkPermitComponent implements OnInit {
 
         this.returnUrl = this.route.snapshot.queryParams[`returnUrl`] || `/dmark`;
     }
+
     onClickPrevious() {
         if (this.step > 1) {
             this.step = this.step - 1;
@@ -128,6 +133,7 @@ export class NewDmarkPermitComponent implements OnInit {
             this.step = 1;
         }
     }
+
     onClickNext(valid: boolean) {
         if (valid) {
             switch (this.step) {
@@ -154,7 +160,6 @@ export class NewDmarkPermitComponent implements OnInit {
             // console.log(`Clicked and step = ${this.step}`);
         }
     }
-
 
 
     get formSta1Form(): any {
@@ -186,6 +191,7 @@ export class NewDmarkPermitComponent implements OnInit {
                         console.log(data);
                         this.step += 1;
                         this.currBtn = 'B';
+                        this.isLoading = false;
                         swal.fire({
                             title: 'STA1 Form saved!',
                             buttonsStyling: false,
@@ -202,6 +208,7 @@ export class NewDmarkPermitComponent implements OnInit {
                     (data: PermitEntityDetails) => {
                         this.permitEntityDetails = data;
                         this.step += 1;
+                        this.isLoading = false;
                         console.log(data);
                         swal.fire({
                             title: 'STA1 Form updated!',
@@ -307,20 +314,6 @@ export class NewDmarkPermitComponent implements OnInit {
                 console.log(file[i]);
                 formData.append('docFile', file[i], file[i].name);
             }
-            //
-            // const headers = new Headers();
-            // // It is very important to leave the Content-Type empty
-            // // do not use headers.append('Content-Type', 'multipart/form-data');
-            // headers.append('Authorization', 'Bearer ' + 'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9....');
-            // const options = new RequestOptions({headers: headers});
-            // this.http.post('https://api.mysite.com/uploadfile', formData, options)
-            //     .map(res => res.json())
-            //     .catch(error => Observable.throw(error))
-            //     .subscribe(
-            //         data => console.log('success'),
-            //         error => console.log(error)
-            //     );
-
             this.qaService.uploadSTA3File(this.permitEntityDetails.id.toString(), formData).subscribe(
                 (data: any) => {
                     console.log(data);
