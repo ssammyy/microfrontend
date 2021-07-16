@@ -702,16 +702,6 @@ class QADaoServices(
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun assignPermitApplicationAfterPayment() {
 
-        for (i in 0..9) {
-            try {
-                if (i == 2 || i == 4) {
-                    throw java.lang.Exception("Test $i")
-                }
-            } catch (ex: java.lang.Exception) {
-// generate a log and flag set.
-            }
-        }
-
         val map = commonDaoServices.serviceMapDetails(appId)
         //Find all permits with Paid status
         val paidPermits = findAllQAOPermitListWithPaymentStatus(map.activeStatus)
