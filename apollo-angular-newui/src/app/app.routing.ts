@@ -32,6 +32,7 @@ import {PdfViewComponent} from "./pdf-view/pdf-view.component";
 import {TaskManagerComponent} from "./apollowebs/task-manager/task-manager.component";
 import {AddUserComponent} from "./apollowebs/company/branch/add-user/add-user.component";
 import {FmarkApplicationComponent} from "./apollowebs/fmark-application/fmark-application.component";
+import {SmarkComponent} from "./apollowebs/smark/smark.component";
 
 // export const AppRoutes: Routes = [
 //     {
@@ -247,7 +248,12 @@ const routes: Routes = [
     },
     {
         path: 'invoice_test', component: PdfViewComponent
-    }
+    },
+
+    {
+        path: 'smarkpermitdetails', component: AdminLayoutComponent,
+        children: [{path: '', component: SmarkComponent}]
+    },
 ];
 
 
