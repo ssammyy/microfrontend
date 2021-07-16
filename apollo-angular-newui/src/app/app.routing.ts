@@ -31,6 +31,7 @@ import {InvoiceConsolidateComponent} from "./apollowebs/invoice-consolidate/invo
 import {PdfViewComponent} from "./pdf-view/pdf-view.component";
 import {TaskManagerComponent} from "./apollowebs/task-manager/task-manager.component";
 import {AddUserComponent} from "./apollowebs/company/branch/add-user/add-user.component";
+import {FmarkApplicationComponent} from "./apollowebs/fmark-application/fmark-application.component";
 
 // export const AppRoutes: Routes = [
 //     {
@@ -193,7 +194,7 @@ const routes: Routes = [
         children: [{path: '', component: DmarkComponent}]
     },
     {
-        path: 'invoice', component: AdminLayoutComponent,
+        path: 'invoice/all_invoice', component: AdminLayoutComponent,
         children: [{path: '', component: InvoiceComponent}]
     },
     {
@@ -239,6 +240,10 @@ const routes: Routes = [
     {
         path: 'all_tasks_list', component: AdminLayoutComponent,
         children: [{path: '', component: TaskManagerComponent}]
+    },
+    {
+        path: 'fmark/appplication', component: AdminLayoutComponent,
+        children: [{path: '', component: FmarkApplicationComponent}]
     },
     {
         path: 'invoice_test', component: PdfViewComponent
