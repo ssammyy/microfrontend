@@ -15,16 +15,7 @@
                         <form [formGroup]="stepOneForm" class="form"
                               (ngSubmit)="onClickSave(stepOneForm.valid)">
                             <div class="row">
-                                <div class="col-md-5">
-                                    <div class="form-group">
-                                        <label for="firstName" class="bmd-label-floating">Firstname</label>
-                                        <input class="form-control" formControlName="firstName"
-                                               id="firstName"
-                                               name="firstName"
-                                               required="required" type="text">
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
+                                <div class="col-md-7">
                                     <div class="form-group">
                                         <label for="userName" class="bmd-label-floating">Username</label>
                                         <input class="form-control" formControlName="userName"
@@ -37,7 +28,17 @@
 
                             </div>
                             <div class="row">
-                                <div class="col-md-4">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="firstName" class="bmd-label-floating">Firstname</label>
+                                        <input class="form-control" formControlName="firstName"
+                                               id="firstName"
+                                               name="firstName"
+                                               required="required" type="text">
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="lastName" class="bmd-label-floating">Lastname</label>
                                         <input class="form-control" formControlName="lastName"
@@ -112,7 +113,7 @@
                             <!--                                    </div>-->
                             <!--                                </div>-->
                             <!--                            </div>-->
-                            <button mat-raised-button type="submit" class="btn btn-rose pull-right">Update Profile
+                            <button mat-raised-button type="submit" class="btn btn-info pull-right">Update Profile
                             </button>
                             <div class="clearfix"></div>
                         </form>
@@ -125,7 +126,7 @@
                         <img alt="The User" class="img" src="./assets/img/faces/user.png"/>
                     </div>
                     <div class="card-body">
-                        <h6 class="card-category text-gray">{{user?.firstName}}</h6>
+                        <h6 class="card-category text-gray">{{user?.firstName}} {{user?.lastName}}</h6>
                         <h4 class="card-title"></h4>
 
                     </div>

@@ -473,19 +473,7 @@ class QualityAssuranceController(
 
                     }
                     map.inactiveStatus -> {
-//                        var reasonValue: String? = null
-//                        reasonValue = "REJECTED"
-//                        with(permitDetails) {
-//                            hodApproveAssessmentStatus = null
-//                        }
-//                        qaDaoServices.permitInsertStatus(
-//                            permitDetails,
-//                            applicationMapProperties.mapQaStatusRejectedJustCationReport,
-//                            loggedInUser
-//                        )
-//                        qaDaoServices.justificationReportSendEmail(permitDetails, reasonValue)
-                        //                    complianceValue= "NON-COMPLIANT"
-                        //                    qaDaoServices.permitInsertStatus(permitDetails,applicationMapProperties.mapQaStatusRe,loggedInUser)
+
                     }
                 }
 //                qaDaoServices.sendComplianceStatusAndLabReport(permitDetails, complianceValue ?: throw ExpectedDataNotFound(" "))

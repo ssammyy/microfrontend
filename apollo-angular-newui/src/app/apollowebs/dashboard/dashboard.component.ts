@@ -140,4 +140,9 @@ export class DashboardComponent implements OnInit, AfterViewInit {
         this.router.navigate(['/smark/newSmarkPermit']);
 
     }
+
+    gotoFMarkApplication() {
+        this.router.navigate(['/fmark/application']);
+
+    }
 }
