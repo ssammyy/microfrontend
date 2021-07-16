@@ -433,22 +433,22 @@ export class NewSmarkPermitComponent implements OnInit {
                 );
         }
     }
-    onClickSaveSTA10G(valid: boolean) {
-        if (valid) {
-            console.log(this.sta1.id.toString());
-            swal.fire({
-                title: 'STA3 Form Completed! Proceed to submit application.!',
-                buttonsStyling: false,
-                customClass: {
-                    confirmButton: 'btn btn-success form-wizard-next-btn ',
-                },
-                icon: 'success'
-            });
-            this.router.navigate(['/permitdetails'], {fragment: this.sta1.id.toString()});
-
-
-        }
-    }
+    // onClickSaveSTA10G(valid: boolean) {
+    //     if (valid) {
+    //         console.log(this.sta1.id.toString());
+    //         swal.fire({
+    //             title: 'STA10 Form Completed! Proceed to submit application.!',
+    //             buttonsStyling: false,
+    //             customClass: {
+    //                 confirmButton: 'btn btn-success form-wizard-next-btn ',
+    //             },
+    //             icon: 'success'
+    //         });
+    //         this.router.navigate(['/smarkpermitdetails'], {fragment: this.sta1.id.toString()});
+    //
+    //
+    //     }
+    // }
 
     onClickSaveSTAPersonnel(valid: boolean) {
         if (valid) {
@@ -612,7 +612,7 @@ export class NewSmarkPermitComponent implements OnInit {
         this.sta10FormE?.get('processMonitoringRecords')?.reset();
     }
 
-    goToPermit() {
+    onClickSaveSTA10G() {
         if (this.uploadedFiles.length > 0) {
             const file = this.uploadedFiles;
             const formData = new FormData();
@@ -650,7 +650,7 @@ export class NewSmarkPermitComponent implements OnInit {
                     // this.router.navigate(['/permitdetails'], {fragment: this.permitEntityDetails.id.toString()});
                 },
             );
-            this.router.navigate(['/permitdetails'], {fragment: this.sta1.id.toString()});
+            this.router.navigate(['/smarkpermitdetails'], {fragment: this.sta1.id.toString()});
         }
 
     }

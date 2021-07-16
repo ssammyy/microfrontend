@@ -52,6 +52,8 @@ export class QaService {
         );
     }
 
+
+
     public loadInvoiceDetails(batchID: string): Observable<any> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.INVOICE_DETAILS);
         const params = new HttpParams()
