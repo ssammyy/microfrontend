@@ -4038,8 +4038,8 @@ class QADaoServices(
                 p.invoiceNumber,
                 p.totalAmount,
                 p.paidDate,
-                p.paidStatus == 1,
-                p.submittedStatus == 1,
+                p.paidStatus,
+                p.submittedStatus,
                 p.receiptNo,
             )
         }

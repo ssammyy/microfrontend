@@ -74,8 +74,8 @@ data class ConsolidatedInvoiceDto(
     var invoiceNumber: String? = null,
     var totalAmount: BigDecimal? = null,
     var paidDate: Timestamp? = null,
-    var paidStatus: Boolean? = null,
-    var submittedStatus: Boolean? = null,
+    var paidStatus: Int? = null,
+    var submittedStatus: Int? = null,
     var receiptNo: String? = null,
 )
 

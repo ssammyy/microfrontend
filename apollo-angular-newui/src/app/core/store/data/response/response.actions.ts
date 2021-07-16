@@ -1,5 +1,5 @@
-import { createAction, props } from '@ngrx/store';
-import {ApiResponse} from "../../../domain/response.model";
+import {createAction, props} from '@ngrx/store';
+import {ApiResponse} from '../../../domain/response.model';
 
 
 export const loadResponses = createAction(

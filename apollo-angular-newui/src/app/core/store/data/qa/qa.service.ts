@@ -6,6 +6,7 @@ import {ApiEndpointService} from '../../../services/endpoints/api-endpoint.servi
 import {catchError, map} from 'rxjs/operators';
 import {BrsLookUpRequest, Company} from '../companies';
 import {
+    MPesaPushDto,
     STA1,
     Sta10Dto,
     STA10MachineryAndPlantDto, STA10ManufacturingProcessDto,
@@ -233,6 +234,19 @@ export class QaService {
         const params = new HttpParams()
             .set('permitID', permitID);
         return this.http.post<any>(url, data, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
+
+    public pushSTKInvoicePermit(data: MPesaPushDto): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.QA_MPESA_STK_PUSH);
+        return this.http.post<any>(url, data).pipe(
             map(function (response: any) {
                 return response;
             }),

@@ -39,8 +39,8 @@ export class ConsolidatedInvoiceDto {
     invoiceNumber: string;
     totalAmount: string;
     paidDate: Date;
-    paidStatus: boolean;
-    submittedStatus: boolean;
+    paidStatus: number;
+    submittedStatus: number;
     receiptNo: string;
 }
 
@@ -49,6 +49,11 @@ export class GenerateInvoiceDto {
     plantID: bigint;
     permitRefNumber: string;
     permitInvoicesID: string[];
+}
+
+export class MPesaPushDto {
+    entityValueID: bigint;
+    phoneNumber: string;
 }
 
 

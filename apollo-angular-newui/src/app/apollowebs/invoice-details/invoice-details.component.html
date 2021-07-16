@@ -28,7 +28,7 @@
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link" data-toggle="tab" href="#link13" role="tablist">
-                                        <i class="material-icons">assignment_turned_in</i>OTHER PAYMENT Details
+                                        <i class="material-icons">assignment_turned_in</i>MPESA PAYMENT Details
                                     </a>
                                 </li>
                                 <li class="nav-item">
@@ -125,8 +125,11 @@
                                                     <tr>
                                                         <td><strong>
                                                             Status</strong></td>
-                                                        <td><span
-                                                                class="badge badge-primary">{{allBatchInvoiceDetails.batchDetails.paidStatus}}</span>
+                                                        <td>
+                                                            <span *ngIf="allBatchInvoiceDetails.batchDetails.paidStatus == 10"
+                                                                  class="badge badge-primary">PAID</span>
+                                                            <span *ngIf="allBatchInvoiceDetails.batchDetails.paidStatus != 10"
+                                                                  class="badge badge-primary">NOT PAID</span>
                                                         </td>
                                                     </tr>
 
@@ -166,7 +169,9 @@
                                                 <td>{{row[1]}}</td>
                                                 <td>{{row[2]}}</td>
                                                 <td>{{row[3]}}</td>
-                                                <td>{{row[4]}}</td>
+                                                <td *ngIf="row[4] == 10">PAID</td>
+                                                <td *ngIf="row[4] != 10">NOT PAID</td>
+
                                                 <td class="text-right">
                                                     <!--                                                    <a href="javascript:void(0)" class="btn btn-link btn-info btn-just-icon like"><i class="material-icons">download</i></a>-->
                                                 </td>
@@ -372,7 +377,7 @@
                                     </div>
                                 </div>
                                 <div class="tab-pane" id="link13">
-                                    <h3>OTHER Payment Details</h3>
+                                    <h3>MPESA Payment Details</h3>
                                     <div class="row">
                                         <div class="col-md-7">
                                             <br>
@@ -472,7 +477,47 @@
                                                     </div>
                                                     <div class="tab-pane" id="link18">
                                                         <div class="card">
+                                                            <form (ngSubmit)="stkPush()" [formGroup]="stkPushForm"
+                                                                  action="" enctype="multipart/form-data"
+                                                                  class="form" method="post">
+                                                                <h2 class="welcome">
+                                                                    Enter details below to Pay for invoice
+                                                                </h2>
+                                                                <div class="form-body">
 
+                                                                    <div style="margin-top: 3%" class="form-group">
+                                                                        <label for="phoneNumber"
+                                                                               class="input-placeholder"><b>Enter Phone
+                                                                            Number</b></label>
+                                                                        <input [ngClass]="{ 'is-invalid': submitted && formStkPushForm.phoneNumber.errors }"
+                                                                               aria-describedby="inputGroup-sizing-sm"
+                                                                               aria-label="Small"
+                                                                               class="form-control two-column-input"
+                                                                               formControlName="phoneNumber"
+                                                                               id="phoneNumber" type="text"
+                                                                               name="phoneNumber"
+                                                                               placeholder="Phone Number"
+                                                                               style="width: 60%">
+                                                                    </div>
+                                                                    <div style="margin-top: 3%" class="form-group">
+                                                                        <input [ngClass]="{ 'is-invalid': submitted && formStkPushForm.entityValueID.errors }"
+                                                                               aria-describedby="inputGroup-sizing-sm"
+                                                                               aria-label="Small"
+                                                                               class="form-control two-column-input"
+                                                                               formControlName="entityValueID"
+                                                                               id="entityValueID" type="hidden"
+                                                                               value="{{batchID}}"
+                                                                               name="entityValueID"
+                                                                               placeholder="Phone Number"
+                                                                               style="width: 60%">
+                                                                    </div>
+                                                                    <br>
+                                                                    <div>
+                                                                        <button type="submit" class="login-button">PAY
+                                                                        </button>
+                                                                    </div>
+                                                                </div>
+                                                            </form>
                                                         </div>
                                                     </div>
                                                 </div>

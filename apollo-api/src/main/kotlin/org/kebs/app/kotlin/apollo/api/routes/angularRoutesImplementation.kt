@@ -288,6 +288,7 @@ class AngularRoutes {
             "/permit".nest {
                 GET("/task-list", handler::permitTaskListMigration)
                 GET("/list", handler::permitListMigration)
+                GET("mpesa/stk-push", handler::permitMPesaPushStk)
                 GET("/firm-list", handler::firmPermitListMigration)
                 "/apply".nest {
                     POST("/sta1", handler::permitApplySTA1Migration)
@@ -358,6 +359,7 @@ class AngularRoutes {
                     POST("/ordinary", handler::permitAttachUploadOrdinaryMigration)
                 }
             }
+
         }
     }
 }
