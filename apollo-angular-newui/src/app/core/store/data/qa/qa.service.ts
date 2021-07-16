@@ -192,6 +192,66 @@ export class QaService {
         );
     }
 
+    public viewSTA10FirmDetails(permitID: string): Observable<Sta10Dto> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.PERMIT_VIEW_STA10_FIRM_DETAILS);
+        const params = new HttpParams()
+            .set('permitID', permitID);
+        return this.http.get<Sta10Dto>(url, {params}).pipe(
+            map(function (response: Sta10Dto) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
+
+    public viewSTA10PersonnelDetails(qaSta10ID: string): Observable<STA10PersonnelDto> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.PERMIT_VIEW_STA10_PERSONNEL_DETAILS);
+        const params = new HttpParams()
+            .set('qaSta10ID', qaSta10ID);
+        return this.http.get<STA10PersonnelDto>(url, {params}).pipe(
+            map(function (response: STA10PersonnelDto) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
+
+    public viewSTA10ProductsManufactureDetails(qaSta10ID: string): Observable<STA10ProductsManufactureDto> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.PERMIT_VIEW_STA10_PRODUCTS_BEING_MANUFACTURED);
+        const params = new HttpParams()
+            .set('qaSta10ID', qaSta10ID);
+        return this.http.get<STA10ProductsManufactureDto>(url, {params}).pipe(
+            map(function (response: STA10ProductsManufactureDto) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
+
+    public viewSTA10RawMaterialsDetails(qaSta10ID: string): Observable<STA10ProductsManufactureDto> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.PERMIT_VIEW_STA10_RAW_MATERIAL);
+        const params = new HttpParams()
+            .set('qaSta10ID', qaSta10ID);
+        return this.http.get<STA10ProductsManufactureDto>(url, {params}).pipe(
+            map(function (response: STA10ProductsManufactureDto) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
+
     public loadInvoiceDetailsPDF(ID: string): Observable<any> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.INVOICE_DETAILS_PDF);
         const params = new HttpParams()
