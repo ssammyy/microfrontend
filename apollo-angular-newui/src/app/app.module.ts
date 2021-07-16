@@ -86,8 +86,8 @@ import {BrowserModule} from "@angular/platform-browser";
 import {NgxExtendedPdfViewerModule} from "ngx-extended-pdf-viewer";
 import { TaskManagerComponent } from './apollowebs/task-manager/task-manager.component';
 import {FileUploadModule} from "@iplab/ngx-file-upload";
-import {AddUserComponent} from './apollowebs/company/branch/add-user/add-user.component';
-import {LoaderComponent} from './shared/loader/loader.component';
+import { AddUserComponent } from './apollowebs/company/branch/add-user/add-user.component';
+import { FmarkApplicationComponent } from './apollowebs/fmark-application/fmark-application.component';
 
 @NgModule({
     exports: [
@@ -171,6 +171,7 @@ import {LoaderComponent} from './shared/loader/loader.component';
         TaskManagerComponent,
         PdfViewComponent,
         AddUserComponent,
+        FmarkApplicationComponent,
         LoaderComponent
     ]
 
