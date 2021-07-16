@@ -28,6 +28,7 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.multipart.MultipartFile
+import java.io.File
 import java.math.BigDecimal
 import java.sql.Date
 import java.sql.Timestamp
@@ -80,6 +81,7 @@ class QADaoServices(
     private val iMoneyTypeCodesRepo: ICfgMoneyTypeCodesRepository,
     private val mpesaServices: MPesaService,
     private val msReportsControllers: MSReportsControllers,
+    private val reportsDaoService: ReportsDaoService,
 //    private val reportsControllers: ReportsController,
     private val notifications: Notifications,
 ) {
@@ -699,56 +701,75 @@ class QADaoServices(
 
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun assignPermitApplicationAfterPayment() {
+
+        for (i in 0..9) {
+            try {
+                if (i == 2 || i == 4) {
+                    throw java.lang.Exception("Test $i")
+                }
+            } catch (ex: java.lang.Exception) {
+// generate a log and flag set.
+            }
+        }
+
         val map = commonDaoServices.serviceMapDetails(appId)
         //Find all permits with Paid status
         val paidPermits = findAllQAOPermitListWithPaymentStatus(map.activeStatus)
         for (permit in paidPermits) {
-            //Get permit type
-            val user = permit.userId?.let { commonDaoServices.findUserByID(it) }
-            when (permit.permitType) {
-                applicationMapProperties.mapQAPermitTypeIDDmark -> {
-                    permit.userTaskId = applicationMapProperties.mapUserTaskNameHOD
-                    permit.hodId = assignNextOfficerBasedOnSection(
-                        permit,
-                        map,
-                        applicationMapProperties.mapQADesignationIDForHODId
-                    )?.id
-                    qualityAssuranceBpmn.startQAAppReviewProcess(
-                        permit.id ?: throw ExpectedDataNotFound("Permit Id Not found"),
-                        permit.hodId ?: throw ExpectedDataNotFound("HOD Not found")
-                    )
-                }
-                applicationMapProperties.mapQAPermitTypeIdSmark -> {
-                    permit.userTaskId = applicationMapProperties.mapUserTaskNameQAM
-                    permit.qamId = assignNextOfficerBasedOnSection(
-                        permit,
-                        map,
-                        applicationMapProperties.mapQADesignationIDForQAMId
-                    )?.id
-                    qualityAssuranceBpmn.startQAAppReviewProcess(
-                        permit.id ?: throw ExpectedDataNotFound("Permit Id Not found"),
-                        permit.qamId ?: throw ExpectedDataNotFound("QAM Not found")
-                    )
-                }
-                applicationMapProperties.mapQAPermitTypeIdFmark -> {
-                    permit.userTaskId = applicationMapProperties.mapUserTaskNameQAM
-                    permit.qamId = assignNextOfficerAfterPayment(
-                        permit,
-                        map,
-                        applicationMapProperties.mapQADesignationIDForQAMId
-                    )?.id
-                    qualityAssuranceBpmn.startQAAppReviewProcess(
-                        permit.id ?: throw ExpectedDataNotFound("Permit Id Not found"),
-                        permit.qamId ?: throw ExpectedDataNotFound("QAM Not found")
-                    )
-                }
-            }
 
-            permit.paidStatus = map.initStatus
-            permit.permitStatus = applicationMapProperties.mapQaStatusPApprovalCompletness
+            try {
+                //Get permit type
+                val user = permit.userId?.let { commonDaoServices.findUserByID(it) }
+                when (permit.permitType) {
+                    applicationMapProperties.mapQAPermitTypeIDDmark -> {
+                        permit.userTaskId = applicationMapProperties.mapUserTaskNameHOD
+                        permit.hodId = assignNextOfficerBasedOnSection(
+                            permit,
+                            map,
+                            applicationMapProperties.mapQADesignationIDForHODId
+                        )?.id
+                        qualityAssuranceBpmn.startQAAppReviewProcess(
+                            permit.id ?: throw ExpectedDataNotFound("Permit Id Not found"),
+                            permit.hodId ?: throw ExpectedDataNotFound("HOD Not found")
+                        )
+                    }
+                    applicationMapProperties.mapQAPermitTypeIdSmark -> {
+                        permit.userTaskId = applicationMapProperties.mapUserTaskNameQAM
+                        permit.qamId = assignNextOfficerBasedOnSection(
+                            permit,
+                            map,
+                            applicationMapProperties.mapQADesignationIDForQAMId
+                        )?.id
+                        qualityAssuranceBpmn.startQAAppReviewProcess(
+                            permit.id ?: throw ExpectedDataNotFound("Permit Id Not found"),
+                            permit.qamId ?: throw ExpectedDataNotFound("QAM Not found")
+                        )
+                    }
+                    applicationMapProperties.mapQAPermitTypeIdFmark -> {
+                        permit.userTaskId = applicationMapProperties.mapUserTaskNameQAM
+                        permit.qamId = assignNextOfficerAfterPayment(
+                            permit,
+                            map,
+                            applicationMapProperties.mapQADesignationIDForQAMId
+                        )?.id
+                        qualityAssuranceBpmn.startQAAppReviewProcess(
+                            permit.id ?: throw ExpectedDataNotFound("Permit Id Not found"),
+                            permit.qamId ?: throw ExpectedDataNotFound("QAM Not found")
+                        )
+                    }
+                }
 
-            if (user != null) {
-                permitUpdateDetails(permit, map, user)
+                permit.paidStatus = map.initStatus
+                permit.permitStatus = applicationMapProperties.mapQaStatusPApprovalCompletness
+
+                if (user != null) {
+                    permitUpdateDetails(permit, map, user)
+                }
+            } catch (e: Exception) {
+                KotlinLogging.logger { }.error(e.message)
+                KotlinLogging.logger { }.debug(e.message, e)
+
+                continue
             }
 //            permitRepo.save(permit)
         }
@@ -1007,6 +1028,7 @@ class QADaoServices(
                 p.userTaskId,
                 p.companyId,
                 p.permitType,
+                p.permitStatus
             )
         }
     }
@@ -1218,6 +1240,9 @@ class QADaoServices(
             approvedRejectedScheme = permit.approvedRejectedScheme == 1
             sendForPcmReview = permit.sendForPcmReview == 1
             sendApplication = permit.sendApplication == 1
+            pcmReviewApprove = permit.pcmApprovalStatus == 1
+            processStep = permit.processStep
+            processStatusID = permit.permitStatus
 
         }
         return p
@@ -1961,7 +1986,7 @@ class QADaoServices(
                 ?.let { foundProductsManufactured ->
 
                     productsManufacturedDetsils = commonDaoServices.updateDetails(
-                        productsManufactured,
+                        productsManufacturedDetsils,
                         foundProductsManufactured
                     ) as QaProductManufacturedEntity
 
@@ -2117,6 +2142,31 @@ class QADaoServices(
 
         KotlinLogging.logger { }.trace("${sr.id} ${sr.responseStatus}")
         return Pair(sr, uploads)
+    }
+
+    fun uploadQaFile(
+        uploads: QaUploadsEntity,
+        docFile: File,
+        doc: String,
+        permitRefNUMBER: String,
+        user: UsersEntity
+    ): QaUploadsEntity {
+
+        with(uploads) {
+            ordinaryStatus = 1
+            name = docFile.name
+            fileType = docFile.extension
+            documentType = doc
+            document = docFile.readBytes()
+            permitRefNumber = permitRefNUMBER
+            transactionDate = commonDaoServices.getCurrentDate()
+            versionNumber = 1
+            status = 1
+            createdBy = commonDaoServices.concatenateName(user)
+            createdOn = commonDaoServices.getTimestamp()
+        }
+
+        return qaUploadsRepo.save(uploads)
     }
 
     fun sta10ManufacturingProcessNewSave(
@@ -2404,6 +2454,18 @@ class QADaoServices(
         return Pair(sr, savePermit)
     }
 
+    fun getFileInvoicePDFForm(batchID: Long): File {
+        val myDetails = reportsControllers.createInvoicePdf(batchID)
+        reportsDaoService.generateEmailPDFReportWithDataSource(
+            "Proforma-Invoice-${myDetails.first.getValue("demandNoteNo")}.pdf",
+            myDetails.first,
+            applicationMapProperties.mapReportProfomaInvoiceWithItemsPath,
+            myDetails.second
+        )?.let {
+            return it
+        } ?: throw ExpectedDataNotFound("MISSING FILE")
+    }
+
     fun invoiceCreationPDF(
         batchID: Long,
         senderEmail: String,
@@ -2412,15 +2474,25 @@ class QADaoServices(
 
         val myDetails = reportsControllers.createInvoicePdf(batchID)
 
-        msReportsControllers.extractAndSaveReport(
+        val invoicePDFCreated = reportsDaoService.generateEmailPDFReportWithDataSource(
+            "Proforma-Invoice-${myDetails.first.getValue("demandNoteNo")}.pdf",
             myDetails.first,
             applicationMapProperties.mapReportProfomaInvoiceWithItemsPath,
-            "Pro forma invoice",
             myDetails.second
         )
+
+        val upload = QaUploadsEntity()
+        uploadQaFile(
+            upload,
+            invoicePDFCreated ?: throw ExpectedDataNotFound("MISSING FILE"),
+            "PERMIT INVOICE",
+            myDetails.first.getValue("demandNoteNo").toString(),
+            loggedInUser
+        )
+
         sendEmailWithProforma(
             senderEmail,
-            applicationMapProperties.mapPDFProfomaInvoiceWithItemsPath,
+            invoicePDFCreated.path,
         )
     }
 
@@ -2428,7 +2500,6 @@ class QADaoServices(
         val subject = "PRO FORMA INVOICE"
         val messageBody = "Check The attached Proforma Invoices for payment"
 
-//        notifications.sendEmail(recipient, subject, messageBody)
         notifications.processEmail(recipient, subject, messageBody, attachment)
 
         return true
@@ -2651,13 +2722,13 @@ class QADaoServices(
         }
         permit = permitUpdateDetails(permit, map, loggedInUser).second
 
-//        //Send email with attached Invoice details
-//        invoiceCreationPDF(
-//            batchInvoice.id ?: throw ExpectedDataNotFound("MISSING BATCH INVOICE ID"),
-//            commonDaoServices.findUserByID(permit.userId ?: throw ExpectedDataNotFound("MISSING USER ID")).email
-//                ?: throw ExpectedDataNotFound("MISSING USER ID"),
-//            loggedInUser
-//        )
+        //Send email with attached Invoice details
+        invoiceCreationPDF(
+            batchInvoice.id ?: throw ExpectedDataNotFound("MISSING BATCH INVOICE ID"),
+            commonDaoServices.findUserByID(permit.userId ?: throw ExpectedDataNotFound("MISSING USER ID")).email
+                ?: throw ExpectedDataNotFound("MISSING USER ID"),
+            loggedInUser
+        )
 
         return Pair(batchInvoice, permit)
     }
@@ -2827,6 +2898,7 @@ class QADaoServices(
                                 totalAmount =
                                     totalAmount?.plus(permitInvoiceFound.amount ?: throw Exception("INVALID AMOUNT"))
                             }
+
                             invoiceBatchDetails = invoiceBatchRepo.save(invoiceDetails)
                         }
                         ?: kotlin.run {
@@ -3847,6 +3919,21 @@ class QADaoServices(
         return sta3ViewDto
     }
 
+    fun mapDtoSTA1View(permit: PermitApplicationsEntity): STA1Dto {
+        val sta1ViewDto = STA1Dto()
+        with(sta1ViewDto) {
+            id = permit.id
+            commodityDescription = permit.commodityDescription
+            tradeMark = permit.tradeMark
+            applicantName = permit.applicantName
+            sectionId = permit.sectionId
+            permitForeignStatus = permit.permitForeignStatus
+            attachedPlant = permit.attachedPlantId
+        }
+
+        return sta1ViewDto
+    }
+
     fun mapDtoSTA10SectionAAndQaSta10Entity(sta10SectionADto: STA10SectionADto): QaSta10Entity {
         val sta10 = QaSta10Entity()
         with(sta10) {
@@ -4010,8 +4097,8 @@ class QADaoServices(
                 p.invoiceNumber,
                 p.totalAmount,
                 p.paidDate,
-                p.paidStatus == 1,
-                p.submittedStatus == 1,
+                p.paidStatus,
+                p.submittedStatus,
                 p.receiptNo,
             )
         }
@@ -4027,13 +4114,15 @@ class QADaoServices(
         }
     }
 
-    fun getTaskListPermit(userID: Long) {
-        qualityAssuranceBpmn.fetchAllTasksByAssignee(userID)
-            ?.forEach { t ->
-                t.permitId
-                t.task.name
-                t.task.createTime
-            }
+    fun getTaskListPermit(userID: Long): List<TaskDto>? {
+        return qualityAssuranceBpmn.fetchAllTasksByAssignee(userID)?.map { t ->
+            TaskDto(
+                t.permitId,
+                t.task.name,
+                t.task.createTime,
+                t.permitRefNo
+            )
+        }
 
     }
 

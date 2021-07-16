@@ -1,8 +1,16 @@
 import {AfterViewInit, Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {QaService} from '../../core/store/data/qa/qa.service';
-import {AllPermitDetailsDto} from '../../core/store/data/qa/qa.model';
-import swal from "sweetalert2";
+import {
+    AllPermitDetailsDto,
+    PermitEntityDetails,
+    PlantDetailsDto,
+    SectionDto,
+    STA1
+} from '../../core/store/data/qa/qa.model';
+import swal from 'sweetalert2';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {ApiEndpointService} from '../../core/services/endpoints/api-endpoint.service';
 
 declare interface DataTable {
     headerRow: string[];
@@ -18,16 +26,31 @@ declare const $: any;
     styleUrls: ['./dmark.component.css']
 })
 export class DmarkComponent implements OnInit, AfterViewInit {
-
+    sta1Form: FormGroup;
+    sta3FormA: FormGroup;
+    sta3FormB: FormGroup;
+    sta3FormC: FormGroup;
+    sta3FormD: FormGroup;
+    returnUrl: string;
+    sta1: STA1;
+    sections: SectionDto[];
+    plants: PlantDetailsDto[];
+    permitEntityDetails: PermitEntityDetails;
     public dataTable: DataTable;
     public permitID!: string;
     public allPermitDetails!: AllPermitDetailsDto;
+
+    FMarkTypeID = ApiEndpointService.QA_APPLICATION_MAP_PROPERTIES.FMARK_TYPE_ID;
+    DMarkTypeID = ApiEndpointService.QA_APPLICATION_MAP_PROPERTIES.DMARK_TYPE_ID;
+    SMarkTypeID = ApiEndpointService.QA_APPLICATION_MAP_PROPERTIES.SMARK_TYPE_ID;
+    draftID = ApiEndpointService.QA_APPLICATION_MAP_PROPERTIES.DRAFT_ID;
 
 
     constructor(
         private route: ActivatedRoute,
         private router: Router,
-        private qaService: QaService
+        private qaService: QaService,
+        private formBuilder: FormBuilder
     ) {
     }
 
@@ -42,6 +65,93 @@ export class DmarkComponent implements OnInit, AfterViewInit {
                 ['REFFM#202107095913D', 'Andrew Mike', '09/07/2021', 'Dassani', 'Water', '']
             ]
         };
+
+        this.sta1Form = this.formBuilder.group({
+            commodityDescription: ['', Validators.required],
+            applicantName: ['', Validators.required],
+            sectionId: ['', Validators.required],
+            permitForeignStatus: ['', Validators.required],
+            attachedPlant: ['', Validators.required],
+            tradeMark: ['', Validators.required]
+
+        });
+        this.sta3FormA = this.formBuilder.group({
+            produceOrdersOrStock: ['', Validators.required],
+            issueWorkOrderOrEquivalent: ['', Validators.required],
+            identifyBatchAsSeparate: ['', Validators.required],
+            productsContainersCarryWorksOrder: ['', Validators.required],
+            isolatedCaseDoubtfulQuality: ['', Validators.required]
+
+        });
+
+        this.sta3FormB = this.formBuilder.group({
+            headQaQualificationsTraining: ['', Validators.required],
+            reportingTo: ['', Validators.required],
+            separateQcid: ['', Validators.required],
+            testsRelevantStandard: ['', Validators.required],
+            spoComingMaterials: ['', Validators.required],
+            spoProcessOperations: ['', Validators.required],
+            spoFinalProducts: ['', Validators.required],
+            monitoredQcs: ['', Validators.required],
+            qauditChecksCarried: ['', Validators.required],
+            informationQcso: ['', Validators.required],
+
+        });
+
+        this.sta3FormC = this.formBuilder.group({
+            mainMaterialsPurchasedSpecification: ['', Validators.required],
+            adoptedReceiptMaterials: ['', Validators.required],
+            storageFacilitiesExist: ['', Validators.required],
+
+        });
+
+        this.sta3FormD = this.formBuilder.group({
+            stepsManufacture: ['', Validators.required],
+            maintenanceSystem: ['', Validators.required],
+            qcsSupplement: ['', Validators.required],
+            qmInstructions: ['', Validators.required],
+            testEquipmentUsed: ['', Validators.required],
+            indicateExternalArrangement: ['', Validators.required],
+            levelDefectivesFound: ['', Validators.required],
+            levelClaimsComplaints: ['', Validators.required],
+            independentTests: ['', Validators.required],
+            indicateStageManufacture: ['', Validators.required],
+
+        });
+
+
+        this.qaService.loadSectionList().subscribe(
+            (data: any) => {
+                this.sections = data;
+                console.log(data);
+            }
+        );
+
+        this.qaService.loadPlantList().subscribe(
+            (data: any) => {
+                this.plants = data;
+                console.log(data);
+            }
+        );
+    }
+    get formSta1Form(): any {
+        return this.sta1Form.controls;
+    }
+
+    get formSta3FormA(): any {
+        return this.sta3FormA.controls;
+    }
+
+    get formSta3FormB(): any {
+        return this.sta3FormB.controls;
+    }
+
+    get formSta3FormC(): any {
+        return this.sta3FormC.controls;
+    }
+
+    get formSta3FormD(): any {
+        return this.sta3FormD.controls;
     }
 
 
@@ -108,8 +218,30 @@ export class DmarkComponent implements OnInit, AfterViewInit {
         $('.card .material-datatables label').addClass('form-group');
     }
 
+    submitApplicationForReview(): void {
+        // tslint:disable-next-line:max-line-length
+        if (this.allPermitDetails.permitDetails.permitForeignStatus === true && this.allPermitDetails.permitDetails.permitTypeID === ApiEndpointService.QA_APPLICATION_MAP_PROPERTIES.DMARK_TYPE_ID) {
+            this.qaService.submitPermitForReview(this.permitID).subscribe(
+                (data: AllPermitDetailsDto) => {
+                    this.allPermitDetails = data;
+                    swal.fire({
+                        title: 'DMARK SUBMITTED SUCCESSFULLY FOR REVIEW FROM PCM!',
+                        buttonsStyling: false,
+                        customClass: {
+                            confirmButton: 'btn btn-success form-wizard-next-btn ',
+                        },
+                        icon: 'success'
+                    });
+
+                    // this.onUpdateReturnToList();
+                },
+            );
+        }
+    }
+
     submitApplication(): void {
-        if (this.allPermitDetails.permitDetails.permitForeignStatus === true) {
+        // tslint:disable-next-line:max-line-length
+        if (this.allPermitDetails.permitDetails.permitForeignStatus === true && this.allPermitDetails.permitDetails.permitTypeID === ApiEndpointService.QA_APPLICATION_MAP_PROPERTIES.DMARK_TYPE_ID) {
             this.qaService.submitPermitForReview(this.permitID).subscribe(
                 (data: AllPermitDetailsDto) => {
                     this.allPermitDetails = data;
@@ -129,14 +261,28 @@ export class DmarkComponent implements OnInit, AfterViewInit {
             this.qaService.submitPermitApplication(this.permitID).subscribe(
                 (data: AllPermitDetailsDto) => {
                     this.allPermitDetails = data;
-                    swal.fire({
-                        title: 'DMARK SUBMITTED SUCCESSFULLY PENDING PAYMENT!',
-                        buttonsStyling: false,
-                        customClass: {
-                            confirmButton: 'btn btn-success form-wizard-next-btn ',
-                        },
-                        icon: 'success'
-                    });
+
+                    // tslint:disable-next-line:max-line-length
+                    if (this.allPermitDetails.permitDetails.permitTypeID === ApiEndpointService.QA_APPLICATION_MAP_PROPERTIES.SMARK_TYPE_ID || this.allPermitDetails.permitDetails.permitTypeID === ApiEndpointService.QA_APPLICATION_MAP_PROPERTIES.FMARK_TYPE_ID) {
+                        swal.fire({
+                            title: 'SMARK SUBMITTED SUCCESSFULLY PENDING PAYMENT!',
+                            buttonsStyling: false,
+                            customClass: {
+                                confirmButton: 'btn btn-success form-wizard-next-btn ',
+                            },
+                            icon: 'success'
+                        });
+                    } else {
+                        swal.fire({
+                            title: 'DMARK SUBMITTED SUCCESSFULLY PENDING PAYMENT!',
+                            buttonsStyling: false,
+                            customClass: {
+                                confirmButton: 'btn btn-success form-wizard-next-btn ',
+                            },
+                            icon: 'success'
+                        });
+                    }
+
 
                     this.router.navigate(['/invoiceDetails'], {fragment: this.allPermitDetails.batchID.toString()});
 
@@ -144,5 +290,160 @@ export class DmarkComponent implements OnInit, AfterViewInit {
                 },
             );
         }
+    }
+    onClickSaveSTA1(valid: boolean) {
+        if (valid) {
+            if (this.permitEntityDetails == null) {
+                this.qaService.savePermitSTA1('1', this.sta1Form.value).subscribe(
+                    (data) => {
+                        this.sta1 = data;
+                        console.log(data);
+                        swal.fire({
+                            title: 'STA1 Form saved!',
+                            buttonsStyling: false,
+                            customClass: {
+                                confirmButton: 'btn btn-success form-wizard-next-btn ',
+                            },
+                            icon: 'success'
+                        });
+// this.router.navigate(['/users-list']);
+                    },
+                );
+            } else {
+                this.qaService.updatePermitSTA1(String(this.permitEntityDetails.id), this.sta1Form.value).subscribe(
+                    (data) => {
+                        this.sta1 = data;
+                        console.log(data);
+                        swal.fire({
+                            title: 'STA1 Form updated!',
+                            buttonsStyling: false,
+                            customClass: {
+                                confirmButton: 'btn btn-success form-wizard-next-btn ',
+                            },
+                            icon: 'success'
+                        });
+// this.router.navigate(['/users-list']);
+                    },
+                );
+            }
+        }
+    }
+
+    onClickSaveSTA3A(valid: boolean) {
+        if (valid) {
+            console.log(this.permitEntityDetails.id.toString());
+            this.qaService.savePermitSTA3(this.permitEntityDetails.id.toString(), this.sta3FormA.value).subscribe(
+                (data: any) => {
+                    console.log(data);
+                    swal.fire({
+                        title: 'STA3: Factory Organisation Details saved!',
+                        buttonsStyling: false,
+                        customClass: {
+                            confirmButton: 'btn btn-success form-wizard-next-btn ',
+                        },
+                        icon: 'success'
+                    });
+// this.router.navigate(['/users-list']);
+                },
+            );
+        }
+    }
+
+    onClickUpdateSTA3B(valid: boolean) {
+        if (valid) {
+            this.qaService.updatePermitSTA3(this.permitEntityDetails.id.toString(), this.sta3FormB.value).subscribe(
+                (data: any) => {
+                    console.log(data);
+                    swal.fire({
+                        title: 'STA3: Factory Organisation Details updated!',
+                        buttonsStyling: false,
+                        customClass: {
+                            confirmButton: 'btn btn-success form-wizard-next-btn ',
+                        },
+                        icon: 'success'
+                    });
+// this.router.navigate(['/users-list']);
+                },
+            );
+        }
+    }
+
+    onClickUpdateSTA3C(valid: boolean) {
+        if (valid) {
+            this.qaService.updatePermitSTA3(this.permitEntityDetails.id.toString(), this.sta3FormC.value).subscribe(
+                (data: any) => {
+                    console.log(data);
+                    swal.fire({
+                        title: 'STA3: Quality Control/Inspection Staff Details saved!',
+                        buttonsStyling: false,
+                        customClass: {
+                            confirmButton: 'btn btn-success form-wizard-next-btn ',
+                        },
+                        icon: 'success'
+                    });
+// this.router.navigate(['/users-list']);
+                },
+            );
+        }
+    }
+
+    onClickUpdateSTA3D(valid: boolean) {
+        if (valid) {
+            this.qaService.updatePermitSTA3(this.permitEntityDetails.id.toString(), this.sta3FormD.value).subscribe(
+                (data: any) => {
+                    console.log(data);
+                    swal.fire({
+                        title: 'STA3 Form Completed! Proceed to submit application.',
+                        buttonsStyling: false,
+                        customClass: {
+                            confirmButton: 'btn btn-success form-wizard-next-btn ',
+                        },
+                        icon: 'success'
+                    });
+                    // this.router.navigate(['/permitdetails'], {fragment: this.permitEntityDetails.id.toString()});
+                },
+            );
+        }
+    }
+
+    goToPermit() {
+        swal.fire({
+            title: 'STA3 Form Completed! Proceed to submit application.',
+            buttonsStyling: false,
+            customClass: {
+                confirmButton: 'btn btn-success form-wizard-next-btn ',
+            },
+            icon: 'success'
+        });
+        this.router.navigate(['/permitdetails'], {fragment: this.permitEntityDetails.id.toString()});
+
+    }
+
+    showNotification(from: any, align: any) {
+        const type = ['', 'info', 'success', 'warning', 'danger', 'rose', 'primary'];
+
+        const color = Math.floor((Math.random() * 6) + 1);
+
+        $.notify({
+            icon: 'notifications',
+            message: 'Welcome to <b>Material Dashboard</b> - a beautiful dashboard for every web developer.'
+        }, {
+            type: type[color],
+            timer: 3000,
+            placement: {
+                from: from,
+                align: align
+            },
+            template: '<div data-notify="container" class="col-xs-11 col-sm-3 alert alert-{0} alert-with-icon" role="alert">' +
+                '<button mat-raised-button type="button" aria-hidden="true" class="close" data-notify="dismiss">  <i class="material-icons">close</i></button>' +
+                '<i class="material-icons" data-notify="icon">notifications</i> ' +
+                '<span data-notify="title"></span> ' +
+                '<span data-notify="message">Ensure all required fields are items have been filled</span>' +
+                '<div class="progress" data-notify="progressbar">' +
+                '<div class="progress-bar progress-bar-{0}" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;"></div>' +
+                '</div>' +
+                '<a href="{3}" target="{4}" data-notify="url"></a>' +
+                '</div>'
+        });
     }
 }

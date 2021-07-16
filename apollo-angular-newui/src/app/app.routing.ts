@@ -26,6 +26,12 @@ import {UserList} from './apollowebs/company/branch/users/user.list';
 import {SmarkApplicationsAllComponent} from './apollowebs/smark-applications-all/smark-applications-all.component';
 import {UserProfileMainComponent} from './apollowebs/userprofilemain/user-profile-main.component';
 import {AddBranchComponent} from "./apollowebs/company/branch/add-branch/add-branch.component";
+import {OtpComponent} from "./views/registration/otp/otp.component";
+import {InvoiceConsolidateComponent} from "./apollowebs/invoice-consolidate/invoice-consolidate.component";
+import {PdfViewComponent} from "./pdf-view/pdf-view.component";
+import {TaskManagerComponent} from "./apollowebs/task-manager/task-manager.component";
+import {AddUserComponent} from "./apollowebs/company/branch/add-user/add-user.component";
+import {FmarkApplicationComponent} from "./apollowebs/fmark-application/fmark-application.component";
 
 // export const AppRoutes: Routes = [
 //     {
@@ -115,6 +121,11 @@ const routes: Routes = [
             {
                 path: 'reset',
                 component: ResetCredentialsComponent
+            },
+            {
+                path: 'otp',
+                component: OtpComponent
+
             }
 
         ],
@@ -156,7 +167,10 @@ const routes: Routes = [
         path: 'branches/add_branch', component: AdminLayoutComponent,
         children: [{path: '', component: AddBranchComponent}]
     },
-
+    {
+        path: 'users/add_users', component: AdminLayoutComponent,
+        children: [{path: '', component: AddUserComponent}]
+    },
     {
         path: 'companies/branch', component: AdminLayoutComponent,
         children: [{path: '', component: BranchComponent}]
@@ -180,7 +194,7 @@ const routes: Routes = [
         children: [{path: '', component: DmarkComponent}]
     },
     {
-        path: 'invoice', component: AdminLayoutComponent,
+        path: 'invoice/all_invoice', component: AdminLayoutComponent,
         children: [{path: '', component: InvoiceComponent}]
     },
     {
@@ -218,6 +232,21 @@ const routes: Routes = [
     {
         path: 'smark/all_smark', component: AdminLayoutComponent,
         children: [{path: '', component: SmarkApplicationsAllComponent}]
+    },
+    {
+        path: 'consolidate_invoice', component: AdminLayoutComponent,
+        children: [{path: '', component: InvoiceConsolidateComponent}]
+    },
+    {
+        path: 'all_tasks_list', component: AdminLayoutComponent,
+        children: [{path: '', component: TaskManagerComponent}]
+    },
+    {
+        path: 'fmark/appplication', component: AdminLayoutComponent,
+        children: [{path: '', component: FmarkApplicationComponent}]
+    },
+    {
+        path: 'invoice_test', component: PdfViewComponent
     }
 ];
 

@@ -1,7 +1,11 @@
 import {UserEntityDto} from '../users';
-import {Timestamp} from "rxjs";
 
 export class Qa {
+}
+
+export class UploadsDtoSTA3 {
+    uploadedFiles: File[];
+    sta3Status: boolean;
 }
 
 export class PermitEntityDto {
@@ -26,6 +30,7 @@ export class PermitEntityDto {
     taskID: bigint;
     companyId: bigint;
     permitType: bigint;
+    processStatusID: number;
 }
 
 export class ConsolidatedInvoiceDto {
@@ -33,10 +38,23 @@ export class ConsolidatedInvoiceDto {
     invoiceNumber: string;
     totalAmount: string;
     paidDate: Date;
-    paidStatus: boolean;
-    submittedStatus: boolean;
+    paidStatus: number;
+    submittedStatus: number;
     receiptNo: string;
 }
+
+export class GenerateInvoiceDto {
+    batchID: bigint;
+    plantID: bigint;
+    permitRefNumber: string;
+    permitInvoicesID: string[];
+}
+
+export class MPesaPushDto {
+    entityValueID: bigint;
+    phoneNumber: string;
+}
+
 
 export class STA1 {
     id: bigint;
@@ -46,6 +64,12 @@ export class STA1 {
     sectionId: bigint;
     permitForeignStatus: number;
     attachedPlant: bigint;
+}
+
+
+export class PermitProcessStepDto {
+    permitID: bigint;
+    processStep: number;
 }
 
 
@@ -98,6 +122,8 @@ export class PermitEntityDetails {
     approvedRejectedScheme: boolean;
     sendForPcmReview: boolean;
     sendApplication: boolean;
+    processStep: number;
+    processStatusID: number;
 }
 
 
@@ -194,11 +220,19 @@ export class PermitInvoiceDto {
     totalAmount: any;
     paidStatus: boolean;
     permitRefNumber: string;
+    batchID: bigint;
 }
 
 export class AllBatchInvoiceDetailsDto {
     batchDetails: InvoiceDto;
     allRelatedBatchInvoices: PermitInvoiceDto[];
+}
+
+export class TaskDto {
+    permitId: bigint;
+    taskName: String;
+    taskCreateTime: Date;
+    permitRefNo: String;
 }
 
 export class Sta10Dto {

@@ -35,6 +35,10 @@ class QaUploadsEntity : Serializable {
     @Basic
     var invoiceStatus: Int? = null
 
+    @Column(name = "STA3_STATUS")
+    @Basic
+    var sta3Status: Int? = null
+
     @Column(name = "VERSION_NUMBER")
     @Basic
     var versionNumber: Long? = null
@@ -162,6 +166,7 @@ class QaUploadsEntity : Serializable {
         return id == that.id &&
                 filepath == that.filepath &&
                 versionNumber == that.versionNumber &&
+                sta3Status == that.sta3Status &&
                 sscStatus == that.sscStatus &&
                 cocStatus == that.cocStatus &&
                 inspectionReportStatus == that.inspectionReportStatus &&
@@ -200,6 +205,7 @@ class QaUploadsEntity : Serializable {
     override fun hashCode(): Int {
         var result = Objects.hash(
             id,
+            sta3Status,
             invoiceStatus,
             assessmentReportStatus,
             versionNumber,

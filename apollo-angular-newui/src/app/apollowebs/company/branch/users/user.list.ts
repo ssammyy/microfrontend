@@ -12,6 +12,7 @@ import {
     UsersService
 } from '../../../../core/store';
 import {Store} from '@ngrx/store';
+import {Router} from "@angular/router";
 
 
 @Component({
@@ -34,6 +35,7 @@ export class UserList implements OnInit {
     constructor(
         private service: UsersService,
         private store$: Store<any>,
+        private router:Router,
     ) {
         this.users$ = service.entities$;
         service.getAll().subscribe();
@@ -61,6 +63,10 @@ export class UserList implements OnInit {
     public goBack(): void {
         this.store$.dispatch(Back());
     }
+    addBranches() {
+        // this.store$.dispatch(Go({payload: null, redirectUrl: '', link: 'dashboard/companies/branch'}));
 
+        this.router.navigate(['users/add_users']);
+    }
 
 }

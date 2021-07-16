@@ -17,16 +17,27 @@ export class ApiEndpointService {
    * Map of domains for API endpoints.
    */
   public static DOMAIN = {
-    // LOCAL_DEV: 'localhost:8006'
+   // LOCAL_DEV: 'localhost:8006'
     // LOCAL_DEV: '12:8006'
     // LOCAL_DEV: '41.72.209.58:8006'
-    LOCAL_DEV: 'kimsint.kebs.org:8006'
+     LOCAL_DEV: 'kimsint.kebs.org:8006'
   };
 
   /**
    * Map of contexts for API endpoints.
    */
   public static CONTEXT = '';
+
+  /**
+   * Map of contexts for API endpoints.
+   */
+  public static QA_APPLICATION_MAP_PROPERTIES = {
+    DMARK_TYPE_ID: 1,
+    SMARK_TYPE_ID: 2,
+    FMARK_TYPE_ID: 3,
+    DRAFT_ID: 1,
+
+  };
 
   /**
    * Map of contexts for API endpoints.
@@ -101,7 +112,7 @@ export class ApiEndpointService {
     MASTERS_ACCOUNT_MASTER: `${ApiEndpointService.ADMIN_CONTEXT}/account/master/`,
     MASTERS_ACCOUNT_TYPE: `${ApiEndpointService.ADMIN_CONTEXT}/account/type/`,
     MASTERS_ACCOUNTING_SIDE: `${ApiEndpointService.ADMIN_CONTEXT}/accounting/side/`,
-      MASTERS_ACCOUNTING_PERIOD: `${ApiEndpointService.ADMIN_CONTEXT}/accounting/period/`,
+    MASTERS_ACCOUNTING_PERIOD: `${ApiEndpointService.ADMIN_CONTEXT}/accounting/period/`,
     ADMIN_USER_DETAILS: `${ApiEndpointService.ADMIN_CONTEXT}/users/`,
     MASTERS: `${ApiEndpointService.MASTERS_CONTEXT}`,
     MASTERS_TITLES: `${ApiEndpointService.MASTERS_CONTEXT}/titles/`,
@@ -109,20 +120,36 @@ export class ApiEndpointService {
     MASTERS_CURRENCIES: `${ApiEndpointService.MASTERS_CONTEXT}/currencies/`,
     // tslint:disable-next-line:max-line-length
     /*::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::QA ENDPOINTS:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
+    PERMIT_PROCESS_STEP: `${ApiEndpointService.QA_CONTEXT_APPLY}/process-step-add`,
+
     FIRM_PERMIT_LIST: `${ApiEndpointService.QA_CONTEXT}/permit/firm-list`,
+    QA_MPESA_STK_PUSH: `${ApiEndpointService.QA_CONTEXT}/permit/mpesa/stk-push`,
     PERMIT_LIST: `${ApiEndpointService.QA_CONTEXT}/permit/list`,
     PERMIT_VIEW_DETAILS: `${ApiEndpointService.QA_CONTEXT}/permit/view/details`,
     PERMIT_SUBMIT_DETAILS_FOR_REVIEW: `${ApiEndpointService.QA_CONTEXT_APPLY}/submit-application-review`,
     PERMIT_SUBMIT_APPLICATION: `${ApiEndpointService.QA_CONTEXT_APPLY}/submit-application`,
     PLANT_LIST: `${ApiEndpointService.QA_CONTEXT}/branch-list`,
     SECTION_LIST: `${ApiEndpointService.QA_CONTEXT}/sections-list`,
+    MY_TASK_LIST: `${ApiEndpointService.QA_CONTEXT}/permit/task-list`,
+
     PERMIT_APPLY_STA1: `${ApiEndpointService.QA_CONTEXT_APPLY}/sta1`,
+    PERMIT_VIEW_STA1: `${ApiEndpointService.QA_CONTEXT_VIEW}/sta1`,
     PERMIT_UPDATE_STA1: `${ApiEndpointService.QA_CONTEXT_APPLY}/sta1-update`,
     PERMIT_APPLY_STA3: `${ApiEndpointService.QA_CONTEXT_APPLY}/sta3`,
+    PERMIT_VIEW_STA3: `${ApiEndpointService.QA_CONTEXT_APPLY}/sta3`,
     PERMIT_UPDATE_STA3: `${ApiEndpointService.QA_CONTEXT_APPLY}/sta3-update`,
+
+    UPLOAD_FILE_STA3: `${ApiEndpointService.QA_CONTEXT_APPLY}/sta3-update-upload`,
+    UPLOAD_FILE_STA10: `${ApiEndpointService.QA_CONTEXT_APPLY}/sta10-update-upload`,
+
+
+    INVOICE_CONSOLIDATE_SUBMIT: `${ApiEndpointService.QA_CONTEXT}/permit/view/invoice/batch-invoice-submit`,
+    INVOICE_CONSOLIDATE_ADD: `${ApiEndpointService.QA_CONTEXT}/permit/view/invoice/batch-invoice-add`,
+    INVOICE_CONSOLIDATE_REMOVE: `${ApiEndpointService.QA_CONTEXT}/permit/view/invoice/batch-invoice-remove`,
     INVOICE_LIST_DETAILS: `${ApiEndpointService.QA_CONTEXT}/permit/view/invoice/batch-invoice-list`,
     INVOICE_DETAILS: `${ApiEndpointService.QA_CONTEXT}/permit/view/invoice/batch-invoice-details`,
     INVOICE_DETAILS_PDF: `${ApiEndpointService.QA_CONTEXT}/report/proforma-invoice-with-Item`,
+    // INVOICE_DETAILS_PDF: `${ApiEndpointService.QA_CONTEXT}/permit/view/invoice/batch-invoice-pdf-details`,
 
     PERMIT_APPLY_STA10_FIRM_DETAILS: `${ApiEndpointService.QA_CONTEXT_APPLY}/sta10/firm_details`,
     PERMIT_APPLY_STA10_PERSONNEL_DETAILS: `${ApiEndpointService.QA_CONTEXT_APPLY}/sta10/personnel_details`,

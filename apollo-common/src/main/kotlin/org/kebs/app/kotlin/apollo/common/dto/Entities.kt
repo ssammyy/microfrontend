@@ -349,6 +349,13 @@ data class ValidatePhoneNumberTokenRequestDto(
     val token: String?
 )
 
+data class MPesaPushDto(
+    @NotEmpty(message = "is required")
+    var entityValueID: Long,
+    @NotEmpty(message = "is required")
+    var phoneNumber: String
+)
+
 data class UserCompanyEntityDto(
     @JsonProperty("name")
     @NotEmpty(message = "is mandatory")

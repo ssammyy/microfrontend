@@ -1,6 +1,7 @@
 package org.kebs.app.kotlin.apollo.common.dto.qa
 
 import org.kebs.app.kotlin.apollo.common.dto.UserEntityDto
+import java.io.File
 import java.math.BigDecimal
 import java.sql.Date
 import java.sql.Timestamp
@@ -73,8 +74,8 @@ data class ConsolidatedInvoiceDto(
     var invoiceNumber: String? = null,
     var totalAmount: BigDecimal? = null,
     var paidDate: Timestamp? = null,
-    var paidStatus: Boolean? = null,
-    var submittedStatus: Boolean? = null,
+    var paidStatus: Int? = null,
+    var submittedStatus: Int? = null,
     var receiptNo: String? = null,
 )
 
@@ -127,14 +128,24 @@ data class BatchInvoiceDto(
 
     )
 
+data class UploadsDtoSTA3(
+    var uploadedFiles: List<File>? = null,
+    var sta3Status: Boolean? = null
+)
+
+data class PermitProcessStepDto(
+    var permitID: Long? = null,
+    var processStep: Int? = null
+)
 
 data class STA1Dto(
+    var id: Long? = null,
     var commodityDescription: String? = null,
     var tradeMark: String? = null,
     var applicantName: String? = null,
     var sectionId: Long? = null,
     var permitForeignStatus: Int? = null,
-    var attachedPlant: Long? = null
+    var attachedPlant: Long? = null,
 )
 
 data class STA10ProductsManufactureDto(
@@ -281,6 +292,7 @@ data class PermitEntityDto(
     var taskID: Long? = null,
     var companyId: Long? = null,
     var permitType: Long? = null,
+    var processStatusID: Long? = null,
 )
 
 data class PermitDetailsDto(
@@ -332,6 +344,9 @@ data class PermitDetailsDto(
     var approvedRejectedScheme: Boolean? = null,
     var sendForPcmReview: Boolean? = null,
     var sendApplication: Boolean? = null,
+    var pcmReviewApprove: Boolean? = null,
+    var processStep: Int? = null,
+    var processStatusID: Long? = null,
 )
 
 data class AllPermitDetailsDto(
@@ -347,6 +362,14 @@ data class StandardsDto(
     var standardTitle: String? = null,
     var standardNumber: String? = null,
 )
+
+data class TaskDto(
+    var permitId: Long? = null,
+    var taskName: String? = null,
+    var taskCreateTime: java.util.Date? = null,
+    var permitRefNo: String? = null,
+)
+
 
 data class PlantsDetailsDto(
     var id: Long? = null,

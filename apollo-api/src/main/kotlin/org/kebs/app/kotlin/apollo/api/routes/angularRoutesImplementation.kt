@@ -287,14 +287,20 @@ class AngularRoutes {
             "/permit".nest {
                 GET("/task-list", handler::permitTaskListMigration)
                 GET("/list", handler::permitListMigration)
+                GET("/mpesa/stk-push", handler::permitMPesaPushStk)
                 GET("/firm-list", handler::firmPermitListMigration)
                 "/apply".nest {
                     POST("/sta1", handler::permitApplySTA1Migration)
+                    POST("/process-step-add", handler::permitProcessStepMigration)
                     PUT("/sta1-update", handler::permitUpdateSTA1Migration)
                     POST("/submit-application", handler::permitSubmitApplicationInvoiceMigration)
                     POST("/submit-application-review", handler::permitSubmitApplicationReviewMigration)
                     POST("/sta3", handler::permitApplySTA3Migration)
                     PUT("/sta3-update", handler::permitUpdateSTA3Migration)
+//                    POST(
+//                        "/sta3-update-upload".and(contentType(MediaType.MULTIPART_FORM_DATA)),
+//                        handler::permitUploadSTA3Migration
+//                    )
                     "/sta10".nest {
                         POST("/firm_details", handler::permitApplySTA10FirmDetailsMigration)
                         PUT("/firm_details_update", handler::permitUpdateSTA10FirmDetailsMigration)
@@ -318,12 +324,13 @@ class AngularRoutes {
                     "/invoice".nest {
                         POST("/batch-invoice-submit", handler::invoiceBatchSubmitMigration)
 //                        POST("/batch-invoice-create", handler::invoiceBatchSubmitMigration)
-                        PUT("/batch-invoice-add", handler::invoiceBatchAddMigration)
+                        POST("/batch-invoice-add", handler::invoiceBatchAddMigration)
                         PUT("/batch-invoice-remove", handler::invoiceBatchRemoveMigration)
                     }
                 }
                 "/view".nest {
                     GET("/details", handler::permitDetailsMigration)
+                    GET("/sta1", handler::permitViewSTA1Migration)
                     GET("/sta3", handler::permitViewSTA3Migration)
                     GET("/invoice-permit", handler::permitViewInvoiceDetailsMigration)
                     "/sta10".nest {
@@ -339,6 +346,7 @@ class AngularRoutes {
                         GET("/list-no-batch-Id", handler::invoiceListNoBatchIDMigration)
                         GET("/batch-invoice-list", handler::invoiceBatchListMigration)
                         GET("/batch-invoice-details", handler::invoiceBatchDetailsMigration)
+                        GET("/batch-invoice-pdf-details", handler::invoiceBatchDetailsPDFMigration)
 
                     }
                 }
@@ -352,6 +360,7 @@ class AngularRoutes {
                     POST("/ordinary", handler::permitAttachUploadOrdinaryMigration)
                 }
             }
+
         }
     }
 }

@@ -1,12 +1,15 @@
 import {AfterViewInit, Component, OnInit} from '@angular/core';
+import {ActivatedRoute} from '@angular/router';
 import {
     AllBatchInvoiceDetailsDto,
     PermitInvoiceDto,
     AllPermitDetailsDto,
-    PermitEntityDto
+    PermitEntityDto, MPesaPushDto
 } from '../../core/store/data/qa/qa.model';
-import {ActivatedRoute} from '@angular/router';
 import {QaService} from '../../core/store/data/qa/qa.service';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {Store} from '@ngrx/store';
+import swal from 'sweetalert2';
 
 declare interface DataTable {
     headerRow: string[];
@@ -23,19 +26,36 @@ declare const $: any;
 })
 export class InvoiceDetailsComponent implements OnInit, AfterViewInit {
 
+
     public dataTable: DataTable;
     public batchID!: string;
     public allPermitData: PermitInvoiceDto[];
     public allBatchInvoiceDetails!: AllBatchInvoiceDetailsDto;
+    // pdfSources = "https://s23.q4cdn.com/202968100/files/doc_downloads/test.pdf";
+    pdfSources: any;
+    submitted = false;
+
+    stkPushForm!: FormGroup;
 
     constructor(
         private route: ActivatedRoute,
+        private formBuilder: FormBuilder,
+        private store$: Store<any>,
         private qaService: QaService
     ) {
     }
 
     ngOnInit(): void {
         this.getSelectedBatch();
+
+        this.stkPushForm = this.formBuilder.group({
+            entityValueID: ['', Validators.required],
+            phoneNumber: ['', Validators.required]
+        });
+    }
+
+    get formStkPushForm(): any {
+        return this.stkPushForm.controls;
     }
 
     public getSelectedBatch(): void {
@@ -64,8 +84,50 @@ export class InvoiceDetailsComponent implements OnInit, AfterViewInit {
 
                 },
             );
+
+            this.qaService.loadInvoiceDetailsPDF(this.batchID).subscribe(
+                (data: any) => {
+                    this.pdfSources = data;
+                },
+            );
         });
 
+    }
+
+    public stkPush(): void {
+        this.submitted = true;
+        // stop here if form is invalid
+        if (this.stkPushForm.invalid) {
+            return;
+        }
+        if (this.submitted) {
+            // const dataSTKPush = new MPesaPushDto();
+            // dataSTKPush.entityValueID = this.batchID;
+            // dataSTKPush.phoneNumber = this.stkPushForm.get('phoneNumber').value;
+            //
+            console.log(this.stkPushForm.value.phoneNumber);
+            console.log(this.stkPushForm.value.entityValueID);
+            this.qaService.pushSTKInvoicePermit(this.stkPushForm.value).subscribe(
+                (data: any) => {
+                    swal.fire({
+                        title: 'Check You phone for an STK Push,If You can\'t see the push either pay with Bank or Normal MPesa service',
+                        buttonsStyling: false,
+                        customClass: {
+                            confirmButton: 'btn btn-success form-wizard-next-btn ',
+                        },
+                        icon: 'success'
+                    });
+                },
+            );
+        } else {
+            // this.store$.dispatch(loadResponsesFailure({
+            //     error: {
+            //         payload: 'REQUIER PHONE NUMBER',
+            //         status: 100,
+            //         response: '05'
+            //     }
+            // }));
+        }
     }
 
     ngAfterViewInit = () => {
@@ -113,5 +175,5 @@ export class InvoiceDetailsComponent implements OnInit, AfterViewInit {
         });
 
         $('.card .material-datatables label').addClass('form-group');
-    };
+    }
 }
