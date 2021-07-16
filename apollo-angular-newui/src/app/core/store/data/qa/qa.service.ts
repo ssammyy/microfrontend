@@ -4,6 +4,7 @@ import {Observable, throwError} from 'rxjs';
 import {ApiEndpointService} from '../../../services/endpoints/api-endpoint.service';
 import {catchError, map} from 'rxjs/operators';
 import {
+    AllSTA10DetailsDto,
     MPesaPushDto, PermitProcessStepDto,
     STA1,
     Sta10Dto,
@@ -209,12 +210,27 @@ export class QaService {
         );
     }
 
-    public viewSTA10PersonnelDetails(qaSta10ID: string): Observable<STA10PersonnelDto> {
+    public viewSTA10Details(permitID: string): Observable<AllSTA10DetailsDto> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.PERMIT_VIEW_STA10_DETAILS);
+        const params = new HttpParams()
+            .set('permitID', permitID);
+        return this.http.get<AllSTA10DetailsDto>(url, {params}).pipe(
+            map(function (response: AllSTA10DetailsDto) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
+
+    public viewSTA10PersonnelDetails(qaSta10ID: string): Observable<STA10PersonnelDto[]> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.PERMIT_VIEW_STA10_PERSONNEL_DETAILS);
         const params = new HttpParams()
             .set('qaSta10ID', qaSta10ID);
-        return this.http.get<STA10PersonnelDto>(url, {params}).pipe(
-            map(function (response: STA10PersonnelDto) {
+        return this.http.get<STA10PersonnelDto[]>(url, {params}).pipe(
+            map(function (response: STA10PersonnelDto[]) {
                 return response;
             }),
             catchError((fault: HttpErrorResponse) => {

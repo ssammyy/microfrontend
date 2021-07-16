@@ -1728,6 +1728,53 @@ class QualityAssuranceHandler(
 
     @PreAuthorize("hasAuthority('PERMIT_APPLICATION')")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun permitViewSTA10AllDetailsMigration(req: ServerRequest): ServerResponse {
+        try {
+            val loggedInUser = commonDaoServices.loggedInUserDetails()
+            val permitID =
+                req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
+            val permit = qaDaoServices.findPermitBYUserIDAndId(
+                permitID,
+                loggedInUser.id ?: throw ExpectedDataNotFound("MISSING USER ID")
+            )
+            val qaSta10Entity = qaDaoServices.findSTA10WithPermitRefNumberBY(
+                permit.permitRefNumber ?: throw ExpectedDataNotFound("INVALID PERMIT REF NUMBER")
+            )
+            //Find all sta 10 personnel in charge  add
+            val qaSta10ID = qaSta10Entity.id ?: throw ExpectedDataNotFound("MISSING STA 10 ID")
+            val sta10Personnel =
+                qaDaoServices.findPersonnelWithSTA10ID(qaSta10ID) ?: throw ExpectedDataNotFound("EMPTY RESULTS")
+            val sta10Products = qaDaoServices.findProductsManufactureWithSTA10ID(qaSta10ID)
+                ?: throw ExpectedDataNotFound("EMPTY RESULTS")
+            val sta10Raw =
+                qaDaoServices.findRawMaterialsWithSTA10ID(qaSta10ID) ?: throw ExpectedDataNotFound("EMPTY RESULTS")
+            val sta10MachinePlant =
+                qaDaoServices.findMachinePlantsWithSTA10ID(qaSta10ID) ?: throw ExpectedDataNotFound("EMPTY RESULTS")
+            val sta10ManufacturingProcess = qaDaoServices.findManufacturingProcessesWithSTA10ID(qaSta10ID)
+                ?: throw ExpectedDataNotFound("EMPTY RESULTS")
+
+
+            qaDaoServices.listSTA10ViewDetails(
+                qaDaoServices.mapDtoSTA10SectionAAndQaSta10View(qaSta10Entity),
+                qaDaoServices.listSTA10Personnel(sta10Personnel),
+                qaDaoServices.listSTA10Product(sta10Products),
+                qaDaoServices.listSTA10RawMaterials(sta10Raw),
+                qaDaoServices.listSTA10MachinePlants(sta10MachinePlant),
+                qaDaoServices.listSTA10ManufacturingProcess(sta10ManufacturingProcess)
+            ).let {
+                return ok().body(it)
+            }
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            throw e
+        }
+
+    }
+
+    @PreAuthorize("hasAuthority('PERMIT_APPLICATION')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun permitApplySTA10ProductsBeingManufacturedMigration(req: ServerRequest): ServerResponse {
         try {
             val loggedInUser = commonDaoServices.loggedInUserDetails()

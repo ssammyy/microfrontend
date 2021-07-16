@@ -357,6 +357,16 @@ data class AllPermitDetailsDto(
     var batchID: Long? = null
 )
 
+
+data class AllSTA10DetailsDto(
+    var sta10FirmDetails: STA10SectionADto? = null,
+    var sta10PersonnelDetails: List<STA10PersonnelDto>? = null,
+    var sta10ProductsManufactureDetails: List<STA10ProductsManufactureDto>? = null,
+    var sta10RawMaterialsDetails: List<STA10RawMaterialsDto>? = null,
+    var sta10MachineryAndPlantDetails: List<STA10MachineryAndPlantDto>? = null,
+    var sta10ManufacturingProcessDetails: List<STA10ManufacturingProcessDto>? = null,
+)
+
 data class StandardsDto(
     var id: Long? = null,
     var standardTitle: String? = null,

@@ -174,6 +174,16 @@ export class AllPermitDetailsDto {
     batchID: bigint;
 }
 
+
+export class AllSTA10DetailsDto {
+    sta10FirmDetails: Sta10Dto;
+    sta10PersonnelDetails: STA10PersonnelDto[];
+    sta10ProductsManufactureDetails: STA10ProductsManufactureDto[];
+    sta10RawMaterialsDetails: STA10RawMaterialsDto[];
+    sta10MachineryAndPlantDetails: STA10MachineryAndPlantDto[];
+    sta10ManufacturingProcessDetails: STA10ManufacturingProcessDto[];
+}
+
 export class PlantDetailsDto {
     id: bigint;
     companyProfileId: bigint;

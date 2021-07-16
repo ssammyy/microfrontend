@@ -334,6 +334,7 @@ class AngularRoutes {
                     GET("/sta3", handler::permitViewSTA3Migration)
                     GET("/invoice-permit", handler::permitViewInvoiceDetailsMigration)
                     "/sta10".nest {
+                        GET("/view-details", handler::permitViewSTA10AllDetailsMigration)
                         GET("/firm-details", handler::permitViewSTA10FirmDetailsMigration)
                         GET("/personnel_details", handler::permitViewSTA10PersonnelMigration)
                         GET("/products-being-manufactured", handler::permitViewSTA10ProductsBeingManufacturedMigration)

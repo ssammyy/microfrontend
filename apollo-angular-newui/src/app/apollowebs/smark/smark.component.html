@@ -390,9 +390,9 @@ name="permitForeignStatus" [class.is-invalid]="formSta1Form.permitForeignStatus.
 <option *ngFor="let plant of plants"
 [ngValue]="plant.id"
 class="dropdown-item">{{plant.buildingName}}</option>
-
 </select>
 </div>
+    <button class="btn btn-sm btn-primary float-left" (click)="onClickSaveSTA1(sta1Form.valid)">Edit</button>
 
 </div>
 </form>

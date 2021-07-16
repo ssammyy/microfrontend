@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {
-  AllPermitDetailsDto,
+  AllPermitDetailsDto, AllSTA10DetailsDto,
   PermitEntityDetails,
   PlantDetailsDto,
   SectionDto, STA1,
@@ -29,7 +29,8 @@ export class SmarkComponent implements OnInit {
   sta10FormG: FormGroup;
   sections: SectionDto[];
   plants: PlantDetailsDto[];
-  public allPermitDetails!: AllPermitDetailsDto;
+  allPermitDetails: AllPermitDetailsDto;
+  allSTA10Details: AllSTA10DetailsDto;
   permitEntityDetails: PermitEntityDetails;
   sta1: STA1;
   Sta10Details: Sta10Dto;
@@ -154,6 +155,7 @@ export class SmarkComponent implements OnInit {
         }
     );
 
+    this.getSelectedPermit();
 
   }
 
@@ -187,62 +189,77 @@ export class SmarkComponent implements OnInit {
   get formSta10FormF(): any {
     return this.sta10FormF.controls;
   }
+
+  public getSelectedPermit(): void {
+    this.route.fragment.subscribe(params => {
+      this.permitID = params;
+      console.log(this.permitID);
+      this.qaService.loadPermitDetails(this.permitID).subscribe(
+          (data: AllPermitDetailsDto) => {
+            this.allPermitDetails = new AllPermitDetailsDto();
+            this.allPermitDetails = data;
+            // this.onSelectL1SubSubSection(this.userDetails?.employeeProfile?.l1SubSubSection);
+
+          },
+      );
+      this.qaService.viewSTA1Details(this.permitID).subscribe(
+          (data) => {
+            this.sta1 = data;
+            this.sta1Form.patchValue(this.sta1);
+          },
+      );
+      console.log(`${this.sta10PersonnelDetails.length}`);
+      this.qaService.viewSTA10Details(this.permitID).subscribe(
+          (data) => {
+            this.allSTA10Details = data;
+            this.sta10Form.patchValue(this.allSTA10Details.sta10FirmDetails);
+            this.sta10PersonnelDetails = this.allSTA10Details.sta10PersonnelDetails;
+            this.sta10ProductsManufactureDetails = this.allSTA10Details.sta10ProductsManufactureDetails;
+            this.sta10RawMaterialsDetails = this.allSTA10Details.sta10RawMaterialsDetails;
+            this.sta10MachineryAndPlantDetails = this.allSTA10Details.sta10MachineryAndPlantDetails;
+            this.sta10ManufacturingProcessDetails = this.allSTA10Details.sta10ManufacturingProcessDetails;
+            this.sta10ManufacturingProcessDetails = this.allSTA10Details.sta10ManufacturingProcessDetails;
+            this.sta10FormF.patchValue(this.allSTA10Details.sta10FirmDetails);
+          },
+      );
+      // this.qaService.viewSTA10FirmDetails(this.permitID).subscribe(
+      //     (data) => {
+      //       this.Sta10Details = data;
+      //       this.sta10Form.patchValue(this.Sta10Details);
+      //     },
+      // );
+      // console.log(`${this.sta10PersonnelDetails.length}`);
+      // this.qaService.viewSTA10PersonnelDetails(String(this.Sta10Details.id)).subscribe(
+      //     (data) => {
+      //       console.log(`${this.sta10PersonnelDetails.length}`);
+      //       this.sta10PersonnelDetails = data;
+      //       console.log(`${this.sta10PersonnelDetails.length}`);
+      //     },
+      // );
+    });
+
+  }
+
+
   onClickSaveSTA1(valid: boolean) {
-    if (valid) {
-      if (this.permitEntityDetails == null) {
-        this.qaService.savePermitSTA1('2', this.sta1Form.value).subscribe(
-            (data) => {
-              this.sta1 = data;
-              console.log(data);
-              swal.fire({
-                title: 'STA1 Form saved!',
-                buttonsStyling: false,
-                customClass: {
-                  confirmButton: 'btn btn-success form-wizard-next-btn ',
-                },
-                icon: 'success'
+    this.qaService.updatePermitSTA1(String(this.permitID), this.sta1Form.value).subscribe(
+        (data) => {
+          this.sta1 = data;
+          console.log(data);
+          swal.fire({
+            title: 'STA1 Form updated!',
+            buttonsStyling: false,
+            customClass: {
+              confirmButton: 'btn btn-success form-wizard-next-btn ',
+            },
+            icon: 'success'
               });
             },
         );
-      } else {
-        this.qaService.updatePermitSTA1(String(this.permitEntityDetails.id), this.sta1Form.value).subscribe(
-            (data) => {
-              this.sta1 = data;
-              console.log(data);
-              swal.fire({
-                title: 'STA1 Form updated!',
-                buttonsStyling: false,
-                customClass: {
-                  confirmButton: 'btn btn-success form-wizard-next-btn ',
-                },
-                icon: 'success'
-              });
-            },
-        );
-      }
-    }
   }
 
   onClickSaveSTA10(valid: boolean) {
-    if (valid) {
-      console.log(this.permitEntityDetails.id.toString());
-      if (this.Sta10Details == null) {
-        this.qaService.saveFirmDetailsSta10(this.permitEntityDetails.id.toString(), this.sta10Form.value).subscribe(
-            (data) => {
-              this.Sta10Details = data;
-              console.log(data);
-              swal.fire({
-                title: 'Firm Details Saved!',
-                buttonsStyling: false,
-                customClass: {
-                  confirmButton: 'btn btn-success form-wizard-next-btn ',
-                },
-                icon: 'success'
-              });
-// this.router.navigate(['/users-list']);
-            },
-        );
-      } else {
+
         this.qaService.updateFirmDetailsSta10(`${this.permitEntityDetails.id}`, this.sta10FormF.value).subscribe(
             (data) => {
               this.Sta10Details = data;
@@ -257,15 +274,13 @@ export class SmarkComponent implements OnInit {
               });
             },
         );
-      }
-    }
   }
 
   onClickSaveSTA10F(valid: boolean) {
     if (valid) {
       console.log(this.permitEntityDetails.id.toString());
 
-      this.qaService.updateFirmDetailsSta10(this.permitEntityDetails.id.toString(), this.sta10FormF.value).subscribe(
+      this.qaService.updateFirmDetailsSta10(this.permitID, this.sta10FormF.value).subscribe(
           (data) => {
             this.Sta10Details = data;
             console.log(data);
@@ -292,7 +307,7 @@ export class SmarkComponent implements OnInit {
         },
         icon: 'success'
       });
-     // this.router.navigate(['/permitdetails'], {fragment: this.permitEntityDetails.id.toString()});
+      // this.router.navigate(['/permitdetails'], {fragment: this.permitID});
 
 
     }

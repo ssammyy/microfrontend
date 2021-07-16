@@ -701,7 +701,6 @@ class QADaoServices(
 
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun assignPermitApplicationAfterPayment() {
-
         val map = commonDaoServices.serviceMapDetails(appId)
         //Find all permits with Paid status
         val paidPermits = findAllQAOPermitListWithPaymentStatus(map.activeStatus)
@@ -1281,6 +1280,25 @@ class QADaoServices(
         }
         return permitsList.sortedBy { it.visitsScheduled }
     }
+
+    fun listSTA10ViewDetails(
+        sta10FirmDetails: STA10SectionADto,
+        sta10PersonnelDetails: List<STA10PersonnelDto>,
+        sta10ProductsManufactureDetails: List<STA10ProductsManufactureDto>,
+        sta10RawMaterialsDetails: List<STA10RawMaterialsDto>,
+        sta10MachineryAndPlantDetails: List<STA10MachineryAndPlantDto>,
+        sta10ManufacturingProcessDetails: List<STA10ManufacturingProcessDto>,
+    ): AllSTA10DetailsDto {
+        return AllSTA10DetailsDto(
+            sta10FirmDetails,
+            sta10PersonnelDetails,
+            sta10ProductsManufactureDetails,
+            sta10RawMaterialsDetails,
+            sta10MachineryAndPlantDetails,
+            sta10ManufacturingProcessDetails,
+        )
+    }
+
 
     fun findOfficersList(
         plantID: Long,
