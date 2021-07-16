@@ -3,7 +3,6 @@ package org.kebs.app.kotlin.apollo.api.routes
 import org.kebs.app.kotlin.apollo.api.handlers.*
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.http.MediaType
 import org.springframework.web.servlet.function.ServerResponse
 import org.springframework.web.servlet.function.router
 
@@ -288,19 +287,20 @@ class AngularRoutes {
             "/permit".nest {
                 GET("/task-list", handler::permitTaskListMigration)
                 GET("/list", handler::permitListMigration)
-                GET("mpesa/stk-push", handler::permitMPesaPushStk)
+                GET("/mpesa/stk-push", handler::permitMPesaPushStk)
                 GET("/firm-list", handler::firmPermitListMigration)
                 "/apply".nest {
+                    POST("/sta1", handler::permitApplySTA1Migration)
                     POST("/sta1", handler::permitApplySTA1Migration)
                     PUT("/sta1-update", handler::permitUpdateSTA1Migration)
                     POST("/submit-application", handler::permitSubmitApplicationInvoiceMigration)
                     POST("/submit-application-review", handler::permitSubmitApplicationReviewMigration)
                     POST("/sta3", handler::permitApplySTA3Migration)
                     PUT("/sta3-update", handler::permitUpdateSTA3Migration)
-                    POST(
-                        "/sta3-update-upload".and(contentType(MediaType.MULTIPART_FORM_DATA)),
-                        handler::permitUploadSTA3Migration
-                    )
+//                    POST(
+//                        "/sta3-update-upload".and(contentType(MediaType.MULTIPART_FORM_DATA)),
+//                        handler::permitUploadSTA3Migration
+//                    )
                     "/sta10".nest {
                         POST("/firm_details", handler::permitApplySTA10FirmDetailsMigration)
                         PUT("/firm_details_update", handler::permitUpdateSTA10FirmDetailsMigration)

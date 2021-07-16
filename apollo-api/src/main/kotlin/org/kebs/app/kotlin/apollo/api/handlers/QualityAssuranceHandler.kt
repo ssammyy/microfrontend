@@ -21,9 +21,9 @@
 
 package org.kebs.app.kotlin.apollo.api.handlers
 
+//import org.kebs.app.kotlin.apollo.api.ports.provided.createUserAlert
 import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.QualityAssuranceBpmn
-//import org.kebs.app.kotlin.apollo.api.ports.provided.createUserAlert
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DestinationInspectionDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.InvoiceDaoService
@@ -32,7 +32,7 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.lims.LimsServices
 import org.kebs.app.kotlin.apollo.common.dto.FmarkEntityDto
 import org.kebs.app.kotlin.apollo.common.dto.MPesaPushDto
 import org.kebs.app.kotlin.apollo.common.dto.qa.*
-import org.kebs.app.kotlin.apollo.common.exceptions.*
+import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.*
 import org.kebs.app.kotlin.apollo.store.model.di.*
@@ -45,7 +45,6 @@ import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
-import org.springframework.web.multipart.MultipartFile
 import org.springframework.web.servlet.function.ServerRequest
 import org.springframework.web.servlet.function.ServerResponse
 import org.springframework.web.servlet.function.ServerResponse.ok
@@ -1129,6 +1128,35 @@ class QualityAssuranceHandler(
             val createdPermit = qaDaoServices.permitSave(permit, permitType, loggedInUser, map)
 
             qaDaoServices.permitDetails(createdPermit.second, map).let {
+                return ok().body(it)
+            }
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            throw e
+        }
+
+    }
+
+    @PreAuthorize("hasAuthority('PERMIT_APPLICATION')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun permitProcessStepMigration(req: ServerRequest): ServerResponse {
+        try {
+            val loggedInUser = commonDaoServices.loggedInUserDetails()
+            val map = commonDaoServices.serviceMapDetails(appId)
+            val auth = commonDaoServices.loggedInUserAuthentication()
+            val permitID =
+                req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required permit ID, check config")
+            val permitStep = req.paramOrNull("permitStep")?.toInt()
+                ?: throw ExpectedDataNotFound("Required permit step, check config")
+            val permitDetails = qaDaoServices.findPermitBYID(permitID)
+
+            //updating of Details in DB
+            permitDetails.processStep = permitStep
+            val updateResults = qaDaoServices.permitUpdateDetails(permitDetails, map, loggedInUser)
+
+            qaDaoServices.permitDetails(updateResults.second, map).let {
                 return ok().body(it)
             }
 

@@ -1,19 +1,19 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpErrorResponse, HttpParams} from '@angular/common/http';
-import {LoggedInUser, LoginCredentials} from '../auth';
 import {Observable, throwError} from 'rxjs';
 import {ApiEndpointService} from '../../../services/endpoints/api-endpoint.service';
 import {catchError, map} from 'rxjs/operators';
-import {BrsLookUpRequest, Company} from '../companies';
 import {
     MPesaPushDto,
     STA1,
     Sta10Dto,
-    STA10MachineryAndPlantDto, STA10ManufacturingProcessDto,
+    STA10MachineryAndPlantDto,
+    STA10ManufacturingProcessDto,
     STA10PersonnelDto,
     STA10ProductsManufactureDto,
     STA10RawMaterialsDto,
-    STA3, TaskDto, UploadsDtoSTA3
+    STA3,
+    TaskDto
 } from './qa.model';
 
 @Injectable({
@@ -212,6 +212,25 @@ export class QaService {
 
     public uploadSTA3File(permitID: string, data: FormData): Observable<any> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.UPLOAD_FILE_STA3);
+        // const params = new HttpParams()
+        //     .set('permitID', permitID);
+        return this.http.post<any>(url, data, {
+            headers: {
+                'enctype': 'multipart/form-data'
+            }, params: {'permitID': permitID}
+        }).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
+
+    public uploadSTA10File(permitID: string, data: FormData): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.UPLOAD_FILE_STA10);
         // const params = new HttpParams()
         //     .set('permitID', permitID);
         return this.http.post<any>(url, data, {

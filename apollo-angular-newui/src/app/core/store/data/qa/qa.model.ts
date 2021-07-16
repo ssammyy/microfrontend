@@ -30,8 +30,6 @@ export class PermitEntityDto {
     taskID: bigint;
     companyId: bigint;
     permitType: bigint;
-    processStep: number;
-    processStepName: string;
 }
 
 export class ConsolidatedInvoiceDto {
@@ -65,6 +63,7 @@ export class STA1 {
     sectionId: bigint;
     permitForeignStatus: number;
     attachedPlant: bigint;
+    processStep: number;
 }
 
 
@@ -117,6 +116,7 @@ export class PermitEntityDetails {
     approvedRejectedScheme: boolean;
     sendForPcmReview: boolean;
     sendApplication: boolean;
+    processStep: number;
 }
 
 
