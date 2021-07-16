@@ -234,7 +234,7 @@ const routes: Routes = [
         children: [{path: '', component: SmarkApplicationsAllComponent}]
     },
     {
-        path: 'consolidate_invoice', component: AdminLayoutComponent,
+        path: 'invoice/consolidate_invoice', component: AdminLayoutComponent,
         children: [{path: '', component: InvoiceConsolidateComponent}]
     },
     {
@@ -242,7 +242,7 @@ const routes: Routes = [
         children: [{path: '', component: TaskManagerComponent}]
     },
     {
-        path: 'fmark/appplication', component: AdminLayoutComponent,
+        path: 'fmark/application', component: AdminLayoutComponent,
         children: [{path: '', component: FmarkApplicationComponent}]
     },
     {
