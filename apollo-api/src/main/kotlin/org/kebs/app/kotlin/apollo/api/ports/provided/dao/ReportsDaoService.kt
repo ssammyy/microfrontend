@@ -60,6 +60,7 @@ class ReportsDaoService(
 //        val map = hashMapOf<String, Any>()
 
 
+        map["imagePath"] = logoImageFile
         map["mpesaLogo"] = logoMpesaImageFile
         map["paybillNo"] = mpesaDetails.payBillNo.toString()
         map["mpesaACNo"] = mpesaDetails.mpesaAccNo.toString()
