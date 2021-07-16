@@ -3,6 +3,8 @@ import {ROUTES} from '../../sidebar/sidebar.component';
 import {Router, ActivatedRoute, NavigationEnd, NavigationStart} from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
 import { Location, LocationStrategy, PathLocationStrategy } from '@angular/common';
+import {loadLogout} from "../../core/store";
+import {Store} from "@ngrx/store";
 const misc: any = {
     navbar_menu_visible: 0,
     active_collapse: true,
@@ -26,7 +28,8 @@ export class NavbarComponent implements OnInit {
 
     @ViewChild('app-navbar-cmp', {static: false}) button: any;
 
-    constructor(location: Location, private renderer: Renderer2, private element: ElementRef, public router: Router,) {
+    constructor(location: Location, private renderer: Renderer2, private element: ElementRef,private store$: Store<any>, private router: Router
+    ) {
         this.location = location;
         this.nativeElement = element.nativeElement;
         this.sidebarVisible = false;
@@ -43,9 +46,9 @@ export class NavbarComponent implements OnInit {
             setTimeout(function () {
                 body.classList.add('sidebar-mini');
 
-              misc.sidebar_mini_active = true;
-          }, 300);
-      }
+                misc.sidebar_mini_active = true;
+            }, 300);
+        }
 
         // we simulate the window Resize so the charts will get updated in realtime.
         const simulateWindowResize = setInterval(function () {
@@ -69,26 +72,26 @@ export class NavbarComponent implements OnInit {
             }, 300);
             setTimeout(function () {
                 sidebar.classList.remove('animation');
-          }, 600);
-          sidebar.classList.add('animation');
+            }, 600);
+            sidebar.classList.add('animation');
 
-      } else {
-          setTimeout(function() {
-            body.classList.add('hide-sidebar');
-              // $('.sidebar').addClass('animation');
-              misc.hide_sidebar_active = true;
-          }, 300);
-      }
+        } else {
+            setTimeout(function() {
+                body.classList.add('hide-sidebar');
+                // $('.sidebar').addClass('animation');
+                misc.hide_sidebar_active = true;
+            }, 300);
+        }
 
-      // we simulate the window Resize so the charts will get updated in realtime.
-      const simulateWindowResize = setInterval(function() {
-          window.dispatchEvent(new Event('resize'));
-      }, 180);
+        // we simulate the window Resize so the charts will get updated in realtime.
+        const simulateWindowResize = setInterval(function() {
+            window.dispatchEvent(new Event('resize'));
+        }, 180);
 
-      // we stop the simulation of Window Resize after the animations are completed
-      setTimeout(function() {
-          clearInterval(simulateWindowResize);
-      }, 1000);
+        // we stop the simulation of Window Resize after the animations are completed
+        setTimeout(function() {
+            clearInterval(simulateWindowResize);
+        }, 1000);
     }
 
     ngOnInit() {
@@ -104,19 +107,19 @@ export class NavbarComponent implements OnInit {
             misc.hide_sidebar_active = true;
         }
         this._router = this.router.events.filter(event => event instanceof NavigationEnd).subscribe((event: NavigationEnd) => {
-          this.sidebarClose();
+            this.sidebarClose();
 
-          const $layer = document.getElementsByClassName('close-layer')[0];
-          if ($layer) {
-            $layer.remove();
-          }
+            const $layer = document.getElementsByClassName('close-layer')[0];
+            if ($layer) {
+                $layer.remove();
+            }
         });
     }
     onResize(event) {
-      if ($(window).width() > 991) {
-        return false;
-      }
-      return true;
+        if ($(window).width() > 991) {
+            return false;
+        }
+        return true;
     }
     sidebarOpen() {
         const $toggle = document.getElementsByClassName('navbar-toggler')[0];
@@ -212,5 +215,10 @@ export class NavbarComponent implements OnInit {
     }
     getPath() {
         return this.location.prepareExternalUrl(this.location.path());
+    }
+
+    onClickLogout() {
+        this.store$.dispatch(loadLogout({loginUrl: 'login'}));
+
     }
 }
