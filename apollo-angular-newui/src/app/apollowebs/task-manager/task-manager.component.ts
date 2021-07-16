@@ -1,12 +1,12 @@
-import { Component, OnInit } from '@angular/core';
-import {PermitEntityDto, TaskDto} from "../../core/store/data/qa/qa.model";
-import {QaService} from "../../core/store/data/qa/qa.service";
-import {Router} from "@angular/router";
+import {Component, OnInit} from '@angular/core';
+import {PermitEntityDto, TaskDto} from '../../core/store/data/qa/qa.model';
+import {QaService} from '../../core/store/data/qa/qa.service';
+import {Router} from '@angular/router';
 
 declare interface DataTable {
-  headerRow: string[];
-  footerRow: string[];
-  dataRows: string[][];
+    headerRow: string[];
+    footerRow: string[];
+    dataRows: string[][];
 }
 
 declare const $: any;
@@ -19,48 +19,34 @@ declare const $: any;
 export class TaskManagerComponent implements OnInit {
   public dataTable: DataTable;
   public allTaskData: TaskDto[];
-  constructor(private qaService: QaService,
-              private router: Router,) { }
+
+    constructor(private qaService: QaService,
+                private router: Router,) {
+    }
 
   ngOnInit() {
     let formattedArray = [];
     this.dataTable;
 
     this.qaService.taskListFind().subscribe(
-        (data:any) => {
+        (data: any) => {
 
-          this.allTaskData = data;
-          // tslint:disable-next-line:max-line-length
-          formattedArray = data.map(i => [i.taskName, i.taskCreateTime, i.permitRefNo]);
+            this.allTaskData = data;
+            // tslint:disable-next-line:max-line-length
+            formattedArray = data.map(i => [i.taskName, i.taskCreateTime, i.permitRefNo, i.permitId]);
 
-          this.dataTable = {
-            headerRow: ['Task Name', 'Task Created Time', 'Permit Reference Number', 'Actions'],
-            footerRow: ['Task Name', 'Task Created Time', 'Permit Reference Number', 'Actions'],
-            dataRows: formattedArray
+            this.dataTable = {
+                headerRow: ['Task Name', 'Task Created Time', 'Permit Reference Number', 'Actions'],
+                footerRow: ['Task Name', 'Task Created Time', 'Permit Reference Number', 'Actions'],
+                dataRows: formattedArray
 
 
-            // ['REFFM#202107095913D', 'Andrew Mike', '09/07/2021', 'Dassani', 'Water', '']
+                // ['REFFM#202107095913D', 'Andrew Mike', '09/07/2021', 'Dassani', 'Water', '']
 
-          }
+            };
 
         });
 
-
-    // this.dataTable = {
-    //   headerRow: ['Permit Ref No', 'Application Date', 'Product', 'Brand Name', 'Permit Number', 'Issue Date', 'Expiry Date', 'Status', 'Actions'],
-    //   footerRow: ['Permit Ref No', 'Application Date', 'Product', 'Brand Name', 'Permit Number', 'Issue Date', 'Expiry Date', 'Status', 'Actions'],
-    //   dataRows: []
-    //
-    //
-    //   // ['REFFM#202107095913D', 'Andrew Mike', '09/07/2021', 'Dassani', 'Water', '']
-    //
-    // }
-    // console.log(this.dataTable);
-    // this.allPermitData = this.Object.json().results;
-    // console.log(formattedArray);
-
-
-    //
   }
   ngAfterViewInit() {
     $('#datatables').DataTable({

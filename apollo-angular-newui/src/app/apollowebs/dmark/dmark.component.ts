@@ -2,8 +2,9 @@ import {AfterViewInit, Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {QaService} from '../../core/store/data/qa/qa.service';
 import {AllPermitDetailsDto, PermitEntityDetails, PlantDetailsDto, SectionDto} from '../../core/store/data/qa/qa.model';
-import swal from "sweetalert2";
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import swal from 'sweetalert2';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {ApiEndpointService} from '../../core/services/endpoints/api-endpoint.service';
 
 declare interface DataTable {
     headerRow: string[];
@@ -31,6 +32,10 @@ export class DmarkComponent implements OnInit, AfterViewInit {
     public dataTable: DataTable;
     public permitID!: string;
     public allPermitDetails!: AllPermitDetailsDto;
+
+    FMarkTypeID = ApiEndpointService.QA_APPLICATION_MAP_PROPERTIES.FMARK_TYPE_ID;
+    DMarkTypeID = ApiEndpointService.QA_APPLICATION_MAP_PROPERTIES.DMARK_TYPE_ID;
+    SMarkTypeID = ApiEndpointService.QA_APPLICATION_MAP_PROPERTIES.SMARK_TYPE_ID;
 
 
     constructor(
@@ -212,8 +217,30 @@ export class DmarkComponent implements OnInit, AfterViewInit {
         $('.card .material-datatables label').addClass('form-group');
     }
 
+    submitApplicationForReview(): void {
+        // tslint:disable-next-line:max-line-length
+        if (this.allPermitDetails.permitDetails.permitForeignStatus === true && this.allPermitDetails.permitDetails.permitTypeID === ApiEndpointService.QA_APPLICATION_MAP_PROPERTIES.DMARK_TYPE_ID) {
+            this.qaService.submitPermitForReview(this.permitID).subscribe(
+                (data: AllPermitDetailsDto) => {
+                    this.allPermitDetails = data;
+                    swal.fire({
+                        title: 'DMARK SUBMITTED SUCCESSFULLY FOR REVIEW FROM PCM!',
+                        buttonsStyling: false,
+                        customClass: {
+                            confirmButton: 'btn btn-success form-wizard-next-btn ',
+                        },
+                        icon: 'success'
+                    });
+
+                    // this.onUpdateReturnToList();
+                },
+            );
+        }
+    }
+
     submitApplication(): void {
-        if (this.allPermitDetails.permitDetails.permitForeignStatus === true) {
+        // tslint:disable-next-line:max-line-length
+        if (this.allPermitDetails.permitDetails.permitForeignStatus === true && this.allPermitDetails.permitDetails.permitTypeID === ApiEndpointService.QA_APPLICATION_MAP_PROPERTIES.DMARK_TYPE_ID) {
             this.qaService.submitPermitForReview(this.permitID).subscribe(
                 (data: AllPermitDetailsDto) => {
                     this.allPermitDetails = data;
@@ -233,14 +260,28 @@ export class DmarkComponent implements OnInit, AfterViewInit {
             this.qaService.submitPermitApplication(this.permitID).subscribe(
                 (data: AllPermitDetailsDto) => {
                     this.allPermitDetails = data;
-                    swal.fire({
-                        title: 'DMARK SUBMITTED SUCCESSFULLY PENDING PAYMENT!',
-                        buttonsStyling: false,
-                        customClass: {
-                            confirmButton: 'btn btn-success form-wizard-next-btn ',
-                        },
-                        icon: 'success'
-                    });
+
+                    // tslint:disable-next-line:max-line-length
+                    if (this.allPermitDetails.permitDetails.permitTypeID === ApiEndpointService.QA_APPLICATION_MAP_PROPERTIES.SMARK_TYPE_ID || this.allPermitDetails.permitDetails.permitTypeID === ApiEndpointService.QA_APPLICATION_MAP_PROPERTIES.FMARK_TYPE_ID) {
+                        swal.fire({
+                            title: 'SMARK SUBMITTED SUCCESSFULLY PENDING PAYMENT!',
+                            buttonsStyling: false,
+                            customClass: {
+                                confirmButton: 'btn btn-success form-wizard-next-btn ',
+                            },
+                            icon: 'success'
+                        });
+                    } else {
+                        swal.fire({
+                            title: 'DMARK SUBMITTED SUCCESSFULLY PENDING PAYMENT!',
+                            buttonsStyling: false,
+                            customClass: {
+                                confirmButton: 'btn btn-success form-wizard-next-btn ',
+                            },
+                            icon: 'success'
+                        });
+                    }
+
 
                     this.router.navigate(['/invoiceDetails'], {fragment: this.allPermitDetails.batchID.toString()});
 
@@ -330,7 +371,7 @@ export class DmarkComponent implements OnInit, AfterViewInit {
         if (valid) {
             this.qaService.updatePermitSTA3(this.permitEntityDetails.id.toString(), this.sta3FormC.value).subscribe(
                 (data: any) => {
-                    console.log(data)
+                    console.log(data);
                     swal.fire({
                         title: 'STA3: Quality Control/Inspection Staff Details saved!',
                         buttonsStyling: false,
@@ -364,8 +405,7 @@ export class DmarkComponent implements OnInit, AfterViewInit {
         }
     }
 
-    goToPermit()
-    {
+    goToPermit() {
         swal.fire({
             title: 'STA3 Form Completed! Proceed to submit application.',
             buttonsStyling: false,

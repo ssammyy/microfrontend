@@ -805,22 +805,41 @@ placeholder=""
 </h4>
 </div>
 <div class="card-body ">
-<button *ngIf="allPermitDetails.permitDetails.invoiceGenerated == true" mat-raised-button=""
-class="btn btn-kebs mat-raised-button mat-button-base"><span class="mat-button-wrapper">View Generated Invoice </span>
-<div matripple="" class="mat-ripple mat-button-ripple"></div>
-<div class="mat-button-focus-overlay"></div>
-</button>
-<button *ngIf="allPermitDetails.permitDetails.sendApplication == false"
-(click)="submitApplication()" mat-raised-button=""
-class="btn btn-kebs mat-raised-button mat-button-base"><span class="mat-button-wrapper">SUBMIT APPLICATION</span>
-<div matripple="" class="mat-ripple mat-button-ripple"></div>
-<div class="mat-button-focus-overlay"></div>
-</button>
-<!--                    <button mat-raised-button="" class="btn btn-kebs mat-raised-button mat-button-base"><span-->
-<!--                            class="mat-button-wrapper">Upload Attachments </span>-->
-<!--                        <div matripple="" class="mat-ripple mat-button-ripple"></div>-->
-<!--                        <div class="mat-button-focus-overlay"></div>-->
-<!--                    </button>-->
+    <button *ngIf="allPermitDetails.permitDetails.invoiceGenerated == true" mat-raised-button=""
+            class="btn btn-kebs mat-raised-button mat-button-base"><span class="mat-button-wrapper">View Generated Invoice </span>
+        <div matripple="" class="mat-ripple mat-button-ripple"></div>
+        <div class="mat-button-focus-overlay"></div>
+    </button>
+
+    <div *ngIf="allPermitDetails.permitDetails.permitTypeID == SMarkTypeID || allPermitDetails.permitDetails.permitTypeID == FMarkTypeID">
+        <button *ngIf="allPermitDetails.permitDetails.sendApplication == false"
+                (click)="submitApplication()" mat-raised-button=""
+                class="btn btn-kebs mat-raised-button mat-button-base"><span class="mat-button-wrapper">SUBMIT APPLICATION</span>
+            <div matripple="" class="mat-ripple mat-button-ripple"></div>
+            <div class="mat-button-focus-overlay"></div>
+        </button>
+    </div>
+
+
+    <div *ngIf="allPermitDetails.permitDetails.permitTypeID == DMarkTypeID">
+        <button *ngIf="allPermitDetails.permitDetails.sendApplication == false"
+                (click)="submitApplicationForReview()" mat-raised-button=""
+                class="btn btn-kebs mat-raised-button mat-button-base"><span class="mat-button-wrapper">SUBMIT APPLICATION FOR REVIEW</span>
+            <div matripple="" class="mat-ripple mat-button-ripple"></div>
+            <div class="mat-button-focus-overlay"></div>
+        </button>
+        <button *ngIf="allPermitDetails.permitDetails.sendApplication == false && allPermitDetails.permitDetails.sendForPcmReview == true"
+                (click)="submitApplication()" mat-raised-button=""
+                class="btn btn-kebs mat-raised-button mat-button-base"><span class="mat-button-wrapper">SUBMIT APPLICATION</span>
+            <div matripple="" class="mat-ripple mat-button-ripple"></div>
+            <div class="mat-button-focus-overlay"></div>
+        </button>
+    </div>
+    <!--                    <button mat-raised-button="" class="btn btn-kebs mat-raised-button mat-button-base"><span-->
+    <!--                            class="mat-button-wrapper">Upload Attachments </span>-->
+    <!--                        <div matripple="" class="mat-ripple mat-button-ripple"></div>-->
+    <!--                        <div class="mat-button-focus-overlay"></div>-->
+    <!--                    </button>-->
 </div>
 </div>
 </div>

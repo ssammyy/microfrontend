@@ -1218,6 +1218,7 @@ class QADaoServices(
             approvedRejectedScheme = permit.approvedRejectedScheme == 1
             sendForPcmReview = permit.sendForPcmReview == 1
             sendApplication = permit.sendApplication == 1
+            pcmReviewApprove = permit.pcmApprovalStatus == 1
 
         }
         return p

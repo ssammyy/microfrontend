@@ -31,6 +31,16 @@ export class ApiEndpointService {
   /**
    * Map of contexts for API endpoints.
    */
+  public static QA_APPLICATION_MAP_PROPERTIES = {
+    DMARK_TYPE_ID: 1,
+    SMARK_TYPE_ID: 2,
+    FMARK_TYPE_ID: 3,
+
+  };
+
+  /**
+   * Map of contexts for API endpoints.
+   */
   public static AUTH_CONTEXT = '/api/v1/login';
   public static ANONYMOUS_CONTEXT = '/api/v1/migration/anonymous';
   public static USER_CONTEXT = 'user';

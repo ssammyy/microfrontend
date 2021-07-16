@@ -339,6 +339,7 @@ data class PermitDetailsDto(
     var approvedRejectedScheme: Boolean? = null,
     var sendForPcmReview: Boolean? = null,
     var sendApplication: Boolean? = null,
+    var pcmReviewApprove: Boolean? = null,
 )
 
 data class AllPermitDetailsDto(
