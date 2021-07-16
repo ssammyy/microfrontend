@@ -1,14 +1,18 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
-import {Company, loadAuths, LoginCredentials} from '../../core/store';
 import {Store} from '@ngrx/store';
 import {ActivatedRoute, Router} from '@angular/router';
 import {QaService} from '../../core/store/data/qa/qa.service';
 import {
     PermitEntityDetails,
     PlantDetailsDto,
-    SectionDto, Sta10Dto, STA10MachineryAndPlantDto, STA10ManufacturingProcessDto, STA10PersonnelDto,
-    STA10ProductsManufactureDto, STA10RawMaterialsDto
+    SectionDto,
+    Sta10Dto,
+    STA10MachineryAndPlantDto,
+    STA10ManufacturingProcessDto,
+    STA10PersonnelDto,
+    STA10ProductsManufactureDto,
+    STA10RawMaterialsDto
 } from '../../core/store/data/qa/qa.model';
 import swal from 'sweetalert2';
 import {FileUploadValidators} from "@iplab/ngx-file-upload";
@@ -48,7 +52,7 @@ export class NewSmarkPermitComponent implements OnInit {
     stepSoFar: | undefined;
     step = 1;
 
-    public uploadedFiles: Array<File> = [];
+    public uploadedFiles: FileList;
     public animation: boolean = false;
     public multiple: boolean = false;
 
@@ -560,6 +564,48 @@ export class NewSmarkPermitComponent implements OnInit {
         this.sta10FormE?.get('criticalProcessParametersMonitored')?.reset();
         this.sta10FormE?.get('frequency')?.reset();
         this.sta10FormE?.get('processMonitoringRecords')?.reset();
+    }
+
+    goToPermit() {
+        if (this.uploadedFiles.length > 0) {
+            const file = this.uploadedFiles;
+            const formData = new FormData();
+            for (let i = 0; i < file.length; i++) {
+                console.log(file[i]);
+                formData.append('docFile', file[i], file[i].name);
+            }
+            //
+            // const headers = new Headers();
+            // // It is very important to leave the Content-Type empty
+            // // do not use headers.append('Content-Type', 'multipart/form-data');
+            // headers.append('Authorization', 'Bearer ' + 'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9....');
+            // const options = new RequestOptions({headers: headers});
+            // this.http.post('https://api.mysite.com/uploadfile', formData, options)
+            //     .map(res => res.json())
+            //     .catch(error => Observable.throw(error))
+            //     .subscribe(
+            //         data => console.log('success'),
+            //         error => console.log(error)
+            //     );
+
+            this.qaService.uploadSTA10File(this.permitEntityDetails.id.toString(), formData).subscribe(
+                (data: any) => {
+                    console.log(data);
+                    this.step += 1;
+                    swal.fire({
+                        title: 'STA10 Form Completed! Proceed to submit application.',
+                        buttonsStyling: false,
+                        customClass: {
+                            confirmButton: 'btn btn-success form-wizard-next-btn ',
+                        },
+                        icon: 'success'
+                    });
+                    // this.router.navigate(['/permitdetails'], {fragment: this.permitEntityDetails.id.toString()});
+                },
+            );
+            this.router.navigate(['/permitdetails'], {fragment: this.permitEntityDetails.id.toString()});
+        }
+
     }
 
     showNotification(from: any, align: any) {

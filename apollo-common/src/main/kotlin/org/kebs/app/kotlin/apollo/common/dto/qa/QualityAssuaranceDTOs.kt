@@ -139,7 +139,8 @@ data class STA1Dto(
     var applicantName: String? = null,
     var sectionId: Long? = null,
     var permitForeignStatus: Int? = null,
-    var attachedPlant: Long? = null
+    var attachedPlant: Long? = null,
+    var processStep: Int? = null
 )
 
 data class STA10ProductsManufactureDto(
@@ -340,6 +341,7 @@ data class PermitDetailsDto(
     var sendForPcmReview: Boolean? = null,
     var sendApplication: Boolean? = null,
     var pcmReviewApprove: Boolean? = null,
+    var processStep: Int? = null,
 )
 
 data class AllPermitDetailsDto(

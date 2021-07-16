@@ -6,7 +6,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {QaService} from '../../core/store/data/qa/qa.service';
 import {PermitEntityDetails, PlantDetailsDto, SectionDto} from '../../core/store/data/qa/qa.model';
 import swal from 'sweetalert2';
-import {FileUploadValidators} from "@iplab/ngx-file-upload";
+import {FileUploadValidators} from '@iplab/ngx-file-upload';
 
 declare const $: any;
 
@@ -188,6 +188,7 @@ export class NewDmarkPermitComponent implements OnInit {
                 this.qaService.savePermitSTA1('1', this.sta1Form.value).subscribe(
                     (data: PermitEntityDetails) => {
                         this.permitEntityDetails = data;
+                        this.permitEntityDetails.processStep = this.step;
                         console.log(data);
                         this.step += 1;
                         this.currBtn = 'B';
@@ -200,13 +201,13 @@ export class NewDmarkPermitComponent implements OnInit {
                             },
                             icon: 'success'
                         });
-// this.router.navigate(['/users-list']);
                     },
                 );
             } else {
                 this.qaService.updatePermitSTA1(String(this.permitEntityDetails.id), this.sta1Form.value).subscribe(
                     (data: PermitEntityDetails) => {
                         this.permitEntityDetails = data;
+                        this.permitEntityDetails.processStep = this.step;
                         this.step += 1;
                         this.isLoading = false;
                         console.log(data);
@@ -218,7 +219,6 @@ export class NewDmarkPermitComponent implements OnInit {
                             },
                             icon: 'success'
                         });
-// this.router.navigate(['/users-list']);
                     },
                 );
             }
@@ -240,7 +240,6 @@ export class NewDmarkPermitComponent implements OnInit {
                         },
                         icon: 'success'
                     });
-// this.router.navigate(['/users-list']);
                 },
             );
         }
@@ -260,7 +259,6 @@ export class NewDmarkPermitComponent implements OnInit {
                         },
                         icon: 'success'
                     });
-// this.router.navigate(['/users-list']);
                 },
             );
         }
@@ -280,7 +278,6 @@ export class NewDmarkPermitComponent implements OnInit {
                         },
                         icon: 'success'
                     });
-// this.router.navigate(['/users-list']);
                 },
             );
         }
@@ -300,10 +297,18 @@ export class NewDmarkPermitComponent implements OnInit {
                         },
                         icon: 'success'
                     });
-                    // this.router.navigate(['/permitdetails'], {fragment: this.permitEntityDetails.id.toString()});
                 },
             );
         }
+    }
+
+    onClickUpdateStep(stepNumber: number) {
+        this.permitEntityDetails.processStep = stepNumber;
+        this.qaService.updatePermitSTA1(String(this.permitEntityDetails.id), this.sta1Form.value).subscribe(
+            (data: PermitEntityDetails) => {
+                this.permitEntityDetails = data;
+            },
+        );
     }
 
     goToPermit() {
