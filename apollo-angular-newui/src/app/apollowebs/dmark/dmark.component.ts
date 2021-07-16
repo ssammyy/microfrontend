@@ -6,7 +6,7 @@ import {
     PermitEntityDetails,
     PlantDetailsDto,
     SectionDto,
-    STA1
+    STA1, STA3
 } from '../../core/store/data/qa/qa.model';
 import swal from 'sweetalert2';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
@@ -33,6 +33,7 @@ export class DmarkComponent implements OnInit, AfterViewInit {
     sta3FormD: FormGroup;
     returnUrl: string;
     sta1: STA1;
+    sta3: STA3;
     sections: SectionDto[];
     plants: PlantDetailsDto[];
     permitEntityDetails: PermitEntityDetails;
@@ -164,6 +165,21 @@ export class DmarkComponent implements OnInit, AfterViewInit {
                     this.allPermitDetails = data;
                     // this.onSelectL1SubSubSection(this.userDetails?.employeeProfile?.l1SubSubSection);
 
+                },
+            );
+            this.qaService.viewSTA1Details(this.permitID).subscribe(
+                (data) => {
+                    this.sta1 = data;
+                    this.sta1Form.patchValue(this.sta1);
+                },
+            );
+            this.qaService.viewSTA3Details(this.permitID).subscribe(
+                (data) => {
+                    this.sta3 = data;
+                    this.sta3FormA.patchValue(this.sta3);
+                    this.sta3FormB.patchValue(this.sta3);
+                    this.sta3FormC.patchValue(this.sta3);
+                    this.sta3FormD.patchValue(this.sta3);
                 },
             );
         });
