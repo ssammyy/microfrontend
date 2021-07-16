@@ -1,7 +1,12 @@
-import { Component, OnInit } from '@angular/core';
-import {QaService} from "../../core/store/data/qa/qa.service";
-import {Router} from "@angular/router";
-import {AllPermitDetailsDto, ConsolidatedInvoiceDto, PermitEntityDto} from "../../core/store/data/qa/qa.model";
+import {Component, OnInit} from '@angular/core';
+import {QaService} from '../../core/store/data/qa/qa.service';
+import {Router} from '@angular/router';
+import {
+  AllPermitDetailsDto,
+  ConsolidatedInvoiceDto,
+  PermitEntityDto,
+  PermitInvoiceDto
+} from '../../core/store/data/qa/qa.model';
 
 declare interface DataTable {
   headerRow: string[];
@@ -18,8 +23,7 @@ declare const $: any;
 })
 export class InvoiceConsolidateComponent implements OnInit {
   public dataTable: DataTable;
-  public allInvoiceData: ConsolidatedInvoiceDto[];
-  
+  public allInvoiceData: PermitInvoiceDto[];
 
   constructor(
       private qaService: QaService,
@@ -28,19 +32,18 @@ export class InvoiceConsolidateComponent implements OnInit {
 
   ngOnInit() {
     let formattedArray = [];
-    this.qaService.loadInvoiceBatchList().subscribe(
+    this.qaService.loadInvoiceListWithNoBatchID().subscribe(
         (data: any) => {
           this.allInvoiceData = data;
           // tslint:disable-next-line:max-line-length
-          formattedArray = data.map(i => [i.invoiceNumber, i.receiptNo, i.paidDate, i.totalAmount, i.paidStatus, i.id, i.batchID]);
+
+          // tslint:disable-next-line:max-line-length
+          formattedArray = data.map(i => [i.permitRefNumber, i.commodityDescription, i.brandName, i.totalAmount, i.invoiceNumber, i.permitID]);
 
           this.dataTable = {
-            headerRow: ['Invoice No', 'Receipt No', 'Date', 'Total Amount', ' Select'],
-            footerRow: ['Invoice No', 'Receipt No', 'Date', 'Total Amount', ' Select'],
+            headerRow: ['Permit Ref N0', 'Commodity Description', 'Brand Name', 'Total Amount', ' Invoice Number', ' Select'],
+            footerRow: ['Permit Ref N0', 'Commodity Description', 'Brand Name', 'Total Amount', ' Invoice Number', ' Select'],
             dataRows: formattedArray
-
-
-            // ['REFFM#202107095913D', 'Andrew Mike', '09/07/2021', 'Dassani', 'Water', '']
 
           };
 
