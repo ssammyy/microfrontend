@@ -234,7 +234,7 @@ const routes: Routes = [
         children: [{path: '', component: SmarkApplicationsAllComponent}]
     },
     {
-        path: 'consolidate_invoice', component: AdminLayoutComponent,
+        path: 'invoice/consolidate_invoice', component: AdminLayoutComponent,
         children: [{path: '', component: InvoiceConsolidateComponent}]
     },
     {

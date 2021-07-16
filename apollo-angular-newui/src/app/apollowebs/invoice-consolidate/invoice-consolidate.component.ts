@@ -34,8 +34,8 @@ export class InvoiceConsolidateComponent implements OnInit {
           formattedArray = data.map(i => [i.invoiceNumber, i.receiptNo, i.paidDate, i.totalAmount, i.paidStatus, i.id, i.batchID]);
 
           this.dataTable = {
-            headerRow: ['Invoice No', 'Receipt No', 'Date', 'Total Amount', ' Status', 'Actions'],
-            footerRow: ['Invoice No', 'Receipt No', 'Date', 'Total Amount', ' Status', 'Actions'],
+            headerRow: ['Invoice No', 'Receipt No', 'Date', 'Total Amount', ' Select'],
+            footerRow: ['Invoice No', 'Receipt No', 'Date', 'Total Amount', ' Select'],
             dataRows: formattedArray
 
 
