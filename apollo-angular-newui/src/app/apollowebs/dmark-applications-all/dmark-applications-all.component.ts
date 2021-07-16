@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {QaService} from '../../core/store/data/qa/qa.service';
 import {PermitEntityDto} from '../../core/store/data/qa/qa.model';
 import {Router} from '@angular/router';
+import {ApiEndpointService} from '../../core/services/endpoints/api-endpoint.service';
 
 declare interface DataTable {
     headerRow: string[];
@@ -21,6 +22,7 @@ export class DmarkApplicationsAllComponent implements OnInit {
     public allPermitData: PermitEntityDto[];
 
     // public formattedArray: any[];
+    draftID = ApiEndpointService.QA_APPLICATION_MAP_PROPERTIES.DRAFT_ID;
 
 
     constructor(
@@ -37,7 +39,7 @@ export class DmarkApplicationsAllComponent implements OnInit {
 
                 this.allPermitData = data;
                 // tslint:disable-next-line:max-line-length
-                formattedArray = data.map(i => [i.permitRefNumber, i.createdOn, i.productName, i.tradeMark, i.awardedPermitNumber, i.dateOfIssue, i.dateOfExpiry, i.permitStatus, i.id]);
+                formattedArray = data.map(i => [i.permitRefNumber, i.createdOn, i.productName, i.tradeMark, i.awardedPermitNumber, i.dateOfIssue, i.dateOfExpiry, i.permitStatus, i.id, i.processStatusID]);
 
                 this.dataTable = {
                     headerRow: ['Permit Ref No', 'Application Date', 'Product', 'Brand Name', 'Permit Number', 'Issue Date', 'Expiry Date', 'Status', 'Actions'],
@@ -70,12 +72,16 @@ export class DmarkApplicationsAllComponent implements OnInit {
             searchPlaceholder: 'Search records',
         }
     });
-    let table: any;
-    table = $(`#datatables`).DataTable();
+      let table: any;
+      table = $(`#datatables`).DataTable();
 
-}
+  }
 
-    onSelect(rowElement: string) {
-        this.router.navigate(['/permitdetails'], {fragment: rowElement});
+    onSelect(rowElement: string, processStatusID: number) {
+        if (this.draftID === processStatusID) {
+            this.router.navigate(['/dmark/newDmarkPermit'], {fragment: rowElement});
+        } else {
+            this.router.navigate(['/permitdetails'], {fragment: rowElement});
+        }
     }
 }

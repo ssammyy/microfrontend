@@ -4,7 +4,7 @@ import {
   AllPermitDetailsDto,
   PermitEntityDetails,
   PlantDetailsDto,
-  SectionDto,
+  SectionDto, STA1,
   Sta10Dto, STA10MachineryAndPlantDto, STA10ManufacturingProcessDto, STA10PersonnelDto,
   STA10ProductsManufactureDto, STA10RawMaterialsDto
 } from "../../core/store/data/qa/qa.model";
@@ -31,6 +31,7 @@ export class SmarkComponent implements OnInit {
   plants: PlantDetailsDto[];
   public allPermitDetails!: AllPermitDetailsDto;
   permitEntityDetails: PermitEntityDetails;
+  sta1: STA1;
   Sta10Details: Sta10Dto;
   sta10ProductsManufactureDetails: STA10ProductsManufactureDto[] = [];
   sta10ProductsManufactureDetail: STA10ProductsManufactureDto;
@@ -187,8 +188,8 @@ export class SmarkComponent implements OnInit {
     if (valid) {
       if (this.permitEntityDetails == null) {
         this.qaService.savePermitSTA1('2', this.sta1Form.value).subscribe(
-            (data: PermitEntityDetails) => {
-              this.permitEntityDetails = data;
+            (data) => {
+              this.sta1 = data;
               console.log(data);
               swal.fire({
                 title: 'STA1 Form saved!',
@@ -202,8 +203,8 @@ export class SmarkComponent implements OnInit {
         );
       } else {
         this.qaService.updatePermitSTA1(String(this.permitEntityDetails.id), this.sta1Form.value).subscribe(
-            (data: PermitEntityDetails) => {
-              this.permitEntityDetails = data;
+            (data) => {
+              this.sta1 = data;
               console.log(data);
               swal.fire({
                 title: 'STA1 Form updated!',
@@ -273,7 +274,6 @@ export class SmarkComponent implements OnInit {
               },
               icon: 'success'
             });
-            //this.router.navigate(['/permitdetails'], {fragment: this.permitEntityDetails.id.toString()});
           },
       );
     }
@@ -403,7 +403,6 @@ export class SmarkComponent implements OnInit {
     this.sta10FormA?.get('personnelName')?.reset();
     this.sta10FormA?.get('qualificationInstitution')?.reset();
     this.sta10FormA?.get('dateOfEmployment')?.reset();
-    //this.sta10FormAA.reset();
   }
 
   onClickAddProductsManufacture() {

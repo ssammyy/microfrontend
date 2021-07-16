@@ -35,6 +35,7 @@ export class ApiEndpointService {
     DMARK_TYPE_ID: 1,
     SMARK_TYPE_ID: 2,
     FMARK_TYPE_ID: 3,
+    DRAFT_ID: 1,
 
   };
 
@@ -119,6 +120,8 @@ export class ApiEndpointService {
     MASTERS_CURRENCIES: `${ApiEndpointService.MASTERS_CONTEXT}/currencies/`,
     // tslint:disable-next-line:max-line-length
     /*::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::QA ENDPOINTS:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
+    PERMIT_PROCESS_STEP: `${ApiEndpointService.QA_CONTEXT_APPLY}/process-step-add`,
+
     FIRM_PERMIT_LIST: `${ApiEndpointService.QA_CONTEXT}/permit/firm-list`,
     QA_MPESA_STK_PUSH: `${ApiEndpointService.QA_CONTEXT}/permit/mpesa/stk-push`,
     PERMIT_LIST: `${ApiEndpointService.QA_CONTEXT}/permit/list`,
@@ -130,8 +133,10 @@ export class ApiEndpointService {
     MY_TASK_LIST: `${ApiEndpointService.QA_CONTEXT}/permit/task-list`,
 
     PERMIT_APPLY_STA1: `${ApiEndpointService.QA_CONTEXT_APPLY}/sta1`,
+    PERMIT_VIEW_STA1: `${ApiEndpointService.QA_CONTEXT_VIEW}/sta1`,
     PERMIT_UPDATE_STA1: `${ApiEndpointService.QA_CONTEXT_APPLY}/sta1-update`,
     PERMIT_APPLY_STA3: `${ApiEndpointService.QA_CONTEXT_APPLY}/sta3`,
+    PERMIT_VIEW_STA3: `${ApiEndpointService.QA_CONTEXT_APPLY}/sta3`,
     PERMIT_UPDATE_STA3: `${ApiEndpointService.QA_CONTEXT_APPLY}/sta3-update`,
 
     UPLOAD_FILE_STA3: `${ApiEndpointService.QA_CONTEXT_APPLY}/sta3-update-upload`,

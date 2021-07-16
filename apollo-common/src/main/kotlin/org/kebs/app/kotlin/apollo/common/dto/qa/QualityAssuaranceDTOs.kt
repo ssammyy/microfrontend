@@ -133,14 +133,19 @@ data class UploadsDtoSTA3(
     var sta3Status: Boolean? = null
 )
 
+data class PermitProcessStepDto(
+    var permitID: Long? = null,
+    var processStep: Int? = null
+)
+
 data class STA1Dto(
+    var id: Long? = null,
     var commodityDescription: String? = null,
     var tradeMark: String? = null,
     var applicantName: String? = null,
     var sectionId: Long? = null,
     var permitForeignStatus: Int? = null,
     var attachedPlant: Long? = null,
-    var processStep: Int? = null
 )
 
 data class STA10ProductsManufactureDto(
@@ -287,8 +292,7 @@ data class PermitEntityDto(
     var taskID: Long? = null,
     var companyId: Long? = null,
     var permitType: Long? = null,
-    var processStep: Int? = null,
-    var processStepName: String? = null,
+    var processStatusID: Long? = null,
 )
 
 data class PermitDetailsDto(
@@ -342,6 +346,7 @@ data class PermitDetailsDto(
     var sendApplication: Boolean? = null,
     var pcmReviewApprove: Boolean? = null,
     var processStep: Int? = null,
+    var processStatusID: Long? = null,
 )
 
 data class AllPermitDetailsDto(

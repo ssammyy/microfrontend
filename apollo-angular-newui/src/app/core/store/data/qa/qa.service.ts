@@ -4,7 +4,7 @@ import {Observable, throwError} from 'rxjs';
 import {ApiEndpointService} from '../../../services/endpoints/api-endpoint.service';
 import {catchError, map} from 'rxjs/operators';
 import {
-    MPesaPushDto,
+    MPesaPushDto, PermitProcessStepDto,
     STA1,
     Sta10Dto,
     STA10MachineryAndPlantDto,
@@ -149,12 +149,27 @@ export class QaService {
         );
     }
 
-    public viewSTA1Details(permitID: string): Observable<any> {
-        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.PERMIT_VIEW_DETAILS);
+    public viewSTA1Details(permitID: string): Observable<STA1> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.PERMIT_VIEW_STA1);
         const params = new HttpParams()
             .set('permitID', permitID);
-        return this.http.get<any>(url, {params}).pipe(
-            map(function (response: any) {
+        return this.http.get<STA1>(url, {params}).pipe(
+            map(function (response: STA1) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
+
+    public viewSTA3Details(permitID: string): Observable<STA3> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.PERMIT_VIEW_STA3);
+        const params = new HttpParams()
+            .set('permitID', permitID);
+        return this.http.get<STA3>(url, {params}).pipe(
+            map(function (response: STA3) {
                 return response;
             }),
             catchError((fault: HttpErrorResponse) => {
@@ -180,11 +195,24 @@ export class QaService {
         );
     }
 
-    public savePermitSTA1(permitTypeID: string, data: STA1): Observable<any> {
+    public savePermitSTA1(permitTypeID: string, data: STA1): Observable<STA1> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.PERMIT_APPLY_STA1);
         const params = new HttpParams()
             .set('permitTypeID', permitTypeID);
-        return this.http.post<any>(url, data, {params}).pipe(
+        return this.http.post<STA1>(url, data, {params}).pipe(
+            map(function (response: STA1) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
+
+    public savePermitProcessStep(data: PermitProcessStepDto): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.PERMIT_PROCESS_STEP);
+        return this.http.post<any>(url, data).pipe(
             map(function (response: any) {
                 return response;
             }),
@@ -195,12 +223,12 @@ export class QaService {
         );
     }
 
-    public updatePermitSTA1(permitID: string, data: STA1): Observable<any> {
+    public updatePermitSTA1(permitID: string, data: STA1): Observable<STA1> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.PERMIT_UPDATE_STA1);
         const params = new HttpParams()
             .set('permitID', permitID);
-        return this.http.put<any>(url, data, {params}).pipe(
-            map(function (response: any) {
+        return this.http.put<STA1>(url, data, {params}).pipe(
+            map(function (response: STA1) {
                 return response;
             }),
             catchError((fault: HttpErrorResponse) => {

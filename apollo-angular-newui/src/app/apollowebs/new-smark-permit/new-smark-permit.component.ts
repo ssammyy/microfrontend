@@ -4,9 +4,9 @@ import {Store} from '@ngrx/store';
 import {ActivatedRoute, Router} from '@angular/router';
 import {QaService} from '../../core/store/data/qa/qa.service';
 import {
-    PermitEntityDetails,
+    PermitEntityDetails, PermitProcessStepDto,
     PlantDetailsDto,
-    SectionDto,
+    SectionDto, STA1,
     Sta10Dto,
     STA10MachineryAndPlantDto,
     STA10ManufacturingProcessDto,
@@ -36,7 +36,8 @@ export class NewSmarkPermitComponent implements OnInit {
     sta10FormG: FormGroup;
     sections: SectionDto[];
     plants: PlantDetailsDto[];
-    permitEntityDetails: PermitEntityDetails;
+    sta1: STA1;
+    permitProcessStep: PermitProcessStepDto | undefined;
     Sta10Details: Sta10Dto;
     sta10ProductsManufactureDetails: STA10ProductsManufactureDto[] = [];
     sta10ProductsManufactureDetail: STA10ProductsManufactureDto;
@@ -53,8 +54,10 @@ export class NewSmarkPermitComponent implements OnInit {
     step = 1;
 
     public uploadedFiles: FileList;
-    public animation: boolean = false;
-    public multiple: boolean = false;
+    public animation = false;
+    public multiple = false;
+
+    public permitID!: string;
 
     private filesControl = new FormControl(null, FileUploadValidators.filesLimit(2));
 
@@ -160,18 +163,49 @@ export class NewSmarkPermitComponent implements OnInit {
     this.qaService.loadSectionList().subscribe(
         (data: any) => {
           this.sections = data;
-          console.log(data);
+            console.log(data);
         }
     );
 
-    this.qaService.loadPlantList().subscribe(
-        (data: any) => {
-          this.plants = data;
-          console.log(data);
-        }
-    );
+        this.qaService.loadPlantList().subscribe(
+            (data: any) => {
+                this.plants = data;
+                console.log(data);
+            }
+        );
 
-  }
+        this.getSelectedPermit();
+
+    }
+
+    public getSelectedPermit(): void {
+        this.route.fragment.subscribe(params => {
+            this.permitID = params;
+            console.log(this.permitID);
+            if (this.permitID) {
+                this.qaService.viewSTA1Details(this.permitID).subscribe(
+                    (data) => {
+                        this.sta1 = data;
+                        this.sta1Form.patchValue(this.sta1);
+                    },
+                );
+            }
+        });
+    }
+
+    onClickUpdateStep(stepNumber: number) {
+        if (this.sta1) {
+            this.permitProcessStep = new PermitProcessStepDto();
+            this.permitProcessStep.permitID = this.sta1.id;
+            this.permitProcessStep.processStep = stepNumber;
+            this.qaService.savePermitProcessStep(this.permitProcessStep).subscribe(
+                (data) => {
+                    // this.sta1 = data;
+                },
+            );
+        }
+    }
+
     onClickPrevious() {
         if (this.step > 1) {
             this.step = this.step - 1;
@@ -179,6 +213,7 @@ export class NewSmarkPermitComponent implements OnInit {
             this.step = 1;
         }
     }
+
     onClickNext(valid: boolean) {
         if (valid) {
             switch (this.step) {
@@ -296,37 +331,39 @@ export class NewSmarkPermitComponent implements OnInit {
 
     onClickSaveSTA1(valid: boolean) {
         if (valid) {
-            if (this.permitEntityDetails == null) {
+            if (this.sta1 == null) {
                 this.qaService.savePermitSTA1('2', this.sta1Form.value).subscribe(
-                    (data: PermitEntityDetails) => {
-                        this.permitEntityDetails = data;
+                    (data) => {
+                        this.sta1 = data;
+                        this.onClickUpdateStep(this.step);
                         console.log(data);
                         this.step += 1;
                         this.currBtn = 'B';
-              swal.fire({
-                  title: 'STA1 Form saved!',
-                  buttonsStyling: false,
-                  customClass: {
-                      confirmButton: 'btn btn-success form-wizard-next-btn ',
-                  },
-                  icon: 'success'
+                        swal.fire({
+                            title: 'STA1 Form saved!',
+                            buttonsStyling: false,
+                            customClass: {
+                                confirmButton: 'btn btn-success form-wizard-next-btn ',
+                            },
+                            icon: 'success'
               });
             },
         );
       } else {
-        this.qaService.updatePermitSTA1(String(this.permitEntityDetails.id), this.sta1Form.value).subscribe(
-            (data: PermitEntityDetails) => {
-              this.permitEntityDetails = data;
-              console.log(data);
-              swal.fire({
-                  title: 'STA1 Form updated!',
-                  buttonsStyling: false,
-                  customClass: {
-                      confirmButton: 'btn btn-success form-wizard-next-btn ',
-                  },
-                  icon: 'success'
-              });
-            },
+                this.qaService.updatePermitSTA1(String(this.sta1.id), this.sta1Form.value).subscribe(
+                    (data) => {
+                        this.sta1 = data;
+                        this.onClickUpdateStep(this.step);
+                        console.log(data);
+                        swal.fire({
+                            title: 'STA1 Form updated!',
+                            buttonsStyling: false,
+                            customClass: {
+                                confirmButton: 'btn btn-success form-wizard-next-btn ',
+                            },
+                            icon: 'success'
+                        });
+                    },
         );
       }
     }
@@ -334,11 +371,12 @@ export class NewSmarkPermitComponent implements OnInit {
 
     onClickSaveSTA10(valid: boolean) {
         if (valid) {
-            console.log(this.permitEntityDetails.id.toString());
+            console.log(this.sta1.id.toString());
             if (this.Sta10Details == null) {
-                this.qaService.saveFirmDetailsSta10(this.permitEntityDetails.id.toString(), this.sta10Form.value).subscribe(
+                this.qaService.saveFirmDetailsSta10(this.sta1.id.toString(), this.sta10Form.value).subscribe(
                     (data) => {
                         this.Sta10Details = data;
+                        this.onClickUpdateStep(this.step);
                         console.log(data);
                         this.step += 1;
                         swal.fire({
@@ -353,9 +391,10 @@ export class NewSmarkPermitComponent implements OnInit {
                     },
                 );
             } else {
-                this.qaService.updateFirmDetailsSta10(`${this.permitEntityDetails.id}`, this.sta10FormF.value).subscribe(
+                this.qaService.updateFirmDetailsSta10(`${this.sta1.id}`, this.sta10FormF.value).subscribe(
                     (data) => {
                         this.Sta10Details = data;
+                        this.onClickUpdateStep(this.step);
                         console.log(data);
                         this.step += 1;
                         swal.fire({
@@ -374,29 +413,29 @@ export class NewSmarkPermitComponent implements OnInit {
 
     onClickSaveSTA10F(valid: boolean) {
         if (valid) {
-            console.log(this.permitEntityDetails.id.toString());
+            console.log(this.sta1.id.toString());
 
-                this.qaService.updateFirmDetailsSta10(this.permitEntityDetails.id.toString(), this.sta10FormF.value).subscribe(
-                    (data) => {
-                        this.Sta10Details = data;
-                        console.log(data);
-                        this.step += 1;
-                        swal.fire({
-                            title: 'Nonconforming Products Manufacturing Process saved!',
-                            buttonsStyling: false,
-                            customClass: {
-                                confirmButton: 'btn btn-success form-wizard-next-btn ',
+            this.qaService.updateFirmDetailsSta10(this.sta1.id.toString(), this.sta10FormF.value).subscribe(
+                (data) => {
+                    this.Sta10Details = data;
+                    this.onClickUpdateStep(this.step);
+                    console.log(data);
+                    this.step += 1;
+                    swal.fire({
+                        title: 'Nonconforming Products Manufacturing Process saved!',
+                        buttonsStyling: false,
+                        customClass: {
+                            confirmButton: 'btn btn-success form-wizard-next-btn ',
                             },
                             icon: 'success'
                         });
-                        //this.router.navigate(['/permitdetails'], {fragment: this.permitEntityDetails.id.toString()});
                     },
                 );
         }
     }
     onClickSaveSTA10G(valid: boolean) {
         if (valid) {
-            console.log(this.permitEntityDetails.id.toString());
+            console.log(this.sta1.id.toString());
             swal.fire({
                 title: 'STA3 Form Completed! Proceed to submit application.!',
                 buttonsStyling: false,
@@ -405,7 +444,7 @@ export class NewSmarkPermitComponent implements OnInit {
                 },
                 icon: 'success'
             });
-            this.router.navigate(['/permitdetails'], {fragment: this.permitEntityDetails.id.toString()});
+            this.router.navigate(['/permitdetails'], {fragment: this.sta1.id.toString()});
 
 
         }
@@ -418,6 +457,7 @@ export class NewSmarkPermitComponent implements OnInit {
             this.qaService.savePersonnelDetailsSta10(this.Sta10Details.id.toString(), this.sta10PersonnelDetails).subscribe(
                 (data) => {
                     this.sta10PersonnelDetails = data;
+                    this.onClickUpdateStep(this.step);
                     console.log(data);
                     this.step += 1;
                     swal.fire({
@@ -436,9 +476,11 @@ export class NewSmarkPermitComponent implements OnInit {
     onClickSaveSTAProductsManufactured(valid: boolean) {
         if (valid) {
             console.log(this.Sta10Details.id.toString());
+            // tslint:disable-next-line:max-line-length
             this.qaService.saveProductsManufacturedDetailsSta10(this.Sta10Details.id.toString(), this.sta10ProductsManufactureDetails).subscribe(
                 (data) => {
                     this.sta10ProductsManufactureDetails = data;
+                    this.onClickUpdateStep(this.step);
                     console.log(data);
                     this.step += 1;
                     swal.fire({
@@ -460,6 +502,7 @@ export class NewSmarkPermitComponent implements OnInit {
             this.qaService.saveRawMaterialsDetailsSta10(this.Sta10Details.id.toString(), this.sta10RawMaterialsDetails).subscribe(
                 (data) => {
                     this.sta10RawMaterialsDetails = data;
+                    this.onClickUpdateStep(this.step);
                     console.log(data);
                     this.step += 1;
                     swal.fire({
@@ -481,6 +524,7 @@ export class NewSmarkPermitComponent implements OnInit {
             this.qaService.saveMachineryPlantDetailsSta10(this.Sta10Details.id.toString(), this.sta10MachineryAndPlantDetails).subscribe(
                 (data) => {
                     this.sta10MachineryAndPlantDetails = data;
+                    this.onClickUpdateStep(this.step);
                     console.log(data);
                     this.step += 1;
                     swal.fire({
@@ -499,9 +543,11 @@ export class NewSmarkPermitComponent implements OnInit {
     onClickSaveSTAManufacturingProcess(valid: boolean) {
         if (valid) {
             console.log(this.Sta10Details.id.toString());
+            // tslint:disable-next-line:max-line-length
             this.qaService.saveManufacturingProcessDetailsSta10(this.Sta10Details.id.toString(), this.sta10ManufacturingProcessDetails).subscribe(
                 (data) => {
                     this.sta10ManufacturingProcessDetails = data;
+                    this.onClickUpdateStep(this.step);
                     console.log(data);
                     this.step += 1;
                     swal.fire({
@@ -524,7 +570,7 @@ export class NewSmarkPermitComponent implements OnInit {
         this.sta10FormA?.get('personnelName')?.reset();
         this.sta10FormA?.get('qualificationInstitution')?.reset();
         this.sta10FormA?.get('dateOfEmployment')?.reset();
-        //this.sta10FormAA.reset();
+        // this.sta10FormAA.reset();
     }
 
     onClickAddProductsManufacture() {
@@ -588,9 +634,10 @@ export class NewSmarkPermitComponent implements OnInit {
             //         error => console.log(error)
             //     );
 
-            this.qaService.uploadSTA10File(this.permitEntityDetails.id.toString(), formData).subscribe(
+            this.qaService.uploadSTA10File(this.sta1.id.toString(), formData).subscribe(
                 (data: any) => {
                     console.log(data);
+                    this.onClickUpdateStep(this.step);
                     this.step += 1;
                     swal.fire({
                         title: 'STA10 Form Completed! Proceed to submit application.',
@@ -603,7 +650,7 @@ export class NewSmarkPermitComponent implements OnInit {
                     // this.router.navigate(['/permitdetails'], {fragment: this.permitEntityDetails.id.toString()});
                 },
             );
-            this.router.navigate(['/permitdetails'], {fragment: this.permitEntityDetails.id.toString()});
+            this.router.navigate(['/permitdetails'], {fragment: this.sta1.id.toString()});
         }
 
     }

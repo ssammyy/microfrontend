@@ -811,6 +811,7 @@ placeholder=""
         <div class="mat-button-focus-overlay"></div>
     </button>
 
+
     <div *ngIf="allPermitDetails.permitDetails.permitTypeID == SMarkTypeID || allPermitDetails.permitDetails.permitTypeID == FMarkTypeID">
         <button *ngIf="allPermitDetails.permitDetails.sendApplication == false"
                 (click)="submitApplication()" mat-raised-button=""
@@ -835,6 +836,8 @@ placeholder=""
             <div class="mat-button-focus-overlay"></div>
         </button>
     </div>
+
+
     <!--                    <button mat-raised-button="" class="btn btn-kebs mat-raised-button mat-button-base"><span-->
     <!--                            class="mat-button-wrapper">Upload Attachments </span>-->
     <!--                        <div matripple="" class="mat-ripple mat-button-ripple"></div>-->

@@ -1127,7 +1127,7 @@ class QualityAssuranceHandler(
 
             val createdPermit = qaDaoServices.permitSave(permit, permitType, loggedInUser, map)
 
-            qaDaoServices.permitDetails(createdPermit.second, map).let {
+            qaDaoServices.mapDtoSTA1View(createdPermit.second).let {
                 return ok().body(it)
             }
 
@@ -1146,14 +1146,14 @@ class QualityAssuranceHandler(
             val loggedInUser = commonDaoServices.loggedInUserDetails()
             val map = commonDaoServices.serviceMapDetails(appId)
             val auth = commonDaoServices.loggedInUserAuthentication()
-            val permitID =
-                req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required permit ID, check config")
-            val permitStep = req.paramOrNull("permitStep")?.toInt()
-                ?: throw ExpectedDataNotFound("Required permit step, check config")
-            val permitDetails = qaDaoServices.findPermitBYID(permitID)
+            val dto = req.body<PermitProcessStepDto>()
+
+            val permitDetails = qaDaoServices.findPermitBYID(
+                dto.permitID ?: throw ExpectedDataNotFound("Required permit ID, check config")
+            )
 
             //updating of Details in DB
-            permitDetails.processStep = permitStep
+            permitDetails.processStep = dto.processStep ?: 1
             val updateResults = qaDaoServices.permitUpdateDetails(permitDetails, map, loggedInUser)
 
             qaDaoServices.permitDetails(updateResults.second, map).let {
@@ -1206,7 +1206,7 @@ class QualityAssuranceHandler(
                 ) as PermitApplicationsEntity, map, loggedInUser
             )
 
-            qaDaoServices.permitDetails(updateResults.second, map).let {
+            qaDaoServices.mapDtoSTA1View(updateResults.second).let {
                 return ok().body(it)
             }
 
@@ -1387,7 +1387,7 @@ class QualityAssuranceHandler(
             with(updatePermit) {
                 id = permit.id
                 sta3FilledStatus = map.activeStatus
-                permitStatus = applicationMapProperties.mapQaStatusPSubmission
+                permitStatus = applicationMapProperties.mapQaStatusDraft
             }
 
             //update the permit with the created entity values
@@ -1485,7 +1485,7 @@ class QualityAssuranceHandler(
             with(updatePermit) {
                 id = permit.id
                 sta3FilledStatus = map.activeStatus
-                permitStatus = applicationMapProperties.mapQaStatusPSubmission
+                permitStatus = applicationMapProperties.mapQaStatusDraft
             }
 
             //update the permit with the created entity values
@@ -1498,6 +1498,29 @@ class QualityAssuranceHandler(
 
 
             qaDaoServices.mapDtoSTA3View(sta3Found).let {
+                return ok().body(it)
+            }
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            throw e
+        }
+
+    }
+
+    @PreAuthorize("hasAuthority('PERMIT_APPLICATION')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun permitViewSTA1Migration(req: ServerRequest): ServerResponse {
+        try {
+            val loggedInUser = commonDaoServices.loggedInUserDetails()
+            val permitID =
+                req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
+            val permit = qaDaoServices.findPermitBYUserIDAndId(
+                permitID,
+                loggedInUser.id ?: throw ExpectedDataNotFound("MISSING USER ID")
+            )
+            qaDaoServices.mapDtoSTA1View(permit).let {
                 return ok().body(it)
             }
 
@@ -1594,7 +1617,7 @@ class QualityAssuranceHandler(
             with(updatePermit) {
                 id = permit.id
                 sta10FilledStatus = map.inactiveStatus
-                permitStatus = applicationMapProperties.mapQaStatusPSTA10Completion
+                permitStatus = applicationMapProperties.mapQaStatusDraft
             }
 
             //update the permit with the created entity values

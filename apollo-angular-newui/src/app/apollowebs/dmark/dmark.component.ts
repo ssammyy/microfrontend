@@ -1,7 +1,13 @@
 import {AfterViewInit, Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {QaService} from '../../core/store/data/qa/qa.service';
-import {AllPermitDetailsDto, PermitEntityDetails, PlantDetailsDto, SectionDto} from '../../core/store/data/qa/qa.model';
+import {
+    AllPermitDetailsDto,
+    PermitEntityDetails,
+    PlantDetailsDto,
+    SectionDto,
+    STA1
+} from '../../core/store/data/qa/qa.model';
 import swal from 'sweetalert2';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {ApiEndpointService} from '../../core/services/endpoints/api-endpoint.service';
@@ -26,6 +32,7 @@ export class DmarkComponent implements OnInit, AfterViewInit {
     sta3FormC: FormGroup;
     sta3FormD: FormGroup;
     returnUrl: string;
+    sta1: STA1;
     sections: SectionDto[];
     plants: PlantDetailsDto[];
     permitEntityDetails: PermitEntityDetails;
@@ -36,6 +43,7 @@ export class DmarkComponent implements OnInit, AfterViewInit {
     FMarkTypeID = ApiEndpointService.QA_APPLICATION_MAP_PROPERTIES.FMARK_TYPE_ID;
     DMarkTypeID = ApiEndpointService.QA_APPLICATION_MAP_PROPERTIES.DMARK_TYPE_ID;
     SMarkTypeID = ApiEndpointService.QA_APPLICATION_MAP_PROPERTIES.SMARK_TYPE_ID;
+    draftID = ApiEndpointService.QA_APPLICATION_MAP_PROPERTIES.DRAFT_ID;
 
 
     constructor(
@@ -151,13 +159,6 @@ export class DmarkComponent implements OnInit, AfterViewInit {
         this.route.fragment.subscribe(params => {
             this.permitID = params;
             console.log(this.permitID);
-            this.qaService.loadPermitDetails(this.permitID).subscribe(
-                (data: AllPermitDetailsDto) => {
-                    this.allPermitDetails = data;
-                    // this.onSelectL1SubSubSection(this.userDetails?.employeeProfile?.l1SubSubSection);
-
-                },
-            );
             this.qaService.loadPermitDetails(this.permitID).subscribe(
                 (data: AllPermitDetailsDto) => {
                     this.allPermitDetails = data;
@@ -294,8 +295,8 @@ export class DmarkComponent implements OnInit, AfterViewInit {
         if (valid) {
             if (this.permitEntityDetails == null) {
                 this.qaService.savePermitSTA1('1', this.sta1Form.value).subscribe(
-                    (data: PermitEntityDetails) => {
-                        this.permitEntityDetails = data;
+                    (data) => {
+                        this.sta1 = data;
                         console.log(data);
                         swal.fire({
                             title: 'STA1 Form saved!',
@@ -310,8 +311,8 @@ export class DmarkComponent implements OnInit, AfterViewInit {
                 );
             } else {
                 this.qaService.updatePermitSTA1(String(this.permitEntityDetails.id), this.sta1Form.value).subscribe(
-                    (data: PermitEntityDetails) => {
-                        this.permitEntityDetails = data;
+                    (data) => {
+                        this.sta1 = data;
                         console.log(data);
                         swal.fire({
                             title: 'STA1 Form updated!',
