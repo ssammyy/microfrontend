@@ -171,7 +171,7 @@
                                                    target='_blank' class="btn btn-primary itemViewBtn">view</a></td>
                                             <td>
                                                 <a th:href="@{/api/qa/kebs/selected/attached-lab-pdf(fileName=${pdfFound}, bsNumber=${ssfDetails?.bsNumber}, ssfID=${ssfDetails?.id})}"
-                                                   class="btn btn-primary itemViewBtn">SEND</a></td>
+                                                   class="btn btn-primary itemViewBtn">SAVE</a></td>
                                         </tr>
                                         </tbody>
                                     </table>
@@ -201,13 +201,19 @@
 
                         </div>
                         <div class="commodityDetailsForm" >
-                            <form id="commodityDetails-Form" name="commodityDetails-Form" th:action="@{/api/qa/kebs/lab-results-compliance-status/save(permitID = ${ssfDetails?.permitId})}" method="post" th:object="${ssfDetails}">
-                                <div class="modal fade" id="commodityDetailsModal" tabindex="-1" role="dialog" aria-labelledby="commodityDetailsModalLable" aria-hidden="true">
+                            <form id="commodityDetails-Form" name="commodityDetails-Form"
+                                  th:action="@{/api/qa/kebs/lab-results-compliance-status/save(ssfID = ${ssfDetails?.id})}"
+                                  method="post" th:object="${ssfDetails}">
+                                <div class="modal fade" id="commodityDetailsModal" tabindex="-1" role="dialog"
+                                     aria-labelledby="commodityDetailsModalLable" aria-hidden="true">
                                     <div class="modal-dialog" role="document">
                                         <div class="modal-content">
                                             <div class="modal-header">
-                                                <h5 style="font-weight: bold; " class="modal-title" id="commodityDetailsLable"><span id="spanValueCommodity">none</span></h5>
-                                                <button aria-label="Close" class="close" data-dismiss="modal" onClick="refreshPage()" type="button">
+                                                <h5 style="font-weight: bold; " class="modal-title"
+                                                    id="commodityDetailsLable"><span id="spanValueCommodity">none</span>
+                                                </h5>
+                                                <button aria-label="Close" class="close" data-dismiss="modal"
+                                                        onClick="refreshPage()" type="button">
                                                     <span aria-hidden="true">&times;</span>
                                                 </button>
                                             </div>

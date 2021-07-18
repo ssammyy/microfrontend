@@ -8,7 +8,6 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.QualityAssuranceBpmn
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.QADaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.lims.LimsServices
-import org.kebs.app.kotlin.apollo.api.ports.provided.makeAnyNotBeNull
 import org.kebs.app.kotlin.apollo.common.dto.FmarkEntityDto
 import org.kebs.app.kotlin.apollo.common.dto.qa.NewBatchInvoiceDto
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
@@ -273,7 +272,7 @@ class QualityAssuranceController(
         when {
             //PCM REVIEW ACTIONS TO BE DONE
             permit.pcmReviewApprovalStatus != null -> {
-                returnDetails = permitApplicationsPCMActions(permitDetails, permit, map, loggedInUser)
+                returnDetails = permitApplicationsPCMReviewActions(permitDetails, permit, map, loggedInUser)
                 permitDetails = returnDetails.first
             }
             //Permit completeness status
@@ -297,17 +296,62 @@ class QualityAssuranceController(
                 returnDetails = factoryInspection(permitDetails, loggedInUser)
                 permitDetails = returnDetails.first
             }
-            //Permit Resubmit application
-            permit.resubmitApplicationStatus == map.activeStatus -> {
-                with(permit) {
-                    resubmitApplicationStatus = null
-                }
-                qaDaoServices.permitInsertStatus(
-                    permitDetails,
-                    applicationMapProperties.mapQaStatusResubmitted,
-                    loggedInUser
-                )
+            //ADD Recommendation
+            permit.recommendationRemarks != null -> {
+                returnDetails = addRecommendation(permitDetails, loggedInUser)
+                permitDetails = returnDetails.first
             }
+            //APPROVE RECOMMENDATION
+            permit.recommendationApprovalStatus != null -> {
+                returnDetails = approveRecommendationPermit(permit, map, permitDetails, loggedInUser)
+                permitDetails = returnDetails.first
+            }
+            //Permit awarded PSC review
+            permit.pscMemberApprovalStatus != null -> {
+                returnDetails = permitPSCApprovalProcess(permit, map, permitDetails, loggedInUser)
+                permitDetails = returnDetails.first
+            }
+            //PCM APPROVE PERMIT
+            permit.pcmApprovalStatus != null -> {
+                //PCM ACTIONS TO BE DONE
+                returnDetails = permitApplicationsPCMApprovalActions(permitDetails, permit, map, loggedInUser)
+                permitDetails = returnDetails.first
+            }
+            //JUSTIFICATION REPORT APPROVE
+            permit.justificationReportStatus != null -> {
+                returnDetails = permitApproveJustificationReport(permit, map, permitDetails, loggedInUser)
+                permitDetails = returnDetails.first
+            }
+            //PERMIT ASSIGNED  ASSESSOR OFFICER
+            permit.assignAssessorStatus != null -> {
+                //Send notification to assessor
+                returnDetails = permitAssignAssessor(permitDetails, loggedInUser)
+                permitDetails = returnDetails.first
+            }
+            //PERMIT ASSESMENT SCHEDULED
+            permit.assessmentScheduledStatus != null -> {
+                //Send manufacturers notification
+                returnDetails = assessmentDateScheduled(permitDetails, loggedInUser)
+                permitDetails = returnDetails.first
+
+            }
+            //PERMIT AWARD DMARK
+            permit.assessmentScheduledStatus != null -> {
+                returnDetails = dmarkAwardPermit(permit, map, permitDetails, loggedInUser)
+                permitDetails = returnDetails.first
+            }
+
+//            //Permit Resubmit application
+//            permit.resubmitApplicationStatus == map.activeStatus -> {
+//                with(permit) {
+//                    resubmitApplicationStatus = null
+//                }
+//                qaDaoServices.permitInsertStatus(
+//                    permitDetails,
+//                    applicationMapProperties.mapQaStatusResubmitted,
+//                    loggedInUser
+//                )
+//            }
             //Permit pending factory inspection Approval
             permit.factoryInspectionReportApprovedRejectedStatus == map.activeStatus -> {
                 qaDaoServices.permitInsertStatus(
@@ -316,73 +360,10 @@ class QualityAssuranceController(
                     loggedInUser
                 )
             }
-            //Permit assigned  assessor officer
-            permit.assignAssessorStatus == map.activeStatus -> {
-                //Send notification to assessor
-                val assessor = permitDetails.assessorId?.let { commonDaoServices.findUserByID(it) }
-                assessor?.email?.let { qaDaoServices.sendAppointAssessorNotificationEmail(it, permitDetails) }
-                permitDetails.userTaskId = applicationMapProperties.mapUserTaskNameASSESSORS
-                qaDaoServices.permitInsertStatus(
-                    permitDetails,
-                    applicationMapProperties.mapQaStatusPFactoryVisitSchedule,
-                    loggedInUser
-                )
-            }
-            //Permit assesment scheduled
-            permit.assessmentScheduledStatus == map.activeStatus -> {
-                //Send manufacturers notification
-                val manufacturer = permitDetails.userId?.let { commonDaoServices.findUserByID(it) }
-                manufacturer?.email?.let {
-                    qaDaoServices.sendScheduledFactoryAssessmentNotificationEmail(
-                        it,
-                        permitDetails
-                    )
-                }
-                qaDaoServices.permitInsertStatus(
-                    permitDetails,
-                    applicationMapProperties.mapQaStatusPGenerationAssesmentReport,
-                    loggedInUser
-                )
-            }
+
+
             //Permit awarded scheduled
-            permit.permitAwardStatus == map.activeStatus -> {
-                val issueDate = commonDaoServices.getCurrentDate()
-                val permitType = permitDetails.permitType?.let { qaDaoServices.findPermitType(it) }
-                val expiryDate = permitType?.numberOfYears?.let { commonDaoServices.addYearsToCurrentDate(it) }
 
-
-                with(permitDetails) {
-                    if (renewalStatus != map.activeStatus) {
-                        awardedPermitNumber = "${permitType?.markNumber}${
-                            generateRandomText(
-                                6,
-                                map.secureRandom,
-                                map.messageDigestAlgorithm,
-                                false
-                            )
-                        }".toUpperCase()
-                    }
-                    permitAwardStatus = map.activeStatus
-                    dateOfIssue = issueDate
-                    dateOfExpiry = expiryDate
-                }
-                //Generate permit and forward to manufacturer
-                KotlinLogging.logger { }.info(":::::: Sending compliance status along with e-permit :::::::")
-                qaDaoServices.permitInsertStatus(
-                    permitDetails,
-                    applicationMapProperties.mapQaStatusPermitAwarded,
-                    loggedInUser
-                )
-            }
-            permit.permitAwardStatus == map.inactiveStatus -> {
-                //Send defer notification
-                KotlinLogging.logger { }.info(":::::: Sending defer notification to assessor/qao :::::::")
-                qaDaoServices.permitInsertStatus(
-                    permitDetails,
-                    applicationMapProperties.mapQaStatusDeferredByPACSecretary,
-                    loggedInUser
-                )
-            }
             permit.hodApproveAssessmentStatus != null -> {
                 //Send manufacturers notification
                 //
@@ -431,88 +412,8 @@ class QualityAssuranceController(
                 }
 //                qaDaoServices.sendComplianceStatusAndLabReport(permitDetails, complianceValue ?: throw ExpectedDataNotFound(" "))
             }
-            permit.recommendationRemarks != null -> {
-                //Send manufacturers notification
-//                permitDetails.userTaskId = applicationMapProperties.mapUserTaskNameHOF
-                qaDaoServices.permitInsertStatus(
-                    permitDetails,
-                    applicationMapProperties.mapQaStatusPRecommendationApproval,
-                    loggedInUser
-                )
-                qaDaoServices.sendNotificationForRecommendation(permitDetails)
-            }
-            permit.recommendationApprovalStatus != null -> {
-                //Send notification
-                if (permit.recommendationApprovalStatus == map.activeStatus) {
-                    with(permit) {
-                        pscMemberId = qaDaoServices.assignNextOfficerAfterPayment(
-                            permitDetails,
-                            map,
-                            applicationMapProperties.mapQADesignationIDForPSCId
-                        )?.id
-                    }
-                    //updating of Details in DB
-                    permitDetails = qaDaoServices.permitUpdateDetails(
-                        commonDaoServices.updateDetails(
-                            permit,
-                            permitDetails
-                        ) as PermitApplicationsEntity, map, loggedInUser
-                    ).second
-                    qaDaoServices.sendNotificationPSCForAwardingPermit(permitDetails)
-
-                    qaDaoServices.permitInsertStatus(
-                        permitDetails,
-                        applicationMapProperties.mapQaStatusPPSCMembersAward,
-                        loggedInUser
-                    )
-
-                } else if (permit.recommendationApprovalStatus == map.inactiveStatus) {
-                    permitDetails = qaDaoServices.permitInsertStatus(
-                        permitDetails,
-                        applicationMapProperties.mapQaStatusPRecommendation,
-                        loggedInUser
-                    )
-                    qaDaoServices.sendNotificationForRecommendationCorrectness(permitDetails)
-                }
-
-            }
-            //Permit awarded pcm review
-            permit.pscMemberApprovalStatus != null -> {
-                //Send notification
-                if (permit.pscMemberApprovalStatus == map.activeStatus) {
-                    with(permit) {
-                        pcmId = qaDaoServices.assignNextOfficerWithDesignation(
-                            permit,
-                            map,
-                            applicationMapProperties.mapQADesignationIDForPCMId
-                        )?.id
-                    }
-                    //updating of Details in DB
-                    permitDetails = qaDaoServices.permitUpdateDetails(
-                        commonDaoServices.updateDetails(
-                            permit,
-                            permitDetails
-                        ) as PermitApplicationsEntity, map, loggedInUser
-                    ).second
-                    qaDaoServices.sendNotificationPCMForAwardingPermit(permitDetails)
-                    qaDaoServices.permitInsertStatus(
-                        permitDetails,
-                        applicationMapProperties.mapQaStatusPPCMAwarding,
-                        loggedInUser
-                    )
 
 
-                } else if (permit.pscMemberApprovalStatus == map.inactiveStatus) {
-                    qaDaoServices.permitInsertStatus(
-                        permitDetails,
-                        applicationMapProperties.mapQaStatusDeferredPSCMembers,
-                        loggedInUser
-                    )
-                    qaDaoServices.sendNotificationForDeferredPermitToQaoFromPSC(permitDetails)
-
-                }
-
-            }
             //Approved or rejected SSC
             permit.approvedRejectedScheme != null -> {
                 //Send notification
@@ -543,40 +444,6 @@ class QualityAssuranceController(
                 }
 
             }
-            permit.justificationReportStatus != null -> {
-                //Send notification
-                var reasonValue: String? = null
-                when (permit.justificationReportStatus) {
-                    map.activeStatus -> {
-                        reasonValue = "ACCEPTED"
-                        qaDaoServices.justificationReportSendEmail(permitDetails, reasonValue)
-                        qaDaoServices.permitInsertStatus(
-                            permitDetails,
-                            applicationMapProperties.mapQaStatusPAssesorAssigning,
-                            loggedInUser
-                        )
-                    }
-                    map.inactiveStatus -> {
-                        reasonValue = "REJECTED"
-                        with(permitDetails) {
-                            justificationReportStatus = null
-                        }
-                        qaDaoServices.permitInsertStatus(
-                            permitDetails,
-                            applicationMapProperties.mapQaStatusRejectedJustCationReport,
-                            loggedInUser
-                        )
-                        qaDaoServices.justificationReportSendEmail(permitDetails, reasonValue)
-                    }
-                }
-
-            }
-
-            permit.pcmApprovalStatus != null -> {
-                //PCM ACTIONS TO BE DONE
-                returnDetails = permitApplicationsPCMActions(permitDetails, permit, map, loggedInUser)
-                permitDetails = returnDetails.first
-            }
 
 
         }
@@ -597,6 +464,272 @@ class QualityAssuranceController(
         return commonDaoServices.returnValues(result, map, sm)
     }
 
+    fun dmarkAwardPermit(
+        permit: PermitApplicationsEntity,
+        map: ServiceMapsEntity,
+        permitDetails: PermitApplicationsEntity,
+        loggedInUser: UsersEntity
+    ): Pair<PermitApplicationsEntity, String> {
+        var permitDetailsDB = permitDetails
+        when (permit.permitAwardStatus) {
+            map.activeStatus -> {
+                val issueDate = commonDaoServices.getCurrentDate()
+                val permitType = permitDetailsDB.permitType?.let { qaDaoServices.findPermitType(it) }
+                val expiryDate = permitType?.numberOfYears?.let { commonDaoServices.addYearsToCurrentDate(it) }
+
+
+                with(permitDetailsDB) {
+                    if (renewalStatus != map.activeStatus) {
+                        awardedPermitNumber = "${permitType?.markNumber}${
+                            generateRandomText(
+                                6,
+                                map.secureRandom,
+                                map.messageDigestAlgorithm,
+                                false
+                            )
+                        }".toUpperCase()
+                    }
+                    userTaskId = null
+                    permitAwardStatus = map.activeStatus
+                    dateOfIssue = issueDate
+                    dateOfExpiry = expiryDate
+                }
+                //Generate permit and forward to manufacturer
+                KotlinLogging.logger { }.info(":::::: Sending compliance status along with e-permit :::::::")
+                permitDetailsDB = qaDaoServices.permitInsertStatus(
+                    permitDetails,
+                    applicationMapProperties.mapQaStatusPermitAwarded,
+                    loggedInUser
+                )
+            }
+            map.inactiveStatus -> {
+                with(permitDetailsDB) {
+                    assessmentScheduledStatus = null
+                    permitAwardStatus = null
+                }
+
+                permitDetailsDB = qaDaoServices.permitInsertStatus(
+                    permitDetails,
+                    applicationMapProperties.mapQaStatusPermitAwarded,
+                    loggedInUser
+                )
+                qaDaoServices.sendNotificationForDeferredPermitToQaoFromPSC(permitDetailsDB)
+                qaDaoServices.sendNotificationForDeferredPermitToAssessorFromPCM(permitDetailsDB)
+            }
+        }
+
+        val closeLink =
+            "${applicationMapProperties.baseUrlValue}/qa/permits-list?permitTypeID=${permitDetailsDB.permitType}"
+        return Pair(permitDetailsDB, closeLink)
+    }
+
+    fun assessmentDateScheduled(
+        permitDetails: PermitApplicationsEntity,
+        loggedInUser: UsersEntity
+    ): Pair<PermitApplicationsEntity, String> {
+        var permitDetailsDB = permitDetails
+        permitDetailsDB = qaDaoServices.permitInsertStatus(
+            permitDetailsDB,
+            applicationMapProperties.mapQaStatusPGenerationAssesmentReport,
+            loggedInUser
+        )
+        val manufacturer = permitDetailsDB.userId?.let { commonDaoServices.findUserByID(it) }
+        manufacturer?.email?.let {
+            qaDaoServices.sendScheduledFactoryAssessmentNotificationEmail(
+                it,
+                permitDetailsDB
+            )
+        }
+
+
+        val closeLink = "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitDetailsDB.id}"
+        return Pair(permitDetailsDB, closeLink)
+    }
+
+    fun permitAssignAssessor(
+        permitDetailsDB: PermitApplicationsEntity,
+        loggedInUser: UsersEntity
+    ): Pair<PermitApplicationsEntity, String> {
+        val assessor = permitDetailsDB.assessorId?.let { commonDaoServices.findUserByID(it) }
+        assessor?.email?.let { qaDaoServices.sendAppointAssessorNotificationEmail(it, permitDetailsDB) }
+        val Leadassessor = permitDetailsDB.leadAssessorId?.let { commonDaoServices.findUserByID(it) }
+        Leadassessor?.email?.let { qaDaoServices.sendAppointAssessorNotificationEmail(it, permitDetailsDB) }
+        permitDetailsDB.userTaskId = applicationMapProperties.mapUserTaskNameASSESSORS
+        qaDaoServices.permitInsertStatus(
+            permitDetailsDB,
+            applicationMapProperties.mapQaStatusPFactoryVisitSchedule,
+            loggedInUser
+        )
+        val closeLink =
+            "${applicationMapProperties.baseUrlValue}/qa/permits-list?permitTypeID=${permitDetailsDB.permitType}"
+        return Pair(permitDetailsDB, closeLink)
+    }
+
+    fun permitApproveJustificationReport(
+        permit: PermitApplicationsEntity,
+        map: ServiceMapsEntity,
+        permitDetails: PermitApplicationsEntity,
+        loggedInUser: UsersEntity
+    ): Pair<PermitApplicationsEntity, String> {
+        var reasonValue: String? = null
+        var permitDetailsDB = permitDetails
+        when (permit.justificationReportStatus) {
+            map.activeStatus -> {
+                reasonValue = "ACCEPTED"
+//                qaDaoServices.justificationReportSendEmail(permitDetails, reasonValue)
+                permitDetailsDB = qaDaoServices.permitInsertStatus(
+                    permitDetails,
+                    applicationMapProperties.mapQaStatusPAssesorAssigning,
+                    loggedInUser
+                )
+            }
+            map.inactiveStatus -> {
+                reasonValue = "REJECTED"
+                with(permitDetails) {
+                    justificationReportStatus = 0
+                    userTaskId = applicationMapProperties.mapUserTaskNameQAO
+                }
+                permitDetailsDB = qaDaoServices.permitInsertStatus(
+                    permitDetails,
+                    applicationMapProperties.mapQaStatusRejectedJustCationReport,
+                    loggedInUser
+                )
+                qaDaoServices.justificationReportSendEmail(permitDetails, reasonValue)
+            }
+        }
+
+        val closeLink = "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitDetailsDB.id}"
+        return Pair(permitDetailsDB, closeLink)
+    }
+
+    fun permitPSCApprovalProcess(
+        permit: PermitApplicationsEntity,
+        map: ServiceMapsEntity,
+        permitDetails: PermitApplicationsEntity,
+        loggedInUser: UsersEntity
+    ): Pair<PermitApplicationsEntity, String> {
+        var permitDetailsDB = permitDetails
+        when (permit.pscMemberApprovalStatus) {
+            map.activeStatus -> {
+                with(permit) {
+                    userTaskId = applicationMapProperties.mapUserTaskNamePCM
+                    pcmId = qaDaoServices.assignNextOfficerWithDesignation(
+                        permit,
+                        map,
+                        applicationMapProperties.mapQADesignationIDForPCMId
+                    )?.id
+                }
+                //updating of Details in DB
+                permitDetailsDB = qaDaoServices.permitUpdateDetails(
+                    commonDaoServices.updateDetails(
+                        permit,
+                        permitDetailsDB
+                    ) as PermitApplicationsEntity, map, loggedInUser
+                ).second
+
+                qaDaoServices.permitInsertStatus(
+                    permitDetailsDB,
+                    applicationMapProperties.mapQaStatusPPCMAwarding,
+                    loggedInUser
+                )
+                qaDaoServices.sendNotificationPCMForAwardingPermit(permitDetailsDB)
+
+            }
+            map.inactiveStatus -> {
+                with(permitDetailsDB) {
+                    compliantStatus = 0
+                    recommendationApprovalStatus = 0
+                }
+
+                permitDetailsDB.userTaskId = applicationMapProperties.mapUserTaskNameQAO
+                qaDaoServices.permitInsertStatus(
+                    permitDetailsDB,
+                    applicationMapProperties.mapQaStatusDeferredPSCMembers,
+                    loggedInUser
+                )
+                qaDaoServices.sendNotificationForDeferredPermitToQaoFromPSC(permitDetailsDB)
+
+            }
+        }
+        val closeLink =
+            "${applicationMapProperties.baseUrlValue}/qa/permits-list?permitTypeID=${permitDetailsDB.permitType}"
+        return Pair(permitDetailsDB, closeLink)
+    }
+
+    fun approveRecommendationPermit(
+        permit: PermitApplicationsEntity,
+        map: ServiceMapsEntity,
+        permitDetails: PermitApplicationsEntity,
+        loggedInUser: UsersEntity
+    ): Pair<PermitApplicationsEntity, String> {
+        var permitDetailsDB = permitDetails
+        when (permit.recommendationApprovalStatus) {
+            map.activeStatus -> {
+                with(permit) {
+                    pscMemberId = qaDaoServices.assignNextOfficerAfterPayment(
+                        permitDetailsDB,
+                        map,
+                        applicationMapProperties.mapQADesignationIDForPSCId
+                    )?.id
+                    userTaskId = applicationMapProperties.mapUserTaskNamePSC
+                }
+                //updating of Details in DB
+                permitDetailsDB = qaDaoServices.permitUpdateDetails(
+                    commonDaoServices.updateDetails(
+                        permit,
+                        permitDetailsDB
+                    ) as PermitApplicationsEntity, map, loggedInUser
+                ).second
+
+                permitDetailsDB = qaDaoServices.permitInsertStatus(
+                    permitDetailsDB,
+                    applicationMapProperties.mapQaStatusPPSCMembersAward,
+                    loggedInUser
+                )
+                qaDaoServices.sendNotificationPSCForAwardingPermit(permitDetailsDB)
+
+            }
+            map.inactiveStatus -> {
+                permitDetailsDB.userTaskId = applicationMapProperties.mapUserTaskNameQAO
+                permitDetailsDB = qaDaoServices.permitInsertStatus(
+                    permitDetailsDB,
+                    applicationMapProperties.mapQaStatusPRecommendation,
+                    loggedInUser
+                )
+                qaDaoServices.sendNotificationForRecommendationCorrectness(permitDetailsDB)
+            }
+        }
+        val closeLink =
+            "${applicationMapProperties.baseUrlValue}/qa/permits-list?permitTypeID=${permitDetailsDB.permitType}"
+        return Pair(permitDetailsDB, closeLink)
+    }
+
+    fun addRecommendation(
+        permitDetails: PermitApplicationsEntity,
+        loggedInUser: UsersEntity
+    ): Pair<PermitApplicationsEntity, String> {
+        var permitDetailsDB = permitDetails
+        when (permitDetailsDB.permitType) {
+            applicationMapProperties.mapQAPermitTypeIDDmark -> {
+                permitDetailsDB.userTaskId = applicationMapProperties.mapUserTaskNameHOD
+            }
+            else -> {
+                permitDetailsDB.userTaskId = applicationMapProperties.mapUserTaskNameQAM
+            }
+        }
+        permitDetailsDB.recommendationApprovalStatus = null
+        permitDetailsDB = qaDaoServices.permitInsertStatus(
+            permitDetailsDB,
+            applicationMapProperties.mapQaStatusPRecommendationApproval,
+            loggedInUser
+        )
+        qaDaoServices.sendNotificationForRecommendation(permitDetails)
+
+        val closeLink =
+            "${applicationMapProperties.baseUrlValue}/qa/permits-list?permitTypeID=${permitDetailsDB.permitType}"
+        return Pair(permitDetailsDB, closeLink)
+    }
+
     fun factoryInspection(
         permitDetailsFromDB: PermitApplicationsEntity,
         loggedInUser: UsersEntity
@@ -612,7 +745,7 @@ class QualityAssuranceController(
 
     }
 
-    private fun assignQAOfficer(
+    fun assignQAOfficer(
         permitDetailsFromDB: PermitApplicationsEntity,
         permitType: PermitTypesEntity,
         loggedInUser: UsersEntity
@@ -709,7 +842,79 @@ class QualityAssuranceController(
     }
 
 
-    fun permitApplicationsPCMActions(
+    fun permitApplicationsPCMApprovalActions(
+        permitDetailsFromDB: PermitApplicationsEntity,
+        permitFromInterface: PermitApplicationsEntity,
+        map: ServiceMapsEntity,
+        loggedInUser: UsersEntity
+    ): Pair<PermitApplicationsEntity, String> {
+        var permitDetailsDB = permitDetailsFromDB
+
+        when (permitFromInterface.pcmApprovalStatus) {
+            map.activeStatus -> {
+                //TODO: CHANGE THE DATE OF EXPIRY IF RENEWAL
+                val issueDate = commonDaoServices.getCurrentDate()
+                val permitType = permitDetailsDB.permitType?.let { qaDaoServices.findPermitType(it) }
+                val expiryDate = permitType?.numberOfYears?.let { commonDaoServices.addYearsToCurrentDate(it) }
+
+                with(permitFromInterface) {
+                    if (renewalStatus != map.activeStatus) {
+                        awardedPermitNumber = "${permitType?.markNumber}${
+                            generateRandomText(
+                                6,
+                                map.secureRandom,
+                                map.messageDigestAlgorithm,
+                                false
+                            )
+                        }".toUpperCase()
+                    } else {
+//                        per
+
+                    }
+                    permitAwardStatus = map.activeStatus
+                    dateOfIssue = issueDate
+                    dateOfExpiry = expiryDate
+                }
+                //Generate permit and forward to manufacturer
+                KotlinLogging.logger { }.info(":::::: Sending compliance status along with e-permit :::::::")
+                //updating of Details in DB
+                permitDetailsDB = qaDaoServices.permitUpdateDetails(
+                    commonDaoServices.updateDetails(
+                        permitFromInterface,
+                        permitDetailsDB
+                    ) as PermitApplicationsEntity, map, loggedInUser
+                ).second
+                permitDetailsDB.userTaskId = null
+                qaDaoServices.permitInsertStatus(
+                    permitDetailsDB,
+                    applicationMapProperties.mapQaStatusPermitAwarded,
+                    loggedInUser
+                )
+                //                    qaDaoServices.sendNotificationPSCForAwardingPermit(permitDetails)
+
+            }
+            map.inactiveStatus -> {
+                with(permitDetailsDB) {
+                    userTaskId = applicationMapProperties.mapUserTaskNameQAO
+                    compliantStatus = 0
+                    recommendationApprovalStatus = 0
+                }
+                permitDetailsDB = qaDaoServices.permitInsertStatus(
+                    permitDetailsDB,
+                    applicationMapProperties.mapQaStatusDeferredPCM,
+                    loggedInUser
+                )
+                qaDaoServices.sendNotificationForDeferredPermitToQaoFromPCM(permitDetailsDB)
+
+            }
+        }
+
+        val closeLink =
+            "${applicationMapProperties.baseUrlValue}/qa/permits-list?permitTypeID=${permitDetailsDB.permitType}"
+        return Pair(permitDetailsDB, closeLink)
+    }
+
+    fun permitApplicationsPCMReviewActions(
         permitDetailsFromDB: PermitApplicationsEntity,
         permitFromInterface: PermitApplicationsEntity,
         map: ServiceMapsEntity,
@@ -777,63 +982,6 @@ class QualityAssuranceController(
 
             }
         }
-//            }
-//            else -> {
-        when (permitFromInterface.pcmApprovalStatus) {
-            map.activeStatus -> {
-                val issueDate = commonDaoServices.getCurrentDate()
-                val permitType = permitDetailsDB.permitType?.let { qaDaoServices.findPermitType(it) }
-                val expiryDate =
-                    permitType?.numberOfYears?.let { commonDaoServices.addYearsToCurrentDate(it.toLong()) }
-
-
-                with(permitFromInterface) {
-                    if (renewalStatus != map.activeStatus) {
-                        awardedPermitNumber = "${permitType?.markNumber}${
-                            generateRandomText(
-                                6,
-                                map.secureRandom,
-                                map.messageDigestAlgorithm,
-                                false
-                            )
-                        }".toUpperCase()
-                    } else {
-
-                    }
-                    permitAwardStatus = map.activeStatus
-                    dateOfIssue = issueDate
-                    dateOfExpiry = expiryDate
-                }
-                //Generate permit and forward to manufacturer
-                KotlinLogging.logger { }
-                    .info(":::::: Sending compliance status along with e-permit :::::::")
-                //updating of Details in DB
-                permitDetailsDB = qaDaoServices.permitUpdateDetails(
-                    commonDaoServices.updateDetails(
-                        permitFromInterface,
-                        permitDetailsDB
-                    ) as PermitApplicationsEntity, map, loggedInUser
-                ).second
-                qaDaoServices.permitInsertStatus(
-                    permitDetailsDB,
-                    applicationMapProperties.mapQaStatusPermitAwarded,
-                    loggedInUser
-                )
-                //                    qaDaoServices.sendNotificationPSCForAwardingPermit(permitDetails)
-
-            }
-            map.inactiveStatus -> {
-                qaDaoServices.sendNotificationForDeferredPermitToQaoFromPCM(permitDetailsDB)
-                qaDaoServices.permitInsertStatus(
-                    permitDetailsDB,
-                    applicationMapProperties.mapQaStatusDeferredPCM,
-                    loggedInUser
-                )
-            }
-        }
-//            }
-//        }
-
         val closeLink =
             "${applicationMapProperties.baseUrlValue}/qa/permits-list?permitTypeID=${permitDetailsDB.permitType}"
         return Pair(permitDetailsDB, closeLink)
@@ -1262,20 +1410,19 @@ class QualityAssuranceController(
     @PostMapping("/kebs/lab-results-compliance-status/save")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun complianceStatusSSF(
-        @RequestParam("permitID") permitID: Long,
+        @RequestParam("ssfID") ssfID: Long,
         @ModelAttribute("SampleSubmissionDetails") sampleSubmissionDetails: QaSampleSubmissionEntity,
         model: Model
     ): String? {
         val map = commonDaoServices.serviceMapDetails(appId)
         val loggedInUser = commonDaoServices.loggedInUserDetails()
-        val permit = qaDaoServices.findPermitBYID(permitID)
 
         val result: ServiceRequestsEntity?
 
-        result = qaDaoServices.ssfUpdateDetails(permit, sampleSubmissionDetails, loggedInUser, map).first
+        result = qaDaoServices.ssfUpdateDetails(ssfID, sampleSubmissionDetails, loggedInUser, map).first
 
         val sm = CommonDaoServices.MessageSuccessFailDTO()
-        sm.closeLink = "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permit.id}"
+        sm.closeLink = "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${result.varField1}"
         sm.message = "You have Successful Filled Sample Submission Details"
 
         return commonDaoServices.returnValues(result, map, sm)
@@ -1798,20 +1945,14 @@ class QualityAssuranceController(
                             permitStatus = applicationMapProperties.mapQaStatusPApprovalAssesmentReport
                             userTaskId = applicationMapProperties.mapUserTaskNameHOD
                         }
-                        qaDaoServices.permitUpdateDetails(permitDetails, map, loggedInUser)
+                        permitDetails = qaDaoServices.permitUpdateDetails(permitDetails, map, loggedInUser).second
 
-                        //Send notification to PAC secretary
+                        //Send notification to HOD secretary
                         val hodSec = hodDetails?.id?.let { commonDaoServices.findUserByID(it) }
                         hodSec?.email?.let { qaDaoServices.sendPacDmarkAssessmentNotificationEmail(it, permitDetails) }
+                        sm.closeLink =
+                            "${applicationMapProperties.baseUrlValue}/qa/permits-list?permitTypeID=${permitDetails.permitType}"
 
-//                        permitDetails.generateSchemeStatus = map.activeStatus
-//                        permitDetails.sscId = uploadResults.second.id
-//                        permitDetails = qaDaoServices.permitUpdateDetails(permitDetails, map, loggedInUser).second
-//                        qaDaoServices.permitInsertStatus(
-//                            permitDetails,
-//                            applicationMapProperties.mapQaStatusPApprSSC,
-//                            loggedInUser
-//                        )
 
                     }
                     inspectionReportStatus != null -> {
@@ -2129,19 +2270,13 @@ class QualityAssuranceController(
             permitStatus = applicationMapProperties.mapQaStatusPApprovalustCationReport
             userTaskId = applicationMapProperties.mapUserTaskNameHOD
         }
-        result = qaDaoServices.permitUpdateDetails(permit, map, loggedInUser).first
+        val myResults = qaDaoServices.permitUpdateDetails(permit, map, loggedInUser)
+        result = myResults.first
 
-//        qaDaoServices.permitInsertStatus(
-//            permitDetails,
-//            applicationMapProperties.mapQaStatusPendingCorrectionManf,
-//            loggedInUser
-//        )
-
-        //Send notification to HOD for permit approval
+        qaDaoServices.sendNotificationForJustification(myResults.second)
 
         val sm = CommonDaoServices.MessageSuccessFailDTO()
-        sm.closeLink =
-            "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permit.id}"
+        sm.closeLink = "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permit.id}"
         sm.message = "Justification report successfully submitted for Approval"
 
         return commonDaoServices.returnValues(result, map, sm)

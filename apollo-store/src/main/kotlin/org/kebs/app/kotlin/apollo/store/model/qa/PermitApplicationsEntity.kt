@@ -375,6 +375,11 @@ class PermitApplicationsEntity : Serializable {
     @Basic
     var assignAssessorStatus: Int? = null
 
+
+    @Column(name = "LEAD_ASSESSOR_ID")
+    @Basic
+    var leadAssessorId: Long? = null
+
     @Column(name = "RESUBMIT_APPLICATION_STATUS")
     @Basic
     var resubmitApplicationStatus: Int? = null
@@ -798,6 +803,7 @@ class PermitApplicationsEntity : Serializable {
                 && factoryVisit == that.factoryVisit
                 && processStep == that.processStep
                 && ssfCompletedStatus == that.ssfCompletedStatus
+                && leadAssessorId == that.leadAssessorId
                 && processStepName == that.processStepName
                 && pcmReviewApprovalStatus == that.pcmReviewApprovalStatus
                 && approvedRejectedSchemeRemarks == that.approvedRejectedSchemeRemarks
@@ -814,6 +820,7 @@ class PermitApplicationsEntity : Serializable {
             id,
             companyId,
             ssfCompletedStatus,
+            leadAssessorId,
             permitRejectedCreatedVersion,
             designation,
             userTaskId,

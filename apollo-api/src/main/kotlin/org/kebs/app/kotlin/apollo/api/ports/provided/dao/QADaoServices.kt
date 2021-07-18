@@ -38,8 +38,6 @@ import java.time.temporal.ChronoUnit
 import java.util.stream.Collectors
 
 
-
-
 @Service
 class QADaoServices(
     private val applicationMapProperties: ApplicationMapProperties,
@@ -1452,7 +1450,8 @@ class QADaoServices(
 
     fun sendAppointAssessorNotificationEmail(recipientEmail: String, permit: PermitApplicationsEntity): Boolean {
         val subject = "DMARK Application Assessment"
-        val messageBody = "DMARK application with the details below has been assisgned to you for assessment:  \n" +
+        val messageBody = "DMARK application with the details below has been assisgned to you for assessment: " +
+                "for the following permit Ref NUMBER : ${permit.permitRefNumber} \n" +
                 "\n " +
                 "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permit.id}"
         notifications.sendEmail(recipientEmail, subject, messageBody)
@@ -1475,9 +1474,10 @@ class QADaoServices(
 
     fun sendPacDmarkAssessmentNotificationEmail(recipientEmail: String, permit: PermitApplicationsEntity): Boolean {
         val subject = "DMARK Factory Conformity Status"
-        val messageBody = "Dmark assessment report and conformity status is available for below:  \n" +
-                "\n " +
-                "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permit.id}"
+        val messageBody =
+            "Dmark assessment report and conformity status is available for approval, With Application Ref Number: ${permit.permitRefNumber} \n" +
+                    "\n " +
+                    "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permit.id}"
         notifications.sendEmail(recipientEmail, subject, messageBody)
         return true
     }
@@ -1646,14 +1646,14 @@ class QADaoServices(
 
 
     fun ssfUpdateDetails(
-        permitDetails: PermitApplicationsEntity,
+        ssfID: Long,
         ssfDetails: QaSampleSubmissionEntity,
         user: UsersEntity,
         map: ServiceMapsEntity
     ): Pair<ServiceRequestsEntity, QaSampleSubmissionEntity> {
 
         var sr = commonDaoServices.createServiceRequest(map)
-        var saveSSF = findSampleSubmittedBYPermitRefNumber(permitDetails.permitRefNumber ?: throw Exception("MISSING permit Ref Number"))
+        var saveSSF = findSampleSubmittedBYID(ssfID)
         try {
 
             with(saveSSF) {
@@ -1665,6 +1665,9 @@ class QADaoServices(
 
             saveSSF = SampleSubmissionRepo.save(saveSSF)
 
+            val permitDetails = findPermitWithPermitRefNumberLatest(
+                saveSSF.permitRefNumber ?: throw Exception("MISSING permit Ref Number")
+            )
 
             permitDetails.compliantStatus = saveSSF.resultsAnalysis
             var complianceValue: String? = null
@@ -1692,12 +1695,12 @@ class QADaoServices(
                 saveSSF.labReportFileId ?: throw ExpectedDataNotFound("MISSING LAB REPORT FILE ID STATUS")
             )
             val mappedFileClass = commonDaoServices.mapClass(fileUploaded)
-//            sendComplianceStatusAndLabReport(
-//                permitDetails,
-//                complianceValue ?: throw ExpectedDataNotFound("MISSING COMPLIANCE STATUS"),
-//                saveSSF.complianceRemarks ?: throw ExpectedDataNotFound("MISSING COMPLIANCE REMARKS"),
-//                mappedFileClass.document
-//            )
+            sendComplianceStatusAndLabReport(
+                permitDetails,
+                complianceValue ?: throw ExpectedDataNotFound("MISSING COMPLIANCE STATUS"),
+                saveSSF.complianceRemarks ?: throw ExpectedDataNotFound("MISSING COMPLIANCE REMARKS"),
+                String(mappedFileClass.document ?: throw ExpectedDataNotFound("MISSING BYTE ARRAY FILE"))
+            )
 
 
             sr.payload = "New SSF Saved [BRAND name${saveSSF.brandName} and ${saveSSF.id}]"
@@ -1920,13 +1923,13 @@ class QADaoServices(
         reasonValue: String?,
     ) {
         //todo: for now lets work with this i will change it
-        val userPermit = permitUpdate.userId?.let { commonDaoServices.findUserByID(it) }
+        val userPermit = permitUpdate.qaoId?.let { commonDaoServices.findUserByID(it) }
         val subject = "JUSTIFICATION REPORT"
         val messageBody = "Dear ${userPermit?.let { commonDaoServices.concatenateName(it) }}: \n" +
                 "\n " +
                 "Justification report was ${reasonValue} " +
 //                "due to the Following reason ${foundSSC.acceptedRejectedReason}:" +
-                "\n " +
+                "\n FOr the following Permit application with Ref Number ${permitUpdate.permitRefNumber}" +
                 "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitUpdate.id}"
 
         userPermit?.email?.let { notifications.sendEmail(it, subject, messageBody) }
@@ -3900,6 +3903,17 @@ class QADaoServices(
         manufacturer?.email?.let { notifications.sendEmail(it, subject, messageBody, attachment) }
     }
 
+    fun sendNotificationForJustification(permitDetails: PermitApplicationsEntity) {
+        val manufacturer = permitDetails.hodId?.let { commonDaoServices.findUserByID(it) }
+        val subject = "JUSTIFICATION REPORT "
+        val messageBody = "Dear ${manufacturer?.let { commonDaoServices.concatenateName(it) }}: \n" +
+                "\n " +
+                "A justification report has been generated for the following permit with REF number ${permitDetails.permitRefNumber} : ${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitDetails.id} \n" +
+                "That awaits your approval"
+
+        manufacturer?.email?.let { notifications.sendEmail(it, subject, messageBody) }
+    }
+
     fun sendNotificationForRecommendation(permitDetails: PermitApplicationsEntity) {
         val manufacturer = permitDetails.qamId?.let { commonDaoServices.findUserByID(it) }
         val subject = "RECOMMENDATION FOR AWARDING OF PERMIT"
@@ -3942,6 +3956,26 @@ class QADaoServices(
                 "Please do some correction and send it back for approval : ${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitDetails.id}\n"
 
         manufacturer?.email?.let { notifications.sendEmail(it, subject, messageBody) }
+    }
+
+    fun sendNotificationForDeferredPermitToAssessorFromPCM(permitDetails: PermitApplicationsEntity) {
+        val manufacturer = permitDetails.assessorId?.let { commonDaoServices.findUserByID(it) }
+        val subject = "AWARDING OF PERMIT DEFERRED "
+        val messageBody = "Dear ${manufacturer?.let { commonDaoServices.concatenateName(it) }}: \n" +
+                "\n " +
+                "The following permit with REF number ${permitDetails.permitRefNumber}, has been DEFERRED due to the following reasons: ${permitDetails.pacDecisionRemarks} \n" +
+                "Please do some correction and send it back for approval : ${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitDetails.id}\n"
+
+        manufacturer?.email?.let { notifications.sendEmail(it, subject, messageBody) }
+
+        val manufacturer2 = permitDetails.leadAssessorId?.let { commonDaoServices.findUserByID(it) }
+        val subject2 = "AWARDING OF PERMIT DEFERRED "
+        val messageBody2 = "Dear ${manufacturer2?.let { commonDaoServices.concatenateName(it) }}: \n" +
+                "\n " +
+                "The following permit with REF number ${permitDetails.permitRefNumber}, has been DEFERRED due to the following reasons: ${permitDetails.pacDecisionRemarks} \n" +
+                "Please do some correction and send it back for approval : ${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitDetails.id}\n"
+
+        manufacturer2?.email?.let { notifications.sendEmail(it, subject2, messageBody2) }
     }
 
     fun sendNotificationForPermitReviewRejectedFromPCM(permitDetails: PermitApplicationsEntity) {
