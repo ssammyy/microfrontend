@@ -316,7 +316,7 @@ export class NewDmarkPermitComponent implements OnInit {
 
     onClickUpdateSTA3B(valid: boolean) {
         if (valid) {
-            this.sta3 = {...this.sta3, ...this.sta3FormA.value};
+            this.sta3 = {...this.sta3, ...this.sta3FormB.value};
             this.qaService.updatePermitSTA3(this.sta1.id.toString(), this.sta3).subscribe(
                 (data: any) => {
                     this.onClickUpdateStep(this.step);
@@ -338,7 +338,7 @@ export class NewDmarkPermitComponent implements OnInit {
 
     onClickUpdateSTA3C(valid: boolean) {
         if (valid) {
-            this.sta3 = {...this.sta3, ...this.sta3FormA.value};
+            this.sta3 = {...this.sta3, ...this.sta3FormC.value};
             this.qaService.updatePermitSTA3(this.sta1.id.toString(), this.sta3).subscribe(
                 (data: any) => {
                     this.onClickUpdateStep(this.step);
@@ -360,7 +360,7 @@ export class NewDmarkPermitComponent implements OnInit {
 
     onClickUpdateSTA3D(valid: boolean) {
         if (valid) {
-            this.sta3 = {...this.sta3, ...this.sta3FormA.value};
+            this.sta3 = {...this.sta3, ...this.sta3FormD.value};
             this.qaService.updatePermitSTA3(this.sta1.id.toString(), this.sta3).subscribe(
                 (data: any) => {
                     this.onClickUpdateStep(this.step);
