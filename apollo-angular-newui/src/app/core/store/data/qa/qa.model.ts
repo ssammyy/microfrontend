@@ -72,6 +72,11 @@ export class PermitProcessStepDto {
     processStep: number;
 }
 
+export class SSCApprovalRejectionDto {
+    approvedRejectedScheme: number;
+    approvedRejectedSchemeRemarks: string;
+}
+
 
 export class PermitEntityDetails {
     id: bigint;
@@ -122,6 +127,10 @@ export class PermitEntityDetails {
     approvedRejectedScheme: boolean;
     sendForPcmReview: boolean;
     sendApplication: boolean;
+    pcmReviewApprove: boolean;
+    hofQamCompletenessStatus: boolean;
+    generateSchemeStatus: boolean;
+    resubmitApplicationStatus: boolean;
     processStep: number;
     processStatusID: number;
 }

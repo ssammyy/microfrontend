@@ -5,7 +5,7 @@ import {ApiEndpointService} from '../../../services/endpoints/api-endpoint.servi
 import {catchError, map} from 'rxjs/operators';
 import {
     AllSTA10DetailsDto,
-    MPesaPushDto, PermitProcessStepDto,
+    MPesaPushDto, PermitProcessStepDto, SSCApprovalRejectionDto,
     STA1,
     Sta10Dto,
     STA10MachineryAndPlantDto,
@@ -607,11 +607,41 @@ export class QaService {
         );
     }
 
+    public submitPermitForReviewHODQAM(permitID: string): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.PERMIT_SUBMIT_DETAILS_FOR_HOD_QAM_REVIEW);
+        const params = new HttpParams()
+            .set('permitID', permitID);
+        return this.http.post<any>(url, null, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
+
     public submitPermitApplication(permitID: string): Observable<any> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.PERMIT_SUBMIT_APPLICATION);
         const params = new HttpParams()
             .set('permitID', permitID);
         return this.http.post<any>(url, null, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
+
+    public submitSSCApprovalRejection(permitID: string, data: SSCApprovalRejectionDto): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.PERMIT_SUBMIT_SSC_APPROVAL_REJECTION);
+        const params = new HttpParams()
+            .set('permitID', permitID);
+        return this.http.post<any>(url, data, {params}).pipe(
             map(function (response: any) {
                 return response;
             }),

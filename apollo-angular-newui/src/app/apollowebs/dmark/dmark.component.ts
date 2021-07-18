@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, OnInit} from '@angular/core';
+import {AfterViewInit, Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {QaService} from '../../core/store/data/qa/qa.service';
 import {
@@ -11,6 +11,7 @@ import {
 import swal from 'sweetalert2';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {ApiEndpointService} from '../../core/services/endpoints/api-endpoint.service';
+import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 
 declare interface DataTable {
     headerRow: string[];
@@ -26,6 +27,11 @@ declare const $: any;
     styleUrls: ['./dmark.component.css']
 })
 export class DmarkComponent implements OnInit, AfterViewInit {
+    @ViewChild('editModal') editModal !: TemplateRef<any>;
+    currDiv!: string;
+    currDivLabel!: string;
+    approveRejectSSCForm!: FormGroup;
+
     sta1Form: FormGroup;
     sta3FormA: FormGroup;
     sta3FormB: FormGroup;
@@ -50,6 +56,7 @@ export class DmarkComponent implements OnInit, AfterViewInit {
     constructor(
         private route: ActivatedRoute,
         private router: Router,
+        private modalService: NgbModal,
         private qaService: QaService,
         private formBuilder: FormBuilder
     ) {
@@ -121,6 +128,13 @@ export class DmarkComponent implements OnInit, AfterViewInit {
         });
 
 
+        this.approveRejectSSCForm = this.formBuilder.group({
+            approvedRejectedScheme: ['', Validators.required],
+            approvedRejectedSchemeRemarks: [''],
+            // approvedRemarks: ['', Validators.required],
+        });
+
+
         this.qaService.loadSectionList().subscribe(
             (data: any) => {
                 this.sections = data;
@@ -134,7 +148,13 @@ export class DmarkComponent implements OnInit, AfterViewInit {
                 console.log(data);
             }
         );
+
     }
+
+    get formApproveRejectSSC(): any {
+        return this.approveRejectSSCForm.controls;
+    }
+
     get formSta1Form(): any {
         return this.sta1Form.controls;
     }
@@ -255,57 +275,64 @@ export class DmarkComponent implements OnInit, AfterViewInit {
         }
     }
 
-    submitApplication(): void {
+    submitApplicationForReviewHOD(): void {
         // tslint:disable-next-line:max-line-length
-        if (this.allPermitDetails.permitDetails.permitForeignStatus === true && this.allPermitDetails.permitDetails.permitTypeID === ApiEndpointService.QA_APPLICATION_MAP_PROPERTIES.DMARK_TYPE_ID) {
-            this.qaService.submitPermitForReview(this.permitID).subscribe(
-                (data: AllPermitDetailsDto) => {
-                    this.allPermitDetails = data;
-                    swal.fire({
-                        title: 'DMARK SUBMITTED SUCCESSFULLY FOR REVIEW FROM PCM!',
-                        buttonsStyling: false,
-                        customClass: {
-                            confirmButton: 'btn btn-success form-wizard-next-btn ',
-                        },
-                        icon: 'success'
-                    });
+        // if (this.allPermitDetails.permitDetails.permitForeignStatus === true && this.allPermitDetails.permitDetails.permitTypeID === ApiEndpointService.QA_APPLICATION_MAP_PROPERTIES.DMARK_TYPE_ID) {
+        this.qaService.submitPermitForReviewHODQAM(this.permitID).subscribe(
+            (data: AllPermitDetailsDto) => {
+                this.allPermitDetails = data;
+                swal.fire({
+                    title: 'DMARK SUBMITTED SUCCESSFULLY FOR REVIEW HOD/RM!',
+                    buttonsStyling: false,
+                    customClass: {
+                        confirmButton: 'btn btn-success form-wizard-next-btn ',
+                    },
+                    icon: 'success'
+                });
 
-                    // this.onUpdateReturnToList();
-                },
-            );
-        } else {
-            this.qaService.submitPermitApplication(this.permitID).subscribe(
-                (data: AllPermitDetailsDto) => {
-                    this.allPermitDetails = data;
+                // this.onUpdateReturnToList();
+            },
+        );
+        // }
+    }
 
-                    // tslint:disable-next-line:max-line-length
-                    if (this.allPermitDetails.permitDetails.permitTypeID === ApiEndpointService.QA_APPLICATION_MAP_PROPERTIES.SMARK_TYPE_ID || this.allPermitDetails.permitDetails.permitTypeID === ApiEndpointService.QA_APPLICATION_MAP_PROPERTIES.FMARK_TYPE_ID) {
-                        swal.fire({
-                            title: 'SMARK SUBMITTED SUCCESSFULLY PENDING PAYMENT!',
-                            buttonsStyling: false,
-                            customClass: {
-                                confirmButton: 'btn btn-success form-wizard-next-btn ',
-                            },
-                            icon: 'success'
-                        });
-                    } else {
-                        swal.fire({
-                            title: 'DMARK SUBMITTED SUCCESSFULLY PENDING PAYMENT!',
-                            buttonsStyling: false,
-                            customClass: {
-                                confirmButton: 'btn btn-success form-wizard-next-btn ',
-                            },
-                            icon: 'success'
-                        });
-                    }
+    submitApplication(): void {
+        this.qaService.submitPermitApplication(this.permitID).subscribe(
+            (data: AllPermitDetailsDto) => {
+                this.allPermitDetails = data;
+                swal.fire({
+                    title: 'DMARK SUBMITTED SUCCESSFULLY PENDING PAYMENT!',
+                    buttonsStyling: false,
+                    customClass: {
+                        confirmButton: 'btn btn-success form-wizard-next-btn ',
+                    },
+                    icon: 'success'
+                });
+                this.router.navigate(['/invoiceDetails'], {fragment: this.allPermitDetails.batchID.toString()});
 
+                // this.onUpdateReturnToList();
+            },
+        );
+    }
 
-                    this.router.navigate(['/invoiceDetails'], {fragment: this.allPermitDetails.batchID.toString()});
+    submitApprovalRejectionSSC(): void {
+        console.log(this.approveRejectSSCForm.value);
+        this.qaService.submitSSCApprovalRejection(this.permitID, this.approveRejectSSCForm.value).subscribe(
+            (data: PermitEntityDetails) => {
+                this.allPermitDetails.permitDetails = data;
+                swal.fire({
+                    title: 'PERMIT APPLICATION SSC UPDATED SUCCESSFULLY!',
+                    buttonsStyling: false,
+                    customClass: {
+                        confirmButton: 'btn btn-success form-wizard-next-btn ',
+                    },
+                    icon: 'success'
+                });
+                // this.router.navigate(['/invoiceDetails'], {fragment: this.allPermitDetails.batchID.toString()});
 
-                    // this.onUpdateReturnToList();
-                },
-            );
-        }
+                // this.onUpdateReturnToList();
+            },
+        );
     }
 
     onClickSaveSTA1(valid: boolean) {
@@ -463,4 +490,19 @@ export class DmarkComponent implements OnInit, AfterViewInit {
                 '</div>'
         });
     }
+
+    openModal(divVal: string): void {
+        const arrHead = ['approveSSC'];
+        const arrHeadSave = ['AGREE/CONSENT TO SCHEME OF SUPERVISION AND CONTROL'];
+
+        for (let h = 0; h < arrHead.length; h++) {
+            if (divVal === arrHead[h]) {
+                this.currDivLabel = arrHeadSave[h];
+            }
+        }
+
+        this.currDiv = divVal;
+        this.modalService.open(this.editModal);
+    }
+
 }

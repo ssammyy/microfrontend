@@ -89,6 +89,7 @@ import {FileUploadModule} from '@iplab/ngx-file-upload';
 import {AddUserComponent} from './apollowebs/company/branch/add-user/add-user.component';
 import {FmarkApplicationComponent} from './apollowebs/fmark-application/fmark-application.component';
 import {LoaderComponent} from './shared/loader/loader.component';
+import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 
 @NgModule({
     exports: [
@@ -207,6 +208,7 @@ export class MaterialModule {}
         }),
         ReactiveFormsModule,
         FormsModule,
+        NgbModule,
         NgxPaginationModule,
         FontAwesomeModule,
         NgxSpinnerModule,

@@ -245,54 +245,70 @@ class SchedulerImpl(
         //Find all Sample with Lab results inactive
         KotlinLogging.logger { }.info { "::::::::::::::::::::::::STARTED LAB RESULTS SCHEDULER::::::::::::::::::" }
         var samples = 1
-        sampleSubmissionRepo.findByLabResultsStatus(map.inactiveStatus)?.forEach { ssfFound ->
-            KotlinLogging.logger { }
-                .info { "::::::::::::::::::::::::SAMPLES WITH RESULTS FOUND = ${samples++}::::::::::::::::::" }
-            val bsNumber = ssfFound.bsNumber ?: throw Exception("DATA NOT FOUND")
-            when {
-                limsServices.mainFunctionLims(bsNumber) == true -> {
-                    with(ssfFound) {
-                        modifiedBy = "SYSTEM SCHEDULER"
-                        modifiedOn = commonDaoServices.getTimestamp()
-                        labResultsStatus = map.activeStatus
-                        resultsDate = commonDaoServices.getCurrentDate()
-                    }
-                    sampleSubmissionRepo.save(ssfFound)
+        val ssfFoundList = sampleSubmissionRepo.findByLabResultsStatus(map.inactiveStatus)
+        if (ssfFoundList != null) {
+            for (ssfFound in ssfFoundList) {
+                try {
+                    KotlinLogging.logger { }
+                        .info { "::::::::::::::::::::::::SAMPLES WITH RESULTS FOUND = ${samples++}::::::::::::::::::" }
+                    val bsNumber = ssfFound.bsNumber ?: throw Exception("DATA NOT FOUND")
                     when {
-                        ssfFound.permitId != null -> {
-                            qaDaoServices.findPermitBYID(ssfFound.permitId ?: throw Exception("PERMIT ID NOT FOUND"))
-                                .let { pm ->
-                                    with(pm) {
-                                        permitStatus = applicationMapProperties.mapQaStatusPLABResultsCompletness
-                                        modifiedBy = "SYSTEM SCHEDULER"
-                                        modifiedOn = commonDaoServices.getTimestamp()
-                                    }
-                                    permitRepo.save(pm)
-                                }
-                        }
-                        ssfFound.cdItemId != null -> {
-                            diDaoServices.findItemWithItemID(
-                                ssfFound.cdItemId ?: throw Exception("CD ITEM ID NOT FOUND")
-                            )
-                                .let { cdItem ->
-                                    diDaoServices.findCD(cdItem.cdDocId?.id ?: throw Exception("CD ID NOT FOUND"))
-                                        .let { updatedCDDetails ->
-                                            updatedCDDetails.cdStandard?.let { cdStd ->
-                                                diDaoServices.updateCDStatus(
-                                                    cdStd,
-                                                    applicationMapProperties.mapDIStatusTypeInspectionSampleResultsReceivedId
-                                                )
+                        limsServices.mainFunctionLims(bsNumber) == true -> {
+                            with(ssfFound) {
+                                modifiedBy = "SYSTEM SCHEDULER"
+                                modifiedOn = commonDaoServices.getTimestamp()
+                                labResultsStatus = map.activeStatus
+                                resultsDate = commonDaoServices.getCurrentDate()
+                            }
+                            sampleSubmissionRepo.save(ssfFound)
+                            when {
+                                ssfFound.permitRefNumber != null -> {
+                                    qaDaoServices.findPermitWithPermitRefNumberLatest(
+                                        ssfFound.permitRefNumber ?: throw Exception("PERMIT WITH REF NO, NOT FOUND")
+                                    )
+                                        .let { pm ->
+                                            with(pm) {
+                                                permitStatus =
+                                                    applicationMapProperties.mapQaStatusPLABResultsCompletness
+                                                modifiedBy = "SYSTEM SCHEDULER"
+                                                modifiedOn = commonDaoServices.getTimestamp()
                                             }
+                                            permitRepo.save(pm)
                                         }
-
                                 }
+                                ssfFound.cdItemId != null -> {
+                                    diDaoServices.findItemWithItemID(
+                                        ssfFound.cdItemId ?: throw Exception("CD ITEM ID NOT FOUND")
+                                    )
+                                        .let { cdItem ->
+                                            diDaoServices.findCD(
+                                                cdItem.cdDocId?.id ?: throw Exception("CD ID NOT FOUND")
+                                            )
+                                                .let { updatedCDDetails ->
+                                                    updatedCDDetails.cdStandard?.let { cdStd ->
+                                                        diDaoServices.updateCDStatus(
+                                                            cdStd,
+                                                            applicationMapProperties.mapDIStatusTypeInspectionSampleResultsReceivedId
+                                                        )
+                                                    }
+                                                }
+
+                                        }
+                                }
+                            }
+
+
                         }
                     }
 
+                } catch (e: Exception) {
+                    KotlinLogging.logger { }.error(e.message)
+                    KotlinLogging.logger { }.debug(e.message, e)
 
+                    continue
                 }
-            }
 
+            }
         }
     }
  }

@@ -410,6 +410,9 @@ class ApplicationMapProperties {
     @Value("\${org.kebs.app.kotlin.apollo.application.map.lims.config.integration.pdf}")
     val mapLimsConfigIntegrationPDF: Long = 0L
 
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.lims.config.integration.List.pdf}")
+    val mapLimsConfigIntegrationListPDF: Long = 0L
+
     @Value("\${org.kebs.app.kotlin.apollo.application.map.sms.config.integration}")
     val mapSmsConfigIntegration: Long = 0L
 

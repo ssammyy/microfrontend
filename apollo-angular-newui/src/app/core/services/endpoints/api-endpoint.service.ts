@@ -17,10 +17,10 @@ export class ApiEndpointService {
    * Map of domains for API endpoints.
    */
   public static DOMAIN = {
-      LOCAL_DEV: 'localhost:8006'
-      // LOCAL_DEV: '12:8006'
+      // LOCAL_DEV: 'localhost:8006'
+    // LOCAL_DEV: '12:8006'
       // LOCAL_DEV: '41.72.209.58:8006'
-      // LOCAL_DEV: 'kimsint.kebs.org:8006'
+    LOCAL_DEV: 'kimsint.kebs.org:8006'
       // LOCAL_DEV: 'kims.kebs.org:8006'
   };
 
@@ -128,7 +128,10 @@ export class ApiEndpointService {
     PERMIT_LIST: `${ApiEndpointService.QA_CONTEXT}/permit/list`,
     PERMIT_VIEW_DETAILS: `${ApiEndpointService.QA_CONTEXT}/permit/view/details`,
     PERMIT_SUBMIT_DETAILS_FOR_REVIEW: `${ApiEndpointService.QA_CONTEXT_APPLY}/submit-application-review`,
+    PERMIT_SUBMIT_DETAILS_FOR_HOD_QAM_REVIEW: `${ApiEndpointService.QA_CONTEXT_APPLY}/submit-application-qam-hod-review`,
     PERMIT_SUBMIT_APPLICATION: `${ApiEndpointService.QA_CONTEXT_APPLY}/submit-application`,
+    PERMIT_SUBMIT_SSC_APPROVAL_REJECTION: `${ApiEndpointService.QA_CONTEXT_APPLY}/submit-application-ssc-approval-rejection`,
+
     PLANT_LIST: `${ApiEndpointService.QA_CONTEXT}/branch-list`,
     SECTION_LIST: `${ApiEndpointService.QA_CONTEXT}/sections-list`,
     MY_TASK_LIST: `${ApiEndpointService.QA_CONTEXT}/permit/task-list`,
