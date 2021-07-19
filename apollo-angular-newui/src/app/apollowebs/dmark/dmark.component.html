@@ -26,6 +26,11 @@
 <i class="material-icons">assignment_turned_in</i> STA3 Summary
 </a>
 </li>
+<li class="nav-item">
+    <a class="nav-link" data-toggle="tab" href="#link14" role="tablist">
+        <i class="material-icons">assignment_turned_in</i>CERTIFICATE ISSUED
+    </a>
+</li>
 <!--                        &lt;!&ndash; &ndash;&gt;-->
 <!--                        <li class="nav-item">-->
 <!--                            <a class="nav-link" data-toggle="tab" href="#link12" role="tablist">-->
@@ -751,16 +756,20 @@ placeholder=""
 </div>
 </div>
 </div>
-<!--                        <div class="tab-pane" id="link12">-->
-<!--                            <div class="material-datatables">-->
-<!--                                <table id="datatables" class="table table-striped table-no-bordered table-hover" cellspacing="0" width="100%" style="width:100%">-->
-<!--                                    <thead>-->
-<!--                                    <tr>-->
-<!--                                        <th>{{ dataTable.headerRow[0] }}</th>-->
-<!--                                        <th>{{ dataTable.headerRow[1] }}</th>-->
-<!--                                        <th>{{ dataTable.headerRow[2] }}</th>-->
-<!--                                        <th>{{ dataTable.headerRow[3] }}</th>-->
-<!--                                        <th>{{ dataTable.headerRow[4] }}</th>-->
+    <div class="tab-pane" id="link14">
+        <ngx-extended-pdf-viewer [src]="pdfSources" [zoom]="'page-actual'"
+                                 [filenameForDownload]="'Certificate'"></ngx-extended-pdf-viewer>
+    </div>
+    <!--                        <div class="tab-pane" id="link12">-->
+    <!--                            <div class="material-datatables">-->
+    <!--                                <table id="datatables" class="table table-striped table-no-bordered table-hover" cellspacing="0" width="100%" style="width:100%">-->
+    <!--                                    <thead>-->
+    <!--                                    <tr>-->
+    <!--                                        <th>{{ dataTable.headerRow[0] }}</th>-->
+    <!--                                        <th>{{ dataTable.headerRow[1] }}</th>-->
+    <!--                                        <th>{{ dataTable.headerRow[2] }}</th>-->
+    <!--                                        <th>{{ dataTable.headerRow[3] }}</th>-->
+    <!--                                        <th>{{ dataTable.headerRow[4] }}</th>-->
 <!--                                        <th class="disabled-sorting text-right">{{ dataTable.headerRow[5] }}</th>-->
 <!--                                    </tr>-->
 <!--                                    </thead>-->
@@ -804,19 +813,25 @@ placeholder=""
 <h4 class="card-title">Actions
 </h4>
 </div>
-<div class="card-body ">
-    <button *ngIf="allPermitDetails.permitDetails.invoiceGenerated == true" mat-raised-button=""
-            class="btn btn-kebs mat-raised-button mat-button-base"><span class="mat-button-wrapper">View Generated Invoice </span>
-        <div matripple="" class="mat-ripple mat-button-ripple"></div>
-        <div class="mat-button-focus-overlay"></div>
-    </button>
+    <div class="card-body ">
+        <!--    <button *ngIf="allPermitDetails.permitDetails.invoiceGenerated == true" mat-raised-button=""-->
+        <!--            class="btn btn-kebs mat-raised-button mat-button-base"><span class="mat-button-wrapper">View Generated Invoice </span>-->
+        <!--        <div matripple="" class="mat-ripple mat-button-ripple"></div>-->
+        <!--        <div class="mat-button-focus-overlay"></div>-->
+        <!--    </button>-->
+        <button *ngIf="allPermitDetails.permitDetails.permitAwardStatus == false" mat-raised-button=""
+                (click)="submitRenewalApplication()" class="btn btn-kebs mat-raised-button mat-button-base"><span
+                class="mat-button-wrapper">RENEW</span>
+            <div matripple="" class="mat-ripple mat-button-ripple"></div>
+            <div class="mat-button-focus-overlay"></div>
+        </button>
 
 
-    <!--    <div *ngIf="allPermitDetails.permitDetails.permitTypeID == SMarkTypeID || allPermitDetails.permitDetails.permitTypeID == FMarkTypeID">-->
-    <!--        <button *ngIf="allPermitDetails.permitDetails.sendApplication == false"-->
-    <!--                (click)="submitApplication()" mat-raised-button=""-->
-    <!--                class="btn btn-kebs mat-raised-button mat-button-base"><span class="mat-button-wrapper">SUBMIT APPLICATION</span>-->
-    <!--            <div matripple="" class="mat-ripple mat-button-ripple"></div>-->
+        <!--    <div *ngIf="allPermitDetails.permitDetails.permitTypeID == SMarkTypeID || allPermitDetails.permitDetails.permitTypeID == FMarkTypeID">-->
+        <!--        <button *ngIf="allPermitDetails.permitDetails.sendApplication == false"-->
+        <!--                (click)="submitApplication()" mat-raised-button=""-->
+        <!--                class="btn btn-kebs mat-raised-button mat-button-base"><span class="mat-button-wrapper">SUBMIT APPLICATION</span>-->
+        <!--            <div matripple="" class="mat-ripple mat-button-ripple"></div>-->
     <!--            <div class="mat-button-focus-overlay"></div>-->
     <!--        </button>-->
     <!--    </div>-->

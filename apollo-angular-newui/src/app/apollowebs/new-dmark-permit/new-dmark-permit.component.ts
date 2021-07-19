@@ -417,7 +417,7 @@ export class NewDmarkPermitComponent implements OnInit {
                     // this.router.navigate(['/permitdetails'], {fragment: this.permitEntityDetails.id.toString()});
                 },
             );
-            this.router.navigate(['/permitdetails'], {fragment: this.sta1.id.toString()});
+            this.router.navigate(['/permitdetails'], {fragment: String(this.sta1.id)});
         }
 
     }

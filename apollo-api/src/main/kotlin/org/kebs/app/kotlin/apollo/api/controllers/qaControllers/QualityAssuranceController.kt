@@ -80,7 +80,7 @@ class QualityAssuranceController(
             fmarkEntityDto.smarkPermitID ?: throw ExpectedDataNotFound("Smark Permit id not found")
         )
 
-        result = qaDaoServices.permitGenerateFmark(map, loggedInUser, permitDetails, auth)
+        result = qaDaoServices.permitGenerateFmark(map, loggedInUser, permitDetails, auth).first
 
         val sm = CommonDaoServices.MessageSuccessFailDTO()
         sm.closeLink = "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${result.varField1}"
@@ -228,21 +228,6 @@ class QualityAssuranceController(
         //Add Permit ID THAT was Fetched so That it wont create a new record while updating with the methode
         permit.id = permitDetails.id
 
-        //Add the extra permit details from plant attached
-//        if (permit.attachedPlantId != null) {
-//            val plantDetails = qaDaoServices.findPlantDetails(permit.attachedPlantId!!)
-//            val manufacturedDetails = commonDaoServices.findCompanyProfile(plantDetails.userId ?: throw ExpectedDataNotFound("MISSING USER ID"))
-//            with(permit) {
-//                firmName = manufacturedDetails.name
-//                postalAddress = plantDetails.postalAddress
-//                telephoneNo = plantDetails.telephone
-//                email = plantDetails.emailAddress
-//                physicalAddress = plantDetails.physicalAddress
-//                faxNo = plantDetails.faxNo
-//                plotNo = plantDetails.plotNo
-//                designation = plantDetails.designation
-//            }
-//        } else
             if (permit.sectionId != null) {
             with(permit) {
                 divisionId = commonDaoServices.findSectionWIthId(
@@ -871,6 +856,7 @@ class QualityAssuranceController(
 //                        per
 
                     }
+                    userTaskId = null
                     permitAwardStatus = map.activeStatus
                     dateOfIssue = issueDate
                     dateOfExpiry = expiryDate
@@ -884,7 +870,6 @@ class QualityAssuranceController(
                         permitDetailsDB
                     ) as PermitApplicationsEntity, map, loggedInUser
                 ).second
-                permitDetailsDB.userTaskId = null
                 qaDaoServices.permitInsertStatus(
                     permitDetailsDB,
                     applicationMapProperties.mapQaStatusPermitAwarded,

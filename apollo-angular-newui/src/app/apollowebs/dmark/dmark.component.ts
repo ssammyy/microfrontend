@@ -32,6 +32,8 @@ export class DmarkComponent implements OnInit, AfterViewInit {
     currDivLabel!: string;
     approveRejectSSCForm!: FormGroup;
 
+    pdfSources: any;
+
     sta1Form: FormGroup;
     sta3FormA: FormGroup;
     sta3FormB: FormGroup;
@@ -148,6 +150,15 @@ export class DmarkComponent implements OnInit, AfterViewInit {
                 console.log(data);
             }
         );
+
+        // if (this.allPermitDetails.permitDetails.permitAwardStatus === true) {
+        this.qaService.loadCertificateDetailsPDF(this.permitID).subscribe(
+            (data: any) => {
+                this.pdfSources = data;
+            },
+        );
+        // }
+
 
     }
 
@@ -505,4 +516,21 @@ export class DmarkComponent implements OnInit, AfterViewInit {
         this.modalService.open(this.editModal);
     }
 
+    submitRenewalApplication() {
+        this.qaService.submitPermitRenewApplication(this.permitID).subscribe(
+            (data: AllPermitDetailsDto) => {
+                this.allPermitDetails = data;
+                console.log(AllPermitDetailsDto);
+                swal.fire({
+                    title: 'DMARK Renewed Successfully! Proceed to submit application.',
+                    buttonsStyling: false,
+                    customClass: {
+                        confirmButton: 'btn btn-success form-wizard-next-btn ',
+                    },
+                    icon: 'success'
+                });
+                // this.router.navigate(['/permitdetails'], {fragment: String(this.AllPermitDetailsDto.permitDetails.id)});
+            },
+        );
+    }
 }

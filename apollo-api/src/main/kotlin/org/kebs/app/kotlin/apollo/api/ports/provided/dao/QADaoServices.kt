@@ -2473,22 +2473,22 @@ class QADaoServices(
             }
             savePermit = permitRepo.save(savePermit)
 
-            when (oldPermit.permitType) {
-                applicationMapProperties.mapQAPermitTypeIdSmark -> {
-                    val sta10 = findSTA10WithPermitRefNumberBY(oldPermit.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"))
-                    var newSta10 = QaSta10Entity()
-                    newSta10 = commonDaoServices.updateDetails(sta10, newSta10) as QaSta10Entity
-                    newSta10.id = null
-                    sta10NewSave(savePermit, newSta10, user, s)
-                }
-                applicationMapProperties.mapQAPermitTypeIDDmark -> {
-                    val sta3 = findSTA3WithPermitRefNumber(oldPermit.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"))
-                    var newSta3 = QaSta3Entity()
-                    newSta3 = commonDaoServices.updateDetails(sta3, newSta3) as QaSta3Entity
-                    newSta3.id = null
-                    sta3NewSave(savePermit.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"), newSta3, user, s)
-                }
-            }
+//            when (oldPermit.permitType) {
+////                applicationMapProperties.mapQAPermitTypeIdSmark -> {
+////                    val sta10 = findSTA10WithPermitRefNumberBY(oldPermit.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"))
+////                    var newSta10 = QaSta10Entity()
+////                    newSta10 = commonDaoServices.updateDetails(sta10, newSta10) as QaSta10Entity
+////                    newSta10.id = null
+////                    sta10NewSave(savePermit, newSta10, user, s)
+////                }
+////                applicationMapProperties.mapQAPermitTypeIDDmark -> {
+////                    val sta3 = findSTA3WithPermitRefNumber(oldPermit.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"))
+////                    var newSta3 = QaSta3Entity()
+////                    newSta3 = commonDaoServices.updateDetails(sta3, newSta3) as QaSta3Entity
+////                    newSta3.id = null
+////                    sta3NewSave(savePermit.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"), newSta3, user, s)
+////                }
+//            }
 
 
             sr.payload = "Permit Renewed Updated [updatePermit= ${savePermit.id}]"
@@ -2521,6 +2521,17 @@ class QADaoServices(
             "Proforma-Invoice-${myDetails.first.getValue("demandNoteNo")}.pdf",
             myDetails.first,
             applicationMapProperties.mapReportProfomaInvoiceWithItemsPath,
+            myDetails.second
+        )?.let {
+            return it
+        } ?: throw ExpectedDataNotFound("MISSING FILE")
+    }
+
+    fun getFileCertificateIssuedPDFForm(permitID: Long): File {
+        val myDetails = reportsControllers.permitCertificateIssuedCreation(permitID)
+        reportsDaoService.generateEmailPDFReportWithNoDataSource(
+            "Permit-Certificate-${myDetails.first.getValue("PermitNo")}.pdf",
+            myDetails.first,
             myDetails.second
         )?.let {
             return it
@@ -3345,15 +3356,16 @@ class QADaoServices(
         user: UsersEntity,
         permit: PermitApplicationsEntity,
         auth: Authentication
-    ): ServiceRequestsEntity {
+    ): Pair<ServiceRequestsEntity, PermitApplicationsEntity> {
 
         var sr = commonDaoServices.createServiceRequest(s)
+        var fmarkPermit = PermitApplicationsEntity()
         try {
 
             val permitType = findPermitType(applicationMapProperties.mapQAPermitTypeIdFmark)
 //            val smark = permit.id?.let { findPermitBYID(it) } ?: throw ExpectedDataNotFound("SMARK Id Not found")
 
-            var fmarkPermit = PermitApplicationsEntity()
+
             with(fmarkPermit) {
                 commodityDescription = permit.commodityDescription
                 tradeMark = permit.tradeMark
@@ -3409,7 +3421,7 @@ class QADaoServices(
         }
 
         KotlinLogging.logger { }.trace("${sr.id} ${sr.responseStatus}")
-        return sr
+        return Pair(sr, fmarkPermit)
     }
 
     fun generateSmarkFmarkEntity(

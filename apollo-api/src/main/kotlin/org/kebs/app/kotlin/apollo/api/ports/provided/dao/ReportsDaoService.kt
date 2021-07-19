@@ -147,7 +147,7 @@ class ReportsDaoService(
         response.contentType = "text/html"
         response.contentType = "application/pdf"
         response.setHeader("Content-Length", pdfReportStream.size().toString())
-        response.addHeader("Content-Dispostion", "inline; filename=jasper.pdf;")
+        response.addHeader("Content-Dispostion", "inline; filename=Permit-Certificate-${map.getValue("PermitNo")}.pdf;")
         response.outputStream.let { responseOutputStream ->
             responseOutputStream.write(pdfReportStream.toByteArray())
             responseOutputStream.close()
