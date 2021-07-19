@@ -812,14 +812,14 @@ placeholder=""
     </button>
 
 
-    <div *ngIf="allPermitDetails.permitDetails.permitTypeID == SMarkTypeID || allPermitDetails.permitDetails.permitTypeID == FMarkTypeID">
-        <button *ngIf="allPermitDetails.permitDetails.sendApplication == false"
-                (click)="submitApplication()" mat-raised-button=""
-                class="btn btn-kebs mat-raised-button mat-button-base"><span class="mat-button-wrapper">SUBMIT APPLICATION</span>
-            <div matripple="" class="mat-ripple mat-button-ripple"></div>
-            <div class="mat-button-focus-overlay"></div>
-        </button>
-    </div>
+    <!--    <div *ngIf="allPermitDetails.permitDetails.permitTypeID == SMarkTypeID || allPermitDetails.permitDetails.permitTypeID == FMarkTypeID">-->
+    <!--        <button *ngIf="allPermitDetails.permitDetails.sendApplication == false"-->
+    <!--                (click)="submitApplication()" mat-raised-button=""-->
+    <!--                class="btn btn-kebs mat-raised-button mat-button-base"><span class="mat-button-wrapper">SUBMIT APPLICATION</span>-->
+    <!--            <div matripple="" class="mat-ripple mat-button-ripple"></div>-->
+    <!--            <div class="mat-button-focus-overlay"></div>-->
+    <!--        </button>-->
+    <!--    </div>-->
 
 
     <div *ngIf="allPermitDetails.permitDetails.permitTypeID == DMarkTypeID">
@@ -829,9 +829,29 @@ placeholder=""
             <div matripple="" class="mat-ripple mat-button-ripple"></div>
             <div class="mat-button-focus-overlay"></div>
         </button>
+        <button *ngIf="allPermitDetails.permitDetails.pcmReviewApprove == false && allPermitDetails.permitDetails.sendForPcmReview == true && allPermitDetails.permitDetails.resubmitApplicationStatus == true"
+                (click)="submitApplicationForReview()" mat-raised-button=""
+                class="btn btn-kebs mat-raised-button mat-button-base"><span class="mat-button-wrapper">RE-SUBMIT APPLICATION FOR REVIEW</span>
+            <div matripple="" class="mat-ripple mat-button-ripple"></div>
+            <div class="mat-button-focus-overlay"></div>
+        </button>
+        <div *ngIf="allPermitDetails.permitDetails.pcmReviewApprove == true && allPermitDetails.permitDetails.sendForPcmReview == true">
+            <button *ngIf="allPermitDetails.permitDetails.hofQamCompletenessStatus == false && allPermitDetails.permitDetails.resubmitApplicationStatus == true"
+                    (click)="submitApplicationForReviewHOD()" mat-raised-button=""
+                    class="btn btn-kebs mat-raised-button mat-button-base"><span class="mat-button-wrapper">RE-SUBMIT APPLICATION FOR REVIEW</span>
+                <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                <div class="mat-button-focus-overlay"></div>
+            </button>
+        </div>
         <button *ngIf="allPermitDetails.permitDetails.permitForeignStatus == false && allPermitDetails.permitDetails.sendApplication == false "
                 (click)="submitApplication()" mat-raised-button=""
                 class="btn btn-kebs mat-raised-button mat-button-base"><span class="mat-button-wrapper">SUBMIT APPLICATION</span>
+            <div matripple="" class="mat-ripple mat-button-ripple"></div>
+            <div class="mat-button-focus-overlay"></div>
+        </button>
+        <button *ngIf="allPermitDetails.permitDetails.generateSchemeStatus == true && allPermitDetails.permitDetails.approvedRejectedScheme == false"
+                (click)="openModal('approveSSC')" mat-raised-button=""
+                class="btn btn-kebs mat-raised-button mat-button-base"><span class="mat-button-wrapper">AGREE/CONSENT TO SSC</span>
             <div matripple="" class="mat-ripple mat-button-ripple"></div>
             <div class="mat-button-focus-overlay"></div>
         </button>
@@ -845,6 +865,67 @@ placeholder=""
     <!--                    </button>-->
 </div>
 </div>
+
+    <ng-template #editModal let-modal>
+
+        <div class="modal-header">
+            <h5 class="modal-title" id="modal-basic-title">{{currDivLabel}}</h5>
+            <button (click)="modal.dismiss()" aria-label="Close" class="close" type="button">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+
+        <div class="modal-body">
+            <!--                <p>Are you sure this userDetails falls in the KEBS mandate ?</p>-->
+            <div *ngIf="(currDiv == 'approveSSC')">
+                <form [formGroup]="approveRejectSSCForm" class="form">
+                    <div class="form-body">
+                        <div class="form-group">
+
+                            <div>
+                                <!--                <input type="checkbox" class="form-control one-column-input" aria-label="Small" aria-describedby="inputGroup-sizing-sm" [value]="1"-->
+                                <!--                       formControlName="approved"-->
+                                <!--                       name="approved" required>-->
+                                <label><b>Approve/Reject SCC</b></label>
+                                <select id="approvedRejectedScheme" class="form-control"
+                                        formControlName="approvedRejectedScheme"
+                                        name="approvedRejectedScheme"
+                                        [class.is-invalid]="formApproveRejectSSC.approvedRejectedScheme.invalid && formApproveRejectSSC.approvedRejectedScheme.touched">
+                                    <option selected>Select Plant</option>
+                                    <option [ngValue]="1">APPROVE</option>
+                                    <option [ngValue]="0">REJECT</option>
+                                </select>
+
+                                <!--              <label><b>Remarks</b></label>-->
+                                <!--              <textarea-->
+                                <!--                [class.is-invalid]="formAssignAuthorities.approvedRemarks.invalid && formKEBSMandateIn.approvedRemarks.touched"-->
+                                <!--                aria-describedby="inputGroup-sizing-sm" aria-label="Small" class="form-control one-column-input"-->
+                                <!--                cols="65" formControlName="approvedRemarks"-->
+                                <!--                name="approvedRemarks"-->
+                                <!--                required rows="5"></textarea>-->
+
+                            </div>
+                        </div>
+                    </div>
+
+
+                </form>
+            </div>
+        </div>
+
+        <div class="modal-footer">
+            <button (click)="modal.dismiss()" class="btn btn-outline-secondary mr-4" data-dismiss="modal" type="button">
+                NO
+            </button>
+            <button (click)="submitApprovalRejectionSSC(); modal.dismiss()"
+                    *ngIf="currDiv == 'approveSSC'"
+                    [disabled]="!approveRejectSSCForm.valid" class="submit-button"
+                    data-dismiss="modal"
+                    type="button">SUBMIT
+            </button>
+        </div>
+
+    </ng-template>
 </div>
 </div>
 </div>

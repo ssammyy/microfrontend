@@ -11,9 +11,13 @@ import javax.persistence.*
 
 @Entity
 @Table(name = "DAT_KEBS_PERMIT_TRANSACTION")
-class PermitApplicationsEntity:Serializable {
+class PermitApplicationsEntity : Serializable {
     @Column(name = "ID")
-    @SequenceGenerator(name = "DAT_KEBS_PERMIT_TRANSACTION_SEQ_GEN", allocationSize = 1, sequenceName = "DAT_KEBS_PERMIT_TRANSACTION_SEQ")
+    @SequenceGenerator(
+        name = "DAT_KEBS_PERMIT_TRANSACTION_SEQ_GEN",
+        allocationSize = 1,
+        sequenceName = "DAT_KEBS_PERMIT_TRANSACTION_SEQ"
+    )
     @GeneratedValue(generator = "DAT_KEBS_PERMIT_TRANSACTION_SEQ_GEN", strategy = GenerationType.SEQUENCE)
     @Id
     var id: Long? = 0
@@ -25,6 +29,14 @@ class PermitApplicationsEntity:Serializable {
     @Column(name = "FIRM_NAME")
     @Basic
     var firmName: String? = null
+
+    @Column(name = "APPROVED_REJECTED_SCHEME_REMARKS")
+    @Basic
+    var approvedRejectedSchemeRemarks: String? = null
+
+    @Column(name = "SSF_COMPLETED_STATUS")
+    @Basic
+    var ssfCompletedStatus: Int? = null
 
     @Column(name = "PROCESS_STEP")
     @Basic
@@ -363,6 +375,11 @@ class PermitApplicationsEntity:Serializable {
     @Basic
     var assignAssessorStatus: Int? = null
 
+
+    @Column(name = "LEAD_ASSESSOR_ID")
+    @Basic
+    var leadAssessorId: Long? = null
+
     @Column(name = "RESUBMIT_APPLICATION_STATUS")
     @Basic
     var resubmitApplicationStatus: Int? = null
@@ -401,6 +418,17 @@ class PermitApplicationsEntity:Serializable {
     @Column(name = "PSC_MEMBER_APPROVAL_REMARKS")
     @Basic
     var pscMemberApprovalRemarks: String? = null
+
+
+    @Column(name = "PCM_REVIEW_APPROVAL_STATUS")
+    @Basic
+    var pcmReviewApprovalStatus: Int? = null
+
+
+    @Column(name = "PCM_REVIEW_APPROVAL_REMARKS")
+    @Basic
+    var pcmReviewApprovalRemarks: String? = null
+
 
     @Column(name = "PCM_APPROVAL_STATUS")
     @Basic
@@ -458,7 +486,7 @@ class PermitApplicationsEntity:Serializable {
 
     @Column(name = "DATE_OF_VISIT")
     @Basic
-    var dateOfVisit :Timestamp? = null
+    var dateOfVisit: Timestamp? = null
 
     @Column(name = "PRODUCT_CATEGORY")
     @Basic
@@ -774,7 +802,12 @@ class PermitApplicationsEntity:Serializable {
         return id == that.id && cocId == that.cocId
                 && factoryVisit == that.factoryVisit
                 && processStep == that.processStep
+                && ssfCompletedStatus == that.ssfCompletedStatus
+                && leadAssessorId == that.leadAssessorId
                 && processStepName == that.processStepName
+                && pcmReviewApprovalStatus == that.pcmReviewApprovalStatus
+                && approvedRejectedSchemeRemarks == that.approvedRejectedSchemeRemarks
+                && pcmReviewApprovalRemarks == that.pcmReviewApprovalRemarks
                 && companyId == that.companyId
                 && userTaskId == that.userTaskId
                 && inspectionReportGenerated == that.inspectionReportGenerated
@@ -786,6 +819,8 @@ class PermitApplicationsEntity:Serializable {
         return Objects.hash(
             id,
             companyId,
+            ssfCompletedStatus,
+            leadAssessorId,
             permitRejectedCreatedVersion,
             designation,
             userTaskId,
@@ -793,7 +828,10 @@ class PermitApplicationsEntity:Serializable {
             processStepName,
             factoryVisit,
             inspectionReportGenerated,
+            approvedRejectedSchemeRemarks,
             cocId,
+            pcmReviewApprovalStatus,
+            pcmReviewApprovalRemarks,
             resubmitRemarks,
             email,
             faxNo,

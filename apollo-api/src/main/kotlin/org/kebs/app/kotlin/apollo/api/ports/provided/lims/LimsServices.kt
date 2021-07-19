@@ -8,14 +8,12 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DaoService
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DestinationInspectionDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.QADaoServices
+import org.kebs.app.kotlin.apollo.api.ports.provided.lims.response.RootLabPdfList
 import org.kebs.app.kotlin.apollo.api.ports.provided.lims.response.RootTestResultsAndParameters
 import org.kebs.app.kotlin.apollo.api.ports.provided.lims.response.TestParameter
 import org.kebs.app.kotlin.apollo.api.ports.provided.lims.response.TestResult
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
-import org.kebs.app.kotlin.apollo.store.model.ServiceMapsEntity
-import org.kebs.app.kotlin.apollo.store.model.UsersEntity
-import org.kebs.app.kotlin.apollo.store.model.di.CdRiskDetailsActionDetailsEntity
 import org.kebs.app.kotlin.apollo.store.model.qa.QaSampleLabTestParametersEntity
 import org.kebs.app.kotlin.apollo.store.model.qa.QaSampleLabTestResultsEntity
 import org.kebs.app.kotlin.apollo.store.repo.IIntegrationConfigurationRepository
@@ -147,15 +145,52 @@ class LimsServices(
 
     }
 
-    fun mainFunctionLims(bsNumber: String): Boolean{
+    fun labPdfListResponseResults(response: String): List<String> {
+        val resultsParam: RootLabPdfList = ObjectMapper().readValue(response, RootLabPdfList::class.java)
+        //Loop
+        if (resultsParam.pdf_files?.isNullOrEmpty() == true) {
+            println("List is null or empty")
+            throw ExpectedDataNotFound("NO RESULTS PDF FOUND")
+//            return myStatus
+        } else {
+            return resultsParam.pdf_files!!
+        }
+
+    }
+
+    fun labPdfResponseResults(response: String): String {
+        return response
+    }
+
+    fun mainFunctionLims(bsNumber: String): Boolean {
         var results = false
         val hmap = HashMap<String, String>()
         hmap["bsnumber"] = bsNumber
         val myResults = performPostCall(hmap, applicationMapProperties.mapLimsConfigIntegration)
         if (myResults != null) {
-            results= labResponseResults(myResults)
+            results = labResponseResults(myResults)
         }
         return results
+    }
+
+    fun mainFunctionLimsGetPDFList(bsNumber: String): List<String>? {
+        var results: List<String>? = null
+        val hmap = HashMap<String, String>()
+        hmap["bsnumber"] = bsNumber
+        val myResults = performPostCall(hmap, applicationMapProperties.mapLimsConfigIntegrationListPDF)
+        if (myResults != null) {
+            results = labPdfListResponseResults(myResults)
+        }
+        return results
+    }
+
+    fun mainFunctionLimsGetPDF(bsNumber: String, pdf: String): String? {
+        var results = false
+        val hmap = HashMap<String, String>()
+        hmap["bsnumber"] = bsNumber
+        hmap["pdf"] = pdf
+
+        return performPostCall(hmap, applicationMapProperties.mapLimsConfigIntegrationPDF)
     }
 
 
@@ -164,9 +199,9 @@ class LimsServices(
     ): QaSampleLabTestResultsEntity {
         val testResultsDetails = QaSampleLabTestResultsEntity()
         with(testResultsDetails) {
-            orderId =testResults.orderID
-            sampleNumber =testResults.sampleNumber
-            test =testResults.test
+            orderId = testResults.orderID
+            sampleNumber = testResults.sampleNumber
+            test = testResults.test
             param =testResults.param
             sortOrder =testResults.sortOrder
             method =testResults.method
@@ -315,5 +350,9 @@ class LimsServices(
                 }
 
             }
+    }
+
+    fun checkPDFFiles(bsNumber: String): List<String>? {
+        return mainFunctionLimsGetPDFList(bsNumber)
     }
 }

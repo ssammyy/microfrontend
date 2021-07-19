@@ -4,7 +4,8 @@ import {Observable, throwError} from 'rxjs';
 import {ApiEndpointService} from '../../../services/endpoints/api-endpoint.service';
 import {catchError, map} from 'rxjs/operators';
 import {
-    MPesaPushDto, PermitProcessStepDto,
+    AllSTA10DetailsDto,
+    MPesaPushDto, PermitProcessStepDto, SSCApprovalRejectionDto,
     STA1,
     Sta10Dto,
     STA10MachineryAndPlantDto,
@@ -185,6 +186,81 @@ export class QaService {
             .set('permitID', permitID);
         return this.http.get<STA3>(url, {params}).pipe(
             map(function (response: STA3) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
+
+    public viewSTA10FirmDetails(permitID: string): Observable<Sta10Dto> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.PERMIT_VIEW_STA10_FIRM_DETAILS);
+        const params = new HttpParams()
+            .set('permitID', permitID);
+        return this.http.get<Sta10Dto>(url, {params}).pipe(
+            map(function (response: Sta10Dto) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
+
+    public viewSTA10Details(permitID: string): Observable<AllSTA10DetailsDto> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.PERMIT_VIEW_STA10_DETAILS);
+        const params = new HttpParams()
+            .set('permitID', permitID);
+        return this.http.get<AllSTA10DetailsDto>(url, {params}).pipe(
+            map(function (response: AllSTA10DetailsDto) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
+
+    public viewSTA10PersonnelDetails(qaSta10ID: string): Observable<STA10PersonnelDto[]> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.PERMIT_VIEW_STA10_PERSONNEL_DETAILS);
+        const params = new HttpParams()
+            .set('qaSta10ID', qaSta10ID);
+        return this.http.get<STA10PersonnelDto[]>(url, {params}).pipe(
+            map(function (response: STA10PersonnelDto[]) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
+
+    public viewSTA10ProductsManufactureDetails(qaSta10ID: string): Observable<STA10ProductsManufactureDto> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.PERMIT_VIEW_STA10_PRODUCTS_BEING_MANUFACTURED);
+        const params = new HttpParams()
+            .set('qaSta10ID', qaSta10ID);
+        return this.http.get<STA10ProductsManufactureDto>(url, {params}).pipe(
+            map(function (response: STA10ProductsManufactureDto) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
+
+    public viewSTA10RawMaterialsDetails(qaSta10ID: string): Observable<STA10ProductsManufactureDto> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.PERMIT_VIEW_STA10_RAW_MATERIAL);
+        const params = new HttpParams()
+            .set('qaSta10ID', qaSta10ID);
+        return this.http.get<STA10ProductsManufactureDto>(url, {params}).pipe(
+            map(function (response: STA10ProductsManufactureDto) {
                 return response;
             }),
             catchError((fault: HttpErrorResponse) => {
@@ -531,11 +607,41 @@ export class QaService {
         );
     }
 
+    public submitPermitForReviewHODQAM(permitID: string): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.PERMIT_SUBMIT_DETAILS_FOR_HOD_QAM_REVIEW);
+        const params = new HttpParams()
+            .set('permitID', permitID);
+        return this.http.post<any>(url, null, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
+
     public submitPermitApplication(permitID: string): Observable<any> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.PERMIT_SUBMIT_APPLICATION);
         const params = new HttpParams()
             .set('permitID', permitID);
         return this.http.post<any>(url, null, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
+
+    public submitSSCApprovalRejection(permitID: string, data: SSCApprovalRejectionDto): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.PERMIT_SUBMIT_SSC_APPROVAL_REJECTION);
+        const params = new HttpParams()
+            .set('permitID', permitID);
+        return this.http.post<any>(url, data, {params}).pipe(
             map(function (response: any) {
                 return response;
             }),

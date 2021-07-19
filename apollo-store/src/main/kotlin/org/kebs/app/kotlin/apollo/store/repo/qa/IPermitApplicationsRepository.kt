@@ -249,6 +249,7 @@ interface IQaSampleSubmissionRepository : HazelcastRepository<QaSampleSubmission
     fun findByLabResultsStatusAndBsNumber(labResultsStatus: Int, bsNumber: String): QaSampleSubmissionEntity?
     fun findByPermitId(permitId: Long): QaSampleSubmissionEntity?
     fun findByPermitRefNumber(permitRefNumber: String): QaSampleSubmissionEntity?
+    fun findByPermitRefNumberAndStatus(permitRefNumber: String, status: Int): List<QaSampleSubmissionEntity>?
     fun findByCdItemId(cdItemId: Long): QaSampleSubmissionEntity?
     fun findByBsNumber(bsNumber: String): QaSampleSubmissionEntity?
 }

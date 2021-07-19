@@ -72,6 +72,11 @@ export class PermitProcessStepDto {
     processStep: number;
 }
 
+export class SSCApprovalRejectionDto {
+    approvedRejectedScheme: number;
+    approvedRejectedSchemeRemarks: string;
+}
+
 
 export class PermitEntityDetails {
     id: bigint;
@@ -122,6 +127,10 @@ export class PermitEntityDetails {
     approvedRejectedScheme: boolean;
     sendForPcmReview: boolean;
     sendApplication: boolean;
+    pcmReviewApprove: boolean;
+    hofQamCompletenessStatus: boolean;
+    generateSchemeStatus: boolean;
+    resubmitApplicationStatus: boolean;
     processStep: number;
     processStatusID: number;
 }
@@ -172,6 +181,16 @@ export class AllPermitDetailsDto {
     officerList: UserEntityDto[];
     oldVersionList: PermitEntityDto[];
     batchID: bigint;
+}
+
+
+export class AllSTA10DetailsDto {
+    sta10FirmDetails: Sta10Dto;
+    sta10PersonnelDetails: STA10PersonnelDto[];
+    sta10ProductsManufactureDetails: STA10ProductsManufactureDto[];
+    sta10RawMaterialsDetails: STA10RawMaterialsDto[];
+    sta10MachineryAndPlantDetails: STA10MachineryAndPlantDto[];
+    sta10ManufacturingProcessDetails: STA10ManufacturingProcessDto[];
 }
 
 export class PlantDetailsDto {

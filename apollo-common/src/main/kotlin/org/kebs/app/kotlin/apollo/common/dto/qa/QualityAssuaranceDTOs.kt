@@ -5,15 +5,17 @@ import java.io.File
 import java.math.BigDecimal
 import java.sql.Date
 import java.sql.Timestamp
+import kotlin.reflect.jvm.internal.impl.builtins.StandardNames.FqNames.number
+
 
 data class ST10Dto(
-        var division: Long? = null,
-        var approved: Int? = 0,
-        var approvedRemarks: String? = null,
-        var rejected: Int? = 0,
-        var rejectedRemarks: String? = null,
-        var mandateForOga: Int? = 0,
-        var advisedWhereToRemarks: String? = null,
+    var division: Long? = null,
+    var approved: Int? = 0,
+    var approvedRemarks: String? = null,
+    var rejected: Int? = 0,
+    var rejectedRemarks: String? = null,
+    var mandateForOga: Int? = 0,
+    var advisedWhereToRemarks: String? = null,
         var assignedIoStatus: Int? = null,
         var assignedIoRemarks: String? = null,
         var assignedIo: Long? = null
@@ -345,6 +347,9 @@ data class PermitDetailsDto(
     var sendForPcmReview: Boolean? = null,
     var sendApplication: Boolean? = null,
     var pcmReviewApprove: Boolean? = null,
+    var hofQamCompletenessStatus: Boolean? = null,
+    var generateSchemeStatus: Boolean? = null,
+    var resubmitApplicationStatus: Boolean? = null,
     var processStep: Int? = null,
     var processStatusID: Long? = null,
 )
@@ -357,10 +362,25 @@ data class AllPermitDetailsDto(
     var batchID: Long? = null
 )
 
+
+data class AllSTA10DetailsDto(
+    var sta10FirmDetails: STA10SectionADto? = null,
+    var sta10PersonnelDetails: List<STA10PersonnelDto>? = null,
+    var sta10ProductsManufactureDetails: List<STA10ProductsManufactureDto>? = null,
+    var sta10RawMaterialsDetails: List<STA10RawMaterialsDto>? = null,
+    var sta10MachineryAndPlantDetails: List<STA10MachineryAndPlantDto>? = null,
+    var sta10ManufacturingProcessDetails: List<STA10ManufacturingProcessDto>? = null,
+)
+
 data class StandardsDto(
     var id: Long? = null,
     var standardTitle: String? = null,
     var standardNumber: String? = null,
+)
+
+data class SSCApprovalRejectionDto(
+    var approvedRejectedScheme: Int? = null,
+    var approvedRejectedSchemeRemarks: String? = null,
 )
 
 data class TaskDto(

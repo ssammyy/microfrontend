@@ -1,10 +1,11 @@
 import {Component, OnInit, Renderer2, ViewChild, ElementRef, Directive} from '@angular/core';
 import {ROUTES} from '../../sidebar/sidebar.component';
 import {Router, ActivatedRoute, NavigationEnd, NavigationStart} from '@angular/router';
-import { Subscription } from 'rxjs/Subscription';
-import { Location, LocationStrategy, PathLocationStrategy } from '@angular/common';
-import {loadLogout} from "../../core/store";
-import {Store} from "@ngrx/store";
+import {Subscription} from 'rxjs/Subscription';
+import {Location, LocationStrategy, PathLocationStrategy} from '@angular/common';
+import {loadLogout} from '../../core/store';
+import {Store} from '@ngrx/store';
+
 const misc: any = {
     navbar_menu_visible: 0,
     active_collapse: true,
@@ -12,6 +13,7 @@ const misc: any = {
 };
 
 declare var $: any;
+
 @Component({
     selector: 'app-navbar-cmp',
     templateUrl: 'navbar.component.html'
@@ -28,7 +30,7 @@ export class NavbarComponent implements OnInit {
 
     @ViewChild('app-navbar-cmp', {static: false}) button: any;
 
-    constructor(location: Location, private renderer: Renderer2, private element: ElementRef,private store$: Store<any>, private router: Router
+    constructor(location: Location, private renderer: Renderer2, private element: ElementRef, private store$: Store<any>, public router: Router
     ) {
         this.location = location;
         this.nativeElement = element.nativeElement;

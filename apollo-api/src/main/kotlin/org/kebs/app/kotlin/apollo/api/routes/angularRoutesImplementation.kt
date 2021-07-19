@@ -295,6 +295,8 @@ class AngularRoutes {
                     PUT("/sta1-update", handler::permitUpdateSTA1Migration)
                     POST("/submit-application", handler::permitSubmitApplicationInvoiceMigration)
                     POST("/submit-application-review", handler::permitSubmitApplicationReviewMigration)
+                    POST("/submit-application-qam-hod-review", handler::permitSubmitApplicationQAMHODReviewMigration)
+                    POST("/submit-application-ssc-approval-rejection", handler::permitApproveRejectSSCMigration)
                     POST("/sta3", handler::permitApplySTA3Migration)
                     PUT("/sta3-update", handler::permitUpdateSTA3Migration)
 //                    POST(
@@ -334,6 +336,7 @@ class AngularRoutes {
                     GET("/sta3", handler::permitViewSTA3Migration)
                     GET("/invoice-permit", handler::permitViewInvoiceDetailsMigration)
                     "/sta10".nest {
+                        GET("/view-details", handler::permitViewSTA10AllDetailsMigration)
                         GET("/firm-details", handler::permitViewSTA10FirmDetailsMigration)
                         GET("/personnel_details", handler::permitViewSTA10PersonnelMigration)
                         GET("/products-being-manufactured", handler::permitViewSTA10ProductsBeingManufacturedMigration)
