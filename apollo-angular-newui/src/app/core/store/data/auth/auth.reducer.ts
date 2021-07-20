@@ -1,7 +1,7 @@
 import {Action, createReducer, on} from '@ngrx/store';
 import {CompanyInfoDto, LoggedInUser} from './auth.model';
 import {
-    doSendTokenForUserSuccess,
+    doSendTokenForUserSuccess, doValidateTokenForUserFailure,
     doValidateTokenForUserSuccess,
     loadAuthsFailure,
     loadAuthsSuccess,
@@ -120,6 +120,13 @@ const authStateInternalReducer = createReducer(
 const tokenValidatedStateInternalReducer = createReducer(
     initialTokenValidatedState,
     on(doValidateTokenForUserSuccess, (state, {data, validated}) => {
+        return {
+            ...state,
+            data,
+            validated
+        };
+    }),
+    on(doValidateTokenForUserFailure, (state, {data, validated}) => {
         return {
             ...state,
             data,

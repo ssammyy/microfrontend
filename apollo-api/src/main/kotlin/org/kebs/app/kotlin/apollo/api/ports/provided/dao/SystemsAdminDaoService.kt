@@ -1081,7 +1081,7 @@ class SystemsAdminDaoService(
         commonDaoServices.findCompanyProfileWithRegistrationNumber(request.registrationNumber)
             ?.let { throw ExpectedDataNotFound("The Company with this [Registration Number : ${request.registrationNumber}] already exist") }
             ?: run {
-                val brsCheck = registrationDaoServices.checkBrs(profile)
+                val brsCheck = registrationDaoServices.brsValidationLookup(request.registrationNumber, request.directorIdNumber)
                 if (brsCheck.first) {
 //                    KotlinLogging.logger {  }.info("${profile.directorIdNumber} ${request.directorIdNumber}")
                     val brs = brsCheck.second
@@ -1110,7 +1110,7 @@ class SystemsAdminDaoService(
                     }
 
                 } else {
-                    throw ExpectedDataNotFound("The Company Details Verification failed Due to Invalid Registration Number and/or Director Id")
+                    throw ExpectedDataNotFound("The Company Details Verification failed Due to Incorrect Company Registration Number and/or Director Id Number")
 
                 }
             }

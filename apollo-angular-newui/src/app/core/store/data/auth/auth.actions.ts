@@ -28,6 +28,10 @@ export const doValidateTokenForUserSuccess = createAction(
   '[Auth] doValidateTokenForUserSuccess',
   props<{ data: ApiResponse, validated: boolean }>()
 );
+export const doValidateTokenForUserFailure = createAction(
+  '[Auth] doValidateTokenForUserFailure',
+  props<{ data: ApiResponse, validated: boolean }>()
+);
 
 export const loadLogoutSuccess = createAction(
   '[Auth] Load loadLogoutSuccess',
