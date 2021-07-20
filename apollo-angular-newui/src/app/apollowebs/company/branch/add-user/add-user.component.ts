@@ -6,8 +6,7 @@ import {
     BranchesService,
     Company,
     loadResponsesFailure,
-    loadResponsesSuccess,
-    User,
+    loadResponsesSuccess, selectBranchData, selectBranchIdData, selectCompanyIdData, User,
     UsersService
 } from '../../../../core/store';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
@@ -48,7 +47,6 @@ export class AddUserComponent implements OnInit {
 
         this.branches$ = branchservice.entities$;
         branchservice.getAll().subscribe();
-        this.user = new User();
 
 
     }
@@ -68,18 +66,27 @@ export class AddUserComponent implements OnInit {
                 validators: ConfirmedValidator('credentials', 'confirmCredentials')
             });
 
+        this.store$.select(selectCompanyIdData).subscribe((d) => {
+            return this.selectedCompany = d;
+        });
+        this.store$.select(selectBranchIdData).subscribe((d) => {
+            return this.selectedBranch = d;
+        });
+        this.store$.select(selectBranchData).subscribe((d) => {
+            return this.selectedBranches$ = d;
+        });
+
+
     }
 
 
     onClickSave(valid: boolean) {
         if (valid) {
-            // this.user = {...this.user, ...this.stepOneForm.value};/
             if (
                 this.user === undefined ||
-                this.user.id === undefined ||
-                this.user.id === null
+                this.user.id === null ||
+                this.user.id === undefined
             ) {
-                this.user = new User();
                 this.user = this.stepOneForm.value;
                 this.user.companyId = this.selectedCompany;
                 this.user.plantId = this.selectedBranch;
@@ -87,7 +94,7 @@ export class AddUserComponent implements OnInit {
                     (a) => {
                         this.stepOneForm.markAsPristine();
                         this.stepOneForm.reset();
-                        return this.store$.dispatch(loadResponsesSuccess({
+                        this.store$.dispatch(loadResponsesSuccess({
                             message: {
                                 response: '00',
                                 payload: `Successfully saved ${a.userName}`,
@@ -111,7 +118,7 @@ export class AddUserComponent implements OnInit {
                     (a) => {
                         this.stepOneForm.markAsPristine();
                         this.stepOneForm.reset();
-                        return this.store$.dispatch(loadResponsesSuccess({
+                        this.store$.dispatch(loadResponsesSuccess({
                             message: {
                                 response: '00',
                                 payload: `Successfully saved ${a.userName}`,
