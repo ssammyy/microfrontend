@@ -320,7 +320,7 @@ class QualityAssuranceController(
             }
             //PERMIT AWARD DMARK
             permit.assessmentScheduledStatus != null -> {
-                returnDetails = dmarkAwardPermit(permit, map, permitDetails, loggedInUser)
+                returnDetails = pacApprovePermit(permit, map, permitDetails, loggedInUser)
                 permitDetails = returnDetails.first
             }
             //PERMIT APPROVE ASSESSMENT REPORT
@@ -469,7 +469,7 @@ class QualityAssuranceController(
         return Pair(permitDetailsDB, closeLink)
     }
 
-    fun dmarkAwardPermit(
+    fun pacApprovePermit(
         permit: PermitApplicationsEntity,
         map: ServiceMapsEntity,
         permitDetails: PermitApplicationsEntity,

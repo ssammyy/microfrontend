@@ -28,7 +28,7 @@ export class FmarkApplicationComponent implements OnInit {
 
     fmarkForm: FormGroup;
 
-    FMarkTypeID = ApiEndpointService.QA_APPLICATION_MAP_PROPERTIES.FMARK_TYPE_ID;
+    SMarkTypeID = ApiEndpointService.QA_APPLICATION_MAP_PROPERTIES.SMARK_TYPE_ID;
 
     constructor(
         private router: Router,
@@ -43,7 +43,7 @@ export class FmarkApplicationComponent implements OnInit {
     let formattedArray = [];
     this.dataTable;
 
-      this.qaService.loadPermitAwardedList(String(this.FMarkTypeID)).subscribe(
+      this.qaService.loadPermitAwardedList(String(this.SMarkTypeID)).subscribe(
           (data: any) => {
 
               this.allPermitData = data;
@@ -89,7 +89,7 @@ export class FmarkApplicationComponent implements OnInit {
     }
 
     onSelect(rowElement: string) {
-        this.router.navigate(['/permitdetails'], {fragment: rowElement});
+        this.router.navigate(['/smarkpermitdetails'], {fragment: rowElement});
     }
 
     onClickSubmit(valid: boolean) {
@@ -107,7 +107,7 @@ export class FmarkApplicationComponent implements OnInit {
                         },
                         icon: 'success'
                     });
-                    this.router.navigate(['/permitdetails'], {fragment: String(this.permitID)});
+                    this.router.navigate(['/smarkpermitdetails'], {fragment: String(this.permitID)});
                 },
             );
         }
