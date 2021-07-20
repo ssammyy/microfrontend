@@ -104,7 +104,7 @@ class QualityAssuranceJSONControllers(
             permitStatus = applicationMapProperties.mapQaStatusPSubmission
         }
 
-
+        permitDetails = qaDaoServices.permitUpdateDetails(permitDetails, map, loggedInUser).second
         val sm = CommonDaoServices.MessageSuccessFailDTO()
 //        sm.closeLink = "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitDetails.id}"
         sm.message = "Document Uploaded successful"

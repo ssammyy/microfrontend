@@ -461,34 +461,19 @@ export class SmarkComponent implements OnInit {
     this.sta10FormE?.get('frequency')?.reset();
     this.sta10FormE?.get('processMonitoringRecords')?.reset();
   }
-  submitApplication(): void {
-    if (this.allPermitDetails.permitDetails.permitForeignStatus === true) {
-      this.qaService.submitPermitForReview(this.permitID).subscribe(
-          (data: AllPermitDetailsDto) => {
-            this.allPermitDetails = data;
-            swal.fire({
-              title: 'DMARK SUBMITTED SUCCESSFULLY FOR REVIEW FROM PCM!',
-              buttonsStyling: false,
-              customClass: {
-                confirmButton: 'btn btn-success form-wizard-next-btn ',
-              },
-              icon: 'success'
-            });
 
-            // this.onUpdateReturnToList();
-          },
-      );
-    } else {
+  submitApplication(): void {
+
       this.qaService.submitPermitApplication(this.permitID).subscribe(
           (data: AllPermitDetailsDto) => {
             this.allPermitDetails = data;
             swal.fire({
-              title: 'DMARK SUBMITTED SUCCESSFULLY PENDING PAYMENT!',
-              buttonsStyling: false,
-              customClass: {
-                confirmButton: 'btn btn-success form-wizard-next-btn ',
-              },
-              icon: 'success'
+                title: 'SMARK SUBMITTED SUCCESSFULLY PENDING PAYMENT!',
+                buttonsStyling: false,
+                customClass: {
+                    confirmButton: 'btn btn-success form-wizard-next-btn ',
+                },
+                icon: 'success'
             });
 
             this.router.navigate(['/invoiceDetails'], {fragment: this.allPermitDetails.batchID.toString()});
@@ -496,7 +481,6 @@ export class SmarkComponent implements OnInit {
             // this.onUpdateReturnToList();
           },
       );
-    }
   }
 
 }

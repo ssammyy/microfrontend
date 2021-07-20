@@ -39,6 +39,7 @@ class LimsServices(
     private val commonDaoServices: CommonDaoServices,
     private val jasyptStringEncryptor: StringEncryptor,
     private val daoService: DaoService,
+    private val downloaderFile: DownloaderFile,
     private val applicationMapProperties: ApplicationMapProperties,
     private val sampleLabTestResults: IQaSampleLabTestResultsRepository,
     private val sampleLabTestParameters: IQaSampleLabTestParametersRepository,
@@ -235,13 +236,17 @@ class LimsServices(
         return results
     }
 
-    fun mainFunctionLimsGetPDF(bsNumber: String, pdf: String): File? {
+    fun mainFunctionLimsGetPDF(bsNumber: String, pdf: String): File {
         var results = false
         val hmap = HashMap<String, String>()
         hmap["bsnumber"] = bsNumber
         hmap["pdf"] = pdf
 
-        return performPostCallReceiveFile(hmap, applicationMapProperties.mapLimsConfigIntegrationPDF)
+        val file = File(pdf)
+
+        return downloaderFile.download(file, applicationMapProperties.mapLimsConfigIntegrationPDF, hmap)
+//        return performPostCallReceiveFile(hmap, applicationMapProperties.mapLimsConfigIntegrationPDF)
+//        return performPostCallReceiveFile(hmap, applicationMapProperties.mapLimsConfigIntegrationPDF)
     }
 
 

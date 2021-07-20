@@ -6,6 +6,7 @@ import org.kebs.app.kotlin.apollo.api.controllers.msControllers.MSReportsControl
 import org.kebs.app.kotlin.apollo.api.controllers.qaControllers.ReportsController
 import org.kebs.app.kotlin.apollo.api.notifications.Notifications
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.QualityAssuranceBpmn
+import org.kebs.app.kotlin.apollo.api.ports.provided.lims.LimsServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.mpesa.MPesaService
 import org.kebs.app.kotlin.apollo.common.dto.qa.*
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
@@ -42,6 +43,7 @@ import java.util.stream.Collectors
 class QADaoServices(
     private val applicationMapProperties: ApplicationMapProperties,
     private val commonDaoServices: CommonDaoServices,
+    private val limsServices: LimsServices,
     private val productsRepo: IProductsRepository,
 //    private val qualityAssuranceBpmn: QualityAssuranceBpmn,
     private val workPlanCreatedRepo: IQaWorkplanRepository,
@@ -1669,6 +1671,7 @@ class QADaoServices(
         try {
 
             with(saveSSF) {
+                complianceRemarks = ssfDetails.complianceRemarks
                 resultsAnalysis = ssfDetails.resultsAnalysis
                 modifiedBy = commonDaoServices.concatenateName(user)
                 modifiedOn = commonDaoServices.getTimestamp()
@@ -1682,6 +1685,7 @@ class QADaoServices(
             )
 
             permitDetails.compliantStatus = saveSSF.resultsAnalysis
+            permitDetails.testReportId = saveSSF.labReportFileId
             var complianceValue: String? = null
             when (permitDetails.compliantStatus) {
                 map.activeStatus -> {
@@ -1703,16 +1707,28 @@ class QADaoServices(
                 }
             }
 
-//            val fileUploaded = findUploadedFileBYId(
-//                saveSSF.labReportFileId ?: throw ExpectedDataNotFound("MISSING LAB REPORT FILE ID STATUS")
-//            )
-//            val mappedFileClass = commonDaoServices.mapClass(fileUploaded)
-//            sendComplianceStatusAndLabReport(
-//                permitDetails,
-//                complianceValue ?: throw ExpectedDataNotFound("MISSING COMPLIANCE STATUS"),
-//                saveSSF.complianceRemarks ?: throw ExpectedDataNotFound("MISSING COMPLIANCE REMARKS"),
-//                String(mappedFileClass.document ?: throw ExpectedDataNotFound("MISSING BYTE ARRAY FILE"))
-//            )
+            val fileUploaded = findUploadedFileBYId(
+                saveSSF.labReportFileId ?: throw ExpectedDataNotFound("MISSING LAB REPORT FILE ID STATUS")
+            )
+            val fileContent = limsServices.mainFunctionLimsGetPDF(
+                saveSSF.bsNumber ?: throw ExpectedDataNotFound("MISSING LBS NUMBER"),
+                saveSSF.pdfSelectedName ?: throw ExpectedDataNotFound("MISSING FILE NAME")
+            )
+            val mappedFileClass = commonDaoServices.mapClass(fileUploaded)
+            sendComplianceStatusAndLabReport(
+                permitDetails,
+                complianceValue ?: throw ExpectedDataNotFound("MISSING COMPLIANCE STATUS"),
+                saveSSF.complianceRemarks ?: throw ExpectedDataNotFound("MISSING COMPLIANCE REMARKS"),
+                fileContent.path ?: throw ExpectedDataNotFound("MISSING FILE PATH")
+            )
+
+            sendEmailWithLabResults(
+                commonDaoServices.findUserByID(
+                    permitDetails.userId ?: throw ExpectedDataNotFound("MISSING USER ID")
+                ).email ?: throw ExpectedDataNotFound("MISSING USER ID"),
+                fileContent.path,
+                permitDetails.permitRefNumber ?: throw ExpectedDataNotFound("MISSING PERMIT REF NUMBER")
+            )
 
 
             sr.payload = "New SSF Saved [BRAND name${saveSSF.brandName} and ${saveSSF.id}]"
@@ -2227,8 +2243,9 @@ class QADaoServices(
 
         with(uploads) {
             ordinaryStatus = 1
+            filepath = docFile.path
             name = docFile.name
-            fileType = docFile.extension
+            fileType = commonDaoServices.getFileTypeByMimetypesFileTypeMap(docFile.name)
             documentType = doc
             document = docFile.readBytes()
             permitRefNumber = permitRefNUMBER
@@ -2327,6 +2344,62 @@ class QADaoServices(
 
         KotlinLogging.logger { }.trace("${sr.id} ${sr.responseStatus}")
         return sr
+    }
+
+
+    fun ssfSavePDFSelectedDetails(
+        fileContent: File,
+        ssfID: Long,
+        s: ServiceMapsEntity,
+        user: UsersEntity
+    ): Pair<ServiceRequestsEntity, QaSampleSubmissionEntity> {
+
+        var sr = commonDaoServices.createServiceRequest(s)
+        val ssfDetails = findSampleSubmittedBYID(ssfID)
+        val updatePermit = findPermitWithPermitRefNumberLatest(
+            ssfDetails.permitRefNumber ?: throw ExpectedDataNotFound("MISSING PERMIT REF NUMBER")
+        )
+        try {
+
+            var upload = QaUploadsEntity()
+            upload = uploadQaFile(
+                upload,
+                fileContent,
+                "LAB RESULTS PDF",
+                ssfDetails.permitRefNumber ?: throw ExpectedDataNotFound("MISSING PERMIT REF NUMBER"),
+                user
+            )
+
+            with(ssfDetails) {
+                pdfSelectedName = fileContent.name
+                labReportFileId = upload.id
+                modifiedBy = commonDaoServices.concatenateName(user)
+                modifiedOn = commonDaoServices.getTimestamp()
+            }
+            SampleSubmissionRepo.save(ssfDetails)
+
+            sr.payload = "SSF Updated [updatePermit= ${ssfDetails.id}]"
+            sr.names = "${ssfDetails.permitRefNumber}} ${updatePermit.userId}"
+            sr.varField1 = "${ssfDetails.id}"
+
+            sr.responseStatus = sr.serviceMapsId?.successStatusCode
+            sr.responseMessage = "Success ${sr.payload}"
+            sr.status = s.successStatus
+            sr = serviceRequestsRepository.save(sr)
+            sr.processingEndDate = Timestamp.from(Instant.now())
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message, e)
+//            KotlinLogging.logger { }.trace(e.message, e)
+            sr.status = sr.serviceMapsId?.exceptionStatus
+            sr.responseStatus = sr.serviceMapsId?.exceptionStatusCode
+            sr.responseMessage = e.message
+            sr = serviceRequestsRepository.save(sr)
+
+        }
+
+        KotlinLogging.logger { }.trace("${sr.id} ${sr.responseStatus}")
+        return Pair(sr, ssfDetails)
     }
 
     fun permitUpdateDetails(
@@ -3537,7 +3610,12 @@ class QADaoServices(
         KotlinLogging.logger { }.info { "ManufacturerId, ${permit.userId}" }
         val permitType = findPermitType(permit.permitType ?: throw Exception("INVALID PERMIT TYPE ID"))
         val numberOfYears = permitType.numberOfYears?.toBigDecimal() ?: throw Exception("INVALID NUMBER OF YEARS")
-        val manufactureTurnOver = permit.userId?.let { commonDaoServices.findCompanyProfile(it).yearlyTurnover }
+        val userDetails =
+            commonDaoServices.findUserByID(permit.userId ?: throw Exception("MISSINNG USER ID ON PERMIT DETAILS"))
+//        val manufactureTurnOver =  commonDaoServices.findCompanyProfile(it).yearlyTurnover
+        val manufactureTurnOver = commonDaoServices.findCompanyProfileWithID(
+            userDetails.companyId ?: throw Exception("MISSING COMPANY ID ON USER DETAILS")
+        ).yearlyTurnover
         val plantDetails = findPlantDetails(permit.attachedPlantId ?: throw Exception("INVALID PLANT ID"))
         var m = mutableListOf<BigDecimal?>()
 
@@ -3919,12 +3997,29 @@ class QADaoServices(
         val subject = "LAB REPORT AND COMPLIANCE STATUS "
         val messageBody = "Dear ${manufacturer?.let { commonDaoServices.concatenateName(it) }}: \n" +
                 "\n " +
-                "Find Attached lab test report for   \n" +
-                " with the following compliance status  $compliantStatus" +
+                "Find Attached lab test report with the following compliance status  $compliantStatus" +
                 "\n  and  the Following Remarks  $compliantRemarks" +
                 "for the following permit with REF number ${permitDetails.permitRefNumber} : You have 30 days to perform corrective action for re-inspection.  "
 
         manufacturer?.email?.let { notifications.sendEmail(it, subject, messageBody, attachment) }
+    }
+
+    fun sendAssessmentReportRejection(
+        permitDetails: PermitApplicationsEntity,
+        compliantStatus: String,
+        compliantRemarks: String
+    ) {
+        var manufacturer = permitDetails.assessorId?.let { commonDaoServices.findUserByID(it) }
+        val subject = "ASSESSMENT REPORT REJECTION"
+        val messageBody = "Dear ${manufacturer?.let { commonDaoServices.concatenateName(it) }}: \n" +
+                "\n " +
+                "Assessment report was REJECTED with the following compliance status  $compliantStatus" +
+                "\n  and  the Following Remarks  $compliantRemarks" +
+                "for the following permit with REF number ${permitDetails.permitRefNumber}"
+
+        manufacturer?.email?.let { notifications.sendEmail(it, subject, messageBody) }
+        manufacturer = permitDetails.leadAssessorId?.let { commonDaoServices.findUserByID(it) }
+        manufacturer?.email?.let { notifications.sendEmail(it, subject, messageBody) }
     }
 
     fun sendNotificationForJustification(permitDetails: PermitApplicationsEntity) {
@@ -4339,6 +4434,7 @@ class QADaoServices(
                 p.companyProfileId,
                 commonDaoServices.findCountiesEntityByCountyId(p.county ?: -1L, map.activeStatus).county,
                 commonDaoServices.findTownEntityByTownId(p.town ?: -1L).town,
+                p.location,
                 p.street,
                 p.buildingName,
                 p.nearestLandMark,

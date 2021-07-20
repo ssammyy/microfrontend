@@ -1852,7 +1852,7 @@ class QualityAssuranceHandler(
             with(updatePermit) {
                 id = permit.id
                 sta10FilledStatus = map.inactiveStatus
-                permitStatus = applicationMapProperties.mapQaStatusPSTA10Completion
+                permitStatus = applicationMapProperties.mapQaStatusDraft
             }
 
             //update the permit with the created entity values
