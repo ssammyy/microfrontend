@@ -3,6 +3,7 @@ package org.kebs.app.kotlin.apollo.api.ports.provided.lims
 import com.fasterxml.jackson.databind.ObjectMapper
 import mu.KotlinLogging
 import org.apache.commons.codec.binary.Base64
+import org.apache.commons.io.FileUtils
 import org.jasypt.encryption.StringEncryptor
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DaoService
@@ -108,6 +109,56 @@ class LimsServices(
         return response
     }
 
+    fun performPostCallReceiveFile(
+        postDataParams: HashMap<String, String>,
+        applicationMapID: Long
+    ): File? {
+        val url: URL
+        var response: File? = null
+        try {
+
+            val map = commonDaoServices.serviceMapDetails(appId)
+            val config = commonDaoServices.findIntegrationConfigurationEntity(applicationMapID)
+
+            url = URL(config.url)
+            val b = Base64()
+            val encoding: String = b.encodeAsString(
+                ("${jasyptStringEncryptor.decrypt(config.username)}:${
+                    jasyptStringEncryptor.decrypt(config.password)
+                }").toByteArray()
+            )
+
+            val conn: HttpURLConnection = url.openConnection() as HttpURLConnection
+            conn.readTimeout = 15000
+            conn.connectTimeout = 15000
+            conn.requestMethod = "POST"
+            conn.doInput = true
+            conn.doOutput = true
+            conn.setRequestProperty("Authorization", "Basic $encoding")
+            val os: OutputStream = conn.outputStream
+            val writer = BufferedWriter(
+                OutputStreamWriter(os, "UTF-8")
+            )
+            writer.write(getPostDataString(postDataParams))
+            writer.flush()
+            writer.close()
+            os.close()
+            val responseCode: Int = conn.responseCode
+            if (responseCode == HttpsURLConnection.HTTP_OK) {
+                var line: String?
+                System.out.println("::::::::::::::::::::::::CONNECTION MADE::::::::::::::::")
+                val br = BufferedReader(InputStreamReader(conn.inputStream))
+                val source: InputStream = conn.inputStream
+                FileUtils.copyInputStreamToFile(source, response)
+            } else {
+                response = null
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        return response
+    }
+
     @Throws(UnsupportedEncodingException::class)
     private fun getPostDataString(params: HashMap<String, String>): String {
         val result = StringBuilder()
@@ -184,13 +235,13 @@ class LimsServices(
         return results
     }
 
-    fun mainFunctionLimsGetPDF(bsNumber: String, pdf: String): String? {
+    fun mainFunctionLimsGetPDF(bsNumber: String, pdf: String): File? {
         var results = false
         val hmap = HashMap<String, String>()
         hmap["bsnumber"] = bsNumber
         hmap["pdf"] = pdf
 
-        return performPostCall(hmap, applicationMapProperties.mapLimsConfigIntegrationPDF)
+        return performPostCallReceiveFile(hmap, applicationMapProperties.mapLimsConfigIntegrationPDF)
     }
 
 

@@ -2,11 +2,12 @@ import {Component, OnInit} from '@angular/core';
 import {QaService} from '../../core/store/data/qa/qa.service';
 import {Router} from '@angular/router';
 import {
-  AllPermitDetailsDto,
-  ConsolidatedInvoiceDto,
-  PermitEntityDto,
-  PermitInvoiceDto
+    AllPermitDetailsDto,
+    ConsolidatedInvoiceDto, GenerateInvoiceDto,
+    PermitEntityDto,
+    PermitInvoiceDto
 } from '../../core/store/data/qa/qa.model';
+import swal from "sweetalert2";
 
 declare interface DataTable {
   headerRow: string[];
@@ -23,7 +24,8 @@ declare const $: any;
 })
 export class InvoiceConsolidateComponent implements OnInit {
   public dataTable: DataTable;
-  public allInvoiceData: PermitInvoiceDto[];
+    public allInvoiceData: PermitInvoiceDto[];
+    consolidatedInvoice: GenerateInvoiceDto;
 
   constructor(
       private qaService: QaService,
@@ -41,9 +43,9 @@ export class InvoiceConsolidateComponent implements OnInit {
           formattedArray = data.map(i => [i.permitRefNumber, i.commodityDescription, i.brandName, i.totalAmount, i.invoiceNumber, i.permitID]);
 
           this.dataTable = {
-            headerRow: ['Permit Ref N0', 'Commodity Description', 'Brand Name', 'Total Amount', ' Invoice Number', ' Select'],
-            footerRow: ['Permit Ref N0', 'Commodity Description', 'Brand Name', 'Total Amount', ' Invoice Number', ' Select'],
-            dataRows: formattedArray
+              headerRow: ['Permit Ref N0', 'Commodity Description', 'Brand Name', 'Total Amount', ' Reference Number', ' Select'],
+              footerRow: ['Permit Ref N0', 'Commodity Description', 'Brand Name', 'Total Amount', ' Reference Number', ' Select'],
+              dataRows: formattedArray
 
           };
 
@@ -52,19 +54,38 @@ export class InvoiceConsolidateComponent implements OnInit {
 
   }
 
-  onSelect(rowElement: string) {
-    this.router.navigate(['/invoiceDetails'], {fragment: rowElement});
-  }
+    onClickGenerateInvoice(permitInvoicesID: string[]) {
+        this.consolidatedInvoice.permitInvoicesID = permitInvoicesID;
 
-  ngAfterViewInit() {
-    $('#datatables').DataTable({
-      'pagingType': 'full_numbers',
-      'lengthMenu': [
-        [10, 25, 50, -1],
-        [10, 25, 50, 'All']
-      ],
-      responsive: true,
-      language: {
+        this.qaService.createInvoiceConsolidatedDetails(this.consolidatedInvoice).subscribe(
+            (data) => {
+                console.log(data);
+                swal.fire({
+                    title: 'INVOICE CONSOLIDATED SUCCESSFULLY!',
+                    buttonsStyling: false,
+                    customClass: {
+                        confirmButton: 'btn btn-success form-wizard-next-btn ',
+                    },
+                    icon: 'success'
+                });
+                this.router.navigate(['/invoiceDetails'], {fragment: String(data.batchDetails.batchID)});
+            },
+        );
+    }
+
+    // onSelect(rowElement: string) {
+    //   this.router.navigate(['/invoiceDetails'], {fragment: rowElement});
+    // }
+
+    ngAfterViewInit() {
+        $('#datatables').DataTable({
+            'pagingType': 'full_numbers',
+            'lengthMenu': [
+                [10, 25, 50, -1],
+                [10, 25, 50, 'All']
+            ],
+            responsive: true,
+            language: {
         search: '_INPUT_',
         searchPlaceholder: 'Search records',
       }

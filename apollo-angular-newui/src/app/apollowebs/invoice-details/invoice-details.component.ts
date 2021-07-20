@@ -94,6 +94,10 @@ export class InvoiceDetailsComponent implements OnInit, AfterViewInit {
 
     }
 
+    onRemoveInvoice() {
+
+    }
+
     public stkPush(): void {
         this.submitted = true;
         // stop here if form is invalid

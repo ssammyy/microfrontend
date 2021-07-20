@@ -2106,16 +2106,16 @@ class QualityAssuranceController(
     ) {
         val fileContent = limsServices.mainFunctionLimsGetPDF(bsNumber, fileName)
         if (fileContent != null) {
-            val docFile = File(fileContent)
-            val targetFile = File(Files.createTempDir(), fileName)
-            targetFile.deleteOnExit()
+            val docFile = fileContent
+//            val targetFile = File(Files.createTempDir(), fileName)
+//            targetFile.deleteOnExit()
 
-            response.contentType = targetFile.extension
+            response.contentType = docFile.extension
 //                    response.setHeader("Content-Length", pdfReportStream.size().toString())
-            response.addHeader("Content-Disposition", "inline; filename=${targetFile.name};")
+            response.addHeader("Content-Disposition", "inline; filename=${docFile.name};")
             response.outputStream
                 .let { responseOutputStream ->
-                    responseOutputStream.write(targetFile.readBytes())
+                    responseOutputStream.write(docFile.readBytes())
                     responseOutputStream.close()
                 }
 
@@ -2138,7 +2138,7 @@ class QualityAssuranceController(
         val map = commonDaoServices.serviceMapDetails(appId)
         val fileContent = limsServices.mainFunctionLimsGetPDF(bsNumber, fileName)
         if (fileContent != null) {
-            val docFile = File(fileContent)
+            val docFile = fileContent
             var ssfDetails = qaDaoServices.findSampleSubmittedBYID(ssfID)
             val permit = qaDaoServices.findPermitWithPermitRefNumberLatest(
                 ssfDetails.permitRefNumber ?: throw ExpectedDataNotFound("MISSING PERMIT REF NUMBER")
@@ -2162,8 +2162,14 @@ class QualityAssuranceController(
             ssfDetails = SampleSubmissionRepo.save(ssfDetails)
 
 //            val fileUploaded = qaDaoServices.findUploadedFileBYId(ssfDetails.labReportFileId)
-//            qaDaoServices.sendEmailWithLabResults(commonDaoServices.findUserByID(permit.userId ?: throw ExpectedDataNotFound("MISSING USER ID")).email ?: throw ExpectedDataNotFound("MISSING USER ID"),docFile.path,permit.permitRefNumber ?: throw ExpectedDataNotFound("MISSING PERMIT REF NUMBER"))
-//            KotlinLogging.logger { }.info("SEND FILE SUCCESSFUL")
+            qaDaoServices.sendEmailWithLabResults(
+                commonDaoServices.findUserByID(
+                    permit.userId ?: throw ExpectedDataNotFound("MISSING USER ID")
+                ).email ?: throw ExpectedDataNotFound("MISSING USER ID"),
+                docFile.path,
+                permit.permitRefNumber ?: throw ExpectedDataNotFound("MISSING PERMIT REF NUMBER")
+            )
+            KotlinLogging.logger { }.info("SEND FILE SUCCESSFUL")
         } else {
             throw ExpectedDataNotFound("NO PDF FOUND WITH THE FOLLOWING NAME $fileName for BS Number $bsNumber")
         }

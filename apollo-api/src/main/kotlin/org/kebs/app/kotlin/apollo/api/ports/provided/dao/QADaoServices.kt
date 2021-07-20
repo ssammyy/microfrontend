@@ -204,9 +204,7 @@ class QADaoServices(
         permitRepo.findByUserIdAndPermitTypeAndOldPermitStatusIsNull(userId, permitType)
             ?.let { permitList ->
                 return permitList
-            }
-
-            ?: throw ExpectedDataNotFound("No Permit Found for the following user with USERNAME = ${user.userName}")
+            } ?: throw ExpectedDataNotFound("No Permit Found for the following user with USERNAME = ${user.userName}")
     }
 
     fun findAllUserPermits(user: UsersEntity): List<PermitApplicationsEntity>? {
@@ -227,12 +225,26 @@ class QADaoServices(
             ?: throw ExpectedDataNotFound("No Permits Found for the following COMPANY ID = ${companyID}")
     }
 
-    fun findAllUserPermitWithPermitTypeAwardedStatusIsNull(
+    fun findAllUserPermitWithPermitTypeAwardedStatusIsNotNull(
         user: UsersEntity,
         permitType: Long
     ): List<PermitApplicationsEntity> {
         val userId = user.id ?: throw ExpectedDataNotFound("No USER ID Found")
         permitRepo.findByUserIdAndPermitTypeAndOldPermitStatusIsNullAndPermitAwardStatusIsNotNull(userId, permitType)
+            ?.let { permitList ->
+                return permitList
+            }
+
+            ?: throw ExpectedDataNotFound("No Permit Found for the following user with USERNAME = ${user.userName}")
+    }
+
+    fun findAllUserPermitWithPermitTypeAwardedStatus(
+        user: UsersEntity,
+        permitType: Long,
+        status: Int
+    ): List<PermitApplicationsEntity> {
+        val userId = user.id ?: throw ExpectedDataNotFound("No USER ID Found")
+        permitRepo.findByUserIdAndPermitTypeAndOldPermitStatusIsNullAndPermitAwardStatus(userId, permitType, status)
             ?.let { permitList ->
                 return permitList
             }
@@ -1691,16 +1703,16 @@ class QADaoServices(
                 }
             }
 
-            val fileUploaded = findUploadedFileBYId(
-                saveSSF.labReportFileId ?: throw ExpectedDataNotFound("MISSING LAB REPORT FILE ID STATUS")
-            )
-            val mappedFileClass = commonDaoServices.mapClass(fileUploaded)
-            sendComplianceStatusAndLabReport(
-                permitDetails,
-                complianceValue ?: throw ExpectedDataNotFound("MISSING COMPLIANCE STATUS"),
-                saveSSF.complianceRemarks ?: throw ExpectedDataNotFound("MISSING COMPLIANCE REMARKS"),
-                String(mappedFileClass.document ?: throw ExpectedDataNotFound("MISSING BYTE ARRAY FILE"))
-            )
+//            val fileUploaded = findUploadedFileBYId(
+//                saveSSF.labReportFileId ?: throw ExpectedDataNotFound("MISSING LAB REPORT FILE ID STATUS")
+//            )
+//            val mappedFileClass = commonDaoServices.mapClass(fileUploaded)
+//            sendComplianceStatusAndLabReport(
+//                permitDetails,
+//                complianceValue ?: throw ExpectedDataNotFound("MISSING COMPLIANCE STATUS"),
+//                saveSSF.complianceRemarks ?: throw ExpectedDataNotFound("MISSING COMPLIANCE REMARKS"),
+//                String(mappedFileClass.document ?: throw ExpectedDataNotFound("MISSING BYTE ARRAY FILE"))
+//            )
 
 
             sr.payload = "New SSF Saved [BRAND name${saveSSF.brandName} and ${saveSSF.id}]"

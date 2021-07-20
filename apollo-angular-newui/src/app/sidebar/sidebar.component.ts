@@ -40,7 +40,7 @@ export const ROUTES: RouteInfo[] = [
         collapse: 'company',
         children: [
             {path: 'companies', title: 'View Companies', ab: 'VC'},
-            {path: 'branches', title: 'View Branches ', ab: 'VB'},
+            // {path: 'branches', title: 'View Branches ', ab: 'VB'},
             {path: 'users', title: 'View Users ', ab: 'VU'}
         ]
     },

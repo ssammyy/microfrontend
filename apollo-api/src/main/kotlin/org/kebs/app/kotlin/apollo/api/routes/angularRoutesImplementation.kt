@@ -288,6 +288,7 @@ class AngularRoutes {
                 POST("/mpesa/stk-push", handler::permitMPesaPushStk)
                 GET("/task-list", handler::permitTaskListMigration)
                 GET("/list", handler::permitListMigration)
+                GET("/awarded-list", handler::permitListAwardedMigration)
                 GET("/firm-list", handler::firmPermitListMigration)
                 "/apply".nest {
                     POST("/fmark", handler::permitFMARKGenerateMigration)

@@ -174,9 +174,25 @@ class QualityAssuranceHandler(
             var permitListAllComplete: List<PermitEntityDto>? = null
             when {
                 auth.authorities.stream().anyMatch { authority -> authority.authority == "PERMIT_APPLICATION" } -> {
-                    permitListAllApplications = qaDaoServices.listPermits(qaDaoServices.findAllUserPermitWithPermitType(loggedInUser, permitTypeID), map)
-                    permitListAllComplete = qaDaoServices.listPermits(qaDaoServices.findAllUserPermitWithPermitTypeAwardedStatusIsNull(loggedInUser, permitTypeID), map)
-                    permitListMyTasks = qaDaoServices.listPermits(qaDaoServices.findAllUserPermitWithPermitTypeAwardedStatusIsNullAndTaskID(loggedInUser, permitTypeID, applicationMapProperties.mapUserTaskNameMANUFACTURE), map)
+                    permitListAllApplications = qaDaoServices.listPermits(
+                        qaDaoServices.findAllUserPermitWithPermitType(
+                            loggedInUser,
+                            permitTypeID
+                        ), map
+                    )
+                    permitListAllComplete = qaDaoServices.listPermits(
+                        qaDaoServices.findAllUserPermitWithPermitTypeAwardedStatusIsNotNull(
+                            loggedInUser,
+                            permitTypeID
+                        ), map
+                    )
+                    permitListMyTasks = qaDaoServices.listPermits(
+                        qaDaoServices.findAllUserPermitWithPermitTypeAwardedStatusIsNullAndTaskID(
+                            loggedInUser,
+                            permitTypeID,
+                            applicationMapProperties.mapUserTaskNameMANUFACTURE
+                        ), map
+                    )
                 }
                 auth.authorities.stream().anyMatch { authority -> authority.authority == "QA_MANAGER_ASSESSORS_READ" } -> {
                     permitListAllApplications = qaDaoServices.listPermits(qaDaoServices.findAllQAMPermitListWithPermitType(loggedInUser, permitTypeID), map)
@@ -1026,6 +1042,43 @@ class QualityAssuranceHandler(
                         qaDaoServices.findAllUserPermitWithPermitType(
                             loggedInUser,
                             permitTypeID
+                        ), map
+                    )
+                }
+                else -> {
+                    throw ExpectedDataNotFound("UNAUTHORISED LOGGED IN USER (ACCESS DENIED)")
+                }
+            }
+
+            return ok().body(permitListAllApplications)
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            throw e
+        }
+
+    }
+
+    @PreAuthorize("hasAuthority('PERMIT_APPLICATION') or hasAuthority('QA_OFFICER_READ') or hasAuthority('QA_HOD_READ') or hasAuthority('QA_MANAGER_ASSESSORS_READ') or hasAuthority('QA_HOF_READ') or hasAuthority('QA_ASSESSORS_READ') or hasAuthority('QA_PAC_SECRETARY_READ') or hasAuthority('QA_PSC_MEMBERS_READ') or hasAuthority('QA_PCM_READ')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun permitListAwardedMigration(req: ServerRequest): ServerResponse {
+        try {
+            val auth = commonDaoServices.loggedInUserAuthentication()
+            val loggedInUser = commonDaoServices.loggedInUserDetails()
+            val map = commonDaoServices.serviceMapDetails(appId)
+            val permitTypeID = req.paramOrNull("permitTypeID")?.toLong()
+                ?: throw ExpectedDataNotFound("Required PermitType ID, check config")
+            val permitType = qaDaoServices.findPermitType(permitTypeID)
+
+            var permitListAllApplications: List<PermitEntityDto>? = null
+            when {
+                auth.authorities.stream().anyMatch { authority -> authority.authority == "PERMIT_APPLICATION" } -> {
+                    permitListAllApplications = qaDaoServices.listPermits(
+                        qaDaoServices.findAllUserPermitWithPermitTypeAwardedStatus(
+                            loggedInUser,
+                            permitTypeID,
+                            map.activeStatus
                         ), map
                     )
                 }
