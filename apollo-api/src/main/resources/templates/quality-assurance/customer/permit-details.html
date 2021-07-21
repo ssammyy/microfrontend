@@ -1026,22 +1026,16 @@
                                                class="filter-link">Grant/Defer Application</a>
                                         </div>
 
-                                        <div sec:authorize="hasAuthority('QA_PSC_MEMBERS_READ')">
-                                            <a th:if="${ permitDetails?.pacDecisionStatus == 0}"
-                                               style="color: white" onclick="popUpFunction('pscMemberApproval');"
+                                        <div sec:authorize="hasAuthority('QA_PCM_READ')">
+                                            <a th:if="${permitDetails?.pacDecisionStatus != null and permitDetails?.pcmApprovalStatus == 0}"
+                                               style="color: white" onclick="popUpFunction('pcmApproval');"
                                                class="filter-link">RE-APPROVE/REJECT PERMIT AWARDING</a>
-                                        </div>
-
-                                        <div sec:authorize="hasAuthority('QA_PSC_MEMBERS_READ')">
-                                            <a th:if="${ permitDetails?.pacDecisionStatus == 1}"
-                                               style="color: white" onclick="popUpFunction('pscMemberApproval');"
-                                               class="filter-link">APPROVE/REJECT PERMIT AWARDING</a>
                                         </div>
 
                                         <div sec:authorize="hasAuthority('QA_PCM_READ')">
-                                            <a th:if="${ permitDetails?.pcmApprovalStatus == 0 and permitDetails?.pacDecisionStatus == 1}"
+                                            <a th:if="${permitDetails?.pacDecisionStatus == 1 and permitDetails?.pcmApprovalStatus == null}"
                                                style="color: white" onclick="popUpFunction('pcmApproval');"
-                                               class="filter-link">RE-APPROVE/REJECT PERMIT AWARDING</a>
+                                               class="filter-link">APPROVE/REJECT PERMIT AWARDING</a>
                                         </div>
 
 

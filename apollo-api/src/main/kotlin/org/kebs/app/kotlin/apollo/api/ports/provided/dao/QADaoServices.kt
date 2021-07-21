@@ -4162,7 +4162,7 @@ class QADaoServices(
 
     fun sendNotificationPSCForAwardingPermit(permitDetails: PermitApplicationsEntity) {
         val manufacturer = permitDetails.pscMemberId?.let { commonDaoServices.findUserByID(it) }
-        val subject = "INSPECTION REVIEW FOR APPROVAL"
+        val subject = "PERMIT APPLICATION FOR APPROVAL"
         val messageBody = "Dear ${manufacturer?.let { commonDaoServices.concatenateName(it) }}: \n" +
                 "\n " +
                 "The following permit with REF number ${permitDetails.permitRefNumber}, awaits your approval for inspection review \n" +
@@ -4171,9 +4171,20 @@ class QADaoServices(
         manufacturer?.email?.let { notifications.sendEmail(it, subject, messageBody) }
     }
 
+//    fun sendNotificationForAwardedPermitToManufacture(permitDetails: PermitApplicationsEntity) {
+//        val manufacturer = permitDetails.userId?.let { commonDaoServices.findUserByID(it) }
+//        val subject = "PERMIT AWARDED"
+//        val messageBody = "Dear ${manufacturer?.let { commonDaoServices.concatenateName(it) }}: \n" +
+//                "\n " +
+//                "The following permit with REF number ${permitDetails.permitRefNumber}, awaits your approval for inspection review \n" +
+//                " ${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitDetails.id}\n"
+//
+//        manufacturer?.email?.let { notifications.sendEmail(it, subject, messageBody) }
+//    }
+
     fun sendNotificationPCMForAwardingPermit(permitDetails: PermitApplicationsEntity) {
         val manufacturer = permitDetails.pcmId?.let { commonDaoServices.findUserByID(it) }
-        val subject = "INSPECTION REVIEW FOR APPROVAL"
+        val subject = "PERMIT APPLICATION/RENEWAL FOR APPROVAL"
         val messageBody = "Dear ${manufacturer?.let { commonDaoServices.concatenateName(it) }}: \n" +
                 "\n " +
                 "The following permit with REF number ${permitDetails.permitRefNumber}, your approval for inspection review \n" +

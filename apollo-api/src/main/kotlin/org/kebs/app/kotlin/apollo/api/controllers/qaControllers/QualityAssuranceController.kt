@@ -477,34 +477,21 @@ class QualityAssuranceController(
         var permitDetailsDB = permitDetails
         when (permit.pacDecisionStatus) {
             map.activeStatus -> {
-//                val issueDate = commonDaoServices.getCurrentDate()
-//                val permitType = permitDetailsDB.permitType?.let { qaDaoServices.findPermitType(it) }
-//                val expiryDate = permitType?.numberOfYears?.let { commonDaoServices.addYearsToCurrentDate(it) }
-//
-//
                 with(permitDetailsDB) {
-//                    if (renewalStatus != map.activeStatus) {
-//                        awardedPermitNumber = "${permitType?.markNumber}${
-//                            generateRandomText(
-//                                6,
-//                                map.secureRandom,
-//                                map.messageDigestAlgorithm,
-//                                false
-//                            )
-//                        }".toUpperCase()
-//                    }
+
                     userTaskId = applicationMapProperties.mapUserTaskNamePCM
-//                    permitAwardStatus = map.activeStatus
-//                    dateOfIssue = issueDate
-//                    dateOfExpiry = expiryDate
+                    pcmId = qaDaoServices.assignNextOfficerWithDesignation(
+                        permit,
+                        map,
+                        applicationMapProperties.mapQADesignationIDForPCMId
+                    )?.id
                 }
-                //Generate permit and forward to manufacturer
-                KotlinLogging.logger { }.info(":::::: Sending compliance status along with e-permit :::::::")
                 permitDetailsDB = qaDaoServices.permitInsertStatus(
                     permitDetails,
                     applicationMapProperties.mapQaStatusPPCMAwarding,
                     loggedInUser
                 )
+                qaDaoServices.sendNotificationPCMForAwardingPermit(permitDetailsDB)
             }
             map.inactiveStatus -> {
                 with(permitDetailsDB) {
@@ -895,7 +882,8 @@ class QualityAssuranceController(
                     applicationMapProperties.mapQaStatusPermitAwarded,
                     loggedInUser
                 )
-                //                    qaDaoServices.sendNotificationPSCForAwardingPermit(permitDetails)
+
+//                qaDaoServices.sendNotificationPSCForAwardingPermit(permitDetails)
 
             }
             map.inactiveStatus -> {
