@@ -564,4 +564,7 @@ export class SmarkComponent implements OnInit {
         );
     }
 
+    goToInvoiceGenerated() {
+        // this.router.navigate(['/permitdetails'], {fragment: String(this.AllPermitDetailsDto.permitDetails.id)});
+    }
 }
