@@ -814,11 +814,13 @@ placeholder=""
 </h4>
 </div>
     <div class="card-body ">
-        <!--    <button *ngIf="allPermitDetails.permitDetails.invoiceGenerated == true" mat-raised-button=""-->
-        <!--            class="btn btn-kebs mat-raised-button mat-button-base"><span class="mat-button-wrapper">View Generated Invoice </span>-->
-        <!--        <div matripple="" class="mat-ripple mat-button-ripple"></div>-->
-        <!--        <div class="mat-button-focus-overlay"></div>-->
-        <!--    </button>-->
+        <button *ngIf="allPermitDetails.permitDetails.invoiceGenerated == true && allPermitDetails.batchID != null"
+                mat-raised-button=""
+                (click)="goToInvoiceGenerated()" class="btn btn-kebs mat-raised-button mat-button-base"><span
+                class="mat-button-wrapper">View Generated Invoice</span>
+            <div matripple="" class="mat-ripple mat-button-ripple"></div>
+            <div class="mat-button-focus-overlay"></div>
+        </button>
         <button *ngIf="allPermitDetails.permitDetails.permitAwardStatus == true" mat-raised-button=""
                 (click)="submitRenewalApplication()" class="btn btn-kebs mat-raised-button mat-button-base"><span
                 class="mat-button-wrapper">RENEW</span>
@@ -850,7 +852,15 @@ placeholder=""
             <div matripple="" class="mat-ripple mat-button-ripple"></div>
             <div class="mat-button-focus-overlay"></div>
         </button>
-        <div *ngIf="allPermitDetails.permitDetails.pcmReviewApprove == true && allPermitDetails.permitDetails.sendForPcmReview == true">
+        <!--        <div *ngIf="allPermitDetails.permitDetails.pcmReviewApprove == true && allPermitDetails.permitDetails.sendForPcmReview == true">-->
+        <!--            <button *ngIf="allPermitDetails.permitDetails.hofQamCompletenessStatus == false && allPermitDetails.permitDetails.resubmitApplicationStatus == true"-->
+        <!--                    (click)="submitApplicationForReviewHOD()" mat-raised-button=""-->
+        <!--                    class="btn btn-kebs mat-raised-button mat-button-base"><span class="mat-button-wrapper">RE-SUBMIT APPLICATION FOR REVIEW</span>-->
+        <!--                <div matripple="" class="mat-ripple mat-button-ripple"></div>-->
+        <!--                <div class="mat-button-focus-overlay"></div>-->
+        <!--            </button>-->
+        <!--        </div>-->
+        <div *ngIf="allPermitDetails.permitDetails.hofQamCompletenessStatus == false ">
             <button *ngIf="allPermitDetails.permitDetails.hofQamCompletenessStatus == false && allPermitDetails.permitDetails.resubmitApplicationStatus == true"
                     (click)="submitApplicationForReviewHOD()" mat-raised-button=""
                     class="btn btn-kebs mat-raised-button mat-button-base"><span class="mat-button-wrapper">RE-SUBMIT APPLICATION FOR REVIEW</span>

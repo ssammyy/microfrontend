@@ -61,7 +61,11 @@ class QAControllerTest {
         val map = commonDaoServices.serviceMapDetails(appId)
 
         val allUnpaidInvoices =
-            qaDaoServices.calculatePayment(qaDaoServices.findPermitBYID(705), map, commonDaoServices.findUserByID(2046))
+            qaDaoServices.calculatePayment(
+                qaDaoServices.findPermitBYID(1215),
+                map,
+                commonDaoServices.findUserByID(2046)
+            )
 //        KotlinLogging.logger { }.info { "complaint = ${complaint.toString()} " }
     }
 

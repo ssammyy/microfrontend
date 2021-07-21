@@ -686,7 +686,9 @@ class QualityAssuranceHandler(
             req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
         val permit = qaDaoServices.findPermitBYID(permitID)
         val allSSFDetailsList = qaDaoServices.findSampleSubmittedListBYPermitRefNumber(
-            permit.permitRefNumber ?: throw ExpectedDataNotFound("INVALID PERMIT REF NUMBER"), map.activeStatus
+            permit.permitRefNumber ?: throw ExpectedDataNotFound("INVALID PERMIT REF NUMBER"),
+            map.activeStatus,
+            permitID
         )
         req.attributes()["allSSFDetailsList"] = allSSFDetailsList
         req.attributes()["permitDetails"] = permit
@@ -875,7 +877,10 @@ class QualityAssuranceHandler(
 //            Pair("statusName", qaDaoServices.findPermitStatus(permit.permitStatus?:throw Exception("INVALID PERMIT STATUS VALUE"))),
             Pair(
                 "myRequests",
-                qaDaoServices.findAllRequestByPermitRefNumber(permit.permitRefNumber?: throw ExpectedDataNotFound("INVALID PERMIT REF NUMBER"),)
+                qaDaoServices.findAllRequestByPermitRefNumber(
+                    permit.permitRefNumber ?: throw ExpectedDataNotFound("INVALID PERMIT REF NUMBER"),
+                    permit.id ?: throw ExpectedDataNotFound("INVALID PERMIT ID")
+                )
             ),
             Pair("userRequestTypes", qaDaoServices.findAllQaRequestTypes(s.activeStatus)),
             Pair("permitDetails", permit),

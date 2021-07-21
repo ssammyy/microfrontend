@@ -23,6 +23,8 @@ import org.springframework.ui.Model
 import org.springframework.validation.BindingResult
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
+import org.springframework.web.servlet.function.ServerResponse
+import org.springframework.web.servlet.function.paramOrNull
 import org.springframework.web.servlet.mvc.support.RedirectAttributes
 import javax.servlet.http.HttpServletResponse
 
@@ -216,17 +218,20 @@ class QualityAssuranceController(
         val loggedInUser = commonDaoServices.loggedInUserDetails()
 
         var result: ServiceRequestsEntity?
-        var returnDetails: Pair<PermitApplicationsEntity, String>? = null
+
 
         //Find Permit with permit ID
         var permitDetails = qaDaoServices.findPermitBYID(permitID)
         val permitType =
             qaDaoServices.findPermitType(permitDetails.permitType ?: throw Exception("MISSING PERMIT TYPE ID"))
 
+        var returnDetails: Pair<PermitApplicationsEntity, String> =
+            assigndefalutDetailsDetails(map, permitDetails, loggedInUser)
+
         //Add Permit ID THAT was Fetched so That it wont create a new record while updating with the methode
         permit.id = permitDetails.id
 
-            if (permit.sectionId != null) {
+        if (permit.sectionId != null) {
             with(permit) {
                 divisionId = commonDaoServices.findSectionWIthId(
                     sectionId ?: throw Exception("SECTION ID IS MISSING")
@@ -398,7 +403,7 @@ class QualityAssuranceController(
 
 
         val sm = CommonDaoServices.MessageSuccessFailDTO()
-        sm.closeLink = returnDetails?.second
+        sm.closeLink = returnDetails.second
         sm.message = "${permit.description}"
 
         return commonDaoServices.returnValues(result, map, sm)
@@ -833,6 +838,17 @@ class QualityAssuranceController(
         return Pair(permitDetailsDB, closeLink)
     }
 
+    fun assigndefalutDetailsDetails(
+        map: ServiceMapsEntity,
+        permitDetailsFromDB: PermitApplicationsEntity,
+        loggedInUser: UsersEntity
+    ): Pair<PermitApplicationsEntity, String> {
+        val permitDetailsDB = permitDetailsFromDB
+
+        val closeLink = "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitDetailsDB.id}"
+        return Pair(permitDetailsDB, closeLink)
+    }
+
 
     fun permitApplicationsPCMApprovalActions(
         permitDetailsFromDB: PermitApplicationsEntity,
@@ -850,7 +866,7 @@ class QualityAssuranceController(
                 val expiryDate = permitType?.numberOfYears?.let { commonDaoServices.addYearsToCurrentDate(it) }
 
                 with(permitFromInterface) {
-                    if (renewalStatus != map.activeStatus) {
+                    if (permitDetailsFromDB.renewalStatus != map.activeStatus) {
                         awardedPermitNumber = "${permitType?.markNumber}${
                             generateRandomText(
                                 6,
@@ -860,8 +876,7 @@ class QualityAssuranceController(
                             )
                         }".toUpperCase()
                     } else {
-//                        per
-
+                        awardedPermitNumber = permitDetailsFromDB.awardedPermitNumber
                     }
                     userTaskId = null
                     permitAwardStatus = map.activeStatus
@@ -877,13 +892,17 @@ class QualityAssuranceController(
                         permitDetailsDB
                     ) as PermitApplicationsEntity, map, loggedInUser
                 ).second
+
                 qaDaoServices.permitInsertStatus(
                     permitDetailsDB,
                     applicationMapProperties.mapQaStatusPermitAwarded,
                     loggedInUser
                 )
 
-//                qaDaoServices.sendNotificationPSCForAwardingPermit(permitDetails)
+                val permitID = permitDetailsDB.id ?: throw ExpectedDataNotFound("MISSING Permit ID, check config")
+                val fileDetails = qaDaoServices.getFileCertificateIssuedPDFForm(permitID)
+
+                qaDaoServices.sendNotificationForAwardedPermitToManufacture(permitDetailsDB, fileDetails.path)
 
             }
             map.inactiveStatus -> {

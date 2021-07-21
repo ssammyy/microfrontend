@@ -29,6 +29,7 @@ export class FmarkApplicationComponent implements OnInit {
     fmarkForm: FormGroup;
 
     SMarkTypeID = ApiEndpointService.QA_APPLICATION_MAP_PROPERTIES.SMARK_TYPE_ID;
+    DMarkTypeID = ApiEndpointService.QA_APPLICATION_MAP_PROPERTIES.DMARK_TYPE_ID;
 
     constructor(
         private router: Router,

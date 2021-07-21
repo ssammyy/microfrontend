@@ -570,7 +570,7 @@ class QADaoServices(
     }
 
     fun findAllQaInspectionOPCWithPermitRefNumber(permitRefNumber: String): List<QaInspectionOpcEntity> {
-        qaInspectionOPCRepo.findByPermitRefNumber(permitRefNumber)?.let {
+        qaInspectionOPCRepo.findTopByPermitRefNumberOrderByIdDesc(permitRefNumber)?.let {
             return it
         } ?: throw ExpectedDataNotFound("No inspection details for OPC with PERMIT REF NO =$permitRefNumber")
     }
@@ -589,7 +589,7 @@ class QADaoServices(
 
 
     fun findSampleSubmittedBYPermitRefNumber(permitRefNumber: String): QaSampleSubmissionEntity {
-        SampleSubmissionRepo.findByPermitRefNumber(permitRefNumber)?.let {
+        SampleSubmissionRepo.findTopByPermitRefNumberOrderByIdDesc(permitRefNumber)?.let {
             return it
         }
             ?: throw ExpectedDataNotFound("No sample submission found with the following [PERMIT REF NO =$permitRefNumber]")
@@ -601,8 +601,12 @@ class QADaoServices(
         } ?: throw ExpectedDataNotFound("No sample submission found with the following ID number=$ssfID]")
     }
 
-    fun findSampleSubmittedListBYPermitRefNumber(permitRefNumber: String, status: Int): List<QaSampleSubmissionEntity> {
-        SampleSubmissionRepo.findByPermitRefNumberAndStatus(permitRefNumber, status)?.let {
+    fun findSampleSubmittedListBYPermitRefNumber(
+        permitRefNumber: String,
+        status: Int,
+        permitID: Long
+    ): List<QaSampleSubmissionEntity> {
+        SampleSubmissionRepo.findByPermitRefNumberAndStatusAndPermitId(permitRefNumber, status, permitID)?.let {
             return it
         }
             ?: throw ExpectedDataNotFound("No sample submission found with the following [PERMIT REF NO =$permitRefNumber]")
@@ -615,27 +619,27 @@ class QADaoServices(
     }
 
     fun findQaInspectionHaccpImplementationBYPermitRefNumber(permitRefNumber: String): QaInspectionHaccpImplementationEntity {
-        qaInspectionHaccpImplementationRepo.findByPermitRefNumber(permitRefNumber)?.let {
+        qaInspectionHaccpImplementationRepo.findTopByPermitRefNumberOrderByIdDesc(permitRefNumber)?.let {
             return it
         }
             ?: throw ExpectedDataNotFound("No Inspection Haccp Implementation found with the following [PERMIT REF NO =$permitRefNumber]")
     }
 
     fun findQaInspectionReportRecommendationBYPermitRefNumber(permitRefNumber: String): QaInspectionReportRecommendationEntity {
-        qaInspectionReportRecommendationRepo.findByPermitRefNumber(permitRefNumber)?.let {
+        qaInspectionReportRecommendationRepo.findTopByPermitRefNumberOrderByIdDesc(permitRefNumber)?.let {
             return it
         }
             ?: throw ExpectedDataNotFound("No Inspection Report Recommendation found with the following [PERMIT REF NO =$permitRefNumber]")
     }
 
     fun findQaInspectionOpcBYPermitRefNumber(permitRefNumber: String): List<QaInspectionOpcEntity> {
-        qaInspectionOPCRepo.findByPermitRefNumber(permitRefNumber)?.let {
+        qaInspectionOPCRepo.findTopByPermitRefNumberOrderByIdDesc(permitRefNumber)?.let {
             return it
         } ?: throw ExpectedDataNotFound("No Inspection OPC found with the following [PERMIT REF NO =$permitRefNumber]")
     }
 
     fun findQaInspectionTechnicalBYPermitRefNumber(permitRefNumber: String): QaInspectionTechnicalEntity {
-        qaInspectionTechnicalRepo.findByPermitRefNumber(permitRefNumber)?.let {
+        qaInspectionTechnicalRepo.findTopByPermitRefNumberOrderByIdDesc(permitRefNumber)?.let {
             return it
         } ?: throw ExpectedDataNotFound("No Inspection Technical found with the following [PERMIT REF NO =$permitRefNumber]")
     }
@@ -684,8 +688,11 @@ class QADaoServices(
         } ?: throw ExpectedDataNotFound("No Permit found with the following [ID=$id]")
     }
 
-    fun findAllRequestByPermitRefNumber(permitRefNumber: String): List<PermitUpdateDetailsRequestsEntity> {
-        permitUpdateDetailsRequestsRepo.findByPermitRefNumber(permitRefNumber)?.let {
+    fun findAllRequestByPermitRefNumber(
+        permitRefNumber: String,
+        permitID: Long
+    ): List<PermitUpdateDetailsRequestsEntity> {
+        permitUpdateDetailsRequestsRepo.findByPermitRefNumberAndPermitId(permitRefNumber, permitID)?.let {
             return it
         } ?: throw ExpectedDataNotFound("No Requests found  with Permit [PERMIT REF NO =$permitRefNumber]")
     }
@@ -741,7 +748,7 @@ class QADaoServices(
                 when (permit.permitType) {
 
                     applicationMapProperties.mapQAPermitTypeIDDmark -> {
-                        userAssigned = assignNextOfficerBasedOnSection(
+                        userAssigned = assignNextOfficerBasedOnRegion(
                             permit,
                             map,
                             applicationMapProperties.mapQADesignationIDForHODId
@@ -758,7 +765,7 @@ class QADaoServices(
                         )
                     }
                     applicationMapProperties.mapQAPermitTypeIdSmark -> {
-                        userAssigned = assignNextOfficerBasedOnSection(
+                        userAssigned = assignNextOfficerBasedOnRegion(
                             permit,
                             map,
                             applicationMapProperties.mapQADesignationIDForQAMId
@@ -775,7 +782,7 @@ class QADaoServices(
                         )
                     }
                     applicationMapProperties.mapQAPermitTypeIdFmark -> {
-                        userAssigned = assignNextOfficerBasedOnSection(
+                        userAssigned = assignNextOfficerBasedOnRegion(
                             permit,
                             map,
                             applicationMapProperties.mapQADesignationIDForQAMId
@@ -855,7 +862,7 @@ class QADaoServices(
     }
 
     fun findSTA3WithPermitRefNumber(permitRefNumber: String): QaSta3Entity {
-        sta3Repo.findByPermitRefNumber(permitRefNumber)?.let {
+        sta3Repo.findTopByPermitRefNumberOrderByIdDesc(permitRefNumber)?.let {
             return it
         } ?: throw ExpectedDataNotFound("No STA3 found with the following [PERMIT REF NO =$permitRefNumber]")
     }
@@ -887,15 +894,29 @@ class QADaoServices(
 
 
     fun findSTA10WithPermitRefNumberBY(permitRefNumber: String): QaSta10Entity {
-        sta10Repo.findByPermitRefNumber(permitRefNumber)?.let {
+        sta10Repo.findTopByPermitRefNumberOrderByIdDesc(permitRefNumber)?.let {
+            return it
+        } ?: throw ExpectedDataNotFound("No STA10 found with the following [PERMIT REF NO =$permitRefNumber]")
+    }
+
+    fun findSTA10WithPermitRefNumberBYPPermitID(permitRefNumber: String, permitID: Long): QaSta10Entity {
+        sta10Repo.findByPermitRefNumberAndPermitId(permitRefNumber, permitID)?.let {
             return it
         } ?: throw ExpectedDataNotFound("No STA10 found with the following [PERMIT REF NO =$permitRefNumber]")
     }
 
     fun findSchemeOfSupervisionWithPermitRefNumberBY(permitRefNumber: String): QaSchemeForSupervisionEntity {
-        schemeForSupervisionRepo.findByPermitRefNumber(permitRefNumber)?.let {
+        schemeForSupervisionRepo.findTopByPermitRefNumberOrderByIdDesc(permitRefNumber)?.let {
             return it
-        } ?: throw ExpectedDataNotFound("No SCHEME OF SUPERVISION found with the following [PERMIT REF NO =$permitRefNumber]")
+        }
+            ?: throw ExpectedDataNotFound("No SCHEME OF SUPERVISION found with the following [PERMIT REF NO =$permitRefNumber]")
+    }
+
+    fun findSchemeOfSupervisionWithPermitRefNumberBYID(permitRefNumber: String): QaSchemeForSupervisionEntity {
+        schemeForSupervisionRepo.findTopByPermitRefNumberOrderByIdDesc(permitRefNumber)?.let {
+            return it
+        }
+            ?: throw ExpectedDataNotFound("No SCHEME OF SUPERVISION found with the following [PERMIT REF NO =$permitRefNumber]")
     }
 
     fun findUploadedFileBYId(fileID: Long): QaUploadsEntity {
@@ -1452,6 +1473,32 @@ class QADaoServices(
 
     }
 
+    fun assignNextOfficerBasedOnRegion(
+        permit: PermitApplicationsEntity,
+        map: ServiceMapsEntity,
+        designationID: Long
+    ): UsersEntity {
+        val plantID = permit.attachedPlantId
+            ?: throw ServiceMapNotFoundException("Attached Plant details For Permit with ID = ${permit.id}, is Empty")
+
+        val plantAttached = findPlantDetails(plantID)
+        val designation = commonDaoServices.findDesignationByID(designationID)
+//        val section = commonDaoServices.findSectionWIthId(
+//            permit.sectionId ?: throw ExpectedDataNotFound("SECTION VALUE IS MISSING")
+//        )
+        val region = plantAttached.region?.let { commonDaoServices.findRegionEntityByRegionID(it, map.activeStatus) }
+            ?: throw ExpectedDataNotFound("Plant attached Region Id is Empty, check config")
+        val department = commonDaoServices.findDepartmentByID(applicationMapProperties.mapQADepertmentId)
+
+        return commonDaoServices.findUserProfileWithDesignationRegionDepartmentAndStatus(
+            designation,
+            region,
+            department,
+            map.activeStatus
+        ).userId ?: throw ExpectedDataNotFound("MISSING USER DETAILS")
+
+    }
+
     fun assignNextOfficerWithDesignation(
         permit: PermitApplicationsEntity,
         map: ServiceMapsEntity,
@@ -1999,7 +2046,7 @@ class QADaoServices(
     ): QaSta3Entity {
 
         var sta3Upadted: QaSta3Entity? = null
-        sta3Repo.findByPermitRefNumber(permitNewRefNumber)?.let {
+        sta3Repo.findTopByPermitRefNumberOrderByIdDesc(permitNewRefNumber)?.let {
             sta3Upadted = sta3Update(qaSta3Details, map, user)
         } ?: kotlin.run {
             with(qaSta3Details) {
@@ -3524,6 +3571,31 @@ class QADaoServices(
 
             val updateSmarkAndFmarkDetails = permitUpdateDetails(permit, s, user)
 
+//            when (oldPermit.permitType) {
+//                applicationMapProperties.mapQAPermitTypeIdSmark -> {
+            val sta10 = findSTA10WithPermitRefNumberBYPPermitID(
+                permit.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"),
+                permit.id ?: throw Exception("INVALID PERMIT REF NUMBER")
+            )
+            var newSta10 = QaSta10Entity()
+            newSta10 = commonDaoServices.updateDetails(sta10, newSta10) as QaSta10Entity
+            with(newSta10) {
+                id = null
+                permitRefNumber = fmarkPermit.permitRefNumber
+                permitId = fmarkPermit.id
+            }
+
+            sta10NewSave(fmarkPermit, newSta10, user, s)
+//                }
+//                applicationMapProperties.mapQAPermitTypeIDDmark -> {
+//                    val sta3 = findSTA3WithPermitRefNumber(oldPermit.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"))
+//                    var newSta3 = QaSta3Entity()
+//                    newSta3 = commonDaoServices.updateDetails(sta3, newSta3) as QaSta3Entity
+//                    newSta3.id = null
+//                    sta3NewSave(savePermit.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"), newSta3, user, s)
+//                }
+//            }
+
             sr.payload = "savedSmarkFmarkId [id= ${savedSmarkFmarkId.id}]"
             sr.names = " Fmark created ID = ${fmarkPermit.id} SMARK TIED ID = ${permit.id}"
             sr.varField1 = "${fmarkPermit.id}"
@@ -4171,16 +4243,16 @@ class QADaoServices(
         manufacturer?.email?.let { notifications.sendEmail(it, subject, messageBody) }
     }
 
-//    fun sendNotificationForAwardedPermitToManufacture(permitDetails: PermitApplicationsEntity) {
-//        val manufacturer = permitDetails.userId?.let { commonDaoServices.findUserByID(it) }
-//        val subject = "PERMIT AWARDED"
-//        val messageBody = "Dear ${manufacturer?.let { commonDaoServices.concatenateName(it) }}: \n" +
-//                "\n " +
-//                "The following permit with REF number ${permitDetails.permitRefNumber}, awaits your approval for inspection review \n" +
-//                " ${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitDetails.id}\n"
-//
-//        manufacturer?.email?.let { notifications.sendEmail(it, subject, messageBody) }
-//    }
+    fun sendNotificationForAwardedPermitToManufacture(permitDetails: PermitApplicationsEntity, attachment: String) {
+        val manufacturer = permitDetails.userId?.let { commonDaoServices.findUserByID(it) }
+        val subject = "PERMIT AWARDED"
+        val messageBody = "Dear ${manufacturer?.let { commonDaoServices.concatenateName(it) }}: \n" +
+                "\n " +
+                "The following permit application with REF NUMBER ${permitDetails.permitRefNumber}, has been awarded" +
+                "Find attached permit certificate issued"
+
+        manufacturer?.email?.let { notifications.sendEmail(it, subject, messageBody, attachment) }
+    }
 
     fun sendNotificationPCMForAwardingPermit(permitDetails: PermitApplicationsEntity) {
         val manufacturer = permitDetails.pcmId?.let { commonDaoServices.findUserByID(it) }
