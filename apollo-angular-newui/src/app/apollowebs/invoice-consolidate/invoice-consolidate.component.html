@@ -1,6 +1,8 @@
 <div class="main-content">
     <div class="container-fluid">
-        <form [formGroup]="checkboxGroup">
+        <form>
+            <div [formGroup]="myForm">
+                <div formGroupName="myForm">
                 <div class="row">
 
                     <div class="col-md-10">
@@ -43,7 +45,7 @@
                                     <td>{{row[2] | date}}</td>
                                     <td>{{row[3]}}</td>
                                     <td>
-                                        <input class="form-check-input" type="checkbox" value="{{row[0]}}"  (change)="onCheckChange($event)" id="checkbox-1" >
+                                        <input class="form-check-input" type="checkbox" value="{{row[0]}}"  (change)="onCheckChange($event)" id="checkboxes" >
                                     </td>
                                 </tr>
                                 </tbody>
@@ -67,6 +69,8 @@
                     <!-- end content-->
 
                 </div>
+                </div>
+            </div>
         </form>
                 <!--  end card  -->
             </div>

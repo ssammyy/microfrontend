@@ -21,7 +21,7 @@ export class InvoiceConsolidateComponent implements OnInit {
   public dataTable: DataTable;
   public allInvoiceData: ConsolidatedInvoiceDto[];
   name:string;
-  checkboxGroup: FormGroup;
+  public myForm: FormGroup;
 
 
   constructor(
@@ -31,6 +31,7 @@ export class InvoiceConsolidateComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    this.initModelForm();
     let formattedArray = [];
     this.qaService.loadInvoiceBatchList().subscribe(
         (data: any) => {
@@ -114,7 +115,7 @@ export class InvoiceConsolidateComponent implements OnInit {
 
 
   onCheckChange(event) {
-    const formArray: FormArray = this.checkboxGroup.get('myChoices') as FormArray;
+    const formArray: FormArray = this.myForm.get('myChoices') as FormArray;
 
     /* Selected */
     if(event.target.checked){
