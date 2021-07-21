@@ -49,7 +49,7 @@ export class InvoiceDetailsComponent implements OnInit, AfterViewInit {
         this.getSelectedBatch();
 
         this.stkPushForm = this.formBuilder.group({
-            entityValueID: ['', Validators.required],
+            entityValueID: [''],
             phoneNumber: ['', Validators.required]
         });
     }
@@ -94,6 +94,10 @@ export class InvoiceDetailsComponent implements OnInit, AfterViewInit {
 
     }
 
+    onRemoveInvoice() {
+
+    }
+
     public stkPush(): void {
         this.submitted = true;
         // stop here if form is invalid
@@ -101,10 +105,7 @@ export class InvoiceDetailsComponent implements OnInit, AfterViewInit {
             return;
         }
         if (this.submitted) {
-            // const dataSTKPush = new MPesaPushDto();
-            // dataSTKPush.entityValueID = this.batchID;
-            // dataSTKPush.phoneNumber = this.stkPushForm.get('phoneNumber').value;
-            //
+            this.stkPushForm.controls['entityValueID'].setValue(this.allBatchInvoiceDetails.batchDetails.batchID);
             console.log(this.stkPushForm.value.phoneNumber);
             console.log(this.stkPushForm.value.entityValueID);
             this.qaService.pushSTKInvoicePermit(this.stkPushForm.value).subscribe(

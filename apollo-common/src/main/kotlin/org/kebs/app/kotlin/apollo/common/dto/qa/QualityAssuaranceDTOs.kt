@@ -127,7 +127,6 @@ data class NewBatchInvoiceDto(
 data class BatchInvoiceDto(
     var batchDetails: InvoiceDto? = null,
     var AllRelatedBatchInvoices: List<PermitInvoiceDto>? = null,
-
     )
 
 data class UploadsDtoSTA3(

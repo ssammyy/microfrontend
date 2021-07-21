@@ -70,9 +70,19 @@
                                                 <div class="list-text-accordion"
                                                      th:text="${ssfDetails?.resultsDate}"></div>
                                             </li>
-                                            <li th:if="${ssfDetails?.resultsAnalysis != null}" class="list-item-accordion">
+                                            <li th:if="${ssfDetails?.labReportFileId != null}"
+                                                class="list-item-accordion">
+                                                <div class="list-title-accordion">VIEW ATTACHED PDF RESULTS:</div>
+                                                <div class="list-text-accordion"><a
+                                                        th:href="@{/api/qa/kebs/view/attached(fileID=${ssfDetails.labReportFileId})}"
+                                                        target='_blank' class="btn btn-primary itemViewBtn">VIEW</a>
+                                                </div>
+                                            </li>
+                                            <li th:if="${ssfDetails?.resultsAnalysis != null}"
+                                                class="list-item-accordion">
                                                 <div class="list-title-accordion">RESULTS ANALYSIS:</div>
-                                                <div class="list-text-accordion" th:text="${ssfDetails?.resultsAnalysis} ? 'COMPLIANT' : 'NOT-COMPLIANT'"></div>
+                                                <div class="list-text-accordion"
+                                                     th:text="${ssfDetails?.resultsAnalysis} ? 'COMPLIANT' : 'NOT-COMPLIANT'"></div>
                                             </li>
                                         </ul>
                                     </div>
@@ -155,7 +165,7 @@
                                             <th>PDF-Name</th>
                                             <!--                                            <th>Result</th>-->
                                             <th>view</th>
-                                            <th>SEND</th>
+                                            <th>SAVE</th>
                                             <!--                                            <th>View</th>-->
                                         </tr>
                                         </thead>
@@ -230,7 +240,8 @@
                                                             <option th:text="'Compliant'" th:value="1"></option>
                                                             <option th:text="'Non-Compliant'" th:value="0"></option>
                                                         </select>complianceRemarks
-                                                        <textarea name="complianceRemarks" id="complianceRemarks"
+                                                        <textarea name="complianceRemarks" required="required"
+                                                                  id="complianceRemarks"
                                                                   class="input-field w-input" cols="65" rows="5"
                                                                   th:field="*{complianceRemarks}"></textarea>
                                                     </div>

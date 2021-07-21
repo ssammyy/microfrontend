@@ -27,8 +27,6 @@ export class UserComponent implements OnInit {
 
     stepOneForm: FormGroup = new FormGroup({});
 
-    // branchSoFar: Partial<User> | undefined;
-    // @ts-ignore
     user: User;
 
     selectedCompany = -1;

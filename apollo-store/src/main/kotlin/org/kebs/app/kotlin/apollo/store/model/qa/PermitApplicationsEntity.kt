@@ -447,6 +447,10 @@ class PermitApplicationsEntity : Serializable {
     @Basic
     var pacDecisionRemarks: String? = null
 
+    @Column(name = "PAC_DECISION_STATUS")
+    @Basic
+    var pacDecisionStatus: Int? = null
+
     @Column(name = "HOD_APPROVE_ASSESSMENT_REMARKS")
     @Basic
     var hodApproveAssessmentRemarks: String? = null
@@ -803,6 +807,7 @@ class PermitApplicationsEntity : Serializable {
                 && factoryVisit == that.factoryVisit
                 && processStep == that.processStep
                 && ssfCompletedStatus == that.ssfCompletedStatus
+                && pacDecisionStatus == that.pacDecisionStatus
                 && leadAssessorId == that.leadAssessorId
                 && processStepName == that.processStepName
                 && pcmReviewApprovalStatus == that.pcmReviewApprovalStatus
@@ -822,6 +827,7 @@ class PermitApplicationsEntity : Serializable {
             ssfCompletedStatus,
             leadAssessorId,
             permitRejectedCreatedVersion,
+            pacDecisionStatus,
             designation,
             userTaskId,
             processStep,

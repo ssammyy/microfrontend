@@ -4,7 +4,9 @@ import {Observable, throwError} from 'rxjs';
 import {ApiEndpointService} from '../../../services/endpoints/api-endpoint.service';
 import {catchError, map} from 'rxjs/operators';
 import {
-    AllSTA10DetailsDto,
+    AllBatchInvoiceDetailsDto,
+    AllPermitDetailsDto,
+    AllSTA10DetailsDto, FmarkEntityDto, GenerateInvoiceDto,
     MPesaPushDto, PermitProcessStepDto, SSCApprovalRejectionDto,
     STA1,
     Sta10Dto,
@@ -53,6 +55,19 @@ export class QaService {
         );
     }
 
+    public loadAllInvoiceListCreatedByUser(): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.INVOICE_LIST_ALL_DETAILS);
+        return this.http.get<any>(url).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
+
     public loadInvoiceBatchList(): Observable<any> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.INVOICE_LIST_DETAILS);
         return this.http.get<any>(url).pipe(
@@ -85,6 +100,21 @@ export class QaService {
 
     public loadPermitList(permitTypeID: string): Observable<any> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.PERMIT_LIST);
+        const params = new HttpParams()
+            .set('permitTypeID', permitTypeID);
+        return this.http.get<any>(url, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
+
+    public loadPermitAwardedList(permitTypeID: string): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.PERMIT_LIST_AWARDED_SMARK);
         const params = new HttpParams()
             .set('permitTypeID', permitTypeID);
         return this.http.get<any>(url, {params}).pipe(
@@ -225,6 +255,32 @@ export class QaService {
         );
     }
 
+    public createInvoiceConsolidatedDetails(data: GenerateInvoiceDto): Observable<AllBatchInvoiceDetailsDto> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.PERMIT_VIEW_STA10_DETAILS);
+        return this.http.post<AllBatchInvoiceDetailsDto>(url, data).pipe(
+            map(function (response: AllBatchInvoiceDetailsDto) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
+
+    public removeInvoiceFromConsolidatedDetails(data: GenerateInvoiceDto): Observable<AllBatchInvoiceDetailsDto> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.INVOICE_CONSOLIDATE_REMOVE);
+        return this.http.post<AllBatchInvoiceDetailsDto>(url, data).pipe(
+            map(function (response: AllBatchInvoiceDetailsDto) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
+
     public viewSTA10PersonnelDetails(qaSta10ID: string): Observable<STA10PersonnelDto[]> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.PERMIT_VIEW_STA10_PERSONNEL_DETAILS);
         const params = new HttpParams()
@@ -286,12 +342,41 @@ export class QaService {
         );
     }
 
+    public loadCertificateDetailsPDF(permitID: string): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.PERMIT_CERTIFICATE_ISSUED_DETAILS_PDF);
+        const params = new HttpParams()
+            .set('permitID', permitID);
+        // return this.httpService.get<any>(`${this.baseUrl}/get/pdf/${fileName}`, { responseType: 'arraybuffer' as 'json' });
+        return this.http.get<any>(url, {params, responseType: 'arraybuffer' as 'json'}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
+
     public savePermitSTA1(permitTypeID: string, data: STA1): Observable<STA1> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.PERMIT_APPLY_STA1);
         const params = new HttpParams()
             .set('permitTypeID', permitTypeID);
         return this.http.post<STA1>(url, data, {params}).pipe(
             map(function (response: STA1) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
+
+    public generatePermitFMARK(data: FmarkEntityDto): Observable<AllPermitDetailsDto> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.PERMIT_APPLY_FMARK);
+        return this.http.post<AllPermitDetailsDto>(url, data).pipe(
+            map(function (response: AllPermitDetailsDto) {
                 return response;
             }),
             catchError((fault: HttpErrorResponse) => {
@@ -637,6 +722,21 @@ export class QaService {
         );
     }
 
+    public submitPermitRenewApplication(permitID: string): Observable<AllPermitDetailsDto> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.PERMIT_RENEW);
+        const params = new HttpParams()
+            .set('permitID', permitID);
+        return this.http.post<AllPermitDetailsDto>(url, null, {params}).pipe(
+            map(function (response: AllPermitDetailsDto) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
+
     public submitSSCApprovalRejection(permitID: string, data: SSCApprovalRejectionDto): Observable<any> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.PERMIT_SUBMIT_SSC_APPROVAL_REJECTION);
         const params = new HttpParams()
@@ -651,5 +751,6 @@ export class QaService {
             })
         );
     }
+
 
 }

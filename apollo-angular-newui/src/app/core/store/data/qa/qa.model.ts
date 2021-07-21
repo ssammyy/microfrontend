@@ -66,6 +66,10 @@ export class STA1 {
     attachedPlant: bigint;
 }
 
+export class FmarkEntityDto {
+    smarkPermitID: bigint;
+}
+
 
 export class PermitProcessStepDto {
     permitID: bigint;

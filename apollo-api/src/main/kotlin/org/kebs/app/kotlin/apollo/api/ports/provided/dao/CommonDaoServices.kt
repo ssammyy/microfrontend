@@ -99,6 +99,7 @@ import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeFormatterBuilder
 import java.time.temporal.ChronoUnit
 import java.util.*
+import javax.activation.MimetypesFileTypeMap
 import javax.servlet.http.HttpServletResponse
 import javax.xml.stream.XMLInputFactory
 import javax.xml.stream.XMLOutputFactory
@@ -568,7 +569,7 @@ class CommonDaoServices(
     }
 
     fun downloadFile(response: HttpServletResponse, doc: FileDTO) {
-        response.contentType = doc.fileType
+        response.contentType = getFileTypeByMimetypesFileTypeMap(doc.name)
 //                    response.setHeader("Content-Length", pdfReportStream.size().toString())
         response.addHeader("Content-Disposition", "inline; filename=${doc.name};")
         response.outputStream
@@ -578,6 +579,11 @@ class CommonDaoServices(
             }
 
         KotlinLogging.logger { }.info("VIEW FILE SUCCESSFUL")
+    }
+
+    fun getFileTypeByMimetypesFileTypeMap(fileName: String?): String? {
+        val fileTypeMap = MimetypesFileTypeMap()
+        return fileTypeMap.getContentType(fileName)
     }
 
     fun loggedInUserDetails(): UsersEntity {
@@ -920,8 +926,7 @@ class CommonDaoServices(
                                 when {
                                     addValues.isNull(keyStr) -> {
                                         //Todo remove the logger
-                                        KotlinLogging.logger { }
-                                            .info { "MY null values key: $keyStr value: ${addValues.get(keyStr)}" }
+//                                        KotlinLogging.logger { }.info { "MY null values key: $keyStr value: ${addValues.get(keyStr)}" }
                                     }
                                     else -> {
                                         removeKeyAndUpdateValueJsonObject(JCD, keyStr, addValues.get(keyStr))

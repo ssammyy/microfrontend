@@ -8,18 +8,20 @@
                     </h4>
                 </div>
                 <div class="card-body ">
-                <form>
-                    <div class="form-group">
-                        <label for="exampleFormControlSelect1">Select Standardization Mark</label>
-                        <select class="form-control" id="exampleFormControlSelect1">
-                            <option>1</option>
-                            <option>2</option>
-                            <option>3</option>
-                            <option>4</option>
-                            <option>5</option>
-                        </select>
-                    </div>
-                    <button type="submit" class="btn btn-primary mb-2">Confirm</button>
+                    <form (ngSubmit)="onClickSubmit(fmarkForm.valid)" [formGroup]="fmarkForm" class="form"
+                          enctype="multipart/form-data">
+                        <div class="form-group">
+                            <label for="smarkPermitID">Select Standardization Mark</label>
+                            <select id="smarkPermitID" class="form-control" formControlName="smarkPermitID"
+                                    name="smarkPermitID"
+                                    [class.is-invalid]="formFmarkForm.smarkPermitID.invalid && formFmarkForm.smarkPermitID.touched">
+                                <option selected>Select smark</option>
+                                <option *ngFor="let permit of allPermitData"
+                                        [ngValue]="permit.id"
+                                        class="dropdown-item">{{permit.tradeMark}}</option>
+                            </select>
+                        </div>
+                        <button type="submit" *ngIf="fmarkForm.valid" class="btn btn-primary mb-2">Confirm</button>
                 </form>
                     <br><br>
                 <hr>
