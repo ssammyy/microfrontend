@@ -316,10 +316,9 @@ class QualityAssuranceController(
                 //Send manufacturers notification
                 returnDetails = assessmentDateScheduled(permitDetails, loggedInUser)
                 permitDetails = returnDetails.first
-
             }
             //PERMIT AWARD DMARK
-            permit.assessmentScheduledStatus != null -> {
+            permit.pacDecisionStatus != null -> {
                 returnDetails = pacApprovePermit(permit, map, permitDetails, loggedInUser)
                 permitDetails = returnDetails.first
             }
@@ -1116,6 +1115,7 @@ class QualityAssuranceController(
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun permitInvoiceBatchAddDetails(
         @ModelAttribute("NewBatchInvoiceDto") NewBatchInvoiceDto: NewBatchInvoiceDto,
+        @RequestParam("permitID") permitID: Long,
         model: Model,
     ): String? {
 
@@ -1124,7 +1124,7 @@ class QualityAssuranceController(
 
         val result: ServiceRequestsEntity?
 
-        result = qaDaoServices.permitMultipleInvoiceCalculation(map, loggedInUser, NewBatchInvoiceDto).first
+        result = qaDaoServices.permitMultipleInvoiceCalculation(map, loggedInUser, permitID, NewBatchInvoiceDto).first
 
         val sm = CommonDaoServices.MessageSuccessFailDTO()
         sm.closeLink = "${applicationMapProperties.baseUrlValue}/qa/invoice/batch-details?batchID=${result.varField1}"
@@ -1326,7 +1326,7 @@ class QualityAssuranceController(
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun permitInvoiceBatchRemoveDetails(
         @ModelAttribute("NewBatchInvoiceDto") batchDetailsRemover: NewBatchInvoiceDto,
-//        @RequestParam("permitID") permitID: Long,
+        @RequestParam("permitID") permitID: Long,
 //        @RequestParam("batchID") batchID: Long,
         model: Model,
     ): String? {
@@ -1340,7 +1340,8 @@ class QualityAssuranceController(
 //        batchDetailsRemover.batchID= batchID
 //        batchDetailsRemover.permitID= permitID
 
-        result = qaDaoServices.permitMultipleInvoiceRemoveInvoice(map, loggedInUser, batchDetailsRemover).first
+        result =
+            qaDaoServices.permitMultipleInvoiceRemoveInvoice(map, loggedInUser, permitID, batchDetailsRemover).first
 
         val sm = CommonDaoServices.MessageSuccessFailDTO()
         sm.closeLink = "${applicationMapProperties.baseUrlValue}/qa/invoice/batch-details?batchID=${result.varField1}"
@@ -2054,6 +2055,10 @@ class QualityAssuranceController(
             commonDaoServices.convertMultipartFileToFile(docFile).path,
             permitDetails1.permitRefNumber ?: throw ExpectedDataNotFound("MISSING PERMIT REF NUMBER")
         )
+
+//        qaDaoServices.sendEmailWithSSCAttached(commonDaoServices.findUserByID(
+//            permitDetails1.userId ?: throw ExpectedDataNotFound("MISSING USER ID")
+//        ).email ?: throw ExpectedDataNotFound("MISSING USER ID"),docFile.bytes.toString(), permitDetails1.permitRefNumber ?: throw ExpectedDataNotFound("MISSING PERMIT REF NUMBER"))
 
         return uploadResults1
     }

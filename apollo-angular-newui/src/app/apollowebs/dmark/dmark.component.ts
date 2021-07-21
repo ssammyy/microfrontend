@@ -150,13 +150,13 @@ export class DmarkComponent implements OnInit, AfterViewInit {
             }
         );
 
-        // if (this.allPermitDetails.permitDetails.permitAwardStatus === true) {
-        this.qaService.loadCertificateDetailsPDF(this.permitID).subscribe(
-            (data: any) => {
-                this.pdfSources = data;
-            },
-        );
-        // }
+        if (this.allPermitDetails.permitDetails.permitAwardStatus === true) {
+            this.qaService.loadCertificateDetailsPDF(this.permitID).subscribe(
+                (data: any) => {
+                    this.pdfSources = data;
+                },
+            );
+        }
 
 
     }

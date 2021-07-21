@@ -274,6 +274,13 @@ class SchedulerImpl(
                                                 modifiedOn = commonDaoServices.getTimestamp()
                                             }
                                             permitRepo.save(pm)
+
+                                            qaDaoServices.sendEmailWithLabResultsFound(
+                                                commonDaoServices.findUserByID(
+                                                    pm.qaoId ?: throw Exception("QAO ID, NOT FOUND")
+                                                ).email ?: throw Exception("EMAIL FOR QAO, NOT FOUND"),
+                                                pm.permitRefNumber ?: throw Exception("PERMIT WITH REF NO, NOT FOUND")
+                                            )
                                         }
                                 }
                                 ssfFound.cdItemId != null -> {
