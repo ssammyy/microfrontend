@@ -39,6 +39,7 @@ export class SmarkApplicationsAllComponent implements OnInit {
           formattedArray = data.map(i => [i.permitRefNumber, i.createdOn, i.productName, i.tradeMark, i.awardedPermitNumber, i.dateOfIssue, i.dateOfExpiry, i.permitStatus, i.id]);
 
           this.dataTable = {
+            // tslint:disable-next-line:max-line-length
             headerRow: ['Permit Ref No', 'Application Date', 'Product', 'Brand Name', 'Permit Number', 'Issue Date', 'Expiry Date', 'Status', 'Actions'],
             footerRow: ['Permit Ref No', 'Application Date', 'Product', 'Brand Name', 'Permit Number', 'Issue Date', 'Expiry Date', 'Status', 'Actions'],
             dataRows: formattedArray
@@ -86,7 +87,7 @@ export class SmarkApplicationsAllComponent implements OnInit {
   }
 
   onSelect(rowElement: string) {
-    this.router.navigate(['/permitdetails'], {fragment: rowElement});
+    this.router.navigate(['/smarkpermitdetails'], {fragment: rowElement});
   }
 
 }

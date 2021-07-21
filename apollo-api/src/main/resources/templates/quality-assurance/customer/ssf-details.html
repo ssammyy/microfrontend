@@ -70,9 +70,19 @@
                                                 <div class="list-text-accordion"
                                                      th:text="${ssfDetails?.resultsDate}"></div>
                                             </li>
-                                            <li th:if="${ssfDetails?.resultsAnalysis != null}" class="list-item-accordion">
+                                            <li th:if="${ssfDetails?.labReportFileId != null}"
+                                                class="list-item-accordion">
+                                                <div class="list-title-accordion">VIEW ATTACHED PDF RESULTS:</div>
+                                                <div class="list-text-accordion"><a
+                                                        th:href="@{/api/qa/kebs/view/attached(fileID=${ssfDetails.labReportFileId})}"
+                                                        target='_blank' class="btn btn-primary itemViewBtn">VIEW</a>
+                                                </div>
+                                            </li>
+                                            <li th:if="${ssfDetails?.resultsAnalysis != null}"
+                                                class="list-item-accordion">
                                                 <div class="list-title-accordion">RESULTS ANALYSIS:</div>
-                                                <div class="list-text-accordion" th:text="${ssfDetails?.resultsAnalysis} ? 'COMPLIANT' : 'NOT-COMPLIANT'"></div>
+                                                <div class="list-text-accordion"
+                                                     th:text="${ssfDetails?.resultsAnalysis} ? 'COMPLIANT' : 'NOT-COMPLIANT'"></div>
                                             </li>
                                         </ul>
                                     </div>
@@ -131,13 +141,47 @@
                                         </tr>
                                         </thead>
                                         <tbody>
-                                        <tr class="list" th:each="fileParam: ${LabResultsParameters}" style="cursor: pointer">
+                                        <tr class="list" th:each="fileParam: ${LabResultsParameters}"
+                                            style="cursor: pointer">
 
                                             <!--                                            <td th:text="${fileParam.sampleNumber}"></td>-->
                                             <td th:text="${fileParam.param}"></td>
                                             <td th:text="${fileParam.result}"></td>
                                             <td th:text="${fileParam.method}"></td>
                                             <!--                                            <td><a th:href="@{/api/qa/kebs/view/attached(fileID=${fileParam.id})}" target='_blank' class="btn btn-primary itemViewBtn">view</a></td>-->
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <button class="accordion">Lab Results PDFS Details</button>
+                            <div class="panel">
+                                <div class="row-table ">
+                                    <table class="table table-striped">
+                                        <thead>
+                                        <tr>
+                                            <!--                                            <th>Sample Number</th>-->
+                                            <th>PDF-Name</th>
+                                            <!--                                            <th>Result</th>-->
+                                            <th>view</th>
+                                            <th>SAVE</th>
+                                            <!--                                            <th>View</th>-->
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr class="list" th:each="pdfFound: ${foundPDFFiles}" style="cursor: pointer">
+
+                                            <!--                                            <td th:text="${fileParam.sampleNumber}"></td>-->
+                                            <td th:text="${pdfFound}"></td>
+                                            <!--                                            <td th:text="${fileParam.result}"></td>-->
+                                            <!--                                            <td th:text="${fileParam.method}"></td>-->
+                                            <td>
+                                                <a th:href="@{/api/qa/kebs/view/attached-lab-pdf(fileName=${pdfFound}, bsNumber=${ssfDetails?.bsNumber})}"
+                                                   target='_blank' class="btn btn-primary itemViewBtn">view</a></td>
+                                            <td>
+                                                <a th:href="@{/api/qa/kebs/selected/attached-lab-pdf(fileName=${pdfFound}, bsNumber=${ssfDetails?.bsNumber}, ssfID=${ssfDetails?.id})}"
+                                                   class="btn btn-primary itemViewBtn">SAVE</a></td>
                                         </tr>
                                         </tbody>
                                     </table>
@@ -159,9 +203,7 @@
                             <div>
 
                                 <div sec:authorize="hasAuthority('QA_OFFICER_MODIFY')">
-                                    <a th:if="${ssfDetails.labResultsStatus == 0}"
-                                       th:href="@{/api/qa/inspection/check-results(bsNumber=${ssfDetails?.bsNumber})}"
-                                       class="filter-link" style="color: white">CHECK RESULTS</a>
+                                    <!--                                    <a th:if="${ssfDetails.labResultsStatus == 0}" th:href="@{/api/qa/inspection/check-results(bsNumber=${ssfDetails?.bsNumber})}" class="filter-link" style="color: white">CHECK RESULTS</a>-->
                                     <a th:if="${ssfDetails.resultsAnalysis == null and ssfDetails.labResultsStatus == 1}" onclick="popUpCompanyFunction('addComplianceStatusDetails');" class="filter-link" style="color: white">ADD COMPLIANCE DETAILS</a>
                                 </div>
 
@@ -169,13 +211,19 @@
 
                         </div>
                         <div class="commodityDetailsForm" >
-                            <form id="commodityDetails-Form" name="commodityDetails-Form" th:action="@{/api/qa/kebs/lab-results-compliance-status/save(permitID = ${ssfDetails?.permitId})}" method="post" th:object="${ssfDetails}">
-                                <div class="modal fade" id="commodityDetailsModal" tabindex="-1" role="dialog" aria-labelledby="commodityDetailsModalLable" aria-hidden="true">
+                            <form id="commodityDetails-Form" name="commodityDetails-Form"
+                                  th:action="@{/api/qa/kebs/lab-results-compliance-status/save(ssfID = ${ssfDetails?.id})}"
+                                  method="post" th:object="${ssfDetails}">
+                                <div class="modal fade" id="commodityDetailsModal" tabindex="-1" role="dialog"
+                                     aria-labelledby="commodityDetailsModalLable" aria-hidden="true">
                                     <div class="modal-dialog" role="document">
                                         <div class="modal-content">
                                             <div class="modal-header">
-                                                <h5 style="font-weight: bold; " class="modal-title" id="commodityDetailsLable"><span id="spanValueCommodity">none</span></h5>
-                                                <button aria-label="Close" class="close" data-dismiss="modal" onClick="refreshPage()" type="button">
+                                                <h5 style="font-weight: bold; " class="modal-title"
+                                                    id="commodityDetailsLable"><span id="spanValueCommodity">none</span>
+                                                </h5>
+                                                <button aria-label="Close" class="close" data-dismiss="modal"
+                                                        onClick="refreshPage()" type="button">
                                                     <span aria-hidden="true">&times;</span>
                                                 </button>
                                             </div>
@@ -192,7 +240,8 @@
                                                             <option th:text="'Compliant'" th:value="1"></option>
                                                             <option th:text="'Non-Compliant'" th:value="0"></option>
                                                         </select>complianceRemarks
-                                                        <textarea name="complianceRemarks" id="complianceRemarks"
+                                                        <textarea name="complianceRemarks" required="required"
+                                                                  id="complianceRemarks"
                                                                   class="input-field w-input" cols="65" rows="5"
                                                                   th:field="*{complianceRemarks}"></textarea>
                                                     </div>

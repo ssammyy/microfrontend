@@ -228,3 +228,10 @@ class RootTestResultsAndParameters {
     var test_result: List<TestResult>? = null
     var test_parameter: List<TestParameter>? = null
 }
+
+class RootLabPdfList {
+    var status: String? = null
+    var message: String? = null
+    var pdf_files: List<String>? = null
+    var bs_number: String? = null
+}

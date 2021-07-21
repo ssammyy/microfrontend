@@ -477,7 +477,7 @@
                                                     </div>
                                                     <div class="tab-pane" id="link18">
                                                         <div class="card">
-                                                            <form (ngSubmit)="stkPush()" [formGroup]="stkPushForm"
+                                                            <form [formGroup]="stkPushForm"
                                                                   action="" enctype="multipart/form-data"
                                                                   class="form" method="post">
                                                                 <h2 class="welcome">
@@ -500,20 +500,18 @@
                                                                                style="width: 60%">
                                                                     </div>
                                                                     <div style="margin-top: 3%" class="form-group">
-                                                                        <input [ngClass]="{ 'is-invalid': submitted && formStkPushForm.entityValueID.errors }"
-                                                                               aria-describedby="inputGroup-sizing-sm"
+                                                                        <input aria-describedby="inputGroup-sizing-sm"
                                                                                aria-label="Small"
                                                                                class="form-control two-column-input"
                                                                                formControlName="entityValueID"
                                                                                id="entityValueID" type="hidden"
                                                                                value="{{batchID}}"
-                                                                               name="entityValueID"
-                                                                               placeholder="Phone Number"
-                                                                               style="width: 60%">
+                                                                               name="entityValueID">
                                                                     </div>
                                                                     <br>
                                                                     <div>
-                                                                        <button type="submit" class="login-button">PAY
+                                                                        <button (click)="stkPush()"
+                                                                                class="login-button">PAY NOW
                                                                         </button>
                                                                     </div>
                                                                 </div>

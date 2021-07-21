@@ -3,17 +3,18 @@ package org.kebs.app.kotlin.apollo.api.controllers.qaControllers
 import org.kebs.app.kotlin.apollo.api.notifications.Notifications
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.QADaoServices
+import org.kebs.app.kotlin.apollo.api.ports.provided.dao.ReportsDaoService
+import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.ServiceRequestsEntity
 import org.kebs.app.kotlin.apollo.store.model.qa.QaUploadsEntity
+import org.springframework.core.io.ResourceLoader
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.ui.Model
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestParam
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
+import javax.servlet.http.HttpServletResponse
 
 
 @RestController
@@ -21,11 +22,22 @@ import org.springframework.web.multipart.MultipartFile
 class QualityAssuranceJSONControllers(
     private val applicationMapProperties: ApplicationMapProperties,
     private val qaDaoServices: QADaoServices,
+    private val reportsDaoService: ReportsDaoService,
+    private val resourceLoader: ResourceLoader,
     private val notifications: Notifications,
     private val commonDaoServices: CommonDaoServices,
 ) {
 
     final val appId: Int = applicationMapProperties.mapQualityAssurance
+
+    final val dMarkImageResource = resourceLoader.getResource(applicationMapProperties.mapDmarkImagePath)
+    val dMarkImageFile = dMarkImageResource.file.toString()
+
+    final val sMarkImageResource = resourceLoader.getResource(applicationMapProperties.mapSmarkImagePath)
+    val sMarkImageFile = sMarkImageResource.file.toString()
+
+    final val fMarkImageResource = resourceLoader.getResource(applicationMapProperties.mapFmarkImagePath)
+    val fMarkImageFile = fMarkImageResource.file.toString()
 
     @PostMapping("/permit/apply/sta3-update-upload")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
@@ -87,6 +99,12 @@ class QualityAssuranceJSONControllers(
             )
         }
 
+        with(permitDetails) {
+            sta10FilledStatus = map.inactiveStatus
+            permitStatus = applicationMapProperties.mapQaStatusPSubmission
+        }
+
+        permitDetails = qaDaoServices.permitUpdateDetails(permitDetails, map, loggedInUser).second
         val sm = CommonDaoServices.MessageSuccessFailDTO()
 //        sm.closeLink = "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitDetails.id}"
         sm.message = "Document Uploaded successful"
@@ -95,6 +113,118 @@ class QualityAssuranceJSONControllers(
 //        return commonDaoServices.returnValues(result ?: throw Exception("invalid results"), map, sm)
     }
 
+
+    @RequestMapping(value = ["/report/proforma-invoice-with-Item"], method = [RequestMethod.GET])
+    @Throws(Exception::class)
+    fun proformaInvoiceWithMoreItems(
+        response: HttpServletResponse,
+        @RequestParam(value = "ID") ID: Long
+    ) {
+        var map = hashMapOf<String, Any>()
+//        val cdItemDetailsEntity = daoServices.findItemWithItemID(id)
+        val batchInvoice = qaDaoServices.findBatchInvoicesWithID(ID)
+        val batchInvoiceList = qaDaoServices.findALlInvoicesPermitWithBatchID(
+            batchInvoice.id ?: throw ExpectedDataNotFound("MISSING BATCH INVOICE ID")
+        )
+        val companyProfile = commonDaoServices.findCompanyProfileWithID(
+            commonDaoServices.findUserByID(
+                batchInvoice.userId ?: throw ExpectedDataNotFound("MISSING USER ID")
+            ).companyId ?: throw ExpectedDataNotFound("MISSING USER ID")
+        )
+
+        map["preparedBy"] = batchInvoice.createdBy.toString()
+        map["datePrepared"] = commonDaoServices.convertTimestampToKeswsValidDate(
+            batchInvoice.createdOn ?: throw ExpectedDataNotFound("MISSING CREATION DATE")
+        )
+        map["demandNoteNo"] = batchInvoice.invoiceNumber.toString()
+        map["companyName"] = companyProfile.name.toString()
+        map["companyAddress"] = companyProfile.postalAddress.toString()
+        map["companyTelephone"] = companyProfile.companyTelephone.toString()
+//        map["productName"] = demandNote?.product.toString()
+//        map["cfValue"] = demandNote?.cfvalue.toString()
+//        map["rate"] = demandNote?.rate.toString()
+//        map["amountPayable"] = demandNote?.amountPayable.toString()
+        map["customerNo"] = companyProfile.entryNumber.toString()
+        map["totalAmount"] = batchInvoice.totalAmount.toString()
+        //Todo: config for amount in words
+
+//                    map["amountInWords"] = demandNote?.
+        map["receiptNo"] = batchInvoice.receiptNo.toString()
+
+        map = reportsDaoService.addBankAndMPESADetails(map)
+
+        reportsDaoService.extractReport(
+            map,
+            response,
+            applicationMapProperties.mapReportProfomaInvoiceWithItemsPath,
+            batchInvoiceList
+        )
+    }
+
+    /*
+ DMARK Permit Report
+  */
+    @RequestMapping(value = ["/report/permit-certificate"], method = [RequestMethod.GET])
+    @Throws(Exception::class)
+    fun certificatePermit(
+        response: HttpServletResponse,
+        @RequestParam(value = "permitID") id: Long
+    ) {
+        var map = hashMapOf<String, Any>()
+        val appId: Int = applicationMapProperties.mapQualityAssurance
+        val s = commonDaoServices.serviceMapDetails(appId)
+        val permit = qaDaoServices.findPermitBYID(id)
+
+        val foundPermitDetails = qaDaoServices.permitDetails(permit, s)
+
+        map["FirmName"] = foundPermitDetails.firmName.toString()
+        map["PermitNo"] = foundPermitDetails.permitNumber.toString()
+        map["PostalAddress"] = foundPermitDetails.postalAddress.toString()
+        map["PhysicalAddress"] = foundPermitDetails.physicalAddress.toString()
+        map["DateOfIssue"] =
+            foundPermitDetails.dateOfIssue?.let { commonDaoServices.convertDateToString(it, "dd-MM-YYYY") }!!
+        map["ExpiryDate"] =
+            foundPermitDetails.dateOfExpiry?.let { commonDaoServices.convertDateToString(it, "dd-MM-YYYY") }!!
+
+//        map["FirmName"] = foundPermitDetails.firmName.toString()
+        map["CommodityDesc"] = foundPermitDetails.commodityDescription.toString()
+        map["TradeMark"] = foundPermitDetails.brandName.toString()
+        map["StandardTitle"] = "${foundPermitDetails.standardNumber}".plus(" ${foundPermitDetails.standardTitle}")
+
+        map["faxNumber"] = foundPermitDetails.faxNo.toString()
+        map["EmailAddress"] = foundPermitDetails.email.toString()
+        map["phoneNumber"] = foundPermitDetails.telephoneNo.toString()
+        map["QrCode"] = foundPermitDetails.permitNumber.toString()
+
+
+        when (foundPermitDetails.permitTypeID) {
+            applicationMapProperties.mapQAPermitTypeIDDmark -> {
+                map["DmarkLogo"] = dMarkImageFile
+                reportsDaoService.extractReportEmptyDataSource(
+                    map,
+                    response,
+                    applicationMapProperties.mapReportDmarkPermitReportPath
+                )
+            }
+            applicationMapProperties.mapQAPermitTypeIdSmark -> {
+                map["SmarkLogo"] = sMarkImageFile
+                reportsDaoService.extractReportEmptyDataSource(
+                    map,
+                    response,
+                    applicationMapProperties.mapReportSmarkPermitReportPath
+                )
+            }
+            applicationMapProperties.mapQAPermitTypeIdFmark -> {
+                map["FmarkLogo"] = fMarkImageFile
+                reportsDaoService.extractReportEmptyDataSource(
+                    map,
+                    response,
+                    applicationMapProperties.mapReportFmarkPermitReportPath
+                )
+            }
+        }
+
+    }
 
     @PostMapping("/kebs/add/new-upload")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)

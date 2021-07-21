@@ -343,10 +343,10 @@ Standard number" >
 </div>
 <div class="form-group col-6">
 <label for="available">Available (YES/NO)</label>
-<input type="checkbox"   formControlName="available"
-name="available" id="available" class="form-control"  >
-
-
+    <select id="available" class="form-control " formControlName="available" name="available">
+     <option ngValue="true">Yes</option>
+        <option ngValue="false">No</option>
+    </select>
 
 </div>
 </div>

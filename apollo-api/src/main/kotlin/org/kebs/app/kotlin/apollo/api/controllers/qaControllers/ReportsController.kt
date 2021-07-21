@@ -3,6 +3,7 @@ package org.kebs.app.kotlin.apollo.api.controllers.qaControllers
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.QADaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.ReportsDaoService
+import org.kebs.app.kotlin.apollo.common.dto.qa.PermitDetailsDto
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.InvoiceEntity
@@ -15,8 +16,8 @@ import org.springframework.web.bind.annotation.RestController
 import javax.servlet.http.HttpServletResponse
 
 @RestController
-//@RequestMapping("/api/qa/report/")
-@RequestMapping("/api/v1/migration/qa/report")
+@RequestMapping("/api/qa/report/")
+//@RequestMapping("/api/v1/migration/qa/report")
 class ReportsController(
     private val applicationMapProperties: ApplicationMapProperties,
     private val qaDaoServices: QADaoServices,
@@ -165,6 +166,54 @@ class ReportsController(
 
         map = reportsDaoService.addBankAndMPESADetails(map)
         return Pair(map, batchInvoiceList)
+    }
+
+
+    fun permitCertificateIssuedCreation(id: Long): Pair<HashMap<String, Any>, String> {
+        var map = hashMapOf<String, Any>()
+        val appId: Int = applicationMapProperties.mapQualityAssurance
+        val s = commonDaoServices.serviceMapDetails(appId)
+        val permit = qaDaoServices.findPermitBYID(id)
+
+        val foundPermitDetails = qaDaoServices.permitDetails(permit, s)
+        var filePath: String? = null
+
+        map["FirmName"] = foundPermitDetails.firmName.toString()
+        map["PermitNo"] = foundPermitDetails.permitNumber.toString()
+        map["PostalAddress"] = foundPermitDetails.postalAddress.toString()
+        map["PhysicalAddress"] = foundPermitDetails.physicalAddress.toString()
+        map["DateOfIssue"] =
+            foundPermitDetails.dateOfIssue?.let { commonDaoServices.convertDateToString(it, "dd-MM-YYYY") }!!
+        map["ExpiryDate"] =
+            foundPermitDetails.dateOfExpiry?.let { commonDaoServices.convertDateToString(it, "dd-MM-YYYY") }!!
+
+        //        map["FirmName"] = foundPermitDetails.firmName.toString()
+        map["CommodityDesc"] = foundPermitDetails.commodityDescription.toString()
+        map["TradeMark"] = foundPermitDetails.brandName.toString()
+        map["StandardTitle"] = "${foundPermitDetails.standardNumber}".plus(" ${foundPermitDetails.standardTitle}")
+
+        map["faxNumber"] = foundPermitDetails.faxNo.toString()
+        map["EmailAddress"] = foundPermitDetails.email.toString()
+        map["phoneNumber"] = foundPermitDetails.telephoneNo.toString()
+        map["QrCode"] = foundPermitDetails.permitNumber.toString()
+        when (foundPermitDetails.permitTypeID) {
+            applicationMapProperties.mapQAPermitTypeIDDmark -> {
+                map["DmarkLogo"] = dMarkImageFile
+                filePath = applicationMapProperties.mapReportDmarkPermitReportPath
+
+            }
+            applicationMapProperties.mapQAPermitTypeIdSmark -> {
+                map["SmarkLogo"] = sMarkImageFile
+                filePath = applicationMapProperties.mapReportSmarkPermitReportPath
+
+            }
+            applicationMapProperties.mapQAPermitTypeIdFmark -> {
+                map["FmarkLogo"] = fMarkImageFile
+                filePath = applicationMapProperties.mapReportFmarkPermitReportPath
+
+            }
+        }
+        return Pair(map, filePath ?: throw ExpectedDataNotFound("MISSING FILE PATH"))
     }
 
     /*
