@@ -325,7 +325,7 @@ export class SignUpComponent implements OnInit {
             }
         }));
         this.store$.pipe(select(selectValidateTokenAndPhoneValidated)).subscribe((d) => {
-            // console.log(`status inside is ${d}`)
+            console.log(`status inside is ${d}`);
             if (d) {
                 this.otpSent = true;
                 // this.stepFourForm?.get('otp')?.reset();
