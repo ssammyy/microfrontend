@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {QaService} from "../../core/store/data/qa/qa.service";
 import {Router} from "@angular/router";
 import {AllPermitDetailsDto, ConsolidatedInvoiceDto, PermitEntityDto} from "../../core/store/data/qa/qa.model";
+import {FormArray, FormBuilder, FormControl, FormGroup} from "@angular/forms";
 
 declare interface DataTable {
   headerRow: string[];
@@ -19,11 +20,14 @@ declare const $: any;
 export class InvoiceConsolidateComponent implements OnInit {
   public dataTable: DataTable;
   public allInvoiceData: ConsolidatedInvoiceDto[];
-  
+  name:string;
+  checkboxGroup: FormGroup;
+
 
   constructor(
       private qaService: QaService,
       private router: Router,
+      private _formBuilder: FormBuilder,
   ) { }
 
   ngOnInit() {
@@ -100,5 +104,38 @@ export class InvoiceConsolidateComponent implements OnInit {
     $('.card .material-datatables label').addClass('form-group');
   }
 
+  initModelForm(): FormGroup{
+    return this._formBuilder.group({
+      otherControls: [''],
+      // The formArray, empty
+      myChoices: new FormArray([]),
+    })
+  }
 
+
+  onCheckChange(event) {
+    const formArray: FormArray = this.checkboxGroup.get('myChoices') as FormArray;
+
+    /* Selected */
+    if(event.target.checked){
+      // Add a new control in the arrayForm
+      formArray.push(new FormControl(event.target.value));
+    }
+    /* unselected */
+    else{
+      // find the unselected element
+      let i: number = 0;
+
+      formArray.controls.forEach((ctrl: FormControl) => {
+        if(ctrl.value == event.target.value) {
+          // Remove the unselected element from the arrayForm
+          formArray.removeAt(i);
+          return;
+        }
+
+        i++;
+      });
+    }
+    console.log(formArray)
+}
 }
