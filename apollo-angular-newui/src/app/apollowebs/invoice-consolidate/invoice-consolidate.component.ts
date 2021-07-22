@@ -24,7 +24,7 @@ export class InvoiceConsolidateComponent implements OnInit {
   name:string;
   checkboxGroup: FormGroup;
   submittedValue: any;
-  messages = [];
+  final_array = [];
   selected = [];
 
 
@@ -130,7 +130,7 @@ export class InvoiceConsolidateComponent implements OnInit {
   }
 
   submit() {
-    this.messages.push(this.selected.sort());
+    this.final_array.push(this.selected.sort());
   }
 
 }
