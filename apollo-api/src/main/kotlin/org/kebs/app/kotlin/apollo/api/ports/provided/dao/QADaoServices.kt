@@ -797,9 +797,10 @@ class QADaoServices(
                 permit.permitStatus = applicationMapProperties.mapQaStatusPApprovalCompletness
                 permitUpdateDetails(permit, map, userDetails)
 
-                val batchInvoice = findPermitInvoiceByPermitRefNumber(
+                val batchInvoice = findPermitInvoiceByPermitRefNumberANdPermitID(
                     permit.permitRefNumber ?: throw ExpectedDataNotFound("MISSING PERMIT REF NUMBER"),
-                    permit.userId ?: throw ExpectedDataNotFound("MISSING USER ID")
+                    permit.userId ?: throw ExpectedDataNotFound("MISSING USER ID"),
+                    permit.id ?: throw ExpectedDataNotFound("MISSING USER ID")
                 )
                 sendEmailWithProformaPaid(
                     userDetails.email ?: throw ExpectedDataNotFound("MISSING USER ID"),
@@ -842,6 +843,17 @@ class QADaoServices(
             ?: throw ExpectedDataNotFound("No Invoice found with the following [PERMIT REF NO =${permitRefNumber}  and LoggedIn User]")
     }
 
+    fun findPermitInvoiceByPermitRefNumberANdPermitID(
+        permitRefNumber: String,
+        userId: Long,
+        permitID: Long
+    ): InvoiceEntity {
+        invoiceRepository.findByPermitRefNumberAndUserIdAndPermitId(permitRefNumber, userId, permitID)?.let {
+            return it
+        }
+            ?: throw ExpectedDataNotFound("No Invoice found with the following [PERMIT REF NO =${permitRefNumber}  and LoggedIn User]")
+    }
+
     fun findSTA3WithPermitRefNumber(permitRefNumber: String): QaSta3Entity {
         sta3Repo.findByPermitRefNumber(permitRefNumber)?.let {
             return it
@@ -858,6 +870,12 @@ class QADaoServices(
         manufacturePlantRepository.findByCompanyProfileId(companyID)?.let {
             return it
         } ?: throw ExpectedDataNotFound("No Plant details found with the following [COMPANY ID =$companyID]")
+    }
+
+    fun findAllPlantDetailsWithIDAndStatus(status: Int, plantID: Long): List<ManufacturePlantDetailsEntity> {
+        manufacturePlantRepository.findByStatusAndId(status, plantID)?.let {
+            return it
+        } ?: throw ExpectedDataNotFound("No Plant details found with the following COMPANY ID =$plantID")
     }
 
 
@@ -2667,6 +2685,15 @@ class QADaoServices(
         return true
     }
 
+    fun sendEmailWithLabResultsFound(recipient: String, permitRefNumber: String): Boolean {
+        val subject = "LAB RESULTS"
+        val messageBody = "Check Lab Results for permit with Ref number $permitRefNumber"
+
+        notifications.sendEmail(recipient, subject, messageBody)
+
+        return true
+    }
+
     fun approvedRejectedSSC(
         sscApprovalRejectionDto: SSCApprovalRejectionDto,
         map: ServiceMapsEntity,
@@ -2706,6 +2733,15 @@ class QADaoServices(
         val messageBody =
             "Check The attached SCHEME OF SUPERVISION AND CONTROL for permit with Ref number $permitRefNumber" +
                     "and Approve or reject it on KIMS system for your application to continue being processesd"
+
+        notifications.processEmail(recipient, subject, messageBody, attachment)
+
+        return true
+    }
+
+    fun sendEmailWithSSCAttached(recipient: String, attachment: String?, permitRefNumber: String): Boolean {
+        val subject = "SSC ATTACHED GENERATED"
+        val messageBody = "BODY"
 
         notifications.processEmail(recipient, subject, messageBody, attachment)
 
@@ -2931,7 +2967,7 @@ class QADaoServices(
         with(newBatchInvoiceDto) {
             permitInvoicesID = arrayOf(permit.permitRefNumber.toString())
         }
-        var batchInvoice = permitMultipleInvoiceCalculation(map, loggedInUser, newBatchInvoiceDto).second
+        var batchInvoice = permitMultipleInvoiceCalculation(map, loggedInUser, permitID, newBatchInvoiceDto).second
 
         // submit invoice to get way
         with(newBatchInvoiceDto) {
@@ -3098,6 +3134,7 @@ class QADaoServices(
     fun permitMultipleInvoiceCalculation(
         s: ServiceMapsEntity,
         user: UsersEntity,
+        permitID: Long,
         batchInvoiceDto: NewBatchInvoiceDto,
     ): Pair<ServiceRequestsEntity, QaBatchInvoiceEntity> {
 
@@ -3109,7 +3146,8 @@ class QADaoServices(
             batchInvoiceDto.permitInvoicesID
                 ?.forEach { permitRefNumber ->
                     val userID = user.id ?: throw Exception("INVALID USER ID")
-                    var permitInvoiceFound = findPermitInvoiceByPermitRefNumber(permitRefNumber, userID)
+                    var permitInvoiceFound =
+                        findPermitInvoiceByPermitRefNumberANdPermitID(permitRefNumber, userID, permitID)
                     val permitType = findPermitType(applicationMapProperties.mapQAPermitTypeIdInvoices)
 
                     invoiceBatchRepo.findByIdOrNull(batchID)
@@ -3191,6 +3229,7 @@ class QADaoServices(
     fun permitMultipleInvoiceRemoveInvoice(
         s: ServiceMapsEntity,
         user: UsersEntity,
+        permitID: Long,
         batchInvoiceDto: NewBatchInvoiceDto,
     ): Pair<ServiceRequestsEntity, QaBatchInvoiceEntity> {
 
@@ -3200,8 +3239,8 @@ class QADaoServices(
         try {
 
             val userID = user.id ?: throw Exception("INVALID USER ID")
-            var permitInvoiceFound = findPermitInvoiceByPermitRefNumber(
-                batchInvoiceDto.permitRefNumber ?: throw Exception("PERMIT REF NUMBER REQUIRED"), userID
+            var permitInvoiceFound = findPermitInvoiceByPermitRefNumberANdPermitID(
+                batchInvoiceDto.permitRefNumber ?: throw Exception("PERMIT REF NUMBER REQUIRED"), userID, permitID
             )
             var batchID: Long? = null
 

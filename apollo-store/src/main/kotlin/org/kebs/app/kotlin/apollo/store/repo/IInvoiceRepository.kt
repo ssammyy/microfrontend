@@ -16,6 +16,7 @@ interface IInvoiceRepository : HazelcastRepository<InvoiceEntity, Long> {
     fun findByPermitRefNumber(permitRefNumber: String): InvoiceEntity?
     fun findByPermitIdAndUserId(permitId: Long, userId: Long): InvoiceEntity?
     fun findByPermitRefNumberAndUserId(permitRefNumber: String, userId: Long): InvoiceEntity?
+    fun findByPermitRefNumberAndUserIdAndPermitId(permitRefNumber: String, userId: Long, permitId: Long): InvoiceEntity?
     fun findAllByStatus(status: Long): List<InvoiceEntity>?
     fun findAllByUserIdAndStatus(userId: Long, status: Int): List<InvoiceEntity>?
     fun findByStatus(status: Long, pages: Pageable): Page<InvoiceEntity>?

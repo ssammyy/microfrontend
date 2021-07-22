@@ -173,11 +173,14 @@ export class SmarkComponent implements OnInit {
             }
         );
 
-        this.qaService.loadCertificateDetailsPDF(this.permitID).subscribe(
-            (data: any) => {
-                this.pdfSources = data;
-            },
-        );
+
+        if (this.allPermitDetails.permitDetails.permitAwardStatus === true) {
+            this.qaService.loadCertificateDetailsPDF(this.permitID).subscribe(
+                (data: any) => {
+                    this.pdfSources = data;
+                },
+            );
+        }
 
     }
 
@@ -564,4 +567,7 @@ export class SmarkComponent implements OnInit {
         );
     }
 
+    goToInvoiceGenerated() {
+        // this.router.navigate(['/permitdetails'], {fragment: String(this.AllPermitDetailsDto.permitDetails.id)});
+    }
 }
