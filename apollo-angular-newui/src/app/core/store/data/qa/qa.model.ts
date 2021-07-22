@@ -41,6 +41,7 @@ export class ConsolidatedInvoiceDto {
     paidStatus: number;
     submittedStatus: number;
     receiptNo: string;
+    checkedValue: boolean;
 }
 
 export class GenerateInvoiceDto {

@@ -3,6 +3,7 @@ import {QaService} from "../../core/store/data/qa/qa.service";
 import {Router} from "@angular/router";
 import {AllPermitDetailsDto, ConsolidatedInvoiceDto, PermitEntityDto} from "../../core/store/data/qa/qa.model";
 import {FormArray, FormBuilder, FormControl, FormGroup} from "@angular/forms";
+import {Subscription} from "rxjs";
 
 declare interface DataTable {
   headerRow: string[];
@@ -21,17 +22,23 @@ export class InvoiceConsolidateComponent implements OnInit {
   public dataTable: DataTable;
   public allInvoiceData: ConsolidatedInvoiceDto[];
   name:string;
-  public myForm: FormGroup;
+  checkboxGroup: FormGroup;
+  submittedValue: any;
+  messages = [];
+  selected = [];
 
 
   constructor(
       private qaService: QaService,
       private router: Router,
-      private _formBuilder: FormBuilder,
+      private fb: FormBuilder,
   ) { }
 
   ngOnInit() {
-    this.initModelForm();
+    this.checkboxGroup = this.fb.group({
+     });
+    const checkboxControl = (this.checkboxGroup.controls.checkboxes as FormArray);
+
     let formattedArray = [];
     this.qaService.loadInvoiceBatchList().subscribe(
         (data: any) => {
@@ -105,38 +112,25 @@ export class InvoiceConsolidateComponent implements OnInit {
     $('.card .material-datatables label').addClass('form-group');
   }
 
-  initModelForm(): FormGroup{
-    return this._formBuilder.group({
-      otherControls: [''],
-      // The formArray, empty
-      myChoices: new FormArray([]),
-    })
+
+  // check if the item are selected
+  checked(item){
+    if(this.selected.indexOf(item) != -1){
+      return true;
+    }
   }
 
-
-  onCheckChange(event) {
-    const formArray: FormArray = this.myForm.get('myChoices') as FormArray;
-
-    /* Selected */
-    if(event.target.checked){
-      // Add a new control in the arrayForm
-      formArray.push(new FormControl(event.target.value));
+  // when checkbox change, add/remove the item from the array
+  onChange(checked, item){
+    if(checked){
+      this.selected.push(item);
+    } else {
+      this.selected.splice(this.selected.indexOf(item), 1)
     }
-    /* unselected */
-    else{
-      // find the unselected element
-      let i: number = 0;
+  }
 
-      formArray.controls.forEach((ctrl: FormControl) => {
-        if(ctrl.value == event.target.value) {
-          // Remove the unselected element from the arrayForm
-          formArray.removeAt(i);
-          return;
-        }
+  submit() {
+    this.messages.push(this.selected.sort());
+  }
 
-        i++;
-      });
-    }
-    console.log(formArray)
-}
 }
