@@ -190,13 +190,13 @@ enctype="multipart/form-data" >
 
 <div class="row">
 <div class="form-group col-6">
-<label for="totalNumberMale">Total Number of Male</label>
+<label for="totalNumberMale">Total Number of Male <span style="font-size: xx-small; color: red;">(*)Required</span></label>
 <input type="number" [class.is-invalid]="formSta10Form.totalNumberMale.invalid && formSta10Form.totalNumberMale.touched"
 class="form-control" id="totalNumberMale" formControlName="totalNumberMale"
 name="totalNumberMale" class="form-control" placeholder="Male">
 </div>
 <div class="form-group col-6">
-<label for="totalNumberFemale">Total Number of Female</label>
+<label for="totalNumberFemale">Total Number of Female <span style="font-size: xx-small; color: red;">(*)Required</span></label>
 <input type="number"
 [class.is-invalid]="formSta10Form.totalNumberFemale.invalid && formSta10Form.totalNumberFemale.touched"
 class="form-control" id="totalNumberFemale" formControlName="totalNumberFemale"
@@ -206,7 +206,7 @@ name="totalNumberFemale" class="form-control" placeholder="Female">
 </div>
 <div class="row">
 <div class="form-group col-6">
-<label for="totalNumberPermanentEmployees">No. of Permanent Employees</label>
+<label for="totalNumberPermanentEmployees">No. of Permanent Employees <span style="font-size: xx-small; color: red;">(*)Required</span></label>
 <input type="number"
 [class.is-invalid]="formSta10Form.totalNumberPermanentEmployees.invalid && formSta10Form.totalNumberPermanentEmployees.touched"
 class="form-control" id="totalNumberPermanentEmployees"
@@ -224,7 +224,7 @@ name="totalNumberCasualEmployees" class="form-control" placeholder="No of Casual
 </div>
 <div class="row">
 <div class="form-group col-6">
-<label for="averageVolumeProductionMonth">Average Volume Production Month</label>
+<label for="averageVolumeProductionMonth">Average Volume Production Month <span style="font-size: xx-small; color: red;">(*)Required</span></label>
 <input [class.is-invalid]="formSta10Form.averageVolumeProductionMonth.invalid && formSta10Form.averageVolumeProductionMonth.touched" type="text" class="form-control" id="averageVolumeProductionMonth" formControlName="averageVolumeProductionMonth"
 name="averageVolumeProductionMonth" placeholder="Average Volume Production Month" required="">
 </div>
@@ -254,19 +254,22 @@ enctype="multipart/form-data">
 
 <div class="row">
 <div class="col-4">
+    <label for="personnelName">Name of Personnel <span style="font-size: xx-small; color: red;">(*)Required</span></label>
 <input type="text"  class="form-control" formControlName="personnelName"
-name="personnelName" class="form-control" placeholder="Name">
+name="personnelName" class="form-control" id="personnelName" placeholder="Name">
 </div>
 <div class="col-3">
+    <label for="qualificationInstitution">Qualification Evidence <span style="font-size: xx-small; color: red;">(*)Required</span></label>
 <input type="text"
 class="form-control" formControlName="qualificationInstitution"
-name="qualificationInstitution" class="form-control"
+name="qualificationInstitution" id="qualificationInstitution" class="form-control"
 placeholder="Qualification Evidence">
 </div>
 <div class="col-3">
+    <label for="dateOfEmployment">Date of Employment <span style="font-size: xx-small; color: red;">(*)Required</span></label>
 <input type="date"
 class="form-control" formControlName="dateOfEmployment"
-name="dateOfEmployment" class="form-control" placeholder="Date of Employment">
+name="dateOfEmployment" class="form-control" id="dateOfEmployment" placeholder="Date of Employment">
 </div>
 <div>
 <span class="input-group-btn">
@@ -324,19 +327,20 @@ enctype="multipart/form-data">
 <h4><b>Products being manufactured/ Brands </b></h4>
 <div class="row">
 <div class="form-group col-6">
-<label for="productName">Product Name</label>
+    <label for="productName">Product Name <span style="font-size: xx-small; color: red;">(*)Required</span></label>
 <input type="text"   formControlName="productName"
 name="productName" id="productName" class="form-control"  placeholder="Product Name " >
 </div>
 <div class="form-group col-6">
-<label for="productBrand">Brand Name</label>
+    <label for="productBrand">Brand Name <span style="font-size: xx-small; color: red;">(*)Required</span></label>
 <input type="text"  formControlName="productBrand"
 name="productBrand" id="productBrand" class="form-control"  placeholder="Brand Name " >
 </div>
 </div>
 <div class="row">
 <div class="form-group col-6">
-<label for="productStandardNumber">Applicable Product Standard number</label>
+    <label for="productStandardNumber">Applicable Product Standard number <span style="font-size: xx-small; color: red;">(*)Required</span></label>
+
 <input type="text"    formControlName="productStandardNumber"
 name="productStandardNumber" id="productStandardNumber" class="form-control"  placeholder="Applicable Product
 Standard number" >
@@ -344,8 +348,9 @@ Standard number" >
 <div class="form-group col-6">
 <label for="available">Available (YES/NO)</label>
     <select id="available" class="form-control " formControlName="available" name="available">
-     <option ngValue="true">Yes</option>
         <option ngValue="false">No</option>
+     <option ngValue="true">Yes</option>
+
     </select>
 
 </div>
@@ -424,19 +429,19 @@ enctype="multipart/form-data">
 name="name" id="name" class="form-control" placeholder="Raw material  " >
 </div>
 <div class="form-group col-6">
-<label for="origin">Origin.</label>
+    <label for="origin">Origin <span style="font-size: xx-small; color: red;">(*)Required</span></label>
 <input type="text"   formControlName="origin"
 name="origin" id="origin" class="form-control"  placeholder="Origin " >
 </div>
 </div>
 <div class="row">
 <div class="form-group col-6">
-<label for="specifications">Specifications.</label>
+    <label for="specifications">Specifications <span style="font-size: xx-small; color: red;">(*)Required</span></label>
 <input type="text"    formControlName="specifications"
 name="specifications" id="specifications" class="form-control"  placeholder="Specifications" >
 </div>
 <div class="form-group col-5">
-<label for="qualityChecksTestingRecords">Quality checks/testing.</label>
+    <label for="qualityChecksTestingRecords">Quality checks/testing <span style="font-size: xx-small; color: red;">(*)Required</span></label>
 <input type="text"     formControlName="qualityChecksTestingRecords"
 name="qualityChecksTestingRecords" id="qualityChecksTestingRecords" class="form-control"  placeholder="Quality checks/testing
 records" >
@@ -495,12 +500,12 @@ enctype="multipart/form-data">
 <h4><b>Machinery and Plant</b></h4>
 <div class="row">
 <div class="form-group col-6">
-<label for="machineName">Machine</label>
+    <label for="machineName">Machine <span style="font-size: xx-small; color: red;">(*)Required</span></label>
 <input type="text"   formControlName="machineName"
 name="machineName" id="machineName" class="form-control"  placeholder="Machine  " >
 </div>
 <div class="form-group col-6">
-<label for="typeModel">Type/Model.</label>
+    <label for="typeModel">Type/Model. <span style="font-size: xx-small; color: red;">(*)Required</span></label>
 <input type="text"  formControlName="typeModel"
 name="typeModel" id="typeModel" class="form-control"  placeholder="Type/Model " >
 </div>
@@ -508,7 +513,7 @@ name="typeModel" id="typeModel" class="form-control"  placeholder="Type/Model " 
 <div>
 <div class="row">
 <div class="form-group col-6">
-<label for="countryOfOrigin">Country of Origin</label>
+    <label for="countryOfOrigin">Country of Origin <span style="font-size: xx-small; color: red;">(*)Required</span></label>
 <select id="countryOfOrigin" class="form-control selectpicker" formControlName="countryOfOrigin" name="countryOfOrigin"
 data-live-search="true"    >
 <option value="Afghanistan">Afghanistan</option>
@@ -821,36 +826,37 @@ enctype="multipart/form-data">
 <h5><b> Manufacturing process  </b></h5>
 <div class="row">
 <div class="col-6">
-<label for="processFlowOfProduction">Process Flow of Production.</label>
+    <label for="processFlowOfProduction">Process Flow of Production. <span style="font-size: xx-small; color: red;">(*)Required</span></label>
 <input type="text"  formControlName="processFlowOfProduction"
 name="processFlowOfProduction" id="processFlowOfProduction" class="form-control"  placeholder="Process Flow of
 Production
 " >
 </div>
 <div class="col-6">
-<label for="operations">Operations</label>
+    <label for="operations">Operations. <span style="font-size: xx-small; color: red;">(*)Required</span></label>
 <input type="text"    formControlName="operations"
 name="operations" id="operations" class="form-control"  placeholder="Operations  " >
 </div>
 </div>
 <div class="row">
 <div class="col-6">
-<label for="criticalProcessParametersMonitored">Critical Process parameters Monitored.</label>
+<label for="criticalProcessParametersMonitored">Critical Process parameters Monitored. <span style="font-size: xx-small; color: red;">(*)Required</span></label>
 <input type="text"   formControlName="criticalProcessParametersMonitored"
 name="criticalProcessParametersMonitored" id="criticalProcessParametersMonitored" class="form-control"  placeholder="Critical Process
 parameters Monitored" >
 </div>
 <div class="col-6">
-<label for="processMonitoringRecords">Process Monitoring Reports.</label>
+    <label for="processMonitoringRecords">Process Monitoring Reports. <span style="font-size: xx-small; color: red;">(*)Required</span></label>
 <input type="text"   formControlName="processMonitoringRecords"
 id="processMonitoringRecords" name="processMonitoringRecords" class="form-control"  placeholder="Process Monitoring Reports" >
 </div>
 </div>
 <div class="row">
 <div class="col-6">
-<label for="qualityChecksTestingRecords">Quality checks/testing.</label>
+    <label for="frequency">Quality checks/testing. <span style="font-size: xx-small; color: red;">(*)Required</span></label>
+
 <input type="text"    formControlName="frequency"
-name="frequency" class="form-control"  placeholder="Frequency" >
+name="frequency" class="form-control" id="frequency"  placeholder="Frequency" >
 </div>
 <div class="col-6">
 <label  style="color: transparent">Quality checks/testing.</label>
@@ -914,16 +920,18 @@ enctype="multipart/form-data" >
 <div class="row">
 
 <div class="form-group col-12">
-<label for="handledManufacturingProcessRawMaterials">i.Raw Materials</label>
+    <label for="handledManufacturingProcessRawMaterials">i.Raw Materials <span style="font-size: xx-small; color: red;">(*)Required</span></label>
+
 <textarea [class.is-invalid]="formSta10FormF.handledManufacturingProcessRawMaterials.invalid && formSta10FormF.handledManufacturingProcessRawMaterials.touched" type="text"  id="handledManufacturingProcessRawMaterials" formControlName="handledManufacturingProcessRawMaterials" name="handledManufacturingProcessRawMaterials" class="form-control" rows="3" placeholder=""></textarea>
 </div>
 <div class="form-group col-12">
-<label for="handledManufacturingProcessInprocessProducts">ii.In-process products</label>
+    <label for="handledManufacturingProcessInprocessProducts">ii.In-process products <span style="font-size: xx-small; color: red;">(*)Required</span></label>
+
 <textarea [class.is-invalid]="formSta10FormF.handledManufacturingProcessInprocessProducts.invalid && formSta10FormF.handledManufacturingProcessInprocessProducts.touched" type="text"  id="handledManufacturingProcessInprocessProducts" formControlName="handledManufacturingProcessInprocessProducts" name="handledManufacturingProcessInprocessProducts" class="form-control" placeholder=""></textarea>
 
 </div>
 <div class="form-group col-12">
-<label for="handledManufacturingProcessFinalProduct">ii.In-process products</label>
+    <label for="handledManufacturingProcessFinalProduct">ii.In-process products<span style="font-size: xx-small; color: red;">(*)Required</span></label>
 <textarea [class.is-invalid]="formSta10FormF.handledManufacturingProcessFinalProduct.invalid && formSta10FormF.handledManufacturingProcessFinalProduct.touched" type="text"  id="handledManufacturingProcessFinalProduct" formControlName="handledManufacturingProcessFinalProduct" name="handledManufacturingProcessFinalProduct" class="form-control" placeholder=""></textarea>
 
 </div>
@@ -931,8 +939,8 @@ enctype="multipart/form-data" >
 </div>
 <div class="row">
 <div class="form-group col-12">
-<label for="strategyInplaceRecallingProducts">What strategy do you have in place for recalling your products from the market that are nonconforming
-and have an effect on Health, Safety and Environment?</label>
+    <label for="strategyInplaceRecallingProducts">What strategy do you have in place for recalling your products from the market that are nonconforming
+        and have an effect on Health, Safety and Environment?<span style="font-size: xx-small; color: red;">(*)Required</span></label>
 <textarea [class.is-invalid]="formSta10FormF.strategyInplaceRecallingProducts.invalid && formSta10FormF.strategyInplaceRecallingProducts.touched" type="text"  id="strategyInplaceRecallingProducts" formControlName="strategyInplaceRecallingProducts" name="strategyInplaceRecallingProducts" class="form-control" placeholder=""></textarea>
 
 </div>
@@ -941,11 +949,11 @@ and have an effect on Health, Safety and Environment?</label>
 <div class="row">
 
 <div class="form-group col-12">
-<label for="stateFacilityConditionsRawMaterials">i.Raw Materials</label>
+    <label for="stateFacilityConditionsRawMaterials">i.Raw Materials <span style="font-size: xx-small; color: red;">(*)Required</span></label>
 <textarea [class.is-invalid]="formSta10FormF.stateFacilityConditionsRawMaterials.invalid && formSta10FormF.stateFacilityConditionsRawMaterials.touched" type="text"  id="stateFacilityConditionsRawMaterials" formControlName="stateFacilityConditionsRawMaterials" name="stateFacilityConditionsRawMaterials" class="form-control" rows="3" placeholder=""></textarea>
 </div>
 <div class="form-group col-12">
-<label for="stateFacilityConditionsEndProduct">ii.End product?</label>
+    <label for="stateFacilityConditionsEndProduct">ii.End product?<span style="font-size: xx-small; color: red;">(*)Required</span></label>
 <textarea [class.is-invalid]="formSta10FormF.stateFacilityConditionsEndProduct.invalid && formSta10FormF.stateFacilityConditionsEndProduct.touched" type="text"  id="stateFacilityConditionsEndProduct" formControlName="stateFacilityConditionsEndProduct" name="stateFacilityConditionsEndProduct" class="form-control" placeholder=" "></textarea>
 
 </div>
@@ -956,17 +964,18 @@ and have an effect on Health, Safety and Environment?</label>
 <div class="row">
 
 <div class="form-group col-12">
-<label for="testingFacilitiesExistSpecifyEquipment">i. Specify equipment:</label>
+    <label for="testingFacilitiesExistSpecifyEquipment">i. Specify equipment: <span style="font-size: xx-small; color: red;">(*)Required</span></label>
+
 <textarea [class.is-invalid]="formSta10FormF.testingFacilitiesExistSpecifyEquipment.invalid && formSta10FormF.testingFacilitiesExistSpecifyEquipment.touched" type="text"  id="testingFacilitiesExistSpecifyEquipment" formControlName="testingFacilitiesExistSpecifyEquipment" name="testingFacilitiesExistSpecifyEquipment" class="form-control" rows="3" placeholder=""></textarea>
 </div>
 <div class="form-group col-12">
-<label for="testingFacilitiesExistStateParametersTested">ii.State parameters tested on site:</label>
+    <label for="testingFacilitiesExistStateParametersTested">ii.State parameters tested on site: <span style="font-size: xx-small; color: red;">(*)Required</span></label>
+
 <textarea [class.is-invalid]="formSta10FormF.testingFacilitiesExistStateParametersTested.invalid && formSta10FormF.testingFacilitiesExistStateParametersTested.touched" type="text"  id="testingFacilitiesExistStateParametersTested" formControlName="testingFacilitiesExistStateParametersTested" name="testingFacilitiesExistStateParametersTested" class="form-control" placeholder=" "></textarea>
 
 </div>
 <div class="form-group col-12">
-<label for="testingFacilitiesSpecifyParametersTested">iii. Specify any testing arrangement with other commercial laboratories (Specify parameters tested):
-</label>
+    <label for="testingFacilitiesSpecifyParametersTested">iii. Specify any testing arrangement with other commercial laboratories (Specify parameters tested): <span style="font-size: xx-small; color: red;">(*)Required</span></label>
 <textarea [class.is-invalid]="formSta10FormF.testingFacilitiesSpecifyParametersTested.invalid && formSta10FormF.testingFacilitiesSpecifyParametersTested.touched" type="text"  id="testingFacilitiesSpecifyParametersTested" formControlName="testingFacilitiesSpecifyParametersTested" name="testingFacilitiesSpecifyParametersTested" class="form-control" placeholder=" "></textarea>
 
 </div>
@@ -974,7 +983,7 @@ and have an effect on Health, Safety and Environment?</label>
 </div>
 <div class="row">
 <div class="form-group col-12">
-<label for="calibrationEquipmentLastCalibrated">v. Calibration of Equipment</label>
+    <label for="calibrationEquipmentLastCalibrated">v. Calibration of Equipment <span style="font-size: xx-small; color: red;">(*)Required</span></label>
 <p>How do you calibrate your measuring equipment stated in 8 (i) above?</p>
 <p>(e.g. Weighing scales, Thermometers e.t.c)? Specify when last calibrated.</p>
 <textarea [class.is-invalid]="formSta10FormF.calibrationEquipmentLastCalibrated.invalid && formSta10FormF.calibrationEquipmentLastCalibrated.touched" type="text"  id="calibrationEquipmentLastCalibrated" formControlName="calibrationEquipmentLastCalibrated" name="calibrationEquipmentLastCalibrated" class="form-control" rows="3" placeholder=""></textarea>
@@ -983,7 +992,7 @@ and have an effect on Health, Safety and Environment?</label>
 </div>
 <div class="row">
 <div class="form-group col-12">
-<label for="handlingConsumerComplaints">Handling of Complaints</label>
+    <label for="handlingConsumerComplaints">Handling of Complaints <span style="font-size: xx-small; color: red;">(*)Required</span></label>
 <p>How do you plan to handle (New) or currently handle your consumer’s complaints?</p>
 <textarea [class.is-invalid]="formSta10FormF.handlingConsumerComplaints.invalid && formSta10FormF.handlingConsumerComplaints.touched" type="text"  id="handlingConsumerComplaints" formControlName="handlingConsumerComplaints" name="handlingConsumerComplaints" class="form-control" rows="3" placeholder=""></textarea>
 </div>
@@ -991,7 +1000,7 @@ and have an effect on Health, Safety and Environment?</label>
 </div>
 <div class="row">
 <div class="form-group col-6">
-<label for="companyRepresentative">Company Representative</label>
+    <label for="companyRepresentative">Company Representative <span style="font-size: xx-small; color: red;">(*)Required</span></label>
 <input [class.is-invalid]="formSta10FormF.companyRepresentative.invalid && formSta10FormF.companyRepresentative.touched" type="text"  id="companyRepresentative" formControlName="companyRepresentative" name="companyRepresentative" class="form-control"  placeholder="">
 </div>
 <div class="form-group col-6">
@@ -1017,7 +1026,7 @@ and have an effect on Health, Safety and Environment?</label>
 <h2 style="text-align: center"><b >Step</b> <b > 9</b><b > of</b> <b > 9</b></h2>
 
 <fieldset class="wizard-fieldset show">
-<form (ngSubmit)="onClickSaveSTA10G(sta10FormG.valid)" [formGroup]="sta10FormG" class="form"
+<form (ngSubmit)="onClickSaveSTA10G()" [formGroup]="sta10FormG" class="form"
 enctype="multipart/form-data" >
 
 <h3>Upload all of the required documents</h3>

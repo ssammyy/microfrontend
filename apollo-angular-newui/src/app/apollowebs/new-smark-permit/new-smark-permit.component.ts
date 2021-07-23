@@ -661,7 +661,7 @@ export class NewSmarkPermitComponent implements OnInit {
                 '<button mat-raised-button type="button" aria-hidden="true" class="close" data-notify="dismiss">  <i class="material-icons">close</i></button>' +
                 '<i class="material-icons" data-notify="icon">notifications</i> ' +
                 '<span data-notify="title"></span> ' +
-                '<span data-notify="message">Ensure all required fields are items have been filled</span>' +
+                '<span data-notify="message">Ensure all required fields and items have been filled</span>' +
                 '<div class="progress" data-notify="progressbar">' +
                 '<div class="progress-bar progress-bar-{0}" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;"></div>' +
                 '</div>' +
