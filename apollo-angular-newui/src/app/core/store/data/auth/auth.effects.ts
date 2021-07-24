@@ -7,14 +7,14 @@ import {
     doValidateTokenForUserSuccess,
     loadAuths,
     loadAuthsSuccess,
-    loadLogout,
+    loadLogout, loadLogoutFailure,
     loadLogoutSuccess,
     loadResetAuths,
     loadUserCompanyInfo,
     loadUserCompanyInfoSuccess
 } from './auth.actions';
 import {Observable, of} from 'rxjs';
-import {Action, Store} from '@ngrx/store';
+import {Action} from '@ngrx/store';
 import {HttpErrorResponse} from '@angular/common/http';
 import {catchError, mergeMap, switchMap} from 'rxjs/operators';
 import {Go} from '../route';
@@ -172,23 +172,19 @@ export class AuthEffects {
                     .pipe(
                         mergeMap((data) => {
                             return [
-                                loadLogoutSuccess({data: data}),
-                                loadAuthsSuccess({
-                                    profile: {
-                                        fullName: '',
-                                        accessToken: '',
-                                        email: '',
-                                        expiry: Date(),
-                                        roles: [],
-                                        id: 0,
-                                        username: '',
-                                    }, loggedIn: false
-                                }),
+                                loadLogoutSuccess({data: data, loggedIn: false, profile: null}),
                                 Go({payload: null, link: action.loginUrl, redirectUrl: ''})
                             ];
                         }),
                         catchError(
                             (err: HttpErrorResponse) => {
+                                loadLogoutFailure({
+                                    error: {
+                                        payload: err.error,
+                                        status: err.status,
+                                        response: (err.error instanceof ErrorEvent) ? `Error: ${err.error.message}` : `Error Code: ${err.status},  Message: ${err.error}`
+                                    }, loggedIn: false, profile: null
+                                });
                                 return of(Go({payload: err, link: action.loginUrl, redirectUrl: ''}));
                             })
                     )
