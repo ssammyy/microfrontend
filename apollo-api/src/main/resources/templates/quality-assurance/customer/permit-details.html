@@ -543,7 +543,12 @@
 
                                         <a th:if="${permitDetails?.testReportId != null}"
                                            th:href="@{/api/qa/kebs/view/attached(fileID=${permitDetails.testReportId})}"
-                                           target='_blank' class="filter-link">LAB REPORT</a>
+                                           target='_blank' class="filter-link">LAB REPORT RESULTS</a>
+
+                                        <a th:if="${permitDetails?.ssfCompletedStatus == 1}"
+                                           class="filter-link"
+                                           th:href="@{/api/qa/inspection/ssf-list(permitID=${permitDetails?.id})}"
+                                           style="color: white">CHECK SAMPLES SUBMITTED DETAILS</a>
 
 
                                     </div>
@@ -636,14 +641,18 @@
                                                style="color: white" onclick="popUpFunction('addStandardsDetails');"
                                                class="filter-link">UPDATE STANDARDS DETAILS</a>
 
-                                            <a th:if="${permitDetails?.inspectionReportGenerated == 1  and permitDetails?.bsNumber == null}"
+                                            <a th:if="${permitDetails?.inspectionReportGenerated == 1  and permitDetails?.ssfCompletedStatus == null and permitDetails?.testReportId == null}"
                                                style="color: white" onclick="popUpSSFFunction('addSSFDetails');"
                                                class="filter-link">ADD SSF & BS NUMBER</a>
 
-                                            <a th:if="${permitDetails?.bsNumber != null and permitDetails?.testReportId == null }"
-                                               target='_blank' class="filter-link"
-                                               th:href="@{/api/qa/inspection/ssf-details(permitID=${permitDetails?.id})}"
-                                               style="color: white">CHECK SAMPLE SUBMITTED DETAILS</a>
+                                            <a th:if="${permitDetails?.compliantStatus == 0  and permitDetails?.ssfCompletedStatus == 1}"
+                                               style="color: white" onclick="popUpSSFFunction('addSSFDetails');"
+                                               class="filter-link">RE-INSPECT ADD SSF & BS NUMBER</a>
+
+                                            <a th:if="${permitDetails?.ssfCompletedStatus == 1 and permitDetails?.testReportId == null }"
+                                               class="filter-link"
+                                               th:href="@{/api/qa/inspection/ssf-list(permitID=${permitDetails?.id})}"
+                                               style="color: white">CHECK SAMPLES SUBMITTED DETAILS</a>
 
 
                                         </div>
@@ -709,13 +718,18 @@
                                                th:href="@{/api/qa/inspection/inspection-report-details(permitID=${permitDetails?.id})}"
                                                class="filter-link">GENERATED INSPECTION REPORT </a>
 
+                                            <a th:if="${permitDetails?.inspectionReportGenerated == 1 and permitDetails?.factoryInspectionReportApprovedRejectedStatus == 0 }"
+                                               style="color: white"
+                                               th:href="@{/api/qa/inspection/inspection-report-details(permitID=${permitDetails?.id})}"
+                                               class="filter-link">RE-GENERATED INSPECTION REPORT </a>
+
                                             <a th:if="${permitDetails?.recommendationRemarks == null and permitDetails?.compliantStatus == 1}"
                                                style="color: white" onclick="popUpFunction('addRecommendation');"
                                                class="filter-link">ADD RECOMMENDATION REMARKS</a>
                                             <a th:if="${permitDetails?.recommendationRemarks != null and permitDetails?.recommendationApprovalStatus == 0 and permitDetails?.compliantStatus == 1}"
                                                style="color: white"
                                                onclick="popUpResubmitFunction('addRecommendation');"
-                                               class="filter-link">REWRITE RECOMMENDATION REMARKS</a>
+                                               class="filter-link">RE-WRITE RECOMMENDATION REMARKS</a>
 
                                         </div>
 
@@ -724,10 +738,20 @@
                                                style="color: white" onclick="popUpFunction('pscMemberApproval');"
                                                class="filter-link">APPROVE/REJECT PERMIT AWARDING</a>
                                         </div>
+                                        <div sec:authorize="hasAuthority('QA_PSC_MEMBERS_READ')">
+                                            <a th:if="${ permitDetails?.pscMemberApprovalStatus == 0}"
+                                               style="color: white" onclick="popUpFunction('pscMemberApproval');"
+                                               class="filter-link">RE-APPROVE/REJECT PERMIT AWARDING</a>
+                                        </div>
                                         <div sec:authorize="hasAuthority('QA_PCM_READ')">
                                             <a th:if="${ permitDetails?.pcmApprovalStatus == null and permitDetails?.pscMemberApprovalStatus == 1}"
                                                style="color: white" onclick="popUpFunction('pcmApproval');"
                                                class="filter-link">APPROVE/REJECT PERMIT AWARDING</a>
+                                        </div>
+                                        <div sec:authorize="hasAuthority('QA_PCM_READ')">
+                                            <a th:if="${ permitDetails?.pcmApprovalStatus == 0 and permitDetails?.pscMemberApprovalStatus == 1}"
+                                               style="color: white" onclick="popUpFunction('pcmApproval');"
+                                               class="filter-link">RE-APPROVE/REJECT PERMIT AWARDING</a>
                                         </div>
 
                                     </div>
@@ -811,6 +835,11 @@
                                                th:href="@{/api/qa/inspection/inspection-report-details(permitID=${permitDetails?.id})}"
                                                class="filter-link">GENERATED INSPECTION REPORT </a>
 
+                                            <a th:if="${permitDetails?.inspectionReportGenerated == 1 and permitDetails?.factoryInspectionReportApprovedRejectedStatus == 0 }"
+                                               style="color: white"
+                                               th:href="@{/api/qa/inspection/inspection-report-details(permitID=${permitDetails?.id})}"
+                                               class="filter-link">RE-GENERATED INSPECTION REPORT </a>
+
                                             <a th:if="${permitDetails?.recommendationRemarks == null and permitDetails?.compliantStatus == 1}"
                                                style="color: white" onclick="popUpFunction('addRecommendation');"
                                                class="filter-link">ADD RECOMMENDATION REMARKS</a>
@@ -818,7 +847,7 @@
                                             <a th:if="${permitDetails?.recommendationRemarks != null and permitDetails?.recommendationApprovalStatus == 0 and permitDetails?.compliantStatus == 1}"
                                                style="color: white"
                                                onclick="popUpResubmitFunction('addRecommendation');"
-                                               class="filter-link">REWRITE RECOMMENDATION REMARKS</a>
+                                               class="filter-link">RE-WRITE RECOMMENDATION REMARKS</a>
 
                                         </div>
 
@@ -827,10 +856,20 @@
                                                style="color: white" onclick="popUpFunction('pscMemberApproval');"
                                                class="filter-link">APPROVE/REJECT PERMIT AWARDING</a>
                                         </div>
+                                        <div sec:authorize="hasAuthority('QA_PSC_MEMBERS_READ')">
+                                            <a th:if="${ permitDetails?.pscMemberApprovalStatus == 0}"
+                                               style="color: white" onclick="popUpFunction('pscMemberApproval');"
+                                               class="filter-link">RE-APPROVE/REJECT PERMIT AWARDING</a>
+                                        </div>
                                         <div sec:authorize="hasAuthority('QA_PCM_READ')">
                                             <a th:if="${ permitDetails?.pcmApprovalStatus == null and permitDetails?.pscMemberApprovalStatus == 1}"
                                                style="color: white" onclick="popUpFunction('pcmApproval');"
                                                class="filter-link">APPROVE/REJECT PERMIT AWARDING</a>
+                                        </div>
+                                        <div sec:authorize="hasAuthority('QA_PCM_READ')">
+                                            <a th:if="${ permitDetails?.pcmApprovalStatus == 0 and permitDetails?.pscMemberApprovalStatus == 1}"
+                                               style="color: white" onclick="popUpFunction('pcmApproval');"
+                                               class="filter-link">RE-APPROVE/REJECT PERMIT AWARDING</a>
                                         </div>
 
                                     </div>
@@ -901,9 +940,9 @@
                                             </div>
 
                                         </div>
-                                        <div sec:authorize="hasAuthority('QA_PCM_READ')">
+                                        <div sec:authorize="hasAuthority('QA_PCM_MODIFY')">
                                             <a th:if="${ permitDetails?.pcmApprovalStatus == null and permitDetails?.sendForPcmReview == 1}"
-                                               style="color: white" onclick="popUpFunction('pcmApproval');"
+                                               style="color: white" onclick="popUpFunction('pcmReviewApproval');"
                                                class="filter-link">APPROVE/REJECT PERMIT REVIEW</a>
                                         </div>
 
@@ -916,6 +955,12 @@
                                             <a th:if="${permitDetails?.compliantStatus == 1 and permitDetails?.justificationReportStatus == 10}"
                                                th:href="@{/api/qa/product-quality-status(permitID=${permitDetails?.id})}"
                                                style="color: white" target='_blank' class="filter-link">Justification
+                                                for Diamond Mark Assessment</a>
+
+                                            <a th:if="${permitDetails?.compliantStatus == 1 and permitDetails?.justificationReportStatus == 0}"
+                                               th:href="@{/api/qa/product-quality-status(permitID=${permitDetails?.id})}"
+                                               style="color: white" target='_blank' class="filter-link">RE-Generate
+                                                Justification
                                                 for Diamond Mark Assessment</a>
 
                                             <a th:if="${permitDetails?.justificationReportStatus == 1 and permitDetails?.assignAssessorStatus == null}"
@@ -938,10 +983,15 @@
                                                th:href="@{/api/qa/inspection/new-inspection-report(permitID=${permitDetails?.id})}"
                                                class="filter-link">GENERATE INSPECTION REPORT </a>
 
-                                            <a th:if="${permitDetails?.inspectionReportGenerated == 1 and permitDetails?.factoryInspectionReportApprovedRejectedStatus == null }"
+                                            <a th:if="${permitDetails?.inspectionReportGenerated == null and permitDetails?.factoryInspectionReportApprovedRejectedStatus == null }"
                                                style="color: white"
                                                th:href="@{/api/qa/inspection/inspection-report-details(permitID=${permitDetails?.id})}"
-                                               class="filter-link">GENERATED INSPECTION REPORT </a>
+                                               class="filter-link">CONTINUE GENERATING INSPECTION REPORT </a>
+
+                                            <a th:if="${permitDetails?.inspectionReportGenerated == 1 and permitDetails?.factoryInspectionReportApprovedRejectedStatus == 0 }"
+                                               style="color: white"
+                                               th:href="@{/api/qa/inspection/inspection-report-details(permitID=${permitDetails?.id})}"
+                                               class="filter-link">RE-GENERATED INSPECTION REPORT </a>
 
                                             <a th:if="${ permitDetails?.inspectionReportGenerated == 1 and permitDetails?.generateSchemeStatus == null and permitType?.schemeGenerate == 1}"
                                                style="color: white" onclick="popUpUploadFunction('uploadSSC');"
@@ -974,6 +1024,24 @@
                                             <a th:if="${permitDetails?.assessmentScheduledStatus == 30}"
                                                style="color: white" onclick="popUpFunction('dmarkApplicationApproval');"
                                                class="filter-link">Grant/Defer Application</a>
+                                        </div>
+
+                                        <div sec:authorize="hasAuthority('QA_PSC_MEMBERS_READ')">
+                                            <a th:if="${ permitDetails?.pacDecisionStatus == 0}"
+                                               style="color: white" onclick="popUpFunction('pscMemberApproval');"
+                                               class="filter-link">RE-APPROVE/REJECT PERMIT AWARDING</a>
+                                        </div>
+
+                                        <div sec:authorize="hasAuthority('QA_PSC_MEMBERS_READ')">
+                                            <a th:if="${ permitDetails?.pacDecisionStatus == 1}"
+                                               style="color: white" onclick="popUpFunction('pscMemberApproval');"
+                                               class="filter-link">APPROVE/REJECT PERMIT AWARDING</a>
+                                        </div>
+
+                                        <div sec:authorize="hasAuthority('QA_PCM_READ')">
+                                            <a th:if="${ permitDetails?.pcmApprovalStatus == 0 and permitDetails?.pacDecisionStatus == 1}"
+                                               style="color: white" onclick="popUpFunction('pcmApproval');"
+                                               class="filter-link">RE-APPROVE/REJECT PERMIT AWARDING</a>
                                         </div>
 
 
@@ -1035,8 +1103,8 @@
                                                         th:field="*{hofQamCompletenessStatus}">
                                                     <option th:text="'Select one.....'"
                                                             th:value="${nullStatus}"></option>
-                                                    <option th:text="'Yes'" th:value="1"></option>
-                                                    <option th:text="'No'" th:value="0"></option>
+                                                    <option th:text="'Approve'" th:value="1"></option>
+                                                    <option th:text="'Reject'" th:value="0"></option>
                                                 </select>
                                                 <label for="hofQamCompletenessRemarks" class="col-form-label">Please
                                                     write, in detail, your feedback for this Permit:</label>
@@ -1081,7 +1149,18 @@
                                                        th:value="'Assessor successfully assigned'">
                                                 <input type="hidden" id="assignAssessorStatus"
                                                        name="assignAssessorStatus" th:value="${activeStatus}">
-                                                <label for="assessorId" class="col-form-label">Select Officer:</label>
+                                                <label for="leadAssessorId" class="col-form-label">Select Lead
+                                                    Assessor:</label>
+                                                <select id="leadAssessorId" required class="form-control"
+                                                        th:field="*{leadAssessorId}">
+                                                    <option value="0">Select one...</option>
+                                                    <option th:each="assessor : ${assessorAssigned}"
+                                                            th:text="${assessor.userId?.firstName} + ' ' + ${assessor.userId?.lastName}"
+                                                            th:name="assessorId"
+                                                            th:value="${assessor.userId?.id}"></option>
+                                                </select>
+                                                <br>
+                                                <label for="assessorId" class="col-form-label">Select Assessor:</label>
                                                 <select id="assessorId" required class="form-control"
                                                         th:field="*{assessorId}">
                                                     <option value="0">Select one...</option>
@@ -1234,6 +1313,27 @@
                                                           class="input-field w-input" cols="65" rows="5"
                                                           th:field="*{hodApproveAssessmentRemarks}"></textarea>
                                             </div>
+
+                                            <div id="pcmReviewApproval">
+                                                <input type="hidden" id="description13" name="description"
+                                                       th:value="'Permit Status Updated succesfull'">
+                                                <label for="pcmReviewApprovalStatus" class="col-form-label">Select
+                                                    Status:</label>
+                                                <select id="pcmReviewApprovalStatus" required class="form-control"
+                                                        th:field="*{pcmReviewApprovalStatus}">
+                                                    <option th:text="'Select one.....'"
+                                                            th:value="${nullStatus}"></option>
+                                                    <option th:text="'APPROVE'" th:value="1"></option>
+                                                    <option th:text="'REJECT'" th:value="0"></option>
+                                                </select>
+                                                <label for="pcmReviewApprovalRemarks" class="col-form-label">Please
+                                                    write, in
+                                                    detail, your feedback for this Approval/Rejection:</label>
+                                                <textarea name="name" id="pcmReviewApprovalRemarks"
+                                                          class="input-field w-input" cols="65" rows="5"
+                                                          th:field="*{pcmReviewApprovalRemarks}"></textarea>
+                                            </div>
+
                                             <div id="pcmApproval">
                                                 <input type="hidden" id="description13" name="description"
                                                        th:value="'Permit Status Updated succesfull'">
@@ -1257,14 +1357,14 @@
                                                        th:value="'Permit status successfully updated'">
                                                 <label for="attachedPlantId" class="col-form-label">Select application
                                                     status:</label>
-                                                <select id="permitAwardStatus" required class="form-control"
-                                                        th:field="*{permitAwardStatus}">
+                                                <select id="pacDecisionStatus" required class="form-control"
+                                                        th:field="*{pacDecisionStatus}">
                                                     <option th:text="'Select one.....'"
                                                             th:value="${nullStatus}"></option>
                                                     <option th:text="'Grant'" th:value="1"></option>
                                                     <option th:text="'Deffer'" th:value="0"></option>
                                                 </select>
-                                                <label for="hofQamCompletenessRemarks" class="col-form-label">Please
+                                                <label for="pacDecisionRemarks" class="col-form-label">Please
                                                     write, in detail, PAC decision/remarks:</label>
                                                 <textarea name="name" id="pacDecisionRemarks"
                                                           class="input-field w-input" cols="65" rows="5"
@@ -2104,6 +2204,7 @@
             'approveRecommendation',
             'pscMemberApproval',
             'pcmApproval',
+            'pcmReviewApproval',
             'dmarkApplicationApproval',
             'hodApprovalAssessmentReport', 'permitEditApplication'];
 
@@ -2124,6 +2225,7 @@
             'Approve / Reject Recommendation',
             'Approve / Reject Awarding of Permit',
             'Approve / Reject Awarding of Permit',
+            'Approve / Reject Permit',
             'Grant/Defer Application',
             'Approve / Reject Permit Review', 'Edit Permit Application'];
 

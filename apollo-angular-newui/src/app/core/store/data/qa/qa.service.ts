@@ -4,7 +4,10 @@ import {Observable, throwError} from 'rxjs';
 import {ApiEndpointService} from '../../../services/endpoints/api-endpoint.service';
 import {catchError, map} from 'rxjs/operators';
 import {
-    MPesaPushDto, PermitProcessStepDto,
+    AllBatchInvoiceDetailsDto,
+    AllPermitDetailsDto,
+    AllSTA10DetailsDto, FmarkEntityDto, GenerateInvoiceDto,
+    MPesaPushDto, PermitProcessStepDto, SSCApprovalRejectionDto,
     STA1,
     Sta10Dto,
     STA10MachineryAndPlantDto,
@@ -39,6 +42,32 @@ export class QaService {
         );
     }
 
+    public loadInvoiceListWithNoBatchID(): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.INVOICE_LIST_NO_DETAILS);
+        return this.http.get<any>(url).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
+
+    public loadAllInvoiceListCreatedByUser(): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.INVOICE_LIST_ALL_DETAILS);
+        return this.http.get<any>(url).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
+
     public loadInvoiceBatchList(): Observable<any> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.INVOICE_LIST_DETAILS);
         return this.http.get<any>(url).pipe(
@@ -51,6 +80,8 @@ export class QaService {
             })
         );
     }
+
+
 
     public loadInvoiceDetails(batchID: string): Observable<any> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.INVOICE_DETAILS);
@@ -69,6 +100,21 @@ export class QaService {
 
     public loadPermitList(permitTypeID: string): Observable<any> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.PERMIT_LIST);
+        const params = new HttpParams()
+            .set('permitTypeID', permitTypeID);
+        return this.http.get<any>(url, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
+
+    public loadPermitAwardedList(permitTypeID: string): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.PERMIT_LIST_AWARDED_SMARK);
         const params = new HttpParams()
             .set('permitTypeID', permitTypeID);
         return this.http.get<any>(url, {params}).pipe(
@@ -179,10 +225,127 @@ export class QaService {
         );
     }
 
+    public viewSTA10FirmDetails(permitID: string): Observable<Sta10Dto> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.PERMIT_VIEW_STA10_FIRM_DETAILS);
+        const params = new HttpParams()
+            .set('permitID', permitID);
+        return this.http.get<Sta10Dto>(url, {params}).pipe(
+            map(function (response: Sta10Dto) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
+
+    public viewSTA10Details(permitID: string): Observable<AllSTA10DetailsDto> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.PERMIT_VIEW_STA10_DETAILS);
+        const params = new HttpParams()
+            .set('permitID', permitID);
+        return this.http.get<AllSTA10DetailsDto>(url, {params}).pipe(
+            map(function (response: AllSTA10DetailsDto) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
+
+    public createInvoiceConsolidatedDetails(data: GenerateInvoiceDto): Observable<AllBatchInvoiceDetailsDto> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.PERMIT_VIEW_STA10_DETAILS);
+        return this.http.post<AllBatchInvoiceDetailsDto>(url, data).pipe(
+            map(function (response: AllBatchInvoiceDetailsDto) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
+
+    public removeInvoiceFromConsolidatedDetails(data: GenerateInvoiceDto): Observable<AllBatchInvoiceDetailsDto> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.INVOICE_CONSOLIDATE_REMOVE);
+        return this.http.post<AllBatchInvoiceDetailsDto>(url, data).pipe(
+            map(function (response: AllBatchInvoiceDetailsDto) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
+
+    public viewSTA10PersonnelDetails(qaSta10ID: string): Observable<STA10PersonnelDto[]> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.PERMIT_VIEW_STA10_PERSONNEL_DETAILS);
+        const params = new HttpParams()
+            .set('qaSta10ID', qaSta10ID);
+        return this.http.get<STA10PersonnelDto[]>(url, {params}).pipe(
+            map(function (response: STA10PersonnelDto[]) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
+
+    public viewSTA10ProductsManufactureDetails(qaSta10ID: string): Observable<STA10ProductsManufactureDto> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.PERMIT_VIEW_STA10_PRODUCTS_BEING_MANUFACTURED);
+        const params = new HttpParams()
+            .set('qaSta10ID', qaSta10ID);
+        return this.http.get<STA10ProductsManufactureDto>(url, {params}).pipe(
+            map(function (response: STA10ProductsManufactureDto) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
+
+    public viewSTA10RawMaterialsDetails(qaSta10ID: string): Observable<STA10ProductsManufactureDto> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.PERMIT_VIEW_STA10_RAW_MATERIAL);
+        const params = new HttpParams()
+            .set('qaSta10ID', qaSta10ID);
+        return this.http.get<STA10ProductsManufactureDto>(url, {params}).pipe(
+            map(function (response: STA10ProductsManufactureDto) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
+
     public loadInvoiceDetailsPDF(ID: string): Observable<any> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.INVOICE_DETAILS_PDF);
         const params = new HttpParams()
             .set('ID', ID);
+        // return this.httpService.get<any>(`${this.baseUrl}/get/pdf/${fileName}`, { responseType: 'arraybuffer' as 'json' });
+        return this.http.get<any>(url, {params, responseType: 'arraybuffer' as 'json'}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
+
+    public loadCertificateDetailsPDF(permitID: string): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.PERMIT_CERTIFICATE_ISSUED_DETAILS_PDF);
+        const params = new HttpParams()
+            .set('permitID', permitID);
         // return this.httpService.get<any>(`${this.baseUrl}/get/pdf/${fileName}`, { responseType: 'arraybuffer' as 'json' });
         return this.http.get<any>(url, {params, responseType: 'arraybuffer' as 'json'}).pipe(
             map(function (response: any) {
@@ -201,6 +364,19 @@ export class QaService {
             .set('permitTypeID', permitTypeID);
         return this.http.post<STA1>(url, data, {params}).pipe(
             map(function (response: STA1) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
+
+    public generatePermitFMARK(data: FmarkEntityDto): Observable<AllPermitDetailsDto> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.PERMIT_APPLY_FMARK);
+        return this.http.post<AllPermitDetailsDto>(url, data).pipe(
+            map(function (response: AllPermitDetailsDto) {
                 return response;
             }),
             catchError((fault: HttpErrorResponse) => {
@@ -516,6 +692,21 @@ export class QaService {
         );
     }
 
+    public submitPermitForReviewHODQAM(permitID: string): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.PERMIT_SUBMIT_DETAILS_FOR_HOD_QAM_REVIEW);
+        const params = new HttpParams()
+            .set('permitID', permitID);
+        return this.http.post<any>(url, null, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
+
     public submitPermitApplication(permitID: string): Observable<any> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.PERMIT_SUBMIT_APPLICATION);
         const params = new HttpParams()
@@ -530,5 +721,36 @@ export class QaService {
             })
         );
     }
+
+    public submitPermitRenewApplication(permitID: string): Observable<AllPermitDetailsDto> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.PERMIT_RENEW);
+        const params = new HttpParams()
+            .set('permitID', permitID);
+        return this.http.post<AllPermitDetailsDto>(url, null, {params}).pipe(
+            map(function (response: AllPermitDetailsDto) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
+
+    public submitSSCApprovalRejection(permitID: string, data: SSCApprovalRejectionDto): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.PERMIT_SUBMIT_SSC_APPROVAL_REJECTION);
+        const params = new HttpParams()
+            .set('permitID', permitID);
+        return this.http.post<any>(url, data, {params}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
+
 
 }

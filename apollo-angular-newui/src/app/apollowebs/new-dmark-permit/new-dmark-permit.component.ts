@@ -67,6 +67,7 @@ export class NewDmarkPermitComponent implements OnInit {
     ngOnInit(): void {
 
         this.sta1Form = this.formBuilder.group({
+            id: [''],
             commodityDescription: ['', Validators.required],
             applicantName: ['', Validators.required],
             sectionId: ['', Validators.required],
@@ -77,6 +78,7 @@ export class NewDmarkPermitComponent implements OnInit {
         });
 
         this.sta3FormA = this.formBuilder.group({
+            id: [''],
             produceOrdersOrStock: ['', Validators.required],
             issueWorkOrderOrEquivalent: ['', Validators.required],
             identifyBatchAsSeparate: ['', Validators.required],
@@ -86,6 +88,7 @@ export class NewDmarkPermitComponent implements OnInit {
         });
 
         this.sta3FormB = this.formBuilder.group({
+            id: [''],
             headQaQualificationsTraining: ['', Validators.required],
             reportingTo: ['', Validators.required],
             separateQcid: ['', Validators.required],
@@ -100,6 +103,7 @@ export class NewDmarkPermitComponent implements OnInit {
         });
 
         this.sta3FormC = this.formBuilder.group({
+            id: [''],
             mainMaterialsPurchasedSpecification: ['', Validators.required],
             adoptedReceiptMaterials: ['', Validators.required],
             storageFacilitiesExist: ['', Validators.required],
@@ -107,6 +111,7 @@ export class NewDmarkPermitComponent implements OnInit {
         });
 
         this.sta3FormD = this.formBuilder.group({
+            id: [''],
             stepsManufacture: ['', Validators.required],
             maintenanceSystem: ['', Validators.required],
             qcsSupplement: ['', Validators.required],
@@ -268,31 +273,55 @@ export class NewDmarkPermitComponent implements OnInit {
 
     onClickSaveSTA3A(valid: boolean) {
         if (valid) {
-            console.log(this.sta1.id.toString());
-            this.qaService.savePermitSTA3(this.sta1.id.toString(), this.sta3FormA.value).subscribe(
-                (data: any) => {
-                    this.onClickUpdateStep(this.step);
-                    console.log(data);
-                    this.step += 1;
-                    swal.fire({
-                        title: 'STA3: Factory Organisation Details saved!',
-                        buttonsStyling: false,
-                        customClass: {
-                            confirmButton: 'btn btn-success form-wizard-next-btn ',
-                        },
-                        icon: 'success'
-                    });
-                },
-            );
+            if (this.sta3 == null) {
+                console.log(this.sta1.id.toString());
+                this.sta3 = {...this.sta3, ...this.sta3FormA.value};
+                this.qaService.savePermitSTA3(this.sta1.id.toString(), this.sta3).subscribe(
+                    (data: any) => {
+                        this.onClickUpdateStep(this.step);
+                        console.log(data);
+                        this.sta3 = data;
+                        this.step += 1;
+                        swal.fire({
+                            title: 'STA3: Factory Organisation Details saved!',
+                            buttonsStyling: false,
+                            customClass: {
+                                confirmButton: 'btn btn-success form-wizard-next-btn ',
+                            },
+                            icon: 'success'
+                        });
+                    },
+                );
+            } else {
+                this.sta3 = {...this.sta3, ...this.sta3FormA.value};
+                this.qaService.updatePermitSTA3(this.sta1.id.toString(), this.sta3).subscribe(
+                    (data: any) => {
+                        this.onClickUpdateStep(this.step);
+                        console.log(data);
+                        this.sta3 = data;
+                        this.step += 1;
+                        swal.fire({
+                            title: 'STA3: Quality Control/Inspection Staff Details saved!',
+                            buttonsStyling: false,
+                            customClass: {
+                                confirmButton: 'btn btn-success form-wizard-next-btn ',
+                            },
+                            icon: 'success'
+                        });
+                    },
+                );
+            }
         }
     }
 
     onClickUpdateSTA3B(valid: boolean) {
         if (valid) {
-            this.qaService.updatePermitSTA3(this.sta1.id.toString(), this.sta3FormB.value).subscribe(
+            this.sta3 = {...this.sta3, ...this.sta3FormB.value};
+            this.qaService.updatePermitSTA3(this.sta1.id.toString(), this.sta3).subscribe(
                 (data: any) => {
                     this.onClickUpdateStep(this.step);
                     console.log(data);
+                    this.sta3 = data;
                     this.step += 1;
                     swal.fire({
                         title: 'STA3: Factory Organisation Details updated!',
@@ -309,10 +338,12 @@ export class NewDmarkPermitComponent implements OnInit {
 
     onClickUpdateSTA3C(valid: boolean) {
         if (valid) {
-            this.qaService.updatePermitSTA3(this.sta1.id.toString(), this.sta3FormC.value).subscribe(
+            this.sta3 = {...this.sta3, ...this.sta3FormC.value};
+            this.qaService.updatePermitSTA3(this.sta1.id.toString(), this.sta3).subscribe(
                 (data: any) => {
                     this.onClickUpdateStep(this.step);
                     console.log(data);
+                    this.sta3 = data;
                     this.step += 1;
                     swal.fire({
                         title: 'STA3: Quality Control/Inspection Staff Details saved!',
@@ -329,10 +360,12 @@ export class NewDmarkPermitComponent implements OnInit {
 
     onClickUpdateSTA3D(valid: boolean) {
         if (valid) {
-            this.qaService.updatePermitSTA3(this.sta1.id.toString(), this.sta3FormD.value).subscribe(
+            this.sta3 = {...this.sta3, ...this.sta3FormD.value};
+            this.qaService.updatePermitSTA3(this.sta1.id.toString(), this.sta3).subscribe(
                 (data: any) => {
                     this.onClickUpdateStep(this.step);
                     console.log(data);
+                    this.sta3 = data;
                     this.step += 1;
                     swal.fire({
                         title: 'STA3 Form Completed! Proceed to Upload attachments.',
@@ -384,7 +417,7 @@ export class NewDmarkPermitComponent implements OnInit {
                     // this.router.navigate(['/permitdetails'], {fragment: this.permitEntityDetails.id.toString()});
                 },
             );
-            this.router.navigate(['/permitdetails'], {fragment: this.sta1.id.toString()});
+            this.router.navigate(['/permitdetails'], {fragment: String(this.sta1.id)});
         }
 
     }
@@ -408,7 +441,7 @@ export class NewDmarkPermitComponent implements OnInit {
                 '<button mat-raised-button type="button" aria-hidden="true" class="close" data-notify="dismiss">  <i class="material-icons">close</i></button>' +
                 '<i class="material-icons" data-notify="icon">notifications</i> ' +
                 '<span data-notify="title"></span> ' +
-                '<span data-notify="message">Ensure all required fields are items have been filled</span>' +
+                '<span data-notify="message">Ensure all required fields and items have been filled</span>' +
                 '<div class="progress" data-notify="progressbar">' +
                 '<div class="progress-bar progress-bar-{0}" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;"></div>' +
                 '</div>' +

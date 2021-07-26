@@ -1,6 +1,13 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {loadResponsesFailure, selectUserInfo, UserEntityDto, UserEntityService} from '../../core/store';
+import {
+    Go,
+    loadResponsesFailure,
+    loadResponsesSuccess,
+    selectUserInfo,
+    UserEntityDto,
+    UserEntityService
+} from '../../core/store';
 import {Observable, of} from 'rxjs';
 import {Titles, TitlesService} from '../../core/store/data/title';
 import {Store} from '@ngrx/store';
@@ -38,7 +45,6 @@ export class UserProfileMainComponent implements OnInit {
                 firstName: ['', Validators.required],
                 lastName: ['', Validators.required],
                 userName: ['', Validators.required],
-                userPinIdNumber: ['', Validators.required],
                 personalContactNumber: ['', Validators.required],
                 email: ['', Validators.required],
                 userRegNo: [''],
@@ -80,8 +86,42 @@ export class UserProfileMainComponent implements OnInit {
 
     onClickSave(valid: boolean) {
         if (valid) {
+
+
             this.user = {...this.user, ...this.stepOneForm.value};
-            this.service.update(this.user);
+
+
+            this.service.update(this.user).subscribe(
+                (a) => {
+
+                    this.store$.dispatch(
+                        loadResponsesSuccess({
+                            message: {
+                                response: '00',
+                                payload: `Profile Successfully Updated.`,
+                                status: 200
+                            }
+                        })
+                    );
+                    return this.store$.dispatch(Go({
+                        payload: null,
+                        link: 'profile',
+                        redirectUrl: 'profile'
+                    }));
+
+
+                },
+                catchError(
+                    (err: HttpErrorResponse) => {
+                        return of(loadResponsesFailure({
+                            error: {
+                                payload: err.error,
+                                status: err.status,
+                                response: (err.error instanceof ErrorEvent) ? `Error: ${err.error.message}` : `Error Code: ${err.status},  Message: ${err.error}`
+                            }
+                        }));
+                    }));
+
 
         } else {
             this.store$.dispatch(loadResponsesFailure({

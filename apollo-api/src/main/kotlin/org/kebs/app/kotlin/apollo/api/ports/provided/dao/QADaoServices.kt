@@ -1,10 +1,12 @@
 package org.kebs.app.kotlin.apollo.api.ports.provided.dao
 
 import mu.KotlinLogging
+import org.apache.commons.lang3.SerializationUtils
 import org.kebs.app.kotlin.apollo.api.controllers.msControllers.MSReportsControllers
 import org.kebs.app.kotlin.apollo.api.controllers.qaControllers.ReportsController
 import org.kebs.app.kotlin.apollo.api.notifications.Notifications
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.QualityAssuranceBpmn
+import org.kebs.app.kotlin.apollo.api.ports.provided.lims.LimsServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.mpesa.MPesaService
 import org.kebs.app.kotlin.apollo.common.dto.qa.*
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
@@ -37,12 +39,11 @@ import java.time.temporal.ChronoUnit
 import java.util.stream.Collectors
 
 
-
-
 @Service
 class QADaoServices(
     private val applicationMapProperties: ApplicationMapProperties,
     private val commonDaoServices: CommonDaoServices,
+    private val limsServices: LimsServices,
     private val productsRepo: IProductsRepository,
 //    private val qualityAssuranceBpmn: QualityAssuranceBpmn,
     private val workPlanCreatedRepo: IQaWorkplanRepository,
@@ -205,9 +206,7 @@ class QADaoServices(
         permitRepo.findByUserIdAndPermitTypeAndOldPermitStatusIsNull(userId, permitType)
             ?.let { permitList ->
                 return permitList
-            }
-
-            ?: throw ExpectedDataNotFound("No Permit Found for the following user with USERNAME = ${user.userName}")
+            } ?: throw ExpectedDataNotFound("No Permit Found for the following user with USERNAME = ${user.userName}")
     }
 
     fun findAllUserPermits(user: UsersEntity): List<PermitApplicationsEntity>? {
@@ -228,12 +227,26 @@ class QADaoServices(
             ?: throw ExpectedDataNotFound("No Permits Found for the following COMPANY ID = ${companyID}")
     }
 
-    fun findAllUserPermitWithPermitTypeAwardedStatusIsNull(
+    fun findAllUserPermitWithPermitTypeAwardedStatusIsNotNull(
         user: UsersEntity,
         permitType: Long
     ): List<PermitApplicationsEntity> {
         val userId = user.id ?: throw ExpectedDataNotFound("No USER ID Found")
         permitRepo.findByUserIdAndPermitTypeAndOldPermitStatusIsNullAndPermitAwardStatusIsNotNull(userId, permitType)
+            ?.let { permitList ->
+                return permitList
+            }
+
+            ?: throw ExpectedDataNotFound("No Permit Found for the following user with USERNAME = ${user.userName}")
+    }
+
+    fun findAllUserPermitWithPermitTypeAwardedStatus(
+        user: UsersEntity,
+        permitType: Long,
+        status: Int
+    ): List<PermitApplicationsEntity> {
+        val userId = user.id ?: throw ExpectedDataNotFound("No USER ID Found")
+        permitRepo.findByUserIdAndPermitTypeAndOldPermitStatusIsNullAndPermitAwardStatus(userId, permitType, status)
             ?.let { permitList ->
                 return permitList
             }
@@ -578,7 +591,21 @@ class QADaoServices(
     fun findSampleSubmittedBYPermitRefNumber(permitRefNumber: String): QaSampleSubmissionEntity {
         SampleSubmissionRepo.findByPermitRefNumber(permitRefNumber)?.let {
             return it
-        } ?: throw ExpectedDataNotFound("No sample submission found with the following [PERMIT REF NO =$permitRefNumber]")
+        }
+            ?: throw ExpectedDataNotFound("No sample submission found with the following [PERMIT REF NO =$permitRefNumber]")
+    }
+
+    fun findSampleSubmittedBYID(ssfID: Long): QaSampleSubmissionEntity {
+        SampleSubmissionRepo.findByIdOrNull(ssfID)?.let {
+            return it
+        } ?: throw ExpectedDataNotFound("No sample submission found with the following ID number=$ssfID]")
+    }
+
+    fun findSampleSubmittedListBYPermitRefNumber(permitRefNumber: String, status: Int): List<QaSampleSubmissionEntity> {
+        SampleSubmissionRepo.findByPermitRefNumberAndStatus(permitRefNumber, status)?.let {
+            return it
+        }
+            ?: throw ExpectedDataNotFound("No sample submission found with the following [PERMIT REF NO =$permitRefNumber]")
     }
 
     fun findSampleSubmittedBYBsNumber(bsNumber: String): QaSampleSubmissionEntity {
@@ -701,17 +728,6 @@ class QADaoServices(
 
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun assignPermitApplicationAfterPayment() {
-
-        for (i in 0..9) {
-            try {
-                if (i == 2 || i == 4) {
-                    throw java.lang.Exception("Test $i")
-                }
-            } catch (ex: java.lang.Exception) {
-// generate a log and flag set.
-            }
-        }
-
         val map = commonDaoServices.serviceMapDetails(appId)
         //Find all permits with Paid status
         val paidPermits = findAllQAOPermitListWithPaymentStatus(map.activeStatus)
@@ -719,39 +735,57 @@ class QADaoServices(
 
             try {
                 //Get permit type
-                val user = permit.userId?.let { commonDaoServices.findUserByID(it) }
+                var userAssigned: UsersEntity
+                val userDetails =
+                    commonDaoServices.findUserByID(permit.userId ?: throw ExpectedDataNotFound("MISSING USER ID"))
                 when (permit.permitType) {
+
                     applicationMapProperties.mapQAPermitTypeIDDmark -> {
-                        permit.userTaskId = applicationMapProperties.mapUserTaskNameHOD
-                        permit.hodId = assignNextOfficerBasedOnSection(
+                        userAssigned = assignNextOfficerBasedOnSection(
                             permit,
                             map,
                             applicationMapProperties.mapQADesignationIDForHODId
-                        )?.id
+                        )
+                        permit.userTaskId = applicationMapProperties.mapUserTaskNameHOD
+                        permit.hodId = userAssigned.id
+                        sendEmailWithTaskDetails(
+                            userAssigned.email ?: throw ExpectedDataNotFound("Missing Email address"),
+                            permit.permitRefNumber ?: throw ExpectedDataNotFound("MISSING PERMIT REF NUMBER")
+                        )
                         qualityAssuranceBpmn.startQAAppReviewProcess(
                             permit.id ?: throw ExpectedDataNotFound("Permit Id Not found"),
                             permit.hodId ?: throw ExpectedDataNotFound("HOD Not found")
                         )
                     }
                     applicationMapProperties.mapQAPermitTypeIdSmark -> {
-                        permit.userTaskId = applicationMapProperties.mapUserTaskNameQAM
-                        permit.qamId = assignNextOfficerBasedOnSection(
+                        userAssigned = assignNextOfficerBasedOnSection(
                             permit,
                             map,
                             applicationMapProperties.mapQADesignationIDForQAMId
-                        )?.id
+                        )
+                        permit.userTaskId = applicationMapProperties.mapUserTaskNameQAM
+                        permit.qamId = userAssigned.id
+                        sendEmailWithTaskDetails(
+                            userAssigned.email ?: throw ExpectedDataNotFound("Missing Email address"),
+                            permit.permitRefNumber ?: throw ExpectedDataNotFound("MISSING PERMIT REF NUMBER")
+                        )
                         qualityAssuranceBpmn.startQAAppReviewProcess(
                             permit.id ?: throw ExpectedDataNotFound("Permit Id Not found"),
                             permit.qamId ?: throw ExpectedDataNotFound("QAM Not found")
                         )
                     }
                     applicationMapProperties.mapQAPermitTypeIdFmark -> {
-                        permit.userTaskId = applicationMapProperties.mapUserTaskNameQAM
-                        permit.qamId = assignNextOfficerAfterPayment(
+                        userAssigned = assignNextOfficerBasedOnSection(
                             permit,
                             map,
                             applicationMapProperties.mapQADesignationIDForQAMId
-                        )?.id
+                        )
+                        permit.userTaskId = applicationMapProperties.mapUserTaskNameQAM
+                        permit.qamId = userAssigned.id
+                        sendEmailWithTaskDetails(
+                            userAssigned.email ?: throw ExpectedDataNotFound("Missing Email address"),
+                            permit.permitRefNumber ?: throw ExpectedDataNotFound("MISSING PERMIT REF NUMBER")
+                        )
                         qualityAssuranceBpmn.startQAAppReviewProcess(
                             permit.id ?: throw ExpectedDataNotFound("Permit Id Not found"),
                             permit.qamId ?: throw ExpectedDataNotFound("QAM Not found")
@@ -761,10 +795,21 @@ class QADaoServices(
 
                 permit.paidStatus = map.initStatus
                 permit.permitStatus = applicationMapProperties.mapQaStatusPApprovalCompletness
+                permitUpdateDetails(permit, map, userDetails)
 
-                if (user != null) {
-                    permitUpdateDetails(permit, map, user)
-                }
+                val batchInvoice = findPermitInvoiceByPermitRefNumberANdPermitID(
+                    permit.permitRefNumber ?: throw ExpectedDataNotFound("MISSING PERMIT REF NUMBER"),
+                    permit.userId ?: throw ExpectedDataNotFound("MISSING USER ID"),
+                    permit.id ?: throw ExpectedDataNotFound("MISSING USER ID")
+                )
+                sendEmailWithProformaPaid(
+                    userDetails.email ?: throw ExpectedDataNotFound("MISSING USER ID"),
+                    invoiceCreationPDF(
+                        batchInvoice.id ?: throw ExpectedDataNotFound("MISSING BATCH INVOICE ID"),
+                        userDetails
+                    ).path,
+                    permit.permitRefNumber ?: throw ExpectedDataNotFound("MISSING PERMIT REF NUMBER")
+                )
             } catch (e: Exception) {
                 KotlinLogging.logger { }.error(e.message)
                 KotlinLogging.logger { }.debug(e.message, e)
@@ -798,6 +843,17 @@ class QADaoServices(
             ?: throw ExpectedDataNotFound("No Invoice found with the following [PERMIT REF NO =${permitRefNumber}  and LoggedIn User]")
     }
 
+    fun findPermitInvoiceByPermitRefNumberANdPermitID(
+        permitRefNumber: String,
+        userId: Long,
+        permitID: Long
+    ): InvoiceEntity {
+        invoiceRepository.findByPermitRefNumberAndUserIdAndPermitId(permitRefNumber, userId, permitID)?.let {
+            return it
+        }
+            ?: throw ExpectedDataNotFound("No Invoice found with the following [PERMIT REF NO =${permitRefNumber}  and LoggedIn User]")
+    }
+
     fun findSTA3WithPermitRefNumber(permitRefNumber: String): QaSta3Entity {
         sta3Repo.findByPermitRefNumber(permitRefNumber)?.let {
             return it
@@ -814,6 +870,12 @@ class QADaoServices(
         manufacturePlantRepository.findByCompanyProfileId(companyID)?.let {
             return it
         } ?: throw ExpectedDataNotFound("No Plant details found with the following [COMPANY ID =$companyID]")
+    }
+
+    fun findAllPlantDetailsWithIDAndStatus(status: Int, plantID: Long): List<ManufacturePlantDetailsEntity> {
+        manufacturePlantRepository.findByStatusAndId(status, plantID)?.let {
+            return it
+        } ?: throw ExpectedDataNotFound("No Plant details found with the following COMPANY ID =$plantID")
     }
 
 
@@ -1240,7 +1302,10 @@ class QADaoServices(
             approvedRejectedScheme = permit.approvedRejectedScheme == 1
             sendForPcmReview = permit.sendForPcmReview == 1
             sendApplication = permit.sendApplication == 1
-            pcmReviewApprove = permit.pcmApprovalStatus == 1
+            pcmReviewApprove = permit.pcmReviewApprovalStatus == 1
+            hofQamCompletenessStatus = permit.hofQamCompletenessStatus == 1
+            generateSchemeStatus = permit.generateSchemeStatus == 1
+            resubmitApplicationStatus = permit.resubmitApplicationStatus == 1
             processStep = permit.processStep
             processStatusID = permit.permitStatus
 
@@ -1291,6 +1356,25 @@ class QADaoServices(
         }
         return permitsList.sortedBy { it.visitsScheduled }
     }
+
+    fun listSTA10ViewDetails(
+        sta10FirmDetails: STA10SectionADto,
+        sta10PersonnelDetails: List<STA10PersonnelDto>,
+        sta10ProductsManufactureDetails: List<STA10ProductsManufactureDto>,
+        sta10RawMaterialsDetails: List<STA10RawMaterialsDto>,
+        sta10MachineryAndPlantDetails: List<STA10MachineryAndPlantDto>,
+        sta10ManufacturingProcessDetails: List<STA10ManufacturingProcessDto>,
+    ): AllSTA10DetailsDto {
+        return AllSTA10DetailsDto(
+            sta10FirmDetails,
+            sta10PersonnelDetails,
+            sta10ProductsManufactureDetails,
+            sta10RawMaterialsDetails,
+            sta10MachineryAndPlantDetails,
+            sta10ManufacturingProcessDetails,
+        )
+    }
+
 
     fun findOfficersList(
         plantID: Long,
@@ -1345,7 +1429,7 @@ class QADaoServices(
         permit: PermitApplicationsEntity,
         map: ServiceMapsEntity,
         designationID: Long
-    ): UsersEntity? {
+    ): UsersEntity {
         val plantID = permit.attachedPlantId
             ?: throw ServiceMapNotFoundException("Attached Plant details For Permit with ID = ${permit.id}, is Empty")
 
@@ -1358,14 +1442,13 @@ class QADaoServices(
             ?: throw ExpectedDataNotFound("Plant attached Region Id is Empty, check config")
         val department = commonDaoServices.findDepartmentByID(applicationMapProperties.mapQADepertmentId)
 
-
         return commonDaoServices.findUserProfileWithDesignationRegionDepartmentAndStatusAndSection(
             designation,
             section,
             region,
             department,
             map.activeStatus
-        ).userId
+        ).userId ?: throw ExpectedDataNotFound("MISSING USER DETAILS")
 
     }
 
@@ -1399,7 +1482,8 @@ class QADaoServices(
 
     fun sendAppointAssessorNotificationEmail(recipientEmail: String, permit: PermitApplicationsEntity): Boolean {
         val subject = "DMARK Application Assessment"
-        val messageBody = "DMARK application with the details below has been assisgned to you for assessment:  \n" +
+        val messageBody = "DMARK application with the details below has been assisgned to you for assessment: " +
+                "for the following permit Ref NUMBER : ${permit.permitRefNumber} \n" +
                 "\n " +
                 "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permit.id}"
         notifications.sendEmail(recipientEmail, subject, messageBody)
@@ -1422,9 +1506,10 @@ class QADaoServices(
 
     fun sendPacDmarkAssessmentNotificationEmail(recipientEmail: String, permit: PermitApplicationsEntity): Boolean {
         val subject = "DMARK Factory Conformity Status"
-        val messageBody = "Dmark assessment report and conformity status is available for below:  \n" +
-                "\n " +
-                "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permit.id}"
+        val messageBody =
+            "Dmark assessment report and conformity status is available for approval, With Application Ref Number: ${permit.permitRefNumber} \n" +
+                    "\n " +
+                    "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permit.id}"
         notifications.sendEmail(recipientEmail, subject, messageBody)
         return true
     }
@@ -1557,6 +1642,7 @@ class QADaoServices(
             with(saveSSF) {
                 bsNumber?.toUpperCase()
                 permitId = permits.id
+                permitRefNumber = permits.permitRefNumber
                 status = map.activeStatus
                 labResultsStatus = map.inactiveStatus
                 createdBy = commonDaoServices.concatenateName(user)
@@ -1592,17 +1678,18 @@ class QADaoServices(
 
 
     fun ssfUpdateDetails(
-        permitDetails: PermitApplicationsEntity,
+        ssfID: Long,
         ssfDetails: QaSampleSubmissionEntity,
         user: UsersEntity,
         map: ServiceMapsEntity
     ): Pair<ServiceRequestsEntity, QaSampleSubmissionEntity> {
 
         var sr = commonDaoServices.createServiceRequest(map)
-        var saveSSF = findSampleSubmittedBYPermitRefNumber(permitDetails.permitRefNumber ?: throw Exception("MISSING permit Ref Number"))
+        var saveSSF = findSampleSubmittedBYID(ssfID)
         try {
 
             with(saveSSF) {
+                complianceRemarks = ssfDetails.complianceRemarks
                 resultsAnalysis = ssfDetails.resultsAnalysis
                 modifiedBy = commonDaoServices.concatenateName(user)
                 modifiedOn = commonDaoServices.getTimestamp()
@@ -1611,8 +1698,12 @@ class QADaoServices(
 
             saveSSF = SampleSubmissionRepo.save(saveSSF)
 
+            val permitDetails = findPermitWithPermitRefNumberLatest(
+                saveSSF.permitRefNumber ?: throw Exception("MISSING permit Ref Number")
+            )
 
             permitDetails.compliantStatus = saveSSF.resultsAnalysis
+            permitDetails.testReportId = saveSSF.labReportFileId
             var complianceValue: String? = null
             when (permitDetails.compliantStatus) {
                 map.activeStatus -> {
@@ -1634,11 +1725,27 @@ class QADaoServices(
                 }
             }
 
-
+            val fileUploaded = findUploadedFileBYId(
+                saveSSF.labReportFileId ?: throw ExpectedDataNotFound("MISSING LAB REPORT FILE ID STATUS")
+            )
+            val fileContent = limsServices.mainFunctionLimsGetPDF(
+                saveSSF.bsNumber ?: throw ExpectedDataNotFound("MISSING LBS NUMBER"),
+                saveSSF.pdfSelectedName ?: throw ExpectedDataNotFound("MISSING FILE NAME")
+            )
+            val mappedFileClass = commonDaoServices.mapClass(fileUploaded)
             sendComplianceStatusAndLabReport(
                 permitDetails,
                 complianceValue ?: throw ExpectedDataNotFound("MISSING COMPLIANCE STATUS"),
-                saveSSF.complianceRemarks ?: throw ExpectedDataNotFound("MISSING COMPLIANCE REMARKS")
+                saveSSF.complianceRemarks ?: throw ExpectedDataNotFound("MISSING COMPLIANCE REMARKS"),
+                fileContent.path ?: throw ExpectedDataNotFound("MISSING FILE PATH")
+            )
+
+            sendEmailWithLabResults(
+                commonDaoServices.findUserByID(
+                    permitDetails.userId ?: throw ExpectedDataNotFound("MISSING USER ID")
+                ).email ?: throw ExpectedDataNotFound("MISSING USER ID"),
+                fileContent.path,
+                permitDetails.permitRefNumber ?: throw ExpectedDataNotFound("MISSING PERMIT REF NUMBER")
             )
 
 
@@ -1842,19 +1949,19 @@ class QADaoServices(
 
     fun schemeSendEmail(
         permitUpdate: PermitApplicationsEntity,
+        user: UsersEntity,
         reasonValue: String?,
     ) {
         //todo: for now lets work with this i will change it
-        val userPermit = permitUpdate.userId?.let { commonDaoServices.findUserByID(it) }
         val subject = "SCHEME FOR SUPERVISION AND CONTROL (SSC)"
-        val messageBody = "Dear ${userPermit?.let { commonDaoServices.concatenateName(it) }}: \n" +
+        val messageBody = "Dear ${user.let { commonDaoServices.concatenateName(it) }}: \n" +
                 "\n " +
                 "Scheme For Supervision And Control was ${reasonValue} " +
 //                "due to the Following reason ${foundSSC.acceptedRejectedReason}:" +
                 "\n " +
                 "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitUpdate.id}"
 
-        userPermit?.email?.let { notifications.sendEmail(it, subject, messageBody) }
+        user.email?.let { notifications.sendEmail(it, subject, messageBody) }
     }
 
     fun justificationReportSendEmail(
@@ -1862,13 +1969,13 @@ class QADaoServices(
         reasonValue: String?,
     ) {
         //todo: for now lets work with this i will change it
-        val userPermit = permitUpdate.userId?.let { commonDaoServices.findUserByID(it) }
+        val userPermit = permitUpdate.qaoId?.let { commonDaoServices.findUserByID(it) }
         val subject = "JUSTIFICATION REPORT"
         val messageBody = "Dear ${userPermit?.let { commonDaoServices.concatenateName(it) }}: \n" +
                 "\n " +
                 "Justification report was ${reasonValue} " +
 //                "due to the Following reason ${foundSSC.acceptedRejectedReason}:" +
-                "\n " +
+                "\n FOr the following Permit application with Ref Number ${permitUpdate.permitRefNumber}" +
                 "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitUpdate.id}"
 
         userPermit?.email?.let { notifications.sendEmail(it, subject, messageBody) }
@@ -2154,8 +2261,9 @@ class QADaoServices(
 
         with(uploads) {
             ordinaryStatus = 1
+            filepath = docFile.path
             name = docFile.name
-            fileType = docFile.extension
+            fileType = commonDaoServices.getFileTypeByMimetypesFileTypeMap(docFile.name)
             documentType = doc
             document = docFile.readBytes()
             permitRefNumber = permitRefNUMBER
@@ -2256,6 +2364,62 @@ class QADaoServices(
         return sr
     }
 
+
+    fun ssfSavePDFSelectedDetails(
+        fileContent: File,
+        ssfID: Long,
+        s: ServiceMapsEntity,
+        user: UsersEntity
+    ): Pair<ServiceRequestsEntity, QaSampleSubmissionEntity> {
+
+        var sr = commonDaoServices.createServiceRequest(s)
+        val ssfDetails = findSampleSubmittedBYID(ssfID)
+        val updatePermit = findPermitWithPermitRefNumberLatest(
+            ssfDetails.permitRefNumber ?: throw ExpectedDataNotFound("MISSING PERMIT REF NUMBER")
+        )
+        try {
+
+            var upload = QaUploadsEntity()
+            upload = uploadQaFile(
+                upload,
+                fileContent,
+                "LAB RESULTS PDF",
+                ssfDetails.permitRefNumber ?: throw ExpectedDataNotFound("MISSING PERMIT REF NUMBER"),
+                user
+            )
+
+            with(ssfDetails) {
+                pdfSelectedName = fileContent.name
+                labReportFileId = upload.id
+                modifiedBy = commonDaoServices.concatenateName(user)
+                modifiedOn = commonDaoServices.getTimestamp()
+            }
+            SampleSubmissionRepo.save(ssfDetails)
+
+            sr.payload = "SSF Updated [updatePermit= ${ssfDetails.id}]"
+            sr.names = "${ssfDetails.permitRefNumber}} ${updatePermit.userId}"
+            sr.varField1 = "${ssfDetails.id}"
+
+            sr.responseStatus = sr.serviceMapsId?.successStatusCode
+            sr.responseMessage = "Success ${sr.payload}"
+            sr.status = s.successStatus
+            sr = serviceRequestsRepository.save(sr)
+            sr.processingEndDate = Timestamp.from(Instant.now())
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message, e)
+//            KotlinLogging.logger { }.trace(e.message, e)
+            sr.status = sr.serviceMapsId?.exceptionStatus
+            sr.responseStatus = sr.serviceMapsId?.exceptionStatusCode
+            sr.responseMessage = e.message
+            sr = serviceRequestsRepository.save(sr)
+
+        }
+
+        KotlinLogging.logger { }.trace("${sr.id} ${sr.responseStatus}")
+        return Pair(sr, ssfDetails)
+    }
+
     fun permitUpdateDetails(
         permits: PermitApplicationsEntity,
         s: ServiceMapsEntity,
@@ -2295,6 +2459,7 @@ class QADaoServices(
         KotlinLogging.logger { }.trace("${sr.id} ${sr.responseStatus}")
         return Pair(sr, updatePermit)
     }
+    //Todo: check why method does not create new version
 
     fun permitRejectedVersionCreation(
         permitID: Long,
@@ -2314,11 +2479,10 @@ class QADaoServices(
                 oldPermit.versionNumber ?: throw ExpectedDataNotFound("Permit Version Number is Empty")
 
             oldPermit.oldPermitStatus = 1
-//            oldPermit.renewalStatus = s.activeStatus
             //update last previous version permit old status
             oldPermit = permitUpdateDetails(oldPermit, s, user).second
 
-            savePermit = oldPermit
+            savePermit = SerializationUtils.clone(oldPermit)
 
             with(savePermit) {
                 id = null
@@ -2412,22 +2576,22 @@ class QADaoServices(
             }
             savePermit = permitRepo.save(savePermit)
 
-            when (oldPermit.permitType) {
-                applicationMapProperties.mapQAPermitTypeIdSmark -> {
-                    val sta10 = findSTA10WithPermitRefNumberBY(oldPermit.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"))
-                    var newSta10 = QaSta10Entity()
-                    newSta10 = commonDaoServices.updateDetails(sta10, newSta10) as QaSta10Entity
-                    newSta10.id = null
-                    sta10NewSave(savePermit, newSta10, user, s)
-                }
-                applicationMapProperties.mapQAPermitTypeIDDmark -> {
-                    val sta3 = findSTA3WithPermitRefNumber(oldPermit.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"))
-                    var newSta3 = QaSta3Entity()
-                    newSta3 = commonDaoServices.updateDetails(sta3, newSta3) as QaSta3Entity
-                    newSta3.id = null
-                    sta3NewSave(savePermit.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"), newSta3, user, s)
-                }
-            }
+//            when (oldPermit.permitType) {
+////                applicationMapProperties.mapQAPermitTypeIdSmark -> {
+////                    val sta10 = findSTA10WithPermitRefNumberBY(oldPermit.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"))
+////                    var newSta10 = QaSta10Entity()
+////                    newSta10 = commonDaoServices.updateDetails(sta10, newSta10) as QaSta10Entity
+////                    newSta10.id = null
+////                    sta10NewSave(savePermit, newSta10, user, s)
+////                }
+////                applicationMapProperties.mapQAPermitTypeIDDmark -> {
+////                    val sta3 = findSTA3WithPermitRefNumber(oldPermit.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"))
+////                    var newSta3 = QaSta3Entity()
+////                    newSta3 = commonDaoServices.updateDetails(sta3, newSta3) as QaSta3Entity
+////                    newSta3.id = null
+////                    sta3NewSave(savePermit.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"), newSta3, user, s)
+////                }
+//            }
 
 
             sr.payload = "Permit Renewed Updated [updatePermit= ${savePermit.id}]"
@@ -2466,11 +2630,21 @@ class QADaoServices(
         } ?: throw ExpectedDataNotFound("MISSING FILE")
     }
 
+    fun getFileCertificateIssuedPDFForm(permitID: Long): File {
+        val myDetails = reportsControllers.permitCertificateIssuedCreation(permitID)
+        reportsDaoService.generateEmailPDFReportWithNoDataSource(
+            "Permit-Certificate-${myDetails.first.getValue("PermitNo")}.pdf",
+            myDetails.first,
+            myDetails.second
+        )?.let {
+            return it
+        } ?: throw ExpectedDataNotFound("MISSING FILE")
+    }
+
     fun invoiceCreationPDF(
         batchID: Long,
-        senderEmail: String,
         loggedInUser: UsersEntity
-    ) {
+    ): File {
 
         val myDetails = reportsControllers.createInvoicePdf(batchID)
 
@@ -2489,16 +2663,104 @@ class QADaoServices(
             myDetails.first.getValue("demandNoteNo").toString(),
             loggedInUser
         )
-
-        sendEmailWithProforma(
-            senderEmail,
-            invoicePDFCreated.path,
-        )
+        return invoicePDFCreated
     }
 
-    fun sendEmailWithProforma(recipient: String, attachment: String?): Boolean {
+    fun sendEmailWithProforma(recipient: String, attachment: String?, permitRefNumber: String): Boolean {
         val subject = "PRO FORMA INVOICE"
-        val messageBody = "Check The attached Proforma Invoices for payment"
+        val messageBody = "Check The attached Proforma Invoices for permit with Ref number $permitRefNumber"
+
+        notifications.processEmail(recipient, subject, messageBody, attachment)
+
+        return true
+    }
+
+
+    fun sendEmailWithLabResults(recipient: String, attachment: String?, permitRefNumber: String): Boolean {
+        val subject = "LAB RESULTS"
+        val messageBody = "Check The attached Lab Results for permit with Ref number $permitRefNumber"
+
+        notifications.processEmail(recipient, subject, messageBody, attachment)
+
+        return true
+    }
+
+    fun sendEmailWithLabResultsFound(recipient: String, permitRefNumber: String): Boolean {
+        val subject = "LAB RESULTS"
+        val messageBody = "Check Lab Results for permit with Ref number $permitRefNumber"
+
+        notifications.sendEmail(recipient, subject, messageBody)
+
+        return true
+    }
+
+    fun approvedRejectedSSC(
+        sscApprovalRejectionDto: SSCApprovalRejectionDto,
+        map: ServiceMapsEntity,
+        permitDetails: PermitApplicationsEntity,
+        loggedInUser: UsersEntity
+    ) {
+        var reasonValue: String? = null
+        val userDetails = commonDaoServices.findUserByID(permitDetails.qaoId ?: throw Exception("MISSING QAO ID"))
+        when (sscApprovalRejectionDto.approvedRejectedScheme) {
+            map.activeStatus -> {
+                reasonValue = "ACCEPTED"
+                schemeSendEmail(permitDetails, userDetails, reasonValue)
+                permitInsertStatus(
+                    permitDetails,
+                    applicationMapProperties.mapQaStatusPSSF,
+                    loggedInUser
+                )
+            }
+            map.inactiveStatus -> {
+                reasonValue = "REJECTED"
+                with(permitDetails) {
+                    approvedRejectedScheme = null
+                    generateSchemeStatus = null
+                }
+                permitInsertStatus(
+                    permitDetails,
+                    applicationMapProperties.mapQaStatusSSCRejected,
+                    loggedInUser
+                )
+                schemeSendEmail(permitDetails, userDetails, reasonValue)
+            }
+        }
+    }
+
+    fun sendEmailWithSSC(recipient: String, attachment: String?, permitRefNumber: String): Boolean {
+        val subject = "SSC GENERATED"
+        val messageBody =
+            "Check The attached SCHEME OF SUPERVISION AND CONTROL for permit with Ref number $permitRefNumber" +
+                    "and Approve or reject it on KIMS system for your application to continue being processesd"
+
+        notifications.processEmail(recipient, subject, messageBody, attachment)
+
+        return true
+    }
+
+    fun sendEmailWithSSCAttached(recipient: String, attachment: String?, permitRefNumber: String): Boolean {
+        val subject = "SSC ATTACHED GENERATED"
+        val messageBody = "BODY"
+
+        notifications.processEmail(recipient, subject, messageBody, attachment)
+
+        return true
+    }
+
+    fun sendEmailWithTaskDetails(recipient: String, permitRefNumber: String): Boolean {
+        val subject = "ALLOCATED TASK"
+        val messageBody = "Permit with Ref number $permitRefNumber  awaits your review/action"
+
+        notifications.processEmail(recipient, subject, messageBody, null)
+
+        return true
+    }
+
+    fun sendEmailWithProformaPaid(recipient: String, attachment: String?, permitRefNumber: String): Boolean {
+        val subject = "PRO FORMA INVOICE"
+        val messageBody =
+            "Check The attached Proforma Invoices  Payment made for permit with Ref number $permitRefNumber"
 
         notifications.processEmail(recipient, subject, messageBody, attachment)
 
@@ -2705,7 +2967,7 @@ class QADaoServices(
         with(newBatchInvoiceDto) {
             permitInvoicesID = arrayOf(permit.permitRefNumber.toString())
         }
-        var batchInvoice = permitMultipleInvoiceCalculation(map, loggedInUser, newBatchInvoiceDto).second
+        var batchInvoice = permitMultipleInvoiceCalculation(map, loggedInUser, permitID, newBatchInvoiceDto).second
 
         // submit invoice to get way
         with(newBatchInvoiceDto) {
@@ -2723,11 +2985,14 @@ class QADaoServices(
         permit = permitUpdateDetails(permit, map, loggedInUser).second
 
         //Send email with attached Invoice details
-        invoiceCreationPDF(
-            batchInvoice.id ?: throw ExpectedDataNotFound("MISSING BATCH INVOICE ID"),
+        sendEmailWithProforma(
             commonDaoServices.findUserByID(permit.userId ?: throw ExpectedDataNotFound("MISSING USER ID")).email
                 ?: throw ExpectedDataNotFound("MISSING USER ID"),
-            loggedInUser
+            invoiceCreationPDF(
+                batchInvoice.id ?: throw ExpectedDataNotFound("MISSING BATCH INVOICE ID"),
+                loggedInUser
+            ).path,
+            permit.permitRefNumber ?: throw ExpectedDataNotFound("MISSING PERMIT REF NUMBER")
         )
 
         return Pair(batchInvoice, permit)
@@ -2869,6 +3134,7 @@ class QADaoServices(
     fun permitMultipleInvoiceCalculation(
         s: ServiceMapsEntity,
         user: UsersEntity,
+        permitID: Long,
         batchInvoiceDto: NewBatchInvoiceDto,
     ): Pair<ServiceRequestsEntity, QaBatchInvoiceEntity> {
 
@@ -2880,7 +3146,8 @@ class QADaoServices(
             batchInvoiceDto.permitInvoicesID
                 ?.forEach { permitRefNumber ->
                     val userID = user.id ?: throw Exception("INVALID USER ID")
-                    var permitInvoiceFound = findPermitInvoiceByPermitRefNumber(permitRefNumber, userID)
+                    var permitInvoiceFound =
+                        findPermitInvoiceByPermitRefNumberANdPermitID(permitRefNumber, userID, permitID)
                     val permitType = findPermitType(applicationMapProperties.mapQAPermitTypeIdInvoices)
 
                     invoiceBatchRepo.findByIdOrNull(batchID)
@@ -2962,6 +3229,7 @@ class QADaoServices(
     fun permitMultipleInvoiceRemoveInvoice(
         s: ServiceMapsEntity,
         user: UsersEntity,
+        permitID: Long,
         batchInvoiceDto: NewBatchInvoiceDto,
     ): Pair<ServiceRequestsEntity, QaBatchInvoiceEntity> {
 
@@ -2971,8 +3239,8 @@ class QADaoServices(
         try {
 
             val userID = user.id ?: throw Exception("INVALID USER ID")
-            var permitInvoiceFound = findPermitInvoiceByPermitRefNumber(
-                batchInvoiceDto.permitRefNumber ?: throw Exception("PERMIT REF NUMBER REQUIRED"), userID
+            var permitInvoiceFound = findPermitInvoiceByPermitRefNumberANdPermitID(
+                batchInvoiceDto.permitRefNumber ?: throw Exception("PERMIT REF NUMBER REQUIRED"), userID, permitID
             )
             var batchID: Long? = null
 
@@ -3212,15 +3480,16 @@ class QADaoServices(
         user: UsersEntity,
         permit: PermitApplicationsEntity,
         auth: Authentication
-    ): ServiceRequestsEntity {
+    ): Pair<ServiceRequestsEntity, PermitApplicationsEntity> {
 
         var sr = commonDaoServices.createServiceRequest(s)
+        var fmarkPermit = PermitApplicationsEntity()
         try {
 
             val permitType = findPermitType(applicationMapProperties.mapQAPermitTypeIdFmark)
 //            val smark = permit.id?.let { findPermitBYID(it) } ?: throw ExpectedDataNotFound("SMARK Id Not found")
 
-            var fmarkPermit = PermitApplicationsEntity()
+
             with(fmarkPermit) {
                 commodityDescription = permit.commodityDescription
                 tradeMark = permit.tradeMark
@@ -3276,7 +3545,7 @@ class QADaoServices(
         }
 
         KotlinLogging.logger { }.trace("${sr.id} ${sr.responseStatus}")
-        return sr
+        return Pair(sr, fmarkPermit)
     }
 
     fun generateSmarkFmarkEntity(
@@ -3380,7 +3649,12 @@ class QADaoServices(
         KotlinLogging.logger { }.info { "ManufacturerId, ${permit.userId}" }
         val permitType = findPermitType(permit.permitType ?: throw Exception("INVALID PERMIT TYPE ID"))
         val numberOfYears = permitType.numberOfYears?.toBigDecimal() ?: throw Exception("INVALID NUMBER OF YEARS")
-        val manufactureTurnOver = permit.userId?.let { commonDaoServices.findCompanyProfile(it).yearlyTurnover }
+        val userDetails =
+            commonDaoServices.findUserByID(permit.userId ?: throw Exception("MISSINNG USER ID ON PERMIT DETAILS"))
+//        val manufactureTurnOver =  commonDaoServices.findCompanyProfile(it).yearlyTurnover
+        val manufactureTurnOver = commonDaoServices.findCompanyProfileWithID(
+            userDetails.companyId ?: throw Exception("MISSING COMPANY ID ON USER DETAILS")
+        ).yearlyTurnover
         val plantDetails = findPlantDetails(permit.attachedPlantId ?: throw Exception("INVALID PLANT ID"))
         var m = mutableListOf<BigDecimal?>()
 
@@ -3755,16 +4029,45 @@ class QADaoServices(
     fun sendComplianceStatusAndLabReport(
         permitDetails: PermitApplicationsEntity,
         compliantStatus: String,
-        compliantRemarks: String
+        compliantRemarks: String,
+        attachment: String,
     ) {
         val manufacturer = permitDetails.userId?.let { commonDaoServices.findUserByID(it) }
         val subject = "LAB REPORT AND COMPLIANCE STATUS "
         val messageBody = "Dear ${manufacturer?.let { commonDaoServices.concatenateName(it) }}: \n" +
                 "\n " +
-                "The lab test report are available  at ${applicationMapProperties.baseUrlValue}/qa/kebs/view/attached?fileID=${permitDetails.testReportId}: \n" +
-                " with the following compliance status  $compliantStatus" +
+                "Find Attached lab test report with the following compliance status  $compliantStatus" +
                 "\n  and  the Following Remarks  $compliantRemarks" +
-                "for the following permit : ${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitDetails.id}"
+                "for the following permit with REF number ${permitDetails.permitRefNumber} : You have 30 days to perform corrective action for re-inspection.  "
+
+        manufacturer?.email?.let { notifications.sendEmail(it, subject, messageBody, attachment) }
+    }
+
+    fun sendAssessmentReportRejection(
+        permitDetails: PermitApplicationsEntity,
+        compliantStatus: String,
+        compliantRemarks: String
+    ) {
+        var manufacturer = permitDetails.assessorId?.let { commonDaoServices.findUserByID(it) }
+        val subject = "ASSESSMENT REPORT REJECTION"
+        val messageBody = "Dear ${manufacturer?.let { commonDaoServices.concatenateName(it) }}: \n" +
+                "\n " +
+                "Assessment report was REJECTED with the following compliance status  $compliantStatus" +
+                "\n  and  the Following Remarks  $compliantRemarks" +
+                "for the following permit with REF number ${permitDetails.permitRefNumber}"
+
+        manufacturer?.email?.let { notifications.sendEmail(it, subject, messageBody) }
+        manufacturer = permitDetails.leadAssessorId?.let { commonDaoServices.findUserByID(it) }
+        manufacturer?.email?.let { notifications.sendEmail(it, subject, messageBody) }
+    }
+
+    fun sendNotificationForJustification(permitDetails: PermitApplicationsEntity) {
+        val manufacturer = permitDetails.hodId?.let { commonDaoServices.findUserByID(it) }
+        val subject = "JUSTIFICATION REPORT "
+        val messageBody = "Dear ${manufacturer?.let { commonDaoServices.concatenateName(it) }}: \n" +
+                "\n " +
+                "A justification report has been generated for the following permit with REF number ${permitDetails.permitRefNumber} : ${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitDetails.id} \n" +
+                "That awaits your approval"
 
         manufacturer?.email?.let { notifications.sendEmail(it, subject, messageBody) }
     }
@@ -3774,7 +4077,7 @@ class QADaoServices(
         val subject = "RECOMMENDATION FOR AWARDING OF PERMIT"
         val messageBody = "Dear ${manufacturer?.let { commonDaoServices.concatenateName(it) }}: \n" +
                 "\n " +
-                "A recommendation has been added for the following permit : ${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitDetails.id} \n" +
+                "A recommendation has been added for the following permit with REF number ${permitDetails.permitRefNumber} : ${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitDetails.id} \n" +
                 "That awaits your approval"
 
         manufacturer?.email?.let { notifications.sendEmail(it, subject, messageBody) }
@@ -3785,7 +4088,7 @@ class QADaoServices(
         val subject = "RECOMMENDATION FOR AWARDING OF PERMIT CORRECTION"
         val messageBody = "Dear ${manufacturer?.let { commonDaoServices.concatenateName(it) }}: \n" +
                 "\n " +
-                "The recommendation has been rejected due to the following reasons: ${permitDetails.recommendationApprovalRemarks} \n" +
+                "The following permit with REF number ${permitDetails.permitRefNumber},, Recommendation has been rejected due to the following reasons: ${permitDetails.recommendationApprovalRemarks} \n" +
                 "Please do some correction and send it back for approval : ${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitDetails.id} \n"
 
         manufacturer?.email?.let { notifications.sendEmail(it, subject, messageBody) }
@@ -3796,7 +4099,7 @@ class QADaoServices(
         val subject = "AWARDING OF PERMIT DEFERRED "
         val messageBody = "Dear ${manufacturer?.let { commonDaoServices.concatenateName(it) }}: \n" +
                 "\n " +
-                "The below permit has been DEFERRED due to the following reasons: ${permitDetails.pscMemberApprovalRemarks} \n" +
+                "The following permit with REF number ${permitDetails.permitRefNumber}, has been DEFERRED due to the following reasons: ${permitDetails.pscMemberApprovalRemarks} \n" +
                 "Please do some correction and send it back for approval : ${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitDetails.id}\n"
 
         manufacturer?.email?.let { notifications.sendEmail(it, subject, messageBody) }
@@ -3807,10 +4110,30 @@ class QADaoServices(
         val subject = "AWARDING OF PERMIT DEFERRED "
         val messageBody = "Dear ${manufacturer?.let { commonDaoServices.concatenateName(it) }}: \n" +
                 "\n " +
-                "The below permit has been DEFERRED due to the following reasons: ${permitDetails.pcmApprovalRemarks} \n" +
+                "The following permit with REF number ${permitDetails.permitRefNumber}, has been DEFERRED due to the following reasons: ${permitDetails.pcmApprovalRemarks} \n" +
                 "Please do some correction and send it back for approval : ${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitDetails.id}\n"
 
         manufacturer?.email?.let { notifications.sendEmail(it, subject, messageBody) }
+    }
+
+    fun sendNotificationForDeferredPermitToAssessorFromPCM(permitDetails: PermitApplicationsEntity) {
+        val manufacturer = permitDetails.assessorId?.let { commonDaoServices.findUserByID(it) }
+        val subject = "AWARDING OF PERMIT DEFERRED "
+        val messageBody = "Dear ${manufacturer?.let { commonDaoServices.concatenateName(it) }}: \n" +
+                "\n " +
+                "The following permit with REF number ${permitDetails.permitRefNumber}, has been DEFERRED due to the following reasons: ${permitDetails.pacDecisionRemarks} \n" +
+                "Please do some correction and send it back for approval : ${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitDetails.id}\n"
+
+        manufacturer?.email?.let { notifications.sendEmail(it, subject, messageBody) }
+
+        val manufacturer2 = permitDetails.leadAssessorId?.let { commonDaoServices.findUserByID(it) }
+        val subject2 = "AWARDING OF PERMIT DEFERRED "
+        val messageBody2 = "Dear ${manufacturer2?.let { commonDaoServices.concatenateName(it) }}: \n" +
+                "\n " +
+                "The following permit with REF number ${permitDetails.permitRefNumber}, has been DEFERRED due to the following reasons: ${permitDetails.pacDecisionRemarks} \n" +
+                "Please do some correction and send it back for approval : ${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitDetails.id}\n"
+
+        manufacturer2?.email?.let { notifications.sendEmail(it, subject2, messageBody2) }
     }
 
     fun sendNotificationForPermitReviewRejectedFromPCM(permitDetails: PermitApplicationsEntity) {
@@ -3818,8 +4141,21 @@ class QADaoServices(
         val subject = "PERMIT REJECTED "
         val messageBody = "Dear ${manufacturer?.let { commonDaoServices.concatenateName(it) }}: \n" +
                 "\n " +
-                "The below permit has been REJECTED due to the following reasons: ${permitDetails.pcmApprovalRemarks} \n" +
-                "Please do some correction and send it back for review again : ${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitDetails.id}\n"
+                "The following permit with REF number ${permitDetails.permitRefNumber}, has been REJECTED due to the following reasons: ${permitDetails.pcmReviewApprovalRemarks} \n" +
+                "Please do some correction and send it back for review again : "
+//                "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitDetails.id}\n"
+
+        manufacturer?.email?.let { notifications.sendEmail(it, subject, messageBody) }
+    }
+
+    fun sendNotificationForPermitReviewRejected(permitDetails: PermitApplicationsEntity, rejectedReason: String) {
+        val manufacturer = permitDetails.userId?.let { commonDaoServices.findUserByID(it) }
+        val subject = "PERMIT REJECTED "
+        val messageBody = "Dear ${manufacturer?.let { commonDaoServices.concatenateName(it) }}: \n" +
+                "\n " +
+                "The following permit with REF number ${permitDetails.permitRefNumber}, has been REJECTED due to the following reasons: $rejectedReason \n" +
+                "Please do some correction and send it back for review again : "
+//                "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitDetails.id}\n"
 
         manufacturer?.email?.let { notifications.sendEmail(it, subject, messageBody) }
     }
@@ -3829,7 +4165,7 @@ class QADaoServices(
         val subject = "INSPECTION REVIEW FOR APPROVAL"
         val messageBody = "Dear ${manufacturer?.let { commonDaoServices.concatenateName(it) }}: \n" +
                 "\n " +
-                "The permit below awaits your approval for inspection review \n" +
+                "The following permit with REF number ${permitDetails.permitRefNumber}, awaits your approval for inspection review \n" +
                 " ${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitDetails.id}\n"
 
         manufacturer?.email?.let { notifications.sendEmail(it, subject, messageBody) }
@@ -3840,7 +4176,7 @@ class QADaoServices(
         val subject = "INSPECTION REVIEW FOR APPROVAL"
         val messageBody = "Dear ${manufacturer?.let { commonDaoServices.concatenateName(it) }}: \n" +
                 "\n " +
-                "The permit below awaits your approval for inspection review \n" +
+                "The following permit with REF number ${permitDetails.permitRefNumber}, your approval for inspection review \n" +
                 " ${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitDetails.id}\n"
 
         manufacturer?.email?.let { notifications.sendEmail(it, subject, messageBody) }
@@ -4137,6 +4473,7 @@ class QADaoServices(
                 p.companyProfileId,
                 commonDaoServices.findCountiesEntityByCountyId(p.county ?: -1L, map.activeStatus).county,
                 commonDaoServices.findTownEntityByTownId(p.town ?: -1L).town,
+                p.location,
                 p.street,
                 p.buildingName,
                 p.nearestLandMark,

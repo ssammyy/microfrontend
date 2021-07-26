@@ -3,7 +3,7 @@ import {Actions, createEffect, ofType} from '@ngrx/effects';
 import {
     doSendTokenForUser,
     doSendTokenForUserSuccess,
-    doValidateTokenForUser,
+    doValidateTokenForUser, doValidateTokenForUserFailure,
     doValidateTokenForUserSuccess,
     loadAuths,
     loadAuthsSuccess,
@@ -104,18 +104,18 @@ export class AuthEffects {
                                 ];
                             } else {
                                 return [
-                                    loadResponsesFailure({error: data})
+                                    doValidateTokenForUserFailure({data: data, validated: false})
                                 ];
                             }
                         }),
                         catchError(
                             (err: HttpErrorResponse) => {
-                                return of(loadResponsesFailure({
-                                    error: {
+                                return of(doValidateTokenForUserFailure({
+                                    data: {
                                         payload: err.error,
                                         status: err.status,
                                         response: (err.error instanceof ErrorEvent) ? `Error: ${err.error.message}` : `Error Code: ${err.status},  Message: ${err.error}`
-                                    }
+                                    }, validated: false
                                 }));
                             })
                     )
@@ -232,7 +232,7 @@ export class AuthEffects {
     constructor(
         private actions$: Actions,
         private service: AuthService,
-        private store$: Store<any>,
+        // private store$: Store<any>,
     ) {
     }
 

@@ -23,10 +23,10 @@ import {
 } from 'src/app/core/store';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {Store} from '@ngrx/store';
-import {Observable, of, Subject, throwError} from "rxjs";
-import {catchError} from "rxjs/internal/operators/catchError";
-import {HttpErrorResponse} from "@angular/common/http";
-import swal from "sweetalert2";
+import {Observable, of, Subject, throwError} from 'rxjs';
+import {catchError} from 'rxjs/internal/operators/catchError';
+import {HttpErrorResponse} from '@angular/common/http';
+import swal from 'sweetalert2';
 
 @Component({
   selector: 'app-add-branch',
@@ -190,18 +190,15 @@ export class AddBranchComponent implements OnInit {
         this.branch.companyProfileId = this.selectedCompany;
         this.service.add(this.branch).subscribe(
             (a) => {
-              this.stepTwoForm.markAsPristine();
-              this.stepTwoForm.reset();
-              this.stepThreeForm.markAsPristine();
-              this.stepThreeForm.reset();
-              this.step = 0;
-              return of(loadResponsesSuccess({
+
+              this.store$.dispatch(loadResponsesSuccess({
                 message: {
                   response: '00',
                   payload: `Successfully saved ${a.buildingName}`,
                   status: 200
                 }
               }));
+              this.store$.dispatch(Go({link: 'company/branches', redirectUrl: 'company/branches', payload: null}));
             },
             catchError(
                 (err: HttpErrorResponse) => {
@@ -302,12 +299,7 @@ export class AddBranchComponent implements OnInit {
   }
 
   showsuccess() {
-    swal.fire('Thank you...', 'New Branch Successfully Added', 'success')
+    swal.fire('Thank you...', 'New Branch Successfully Added', 'success');
   }
 
 }
-
-
-
-
-

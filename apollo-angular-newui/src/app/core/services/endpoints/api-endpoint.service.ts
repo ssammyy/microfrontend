@@ -17,10 +17,11 @@ export class ApiEndpointService {
    * Map of domains for API endpoints.
    */
   public static DOMAIN = {
-   // LOCAL_DEV: 'localhost:8006'
+    //LOCAL_DEV: 'localhost:8006'
     // LOCAL_DEV: '12:8006'
     // LOCAL_DEV: '41.72.209.58:8006'
      LOCAL_DEV: 'kimsint.kebs.org:8006'
+    //   LOCAL_DEV: 'kims.kebs.org:8006'
   };
 
   /**
@@ -115,48 +116,68 @@ export class ApiEndpointService {
     MASTERS_ACCOUNTING_PERIOD: `${ApiEndpointService.ADMIN_CONTEXT}/accounting/period/`,
     ADMIN_USER_DETAILS: `${ApiEndpointService.ADMIN_CONTEXT}/users/`,
     MASTERS: `${ApiEndpointService.MASTERS_CONTEXT}`,
-    MASTERS_TITLES: `${ApiEndpointService.MASTERS_CONTEXT}/titles/`,
-    MASTERS_COUNTRIES: `${ApiEndpointService.MASTERS_CONTEXT}/countries/`,
-    MASTERS_CURRENCIES: `${ApiEndpointService.MASTERS_CONTEXT}/currencies/`,
-    // tslint:disable-next-line:max-line-length
-    /*::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::QA ENDPOINTS:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
-    PERMIT_PROCESS_STEP: `${ApiEndpointService.QA_CONTEXT_APPLY}/process-step-add`,
+      MASTERS_TITLES: `${ApiEndpointService.MASTERS_CONTEXT}/titles/`,
+      MASTERS_COUNTRIES: `${ApiEndpointService.MASTERS_CONTEXT}/countries/`,
+      MASTERS_CURRENCIES: `${ApiEndpointService.MASTERS_CONTEXT}/currencies/`,
+      // tslint:disable-next-line:max-line-length
+      /*::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::QA ENDPOINTS:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
+      PERMIT_PROCESS_STEP: `${ApiEndpointService.QA_CONTEXT_APPLY}/process-step-add`,
 
-    FIRM_PERMIT_LIST: `${ApiEndpointService.QA_CONTEXT}/permit/firm-list`,
-    QA_MPESA_STK_PUSH: `${ApiEndpointService.QA_CONTEXT}/permit/mpesa/stk-push`,
-    PERMIT_LIST: `${ApiEndpointService.QA_CONTEXT}/permit/list`,
-    PERMIT_VIEW_DETAILS: `${ApiEndpointService.QA_CONTEXT}/permit/view/details`,
-    PERMIT_SUBMIT_DETAILS_FOR_REVIEW: `${ApiEndpointService.QA_CONTEXT_APPLY}/submit-application-review`,
-    PERMIT_SUBMIT_APPLICATION: `${ApiEndpointService.QA_CONTEXT_APPLY}/submit-application`,
-    PLANT_LIST: `${ApiEndpointService.QA_CONTEXT}/branch-list`,
-    SECTION_LIST: `${ApiEndpointService.QA_CONTEXT}/sections-list`,
-    MY_TASK_LIST: `${ApiEndpointService.QA_CONTEXT}/permit/task-list`,
+      FIRM_PERMIT_LIST: `${ApiEndpointService.QA_CONTEXT}/permit/firm-list`,
+      QA_MPESA_STK_PUSH: `${ApiEndpointService.QA_CONTEXT}/permit/mpesa/stk-push`,
+      PERMIT_LIST: `${ApiEndpointService.QA_CONTEXT}/permit/list`,
+      PERMIT_LIST_AWARDED_SMARK: `${ApiEndpointService.QA_CONTEXT}/permit/awarded-list`,
+      PERMIT_VIEW_DETAILS: `${ApiEndpointService.QA_CONTEXT}/permit/view/details`,
+      PERMIT_SUBMIT_DETAILS_FOR_REVIEW: `${ApiEndpointService.QA_CONTEXT_APPLY}/submit-application-review`,
+      PERMIT_SUBMIT_DETAILS_FOR_HOD_QAM_REVIEW: `${ApiEndpointService.QA_CONTEXT_APPLY}/submit-application-qam-hod-review`,
+      PERMIT_SUBMIT_APPLICATION: `${ApiEndpointService.QA_CONTEXT_APPLY}/submit-application`,
+      PERMIT_SUBMIT_SSC_APPROVAL_REJECTION: `${ApiEndpointService.QA_CONTEXT_APPLY}/submit-application-ssc-approval-rejection`,
 
-    PERMIT_APPLY_STA1: `${ApiEndpointService.QA_CONTEXT_APPLY}/sta1`,
-    PERMIT_VIEW_STA1: `${ApiEndpointService.QA_CONTEXT_VIEW}/sta1`,
-    PERMIT_UPDATE_STA1: `${ApiEndpointService.QA_CONTEXT_APPLY}/sta1-update`,
-    PERMIT_APPLY_STA3: `${ApiEndpointService.QA_CONTEXT_APPLY}/sta3`,
-    PERMIT_VIEW_STA3: `${ApiEndpointService.QA_CONTEXT_APPLY}/sta3`,
-    PERMIT_UPDATE_STA3: `${ApiEndpointService.QA_CONTEXT_APPLY}/sta3-update`,
+      PERMIT_RENEW: `${ApiEndpointService.QA_CONTEXT}/permit/renew/`,
+      PLANT_LIST: `${ApiEndpointService.QA_CONTEXT}/branch-list`,
+      SECTION_LIST: `${ApiEndpointService.QA_CONTEXT}/sections-list`,
+      MY_TASK_LIST: `${ApiEndpointService.QA_CONTEXT}/permit/task-list`,
 
-    UPLOAD_FILE_STA3: `${ApiEndpointService.QA_CONTEXT_APPLY}/sta3-update-upload`,
-    UPLOAD_FILE_STA10: `${ApiEndpointService.QA_CONTEXT_APPLY}/sta10-update-upload`,
+      PERMIT_APPLY_FMARK: `${ApiEndpointService.QA_CONTEXT_APPLY}/fmark`,
+      PERMIT_APPLY_STA1: `${ApiEndpointService.QA_CONTEXT_APPLY}/sta1`,
+      PERMIT_VIEW_STA1: `${ApiEndpointService.QA_CONTEXT_VIEW}/sta1`,
+      PERMIT_UPDATE_STA1: `${ApiEndpointService.QA_CONTEXT_APPLY}/sta1-update`,
+      PERMIT_APPLY_STA3: `${ApiEndpointService.QA_CONTEXT_APPLY}/sta3`,
+      PERMIT_VIEW_STA3: `${ApiEndpointService.QA_CONTEXT_VIEW}/sta3`,
+      PERMIT_UPDATE_STA3: `${ApiEndpointService.QA_CONTEXT_APPLY}/sta3-update`,
+
+      UPLOAD_FILE_STA3: `${ApiEndpointService.QA_CONTEXT_APPLY}/sta3-update-upload`,
+      UPLOAD_FILE_STA10: `${ApiEndpointService.QA_CONTEXT_APPLY}/sta10-update-upload`,
 
 
-    INVOICE_CONSOLIDATE_SUBMIT: `${ApiEndpointService.QA_CONTEXT}/permit/view/invoice/batch-invoice-submit`,
-    INVOICE_CONSOLIDATE_ADD: `${ApiEndpointService.QA_CONTEXT}/permit/view/invoice/batch-invoice-add`,
-    INVOICE_CONSOLIDATE_REMOVE: `${ApiEndpointService.QA_CONTEXT}/permit/view/invoice/batch-invoice-remove`,
-    INVOICE_LIST_DETAILS: `${ApiEndpointService.QA_CONTEXT}/permit/view/invoice/batch-invoice-list`,
-    INVOICE_DETAILS: `${ApiEndpointService.QA_CONTEXT}/permit/view/invoice/batch-invoice-details`,
-    INVOICE_DETAILS_PDF: `${ApiEndpointService.QA_CONTEXT}/report/proforma-invoice-with-Item`,
-    // INVOICE_DETAILS_PDF: `${ApiEndpointService.QA_CONTEXT}/permit/view/invoice/batch-invoice-pdf-details`,
+      INVOICE_CONSOLIDATE_SUBMIT: `${ApiEndpointService.QA_CONTEXT}/permit/view/invoice/batch-invoice-submit`,
+      INVOICE_CONSOLIDATE_ADD: `${ApiEndpointService.QA_CONTEXT}/permit/view/invoice/batch-invoice-add`,
+      INVOICE_CONSOLIDATE_REMOVE: `${ApiEndpointService.QA_CONTEXT}/permit/view/invoice/batch-invoice-remove`,
+      INVOICE_LIST_DETAILS: `${ApiEndpointService.QA_CONTEXT}/permit/view/invoice/batch-invoice-list`,
+      INVOICE_LIST_NO_DETAILS: `${ApiEndpointService.QA_CONTEXT}/permit/invoice/list-no-batch-Id`,
+      INVOICE_LIST_ALL_DETAILS: `${ApiEndpointService.QA_CONTEXT}/permit/invoice/list`,
+      INVOICE_DETAILS: `${ApiEndpointService.QA_CONTEXT}/permit/view/invoice/batch-invoice-details`,
+      INVOICE_DETAILS_PDF: `${ApiEndpointService.QA_CONTEXT}/report/proforma-invoice-with-Item`,
 
-    PERMIT_APPLY_STA10_FIRM_DETAILS: `${ApiEndpointService.QA_CONTEXT_APPLY}/sta10/firm_details`,
-    PERMIT_APPLY_STA10_PERSONNEL_DETAILS: `${ApiEndpointService.QA_CONTEXT_APPLY}/sta10/personnel_details`,
-    PERMIT_APPLY_STA10_PRODUCTS_BEING_MANUFACTURED: `${ApiEndpointService.QA_CONTEXT_APPLY}/sta10/products_being_manufactured`,
+
+      PERMIT_CERTIFICATE_ISSUED_DETAILS_PDF: `${ApiEndpointService.QA_CONTEXT}/report/permit-certificate`,
+      // INVOICE_DETAILS_PDF: `${ApiEndpointService.QA_CONTEXT}/permit/view/invoice/batch-invoice-pdf-details`,
+
+      PERMIT_APPLY_STA10_FIRM_DETAILS: `${ApiEndpointService.QA_CONTEXT_APPLY}/sta10/firm_details`,
+      PERMIT_VIEW_STA10_FIRM_DETAILS: `${ApiEndpointService.QA_CONTEXT_VIEW}/sta10/firm-details`,
+      PERMIT_VIEW_STA10_DETAILS: `${ApiEndpointService.QA_CONTEXT_VIEW}/sta10/view-details`,
+
+
+      PERMIT_APPLY_STA10_PERSONNEL_DETAILS: `${ApiEndpointService.QA_CONTEXT_APPLY}/sta10/personnel_details`,
+      PERMIT_VIEW_STA10_PERSONNEL_DETAILS: `${ApiEndpointService.QA_CONTEXT_VIEW}/sta10/personnel_details`,
+      PERMIT_APPLY_STA10_PRODUCTS_BEING_MANUFACTURED: `${ApiEndpointService.QA_CONTEXT_APPLY}/sta10/products_being_manufactured`,
+    PERMIT_VIEW_STA10_PRODUCTS_BEING_MANUFACTURED: `${ApiEndpointService.QA_CONTEXT_VIEW}/sta10/products_being_manufactured`,
     PERMIT_APPLY_STA10_RAW_MATERIAL: `${ApiEndpointService.QA_CONTEXT_APPLY}/sta10/raw_material`,
+    PERMIT_VIEW_STA10_RAW_MATERIAL: `${ApiEndpointService.QA_CONTEXT_VIEW}/sta10/raw_material`,
     PERMIT_APPLY_STA10_MACHINERY_PLANT: `${ApiEndpointService.QA_CONTEXT_APPLY}/sta10/machinery_plant`,
+    PERMIT_VIEW_STA10_MACHINERY_PLANT: `${ApiEndpointService.QA_CONTEXT_VIEW}/sta10/machinery_plant`,
     PERMIT_APPLY_STA10_MANUFACTURING_PROCESS: `${ApiEndpointService.QA_CONTEXT_APPLY}/sta10/manufacturing_process`,
+    PERMIT_VIEW_STA10_MANUFACTURING_PROCESS: `${ApiEndpointService.QA_CONTEXT_VIEW}/sta10/manufacturing_process`,
 
     PERMIT_UPDATE_STA10_FIRM_DETAILS: `${ApiEndpointService.QA_CONTEXT_APPLY}/sta10/firm_details_update`,
     PERMIT_UPDATE_STA10_PERSONNEL_DETAILS: `${ApiEndpointService.QA_CONTEXT_APPLY}/sta10/personnel_details_update`,

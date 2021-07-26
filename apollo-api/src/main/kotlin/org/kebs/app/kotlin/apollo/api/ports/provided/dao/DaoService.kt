@@ -39,11 +39,15 @@ import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean
 import org.springframework.web.servlet.function.ServerRequest
 import org.springframework.web.servlet.function.ServerResponse
 import org.springframework.web.servlet.function.remoteAddressOrNull
+import java.security.SecureRandom
+import java.security.cert.X509Certificate
 import java.sql.Timestamp
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.*
+import javax.net.ssl.SSLContext
+import javax.net.ssl.X509TrustManager
 import javax.persistence.EntityManager
 import javax.persistence.PersistenceContext
 import javax.persistence.criteria.CriteriaUpdate
@@ -241,8 +245,18 @@ class DaoService(
                     customizeClient {
                         setMaxConnPerRoute(cfg.maxConnPerRoute)
                         setMaxConnTotal(cfg.maxConnTotal)
+                        /**
+                         * TODO: Ensure to restore security before prod
+                         * setSSLContext(
+                         * sslContextFactory.createSslContext()
+                         * )
+                         */
+
                         setSSLContext(
-                                sslContextFactory.createSslContext()
+                            SSLContext.getInstance("TLS")
+                                .apply {
+                                    init(null, arrayOf(TrustAllX509TrustManager()), SecureRandom())
+                                }
                         )
                         setSSLHostnameVerifier(NoopHostnameVerifier())
                     }
@@ -353,7 +367,11 @@ class DaoService(
         return results
     }
 
-    private fun evaluateFinalStatus(log: WorkflowTransactionsEntity, config: IntegrationConfigurationEntity, jobDetails: BatchJobDetails): Int? {
+    private fun evaluateFinalStatus(
+        log: WorkflowTransactionsEntity,
+        config: IntegrationConfigurationEntity,
+        jobDetails: BatchJobDetails
+    ): Int? {
         return when (log.responseStatus) {
             config.exceptionCode -> jobDetails.endExceptionStatus
             config.failureCode -> jobDetails.endFailureStatus
@@ -362,6 +380,14 @@ class DaoService(
         }
 
 
+    }
+
+    class TrustAllX509TrustManager : X509TrustManager {
+        override fun getAcceptedIssuers(): Array<X509Certificate?> = arrayOfNulls(0)
+
+        override fun checkClientTrusted(certs: Array<X509Certificate?>?, authType: String?) {}
+
+        override fun checkServerTrusted(certs: Array<X509Certificate?>?, authType: String?) {}
     }
 }
 

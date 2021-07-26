@@ -103,7 +103,7 @@ export class UsersCustomService extends DefaultDataService<User> {
 
 
     if (company) {
-      myUrl = `${this.baseUrl}${company}/branches/${branch}/users/`;
+      myUrl = `${this.baseUrl}${company}/branches/${branch}/users`;
       // console.log(`Revised url = ${baseUrl}${data}/branches/ `)
       return this.http.get<User[]>(myUrl).pipe(
         map((response: User[]) => response),

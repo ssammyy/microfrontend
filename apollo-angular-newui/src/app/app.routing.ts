@@ -32,6 +32,7 @@ import {PdfViewComponent} from "./pdf-view/pdf-view.component";
 import {TaskManagerComponent} from "./apollowebs/task-manager/task-manager.component";
 import {AddUserComponent} from "./apollowebs/company/branch/add-user/add-user.component";
 import {FmarkApplicationComponent} from "./apollowebs/fmark-application/fmark-application.component";
+import {SmarkComponent} from "./apollowebs/smark/smark.component";
 
 // export const AppRoutes: Routes = [
 //     {
@@ -147,107 +148,155 @@ const routes: Routes = [
     },
     {
         path: 'company/companies', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
         children: [{path: '', component: CompaniesList}]
 
     },
     {
         path: 'company', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+
         children: [{path: '', component: CompanyComponent}]
     },
     {
         path: 'company/branches', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+
         children: [{path: '', component: BranchList}]
     },
     {
         path: 'branches', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+
         children: [{path: '', component: BranchList}]
 
     },
     {
         path: 'branches/add_branch', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+
         children: [{path: '', component: AddBranchComponent}]
     },
     {
         path: 'users/add_users', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+
         children: [{path: '', component: AddUserComponent}]
     },
     {
         path: 'companies/branch', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+
         children: [{path: '', component: BranchComponent}]
     },
     {
         path: 'companies/branches/users', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+
         children: [{path: '', component: UserList}]
     },
     {
         path: 'company/users', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+
         children: [{path: '', component: UserList}]
     },
     {
         path: 'companies/branches/user', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+
         children: [{path: '', component: UserComponent}]
     },
 
 
     {
         path: 'permitdetails', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+
         children: [{path: '', component: DmarkComponent}]
     },
     {
+        canActivate: [RouteGuard],
         path: 'invoice/all_invoice', component: AdminLayoutComponent,
         children: [{path: '', component: InvoiceComponent}]
     },
     {
         path: 'invoiceDetails', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+
         children: [{path: '', component: InvoiceDetailsComponent}]
     },
     {
         path: 'fmark/fMarkAllApp', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+
         children: [{path: '', component: FmarkallappsComponent}]
     },
     {
         path: 'st10Form', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+
         children: [{path: '', component: St10FormComponent}]
     },
     {
         path: 'permitReport', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+
         children: [{path: '', component: PermitReportComponent}]
     },
     {
         path: 'smark/newSmarkPermit', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+
         children: [{path: '', component: NewSmarkPermitComponent}]
     },
     {
         path: 'dmark/newDmarkPermit', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+
         children: [{path: '', component: NewDmarkPermitComponent}]
     },
     {
         path: 'dmark/all_dmark', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+
         children: [{path: '', component: DmarkApplicationsAllComponent}]
     },
     {
         path: 'profile', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+
         children: [{path: '', component: UserProfileMainComponent}]
     },
     {
         path: 'smark/all_smark', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+
         children: [{path: '', component: SmarkApplicationsAllComponent}]
     },
     {
-        path: 'consolidate_invoice', component: AdminLayoutComponent,
+        path: 'invoice/consolidate_invoice', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
         children: [{path: '', component: InvoiceConsolidateComponent}]
     },
     {
         path: 'all_tasks_list', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+
         children: [{path: '', component: TaskManagerComponent}]
     },
     {
-        path: 'fmark/appplication', component: AdminLayoutComponent,
+        path: 'fmark/application', component: AdminLayoutComponent,
         children: [{path: '', component: FmarkApplicationComponent}]
     },
     {
         path: 'invoice_test', component: PdfViewComponent
-    }
+    },
+
+    {
+        path: 'smarkpermitdetails', component: AdminLayoutComponent,
+        children: [{path: '', component: SmarkComponent}]
+    },
 ];
 
 

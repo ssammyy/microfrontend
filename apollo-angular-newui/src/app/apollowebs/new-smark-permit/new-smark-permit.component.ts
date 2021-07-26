@@ -433,22 +433,22 @@ export class NewSmarkPermitComponent implements OnInit {
                 );
         }
     }
-    onClickSaveSTA10G(valid: boolean) {
-        if (valid) {
-            console.log(this.sta1.id.toString());
-            swal.fire({
-                title: 'STA3 Form Completed! Proceed to submit application.!',
-                buttonsStyling: false,
-                customClass: {
-                    confirmButton: 'btn btn-success form-wizard-next-btn ',
-                },
-                icon: 'success'
-            });
-            this.router.navigate(['/permitdetails'], {fragment: this.sta1.id.toString()});
-
-
-        }
-    }
+    // onClickSaveSTA10G(valid: boolean) {
+    //     if (valid) {
+    //         console.log(this.sta1.id.toString());
+    //         swal.fire({
+    //             title: 'STA10 Form Completed! Proceed to submit application.!',
+    //             buttonsStyling: false,
+    //             customClass: {
+    //                 confirmButton: 'btn btn-success form-wizard-next-btn ',
+    //             },
+    //             icon: 'success'
+    //         });
+    //         this.router.navigate(['/smarkpermitdetails'], {fragment: this.sta1.id.toString()});
+    //
+    //
+    //     }
+    // }
 
     onClickSaveSTAPersonnel(valid: boolean) {
         if (valid) {
@@ -612,7 +612,7 @@ export class NewSmarkPermitComponent implements OnInit {
         this.sta10FormE?.get('processMonitoringRecords')?.reset();
     }
 
-    goToPermit() {
+    onClickSaveSTA10G() {
         if (this.uploadedFiles.length > 0) {
             const file = this.uploadedFiles;
             const formData = new FormData();
@@ -620,19 +620,6 @@ export class NewSmarkPermitComponent implements OnInit {
                 console.log(file[i]);
                 formData.append('docFile', file[i], file[i].name);
             }
-            //
-            // const headers = new Headers();
-            // // It is very important to leave the Content-Type empty
-            // // do not use headers.append('Content-Type', 'multipart/form-data');
-            // headers.append('Authorization', 'Bearer ' + 'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9....');
-            // const options = new RequestOptions({headers: headers});
-            // this.http.post('https://api.mysite.com/uploadfile', formData, options)
-            //     .map(res => res.json())
-            //     .catch(error => Observable.throw(error))
-            //     .subscribe(
-            //         data => console.log('success'),
-            //         error => console.log(error)
-            //     );
 
             this.qaService.uploadSTA10File(this.sta1.id.toString(), formData).subscribe(
                 (data: any) => {
@@ -650,7 +637,7 @@ export class NewSmarkPermitComponent implements OnInit {
                     // this.router.navigate(['/permitdetails'], {fragment: this.permitEntityDetails.id.toString()});
                 },
             );
-            this.router.navigate(['/permitdetails'], {fragment: this.sta1.id.toString()});
+            this.router.navigate(['/smarkpermitdetails'], {fragment: this.sta1.id.toString()});
         }
 
     }
@@ -674,7 +661,7 @@ export class NewSmarkPermitComponent implements OnInit {
                 '<button mat-raised-button type="button" aria-hidden="true" class="close" data-notify="dismiss">  <i class="material-icons">close</i></button>' +
                 '<i class="material-icons" data-notify="icon">notifications</i> ' +
                 '<span data-notify="title"></span> ' +
-                '<span data-notify="message">Ensure all required fields are items have been filled</span>' +
+                '<span data-notify="message">Ensure all required fields and items have been filled</span>' +
                 '<div class="progress" data-notify="progressbar">' +
                 '<div class="progress-bar progress-bar-{0}" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;"></div>' +
                 '</div>' +

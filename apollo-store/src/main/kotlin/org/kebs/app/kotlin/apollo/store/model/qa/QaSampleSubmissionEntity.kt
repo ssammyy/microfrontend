@@ -68,6 +68,14 @@ class QaSampleSubmissionEntity : Serializable {
     @Basic
     var description: String? = null
 
+    @Column(name = "PDF_SELECTED_NAME")
+    @Basic
+    var pdfSelectedName: String? = null
+
+    @Column(name = "LAB_REPORT_FILE_ID")
+    @Basic
+    var labReportFileId: Long? = null
+
     @Column(name = "STATUS")
     @Basic
     var status: Int? = null
@@ -157,6 +165,8 @@ class QaSampleSubmissionEntity : Serializable {
                 sampleStatus == that.sampleStatus &&
                 resultsDate == that.resultsDate &&
                 resultsAnalysis == that.resultsAnalysis &&
+                labReportFileId == that.labReportFileId &&
+                pdfSelectedName == that.pdfSelectedName &&
                 description == that.description &&
                 status == that.status &&
                 labResultsStatus == that.labResultsStatus &&
@@ -187,7 +197,9 @@ class QaSampleSubmissionEntity : Serializable {
             cdItemId,
             ssfNo,
             ssfSubmissionDate,
+            labReportFileId,
             bsNumber,
+            pdfSelectedName,
             brandName,
             productDescription,
             sampleStatus,

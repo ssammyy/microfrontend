@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import {QaService} from "../../core/store/data/qa/qa.service";
 import {Router} from "@angular/router";
 import {AllPermitDetailsDto, ConsolidatedInvoiceDto, PermitEntityDto} from "../../core/store/data/qa/qa.model";
+import {FormArray, FormBuilder, FormControl, FormGroup} from "@angular/forms";
+import {Subscription} from "rxjs";
 
 declare interface DataTable {
   headerRow: string[];
@@ -19,13 +21,24 @@ declare const $: any;
 export class InvoiceConsolidateComponent implements OnInit {
   public dataTable: DataTable;
   public allInvoiceData: ConsolidatedInvoiceDto[];
+  name:string;
+  checkboxGroup: FormGroup;
+  submittedValue: any;
+  final_array = [];
+  selected = [];
+
 
   constructor(
       private qaService: QaService,
       private router: Router,
+      private fb: FormBuilder,
   ) { }
 
   ngOnInit() {
+    this.checkboxGroup = this.fb.group({
+     });
+    const checkboxControl = (this.checkboxGroup.controls.checkboxes as FormArray);
+
     let formattedArray = [];
     this.qaService.loadInvoiceBatchList().subscribe(
         (data: any) => {
@@ -34,8 +47,8 @@ export class InvoiceConsolidateComponent implements OnInit {
           formattedArray = data.map(i => [i.invoiceNumber, i.receiptNo, i.paidDate, i.totalAmount, i.paidStatus, i.id, i.batchID]);
 
           this.dataTable = {
-            headerRow: ['Invoice No', 'Receipt No', 'Date', 'Total Amount', ' Status', 'Actions'],
-            footerRow: ['Invoice No', 'Receipt No', 'Date', 'Total Amount', ' Status', 'Actions'],
+            headerRow: ['Invoice No', 'Receipt No', 'Date', 'Total Amount', ' Select'],
+            footerRow: ['Invoice No', 'Receipt No', 'Date', 'Total Amount', ' Select'],
             dataRows: formattedArray
 
 
@@ -99,5 +112,25 @@ export class InvoiceConsolidateComponent implements OnInit {
     $('.card .material-datatables label').addClass('form-group');
   }
 
+
+  // check if the item are selected
+  checked(item){
+    if(this.selected.indexOf(item) != -1){
+      return true;
+    }
+  }
+
+  // when checkbox change, add/remove the item from the array
+  onChange(checked, item){
+    if(checked){
+      this.selected.push(item);
+    } else {
+      this.selected.splice(this.selected.indexOf(item), 1)
+    }
+  }
+
+  submit() {
+    this.final_array.push(this.selected.sort());
+  }
 
 }

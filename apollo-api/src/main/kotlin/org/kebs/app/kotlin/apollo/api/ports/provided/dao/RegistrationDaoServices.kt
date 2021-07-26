@@ -50,10 +50,7 @@ import org.kebs.app.kotlin.apollo.common.dto.*
 import org.kebs.app.kotlin.apollo.common.dto.brs.response.BrsLookUpRecords
 import org.kebs.app.kotlin.apollo.common.dto.brs.response.BrsLookUpResponse
 import org.kebs.app.kotlin.apollo.common.dto.brs.response.BrsLookupBusinessPartners
-import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
-import org.kebs.app.kotlin.apollo.common.exceptions.MissingConfigurationException
-import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
-import org.kebs.app.kotlin.apollo.common.exceptions.ServiceMapNotFoundException
+import org.kebs.app.kotlin.apollo.common.exceptions.*
 import org.kebs.app.kotlin.apollo.common.utils.generateRandomText
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.*
@@ -130,6 +127,9 @@ class RegistrationDaoServices(
     private val standardsLevyBpmn: StandardsLevyBpmn,
     private val brsLookupManufacturerDataRepo: IBrsLookupManufacturerDataRepository,
     private val brsLookupManufacturerPartnerRepo: IBrsLookupManufacturerPartnersRepository,
+    private val configurationRepository: IIntegrationConfigurationRepository,
+    private val daoService: DaoService,
+    private val logsRepo: IWorkflowTransactionsRepository,
 ) {
 
 
@@ -137,15 +137,6 @@ class RegistrationDaoServices(
     @Autowired
     lateinit var systemsAdminDaoService: SystemsAdminDaoService
 
-
-    @Autowired
-    lateinit var configurationRepository: IIntegrationConfigurationRepository
-
-    @Autowired
-    lateinit var daoService: DaoService
-
-    @Autowired
-    lateinit var logsRepo: IWorkflowTransactionsRepository
 
     final val appId: Int = applicationMapProperties.mapUserRegistration
 
@@ -1331,6 +1322,124 @@ class RegistrationDaoServices(
 
         tokensEntity = verificationTokensRepo.save(tokensEntity)
         return tokensEntity
+    }
+
+    /**
+     * During the registration process we require to validate that a company is registered with the Busness Registration
+     * Services BRS, we should use the Company registration number to fetch the record. To ensure that only authorized
+     * users onboard the company check that the National ID provided matches one of the directors
+     * @param companyRegistrationNumber
+     * @param config Configuration row on DB providing connection parameters
+     * @param directorIdNumber
+     */
+    fun brsValidationLookup(
+        companyRegistrationNumber: String,
+        directorIdNumber: String
+    ): Pair<Boolean, BrsLookUpRecords?> {
+        var lookupResponse: BrsLookUpRecords? = null
+        var idMatched = false
+        configurationRepository.findByIdOrNull(3L)
+            ?.let { config ->
+                runBlocking {
+                    val log = daoService.createTransactionLog(0, "integ")
+                    val params = mapOf(Pair("registration_number", companyRegistrationNumber))
+                    log.integrationRequest = "$params"
+                    val resp = daoService.getHttpResponseFromGetCall(
+                        true,
+                        config.url ?: throw NullValueNotAllowedException("Missing URL on config ${config.id}"),
+                        config,
+                        null,
+                        params,
+                        null
+                    )
+                    val data = daoService.processResponses<BrsLookUpResponse>(
+                        resp,
+                        log,
+                        config.url ?: throw NullValueNotAllowedException("Missing URL on config ${config.id}"),
+                        config
+                    )
+                    logsRepo.save(data.first)
+                    data.second
+                        ?.let { r ->
+                            for ((i, record) in (r.records
+                                ?: throw InvalidInputException("BRS response has no records")).withIndex()) {
+                                val date = try {
+                                    Date(SimpleDateFormat("D MMM YYYY").parse(record?.registrationDate).time)
+                                } catch (e: Exception) {
+                                    Date(java.util.Date().time)
+                                }
+                                var brsLookupManufacturerDataEntity = BrsLookupManufacturerDataEntity().apply {
+                                    manufacturerId = 1L
+                                    transactionDate = Date(java.util.Date().time)
+                                    registrationNumber = record?.registrationNumber
+                                    registrationDate = date
+                                    postalAddress = record?.postalAddress
+                                    physicalAddress = record?.physicalAddress
+                                    phoneNumber = record?.phoneNumber
+                                    brsId = record?.id
+                                    email = record?.email
+                                    kraPin = record?.kraPin
+                                    businessName = record?.businessName
+                                    brsStatus = record?.status
+                                    status = 30
+                                    createdBy = log.transactionReference
+                                    createdOn = Timestamp.from(Instant.now())
+                                }
+                                for (partner in record?.partners
+                                    ?: throw InvalidInputException("BRS Record does not contain directors")) {
+                                    try {
+                                        brsLookupManufacturerDataEntity =
+                                            brsLookupManufacturerDataRepo.save(brsLookupManufacturerDataEntity)
+
+                                        KotlinLogging.logger { }.trace { "working on ${partner?.name}" }
+                                        val brsLookupManufacturerPartnersEntity =
+                                            BrsLookupManufacturerPartnersEntity().apply {
+                                                manufacturerId = brsLookupManufacturerDataEntity.id
+                                                transactionDate = Date(java.util.Date().time)
+                                                names = partner?.name
+                                                idType = partner?.idType
+                                                idNumber = partner?.idNumber
+                                                status = 30
+                                                createdBy = log.transactionReference
+                                                createdOn = Timestamp.from(Instant.now())
+                                            }
+                                        brsLookupManufacturerPartnerRepo.save(
+                                            brsLookupManufacturerPartnersEntity
+                                        )
+
+
+                                    } catch (e: Exception) {
+                                        KotlinLogging.logger { }.error(e.message, e)
+                                    }
+                                    if (!idMatched) {
+                                        if (directorIdNumber == partner?.idNumber) {
+                                            idMatched = true
+                                            lookupResponse = record
+                                            KotlinLogging.logger { }
+                                                .trace("Matched ${record.businessName} for ${partner.name} on index= $i")
+
+
+                                            break
+                                        } else {
+                                            KotlinLogging.logger { }
+                                                .trace("Not Matched ${record.businessName} for ${partner?.idNumber} vs $directorIdNumber on index= $i")
+                                        }
+                                    } else {
+                                        break
+                                    }
+                                }
+
+                            }
+                        }
+                        ?: throw NullValueNotAllowedException("Empty response from BRS for $companyRegistrationNumber")
+                    KotlinLogging.logger { }.trace("After all checks Id# Match = $idMatched")
+
+
+                }
+            }
+            ?: throw NullValueNotAllowedException("Missing Configuration")
+
+        return Pair(idMatched, lookupResponse)
     }
 
     /**

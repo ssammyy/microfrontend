@@ -40,7 +40,7 @@ export const ROUTES: RouteInfo[] = [
         collapse: 'company',
         children: [
             {path: 'companies', title: 'View Companies', ab: 'VC'},
-            {path: 'branches', title: 'View Branches ', ab: 'VB'},
+            // {path: 'branches', title: 'View Branches ', ab: 'VB'},
             {path: 'users', title: 'View Users ', ab: 'VU'}
         ]
     },
@@ -52,7 +52,7 @@ export const ROUTES: RouteInfo[] = [
         icontype: 'recommended',
         collapse: 'fmark',
         children: [
-            {path: 'buttons', title: 'Make Application', ab: 'MA'},
+            {path: 'application', title: 'Make Application', ab: 'MA'},
             {path: 'fMarkAllApp', title: 'All My Applications', ab: 'AMA'},
             {path: 'panels', title: 'Awarded Applications', ab: 'AA'}
         ]
@@ -78,7 +78,7 @@ export const ROUTES: RouteInfo[] = [
             {path: 'all_smark', title: 'All My Applications', ab: 'AMA'},
             {path: 'panels', title: 'Awarded Applications', ab: 'AA'}
         ]
-    },{
+    }, {
         path: '/invoice',
         title: 'Invoices',
         type: 'sub',
