@@ -398,7 +398,7 @@ class RegistrationManagementHandler(
      * @param req ServerRequest
      * @return ServerResponse
      */
-    @PreAuthorize("hasAuthority('LIST_COMPANY')")
+    @PreAuthorize("isAuthenticated")
     fun handleFetchCompanyById(req: ServerRequest): ServerResponse {
         return try {
             val body = req.pathVariable("companyId").toLongOrNull()
@@ -428,7 +428,7 @@ class RegistrationManagementHandler(
      * @param req ServerRequest
      * @return ServerResponse
      */
-    @PreAuthorize("hasAuthority('LIST_COMPANY')")
+    @PreAuthorize("isAuthenticated")
     fun handleFetchBranchesByCompanyIdAndUserId(req: ServerRequest): ServerResponse {
         return try {
             val body = req.pathVariable("companyId").toLongOrNull()
