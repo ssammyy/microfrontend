@@ -1,15 +1,14 @@
 package org.kebs.app.kotlin.apollo.api.controllers.qaControllers
 
+//import org.kebs.app.kotlin.apollo.api.service.FileService
 import mu.KotlinLogging
-import org.kebs.app.kotlin.apollo.api.utils.DummyProduct
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.QualityAssuranceBpmn
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.QualityAssuranceDaoServices
+import org.kebs.app.kotlin.apollo.api.utils.DummyProduct
 import org.kebs.app.kotlin.apollo.common.exceptions.ServiceMapNotFoundException
 import org.kebs.app.kotlin.apollo.common.utils.generateRandomText
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
-//import org.kebs.app.kotlin.apollo.api.service.FileService
 import org.kebs.app.kotlin.apollo.store.model.ApplicationQuestionnaireEntity
-import org.kebs.app.kotlin.apollo.store.model.DmarkForeignApplicationsEntity
 import org.kebs.app.kotlin.apollo.store.model.InvoiceEntity
 import org.kebs.app.kotlin.apollo.store.model.PermitApplicationEntity
 import org.kebs.app.kotlin.apollo.store.repo.*
@@ -24,12 +23,10 @@ import org.springframework.validation.BindingResult
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
 import org.springframework.web.servlet.mvc.support.RedirectAttributes
-import java.sql.Date
 import java.sql.Timestamp
 import java.time.Duration
 import java.time.Instant
 import java.time.temporal.ChronoUnit
-import java.util.*
 import javax.servlet.http.HttpSession
 import javax.validation.Valid
 
@@ -207,9 +204,9 @@ class QADmarkController(
                                                 /**
                                                  * Start BPMN application review
                                                  */
-                                                pmform.id?.let {
-                                                    qualityAssuranceBpmn.startQADMApplicationReviewProcess(it, hodId,false)
-                                                }
+//                                                pmform.id?.let {
+//                                                    qualityAssuranceBpmn.startQADMApplicationReviewProcess(it, hodId,false)
+//                                                }
 
                                                 model.addAttribute("generatedPermitId", pmform.id)
                                                 model.addAttribute("questionnaire", ApplicationQuestionnaireEntity())
