@@ -1,62 +1,62 @@
-import {Component, OnInit} from '@angular/core';
-import {QaService} from '../../core/store/data/qa/qa.service';
-import {Router} from '@angular/router';
-import {
-    AllPermitDetailsDto,
-    ConsolidatedInvoiceDto,
-    GenerateInvoiceDto,
-    PermitEntityDto
-} from '../../core/store/data/qa/qa.model';
-import {FormArray, FormBuilder, FormControl, FormGroup} from '@angular/forms';
-import swal from 'sweetalert2';
+import { Component, OnInit } from '@angular/core';
+import {QaService} from "../../core/store/data/qa/qa.service";
+import {Router} from "@angular/router";
+import {AllPermitDetailsDto, ConsolidatedInvoiceDto, PermitEntityDto} from "../../core/store/data/qa/qa.model";
+import {FormArray, FormBuilder, FormControl, FormGroup} from "@angular/forms";
+import {Subscription} from "rxjs";
 
 declare interface DataTable {
-    headerRow: string[];
-    footerRow: string[];
-    dataRows: string[][];
+  headerRow: string[];
+  footerRow: string[];
+  dataRows: string[][];
 }
 
 declare const $: any;
 
 @Component({
-    selector: 'app-invoice-consolidate',
-    templateUrl: './invoice-consolidate.component.html',
-    styleUrls: ['./invoice-consolidate.component.css']
+  selector: 'app-invoice-consolidate',
+  templateUrl: './invoice-consolidate.component.html',
+  styleUrls: ['./invoice-consolidate.component.css']
 })
 export class InvoiceConsolidateComponent implements OnInit {
-    public dataTable: DataTable;
-    public allInvoiceData: ConsolidatedInvoiceDto[];
-    consolidatedInvoice: GenerateInvoiceDto;
-    name: string;
-    public myForm: FormGroup;
+  public dataTable: DataTable;
+  public allInvoiceData: ConsolidatedInvoiceDto[];
+  name:string;
+  checkboxGroup: FormGroup;
+  submittedValue: any;
+  final_array = [];
+  selected = [];
 
 
-    constructor(
-        private qaService: QaService,
-        private router: Router,
-        private _formBuilder: FormBuilder,
-    ) {
-    }
+  constructor(
+      private qaService: QaService,
+      private router: Router,
+      private fb: FormBuilder,
+  ) { }
 
-    ngOnInit() {
-    this.initModelForm();
+  ngOnInit() {
+    this.checkboxGroup = this.fb.group({
+     });
+    const checkboxControl = (this.checkboxGroup.controls.checkboxes as FormArray);
+
     let formattedArray = [];
-        this.qaService.loadInvoiceListWithNoBatchID().subscribe(
-            (data: any) => {
-                this.allInvoiceData = data;
-                // tslint:disable-next-line:max-line-length
+    this.qaService.loadInvoiceBatchList().subscribe(
+        (data: any) => {
+          this.allInvoiceData = data;
+          // tslint:disable-next-line:max-line-length
+          formattedArray = data.map(i => [i.invoiceNumber, i.receiptNo, i.paidDate, i.totalAmount, i.paidStatus, i.id, i.batchID]);
 
-                // tslint:disable-next-line:max-line-length
-                formattedArray = data.map(i => [i.permitRefNumber, i.commodityDescription, i.brandName, i.totalAmount, i.invoiceNumber, i.permitID]);
+          this.dataTable = {
+            headerRow: ['Invoice No', 'Receipt No', 'Date', 'Total Amount', ' Select'],
+            footerRow: ['Invoice No', 'Receipt No', 'Date', 'Total Amount', ' Select'],
+            dataRows: formattedArray
 
-                this.dataTable = {
-                    headerRow: ['Permit Ref N0', 'Commodity Description', 'Brand Name', 'Total Amount', ' Reference Number', ' Select'],
-                    footerRow: ['Permit Ref N0', 'Commodity Description', 'Brand Name', 'Total Amount', ' Reference Number', ' Select'],
-                    dataRows: formattedArray
 
-                };
+            // ['REFFM#202107095913D', 'Andrew Mike', '09/07/2021', 'Dassani', 'Water', '']
 
-            }
+          };
+
+        }
     );
 
   }
@@ -112,56 +112,25 @@ export class InvoiceConsolidateComponent implements OnInit {
     $('.card .material-datatables label').addClass('form-group');
   }
 
-    initModelForm(): FormGroup {
-        return this._formBuilder.group({
-            otherControls: [''],
-            // The formArray, empty
-            myChoices: new FormArray([]),
-        });
+
+  // check if the item are selected
+  checked(item){
+    if(this.selected.indexOf(item) != -1){
+      return true;
     }
-
-
-  onCheckChange(event) {
-    const formArray: FormArray = this.myForm.get('myChoices') as FormArray;
-
-    /* Selected */
-      if (event.target.checked) {
-          // Add a new control in the arrayForm
-          formArray.push(new FormControl(event.target.value));
-      } else {
-          // find the unselected element
-          let i = 0;
-
-          formArray.controls.forEach((ctrl: FormControl) => {
-              if (ctrl.value === event.target.value) {
-                  // Remove the unselected element from the arrayForm
-                  formArray.removeAt(i);
-                  return;
-              }
-
-              i++;
-          });
-      }
-      console.log(formArray);
   }
 
-    onClickGenerateInvoice() {
-        // TODO: check details to be submitted
-        // this.consolidatedInvoice.permitInvoicesID = permitInvoicesID;
-
-        this.qaService.createInvoiceConsolidatedDetails(this.consolidatedInvoice).subscribe(
-            (data) => {
-                console.log(data);
-                swal.fire({
-                    title: 'INVOICE CONSOLIDATED SUCCESSFULLY!',
-                    buttonsStyling: false,
-                    customClass: {
-                        confirmButton: 'btn btn-success form-wizard-next-btn ',
-                    },
-                    icon: 'success'
-                });
-                this.router.navigate(['/invoiceDetails'], {fragment: String(data.batchDetails.batchID)});
-            },
-        );
+  // when checkbox change, add/remove the item from the array
+  onChange(checked, item){
+    if(checked){
+      this.selected.push(item);
+    } else {
+      this.selected.splice(this.selected.indexOf(item), 1)
     }
+  }
+
+  submit() {
+    this.final_array.push(this.selected.sort());
+  }
+
 }

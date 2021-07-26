@@ -1,8 +1,6 @@
 <div class="main-content">
     <div class="container-fluid">
-        <form>
-            <div [formGroup]="myForm">
-                <div formGroupName="myForm">
+        <form [formGroup]="checkboxGroup">
                 <div class="row">
 
                     <div class="col-md-10">
@@ -42,12 +40,10 @@
                                 <tr *ngFor="let row of dataTable.dataRows">
                                     <td>{{row[0]}}</td>
                                     <td>{{row[1]}}</td>
-                                    <td>{{row[2]}}</td>
+                                    <td>{{row[2] | date}}</td>
                                     <td>{{row[3]}}</td>
-                                    <td>{{row[4]}}</td>
-                                    <td>
-                                        <input class="form-check-input" type="checkbox" value="{{row[5]}}"
-                                               (change)="onCheckChange($event)" id="checkboxes">
+                                    <td><input class="form-check-input" type="checkbox" value="{{row[0]}}" id="defaultCheck1"   (change)="onChange($event.target.checked, row)"
+                                               [checked]="checked(row)">
                                     </td>
                                 </tr>
                                 </tbody>
@@ -63,9 +59,7 @@
                                 </div>
                                     <div class="card-icon">
                                         <div class="card-body">
-                                            <button type="button" (click)="onClickGenerateInvoice()"
-                                                    class="btn btn-primary">Finish
-                                            </button>
+                                            <button type="button" class="btn btn-primary" (click)="submit()">Finish</button>
                                         </div>
                                     </div>
                                 </div>
@@ -73,10 +67,13 @@
                     <!-- end content-->
 
                 </div>
-                </div>
-            </div>
         </form>
-                <!--  end card  -->
+        {{selected.length}} items selected
+        <!--  end card  -->
             </div>
+    <h3 *ngIf="messages.length != 0">Log</h3>
+    <div *ngFor="let item of messages">
+        save: {{item}}
             <!-- end col-md-12 -->
         </div>
+</div>
