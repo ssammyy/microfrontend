@@ -72,6 +72,7 @@ class RegistrationManagementDaoService(
             countExpired
         )
     }
+
     /**
      * CRUD For users, will start with managing the currently logged in user
      * Update the profile of the logged in user
@@ -89,7 +90,7 @@ class RegistrationManagementDaoService(
                             lastName = dto.lastName
                             cellphone = dto.personalContactNumber
                             email = dto.email
-                            status = if (dto.enabled)  1 else 0
+                            status = if (dto.enabled) 1 else 0
                             title = dto.title
                         }
 
@@ -522,18 +523,19 @@ class RegistrationManagementDaoService(
      * @param userId the currently logged-in user
      */
     fun fetchBranchesByCompanyIdAndUserId(companyId: Long, userId: Long): List<PlantEntityDto>? {
-        return companyRepo.findByIdOrNull(companyId)
-            ?.let { entity ->
-                if (entity.userId != userId) {
-                    throw ExpectedDataNotFound("Authorization failed")
-                } else {
-                    manufacturePlantRepository.findByCompanyProfileId(companyId)
-                        ?.sortedBy { it.id }?.map {
-                            plantEntityDtoFromEntity(it)
-                        }
-                }
+
+//        companyRepo.findByIdOrNull(companyId)
+//            ?.let { entity ->
+//                if (entity.userId != userId) {
+//                    throw ExpectedDataNotFound("Authorization failed")
+//                } else {
+        return manufacturePlantRepository.findByCompanyProfileId(companyId)
+            ?.sortedBy { it.id }?.map {
+                plantEntityDtoFromEntity(it)
             }
-            ?: throw ExpectedDataNotFound("A valid company is required")
+//                }
+//            }
+//            ?: throw ExpectedDataNotFound("A valid company is required")
 
     }
 
