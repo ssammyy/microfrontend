@@ -1825,7 +1825,7 @@ class QualityAssuranceHandler(
             var updatePermit = PermitApplicationsEntity()
             with(updatePermit) {
                 id = permit.id
-                sta10FilledStatus = map.inactiveStatus
+                sta10FilledStatus = map.activeStatus
                 permitStatus = applicationMapProperties.mapQaStatusDraft
             }
 

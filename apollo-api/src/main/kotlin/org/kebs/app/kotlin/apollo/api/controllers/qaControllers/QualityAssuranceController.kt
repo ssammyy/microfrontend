@@ -866,8 +866,8 @@ class QualityAssuranceController(
                 val expiryDate = permitType?.numberOfYears?.let { commonDaoServices.addYearsToCurrentDate(it) }
 
                 with(permitFromInterface) {
-                    if (permitDetailsFromDB.renewalStatus != map.activeStatus) {
-                        awardedPermitNumber = "${permitType?.markNumber}${
+                    awardedPermitNumber = if (permitDetailsFromDB.renewalStatus != map.activeStatus) {
+                        "${permitType?.markNumber}${
                             generateRandomText(
                                 6,
                                 map.secureRandom,
@@ -876,7 +876,7 @@ class QualityAssuranceController(
                             )
                         }".toUpperCase()
                     } else {
-                        awardedPermitNumber = permitDetailsFromDB.awardedPermitNumber
+                        permitDetailsFromDB.awardedPermitNumber
                     }
                     userTaskId = null
                     permitAwardStatus = map.activeStatus
@@ -893,6 +893,7 @@ class QualityAssuranceController(
                     ) as PermitApplicationsEntity, map, loggedInUser
                 ).second
 
+                permitDetailsDB.userTaskId = null
                 qaDaoServices.permitInsertStatus(
                     permitDetailsDB,
                     applicationMapProperties.mapQaStatusPermitAwarded,
