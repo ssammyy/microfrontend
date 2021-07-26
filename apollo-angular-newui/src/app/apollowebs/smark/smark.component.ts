@@ -65,7 +65,7 @@ export class SmarkComponent implements OnInit {
     constructor(
         private route: ActivatedRoute,
         private router: Router,
-        private modalService: ModalComponent,
+        // private modalService: ModalComponent,
         private qaService: QaService,
         private formBuilder: FormBuilder
     ) {
@@ -485,7 +485,7 @@ export class SmarkComponent implements OnInit {
 
         this.currDiv = divVal;
         // this.modalService.show(this.editModal);
-        this.modalService.open();
+        // this.modalService.open();
 
 
     }

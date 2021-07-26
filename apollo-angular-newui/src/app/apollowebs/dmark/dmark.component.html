@@ -865,7 +865,8 @@ placeholder=""
             <div class="mat-button-focus-overlay"></div>
         </button>
         <button *ngIf="allPermitDetails.permitDetails.generateSchemeStatus == true && allPermitDetails.permitDetails.approvedRejectedScheme == false"
-                (click)="openModal('approveSSC')" mat-raised-button=""
+                data-toggle="modal" data-target="#noticeModal"
+                mat-raised-button=""
                 class="btn btn-kebs mat-raised-button mat-button-base"><span class="mat-button-wrapper">AGREE/CONSENT TO SSC</span>
             <div matripple="" class="mat-ripple mat-button-ripple"></div>
             <div class="mat-button-focus-overlay"></div>
@@ -881,66 +882,142 @@ placeholder=""
 </div>
 </div>
 
-    <ng-template #editModal let-modal>
+    <!--    <div class="modal fade" id="noticeModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"-->
+    <!--         aria-hidden="true">-->
+    <!--        <div class="modal-header">-->
+    <!--            <h5 class="modal-title" id="modal-basic-title">{{currDivLabel}}</h5>-->
+    <!--            <button data-dismiss="modal" aria-label="Close" class="close" type="button">-->
+    <!--                <span aria-hidden="true">&times;</span>-->
+    <!--            </button>-->
+    <!--        </div>-->
 
-        <div class="modal-header">
-            <h5 class="modal-title" id="modal-basic-title">{{currDivLabel}}</h5>
-            <button (click)="modal.dismiss()" aria-label="Close" class="close" type="button">
-                <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
+    <!--        <div class="modal-body">-->
+    <!--            &lt;!&ndash;                <p>Are you sure this userDetails falls in the KEBS mandate ?</p>&ndash;&gt;-->
+    <!--            <div *ngIf="(currDiv == 'approveSSC')">-->
+    <!--                <form [formGroup]="approveRejectSSCForm" class="form">-->
+    <!--                    <div class="form-body">-->
+    <!--                        <div class="form-group">-->
 
-        <div class="modal-body">
-            <!--                <p>Are you sure this userDetails falls in the KEBS mandate ?</p>-->
-            <div *ngIf="(currDiv == 'approveSSC')">
-                <form [formGroup]="approveRejectSSCForm" class="form">
-                    <div class="form-body">
-                        <div class="form-group">
+    <!--                            <div>-->
+    <!--                                &lt;!&ndash;                <input type="checkbox" class="form-control one-column-input" aria-label="Small" aria-describedby="inputGroup-sizing-sm" [value]="1"&ndash;&gt;-->
+    <!--                                &lt;!&ndash;                       formControlName="approved"&ndash;&gt;-->
+    <!--                                &lt;!&ndash;                       name="approved" required>&ndash;&gt;-->
+    <!--                                <label><b>Approve/Reject SCC</b></label>-->
+    <!--                                <select id="approvedRejectedScheme" class="form-control"-->
+    <!--                                        formControlName="approvedRejectedScheme"-->
+    <!--                                        name="approvedRejectedScheme"-->
+    <!--                                        [class.is-invalid]="formApproveRejectSSC.approvedRejectedScheme.invalid && formApproveRejectSSC.approvedRejectedScheme.touched">-->
+    <!--                                    <option selected>Select Plant</option>-->
+    <!--                                    <option [ngValue]="1">APPROVE</option>-->
+    <!--                                    <option [ngValue]="0">REJECT</option>-->
+    <!--                                </select>-->
 
-                            <div>
-                                <!--                <input type="checkbox" class="form-control one-column-input" aria-label="Small" aria-describedby="inputGroup-sizing-sm" [value]="1"-->
-                                <!--                       formControlName="approved"-->
-                                <!--                       name="approved" required>-->
-                                <label><b>Approve/Reject SCC</b></label>
-                                <select id="approvedRejectedScheme" class="form-control"
-                                        formControlName="approvedRejectedScheme"
-                                        name="approvedRejectedScheme"
-                                        [class.is-invalid]="formApproveRejectSSC.approvedRejectedScheme.invalid && formApproveRejectSSC.approvedRejectedScheme.touched">
-                                    <option selected>Select Plant</option>
-                                    <option [ngValue]="1">APPROVE</option>
-                                    <option [ngValue]="0">REJECT</option>
-                                </select>
+    <!--                                &lt;!&ndash;              <label><b>Remarks</b></label>&ndash;&gt;-->
+    <!--                                &lt;!&ndash;              <textarea&ndash;&gt;-->
+    <!--                                &lt;!&ndash;                [class.is-invalid]="formAssignAuthorities.approvedRemarks.invalid && formKEBSMandateIn.approvedRemarks.touched"&ndash;&gt;-->
+    <!--                                &lt;!&ndash;                aria-describedby="inputGroup-sizing-sm" aria-label="Small" class="form-control one-column-input"&ndash;&gt;-->
+    <!--                                &lt;!&ndash;                cols="65" formControlName="approvedRemarks"&ndash;&gt;-->
+    <!--                                &lt;!&ndash;                name="approvedRemarks"&ndash;&gt;-->
+    <!--                                &lt;!&ndash;                required rows="5"></textarea>&ndash;&gt;-->
 
-                                <!--              <label><b>Remarks</b></label>-->
-                                <!--              <textarea-->
-                                <!--                [class.is-invalid]="formAssignAuthorities.approvedRemarks.invalid && formKEBSMandateIn.approvedRemarks.touched"-->
-                                <!--                aria-describedby="inputGroup-sizing-sm" aria-label="Small" class="form-control one-column-input"-->
-                                <!--                cols="65" formControlName="approvedRemarks"-->
-                                <!--                name="approvedRemarks"-->
-                                <!--                required rows="5"></textarea>-->
+    <!--                            </div>-->
+    <!--                        </div>-->
+    <!--                    </div>-->
 
+
+    <!--                </form>-->
+    <!--            </div>-->
+    <!--        </div>-->
+
+    <!--        <div class="modal-footer">-->
+    <!--            <button class="btn btn-outline-secondary mr-4" data-dismiss="modal" type="button">-->
+    <!--                NO-->
+    <!--            </button>-->
+    <!--            <button (click)="submitApprovalRejectionSSC();"-->
+    <!--                    *ngIf="currDiv == 'approveSSC'"-->
+    <!--                    [disabled]="!approveRejectSSCForm.valid" class="submit-button"-->
+    <!--                    data-dismiss="modal"-->
+    <!--                    type="button">SUBMIT-->
+    <!--            </button>-->
+    <!--        </div>-->
+
+    <!--    </div>-->
+
+    <!-- Classic Modal -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Approve Or Reject SCC</h4>
+                    <button mat-button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        <i class="material-icons">clear</i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!--                <p>Are you sure this userDetails falls in the KEBS mandate ?</p>-->
+                    <div>
+                        <form [formGroup]="approveRejectSSCForm" class="form">
+                            <div class="form-body">
+                                <div class="form-group">
+
+                                    <div>
+                                        <!--                <input type="checkbox" class="form-control one-column-input" aria-label="Small" aria-describedby="inputGroup-sizing-sm" [value]="1"-->
+                                        <!--                       formControlName="approved"-->
+                                        <!--                       name="approved" required>-->
+                                        <label for="approvedRejectedScheme"><b>Approve/Reject SCC</b></label>
+                                        <mat-form-field id="approvedRejectedScheme">
+                                            <mat-select placeholder="Please Select an option"
+                                                        formControlName="approvedRejectedScheme"
+                                                        [class.is-invalid]="formApproveRejectSSC.approvedRejectedScheme.invalid && formApproveRejectSSC.approvedRejectedScheme.touched"
+                                                        name="approvedRejectedScheme">
+                                                <mat-option [value]="1">APPROVE</mat-option>
+                                                <mat-option [value]="0">REJECT</mat-option>
+
+                                            </mat-select>
+                                        </mat-form-field>
+
+                                        <!--                                        <select id="approvedRejectedScheme" class="form-control"-->
+                                        <!--                                                formControlName="approvedRejectedScheme"-->
+                                        <!--                                                name="approvedRejectedScheme"-->
+                                        <!--                                                data-placeholder="Please Select an option"-->
+                                        <!--                                                [class.is-invalid]="formApproveRejectSSC.approvedRejectedScheme.invalid && formApproveRejectSSC.approvedRejectedScheme.touched"-->
+                                        <!--                                        >-->
+                                        <!--                                            <option selected>Please Select an option</option>-->
+                                        <!--                                            <option [ngValue]="1">APPROVE</option>-->
+                                        <!--                                            <option [ngValue]="0">REJECT</option>-->
+                                        <!--                                        </select>-->
+
+                                        <!--              <label><b>Remarks</b></label>-->
+                                        <!--              <textarea-->
+                                        <!--                [class.is-invalid]="formAssignAuthorities.approvedRemarks.invalid && formKEBSMandateIn.approvedRemarks.touched"-->
+                                        <!--                aria-describedby="inputGroup-sizing-sm" aria-label="Small" class="form-control one-column-input"-->
+                                        <!--                cols="65" formControlName="approvedRemarks"-->
+                                        <!--                name="approvedRemarks"-->
+                                        <!--                required rows="5"></textarea>-->
+
+                                    </div>
+                                </div>
                             </div>
-                        </div>
+
+
+                        </form>
                     </div>
+                </div>
+                <div class="modal-footer">
 
-
-                </form>
+                    <button mat-raised-button type="button" class="btn btn-success"
+                            (click)="submitApprovalRejectionSSC();"
+                            [disabled]="!approveRejectSSCForm.valid"
+                            data-dismiss="modal"
+                    >SUBMIT
+                    </button>
+                    <button mat-raised-button type="button" class="btn btn-danger" data-dismiss="modal">Close
+                    </button>
+                </div>
             </div>
         </div>
-
-        <div class="modal-footer">
-            <button (click)="modal.dismiss()" class="btn btn-outline-secondary mr-4" data-dismiss="modal" type="button">
-                NO
-            </button>
-            <button (click)="submitApprovalRejectionSSC(); modal.dismiss()"
-                    *ngIf="currDiv == 'approveSSC'"
-                    [disabled]="!approveRejectSSCForm.valid" class="submit-button"
-                    data-dismiss="modal"
-                    type="button">SUBMIT
-            </button>
-        </div>
-
-    </ng-template>
+    </div>
+    <!--  End Modal -->
 </div>
 </div>
 </div>
