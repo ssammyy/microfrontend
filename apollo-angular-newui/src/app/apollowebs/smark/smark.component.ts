@@ -5,19 +5,15 @@ import {
     AllSTA10DetailsDto,
     PermitEntityDetails,
     PlantDetailsDto,
-    SectionDto,
-    STA1,
-    Sta10Dto,
-    STA10MachineryAndPlantDto,
-    STA10ManufacturingProcessDto,
-    STA10PersonnelDto,
-    STA10ProductsManufactureDto,
-    STA10RawMaterialsDto
+    SectionDto, STA1,
+    Sta10Dto, STA10MachineryAndPlantDto, STA10ManufacturingProcessDto, STA10PersonnelDto,
+    STA10ProductsManufactureDto, STA10RawMaterialsDto
 } from "../../core/store/data/qa/qa.model";
 import {QaService} from "../../core/store/data/qa/qa.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import swal from "sweetalert2";
-import {ModalComponent} from "ngb-modal";
+import {ApiEndpointService} from '../../core/services/endpoints/api-endpoint.service';
+import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 
 @Component({
     selector: 'app-smark',
@@ -61,11 +57,16 @@ export class SmarkComponent implements OnInit {
     stepSoFar: | undefined;
     step = 1;
     public permitID!: string;
+    batchID!: bigint;
+
+
+    SMarkTypeID = ApiEndpointService.QA_APPLICATION_MAP_PROPERTIES.SMARK_TYPE_ID;
+    FMarkTypeID = ApiEndpointService.QA_APPLICATION_MAP_PROPERTIES.FMARK_TYPE_ID;
 
     constructor(
         private route: ActivatedRoute,
         private router: Router,
-        // private modalService: ModalComponent,
+        private modalService: NgbModal,
         private qaService: QaService,
         private formBuilder: FormBuilder
     ) {
@@ -180,13 +181,13 @@ export class SmarkComponent implements OnInit {
         );
 
 
-        if (this.allPermitDetails.permitDetails.permitAwardStatus === true) {
-            this.qaService.loadCertificateDetailsPDF(this.permitID).subscribe(
-                (data: any) => {
-                    this.pdfSources = data;
-                },
-            );
-        }
+        // if (this.allPermitDetails.permitDetails.permitAwardStatus === true) {
+        this.qaService.loadCertificateDetailsPDF(String(this.allPermitDetails.permitDetails.id)).subscribe(
+            (data: any) => {
+                this.pdfSources = data;
+            },
+        );
+        // }
 
     }
 
@@ -228,24 +229,25 @@ export class SmarkComponent implements OnInit {
 
     public getSelectedPermit(): void {
         this.route.fragment.subscribe(params => {
-            this.permitID = params;
-            console.log(this.permitID);
-            this.qaService.loadPermitDetails(this.permitID).subscribe(
+            // this.permitID = params;
+            // console.log(this.permitID);
+            this.qaService.loadPermitDetails(params).subscribe(
                 (data: AllPermitDetailsDto) => {
                     this.allPermitDetails = new AllPermitDetailsDto();
                     this.allPermitDetails = data;
+                    this.batchID = this.allPermitDetails.batchID;
                     // this.onSelectL1SubSubSection(this.userDetails?.employeeProfile?.l1SubSubSection);
 
                 },
             );
-            this.qaService.viewSTA1Details(this.permitID).subscribe(
+            this.qaService.viewSTA1Details(String(this.allPermitDetails.permitDetails.id)).subscribe(
                 (data) => {
                     this.sta1 = data;
                     this.sta1Form.patchValue(this.sta1);
                 },
             );
             console.log(`${this.sta10PersonnelDetails.length}`);
-            this.qaService.viewSTA10Details(this.permitID).subscribe(
+            this.qaService.viewSTA10Details(String(this.allPermitDetails.permitDetails.id)).subscribe(
                 (data) => {
                     this.allSTA10Details = data;
                     this.sta10Form.patchValue(this.allSTA10Details.sta10FirmDetails);
@@ -258,7 +260,7 @@ export class SmarkComponent implements OnInit {
                     this.sta10FormF.patchValue(this.allSTA10Details.sta10FirmDetails);
                 },
             );
-            // this.qaService.viewSTA10FirmDetails(this.permitID).subscribe(
+            // this.qaService.viewSTA10FirmDetails(String(this.allPermitDetails.permitDetails.id)).subscribe(
             //     (data) => {
             //       this.Sta10Details = data;
             //       this.sta10Form.patchValue(this.Sta10Details);
@@ -278,7 +280,7 @@ export class SmarkComponent implements OnInit {
 
 
     onClickSaveSTA1(valid: boolean) {
-        this.qaService.updatePermitSTA1(String(this.permitID), this.sta1Form.value).subscribe(
+        this.qaService.updatePermitSTA1(String(String(this.allPermitDetails.permitDetails.id)), this.sta1Form.value).subscribe(
             (data) => {
                 this.sta1 = data;
                 console.log(data);
@@ -316,7 +318,7 @@ export class SmarkComponent implements OnInit {
         if (valid) {
             console.log(this.permitEntityDetails.id.toString());
 
-            this.qaService.updateFirmDetailsSta10(this.permitID, this.sta10FormF.value).subscribe(
+            this.qaService.updateFirmDetailsSta10(String(this.allPermitDetails.permitDetails.id), this.sta10FormF.value).subscribe(
                 (data) => {
                     this.Sta10Details = data;
                     console.log(data);
@@ -335,7 +337,7 @@ export class SmarkComponent implements OnInit {
 
     submitApprovalRejectionSSC(): void {
         console.log(this.approveRejectSSCForm.value);
-        this.qaService.submitSSCApprovalRejection(this.permitID, this.approveRejectSSCForm.value).subscribe(
+        this.qaService.submitSSCApprovalRejection(String(this.allPermitDetails.permitDetails.id), this.approveRejectSSCForm.value).subscribe(
             (data: PermitEntityDetails) => {
                 this.allPermitDetails.permitDetails = data;
                 swal.fire({
@@ -364,7 +366,7 @@ export class SmarkComponent implements OnInit {
                 },
                 icon: 'success'
             });
-            // this.router.navigate(['/permitdetails'], {fragment: this.permitID});
+            // this.router.navigate(['/permitdetails'], {fragment: String(this.allPermitDetails.permitDetails.id)});
 
 
         }
@@ -539,17 +541,29 @@ export class SmarkComponent implements OnInit {
 
     submitApplication(): void {
 
-        this.qaService.submitPermitApplication(this.permitID).subscribe(
+        this.qaService.submitPermitApplication(String(this.allPermitDetails.permitDetails.id)).subscribe(
             (data: AllPermitDetailsDto) => {
                 this.allPermitDetails = data;
-                swal.fire({
-                    title: 'SMARK SUBMITTED SUCCESSFULLY PENDING PAYMENT!',
-                    buttonsStyling: false,
-                    customClass: {
-                        confirmButton: 'btn btn-success form-wizard-next-btn ',
-                    },
-                    icon: 'success'
-                });
+                if (this.allPermitDetails.permitDetails.permitTypeID === this.FMarkTypeID) {
+                    swal.fire({
+                        title: 'FMARK SUBMITTED SUCCESSFULLY PENDING PAYMENT!',
+                        buttonsStyling: false,
+                        customClass: {
+                            confirmButton: 'btn btn-success form-wizard-next-btn ',
+                        },
+                        icon: 'success'
+                    });
+                } else {
+                    swal.fire({
+                        title: 'SMARK SUBMITTED SUCCESSFULLY PENDING PAYMENT!',
+                        buttonsStyling: false,
+                        customClass: {
+                            confirmButton: 'btn btn-success form-wizard-next-btn ',
+                        },
+                        icon: 'success'
+                    });
+                }
+
 
                 this.router.navigate(['/invoiceDetails'], {fragment: this.allPermitDetails.batchID.toString()});
 
@@ -559,24 +573,70 @@ export class SmarkComponent implements OnInit {
     }
 
     submitRenewalApplication() {
-        this.qaService.submitPermitRenewApplication(this.permitID).subscribe(
+        this.qaService.submitPermitRenewApplication(String(this.allPermitDetails.permitDetails.id)).subscribe(
             (data: AllPermitDetailsDto) => {
                 this.allPermitDetails = data;
                 console.log(AllPermitDetailsDto);
-                swal.fire({
-                    title: 'SMARK Renewed Successfully! Proceed to submit application.',
-                    buttonsStyling: false,
-                    customClass: {
-                        confirmButton: 'btn btn-success form-wizard-next-btn ',
-                    },
-                    icon: 'success'
-                });
+                if (this.allPermitDetails.permitDetails.permitTypeID === this.FMarkTypeID) {
+                    swal.fire({
+                        title: 'FMARK Renewed Successfully! Proceed to submit application.',
+                        buttonsStyling: false,
+                        customClass: {
+                            confirmButton: 'btn btn-success form-wizard-next-btn ',
+                        },
+                        icon: 'success'
+                    });
+                } else {
+                    swal.fire({
+                        title: 'SMARK Renewed Successfully! Proceed to submit application.',
+                        buttonsStyling: false,
+                        customClass: {
+                            confirmButton: 'btn btn-success form-wizard-next-btn ',
+                        },
+                        icon: 'success'
+                    });
+                }
+
                 // this.router.navigate(['/permitdetails'], {fragment: String(this.AllPermitDetailsDto.permitDetails.id)});
             },
         );
     }
 
+    submitApplicationForReviewHOD(): void {
+        // tslint:disable-next-line:max-line-length
+        // if (this.allPermitDetails.permitDetails.permitForeignStatus === true && this.allPermitDetails.permitDetails.permitTypeID === ApiEndpointService.QA_APPLICATION_MAP_PROPERTIES.DMARK_TYPE_ID) {
+        this.qaService.submitPermitForReviewHODQAM(String(this.allPermitDetails.permitDetails.id)).subscribe(
+            (data: AllPermitDetailsDto) => {
+                this.allPermitDetails = data;
+                if (this.allPermitDetails.permitDetails.permitTypeID === this.FMarkTypeID) {
+                    swal.fire({
+                        title: 'FMARK SUBMITTED SUCCESSFULLY FOR REVIEW HOD/RM!',
+                        buttonsStyling: false,
+                        customClass: {
+                            confirmButton: 'btn btn-success form-wizard-next-btn ',
+                        },
+                        icon: 'success'
+                    });
+
+                } else {
+                    swal.fire({
+                        title: 'SMARK SUBMITTED SUCCESSFULLY FOR REVIEW HOD/RM!',
+                        buttonsStyling: false,
+                        customClass: {
+                            confirmButton: 'btn btn-success form-wizard-next-btn ',
+                        },
+                        icon: 'success'
+                    });
+
+                }
+
+                // this.onUpdateReturnToList();
+            },
+        );
+        // }
+    }
+
     goToInvoiceGenerated() {
-        // this.router.navigate(['/permitdetails'], {fragment: String(this.AllPermitDetailsDto.permitDetails.id)});
+        this.router.navigate(['/invoiceDetails'], {fragment: String(this.allPermitDetails.batchID)});
     }
 }

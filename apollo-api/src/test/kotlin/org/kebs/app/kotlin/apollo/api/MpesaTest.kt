@@ -71,10 +71,10 @@ class MpesaTest {
 
     @Test
     fun unHashString() {
-        val hashed = listOf("dNQ60pPzbf+4J3+33XXDZUyF8zgpohBv")
+        val hashed = listOf("1P1nTVyEDH2zJQRR0PcRXXDW5dnbUNfuJWlY6w9mcOQ=")
         hashed.forEach {
             val plainText = jasyptStringEncryptor.decrypt(it)
-            KotlinLogging.logger { }.info { plainText }
+            KotlinLogging.logger { }.info { "my hashed value =$it =  $plainText" }
         }
 
     }

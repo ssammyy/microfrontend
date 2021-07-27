@@ -274,6 +274,9 @@ class ApplicationMapProperties {
     @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.status.pending_recommendation}")
     val mapQaStatusPRecommendation: Long = 0L
 
+    @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.status.deferred_recommendation_qam}")
+    val mapQaStatusDeferredRecommendationQAM: Long = 0L
+
     @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.status.pending_recommendation_approval}")
     val mapQaStatusPRecommendationApproval: Long = 0L
 

@@ -1,9 +1,15 @@
-import { Component, OnInit } from '@angular/core';
-import {QaService} from "../../core/store/data/qa/qa.service";
-import {Router} from "@angular/router";
-import {AllPermitDetailsDto, ConsolidatedInvoiceDto, PermitEntityDto} from "../../core/store/data/qa/qa.model";
-import {FormArray, FormBuilder, FormControl, FormGroup} from "@angular/forms";
-import {Subscription} from "rxjs";
+import {Component, OnInit} from '@angular/core';
+import {QaService} from '../../core/store/data/qa/qa.service';
+import {Router} from '@angular/router';
+import {
+  AllPermitDetailsDto,
+  ConsolidatedInvoiceDto,
+  GenerateInvoiceDto,
+  PermitEntityDto, PermitInvoiceDto
+} from '../../core/store/data/qa/qa.model';
+import {FormArray, FormBuilder, FormControl, FormGroup} from '@angular/forms';
+import {Subscription} from 'rxjs';
+import swal from 'sweetalert2';
 
 declare interface DataTable {
   headerRow: string[];
@@ -20,8 +26,9 @@ declare const $: any;
 })
 export class InvoiceConsolidateComponent implements OnInit {
   public dataTable: DataTable;
-  public allInvoiceData: ConsolidatedInvoiceDto[];
-  name:string;
+  public allInvoiceData: PermitInvoiceDto[];
+  consolidatedInvoice: GenerateInvoiceDto;
+  name: string;
   checkboxGroup: FormGroup;
   submittedValue: any;
   final_array = [];
@@ -40,19 +47,18 @@ export class InvoiceConsolidateComponent implements OnInit {
     const checkboxControl = (this.checkboxGroup.controls.checkboxes as FormArray);
 
     let formattedArray = [];
-    this.qaService.loadInvoiceBatchList().subscribe(
+    this.qaService.loadInvoiceListWithNoBatchID().subscribe(
         (data: any) => {
           this.allInvoiceData = data;
           // tslint:disable-next-line:max-line-length
-          formattedArray = data.map(i => [i.invoiceNumber, i.receiptNo, i.paidDate, i.totalAmount, i.paidStatus, i.id, i.batchID]);
+
+          // tslint:disable-next-line:max-line-length
+          formattedArray = data.map(i => [i.permitRefNumber, i.commodityDescription, i.brandName, i.totalAmount, i.invoiceNumber, i.permitID]);
 
           this.dataTable = {
-            headerRow: ['Invoice No', 'Receipt No', 'Date', 'Total Amount', ' Select'],
-            footerRow: ['Invoice No', 'Receipt No', 'Date', 'Total Amount', ' Select'],
+            headerRow: ['Permit Ref N0', 'Commodity Description', 'Brand Name', 'Total Amount', ' Reference Number', ' Select'],
+            footerRow: ['Permit Ref N0', 'Commodity Description', 'Brand Name', 'Total Amount', ' Reference Number', ' Select'],
             dataRows: formattedArray
-
-
-            // ['REFFM#202107095913D', 'Andrew Mike', '09/07/2021', 'Dassani', 'Water', '']
 
           };
 
@@ -114,23 +120,38 @@ export class InvoiceConsolidateComponent implements OnInit {
 
 
   // check if the item are selected
-  checked(item){
-    if(this.selected.indexOf(item) != -1){
+  checked(item) {
+    if (this.selected.indexOf(item) !== -1) {
       return true;
     }
   }
 
   // when checkbox change, add/remove the item from the array
-  onChange(checked, item){
-    if(checked){
+  onChange(checked, item) {
+    if (checked) {
       this.selected.push(item);
     } else {
-      this.selected.splice(this.selected.indexOf(item), 1)
+      this.selected.splice(this.selected.indexOf(item), 1);
     }
   }
 
   submit() {
     this.final_array.push(this.selected.sort());
+    this.consolidatedInvoice.permitInvoicesID = this.final_array;
+    this.qaService.createInvoiceConsolidatedDetails(this.consolidatedInvoice).subscribe(
+        (data) => {
+          console.log(data);
+          swal.fire({
+            title: 'INVOICE CONSOLIDATED SUCCESSFULLY!',
+            buttonsStyling: false,
+            customClass: {
+              confirmButton: 'btn btn-success form-wizard-next-btn ',
+            },
+            icon: 'success'
+          });
+          this.router.navigate(['/invoiceDetails'], {fragment: String(data.batchDetails.batchID)});
+        },
+    );
   }
 
 }

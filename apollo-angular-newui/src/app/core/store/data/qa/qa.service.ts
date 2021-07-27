@@ -114,7 +114,7 @@ export class QaService {
     }
 
     public loadPermitAwardedList(permitTypeID: string): Observable<any> {
-        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.PERMIT_LIST_AWARDED_SMARK);
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.PERMIT_LIST_AWARDED);
         const params = new HttpParams()
             .set('permitTypeID', permitTypeID);
         return this.http.get<any>(url, {params}).pipe(

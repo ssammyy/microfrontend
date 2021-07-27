@@ -686,7 +686,9 @@ class QualityAssuranceHandler(
             req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
         val permit = qaDaoServices.findPermitBYID(permitID)
         val allSSFDetailsList = qaDaoServices.findSampleSubmittedListBYPermitRefNumber(
-            permit.permitRefNumber ?: throw ExpectedDataNotFound("INVALID PERMIT REF NUMBER"), map.activeStatus
+            permit.permitRefNumber ?: throw ExpectedDataNotFound("INVALID PERMIT REF NUMBER"),
+            map.activeStatus,
+            permitID
         )
         req.attributes()["allSSFDetailsList"] = allSSFDetailsList
         req.attributes()["permitDetails"] = permit
@@ -875,7 +877,10 @@ class QualityAssuranceHandler(
 //            Pair("statusName", qaDaoServices.findPermitStatus(permit.permitStatus?:throw Exception("INVALID PERMIT STATUS VALUE"))),
             Pair(
                 "myRequests",
-                qaDaoServices.findAllRequestByPermitRefNumber(permit.permitRefNumber?: throw ExpectedDataNotFound("INVALID PERMIT REF NUMBER"),)
+                qaDaoServices.findAllRequestByPermitRefNumber(
+                    permit.permitRefNumber ?: throw ExpectedDataNotFound("INVALID PERMIT REF NUMBER"),
+                    permit.id ?: throw ExpectedDataNotFound("INVALID PERMIT ID")
+                )
             ),
             Pair("userRequestTypes", qaDaoServices.findAllQaRequestTypes(s.activeStatus)),
             Pair("permitDetails", permit),
@@ -1370,13 +1375,21 @@ class QualityAssuranceHandler(
             //Calculate Invoice Details
             qaDaoServices.permitInvoiceCalculation(map, loggedInUser, permit, permitType)
 
+            //Update Permit Details
+            with(permit) {
+                sendApplication = map.activeStatus
+                invoiceGenerated = map.activeStatus
+                permitStatus = applicationMapProperties.mapQaStatusPPayment
+            }
+            permit = qaDaoServices.permitUpdateDetails(permit, map, loggedInUser).second
 
-            val pair = qaDaoServices.consolidateInvoiceAndSendMail(
-                permit.id ?: throw ExpectedDataNotFound("MISSING PERMIT ID"), map, loggedInUser
-            )
 
-            val batchInvoice = pair.first
-            permit = pair.second
+//            val pair = qaDaoServices.consolidateInvoiceAndSendMail(
+//                permit.id ?: throw ExpectedDataNotFound("MISSING PERMIT ID"), map, loggedInUser
+//            )
+//
+//            val batchInvoice = pair.first
+//            permit = pair.second
 
             //Start DMARK PROCESS
             qualityAssuranceBpmn.startQADmAppPaymentProcess(
@@ -1389,7 +1402,7 @@ class QualityAssuranceHandler(
 
             qaDaoServices.mapAllPermitDetailsTogether(
                 permit,
-                batchInvoice.id ?: throw ExpectedDataNotFound("MISSING BATCH INVOICE ID"),
+                null,
                 map
             ).let {
                 return ok().body(it)
@@ -1831,7 +1844,7 @@ class QualityAssuranceHandler(
             var updatePermit = PermitApplicationsEntity()
             with(updatePermit) {
                 id = permit.id
-                sta10FilledStatus = map.inactiveStatus
+                sta10FilledStatus = map.activeStatus
                 permitStatus = applicationMapProperties.mapQaStatusDraft
             }
 
@@ -2419,7 +2432,7 @@ class QualityAssuranceHandler(
             val dto = req.body<NewBatchInvoiceDto>()
 
             val batchInvoiceDetails =
-                qaDaoServices.permitMultipleInvoiceCalculation(map, loggedInUser, permitID, dto).second
+                qaDaoServices.permitMultipleInvoiceCalculation(map, loggedInUser, dto).second
 
             qaDaoServices.mapBatchInvoiceDetails(batchInvoiceDetails, loggedInUser, map).let {
                 return ok().body(it)

@@ -223,28 +223,28 @@
                                     <ul class="w-list-unstyled">
                                         <li th:if="${permitDetails?.hofQamCompletenessStatus != null}"
                                             class="list-item-accordion">
-                                            <div class="list-title-accordion">Completeness Remarks</div>
+                                            <div class="list-title-accordion">Completeness Remarks BY QAM/HOD</div>
                                             <div class="list-text-accordion"><a class="btn btn-primary itemViewBtn"
                                                                                 onclick="popUpRemarksFunction('permitRemarksCompleteness');">VIEW</a>
                                             </div>
                                         </li>
                                         <li th:if="${permitDetails?.pcmApprovalStatus != null}"
                                             class="list-item-accordion">
-                                            <div class="list-title-accordion">PCM Review Remarks</div>
+                                            <div class="list-title-accordion">Review Remarks BY PCM</div>
                                             <div class="list-text-accordion"><a class="btn btn-primary itemViewBtn"
                                                                                 onclick="popUpRemarksFunction('permitRemarksPCMReview');">VIEW</a>
                                             </div>
                                         </li>
                                         <li th:if="${permitDetails?.recommendationApprovalStatus != null}"
                                             class="list-item-accordion">
-                                            <div class="list-title-accordion">Recommendation Review Remarks</div>
+                                            <div class="list-title-accordion">Recommendation Review Remarks BY QAO</div>
                                             <div class="list-text-accordion"><a class="btn btn-primary itemViewBtn"
                                                                                 onclick="popUpRemarksFunction('permitRemarksRecommendationReview');">VIEW</a>
                                             </div>
                                         </li>
                                         <li th:if="${permitDetails?.justificationReportStatus != null}"
                                             class="list-item-accordion">
-                                            <div class="list-title-accordion">Justification Review Remarks</div>
+                                            <div class="list-title-accordion">Justification Review Remarks BY HOD</div>
                                             <div class="list-text-accordion"><a class="btn btn-primary itemViewBtn"
                                                                                 onclick="popUpRemarksFunction('permitRemarksJustificationReview');">VIEW</a>
                                             </div>
@@ -306,49 +306,49 @@
                                     </div>
                                 </div>
 
-                                <div th:if="${permitType?.id == dmarkPermit}">
-                                    <button class="accordion">COC Attached Details</button>
-                                    <div class="panel">
-                                        <div th:if="${permitDetails?.cocId != null and permitDetails?.sendForPcmReview == null}"
-                                             id="idButtons">
-                                            <div class="form-row">
-                                                <div class="col-md-6 mb-3">
-                                                    <button id="addCocUpload" class="btn btn-primary"
-                                                            onclick="popUpUploadFunction('uploadCOC');"
-                                                            type="button">ADD COC UPLOAD
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="row-table ">
-                                            <table class="table table-striped">
-                                                <thead>
-                                                <tr>
-                                                    <th>File Name</th>
-                                                    <th>File Type</th>
-                                                    <th>Document Description</th>
-                                                    <th>Version Number</th>
-                                                    <th>View</th>
-                                                </tr>
-                                                </thead>
-                                                <tbody>
-                                                <tr class="list" th:each="cocParam: ${cocParameters}"
-                                                    style="cursor: pointer">
+                                <!--                                <div th:if="${permitType?.id == dmarkPermit}">-->
+                                <!--                                    <button class="accordion">COC Attached Details</button>-->
+                                <!--                                    <div class="panel">-->
+                                <!--                                        <div th:if="${permitDetails?.cocId != null and permitDetails?.sendForPcmReview == null}"-->
+                                <!--                                             id="idButtons">-->
+                                <!--                                            <div class="form-row">-->
+                                <!--                                                <div class="col-md-6 mb-3">-->
+                                <!--                                                    <button id="addCocUpload" class="btn btn-primary"-->
+                                <!--                                                            onclick="popUpUploadFunction('uploadCOC');"-->
+                                <!--                                                            type="button">ADD COC UPLOAD-->
+                                <!--                                                    </button>-->
+                                <!--                                                </div>-->
+                                <!--                                            </div>-->
+                                <!--                                        </div>-->
+                                <!--                                        <div class="row-table ">-->
+                                <!--                                            <table class="table table-striped">-->
+                                <!--                                                <thead>-->
+                                <!--                                                <tr>-->
+                                <!--                                                    <th>File Name</th>-->
+                                <!--                                                    <th>File Type</th>-->
+                                <!--                                                    <th>Document Description</th>-->
+                                <!--                                                    <th>Version Number</th>-->
+                                <!--                                                    <th>View</th>-->
+                                <!--                                                </tr>-->
+                                <!--                                                </thead>-->
+                                <!--                                                <tbody>-->
+                                <!--                                                <tr class="list" th:each="cocParam: ${cocParameters}"-->
+                                <!--                                                    style="cursor: pointer">-->
 
-                                                    <td th:text="${cocParam.name}"></td>
-                                                    <td th:text="${cocParam.fileType}"></td>
-                                                    <td th:text="${cocParam.documentType}"></td>
-                                                    <td th:text="${cocParam.versionNumber}"></td>
-                                                    <td>
-                                                        <a th:href="@{/api/qa/kebs/view/attached(fileID=${cocParam.id})}"
-                                                           target='_blank' class="btn btn-primary itemViewBtn">view</a>
-                                                    </td>
-                                                </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
+                                <!--                                                    <td th:text="${cocParam.name}"></td>-->
+                                <!--                                                    <td th:text="${cocParam.fileType}"></td>-->
+                                <!--                                                    <td th:text="${cocParam.documentType}"></td>-->
+                                <!--                                                    <td th:text="${cocParam.versionNumber}"></td>-->
+                                <!--                                                    <td>-->
+                                <!--                                                        <a th:href="@{/api/qa/kebs/view/attached(fileID=${cocParam.id})}"-->
+                                <!--                                                           target='_blank' class="btn btn-primary itemViewBtn">view</a>-->
+                                <!--                                                    </td>-->
+                                <!--                                                </tr>-->
+                                <!--                                                </tbody>-->
+                                <!--                                            </table>-->
+                                <!--                                        </div>-->
+                                <!--                                    </div>-->
+                                <!--                                </div>-->
 
 
                                 <div sec:authorize="hasAuthority('QA_OFFICER_MODIFY') or hasAuthority('QA_HOD_MODIFY') or hasAuthority('QA_MANAGER_ASSESSORS_MODIFY') or hasAuthority('QA_HOF_MODIFY') or hasAuthority('QA_ASSESSORS_MODIFY') or hasAuthority('QA_PAC_SECRETARY_MODIFY') or hasAuthority('QA_PSC_MEMBERS_MODIFY') or hasAuthority('QA_PCM_MODIFY')">
@@ -983,10 +983,10 @@
                                                th:href="@{/api/qa/inspection/new-inspection-report(permitID=${permitDetails?.id})}"
                                                class="filter-link">GENERATE INSPECTION REPORT </a>
 
-                                            <a th:if="${permitDetails?.inspectionReportGenerated == null and permitDetails?.factoryInspectionReportApprovedRejectedStatus == null }"
-                                               style="color: white"
-                                               th:href="@{/api/qa/inspection/inspection-report-details(permitID=${permitDetails?.id})}"
-                                               class="filter-link">CONTINUE GENERATING INSPECTION REPORT </a>
+                                            <!--                                            <a th:if="${permitDetails?.inspectionReportGenerated == null and permitDetails?.factoryInspectionReportApprovedRejectedStatus == null }"-->
+                                            <!--                                               style="color: white"-->
+                                            <!--                                               th:href="@{/api/qa/inspection/inspection-report-details(permitID=${permitDetails?.id})}"-->
+                                            <!--                                               class="filter-link">CONTINUE GENERATING INSPECTION REPORT </a>-->
 
                                             <a th:if="${permitDetails?.inspectionReportGenerated == 1 and permitDetails?.factoryInspectionReportApprovedRejectedStatus == 0 }"
                                                style="color: white"
@@ -1026,22 +1026,16 @@
                                                class="filter-link">Grant/Defer Application</a>
                                         </div>
 
-                                        <div sec:authorize="hasAuthority('QA_PSC_MEMBERS_READ')">
-                                            <a th:if="${ permitDetails?.pacDecisionStatus == 0}"
-                                               style="color: white" onclick="popUpFunction('pscMemberApproval');"
+                                        <div sec:authorize="hasAuthority('QA_PCM_READ')">
+                                            <a th:if="${permitDetails?.pacDecisionStatus != null and permitDetails?.pcmApprovalStatus == 0}"
+                                               style="color: white" onclick="popUpFunction('pcmApproval');"
                                                class="filter-link">RE-APPROVE/REJECT PERMIT AWARDING</a>
-                                        </div>
-
-                                        <div sec:authorize="hasAuthority('QA_PSC_MEMBERS_READ')">
-                                            <a th:if="${ permitDetails?.pacDecisionStatus == 1}"
-                                               style="color: white" onclick="popUpFunction('pscMemberApproval');"
-                                               class="filter-link">APPROVE/REJECT PERMIT AWARDING</a>
                                         </div>
 
                                         <div sec:authorize="hasAuthority('QA_PCM_READ')">
-                                            <a th:if="${ permitDetails?.pcmApprovalStatus == 0 and permitDetails?.pacDecisionStatus == 1}"
+                                            <a th:if="${permitDetails?.pacDecisionStatus == 1 and permitDetails?.pcmApprovalStatus == null}"
                                                style="color: white" onclick="popUpFunction('pcmApproval');"
-                                               class="filter-link">RE-APPROVE/REJECT PERMIT AWARDING</a>
+                                               class="filter-link">APPROVE/REJECT PERMIT AWARDING</a>
                                         </div>
 
 

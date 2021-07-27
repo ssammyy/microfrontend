@@ -48,7 +48,7 @@ export class GenerateInvoiceDto {
     batchID: bigint;
     plantID: bigint;
     permitRefNumber: string;
-    permitInvoicesID: string[];
+    permitInvoicesID: number[];
 }
 
 export class MPesaPushDto {

@@ -268,6 +268,7 @@ class SchedulerImpl(
                                     )
                                         .let { pm ->
                                             with(pm) {
+                                                userTaskId = applicationMapProperties.mapUserTaskNameQAO
                                                 permitStatus =
                                                     applicationMapProperties.mapQaStatusPLABResultsCompletness
                                                 modifiedBy = "SYSTEM SCHEDULER"
