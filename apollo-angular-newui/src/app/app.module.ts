@@ -140,6 +140,7 @@ import { FieldErrorDisplayComponent } from './apollowebs/forms/field-error-displ
         PdfViewerModule,
         NgxExtendedPdfViewerModule,
         FileUploadModule,
+        NgxSpinnerModule,
         // CoreModule
     ],
     declarations: [

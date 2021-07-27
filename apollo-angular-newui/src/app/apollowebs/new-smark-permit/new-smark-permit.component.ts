@@ -17,6 +17,8 @@ import {
 import swal from 'sweetalert2';
 import {FileUploadValidators} from "@iplab/ngx-file-upload";
 import {selectUserInfo} from "../../core/store";
+import {LoadingService} from "../../core/services/loader/loadingservice.service";
+import {NgxSpinnerService} from "ngx-spinner";
 
 declare const $: any;
 
@@ -27,6 +29,7 @@ declare const $: any;
 })
 export class NewSmarkPermitComponent implements OnInit {
     fullname = '';
+    loading: boolean = false;
     SelectedSectionId;
     sta1Form: FormGroup;
     sta10Form: FormGroup;
@@ -72,6 +75,8 @@ export class NewSmarkPermitComponent implements OnInit {
                 private router: Router,
                 private qaService: QaService,
                 private formBuilder: FormBuilder,
+                private _loading: LoadingService,
+                private SpinnerService: NgxSpinnerService,
                 private route: ActivatedRoute) {
     }
 
@@ -80,7 +85,7 @@ export class NewSmarkPermitComponent implements OnInit {
 
         this.sta1Form = this.formBuilder.group({
           commodityDescription: ['', Validators.required],
-          applicantName: ['', Validators.required],
+          applicantName: [],
           sectionId: ['', Validators.required],
           permitForeignStatus: [],
           attachedPlant: ['', Validators.required],
@@ -339,10 +344,12 @@ export class NewSmarkPermitComponent implements OnInit {
     onClickSaveSTA1(valid: boolean) {
         if (valid) {
             if (this.sta1 == null) {
+                this.SpinnerService.show();
                 this.qaService.savePermitSTA1('2', this.sta1Form.value).subscribe(
                     (data) => {
                         this.sta1 = data;
                         this.onClickUpdateStep(this.step);
+                        this.SpinnerService.hide();
                         console.log(data);
                         this.step += 1;
                         this.currBtn = 'B';
@@ -357,10 +364,12 @@ export class NewSmarkPermitComponent implements OnInit {
             },
         );
       } else {
+                this.SpinnerService.show();
                 this.qaService.updatePermitSTA1(String(this.sta1.id), this.sta1Form.value).subscribe(
                     (data) => {
                         this.sta1 = data;
                         this.onClickUpdateStep(this.step);
+                        this.SpinnerService.hide();
                         console.log(data);
                         swal.fire({
                             title: 'STA1 Form updated!',
@@ -378,12 +387,14 @@ export class NewSmarkPermitComponent implements OnInit {
 
     onClickSaveSTA10(valid: boolean) {
         if (valid) {
+            this.SpinnerService.show();
             console.log(this.sta1.id.toString());
             if (this.Sta10Details == null) {
                 this.qaService.saveFirmDetailsSta10(this.sta1.id.toString(), this.sta10Form.value).subscribe(
                     (data) => {
                         this.Sta10Details = data;
                         this.onClickUpdateStep(this.step);
+                        this.SpinnerService.hide();
                         console.log(data);
                         this.step += 1;
                         swal.fire({
@@ -398,10 +409,12 @@ export class NewSmarkPermitComponent implements OnInit {
                     },
                 );
             } else {
+                this.SpinnerService.show();
                 this.qaService.updateFirmDetailsSta10(`${this.sta1.id}`, this.sta10FormF.value).subscribe(
                     (data) => {
                         this.Sta10Details = data;
                         this.onClickUpdateStep(this.step);
+                        this.SpinnerService.hide();
                         console.log(data);
                         this.step += 1;
                         swal.fire({
@@ -420,12 +433,14 @@ export class NewSmarkPermitComponent implements OnInit {
 
     onClickSaveSTA10F(valid: boolean) {
         if (valid) {
+            this.SpinnerService.show();
             console.log(this.sta1.id.toString());
 
             this.qaService.updateFirmDetailsSta10(this.sta1.id.toString(), this.sta10FormF.value).subscribe(
                 (data) => {
                     this.Sta10Details = data;
                     this.onClickUpdateStep(this.step);
+                    this.SpinnerService.hide();
                     console.log(data);
                     this.step += 1;
                     swal.fire({
@@ -459,12 +474,14 @@ export class NewSmarkPermitComponent implements OnInit {
 
     onClickSaveSTAPersonnel(valid: boolean) {
         if (valid) {
+            this.SpinnerService.show();
             console.log(this.Sta10Details.id.toString());
             // if (this.sta10PersonnelDetails == null) {
             this.qaService.savePersonnelDetailsSta10(this.Sta10Details.id.toString(), this.sta10PersonnelDetails).subscribe(
                 (data) => {
                     this.sta10PersonnelDetails = data;
                     this.onClickUpdateStep(this.step);
+                    this.SpinnerService.hide();
                     console.log(data);
                     this.step += 1;
                     swal.fire({
@@ -482,12 +499,14 @@ export class NewSmarkPermitComponent implements OnInit {
 
     onClickSaveSTAProductsManufactured(valid: boolean) {
         if (valid) {
+            this.SpinnerService.show();
             console.log(this.Sta10Details.id.toString());
             // tslint:disable-next-line:max-line-length
             this.qaService.saveProductsManufacturedDetailsSta10(this.Sta10Details.id.toString(), this.sta10ProductsManufactureDetails).subscribe(
                 (data) => {
                     this.sta10ProductsManufactureDetails = data;
                     this.onClickUpdateStep(this.step);
+                    this.SpinnerService.hide();
                     console.log(data);
                     this.step += 1;
                     swal.fire({
@@ -505,11 +524,13 @@ export class NewSmarkPermitComponent implements OnInit {
 
     onClickSaveSTARawMaterials(valid: boolean) {
         if (valid) {
+            this.SpinnerService.show();
             console.log(this.Sta10Details.id.toString());
             this.qaService.saveRawMaterialsDetailsSta10(this.Sta10Details.id.toString(), this.sta10RawMaterialsDetails).subscribe(
                 (data) => {
                     this.sta10RawMaterialsDetails = data;
                     this.onClickUpdateStep(this.step);
+                    this.SpinnerService.hide();
                     console.log(data);
                     this.step += 1;
                     swal.fire({
@@ -527,11 +548,13 @@ export class NewSmarkPermitComponent implements OnInit {
 
     onClickSaveSTAMachineryPlant(valid: boolean) {
         if (valid) {
+            this.SpinnerService.show();
             console.log(this.Sta10Details.id.toString());
             this.qaService.saveMachineryPlantDetailsSta10(this.Sta10Details.id.toString(), this.sta10MachineryAndPlantDetails).subscribe(
                 (data) => {
                     this.sta10MachineryAndPlantDetails = data;
                     this.onClickUpdateStep(this.step);
+                    this.SpinnerService.hide();
                     console.log(data);
                     this.step += 1;
                     swal.fire({
@@ -549,12 +572,14 @@ export class NewSmarkPermitComponent implements OnInit {
 
     onClickSaveSTAManufacturingProcess(valid: boolean) {
         if (valid) {
+            this.SpinnerService.show();
             console.log(this.Sta10Details.id.toString());
             // tslint:disable-next-line:max-line-length
             this.qaService.saveManufacturingProcessDetailsSta10(this.Sta10Details.id.toString(), this.sta10ManufacturingProcessDetails).subscribe(
                 (data) => {
                     this.sta10ManufacturingProcessDetails = data;
                     this.onClickUpdateStep(this.step);
+                    this.SpinnerService.hide();
                     console.log(data);
                     this.step += 1;
                     swal.fire({
@@ -628,8 +653,10 @@ export class NewSmarkPermitComponent implements OnInit {
                 formData.append('docFile', file[i], file[i].name);
             }
 
+            this.SpinnerService.show();
             this.qaService.uploadSTA10File(this.sta1.id.toString(), formData).subscribe(
                 (data: any) => {
+                    this.SpinnerService.hide();
                     console.log(data);
                     this.onClickUpdateStep(this.step);
                     this.step += 1;
