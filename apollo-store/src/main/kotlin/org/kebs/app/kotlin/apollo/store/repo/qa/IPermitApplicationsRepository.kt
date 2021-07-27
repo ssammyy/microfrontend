@@ -1,5 +1,6 @@
 package org.kebs.app.kotlin.apollo.store.repo.qa
 
+import org.kebs.app.kotlin.apollo.store.model.InvoiceEntity
 import org.kebs.app.kotlin.apollo.store.model.UsersEntity
 import org.kebs.app.kotlin.apollo.store.model.importer.TemporaryImportApplicationsEntity
 import org.kebs.app.kotlin.apollo.store.model.importer.TemporaryImportApplicationsUploadsEntity
@@ -155,6 +156,15 @@ interface IPermitApplicationsRepository : HazelcastRepository<PermitApplications
         permitType: Long, endOfProductionStatus: Int, permitAwardStatus: Int, attachedPlantId: Long
     ): List<PermitApplicationsEntity>?
 
+    fun findByPermitTypeAndEndOfProductionStatusAndPermitAwardStatusAndAttachedPlantIdAndOldPermitStatusIsNull(
+        permitType: Long, endOfProductionStatus: Int, permitAwardStatus: Int, attachedPlantId: Long
+    ): List<PermitApplicationsEntity>?
+
+    fun findByPermitTypeAndEndOfProductionStatusAndApplicationStatusAndAttachedPlantIdAndOldPermitStatusIsNull(
+        permitType: Long, endOfProductionStatus: Int, permitAwardStatus: Int, attachedPlantId: Long
+    ): List<PermitApplicationsEntity>?
+
+
     fun findByUserIdAndPermitTypeAndEndOfProductionStatusAndOldPermitStatusIsNull(
         userId: Long,
         permitType: Long,
@@ -224,6 +234,30 @@ interface IQaProcessStatusRepository : HazelcastRepository<QaProcessStatusEntity
     fun findByProcessStatusName(processStatusName: String): QaProcessStatusEntity?
     fun findByProcessStatusNameAndStatus(processStatusName: String, status: Long): QaProcessStatusEntity?
     fun findByStatus(status: Int): List<QaProcessStatusEntity>?
+}
+
+@Repository
+interface IQaInvoiceDetailsRepository : HazelcastRepository<QaInvoiceDetailsEntity, Long> {
+//    fun findByProcessStatusName(processStatusName: String): QaInvoiceDetailsEntity?
+//    fun findByProcessStatusNameAndStatus(processStatusName: String, status: Long): QaProcessStatusEntity?
+//    fun findByStatus(status: Int): List<QaInvoiceDetailsEntity>?
+}
+
+@Repository
+interface IQaInvoiceMasterDetailsRepository : HazelcastRepository<QaInvoiceMasterDetailsEntity, Long> {
+    fun findByPermitId(permitId: Long): QaInvoiceMasterDetailsEntity?
+    fun findAllByBatchInvoiceNo(
+        batchInvoiceNo: Long
+    ): List<QaInvoiceMasterDetailsEntity>?
+
+    fun findAllByUserIdAndPaymentStatusAndBatchInvoiceNoIsNull(
+        userId: Long,
+        paymentStatus: Int
+    ): List<QaInvoiceMasterDetailsEntity>?
+
+    fun findAllByUserId(userId: Long): List<QaInvoiceMasterDetailsEntity>?
+//    fun findByProcessStatusNameAndStatus(processStatusName: String, status: Long): QaInvoiceMasterDetailsEntity?
+//    fun findByStatus(status: Int): List<QaInvoiceMasterDetailsEntity>?
 }
 
 @Repository
@@ -362,7 +396,7 @@ interface IQaManufactureProcessRepository: HazelcastRepository<QaManufacturingPr
 }
 
 @Repository
-interface IQaProductBrandEntityRepository: HazelcastRepository<QaProductManufacturedEntity, Long> {
+interface IQaProductBrandEntityRepository : HazelcastRepository<QaProductManufacturedEntity, Long> {
     fun findBySta10Id(sta10Id: Long): List<QaProductManufacturedEntity>?
 }
 
@@ -370,7 +404,15 @@ interface IQaProductBrandEntityRepository: HazelcastRepository<QaProductManufact
 @Repository
 interface ITurnOverRatesRepository : HazelcastRepository<TurnOverRatesEntity, Long> {
     fun findByIdAndFirmType(id: Long, firmType: String): TurnOverRatesEntity?
+    fun findAllByStatus(status: Int): List<TurnOverRatesEntity>?
 }
+
+@Repository
+interface IPermitRatingRepository : HazelcastRepository<PermitRatingEntity, Long> {
+    fun findByIdAndFirmType(id: Long, firmType: String): PermitRatingEntity?
+    fun findAllByStatus(status: Int): List<PermitRatingEntity>?
+}
+
 
 @Repository
 interface IQaUploadsRepository : HazelcastRepository<QaUploadsEntity, Long> {

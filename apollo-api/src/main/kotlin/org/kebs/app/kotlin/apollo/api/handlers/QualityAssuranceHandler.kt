@@ -1375,17 +1375,25 @@ class QualityAssuranceHandler(
             //Calculate Invoice Details
             qaDaoServices.permitInvoiceCalculation(map, loggedInUser, permit, permitType)
 
+            //Update Permit Details
+            with(permit) {
+                sendApplication = map.activeStatus
+                invoiceGenerated = map.activeStatus
+                permitStatus = applicationMapProperties.mapQaStatusPPayment
+            }
+            permit = qaDaoServices.permitUpdateDetails(permit, map, loggedInUser).second
 
-            val pair = qaDaoServices.consolidateInvoiceAndSendMail(
-                permit.id ?: throw ExpectedDataNotFound("MISSING PERMIT ID"), map, loggedInUser
-            )
 
-            val batchInvoice = pair.first
-            permit = pair.second
+//            val pair = qaDaoServices.consolidateInvoiceAndSendMail(
+//                permit.id ?: throw ExpectedDataNotFound("MISSING PERMIT ID"), map, loggedInUser
+//            )
+//
+//            val batchInvoice = pair.first
+//            permit = pair.second
 
             qaDaoServices.mapAllPermitDetailsTogether(
                 permit,
-                batchInvoice.id ?: throw ExpectedDataNotFound("MISSING BATCH INVOICE ID"),
+                null,
                 map
             ).let {
                 return ok().body(it)
@@ -2413,7 +2421,7 @@ class QualityAssuranceHandler(
             val dto = req.body<NewBatchInvoiceDto>()
 
             val batchInvoiceDetails =
-                qaDaoServices.permitMultipleInvoiceCalculation(map, loggedInUser, permitID, dto).second
+                qaDaoServices.permitMultipleInvoiceCalculation(map, loggedInUser, dto).second
 
             qaDaoServices.mapBatchInvoiceDetails(batchInvoiceDetails, loggedInUser, map).let {
                 return ok().body(it)
