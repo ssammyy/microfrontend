@@ -62,11 +62,10 @@ placeholder="Trade Mark" required="">
 <div class="form-group col-6">
     <label for="applicantName">Applicant Name <span style="font-size: xx-small; color: red;">(*)Required</span></label>
 <input type="text"
-[class.is-invalid]="formSta1Form.applicantName.invalid && formSta1Form.applicantName.touched"
 class="form-control" id="applicantName"
 formControlName="applicantName"
-name="applicantName"
-placeholder="Applicant Name" required="">
+name="applicantName" ngModel="{{fullname}}"
+placeholder="Applicant Name" disabled>
 </div>
 
 <div class="form-group col-6">
@@ -143,7 +142,7 @@ class="form-group clearfix">
 <form (ngSubmit)="onClickSaveSTA3A(sta3FormA.valid)"
 [formGroup]="sta3FormA" action="" class="form"
 enctype="multipart/form-data" method="post">
-<h2>STA3 Form</h2>
+<h2>STA3 Form : <b style="color: #d50000">Documents will be uploaded on the last step of STA3 Appliction</b></h2>
 <h3>1.Factory Organization</h3>
 <h4>1.1 PROCEDURES/PAPER WORK</h4>
 <h5>Please give the following information</h5>
