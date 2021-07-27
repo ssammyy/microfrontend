@@ -11,7 +11,8 @@ import {
 import swal from 'sweetalert2';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {ApiEndpointService} from '../../core/services/endpoints/api-endpoint.service';
-import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
+// import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
+// import {ModalComponent} from "ngb-modal";
 
 declare interface DataTable {
     headerRow: string[];
@@ -57,7 +58,7 @@ export class DmarkComponent implements OnInit, AfterViewInit {
     constructor(
         private route: ActivatedRoute,
         private router: Router,
-        private modalService: NgbModal,
+        // private modalService: ModalComponent,
         private qaService: QaService,
         private formBuilder: FormBuilder
     ) {
@@ -512,7 +513,7 @@ export class DmarkComponent implements OnInit, AfterViewInit {
         }
 
         this.currDiv = divVal;
-        this.modalService.open(this.editModal);
+        // this.modalService.open();
     }
 
     submitRenewalApplication() {

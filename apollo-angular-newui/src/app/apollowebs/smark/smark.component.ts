@@ -1,17 +1,23 @@
 import {Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {
-    AllPermitDetailsDto, AllSTA10DetailsDto,
+    AllPermitDetailsDto,
+    AllSTA10DetailsDto,
     PermitEntityDetails,
     PlantDetailsDto,
-    SectionDto, STA1,
-    Sta10Dto, STA10MachineryAndPlantDto, STA10ManufacturingProcessDto, STA10PersonnelDto,
-    STA10ProductsManufactureDto, STA10RawMaterialsDto
+    SectionDto,
+    STA1,
+    Sta10Dto,
+    STA10MachineryAndPlantDto,
+    STA10ManufacturingProcessDto,
+    STA10PersonnelDto,
+    STA10ProductsManufactureDto,
+    STA10RawMaterialsDto
 } from "../../core/store/data/qa/qa.model";
 import {QaService} from "../../core/store/data/qa/qa.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import swal from "sweetalert2";
-import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
+import {ModalComponent} from "ngb-modal";
 
 @Component({
     selector: 'app-smark',
@@ -59,7 +65,7 @@ export class SmarkComponent implements OnInit {
     constructor(
         private route: ActivatedRoute,
         private router: Router,
-        private modalService: NgbModal,
+        // private modalService: ModalComponent,
         private qaService: QaService,
         private formBuilder: FormBuilder
     ) {
@@ -478,7 +484,10 @@ export class SmarkComponent implements OnInit {
         }
 
         this.currDiv = divVal;
-        this.modalService.open(this.editModal);
+        // this.modalService.show(this.editModal);
+        // this.modalService.open();
+
+
     }
 
     onClickAddPersonnel() {

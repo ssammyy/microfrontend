@@ -12,7 +12,9 @@ import org.kebs.app.kotlin.apollo.common.dto.qa.NewBatchInvoiceDto
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.common.utils.generateRandomText
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
-import org.kebs.app.kotlin.apollo.store.model.*
+import org.kebs.app.kotlin.apollo.store.model.ServiceMapsEntity
+import org.kebs.app.kotlin.apollo.store.model.ServiceRequestsEntity
+import org.kebs.app.kotlin.apollo.store.model.UsersEntity
 import org.kebs.app.kotlin.apollo.store.model.qa.*
 import org.kebs.app.kotlin.apollo.store.repo.qa.IQaSampleSubmissionRepository
 import org.springframework.security.access.prepost.PreAuthorize
@@ -954,11 +956,14 @@ class QualityAssuranceController(
                 var batchInvoice = pair.first
                 permitDetailsDB = pair.second
 
-                qualityAssuranceBpmn.qaDmARCheckApplicationComplete(
-                    permitDetailsDB.id ?: throw Exception("MISSING PERMIT ID"),
-                    permitDetailsDB.userId ?: throw Exception("MISSING USER ID"),
-                    true
-                )
+//                qualityAssuranceBpmn.qaDmARCheckApplicationComplete(
+//                    permitDetailsDB.id ?: throw Exception("MISSING PERMIT ID"),
+//                    permitDetailsDB.userId ?: throw Exception("MISSING USER ID"),
+//                    true
+//                )
+                //Application complete and successful
+                qualityAssuranceBpmn.qaDmCheckApplicationComplete(permitDetailsDB.id ?: throw Exception("MISSING PERMIT ID"), true)
+
             }
             map.inactiveStatus -> {
 
@@ -979,12 +984,14 @@ class QualityAssuranceController(
 
                 qaDaoServices.sendNotificationForPermitReviewRejectedFromPCM(permitDetailsDB)
 
-                qualityAssuranceBpmn.qaDmARCheckApplicationComplete(
-                    permitDetailsDB.id ?: throw Exception("MISSING PERMIT ID"),
-                    permitDetailsDB.userId ?: throw Exception("MISSING USER ID"),
-                    false
-                )
+//                qualityAssuranceBpmn.qaDmARCheckApplicationComplete(
+//                    permitDetailsDB.id ?: throw Exception("MISSING PERMIT ID"),
+//                    permitDetailsDB.userId ?: throw Exception("MISSING USER ID"),
+//                    false
+//                )
 
+                //Application complete and successful
+                qualityAssuranceBpmn.qaDmCheckApplicationComplete(permitDetailsDB.id ?: throw Exception("MISSING PERMIT ID"), false)
             }
         }
         val closeLink =
