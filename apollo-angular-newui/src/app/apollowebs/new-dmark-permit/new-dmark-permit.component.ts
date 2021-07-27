@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
-import {LoginCredentials} from '../../core/store';
+import {LoginCredentials, selectUserInfo} from '../../core/store';
 import {Store} from '@ngrx/store';
 import {ActivatedRoute, Router} from '@angular/router';
 import {QaService} from '../../core/store/data/qa/qa.service';
@@ -24,7 +24,7 @@ declare const $: any;
 export class NewDmarkPermitComponent implements OnInit {
 
     public isLoading = false;
-
+    fullname = '';
     sta1Form: FormGroup;
     sta3FormA: FormGroup;
     sta3FormB: FormGroup;
@@ -69,7 +69,6 @@ export class NewDmarkPermitComponent implements OnInit {
         this.sta1Form = this.formBuilder.group({
             id: [''],
             commodityDescription: ['', Validators.required],
-            applicantName: ['', Validators.required],
             sectionId: ['', Validators.required],
             permitForeignStatus: ['', Validators.required],
             attachedPlant: ['', Validators.required],
@@ -143,6 +142,11 @@ export class NewDmarkPermitComponent implements OnInit {
         this.getSelectedPermit();
 
         this.returnUrl = this.route.snapshot.queryParams[`returnUrl`] || `/dmark`;
+
+        this.store$.select(selectUserInfo).pipe().subscribe((u) => {
+            return this.fullname = u.fullName;
+        });
+
     }
 
     public getSelectedPermit(): void {

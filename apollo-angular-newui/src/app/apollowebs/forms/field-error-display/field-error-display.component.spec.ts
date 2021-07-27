@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { LoginComponent } from './login.component';
+import { FieldErrorDisplayComponent } from './field-error-display.component';
 
-describe('LoginComponent', () => {
-  let component: LoginComponent;
-  let fixture: ComponentFixture<LoginComponent>;
+describe('FieldErrorDisplayComponent', () => {
+  let component: FieldErrorDisplayComponent;
+  let fixture: ComponentFixture<FieldErrorDisplayComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ LoginComponent ]
+      declarations: [ FieldErrorDisplayComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(LoginComponent);
+    fixture = TestBed.createComponent(FieldErrorDisplayComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

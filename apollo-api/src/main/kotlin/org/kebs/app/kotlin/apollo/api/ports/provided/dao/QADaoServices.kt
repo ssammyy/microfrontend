@@ -14,6 +14,7 @@ import org.kebs.app.kotlin.apollo.common.exceptions.ServiceMapNotFoundException
 import org.kebs.app.kotlin.apollo.common.utils.generateRandomText
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.*
+import org.kebs.app.kotlin.apollo.store.model.di.ConsignmentDocumentDetailsEntity
 import org.kebs.app.kotlin.apollo.store.model.qa.*
 import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileDirectorsEntity
 import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileEntity
@@ -786,10 +787,12 @@ class QADaoServices(
                             userAssigned.email ?: throw ExpectedDataNotFound("Missing Email address"),
                             permit.permitRefNumber ?: throw ExpectedDataNotFound("MISSING PERMIT REF NUMBER")
                         )
-                        qualityAssuranceBpmn.startQAAppReviewProcess(
-                            permit.id ?: throw ExpectedDataNotFound("Permit Id Not found"),
-                            permit.hodId ?: throw ExpectedDataNotFound("HOD Not found")
-                        )
+//                        qualityAssuranceBpmn.startQAAppReviewProcess(
+//                            permit.id ?: throw ExpectedDataNotFound("Permit Id Not found"),
+//                            permit.hodId ?: throw ExpectedDataNotFound("HOD Not found")
+//                        )
+                        //Trigger Receive payment task BPM
+                        qualityAssuranceBpmn.diReceivePaymentComplete(permit.id ?: throw ExpectedDataNotFound("MISSING PERMIT"))
                     }
                     applicationMapProperties.mapQAPermitTypeIdSmark -> {
                         userAssigned = assignNextOfficerBasedOnRegion(

@@ -213,7 +213,7 @@
 		</band>
 	</columnHeader>
 	<detail>
-		<band height="498" splitType="Stretch">
+		<band height="482" splitType="Stretch">
 			<staticText>
 				<reportElement x="0" y="12" width="552" height="40" uuid="f03e6f7c-5b57-4e87-bd99-760d258fb2fe"/>
 				<textElement>
@@ -344,7 +344,7 @@ Standards]]></text>
 				<textFieldExpression><![CDATA[$P{StandardTitle}]]></textFieldExpression>
 			</textField>
 			<image>
-				<reportElement x="0" y="430" width="60" height="60" uuid="d4eefd96-de1a-4bc6-b838-281d72098d9a"/>
+				<reportElement x="0" y="421" width="60" height="56" uuid="429a4940-a4aa-490b-b159-bca9722c1ae7"/>
 				<imageExpression><![CDATA[com.google.zxing.client.j2se.MatrixToImageWriter.toBufferedImage(
     new com.google.zxing.qrcode.QRCodeWriter().encode(
         $P{QrCode},

@@ -16,6 +16,7 @@ import {
 } from '../../core/store/data/qa/qa.model';
 import swal from 'sweetalert2';
 import {FileUploadValidators} from "@iplab/ngx-file-upload";
+import {selectUserInfo} from "../../core/store";
 
 declare const $: any;
 
@@ -25,6 +26,8 @@ declare const $: any;
     styleUrls: ['./new-smark-permit.component.css']
 })
 export class NewSmarkPermitComponent implements OnInit {
+    fullname = '';
+    SelectedSectionId;
     sta1Form: FormGroup;
     sta10Form: FormGroup;
     sta10FormA: FormGroup;
@@ -175,6 +178,10 @@ export class NewSmarkPermitComponent implements OnInit {
         );
 
         this.getSelectedPermit();
+
+        this.store$.select(selectUserInfo).pipe().subscribe((u) => {
+            return this.fullname = u.fullName;
+        });
 
     }
 
@@ -669,4 +676,11 @@ export class NewSmarkPermitComponent implements OnInit {
                 '</div>'
         });
     }
+
+
+        onselectSection(){
+            console.log(this.SelectedSectionId)
+            //this.SelectedSectionId=sselect;
+            //this.SelectedSectionId = Selectedfood;
+        }
 }

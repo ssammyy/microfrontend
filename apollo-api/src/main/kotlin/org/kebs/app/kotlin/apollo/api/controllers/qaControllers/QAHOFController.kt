@@ -5,7 +5,6 @@ import org.kebs.app.kotlin.apollo.api.notifications.Notifications
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.QualityAssuranceBpmn
 import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
-import org.kebs.app.kotlin.apollo.store.model.FactoryInspectionReportEntity
 import org.kebs.app.kotlin.apollo.store.model.PermitApplicationEntity
 import org.kebs.app.kotlin.apollo.store.model.PermitApplicationRemarksEntity
 import org.kebs.app.kotlin.apollo.store.repo.*
@@ -13,19 +12,15 @@ import org.kebs.app.kotlin.apollo.store.repo.qa.IPermitTypesEntityRepository
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.mail.javamail.JavaMailSender
-import org.springframework.mail.javamail.MimeMessageHelper
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.security.core.context.SecurityContextHolder
-import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.servlet.mvc.support.RedirectAttributes
-import java.lang.StringBuilder
 import java.sql.Timestamp
 import java.time.Instant
 import java.time.temporal.ChronoUnit
-import javax.mail.internet.MimeMessage
 import javax.validation.Valid
 
 
@@ -265,15 +260,15 @@ class QAHOFController(
                 when (status) {
                     1 -> {
                         redirectAttributes.addFlashAttribute("alert", "You have marked the application as complete.")
-                        if(permit.permitType == 1L) {
-                            qualityAssuranceBpmn.qaDmARCheckApplicationComplete(id, hodId, true)
-                                    .let {
-                                        qualityAssuranceBpmn.qaDmARAllocateQAOComplete(id, qaoAssigneeId)
-                                        redirectAttributes.addFlashAttribute("alert", "You have marked the application as complete. The task has been passed to the selected QAO")
-                                    }
-                        } else {
-                            qualityAssuranceBpmn.qaAppReviewCheckIfApplicationComplete(id, status)
-                        }
+//                        if(permit.permitType == 1L) {
+//                            qualityAssuranceBpmn.qaDmARCheckApplicationComplete(id, hodId, true)
+//                                    .let {
+//                                        qualityAssuranceBpmn.qaDmARAllocateQAOComplete(id, qaoAssigneeId)
+//                                        redirectAttributes.addFlashAttribute("alert", "You have marked the application as complete. The task has been passed to the selected QAO")
+//                                    }
+//                        } else {
+//                            qualityAssuranceBpmn.qaAppReviewCheckIfApplicationComplete(id, status)
+//                        }
 
                         with(permit) {
                             applicationCompletenessStatus = status
@@ -286,13 +281,13 @@ class QAHOFController(
                     }
                     0 -> {
                         redirectAttributes.addFlashAttribute("error", "You have marked the application as incomplete. A notification will be sent to the manufacturer.")
-                        if(permit.permitType == 1L) {
-                            qualityAssuranceBpmn.qaDmARCheckApplicationComplete(id, hodId, false)
-                        } else {
-//                            qualityAssuranceBpmn.qaAppReviewCheckIfApplicationComplete(id, status, qaoAssigneeId)
-                            permit.userId?.id
-                                    ?.let { qualityAssuranceBpmn.qaAppReviewCheckIfApplicationComplete(id, status) }
-                        }
+//                        if(permit.permitType == 1L) {
+//                            qualityAssuranceBpmn.qaDmARCheckApplicationComplete(id, hodId, false)
+//                        } else {
+////                            qualityAssuranceBpmn.qaAppReviewCheckIfApplicationComplete(id, status, qaoAssigneeId)
+//                            permit.userId?.id
+//                                    ?.let { qualityAssuranceBpmn.qaAppReviewCheckIfApplicationComplete(id, status) }
+//                        }
 
                         with(permit) {
                             applicationCompletenessStatus = status
@@ -340,11 +335,11 @@ class QAHOFController(
                             this?.hofApproval = inspectionApprovalStatus
                         }
                         factoryInspectionRepository.save(inspectionReport!!)
-                        if(permit.permitType == 1L) {
-                            qualityAssuranceBpmn.qaDmARApproveInspectionReportComplete(id, qaoAssigneeId, true)
-                        } else {
-                            KotlinLogging.logger {  }.info { "This is an SMARK application" }
-                        }
+//                        if(permit.permitType == 1L) {
+//                            qualityAssuranceBpmn.qaDmARApproveInspectionReportComplete(id, qaoAssigneeId, true)
+//                        } else {
+//                            KotlinLogging.logger {  }.info { "This is an SMARK application" }
+//                        }
                         redirectAttributes.addFlashAttribute("alert", "You have approved the inspection report.")
                         result = "redirect:/api/qa/hof/application/details/${id}"
                     }
@@ -353,11 +348,11 @@ class QAHOFController(
                             this?.hofApproval = inspectionApprovalStatus
                         }
                         factoryInspectionRepository.save(inspectionReport!!)
-                        if(permit.permitType == 1L) {
-                            qualityAssuranceBpmn.qaDmARApproveInspectionReportComplete(id, qaoAssigneeId, false)
-                        } else {
-                            KotlinLogging.logger {  }.info { "This is an SMARK application" }
-                        }
+//                        if(permit.permitType == 1L) {
+//                            qualityAssuranceBpmn.qaDmARApproveInspectionReportComplete(id, qaoAssigneeId, false)
+//                        } else {
+//                            KotlinLogging.logger {  }.info { "This is an SMARK application" }
+//                        }
                         redirectAttributes.addFlashAttribute("alert", "You have approved the inspection report.")
                         result = "redirect:/api/qa/hof/application/details/${id}"
                     }
@@ -370,7 +365,7 @@ class QAHOFController(
                             labReportStatus = 1
                         }
                         permitRepository.save(permit)
-                        qualityAssuranceBpmn.qaDmARCheckTestReportsComplete(id, qaoAssigneeId, true)
+//                        qualityAssuranceBpmn.qaDmARCheckTestReportsComplete(id, qaoAssigneeId, true)
                         redirectAttributes.addFlashAttribute("alert", "You have confirmrd that the lab report is not available")
                         result = "redirect:/api/qao/application/details/${id}"
                     }
@@ -379,7 +374,7 @@ class QAHOFController(
                             labReportStatus = 0
                         }
                         permitRepository.save(permit)
-                        qualityAssuranceBpmn.qaDmARCheckTestReportsComplete(id, qaoAssigneeId, false)
+//                        qualityAssuranceBpmn.qaDmARCheckTestReportsComplete(id, qaoAssigneeId, false)
                         redirectAttributes.addFlashAttribute("alert", "You have confirmrd that the lab report is available")
                         result = "redirect:/api/qao/application/details/${id}"
                     }
@@ -388,7 +383,7 @@ class QAHOFController(
             "report_compliance_status" -> {
                 when(reportComplianceStatus) {
                     1 -> {
-                        qualityAssuranceBpmn.qaDmARTestReportsCompliantComplete(id, qaoAssigneeId, true)
+//                        qualityAssuranceBpmn.qaDmARTestReportsCompliantComplete(id, qaoAssigneeId, true)
                         with(permit){
                             labComplianceStatus = reportComplianceStatus
                         }
@@ -396,14 +391,14 @@ class QAHOFController(
                         result = "redirect:/api/qao/application/details/${id}"
                     }
                     0 -> {
-                        qualityAssuranceBpmn.qaDmARTestReportsCompliantComplete(id, qaoAssigneeId, false)
+//                        qualityAssuranceBpmn.qaDmARTestReportsCompliantComplete(id, qaoAssigneeId, false)
                         with(permit){
                             labComplianceStatus = reportComplianceStatus
                         }
                         permitRepository.save(permit)
 
-                        qualityAssuranceBpmn.qaDmARFillSSFComplete(id, labId)
-                        qualityAssuranceBpmn.qaDmARReceiveSSFComplete(id, qaoAssigneeId)
+//                        qualityAssuranceBpmn.qaDmARFillSSFComplete(id, labId)
+//                        qualityAssuranceBpmn.qaDmARReceiveSSFComplete(id, qaoAssigneeId)
 
                         redirectAttributes.addFlashAttribute("alert", "Lab report marked as non-compliant. Submit samples for review.")
                         result = "redirect:/api/qao/application/details/${id}"

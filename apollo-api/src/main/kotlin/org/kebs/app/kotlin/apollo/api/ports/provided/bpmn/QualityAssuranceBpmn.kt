@@ -773,282 +773,282 @@ class QualityAssuranceBpmn(
         return false
     }
 
-    /*
-    ***********************************************************************************
-    * DM APPLICATION REVIEW
-    ***********************************************************************************
-     */
-    //Start the DM Application Review process
-    fun startQADMApplicationReviewProcess(permitId: Long, assigneeId: Long, foreignApplication: Boolean): HashMap<String, String>? {
-        var variables: HashMap<String, Any> = HashMap()
-        KotlinLogging.logger { }.info("permitId : $permitId : Starting QA DM application review process")
-        try {
-            //Remember to start by setting email and assignee to manufacturer
-            checkStartProcessInputs(permitId, assigneeId, qaDmApplicationReviewProcessDefinitionKey)?.let { checkVariables ->
-                val permit: PermitApplicationsEntity = checkVariables["permit"] as PermitApplicationsEntity
-                variables["permitId"] = permit.id.toString()
-                variables["permitRefNo"] = permit.permitRefNumber.toString()
-                variables["email"] = checkVariables["assigneeEmail"].toString()
-                variables["manufacturerEmail"] = checkVariables["manufacturerEmail"].toString()
-                variables["applicationComplete"] = 0
-                variables["inspectionReportApproved"] = 0
-                variables["testReportsAvailable"] = 0
-                variables["testReportsCompliant"] = 0
-                variables["labReportStatus"] = 0
-                variables["complianceStatus"] = 0
-                variables["supervisionSchemeAccepted"] = 0
-                variables["foreignDmark"] = bpmnCommonFunctions.booleanToInt(foreignApplication).toString()
-                variables["justificationReportApproved"] = 0
-
-                bpmnCommonFunctions.startBpmnProcess(qaDmApplicationReviewProcessDefinitionKey, qaDmApplicationReviewBusinessKey, variables, assigneeId)?.let {
-                    permit.dmAppReviewProcessInstanceId = it["processInstanceId"]
-                    //permit.sfMarkInspectionTaskId = it["taskId"]
-                    permit.dmAppReviewStartedOn = Timestamp.from(Instant.now())
-                    permit.dmAppReviewStatus = 1
-                    permitsRepo.save(permit)
-                    KotlinLogging.logger { }.info("permitId : $permitId : Successfully started QA DM application review process for permit")
-                    return it
-                } ?: run {
-                    KotlinLogging.logger { }.info("$permitId : Unable to start QA DM application review process")
-                }
-            }
-        } catch (e: Exception) {
-            KotlinLogging.logger { }.error(e.message, e)
-        }
-        return null
-    }
-
-    fun qaDmARCheckApplicationComplete(permitId: Long, hofAssigneeId: Long, applicationComplete: Boolean): Boolean {
-        KotlinLogging.logger { }.info("PermitId : $permitId :  Check if application is complete")
-        updateTaskVariableByObjectIdAndKey(permitId, "qaDmarCheckApplication", qaDmApplicationReviewProcessDefinitionKey, "applicationComplete", bpmnCommonFunctions.booleanToInt(applicationComplete).toString())
-        qaCompleteTask(permitId, "qaDmarCheckApplication", qaDmApplicationReviewProcessDefinitionKey)?.let {
-            return if (applicationComplete) {   //application is complete
-                qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "qaDmarAllocateQAO", hofAssigneeId)
-            } else {
-                qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "qaSfmiAnalyzeSamples", hofAssigneeId)
-            }
-        }
-        return false
-    }
-
-    fun qaDmARManufacturerCorrectionComplete(permitId: Long, hofAssigneeId: Long): Boolean {
-        KotlinLogging.logger { }.info("PermitId : $permitId :  manufacturer correction complete")
-        qaCompleteTask(permitId, "qaDmarManufacturerCorrection", qaDmApplicationReviewProcessDefinitionKey)?.let {
-            qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "qaDmarCheckApplication", hofAssigneeId)
-        }
-        return false
-    }
-
-    fun qaDmARAllocateQAOComplete(permitId: Long, assigneeId: Long): Boolean {
-        KotlinLogging.logger { }.info("PermitId : $permitId :  Allocate QAO complete")
-        //Update email
-        userRepo.findByIdOrNull(assigneeId)?.let { usersEntity ->
-            updateTaskVariableByObjectIdAndKey(permitId, "qaDmarAllocateQAO", qaDmApplicationReviewProcessDefinitionKey, "email", usersEntity.email.toString())
-        }
-
-        qaCompleteTask(permitId, "qaDmarAllocateQAO", qaDmApplicationReviewProcessDefinitionKey)?.let {
-            val foreignDmark = bpmnCommonFunctions.getProcessVariables(it["processInstanceId"].toString())?.get("foreignDmark").toString()
-            if (foreignDmark == "1"){  //foreign dmark
-                qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "qaDmarGenerateJustificationReport", assigneeId)
-            } else {
-                qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "qaDmarFactoryInspection", assigneeId)
-            }
-        }
-        return false
-    }
-
-    //------------------------------------
-    //FOREIGN DMARK ADDITIONAL STEPS
-    //------------------------------------
-    fun qaDmARGenerateJustificationReportComplete(permitId: Long, assigneeId: Long): Boolean {
-        KotlinLogging.logger { }.info("PermitId : $permitId :  Generate Justification report complete")
-        qaCompleteTask(permitId, "qaDmarGenerateJustificationReport", qaDmApplicationReviewProcessDefinitionKey)?.let {
-            qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "qaDmarApproveJustificationReport", assigneeId)
-        }
-        return false
-    }
-
-    fun qaDmARApproveJustificationReportComplete(permitId: Long, assigneeId: Long,justificationReportApproved:Boolean): Boolean {
-        KotlinLogging.logger { }.info("PermitId : $permitId :  Approve the justification report complete")
-        updateTaskVariableByObjectIdAndKey(permitId, "qaDmarApproveJustificationReport", qaDmApplicationReviewProcessDefinitionKey, "justificationReportApproved", bpmnCommonFunctions.booleanToInt(justificationReportApproved).toString())
-        qaCompleteTask(permitId, "qaDmarApproveJustificationReport", qaDmApplicationReviewProcessDefinitionKey)?.let {
-            return if (justificationReportApproved) {   //justification report approved
-                qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "qaDmarAssignAssessor", assigneeId)
-            } else {
-                qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "qaDmarGenerateJustificationReport", assigneeId)
-            }
-        }
-        return false
-    }
-
-    fun qaDmARAssignAssessorComplete(permitId: Long, assigneeId: Long): Boolean {
-        KotlinLogging.logger { }.info("PermitId : $permitId :  Assign assessor complete")
-        qaCompleteTask(permitId, "qaDmarAssignAssessor", qaDmApplicationReviewProcessDefinitionKey)?.let {
-            qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "qaDmarFactoryInspection", assigneeId)
-        }
-        return false
-    }
-    //------------------------------------
-
-    fun qaDmARFactoryInspectionComplete(permitId: Long, qaoAssigneeId: Long): Boolean {
-        KotlinLogging.logger { }.info("PermitId : $permitId :  Factory inspection complete")
-        qaCompleteTask(permitId, "qaDmarFactoryInspection", qaDmApplicationReviewProcessDefinitionKey)?.let {
-            qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "qaDmarGenerateInspectionReport", qaoAssigneeId)
-        }
-        return false
-    }
-
-    fun qaDmARGenerateInspectionReportComplete(permitId: Long, hofAssigneeId: Long): Boolean {
-        KotlinLogging.logger { }.info("PermitId : $permitId :  Generate inspection report complete")
-        //Update email
-        userRepo.findByIdOrNull(hofAssigneeId)?.let { usersEntity ->
-            updateTaskVariableByObjectIdAndKey(permitId, "qaDmarGenerateInspectionReport", qaDmApplicationReviewProcessDefinitionKey, "email", usersEntity.email.toString())
-        }
-        qaCompleteTask(permitId, "qaDmarGenerateInspectionReport", qaDmApplicationReviewProcessDefinitionKey)?.let {
-            qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "qaDmarApproveInspectionReport", hofAssigneeId)
-        }
-        return false
-    }
-
-    fun qaDmARApproveInspectionReportComplete(permitId: Long, qaoAssigneeId: Long, inspectionReportApproved: Boolean): Boolean {
-        KotlinLogging.logger { }.info("PermitId : $permitId :  Approve the inspection report complete")
-        updateTaskVariableByObjectIdAndKey(permitId, "qaDmarApproveInspectionReport", qaDmApplicationReviewProcessDefinitionKey, "inspectionReportApproved", bpmnCommonFunctions.booleanToInt(inspectionReportApproved).toString())
-        qaCompleteTask(permitId, "qaDmarApproveInspectionReport", qaDmApplicationReviewProcessDefinitionKey)?.let {
-            qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "qaDmarGenerateSupervisionScheme", qaoAssigneeId)
-            return if (inspectionReportApproved) {   //inspection report approved
-                qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "qaDmarTestReportsAvailable", qaoAssigneeId)
-            } else {
-                qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "qaDmarGenerateInspectionReport", qaoAssigneeId)
-            }
-        }
-        return false
-    }
-
-    fun qaDmARGenSupervisionSchemeComplete(permitId: Long, assigneeId: Long): Boolean {
-        KotlinLogging.logger { }.info("PermitId : $permitId :  Generate supervision scheme")
-        qaCompleteTask(permitId, "qaDmarGenerateSupervisionScheme" , qaDmApplicationReviewProcessDefinitionKey)?.let {
-            return qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "qaDmarAcceptSupervisionScheme", assigneeId)
-        }
-        return false
-    }
-
-    fun qaDmARAcceptSupervisionScheme(permitId: Long, assigneeId: Long, supervisionSchemeAccepted: Boolean): Boolean {
-        KotlinLogging.logger { }.info("PermitId : $permitId :  Accept supervision scheme")
-        updateTaskVariableByObjectIdAndKey(permitId, "qaDmarAcceptSupervisionScheme", qaDmApplicationReviewProcessDefinitionKey, "supervisionSchemeAccepted", bpmnCommonFunctions.booleanToInt(supervisionSchemeAccepted).toString())
-        qaCompleteTask(permitId, "qaDmarAcceptSupervisionScheme", qaDmApplicationReviewProcessDefinitionKey)?.let {
-            if (!supervisionSchemeAccepted){
-                //return to sender
-                return qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "qaDmarGenerateSupervisionScheme", assigneeId)
-            } else {
-                return true //process ends
-            }
-        }
-        return false
-    }
-
-    fun qaDmARCheckTestReportsComplete(permitId: Long, qaoAssigneeId: Long, testReportsAvailable: Boolean): Boolean {
-        KotlinLogging.logger { }.info("PermitId : $permitId :  Check if test reports available complete")
-        updateTaskVariableByObjectIdAndKey(permitId, "qaDmarTestReportsAvailable", qaDmApplicationReviewProcessDefinitionKey, "testReportsAvailable", bpmnCommonFunctions.booleanToInt(testReportsAvailable).toString())
-        qaCompleteTask(permitId, "qaDmarTestReportsAvailable", qaDmApplicationReviewProcessDefinitionKey)?.let {
-            return if (testReportsAvailable) {   //test reports available
-                qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "qaDmarTestReportsCompliant", qaoAssigneeId)
-            } else {
-                qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "qaDmarFillSSF", qaoAssigneeId)
-            }
-        }
-        return false
-    }
-
-    fun qaDmARTestReportsCompliantComplete(permitId: Long, qaoAssigneeId: Long, testReportsCompliant: Boolean): Boolean {
-        KotlinLogging.logger { }.info("PermitId : $permitId :  Check if test reports are compliant complete")
-        updateTaskVariableByObjectIdAndKey(permitId, "qaDmarTestReportsCompliant", qaDmApplicationReviewProcessDefinitionKey, "testReportsCompliant", bpmnCommonFunctions.booleanToInt(testReportsCompliant).toString())
-        qaCompleteTask(permitId, "qaDmarTestReportsCompliant", qaDmApplicationReviewProcessDefinitionKey)?.let {
-            return if (testReportsCompliant) {   //test reports are compliant
-                //update the task completion time and status
-                permitRepo.findByIdOrNull(permitId)?.let { permit ->//Check that the permit is valid
-                    permit.dmAppReviewStatus = 2
-                    permit.dmAppReviewCompletedOn = Timestamp.from(Instant.now())
-                    permitRepo.save(permit)
-                }
-                true
-            } else {
-                qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "qaDmarFillSSF", qaoAssigneeId)
-            }
-        }
-        return false
-    }
-
-    fun qaDmARFillSSFComplete(permitId: Long, labAssigneeId: Long): Boolean {
-        KotlinLogging.logger { }.info("PermitId : $permitId :  Fill the SSF complete")
-        qaCompleteTask(permitId, "qaDmarFillSSF", qaDmApplicationReviewProcessDefinitionKey)?.let {
-            return qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "qaDmarReceiveSSF", labAssigneeId)
-        }
-        return false
-    }
-
-    fun qaDmARReceiveSSFComplete(permitId: Long, qaoAssigneeId: Long): Boolean {
-        KotlinLogging.logger { }.info("PermitId : $permitId :  Receive the SSF complete")
-        qaCompleteTask(permitId, "qaDmarReceiveSSF", qaDmApplicationReviewProcessDefinitionKey)?.let {
-            return qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "qaDmarSubmitSamples", qaoAssigneeId)
-        }
-        return false
-    }
-
-    fun qaDmARSubmitSamplesComplete(permitId: Long, labAssigneeId: Long): Boolean {
-        KotlinLogging.logger { }.info("PermitId : $permitId :  Submit the samples complete")
-        qaCompleteTask(permitId, "qaDmarSubmitSamples", qaDmApplicationReviewProcessDefinitionKey)?.let {
-            return qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "qaDmarAnalyzeSamples", labAssigneeId)
-        }
-        return false
-    }
-
-    fun qaDmARLabAnalysisComplete(permitId: Long, qaoAssigneeId: Long): Boolean {
-        KotlinLogging.logger { }.info("PermitId : $permitId :  Lab analysis complete")
-        userRepo.findByIdOrNull(qaoAssigneeId)?.let { usersEntity ->
-            updateTaskVariableByObjectIdAndKey(permitId, "qaDmarAnalyzeSamples", qaDmApplicationReviewProcessDefinitionKey, "email", usersEntity.email.toString())
-        }
-        qaCompleteTask(permitId, "qaDmarAnalyzeSamples", qaDmApplicationReviewProcessDefinitionKey)?.let {
-            return qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "qaDmarLabReportCorrect", qaoAssigneeId)
-        }
-        return false
-    }
-
-    fun qaDmARCheckLabReportsComplete(permitId: Long, qaoAssigneeId: Long, labAssigneeId: Long, labReportStatus: Boolean): Boolean {
-        KotlinLogging.logger { }.info("PermitId : $permitId :  Check if lab report correct complete")
-        updateTaskVariableByObjectIdAndKey(permitId, "qaDmarLabReportCorrect", qaDmApplicationReviewProcessDefinitionKey, "labReportStatus", bpmnCommonFunctions.booleanToInt(labReportStatus).toString())
-        qaCompleteTask(permitId, "qaDmarLabReportCorrect", qaDmApplicationReviewProcessDefinitionKey)?.let {
-            return if (labReportStatus) {   //test reports available
-                qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "qaDmarAssignComplianceStatus", qaoAssigneeId)
-            } else {
-                qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "qaDmarAnalyzeSamples", labAssigneeId)
-            }
-        }
-        return false
-    }
-
-    fun qaDmARAssignComplianceStatusComplete(permitId: Long, qaoAssigneeId: Long, complianceStatus: Boolean): Boolean {
-        KotlinLogging.logger { }.info("PermitId : $permitId :  Assign the compliance status complete")
-        updateTaskVariableByObjectIdAndKey(permitId, "qaDmarAssignComplianceStatus", qaDmApplicationReviewProcessDefinitionKey, "complianceStatus", bpmnCommonFunctions.booleanToInt(complianceStatus).toString())
-        fetchTaskByPermitId(permitId, qaDmApplicationReviewProcessDefinitionKey)?.let { taskDetails ->
-            bpmnCommonFunctions.getTaskVariables(taskDetails[0].task.id)?.let {
-                updateTaskVariableByObjectIdAndKey(permitId, "qaDmarAssignComplianceStatus", qaDmApplicationReviewProcessDefinitionKey, "email", it["manufacturerEmail"].toString())
-            }
-        }
-        qaCompleteTask(permitId, "qaDmarAssignComplianceStatus", qaDmApplicationReviewProcessDefinitionKey)?.let {
-            return if (complianceStatus) {   //compliance Status ok
-                //update the task completion time and status
-                permitRepo.findByIdOrNull(permitId)?.let { permit ->//Check that the permit is valid
-                    permit.dmAppReviewStatus = 2
-                    permit.dmAppReviewCompletedOn = Timestamp.from(Instant.now())
-                    permitRepo.save(permit)
-                }
-                true //process ends here
-            } else {
-                qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "qaoAssigneeId", qaoAssigneeId)
-            }
-        }
-        return false
-    }
+//    /*
+//    ***********************************************************************************
+//    * DM APPLICATION REVIEW
+//    ***********************************************************************************
+//     */
+//    //Start the DM Application Review process
+//    fun startQADMApplicationReviewProcess(permitId: Long, assigneeId: Long, foreignApplication: Boolean): HashMap<String, String>? {
+//        var variables: HashMap<String, Any> = HashMap()
+//        KotlinLogging.logger { }.info("permitId : $permitId : Starting QA DM application review process")
+//        try {
+//            //Remember to start by setting email and assignee to manufacturer
+//            checkStartProcessInputs(permitId, assigneeId, qaDmApplicationReviewProcessDefinitionKey)?.let { checkVariables ->
+//                val permit: PermitApplicationsEntity = checkVariables["permit"] as PermitApplicationsEntity
+//                variables["permitId"] = permit.id.toString()
+//                variables["permitRefNo"] = permit.permitRefNumber.toString()
+//                variables["email"] = checkVariables["assigneeEmail"].toString()
+//                variables["manufacturerEmail"] = checkVariables["manufacturerEmail"].toString()
+//                variables["applicationComplete"] = 0
+//                variables["inspectionReportApproved"] = 0
+//                variables["testReportsAvailable"] = 0
+//                variables["testReportsCompliant"] = 0
+//                variables["labReportStatus"] = 0
+//                variables["complianceStatus"] = 0
+//                variables["supervisionSchemeAccepted"] = 0
+//                variables["foreignDmark"] = bpmnCommonFunctions.booleanToInt(foreignApplication).toString()
+//                variables["justificationReportApproved"] = 0
+//
+//                bpmnCommonFunctions.startBpmnProcess(qaDmApplicationReviewProcessDefinitionKey, qaDmApplicationReviewBusinessKey, variables, assigneeId)?.let {
+//                    permit.dmAppReviewProcessInstanceId = it["processInstanceId"]
+//                    //permit.sfMarkInspectionTaskId = it["taskId"]
+//                    permit.dmAppReviewStartedOn = Timestamp.from(Instant.now())
+//                    permit.dmAppReviewStatus = 1
+//                    permitsRepo.save(permit)
+//                    KotlinLogging.logger { }.info("permitId : $permitId : Successfully started QA DM application review process for permit")
+//                    return it
+//                } ?: run {
+//                    KotlinLogging.logger { }.info("$permitId : Unable to start QA DM application review process")
+//                }
+//            }
+//        } catch (e: Exception) {
+//            KotlinLogging.logger { }.error(e.message, e)
+//        }
+//        return null
+//    }
+//
+//    fun qaDmARCheckApplicationComplete(permitId: Long, hofAssigneeId: Long, applicationComplete: Boolean): Boolean {
+//        KotlinLogging.logger { }.info("PermitId : $permitId :  Check if application is complete")
+//        updateTaskVariableByObjectIdAndKey(permitId, "qaDmarCheckApplication", qaDmApplicationReviewProcessDefinitionKey, "applicationComplete", bpmnCommonFunctions.booleanToInt(applicationComplete).toString())
+//        qaCompleteTask(permitId, "qaDmarCheckApplication", qaDmApplicationReviewProcessDefinitionKey)?.let {
+//            return if (applicationComplete) {   //application is complete
+//                qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "qaDmarAllocateQAO", hofAssigneeId)
+//            } else {
+//                qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "qaSfmiAnalyzeSamples", hofAssigneeId)
+//            }
+//        }
+//        return false
+//    }
+//
+//    fun qaDmARManufacturerCorrectionComplete(permitId: Long, hofAssigneeId: Long): Boolean {
+//        KotlinLogging.logger { }.info("PermitId : $permitId :  manufacturer correction complete")
+//        qaCompleteTask(permitId, "qaDmarManufacturerCorrection", qaDmApplicationReviewProcessDefinitionKey)?.let {
+//            qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "qaDmarCheckApplication", hofAssigneeId)
+//        }
+//        return false
+//    }
+//
+//    fun qaDmARAllocateQAOComplete(permitId: Long, assigneeId: Long): Boolean {
+//        KotlinLogging.logger { }.info("PermitId : $permitId :  Allocate QAO complete")
+//        //Update email
+//        userRepo.findByIdOrNull(assigneeId)?.let { usersEntity ->
+//            updateTaskVariableByObjectIdAndKey(permitId, "qaDmarAllocateQAO", qaDmApplicationReviewProcessDefinitionKey, "email", usersEntity.email.toString())
+//        }
+//
+//        qaCompleteTask(permitId, "qaDmarAllocateQAO", qaDmApplicationReviewProcessDefinitionKey)?.let {
+//            val foreignDmark = bpmnCommonFunctions.getProcessVariables(it["processInstanceId"].toString())?.get("foreignDmark").toString()
+//            if (foreignDmark == "1"){  //foreign dmark
+//                qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "qaDmarGenerateJustificationReport", assigneeId)
+//            } else {
+//                qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "qaDmarFactoryInspection", assigneeId)
+//            }
+//        }
+//        return false
+//    }
+//
+//    //------------------------------------
+//    //FOREIGN DMARK ADDITIONAL STEPS
+//    //------------------------------------
+//    fun qaDmARGenerateJustificationReportComplete(permitId: Long, assigneeId: Long): Boolean {
+//        KotlinLogging.logger { }.info("PermitId : $permitId :  Generate Justification report complete")
+//        qaCompleteTask(permitId, "qaDmarGenerateJustificationReport", qaDmApplicationReviewProcessDefinitionKey)?.let {
+//            qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "qaDmarApproveJustificationReport", assigneeId)
+//        }
+//        return false
+//    }
+//
+//    fun qaDmARApproveJustificationReportComplete(permitId: Long, assigneeId: Long,justificationReportApproved:Boolean): Boolean {
+//        KotlinLogging.logger { }.info("PermitId : $permitId :  Approve the justification report complete")
+//        updateTaskVariableByObjectIdAndKey(permitId, "qaDmarApproveJustificationReport", qaDmApplicationReviewProcessDefinitionKey, "justificationReportApproved", bpmnCommonFunctions.booleanToInt(justificationReportApproved).toString())
+//        qaCompleteTask(permitId, "qaDmarApproveJustificationReport", qaDmApplicationReviewProcessDefinitionKey)?.let {
+//            return if (justificationReportApproved) {   //justification report approved
+//                qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "qaDmarAssignAssessor", assigneeId)
+//            } else {
+//                qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "qaDmarGenerateJustificationReport", assigneeId)
+//            }
+//        }
+//        return false
+//    }
+//
+//    fun qaDmARAssignAssessorComplete(permitId: Long, assigneeId: Long): Boolean {
+//        KotlinLogging.logger { }.info("PermitId : $permitId :  Assign assessor complete")
+//        qaCompleteTask(permitId, "qaDmarAssignAssessor", qaDmApplicationReviewProcessDefinitionKey)?.let {
+//            qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "qaDmarFactoryInspection", assigneeId)
+//        }
+//        return false
+//    }
+//    //------------------------------------
+//
+//    fun qaDmARFactoryInspectionComplete(permitId: Long, qaoAssigneeId: Long): Boolean {
+//        KotlinLogging.logger { }.info("PermitId : $permitId :  Factory inspection complete")
+//        qaCompleteTask(permitId, "qaDmarFactoryInspection", qaDmApplicationReviewProcessDefinitionKey)?.let {
+//            qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "qaDmarGenerateInspectionReport", qaoAssigneeId)
+//        }
+//        return false
+//    }
+//
+//    fun qaDmARGenerateInspectionReportComplete(permitId: Long, hofAssigneeId: Long): Boolean {
+//        KotlinLogging.logger { }.info("PermitId : $permitId :  Generate inspection report complete")
+//        //Update email
+//        userRepo.findByIdOrNull(hofAssigneeId)?.let { usersEntity ->
+//            updateTaskVariableByObjectIdAndKey(permitId, "qaDmarGenerateInspectionReport", qaDmApplicationReviewProcessDefinitionKey, "email", usersEntity.email.toString())
+//        }
+//        qaCompleteTask(permitId, "qaDmarGenerateInspectionReport", qaDmApplicationReviewProcessDefinitionKey)?.let {
+//            qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "qaDmarApproveInspectionReport", hofAssigneeId)
+//        }
+//        return false
+//    }
+//
+//    fun qaDmARApproveInspectionReportComplete(permitId: Long, qaoAssigneeId: Long, inspectionReportApproved: Boolean): Boolean {
+//        KotlinLogging.logger { }.info("PermitId : $permitId :  Approve the inspection report complete")
+//        updateTaskVariableByObjectIdAndKey(permitId, "qaDmarApproveInspectionReport", qaDmApplicationReviewProcessDefinitionKey, "inspectionReportApproved", bpmnCommonFunctions.booleanToInt(inspectionReportApproved).toString())
+//        qaCompleteTask(permitId, "qaDmarApproveInspectionReport", qaDmApplicationReviewProcessDefinitionKey)?.let {
+//            qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "qaDmarGenerateSupervisionScheme", qaoAssigneeId)
+//            return if (inspectionReportApproved) {   //inspection report approved
+//                qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "qaDmarTestReportsAvailable", qaoAssigneeId)
+//            } else {
+//                qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "qaDmarGenerateInspectionReport", qaoAssigneeId)
+//            }
+//        }
+//        return false
+//    }
+//
+//    fun qaDmARGenSupervisionSchemeComplete(permitId: Long, assigneeId: Long): Boolean {
+//        KotlinLogging.logger { }.info("PermitId : $permitId :  Generate supervision scheme")
+//        qaCompleteTask(permitId, "qaDmarGenerateSupervisionScheme" , qaDmApplicationReviewProcessDefinitionKey)?.let {
+//            return qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "qaDmarAcceptSupervisionScheme", assigneeId)
+//        }
+//        return false
+//    }
+//
+//    fun qaDmARAcceptSupervisionScheme(permitId: Long, assigneeId: Long, supervisionSchemeAccepted: Boolean): Boolean {
+//        KotlinLogging.logger { }.info("PermitId : $permitId :  Accept supervision scheme")
+//        updateTaskVariableByObjectIdAndKey(permitId, "qaDmarAcceptSupervisionScheme", qaDmApplicationReviewProcessDefinitionKey, "supervisionSchemeAccepted", bpmnCommonFunctions.booleanToInt(supervisionSchemeAccepted).toString())
+//        qaCompleteTask(permitId, "qaDmarAcceptSupervisionScheme", qaDmApplicationReviewProcessDefinitionKey)?.let {
+//            if (!supervisionSchemeAccepted){
+//                //return to sender
+//                return qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "qaDmarGenerateSupervisionScheme", assigneeId)
+//            } else {
+//                return true //process ends
+//            }
+//        }
+//        return false
+//    }
+//
+//    fun qaDmARCheckTestReportsComplete(permitId: Long, qaoAssigneeId: Long, testReportsAvailable: Boolean): Boolean {
+//        KotlinLogging.logger { }.info("PermitId : $permitId :  Check if test reports available complete")
+//        updateTaskVariableByObjectIdAndKey(permitId, "qaDmarTestReportsAvailable", qaDmApplicationReviewProcessDefinitionKey, "testReportsAvailable", bpmnCommonFunctions.booleanToInt(testReportsAvailable).toString())
+//        qaCompleteTask(permitId, "qaDmarTestReportsAvailable", qaDmApplicationReviewProcessDefinitionKey)?.let {
+//            return if (testReportsAvailable) {   //test reports available
+//                qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "qaDmarTestReportsCompliant", qaoAssigneeId)
+//            } else {
+//                qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "qaDmarFillSSF", qaoAssigneeId)
+//            }
+//        }
+//        return false
+//    }
+//
+//    fun qaDmARTestReportsCompliantComplete(permitId: Long, qaoAssigneeId: Long, testReportsCompliant: Boolean): Boolean {
+//        KotlinLogging.logger { }.info("PermitId : $permitId :  Check if test reports are compliant complete")
+//        updateTaskVariableByObjectIdAndKey(permitId, "qaDmarTestReportsCompliant", qaDmApplicationReviewProcessDefinitionKey, "testReportsCompliant", bpmnCommonFunctions.booleanToInt(testReportsCompliant).toString())
+//        qaCompleteTask(permitId, "qaDmarTestReportsCompliant", qaDmApplicationReviewProcessDefinitionKey)?.let {
+//            return if (testReportsCompliant) {   //test reports are compliant
+//                //update the task completion time and status
+//                permitRepo.findByIdOrNull(permitId)?.let { permit ->//Check that the permit is valid
+//                    permit.dmAppReviewStatus = 2
+//                    permit.dmAppReviewCompletedOn = Timestamp.from(Instant.now())
+//                    permitRepo.save(permit)
+//                }
+//                true
+//            } else {
+//                qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "qaDmarFillSSF", qaoAssigneeId)
+//            }
+//        }
+//        return false
+//    }
+//
+//    fun qaDmARFillSSFComplete(permitId: Long, labAssigneeId: Long): Boolean {
+//        KotlinLogging.logger { }.info("PermitId : $permitId :  Fill the SSF complete")
+//        qaCompleteTask(permitId, "qaDmarFillSSF", qaDmApplicationReviewProcessDefinitionKey)?.let {
+//            return qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "qaDmarReceiveSSF", labAssigneeId)
+//        }
+//        return false
+//    }
+//
+//    fun qaDmARReceiveSSFComplete(permitId: Long, qaoAssigneeId: Long): Boolean {
+//        KotlinLogging.logger { }.info("PermitId : $permitId :  Receive the SSF complete")
+//        qaCompleteTask(permitId, "qaDmarReceiveSSF", qaDmApplicationReviewProcessDefinitionKey)?.let {
+//            return qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "qaDmarSubmitSamples", qaoAssigneeId)
+//        }
+//        return false
+//    }
+//
+//    fun qaDmARSubmitSamplesComplete(permitId: Long, labAssigneeId: Long): Boolean {
+//        KotlinLogging.logger { }.info("PermitId : $permitId :  Submit the samples complete")
+//        qaCompleteTask(permitId, "qaDmarSubmitSamples", qaDmApplicationReviewProcessDefinitionKey)?.let {
+//            return qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "qaDmarAnalyzeSamples", labAssigneeId)
+//        }
+//        return false
+//    }
+//
+//    fun qaDmARLabAnalysisComplete(permitId: Long, qaoAssigneeId: Long): Boolean {
+//        KotlinLogging.logger { }.info("PermitId : $permitId :  Lab analysis complete")
+//        userRepo.findByIdOrNull(qaoAssigneeId)?.let { usersEntity ->
+//            updateTaskVariableByObjectIdAndKey(permitId, "qaDmarAnalyzeSamples", qaDmApplicationReviewProcessDefinitionKey, "email", usersEntity.email.toString())
+//        }
+//        qaCompleteTask(permitId, "qaDmarAnalyzeSamples", qaDmApplicationReviewProcessDefinitionKey)?.let {
+//            return qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "qaDmarLabReportCorrect", qaoAssigneeId)
+//        }
+//        return false
+//    }
+//
+//    fun qaDmARCheckLabReportsComplete(permitId: Long, qaoAssigneeId: Long, labAssigneeId: Long, labReportStatus: Boolean): Boolean {
+//        KotlinLogging.logger { }.info("PermitId : $permitId :  Check if lab report correct complete")
+//        updateTaskVariableByObjectIdAndKey(permitId, "qaDmarLabReportCorrect", qaDmApplicationReviewProcessDefinitionKey, "labReportStatus", bpmnCommonFunctions.booleanToInt(labReportStatus).toString())
+//        qaCompleteTask(permitId, "qaDmarLabReportCorrect", qaDmApplicationReviewProcessDefinitionKey)?.let {
+//            return if (labReportStatus) {   //test reports available
+//                qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "qaDmarAssignComplianceStatus", qaoAssigneeId)
+//            } else {
+//                qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "qaDmarAnalyzeSamples", labAssigneeId)
+//            }
+//        }
+//        return false
+//    }
+//
+//    fun qaDmARAssignComplianceStatusComplete(permitId: Long, qaoAssigneeId: Long, complianceStatus: Boolean): Boolean {
+//        KotlinLogging.logger { }.info("PermitId : $permitId :  Assign the compliance status complete")
+//        updateTaskVariableByObjectIdAndKey(permitId, "qaDmarAssignComplianceStatus", qaDmApplicationReviewProcessDefinitionKey, "complianceStatus", bpmnCommonFunctions.booleanToInt(complianceStatus).toString())
+//        fetchTaskByPermitId(permitId, qaDmApplicationReviewProcessDefinitionKey)?.let { taskDetails ->
+//            bpmnCommonFunctions.getTaskVariables(taskDetails[0].task.id)?.let {
+//                updateTaskVariableByObjectIdAndKey(permitId, "qaDmarAssignComplianceStatus", qaDmApplicationReviewProcessDefinitionKey, "email", it["manufacturerEmail"].toString())
+//            }
+//        }
+//        qaCompleteTask(permitId, "qaDmarAssignComplianceStatus", qaDmApplicationReviewProcessDefinitionKey)?.let {
+//            return if (complianceStatus) {   //compliance Status ok
+//                //update the task completion time and status
+//                permitRepo.findByIdOrNull(permitId)?.let { permit ->//Check that the permit is valid
+//                    permit.dmAppReviewStatus = 2
+//                    permit.dmAppReviewCompletedOn = Timestamp.from(Instant.now())
+//                    permitRepo.save(permit)
+//                }
+//                true //process ends here
+//            } else {
+//                qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "qaoAssigneeId", qaoAssigneeId)
+//            }
+//        }
+//        return false
+//    }
 
     /*
      ***********************************************************************************
@@ -1726,6 +1726,283 @@ class QualityAssuranceBpmn(
         }
     }
 
+
+    /*
+    ***********************************************************************************
+    * DM APPLICATION REVIEW
+    ***********************************************************************************
+     */
+
+    //Start the DM Application Review process
+    fun startQaDMApplicationReviewProcess(permitId: Long, assigneeId: Long): HashMap<String, String>? {
+        var variables: HashMap<String, Any> = HashMap()
+        KotlinLogging.logger { }.info("permitId : $permitId : Starting QA DM application review process")
+        try {
+            //Remember to start by setting email and assignee to manufacturer
+            checkStartProcessInputs(permitId, assigneeId, qaDmApplicationReviewProcessDefinitionKey)?.let { checkVariables ->
+                val permit: PermitApplicationsEntity = checkVariables["permit"] as PermitApplicationsEntity
+                variables["permitId"] = permit.id.toString()
+                variables["permitRefNo"] = permit.permitRefNumber.toString()
+                variables["email"] = checkVariables["assigneeEmail"].toString()
+                variables["manufacturerEmail"] = checkVariables["manufacturerEmail"].toString()
+                variables["applicationComplete"] = 0
+                variables["inspectionReportApproved"] = 0
+                variables["testReportsAvailable"] = 0
+                variables["testReportsCompliant"] = 0
+                variables["labReportStatus"] = 0
+                variables["complianceStatus"] = 0
+                variables["labResultsCompliant"] = 0
+                variables["supervisionSchemeAccepted"] = 0
+                variables["foreignDmark"] = 0
+                variables["justificationReportApproved"] = 0
+                variables["collectAdditionalSamples"] = 0
+
+                bpmnCommonFunctions.startBpmnProcess(qaDmApplicationReviewProcessDefinitionKey, qaDmApplicationReviewBusinessKey, variables, assigneeId)?.let {
+                    permit.dmAppReviewProcessInstanceId = it["processInstanceId"]
+                    //permit.sfMarkInspectionTaskId = it["taskId"]
+                    permit.dmAppReviewStartedOn = Timestamp.from(Instant.now())
+                    permit.dmAppReviewStatus = 1
+                    permitsRepo.save(permit)
+                    KotlinLogging.logger { }.info("permitId : $permitId : Successfully started QA DM application review process for permit")
+                    return it
+                } ?: run {
+                    KotlinLogging.logger { }.info("$permitId : Unable to start QA DM application review process")
+                }
+            }
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message, e)
+        }
+        return null
+    }
+
+    //HOD check application complete
+    fun qaDMHodReviewComplete(permitId: Long, applicationComplete: Boolean, assigneeId: Long): Boolean {
+        KotlinLogging.logger { }.info("PermitId : $permitId : QA DM App Payment check application complete")
+        updateTaskVariableByObjectIdAndKey(permitId, "QaDmApplicationReview", qaDmApplicationReviewBusinessKey,
+            "applicationComplete", bpmnCommonFunctions.booleanToInt(applicationComplete).toString())
+        qaCompleteTask(permitId, "QaDmApplicationReview", qaDmApplicationReviewBusinessKey)?.let {
+            if (applicationComplete) {
+                qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "QaDmAssignQAO", assigneeId)
+            } else {
+                val permit: PermitApplicationsEntity? = permitsRepo.findByIdOrNull(permitId)
+                val manufacturerId = permit?.userId
+                manufacturerId?.let { manufacturerId ->
+                    qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "QaDmReviewManufacturerCorrection", manufacturerId)
+                }
+            }
+        }
+        return false
+    }
+
+    //Assign QAO complete
+    fun qaDMAssignQAOComplete(permitId: Long, foreignDmark: Boolean, assigneeId: Long): Boolean {
+        KotlinLogging.logger { }.info("PermitId : $permitId :  Allocate QAO complete")
+        updateTaskVariableByObjectIdAndKey(permitId, "QaDmAssignQAO", qaDmApplicationReviewBusinessKey,
+            "foreignDmark", bpmnCommonFunctions.booleanToInt(foreignDmark).toString())
+        //Update email
+        userRepo.findByIdOrNull(assigneeId)?.let { usersEntity -> updateTaskVariableByObjectIdAndKey(permitId, "QaDmAssignQAO",
+                qaDmApplicationReviewProcessDefinitionKey, "email", usersEntity.email.toString()
+            )
+        }
+        //Complete Task
+        qaCompleteTask(permitId, "QaDmAssignQAO", qaDmApplicationReviewProcessDefinitionKey)?.let {
+//            val foreignDmark = bpmnCommonFunctions.getProcessVariables(it["processInstanceId"].toString())?.get("foreignDmark").toString()
+            if (foreignDmark) {
+                qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "QaDmReviewGenerateJustificationReport", assigneeId)
+            } else {
+                qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "QaDmReviewScheduleInspectionDate", assigneeId)
+            }
+        }
+        return false
+    }
+
+    //Generate justification report Complete
+    fun qaDMGenerateJustificationReportComplete(permitId: Long): Boolean {
+        KotlinLogging.logger { }.info("PermitId : $permitId : QA generate justification complete")
+        qaCompleteTask(permitId, "QaDmReviewGenerateJustificationReport", qaDmApplicationReviewProcessDefinitionKey)?.let {
+            return true
+        }
+        return false
+    }
+
+    /*
+    Assessor Path if foreign DMARK
+    ---------------------------------------------------------------------------------------------------------------------------------------
+     */
+
+    //Approve Justification Report Complete
+    fun qaDMApproveJustificationReportComplete(permitId: Long, reportApproved: Boolean, assigneeId: Long): Boolean {
+        KotlinLogging.logger { }.info("PermitId : $permitId :  Approve Justification Report complete")
+        updateTaskVariableByObjectIdAndKey(permitId, "QaDmReviewApproveJustificationReport", qaDmApplicationReviewBusinessKey,
+            "justificationReportApproved", bpmnCommonFunctions.booleanToInt(reportApproved).toString())
+        //Complete Task
+        qaCompleteTask(permitId, "QaDmReviewApproveJustificationReport", qaDmApplicationReviewProcessDefinitionKey)?.let {
+//            val foreignDmark = bpmnCommonFunctions.getProcessVariables(it["processInstanceId"].toString())?.get("foreignDmark").toString()
+            if (reportApproved) {
+                qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "QaDmReviewAssignAssessor", assigneeId)
+            } else {
+                qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "QaDmReviewGenerateJustificationReport", assigneeId)
+            }
+        }
+        return false
+    }
+
+    //Assign Assessor Complete
+    fun qaDMAssignAssessorComplete(permitId: Long, assigneeId: Long): Boolean {
+        KotlinLogging.logger { }.info("PermitId : $permitId : QA assign assessor complete")
+        qaCompleteTask(permitId, "QaDmReviewAssignAssessor", qaDmApplicationReviewProcessDefinitionKey)?.let {
+            return qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "QaDmReviewScheduleInspectionDate", assigneeId)
+        }
+        return false
+    }
+
+    /*
+    End FMARK Assessor Path ---------------------------------------------------------------------------------------------------------------------
+     */
+
+    //Schedule Inspection Date Complete
+    fun qaDMScheduleInspectionComplete(permitId: Long): Boolean {
+        KotlinLogging.logger { }.info("PermitId : $permitId : QA schedule inspection complete")
+        qaCompleteTask(permitId, "QaDmReviewScheduleInspectionDate", qaDmApplicationReviewProcessDefinitionKey)?.let {
+            return true
+        }
+        return false
+    }
+
+    //Generate Inspection Report Complete
+    fun qaDMGenerateInspectionComplete(permitId: Long, assigneeId: Long, hodAssigneeId: Long): Boolean {
+        KotlinLogging.logger { }.info("PermitId : $permitId : QA generate inspection complete")
+        qaCompleteTask(permitId, "QaDmReviewGenerateInspectionReport", qaDmApplicationReviewProcessDefinitionKey)?.let {
+            qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "QaDmReviewApproveInspectionReport", hodAssigneeId)
+            qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "QaDmReviewGenerateSchemeOfSupervision", assigneeId)
+            qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "QaDmReviewFillSSFandBSNumber", assigneeId)
+            return true
+        }
+        return false
+    }
+
+    /*
+    ---------------------- Start Approve Inspection Report Route ------------------------------------
+     */
+    //Approve inspection report
+    fun qaDMApproveInspectionComplete(permitId: Long): Boolean {
+        KotlinLogging.logger { }.info("PermitId : $permitId : QA approve inspection complete")
+        qaCompleteTask(permitId, "QaDmReviewApproveInspectionReport", qaDmApplicationReviewProcessDefinitionKey)?.let {
+            return true
+        }
+        return false
+    }
+    /*
+    ---------------------- End Approve Inspection Report Route ------------------------------------
+     */
+
+    /*
+    ---------------------- Start Scheme of supervision Route ------------------------------------
+     */
+    //Generate Scheme of Supervision complete
+    fun qaDMGenerateSchemeofSupervisionComplete(permitId: Long, assigneeId: Long): Boolean {
+        KotlinLogging.logger { }.info("PermitId : $permitId : QA generate scheme of supervision complete")
+        qaCompleteTask(permitId, "QaDmReviewGenerateSchemeOfSupervision", qaDmApplicationReviewProcessDefinitionKey)?.let {
+            return qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "QaDmReviewAcceptSchemeOfSupervision", assigneeId)
+        }
+        return false
+    }
+    //Accept Scheme of Supervision complete
+    fun qaDMAcceptSchemeofSupervisionComplete(permitId: Long, assigneeId: Long): Boolean {
+        KotlinLogging.logger { }.info("PermitId : $permitId : QA accept scheme of supervision complete")
+        qaCompleteTask(permitId, "QaDmReviewAcceptSchemeOfSupervision", qaDmApplicationReviewProcessDefinitionKey)?.let {
+            return true
+        }
+        return false
+    }
+    /*
+    ---------------------- End Scheme of supervision Route ------------------------------------
+     */
+
+    /*
+    ---------------------- Start Lab Route ------------------------------------
+     */
+    //Fill SSF & BS No. complete
+    fun qaDMFillSSFAndBsNumberComplete(permitId: Long): Boolean {
+        KotlinLogging.logger { }.info("PermitId : $permitId : QA fill ssf and bs number complete")
+        qaCompleteTask(permitId, "QaDmReviewFillSSFandBSNumber", qaDmApplicationReviewProcessDefinitionKey)?.let {
+            return true
+        }
+        return false
+    }
+    /*
+    ---------------------- End Lab Route ------------------------------------
+     */
+
+    //Assign Compliance status Complete
+    fun qaDMAssignComplianceStatusComplete(permitId: Long, labResultsCompliant: Boolean, assigneeId: Long): Boolean {
+        KotlinLogging.logger { }.info("PermitId : $permitId :  Assign Compliance Report complete")
+        updateTaskVariableByObjectIdAndKey(permitId, "QaDmReviewAssignComplianceStatus", qaDmApplicationReviewBusinessKey,
+            "labResultsCompliant", bpmnCommonFunctions.booleanToInt(labResultsCompliant).toString())
+        //Complete Task
+        qaCompleteTask(permitId, "QaDmReviewAssignComplianceStatus", qaDmApplicationReviewProcessDefinitionKey)?.let {
+//            val foreignDmark = bpmnCommonFunctions.getProcessVariables(it["processInstanceId"].toString())?.get("foreignDmark").toString()
+            if (labResultsCompliant) {
+                return qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "QaDmReviewAddRecommendations", assigneeId)
+            } else {
+                val permit: PermitApplicationsEntity? = permitsRepo.findByIdOrNull(permitId)
+                val manufacturerId = permit?.userId
+                manufacturerId?.let { manufacturerId ->
+                    qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "QaDmReviewPerformCorrectiveAction", manufacturerId)
+                }
+            }
+        }
+        return false
+    }
+
+    //Perform corrective action complete
+    fun qaDMPerformCorrectiveActionComplete(permitId: Long, assigneeId: Long): Boolean {
+        KotlinLogging.logger { }.info("PermitId : $permitId : QA perform corrective action complete")
+        qaCompleteTask(permitId, "QaDmReviewPerformCorrectiveAction", qaDmApplicationReviewProcessDefinitionKey)?.let {
+            return qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "QaDmReviewCorrectiveAction", assigneeId)
+        }
+        return false
+    }
+
+    //Review Corrective Action Complete
+    fun qaDMReviewCorrectiveActionComplete(permitId: Long, collectAdditionalSamples: Boolean, assigneeId: Long): Boolean {
+        KotlinLogging.logger { }.info("PermitId : $permitId :  Review Corrective Action complete")
+        updateTaskVariableByObjectIdAndKey(permitId, "QaDmReviewCorrectiveAction", qaDmApplicationReviewBusinessKey,
+            "collectAdditionalSamples", bpmnCommonFunctions.booleanToInt(collectAdditionalSamples).toString())
+        //Complete Task
+        qaCompleteTask(permitId, "QaDmReviewCorrectiveAction", qaDmApplicationReviewProcessDefinitionKey)?.let {
+            if (collectAdditionalSamples) {
+                return qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "QaDmReviewFillSSFandBSNumber", assigneeId)
+            } else {
+                return qaAssignTask(it["permit"] as PermitApplicationsEntity, it["processInstanceId"].toString(), "QaDmReviewAssignComplianceStatus", assigneeId)
+            }
+        }
+        return false
+    }
+
+    //Generate Scheme of Supervision complete
+    fun qaDMAddRecommendationsComplete(permitId: Long): Boolean {
+        KotlinLogging.logger { }.info("PermitId : $permitId : QA add recommendations complete")
+        qaCompleteTask(permitId, "QaDmReviewAddRecommendations", qaDmApplicationReviewProcessDefinitionKey)?.let {
+            return true
+        }
+        return false
+    }
+
+    //End DM Application Process
+    fun endDmReviewProcess(permitId: String) {
+        KotlinLogging.logger { }.info("End DM Review process for permitId $permitId")
+        try{
+            permitsRepo.findByIdOrNull(permitId.toLong())?.let { permit ->
+                permit.dmAppReviewCompletedOn = Timestamp.from(Instant.now())
+                permit.dmAppReviewStatus = processCompleted
+                permitsRepo.save(permit)
+            }
+        } catch (e: Exception){
+            KotlinLogging.logger { }.error("$permitId : Unable to complete DM Review process for $permitId")
+        }
+    }
+
     /*
     ***********************************************************************************
     * OTHER METHODS
@@ -1785,5 +2062,39 @@ class QualityAssuranceBpmn(
         }
 
         processInstanceId?.let { bpmnCommonFunctions.claimTask(it, "QaDMAppPCMCheckComplete", assigneeId) }
+    }
+
+    //Send inspection schedule to manufacturer
+    fun sendManufacturerInspectionScheduleEmail(permitId: String) {
+        KotlinLogging.logger { }.info("Sending Inspection Schedule to Manufacturer for Permit $permitId............")
+    }
+
+    //Send inspection report to manufacturer
+    fun sendManufacturerInspectionReportEmail(permitId: String) {
+        KotlinLogging.logger { }.info("Sending Inspection Report to Manufacturer for Permit $permitId............")
+    }
+
+    //Receive Lab Results
+    fun diReceiveLabResultsComplete(permitId: Long) {
+        KotlinLogging.logger { }.info("Trigger lab results received task to complete")
+        //Get the process instance ID
+        var processInstanceId: String? = null
+
+        permitsRepo.findByIdOrNull(permitId)?.let { permit ->//Check that the permit is valid
+            KotlinLogging.logger { }.trace("PermitId : $permitId : Valid permit found")
+            processInstanceId = permit.dmAppReviewProcessInstanceId.toString()
+        }
+        KotlinLogging.logger { }.info ("Process Instance ID: $processInstanceId")
+        processInstanceId?.let {
+            try {
+                val ex = runtimeService.createExecutionQuery().processInstanceId(it)
+                    .activityId("QaDmReviewReceiveLabResults")
+                    .singleResult()
+                KotlinLogging.logger { }.info("Execution ID: ${ex.id} & activityID: ${ex.activityId}")
+                runtimeService.trigger(ex.getId())
+            } catch (e: Exception){
+                KotlinLogging.logger { }.error("An error occurred on Trigger receive lab results task to complete ", e)
+            }
+        }
     }
 }

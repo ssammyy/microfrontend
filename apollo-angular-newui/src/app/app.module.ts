@@ -89,7 +89,9 @@ import {FileUploadModule} from '@iplab/ngx-file-upload';
 import {AddUserComponent} from './apollowebs/company/branch/add-user/add-user.component';
 import {FmarkApplicationComponent} from './apollowebs/fmark-application/fmark-application.component';
 import {LoaderComponent} from './shared/loader/loader.component';
-import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
+import { FormsComponent } from './apollowebs/forms/forms.component';
+import { FieldErrorDisplayComponent } from './apollowebs/forms/field-error-display/field-error-display.component';
+// import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 
 @NgModule({
     exports: [
@@ -174,7 +176,9 @@ import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
         PdfViewComponent,
         AddUserComponent,
         FmarkApplicationComponent,
-        LoaderComponent
+        LoaderComponent,
+        FormsComponent,
+        FieldErrorDisplayComponent
     ]
 
 })
@@ -208,7 +212,7 @@ export class MaterialModule {}
         }),
         ReactiveFormsModule,
         FormsModule,
-        NgbModule,
+        // NgbModule,
         NgxPaginationModule,
         FontAwesomeModule,
         NgxSpinnerModule,

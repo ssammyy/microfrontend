@@ -1391,6 +1391,15 @@ class QualityAssuranceHandler(
 //            val batchInvoice = pair.first
 //            permit = pair.second
 
+            //Start DMARK PROCESS
+            qualityAssuranceBpmn.startQADmAppPaymentProcess(
+                permit.id ?: throw Exception("MISSING PERMIT ID"), null
+            )
+
+            //Complete Submit Application
+            qualityAssuranceBpmn.qaDmSubmitApplicationComplete(permit.id ?: throw Exception("MISSING PERMIT ID"), permit.renewalStatus == 1,
+                permit.permitForeignStatus == 1)
+
             qaDaoServices.mapAllPermitDetailsTogether(
                 permit,
                 null,
@@ -1436,11 +1445,13 @@ class QualityAssuranceHandler(
             permit = qaDaoServices.permitUpdateDetails(permit, map, loggedInUser).second
 
             //Start DMARK PROCESS
-            qualityAssuranceBpmn.startQADMApplicationReviewProcess(
-                permit.id ?: throw Exception("MISSING PERMIT ID"),
-                permit.pcmId ?: throw Exception("MISSING PCM ID"),
-                false
+            qualityAssuranceBpmn.startQADmAppPaymentProcess(
+                permit.id ?: throw Exception("MISSING PERMIT ID"), null
             )
+
+            //Complete Submit Application
+            qualityAssuranceBpmn.qaDmSubmitApplicationComplete(permit.id ?: throw Exception("MISSING PERMIT ID"), permit.renewalStatus == 1,
+                permit.permitForeignStatus == 1)
 
             qaDaoServices.mapAllPermitDetailsTogether(permit, null, map).let {
                 return ok().body(it)
