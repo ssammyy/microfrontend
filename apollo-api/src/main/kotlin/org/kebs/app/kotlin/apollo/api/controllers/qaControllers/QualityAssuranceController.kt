@@ -690,7 +690,7 @@ class QualityAssuranceController(
                 permitDetailsDB.userTaskId = applicationMapProperties.mapUserTaskNameQAO
                 permitDetailsDB = qaDaoServices.permitInsertStatus(
                     permitDetailsDB,
-                    applicationMapProperties.mapQaStatusPRecommendation,
+                    applicationMapProperties.mapQaStatusDeferredRecommendationQAM,
                     loggedInUser
                 )
                 qaDaoServices.sendNotificationForRecommendationCorrectness(permitDetailsDB)

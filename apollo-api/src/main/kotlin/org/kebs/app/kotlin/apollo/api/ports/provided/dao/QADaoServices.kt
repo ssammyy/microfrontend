@@ -1264,7 +1264,8 @@ class QADaoServices(
                             permitDetails.tradeMark,
                             pi.totalAmount,
                             pi.paymentStatus,
-                            pi.permitRefNumber
+                            pi.permitRefNumber,
+                            pi.batchInvoiceNo
                         )
                     )
                 } else {
@@ -1280,7 +1281,8 @@ class QADaoServices(
                         permitDetails.tradeMark,
                         pi.totalAmount,
                         pi.paymentStatus,
-                        pi.permitRefNumber
+                        pi.permitRefNumber,
+                        pi.batchInvoiceNo
                     )
                 )
             }

@@ -5,7 +5,7 @@ import {
   AllPermitDetailsDto,
   ConsolidatedInvoiceDto,
   GenerateInvoiceDto,
-  PermitEntityDto
+  PermitEntityDto, PermitInvoiceDto
 } from '../../core/store/data/qa/qa.model';
 import {FormArray, FormBuilder, FormControl, FormGroup} from '@angular/forms';
 import {Subscription} from 'rxjs';
@@ -26,7 +26,7 @@ declare const $: any;
 })
 export class InvoiceConsolidateComponent implements OnInit {
   public dataTable: DataTable;
-  public allInvoiceData: ConsolidatedInvoiceDto[];
+  public allInvoiceData: PermitInvoiceDto[];
   consolidatedInvoice: GenerateInvoiceDto;
   name: string;
   checkboxGroup: FormGroup;
