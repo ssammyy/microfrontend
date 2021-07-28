@@ -27,12 +27,13 @@ declare const $: any;
 export class InvoiceConsolidateComponent implements OnInit {
   public dataTable: DataTable;
   public allInvoiceData: PermitInvoiceDto[];
-  consolidatedInvoice: GenerateInvoiceDto;
+  consolidatedInvoice: GenerateInvoiceDto | undefined;
   name: string;
   checkboxGroup: FormGroup;
   submittedValue: any;
   final_array = [];
   selected = [];
+  permitInvoicesIDS = [];
 
 
   constructor(
@@ -56,8 +57,8 @@ export class InvoiceConsolidateComponent implements OnInit {
           formattedArray = data.map(i => [i.permitRefNumber, i.commodityDescription, i.brandName, i.totalAmount, i.invoiceNumber, i.permitID]);
 
           this.dataTable = {
-            headerRow: ['Permit Ref N0', 'Commodity Description', 'Brand Name', 'Total Amount', ' Reference Number', ' Select'],
-            footerRow: ['Permit Ref N0', 'Commodity Description', 'Brand Name', 'Total Amount', ' Reference Number', ' Select'],
+            headerRow: ['Permit Ref N0', 'Commodity Description', 'Brand Name', 'Total Amount', 'Reference Number', 'Select'],
+            footerRow: ['Permit Ref N0', 'Commodity Description', 'Brand Name', 'Total Amount', 'Reference Number', 'Select'],
             dataRows: formattedArray
 
           };
@@ -137,21 +138,29 @@ export class InvoiceConsolidateComponent implements OnInit {
 
   submit() {
     this.final_array.push(this.selected.sort());
+    console.log(this.final_array);
+    console.log(this.final_array);
+    const selectedRows = this.final_array;
+    selectedRows.forEach(function (data) {
+      this.permitInvoicesIDS.push(data);
+      console.log(data[0], data[0].length);
+    });
     this.consolidatedInvoice.permitInvoicesID = this.final_array;
-    this.qaService.createInvoiceConsolidatedDetails(this.consolidatedInvoice).subscribe(
-        (data) => {
-          console.log(data);
-          swal.fire({
-            title: 'INVOICE CONSOLIDATED SUCCESSFULLY!',
-            buttonsStyling: false,
-            customClass: {
-              confirmButton: 'btn btn-success form-wizard-next-btn ',
-            },
-            icon: 'success'
-          });
-          this.router.navigate(['/invoiceDetails'], {fragment: String(data.batchDetails.batchID)});
-        },
-    );
+    console.log(this.consolidatedInvoice);
+    // this.qaService.createInvoiceConsolidatedDetails(this.consolidatedInvoice).subscribe(
+    //     (data) => {
+    //       console.log(data);
+    //       swal.fire({
+    //         title: 'INVOICE CONSOLIDATED SUCCESSFULLY!',
+    //         buttonsStyling: false,
+    //         customClass: {
+    //           confirmButton: 'btn btn-success form-wizard-next-btn ',
+    //         },
+    //         icon: 'success'
+    //       });
+    //       this.router.navigate(['/invoiceDetails'], {fragment: String(data.batchDetails.batchID)});
+    //     },
+    // );
   }
 
 }

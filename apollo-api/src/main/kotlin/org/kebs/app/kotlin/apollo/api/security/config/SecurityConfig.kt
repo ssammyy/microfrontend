@@ -80,9 +80,9 @@ class WebSecurityConfig {
             configuration.allowedOrigins = listOf(
                 "http://localhost:4200",
                 "https://kimsint.kebs.org",
+                "https://kimsint.kebs.org:8006",
                 "https://kims.kebs.org",
-                "https://kims.kebs.org:8006",
-                "https://kimsint.kebs.org:8006"
+                "https://kims.kebs.org:8006"
             )
             configuration.allowedMethods = listOf("*")
             configuration.allowedHeaders = listOf("*")

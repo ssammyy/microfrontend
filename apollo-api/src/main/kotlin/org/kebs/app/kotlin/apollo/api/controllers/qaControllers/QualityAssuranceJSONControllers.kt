@@ -168,12 +168,12 @@ class QualityAssuranceJSONControllers(
     @Throws(Exception::class)
     fun certificatePermit(
         response: HttpServletResponse,
-        @RequestParam(value = "permitID") id: Long
+        @RequestParam(value = "permitID") permitID: Long
     ) {
         var map = hashMapOf<String, Any>()
         val appId: Int = applicationMapProperties.mapQualityAssurance
         val s = commonDaoServices.serviceMapDetails(appId)
-        val permit = qaDaoServices.findPermitBYID(id)
+        val permit = qaDaoServices.findPermitBYID(permitID)
 
         val foundPermitDetails = qaDaoServices.permitDetails(permit, s)
 
