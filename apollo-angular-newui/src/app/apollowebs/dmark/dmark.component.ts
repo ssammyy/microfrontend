@@ -151,13 +151,7 @@ export class DmarkComponent implements OnInit, AfterViewInit {
             }
         );
 
-        // if (this.allPermitDetails.permitDetails.permitAwardStatus === true) {
-        this.qaService.loadCertificateDetailsPDF(String(this.allPermitDetails.permitDetails.id)).subscribe(
-            (data: any) => {
-                this.pdfSources = data;
-            },
-        );
-        // }
+
 
 
     }
@@ -195,24 +189,31 @@ export class DmarkComponent implements OnInit, AfterViewInit {
                 (data: AllPermitDetailsDto) => {
                     this.allPermitDetails = data;
                     // this.onSelectL1SubSubSection(this.userDetails?.employeeProfile?.l1SubSubSection);
+                    this.qaService.viewSTA1Details(String(this.allPermitDetails.permitDetails.id)).subscribe(
+                        (data) => {
+                            this.sta1 = data;
+                            this.sta1Form.patchValue(this.sta1);
+                        },
+                    );
+                    this.qaService.viewSTA3Details(String(this.allPermitDetails.permitDetails.id)).subscribe(
+                        (data) => {
+                            this.sta3 = data;
+                            this.sta3FormA.patchValue(this.sta3);
+                            this.sta3FormB.patchValue(this.sta3);
+                            this.sta3FormC.patchValue(this.sta3);
+                            this.sta3FormD.patchValue(this.sta3);
+                        },
+                    );
+                    if (this.allPermitDetails.permitDetails.permitAwardStatus === true) {
+                    this.qaService.loadCertificateDetailsPDF(String(this.allPermitDetails.permitDetails.id)).subscribe(
+                        (data: any) => {
+                            this.pdfSources = data;
+                        },
+                    );
+                    }
+                },
+            );
 
-                },
-            );
-            this.qaService.viewSTA1Details(String(this.allPermitDetails.permitDetails.id)).subscribe(
-                (data) => {
-                    this.sta1 = data;
-                    this.sta1Form.patchValue(this.sta1);
-                },
-            );
-            this.qaService.viewSTA3Details(String(this.allPermitDetails.permitDetails.id)).subscribe(
-                (data) => {
-                    this.sta3 = data;
-                    this.sta3FormA.patchValue(this.sta3);
-                    this.sta3FormB.patchValue(this.sta3);
-                    this.sta3FormC.patchValue(this.sta3);
-                    this.sta3FormD.patchValue(this.sta3);
-                },
-            );
         });
 
     }

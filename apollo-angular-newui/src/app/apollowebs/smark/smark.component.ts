@@ -5,15 +5,19 @@ import {
     AllSTA10DetailsDto,
     PermitEntityDetails,
     PlantDetailsDto,
-    SectionDto, STA1,
-    Sta10Dto, STA10MachineryAndPlantDto, STA10ManufacturingProcessDto, STA10PersonnelDto,
-    STA10ProductsManufactureDto, STA10RawMaterialsDto
+    SectionDto,
+    STA1,
+    Sta10Dto,
+    STA10MachineryAndPlantDto,
+    STA10ManufacturingProcessDto,
+    STA10PersonnelDto,
+    STA10ProductsManufactureDto,
+    STA10RawMaterialsDto
 } from "../../core/store/data/qa/qa.model";
 import {QaService} from "../../core/store/data/qa/qa.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import swal from "sweetalert2";
 import {ApiEndpointService} from '../../core/services/endpoints/api-endpoint.service';
-import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 
 @Component({
     selector: 'app-smark',
@@ -66,7 +70,6 @@ export class SmarkComponent implements OnInit {
     constructor(
         private route: ActivatedRoute,
         private router: Router,
-        private modalService: NgbModal,
         private qaService: QaService,
         private formBuilder: FormBuilder
     ) {
@@ -237,29 +240,29 @@ export class SmarkComponent implements OnInit {
                     this.allPermitDetails = data;
                     this.batchID = this.allPermitDetails.batchID;
                     // this.onSelectL1SubSubSection(this.userDetails?.employeeProfile?.l1SubSubSection);
+                    this.qaService.viewSTA1Details(String(this.allPermitDetails.permitDetails.id)).subscribe(
+                        (data) => {
+                            this.sta1 = data;
+                            this.sta1Form.patchValue(this.sta1);
+                        },
+                    );
+                    console.log(`${this.sta10PersonnelDetails.length}`);
+                    this.qaService.viewSTA10Details(String(this.allPermitDetails.permitDetails.id)).subscribe(
+                        (data) => {
+                            this.allSTA10Details = data;
+                            this.sta10Form.patchValue(this.allSTA10Details.sta10FirmDetails);
+                            this.sta10PersonnelDetails = this.allSTA10Details.sta10PersonnelDetails;
+                            this.sta10ProductsManufactureDetails = this.allSTA10Details.sta10ProductsManufactureDetails;
+                            this.sta10RawMaterialsDetails = this.allSTA10Details.sta10RawMaterialsDetails;
+                            this.sta10MachineryAndPlantDetails = this.allSTA10Details.sta10MachineryAndPlantDetails;
+                            this.sta10ManufacturingProcessDetails = this.allSTA10Details.sta10ManufacturingProcessDetails;
+                            this.sta10ManufacturingProcessDetails = this.allSTA10Details.sta10ManufacturingProcessDetails;
+                            this.sta10FormF.patchValue(this.allSTA10Details.sta10FirmDetails);
+                        },
+                    );
+                },
+            );
 
-                },
-            );
-            this.qaService.viewSTA1Details(String(this.allPermitDetails.permitDetails.id)).subscribe(
-                (data) => {
-                    this.sta1 = data;
-                    this.sta1Form.patchValue(this.sta1);
-                },
-            );
-            console.log(`${this.sta10PersonnelDetails.length}`);
-            this.qaService.viewSTA10Details(String(this.allPermitDetails.permitDetails.id)).subscribe(
-                (data) => {
-                    this.allSTA10Details = data;
-                    this.sta10Form.patchValue(this.allSTA10Details.sta10FirmDetails);
-                    this.sta10PersonnelDetails = this.allSTA10Details.sta10PersonnelDetails;
-                    this.sta10ProductsManufactureDetails = this.allSTA10Details.sta10ProductsManufactureDetails;
-                    this.sta10RawMaterialsDetails = this.allSTA10Details.sta10RawMaterialsDetails;
-                    this.sta10MachineryAndPlantDetails = this.allSTA10Details.sta10MachineryAndPlantDetails;
-                    this.sta10ManufacturingProcessDetails = this.allSTA10Details.sta10ManufacturingProcessDetails;
-                    this.sta10ManufacturingProcessDetails = this.allSTA10Details.sta10ManufacturingProcessDetails;
-                    this.sta10FormF.patchValue(this.allSTA10Details.sta10FirmDetails);
-                },
-            );
             // this.qaService.viewSTA10FirmDetails(String(this.allPermitDetails.permitDetails.id)).subscribe(
             //     (data) => {
             //       this.Sta10Details = data;

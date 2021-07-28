@@ -14,7 +14,6 @@ import {
     STA10RawMaterialsDto
 } from "../../core/store/data/qa/qa.model";
 import {ActivatedRoute, Router} from "@angular/router";
-import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 import {QaService} from "../../core/store/data/qa/qa.service";
 import swal from "sweetalert2";
 
@@ -65,7 +64,6 @@ export class FmarkComponent implements OnInit {
     constructor(
         private route: ActivatedRoute,
         private router: Router,
-        private modalService: NgbModal,
         private qaService: QaService,
         private formBuilder: FormBuilder
     ) {
@@ -485,7 +483,6 @@ export class FmarkComponent implements OnInit {
         }
 
         this.currDiv = divVal;
-        this.modalService.open(this.editModal);
     }
 
     onClickAddPersonnel() {
