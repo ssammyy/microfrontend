@@ -85,7 +85,7 @@ import {SmarkComponent} from "./apollowebs/smark/smark.component";
 //     }
 // ];
 
-const routes: Routes = [
+export const routes: Routes = [
     {
         path: '',
         redirectTo: 'dashboard',

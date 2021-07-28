@@ -92,6 +92,7 @@ export class NewSmarkPermitComponent implements OnInit {
           tradeMark: ['', Validators.required],
             // inputCountryCode: ['', Validators.required,Validators.pattern("[0-9 ]{11}")]
 
+
         });
       this.sta10Form = this.formBuilder.group({
           // firmName: ['', Validators.required],
@@ -123,9 +124,9 @@ export class NewSmarkPermitComponent implements OnInit {
         this.sta10FormB = this.formBuilder.group({
             productName: [],
             productBrand: [],
-            productStandardNumber: [],
-            available: [],
-            permitNo: []
+            // productStandardNumber: [],
+            // available: [],
+            // permitNo: []
         });
 
         this.sta10FormC = this.formBuilder.group({
@@ -501,6 +502,8 @@ export class NewSmarkPermitComponent implements OnInit {
         if (valid) {
             this.SpinnerService.show();
             console.log(this.Sta10Details.id.toString());
+            this.sta10ProductsManufactureDetail = this.sta10FormB.value;
+            this.sta10ProductsManufactureDetails.push(this.sta10ProductsManufactureDetail);
             // tslint:disable-next-line:max-line-length
             this.qaService.saveProductsManufacturedDetailsSta10(this.Sta10Details.id.toString(), this.sta10ProductsManufactureDetails).subscribe(
                 (data) => {
@@ -602,7 +605,7 @@ export class NewSmarkPermitComponent implements OnInit {
         this.sta10FormA?.get('personnelName')?.reset();
         this.sta10FormA?.get('qualificationInstitution')?.reset();
         this.sta10FormA?.get('dateOfEmployment')?.reset();
-        // this.sta10FormAA.reset();
+        // this.sta10FormA.reset();
     }
 
     onClickAddProductsManufacture() {
@@ -702,6 +705,23 @@ export class NewSmarkPermitComponent implements OnInit {
                 '<a href="{3}" target="{4}" data-notify="url"></a>' +
                 '</div>'
         });
+    }
+//Remove Form repeater values
+    removePersonnelDetails(index){
+        this.sta10PersonnelDetails.splice(index, index);
+    }
+
+    removeProductsManufacture(index){
+        this.sta10ProductsManufactureDetails.splice(index, index);
+    }
+    removeRawMaterials(index){
+        this.sta10RawMaterialsDetails.splice(index, index);
+    }
+    removeMachineryAndPlantDetails(index){
+        this.sta10MachineryAndPlantDetails.splice(index, index);
+    }
+    removeManufacturingProcessDetails(index){
+        this.sta10ManufacturingProcessDetails.splice(index, index);
     }
 
 
