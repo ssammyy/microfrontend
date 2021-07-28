@@ -414,7 +414,9 @@ class QualityAssuranceHandler(
 
         req.attributes()["message"] = applicationMapProperties.mapPermitRenewMessage
         req.attributes()["permit"] = permit
-        req.attributes()["QaSta3Entity"] = qaDaoServices.findSTA3WithPermitRefNumber(permit.permitRefNumber?: throw Exception("INVALID PERMIT REF NUMBER"))
+        req.attributes()["QaSta3Entity"] = qaDaoServices.findSTA3WithPermitIDAndRefNumber(
+            permit.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"), permitID
+        )
         return ok().render(qaNewSta3Page, req.attributes())
 
     }
@@ -453,7 +455,9 @@ class QualityAssuranceHandler(
         req.attributes()["counties"] = countyRepo.findByStatusOrderByCounty(map.activeStatus)
         req.attributes()["applicationDate"] = commonDaoServices.getCurrentDate()
         req.attributes()["CommonPermitDto"] = qaDaoServices.companyDtoDetails(permit, map)
-        req.attributes()["QaSta10Entity"] = qaDaoServices.findSTA10WithPermitRefNumberBY(permit.permitRefNumber?: throw ExpectedDataNotFound("INVALID PERMIT REF NUMBER"))
+        req.attributes()["QaSta10Entity"] = qaDaoServices.findSTA10WithPermitRefNumberANdPermitID(
+            permit.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"), permitID
+        )
         return ok().render(qaNewSta10Page, req.attributes())
 
     }
@@ -469,7 +473,9 @@ class QualityAssuranceHandler(
         req.attributes()["permit"] = permit
         req.attributes()["counties"] = countyRepo.findByStatusOrderByCounty(map.activeStatus)
         req.attributes()["applicationDate"] = commonDaoServices.getCurrentDate()
-        req.attributes()["QaSta10Entity"] = qaDaoServices.findSTA10WithPermitRefNumberBY(permit.permitRefNumber?: throw ExpectedDataNotFound("INVALID PERMIT REF NUMBER"))
+        req.attributes()["QaSta10Entity"] = qaDaoServices.findSTA10WithPermitRefNumberANdPermitID(
+            permit.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"), permitID
+        )
         return ok().render(qaNewSta10OfficerPage, req.attributes())
 
     }
@@ -480,8 +486,10 @@ class QualityAssuranceHandler(
 
         val permitID = req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
       val permit  =   qaDaoServices.findPermitBYID(permitID)
-        req.attributes()["permit"] =  permit
-        req.attributes()["QaSta3Entity"] = qaDaoServices.findSTA3WithPermitRefNumber(permit.permitRefNumber?: throw ExpectedDataNotFound("INVALID PERMIT REF NUMBER"))
+        req.attributes()["permit"] = permit
+        req.attributes()["QaSta3Entity"] = qaDaoServices.findSTA3WithPermitIDAndRefNumber(
+            permit.permitRefNumber ?: throw ExpectedDataNotFound("INVALID PERMIT REF NUMBER"), permitID
+        )
         req.attributes()["message"] = applicationMapProperties.mapQualityAssuranceManufactureViewPage
         return ok().render(qaNewSta3Page, req.attributes())
 
@@ -494,7 +502,9 @@ class QualityAssuranceHandler(
         val permitID = req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
         val permit = qaDaoServices.findPermitBYID(permitID)
         req.attributes()["permit"] = permit
-        req.attributes()["QaSta10Entity"] = qaDaoServices.findSTA10WithPermitRefNumberBY(permit.permitRefNumber?: throw ExpectedDataNotFound("INVALID PERMIT REF NUMBER"))
+        req.attributes()["QaSta10Entity"] = qaDaoServices.findSTA10WithPermitRefNumberANdPermitID(
+            permit.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"), permitID
+        )
         req.attributes()["message"] = applicationMapProperties.mapQualityAssuranceManufactureViewPage
         return ok().render(qaNewSta3Page, req.attributes())
 
@@ -518,7 +528,9 @@ class QualityAssuranceHandler(
 
         val permitID = req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
         val permit = qaDaoServices.findPermitBYID(permitID)
-        val qaSta10Entity = qaDaoServices.findSTA10WithPermitRefNumberBY(permit.permitRefNumber?: throw ExpectedDataNotFound("INVALID PERMIT REF NUMBER"))
+        val qaSta10Entity = qaDaoServices.findSTA10WithPermitRefNumberANdPermitID(
+            permit.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"), permitID
+        )
         req.attributes().putAll(commonDaoServices.loadCommonUIComponents(map))
         req.attributes()["permit"] = permit
         req.attributes()["fileParameters"] = qaDaoServices.findAllUploadedFileBYPermitRefNumberAndSta10Status(permit.permitRefNumber?: throw ExpectedDataNotFound("INVALID PERMIT REF NUMBER"), map.activeStatus)
@@ -1603,6 +1615,7 @@ class QualityAssuranceHandler(
 
             //Save the sta3 details first
             val savedSta3 = qaDaoServices.sta3NewSave(
+                permit.id ?: throw Exception("MISSING PERMIT ID"),
                 permit.permitRefNumber ?: throw Exception("MISSING PERMIT REF NUMBER"),
                 sta3,
                 loggedInUser,
@@ -1650,8 +1663,8 @@ class QualityAssuranceHandler(
                 permitID,
                 loggedInUser.id ?: throw ExpectedDataNotFound("MISSING USER ID")
             )
-            val sta3 = qaDaoServices.findSTA3WithPermitRefNumber(
-                permit.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER")
+            val sta3 = qaDaoServices.findSTA3WithPermitIDAndRefNumber(
+                permit.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"), permitID
             )
             val dto = req.body<List<File>>()
             dto.forEach { u ->
@@ -1697,8 +1710,8 @@ class QualityAssuranceHandler(
             val sta3 = qaDaoServices.mapDtoSTA3AndQaSta3Entity(dto)
 
             //Update the sta3 details first
-            var sta3Found = qaDaoServices.findSTA3WithPermitRefNumber(
-                permit.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER")
+            var sta3Found = qaDaoServices.findSTA3WithPermitIDAndRefNumber(
+                permit.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"), permitID
             )
             sta3.id = sta3Found.id
             sta3Found = qaDaoServices.sta3Update(
@@ -1770,8 +1783,8 @@ class QualityAssuranceHandler(
                 permitID,
                 loggedInUser.id ?: throw ExpectedDataNotFound("MISSING USER ID")
             )
-            val sta3 = qaDaoServices.findSTA3WithPermitRefNumber(
-                permit.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER")
+            val sta3 = qaDaoServices.findSTA3WithPermitIDAndRefNumber(
+                permit.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"), permitID
             )
 
             qaDaoServices.mapDtoSTA3View(sta3).let {
@@ -1880,8 +1893,8 @@ class QualityAssuranceHandler(
                 permitID,
                 loggedInUser.id ?: throw ExpectedDataNotFound("MISSING USER ID")
             )
-            val qaSta10Entity = qaDaoServices.findSTA10WithPermitRefNumberBY(
-                permit.permitRefNumber ?: throw ExpectedDataNotFound("INVALID PERMIT REF NUMBER")
+            val qaSta10Entity = qaDaoServices.findSTA10WithPermitRefNumberANdPermitID(
+                permit.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"), permitID
             )
 
             val dto = req.body<STA10SectionADto>()
@@ -1938,8 +1951,8 @@ class QualityAssuranceHandler(
                 permitID,
                 loggedInUser.id ?: throw ExpectedDataNotFound("MISSING USER ID")
             )
-            val qaSta10Entity = qaDaoServices.findSTA10WithPermitRefNumberBY(
-                permit.permitRefNumber ?: throw ExpectedDataNotFound("INVALID PERMIT REF NUMBER")
+            val qaSta10Entity = qaDaoServices.findSTA10WithPermitRefNumberANdPermitID(
+                permit.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"), permitID
             )
 
             qaDaoServices.mapDtoSTA10SectionAAndQaSta10View(qaSta10Entity).let {
@@ -1965,8 +1978,8 @@ class QualityAssuranceHandler(
                 permitID,
                 loggedInUser.id ?: throw ExpectedDataNotFound("MISSING USER ID")
             )
-            val qaSta10Entity = qaDaoServices.findSTA10WithPermitRefNumberBY(
-                permit.permitRefNumber ?: throw ExpectedDataNotFound("INVALID PERMIT REF NUMBER")
+            val qaSta10Entity = qaDaoServices.findSTA10WithPermitRefNumberANdPermitID(
+                permit.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"), permitID
             )
             //Find all sta 10 personnel in charge  add
             val qaSta10ID = qaSta10Entity.id ?: throw ExpectedDataNotFound("MISSING STA 10 ID")
@@ -2431,8 +2444,7 @@ class QualityAssuranceHandler(
                 req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
             val dto = req.body<NewBatchInvoiceDto>()
 
-            val batchInvoiceDetails =
-                qaDaoServices.permitMultipleInvoiceCalculation(map, loggedInUser, dto).second
+            val batchInvoiceDetails = qaDaoServices.permitMultipleInvoiceCalculation(map, loggedInUser, dto).second
 
             qaDaoServices.mapBatchInvoiceDetails(batchInvoiceDetails, loggedInUser, map).let {
                 return ok().body(it)

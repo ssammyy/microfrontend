@@ -5,9 +5,14 @@ import {
     AllSTA10DetailsDto,
     PermitEntityDetails,
     PlantDetailsDto,
-    SectionDto, STA1,
-    Sta10Dto, STA10MachineryAndPlantDto, STA10ManufacturingProcessDto, STA10PersonnelDto,
-    STA10ProductsManufactureDto, STA10RawMaterialsDto
+    SectionDto,
+    STA1,
+    Sta10Dto,
+    STA10MachineryAndPlantDto,
+    STA10ManufacturingProcessDto,
+    STA10PersonnelDto,
+    STA10ProductsManufactureDto,
+    STA10RawMaterialsDto
 } from "../../core/store/data/qa/qa.model";
 import {QaService} from "../../core/store/data/qa/qa.service";
 import {ActivatedRoute, Router} from "@angular/router";
@@ -69,7 +74,6 @@ export class SmarkComponent implements OnInit {
     constructor(
         private route: ActivatedRoute,
         private router: Router,
-        private modalService: NgbModal,
         private qaService: QaService,
         private formBuilder: FormBuilder,
         private _loading: LoadingService,
@@ -267,7 +271,6 @@ export class SmarkComponent implements OnInit {
                     );
                 },
             );
-
             // this.qaService.viewSTA10FirmDetails(String(this.allPermitDetails.permitDetails.id)).subscribe(
             //     (data) => {
             //       this.Sta10Details = data;

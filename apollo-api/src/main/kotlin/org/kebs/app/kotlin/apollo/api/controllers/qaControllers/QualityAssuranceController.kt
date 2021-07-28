@@ -1583,7 +1583,9 @@ class QualityAssuranceController(
 
         when (permitViewType) {
             applicationMapProperties.mapPermitRenewMessage -> {
-                val sta3 = qaDaoServices.findSTA3WithPermitRefNumber(permit.permitRefNumber?: throw Exception("INVALID PERMIT REF NUMBER"))
+                val sta3 = qaDaoServices.findSTA3WithPermitIDAndRefNumber(
+                    permit.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"), permitID
+                )
                 QaSta3Entity.id = sta3.id
                 qaDaoServices.sta3Update(
                     commonDaoServices.updateDetails(sta3, QaSta3Entity) as QaSta3Entity,
@@ -1592,7 +1594,13 @@ class QualityAssuranceController(
                 )
             }
             applicationMapProperties.mapPermitNewMessage -> {
-                 qaDaoServices.sta3NewSave(permit.permitRefNumber?: throw Exception("INVALID PERMIT REF NUMBER"), QaSta3Entity, loggedInUser, map)
+                qaDaoServices.sta3NewSave(
+                    permitID,
+                    permit.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"),
+                    QaSta3Entity,
+                    loggedInUser,
+                    map
+                )
             }
         }
         val result: ServiceRequestsEntity?
@@ -1632,7 +1640,9 @@ class QualityAssuranceController(
             ?: throw ExpectedDataNotFound("User Id required")
         when (permitViewType) {
             applicationMapProperties.mapPermitRenewMessage -> {
-                val sta10 = qaDaoServices.findSTA10WithPermitRefNumberBY(permit.permitRefNumber?: throw Exception("INVALID PERMIT REF NUMBER"))
+                val sta10 = qaDaoServices.findSTA10WithPermitRefNumberANdPermitID(
+                    permit.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"), permitID
+                )
                 with(QaSta10Entity){
                     id = sta10.id
                     closedProduction=map.inactiveStatus

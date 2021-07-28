@@ -14,7 +14,6 @@ import org.kebs.app.kotlin.apollo.common.exceptions.ServiceMapNotFoundException
 import org.kebs.app.kotlin.apollo.common.utils.generateRandomText
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.*
-import org.kebs.app.kotlin.apollo.store.model.di.ConsignmentDocumentDetailsEntity
 import org.kebs.app.kotlin.apollo.store.model.qa.*
 import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileDirectorsEntity
 import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileEntity
@@ -842,7 +841,7 @@ class QADaoServices(
                 sendEmailWithProformaPaid(
                     userDetails.email ?: throw ExpectedDataNotFound("MISSING USER ID"),
                     invoiceCreationPDF(
-                        batchInvoice.id ?: throw ExpectedDataNotFound("MISSING BATCH INVOICE ID"),
+                        batchInvoice.id,
                         userDetails
                     ).path,
                     permit.permitRefNumber ?: throw ExpectedDataNotFound("MISSING PERMIT REF NUMBER")
@@ -913,8 +912,8 @@ class QADaoServices(
         permitRefNumber: String,
         userId: Long,
         permitID: Long
-    ): InvoiceEntity {
-        invoiceRepository.findByPermitRefNumberAndUserIdAndPermitId(permitRefNumber, userId, permitID)?.let {
+    ): QaInvoiceMasterDetailsEntity {
+        invoiceMasterDetailsRepo.findByPermitRefNumberAndUserIdAndPermitId(permitRefNumber, userId, permitID)?.let {
             return it
         }
             ?: throw ExpectedDataNotFound("No Invoice found with the following [PERMIT REF NO =${permitRefNumber}  and LoggedIn User]")
@@ -929,11 +928,18 @@ class QADaoServices(
             ?: throw ExpectedDataNotFound("No Invoice found with the following PERMIT ID =${permitID}")
     }
 
-    fun findSTA3WithPermitRefNumber(permitRefNumber: String): QaSta3Entity {
-        sta3Repo.findTopByPermitRefNumberOrderByIdDesc(permitRefNumber)?.let {
+    fun findSTA3WithPermitIDAndRefNumber(permitRefNumber: String, permitID: Long): QaSta3Entity {
+        sta3Repo.findByPermitRefNumberAndPermitId(permitRefNumber, permitID)?.let {
             return it
-        } ?: throw ExpectedDataNotFound("No STA3 found with the following [PERMIT REF NO =$permitRefNumber]")
+        }
+            ?: throw ExpectedDataNotFound("No STA3 found with the following PERMIT REF NO =$permitRefNumber and Permit ID =$permitID")
     }
+
+//    fun findSTA3WithPermitRefNumber(permitRefNumber: String): QaSta3Entity {
+//        sta3Repo.findTopByPermitRefNumberOrderByIdDesc(permitRefNumber)?.let {
+//            return it
+//        } ?: throw ExpectedDataNotFound("No STA3 found with the following [PERMIT REF NO =$permitRefNumber]")
+//    }
 
     fun findAllPlantDetails(userId: Long): List<ManufacturePlantDetailsEntity> {
         manufacturePlantRepository.findByUserId(userId)?.let {
@@ -961,11 +967,18 @@ class QADaoServices(
     }
 
 
-    fun findSTA10WithPermitRefNumberBY(permitRefNumber: String): QaSta10Entity {
-        sta10Repo.findTopByPermitRefNumberOrderByIdDesc(permitRefNumber)?.let {
+    fun findSTA10WithPermitRefNumberANdPermitID(permitRefNumber: String, permitID: Long): QaSta10Entity {
+        sta10Repo.findByPermitRefNumberAndPermitId(permitRefNumber, permitID)?.let {
             return it
-        } ?: throw ExpectedDataNotFound("No STA10 found with the following [PERMIT REF NO =$permitRefNumber]")
+        }
+            ?: throw ExpectedDataNotFound("No STA10 found with the following PERMIT REF NO =$permitRefNumber and Permit ID =$permitID")
     }
+
+//    fun findSTA10WithPermitRefNumberBY(permitRefNumber: String): QaSta10Entity {
+//        sta10Repo.findTopByPermitRefNumberOrderByIdDesc(permitRefNumber)?.let {
+//            return it
+//        } ?: throw ExpectedDataNotFound("No STA10 found with the following [PERMIT REF NO =$permitRefNumber]")
+//    }
 
     fun findSTA10WithPermitRefNumberBYPPermitID(permitRefNumber: String, permitID: Long): QaSta10Entity {
         sta10Repo.findByPermitRefNumberAndPermitId(permitRefNumber, permitID)?.let {
@@ -1293,15 +1306,15 @@ class QADaoServices(
 
 
     fun permitsInvoiceDTO(
-        permitInvoices: InvoiceEntity,
+        permitInvoices: QaInvoiceMasterDetailsEntity,
         permitDetails: PermitApplicationsEntity,
     ): PermitInvoiceDto {
         return PermitInvoiceDto(
             permitInvoices.permitId,
-            permitInvoices.invoiceNumber,
+            permitInvoices.invoiceRef,
             permitDetails.commodityDescription,
             permitDetails.tradeMark,
-            permitInvoices.amount,
+            permitInvoices.totalAmount,
             permitInvoices.paymentStatus,
             permitInvoices.permitRefNumber
         )
@@ -2109,6 +2122,7 @@ class QADaoServices(
     }
 
     fun sta3NewSave(
+        permitID: Long,
         permitNewRefNumber: String,
         qaSta3Details: QaSta3Entity,
         user: UsersEntity,
@@ -2116,10 +2130,11 @@ class QADaoServices(
     ): QaSta3Entity {
 
         var sta3Upadted: QaSta3Entity? = null
-        sta3Repo.findTopByPermitRefNumberOrderByIdDesc(permitNewRefNumber)?.let {
+        sta3Repo.findByPermitRefNumberAndPermitId(permitNewRefNumber, permitID)?.let {
             sta3Upadted = sta3Update(qaSta3Details, map, user)
         } ?: kotlin.run {
             with(qaSta3Details) {
+                permitId = permitID
                 permitRefNumber = permitNewRefNumber
                 status = map.activeStatus
                 createdBy = commonDaoServices.concatenateName(user)
@@ -2143,6 +2158,7 @@ class QADaoServices(
             town = plantAttached.town
             county = plantAttached.county
             region = plantAttached.region
+            permitId = permit.id
             permitRefNumber = permit.permitRefNumber
             applicationDate = commonDaoServices.getCurrentDate()
             status = map.activeStatus
@@ -2585,7 +2601,7 @@ class QADaoServices(
     ): Pair<ServiceRequestsEntity, PermitApplicationsEntity> {
 
         var sr = commonDaoServices.createServiceRequest(s)
-        var savePermit: PermitApplicationsEntity? = null
+        var createNewVersionPermit: PermitApplicationsEntity? = null
         try {
             val pm = findPermitBYID(permitID)
             var oldPermit =
@@ -2599,19 +2615,19 @@ class QADaoServices(
             //update last previous version permit old status
             oldPermit = permitUpdateDetails(oldPermit, s, user).second
 
-            savePermit = SerializationUtils.clone(oldPermit)
+            createNewVersionPermit = SerializationUtils.clone(oldPermit)
 
-            with(savePermit) {
+            with(createNewVersionPermit) {
                 id = null
                 oldPermitStatus = null
                 versionNumber = versionNumberOld.plus(1)
             }
 
-            savePermit = permitRepo.save(savePermit)
+            createNewVersionPermit = permitRepo.save(createNewVersionPermit)
 
-            sr.payload = "Permit Renewed Updated [updatePermit= ${savePermit.id}]"
-            sr.names = "${savePermit.permitRefNumber}} ${savePermit.userId}"
-            sr.varField1 = "${savePermit.id}"
+            sr.payload = "Permit Renewed Updated [updatePermit= ${createNewVersionPermit.id}]"
+            sr.names = "${createNewVersionPermit.permitRefNumber}} ${createNewVersionPermit.userId}"
+            sr.varField1 = "${createNewVersionPermit.id}"
 
             sr.responseStatus = sr.serviceMapsId?.successStatusCode
             sr.responseMessage = "Success ${sr.payload}"
@@ -2630,7 +2646,7 @@ class QADaoServices(
         }
 
         KotlinLogging.logger { }.trace("${sr.id} ${sr.responseStatus}")
-        return Pair(sr, savePermit ?: throw ExpectedDataNotFound("MISSING SAVED PERMIT"))
+        return Pair(sr, createNewVersionPermit ?: throw ExpectedDataNotFound("MISSING SAVED PERMIT"))
     }
 
     fun permitUpdateNewWithSamePermitNumber(
@@ -3362,8 +3378,8 @@ class QADaoServices(
 
 
             with(invoiceDetails) {
-                description = "${permitInvoiceFound.invoiceNumber},$description"
-                totalAmount = totalAmount?.minus(permitInvoiceFound.amount ?: throw Exception("INVALID AMOUNT"))
+                description = "${permitInvoiceFound.invoiceRef},$description"
+                totalAmount = totalAmount?.minus(permitInvoiceFound.totalAmount ?: throw Exception("INVALID AMOUNT"))
             }
             batchID = invoiceBatchRepo.save(invoiceDetails).id
 
@@ -3372,10 +3388,10 @@ class QADaoServices(
                 modifiedBy = commonDaoServices.concatenateName(user)
                 modifiedOn = commonDaoServices.getTimestamp()
             }
-            permitInvoiceFound = invoiceRepository.save(permitInvoiceFound)
+            permitInvoiceFound = invoiceMasterDetailsRepo.save(permitInvoiceFound)
 
             sr.payload = "permitInvoiceFound[id= ${permitInvoiceFound.userId}]"
-            sr.names = "${permitInvoiceFound.invoiceNumber} ${permitInvoiceFound.amount}"
+            sr.names = "${permitInvoiceFound.invoiceRef} ${permitInvoiceFound.totalAmount}"
             sr.varField1 = batchID.toString()
 
             sr.responseStatus = sr.serviceMapsId?.successStatusCode

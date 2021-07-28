@@ -256,7 +256,11 @@ interface IQaInvoiceMasterDetailsRepository : HazelcastRepository<QaInvoiceMaste
     ): List<QaInvoiceMasterDetailsEntity>?
 
     fun findAllByUserId(userId: Long): List<QaInvoiceMasterDetailsEntity>?
-//    fun findByProcessStatusNameAndStatus(processStatusName: String, status: Long): QaInvoiceMasterDetailsEntity?
+    fun findByPermitRefNumberAndUserIdAndPermitId(
+        permitRefNumber: String,
+        userId: Long,
+        permitId: Long
+    ): QaInvoiceMasterDetailsEntity?
 //    fun findByStatus(status: Int): List<QaInvoiceMasterDetailsEntity>?
 }
 
