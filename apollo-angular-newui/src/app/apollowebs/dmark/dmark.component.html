@@ -26,6 +26,16 @@
 <i class="material-icons">assignment_turned_in</i> STA3 Summary
 </a>
 </li>
+    <li class="nav-item">
+        <a class="nav-link" data-toggle="tab" href="#link13" role="tablist">
+            <i class="material-icons">assignment_turned_in</i> Uploaded Documents
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" data-toggle="tab" href="#link15" role="tablist">
+            <i class="material-icons">assignment_turned_in</i> Comments
+        </a>
+    </li>
 <li *ngIf="allPermitDetails.permitDetails.permitAwardStatus == true" class="nav-item">
     <a class="nav-link" data-toggle="tab" href="#link14" role="tablist">
         <i class="material-icons">assignment_turned_in</i>CERTIFICATE ISSUED
@@ -759,6 +769,24 @@ placeholder=""
     <div class="tab-pane" id="link14">
         <ngx-extended-pdf-viewer [src]="pdfSources" [zoom]="'page-actual'"
                                  [filenameForDownload]="'Certificate'"></ngx-extended-pdf-viewer>
+    </div>
+    <div class="tab-pane" id="link13">
+        <h3>Uploaded Documents</h3>
+        <br>
+        <div id="main1">
+            <div class="container">
+
+            </div>
+        </div>
+    </div>
+    <div class="tab-pane" id="link15">
+        <h3>Comments</h3>
+        <br>
+        <div id="main3">
+            <div class="container">
+
+            </div>
+        </div>
     </div>
     <!--                        <div class="tab-pane" id="link12">-->
     <!--                            <div class="material-datatables">-->
