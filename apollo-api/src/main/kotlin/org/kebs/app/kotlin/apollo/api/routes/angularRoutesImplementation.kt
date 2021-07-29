@@ -82,6 +82,8 @@ class AngularRoutes {
                     GET("/load", handler::usersListing)
                     GET("/load/users-requests", handler::listUserRequests)
                     GET("/user-details", handler::userDetails)
+                    GET("/user-email-exist", handler::userSearchEmailExistsDetails)
+                    GET("/user-username-exist", handler::userSearchUserNameExistsDetails)
                     POST("/search", handler::usersSearchListing)
                     POST("/{userId}/user-request", handler::usersRequests)
                     POST("/{userId}/update/company-profile", handler::usersUpdateCompanyProfile)

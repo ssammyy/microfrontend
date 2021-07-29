@@ -298,6 +298,41 @@ class SystemsAdministrationHandler(
 
     }
 
+    fun userSearchEmailExistsDetails(req: ServerRequest): ServerResponse {
+        return try {
+            val userEmail = req.paramOrNull("userEmail") ?: throw ExpectedDataNotFound("Required USER ID, check config")
+            val userDetails = daoService.getUserByEmail(userEmail)
+
+            if (userDetails != null) {
+                ok().body(daoService.getUserDetails(userDetails.id ?: throw Exception("MISSING USER ID")))
+            } else {
+                ok().body(false)
+            }
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            badRequest().body(e.message ?: "Unknown Error")
+        }
+
+    }
+
+    fun userSearchUserNameExistsDetails(req: ServerRequest): ServerResponse {
+        return try {
+            val userName = req.paramOrNull("userName") ?: throw ExpectedDataNotFound("Required USER ID, check config")
+            val userDetails = daoService.getUserByUserName(userName)
+            if (userDetails != null) {
+                ok().body(daoService.getUserDetails(userDetails.id ?: throw Exception("MISSING USER ID")))
+            } else {
+                ok().body(false)
+            }
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            badRequest().body(e.message ?: "Unknown Error")
+        }
+
+    }
+
     fun userView(req: ServerRequest): ServerResponse {
         try {
             val user = daoService.getUser(req.pathVariable("id")) ?: UsersEntity()
