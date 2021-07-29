@@ -476,13 +476,14 @@
                                                         </div>
                                                     </div>
                                                     <div class="tab-pane" id="link18">
-                                                        <div class="card">
+                                                        <div class="card" style="padding-left: 20px; padding-bottom: 20px;">
                                                             <form [formGroup]="stkPushForm"
                                                                   action="" enctype="multipart/form-data"
                                                                   class="form" method="post">
-                                                                <h2 class="welcome">
-                                                                    Enter details below to Pay for invoice
-                                                                </h2>
+                                                                <br>
+                                                                <h4>
+                                                                    Fill the details below to make payment
+                                                                </h4>
                                                                 <div class="form-body">
 
                                                                     <div style="margin-top: 3%" class="form-group">
@@ -508,10 +509,9 @@
                                                                                value="{{batchID}}"
                                                                                name="entityValueID">
                                                                     </div>
-                                                                    <br>
                                                                     <div>
-                                                                        <button (click)="stkPush()"
-                                                                                class="login-button">PAY NOW
+                                                                        <button class="btn btn-primary" (click)="stkPush()"
+                                                                               >PAY NOW
                                                                         </button>
                                                                     </div>
                                                                 </div>
