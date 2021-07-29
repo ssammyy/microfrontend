@@ -47,6 +47,7 @@ import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.servlet.function.ServerRequest
 import org.springframework.web.servlet.function.ServerResponse
+import org.springframework.web.servlet.function.ServerResponse.badRequest
 import org.springframework.web.servlet.function.ServerResponse.ok
 import org.springframework.web.servlet.function.body
 import org.springframework.web.servlet.function.paramOrNull
@@ -974,7 +975,7 @@ class QualityAssuranceHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            throw e
+            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
         }
 
     }
@@ -996,7 +997,7 @@ class QualityAssuranceHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            throw e
+            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
         }
 
     }
@@ -1017,7 +1018,7 @@ class QualityAssuranceHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            throw e
+            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
         }
 
     }
@@ -1051,7 +1052,7 @@ class QualityAssuranceHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            throw e
+            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
         }
 
     }
@@ -1090,7 +1091,7 @@ class QualityAssuranceHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            throw e
+            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
         }
 
     }
@@ -1127,7 +1128,7 @@ class QualityAssuranceHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            throw e
+            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
         }
 
     }
@@ -1150,7 +1151,7 @@ class QualityAssuranceHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            throw e
+            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
         }
 
     }
@@ -1182,7 +1183,7 @@ class QualityAssuranceHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            throw e
+            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
         }
 
     }
@@ -1203,7 +1204,7 @@ class QualityAssuranceHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            throw e
+            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
         }
     }
 
@@ -1246,7 +1247,7 @@ class QualityAssuranceHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            throw e
+            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
         }
 
     }
@@ -1275,7 +1276,7 @@ class QualityAssuranceHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            throw e
+            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
         }
 
     }
@@ -1314,7 +1315,7 @@ class QualityAssuranceHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            throw e
+            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
         }
 
     }
@@ -1364,7 +1365,7 @@ class QualityAssuranceHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            throw e
+            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
         }
 
     }
@@ -1466,7 +1467,7 @@ class QualityAssuranceHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            throw e
+            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
         }
 
     }
@@ -1525,7 +1526,7 @@ class QualityAssuranceHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            throw e
+            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
         }
 
     }
@@ -1552,7 +1553,7 @@ class QualityAssuranceHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            throw e
+            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
         }
 
     }
@@ -1579,7 +1580,7 @@ class QualityAssuranceHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            throw e
+            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
         }
 
     }
@@ -1613,7 +1614,7 @@ class QualityAssuranceHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            throw e
+            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
         }
 
     }
@@ -1667,7 +1668,7 @@ class QualityAssuranceHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            throw e
+            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
         }
 
     }
@@ -1709,7 +1710,7 @@ class QualityAssuranceHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            throw e
+            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
         }
 
     }
@@ -1765,7 +1766,7 @@ class QualityAssuranceHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            throw e
+            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
         }
 
     }
@@ -1788,7 +1789,7 @@ class QualityAssuranceHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            throw e
+            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
         }
 
     }
@@ -1815,7 +1816,7 @@ class QualityAssuranceHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            throw e
+            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
         }
 
     }
@@ -1844,7 +1845,7 @@ class QualityAssuranceHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            throw e
+            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
         }
 
     }
@@ -1897,7 +1898,7 @@ class QualityAssuranceHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            throw e
+            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
         }
 
     }
@@ -1956,7 +1957,7 @@ class QualityAssuranceHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            throw e
+            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
         }
 
     }
@@ -1983,7 +1984,7 @@ class QualityAssuranceHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            throw e
+            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
         }
 
     }
@@ -2030,7 +2031,7 @@ class QualityAssuranceHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            throw e
+            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
         }
 
     }
@@ -2061,7 +2062,7 @@ class QualityAssuranceHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message, e)
             KotlinLogging.logger { }.debug(e.message, e)
-            throw e
+            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
         }
 
     }
@@ -2088,7 +2089,7 @@ class QualityAssuranceHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            throw e
+            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
         }
 
     }
@@ -2119,7 +2120,7 @@ class QualityAssuranceHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            throw e
+            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
         }
 
     }
@@ -2150,7 +2151,7 @@ class QualityAssuranceHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            throw e
+            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
         }
 
     }
@@ -2175,7 +2176,7 @@ class QualityAssuranceHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            throw e
+            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
         }
 
     }
@@ -2202,7 +2203,7 @@ class QualityAssuranceHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            throw e
+            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
         }
 
     }
@@ -2234,7 +2235,7 @@ class QualityAssuranceHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            throw e
+            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
         }
 
     }
@@ -2260,7 +2261,7 @@ class QualityAssuranceHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            throw e
+            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
         }
 
     }
@@ -2291,7 +2292,7 @@ class QualityAssuranceHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            throw e
+            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
         }
 
     }
@@ -2317,7 +2318,7 @@ class QualityAssuranceHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            throw e
+            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
         }
 
     }
@@ -2339,7 +2340,7 @@ class QualityAssuranceHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            throw e
+            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
         }
 
     }
@@ -2361,7 +2362,7 @@ class QualityAssuranceHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            throw e
+            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
         }
 
     }
@@ -2383,7 +2384,7 @@ class QualityAssuranceHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            throw e
+            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
         }
 
     }
@@ -2403,7 +2404,7 @@ class QualityAssuranceHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            throw e
+            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
         }
 
     }
@@ -2425,7 +2426,7 @@ class QualityAssuranceHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            throw e
+            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
         }
 
     }
@@ -2450,7 +2451,7 @@ class QualityAssuranceHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            throw e
+            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
         }
 
     }
@@ -2478,7 +2479,7 @@ class QualityAssuranceHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            throw e
+            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
         }
 
     }
@@ -2500,7 +2501,7 @@ class QualityAssuranceHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            throw e
+            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
         }
 
     }
@@ -2517,7 +2518,7 @@ class QualityAssuranceHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            throw e
+            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
         }
 
     }
@@ -2545,7 +2546,7 @@ class QualityAssuranceHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            throw e
+            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
         }
 
     }
@@ -2562,7 +2563,7 @@ class QualityAssuranceHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            throw e
+            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
         }
 
     }
