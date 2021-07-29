@@ -1386,7 +1386,7 @@ class QualityAssuranceHandler(
             )
 
             //Calculate Invoice Details
-            qaDaoServices.permitInvoiceCalculation(map, loggedInUser, permit, permitType)
+            val invoiceCreated = qaDaoServices.permitInvoiceCalculation(map, loggedInUser, permit, permitType).second
 
             //Update Permit Details
             with(permit) {
@@ -1396,13 +1396,6 @@ class QualityAssuranceHandler(
             }
             permit = qaDaoServices.permitUpdateDetails(permit, map, loggedInUser).second
 
-
-//            val pair = qaDaoServices.consolidateInvoiceAndSendMail(
-//                permit.id ?: throw ExpectedDataNotFound("MISSING PERMIT ID"), map, loggedInUser
-//            )
-//
-//            val batchInvoice = pair.first
-//            permit = pair.second
 
             //Start DMARK PROCESS
             qualityAssuranceBpmn.startQADmAppPaymentProcess(
@@ -1547,6 +1540,33 @@ class QualityAssuranceHandler(
                 req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
 //            val docFile: MultipartFile = req.paramOrNull("docFile").toMultipartData()
 
+            val permit = qaDaoServices.findPermitBYUserIDAndId(
+                permitID,
+                loggedInUser.id ?: throw ExpectedDataNotFound("MISSING USER ID")
+            )
+
+            qaDaoServices.mapAllPermitDetailsTogether(permit, null, map).let {
+                return ok().body(it)
+            }
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            throw e
+        }
+
+    }
+
+    @PreAuthorize("hasAuthority('PERMIT_APPLICATION')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun permitAttachGetOrdinaryFilesListMigration(req: ServerRequest): ServerResponse {
+        try {
+            val loggedInUser = commonDaoServices.loggedInUserDetails()
+            val map = commonDaoServices.serviceMapDetails(appId)
+            val permitID =
+                req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
+//            val docFile: MultipartFile = req.paramOrNull("docFile").toMultipartData()
+            val ordinaryFiles = qaDaoServices.findAllUploadedFileBYPermitIDAndOrdinarStatus(permitID, map.activeStatus)
             val permit = qaDaoServices.findPermitBYUserIDAndId(
                 permitID,
                 loggedInUser.id ?: throw ExpectedDataNotFound("MISSING USER ID")
@@ -2441,11 +2461,15 @@ class QualityAssuranceHandler(
         try {
             val loggedInUser = commonDaoServices.loggedInUserDetails()
             val map = commonDaoServices.serviceMapDetails(appId)
-            val permitID =
-                req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
+//            val permitID = req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
             val dto = req.body<NewBatchInvoiceDto>()
-
-            val batchInvoiceDetails = qaDaoServices.permitMultipleInvoiceCalculation(map, loggedInUser, dto).second
+            //Create invoice consolidation list
+            var batchInvoiceDetails = qaDaoServices.permitMultipleInvoiceCalculation(map, loggedInUser, dto).second
+            //Add created invoice consolidated id to my batch id to be submitted
+            dto.batchID =
+                batchInvoiceDetails.id ?: throw ExpectedDataNotFound("MISSING BATCH ID ON CREATED CONSOLIDATION")
+            //submit to staging invoices
+            batchInvoiceDetails = qaDaoServices.permitMultipleInvoiceSubmitInvoice(map, loggedInUser, dto).second
 
             qaDaoServices.mapBatchInvoiceDetails(batchInvoiceDetails, loggedInUser, map).let {
                 return ok().body(it)

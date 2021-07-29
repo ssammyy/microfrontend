@@ -53,6 +53,8 @@ class QualityAssuranceJSONControllers(
         docFile.forEach { u ->
             val upload = QaUploadsEntity()
             with(upload) {
+                permitId = permitDetails.id
+                versionNumber = 1
                 sta3Status = 1
                 ordinaryStatus = 0
             }
@@ -87,6 +89,8 @@ class QualityAssuranceJSONControllers(
         docFile.forEach { u ->
             val upload = QaUploadsEntity()
             with(upload) {
+                permitId = permitDetails.id
+                versionNumber = 1
                 sta10Status = 1
                 ordinaryStatus = 0
             }

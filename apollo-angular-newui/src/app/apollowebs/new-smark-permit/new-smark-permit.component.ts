@@ -707,21 +707,25 @@ export class NewSmarkPermitComponent implements OnInit {
                 '</div>'
         });
     }
-//Remove Form repeater values
-    removePersonnelDetails(index){
+
+// Remove Form repeater values
+    removePersonnelDetails(index) {
         this.sta10PersonnelDetails.splice(index, index);
     }
 
-    removeProductsManufacture(index){
+    removeProductsManufacture(index) {
         this.sta10ProductsManufactureDetails.splice(index, index);
     }
-    removeRawMaterials(index){
+
+    removeRawMaterials(index) {
         this.sta10RawMaterialsDetails.splice(index, index);
     }
-    removeMachineryAndPlantDetails(index){
+
+    removeMachineryAndPlantDetails(index) {
         this.sta10MachineryAndPlantDetails.splice(index, index);
     }
-    removeManufacturingProcessDetails(index){
+
+    removeManufacturingProcessDetails(index) {
         this.sta10ManufacturingProcessDetails.splice(index, index);
     }
 

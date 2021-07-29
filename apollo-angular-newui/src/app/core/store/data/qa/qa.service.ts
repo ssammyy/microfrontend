@@ -256,7 +256,7 @@ export class QaService {
     }
 
     public createInvoiceConsolidatedDetails(data: GenerateInvoiceDto): Observable<AllBatchInvoiceDetailsDto> {
-        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.PERMIT_VIEW_STA10_DETAILS);
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.INVOICE_CONSOLIDATE_ADD);
         return this.http.post<AllBatchInvoiceDetailsDto>(url, data).pipe(
             map(function (response: AllBatchInvoiceDetailsDto) {
                 return response;
