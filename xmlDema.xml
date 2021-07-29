@@ -1,0 +1,244 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xdb="http://xmlns.oracle.com/xdb"
+            targetNamespace="http://DAT_KEBS_CD_DEMAND_NOTE/xsd" xmlns:tns="http://DAT_KEBS_CD_DEMAND_NOTE/xsd"
+            elementFormDefault="qualified">
+    <xsd:complexType name="APOLLO.Base_T"></xsd:complexType>
+    <xsd:element name="APOLLO.DAT_KEBS_CD_DEMAND_NOTES" type="tns:APOLLO.DAT_KEBS_CD_DEMAND_NOTES_T"></xsd:element>
+    <xsd:complexType name="APOLLO.DAT_KEBS_CD_DEMAND_NOTES_T">
+        <xsd:sequence>
+            <xsd:element name="APOLLO.DAT_KEBS_CD_DEMAND_NOTE" type="tns:APOLLO.DAT_KEBS_CD_DEMAND_NOTE_T"
+                         maxOccurs="unbounded"></xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="APOLLO.DAT_KEBS_CD_DEMAND_NOTE_T">
+        <xsd:complexContent>
+            <xsd:extension base="tns:APOLLO.Base_T">
+                <xsd:sequence>
+                    <xsd:element name="ID" type="xsd:double" minOccurs="1" xdb:SQLName="ID"
+                                 xdb:SQLTYPE="NUMBER"></xsd:element>
+                    <xsd:element name="NAME_IMPORTER" minOccurs="0" xdb:SQLName="NAME_IMPORTER" xdb:SQLTYPE="VARCHAR2">
+                        <xsd:simpleType>
+                            <xsd:restriction base="xsd:string">
+                                <xsd:maxLength value="200"></xsd:maxLength>
+                            </xsd:restriction>
+                        </xsd:simpleType>
+                    </xsd:element>
+                    <xsd:element name="ADDRESS" minOccurs="0" xdb:SQLName="ADDRESS" xdb:SQLTYPE="VARCHAR2">
+                        <xsd:simpleType>
+                            <xsd:restriction base="xsd:string">
+                                <xsd:maxLength value="200"></xsd:maxLength>
+                            </xsd:restriction>
+                        </xsd:simpleType>
+                    </xsd:element>
+                    <xsd:element name="TELEPHONE" minOccurs="0" xdb:SQLName="TELEPHONE" xdb:SQLTYPE="VARCHAR2">
+                        <xsd:simpleType>
+                            <xsd:restriction base="xsd:string">
+                                <xsd:maxLength value="200"></xsd:maxLength>
+                            </xsd:restriction>
+                        </xsd:simpleType>
+                    </xsd:element>
+                    <xsd:element name="PRODUCT" minOccurs="0" xdb:SQLName="PRODUCT" xdb:SQLTYPE="VARCHAR2">
+                        <xsd:simpleType>
+                            <xsd:restriction base="xsd:string">
+                                <xsd:maxLength value="500"></xsd:maxLength>
+                            </xsd:restriction>
+                        </xsd:simpleType>
+                    </xsd:element>
+                    <xsd:element name="C_F_VALUE" type="xsd:double" minOccurs="0" xdb:SQLName="C_F_VALUE"
+                                 xdb:SQLTYPE="NUMBER"></xsd:element>
+                    <xsd:element name="RATE" minOccurs="0" xdb:SQLName="RATE" xdb:SQLTYPE="VARCHAR2">
+                        <xsd:simpleType>
+                            <xsd:restriction base="xsd:string">
+                                <xsd:maxLength value="20"></xsd:maxLength>
+                            </xsd:restriction>
+                        </xsd:simpleType>
+                    </xsd:element>
+                    <xsd:element name="AMOUNT_PAYABLE" type="xsd:double" minOccurs="0" xdb:SQLName="AMOUNT_PAYABLE"
+                                 xdb:SQLTYPE="NUMBER"></xsd:element>
+                    <xsd:element name="ENTRY_ABL_NUMBER" minOccurs="0" xdb:SQLName="ENTRY_ABL_NUMBER"
+                                 xdb:SQLTYPE="VARCHAR2">
+                        <xsd:simpleType>
+                            <xsd:restriction base="xsd:string">
+                                <xsd:maxLength value="200"></xsd:maxLength>
+                            </xsd:restriction>
+                        </xsd:simpleType>
+                    </xsd:element>
+                    <xsd:element name="PRO_IDE_NUMBER" minOccurs="0" xdb:SQLName="PRO_IDE_NUMBER"
+                                 xdb:SQLTYPE="VARCHAR2">
+                        <xsd:simpleType>
+                            <xsd:restriction base="xsd:string">
+                                <xsd:maxLength value="200"></xsd:maxLength>
+                            </xsd:restriction>
+                        </xsd:simpleType>
+                    </xsd:element>
+                    <xsd:element name="KPA_KAHL_NUMBER" minOccurs="0" xdb:SQLName="KPA_KAHL_NUMBER"
+                                 xdb:SQLTYPE="VARCHAR2">
+                        <xsd:simpleType>
+                            <xsd:restriction base="xsd:string">
+                                <xsd:maxLength value="200"></xsd:maxLength>
+                            </xsd:restriction>
+                        </xsd:simpleType>
+                    </xsd:element>
+                    <xsd:element name="KYC" minOccurs="0" xdb:SQLName="KYC" xdb:SQLTYPE="VARCHAR2">
+                        <xsd:simpleType>
+                            <xsd:restriction base="xsd:string">
+                                <xsd:maxLength value="20"></xsd:maxLength>
+                            </xsd:restriction>
+                        </xsd:simpleType>
+                    </xsd:element>
+                    <xsd:element name="DATE_GENERATED" type="xsd:date" minOccurs="0" xdb:SQLName="DATE_GENERATED"
+                                 xdb:SQLTYPE="DATE"></xsd:element>
+                    <xsd:element name="DESCRIPTION_GOODS" minOccurs="0" xdb:SQLName="DESCRIPTION_GOODS"
+                                 xdb:SQLTYPE="VARCHAR2">
+                        <xsd:simpleType>
+                            <xsd:restriction base="xsd:string">
+                                <xsd:maxLength value="3800"></xsd:maxLength>
+                            </xsd:restriction>
+                        </xsd:simpleType>
+                    </xsd:element>
+                    <xsd:element name="UCR_NUMBER" minOccurs="0" xdb:SQLName="UCR_NUMBER" xdb:SQLTYPE="VARCHAR2">
+                        <xsd:simpleType>
+                            <xsd:restriction base="xsd:string">
+                                <xsd:maxLength value="1400"></xsd:maxLength>
+                            </xsd:restriction>
+                        </xsd:simpleType>
+                    </xsd:element>
+                    <xsd:element name="STATUS" type="xsd:integer" minOccurs="0" xdb:SQLName="STATUS"
+                                 xdb:SQLTYPE="NUMBER"></xsd:element>
+                    <xsd:element name="VAR_FIELD_1" minOccurs="0" xdb:SQLName="VAR_FIELD_1" xdb:SQLTYPE="VARCHAR2">
+                        <xsd:simpleType>
+                            <xsd:restriction base="xsd:string">
+                                <xsd:maxLength value="1400"></xsd:maxLength>
+                            </xsd:restriction>
+                        </xsd:simpleType>
+                    </xsd:element>
+                    <xsd:element name="VAR_FIELD_2" minOccurs="0" xdb:SQLName="VAR_FIELD_2" xdb:SQLTYPE="VARCHAR2">
+                        <xsd:simpleType>
+                            <xsd:restriction base="xsd:string">
+                                <xsd:maxLength value="1400"></xsd:maxLength>
+                            </xsd:restriction>
+                        </xsd:simpleType>
+                    </xsd:element>
+                    <xsd:element name="VAR_FIELD_3" minOccurs="0" xdb:SQLName="VAR_FIELD_3" xdb:SQLTYPE="VARCHAR2">
+                        <xsd:simpleType>
+                            <xsd:restriction base="xsd:string">
+                                <xsd:maxLength value="1400"></xsd:maxLength>
+                            </xsd:restriction>
+                        </xsd:simpleType>
+                    </xsd:element>
+                    <xsd:element name="VAR_FIELD_4" minOccurs="0" xdb:SQLName="VAR_FIELD_4" xdb:SQLTYPE="VARCHAR2">
+                        <xsd:simpleType>
+                            <xsd:restriction base="xsd:string">
+                                <xsd:maxLength value="1400"></xsd:maxLength>
+                            </xsd:restriction>
+                        </xsd:simpleType>
+                    </xsd:element>
+                    <xsd:element name="VAR_FIELD_5" minOccurs="0" xdb:SQLName="VAR_FIELD_5" xdb:SQLTYPE="VARCHAR2">
+                        <xsd:simpleType>
+                            <xsd:restriction base="xsd:string">
+                                <xsd:maxLength value="1400"></xsd:maxLength>
+                            </xsd:restriction>
+                        </xsd:simpleType>
+                    </xsd:element>
+                    <xsd:element name="VAR_FIELD_6" minOccurs="0" xdb:SQLName="VAR_FIELD_6" xdb:SQLTYPE="VARCHAR2">
+                        <xsd:simpleType>
+                            <xsd:restriction base="xsd:string">
+                                <xsd:maxLength value="1400"></xsd:maxLength>
+                            </xsd:restriction>
+                        </xsd:simpleType>
+                    </xsd:element>
+                    <xsd:element name="VAR_FIELD_7" minOccurs="0" xdb:SQLName="VAR_FIELD_7" xdb:SQLTYPE="VARCHAR2">
+                        <xsd:simpleType>
+                            <xsd:restriction base="xsd:string">
+                                <xsd:maxLength value="1400"></xsd:maxLength>
+                            </xsd:restriction>
+                        </xsd:simpleType>
+                    </xsd:element>
+                    <xsd:element name="VAR_FIELD_8" minOccurs="0" xdb:SQLName="VAR_FIELD_8" xdb:SQLTYPE="VARCHAR2">
+                        <xsd:simpleType>
+                            <xsd:restriction base="xsd:string">
+                                <xsd:maxLength value="1400"></xsd:maxLength>
+                            </xsd:restriction>
+                        </xsd:simpleType>
+                    </xsd:element>
+                    <xsd:element name="VAR_FIELD_9" minOccurs="0" xdb:SQLName="VAR_FIELD_9" xdb:SQLTYPE="VARCHAR2">
+                        <xsd:simpleType>
+                            <xsd:restriction base="xsd:string">
+                                <xsd:maxLength value="1400"></xsd:maxLength>
+                            </xsd:restriction>
+                        </xsd:simpleType>
+                    </xsd:element>
+                    <xsd:element name="VAR_FIELD_10" minOccurs="0" xdb:SQLName="VAR_FIELD_10" xdb:SQLTYPE="VARCHAR2">
+                        <xsd:simpleType>
+                            <xsd:restriction base="xsd:string">
+                                <xsd:maxLength value="1400"></xsd:maxLength>
+                            </xsd:restriction>
+                        </xsd:simpleType>
+                    </xsd:element>
+                    <xsd:element name="CREATED_BY" minOccurs="1" xdb:SQLName="CREATED_BY" xdb:SQLTYPE="VARCHAR2">
+                        <xsd:simpleType>
+                            <xsd:restriction base="xsd:string">
+                                <xsd:maxLength value="400"></xsd:maxLength>
+                            </xsd:restriction>
+                        </xsd:simpleType>
+                    </xsd:element>
+                    <xsd:element name="CREATED_ON" type="xsd:anySimpleType" minOccurs="1" xdb:SQLName="CREATED_ON"
+                                 xdb:SQLTYPE="TIMESTAMP(6) WITH TIME ZONE"></xsd:element>
+                    <xsd:element name="MODIFIED_BY" minOccurs="0" xdb:SQLName="MODIFIED_BY" xdb:SQLTYPE="VARCHAR2">
+                        <xsd:simpleType>
+                            <xsd:restriction base="xsd:string">
+                                <xsd:maxLength value="400"></xsd:maxLength>
+                            </xsd:restriction>
+                        </xsd:simpleType>
+                    </xsd:element>
+                    <xsd:element name="MODIFIED_ON" type="xsd:anySimpleType" minOccurs="0" xdb:SQLName="MODIFIED_ON"
+                                 xdb:SQLTYPE="TIMESTAMP(6) WITH TIME ZONE"></xsd:element>
+                    <xsd:element name="DELETE_BY" minOccurs="0" xdb:SQLName="DELETE_BY" xdb:SQLTYPE="VARCHAR2">
+                        <xsd:simpleType>
+                            <xsd:restriction base="xsd:string">
+                                <xsd:maxLength value="400"></xsd:maxLength>
+                            </xsd:restriction>
+                        </xsd:simpleType>
+                    </xsd:element>
+                    <xsd:element name="DELETED_ON" type="xsd:anySimpleType" minOccurs="0" xdb:SQLName="DELETED_ON"
+                                 xdb:SQLTYPE="TIMESTAMP(6) WITH TIME ZONE"></xsd:element>
+                    <xsd:element name="ITEM_ID" type="xsd:double" minOccurs="0" xdb:SQLName="ITEM_ID"
+                                 xdb:SQLTYPE="NUMBER"></xsd:element>
+                    <xsd:element name="ITEM_HSCODE" minOccurs="0" xdb:SQLName="ITEM_HSCODE" xdb:SQLTYPE="VARCHAR2">
+                        <xsd:simpleType>
+                            <xsd:restriction base="xsd:string">
+                                <xsd:maxLength value="200"></xsd:maxLength>
+                            </xsd:restriction>
+                        </xsd:simpleType>
+                    </xsd:element>
+                    <xsd:element name="TOTAL_AMOUNT" type="xsd:double" minOccurs="0" xdb:SQLName="TOTAL_AMOUNT"
+                                 xdb:SQLTYPE="NUMBER"></xsd:element>
+                    <xsd:element name="ITEM_ID_NO" type="xsd:integer" minOccurs="0" xdb:SQLName="ITEM_ID_NO"
+                                 xdb:SQLTYPE="NUMBER"></xsd:element>
+                    <xsd:element name="DESTINATION_FEE_ID" type="xsd:double" minOccurs="0"
+                                 xdb:SQLName="DESTINATION_FEE_ID" xdb:SQLTYPE="NUMBER"></xsd:element>
+                    <xsd:element name="DESTINATION_FEE_VALUE" type="xsd:double" minOccurs="0"
+                                 xdb:SQLName="DESTINATION_FEE_VALUE" xdb:SQLTYPE="NUMBER"></xsd:element>
+                    <xsd:element name="CURRENCY_ID" type="xsd:double" minOccurs="0" xdb:SQLName="CURRENCY_ID"
+                                 xdb:SQLTYPE="NUMBER"></xsd:element>
+                    <xsd:element name="DEMAND_NOTE_NUMBER" minOccurs="0" xdb:SQLName="DEMAND_NOTE_NUMBER"
+                                 xdb:SQLTYPE="VARCHAR2">
+                        <xsd:simpleType>
+                            <xsd:restriction base="xsd:string">
+                                <xsd:maxLength value="200"></xsd:maxLength>
+                            </xsd:restriction>
+                        </xsd:simpleType>
+                    </xsd:element>
+                    <xsd:element name="PAYMENT_STATUS" type="xsd:double" minOccurs="0" xdb:SQLName="PAYMENT_STATUS"
+                                 xdb:SQLTYPE="NUMBER"></xsd:element>
+                    <xsd:element name="RECEIPT_NO" minOccurs="0" xdb:SQLName="RECEIPT_NO" xdb:SQLTYPE="VARCHAR2">
+                        <xsd:simpleType>
+                            <xsd:restriction base="xsd:string">
+                                <xsd:maxLength value="200"></xsd:maxLength>
+                            </xsd:restriction>
+                        </xsd:simpleType>
+                    </xsd:element>
+                </xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+</xsd:schema>

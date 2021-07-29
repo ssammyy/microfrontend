@@ -88,14 +88,15 @@ data class PermitInvoiceDto(
     var brandName: String? = null,
     var totalAmount: BigDecimal? = null,
     var paidStatus: Int? = null,
-    var permitRefNumber: String? = null
+    var permitRefNumber: String? = null,
+    var batchID: Long? = null
 )
 
 data class NewBatchInvoiceDto(
     var batchID: Long = -1L,
     var plantID: Long? = null,
     var permitRefNumber: String? = null,
-    var permitInvoicesID: Array<String>? = null
+    var permitInvoicesID: Array<Long>? = null
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -147,6 +148,7 @@ data class STA1Dto(
     var sectionId: Long? = null,
     var permitForeignStatus: Int? = null,
     var attachedPlant: Long? = null,
+    var createFmark: Int? = null,
 )
 
 data class STA10ProductsManufactureDto(
@@ -271,6 +273,44 @@ data class STA3Dto(
     var indicateStageManufacture: String? = null
 )
 
+data class FilesListDto(
+    var id: Long? = null,
+    var name: String? = null,
+    var fileType: String? = null,
+    var documentType: String? = null,
+    var versionNumber: Long? = null,
+    var document: ByteArray? = null
+) {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as FilesListDto
+
+        if (id != other.id) return false
+        if (name != other.name) return false
+        if (fileType != other.fileType) return false
+        if (documentType != other.documentType) return false
+        if (versionNumber != other.versionNumber) return false
+        if (document != null) {
+            if (other.document == null) return false
+            if (!document.contentEquals(other.document)) return false
+        } else if (other.document != null) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = id?.hashCode() ?: 0
+        result = 31 * result + (name?.hashCode() ?: 0)
+        result = 31 * result + (fileType?.hashCode() ?: 0)
+        result = 31 * result + (documentType?.hashCode() ?: 0)
+        result = 31 * result + (versionNumber?.hashCode() ?: 0)
+        result = 31 * result + (document?.contentHashCode() ?: 0)
+        return result
+    }
+}
+
 data class PermitEntityDto(
     var id: Long? = null,
     var firmName: String? = null,
@@ -358,6 +398,9 @@ data class AllPermitDetailsDto(
 //    var standardList: List<UserEntityDto>? = null,
     var officerList: List<UserEntityDto>? = null,
     var oldVersionList: List<PermitEntityDto>? = null,
+    var ordinaryFilesList: List<FilesListDto>? = null,
+    var sta3FilesList: List<FilesListDto>? = null,
+    var sta10FilesList: List<FilesListDto>? = null,
     var batchID: Long? = null
 )
 

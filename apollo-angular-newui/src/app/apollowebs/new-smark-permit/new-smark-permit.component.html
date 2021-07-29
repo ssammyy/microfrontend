@@ -1,4 +1,14 @@
-
+<div class="container-fluid" style="margin-top: 5%">
+<div  class="loading-spinner ">
+<ngx-spinner
+bdColor="rgba(51,51,51,0.8)"
+size="medium"
+color="#fff"
+type="ball-scale-multiple"
+>
+<p style="font-size: 20px; color: white">Saving Please Wait...</p>
+</ngx-spinner>
+</div>
 <div class="main-content">
 <div class="container-fluid">
 <div class="row">
@@ -57,20 +67,22 @@ placeholder="Trade Mark" required="">
 <div class="row">
 <div class="form-group col-6">
 <label for="applicantName">Applicant Name <span style="font-size: xx-small; color: red;">(*)Required</span></label>
-<input type="text" [class.is-invalid]="formSta1Form.applicantName.invalid && formSta1Form.applicantName.touched" class="form-control" id="applicantName" formControlName="applicantName" name="applicantName"
-placeholder="Applicant Name" required="">
+<input type="text"  class="form-control" id="applicantName" formControlName="applicantName" name="applicantName"
+placeholder="Applicant Name" ngModel="{{fullname}}" disabled>
 </div>
-
 <div class="form-group col-6">
-<label for="inputState">Select Section <span style="font-size: xx-small; color: red;">(*)Select One</span></label>
-<select id="inputState" class="form-control" formControlName="sectionId" name="sectionId"
-[class.is-invalid]="formSta1Form.sectionId.invalid && formSta1Form.sectionId.touched">
-<option selected>Select Section</option>
-<option *ngFor="let section of sections"
-[ngValue]="section.id"
-class="dropdown-item">{{section.section}}</option>
+<label for="attachedPlant">Attach Plant <span style="font-size: xx-small; color: red;">(*)Select One</span></label>
+<select id="attachedPlant" class="form-control" formControlName="attachedPlant" name="attachedPlant"
+[class.is-invalid]="formSta1Form.attachedPlant.invalid && formSta1Form.attachedPlant.touched">
+<option selected>Select Plant</option>
+<option *ngFor="let plant of plants"
+[ngValue]="plant.id"
+class="dropdown-item">{{plant.buildingName}}</option>
+
 </select>
 </div>
+
+
 </div>
 
 <div class="row">
@@ -84,20 +96,30 @@ class="dropdown-item">{{section.section}}</option>
 <!--                        </select>-->
 <!--                    </div>-->
 <div class="form-group col-6">
-<label for="attachedPlant">Attach Plant <span style="font-size: xx-small; color: red;">(*)Select One</span></label>
-<select id="attachedPlant" class="form-control" formControlName="attachedPlant" name="attachedPlant"
-[class.is-invalid]="formSta1Form.attachedPlant.invalid && formSta1Form.attachedPlant.touched">
-<option selected>Select Plant</option>
-<option *ngFor="let plant of plants"
-[ngValue]="plant.id"
-class="dropdown-item">{{plant.buildingName}}</option>
-
+<label for="inputState">Select Section <span style="font-size: xx-small; color: red;">(*)Select One</span></label>
+<select id="inputState" class="form-control" [(ngModel)]="SelectedSectionId" formControlName="sectionId" name="sectionId"
+[class.is-invalid]="formSta1Form.sectionId.invalid && formSta1Form.sectionId.touched" (change)="onselectSection()">
+<option selected>Select Section</option>
+<option *ngFor="let section of sections"
+[ngValue]="section.id"
+class="dropdown-item">{{section.section}}</option>
 </select>
-
-
+</div>
+</div>
+<div *ngIf="SelectedSectionId==5" class="row">
+<div class="form-group col-12" >
+<label for="createFmark">You are applying for Fortification Mark as well<span style="font-size: xx-small; color: red;"></span></label>
+<p>The following products require Fortification Mark;-Edible fats and oil,Sifted Maize and Wheat flour,Salt and Sugar(Optional)</p>
+<select id="createFmark" class="form-control" formControlName="createFmark" name="createFmark">
+<option selected>Are you applying for FMark</option>
+<option value="0">No</option>
+<option value="1">Yes</option>
+</select>
 </div>
 
 </div>
+
+
 <div *ngIf="sta1Form.valid" class="form-group clearfix">
 <button type="submit" class="form-wizard-next-btn btn-sm float-right">Next</button>
 </div>
@@ -114,7 +136,8 @@ class="dropdown-item">{{plant.buildingName}}</option>
 <h2 style="text-align: center"><b >Step</b> <b > 2</b><b > of</b> <b > 9</b></h2>
 
 <fieldset class="wizard-fieldset show">
-<h2>STA10 FORM</h2>
+<h2>STA10 FORM </h2>
+<p><b style="color: #d50000">Documents will be uploaded on the last step of STA10 Application</b></p>
 <h3>Firm details</h3>
 <form (ngSubmit)="onClickSaveSTA10(sta10Form.valid)" [formGroup]="sta10Form" class="form"
 enctype="multipart/form-data" >
@@ -190,13 +213,13 @@ enctype="multipart/form-data" >
 
 <div class="row">
 <div class="form-group col-6">
-<label for="totalNumberMale">Total Number of Male</label>
+<label for="totalNumberMale">Total Number of Male <span style="font-size: xx-small; color: red;">(*)Required</span></label>
 <input type="number" [class.is-invalid]="formSta10Form.totalNumberMale.invalid && formSta10Form.totalNumberMale.touched"
 class="form-control" id="totalNumberMale" formControlName="totalNumberMale"
 name="totalNumberMale" class="form-control" placeholder="Male">
 </div>
 <div class="form-group col-6">
-<label for="totalNumberFemale">Total Number of Female</label>
+<label for="totalNumberFemale">Total Number of Female <span style="font-size: xx-small; color: red;">(*)Required</span></label>
 <input type="number"
 [class.is-invalid]="formSta10Form.totalNumberFemale.invalid && formSta10Form.totalNumberFemale.touched"
 class="form-control" id="totalNumberFemale" formControlName="totalNumberFemale"
@@ -206,7 +229,7 @@ name="totalNumberFemale" class="form-control" placeholder="Female">
 </div>
 <div class="row">
 <div class="form-group col-6">
-<label for="totalNumberPermanentEmployees">No. of Permanent Employees</label>
+<label for="totalNumberPermanentEmployees">No. of Permanent Employees <span style="font-size: xx-small; color: red;">(*)Required</span></label>
 <input type="number"
 [class.is-invalid]="formSta10Form.totalNumberPermanentEmployees.invalid && formSta10Form.totalNumberPermanentEmployees.touched"
 class="form-control" id="totalNumberPermanentEmployees"
@@ -224,7 +247,7 @@ name="totalNumberCasualEmployees" class="form-control" placeholder="No of Casual
 </div>
 <div class="row">
 <div class="form-group col-6">
-<label for="averageVolumeProductionMonth">Average Volume Production Month</label>
+<label for="averageVolumeProductionMonth">Average Volume Production Month <span style="font-size: xx-small; color: red;">(*)Required</span></label>
 <input [class.is-invalid]="formSta10Form.averageVolumeProductionMonth.invalid && formSta10Form.averageVolumeProductionMonth.touched" type="text" class="form-control" id="averageVolumeProductionMonth" formControlName="averageVolumeProductionMonth"
 name="averageVolumeProductionMonth" placeholder="Average Volume Production Month" required="">
 </div>
@@ -249,24 +272,27 @@ name="averageVolumeProductionMonth" placeholder="Average Volume Production Month
 <form (ngSubmit)="onClickSaveSTAPersonnel(sta10FormA.valid)" [formGroup]="sta10FormA" class="form"
 enctype="multipart/form-data">
 <h4><b>Competency of key personnel in charge of (Production and Quality Control) </b></h4>
-
+    <p style="color: red">*<b>Additional documents will be required at the end of the application</b></p>
 
 
 <div class="row">
 <div class="col-4">
+<label for="personnelName">Name of Personnel <span style="font-size: xx-small; color: red;">(*)Required</span></label>
 <input type="text"  class="form-control" formControlName="personnelName"
-name="personnelName" class="form-control" placeholder="Name">
+name="personnelName" class="form-control" id="personnelName" placeholder="Name">
 </div>
 <div class="col-3">
+<label for="qualificationInstitution">Qualification Evidence <span style="font-size: xx-small; color: red;">(*)Required</span></label>
 <input type="text"
 class="form-control" formControlName="qualificationInstitution"
-name="qualificationInstitution" class="form-control"
+name="qualificationInstitution" id="qualificationInstitution" class="form-control"
 placeholder="Qualification Evidence">
 </div>
 <div class="col-3">
+<label for="dateOfEmployment">Date of Employment <span style="font-size: xx-small; color: red;">(*)Required</span></label>
 <input type="date"
 class="form-control" formControlName="dateOfEmployment"
-name="dateOfEmployment" class="form-control" placeholder="Date of Employment">
+name="dateOfEmployment" class="form-control" id="dateOfEmployment" placeholder="Date of Employment">
 </div>
 <div>
 <span class="input-group-btn">
@@ -289,13 +315,18 @@ class="table table-striped table-bordered table-hover"
 <th>Personnel Name</th>
 <th>Qualification Institution</th>
 <th>Date Of Employment</th>
+    <th>Action</th>
 </tr>
 </thead>
 <tbody>
-<tr *ngFor="let r of sta10PersonnelDetails">
+<tr *ngFor="let r of sta10PersonnelDetails; let i=index">
 <td>{{r.personnelName}}</td>
 <td>{{r.qualificationInstitution}}</td>
 <td>{{r.dateOfEmployment}}</td>
+    <td><button (click)="removePersonnelDetails(i)"
+                type="button" class="btn btn-warning btn-sm">
+        <span class="" aria-hidden="true">Remove</span>
+    </button></td>
 </tr>
 </tbody>
 </table>
@@ -324,84 +355,91 @@ enctype="multipart/form-data">
 <h4><b>Products being manufactured/ Brands </b></h4>
 <div class="row">
 <div class="form-group col-6">
-<label for="productName">Product Name</label>
+<label for="productName">Product Name <span style="font-size: xx-small; color: red;">(*)Required</span></label>
 <input type="text"   formControlName="productName"
-name="productName" id="productName" class="form-control"  placeholder="Product Name " >
+name="productName" id="productName" class="form-control"  placeholder="Product Name "  ngModel="{{sta1.commodityDescription}}" disabled>
 </div>
 <div class="form-group col-6">
-<label for="productBrand">Brand Name</label>
+<label for="productBrand">Brand Name <span style="font-size: xx-small; color: red;">(*)Required</span></label>
 <input type="text"  formControlName="productBrand"
-name="productBrand" id="productBrand" class="form-control"  placeholder="Brand Name " >
+name="productBrand" id="productBrand" class="form-control"  placeholder="Brand Name " ngModel="{{sta1.tradeMark}}" disabled >
 </div>
 </div>
-<div class="row">
-<div class="form-group col-6">
-<label for="productStandardNumber">Applicable Product Standard number</label>
-<input type="text"    formControlName="productStandardNumber"
-name="productStandardNumber" id="productStandardNumber" class="form-control"  placeholder="Applicable Product
-Standard number" >
-</div>
-<div class="form-group col-6">
-<label for="available">Available (YES/NO)</label>
-    <select id="available" class="form-control " formControlName="available" name="available">
-     <option ngValue="true">Yes</option>
-        <option ngValue="false">No</option>
-    </select>
+<!--<div class="row">-->
+<!--<div class="form-group col-6">-->
+<!--<label for="productStandardNumber">Applicable Product Standard number <span style="font-size: xx-small; color: red;">(*)Required</span></label>-->
 
-</div>
-</div>
-<div class="row">
-<div class="form-group col-6">
-<label for="permitNo">KEBS Permit NO. (if applicable).</label>
-<input type="text"    formControlName="permitNo"
-name="permitNo" id="permitNo" class="form-control"  placeholder="KEBS Permit NO.
-(if applicable)." >
-</div>
-<div class="form-group col-6">
-<label style="color: transparent">Button</label>
-<span class="input-group-btn">
-<button (click)="onClickAddProductsManufacture()"
-type="button" class="btn btn-success btn-sm">
-<span class="" aria-hidden="true">ADD</span>
-</button>
-</span>
-</div>
-</div>
-<br><br>
-<div class="material-datatables" >
-<div class="table-responsive">
-<table id="production"
-class="table table-striped table-bordered table-hover"
->
-<thead>
-<tr>
-<th>Product Name</th>
-<th>Brand Name</th>
-<th>Applicable Product Standard number</th>
-<th>Available (YES/NO)</th>
-<th>KEBS Permit NO. (if applicable).</th>
-</tr>
-</thead>
-<tbody>
-<tr *ngFor="let r of sta10ProductsManufactureDetails">
-<td>{{r.productName}}</td>
-<td>{{r.productBrand}}</td>
-<td>{{r.productStandardNumber}}</td>
-<td>{{r.available}}</td>
-<td>{{r.permitNo}}</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<div *ngIf="sta10ProductsManufactureDetails.length >= 1" class="form-group clearfix">
+<!--<input type="text"    formControlName="productStandardNumber"-->
+<!--name="productStandardNumber" id="productStandardNumber" class="form-control"  placeholder="Applicable Product-->
+<!--Standard number" >-->
+<!--</div>-->
+<!--<div class="form-group col-6">-->
+<!--<label for="available">Available (YES/NO)</label>-->
+<!--<select id="available" class="form-control " formControlName="available" name="available">-->
+<!--<option ngValue="false">No</option>-->
+<!--<option ngValue="true">Yes</option>-->
+
+<!--</select>-->
+
+<!--</div>-->
+<!--</div>-->
+<!--<div class="row">-->
+<!--<div class="form-group col-6">-->
+<!--<label for="permitNo">KEBS Permit NO. (if applicable).</label>-->
+<!--<input type="text"    formControlName="permitNo"-->
+<!--name="permitNo" id="permitNo" class="form-control"  placeholder="KEBS Permit NO.-->
+<!--(if applicable)." >-->
+<!--</div>-->
+<!--<div class="form-group col-6">-->
+<!--<label style="color: transparent">Button</label>-->
+<!--<span class="input-group-btn">-->
+<!--<button (click)="onClickAddProductsManufacture()"-->
+<!--type="button" class="btn btn-success btn-sm">-->
+<!--<span class="" aria-hidden="true">ADD</span>-->
+<!--</button>-->
+<!--</span>-->
+<!--</div>-->
+<!--</div>-->
+<!--<br><br>-->
+<!--<div class="material-datatables" >-->
+<!--<div class="table-responsive">-->
+<!--<table id="production"-->
+<!--class="table table-striped table-bordered table-hover"-->
+<!--&gt;-->
+<!--<thead>-->
+<!--<tr>-->
+<!--<th>Product Name</th>-->
+<!--<th>Brand Name</th>-->
+<!--<th>Applicable Product Standard number</th>-->
+<!--<th>Available (YES/NO)</th>-->
+<!--<th>KEBS Permit NO. (if applicable).</th>-->
+<!--    <th>Action</th>-->
+<!--</tr>-->
+<!--</thead>-->
+<!--<tbody>-->
+<!--<tr *ngFor="let r of sta10ProductsManufactureDetails; let i=index">-->
+<!--<td>{{r.productName}}</td>-->
+<!--<td>{{r.productBrand}}</td>-->
+<!--<td>{{r.productStandardNumber}}</td>-->
+<!--<td>{{r.available}}</td>-->
+<!--<td>{{r.permitNo}}</td>-->
+<!--    <td><button (click)="removeProductsManufacture(i)"-->
+<!--                type="button" class="btn btn-warning btn-sm">-->
+<!--        <span class="" aria-hidden="true">Remove</span>-->
+<!--    </button></td>-->
+<!--</tr>-->
+<!--</tbody>-->
+<!--</table>-->
+<!--</div>-->
+<!--</div>-->
+<div  class="form-group clearfix">
 <button (click)="onClickPrevious()" class="btn btn-sm btn-danger form-wizard-previous-btn">Previous</button>
 <button type="submit" class="form-wizard-next-btn btn-sm float-right">Next</button>
 </div>
-<div *ngIf="sta10ProductsManufactureDetails.length < 1" class="form-group clearfix">
-<button (click)="onClickPrevious()" class="btn btn-sm btn-danger form-wizard-previous-btn">Previous</button>
-<button  class="btn btn-sm btn-primary float-right" (click)="showNotification('top','right')">Next</button>
-</div>
+<!--<div *ngIf="sta10ProductsManufactureDetails.length < 1" class="form-group clearfix">-->
+<!--<button (click)="onClickPrevious()" class="btn btn-sm btn-danger form-wizard-previous-btn">Previous</button>-->
+<!--<button  class="btn btn-sm btn-primary float-right" (click)="showNotification('top','right')">Next</button>-->
+<!--</div>-->
 
 </form>
 </fieldset>
@@ -414,7 +452,7 @@ class="table table-striped table-bordered table-hover"
 enctype="multipart/form-data">
 <h4><b>Raw material</b></h4>
 <h5><b>   Specify the type of materials and origin (attach their specification where applicable): </b></h5>
-
+    <p style="color: red">*<b>Additional documents will be required at the end of the application</b></p>
 
 
 <div class="row">
@@ -424,19 +462,19 @@ enctype="multipart/form-data">
 name="name" id="name" class="form-control" placeholder="Raw material  " >
 </div>
 <div class="form-group col-6">
-<label for="origin">Origin.</label>
+<label for="origin">Origin <span style="font-size: xx-small; color: red;">(*)Required</span></label>
 <input type="text"   formControlName="origin"
 name="origin" id="origin" class="form-control"  placeholder="Origin " >
 </div>
 </div>
 <div class="row">
 <div class="form-group col-6">
-<label for="specifications">Specifications.</label>
+<label for="specifications">Specifications <span style="font-size: xx-small; color: red;">(*)Required</span></label>
 <input type="text"    formControlName="specifications"
 name="specifications" id="specifications" class="form-control"  placeholder="Specifications" >
 </div>
 <div class="form-group col-5">
-<label for="qualityChecksTestingRecords">Quality checks/testing.</label>
+<label for="qualityChecksTestingRecords">Quality checks/testing <span style="font-size: xx-small; color: red;">(*)Required</span></label>
 <input type="text"     formControlName="qualityChecksTestingRecords"
 name="qualityChecksTestingRecords" id="qualityChecksTestingRecords" class="form-control"  placeholder="Quality checks/testing
 records" >
@@ -461,14 +499,19 @@ type="button" class="btn btn-success btn-sm">
 <th>Origin</th>
 <th>Specifications</th>
 <th>Quality checks/testing records</th>
+    <th>Action</th>
 </tr>
 </thead>
 <tbody>
-<tr *ngFor="let r of sta10RawMaterialsDetails">
+<tr *ngFor="let r of sta10RawMaterialsDetails; let i=index">
 <td>{{r.name}}</td>
 <td>{{r.origin}}</td>
 <td>{{r.specifications}}</td>
 <td>{{r.qualityChecksTestingRecords}}</td>
+    <td><button (click)="removeRawMaterials(i)"
+                type="button" class="btn btn-warning btn-sm">
+        <span class="" aria-hidden="true">Remove</span>
+    </button></td>
 </tr>
 </tbody>
 </table>
@@ -495,12 +538,12 @@ enctype="multipart/form-data">
 <h4><b>Machinery and Plant</b></h4>
 <div class="row">
 <div class="form-group col-6">
-<label for="machineName">Machine</label>
+<label for="machineName">Machine <span style="font-size: xx-small; color: red;">(*)Required</span></label>
 <input type="text"   formControlName="machineName"
 name="machineName" id="machineName" class="form-control"  placeholder="Machine  " >
 </div>
 <div class="form-group col-6">
-<label for="typeModel">Type/Model.</label>
+<label for="typeModel">Type/Model. <span style="font-size: xx-small; color: red;">(*)Required</span></label>
 <input type="text"  formControlName="typeModel"
 name="typeModel" id="typeModel" class="form-control"  placeholder="Type/Model " >
 </div>
@@ -508,7 +551,7 @@ name="typeModel" id="typeModel" class="form-control"  placeholder="Type/Model " 
 <div>
 <div class="row">
 <div class="form-group col-6">
-<label for="countryOfOrigin">Country of Origin</label>
+<label for="countryOfOrigin">Country of Origin <span style="font-size: xx-small; color: red;">(*)Required</span></label>
 <select id="countryOfOrigin" class="form-control selectpicker" formControlName="countryOfOrigin" name="countryOfOrigin"
 data-live-search="true"    >
 <option value="Afghanistan">Afghanistan</option>
@@ -785,13 +828,18 @@ type="button" class="btn btn-success btn-sm">
 <th>Machine</th>
 <th>Type/model </th>
 <th>Country of Origin</th>
+    <th>Action</th>
 </tr>
 </thead>
 <tbody>
-<tr *ngFor="let r of sta10MachineryAndPlantDetails">
+<tr *ngFor="let r of sta10MachineryAndPlantDetails; let i=index">
 <td>{{r.machineName}}</td>
 <td>{{r.typeModel}}</td>
 <td>{{r.countryOfOrigin}}</td>
+    <td><button (click)="removeMachineryAndPlantDetails(i)"
+                type="button" class="btn btn-warning btn-sm">
+        <span class="" aria-hidden="true">Remove</span>
+    </button></td>
 </tr>
 </tbody>
 </table>
@@ -813,7 +861,7 @@ type="button" class="btn btn-success btn-sm">
 </div>
 <div *ngSwitchCase="7">
 <h2 style="text-align: center"><b >Step</b> <b > 7</b><b > of</b> <b > 9</b></h2>
-
+<p style="color: red">*<b>Additional documents will be required at the end of the application</b></p>
 <fieldset class="wizard-fieldset show">
 <form (ngSubmit)="onClickSaveSTAManufacturingProcess(sta10FormE.valid)" [formGroup]="sta10FormE"
 class="form"
@@ -821,36 +869,37 @@ enctype="multipart/form-data">
 <h5><b> Manufacturing process  </b></h5>
 <div class="row">
 <div class="col-6">
-<label for="processFlowOfProduction">Process Flow of Production.</label>
+<label for="processFlowOfProduction">Process Flow of Production. <span style="font-size: xx-small; color: red;">(*)Required</span></label>
 <input type="text"  formControlName="processFlowOfProduction"
 name="processFlowOfProduction" id="processFlowOfProduction" class="form-control"  placeholder="Process Flow of
 Production
 " >
 </div>
 <div class="col-6">
-<label for="operations">Operations</label>
+<label for="operations">Operations. <span style="font-size: xx-small; color: red;">(*)Required</span></label>
 <input type="text"    formControlName="operations"
 name="operations" id="operations" class="form-control"  placeholder="Operations  " >
 </div>
 </div>
 <div class="row">
 <div class="col-6">
-<label for="criticalProcessParametersMonitored">Critical Process parameters Monitored.</label>
+<label for="criticalProcessParametersMonitored">Critical Process parameters Monitored. <span style="font-size: xx-small; color: red;">(*)Required</span></label>
 <input type="text"   formControlName="criticalProcessParametersMonitored"
 name="criticalProcessParametersMonitored" id="criticalProcessParametersMonitored" class="form-control"  placeholder="Critical Process
 parameters Monitored" >
 </div>
 <div class="col-6">
-<label for="processMonitoringRecords">Process Monitoring Reports.</label>
+<label for="processMonitoringRecords">Process Monitoring Reports. <span style="font-size: xx-small; color: red;">(*)Required</span></label>
 <input type="text"   formControlName="processMonitoringRecords"
 id="processMonitoringRecords" name="processMonitoringRecords" class="form-control"  placeholder="Process Monitoring Reports" >
 </div>
 </div>
 <div class="row">
 <div class="col-6">
-<label for="qualityChecksTestingRecords">Quality checks/testing.</label>
+<label for="frequency">Quality checks/testing. <span style="font-size: xx-small; color: red;">(*)Required</span></label>
+
 <input type="text"    formControlName="frequency"
-name="frequency" class="form-control"  placeholder="Frequency" >
+name="frequency" class="form-control" id="frequency"  placeholder="Frequency" >
 </div>
 <div class="col-6">
 <label  style="color: transparent">Quality checks/testing.</label>
@@ -875,15 +924,20 @@ type="button" class="btn btn-success btn-sm">
 <th>Frequency</th>
 <th>Process monitoring records
 </th>
+    <th>Action</th>
 </tr>
 </thead>
 <tbody>
-<tr *ngFor="let r of sta10ManufacturingProcessDetails">
+<tr *ngFor="let r of sta10ManufacturingProcessDetails; let i=index">
 <td>{{r.processFlowOfProduction}}</td>
 <td>{{r.operations}}</td>
 <td>{{r.criticalProcessParametersMonitored}}</td>
 <td>{{r.frequency}}</td>
 <td>{{r.processMonitoringRecords}}</td>
+    <td><button (click)="removeManufacturingProcessDetails(i)"
+                type="button" class="btn btn-warning btn-sm">
+        <span class="" aria-hidden="true">Remove</span>
+    </button></td>
 </tr>
 </tbody>
 </table>
@@ -914,16 +968,18 @@ enctype="multipart/form-data" >
 <div class="row">
 
 <div class="form-group col-12">
-<label for="handledManufacturingProcessRawMaterials">i.Raw Materials</label>
+<label for="handledManufacturingProcessRawMaterials">i.Raw Materials <span style="font-size: xx-small; color: red;">(*)Required</span></label>
+
 <textarea [class.is-invalid]="formSta10FormF.handledManufacturingProcessRawMaterials.invalid && formSta10FormF.handledManufacturingProcessRawMaterials.touched" type="text"  id="handledManufacturingProcessRawMaterials" formControlName="handledManufacturingProcessRawMaterials" name="handledManufacturingProcessRawMaterials" class="form-control" rows="3" placeholder=""></textarea>
 </div>
 <div class="form-group col-12">
-<label for="handledManufacturingProcessInprocessProducts">ii.In-process products</label>
+<label for="handledManufacturingProcessInprocessProducts">ii.In-process products <span style="font-size: xx-small; color: red;">(*)Required</span></label>
+
 <textarea [class.is-invalid]="formSta10FormF.handledManufacturingProcessInprocessProducts.invalid && formSta10FormF.handledManufacturingProcessInprocessProducts.touched" type="text"  id="handledManufacturingProcessInprocessProducts" formControlName="handledManufacturingProcessInprocessProducts" name="handledManufacturingProcessInprocessProducts" class="form-control" placeholder=""></textarea>
 
 </div>
 <div class="form-group col-12">
-<label for="handledManufacturingProcessFinalProduct">ii.In-process products</label>
+<label for="handledManufacturingProcessFinalProduct">iii.Final Products<span style="font-size: xx-small; color: red;">(*)Required</span></label>
 <textarea [class.is-invalid]="formSta10FormF.handledManufacturingProcessFinalProduct.invalid && formSta10FormF.handledManufacturingProcessFinalProduct.touched" type="text"  id="handledManufacturingProcessFinalProduct" formControlName="handledManufacturingProcessFinalProduct" name="handledManufacturingProcessFinalProduct" class="form-control" placeholder=""></textarea>
 
 </div>
@@ -932,7 +988,7 @@ enctype="multipart/form-data" >
 <div class="row">
 <div class="form-group col-12">
 <label for="strategyInplaceRecallingProducts">What strategy do you have in place for recalling your products from the market that are nonconforming
-and have an effect on Health, Safety and Environment?</label>
+and have an effect on Health, Safety and Environment?<span style="font-size: xx-small; color: red;">(*)Required</span></label>
 <textarea [class.is-invalid]="formSta10FormF.strategyInplaceRecallingProducts.invalid && formSta10FormF.strategyInplaceRecallingProducts.touched" type="text"  id="strategyInplaceRecallingProducts" formControlName="strategyInplaceRecallingProducts" name="strategyInplaceRecallingProducts" class="form-control" placeholder=""></textarea>
 
 </div>
@@ -941,11 +997,11 @@ and have an effect on Health, Safety and Environment?</label>
 <div class="row">
 
 <div class="form-group col-12">
-<label for="stateFacilityConditionsRawMaterials">i.Raw Materials</label>
+<label for="stateFacilityConditionsRawMaterials">i.Raw Materials <span style="font-size: xx-small; color: red;">(*)Required</span></label>
 <textarea [class.is-invalid]="formSta10FormF.stateFacilityConditionsRawMaterials.invalid && formSta10FormF.stateFacilityConditionsRawMaterials.touched" type="text"  id="stateFacilityConditionsRawMaterials" formControlName="stateFacilityConditionsRawMaterials" name="stateFacilityConditionsRawMaterials" class="form-control" rows="3" placeholder=""></textarea>
 </div>
 <div class="form-group col-12">
-<label for="stateFacilityConditionsEndProduct">ii.End product?</label>
+<label for="stateFacilityConditionsEndProduct">ii.End product?<span style="font-size: xx-small; color: red;">(*)Required</span></label>
 <textarea [class.is-invalid]="formSta10FormF.stateFacilityConditionsEndProduct.invalid && formSta10FormF.stateFacilityConditionsEndProduct.touched" type="text"  id="stateFacilityConditionsEndProduct" formControlName="stateFacilityConditionsEndProduct" name="stateFacilityConditionsEndProduct" class="form-control" placeholder=" "></textarea>
 
 </div>
@@ -956,17 +1012,18 @@ and have an effect on Health, Safety and Environment?</label>
 <div class="row">
 
 <div class="form-group col-12">
-<label for="testingFacilitiesExistSpecifyEquipment">i. Specify equipment:</label>
+<label for="testingFacilitiesExistSpecifyEquipment">i. Specify equipment: <span style="font-size: xx-small; color: red;">(*)Required</span></label>
+
 <textarea [class.is-invalid]="formSta10FormF.testingFacilitiesExistSpecifyEquipment.invalid && formSta10FormF.testingFacilitiesExistSpecifyEquipment.touched" type="text"  id="testingFacilitiesExistSpecifyEquipment" formControlName="testingFacilitiesExistSpecifyEquipment" name="testingFacilitiesExistSpecifyEquipment" class="form-control" rows="3" placeholder=""></textarea>
 </div>
 <div class="form-group col-12">
-<label for="testingFacilitiesExistStateParametersTested">ii.State parameters tested on site:</label>
+<label for="testingFacilitiesExistStateParametersTested">ii.State parameters tested on site: <span style="font-size: xx-small; color: red;">(*)Required</span></label>
+
 <textarea [class.is-invalid]="formSta10FormF.testingFacilitiesExistStateParametersTested.invalid && formSta10FormF.testingFacilitiesExistStateParametersTested.touched" type="text"  id="testingFacilitiesExistStateParametersTested" formControlName="testingFacilitiesExistStateParametersTested" name="testingFacilitiesExistStateParametersTested" class="form-control" placeholder=" "></textarea>
 
 </div>
 <div class="form-group col-12">
-<label for="testingFacilitiesSpecifyParametersTested">iii. Specify any testing arrangement with other commercial laboratories (Specify parameters tested):
-</label>
+<label for="testingFacilitiesSpecifyParametersTested">iii. Specify any testing arrangement with other commercial laboratories (Specify parameters tested): <span style="font-size: xx-small; color: red;">(*)Required</span></label>
 <textarea [class.is-invalid]="formSta10FormF.testingFacilitiesSpecifyParametersTested.invalid && formSta10FormF.testingFacilitiesSpecifyParametersTested.touched" type="text"  id="testingFacilitiesSpecifyParametersTested" formControlName="testingFacilitiesSpecifyParametersTested" name="testingFacilitiesSpecifyParametersTested" class="form-control" placeholder=" "></textarea>
 
 </div>
@@ -974,7 +1031,7 @@ and have an effect on Health, Safety and Environment?</label>
 </div>
 <div class="row">
 <div class="form-group col-12">
-<label for="calibrationEquipmentLastCalibrated">v. Calibration of Equipment</label>
+<label for="calibrationEquipmentLastCalibrated">v. Calibration of Equipment <span style="font-size: xx-small; color: red;">(*)Required</span></label>
 <p>How do you calibrate your measuring equipment stated in 8 (i) above?</p>
 <p>(e.g. Weighing scales, Thermometers e.t.c)? Specify when last calibrated.</p>
 <textarea [class.is-invalid]="formSta10FormF.calibrationEquipmentLastCalibrated.invalid && formSta10FormF.calibrationEquipmentLastCalibrated.touched" type="text"  id="calibrationEquipmentLastCalibrated" formControlName="calibrationEquipmentLastCalibrated" name="calibrationEquipmentLastCalibrated" class="form-control" rows="3" placeholder=""></textarea>
@@ -983,7 +1040,7 @@ and have an effect on Health, Safety and Environment?</label>
 </div>
 <div class="row">
 <div class="form-group col-12">
-<label for="handlingConsumerComplaints">Handling of Complaints</label>
+<label for="handlingConsumerComplaints">Handling of Complaints <span style="font-size: xx-small; color: red;">(*)Required</span></label>
 <p>How do you plan to handle (New) or currently handle your consumer’s complaints?</p>
 <textarea [class.is-invalid]="formSta10FormF.handlingConsumerComplaints.invalid && formSta10FormF.handlingConsumerComplaints.touched" type="text"  id="handlingConsumerComplaints" formControlName="handlingConsumerComplaints" name="handlingConsumerComplaints" class="form-control" rows="3" placeholder=""></textarea>
 </div>
@@ -991,7 +1048,7 @@ and have an effect on Health, Safety and Environment?</label>
 </div>
 <div class="row">
 <div class="form-group col-6">
-<label for="companyRepresentative">Company Representative</label>
+<label for="companyRepresentative">Company Representative <span style="font-size: xx-small; color: red;">(*)Required</span></label>
 <input [class.is-invalid]="formSta10FormF.companyRepresentative.invalid && formSta10FormF.companyRepresentative.touched" type="text"  id="companyRepresentative" formControlName="companyRepresentative" name="companyRepresentative" class="form-control"  placeholder="">
 </div>
 <div class="form-group col-6">
@@ -1017,7 +1074,7 @@ and have an effect on Health, Safety and Environment?</label>
 <h2 style="text-align: center"><b >Step</b> <b > 9</b><b > of</b> <b > 9</b></h2>
 
 <fieldset class="wizard-fieldset show">
-<form (ngSubmit)="onClickSaveSTA10G(sta10FormG.valid)" [formGroup]="sta10FormG" class="form"
+<form (ngSubmit)="onClickSaveSTA10G()" [formGroup]="sta10FormG" class="form"
 enctype="multipart/form-data" >
 
 <h3>Upload all of the required documents</h3>
@@ -1042,6 +1099,7 @@ enctype="multipart/form-data" >
 </div>
 </div>
 </section>
+</div>
 </div>
 </div>
 </div>

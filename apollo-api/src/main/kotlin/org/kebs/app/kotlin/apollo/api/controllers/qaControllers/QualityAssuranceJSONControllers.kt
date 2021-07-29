@@ -53,6 +53,8 @@ class QualityAssuranceJSONControllers(
         docFile.forEach { u ->
             val upload = QaUploadsEntity()
             with(upload) {
+                permitId = permitDetails.id
+                versionNumber = 1
                 sta3Status = 1
                 ordinaryStatus = 0
             }
@@ -87,6 +89,8 @@ class QualityAssuranceJSONControllers(
         docFile.forEach { u ->
             val upload = QaUploadsEntity()
             with(upload) {
+                permitId = permitDetails.id
+                versionNumber = 1
                 sta10Status = 1
                 ordinaryStatus = 0
             }
@@ -168,12 +172,12 @@ class QualityAssuranceJSONControllers(
     @Throws(Exception::class)
     fun certificatePermit(
         response: HttpServletResponse,
-        @RequestParam(value = "permitID") id: Long
+        @RequestParam(value = "permitID") permitID: Long
     ) {
         var map = hashMapOf<String, Any>()
         val appId: Int = applicationMapProperties.mapQualityAssurance
         val s = commonDaoServices.serviceMapDetails(appId)
-        val permit = qaDaoServices.findPermitBYID(id)
+        val permit = qaDaoServices.findPermitBYID(permitID)
 
         val foundPermitDetails = qaDaoServices.permitDetails(permit, s)
 

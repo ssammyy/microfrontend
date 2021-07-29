@@ -47,6 +47,7 @@ import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.servlet.function.ServerRequest
 import org.springframework.web.servlet.function.ServerResponse
+import org.springframework.web.servlet.function.ServerResponse.badRequest
 import org.springframework.web.servlet.function.ServerResponse.ok
 import org.springframework.web.servlet.function.body
 import org.springframework.web.servlet.function.paramOrNull
@@ -414,7 +415,9 @@ class QualityAssuranceHandler(
 
         req.attributes()["message"] = applicationMapProperties.mapPermitRenewMessage
         req.attributes()["permit"] = permit
-        req.attributes()["QaSta3Entity"] = qaDaoServices.findSTA3WithPermitRefNumber(permit.permitRefNumber?: throw Exception("INVALID PERMIT REF NUMBER"))
+        req.attributes()["QaSta3Entity"] = qaDaoServices.findSTA3WithPermitIDAndRefNumber(
+            permit.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"), permitID
+        )
         return ok().render(qaNewSta3Page, req.attributes())
 
     }
@@ -453,7 +456,9 @@ class QualityAssuranceHandler(
         req.attributes()["counties"] = countyRepo.findByStatusOrderByCounty(map.activeStatus)
         req.attributes()["applicationDate"] = commonDaoServices.getCurrentDate()
         req.attributes()["CommonPermitDto"] = qaDaoServices.companyDtoDetails(permit, map)
-        req.attributes()["QaSta10Entity"] = qaDaoServices.findSTA10WithPermitRefNumberBY(permit.permitRefNumber?: throw ExpectedDataNotFound("INVALID PERMIT REF NUMBER"))
+        req.attributes()["QaSta10Entity"] = qaDaoServices.findSTA10WithPermitRefNumberANdPermitID(
+            permit.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"), permitID
+        )
         return ok().render(qaNewSta10Page, req.attributes())
 
     }
@@ -469,7 +474,9 @@ class QualityAssuranceHandler(
         req.attributes()["permit"] = permit
         req.attributes()["counties"] = countyRepo.findByStatusOrderByCounty(map.activeStatus)
         req.attributes()["applicationDate"] = commonDaoServices.getCurrentDate()
-        req.attributes()["QaSta10Entity"] = qaDaoServices.findSTA10WithPermitRefNumberBY(permit.permitRefNumber?: throw ExpectedDataNotFound("INVALID PERMIT REF NUMBER"))
+        req.attributes()["QaSta10Entity"] = qaDaoServices.findSTA10WithPermitRefNumberANdPermitID(
+            permit.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"), permitID
+        )
         return ok().render(qaNewSta10OfficerPage, req.attributes())
 
     }
@@ -480,8 +487,10 @@ class QualityAssuranceHandler(
 
         val permitID = req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
       val permit  =   qaDaoServices.findPermitBYID(permitID)
-        req.attributes()["permit"] =  permit
-        req.attributes()["QaSta3Entity"] = qaDaoServices.findSTA3WithPermitRefNumber(permit.permitRefNumber?: throw ExpectedDataNotFound("INVALID PERMIT REF NUMBER"))
+        req.attributes()["permit"] = permit
+        req.attributes()["QaSta3Entity"] = qaDaoServices.findSTA3WithPermitIDAndRefNumber(
+            permit.permitRefNumber ?: throw ExpectedDataNotFound("INVALID PERMIT REF NUMBER"), permitID
+        )
         req.attributes()["message"] = applicationMapProperties.mapQualityAssuranceManufactureViewPage
         return ok().render(qaNewSta3Page, req.attributes())
 
@@ -494,7 +503,9 @@ class QualityAssuranceHandler(
         val permitID = req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
         val permit = qaDaoServices.findPermitBYID(permitID)
         req.attributes()["permit"] = permit
-        req.attributes()["QaSta10Entity"] = qaDaoServices.findSTA10WithPermitRefNumberBY(permit.permitRefNumber?: throw ExpectedDataNotFound("INVALID PERMIT REF NUMBER"))
+        req.attributes()["QaSta10Entity"] = qaDaoServices.findSTA10WithPermitRefNumberANdPermitID(
+            permit.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"), permitID
+        )
         req.attributes()["message"] = applicationMapProperties.mapQualityAssuranceManufactureViewPage
         return ok().render(qaNewSta3Page, req.attributes())
 
@@ -518,7 +529,9 @@ class QualityAssuranceHandler(
 
         val permitID = req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
         val permit = qaDaoServices.findPermitBYID(permitID)
-        val qaSta10Entity = qaDaoServices.findSTA10WithPermitRefNumberBY(permit.permitRefNumber?: throw ExpectedDataNotFound("INVALID PERMIT REF NUMBER"))
+        val qaSta10Entity = qaDaoServices.findSTA10WithPermitRefNumberANdPermitID(
+            permit.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"), permitID
+        )
         req.attributes().putAll(commonDaoServices.loadCommonUIComponents(map))
         req.attributes()["permit"] = permit
         req.attributes()["fileParameters"] = qaDaoServices.findAllUploadedFileBYPermitRefNumberAndSta10Status(permit.permitRefNumber?: throw ExpectedDataNotFound("INVALID PERMIT REF NUMBER"), map.activeStatus)
@@ -686,7 +699,9 @@ class QualityAssuranceHandler(
             req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
         val permit = qaDaoServices.findPermitBYID(permitID)
         val allSSFDetailsList = qaDaoServices.findSampleSubmittedListBYPermitRefNumber(
-            permit.permitRefNumber ?: throw ExpectedDataNotFound("INVALID PERMIT REF NUMBER"), map.activeStatus
+            permit.permitRefNumber ?: throw ExpectedDataNotFound("INVALID PERMIT REF NUMBER"),
+            map.activeStatus,
+            permitID
         )
         req.attributes()["allSSFDetailsList"] = allSSFDetailsList
         req.attributes()["permitDetails"] = permit
@@ -875,7 +890,10 @@ class QualityAssuranceHandler(
 //            Pair("statusName", qaDaoServices.findPermitStatus(permit.permitStatus?:throw Exception("INVALID PERMIT STATUS VALUE"))),
             Pair(
                 "myRequests",
-                qaDaoServices.findAllRequestByPermitRefNumber(permit.permitRefNumber?: throw ExpectedDataNotFound("INVALID PERMIT REF NUMBER"),)
+                qaDaoServices.findAllRequestByPermitRefNumber(
+                    permit.permitRefNumber ?: throw ExpectedDataNotFound("INVALID PERMIT REF NUMBER"),
+                    permit.id ?: throw ExpectedDataNotFound("INVALID PERMIT ID")
+                )
             ),
             Pair("userRequestTypes", qaDaoServices.findAllQaRequestTypes(s.activeStatus)),
             Pair("permitDetails", permit),
@@ -957,7 +975,7 @@ class QualityAssuranceHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            throw e
+            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
         }
 
     }
@@ -979,7 +997,7 @@ class QualityAssuranceHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            throw e
+            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
         }
 
     }
@@ -1000,7 +1018,7 @@ class QualityAssuranceHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            throw e
+            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
         }
 
     }
@@ -1034,7 +1052,7 @@ class QualityAssuranceHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            throw e
+            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
         }
 
     }
@@ -1073,7 +1091,7 @@ class QualityAssuranceHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            throw e
+            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
         }
 
     }
@@ -1110,7 +1128,7 @@ class QualityAssuranceHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            throw e
+            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
         }
 
     }
@@ -1133,7 +1151,7 @@ class QualityAssuranceHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            throw e
+            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
         }
 
     }
@@ -1165,7 +1183,7 @@ class QualityAssuranceHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            throw e
+            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
         }
 
     }
@@ -1186,7 +1204,7 @@ class QualityAssuranceHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            throw e
+            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
         }
     }
 
@@ -1209,6 +1227,7 @@ class QualityAssuranceHandler(
                 applicantName = dto.applicantName
                 sectionId = dto.sectionId
                 permitForeignStatus = dto.permitForeignStatus
+                fmarkGenerateStatus = dto.createFmark
                 attachedPlantId = when {
                     auth.authorities.stream().anyMatch { authority -> authority.authority == "MODIFY_COMPANY" } -> {
                         dto.attachedPlant
@@ -1228,7 +1247,7 @@ class QualityAssuranceHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            throw e
+            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
         }
 
     }
@@ -1257,7 +1276,7 @@ class QualityAssuranceHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            throw e
+            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
         }
 
     }
@@ -1296,7 +1315,7 @@ class QualityAssuranceHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            throw e
+            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
         }
 
     }
@@ -1346,7 +1365,7 @@ class QualityAssuranceHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            throw e
+            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
         }
 
     }
@@ -1368,19 +1387,29 @@ class QualityAssuranceHandler(
             )
 
             //Calculate Invoice Details
-            qaDaoServices.permitInvoiceCalculation(map, loggedInUser, permit, permitType)
+            val invoiceCreated = qaDaoServices.permitInvoiceCalculation(map, loggedInUser, permit, permitType).second
+
+            //Update Permit Details
+            with(permit) {
+                sendApplication = map.activeStatus
+                invoiceGenerated = map.activeStatus
+                permitStatus = applicationMapProperties.mapQaStatusPPayment
+            }
+            permit = qaDaoServices.permitUpdateDetails(permit, map, loggedInUser).second
 
 
-            val pair = qaDaoServices.consolidateInvoiceAndSendMail(
-                permit.id ?: throw ExpectedDataNotFound("MISSING PERMIT ID"), map, loggedInUser
+            //Start DMARK PROCESS
+            qualityAssuranceBpmn.startQADmAppPaymentProcess(
+                permit.id ?: throw Exception("MISSING PERMIT ID"), null
             )
 
-            val batchInvoice = pair.first
-            permit = pair.second
+            //Complete Submit Application
+            qualityAssuranceBpmn.qaDmSubmitApplicationComplete(permit.id ?: throw Exception("MISSING PERMIT ID"), permit.renewalStatus == 1,
+                permit.permitForeignStatus == 1)
 
             qaDaoServices.mapAllPermitDetailsTogether(
                 permit,
-                batchInvoice.id ?: throw ExpectedDataNotFound("MISSING BATCH INVOICE ID"),
+                null,
                 map
             ).let {
                 return ok().body(it)
@@ -1423,11 +1452,13 @@ class QualityAssuranceHandler(
             permit = qaDaoServices.permitUpdateDetails(permit, map, loggedInUser).second
 
             //Start DMARK PROCESS
-            qualityAssuranceBpmn.startQADMApplicationReviewProcess(
-                permit.id ?: throw Exception("MISSING PERMIT ID"),
-                permit.pcmId ?: throw Exception("MISSING PCM ID"),
-                false
+            qualityAssuranceBpmn.startQADmAppPaymentProcess(
+                permit.id ?: throw Exception("MISSING PERMIT ID"), null
             )
+
+            //Complete Submit Application
+            qualityAssuranceBpmn.qaDmSubmitApplicationComplete(permit.id ?: throw Exception("MISSING PERMIT ID"), permit.renewalStatus == 1,
+                permit.permitForeignStatus == 1)
 
             qaDaoServices.mapAllPermitDetailsTogether(permit, null, map).let {
                 return ok().body(it)
@@ -1436,7 +1467,7 @@ class QualityAssuranceHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            throw e
+            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
         }
 
     }
@@ -1495,7 +1526,7 @@ class QualityAssuranceHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            throw e
+            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
         }
 
     }
@@ -1522,7 +1553,34 @@ class QualityAssuranceHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            throw e
+            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+
+    }
+
+    @PreAuthorize("hasAuthority('PERMIT_APPLICATION')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun permitAttachGetOrdinaryFilesListMigration(req: ServerRequest): ServerResponse {
+        try {
+            val loggedInUser = commonDaoServices.loggedInUserDetails()
+            val map = commonDaoServices.serviceMapDetails(appId)
+            val permitID =
+                req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
+//            val docFile: MultipartFile = req.paramOrNull("docFile").toMultipartData()
+            val ordinaryFiles = qaDaoServices.findAllUploadedFileBYPermitIDAndOrdinarStatus(permitID, map.activeStatus)
+            val permit = qaDaoServices.findPermitBYUserIDAndId(
+                permitID,
+                loggedInUser.id ?: throw ExpectedDataNotFound("MISSING USER ID")
+            )
+
+            qaDaoServices.mapAllPermitDetailsTogether(permit, null, map).let {
+                return ok().body(it)
+            }
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
         }
 
     }
@@ -1556,7 +1614,7 @@ class QualityAssuranceHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            throw e
+            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
         }
 
     }
@@ -1579,6 +1637,7 @@ class QualityAssuranceHandler(
 
             //Save the sta3 details first
             val savedSta3 = qaDaoServices.sta3NewSave(
+                permit.id ?: throw Exception("MISSING PERMIT ID"),
                 permit.permitRefNumber ?: throw Exception("MISSING PERMIT REF NUMBER"),
                 sta3,
                 loggedInUser,
@@ -1609,7 +1668,7 @@ class QualityAssuranceHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            throw e
+            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
         }
 
     }
@@ -1626,8 +1685,8 @@ class QualityAssuranceHandler(
                 permitID,
                 loggedInUser.id ?: throw ExpectedDataNotFound("MISSING USER ID")
             )
-            val sta3 = qaDaoServices.findSTA3WithPermitRefNumber(
-                permit.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER")
+            val sta3 = qaDaoServices.findSTA3WithPermitIDAndRefNumber(
+                permit.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"), permitID
             )
             val dto = req.body<List<File>>()
             dto.forEach { u ->
@@ -1651,7 +1710,7 @@ class QualityAssuranceHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            throw e
+            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
         }
 
     }
@@ -1673,8 +1732,8 @@ class QualityAssuranceHandler(
             val sta3 = qaDaoServices.mapDtoSTA3AndQaSta3Entity(dto)
 
             //Update the sta3 details first
-            var sta3Found = qaDaoServices.findSTA3WithPermitRefNumber(
-                permit.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER")
+            var sta3Found = qaDaoServices.findSTA3WithPermitIDAndRefNumber(
+                permit.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"), permitID
             )
             sta3.id = sta3Found.id
             sta3Found = qaDaoServices.sta3Update(
@@ -1707,7 +1766,7 @@ class QualityAssuranceHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            throw e
+            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
         }
 
     }
@@ -1730,7 +1789,7 @@ class QualityAssuranceHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            throw e
+            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
         }
 
     }
@@ -1746,8 +1805,8 @@ class QualityAssuranceHandler(
                 permitID,
                 loggedInUser.id ?: throw ExpectedDataNotFound("MISSING USER ID")
             )
-            val sta3 = qaDaoServices.findSTA3WithPermitRefNumber(
-                permit.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER")
+            val sta3 = qaDaoServices.findSTA3WithPermitIDAndRefNumber(
+                permit.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"), permitID
             )
 
             qaDaoServices.mapDtoSTA3View(sta3).let {
@@ -1757,7 +1816,7 @@ class QualityAssuranceHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            throw e
+            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
         }
 
     }
@@ -1786,7 +1845,7 @@ class QualityAssuranceHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            throw e
+            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
         }
 
     }
@@ -1820,7 +1879,7 @@ class QualityAssuranceHandler(
             var updatePermit = PermitApplicationsEntity()
             with(updatePermit) {
                 id = permit.id
-                sta10FilledStatus = map.inactiveStatus
+                sta10FilledStatus = map.activeStatus
                 permitStatus = applicationMapProperties.mapQaStatusDraft
             }
 
@@ -1839,7 +1898,7 @@ class QualityAssuranceHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            throw e
+            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
         }
 
     }
@@ -1856,8 +1915,8 @@ class QualityAssuranceHandler(
                 permitID,
                 loggedInUser.id ?: throw ExpectedDataNotFound("MISSING USER ID")
             )
-            val qaSta10Entity = qaDaoServices.findSTA10WithPermitRefNumberBY(
-                permit.permitRefNumber ?: throw ExpectedDataNotFound("INVALID PERMIT REF NUMBER")
+            val qaSta10Entity = qaDaoServices.findSTA10WithPermitRefNumberANdPermitID(
+                permit.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"), permitID
             )
 
             val dto = req.body<STA10SectionADto>()
@@ -1898,7 +1957,7 @@ class QualityAssuranceHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            throw e
+            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
         }
 
     }
@@ -1914,8 +1973,8 @@ class QualityAssuranceHandler(
                 permitID,
                 loggedInUser.id ?: throw ExpectedDataNotFound("MISSING USER ID")
             )
-            val qaSta10Entity = qaDaoServices.findSTA10WithPermitRefNumberBY(
-                permit.permitRefNumber ?: throw ExpectedDataNotFound("INVALID PERMIT REF NUMBER")
+            val qaSta10Entity = qaDaoServices.findSTA10WithPermitRefNumberANdPermitID(
+                permit.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"), permitID
             )
 
             qaDaoServices.mapDtoSTA10SectionAAndQaSta10View(qaSta10Entity).let {
@@ -1925,7 +1984,7 @@ class QualityAssuranceHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            throw e
+            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
         }
 
     }
@@ -1941,8 +2000,8 @@ class QualityAssuranceHandler(
                 permitID,
                 loggedInUser.id ?: throw ExpectedDataNotFound("MISSING USER ID")
             )
-            val qaSta10Entity = qaDaoServices.findSTA10WithPermitRefNumberBY(
-                permit.permitRefNumber ?: throw ExpectedDataNotFound("INVALID PERMIT REF NUMBER")
+            val qaSta10Entity = qaDaoServices.findSTA10WithPermitRefNumberANdPermitID(
+                permit.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"), permitID
             )
             //Find all sta 10 personnel in charge  add
             val qaSta10ID = qaSta10Entity.id ?: throw ExpectedDataNotFound("MISSING STA 10 ID")
@@ -1972,7 +2031,7 @@ class QualityAssuranceHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            throw e
+            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
         }
 
     }
@@ -2003,7 +2062,7 @@ class QualityAssuranceHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message, e)
             KotlinLogging.logger { }.debug(e.message, e)
-            throw e
+            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
         }
 
     }
@@ -2030,7 +2089,7 @@ class QualityAssuranceHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            throw e
+            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
         }
 
     }
@@ -2061,7 +2120,7 @@ class QualityAssuranceHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            throw e
+            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
         }
 
     }
@@ -2092,7 +2151,7 @@ class QualityAssuranceHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            throw e
+            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
         }
 
     }
@@ -2117,7 +2176,7 @@ class QualityAssuranceHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            throw e
+            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
         }
 
     }
@@ -2144,7 +2203,7 @@ class QualityAssuranceHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            throw e
+            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
         }
 
     }
@@ -2176,7 +2235,7 @@ class QualityAssuranceHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            throw e
+            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
         }
 
     }
@@ -2202,7 +2261,7 @@ class QualityAssuranceHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            throw e
+            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
         }
 
     }
@@ -2233,7 +2292,7 @@ class QualityAssuranceHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            throw e
+            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
         }
 
     }
@@ -2259,7 +2318,7 @@ class QualityAssuranceHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            throw e
+            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
         }
 
     }
@@ -2281,7 +2340,7 @@ class QualityAssuranceHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            throw e
+            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
         }
 
     }
@@ -2303,7 +2362,7 @@ class QualityAssuranceHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            throw e
+            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
         }
 
     }
@@ -2325,7 +2384,7 @@ class QualityAssuranceHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            throw e
+            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
         }
 
     }
@@ -2345,7 +2404,7 @@ class QualityAssuranceHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            throw e
+            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
         }
 
     }
@@ -2367,7 +2426,7 @@ class QualityAssuranceHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            throw e
+            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
         }
 
     }
@@ -2392,7 +2451,7 @@ class QualityAssuranceHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            throw e
+            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
         }
 
     }
@@ -2403,12 +2462,15 @@ class QualityAssuranceHandler(
         try {
             val loggedInUser = commonDaoServices.loggedInUserDetails()
             val map = commonDaoServices.serviceMapDetails(appId)
-            val permitID =
-                req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
+//            val permitID = req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
             val dto = req.body<NewBatchInvoiceDto>()
-
-            val batchInvoiceDetails =
-                qaDaoServices.permitMultipleInvoiceCalculation(map, loggedInUser, permitID, dto).second
+            //Create invoice consolidation list
+            var batchInvoiceDetails = qaDaoServices.permitMultipleInvoiceCalculation(map, loggedInUser, dto).second
+            //Add created invoice consolidated id to my batch id to be submitted
+            dto.batchID =
+                batchInvoiceDetails.id ?: throw ExpectedDataNotFound("MISSING BATCH ID ON CREATED CONSOLIDATION")
+            //submit to staging invoices
+            batchInvoiceDetails = qaDaoServices.permitMultipleInvoiceSubmitInvoice(map, loggedInUser, dto).second
 
             qaDaoServices.mapBatchInvoiceDetails(batchInvoiceDetails, loggedInUser, map).let {
                 return ok().body(it)
@@ -2417,7 +2479,7 @@ class QualityAssuranceHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            throw e
+            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
         }
 
     }
@@ -2439,7 +2501,7 @@ class QualityAssuranceHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            throw e
+            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
         }
 
     }
@@ -2456,7 +2518,7 @@ class QualityAssuranceHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            throw e
+            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
         }
 
     }
@@ -2484,7 +2546,7 @@ class QualityAssuranceHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            throw e
+            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
         }
 
     }
@@ -2501,7 +2563,7 @@ class QualityAssuranceHandler(
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            throw e
+            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
         }
 
     }

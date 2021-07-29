@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
-import {LoginCredentials} from '../../core/store';
+import {LoginCredentials, selectUserInfo} from '../../core/store';
 import {Store} from '@ngrx/store';
 import {ActivatedRoute, Router} from '@angular/router';
 import {QaService} from '../../core/store/data/qa/qa.service';
@@ -13,6 +13,9 @@ import {
 } from '../../core/store/data/qa/qa.model';
 import swal from 'sweetalert2';
 import {FileUploadValidators} from '@iplab/ngx-file-upload';
+import {LoadingService} from "../../core/services/loader/loadingservice.service";
+import {delay} from "rxjs/operators";
+import {NgxSpinnerService} from "ngx-spinner";
 
 declare const $: any;
 
@@ -24,7 +27,8 @@ declare const $: any;
 export class NewDmarkPermitComponent implements OnInit {
 
     public isLoading = false;
-
+    loading: boolean = false;
+    fullname = '';
     sta1Form: FormGroup;
     sta3FormA: FormGroup;
     sta3FormB: FormGroup;
@@ -61,6 +65,8 @@ export class NewDmarkPermitComponent implements OnInit {
                 private route: ActivatedRoute,
                 private qaService: QaService,
                 private formBuilder: FormBuilder,
+                private _loading: LoadingService,
+                private SpinnerService: NgxSpinnerService
     ) {
     }
 
@@ -69,11 +75,11 @@ export class NewDmarkPermitComponent implements OnInit {
         this.sta1Form = this.formBuilder.group({
             id: [''],
             commodityDescription: ['', Validators.required],
-            applicantName: ['', Validators.required],
             sectionId: ['', Validators.required],
             permitForeignStatus: ['', Validators.required],
             attachedPlant: ['', Validators.required],
-            tradeMark: ['', Validators.required]
+            tradeMark: ['', Validators.required],
+            applicantName: []
 
         });
 
@@ -143,6 +149,11 @@ export class NewDmarkPermitComponent implements OnInit {
         this.getSelectedPermit();
 
         this.returnUrl = this.route.snapshot.queryParams[`returnUrl`] || `/dmark`;
+
+        this.store$.select(selectUserInfo).pipe().subscribe((u) => {
+            return this.fullname = u.fullName;
+        });
+
     }
 
     public getSelectedPermit(): void {
@@ -231,11 +242,13 @@ export class NewDmarkPermitComponent implements OnInit {
     onClickSaveSTA1(valid: boolean) {
         if (valid) {
             if (this.sta1 == null) {
+                this.SpinnerService.show();
                 this.qaService.savePermitSTA1('1', this.sta1Form.value).subscribe(
                     (data) => {
                         this.sta1 = data;
                         this.onClickUpdateStep(this.step);
                         console.log(data);
+                        this.SpinnerService.hide();
                         this.step += 1;
                         this.currBtn = 'B';
                         this.isLoading = false;
@@ -250,12 +263,14 @@ export class NewDmarkPermitComponent implements OnInit {
                     },
                 );
             } else {
+                this.SpinnerService.show();
                 this.qaService.updatePermitSTA1(String(this.sta1.id), this.sta1Form.value).subscribe(
                     (data) => {
                         this.sta1 = data;
                         this.onClickUpdateStep(this.step);
                         this.step += 1;
                         this.isLoading = false;
+                        this.SpinnerService.hide();
                         console.log(data);
                         swal.fire({
                             title: 'STA1 Form updated!',
@@ -274,12 +289,14 @@ export class NewDmarkPermitComponent implements OnInit {
     onClickSaveSTA3A(valid: boolean) {
         if (valid) {
             if (this.sta3 == null) {
+                this.SpinnerService.show();
                 console.log(this.sta1.id.toString());
                 this.sta3 = {...this.sta3, ...this.sta3FormA.value};
                 this.qaService.savePermitSTA3(this.sta1.id.toString(), this.sta3).subscribe(
                     (data: any) => {
                         this.onClickUpdateStep(this.step);
                         console.log(data);
+                        this.SpinnerService.hide();
                         this.sta3 = data;
                         this.step += 1;
                         swal.fire({
@@ -293,11 +310,13 @@ export class NewDmarkPermitComponent implements OnInit {
                     },
                 );
             } else {
+                this.SpinnerService.show();
                 this.sta3 = {...this.sta3, ...this.sta3FormA.value};
                 this.qaService.updatePermitSTA3(this.sta1.id.toString(), this.sta3).subscribe(
                     (data: any) => {
                         this.onClickUpdateStep(this.step);
                         console.log(data);
+                        this.SpinnerService.hide();
                         this.sta3 = data;
                         this.step += 1;
                         swal.fire({
@@ -316,11 +335,13 @@ export class NewDmarkPermitComponent implements OnInit {
 
     onClickUpdateSTA3B(valid: boolean) {
         if (valid) {
+            this.SpinnerService.show();
             this.sta3 = {...this.sta3, ...this.sta3FormB.value};
             this.qaService.updatePermitSTA3(this.sta1.id.toString(), this.sta3).subscribe(
                 (data: any) => {
                     this.onClickUpdateStep(this.step);
                     console.log(data);
+                    this.SpinnerService.hide();
                     this.sta3 = data;
                     this.step += 1;
                     swal.fire({
@@ -338,11 +359,13 @@ export class NewDmarkPermitComponent implements OnInit {
 
     onClickUpdateSTA3C(valid: boolean) {
         if (valid) {
+            this.SpinnerService.show();
             this.sta3 = {...this.sta3, ...this.sta3FormC.value};
             this.qaService.updatePermitSTA3(this.sta1.id.toString(), this.sta3).subscribe(
                 (data: any) => {
                     this.onClickUpdateStep(this.step);
                     console.log(data);
+                    this.SpinnerService.hide();
                     this.sta3 = data;
                     this.step += 1;
                     swal.fire({
@@ -360,11 +383,13 @@ export class NewDmarkPermitComponent implements OnInit {
 
     onClickUpdateSTA3D(valid: boolean) {
         if (valid) {
+            this.SpinnerService.show();
             this.sta3 = {...this.sta3, ...this.sta3FormD.value};
             this.qaService.updatePermitSTA3(this.sta1.id.toString(), this.sta3).subscribe(
                 (data: any) => {
                     this.onClickUpdateStep(this.step);
                     console.log(data);
+                    this.SpinnerService.hide();
                     this.sta3 = data;
                     this.step += 1;
                     swal.fire({
@@ -401,9 +426,11 @@ export class NewDmarkPermitComponent implements OnInit {
                 console.log(file[i]);
                 formData.append('docFile', file[i], file[i].name);
             }
+            this.SpinnerService.show();
             this.qaService.uploadSTA3File(this.sta1.id.toString(), formData).subscribe(
                 (data: any) => {
                     this.onClickUpdateStep(this.step);
+                    this.SpinnerService.hide();
                     console.log(data);
                     this.step += 1;
                     swal.fire({
@@ -441,7 +468,7 @@ export class NewDmarkPermitComponent implements OnInit {
                 '<button mat-raised-button type="button" aria-hidden="true" class="close" data-notify="dismiss">  <i class="material-icons">close</i></button>' +
                 '<i class="material-icons" data-notify="icon">notifications</i> ' +
                 '<span data-notify="title"></span> ' +
-                '<span data-notify="message">Ensure all required fields are items have been filled</span>' +
+                '<span data-notify="message">Ensure all required fields and items have been filled</span>' +
                 '<div class="progress" data-notify="progressbar">' +
                 '<div class="progress-bar progress-bar-{0}" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;"></div>' +
                 '</div>' +
@@ -449,4 +476,13 @@ export class NewDmarkPermitComponent implements OnInit {
                 '</div>'
         });
     }
+
+    listenToLoading(): void {
+        this._loading.loadingSub
+            .pipe(delay(0)) // This prevents a ExpressionChangedAfterItHasBeenCheckedError for subsequent requests
+            .subscribe((loading) => {
+                this.loading = loading;
+            });
+    }
+
 }

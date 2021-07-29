@@ -52,17 +52,13 @@
                                         <td>{{row[5]}}</td>
                                         <td>{{row[6]}}</td>
                                         <td>{{row[7]}}</td>
-                                        <td class="text-right">
-                                            <a (click)="onSelect(row[8])"
-                                               class="btn btn-link btn-info btn-just-icon view"><i
-                                                    class="material-icons">remove_red_eye</i></a>
-                                            <!--                                            <a href="javascript:void(0)"-->
-                                            <!--                                               class="btn btn-link btn-warning btn-just-icon edit"><i-->
-                                            <!--                                                    class="material-icons">dvr</i></a>-->
-                                            <!--                                            <a href="javascript:void(0)"-->
-                                            <!--                                               class="btn btn-link btn-danger btn-just-icon remove"><i-->
-                                            <!--                                                    class="material-icons">close</i></a>-->
+                                        <td *ngIf="1!=row[9]" class="text-right">
+                                            <a href="/smarkpermitdetails#{{row[8]}}" ><i class="material-icons">remove_red_eye</i></a>
                                         </td>
+                                        <td *ngIf="1== row[9]"class="text-right">
+                                            <a  href="/smark/newSmarkPermit#{{row[8]}}" ><i class="material-icons">remove_red_eye</i></a>
+                                        </td>
+
                                     </tr>
                                     </tbody>
                                 </table>

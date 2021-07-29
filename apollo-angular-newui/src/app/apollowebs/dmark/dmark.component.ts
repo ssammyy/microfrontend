@@ -11,7 +11,8 @@ import {
 import swal from 'sweetalert2';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {ApiEndpointService} from '../../core/services/endpoints/api-endpoint.service';
-import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
+// import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
+// import {ModalComponent} from "ngb-modal";
 
 declare interface DataTable {
     headerRow: string[];
@@ -57,7 +58,7 @@ export class DmarkComponent implements OnInit, AfterViewInit {
     constructor(
         private route: ActivatedRoute,
         private router: Router,
-        private modalService: NgbModal,
+        // private modalService: ModalComponent,
         private qaService: QaService,
         private formBuilder: FormBuilder
     ) {
@@ -150,13 +151,7 @@ export class DmarkComponent implements OnInit, AfterViewInit {
             }
         );
 
-        if (this.allPermitDetails.permitDetails.permitAwardStatus === true) {
-            this.qaService.loadCertificateDetailsPDF(this.permitID).subscribe(
-                (data: any) => {
-                    this.pdfSources = data;
-                },
-            );
-        }
+
 
 
     }
@@ -188,30 +183,37 @@ export class DmarkComponent implements OnInit, AfterViewInit {
 
     public getSelectedPermit(): void {
         this.route.fragment.subscribe(params => {
-            this.permitID = params;
-            console.log(this.permitID);
-            this.qaService.loadPermitDetails(this.permitID).subscribe(
+            // this.permitID = params;
+            // console.log(this.permitID);
+            this.qaService.loadPermitDetails(params).subscribe(
                 (data: AllPermitDetailsDto) => {
                     this.allPermitDetails = data;
                     // this.onSelectL1SubSubSection(this.userDetails?.employeeProfile?.l1SubSubSection);
+                    this.qaService.viewSTA1Details(String(this.allPermitDetails.permitDetails.id)).subscribe(
+                        (data) => {
+                            this.sta1 = data;
+                            this.sta1Form.patchValue(this.sta1);
+                        },
+                    );
+                    this.qaService.viewSTA3Details(String(this.allPermitDetails.permitDetails.id)).subscribe(
+                        (data) => {
+                            this.sta3 = data;
+                            this.sta3FormA.patchValue(this.sta3);
+                            this.sta3FormB.patchValue(this.sta3);
+                            this.sta3FormC.patchValue(this.sta3);
+                            this.sta3FormD.patchValue(this.sta3);
+                        },
+                    );
+                    if (this.allPermitDetails.permitDetails.permitAwardStatus === true) {
+                    this.qaService.loadCertificateDetailsPDF(String(this.allPermitDetails.permitDetails.id)).subscribe(
+                        (data: any) => {
+                            this.pdfSources = data;
+                        },
+                    );
+                    }
+                },
+            );
 
-                },
-            );
-            this.qaService.viewSTA1Details(this.permitID).subscribe(
-                (data) => {
-                    this.sta1 = data;
-                    this.sta1Form.patchValue(this.sta1);
-                },
-            );
-            this.qaService.viewSTA3Details(this.permitID).subscribe(
-                (data) => {
-                    this.sta3 = data;
-                    this.sta3FormA.patchValue(this.sta3);
-                    this.sta3FormB.patchValue(this.sta3);
-                    this.sta3FormC.patchValue(this.sta3);
-                    this.sta3FormD.patchValue(this.sta3);
-                },
-            );
         });
 
     }
@@ -267,7 +269,7 @@ export class DmarkComponent implements OnInit, AfterViewInit {
     submitApplicationForReview(): void {
         // tslint:disable-next-line:max-line-length
         if (this.allPermitDetails.permitDetails.permitForeignStatus === true && this.allPermitDetails.permitDetails.permitTypeID === ApiEndpointService.QA_APPLICATION_MAP_PROPERTIES.DMARK_TYPE_ID) {
-            this.qaService.submitPermitForReview(this.permitID).subscribe(
+            this.qaService.submitPermitForReview(String(this.allPermitDetails.permitDetails.id)).subscribe(
                 (data: AllPermitDetailsDto) => {
                     this.allPermitDetails = data;
                     swal.fire({
@@ -288,7 +290,7 @@ export class DmarkComponent implements OnInit, AfterViewInit {
     submitApplicationForReviewHOD(): void {
         // tslint:disable-next-line:max-line-length
         // if (this.allPermitDetails.permitDetails.permitForeignStatus === true && this.allPermitDetails.permitDetails.permitTypeID === ApiEndpointService.QA_APPLICATION_MAP_PROPERTIES.DMARK_TYPE_ID) {
-        this.qaService.submitPermitForReviewHODQAM(this.permitID).subscribe(
+        this.qaService.submitPermitForReviewHODQAM(String(this.allPermitDetails.permitDetails.id)).subscribe(
             (data: AllPermitDetailsDto) => {
                 this.allPermitDetails = data;
                 swal.fire({
@@ -307,7 +309,7 @@ export class DmarkComponent implements OnInit, AfterViewInit {
     }
 
     submitApplication(): void {
-        this.qaService.submitPermitApplication(this.permitID).subscribe(
+        this.qaService.submitPermitApplication(String(this.allPermitDetails.permitDetails.id)).subscribe(
             (data: AllPermitDetailsDto) => {
                 this.allPermitDetails = data;
                 swal.fire({
@@ -327,7 +329,7 @@ export class DmarkComponent implements OnInit, AfterViewInit {
 
     submitApprovalRejectionSSC(): void {
         console.log(this.approveRejectSSCForm.value);
-        this.qaService.submitSSCApprovalRejection(this.permitID, this.approveRejectSSCForm.value).subscribe(
+        this.qaService.submitSSCApprovalRejection(String(this.allPermitDetails.permitDetails.id), this.approveRejectSSCForm.value).subscribe(
             (data: PermitEntityDetails) => {
                 this.allPermitDetails.permitDetails = data;
                 swal.fire({
@@ -512,11 +514,11 @@ export class DmarkComponent implements OnInit, AfterViewInit {
         }
 
         this.currDiv = divVal;
-        this.modalService.open(this.editModal);
+        // this.modalService.open();
     }
 
     submitRenewalApplication() {
-        this.qaService.submitPermitRenewApplication(this.permitID).subscribe(
+        this.qaService.submitPermitRenewApplication(String(this.allPermitDetails.permitDetails.id)).subscribe(
             (data: AllPermitDetailsDto) => {
                 this.allPermitDetails = data;
                 console.log(AllPermitDetailsDto);
@@ -531,5 +533,9 @@ export class DmarkComponent implements OnInit, AfterViewInit {
                 // this.router.navigate(['/permitdetails'], {fragment: String(this.AllPermitDetailsDto.permitDetails.id)});
             },
         );
+    }
+
+    goToInvoiceGenerated() {
+        this.router.navigate(['/invoiceDetails'], {fragment: String(this.allPermitDetails.batchID)});
     }
 }

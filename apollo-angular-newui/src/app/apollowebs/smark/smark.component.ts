@@ -1,17 +1,26 @@
 import {Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {
-    AllPermitDetailsDto, AllSTA10DetailsDto,
+    AllPermitDetailsDto,
+    AllSTA10DetailsDto,
     PermitEntityDetails,
     PlantDetailsDto,
-    SectionDto, STA1,
-    Sta10Dto, STA10MachineryAndPlantDto, STA10ManufacturingProcessDto, STA10PersonnelDto,
-    STA10ProductsManufactureDto, STA10RawMaterialsDto
+    SectionDto,
+    STA1,
+    Sta10Dto,
+    STA10MachineryAndPlantDto,
+    STA10ManufacturingProcessDto,
+    STA10PersonnelDto,
+    STA10ProductsManufactureDto,
+    STA10RawMaterialsDto
 } from "../../core/store/data/qa/qa.model";
 import {QaService} from "../../core/store/data/qa/qa.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import swal from "sweetalert2";
+import {ApiEndpointService} from '../../core/services/endpoints/api-endpoint.service';
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
+import {LoadingService} from "../../core/services/loader/loadingservice.service";
+import {NgxSpinnerService} from "ngx-spinner";
 
 @Component({
     selector: 'app-smark',
@@ -25,7 +34,7 @@ export class SmarkComponent implements OnInit {
     approveRejectSSCForm!: FormGroup;
 
     pdfSources: any;
-
+    loading: boolean = false;
     sta1Form: FormGroup;
     sta10Form: FormGroup;
     sta10FormA: FormGroup;
@@ -55,13 +64,20 @@ export class SmarkComponent implements OnInit {
     stepSoFar: | undefined;
     step = 1;
     public permitID!: string;
+    batchID!: bigint;
+
+
+    SMarkTypeID = ApiEndpointService.QA_APPLICATION_MAP_PROPERTIES.SMARK_TYPE_ID;
+    FMarkTypeID = ApiEndpointService.QA_APPLICATION_MAP_PROPERTIES.FMARK_TYPE_ID;
+    draftID = ApiEndpointService.QA_APPLICATION_MAP_PROPERTIES.DRAFT_ID;
 
     constructor(
         private route: ActivatedRoute,
         private router: Router,
-        private modalService: NgbModal,
         private qaService: QaService,
-        private formBuilder: FormBuilder
+        private formBuilder: FormBuilder,
+        private _loading: LoadingService,
+        private SpinnerService: NgxSpinnerService
     ) {
     }
 
@@ -174,13 +190,13 @@ export class SmarkComponent implements OnInit {
         );
 
 
-        if (this.allPermitDetails.permitDetails.permitAwardStatus === true) {
-            this.qaService.loadCertificateDetailsPDF(this.permitID).subscribe(
-                (data: any) => {
-                    this.pdfSources = data;
-                },
-            );
-        }
+        // if (this.allPermitDetails.permitDetails.permitAwardStatus === true) {
+        this.qaService.loadCertificateDetailsPDF(String(this.allPermitDetails.permitDetails.id)).subscribe(
+            (data: any) => {
+                this.pdfSources = data;
+            },
+        );
+        // }
 
     }
 
@@ -222,37 +238,40 @@ export class SmarkComponent implements OnInit {
 
     public getSelectedPermit(): void {
         this.route.fragment.subscribe(params => {
-            this.permitID = params;
-            console.log(this.permitID);
-            this.qaService.loadPermitDetails(this.permitID).subscribe(
+            let permitID = params;
+            // localStorage.setItem('permitID')
+            // console.log(this.permitID);
+          //  this.SpinnerService.show();
+            this.qaService.loadPermitDetails(params).subscribe(
                 (data: AllPermitDetailsDto) => {
+                   // this.SpinnerService.hide();
                     this.allPermitDetails = new AllPermitDetailsDto();
                     this.allPermitDetails = data;
+                    this.batchID = this.allPermitDetails.batchID;
                     // this.onSelectL1SubSubSection(this.userDetails?.employeeProfile?.l1SubSubSection);
-
+                    this.qaService.viewSTA1Details(String(this.allPermitDetails.permitDetails.id)).subscribe(
+                        (data) => {
+                            this.sta1 = data;
+                            this.sta1Form.patchValue(this.sta1);
+                        },
+                    );
+                    console.log(`${this.sta10PersonnelDetails.length}`);
+                    this.qaService.viewSTA10Details(String(this.allPermitDetails.permitDetails.id)).subscribe(
+                        (data) => {
+                            this.allSTA10Details = data;
+                            this.sta10Form.patchValue(this.allSTA10Details.sta10FirmDetails);
+                            this.sta10PersonnelDetails = this.allSTA10Details.sta10PersonnelDetails;
+                            this.sta10ProductsManufactureDetails = this.allSTA10Details.sta10ProductsManufactureDetails;
+                            this.sta10RawMaterialsDetails = this.allSTA10Details.sta10RawMaterialsDetails;
+                            this.sta10MachineryAndPlantDetails = this.allSTA10Details.sta10MachineryAndPlantDetails;
+                            this.sta10ManufacturingProcessDetails = this.allSTA10Details.sta10ManufacturingProcessDetails;
+                            this.sta10ManufacturingProcessDetails = this.allSTA10Details.sta10ManufacturingProcessDetails;
+                            this.sta10FormF.patchValue(this.allSTA10Details.sta10FirmDetails);
+                        },
+                    );
                 },
             );
-            this.qaService.viewSTA1Details(this.permitID).subscribe(
-                (data) => {
-                    this.sta1 = data;
-                    this.sta1Form.patchValue(this.sta1);
-                },
-            );
-            console.log(`${this.sta10PersonnelDetails.length}`);
-            this.qaService.viewSTA10Details(this.permitID).subscribe(
-                (data) => {
-                    this.allSTA10Details = data;
-                    this.sta10Form.patchValue(this.allSTA10Details.sta10FirmDetails);
-                    this.sta10PersonnelDetails = this.allSTA10Details.sta10PersonnelDetails;
-                    this.sta10ProductsManufactureDetails = this.allSTA10Details.sta10ProductsManufactureDetails;
-                    this.sta10RawMaterialsDetails = this.allSTA10Details.sta10RawMaterialsDetails;
-                    this.sta10MachineryAndPlantDetails = this.allSTA10Details.sta10MachineryAndPlantDetails;
-                    this.sta10ManufacturingProcessDetails = this.allSTA10Details.sta10ManufacturingProcessDetails;
-                    this.sta10ManufacturingProcessDetails = this.allSTA10Details.sta10ManufacturingProcessDetails;
-                    this.sta10FormF.patchValue(this.allSTA10Details.sta10FirmDetails);
-                },
-            );
-            // this.qaService.viewSTA10FirmDetails(this.permitID).subscribe(
+            // this.qaService.viewSTA10FirmDetails(String(this.allPermitDetails.permitDetails.id)).subscribe(
             //     (data) => {
             //       this.Sta10Details = data;
             //       this.sta10Form.patchValue(this.Sta10Details);
@@ -272,9 +291,11 @@ export class SmarkComponent implements OnInit {
 
 
     onClickSaveSTA1(valid: boolean) {
-        this.qaService.updatePermitSTA1(String(this.permitID), this.sta1Form.value).subscribe(
+        this.SpinnerService.show();
+        this.qaService.updatePermitSTA1(String(String(this.allPermitDetails.permitDetails.id)), this.sta1Form.value).subscribe(
             (data) => {
                 this.sta1 = data;
+                this.SpinnerService.hide();
                 console.log(data);
                 swal.fire({
                     title: 'STA1 Form updated!',
@@ -289,11 +310,12 @@ export class SmarkComponent implements OnInit {
     }
 
     onClickSaveSTA10(valid: boolean) {
-
+        this.SpinnerService.show();
         this.qaService.updateFirmDetailsSta10(`${this.permitEntityDetails.id}`, this.sta10FormF.value).subscribe(
             (data) => {
                 this.Sta10Details = data;
                 console.log(data);
+                this.SpinnerService.hide();
                 swal.fire({
                     title: 'STA10 Form Updated!',
                     buttonsStyling: false,
@@ -308,11 +330,13 @@ export class SmarkComponent implements OnInit {
 
     onClickSaveSTA10F(valid: boolean) {
         if (valid) {
+            this.SpinnerService.show();
             console.log(this.permitEntityDetails.id.toString());
 
-            this.qaService.updateFirmDetailsSta10(this.permitID, this.sta10FormF.value).subscribe(
+            this.qaService.updateFirmDetailsSta10(String(this.allPermitDetails.permitDetails.id), this.sta10FormF.value).subscribe(
                 (data) => {
                     this.Sta10Details = data;
+                    this.SpinnerService.hide();
                     console.log(data);
                     swal.fire({
                         title: 'Non-conforming Products Manufacturing Process saved!',
@@ -329,9 +353,11 @@ export class SmarkComponent implements OnInit {
 
     submitApprovalRejectionSSC(): void {
         console.log(this.approveRejectSSCForm.value);
-        this.qaService.submitSSCApprovalRejection(this.permitID, this.approveRejectSSCForm.value).subscribe(
+        this.SpinnerService.show();
+        this.qaService.submitSSCApprovalRejection(String(this.allPermitDetails.permitDetails.id), this.approveRejectSSCForm.value).subscribe(
             (data: PermitEntityDetails) => {
                 this.allPermitDetails.permitDetails = data;
+                this.SpinnerService.hide();
                 swal.fire({
                     title: 'PERMIT APPLICATION SSC UPDATED SUCCESSFULLY!',
                     buttonsStyling: false,
@@ -349,7 +375,9 @@ export class SmarkComponent implements OnInit {
 
     onClickSaveSTA10G(valid: boolean) {
         if (valid) {
+            this.SpinnerService.show();
             console.log(this.permitEntityDetails.id.toString());
+            this.SpinnerService.hide();
             swal.fire({
                 title: 'STA3 Form Completed! Proceed to submit application.!',
                 buttonsStyling: false,
@@ -358,7 +386,7 @@ export class SmarkComponent implements OnInit {
                 },
                 icon: 'success'
             });
-            // this.router.navigate(['/permitdetails'], {fragment: this.permitID});
+            // this.router.navigate(['/permitdetails'], {fragment: String(this.allPermitDetails.permitDetails.id)});
 
 
         }
@@ -366,12 +394,14 @@ export class SmarkComponent implements OnInit {
 
     onClickSaveSTAPersonnel(valid: boolean) {
         if (valid) {
+            this.SpinnerService.show();
             console.log(this.Sta10Details.id.toString());
             // if (this.sta10PersonnelDetails == null) {
             this.qaService.savePersonnelDetailsSta10(this.Sta10Details.id.toString(), this.sta10PersonnelDetails).subscribe(
                 (data) => {
                     this.sta10PersonnelDetails = data;
                     console.log(data);
+                    this.SpinnerService.hide();
                     swal.fire({
                         title: 'Key Personnel Details Saved!',
                         buttonsStyling: false,
@@ -387,12 +417,14 @@ export class SmarkComponent implements OnInit {
 
     onClickSaveSTAProductsManufactured(valid: boolean) {
         if (valid) {
+            this.SpinnerService.show();
             console.log(this.Sta10Details.id.toString());
             // tslint:disable-next-line:max-line-length
             this.qaService.saveProductsManufacturedDetailsSta10(this.Sta10Details.id.toString(), this.sta10ProductsManufactureDetails).subscribe(
                 (data) => {
                     this.sta10ProductsManufactureDetails = data;
                     console.log(data);
+                    this.SpinnerService.hide();
                     swal.fire({
                         title: 'Products being Manufactured Saved!',
                         buttonsStyling: false,
@@ -408,11 +440,13 @@ export class SmarkComponent implements OnInit {
 
     onClickSaveSTARawMaterials(valid: boolean) {
         if (valid) {
+            this.SpinnerService.show();
             console.log(this.Sta10Details.id.toString());
             this.qaService.saveRawMaterialsDetailsSta10(this.Sta10Details.id.toString(), this.sta10RawMaterialsDetails).subscribe(
                 (data) => {
                     this.sta10RawMaterialsDetails = data;
                     console.log(data);
+                    this.SpinnerService.hide();
                     swal.fire({
                         title: 'Raw Materials Details saved!',
                         buttonsStyling: false,
@@ -429,10 +463,12 @@ export class SmarkComponent implements OnInit {
     onClickSaveSTAMachineryPlant(valid: boolean) {
         if (valid) {
             console.log(this.Sta10Details.id.toString());
+            this.SpinnerService.show();
             this.qaService.saveMachineryPlantDetailsSta10(this.Sta10Details.id.toString(), this.sta10MachineryAndPlantDetails).subscribe(
                 (data) => {
                     this.sta10MachineryAndPlantDetails = data;
                     console.log(data);
+                    this.SpinnerService.hide();
                     swal.fire({
                         title: 'Machinery And Plant Details saved!',
                         buttonsStyling: false,
@@ -449,11 +485,13 @@ export class SmarkComponent implements OnInit {
     onClickSaveSTAManufacturingProcess(valid: boolean) {
         if (valid) {
             console.log(this.Sta10Details.id.toString());
+            this.SpinnerService.show();
             // tslint:disable-next-line:max-line-length
             this.qaService.saveManufacturingProcessDetailsSta10(this.Sta10Details.id.toString(), this.sta10ManufacturingProcessDetails).subscribe(
                 (data) => {
                     this.sta10ManufacturingProcessDetails = data;
                     console.log(data);
+                    this.SpinnerService.hide();
                     swal.fire({
                         title: 'Manufacturing Process Details saved!',
                         buttonsStyling: false,
@@ -478,7 +516,10 @@ export class SmarkComponent implements OnInit {
         }
 
         this.currDiv = divVal;
-        this.modalService.open(this.editModal);
+        // this.modalService.show(this.editModal);
+        // this.modalService.open();
+
+
     }
 
     onClickAddPersonnel() {
@@ -530,17 +571,32 @@ export class SmarkComponent implements OnInit {
 
     submitApplication(): void {
 
-        this.qaService.submitPermitApplication(this.permitID).subscribe(
+        this.SpinnerService.show();
+        this.qaService.submitPermitApplication(String(this.allPermitDetails.permitDetails.id)).subscribe(
             (data: AllPermitDetailsDto) => {
                 this.allPermitDetails = data;
-                swal.fire({
-                    title: 'SMARK SUBMITTED SUCCESSFULLY PENDING PAYMENT!',
-                    buttonsStyling: false,
-                    customClass: {
-                        confirmButton: 'btn btn-success form-wizard-next-btn ',
-                    },
-                    icon: 'success'
-                });
+                this.SpinnerService.hide();
+                if (this.allPermitDetails.permitDetails.permitTypeID === this.FMarkTypeID) {
+
+                    swal.fire({
+                        title: 'FMARK SUBMITTED SUCCESSFULLY PENDING PAYMENT!',
+                        buttonsStyling: false,
+                        customClass: {
+                            confirmButton: 'btn btn-success form-wizard-next-btn ',
+                        },
+                        icon: 'success'
+                    });
+                } else {
+                    swal.fire({
+                        title: 'SMARK SUBMITTED SUCCESSFULLY PENDING PAYMENT!',
+                        buttonsStyling: false,
+                        customClass: {
+                            confirmButton: 'btn btn-success form-wizard-next-btn ',
+                        },
+                        icon: 'success'
+                    });
+                }
+
 
                 this.router.navigate(['/invoiceDetails'], {fragment: this.allPermitDetails.batchID.toString()});
 
@@ -550,24 +606,74 @@ export class SmarkComponent implements OnInit {
     }
 
     submitRenewalApplication() {
-        this.qaService.submitPermitRenewApplication(this.permitID).subscribe(
+        this.SpinnerService.show();
+        this.qaService.submitPermitRenewApplication(String(this.allPermitDetails.permitDetails.id)).subscribe(
             (data: AllPermitDetailsDto) => {
                 this.allPermitDetails = data;
+                this.SpinnerService.hide();
                 console.log(AllPermitDetailsDto);
-                swal.fire({
-                    title: 'SMARK Renewed Successfully! Proceed to submit application.',
-                    buttonsStyling: false,
-                    customClass: {
-                        confirmButton: 'btn btn-success form-wizard-next-btn ',
-                    },
-                    icon: 'success'
-                });
+                if (this.allPermitDetails.permitDetails.permitTypeID === this.FMarkTypeID) {
+                    swal.fire({
+                        title: 'FMARK Renewed Successfully! Proceed to submit application.',
+                        buttonsStyling: false,
+                        customClass: {
+                            confirmButton: 'btn btn-success form-wizard-next-btn ',
+                        },
+                        icon: 'success'
+                    });
+                } else {
+                    swal.fire({
+                        title: 'SMARK Renewed Successfully! Proceed to submit application.',
+                        buttonsStyling: false,
+                        customClass: {
+                            confirmButton: 'btn btn-success form-wizard-next-btn ',
+                        },
+                        icon: 'success'
+                    });
+                }
+
                 // this.router.navigate(['/permitdetails'], {fragment: String(this.AllPermitDetailsDto.permitDetails.id)});
             },
         );
     }
 
+    submitApplicationForReviewHOD(): void {
+        // tslint:disable-next-line:max-line-length
+        // if (this.allPermitDetails.permitDetails.permitForeignStatus === true && this.allPermitDetails.permitDetails.permitTypeID === ApiEndpointService.QA_APPLICATION_MAP_PROPERTIES.DMARK_TYPE_ID) {
+        this.SpinnerService.show();
+        this.qaService.submitPermitForReviewHODQAM(String(this.allPermitDetails.permitDetails.id)).subscribe(
+            (data: AllPermitDetailsDto) => {
+                this.allPermitDetails = data;
+                this.SpinnerService.hide();
+                if (this.allPermitDetails.permitDetails.permitTypeID === this.FMarkTypeID) {
+                    swal.fire({
+                        title: 'FMARK SUBMITTED SUCCESSFULLY FOR REVIEW HOD/RM!',
+                        buttonsStyling: false,
+                        customClass: {
+                            confirmButton: 'btn btn-success form-wizard-next-btn ',
+                        },
+                        icon: 'success'
+                    });
+
+                } else {
+                    swal.fire({
+                        title: 'SMARK SUBMITTED SUCCESSFULLY FOR REVIEW HOD/RM!',
+                        buttonsStyling: false,
+                        customClass: {
+                            confirmButton: 'btn btn-success form-wizard-next-btn ',
+                        },
+                        icon: 'success'
+                    });
+
+                }
+
+                // this.onUpdateReturnToList();
+            },
+        );
+        // }
+    }
+
     goToInvoiceGenerated() {
-        // this.router.navigate(['/permitdetails'], {fragment: String(this.AllPermitDetailsDto.permitDetails.id)});
+        this.router.navigate(['/invoiceDetails'], {fragment: String(this.allPermitDetails.batchID)});
     }
 }

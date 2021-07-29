@@ -1,3 +1,14 @@
+<div class="container-fluid" style="margin-top: 5%">
+<div  class="loading-spinner ">
+<ngx-spinner
+bdColor="rgba(51,51,51,0.8)"
+size="medium"
+color="#fff"
+type="ball-scale-multiple"
+>
+<p style="font-size: 20px; color: white">Loading Please Wait...</p>
+</ngx-spinner>
+</div>
 <div class="main-content">
 <div class="row">
 <div class="col-lg-9">
@@ -17,30 +28,40 @@
 </a>
 </li>
 <li class="nav-item">
-    <a class="nav-link" data-toggle="tab" href="#link11" role="tablist">
-        <i class="material-icons">assignment_turned_in</i> Plant Attached Details
-    </a>
+<a class="nav-link" data-toggle="tab" href="#link11" role="tablist">
+<i class="material-icons">assignment_turned_in</i> Plant Attached Details
+</a>
+</li>
+<li class="nav-item">
+<a class="nav-link" data-toggle="tab" href="#link12" role="tablist">
+<i class="material-icons">assignment_turned_in</i> STA10 Summary
+</a>
 </li>
     <li class="nav-item">
-        <a class="nav-link" data-toggle="tab" href="#link12" role="tablist">
-            <i class="material-icons">assignment_turned_in</i> STA10 Summary
+        <a class="nav-link" data-toggle="tab" href="#link16" role="tablist">
+            <i class="material-icons">assignment_turned_in</i> Uploads
         </a>
     </li>
-    <li *ngIf="allPermitDetails.permitDetails.permitAwardStatus == true" class="nav-item">
-        <a class="nav-link" data-toggle="tab" href="#link14" role="tablist">
-            <i class="material-icons">assignment_turned_in</i>CERTIFICATE ISSUED
-        </a>
-    </li>
-    <!--                        &lt;!&ndash; &ndash;&gt;-->
-    <!--                        <li class="nav-item">-->
-    <!--                            <a class="nav-link" data-toggle="tab" href="#link12" role="tablist">-->
-    <!--                                <i class="material-icons">feedback</i> Remark Details-->
-    <!--                            </a>-->
-    <!--                        </li>-->
-    <!--                        <li class="nav-item">-->
-    <!--                            <a class="nav-link" data-toggle="tab" href="#link13" role="tablist">-->
-    <!--                                <i class="material-icons">add_task</i> Recommendation Details-->
-    <!--                            </a>-->
+<li *ngIf="allPermitDetails.permitDetails.permitAwardStatus == true" class="nav-item">
+<a class="nav-link" data-toggle="tab" href="#link14" role="tablist">
+<i class="material-icons">assignment_turned_in</i>CERTIFICATE ISSUED
+</a>
+</li>
+<li class="nav-item">
+<a class="nav-link" data-toggle="tab" href="#link15" role="tablist">
+<i class="material-icons">assignment_turned_in</i> Comments
+</a>
+</li>
+<!--                        &lt;!&ndash; &ndash;&gt;-->
+<!--                        <li class="nav-item">-->
+<!--                            <a class="nav-link" data-toggle="tab" href="#link12" role="tablist">-->
+<!--                                <i class="material-icons">feedback</i> Remark Details-->
+<!--                            </a>-->
+<!--                        </li>-->
+<!--                        <li class="nav-item">-->
+<!--                            <a class="nav-link" data-toggle="tab" href="#link13" role="tablist">-->
+<!--                                <i class="material-icons">add_task</i> Recommendation Details-->
+<!--                            </a>-->
 <!--                        </li>-->
 <!--                        <li class="nav-item">-->
 <!--                            <a class="nav-link" data-toggle="tab" href="#link14" role="tablist">-->
@@ -397,8 +418,8 @@ name="permitForeignStatus" [class.is-invalid]="formSta1Form.permitForeignStatus.
 class="dropdown-item">{{plant.buildingName}}</option>
 </select>
 </div>
-    <button class="btn btn-sm btn-primary float-left" (click)="onClickSaveSTA1(sta1Form.valid)">Edit</button>
 </div>
+    <button class="btn btn-sm btn-primary float-right" (click)="onClickSaveSTA1(sta1Form.valid)">Save</button>
 </form>
 </div>
 </div>
@@ -454,7 +475,7 @@ name="totalNumberCasualEmployees" class="form-control" placeholder="No of Casual
 name="averageVolumeProductionMonth" placeholder="Average Volume Production Month" required="">
 </div>
 </div>
-    <button class="btn btn-sm btn-primary float-left" (click)="onClickSaveSTA10(sta10Form.valid)">Edit</button>
+<button class="btn btn-sm btn-primary float-right" (click)="onClickSaveSTA10(sta10Form.valid)">Save</button>
 </form>
 </div>
 </div>
@@ -518,7 +539,7 @@ class="table table-striped table-bordered table-hover"
 </table>
 </div>
 </div>
-    <button class="btn btn-sm btn-primary float-left" (click)="onClickSaveSTAPersonnel(sta10FormA.valid)">Edit</button>
+<button class="btn btn-sm btn-primary float-right" (click)="onClickSaveSTAPersonnel(sta10FormA.valid)">Save</button>
 </form>
 </div>
 </div>
@@ -534,52 +555,52 @@ aria-expanded="true" aria-controls="faq4" style="width: 623px; background-color:
 <div class="card-body">
 <form (ngSubmit)="onClickSaveSTAProductsManufactured(sta10FormB.valid)" [formGroup]="sta10FormB" action="" class="form"
 enctype="multipart/form-data" method="post">
-<div class="row">
-<div class="form-group col-6">
-<label for="productName">Product Name</label>
-<input type="text"   formControlName="productName"
-name="productName" id="productName" class="form-control"  placeholder="Product Name " >
-</div>
-<div class="form-group col-6">
-<label for="productBrand">Brand Name</label>
-<input type="text"  formControlName="productBrand"
-name="productBrand" id="productBrand" class="form-control"  placeholder="Brand Name " >
-</div>
-</div>
-<div class="row">
-<div class="form-group col-6">
-<label for="productStandardNumber">Applicable Product Standard number</label>
-<input type="text"    formControlName="productStandardNumber"
-name="productStandardNumber" id="productStandardNumber" class="form-control"  placeholder="Applicable Product
-Standard number" >
-</div>
-<div class="form-group col-6">
-<label for="available">Available (YES/NO)</label>
-<input type="checkbox"   formControlName="available"
-name="available" id="available" class="form-control"  >
+<!--<div class="row">-->
+<!--<div class="form-group col-6">-->
+<!--<label for="productName">Product Name</label>-->
+<!--<input type="text"   formControlName="productName"-->
+<!--name="productName" id="productName" class="form-control"  placeholder="Product Name " >-->
+<!--</div>-->
+<!--<div class="form-group col-6">-->
+<!--<label for="productBrand">Brand Name</label>-->
+<!--<input type="text"  formControlName="productBrand"-->
+<!--name="productBrand" id="productBrand" class="form-control"  placeholder="Brand Name " >-->
+<!--</div>-->
+<!--</div>-->
+<!--<div class="row">-->
+<!--<div class="form-group col-6">-->
+<!--<label for="productStandardNumber">Applicable Product Standard number</label>-->
+<!--<input type="text"    formControlName="productStandardNumber"-->
+<!--name="productStandardNumber" id="productStandardNumber" class="form-control"  placeholder="Applicable Product-->
+<!--Standard number" >-->
+<!--</div>-->
+<!--<div class="form-group col-6">-->
+<!--<label for="available">Available (YES/NO)</label>-->
+<!--<input type="checkbox"   formControlName="available"-->
+<!--name="available" id="available" class="form-control"  >-->
 
 
 
-</div>
-</div>
-<div class="row">
-<div class="form-group col-6">
-<label for="permitNo">KEBS Permit NO. (if applicable).</label>
-<input type="text"    formControlName="permitNo"
-name="permitNo" id="permitNo" class="form-control"  placeholder="KEBS Permit NO.
-(if applicable)." >
-</div>
-<div class="form-group col-6">
-<label style="color: transparent">Button</label>
-<span class="input-group-btn">
-<button (click)="onClickAddProductsManufacture()"
-type="button" class="btn btn-success btn-sm">
-<span class="" aria-hidden="true">ADD</span>
-</button>
-</span>
-</div>
-</div>
-<br><br>
+<!--</div>-->
+<!--</div>-->
+<!--<div class="row">-->
+<!--<div class="form-group col-6">-->
+<!--<label for="permitNo">KEBS Permit NO. (if applicable).</label>-->
+<!--<input type="text"    formControlName="permitNo"-->
+<!--name="permitNo" id="permitNo" class="form-control"  placeholder="KEBS Permit NO.-->
+<!--(if applicable)." >-->
+<!--</div>-->
+<!--<div class="form-group col-6">-->
+<!--<label style="color: transparent">Button</label>-->
+<!--<span class="input-group-btn">-->
+<!--<button (click)="onClickAddProductsManufacture()"-->
+<!--type="button" class="btn btn-success btn-sm">-->
+<!--<span class="" aria-hidden="true">ADD</span>-->
+<!--</button>-->
+<!--</span>-->
+<!--</div>-->
+<!--</div>-->
+<!--<br><br>-->
 <div class="material-datatables" >
 <div class="table-responsive">
 <table id="production"
@@ -589,26 +610,20 @@ class="table table-striped table-bordered table-hover"
 <tr>
 <th>Product Name</th>
 <th>Brand Name</th>
-<th>Applicable Product Standard number</th>
-<th>Available (YES/NO)</th>
-<th>KEBS Permit NO. (if applicable).</th>
 </tr>
 </thead>
 <tbody>
 <tr *ngFor="let r of sta10ProductsManufactureDetails">
 <td>{{r.productName}}</td>
 <td>{{r.productBrand}}</td>
-<td>{{r.productStandardNumber}}</td>
-<td>{{r.available}}</td>
-<td>{{r.permitNo}}</td>
 </tr>
 </tbody>
 </table>
 </div>
 </div>
-    <button class="btn btn-sm btn-primary float-left" (click)="onClickSaveSTAProductsManufactured(sta10FormB.valid)">
-        Edit
-    </button>
+<!--<button class="btn btn-sm btn-primary float-right" (click)="onClickSaveSTAProductsManufactured(sta10FormB.valid)">-->
+<!--Save-->
+<!--</button>-->
 </form>
 </div>
 </div>
@@ -680,8 +695,8 @@ type="button" class="btn btn-success btn-sm">
 </table>
 </div>
 </div>
-    <button class="btn btn-sm btn-primary float-left" (click)="onClickSaveSTARawMaterials(sta10FormC.valid)">Edit
-    </button>
+<button class="btn btn-sm btn-primary float-right" (click)="onClickSaveSTARawMaterials(sta10FormC.valid)">Save
+</button>
 </form>
 </div>
 </div>
@@ -998,8 +1013,8 @@ type="button" class="btn btn-success btn-sm">
 </table>
 </div>
 </div>
-    <button class="btn btn-sm btn-primary float-left" (click)="onClickSaveSTAMachineryPlant(sta10FormD.valid)">Edit
-    </button>
+<button class="btn btn-sm btn-primary float-right" (click)="onClickSaveSTAMachineryPlant(sta10FormD.valid)">Save
+</button>
 </form>
 </div>
 </div>
@@ -1017,34 +1032,34 @@ enctype="multipart/form-data" method="post">
 <div class="col-6">
 <label for="processFlowOfProduction">Process Flow of Production.</label>
 <input type="text"  formControlName="processFlowOfProduction"
-   name="processFlowOfProduction" id="processFlowOfProduction" class="form-control"  placeholder="Process Flow of
+name="processFlowOfProduction" id="processFlowOfProduction" class="form-control"  placeholder="Process Flow of
 Production
 " >
 </div>
 <div class="col-6">
 <label for="operations">Operations</label>
 <input type="text"    formControlName="operations"
-   name="operations" id="operations" class="form-control"  placeholder="Operations  " >
+name="operations" id="operations" class="form-control"  placeholder="Operations  " >
 </div>
 </div>
 <div class="row">
 <div class="col-6">
 <label for="criticalProcessParametersMonitored">Critical Process parameters Monitored.</label>
 <input type="text"   formControlName="criticalProcessParametersMonitored"
-   name="criticalProcessParametersMonitored" id="criticalProcessParametersMonitored" class="form-control"  placeholder="Critical Process
+name="criticalProcessParametersMonitored" id="criticalProcessParametersMonitored" class="form-control"  placeholder="Critical Process
 parameters Monitored" >
 </div>
 <div class="col-6">
 <label for="processMonitoringRecords">Process Monitoring Reports.</label>
 <input type="text"   formControlName="processMonitoringRecords"
-   id="processMonitoringRecords" name="processMonitoringRecords" class="form-control"  placeholder="Process Monitoring Reports" >
+id="processMonitoringRecords" name="processMonitoringRecords" class="form-control"  placeholder="Process Monitoring Reports" >
 </div>
 </div>
 <div class="row">
 <div class="col-6">
 <label for="qualityChecksTestingRecords">Quality checks/testing.</label>
 <input type="text"    formControlName="frequency"
-   name="frequency" class="form-control"  placeholder="Frequency" >
+name="frequency" class="form-control"  placeholder="Frequency" >
 </div>
 <div class="col-6">
 <label  style="color: transparent">Quality checks/testing.</label>
@@ -1063,162 +1078,170 @@ type="button" class="btn btn-success btn-sm">
 <table id="manufacturing" class="table table-striped table-bordered table-hover">
 <thead>
 <tr>
-    <th>Process Flow of Production</th>
-    <th>Operations </th>
-    <th>Critical Process parameters Monitored</th>
-    <th>Frequency</th>
-    <th>Process monitoring records
-    </th>
+<th>Process Flow of Production</th>
+<th>Operations </th>
+<th>Critical Process parameters Monitored</th>
+<th>Frequency</th>
+<th>Process monitoring records
+</th>
 </tr>
 </thead>
 <tbody>
 <tr *ngFor="let r of sta10ManufacturingProcessDetails">
-    <td>{{r.processFlowOfProduction}}</td>
-    <td>{{r.operations}}</td>
-    <td>{{r.criticalProcessParametersMonitored}}</td>
-    <td>{{r.frequency}}</td>
-    <td>{{r.processMonitoringRecords}}</td>
+<td>{{r.processFlowOfProduction}}</td>
+<td>{{r.operations}}</td>
+<td>{{r.criticalProcessParametersMonitored}}</td>
+<td>{{r.frequency}}</td>
+<td>{{r.processMonitoringRecords}}</td>
 </tr>
 </tbody>
 </table>
 </div>
 </div>
-    <button class="btn btn-sm btn-primary float-left" (click)="onClickSaveSTAManufacturingProcess(sta10FormE.valid)">
-        Edit
-    </button>
+<button class="btn btn-sm btn-primary float-right" (click)="onClickSaveSTAManufacturingProcess(sta10FormE.valid)">
+Save
+</button>
 </form>
 </div>
 </div>
 </div>
-    <div class="card">
-        <div class="card-header" id="faqhead8">
-            <a href="#" class="btn btn-header-link collapsed" data-toggle="collapse" data-target="#faq8"
-               aria-expanded="true" aria-controls="faq8" style="width: 623px; background-color: #3a75bc;">How are nonconforming products handled at the following stages of the manufacturing process:</a>
-        </div>
-        <div id="faq8" class="collapse" aria-labelledby="faqhead8" data-parent="#faq">
-            <div class="card-body">
-                <form (ngSubmit)="onClickSaveSTA10F(sta10FormF.valid)" [formGroup]="sta10FormF" action="" class="form"
-                      enctype="multipart/form-data" method="post">
-                    <div class="row">
+<div class="card">
+<div class="card-header" id="faqhead8">
+<a href="#" class="btn btn-header-link collapsed" data-toggle="collapse" data-target="#faq8"
+aria-expanded="true" aria-controls="faq8" style="width: 623px; background-color: #3a75bc;">How are nonconforming products handled at the following stages of the manufacturing process:</a>
+</div>
+<div id="faq8" class="collapse" aria-labelledby="faqhead8" data-parent="#faq">
+<div class="card-body">
+<form (ngSubmit)="onClickSaveSTA10F(sta10FormF.valid)" [formGroup]="sta10FormF" action="" class="form"
+  enctype="multipart/form-data" method="post">
+<div class="row">
 
-                        <div class="form-group col-12">
-                            <label for="handledManufacturingProcessRawMaterials">i.Raw Materials</label>
-                            <textarea [class.is-invalid]="formSta10FormF.handledManufacturingProcessRawMaterials.invalid && formSta10FormF.handledManufacturingProcessRawMaterials.touched" type="text"  id="handledManufacturingProcessRawMaterials" formControlName="handledManufacturingProcessRawMaterials" name="handledManufacturingProcessRawMaterials" class="form-control" rows="3" placeholder=""></textarea>
-                        </div>
-                        <div class="form-group col-12">
-                            <label for="handledManufacturingProcessInprocessProducts">ii.In-process products</label>
-                            <textarea [class.is-invalid]="formSta10FormF.handledManufacturingProcessInprocessProducts.invalid && formSta10FormF.handledManufacturingProcessInprocessProducts.touched" type="text"  id="handledManufacturingProcessInprocessProducts" formControlName="handledManufacturingProcessInprocessProducts" name="handledManufacturingProcessInprocessProducts" class="form-control" placeholder=""></textarea>
+    <div class="form-group col-12">
+        <label for="handledManufacturingProcessRawMaterials">i.Raw Materials</label>
+        <textarea [class.is-invalid]="formSta10FormF.handledManufacturingProcessRawMaterials.invalid && formSta10FormF.handledManufacturingProcessRawMaterials.touched" type="text"  id="handledManufacturingProcessRawMaterials" formControlName="handledManufacturingProcessRawMaterials" name="handledManufacturingProcessRawMaterials" class="form-control" rows="3" placeholder=""></textarea>
+    </div>
+    <div class="form-group col-12">
+        <label for="handledManufacturingProcessInprocessProducts">ii.In-process products</label>
+        <textarea [class.is-invalid]="formSta10FormF.handledManufacturingProcessInprocessProducts.invalid && formSta10FormF.handledManufacturingProcessInprocessProducts.touched" type="text"  id="handledManufacturingProcessInprocessProducts" formControlName="handledManufacturingProcessInprocessProducts" name="handledManufacturingProcessInprocessProducts" class="form-control" placeholder=""></textarea>
 
-                        </div>
-                        <div class="form-group col-12">
-                            <label for="handledManufacturingProcessFinalProduct">ii.In-process products</label>
-                            <textarea [class.is-invalid]="formSta10FormF.handledManufacturingProcessFinalProduct.invalid && formSta10FormF.handledManufacturingProcessFinalProduct.touched" type="text"  id="handledManufacturingProcessFinalProduct" formControlName="handledManufacturingProcessFinalProduct" name="handledManufacturingProcessFinalProduct" class="form-control" placeholder=""></textarea>
+    </div>
+    <div class="form-group col-12">
+        <label for="handledManufacturingProcessFinalProduct">ii.In-process products</label>
+        <textarea [class.is-invalid]="formSta10FormF.handledManufacturingProcessFinalProduct.invalid && formSta10FormF.handledManufacturingProcessFinalProduct.touched" type="text"  id="handledManufacturingProcessFinalProduct" formControlName="handledManufacturingProcessFinalProduct" name="handledManufacturingProcessFinalProduct" class="form-control" placeholder=""></textarea>
 
-                        </div>
-
-                    </div>
-                    <div class="row">
-                        <div class="form-group col-12">
-                            <label for="strategyInplaceRecallingProducts">What strategy do you have in place for recalling your products from the market that are nonconforming
-                                and have an effect on Health, Safety and Environment?</label>
-                            <textarea [class.is-invalid]="formSta10FormF.strategyInplaceRecallingProducts.invalid && formSta10FormF.strategyInplaceRecallingProducts.touched" type="text"  id="strategyInplaceRecallingProducts" formControlName="strategyInplaceRecallingProducts" name="strategyInplaceRecallingProducts" class="form-control" placeholder=""></textarea>
-
-                        </div>
-                    </div>
-                    <h5>State, where and how you store your raw materials and end products (State facility conditions). </h5>
-                    <div class="row">
-
-                        <div class="form-group col-12">
-                            <label for="stateFacilityConditionsRawMaterials">i.Raw Materials</label>
-                            <textarea [class.is-invalid]="formSta10FormF.stateFacilityConditionsRawMaterials.invalid && formSta10FormF.stateFacilityConditionsRawMaterials.touched" type="text"  id="stateFacilityConditionsRawMaterials" formControlName="stateFacilityConditionsRawMaterials" name="stateFacilityConditionsRawMaterials" class="form-control" rows="3" placeholder=""></textarea>
-                        </div>
-                        <div class="form-group col-12">
-                            <label for="stateFacilityConditionsEndProduct">ii.End product?</label>
-                            <textarea [class.is-invalid]="formSta10FormF.stateFacilityConditionsEndProduct.invalid && formSta10FormF.stateFacilityConditionsEndProduct.touched" type="text"  id="stateFacilityConditionsEndProduct" formControlName="stateFacilityConditionsEndProduct" name="stateFacilityConditionsEndProduct" class="form-control" placeholder=" "></textarea>
-
-                        </div>
-
-                    </div>
-                    <h5>What testing facilities exist on the premises (if any)?
-                    </h5>
-                    <div class="row">
-
-                        <div class="form-group col-12">
-                            <label for="testingFacilitiesExistSpecifyEquipment">i. Specify equipment:</label>
-                            <textarea [class.is-invalid]="formSta10FormF.testingFacilitiesExistSpecifyEquipment.invalid && formSta10FormF.testingFacilitiesExistSpecifyEquipment.touched" type="text"  id="testingFacilitiesExistSpecifyEquipment" formControlName="testingFacilitiesExistSpecifyEquipment" name="testingFacilitiesExistSpecifyEquipment" class="form-control" rows="3" placeholder=""></textarea>
-                        </div>
-                        <div class="form-group col-12">
-                            <label for="testingFacilitiesExistStateParametersTested">ii.State parameters tested on site:</label>
-                            <textarea [class.is-invalid]="formSta10FormF.testingFacilitiesExistStateParametersTested.invalid && formSta10FormF.testingFacilitiesExistStateParametersTested.touched" type="text"  id="testingFacilitiesExistStateParametersTested" formControlName="testingFacilitiesExistStateParametersTested" name="testingFacilitiesExistStateParametersTested" class="form-control" placeholder=" "></textarea>
-
-                        </div>
-                        <div class="form-group col-12">
-                            <label for="testingFacilitiesSpecifyParametersTested">iii. Specify any testing arrangement with other commercial laboratories (Specify parameters tested):
-                            </label>
-                            <textarea [class.is-invalid]="formSta10FormF.testingFacilitiesSpecifyParametersTested.invalid && formSta10FormF.testingFacilitiesSpecifyParametersTested.touched" type="text"  id="testingFacilitiesSpecifyParametersTested" formControlName="testingFacilitiesSpecifyParametersTested" name="testingFacilitiesSpecifyParametersTested" class="form-control" placeholder=" "></textarea>
-
-                        </div>
-
-                    </div>
-                    <div class="row">
-                        <div class="form-group col-12">
-                            <label for="calibrationEquipmentLastCalibrated">v. Calibration of Equipment</label>
-                            <p>How do you calibrate your measuring equipment stated in 8 (i) above?</p>
-                            <p>(e.g. Weighing scales, Thermometers e.t.c)? Specify when last calibrated.</p>
-                            <textarea [class.is-invalid]="formSta10FormF.calibrationEquipmentLastCalibrated.invalid && formSta10FormF.calibrationEquipmentLastCalibrated.touched" type="text"  id="calibrationEquipmentLastCalibrated" formControlName="calibrationEquipmentLastCalibrated" name="calibrationEquipmentLastCalibrated" class="form-control" rows="3" placeholder=""></textarea>
-                        </div>
-
-                    </div>
-                    <div class="row">
-                        <div class="form-group col-12">
-                            <label for="handlingConsumerComplaints">Handling of Complaints</label>
-                            <p>How do you plan to handle (New) or currently handle your consumer’s complaints?</p>
-                            <textarea [class.is-invalid]="formSta10FormF.handlingConsumerComplaints.invalid && formSta10FormF.handlingConsumerComplaints.touched" type="text"  id="handlingConsumerComplaints" formControlName="handlingConsumerComplaints" name="handlingConsumerComplaints" class="form-control" rows="3" placeholder=""></textarea>
-                        </div>
-
-                    </div>
-                    <div class="row">
-                        <div class="form-group col-6">
-                            <label for="companyRepresentative">Company Representative</label>
-                            <input [class.is-invalid]="formSta10FormF.companyRepresentative.invalid && formSta10FormF.companyRepresentative.touched"
-                                   type="text" id="companyRepresentative" formControlName="companyRepresentative"
-                                   name="companyRepresentative" class="form-control" placeholder="">
-                        </div>
-                        <div class="form-group col-6">
-                            <label for="applicationDate">Date</label>
-                            <input [class.is-invalid]="formSta10FormF.applicationDate.invalid && formSta10FormF.applicationDate.touched"
-                                   type="date" id="applicationDate" formControlName="applicationDate"
-                                   name="applicationDate" class="form-control" placeholder="">
-
-                        </div>
-                    </div>
-
-                    <button class="btn btn-sm btn-primary float-left"
-                            (click)="onClickSaveSTAManufacturingProcess(sta10FormE.valid)">Edit
-                    </button>
-                </form>
-            </div>
-        </div>
     </div>
 
 </div>
-</div>
-</div>
-</div>
-    <div class="tab-pane" id="link14">
-        <ngx-extended-pdf-viewer [src]="pdfSources" [zoom]="'page-actual'"
-                                 [filenameForDownload]="'Certificate'"></ngx-extended-pdf-viewer>
+<div class="row">
+    <div class="form-group col-12">
+        <label for="strategyInplaceRecallingProducts">What strategy do you have in place for recalling your products from the market that are nonconforming
+            and have an effect on Health, Safety and Environment?</label>
+        <textarea [class.is-invalid]="formSta10FormF.strategyInplaceRecallingProducts.invalid && formSta10FormF.strategyInplaceRecallingProducts.touched" type="text"  id="strategyInplaceRecallingProducts" formControlName="strategyInplaceRecallingProducts" name="strategyInplaceRecallingProducts" class="form-control" placeholder=""></textarea>
+
     </div>
-    <!--                        <div class="tab-pane" id="link12">-->
-    <!--                            <div class="material-datatables">-->
-    <!--                                <table id="datatables" class="table table-striped table-no-bordered table-hover" cellspacing="0" width="100%" style="width:100%">-->
-    <!--                                    <thead>-->
-    <!--                                    <tr>-->
-    <!--                                        <th>{{ dataTable.headerRow[0] }}</th>-->
-    <!--                                        <th>{{ dataTable.headerRow[1] }}</th>-->
-    <!--                                        <th>{{ dataTable.headerRow[2] }}</th>-->
-    <!--                                        <th>{{ dataTable.headerRow[3] }}</th>-->
-    <!--                                        <th>{{ dataTable.headerRow[4] }}</th>-->
+</div>
+<h5>State, where and how you store your raw materials and end products (State facility conditions). </h5>
+<div class="row">
+
+    <div class="form-group col-12">
+        <label for="stateFacilityConditionsRawMaterials">i.Raw Materials</label>
+        <textarea [class.is-invalid]="formSta10FormF.stateFacilityConditionsRawMaterials.invalid && formSta10FormF.stateFacilityConditionsRawMaterials.touched" type="text"  id="stateFacilityConditionsRawMaterials" formControlName="stateFacilityConditionsRawMaterials" name="stateFacilityConditionsRawMaterials" class="form-control" rows="3" placeholder=""></textarea>
+    </div>
+    <div class="form-group col-12">
+        <label for="stateFacilityConditionsEndProduct">ii.End product?</label>
+        <textarea [class.is-invalid]="formSta10FormF.stateFacilityConditionsEndProduct.invalid && formSta10FormF.stateFacilityConditionsEndProduct.touched" type="text"  id="stateFacilityConditionsEndProduct" formControlName="stateFacilityConditionsEndProduct" name="stateFacilityConditionsEndProduct" class="form-control" placeholder=" "></textarea>
+
+    </div>
+
+</div>
+<h5>What testing facilities exist on the premises (if any)?
+</h5>
+<div class="row">
+
+    <div class="form-group col-12">
+        <label for="testingFacilitiesExistSpecifyEquipment">i. Specify equipment:</label>
+        <textarea [class.is-invalid]="formSta10FormF.testingFacilitiesExistSpecifyEquipment.invalid && formSta10FormF.testingFacilitiesExistSpecifyEquipment.touched" type="text"  id="testingFacilitiesExistSpecifyEquipment" formControlName="testingFacilitiesExistSpecifyEquipment" name="testingFacilitiesExistSpecifyEquipment" class="form-control" rows="3" placeholder=""></textarea>
+    </div>
+    <div class="form-group col-12">
+        <label for="testingFacilitiesExistStateParametersTested">ii.State parameters tested on site:</label>
+        <textarea [class.is-invalid]="formSta10FormF.testingFacilitiesExistStateParametersTested.invalid && formSta10FormF.testingFacilitiesExistStateParametersTested.touched" type="text"  id="testingFacilitiesExistStateParametersTested" formControlName="testingFacilitiesExistStateParametersTested" name="testingFacilitiesExistStateParametersTested" class="form-control" placeholder=" "></textarea>
+
+    </div>
+    <div class="form-group col-12">
+        <label for="testingFacilitiesSpecifyParametersTested">iii. Specify any testing arrangement with other commercial laboratories (Specify parameters tested):
+        </label>
+        <textarea [class.is-invalid]="formSta10FormF.testingFacilitiesSpecifyParametersTested.invalid && formSta10FormF.testingFacilitiesSpecifyParametersTested.touched" type="text"  id="testingFacilitiesSpecifyParametersTested" formControlName="testingFacilitiesSpecifyParametersTested" name="testingFacilitiesSpecifyParametersTested" class="form-control" placeholder=" "></textarea>
+
+    </div>
+
+</div>
+<div class="row">
+    <div class="form-group col-12">
+        <label for="calibrationEquipmentLastCalibrated">v. Calibration of Equipment</label>
+        <p>How do you calibrate your measuring equipment stated in 8 (i) above?</p>
+        <p>(e.g. Weighing scales, Thermometers e.t.c)? Specify when last calibrated.</p>
+        <textarea [class.is-invalid]="formSta10FormF.calibrationEquipmentLastCalibrated.invalid && formSta10FormF.calibrationEquipmentLastCalibrated.touched" type="text"  id="calibrationEquipmentLastCalibrated" formControlName="calibrationEquipmentLastCalibrated" name="calibrationEquipmentLastCalibrated" class="form-control" rows="3" placeholder=""></textarea>
+    </div>
+
+</div>
+<div class="row">
+    <div class="form-group col-12">
+        <label for="handlingConsumerComplaints">Handling of Complaints</label>
+        <p>How do you plan to handle (New) or currently handle your consumer’s complaints?</p>
+        <textarea [class.is-invalid]="formSta10FormF.handlingConsumerComplaints.invalid && formSta10FormF.handlingConsumerComplaints.touched" type="text"  id="handlingConsumerComplaints" formControlName="handlingConsumerComplaints" name="handlingConsumerComplaints" class="form-control" rows="3" placeholder=""></textarea>
+    </div>
+
+</div>
+<div class="row">
+    <div class="form-group col-6">
+        <label for="companyRepresentative">Company Representative</label>
+        <input [class.is-invalid]="formSta10FormF.companyRepresentative.invalid && formSta10FormF.companyRepresentative.touched"
+               type="text" id="companyRepresentative" formControlName="companyRepresentative"
+               name="companyRepresentative" class="form-control" placeholder="">
+    </div>
+    <div class="form-group col-6">
+        <label for="applicationDate">Date</label>
+        <input [class.is-invalid]="formSta10FormF.applicationDate.invalid && formSta10FormF.applicationDate.touched"
+               type="date" id="applicationDate" formControlName="applicationDate"
+               name="applicationDate" class="form-control" placeholder="">
+
+    </div>
+</div>
+
+<button class="btn btn-sm btn-primary float-right"
+        (click)="onClickSaveSTAManufacturingProcess(sta10FormE.valid)">Save
+</button>
+</form>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+<div class="tab-pane" id="link14">
+<ngx-extended-pdf-viewer [src]="pdfSources" [zoom]="'page-actual'"
+             [filenameForDownload]="'Certificate'"></ngx-extended-pdf-viewer>
+</div>
+<div class="tab-pane" id="link15">
+Comments
+</div>
+
+    <div class="tab-pane" id="link16">
+        Uploads
+    </div>
+
+<!--                        <div class="tab-pane" id="link12">-->
+<!--                            <div class="material-datatables">-->
+<!--                                <table id="datatables" class="table table-striped table-no-bordered table-hover" cellspacing="0" width="100%" style="width:100%">-->
+<!--                                    <thead>-->
+<!--                                    <tr>-->
+<!--                                        <th>{{ dataTable.headerRow[0] }}</th>-->
+<!--                                        <th>{{ dataTable.headerRow[1] }}</th>-->
+<!--                                        <th>{{ dataTable.headerRow[2] }}</th>-->
+<!--                                        <th>{{ dataTable.headerRow[3] }}</th>-->
+<!--                                        <th>{{ dataTable.headerRow[4] }}</th>-->
 <!--                                        <th class="disabled-sorting text-right">{{ dataTable.headerRow[5] }}</th>-->
 <!--                                    </tr>-->
 <!--                                    </thead>-->
@@ -1262,105 +1285,131 @@ type="button" class="btn btn-success btn-sm">
 <h4 class="card-title">Actions
 </h4>
 </div>
-    <div class="card-body ">
-        <!--        <button *ngIf="allPermitDetails.permitDetails.invoiceGenerated == true" mat-raised-button=""-->
-        <!--                (click)="goToInvoiceGenerated(allPermitDetails.batchID)" class="btn btn-kebs mat-raised-button mat-button-base"><span class="mat-button-wrapper">View Generated Invoice </span>-->
-        <!--            <div matripple="" class="mat-ripple mat-button-ripple"></div>-->
-        <!--            <div class="mat-button-focus-overlay"></div>-->
-        <!--        </button>-->
-        <button *ngIf="allPermitDetails.permitDetails.permitAwardStatus == true" mat-raised-button=""
-                (click)="submitRenewalApplication()" class="btn btn-kebs mat-raised-button mat-button-base"><span
-                class="mat-button-wrapper">RENEW</span>
-            <div matripple="" class="mat-ripple mat-button-ripple"></div>
-            <div class="mat-button-focus-overlay"></div>
-        </button>
-        <button *ngIf="allPermitDetails.permitDetails.sendApplication == false"
-                (click)="submitApplication()" mat-raised-button=""
-                class="btn btn-kebs mat-raised-button mat-button-base"><span
-                class="mat-button-wrapper">SUBMIT APPLICATION</span>
-            <div matripple="" class="mat-ripple mat-button-ripple"></div>
-            <div class="mat-button-focus-overlay"></div>
-        </button>
-        <button *ngIf="allPermitDetails.permitDetails.generateSchemeStatus == true && allPermitDetails.permitDetails.approvedRejectedScheme == false"
-                (click)="openModal('approveSSC')" mat-raised-button=""
-                class="btn btn-kebs mat-raised-button mat-button-base"><span class="mat-button-wrapper">AGREE/CONSENT TO SSC</span>
-            <div matripple="" class="mat-ripple mat-button-ripple"></div>
-            <div class="mat-button-focus-overlay"></div>
-        </button>
-        <!--    <button *ngIf="allPermitDetails.permitDetails.permitAwardStatus == true"-->
-        <!--            (click)="submitApplication()" mat-raised-button=""-->
-        <!--            class="btn btn-kebs mat-raised-button mat-button-base"><span-->
-        <!--            class="mat-button-wrapper">SUBMIT APPLICATION</span>-->
-        <!--        <div matripple="" class="mat-ripple mat-button-ripple"></div>-->
-        <!--        <div class="mat-button-focus-overlay"></div>-->
-        <!--    </button>-->
-        <!--                    <button mat-raised-button="" class="btn btn-kebs mat-raised-button mat-button-base"><span-->
-        <!--                            class="mat-button-wrapper">Upload Attachments </span>-->
-        <!--                        <div matripple="" class="mat-ripple mat-button-ripple"></div>-->
-        <!--                        <div class="mat-button-focus-overlay"></div>-->
-        <!--                    </button>-->
-    </div>
+<div class="card-body ">
+<button *ngIf="allPermitDetails.permitDetails.invoiceGenerated == true && allPermitDetails.batchID != null"
+mat-raised-button=""
+(click)="goToInvoiceGenerated()" class="btn btn-kebs mat-raised-button mat-button-base"><span
+class="mat-button-wrapper">View Generated Invoice</span>
+<div matripple="" class="mat-ripple mat-button-ripple"></div>
+<div class="mat-button-focus-overlay"></div>
+</button>
+<div *ngIf="allPermitDetails.permitDetails.hofQamCompletenessStatus == false ">
+<button *ngIf="allPermitDetails.permitDetails.hofQamCompletenessStatus == false && allPermitDetails.permitDetails.resubmitApplicationStatus == true"
+(click)="submitApplicationForReviewHOD()" mat-raised-button=""
+class="btn btn-kebs mat-raised-button mat-button-base"><span class="mat-button-wrapper">RE-SUBMIT APPLICATION FOR REVIEW</span>
+<div matripple="" class="mat-ripple mat-button-ripple"></div>
+<div class="mat-button-focus-overlay"></div>
+</button>
 </div>
-    <ng-template #editModal let-modal>
+<button *ngIf="allPermitDetails.permitDetails.permitAwardStatus == true" mat-raised-button=""
+(click)="submitRenewalApplication()" class="btn btn-kebs mat-raised-button mat-button-base"><span
+class="mat-button-wrapper">RENEW</span>
+<div matripple="" class="mat-ripple mat-button-ripple"></div>
+<div class="mat-button-focus-overlay"></div>
+</button>
+<button *ngIf="allPermitDetails.permitDetails.sendApplication == false"
+(click)="submitApplication()" mat-raised-button=""
+class="btn btn-kebs mat-raised-button mat-button-base"><span
+class="mat-button-wrapper">SUBMIT APPLICATION</span>
+<div matripple="" class="mat-ripple mat-button-ripple"></div>
+<div class="mat-button-focus-overlay"></div>
+</button>
+<button *ngIf="allPermitDetails.permitDetails.generateSchemeStatus == true && allPermitDetails.permitDetails.approvedRejectedScheme == false"
+data-toggle="modal" data-target="#noticeModal"
+mat-raised-button=""
+class="btn btn-kebs mat-raised-button mat-button-base"><span class="mat-button-wrapper">AGREE/CONSENT TO SSC</span>
+<div matripple="" class="mat-ripple mat-button-ripple"></div>
+<div class="mat-button-focus-overlay"></div>
+</button>
+<!--    <button *ngIf="allPermitDetails.permitDetails.permitAwardStatus == true"-->
+<!--            (click)="submitApplication()" mat-raised-button=""-->
+<!--            class="btn btn-kebs mat-raised-button mat-button-base"><span-->
+<!--            class="mat-button-wrapper">SUBMIT APPLICATION</span>-->
+<!--        <div matripple="" class="mat-ripple mat-button-ripple"></div>-->
+<!--        <div class="mat-button-focus-overlay"></div>-->
+<!--    </button>-->
+<!--                    <button mat-raised-button="" class="btn btn-kebs mat-raised-button mat-button-base"><span-->
+<!--                            class="mat-button-wrapper">Upload Attachments </span>-->
+<!--                        <div matripple="" class="mat-ripple mat-button-ripple"></div>-->
+<!--                        <div class="mat-button-focus-overlay"></div>-->
+<!--                    </button>-->
+</div>
+</div>
+<!-- Classic Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal-dialog">
+<div class="modal-content">
+<div class="modal-header">
+<h4 class="modal-title">Approve Or Reject SCC</h4>
+<button mat-button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+    <i class="material-icons">clear</i>
+</button>
+</div>
+<div class="modal-body">
+<!--                <p>Are you sure this userDetails falls in the KEBS mandate ?</p>-->
+<div>
+    <form [formGroup]="approveRejectSSCForm" class="form">
+        <div class="form-body">
+            <div class="form-group">
 
-        <div class="modal-header">
-            <h5 class="modal-title" id="modal-basic-title">{{currDivLabel}}</h5>
-            <button (click)="modal.dismiss()" aria-label="Close" class="close" type="button">
-                <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
+                <div>
+                    <!--                <input type="checkbox" class="form-control one-column-input" aria-label="Small" aria-describedby="inputGroup-sizing-sm" [value]="1"-->
+                    <!--                       formControlName="approved"-->
+                    <!--                       name="approved" required>-->
+                    <label for="approvedRejectedScheme"><b>Approve/Reject SCC</b></label>
+                    <mat-form-field id="approvedRejectedScheme">
+                        <mat-select placeholder="Please Select an option"
+                                    formControlName="approvedRejectedScheme"
+                                    [class.is-invalid]="formApproveRejectSSC.approvedRejectedScheme.invalid && formApproveRejectSSC.approvedRejectedScheme.touched"
+                                    name="approvedRejectedScheme">
+                            <mat-option [value]="1">APPROVE</mat-option>
+                            <mat-option [value]="0">REJECT</mat-option>
 
-        <div class="modal-body">
-            <!--                <p>Are you sure this userDetails falls in the KEBS mandate ?</p>-->
-            <div *ngIf="(currDiv == 'approveSSC')">
-                <form [formGroup]="approveRejectSSCForm" class="form">
-                    <div class="form-body">
-                        <div class="form-group">
+                        </mat-select>
+                    </mat-form-field>
 
-                            <div>
-                                <!--                <input type="checkbox" class="form-control one-column-input" aria-label="Small" aria-describedby="inputGroup-sizing-sm" [value]="1"-->
-                                <!--                       formControlName="approved"-->
-                                <!--                       name="approved" required>-->
-                                <label><b>Approve/Reject SCC</b></label>
-                                <select id="approvedRejectedScheme" class="form-control"
-                                        formControlName="approvedRejectedScheme"
-                                        name="approvedRejectedScheme"
-                                        [class.is-invalid]="formApproveRejectSSC.approvedRejectedScheme.invalid && formApproveRejectSSC.approvedRejectedScheme.touched">
-                                    <option selected>Select Plant</option>
-                                    <option [ngValue]="1">APPROVE</option>
-                                    <option [ngValue]="0">REJECT</option>
-                                </select>
+                    <!--                                        <select id="approvedRejectedScheme" class="form-control"-->
+                    <!--                                                formControlName="approvedRejectedScheme"-->
+                    <!--                                                name="approvedRejectedScheme"-->
+                    <!--                                                data-placeholder="Please Select an option"-->
+                    <!--                                                [class.is-invalid]="formApproveRejectSSC.approvedRejectedScheme.invalid && formApproveRejectSSC.approvedRejectedScheme.touched"-->
+                    <!--                                        >-->
+                    <!--                                            <option selected>Please Select an option</option>-->
+                    <!--                                            <option [ngValue]="1">APPROVE</option>-->
+                    <!--                                            <option [ngValue]="0">REJECT</option>-->
+                    <!--                                        </select>-->
 
-                                <!--              <label><b>Remarks</b></label>-->
-                                <!--              <textarea-->
-                                <!--                [class.is-invalid]="formAssignAuthorities.approvedRemarks.invalid && formKEBSMandateIn.approvedRemarks.touched"-->
-                                <!--                aria-describedby="inputGroup-sizing-sm" aria-label="Small" class="form-control one-column-input"-->
-                                <!--                cols="65" formControlName="approvedRemarks"-->
-                                <!--                name="approvedRemarks"-->
-                                <!--                required rows="5"></textarea>-->
+                    <!--              <label><b>Remarks</b></label>-->
+                    <!--              <textarea-->
+                    <!--                [class.is-invalid]="formAssignAuthorities.approvedRemarks.invalid && formKEBSMandateIn.approvedRemarks.touched"-->
+                    <!--                aria-describedby="inputGroup-sizing-sm" aria-label="Small" class="form-control one-column-input"-->
+                    <!--                cols="65" formControlName="approvedRemarks"-->
+                    <!--                name="approvedRemarks"-->
+                    <!--                required rows="5"></textarea>-->
 
-                            </div>
-                        </div>
-                    </div>
-
-
-                </form>
+                </div>
             </div>
         </div>
 
-        <div class="modal-footer">
-            <button (click)="modal.dismiss()" class="btn btn-outline-secondary mr-4" data-dismiss="modal" type="button">
-                NO
-            </button>
-            <button (click)="submitApprovalRejectionSSC(); modal.dismiss()"
-                    *ngIf="currDiv == 'approveSSC'"
-                    [disabled]="!approveRejectSSCForm.valid" class="submit-button"
-                    data-dismiss="modal"
-                    type="button">SUBMIT
-            </button>
-        </div>
 
-    </ng-template>
+    </form>
+</div>
+</div>
+<div class="modal-footer">
+
+<button mat-raised-button type="button" class="btn btn-success"
+        (click)="submitApprovalRejectionSSC();"
+        [disabled]="!approveRejectSSCForm.valid"
+        data-dismiss="modal"
+>SUBMIT
+</button>
+<button mat-raised-button type="button" class="btn btn-danger" data-dismiss="modal">Close
+</button>
+</div>
+</div>
+</div>
+</div>
+<!--  End Modal --></div>
 </div>
 </div>
 </div>

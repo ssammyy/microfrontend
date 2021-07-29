@@ -8,10 +8,15 @@
                             <i class="material-icons">assignment</i>
                         </div>
                         <h4 class="card-title">Organizations: All My Users</h4>
-                        <div (click)="addBranches()" style="float: right; margin: inherit" class="card-icon">
+
+                        <div *ngFor="let role of roles">
+                            <div *ngIf="role == 'MODIFY_COMPANY'" (click)="addBranches()" style="float: right; margin: inherit" class="card-icon">
                             <i class="material-icons">add</i>
                         </div>
-                        <h4 style="float: right" class="card-title">Add A New User</h4>
+                            <div *ngIf="role == 'MODIFY_COMPANY'">
+                                <h4 style="float: right" class="card-title">Add A New User</h4>
+                            </div>
+                        </div>
 
                     </div>
                     <div class="card-body">
