@@ -108,12 +108,12 @@ class="dropdown-item">{{section.section}}</option>
 </div>
 <div *ngIf="SelectedSectionId==5" class="row">
 <div class="form-group col-12" >
-<label for="fortificationMark">You are applying for Fortification Mark as well<span style="font-size: xx-small; color: red;"></span></label>
+<label for="createFmark">You are applying for Fortification Mark as well<span style="font-size: xx-small; color: red;"></span></label>
 <p>The following products require Fortification Mark;-Edible fats and oil,Sifted Maize and Wheat flour,Salt and Sugar(Optional)</p>
-<select id="fortificationMark" class="form-control"  name="fortificationMark">
+<select id="createFmark" class="form-control" formControlName="createFmark" name="createFmark">
 <option selected>Are you applying for FMark</option>
-<option value="No">No</option>
-<option value="Yes">Yes</option>
+<option value="0">No</option>
+<option value="1">Yes</option>
 </select>
 </div>
 

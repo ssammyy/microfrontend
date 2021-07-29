@@ -433,6 +433,7 @@ interface IQaUploadsRepository : HazelcastRepository<QaUploadsEntity, Long> {
     fun findByPermitIdAndInspectionReportStatus(permitId: Long, inspectionReportStatus: Int): List<QaUploadsEntity>?
     fun findByPermitRefNumberAndInspectionReportStatus(permitRefNumber: String, inspectionReportStatus: Int): List<QaUploadsEntity>?
     fun findByPermitIdAndSta10Status(permitId: Long, sta10Status: Int): List<QaUploadsEntity>?
+    fun findByPermitIdAndSta3Status(permitId: Long, sta10Status: Int): List<QaUploadsEntity>?
     fun findByPermitRefNumberAndSta10Status(permitRefNumber: String, sta10Status: Int): List<QaUploadsEntity>?
 }
 

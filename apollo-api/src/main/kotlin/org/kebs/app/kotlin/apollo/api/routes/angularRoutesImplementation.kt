@@ -366,6 +366,7 @@ class AngularRoutes {
                     POST("/", handler::permitRenewMigration)
                 }
                 "/attach".nest {
+                    GET("/ordinary-file-list", handler::permitAttachGetOrdinaryFilesListMigration)
                     POST("/ordinary", handler::permitAttachUploadOrdinaryMigration)
                 }
             }
