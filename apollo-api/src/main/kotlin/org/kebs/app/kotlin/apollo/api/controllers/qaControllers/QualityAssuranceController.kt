@@ -1690,7 +1690,6 @@ class QualityAssuranceController(
 
         val result: ServiceRequestsEntity?
 
-
         //updating of Details in DB
         result = qaDaoServices.ssfSave(permit, sampleSubmissionDetails, loggedInUser, map).first
         with(permit) {
