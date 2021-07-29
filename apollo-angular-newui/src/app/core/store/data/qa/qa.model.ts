@@ -65,6 +65,7 @@ export class STA1 {
     sectionId: bigint;
     permitForeignStatus: number;
     attachedPlant: bigint;
+    createFmark: number;
 }
 
 export class FmarkEntityDto {

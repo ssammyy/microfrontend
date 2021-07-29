@@ -148,6 +148,7 @@ data class STA1Dto(
     var sectionId: Long? = null,
     var permitForeignStatus: Int? = null,
     var attachedPlant: Long? = null,
+    var createFmark: Int? = null,
 )
 
 data class STA10ProductsManufactureDto(

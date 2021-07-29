@@ -1226,6 +1226,7 @@ class QualityAssuranceHandler(
                 applicantName = dto.applicantName
                 sectionId = dto.sectionId
                 permitForeignStatus = dto.permitForeignStatus
+                fmarkGenerateStatus = dto.createFmark
                 attachedPlantId = when {
                     auth.authorities.stream().anyMatch { authority -> authority.authority == "MODIFY_COMPANY" } -> {
                         dto.attachedPlant

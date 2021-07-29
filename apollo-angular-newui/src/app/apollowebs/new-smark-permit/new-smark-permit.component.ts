@@ -15,10 +15,10 @@ import {
     STA10RawMaterialsDto
 } from '../../core/store/data/qa/qa.model';
 import swal from 'sweetalert2';
-import {FileUploadValidators} from "@iplab/ngx-file-upload";
-import {selectUserInfo} from "../../core/store";
-import {LoadingService} from "../../core/services/loader/loadingservice.service";
-import {NgxSpinnerService} from "ngx-spinner";
+import {FileUploadValidators} from '@iplab/ngx-file-upload';
+import {selectUserInfo} from '../../core/store';
+import {LoadingService} from '../../core/services/loader/loadingservice.service';
+import {NgxSpinnerService} from 'ngx-spinner';
 
 declare const $: any;
 
@@ -29,7 +29,7 @@ declare const $: any;
 })
 export class NewSmarkPermitComponent implements OnInit {
     fullname = '';
-    loading: boolean = false;
+    loading = false;
     SelectedSectionId;
     sta1Form: FormGroup;
     sta10Form: FormGroup;
@@ -90,6 +90,7 @@ export class NewSmarkPermitComponent implements OnInit {
           permitForeignStatus: [],
           attachedPlant: ['', Validators.required],
           tradeMark: ['', Validators.required],
+            createFmark: [],
             // inputCountryCode: ['', Validators.required,Validators.pattern("[0-9 ]{11}")]
 
         });
@@ -705,9 +706,9 @@ export class NewSmarkPermitComponent implements OnInit {
     }
 
 
-        onselectSection(){
-            console.log(this.SelectedSectionId)
-            //this.SelectedSectionId=sselect;
-            //this.SelectedSectionId = Selectedfood;
+        onselectSection() {
+            console.log(this.SelectedSectionId);
+            // this.SelectedSectionId=sselect;
+            // this.SelectedSectionId = Selectedfood;
         }
 }

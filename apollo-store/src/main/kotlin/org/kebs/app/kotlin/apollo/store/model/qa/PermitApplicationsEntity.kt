@@ -339,6 +339,10 @@ class PermitApplicationsEntity : Serializable {
     @Basic
     var fmarkGenerated: Int? = null
 
+    @Column(name = "FMARK_GENERATE_STATUS")
+    @Basic
+    var fmarkGenerateStatus: Int? = null
+
     @Column(name = "PERMIT_FOREIGN_STATUS")
     @Basic
     var permitForeignStatus: Int? = null
@@ -811,6 +815,7 @@ class PermitApplicationsEntity : Serializable {
         return id == that.id && cocId == that.cocId
                 && factoryVisit == that.factoryVisit
                 && processStep == that.processStep
+                && fmarkGenerateStatus == that.fmarkGenerateStatus
                 && ssfCompletedStatus == that.ssfCompletedStatus
                 && pacDecisionStatus == that.pacDecisionStatus
                 && leadAssessorId == that.leadAssessorId
@@ -831,6 +836,7 @@ class PermitApplicationsEntity : Serializable {
             id,
             companyId,
             applicationStatus,
+            fmarkGenerateStatus,
             ssfCompletedStatus,
             leadAssessorId,
             permitRejectedCreatedVersion,
