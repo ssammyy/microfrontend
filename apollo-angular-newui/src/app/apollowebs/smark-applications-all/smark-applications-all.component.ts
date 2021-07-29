@@ -20,7 +20,7 @@ declare const $: any;
 export class SmarkApplicationsAllComponent implements OnInit {
   public dataTable: DataTable;
     public allPermitData: PermitEntityDto[];
-    draftID = ApiEndpointService.QA_APPLICATION_MAP_PROPERTIES.DRAFT_ID;
+    draftID = String(ApiEndpointService.QA_APPLICATION_MAP_PROPERTIES.DRAFT_ID);
 
   constructor(
       private qaService: QaService,
@@ -38,7 +38,7 @@ export class SmarkApplicationsAllComponent implements OnInit {
 
           this.allPermitData = data;
           // tslint:disable-next-line:max-line-length
-          formattedArray = data.map(i => [i.permitRefNumber, i.createdOn, i.productName, i.tradeMark, i.awardedPermitNumber, i.dateOfIssue, i.dateOfExpiry, i.permitStatus, i.id]);
+          formattedArray = data.map(i => [i.permitRefNumber, i.createdOn, i.productName, i.tradeMark, i.awardedPermitNumber, i.dateOfIssue, i.dateOfExpiry, i.permitStatus, i.id, i.processStatusID]);
 
             this.dataTable = {
                 // tslint:disable-next-line:max-line-length
@@ -89,11 +89,22 @@ export class SmarkApplicationsAllComponent implements OnInit {
   }
 
     onSelect(rowElement: string, processStatusID: number) {
-        if (this.draftID === processStatusID) {
-            this.router.navigate(['/smark/newSmarkPermit'], {fragment: rowElement});
-        } else {
-            this.router.navigate(['/smarkpermitdetails'], {fragment: rowElement});
-        }
+        // if (this.draftID === processStatusID) {
+        //     this.router.navigate([`/smark/newSmarkPermit`], {fragment: rowElement});
+        //     //this.router.navigate(['/smark/newSmarkPermit'], { state: { id: '123' } });
+        // } else {
+        //     this.router.navigate([`/smarkpermitdetails`], {fragment: rowElement});
+        //     //this.router.navigate([`/smarkpermitdetails`], {fragment: rowElement});
+        // }
     }
 
+    onGoToSelect(string: string, string2: string) {
+        // if (this.draftID === Number(string2)) {
+        //     this.router.navigate([`/smark/newSmarkPermit`], {fragment: string});
+        //     //this.router.navigate(['/smark/newSmarkPermit'], { state: { id: '123' } });
+        // } else {
+        //     this.router.navigate([`/smarkpermitdetails`], {fragment: string});
+        //     //this.router.navigate([`/smarkpermitdetails`], {fragment: rowElement});
+        // }
+    }
 }
