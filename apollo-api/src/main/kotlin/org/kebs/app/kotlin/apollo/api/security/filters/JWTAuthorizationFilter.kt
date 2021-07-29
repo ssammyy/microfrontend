@@ -62,6 +62,7 @@ class JWTAuthorizationFilter : OncePerRequestFilter() {
                                 myToken = token.replace(prefix, "")
                             }
 
+                    //TODO: fix error for try catch
                     val authentication = UsernamePasswordAuthenticationBearer(tokenService).create(myToken)
                     SecurityContextHolder.getContext().authentication = authentication
                     response.addHeader(HttpHeaders.AUTHORIZATION, token)

@@ -3377,9 +3377,13 @@ class QADaoServices(
                             permitInvoiceFound = invoiceMasterDetailsRepo.save(permitInvoiceFound)
 
                             invoiceBatchDetails = batchInvoicePermit
+
+                            //Create details to batch invoice for all transactions at kebs main Staging table
                         }
 
                     batchID = invoiceBatchDetails?.id!!
+
+                    KotlinLogging.logger { }.info("batch ID = ${invoiceBatchDetails?.id}")
 
                     sr.payload = "permitInvoiceFound[id= ${permitInvoiceFound.createdBy}]"
                     sr.names = "${permitInvoiceFound.invoiceRef} ${permitInvoiceFound.totalAmount}"
