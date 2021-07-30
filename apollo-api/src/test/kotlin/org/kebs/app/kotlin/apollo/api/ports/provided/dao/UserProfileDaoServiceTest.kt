@@ -1,7 +1,6 @@
 package org.kebs.app.kotlin.apollo.api.ports.provided.dao
 
 import mu.KotlinLogging
-import org.flowable.common.engine.impl.interceptor.SessionFactory
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.kebs.app.kotlin.apollo.api.ports.provided.criteria.SearchCriteria
@@ -12,7 +11,6 @@ import org.kebs.app.kotlin.apollo.store.model.RegionsCountyTownViewDto
 import org.kebs.app.kotlin.apollo.store.repo.IUserRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.data.repository.findByIdOrNull
 import org.springframework.test.context.junit.jupiter.SpringExtension
 import javax.persistence.EntityManager
 import javax.persistence.PersistenceContext
@@ -78,10 +76,22 @@ class UserProfileDaoServiceTest {
         val spec2 = UserSpecification(SearchCriteria("firstName", ":", search.firstName))
         val spec3 = UserSpecification(SearchCriteria("lastName", ":", search.lastName))
         val other = usersRepo.findAll(spec.or(spec2).or(spec3).or(spec4))
-        other.forEach { l -> KotlinLogging.logger { }.info("${l.id} ${l.userName} ${l.email} ${l.firstName} ${l.lastName}") }
+        other.forEach { l ->
+            KotlinLogging.logger { }.info("${l.id} ${l.userName} ${l.email} ${l.firstName} ${l.lastName}")
+        }
 
 
     }
 
+}
+
+class SideBarEntityDto {
+    var path: String? = null
+    var title: String? = null
+    var type: String? = null
+    var iconType: String? = null
+    var collapse: String? = null
+    var ab: String? = null
+    var level: Int = 0
 }
 
