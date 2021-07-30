@@ -44,11 +44,32 @@ export class ConsolidatedInvoiceDto {
     checkedValue: boolean;
 }
 
+export class PermitAllRemarksDetailsDto {
+    hofQamCompletenessStatus: boolean;
+    hofQamCompletenessRemarks: string;
+    pcmApprovalStatus: boolean;
+    pcmApprovalRemarks: string;
+    pscMemberApprovalStatus: boolean;
+    pscMemberApprovalRemarks: string;
+    pcmReviewApprovalStatus: boolean;
+    pcmReviewApprovalRemarks: string;
+    justificationReportStatus: boolean;
+    justificationReportRemarks: string;
+}
+
 export class GenerateInvoiceDto {
     batchID: bigint;
     plantID: bigint;
     permitRefNumber: string;
     permitInvoicesID: number[];
+}
+
+export class SSFPDFListDetailsDto {
+    pdfSavedId: bigint;
+    pdfName: string;
+    sffId: bigint;
+    complianceRemarks: string;
+    complianceStatus: boolean;
 }
 
 export class MPesaPushDto {

@@ -115,8 +115,8 @@ class ReportsDaoService(
         pdfExporter.setExporterInput(SimpleExporterInput(jasperPrint))
         pdfExporter.exporterOutput = SimpleOutputStreamExporterOutput(pdfReportStream)
         pdfExporter.exportReport()
-        response.contentType = "text/html"
-//        response.contentType = "application/pdf"
+//        response.contentType = "text/html"
+        response.contentType = "application/pdf"
         response.setHeader("Content-Length", pdfReportStream.size().toString())
         response.addHeader("Content-Dispostion", "inline; filename=jasper.html;")
         response.outputStream
@@ -227,7 +227,7 @@ class ReportsDaoService(
         map: HashMap<String, Any>,
         filePath: String,
         dataSourceList: List<Any>
-    ): File? {
+    ): File {
 
         val file = ResourceUtils.getFile(filePath)
         val design = JRXmlLoader.load(file)

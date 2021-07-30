@@ -329,7 +329,6 @@ class AngularRoutes {
                     }
                     "/invoice".nest {
                         POST("/batch-invoice-submit", handler::invoiceBatchSubmitMigration)
-//                        POST("/batch-invoice-create", handler::invoiceBatchSubmitMigration)
                         POST("/batch-invoice-add", handler::invoiceBatchAddMigration)
                         PUT("/batch-invoice-remove", handler::invoiceBatchRemoveMigration)
                     }

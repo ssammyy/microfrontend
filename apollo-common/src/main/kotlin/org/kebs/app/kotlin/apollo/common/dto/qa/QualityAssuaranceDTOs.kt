@@ -100,6 +100,19 @@ data class SSFPDFListDetailsDto(
     var complianceStatus: Boolean? = null,
 )
 
+data class PermitAllRemarksDetailsDto(
+    var hofQamCompletenessStatus: Boolean? = null,
+    var hofQamCompletenessRemarks: String? = null,
+    var pcmApprovalStatus: Boolean? = null,
+    var pcmApprovalRemarks: String? = null,
+    var pscMemberApprovalStatus: Boolean? = null,
+    var pscMemberApprovalRemarks: String? = null,
+    var pcmReviewApprovalStatus: Boolean? = null,
+    var pcmReviewApprovalRemarks: String? = null,
+    var justificationReportStatus: Boolean? = null,
+    var justificationReportRemarks: String? = null,
+)
+
 data class NewBatchInvoiceDto(
     var batchID: Long = -1L,
     var plantID: Long? = null,
@@ -403,12 +416,14 @@ data class PermitDetailsDto(
 
 data class AllPermitDetailsDto(
     var permitDetails: PermitDetailsDto? = null,
+    var remarksDetails: PermitAllRemarksDetailsDto? = null,
 //    var standardList: List<UserEntityDto>? = null,
     var officerList: List<UserEntityDto>? = null,
     var oldVersionList: List<PermitEntityDto>? = null,
     var ordinaryFilesList: List<FilesListDto>? = null,
     var sta3FilesList: List<FilesListDto>? = null,
     var sta10FilesList: List<FilesListDto>? = null,
+    var labResultsList: List<SSFPDFListDetailsDto>? = null,
     var batchID: Long? = null
 )
 

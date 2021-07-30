@@ -216,7 +216,8 @@
                                             <td>
                                                 <a th:href="@{/api/qa/kebs/view/attached(fileID=${pdfSaved.pdfSavedId})}"
                                                    target='_blank' class="btn btn-primary itemViewBtn">view</a></td>
-                                            <td sec:authorize="hasAuthority('QA_OFFICER_MODIFY')">
+                                            <td th:if="${pdfSaved?.sentToManufacturerStatus != 1}"
+                                                sec:authorize="hasAuthority('QA_OFFICER_MODIFY')">
                                                 <a onclick="popUpCompanyFunction('addComplianceStatusDetails', ''+${pdfSaved.id}+'');"
                                                    class="btn btn-primary itemViewBtn">add compliance</a></td>
                                         </tr>
@@ -286,7 +287,8 @@
                                                                   th:field="*{complianceRemarks}"></textarea>
                                                     </div>
                                                     <div id="viewComplianceRemarksDetails">
-                                                        <textarea name="complianceRemarks" required="required"
+                                                        <textarea name="complianceRemarks" readonly="readonly"
+                                                                  required="required"
                                                                   id="complianceRemarks"
                                                                   class="input-field w-input" cols="65"
                                                                   rows="5"></textarea>

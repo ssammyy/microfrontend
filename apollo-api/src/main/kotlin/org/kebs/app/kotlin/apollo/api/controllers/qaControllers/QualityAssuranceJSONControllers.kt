@@ -39,6 +39,17 @@ class QualityAssuranceJSONControllers(
     final val fMarkImageResource = resourceLoader.getResource(applicationMapProperties.mapFmarkImagePath)
     val fMarkImageFile = fMarkImageResource.file.toString()
 
+    @GetMapping("/view/attached")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun downloadFileDocument(
+        response: HttpServletResponse,
+        @RequestParam("fileID") fileID: Long
+    ) {
+        val fileUploaded = qaDaoServices.findUploadedFileBYId(fileID)
+        val mappedFileClass = commonDaoServices.mapClass(fileUploaded)
+        commonDaoServices.downloadFile(response, mappedFileClass)
+    }
+
     @PostMapping("/permit/apply/sta3-update-upload")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun uploadFilesQASTA3Permit(
@@ -98,6 +109,48 @@ class QualityAssuranceJSONControllers(
                 upload,
                 commonDaoServices.convertMultipartFileToFile(u),
                 "STA10-UPLOADS",
+                permitDetails.permitRefNumber ?: throw Exception("MISSING PERMIT REF NUMBER"),
+                loggedInUser
+            )
+        }
+
+        with(permitDetails) {
+            sta10FilledStatus = map.inactiveStatus
+            permitStatus = applicationMapProperties.mapQaStatusPSubmission
+        }
+
+        permitDetails = qaDaoServices.permitUpdateDetails(permitDetails, map, loggedInUser).second
+        val sm = CommonDaoServices.MessageSuccessFailDTO()
+//        sm.closeLink = "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${permitDetails.id}"
+        sm.message = "Document Uploaded successful"
+
+        return sm
+//        return commonDaoServices.returnValues(result ?: throw Exception("invalid results"), map, sm)
+    }
+
+
+    @PostMapping("/permit/apply/ordinary-upload")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun uploadFilesOrdinaryPermit(
+        @RequestParam("permitID") permitID: Long,
+        @RequestParam("docFile") docFile: List<MultipartFile>,
+        model: Model
+    ): CommonDaoServices.MessageSuccessFailDTO {
+        val map = commonDaoServices.serviceMapDetails(appId)
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        var permitDetails = qaDaoServices.findPermitBYID(permitID)
+
+        docFile.forEach { u ->
+            val upload = QaUploadsEntity()
+            with(upload) {
+                permitId = permitDetails.id
+                versionNumber = 1
+                ordinaryStatus = 1
+            }
+            qaDaoServices.uploadQaFile(
+                upload,
+                commonDaoServices.convertMultipartFileToFile(u),
+                "NORMAL-UPLOADS",
                 permitDetails.permitRefNumber ?: throw Exception("MISSING PERMIT REF NUMBER"),
                 loggedInUser
             )
@@ -227,8 +280,8 @@ class QualityAssuranceJSONControllers(
                 )
             }
         }
-
     }
+
 
     @PostMapping("/kebs/add/new-upload")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)

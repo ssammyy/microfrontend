@@ -701,7 +701,7 @@ class QualityAssuranceHandler(
         val permitID =
             req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
         val permit = qaDaoServices.findPermitBYID(permitID)
-        val allSSFDetailsList = qaDaoServices.findSampleSubmittedListBYPermitRefNumber(
+        val allSSFDetailsList = qaDaoServices.findSampleSubmittedListBYPermitRefNumberAndPermitID(
             permit.permitRefNumber ?: throw ExpectedDataNotFound("INVALID PERMIT REF NUMBER"),
             map.activeStatus,
             permitID

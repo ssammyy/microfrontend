@@ -1555,16 +1555,19 @@
                                                           th:text="${permitDetails?.hofQamCompletenessRemarks}"></textarea>
                                             </div>
                                             <div id="permitRemarksPCMReview">
-                                                <label for="pcmApprovalStatus" class="col-form-label">Review
+                                                <label for="pcmReviewApprovalStatus" class="col-form-label">Review
                                                     Status:</label>
                                                 <input type="text" disabled class="form-control" maxlength="256"
-                                                       name="entryPoint" data-name="entry Point" id="pcmApprovalStatus"
-                                                       th:value="${permitDetails?.pcmApprovalStatus} ? 'APPROVED' : 'REJECTED'">
-                                                <label for="pcmApprovalRemarks" class="col-form-label">Feedback for this
+                                                       name="pcmReviewApprovalStatus" data-name="entry Point"
+                                                       id="pcmReviewApprovalStatus"
+                                                       th:value="${permitDetails?.pcmReviewApprovalStatus} ? 'APPROVED' : 'REJECTED'">
+                                                <label for="pcmReviewApprovalRemarks" class="col-form-label">Feedback
+                                                    for this
                                                     Permit:</label>
-                                                <textarea name="name" disabled id="pcmApprovalRemarks"
+                                                <textarea name="pcmReviewApprovalRemarks" disabled
+                                                          id="pcmReviewApprovalRemarks"
                                                           class="input-field w-input" cols="65" rows="5"
-                                                          th:text="${permitDetails?.pcmApprovalRemarks}"></textarea>
+                                                          th:text="${permitDetails?.pcmReviewApprovalRemarks}"></textarea>
                                             </div>
                                             <div id="permitRemarksPscApproval">
                                                 <label for="pscMemberApprovalStatus" class="col-form-label">Awarding
