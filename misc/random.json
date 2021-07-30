@@ -1,21 +1,126 @@
-{
-  "HEADER": {
-    "transmissionDate": "29-03-2021T16:14:35",
-    "loginId": " KEBSUSER",
-    "password": "password@1",
-    "hash": "1e1ab2efd54f40fdaac2ed9f9825e3b0d0f2984fd114c82f7dc891c2ffc94c8b",
-    "noOfRecords": "1"
+[
+  {
+    "path": "/dashboard",
+    "title": "Dashboard",
+    "type": "link",
+    "icontype": "dashboard",
+    "children": [
+    ]
   },
-  "PENALTYINFO": [
-    {
-      "entryNo": "4633",
-      "kraPin": "P051136200I",
-      "manufacName": "RENOCON LTD",
-      "periodFrom": "01-03-2021",
-      "periodTo": "31-03-2021",
-      "penaltyGenDate": "25-03-2021",
-      "penaltyPayable": 10000,
-      "PenaltyOrderNo": "30"
-    }
-  ]
-}
+  {
+    "path": "/company",
+    "title": "My Companies",
+    "type": "sub",
+    "icontype": "business",
+    "collapse": "company",
+    "children": [
+      {
+        "path": "companies",
+        "title": "View Companies",
+        "ab": "VC"
+      },
+      {
+        "path": "users",
+        "title": "View Users ",
+        "ab": "VU"
+      }
+    ]
+  },
+  {
+    "path": "/fmark",
+    "title": "Fortification Mark",
+    "type": "sub",
+    "icontype": "recommended",
+    "collapse": "fmark",
+    "children": [
+      {
+        "path": "application",
+        "title": "Make Application",
+        "ab": "MA"
+      },
+      {
+        "path": "fMarkAllApp",
+        "title": "All My Applications",
+        "ab": "AMA"
+      },
+      {
+        "path": "panels",
+        "title": "Awarded Applications",
+        "ab": "AA"
+      }
+    ]
+  },
+  {
+    "path": "/dmark",
+    "title": "Diamond Mark",
+    "type": "sub",
+    "icontype": "verified",
+    "collapse": "forms",
+    "children": [
+      {
+        "path": "newDmarkPermit",
+        "title": "Make Application",
+        "ab": "MA"
+      },
+      {
+        "path": "all_dmark",
+        "title": "All My Applications",
+        "ab": "AMA"
+      },
+      {
+        "path": "panels",
+        "title": "Awarded Applications",
+        "ab": "AA"
+      }
+    ]
+  },
+  {
+    "path": "/smark",
+    "title": "Standardization Mark",
+    "type": "sub",
+    "icontype": "class",
+    "collapse": "tables",
+    "children": [
+      {
+        "path": "newSmarkPermit",
+        "title": "Make Application",
+        "ab": "MA"
+      },
+      {
+        "path": "all_smark",
+        "title": "All My Applications",
+        "ab": "AMA"
+      },
+      {
+        "path": "panels",
+        "title": "Awarded Applications",
+        "ab": "AA"
+      }
+    ]
+  },
+  {
+    "path": "/invoice",
+    "title": "Invoices",
+    "type": "sub",
+    "icontype": "receipt",
+    "collapse": "invoice",
+    "children": [
+      {
+        "path": "all_invoice",
+        "title": "All Invoices",
+        "ab": "AI"
+      },
+      {
+        "path": "consolidate_invoice",
+        "title": "Consolidate Invoices",
+        "ab": "CI"
+      }
+    ]
+  },
+  {
+    "path": "/all_tasks_list",
+    "title": "My Tasks",
+    "type": "link",
+    "icontype": "task"
+  }
+]

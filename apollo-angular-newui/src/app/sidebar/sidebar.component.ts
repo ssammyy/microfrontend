@@ -29,7 +29,8 @@ export const ROUTES: RouteInfo[] = [
         path: '/dashboard',
         title: 'Dashboard',
         type: 'link',
-        icontype: 'dashboard'
+        icontype: 'dashboard',
+        children: []
     },
 
     {

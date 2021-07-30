@@ -1,5 +1,7 @@
 package org.kebs.app.kotlin.apollo.api.ports.provided.dao
 
+import com.fasterxml.jackson.annotation.JsonProperty
+import com.fasterxml.jackson.core.type.TypeReference
 import mu.KotlinLogging
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -8,10 +10,16 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.spec.UserSpecification
 import org.kebs.app.kotlin.apollo.common.dto.UserSearchValues
 import org.kebs.app.kotlin.apollo.store.model.DirectorateToSubSectionL2ViewDto
 import org.kebs.app.kotlin.apollo.store.model.RegionsCountyTownViewDto
+import org.kebs.app.kotlin.apollo.store.model.SidebarChildrenEntity
+import org.kebs.app.kotlin.apollo.store.model.SidebarMainEntity
+import org.kebs.app.kotlin.apollo.store.repo.ISidebarChildrenRepository
+import org.kebs.app.kotlin.apollo.store.repo.ISidebarMainRepository
 import org.kebs.app.kotlin.apollo.store.repo.IUserRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.junit.jupiter.SpringExtension
+import java.sql.Timestamp
+import java.time.Instant
 import javax.persistence.EntityManager
 import javax.persistence.PersistenceContext
 import kotlin.test.expect
@@ -30,13 +38,25 @@ class UserProfileDaoServiceTest {
     @Autowired
     lateinit var usersRepo: IUserRepository
 
+    @Autowired
+    lateinit var daoService: DaoService
+
+    @Autowired
+    lateinit var sideBarMainRepository: ISidebarMainRepository
+
+    @Autowired
+    lateinit var sideBarChildrenRepository: ISidebarChildrenRepository
+
 //    @Autowired
 //    lateinit var sessionFactory: SessionFactory
 
     @Test
     fun initialIntegrationTest() {
 
-        val list: List<RegionsCountyTownViewDto> = entityManager.createNamedQuery(RegionsCountyTownViewDto.FIND_ALL, RegionsCountyTownViewDto::class.java).resultList.filter { it.townId != null }
+        val list: List<RegionsCountyTownViewDto> = entityManager.createNamedQuery(
+            RegionsCountyTownViewDto.FIND_ALL,
+            RegionsCountyTownViewDto::class.java
+        ).resultList.filter { it.townId != null }
         expect(list.isEmpty(), "Empty List found", { false })
         list.forEach {
             KotlinLogging.logger { }.info("Record found: ${it.townId} ${it.county}")
@@ -45,12 +65,15 @@ class UserProfileDaoServiceTest {
 
     @Test
     fun initialDirectorateToSubSectionL2ViewDtoTest() {
-        val list = entityManager.createNamedQuery(DirectorateToSubSectionL2ViewDto.FIND_ALL, DirectorateToSubSectionL2ViewDto::class.java).resultList
+        val list = entityManager.createNamedQuery(
+            DirectorateToSubSectionL2ViewDto.FIND_ALL,
+            DirectorateToSubSectionL2ViewDto::class.java
+        ).resultList
         list.forEach { l -> KotlinLogging.logger { }.info("Record found: ${l.department} ${l.directorate}") }
     }
 
     @Test
-    fun testBrs(){
+    fun testBrs() {
 //        usersRepo.findByIdOrNull(1464)?.let { user ->
 //            registrationDaoServices.checkBrs(user)
 //        }
@@ -83,15 +106,142 @@ class UserProfileDaoServiceTest {
 
     }
 
+    @Test
+    fun loadAndSaveSideBarToDatastoreGivenRawJsonTest() {
+        val json = "[\n" +
+                "  {\n" +
+                "    \"path\": \"/dashboard\",\n" +
+                "    \"title\": \"Dashboard\",\n" +
+                "    \"type\": \"link\",\n" +
+                "    \"icontype\": \"dashboard\",\n" +
+                "    \"children\": [\n" +
+                "\n" +
+                "    ]\n" +
+                "  },\n" +
+                "\n" +
+                "  {\n" +
+                "    \"path\": \"/company\",\n" +
+                "    \"title\": \"My Companies\",\n" +
+                "    \"type\": \"sub\",\n" +
+                "    \"icontype\": \"business\",\n" +
+                "    \"collapse\": \"company\",\n" +
+                "    \"children\": [\n" +
+                "      {\"path\": \"companies\", \"title\": \"View Companies\", \"ab\": \"VC\"},\n" +
+                "      {\"path\": \"users\", \"title\": \"View Users \", \"ab\": \"VU\"}\n" +
+                "    ]\n" +
+                "  },\n" +
+                "\n" +
+                "  {\n" +
+                "    \"path\": \"/fmark\",\n" +
+                "    \"title\": \"Fortification Mark\",\n" +
+                "    \"type\": \"sub\",\n" +
+                "    \"icontype\": \"recommended\",\n" +
+                "    \"collapse\": \"fmark\",\n" +
+                "    \"children\": [\n" +
+                "      {\"path\": \"application\", \"title\": \"Make Application\", \"ab\": \"MA\"},\n" +
+                "      {\"path\": \"fMarkAllApp\", \"title\": \"All My Applications\", \"ab\": \"AMA\"},\n" +
+                "      {\"path\": \"panels\", \"title\": \"Awarded Applications\", \"ab\": \"AA\"}\n" +
+                "    ]\n" +
+                "  }, {\n" +
+                "  \"path\": \"/dmark\",\n" +
+                "  \"title\": \"Diamond Mark\",\n" +
+                "  \"type\": \"sub\",\n" +
+                "  \"icontype\": \"verified\",\n" +
+                "  \"collapse\": \"forms\",\n" +
+                "  \"children\": [\n" +
+                "    {\"path\": \"newDmarkPermit\", \"title\": \"Make Application\", \"ab\": \"MA\"},\n" +
+                "    {\"path\": \"all_dmark\", \"title\": \"All My Applications\", \"ab\": \"AMA\"},\n" +
+                "    {\"path\": \"panels\", \"title\": \"Awarded Applications\", \"ab\": \"AA\"}\n" +
+                "  ]\n" +
+                "}, {\n" +
+                "  \"path\": \"/smark\",\n" +
+                "  \"title\": \"Standardization Mark\",\n" +
+                "  \"type\": \"sub\",\n" +
+                "  \"icontype\": \"class\",\n" +
+                "  \"collapse\": \"tables\",\n" +
+                "  \"children\": [\n" +
+                "    {\"path\": \"newSmarkPermit\", \"title\": \"Make Application\", \"ab\": \"MA\"},\n" +
+                "    {\"path\": \"all_smark\", \"title\": \"All My Applications\", \"ab\": \"AMA\"},\n" +
+                "    {\"path\": \"panels\", \"title\": \"Awarded Applications\", \"ab\": \"AA\"}\n" +
+                "  ]\n" +
+                "}, {\n" +
+                "  \"path\": \"/invoice\",\n" +
+                "  \"title\": \"Invoices\",\n" +
+                "  \"type\": \"sub\",\n" +
+                "  \"icontype\": \"receipt\",\n" +
+                "  \"collapse\": \"invoice\",\n" +
+                "  \"children\": [\n" +
+                "    {\"path\": \"all_invoice\", \"title\": \"All Invoices\", \"ab\": \"AI\"},\n" +
+                "    {\"path\": \"consolidate_invoice\", \"title\": \"Consolidate Invoices\", \"ab\": \"CI\"}\n" +
+                "  ]\n" +
+                "},\n" +
+                "  {\n" +
+                "    \"path\": \"/all_tasks_list\",\n" +
+                "    \"title\": \"My Tasks\",\n" +
+                "    \"type\": \"link\",\n" +
+                "    \"icontype\": \"task\"\n" +
+                "  }\n" +
+                "]"
+
+        val mainMenu: List<SideBarLevelOneEntityDto> =
+            daoService.mapper().readValue(json, object : TypeReference<List<SideBarLevelOneEntityDto>>() {})
+
+        KotlinLogging.logger { }.info("Size ${mainMenu.size}")
+        mainMenu.forEach { m ->
+            var entity = SidebarMainEntity().apply {
+                status = 1
+                path = m.path
+                title = m.title
+                type = m.type
+                iconType = m.iconType
+                collapse = m.collapse
+                createdOn = Timestamp.from(Instant.now())
+                createdBy = "Admin"
+                roleId = 0
+
+            }
+            entity = sideBarMainRepository.save(entity)
+            m.children?.forEach { c ->
+                val child = SidebarChildrenEntity().apply {
+                    roleId = entity.roleId
+                    mainId = entity.id
+                    status = 1
+                    path = c.path
+                    title = c.title
+                    aB = c.ab
+                    createdOn = Timestamp.from(Instant.now())
+                    createdBy = "Admin"
+                }
+                sideBarChildrenRepository.save(child)
+            }
+        }
+
+
+    }
 }
 
-class SideBarEntityDto {
-    var path: String? = null
-    var title: String? = null
-    var type: String? = null
-    var iconType: String? = null
-    var collapse: String? = null
-    var ab: String? = null
-    var level: Int = 0
-}
+data class SideBarLevelOneEntityDto(
+    @JsonProperty("path")
+    var path: String?,
+    @JsonProperty("title")
+    var title: String?,
+    @JsonProperty("type")
+    var type: String?,
+    @JsonProperty("icontype")
+    var iconType: String?,
+    @JsonProperty("collapse")
+    var collapse: String?,
+    @JsonProperty("children")
+    var children: List<SideBarLevelTwoEntityDto>?
+)
+
+data class SideBarLevelTwoEntityDto(
+    @JsonProperty("path")
+    var path: String?,
+    @JsonProperty("title")
+    var title: String?,
+    @JsonProperty("ab")
+    var ab: String?
+)
+
 
