@@ -1690,7 +1690,6 @@ class QualityAssuranceController(
 
         val result: ServiceRequestsEntity?
 
-
         //updating of Details in DB
         result = qaDaoServices.ssfSave(permit, sampleSubmissionDetails, loggedInUser, map).first
         with(permit) {
@@ -2226,7 +2225,7 @@ class QualityAssuranceController(
         val permit = loggedInUser.id?.let { qaDaoServices.findPermitBYUserIDAndId(permitID, it) } ?: throw ExpectedDataNotFound("Required User ID, check config")
         val permitType = permit.permitType?.let { qaDaoServices.findPermitType(it) } ?: throw ExpectedDataNotFound("PermitType Id Not found")
 
-        result = qaDaoServices.permitInvoiceCalculation(map, loggedInUser, permit, permitType)
+        result = qaDaoServices.permitInvoiceCalculation(map, loggedInUser, permit, permitType).first
         with(permit) {
             sendApplication = map.activeStatus
             invoiceGenerated = map.activeStatus

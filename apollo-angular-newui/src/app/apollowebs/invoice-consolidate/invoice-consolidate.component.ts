@@ -27,13 +27,14 @@ declare const $: any;
 export class InvoiceConsolidateComponent implements OnInit {
   public dataTable: DataTable;
   public allInvoiceData: PermitInvoiceDto[];
-  consolidatedInvoice: GenerateInvoiceDto | undefined;
+  // consolidatedInvoice: GenerateInvoiceDto;
   name: string;
   checkboxGroup: FormGroup;
   submittedValue: any;
   final_array = [];
   selected = [];
-  permitInvoicesIDS = [];
+
+    // permitInvoicesIDS = [];
 
 
   constructor(
@@ -139,28 +140,40 @@ export class InvoiceConsolidateComponent implements OnInit {
   submit() {
     this.final_array.push(this.selected.sort());
     console.log(this.final_array);
-    console.log(this.final_array);
     const selectedRows = this.final_array;
-    selectedRows.forEach(function (data) {
-      this.permitInvoicesIDS.push(data);
-      console.log(data[0], data[0].length);
+    const permitInvoicesIDS: number[] = [];
+    selectedRows.forEach(function (dataValue) {
+      for (let i = 0; i <= dataValue.length - 1; i++) {
+        const pickedI = dataValue[i];
+        const idIndex = dataValue[i].length;
+        console.log(`VALUE OF I =${dataValue[i][5]}`);
+        const myData = dataValue[i][5];
+        console.log(`DATA ADDED ${myData}`);
+        permitInvoicesIDS.push(myData);
+      }
     });
-    this.consolidatedInvoice.permitInvoicesID = this.final_array;
-    console.log(this.consolidatedInvoice);
-    // this.qaService.createInvoiceConsolidatedDetails(this.consolidatedInvoice).subscribe(
-    //     (data) => {
-    //       console.log(data);
-    //       swal.fire({
-    //         title: 'INVOICE CONSOLIDATED SUCCESSFULLY!',
-    //         buttonsStyling: false,
-    //         customClass: {
-    //           confirmButton: 'btn btn-success form-wizard-next-btn ',
-    //         },
-    //         icon: 'success'
-    //       });
-    //       this.router.navigate(['/invoiceDetails'], {fragment: String(data.batchDetails.batchID)});
-    //     },
-    // );
+    console.log(permitInvoicesIDS);
+    const consolidatedInvoice = new GenerateInvoiceDto;
+    consolidatedInvoice.batchID = null;
+    consolidatedInvoice.plantID = null;
+    consolidatedInvoice.permitRefNumber = null;
+    consolidatedInvoice.permitInvoicesID = permitInvoicesIDS;
+    console.log('TEST CONSOLIDATE' + consolidatedInvoice);
+    console.log(consolidatedInvoice.permitInvoicesID);
+      this.qaService.createInvoiceConsolidatedDetails(consolidatedInvoice).subscribe(
+          (data) => {
+              console.log(data);
+              swal.fire({
+                  title: 'INVOICE CONSOLIDATED SUCCESSFULLY!',
+                  buttonsStyling: false,
+                  customClass: {
+                      confirmButton: 'btn btn-success form-wizard-next-btn ',
+                  },
+                  icon: 'success'
+              });
+              this.router.navigate(['/invoiceDetails'], {fragment: String(data.batchDetails.batchID)});
+          },
+      );
   }
 
 }

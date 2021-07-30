@@ -1014,10 +1014,31 @@ class QADaoServices(
     }
 
     //Todo : Remove
-    fun findAllUploadedFileBYPermitRefNumberAndOrdinarStatus(permitRefNumber: String, status: Int): List<QaUploadsEntity> {
+    fun findAllUploadedFileBYPermitRefNumberAndOrdinarStatus(
+        permitRefNumber: String,
+        status: Int
+    ): List<QaUploadsEntity> {
         qaUploadsRepo.findByPermitRefNumberAndOrdinaryStatus(permitRefNumber, status)?.let {
             return it
         } ?: throw ExpectedDataNotFound("No File found with the following [ PERMIT REF NO =$permitRefNumber]")
+    }
+
+    fun findAllUploadedFileBYPermitIDAndOrdinarStatus(permitID: Long, status: Int): List<QaUploadsEntity> {
+        qaUploadsRepo.findByPermitIdAndOrdinaryStatus(permitID, status)?.let {
+            return it
+        } ?: throw ExpectedDataNotFound("No File found with the following [ PERMIT ID =$permitID]")
+    }
+
+    fun findAllUploadedFileBYPermitIDAndSta10Status(permitID: Long, status: Int): List<QaUploadsEntity> {
+        qaUploadsRepo.findByPermitIdAndSta10Status(permitID, status)?.let {
+            return it
+        } ?: throw ExpectedDataNotFound("No File found with the following [ PERMIT ID =$permitID]")
+    }
+
+    fun findAllUploadedFileBYPermitIDAndSta3Status(permitID: Long, status: Int): List<QaUploadsEntity> {
+        qaUploadsRepo.findByPermitIdAndSta3Status(permitID, status)?.let {
+            return it
+        } ?: throw ExpectedDataNotFound("No File found with the following [ PERMIT ID =$permitID]")
     }
 
     fun findAllUploadedFileBYPermitRefNumberAndCocStatus(permitRefNumber: String, status: Int): List<QaUploadsEntity> {
@@ -1026,7 +1047,10 @@ class QADaoServices(
         } ?: throw ExpectedDataNotFound("No File found with the following [ PERMIT REF NO =$permitRefNumber]")
     }
 
-    fun findAllUploadedFileBYPermitRefNumberAndAssessmentReportStatus(permitRefNumber: String, status: Int): List<QaUploadsEntity> {
+    fun findAllUploadedFileBYPermitRefNumberAndAssessmentReportStatus(
+        permitRefNumber: String,
+        status: Int
+    ): List<QaUploadsEntity> {
         qaUploadsRepo.findByPermitRefNumberAndAssessmentReportStatus(permitRefNumber, status)?.let {
             return it
         } ?: throw ExpectedDataNotFound("No File found with the following [ PERMIT REF NO =$permitRefNumber]")
@@ -1206,6 +1230,19 @@ class QADaoServices(
                 p.productStandardNumber,
                 p.available == 1,
                 p.permitNo,
+            )
+        }
+    }
+
+    fun listFilesDto(fileList: List<QaUploadsEntity>): List<FilesListDto> {
+        return fileList.map { f ->
+            FilesListDto(
+                f.id,
+                f.name,
+                f.fileType,
+                f.documentType,
+                f.versionNumber,
+                f.document,
             )
         }
     }
@@ -1435,6 +1472,18 @@ class QADaoServices(
             findAllOldPermitWithPermitRefNumber(
                 permit.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER")
             )?.let { listPermits(it, map) },
+            findAllUploadedFileBYPermitIDAndOrdinarStatus(
+                permit.id ?: throw Exception("MISSING PERMIT ID"),
+                1
+            ).let { listFilesDto(it) },
+            findAllUploadedFileBYPermitIDAndSta3Status(
+                permit.id ?: throw Exception("MISSING PERMIT ID"),
+                1
+            ).let { listFilesDto(it) },
+            findAllUploadedFileBYPermitIDAndSta10Status(
+                permit.id ?: throw Exception("MISSING PERMIT ID"),
+                1
+            ).let { listFilesDto(it) },
             batchID
         )
     }
@@ -2401,7 +2450,6 @@ class QADaoServices(
             document = docFile.readBytes()
             permitRefNumber = permitRefNUMBER
             transactionDate = commonDaoServices.getCurrentDate()
-            versionNumber = 1
             status = 1
             createdBy = commonDaoServices.concatenateName(user)
             createdOn = commonDaoServices.getTimestamp()
@@ -3329,9 +3377,13 @@ class QADaoServices(
                             permitInvoiceFound = invoiceMasterDetailsRepo.save(permitInvoiceFound)
 
                             invoiceBatchDetails = batchInvoicePermit
+
+                            //Create details to batch invoice for all transactions at kebs main Staging table
                         }
 
                     batchID = invoiceBatchDetails?.id!!
+
+                    KotlinLogging.logger { }.info("batch ID = ${invoiceBatchDetails?.id}")
 
                     sr.payload = "permitInvoiceFound[id= ${permitInvoiceFound.createdBy}]"
                     sr.names = "${permitInvoiceFound.invoiceRef} ${permitInvoiceFound.totalAmount}"
@@ -3492,9 +3544,10 @@ class QADaoServices(
         user: UsersEntity,
         permit: PermitApplicationsEntity,
         permitType: PermitTypesEntity
-    ): ServiceRequestsEntity {
+    ): Pair<ServiceRequestsEntity, QaInvoiceMasterDetailsEntity?> {
 
         var sr = commonDaoServices.createServiceRequest(s)
+        var invoiceGenerated: QaInvoiceMasterDetailsEntity? = null
         try {
 
             val userDetails =
@@ -3513,7 +3566,7 @@ class QADaoServices(
                 plantDetail.id
             )
 //            val invoiceGenerated = invoiceGen(permit, userCompany, user, permitType)
-            var invoiceGenerated: QaInvoiceMasterDetailsEntity? = null
+
             when (permitType.id) {
                 applicationMapProperties.mapQAPermitTypeIdSmark -> {
                     invoiceGenerated = qaInvoiceCalculation.calculatePaymentSMark(
@@ -3553,7 +3606,7 @@ class QADaoServices(
         }
 
         KotlinLogging.logger { }.trace("${sr.id} ${sr.responseStatus}")
-        return sr
+        return Pair(sr, invoiceGenerated)
     }
 
     fun permitInvoiceSTKPush(

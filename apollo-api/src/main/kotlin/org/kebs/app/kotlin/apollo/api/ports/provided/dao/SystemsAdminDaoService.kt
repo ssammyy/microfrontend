@@ -129,6 +129,14 @@ class SystemsAdminDaoService(
 
     }
 
+    fun getUserByEmail(userEmail: String): UsersEntity? {
+        return usersRepo.findByEmail(userEmail)
+    }
+
+    fun getUserByUserName(userName: String): UsersEntity? {
+        return usersRepo.findByUserName(userName)
+    }
+
     fun getUserDetails(id: Long): UserDetailsDto {
         val user = commonDaoServices.findUserByID(id)
         val employeeProfile = userProfilesRepo.findByUserId(user)
