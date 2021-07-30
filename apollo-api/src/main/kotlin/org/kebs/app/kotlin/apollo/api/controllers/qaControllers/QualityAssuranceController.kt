@@ -1430,8 +1430,8 @@ class QualityAssuranceController(
     @PostMapping("/kebs/lab-results-compliance-status/save")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun complianceStatusSSF(
-        @RequestParam("ssfID") ssfID: Long,
-        @ModelAttribute("SampleSubmissionDetails") sampleSubmissionDetails: QaSampleSubmissionEntity,
+        @RequestParam("complianceSaveID") complianceSaveID: Long,
+        @ModelAttribute("complianceDetails") complianceDetails: QaSampleSubmittedPdfListDetailsEntity,
         model: Model
     ): String? {
         val map = commonDaoServices.serviceMapDetails(appId)
@@ -1439,10 +1439,11 @@ class QualityAssuranceController(
 
         val result: ServiceRequestsEntity?
 
-        result = qaDaoServices.ssfUpdateDetails(ssfID, sampleSubmissionDetails, loggedInUser, map).first
+        val myResults = qaDaoServices.ssfUpdateComplianceDetails(complianceSaveID, complianceDetails, loggedInUser, map)
+        result = myResults.first
 
         val sm = CommonDaoServices.MessageSuccessFailDTO()
-        sm.closeLink = "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${result.varField1}"
+        sm.closeLink = "${applicationMapProperties.baseUrlValue}/qa/inspection/ssf-details?ssfID=${myResults.second.id}"
         sm.message = "You have Successful Filled Sample Submission Details"
 
         return commonDaoServices.returnValues(result, map, sm)
@@ -2178,16 +2179,12 @@ class QualityAssuranceController(
     ): String? {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         val map = commonDaoServices.serviceMapDetails(appId)
-        var result: ServiceRequestsEntity?
+        val result: ServiceRequestsEntity?
         var myResults: Pair<ServiceRequestsEntity, QaSampleSubmissionEntity>? = null
         val fileContent = limsServices.mainFunctionLimsGetPDF(bsNumber, fileName)
-        if (fileContent != null) {
-            myResults = qaDaoServices.ssfSavePDFSelectedDetails(fileContent, ssfID, map, loggedInUser)
-            result = myResults.first
-            KotlinLogging.logger { }.info("SAVE FILE SUCCESSFUL")
-        } else {
-            throw ExpectedDataNotFound("NO PDF FOUND WITH THE FOLLOWING NAME $fileName for BS Number $bsNumber")
-        }
+        myResults = qaDaoServices.ssfSavePDFSelectedDetails(fileContent, ssfID, map, loggedInUser)
+        result = myResults.first
+        KotlinLogging.logger { }.info("SAVE FILE SUCCESSFUL")
 
         val sm = CommonDaoServices.MessageSuccessFailDTO()
         sm.closeLink = "${applicationMapProperties.baseUrlValue}/qa/inspection/ssf-details?ssfID=${myResults.second.id}"

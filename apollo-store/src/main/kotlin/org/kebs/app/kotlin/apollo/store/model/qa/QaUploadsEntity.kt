@@ -35,6 +35,10 @@ class QaUploadsEntity : Serializable {
     @Basic
     var invoiceStatus: Int? = null
 
+    @Column(name = "SSF_UPLOADS")
+    @Basic
+    var ssfUploads: Int? = null
+
     @Column(name = "STA3_STATUS")
     @Basic
     var sta3Status: Int? = null
@@ -171,6 +175,7 @@ class QaUploadsEntity : Serializable {
                 cocStatus == that.cocStatus &&
                 inspectionReportStatus == that.inspectionReportStatus &&
                 ordinaryStatus == that.ordinaryStatus &&
+                ssfUploads == that.ssfUploads &&
                 description == that.description &&
                 name == that.name &&
                 fileType == that.fileType &&
@@ -206,6 +211,7 @@ class QaUploadsEntity : Serializable {
         var result = Objects.hash(
             id,
             sta3Status,
+            ssfUploads,
             invoiceStatus,
             assessmentReportStatus,
             versionNumber,

@@ -683,8 +683,11 @@ class QualityAssuranceHandler(
         )
         KotlinLogging.logger { }.info { ssfDetails.bsNumber }
         req.attributes()["LabResultsParameters"] = labResultsParameters
+        req.attributes()["savedPDFFiles"] = qaDaoServices.findSampleSubmittedListPdfBYSSFid(ssfID)
         req.attributes()["foundPDFFiles"] =
             limsServices.checkPDFFiles(ssfDetails.bsNumber ?: throw ExpectedDataNotFound("MISSING BS NUMBER"))
+        req.attributes()["complianceDetails"] = QaSampleSubmittedPdfListDetailsEntity()
+
 
         return ok().render(qaSSFDetailesPage, req.attributes())
 

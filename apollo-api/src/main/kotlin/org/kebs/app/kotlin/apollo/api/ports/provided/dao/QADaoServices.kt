@@ -63,6 +63,7 @@ class QADaoServices(
     private val userRequestsRepo: IUserRequestTypesRepository,
     private val SampleCollectionRepo: IQaSampleCollectionRepository,
     private val SampleSubmissionRepo: IQaSampleSubmissionRepository,
+    private val SampleSubmissionSavedPdfListRepo: IQaSampleSubmittedPdfListRepository,
     private val sampleLabTestResultsRepo: IQaSampleLabTestResultsRepository,
     private val sampleLabTestParametersRepo: IQaSampleLabTestParametersRepository,
     private val schemeForSupervisionRepo: IQaSchemeForSupervisionRepository,
@@ -630,6 +631,13 @@ class QADaoServices(
         } ?: throw ExpectedDataNotFound("No sample submission found with the following ID number=$ssfID]")
     }
 
+
+    fun findSampleSubmittedPDfBYID(ssfPdfID: Long): QaSampleSubmittedPdfListDetailsEntity {
+        SampleSubmissionSavedPdfListRepo.findByIdOrNull(ssfPdfID)?.let {
+            return it
+        } ?: throw ExpectedDataNotFound("No sample submission pdf found with the following ID number=$ssfPdfID")
+    }
+
     fun findSampleSubmittedListBYPermitRefNumber(
         permitRefNumber: String,
         status: Int,
@@ -639,6 +647,15 @@ class QADaoServices(
             return it
         }
             ?: throw ExpectedDataNotFound("No sample submission found with the following [PERMIT REF NO =$permitRefNumber]")
+    }
+
+    fun findSampleSubmittedListPdfBYSSFid(
+        ssfID: Long
+    ): List<QaSampleSubmittedPdfListDetailsEntity> {
+        SampleSubmissionSavedPdfListRepo.findBySffId(ssfID)?.let {
+            return it
+        }
+            ?: throw ExpectedDataNotFound("No sample submission pdf found with the following SSF ID=$ssfID]")
     }
 
     fun findSampleSubmittedBYBsNumber(bsNumber: String): QaSampleSubmissionEntity {
@@ -1954,6 +1971,102 @@ class QADaoServices(
         return Pair(sr, saveSSF)
     }
 
+    fun ssfUpdateComplianceDetails(
+        complianceSaveID: Long,
+        ssfPDFDetails: QaSampleSubmittedPdfListDetailsEntity,
+        user: UsersEntity,
+        map: ServiceMapsEntity
+    ): Pair<ServiceRequestsEntity, QaSampleSubmissionEntity> {
+
+        var sr = commonDaoServices.createServiceRequest(map)
+        var saveSSFPdf = findSampleSubmittedPDfBYID(complianceSaveID)
+        val savedSSF = findSampleSubmittedBYID(saveSSFPdf.sffId ?: throw Exception("MISSING SSF ID"))
+        try {
+
+            with(saveSSFPdf) {
+                complianceRemarks = ssfPDFDetails.complianceRemarks
+                complianceStatus = ssfPDFDetails.complianceStatus
+                modifiedBy = commonDaoServices.concatenateName(user)
+                modifiedOn = commonDaoServices.getTimestamp()
+            }
+
+
+            saveSSFPdf = SampleSubmissionSavedPdfListRepo.save(saveSSFPdf)
+
+
+            val permitDetails = findPermitWithPermitRefNumberLatest(
+                savedSSF.permitRefNumber ?: throw Exception("MISSING permit Ref Number")
+            )
+
+            var complianceValue: String? = null
+            when (saveSSFPdf.complianceStatus) {
+                map.activeStatus -> {
+                    complianceValue = "COMPLIANT"
+                    if (permitDetails.permitType == applicationMapProperties.mapQAPermitTypeIDDmark) {
+                        permitInsertStatus(
+                            permitDetails,
+                            applicationMapProperties.mapQaStatusPGeneJustCationReport,
+                            user
+                        )
+                    } else {
+                        permitInsertStatus(permitDetails, applicationMapProperties.mapQaStatusPRecommendation, user)
+                    }
+                }
+                map.inactiveStatus -> {
+                    complianceValue = "NON-COMPLIANT"
+                    permitDetails.userTaskId = applicationMapProperties.mapUserTaskNameMANUFACTURE
+                    permitInsertStatus(permitDetails, applicationMapProperties.mapQaStatusPendingCorrectionManf, user)
+                }
+            }
+
+            val fileUploaded = findUploadedFileBYId(
+                saveSSFPdf.pdfSavedId ?: throw ExpectedDataNotFound("MISSING LAB REPORT FILE ID STATUS")
+            )
+            val fileContent = limsServices.mainFunctionLimsGetPDF(
+                savedSSF.bsNumber ?: throw ExpectedDataNotFound("MISSING LBS NUMBER"),
+                saveSSFPdf.pdfName ?: throw ExpectedDataNotFound("MISSING FILE NAME")
+            )
+            val mappedFileClass = commonDaoServices.mapClass(fileUploaded)
+            sendComplianceStatusAndLabReport(
+                permitDetails,
+                complianceValue ?: throw ExpectedDataNotFound("MISSING COMPLIANCE STATUS"),
+                saveSSFPdf.complianceRemarks ?: throw ExpectedDataNotFound("MISSING COMPLIANCE REMARKS"),
+                mappedFileClass.document.toString()
+            )
+
+            sendEmailWithLabResults(
+                commonDaoServices.findUserByID(
+                    permitDetails.userId ?: throw ExpectedDataNotFound("MISSING USER ID")
+                ).email ?: throw ExpectedDataNotFound("MISSING USER ID"),
+                mappedFileClass.document.toString(),
+                permitDetails.permitRefNumber ?: throw ExpectedDataNotFound("MISSING PERMIT REF NUMBER")
+            )
+
+
+            sr.payload = "New SSF Saved [BRAND name${savedSSF.brandName} and ${savedSSF.id}]"
+            sr.names = "${savedSSF.brandName}"
+            sr.varField1 = permitDetails.id.toString()
+
+            sr.responseStatus = sr.serviceMapsId?.successStatusCode
+            sr.responseMessage = "Success ${sr.payload}"
+            sr.status = map.successStatus
+            sr = serviceRequestsRepository.save(sr)
+            sr.processingEndDate = Timestamp.from(Instant.now())
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message, e)
+//            KotlinLogging.logger { }.trace(e.message, e)
+            sr.status = sr.serviceMapsId?.exceptionStatus
+            sr.responseStatus = sr.serviceMapsId?.exceptionStatusCode
+            sr.responseMessage = e.message
+            sr = serviceRequestsRepository.save(sr)
+
+        }
+
+        KotlinLogging.logger { }.trace("${sr.id} ${sr.responseStatus}")
+        return Pair(sr, savedSSF)
+    }
+
     fun requestUpdateDetails(
         requestID: Long,
         requestDetails: PermitUpdateDetailsRequestsEntity,
@@ -2557,12 +2670,14 @@ class QADaoServices(
 
         var sr = commonDaoServices.createServiceRequest(s)
         val ssfDetails = findSampleSubmittedBYID(ssfID)
-        val updatePermit = findPermitWithPermitRefNumberLatest(
-            ssfDetails.permitRefNumber ?: throw ExpectedDataNotFound("MISSING PERMIT REF NUMBER")
-        )
         try {
 
             var upload = QaUploadsEntity()
+            with(upload) {
+                ssfUploads = 1
+                ordinaryStatus = 0
+                versionNumber = 1
+            }
             upload = uploadQaFile(
                 upload,
                 fileContent,
@@ -2571,16 +2686,18 @@ class QADaoServices(
                 user
             )
 
-            with(ssfDetails) {
-                pdfSelectedName = fileContent.name
-                labReportFileId = upload.id
-                modifiedBy = commonDaoServices.concatenateName(user)
-                modifiedOn = commonDaoServices.getTimestamp()
+            val ssfPdfDetails = QaSampleSubmittedPdfListDetailsEntity()
+            with(ssfPdfDetails) {
+                sffId = ssfDetails.id
+                pdfName = fileContent.name
+                pdfSavedId = upload.id
+                createdBy = commonDaoServices.concatenateName(user)
+                createdOn = commonDaoServices.getTimestamp()
             }
-            SampleSubmissionRepo.save(ssfDetails)
+            SampleSubmissionSavedPdfListRepo.save(ssfPdfDetails)
 
             sr.payload = "SSF Updated [updatePermit= ${ssfDetails.id}]"
-            sr.names = "${ssfDetails.permitRefNumber}} ${updatePermit.userId}"
+            sr.names = "PERMIT REF NO = ${ssfDetails.permitRefNumber}}  USER ID = ${user.id}"
             sr.varField1 = "${ssfDetails.id}"
 
             sr.responseStatus = sr.serviceMapsId?.successStatusCode

@@ -155,7 +155,7 @@
                                 </div>
                             </div>
 
-                            <button class="accordion">Lab Results PDFS Details</button>
+                            <button class="accordion">Lab Results PDFS Details Found</button>
                             <div class="panel">
                                 <div class="row-table ">
                                     <table class="table table-striped">
@@ -188,6 +188,43 @@
                                 </div>
                             </div>
 
+                            <button class="accordion">Lab Results PDFS Details Saved On KIMS</button>
+                            <div class="panel">
+                                <div class="row-table ">
+                                    <table class="table table-striped">
+                                        <thead>
+                                        <tr>
+                                            <!--                                            <th>Sample Number</th>-->
+                                            <th>PDF-Name</th>
+                                            <th>Compliance Status</th>
+                                            <th>View Remarks</th>
+                                            <th>View PDF</th>
+                                            <th sec:authorize="hasAuthority('QA_OFFICER_MODIFY')">Action</th>
+                                            <!--                                            <th>View</th>-->
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr class="list" th:each="pdfSaved: ${savedPDFFiles}" style="cursor: pointer">
+
+                                            <td th:text="${pdfSaved?.pdfName}"></td>
+                                            <td th:if="${pdfSaved?.complianceStatus == null}" th:text=""></td>
+                                            <td th:if="${pdfSaved?.complianceStatus != null}"
+                                                th:text="${pdfSaved?.complianceStatus} ? 'COMPLIANT' : 'NOT-COMPLIANT'"></td>
+                                            <td>
+                                                <a onclick="popUpCompanyFunction('viewComplianceRemarksDetails', ''+${pdfSaved.complianceRemarks}+'');"
+                                                   class="btn btn-primary itemViewBtn">view</a></td>
+                                            <td>
+                                                <a th:href="@{/api/qa/kebs/view/attached(fileID=${pdfSaved.pdfSavedId})}"
+                                                   target='_blank' class="btn btn-primary itemViewBtn">view</a></td>
+                                            <td sec:authorize="hasAuthority('QA_OFFICER_MODIFY')">
+                                                <a onclick="popUpCompanyFunction('addComplianceStatusDetails', ''+${pdfSaved.id}+'');"
+                                                   class="btn btn-primary itemViewBtn">add compliance</a></td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
                         </div>
 
                         <div class="filter-block">
@@ -204,7 +241,7 @@
 
                                 <div sec:authorize="hasAuthority('QA_OFFICER_MODIFY')">
                                     <!--                                    <a th:if="${ssfDetails.labResultsStatus == 0}" th:href="@{/api/qa/inspection/check-results(bsNumber=${ssfDetails?.bsNumber})}" class="filter-link" style="color: white">CHECK RESULTS</a>-->
-                                    <a th:if="${ssfDetails.resultsAnalysis == null and ssfDetails.labResultsStatus == 1}" onclick="popUpCompanyFunction('addComplianceStatusDetails');" class="filter-link" style="color: white">ADD COMPLIANCE DETAILS</a>
+                                    <!--                                    <a th:if="${ssfDetails.resultsAnalysis == null and ssfDetails.labResultsStatus == 1}" onclick="popUpCompanyFunction('addComplianceStatusDetails');" class="filter-link" style="color: white">ADD COMPLIANCE DETAILS</a>-->
                                 </div>
 
                             </div>
@@ -212,8 +249,8 @@
                         </div>
                         <div class="commodityDetailsForm" >
                             <form id="commodityDetails-Form" name="commodityDetails-Form"
-                                  th:action="@{/api/qa/kebs/lab-results-compliance-status/save(ssfID = ${ssfDetails?.id})}"
-                                  method="post" th:object="${ssfDetails}">
+                                  th:action="@{/api/qa/kebs/lab-results-compliance-status/save}"
+                                  method="post" th:object="${complianceDetails}">
                                 <div class="modal fade" id="commodityDetailsModal" tabindex="-1" role="dialog"
                                      aria-labelledby="commodityDetailsModalLable" aria-hidden="true">
                                     <div class="modal-dialog" role="document">
@@ -230,20 +267,29 @@
                                             <div class="modal-body">
                                                 <div class="form-group">
                                                     <div id="addComplianceStatusDetails">
-                                                        <label for="resultsAnalysis" class="col-form-label">Select a
+                                                        <input type="hidden" id="complianceSaveID"
+                                                               name="complianceSaveID"
+                                                               th:value="${InvoiceDetails?.batchID}">
+                                                        <label for="complianceStatus" class="col-form-label">Select a
                                                             Compliance status:</label>
-                                                        <select id="resultsAnalysis" required
+                                                        <select id="complianceStatus" required
                                                                 class="select-field w-select"
-                                                                th:field="*{resultsAnalysis}">
+                                                                th:field="*{complianceStatus}">
                                                             <option th:text="'Select one.....'"
                                                                     th:value="null"></option>
                                                             <option th:text="'Compliant'" th:value="1"></option>
                                                             <option th:text="'Non-Compliant'" th:value="0"></option>
-                                                        </select>complianceRemarks
+                                                        </select>
                                                         <textarea name="complianceRemarks" required="required"
                                                                   id="complianceRemarks"
                                                                   class="input-field w-input" cols="65" rows="5"
                                                                   th:field="*{complianceRemarks}"></textarea>
+                                                    </div>
+                                                    <div id="viewComplianceRemarksDetails">
+                                                        <textarea name="complianceRemarks" required="required"
+                                                                  id="complianceRemarks"
+                                                                  class="input-field w-input" cols="65"
+                                                                  rows="5"></textarea>
                                                     </div>
 
                                                 </div>
@@ -377,9 +423,9 @@
         $('.productsManufacturedForm #productsManufacturedModal').modal();
     }
 
-    function popUpCompanyFunction(eventAction) {
-        let arrHead = ['addComplianceStatusDetails'];
-        let arrHeadSave = ['Add Compliance status'];
+    function popUpCompanyFunction(eventAction, paramter) {
+        let arrHead = ['addComplianceStatusDetails', 'viewComplianceRemarksDetails'];
+        let arrHeadSave = ['Add Compliance status', 'View Compliance Remarks'];
 
         for (let h = 0; h < arrHead.length; h++) {
             if (eventAction !== arrHead[h]) {
@@ -388,6 +434,13 @@
                 if (eventAction === arrHead[h]) {
                     document.getElementById('spanValueCommodity').innerHTML = arrHeadSave[h];
                     document.getElementById("saveValueCommodity").value = 'Submit';
+                    if (eventAction === 'addComplianceStatusDetails') {
+                        document.getElementById("complianceSaveID").value = paramter;
+                    } else if (eventAction === 'viewComplianceRemarksDetails') {
+                        document.getElementById("complianceRemarks").value = paramter;
+                        document.getElementById("saveValueCommodity").remove();
+                    }
+
                 }
             }
         }
