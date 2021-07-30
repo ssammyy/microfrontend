@@ -92,6 +92,14 @@ data class PermitInvoiceDto(
     var batchID: Long? = null
 )
 
+data class SSFPDFListDetailsDto(
+    var pdfSavedId: Long? = null,
+    var pdfName: String? = null,
+    var sffId: Long? = null,
+    var complianceRemarks: String? = null,
+    var complianceStatus: Boolean? = null,
+)
+
 data class NewBatchInvoiceDto(
     var batchID: Long = -1L,
     var plantID: Long? = null,

@@ -42,3 +42,63 @@ export class UserEntityDto {
     subRegion: bigint;
 }
 
+class EmployeeProfileDetailsDto {
+    directorate: string;
+    department: string;
+    division: string;
+    section: string;
+    l1SubSubSection: string;
+    l2SubSubSection: string;
+    designation: string;
+    profileId: bigint;
+    region: string;
+    county: string;
+    town: string;
+    status: boolean;
+}
+
+class UserCompanyDto {
+    id: bigint;
+    name: string;
+    kraPin: string;
+    userId: bigint;
+    registrationNumber: string;
+    postalAddress: string;
+    physicalAddress: string;
+    plotNumber: string;
+    companyEmail: string;
+    companyTelephone: string;
+    yearlyTurnover: number;
+    businessLines: string;
+    businessNatures: string;
+    buildingName: string;
+    streetName: string;
+    region: string;
+    county: string;
+    town: string;
+    factoryVisitDate: Date;
+    factoryVisitStatus: number;
+    manufactureStatus: number;
+}
+
+export class UserDetailsDto {
+    id: bigint;
+    firstName: string;
+    lastName: string;
+    userName: string;
+    email: string;
+    userPinIdNumber: string;
+    personalContactNumber: string;
+    typeOfUser: number;
+    userRegNo: string;
+    enabled: boolean;
+    accountExpired: boolean;
+    accountLocked: boolean;
+    credentialsExpired: boolean;
+    status: boolean;
+    registrationDate: Date;
+    title: string;
+    employeeProfile: EmployeeProfileDetailsDto;
+    companyProfile: UserCompanyDto;
+}
+

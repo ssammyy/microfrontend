@@ -9,19 +9,19 @@ export class ApiEndpointService {
      * Map of protocols for API endpoints.
      */
     public static PROTOCOL = {
-        HTTP: 'http://',
-        HTTPS: 'https://'
+        HTTP: `http://`,
+        HTTPS: `https://`
     };
 
     /**
      * Map of domains for API endpoints.
      */
     public static DOMAIN = {
-        LOCAL_DEV: 'localhost:8006'
+       // LOCAL_DEV: 'localhost:8006'
         // LOCAL_DEV: '12:8006'
         // LOCAL_DEV: '41.72.209.58:8006'
-        // LOCAL_DEV: 'kimsint.kebs.org:8006'
-        // LOCAL_DEV: 'kims.kebs.org:8006'
+         LOCAL_DEV: `kimsint.kebs.org:8006`
+        // LOCAL_DEV: `kims.kebs.org:8006`
     };
 
     /**
@@ -121,7 +121,11 @@ export class ApiEndpointService {
         MASTERS_COUNTRIES: `${ApiEndpointService.MASTERS_CONTEXT}/countries/`,
         MASTERS_CURRENCIES: `${ApiEndpointService.MASTERS_CONTEXT}/currencies/`,
         // tslint:disable-next-line:max-line-length
-        /*::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::QA ENDPOINTS:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
+        /*::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::USERS ENDPOINTS::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
+        USER_DETAILS_BY_EMAIL: `${ApiEndpointService.MASTERS_CONTEXT}/security/users/user-email-exist`,
+        USER_DETAILS_BY_USERNAME: `${ApiEndpointService.MASTERS_CONTEXT}/security/users/user-username-exist`,
+        // tslint:disable-next-line:max-line-length
+        /*:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::QA ENDPOINTS:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
         PERMIT_PROCESS_STEP: `${ApiEndpointService.QA_CONTEXT_APPLY}/process-step-add`,
 
         FIRM_PERMIT_LIST: `${ApiEndpointService.QA_CONTEXT}/permit/firm-list`,

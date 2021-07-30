@@ -39,6 +39,10 @@ class InvoiceBatchDetailsEntity : Serializable {
     @Basic
     var status: Int? = null
 
+    @Column(name = "PAYMENT_STARTED")
+    @Basic
+    var paymentStarted: Int? = null
+
     @Column(name = "VAR_FIELD_1")
     @Basic
     var varField1: String? = null
@@ -110,6 +114,7 @@ class InvoiceBatchDetailsEntity : Serializable {
         return id == that.id &&
                 batchNumber == that.batchNumber &&
                 receiptNumber == that.receiptNumber &&
+                paymentStarted == that.paymentStarted &&
                 totalAmount == that.totalAmount &&
                 description == that.description &&
                 tableSource == that.tableSource &&
@@ -133,6 +138,31 @@ class InvoiceBatchDetailsEntity : Serializable {
     }
 
     override fun hashCode(): Int {
-        return Objects.hash(id, batchNumber,receiptNumber, totalAmount, description, tableSource, status, varField1, varField2, varField3, varField4, varField5, varField6, varField7, varField8, varField9, varField10, createdBy, createdOn, modifiedBy, modifiedOn, deleteBy, deletedOn)
+        return Objects.hash(
+            id,
+            batchNumber,
+            receiptNumber,
+            paymentStarted,
+            totalAmount,
+            description,
+            tableSource,
+            status,
+            varField1,
+            varField2,
+            varField3,
+            varField4,
+            varField5,
+            varField6,
+            varField7,
+            varField8,
+            varField9,
+            varField10,
+            createdBy,
+            createdOn,
+            modifiedBy,
+            modifiedOn,
+            deleteBy,
+            deletedOn
+        )
     }
 }

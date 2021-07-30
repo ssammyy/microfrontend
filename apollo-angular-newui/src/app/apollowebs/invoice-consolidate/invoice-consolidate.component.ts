@@ -140,25 +140,27 @@ export class InvoiceConsolidateComponent implements OnInit {
   submit() {
     this.final_array.push(this.selected.sort());
     console.log(this.final_array);
-      console.log(this.final_array);
-      const selectedRows = this.final_array;
-      const permitInvoicesIDS: number[] = [];
-      selectedRows.forEach(function (data) {
-          for (let i = 0; i <= selectedRows.length; i++) {
-              const myData = data[i][5];
-              console.log(data[i], myData);
-              permitInvoicesIDS.push(myData);
-          }
-      });
-      console.log(permitInvoicesIDS);
-      const consolidatedInvoice = new GenerateInvoiceDto;
-      consolidatedInvoice.batchID = null;
-      consolidatedInvoice.plantID = null;
-      consolidatedInvoice.permitRefNumber = null;
-      consolidatedInvoice.permitInvoicesID = permitInvoicesIDS;
-      console.log('TEST CONSOLIDATE' + consolidatedInvoice);
-      console.log(consolidatedInvoice.permitInvoicesID);
-      this.qaService.createInvoiceConsolidatedDetails(consolidatedInvoice).subscribe(
+    const selectedRows = this.final_array;
+    const permitInvoicesIDS: number[] = [];
+    selectedRows.forEach(function (dataValue) {
+      for (let i = 0; i <= dataValue.length - 1; i++) {
+        const pickedI = dataValue[i];
+        const idIndex = dataValue[i].length;
+        console.log(`VALUE OF I =${dataValue[i][5]}`);
+        const myData = dataValue[i][5];
+        console.log(`DATA ADDED ${myData}`);
+        permitInvoicesIDS.push(myData);
+      }
+    });
+    console.log(permitInvoicesIDS);
+    const consolidatedInvoice = new GenerateInvoiceDto;
+    consolidatedInvoice.batchID = null;
+    consolidatedInvoice.plantID = null;
+    consolidatedInvoice.permitRefNumber = null;
+    consolidatedInvoice.permitInvoicesID = permitInvoicesIDS;
+    console.log('TEST CONSOLIDATE' + consolidatedInvoice);
+    console.log(consolidatedInvoice.permitInvoicesID);
+      this.qaService.addInvoiceConsolidatedDetails(consolidatedInvoice).subscribe(
           (data) => {
               console.log(data);
               swal.fire({

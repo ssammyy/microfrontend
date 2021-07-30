@@ -1,5 +1,5 @@
 import {Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {
     AllPermitDetailsDto,
     AllSTA10DetailsDto,
@@ -13,14 +13,14 @@ import {
     STA10PersonnelDto,
     STA10ProductsManufactureDto,
     STA10RawMaterialsDto
-} from "../../core/store/data/qa/qa.model";
-import {QaService} from "../../core/store/data/qa/qa.service";
-import {ActivatedRoute, Router} from "@angular/router";
-import swal from "sweetalert2";
+} from '../../core/store/data/qa/qa.model';
+import {QaService} from '../../core/store/data/qa/qa.service';
+import {ActivatedRoute, Router} from '@angular/router';
+import swal from 'sweetalert2';
 import {ApiEndpointService} from '../../core/services/endpoints/api-endpoint.service';
-import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
-import {LoadingService} from "../../core/services/loader/loadingservice.service";
-import {NgxSpinnerService} from "ngx-spinner";
+import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {LoadingService} from '../../core/services/loader/loadingservice.service';
+import {NgxSpinnerService} from 'ngx-spinner';
 
 @Component({
     selector: 'app-smark',
@@ -34,7 +34,7 @@ export class SmarkComponent implements OnInit {
     approveRejectSSCForm!: FormGroup;
 
     pdfSources: any;
-    loading: boolean = false;
+    loading = false;
     sta1Form: FormGroup;
     sta10Form: FormGroup;
     sta10FormA: FormGroup;
@@ -238,7 +238,7 @@ export class SmarkComponent implements OnInit {
 
     public getSelectedPermit(): void {
         this.route.fragment.subscribe(params => {
-            let permitID = params;
+            const permitID = params;
             // localStorage.setItem('permitID')
             // console.log(this.permitID);
           //  this.SpinnerService.show();
