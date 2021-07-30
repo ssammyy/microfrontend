@@ -160,7 +160,7 @@ export class InvoiceConsolidateComponent implements OnInit {
     consolidatedInvoice.permitInvoicesID = permitInvoicesIDS;
     console.log('TEST CONSOLIDATE' + consolidatedInvoice);
     console.log(consolidatedInvoice.permitInvoicesID);
-      this.qaService.createInvoiceConsolidatedDetails(consolidatedInvoice).subscribe(
+      this.qaService.addInvoiceConsolidatedDetails(consolidatedInvoice).subscribe(
           (data) => {
               console.log(data);
               swal.fire({

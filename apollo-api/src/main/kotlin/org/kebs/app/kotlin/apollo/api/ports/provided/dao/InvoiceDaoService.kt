@@ -144,8 +144,9 @@ class InvoiceDaoService(
             actualAmount = invoiceBatchDetails.totalAmount
             transactionDate = commonDaoServices.getCurrentDate()
             invoiceDate = commonDaoServices.getCurrentDate()
-            description = "{BATCH DETAILS :${additionalInformation},BATCH NUMBER:${referenceCode},BATCH ID:${invoiceId},TOTAL AMOUNT:${invoiceAmount},TRANSACTION DATE:${transactionDate}}"
-            paidAmount = map.inactiveStatus.toBigDecimal()
+            description =
+                "{BATCH DETAILS :${additionalInformation},BATCH NUMBER:${referenceCode},BATCH ID:${invoiceId},TOTAL AMOUNT:${invoiceAmount},TRANSACTION DATE:${transactionDate}}"
+            paidAmount = BigDecimal.ZERO
             transactionId = null
             paymentTablesUpdatedStatus = null
             outstandingAmount = map.inactiveStatus.toBigDecimal()

@@ -1354,7 +1354,7 @@ class QualityAssuranceController(
 //        batchDetailsRemover.permitID= permitID
 
         result =
-            qaDaoServices.permitMultipleInvoiceRemoveInvoice(map, loggedInUser, permitID, batchDetailsRemover).first
+            qaDaoServices.permitMultipleInvoiceRemoveInvoice(map, loggedInUser, batchDetailsRemover).first
 
         val sm = CommonDaoServices.MessageSuccessFailDTO()
         sm.closeLink = "${applicationMapProperties.baseUrlValue}/qa/invoice/batch-details?batchID=${result.varField1}"

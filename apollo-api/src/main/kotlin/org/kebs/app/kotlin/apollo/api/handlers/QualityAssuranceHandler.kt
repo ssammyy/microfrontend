@@ -2416,8 +2416,19 @@ class QualityAssuranceHandler(
             val loggedInUser = commonDaoServices.loggedInUserDetails()
             val map = commonDaoServices.serviceMapDetails(appId)
             val dto = req.body<NewBatchInvoiceDto>()
+            //Create invoice consolidation list
+            var batchInvoiceDetails = qaDaoServices.permitMultipleInvoiceCalculation(map, loggedInUser, dto).second
+            //Add created invoice consolidated id to my batch id to be submitted
+            val newBatchInvoiceDto = NewBatchInvoiceDto()
+            with(newBatchInvoiceDto) {
+                batchID =
+                    batchInvoiceDetails.id ?: throw ExpectedDataNotFound("MISSING BATCH ID ON CREATED CONSOLIDATION")
+            }
+            KotlinLogging.logger { }.info("batch ID = ${newBatchInvoiceDto.batchID}")
+            //submit to staging invoices
+            batchInvoiceDetails =
+                qaDaoServices.permitMultipleInvoiceSubmitInvoice(map, loggedInUser, newBatchInvoiceDto).second
 
-            val batchInvoiceDetails = qaDaoServices.permitMultipleInvoiceSubmitInvoice(map, loggedInUser, dto).second
 
             qaDaoServices.mapBatchInvoiceDetails(batchInvoiceDetails, loggedInUser, map).let {
                 return ok().body(it)
@@ -2441,8 +2452,13 @@ class QualityAssuranceHandler(
                 req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
             val dto = req.body<NewBatchInvoiceDto>()
 
-            val batchInvoiceDetails =
-                qaDaoServices.permitMultipleInvoiceRemoveInvoice(map, loggedInUser, permitID, dto).second
+            var batchInvoiceDetails = qaDaoServices.permitMultipleInvoiceRemoveInvoice(map, loggedInUser, dto).second
+
+            batchInvoiceDetails = qaDaoServices.permitMultipleInvoiceUpdateStagingInvoice(
+                map,
+                loggedInUser,
+                batchInvoiceDetails.id ?: throw ExpectedDataNotFound("MISSING BATCH ID")
+            ).second
 
             qaDaoServices.mapBatchInvoiceDetails(batchInvoiceDetails, loggedInUser, map).let {
                 return ok().body(it)
@@ -2473,9 +2489,12 @@ class QualityAssuranceHandler(
                     batchInvoiceDetails.id ?: throw ExpectedDataNotFound("MISSING BATCH ID ON CREATED CONSOLIDATION")
             }
             KotlinLogging.logger { }.info("batch ID = ${newBatchInvoiceDto.batchID}")
-            //submit to staging invoices
-            batchInvoiceDetails =
-                qaDaoServices.permitMultipleInvoiceSubmitInvoice(map, loggedInUser, newBatchInvoiceDto).second
+
+            batchInvoiceDetails = qaDaoServices.permitMultipleInvoiceUpdateStagingInvoice(
+                map,
+                loggedInUser,
+                batchInvoiceDetails.id ?: throw ExpectedDataNotFound("MISSING BATCH ID")
+            ).second
 
             qaDaoServices.mapBatchInvoiceDetails(batchInvoiceDetails, loggedInUser, map).let {
                 return ok().body(it)
