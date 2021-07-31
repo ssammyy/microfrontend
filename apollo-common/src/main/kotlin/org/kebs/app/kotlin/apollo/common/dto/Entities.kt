@@ -23,6 +23,7 @@ package org.kebs.app.kotlin.apollo.common.dto
 
 
 import com.fasterxml.jackson.annotation.JsonFormat
+import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.databind.PropertyNamingStrategies
 import com.fasterxml.jackson.databind.annotation.JsonNaming
@@ -733,4 +734,34 @@ data class UserCompanyDetailsDto(
     val countAwarded: Long? = null,
     @JsonProperty("countExpired")
     val countExpired: Long? = null
+)
+
+@JsonInclude(JsonInclude.Include.NON_NULL)
+data class SideBarMainMenusEntityDto(
+    @JsonProperty("id")
+    var id: Long?,
+    @JsonProperty("path")
+    var path: String?,
+    @JsonProperty("title")
+    var title: String?,
+    @JsonProperty("type")
+    var type: String?,
+    @JsonProperty("icontype")
+    var iconType: String?,
+    @JsonProperty("collapse")
+    var collapse: String?,
+    @JsonProperty("children")
+    var children: List<SideBarChildMenusEntityDto>?
+)
+
+@JsonInclude(JsonInclude.Include.NON_NULL)
+data class SideBarChildMenusEntityDto(
+    @JsonProperty("id")
+    var id: Long?,
+    @JsonProperty("path")
+    var path: String?,
+    @JsonProperty("title")
+    var title: String?,
+    @JsonProperty("ab")
+    var ab: String?
 )

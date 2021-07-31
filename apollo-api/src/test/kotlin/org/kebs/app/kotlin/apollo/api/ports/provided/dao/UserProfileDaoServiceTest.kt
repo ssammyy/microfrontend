@@ -1,12 +1,12 @@
 package org.kebs.app.kotlin.apollo.api.ports.provided.dao
 
-import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.core.type.TypeReference
 import mu.KotlinLogging
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.kebs.app.kotlin.apollo.api.ports.provided.criteria.SearchCriteria
 import org.kebs.app.kotlin.apollo.api.ports.provided.spec.UserSpecification
+import org.kebs.app.kotlin.apollo.common.dto.SideBarMainMenusEntityDto
 import org.kebs.app.kotlin.apollo.common.dto.UserSearchValues
 import org.kebs.app.kotlin.apollo.store.model.DirectorateToSubSectionL2ViewDto
 import org.kebs.app.kotlin.apollo.store.model.RegionsCountyTownViewDto
@@ -183,8 +183,8 @@ class UserProfileDaoServiceTest {
                 "  }\n" +
                 "]"
 
-        val mainMenu: List<SideBarLevelOneEntityDto> =
-            daoService.mapper().readValue(json, object : TypeReference<List<SideBarLevelOneEntityDto>>() {})
+        val mainMenu: List<SideBarMainMenusEntityDto> =
+            daoService.mapper().readValue(json, object : TypeReference<List<SideBarMainMenusEntityDto>>() {})
 
         KotlinLogging.logger { }.info("Size ${mainMenu.size}")
         mainMenu.forEach { m ->
@@ -219,29 +219,5 @@ class UserProfileDaoServiceTest {
 
     }
 }
-
-data class SideBarLevelOneEntityDto(
-    @JsonProperty("path")
-    var path: String?,
-    @JsonProperty("title")
-    var title: String?,
-    @JsonProperty("type")
-    var type: String?,
-    @JsonProperty("icontype")
-    var iconType: String?,
-    @JsonProperty("collapse")
-    var collapse: String?,
-    @JsonProperty("children")
-    var children: List<SideBarLevelTwoEntityDto>?
-)
-
-data class SideBarLevelTwoEntityDto(
-    @JsonProperty("path")
-    var path: String?,
-    @JsonProperty("title")
-    var title: String?,
-    @JsonProperty("ab")
-    var ab: String?
-)
 
 

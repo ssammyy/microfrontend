@@ -103,9 +103,39 @@ end;
 /
 
 select *
-from cfg_sidebar_main
+from CFG_SIDEBAR_MAIN
 order by id;
 
 select *
 from CFG_SIDEBAR_CHILDREN
 order by id;
+
+
+select *
+from CFG_USER_ROLES_ASSIGNMENTS
+where USER_ID in (select id from DAT_KEBS_USERS where USER_NAME = 'Ian_Kiprono')
+;
+
+-- ID|NAME
+-- 806|LIST_COMPANY
+-- 807|MODIFY_COMPANY
+-- 3|PERMIT_APPLICATION
+-- 4|PERMIT_RENEWAL
+-- 143|PVOC_APPLICATION_READ
+
+commit;
+
+select *
+from CFG_SIDEBAR_MAIN
+where role_id in (0, 806, 87, 3, 4);
+
+
+
+select id, NAME
+from CFG_USER_PRIVILEGES
+where ID in (
+    select PRIVILEGE_ID
+    from CFG_ROLES_PRIVILEGES
+    where ROLES_ID in (3, 774)
+)
+;

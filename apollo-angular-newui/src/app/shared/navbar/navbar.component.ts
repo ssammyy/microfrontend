@@ -1,10 +1,12 @@
-import {Component, OnInit, Renderer2, ViewChild, ElementRef, Directive} from '@angular/core';
-import {ROUTES} from '../../sidebar/sidebar.component';
-import {Router, ActivatedRoute, NavigationEnd, NavigationStart} from '@angular/router';
+import {Component, ElementRef, OnInit, Renderer2, ViewChild} from '@angular/core';
+import {NavigationEnd, Router} from '@angular/router';
 import {Subscription} from 'rxjs/Subscription';
-import {Location, LocationStrategy, PathLocationStrategy} from '@angular/common';
+import {Location} from '@angular/common';
 import {loadLogout} from '../../core/store';
 import {Store} from '@ngrx/store';
+import {SidebarService} from '../../core/store/data/sidebar/sidebar.service';
+import {Observable} from 'rxjs';
+import {SideBarMainMenus} from '../../core/store/data/sidebar/sidebar.model';
 
 const misc: any = {
     navbar_menu_visible: 0,
@@ -28,10 +30,21 @@ export class NavbarComponent implements OnInit {
     private sidebarVisible: boolean;
     private _router: Subscription;
 
+    public menuItems: any[];
+    menus: Observable<SideBarMainMenus[]>;
+
     @ViewChild('app-navbar-cmp', {static: false}) button: any;
 
-    constructor(location: Location, private renderer: Renderer2, private element: ElementRef, private store$: Store<any>, public router: Router
+    constructor(
+        location: Location,
+        private renderer: Renderer2,
+        private element: ElementRef,
+        private store$: Store<any>,
+        public router: Router,
+        private service: SidebarService
     ) {
+        this.menus = service.entities$;
+        service.getAll().subscribe();
         this.location = location;
         this.nativeElement = element.nativeElement;
         this.sidebarVisible = false;
@@ -78,7 +91,7 @@ export class NavbarComponent implements OnInit {
             sidebar.classList.add('animation');
 
         } else {
-            setTimeout(function() {
+            setTimeout(function () {
                 body.classList.add('hide-sidebar');
                 // $('.sidebar').addClass('animation');
                 misc.hide_sidebar_active = true;
@@ -86,43 +99,49 @@ export class NavbarComponent implements OnInit {
         }
 
         // we simulate the window Resize so the charts will get updated in realtime.
-        const simulateWindowResize = setInterval(function() {
+        const simulateWindowResize = setInterval(function () {
             window.dispatchEvent(new Event('resize'));
         }, 180);
 
         // we stop the simulation of Window Resize after the animations are completed
-        setTimeout(function() {
+        setTimeout(function () {
             clearInterval(simulateWindowResize);
         }, 1000);
     }
 
     ngOnInit() {
-        this.listTitles = ROUTES.filter(listTitle => listTitle);
+        this.menus.subscribe((m) => {
+            this.listTitles = m.filter(listTitle => listTitle);
+            // console.log(`Comparing ${m.length} vs ${this.listTitles.length}`);
 
-        const navbar: HTMLElement = this.element.nativeElement;
-        const body = document.getElementsByTagName('body')[0];
-        this.toggleButton = navbar.getElementsByClassName('navbar-toggler')[0];
-        if (body.classList.contains('sidebar-mini')) {
-            misc.sidebar_mini_active = true;
-        }
-        if (body.classList.contains('hide-sidebar')) {
-            misc.hide_sidebar_active = true;
-        }
-        this._router = this.router.events.filter(event => event instanceof NavigationEnd).subscribe((event: NavigationEnd) => {
-            this.sidebarClose();
-
-            const $layer = document.getElementsByClassName('close-layer')[0];
-            if ($layer) {
-                $layer.remove();
+            const navbar: HTMLElement = this.element.nativeElement;
+            const body = document.getElementsByTagName('body')[0];
+            this.toggleButton = navbar.getElementsByClassName('navbar-toggler')[0];
+            if (body.classList.contains('sidebar-mini')) {
+                misc.sidebar_mini_active = true;
             }
+            if (body.classList.contains('hide-sidebar')) {
+                misc.hide_sidebar_active = true;
+            }
+            this._router = this.router.events.filter(event => event instanceof NavigationEnd).subscribe((event: NavigationEnd) => {
+                this.sidebarClose();
+
+                const $layer = document.getElementsByClassName('close-layer')[0];
+                if ($layer) {
+                    $layer.remove();
+                }
+            });
         });
+
     }
+
     onResize(event) {
         if ($(window).width() > 991) {
             return false;
         }
         return true;
     }
+
     sidebarOpen() {
         const $toggle = document.getElementsByClassName('navbar-toggler')[0];
         const toggleButton = this.toggleButton;
@@ -131,7 +150,7 @@ export class NavbarComponent implements OnInit {
             toggleButton.classList.add('toggled');
         }, 500);
         body.classList.add('nav-open');
-        setTimeout(function() {
+        setTimeout(function () {
             $toggle.classList.add('toggled');
         }, 430);
 
@@ -145,7 +164,7 @@ export class NavbarComponent implements OnInit {
             document.getElementsByClassName('wrapper-full-page')[0].appendChild($layer);
         }
 
-        setTimeout(function() {
+        setTimeout(function () {
             $layer.classList.add('visible');
         }, 100);
 
@@ -165,6 +184,7 @@ export class NavbarComponent implements OnInit {
         this.mobile_menu_visible = 1;
         this.sidebarVisible = true;
     }
+
     sidebarClose() {
         const $toggle = document.getElementsByClassName('navbar-toggler')[0];
         const body = document.getElementsByTagName('body')[0];
@@ -180,12 +200,13 @@ export class NavbarComponent implements OnInit {
             $layer.remove();
         }
 
-        setTimeout(function() {
+        setTimeout(function () {
             $toggle.classList.remove('toggled');
         }, 400);
 
         this.mobile_menu_visible = 0;
     }
+
     sidebarToggle() {
         if (this.sidebarVisible === false) {
             this.sidebarOpen();
@@ -200,6 +221,7 @@ export class NavbarComponent implements OnInit {
             titlee = titlee.slice(1);
         }
         for (let i = 0; i < this.listTitles.length; i++) {
+            // console.log(`${this.listTitles[i].path}`);
             if (this.listTitles[i].type === 'link' && this.listTitles[i].path === titlee) {
                 return this.listTitles[i].title;
             } else if (this.listTitles[i].type === 'sub') {
@@ -215,6 +237,7 @@ export class NavbarComponent implements OnInit {
         }
         return 'Dashboard';
     }
+
     getPath() {
         return this.location.prepareExternalUrl(this.location.path());
     }

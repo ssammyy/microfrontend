@@ -4,8 +4,7 @@
     "title": "Dashboard",
     "type": "link",
     "icontype": "dashboard",
-    "children": [
-    ]
+    "children": []
   },
   {
     "path": "/company",
@@ -121,6 +120,7 @@
     "path": "/all_tasks_list",
     "title": "My Tasks",
     "type": "link",
-    "icontype": "task"
+    "icontype": "task",
+    "children": []
   }
 ]
