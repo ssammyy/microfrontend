@@ -6,11 +6,13 @@ import {
     PermitEntityDetails,
     PlantDetailsDto,
     SectionDto,
-    STA1, STA3
+    STA1,
+    STA3
 } from '../../core/store/data/qa/qa.model';
 import swal from 'sweetalert2';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {ApiEndpointService} from '../../core/services/endpoints/api-endpoint.service';
+import {TableData} from "../../md/md-table/md-table.component";
 // import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 // import {ModalComponent} from "ngb-modal";
 
@@ -54,6 +56,10 @@ export class DmarkComponent implements OnInit, AfterViewInit {
     SMarkTypeID = ApiEndpointService.QA_APPLICATION_MAP_PROPERTIES.SMARK_TYPE_ID;
     draftID = ApiEndpointService.QA_APPLICATION_MAP_PROPERTIES.DRAFT_ID;
 
+    public tableData1: TableData;
+    public tableData2: TableData;
+    public tableData12: TableData;
+
 
     constructor(
         private route: ActivatedRoute,
@@ -73,6 +79,35 @@ export class DmarkComponent implements OnInit, AfterViewInit {
 
             dataRows: [
                 ['REFFM#202107095913D', 'Andrew Mike', '09/07/2021', 'Dassani', 'Water', '']
+            ]
+        };
+        this.tableData1 = {
+            headerRow: ['Remark Details', 'Action'],
+            dataRows: [
+                ['Completeness Remarks By QAM/HOD', ''],
+                ['Review Remarks By PCM', ''],
+                ['Recommendation Review Remarks By QAO', ''],
+                ['PSC Members Approval/Rejection Remarks', ''],
+                ['PCM Approval/Rejection Remarks', ''],
+
+            ]
+        };
+        this.tableData2 = {
+            headerRow: ['File Name', 'File Type', 'Document Description', 'Version Number', 'Action'],
+            dataRows: [
+                ['V1__8_QC.pdf', 'application/octet-stream', 'LAB RESULTS PDF', '1', ''],
+
+
+            ]
+        };
+        this.tableData12 = {
+            headerRow: ['Item', 'Fee'],
+            dataRows: [
+                ['Inspection Fee', 'Kshs 20,000'],
+                ['Permit Fee ', 'Kshs 7500'],
+                ['Tax Fee', 'Kshs 20,000'],
+                ['Total', '47,500']
+
             ]
         };
 

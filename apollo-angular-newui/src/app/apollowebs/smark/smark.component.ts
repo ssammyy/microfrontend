@@ -18,7 +18,6 @@ import {QaService} from '../../core/store/data/qa/qa.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import swal from 'sweetalert2';
 import {ApiEndpointService} from '../../core/services/endpoints/api-endpoint.service';
-import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {LoadingService} from '../../core/services/loader/loadingservice.service';
 import {NgxSpinnerService} from 'ngx-spinner';
 
