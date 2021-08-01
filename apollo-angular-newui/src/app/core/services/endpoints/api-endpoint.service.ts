@@ -51,6 +51,7 @@ export class ApiEndpointService {
     public static QA_CONTEXT_APPLY = `${ApiEndpointService.QA_CONTEXT}/permit/apply`;
     public static QA_CONTEXT_VIEW = `${ApiEndpointService.QA_CONTEXT}/permit/view`;
     public static ADMIN_CONTEXT = 'api/admin/v1';
+    public static SD_NWA_CONTEXT = 'api/v1/nwa';
 
     /**
      * Map of API endpoints.
@@ -189,6 +190,27 @@ export class ApiEndpointService {
         PERMIT_UPDATE_STA10_RAW_MATERIAL: `${ApiEndpointService.QA_CONTEXT_APPLY}/sta10/raw_material_update`,
         PERMIT_UPDATE_STA10_MACHINERY_PLANT: `${ApiEndpointService.QA_CONTEXT_APPLY}/sta10/machinery_plant_update`,
         PERMIT_UPDATE_STA10_MANUFACTURING_PROCESS: `${ApiEndpointService.QA_CONTEXT_APPLY}/sta10/manufacturing_process_update`,
+
+        // NWA
+        NWA_PREPARE_JUSTIFICATION: `${ApiEndpointService.SD_NWA_CONTEXT}/prepareJustification`,
+        NWA_DEPARTMENTS: `${ApiEndpointService.SD_NWA_CONTEXT}/getKNWDepartments`,
+        NWA_KNW_COMMITTEE: `${ApiEndpointService.SD_NWA_CONTEXT}/getKNWCommittee`,
+        NWA_KNW_TASKS: `${ApiEndpointService.SD_NWA_CONTEXT}/knwtasks`,
+        NWA_SPC_SEC_TASKS: `${ApiEndpointService.SD_NWA_CONTEXT}/getSpcSecTasks`,
+        NWA_DECISION_ON_JUSTIFICATION: `${ApiEndpointService.SD_NWA_CONTEXT}/decisionOnJustification`,
+        NWA_PREPARE_DISDT_JUSTIFICATION: `${ApiEndpointService.SD_NWA_CONTEXT}/prepareDiSdtJustification`,
+        NWA_DISDT_TASKS: `${ApiEndpointService.SD_NWA_CONTEXT}/getDiSdtTasks`,
+        NWA_DECISION_ON_DISDT_JUSTIFICATION: `${ApiEndpointService.SD_NWA_CONTEXT}/decisionOnDiSdtJustification`,
+        NWA_PREPARE_PRELIMINARY_DRAFT: `${ApiEndpointService.SD_NWA_CONTEXT}/preparePreliminaryDraft`,
+        NWA_DECISION_ON_PRELIMINARY_DRAFT: `${ApiEndpointService.SD_NWA_CONTEXT}/decisionOnPd`,
+        NWA_HOP_TASKS: `${ApiEndpointService.SD_NWA_CONTEXT}/getHOPTasks`,
+        NWA_EDIT_WORKSHOP_DRAFT: `${ApiEndpointService.SD_NWA_CONTEXT}/editWorkshopDraft`,
+        NWA_SAC_SEC_TASKS: `${ApiEndpointService.SD_NWA_CONTEXT}/getSacSecTasks`,
+        NWA_DECISION_ON_WORKSHOP_DRAFT: `${ApiEndpointService.SD_NWA_CONTEXT}/decisionOnWd`,
+        NWA_UPLOAD_STANDARD: `${ApiEndpointService.SD_NWA_CONTEXT}/uploadNwaStandard`,
+        NWA_HO_SIC_TASKS: `${ApiEndpointService.SD_NWA_CONTEXT}/getHoSiCTasks`,
+        NWA_UPLOAD_GAZETTE_NOTICE: `${ApiEndpointService.SD_NWA_CONTEXT}/uploadGazetteNotice`,
+        NWA_UPDATE_GAZETTEMENT_DATE: `${ApiEndpointService.SD_NWA_CONTEXT}/updateGazettementDate`,
 
     };
 
