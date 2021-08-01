@@ -22,51 +22,71 @@
 </a>
 </li>
 <li class="nav-item">
-<a class="nav-link" data-toggle="tab" href="#link12" role="tablist">
-<i class="material-icons">assignment_turned_in</i> STA3 Summary
-</a>
+    <a class="nav-link" data-toggle="tab" href="#link12" role="tablist">
+        <i class="material-icons">assignment_turned_in</i> STA3 Summary
+    </a>
 </li>
     <li class="nav-item">
         <a class="nav-link" data-toggle="tab" href="#link13" role="tablist">
-            <i class="material-icons">assignment_turned_in</i> Uploaded Documents
+            <i class="material-icons">assignment_turned_in</i>STA 3 Uploaded Documents
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" data-toggle="tab" href="#link16" role="tablist">
+            <i class="material-icons">assignment_turned_in</i>Uploaded Documents
         </a>
     </li>
     <li class="nav-item">
         <a class="nav-link" data-toggle="tab" href="#link15" role="tablist">
-            <i class="material-icons">assignment_turned_in</i> Comments
+            <i class="material-icons">message</i> Comments
         </a>
     </li>
-<li *ngIf="allPermitDetails.permitDetails.permitAwardStatus == true" class="nav-item">
-    <a class="nav-link" data-toggle="tab" href="#link14" role="tablist">
-        <i class="material-icons">assignment_turned_in</i>CERTIFICATE ISSUED
-    </a>
-</li>
-<!--                        &lt;!&ndash; &ndash;&gt;-->
-<!--                        <li class="nav-item">-->
-<!--                            <a class="nav-link" data-toggle="tab" href="#link12" role="tablist">-->
-<!--                                <i class="material-icons">feedback</i> Remark Details-->
-<!--                            </a>-->
-<!--                        </li>-->
-<!--                        <li class="nav-item">-->
-<!--                            <a class="nav-link" data-toggle="tab" href="#link13" role="tablist">-->
-<!--                                <i class="material-icons">add_task</i> Recommendation Details-->
-<!--                            </a>-->
-<!--                        </li>-->
-<!--                        <li class="nav-item">-->
-<!--                            <a class="nav-link" data-toggle="tab" href="#link14" role="tablist">-->
-<!--                                <i class="material-icons">source</i> Document Attached Details-->
-<!--                            </a>-->
-<!--                        </li>-->
-<!--                        <li class="nav-item">-->
-<!--                            <a class="nav-link" data-toggle="tab" href="#link15" role="tablist">-->
-<!--                                <i class="material-icons">find_in_page</i> Request Details-->
-<!--                            </a>-->
-<!--                        </li>-->
-<!--                        <li class="nav-item">-->
-<!--                            <a class="nav-link" data-toggle="tab" href="#link16" role="tablist">-->
-<!--                                <i class="material-icons">table_view</i> Other Version Details-->
-<!--                            </a>-->
-<!--                        </li>-->
+    <li *ngIf="allPermitDetails.permitDetails.generateSchemeStatus == true" class="nav-item">
+        <a class="nav-link" data-toggle="tab" href="#link19" role="tablist">
+            <i class="material-icons">preview</i> Schema Supervision
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" data-toggle="tab" href="#link17" role="tablist">
+            <i class="material-icons">summarize</i> Lab Results
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" data-toggle="tab" href="#link18" role="tablist">
+            <i class="material-icons">money</i> Invoice
+        </a>
+    </li>
+    <li *ngIf="allPermitDetails.permitDetails.permitAwardStatus == true" class="nav-item">
+        <a class="nav-link" data-toggle="tab" href="#link14" role="tablist">
+            <i class="material-icons">assignment_turned_in</i>CERTIFICATE ISSUED
+        </a>
+    </li>
+    <!--                        &lt;!&ndash; &ndash;&gt;-->
+    <!--                        <li class="nav-item">-->
+    <!--                            <a class="nav-link" data-toggle="tab" href="#link12" role="tablist">-->
+    <!--                                <i class="material-icons">feedback</i> Remark Details-->
+    <!--                            </a>-->
+    <!--                        </li>-->
+    <!--                        <li class="nav-item">-->
+    <!--                            <a class="nav-link" data-toggle="tab" href="#link13" role="tablist">-->
+    <!--                                <i class="material-icons">add_task</i> Recommendation Details-->
+    <!--                            </a>-->
+    <!--                        </li>-->
+    <!--                        <li class="nav-item">-->
+    <!--                            <a class="nav-link" data-toggle="tab" href="#link14" role="tablist">-->
+    <!--                                <i class="material-icons">source</i> Document Attached Details-->
+    <!--                            </a>-->
+    <!--                        </li>-->
+    <!--                        <li class="nav-item">-->
+    <!--                            <a class="nav-link" data-toggle="tab" href="#link15" role="tablist">-->
+    <!--                                <i class="material-icons">find_in_page</i> Request Details-->
+    <!--                            </a>-->
+    <!--                        </li>-->
+    <!--                        <li class="nav-item">-->
+    <!--                            <a class="nav-link" data-toggle="tab" href="#link16" role="tablist">-->
+    <!--                                <i class="material-icons">table_view</i> Other Version Details-->
+    <!--                            </a>-->
+    <!--                        </li>-->
 </ul>
 </div>
 <div class="col-md-9" style="background-color: #eeeeee8a; border-left: 0.5px solid black;">
@@ -771,10 +791,81 @@ placeholder=""
                                  [filenameForDownload]="'Certificate'"></ngx-extended-pdf-viewer>
     </div>
     <div class="tab-pane" id="link13">
-        <h3>Uploaded Documents</h3>
+        <h3>STA 3 Uploaded Documents</h3>
         <br>
         <div id="main1">
             <div class="container">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th class="text-left">{{ tableData2.headerRow[0] }}</th>
+                            <th >{{ tableData2.headerRow[1] }}</th>
+                            <th>{{ tableData2.headerRow[2] }}</th>
+                            <th >{{ tableData2.headerRow[3] }}</th>
+                            <th class="text-right">{{ tableData2.headerRow[4] }}</th>
+
+
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr *ngFor="let row of tableData2.dataRows">
+                            <td class="text-left">{{row[0]}}</td>
+                            <td>{{row[1]}}</td>
+                            <td>{{row[2]}}</td>
+                            <td>{{row[3]}}</td>
+
+                            <td class="td-actions text-right">
+                                <button mat-raised-button type="button" data-toggle="modal" data-target="#myModal2"
+                                        class="btn btn-info {{row[4]}}">
+                                    <i class="material-icons">visibility</i>
+
+                                </button>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="tab-pane" id="link16">
+        <h3>Uploaded Documents</h3>
+        <br>
+        <div id="main16">
+            <div class="container">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th class="text-left">{{ tableData2.headerRow[0] }}</th>
+                            <th >{{ tableData2.headerRow[1] }}</th>
+                            <th>{{ tableData2.headerRow[2] }}</th>
+                            <th >{{ tableData2.headerRow[3] }}</th>
+                            <th class="text-right">{{ tableData2.headerRow[4] }}</th>
+
+
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr *ngFor="let row of tableData2.dataRows">
+                            <td class="text-left">{{row[0]}}</td>
+                            <td>{{row[1]}}</td>
+                            <td>{{row[2]}}</td>
+                            <td>{{row[3]}}</td>
+
+                            <td class="td-actions text-right">
+                                <button mat-raised-button type="button" data-toggle="modal" data-target="#myModal2"
+                                        class="btn btn-info {{row[4]}}">
+                                    <i class="material-icons">visibility</i>
+
+                                </button>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
 
             </div>
         </div>
@@ -784,10 +875,79 @@ placeholder=""
         <br>
         <div id="main3">
             <div class="container">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>{{ tableData1.headerRow[0] }}</th>
+                            <th class="text-right">{{ tableData1.headerRow[1] }}</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr *ngFor="let row of tableData1.dataRows">
+                            <td>{{row[0]}}</td>
+                            <td class="td-actions text-right">
+                                <button mat-raised-button type="button" data-toggle="modal" data-target="#myModal2"
+                                        class="btn btn-info {{row[1]}}">
+                                    <i class="material-icons">visibility</i>
+
+                                </button>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="tab-pane" id="link19">
+        <h3>Schema Supervision</h3>
+        <br>
+        <div id="main19">
+            <div class="container">
 
             </div>
         </div>
     </div>
+    <div class="tab-pane" id="link17">
+        <h3>Lab Results</h3>
+        <br>
+        <div id="main17">
+            <div class="container">
+
+            </div>
+        </div>
+    </div>
+    <div class="tab-pane" id="link18">
+        <h3>Invoice</h3>
+        <br>
+        <div id="main18">
+            <div class="container">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>{{ tableData12.headerRow[0] }}</th>
+                            <th class="text-right">{{ tableData12.headerRow[1] }}</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr *ngFor="let row of tableData12.dataRows">
+                            <td>
+                                {{row[0]}}</td>
+                            <td class="td-actions text-right">
+                                {{row[1]}}
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
     <!--                        <div class="tab-pane" id="link12">-->
     <!--                            <div class="material-datatables">-->
     <!--                                <table id="datatables" class="table table-striped table-no-bordered table-hover" cellspacing="0" width="100%" style="width:100%">-->
@@ -910,76 +1070,10 @@ placeholder=""
             <div class="mat-button-focus-overlay"></div>
         </button>
     </div>
-
-
-    <!--                    <button mat-raised-button="" class="btn btn-kebs mat-raised-button mat-button-base"><span-->
-    <!--                            class="mat-button-wrapper">Upload Attachments </span>-->
-    <!--                        <div matripple="" class="mat-ripple mat-button-ripple"></div>-->
-    <!--                        <div class="mat-button-focus-overlay"></div>-->
-    <!--                    </button>-->
 </div>
 </div>
 
-    <!--    <div class="modal fade" id="noticeModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"-->
-    <!--         aria-hidden="true">-->
-    <!--        <div class="modal-header">-->
-    <!--            <h5 class="modal-title" id="modal-basic-title">{{currDivLabel}}</h5>-->
-    <!--            <button data-dismiss="modal" aria-label="Close" class="close" type="button">-->
-    <!--                <span aria-hidden="true">&times;</span>-->
-    <!--            </button>-->
-    <!--        </div>-->
 
-    <!--        <div class="modal-body">-->
-    <!--            &lt;!&ndash;                <p>Are you sure this userDetails falls in the KEBS mandate ?</p>&ndash;&gt;-->
-    <!--            <div *ngIf="(currDiv == 'approveSSC')">-->
-    <!--                <form [formGroup]="approveRejectSSCForm" class="form">-->
-    <!--                    <div class="form-body">-->
-    <!--                        <div class="form-group">-->
-
-    <!--                            <div>-->
-    <!--                                &lt;!&ndash;                <input type="checkbox" class="form-control one-column-input" aria-label="Small" aria-describedby="inputGroup-sizing-sm" [value]="1"&ndash;&gt;-->
-    <!--                                &lt;!&ndash;                       formControlName="approved"&ndash;&gt;-->
-    <!--                                &lt;!&ndash;                       name="approved" required>&ndash;&gt;-->
-    <!--                                <label><b>Approve/Reject SCC</b></label>-->
-    <!--                                <select id="approvedRejectedScheme" class="form-control"-->
-    <!--                                        formControlName="approvedRejectedScheme"-->
-    <!--                                        name="approvedRejectedScheme"-->
-    <!--                                        [class.is-invalid]="formApproveRejectSSC.approvedRejectedScheme.invalid && formApproveRejectSSC.approvedRejectedScheme.touched">-->
-    <!--                                    <option selected>Select Plant</option>-->
-    <!--                                    <option [ngValue]="1">APPROVE</option>-->
-    <!--                                    <option [ngValue]="0">REJECT</option>-->
-    <!--                                </select>-->
-
-    <!--                                &lt;!&ndash;              <label><b>Remarks</b></label>&ndash;&gt;-->
-    <!--                                &lt;!&ndash;              <textarea&ndash;&gt;-->
-    <!--                                &lt;!&ndash;                [class.is-invalid]="formAssignAuthorities.approvedRemarks.invalid && formKEBSMandateIn.approvedRemarks.touched"&ndash;&gt;-->
-    <!--                                &lt;!&ndash;                aria-describedby="inputGroup-sizing-sm" aria-label="Small" class="form-control one-column-input"&ndash;&gt;-->
-    <!--                                &lt;!&ndash;                cols="65" formControlName="approvedRemarks"&ndash;&gt;-->
-    <!--                                &lt;!&ndash;                name="approvedRemarks"&ndash;&gt;-->
-    <!--                                &lt;!&ndash;                required rows="5"></textarea>&ndash;&gt;-->
-
-    <!--                            </div>-->
-    <!--                        </div>-->
-    <!--                    </div>-->
-
-
-    <!--                </form>-->
-    <!--            </div>-->
-    <!--        </div>-->
-
-    <!--        <div class="modal-footer">-->
-    <!--            <button class="btn btn-outline-secondary mr-4" data-dismiss="modal" type="button">-->
-    <!--                NO-->
-    <!--            </button>-->
-    <!--            <button (click)="submitApprovalRejectionSSC();"-->
-    <!--                    *ngIf="currDiv == 'approveSSC'"-->
-    <!--                    [disabled]="!approveRejectSSCForm.valid" class="submit-button"-->
-    <!--                    data-dismiss="modal"-->
-    <!--                    type="button">SUBMIT-->
-    <!--            </button>-->
-    <!--        </div>-->
-
-    <!--    </div>-->
 
     <!-- Classic Modal -->
     <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -1049,6 +1143,49 @@ placeholder=""
                             data-dismiss="modal"
                     >SUBMIT
                     </button>
+                    <button mat-raised-button type="button" class="btn btn-danger" data-dismiss="modal">Close
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--  End Modal -->
+    <!-- Classic Modal -->
+    <div class="modal fade" id="myModal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Permit Application And Status</h4>
+                    <button mat-button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        <i class="material-icons">clear</i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!--                <p>Are you sure this userDetails falls in the KEBS mandate ?</p>-->
+                    <div>
+                        <label for="recommendation">Recommendation</label>
+                        <mat-form-field class="example-full-width">
+                            <textarea id="recommendation" matInput type="text" value="Recommendation"
+                                      disabled>
+                            </textarea>
+                        </mat-form-field>
+                        <label for="reviewsattus">Review Status</label>
+                        <mat-form-field class="example-full-width">
+                            <input id="reviewsattus" matInput type="text" value="REJECTED"
+                                   disabled>
+                        </mat-form-field>
+
+                        <label for="feedback">Feedback For This Permit</label>
+                        <mat-form-field class="example-full-width">
+                            <textarea id="feedback" matInput type="text" value="REJECTED"
+                                      disabled>
+                            </textarea>
+                        </mat-form-field>
+                    </div>
+                </div>
+                <div class="modal-footer">
+
+
                     <button mat-raised-button type="button" class="btn btn-danger" data-dismiss="modal">Close
                     </button>
                 </div>
