@@ -103,12 +103,16 @@ data class SSFPDFListDetailsDto(
 data class PermitAllRemarksDetailsDto(
     var hofQamCompletenessStatus: Boolean? = null,
     var hofQamCompletenessRemarks: String? = null,
+
     var pcmApprovalStatus: Boolean? = null,
     var pcmApprovalRemarks: String? = null,
+
     var pscMemberApprovalStatus: Boolean? = null,
     var pscMemberApprovalRemarks: String? = null,
+
     var pcmReviewApprovalStatus: Boolean? = null,
     var pcmReviewApprovalRemarks: String? = null,
+
     var justificationReportStatus: Boolean? = null,
     var justificationReportRemarks: String? = null,
 )
@@ -424,6 +428,7 @@ data class AllPermitDetailsDto(
     var sta3FilesList: List<FilesListDto>? = null,
     var sta10FilesList: List<FilesListDto>? = null,
     var labResultsList: List<SSFPDFListDetailsDto>? = null,
+    var schemeOfSuperVisionID: Long? = null,
     var batchID: Long? = null
 )
 

@@ -870,18 +870,34 @@ class QualityAssuranceHandler(
                 "permitType",
                 qaDaoServices.findPermitType(permit.permitType ?: throw Exception("INVALID PERMIT TYPE ID"))
             ),
-            Pair("fileParameters", qaDaoServices.findAllUploadedFileBYPermitRefNumberAndOrdinarStatus(permit.permitRefNumber?: throw ExpectedDataNotFound("INVALID PERMIT REF NUMBER"), s.activeStatus)
+            Pair(
+                "fileParameters",
+                qaDaoServices.findAllUploadedFileBYPermitRefNumberAndOrdinarStatus(
+                    permit.permitRefNumber ?: throw ExpectedDataNotFound("INVALID PERMIT REF NUMBER"), s.activeStatus
+                )
+            ),
+            Pair(
+                "fileSta3Parameters",
+                qaDaoServices.findAllUploadedFileBYPermitIDAndSta3Status(
+                    permit.id ?: throw ExpectedDataNotFound("MISSING PERMIT ID"), s.activeStatus
+                )
+            ),
+            Pair(
+                "fileSta10Parameters",
+                qaDaoServices.findAllUploadedFileBYPermitIDAndSta10Status(
+                    permit.id ?: throw ExpectedDataNotFound("MISSING PERMIT ID"), s.activeStatus
+                )
             ),
             Pair(
                 "cocParameters",
                 qaDaoServices.findAllUploadedFileBYPermitRefNumberAndCocStatus(
-                    permit.permitRefNumber?: throw ExpectedDataNotFound("INVALID PERMIT REF NUMBER"), s.activeStatus
+                    permit.permitRefNumber ?: throw ExpectedDataNotFound("INVALID PERMIT REF NUMBER"), s.activeStatus
                 )
             ),
             Pair(
                 "assessmentReportParameters",
                 qaDaoServices.findAllUploadedFileBYPermitRefNumberAndAssessmentReportStatus(
-                    permit.permitRefNumber?: throw ExpectedDataNotFound("INVALID PERMIT REF NUMBER"), s.activeStatus
+                    permit.permitRefNumber ?: throw ExpectedDataNotFound("INVALID PERMIT REF NUMBER"), s.activeStatus
                 )
             ),
             Pair(
