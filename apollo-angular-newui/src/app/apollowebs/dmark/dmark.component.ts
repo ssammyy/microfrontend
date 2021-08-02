@@ -42,9 +42,11 @@ export class DmarkComponent implements OnInit, AfterViewInit {
     uploadForm!: FormGroup;
     uploadedFile: File;
     uploadedFiles: FileList;
-    upLoadDescription: String;
+    upLoadDescription: string;
 
     pdfSources: any;
+    pdfInvoiceBreakDownSources: any;
+    pdfSourcesScheme: any;
     pdfUploadsView: any;
 
     sta1Form: FormGroup;
@@ -60,6 +62,7 @@ export class DmarkComponent implements OnInit, AfterViewInit {
     sta3FileList: FilesListDto[];
     ordinaryFilesList: FilesListDto[];
     labResultsDetailsList: SSFPDFListDetailsDto[];
+    olderVersionDetailsList: PermitEntityDto[];
     permitEntityDetails: PermitEntityDetails;
     public dataTable: DataTable;
     public permitID!: string;
@@ -75,7 +78,9 @@ export class DmarkComponent implements OnInit, AfterViewInit {
     public tableData2: TableData;
     public tableData3: TableData;
     public tableData4: TableData;
+    public tableData5: TableData;
     public tableData12: TableData;
+    blob: Blob;
 
 
     constructor(
@@ -100,36 +105,7 @@ export class DmarkComponent implements OnInit, AfterViewInit {
                 ['REFFM#202107095913D', 'Andrew Mike', '09/07/2021', 'Dassani', 'Water', '']
             ]
         };
-
-        const formattedArrayRemarks = [];
-
-        if (this.allPermitDetails.remarksDetails.hofQamCompletenessRemarks !== null) {
-            formattedArrayRemarks.push(['Completeness Remarks By HOD', '', 'hofQamCompletenessRemarks']);
-        }
-        if (this.allPermitDetails.remarksDetails.pcmReviewApprovalRemarks !== null) {
-            formattedArrayRemarks.push(['Review Remarks By PCM', '', 'reviewRemarksPCMRemarks']);
-        }
-        if (this.allPermitDetails.remarksDetails.pscMemberApprovalRemarks !== null) {
-            formattedArrayRemarks.push(['PSC Members Approval/Rejection Remarks', '', 'pscApprovalRejectionRemarks']);
-        }
-        if (this.allPermitDetails.remarksDetails.pcmApprovalRemarks !== null) {
-            formattedArrayRemarks.push(['PCM Approval/Rejection Remarks', '', 'pcmApprovalRejectionRemarks']);
-        }
-
-        this.tableData1 = {
-            headerRow: ['Remark Details', 'Action'],
-            dataRows: formattedArrayRemarks
-        };
-        this.tableData12 = {
-            headerRow: ['Item', 'Fee'],
-            dataRows: [
-                ['Inspection Fee', 'Kshs 20,000'],
-                ['Permit Fee ', 'Kshs 7500'],
-                ['Tax Fee', 'Kshs 20,000'],
-                ['Total', '47,500']
-
-            ]
-        };
+        this.remarksDetails();
 
         this.sta1Form = this.formBuilder.group({
             commodityDescription: ['', Validators.required],
@@ -215,6 +191,28 @@ export class DmarkComponent implements OnInit, AfterViewInit {
 
     }
 
+    remarksDetails() {
+        const formattedArrayRemarks = [];
+
+        if (this.allPermitDetails?.remarksDetails?.hofQamCompleteness !== null) {
+            formattedArrayRemarks.push(['Completeness Remarks By HOD', '', 'hofQamCompletenessRemarks']);
+        }
+        // if (this.allPermitDetails.remarksDetails.pcmReviewApprovalRemarks !== null) {
+        formattedArrayRemarks.push(['Review Remarks By PCM', '', 'reviewRemarksPCMRemarks']);
+        // }
+        // if (this.allPermitDetails.remarksDetails.pscMemberApprovalRemarks !== null) {
+        formattedArrayRemarks.push(['PSC Members Approval/Rejection Remarks', '', 'pscApprovalRejectionRemarks']);
+        // }
+        // if (this.allPermitDetails.remarksDetails.pcmApprovalRemarks !== null) {
+        formattedArrayRemarks.push(['PCM Approval/Rejection Remarks', '', 'pcmApprovalRejectionRemarks']);
+        // }
+
+        this.tableData1 = {
+            headerRow: ['Remark Details', 'Action'],
+            dataRows: formattedArrayRemarks
+        };
+    }
+
     get formUploadForm(): any {
         return this.uploadForm.controls;
     }
@@ -251,17 +249,35 @@ export class DmarkComponent implements OnInit, AfterViewInit {
             let formattedArraySta3 = [];
             let formattedArrayOrdinaryFiles = [];
             let formattedArrayLabResultsList = [];
+            let formattedArrayOlderVersionList = [];
+            const formattedArrayInvoiceDetailsList = [];
             this.qaService.loadPermitDetails(params).subscribe(
                 (data: AllPermitDetailsDto) => {
                     this.allPermitDetails = data;
-                    if (this.allPermitDetails.sta3FilesList !== []) {
-                        this.sta3FileList = this.allPermitDetails.sta3FilesList;
-                        formattedArraySta3 = this.sta3FileList.map(i => [i.name, i.fileType, i.documentType, i.versionNumber, i.id]);
-                        this.tableData2 = {
-                            headerRow: ['File Name', 'File Type', 'Document Description', 'Version Number', 'Action'],
-                            dataRows: formattedArraySta3
-                        };
-                    }
+                    this.qaService.viewSTA1Details(String(this.allPermitDetails.permitDetails.id)).subscribe(
+                        (dataSta1) => {
+                            this.sta1 = dataSta1;
+                            this.sta1Form.patchValue(this.sta1);
+                        },
+                    );
+                    this.qaService.viewSTA3Details(String(this.allPermitDetails.permitDetails.id)).subscribe(
+                        (dataSta3) => {
+                            this.sta3 = dataSta3;
+                            this.sta3FormA.patchValue(this.sta3);
+                            this.sta3FormB.patchValue(this.sta3);
+                            this.sta3FormC.patchValue(this.sta3);
+                            this.sta3FormD.patchValue(this.sta3);
+                        },
+                    );
+                    // if (this.allPermitDetails.sta3FilesList !== []) {
+                    this.sta3FileList = this.allPermitDetails.sta3FilesList;
+                    // tslint:disable-next-line:max-line-length
+                    formattedArraySta3 = this.sta3FileList.map(i => [i.name, i.fileType, i.documentType, i.versionNumber, i.id, i.document]);
+                    this.tableData2 = {
+                        headerRow: ['File Name', 'File Type', 'Document Description', 'Version Number', 'Action'],
+                        dataRows: formattedArraySta3
+                    };
+                    // }
                     if (this.allPermitDetails.ordinaryFilesList !== []) {
                         this.ordinaryFilesList = this.allPermitDetails.ordinaryFilesList;
                         // tslint:disable-next-line:max-line-length
@@ -280,28 +296,38 @@ export class DmarkComponent implements OnInit, AfterViewInit {
                             dataRows: formattedArrayLabResultsList
                         };
                     }
+                    if (this.allPermitDetails.oldVersionList !== []) {
+                        this.olderVersionDetailsList = this.allPermitDetails.oldVersionList;
+                        // tslint:disable-next-line:max-line-length
+                        formattedArrayOlderVersionList = this.olderVersionDetailsList.map(i => [i.permitRefNumber, i.createdOn, i.permitStatus, i.versionNumber, i.id]);
+                        this.tableData5 = {
+                            headerRow: ['Permit Ref Number', 'Created On', 'Status', 'Version Number', 'Action'],
+                            dataRows: formattedArrayOlderVersionList
+                        };
+                    }
                     // this.onSelectL1SubSubSection(this.userDetails?.employeeProfile?.l1SubSubSection);
-                    this.qaService.viewSTA1Details(String(this.allPermitDetails.permitDetails.id)).subscribe(
-                        (dataSta1) => {
-                            this.sta1 = dataSta1;
-                            this.sta1Form.patchValue(this.sta1);
-                        },
-                    );
-                    this.qaService.viewSTA3Details(String(this.allPermitDetails.permitDetails.id)).subscribe(
-                        (dataSta3) => {
-                            this.sta3 = dataSta3;
-                            this.sta3FormA.patchValue(this.sta3);
-                            this.sta3FormB.patchValue(this.sta3);
-                            this.sta3FormC.patchValue(this.sta3);
-                            this.sta3FormD.patchValue(this.sta3);
-                        },
-                    );
                     if (this.allPermitDetails.permitDetails.permitAwardStatus === true) {
-                    this.qaService.loadCertificateDetailsPDF(String(this.allPermitDetails.permitDetails.id)).subscribe(
-                        (dataCertificatePdf: any) => {
-                            this.pdfSources = dataCertificatePdf;
-                        },
-                    );
+                        this.qaService.loadCertificateDetailsPDF(String(this.allPermitDetails.permitDetails.id)).subscribe(
+                            (dataCertificatePdf: any) => {
+                                this.pdfSources = dataCertificatePdf;
+                            },
+                        );
+                    }
+                    if (this.allPermitDetails.permitDetails.generateSchemeStatus === true) {
+                        this.pdfSourcesScheme = this.getPdfFile(String(this.allPermitDetails.schemeOfSuperVisionID));
+                    }
+                    if (this.allPermitDetails.permitDetails.invoiceGenerated === true) {
+                        this.tableData12 = {
+                            headerRow: ['Item', 'Details/Fee'],
+                            dataRows: [
+                                ['Invoice Ref No', this.allPermitDetails.invoiceDetails.invoiceRef],
+                                ['Description', this.allPermitDetails.invoiceDetails.description],
+                                ['Sub Total Before Tax', `KSH ${this.allPermitDetails.invoiceDetails.subTotalBeforeTax}`],
+                                ['Tax Amount', `KSH ${this.allPermitDetails.invoiceDetails.taxAmount}`],
+                                ['Total Amount', `KSH ${this.allPermitDetails.invoiceDetails.totalAmount}`]
+
+                            ]
+                        };
                     }
                 },
             );
@@ -323,10 +349,37 @@ export class DmarkComponent implements OnInit, AfterViewInit {
         this.currDiv = divVal;
     }
 
-    viewPdfFile(pdfId: string): void {
+    viewPdfFile(pdfId: string, fileName: string, applicationType: string): void {
         this.qaService.loadFileDetailsPDF(pdfId).subscribe(
             (dataPdf: any) => {
-                this.pdfUploadsView = dataPdf;
+                this.blob = new Blob([dataPdf], {type: applicationType});
+
+                // tslint:disable-next-line:prefer-const
+                let downloadURL = window.URL.createObjectURL(this.blob);
+                const link = document.createElement('a');
+                link.href = downloadURL;
+                link.download = fileName;
+                link.click();
+                // this.pdfUploadsView = dataPdf;
+            },
+        );
+    }
+
+    downloadPdfFile(data: string, fileName: string): void {
+        this.blob = new Blob([data], {type: 'application/pdf'});
+
+        // tslint:disable-next-line:prefer-const
+        let downloadURL = window.URL.createObjectURL(this.blob);
+        const link = document.createElement('a');
+        link.href = downloadURL;
+        link.download = fileName;
+        link.click();
+    }
+
+    getPdfFile(pdfId: string): any {
+        this.qaService.loadFileDetailsPDF(pdfId).subscribe(
+            (dataPdf: any) => {
+                return dataPdf;
             },
         );
     }
@@ -433,7 +486,7 @@ export class DmarkComponent implements OnInit, AfterViewInit {
                     },
                     icon: 'success'
                 });
-                this.router.navigate(['/invoiceDetails'], {fragment: this.allPermitDetails.batchID.toString()});
+                // this.router.navigate(['/invoiceDetails'], {fragment: this.allPermitDetails.batchID.toString()});
 
                 // this.onUpdateReturnToList();
             },
@@ -589,6 +642,19 @@ export class DmarkComponent implements OnInit, AfterViewInit {
 
     }
 
+    goToPermitOlderVersion(permitID: string) {
+        swal.fire({
+            title: 'YOU ARE VIEWING THE OLDER VERSION.',
+            buttonsStyling: false,
+            customClass: {
+                confirmButton: 'btn btn-success form-wizard-next-btn ',
+            },
+            icon: 'success'
+        });
+        this.router.navigate(['/permitdetails'], {fragment: permitID});
+
+    }
+
     showNotification(from: any, align: any) {
         const type = ['', 'info', 'success', 'warning', 'danger', 'rose', 'primary'];
 
@@ -673,6 +739,11 @@ export class DmarkComponent implements OnInit, AfterViewInit {
         this.currDivLabel = 'Upload PDF Documents Only';
     }
 
+    openModalViewUpload(viewDiv: string) {
+        this.currDiv = viewDiv;
+        this.currDivLabel = 'VIEWS PDF Documents Only';
+    }
+
     uploadDocument() {
         if (this.uploadedFiles.length > 0) {
             const file = this.uploadedFiles;
@@ -683,7 +754,7 @@ export class DmarkComponent implements OnInit, AfterViewInit {
             }
             this.SpinnerService.show();
             // tslint:disable-next-line:max-line-length
-            this.qaService.uploadFile(String(this.allPermitDetails.permitDetails.id), this.uploadForm.get('upLoadDescription').value, formData).subscribe(
+            this.qaService.uploadFile(String(this.allPermitDetails.permitDetails.id), this.upLoadDescription, formData).subscribe(
                 (data: any) => {
                     this.SpinnerService.hide();
                     console.log(data);

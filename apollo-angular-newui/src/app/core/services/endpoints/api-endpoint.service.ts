@@ -167,6 +167,7 @@ export class ApiEndpointService {
 
 
         PERMIT_CERTIFICATE_ISSUED_DETAILS_PDF: `${ApiEndpointService.QA_CONTEXT}/report/permit-certificate`,
+        PERMIT_INVOICE_BREAK_DOWN_DETAILS_PDF: `${ApiEndpointService.QA_CONTEXT}/report/braked-down-invoice-with-Item`,
         PERMIT_VIEW_PDF: `${ApiEndpointService.QA_CONTEXT}/view/attached`,
         // INVOICE_DETAILS_PDF: `${ApiEndpointService.QA_CONTEXT}/permit/view/invoice/batch-invoice-pdf-details`,
 

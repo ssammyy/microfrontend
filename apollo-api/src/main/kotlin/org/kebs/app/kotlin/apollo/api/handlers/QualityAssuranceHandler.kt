@@ -1411,6 +1411,7 @@ class QualityAssuranceHandler(
             //Update Permit Details
             with(permit) {
                 sendApplication = map.activeStatus
+                applicationStatus = map.activeStatus
                 invoiceGenerated = map.activeStatus
                 permitStatus = applicationMapProperties.mapQaStatusPPayment
             }

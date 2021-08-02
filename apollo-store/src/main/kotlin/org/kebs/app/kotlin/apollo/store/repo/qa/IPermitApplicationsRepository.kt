@@ -161,7 +161,7 @@ interface IPermitApplicationsRepository : HazelcastRepository<PermitApplications
     ): List<PermitApplicationsEntity>?
 
     fun findByPermitTypeAndEndOfProductionStatusAndApplicationStatusAndAttachedPlantIdAndOldPermitStatusIsNull(
-        permitType: Long, endOfProductionStatus: Int, permitAwardStatus: Int, attachedPlantId: Long
+        permitType: Long, endOfProductionStatus: Int, applicationStatus: Int, attachedPlantId: Long
     ): List<PermitApplicationsEntity>?
 
 
@@ -238,7 +238,7 @@ interface IQaProcessStatusRepository : HazelcastRepository<QaProcessStatusEntity
 
 @Repository
 interface IQaInvoiceDetailsRepository : HazelcastRepository<QaInvoiceDetailsEntity, Long> {
-//    fun findByProcessStatusName(processStatusName: String): QaInvoiceDetailsEntity?
+    fun findByStatusAndInvoiceMasterId(status: Int, invoiceMasterId: Long): List<QaInvoiceDetailsEntity>?
 //    fun findByProcessStatusNameAndStatus(processStatusName: String, status: Long): QaProcessStatusEntity?
 //    fun findByStatus(status: Int): List<QaInvoiceDetailsEntity>?
 }

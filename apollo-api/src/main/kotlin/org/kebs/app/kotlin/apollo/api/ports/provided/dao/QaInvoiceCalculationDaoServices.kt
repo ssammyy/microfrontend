@@ -104,6 +104,7 @@ class QaInvoiceCalculationDaoServices(
 
         var invoiceDetails = QaInvoiceDetailsEntity().apply {
             invoiceMasterId = invoiceMaster.id
+            umo = "PER"
             generatedDate = Timestamp.from(Instant.now())
             itemDescName = selectedRate.invoiceDesc
             itemQuantity = BigDecimal.ZERO
@@ -118,6 +119,7 @@ class QaInvoiceCalculationDaoServices(
             description = invoiceDetails.itemDescName
             paymentStatus = 0
             taxAmount = invoiceDetails.itemAmount ?: BigDecimal.ZERO.multiply(selectedRate.taxRate)
+            subTotalBeforeTax = invoiceDetails.itemAmount
             totalAmount = invoiceDetails.itemAmount ?: BigDecimal.ZERO.plus(taxAmount ?: BigDecimal.ZERO)
             modifiedOn = Timestamp.from(Instant.now())
             modifiedBy = commonDaoServices.concatenateName(user)
@@ -184,6 +186,7 @@ class QaInvoiceCalculationDaoServices(
         var invoiceDetails = QaInvoiceDetailsEntity().apply {
             invoiceMasterId = invoiceMaster.id
             generatedDate = Timestamp.from(Instant.now())
+            umo = "PER"
             itemDescName = permitType.itemInvoiceDesc
             itemQuantity = BigDecimal.ZERO
             itemAmount = stgAmount
@@ -197,6 +200,7 @@ class QaInvoiceCalculationDaoServices(
             description = invoiceDetails.itemDescName
             paymentStatus = 0
             taxAmount = taxAmountToPay
+            subTotalBeforeTax = invoiceDetails.itemAmount
             totalAmount = amountToPay
             modifiedOn = Timestamp.from(Instant.now())
             modifiedBy = commonDaoServices.concatenateName(user)
@@ -242,6 +246,7 @@ class QaInvoiceCalculationDaoServices(
         var invoiceDetails = QaInvoiceDetailsEntity().apply {
             invoiceMasterId = invoiceMaster.id
             generatedDate = Timestamp.from(Instant.now())
+            umo = "PER"
             itemDescName = permitType.itemInvoiceDesc
             itemQuantity = BigDecimal.ZERO
             itemAmount = stgAmount
@@ -255,6 +260,7 @@ class QaInvoiceCalculationDaoServices(
             description = invoiceDetails.itemDescName
             paymentStatus = 0
             taxAmount = taxAmountToPay
+            subTotalBeforeTax = invoiceDetails.itemAmount
             totalAmount = amountToPay
             modifiedOn = Timestamp.from(Instant.now())
             modifiedBy = commonDaoServices.concatenateName(user)

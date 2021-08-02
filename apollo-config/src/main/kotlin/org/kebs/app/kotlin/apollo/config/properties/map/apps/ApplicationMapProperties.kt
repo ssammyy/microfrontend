@@ -485,6 +485,9 @@ class ApplicationMapProperties {
     @Value("\${org.kebs.app.kotlin.apollo.resources.report.proforma.invoice.with.item.path}")
     val mapReportProfomaInvoiceWithItemsPath: String = ""
 
+    @Value("\${org.kebs.app.kotlin.apollo.resources.report.break.down.invoice.with.item.path}")
+    val mapReportBreakDownInvoiceWithItemsPath: String = ""
+
     @Value("\${org.kebs.app.kotlin.apollo.resources.report.proforma.invoice.pdf.with.item.path}")
     val mapPDFProfomaInvoiceWithItemsPath: String = ""
 
