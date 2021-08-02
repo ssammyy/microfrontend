@@ -3,6 +3,8 @@ import {QaService} from '../../core/store/data/qa/qa.service';
 import {PermitEntityDto} from '../../core/store/data/qa/qa.model';
 import {Router} from '@angular/router';
 import {ApiEndpointService} from '../../core/services/endpoints/api-endpoint.service';
+import {LoadingService} from "../../core/services/loader/loadingservice.service";
+import {NgxSpinnerService} from "ngx-spinner";
 
 declare interface DataTable {
     headerRow: string[];
@@ -28,12 +30,15 @@ export class DmarkApplicationsAllComponent implements OnInit {
     constructor(
         private qaService: QaService,
         private router: Router,
+        private _loading: LoadingService,
+        private SpinnerService: NgxSpinnerService
     ) {
 
     }
 
     ngOnInit() {
         let formattedArray = [];
+        this.SpinnerService.show();
         this.qaService.loadPermitList('1').subscribe(
             (data: any) => {
 
@@ -45,11 +50,8 @@ export class DmarkApplicationsAllComponent implements OnInit {
                     headerRow: ['Permit Ref No', 'Application Date', 'Product', 'Brand Name', 'Permit Number', 'Issue Date', 'Expiry Date', 'Status', 'Actions'],
                     footerRow: ['Permit Ref No', 'Application Date', 'Product', 'Brand Name', 'Permit Number', 'Issue Date', 'Expiry Date', 'Status', 'Actions'],
                     dataRows: formattedArray
-
-
-                    // ['REFFM#202107095913D', 'Andrew Mike', '09/07/2021', 'Dassani', 'Water', '']
-
                 };
+                this.SpinnerService.hide();
             });
                 // console.log(this.dataTable);
                 // this.allPermitData = this.Object.json().results;

@@ -13,9 +13,9 @@ import swal from 'sweetalert2';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {ApiEndpointService} from '../../core/services/endpoints/api-endpoint.service';
 import {TableData} from '../../md/md-table/md-table.component';
-import {FileUploadValidators} from "@iplab/ngx-file-upload";
-import {LoadingService} from "../../core/services/loader/loadingservice.service";
-import {NgxSpinnerService} from "ngx-spinner";
+import {FileUploadValidators} from '@iplab/ngx-file-upload';
+import {LoadingService} from '../../core/services/loader/loadingservice.service';
+import {NgxSpinnerService} from 'ngx-spinner';
 // import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 // import {ModalComponent} from "ngb-modal";
 
@@ -100,15 +100,25 @@ export class DmarkComponent implements OnInit, AfterViewInit {
                 ['REFFM#202107095913D', 'Andrew Mike', '09/07/2021', 'Dassani', 'Water', '']
             ]
         };
+
+        const formattedArrayRemarks = [];
+
+        if (this.allPermitDetails.remarksDetails.hofQamCompletenessRemarks !== null) {
+            formattedArrayRemarks.push(['Completeness Remarks By HOD', '', 'hofQamCompletenessRemarks']);
+        }
+        if (this.allPermitDetails.remarksDetails.pcmReviewApprovalRemarks !== null) {
+            formattedArrayRemarks.push(['Review Remarks By PCM', '', 'reviewRemarksPCMRemarks']);
+        }
+        if (this.allPermitDetails.remarksDetails.pscMemberApprovalRemarks !== null) {
+            formattedArrayRemarks.push(['PSC Members Approval/Rejection Remarks', '', 'pscApprovalRejectionRemarks']);
+        }
+        if (this.allPermitDetails.remarksDetails.pcmApprovalRemarks !== null) {
+            formattedArrayRemarks.push(['PCM Approval/Rejection Remarks', '', 'pcmApprovalRejectionRemarks']);
+        }
+
         this.tableData1 = {
             headerRow: ['Remark Details', 'Action'],
-            dataRows: [
-                ['Completeness Remarks By QAM/HOD', '', 'hofQamCompletenessRemarks'],
-                ['Review Remarks By PCM', '', 'reviewRemarksPCMRemarks'],
-                ['Recommendation Review Remarks By QAO', '', 'recommendationRemarks'],
-                ['PSC Members Approval/Rejection Remarks', '', 'pscApprovalRejectionRemarks'],
-                ['PCM Approval/Rejection Remarks', '', 'pcmApprovalRejectionRemarks'],
-            ]
+            dataRows: formattedArrayRemarks
         };
         this.tableData12 = {
             headerRow: ['Item', 'Fee'],
@@ -690,5 +700,13 @@ export class DmarkComponent implements OnInit, AfterViewInit {
             );
             // this.router.navigate(['/permitdetails'], {fragment: String(this.sta1.id)});
         }
+    }
+
+    goToPayment() {
+        this.router.navigate(['/invoice/consolidate_invoice']);
+    }
+
+    goToNewApplication() {
+        this.router.navigate(['/dmark/newDmarkPermit']);
     }
 }

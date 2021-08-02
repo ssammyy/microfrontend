@@ -572,7 +572,7 @@ class CommonDaoServices(
     }
 
     fun downloadFile(response: HttpServletResponse, doc: FileDTO) {
-        response.contentType = getFileTypeByMimetypesFileTypeMap(doc.name)
+        response.contentType = doc.fileType
 //                    response.setHeader("Content-Length", pdfReportStream.size().toString())
         response.addHeader("Content-Disposition", "inline; filename=${doc.name};")
         response.outputStream
