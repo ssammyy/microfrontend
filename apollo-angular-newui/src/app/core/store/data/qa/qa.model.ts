@@ -215,11 +215,14 @@ export class FilesListDto {
 
 export class AllPermitDetailsDto {
     permitDetails: PermitEntityDetails;
+    remarksDetails: PermitAllRemarksDetailsDto;
     officerList: UserEntityDto[];
     oldVersionList: PermitEntityDto[];
     ordinaryFilesList: FilesListDto[];
     sta3FilesList: FilesListDto[];
     sta10FilesList: FilesListDto[];
+    labResultsList: SSFPDFListDetailsDto[];
+    schemeOfSuperVisionID: bigint[];
     batchID: bigint;
 }
 
