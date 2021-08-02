@@ -91,6 +91,8 @@ import {FmarkApplicationComponent} from './apollowebs/fmark-application/fmark-ap
 import {LoaderComponent} from './shared/loader/loader.component';
 import { FormsComponent } from './apollowebs/forms/forms.component';
 import { FieldErrorDisplayComponent } from './apollowebs/forms/field-error-display/field-error-display.component';
+import {NwaJustificationFormComponent} from "./apollowebs/standards-development/nwa-justification-form/nwa-justification-form.component";
+import {StandardsDevelopmentComponent} from "./apollowebs/standards-development/standards-development.component";
 
 // import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 
@@ -181,6 +183,8 @@ import { FieldErrorDisplayComponent } from './apollowebs/forms/field-error-displ
         LoaderComponent,
         FormsComponent,
         FieldErrorDisplayComponent,
+        NwaJustificationFormComponent,
+        StandardsDevelopmentComponent
 
     ]
 
