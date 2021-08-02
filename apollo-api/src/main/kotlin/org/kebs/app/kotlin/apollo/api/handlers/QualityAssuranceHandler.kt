@@ -1692,48 +1692,6 @@ class QualityAssuranceHandler(
 
     }
 
-    @PreAuthorize("hasAuthority('PERMIT_APPLICATION')")
-    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
-    fun permitUploadSTA3Migration(req: ServerRequest): ServerResponse {
-        try {
-            val loggedInUser = commonDaoServices.loggedInUserDetails()
-            val permitID =
-                req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
-
-            val permit = qaDaoServices.findPermitBYUserIDAndId(
-                permitID,
-                loggedInUser.id ?: throw ExpectedDataNotFound("MISSING USER ID")
-            )
-            val sta3 = qaDaoServices.findSTA3WithPermitIDAndRefNumber(
-                permit.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"), permitID
-            )
-            val dto = req.body<List<File>>()
-            dto.forEach { u ->
-                val upload = QaUploadsEntity()
-                with(upload) {
-                    sta3Status = 1
-                    ordinaryStatus = 0
-                }
-                qaDaoServices.uploadQaFile(
-                    upload,
-                    u,
-                    "STA3-UPLOADS",
-                    permit.permitRefNumber ?: throw Exception("MISSING PERMIT REF NUMBER"),
-                    loggedInUser
-                )
-            }
-
-            return ok().body("UPLOAD SUCCESSFULLY")
-
-
-        } catch (e: Exception) {
-            KotlinLogging.logger { }.error(e.message)
-            KotlinLogging.logger { }.debug(e.message, e)
-            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
-        }
-
-    }
-
 
     @PreAuthorize("hasAuthority('PERMIT_APPLICATION')")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
@@ -2508,6 +2466,8 @@ class QualityAssuranceHandler(
                     batchInvoiceDetails.id ?: throw ExpectedDataNotFound("MISSING BATCH ID ON CREATED CONSOLIDATION")
             }
             KotlinLogging.logger { }.info("batch ID = ${newBatchInvoiceDto.batchID}")
+
+
 
             batchInvoiceDetails = qaDaoServices.permitMultipleInvoiceUpdateStagingInvoice(
                 map,

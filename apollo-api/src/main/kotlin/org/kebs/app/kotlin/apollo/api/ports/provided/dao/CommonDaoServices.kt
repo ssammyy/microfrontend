@@ -51,7 +51,6 @@ import com.fasterxml.jackson.dataformat.xml.XmlMapper
 import com.fasterxml.jackson.module.kotlin.KotlinModule
 import com.google.common.io.Files
 import com.google.gson.Gson
-import jdk.jfr.ContentType
 import mu.KotlinLogging
 import org.jasypt.encryption.StringEncryptor
 import org.json.JSONObject
@@ -81,6 +80,7 @@ import org.kebs.app.kotlin.apollo.store.repo.di.ILaboratoryRepository
 import org.modelmapper.ModelMapper
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.data.repository.findByIdOrNull
+import org.springframework.mock.web.MockMultipartFile
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Service
@@ -472,6 +472,9 @@ class CommonDaoServices(
         return convFile
     }
 
+    fun convertFileToMultipartFile(file: File): MultipartFile {
+        return MockMultipartFile(file.name, FileInputStream(file))
+    }
 
     fun concatenateName(user: UsersEntity): String {
         return "${user.firstName} ${user.lastName}"

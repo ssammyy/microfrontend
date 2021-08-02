@@ -160,17 +160,17 @@ export class InvoiceConsolidateComponent implements OnInit {
     consolidatedInvoice.permitInvoicesID = permitInvoicesIDS;
     console.log('TEST CONSOLIDATE' + consolidatedInvoice);
     console.log(consolidatedInvoice.permitInvoicesID);
-      this.qaService.addInvoiceConsolidatedDetails(consolidatedInvoice).subscribe(
+      this.qaService.createInvoiceConsolidatedDetails(consolidatedInvoice).subscribe(
           (data) => {
-              console.log(data);
-              swal.fire({
-                  title: 'INVOICE CONSOLIDATED SUCCESSFULLY!',
-                  buttonsStyling: false,
-                  customClass: {
-                      confirmButton: 'btn btn-success form-wizard-next-btn ',
-                  },
-                  icon: 'success'
-              });
+            console.log(data);
+            swal.fire({
+              title: 'INVOICE CONSOLIDATED SUCCESSFULLY!',
+              buttonsStyling: false,
+              customClass: {
+                confirmButton: 'btn btn-success form-wizard-next-btn ',
+              },
+              icon: 'success'
+            });
               this.router.navigate(['/invoiceDetails'], {fragment: String(data.batchDetails.batchID)});
           },
       );

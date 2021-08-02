@@ -10,9 +10,12 @@ import {
     STA3
 } from '../../core/store/data/qa/qa.model';
 import swal from 'sweetalert2';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {ApiEndpointService} from '../../core/services/endpoints/api-endpoint.service';
 import {TableData} from '../../md/md-table/md-table.component';
+import {FileUploadValidators} from "@iplab/ngx-file-upload";
+import {LoadingService} from "../../core/services/loader/loadingservice.service";
+import {NgxSpinnerService} from "ngx-spinner";
 // import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 // import {ModalComponent} from "ngb-modal";
 
@@ -36,6 +39,10 @@ export class DmarkComponent implements OnInit, AfterViewInit {
     labResultsStatus!: string;
     labResultsRemarks!: string;
     approveRejectSSCForm!: FormGroup;
+    uploadForm!: FormGroup;
+    uploadedFile: File;
+    uploadedFiles: FileList;
+    upLoadDescription: String;
 
     pdfSources: any;
     pdfUploadsView: any;
@@ -58,6 +65,8 @@ export class DmarkComponent implements OnInit, AfterViewInit {
     public permitID!: string;
     allPermitDetails!: AllPermitDetailsDto;
 
+    private filesControl = new FormControl(null, FileUploadValidators.filesLimit(2));
+
     DMarkTypeID = ApiEndpointService.QA_APPLICATION_MAP_PROPERTIES.DMARK_TYPE_ID;
     SMarkTypeID = ApiEndpointService.QA_APPLICATION_MAP_PROPERTIES.SMARK_TYPE_ID;
     draftID = ApiEndpointService.QA_APPLICATION_MAP_PROPERTIES.DRAFT_ID;
@@ -74,6 +83,8 @@ export class DmarkComponent implements OnInit, AfterViewInit {
         private router: Router,
         // private modalService: ModalComponent,
         private qaService: QaService,
+        private _loading: LoadingService,
+        private SpinnerService: NgxSpinnerService,
         private formBuilder: FormBuilder
     ) {
     }
@@ -170,6 +181,12 @@ export class DmarkComponent implements OnInit, AfterViewInit {
             // approvedRemarks: ['', Validators.required],
         });
 
+        this.uploadForm = this.formBuilder.group({
+            upLoadDescription: ['', Validators.required],
+            uploadedFile: this.filesControl
+            // approvedRemarks: ['', Validators.required],
+        });
+
 
         this.qaService.loadSectionList().subscribe(
             (data: any) => {
@@ -186,8 +203,10 @@ export class DmarkComponent implements OnInit, AfterViewInit {
         );
 
 
+    }
 
-
+    get formUploadForm(): any {
+        return this.uploadForm.controls;
     }
 
     get formApproveRejectSSC(): any {
@@ -413,6 +432,7 @@ export class DmarkComponent implements OnInit, AfterViewInit {
 
     submitApprovalRejectionSSC(): void {
         console.log(this.approveRejectSSCForm.value);
+        // tslint:disable-next-line:max-line-length
         this.qaService.submitSSCApprovalRejection(String(this.allPermitDetails.permitDetails.id), this.approveRejectSSCForm.value).subscribe(
             (data: PermitEntityDetails) => {
                 this.allPermitDetails.permitDetails = data;
@@ -636,5 +656,39 @@ export class DmarkComponent implements OnInit, AfterViewInit {
         }
 
         this.labResultsRemarks = remarksValue;
+    }
+
+    openModalUpload(viewDiv: string) {
+        this.currDiv = viewDiv;
+        this.currDivLabel = 'Upload PDF Documents Only';
+    }
+
+    uploadDocument() {
+        if (this.uploadedFiles.length > 0) {
+            const file = this.uploadedFiles;
+            const formData = new FormData();
+            for (let i = 0; i < file.length; i++) {
+                console.log(file[i]);
+                formData.append('docFile', file[i], file[i].name);
+            }
+            this.SpinnerService.show();
+            // tslint:disable-next-line:max-line-length
+            this.qaService.uploadFile(String(this.allPermitDetails.permitDetails.id), this.uploadForm.get('upLoadDescription').value, formData).subscribe(
+                (data: any) => {
+                    this.SpinnerService.hide();
+                    console.log(data);
+                    swal.fire({
+                        title: 'UPLOADED SUCCESSFULLY',
+                        buttonsStyling: false,
+                        customClass: {
+                            confirmButton: 'btn btn-success form-wizard-next-btn ',
+                        },
+                        icon: 'success'
+                    });
+                    // this.router.navigate(['/permitdetails'], {fragment: this.permitEntityDetails.id.toString()});
+                },
+            );
+            // this.router.navigate(['/permitdetails'], {fragment: String(this.sta1.id)});
+        }
     }
 }

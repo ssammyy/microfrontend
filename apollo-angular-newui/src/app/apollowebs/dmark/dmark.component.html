@@ -1062,13 +1062,14 @@ placeholder=""
         </button>
 
 
-        <!--    <div *ngIf="allPermitDetails?.permitDetails?.permitTypeID == SMarkTypeID || allPermitDetails?.permitDetails?.permitTypeID == FMarkTypeID">-->
-        <!--        <button *ngIf="allPermitDetails?.permitDetails?.sendApplication == false"-->
-        <!--                (click)="submitApplication()" mat-raised-button=""-->
-        <!--                class="btn btn-kebs mat-raised-button mat-button-base"><span class="mat-button-wrapper">SUBMIT APPLICATION</span>-->
-        <!--            <div matripple="" class="mat-ripple mat-button-ripple"></div>-->
-        <!--            <div class="mat-button-focus-overlay"></div>-->
-        <!--        </button>-->
+        <!--    <div *ngIf="allPermitDetails?.permitDetails?.resubmitApplicationStatus == true">-->
+        <button (click)="openModalUpload('uploadModal')" mat-raised-button="" data-toggle="modal"
+                data-target="#myModal1"
+                class="btn btn-kebs mat-raised-button mat-button-base"><span
+                class="mat-button-wrapper">UPLOAD DOCUMENTS</span>
+            <div matripple="" class="mat-ripple mat-button-ripple"></div>
+            <div class="mat-button-focus-overlay"></div>
+        </button>
         <!--    </div>-->
 
 
@@ -1121,18 +1122,18 @@ placeholder=""
 
 
     <!-- Classic Modal -->
-    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal fade" id="myModal1" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title">Approve Or Reject SCC</h4>
+                    <h4 class="modal-title">{{currDivLabel}}</h4>
                     <button mat-button type="button" class="close" data-dismiss="modal" aria-hidden="true">
                         <i class="material-icons">clear</i>
                     </button>
                 </div>
                 <div class="modal-body">
                     <!--                <p>Are you sure this userDetails falls in the KEBS mandate ?</p>-->
-                    <div>
+                    <div *ngIf="(currDiv == 'schemeModal')">
                         <form [formGroup]="approveRejectSSCForm" class="form">
                             <div class="form-body">
                                 <div class="form-group">
@@ -1179,16 +1180,47 @@ placeholder=""
 
                         </form>
                     </div>
+                    <div *ngIf="(currDiv == 'uploadModal')">
+                        <form #demoForm="ngForm">
+                            <label for="upLoadDescription">File Description</label>
+                            <mat-form-field class="example-full-width">
+                                <input [(ngModel)]="upLoadDescription" name="upLoadDescription" id="upLoadDescription"
+                                       matInput type="text">
+                            </mat-form-field>
+                            <file-upload [(ngModel)]="uploadedFiles" name="files" fileslimit="2"></file-upload>
+                        </form>
+                        <!--                        <form [formGroup]="uploadForm" class="form">-->
+                        <!--                            <div class="form-body">-->
+                        <!--                                <div class="form-group">-->
+
+                        <!--                                    <div>-->
+                        <!--                                        <div>-->
+
+                        <!--                                            <file-upload [(ngModel)]="uploadedFiles" name="uploadedFile" fileslimit="2"></file-upload>-->
+                        <!--                                        </div>-->
+
+                        <!--                                    </div>-->
+                        <!--                                </div>-->
+                        <!--                            </div>-->
+
+
+                        <!--                        </form>-->
+                    </div>
                 </div>
                 <div class="modal-footer">
 
-                    <button mat-raised-button type="button" class="btn btn-success"
+                    <button mat-raised-button type="button" class="btn btn-danger" data-dismiss="modal">Close
+                    </button>
+                    <button *ngIf="(currDiv == 'schemeModal')" mat-raised-button type="button" class="btn btn-success"
                             (click)="submitApprovalRejectionSSC();"
                             [disabled]="!approveRejectSSCForm.valid"
                             data-dismiss="modal"
                     >SUBMIT
                     </button>
-                    <button mat-raised-button type="button" class="btn btn-danger" data-dismiss="modal">Close
+                    <button *ngIf="(currDiv == 'uploadModal')" mat-raised-button type="button" class="btn btn-success"
+                            (click)="uploadDocument();"
+                            data-dismiss="modal"
+                    >UPLOAD
                     </button>
                 </div>
             </div>
@@ -1228,6 +1260,23 @@ placeholder=""
                     <!--                            </textarea>-->
                     <!--                        </mat-form-field>-->
                     <!--                    </div>-->
+                    <div *ngIf="(currDiv == 'uploadModal')">
+                        <div *ngIf="allPermitDetails.remarksDetails.hofQamCompletenessStatus === false">
+                            <label for="reviewsattus52">Review Status</label>
+                            <mat-form-field class="example-full-width">
+                                <input id="reviewsattus52" matInput type="text" value="REJECTED"
+                                       disabled>
+                            </mat-form-field>
+                        </div>
+
+                        <label for="feedback">Feedback For This Permit</label>
+                        <mat-form-field class="example-full-width">
+                            <textarea id="feedback" matInput type="text"
+                                      value="{{allPermitDetails.remarksDetails.hofQamCompletenessRemarks}}"
+                                      disabled>
+                            </textarea>
+                        </mat-form-field>
+                    </div>
                     <div *ngIf="(currDiv == 'viewLabResultsRemarks')">
                         <div *ngIf="allPermitDetails.remarksDetails.hofQamCompletenessStatus === true">
                             <label for="reviewsattus25">Review Status</label>

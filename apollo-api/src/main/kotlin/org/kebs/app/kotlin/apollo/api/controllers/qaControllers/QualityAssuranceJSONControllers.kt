@@ -33,10 +33,10 @@ class QualityAssuranceJSONControllers(
     final val dMarkImageResource = resourceLoader.getResource(applicationMapProperties.mapDmarkImagePath)
     val dMarkImageFile = dMarkImageResource.file.toString()
 
-    final val sMarkImageResource = resourceLoader.getResource(applicationMapProperties.mapSmarkImagePath)
+    private val sMarkImageResource = resourceLoader.getResource(applicationMapProperties.mapSmarkImagePath)
     val sMarkImageFile = sMarkImageResource.file.toString()
 
-    final val fMarkImageResource = resourceLoader.getResource(applicationMapProperties.mapFmarkImagePath)
+    private val fMarkImageResource = resourceLoader.getResource(applicationMapProperties.mapFmarkImagePath)
     val fMarkImageFile = fMarkImageResource.file.toString()
 
     @GetMapping("/view/attached")
@@ -71,7 +71,7 @@ class QualityAssuranceJSONControllers(
             }
             qaDaoServices.uploadQaFile(
                 upload,
-                commonDaoServices.convertMultipartFileToFile(u),
+                u,
                 "STA3-UPLOADS",
                 permitDetails.permitRefNumber ?: throw Exception("MISSING PERMIT REF NUMBER"),
                 loggedInUser
@@ -107,7 +107,7 @@ class QualityAssuranceJSONControllers(
             }
             qaDaoServices.uploadQaFile(
                 upload,
-                commonDaoServices.convertMultipartFileToFile(u),
+                u,
                 "STA10-UPLOADS",
                 permitDetails.permitRefNumber ?: throw Exception("MISSING PERMIT REF NUMBER"),
                 loggedInUser
@@ -133,6 +133,7 @@ class QualityAssuranceJSONControllers(
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun uploadFilesOrdinaryPermit(
         @RequestParam("permitID") permitID: Long,
+        @RequestParam("docDesc") docDesc: String,
         @RequestParam("docFile") docFile: List<MultipartFile>,
         model: Model
     ): CommonDaoServices.MessageSuccessFailDTO {
@@ -149,8 +150,8 @@ class QualityAssuranceJSONControllers(
             }
             qaDaoServices.uploadQaFile(
                 upload,
-                commonDaoServices.convertMultipartFileToFile(u),
-                "NORMAL-UPLOADS",
+                u,
+                docDesc,
                 permitDetails.permitRefNumber ?: throw Exception("MISSING PERMIT REF NUMBER"),
                 loggedInUser
             )
