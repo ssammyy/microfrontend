@@ -93,6 +93,7 @@ import { FormsComponent } from './apollowebs/forms/forms.component';
 import { FieldErrorDisplayComponent } from './apollowebs/forms/field-error-display/field-error-display.component';
 import {NwaJustificationFormComponent} from "./apollowebs/standards-development/nwa-justification-form/nwa-justification-form.component";
 import {StandardsDevelopmentComponent} from "./apollowebs/standards-development/standards-development.component";
+import { InformationcheckComponent } from './apollowebs/standards-development/informationcheck/informationcheck.component';
 
 // import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 
@@ -184,7 +185,8 @@ import {StandardsDevelopmentComponent} from "./apollowebs/standards-development/
         FormsComponent,
         FieldErrorDisplayComponent,
         NwaJustificationFormComponent,
-        StandardsDevelopmentComponent
+        StandardsDevelopmentComponent,
+        InformationcheckComponent
 
     ]
 
