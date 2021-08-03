@@ -1206,9 +1206,6 @@ placeholder=""
                                 <div class="form-group">
 
                                     <div>
-                                        <!--                <input type="checkbox" class="form-control one-column-input" aria-label="Small" aria-describedby="inputGroup-sizing-sm" [value]="1"-->
-                                        <!--                       formControlName="approved"-->
-                                        <!--                       name="approved" required>-->
                                         <label for="approvedRejectedScheme"><b>Approve/Reject SCC</b></label>
                                         <mat-form-field id="approvedRejectedScheme">
                                             <mat-select placeholder="Please Select an option"
@@ -1219,6 +1216,15 @@ placeholder=""
                                                 <mat-option [value]="0">REJECT</mat-option>
 
                                             </mat-select>
+                                        </mat-form-field>
+                                        <label for="approvedRejectedSchemeRemarks">Feedback For This Permit</label>
+                                        <mat-form-field class="example-full-width">
+                                            <textarea id="approvedRejectedSchemeRemarks" matInput type="text"
+                                                      formControlName="approvedRejectedScheme"
+                                                      name="approvedRejectedScheme"
+                                                      [class.is-invalid]="formApproveRejectSSC.approvedRejectedSchemeRemarks.invalid && formApproveRejectSSC.approvedRejectedSchemeRemarks.touched"
+                                                      disabled>
+                                            </textarea>
                                         </mat-form-field>
                                     </div>
                                 </div>
@@ -1234,22 +1240,6 @@ placeholder=""
                             </mat-form-field>
                             <file-upload [(ngModel)]="uploadedFiles" name="files" fileslimit="2"></file-upload>
                         </form>
-                        <!--                        <form [formGroup]="uploadForm" class="form">-->
-                        <!--                            <div class="form-body">-->
-                        <!--                                <div class="form-group">-->
-
-                        <!--                                    <div>-->
-                        <!--                                        <div>-->
-
-                        <!--                                            <file-upload [(ngModel)]="uploadedFiles" name="uploadedFile" fileslimit="2"></file-upload>-->
-                        <!--                                        </div>-->
-
-                        <!--                                    </div>-->
-                        <!--                                </div>-->
-                        <!--                            </div>-->
-
-
-                        <!--                        </form>-->
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -1305,56 +1295,47 @@ placeholder=""
                     <!--                            </textarea>-->
                     <!--                        </mat-form-field>-->
                     <!--                    </div>-->
-                    <div *ngIf="(currDiv == 'uploadModal')">
-                        <div *ngIf="allPermitDetails.remarksDetails.hofQamCompletenessStatus === false">
-                            <label for="reviewsattus52">Review Status</label>
-                            <mat-form-field class="example-full-width">
-                                <input id="reviewsattus52" matInput type="text" value="REJECTED"
-                                       disabled>
-                            </mat-form-field>
-                        </div>
+                    <!--                    <div *ngIf="(currDiv == 'uploadModal')">-->
+                    <!--                        <div *ngIf="allPermitDetails.remarksDetails.hofQamCompletenessStatus === false">-->
+                    <!--                            <label for="reviewsattus52">Review Status</label>-->
+                    <!--                            <mat-form-field class="example-full-width">-->
+                    <!--                                <input id="reviewsattus52" matInput type="text" value="REJECTED"-->
+                    <!--                                       disabled>-->
+                    <!--                            </mat-form-field>-->
+                    <!--                        </div>-->
 
-                        <label for="feedback">Feedback For This Permit</label>
-                        <mat-form-field class="example-full-width">
-                            <textarea id="feedback" matInput type="text"
-                                      value="{{allPermitDetails.remarksDetails.hofQamCompletenessRemarks}}"
-                                      disabled>
-                            </textarea>
-                        </mat-form-field>
-                    </div>
+                    <!--                        <label for="feedback">Feedback For This Permit</label>-->
+                    <!--                        <mat-form-field class="example-full-width">-->
+                    <!--                            <textarea id="feedback" matInput type="text"-->
+                    <!--                                      value="{{allPermitDetails.remarksDetails.hofQamCompletenessRemarks}}"-->
+                    <!--                                      disabled>-->
+                    <!--                            </textarea>-->
+                    <!--                        </mat-form-field>-->
+                    <!--                    </div>-->
                     <div *ngIf="(currDiv == 'viewLabResultsRemarks')">
-                        <div *ngIf="allPermitDetails.remarksDetails.hofQamCompletenessStatus === true">
-                            <label for="reviewsattus25">Review Status</label>
-                            <mat-form-field class="example-full-width">
-                                <input id="reviewsattus25" matInput type="text" value="APPROVED"
-                                       disabled>
-                            </mat-form-field>
-                        </div>
-                        <div *ngIf="allPermitDetails.remarksDetails.hofQamCompletenessStatus === false">
-                            <label for="reviewsattus52">Review Status</label>
-                            <mat-form-field class="example-full-width">
-                                <input id="reviewsattus52" matInput type="text" value="REJECTED"
-                                       disabled>
-                            </mat-form-field>
-                        </div>
 
-                        <label for="feedback">Feedback For This Permit</label>
+                        <label for="reviewsattus52">Lab Results Status</label>
+                        <mat-form-field class="example-full-width">
+                            <input id="reviewsattus52" matInput type="text" value="{{labResultsStatus}}"
+                                   disabled>
+                        </mat-form-field>
+                        <label for="feedback">Lab Results Remarks</label>
                         <mat-form-field class="example-full-width">
                             <textarea id="feedback" matInput type="text"
-                                      value="{{allPermitDetails.remarksDetails.hofQamCompletenessRemarks}}"
+                                      value="{{labResultsRemarks}}"
                                       disabled>
                             </textarea>
                         </mat-form-field>
                     </div>
                     <div *ngIf="(currDiv == 'hofQamCompletenessRemarks')">
-                        <div *ngIf="allPermitDetails.remarksDetails.hofQamCompletenessStatus === true">
+                        <div *ngIf="allPermitDetails.remarksDetails.hofQamCompleteness.remarksStatus === true">
                             <label for="reviewsattus25">Review Status</label>
                             <mat-form-field class="example-full-width">
                                 <input id="reviewsattus25" matInput type="text" value="APPROVED"
                                        disabled>
                             </mat-form-field>
                         </div>
-                        <div *ngIf="allPermitDetails.remarksDetails.hofQamCompletenessStatus === false">
+                        <div *ngIf="allPermitDetails.remarksDetails.hofQamCompleteness.remarksStatus === false">
                             <label for="reviewsattus52">Review Status</label>
                             <mat-form-field class="example-full-width">
                                 <input id="reviewsattus52" matInput type="text" value="REJECTED"
@@ -1365,20 +1346,20 @@ placeholder=""
                         <label for="feedback">Feedback For This Permit</label>
                         <mat-form-field class="example-full-width">
                             <textarea id="feedback" matInput type="text"
-                                      value="{{allPermitDetails.remarksDetails.hofQamCompletenessRemarks}}"
+                                      value="{{allPermitDetails.remarksDetails.hofQamCompleteness.remarksValue}}"
                                       disabled>
                             </textarea>
                         </mat-form-field>
                     </div>
                     <div *ngIf="(currDiv == 'reviewRemarksPCMRemarks')">
-                        <div *ngIf="allPermitDetails.remarksDetails.pcmReviewApprovalStatus === true">
+                        <div *ngIf="allPermitDetails.remarksDetails.pcmReviewApproval.remarksStatus === true">
                             <label for="reviewsattus25">Review Status</label>
                             <mat-form-field class="example-full-width">
                                 <input id="reviewsattus25" matInput type="text" value="APPROVED"
                                        disabled>
                             </mat-form-field>
                         </div>
-                        <div *ngIf="allPermitDetails.remarksDetails.pcmReviewApprovalStatus === false">
+                        <div *ngIf="allPermitDetails.remarksDetails.pcmReviewApproval.remarksStatus === false">
                             <label for="reviewsattus52">Review Status</label>
                             <mat-form-field class="example-full-width">
                                 <input id="reviewsattus52" matInput type="text" value="REJECTED"
@@ -1389,44 +1370,44 @@ placeholder=""
                         <label for="feedback">Feedback For This Permit</label>
                         <mat-form-field class="example-full-width">
                             <textarea id="feedback" matInput type="text"
-                                      value="{{allPermitDetails.remarksDetails.pcmReviewApprovalRemarks}}"
+                                      value="{{allPermitDetails.remarksDetails.pcmReviewApproval.remarksValue}}"
                                       disabled>
                             </textarea>
                         </mat-form-field>
                     </div>
-                    <div *ngIf="(currDiv == 'recommendationRemarks')">
-                        <div *ngIf="allPermitDetails.remarksDetails.pcmReviewApprovalStatus === true">
-                            <label for="reviewsattus25">Review Status</label>
-                            <mat-form-field class="example-full-width">
-                                <input id="reviewsattus25" matInput type="text" value="APPROVED"
-                                       disabled>
-                            </mat-form-field>
-                        </div>
-                        <div *ngIf="allPermitDetails.remarksDetails.pcmReviewApprovalStatus === false">
-                            <label for="reviewsattus52">Review Status</label>
-                            <mat-form-field class="example-full-width">
-                                <input id="reviewsattus52" matInput type="text" value="REJECTED"
-                                       disabled>
-                            </mat-form-field>
-                        </div>
+                    <!--                    <div *ngIf="(currDiv == 'recommendationRemarks')">-->
+                    <!--                        <div *ngIf="allPermitDetails.remarksDetails.pcmReviewApprovalStatus === true">-->
+                    <!--                            <label for="reviewsattus25">Review Status</label>-->
+                    <!--                            <mat-form-field class="example-full-width">-->
+                    <!--                                <input id="reviewsattus25" matInput type="text" value="APPROVED"-->
+                    <!--                                       disabled>-->
+                    <!--                            </mat-form-field>-->
+                    <!--                        </div>-->
+                    <!--                        <div *ngIf="allPermitDetails.remarksDetails.pcmReviewApprovalStatus === false">-->
+                    <!--                            <label for="reviewsattus52">Review Status</label>-->
+                    <!--                            <mat-form-field class="example-full-width">-->
+                    <!--                                <input id="reviewsattus52" matInput type="text" value="REJECTED"-->
+                    <!--                                       disabled>-->
+                    <!--                            </mat-form-field>-->
+                    <!--                        </div>-->
 
-                        <label for="feedback">Feedback For This Permit</label>
-                        <mat-form-field class="example-full-width">
-                            <textarea id="feedback" matInput type="text"
-                                      value="{{allPermitDetails.remarksDetails.pcmReviewApprovalRemarks}}"
-                                      disabled>
-                            </textarea>
-                        </mat-form-field>
-                    </div>
+                    <!--                        <label for="feedback">Feedback For This Permit</label>-->
+                    <!--                        <mat-form-field class="example-full-width">-->
+                    <!--                            <textarea id="feedback" matInput type="text"-->
+                    <!--                                      value="{{allPermitDetails.remarksDetails.pcmReviewApprovalRemarks}}"-->
+                    <!--                                      disabled>-->
+                    <!--                            </textarea>-->
+                    <!--                        </mat-form-field>-->
+                    <!--                    </div>-->
                     <div *ngIf="(currDiv == 'pscApprovalRejectionRemarks')">
-                        <div *ngIf="allPermitDetails.remarksDetails.pscMemberApprovalStatus === true">
+                        <div *ngIf="allPermitDetails.remarksDetails.pscMemberApproval.remarksStatus === true">
                             <label for="reviewsattus25">Review Status</label>
                             <mat-form-field class="example-full-width">
                                 <input id="reviewsattus25" matInput type="text" value="APPROVED"
                                        disabled>
                             </mat-form-field>
                         </div>
-                        <div *ngIf="allPermitDetails.remarksDetails.pscMemberApprovalStatus === false">
+                        <div *ngIf="allPermitDetails.remarksDetails.pscMemberApproval.remarksStatus === false">
                             <label for="reviewsattus52">Review Status</label>
                             <mat-form-field class="example-full-width">
                                 <input id="reviewsattus52" matInput type="text" value="REJECTED"
@@ -1437,20 +1418,20 @@ placeholder=""
                         <label for="feedback">Feedback For This Permit</label>
                         <mat-form-field class="example-full-width">
                             <textarea id="feedback" matInput type="text"
-                                      value="{{allPermitDetails.remarksDetails.pscMemberApprovalRemarks}}"
+                                      value="{{allPermitDetails.remarksDetails.pscMemberApproval.remarksValue}}"
                                       disabled>
                             </textarea>
                         </mat-form-field>
                     </div>
                     <div *ngIf="(currDiv == 'pcmApprovalRejectionRemarks')">
-                        <div *ngIf="allPermitDetails.remarksDetails.pcmApprovalStatus === true">
+                        <div *ngIf="allPermitDetails.remarksDetails.pcmApproval.remarksStatus === true">
                             <label for="reviewsattus25">Review Status</label>
                             <mat-form-field class="example-full-width">
                                 <input id="reviewsattus25" matInput type="text" value="APPROVED"
                                        disabled>
                             </mat-form-field>
                         </div>
-                        <div *ngIf="allPermitDetails.remarksDetails.pcmApprovalStatus === false">
+                        <div *ngIf="allPermitDetails.remarksDetails.pcmApproval.remarksStatus === false">
                             <label for="reviewsattus52">Review Status</label>
                             <mat-form-field class="example-full-width">
                                 <input id="reviewsattus52" matInput type="text" value="REJECTED"
@@ -1461,7 +1442,7 @@ placeholder=""
                         <label for="feedback">Feedback For This Permit</label>
                         <mat-form-field class="example-full-width">
                             <textarea id="feedback" matInput type="text"
-                                      value="{{allPermitDetails.remarksDetails.pcmApprovalRemarks}}"
+                                      value="{{allPermitDetails.remarksDetails.pcmApproval.remarksValue}}"
                                       disabled>
                             </textarea>
                         </mat-form-field>
