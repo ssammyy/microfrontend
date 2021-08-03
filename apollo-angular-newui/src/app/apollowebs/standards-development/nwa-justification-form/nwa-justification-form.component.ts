@@ -21,6 +21,7 @@ export class NwaJustificationFormComponent implements OnInit {
   public nwaCommittees !: KNWCommittee[];
   public prepareJustificationFormGroup!: FormGroup;
   public knwsectasks !: KnwSecTasks[];
+    public uploadedFiles: FileList;
 
   title = 'toaster-not';
 
@@ -90,7 +91,8 @@ export class NwaJustificationFormComponent implements OnInit {
         (response ) => {
           console.log(response);
           this.SpinnerService.hide();
-          this.showToasterSuccess(response.httpStatus, "requestNumber")
+          this.showToasterSuccess(response.httpStatus, `Request Number is ${response.body.requestNumber}`);
+         this.onClickSaveULOADS(response.body.savedRowID)
           this.prepareJustificationFormGroup.reset();
         },
         (error: HttpErrorResponse) => {
@@ -109,6 +111,36 @@ export class NwaJustificationFormComponent implements OnInit {
         }
     );
   }
+
+    onClickSaveULOADS(nwaJustificationID: string) {
+        if (this.uploadedFiles.length > 0) {
+            const file = this.uploadedFiles;
+            const formData = new FormData();
+            for (let i = 0; i < file.length; i++) {
+                console.log(file[i]);
+                formData.append('docFile', file[i], file[i].name);
+            }
+
+            this.SpinnerService.show();
+            this.stdNwaService.uploadFileDetails(nwaJustificationID, formData).subscribe(
+                (data: any) => {
+                    this.SpinnerService.hide();
+                    this.uploadedFiles = null;
+                    console.log(data);
+                    swal.fire({
+                        title: 'Justification Prepared.',
+                        buttonsStyling: false,
+                        customClass: {
+                            confirmButton: 'btn btn-success form-wizard-next-btn ',
+                        },
+                        icon: 'success'
+                    });
+                     this.router.navigate(['/nwaJustification']);
+                },
+            );
+        }
+
+    }
 
 
   // public saveJustification(saveJustification: NgForm): void{

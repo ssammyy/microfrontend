@@ -88,6 +88,8 @@ interface UserListRepository : JpaRepository<UsersEntity,Long>{
     @Query("SELECT u.firstName,u.lastName,u.id FROM UsersEntity u WHERE u.id =:id")
     fun findNameById(@Param("id") id: Long?): String
 }
+interface DatKebsSdNwaUploadsEntityRepository : JpaRepository<DatKebsSdNwaUploadsEntity, Long> {
+}
 //interface UserNameRepository : JpaRepository<UsersEntity,Long>{
 //    fun findByUserId(assignedTo: Long?) : MutableList<UsersEntity>
 //    @Query("SELECT u.firstName,u.lastName FROM UsersEntity u WHERE u.id =:id")

@@ -214,6 +214,7 @@ export class ApiEndpointService {
         NWA_HO_SIC_TASKS: `${ApiEndpointService.SD_NWA_CONTEXT}/getHoSiCTasks`,
         NWA_UPLOAD_GAZETTE_NOTICE: `${ApiEndpointService.SD_NWA_CONTEXT}/uploadGazetteNotice`,
         NWA_UPDATE_GAZETTEMENT_DATE: `${ApiEndpointService.SD_NWA_CONTEXT}/updateGazettementDate`,
+        NWA_UPLOAD_DATA: `${ApiEndpointService.SD_NWA_CONTEXT}/file-upload`,
 
     };
 
