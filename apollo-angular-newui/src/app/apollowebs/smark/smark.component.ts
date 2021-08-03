@@ -413,6 +413,13 @@ export class SmarkComponent implements OnInit {
         this.currDiv = divVal;
     }
 
+    reloadComponent() {
+        let currentUrl = this.router.url;
+        this.router.routeReuseStrategy.shouldReuseRoute = () => false;
+        this.router.onSameUrlNavigation = 'reload';
+        this.router.navigate([currentUrl]);
+    }
+
     viewPdfFile(pdfId: string, fileName: string, applicationType: string): void {
         this.qaService.loadFileDetailsPDF(pdfId).subscribe(
             (dataPdf: any) => {
@@ -736,6 +743,7 @@ export class SmarkComponent implements OnInit {
             (data: AllPermitDetailsDto) => {
                 this.allPermitDetails = data;
                 this.SpinnerService.hide();
+                this.reloadComponent();
                 if (this.allPermitDetails.permitDetails.permitTypeID === this.FMarkTypeID) {
 
                     swal.fire({
@@ -771,6 +779,7 @@ export class SmarkComponent implements OnInit {
             (data: AllPermitDetailsDto) => {
                 this.allPermitDetails = data;
                 this.SpinnerService.hide();
+                this.reloadComponent();
                 console.log(AllPermitDetailsDto);
                 if (this.allPermitDetails.permitDetails.permitTypeID === this.FMarkTypeID) {
                     swal.fire({
@@ -805,6 +814,7 @@ export class SmarkComponent implements OnInit {
             (data: AllPermitDetailsDto) => {
                 this.allPermitDetails = data;
                 this.SpinnerService.hide();
+                this.reloadComponent();
                 if (this.allPermitDetails.permitDetails.permitTypeID === this.FMarkTypeID) {
                     swal.fire({
                         title: 'FMARK SUBMITTED SUCCESSFULLY FOR REVIEW HOD/RM!',
@@ -885,6 +895,7 @@ export class SmarkComponent implements OnInit {
             this.qaService.uploadFile(String(this.allPermitDetails.permitDetails.id), this.upLoadDescription, formData).subscribe(
                 (data: any) => {
                     this.SpinnerService.hide();
+                    this.reloadComponent();
                     console.log(data);
                     swal.fire({
                         title: 'UPLOADED SUCCESSFULLY',

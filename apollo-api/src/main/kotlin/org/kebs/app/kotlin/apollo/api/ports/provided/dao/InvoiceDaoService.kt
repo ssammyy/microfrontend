@@ -62,13 +62,27 @@ class InvoiceDaoService(
 
     fun findInvoiceStgReconciliationDetails(referenceCode: String): StagingPaymentReconciliation {
         invoicePaymentRepo.findByReferenceCode(referenceCode)
-                ?.let {
-                    return it
-                }
-                ?: throw ExpectedDataNotFound(" INVOICE WITH [REFERENCE CODE = ${referenceCode}], DOES NOT EXIST")
+            ?.let {
+                return it
+            }
+            ?: throw ExpectedDataNotFound(" INVOICE WITH [REFERENCE CODE = ${referenceCode}], DOES NOT EXIST")
     }
 
-    fun updateInvoiceBatchDetails(invoiceBatchDetails: InvoiceBatchDetailsEntity, tableSourcePrefix: String, detailsDescription: String, user: UsersEntity, amount: BigDecimal): InvoiceBatchDetailsEntity {
+    fun findInvoiceStgReconciliationDetailsByID(stgID: Long): StagingPaymentReconciliation {
+        invoicePaymentRepo.findByIdOrNull(stgID)
+            ?.let {
+                return it
+            }
+            ?: throw ExpectedDataNotFound(" INVOICE WITH ID ON STAGING WITH ID = ${stgID}, DOES NOT EXIST")
+    }
+
+    fun updateInvoiceBatchDetails(
+        invoiceBatchDetails: InvoiceBatchDetailsEntity,
+        tableSourcePrefix: String,
+        detailsDescription: String,
+        user: UsersEntity,
+        amount: BigDecimal
+    ): InvoiceBatchDetailsEntity {
         val map = commonDaoServices.serviceMapDetails(appId)
         with(invoiceBatchDetails) {
             totalAmount = amount

@@ -8,11 +8,13 @@ import org.junit.jupiter.api.extension.ExtendWith
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DaoService
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.QADaoServices
+import org.kebs.app.kotlin.apollo.api.ports.provided.sage.PostInvoiceToSageServices
 import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.repo.IBatchJobDetailsRepository
 import org.kebs.app.kotlin.apollo.store.repo.IIntegrationConfigurationRepository
 import org.kebs.app.kotlin.apollo.store.repo.IMpesaTransactionsRepository
+import org.kebs.app.kotlin.apollo.store.repo.IUserRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.junit.jupiter.SpringExtension
@@ -30,6 +32,9 @@ class QAControllerTest {
     lateinit var daoService: DaoService
 
     @Autowired
+    lateinit var usersRepo: IUserRepository
+
+    @Autowired
     lateinit var applicationMapProperties: ApplicationMapProperties
 
     @Autowired
@@ -45,10 +50,13 @@ class QAControllerTest {
     lateinit var commonDaoServices: CommonDaoServices
 
     @Autowired
+    lateinit var postInvoiceToSageServices: PostInvoiceToSageServices
+
+    @Autowired
     lateinit var jasyptStringEncryptor: StringEncryptor
 
     @Autowired
-    lateinit var  qaDaoServices: QADaoServices
+    lateinit var qaDaoServices: QADaoServices
 
     @Test
     fun complaintDetails() {
@@ -82,6 +90,15 @@ class QAControllerTest {
         val allUnpaidInvoices =
             qaDaoServices.permitRejectedVersionCreation(842, map, commonDaoServices.findUserByID(2046))
 //        KotlinLogging.logger { }.info { "complaint = ${complaint.toString()} " }
+    }
+
+
+    @Test
+    fun permitSendSAGEDetails() {
+        val loggedInUser = usersRepo.findByUserName("kpaul7747@gmail.com")
+
+        val allUnpaidInvoices = loggedInUser?.let { postInvoiceToSageServices.postInvoiceTransactionToSage(1412, it) }
+        KotlinLogging.logger { }.info { "DETAILS SAVE   " }
     }
 
     val smarkRate = PermitRatingDto().apply {
