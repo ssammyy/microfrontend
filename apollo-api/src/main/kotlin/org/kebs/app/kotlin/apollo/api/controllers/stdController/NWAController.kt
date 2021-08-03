@@ -14,8 +14,8 @@ import org.springframework.security.access.prepost.PreAuthorize
 
 
 @RestController
-@CrossOrigin(origins = ["http://localhost:4200"])
-@RequestMapping("api/v1/nwa")
+//@CrossOrigin(origins = ["http://localhost:4200"])
+@RequestMapping("api/v1/migration/nwa")
 class NWAController(val nwaService: NWAService,
                     val standardReviewFormService: StandardReviewFormService,
                     val nwaJustificationFileService: NwaJustificationFileService,
