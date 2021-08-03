@@ -106,8 +106,10 @@
             <div class="row">
                 <div class="form-group col-6">
                     <label><b>Upload Justification</b></label>
-<!--                    <app-upload-files  [itemId]="itemId" [type]="justification" ></app-upload-files>-->
-                </div>
+                    <form #demoForm="ngForm">
+                    <file-upload [(ngModel)]="uploadedFiles" name="uploadedFiles" fileslimit="2" accept=".pdf, .doc, .docx"></file-upload>
+                    </form>
+ </div>
             </div>
 
             <div class="row col-12 " style="margin: 3em 0 2em 0">

@@ -6,12 +6,16 @@ import org.flowable.engine.RuntimeService
 import org.flowable.engine.TaskService
 import org.flowable.engine.repository.Deployment
 import org.flowable.task.api.Task
+import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.common.dto.std.ProcessInstanceResponse
+import org.kebs.app.kotlin.apollo.common.dto.std.ProcessInstanceResponseValue
 import org.kebs.app.kotlin.apollo.common.dto.std.TaskDetails
+import org.kebs.app.kotlin.apollo.store.model.UsersEntity
 import org.kebs.app.kotlin.apollo.store.model.std.*
 import org.kebs.app.kotlin.apollo.store.repo.std.*
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Service
+import org.springframework.web.multipart.MultipartFile
 import java.sql.Timestamp
 import java.util.*
 import kotlin.collections.HashMap
@@ -22,11 +26,13 @@ class NWAService(private val runtimeService: RuntimeService,
                  private val taskService: TaskService,
                  @Qualifier("processEngine") private val processEngine: ProcessEngine,
                  private val repositoryService: RepositoryService,
+                 private val commonDaoServices: CommonDaoServices,
                  private val nwaJustificationRepository: NwaJustificationRepository,
                  private val nwaDisDtJustificationRepository: NWADISDTJustificationRepository,
                  private val nwaPreliminaryDraftRepository: NwaPreliminaryDraftRepository,
                  private val technicalCommitteeRepository: TechnicalCommitteeRepository,
                  private val departmentRepository: DepartmentRepository,
+                 private val sdNwaUploadsEntityRepository: DatKebsSdNwaUploadsEntityRepository,
                  private val nwaWorkshopDraftRepository: NwaWorkShopDraftRepository,
                  private val nwaStandardRepository: NwaStandardRepository,
                  private val nwaGazettementRepository: NwaGazettementRepository,
@@ -55,7 +61,7 @@ class NWAService(private val runtimeService: RuntimeService,
     {
 
         val processInstance = runtimeService.startProcessInstanceByKey(PROCESS_DEFINITION_KEY)
-        return ProcessInstanceResponse(processInstance.id, processInstance.isEnded)
+        return ProcessInstanceResponse( processInstance.id, processInstance.isEnded)
     }
 
     //*** Not used *** but closes any Task, linked to task close endpoint
@@ -79,8 +85,10 @@ class NWAService(private val runtimeService: RuntimeService,
 //    }
 
     //prepare justification
-    fun prepareJustification(nwaJustification: NWAJustification): ProcessInstanceResponse
+    fun prepareJustification(nwaJustification: NWAJustification): ProcessInstanceResponseValue
     {
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+
         val variables: MutableMap<String, Any> = HashMap()
         nwaJustification.meetingDate?.let{ variables.put("meetingDate", it)}
         nwaJustification.knw?.let{ variables.put("knw", it)}
@@ -109,11 +117,37 @@ class NWAService(private val runtimeService: RuntimeService,
         nwaJustification.departmentName = departmentRepository.findNameById(nwaJustification.department?.toLong())
 
 
-        nwaJustificationRepository.save(nwaJustification)
+        val nwaDetails = nwaJustificationRepository.save(nwaJustification)
 
         val processInstance = runtimeService.startProcessInstanceByKey(PROCESS_DEFINITION_KEY, variables)
-        return ProcessInstanceResponse(processInstance.id, processInstance.isEnded)
+        return ProcessInstanceResponseValue(nwaDetails.id, processInstance.id, processInstance.isEnded,
+            nwaJustification.requestNumber!!
+        )
 
+    }
+
+
+    fun uploadSDFile(
+        uploads: DatKebsSdNwaUploadsEntity,
+        docFile: MultipartFile,
+        doc: String,
+        user: UsersEntity
+    ): DatKebsSdNwaUploadsEntity {
+
+        with(uploads) {
+//            filepath = docFile.path
+            name = commonDaoServices.saveDocuments(docFile)
+//            fileType = docFile.contentType
+            fileType = commonDaoServices.getFileTypeByMimetypesFileTypeMap(docFile.name)
+            documentType = doc
+            document = docFile.bytes
+            transactionDate = commonDaoServices.getCurrentDate()
+            status = 1
+            createdBy = commonDaoServices.concatenateName(user)
+            createdOn = commonDaoServices.getTimestamp()
+        }
+
+        return sdNwaUploadsEntityRepository.save(uploads)
     }
 
     //Function to retrieve task details for any candidate group
