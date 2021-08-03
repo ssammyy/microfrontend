@@ -952,15 +952,15 @@ class QualityAssuranceController(
                     permitDetailsDB,
                     permitDetailsDB.permitType ?: throw Exception("ID NOT FOUND")
                 )
-
-                val permitUser = commonDaoServices.findUserByID(
-                    permitDetailsDB.userId ?: throw ExpectedDataNotFound("Permit USER Id Not found")
-                )
-                val pair = qaDaoServices.consolidateInvoiceAndSendMail(
-                    permitDetailsDB.id ?: throw ExpectedDataNotFound("MISSING PERMIT ID"), map, permitUser
-                )
-                var batchInvoice = pair.first
-                permitDetailsDB = pair.second
+//
+//                val permitUser = commonDaoServices.findUserByID(
+//                    permitDetailsDB.userId ?: throw ExpectedDataNotFound("Permit USER Id Not found")
+//                )
+//                val pair = qaDaoServices.consolidateInvoiceAndSendMail(
+//                    permitDetailsDB.id ?: throw ExpectedDataNotFound("MISSING PERMIT ID"), map, permitUser
+////                )
+//                var batchInvoice = pair.first
+//                permitDetailsDB = pair.second
 
 //                qualityAssuranceBpmn.qaDmARCheckApplicationComplete(
 //                    permitDetailsDB.id ?: throw Exception("MISSING PERMIT ID"),
@@ -968,7 +968,9 @@ class QualityAssuranceController(
 //                    true
 //                )
                 //Application complete and successful
-                qualityAssuranceBpmn.qaDmCheckApplicationComplete(permitDetailsDB.id ?: throw Exception("MISSING PERMIT ID"), true)
+                qualityAssuranceBpmn.qaDmCheckApplicationComplete(
+                    permitDetailsDB.id ?: throw Exception("MISSING PERMIT ID"), true
+                )
 
             }
             map.inactiveStatus -> {

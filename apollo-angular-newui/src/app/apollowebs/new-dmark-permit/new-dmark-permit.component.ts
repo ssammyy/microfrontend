@@ -27,7 +27,7 @@ declare const $: any;
 export class NewDmarkPermitComponent implements OnInit {
 
     public isLoading = false;
-    loading: boolean = false;
+    loading = false;
     fullname = '';
     sta1Form: FormGroup;
     sta3FormA: FormGroup;
@@ -446,7 +446,6 @@ export class NewDmarkPermitComponent implements OnInit {
             );
             this.router.navigate(['/permitdetails'], {fragment: String(this.sta1.id)});
         }
-
     }
 
     showNotification(from: any, align: any) {

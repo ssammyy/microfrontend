@@ -17,7 +17,7 @@ export class ApiEndpointService {
      * Map of domains for API endpoints.
      */
     public static DOMAIN = {
-        LOCAL_DEV: 'localhost:8006'
+       LOCAL_DEV: 'localhost:8006'
         // LOCAL_DEV: '12:8006'
         // LOCAL_DEV: '41.72.209.58:8006'
         //  LOCAL_DEV: `kimsint.kebs.org:8006`
@@ -151,6 +151,7 @@ export class ApiEndpointService {
         PERMIT_VIEW_STA3: `${ApiEndpointService.QA_CONTEXT_VIEW}/sta3`,
         PERMIT_UPDATE_STA3: `${ApiEndpointService.QA_CONTEXT_APPLY}/sta3-update`,
 
+        UPLOAD_FILE: `${ApiEndpointService.QA_CONTEXT_APPLY}/ordinary-upload`,
         UPLOAD_FILE_STA3: `${ApiEndpointService.QA_CONTEXT_APPLY}/sta3-update-upload`,
         UPLOAD_FILE_STA10: `${ApiEndpointService.QA_CONTEXT_APPLY}/sta10-update-upload`,
 
@@ -166,6 +167,7 @@ export class ApiEndpointService {
 
 
         PERMIT_CERTIFICATE_ISSUED_DETAILS_PDF: `${ApiEndpointService.QA_CONTEXT}/report/permit-certificate`,
+        PERMIT_INVOICE_BREAK_DOWN_DETAILS_PDF: `${ApiEndpointService.QA_CONTEXT}/report/braked-down-invoice-with-Item`,
         PERMIT_VIEW_PDF: `${ApiEndpointService.QA_CONTEXT}/view/attached`,
         // INVOICE_DETAILS_PDF: `${ApiEndpointService.QA_CONTEXT}/permit/view/invoice/batch-invoice-pdf-details`,
 

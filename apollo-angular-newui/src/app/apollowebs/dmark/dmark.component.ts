@@ -10,9 +10,12 @@ import {
     STA3
 } from '../../core/store/data/qa/qa.model';
 import swal from 'sweetalert2';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {ApiEndpointService} from '../../core/services/endpoints/api-endpoint.service';
 import {TableData} from '../../md/md-table/md-table.component';
+import {FileUploadValidators} from '@iplab/ngx-file-upload';
+import {LoadingService} from '../../core/services/loader/loadingservice.service';
+import {NgxSpinnerService} from 'ngx-spinner';
 // import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 // import {ModalComponent} from "ngb-modal";
 
@@ -36,8 +39,14 @@ export class DmarkComponent implements OnInit, AfterViewInit {
     labResultsStatus!: string;
     labResultsRemarks!: string;
     approveRejectSSCForm!: FormGroup;
+    uploadForm!: FormGroup;
+    uploadedFile: File;
+    uploadedFiles: FileList;
+    upLoadDescription: string;
 
     pdfSources: any;
+    pdfInvoiceBreakDownSources: any;
+    pdfSourcesScheme: any;
     pdfUploadsView: any;
 
     sta1Form: FormGroup;
@@ -53,10 +62,13 @@ export class DmarkComponent implements OnInit, AfterViewInit {
     sta3FileList: FilesListDto[];
     ordinaryFilesList: FilesListDto[];
     labResultsDetailsList: SSFPDFListDetailsDto[];
+    olderVersionDetailsList: PermitEntityDto[];
     permitEntityDetails: PermitEntityDetails;
     public dataTable: DataTable;
     public permitID!: string;
     allPermitDetails!: AllPermitDetailsDto;
+
+    private filesControl = new FormControl(null, FileUploadValidators.filesLimit(2));
 
     DMarkTypeID = ApiEndpointService.QA_APPLICATION_MAP_PROPERTIES.DMARK_TYPE_ID;
     SMarkTypeID = ApiEndpointService.QA_APPLICATION_MAP_PROPERTIES.SMARK_TYPE_ID;
@@ -66,7 +78,9 @@ export class DmarkComponent implements OnInit, AfterViewInit {
     public tableData2: TableData;
     public tableData3: TableData;
     public tableData4: TableData;
+    public tableData5: TableData;
     public tableData12: TableData;
+    blob: Blob;
 
 
     constructor(
@@ -74,6 +88,8 @@ export class DmarkComponent implements OnInit, AfterViewInit {
         private router: Router,
         // private modalService: ModalComponent,
         private qaService: QaService,
+        private _loading: LoadingService,
+        private SpinnerService: NgxSpinnerService,
         private formBuilder: FormBuilder
     ) {
     }
@@ -89,26 +105,7 @@ export class DmarkComponent implements OnInit, AfterViewInit {
                 ['REFFM#202107095913D', 'Andrew Mike', '09/07/2021', 'Dassani', 'Water', '']
             ]
         };
-        this.tableData1 = {
-            headerRow: ['Remark Details', 'Action'],
-            dataRows: [
-                ['Completeness Remarks By QAM/HOD', '', 'hofQamCompletenessRemarks'],
-                ['Review Remarks By PCM', '', 'reviewRemarksPCMRemarks'],
-                ['Recommendation Review Remarks By QAO', '', 'recommendationRemarks'],
-                ['PSC Members Approval/Rejection Remarks', '', 'pscApprovalRejectionRemarks'],
-                ['PCM Approval/Rejection Remarks', '', 'pcmApprovalRejectionRemarks'],
-            ]
-        };
-        this.tableData12 = {
-            headerRow: ['Item', 'Fee'],
-            dataRows: [
-                ['Inspection Fee', 'Kshs 20,000'],
-                ['Permit Fee ', 'Kshs 7500'],
-                ['Tax Fee', 'Kshs 20,000'],
-                ['Total', '47,500']
-
-            ]
-        };
+        this.remarksDetails();
 
         this.sta1Form = this.formBuilder.group({
             commodityDescription: ['', Validators.required],
@@ -170,6 +167,12 @@ export class DmarkComponent implements OnInit, AfterViewInit {
             // approvedRemarks: ['', Validators.required],
         });
 
+        this.uploadForm = this.formBuilder.group({
+            upLoadDescription: ['', Validators.required],
+            uploadedFile: this.filesControl
+            // approvedRemarks: ['', Validators.required],
+        });
+
 
         this.qaService.loadSectionList().subscribe(
             (data: any) => {
@@ -186,8 +189,32 @@ export class DmarkComponent implements OnInit, AfterViewInit {
         );
 
 
+    }
 
+    remarksDetails() {
+        const formattedArrayRemarks = [];
 
+        if (this.allPermitDetails?.remarksDetails?.hofQamCompleteness !== null) {
+            formattedArrayRemarks.push(['Completeness Remarks By HOD', '', 'hofQamCompletenessRemarks']);
+        }
+        // if (this.allPermitDetails.remarksDetails.pcmReviewApprovalRemarks !== null) {
+        formattedArrayRemarks.push(['Review Remarks By PCM', '', 'reviewRemarksPCMRemarks']);
+        // }
+        // if (this.allPermitDetails.remarksDetails.pscMemberApprovalRemarks !== null) {
+        formattedArrayRemarks.push(['PSC Members Approval/Rejection Remarks', '', 'pscApprovalRejectionRemarks']);
+        // }
+        // if (this.allPermitDetails.remarksDetails.pcmApprovalRemarks !== null) {
+        formattedArrayRemarks.push(['PCM Approval/Rejection Remarks', '', 'pcmApprovalRejectionRemarks']);
+        // }
+
+        this.tableData1 = {
+            headerRow: ['Remark Details', 'Action'],
+            dataRows: formattedArrayRemarks
+        };
+    }
+
+    get formUploadForm(): any {
+        return this.uploadForm.controls;
     }
 
     get formApproveRejectSSC(): any {
@@ -222,17 +249,35 @@ export class DmarkComponent implements OnInit, AfterViewInit {
             let formattedArraySta3 = [];
             let formattedArrayOrdinaryFiles = [];
             let formattedArrayLabResultsList = [];
+            let formattedArrayOlderVersionList = [];
+            const formattedArrayInvoiceDetailsList = [];
             this.qaService.loadPermitDetails(params).subscribe(
                 (data: AllPermitDetailsDto) => {
                     this.allPermitDetails = data;
-                    if (this.allPermitDetails.sta3FilesList !== []) {
-                        this.sta3FileList = this.allPermitDetails.sta3FilesList;
-                        formattedArraySta3 = this.sta3FileList.map(i => [i.name, i.fileType, i.documentType, i.versionNumber, i.id]);
-                        this.tableData2 = {
-                            headerRow: ['File Name', 'File Type', 'Document Description', 'Version Number', 'Action'],
-                            dataRows: formattedArraySta3
-                        };
-                    }
+                    this.qaService.viewSTA1Details(String(this.allPermitDetails.permitDetails.id)).subscribe(
+                        (dataSta1) => {
+                            this.sta1 = dataSta1;
+                            this.sta1Form.patchValue(this.sta1);
+                        },
+                    );
+                    this.qaService.viewSTA3Details(String(this.allPermitDetails.permitDetails.id)).subscribe(
+                        (dataSta3) => {
+                            this.sta3 = dataSta3;
+                            this.sta3FormA.patchValue(this.sta3);
+                            this.sta3FormB.patchValue(this.sta3);
+                            this.sta3FormC.patchValue(this.sta3);
+                            this.sta3FormD.patchValue(this.sta3);
+                        },
+                    );
+                    // if (this.allPermitDetails.sta3FilesList !== []) {
+                    this.sta3FileList = this.allPermitDetails.sta3FilesList;
+                    // tslint:disable-next-line:max-line-length
+                    formattedArraySta3 = this.sta3FileList.map(i => [i.name, i.fileType, i.documentType, i.versionNumber, i.id, i.document]);
+                    this.tableData2 = {
+                        headerRow: ['File Name', 'File Type', 'Document Description', 'Version Number', 'Action'],
+                        dataRows: formattedArraySta3
+                    };
+                    // }
                     if (this.allPermitDetails.ordinaryFilesList !== []) {
                         this.ordinaryFilesList = this.allPermitDetails.ordinaryFilesList;
                         // tslint:disable-next-line:max-line-length
@@ -251,28 +296,38 @@ export class DmarkComponent implements OnInit, AfterViewInit {
                             dataRows: formattedArrayLabResultsList
                         };
                     }
+                    if (this.allPermitDetails.oldVersionList !== []) {
+                        this.olderVersionDetailsList = this.allPermitDetails.oldVersionList;
+                        // tslint:disable-next-line:max-line-length
+                        formattedArrayOlderVersionList = this.olderVersionDetailsList.map(i => [i.permitRefNumber, i.createdOn, i.permitStatus, i.versionNumber, i.id]);
+                        this.tableData5 = {
+                            headerRow: ['Permit Ref Number', 'Created On', 'Status', 'Version Number', 'Action'],
+                            dataRows: formattedArrayOlderVersionList
+                        };
+                    }
                     // this.onSelectL1SubSubSection(this.userDetails?.employeeProfile?.l1SubSubSection);
-                    this.qaService.viewSTA1Details(String(this.allPermitDetails.permitDetails.id)).subscribe(
-                        (dataSta1) => {
-                            this.sta1 = dataSta1;
-                            this.sta1Form.patchValue(this.sta1);
-                        },
-                    );
-                    this.qaService.viewSTA3Details(String(this.allPermitDetails.permitDetails.id)).subscribe(
-                        (dataSta3) => {
-                            this.sta3 = dataSta3;
-                            this.sta3FormA.patchValue(this.sta3);
-                            this.sta3FormB.patchValue(this.sta3);
-                            this.sta3FormC.patchValue(this.sta3);
-                            this.sta3FormD.patchValue(this.sta3);
-                        },
-                    );
                     if (this.allPermitDetails.permitDetails.permitAwardStatus === true) {
-                    this.qaService.loadCertificateDetailsPDF(String(this.allPermitDetails.permitDetails.id)).subscribe(
-                        (dataCertificatePdf: any) => {
-                            this.pdfSources = dataCertificatePdf;
-                        },
-                    );
+                        this.qaService.loadCertificateDetailsPDF(String(this.allPermitDetails.permitDetails.id)).subscribe(
+                            (dataCertificatePdf: any) => {
+                                this.pdfSources = dataCertificatePdf;
+                            },
+                        );
+                    }
+                    if (this.allPermitDetails.permitDetails.generateSchemeStatus === true) {
+                        this.pdfSourcesScheme = this.getPdfFile(String(this.allPermitDetails.schemeOfSuperVisionID));
+                    }
+                    if (this.allPermitDetails.permitDetails.invoiceGenerated === true) {
+                        this.tableData12 = {
+                            headerRow: ['Item', 'Details/Fee'],
+                            dataRows: [
+                                ['Invoice Ref No', this.allPermitDetails.invoiceDetails.invoiceRef],
+                                ['Description', this.allPermitDetails.invoiceDetails.description],
+                                ['Sub Total Before Tax', `KSH ${this.allPermitDetails.invoiceDetails.subTotalBeforeTax}`],
+                                ['Tax Amount', `KSH ${this.allPermitDetails.invoiceDetails.taxAmount}`],
+                                ['Total Amount', `KSH ${this.allPermitDetails.invoiceDetails.totalAmount}`]
+
+                            ]
+                        };
                     }
                 },
             );
@@ -294,10 +349,37 @@ export class DmarkComponent implements OnInit, AfterViewInit {
         this.currDiv = divVal;
     }
 
-    viewPdfFile(pdfId: string): void {
+    viewPdfFile(pdfId: string, fileName: string, applicationType: string): void {
         this.qaService.loadFileDetailsPDF(pdfId).subscribe(
             (dataPdf: any) => {
-                this.pdfUploadsView = dataPdf;
+                this.blob = new Blob([dataPdf], {type: applicationType});
+
+                // tslint:disable-next-line:prefer-const
+                let downloadURL = window.URL.createObjectURL(this.blob);
+                const link = document.createElement('a');
+                link.href = downloadURL;
+                link.download = fileName;
+                link.click();
+                // this.pdfUploadsView = dataPdf;
+            },
+        );
+    }
+
+    downloadPdfFile(data: string, fileName: string): void {
+        this.blob = new Blob([data], {type: 'application/pdf'});
+
+        // tslint:disable-next-line:prefer-const
+        let downloadURL = window.URL.createObjectURL(this.blob);
+        const link = document.createElement('a');
+        link.href = downloadURL;
+        link.download = fileName;
+        link.click();
+    }
+
+    getPdfFile(pdfId: string): any {
+        this.qaService.loadFileDetailsPDF(pdfId).subscribe(
+            (dataPdf: any) => {
+                return dataPdf;
             },
         );
     }
@@ -404,7 +486,7 @@ export class DmarkComponent implements OnInit, AfterViewInit {
                     },
                     icon: 'success'
                 });
-                this.router.navigate(['/invoiceDetails'], {fragment: this.allPermitDetails.batchID.toString()});
+                // this.router.navigate(['/invoiceDetails'], {fragment: this.allPermitDetails.batchID.toString()});
 
                 // this.onUpdateReturnToList();
             },
@@ -413,6 +495,7 @@ export class DmarkComponent implements OnInit, AfterViewInit {
 
     submitApprovalRejectionSSC(): void {
         console.log(this.approveRejectSSCForm.value);
+        // tslint:disable-next-line:max-line-length
         this.qaService.submitSSCApprovalRejection(String(this.allPermitDetails.permitDetails.id), this.approveRejectSSCForm.value).subscribe(
             (data: PermitEntityDetails) => {
                 this.allPermitDetails.permitDetails = data;
@@ -559,6 +642,19 @@ export class DmarkComponent implements OnInit, AfterViewInit {
 
     }
 
+    goToPermitOlderVersion(permitID: string) {
+        swal.fire({
+            title: 'YOU ARE VIEWING THE OLDER VERSION.',
+            buttonsStyling: false,
+            customClass: {
+                confirmButton: 'btn btn-success form-wizard-next-btn ',
+            },
+            icon: 'success'
+        });
+        this.router.navigate(['/permitdetails'], {fragment: permitID});
+
+    }
+
     showNotification(from: any, align: any) {
         const type = ['', 'info', 'success', 'warning', 'danger', 'rose', 'primary'];
 
@@ -636,5 +732,52 @@ export class DmarkComponent implements OnInit, AfterViewInit {
         }
 
         this.labResultsRemarks = remarksValue;
+    }
+
+    openModalUpload(viewDiv: string) {
+        this.currDiv = viewDiv;
+        this.currDivLabel = 'Upload PDF Documents Only';
+    }
+
+    openModalViewUpload(viewDiv: string) {
+        this.currDiv = viewDiv;
+        this.currDivLabel = 'VIEWS PDF Documents Only';
+    }
+
+    uploadDocument() {
+        if (this.uploadedFiles.length > 0) {
+            const file = this.uploadedFiles;
+            const formData = new FormData();
+            for (let i = 0; i < file.length; i++) {
+                console.log(file[i]);
+                formData.append('docFile', file[i], file[i].name);
+            }
+            this.SpinnerService.show();
+            // tslint:disable-next-line:max-line-length
+            this.qaService.uploadFile(String(this.allPermitDetails.permitDetails.id), this.upLoadDescription, formData).subscribe(
+                (data: any) => {
+                    this.SpinnerService.hide();
+                    console.log(data);
+                    swal.fire({
+                        title: 'UPLOADED SUCCESSFULLY',
+                        buttonsStyling: false,
+                        customClass: {
+                            confirmButton: 'btn btn-success form-wizard-next-btn ',
+                        },
+                        icon: 'success'
+                    });
+                    // this.router.navigate(['/permitdetails'], {fragment: this.permitEntityDetails.id.toString()});
+                },
+            );
+            // this.router.navigate(['/permitdetails'], {fragment: String(this.sta1.id)});
+        }
+    }
+
+    goToPayment() {
+        this.router.navigate(['/invoice/consolidate_invoice']);
+    }
+
+    goToNewApplication() {
+        this.router.navigate(['/dmark/newDmarkPermit']);
     }
 }

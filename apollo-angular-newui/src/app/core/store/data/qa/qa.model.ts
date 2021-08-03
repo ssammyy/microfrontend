@@ -31,6 +31,7 @@ export class PermitEntityDto {
     companyId: bigint;
     permitType: bigint;
     processStatusID: number;
+    versionNumber: number;
 }
 
 export class ConsolidatedInvoiceDto {
@@ -44,17 +45,17 @@ export class ConsolidatedInvoiceDto {
     checkedValue: boolean;
 }
 
+export class RemarksAndStatusDto {
+    remarksStatus: boolean;
+    remarksValue: string;
+}
+
 export class PermitAllRemarksDetailsDto {
-    hofQamCompletenessStatus: boolean;
-    hofQamCompletenessRemarks: string;
-    pcmApprovalStatus: boolean;
-    pcmApprovalRemarks: string;
-    pscMemberApprovalStatus: boolean;
-    pscMemberApprovalRemarks: string;
-    pcmReviewApprovalStatus: boolean;
-    pcmReviewApprovalRemarks: string;
-    justificationReportStatus: boolean;
-    justificationReportRemarks: string;
+    hofQamCompleteness: RemarksAndStatusDto;
+    pcmApproval: RemarksAndStatusDto;
+    pscMemberApproval: RemarksAndStatusDto;
+    pcmReviewApproval: RemarksAndStatusDto;
+    justificationReport: RemarksAndStatusDto;
 }
 
 export class GenerateInvoiceDto {
@@ -213,16 +214,26 @@ export class FilesListDto {
     document: Blob;
 }
 
+export class InvoiceDetailsDto {
+    invoiceMasterId: bigint;
+    invoiceRef: string;
+    description: string;
+    taxAmount: any;
+    subTotalBeforeTax: any;
+    totalAmount: any;
+}
+
 export class AllPermitDetailsDto {
     permitDetails: PermitEntityDetails;
     remarksDetails: PermitAllRemarksDetailsDto;
+    invoiceDetails: InvoiceDetailsDto;
     officerList: UserEntityDto[];
     oldVersionList: PermitEntityDto[];
     ordinaryFilesList: FilesListDto[];
     sta3FilesList: FilesListDto[];
     sta10FilesList: FilesListDto[];
     labResultsList: SSFPDFListDetailsDto[];
-    schemeOfSuperVisionID: bigint[];
+    schemeOfSuperVisionID: bigint;
     batchID: bigint;
 }
 

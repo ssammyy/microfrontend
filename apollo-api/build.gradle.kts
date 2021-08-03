@@ -56,7 +56,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("io.jsonwebtoken:jjwt:0.9.1")
 
-
+    implementation("org.springframework.boot:spring-boot-starter-test:2.2.4.RELEASE")
 
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.hibernate.validator:hibernate-validator:6.1.5.Final")

@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional
 import org.springframework.ui.Model
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
+import java.math.BigDecimal
 import javax.servlet.http.HttpServletResponse
 
 
@@ -33,10 +34,10 @@ class QualityAssuranceJSONControllers(
     final val dMarkImageResource = resourceLoader.getResource(applicationMapProperties.mapDmarkImagePath)
     val dMarkImageFile = dMarkImageResource.file.toString()
 
-    final val sMarkImageResource = resourceLoader.getResource(applicationMapProperties.mapSmarkImagePath)
+    private val sMarkImageResource = resourceLoader.getResource(applicationMapProperties.mapSmarkImagePath)
     val sMarkImageFile = sMarkImageResource.file.toString()
 
-    final val fMarkImageResource = resourceLoader.getResource(applicationMapProperties.mapFmarkImagePath)
+    private val fMarkImageResource = resourceLoader.getResource(applicationMapProperties.mapFmarkImagePath)
     val fMarkImageFile = fMarkImageResource.file.toString()
 
     @GetMapping("/view/attached")
@@ -71,7 +72,7 @@ class QualityAssuranceJSONControllers(
             }
             qaDaoServices.uploadQaFile(
                 upload,
-                commonDaoServices.convertMultipartFileToFile(u),
+                u,
                 "STA3-UPLOADS",
                 permitDetails.permitRefNumber ?: throw Exception("MISSING PERMIT REF NUMBER"),
                 loggedInUser
@@ -107,7 +108,7 @@ class QualityAssuranceJSONControllers(
             }
             qaDaoServices.uploadQaFile(
                 upload,
-                commonDaoServices.convertMultipartFileToFile(u),
+                u,
                 "STA10-UPLOADS",
                 permitDetails.permitRefNumber ?: throw Exception("MISSING PERMIT REF NUMBER"),
                 loggedInUser
@@ -133,6 +134,7 @@ class QualityAssuranceJSONControllers(
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun uploadFilesOrdinaryPermit(
         @RequestParam("permitID") permitID: Long,
+        @RequestParam("docDesc") docDesc: String,
         @RequestParam("docFile") docFile: List<MultipartFile>,
         model: Model
     ): CommonDaoServices.MessageSuccessFailDTO {
@@ -149,8 +151,8 @@ class QualityAssuranceJSONControllers(
             }
             qaDaoServices.uploadQaFile(
                 upload,
-                commonDaoServices.convertMultipartFileToFile(u),
-                "NORMAL-UPLOADS",
+                u,
+                docDesc,
                 permitDetails.permitRefNumber ?: throw Exception("MISSING PERMIT REF NUMBER"),
                 loggedInUser
             )
@@ -215,6 +217,55 @@ class QualityAssuranceJSONControllers(
             response,
             applicationMapProperties.mapReportProfomaInvoiceWithItemsPath,
             batchInvoiceList
+        )
+    }
+
+    @RequestMapping(value = ["/report/braked-down-invoice-with-Item"], method = [RequestMethod.GET])
+    @Throws(Exception::class)
+    fun brakedDownInvoiceWithMoreItems(
+        response: HttpServletResponse,
+        @RequestParam(value = "ID") ID: Long
+    ) {
+        var map = hashMapOf<String, Any>()
+//        val cdItemDetailsEntity = daoServices.findItemWithItemID(id)
+        val masterInvoice = qaDaoServices.findPermitInvoiceByPermitID(ID)
+        val invoiceDetailsList = qaDaoServices.findALlInvoicesPermitWithMasterInvoiceID(
+            masterInvoice.id, 1
+        )
+        val companyProfile = commonDaoServices.findCompanyProfileWithID(
+            commonDaoServices.findUserByID(
+                masterInvoice.userId ?: throw ExpectedDataNotFound("MISSING USER ID")
+            ).companyId ?: throw ExpectedDataNotFound("MISSING USER ID")
+        )
+
+        map["preparedBy"] = masterInvoice.createdBy.toString()
+        map["datePrepared"] = commonDaoServices.convertTimestampToKeswsValidDate(
+            masterInvoice.createdOn ?: throw ExpectedDataNotFound("MISSING CREATION DATE")
+        )
+        map["demandNoteNo"] = masterInvoice.invoiceRef.toString()
+        map["companyName"] = companyProfile.name.toString()
+        map["companyAddress"] = companyProfile.postalAddress.toString()
+        map["companyTelephone"] = companyProfile.companyTelephone.toString()
+//        map["productName"] = demandNote?.product.toString()
+//        map["cfValue"] = demandNote?.cfvalue.toString()
+//        map["rate"] = demandNote?.rate.toString()
+//        map["amountPayable"] = demandNote?.amountPayable.toString()
+        map["customerNo"] = companyProfile.entryNumber.toString()
+        map["taxAmount"] = masterInvoice.taxAmount.toString()
+        map["subTotalAmount"] = masterInvoice.subTotalBeforeTax.toString()
+        map["totalAmount"] = masterInvoice.totalAmount.toString()
+        //Todo: config for amount in words
+
+//                    map["amountInWords"] = demandNote?.
+        map["receiptNo"] = masterInvoice.receiptNo.toString()
+
+        map = reportsDaoService.addBankAndMPESADetails(map)
+
+        reportsDaoService.extractReport(
+            map,
+            response,
+            applicationMapProperties.mapReportBreakDownInvoiceWithItemsPath,
+            invoiceDetailsList
         )
     }
 

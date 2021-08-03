@@ -31,7 +31,7 @@
             <i class="material-icons">assignment_turned_in</i>STA 3 Uploaded Documents
         </a>
     </li>
-    <li class="nav-item">
+    <li *ngIf="allPermitDetails?.ordinaryFilesList.length > 0" class="nav-item">
         <a class="nav-link" data-toggle="tab" href="#link16" role="tablist">
             <i class="material-icons">assignment_turned_in</i>Uploaded Documents
         </a>
@@ -46,14 +46,14 @@
             <i class="material-icons">preview</i> Schema Supervision
         </a>
     </li>
-    <li class="nav-item">
+    <li *ngIf="allPermitDetails?.labResultsList.length > 0" class="nav-item">
         <a class="nav-link" data-toggle="tab" href="#link17" role="tablist">
             <i class="material-icons">summarize</i> Lab Results
         </a>
     </li>
-    <li class="nav-item">
+    <li *ngIf="allPermitDetails?.permitDetails?.invoiceGenerated == true" class="nav-item">
         <a class="nav-link" data-toggle="tab" href="#link18" role="tablist">
-            <i class="material-icons">money</i> Invoice
+            <i class="material-icons">money</i> Payment Details
         </a>
     </li>
     <li *ngIf="allPermitDetails?.permitDetails?.permitAwardStatus == true" class="nav-item">
@@ -82,26 +82,26 @@
     <!--                                <i class="material-icons">find_in_page</i> Request Details-->
     <!--                            </a>-->
     <!--                        </li>-->
-    <!--                        <li class="nav-item">-->
-    <!--                            <a class="nav-link" data-toggle="tab" href="#link16" role="tablist">-->
-    <!--                                <i class="material-icons">table_view</i> Other Version Details-->
-    <!--                            </a>-->
-    <!--                        </li>-->
+    <li *ngIf="allPermitDetails?.oldVersionList.length > 0" class="nav-item">
+        <a class="nav-link" data-toggle="tab" href="#link20" role="tablist">
+            <i class="material-icons">table_view</i> Other Version Details
+        </a>
+    </li>
 </ul>
 </div>
 <div class="col-md-9" style="background-color: #eeeeee8a; border-left: 0.5px solid black;">
 <div class="tab-content">
-<div class="tab-pane active" id="link10">
-<h3>Permit Details</h3>
-<div class="row">
-<div class="col-md-7">
-<br>
-<table class="table">
-<tbody>
-<tr>
-<td>
-<i class="material-icons">table_view</i>
-</td>
+    <div class="tab-pane active" id="link10">
+        <h3>Permit Details</h3>
+        <div class="row">
+            <div class="col-md-7">
+                <br>
+                <table class="table">
+                    <tbody>
+                    <tr>
+                        <td>
+                            <i class="material-icons">table_view</i>
+                        </td>
 <td><strong>
 Permit Ref No.</strong></td>
     <td>{{allPermitDetails?.permitDetails?.permitRefNumber}} </td>
@@ -263,17 +263,17 @@ text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</t
 
 </div>
 </div>
-<div class="tab-pane" id="link11">
-<h3>Plant Attached Details</h3>
-<br>
-<table class="table">
-<tbody>
-<tr>
-<td>
-<i class="material-icons">room</i>
-</td>
-<td><strong>
-REGION</strong></td>
+    <div class="tab-pane" id="link11">
+        <h3>Plant Attached Details</h3>
+        <br>
+        <table class="table">
+            <tbody>
+            <tr>
+                <td>
+                    <i class="material-icons">room</i>
+                </td>
+                <td><strong>
+                    REGION</strong></td>
     <td>{{allPermitDetails?.permitDetails?.regionPlantValue}}</td>
 </tr>
 <tr>
@@ -361,17 +361,18 @@ REGION</strong></td>
 </table>
 
 </div>
-<div class="tab-pane" id="link12">
-<h3>Account Summary</h3>
-<br>
-<div id="main">
-<div class="container">
-<div class="accordion" id="faq">
-<div class="card">
-<div class="card-header" id="faqhead1">
-<a href="#" class="btn btn-header-link" data-toggle="collapse" data-target="#faq1"
-aria-expanded="true" aria-controls="faq1" style="width: 623px; background-color: #3a75bc;">STA 1 Form</a>
-</div>
+    <div class="tab-pane" id="link12">
+        <h3>Account Summary</h3>
+        <br>
+        <div id="main">
+            <div class="container">
+                <div class="accordion" id="faq">
+                    <div class="card">
+                        <div class="card-header" id="faqhead1">
+                            <a href="#" class="btn btn-header-link" data-toggle="collapse" data-target="#faq1"
+                               aria-expanded="true" aria-controls="faq1"
+                               style="width: 623px; background-color: #3a75bc;">STA 1 Form</a>
+                        </div>
 
 <div id="faq1" class="collapse show" aria-labelledby="faqhead1" data-parent="#faq">
 <div class="card-body">
@@ -818,7 +819,7 @@ placeholder=""
 
                             <td class="td-actions text-right">
                                 <button mat-raised-button type="button" data-toggle="modal"
-                                        (click)="viewPdfFile(row[4])" class="btn btn-info {{row[4]}}">
+                                        (click)="viewPdfFile(row[4], row[0], row[1])" class="btn btn-info {{row[4]}}">
                                     <i class="material-icons">visibility</i>
 
                                 </button>
@@ -830,8 +831,8 @@ placeholder=""
 
             </div>
         </div>
-        <ngx-extended-pdf-viewer [src]="pdfUploadsView" [zoom]="'page-actual'"
-                                 [filenameForDownload]="'STA3 UPLOAD'"></ngx-extended-pdf-viewer>
+        <!--        <ngx-extended-pdf-viewer [src]="pdfUploadsView" [zoom]="'page-actual'"-->
+        <!--                                 [filenameForDownload]="'STA3 UPLOAD'"></ngx-extended-pdf-viewer>-->
     </div>
     <div class="tab-pane" id="link16">
         <h3>Uploaded Documents</h3>
@@ -860,7 +861,7 @@ placeholder=""
 
                             <td class="td-actions text-right">
                                 <button mat-raised-button type="button" data-toggle="modal"
-                                        (click)="viewPdfFile(row[4])" class="btn btn-info {{row[4]}}">
+                                        (click)="viewPdfFile(row[4], row[0], row[1])" class="btn btn-info {{row[4]}}">
                                     <i class="material-icons">visibility</i>
 
                                 </button>
@@ -872,8 +873,46 @@ placeholder=""
 
             </div>
         </div>
-        <ngx-extended-pdf-viewer [src]="pdfSources" [zoom]="'page-actual'"
-                                 [filenameForDownload]="'Certificate'"></ngx-extended-pdf-viewer>
+    </div>
+    <div class="tab-pane" id="link20">
+        <h3>Other Permit Versions</h3>
+        <br>
+        <div id="main20">
+            <div class="container">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th class="text-left">{{ tableData5?.headerRow[0] }}</th>
+                            <th>{{ tableData5?.headerRow[1] }}</th>
+                            <th>{{ tableData5?.headerRow[2] }}</th>
+                            <th>{{ tableData5?.headerRow[3] }}</th>
+                            <th class="text-right">{{ tableData5?.headerRow[4] }}</th>
+
+
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr *ngFor="let row of tableData5?.dataRows">
+                            <td class="text-left">{{row[0]}}</td>
+                            <td>{{row[1] | date}}</td>
+                            <td>{{row[2]}}</td>
+                            <td>{{row[3]}}</td>
+
+                            <td class="td-actions text-right">
+                                <button mat-raised-button type="button" data-toggle="modal"
+                                        (click)="goToPermitOlderVersion(row[4])" class="btn btn-info {{row[4]}}">
+                                    <i class="material-icons">visibility</i>
+
+                                </button>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
     </div>
     <div class="tab-pane" id="link15">
         <h3>Comments</h3>
@@ -890,6 +929,7 @@ placeholder=""
                         </thead>
                         <tbody>
                         <tr *ngFor="let row of tableData1.dataRows">
+                            <!--                            <div *ngIf="row[0]">-->
                             <td>{{row[0]}}</td>
                             <td class="td-actions text-right">
                                 <button mat-raised-button type="button" data-toggle="modal" data-target="#myModal2"
@@ -898,6 +938,8 @@ placeholder=""
 
                                 </button>
                             </td>
+                            <!--                            </div>-->
+
                         </tr>
                         </tbody>
                     </table>
@@ -910,7 +952,12 @@ placeholder=""
         <br>
         <div id="main19">
             <div class="container">
-
+                <button (click)="getPdfFile((allPermitDetails?.schemeOfSuperVisionID).toString())" mat-raised-button=""
+                        class="btn btn-kebs mat-raised-button mat-button-base"><span
+                        class="mat-button-wrapper">VIEW SCHEME</span>
+                    <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                    <div class="mat-button-focus-overlay"></div>
+                </button>
             </div>
         </div>
     </div>
@@ -949,7 +996,8 @@ placeholder=""
                                 </td>
                                 <td class="td-actions text-right">
                                     <button mat-raised-button type="button" data-toggle="modal"
-                                            (click)="viewPdfFile(row[4])" class="btn btn-info {{row[4]}}">
+                                            (click)="viewPdfFile(row[4], row[0], 'application/pdf')"
+                                            class="btn btn-info {{row[4]}}">
                                         <i class="material-icons">visibility</i>
 
                                     </button>
@@ -968,6 +1016,25 @@ placeholder=""
         <br>
         <div id="main18">
             <div class="container">
+                <button (click)="goToPayment()" mat-raised-button=""
+                        class="btn btn-kebs mat-raised-button mat-button-base"><span
+                        class="mat-button-wrapper">MAKE PAYMENT</span>
+                    <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                    <div class="mat-button-focus-overlay"></div>
+                </button>
+                <button *ngIf="allPermitDetails?.permitDetails?.invoiceGenerated == true && allPermitDetails.batchID != null"
+                        (click)="goToInvoiceGenerated()" mat-raised-button=""
+                        class="btn btn-kebs mat-raised-button mat-button-base"><span
+                        class="mat-button-wrapper">VIEW CONSOLIDATE INVOICE</span>
+                    <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                    <div class="mat-button-focus-overlay"></div>
+                </button>
+                <button (click)="goToNewApplication()" mat-raised-button=""
+                        class="btn btn-kebs mat-raised-button mat-button-base"><span
+                        class="mat-button-wrapper">MAKE NEW APPLICATION</span>
+                    <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                    <div class="mat-button-focus-overlay"></div>
+                </button>
                 <div class="table-responsive">
                     <table class="table">
                         <thead>
@@ -1062,24 +1129,25 @@ placeholder=""
         </button>
 
 
-        <!--    <div *ngIf="allPermitDetails?.permitDetails?.permitTypeID == SMarkTypeID || allPermitDetails?.permitDetails?.permitTypeID == FMarkTypeID">-->
-        <!--        <button *ngIf="allPermitDetails?.permitDetails?.sendApplication == false"-->
-        <!--                (click)="submitApplication()" mat-raised-button=""-->
-        <!--                class="btn btn-kebs mat-raised-button mat-button-base"><span class="mat-button-wrapper">SUBMIT APPLICATION</span>-->
-        <!--            <div matripple="" class="mat-ripple mat-button-ripple"></div>-->
-        <!--            <div class="mat-button-focus-overlay"></div>-->
-        <!--        </button>-->
-        <!--    </div>-->
-
-
-        <div *ngIf="allPermitDetails?.permitDetails?.permitTypeID == DMarkTypeID">
-            <button *ngIf="allPermitDetails?.permitDetails?.permitForeignStatus == true && allPermitDetails?.permitDetails?.sendForPcmReview == false"
-                    (click)="submitApplicationForReview()" mat-raised-button=""
-                    class="btn btn-kebs mat-raised-button mat-button-base"><span class="mat-button-wrapper">SUBMIT APPLICATION FOR REVIEW</span>
+        <div *ngIf="allPermitDetails?.permitDetails?.resubmitApplicationStatus == true">
+            <button (click)="openModalUpload('uploadModal')" mat-raised-button="" data-toggle="modal"
+                    data-target="#myModal1"
+                    class="btn btn-kebs mat-raised-button mat-button-base"><span
+                    class="mat-button-wrapper">UPLOAD DOCUMENTS</span>
                 <div matripple="" class="mat-ripple mat-button-ripple"></div>
                 <div class="mat-button-focus-overlay"></div>
             </button>
-            <button *ngIf="allPermitDetails?.permitDetails?.pcmReviewApprove == false && allPermitDetails?.permitDetails?.sendForPcmReview == true && allPermitDetails?.permitDetails?.resubmitApplicationStatus == true"
+        </div>
+
+
+        <!--        <div *ngIf="allPermitDetails?.permitDetails?.permitTypeID == DMarkTypeID">-->
+        <button *ngIf="allPermitDetails?.permitDetails?.permitForeignStatus == true && allPermitDetails?.permitDetails?.sendForPcmReview == false"
+                (click)="submitApplicationForReview()" mat-raised-button=""
+                class="btn btn-kebs mat-raised-button mat-button-base"><span class="mat-button-wrapper">SUBMIT APPLICATION FOR REVIEW</span>
+            <div matripple="" class="mat-ripple mat-button-ripple"></div>
+            <div class="mat-button-focus-overlay"></div>
+        </button>
+        <button *ngIf="allPermitDetails?.permitDetails?.pcmReviewApprove == false && allPermitDetails?.permitDetails?.sendForPcmReview == true && allPermitDetails?.permitDetails?.resubmitApplicationStatus == true"
                     (click)="submitApplicationForReview()" mat-raised-button=""
                     class="btn btn-kebs mat-raised-button mat-button-base"><span class="mat-button-wrapper">RE-SUBMIT APPLICATION FOR REVIEW</span>
                 <div matripple="" class="mat-ripple mat-button-ripple"></div>
@@ -1114,25 +1182,25 @@ placeholder=""
                 <div matripple="" class="mat-ripple mat-button-ripple"></div>
                 <div class="mat-button-focus-overlay"></div>
             </button>
-    </div>
+        <!--    </div>-->
 </div>
 </div>
 
 
 
     <!-- Classic Modal -->
-    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal fade" id="myModal1" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title">Approve Or Reject SCC</h4>
+                    <h4 class="modal-title">{{currDivLabel}}</h4>
                     <button mat-button type="button" class="close" data-dismiss="modal" aria-hidden="true">
                         <i class="material-icons">clear</i>
                     </button>
                 </div>
                 <div class="modal-body">
                     <!--                <p>Are you sure this userDetails falls in the KEBS mandate ?</p>-->
-                    <div>
+                    <div *ngIf="(currDiv == 'schemeModal')">
                         <form [formGroup]="approveRejectSSCForm" class="form">
                             <div class="form-body">
                                 <div class="form-group">
@@ -1152,43 +1220,52 @@ placeholder=""
 
                                             </mat-select>
                                         </mat-form-field>
-
-                                        <!--                                        <select id="approvedRejectedScheme" class="form-control"-->
-                                        <!--                                                formControlName="approvedRejectedScheme"-->
-                                        <!--                                                name="approvedRejectedScheme"-->
-                                        <!--                                                data-placeholder="Please Select an option"-->
-                                        <!--                                                [class.is-invalid]="formApproveRejectSSC.approvedRejectedScheme.invalid && formApproveRejectSSC.approvedRejectedScheme.touched"-->
-                                        <!--                                        >-->
-                                        <!--                                            <option selected>Please Select an option</option>-->
-                                        <!--                                            <option [ngValue]="1">APPROVE</option>-->
-                                        <!--                                            <option [ngValue]="0">REJECT</option>-->
-                                        <!--                                        </select>-->
-
-                                        <!--              <label><b>Remarks</b></label>-->
-                                        <!--              <textarea-->
-                                        <!--                [class.is-invalid]="formAssignAuthorities.approvedRemarks.invalid && formKEBSMandateIn.approvedRemarks.touched"-->
-                                        <!--                aria-describedby="inputGroup-sizing-sm" aria-label="Small" class="form-control one-column-input"-->
-                                        <!--                cols="65" formControlName="approvedRemarks"-->
-                                        <!--                name="approvedRemarks"-->
-                                        <!--                required rows="5"></textarea>-->
-
                                     </div>
                                 </div>
                             </div>
-
-
                         </form>
+                    </div>
+                    <div *ngIf="(currDiv == 'uploadModal')">
+                        <form #demoForm="ngForm">
+                            <label for="upLoadDescription">File Description</label>
+                            <mat-form-field class="example-full-width">
+                                <input [(ngModel)]="upLoadDescription" name="upLoadDescription" id="upLoadDescription"
+                                       matInput type="text">
+                            </mat-form-field>
+                            <file-upload [(ngModel)]="uploadedFiles" name="files" fileslimit="2"></file-upload>
+                        </form>
+                        <!--                        <form [formGroup]="uploadForm" class="form">-->
+                        <!--                            <div class="form-body">-->
+                        <!--                                <div class="form-group">-->
+
+                        <!--                                    <div>-->
+                        <!--                                        <div>-->
+
+                        <!--                                            <file-upload [(ngModel)]="uploadedFiles" name="uploadedFile" fileslimit="2"></file-upload>-->
+                        <!--                                        </div>-->
+
+                        <!--                                    </div>-->
+                        <!--                                </div>-->
+                        <!--                            </div>-->
+
+
+                        <!--                        </form>-->
                     </div>
                 </div>
                 <div class="modal-footer">
 
-                    <button mat-raised-button type="button" class="btn btn-success"
+                    <button mat-raised-button type="button" class="btn btn-danger" data-dismiss="modal">Close
+                    </button>
+                    <button *ngIf="(currDiv == 'schemeModal')" mat-raised-button type="button" class="btn btn-success"
                             (click)="submitApprovalRejectionSSC();"
                             [disabled]="!approveRejectSSCForm.valid"
                             data-dismiss="modal"
                     >SUBMIT
                     </button>
-                    <button mat-raised-button type="button" class="btn btn-danger" data-dismiss="modal">Close
+                    <button *ngIf="(currDiv == 'uploadModal')" mat-raised-button type="button" class="btn btn-success"
+                            (click)="uploadDocument();"
+                            data-dismiss="modal"
+                    >UPLOAD
                     </button>
                 </div>
             </div>
@@ -1228,6 +1305,23 @@ placeholder=""
                     <!--                            </textarea>-->
                     <!--                        </mat-form-field>-->
                     <!--                    </div>-->
+                    <div *ngIf="(currDiv == 'uploadModal')">
+                        <div *ngIf="allPermitDetails.remarksDetails.hofQamCompletenessStatus === false">
+                            <label for="reviewsattus52">Review Status</label>
+                            <mat-form-field class="example-full-width">
+                                <input id="reviewsattus52" matInput type="text" value="REJECTED"
+                                       disabled>
+                            </mat-form-field>
+                        </div>
+
+                        <label for="feedback">Feedback For This Permit</label>
+                        <mat-form-field class="example-full-width">
+                            <textarea id="feedback" matInput type="text"
+                                      value="{{allPermitDetails.remarksDetails.hofQamCompletenessRemarks}}"
+                                      disabled>
+                            </textarea>
+                        </mat-form-field>
+                    </div>
                     <div *ngIf="(currDiv == 'viewLabResultsRemarks')">
                         <div *ngIf="allPermitDetails.remarksDetails.hofQamCompletenessStatus === true">
                             <label for="reviewsattus25">Review Status</label>

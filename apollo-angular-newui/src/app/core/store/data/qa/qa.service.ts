@@ -355,6 +355,22 @@ export class QaService {
         );
     }
 
+    public loadInvoiceBreakDownDetailsPDF(ID: string): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.PERMIT_INVOICE_BREAK_DOWN_DETAILS_PDF);
+        const params = new HttpParams()
+            .set('ID', ID);
+        // return this.httpService.get<any>(`${this.baseUrl}/get/pdf/${fileName}`, { responseType: 'arraybuffer' as 'json' });
+        return this.http.get<any>(url, {params, responseType: 'arraybuffer' as 'json'}).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
+
     public loadCertificateDetailsPDF(permitID: string): Observable<any> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.PERMIT_CERTIFICATE_ISSUED_DETAILS_PDF);
         const params = new HttpParams()
@@ -451,6 +467,25 @@ export class QaService {
             headers: {
                 'enctype': 'multipart/form-data'
             }, params: {'permitID': permitID}
+        }).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
+
+    public uploadFile(permitID: string, docDesc: string, data: FormData): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.UPLOAD_FILE);
+        // const params = new HttpParams()
+        //     .set('permitID', permitID);
+        return this.http.post<any>(url, data, {
+            headers: {
+                'enctype': 'multipart/form-data'
+            }, params: {'permitID': permitID, 'docDesc': docDesc}
         }).pipe(
             map(function (response: any) {
                 return response;

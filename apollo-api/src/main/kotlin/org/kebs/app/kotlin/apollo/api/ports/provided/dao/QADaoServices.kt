@@ -70,6 +70,7 @@ class QADaoServices(
     private val sta3Repo: IQaSta3EntityRepository,
     private val smarkFmarkRepo: IQaSmarkFmarkRepository,
     private val invoiceRepository: IInvoiceRepository,
+    private val invoiceDetailsRepo: IQaInvoiceDetailsRepository,
     private val invoiceMasterDetailsRepo: IQaInvoiceMasterDetailsRepository,
     private val invoiceQaBatchRepo: IQaBatchInvoiceRepository,
     private val invoiceStagingReconciliationRepo: IStagingPaymentReconciliationRepo,
@@ -178,6 +179,14 @@ class QADaoServices(
                 return it
             }
             ?: throw ExpectedDataNotFound("Invoice list With [BATCH ID = ${batchID}], do not Exist")
+    }
+
+    fun findALlInvoicesPermitWithMasterInvoiceID(masterInvoiceID: Long, status: Int): List<QaInvoiceDetailsEntity> {
+        invoiceDetailsRepo.findByStatusAndInvoiceMasterId(status, masterInvoiceID)
+            ?.let { it ->
+                return it
+            }
+            ?: throw ExpectedDataNotFound("Invoice list With Master ID = $masterInvoiceID and status = ${status}, do not Exist")
     }
 
     fun findALlBatchInvoicesWithUserID(userID: Long): List<QaBatchInvoiceEntity> {
@@ -1281,7 +1290,8 @@ class QADaoServices(
                 p.userTaskId,
                 p.companyId,
                 p.permitType,
-                p.permitStatus
+                p.permitStatus,
+                p.versionNumber
             )
         }
     }
@@ -1425,18 +1435,80 @@ class QADaoServices(
     fun permitsRemarksDTO(
         permitDetails: PermitApplicationsEntity,
     ): PermitAllRemarksDetailsDto {
+        var hofQamCompleteness: RemarksAndStatusDto? = null
+        var pcmApproval: RemarksAndStatusDto? = null
+        var pscMemberApproval: RemarksAndStatusDto? = null
+        var pcmReviewApproval: RemarksAndStatusDto? = null
+        var justificationReport: RemarksAndStatusDto? = null
+        when {
+            permitDetails.hofQamCompletenessStatus != null -> {
+                hofQamCompleteness = RemarksAndStatusDto(
+                    permitDetails.hofQamCompletenessStatus == 1,
+                    permitDetails.hofQamCompletenessRemarks,
+                )
+            }
+        }
+        when {
+            permitDetails.pscMemberApprovalStatus != null -> {
+                pcmApproval = RemarksAndStatusDto(
+                    permitDetails.pcmApprovalStatus == 1,
+                    permitDetails.pcmApprovalRemarks,
+                )
+            }
+        }
+        when {
+            permitDetails.pscMemberApprovalRemarks != null -> {
+                pscMemberApproval = RemarksAndStatusDto(
+                    permitDetails.pscMemberApprovalStatus == 1,
+                    permitDetails.pscMemberApprovalRemarks,
+                )
+            }
+        }
+        when {
+            permitDetails.pcmReviewApprovalStatus != null -> {
+                pcmReviewApproval = RemarksAndStatusDto(
+                    permitDetails.pcmReviewApprovalStatus == 1,
+                    permitDetails.pcmReviewApprovalRemarks,
+                )
+            }
+        }
+        when {
+            permitDetails.justificationReportStatus != null -> {
+                justificationReport = RemarksAndStatusDto(
+                    permitDetails.justificationReportStatus == 1,
+                    permitDetails.justificationReportRemarks,
+                )
+            }
+        }
         return PermitAllRemarksDetailsDto(
-            permitDetails.hofQamCompletenessStatus == 1,
-            permitDetails.hofQamCompletenessRemarks,
-            permitDetails.pcmApprovalStatus == 1,
-            permitDetails.pcmApprovalRemarks,
-            permitDetails.pscMemberApprovalStatus == 1,
-            permitDetails.pscMemberApprovalRemarks,
-            permitDetails.pcmReviewApprovalStatus == 1,
-            permitDetails.pcmReviewApprovalRemarks,
-            permitDetails.justificationReportStatus == 1,
-            permitDetails.justificationReportRemarks,
+            hofQamCompleteness,
+            pcmApproval,
+            pscMemberApproval,
+            pcmReviewApproval,
+            justificationReport,
         )
+    }
+
+
+    fun permitsInvoiceDetailsDTO(
+        permitDetails: PermitApplicationsEntity,
+    ): InvoiceDetailsDto? {
+        return when (permitDetails.invoiceGenerated) {
+            1 -> {
+                val v = findPermitInvoiceByPermitID(permitDetails.id ?: throw ExpectedDataNotFound("MISSING PERMIT ID"))
+                InvoiceDetailsDto(
+                    v.id,
+                    v.invoiceRef,
+                    v.description,
+                    v.taxAmount,
+                    v.subTotalBeforeTax,
+                    v.totalAmount,
+                )
+            }
+            else -> {
+                null
+            }
+        }
     }
 
     fun permitDetails(permit: PermitApplicationsEntity, map: ServiceMapsEntity): PermitDetailsDto {
@@ -1544,6 +1616,7 @@ class QADaoServices(
         return AllPermitDetailsDto(
             permitDetails(permit, map),
             permitsRemarksDTO(permit),
+            permitsInvoiceDetailsDTO(permit),
             commonDaoServices.userListDto(
                 findOfficersList(
                     permit.attachedPlantId ?: throw Exception("MISSING PLANT ID"),
@@ -1571,6 +1644,7 @@ class QADaoServices(
                 permit.id ?: throw Exception("Missing Permit ID"),
                 permit.permitRefNumber ?: throw Exception("Missing Permit Ref Number")
             ),
+            permit.sscId,
             batchID
         )
     }
@@ -2628,18 +2702,19 @@ class QADaoServices(
 
     fun uploadQaFile(
         uploads: QaUploadsEntity,
-        docFile: File,
+        docFile: MultipartFile,
         doc: String,
         permitRefNUMBER: String,
         user: UsersEntity
     ): QaUploadsEntity {
 
         with(uploads) {
-            filepath = docFile.path
-            name = docFile.name
+//            filepath = docFile.path
+            name = commonDaoServices.saveDocuments(docFile)
+//            fileType = docFile.contentType
             fileType = commonDaoServices.getFileTypeByMimetypesFileTypeMap(docFile.name)
             documentType = doc
-            document = docFile.readBytes()
+            document = docFile.bytes
             permitRefNumber = permitRefNUMBER
             transactionDate = commonDaoServices.getCurrentDate()
             status = 1
@@ -2758,7 +2833,7 @@ class QADaoServices(
             }
             upload = uploadQaFile(
                 upload,
-                fileContent,
+                commonDaoServices.convertFileToMultipartFile(fileContent),
                 "LAB RESULTS PDF",
                 ssfDetails.permitRefNumber ?: throw ExpectedDataNotFound("MISSING PERMIT REF NUMBER"),
                 user
@@ -3669,49 +3744,57 @@ class QADaoServices(
             ?: throw Exception("INVOICE BATCH WITH ID=${batchID},DOES NOT EXIST ")
         try {
 
-            var invoiceBatchDetails = invoiceBatchDetailsRepo.findByIdOrNull(invoiceDetails.invoiceBatchNumberId)
-                ?: throw Exception("INVOICE ON BATCH INVOICE DETAILS WITH ID=${invoiceDetails.invoiceBatchNumberId},DOES NOT EXIST ")
-            when (invoiceBatchDetails.paymentStarted) {
-                1 -> {
-                    throw Exception("INVOICE IS  ALREADY BEING PAID FOR YOU CAN'T BE ABLE TO ADD/REMOVE")
-                }
-                else -> {
-                    with(invoiceBatchDetails) {
-                        totalAmount = invoiceDetails.totalAmount
-                        //TODO: remove details from description also
-                        modifiedOn = commonDaoServices.getTimestamp()
-                        modifiedBy = commonDaoServices.concatenateName(user)
+            invoiceBatchDetailsRepo.findByIdOrNull(invoiceDetails.invoiceBatchNumberId)?.let {
+                var invoiceBatchDetails = it
+                when (invoiceBatchDetails.paymentStarted) {
+                    1 -> {
+                        throw Exception("INVOICE IS  ALREADY BEING PAID FOR YOU CAN'T BE ABLE TO ADD/REMOVE")
                     }
-                    invoiceBatchDetails = invoiceBatchDetailsRepo.save(invoiceBatchDetails)
+                    else -> {
+                        with(invoiceBatchDetails) {
+                            totalAmount = invoiceDetails.totalAmount
+                            //TODO: remove details from description also
+                            modifiedOn = commonDaoServices.getTimestamp()
+                            modifiedBy = commonDaoServices.concatenateName(user)
+                        }
+                        invoiceBatchDetails = invoiceBatchDetailsRepo.save(invoiceBatchDetails)
 
-                    var stagingReconciliationDetails = invoiceStagingReconciliationRepo.findByReferenceCodeAndInvoiceId(
-                        invoiceBatchDetails.batchNumber
-                            ?: throw Exception("MISSING BATCH NUMBER=${invoiceBatchDetails.batchNumber}"),
-                        invoiceBatchDetails.id
-                    )
-                        ?: throw Exception("INVOICE ON STAGING RECONCILIATION WITH ID=${invoiceDetails.invoiceBatchNumberId},DOES NOT EXIST ")
-                    with(stagingReconciliationDetails) {
-                        invoiceAmount = invoiceBatchDetails.totalAmount
-                        actualAmount = invoiceBatchDetails.totalAmount
-                        paidAmount = BigDecimal.ZERO
-                        modifiedOn = commonDaoServices.getTimestamp()
-                        modifiedBy = commonDaoServices.concatenateName(user)
+                        var stagingReconciliationDetails =
+                            invoiceStagingReconciliationRepo.findByReferenceCodeAndInvoiceId(
+                                invoiceBatchDetails.batchNumber
+                                    ?: throw Exception("MISSING BATCH NUMBER=${invoiceBatchDetails.batchNumber}"),
+                                invoiceBatchDetails.id
+                            )
+                                ?: throw Exception("INVOICE ON STAGING RECONCILIATION WITH ID=${invoiceDetails.invoiceBatchNumberId},DOES NOT EXIST ")
+                        with(stagingReconciliationDetails) {
+                            invoiceAmount = invoiceBatchDetails.totalAmount
+                            actualAmount = invoiceBatchDetails.totalAmount
+                            paidAmount = BigDecimal.ZERO
+                            modifiedOn = commonDaoServices.getTimestamp()
+                            modifiedBy = commonDaoServices.concatenateName(user)
+                        }
+                        stagingReconciliationDetails =
+                            invoiceStagingReconciliationRepo.save(stagingReconciliationDetails)
+
+                        sr.payload = "STAGING RECONCILIATION UPDATED [id= ${stagingReconciliationDetails.id}]"
+                        sr.names =
+                            "BY USER NAME ${commonDaoServices.getUserName(user)} to this amount ${stagingReconciliationDetails.invoiceAmount}"
+                        sr.varField1 = batchID.toString()
+
+                        sr.responseStatus = sr.serviceMapsId?.successStatusCode
+                        sr.responseMessage = "Success ${sr.payload}"
+                        sr.status = s.successStatus
+                        sr = serviceRequestsRepository.save(sr)
+                        sr.processingEndDate = Timestamp.from(Instant.now())
                     }
-                    stagingReconciliationDetails = invoiceStagingReconciliationRepo.save(stagingReconciliationDetails)
-
-                    sr.payload = "STAGING RECONCILIATION UPDATED [id= ${stagingReconciliationDetails.id}]"
-                    sr.names =
-                        "BY USER NAME ${commonDaoServices.getUserName(user)} to this amount ${stagingReconciliationDetails.invoiceAmount}"
-                    sr.varField1 = batchID.toString()
-
-                    sr.responseStatus = sr.serviceMapsId?.successStatusCode
-                    sr.responseMessage = "Success ${sr.payload}"
-                    sr.status = s.successStatus
-                    sr = serviceRequestsRepository.save(sr)
-                    sr.processingEndDate = Timestamp.from(Instant.now())
                 }
+            } ?: kotlin.run {
+                val newBatchInvoiceDto = NewBatchInvoiceDto()
+                newBatchInvoiceDto.batchID =
+                    invoiceDetails.id ?: throw ExpectedDataNotFound("MISSING BATCH ID ON CREATED CONSOLIDATION")
+                KotlinLogging.logger { }.info("batch ID = ${newBatchInvoiceDto.batchID}")
+                permitMultipleInvoiceSubmitInvoice(s, user, newBatchInvoiceDto).second
             }
-
 
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message, e)

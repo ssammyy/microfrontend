@@ -23,6 +23,10 @@ class QaInvoiceDetailsEntity : Serializable {
     @Basic
     var itemDescName: String? = null
 
+    @Column(name = "UMO")
+    @Basic
+    var umo: String? = null
+
     @Column(name = "DESCRIPTION")
     @Basic
     var description: String? = null
@@ -114,7 +118,10 @@ class QaInvoiceDetailsEntity : Serializable {
         if (this === other) return true
         if (other == null || javaClass != other.javaClass) return false
         val that = other as QaInvoiceDetailsEntity
-        return id == that.id && itemDescName == that.itemDescName && description == that.description && status == that.status && varField1 == that.varField1 && varField2 == that.varField2 && varField3 == that.varField3 && varField4 == that.varField4 && varField5 == that.varField5 && varField6 == that.varField6 && varField7 == that.varField7 && varField8 == that.varField8 && varField9 == that.varField9 && varField10 == that.varField10 && createdBy == that.createdBy && createdOn == that.createdOn && modifiedBy == that.modifiedBy && modifiedOn == that.modifiedOn && deleteBy == that.deleteBy && deletedOn == that.deletedOn && generatedDate == that.generatedDate && itemQuantity == that.itemQuantity && itemAmount == that.itemAmount && invoiceMasterId == that.invoiceMasterId
+        return id == that.id &&
+                itemDescName == that.itemDescName &&
+                umo == that.umo &&
+                description == that.description && status == that.status && varField1 == that.varField1 && varField2 == that.varField2 && varField3 == that.varField3 && varField4 == that.varField4 && varField5 == that.varField5 && varField6 == that.varField6 && varField7 == that.varField7 && varField8 == that.varField8 && varField9 == that.varField9 && varField10 == that.varField10 && createdBy == that.createdBy && createdOn == that.createdOn && modifiedBy == that.modifiedBy && modifiedOn == that.modifiedOn && deleteBy == that.deleteBy && deletedOn == that.deletedOn && generatedDate == that.generatedDate && itemQuantity == that.itemQuantity && itemAmount == that.itemAmount && invoiceMasterId == that.invoiceMasterId
     }
 
     override fun hashCode(): Int {
@@ -122,6 +129,7 @@ class QaInvoiceDetailsEntity : Serializable {
             id,
             itemDescName,
             description,
+            umo,
             status,
             varField1,
             varField2,
