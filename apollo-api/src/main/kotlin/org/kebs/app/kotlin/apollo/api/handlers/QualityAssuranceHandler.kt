@@ -586,7 +586,7 @@ class QualityAssuranceHandler(
 
     }
 
-    @PreAuthorize("hasAuthority('QA_OFFICER_MODIFY') or hasAuthority('QA_HOD_READ')")
+    @PreAuthorize("hasAuthority('PERMIT_APPLICATION') or hasAuthority('QA_HOD_READ') or hasAuthority('QA_MANAGER_ASSESSORS_READ') or hasAuthority('QA_HOF_READ') or hasAuthority('QA_OFFICER_MODIFY') or hasAuthority('QA_ASSESSORS_READ') or hasAuthority('QA_PSC_MEMBERS_READ') or hasAuthority('QA_PCM_READ')")
     fun generateProductQualityStatus(req: ServerRequest): ServerResponse {
         val permitID = req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
         val permit = qaDaoServices.findPermitBYID(permitID)
@@ -668,19 +668,23 @@ class QualityAssuranceHandler(
     }
 
 
-    @PreAuthorize("hasAuthority('PERMIT_APPLICATION') or hasAuthority('QA_HOD_READ') or hasAuthority('QA_MANAGER_ASSESSORS_READ') or hasAuthority('QA_HOF_READ') or hasAuthority('QA_OFFICER_MODIFY') or hasAuthority('QA_PSC_MEMBERS_READ') or hasAuthority('QA_PCM_READ')")
+    @PreAuthorize("hasAuthority('PERMIT_APPLICATION') or hasAuthority('QA_ASSESSORS_READ') or hasAuthority('QA_HOD_READ') or hasAuthority('QA_MANAGER_ASSESSORS_READ') or hasAuthority('QA_HOF_READ') or hasAuthority('QA_OFFICER_MODIFY') or hasAuthority('QA_PSC_MEMBERS_READ') or hasAuthority('QA_PCM_READ')")
     fun getSSfDetails(req: ServerRequest): ServerResponse {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
 
         val ssfID = req.paramOrNull("ssfID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
 //        val permit = qaDaoServices.findPermitBYID(permitID)
         val ssfDetails = qaDaoServices.findSampleSubmittedBYID(ssfID)
-
+        val permit = qaDaoServices.findPermitBYID(
+            ssfDetails.permitId ?: throw ExpectedDataNotFound("Required Permit ID, check config")
+        )
+        req.attributes()["permitDetails"] = permit
         req.attributes()["ssfDetails"] = ssfDetails
         val labResultsParameters = qaDaoServices.findSampleLabTestResultsRepoBYBSNumber(
             ssfDetails.bsNumber ?: throw ExpectedDataNotFound("MISSING BS NUMBER")
         )
         KotlinLogging.logger { }.info { ssfDetails.bsNumber }
+
         req.attributes()["LabResultsParameters"] = labResultsParameters
         req.attributes()["savedPDFFiles"] = qaDaoServices.findSampleSubmittedListPdfBYSSFid(ssfID)
         req.attributes()["foundPDFFiles"] =
@@ -692,7 +696,7 @@ class QualityAssuranceHandler(
 
     }
 
-    @PreAuthorize("hasAuthority('PERMIT_APPLICATION') or hasAuthority('QA_HOD_READ') or hasAuthority('QA_MANAGER_ASSESSORS_READ') or hasAuthority('QA_HOF_READ') or hasAuthority('QA_OFFICER_MODIFY') or hasAuthority('QA_PSC_MEMBERS_READ') or hasAuthority('QA_PCM_READ')")
+    @PreAuthorize("hasAuthority('PERMIT_APPLICATION') or hasAuthority('QA_ASSESSORS_READ') or hasAuthority('QA_HOD_READ') or hasAuthority('QA_MANAGER_ASSESSORS_READ') or hasAuthority('QA_HOF_READ') or hasAuthority('QA_OFFICER_MODIFY') or hasAuthority('QA_PSC_MEMBERS_READ') or hasAuthority('QA_PCM_READ')")
     fun getSSfListDetails(req: ServerRequest): ServerResponse {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         val map = commonDaoServices.serviceMapDetails(appId)
@@ -713,7 +717,7 @@ class QualityAssuranceHandler(
     }
 
 
-    @PreAuthorize(" hasAuthority('QA_OFFICER_READ')")
+    @PreAuthorize(" hasAuthority('QA_OFFICER_READ') or hasAuthority('QA_ASSESSORS_READ')")
     fun checkLabResults(req: ServerRequest): ServerResponse {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         val map = commonDaoServices.serviceMapDetails(appId)
@@ -735,7 +739,7 @@ class QualityAssuranceHandler(
 
 /*:::::::::::::::::::::::::::::::::::::::::::::START OF WORKPLAN(SURVEILLANCE) FUNCTIONS:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
 
-    @PreAuthorize("hasAuthority('QA_HOD_READ') or hasAuthority('QA_MANAGER_ASSESSORS_READ') or hasAuthority('QA_HOF_READ') or hasAuthority('QA_OFFICER_MODIFY') or hasAuthority('QA_PSC_MEMBERS_READ') or hasAuthority('QA_PCM_READ')")
+    @PreAuthorize("hasAuthority('QA_HOD_READ') or hasAuthority('QA_ASSESSORS_READ') or hasAuthority('QA_MANAGER_ASSESSORS_READ') or hasAuthority('QA_HOF_READ') or hasAuthority('QA_OFFICER_MODIFY') or hasAuthority('QA_PSC_MEMBERS_READ') or hasAuthority('QA_PCM_READ')")
     fun inspectionReportDetails(req: ServerRequest): ServerResponse {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         val map = commonDaoServices.serviceMapDetails(appId)
@@ -777,7 +781,7 @@ class QualityAssuranceHandler(
         return ok().render(qaInspectionReportPage, req.attributes())
     }
 
-    @PreAuthorize(" hasAuthority('QA_OFFICER_READ')")
+    @PreAuthorize("hasAuthority('QA_OFFICER_READ') or hasAuthority('QA_ASSESSORS_READ')")
     fun newInspectionReport(req: ServerRequest): ServerResponse {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         val map = commonDaoServices.serviceMapDetails(appId)
@@ -794,7 +798,7 @@ class QualityAssuranceHandler(
     }
 
 
-    @PreAuthorize(" hasAuthority('QA_OFFICER_READ')")
+    @PreAuthorize(" hasAuthority('QA_OFFICER_READ') or hasAuthority('QA_ASSESSORS_READ')")
     fun allWorkPlanList(req: ServerRequest): ServerResponse {
         val loggedInUser = commonDaoServices.loggedInUserDetails()
         val map = commonDaoServices.serviceMapDetails(appId)
@@ -807,7 +811,7 @@ class QualityAssuranceHandler(
         return ok().render(qaAllWorkPlanCreatedListPage, req.attributes())
     }
 
-    @PreAuthorize(" hasAuthority('QA_OFFICER_READ')")
+    @PreAuthorize(" hasAuthority('QA_OFFICER_READ') or hasAuthority('QA_ASSESSORS_READ')")
     fun workPlanDetails(req: ServerRequest): ServerResponse {
         val map = commonDaoServices.serviceMapDetails(appId)
         val loggedInUser = commonDaoServices.loggedInUserDetails()

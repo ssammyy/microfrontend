@@ -709,6 +709,7 @@ export class DmarkComponent implements OnInit, AfterViewInit {
         this.qaService.submitPermitRenewApplication(String(this.allPermitDetails.permitDetails.id)).subscribe(
             (data: AllPermitDetailsDto) => {
                 this.allPermitDetails = data;
+                this.reloadCurrentRoute();
                 console.log(AllPermitDetailsDto);
                 swal.fire({
                     title: 'DMARK Renewed Successfully! Proceed to submit application.',

@@ -2086,14 +2086,14 @@ class QADaoServices(
                 }
             }
 
-            val fileUploaded = findUploadedFileBYId(
-                saveSSF.labReportFileId ?: throw ExpectedDataNotFound("MISSING LAB REPORT FILE ID STATUS")
-            )
-            val fileContent = limsServices.mainFunctionLimsGetPDF(
-                saveSSF.bsNumber ?: throw ExpectedDataNotFound("MISSING LBS NUMBER"),
-                saveSSF.pdfSelectedName ?: throw ExpectedDataNotFound("MISSING FILE NAME")
-            )
-            val mappedFileClass = commonDaoServices.mapClass(fileUploaded)
+//            val fileUploaded = findUploadedFileBYId(
+//                saveSSF.labReportFileId ?: throw ExpectedDataNotFound("MISSING LAB REPORT FILE ID STATUS")
+//            )
+//            val fileContent = limsServices.mainFunctionLimsGetPDF(
+//                saveSSF.bsNumber ?: throw ExpectedDataNotFound("MISSING LBS NUMBER"),
+//                saveSSF.pdfSelectedName ?: throw ExpectedDataNotFound("MISSING FILE NAME")
+//            )
+//            val mappedFileClass = commonDaoServices.mapClass(fileUploaded)
             sendComplianceStatusAndLabReport(
                 permitDetails,
                 complianceValue ?: throw ExpectedDataNotFound("MISSING COMPLIANCE STATUS"),
@@ -3041,23 +3041,34 @@ class QADaoServices(
             }
             savePermit = permitRepo.save(savePermit)
 
-//            when (oldPermit.permitType) {
-////                applicationMapProperties.mapQAPermitTypeIdSmark -> {
-////                    val sta10 = findSTA10WithPermitRefNumberBY(oldPermit.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"))
-////                    var newSta10 = QaSta10Entity()
-////                    newSta10 = commonDaoServices.updateDetails(sta10, newSta10) as QaSta10Entity
-////                    newSta10.id = null
-////                    sta10NewSave(savePermit, newSta10, user, s)
-////                }
-////                applicationMapProperties.mapQAPermitTypeIDDmark -> {
-////                    val sta3 = findSTA3WithPermitRefNumber(oldPermit.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"))
-////                    var newSta3 = QaSta3Entity()
-////                    newSta3 = commonDaoServices.updateDetails(sta3, newSta3) as QaSta3Entity
-////                    newSta3.id = null
-////                    sta3NewSave(savePermit.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"), newSta3, user, s)
-////                }
-//            }
-
+            when (oldPermit.permitType) {
+                applicationMapProperties.mapQAPermitTypeIdSmark -> {
+                    val sta10 = findSTA10WithPermitRefNumberANdPermitID(
+                        oldPermit.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"),
+                        oldPermit.id ?: throw Exception("INVALID PERMIT ID")
+                    )
+                    var newSta10 = QaSta10Entity()
+                    newSta10 = commonDaoServices.updateDetails(sta10, newSta10) as QaSta10Entity
+                    newSta10.id = null
+                    sta10NewSave(savePermit, newSta10, user, s)
+                }
+                applicationMapProperties.mapQAPermitTypeIDDmark -> {
+                    val sta3 = findSTA3WithPermitIDAndRefNumber(
+                        oldPermit.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"),
+                        oldPermit.id ?: throw Exception("INVALID PERMIT ID")
+                    )
+                    var newSta3 = QaSta3Entity()
+                    newSta3 = commonDaoServices.updateDetails(sta3, newSta3) as QaSta3Entity
+                    newSta3.id = null
+                    sta3NewSave(
+                        savePermit.id ?: throw Exception("INVALID PERMITID"),
+                        savePermit.permitRefNumber ?: throw Exception("INVALID PERMITID"),
+                        newSta3,
+                        user,
+                        s
+                    )
+                }
+            }
 
             sr.payload = "Permit Renewed Updated [updatePermit= ${savePermit.id}]"
             sr.names = "${savePermit.permitRefNumber}} ${savePermit.userId}"

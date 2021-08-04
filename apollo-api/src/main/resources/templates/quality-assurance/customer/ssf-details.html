@@ -200,7 +200,9 @@
                                             <th>Compliance Status</th>
                                             <th>View Remarks</th>
                                             <th>View PDF</th>
-                                            <th sec:authorize="hasAuthority('QA_OFFICER_MODIFY')">Action</th>
+                                            <th sec:authorize="hasAuthority('QA_OFFICER_MODIFY') or hasAuthority('QA_ASSESSORS_READ')">
+                                                Action
+                                            </th>
                                             <!--                                            <th>View</th>-->
                                         </tr>
                                         </thead>
@@ -225,7 +227,7 @@
                                                 <a th:href="@{/api/qa/kebs/view/lab-pdf(fileID=${pdfSaved.pdfSavedId})}"
                                                    target='_blank' class="btn btn-primary itemViewBtn">VIEW</a></td>
                                             <td th:if="${pdfSaved?.sentToManufacturerStatus != 1}"
-                                                sec:authorize="hasAuthority('QA_OFFICER_MODIFY')">
+                                                sec:authorize="hasAuthority('QA_OFFICER_MODIFY') or hasAuthority('QA_ASSESSORS_READ')">
                                                 <button onclick="popUpCompanyFunction('addComplianceStatusDetails', this);"
                                                         type="button"
                                                         id="addMyCompliance" th:value="${pdfSaved?.id}"
@@ -252,11 +254,15 @@
                             </div>
                             <div>
 
-                                <div sec:authorize="hasAuthority('QA_OFFICER_MODIFY')">
+                                <div sec:authorize="hasAuthority('QA_OFFICER_MODIFY') or hasAuthority('QA_ASSESSORS_READ')">
                                     <!--                                    <a th:if="${ssfDetails.labResultsStatus == 0}" th:href="@{/api/qa/inspection/check-results(bsNumber=${ssfDetails?.bsNumber})}" class="filter-link" style="color: white">CHECK RESULTS</a>-->
                                     <a onclick="popUpComplianceFunction('addComplianceStatusDetailsSSF');"
                                        class="filter-link" style="color: white">ADD COMPLIANCE DETAILS</a>
                                 </div>
+
+                                <a style="color: white"
+                                   th:href="@{/api/qa/permit-details(permitID=${permitDetails.id},userID=${permitDetails?.userId})}"
+                                   class="filter-link">GO TO PERMIT DETAILS</a>
                             </div>
                         </div>
 

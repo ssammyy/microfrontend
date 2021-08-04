@@ -1429,7 +1429,7 @@ class QualityAssuranceController(
         return commonDaoServices.returnValues(result, map, sm)
     }
 
-    @PreAuthorize("hasAuthority('QA_OFFICER_MODIFY')")
+    @PreAuthorize("hasAuthority('QA_OFFICER_MODIFY') or hasAuthority('QA_ASSESSORS_READ')")
     @PostMapping("/kebs/lab-results-compliance-status/save")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun complianceStatusLabResults(
@@ -1452,7 +1452,7 @@ class QualityAssuranceController(
         return commonDaoServices.returnValues(result, map, sm)
     }
 
-    @PreAuthorize("hasAuthority('QA_OFFICER_MODIFY')")
+    @PreAuthorize("hasAuthority('QA_OFFICER_MODIFY') or hasAuthority('QA_ASSESSORS_READ')")
     @PostMapping("/kebs/ssf-results-compliance-status/save")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun complianceStatusSSF(

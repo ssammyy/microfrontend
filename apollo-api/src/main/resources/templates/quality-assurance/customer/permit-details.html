@@ -999,9 +999,6 @@
                                                style="color: white" class="filter-link">Justification for Diamond Mark
                                                 Assessment</a>
 
-                                        </div>
-
-                                        <div sec:authorize="hasAuthority('QA_ASSESSORS_MODIFY')">
                                             <a th:if="${permitDetails?.inspectionScheduledStatus == null}"
                                                style="color: white" onclick="popUpFunction('scheduleInspectionDate');"
                                                class="filter-link">SCHEDULE INSPECTION</a>
@@ -1019,6 +1016,11 @@
                                             <a th:if="${ permitDetails?.inspectionReportGenerated == 1 and permitDetails?.generateSchemeStatus == null and permitType?.schemeGenerate == 1}"
                                                style="color: white" onclick="popUpUploadFunction('uploadSSC');"
                                                class="filter-link">UPLOAD SCHEME OF SUPERVISION AND CONTROL</a>
+
+
+                                        </div>
+
+                                        <div sec:authorize="hasAuthority('QA_ASSESSORS_MODIFY')">
 
                                             <a th:if="${permitDetails?.assessmentScheduledStatus == null}"
                                                style="color: white" onclick="popUpFunction('scheduleAssessmentDate');"
