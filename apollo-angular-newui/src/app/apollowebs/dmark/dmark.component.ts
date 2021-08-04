@@ -314,9 +314,6 @@ export class DmarkComponent implements OnInit, AfterViewInit {
                             },
                         );
                     }
-                    if (this.allPermitDetails.permitDetails.generateSchemeStatus === true) {
-                        this.pdfSourcesScheme = this.getPdfFile(String(this.allPermitDetails.schemeOfSuperVisionID));
-                    }
                     if (this.allPermitDetails.permitDetails.invoiceGenerated === true) {
                         this.tableData12 = {
                             headerRow: ['Item', 'Details/Fee'],

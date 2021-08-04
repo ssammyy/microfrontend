@@ -931,7 +931,8 @@ placeholder=""
         <br>
         <div id="main19">
             <div class="container">
-                <button (click)="getPdfFile((allPermitDetails?.schemeOfSuperVisionID).toString())" mat-raised-button=""
+                <button (click)="viewPdfFile((allPermitDetails?.schemeOfSuperVision?.id).toString(),(allPermitDetails?.schemeOfSuperVision?.name).toString(),(allPermitDetails?.schemeOfSuperVision?.fileType).toString())"
+                        mat-raised-button=""
                         class="btn btn-kebs mat-raised-button mat-button-base"><span
                         class="mat-button-wrapper">VIEW SCHEME</span>
                     <div matripple="" class="mat-ripple mat-button-ripple"></div>
