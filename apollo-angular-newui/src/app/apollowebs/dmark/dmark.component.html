@@ -1155,8 +1155,8 @@ placeholder=""
                 <div class="mat-button-focus-overlay"></div>
             </button>
             <button *ngIf="allPermitDetails?.permitDetails?.generateSchemeStatus == true && allPermitDetails?.permitDetails?.approvedRejectedScheme == false"
-                    data-toggle="modal" data-target="#noticeModal"
-                    mat-raised-button=""
+                    (click)="openModalUpload('schemeModal')" mat-raised-button="" data-toggle="modal"
+                    data-target="#myModal1"
                     class="btn btn-kebs mat-raised-button mat-button-base"><span class="mat-button-wrapper">AGREE/CONSENT TO SSC</span>
                 <div matripple="" class="mat-ripple mat-button-ripple"></div>
                 <div class="mat-button-focus-overlay"></div>

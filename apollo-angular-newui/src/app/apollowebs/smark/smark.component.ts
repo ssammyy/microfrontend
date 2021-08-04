@@ -378,9 +378,6 @@ export class SmarkComponent implements OnInit {
                             },
                         );
                     }
-                    if (this.allPermitDetails.permitDetails.generateSchemeStatus === true) {
-                        this.pdfSourcesScheme = this.getPdfFile(String(this.allPermitDetails.schemeOfSuperVisionID));
-                    }
                     if (this.allPermitDetails.permitDetails.invoiceGenerated === true) {
                         this.tableData12 = {
                             headerRow: ['Item', 'Details/Fee'],
@@ -414,10 +411,14 @@ export class SmarkComponent implements OnInit {
     }
 
     reloadComponent() {
-        let currentUrl = this.router.url;
+        const currentUrl = this.router.url;
         this.router.routeReuseStrategy.shouldReuseRoute = () => false;
         this.router.onSameUrlNavigation = 'reload';
         this.router.navigate([currentUrl]);
+    }
+
+    reloadCurrentRoute() {
+        location.reload();
     }
 
     viewPdfFile(pdfId: string, fileName: string, applicationType: string): void {
@@ -743,7 +744,7 @@ export class SmarkComponent implements OnInit {
             (data: AllPermitDetailsDto) => {
                 this.allPermitDetails = data;
                 this.SpinnerService.hide();
-                this.reloadComponent();
+                this.reloadCurrentRoute();
                 if (this.allPermitDetails.permitDetails.permitTypeID === this.FMarkTypeID) {
 
                     swal.fire({
@@ -779,7 +780,7 @@ export class SmarkComponent implements OnInit {
             (data: AllPermitDetailsDto) => {
                 this.allPermitDetails = data;
                 this.SpinnerService.hide();
-                this.reloadComponent();
+                this.reloadCurrentRoute();
                 console.log(AllPermitDetailsDto);
                 if (this.allPermitDetails.permitDetails.permitTypeID === this.FMarkTypeID) {
                     swal.fire({
@@ -814,7 +815,7 @@ export class SmarkComponent implements OnInit {
             (data: AllPermitDetailsDto) => {
                 this.allPermitDetails = data;
                 this.SpinnerService.hide();
-                this.reloadComponent();
+                this.reloadCurrentRoute();
                 if (this.allPermitDetails.permitDetails.permitTypeID === this.FMarkTypeID) {
                     swal.fire({
                         title: 'FMARK SUBMITTED SUCCESSFULLY FOR REVIEW HOD/RM!',
@@ -895,7 +896,7 @@ export class SmarkComponent implements OnInit {
             this.qaService.uploadFile(String(this.allPermitDetails.permitDetails.id), this.upLoadDescription, formData).subscribe(
                 (data: any) => {
                     this.SpinnerService.hide();
-                    this.reloadComponent();
+                    this.reloadCurrentRoute();
                     console.log(data);
                     swal.fire({
                         title: 'UPLOADED SUCCESSFULLY',

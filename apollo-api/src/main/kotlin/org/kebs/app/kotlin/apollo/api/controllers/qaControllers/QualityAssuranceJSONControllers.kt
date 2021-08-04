@@ -116,7 +116,7 @@ class QualityAssuranceJSONControllers(
         }
 
         with(permitDetails) {
-            sta10FilledStatus = map.inactiveStatus
+            sta10FilledStatus = map.activeStatus
             permitStatus = applicationMapProperties.mapQaStatusPSubmission
         }
 

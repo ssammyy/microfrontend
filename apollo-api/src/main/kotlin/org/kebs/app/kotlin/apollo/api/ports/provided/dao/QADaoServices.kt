@@ -1322,6 +1322,17 @@ class QADaoServices(
         }
     }
 
+    fun filesDtoDetails(f: QaUploadsEntity): FilesListDto {
+        return FilesListDto(
+            f.id,
+            f.name,
+            f.fileType,
+            f.documentType,
+            f.versionNumber,
+            f.document,
+        )
+    }
+
     fun listSTA10RawMaterials(qaRawMaterialEntity: List<QaRawMaterialEntity>): List<STA10RawMaterialsDto> {
         return qaRawMaterialEntity.map { p ->
             STA10RawMaterialsDto(
@@ -1644,7 +1655,7 @@ class QADaoServices(
                 permit.id ?: throw Exception("Missing Permit ID"),
                 permit.permitRefNumber ?: throw Exception("Missing Permit Ref Number")
             ),
-            permit.sscId,
+            permit.sscId?.let { findUploadedFileBYId(it).let { f -> filesDtoDetails(f) } },
             batchID
         )
     }

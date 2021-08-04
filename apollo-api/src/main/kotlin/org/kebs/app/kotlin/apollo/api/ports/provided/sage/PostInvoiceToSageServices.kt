@@ -1,27 +1,13 @@
 package org.kebs.app.kotlin.apollo.api.ports.provided.sage
 
+import com.google.gson.Gson
 import kotlinx.coroutines.runBlocking
-import mu.KotlinLogging
-import org.apache.commons.codec.binary.Base64
-import org.apache.commons.io.FileUtils
-import org.apache.commons.io.IOUtils
-import org.apache.http.HttpHeaders
-import org.apache.http.HttpResponse
-import org.apache.http.NameValuePair
-import org.apache.http.client.ClientProtocolException
-import org.apache.http.client.ResponseHandler
-import org.apache.http.client.entity.UrlEncodedFormEntity
-import org.apache.http.client.methods.HttpPost
-import org.apache.http.impl.client.CloseableHttpClient
-import org.apache.http.impl.client.HttpClients
-import org.apache.http.impl.client.LaxRedirectStrategy
-import org.apache.http.message.BasicNameValuePair
 import org.jasypt.encryption.StringEncryptor
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DaoService
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.InvoiceDaoService
-import org.kebs.app.kotlin.apollo.api.ports.provided.mpesa.requests.MpesaTransactionsRequest
-import org.kebs.app.kotlin.apollo.api.ports.provided.mpesa.response.MpesaPushResponse
+import org.kebs.app.kotlin.apollo.api.ports.provided.sage.requests.Header
+import org.kebs.app.kotlin.apollo.api.ports.provided.sage.requests.Request
 import org.kebs.app.kotlin.apollo.api.ports.provided.sage.requests.RootRequest
 import org.kebs.app.kotlin.apollo.api.ports.provided.sage.response.RootResponse
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
@@ -30,14 +16,6 @@ import org.kebs.app.kotlin.apollo.store.model.WorkflowTransactionsEntity
 import org.kebs.app.kotlin.apollo.store.model.invoice.LogStgPaymentReconciliationDetailsToSageEntity
 import org.kebs.app.kotlin.apollo.store.repo.ILogStgPaymentReconciliationDetailsToSageRepo
 import org.springframework.stereotype.Service
-import java.io.File
-import java.io.IOException
-import java.io.InputStream
-import java.math.BigDecimal
-import java.net.URL
-import java.sql.Timestamp
-import java.time.Instant
-import javax.activation.MimetypesFileTypeMap
 
 
 @Service
@@ -56,27 +34,31 @@ class PostInvoiceToSageServices(
         val invoiceFound = invoiceDaoService.findInvoiceStgReconciliationDetailsByID(stgID)
         runBlocking {
 
-            val rootRequest = RootRequest()
-            with(rootRequest.header) {
-                this?.serviceName = "Thirdparty"
-                this?.messageID = invoiceFound.referenceCode
-                this?.connectionID = jasyptStringEncryptor.decrypt(config.username)
-                this?.connectionPassword = jasyptStringEncryptor.decrypt(config.password)
+
+            val headerBody = Header().apply {
+                serviceName = "Thirdparty"
+                messageID = invoiceFound.referenceCode
+                connectionID = jasyptStringEncryptor.decrypt(config.username)
+                connectionPassword = jasyptStringEncryptor.decrypt(config.password)
             }
-            with(rootRequest.request) {
-                this?.documentNo = invoiceFound.referenceCode
-                this?.documentDate = invoiceFound.invoiceDate.toString()
-                this?.docType = 1
-                this?.currencyCode = "KES"
-                this?.customerCode = "HQS-0662"
-                this?.customerName = invoiceFound.customerName
-                this?.invoiceDesc = "Laboratory Analysis Fees"
-                this?.revenueAcc = "10020-100-04"
-                this?.revenueAccDesc = "Laboratory Analysis Fees- Testing Dept"
-                this?.taxable = 1
-                this?.invoiceAmnt = invoiceFound.invoiceAmount ?: throw Exception("INVOICE AMOUNT CANNOT BE NULL")
+            val requestBody = Request().apply {
+                documentNo = invoiceFound.referenceCode
+                documentDate = invoiceFound.invoiceDate.toString()
+                docType = 1
+                currencyCode = "KES"
+                customerCode = "HQS-0662"
+                customerName = invoiceFound.customerName
+                invoiceDesc = "Laboratory Analysis Fees"
+                revenueAcc = "10020-100-04"
+                revenueAccDesc = "Laboratory Analysis Fees- Testing Dept"
+                taxable = 1
+                invoiceAmnt = invoiceFound.invoiceAmount ?: throw Exception("INVOICE AMOUNT CANNOT BE NULL")
             }
 
+            val rootRequest = RootRequest().apply {
+                header = headerBody
+                request = requestBody
+            }
 
             var transactionsRequest = LogStgPaymentReconciliationDetailsToSageEntity()
             with(transactionsRequest) {
@@ -109,15 +91,19 @@ class PostInvoiceToSageServices(
             headerParameters["connectionID"] = rootRequest.header?.connectionID.toString()
             headerParameters["connectionPassword"] = rootRequest.header?.connectionPassword.toString()
 
+//            val requestBody = Gson().toJson(rootRequest.request)
+
+//            println("DATA BEING SENT =$requestBody")
+
             val log = daoService.createTransactionLog(0, "${invoiceFound.referenceCode}_1")
             val resp = daoService.getHttpResponseFromPostCall(
                 false,
                 configUrl,
                 null,
-                rootRequest.request,
+                rootRequest,
                 config,
                 null,
-                headerParameters
+                null
             )
             val response: Triple<WorkflowTransactionsEntity, RootResponse?, io.ktor.client.statement.HttpResponse?> =
                 daoService.processResponses(resp, log, configUrl, config)
