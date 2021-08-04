@@ -746,7 +746,6 @@ export class SmarkComponent implements OnInit {
                 this.SpinnerService.hide();
                 this.reloadCurrentRoute();
                 if (this.allPermitDetails.permitDetails.permitTypeID === this.FMarkTypeID) {
-
                     swal.fire({
                         title: 'FMARK SUBMITTED SUCCESSFULLY PENDING PAYMENT!',
                         buttonsStyling: false,

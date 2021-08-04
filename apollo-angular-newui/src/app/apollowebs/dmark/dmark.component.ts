@@ -363,6 +363,10 @@ export class DmarkComponent implements OnInit, AfterViewInit {
         );
     }
 
+    reloadCurrentRoute() {
+        location.reload();
+    }
+
     downloadPdfFile(data: string, fileName: string): void {
         this.blob = new Blob([data], {type: 'application/pdf'});
 
@@ -436,6 +440,7 @@ export class DmarkComponent implements OnInit, AfterViewInit {
             this.qaService.submitPermitForReview(String(this.allPermitDetails.permitDetails.id)).subscribe(
                 (data: AllPermitDetailsDto) => {
                     this.allPermitDetails = data;
+                    this.reloadCurrentRoute();
                     swal.fire({
                         title: 'DMARK SUBMITTED SUCCESSFULLY FOR REVIEW FROM PCM!',
                         buttonsStyling: false,
@@ -457,6 +462,7 @@ export class DmarkComponent implements OnInit, AfterViewInit {
         this.qaService.submitPermitForReviewHODQAM(String(this.allPermitDetails.permitDetails.id)).subscribe(
             (data: AllPermitDetailsDto) => {
                 this.allPermitDetails = data;
+                this.reloadCurrentRoute();
                 swal.fire({
                     title: 'DMARK SUBMITTED SUCCESSFULLY FOR REVIEW HOD/RM!',
                     buttonsStyling: false,
@@ -476,6 +482,7 @@ export class DmarkComponent implements OnInit, AfterViewInit {
         this.qaService.submitPermitApplication(String(this.allPermitDetails.permitDetails.id)).subscribe(
             (data: AllPermitDetailsDto) => {
                 this.allPermitDetails = data;
+                this.reloadCurrentRoute();
                 swal.fire({
                     title: 'DMARK SUBMITTED SUCCESSFULLY PENDING PAYMENT!',
                     buttonsStyling: false,
@@ -498,6 +505,7 @@ export class DmarkComponent implements OnInit, AfterViewInit {
         this.qaService.submitSSCApprovalRejection(String(this.allPermitDetails.permitDetails.id), this.approveRejectSSCForm.value).subscribe(
             (data: PermitEntityDetails) => {
                 this.allPermitDetails.permitDetails = data;
+                this.reloadCurrentRoute();
                 this.SpinnerService.hide();
                 swal.fire({
                     title: 'PERMIT APPLICATION SSC UPDATED SUCCESSFULLY!',
@@ -757,6 +765,7 @@ export class DmarkComponent implements OnInit, AfterViewInit {
             this.qaService.uploadFile(String(this.allPermitDetails.permitDetails.id), this.upLoadDescription, formData).subscribe(
                 (data: any) => {
                     this.SpinnerService.hide();
+                    this.reloadCurrentRoute();
                     console.log(data);
                     swal.fire({
                         title: 'UPLOADED SUCCESSFULLY',
