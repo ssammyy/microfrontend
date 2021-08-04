@@ -686,7 +686,7 @@ class QualityAssuranceHandler(
         req.attributes()["foundPDFFiles"] =
             limsServices.checkPDFFiles(ssfDetails.bsNumber ?: throw ExpectedDataNotFound("MISSING BS NUMBER"))
         req.attributes()["complianceDetails"] = QaSampleSubmittedPdfListDetailsEntity()
-
+        req.attributes()["SampleSubmissionDetails"] = QaSampleSubmissionEntity()
 
         return ok().render(qaSSFDetailesPage, req.attributes())
 
