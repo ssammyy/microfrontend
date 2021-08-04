@@ -214,6 +214,11 @@ class CommonDaoServices(
         return date
     }
 
+    fun convertDateToSAGEDate(dateChange: Date): String {
+        val sdf = SimpleDateFormat("mm/dd/yyyy")
+        return sdf.format(dateChange)
+    }
+
     fun convertDateToString(date: Date, format: String): String {
         val format = SimpleDateFormat(format)
         return format.format(date)

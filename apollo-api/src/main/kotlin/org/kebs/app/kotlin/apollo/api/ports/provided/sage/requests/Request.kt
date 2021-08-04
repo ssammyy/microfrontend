@@ -1,7 +1,9 @@
 package org.kebs.app.kotlin.apollo.api.ports.provided.sage.requests
 
+import com.fasterxml.jackson.annotation.JsonFormat
 import com.fasterxml.jackson.annotation.JsonProperty
 import java.math.BigDecimal
+import java.sql.Date
 
 // import com.fasterxml.jackson.databind.ObjectMapper; // version 2.11.1
 // import com.fasterxml.jackson.annotation.JsonProperty; // version 2.11.1
@@ -19,7 +21,8 @@ class Request {
     var documentNo: String? = null
 
     @JsonProperty("DocumentDate")
-    var documentDate: String? = null
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MM/dd/yyyy")
+    var documentDate: Date? = null
 
     @JsonProperty("DocType")
     var docType: Int? = null

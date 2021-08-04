@@ -43,7 +43,7 @@ class PostInvoiceToSageServices(
             }
             val requestBody = Request().apply {
                 documentNo = invoiceFound.referenceCode
-                documentDate = invoiceFound.invoiceDate.toString()
+                documentDate = invoiceFound.invoiceDate
                 docType = 1
                 currencyCode = "KES"
                 customerCode = "HQS-0662"
@@ -68,7 +68,7 @@ class PostInvoiceToSageServices(
                 connectionId = rootRequest.header?.connectionID
                 connectionPassword = rootRequest.header?.connectionPassword
                 requestDocumentNo = rootRequest.request?.documentNo
-                documentDate = rootRequest.request?.documentDate
+                documentDate = rootRequest.request?.documentDate.toString()
                 docType = rootRequest.request?.docType.toString()
                 currencyCode = rootRequest.request?.currencyCode
                 customerCode = rootRequest.request?.customerCode

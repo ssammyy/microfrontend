@@ -1,21 +1,21 @@
 {
-  "HEADER": {
-    "transmissionDate": "29-03-2021T16:14:35",
-    "loginId": " KEBSUSER",
-    "password": "password@1",
-    "hash": "1e1ab2efd54f40fdaac2ed9f9825e3b0d0f2984fd114c82f7dc891c2ffc94c8b",
-    "noOfRecords": "1"
+  "header": {
+    "serviceName": "Thirdparty",
+    "messageID": "KIMSINVOICE#202108044744D",
+    "connectionID": "",
+    "connectionPassword": ""
   },
-  "PENALTYINFO": [
-    {
-      "entryNo": "4633",
-      "kraPin": "P051136200I",
-      "manufacName": "RENOCON LTD",
-      "periodFrom": "01-03-2021",
-      "periodTo": "31-03-2021",
-      "penaltyGenDate": "25-03-2021",
-      "penaltyPayable": 10000,
-      "PenaltyOrderNo": "30"
-    }
-  ]
+  "request": {
+    "DocumentNo": "KIMSINVOICE#202108044744D",
+    "DocumentDate": "08/04/2021",
+    "DocType": 1,
+    "CurrencyCode": "KES",
+    "CustomerCode": "HQS-0662",
+    "CustomerName": "Ian Kiprono",
+    "InvoiceDesc": "Laboratory Analysis Fees",
+    "RevenueAcc": "10020-100-04",
+    "RevenueAccDesc": "Laboratory Analysis Fees- Testing Dept",
+    "Taxable": 1,
+    "InvoiceAmnt": 191400
+  }
 }
