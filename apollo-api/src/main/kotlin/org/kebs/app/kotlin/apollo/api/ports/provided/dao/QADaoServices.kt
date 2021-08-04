@@ -3252,7 +3252,7 @@ class QADaoServices(
         val permitType = findPermitType(permitTypeID)
         val permitUser =
             commonDaoServices.findUserByID(permit.userId ?: throw ExpectedDataNotFound("Permit USER Id Not found"))
-        permitInvoiceCalculation(s, permitUser, permit, permitType)
+        permitInvoiceCalculation(s, permitUser, permit)
         with(permit) {
             sendApplication = s.activeStatus
             invoiceGenerated = s.activeStatus
@@ -3625,7 +3625,7 @@ class QADaoServices(
                         ?: kotlin.run {
                             var batchInvoicePermit = QaBatchInvoiceEntity()
                             with(batchInvoicePermit) {
-                                invoiceNumber = "KIMS${permitType.markNumber}${
+                                invoiceNumber = "KIMS${
                                     generateRandomText(
                                         5,
                                         s.secureRandom,
@@ -3898,7 +3898,6 @@ class QADaoServices(
         s: ServiceMapsEntity,
         user: UsersEntity,
         permit: PermitApplicationsEntity,
-        permitType: PermitTypesEntity
     ): Pair<ServiceRequestsEntity, QaInvoiceMasterDetailsEntity?> {
 
         var sr = commonDaoServices.createServiceRequest(s)
@@ -3907,10 +3906,12 @@ class QADaoServices(
 
             val userDetails =
                 commonDaoServices.findUserByID(permit.userId ?: throw Exception("MISSING USER ID ON PERMIT DETAILS"))
+            val permitType = findPermitType(permit.permitType ?: throw Exception("MISSING PERMIT TYPE ID"))
             val companyDetails = commonDaoServices.findCompanyProfileWithID(
                 userDetails.companyId ?: throw Exception("MISSING COMPANY ID ON USER DETAILS")
             )
             val plantDetail = findPlantDetails(permit.attachedPlantId ?: throw Exception("INVALID PLANT ID"))
+            KotlinLogging.logger { }.info { "PLANT ID = ${plantDetail.id}" }
             val manufactureTurnOver =
                 companyDetails.yearlyTurnover ?: throw Exception("MISSING COMPANY TURNOVER DETAILS")
             val productsManufacture = findAllProductManufactureInPlantWithPlantID(
@@ -3920,8 +3921,7 @@ class QADaoServices(
                 permitType.id ?: throw Exception("MISSING PERMIT TYPE ID"),
                 plantDetail.id
             )
-//            val invoiceGenerated = invoiceGen(permit, userCompany, user, permitType)
-
+            KotlinLogging.logger { }.info { "PRODUCT SIZE = ${productsManufacture.size}" }
             when (permitType.id) {
                 applicationMapProperties.mapQAPermitTypeIdSmark -> {
                     invoiceGenerated = qaInvoiceCalculation.calculatePaymentSMark(

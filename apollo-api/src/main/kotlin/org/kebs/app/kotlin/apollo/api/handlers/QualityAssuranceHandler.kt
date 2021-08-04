@@ -51,7 +51,6 @@ import org.springframework.web.servlet.function.ServerResponse.badRequest
 import org.springframework.web.servlet.function.ServerResponse.ok
 import org.springframework.web.servlet.function.body
 import org.springframework.web.servlet.function.paramOrNull
-import java.io.File
 
 
 @Component
@@ -1406,7 +1405,7 @@ class QualityAssuranceHandler(
             )
 
             //Calculate Invoice Details
-            val invoiceCreated = qaDaoServices.permitInvoiceCalculation(map, loggedInUser, permit, permitType).second
+            val invoiceCreated = qaDaoServices.permitInvoiceCalculation(map, loggedInUser, permit).second
 
             //Update Permit Details
             with(permit) {

@@ -10,7 +10,9 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.sage.requests.Header
 import org.kebs.app.kotlin.apollo.api.ports.provided.sage.requests.Request
 import org.kebs.app.kotlin.apollo.api.ports.provided.sage.requests.RootRequest
 import org.kebs.app.kotlin.apollo.api.ports.provided.sage.response.RootResponse
+import org.kebs.app.kotlin.apollo.common.utils.generateRandomText
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
+import org.kebs.app.kotlin.apollo.store.model.ServiceMapsEntity
 import org.kebs.app.kotlin.apollo.store.model.UsersEntity
 import org.kebs.app.kotlin.apollo.store.model.WorkflowTransactionsEntity
 import org.kebs.app.kotlin.apollo.store.model.invoice.LogStgPaymentReconciliationDetailsToSageEntity
@@ -27,7 +29,7 @@ class PostInvoiceToSageServices(
     private val daoService: DaoService,
     private val invoiceDaoService: InvoiceDaoService
 ) {
-    fun postInvoiceTransactionToSage(stgID: Long, user: UsersEntity) {
+    fun postInvoiceTransactionToSage(stgID: Long, user: UsersEntity, map: ServiceMapsEntity) {
         val config =
             commonDaoServices.findIntegrationConfigurationEntity(applicationMapProperties.mapSageConfigIntegration)
         val configUrl = config.url ?: throw Exception("URL CANNOT BE NULL")
@@ -37,7 +39,8 @@ class PostInvoiceToSageServices(
 
             val headerBody = Header().apply {
                 serviceName = "Thirdparty"
-                messageID = invoiceFound.referenceCode
+                messageID =
+                    "SAGEREF${generateRandomText(3, map.secureRandom, map.messageDigestAlgorithm, true).toUpperCase()}"
                 connectionID = jasyptStringEncryptor.decrypt(config.username)
                 connectionPassword = jasyptStringEncryptor.decrypt(config.password)
             }

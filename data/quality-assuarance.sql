@@ -95,6 +95,21 @@ where PERMIT_REF_NUMBER = 'REFSM#202106098701C'
 order by id desc;
 
 select *
+from CFG_KEBS_PERMIT_RATING
+-- where id = 503
+
+-- where PERMIT_NUMBER = 'DM#0954A'
+order by id desc;
+
+select *
+from DAT_KEBS_MANUFACTURE_PLANT_DETAILS
+where id = 681
+
+-- where PERMIT_NUMBER = 'DM#0954A'
+order by id desc;
+
+
+select *
 from dat_kebs_qa_batch_invoice
 -- where id = 503
 

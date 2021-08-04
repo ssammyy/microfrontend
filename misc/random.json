@@ -1,12 +1,12 @@
 {
   "header": {
     "serviceName": "Thirdparty",
-    "messageID": "KIMSINVOICE#202108044744D",
+    "messageID": "SAGEREF202108048C9",
     "connectionID": "",
     "connectionPassword": ""
   },
   "request": {
-    "DocumentNo": "KIMSINVOICE#202108044744D",
+    "DocumentNo": "KIMS202108044744D",
     "DocumentDate": "08/04/2021",
     "DocType": 1,
     "CurrencyCode": "KES",

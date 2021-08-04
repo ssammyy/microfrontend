@@ -207,7 +207,8 @@
                                         <tr class="list" th:each="pdfSaved: ${savedPDFFiles}" style="cursor: pointer">
 
                                             <td th:text="${pdfSaved?.pdfName}"></td>
-                                            <td th:if="${pdfSaved?.complianceStatus == null}" th:text=""></td>
+                                            <td th:if="${pdfSaved?.complianceStatus == null}"
+                                                th:text="'NO COMPLIANT STATUS PICKED YET'"></td>
                                             <td th:if="${pdfSaved?.complianceStatus != null}"
                                                 th:text="${pdfSaved?.complianceStatus} ? 'COMPLIANT' : 'NOT-COMPLIANT'"></td>
                                             <td>
