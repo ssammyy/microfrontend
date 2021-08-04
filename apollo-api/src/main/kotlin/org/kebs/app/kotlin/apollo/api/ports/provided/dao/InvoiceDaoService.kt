@@ -22,7 +22,7 @@ import java.math.BigDecimal
 class InvoiceDaoService(
     private val invoiceBatchDetailsRepo: InvoiceBatchDetailsRepo,
 //        private val diDaoServices: DestinationInspectionDaoServices,
-    private val postInvoiceToSageServices: PostInvoiceToSageServices,
+//    private val postInvoiceToSageServices: PostInvoiceToSageServices,
     private val invoicePaymentRepo: IStagingPaymentReconciliationRepo,
     private val iPaymentMethodsRepo: IPaymentMethodsRepository,
     private val applicationMapProperties: ApplicationMapProperties,
@@ -36,6 +36,10 @@ class InvoiceDaoService(
     @Lazy
     @Autowired
     lateinit var qaDaoServices: QADaoServices
+
+    @Lazy
+    @Autowired
+    lateinit var postInvoiceToSageServices: PostInvoiceToSageServices
 
     final val appId = applicationMapProperties.mapInvoiceTransactions
     val map = commonDaoServices.serviceMapDetails(appId)

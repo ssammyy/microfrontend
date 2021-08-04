@@ -70,14 +70,14 @@
                                                 <div class="list-text-accordion"
                                                      th:text="${ssfDetails?.resultsDate}"></div>
                                             </li>
-                                            <li th:if="${ssfDetails?.labReportFileId != null}"
-                                                class="list-item-accordion">
-                                                <div class="list-title-accordion">VIEW ATTACHED PDF RESULTS:</div>
-                                                <div class="list-text-accordion"><a
-                                                        th:href="@{/api/qa/kebs/view/attached(fileID=${ssfDetails.labReportFileId})}"
-                                                        target='_blank' class="btn btn-primary itemViewBtn">VIEW</a>
-                                                </div>
-                                            </li>
+                                            <!--                                            <li th:if="${ssfDetails?.labReportFileId != null}"-->
+                                            <!--                                                class="list-item-accordion">-->
+                                            <!--                                                <div class="list-title-accordion">VIEW ATTACHED PDF RESULTS:</div>-->
+                                            <!--                                                <div class="list-text-accordion"><a-->
+                                            <!--                                                        th:href="@{/api/qa/kebs/view/attached(fileID=${ssfDetails.labReportFileId})}"-->
+                                            <!--                                                        target='_blank' class="btn btn-primary itemViewBtn">VIEW</a>-->
+                                            <!--                                                </div>-->
+                                            <!--                                            </li>-->
                                             <li th:if="${ssfDetails?.resultsAnalysis != null}"
                                                 class="list-item-accordion">
                                                 <div class="list-title-accordion">RESULTS ANALYSIS:</div>
@@ -218,18 +218,18 @@
                                                         type="button"
                                                         id="addMyComplianceRemark"
                                                         th:value="${pdfSaved?.complianceRemarks}"
-                                                        class="btn btn-primary itemViewBtn">view
+                                                        class="btn btn-primary itemViewBtn">VIEW
                                                 </button>
                                             </td>
                                             <td>
                                                 <a th:href="@{/api/qa/kebs/view/lab-pdf(fileID=${pdfSaved.pdfSavedId})}"
-                                                   target='_blank' class="btn btn-primary itemViewBtn">view</a></td>
+                                                   target='_blank' class="btn btn-primary itemViewBtn">VIEW</a></td>
                                             <td th:if="${pdfSaved?.sentToManufacturerStatus != 1}"
                                                 sec:authorize="hasAuthority('QA_OFFICER_MODIFY')">
                                                 <button onclick="popUpCompanyFunction('addComplianceStatusDetails', this);"
                                                         type="button"
                                                         id="addMyCompliance" th:value="${pdfSaved?.id}"
-                                                        class="btn btn-primary itemViewBtn">add compliance
+                                                        class="btn btn-primary itemViewBtn">ADD COMPLIANCE
                                                 </button>
                                             </td>
                                         </tr>

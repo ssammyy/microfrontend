@@ -982,7 +982,7 @@
                                                 Justification
                                                 for Diamond Mark Assessment</a>
 
-                                            <a th:if="${permitDetails?.justificationReportStatus == 1 and permitDetails?.assignAssessorStatus == null}"
+                                            <a th:if="${permitDetails?.assignAssessorStatus == null}"
                                                style="color: white" onclick="popUpFunction('assignAssessor');"
                                                class="filter-link">Assign Assessor</a>
 
@@ -993,6 +993,15 @@
                                         </div>
 
                                         <div sec:authorize="hasAuthority('QA_OFFICER_MODIFY')">
+
+                                            <a th:if="${permitDetails?.compliantStatus == 1 and permitDetails?.justificationReportStatus == null}"
+                                               th:href="@{/api/qa/product-quality-status(permitID=${permitDetails?.id})}"
+                                               style="color: white" class="filter-link">Justification for Diamond Mark
+                                                Assessment</a>
+
+                                        </div>
+
+                                        <div sec:authorize="hasAuthority('QA_ASSESSORS_MODIFY')">
                                             <a th:if="${permitDetails?.inspectionScheduledStatus == null}"
                                                style="color: white" onclick="popUpFunction('scheduleInspectionDate');"
                                                class="filter-link">SCHEDULE INSPECTION</a>
@@ -1001,11 +1010,6 @@
                                                style="color: white"
                                                th:href="@{/api/qa/inspection/new-inspection-report(permitID=${permitDetails?.id})}"
                                                class="filter-link">GENERATE INSPECTION REPORT </a>
-
-                                            <!--                                            <a th:if="${permitDetails?.inspectionReportGenerated == null and permitDetails?.factoryInspectionReportApprovedRejectedStatus == null }"-->
-                                            <!--                                               style="color: white"-->
-                                            <!--                                               th:href="@{/api/qa/inspection/inspection-report-details(permitID=${permitDetails?.id})}"-->
-                                            <!--                                               class="filter-link">CONTINUE GENERATING INSPECTION REPORT </a>-->
 
                                             <a th:if="${permitDetails?.inspectionReportGenerated == 1 and permitDetails?.factoryInspectionReportApprovedRejectedStatus == 0 }"
                                                style="color: white"
@@ -1016,18 +1020,6 @@
                                                style="color: white" onclick="popUpUploadFunction('uploadSSC');"
                                                class="filter-link">UPLOAD SCHEME OF SUPERVISION AND CONTROL</a>
 
-                                            <!--                                            <a th:if="${permitDetails?.inspectionReportId == null}" style="color: white"-->
-                                            <!--                                               onclick="popUpUploadFunction('uploadInspectionReport');"-->
-                                            <!--                                               class="filter-link">UPLOAD INSPECTION REPORT</a>-->
-
-                                            <a th:if="${permitDetails?.compliantStatus == 1 and permitDetails?.justificationReportStatus == null}"
-                                               th:href="@{/api/qa/product-quality-status(permitID=${permitDetails?.id})}"
-                                               style="color: white" class="filter-link">Justification for Diamond Mark
-                                                Assessment</a>
-
-                                        </div>
-
-                                        <div sec:authorize="hasAuthority('QA_ASSESSORS_MODIFY')">
                                             <a th:if="${permitDetails?.assessmentScheduledStatus == null}"
                                                style="color: white" onclick="popUpFunction('scheduleAssessmentDate');"
                                                class="filter-link">SCHEDULE ASSESSMENT</a>

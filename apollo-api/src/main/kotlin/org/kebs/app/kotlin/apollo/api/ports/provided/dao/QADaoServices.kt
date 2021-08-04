@@ -2069,6 +2069,7 @@ class QADaoServices(
                 map.activeStatus -> {
                     complianceValue = "COMPLIANT"
                     if (permitDetails.permitType == applicationMapProperties.mapQAPermitTypeIDDmark) {
+                        permitDetails.userTaskId = applicationMapProperties.mapUserTaskNameQAO
                         permitInsertStatus(
                             permitDetails,
                             applicationMapProperties.mapQaStatusPGeneJustCationReport,
