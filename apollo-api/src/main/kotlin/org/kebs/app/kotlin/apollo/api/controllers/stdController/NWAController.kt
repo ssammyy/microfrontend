@@ -1,8 +1,12 @@
 package org.kebs.app.kotlin.apollo.api.controllers.stdController
 
+import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.std.*
 import org.kebs.app.kotlin.apollo.common.dto.std.*
+import org.kebs.app.kotlin.apollo.store.model.qa.QaUploadsEntity
 import org.kebs.app.kotlin.apollo.store.model.std.*
+import org.kebs.app.kotlin.apollo.store.repo.std.NwaJustificationRepository
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -11,12 +15,17 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder
 import java.util.stream.Collectors
 import org.springframework.http.HttpHeaders
 import org.springframework.security.access.prepost.PreAuthorize
+import org.springframework.transaction.annotation.Propagation
+import org.springframework.transaction.annotation.Transactional
+import org.springframework.ui.Model
 
 
 @RestController
-@CrossOrigin(origins = ["http://localhost:4200"])
-@RequestMapping("api/v1/nwa")
+//@CrossOrigin(origins = ["http://localhost:4200"])
+@RequestMapping("api/v1/migration/nwa")
 class NWAController(val nwaService: NWAService,
+                    private val commonDaoServices: CommonDaoServices,
+                    private val nwaJustificationRepository: NwaJustificationRepository,
                     val standardReviewFormService: StandardReviewFormService,
                     val nwaJustificationFileService: NwaJustificationFileService,
                     val nwaDiJustificationFileService: NwaDiJustificationFileService
@@ -55,8 +64,41 @@ class NWAController(val nwaService: NWAService,
     @PreAuthorize("hasAuthority('KNW_SEC_MODIFY')")
     @PostMapping("/prepareJustification")
     @ResponseBody
-    fun prepareJustification(@RequestBody nwaJustification: NWAJustification): ServerResponse{
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun prepareJustification(
+        @RequestBody nwaJustification: NWAJustification
+    ): ServerResponse{
         return ServerResponse(HttpStatus.OK,"Successfully uploaded Justification",nwaService.prepareJustification(nwaJustification))
+    }
+
+    @PreAuthorize("hasAuthority('KNW_SEC_MODIFY')")
+    @PostMapping("/file-upload")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun uploadFiles(
+        @RequestParam("nwaJustificationID") nwaJustificationID: Long,
+        @RequestParam("docFile") docFile: List<MultipartFile>,
+        model: Model
+    ): CommonDaoServices.MessageSuccessFailDTO {
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val nwaJustification = nwaJustificationRepository.findByIdOrNull(nwaJustificationID)?: throw Exception("NWA JUSTIFICATION ID DOES NOT EXIST")
+
+        docFile.forEach { u ->
+            val upload = DatKebsSdNwaUploadsEntity()
+            with(upload) {
+                nwaDocumentId = nwaJustification.id
+            }
+            nwaService.uploadSDFile(
+                upload,
+                u,
+                "UPLOADS",
+                loggedInUser
+            )
+        }
+
+        val sm = CommonDaoServices.MessageSuccessFailDTO()
+        sm.message = "Document Uploaded successful"
+
+        return sm
     }
 
     //********************************************************** get spc_sec Tasks **********************************************************

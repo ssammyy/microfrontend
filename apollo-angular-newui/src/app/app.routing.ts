@@ -33,6 +33,8 @@ import {TaskManagerComponent} from "./apollowebs/task-manager/task-manager.compo
 import {AddUserComponent} from "./apollowebs/company/branch/add-user/add-user.component";
 import {FmarkApplicationComponent} from "./apollowebs/fmark-application/fmark-application.component";
 import {SmarkComponent} from "./apollowebs/smark/smark.component";
+import {NwaJustificationFormComponent} from "./apollowebs/standards-development/nwa-justification-form/nwa-justification-form.component";
+import {InformationcheckComponent} from "./apollowebs/standards-development/informationcheck/informationcheck.component";
 
 // export const AppRoutes: Routes = [
 //     {
@@ -296,6 +298,14 @@ export const routes: Routes = [
     {
         path: 'smarkpermitdetails', component: AdminLayoutComponent,
         children: [{path: '', component: SmarkComponent}]
+    },
+    {
+        path: 'nwaJustification', component: AdminLayoutComponent,
+        children: [{path: '', component: NwaJustificationFormComponent}]
+    },
+    {
+        path: 'nep_information_received', component: AdminLayoutComponent,
+        children: [{path: '', component: InformationcheckComponent}]
     },
 ];
 

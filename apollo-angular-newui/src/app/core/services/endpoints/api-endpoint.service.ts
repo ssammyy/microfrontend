@@ -50,7 +50,8 @@ export class ApiEndpointService {
     public static QA_CONTEXT_APPLY = `${ApiEndpointService.QA_CONTEXT}/permit/apply`;
     public static QA_CONTEXT_VIEW = `${ApiEndpointService.QA_CONTEXT}/permit/view`;
     public static ADMIN_CONTEXT = 'api/admin/v1';
-    public static SD_NWA_CONTEXT = 'api/v1/nwa';
+    public static SD_NWA_CONTEXT = `${ApiEndpointService.MASTERS_CONTEXT}/nwa`;
+    public static SD_NEP_NATIONAL_ENQUIRY = `${ApiEndpointService.MASTERS_CONTEXT}/National_enquiry_point`;
 
     /**
      * Map of API endpoints.
@@ -213,7 +214,15 @@ export class ApiEndpointService {
         NWA_HO_SIC_TASKS: `${ApiEndpointService.SD_NWA_CONTEXT}/getHoSiCTasks`,
         NWA_UPLOAD_GAZETTE_NOTICE: `${ApiEndpointService.SD_NWA_CONTEXT}/uploadGazetteNotice`,
         NWA_UPDATE_GAZETTEMENT_DATE: `${ApiEndpointService.SD_NWA_CONTEXT}/updateGazettementDate`,
+        NWA_UPLOAD_DATA: `${ApiEndpointService.SD_NWA_CONTEXT}/file-upload`,
 
+        //SD NATIONAL ENQUIRY POINT
+        NEP_ENQUIRY_NEP_TASKS: `${ApiEndpointService.SD_NEP_NATIONAL_ENQUIRY}/nep_officer/tasks`,
+        NEP_ENQUIRY_DIVISION_TASKS: `${ApiEndpointService.SD_NEP_NATIONAL_ENQUIRY}/division/tasks`,
+        NEP_MAKE_ENQUIRY: `${ApiEndpointService.SD_NEP_NATIONAL_ENQUIRY}/notification_request`,
+        NEP_INFORMATION_AVAILABLE_YES: `${ApiEndpointService.SD_NEP_NATIONAL_ENQUIRY}/nep_officer/is_available`,
+        NEP_DEPARTMENT_RESPONSE: `${ApiEndpointService.SD_NEP_NATIONAL_ENQUIRY}/division_response/send_response`,
+        NEP_FEEDBACK_EMAIL: `${ApiEndpointService.SD_NEP_NATIONAL_ENQUIRY}/information_available/send_email`
     };
 
     /**

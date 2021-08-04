@@ -7,8 +7,7 @@ import org.springframework.web.bind.annotation.*
 
 
 @RestController
-@CrossOrigin(origins = ["http://localhost:4200"])
-@RequestMapping("api/v1/National_enquiry_point")
+@RequestMapping("api/v1/migration/National_enquiry_point")
 class NationalEnquiryPointController(val nationalEnquiryPointService: NationalEnquiryPointService) {
 
     //********************************************************** deployment endpoints **********************************************************
