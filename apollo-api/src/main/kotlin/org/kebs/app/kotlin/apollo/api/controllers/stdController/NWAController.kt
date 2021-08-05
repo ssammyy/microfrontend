@@ -1,10 +1,12 @@
 package org.kebs.app.kotlin.apollo.api.controllers.stdController
 
+import com.nhaarman.mockitokotlin2.any
+import org.apache.commons.io.input.ObservableInputStream
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.std.*
 import org.kebs.app.kotlin.apollo.common.dto.std.*
-import org.kebs.app.kotlin.apollo.store.model.qa.QaUploadsEntity
 import org.kebs.app.kotlin.apollo.store.model.std.*
+import org.kebs.app.kotlin.apollo.store.repo.std.NWADISDTJustificationRepository
 import org.kebs.app.kotlin.apollo.store.repo.std.NwaJustificationRepository
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.HttpStatus
@@ -28,7 +30,8 @@ class NWAController(val nwaService: NWAService,
                     private val nwaJustificationRepository: NwaJustificationRepository,
                     val standardReviewFormService: StandardReviewFormService,
                     val nwaJustificationFileService: NwaJustificationFileService,
-                    val nwaDiJustificationFileService: NwaDiJustificationFileService
+                    val nwaDiJustificationFileService: NwaDiJustificationFileService,
+                    val nwadisdtJustificationRepository: NWADISDTJustificationRepository
                     ) {
 
     //********************************************************** deployment endpoints **********************************************************
@@ -71,27 +74,31 @@ class NWAController(val nwaService: NWAService,
         return ServerResponse(HttpStatus.OK,"Successfully uploaded Justification",nwaService.prepareJustification(nwaJustification))
     }
 
-    @PreAuthorize("hasAuthority('KNW_SEC_MODIFY')")
+//    @PreAuthorize("hasAuthority('KNW_SEC_MODIFY')")
     @PostMapping("/file-upload")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun uploadFiles(
         @RequestParam("nwaJustificationID") nwaJustificationID: Long,
         @RequestParam("docFile") docFile: List<MultipartFile>,
+        @RequestParam("DocDescription") DocDescription: String,
         model: Model
     ): CommonDaoServices.MessageSuccessFailDTO {
+
         val loggedInUser = commonDaoServices.loggedInUserDetails()
-        val nwaJustification = nwaJustificationRepository.findByIdOrNull(nwaJustificationID)?: throw Exception("NWA JUSTIFICATION ID DOES NOT EXIST")
+          val nwaJustification = nwaJustificationRepository.findByIdOrNull(nwaJustificationID)?: throw Exception("NWA DOCUMENT ID DOES NOT EXIST")
 
         docFile.forEach { u ->
             val upload = DatKebsSdNwaUploadsEntity()
             with(upload) {
                 nwaDocumentId = nwaJustification.id
+
             }
             nwaService.uploadSDFile(
                 upload,
                 u,
                 "UPLOADS",
-                loggedInUser
+                loggedInUser,
+                DocDescription
             )
         }
 
@@ -130,12 +137,45 @@ class NWAController(val nwaService: NWAService,
     //********************************************************** process prepare justification for DI-SDT Approval **********************************************************
     @PreAuthorize("hasAuthority('KNW_SEC_MODIFY')")
     @PostMapping("/prepareDiSdtJustification")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     @ResponseBody
     fun prepareDisDtJustification(@RequestBody nwaDiSdtJustification: NWADiSdtJustification): ServerResponse
     {
         return ServerResponse(HttpStatus.OK,"Successfully uploaded DI-SDT Justification",nwaService.prepareDisDtJustification(nwaDiSdtJustification))
     }
 
+    @PostMapping("/di-file-upload")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun uploadDIFiles(
+        @RequestParam("nwaJustificationID") nwaJustificationID: Long,
+        @RequestParam("docFile") docFile: List<MultipartFile>,
+        @RequestParam("DocDescription") DocDescription: String,
+        model: Model
+    ): CommonDaoServices.MessageSuccessFailDTO {
+
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val nwaJustification = nwadisdtJustificationRepository.findByIdOrNull(nwaJustificationID)?: throw Exception("NWA DISDT DOCUMENT ID DOES NOT EXIST")
+
+        docFile.forEach { u ->
+            val upload = DatKebsSdNwaUploadsEntity()
+            with(upload) {
+                nwaDocumentId = nwaJustification.id
+
+            }
+            nwaService.uploadSDIFile(
+                upload,
+                u,
+                "UPLOADS",
+                loggedInUser,
+                DocDescription
+            )
+        }
+
+        val sm = CommonDaoServices.MessageSuccessFailDTO()
+        sm.message = "Document Uploaded successful"
+
+        return sm
+    }
     //********************************************************** get di-sdt Tasks **********************************************************
     @PreAuthorize("hasAuthority('DI_SDT_SD_READ')")
     @GetMapping("/getDiSdtTasks")

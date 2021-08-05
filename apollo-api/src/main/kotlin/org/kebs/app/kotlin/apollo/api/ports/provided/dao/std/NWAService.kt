@@ -7,6 +7,7 @@ import org.flowable.engine.TaskService
 import org.flowable.engine.repository.Deployment
 import org.flowable.task.api.Task
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
+import org.kebs.app.kotlin.apollo.common.dto.std.ProcessInstanceDISDT
 import org.kebs.app.kotlin.apollo.common.dto.std.ProcessInstanceResponse
 import org.kebs.app.kotlin.apollo.common.dto.std.ProcessInstanceResponseValue
 import org.kebs.app.kotlin.apollo.common.dto.std.TaskDetails
@@ -131,7 +132,8 @@ class NWAService(private val runtimeService: RuntimeService,
         uploads: DatKebsSdNwaUploadsEntity,
         docFile: MultipartFile,
         doc: String,
-        user: UsersEntity
+        user: UsersEntity,
+        DocDescription: String
     ): DatKebsSdNwaUploadsEntity {
 
         with(uploads) {
@@ -140,6 +142,7 @@ class NWAService(private val runtimeService: RuntimeService,
 //            fileType = docFile.contentType
             fileType = commonDaoServices.getFileTypeByMimetypesFileTypeMap(docFile.name)
             documentType = doc
+            description=DocDescription
             document = docFile.bytes
             transactionDate = commonDaoServices.getCurrentDate()
             status = 1
@@ -188,8 +191,9 @@ class NWAService(private val runtimeService: RuntimeService,
 
 
     // Prepare Justification for DI-SDT approval
-    fun prepareDisDtJustification(nwaDiSdtJustification: NWADiSdtJustification)
+    fun prepareDisDtJustification(nwaDiSdtJustification: NWADiSdtJustification) : ProcessInstanceDISDT
     {
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
         val variable:MutableMap<String, Any> = HashMap()
         nwaDiSdtJustification.cost?.let{variable.put("cost", it)}
         nwaDiSdtJustification.numberOfMeetings?.let{variable.put("numberOfMeetings", it)}
@@ -198,12 +202,40 @@ class NWAService(private val runtimeService: RuntimeService,
         nwaDiSdtJustification.datePrepared = Timestamp(System.currentTimeMillis())
         variable["submissionDate"] = nwaDiSdtJustification.datePrepared!!
 
-        print(nwaDiSdtJustification.toString())
+        //print(nwaDiSdtJustification.toString())
 
-        nwaDisDtJustificationRepository.save(nwaDiSdtJustification)
+
+        val nwaDetails = nwaDisDtJustificationRepository.save(nwaDiSdtJustification)
         taskService.complete(nwaDiSdtJustification.taskId, variable)
         println("Justification for DI-SDT prepared")
+        val processInstance = runtimeService.startProcessInstanceByKey(PROCESS_DEFINITION_KEY, variable)
+        return ProcessInstanceDISDT(nwaDetails.id, processInstance.id, processInstance.isEnded)
 
+
+    }
+    fun uploadSDIFile(
+        uploads: DatKebsSdNwaUploadsEntity,
+        docFile: MultipartFile,
+        doc: String,
+        user: UsersEntity,
+        DocDescription: String
+    ): DatKebsSdNwaUploadsEntity {
+
+        with(uploads) {
+//            filepath = docFile.path
+            name = commonDaoServices.saveDocuments(docFile)
+//            fileType = docFile.contentType
+            fileType = commonDaoServices.getFileTypeByMimetypesFileTypeMap(docFile.name)
+            documentType = doc
+            description=DocDescription
+            document = docFile.bytes
+            transactionDate = commonDaoServices.getCurrentDate()
+            status = 1
+            createdBy = commonDaoServices.concatenateName(user)
+            createdOn = commonDaoServices.getTimestamp()
+        }
+
+        return sdNwaUploadsEntityRepository.save(uploads)
     }
 
     //Return task details for SPC_SEC

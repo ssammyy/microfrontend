@@ -52,6 +52,14 @@ export class ApiEndpointService {
     public static QA_CONTEXT_VIEW = `${ApiEndpointService.QA_CONTEXT}/permit/view`;
     public static ADMIN_CONTEXT = 'api/admin/v1';
     public static SD_NWA_CONTEXT = `${ApiEndpointService.MASTERS_CONTEXT}/nwa`;
+    public static SD_SCHEME_CONTEXT = `${ApiEndpointService.MASTERS_CONTEXT}/Scheme_membership`;
+    public static SD_IST_CONTEXT = `${ApiEndpointService.MASTERS_CONTEXT}/international_standard`;
+    public static SD_ICT_CONTEXT = `${ApiEndpointService.MASTERS_CONTEXT}/company_standard`;
+    public static SD_DR_CONTEXT = `${ApiEndpointService.MASTERS_CONTEXT}/standard/dropdown`;
+    public static SD_SR_CONTEXT = `${ApiEndpointService.MASTERS_CONTEXT}/standard_review`;
+    public static SD_STD_CONTEXT = `${ApiEndpointService.MASTERS_CONTEXT}/standard`;
+    public static SD_PB_CONTEXT = `${ApiEndpointService.MASTERS_CONTEXT}/publishing`;
+    public static SD_NEP_CONTEXT = `${ApiEndpointService.MASTERS_CONTEXT}/National_enquiry_point`;
 
     /**
      * Map of API endpoints.
@@ -194,7 +202,7 @@ export class ApiEndpointService {
         PERMIT_UPDATE_STA10_MACHINERY_PLANT: `${ApiEndpointService.QA_CONTEXT_APPLY}/sta10/machinery_plant_update`,
         PERMIT_UPDATE_STA10_MANUFACTURING_PROCESS: `${ApiEndpointService.QA_CONTEXT_APPLY}/sta10/manufacturing_process_update`,
 
-        // NWA
+        // SD Kenya National Workshop Agreement
         NWA_PREPARE_JUSTIFICATION: `${ApiEndpointService.SD_NWA_CONTEXT}/prepareJustification`,
         NWA_DEPARTMENTS: `${ApiEndpointService.SD_NWA_CONTEXT}/getKNWDepartments`,
         NWA_KNW_COMMITTEE: `${ApiEndpointService.SD_NWA_CONTEXT}/getKNWCommittee`,
@@ -215,6 +223,47 @@ export class ApiEndpointService {
         NWA_UPLOAD_GAZETTE_NOTICE: `${ApiEndpointService.SD_NWA_CONTEXT}/uploadGazetteNotice`,
         NWA_UPDATE_GAZETTEMENT_DATE: `${ApiEndpointService.SD_NWA_CONTEXT}/updateGazettementDate`,
         NWA_UPLOAD_DATA: `${ApiEndpointService.SD_NWA_CONTEXT}/file-upload`,
+        NWA_UPLOAD_DATA_DI: `${ApiEndpointService.SD_NWA_CONTEXT}/di-file-upload`,
+
+        // SD INTERNATIONAL STANDARDS
+        IST_PREPARE_ADOPTION_PROPOSAL: `${ApiEndpointService.SD_IST_CONTEXT}/prepareAdoptionProposal`,
+        IST_UPLOAD_DOCUMENT: `${ApiEndpointService.SD_IST_CONTEXT}/file-upload`,
+        IST_VIEW_IS_PROPOSALS: `${ApiEndpointService.SD_IST_CONTEXT}/getISProposals`,
+        IST_SUBMIT_AP_COMMENTS: `${ApiEndpointService.SD_IST_CONTEXT}/SubmitAPComments`,
+        IST_TC_SEC_TASKS: `${ApiEndpointService.SD_IST_CONTEXT}/getTCSECTasks`,
+        IST_DECISION_ON_PROPOSAL: `${ApiEndpointService.SD_IST_CONTEXT}/decisionOnProposal`,
+        IST_PREPARE_JUSTIFICATION: `${ApiEndpointService.SD_IST_CONTEXT}/prepareJustification`,
+        IST_SPC_SEC_TASKS: `${ApiEndpointService.SD_IST_CONTEXT}/getSPCSECTasks`,
+        IST_DECISION_ON_JUSTIFICATION: `${ApiEndpointService.SD_IST_CONTEXT}/decisionOnJustification`,
+        IST_SAC_SEC_TASKS: `${ApiEndpointService.SD_IST_CONTEXT}/getSACSECTasks`,
+        IST_APPROVE_STANDARD: `${ApiEndpointService.SD_IST_CONTEXT}/approveStandard`,
+
+        //SD COMPANY STANDARDS
+        ICT_GET_PRODUCTS: `${ApiEndpointService.SD_ICT_CONTEXT}/getProducts`,
+        //ICT_GET_PRODUCTS_LS: `${ApiEndpointService.SD_DR_CONTEXT}/getProducts/${id}`,
+        ICT_GET_PRODUCTS_LS: `${ApiEndpointService.SD_DR_CONTEXT}/getProducts/`,
+        ICT_GET_DEPARTMENTS: `${ApiEndpointService.SD_ICT_CONTEXT}/getDepartments`,
+        ICT_GET_USERS: `${ApiEndpointService.SD_ICT_CONTEXT}/getUserList`,
+        ICT_GET_DEPARTMENT: `${ApiEndpointService.SD_DR_CONTEXT}/getDepartments`,
+        ICT_GET_TC_COMMITTEE: `${ApiEndpointService.SD_DR_CONTEXT}/getTechnicalCommittee`,
+        //ICT_GET_PRODUCT_CATEGORIES: `${ApiEndpointService.SD_DR_CONTEXT}/getProductCategories/${id}`,
+        ICT_GET_PRODUCT_CATEGORIES: `${ApiEndpointService.SD_DR_CONTEXT}/getProductCategories/`,
+        ICT_ADD_STD_REQUEST: `${ApiEndpointService.SD_ICT_CONTEXT}/request`,
+        ICT_HOD_TASKS: `${ApiEndpointService.SD_ICT_CONTEXT}/getHODTasks`,
+        ICT_ASSIGN_REQUEST: `${ApiEndpointService.SD_ICT_CONTEXT}/assignRequest`,
+        ICT_PL_TASKS: `${ApiEndpointService.SD_ICT_CONTEXT}/getPlTasks`,
+        ICT_PREPARE_JUSTIFICATION: `${ApiEndpointService.SD_ICT_CONTEXT}/prepareJustification`,
+        ICT_SPC_SEC_TASKS: `${ApiEndpointService.SD_ICT_CONTEXT}/getSpcSecTasks`,
+        ICT_DECISION_ON_JUSTIFICATION: `${ApiEndpointService.SD_ICT_CONTEXT}/decisionOnJustification`,
+
+        //SD SYSTEMIC REVIEW
+        SR_GET_REVIEWED_STANDARDS: `${ApiEndpointService.SD_SR_CONTEXT}/reviewedStandards`,
+        SR_REVIEW_FORM: `${ApiEndpointService.SD_SR_CONTEXT}/standardReviewForm`,
+        SR_GET_REVIEW_FORM: `${ApiEndpointService.SD_SR_CONTEXT}/getReviewForms`,
+        SR_REVIEW_COMMENTS: `${ApiEndpointService.SD_SR_CONTEXT}/commentsOnReview`,
+        SR_GET_REVIEW_TASKS: `${ApiEndpointService.SD_SR_CONTEXT}/getReviewTasks`,
+        SR_DECISION_ON_RECOMMENDATION: `${ApiEndpointService.SD_SR_CONTEXT}/decisionOnRecommendation`,
+        SR_UPLOAD_DOCUMENT: `${ApiEndpointService.SD_SR_CONTEXT}/sr-file-upload`,
 
     };
 

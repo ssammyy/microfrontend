@@ -8,8 +8,8 @@ import org.kebs.app.kotlin.apollo.store.model.std.SchemeMembershipRequest
 import org.springframework.web.bind.annotation.*
 
 @RestController
-@RequestMapping("api/v1/Scheme_membership")
-@CrossOrigin(origins = ["http://localhost:4200"])
+@RequestMapping("api/v1/migration/Scheme_membership")
+//@CrossOrigin(origins = ["http://localhost:4200"])
 class SchemeMembershipController(val schemeMembershipService: SchemeMembershipService) {
 
     @PostMapping("/deploy")
