@@ -1,0 +1,138 @@
+<div class="container-fluid" style="margin-top: 5%" id="main-container">
+    <div  class="loading-spinner ">
+        <ngx-spinner
+                bdColor="rgba(51,51,51,0.8)"
+                size="medium"
+                color="#fff"
+                type="ball-scale-multiple"
+        >
+            <p style="font-size: 20px; color: white">Loading...</p>
+        </ngx-spinner>
+    </div>
+    <div class="main-content" >
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header card-header-primary card-header-icon">
+                            <div class="card-icon">
+                                <i class="material-icons">assignment</i>
+                            </div>
+                            <h4 class="card-title">Fill in the form below to request for a standard</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="toolbar">
+
+                            </div>
+                            <div class="material-datatables">
+                                <form (ngSubmit)="saveStandard()" [formGroup]="stdRequestFormGroup" class="form">
+
+                                    <p>Fill in the form below to request for a standard</p>
+                                    <hr>
+
+                                    <div class="form-body">
+                                        <div class="form-group">
+                                            <label>Department/Sector</label>
+                                            <select aria-label="Small" aria-describedby="inputGroup-sizing-lg"
+                                                    class="form-control" required
+                                                    formControlName="departmentId"
+                                                    name="departmentId" (change)="onSelectDepartment($event.target.value)"
+                                                    [class.is-invalid]="formStdRequest.departmentId.invalid && formStdRequest.departmentId.touched">
+                                                <option disabled>--Select Department--</option>
+                                                <option *ngFor="let department of departments" value="{{department.id}}">{{department.name}}</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Technical Committee</label>
+                                            <select aria-label="Small" aria-describedby="inputGroup-sizing-lg"
+                                                    class="form-control" required
+                                                    formControlName="tcId"
+                                                    name="tcId" (change)="onSelectTechnicalCommittee($event.target.value)"
+                                                    [class.is-invalid]="formStdRequest.tcId.invalid && formStdRequest.tcId.touched">
+                                                <option disabled>--Select committee--</option>
+                                                <option *ngFor="let committee of technicalCommittees"
+                                                        [value]="committee.id">{{committee.title}}
+                                                </option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Product Category</label>
+                                            <select aria-label="Small" aria-describedby="inputGroup-sizing-lg"
+                                                    class="form-control"
+                                                    formControlName="productId"
+                                                    name="productId" (change)="onSelectProductCategory($event.target.value)" [class.is-invalid]="formStdRequest.productId.invalid && formStdRequest.productId.touched">
+                                                <option disabled>--Select Category--</option>
+                                                <option *ngFor="let product of products" [value]="product.id">{{product.name}}</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Product Sub Category</label>
+                                            <select aria-label="Small" aria-describedby="inputGroup-sizing-lg"
+                                                    class="form-control" required
+                                                    formControlName="productSubCategoryId"
+                                                    name="productSubCategoryId" [class.is-invalid]="formStdRequest.productSubCategoryId.invalid && formStdRequest.productSubCategoryId.touched">
+                                                <option disabled>--Select Sub Category--</option>
+                                                <option *ngFor="let productSub of productsSubCategory" [value]="productSub.id">{{productSub.name}}</option>
+                                            </select>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label><b>Enter Company name</b></label>
+                                            <input [class.is-invalid]="formStdRequest.companyName.invalid && formStdRequest.companyName.touched"
+                                                   aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                                   class="form-control one-column-input" formControlName="companyName" name="companyName"
+                                                   placeholder="name" type="text">
+                                        </div>
+                                        <div class="form-group">
+                                            <label><b>Enter Phone Number</b></label>
+                                            <input [class.is-invalid]="formStdRequest.companyPhone.invalid && formStdRequest.companyPhone.touched"
+                                                   aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                                   class="form-control one-column-input" formControlName="companyPhone" name="companyPhone"
+                                                   placeholder="+25470000000" type="text">
+                                        </div>
+                                        <div class="form-group">
+                                            <label><b>Enter Email address</b></label>
+                                            <input
+                                                    aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                                    class="form-control one-column-input" formControlName="companyEmail"  name="companyEmail"
+                                                    placeholder="joedoe@gmail.com" type="email">
+                                        </div>
+                                        <div id="repeater">
+                                            <div class="items" data-group="test">
+                                                <div class="item-content">
+                                                    <div class="container">
+                                                        <div class="row">
+                                                            <input type="hidden" name="assessment_id" >
+                                                            <div id="myRepeatingFieldsFocus" class="col-xs-12 col-sm-12 col-lg-12">
+                                                                <div class="entry input-group form-group form-default form-static-label">
+                                                                    <input type="text" name="focus_area[]" class="form-control" id="focus_area" placeholder="Focus Area" required="">
+                                                                    <span class="input-group-btn">
+<button type="button" class="btn btn-success btn-sm btn-add-focus">
+<span class="fa fa-plus" aria-hidden="true">+</span>
+</button>
+</span>
+                                                                    <br><br>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <!-- Repeater Remove Btn -->
+                                            </div>
+                                        </div>
+                                        <div style="margin: 3em 0 2em 0">
+                                            <button [disabled]="!stdRequestFormGroup.valid" class="submit-button" type="submit">SUBMIT</button>
+                                        </div>
+                                    </div>
+
+
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
