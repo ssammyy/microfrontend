@@ -233,7 +233,7 @@ export class AllPermitDetailsDto {
     sta3FilesList: FilesListDto[];
     sta10FilesList: FilesListDto[];
     labResultsList: SSFPDFListDetailsDto[];
-    schemeOfSuperVisionID: bigint;
+    schemeOfSuperVision: FilesListDto;
     batchID: bigint;
 }
 

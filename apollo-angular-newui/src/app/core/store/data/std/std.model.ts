@@ -295,9 +295,10 @@ export interface TaskData {
     requesterComment: string;
     requesterPhone: string;
     feedbackProvided: string;
+    requestDate : string;
 }
 
-export interface Notification {
+export interface Notifications{
     taskId: string;
     name: string;
     taskData: TaskData;
@@ -311,30 +312,12 @@ export interface RootObject {
     requesterPhone: string;
     requesterSubject: string;
 }
-export interface InfoAvailableYes{
-    taskId: string;
-    isAvailable: string;
-}
 
 export interface InfoAvailableNo{
     taskId: string;
     isAvailable: string;
 }
 
-
-
-export interface DepartmentResponse {
-    departmentResponseID: number;
-    enquiryID: number;
-    feedbackProvided: string;
-    taskId: string;
-}
-export interface FeedbackEmail {
-    nepOfficerId: string;
-    feedbackSent: string;
-    requesterEmail: string;
-    taskId: string;
-}
 
 //********************************************************** International Standards Adoption -START **********************************************************
 export interface ISAdoptionProposal{
@@ -659,4 +642,23 @@ export interface StandardReviewRecommendations{
 // }
 
 //********************************************************** Systemic  Standards Standards Review -END **********************************************************
+//********************************************************** National Enquiry Point -START **********************************************************
+export interface DepartmentResponse {
+    departmentResponseID: number;
+    enquiryID: number;
+    feedbackProvided: string;
+    taskId: string;
+}
+
+export interface FeedbackEmail {
+    nepOfficerId: string;
+    feedbackSent: string;
+    requesterEmail: string;
+    taskId: string;
+}
+
+export interface InfoAvailableYes{
+    taskId: string;
+    isAvailable: string;
+}
 

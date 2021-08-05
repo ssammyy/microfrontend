@@ -52,6 +52,7 @@ import {ComStdRequestListComponent} from "./apollowebs/standards-development/com
 import {ComStdJcJustificationComponent} from "./apollowebs/standards-development/com-std-jc-justification/com-std-jc-justification.component";
 import {CsRequestFormComponent} from "./apollowebs/standards-development/company-standard-request/cs-request-form/cs-request-form.component";
 import {ComStdJcJustificationListComponent} from "./apollowebs/standards-development/com-std-jc-justification-list/com-std-jc-justification-list.component";
+import {InformationcheckComponent} from "./apollowebs/standards-development/informationcheck/informationcheck.component";
 
 // export const AppRoutes: Routes = [
 //     {
@@ -417,6 +418,10 @@ export const routes: Routes = [
         children: [{path: '', component: ComStdJcJustificationListComponent}]
     },
 
+    {
+        path: 'nep_information_received', component: AdminLayoutComponent,
+        children: [{path: '', component: InformationcheckComponent}]
+    },
 ];
 
 

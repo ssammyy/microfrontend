@@ -43,6 +43,7 @@ export class DmarkComponent implements OnInit, AfterViewInit {
     uploadedFile: File;
     uploadedFiles: FileList;
     upLoadDescription: string;
+    loading = false;
 
     pdfSources: any;
     pdfInvoiceBreakDownSources: any;
@@ -269,15 +270,15 @@ export class DmarkComponent implements OnInit, AfterViewInit {
                             this.sta3FormD.patchValue(this.sta3);
                         },
                     );
-                    // if (this.allPermitDetails.sta3FilesList !== []) {
-                    this.sta3FileList = this.allPermitDetails.sta3FilesList;
-                    // tslint:disable-next-line:max-line-length
-                    formattedArraySta3 = this.sta3FileList.map(i => [i.name, i.fileType, i.documentType, i.versionNumber, i.id, i.document]);
-                    this.tableData2 = {
-                        headerRow: ['File Name', 'File Type', 'Document Description', 'Version Number', 'Action'],
-                        dataRows: formattedArraySta3
-                    };
-                    // }
+                    if (this.allPermitDetails.sta3FilesList !== []) {
+                        this.sta3FileList = this.allPermitDetails.sta3FilesList;
+                        // tslint:disable-next-line:max-line-length
+                        formattedArraySta3 = this.sta3FileList.map(i => [i.name, i.fileType, i.documentType, i.versionNumber, i.id, i.document]);
+                        this.tableData2 = {
+                            headerRow: ['File Name', 'File Type', 'Document Description', 'Version Number', 'Action'],
+                            dataRows: formattedArraySta3
+                        };
+                    }
                     if (this.allPermitDetails.ordinaryFilesList !== []) {
                         this.ordinaryFilesList = this.allPermitDetails.ordinaryFilesList;
                         // tslint:disable-next-line:max-line-length
@@ -312,9 +313,6 @@ export class DmarkComponent implements OnInit, AfterViewInit {
                                 this.pdfSources = dataCertificatePdf;
                             },
                         );
-                    }
-                    if (this.allPermitDetails.permitDetails.generateSchemeStatus === true) {
-                        this.pdfSourcesScheme = this.getPdfFile(String(this.allPermitDetails.schemeOfSuperVisionID));
                     }
                     if (this.allPermitDetails.permitDetails.invoiceGenerated === true) {
                         this.tableData12 = {
@@ -363,6 +361,10 @@ export class DmarkComponent implements OnInit, AfterViewInit {
                 // this.pdfUploadsView = dataPdf;
             },
         );
+    }
+
+    reloadCurrentRoute() {
+        location.reload();
     }
 
     downloadPdfFile(data: string, fileName: string): void {
@@ -438,6 +440,7 @@ export class DmarkComponent implements OnInit, AfterViewInit {
             this.qaService.submitPermitForReview(String(this.allPermitDetails.permitDetails.id)).subscribe(
                 (data: AllPermitDetailsDto) => {
                     this.allPermitDetails = data;
+                    this.reloadCurrentRoute();
                     swal.fire({
                         title: 'DMARK SUBMITTED SUCCESSFULLY FOR REVIEW FROM PCM!',
                         buttonsStyling: false,
@@ -459,6 +462,7 @@ export class DmarkComponent implements OnInit, AfterViewInit {
         this.qaService.submitPermitForReviewHODQAM(String(this.allPermitDetails.permitDetails.id)).subscribe(
             (data: AllPermitDetailsDto) => {
                 this.allPermitDetails = data;
+                this.reloadCurrentRoute();
                 swal.fire({
                     title: 'DMARK SUBMITTED SUCCESSFULLY FOR REVIEW HOD/RM!',
                     buttonsStyling: false,
@@ -478,6 +482,7 @@ export class DmarkComponent implements OnInit, AfterViewInit {
         this.qaService.submitPermitApplication(String(this.allPermitDetails.permitDetails.id)).subscribe(
             (data: AllPermitDetailsDto) => {
                 this.allPermitDetails = data;
+                this.reloadCurrentRoute();
                 swal.fire({
                     title: 'DMARK SUBMITTED SUCCESSFULLY PENDING PAYMENT!',
                     buttonsStyling: false,
@@ -495,10 +500,13 @@ export class DmarkComponent implements OnInit, AfterViewInit {
 
     submitApprovalRejectionSSC(): void {
         console.log(this.approveRejectSSCForm.value);
+        this.SpinnerService.show();
         // tslint:disable-next-line:max-line-length
         this.qaService.submitSSCApprovalRejection(String(this.allPermitDetails.permitDetails.id), this.approveRejectSSCForm.value).subscribe(
             (data: PermitEntityDetails) => {
                 this.allPermitDetails.permitDetails = data;
+                this.reloadCurrentRoute();
+                this.SpinnerService.hide();
                 swal.fire({
                     title: 'PERMIT APPLICATION SSC UPDATED SUCCESSFULLY!',
                     buttonsStyling: false,
@@ -701,6 +709,7 @@ export class DmarkComponent implements OnInit, AfterViewInit {
         this.qaService.submitPermitRenewApplication(String(this.allPermitDetails.permitDetails.id)).subscribe(
             (data: AllPermitDetailsDto) => {
                 this.allPermitDetails = data;
+                this.reloadCurrentRoute();
                 console.log(AllPermitDetailsDto);
                 swal.fire({
                     title: 'DMARK Renewed Successfully! Proceed to submit application.',
@@ -757,6 +766,7 @@ export class DmarkComponent implements OnInit, AfterViewInit {
             this.qaService.uploadFile(String(this.allPermitDetails.permitDetails.id), this.upLoadDescription, formData).subscribe(
                 (data: any) => {
                     this.SpinnerService.hide();
+                    this.reloadCurrentRoute();
                     console.log(data);
                     swal.fire({
                         title: 'UPLOADED SUCCESSFULLY',

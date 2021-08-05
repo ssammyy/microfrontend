@@ -1,16 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.16.0.final using JasperReports Library version 6.16.0-48579d909b7943b64690c65c71e07e0b80981928  -->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="DiamondMarkPermit" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="ed21babd-bc90-4f45-a015-31c53503a62e">
-	<parameter name="DmarkLogo" class="java.lang.String"/>
-	<parameter name="imagePath" class="java.lang.String"/>
-	<parameter name="FirmName" class="java.lang.String"/>
-	<parameter name="PermitNo" class="java.lang.String"/>
-	<parameter name="PostalAddress" class="java.lang.String"/>
-	<parameter name="ExpiryDate" class="java.lang.String"/>
-	<parameter name="DateOfIssue" class="java.lang.String"/>
-	<parameter name="PhysicalAddress" class="java.lang.String"/>
-	<parameter name="CommodityDesc" class="java.lang.String"/>
-	<parameter name="TradeMark" class="java.lang.String"/>
+<!-- Created with Jaspersoft Studio version 6.13.0.final using JasperReports Library version 6.13.0-46ada4d1be8f3c5985fd0b6146f3ed44caed6f05  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
+              name="DiamondMarkPermit" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20"
+              rightMargin="20" topMargin="20" bottomMargin="20" uuid="ed21babd-bc90-4f45-a015-31c53503a62e">
+    <property name="background.image.path" value="C:\Users\ADMIN\Downloads\KEBS SM FORMAT.png"/>
+    <property name="background.image.x" value="10"/>
+    <property name="background.image.y" value="10"/>
+    <property name="background.image.widht" value="595"/>
+    <property name="background.image.alpha" value="1.0"/>
+    <property name="background.image.height" value="842"/>
+    <parameter name="DmarkLogo" class="java.lang.String"/>
+    <parameter name="imagePath" class="java.lang.String"/>
+    <parameter name="FirmName" class="java.lang.String"/>
+    <parameter name="PermitNo" class="java.lang.String"/>
+    <parameter name="PostalAddress" class="java.lang.String"/>
+    <parameter name="ExpiryDate" class="java.lang.String"/>
+    <parameter name="DateOfIssue" class="java.lang.String"/>
+    <parameter name="PhysicalAddress" class="java.lang.String"/>
+    <parameter name="CommodityDesc" class="java.lang.String"/>
+    <parameter name="TradeMark" class="java.lang.String"/>
 	<parameter name="faxNumber" class="java.lang.String"/>
 	<parameter name="EmailAddress" class="java.lang.String"/>
 	<parameter name="StandardTitle" class="java.lang.String"/>
@@ -23,40 +33,49 @@
 	<background>
 		<band splitType="Stretch"/>
 	</background>
-	<title>
-		<band height="60" splitType="Stretch">
-			<staticText>
-				<reportElement x="0" y="-13" width="163" height="13" uuid="06ac078c-12b8-4df5-a224-4b0284ecea4f"/>
-				<textElement>
-					<font size="8"/>
-				</textElement>
-				<text><![CDATA[ORIGINAL FORM STA/2]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="50" y="9" width="440" height="20" uuid="2e60ab76-bf15-4408-8c78-8101c30ea384"/>
-				<textElement>
-					<font fontName="SansSerif" size="14" isBold="true"/>
-				</textElement>
-				<text><![CDATA[PERMIT TO USE THE STANDARDAIZATION MARK OF QUALITY]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="180" y="29" width="180" height="20" uuid="52c5994c-9f48-4878-9ee0-158b5df02158"/>
-				<textElement>
-					<font fontName="SansSerif"/>
-				</textElement>
-				<text><![CDATA[THE STANDARDS ACT (CAP.496)]]></text>
-			</staticText>
-		</band>
+    <title>
+        <band height="69" splitType="Stretch">
+            <staticText>
+                <reportElement x="0" y="-13" width="163" height="13" uuid="06ac078c-12b8-4df5-a224-4b0284ecea4f"/>
+                <textElement>
+                    <font size="8"/>
+                </textElement>
+                <text><![CDATA[ORIGINAL FORM STA/2]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="44" y="9" width="440" height="20" uuid="2e60ab76-bf15-4408-8c78-8101c30ea384"/>
+                <textElement>
+                    <font fontName="SansSerif" size="14" isBold="true"/>
+                </textElement>
+                <text><![CDATA[PERMIT TO USE THE STANDARDAIZATION MARK OF QUALITY]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="174" y="34" width="180" height="20" uuid="52c5994c-9f48-4878-9ee0-158b5df02158"/>
+                <textElement>
+                    <font fontName="SansSerif"/>
+                </textElement>
+                <text><![CDATA[THE STANDARDS ACT (CAP.496)]]></text>
+            </staticText>
+            <image>
+                <reportElement x="494" y="8" width="60" height="57" uuid="73cc3b08-c3a9-4af2-a36c-5e168e2f9972"/>
+                <imageExpression><![CDATA[com.google.zxing.client.j2se.MatrixToImageWriter.toBufferedImage(
+    new com.google.zxing.qrcode.QRCodeWriter().encode(
+        $P{QrCode},
+        com.google.zxing.BarcodeFormat.QR_CODE, 300, 300
+    )
+)]]></imageExpression>
+            </image>
+        </band>
 	</title>
 	<columnHeader>
 		<band height="211" splitType="Stretch">
-			<staticText>
-				<reportElement x="0" y="2" width="178" height="18" uuid="c607bd91-f9be-4661-8946-7a7af5a2d880"/>
-				<textElement>
-					<font fontName="SansSerif"/>
-				</textElement>
-				<text><![CDATA[PERMIT IS GRANTED TO:]]></text>
-			</staticText>
+            <staticText>
+                <reportElement x="0" y="2" width="178" height="18" uuid="c607bd91-f9be-4661-8946-7a7af5a2d880"/>
+                <textElement>
+                    <font fontName="SansSerif"/>
+                </textElement>
+                <text><![CDATA[PERMIT IS GRANTED TO :]]></text>
+            </staticText>
 			<staticText>
 				<reportElement x="0" y="19" width="84" height="18" uuid="5bd7ae9f-8f36-4ae9-b21a-eaf6c761835c"/>
 				<textElement>
@@ -215,18 +234,19 @@
 			</textField>
 		</band>
 	</columnHeader>
-	<detail>
-		<band height="483" splitType="Stretch">
-			<staticText>
-				<reportElement x="0" y="12" width="552" height="40" uuid="f03e6f7c-5b57-4e87-bd99-760d258fb2fe"/>
-				<textElement>
-					<font fontName="SansSerif" size="10"/>
-				</textElement>
-				<text><![CDATA[To use the standardization mark of quality specified in the row hereunder and upon and in respect of the commodity and brand specified in the second and third rows there of, which commodity, conform to the standard specification in the fourth row]]></text>
-			</staticText>
-			<line>
-				<reportElement x="1" y="115" width="553" height="1" uuid="8954d644-2f98-43c6-81f5-55f5cb18b95a"/>
-			</line>
+    <detail>
+        <band height="519" splitType="Stretch">
+            <staticText>
+                <reportElement x="0" y="12" width="552" height="40" uuid="f03e6f7c-5b57-4e87-bd99-760d258fb2fe"/>
+                <textElement>
+                    <font fontName="SansSerif" size="10"/>
+                </textElement>
+                <text>
+                    <![CDATA[To use the standardization mark of quality specified in the row hereunder and upon and in respect of the commodity and brand specified in the second and third rows there of, which commodity, conform to the standard specification in the fourth row]]></text>
+            </staticText>
+            <line>
+                <reportElement x="1" y="115" width="553" height="1" uuid="8954d644-2f98-43c6-81f5-55f5cb18b95a"/>
+            </line>
 			<line>
 				<reportElement x="0" y="183" width="553" height="1" uuid="e33c5796-cb99-4a5c-921f-8cfccd257b19"/>
 			</line>
@@ -316,18 +336,6 @@
 				<text><![CDATA[KENYA BUREAU OF STANDARDS]]></text>
 			</staticText>
 			<image>
-				<reportElement x="332" y="427" width="47" height="50" uuid="d42e2357-c5fd-497f-9c38-3479f96079cd"/>
-				<imageExpression><![CDATA[$P{imagePath}]]></imageExpression>
-			</image>
-			<staticText>
-				<reportElement x="386" y="438" width="88" height="29" forecolor="#1067E8" uuid="0e26ddaa-f30a-4fe3-a460-6f864191ad38"/>
-				<textElement verticalAlignment="Top">
-					<font isBold="true"/>
-				</textElement>
-				<text><![CDATA[Kenya Bureau of
-Standards]]></text>
-			</staticText>
-			<image>
 				<reportElement x="230" y="58" width="50" height="50" uuid="55ac87ae-248c-4aaf-98ea-7be3fb403701"/>
 				<imageExpression><![CDATA[$P{SmarkLogo}]]></imageExpression>
 			</image>
@@ -346,15 +354,6 @@ Standards]]></text>
 				<textElement textAlignment="Center" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$P{StandardTitle}]]></textFieldExpression>
 			</textField>
-			<image>
-				<reportElement x="10" y="420" width="60" height="57" uuid="73cc3b08-c3a9-4af2-a36c-5e168e2f9972"/>
-				<imageExpression><![CDATA[com.google.zxing.client.j2se.MatrixToImageWriter.toBufferedImage(
-    new com.google.zxing.qrcode.QRCodeWriter().encode(
-        $P{QrCode},
-        com.google.zxing.BarcodeFormat.QR_CODE, 300, 300
-    )
-)]]></imageExpression>
-			</image>
 		</band>
 	</detail>
 </jasperReport>

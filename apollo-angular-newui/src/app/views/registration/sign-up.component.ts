@@ -42,7 +42,7 @@ import {takeUntil} from 'rxjs/operators';
 export class SignUpComponent implements OnInit {
 
     ispause = new Subject();
-    time = 20;
+    time = 59;
     timer!: Observable<number>;
     timerObserver!: PartialObserver<number>;
     step = 0;
@@ -381,7 +381,7 @@ export class SignUpComponent implements OnInit {
 
     onClickSendOtp() {
         this.otpSent = true;
-        this.time = 20;
+        this.time = 59;
         this.timer.subscribe(this.timerObserver);
         this.validationCellphone = this.stepFiveForm?.get('cellphone')?.value;
 

@@ -1322,6 +1322,17 @@ class QADaoServices(
         }
     }
 
+    fun filesDtoDetails(f: QaUploadsEntity): FilesListDto {
+        return FilesListDto(
+            f.id,
+            f.name,
+            f.fileType,
+            f.documentType,
+            f.versionNumber,
+            f.document,
+        )
+    }
+
     fun listSTA10RawMaterials(qaRawMaterialEntity: List<QaRawMaterialEntity>): List<STA10RawMaterialsDto> {
         return qaRawMaterialEntity.map { p ->
             STA10RawMaterialsDto(
@@ -1644,7 +1655,7 @@ class QADaoServices(
                 permit.id ?: throw Exception("Missing Permit ID"),
                 permit.permitRefNumber ?: throw Exception("Missing Permit Ref Number")
             ),
-            permit.sscId,
+            permit.sscId?.let { findUploadedFileBYId(it).let { f -> filesDtoDetails(f) } },
             batchID
         )
     }
@@ -2058,6 +2069,7 @@ class QADaoServices(
                 map.activeStatus -> {
                     complianceValue = "COMPLIANT"
                     if (permitDetails.permitType == applicationMapProperties.mapQAPermitTypeIDDmark) {
+                        permitDetails.userTaskId = applicationMapProperties.mapUserTaskNameQAO
                         permitInsertStatus(
                             permitDetails,
                             applicationMapProperties.mapQaStatusPGeneJustCationReport,
@@ -2074,28 +2086,28 @@ class QADaoServices(
                 }
             }
 
-            val fileUploaded = findUploadedFileBYId(
-                saveSSF.labReportFileId ?: throw ExpectedDataNotFound("MISSING LAB REPORT FILE ID STATUS")
-            )
-            val fileContent = limsServices.mainFunctionLimsGetPDF(
-                saveSSF.bsNumber ?: throw ExpectedDataNotFound("MISSING LBS NUMBER"),
-                saveSSF.pdfSelectedName ?: throw ExpectedDataNotFound("MISSING FILE NAME")
-            )
-            val mappedFileClass = commonDaoServices.mapClass(fileUploaded)
+//            val fileUploaded = findUploadedFileBYId(
+//                saveSSF.labReportFileId ?: throw ExpectedDataNotFound("MISSING LAB REPORT FILE ID STATUS")
+//            )
+//            val fileContent = limsServices.mainFunctionLimsGetPDF(
+//                saveSSF.bsNumber ?: throw ExpectedDataNotFound("MISSING LBS NUMBER"),
+//                saveSSF.pdfSelectedName ?: throw ExpectedDataNotFound("MISSING FILE NAME")
+//            )
+//            val mappedFileClass = commonDaoServices.mapClass(fileUploaded)
             sendComplianceStatusAndLabReport(
                 permitDetails,
                 complianceValue ?: throw ExpectedDataNotFound("MISSING COMPLIANCE STATUS"),
                 saveSSF.complianceRemarks ?: throw ExpectedDataNotFound("MISSING COMPLIANCE REMARKS"),
-                fileContent.path ?: throw ExpectedDataNotFound("MISSING FILE PATH")
+                null
             )
 
-            sendEmailWithLabResults(
-                commonDaoServices.findUserByID(
-                    permitDetails.userId ?: throw ExpectedDataNotFound("MISSING USER ID")
-                ).email ?: throw ExpectedDataNotFound("MISSING USER ID"),
-                fileContent.path,
-                permitDetails.permitRefNumber ?: throw ExpectedDataNotFound("MISSING PERMIT REF NUMBER")
-            )
+//            sendEmailWithLabResults(
+//                commonDaoServices.findUserByID(
+//                    permitDetails.userId ?: throw ExpectedDataNotFound("MISSING USER ID")
+//                ).email ?: throw ExpectedDataNotFound("MISSING USER ID"),
+//                fileContent.path,
+//                permitDetails.permitRefNumber ?: throw ExpectedDataNotFound("MISSING PERMIT REF NUMBER")
+//            )
 
 
             sr.payload = "New SSF Saved [BRAND name${saveSSF.brandName} and ${saveSSF.id}]"
@@ -3029,23 +3041,34 @@ class QADaoServices(
             }
             savePermit = permitRepo.save(savePermit)
 
-//            when (oldPermit.permitType) {
-////                applicationMapProperties.mapQAPermitTypeIdSmark -> {
-////                    val sta10 = findSTA10WithPermitRefNumberBY(oldPermit.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"))
-////                    var newSta10 = QaSta10Entity()
-////                    newSta10 = commonDaoServices.updateDetails(sta10, newSta10) as QaSta10Entity
-////                    newSta10.id = null
-////                    sta10NewSave(savePermit, newSta10, user, s)
-////                }
-////                applicationMapProperties.mapQAPermitTypeIDDmark -> {
-////                    val sta3 = findSTA3WithPermitRefNumber(oldPermit.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"))
-////                    var newSta3 = QaSta3Entity()
-////                    newSta3 = commonDaoServices.updateDetails(sta3, newSta3) as QaSta3Entity
-////                    newSta3.id = null
-////                    sta3NewSave(savePermit.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"), newSta3, user, s)
-////                }
-//            }
-
+            when (oldPermit.permitType) {
+                applicationMapProperties.mapQAPermitTypeIdSmark -> {
+                    val sta10 = findSTA10WithPermitRefNumberANdPermitID(
+                        oldPermit.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"),
+                        oldPermit.id ?: throw Exception("INVALID PERMIT ID")
+                    )
+                    var newSta10 = QaSta10Entity()
+                    newSta10 = commonDaoServices.updateDetails(sta10, newSta10) as QaSta10Entity
+                    newSta10.id = null
+                    sta10NewSave(savePermit, newSta10, user, s)
+                }
+                applicationMapProperties.mapQAPermitTypeIDDmark -> {
+                    val sta3 = findSTA3WithPermitIDAndRefNumber(
+                        oldPermit.permitRefNumber ?: throw Exception("INVALID PERMIT REF NUMBER"),
+                        oldPermit.id ?: throw Exception("INVALID PERMIT ID")
+                    )
+                    var newSta3 = QaSta3Entity()
+                    newSta3 = commonDaoServices.updateDetails(sta3, newSta3) as QaSta3Entity
+                    newSta3.id = null
+                    sta3NewSave(
+                        savePermit.id ?: throw Exception("INVALID PERMITID"),
+                        savePermit.permitRefNumber ?: throw Exception("INVALID PERMITID"),
+                        newSta3,
+                        user,
+                        s
+                    )
+                }
+            }
 
             sr.payload = "Permit Renewed Updated [updatePermit= ${savePermit.id}]"
             sr.names = "${savePermit.permitRefNumber}} ${savePermit.userId}"
@@ -3241,7 +3264,7 @@ class QADaoServices(
         val permitType = findPermitType(permitTypeID)
         val permitUser =
             commonDaoServices.findUserByID(permit.userId ?: throw ExpectedDataNotFound("Permit USER Id Not found"))
-        permitInvoiceCalculation(s, permitUser, permit, permitType)
+        permitInvoiceCalculation(s, permitUser, permit)
         with(permit) {
             sendApplication = s.activeStatus
             invoiceGenerated = s.activeStatus
@@ -3614,7 +3637,7 @@ class QADaoServices(
                         ?: kotlin.run {
                             var batchInvoicePermit = QaBatchInvoiceEntity()
                             with(batchInvoicePermit) {
-                                invoiceNumber = "KIMS${permitType.markNumber}${
+                                invoiceNumber = "KIMS${
                                     generateRandomText(
                                         5,
                                         s.secureRandom,
@@ -3887,7 +3910,6 @@ class QADaoServices(
         s: ServiceMapsEntity,
         user: UsersEntity,
         permit: PermitApplicationsEntity,
-        permitType: PermitTypesEntity
     ): Pair<ServiceRequestsEntity, QaInvoiceMasterDetailsEntity?> {
 
         var sr = commonDaoServices.createServiceRequest(s)
@@ -3896,10 +3918,12 @@ class QADaoServices(
 
             val userDetails =
                 commonDaoServices.findUserByID(permit.userId ?: throw Exception("MISSING USER ID ON PERMIT DETAILS"))
+            val permitType = findPermitType(permit.permitType ?: throw Exception("MISSING PERMIT TYPE ID"))
             val companyDetails = commonDaoServices.findCompanyProfileWithID(
                 userDetails.companyId ?: throw Exception("MISSING COMPANY ID ON USER DETAILS")
             )
             val plantDetail = findPlantDetails(permit.attachedPlantId ?: throw Exception("INVALID PLANT ID"))
+            KotlinLogging.logger { }.info { "PLANT ID = ${plantDetail.id}" }
             val manufactureTurnOver =
                 companyDetails.yearlyTurnover ?: throw Exception("MISSING COMPANY TURNOVER DETAILS")
             val productsManufacture = findAllProductManufactureInPlantWithPlantID(
@@ -3909,8 +3933,7 @@ class QADaoServices(
                 permitType.id ?: throw Exception("MISSING PERMIT TYPE ID"),
                 plantDetail.id
             )
-//            val invoiceGenerated = invoiceGen(permit, userCompany, user, permitType)
-
+            KotlinLogging.logger { }.info { "PRODUCT SIZE = ${productsManufacture.size}" }
             when (permitType.id) {
                 applicationMapProperties.mapQAPermitTypeIdSmark -> {
                     invoiceGenerated = qaInvoiceCalculation.calculatePaymentSMark(
@@ -4615,17 +4638,17 @@ class QADaoServices(
         permitDetails: PermitApplicationsEntity,
         compliantStatus: String,
         compliantRemarks: String,
-        attachment: String,
+        attachment: String?,
     ) {
         val manufacturer = permitDetails.userId?.let { commonDaoServices.findUserByID(it) }
         val subject = "LAB REPORT AND COMPLIANCE STATUS "
         val messageBody = "Dear ${manufacturer?.let { commonDaoServices.concatenateName(it) }}: \n" +
                 "\n " +
-                "Find Attached lab test report with the following compliance status  $compliantStatus" +
+                "Lab test report with the following compliance status  $compliantStatus" +
                 "\n  and  the Following Remarks  $compliantRemarks" +
                 "for the following permit with REF number ${permitDetails.permitRefNumber} : You have 30 days to perform corrective action for re-inspection.  "
 
-        manufacturer?.email?.let { notifications.sendEmail(it, subject, messageBody, attachment) }
+        manufacturer?.email?.let { notifications.sendEmail(it, subject, messageBody) }
     }
 
     fun sendAssessmentReportRejection(
