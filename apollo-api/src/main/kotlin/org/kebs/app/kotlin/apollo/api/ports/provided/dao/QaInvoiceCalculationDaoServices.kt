@@ -57,7 +57,9 @@ class QaInvoiceCalculationDaoServices(
                 "Max needs to be defined"
             )
         }.firstOrNull() ?: throw NullValueNotAllowedException("Rate not found")
-        KotlinLogging.logger { }.info { "selectedRate fixed cost = ${selectedRate.id} and  ${selectedRate.firmType}" }
+
+        KotlinLogging.logger { }.info { "selected Rate fixed cost = ${selectedRate.id} and  ${selectedRate.firmType}" }
+
 
         val inspectionFee = selectedRate.firmFee ?: BigDecimal.ZERO.multiply(numberOfYears)
         val countBeforeDiscountFee = selectedRate.countBeforeFee ?: BigDecimal.ZERO.multiply(numberOfYears)

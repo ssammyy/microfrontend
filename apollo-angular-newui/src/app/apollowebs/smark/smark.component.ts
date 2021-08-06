@@ -853,7 +853,7 @@ export class SmarkComponent implements OnInit {
             },
             icon: 'success'
         });
-        this.router.navigate(['/permitdetails'], {fragment: permitID});
+        this.router.navigate(['/smarkpermitdetails'], {fragment: permitID});
 
     }
 
@@ -917,7 +917,7 @@ export class SmarkComponent implements OnInit {
     }
 
     goToNewApplication() {
-        this.router.navigate(['/dmark/newDmarkPermit']);
+        this.router.navigate(['/smark/newSmarkPermit']);
     }
 
     goToInvoiceGenerated() {

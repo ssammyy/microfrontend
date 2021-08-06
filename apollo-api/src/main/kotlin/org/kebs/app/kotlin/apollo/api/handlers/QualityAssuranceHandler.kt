@@ -254,7 +254,8 @@ class QualityAssuranceHandler(
     @PreAuthorize("hasAuthority('PERMIT_APPLICATION') or hasAuthority('QA_OFFICER_MODIFY') or hasAuthority('QA_HOD_READ') " +
             "or hasAuthority('QA_MANAGER_ASSESSORS_READ') or hasAuthority('QA_HOF_READ') or hasAuthority('QA_ASSESSORS_READ') or hasAuthority('QA_PAC_SECRETARY_READ') or hasAuthority('QA_PSC_MEMBERS_READ') or hasAuthority('QA_PCM_READ')")
     fun permitDetails(req: ServerRequest): ServerResponse {
-        val permitID = req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
+        val permitID =
+            req.paramOrNull("permitID")?.toLong() ?: throw ExpectedDataNotFound("Required Permit ID, check config")
         val map = commonDaoServices.serviceMapDetails(appId)
         val auth = commonDaoServices.loggedInUserAuthentication()
         val loggedInUser = commonDaoServices.loggedInUserDetails()
@@ -262,12 +263,21 @@ class QualityAssuranceHandler(
         val departmentEntity = commonDaoServices.findDepartmentByID(applicationMapProperties.mapQADepertmentId)
 
         if (auth.authorities.stream().anyMatch { authority -> authority.authority == "MODIFY_COMPANY" }) {
-            req.attributes()["plantsDetails"] = qaDaoServices.findAllPlantDetailsWithCompanyID(loggedInUser.companyId?:throw ExpectedDataNotFound("Missing COMPANY ID"))
+            req.attributes()["plantsDetails"] = qaDaoServices.findAllPlantDetailsWithCompanyID(
+                loggedInUser.companyId ?: throw ExpectedDataNotFound("Missing COMPANY ID")
+            )
         }
+        val batchDetail = qaDaoServices.findPermitInvoiceByPermitRefNumberANdPermitID(
+            permit.permitRefNumber ?: throw ExpectedDataNotFound("PERMIT REF NUMBER NOT FOUND"),
+            loggedInUser.id ?: throw ExpectedDataNotFound("MISSING USER ID"),
+            permitID
+        ).batchInvoiceNo
+        req.attributes()["batchID"] = batchDetail
+        req.attributes()["invoiceDetails"] = QaInvoiceDetailsEntity()
         req.attributes()["sections"] = loadSectionDetails(departmentEntity, map, req)
         req.attributes()["standardsList"] = qaDaoServices.findALlStandardsDetails(map.activeStatus)
         req.attributes().putAll(loadCommonUIComponents(map))
-        req.attributes().putAll(loadCommonPermitComponents(map,permit))
+        req.attributes().putAll(loadCommonPermitComponents(map, permit))
         req.attributes()["permit"] = qaDaoServices.permitDetails(permit, map)
 
         return ok().render(qaPermitDetailPage, req.attributes())
