@@ -33,6 +33,10 @@ import {TaskManagerComponent} from "./apollowebs/task-manager/task-manager.compo
 import {AddUserComponent} from "./apollowebs/company/branch/add-user/add-user.component";
 import {FmarkApplicationComponent} from "./apollowebs/fmark-application/fmark-application.component";
 import {SmarkComponent} from "./apollowebs/smark/smark.component";
+import {PVOCComponent} from "./apollowebs/pvoc/pvoc.component";
+import {WaiverApplicationComponent} from "./apollowebs/pvoc/waiver-application/waiver-application.component";
+import {ExceptionsApplicationComponent} from "./apollowebs/pvoc/exceptions-application/exceptions-application.component";
+import {GoodsDetailsComponent} from "./apollowebs/pvoc/exceptions-application/goods-details/goods-details.component";
 
 // export const AppRoutes: Routes = [
 //     {
@@ -292,7 +296,30 @@ export const routes: Routes = [
     {
         path: 'invoice_test', component: PdfViewComponent
     },
-
+    {
+        path: 'pvoc',
+        component: AdminLayoutComponent,
+        children: [
+            {
+                path: '',
+                component: ExceptionsApplicationComponent
+            },
+            {
+                path: 'waivers',
+                component: WaiverApplicationComponent
+            },
+            {
+                path: 'exceptions',
+                component: ExceptionsApplicationComponent,
+                children: [
+                    {
+                        path: 'goods',
+                        component: GoodsDetailsComponent
+                    }
+                ]
+            }
+        ]
+    },
     {
         path: 'smarkpermitdetails', component: AdminLayoutComponent,
         children: [{path: '', component: SmarkComponent}]

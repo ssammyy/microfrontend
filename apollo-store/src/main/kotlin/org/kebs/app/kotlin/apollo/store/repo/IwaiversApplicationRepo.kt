@@ -12,6 +12,8 @@ interface IwaiversApplicationRepo : HazelcastRepository<PvocWaiversApplicationEn
     fun findAllByStatusOrderByCreatedOnDesc(status: Int, pageable: Pageable) : Page<PvocWaiversApplicationEntity>?
     fun findAllByStatusAndCreatedOnBetweenOrderByCreatedOnDesc(status: Int, from: Date, to: Date, pageable: Pageable) : Page<PvocWaiversApplicationEntity>?
     fun findAllByReviewStatusOrderByCreatedOnDesc(reviewStatus: String) : List<PvocWaiversApplicationEntity>?
+    fun findAllByCreatedBy(userName: String?, page: Pageable): Page<PvocWaiversApplicationEntity>?
+    fun findFirstByCreatedByAndId(username: String?, id: Long): PvocWaiversApplicationEntity?
 }
 
 interface IPvocMasterListRepo : HazelcastRepository<PvocMasterListEntity, Long>{

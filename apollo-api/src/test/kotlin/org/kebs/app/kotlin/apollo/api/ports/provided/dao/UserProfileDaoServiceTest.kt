@@ -54,8 +54,8 @@ class UserProfileDaoServiceTest {
     fun initialIntegrationTest() {
 
         val list: List<RegionsCountyTownViewDto> = entityManager.createNamedQuery(
-            RegionsCountyTownViewDto.FIND_ALL,
-            RegionsCountyTownViewDto::class.java
+                RegionsCountyTownViewDto.FIND_ALL,
+                RegionsCountyTownViewDto::class.java
         ).resultList.filter { it.townId != null }
         expect(list.isEmpty(), "Empty List found", { false })
         list.forEach {
@@ -66,8 +66,8 @@ class UserProfileDaoServiceTest {
     @Test
     fun initialDirectorateToSubSectionL2ViewDtoTest() {
         val list = entityManager.createNamedQuery(
-            DirectorateToSubSectionL2ViewDto.FIND_ALL,
-            DirectorateToSubSectionL2ViewDto::class.java
+                DirectorateToSubSectionL2ViewDto.FIND_ALL,
+                DirectorateToSubSectionL2ViewDto::class.java
         ).resultList
         list.forEach { l -> KotlinLogging.logger { }.info("Record found: ${l.department} ${l.directorate}") }
     }
@@ -175,6 +175,17 @@ class UserProfileDaoServiceTest {
                 "    {\"path\": \"consolidate_invoice\", \"title\": \"Consolidate Invoices\", \"ab\": \"CI\"}\n" +
                 "  ]\n" +
                 "},\n" +
+                "{\n" +
+                "  \"path\": \"/pvoc\",\n" +
+                "  \"title\": \"Exports\",\n" +
+                "  \"type\": \"sub\",\n" +
+                "  \"icontype\": \"receipt\",\n" +
+                "  \"collapse\": \"pvoc\",\n" +
+                "  \"children\": [\n" +
+                "    {\"path\": \"waivers\", \"title\": \"Export Waivers\", \"ab\": \"EW\"},\n" +
+                "    {\"path\": \"exceptions\", \"title\": \"Export Exceptions\", \"ab\": \"EE\"}\n" +
+                "  ]\n" +
+                "}" +
                 "  {\n" +
                 "    \"path\": \"/all_tasks_list\",\n" +
                 "    \"title\": \"My Tasks\",\n" +
@@ -184,7 +195,7 @@ class UserProfileDaoServiceTest {
                 "]"
 
         val mainMenu: List<SideBarMainMenusEntityDto> =
-            daoService.mapper().readValue(json, object : TypeReference<List<SideBarMainMenusEntityDto>>() {})
+                daoService.mapper().readValue(json, object : TypeReference<List<SideBarMainMenusEntityDto>>() {})
 
         KotlinLogging.logger { }.info("Size ${mainMenu.size}")
         mainMenu.forEach { m ->

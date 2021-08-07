@@ -37,6 +37,7 @@
 
 package org.kebs.app.kotlin.apollo.api
 
+import org.codehaus.jackson.map.ObjectMapper
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.builder.SpringApplicationBuilder
@@ -53,11 +54,15 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 
 
-
-
-
 @SpringBootApplication(scanBasePackages = ["org.kebs.app.kotlin.apollo"])
-class ApiApplication : SpringBootServletInitializer( ) {
+class ApiApplication : SpringBootServletInitializer() {
+    @Bean
+    fun objectMapper(): ObjectMapper{
+        var mapper=ObjectMapper()
+
+        return mapper
+    }
+
 
     override fun configure(application: SpringApplicationBuilder): SpringApplicationBuilder {
         return application.sources(ApiApplication::class.java)

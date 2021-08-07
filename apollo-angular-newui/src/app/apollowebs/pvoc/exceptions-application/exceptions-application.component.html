@@ -1,0 +1,42 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">assignment</i>
+                        </div>
+                        <h4 class="card-title">MANUFACTURER EXPORT CONFORMITY EXCEPTION APPLICATION</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="toolbar">
+                        </div>
+                        <mat-horizontal-stepper>
+                            <!-- Stepers Wrapper -->
+                            <mat-step label="Industry details">
+                                <app-manufacturer-details></app-manufacturer-details>
+                                <div class="pull-right pr-4">
+                                    <button class="btn btn-primary" mat-button matStepperNext>Next</button>
+                                </div>
+                            </mat-step>
+                            <mat-step label="Good Details">
+                                <app-goods-details></app-goods-details>
+                                <button class="btn btn-warning" mat-button matStepperPrevious>Back</button>
+                                <div class="pull-right pr-4">
+                                    <button class="btn btn-primary" mat-button matStepperNext>Submit</button>
+                                </div>
+                            </mat-step>
+                            <mat-step label="Application Sent">
+                                <app-waiver-submitted-dialog></app-waiver-submitted-dialog>
+                                <div class="pull-right pr-4">
+                                    <button class="btn btn-primary" mat-button matStepperNext>Done</button>
+                                </div>
+                            </mat-step>
+                        </mat-horizontal-stepper>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -199,6 +199,24 @@ class ControllerRoutes {
         }
     }
 
+    /**
+     * Pre Export Verification of Conformity
+     */
+    @Bean
+    fun ApiPovRoute(handler: PvocHandler) = router {
+        "/api/v1/pvoc".nest {
+            GET("/waiver/categories", handler::waiverCategories)
+            GET("/waiver/history", handler::waiverHistory)
+            GET("/waiver/{waiverId}", handler::viewWaiver)
+            POST("/waiver/apply", handler::waiversApplication)
+            POST("/exemption/apply", handler::exemptionApplication)
+            GET("/exemption/check/eligible", handler::checkExemptionEligibility)
+            GET("/exemption/history", handler::exemptionHistory)
+            GET("/exemption/{exemptionId}", handler::viewExemption)
+
+        }
+    }
+
     @Bean
     fun utilitiesRoute(handler: UtilitiesHandler) = router {
         "/api/utilities".nest {
@@ -223,24 +241,24 @@ class ControllerRoutes {
 
     @Bean
     fun tasksRoute(handler: BpmnTasksHandler) =
-        router {
-            "/api/user/tasks".nest {
-                GET(pattern = "/list", f = handler::tasksListView)
-                GET(pattern = "/task/{taskId}", f = handler::reviewTask)
-                POST(pattern = "/task/{taskId}/claim", f = handler::claimTask)
-                POST(pattern = "/task/{taskId}/complete/{taskStatus}", f = handler::completeTask)
+            router {
+                "/api/user/tasks".nest {
+                    GET(pattern = "/list", f = handler::tasksListView)
+                    GET(pattern = "/task/{taskId}", f = handler::reviewTask)
+                    POST(pattern = "/task/{taskId}/claim", f = handler::claimTask)
+                    POST(pattern = "/task/{taskId}/complete/{taskStatus}", f = handler::completeTask)
+                }
             }
-        }
 
     @Bean
     fun userRoute(handler: UserHandler) =
-        router {
-            "/api/user".nest {
-                GET("/user-notifications", handler::notificationList)
-                GET("/user-profile", handler::userProfile)
-                GET("/add/plant-details/save", handler::userProfile)
+            router {
+                "/api/user".nest {
+                    GET("/user-notifications", handler::notificationList)
+                    GET("/user-profile", handler::userProfile)
+                    GET("/add/plant-details/save", handler::userProfile)
+                }
             }
-        }
 
     @Bean
     fun registrationRoutes(handler: RegistrationHandler) = router {
@@ -520,8 +538,8 @@ class ControllerRoutes {
                     POST("/cfs/revoke/{userProfileId}/{cfsId}/{status}", handler::revokeCfsFromUser)
                     POST("/cfs/assign/{userProfileId}/{cfsId}/{status}", handler::assignCfsToUser)
                     POST(
-                        "/user/request/role/assign/{userId}/{roleId}/{status}/{requestID}",
-                        handler::assignRoleToUserThroughRequest
+                            "/user/request/role/assign/{userId}/{roleId}/{status}/{requestID}",
+                            handler::assignRoleToUserThroughRequest
                     )
 //                    POST("/user/request/{userId}/{cfsId}/{status}", handler::assignCfsToUser)
 

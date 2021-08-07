@@ -1,6 +1,5 @@
 package org.kebs.app.kotlin.apollo.api.scheduler
 
-import mu.KotlinLogging
 import org.joda.time.DateTime
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.QADaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.scheduler.SchedulerImpl
@@ -11,7 +10,7 @@ import org.springframework.scheduling.annotation.EnableScheduling
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
 
-@Component
+
 @Configuration
 @EnableScheduling
 class Scheduler(
