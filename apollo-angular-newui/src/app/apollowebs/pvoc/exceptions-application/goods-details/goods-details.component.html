@@ -1,0 +1,83 @@
+<div class="row">
+    <div class="col-md-12">
+        <p>Please select a copy of at least three compliant lab reports you have performed in the last three months</p>
+        <button class="btn btn-primary btn-sm form-wizard-next-btn">ADD LAB REPORTS</button>
+    </div>
+    <div class="col-md-12">
+        <p>Please upload a copy of each QMS certificate for importer and exporter</p>
+        <button class="btn btn-primary btn-sm form-wizard-next-btn">ADD LAB REPORTS</button>
+    </div>
+    <b>GOOD DETAILS</b>
+    <div class="col-md-12">
+        <p>Please upload a copy of the filled Excel Workbook with all products</p>
+        <button class="btn btn-primary btn-sm form-wizard-next-btn">ADD LAB REPORTS</button>
+    </div>
+    <div class="col-md-12">
+        <h3> GOODS MANUFACTURED</h3>
+        <table class="table table-condensed">
+            <thead>
+            <tr>
+                <th>#</th>
+                <th>PRODUCT NAME</th>
+                <th>BRAND</th>
+                <th>KEBS SMARK PERMIT NO.</th>
+                <th>EXPIRY DATE</th>
+            </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+        <br/>
+        <button class="btn btn-primary btn-sm form-wizard-next-btn" (click)="addGoodsManufactured()">+Add</button>
+    </div>
+    <div class="col-md-12">
+        <h3> RAW MATERIALS</h3>
+        <table class="table table-condensed">
+            <thead>
+            <tr>
+                <th>#</th>
+                <th>HS CODE</th>
+                <th>RAW MATERIAL DESCRIPTION</th>
+                <th>END PRODUCT</th>
+                <th>COUNTRY OF ORIGIN</th>
+            </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+        <br/>
+        <button (click)="addRawMaterials()" class="btn btn-primary btn-sm form-wizard-next-btn">+Add</button>
+    </div>
+    <div class="col-md-12">
+        <h3>MAIN PRODUCTION MACHINERY</h3>
+        <table class="table table-condensed">
+            <thead>
+            <tr>
+                <th>#</th>
+                <th>HS CODE</th>
+                <th>MACHINE DESCRIPTION</th>
+                <th>MAKE AND MODEL</th>
+                <th>COUNTRY OF ORIGIN</th>
+            </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+        <br/>
+        <button (click)="addMachinery()" class="btn btn-primary btn-sm form-wizard-next-btn">+Add</button>
+    </div>
+    <div class="col-md-12">
+        <h3>INDUSTRIAL SPARES</h3>
+        <table class="table table-condensed">
+            <thead>
+            <tr>
+                <th>#</th>
+                <th>HS CODE</th>
+                <th>SPARE DESCRIPTION</th>
+                <th>MACHINE TO BE FITTED TO (FROM NO.4)</th>
+                <th>COUNTRY OF ORIGIN</th>
+            </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+        <br/>
+        <button (click)="addSpareParts()" class="btn btn-primary btn-sm form-wizard-next-btn">+Add</button>
+    </div>
+</div>
