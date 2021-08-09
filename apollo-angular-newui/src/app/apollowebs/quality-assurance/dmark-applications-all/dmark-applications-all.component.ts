@@ -1,9 +1,9 @@
 import {Component, OnInit} from '@angular/core';
-import {QaService} from '../../core/store/data/qa/qa.service';
-import {PermitEntityDto} from '../../core/store/data/qa/qa.model';
+import {QaService} from '../../../core/store/data/qa/qa.service';
+import {PermitEntityDto} from '../../../core/store/data/qa/qa.model';
 import {Router} from '@angular/router';
-import {ApiEndpointService} from '../../core/services/endpoints/api-endpoint.service';
-import {LoadingService} from "../../core/services/loader/loadingservice.service";
+import {ApiEndpointService} from '../../../core/services/endpoints/api-endpoint.service';
+import {LoadingService} from "../../../core/services/loader/loadingservice.service";
 import {NgxSpinnerService} from "ngx-spinner";
 
 declare interface DataTable {

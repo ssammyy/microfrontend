@@ -1,8 +1,8 @@
 import {Component, OnInit} from '@angular/core';
-import {AllPermitDetailsDto, FmarkEntityDto, PermitEntityDto} from '../../core/store/data/qa/qa.model';
-import {QaService} from '../../core/store/data/qa/qa.service';
+import {AllPermitDetailsDto, FmarkEntityDto, PermitEntityDto} from '../../../core/store/data/qa/qa.model';
+import {QaService} from '../../../core/store/data/qa/qa.service';
 import {ActivatedRoute, Router} from '@angular/router';
-import {ApiEndpointService} from '../../core/services/endpoints/api-endpoint.service';
+import {ApiEndpointService} from '../../../core/services/endpoints/api-endpoint.service';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import swal from "sweetalert2";
 

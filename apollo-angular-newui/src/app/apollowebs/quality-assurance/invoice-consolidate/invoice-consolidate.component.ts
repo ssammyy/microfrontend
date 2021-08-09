@@ -1,12 +1,12 @@
 import {Component, OnInit} from '@angular/core';
-import {QaService} from '../../core/store/data/qa/qa.service';
+import {QaService} from '../../../core/store/data/qa/qa.service';
 import {Router} from '@angular/router';
 import {
-  AllPermitDetailsDto,
-  ConsolidatedInvoiceDto,
-  GenerateInvoiceDto,
-  PermitEntityDto, PermitInvoiceDto
-} from '../../core/store/data/qa/qa.model';
+    AllPermitDetailsDto,
+    ConsolidatedInvoiceDto,
+    GenerateInvoiceDto,
+    PermitEntityDto, PermitInvoiceDto
+} from '../../../core/store/data/qa/qa.model';
 import {FormArray, FormBuilder, FormControl, FormGroup} from '@angular/forms';
 import {Subscription} from 'rxjs';
 import swal from 'sweetalert2';

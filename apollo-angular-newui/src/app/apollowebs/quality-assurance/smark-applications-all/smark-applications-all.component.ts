@@ -1,13 +1,13 @@
 import {Component, OnInit} from '@angular/core';
-import {PermitEntityDto} from "../../core/store/data/qa/qa.model";
-import {QaService} from "../../core/store/data/qa/qa.service";
+import {PermitEntityDto} from "../../../core/store/data/qa/qa.model";
+import {QaService} from "../../../core/store/data/qa/qa.service";
 import {Router} from "@angular/router";
-import {ApiEndpointService} from "../../core/services/endpoints/api-endpoint.service";
+import {ApiEndpointService} from "../../../core/services/endpoints/api-endpoint.service";
 
 declare interface DataTable {
-  headerRow: string[];
-  footerRow: string[];
-  dataRows: string[][];
+    headerRow: string[];
+    footerRow: string[];
+    dataRows: string[][];
 }
 
 declare const $: any;

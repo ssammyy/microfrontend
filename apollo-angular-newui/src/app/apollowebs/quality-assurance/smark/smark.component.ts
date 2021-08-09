@@ -13,15 +13,15 @@ import {
     STA10PersonnelDto,
     STA10ProductsManufactureDto,
     STA10RawMaterialsDto
-} from '../../core/store/data/qa/qa.model';
-import {QaService} from '../../core/store/data/qa/qa.service';
+} from '../../../core/store/data/qa/qa.model';
+import {QaService} from '../../../core/store/data/qa/qa.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import swal from 'sweetalert2';
-import {ApiEndpointService} from '../../core/services/endpoints/api-endpoint.service';
-import {LoadingService} from '../../core/services/loader/loadingservice.service';
+import {ApiEndpointService} from '../../../core/services/endpoints/api-endpoint.service';
+import {LoadingService} from '../../../core/services/loader/loadingservice.service';
 import {NgxSpinnerService} from 'ngx-spinner';
 import {FileUploadValidators} from '@iplab/ngx-file-upload';
-import {TableData} from '../../md/md-table/md-table.component';
+import {TableData} from '../../../md/md-table/md-table.component';
 
 @Component({
     selector: 'app-smark',

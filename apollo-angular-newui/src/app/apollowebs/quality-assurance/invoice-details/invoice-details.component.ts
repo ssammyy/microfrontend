@@ -5,8 +5,8 @@ import {
     PermitInvoiceDto,
     AllPermitDetailsDto,
     PermitEntityDto, MPesaPushDto
-} from '../../core/store/data/qa/qa.model';
-import {QaService} from '../../core/store/data/qa/qa.service';
+} from '../../../core/store/data/qa/qa.model';
+import {QaService} from '../../../core/store/data/qa/qa.service';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {Store} from '@ngrx/store';
 import swal from 'sweetalert2';
