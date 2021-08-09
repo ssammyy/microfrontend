@@ -1,12 +1,12 @@
 <div class="pl-2">
     <p>Please fill the details about your company or business bellow</p>
-    <div class="form-group">
+    <div class="form-group" [formGroup]="companyDetailsForm">
         <div class="form-group row">
             <label for="business-name" class="col-12 control-label">BUSINESS/COMPANY
                 NAME</label>
             <div class="col-8">
                 <div class="input-group">
-                    <input id="business-name" name="business-name" type="text"
+                    <input formControlName="companyName" id="business-name" name="business-name" type="text"
                            class="form-control">
                 </div>
             </div>
@@ -14,26 +14,27 @@
         <div class="form-group row">
             <label for="kra-pin" class="col-12 control-label">KRA PIN</label>
             <div class="col-8">
-                <input id="kra-pin" name="kra-pin" type="text" class="form-control">
+                <input formControlName="companyPinNo" id="kra-pin" name="kra-pin" type="text" class="form-control">
             </div>
         </div>
         <div class="form-group row">
             <label for="company-email" class="col-12 control-label">COMPANY EMAIL</label>
             <div class="col-8">
-                <input id="company-email" name="company-email" type="text" class="form-control">
+                <input formControlName="email" id="company-email" name="company-email" type="text" class="form-control">
             </div>
         </div>
         <div class="form-group row">
             <label for="postal-address" class="col-12 control-label">POSTAL ADDRESS</label>
             <div class="col-8">
-                <input id="postal-address" name="postal-address" type="text"
+                <input formControlName="postalAddress" id="postal-address" name="postal-address" type="text"
                        class="form-control">
             </div>
         </div>
         <div class="form-group row">
             <label for="mobile-number" class="col-12 control-label">TELEPHONE</label>
             <div class="col-8">
-                <input id="mobile-number" name="mobile-number" type="text" class="form-control">
+                <input formControlName="telephoneNo" id="mobile-number" name="mobile-number" type="text"
+                       class="form-control">
             </div>
         </div>
         <div class="form-group row">
@@ -48,7 +49,8 @@
             <label for="contact-person-name" class="col-12 control-label">CONTACT PERSON
                 NAME</label>
             <div class="col-8">
-                <input id="contact-person-name" name="contact-person-name" type="text"
+                <input formControlName="contactPersonName" id="contact-person-name" name="contact-person-name"
+                       type="text"
                        class="form-control">
             </div>
         </div>
@@ -56,7 +58,8 @@
             <label for="contact-person-telephone" class="col-12 control-label">CONTACT PERSON
                 TELEPHONE</label>
             <div class="col-8">
-                <input id="contact-person-telephone" name="contact-person-telephone" type="text"
+                <input formControlName="contactPersonEmail" id="contact-person-telephone"
+                       name="contact-person-telephone" type="text"
                        class="form-control">
             </div>
         </div>
@@ -64,7 +67,8 @@
             <label for="contact-person-email" class="col-12 control-label ">CONTACT PERSON
                 EMAIL</label>
             <div class="col-8">
-                <input id="contact-person-email" name="contact-person-email" type="text"
+                <input formControlName="contactPersonPhone" id="contact-person-email" name="contact-person-email"
+                       type="text"
                        class="form-control">
             </div>
         </div>

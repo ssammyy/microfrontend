@@ -166,7 +166,6 @@ class PvocService(
         commonDaoServices.getLoggedInUser().let { userDetails ->
             var pvocExceptionApp = PvocApplicationEntity()
             pvocExceptionApp.companyPinNo = manufacturer?.companyPinNo
-            pvocExceptionApp.contactPersorn = manufacturer?.contactPerson
             pvocExceptionApp.email = manufacturer?.email
             pvocExceptionApp.status = 1
             pvocExceptionApp.reviewStatus = statuses?.initialStatus
@@ -174,6 +173,9 @@ class PvocService(
             pvocExceptionApp.conpanyName = manufacturer?.companyName
             pvocExceptionApp.postalAadress = manufacturer?.postalAddress
             pvocExceptionApp.physicalLocation = manufacturer?.physicalLocation
+            pvocExceptionApp.contactPersorn = manufacturer?.contactPersonName
+            pvocExceptionApp.varField8 = manufacturer?.contactPersonEmail
+            pvocExceptionApp.varField9 = manufacturer?.contactPersonPhone
             with(pvocExceptionApp) {
                 createdBy = userDetails?.email
                 createdOn = Timestamp.from(Instant.now())

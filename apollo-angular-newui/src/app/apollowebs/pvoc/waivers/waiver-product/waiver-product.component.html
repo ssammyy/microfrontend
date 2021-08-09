@@ -1,32 +1,33 @@
 <h2 mat-dialog-title>Add Manufactured Product</h2>
 <mat-dialog-content>
-    <div class="form-group row">
-        <label for="product-name" class="col-4 col-form-label">Product Name</label>
-        <div class="col-8">
-            <input id="product-name" name="text" type="text" class="form-control">
+    <div [formGroup]="productForm">
+        <div class="form-group row">
+            <label for="product-name" class="col-4 col-form-label">Product Name</label>
+            <div class="col-8">
+                <input formControlName="productName" id="product-name" name="text" type="text" class="form-control">
+            </div>
         </div>
-    </div>
-    <div class="form-group row">
-        <label for="brand" class="col-4 col-form-label">Brand</label>
-        <div class="col-8">
-            <input id="brand" name="brand" type="text" class="form-control">
+        <div class="form-group row">
+            <label for="brand" class="col-4 col-form-label">Brand</label>
+            <div class="col-8">
+                <input formControlName="permitNumber" id="brand" name="brand" type="text" class="form-control">
+            </div>
         </div>
-    </div>
-    <div class="form-group row">
-        <label for="permit-no" class="col-4 col-form-label">KEBS SMARK Permit No.</label>
-        <div class="col-8">
-            <input id="permit-no" name="end-product" type="text" class="form-control">
+        <div class="form-group row">
+            <label for="permit-no" class="col-4 col-form-label">KEBS SMARK Permit No.</label>
+            <div class="col-8">
+                <input formControlName="expriryDate" id="permit-no" name="end-product" type="text" class="form-control">
+            </div>
         </div>
-    </div>
-    <div class="form-group row">
-        <label for="country-of-origin" class="col-4 col-form-label">Expiry Date</label>
-        <div class="col-8">
-            <input id="country-of-origin" name="country-of-origin" type="text" class="form-control">
+        <div class="form-group row">
+            <label for="country-of-origin" class="col-4 col-form-label">Expiry Date</label>
+            <div class="col-8">
+                <input formControlName="brandName" id="country-of-origin" name="country-of-origin" type="text" class="form-control">
+            </div>
         </div>
     </div>
 </mat-dialog-content>
 <mat-dialog-actions>
-    <button mat-button mat-dialog-close class="btn btn-warning">Close</button>
-    <button name="submit" type="button" class="btn btn-primary">SAVE</button>
-    <button name="submit" type="button" class="btn btn-primary">SAVE & ADD MORE</button>
+    <button class="btn btn-warning" mat-button mat-dialog-close >Close</button>
+    <button [disabled]="!productForm.valid" name="submit" type="button" class="btn btn-primary" (click)="saveProduct()">SAVE</button>
 </mat-dialog-actions>

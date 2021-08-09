@@ -12,25 +12,25 @@
                     <div class="card-body">
                         <div class="toolbar">
                         </div>
-                        <mat-horizontal-stepper>
+                        <mat-horizontal-stepper [linear]="true">
                             <!-- Stepers Wrapper -->
                             <mat-step label="Industry details">
-                                <app-manufacturer-details></app-manufacturer-details>
+                                <app-manufacturer-details [nextClicked]="companyNextClicked"  [companyDetails]="companyDetails"></app-manufacturer-details>
                                 <div class="pull-right pr-4">
-                                    <button class="btn btn-primary" mat-button matStepperNext>Next</button>
+                                    <button  (click)="companyNextClickedEvent()" class="btn btn-primary" mat-button matStepperNext>Next</button>
                                 </div>
                             </mat-step>
                             <mat-step label="Good Details">
-                                <app-goods-details></app-goods-details>
+                                <app-goods-details  [goodDetails]="goodDetails"></app-goods-details>
                                 <button class="btn btn-warning" mat-button matStepperPrevious>Back</button>
                                 <div class="pull-right pr-4">
-                                    <button class="btn btn-primary" mat-button matStepperNext>Submit</button>
+                                    <button (click)="submitExemptionRequest()" class="btn btn-primary" mat-button matStepperNext>Submit</button>
                                 </div>
                             </mat-step>
                             <mat-step label="Application Sent">
                                 <app-waiver-submitted-dialog></app-waiver-submitted-dialog>
                                 <div class="pull-right pr-4">
-                                    <button class="btn btn-primary" mat-button matStepperNext>Done</button>
+                                    <button (click)="goToHome()" class="btn btn-primary" mat-button matStepperNext>Done</button>
                                 </div>
                             </mat-step>
                         </mat-horizontal-stepper>

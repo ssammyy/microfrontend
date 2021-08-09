@@ -19,12 +19,9 @@
                 <div class="row no-margin inspection-data">
                   <div class="col-sm-12 col-md-8 no-padding inspection-data-main">
                     
-                    <div class="inspection-data-card blue-box" (click)="goTo('/pvoc/exceptions')" >
+                    <div class="inspection-data-card blue-box" (click)="goTo('/pvoc/exceptions', true)" >
                       <div class="inspection-data-info-container">
                         <div class="row no-margin inspection-data-info-header">
-                          <div class="col-xs-2 no-padding inspection-data-info-img">
-                            <img src="assets/kebs_logo.png" />
-                          </div>
                           <div class="col-xs-10 no-padding inspection-data-info-title-container">
                             <h1 class="inspection-data-info-title">Apply / Renew your</h1>
                             <h2 class="inspection-data-info-subtitle">PVoC Exemptions</h2>
@@ -38,12 +35,9 @@
                         </div>
                       </div>
                     </div>
-                    <div class="inspection-data-card orange-box" (click)="goTo('/pvoc/waivers')">
+                    <div class="inspection-data-card orange-box" (click)="goTo('/pvoc/waivers', false)">
                       <div class="inspection-data-info-container">
                         <div class="row no-margin inspection-data-info-header">
-                          <div class="col-xs-2 no-padding inspection-data-info-img">
-                            <img src="assets/kebs_logo_2.png" />
-                          </div>
                           <div class="col-xs-10 no-padding inspection-data-info-title-container">
                             <h1 class="inspection-data-info-title">Apply / Renew your</h1>
                             <h2 class="inspection-data-info-subtitle">Importation Waiver</h2>
@@ -60,9 +54,6 @@
                     <div class="inspection-data-card orange-box" >
                       <div class="inspection-data-info-container">
                         <div class="row no-margin inspection-data-info-header">
-                          <div class="col-xs-2 no-padding inspection-data-info-img">
-                            <img src="assets/afya_logo.png" />
-                          </div>
                           <div class="col-xs-10 no-padding inspection-data-info-title-container">
                             <h1 class="inspection-data-info-title">Submit your</h1>
                             <h2 class="inspection-data-info-subtitle">PVoC Complaint</h2>
@@ -86,7 +77,7 @@
 
                     <div class="inspection-data-side-btn center-vertical-flex blue-box">
                       <mat-icon>assignment</mat-icon>
-                      <p class="side-btn-font">Excemption Certificates</p>
+                      <p class="side-btn-font">Exemption Certificates</p>
                     </div>
                   </div>
                 </div>

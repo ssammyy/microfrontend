@@ -34,7 +34,7 @@ class WaiverApplication {
     @Email(message = "Email address is invalid")
     var emailAddress: String? = null
 
-    @Pattern(regexp = "^[\\d\\w]]{5,25}$", message = "KRA PIN is required to have numbers and letters only")
+    @Pattern(regexp = "^[\\d\\w]{5,25}$", message = "KRA PIN is required to have numbers and letters only")
     var kraPin: String? = null
     var category: String? = null
     var justification: String? = null

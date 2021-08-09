@@ -96,6 +96,12 @@ import { WaiverApplicationComponent } from './apollowebs/pvoc/waiver-application
 import { GoodsDetailsComponent } from './apollowebs/pvoc/exceptions-application/goods-details/goods-details.component';
 import { WaiverSubmittedDialogComponent } from './apollowebs/pvoc/waivers/waiver-submitted-dialog/waiver-submitted-dialog.component';
 import { ManufacturerDetailsComponent } from './apollowebs/pvoc/waivers/manufacturer-details/manufacturer-details.component';
+import { ProductDetailsComponent } from './apollowebs/pvoc/waiver-application/product-details/product-details.component';
+import {ImportationWaiverComponent} from "./apollowebs/pvoc/importation-waiver/importation-waiver.component";
+import {MainProductionMachineryComponent} from "./apollowebs/pvoc/waivers/main-production-machinery/main-production-machinery.component";
+import {RawMaterialsComponent} from "./apollowebs/pvoc/waivers/raw-materials/raw-materials.component";
+import {WaiverProductComponent} from "./apollowebs/pvoc/waivers/waiver-product/waiver-product.component";
+import {IndustrialSparesComponent} from "./apollowebs/pvoc/waivers/industrial-spares/industrial-spares.component";
 
 @NgModule({
     exports: [
@@ -181,7 +187,12 @@ import { ManufacturerDetailsComponent } from './apollowebs/pvoc/waivers/manufact
         AddUserComponent,
         FmarkApplicationComponent,
         LoaderComponent,
-        
+        ProductDetailsComponent,
+        ImportationWaiverComponent,
+        MainProductionMachineryComponent,
+        RawMaterialsComponent,
+        WaiverProductComponent,
+        IndustrialSparesComponent
     ]
 
 })
