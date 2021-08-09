@@ -1,0 +1,179 @@
+<div class="main-content">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="card">
+          <div class="card-header card-header-primary card-header-icon">
+            <div class="card-icon">
+              <i class="material-icons">assignment</i>
+            </div>
+            <h4 class="card-title">IMPORT INSPECTION</h4>
+          </div>
+          <div class="card-body">
+            <div class="toolbar">
+            </div>
+            <div class="importation-waiver-main">
+              <h1 class="main-title-font importation-waiver-title">Apply for an importation waiver</h1>
+              <form name="applicantDetailsForm" [formGroup]="ApplicantDetailsForm" class="form">
+                <h2 class="main-title-font importation-waiver-subtitle">APPLICANT DETAILS</h2>
+
+                <label for="applicantName" class="waiver-form-label">1. Applicant Name</label>
+                <input name="name" class="waiver-form-input" formControlName="applicantName" placeholder="Enter Name"
+                  type="name" required>
+                <div *ngIf="applicantFormErrors.applicantName" class="err-msg">
+                  Applicant name is required
+                </div>
+
+                <label for="phoneNumber" class="waiver-form-label">2. Phone Number</label>
+                <input name="name" class="waiver-form-input" formControlName="phoneNumber"
+                  placeholder="Enter Phone Number" type="text" required>
+                <div *ngIf="applicantFormErrors.phoneNumber" class="err-msg">
+                  Phone number is required
+                </div>
+
+                <label for="postalAddress" class="waiver-form-label">3. Postal Address</label>
+                <input name="name" class="waiver-form-input" formControlName="postalAddress"
+                  placeholder="Enter Postal Address" type="text" required>
+                <div *ngIf="applicantFormErrors.postalAddress" class="err-msg">
+                  Postal Address is required
+                </div>
+
+                <label for="email" class="waiver-form-label">4. Email Address</label>
+                <input name="name" class="waiver-form-input" formControlName="email" placeholder="Enter Email Address"
+                  type="email" required>
+                <div *ngIf="applicantFormErrors.email" class="err-msg">
+                  Enter a valid email.
+                </div>
+
+                <label for="kraPin" class="waiver-form-label">5. KRA PIN</label>
+                <input name="name" class="waiver-form-input" formControlName="kraPin" placeholder="Enter KRA PIN"
+                  type="text" required>
+                <div *ngIf="applicantFormErrors.kraPin" class="err-msg">
+                  KRA PIN is required.
+                </div>
+              </form>
+              <form class="application-details-form">
+                <h2 class="main-title-font importation-waiver-subtitle">APPLICATION DETAILS</h2>
+
+                <label class="waiver-form-label">6. Category</label>
+                <select id="categ" name="categ" class="waiver-form-input" (change)="selectOption($event.target.value)"
+                  [(ngModel)]="secondFormData.category">
+                  <option value="" disabled selected>Select your option</option>
+                  <option *ngFor="let cat of categoryList" [value]="cat.value">
+                    {{cat.viewValue}}
+                  </option>
+                </select>
+
+                <label class="waiver-form-label">7. Justification</label>
+                <textarea name="name" class="waiver-form-input" rows="5" placeholder="Enter justification here..."
+                  type="text" [(ngModel)]="secondFormData.justification"></textarea>
+
+                <label class="waiver-form-label">8. Product Description</label>
+                <select id="categ" name="categ" class="waiver-form-input" (change)="selectOption($event.target.value)"
+                  [(ngModel)]="secondFormData.productDescription">
+                  <option value="" disabled selected>Select your option</option>
+                  <option *ngFor="let desc of descriptionList" [value]="desc.value">
+                    {{desc.viewValue}}
+                  </option>
+                </select>
+
+                <label class="waiver-form-label">9. Documentation</label>
+                <div class="row no-margin file-input" *ngIf="secondFormData.documentation.length == 0; else hasFiles">
+                  <p>Documents Required</p>
+                  <ul>
+                    <li>Document 1</li>
+                    <li>Document 2</li>
+                    <li>Document 3</li>
+                  </ul>
+                </div>
+                <ng-template #hasFiles>
+                  <div class="row no-margin file-input">
+                    <p>Documents Added</p>
+                    <ul>
+                      <li *ngFor="let files of secondFormData.documentation; let i = index">
+                        <span>{{files.name}}</span>&nbsp;&nbsp;<span class="close-btn" (click)="deleteFile(i)">X</span>
+                      </li>
+                    </ul>
+                  </div>
+                </ng-template>
+                <div class="row no-margin">
+                  <input type="file" accept="image/*" (change)="importFile($event)" class="display-nothing" #file>
+                  <button class="next-btn btn-attach" (click)="file.click()">ATTACH FILES</button>
+                </div>
+
+                <label class="waiver-form-label">8. Master List</label>
+                <div class="row no_margin master-list-container">
+
+                  <div class="col-sm-12 col-md-4">
+
+                    <label class="waiver-form-label">PRODUCT DESCRIPTION</label>
+                    <select id="product_desc" name="product_desc" class="waiver-form-input-master"
+                      (change)="selectOption($event.target.value)"
+                      [(ngModel)]="masterListData.productDescriptionMaster">
+                      <option value="" disabled selected>Select product</option>
+                      <option *ngFor="let desc of masterDescriptionList" [value]="desc.value">
+                        {{desc.viewValue}}
+                      </option>
+                    </select>
+
+                    <label class="waiver-form-label">UNIT</label>
+                    <input name="unit_master" class="waiver-form-input-master" placeholder="Enter unit" type="text"
+                      [(ngModel)]="masterListData.unitMaster">
+
+                    <label class="waiver-form-label">COUNTRY</label>
+                    <select id="unit_country" name="unit_country" class="waiver-form-input-master"
+                      (change)="selectOption($event.target.value)" [(ngModel)]="masterListData.originCountryMaster">
+                      <option value="" disabled selected>Select country</option>
+                      <option *ngFor="let country of masterCountryList" [value]="country.value">
+                        {{country.viewValue}}
+                      </option>
+                    </select>
+
+                    <label class="waiver-form-label">TOTAL AMOUNT</label>
+                    <input name="unit_amount" class="waiver-form-input-master" placeholder="Enter amount" type="text"
+                      [(ngModel)]="masterListData.totalAmountMaster">
+
+                  </div>
+
+                  <div class="col-sm-12 col-md-4">
+
+                    <label class="waiver-form-label">HS CODE</label>
+                    <input name="unit_hs_code" class="waiver-form-input-master" placeholder="Enter hs code" type="text"
+                      [(ngModel)]="masterListData.hsCodeMaster">
+
+                    <label class="waiver-form-label">QUANTITY</label>
+                    <input name="unit_quantity" class="waiver-form-input-master" placeholder="Enter quantity"
+                      type="text" [(ngModel)]="masterListData.quantityMaster">
+
+                    <label class="waiver-form-label">CURRENCY</label>
+                    <select id="unit_currency" name="unit_currency" class="waiver-form-input-master"
+                      (change)="selectOption($event.target.value)" [(ngModel)]="masterListData.originCountryMaster">
+                      <option value="" disabled selected>Select currency</option>
+                      <option *ngFor="let currency of masterCurrencyList" [value]="currency.value">
+                        {{currency.viewValue}}
+                      </option>
+                    </select>
+                  </div>
+                </div>
+                <div class="row no_margin master-list-new-btn">
+                  <button class="next-btn btn-gen new-btn" (click)="addNewMasterSheet()">ADD NEW</button>
+                </div>
+                <div class="row no_margin master-list-new-btn">
+                  <button class="next-btn btn-attach" (click)="addMasterListDataToMasterList()">UPLOAD MASTER
+                    SHEET</button>
+                </div>
+
+
+              </form>
+              <div class="nxt-and-back-container-holder">
+                <button class="back-btn btn-gen" *ngIf="firstFormButtonClicked">BACK</button>
+                <button class="next-btn btn-gen" 
+                  (click)="submitDataFunction()">NEXT</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
