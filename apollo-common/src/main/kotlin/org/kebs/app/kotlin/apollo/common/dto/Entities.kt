@@ -28,12 +28,10 @@ import com.fasterxml.jackson.databind.PropertyNamingStrategies
 import com.fasterxml.jackson.databind.annotation.JsonNaming
 import java.math.BigDecimal
 import java.sql.Date
+import java.sql.Timestamp
 import java.time.LocalDateTime
 import javax.validation.Valid
-import javax.validation.constraints.Email
-import javax.validation.constraints.NotBlank
-import javax.validation.constraints.NotEmpty
-import javax.validation.constraints.Size
+import javax.validation.constraints.*
 
 open class BaseRequest(
     override var id: Long,
@@ -629,7 +627,7 @@ class JwtResponse(
 ) {
     var tokenType = "Bearer"
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss.SSS")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm:ss.SSS")
     var expiry: LocalDateTime? = null
     var companyID: Long? = null
     var branchID: Long? = null
@@ -734,3 +732,233 @@ data class UserCompanyDetailsDto(
     @JsonProperty("countExpired")
     val countExpired: Long? = null
 )
+
+
+class CocsItemsEntityDto {
+
+    @JsonProperty("CoC Number")
+    var cocNumber: String? = null
+
+    @JsonProperty("IDF Number")
+    var idfNumber: String? = null
+
+    @JsonProperty("RFI NUMBER")
+    var rfiNumber: String? = null
+
+    @NotEmpty(message = "Required field")
+    @JsonProperty("UCR Number")
+    var ucrNumber: String? = null
+
+    @JsonProperty("RFC DATE")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+    var rfcDate: Timestamp? = null
+
+
+    @JsonProperty("CoC Issued Date")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+    var cocIssueDate: Timestamp? = null
+
+
+    @NotEmpty(message = "Required field")
+    @JsonProperty("Clean")
+    var clean: String? = null
+
+    @JsonProperty("CoC remarks")
+    var cocRemarks: String? = null
+
+
+    @NotEmpty(message = "Required field")
+    @JsonProperty("Issuing Office")
+    var issuingOffice: String? = null
+
+    @NotEmpty(message = "Required field")
+    @JsonProperty("Importer Name")
+    var importerName: String? = null
+
+    @JsonProperty("Importer Pin")
+    var importerPin: String? = null
+
+    @NotEmpty(message = "Required field")
+    @JsonProperty("Importer Address 1")
+    var importerAddress1: String? = null
+
+
+    @JsonProperty("Importer Address 2")
+    var importerAddress2: String? = null
+
+    @NotEmpty(message = "Required field")
+    @JsonProperty("Importer City")
+    var importerCity: String? = null
+
+    @NotEmpty(message = "Required field")
+    @JsonProperty("importer Country")
+    var importerCountry: String? = null
+
+    @NotEmpty(message = "Required field")
+    @JsonProperty("Importer Zip code")
+    var importerZipCode: String? = null
+
+    @NotEmpty(message = "Required field")
+    @JsonProperty("Importer Telephone Number")
+    var importerTelephoneNumber: String? = null
+
+
+    @JsonProperty("Importer Fax Number")
+    var importerFaxNumber: String? = null
+
+    @NotEmpty(message = "Required field")
+    @JsonProperty("Importer Email")
+    var importerEmail: String? = null
+
+    @NotEmpty(message = "Required field")
+    @JsonProperty("Exporter Name")
+    var exporterName: String? = null
+
+    @JsonProperty("EXPORTER_PIN")
+    var exporterPin: String? = null
+
+    @NotEmpty(message = "Required field")
+    @JsonProperty("exporter address 1")
+    var exporterAddress1: String? = null
+
+
+    @JsonProperty("exporter address 2")
+    var exporterAddress2: String? = null
+
+    @NotEmpty(message = "Required field")
+    @JsonProperty("Exporter City")
+    var exporterCity: String? = null
+
+    @NotEmpty(message = "Required field")
+    @JsonProperty("Exporter Country")
+    var exporterCountry: String? = null
+
+    @NotEmpty(message = "Required field")
+    @JsonProperty("Exporter Zip code")
+    var exporterZipCode: String? = null
+
+    @NotEmpty(message = "Required field")
+    @JsonProperty("Exporter Telephone Number")
+    var exporterTelephoneNumber: String? = null
+
+    @JsonProperty("Exporter Fax Number")
+    var exporterFaxNumber: String? = null
+
+    @NotEmpty(message = "Required field")
+    @JsonProperty("Exporter Email")
+    var exporterEmail: String? = null
+
+    @NotEmpty(message = "Required field")
+    @JsonProperty("Place of Inspection")
+    var placeOfInspection: String? = null
+
+    @NotNull(message = "Required field")
+    @JsonProperty("Date of Inspection")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+    var dateOfInspection: Timestamp? = null
+
+    @NotEmpty(message = "Required field")
+    @JsonProperty("Port of Destination")
+    var portOfDestination: String? = null
+
+    @NotEmpty(message = "Required field")
+    @JsonProperty("Shipment Mode")
+    var shipmentMode: String? = null
+
+    @NotEmpty(message = "Required field")
+    @JsonProperty("Country of Supply")
+    var countryOfSupply: String? = null
+
+    @NotNull(message = "Required field")
+    @JsonProperty("Final Invoice FOB Value")
+    var finalInvoiceFobValue: Long = 0
+
+    @NotNull(message = "Required field")
+    @JsonProperty("Final Invoice currency")
+    var finalInvoiceExchangeRate: Long = 0
+
+    @NotEmpty(message = "Required field")
+    @JsonProperty("Final Invoice Exchange Rate")
+    var finalInvoiceCurrency: String? = null
+
+    @NotEmpty(message = "Required field")
+    @JsonProperty("Final Invoice Number")
+    var finalInvoiceNumber: String? = null
+
+    @NotNull(message = "Required field")
+    @JsonProperty("Final Invoice Date")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+    var finalInvoiceDate: Timestamp? = null
+
+    @NotNull(message = "Required field")
+    @JsonProperty("Shipment Partial Number")
+    var shipmentPartialNumber: Long = 0
+
+    @NotEmpty(message = "Required field")
+    @JsonProperty("Shipment seal Numbers")
+    var shipmentSealNumbers: String? = null
+
+    @JsonProperty("SHIPMENT_CONTAINER_NUMBER")
+    var shipmentContainerNumber: String? = null
+
+    @NotEmpty(message = "Required field")
+    @JsonProperty("SHIPMENT_GROSS_WEIGHT")
+    var shipmentGrossWeight: String? = null
+
+    @NotEmpty(message = "Required field")
+    @JsonProperty("Shipment Quantity Delivered")
+    var shipmentQuantityDelivered: String? = null
+
+    @NotNull(message = "Required field")
+    @JsonProperty("Shipment Line Number")
+    var shipmentLineNumber: Long = 0
+
+    @NotEmpty(message = "Required field")
+    @JsonProperty("Shipment Line HS Code")
+    var shipmentLineHscode: String? = null
+
+    @NotNull(message = "Required field")
+    @JsonProperty("Shipment Line Quantity")
+    var shipmentLineQuantity: Long = 0
+
+    @NotEmpty(message = "Required field")
+    @JsonProperty("Shipment Line Unit of Measure")
+    var shipmentLineUnitofMeasure: String? = null
+
+    @NotEmpty(message = "Required field")
+    @JsonProperty("Shipment Line Description")
+    var shipmentLineDescription: String? = null
+
+    @JsonProperty("Shipment Line VIN")
+    var shipmentLineVin: String? = null
+
+
+    @JsonProperty("Shipment Line Sticker Number")
+    var shipmentLineStickerNumber: String? = null
+
+    @JsonProperty("Shipment Line ICS")
+    var shipmentLineIcs: String? = null
+
+    @NotEmpty(message = "Required field")
+    @JsonProperty("Shipment Line Standards Reference")
+    var shipmentLineStandardsReference: String? = null
+
+    @JsonProperty("Shipment Line Licence Reference")
+    var shipmentLineLicenceReference: String? = null
+
+    @JsonProperty("SHIPMENT_LINE_REGISTRATION")
+    var shipmentLineRegistration: String? = null
+
+    @NotEmpty(message = "Required field")
+    @JsonProperty("Route")
+    var route: String? = null
+
+    @NotEmpty(message = "Required field")
+    @JsonProperty("PRODUCT_CATEGORY")
+    var productCategory: String? = null
+
+
+    @JsonProperty("LOCAL_COC_FILE_NAME")
+    var localCocFileName: String? = null
+
+}

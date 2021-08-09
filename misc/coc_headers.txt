@@ -1,0 +1,51 @@
+--IDF Number
+--RFC DATE
+--RFI NUMBER
+--CoC Number
+--CoC Issued Date
+--Clean?(Y/N)
+--CoC remarks
+--Issuing Office
+--Importer Name
+--Importer Address 1
+--Importer Address 2
+--Importer City
+--importer Country
+--Importer Zip code
+--Importer Telephone Number
+--Importer Fax Number
+--Importer Email
+--Exporter Name
+--exporter address 1
+--exporter address 2
+--Exporter City
+--Exporter Country
+--Exporter Zip code
+--Exporter Telephone Number
+--Exporter Fax Number
+--Exporter Email
+--Place of Inspection
+--Date of Inspection
+--Port of Destination
+--Shipment Mode
+--Country of Supply
+--Final Invoice FOB Value
+--Final Invoice currency
+--Final Invoice Exchange Rate
+--Final Invoice Number
+--Final Invoice Date
+--Shipment Partial Number
+--Shipment seal Numbers
+--Shipment Quantity Delivered
+--Shipment Line Number
+--Shipment Line HS Code
+--Shipment Line Quantity
+--Shipment Line Unit of Measure
+--Shipment Line Description
+--Shipment Line VIN
+--Shipment Line Sticker Number
+--Shipment Line ICS
+--Shipment Line Standards Reference
+--Shipment Line Licence Reference
+--Route
+--UCR Number
