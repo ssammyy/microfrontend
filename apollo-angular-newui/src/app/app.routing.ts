@@ -35,6 +35,7 @@ import {FmarkApplicationComponent} from "./apollowebs/fmark-application/fmark-ap
 import {SmarkComponent} from "./apollowebs/smark/smark.component";
 import {NwaJustificationFormComponent} from "./apollowebs/standards-development/nwa-justification-form/nwa-justification-form.component";
 import {InformationcheckComponent} from "./apollowebs/standards-development/informationcheck/informationcheck.component";
+import {UsermanagementComponent} from "./apollowebs/usermanagement/usermanagement.component";
 
 // export const AppRoutes: Routes = [
 //     {
@@ -269,6 +270,12 @@ export const routes: Routes = [
         canActivate: [RouteGuard],
 
         children: [{path: '', component: UserProfileMainComponent}]
+    },
+    {
+        path: 'user_management', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+
+        children: [{path: '', component: UsermanagementComponent}]
     },
     {
         path: 'smark/all_smark', component: AdminLayoutComponent,
