@@ -53,6 +53,9 @@ import {ComStdJcJustificationComponent} from "./apollowebs/standards-development
 import {CsRequestFormComponent} from "./apollowebs/standards-development/company-standard-request/cs-request-form/cs-request-form.component";
 import {ComStdJcJustificationListComponent} from "./apollowebs/standards-development/com-std-jc-justification-list/com-std-jc-justification-list.component";
 import {InformationcheckComponent} from "./apollowebs/standards-development/informationcheck/informationcheck.component";
+import {DivisionresponseComponent} from "./apollowebs/standards-development/divisionresponse/divisionresponse.component";
+import {NationalEnquiryPointComponent} from "./apollowebs/standards-development/national-enquiry-point/national-enquiry-point.component";
+import {MakeEnquiryComponent} from "./apollowebs/standards-development/national-enquiry-point/make-enquiry/make-enquiry.component";
 
 // export const AppRoutes: Routes = [
 //     {
@@ -421,6 +424,13 @@ export const routes: Routes = [
     {
         path: 'nep_information_received', component: AdminLayoutComponent,
         children: [{path: '', component: InformationcheckComponent}]
+    },
+    {
+        path: 'nep_division_response', component: AdminLayoutComponent,
+        children: [{path: '', component: DivisionresponseComponent}]
+    },
+    {
+        path: 'make_enquiry', component: MakeEnquiryComponent
     },
 ];
 

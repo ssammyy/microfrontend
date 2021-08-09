@@ -116,6 +116,9 @@ import { CsRequestFormComponent } from './apollowebs/standards-development/compa
 import { ComStdRequestListComponent } from './apollowebs/standards-development/com-std-request-list/com-std-request-list.component';
 import { ComStdJcJustificationComponent } from './apollowebs/standards-development/com-std-jc-justification/com-std-jc-justification.component';
 import { ComStdJcJustificationListComponent } from './apollowebs/standards-development/com-std-jc-justification-list/com-std-jc-justification-list.component';
+import {DivisionresponseComponent} from "./apollowebs/standards-development/divisionresponse/divisionresponse.component";
+import { NationalEnquiryPointComponent } from './apollowebs/standards-development/national-enquiry-point/national-enquiry-point.component';
+import { MakeEnquiryComponent } from './apollowebs/standards-development/national-enquiry-point/make-enquiry/make-enquiry.component';
 
 // import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 
@@ -230,7 +233,10 @@ import { ComStdJcJustificationListComponent } from './apollowebs/standards-devel
         ComStdRequestListComponent,
         ComStdJcJustificationComponent,
         ComStdJcJustificationListComponent,
-        InformationcheckComponent
+        InformationcheckComponent,
+        DivisionresponseComponent,
+        NationalEnquiryPointComponent,
+        MakeEnquiryComponent
 
     ]
 
