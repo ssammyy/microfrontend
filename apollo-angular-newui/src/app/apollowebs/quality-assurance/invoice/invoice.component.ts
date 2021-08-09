@@ -1,7 +1,7 @@
 import {AfterViewInit, Component, OnInit} from '@angular/core';
-import {QaService} from "../../core/store/data/qa/qa.service";
+import {QaService} from "../../../core/store/data/qa/qa.service";
 import {Router} from "@angular/router";
-import {AllPermitDetailsDto, ConsolidatedInvoiceDto, PermitEntityDto} from "../../core/store/data/qa/qa.model";
+import {AllPermitDetailsDto, ConsolidatedInvoiceDto, PermitEntityDto} from "../../../core/store/data/qa/qa.model";
 
 declare interface DataTable {
   headerRow: string[];

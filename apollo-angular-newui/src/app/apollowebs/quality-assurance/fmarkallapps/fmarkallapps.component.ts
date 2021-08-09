@@ -1,6 +1,6 @@
 import {AfterViewInit, Component, OnInit} from '@angular/core';
-import {PermitEntityDto} from "../../core/store/data/qa/qa.model";
-import {QaService} from "../../core/store/data/qa/qa.service";
+import {PermitEntityDto} from "../../../core/store/data/qa/qa.model";
+import {QaService} from "../../../core/store/data/qa/qa.service";
 import {Router} from "@angular/router";
 
 declare interface DataTable {

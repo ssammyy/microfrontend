@@ -9,6 +9,7 @@ class InformationTracker {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "INFORMATION_TRACKER_ID")
     val informationTrackerId: Long = 0
 
     @Column(name = "NEP_OFFICER_ID")

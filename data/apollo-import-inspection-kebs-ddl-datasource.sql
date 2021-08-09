@@ -793,11 +793,15 @@ begin
             into :new.id
             from dual;
 
-        end if;
+end if;
 
-    end if;
+end if;
 end;
 
-create index dat_kebs_cs_approval_applications_uploads_idx on dat_kebs_cs_approval_applications_uploads (CS_APPROVAL_APPLICATION_ID, status) TABLESPACE qaimssdb_idx;
+create
+index dat_kebs_cs_approval_applications_uploads_idx on dat_kebs_cs_approval_applications_uploads (CS_APPROVAL_APPLICATION_ID, status) TABLESPACE qaimssdb_idx;
 /
 
+
+
+CFG_KEBS_CDCFS_USERCFS

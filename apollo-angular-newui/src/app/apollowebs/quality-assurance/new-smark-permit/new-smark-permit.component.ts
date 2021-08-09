@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {Store} from '@ngrx/store';
 import {ActivatedRoute, Router} from '@angular/router';
-import {QaService} from '../../core/store/data/qa/qa.service';
+import {QaService} from '../../../core/store/data/qa/qa.service';
 import {
     PermitEntityDetails, PermitProcessStepDto,
     PlantDetailsDto,
@@ -13,11 +13,11 @@ import {
     STA10PersonnelDto,
     STA10ProductsManufactureDto,
     STA10RawMaterialsDto
-} from '../../core/store/data/qa/qa.model';
+} from '../../../core/store/data/qa/qa.model';
 import swal from 'sweetalert2';
 import {FileUploadValidators} from '@iplab/ngx-file-upload';
-import {selectUserInfo} from '../../core/store';
-import {LoadingService} from '../../core/services/loader/loadingservice.service';
+import {selectUserInfo} from '../../../core/store';
+import {LoadingService} from '../../../core/services/loader/loadingservice.service';
 import {NgxSpinnerService} from 'ngx-spinner';
 
 declare const $: any;

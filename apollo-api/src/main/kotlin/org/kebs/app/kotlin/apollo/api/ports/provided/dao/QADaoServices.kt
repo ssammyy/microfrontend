@@ -3862,7 +3862,8 @@ class QADaoServices(
             )
 
             //Todo: Payment selection
-            val manufactureDetails = commonDaoServices.findCompanyProfile(userID)
+            val manufactureDetails =
+                commonDaoServices.findCompanyProfileWithID(user.companyId ?: throw Exception("MISSING COMPANY ID"))
             val myAccountDetails = InvoiceDaoService.InvoiceAccountDetails()
             with(myAccountDetails) {
                 accountName = manufactureDetails.name

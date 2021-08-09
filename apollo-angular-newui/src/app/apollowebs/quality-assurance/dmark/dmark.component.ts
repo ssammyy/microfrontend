@@ -1,6 +1,6 @@
 import {AfterViewInit, Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
-import {QaService} from '../../core/store/data/qa/qa.service';
+import {QaService} from '../../../core/store/data/qa/qa.service';
 import {
     AllPermitDetailsDto, FilesListDto,
     PermitEntityDetails, PermitEntityDto,
@@ -8,13 +8,13 @@ import {
     SectionDto, SSFPDFListDetailsDto,
     STA1,
     STA3
-} from '../../core/store/data/qa/qa.model';
+} from '../../../core/store/data/qa/qa.model';
 import swal from 'sweetalert2';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
-import {ApiEndpointService} from '../../core/services/endpoints/api-endpoint.service';
-import {TableData} from '../../md/md-table/md-table.component';
+import {ApiEndpointService} from '../../../core/services/endpoints/api-endpoint.service';
+import {TableData} from '../../../md/md-table/md-table.component';
 import {FileUploadValidators} from '@iplab/ngx-file-upload';
-import {LoadingService} from '../../core/services/loader/loadingservice.service';
+import {LoadingService} from '../../../core/services/loader/loadingservice.service';
 import {NgxSpinnerService} from 'ngx-spinner';
 // import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 // import {ModalComponent} from "ngb-modal";

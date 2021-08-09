@@ -12,9 +12,9 @@ import {
     STA10PersonnelDto,
     STA10ProductsManufactureDto,
     STA10RawMaterialsDto
-} from "../../core/store/data/qa/qa.model";
+} from "../../../core/store/data/qa/qa.model";
 import {ActivatedRoute, Router} from "@angular/router";
-import {QaService} from "../../core/store/data/qa/qa.service";
+import {QaService} from "../../../core/store/data/qa/qa.service";
 import swal from "sweetalert2";
 
 @Component({
