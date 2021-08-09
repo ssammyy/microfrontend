@@ -11,15 +11,10 @@
                         </div>
                         <h4 class="card-title">Organizations: All My Branches</h4>
 
-                        <div *ngFor="let role of roles">
-                            <div *ngIf="role == 'MODIFY_COMPANY'" (click)="addBranches()" style="float: right; margin: inherit" class="card-icon">
-                                <i class="material-icons">add</i>
-                            </div>
-                            <div  *ngIf="role == 'MODIFY_COMPANY'" >
-                                <h4 style="float: right" class="card-title">Add A New Branch</h4>
-                            </div>
-
+                        <div (click)="addBranches()" style="float: right; margin: inherit" class="card-icon">
+                            <i class="material-icons">add</i>
                         </div>
+                        <h4 style="float: right" class="card-title">Add A New Branch</h4>
 
                     </div>
 

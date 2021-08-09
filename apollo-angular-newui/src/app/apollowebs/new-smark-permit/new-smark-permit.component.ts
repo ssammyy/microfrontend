@@ -15,10 +15,7 @@ import {
     STA10RawMaterialsDto
 } from '../../core/store/data/qa/qa.model';
 import swal from 'sweetalert2';
-import {FileUploadValidators} from '@iplab/ngx-file-upload';
-import {selectUserInfo} from '../../core/store';
-import {LoadingService} from '../../core/services/loader/loadingservice.service';
-import {NgxSpinnerService} from 'ngx-spinner';
+import {FileUploadValidators} from "@iplab/ngx-file-upload";
 
 declare const $: any;
 
@@ -28,9 +25,6 @@ declare const $: any;
     styleUrls: ['./new-smark-permit.component.css']
 })
 export class NewSmarkPermitComponent implements OnInit {
-    fullname = '';
-    loading = false;
-    SelectedSectionId;
     sta1Form: FormGroup;
     sta10Form: FormGroup;
     sta10FormA: FormGroup;
@@ -75,8 +69,6 @@ export class NewSmarkPermitComponent implements OnInit {
                 private router: Router,
                 private qaService: QaService,
                 private formBuilder: FormBuilder,
-                private _loading: LoadingService,
-                private SpinnerService: NgxSpinnerService,
                 private route: ActivatedRoute) {
     }
 
@@ -85,14 +77,12 @@ export class NewSmarkPermitComponent implements OnInit {
 
         this.sta1Form = this.formBuilder.group({
           commodityDescription: ['', Validators.required],
-          applicantName: [],
+          applicantName: ['', Validators.required],
           sectionId: ['', Validators.required],
           permitForeignStatus: [],
           attachedPlant: ['', Validators.required],
           tradeMark: ['', Validators.required],
-            createFmark: [],
             // inputCountryCode: ['', Validators.required,Validators.pattern("[0-9 ]{11}")]
-
 
         });
       this.sta10Form = this.formBuilder.group({
@@ -125,9 +115,9 @@ export class NewSmarkPermitComponent implements OnInit {
         this.sta10FormB = this.formBuilder.group({
             productName: [],
             productBrand: [],
-            // productStandardNumber: [],
-            // available: [],
-            // permitNo: []
+            productStandardNumber: [],
+            available: [],
+            permitNo: []
         });
 
         this.sta10FormC = this.formBuilder.group({
@@ -185,10 +175,6 @@ export class NewSmarkPermitComponent implements OnInit {
         );
 
         this.getSelectedPermit();
-
-        this.store$.select(selectUserInfo).pipe().subscribe((u) => {
-            return this.fullname = u.fullName;
-        });
 
     }
 
@@ -346,12 +332,10 @@ export class NewSmarkPermitComponent implements OnInit {
     onClickSaveSTA1(valid: boolean) {
         if (valid) {
             if (this.sta1 == null) {
-                this.SpinnerService.show();
                 this.qaService.savePermitSTA1('2', this.sta1Form.value).subscribe(
                     (data) => {
                         this.sta1 = data;
                         this.onClickUpdateStep(this.step);
-                        this.SpinnerService.hide();
                         console.log(data);
                         this.step += 1;
                         this.currBtn = 'B';
@@ -366,12 +350,10 @@ export class NewSmarkPermitComponent implements OnInit {
             },
         );
       } else {
-                this.SpinnerService.show();
                 this.qaService.updatePermitSTA1(String(this.sta1.id), this.sta1Form.value).subscribe(
                     (data) => {
                         this.sta1 = data;
                         this.onClickUpdateStep(this.step);
-                        this.SpinnerService.hide();
                         console.log(data);
                         swal.fire({
                             title: 'STA1 Form updated!',
@@ -389,14 +371,12 @@ export class NewSmarkPermitComponent implements OnInit {
 
     onClickSaveSTA10(valid: boolean) {
         if (valid) {
-            this.SpinnerService.show();
             console.log(this.sta1.id.toString());
             if (this.Sta10Details == null) {
                 this.qaService.saveFirmDetailsSta10(this.sta1.id.toString(), this.sta10Form.value).subscribe(
                     (data) => {
                         this.Sta10Details = data;
                         this.onClickUpdateStep(this.step);
-                        this.SpinnerService.hide();
                         console.log(data);
                         this.step += 1;
                         swal.fire({
@@ -411,12 +391,10 @@ export class NewSmarkPermitComponent implements OnInit {
                     },
                 );
             } else {
-                this.SpinnerService.show();
                 this.qaService.updateFirmDetailsSta10(`${this.sta1.id}`, this.sta10FormF.value).subscribe(
                     (data) => {
                         this.Sta10Details = data;
                         this.onClickUpdateStep(this.step);
-                        this.SpinnerService.hide();
                         console.log(data);
                         this.step += 1;
                         swal.fire({
@@ -435,14 +413,12 @@ export class NewSmarkPermitComponent implements OnInit {
 
     onClickSaveSTA10F(valid: boolean) {
         if (valid) {
-            this.SpinnerService.show();
             console.log(this.sta1.id.toString());
 
             this.qaService.updateFirmDetailsSta10(this.sta1.id.toString(), this.sta10FormF.value).subscribe(
                 (data) => {
                     this.Sta10Details = data;
                     this.onClickUpdateStep(this.step);
-                    this.SpinnerService.hide();
                     console.log(data);
                     this.step += 1;
                     swal.fire({
@@ -476,14 +452,12 @@ export class NewSmarkPermitComponent implements OnInit {
 
     onClickSaveSTAPersonnel(valid: boolean) {
         if (valid) {
-            this.SpinnerService.show();
             console.log(this.Sta10Details.id.toString());
             // if (this.sta10PersonnelDetails == null) {
             this.qaService.savePersonnelDetailsSta10(this.Sta10Details.id.toString(), this.sta10PersonnelDetails).subscribe(
                 (data) => {
                     this.sta10PersonnelDetails = data;
                     this.onClickUpdateStep(this.step);
-                    this.SpinnerService.hide();
                     console.log(data);
                     this.step += 1;
                     swal.fire({
@@ -501,16 +475,12 @@ export class NewSmarkPermitComponent implements OnInit {
 
     onClickSaveSTAProductsManufactured(valid: boolean) {
         if (valid) {
-            this.SpinnerService.show();
             console.log(this.Sta10Details.id.toString());
-            this.sta10ProductsManufactureDetail = this.sta10FormB.value;
-            this.sta10ProductsManufactureDetails.push(this.sta10ProductsManufactureDetail);
             // tslint:disable-next-line:max-line-length
             this.qaService.saveProductsManufacturedDetailsSta10(this.Sta10Details.id.toString(), this.sta10ProductsManufactureDetails).subscribe(
                 (data) => {
                     this.sta10ProductsManufactureDetails = data;
                     this.onClickUpdateStep(this.step);
-                    this.SpinnerService.hide();
                     console.log(data);
                     this.step += 1;
                     swal.fire({
@@ -528,13 +498,11 @@ export class NewSmarkPermitComponent implements OnInit {
 
     onClickSaveSTARawMaterials(valid: boolean) {
         if (valid) {
-            this.SpinnerService.show();
             console.log(this.Sta10Details.id.toString());
             this.qaService.saveRawMaterialsDetailsSta10(this.Sta10Details.id.toString(), this.sta10RawMaterialsDetails).subscribe(
                 (data) => {
                     this.sta10RawMaterialsDetails = data;
                     this.onClickUpdateStep(this.step);
-                    this.SpinnerService.hide();
                     console.log(data);
                     this.step += 1;
                     swal.fire({
@@ -552,13 +520,11 @@ export class NewSmarkPermitComponent implements OnInit {
 
     onClickSaveSTAMachineryPlant(valid: boolean) {
         if (valid) {
-            this.SpinnerService.show();
             console.log(this.Sta10Details.id.toString());
             this.qaService.saveMachineryPlantDetailsSta10(this.Sta10Details.id.toString(), this.sta10MachineryAndPlantDetails).subscribe(
                 (data) => {
                     this.sta10MachineryAndPlantDetails = data;
                     this.onClickUpdateStep(this.step);
-                    this.SpinnerService.hide();
                     console.log(data);
                     this.step += 1;
                     swal.fire({
@@ -576,14 +542,12 @@ export class NewSmarkPermitComponent implements OnInit {
 
     onClickSaveSTAManufacturingProcess(valid: boolean) {
         if (valid) {
-            this.SpinnerService.show();
             console.log(this.Sta10Details.id.toString());
             // tslint:disable-next-line:max-line-length
             this.qaService.saveManufacturingProcessDetailsSta10(this.Sta10Details.id.toString(), this.sta10ManufacturingProcessDetails).subscribe(
                 (data) => {
                     this.sta10ManufacturingProcessDetails = data;
                     this.onClickUpdateStep(this.step);
-                    this.SpinnerService.hide();
                     console.log(data);
                     this.step += 1;
                     swal.fire({
@@ -606,7 +570,7 @@ export class NewSmarkPermitComponent implements OnInit {
         this.sta10FormA?.get('personnelName')?.reset();
         this.sta10FormA?.get('qualificationInstitution')?.reset();
         this.sta10FormA?.get('dateOfEmployment')?.reset();
-        // this.sta10FormA.reset();
+        // this.sta10FormAA.reset();
     }
 
     onClickAddProductsManufacture() {
@@ -657,10 +621,8 @@ export class NewSmarkPermitComponent implements OnInit {
                 formData.append('docFile', file[i], file[i].name);
             }
 
-            this.SpinnerService.show();
             this.qaService.uploadSTA10File(this.sta1.id.toString(), formData).subscribe(
                 (data: any) => {
-                    this.SpinnerService.hide();
                     console.log(data);
                     this.onClickUpdateStep(this.step);
                     this.step += 1;
@@ -675,7 +637,7 @@ export class NewSmarkPermitComponent implements OnInit {
                     // this.router.navigate(['/permitdetails'], {fragment: this.permitEntityDetails.id.toString()});
                 },
             );
-            this.router.navigate(['/smarkpermitdetails'], {fragment: String(this.sta1.id)});
+            this.router.navigate(['/smarkpermitdetails'], {fragment: this.sta1.id.toString()});
         }
 
     }
@@ -707,32 +669,4 @@ export class NewSmarkPermitComponent implements OnInit {
                 '</div>'
         });
     }
-
-// Remove Form repeater values
-    removePersonnelDetails(index) {
-        this.sta10PersonnelDetails.splice(index, index);
-    }
-
-    removeProductsManufacture(index) {
-        this.sta10ProductsManufactureDetails.splice(index, index);
-    }
-
-    removeRawMaterials(index) {
-        this.sta10RawMaterialsDetails.splice(index, index);
-    }
-
-    removeMachineryAndPlantDetails(index) {
-        this.sta10MachineryAndPlantDetails.splice(index, index);
-    }
-
-    removeManufacturingProcessDetails(index) {
-        this.sta10ManufacturingProcessDetails.splice(index, index);
-    }
-
-
-        onselectSection() {
-            console.log(this.SelectedSectionId);
-            // this.SelectedSectionId=sselect;
-            // this.SelectedSectionId = Selectedfood;
-        }
 }

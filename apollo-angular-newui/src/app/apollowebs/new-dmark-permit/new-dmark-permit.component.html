@@ -1,14 +1,3 @@
-<div class="container-fluid" style="margin-top: 5%">
-<div  class="loading-spinner ">
-<ngx-spinner
-bdColor="rgba(51,51,51,0.8)"
-size="medium"
-color="#fff"
-type="ball-scale-multiple"
->
-<p style="font-size: 20px; color: white">Saving Please Wait...</p>
-</ngx-spinner>
-</div>
 <div class="main-content">
 <div class="container-fluid">
 <div class="row">
@@ -38,7 +27,7 @@ type="ball-scale-multiple"
 <form (ngSubmit)="onClickSaveSTA1(sta1Form.valid)"
 [formGroup]="sta1Form" class="form"
 enctype="multipart/form-data">
-<h4><b>STA 1 Form </b></h4>
+<h4><b>STA 1 Form</b></h4>
 <p>I/We the undersigned hereby apply for the grant/renewal
 of a permit/ the permit No………… to use the
 standardization mark on the commodity specified here
@@ -49,7 +38,7 @@ under:
 </div>
 <div class="row">
 <div class="form-group col-6">
-<label for="commodityDescription">Commodity Description <span style="font-size: xx-small; color: red;">(*)Required</span></label>
+    <label for="commodityDescription">Commodity Description <span style="font-size: xx-small; color: red;">(*)Required</span></label>
 
 <input [class.is-invalid]="formSta1Form.commodityDescription.invalid && formSta1Form.commodityDescription.touched"
 type="text" class="form-control"
@@ -60,7 +49,7 @@ placeholder="Commodity Description"
 required="">
 </div>
 <div class="form-group col-6">
-<label for="tradeMark">Trade Mark <span style="font-size: xx-small; color: red;">(*)Required</span></label>
+    <label for="tradeMark">Trade Mark <span style="font-size: xx-small; color: red;">(*)Required</span></label>
 
 <input type="text"
 [class.is-invalid]="formSta1Form.tradeMark.invalid && formSta1Form.tradeMark.touched"
@@ -71,13 +60,17 @@ placeholder="Trade Mark" required="">
 </div>
 <div class="row">
 <div class="form-group col-6">
-<label for="applicantName">Applicant Name <span style="font-size: xx-small; color: red;">(*)Required</span></label>
-<input type="text"  class="form-control" id="applicantName" formControlName="applicantName" name="applicantName"
-placeholder="Applicant Name" ngModel="{{fullname}}"  disabled>
+    <label for="applicantName">Applicant Name <span style="font-size: xx-small; color: red;">(*)Required</span></label>
+<input type="text"
+[class.is-invalid]="formSta1Form.applicantName.invalid && formSta1Form.applicantName.touched"
+class="form-control" id="applicantName"
+formControlName="applicantName"
+name="applicantName"
+placeholder="Applicant Name" required="">
 </div>
 
 <div class="form-group col-6">
-<label for="inputState">Select Section <span style="font-size: xx-small; color: red;">(*)Required</span></label>
+    <label for="inputState">Select Section <span style="font-size: xx-small; color: red;">(*)Required</span></label>
 <select id="inputState" class="form-control"
 formControlName="sectionId" name="sectionId"
 [class.is-invalid]="formSta1Form.sectionId.invalid && formSta1Form.sectionId.touched">
@@ -91,20 +84,20 @@ class="dropdown-item">{{section.section}}</option>
 
 <div class="row">
 <div class="form-group col-6">
-<label for="permitForeignStatus">Application Type <span style="font-size: xx-small; color: red;">(*)Required</span></label>
+    <label for="permitForeignStatus">Application Type <span style="font-size: xx-small; color: red;">(*)Required</span></label>
 
 <select id="permitForeignStatus"
 class="form-control"
 formControlName="permitForeignStatus"
 name="permitForeignStatus"
-[class.is-invalid]="formSta1Form.permitForeignStatus.invalid && formSta1Form.permitForeignStatus.touched" >
+[class.is-invalid]="formSta1Form.permitForeignStatus.invalid && formSta1Form.permitForeignStatus.touched">
 <option selected>Select Application</option>
 <option [ngValue]="0">DOMESTIC</option>
 <option [ngValue]="1">FOREIGN</option>
 </select>
 </div>
 <div class="form-group col-6">
-<label for="attachedPlant">Attach Plant <span style="font-size: xx-small; color: red;">(*)Required</span></label>
+    <label for="attachedPlant">Attach Plant <span style="font-size: xx-small; color: red;">(*)Required</span></label>
 <select id="attachedPlant" class="form-control"
 formControlName="attachedPlant"
 name="attachedPlant"
@@ -150,14 +143,13 @@ class="form-group clearfix">
 <form (ngSubmit)="onClickSaveSTA3A(sta3FormA.valid)"
 [formGroup]="sta3FormA" action="" class="form"
 enctype="multipart/form-data" method="post">
-<h2>STA3 Form </h2>
-<p><b style="color: #d50000">Documents will be uploaded on the last step of STA3 Application</b></p>
+<h2>STA3 Form</h2>
 <h3>1.Factory Organization</h3>
 <h4>1.1 PROCEDURES/PAPER WORK</h4>
 <h5>Please give the following information</h5>
 <div class="row">
 <div class="form-group col-12">
-<label for="produceOrdersOrStock">Do you produce against Orders or for Stock? <span style="font-size: xx-small; color: red;">(*)Required</span></label>
+    <label for="produceOrdersOrStock">Do you produce against Orders or for Stock? <span style="font-size: xx-small; color: red;">(*)Required</span></label>
 <textarea class="form-control"
 id="produceOrdersOrStock"
 formControlName="produceOrdersOrStock"
@@ -170,7 +162,7 @@ required="required"></textarea>
 </div>
 <div class="row">
 <div class="form-group col-12">
-<label for="issueWorkOrderOrEquivalent">Do you issue a work Order or equivalent?<span style="font-size: xx-small; color: red;">(*)Required</span></label>
+    <label for="issueWorkOrderOrEquivalent">Do you issue a work Order or equivalent?<span style="font-size: xx-small; color: red;">(*)Required</span></label>
 
 <textarea class="form-control"
 id="issueWorkOrderOrEquivalent"
@@ -183,7 +175,7 @@ placeholder=""
 </div>
 <div class="row">
 <div class="form-group col-12">
-<label for="identifyBatchAsSeparate">If so does this identify a batch as separate entity? <span style="font-size: xx-small; color: red;">(*)Required</span></label>
+    <label for="identifyBatchAsSeparate">If so does this identify a batch as separate entity? <span style="font-size: xx-small; color: red;">(*)Required</span></label>
 <textarea class="form-control"
 id="identifyBatchAsSeparate"
 formControlName="identifyBatchAsSeparate"
@@ -196,7 +188,7 @@ placeholder=""
 </div>
 <div class="row">
 <div class="form-group col-12">
-<label for="productsContainersCarryWorksOrder">Do products and/or containers carry works order identification in manufacture?<span style="font-size: xx-small; color: red;">(*)Required</span></label>
+    <label for="productsContainersCarryWorksOrder">Do products and/or containers carry works order identification in manufacture?<span style="font-size: xx-small; color: red;">(*)Required</span></label>
 <textarea class="form-control"
 id="productsContainersCarryWorksOrder"
 formControlName="productsContainersCarryWorksOrder"
@@ -208,7 +200,7 @@ rows="3" placeholder=""
 </div>
 <div class="row">
 <div class="form-group col-12">
-<label for="isolatedCaseDoubtfulQuality">If not how does system allow for products to be isolated in case of doubtful quality? <span style="font-size: xx-small; color: red;">(*)Required</span></label>
+    <label for="isolatedCaseDoubtfulQuality">If not how does system allow for products to be isolated in case of doubtful quality? <span style="font-size: xx-small; color: red;">(*)Required</span></label>
 <textarea class="form-control"
 id="isolatedCaseDoubtfulQuality"
 formControlName="isolatedCaseDoubtfulQuality"
@@ -253,7 +245,7 @@ enctype="multipart/form-data" method="post">
 staff organization:</b></h4>
 <div class="row">
 <div class="form-group col-12">
-<label for="headQaQualificationsTraining">Head of Quality Assurance, Qualifications, Training etc.<span style="font-size: xx-small; color: red;">(*)Required</span></label>
+    <label for="headQaQualificationsTraining">Head of Quality Assurance, Qualifications, Training etc.<span style="font-size: xx-small; color: red;">(*)Required</span></label>
 <textarea class="form-control"
 id="headQaQualificationsTraining"
 formControlName="headQaQualificationsTraining"
@@ -265,7 +257,7 @@ rows="3" placeholder=""
 </div>
 <div class="row">
 <div class="form-group col-12">
-<label for="reportingTo">Reporting to: <span style="font-size: xx-small; color: red;">(*)Required</span></label>
+    <label for="reportingTo">Reporting to: <span style="font-size: xx-small; color: red;">(*)Required</span></label>
 
 <textarea class="form-control" id="reportingTo"
 formControlName="reportingTo"
@@ -277,7 +269,7 @@ rows="3" placeholder=""
 </div>
 <div class="row">
 <div class="form-group col-12">
-<label for="separateQcid">Is there a separate Quality Control Inspection Department?<span style="font-size: xx-small; color: red;">(*)Required</span></label>
+    <label for="separateQcid">Is there a separate Quality Control Inspection Department?<span style="font-size: xx-small; color: red;">(*)Required</span></label>
 <textarea class="form-control" id="separateQcid"
 formControlName="separateQcid"
 name="separateQcid"
@@ -287,7 +279,7 @@ rows="3" placeholder=""
 </div>
 <div class="row">
 <div class="form-group col-12">
-<label for="testsRelevantStandard">If so indicate if staff are aware of the tests in the relevant standard(s)<span style="font-size: xx-small; color: red;">(*)Required</span></label>
+    <label for="testsRelevantStandard">If so indicate if staff are aware of the tests in the relevant standard(s)<span style="font-size: xx-small; color: red;">(*)Required</span></label>
 <textarea class="form-control"
 id="testsRelevantStandard"
 formControlName="testsRelevantStandard"
@@ -300,7 +292,7 @@ placeholder=""
 staff organization:</b></p>
 <div class="row">
 <div class="form-group col-12">
-<label for="spoComingMaterials">i). In-coming materials? <span style="font-size: xx-small; color: red;">(*)Required</span></label>
+    <label for="spoComingMaterials">i). In-coming materials? <span style="font-size: xx-small; color: red;">(*)Required</span></label>
 <textarea class="form-control"
 id="spoComingMaterials"
 formControlName="spoComingMaterials"
@@ -312,7 +304,7 @@ placeholder=""
 </div>
 <div class="row">
 <div class="form-group col-12">
-<label for="spoProcessOperations">ii). In process operations?<span style="font-size: xx-small; color: red;">(*)Required</span></label>
+    <label for="spoProcessOperations">ii). In process operations?<span style="font-size: xx-small; color: red;">(*)Required</span></label>
 <textarea class="form-control"
 id="spoProcessOperations"
 formControlName="spoProcessOperations"
@@ -324,7 +316,7 @@ placeholder=""
 </div>
 <div class="row">
 <div class="form-group col-12">
-<label for="spoFinalProducts">iii). Final Products? <span style="font-size: xx-small; color: red;">(*)Required</span></label>
+    <label for="spoFinalProducts">iii). Final Products? <span style="font-size: xx-small; color: red;">(*)Required</span></label>
 <textarea class="form-control" id="spoFinalProducts"
 formControlName="spoFinalProducts"
 name="spoFinalProducts" rows="3"
@@ -335,7 +327,7 @@ placeholder=""
 </div>
 <div class="row">
 <div class="form-group col-12">
-<label for="monitoredQcs">if so are they monitored by Quality Control Staff? <span style="font-size: xx-small; color: red;">(*)Required</span></label>
+    <label for="monitoredQcs">if so are they monitored by Quality Control Staff? <span style="font-size: xx-small; color: red;">(*)Required</span></label>
 <textarea class="form-control" id="monitoredQcs"
 formControlName="monitoredQcs"
 name="monitoredQcs"
@@ -346,7 +338,7 @@ rows="3" placeholder=""
 </div>
 <div class="row">
 <div class="form-group col-12">
-<label for="qauditChecksCarried">Are Quality Audit checks carried out and by whom? <span style="font-size: xx-small; color: red;">(*)Required</span></label>
+    <label for="qauditChecksCarried">Are Quality Audit checks carried out and by whom? <span style="font-size: xx-small; color: red;">(*)Required</span></label>
 <textarea class="form-control"
 id="qauditChecksCarried"
 formControlName="qauditChecksCarried"
@@ -358,7 +350,7 @@ placeholder=""
 </div>
 <div class="row">
 <div class="form-group col-12">
-<label for="informationQcso">Please give any other information on quality Control Staff Organization <span style="font-size: xx-small; color: red;">(*)Required</span></label>
+    <label for="informationQcso">Please give any other information on quality Control Staff Organization <span style="font-size: xx-small; color: red;">(*)Required</span></label>
 
 <textarea class="form-control" id="informationQcso"
 formControlName="informationQcso"
@@ -403,7 +395,7 @@ enctype="multipart/form-data" method="post">
 
 <div class="row">
 <div class="form-group col-12">
-<label for="mainMaterialsPurchasedSpecification">Please detail main materials purchased, specification(s) used and major supplies involved.  <span style="font-size: xx-small; color: red;">(*)Required</span></label>
+    <label for="mainMaterialsPurchasedSpecification">Please detail main materials purchased, specification(s) used and major supplies involved.  <span style="font-size: xx-small; color: red;">(*)Required</span></label>
 
 <textarea class="form-control"
 id="mainMaterialsPurchasedSpecification"
@@ -416,7 +408,7 @@ rows="3" placeholder=""
 </div>
 <div class="row">
 <div class="form-group col-12">
-<label for="adoptedReceiptMaterials">Please also give quality assurance method adopted on receipt of materials, or components indicating action taken on rejects <span style="font-size: xx-small; color: red;">(*)Required</span></label>
+    <label for="adoptedReceiptMaterials">Please also give quality assurance method adopted on receipt of materials, or components indicating action taken on rejects <span style="font-size: xx-small; color: red;">(*)Required</span></label>
 
 <textarea class="form-control"
 id="adoptedReceiptMaterials"
@@ -429,7 +421,7 @@ placeholder=""
 </div>
 <div class="row">
 <div class="form-group col-12">
-<label for="storageFacilitiesExist">What storage facilities exist for in-coming materials and finished products?  <span style="font-size: xx-small; color: red;">(*)Required</span></label>
+    <label for="storageFacilitiesExist">What storage facilities exist for in-coming materials and finished products?  <span style="font-size: xx-small; color: red;">(*)Required</span></label>
 
 <textarea class="form-control"
 id="storageFacilitiesExist"
@@ -473,7 +465,7 @@ enctype="multipart/form-data" method="post">
 <h4>SYSTEM</h4>
 <div class="row">
 <div class="form-group col-12">
-<label for="stepsManufacture">Please detail various steps in manufacture – A production schedule and /or supplement in chart form showing stages, which may be advantageous <span style="font-size: xx-small; color: red;">(*)Required</span></label>
+    <label for="stepsManufacture">Please detail various steps in manufacture – A production schedule and /or supplement in chart form showing stages, which may be advantageous <span style="font-size: xx-small; color: red;">(*)Required</span></label>
 
 <textarea class="form-control" id="stepsManufacture"
 formControlName="stepsManufacture"
@@ -501,8 +493,8 @@ placeholder=""
 <p>SYSTEM</p>
 <div class="row">
 <div class="form-group col-12">
-<label for="qcsSupplement">Please detail Quality Control System, including sampling followed with particular reference to the tests in the relevant Standard. A quality Control
-Schedule or supplement cross-reference to Chart required in 3.1 is advantageous <span style="font-size: xx-small; color: red;">(*)Required</span></label>
+    <label for="qcsSupplement">Please detail Quality Control System, including sampling followed with particular reference to the tests in the relevant Standard. A quality Control
+        Schedule or supplement cross-reference to Chart required in 3.1 is advantageous <span style="font-size: xx-small; color: red;">(*)Required</span></label>
 
 <textarea class="form-control" id="qcsSupplement"
 formControlName="qcsSupplement"
@@ -514,7 +506,7 @@ rows="3" placeholder=""
 </div>
 <div class="row">
 <div class="form-group col-12">
-<label for="qmInstructions">Please attach a copy of the Quality Manual or instructions on Quality Control issued to staff.<span style="font-size: xx-small; color: red;">(*)Required</span></label>
+    <label for="qmInstructions">Please attach a copy of the Quality Manual or instructions on Quality Control issued to staff.<span style="font-size: xx-small; color: red;">(*)Required</span></label>
 
 <textarea class="form-control" id="qmInstructions"
 formControlName="qmInstructions"
@@ -527,7 +519,7 @@ placeholder=""
 <h3>TEST EQUIPMENT/INSTRUMENTS, GAUGES AND TOOLS.</h3>
 <div class="row">
 <div class="form-group col-12">
-<label for="testEquipmentUsed">Please detail test equipment used and if any of the production or test equipment are calibrated?<span style="font-size: xx-small; color: red;">(*)Required</span></label>
+    <label for="testEquipmentUsed">Please detail test equipment used and if any of the production or test equipment are calibrated?<span style="font-size: xx-small; color: red;">(*)Required</span></label>
 <textarea class="form-control"
 id="testEquipmentUsed"
 formControlName="testEquipmentUsed"
@@ -539,7 +531,7 @@ placeholder=""
 </div>
 <div class="row">
 <div class="form-group col-12">
-<label for="indicateExternalArrangement">Indicate External arrangement for testing if any <span style="font-size: xx-small; color: red;">(*)Required</span></label>
+    <label for="indicateExternalArrangement">Indicate External arrangement for testing if any <span style="font-size: xx-small; color: red;">(*)Required</span></label>
 <textarea class="form-control"
 id="indicateExternalArrangement"
 formControlName="indicateExternalArrangement"
@@ -554,12 +546,12 @@ placeholder=""
 <h4>COMPLIANCE TO SPECIFICATION</h4>
 <div class="row">
 <div class="form-group col-12">
-<label for="levelDefectivesFound">Please indicate
-level of defectives found in past six month. If
-tests
-in accordance with the relevant
-standard(s) have already been carried out attach
-copies of test reports if available. <span style="font-size: xx-small; color: red;">(*)Required</span></label>
+    <label for="levelDefectivesFound">Please indicate
+        level of defectives found in past six month. If
+        tests
+        in accordance with the relevant
+        standard(s) have already been carried out attach
+        copies of test reports if available. <span style="font-size: xx-small; color: red;">(*)Required</span></label>
 
 <textarea class="form-control"
 id="levelDefectivesFound"
@@ -572,10 +564,10 @@ placeholder=""
 </div>
 <div class="row">
 <div class="form-group col-12">
-<label for="levelClaimsComplaints">Please indicate
-the level of claims/complaints made under
-warranty and/or otherwise and also give as a
-percentage of total out put.  <span style="font-size: xx-small; color: red;">(*)Required</span></label>
+    <label for="levelClaimsComplaints">Please indicate
+        the level of claims/complaints made under
+        warranty and/or otherwise and also give as a
+        percentage of total out put.  <span style="font-size: xx-small; color: red;">(*)Required</span></label>
 
 <textarea class="form-control"
 id="levelClaimsComplaints"
@@ -588,11 +580,11 @@ placeholder=""
 </div>
 <div class="row">
 <div class="form-group col-12">
-<label for="independentTests">Have
-independent tests been made on products against
-the
-standard? By whom? Please attach
-copies if available. <span style="font-size: xx-small; color: red;">(*)Required</span></label>
+    <label for="independentTests">Have
+        independent tests been made on products against
+        the
+        standard? By whom? Please attach
+        copies if available. <span style="font-size: xx-small; color: red;">(*)Required</span></label>
 <textarea class="form-control" id="independentTests"
 formControlName="independentTests"
 name="independentTests" rows="3"
@@ -604,14 +596,14 @@ placeholder=""
 <h3>AFFIXATION ON MARK OF CONFORMITY</h3>
 <div class="row">
 <div class="form-group col-12">
-<label for="independentTests">Please attach an
-illustration and indicate method e.g. special
-label,
-Embossing etc. which will be used
-to affix the Mark of Conformity. Please indicate
-at which stage of manufacture the Mark of
-Conformity
-will be affixed. <span style="font-size: xx-small; color: red;">(*)Required</span></label>
+    <label for="independentTests">Please attach an
+        illustration and indicate method e.g. special
+        label,
+        Embossing etc. which will be used
+        to affix the Mark of Conformity. Please indicate
+        at which stage of manufacture the Mark of
+        Conformity
+        will be affixed. <span style="font-size: xx-small; color: red;">(*)Required</span></label>
 <textarea class="form-control"
 id="indicateStageManufacture"
 formControlName="indicateStageManufacture"
@@ -653,7 +645,7 @@ Previous
 <li *ngIf="sta1.permitForeignStatus == 1">
 COC Document
 </li>
-<li *ngIf="sta1.permitForeignStatus == 0">Inspection Report</li>
+<li>Inspection Report</li>
 <li>Premise Photos</li>
 <li>Other Supporting Documents</li>
 </ul>
@@ -678,7 +670,6 @@ Finish
 </div>
 </div>
 </section>
-</div>
 </div>
 </div>
 </div>

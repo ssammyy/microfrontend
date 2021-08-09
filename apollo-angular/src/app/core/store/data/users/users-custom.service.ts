@@ -1,13 +1,13 @@
 import {Injectable} from '@angular/core';
-import {DefaultDataService, HttpUrlGenerator, Logger} from "@ngrx/data";
-import {selectBranchIdData, selectCompanyIdData} from "../companies";
-import {ApiEndpointService} from "../../../services/endpoints/api-endpoint.service";
-import {HttpClient, HttpErrorResponse} from "@angular/common/http";
-import {select, Store} from "@ngrx/store";
-import {Observable, throwError} from "rxjs";
-import {catchError, map} from "rxjs/operators";
-import {Update} from "@ngrx/entity";
-import {User} from "./user.model";
+import {DefaultDataService, HttpUrlGenerator, Logger} from '@ngrx/data';
+import {selectBranchIdData, selectCompanyIdData} from '../companies';
+import {ApiEndpointService} from '../../../services/endpoints/api-endpoint.service';
+import {HttpClient, HttpErrorResponse} from '@angular/common/http';
+import {select, Store} from '@ngrx/store';
+import {Observable, throwError} from 'rxjs';
+import {catchError, map} from 'rxjs/operators';
+import {Update} from '@ngrx/entity';
+import {User} from './user.model';
 
 @Injectable({
   providedIn: 'root'
@@ -31,11 +31,11 @@ export class UsersCustomService extends DefaultDataService<User> {
     let branch = 0;
     this.store$.pipe(select(selectCompanyIdData)).subscribe(
       (d) => {
-        if (d) return data = d; else return throwError('Invalid request, Company id is required inside');
+        if (d) { return data = d; } else { return throwError('Invalid request, Company id is required inside'); }
       });
     this.store$.pipe(select(selectBranchIdData)).subscribe(
       (d) => {
-        if (d) return branch = d; else return throwError('Invalid request, Company id is required inside');
+        if (d) { return branch = d; } else { return throwError('Invalid request, Company id is required inside'); }
       });
 
 
@@ -44,12 +44,12 @@ export class UsersCustomService extends DefaultDataService<User> {
       // console.log(`Revised url = ${baseUrl}${data}/branches/ `)
       return this.http.post<User>(myUrl, entity).pipe(
         map((response: User) => {
-          super.add(response)
+          super.add(response);
           return response;
         }),
         catchError((fault: HttpErrorResponse) => throwError(fault))
       );
-    } else return throwError('Invalid request, Organization id is required outside');
+    } else { return throwError('Invalid request, Organization id is required outside'); }
     // return super.add(entity);
   }
 
@@ -61,11 +61,11 @@ export class UsersCustomService extends DefaultDataService<User> {
     let branch = 0;
     this.store$.pipe(select(selectCompanyIdData)).subscribe(
       (d) => {
-        if (d) return data = d; else return throwError('Invalid request, Company id is required inside');
+        if (d) { return data = d; } else { return throwError('Invalid request, Company id is required inside'); }
       });
     this.store$.pipe(select(selectBranchIdData)).subscribe(
       (d) => {
-        if (d) return branch = d; else return throwError('Invalid request, Company id is required inside');
+        if (d) { return branch = d; } else { return throwError('Invalid request, Company id is required inside'); }
       });
 
 
@@ -80,7 +80,7 @@ export class UsersCustomService extends DefaultDataService<User> {
         }),
         catchError((fault: HttpErrorResponse) => throwError(fault))
       );
-    } else return throwError('Invalid request, Organization id is required outside');
+    } else { return throwError('Invalid request, Organization id is required outside'); }
 
     // return super.update(update);
   }
@@ -94,22 +94,22 @@ export class UsersCustomService extends DefaultDataService<User> {
     let branch = 0;
     this.store$.pipe(select(selectCompanyIdData)).subscribe(
       (d) => {
-        if (d) return company = d; else return throwError('Invalid request, Company id is required');
+        if (d) { return company = d; } else { return throwError('Invalid request, Company id is required'); }
       });
     this.store$.pipe(select(selectBranchIdData)).subscribe(
       (d) => {
-        if (d) return branch = d; else return throwError('Invalid request, Company id is required inside');
+        if (d) { return branch = d; } else { return throwError('Invalid request, Company id is required inside'); }
       });
 
 
     if (company) {
-      myUrl = `${this.baseUrl}${company}/branches/${branch}/users/`;
+      myUrl = `${this.baseUrl}${company}/branches/${branch}/users`;
       // console.log(`Revised url = ${baseUrl}${data}/branches/ `)
       return this.http.get<User[]>(myUrl).pipe(
         map((response: User[]) => response),
         catchError((fault: HttpErrorResponse) => throwError(fault))
       );
-    } else return throwError('Invalid request, Organization id is required');
+    } else { return throwError('Invalid request, Organization id is required'); }
 
   }
 }

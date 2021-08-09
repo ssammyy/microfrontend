@@ -33,10 +33,9 @@ import {TaskManagerComponent} from "./apollowebs/task-manager/task-manager.compo
 import {AddUserComponent} from "./apollowebs/company/branch/add-user/add-user.component";
 import {FmarkApplicationComponent} from "./apollowebs/fmark-application/fmark-application.component";
 import {SmarkComponent} from "./apollowebs/smark/smark.component";
-import {PVOCComponent} from "./apollowebs/pvoc/pvoc.component";
-import {WaiverApplicationComponent} from "./apollowebs/pvoc/waiver-application/waiver-application.component";
-import {ExceptionsApplicationComponent} from "./apollowebs/pvoc/exceptions-application/exceptions-application.component";
-import {GoodsDetailsComponent} from "./apollowebs/pvoc/exceptions-application/goods-details/goods-details.component";
+import { ImportInspectionComponent } from './apollowebs/pvoc/import-inspection/import-inspection.component';
+import { ExceptionsApplicationComponent } from './apollowebs/pvoc/exceptions-application/exceptions-application.component';
+import { ImportationWaiverComponent } from './apollowebs/pvoc/importation-waiver/importation-waiver.component';
 
 // export const AppRoutes: Routes = [
 //     {
@@ -89,7 +88,7 @@ import {GoodsDetailsComponent} from "./apollowebs/pvoc/exceptions-application/go
 //     }
 // ];
 
-export const routes: Routes = [
+const routes: Routes = [
     {
         path: '',
         redirectTo: 'dashboard',
@@ -296,34 +295,30 @@ export const routes: Routes = [
     {
         path: 'invoice_test', component: PdfViewComponent
     },
+
+    {
+        path: 'smarkpermitdetails', component: AdminLayoutComponent,
+        children: [{path: '', component: SmarkComponent}]
+    },
     {
         path: 'pvoc',
         component: AdminLayoutComponent,
         children: [
             {
                 path: '',
-                component: ExceptionsApplicationComponent
+                component: ImportInspectionComponent
             },
             {
                 path: 'waivers',
-                component: WaiverApplicationComponent
+                component: ImportationWaiverComponent
             },
             {
                 path: 'exceptions',
-                component: ExceptionsApplicationComponent,
-                children: [
-                    {
-                        path: 'goods',
-                        component: GoodsDetailsComponent
-                    }
-                ]
+                component: ExceptionsApplicationComponent
+               
             }
         ]
-    },
-    {
-        path: 'smarkpermitdetails', component: AdminLayoutComponent,
-        children: [{path: '', component: SmarkComponent}]
-    },
+    }
 ];
 
 

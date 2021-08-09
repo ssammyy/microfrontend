@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
-import {EntityCollectionServiceBase, EntityCollectionServiceElementsFactory} from "@ngrx/data";
-import {User} from "./user.model";
+import {EntityCollectionServiceBase, EntityCollectionServiceElementsFactory} from '@ngrx/data';
+import {User} from './user.model';
 
 @Injectable({
   providedIn: 'root'

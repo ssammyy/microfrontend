@@ -66,11 +66,11 @@ import {PermitReportComponent} from './apollowebs/permit-report/permit-report.co
 import {NewSmarkPermitComponent} from './apollowebs/new-smark-permit/new-smark-permit.component';
 import {NewDmarkPermitComponent} from './apollowebs/new-dmark-permit/new-dmark-permit.component';
 import {DmarkApplicationsAllComponent} from './apollowebs/dmark-applications-all/dmark-applications-all.component';
-import {InvoiceDetailsComponent} from './apollowebs/invoice-details/invoice-details.component';
-import {CompaniesList} from './apollowebs/company/companies.list';
-import {CompanyComponent} from './apollowebs/company/company.component';
-import {BranchComponent} from './apollowebs/company/branch/branch.component';
-import {BranchList} from './apollowebs/company/branch/branch.list';
+import { InvoiceDetailsComponent } from './apollowebs/invoice-details/invoice-details.component';
+import { CompaniesList } from './apollowebs/company/companies.list';
+import { CompanyComponent } from './apollowebs/company/company.component';
+import { BranchComponent } from './apollowebs/company/branch/branch.component';
+import { BranchList } from './apollowebs/company/branch/branch.list';
 import {UserComponent} from './apollowebs/company/branch/users/user.component';
 import {UserList} from './apollowebs/company/branch/users/user.list';
 import {UserProfileComponent} from './apollowebs/company/branch/users/user-profile.component';
@@ -89,15 +89,13 @@ import {FileUploadModule} from '@iplab/ngx-file-upload';
 import {AddUserComponent} from './apollowebs/company/branch/add-user/add-user.component';
 import {FmarkApplicationComponent} from './apollowebs/fmark-application/fmark-application.component';
 import {LoaderComponent} from './shared/loader/loader.component';
-import {FormsComponent} from './apollowebs/forms/forms.component';
-import {FieldErrorDisplayComponent} from './apollowebs/forms/field-error-display/field-error-display.component';
-import {ManufacturerDetailsComponent} from "./apollowebs/pvoc/waivers/manufacturer-details/manufacturer-details.component";
-import {WaiverApplicationComponent} from "./apollowebs/pvoc/waiver-application/waiver-application.component";
-import {ExceptionsApplicationComponent} from "./apollowebs/pvoc/exceptions-application/exceptions-application.component";
-import {GoodsDetailsComponent} from './apollowebs/pvoc/exceptions-application/goods-details/goods-details.component';
-import {WaiverSubmittedDialogComponent} from "./apollowebs/pvoc/waivers/waiver-submitted-dialog/waiver-submitted-dialog.component";
-
-// import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
+import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
+import { ImportInspectionComponent } from './apollowebs/pvoc/import-inspection/import-inspection.component';
+import { ExceptionsApplicationComponent } from './apollowebs/pvoc/exceptions-application/exceptions-application.component';
+import { WaiverApplicationComponent } from './apollowebs/pvoc/waiver-application/waiver-application.component';
+import { GoodsDetailsComponent } from './apollowebs/pvoc/exceptions-application/goods-details/goods-details.component';
+import { WaiverSubmittedDialogComponent } from './apollowebs/pvoc/waivers/waiver-submitted-dialog/waiver-submitted-dialog.component';
+import { ManufacturerDetailsComponent } from './apollowebs/pvoc/waivers/manufacturer-details/manufacturer-details.component';
 
 @NgModule({
     exports: [
@@ -146,7 +144,6 @@ import {WaiverSubmittedDialogComponent} from "./apollowebs/pvoc/waivers/waiver-s
         PdfViewerModule,
         NgxExtendedPdfViewerModule,
         FileUploadModule,
-        NgxSpinnerModule,
         // CoreModule
     ],
     declarations: [
@@ -184,18 +181,11 @@ import {WaiverSubmittedDialogComponent} from "./apollowebs/pvoc/waivers/waiver-s
         AddUserComponent,
         FmarkApplicationComponent,
         LoaderComponent,
-        FormsComponent,
-        FieldErrorDisplayComponent,
-        ManufacturerDetailsComponent,
-        WaiverApplicationComponent,
-        ExceptionsApplicationComponent,
-        GoodsDetailsComponent,
-        WaiverSubmittedDialogComponent
+        
     ]
 
 })
-export class MaterialModule {
-}
+export class MaterialModule {}
 
 @NgModule({
     imports: [
@@ -225,7 +215,7 @@ export class MaterialModule {
         }),
         ReactiveFormsModule,
         FormsModule,
-        // NgbModule,
+        NgbModule,
         NgxPaginationModule,
         FontAwesomeModule,
         NgxSpinnerModule,
@@ -234,13 +224,17 @@ export class MaterialModule {
         AppComponent,
         AdminLayoutComponent,
         AuthLayoutComponent,
-
+        ImportInspectionComponent,
+        ExceptionsApplicationComponent,
+        WaiverApplicationComponent,
+        GoodsDetailsComponent,
+        WaiverSubmittedDialogComponent,
+        ManufacturerDetailsComponent
     ],
-    providers: [
+    providers : [
         MatNativeDateModule,
         // {provide: APP_BASE_HREF, useValue: '/migration/'}
     ],
-    bootstrap: [AppComponent]
+    bootstrap:    [ AppComponent ]
 })
-export class AppModule {
-}
+export class AppModule { }

@@ -3,9 +3,6 @@ import PerfectScrollbar from 'perfect-scrollbar';
 import {Store} from '@ngrx/store';
 import {loadLogout, selectUserInfo} from '../core/store';
 import {Router} from '@angular/router';
-import {SideBarMainMenus} from '../core/store/data/sidebar/sidebar.model';
-import {SidebarService} from '../core/store/data/sidebar/sidebar.service';
-import {Observable} from 'rxjs';
 
 declare const $: any;
 
@@ -27,79 +24,84 @@ export interface ChildrenItems {
 }
 
 // Menu Items
-// export const ROUTES: RouteInfo[] = [
-//     {
-//         path: '/dashboard',
-//         title: 'Dashboard',
-//         type: 'link',
-//         icontype: 'dashboard',
-//         children: []
-//     },
-//
-//     {
-//         path: '/company',
-//         title: 'My Companies',
-//         type: 'sub',
-//         icontype: 'business',
-//         collapse: 'company',
-//         children: [
-//             {path: 'companies', title: 'View Companies', ab: 'VC'},
-//             // {path: 'branches', title: 'View Branches ', ab: 'VB'},
-//             {path: 'users', title: 'View Users ', ab: 'VU'}
-//         ]
-//     },
-//
-//     {
-//         path: '/fmark',
-//         title: 'Fortification Mark',
-//         type: 'sub',
-//         icontype: 'recommended',
-//         collapse: 'fmark',
-//         children: [
-//             {path: 'application', title: 'Make Application', ab: 'MA'},
-//             {path: 'fMarkAllApp', title: 'All My Applications', ab: 'AMA'},
-//             {path: 'panels', title: 'Awarded Applications', ab: 'AA'}
-//         ]
-//     }, {
-//         path: '/dmark',
-//         title: 'Diamond Mark',
-//         type: 'sub',
-//         icontype: 'verified',
-//         collapse: 'forms',
-//         children: [
-//             {path: 'newDmarkPermit', title: 'Make Application', ab: 'MA'},
-//             {path: 'all_dmark', title: 'All My Applications', ab: 'AMA'},
-//             {path: 'panels', title: 'Awarded Applications', ab: 'AA'}
-//         ]
-//     }, {
-//         path: '/smark',
-//         title: 'Standardization Mark',
-//         type: 'sub',
-//         icontype: 'class',
-//         collapse: 'tables',
-//         children: [
-//             {path: 'newSmarkPermit', title: 'Make Application', ab: 'MA'},
-//             {path: 'all_smark', title: 'All My Applications', ab: 'AMA'},
-//             {path: 'panels', title: 'Awarded Applications', ab: 'AA'}
-//         ]
-//     }, {
-//         path: '/invoice',
-//         title: 'Invoices',
-//         type: 'sub',
-//         icontype: 'receipt',
-//         collapse: 'invoice',
-//         children: [
-//             {path: 'all_invoice', title: 'All Invoices', ab: 'AI'},
-//             {path: 'consolidate_invoice', title: 'Consolidate Invoices', ab: 'CI'}
-//         ]
-//     },
-//     {
-//         path: '/all_tasks_list',
-//         title: 'My Tasks',
-//         type: 'link',
-//         icontype: 'task'
-//     }
-// ];
+export const ROUTES: RouteInfo[] = [
+    {
+        path: '/dashboard',
+        title: 'Dashboard',
+        type: 'link',
+        icontype: 'dashboard'
+    },
+
+    {
+        path: '/company',
+        title: 'My Companies',
+        type: 'sub',
+        icontype: 'business',
+        collapse: 'company',
+        children: [
+            {path: 'companies', title: 'View Companies', ab: 'VC'},
+            // {path: 'branches', title: 'View Branches ', ab: 'VB'},
+            {path: 'users', title: 'View Users ', ab: 'VU'}
+        ]
+    },
+
+    {
+        path: '/fmark',
+        title: 'Fortification Mark',
+        type: 'sub',
+        icontype: 'recommended',
+        collapse: 'fmark',
+        children: [
+            {path: 'application', title: 'Make Application', ab: 'MA'},
+            {path: 'fMarkAllApp', title: 'All My Applications', ab: 'AMA'},
+            {path: 'panels', title: 'Awarded Applications', ab: 'AA'}
+        ]
+    }, {
+        path: '/dmark',
+        title: 'Diamond Mark',
+        type: 'sub',
+        icontype: 'verified',
+        collapse: 'forms',
+        children: [
+            {path: 'newDmarkPermit', title: 'Make Application', ab: 'MA'},
+            {path: 'all_dmark', title: 'All My Applications', ab: 'AMA'},
+            {path: 'panels', title: 'Awarded Applications', ab: 'AA'}
+        ]
+    }, {
+        path: '/smark',
+        title: 'Standardization Mark',
+        type: 'sub',
+        icontype: 'class',
+        collapse: 'tables',
+        children: [
+            {path: 'newSmarkPermit', title: 'Make Application', ab: 'MA'},
+            {path: 'all_smark', title: 'All My Applications', ab: 'AMA'},
+            {path: 'panels', title: 'Awarded Applications', ab: 'AA'}
+        ]
+    }, {
+        path: '/invoice',
+        title: 'Invoices',
+        type: 'sub',
+        icontype: 'receipt',
+        collapse: 'invoice',
+        children: [
+            {path: 'all_invoice', title: 'All Invoices', ab: 'AI'},
+            {path: 'consolidate_invoice', title: 'Consolidate Invoices', ab: 'CI'}
+        ]
+    },
+    {
+        path: '/all_tasks_list',
+        title: 'My Tasks',
+        type: 'link',
+        icontype: 'task'
+    },
+    {
+        path: '/pvoc',
+        title: 'Import Inspection',
+        type: 'link',
+        icontype: 'receipt'
+    }
+];
 
 @Component({
     selector: 'app-sidebar-cmp',
@@ -110,16 +112,10 @@ export class SidebarComponent implements OnInit {
     public menuItems: any[];
     ps: any;
     fullname = '';
-    menus: Observable<SideBarMainMenus[]>;
 
     constructor(
-        private store$: Store<any>,
-        private router: Router,
-        private service: SidebarService
+        private store$: Store<any>, private router: Router
     ) {
-        this.menus = service.entities$;
-        service.getAll().subscribe();
-
     }
 
     isMobileMenu() {
@@ -128,17 +124,11 @@ export class SidebarComponent implements OnInit {
     }
 
     ngOnInit() {
-
-        this.menus.subscribe((m) => {
-            this.menuItems = m.filter(menuItem => menuItem);
-            // console.log(`Comparing ${m.length} vs ${this.menuItems.length}`);
-            if (window.matchMedia(`(min-width: 960px)`).matches && !this.isMac()) {
-                const elemSidebar = <HTMLElement>document.querySelector('.sidebar .sidebar-wrapper');
-                this.ps = new PerfectScrollbar(elemSidebar);
-            }
-        });
-
-
+        this.menuItems = ROUTES.filter(menuItem => menuItem);
+        if (window.matchMedia(`(min-width: 960px)`).matches && !this.isMac()) {
+            const elemSidebar = <HTMLElement>document.querySelector('.sidebar .sidebar-wrapper');
+            this.ps = new PerfectScrollbar(elemSidebar);
+        }
         this.store$.select(selectUserInfo).pipe().subscribe((u) => {
             return this.fullname = u.fullName;
         });

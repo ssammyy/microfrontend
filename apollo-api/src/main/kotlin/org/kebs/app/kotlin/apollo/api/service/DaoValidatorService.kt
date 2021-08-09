@@ -7,16 +7,15 @@ import javax.validation.Validator
 @Service
 class DaoValidatorService(private var validator: Validator) {
 
-
     fun validateInputWithInjectedValidator(input: Any?): Map<String, String>? {
-        var errors = HashMap<String, String>()
+        val errors = HashMap<String, String>()
         val violations: Set<ConstraintViolation<Any?>> = validator.validate(input)
         if (violations.isEmpty()) {
             return null
         }
-        violations.forEach({
+        violations.forEach {
             errors.put(it.propertyPath.toString(), it.message)
-        })
+        }
         return errors
     }
 }

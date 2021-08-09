@@ -48,7 +48,7 @@ export class GenerateInvoiceDto {
     batchID: bigint;
     plantID: bigint;
     permitRefNumber: string;
-    permitInvoicesID: number[];
+    permitInvoicesID: string[];
 }
 
 export class MPesaPushDto {
@@ -65,7 +65,6 @@ export class STA1 {
     sectionId: bigint;
     permitForeignStatus: number;
     attachedPlant: bigint;
-    createFmark: number;
 }
 
 export class FmarkEntityDto {
@@ -182,23 +181,10 @@ export class SectionDto {
     status: boolean;
 }
 
-
-export class FilesListDto {
-    id: bigint;
-    name: string;
-    fileType: string;
-    documentType: string;
-    versionNumber: number;
-    document: Blob;
-}
-
 export class AllPermitDetailsDto {
     permitDetails: PermitEntityDetails;
     officerList: UserEntityDto[];
     oldVersionList: PermitEntityDto[];
-    ordinaryFilesList: FilesListDto[];
-    sta3FilesList: FilesListDto[];
-    sta10FilesList: FilesListDto[];
     batchID: bigint;
 }
 

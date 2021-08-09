@@ -1,4 +1,5 @@
 import {createAction, props} from '@ngrx/store';
+import { User } from '..';
 import {ApiResponse} from '../../../domain/response.model';
 import {Branches} from './branch';
 import {Company} from './company';
@@ -19,7 +20,7 @@ export const loadDirectorId = createAction(
 
 export const loadUserId = createAction(
   '[Companies] loadUserId',
-  props<{ payload: number }>()
+  props<{ payload: number, user: User }>()
 );
 
 export const loadCompanyIdSuccess = createAction(
@@ -28,7 +29,7 @@ export const loadCompanyIdSuccess = createAction(
 );
 export const loadUserIdSuccess = createAction(
   '[Request] Load loadUserId Success',
-  props<{ userId: number }>()
+  props<{ userId: number, user: User }>()
 );
 
 

@@ -5,121 +5,114 @@ import {ApiEndpointService} from '../services/endpoints/api-endpoint.service';
 
 
 export const entityMetadata: EntityMetadataMap = {
-    RegistrationPayload: {
-        filterFn: activeFilter,
-    },
-    BrsLookUpRequest: {
-        filterFn: activeFilter,
-    },
-    SendTokenToPhone: {
-        filterFn: activeFilter,
-    },
-    ValidateTokenAndPhone: {
-        filterFn: activeFilter,
-    },
-    BusinessNatures: {
-        filterFn: activeFilter,
-    },
-    BusinessLines: {
-        filterFn: activeFilter,
-    },
-    Region: {
-        filterFn: activeFilter,
-    },
-    County: {
-        filterFn: activeFilter,
-    },
-    Town: {
-        filterFn: activeFilter,
-    },
-    Company: {
-        filterFn: activeFilter,
-    },
-    Branches: {
-        filterFn: activeFilter,
-    },
-    User: {
-        filterFn: activeFilter,
-    },
-    UserEntityDto: {
-        filterFn: activeFilter,
-    },
-    Titles: {
-        filterFn: activeFilter,
-    },
-    SideBarMainMenus: {
-        filterFn: activeFilter,
-    },
+  RegistrationPayload: {
+    filterFn: activeFilter,
+  },
+  BrsLookUpRequest: {
+    filterFn: activeFilter,
+  },
+  SendTokenToPhone: {
+    filterFn: activeFilter,
+  },
+  ValidateTokenAndPhone: {
+    filterFn: activeFilter,
+  },
+  BusinessNatures: {
+    filterFn: activeFilter,
+  },
+  BusinessLines: {
+    filterFn: activeFilter,
+  },
+  Region: {
+    filterFn: activeFilter,
+  },
+  County: {
+    filterFn: activeFilter,
+  },
+  Town: {
+    filterFn: activeFilter,
+  },
+  Company: {
+    filterFn: activeFilter,
+  },
+  Branches: {
+    filterFn: activeFilter,
+  },
+  User: {
+    filterFn: activeFilter,
+  },
+  UserEntityDto: {
+    filterFn: activeFilter,
+  },
+  Titles: {
+    filterFn: activeFilter,
+  },
 };
 
 
 export const pluralNames = {Branches: 'branches'};
 
 export const entityConfig: EntityDataModuleConfig = {
-    entityMetadata
+  entityMetadata
 };
 
 export const defaultDataServiceConfig: DefaultDataServiceConfig = {
-    root: ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.HOME_PAGE),
-    timeout: 15000, // request timeout
-    entityHttpResourceUrls: {
-        RegistrationPayload: {
-            entityResourceUrl: ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.REGISTER_COMPANY),
-            collectionResourceUrl: ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.REGISTER_COMPANY)
-        },
-        BrsLookUpRequest: {
-            entityResourceUrl: ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.VALIDATE_BRS),
-            collectionResourceUrl: ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.VALIDATE_BRS)
-        },
-        SendTokenToPhone: {
-            entityResourceUrl: ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.SEND_TOKEN),
-            collectionResourceUrl: ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.SEND_TOKEN)
-        },
-        ValidateTokenAndPhone: {
-            entityResourceUrl: ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.VALIDATE_TOKEN),
-            collectionResourceUrl: ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.VALIDATE_TOKEN)
-        },
-        BusinessNatures: {
-            entityResourceUrl: ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.BUSINESS_NATURES_LIST),
-            collectionResourceUrl: ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.BUSINESS_NATURES_LIST)
-        },
-        BusinessLines: {
-            entityResourceUrl: ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.BUSINESS_LINES_LIST),
-            collectionResourceUrl: ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.BUSINESS_LINES_LIST)
-        },
-        Region: {
-            entityResourceUrl: ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.REGIONS_LIST),
-            collectionResourceUrl: ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.REGIONS_LIST)
-        },
-        Titles: {
-            entityResourceUrl: ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.TITLES_LIST),
-            collectionResourceUrl: ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.TITLES_LIST)
-        },
-        County: {
-            entityResourceUrl: ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.COUNTY_LIST),
-            collectionResourceUrl: ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.COUNTY_LIST)
-        },
-        Town: {
-            entityResourceUrl: ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.TOWN_LIST),
-            collectionResourceUrl: ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.TOWN_LIST)
-        },
-        Company: {
-            entityResourceUrl: ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.COMPANY_LIST),
-            collectionResourceUrl: ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.COMPANY_LIST)
-        },
-        Branches: {
-            entityResourceUrl: ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.BRANCH_LIST),
-            collectionResourceUrl: ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.BRANCH_LIST)
-        },
-        UserEntityDto: {
-            entityResourceUrl: ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.USER_DETAILS),
-            collectionResourceUrl: ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.USER_DETAILS)
-        },
-        SideBarMainMenus: {
-            entityResourceUrl: ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.SIDEBAR_MENU_URL),
-            collectionResourceUrl: ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.SIDEBAR_MENU_URL)
-        },
-    }
+  root: ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.HOME_PAGE),
+  timeout: 15000, // request timeout
+  entityHttpResourceUrls: {
+    RegistrationPayload: {
+      entityResourceUrl: ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.REGISTER_COMPANY),
+      collectionResourceUrl: ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.REGISTER_COMPANY)
+    },
+    BrsLookUpRequest: {
+      entityResourceUrl: ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.VALIDATE_BRS),
+      collectionResourceUrl: ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.VALIDATE_BRS)
+    },
+    SendTokenToPhone: {
+      entityResourceUrl: ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.SEND_TOKEN),
+      collectionResourceUrl: ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.SEND_TOKEN)
+    },
+    ValidateTokenAndPhone: {
+      entityResourceUrl: ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.VALIDATE_TOKEN),
+      collectionResourceUrl: ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.VALIDATE_TOKEN)
+    },
+    BusinessNatures: {
+      entityResourceUrl: ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.BUSINESS_NATURES_LIST),
+      collectionResourceUrl: ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.BUSINESS_NATURES_LIST)
+    },
+    BusinessLines: {
+      entityResourceUrl: ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.BUSINESS_LINES_LIST),
+      collectionResourceUrl: ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.BUSINESS_LINES_LIST)
+    },
+    Region: {
+      entityResourceUrl: ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.REGIONS_LIST),
+      collectionResourceUrl: ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.REGIONS_LIST)
+    },
+    Titles: {
+      entityResourceUrl: ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.TITLES_LIST),
+      collectionResourceUrl: ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.TITLES_LIST)
+    },
+    County: {
+      entityResourceUrl: ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.COUNTY_LIST),
+      collectionResourceUrl: ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.COUNTY_LIST)
+    },
+    Town: {
+      entityResourceUrl: ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.TOWN_LIST),
+      collectionResourceUrl: ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.TOWN_LIST)
+    },
+    Company: {
+      entityResourceUrl: ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.COMPANY_LIST),
+      collectionResourceUrl: ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.COMPANY_LIST)
+    },
+    Branches: {
+      entityResourceUrl: ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.BRANCH_LIST),
+      collectionResourceUrl: ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.BRANCH_LIST)
+    },
+    UserEntityDto: {
+      entityResourceUrl: ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.USER_DETAILS),
+      collectionResourceUrl: ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.USER_DETAILS)
+    },
+  }
 };
 
 
@@ -131,10 +124,10 @@ export const defaultDataServiceConfig: DefaultDataServiceConfig = {
  * @param pattern pattern to filter against
  */
 export function textFilter<T extends { title: string; description: string }>(
-    entities: T[],
-    pattern: string
+  entities: T[],
+  pattern: string
 ) {
-    return PropsFilterFnFactory(['title', 'description'])(entities, pattern);
+  return PropsFilterFnFactory(['title', 'description'])(entities, pattern);
 }
 
 /**
@@ -144,10 +137,10 @@ export function textFilter<T extends { title: string; description: string }>(
  * @param b second title
  */
 export function sortByTitle(
-    a: { title: string },
-    b: { title: string }
+  a: { title: string },
+  b: { title: string }
 ): number {
-    return a.title.localeCompare(b.title);
+  return a.title.localeCompare(b.title);
 }
 
 /**
@@ -157,26 +150,26 @@ export function sortByTitle(
  * @param b second title
  */
 export function sortById(
-    a: { id: number },
-    b: { id: number }
+  a: { id: number },
+  b: { id: number }
 ): number {
-    /**
-     * TODO; Fix to sort as a number
-     */
-    return a.id.toString().localeCompare(b.id.toString());
+  /**
+   * TODO; Fix to sort as a number
+   */
+  return a.id.toString().localeCompare(b.id.toString());
 }
 
 export function activeFilter(entities: { active: boolean }[], search: boolean) {
-    return entities.filter(e => e.active === search);
+  return entities.filter(e => e.active === search);
 }
 
 
 @NgModule({
-    declarations: [],
-    imports: [
-        CommonModule
-    ],
-    providers: [{provide: DefaultDataServiceConfig, useValue: defaultDataServiceConfig}]
+  declarations: [],
+  imports: [
+    CommonModule
+  ],
+  providers: [{provide: DefaultDataServiceConfig, useValue: defaultDataServiceConfig}]
 })
 export class EntityStoreModule {
 
