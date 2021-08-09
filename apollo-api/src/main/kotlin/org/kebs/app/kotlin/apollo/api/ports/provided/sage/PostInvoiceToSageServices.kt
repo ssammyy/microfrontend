@@ -38,7 +38,7 @@ class PostInvoiceToSageServices(
 
 
             val headerBody = Header().apply {
-                serviceName = "Thirdparty"
+                serviceName = "BSKApp"
                 messageID =
                     "SAGEREF${generateRandomText(3, map.secureRandom, map.messageDigestAlgorithm, true).toUpperCase()}"
                 connectionID = jasyptStringEncryptor.decrypt(config.username)

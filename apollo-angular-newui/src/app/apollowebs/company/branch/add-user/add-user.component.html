@@ -26,8 +26,8 @@
 
                                                 <div *ngSwitchCase="1">
                                                     <fieldset class="wizard-fieldset show">
-                                                        <form (ngSubmit)="onClickSave(adduser.valid)"
-                                                              [formGroup]="adduser" action="" class="form"
+                                                        <form (ngSubmit)="onClickSave(stepOneForm.valid)"
+                                                              [formGroup]="stepOneForm" action="" class="form"
                                                               enctype="multipart/form-data" method="post">
                                                             <div class="container">
                                                                 <div class="row">

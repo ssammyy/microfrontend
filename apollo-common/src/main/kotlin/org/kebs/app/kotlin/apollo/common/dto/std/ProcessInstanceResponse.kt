@@ -5,3 +5,5 @@ class ProcessInstanceResponseValue (val savedRowID: Long?,val processId: String,
 }
 class ProcessInstanceResponse(val processId: String, val isEnded: Boolean) {
 }
+class ProcessInstanceDISDT (val savedRowID: Long?,val processId: String, val isEnded: Boolean) {
+}

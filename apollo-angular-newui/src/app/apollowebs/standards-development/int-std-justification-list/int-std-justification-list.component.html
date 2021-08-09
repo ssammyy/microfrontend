@@ -1,0 +1,175 @@
+<div class="container-fluid" style="margin-top: 5%" id="main-container">
+    <div  class="loading-spinner ">
+        <ngx-spinner
+                bdColor="rgba(51,51,51,0.8)"
+                size="medium"
+                color="#fff"
+                type="ball-scale-multiple"
+        >
+            <p style="font-size: 20px; color: white">Loading...</p>
+        </ngx-spinner>
+    </div>
+    <div class="main-content" >
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header card-header-primary card-header-icon">
+                            <div class="card-icon">
+                                <i class="material-icons">assignment</i>
+                            </div>
+                            <h4 class="card-title">Tasks</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="toolbar">
+
+                            </div>
+                            <div class="material-datatables">
+                                <table  class="table table-striped table-bordered table-hover" datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger">
+
+                                        <thead>
+                                        <th class="knw">Meeting Date</th>
+                                        <th class="sl">TC</th>
+                                        <th class="requestNumber">SL Number </th>
+                                        <th class="knw">Request Number</th>
+                                        <th class="sl">Requested By</th>
+                                        <th class="requestNumber">Issues Addressed </th>
+                                        <th class="knw">Acceptance Date</th>
+                                        <th class="sl">Reference Material</th>
+                                        <th class="action">Action</th>
+                                        <th></th>
+                                        </thead>
+                                        <tbody>
+                                        <tr  *ngFor="let task of tasks ">
+                                            <td>{{task.taskData.meetingDate}}</td>
+                                            <td>{{task.taskData.tc_id}}</td>
+                                            <td>{{task.taskData.slNumber}}</td>
+                                            <td>{{task.taskData.requestNumber}}</td>
+                                            <td>{{task.taskData.requestedBy}}</td>
+                                            <td>{{task.taskData.issuesAddressed}}</td>
+                                            <td>{{task.taskData.tcAcceptanceDate}}</td>
+                                            <td>{{task.taskData.referenceMaterial}}</td>
+                                            <td ><a  (click)="onOpenModal(task,'approve')" class="btn btn-success btn-sm tooltips" data-placement="top">Accept Justification</a></td>
+                                            <td><button (click)="onOpenModal(task,'reject')" type="submit" class="btn btn-danger btn-sm">Reject</button></td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+
+
+                                    <div class="modal fade" id="approveModal" tabindex="-1" role="dialog" aria-labelledby="approveExampleModalLabel" aria-hidden="true">a
+                                        <div class="modal-dialog modal-lg" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="approveExampleModalLabel">Accept Justification</h5>
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <form #approveForm="ngForm" >
+                                                    <div class="modal-body">
+                                                        <p>Accept Justification?  </p>
+                                                        <hr>
+                                                        <div class="row col-12">
+                                                            <div class="form-group col-6">
+                                                                <label>Proposal Document </label>
+                                                                <h4>{{actionRequest?.taskData?.proposal_doc_name}}</h4>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row col-12">
+                                                            <div class="form-group col-6">
+                                                                <label>Meeting Date</label>
+                                                                <h4>{{actionRequest?.taskData?.meetingDate}}</h4>
+                                                            </div>
+                                                            <div class="form-group col-6">
+                                                                <label>Department/Sector</label>
+                                                                <h4>{{actionRequest?.taskData?.department}}</h4>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row col-12">
+                                                            <div class="form-group col-6">
+                                                                <label>Technical Committee</label>
+                                                                <h4>{{actionRequest?.taskData?.tc_id}}</h4>
+                                                            </div>
+                                                            <div class="form-group col-6">
+                                                                <label>TC Secretary</label>
+                                                                <h4>{{actionRequest?.taskData?.tcSec_id}}</h4>
+                                                            </div>
+                                                            <div class="form-group col-6">
+                                                                <div class="form-group col-6">
+                                                                    <label>SL Number</label>
+                                                                    <h4>{{actionRequest?.taskData?.slNumber}}</h4>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row col-12">
+                                                            <div class="form-group col-6">
+                                                                <label>Request Number</label>
+                                                                <h4>{{actionRequest?.taskData?.requestNumber}}</h4>
+                                                            </div>
+
+                                                            <div class="form-group col-6">
+                                                                <label>Requested By</label>
+                                                                <h4>{{actionRequest?.taskData?.requestedBy}}</h4>
+                                                            </div>
+
+                                                        </div>
+                                                        <div class="row col-12">
+                                                            <div class="form-group col-6">
+                                                                <label>Issues Addressed</label>
+                                                                <h4>{{actionRequest?.taskData?.issuesAddressed}}</h4>
+                                                            </div>
+                                                            <div class="form-group col-6">
+                                                                <label>Acceptance Date</label>
+                                                                <h4>{{actionRequest?.taskData?.tcAcceptanceDate}}</h4>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row col-12">
+                                                            <div class="form-group col-6">
+                                                                <label>Reference Material</label>
+                                                                <h4>{{actionRequest?.taskData?.referenceMaterial}}</h4>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <input type="hidden" ngModel="{{actionRequest?.taskId}}" name="taskId" >
+                                                    <input type="hidden" ngModel="true" name="accentTo"  >
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
+                                                        <button type="submit" class="btn btn-primary btn-sm" (click)="onDecision(approveForm.value)" data-dismiss="modal">Approve</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="modal fade" id="rejectModal" tabindex="-1" role="dialog" aria-labelledby="rejectExampleModalLabel" aria-hidden="true">a
+                                        <div class="modal-dialog" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="rejectExampleModalLabel">Reject Justification</h5>
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <form #rejectForm="ngForm" >
+                                                    <div class="modal-body">
+                                                        <p>Reject Justification?  </p>
+                                                    </div>
+                                                    <input type="hidden" ngModel="{{actionRequest?.taskId}}" name="taskId" >
+                                                    <input type="hidden" ngModel="false" name="accentTo"  >
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
+                                                        <button type="submit" class="btn btn-primary btn-sm" (click)="onDecision(rejectForm.value)" data-dismiss="modal">Submit</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

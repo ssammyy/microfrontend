@@ -1,0 +1,94 @@
+<div class="container-fluid" style="margin-top: 5%" id="main-container">
+    <div  class="loading-spinner ">
+        <ngx-spinner
+                bdColor="rgba(51,51,51,0.8)"
+                size="medium"
+                color="#fff"
+                type="ball-scale-multiple"
+        >
+            <p style="font-size: 20px; color: white">Loading...</p>
+        </ngx-spinner>
+    </div>
+    <div class="main-content" >
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header card-header-primary card-header-icon">
+                            <div class="card-icon">
+                                <i class="material-icons">assignment</i>
+                            </div>
+                            <h4 class="card-title">Prepare form for standard Review</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="toolbar">
+
+                            </div>
+                            <div class="material-datatables">
+                                <form (ngSubmit)="reviewStandard()" [formGroup]="stdReviewFormGroup" class="form">
+
+
+
+                                    <div class="form-body" >
+                                        <div class="form-group col-6">
+                                            <label><b>Title</b></label>
+                                            <input [class.is-invalid]="formStdReview.title.invalid && formStdReview.title.touched"
+                                                   aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                                   class="form-control one-column-input" formControlName="title" name="title"
+                                                   placeholder="Title" type="text">
+                                        </div>
+                                        <div class="form-group col-6">
+                                            <label><b>Standard Number</b></label>
+                                            <input [class.is-invalid]="formStdReview.standardNumber.invalid && formStdReview.standardNumber.touched"
+                                                   aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                                   class="form-control one-column-input" formControlName="standardNumber" name="standardNumber"
+                                                   placeholder="SL/03/21" type="text">
+                                        </div>
+                                        <div class="form-group col-6">
+                                            <label><b>Document Type</b></label>
+                                            <input [class.is-invalid]="formStdReview.documentType.invalid && formStdReview.documentType.touched"
+                                                   aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                                   class="form-control one-column-input" formControlName="documentType" name="documentType"
+                                                   placeholder="Standard Review" type="text">
+                                        </div>
+                                        <div class="form-group col-6">
+                                            <label><b>Date</b></label>
+                                            <input [class.is-invalid]="formStdReview.datePrepared.invalid && formStdReview.datePrepared.touched"
+                                                   aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                                                   class="form-control one-column-input" formControlName="datePrepared" name="datePrepared"
+                                                   type="date">
+                                        </div>
+
+
+                                        <div class="form-group col-6">
+                                            <label><b>Upload Relevant Documents</b></label>
+
+                                        </div>
+
+
+
+                                        <input type="hidden" value="Stephen Muganda" name="preparedBy" >
+
+
+                                        <div style="margin: 3em 0 2em 0">
+                                            <button [disabled]="!stdReviewFormGroup.valid" class="submit-button" type="submit">SUBMIT</button>
+                                        </div>
+
+                                        <!--      <div>-->
+                                        <!--        <span>Don't have an account ? </span><span><a routerLink="/register" >Register</a></span>-->
+                                        <!--      </div>-->
+                                        <!--      <div>-->
+                                        <!--        <span>Forgot username/password ? </span><span><a>Reset</a></span>-->
+                                        <!--      </div>-->
+                                    </div>
+
+
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

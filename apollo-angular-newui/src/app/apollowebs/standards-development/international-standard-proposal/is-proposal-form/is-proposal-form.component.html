@@ -1,0 +1,56 @@
+<div class="container-fluid" style="margin-top: 5%" id="main-container">
+<div  class="loading-spinner ">
+<ngx-spinner
+bdColor="rgba(51,51,51,0.8)"
+size="medium"
+color="#fff"
+type="ball-scale-multiple"
+>
+<p style="font-size: 20px; color: white">Loading...</p>
+</ngx-spinner>
+</div>
+<div class="main-content" >
+<div class="container-fluid">
+<div class="row">
+<div class="col-md-12">
+<div class="card">
+<div class="card-header card-header-primary card-header-icon">
+<div class="card-icon">
+<i class="material-icons">assignment</i>
+</div>
+<h4 class="card-title">Tasks</h4>
+</div>
+<div class="card-body">
+<div class="toolbar">
+
+</div>
+<div class="material-datatables">
+<form (ngSubmit)="uploadProposal()" [formGroup]="isProposalFormGroup" class="form">
+
+<p>Upload Standard Proposal</p>
+<hr>
+
+<div class="form-body">
+<div class="form-group">
+<label><b>Enter Document Name</b></label>
+<input [class.is-invalid]="formISProposal.proposal_doc_name.invalid && formISProposal.proposal_doc_name.touched"
+aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+class="form-control one-column-input" formControlName="proposal_doc_name" name="proposal_doc_name"
+placeholder="name" type="text">
+</div>
+<div style="margin: 3em 0 2em 0">
+<button [disabled]="!isProposalFormGroup.valid" class="submit-button" type="submit">SUBMIT</button>
+</div>
+
+</div>
+
+
+</form>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>

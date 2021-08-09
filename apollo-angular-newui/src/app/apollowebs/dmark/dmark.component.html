@@ -43,7 +43,7 @@
     </li>
     <li *ngIf="allPermitDetails?.permitDetails?.generateSchemeStatus == true" class="nav-item">
         <a class="nav-link" data-toggle="tab" href="#link19" role="tablist">
-            <i class="material-icons">preview</i> Schema Supervision
+            <i class="material-icons">preview</i> Scheme of Supervision
         </a>
     </li>
     <li *ngIf="allPermitDetails?.labResultsList.length > 0" class="nav-item">
@@ -879,11 +879,12 @@ placeholder=""
                             <td>{{row[3]}}</td>
 
                             <td class="td-actions text-right">
-                                <button mat-raised-button type="button" data-toggle="modal"
-                                        (click)="goToPermitOlderVersion(row[4])" class="btn btn-info {{row[4]}}">
-                                    <i class="material-icons">visibility</i>
+                                <a href="/permitdetails#{{row[4]}}"><i class="material-icons">remove_red_eye</i></a>
+                                <!--                                <button mat-raised-button type="button" data-toggle="modal"-->
+                                <!--                                        (click)="goToPermitOlderVersion(row[4])" class="btn btn-info {{row[4]}}">-->
+                                <!--                                    <i class="material-icons">visibility</i>-->
 
-                                </button>
+                                <!--                                </button>-->
                             </td>
                         </tr>
                         </tbody>
@@ -1200,8 +1201,8 @@ placeholder=""
                                         <label for="approvedRejectedSchemeRemarks">Feedback For This Permit</label>
                                         <mat-form-field class="example-full-width">
                                             <textarea id="approvedRejectedSchemeRemarks" matInput type="text"
-                                                      formControlName="approvedRejectedScheme"
-                                                      name="approvedRejectedScheme"
+                                                      formControlName="approvedRejectedSchemeRemarks"
+                                                      name="approvedRejectedSchemeRemarks"
                                                       [class.is-invalid]="formApproveRejectSSC.approvedRejectedSchemeRemarks.invalid && formApproveRejectSSC.approvedRejectedSchemeRemarks.touched"
                                                       disabled>
                                             </textarea>

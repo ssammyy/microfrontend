@@ -58,7 +58,7 @@ export class StdNwaService {
     return this.http.get<SPCSECTasks[]>(url, {params}).pipe();
   }
   public decisionOnJustification(nwaJustification: NWAJustification): Observable<any> {
-    const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.NWA_PREPARE_JUSTIFICATION);
+    const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.NWA_DECISION_ON_JUSTIFICATION);
     const params = new HttpParams();
     return this.http.post<NWAJustification>(url, nwaJustification, {params}).pipe(
         map(function (response: any) {
@@ -204,8 +204,24 @@ export class StdNwaService {
 
     public uploadFileDetails(nwaJustificationID: string, data: FormData): Observable<any> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.NWA_UPLOAD_DATA);
-        // const params = new HttpParams()
-        //     .set('permitID', permitID);
+
+        return this.http.post<any>(url, data, {
+            headers: {
+                'enctype': 'multipart/form-data'
+            }, params: {'nwaJustificationID': nwaJustificationID}
+        }).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
+    public uploadDIFileDetails(nwaJustificationID: string, data: FormData): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.NWA_UPLOAD_DATA_DI);
+
         return this.http.post<any>(url, data, {
             headers: {
                 'enctype': 'multipart/form-data'

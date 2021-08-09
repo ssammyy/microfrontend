@@ -34,6 +34,24 @@ import {AddUserComponent} from "./apollowebs/company/branch/add-user/add-user.co
 import {FmarkApplicationComponent} from "./apollowebs/fmark-application/fmark-application.component";
 import {SmarkComponent} from "./apollowebs/smark/smark.component";
 import {NwaJustificationFormComponent} from "./apollowebs/standards-development/nwa-justification-form/nwa-justification-form.component";
+import {NwaJustificationTasksComponent} from "./apollowebs/standards-development/nwa-justification-tasks/nwa-justification-tasks.component";
+import {NwaKnwSecTasksComponent} from "./apollowebs/standards-development/nwa-knw-sec-tasks/nwa-knw-sec-tasks.component";
+import {NwaDiSdtTasksComponent} from "./apollowebs/standards-development/nwa-di-sdt-tasks/nwa-di-sdt-tasks.component";
+import {SacSecTasksComponent} from "./apollowebs/standards-development/sac-sec-tasks/sac-sec-tasks.component";
+import {HoSicTasksComponent} from "./apollowebs/standards-development/ho-sic-tasks/ho-sic-tasks.component";
+import {NwaHopTasksComponent} from "./apollowebs/standards-development/nwa-hop-tasks/nwa-hop-tasks.component";
+import {IsProposalFormComponent} from "./apollowebs/standards-development/international-standard-proposal/is-proposal-form/is-proposal-form.component";
+import {IntStdCommentsComponent} from "./apollowebs/standards-development/int-std-comments/int-std-comments.component";
+import {IntStdJustificationAppComponent} from "./apollowebs/standards-development/int-std-justification-app/int-std-justification-app.component";
+import {IntStdResponsesListComponent} from "./apollowebs/standards-development/int-std-responses-list/int-std-responses-list.component";
+import {IntStdJustificationListComponent} from "./apollowebs/standards-development/int-std-justification-list/int-std-justification-list.component";
+import {ReviewStandardsComponent} from "./apollowebs/standards-development/request-standard-review/review-standards/review-standards.component";
+import {SystemicReviewCommentsComponent} from "./apollowebs/standards-development/systemic-review-comments/systemic-review-comments.component";
+import {SystemicAnalyseCommentsComponent} from "./apollowebs/standards-development/systemic-analyse-comments/systemic-analyse-comments.component";
+import {ComStdRequestListComponent} from "./apollowebs/standards-development/com-std-request-list/com-std-request-list.component";
+import {ComStdJcJustificationComponent} from "./apollowebs/standards-development/com-std-jc-justification/com-std-jc-justification.component";
+import {CsRequestFormComponent} from "./apollowebs/standards-development/company-standard-request/cs-request-form/cs-request-form.component";
+import {ComStdJcJustificationListComponent} from "./apollowebs/standards-development/com-std-jc-justification-list/com-std-jc-justification-list.component";
 import {InformationcheckComponent} from "./apollowebs/standards-development/informationcheck/informationcheck.component";
 import {UsermanagementComponent} from "./apollowebs/usermanagement/usermanagement.component";
 
@@ -306,10 +324,107 @@ export const routes: Routes = [
         path: 'smarkpermitdetails', component: AdminLayoutComponent,
         children: [{path: '', component: SmarkComponent}]
     },
+
+    // SD Kenya National Workshop Agreement
     {
         path: 'nwaJustification', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
         children: [{path: '', component: NwaJustificationFormComponent}]
     },
+    {
+        path: 'nwaJustificationTasks', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: NwaJustificationTasksComponent}]
+    },
+    {
+        path: 'nwaKnwSecTasks', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: NwaKnwSecTasksComponent}]
+    },
+    {
+        path: 'nwaDirStTasks', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: NwaDiSdtTasksComponent}]
+    },
+    {
+        path: 'nwaHopTasks', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: NwaHopTasksComponent}]
+    },
+    {
+        path: 'nwaSacSecTasks', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: SacSecTasksComponent}]
+    },
+    {
+        path: 'nwaHoSicTasks', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: HoSicTasksComponent}]
+    },
+
+    // SD International Standards
+    {
+        path: 'isProposalForm', component: AdminLayoutComponent,
+        //canActivate: [RouteGuard],
+        children: [{path: '', component: IsProposalFormComponent}]
+    },
+    {
+        path: 'isProposalComments', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: IntStdCommentsComponent}]
+    },
+    {
+        path: 'isProposalResponses', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: IntStdResponsesListComponent}]
+    },
+    {
+        path: 'isJustificationList', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: IntStdJustificationListComponent}]
+    },
+    {
+        path: 'isJustificationApp', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: IntStdJustificationAppComponent}]
+    },
+    // SD SYSTEMIC REVIEW
+    {
+        path: 'requestStandardReview', component: AdminLayoutComponent,
+        children: [{path: '', component: ReviewStandardsComponent}]
+    },
+    {
+        path: 'systemicReviewComments', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: SystemicReviewCommentsComponent}]
+    },
+    {
+        path: 'systemicRecommendations', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: SystemicAnalyseCommentsComponent}]
+    },
+
+    // SD COMPANY STANDARDS
+    {
+        path: 'comStdRequest', component: AdminLayoutComponent,
+        children: [{path: '', component: CsRequestFormComponent}]
+    },
+    {
+        path: 'comStdList', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: ComStdRequestListComponent}]
+    },
+    {
+        path: 'comStdJustification', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: ComStdJcJustificationComponent}]
+    },
+    {
+        path: 'comStdJustificationList', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: ComStdJcJustificationListComponent}]
+    },
+
     {
         path: 'nep_information_received', component: AdminLayoutComponent,
         children: [{path: '', component: InformationcheckComponent}]

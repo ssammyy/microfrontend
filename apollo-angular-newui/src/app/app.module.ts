@@ -95,6 +95,28 @@ import {NwaJustificationFormComponent} from "./apollowebs/standards-development/
 import {StandardsDevelopmentComponent} from "./apollowebs/standards-development/standards-development.component";
 import { InformationcheckComponent } from './apollowebs/standards-development/informationcheck/informationcheck.component';
 import { UsermanagementComponent } from './apollowebs/usermanagement/usermanagement.component';
+import { NwaJustificationTasksComponent } from './apollowebs/standards-development/nwa-justification-tasks/nwa-justification-tasks.component';
+import {DataTablesModule} from "angular-datatables";
+import { NwaKnwSecTasksComponent } from './apollowebs/standards-development/nwa-knw-sec-tasks/nwa-knw-sec-tasks.component';
+import { NwaDiSdtTasksComponent } from './apollowebs/standards-development/nwa-di-sdt-tasks/nwa-di-sdt-tasks.component';
+import { NwaHopTasksComponent } from './apollowebs/standards-development/nwa-hop-tasks/nwa-hop-tasks.component';
+import { SacSecTasksComponent } from './apollowebs/standards-development/sac-sec-tasks/sac-sec-tasks.component';
+import { HoSicTasksComponent } from './apollowebs/standards-development/ho-sic-tasks/ho-sic-tasks.component';
+import { InternationalStandardProposalComponent } from './apollowebs/standards-development/international-standard-proposal/international-standard-proposal.component';
+import { IntStdCommentsComponent } from './apollowebs/standards-development/int-std-comments/int-std-comments.component';
+import { IntStdJustificationAppComponent } from './apollowebs/standards-development/int-std-justification-app/int-std-justification-app.component';
+import { IntStdJustificationListComponent } from './apollowebs/standards-development/int-std-justification-list/int-std-justification-list.component';
+import { IntStdResponsesListComponent } from './apollowebs/standards-development/int-std-responses-list/int-std-responses-list.component';
+import { IsProposalFormComponent } from './apollowebs/standards-development/international-standard-proposal/is-proposal-form/is-proposal-form.component';
+import { RequestStandardReviewComponent } from './apollowebs/standards-development/request-standard-review/request-standard-review.component';
+import { ReviewStandardsComponent } from './apollowebs/standards-development/request-standard-review/review-standards/review-standards.component';
+import { SystemicReviewCommentsComponent } from './apollowebs/standards-development/systemic-review-comments/systemic-review-comments.component';
+import { SystemicAnalyseCommentsComponent } from './apollowebs/standards-development/systemic-analyse-comments/systemic-analyse-comments.component';
+import { CompanyStandardRequestComponent } from './apollowebs/standards-development/company-standard-request/company-standard-request.component';
+import { CsRequestFormComponent } from './apollowebs/standards-development/company-standard-request/cs-request-form/cs-request-form.component';
+import { ComStdRequestListComponent } from './apollowebs/standards-development/com-std-request-list/com-std-request-list.component';
+import { ComStdJcJustificationComponent } from './apollowebs/standards-development/com-std-jc-justification/com-std-jc-justification.component';
+import { ComStdJcJustificationListComponent } from './apollowebs/standards-development/com-std-jc-justification-list/com-std-jc-justification-list.component';
 
 // import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 
@@ -146,6 +168,7 @@ import { UsermanagementComponent } from './apollowebs/usermanagement/usermanagem
         NgxExtendedPdfViewerModule,
         FileUploadModule,
         NgxSpinnerModule,
+        DataTablesModule
         // CoreModule
     ],
     declarations: [
@@ -188,7 +211,29 @@ import { UsermanagementComponent } from './apollowebs/usermanagement/usermanagem
         NwaJustificationFormComponent,
         StandardsDevelopmentComponent,
         InformationcheckComponent,
-        UsermanagementComponent
+        UsermanagementComponent,
+        NwaJustificationTasksComponent,
+        NwaKnwSecTasksComponent,
+        NwaDiSdtTasksComponent,
+        NwaHopTasksComponent,
+        SacSecTasksComponent,
+        HoSicTasksComponent,
+        InternationalStandardProposalComponent,
+        IntStdCommentsComponent,
+        IntStdJustificationAppComponent,
+        IntStdJustificationListComponent,
+        IntStdResponsesListComponent,
+        IsProposalFormComponent,
+        RequestStandardReviewComponent,
+        ReviewStandardsComponent,
+        SystemicReviewCommentsComponent,
+        SystemicAnalyseCommentsComponent,
+        CompanyStandardRequestComponent,
+        CsRequestFormComponent,
+        ComStdRequestListComponent,
+        ComStdJcJustificationComponent,
+        ComStdJcJustificationListComponent,
+        InformationcheckComponent
 
     ]
 

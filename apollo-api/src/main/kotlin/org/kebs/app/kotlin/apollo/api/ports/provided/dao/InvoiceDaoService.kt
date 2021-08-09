@@ -1,6 +1,7 @@
 package org.kebs.app.kotlin.apollo.api.ports.provided.dao
 
 
+import org.kebs.app.kotlin.apollo.api.ports.provided.sage.PostInvoiceToSageServices
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.*
@@ -19,12 +20,13 @@ import java.math.BigDecimal
 
 @Service
 class InvoiceDaoService(
-        private val invoiceBatchDetailsRepo: InvoiceBatchDetailsRepo,
+    private val invoiceBatchDetailsRepo: InvoiceBatchDetailsRepo,
 //        private val diDaoServices: DestinationInspectionDaoServices,
-        private val invoicePaymentRepo: IStagingPaymentReconciliationRepo,
-        private val iPaymentMethodsRepo: IPaymentMethodsRepository,
-        private val applicationMapProperties: ApplicationMapProperties,
-        private val commonDaoServices: CommonDaoServices
+//    private val postInvoiceToSageServices: PostInvoiceToSageServices,
+    private val invoicePaymentRepo: IStagingPaymentReconciliationRepo,
+    private val iPaymentMethodsRepo: IPaymentMethodsRepository,
+    private val applicationMapProperties: ApplicationMapProperties,
+    private val commonDaoServices: CommonDaoServices
 ) {
 
     @Lazy
@@ -34,6 +36,10 @@ class InvoiceDaoService(
     @Lazy
     @Autowired
     lateinit var qaDaoServices: QADaoServices
+
+    @Lazy
+    @Autowired
+    lateinit var postInvoiceToSageServices: PostInvoiceToSageServices
 
     final val appId = applicationMapProperties.mapInvoiceTransactions
     val map = commonDaoServices.serviceMapDetails(appId)
@@ -170,6 +176,10 @@ class InvoiceDaoService(
             createdBy = commonDaoServices.concatenateName(user)
         }
         invoiceDetails = invoicePaymentRepo.save(invoiceDetails)
+
+        postInvoiceToSageServices.postInvoiceTransactionToSage(
+            invoiceDetails.id ?: throw Exception("STG INVOICE CAN'T BE NULL"), user, map
+        )
 
         return invoiceDetails
     }

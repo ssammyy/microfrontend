@@ -7,6 +7,7 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.QualityAssuranceBpmn
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.QADaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.lims.LimsServices
+import org.kebs.app.kotlin.apollo.api.ports.provided.makeAnyNotBeNull
 import org.kebs.app.kotlin.apollo.common.dto.FmarkEntityDto
 import org.kebs.app.kotlin.apollo.common.dto.qa.NewBatchInvoiceDto
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
@@ -210,6 +211,7 @@ class QualityAssuranceController(
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun updatePermitDetails(
         @ModelAttribute("permit") permit: PermitApplicationsEntity,
+        @ModelAttribute("invoiceDetails") invoiceDetails: QaInvoiceDetailsEntity?,
         @RequestParam("permitID") permitID: Long,
         model: Model
     ): String? {
@@ -1428,10 +1430,10 @@ class QualityAssuranceController(
         return commonDaoServices.returnValues(result, map, sm)
     }
 
-    @PreAuthorize("hasAuthority('QA_OFFICER_MODIFY')")
+    @PreAuthorize("hasAuthority('QA_OFFICER_MODIFY') or hasAuthority('QA_ASSESSORS_READ')")
     @PostMapping("/kebs/lab-results-compliance-status/save")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
-    fun complianceStatusSSF(
+    fun complianceStatusLabResults(
         @RequestParam("complianceSaveID") complianceSaveID: Long,
         @ModelAttribute("complianceDetails") complianceDetails: QaSampleSubmittedPdfListDetailsEntity,
         model: Model
@@ -1442,6 +1444,30 @@ class QualityAssuranceController(
         val result: ServiceRequestsEntity?
 
         val myResults = qaDaoServices.ssfUpdateComplianceDetails(complianceSaveID, complianceDetails, loggedInUser, map)
+        result = myResults.first
+
+        val sm = CommonDaoServices.MessageSuccessFailDTO()
+        sm.closeLink = "${applicationMapProperties.baseUrlValue}/qa/inspection/ssf-details?ssfID=${myResults.second.id}"
+        sm.message = "You have Successful Filled Sample Submission Details"
+
+        return commonDaoServices.returnValues(result, map, sm)
+    }
+
+    @PreAuthorize("hasAuthority('QA_OFFICER_MODIFY') or hasAuthority('QA_ASSESSORS_READ')")
+    @PostMapping("/kebs/ssf-results-compliance-status/save")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun complianceStatusSSF(
+        @RequestParam("ssfID") ssfID: Long,
+        @ModelAttribute("SampleSubmissionDetails") SampleSubmissionDetails: QaSampleSubmissionEntity,
+        model: Model
+    ): String? {
+        val map = commonDaoServices.serviceMapDetails(appId)
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val result: ServiceRequestsEntity?
+//        sampleSubmissionDetails.id = cdItem.id
+
+        //updating of Details in DB
+        val myResults = qaDaoServices.ssfUpdateDetails(ssfID, SampleSubmissionDetails, loggedInUser, map)
         result = myResults.first
 
         val sm = CommonDaoServices.MessageSuccessFailDTO()
@@ -2165,6 +2191,26 @@ class QualityAssuranceController(
         response.outputStream
             .let { responseOutputStream ->
                 responseOutputStream.write(file.readBytes())
+                responseOutputStream.close()
+            }
+
+        KotlinLogging.logger { }.info("VIEW FILE SUCCESSFUL")
+
+    }
+
+    @GetMapping("/kebs/view/lab-pdf")
+    fun viewPDFFileLabResultsDocument(
+        response: HttpServletResponse,
+        @RequestParam("fileID") fileID: Long
+    ) {
+        val fileUploaded = qaDaoServices.findUploadedFileBYId(fileID)
+        val fileDoc = commonDaoServices.mapClass(fileUploaded)
+        response.contentType = "application/pdf"
+//                    response.setHeader("Content-Length", pdfReportStream.size().toString())
+        response.addHeader("Content-Disposition", "inline; filename=${fileDoc.name}")
+        response.outputStream
+            .let { responseOutputStream ->
+                responseOutputStream.write(fileDoc.document?.let { makeAnyNotBeNull(it) } as ByteArray)
                 responseOutputStream.close()
             }
 
