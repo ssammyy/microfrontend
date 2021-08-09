@@ -66,7 +66,8 @@ class ReportsController(
     */
     //Todo CHANGE TO A POST
 
-    @RequestMapping(value = ["proforma-invoice-with-Item"], method = [RequestMethod.GET])
+
+    @RequestMapping(value = ["/proforma-invoice-with-Item"], method = [RequestMethod.GET])
     @Throws(Exception::class)
     fun proformaInvoiceWithMoreItems(
         response: HttpServletResponse,

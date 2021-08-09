@@ -3862,7 +3862,8 @@ class QADaoServices(
             )
 
             //Todo: Payment selection
-            val manufactureDetails = commonDaoServices.findCompanyProfile(userID)
+            val manufactureDetails =
+                commonDaoServices.findCompanyProfileWithID(user.companyId ?: throw Exception("MISSING COMPANY ID"))
             val myAccountDetails = InvoiceDaoService.InvoiceAccountDetails()
             with(myAccountDetails) {
                 accountName = manufactureDetails.name
@@ -3990,10 +3991,12 @@ class QADaoServices(
             user.userName?.let {
                 invoice.invoiceNumber?.let { it1 ->
                     mpesaServices.sanitizePhoneNumber(phoneNumber)?.let { it2 ->
-                        mpesaServices.mainMpesaTransaction(
-                            10.00.toBigDecimal(),
-                            it2, it1, it, applicationMapProperties.mapInvoiceTransactionsForPermit
-                        )
+                        invoice.totalAmount?.let { it3 ->
+                            mpesaServices.mainMpesaTransaction(
+                                it3,
+                                it2, it1, it, applicationMapProperties.mapInvoiceTransactionsForPermit
+                            )
+                        }
                     }
                 }
             }

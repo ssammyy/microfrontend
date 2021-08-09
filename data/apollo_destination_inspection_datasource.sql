@@ -1,5 +1,11 @@
 ***************************Table USED IN DI*****************************************
-select * from DAT_KEBS_CD_FILE_XML
+select *
+from DAT_KEBS_CD_FILE_XML
+-- where CD_ITEM_DETAILS_ID = '281'
+;
+
+select *
+from CFG_USERS_CFS_ASSIGNMENTS
 -- where CD_ITEM_DETAILS_ID = '281'
 ;
 

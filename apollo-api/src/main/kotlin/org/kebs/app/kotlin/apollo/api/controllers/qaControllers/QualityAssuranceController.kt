@@ -211,6 +211,7 @@ class QualityAssuranceController(
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun updatePermitDetails(
         @ModelAttribute("permit") permit: PermitApplicationsEntity,
+        @ModelAttribute("invoiceDetails") invoiceDetails: QaInvoiceDetailsEntity?,
         @RequestParam("permitID") permitID: Long,
         model: Model
     ): String? {

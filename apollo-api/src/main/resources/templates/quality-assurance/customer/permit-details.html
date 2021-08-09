@@ -525,7 +525,7 @@
 
                                     <a th:if="${permitDetails?.sendApplication == 1 and permitDetails?.invoiceGenerated == 1}"
 
-                                       th:href="@{/api/qa/invoice-details(permitID=${permitDetails?.id})}"
+                                       th:href="@{/api/qa/report/proforma-invoice-with-Item(ID=${batchID})}"
                                        class="filter-link" style="color: white">GENERATED INVOICE</a>
 
 
@@ -1322,6 +1322,14 @@
                                             </div>
 
                                             <div id="pcmReviewApproval">
+                                                <div th:object="${invoiceDetails}">
+                                                    <label for="itemDescName" class="field-label">Desc Name</label>
+                                                    <input type="text" class="form-control" id="itemDescName"
+                                                           th:field="*{itemDescName}" required="required">
+                                                    <label for="itemAmount" class="field-label">Amount</label>
+                                                    <input type="number" class="form-control" id="itemAmount"
+                                                           th:field="*{itemAmount}" required="required">
+                                                </div>
                                                 <input type="hidden" id="description13" name="description"
                                                        th:value="'Permit Status Updated succesfull'">
                                                 <label for="pcmReviewApprovalStatus" class="col-form-label">Select
@@ -1334,8 +1342,7 @@
                                                     <option th:text="'REJECT'" th:value="0"></option>
                                                 </select>
                                                 <label for="pcmReviewApprovalRemarks" class="col-form-label">Please
-                                                    write, in
-                                                    detail, your feedback for this Approval/Rejection:</label>
+                                                    write, in detail, your feedback for this Approval/Rejection:</label>
                                                 <textarea name="name" id="pcmReviewApprovalRemarks"
                                                           class="input-field w-input" cols="65" rows="5"
                                                           th:field="*{pcmReviewApprovalRemarks}"></textarea>
