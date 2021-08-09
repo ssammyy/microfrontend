@@ -269,9 +269,10 @@ class QualityAssuranceHandler(
         }
         val batchDetail = qaDaoServices.findPermitInvoiceByPermitRefNumberANdPermitID(
             permit.permitRefNumber ?: throw ExpectedDataNotFound("PERMIT REF NUMBER NOT FOUND"),
-            loggedInUser.id ?: throw ExpectedDataNotFound("MISSING USER ID"),
+            permit.userId ?: throw ExpectedDataNotFound("MISSING USER ID"),
             permitID
         ).batchInvoiceNo
+
         req.attributes()["batchID"] = batchDetail
         req.attributes()["invoiceDetails"] = QaInvoiceDetailsEntity()
         req.attributes()["sections"] = loadSectionDetails(departmentEntity, map, req)
