@@ -94,6 +94,7 @@ import { FieldErrorDisplayComponent } from './apollowebs/forms/field-error-displ
 import {NwaJustificationFormComponent} from "./apollowebs/standards-development/nwa-justification-form/nwa-justification-form.component";
 import {StandardsDevelopmentComponent} from "./apollowebs/standards-development/standards-development.component";
 import { InformationcheckComponent } from './apollowebs/standards-development/informationcheck/informationcheck.component';
+import { UsermanagementComponent } from './apollowebs/usermanagement/usermanagement.component';
 import { NwaJustificationTasksComponent } from './apollowebs/standards-development/nwa-justification-tasks/nwa-justification-tasks.component';
 import {DataTablesModule} from "angular-datatables";
 import { NwaKnwSecTasksComponent } from './apollowebs/standards-development/nwa-knw-sec-tasks/nwa-knw-sec-tasks.component';
@@ -209,6 +210,8 @@ import { ComStdJcJustificationListComponent } from './apollowebs/standards-devel
         FieldErrorDisplayComponent,
         NwaJustificationFormComponent,
         StandardsDevelopmentComponent,
+        InformationcheckComponent,
+        UsermanagementComponent,
         NwaJustificationTasksComponent,
         NwaKnwSecTasksComponent,
         NwaDiSdtTasksComponent,

@@ -53,6 +53,7 @@ import {ComStdJcJustificationComponent} from "./apollowebs/standards-development
 import {CsRequestFormComponent} from "./apollowebs/standards-development/company-standard-request/cs-request-form/cs-request-form.component";
 import {ComStdJcJustificationListComponent} from "./apollowebs/standards-development/com-std-jc-justification-list/com-std-jc-justification-list.component";
 import {InformationcheckComponent} from "./apollowebs/standards-development/informationcheck/informationcheck.component";
+import {UsermanagementComponent} from "./apollowebs/usermanagement/usermanagement.component";
 
 // export const AppRoutes: Routes = [
 //     {
@@ -287,6 +288,12 @@ export const routes: Routes = [
         canActivate: [RouteGuard],
 
         children: [{path: '', component: UserProfileMainComponent}]
+    },
+    {
+        path: 'user_management', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+
+        children: [{path: '', component: UsermanagementComponent}]
     },
     {
         path: 'smark/all_smark', component: AdminLayoutComponent,
