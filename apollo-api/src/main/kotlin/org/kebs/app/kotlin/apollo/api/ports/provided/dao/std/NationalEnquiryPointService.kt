@@ -7,21 +7,27 @@ import org.flowable.engine.RuntimeService
 import org.flowable.engine.TaskService
 import org.flowable.engine.repository.Deployment
 import org.flowable.task.api.Task
-import org.kebs.app.kotlin.apollo.common.dto.std.*
-import org.kebs.app.kotlin.apollo.store.model.std.*
-import org.kebs.app.kotlin.apollo.store.repo.std.*
+import org.kebs.app.kotlin.apollo.common.dto.std.ProcessInstanceResponse
+import org.kebs.app.kotlin.apollo.common.dto.std.TaskDetails
+import org.kebs.app.kotlin.apollo.store.model.std.DepartmentResponse
+import org.kebs.app.kotlin.apollo.store.model.std.InformationTracker
+import org.kebs.app.kotlin.apollo.store.model.std.NationalEnquiryPoint
+import org.kebs.app.kotlin.apollo.store.repo.std.DepartmentResponseRepository
+import org.kebs.app.kotlin.apollo.store.repo.std.InformationTrackerRepository
+import org.kebs.app.kotlin.apollo.store.repo.std.NationalEnquiryPointRepository
 import org.springframework.stereotype.Service
+import java.time.LocalDate
 
 
 @Service
 class NationalEnquiryPointService(
-    private val runtimeService: RuntimeService,
-    private val taskService: TaskService,
-    private val processEngine: ProcessEngine,
-    private val repositoryService: RepositoryService,
-    private val nationalEnquiryPointRepository: NationalEnquiryPointRepository,
-    private val informationTrackerRepository: InformationTrackerRepository,
-    private val departmentResponseRepository: DepartmentResponseRepository
+        private val runtimeService: RuntimeService,
+        private val taskService: TaskService,
+        private val processEngine: ProcessEngine,
+        private val repositoryService: RepositoryService,
+        private val nationalEnquiryPointRepository: NationalEnquiryPointRepository,
+        private val informationTrackerRepository: InformationTrackerRepository,
+        private val departmentResponseRepository: DepartmentResponseRepository
 ) {
 
     var PROCESS_DEFINITION_KEY: String = "nationalEnquiryPoint"
@@ -31,15 +37,17 @@ class NationalEnquiryPointService(
 
     //deployment of flowable function
     fun deployProcessDefinition(): Deployment = repositoryService
-        .createDeployment()
-        .addClasspathResource("processes/National_Enquiry_Point.bpmn20.xml")
-        .deploy()
+            .createDeployment()
+            .addClasspathResource("processes/std/National_Enquiry_Point.bpmn20.xml")
+            .deploy()
 
 
     //********************************************************** process service methods **********************************************************
 
     //make enquiry and process initiation function
     fun notificationRequest(nationalEnquiryPoint: NationalEnquiryPoint): ProcessInstanceResponse {
+
+
         val variables: MutableMap<String, Any> = HashMap()
         nationalEnquiryPoint.requesterName.let { variables.put("requesterName", it) }
         nationalEnquiryPoint.requesterComment.let { variables.put("requesterComment", it) }
@@ -48,6 +56,7 @@ class NationalEnquiryPointService(
         nationalEnquiryPoint.requesterInstitution.let { variables.put("requesterInstitution", it) }
         nationalEnquiryPoint.requesterPhone.let { variables.put("requesterPhone", it) }
         nationalEnquiryPoint.requesterSubject.let { variables.put("requesterSubject", it) }
+        nationalEnquiryPoint.requestDate.let { variables.put("requestDate", it) }
 
         nationalEnquiryPointRepository.save(nationalEnquiryPoint)
 
@@ -58,7 +67,7 @@ class NationalEnquiryPointService(
     //request task list retrieval
     fun getManagerTasks(): List<TaskDetails?>? {
         val tasks = taskService.createTaskQuery().taskCandidateGroup(TASK_CANDIDATE_GROUP_NEP)
-            .processDefinitionKey(PROCESS_DEFINITION_KEY).list()
+                .processDefinitionKey(PROCESS_DEFINITION_KEY).list()
         return getTaskDetails(tasks)
     }
 
@@ -119,7 +128,7 @@ class NationalEnquiryPointService(
     //displays tasks due for organizations
     fun getDepartmentTasks(): List<TaskDetails?>? {
         val tasks = taskService.createTaskQuery().taskCandidateGroup(TASK_CANDIDATE_GROUP_DEPT)
-            .processDefinitionKey(PROCESS_DEFINITION_KEY).list()
+                .processDefinitionKey(PROCESS_DEFINITION_KEY).list()
         return getTaskDetails(tasks)
     }
 
@@ -127,15 +136,15 @@ class NationalEnquiryPointService(
     fun checkProcessHistory(processId: String?) {
         val historyService = processEngine.historyService
         val activities = historyService
-            .createHistoricActivityInstanceQuery()
-            .processInstanceId(processId)
-            .finished()
-            .orderByHistoricActivityInstanceEndTime()
-            .asc()
-            .list()
+                .createHistoricActivityInstanceQuery()
+                .processInstanceId(processId)
+                .finished()
+                .orderByHistoricActivityInstanceEndTime()
+                .asc()
+                .list()
         for (activity in activities) {
             println(
-                activity.activityId + " took " + activity.durationInMillis + " milliseconds"
+                    activity.activityId + " took " + activity.durationInMillis + " milliseconds"
             )
         }
 

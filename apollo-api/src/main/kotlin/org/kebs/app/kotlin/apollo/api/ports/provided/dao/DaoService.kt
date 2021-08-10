@@ -1,11 +1,23 @@
 package org.kebs.app.kotlin.apollo.api.ports.provided.dao
 
 
+import com.ctc.wstx.api.WstxInputProperties
+import com.ctc.wstx.api.WstxOutputProperties
+import com.ctc.wstx.stax.WstxInputFactory
+import com.ctc.wstx.stax.WstxOutputFactory
 import com.fasterxml.jackson.annotation.JsonInclude
+import com.fasterxml.jackson.core.JsonGenerator
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.databind.node.JsonNodeFactory
+import com.fasterxml.jackson.dataformat.csv.CsvMapper
+import com.fasterxml.jackson.dataformat.csv.CsvSchema
+import com.fasterxml.jackson.dataformat.xml.XmlFactory
+import com.fasterxml.jackson.dataformat.xml.XmlMapper
+import com.fasterxml.jackson.module.kotlin.KotlinModule
 import com.fasterxml.jackson.module.kotlin.readValue
+import com.google.common.io.Files
 import io.ktor.client.*
 import io.ktor.client.engine.apache.*
 import io.ktor.client.features.auth.*
@@ -19,14 +31,18 @@ import io.ktor.http.*
 import mu.KotlinLogging
 import org.apache.http.conn.ssl.NoopHostnameVerifier
 import org.jasypt.encryption.StringEncryptor
-import org.kebs.app.kotlin.apollo.api.ports.provided.mpesa.response.MpesaPushResponse
+import org.kebs.app.kotlin.apollo.api.ports.provided.sftp.SftpServiceImpl
+import org.kebs.app.kotlin.apollo.common.dto.CocsItemsEntityDto
 import org.kebs.app.kotlin.apollo.common.exceptions.InvalidValueException
 import org.kebs.app.kotlin.apollo.common.utils.generateRandomText
+import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.config.security.ssl.SslContextFactory
-import org.kebs.app.kotlin.apollo.store.model.BatchJobDetails
-import org.kebs.app.kotlin.apollo.store.model.IntegrationConfigurationEntity
-import org.kebs.app.kotlin.apollo.store.model.StagingStandardsLevyManufacturerEntryNumber
-import org.kebs.app.kotlin.apollo.store.model.WorkflowTransactionsEntity
+import org.kebs.app.kotlin.apollo.store.customdto.COCXmlDTO
+import org.kebs.app.kotlin.apollo.store.customdto.CustomCocXmlDto
+import org.kebs.app.kotlin.apollo.store.customdto.toCocItemDetailsXmlRecordRefl
+import org.kebs.app.kotlin.apollo.store.customdto.toCocXmlRecordRefl
+import org.kebs.app.kotlin.apollo.store.model.*
+import org.kebs.app.kotlin.apollo.store.repo.ICocItemsRepository
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Primary
 import org.springframework.data.jpa.repository.Modifying
@@ -39,10 +55,14 @@ import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean
 import org.springframework.web.servlet.function.ServerRequest
 import org.springframework.web.servlet.function.ServerResponse
 import org.springframework.web.servlet.function.remoteAddressOrNull
+import java.io.File
+import java.io.FileReader
+import java.io.FileWriter
 import java.security.SecureRandom
 import java.security.cert.X509Certificate
 import java.sql.Timestamp
 import java.time.Instant
+import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.*
@@ -53,13 +73,18 @@ import javax.persistence.PersistenceContext
 import javax.persistence.criteria.CriteriaUpdate
 import javax.persistence.criteria.Path
 import javax.persistence.criteria.Root
+import javax.xml.stream.XMLInputFactory
+import javax.xml.stream.XMLOutputFactory
 
 @Service
 class DaoService(
-        private val sslContextFactory: SslContextFactory,
-        private val jasyptStringEncryptor: StringEncryptor,
-        @PersistenceContext
-        private val entityManager: EntityManager,
+    private val sslContextFactory: SslContextFactory,
+    private val jasyptStringEncryptor: StringEncryptor,
+    @PersistenceContext
+    private val entityManager: EntityManager,
+    private val cocItemsRepository: ICocItemsRepository,
+    private val applicationMapProperties: ApplicationMapProperties,
+    private val sftpService: SftpServiceImpl
 ) {
 
 
@@ -381,6 +406,106 @@ class DaoService(
 
 
     }
+
+    val csvMapper = CsvMapper().apply {
+        registerModule(KotlinModule())
+    }
+
+    fun readCocFileFromController(separator: Char, reader: FileReader) =
+        readCsvFile<CocsItemsEntityDto>(separator, reader)
+
+    fun readCorFileFromController(separator: Char, reader: FileReader) = readCsvFile<CorsBakEntity>(separator, reader)
+
+    private inline fun <reified T> readCsvFile(separator: Char, reader: FileReader): List<T> {
+//        FileReader(fileName).use { reader ->
+        return csvMapper
+            .readerFor(T::class.java)
+            .with(
+                CsvSchema
+                    .emptySchema()
+                    .withColumnSeparator(separator)
+                    .withHeader()
+            )
+            .readValues<T>(reader)
+            .readAll()
+            .toList()
+//        }
+    }
+
+
+    fun submitCocToKeSWS(cocData: CocsEntity) {
+        val coc: CustomCocXmlDto = cocData.toCocXmlRecordRefl()
+        val cocItem = cocItemsRepository.findByCocId(cocData.id)?.get(0)
+        cocItem?.toCocItemDetailsXmlRecordRefl().let { cocDetails ->
+            coc.cocDetals = cocDetails
+            val cocFinalDto = COCXmlDTO()
+            cocFinalDto.coc = coc
+            val fileName = cocFinalDto.coc?.ucrNumber?.let { s ->
+                createKesWsFileName(
+                    applicationMapProperties.mapKeswsCocDoctype,
+                    s
+                )
+            }
+            val xmlFile = fileName?.let { s -> serializeToXml(s, cocFinalDto) }
+            xmlFile.let { it1 -> it1?.let { file -> sftpService.uploadFile(file) } }
+        }
+    }
+
+    fun serializeToXml(fileName: String, obj: Any): File {
+        try {
+            val xmlString = xmlMapper.writeValueAsString(obj)
+            val targetFile = File(Files.createTempDir(), fileName)
+            targetFile.deleteOnExit()
+            val fileWriter = FileWriter(targetFile)
+            fileWriter.write(xmlString)
+            fileWriter.close()
+            return targetFile
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error("An error occurred with xml serialization", e)
+            throw RuntimeException("An error occurred while serializing xml")
+        }
+    }
+
+    val xmlMapper: ObjectMapper = run {
+        val iFactory: XMLInputFactory = WstxInputFactory()
+        iFactory.setProperty(WstxInputProperties.P_MAX_ATTRIBUTE_SIZE, 32000)
+        val oFactory: XMLOutputFactory = WstxOutputFactory()
+        oFactory.setProperty(WstxOutputProperties.P_OUTPUT_CDATA_AS_TEXT, true)
+        val xf = XmlFactory(iFactory, oFactory)
+        val xmlMapper: ObjectMapper = XmlMapper(xf)
+            .registerModule(KotlinModule())
+        xmlMapper.configure(SerializationFeature.WRITE_SELF_REFERENCES_AS_NULL, false)
+        xmlMapper.configure(JsonGenerator.Feature.AUTO_CLOSE_TARGET, false)
+        xmlMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
+        xmlMapper.configure(DeserializationFeature.FAIL_ON_MISSING_CREATOR_PROPERTIES, false)
+        xmlMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+        xmlMapper.configure(DeserializationFeature.USE_BIG_DECIMAL_FOR_FLOATS, true)
+        xmlMapper.configure(SerializationFeature.WRITE_SELF_REFERENCES_AS_NULL, false)
+        xmlMapper.enable(SerializationFeature.INDENT_OUTPUT)
+        /**
+         * This line causes an exception to be thrown if the test has more than one thread!
+         */
+//        xmlMapper.configure(SerializationFeature.INDENT_OUTPUT, true)
+        xmlMapper
+    }
+
+    fun createKesWsFileName(filePrefix: String, documentIdentifier: String): String {
+        val current = LocalDateTime.now()
+
+        val formatter = DateTimeFormatter.ofPattern("yyyymmddhhmmss")
+        val formatted = current.format(formatter)
+
+        var finalFileName = filePrefix
+            .plus("-")
+            .plus(documentIdentifier)
+            .plus("-1-B-")
+            .plus(formatted)
+            .plus(".xml")
+        finalFileName = finalFileName.replace("\\s".toRegex(), "")
+
+        return finalFileName
+    }
+
 
     class TrustAllX509TrustManager : X509TrustManager {
         override fun getAcceptedIssuers(): Array<X509Certificate?> = arrayOfNulls(0)

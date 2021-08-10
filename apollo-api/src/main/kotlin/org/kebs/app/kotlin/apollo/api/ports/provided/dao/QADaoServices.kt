@@ -984,7 +984,7 @@ class QADaoServices(
         invoiceMasterDetailsRepo.findByPermitRefNumberAndUserIdAndPermitId(permitRefNumber, userId, permitID)?.let {
             return it
         }
-            ?: throw ExpectedDataNotFound("No Invoice found with the following [PERMIT REF NO =${permitRefNumber}  and LoggedIn User]")
+            ?: throw ExpectedDataNotFound("No Invoice found with the following PERMIT REF NO =${permitRefNumber}")
     }
 
     fun findPermitInvoiceByPermitID(
@@ -3862,7 +3862,8 @@ class QADaoServices(
             )
 
             //Todo: Payment selection
-            val manufactureDetails = commonDaoServices.findCompanyProfile(userID)
+            val manufactureDetails =
+                commonDaoServices.findCompanyProfileWithID(user.companyId ?: throw Exception("MISSING COMPANY ID"))
             val myAccountDetails = InvoiceDaoService.InvoiceAccountDetails()
             with(myAccountDetails) {
                 accountName = manufactureDetails.name
@@ -3940,7 +3941,7 @@ class QADaoServices(
                         permit,
                         user,
                         manufactureTurnOver,
-                        productsManufacture.size,
+                        productsManufacture.size.toLong(),
                         plantDetail
                     )
                 }
@@ -3990,10 +3991,12 @@ class QADaoServices(
             user.userName?.let {
                 invoice.invoiceNumber?.let { it1 ->
                     mpesaServices.sanitizePhoneNumber(phoneNumber)?.let { it2 ->
-                        mpesaServices.mainMpesaTransaction(
-                            10.00.toBigDecimal(),
-                            it2, it1, it, applicationMapProperties.mapInvoiceTransactionsForPermit
-                        )
+                        invoice.totalAmount?.let { it3 ->
+                            mpesaServices.mainMpesaTransaction(
+                                it3,
+                                it2, it1, it, applicationMapProperties.mapInvoiceTransactionsForPermit
+                            )
+                        }
                     }
                 }
             }

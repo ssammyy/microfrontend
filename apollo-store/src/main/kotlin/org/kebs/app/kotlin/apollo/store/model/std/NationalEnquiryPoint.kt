@@ -1,5 +1,6 @@
 package org.kebs.app.kotlin.apollo.store.model.std
 
+import java.time.LocalDate
 import javax.persistence.*
 
 @Entity
@@ -38,4 +39,8 @@ class NationalEnquiryPoint {
     @Column(name = "ENQUIRER_COMMENT")
     @Basic
     val requesterComment : String = ""
+
+    @Column(name = "REQUEST_DATE")
+    @Basic
+    val requestDate: LocalDate = LocalDate.now()
 }

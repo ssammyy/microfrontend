@@ -2,12 +2,10 @@ package org.kebs.app.kotlin.apollo.store.repo.di
 
 import org.kebs.app.kotlin.apollo.store.model.*
 import org.kebs.app.kotlin.apollo.store.model.di.*
-import org.kebs.app.kotlin.apollo.store.model.di.ConsignmentDocumentDetailsEntity
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.hazelcast.repository.HazelcastRepository
 import org.springframework.data.jpa.repository.Query
-import org.springframework.data.repository.query.Param
 import org.springframework.stereotype.Repository
 
 
@@ -25,12 +23,22 @@ interface IConsignmentDocumentDetailsRepository : HazelcastRepository<Consignmen
         cdType: Long
     ): List<ConsignmentDocumentDetailsEntity>?
 
+    fun findByPortOfArrivalAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNull(
+        portOfArrival: Long
+    ): List<ConsignmentDocumentDetailsEntity>?
+
     fun findByPortOfArrivalAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNotNull(
         portOfArrival: Long,
         cdType: Long
     ): List<ConsignmentDocumentDetailsEntity>?
 
+    fun findByPortOfArrivalAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNotNull(
+        portOfArrival: Long
+    ): List<ConsignmentDocumentDetailsEntity>?
+
     fun findByPortOfArrivalIsNullAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNull(cdType: Long): List<ConsignmentDocumentDetailsEntity>?
+
+    fun findByPortOfArrivalIsNullAndUcrNumberIsNotNullAndOldCdStatusIsNull(): List<ConsignmentDocumentDetailsEntity>?
 
     fun findByPortOfArrivalOrderByIdDesc(
         portOfArrival: Long,
@@ -42,14 +50,26 @@ interface IConsignmentDocumentDetailsRepository : HazelcastRepository<Consignmen
         cdType: Long
     ): List<ConsignmentDocumentDetailsEntity>?
 
+    fun findAllByAssignedInspectionOfficerAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNull(
+        assignedInspectionOfficer: UsersEntity
+    ): List<ConsignmentDocumentDetailsEntity>?
+
     fun findAllByAssignedInspectionOfficerAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNotNull(
         assignedInspectionOfficer: UsersEntity,
         cdType: Long
     ): List<ConsignmentDocumentDetailsEntity>?
 
+    fun findAllByAssignedInspectionOfficerAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNotNull(
+        assignedInspectionOfficer: UsersEntity
+    ): List<ConsignmentDocumentDetailsEntity>?
+
     fun findByFreightStationAndAssignedInspectionOfficerIsNullAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNull(
         freightStation: Long,
         cdType: Long
+    ): List<ConsignmentDocumentDetailsEntity>?
+
+    fun findByFreightStationAndAssignedInspectionOfficerIsNullAndUcrNumberIsNotNullAndOldCdStatusIsNull(
+        freightStation: Long
     ): List<ConsignmentDocumentDetailsEntity>?
 
     fun findByUcrNumber(ucrNumber: String): ConsignmentDocumentDetailsEntity?

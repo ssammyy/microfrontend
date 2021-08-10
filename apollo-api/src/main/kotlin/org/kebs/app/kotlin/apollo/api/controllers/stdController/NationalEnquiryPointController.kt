@@ -45,7 +45,7 @@ class NationalEnquiryPointController(val nationalEnquiryPointService: NationalEn
         nationalEnquiryPointService.checkProcessHistory(processId)
     }
 
-    @PostMapping("information_available/send_email")
+    @PostMapping("/information_available/send_email")
     fun sendEmailInfoAvailable(@RequestBody informationTracker: InformationTracker) {
         nationalEnquiryPointService.sendEmailInfoAvailable(informationTracker, informationTracker.taskId)
     }
@@ -55,7 +55,7 @@ class NationalEnquiryPointController(val nationalEnquiryPointService: NationalEn
         return nationalEnquiryPointService.getDepartmentTasks() as List<TaskDetails>
     }
 
-    @PostMapping("division_response/send_response")
+    @PostMapping("/division_response/send_response")
     fun divisionResponse(@RequestBody departmentResponse: DepartmentResponse) {
         nationalEnquiryPointService.departmentOrganizationResponse(departmentResponse, departmentResponse.taskId)
     }

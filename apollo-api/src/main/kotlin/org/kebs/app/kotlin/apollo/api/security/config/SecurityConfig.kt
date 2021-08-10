@@ -110,7 +110,8 @@ class WebSecurityConfig {
                     "/api/v1/auth/**",
                     "/api/v1/otp",
                     "/api/v1/migration/anonymous/**",
-                    "/api/v1/migration/qa/report/proforma-invoice-with-Item**"
+                    "/api/v1/migration/qa/report/proforma-invoice-with-Item**",
+                    "/api/v1/migration/qa/smark-background-image-permit**"
                 )
                 .permitAll()
                 .anyRequest().authenticated()

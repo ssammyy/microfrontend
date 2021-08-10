@@ -30,7 +30,11 @@ export class InformationcheckComponent implements OnInit {
               private notificationService: NepPointService) { }
 
   ngOnInit(): void {
-    //this.getRequests();
+      this.getRequests();
+  }
+
+  public getRequests(): void{
+      //this.getRequests();
       let formattedArray = [];
       this.notificationService.sendGetRequest().subscribe(
           (data: any) => {
@@ -50,17 +54,6 @@ export class InformationcheckComponent implements OnInit {
 
           }
       );
-  }
-
-  public getRequests(): void{
-    this.notificationService.sendGetRequest().subscribe(
-        (response: Notifications[]) => {
-          this.notifications = response;
-        },
-        (error: HttpErrorResponse) => {
-          alert(error.message);
-        }
-    );
   }
 
   public onReSubmit(notification: InfoAvailableYes): void{

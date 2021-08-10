@@ -26,25 +26,23 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.DestinationInspectionB
 import org.kebs.app.kotlin.apollo.api.ports.provided.createUserAlert
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.*
 import org.kebs.app.kotlin.apollo.common.dto.MinistryInspectionListResponseDto
-import org.kebs.app.kotlin.apollo.common.exceptions.*
+import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
+import org.kebs.app.kotlin.apollo.common.exceptions.SupervisorNotFoundException
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
-import org.kebs.app.kotlin.apollo.store.model.*
+import org.kebs.app.kotlin.apollo.store.model.CdSampleCollectionEntity
+import org.kebs.app.kotlin.apollo.store.model.CdSampleSubmissionItemsEntity
+import org.kebs.app.kotlin.apollo.store.model.ServiceMapsEntity
 import org.kebs.app.kotlin.apollo.store.model.di.*
 import org.kebs.app.kotlin.apollo.store.model.qa.QaSampleSubmissionEntity
 import org.kebs.app.kotlin.apollo.store.repo.di.*
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Component
 import org.springframework.web.servlet.function.ServerRequest
 import org.springframework.web.servlet.function.ServerResponse
 import org.springframework.web.servlet.function.ServerResponse.ok
 import org.springframework.web.servlet.function.paramOrNull
-import java.sql.Date
 import org.springframework.web.servlet.support.RequestContextUtils
-import java.util.*
-import java.util.stream.Collectors
-import kotlin.Comparator
-import kotlin.collections.ArrayList
+import java.sql.Date
 
 
 @Component
@@ -67,7 +65,8 @@ class DestinationInspectionHandler(
 
     final val appId = applicationMapProperties.mapImportInspection
 
-    private val destinationInspectionHomePage = "destination-inspection/di-home"
+//    private val destinationInspectionHomePage = "destination-inspection/di-home"
+private val destinationInspectionHomePage = "destination-inspection/di-home-new"
     private val destinationInspectionMinistryHomePage = "destination-inspection/ministry-home"
     private val cdPageList = "destination-inspection/cd-documents/consignment-document-list"
     private val cdInvoicePageList = "destination-inspection/cd-documents/consignment-document-invoice-list"
@@ -95,17 +94,54 @@ class DestinationInspectionHandler(
 //            "or hasAuthority('DI_NSC_MEMBER_READ') or hasAuthority('DI_HOD_READ') or hasAuthority('DI_NSC_SECRETARY_READ') or" +
 //            "hasAuthority('DI_CLUSTER_SUPERVISOR_READ') or hasAuthority('DI_WETC_MEMBER_READ') or hasAuthority('DI_OFFICER_CHARGE_READ') " +
 //            "or hasAuthority('DI_MANAGER_INSPECTION_READ') or hasAuthority('DI_EXEMPTION_COMMITTEE_CHAIR_READ') or hasAuthority('IMPORTER') ")
+//    fun home(req: ServerRequest): ServerResponse =
+//        try {
+//            val map = commonDaoServices.serviceMapDetails(appId)
+//            req.attributes()["cdTypes"] = cdTypesRepo.findByStatus(map.activeStatus)
+//                req.attributes()["diApplicationsTypes"] = importerDaoServices.findDiApplicationTypes(map.activeStatus)
+//                req.attributes()["map"] = map
+//                ok().render(destinationInspectionHomePage, req.attributes())
+//            } catch (e: Exception) {
+//                createUserAlert(req, e)
+//            }
+
     fun home(req: ServerRequest): ServerResponse =
         try {
             val map = commonDaoServices.serviceMapDetails(appId)
-            req.attributes()["cdTypes"] = cdTypesRepo.findByStatus(map.activeStatus)
-                req.attributes()["diApplicationsTypes"] = importerDaoServices.findDiApplicationTypes(map.activeStatus)
-                req.attributes()["map"] = map
-                ok().render(destinationInspectionHomePage, req.attributes())
-            } catch (e: Exception) {
-                createUserAlert(req, e)
+            val auth = commonDaoServices.loggedInUserAuthentication()
+            when {
+                auth.authorities.stream().anyMatch { authority -> authority.authority == "DI_OFFICER_CHARGE_READ" } -> {
+                    val usersEntity = commonDaoServices.findUserByUserName(auth.name)
+                    val userProfilesEntity = commonDaoServices.findUserProfileByUserID(usersEntity, map.activeStatus)
+                    userProfilesEntity.sectionId
+                        ?.let { sectionsEntity ->
+                            req.attributes()["CDSAutoAssigned"] =
+                                daoServices.findAllOngoingCdWithPortOfEntry(sectionsEntity)
+                            req.attributes()["CDSManualAssign"] =
+                                daoServices.findAllCdWithNoPortOfEntry()
+                            req.attributes()["CDCompleted"] =
+                                daoServices.findAllCompleteCdWithPortOfEntry(sectionsEntity)
+                            ok().render(destinationInspectionHomePage, req.attributes())
+                        }
+                        ?: throw ExpectedDataNotFound("missing section id, check config")
+                }
+                auth.authorities.stream()
+                    .anyMatch { authority -> authority.authority == "DI_INSPECTION_OFFICER_READ" } -> {
+                    val usersEntity = commonDaoServices.findUserByUserName(auth.name)
+                    val userProfilesEntity = commonDaoServices.findUserProfileByUserID(usersEntity, map.activeStatus)
+                    req.attributes()["CDSAutoAssigned"] = daoServices.findAllCdWithAssignedIoID(usersEntity)
+                    req.attributes()["CDSManualAssign"] = userProfilesEntity.subSectionL2Id?.let {
+                        daoServices.findAllCdWithNoAssignedIoID(it)
+                    }
+                    req.attributes()["CDCompleted"] =
+                        daoServices.findAllCompleteCdWithAssignedIoID(usersEntity)
+                    ok().render(destinationInspectionHomePage, req.attributes())
+                }
+                else -> throw SupervisorNotFoundException("can't access this page Due to Invalid authority")
             }
-
+        } catch (e: Exception) {
+            createUserAlert(req, e)
+        }
 
     fun ministryInspectionHome(req: ServerRequest): ServerResponse =
             try {
@@ -200,18 +236,20 @@ class DestinationInspectionHandler(
                                                 cdDetails.cdConsignor?.let { it5 ->
                                                     cdDetails.cdTransport?.let { it6 ->
                                                         cdDetails.cdHeaderOne?.let { it7 ->
-                                                            loadCDUIComponents(
-                                                                cdDetails,
-                                                                map,
-                                                                it,
-                                                                it1,
-                                                                it2,
-                                                                it3,
-                                                                it4,
-                                                                it5,
-                                                                it6,
-                                                                it7
-                                                            )
+                                                            cdDetails.cdType?.id?.let { it8 ->
+                                                                loadCDUIComponents(
+                                                                    cdDetails,
+                                                                    map,
+                                                                    it8,
+                                                                    it1,
+                                                                    it2,
+                                                                    it3,
+                                                                    it4,
+                                                                    it5,
+                                                                    it6,
+                                                                    it7
+                                                                )
+                                                            }
                                                         }
                                                     }
                                                 }
@@ -305,7 +343,7 @@ class DestinationInspectionHandler(
 //                                    }
 //                                }
 //                            }?.let { req.attributes().putAll(it) }
-                            req.attributes()["cdType"] = cdItemDetails.cdDocId?.cdType?.let { daoServices.findCdTypeDetails(it) }
+                            req.attributes()["cdType"] = cdItemDetails.cdDocId?.cdType
                             //Get non standard items
                             req.attributes()["itemNonStandard"] = daoServices.findCdItemNonStandardByItemID(cdItemDetails)
                             //Find demand note by item
@@ -314,7 +352,7 @@ class DestinationInspectionHandler(
                             //TODO: Abstract this to different method
                             cdItemDetails.cdDocId?.let { consignmentDocumentDetailsEntity ->
                                 consignmentDocumentDetailsEntity.cdType?.let { consignmentDocumentTypesEntity ->
-                                    val consignmentDocumentTypesEntityUuid = daoServices.findCdTypeDetails(consignmentDocumentTypesEntity)
+                                    val consignmentDocumentTypesEntityUuid = daoServices.findCdTypeDetails(consignmentDocumentTypesEntity.id)
                                     if (consignmentDocumentTypesEntityUuid.equals(corCdType)) {
                                         consignmentDocumentDetailsEntity.docTypeId?.let {
                                             req.attributes()["cor"] = daoServices.findCORById(it)

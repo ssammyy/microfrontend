@@ -899,7 +899,7 @@ class CommonDaoServices(
             ?.let { userCompanyDetails ->
                 return userCompanyDetails
             }
-            ?: throw ExpectedDataNotFound("Company Profile with [ ID= ${id}], does not Exist")
+            ?: throw ExpectedDataNotFound("Company Profile with ID= ${id}, does not Exist")
     }
 
 
