@@ -19,23 +19,15 @@ import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapPrope
 import org.kebs.app.kotlin.apollo.store.customdto.*
 import org.kebs.app.kotlin.apollo.store.model.*
 import org.kebs.app.kotlin.apollo.store.model.di.*
-import org.kebs.app.kotlin.apollo.store.model.qa.PermitApplicationsEntity
 import org.kebs.app.kotlin.apollo.store.model.qa.QaSampleSubmissionEntity
 import org.kebs.app.kotlin.apollo.store.repo.*
 import org.kebs.app.kotlin.apollo.store.repo.di.*
-import org.kebs.app.kotlin.apollo.store.repo.di.IConsignmentItemsRepository
-import org.kebs.app.kotlin.apollo.store.repo.di.IDemandNoteRepository
-import org.kebs.app.kotlin.apollo.store.repo.di.IDestinationInspectionFeeRepository
-import org.kebs.app.kotlin.apollo.store.repo.di.ISampleCollectRepository
-import org.kebs.app.kotlin.apollo.store.repo.di.ISampleSubmitRepository
 import org.kebs.app.kotlin.apollo.store.repo.qa.IQaSampleCollectionRepository
 import org.kebs.app.kotlin.apollo.store.repo.qa.IQaSampleSubmissionRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Propagation
-import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.multipart.MultipartFile
 import java.math.BigDecimal
 import java.sql.Date
@@ -446,6 +438,7 @@ fun createLocalCoc(
                         shipmentSealNumbers = "UNKNOWN"
                         shipmentContainerNumber = "UNKNOWN"
                         shipmentGrossWeight = "UNKNOWN"
+//                        shipmentGrossWeightUnit = "UNKOWN"
                         route = routValue
                         cocType = "L"
                         productCategory = "UNKNOWN"
@@ -544,6 +537,7 @@ fun createLocalCoc(
                     shipmentSealNumbers = "UNKNOWN"
                     shipmentContainerNumber = "UNKNOWN"
                     shipmentGrossWeight = "UNKNOWN"
+//                    shipmentGrossWeightUnit = "UNKNOWN"
                     route = routValue
                     cocType = "L"
                     productCategory = "UNKNOWN"
