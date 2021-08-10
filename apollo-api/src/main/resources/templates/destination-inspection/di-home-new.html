@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<!--  This site was created in Webflow. http://www.webflow.com  -->
+<!--  Last Published: Wed Mar 18 2020 20:03:10 GMT+0000 (Coordinated Universal Time)  -->
+<html data-wf-page="5e70fb3a565ebdc05ddb37cf" data-wf-site="5e70fb3a565ebd99c1db37ce"
+      xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8">
+  <title>KEBS</title>
+  <th:block th:include="fragments/general-form.html:: headerfiles"/>
+</head>
+<body>
+<div id ="spinnerContainer"><div class="spinner"></div></div>
+<div th:replace="fragments/general-form.html :: dashboard-page" ></div>
+
+<div class="dashboard-body">
+  <div th:replace="fragments/general-form.html :: side-navigation-bar" ></div>
+  <div class="main-area">
+    <div th:replace="fragments/general-form.html :: content-navigation-bar"></div>
+    <section class="dashboard-content">
+      <div class="content-wrap">
+        <div class="content-container">
+          <h4 class="h3-blue" style="color: #0082f3; font-weight: bold; "><span th:text="${cdType?.typeName}"></span> Consignment Document List</h4>
+          <br>
+          <div class="content-block">
+              <div class="content-block-parent" style="flex: 0 85%" >
+                  <div class="bs-example">
+                      <ul class="nav nav-tabs" id="myTab">
+                          <li><a id="linkOne" class="filter-link" href="#withPort">ASSIGNED/ONGOING</a></li>
+                          <li><a id="linkTwo" class="filter-link" href="#withNoPort">NOT ASSIGNED</a></li>
+                          <li><a id="linkThree" class="filter-link" href="#completed">COMPLETED</a></li>
+                      </ul>
+                      <div class="tab-content">
+                          <div id="withPort" class="tab-pane active">
+                              <div class="row-table ">
+                                  <table id="example" class="table table-striped" style="width:100%;">
+                                      <thead>
+                                      <tr>
+                                          <th>ID</th>
+                                          <th>UCR No</th>
+                                          <th>Applicant Name</th>
+                                          <th>Application Date</th>
+                                          <th>Approval Date</th>
+                                          <th>Approval Status</th>
+                                          <th>Assigned Officer</th>
+                                          <th>CD Type</th>
+                                          <th>View Details</th>
+                                      </tr>
+                                      </thead>
+                                      <tbody>
+                                      <tr class="list" th:each="CD: ${CDSAutoAssigned}" style="cursor: pointer">
+                                          <td th:text="${CD?.id}"></td>
+                                          <td th:text="${CD?.ucrNumber}"></td>
+                                          <td th:text="${CD?.cdStandard?.cdServiceProvider?.name}"></td>
+                                          <td th:text="${#dates.format(CD?.createdOn, 'dd/MM/yyyy hh:mm')}"></td>
+                                          <td th:text="${#dates.format(CD?.approveRejectCdDate, 'dd/MM/yyyy hh:mm')}"></td>
+                                          <td th:text="${CD?.cdStandard?.approvalStatus}"></td>
+                                          <!--                                        <td th:text="${#dates.format(user?.registrationDate, 'dd/MM/yyyy')}"></td>-->
+                                          <td  style="color: #0082f3" th:if="${CD?.assignedStatus == 1}"  th:text="${CD?.assignedInspectionOfficer?.firstName}+ ' ' +${CD?.assignedInspectionOfficer?.lastName}"></td>
+                                          <td th:if="${CD?.assignedStatus != 1}">NOT ASSIGNED</td>
+                                          <td th:text="${CD?.cdType?.description}"></td>
+                                          <td><a class="filter-link" th:href="@{/api/di/cd-details(cdUuid=${CD.uuid})}">view</a></td>
+                                      </tr>
+                                      </tbody>
+                                  </table>
+                              </div>
+                          </div>
+                          <div id="withNoPort" class="tab-pane">
+                              <div class="row-table ">
+                                  <table id="example2" class="table table-striped" style="width:100%;">
+                                      <thead>
+                                      <tr>
+                                          <th>ID</th>
+                                          <th>UCR No</th>
+                                          <th>Applicant Name</th>
+                                          <th>Application Date</th>
+                                          <th>Approval Date</th>
+                                          <th>Approval Status</th>
+                                          <th>Assigned Officer</th>
+                                          <th>CD Type</th>
+                                          <th>View Details</th>
+                                      </tr>
+                                      </thead>
+                                      <tbody>
+                                      <tr class="list" th:each="CD: ${CDSManualAssign}" style="cursor: pointer">
+                                          <td th:text="${CD?.id}"></td>
+                                          <td th:text="${CD?.ucrNumber}"></td>
+                                          <td th:text="${CD?.cdStandard?.cdServiceProvider?.name}"></td>
+                                          <td th:text="${CD?.cdStandard?.applicationDate}"></td>
+                                          <td th:text="${CD?.cdStandard?.approvalDate}"></td>
+                                          <td th:text="${CD?.cdStandard?.approvalStatus}"></td>
+                                          <!--                                        <td th:text="${#dates.format(user?.registrationDate, 'dd/MM/yyyy')}"></td>-->
+                                          <td  style="color: #0082f3" th:if="${CD?.assignedStatus == 1}"  th:text="${CD?.assignedInspectionOfficer?.firstName}+ ' ' +${CD?.assignedInspectionOfficer?.lastName}"></td>
+                                          <td th:if="${CD?.assignedStatus != 1}">NOT ASSIGNED</td>
+                                          <td th:text="${CD?.cdType?.description}"></td>
+                                          <td><a class="filter-link" th:href="@{/api/di/cd-details(cdUuid=${CD.uuid})}">view</a></td>
+                                      </tr>
+                                      </tbody>
+                                  </table>
+                              </div>
+                          </div>
+                          <div id="completed" class="tab-pane">
+                              <div class="row-table ">
+                                  <table id="example3" class="table table-striped" style="width:100%;">
+                                      <thead>
+                                      <tr>
+                                          <th>ID</th>
+                                          <th>UCR No</th>
+                                          <th>Applicant Name</th>
+                                          <th>Application Date</th>
+                                          <th>Approval Date</th>
+                                          <th>Approval Status</th>
+                                          <th>Assigned Officer</th>
+                                          <th>CD Type</th>
+                                          <th>View Details</th>
+                                      </tr>
+                                      </thead>
+                                      <tbody>
+                                      <tr class="list" th:each="CD: ${CDCompleted}" style="cursor: pointer">
+                                          <td th:text="${CD?.id}"></td>
+                                          <td th:text="${CD?.ucrNumber}"></td>
+                                          <td th:text="${CD?.cdStandard?.cdServiceProvider?.name}"></td>
+                                          <td th:text="${CD?.cdStandard?.applicationDate}"></td>
+                                          <td th:text="${CD?.cdStandard?.approvalDate}"></td>
+                                          <td th:text="${CD?.cdStandard?.approvalStatus}"></td>
+                                          <!--                                        <td th:text="${#dates.format(user?.registrationDate, 'dd/MM/yyyy')}"></td>-->
+                                          <td  style="color: #0082f3" th:if="${CD?.assignedStatus == 1}"  th:text="${CD?.assignedInspectionOfficer?.firstName}+ ' ' +${CD?.assignedInspectionOfficer?.lastName}"></td>
+                                          <td th:if="${CD?.assignedStatus != 1}">NOT ASSIGNED</td>
+                                          <td th:text="${CD?.cdType?.description}"></td>
+                                          <td><a class="filter-link" th:href="@{/api/di/cd-details(cdUuid=${CD.uuid})}">view</a></td>
+                                      </tr>
+                                      </tbody>
+                                  </table>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+
+              </div>
+
+            <div class="filter-block">
+              <div class="filter-block-title">
+                <div class="filter-title">Action:</div>
+              </div>
+              <div>
+                  <a class="filter-link" style="color: white" onclick="popUpFunctionUpload('uploadBtn');">Upload Foreign COC/COR</a>
+              </div>
+            </div>
+          </div>
+
+            <div class="uploadForm">
+                <form id="upload-form" enctype="multipart/form-data"  name="upload-form" th:action="@{/api/di/ministry/upload-inspection-report(mvInspectionChecklistId = ${mvInspectionChecklist?.id})}" method="post">
+                    <div class="modal fade" id="uploadModal" tabindex="-1" role="dialog" aria-labelledby="uploadModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 style="font-weight: bold; " class="modal-title" id="uploadModalLabel"><span id="uploadSpan" >none</span></h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+
+                                    <div class="form-group">
+                                        <label for="file_type" class="col-form-label">File Type:</label>
+                                        <select name="file_type" class="form-control select-inline" id="file_type">
+                                            <option value="default" selected="true">- SELECT -</option>
+                                            <option th:value=1 th:text="COC"></option>
+                                            <option th:value=0 th:text="COR"></option>
+                                        </select>
+                                        <label for="docFile" class="col-form-label">Upload your File</label>
+                                        <input type="file"  multiple name="doc_file" data-name="doc_file" id="docFile" required="required" >
+                                    </div>
+
+                                </div>
+                                <div class="modal-footer">
+                                    <button class="btn btn-secondary" data-dismiss="modal" onClick="refreshPage()" type="button">Close</button>
+                                    <input type="submit" id="upload" class="btn btn-primary" value="Save"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
+<div th:replace="fragments/general-form.html :: scripts"></div>
+
+<script>
+    document.onreadystatechange = function(){
+        showSpinnerOnLoad(document)
+    }
+
+    function loadSpinner(){
+        showSpinner(document)
+    }
+</script>
+<script>
+    $(document).ready(function(){
+        $("#linkOne").click(function(e){
+            e.preventDefault();
+            $("#completed").removeClass("active");
+            $("#withNoPort").removeClass("active");
+            $("#withPort").addClass("active");
+        });
+        $("#linkTwo").click(function(e){
+            e.preventDefault();
+            $("#completed").removeClass("active");
+            $("#withPort").removeClass("active");
+            $("#withNoPort").addClass("active");
+        });
+        $("#linkThree").click(function(e){
+            e.preventDefault();
+            $("#withPort").removeClass("active");
+            $("#withNoPort").removeClass("active");
+            $("#completed").addClass("active");
+        });
+    });
+</script>
+<script>
+    $(document).ready(function() {
+        var table = $('#example').DataTable( {
+            order: [ 0, 'desc'],
+            lengthChange: false,
+            buttons: [ 'copy', 'excel', 'pdf', 'colvis' ]
+        } );
+
+        table.buttons().container()
+            .appendTo( '#example_wrapper .col-sm-6:eq(0)' );
+    } );
+
+    $(document).ready(function() {
+        var table = $('#example2').DataTable( {
+            order: [ 0, 'desc'],
+            lengthChange: false,
+            buttons: [ 'copy', 'excel', 'pdf', 'colvis' ]
+        } );
+
+        table.buttons().container()
+            .appendTo( '#example_wrapper2 .col-sm-6:eq(0)' );
+    } );
+
+    function popUpFunctionUpload(eventAction) {
+        let arrHead = [ 'uploadBtn'];
+        let arrHeadSave = [ 'Upload Report'];
+
+        for (let h = 0; h < arrHead.length; h++) {
+            if(eventAction !== arrHead[h]){
+                document.getElementById(arrHead[h]).remove();
+            }else {
+                if (eventAction === arrHead[h]) {
+                    document.getElementById('uploadSpan').innerHTML = arrHeadSave[h];
+                    document.getElementById("upload").value = 'Save';
+                }
+            }
+        }
+
+        $('.uploadForm #uploadModal').modal();
+    }
+
+
+
+</script>
+</body>
+</html>

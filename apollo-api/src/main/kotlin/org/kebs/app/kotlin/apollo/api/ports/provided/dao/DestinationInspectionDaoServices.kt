@@ -247,7 +247,7 @@ class DestinationInspectionDaoServices(
                     this.handleNoCorFromCosWithPvoc(cdDetails)
                     //Check if No CoR from CoS with PVoC
                     with(cdDetails) {
-                        cdType = findCdTypeDetailsWithUuid(noCorCdType).id
+                        cdType = findCdTypeDetailsWithUuid(noCorCdType)
                     }
                     iConsignmentDocumentDetailsRepo.save(cdDetails)
                 }
@@ -1195,7 +1195,7 @@ fun createLocalCoc(
 
                     //Generate Demand note number
                     demandNoteNumber =
-                        "KIMS${itemDetails.cdDocId?.cdType?.let { findCdTypeDetails(it).demandNotePrefix }}${
+                        "KIMS${itemDetails.cdDocId?.cdType?.demandNotePrefix}${
                             generateRandomText(
                                 5,
                                 map.secureRandom,
@@ -1932,14 +1932,14 @@ fun createLocalCoc(
     ): ConsignmentDocumentDetailsEntity {
         if (cocEntity.clean.equals("Y")) {
             with(cdDetailsEntity) {
-                cdType = findCdTypeDetailsWithUuid(cocCdType).id
+                cdType = findCdTypeDetailsWithUuid(cocCdType)
                 docTypeId = cocEntity.id
                 cocNumber = cocEntity.cocNumber
 
             }
         } else if (cocEntity.clean.equals("N")) {
             with(cdDetailsEntity) {
-                cdType = findCdTypeDetailsWithUuid(ncrCdType).id
+                cdType = findCdTypeDetailsWithUuid(ncrCdType)
                 docTypeId = cocEntity.id
                 cocNumber = cocEntity.cocNumber
             }
@@ -1955,7 +1955,7 @@ fun createLocalCoc(
     ): ConsignmentDocumentDetailsEntity {
         KotlinLogging.logger { }.info { "CorsBakEntity = $corsBakEntity.id" }
         with(cdDetailsEntity) {
-            cdType = findCdTypeDetailsWithUuid(corCdType).id
+            cdType = findCdTypeDetailsWithUuid(corCdType)
             docTypeId = corsBakEntity.id
         }
         return iConsignmentDocumentDetailsRepo.save(cdDetailsEntity)
@@ -2053,6 +2053,17 @@ fun createLocalCoc(
 
     }
 
+    fun findAllOngoingCdWithPortOfEntry(
+        sectionsEntity: SectionsEntity
+    ): List<ConsignmentDocumentDetailsEntity> {
+        iConsignmentDocumentDetailsRepo.findByPortOfArrivalAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNull(sectionsEntity.id)
+            ?.let {
+                return it
+            }
+            ?: throw Exception("COC List with the following Port arrival = ${sectionsEntity.section}, does not Exist")
+
+    }
+
     fun findAllCompleteCdWithPortOfEntry(
         sectionsEntity: SectionsEntity,
         cdType: ConsignmentDocumentTypesEntity
@@ -2068,15 +2079,27 @@ fun createLocalCoc(
 
     }
 
+    fun findAllCompleteCdWithPortOfEntry(
+        sectionsEntity: SectionsEntity
+    ): List<ConsignmentDocumentDetailsEntity> {
+        iConsignmentDocumentDetailsRepo.findByPortOfArrivalAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNotNull(
+            sectionsEntity.id
+        )
+            ?.let {
+                return it
+            }
+            ?: throw Exception("COC List with the following Port arrival = ${sectionsEntity.section}, does not Exist")
+
+    }
+
     fun findAllCdWithNoPortOfEntry(cdType: ConsignmentDocumentTypesEntity): List<ConsignmentDocumentDetailsEntity>? {
         return iConsignmentDocumentDetailsRepo.findByPortOfArrivalIsNullAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNull(
             cdType.id
         )
-//                ?.let {
-//                    return it
-//                }
-//                ?: throw Exception("COC List with the following Port arrival = ${sectionsEntity.section} and CD Type = ${cdType.typeName}, does not Exist")
+    }
 
+    fun findAllCdWithNoPortOfEntry(): List<ConsignmentDocumentDetailsEntity>? {
+        return iConsignmentDocumentDetailsRepo.findByPortOfArrivalIsNullAndUcrNumberIsNotNullAndOldCdStatusIsNull()
     }
 
     fun findAllCdWithAssignedIoID(
@@ -2086,6 +2109,18 @@ fun createLocalCoc(
         iConsignmentDocumentDetailsRepo.findAllByAssignedInspectionOfficerAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNull(
             usersEntity,
             cdType.id
+        )
+            ?.let {
+                return it
+            }
+            ?: throw Exception("Assigned Inspection Officer with ID = ${usersEntity.id}, does not Exist")
+    }
+
+    fun findAllCdWithAssignedIoID(
+        usersEntity: UsersEntity
+    ): List<ConsignmentDocumentDetailsEntity> {
+        iConsignmentDocumentDetailsRepo.findAllByAssignedInspectionOfficerAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNull(
+            usersEntity
         )
             ?.let {
                 return it
@@ -2107,6 +2142,18 @@ fun createLocalCoc(
             ?: throw Exception("Assigned Inspection Officer with ID = ${usersEntity.id}, does not Exist")
     }
 
+    fun findAllCompleteCdWithAssignedIoID(
+        usersEntity: UsersEntity
+    ): List<ConsignmentDocumentDetailsEntity> {
+        iConsignmentDocumentDetailsRepo.findAllByAssignedInspectionOfficerAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNotNull(
+            usersEntity
+        )
+            ?.let {
+                return it
+            }
+            ?: throw Exception("Assigned Inspection Officer with ID = ${usersEntity.id}, does not Exist")
+    }
+
 
     fun findAllCdWithNoAssignedIoID(
         subSectionsLevel2Entity: SubSectionsLevel2Entity,
@@ -2116,11 +2163,14 @@ fun createLocalCoc(
             subSectionsLevel2Entity.id,
             cdType.id
         )
-//                ?.let {
-//                    return it
-//                }
-//                ?: throw Exception("Assigned Inspection Officer with ID = ${usersEntity.id}, does not Exist")
+    }
 
+    fun findAllCdWithNoAssignedIoID(
+        subSectionsLevel2Entity: SubSectionsLevel2Entity
+    ): List<ConsignmentDocumentDetailsEntity>? {
+        return iConsignmentDocumentDetailsRepo.findByFreightStationAndAssignedInspectionOfficerIsNullAndUcrNumberIsNotNullAndOldCdStatusIsNull(
+            subSectionsLevel2Entity.id
+        )
     }
 
     fun addFreightStation(freightStation: String, status: Int): SubSectionsLevel2Entity =
@@ -2914,7 +2964,7 @@ fun createLocalCoc(
     //Start relevant BPMN process
     fun startDiBpmProcessByCdType(consignmentDoc: ConsignmentDocumentDetailsEntity) {
         consignmentDoc.cdType?.let {
-            this.findCdTypeDetails(it).uuid?.let { cdTypeUuid ->
+            it.uuid?.let { cdTypeUuid ->
                 when (cdTypeUuid) {
                     corCdType -> consignmentDoc.id?.let { it1 ->
                         consignmentDoc.assignedInspectionOfficer?.id?.let { it2 ->

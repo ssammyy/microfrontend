@@ -1,7 +1,6 @@
 package org.kebs.app.kotlin.apollo.api.ports.provided.dao
 
 
-import liquibase.pro.packaged.s
 import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.ports.provided.sftp.UpAndDownLoad
 import org.kebs.app.kotlin.apollo.api.utils.Delimiters
@@ -9,16 +8,17 @@ import org.kebs.app.kotlin.apollo.api.utils.XMLDocument
 import org.kebs.app.kotlin.apollo.common.dto.kesws.receive.*
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
-import org.kebs.app.kotlin.apollo.store.model.*
+import org.kebs.app.kotlin.apollo.store.model.ProcessesStagesEntity
+import org.kebs.app.kotlin.apollo.store.model.ServiceMapsEntity
+import org.kebs.app.kotlin.apollo.store.model.UsersEntity
 import org.kebs.app.kotlin.apollo.store.model.di.*
 import org.kebs.app.kotlin.apollo.store.repo.di.*
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
-import org.w3c.dom.*
+import org.w3c.dom.Document
 import org.xml.sax.InputSource
 import java.io.StringReader
-import java.util.*
 
 
 @Service
@@ -800,7 +800,7 @@ class ConsignmentDocumentDaoService(
                     val cocLocalDetails =
                         standardsTwoDetails.localCocType?.let { daoServices.findLocalCocTypeWithCocTypeCode(it) }
                     cdCocLocalTypeId = cocLocalDetails?.id
-                    cdType = cocLocalDetails?.cdType
+                    cdType = cocLocalDetails?.cdType?.let { daoServices.findCdTypeDetails(it) }
                 }
                 else -> {
                     //Todo: If there is no value for for either local or Foregin (L/F)

@@ -22,12 +22,6 @@ import org.springframework.web.bind.annotation.*
 import org.springframework.web.bind.support.SessionStatus
 import org.springframework.web.multipart.MultipartFile
 import org.springframework.web.servlet.mvc.support.RedirectAttributes
-import java.io.BufferedInputStream
-import java.io.ByteArrayInputStream
-import java.io.File
-import java.io.InputStream
-import java.lang.Exception
-import java.net.URLConnection
 import javax.servlet.http.HttpServletResponse
 
 
@@ -116,7 +110,7 @@ class DestinationInspectionController(
 
                 //If CD without COR, auto-target
                 //Todo: Use the method for saving details
-                if (updatedCDDetails.cdType?.let { daoServices.findCdTypeDetails(it).uuid } == daoServices.noCorCdType) {
+                if (updatedCDDetails.cdType?.uuid == daoServices.noCorCdType) {
                     updatedCDDetails.id?.let {
 //                        daoServices.loopAllItemsInCDToBeTargeted(it, updatedCDDetails, map, loggedInUser)
                     }
@@ -357,7 +351,7 @@ class DestinationInspectionController(
                     }
                     //Send LOCAL COI/COC/COR Data to Single Window
                     cdDetails.localCocOrCorStatus == map.activeStatus -> {
-                        if (updatedCDDetails.cdType?.let { daoServices.findCdTypeDetails(it).localCocStatus } == map.activeStatus) {
+                        if (updatedCDDetails.cdType?.localCocStatus == map.activeStatus) {
 
                             when (cdDetails.localCoi) {
                                 //Todo : Ask Fred on where to get the routValue
@@ -382,7 +376,7 @@ class DestinationInspectionController(
                                     }
                                 }
                             }
-                        } else if (updatedCDDetails.cdType?.let { daoServices.findCdTypeDetails(it).localCorStatus } == map.activeStatus) {
+                        } else if (updatedCDDetails.cdType?.localCorStatus == map.activeStatus) {
                             daoServices.generateCor(updatedCDDetails, map, loggedInUser).let { corDetails ->
                                 daoServices.submitCoRToKesWS(corDetails)
                                 updatedCDDetails.cdStandard?.let { cdStd ->
@@ -787,7 +781,7 @@ class DestinationInspectionController(
                         KotlinLogging.logger { }.info { "generalInspectionChecklistId = $generalInspectionChecklistId" }
 
                         daoServices.findInspectionGeneralById(generalInspectionChecklistId)
-                            ?.let { cdInspectionGeneralEntity ->
+                            ?.let {  cdInspectionGeneralEntity ->
                                 cdInspectionGeneralEntity.inspectionReportFile = docFile.bytes
                                 cdInspectionGeneralEntity.complianceRecommendations = complianceRecommendations
                                 cdInspectionGeneralEntity.complianceStatus = complianceStatus
