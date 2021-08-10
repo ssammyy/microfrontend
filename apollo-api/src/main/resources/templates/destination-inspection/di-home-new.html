@@ -148,7 +148,7 @@
           </div>
 
             <div class="uploadForm">
-                <form id="upload-form" enctype="multipart/form-data"  name="upload-form" th:action="@{/api/di/ministry/upload-inspection-report(mvInspectionChecklistId = ${mvInspectionChecklist?.id})}" method="post">
+                <form id="upload-form" enctype="multipart/form-data"  name="upload-form" th:action="@{/api/di/upload/coc}" method="post">
                     <div class="modal fade" id="uploadModal" tabindex="-1" role="dialog" aria-labelledby="uploadModalLabel" aria-hidden="true">
                         <div class="modal-dialog" role="document">
                             <div class="modal-content">
@@ -161,14 +161,14 @@
                                 <div class="modal-body">
 
                                     <div class="form-group">
-                                        <label for="file_type" class="col-form-label">File Type:</label>
-                                        <select name="file_type" class="form-control select-inline" id="file_type">
-                                            <option value="default" selected="true">- SELECT -</option>
-                                            <option th:value=1 th:text="COC"></option>
-                                            <option th:value=0 th:text="COR"></option>
-                                        </select>
-                                        <label for="docFile" class="col-form-label">Upload your File</label>
-                                        <input type="file"  multiple name="doc_file" data-name="doc_file" id="docFile" required="required" >
+<!--                                        <label for="file_type" class="col-form-label">File Type:</label>-->
+<!--                                        <select name="file_type" class="form-control select-inline" id="file_type">-->
+<!--                                            <option value="default" selected="true">- SELECT -</option>-->
+<!--                                            <option th:value=1 th:text="COC"></option>-->
+<!--&lt;!&ndash;                                            <option th:value=0 th:text="COR"></option>&ndash;&gt;-->
+<!--                                        </select>-->
+                                        <label for="doc_file" class="col-form-label">Upload your File</label>
+                                        <input type="file"  multiple name="doc_file" data-name="doc_file" id="doc_file" required="required" >
                                     </div>
 
                                 </div>
