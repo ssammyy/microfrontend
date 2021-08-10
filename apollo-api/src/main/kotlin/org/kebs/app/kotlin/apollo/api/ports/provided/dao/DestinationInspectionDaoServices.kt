@@ -438,7 +438,7 @@ fun createLocalCoc(
                         shipmentSealNumbers = "UNKNOWN"
                         shipmentContainerNumber = "UNKNOWN"
                         shipmentGrossWeight = "UNKNOWN"
-                        shipmentGrossWeightUnit = "UNKOWN"
+//                        shipmentGrossWeightUnit = "UNKOWN"
                         route = routValue
                         cocType = "L"
                         productCategory = "UNKNOWN"
@@ -537,7 +537,7 @@ fun createLocalCoc(
                     shipmentSealNumbers = "UNKNOWN"
                     shipmentContainerNumber = "UNKNOWN"
                     shipmentGrossWeight = "UNKNOWN"
-                    shipmentGrossWeightUnit = "UNKNOWN"
+//                    shipmentGrossWeightUnit = "UNKNOWN"
                     route = routValue
                     cocType = "L"
                     productCategory = "UNKNOWN"

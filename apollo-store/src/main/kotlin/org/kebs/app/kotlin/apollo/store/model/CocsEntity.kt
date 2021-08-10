@@ -245,10 +245,10 @@ class CocsEntity : Serializable {
     @Basic
     var shipmentGrossWeight: String? = null
 
-    @NotEmpty(message = "Required field")
-    @Column(name = "SHIPMENT_GROSS_WEIGHT_UNIT", nullable = false, length = 50)
-    @Basic
-    var shipmentGrossWeightUnit: String? = null
+//    @NotEmpty(message = "Required field")
+//    @Column(name = "SHIPMENT_GROSS_WEIGHT_UNIT", nullable = false, length = 50)
+//    @Basic
+//    var shipmentGrossWeightUnit: String? = null
 
     @NotEmpty(message = "Required field")
     @Column(name = "SHIPMENT_QUANTITY_DELIVERED")
@@ -412,7 +412,7 @@ class CocsEntity : Serializable {
                 shipmentSealNumbers == that.shipmentSealNumbers &&
                 shipmentContainerNumber == that.shipmentContainerNumber &&
                 shipmentGrossWeight == that.shipmentGrossWeight &&
-                shipmentGrossWeightUnit == that.shipmentGrossWeightUnit &&
+//                shipmentGrossWeightUnit == that.shipmentGrossWeightUnit &&
                 route == that.route &&
                 productCategory == that.productCategory &&
                 cocType == that.cocType &&
@@ -490,7 +490,7 @@ class CocsEntity : Serializable {
             shipmentSealNumbers,
             shipmentContainerNumber,
             shipmentGrossWeight,
-            shipmentGrossWeightUnit,
+//            shipmentGrossWeightUnit,
             route,
             cocType,
             productCategory,
