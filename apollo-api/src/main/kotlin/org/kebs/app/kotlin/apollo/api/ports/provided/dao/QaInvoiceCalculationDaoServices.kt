@@ -46,9 +46,8 @@ class QaInvoiceCalculationDaoServices(
     ): QaInvoiceMasterDetailsEntity {
         val map = commonDaoServices.serviceMapDetails(appId)
         val permitType = qaDaoServices.findPermitType(permit.permitType ?: throw Exception("INVALID PERMIT TYPE ID"))
-        val numberOfYears = BigDecimal(permitType.numberOfYears ?: throw Exception("INVALID NUMBER OF YEARS"))
-        val userDetails =
-            commonDaoServices.findUserByID(permit.userId ?: throw Exception("MISSING USER ID ON PERMIT DETAILS"))
+        BigDecimal(permitType.numberOfYears ?: throw Exception("INVALID NUMBER OF YEARS"))
+        commonDaoServices.findUserByID(permit.userId ?: throw Exception("MISSING USER ID ON PERMIT DETAILS"))
 
         val ratesMap =
             iPermitRatingRepo.findAllByStatus(map.activeStatus) ?: throw Exception("SMARK RATE SHOULD NOT BE NULL")
@@ -362,8 +361,6 @@ class QaInvoiceCalculationDaoServices(
             createdOn = Timestamp.from(Instant.now())
             createdBy = commonDaoServices.concatenateName(user)
         }
-
-        invoiceDetailsPermitFee = qaInvoiceDetailsRepo.save(invoiceDetailsPermitFee)
 
         with(plantDetail) {
             tokenGiven =
