@@ -13,6 +13,10 @@ import swal from "sweetalert2";
 export class ExceptionsApplicationComponent implements OnInit {
     companyDetails: any = {};
     goodDetails: any = {}
+    labReports: any[] = [];
+    qmsReports: any[] = [];
+    productList: any[] = [];
+    documentation: File[] = [];
     companyNextClicked: EventEmitter<any> = new EventEmitter<any>();
 
 
@@ -29,6 +33,60 @@ export class ExceptionsApplicationComponent implements OnInit {
             )
     }
 
+    // Loading file
+    loadFile($event, rtype) {
+        if ($event.target.files.length == 0) {
+            console.log("No file selected!");
+            return
+        }
+        let file: File = $event.target.files[0];
+        // console.log("file selected!",$event.target.files,  file.name);
+        this.documentation.push(file)
+        switch (rtype) {
+            case 'lab':
+                this.labReports.push({
+                    name: file.name,
+                    file
+                });
+                break
+            case 'product':
+                this.productList.push({
+                    name: file.name,
+                    file
+                });
+                break
+            case 'qms':
+                this.qmsReports.push({
+                    name: file.name,
+                    file
+                });
+                break
+            default:
+                console.log("Failed")
+        }
+    }
+
+    deleteFile(i, report) {
+        let d: any[] = null
+        switch (report) {
+            case 'lab':
+                d = this.labReports.splice(i, 1);
+                break
+            case 'qms':
+                d = this.qmsReports.splice(i, 1)
+                break
+            case 'product':
+                d = this.productList.splice(i, 1)
+                break
+            default:
+                console.log("Not done: " + report)
+        }
+        if (d && d.length > 0) {
+            this.documentation.filter(f => f.name === d[0].name)
+        }
+
+    }
+
     companyNextClickedEvent() {
         this.companyNextClicked.emit("yes");
     }
@@ -36,10 +94,10 @@ export class ExceptionsApplicationComponent implements OnInit {
     submitExemptionRequest() {
         let data = this.companyDetails
         console.log(data)
-        this.pvoc.applyForImportExemption(data, this.goodDetails ? this.goodDetails.documentation : [])
+        this.pvoc.applyForImportExemption(data, this.documentation ? this.documentation : [])
             .subscribe(
                 res => {
-                    if(res.responseCode==='00') {
+                    if (res.responseCode === '00') {
                         swal.fire({
                             title: res.message,
                             buttonsStyling: false,

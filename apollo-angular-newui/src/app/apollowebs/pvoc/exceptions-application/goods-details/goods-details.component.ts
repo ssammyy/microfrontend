@@ -13,9 +13,6 @@ import {StepperDataService} from "../../../../core/services/data/stepper-data.se
     styleUrls: ['./goods-details.component.css']
 })
 export class GoodsDetailsComponent implements OnInit {
-    private labReports: any[];
-    private qmsReports: any[];
-    private productList: any[];
     @Input() goodDetails: any;
 
     constructor(private dialog: MatDialog, private data: StepperDataService) {
