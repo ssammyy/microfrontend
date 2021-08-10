@@ -3941,7 +3941,7 @@ class QADaoServices(
                         permit,
                         user,
                         manufactureTurnOver,
-                        productsManufacture.size,
+                        productsManufacture.size.toLong(),
                         plantDetail
                     )
                 }
