@@ -53,7 +53,7 @@ import {FmarkComponent} from './apollowebs/quality-assurance/fmark/fmark.compone
 import {DmarkComponent} from './apollowebs/quality-assurance/dmark/dmark.component';
 import {SmarkComponent} from './apollowebs/quality-assurance/smark/smark.component';
 import {FmarkallappsComponent} from './apollowebs/quality-assurance/fmarkallapps/fmarkallapps.component';
-import {St10FormComponent} from './apollowebs/st10-form/st10-form.component';
+import {St10FormComponent} from './apollowebs/quality-assurance/st10-form/st10-form.component';
 import {FontAwesomeModule} from '@fortawesome/angular-fontawesome';
 import {NgxPaginationModule} from 'ngx-pagination';
 import {CoreModule} from './core/core.module';
