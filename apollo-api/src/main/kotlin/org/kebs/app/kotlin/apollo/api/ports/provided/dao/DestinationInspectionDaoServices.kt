@@ -537,6 +537,7 @@ fun createLocalCoc(
                     shipmentSealNumbers = "UNKNOWN"
                     shipmentContainerNumber = "UNKNOWN"
                     shipmentGrossWeight = "UNKNOWN"
+                    shipmentGrossWeightUnit = "UNKNOWN"
                     route = routValue
                     cocType = "L"
                     productCategory = "UNKNOWN"
