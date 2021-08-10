@@ -59,7 +59,7 @@ class DestinationInspectionController(
     @PostMapping("upload/coc")
     fun uploadCOCFile(
         @RequestParam("doc_file") docFile: MultipartFile,
-        @ModelAttribute upLoads: DiUploadsEntity,
+//        @ModelAttribute upLoads: DiUploadsEntity,
         model: Model,
         redirectAttributes: RedirectAttributes,
     ): String {
@@ -77,7 +77,7 @@ class DestinationInspectionController(
 
                         try {
 
-                            saveUploadedCsvFileAndSendToKeSWS(docFile, upLoads, loggedInUser, map)
+                            saveUploadedCsvFileAndSendToKeSWS(docFile, DiUploadsEntity(), loggedInUser, map)
 
 
                         } catch (e: Exception) {
