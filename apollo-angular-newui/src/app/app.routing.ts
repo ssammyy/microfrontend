@@ -3,8 +3,8 @@ import {RouterModule, Routes} from '@angular/router';
 import {AdminLayoutComponent} from './layouts/admin/admin-layout.component';
 import {DashboardComponent} from './apollowebs/dashboard/dashboard.component';
 import {NgModule} from '@angular/core';
-import {DmarkComponent} from './apollowebs/quality-assurance/dmark/dmark.component';
-import {FmarkallappsComponent} from './apollowebs/quality-assurance/fmarkallapps/fmarkallapps.component';
+import {DmarkComponent} from './apollowebs/dmark/dmark.component';
+import {FmarkallappsComponent} from './apollowebs/fmarkallapps/fmarkallapps.component';
 import {St10FormComponent} from './apollowebs/st10-form/st10-form.component';
 import {RegistrationComponent} from './views/registration.component';
 import {SignUpComponent} from './views/registration/sign-up.component';
@@ -12,27 +12,27 @@ import {ResetCredentialsComponent} from './views/registration/reset-credentials.
 import {RouteGuard} from './core/route-guard/route.guard';
 import {LoginComponent} from './views/registration/login.component';
 import {PermitReportComponent} from './apollowebs/permit-report/permit-report.component';
-import {NewSmarkPermitComponent} from './apollowebs/quality-assurance/new-smark-permit/new-smark-permit.component';
-import {NewDmarkPermitComponent} from './apollowebs/quality-assurance/new-dmark-permit/new-dmark-permit.component';
-import {DmarkApplicationsAllComponent} from './apollowebs/quality-assurance/dmark-applications-all/dmark-applications-all.component';
-import {InvoiceComponent} from './apollowebs/quality-assurance/invoice/invoice.component';
-import {InvoiceDetailsComponent} from './apollowebs/quality-assurance/invoice-details/invoice-details.component';
+import {NewSmarkPermitComponent} from './apollowebs/new-smark-permit/new-smark-permit.component';
+import {NewDmarkPermitComponent} from './apollowebs/new-dmark-permit/new-dmark-permit.component';
+import {DmarkApplicationsAllComponent} from './apollowebs/dmark-applications-all/dmark-applications-all.component';
+import {InvoiceComponent} from './apollowebs/invoice/invoice.component';
+import {InvoiceDetailsComponent} from './apollowebs/invoice-details/invoice-details.component';
 import {CompaniesList} from './apollowebs/company/companies.list';
 import {CompanyComponent} from './apollowebs/company/company.component';
 import {BranchComponent} from './apollowebs/company/branch/branch.component';
 import {BranchList} from './apollowebs/company/branch/branch.list';
 import {UserComponent} from './apollowebs/company/branch/users/user.component';
 import {UserList} from './apollowebs/company/branch/users/user.list';
-import {SmarkApplicationsAllComponent} from './apollowebs/quality-assurance/smark-applications-all/smark-applications-all.component';
+import {SmarkApplicationsAllComponent} from './apollowebs/smark-applications-all/smark-applications-all.component';
 import {UserProfileMainComponent} from './apollowebs/userprofilemain/user-profile-main.component';
 import {AddBranchComponent} from "./apollowebs/company/branch/add-branch/add-branch.component";
 import {OtpComponent} from "./views/registration/otp/otp.component";
-import {InvoiceConsolidateComponent} from "./apollowebs/quality-assurance/invoice-consolidate/invoice-consolidate.component";
+import {InvoiceConsolidateComponent} from "./apollowebs/invoice-consolidate/invoice-consolidate.component";
 import {PdfViewComponent} from "./pdf-view/pdf-view.component";
 import {TaskManagerComponent} from "./apollowebs/task-manager/task-manager.component";
 import {AddUserComponent} from "./apollowebs/company/branch/add-user/add-user.component";
-import {FmarkApplicationComponent} from "./apollowebs/quality-assurance/fmark-application/fmark-application.component";
-import {SmarkComponent} from "./apollowebs/quality-assurance/smark/smark.component";
+import {FmarkApplicationComponent} from "./apollowebs/fmark-application/fmark-application.component";
+import {SmarkComponent} from "./apollowebs/smark/smark.component";
 import {NwaJustificationFormComponent} from "./apollowebs/standards-development/nwa-justification-form/nwa-justification-form.component";
 import {NwaJustificationTasksComponent} from "./apollowebs/standards-development/nwa-justification-tasks/nwa-justification-tasks.component";
 import {NwaKnwSecTasksComponent} from "./apollowebs/standards-development/nwa-knw-sec-tasks/nwa-knw-sec-tasks.component";
@@ -53,7 +53,9 @@ import {ComStdJcJustificationComponent} from "./apollowebs/standards-development
 import {CsRequestFormComponent} from "./apollowebs/standards-development/company-standard-request/cs-request-form/cs-request-form.component";
 import {ComStdJcJustificationListComponent} from "./apollowebs/standards-development/com-std-jc-justification-list/com-std-jc-justification-list.component";
 import {InformationcheckComponent} from "./apollowebs/standards-development/informationcheck/informationcheck.component";
-import {UsermanagementComponent} from "./apollowebs/usermanagement/usermanagement.component";
+import {DivisionresponseComponent} from "./apollowebs/standards-development/divisionresponse/divisionresponse.component";
+import {NationalEnquiryPointComponent} from "./apollowebs/standards-development/national-enquiry-point/national-enquiry-point.component";
+import {MakeEnquiryComponent} from "./apollowebs/standards-development/national-enquiry-point/make-enquiry/make-enquiry.component";
 
 // export const AppRoutes: Routes = [
 //     {
@@ -290,12 +292,6 @@ export const routes: Routes = [
         children: [{path: '', component: UserProfileMainComponent}]
     },
     {
-        path: 'user_management', component: AdminLayoutComponent,
-        canActivate: [RouteGuard],
-
-        children: [{path: '', component: UsermanagementComponent}]
-    },
-    {
         path: 'smark/all_smark', component: AdminLayoutComponent,
         canActivate: [RouteGuard],
 
@@ -428,6 +424,13 @@ export const routes: Routes = [
     {
         path: 'nep_information_received', component: AdminLayoutComponent,
         children: [{path: '', component: InformationcheckComponent}]
+    },
+    {
+        path: 'nep_division_response', component: AdminLayoutComponent,
+        children: [{path: '', component: DivisionresponseComponent}]
+    },
+    {
+        path: 'make_enquiry', component: MakeEnquiryComponent
     },
 ];
 

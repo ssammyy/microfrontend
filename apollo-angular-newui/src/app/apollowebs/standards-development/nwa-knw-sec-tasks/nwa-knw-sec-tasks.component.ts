@@ -6,6 +6,7 @@ import {HttpErrorResponse} from "@angular/common/http";
 import {Subject} from "rxjs";
 import swal from "sweetalert2";
 
+
 @Component({
   selector: 'app-nwa-knw-sec-tasks',
   templateUrl: './nwa-knw-sec-tasks.component.html',
@@ -16,8 +17,6 @@ export class NwaKnwSecTasksComponent implements OnInit,OnDestroy {
   dtTrigger: Subject<any> = new Subject<any>();
   p = 1;
   p2 = 1;
-  public itemId :string="1";
-  public type: string="DISDTJustification";
   tasks: KnwSecTasks[] = [];
   public actionRequest: KnwSecTasks | undefined;
     public uploadedFiles: FileList;
@@ -28,6 +27,7 @@ export class NwaKnwSecTasksComponent implements OnInit,OnDestroy {
 
   ngOnInit(): void {
     this.knwtasks();
+
   }
   public knwtasks(): void{
     this.SpinnerService.show();
@@ -38,6 +38,7 @@ export class NwaKnwSecTasksComponent implements OnInit,OnDestroy {
           this.SpinnerService.hide();
         },
         (error: HttpErrorResponse)=>{
+            this.SpinnerService.hide();
           alert(error.message);
         }
     );
@@ -95,13 +96,14 @@ export class NwaKnwSecTasksComponent implements OnInit,OnDestroy {
   public uploadDiSdt(nWADiSdtJustification: NWADiSdtJustification): void{
     this.SpinnerService.show();
     this.stdNwaService.prepareDisDtJustification(nWADiSdtJustification).subscribe(
-        (response: NWADiSdtJustification) => {
+        (response) => {
           console.log(response);
           this.SpinnerService.hide();
-            //this.onClickSaveUPLOADS(response.)
+            this.onClickSaveUPLOADS(response.body.savedRowID)
           this.knwtasks();
         },
         (error: HttpErrorResponse) => {
+            this.SpinnerService.hide();
           alert(error.message);
         }
     );
@@ -115,6 +117,7 @@ export class NwaKnwSecTasksComponent implements OnInit,OnDestroy {
           this.knwtasks();
         },
         (error: HttpErrorResponse) => {
+            this.SpinnerService.hide();
           alert(error.message);
         }
     );
@@ -128,6 +131,7 @@ export class NwaKnwSecTasksComponent implements OnInit,OnDestroy {
           this.knwtasks();
         },
         (error: HttpErrorResponse) => {
+            this.SpinnerService.hide();
           alert(error.message);
         }
     );
@@ -135,7 +139,7 @@ export class NwaKnwSecTasksComponent implements OnInit,OnDestroy {
   ngOnDestroy(): void {
     this.dtTrigger.unsubscribe();
   }
-    onClickSaveUPLOADS(nWADiSdtJustification: string) {
+    onClickSaveUPLOADS(nwaJustificationID: string) {
         if (this.uploadedFiles.length > 0) {
             const file = this.uploadedFiles;
             const formData = new FormData();
@@ -145,7 +149,7 @@ export class NwaKnwSecTasksComponent implements OnInit,OnDestroy {
             }
 
             this.SpinnerService.show();
-            this.stdNwaService.uploadDIFileDetails(nWADiSdtJustification, formData).subscribe(
+            this.stdNwaService.uploadDIFileDetails(nwaJustificationID, formData).subscribe(
                 (data: any) => {
                     this.SpinnerService.hide();
                     this.uploadedFiles = null;

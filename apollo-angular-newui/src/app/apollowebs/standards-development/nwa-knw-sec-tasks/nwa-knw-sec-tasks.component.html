@@ -68,7 +68,7 @@ type="ball-scale-multiple"
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <form #disDtForm="ngForm" >
+                <form #disDtForm="ngForm"  >
                     <div class="modal-body">
                         <div class="row col-12">
                             <div class="form-group col-6">
@@ -90,14 +90,20 @@ type="ball-scale-multiple"
                                 <input class="form-control"  ngModel name="dateOfApproval" type="date">
                             </div>
                         </div>
+
                         <div class="row col-12">
-                            <div class="form-group col-12">
-                                <label><b>Upload Justification for Director of Standards Approval</b></label>
+
+                                <div class=" col-12">
+                                <label><b>Upload Justification for Director of Standards Approval</b></label><br>
+                                    <div style="visibility: hidden"><input type="file" [(ngModel)]="uploadedFiles" nv-file-select="" uploader="uploader" multiple name="uploadedFiles"  /></div>
 
                                     <file-upload [(ngModel)]="uploadedFiles" name="uploadedFiles" fileslimit="2" accept=".pdf, .doc, .docx"></file-upload>
-                                <input class="form-control one-column-input" ngModel="NWA DISDT Justification"  name="DocDescription" type="hidden">
-                            </div>
+                                </div>
+
+
                         </div>
+
+
                     </div>
 
                     <input type="hidden" ngModel="{{actionRequest?.taskId}}" name="taskId" >

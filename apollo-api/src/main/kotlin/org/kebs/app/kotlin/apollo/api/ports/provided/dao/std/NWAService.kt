@@ -198,9 +198,9 @@ class NWAService(private val runtimeService: RuntimeService,
         nwaDiSdtJustification.cost?.let{variable.put("cost", it)}
         nwaDiSdtJustification.numberOfMeetings?.let{variable.put("numberOfMeetings", it)}
         nwaDiSdtJustification.identifiedNeed?.let{variable.put("identifiedNeed", it)}
-        nwaDiSdtJustification.dateApprovalMade?.let{variable.put("dateApprovalMade", it)}
-        nwaDiSdtJustification.datePrepared = Timestamp(System.currentTimeMillis())
-        variable["submissionDate"] = nwaDiSdtJustification.datePrepared!!
+        nwaDiSdtJustification.dateApprovalMade?.let{variable.put("dateOfApproval", it)}
+        nwaDiSdtJustification.datePrepared = commonDaoServices.getTimestamp()
+        variable["datePrepared"] = nwaDiSdtJustification.datePrepared!!
 
         //print(nwaDiSdtJustification.toString())
 

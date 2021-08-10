@@ -74,10 +74,9 @@ placeholder="Name" type="text">
 <div class="form-group col-6">
 <label><b>Requested By</b></label>
 <input
-[class.is-invalid]="formPrepareJustification.requestedBy.invalid && formPrepareJustification.requestedBy.touched"
 aria-describedby="inputGroup-sizing-sm" aria-label="Small"
-class="form-control one-column-input" formControlName="requestedBy" name="requestedBy"
-placeholder="Name" type="text">
+class="form-control one-column-input" formControlName="requestedBy" ngModel="{{fullname}}" name="requestedBy"
+placeholder="Name" type="text" disabled>
 </div>
 </div>
 

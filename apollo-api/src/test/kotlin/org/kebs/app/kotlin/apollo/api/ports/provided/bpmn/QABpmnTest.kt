@@ -104,7 +104,7 @@ class QABpmnTest{
     lateinit var qaEmailDefaultBody: String
 
     val assigneeId:Long = 101
-    val qaoAssigneeId: Long = 102
+    val qaoAssigneeId: Long = 1524
     val directorAssigneeId: Long = 103
     val hofAssigneeId: Long = 104
     val custAssigneeId: Long = 105
@@ -112,13 +112,13 @@ class QABpmnTest{
     val pscAssigneeId:Long=107
     val pcmAssigneeId:Long=1605
     val pmAssigneeId:Long = 109
-    val assessorAssigneeId:Long = 111
+    val assessorAssigneeId:Long = 1541
     val pacAssigneeId:Long = 112
-    val assesorAssigneeId:Long = 113
+    val assesorAssigneeId:Long = 1541
     val customerEmail = "james.mantu@gmal.com"
 
     //HOD
-    val hodAssigneeId: Long = 110
+    val hodAssigneeId: Long = 1523
 
     @Test
     @Ignore
@@ -1117,7 +1117,7 @@ class QABpmnTest{
         }?: return
 
         //Assign to QAO
-        qualityAssuranceBpmn.qaDMAssignQAOComplete(permitId, false, qaoAssigneeId).let {
+        qualityAssuranceBpmn.qaDMAssignQAOComplete(permitId, qaoAssigneeId).let {
             qualityAssuranceBpmn.fetchTaskByPermitId(permitId,qaDmApplicationReviewProcessDefinitionKey)?.let { taskDetails ->
                 println("Task details after assign to QAO is complete")
                 for (taskDetail in taskDetails){
@@ -1127,31 +1127,97 @@ class QABpmnTest{
                 }
             }
         }?: return
-//
-//        //Factory inspection
-//        qualityAssuranceBpmn.qaDmARFactoryInspectionComplete(permitId, qaoAssigneeId).let {
-//            qualityAssuranceBpmn.fetchTaskByPermitId(permitId,qaDmApplicationReviewProcessDefinitionKey)?.let { taskDetails ->
-//                println("Task details after factory inspection complete")
-//                for (taskDetail in taskDetails){
-//                    taskDetail.task.let{ task->
-//                        println("${taskDetail.permitId} -- ${task.id} -- ${task.name} -- ${task.assignee} -- ${task.processInstanceId} -- ${task.taskDefinitionKey} " )
-//                    }
-//                }
-//            }
-//        }?: return
-//
-//        //Generate inspection report complete
-//        qualityAssuranceBpmn.qaDmARGenerateInspectionReportComplete(permitId, hofAssigneeId).let {
-//            qualityAssuranceBpmn.fetchTaskByPermitId(permitId,qaDmApplicationReviewProcessDefinitionKey)?.let { taskDetails ->
-//                println("Task details after generate inspection report complete")
-//                for (taskDetail in taskDetails){
-//                    taskDetail.task.let{ task->
-//                        println("${taskDetail.permitId} -- ${task.id} -- ${task.name} -- ${task.assignee} -- ${task.processInstanceId} -- ${task.taskDefinitionKey} " )
-//                    }
-//                }
-//            }
-//        }?: return
 
+        //Generate Justification Report
+        qualityAssuranceBpmn.qaDMGenerateJustificationReportComplete(permitId, hodAssigneeId).let {
+            qualityAssuranceBpmn.fetchTaskByPermitId(permitId,qaDmApplicationReviewProcessDefinitionKey)?.let { taskDetails ->
+                println("Task details after generate justification report is complete")
+                for (taskDetail in taskDetails){
+                    taskDetail.task.let{ task->
+                        println("${taskDetail.permitId} -- ${task.id} -- ${task.name} -- ${task.assignee} -- ${task.processInstanceId} -- ${task.taskDefinitionKey} " )
+                    }
+                }
+            }
+        }?: return
+
+        //Approve Justification Report complete
+        qualityAssuranceBpmn.qaDMApproveJustificationReportComplete(permitId, true, assessorAssigneeId).let {
+            qualityAssuranceBpmn.fetchTaskByPermitId(permitId, qaDmAppPaymentProcessDefinitionKey)?.let { taskDetails ->
+                println("Task details after approve justification report complete")
+                for (taskDetail in taskDetails){
+                    taskDetail.task.let{ task->
+                        println("${taskDetail.permitId} -- ${task.id} -- ${task.name} -- ${task.assignee} -- ${task.processInstanceId} -- ${task.taskDefinitionKey} " )
+                    }
+                }
+            }
+        } ?: return
+
+        //Assign Assessor complete
+        qualityAssuranceBpmn.qaDMAssignAssessorComplete(permitId, assessorAssigneeId).let {
+            qualityAssuranceBpmn.fetchTaskByPermitId(permitId, qaDmAppPaymentProcessDefinitionKey)?.let { taskDetails ->
+                println("Task details after assign assessor complete")
+                for (taskDetail in taskDetails){
+                    taskDetail.task.let{ task->
+                        println("${taskDetail.permitId} -- ${task.id} -- ${task.name} -- ${task.assignee} -- ${task.processInstanceId} -- ${task.taskDefinitionKey} " )
+                    }
+                }
+            }
+        } ?: return
+
+        //Schedule inspection date complete
+        qualityAssuranceBpmn.qaDMScheduleInspectionComplete(permitId, assessorAssigneeId).let {
+            qualityAssuranceBpmn.fetchTaskByPermitId(permitId, qaDmAppPaymentProcessDefinitionKey)?.let { taskDetails ->
+                println("Task details after schedule inspection date complete")
+                for (taskDetail in taskDetails){
+                    taskDetail.task.let{ task->
+                        println("${taskDetail.permitId} -- ${task.id} -- ${task.name} -- ${task.assignee} -- ${task.processInstanceId} -- ${task.taskDefinitionKey} " )
+                    }
+                }
+            }
+        } ?: return
+
+        //Schedule inspection date complete
+        qualityAssuranceBpmn.qaDMGenerateInspectionComplete(permitId, assessorAssigneeId, hodAssigneeId).let {
+            qualityAssuranceBpmn.fetchTaskByPermitId(permitId, qaDmAppPaymentProcessDefinitionKey)?.let { taskDetails ->
+                println("Task details after generate inspection report complete")
+                for (taskDetail in taskDetails){
+                    taskDetail.task.let{ task->
+                        println("${taskDetail.permitId} -- ${task.id} -- ${task.name} -- ${task.assignee} -- ${task.processInstanceId} -- ${task.taskDefinitionKey} " )
+                    }
+                }
+            }
+        } ?: return
+
+        /*
+        Approve Inspection Route
+         */
+        //Approve Inspection report complete
+//        qualityAssuranceBpmn.qaDMApproveInspectionComplete(permitId).let {
+//            qualityAssuranceBpmn.fetchTaskByPermitId(permitId, qaDmAppPaymentProcessDefinitionKey)?.let { taskDetails ->
+//                println("Task details after approve inspection report complete")
+//                for (taskDetail in taskDetails){
+//                    taskDetail.task.let{ task->
+//                        println("${taskDetail.permitId} -- ${task.id} -- ${task.name} -- ${task.assignee} -- ${task.processInstanceId} -- ${task.taskDefinitionKey} " )
+//                    }
+//                }
+//            }
+//        } ?: return
+
+        /*
+        Generate Scheme of supervision route
+         */
+        //Generate Scheme of supervision complete
+        qualityAssuranceBpmn.qaDMGenerateSchemeofSupervisionComplete(permitId, assessorAssigneeId).let {
+            qualityAssuranceBpmn.fetchTaskByPermitId(permitId, qaDmAppPaymentProcessDefinitionKey)?.let { taskDetails ->
+                println("Task details after generate scheme of supervision complete")
+                for (taskDetail in taskDetails){
+                    taskDetail.task.let{ task->
+                        println("${taskDetail.permitId} -- ${task.id} -- ${task.name} -- ${task.assignee} -- ${task.processInstanceId} -- ${task.taskDefinitionKey} " )
+                    }
+                }
+            }
+        } ?: return
+        //Accept Scheme of supervision complete
     }
 
     @Test
