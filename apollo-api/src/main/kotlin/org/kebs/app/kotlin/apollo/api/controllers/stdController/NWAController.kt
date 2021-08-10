@@ -80,7 +80,6 @@ class NWAController(val nwaService: NWAService,
     fun uploadFiles(
         @RequestParam("nwaJustificationID") nwaJustificationID: Long,
         @RequestParam("docFile") docFile: List<MultipartFile>,
-        @RequestParam("DocDescription") DocDescription: String,
         model: Model
     ): CommonDaoServices.MessageSuccessFailDTO {
 
@@ -98,7 +97,7 @@ class NWAController(val nwaService: NWAService,
                 u,
                 "UPLOADS",
                 loggedInUser,
-                DocDescription
+                "NWA Justification"
             )
         }
 
@@ -149,12 +148,11 @@ class NWAController(val nwaService: NWAService,
     fun uploadDIFiles(
         @RequestParam("nwaJustificationID") nwaJustificationID: Long,
         @RequestParam("docFile") docFile: List<MultipartFile>,
-        @RequestParam("DocDescription") DocDescription: String,
         model: Model
     ): CommonDaoServices.MessageSuccessFailDTO {
 
         val loggedInUser = commonDaoServices.loggedInUserDetails()
-        val nwaJustification = nwadisdtJustificationRepository.findByIdOrNull(nwaJustificationID)?: throw Exception("NWA DISDT DOCUMENT ID DOES NOT EXIST")
+        val nwaJustification = nwadisdtJustificationRepository.findByIdOrNull(nwaJustificationID)?: throw Exception("NWA DI-SDT DOCUMENT ID DOES NOT EXIST")
 
         docFile.forEach { u ->
             val upload = DatKebsSdNwaUploadsEntity()
@@ -167,7 +165,7 @@ class NWAController(val nwaService: NWAService,
                 u,
                 "UPLOADS",
                 loggedInUser,
-                DocDescription
+                "NWA DI-SDT Justification"
             )
         }
 

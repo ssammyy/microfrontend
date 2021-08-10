@@ -7,14 +7,20 @@ import {HttpErrorResponse} from "@angular/common/http";
 import swal from "sweetalert2";
 import {StdNwaService} from "../../../core/store/data/std/std-nwa.service";
 import {NotificationService} from "../../../core/store/data/std/notification.service";
+import {selectUserInfo} from "../../../core/store";
+import {Store} from "@ngrx/store";
+
+declare const $: any;
 
 @Component({
   selector: 'app-nwa-justification-form',
   templateUrl: './nwa-justification-form.component.html',
   styleUrls: ['./nwa-justification-form.component.css']
 })
-export class NwaJustificationFormComponent implements OnInit {
 
+
+export class NwaJustificationFormComponent implements OnInit {
+    fullname = '';
   public itemId :string="1";
   public justification: string="Justification";
   public nwaDepartments !: KNWDepartment[];
@@ -26,6 +32,7 @@ export class NwaJustificationFormComponent implements OnInit {
   title = 'toaster-not';
 
   constructor(
+      private store$: Store<any>,
       private router: Router,
       private formBuilder: FormBuilder,
       private stdNwaService: StdNwaService,
@@ -38,12 +45,16 @@ export class NwaJustificationFormComponent implements OnInit {
     this.getKNWCommittee();
     this.knwtasks();
 
+      this.store$.select(selectUserInfo).pipe().subscribe((u) => {
+          return this.fullname = u.fullName;
+      });
+
     this.prepareJustificationFormGroup = this.formBuilder.group({
       meetingDate: ['', Validators.required],
       knw: ['', Validators.required],
       sl: ['', Validators.required],
+        requestedBy: [],
       department: ['', Validators.required],
-      requestedBy: ['', Validators.required],
       issuesAddressed: ['', Validators.required],
       knwAcceptanceDate: ['', Validators.required],
       knwSecretary: ['', Validators.required]
