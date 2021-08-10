@@ -15,16 +15,15 @@ import {Subject} from "rxjs";
 export class NwaJustificationTasksComponent implements OnInit , OnDestroy {
   dtOptions: DataTables.Settings = {};
   dtTrigger: Subject<any> = new Subject<any>();
-
-  p = 1;
-  p2 = 1;
   tasks: SPCSECTasks[] = [];
   public actionRequest: SPCSECTasks | undefined;
 
   constructor(
       private stdNwaService: StdNwaService,
       private SpinnerService: NgxSpinnerService,
-  ) { }
+
+  ) {
+  }
 
   ngOnInit(): void {
     this.getSPCSECTasks();
