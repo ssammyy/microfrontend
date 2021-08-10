@@ -41,7 +41,7 @@ class QaInvoiceCalculationDaoServices(
         permit: PermitApplicationsEntity,
         user: UsersEntity,
         manufactureTurnOver: BigDecimal,
-        productNumber: Int,
+        productNumber: Long,
         plantDetail: ManufacturePlantDetailsEntity
     ): QaInvoiceMasterDetailsEntity {
         val map = commonDaoServices.serviceMapDetails(appId)
@@ -60,68 +60,48 @@ class QaInvoiceCalculationDaoServices(
 
         KotlinLogging.logger { }.info { "selected Rate fixed cost = ${selectedRate.id} and  ${selectedRate.firmType}" }
 
-
-        val inspectionFee = selectedRate.firmFee ?: BigDecimal.ZERO.multiply(numberOfYears)
-        val countBeforeDiscountFee = selectedRate.countBeforeFee ?: BigDecimal.ZERO.multiply(numberOfYears)
-        val extraProducts =
-            if (productNumber - (selectedRate.countBeforeFree ?: 0) > 0) productNumber - (selectedRate.countBeforeFree
-                ?: 0) else 0
-        val feeAfterDiscount =
-            selectedRate.extraProductFee?.multiply(BigDecimal(extraProducts))?.multiply(numberOfYears)
-
-        var stgAmount = BigDecimal.ZERO
-        when {
-            plantDetail.paidDate == null && plantDetail.endingDate == null && plantDetail.inspectionFeeStatus == null -> {
-                stgAmount = inspectionFee ?: BigDecimal.ZERO.plus(countBeforeDiscountFee ?: BigDecimal.ZERO)
-                    .plus(feeAfterDiscount ?: BigDecimal.ZERO)
-                with(plantDetail) {
-                    inspectionFeeStatus = 1
-                    paidDate = commonDaoServices.getCurrentDate()
-                    endingDate = commonDaoServices.addYearsToCurrentDate(
-                        permitType.numberOfYears ?: throw Exception("INVALID NUMBER OF YEARS")
-                    )
-                }
-                qaDaoServices.updatePlantDetails(map, user, plantDetail)
-            }
-            commonDaoServices.getCurrentDate() > plantDetail.paidDate && commonDaoServices.getCurrentDate() < plantDetail.endingDate && plantDetail.inspectionFeeStatus == 1 -> {
-                stgAmount = countBeforeDiscountFee ?: BigDecimal.ZERO.plus(feeAfterDiscount ?: BigDecimal.ZERO)
-            }
-        }
-
-
         var invoiceMaster = generateInvoiceMasterDetail(permit, map, user)
 
-        var invoiceDetails = QaInvoiceDetailsEntity().apply {
-            invoiceMasterId = invoiceMaster.id
-            umo = "PER"
-            generatedDate = Timestamp.from(Instant.now())
-            itemDescName = selectedRate.invoiceDesc
-            itemQuantity = BigDecimal.ZERO
-            itemAmount = stgAmount
-            createdOn = Timestamp.from(Instant.now())
-            createdBy = commonDaoServices.concatenateName(user)
+        when {
+            applicationMapProperties.mapQASmarkLargeFirmsTurnOverId == selectedRate.id -> {
+                calculatePaymentSMarkLargeFirm(permit, invoiceMaster, map, user, plantDetail, selectedRate)
+            }
+            applicationMapProperties.mapQASmarkMediumTurnOverId == selectedRate.id -> {
+                calculatePaymentSMarkMediumOrSmallFirm(
+                    permit,
+                    invoiceMaster,
+                    map,
+                    user,
+                    plantDetail,
+                    selectedRate,
+                    productNumber
+                )
+            }
+            applicationMapProperties.mapQASmarkJuakaliTurnOverId == selectedRate.id -> {
+                calculatePaymentSMarkMediumOrSmallFirm(
+                    permit,
+                    invoiceMaster,
+                    map,
+                    user,
+                    plantDetail,
+                    selectedRate,
+                    productNumber
+                )
+            }
         }
 
-        invoiceDetails = qaInvoiceDetailsRepo.save(invoiceDetails)
+        invoiceMaster = calculateTotalInvoiceAmountToPay(invoiceMaster, user)
 
-        with(invoiceMaster) {
-            description = invoiceDetails.itemDescName
-            paymentStatus = 0
-            taxAmount = invoiceDetails.itemAmount ?: BigDecimal.ZERO.multiply(selectedRate.taxRate)
-            subTotalBeforeTax = invoiceDetails.itemAmount
-            totalAmount = invoiceDetails.itemAmount ?: BigDecimal.ZERO.plus(taxAmount ?: BigDecimal.ZERO)
-            modifiedOn = Timestamp.from(Instant.now())
-            modifiedBy = commonDaoServices.concatenateName(user)
-        }
-
-        invoiceMaster = qaInvoiceMasterDetailsRepo.save(invoiceMaster)
 
         KotlinLogging.logger { }.info { "invoice Master total Amount = ${invoiceMaster.totalAmount}" }
 
         return invoiceMaster
     }
 
-    fun calculateTotalInvoiceAmountToPay(invoiceMaster: QaInvoiceMasterDetailsEntity, user: UsersEntity) {
+    fun calculateTotalInvoiceAmountToPay(
+        invoiceMaster: QaInvoiceMasterDetailsEntity,
+        user: UsersEntity
+    ): QaInvoiceMasterDetailsEntity {
         var totalAmountPayable: BigDecimal = BigDecimal.ZERO
         qaInvoiceDetailsRepo.findByStatusAndInvoiceMasterId(1, invoiceMaster.id)
             ?.let { invoiceDetailsList ->
@@ -143,7 +123,7 @@ class QaInvoiceCalculationDaoServices(
             modifiedBy = commonDaoServices.concatenateName(user)
         }
 
-        qaInvoiceMasterDetailsRepo.save(invoiceMaster)
+        return qaInvoiceMasterDetailsRepo.save(invoiceMaster)
     }
 
     fun generateInvoiceMasterDetail(

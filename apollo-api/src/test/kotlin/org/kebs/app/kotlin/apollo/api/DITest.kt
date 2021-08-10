@@ -671,7 +671,7 @@ class DITest {
                     demandNote.demandNoteNumber?.let {
                         val batchInvoiceDetail = invoiceDaoService.createBatchInvoiceDetails(loggedInUser, it)
                         itemDetails.cdDocId?.cdType?.let { it1 ->
-                            destinationInspectionDaoServices.findCdTypeDetails(it1).demandNotePrefix?.let { myPrefix ->
+                            destinationInspectionDaoServices.findCdTypeDetails(it1.id).demandNotePrefix?.let { myPrefix ->
                                 val updateBatchInvoiceDetail = invoiceDaoService.addInvoiceDetailsToBatchInvoice(
                                     demandNote,
                                     applicationMapProperties.mapInvoiceTransactionsForDemandNote,

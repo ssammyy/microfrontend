@@ -984,7 +984,7 @@ class QADaoServices(
         invoiceMasterDetailsRepo.findByPermitRefNumberAndUserIdAndPermitId(permitRefNumber, userId, permitID)?.let {
             return it
         }
-            ?: throw ExpectedDataNotFound("No Invoice found with the following [PERMIT REF NO =${permitRefNumber}  and LoggedIn User]")
+            ?: throw ExpectedDataNotFound("No Invoice found with the following PERMIT REF NO =${permitRefNumber}")
     }
 
     fun findPermitInvoiceByPermitID(
