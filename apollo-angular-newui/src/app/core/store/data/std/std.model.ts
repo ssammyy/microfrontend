@@ -94,6 +94,7 @@ export interface NWAJustification{
     knwCommittee: string;
     departmentName: string;
 
+
 }
 
 export interface KNWDepartment{
@@ -157,6 +158,7 @@ export interface SPCTaskData {
     submissionDate: string;
     knwCommittee: string;
     departmentName: string;
+    knwSecretary: string;
 }
 
 export interface NWADiSdtJustification{
