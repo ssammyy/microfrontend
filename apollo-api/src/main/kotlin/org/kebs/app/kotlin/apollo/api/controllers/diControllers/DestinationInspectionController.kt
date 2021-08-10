@@ -5,13 +5,15 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.DestinationInspectionB
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.*
 import org.kebs.app.kotlin.apollo.api.ports.provided.emailDTO.MvInspectionNotificationDTO
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
+import org.kebs.app.kotlin.apollo.common.exceptions.InvalidValueException
+import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
 import org.kebs.app.kotlin.apollo.common.utils.generateRandomText
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
-import org.kebs.app.kotlin.apollo.store.model.CdSampleCollectionEntity
-import org.kebs.app.kotlin.apollo.store.model.CdSampleSubmissionItemsEntity
-import org.kebs.app.kotlin.apollo.store.model.ServiceRequestsEntity
+import org.kebs.app.kotlin.apollo.store.model.*
 import org.kebs.app.kotlin.apollo.store.model.di.*
 import org.kebs.app.kotlin.apollo.store.model.qa.QaSampleSubmissionEntity
+import org.kebs.app.kotlin.apollo.store.repo.ICocItemsRepository
+import org.kebs.app.kotlin.apollo.store.repo.ICocsRepository
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Controller
 import org.springframework.transaction.annotation.Propagation
@@ -22,6 +24,11 @@ import org.springframework.web.bind.annotation.*
 import org.springframework.web.bind.support.SessionStatus
 import org.springframework.web.multipart.MultipartFile
 import org.springframework.web.servlet.mvc.support.RedirectAttributes
+import java.io.File
+import java.io.FileOutputStream
+import java.io.FileReader
+import java.sql.Timestamp
+import java.time.Instant
 import javax.servlet.http.HttpServletResponse
 
 
@@ -34,8 +41,12 @@ class DestinationInspectionController(
     private val riskProfileDaoService: RiskProfileDaoService,
     private val commonDaoServices: CommonDaoServices,
     private val diBpmn: DestinationInspectionBpmn,
-    private val reportsDaoService: ReportsDaoService
-) {
+    private val reportsDaoService: ReportsDaoService,
+    private val service: DaoService,
+    private val cocsRepository: ICocsRepository,
+    private val cocItemsRepository: ICocItemsRepository,
+
+    ) {
 
     final val appId = applicationMapProperties.mapImportInspection
 
@@ -43,6 +54,176 @@ class DestinationInspectionController(
 //    private val motorVehicleInspectionDetailsPage = "redirect:/api/di/inspection/motor-vehicle-inspection-details?itemId"
     private val motorVehicleInspectionDetailsPage = "redirect:/api/di/motor-vehicle-inspection-details?itemId"
     private val cdItemViewPageDetails = "redirect:/api/di/cd-item-details?cdItemUuid"
+
+    @PreAuthorize("hasAuthority('DI_OFFICER_CHARGE_MODIFY') or hasAuthority('DI_INSPECTION_OFFICER_MODIFY')")
+    @PostMapping("upload/coc")
+    fun uploadCOCFile(
+        @RequestParam("doc_file") docFile: MultipartFile,
+        @ModelAttribute upLoads: DiUploadsEntity,
+        model: Model,
+        redirectAttributes: RedirectAttributes,
+    ): String {
+        commonDaoServices.serviceMapDetails(appId)
+            .let { map ->
+                commonDaoServices.loggedInUserDetails()
+                    .let { loggedInUser ->
+                        if (docFile.isEmpty) {
+                            redirectAttributes.addFlashAttribute("message", "Please select a file to upload.")
+                            /**
+                             * Go back to the page we were on
+                             */
+                            throw  NullValueNotAllowedException("Upload request detected with an empty file")
+                        }
+
+                        try {
+
+                            saveUploadedCsvFileAndSendToKeSWS(docFile, upLoads, loggedInUser, map)
+
+
+                        } catch (e: Exception) {
+
+                        }
+
+                    }
+            }
+
+
+        TODO()
+    }
+
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun saveUploadedCsvFileAndSendToKeSWS(
+        docFile: MultipartFile,
+        upLoads: DiUploadsEntity,
+        loggedInUser: UsersEntity,
+        map: ServiceMapsEntity
+    ) {
+        if (docFile.contentType != "text/csv") {
+            throw InvalidValueException("Incorrect file type received, try again later")
+        }
+
+        daoServices.saveUploads(
+            upLoads,
+            docFile,
+            "File upload",
+            loggedInUser,
+            map,
+            null,
+            null
+        )
+        val file = File(docFile.originalFilename ?: "UploadedFile")
+        file.createNewFile()
+        val fos = FileOutputStream(file)
+        fos.use {
+            it.write(docFile.bytes)
+            it.close()
+        }
+
+        val cocs = service.readCocFileFromController(',', FileReader(file))
+        val uniqueCoc = cocs.map { it.cocNumber }.distinct()
+        uniqueCoc.forEach {
+            it
+                ?.let { u ->
+                    val coc = cocs.firstOrNull { it.cocNumber == u }
+                    cocsRepository.findByUcrNumber(
+                        coc?.ucrNumber
+                            ?: throw InvalidValueException("Record with empty UCR Number not allowed")
+                    )
+                        ?.let {
+                            throw InvalidValueException("CoC with UCR number already exists")
+                        }
+                        ?: run {
+                            var entity = CocsEntity().apply {
+                                cocNumber = coc.cocNumber
+                                idfNumber = coc.idfNumber
+                                rfiNumber = coc.rfiNumber
+                                ucrNumber = coc.ucrNumber
+                                rfcDate = coc.rfcDate
+                                cocIssueDate = coc.cocIssueDate
+                                clean = coc.clean
+                                cocRemarks = coc.cocRemarks
+                                issuingOffice = coc.issuingOffice
+                                importerName = coc.importerName
+                                importerPin = coc.importerPin
+                                importerAddress1 = coc.importerAddress1
+                                importerAddress2 = coc.importerAddress2
+                                importerCity = coc.importerCity
+                                importerCountry = coc.importerCountry
+                                importerZipCode = coc.importerZipCode
+                                importerTelephoneNumber = coc.importerTelephoneNumber
+                                importerFaxNumber = coc.importerFaxNumber
+                                importerEmail = coc.importerEmail
+                                exporterName = coc.exporterName ?: "UNDEFINED"
+                                exporterPin = coc.exporterPin ?: "UNDEFINED"
+                                exporterAddress1 = coc.exporterAddress1 ?: "UNDEFINED"
+                                exporterAddress2 = coc.exporterAddress2 ?: "UNDEFINED"
+                                exporterCity = coc.exporterCity ?: "UNDEFINED"
+                                exporterCountry = coc.exporterCountry ?: "UNDEFINED"
+                                exporterZipCode = coc.exporterZipCode ?: "UNDEFINED"
+                                exporterTelephoneNumber = coc.exporterTelephoneNumber ?: "UNDEFINED"
+                                exporterFaxNumber = coc.exporterFaxNumber ?: "UNDEFINED"
+                                exporterEmail = coc.exporterEmail ?: "UNDEFINED"
+                                placeOfInspection = coc.placeOfInspection ?: "UNDEFINED"
+                                dateOfInspection =
+                                    coc.dateOfInspection ?: Timestamp.from(Instant.now())
+                                portOfDestination = coc.portOfDestination ?: "UNDEFINED"
+                                shipmentMode = coc.shipmentMode ?: "UNDEFINED"
+                                countryOfSupply = coc.countryOfSupply ?: "UNDEFINED"
+                                finalInvoiceFobValue = coc.finalInvoiceFobValue
+                                finalInvoiceExchangeRate = coc.finalInvoiceExchangeRate
+                                finalInvoiceCurrency = coc.finalInvoiceCurrency ?: "UNDEFINED"
+                                finalInvoiceDate =
+                                    coc.finalInvoiceDate ?: Timestamp.from(Instant.now())
+                                shipmentPartialNumber = coc.shipmentPartialNumber
+                                shipmentSealNumbers = coc.shipmentSealNumbers ?: "UNDEFINED"
+                                route = coc.route ?: "UNDEFINED"
+                                productCategory = coc.productCategory ?: "UNDEFINED"
+                                productCategory = coc.productCategory ?: "UNDEFINED"
+                                status = 1L
+                                createdBy = loggedInUser.userName
+                                createdOn = Timestamp.from(Instant.now())
+                                partner = loggedInUser.userName
+                                pvocPartner = loggedInUser.id
+
+
+                            }
+                            entity = cocsRepository.save(entity)
+                            cocs.filter { dto -> dto.cocNumber == u }.forEach { cocItems ->
+                                var itemEntity = CocItemsEntity().apply {
+                                    cocId = entity.id
+                                    shipmentLineNumber = cocItems.shipmentLineNumber
+                                    shipmentLineHscode = cocItems.shipmentLineHscode ?: "UNDEFINED"
+                                    shipmentLineQuantity = cocItems.shipmentLineQuantity
+                                    shipmentLineUnitofMeasure = cocItems.shipmentLineUnitofMeasure ?: "UNDEFINED"
+                                    shipmentLineDescription = cocItems.shipmentLineDescription ?: "UNDEFINED"
+                                    shipmentLineVin = cocItems.shipmentLineVin ?: "UNDEFINED"
+                                    shipmentLineStickerNumber = cocItems.shipmentLineStickerNumber ?: "UNDEFINED"
+                                    shipmentLineIcs = cocItems.shipmentLineIcs ?: "UNDEFINED"
+                                    shipmentLineStandardsReference =
+                                        cocItems.shipmentLineStandardsReference ?: "UNDEFINED"
+                                    shipmentLineRegistration = cocItems.shipmentLineRegistration ?: "UNDEFINED"
+                                    shipmentLineRegistration = cocItems.shipmentLineRegistration ?: "UNDEFINED"
+                                    status = 1
+                                    createdBy = loggedInUser.userName
+                                    createdOn = Timestamp.from(Instant.now())
+                                    cocNumber = entity.cocNumber
+                                    shipmentLineBrandName = "UNDEFINED"
+
+
+                                }
+                                cocItemsRepository.save(itemEntity)
+
+                                service.submitCocToKeSWS(entity)
+
+                            }
+
+
+                        }
+
+                }
+                ?: KotlinLogging.logger { }.info("Empty value")
+        }
+    }
 
 
     @PreAuthorize("hasAuthority('DI_OFFICER_CHARGE_MODIFY') or hasAuthority('DI_INSPECTION_OFFICER_MODIFY')")
@@ -781,7 +962,7 @@ class DestinationInspectionController(
                         KotlinLogging.logger { }.info { "generalInspectionChecklistId = $generalInspectionChecklistId" }
 
                         daoServices.findInspectionGeneralById(generalInspectionChecklistId)
-                            ?.let {  cdInspectionGeneralEntity ->
+                            ?.let { cdInspectionGeneralEntity ->
                                 cdInspectionGeneralEntity.inspectionReportFile = docFile.bytes
                                 cdInspectionGeneralEntity.complianceRecommendations = complianceRecommendations
                                 cdInspectionGeneralEntity.complianceStatus = complianceStatus

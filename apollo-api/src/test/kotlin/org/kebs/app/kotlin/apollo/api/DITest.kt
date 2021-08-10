@@ -636,7 +636,7 @@ class DITest {
         val permit = qaDaoServices.findPermitBYID(2)
         val permitType = qaDaoServices.findPermitType(2)
         if (loggedInUser != null) {
-            qaDaoServices.permitInvoiceCalculation(map, loggedInUser,permit, permitType)
+            qaDaoServices.permitInvoiceCalculation(map, loggedInUser, permit)
         }
 //        schedulerImpl.updateLabResultsWithDetails()
     }

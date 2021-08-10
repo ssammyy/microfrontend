@@ -758,21 +758,21 @@
 
 <div [ngSwitch]="step">
     <div *ngSwitchCase="0">
-        <form (ngSubmit)="onClickBrsLookup()" [formGroup]="stepZeroForm" action="" enctype="multipart/form-data"
-              class="form" method="post">
+        <form (ngSubmit)="onClickBrsLookup()" [formGroup]="stepZeroForm" action="" class="form"
+              enctype="multipart/form-data" method="post">
             <h2 class="welcome">
                 Enter details below to validate company
             </h2>
             <div class="form-body">
 
-                <div style="margin-top: 3%" class="form-group">
-                    <label for="compRegistrationNumber" class="input-placeholder"><b>Company Registration
+                <div class="form-group" style="margin-top: 3%">
+                    <label class="input-placeholder" for="compRegistrationNumber"><b>Company Registration
                         Number</b></label>
                     <input [ngClass]="{ 'is-invalid': submitted && formStepZeroForm.registrationNumber.errors }"
                            aria-describedby="inputGroup-sizing-sm" aria-label="Small"
                            class="form-control two-column-input" formControlName="registrationNumber"
-                           id="compRegistrationNumber" type="text"
-                           name="registrationNumber" placeholder="Company registration number" style="width: 60%">
+                           id="compRegistrationNumber" name="registrationNumber"
+                           placeholder="Company registration number" style="width: 60%" type="text">
                     <div *ngIf="submitted && formStepZeroForm.registrationNumber.errors" class="invalid-feedback">
                         <div *ngIf="formStepZeroForm.registrationNumber.errors.required">Company registration number is
                             required
@@ -780,13 +780,13 @@
                     </div>
                 </div>
 
-                <div style="margin-top: 3%" class="form-group">
-                    <label for="compDirectorIdNumber" class="input-placeholder"><b>Director's Id Number</b></label>
+                <div class="form-group" style="margin-top: 3%">
+                    <label class="input-placeholder" for="compDirectorIdNumber"><b>Director's Id Number</b></label>
                     <input [ngClass]="{ 'is-invalid': submitted && formStepZeroForm.directorIdNumber.errors }"
                            aria-describedby="inputGroup-sizing-sm" aria-label="Small"
                            class="form-control two-column-input" formControlName="directorIdNumber"
-                           id="compDirectorIdNumber" type="text"
-                           name="directorIdNumber" placeholder="The id number of one director" style="width: 60%">
+                           id="compDirectorIdNumber" name="directorIdNumber"
+                           placeholder="The id number of one director" style="width: 60%" type="text">
                     <div *ngIf="submitted && formStepZeroForm.directorIdNumber.errors" class="invalid-feedback">
                         <div *ngIf="formStepZeroForm.directorIdNumber.errors.required">The id number of one director is
                             required
@@ -796,12 +796,14 @@
                 </div>
                 <br>
                 <div>
-                    <button type="submit" class="login-button">VALIDATE</button>
+                    <button class="login-button" type="submit">VALIDATE</button>
                 </div>
             </div>
 
         </form>
-
+        <span class="input-placeholder">
+        Have an account? <a class="reset-credentials" href="#" routerLink="/login">Login</a>
+      </span>
     </div>
 
     <div *ngSwitchCase="1">
@@ -900,9 +902,9 @@
                                        aria-describedby="inputGroup-sizing-sm" aria-label="Small"
                                        class="form-control two-column-input" formControlName="yearlyTurnover"
                                        id="yearlyTurnover"
-                                       name="yearlyTurnover" placeholder="The yearly Turnover" required="required"
-                                       type="number"
-                                       oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(\..*)\./g, '$1');"/>
+                                       name="yearlyTurnover" oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(\..*)\./g, '$1');" placeholder="The yearly Turnover"
+                                       required="required"
+                                       type="number"/>
 
 
                                 <div *ngIf="submitted && formStepOneForm.yearlyTurnover.errors"
@@ -922,8 +924,8 @@
                                 </label>
                                 <br>
                                 <ng-container *ngIf="businessLines$ | async as apps">
-                                    <select [ngClass]="{ 'is-invalid': submitted && formStepOneForm.businessLines.errors }"
-                                            (ngModelChange)="updateSelectedBusinessLine()"
+                                    <select (ngModelChange)="updateSelectedBusinessLine()"
+                                            [ngClass]="{ 'is-invalid': submitted && formStepOneForm.businessLines.errors }"
                                             formControlName="businessLines" id="businessLines"
                                             name="businessLines" required="required" style="width: 100%; height: 75%">
                                         <option ngValue="null" selected>Please select</option>
@@ -952,8 +954,8 @@
                                 <br>
                                 <ng-container
                                         *ngIf="businessNatures$ | async as apps">
-                                    <select [ngClass]="{ 'is-invalid': submitted && formStepOneForm.businessNatures.errors }"
-                                            (ngModelChange)="updateSelectedBusinessNatures()"
+                                    <select (ngModelChange)="updateSelectedBusinessNatures()"
+                                            [ngClass]="{ 'is-invalid': submitted && formStepOneForm.businessNatures.errors }"
                                             formControlName="businessNatures" id="businessNatures"
                                             name="businessNatures" required="required" style="width: 48%; height: 100%">
                                         <option ngValue="null" selected>Please select</option>
@@ -1004,7 +1006,7 @@
                     <div class="row input-row">
 
                         <div class="col">
-                            <div style="margin-top: 3%" class="form-group">
+                            <div class="form-group" style="margin-top: 3%">
                                 <label class="input-placeholder"><b>Postal Address</b></label>
                                 <input [ngClass]="{ 'is-invalid': submitted && formStepTwoForm.postalAddress.errors }"
                                        aria-describedby="inputGroup-sizing-sm" aria-label="Small"
@@ -1021,7 +1023,7 @@
                         </div>
 
                         <div class="col">
-                            <div style="margin-top: 3%" class="form-group">
+                            <div class="form-group" style="margin-top: 3%">
                                 <label class="input-placeholder"><b>Physical Address</b></label>
                                 <input [ngClass]="{ 'is-invalid': submitted && formStepTwoForm.physicalAddress.errors }"
                                        aria-describedby="inputGroup-sizing-sm" aria-label="Small"
@@ -1043,7 +1045,7 @@
                     <div class="row input-row">
 
                         <div class="col">
-                            <div style="margin-top: 3%" class="form-group">
+                            <div class="form-group" style="margin-top: 3%">
                                 <label class="input-placeholder"><b>Plot Number</b></label>
                                 <input [ngClass]="{ 'is-invalid': submitted && formStepTwoForm.plotNumber.errors }"
                                        aria-describedby="inputGroup-sizing-sm" aria-label="Small"
@@ -1058,7 +1060,7 @@
                             </div>
                         </div>
                         <div class="col">
-                            <div style="margin-top: 3%" class="form-group">
+                            <div class="form-group" style="margin-top: 3%">
                                 <label class="input-placeholder"><b>Company Email</b></label>
                                 <input [ngClass]="{ 'is-invalid': submitted && formStepTwoForm.companyEmail.errors }"
                                        aria-describedby="inputGroup-sizing-sm" aria-label="Small"
@@ -1079,7 +1081,7 @@
                     <div class="row input-row">
 
                         <div class="col">
-                            <div style="margin-top: 3%" class="form-group">
+                            <div class="form-group" style="margin-top: 3%">
                                 <label class="input-placeholder"><b>Company Phone</b></label>
                                 <input [ngClass]="{ 'is-invalid': submitted && formStepTwoForm.companyTelephone.errors }"
                                        aria-describedby="inputGroup-sizing-sm" aria-label="Small"
@@ -1125,7 +1127,7 @@
                 </div>
                 <div class="row input-row">
                     <div class="col">
-                        <div style="margin-top: 3%" class="form-group">
+                        <div class="form-group" style="margin-top: 3%">
                             <label class="input-placeholder"><b>Building Name</b></label>
                             <input [ngClass]="{ 'is-invalid': submitted && formStepThreeForm.buildingName.errors }"
                                    aria-describedby="inputGroup-sizing-sm" aria-label="Small"
@@ -1154,12 +1156,12 @@
                 </div>
                 <div class="row input-row">
                     <div class="col">
-                        <div style="margin-top: 3%" class="form-group">
+                        <div class="form-group" style="margin-top: 3%">
                             <label class="input-placeholder"><b>Region</b></label>
                             <br>
                             <ng-container *ngIf="region$ | async as apps">
-                                <select [ngClass]="{ 'is-invalid': submitted && formStepThreeForm.region.errors }"
-                                        (ngModelChange)="updateSelectedRegion()"
+                                <select (ngModelChange)="updateSelectedRegion()"
+                                        [ngClass]="{ 'is-invalid': submitted && formStepThreeForm.region.errors }"
                                         formControlName="region" id="region"
                                         name="region" required="required" style="width: 100%; height: 60%">
                                     <option ngValue="null" selected>Please select</option>
@@ -1173,12 +1175,12 @@
                         </div>
                     </div>
                     <div class="col">
-                        <div style="margin-top: 3%" class="form-group">
+                        <div class="form-group" style="margin-top: 3%">
                             <label class="input-placeholder"><b>County</b></label>
                             <br>
                             <ng-container *ngIf="county$ | async as apps">
-                                <select [ngClass]="{ 'is-invalid': submitted && formStepThreeForm.county.errors }"
-                                        (ngModelChange)="updateSelectedCounty()"
+                                <select (ngModelChange)="updateSelectedCounty()"
+                                        [ngClass]="{ 'is-invalid': submitted && formStepThreeForm.county.errors }"
                                         formControlName="county" id="county"
                                         name="county" required="required" style="width: 100%; height: 60%">
                                     <option ngValue="null" selected>Please select</option>
@@ -1202,8 +1204,8 @@
                         </label>
                         <br>
                         <ng-container *ngIf="town$ | async as apps">
-                            <select [ngClass]="{ 'is-invalid': submitted && formStepThreeForm.town.errors }"
-                                    (ngModelChange)="updateSelectedTown()"
+                            <select (ngModelChange)="updateSelectedTown()"
+                                    [ngClass]="{ 'is-invalid': submitted && formStepThreeForm.town.errors }"
                                     formControlName="town" id="town"
                                     name="town" required="required" style="width: 100%; height: 60%">
                                 <option ngValue="null" selected>Please select</option>
@@ -1224,7 +1226,7 @@
                         <button (click)="onClickPrevious()" class="login-button" type="button">PREV</button>
                     </div>
                     <div class="col">
-                        <button class="login-button" [disabled]="!stepThreeForm.valid" type="submit">NEXT</button>
+                        <button [disabled]="!stepThreeForm.valid" class="login-button" type="submit">NEXT</button>
                     </div>
                 </div>
 
@@ -1391,7 +1393,7 @@
                         <button (click)="onClickPrevious()" class="login-button" type="button">PREV</button>
                     </div>
                     <div class="col">
-                        <button class="login-button" [disabled]="!stepFourForm.valid" type="submit">NEXT</button>
+                        <button [disabled]="!stepFourForm.valid" class="login-button" type="submit">NEXT</button>
                     </div>
 
                 </div>
@@ -1482,7 +1484,4 @@
 </div>
 
 <br>
-<span class="input-placeholder">
-        Have an account? <a class="reset-credentials" href="#" routerLink="/login">Login</a>
-      </span>
 

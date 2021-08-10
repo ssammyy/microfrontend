@@ -88,14 +88,31 @@ data class PermitInvoiceDto(
     var brandName: String? = null,
     var totalAmount: BigDecimal? = null,
     var paidStatus: Int? = null,
-    var permitRefNumber: String? = null
+    var permitRefNumber: String? = null,
+    var batchID: Long? = null
+)
+
+data class SSFPDFListDetailsDto(
+    var pdfSavedId: Long? = null,
+    var pdfName: String? = null,
+    var sffId: Long? = null,
+    var complianceRemarks: String? = null,
+    var complianceStatus: Boolean? = null,
+)
+
+data class PermitAllRemarksDetailsDto(
+    var hofQamCompleteness: RemarksAndStatusDto? = null,
+    var pcmApproval: RemarksAndStatusDto? = null,
+    var pscMemberApproval: RemarksAndStatusDto? = null,
+    var pcmReviewApproval: RemarksAndStatusDto? = null,
+    var justificationReport: RemarksAndStatusDto? = null,
 )
 
 data class NewBatchInvoiceDto(
     var batchID: Long = -1L,
     var plantID: Long? = null,
     var permitRefNumber: String? = null,
-    var permitInvoicesID: Array<String>? = null
+    var permitInvoicesID: Array<Long>? = null
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -147,6 +164,7 @@ data class STA1Dto(
     var sectionId: Long? = null,
     var permitForeignStatus: Int? = null,
     var attachedPlant: Long? = null,
+    var createFmark: Int? = null,
 )
 
 data class STA10ProductsManufactureDto(
@@ -180,14 +198,28 @@ data class STA10MachineryAndPlantDto(
     var countryOfOrigin: String? = null,
 )
 
+data class RemarksAndStatusDto(
+    var remarksStatus: Boolean? = null,
+    var remarksValue: String? = null,
+)
+
+data class InvoiceDetailsDto(
+    var invoiceMasterId: Long? = null,
+    var invoiceRef: String? = null,
+    var description: String? = null,
+    var taxAmount: BigDecimal? = null,
+    var subTotalBeforeTax: BigDecimal? = null,
+    var totalAmount: BigDecimal? = null,
+)
+
 data class PermitUploads(
-    var permitID: Long?= null,
+    var permitID: Long? = null,
     var manufactureNonStatus: Int,
-    var ordinaryStatus: Int?= null,
-    var inspectionReportStatus: Int?= null,
-    var sta10Status: Int?= null,
-    var sscUploadStatus: Int?= null,
-    var scfStatus: Int?= null,
+    var ordinaryStatus: Int? = null,
+    var inspectionReportStatus: Int? = null,
+    var sta10Status: Int? = null,
+    var sscUploadStatus: Int? = null,
+    var scfStatus: Int? = null,
     var ssfStatus: Int?= null,
     var cocStatus: Int?= null,
     var assessmentReportStatus: Int?= null,
@@ -271,6 +303,44 @@ data class STA3Dto(
     var indicateStageManufacture: String? = null
 )
 
+data class FilesListDto(
+    var id: Long? = null,
+    var name: String? = null,
+    var fileType: String? = null,
+    var documentType: String? = null,
+    var versionNumber: Long? = null,
+    var document: ByteArray? = null
+) {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as FilesListDto
+
+        if (id != other.id) return false
+        if (name != other.name) return false
+        if (fileType != other.fileType) return false
+        if (documentType != other.documentType) return false
+        if (versionNumber != other.versionNumber) return false
+        if (document != null) {
+            if (other.document == null) return false
+            if (!document.contentEquals(other.document)) return false
+        } else if (other.document != null) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = id?.hashCode() ?: 0
+        result = 31 * result + (name?.hashCode() ?: 0)
+        result = 31 * result + (fileType?.hashCode() ?: 0)
+        result = 31 * result + (documentType?.hashCode() ?: 0)
+        result = 31 * result + (versionNumber?.hashCode() ?: 0)
+        result = 31 * result + (document?.contentHashCode() ?: 0)
+        return result
+    }
+}
+
 data class PermitEntityDto(
     var id: Long? = null,
     var firmName: String? = null,
@@ -294,6 +364,7 @@ data class PermitEntityDto(
     var companyId: Long? = null,
     var permitType: Long? = null,
     var processStatusID: Long? = null,
+    var versionNumber: Long? = null,
 )
 
 data class PermitDetailsDto(
@@ -355,9 +426,16 @@ data class PermitDetailsDto(
 
 data class AllPermitDetailsDto(
     var permitDetails: PermitDetailsDto? = null,
+    var remarksDetails: PermitAllRemarksDetailsDto? = null,
+    var invoiceDetails: InvoiceDetailsDto? = null,
 //    var standardList: List<UserEntityDto>? = null,
     var officerList: List<UserEntityDto>? = null,
     var oldVersionList: List<PermitEntityDto>? = null,
+    var ordinaryFilesList: List<FilesListDto>? = null,
+    var sta3FilesList: List<FilesListDto>? = null,
+    var sta10FilesList: List<FilesListDto>? = null,
+    var labResultsList: List<SSFPDFListDetailsDto>? = null,
+    var schemeOfSuperVision: FilesListDto? = null,
     var batchID: Long? = null
 )
 

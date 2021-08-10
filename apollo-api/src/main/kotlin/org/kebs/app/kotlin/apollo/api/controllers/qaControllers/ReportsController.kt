@@ -7,6 +7,7 @@ import org.kebs.app.kotlin.apollo.common.dto.qa.PermitDetailsDto
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.InvoiceEntity
+import org.kebs.app.kotlin.apollo.store.model.qa.QaInvoiceMasterDetailsEntity
 import org.kebs.app.kotlin.apollo.store.repo.ISampleStandardsRepository
 import org.springframework.core.io.ResourceLoader
 import org.springframework.web.bind.annotation.RequestMapping
@@ -65,7 +66,8 @@ class ReportsController(
     */
     //Todo CHANGE TO A POST
 
-    @RequestMapping(value = ["proforma-invoice-with-Item"], method = [RequestMethod.GET])
+
+    @RequestMapping(value = ["/proforma-invoice-with-Item"], method = [RequestMethod.GET])
     @Throws(Exception::class)
     fun proformaInvoiceWithMoreItems(
         response: HttpServletResponse,
@@ -132,7 +134,7 @@ class ReportsController(
 //        )
 //    }
 
-    fun createInvoicePdf(ID: Long): Pair<HashMap<String, Any>, List<InvoiceEntity>> {
+    fun createInvoicePdf(ID: Long): Pair<HashMap<String, Any>, List<QaInvoiceMasterDetailsEntity>> {
         var map = hashMapOf<String, Any>()
         //        val cdItemDetailsEntity = daoServices.findItemWithItemID(id)
         val batchInvoice = qaDaoServices.findBatchInvoicesWithID(ID)

@@ -7,9 +7,9 @@ import io.ktor.client.statement.*
 import org.jasypt.encryption.StringEncryptor
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DaoService
-import org.kebs.app.kotlin.apollo.api.ports.provided.mpesa.requests.LimsLoginRequest
 import org.kebs.app.kotlin.apollo.api.ports.provided.mpesa.requests.MpesaPushRequest
 import org.kebs.app.kotlin.apollo.api.ports.provided.mpesa.requests.MpesaTransactionsRequest
+import org.kebs.app.kotlin.apollo.api.ports.provided.mpesa.requests.RequestHeader
 import org.kebs.app.kotlin.apollo.api.ports.provided.mpesa.response.MpesaPushResponse
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
@@ -184,7 +184,7 @@ class MPesaService(
         transactionRef: String,
         config: IntegrationConfigurationEntity
     ): IntegrationConfigurationEntity {
-        val loginRequest = LimsLoginRequest()
+        val loginRequest = RequestHeader()
         loginRequest.username = jasyptStringEncryptor.decrypt(config.username)
         loginRequest.password = jasyptStringEncryptor.decrypt(config.password)
 

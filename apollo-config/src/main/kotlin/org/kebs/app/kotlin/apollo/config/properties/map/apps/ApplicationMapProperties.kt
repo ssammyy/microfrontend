@@ -274,6 +274,9 @@ class ApplicationMapProperties {
     @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.status.pending_recommendation}")
     val mapQaStatusPRecommendation: Long = 0L
 
+    @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.status.deferred_recommendation_qam}")
+    val mapQaStatusDeferredRecommendationQAM: Long = 0L
+
     @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.status.pending_recommendation_approval}")
     val mapQaStatusPRecommendationApproval: Long = 0L
 
@@ -404,6 +407,9 @@ class ApplicationMapProperties {
     @Value("\${org.kebs.app.kotlin.apollo.application.map.mpesa.config.integration}")
     val mapMpesaConfigIntegration: Long = 0L
 
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.sage.config.integration}")
+    val mapSageConfigIntegration: Long = 0L
+
     @Value("\${org.kebs.app.kotlin.apollo.application.map.lims.config.integration}")
     val mapLimsConfigIntegration: Long = 0L
 
@@ -481,6 +487,9 @@ class ApplicationMapProperties {
 
     @Value("\${org.kebs.app.kotlin.apollo.resources.report.proforma.invoice.with.item.path}")
     val mapReportProfomaInvoiceWithItemsPath: String = ""
+
+    @Value("\${org.kebs.app.kotlin.apollo.resources.report.break.down.invoice.with.item.path}")
+    val mapReportBreakDownInvoiceWithItemsPath: String = ""
 
     @Value("\${org.kebs.app.kotlin.apollo.resources.report.proforma.invoice.pdf.with.item.path}")
     val mapPDFProfomaInvoiceWithItemsPath: String = ""

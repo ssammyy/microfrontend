@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository
 
 @Repository
 interface ICocItemsRepository : HazelcastRepository<CocItemsEntity, Long> {
+    fun findByCocId(cocId: Long): List<CocItemsEntity>?
 }

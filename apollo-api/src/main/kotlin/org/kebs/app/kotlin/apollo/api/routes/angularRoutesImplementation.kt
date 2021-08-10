@@ -82,6 +82,8 @@ class AngularRoutes {
                     GET("/load", handler::usersListing)
                     GET("/load/users-requests", handler::listUserRequests)
                     GET("/user-details", handler::userDetails)
+                    GET("/user-email-exist", handler::userSearchEmailExistsDetails)
+                    GET("/user-username-exist", handler::userSearchUserNameExistsDetails)
                     POST("/search", handler::usersSearchListing)
                     POST("/{userId}/user-request", handler::usersRequests)
                     POST("/{userId}/update/company-profile", handler::usersUpdateCompanyProfile)
@@ -327,7 +329,6 @@ class AngularRoutes {
                     }
                     "/invoice".nest {
                         POST("/batch-invoice-submit", handler::invoiceBatchSubmitMigration)
-//                        POST("/batch-invoice-create", handler::invoiceBatchSubmitMigration)
                         POST("/batch-invoice-add", handler::invoiceBatchAddMigration)
                         PUT("/batch-invoice-remove", handler::invoiceBatchRemoveMigration)
                     }
@@ -366,6 +367,7 @@ class AngularRoutes {
                     POST("/", handler::permitRenewMigration)
                 }
                 "/attach".nest {
+                    GET("/ordinary-file-list", handler::permitAttachGetOrdinaryFilesListMigration)
                     POST("/ordinary", handler::permitAttachUploadOrdinaryMigration)
                 }
             }

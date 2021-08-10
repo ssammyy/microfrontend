@@ -71,6 +71,10 @@
                             <div>
                                 <a style="color: white" onclick="popUpSSFFunction('addSSFDetails');"
                                    class="filter-link">ADD SSF & BS NUMBER</a>
+
+                                <a style="color: white"
+                                   th:href="@{/api/qa/permit-details(permitID=${permitDetails.id},userID=${permitDetails?.userId})}"
+                                   class="filter-link">GO TO PERMIT DETAILS</a>
                                 <!--                                <button id="addParam" class="btn btn-primary"  type="button">ADD PLANT DETAILS</button>-->
                             </div>
                         </div>

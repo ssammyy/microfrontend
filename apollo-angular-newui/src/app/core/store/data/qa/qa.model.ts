@@ -31,6 +31,7 @@ export class PermitEntityDto {
     companyId: bigint;
     permitType: bigint;
     processStatusID: number;
+    versionNumber: number;
 }
 
 export class ConsolidatedInvoiceDto {
@@ -44,11 +45,32 @@ export class ConsolidatedInvoiceDto {
     checkedValue: boolean;
 }
 
+export class RemarksAndStatusDto {
+    remarksStatus: boolean;
+    remarksValue: string;
+}
+
+export class PermitAllRemarksDetailsDto {
+    hofQamCompleteness: RemarksAndStatusDto;
+    pcmApproval: RemarksAndStatusDto;
+    pscMemberApproval: RemarksAndStatusDto;
+    pcmReviewApproval: RemarksAndStatusDto;
+    justificationReport: RemarksAndStatusDto;
+}
+
 export class GenerateInvoiceDto {
     batchID: bigint;
     plantID: bigint;
     permitRefNumber: string;
-    permitInvoicesID: string[];
+    permitInvoicesID: number[];
+}
+
+export class SSFPDFListDetailsDto {
+    pdfSavedId: bigint;
+    pdfName: string;
+    sffId: bigint;
+    complianceRemarks: string;
+    complianceStatus: boolean;
 }
 
 export class MPesaPushDto {
@@ -65,6 +87,7 @@ export class STA1 {
     sectionId: bigint;
     permitForeignStatus: number;
     attachedPlant: bigint;
+    createFmark: number;
 }
 
 export class FmarkEntityDto {
@@ -181,10 +204,36 @@ export class SectionDto {
     status: boolean;
 }
 
+
+export class FilesListDto {
+    id: bigint;
+    name: string;
+    fileType: string;
+    documentType: string;
+    versionNumber: number;
+    document: Blob;
+}
+
+export class InvoiceDetailsDto {
+    invoiceMasterId: bigint;
+    invoiceRef: string;
+    description: string;
+    taxAmount: any;
+    subTotalBeforeTax: any;
+    totalAmount: any;
+}
+
 export class AllPermitDetailsDto {
     permitDetails: PermitEntityDetails;
+    remarksDetails: PermitAllRemarksDetailsDto;
+    invoiceDetails: InvoiceDetailsDto;
     officerList: UserEntityDto[];
     oldVersionList: PermitEntityDto[];
+    ordinaryFilesList: FilesListDto[];
+    sta3FilesList: FilesListDto[];
+    sta10FilesList: FilesListDto[];
+    labResultsList: SSFPDFListDetailsDto[];
+    schemeOfSuperVision: FilesListDto;
     batchID: bigint;
 }
 
