@@ -30,6 +30,10 @@ class PermitApplicationsEntity : Serializable {
     @Basic
     var firmName: String? = null
 
+    @Column(name = "PERMIT_FEE_TOKEN")
+    @Basic
+    var permitFeeToken: String? = null
+
     @Column(name = "APPROVED_REJECTED_SCHEME_REMARKS")
     @Basic
     var approvedRejectedSchemeRemarks: String? = null
@@ -817,6 +821,7 @@ class PermitApplicationsEntity : Serializable {
                 && processStep == that.processStep
                 && fmarkGenerateStatus == that.fmarkGenerateStatus
                 && ssfCompletedStatus == that.ssfCompletedStatus
+                && permitFeeToken == that.permitFeeToken
                 && pacDecisionStatus == that.pacDecisionStatus
                 && leadAssessorId == that.leadAssessorId
                 && processStepName == that.processStepName
@@ -836,6 +841,7 @@ class PermitApplicationsEntity : Serializable {
             id,
             companyId,
             applicationStatus,
+            permitFeeToken,
             fmarkGenerateStatus,
             ssfCompletedStatus,
             leadAssessorId,

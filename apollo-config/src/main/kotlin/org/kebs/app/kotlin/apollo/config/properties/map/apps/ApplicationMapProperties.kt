@@ -145,7 +145,7 @@ class ApplicationMapProperties {
     val mapQaFuelInspection: Int = 0
 
     @Value("\${org.kebs.app.kotlin.apollo.application.map.tax.rate}")
-    val mapKebsTaxRate: BigDecimal = 0.0000.toBigDecimal()
+    val mapKebsTaxRate: BigDecimal = BigDecimal.ZERO
 
     @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.type.smark.mediumFirm.extra.products.cost}")
     val mapQaSmarkMediumExtraProductCost: BigDecimal = 0.0000.toBigDecimal()
@@ -406,6 +406,9 @@ class ApplicationMapProperties {
 
     @Value("\${org.kebs.app.kotlin.apollo.application.map.mpesa.config.integration}")
     val mapMpesaConfigIntegration: Long = 0L
+
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.config.integration.max.amount}")
+    val mapMpesaConfigIntegrationMaxAmount: BigDecimal = BigDecimal.ZERO
 
     @Value("\${org.kebs.app.kotlin.apollo.application.map.sage.config.integration}")
     val mapSageConfigIntegration: Long = 0L
