@@ -56,6 +56,7 @@ import {InformationcheckComponent} from './apollowebs/standards-development/info
 import {DivisionresponseComponent} from './apollowebs/standards-development/divisionresponse/divisionresponse.component';
 import {NationalEnquiryPointComponent} from './apollowebs/standards-development/national-enquiry-point/national-enquiry-point.component';
 import {MakeEnquiryComponent} from './apollowebs/standards-development/national-enquiry-point/make-enquiry/make-enquiry.component';
+import {UsermanagementComponent} from "./apollowebs/usermanagement/usermanagement.component";
 
 // export const AppRoutes: Routes = [
 //     {
@@ -248,6 +249,12 @@ export const routes: Routes = [
         canActivate: [RouteGuard],
 
         children: [{path: '', component: InvoiceDetailsComponent}]
+    },
+    {
+        path: 'user_management', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+
+        children: [{path: '', component: UsermanagementComponent}]
     },
     {
         path: 'fmark/fMarkAllApp', component: AdminLayoutComponent,

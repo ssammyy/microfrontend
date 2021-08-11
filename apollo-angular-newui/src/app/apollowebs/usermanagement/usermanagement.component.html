@@ -33,7 +33,14 @@
                     <div class="tab-content tab-space tab-subcategories">
                         <div class="tab-pane" id="link7">
                             <div class="card">
-                                <div class="card-header">
+                                <div class="card-header card-header-primary card-header-icon">
+                                    <div style="float: right" class="card-icon">
+                                        <i title="Add A New Menu" class="material-icons" data-toggle="modal"
+                                           data-target="#userModal">
+                                            add
+                                        </i>
+                                    </div>
+
                                     <h4 class="card-title">Add and Manage Users</h4>
                                     <p class="card-category">
                                         User Management </p>
@@ -72,7 +79,7 @@
                                                 <td class="text-right">
                                                     <a href="javascript:void(0)"
                                                        class="btn btn-link btn-info btn-just-icon like"><i
-                                                            class="material-icons">add</i></a>
+                                                            class="material-icons">visibility</i></a>
                                                     <a href="javascript:void(0)"
                                                        class="btn btn-link btn-warning btn-just-icon edit"><i
                                                             class="material-icons">dvr</i></a>
@@ -190,7 +197,7 @@
                                                     <td class="text-right">
                                                         <a href="javascript:void(0)"
                                                            class="btn btn-link btn-info btn-just-icon like"><i
-                                                                class="material-icons">add</i></a>
+                                                                class="material-icons">eye</i></a>
                                                         <a href="javascript:void(0)"
                                                            class="btn btn-link btn-warning btn-just-icon edit"><i
                                                                 class="material-icons">dvr</i></a>
@@ -285,39 +292,225 @@
                 <div class="modal-body">
                     <div class="form-group bmd-form-group is-filled">
                         <div class="row">
-                            <label class="label-control">Datetime Picker</label>
                             <div class="col-md-10 col-lg-8 ml-auto mr-auto">
-                                <mat-form-field >
-                                    <input matInput [matDatepicker]="picker" placeholder="Choose a date" (click)="picker.open()">
-                                    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-                                    <mat-datepicker #picker></mat-datepicker>
+                                <mat-form-field>
+                                    <mat-select placeholder="Select Main or Sub Menu" name="menu">
+                                        <mat-option value="main">Main-Menu</mat-option>
+                                        <mat-option value="sub">Sub-Menu</mat-option>
+                                    </mat-select>
                                 </mat-form-field>
                             </div>
                             <div class="col-md-10 col-lg-8 ml-auto mr-auto">
-                                <mat-form-field >
-                                    <input matInput [matDatepicker]="picker" placeholder="Choose a date" (click)="picker.open()">
-                                    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-                                    <mat-datepicker #picker></mat-datepicker>
+                                <mat-form-field>
+                                    <input matInput placeholder="Name">
+
                                 </mat-form-field>
                             </div>
                             <div class="col-md-10 col-lg-8 ml-auto mr-auto">
-                                <mat-form-field >
-                                    <input matInput [matDatepicker]="picker" placeholder="Choose a date" (click)="picker.open()">
-                                    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-                                    <mat-datepicker #picker></mat-datepicker>
+                                <mat-form-field>
+                                    <input matInput placeholder="Link">
+
                                 </mat-form-field>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button mat-raised-button type="button" class="btn btn-link">Nice Button</button>
-                    <button mat-raised-button type="button" class="btn btn-danger btn-link" data-dismiss="modal">Close</button>
+                    <button mat-raised-button type="button" class="btn btn-success btn-link">Save</button>
+                    <button mat-raised-button type="button" class="btn btn-danger btn-link" data-dismiss="modal">Close
+                    </button>
                 </div>
             </div>
         </div>
     </div>
     <!--  End Modal -->
+    <!-- User Modal -->
+    <div class="modal fade" id="userModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Add Users</h4>
+                    <button mat-button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        <i class="material-icons">clear</i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group bmd-form-group is-filled">
+                        <div class="col-md-8">
+                            <strong style="text-underline: auto">1. Basic Details</strong>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-6">
+                                <label>Title <span
+                                        style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                <mat-form-field>
+                                    <mat-select placeholder="Select Title" name="title">
+                                        <mat-option value="main">HOD</mat-option>
+                                        <mat-option value="sub">HOR</mat-option>
+                                    </mat-select>
+                                </mat-form-field>
 
+                            </div>
 
-</div>
+                            <div class="form-group col-6">
+                                <label for="emailAddress">Email Address <span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                <input type="email" class="form-control" id="emailAddress"
+                                       formControlName="emailAddress"
+                                       name="emailAddress"
+                                       placeholder="Email Address" required="">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-6">
+                                <label for="firstname">First Name <span
+                                        style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                <input type="text" class="form-control" id="firstname" formControlName="firstname"
+                                       name="firstname"
+                                       placeholder="First Name" required="">
+
+                            </div>
+
+                            <div class="form-group col-6">
+                                <label for="lastName">Last Name <span style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                <input type="text" class="form-control" id="lastName" formControlName="lastName"
+                                       name="lastName"
+                                       placeholder="Last Name" required="">
+                            </div>
+                        </div>
+
+                        <div class="col-md-8">
+                            <strong style="text-underline: auto">2. Employee Details</strong>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-6">
+                                <label>Directorate <span
+                                        style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                <mat-form-field>
+                                    <mat-select placeholder="Select Directorate" name="directorate">
+                                        <mat-option value="main">Directorate 1</mat-option>
+                                        <mat-option value="sub">Directorate 2</mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                            <div class="form-group col-6">
+                                <label>Designation <span
+                                        style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                <mat-form-field>
+                                    <mat-select placeholder="Select Designation" name="designation">
+                                        <mat-option value="main">Designation 1</mat-option>
+                                        <mat-option value="sub">Designation 2</mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-6">
+                                <label>Department <span
+                                        style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                <mat-form-field>
+                                    <mat-select placeholder="Select Department" name="department">
+                                        <mat-option value="main">Department 1</mat-option>
+                                        <mat-option value="sub">Department 2</mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                            <div class="form-group col-6">
+                                <label>Division <span
+                                        style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                <mat-form-field>
+                                    <mat-select placeholder="Select Division" name="division">
+                                        <mat-option value="main">Division 1</mat-option>
+                                        <mat-option value="sub">Division 2</mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-6">
+                                <label>Section <span
+                                        style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                <mat-form-field>
+                                    <mat-select placeholder="Select Section" name="section">
+                                        <mat-option value="main">Section 1</mat-option>
+                                        <mat-option value="sub">Section 2</mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                            <div class="form-group col-6">
+                                <label>Sub Section 1 <span
+                                        style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                <mat-form-field>
+                                    <mat-select placeholder="Select Sub Section 1" name="subSection1">
+                                        <mat-option value="main">Sub Section 1 1</mat-option>
+                                        <mat-option value="sub">Sub Section 1 2</mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-6">
+                                <label>Sub Section 2 <span
+                                        style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                <mat-form-field>
+                                    <mat-select placeholder="Select Sub Section 2" name="subSection2">
+                                        <mat-option value="main">Sub Section 2 1</mat-option>
+                                        <mat-option value="sub">Sub Section 2 2</mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+
+                        </div>
+                        <div class="col-md-8">
+                            <strong style="text-underline: auto">3. Location Details</strong>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-6">
+                                <label>Region <span
+                                        style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                <mat-form-field>
+                                    <mat-select placeholder="Select Region" name="region">
+                                        <mat-option value="main">Region 1</mat-option>
+                                        <mat-option value="sub">Region 2</mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                            <div class="form-group col-6">
+                                <label>County <span
+                                        style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                <mat-form-field>
+                                    <mat-select placeholder="Select County" name="county">
+                                        <mat-option value="main">Nairobi</mat-option>
+                                        <mat-option value="sub">Mombasa</mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-6">
+                                <label>Town <span
+                                        style="font-size: xx-small; color: red;">(*)Required</span></label>
+                                <mat-form-field>
+                                    <mat-select placeholder="Select Town" name="town">
+                                        <mat-option value="main">Masimba</mat-option>
+                                        <mat-option value="sub">Magadi</mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button mat-raised-button type="button" class="btn btn-success btn-link">Save</button>
+                        <button mat-raised-button type="button" class="btn btn-danger btn-link" data-dismiss="modal">
+                            Close
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+        <!-- End User Modal -->
+
+    </div>
