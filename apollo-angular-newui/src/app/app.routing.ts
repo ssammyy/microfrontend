@@ -57,6 +57,7 @@ import {DivisionresponseComponent} from './apollowebs/standards-development/divi
 import {NationalEnquiryPointComponent} from './apollowebs/standards-development/national-enquiry-point/national-enquiry-point.component';
 import {MakeEnquiryComponent} from './apollowebs/standards-development/national-enquiry-point/make-enquiry/make-enquiry.component';
 import {UsermanagementComponent} from "./apollowebs/usermanagement/usermanagement.component";
+import {UserManagementProfileComponent} from "./apollowebs/usermanagement/user-management-profile/user-management-profile.component";
 
 // export const AppRoutes: Routes = [
 //     {
@@ -285,6 +286,12 @@ export const routes: Routes = [
         canActivate: [RouteGuard],
 
         children: [{path: '', component: NewDmarkPermitComponent}]
+    },
+    {
+        path: 'userDetails', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+
+        children: [{path: '', component: UserManagementProfileComponent}]
     },
     {
         path: 'dmark/all_dmark', component: AdminLayoutComponent,

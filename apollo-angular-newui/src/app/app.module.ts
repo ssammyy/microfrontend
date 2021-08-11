@@ -120,6 +120,7 @@ import { ComStdJcJustificationListComponent } from './apollowebs/standards-devel
 import {DivisionresponseComponent} from "./apollowebs/standards-development/divisionresponse/divisionresponse.component";
 import { NationalEnquiryPointComponent } from './apollowebs/standards-development/national-enquiry-point/national-enquiry-point.component';
 import { MakeEnquiryComponent } from './apollowebs/standards-development/national-enquiry-point/make-enquiry/make-enquiry.component';
+import { UserManagementProfileComponent } from './apollowebs/usermanagement/user-management-profile/user-management-profile.component';
 
 // import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 
@@ -239,7 +240,8 @@ import { MakeEnquiryComponent } from './apollowebs/standards-development/nationa
         InformationcheckComponent,
         DivisionresponseComponent,
         NationalEnquiryPointComponent,
-        MakeEnquiryComponent
+        MakeEnquiryComponent,
+        UserManagementProfileComponent
 
     ]
 
