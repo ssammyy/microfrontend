@@ -1,12 +1,6 @@
 package org.kebs.app.kotlin.apollo.store.repo.qa
 
-import org.kebs.app.kotlin.apollo.store.model.InvoiceEntity
-import org.kebs.app.kotlin.apollo.store.model.UsersEntity
-import org.kebs.app.kotlin.apollo.store.model.importer.TemporaryImportApplicationsEntity
-import org.kebs.app.kotlin.apollo.store.model.importer.TemporaryImportApplicationsUploadsEntity
 import org.kebs.app.kotlin.apollo.store.model.qa.*
-import org.springframework.data.domain.Page
-import org.springframework.data.domain.Pageable
 import org.springframework.data.hazelcast.repository.HazelcastRepository
 import org.springframework.stereotype.Repository
 
@@ -239,6 +233,7 @@ interface IQaProcessStatusRepository : HazelcastRepository<QaProcessStatusEntity
 @Repository
 interface IQaInvoiceDetailsRepository : HazelcastRepository<QaInvoiceDetailsEntity, Long> {
     fun findByStatusAndInvoiceMasterId(status: Int, invoiceMasterId: Long): List<QaInvoiceDetailsEntity>?
+    fun findByInvoiceMasterId(invoiceMasterId: Long): List<QaInvoiceDetailsEntity>?
 //    fun findByProcessStatusNameAndStatus(processStatusName: String, status: Long): QaProcessStatusEntity?
 //    fun findByStatus(status: Int): List<QaInvoiceDetailsEntity>?
 }

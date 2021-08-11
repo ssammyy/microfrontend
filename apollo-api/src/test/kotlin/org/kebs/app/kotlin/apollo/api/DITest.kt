@@ -657,7 +657,7 @@ class DITest {
 
                     var itemDetails = destinationInspectionDaoServices.findItemWithItemID(284)
                     with(itemDetails) {
-                        paymentFeeIdSelected = iDIFeeDetailsRepo.findByIdOrNull(7)
+                        paymentFeeIdSelected = iDIFeeDetailsRepo.findByIdOrNull(5)
                     }
                     itemDetails = destinationInspectionDaoServices.updateCdItemDetailsInDB(itemDetails, loggedInUser)
                     val importerDetails =

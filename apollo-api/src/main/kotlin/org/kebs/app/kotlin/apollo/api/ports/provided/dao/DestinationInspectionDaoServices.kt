@@ -41,13 +41,11 @@ import java.time.format.DateTimeFormatter
 class DestinationInspectionDaoServices(
     private val applicationMapProperties: ApplicationMapProperties,
     private val commonDaoServices: CommonDaoServices,
-    private val SampleCollectionRepo: IQaSampleCollectionRepository,
     private val SampleSubmissionRepo: IQaSampleSubmissionRepository,
     private val serviceRequestsRepository: IServiceRequestsRepository,
     private val invoiceDaoService: InvoiceDaoService,
     private val notifications: Notifications,
     private val iCocItemRepository: ICocItemRepository,
-    private val coiItemsRepository: ICoiItemsRepository,
     private val iUserProfilesRepo: IUserProfilesRepository,
     private val iSubSectionsLevel2Repo: ISubSectionsLevel2Repository,
     private val idfsRepo: IIDFDetailsEntityRepository,
@@ -78,9 +76,9 @@ class DestinationInspectionDaoServices(
     private val iSampleSubmissionParamRepo: ICdSampleSubmissionParametersRepository,
     private val iChecklistInspectionTypesRepo: IChecklistInspectionTypesRepository,
     private val iUserRepository: IUserRepository,
-
     private val iCdItemsRepo: IConsignmentItemsRepository,
     private val iLocalCocRepo: ILocalCocEntityRepository,
+
     private val iLocalCorRepo: ILocalCorEntityRepository,
     private val iLocalCocItemRepo: ILocalCocItemsEntityRepository,
     private val iCdItemNonStandardEntityRepository: ICdItemNonStandardEntityRepository,
@@ -90,25 +88,22 @@ class DestinationInspectionDaoServices(
     private val corsBakRepository: ICorsBakRepository,
     private val idfItemRepo: IIDFItemDetailsEntityRepository,
     private val declarationItemRepo: IDeclarationItemDetailsEntityRepository,
-
     private val iCdTransactionRepo: ICdTransactionsRepository,
     private val iCountryTypeCodesRepo: ICountryTypeCodesRepository,
 
     private val iCfsTypeCodesRepository: ICfsTypeCodesRepository,
     private val iCdCfsUserCfsRepository: ICdCfsUserCfsRepository,
+
     private val iPortsTypeCodesRepository: IPortsTypeCodesRepository,
     private val iCdPortsUserPortsRepository: ICdPortsUserPortsRepository,
-
-    //Inspection Checklist Repos
     private val iCdInspectionGeneralRepo: ICdInspectionGeneralRepository,
     private val iCdInspectionAgrochemItemChecklistRepo: ICdInspectionAgrochemItemChecklistRepository,
+
+    //Inspection Checklist Repos
     private val iCdInspectionEngineeringItemChecklistRepo: ICdInspectionEngineeringItemChecklistRepository,
     private val iCdInspectionOtherItemChecklistRepo: ICdInspectionOtherItemChecklistRepository,
     private val iCdInspectionMotorVehicleItemChecklistRepo: ICdInspectionMotorVehicleItemChecklistRepository,
-
     private val iPvocPartnersCountriesRepository: IPvocPartnersCountriesRepository,
-
-    //DI BPMNs
     private val diBpmn: DestinationInspectionBpmn
 
 ) {
@@ -1026,7 +1021,9 @@ fun createLocalCoc(
     ): BigDecimal? {
         val percentage = 100
         var amount = (diInspectionFeeId.rate?.toBigDecimal())?.multiply(cfiValue)?.divide(percentage.toBigDecimal())
+
         KotlinLogging.logger { }.info { "MY AMOUNT BEFORE CALCULATION = $amount" }
+
         val currencyValues = itemDetails.foreignCurrencyCode?.let { iCfgMoneyTypeCodesRepo.findByTypeCode(it) }
 //        var amountInUSD = itemDetails.foreignCurrencyCode?.let { iCfgMoneyTypeCodesRepo.findByTypeCode(it) }
 
@@ -1059,20 +1056,26 @@ fun createLocalCoc(
             }
         }
 
-        if (diInspectionFeeId.higher != null) {
-            val higherValue =
-                (currencyValues?.typeCodeValue)?.toBigDecimal()?.multiply(diInspectionFeeId.higher?.toBigDecimal())
-            if (higherValue != null) {
-                if (amount != null) {
-                    amount = when {
-                        amount > higherValue -> {
-                            amount
-                        }
-                        amount < higherValue -> {
-                            higherValue
-                        }
-                        else -> {
-                            amount
+        when {
+            diInspectionFeeId.higher != null -> {
+                val higherValue =
+                    (currencyValues?.typeCodeValue)?.toBigDecimal()?.multiply(diInspectionFeeId.higher?.toBigDecimal())
+                when {
+                    higherValue != null -> {
+                        when {
+                            amount != null -> {
+                                amount = when {
+                                    amount > higherValue -> {
+                                        amount
+                                    }
+                                    amount < higherValue -> {
+                                        higherValue
+                                    }
+                                    else -> {
+                                        amount
+                                    }
+                                }
+                            }
                         }
                     }
                 }
