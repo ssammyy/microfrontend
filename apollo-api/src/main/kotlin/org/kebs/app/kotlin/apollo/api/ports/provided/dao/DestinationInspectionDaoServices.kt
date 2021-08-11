@@ -3057,7 +3057,7 @@ fun createLocalCoc(
         cdDetails.cdStandard?.applicationRefNo?.let { cdNumber ->
             KotlinLogging.logger { }.info { "::::::::::::::::::: CD Ref Number = $cdNumber ::::::::::::::" }
             val docHeader = DocumentHeader(cdNumber, messageDate, version)
-            val docDetails = DocumentDetails(cdNumber, formattedExipry, messageDate, status, pgaRemarks)
+            val docDetails = DocumentDetails(cdNumber, formattedExipry, messageDate, status, pgaRemarks, applicationMapProperties.mapKeswsCheckingOfficer)
             val cdApprovalResponseDTO = CDApprovalResponseDTO()
             cdApprovalResponseDTO.documentHeader = docHeader
             cdApprovalResponseDTO.documentDetails = docDetails
