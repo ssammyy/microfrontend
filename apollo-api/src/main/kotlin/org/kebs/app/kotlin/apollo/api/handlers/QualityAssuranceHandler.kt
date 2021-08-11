@@ -1224,7 +1224,7 @@ class QualityAssuranceHandler(
     @PreAuthorize("hasAuthority('PERMIT_APPLICATION')")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun permitMPesaPushStk(req: ServerRequest): ServerResponse {
-        try {
+        return try {
             val map = commonDaoServices.serviceMapDetails(appId)
             val loggedInUser = commonDaoServices.loggedInUserDetails()
             val dto = req.body<MPesaPushDto>()
@@ -1232,12 +1232,12 @@ class QualityAssuranceHandler(
             val invoiceEntity = qaDaoServices.findBatchInvoicesWithID(dto.entityValueID)
             qaDaoServices.permitInvoiceSTKPush(map, loggedInUser, dto.phoneNumber, invoiceEntity)
 
-            return ok().body("Check You phone for an STK Push,If You can't see the push either pay with Bank or MPesa Paybill number")
+            ok().body("Check You phone for an STK Push,If You can't see the push either pay with Bank or MPesa Paybill number")
 
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
             KotlinLogging.logger { }.debug(e.message, e)
-            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
+            badRequest().body(e.message ?: "UNKNOWN_ERROR")
         }
     }
 

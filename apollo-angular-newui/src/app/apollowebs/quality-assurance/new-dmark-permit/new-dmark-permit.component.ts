@@ -13,9 +13,10 @@ import {
 } from '../../../core/store/data/qa/qa.model';
 import swal from 'sweetalert2';
 import {FileUploadValidators} from '@iplab/ngx-file-upload';
-import {LoadingService} from "../../../core/services/loader/loadingservice.service";
-import {delay} from "rxjs/operators";
-import {NgxSpinnerService} from "ngx-spinner";
+import {LoadingService} from '../../../core/services/loader/loadingservice.service';
+import {delay} from 'rxjs/operators';
+import {NgxSpinnerService} from 'ngx-spinner';
+import {ApiEndpointService} from '../../../core/services/endpoints/api-endpoint.service';
 
 declare const $: any;
 
@@ -53,6 +54,7 @@ export class NewDmarkPermitComponent implements OnInit {
     public permitID!: string;
 
     private filesControl = new FormControl(null, FileUploadValidators.filesLimit(2));
+    DMarkTypeID = ApiEndpointService.QA_APPLICATION_MAP_PROPERTIES.DMARK_TYPE_ID;
 
     public demoForm = new FormGroup({
         files: this.filesControl
@@ -170,6 +172,7 @@ export class NewDmarkPermitComponent implements OnInit {
 
                 this.qaService.viewSTA3Details(this.permitID).subscribe(
                     (data) => {
+                        console.log(data);
                         this.sta3 = data;
                         this.sta3FormA.patchValue(this.sta3);
                         this.sta3FormB.patchValue(this.sta3);
@@ -177,7 +180,6 @@ export class NewDmarkPermitComponent implements OnInit {
                         this.sta3FormD.patchValue(this.sta3);
                     },
                 );
-
 
             }
         });
@@ -243,7 +245,7 @@ export class NewDmarkPermitComponent implements OnInit {
         if (valid) {
             if (this.sta1 == null) {
                 this.SpinnerService.show();
-                this.qaService.savePermitSTA1('1', this.sta1Form.value).subscribe(
+                this.qaService.savePermitSTA1(String(this.DMarkTypeID), this.sta1Form.value).subscribe(
                     (data) => {
                         this.sta1 = data;
                         this.onClickUpdateStep(this.step);

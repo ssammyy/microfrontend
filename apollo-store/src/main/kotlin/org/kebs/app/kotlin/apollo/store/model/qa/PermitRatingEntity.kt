@@ -49,7 +49,7 @@ class PermitRatingEntity : Serializable {
 
     @Column(name = "VALIDITY")
     @Basic
-    var validity: Int? = null
+    var validity: Long? = null
 
     @Column(name = "INVOICE_DESC")
     @Basic

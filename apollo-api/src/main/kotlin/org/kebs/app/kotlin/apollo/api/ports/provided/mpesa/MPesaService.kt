@@ -49,12 +49,12 @@ class MPesaService(
         var config =
             commonDaoServices.findIntegrationConfigurationEntity(applicationMapProperties.mapMpesaConfigIntegration)
         val push = commonDaoServices.findBatchJobDetails(applicationMapProperties.mapMpesaConfigIntegrationPushJob)
-//        val callBack = commonDaoServices.findBatchJobDetails(applicationMapProperties.mapMpesaConfigIntegrationCallBackJob)
         val loginUrl = config.url.toString()
         val pushUrl = push.jobUri.toString()
-//        val callBackUrl = callBack.jobUri.toString()
 
         runBlocking {
+
+            checkIfAmountReachedPerTransaction(amount)
 
             val transactionsRequest = MpesaTransactionsRequest()
             with(transactionsRequest) {
@@ -69,7 +69,7 @@ class MPesaService(
             val log = daoService.createTransactionLog(0, transactionRef)
             log.integrationRequest = daoService.mapper().writeValueAsString(transactionsRequest)
             config.token.let { token ->
-                if (token.isNullOrEmpty()) {
+                if (token.isEmpty()) {
                     config = loginRequest(loginUrl, transactionRef, config)
                 }
             }
@@ -133,31 +133,11 @@ class MPesaService(
             ?: throw NullValueNotAllowedException("Response cannot be empty")
     }
 
-//    private fun updateMpesaTransactionEntity(merchantCode: String, checkOutCode: String, response: MpesaValidationResponse, map: ServiceMapsEntity): MpesaTransactionEntity {
-//        val mpesaTransaction = findMpesaTransactionEntity(merchantCode, checkOutCode)
-//        with(mpesaTransaction) {
-//            phonenumber = response.responsePhoneNumber.toString()
-//            mpesareceiptnumber = response.responseReceiptNumber?.toString()
-//            amount = response.responseAmount?.toBigDecimalOrNull()
-//            transactiondate = commonDaoServices.getCurrentDate()
-//            usedTransactionReference = map.activeStatus
-//            status = map.activeStatus
-//            modifiedBy = createdBy
-//            modifiedOn = commonDaoServices.getTimestamp()
-//        }
-//        return iMpesaTransactionsRepo.save(mpesaTransaction)
-//    }
-
-//    private suspend fun callBackRequest(url: String, transactionRef: String, config: IntegrationConfigurationEntity, headerParameters: MutableMap<String, String>): Pair<WorkflowTransactionsEntity, MpesaValidationResponse?> {
-//        val validationRequest = MpesaValidationRequest()
-//        validationRequest.transactionReference = config.transactionReference
-//        validationRequest.account = config.account
-//        validationRequest.accountReference = config.accountReference
-//
-//        val log2 = daoService.createTransactionLog(0, "${transactionRef}_2")
-//        val resp1 = daoService.getHttpResponseFromPostCall(false, url, null, validationRequest, config, null, headerParameters)
-//        return daoService.processResponses(resp1, log2, url, config)
-//    }
+    private fun checkIfAmountReachedPerTransaction(amount: BigDecimal) {
+        if (amount > applicationMapProperties.mapMpesaConfigIntegrationMaxAmount) {
+            throw ExpectedDataNotFound("THE AMOUNT TO PAY IS MORE THAN TRANSACTION AMOUNT APPROVED BY SAFARICOM")
+        }
+    }
 
     private suspend fun pushRequest(
         url: String,
@@ -251,9 +231,7 @@ class MPesaService(
                 match = patt.matcher(replPhone2)
                 when {
                     match.find() -> {
-                        //                Toast.makeText(getApplicationContext(), "Safaricom Number", Toast.LENGTH_LONG).show()
                         val replPhone3: String
-                        //                phoneCompany = "safaricom"
                         when {
                             replPhone2.startsWith("0") -> {
                                 replPhone3 = replPhone2.replaceFirst("0".toRegex(), "\\254")
@@ -278,8 +256,6 @@ class MPesaService(
             }
             else -> {
                  throw ExpectedDataNotFound("Please Enter a valid Safaricom Phone Number")
-//            Toast.makeText(getApplicationContext(), "Please enter a mobile number ", Toast.LENGTH_LONG).show()
-//            moveToContact(view)
             }
         }
         return validPhoneNo

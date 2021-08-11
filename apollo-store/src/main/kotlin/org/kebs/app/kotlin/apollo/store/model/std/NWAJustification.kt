@@ -79,6 +79,7 @@ class NWAJustification {
     @Column(name = "ACCENT_TO")
     @Basic
     val accentTo: Boolean = false
+
     @Column(name = "TASKID")
     @Basic
     var taskId: String? = null

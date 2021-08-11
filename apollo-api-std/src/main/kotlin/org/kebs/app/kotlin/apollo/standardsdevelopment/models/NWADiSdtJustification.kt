@@ -1,5 +1,6 @@
 package org.kebs.app.kotlin.apollo.standardsdevelopment.models
 
+import java.sql.Date
 import javax.persistence.*
 
 @Entity
@@ -26,7 +27,7 @@ class NWADiSdtJustification {
 
     @Column(name="DATE_APPROVAL_MADE")
     @Basic
-    val dateApprovalMade:String? =null
+    val dateApprovalMade:Date? =null
 
 
     @Transient
