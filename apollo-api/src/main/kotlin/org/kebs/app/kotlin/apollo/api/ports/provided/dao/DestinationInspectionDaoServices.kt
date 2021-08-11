@@ -54,6 +54,7 @@ class DestinationInspectionDaoServices(
     private val iLocalCocTypeRepo: ILocalCocTypesRepository,
     private val cocRepo: ICocsRepository,
     private val coisRep: ICoisRepository,
+    private val usersCfsRepo: IUsersCfsAssignmentsRepository,
     private val iCdInspectionChecklistRepo: ICdInspectionChecklistRepository,
     private val cdTypesRepo: IConsignmentDocumentTypesEntityRepository,
     private val iCdImporterRepo: ICdImporterEntityRepository,
@@ -1599,6 +1600,13 @@ fun createLocalCoc(
         return iCfsTypeCodesRepository.findByCfsCode(cfsCodeValue)
     }
 
+    fun findCfsID(id: Long): CfsTypeCodesEntity {
+        iCfsTypeCodesRepository.findByIdOrNull(id)?.let {
+            return it
+        }
+            ?: throw Exception("No CFS with ID = $id")
+    }
+
     fun findCfsUserFromCdCfs(cfsCdID: Long): CdCfsUserCfsEntity? {
         return iCdCfsUserCfsRepository.findByCdCfs(cfsCdID)
     }
@@ -2050,10 +2058,26 @@ fun createLocalCoc(
 
     }
 
+    fun findAllOngoingCdWithFreightStationID(
+        cfsEntity: CfsTypeCodesEntity,
+        cdType: ConsignmentDocumentTypesEntity
+    ): List<ConsignmentDocumentDetailsEntity> {
+        iConsignmentDocumentDetailsRepo.findByFreightStationAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNull(
+            cfsEntity.id,
+            cdType
+        )?.let {
+            return it
+        }
+            ?: throw Exception("COC List with the following  Freight STATION = ${cfsEntity.cfsName} and CD Type = ${cdType.typeName}, does not Exist")
+
+    }
+
     fun findAllOngoingCdWithPortOfEntry(
         sectionsEntity: SectionsEntity
     ): List<ConsignmentDocumentDetailsEntity> {
-        iConsignmentDocumentDetailsRepo.findByPortOfArrivalAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNull(sectionsEntity.id)
+        iConsignmentDocumentDetailsRepo.findByPortOfArrivalAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNull(
+            sectionsEntity.id
+        )
             ?.let {
                 return it
             }
@@ -2089,9 +2113,27 @@ fun createLocalCoc(
 
     }
 
+    fun findAllCompleteCdWithFreightStation(
+        cfsEntity: CfsTypeCodesEntity
+    ): List<ConsignmentDocumentDetailsEntity> {
+        iConsignmentDocumentDetailsRepo.findByFreightStationAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNotNull(
+            cfsEntity.id
+        )?.let {
+            return it
+        }
+            ?: throw Exception("COC List with the following Freight Station = ${cfsEntity.cfsName}, does not Exist")
+
+    }
+
     fun findAllCdWithNoPortOfEntry(cdType: ConsignmentDocumentTypesEntity): List<ConsignmentDocumentDetailsEntity>? {
         return iConsignmentDocumentDetailsRepo.findByPortOfArrivalIsNullAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNull(
             cdType.id
+        )
+    }
+
+    fun findAllCdWithNoFreghitStation(cdType: ConsignmentDocumentTypesEntity): List<ConsignmentDocumentDetailsEntity>? {
+        return iConsignmentDocumentDetailsRepo.findByFreightStationIsNullAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNull(
+            cdType
         )
     }
 
@@ -2153,11 +2195,11 @@ fun createLocalCoc(
 
 
     fun findAllCdWithNoAssignedIoID(
-        subSectionsLevel2Entity: SubSectionsLevel2Entity,
+        cfsEntity: CfsTypeCodesEntity,
         cdType: ConsignmentDocumentTypesEntity
     ): List<ConsignmentDocumentDetailsEntity>? {
         return iConsignmentDocumentDetailsRepo.findByFreightStationAndAssignedInspectionOfficerIsNullAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNull(
-            subSectionsLevel2Entity.id,
+            cfsEntity.id,
             cdType.id
         )
     }
@@ -2280,6 +2322,15 @@ fun createLocalCoc(
         return iSampleSubmissionParamRepo.save(sampleSubmitParamEntity)
     }
 
+
+    fun findAllCFSUserList(userProfileID: Long): List<UsersCfsAssignmentsEntity> {
+        usersCfsRepo.findByUserProfileId(userProfileID)
+            ?.let {
+                return it
+            }
+            ?: throw ServiceMapNotFoundException("NO USER CFS FOUND WITH PROFILE ID = ${userProfileID}")
+    }
+
     fun findSavedChecklist(itemId: Long): CdInspectionChecklistEntity {
         iCdInspectionChecklistRepo.findByItemId(itemId)
             ?.let { checklist ->
@@ -2358,6 +2409,11 @@ fun createLocalCoc(
                     "https://localhost:8006/api/di/item/sample-Submit-param/bs-number?cdSampleSubmitID=${paramatersEntity.sampleSubmissionId?.id}&docType=${sampSubmitName}&itemID=${paramatersEntity.sampleSubmissionId?.itemId}&message=${labResults}"
         notifications.sendEmail(recipientEmail, subject, messageBody)
         return true
+    }
+
+
+    fun addCDByCFSToList() {
+
     }
 
     fun sendBSNumber(

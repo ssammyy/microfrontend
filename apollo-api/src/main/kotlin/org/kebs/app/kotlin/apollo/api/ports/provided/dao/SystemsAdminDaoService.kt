@@ -16,6 +16,7 @@ import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileDirecto
 import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileEntity
 import org.kebs.app.kotlin.apollo.store.model.registration.UserRequestsEntity
 import org.kebs.app.kotlin.apollo.store.repo.*
+import org.kebs.app.kotlin.apollo.store.repo.di.ICfsTypeCodesRepository
 import org.kebs.app.kotlin.apollo.store.repo.di.IUsersCfsAssignmentsRepository
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
@@ -60,6 +61,7 @@ class SystemsAdminDaoService(
     private val sectionsRepo: ISectionsRepository,
     private val subSectionsL1Repo: ISubSectionsLevel1Repository,
     private val subSectionsL2Repo: ISubSectionsLevel2Repository,
+    private val iCfsTypeCodesRepo: ICfsTypeCodesRepository,
     private val applicationMapProperties: ApplicationMapProperties,
     private val countiesRepo: ICountiesRepository,
     private val townsRepo: ITownsRepository,
@@ -841,7 +843,7 @@ class SystemsAdminDaoService(
     fun assignCFSToUser(userProfileId: Long, cfsId: Long): UsersCfsAssignmentsEntity? {
         return userProfilesRepo.findByIdOrNull(userProfileId)
             ?.let { userProfile ->
-                subSectionsL2Repo.findByIdOrNull(cfsId)
+                iCfsTypeCodesRepo.findByIdOrNull(cfsId)
                     ?.let { cfs ->
                         /* todo: Discuss with KEN on how the function works */
                         usersCfsRepo.findByUserProfileIdAndCfsId(userProfile.id ?: -1L, cfs.id)
@@ -990,7 +992,7 @@ class SystemsAdminDaoService(
     fun revokeCfsFromUser(userProfileId: Long, cfsId: Long, status: Int): UsersCfsAssignmentsEntity? {
         return userProfilesRepo.findByIdOrNull(userProfileId)
             ?.let { userProfile ->
-                subSectionsL2Repo.findByIdOrNull(cfsId)
+                iCfsTypeCodesRepo.findByIdOrNull(cfsId)
                     ?.let { cfs ->
                         /* todo: Discuss with KEN on how the function works */
                         usersCfsRepo.findByUserProfileIdAndCfsIdAndStatus(userProfile.id ?: -1L, cfs.id, status)

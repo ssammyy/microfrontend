@@ -23,6 +23,10 @@ interface IConsignmentDocumentDetailsRepository : HazelcastRepository<Consignmen
         cdType: Long
     ): List<ConsignmentDocumentDetailsEntity>?
 
+    fun findByFreightStationAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNull(
+        freightStation: Long, cdType: ConsignmentDocumentTypesEntity
+    ): List<ConsignmentDocumentDetailsEntity>?
+
     fun findByPortOfArrivalAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNull(
         portOfArrival: Long
     ): List<ConsignmentDocumentDetailsEntity>?
@@ -36,7 +40,13 @@ interface IConsignmentDocumentDetailsRepository : HazelcastRepository<Consignmen
         portOfArrival: Long
     ): List<ConsignmentDocumentDetailsEntity>?
 
+    fun findByFreightStationAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNotNull(
+        freightStation: Long
+    ): List<ConsignmentDocumentDetailsEntity>?
+
     fun findByPortOfArrivalIsNullAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNull(cdType: Long): List<ConsignmentDocumentDetailsEntity>?
+
+    fun findByFreightStationIsNullAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNull(cdType: ConsignmentDocumentTypesEntity): List<ConsignmentDocumentDetailsEntity>?
 
     fun findByPortOfArrivalIsNullAndUcrNumberIsNotNullAndOldCdStatusIsNull(): List<ConsignmentDocumentDetailsEntity>?
 
@@ -374,6 +384,7 @@ interface ICdValuesHeaderLevelEntityRepository : HazelcastRepository<CdValuesHea
 @Repository
 interface IUsersCfsAssignmentsRepository : HazelcastRepository<UsersCfsAssignmentsEntity, Long> {
     fun findAllById(Id: Long): List<UsersCfsAssignmentsEntity>?
+    fun findByUserProfileId(userProfileId: Long): List<UsersCfsAssignmentsEntity>?
     fun findByUserProfileIdAndCfsId(userProfileId: Long, cfsId: Long): UsersCfsAssignmentsEntity?
     fun findByUserProfileIdAndCfsIdAndStatus(userProfileId: Long, cfsId: Long, status: Int): UsersCfsAssignmentsEntity?
 }
