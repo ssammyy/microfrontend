@@ -122,6 +122,8 @@ import { NationalEnquiryPointComponent } from './apollowebs/standards-developmen
 import { MakeEnquiryComponent } from './apollowebs/standards-development/national-enquiry-point/make-enquiry/make-enquiry.component';
 import { UserManagementProfileComponent } from './apollowebs/usermanagement/user-management-profile/user-management-profile.component';
 import { NepNotificationComponent } from './apollowebs/standards-development/nep-notification/nep-notification.component';
+import { StandardRequestComponent } from './apollowebs/standards-development/standard-request/standard-request.component';
+import { RequestStandardFormComponent } from './apollowebs/standards-development/standard-request/request-standard-form/request-standard-form.component';
 
 // import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 
@@ -243,7 +245,9 @@ import { NepNotificationComponent } from './apollowebs/standards-development/nep
         NationalEnquiryPointComponent,
         MakeEnquiryComponent,
         UserManagementProfileComponent,
-        NepNotificationComponent
+        NepNotificationComponent,
+        StandardRequestComponent,
+        RequestStandardFormComponent
 
     ]
 

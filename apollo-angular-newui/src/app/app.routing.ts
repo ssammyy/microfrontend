@@ -58,6 +58,8 @@ import {NationalEnquiryPointComponent} from './apollowebs/standards-development/
 import {MakeEnquiryComponent} from './apollowebs/standards-development/national-enquiry-point/make-enquiry/make-enquiry.component';
 import {UsermanagementComponent} from "./apollowebs/usermanagement/usermanagement.component";
 import {UserManagementProfileComponent} from "./apollowebs/usermanagement/user-management-profile/user-management-profile.component";
+import {RequestStandardFormComponent} from "./apollowebs/standards-development/standard-request/request-standard-form/request-standard-form.component";
+import {StandardRequestComponent} from "./apollowebs/standards-development/standard-request/standard-request.component";
 
 // export const AppRoutes: Routes = [
 //     {
@@ -445,6 +447,12 @@ export const routes: Routes = [
     },
     {
         path: 'make_enquiry', component: MakeEnquiryComponent
+    },
+
+    {
+        path: 'request-standards',
+        component: StandardRequestComponent,
+        children: [{path: '', component: RequestStandardFormComponent}]
     },
 ];
 

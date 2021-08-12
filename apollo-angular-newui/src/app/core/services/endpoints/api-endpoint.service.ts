@@ -17,10 +17,10 @@ export class ApiEndpointService {
      * Map of domains for API endpoints.
      */
     public static DOMAIN = {
-       // LOCAL_DEV: 'localhost:8006'
+       LOCAL_DEV: 'localhost:8006'
         // LOCAL_DEV: '12:8006'
         // LOCAL_DEV: '41.72.209.58:8006'
-        LOCAL_DEV: `kimsint.kebs.org:8006`
+        // LOCAL_DEV: `kimsint.kebs.org:8006`
         // LOCAL_DEV: `kims.kebs.org:8006`
     };
 
@@ -60,6 +60,7 @@ export class ApiEndpointService {
     public static SD_STD_CONTEXT = `${ApiEndpointService.MASTERS_CONTEXT}/standard`;
     public static SD_PB_CONTEXT = `${ApiEndpointService.MASTERS_CONTEXT}/publishing`;
     public static SD_NEP_CONTEXT = `${ApiEndpointService.MASTERS_CONTEXT}/Domestic_notification`;
+    public static REQUEST_STANDARD = `${ApiEndpointService.ANONYMOUS_CONTEXT}/standard/dropdown`;
 
     /**
      * Map of API endpoints.
@@ -280,7 +281,14 @@ export class ApiEndpointService {
         NEP_REJECT_REQUEST_MADE: `${ApiEndpointService.SD_NEP_CONTEXT}/nep_officer/is_accepted`,
         NEP_FINAL_SUBMISSION: `${ApiEndpointService.SD_NEP_CONTEXT}/nep_officer/upload_final`,
         NEP_MANAGER_ACCEPT: `${ApiEndpointService.SD_NEP_CONTEXT}/manager/is_accepted`,
-        NEP_UPLOAD_FILE: `${ApiEndpointService.SD_NEP_CONTEXT}/nep_officer/draft_notification`
+        NEP_UPLOAD_FILE: `${ApiEndpointService.SD_NEP_CONTEXT}/nep_officer/draft_notification`,
+
+
+        //REQUEST STANDARDS
+        REQ_STANDARD:`${ApiEndpointService.REQUEST_STANDARD}/request`,
+        REQ_PRODUCTS:`${ApiEndpointService.REQUEST_STANDARD}/getProducts`,
+        REQ_PRODUCTS_SUBCATEGORY:`${ApiEndpointService.REQUEST_STANDARD}/getProductCategories`
+
     };
 
     /**
