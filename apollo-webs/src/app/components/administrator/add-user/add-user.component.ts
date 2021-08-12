@@ -85,6 +85,7 @@ export class AddUserComponent implements OnInit {
       email: ['', Validators.required],
       firstName: ['', Validators.required],
       lastName: ['', Validators.required],
+      personalContactNumber: ['', Validators.required],
       directorate: ['', Validators.required],
       designation: ['', Validators.required],
       department: ['', Validators.required],
@@ -303,7 +304,7 @@ export class AddUserComponent implements OnInit {
     this.administratorService.registerEmployee(this.addUserFormGroup.value).subscribe(
       (data: UserRegister) => {
         console.log(data);
-        this.router.navigate(['/users-list']);
+        // this.router.navigate(['/users-list']);
       },
 
       (error: { error: { message: any; }; }) => {

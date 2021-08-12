@@ -56,8 +56,7 @@ interface IConsignmentDocumentDetailsRepository : HazelcastRepository<Consignmen
     ): Page<ConsignmentDocumentDetailsEntity>?
 
     fun findAllByAssignedInspectionOfficerAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNull(
-        assignedInspectionOfficer: UsersEntity,
-        cdType: Long
+        assignedInspectionOfficer: UsersEntity, cdType: ConsignmentDocumentTypesEntity
     ): List<ConsignmentDocumentDetailsEntity>?
 
     fun findAllByAssignedInspectionOfficerAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNull(
@@ -65,8 +64,7 @@ interface IConsignmentDocumentDetailsRepository : HazelcastRepository<Consignmen
     ): List<ConsignmentDocumentDetailsEntity>?
 
     fun findAllByAssignedInspectionOfficerAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNotNull(
-        assignedInspectionOfficer: UsersEntity,
-        cdType: Long
+        assignedInspectionOfficer: UsersEntity, cdType: ConsignmentDocumentTypesEntity
     ): List<ConsignmentDocumentDetailsEntity>?
 
     fun findAllByAssignedInspectionOfficerAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNotNull(
@@ -74,8 +72,7 @@ interface IConsignmentDocumentDetailsRepository : HazelcastRepository<Consignmen
     ): List<ConsignmentDocumentDetailsEntity>?
 
     fun findByFreightStationAndAssignedInspectionOfficerIsNullAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNull(
-        freightStation: Long,
-        cdType: Long
+        freightStation: Long, cdType: ConsignmentDocumentTypesEntity
     ): List<ConsignmentDocumentDetailsEntity>?
 
     fun findByFreightStationAndAssignedInspectionOfficerIsNullAndUcrNumberIsNotNullAndOldCdStatusIsNull(
@@ -134,6 +131,7 @@ interface ICfsTypeCodesRepository : HazelcastRepository<CfsTypeCodesEntity, Long
     fun findByCfsCode(cfsCode: String): CfsTypeCodesEntity?
 
     fun findByStatus(status: Int): List<CfsTypeCodesEntity>?
+    fun findByStatusOrderByCfsName(status: Int): List<CfsTypeCodesEntity>?
 //    fun findAllById(Id: Long): List<ConsignmentDocumentTypesEntity>?
 }
 

@@ -2147,7 +2147,7 @@ fun createLocalCoc(
     ): List<ConsignmentDocumentDetailsEntity> {
         iConsignmentDocumentDetailsRepo.findAllByAssignedInspectionOfficerAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNull(
             usersEntity,
-            cdType.id
+            cdType
         )
             ?.let {
                 return it
@@ -2173,7 +2173,7 @@ fun createLocalCoc(
     ): List<ConsignmentDocumentDetailsEntity> {
         iConsignmentDocumentDetailsRepo.findAllByAssignedInspectionOfficerAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNotNull(
             usersEntity,
-            cdType.id
+            cdType
         )
             ?.let {
                 return it
@@ -2200,7 +2200,7 @@ fun createLocalCoc(
     ): List<ConsignmentDocumentDetailsEntity>? {
         return iConsignmentDocumentDetailsRepo.findByFreightStationAndAssignedInspectionOfficerIsNullAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNull(
             cfsEntity.id,
-            cdType.id
+            cdType
         )
     }
 
