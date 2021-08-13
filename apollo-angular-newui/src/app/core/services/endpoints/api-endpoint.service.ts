@@ -59,7 +59,8 @@ export class ApiEndpointService {
     public static SD_SR_CONTEXT = `${ApiEndpointService.MASTERS_CONTEXT}/standard_review`;
     public static SD_STD_CONTEXT = `${ApiEndpointService.MASTERS_CONTEXT}/standard`;
     public static SD_PB_CONTEXT = `${ApiEndpointService.MASTERS_CONTEXT}/publishing`;
-    public static SD_NEP_CONTEXT = `${ApiEndpointService.MASTERS_CONTEXT}/National_enquiry_point`;
+    public static SD_NEP_CONTEXT = `${ApiEndpointService.MASTERS_CONTEXT}/Domestic_notification`;
+    public static REQUEST_STANDARD = `${ApiEndpointService.ANONYMOUS_CONTEXT}/standard/dropdown`;
 
     /**
      * Map of API endpoints.
@@ -271,7 +272,23 @@ export class ApiEndpointService {
         NEP_MAKE_ENQUIRY: `${ApiEndpointService.SD_NEP_NATIONAL_ENQUIRY}/notification_request`,
         NEP_INFORMATION_AVAILABLE_YES: `${ApiEndpointService.SD_NEP_NATIONAL_ENQUIRY}/nep_officer/is_available`,
         NEP_DEPARTMENT_RESPONSE: `${ApiEndpointService.SD_NEP_NATIONAL_ENQUIRY}/division_response/send_response`,
-        NEP_FEEDBACK_EMAIL: `${ApiEndpointService.SD_NEP_NATIONAL_ENQUIRY}/information_available/send_email`
+        NEP_FEEDBACK_EMAIL: `${ApiEndpointService.SD_NEP_NATIONAL_ENQUIRY}/information_available/send_email`,
+
+        //SD NEP DOMESTIC NOTIFICATION
+        NEP_RETRIEVE_NOTIFICATIONS: `${ApiEndpointService.SD_NEP_CONTEXT}/nep_officer/tasks`,
+        NEP_MANAGER_RETRIEVE_NOTIFICATIONS: `${ApiEndpointService.SD_NEP_CONTEXT}/manager/tasks`,
+        NEP_ACCEPT_REQUEST_MADE: `${ApiEndpointService.SD_NEP_CONTEXT}/nep_officer/is_accepted`,
+        NEP_REJECT_REQUEST_MADE: `${ApiEndpointService.SD_NEP_CONTEXT}/nep_officer/is_accepted`,
+        NEP_FINAL_SUBMISSION: `${ApiEndpointService.SD_NEP_CONTEXT}/nep_officer/upload_final`,
+        NEP_MANAGER_ACCEPT: `${ApiEndpointService.SD_NEP_CONTEXT}/manager/is_accepted`,
+        NEP_UPLOAD_FILE: `${ApiEndpointService.SD_NEP_CONTEXT}/nep_officer/draft_notification`,
+
+
+        //REQUEST STANDARDS
+        REQ_STANDARD:`${ApiEndpointService.REQUEST_STANDARD}/request`,
+        REQ_PRODUCTS:`${ApiEndpointService.REQUEST_STANDARD}/getProducts`,
+        REQ_PRODUCTS_SUBCATEGORY:`${ApiEndpointService.REQUEST_STANDARD}/getProductCategories`
+
     };
 
     /**

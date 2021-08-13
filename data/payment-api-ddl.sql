@@ -18,12 +18,12 @@ order by id desc;
 
 select *
 from DAT_KEBS_QA_BATCH_INVOICE
-where INVOICE_NUMBER = 'KIMSINVOICE#20210623F90B6'
+-- where INVOICE_NUMBER = 'KIMSINVOICE#20210623F90B6'
 order by id desc;
 
 select *
 from STG_PAYMENT_RECONCILIATION
-where REFERENCE_CODE = 'KIMSINVOICE#20210623F90B6'
+where REFERENCE_CODE = 'KIMSDN20210811FA71C'
 order by id desc;
 
 select *
@@ -33,6 +33,7 @@ order by id desc;
 
 select *
 from stg_payment_reconciliation
+-- where PAYMENT_T
 order by ID desc;
 
 alter table CFG_PAYMENT_METHODS

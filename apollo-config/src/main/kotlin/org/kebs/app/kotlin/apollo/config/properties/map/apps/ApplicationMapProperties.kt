@@ -869,6 +869,9 @@ class ApplicationMapProperties {
     @Value("\${org.kebs.app.kotlin.apollo.application.map.kesws.air.manifest.doctype}")
     val mapKeswsAirManifestDoctype: String = ""
 
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.kesws.checking.officer}")
+    val mapKeswsCheckingOfficer: String = ""
+
     @Value("\${org.kebs.app.kotlin.apollo.application.map.cors.urls}")
     val mapCorsUrls: String = ""
 

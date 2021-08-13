@@ -96,6 +96,10 @@ export class MasterDataService {
     return this.http.get<any>(`${this.sysAdmin}masters/subsections/l2/load`);
   }
 
+  loadCfsSystemAdmin(): any {
+    return this.http.get<any>(`${this.sysAdmin}masters/freightStations/load`);
+  }
+
   loadRegionsSystemAdmin(): any {
     return this.http.get<any>(`${this.sysAdmin}masters/regions/load`);
   }

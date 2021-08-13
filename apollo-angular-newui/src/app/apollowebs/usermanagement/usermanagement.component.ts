@@ -13,6 +13,7 @@ import {Titles, TitlesService} from '../../core/store/data/title';
 import {Store} from '@ngrx/store';
 import {catchError} from 'rxjs/operators';
 import {HttpErrorResponse} from '@angular/common/http';
+import {Router} from "@angular/router";
 
 declare interface DataTable {
     headerRow: string[];
@@ -41,12 +42,14 @@ export class UsermanagementComponent implements OnInit {
     constructor(private store$: Store<any>,
                 private service: UserEntityService,
                 private titleService: TitlesService,
+                private router: Router,
                 private formBuilder: FormBuilder) {
         this.title$ = titleService.entities$;
         titleService.getAll().subscribe();
     }
 
     ngOnInit(): void {
+
         this.dataTable = {
             headerRow: ['Name', 'Username', 'Role', 'Creation Date', 'Functions', 'Actions'],
             footerRow: ['Name', 'Role', 'Position', 'Creation Date', 'Functions', 'Actions'],
@@ -119,7 +122,10 @@ export class UsermanagementComponent implements OnInit {
 
 
     }
+    gotoHome() {
+        this.router.navigate(['/home']);  // define your component where you want to go
 
+    }
     onClickSave(valid: boolean) {
         if (valid) {
 
@@ -200,6 +206,8 @@ export class UsermanagementComponent implements OnInit {
 
         const table = $('#datatables').DataTable();
 
+
+
         // Edit record
         table.on('click', '.edit', function (e) {
             let $tr = $(this).closest('tr');
@@ -208,8 +216,6 @@ export class UsermanagementComponent implements OnInit {
             }
 
             var data = table.row($tr).data();
-            alert('You press on Row: ' + data[0] + ' ' + data[1] + ' ' + data[2] + '\'s row.');
-            e.preventDefault();
         });
 
         // Delete a record
@@ -220,11 +226,12 @@ export class UsermanagementComponent implements OnInit {
         });
 
         //Like record
-        table.on('click', '.like', function (e) {
-            alert('You clicked on Like button');
-            e.preventDefault();
-        });
+        // table.on('click', '.like', function (e) {
+        //     alert('You clicked on Like button');
+        //     e.preventDefault();
+        // });
 
         $('.card .material-datatables label').addClass('form-group');
     }
+
 }
