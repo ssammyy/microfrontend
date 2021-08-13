@@ -71,13 +71,13 @@
                                             </tfoot>
                                             <tbody>
                                             <tr *ngFor="let row of dataTable.dataRows">
-                                                <td>{{row[0]}}</td>
-                                                <td>{{row[1]}}</td>
-                                                <td>{{row[2]}}</td>
+                                                <td>{{row[1]}} {{row[2]}}</td>
                                                 <td>{{row[3]}}</td>
                                                 <td>{{row[4]}}</td>
+                                                <td>{{row[5]}} | Date</td>
+                                                <td>{{row[6]}}</td>
                                                 <td class="text-right">
-                                                    <a routerLink="/userDetails"
+                                                    <a href="/userDetails#{{row[0]}}"
                                                        class="btn btn-link btn-info btn-just-icon like"><i
                                                             class="material-icons">visibility</i></a>
                                                     <a href="javascript:void(0)"
