@@ -46,6 +46,7 @@ export class ApiEndpointService {
     public static ANONYMOUS_CONTEXT = '/api/v1/migration/anonymous';
     public static USER_CONTEXT = 'user';
     public static MASTERS_CONTEXT = '/api/v1/migration';
+    public static SYSTEMS_ADMIN_CONTEXT = `${ApiEndpointService.MASTERS_CONTEXT}/security`;
     public static QA_CONTEXT = '/api/v1/migration/qa';
     public static QA_CONTEXT_APPLY = `${ApiEndpointService.QA_CONTEXT}/permit/apply`;
     public static QA_CONTEXT_VIEW = `${ApiEndpointService.QA_CONTEXT}/permit/view`;
@@ -130,8 +131,41 @@ export class ApiEndpointService {
         MASTERS_CURRENCIES: `${ApiEndpointService.MASTERS_CONTEXT}/currencies/`,
         // tslint:disable-next-line:max-line-length
         /*::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::USERS ENDPOINTS::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
-        USER_DETAILS_BY_EMAIL: `${ApiEndpointService.MASTERS_CONTEXT}/security/users/user-email-exist`,
-        USER_DETAILS_BY_USERNAME: `${ApiEndpointService.MASTERS_CONTEXT}/security/users/user-username-exist`,
+        // Users Endpoints
+        USER_CREATE_EMPLOYEE: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/users/`,
+        USER_UPDATE_EMPLOYEE: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/users/`,
+        USERS_LIST: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/users/load`,
+        USER_SELECTED_DETAILS: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/users/user-details`,
+        USER_DETAILS_BY_EMAIL: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/users/user-email-exist`,
+        USER_DETAILS_BY_USERNAME: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/users/user-username-exist`,
+        USER_SEARCH: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/users/search`,
+        // Titles Endpoint
+        TITLE_LIST: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/titles/load`,
+        TITLE_LIST_BY_STATUS: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/titles/load/`,
+        ADD_TITLE: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/titles/`,
+        UPDATE_TITLE: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/titles/`,
+        // Roles Endpoint
+        ROLES_LIST: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/roles/load`,
+        ROLES_LIST_BY_STATUS: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/roles/load/`,
+        ADD_ROLES: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/roles/`,
+        UPDATE_ROLES: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/roles/`,
+        // Authorities Endpoint
+        AUTHORITIES_LIST: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/authorities/load`,
+        AUTHORITIES_LIST_BY_STATUS: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/authorities/load/`,
+        ADD_AUTHORITIES: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/authorities/`,
+        UPDATE_AUTHORITIES: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/authorities/`,
+        // RBAC Endpoint
+        FETCH_ACTIVE_ROLE_LIST: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/rbac/fetch/roles/`,
+        AUTHORITIES_BY_ROLE_AND_STATUS_LISTING: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/rbac/fetch/authorities/`,
+        REVOKE_AUTHORIZATION_FROM_ROLE: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/rbac/revoke/`,
+        ASSIGN_AUTHORIZATION_TO_ROLE: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/rbac/assign/`,
+        LIST_ACTIVE_RBAC_USERS: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/rbac/fetch/users/`,
+        LIST_ACTIVE_RBAC_USERS_ROLES: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/rbac/fetch/user-roles/`,
+        REVOKE_ROLE_FROM_USER: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/rbac/role/revoke/`,
+        ASSIGN_ROLE_TO_USER: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/rbac/role/assign/`,
+        REVOKE_CFS_FROM_USER: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/rbac/cfs/revoke/`,
+        ASSIGN_CFS_TO_USER: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/rbac/cfs/assign/`,
+
         // tslint:disable-next-line:max-line-length
         /*:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::QA ENDPOINTS:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
         PERMIT_PROCESS_STEP: `${ApiEndpointService.QA_CONTEXT_APPLY}/process-step-add`,
@@ -202,6 +236,8 @@ export class ApiEndpointService {
         PERMIT_UPDATE_STA10_MACHINERY_PLANT: `${ApiEndpointService.QA_CONTEXT_APPLY}/sta10/machinery_plant_update`,
         PERMIT_UPDATE_STA10_MANUFACTURING_PROCESS: `${ApiEndpointService.QA_CONTEXT_APPLY}/sta10/manufacturing_process_update`,
 
+
+        /*:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::SD ENDPOINTS:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
         // SD Kenya National Workshop Agreement
         NWA_PREPARE_JUSTIFICATION: `${ApiEndpointService.SD_NWA_CONTEXT}/prepareJustification`,
         NWA_DEPARTMENTS: `${ApiEndpointService.SD_NWA_CONTEXT}/getKNWDepartments`,

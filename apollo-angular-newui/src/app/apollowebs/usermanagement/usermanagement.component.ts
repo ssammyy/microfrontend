@@ -13,7 +13,10 @@ import {Titles, TitlesService} from '../../core/store/data/title';
 import {Store} from '@ngrx/store';
 import {catchError} from 'rxjs/operators';
 import {HttpErrorResponse} from '@angular/common/http';
-import {Router} from "@angular/router";
+import {Router} from '@angular/router';
+import {LoadingService} from '../../core/services/loader/loadingservice.service';
+import {NgxSpinnerService} from 'ngx-spinner';
+import {MasterService} from '../../core/store/data/master/master.service';
 
 declare interface DataTable {
     headerRow: string[];
@@ -40,7 +43,10 @@ export class UsermanagementComponent implements OnInit {
 
 
     constructor(private store$: Store<any>,
+                private _loading: LoadingService,
+                private SpinnerService: NgxSpinnerService,
                 private service: UserEntityService,
+                private masterService: MasterService,
                 private titleService: TitlesService,
                 private router: Router,
                 private formBuilder: FormBuilder) {
@@ -49,17 +55,21 @@ export class UsermanagementComponent implements OnInit {
     }
 
     ngOnInit(): void {
+        let formattedArray = [];
+        this.SpinnerService.show();
+        this.masterService.loadUsers().subscribe(
+            (data: any) => {
+                formattedArray = data.map(i => [i.id, i.firstName, i.lastName, i.userName, i.email, i.registrationDate, i.status]);
 
-        this.dataTable = {
-            headerRow: ['Name', 'Username', 'Role', 'Creation Date', 'Functions', 'Actions'],
-            footerRow: ['Name', 'Role', 'Position', 'Creation Date', 'Functions', 'Actions'],
+                this.dataTable = {
+                    headerRow: ['Full Name', 'User name', 'Email', 'Date Registered', 'Status', 'Actions'],
+                    footerRow: ['Full Name', 'User name', 'Email', 'Date Registered', 'Status', 'Actions'],
+                    dataRows: formattedArray
+                };
+            });
 
-            dataRows: [
-                ['Airi Satou', 'Andrew Mike', 'Develop', '2013', '99,225', ''],
-                ['Angelica Ramos', 'John Doe', 'Design', '2012', '89,241', 'btn-round'],
 
-            ]
-        };
+
         this.dataTable2 = {
             headerRow: ['Role Name', 'Functions', 'Modules', 'Actions'],
             footerRow: ['Role Name', 'Functions', 'Modules', 'Actions'],
@@ -81,19 +91,20 @@ export class UsermanagementComponent implements OnInit {
 
         this.userManagementForm = this.formBuilder.group({
                 id: [''],
+                email: ['', Validators.required],
                 firstName: ['', Validators.required],
                 lastName: ['', Validators.required],
-                userName: ['', Validators.required],
                 personalContactNumber: ['', Validators.required],
-                email: ['', Validators.required],
-                userRegNo: [''],
-                enabled: [''],
-                accountExpired: [''],
-                accountLocked: [''],
-                credentialsExpired: [''],
-                status: [''],
-                registrationDate: [''],
-                title: [''],
+                directorate: ['', Validators.required],
+                designation: ['', Validators.required],
+                department: ['', Validators.required],
+                division: ['', Validators.required],
+                section: ['', null],
+                l1SubSubSection: ['', null],
+                l2SubSubSection: ['', null],
+                region: ['', Validators.required],
+                county: ['', Validators.required],
+                town: ['', Validators.required],
             },
             {
                 // validators: ConfirmedValidator('credentials', 'confirmCredentials')
@@ -178,28 +189,28 @@ export class UsermanagementComponent implements OnInit {
 
     ngAfterViewInit() {
         $(`#datatables`).DataTable({
-            "pagingType": "full_numbers",
-            "lengthMenu": [
+            'pagingType': 'full_numbers',
+            'lengthMenu': [
                 [10, 25, 50, -1],
-                [10, 25, 50, "All"]
+                [10, 25, 50, 'All']
             ],
             responsive: true,
             language: {
-                search: "_INPUT_",
-                searchPlaceholder: "Search records",
+                search: '_INPUT_',
+                searchPlaceholder: 'Search records',
             }
 
         });
         $(`#datatablescd`).DataTable({
-            "pagingType": "full_numbers",
-            "lengthMenu": [
+            'pagingType': 'full_numbers',
+            'lengthMenu': [
                 [10, 25, 50, -1],
-                [10, 25, 50, "All"]
+                [10, 25, 50, 'All']
             ],
             responsive: true,
             language: {
-                search: "_INPUT_",
-                searchPlaceholder: "Search records",
+                search: '_INPUT_',
+                searchPlaceholder: 'Search records',
             }
 
         });
@@ -215,7 +226,7 @@ export class UsermanagementComponent implements OnInit {
                 $tr = $tr.prev('.parent');
             }
 
-            var data = table.row($tr).data();
+            let data = table.row($tr).data();
         });
 
         // Delete a record
@@ -225,7 +236,7 @@ export class UsermanagementComponent implements OnInit {
             e.preventDefault();
         });
 
-        //Like record
+        // Like record
         // table.on('click', '.like', function (e) {
         //     alert('You clicked on Like button');
         //     e.preventDefault();

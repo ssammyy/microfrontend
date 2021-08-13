@@ -13,21 +13,6 @@ class AngularRoutes {
     @Bean
     fun systemsAdministrationMigrationRoutes(handler: SystemsAdministrationHandler) = router {
         "/api/v1/migration/".nest {
-            GET("/home", handler::sysadminHome)
-            "/ui".nest {
-                GET("/rbac-user-roles", handler::rbacUserRoles)
-                GET("/rbac-user-requests", handler::rbacUserRequests)
-                GET("/rbac-role-authorities", handler::rbacRoleAuthorities)
-                GET("/users-crud", handler::usersCrud)
-                GET("/roles-crud", handler::rolesCrud)
-                GET("/authorities-crud", handler::authoritiesCrud)
-                GET("/titles-crud", handler::titlesCrud)
-                GET("/userTypes-crud", handler::userTypesCrud)
-
-            }
-
-            GET("/", handler::sysadminHome)
-//            GET("/rbacRolesTemplate", handler::sysadminHome)
             "/security".nest {
                 "/rbac".nest {
                     GET("/fetch/roles/{status}", handler::listActiveRbacRoles)
