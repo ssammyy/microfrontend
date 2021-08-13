@@ -56,6 +56,10 @@ import {ComStdJcJustificationListComponent} from "./apollowebs/standards-develop
 import {SystemicReviewCommentsComponent} from "./apollowebs/standards-development/systemic-review/systemic-review-comments/systemic-review-comments.component";
 import {IntStdJustificationAppComponent} from "./apollowebs/standards-development/international-standard/int-std-justification-app/int-std-justification-app.component";
 import {SystemicAnalyseCommentsComponent} from "./apollowebs/standards-development/systemic-review/systemic-analyse-comments/systemic-analyse-comments.component";
+import {UsermanagementComponent} from "./apollowebs/usermanagement/usermanagement.component";
+import {UserManagementProfileComponent} from "./apollowebs/usermanagement/user-management-profile/user-management-profile.component";
+import {RequestStandardFormComponent} from "./apollowebs/standards-development/standard-request/request-standard-form/request-standard-form.component";
+import {StandardRequestComponent} from "./apollowebs/standards-development/standard-request/standard-request.component";
 
 // export const AppRoutes: Routes = [
 //     {
@@ -250,6 +254,12 @@ export const routes: Routes = [
         children: [{path: '', component: InvoiceDetailsComponent}]
     },
     {
+        path: 'user_management', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+
+        children: [{path: '', component: UsermanagementComponent}]
+    },
+    {
         path: 'fmark/fMarkAllApp', component: AdminLayoutComponent,
         canActivate: [RouteGuard],
 
@@ -278,6 +288,12 @@ export const routes: Routes = [
         canActivate: [RouteGuard],
 
         children: [{path: '', component: NewDmarkPermitComponent}]
+    },
+    {
+        path: 'userDetails', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+
+        children: [{path: '', component: UserManagementProfileComponent}]
     },
     {
         path: 'dmark/all_dmark', component: AdminLayoutComponent,
@@ -431,6 +447,12 @@ export const routes: Routes = [
     },
     {
         path: 'make_enquiry', component: MakeEnquiryComponent
+    },
+
+    {
+        path: 'request-standards',
+        component: StandardRequestComponent,
+        children: [{path: '', component: RequestStandardFormComponent}]
     },
 ];
 

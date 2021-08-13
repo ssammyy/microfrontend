@@ -26,6 +26,7 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.DestinationInspectionB
 import org.kebs.app.kotlin.apollo.api.ports.provided.createUserAlert
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.*
 import org.kebs.app.kotlin.apollo.common.dto.MinistryInspectionListResponseDto
+import org.kebs.app.kotlin.apollo.common.dto.qa.PermitInvoiceDto
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.common.exceptions.SupervisorNotFoundException
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
@@ -36,6 +37,7 @@ import org.kebs.app.kotlin.apollo.store.model.di.*
 import org.kebs.app.kotlin.apollo.store.model.qa.QaSampleSubmissionEntity
 import org.kebs.app.kotlin.apollo.store.repo.di.*
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Component
 import org.springframework.web.servlet.function.ServerRequest
 import org.springframework.web.servlet.function.ServerResponse
@@ -90,7 +92,7 @@ private val destinationInspectionHomePage = "destination-inspection/di-home-new"
     private val cdSampleSubmitPage = "destination-inspection/cd-Inspection-documents/cd-inspection-sample-submit.html"
     private val cdItemViewPageDetails = "redirect:/api/di/cd-item-details?cdItemUuid"
 
-    //    @PreAuthorize("hasAuthority('DI_INSPECTION_OFFICER_READ') or hasAuthority('DI_DIRECTOR_READ') or hasAuthority('DI_WETC_CHAIR_READ') " +
+//        @PreAuthorize("hasAuthority('DI_INSPECTION_OFFICER_READ') or hasAuthority('DI_DIRECTOR_READ') or hasAuthority('DI_WETC_CHAIR_READ') " +
 //            "or hasAuthority('DI_NSC_MEMBER_READ') or hasAuthority('DI_HOD_READ') or hasAuthority('DI_NSC_SECRETARY_READ') or" +
 //            "hasAuthority('DI_CLUSTER_SUPERVISOR_READ') or hasAuthority('DI_WETC_MEMBER_READ') or hasAuthority('DI_OFFICER_CHARGE_READ') " +
 //            "or hasAuthority('DI_MANAGER_INSPECTION_READ') or hasAuthority('DI_EXEMPTION_COMMITTEE_CHAIR_READ') or hasAuthority('IMPORTER') ")
@@ -184,28 +186,65 @@ private val destinationInspectionHomePage = "destination-inspection/di-home-new"
                             when {
                                 auth.authorities.stream().anyMatch { authority -> authority.authority == "DI_OFFICER_CHARGE_READ" } -> {
                                     val usersEntity = commonDaoServices.findUserByUserName(auth.name)
-                                    val userProfilesEntity = commonDaoServices.findUserProfileByUserID(usersEntity, map.activeStatus)
-                                    userProfilesEntity.sectionId
-                                            ?.let { sectionsEntity ->
-                                                req.attributes()["CDSAutoAssigned"] = daoServices.findAllOngoingCdWithPortOfEntry(sectionsEntity, cdType)
-                                                req.attributes()["CDSManualAssign"] =
-                                                    daoServices.findAllCdWithNoPortOfEntry(cdType)
-                                                req.attributes()["CDCompleted"] =
-                                                    daoServices.findAllCompleteCdWithPortOfEntry(sectionsEntity, cdType)
-                                                ok().render(cdPageList, req.attributes())
-                                            }
-                                            ?: throw ExpectedDataNotFound("missing section id, check config")
+                                    val userProfilesEntity =
+                                        commonDaoServices.findUserProfileByUserID(usersEntity, map.activeStatus)
+                                    val allUserCFS = daoServices.findAllCFSUserList(
+                                        userProfilesEntity.id
+                                            ?: throw ExpectedDataNotFound("missing USER PROFILE id, check config")
+                                    )
+                                    val cdListAutoAssigned = mutableListOf<ConsignmentDocumentDetailsEntity>()
+
+                                    allUserCFS.forEach { assignedCfs ->
+                                        val cfsEntity = daoServices.findCfsID(
+                                            assignedCfs.cfsId
+                                                ?: throw ExpectedDataNotFound("missing cfs id, check config")
+                                        )
+                                        val allCdFound =
+                                            daoServices.findAllOngoingCdWithFreightStationID(cfsEntity, cdType)
+                                        cdListAutoAssigned.addAll(allCdFound)
+                                    }
+
+                                    req.attributes()["CDSAutoAssigned"] = cdListAutoAssigned
+                                    req.attributes()["CDSManualAssign"] =
+                                        daoServices.findAllCdWithNoFreghitStation(cdType)
+
+                                    val cdListCompleted = mutableListOf<ConsignmentDocumentDetailsEntity>()
+
+                                    allUserCFS.forEach { assignedCfs ->
+                                        val cfsEntity = daoServices.findCfsID(
+                                            assignedCfs.cfsId
+                                                ?: throw ExpectedDataNotFound("missing cfs id, check config")
+                                        )
+                                        val allCdFound = daoServices.findAllCompleteCdWithFreightStation(cfsEntity)
+                                        cdListCompleted.addAll(allCdFound)
+                                    }
+                                    req.attributes()["CDCompleted"] = cdListCompleted
+                                    ok().render(cdPageList, req.attributes())
                                 }
                                 auth.authorities.stream().anyMatch { authority -> authority.authority == "DI_INSPECTION_OFFICER_READ" } -> {
                                     val usersEntity = commonDaoServices.findUserByUserName(auth.name)
-                                    val userProfilesEntity = commonDaoServices.findUserProfileByUserID(usersEntity, map.activeStatus)
-                                    req.attributes()["CDSAutoAssigned"] = daoServices.findAllCdWithAssignedIoID(usersEntity, cdType)
-                                    req.attributes()["CDSManualAssign"] = userProfilesEntity.subSectionL2Id?.let {
-                                        daoServices.findAllCdWithNoAssignedIoID(
-                                            it,
-                                            cdType
+                                    val userProfilesEntity =
+                                        commonDaoServices.findUserProfileByUserID(usersEntity, map.activeStatus)
+                                    val allUserCFS = daoServices.findAllCFSUserList(
+                                        userProfilesEntity.id
+                                            ?: throw ExpectedDataNotFound("missing USER PROFILE id, check config")
+                                    )
+                                    val cdListAutoAssigned = mutableListOf<ConsignmentDocumentDetailsEntity>()
+
+                                    allUserCFS.forEach { assignedCfs ->
+                                        val cfsEntity = daoServices.findCfsID(
+                                            assignedCfs.cfsId
+                                                ?: throw ExpectedDataNotFound("missing cfs id, check config")
                                         )
+                                        val allCdFound = daoServices.findAllCdWithNoAssignedIoID(cfsEntity, cdType)
+                                        if (allCdFound != null) {
+                                            cdListAutoAssigned.addAll(allCdFound)
+                                        }
                                     }
+
+                                    req.attributes()["CDSAutoAssigned"] =
+                                        daoServices.findAllCdWithAssignedIoID(usersEntity, cdType)
+                                    req.attributes()["CDSManualAssign"] = cdListAutoAssigned
                                     req.attributes()["CDCompleted"] =
                                         daoServices.findAllCompleteCdWithAssignedIoID(usersEntity, cdType)
                                     ok().render(cdPageList, req.attributes())

@@ -5,6 +5,7 @@ import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
 import org.kebs.app.kotlin.apollo.store.model.*
 import org.kebs.app.kotlin.apollo.store.model.registration.UserRequestTypesEntity
 import org.kebs.app.kotlin.apollo.store.repo.*
+import org.kebs.app.kotlin.apollo.store.repo.di.ICfsTypeCodesRepository
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import java.sql.Timestamp
@@ -24,6 +25,7 @@ class MasterDataDaoService(
     private val sectionsRepo: ISectionsRepository,
     private val subSectionsL1Repo: ISubSectionsLevel1Repository,
     private val subSectionsL2Repo: ISubSectionsLevel2Repository,
+    private val iCfsTypeCodesRepo: ICfsTypeCodesRepository,
     private val countiesRepo: ICountiesRepository,
     private val townsRepo: ITownsRepository,
     private val userRequestTypesRepo: IUserRequestTypesRepository,
@@ -32,8 +34,8 @@ class MasterDataDaoService(
     private val broadProductCategoryRepo: IBroadProductCategoryRepository,
     private val productSubCategoryRepo: IProductSubcategoryRepository,
     private val productsRepo: IProductsRepository,
-    private val businessLinesRepo:IBusinessLinesRepository,
-    private val businessNatureRepo:IBusinessNatureRepository,
+    private val businessLinesRepo: IBusinessLinesRepository,
+    private val businessNatureRepo: IBusinessNatureRepository,
     @PersistenceContext
     private val entityManager: EntityManager,
 //    private val sessionFactory: SessionFactory
@@ -112,6 +114,10 @@ class MasterDataDaoService(
     fun getAllTowns(): List<TownsEntityDto>? =
         townsRepo.findAll().sortedBy { it.id }.map { TownsEntityDto(it.id, it.town, it.counties?.id, it.status == 1) }
 
+    fun getAllCFS(): List<FreightStationsDto>? =
+        iCfsTypeCodesRepo.findAll().sortedBy { it.id }
+            .map { FreightStationsDto(it.id, it.cfsCode, it.cfsName, it.description, it.status == 1) }
+
     fun getAllTownsByCountyId(countyId: Long, status: Int): List<TownsEntityDto>? =
         townsRepo.findByCountyIdAndStatus(countyId, status)?.sortedBy { it.id }
             ?.map { TownsEntityDto(it.id, it.town, it.counties?.id, it.status == 1) }
@@ -119,6 +125,10 @@ class MasterDataDaoService(
     fun getTownsByStatus(status: Int): List<TownsEntityDto>? =
         townsRepo.findByStatusOrderByTown(status)?.sortedBy { it.id }
             ?.map { TownsEntityDto(it.id, it.town, it.counties?.id, it.status == 1) }
+
+    fun getCFSByStatus(status: Int): List<FreightStationsDto>? =
+        iCfsTypeCodesRepo.findByStatusOrderByCfsName(status)?.sortedBy { it.id }
+            ?.map { FreightStationsDto(it.id, it.cfsCode, it.cfsName, it.description, it.status == 1) }
 
 
     fun getAllRegions(): List<RegionsEntityDto>? = regionsRepo.findAll().sortedBy { it.id }

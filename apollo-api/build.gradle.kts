@@ -109,6 +109,7 @@ dependencies {
     implementation("com.google.code.gson:gson:2.8.5")
     implementation("org.codehaus.jackson:jackson-mapper-asl:1.9.13")
     implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.11.0")
+    implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-csv:2.12.1")
     implementation("com.fasterxml.woodstox:woodstox-core:5.1.0")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     /**

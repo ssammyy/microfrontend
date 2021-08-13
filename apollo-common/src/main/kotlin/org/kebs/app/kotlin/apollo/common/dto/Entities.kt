@@ -176,6 +176,14 @@ data class SubSectionsL2EntityDto(
     var status: Boolean?
 )
 
+data class FreightStationsDto(
+    var id: Long?,
+    var cfsCode: String?,
+    var cfsName: String?,
+    var description: String?,
+    var status: Boolean?
+)
+
 data class DepartmentsEntityDto(
     var id: Long?,
     var department: String?,

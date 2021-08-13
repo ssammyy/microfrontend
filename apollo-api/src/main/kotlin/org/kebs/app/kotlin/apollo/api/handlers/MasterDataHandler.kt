@@ -735,6 +735,42 @@ class MasterDataHandler(
 
 }
 
+    @PreAuthorize("hasAuthority('RBAC_ASSIGN_CFS')")
+    fun cfsListing(req: ServerRequest): ServerResponse {
+        try {
+            val status = try {
+                req.pathVariable("status").toInt()
+            } catch (e: Exception) {
+                -1
+            }
+            when {
+                status <= 1 -> {
+                    daoService.getAllCFS()
+                        ?.let {
+                            return ok().body(it)
+                        }
+                        ?: throw NullValueNotAllowedException("No records found")
+
+                }
+                else -> {
+                    daoService.getCFSByStatus(status)
+
+                        ?.let {
+                            return ok().body(it)
+                        }
+                        ?: throw NullValueNotAllowedException("No records found")
+
+                }
+            }
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            return badRequest().body(e.message ?: "Unknown Error")
+        }
+
+
+    }
+
     @PreAuthorize("isAnonymous()")
     fun townsListingByCountyId(req: ServerRequest): ServerResponse {
         try {

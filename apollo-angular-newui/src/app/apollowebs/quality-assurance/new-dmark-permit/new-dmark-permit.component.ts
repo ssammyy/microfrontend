@@ -172,6 +172,7 @@ export class NewDmarkPermitComponent implements OnInit {
 
                 this.qaService.viewSTA3Details(this.permitID).subscribe(
                     (data) => {
+                        console.log(data);
                         this.sta3 = data;
                         this.sta3FormA.patchValue(this.sta3);
                         this.sta3FormB.patchValue(this.sta3);

@@ -45,7 +45,7 @@ select * from DAT_KEBS_COCS
 -- where id = 283
 order by ID desc;
 
-select DAT_KEBS_COCS_SEQ.nextval
+select CFG_USERS_CFS_ASSIGNMENTS_SEQ.nextval
 from dual;
 
 -- alter sequence CFG_KEBS_COUNTRY_TYPE_CODES_SEQ

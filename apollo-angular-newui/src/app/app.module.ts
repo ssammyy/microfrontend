@@ -120,6 +120,10 @@ import {SystemicReviewCommentsComponent} from "./apollowebs/standards-developmen
 import {IntStdJustificationAppComponent} from "./apollowebs/standards-development/international-standard/int-std-justification-app/int-std-justification-app.component";
 import {IsProposalFormComponent} from "./apollowebs/standards-development/international-standard/international-standard-proposal/is-proposal-form/is-proposal-form.component";
 import {SystemicAnalyseCommentsComponent} from "./apollowebs/standards-development/systemic-review/systemic-analyse-comments/systemic-analyse-comments.component";
+import { UserManagementProfileComponent } from './apollowebs/usermanagement/user-management-profile/user-management-profile.component';
+import { NepNotificationComponent } from './apollowebs/standards-development/nep-notification/nep-notification.component';
+import { StandardRequestComponent } from './apollowebs/standards-development/standard-request/standard-request.component';
+import { RequestStandardFormComponent } from './apollowebs/standards-development/standard-request/request-standard-form/request-standard-form.component';
 
 // import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 
@@ -239,7 +243,11 @@ import {SystemicAnalyseCommentsComponent} from "./apollowebs/standards-developme
         InformationcheckComponent,
         DivisionresponseComponent,
         NationalEnquiryPointComponent,
-        MakeEnquiryComponent
+        MakeEnquiryComponent,
+        UserManagementProfileComponent,
+        NepNotificationComponent,
+        StandardRequestComponent,
+        RequestStandardFormComponent
 
     ]
 
