@@ -94,6 +94,7 @@ export interface NWAJustification{
     knwCommittee: string;
     departmentName: string;
 
+
 }
 
 export interface KNWDepartment{
@@ -157,6 +158,7 @@ export interface SPCTaskData {
     submissionDate: string;
     knwCommittee: string;
     departmentName: string;
+    knwSecretary: string;
 }
 
 export interface NWADiSdtJustification{
@@ -660,5 +662,57 @@ export interface FeedbackEmail {
 export interface InfoAvailableYes{
     taskId: string;
     isAvailable: string;
+}
+//********************************************************** National Enquiry Point -END **********************************************************
+//********************************************************** National Enquiry Point Domestic Notification -START **********************************************************
+export interface NepNotification {
+    taskId: string;
+    name: string;
+    taskData: NotificationBody;
+}
+export interface NotificationBody {
+    tcSecretaryId?: number;
+    nepOfficerId?: number;
+    NotificationDueIndex: string;
+    NotificationCategory: string;
+}
+export interface NepNotificationss {
+    taskId: string;
+    name: string;
+    taskData: TaskDatas;
+}
+export interface TaskDatas {
+    requesterSubject: string;
+    requesterEmail: string;
+    requesterInstitution: string;
+    requesterName: string;
+    requesterCountry: string;
+    requesterComment: string;
+    requesterPhone: string;
+}
+export interface DraftNotification {
+    tcNotificationID: number;
+    nepOfficerID: number;
+    notificationDocumentIndex: string;
+    taskID: string;
+}
+
+export interface NotificationData{
+    tcNotificationID: number;
+    tcSecretaryId: number;
+    nepOfficerId: number;
+    NotificationDueIndex: string;
+    notificationDocumentIndex: string;
+    NotificationCategory: string;
+}
+
+export interface InboundNotification{
+    taskId: string;
+    name: string;
+    taskData: NotificationData;
+}
+
+export interface finalSubmit{
+    taskId: string;
 }
 
