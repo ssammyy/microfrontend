@@ -18,7 +18,7 @@ export class UserSearchValues {
     lastName?: string;
 }
 
-export class DivisionDetails {
+export class DivisionDetailsDto {
     id?: string;
     division?: string;
     descriptions?: string;
@@ -62,21 +62,21 @@ export class ProductSubcategory {
     productId?: number;
 }
 
-export class Counties {
+export class CountiesDto {
     id?: number;
     county?: string;
     regionId?: number;
     status?: boolean;
 }
 
-export class Towns {
+export class TownsDto {
     id?: number;
     town?: string;
     countyId?: number;
     status?: boolean;
 }
 
-export class Department {
+export class DepartmentDto {
     id?: number;
     department?: string;
     descriptions?: string;

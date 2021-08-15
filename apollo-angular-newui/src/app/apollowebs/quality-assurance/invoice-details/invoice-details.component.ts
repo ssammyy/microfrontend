@@ -98,6 +98,10 @@ export class InvoiceDetailsComponent implements OnInit, AfterViewInit {
 
     }
 
+    reloadPage() {
+        location.reload();
+    }
+
     public stkPush(): void {
         this.submitted = true;
         // stop here if form is invalid
@@ -111,7 +115,7 @@ export class InvoiceDetailsComponent implements OnInit, AfterViewInit {
             this.qaService.pushSTKInvoicePermit(this.stkPushForm.value).subscribe(
                 (data: any) => {
                     swal.fire({
-                        title: 'Check You phone for an STK Push,If You can\'t see the push either pay with Bank or Normal MPesa service',
+                        title: 'Check You phone for and enter your MPesa pin to complete the payment',
                         buttonsStyling: false,
                         customClass: {
                             confirmButton: 'btn btn-success form-wizard-next-btn ',

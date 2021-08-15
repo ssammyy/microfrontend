@@ -162,6 +162,30 @@ class SystemsAdministrationHandler(
         }
     }
 
+    fun listActiveRbacUserCfs(req: ServerRequest): ServerResponse {
+        return try {
+
+            req.pathVariable("userProfileId").toLongOrNull()
+                ?.let { userProfileId ->
+                    req.pathVariable("status").toIntOrNull()
+                        ?.let { status ->
+                            daoService.listRbacCfsByUsersProfileIdAndByStatus(userProfileId, status)
+                                ?.let { ok().body(it) }
+                        }
+                        ?: throw InvalidValueException("Valid value for status required")
+
+                }
+                ?: throw InvalidValueException("Valid value for UserId required")
+
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            badRequest().body(e.message ?: "Unknown Error")
+
+        }
+    }
+
     fun listActiveRbacRoles(req: ServerRequest): ServerResponse {
         try {
             req.pathVariable("status").toIntOrNull()
