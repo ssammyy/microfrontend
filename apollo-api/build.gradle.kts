@@ -146,7 +146,7 @@ dependencies {
     /**
      * KRA Integrations
      */
-    implementation("org.springframework.boot:spring-boot-devtools")
+//    implementation("org.springframework.boot:spring-boot-devtools")
     implementation("org.springframework.boot:spring-boot-starter-web-services")
     implementation("javax.xml.bind:jaxb-api:2.3.0")
     implementation("javax.activation:activation:1.1")

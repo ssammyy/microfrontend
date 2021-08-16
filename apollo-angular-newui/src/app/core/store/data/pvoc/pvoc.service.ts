@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {Observable, throwError} from "rxjs";
 import {ApiEndpointService} from "../../../services/endpoints/api-endpoint.service";
-import {HttpClient, HttpErrorResponse, HttpParams} from "@angular/common/http";
+import {HttpClient, HttpErrorResponse} from "@angular/common/http";
 import {catchError, map} from "rxjs/operators";
 
 @Injectable({

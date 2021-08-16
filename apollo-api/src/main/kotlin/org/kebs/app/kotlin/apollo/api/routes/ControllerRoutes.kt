@@ -41,7 +41,6 @@ import org.kebs.app.kotlin.apollo.api.handlers.*
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.web.bind.annotation.CrossOrigin
-import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.servlet.function.router
 
 @Configuration
@@ -254,14 +253,13 @@ class ControllerRoutes {
             }
 
     @Bean
-    fun userRoute(handler: UserHandler) =
-            router {
-                "/api/user".nest {
-                    GET("/user-notifications", handler::notificationList)
-                    GET("/user-profile", handler::userProfile)
-                    GET("/add/plant-details/save", handler::userProfile)
-                }
-            }
+    fun userRoute(handler: UserHandler) = router {
+        "/api/v1/user".nest {
+            GET("/notifications", handler::notificationList)
+            GET("/profile", handler::userProfile)
+            GET("/add/plant-details/save", handler::userProfile)
+        }
+    }
 
     @Bean
     fun registrationRoutes(handler: RegistrationHandler) = router {
@@ -271,8 +269,6 @@ class ControllerRoutes {
             PUT("/authorize", handler::signUpAllUsersVerification)
             PUT("/forgot-password", handler::signUpUserRestPassword)
 
-
-//            GET(pattern = "/manufacturer", f = handler::signupManufacturerView)
             GET(pattern = "/employee", f = handler::signUpEmployeeView)
             GET(pattern = "/update-user-details", f = handler::updateUserView)
             GET("/new", handler::userNewFormView)
@@ -342,7 +338,7 @@ class ControllerRoutes {
 
     @Bean
     fun qualityAssuranceRoutes(handler: QualityAssuranceHandler) = router {
-        "/api/qa".nest {
+        "/api/v1/qa".nest {
             println("**************************")
             GET("/home", handler::home)
             GET("/permits-list", handler::permitList)
@@ -387,7 +383,7 @@ class ControllerRoutes {
 
 
     @Bean
-    fun destinationInspectionRoutes(handler: DestinationInspectionHandler) = router {
+    fun diestinationInspectionRoutes(handler: DestinationInspectionHandler) = router {
         "/api/di".nest {
             GET("/home", handler::home)
             GET("/cd-list", handler::cdList)
