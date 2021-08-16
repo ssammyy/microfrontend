@@ -16,9 +16,13 @@ class ISAdoptionProposal {
     @Basic
     val proposal_doc_name: String? = null
 
-    @Column(name="SUBMISSION_DATE")
+    @Column(name="DATE_PREPARED")
     @Basic
-    var submissionDate: Timestamp?=null
+    var preparedDate: Timestamp?=null
+
+    @Column(name = "PROPOSAL_NUMBER")
+    @Basic
+    var proposalNumber: String? = null
 
     @Column(name = "UPLOADED_BY")
     @Basic

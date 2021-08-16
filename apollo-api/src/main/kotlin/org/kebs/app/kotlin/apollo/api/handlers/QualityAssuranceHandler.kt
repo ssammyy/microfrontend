@@ -30,6 +30,7 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.dao.InvoiceDaoService
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.QADaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.lims.LimsServices
 import org.kebs.app.kotlin.apollo.common.dto.FmarkEntityDto
+import org.kebs.app.kotlin.apollo.common.dto.MPesaMessageDto
 import org.kebs.app.kotlin.apollo.common.dto.MPesaPushDto
 import org.kebs.app.kotlin.apollo.common.dto.qa.*
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
@@ -1232,7 +1233,10 @@ class QualityAssuranceHandler(
             val invoiceEntity = qaDaoServices.findBatchInvoicesWithID(dto.entityValueID)
             qaDaoServices.permitInvoiceSTKPush(map, loggedInUser, dto.phoneNumber, invoiceEntity)
 
-            ok().body("Check You phone for an STK Push,If You can't see the push either pay with Bank or MPesa Paybill number")
+            val messageDto = MPesaMessageDto(
+                "Check You phone for an STK Push,If You can't see the push either pay with Bank or MPesa Paybill number"
+            )
+            ok().body(messageDto)
 
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)

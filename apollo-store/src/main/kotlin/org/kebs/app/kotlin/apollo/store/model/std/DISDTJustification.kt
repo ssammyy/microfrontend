@@ -33,6 +33,14 @@ class DISDTJustification {
     @Basic
     var dateOfApproval: Timestamp? = null
 
+    @Column(name="DATE_PREPARED")
+    @Basic
+    var datePrepared: Timestamp?=null
+
+    @Column(name = "CD_APP_NUMBER")
+    @Basic
+    var cdAppNumber: String? = null
+
     @Transient
     val accentTo: Boolean = false
 

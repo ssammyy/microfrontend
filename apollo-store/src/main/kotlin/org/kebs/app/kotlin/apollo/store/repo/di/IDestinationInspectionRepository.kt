@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.hazelcast.repository.HazelcastRepository
 import org.springframework.data.jpa.repository.Query
+import org.springframework.data.repository.query.Param
 import org.springframework.stereotype.Repository
 
 
@@ -132,6 +133,15 @@ interface ICfsTypeCodesRepository : HazelcastRepository<CfsTypeCodesEntity, Long
 
     fun findByStatus(status: Int): List<CfsTypeCodesEntity>?
     fun findByStatusOrderByCfsName(status: Int): List<CfsTypeCodesEntity>?
+
+    @Query(
+        "SELECT r.* FROM CFG_USERS_CFS_ASSIGNMENTS UR, CFG_KEBS_CFS_TYPE_CODES R WHERE UR.CFS_ID = R.ID AND UR.STATUS = :status AND UR.USER_PROFILE_ID = :userProfileID order by r.ID",
+        nativeQuery = true
+    )
+    fun findRbacCfsByUserProfileID(
+        @Param("userProfileID") userProfileID: Long,
+        @Param("status") status: Int
+    ): List<CfsTypeCodesEntity>?
 //    fun findAllById(Id: Long): List<ConsignmentDocumentTypesEntity>?
 }
 

@@ -18,7 +18,7 @@ type="ball-scale-multiple"
 <div class="card-icon">
 <i class="material-icons">assignment</i>
 </div>
-<h4 class="card-title">NWA Justification</h4>
+<h4 class="card-title">NWA Justification Tasks</h4>
 </div>
 <div class="card-body">
 <div class="toolbar">
@@ -49,7 +49,7 @@ type="ball-scale-multiple"
             <td>{{task.taskData.issuesAddressed}}</td>
             <td>{{task.taskData.referenceMaterial}}</td>
             <td>{{task.taskData.submissionDate | date: 'dd/MM/yyyy hh:mm:ss'}}</td>
-            <td><a  (click)="onOpenModal(task,'approve')" class="btn btn-primary btn-sm tooltips" data-placement="top"  data-original-title="Approve"> Approve</a></td>
+            <td><a  (click)="onOpenModal(task,'approve')" class="btn btn-info btn-sm tooltips" data-placement="top"  data-original-title="Approve"> Approve</a></td>
             <td><button (click)="onOpenModal(task,'reject')" type="submit" class="btn btn-danger btn-sm">Reject</button></td>
         </tr>
         </tbody>
@@ -64,7 +64,7 @@ type="ball-scale-multiple"
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <form #approveForm="ngForm" >
+                    <form (ngSubmit)="onDecision()" [formGroup]="approveFormGroup" class="form">
                     <div class="modal-body">
                         <div class="row">
                             <div class=" col-12">
@@ -84,11 +84,11 @@ type="ball-scale-multiple"
                     </div>
 
 
-                    <input type="hidden" ngModel="{{actionRequest?.taskId}}" name="taskId" >
-                    <input type="hidden" ngModel="true" name="accentTo"  >
+                    <input type="hidden" ngModel="{{actionRequest?.taskId}}" name="taskId" formControlName="taskId">
+                    <input type="hidden" ngModel="true" name="accentTo" formControlName="accentTo" >
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary btn-sm" (click)="onDecision(approveForm.value)" data-dismiss="modal">Approve</button>
+                        <button type="submit" class="btn btn-primary btn-sm" >Approve</button>
                     </div>
                 </form>
             </div>

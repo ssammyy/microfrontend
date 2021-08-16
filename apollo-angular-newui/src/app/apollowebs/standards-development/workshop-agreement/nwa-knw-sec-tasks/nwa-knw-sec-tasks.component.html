@@ -54,7 +54,7 @@ type="ball-scale-multiple"
             <td *ngIf="task.name ==='Prepare Justification for DI-SDT Approval'"><a  (click)="onOpenModal(task,'prepDiSdt')" class="btn btn-info btn-sm tooltips" data-placement="top" style="width: 160px;" data-original-title="prepareDISDTJustification"> DI-SDT Justification</a></td>
             <td *ngIf="task.name ==='Prepare Preliminary Draft'"><a  (click)="onOpenModal(task,'prepPd')" class="btn btn-success btn-sm tooltips" data-placement="top" style="width: 160px;" data-original-title="preparePD"> Prepare PD</a></td>
             <td *ngIf="task.name ==='KNW Task'"><a  (click)="onOpenModal(task,'approvePd')" class="btn btn-warning btn-sm tooltips" data-placement="top" style="width: 160px;" data-original-title="approvePD"> Approve PD</a></td>
-            <td *ngIf="task.name ==='Review Justification'"><button  type="submit" class="btn btn-warning btn-sm" style="width: 160px;" disabled>Review Justification</button></td>
+            <td *ngIf="task.name ==='Review Justification'"><a   class="btn btn-warning btn-sm tooltips" data-placement="top" style="width: 160px;" data-original-title=""> Review Justification</a></td>
             <td><button (click)="onOpenModal(task,'reject')" type="submit" class="btn btn-danger btn-sm">Reject</button></td>
         </tr>
         </tbody>
@@ -85,11 +85,11 @@ type="ball-scale-multiple"
                             </div>
                         </div>
                         <div class="row col-12">
-                            <div class="form-group col-6">
+                            <div class="form-group col-12">
                                 <label>Identified Need <span style="font-size: xx-small; color: red;">(*)Required</span></label>
                                 <textarea class="form-control"
                                           formControlName="identifiedNeed"
-                                          name="identifiedNeed" rows="3"
+                                          name="identifiedNeed" rows="2"
                                           [class.is-invalid]="formPrepareJustification.identifiedNeed.invalid && formPrepareJustification.identifiedNeed.touched"
                                           required="required"></textarea>
                             </div>
@@ -99,33 +99,18 @@ type="ball-scale-multiple"
                                        class="form-control"  formControlName="dateOfApproval" name="dateOfApproval" type="date">
                             </div>
                         </div>
-                        <form #preliminaryDraftForm="ngForm" >
-                        <div class="row col-12">
-                                <div class=" col-12">
-                                <label><b>Upload Justification for Director of Standards Approval </b> <span style="font-size: xx-small; color: red;">(*)Required</span></label><br>
-<!--                                    <file-upload [(ngModel)]="uploadedFiles" name="uploadedFiles"  fileslimit="2" accept=".pdf, .doc, .docx" simple>-->
-<!--                                        <ng-template let-file #placeholder>-->
-<!--                                            <ng-container *ngIf="file; else emptyList">-->
-<!--                                                {{ file.name }}-->
-<!--                                            </ng-container>-->
-
-<!--                                            <ng-template #emptyList>-->
-<!--                                                Choose a file...-->
-<!--                                            </ng-template>-->
-<!--                                        </ng-template>-->
-
-<!--                                        <ng-template let-control="control" #button>-->
-<!--                                            Browse for file-->
-<!--                                        </ng-template>-->
-<!--                                    </file-upload>-->
-                                    <input type="file" select-ng-files [(ngModel)]="uploadedFiles" name="uploadedFiles"  fileslimit="2" accept=".pdf, .doc, .docx" multiple>
-
+                            <div class="row col-12">
+                                <div class="form-group col-12">
+                                    <label><b>Upload Justification for Director of Standards Approval </b> <span style="font-size: xx-small; color: red;">(*)Required</span></label><br>
+                                    <form #demoForm="ngForm">
+                                        <input type="file" name="uploadedFiles" [(ngModel)]="uploadedFiles"  multiple>
+                                    <file-upload [(ngModel)]="uploadedFiles" name="uploadedFiles"   fileslimit="2" accept=".pdf, .doc, .docx" ></file-upload>
+                                    </form>
                                 </div>
 
 
-                        </div>
+                            </div>
 
-                        </form>
                     </div>
 
                     <input type="hidden" ngModel="{{actionRequest?.taskId}}" formControlName="taskId" name="taskId" >
@@ -138,6 +123,7 @@ type="ball-scale-multiple"
                         </button>
                     </div>
                 </form>
+
             </div>
         </div>
     </div>
