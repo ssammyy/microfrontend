@@ -104,12 +104,12 @@ name="permitForeignStatus"
 </select>
 </div>
 <div class="form-group col-6">
-<label for="attachedPlant">Attach Plant <span style="font-size: xx-small; color: red;">(*)Required</span></label>
+<label for="attachedPlant">Attach Branch <span style="font-size: xx-small; color: red;">(*)Required</span></label>
 <select id="attachedPlant" class="form-control"
 formControlName="attachedPlant"
 name="attachedPlant"
 [class.is-invalid]="formSta1Form.attachedPlant.invalid && formSta1Form.attachedPlant.touched">
-<option selected>Select Plant</option>
+    <option selected>Select Branch</option>
 <option *ngFor="let plant of plants"
 [ngValue]="plant.id"
 class="dropdown-item">{{plant.buildingName}}</option>

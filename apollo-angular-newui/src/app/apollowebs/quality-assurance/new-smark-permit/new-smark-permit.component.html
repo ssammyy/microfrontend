@@ -71,10 +71,10 @@ placeholder="Trade Mark" required="">
 placeholder="Applicant Name" ngModel="{{fullname}}" disabled>
 </div>
 <div class="form-group col-6">
-<label for="attachedPlant">Attach Plant <span style="font-size: xx-small; color: red;">(*)Select One</span></label>
+<label for="attachedPlant">Attach Branch <span style="font-size: xx-small; color: red;">(*)Select One</span></label>
 <select id="attachedPlant" class="form-control" formControlName="attachedPlant" name="attachedPlant"
 [class.is-invalid]="formSta1Form.attachedPlant.invalid && formSta1Form.attachedPlant.touched">
-<option selected>Select Plant</option>
+    <option selected>Select Branch</option>
 <option *ngFor="let plant of plants"
 [ngValue]="plant.id"
 class="dropdown-item">{{plant.buildingName}}</option>
@@ -107,15 +107,22 @@ class="dropdown-item">{{section.section}}</option>
 </div>
 </div>
 <div *ngIf="SelectedSectionId==5" class="row">
-<div class="form-group col-12" >
-<label for="createFmark">You are applying for Fortification Mark as well<span style="font-size: xx-small; color: red;"></span></label>
-<p>The following products require Fortification Mark;-Edible fats and oil,Sifted Maize and Wheat flour,Salt and Sugar(Optional)</p>
-<select id="createFmark" class="form-control" formControlName="createFmark" name="createFmark">
-<option selected>Are you applying for FMark</option>
-<option value="0">No</option>
-<option value="1">Yes</option>
-</select>
-</div>
+    <div class="form-group col-12">
+        <label for="createFmark">Are you applying for Fortification Mark as well<span
+                style="font-size: xx-small; color: red;"></span></label>
+        <p>The following products require Fortification Mark:</p>
+        <ul>
+            <li>Edible fats and oil</li>
+            <li>Sifted Maize</li>
+            <li>Wheat flour</li>
+            <li>Sugar(Optional)</li>
+        </ul>
+        <select id="createFmark" class="form-control" formControlName="createFmark" name="createFmark">
+            <option selected>Are you applying for FMark</option>
+            <option value="0">No</option>
+            <option value="1">Yes</option>
+        </select>
+    </div>
 
 </div>
 

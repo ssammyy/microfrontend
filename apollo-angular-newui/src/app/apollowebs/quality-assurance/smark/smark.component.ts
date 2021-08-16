@@ -41,6 +41,7 @@ export class SmarkComponent implements OnInit {
     upLoadDescription: string;
 
     pdfSources: any;
+    SelectedSectionId;
     pdfInvoiceBreakDownSources: any;
     pdfSourcesScheme: any;
     pdfUploadsView: any;

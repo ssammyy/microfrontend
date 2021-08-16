@@ -18,7 +18,7 @@
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link" data-toggle="tab" href="#link11" role="tablist">
-                                        <i class="material-icons">assignment_turned_in</i> Plant Attached Details
+                                        <i class="material-icons">assignment_turned_in</i> Branch Attached Details
                                     </a>
                                 </li>
                                 <li class="nav-item">
@@ -234,7 +234,7 @@ text-justify: inter-word;">{{allPermitDetails.permitDetails.versionNumber}}</td>
                                     </div>
                                 </div>
                                 <div class="tab-pane" id="link11">
-                                    <h3>Plant Attached Details</h3>
+                                    <h3>Branch Attached Details</h3>
                                     <br>
                                     <table class="table">
                                         <tbody>
@@ -415,12 +415,12 @@ text-justify: inter-word;">{{allPermitDetails.permitDetails.versionNumber}}</td>
                                                                         </select>
                                                                     </div>
                                                                     <div class="form-group col-6">
-                                                                        <label for="attachedPlant">Attach Plant</label>
+                                                                        <label for="attachedPlant">Attach Branch</label>
                                                                         <select id="attachedPlant" class="form-control"
                                                                                 formControlName="attachedPlant"
                                                                                 name="attachedPlant"
                                                                                 [class.is-invalid]="formSta1Form.attachedPlant.invalid && formSta1Form.attachedPlant.touched">
-                                                                            <option selected>Select Plant</option>
+                                                                            <option selected>Select Branch</option>
                                                                             <option *ngFor="let plant of plants"
                                                                                     [ngValue]="plant.id"
                                                                                     class="dropdown-item">{{plant.buildingName}}</option>
