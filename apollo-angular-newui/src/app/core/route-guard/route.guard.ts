@@ -21,7 +21,7 @@ export class RouteGuard implements CanActivate {
 
     return this.checkStoreAuthentication().pipe(
       map((authed) => {
-        if (!authed) {
+        if (authed) {
           // this.store$.dispatch(fromStore.logout({payload: ''}));
           console.log(`Authd = ${authed} redirecting to login`)
           this.store$.dispatch(Go({link: 'login', payload: null, redirectUrl: state.url}));
