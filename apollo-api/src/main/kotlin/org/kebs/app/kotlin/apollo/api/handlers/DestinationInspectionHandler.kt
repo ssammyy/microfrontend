@@ -221,6 +221,7 @@ private val destinationInspectionHomePage = "destination-inspection/di-home-new"
                                     req.attributes()["CDCompleted"] = cdListCompleted
                                     ok().render(cdPageList, req.attributes())
                                 }
+
                                 auth.authorities.stream().anyMatch { authority -> authority.authority == "DI_INSPECTION_OFFICER_READ" } -> {
                                     val usersEntity = commonDaoServices.findUserByUserName(auth.name)
                                     val userProfilesEntity =

@@ -17,10 +17,10 @@ export class ApiEndpointService {
      * Map of domains for API endpoints.
      */
     public static DOMAIN = {
-       LOCAL_DEV: 'localhost:8006'
+       // LOCAL_DEV: 'localhost:8006'
         // LOCAL_DEV: '12:8006'
         // LOCAL_DEV: '41.72.209.58:8006'
-         //LOCAL_DEV: `kimsint.kebs.org:8006`
+        LOCAL_DEV: `kimsint.kebs.org:8006`
         // LOCAL_DEV: `kims.kebs.org:8006`
     };
 
@@ -46,6 +46,8 @@ export class ApiEndpointService {
     public static ANONYMOUS_CONTEXT = '/api/v1/migration/anonymous';
     public static USER_CONTEXT = 'user';
     public static MASTERS_CONTEXT = '/api/v1/migration';
+    public static SYSTEMS_ADMIN_SECURITY = `${ApiEndpointService.MASTERS_CONTEXT}/security`;
+    public static SYSTEMS_ADMIN_CONTEXT = `${ApiEndpointService.MASTERS_CONTEXT}/system/admin/masters`;
     public static QA_CONTEXT = '/api/v1/migration/qa';
     public static QA_CONTEXT_APPLY = `${ApiEndpointService.QA_CONTEXT}/permit/apply`;
     public static QA_CONTEXT_VIEW = `${ApiEndpointService.QA_CONTEXT}/permit/view`;
@@ -130,9 +132,65 @@ export class ApiEndpointService {
         MASTERS_COUNTRIES: `${ApiEndpointService.MASTERS_CONTEXT}/countries/`,
         MASTERS_CURRENCIES: `${ApiEndpointService.MASTERS_CONTEXT}/currencies/`,
         // tslint:disable-next-line:max-line-length
-        /*::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::USERS ENDPOINTS::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
-        USER_DETAILS_BY_EMAIL: `${ApiEndpointService.MASTERS_CONTEXT}/security/users/user-email-exist`,
-        USER_DETAILS_BY_USERNAME: `${ApiEndpointService.MASTERS_CONTEXT}/security/users/user-username-exist`,
+        /*::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::USERS & SYSTEM ADMIN ENDPOINTS::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
+        // MASTER Endpoints
+        LOAD_DESIGNATIONS: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/designations/load`,
+        LOAD_DEPARTMENTS: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/departments/load`,
+        LOAD_DIVISIONS: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/divisions/load`,
+        LOAD_DIRECTORATE: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/directorate/load`,
+        LOAD_REGIONS: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/regions/load`,
+        LOAD_SUB_REGIONS: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/subRegions/load`,
+        LOAD_SECTIONS: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/sections/load`,
+        LOAD_SUB_SECTIONS_L1: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/subsections/l1/load`,
+        LOAD_SUB_SECTIONS_L2: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/subsections/l2/load`,
+        LOAD_FREIGHT_STATIONS: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/freightStations/load`,
+        LOAD_COUNTIES: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/counties/load`,
+        LOAD_TOWNS: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/towns/load`,
+        LOAD_BUSINESS_LINES: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/businessLines/load`,
+        LOAD_BUSINESS_NATURES: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/businessNatures/load`,
+        LOAD_REGION_COUNTY_TOWN: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/regionCountyTown/load`,
+        LOAD_REGION_SUB_REGION: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/regionSubRegion/load`,
+        LOAD_DIRECTORATE_DESIGNATIONS: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/directorateDesignations/load`,
+        LOAD_DIRECTORATE_TO_SUB_SECTIONL2: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/directorateToSubSectionL2/load`,
+        LOAD_STANDARD_PRODUCT_CATEGORY: `${ApiEndpointService.SYSTEMS_ADMIN_CONTEXT}/standardProductCategory/load`,
+
+
+        // Users Endpoints
+        USER_CREATE_EMPLOYEE: `${ApiEndpointService.SYSTEMS_ADMIN_SECURITY}/users/`,
+        USER_UPDATE_EMPLOYEE: `${ApiEndpointService.SYSTEMS_ADMIN_SECURITY}/users/`,
+        LOAD_USERS_LIST: `${ApiEndpointService.SYSTEMS_ADMIN_SECURITY}/users/load`,
+        USER_SELECTED_DETAILS: `${ApiEndpointService.SYSTEMS_ADMIN_SECURITY}/users/user-details`,
+        USER_DETAILS_BY_EMAIL: `${ApiEndpointService.SYSTEMS_ADMIN_SECURITY}/users/user-email-exist`,
+        USER_DETAILS_BY_USERNAME: `${ApiEndpointService.SYSTEMS_ADMIN_SECURITY}/users/user-username-exist`,
+        USER_SEARCH: `${ApiEndpointService.SYSTEMS_ADMIN_SECURITY}/users/search`,
+        // Titles Endpoint
+        LOAD_TITLE_LIST: `${ApiEndpointService.SYSTEMS_ADMIN_SECURITY}/titles/load`,
+        TITLE_LIST_BY_STATUS: `${ApiEndpointService.SYSTEMS_ADMIN_SECURITY}/titles/load/`,
+        ADD_TITLE: `${ApiEndpointService.SYSTEMS_ADMIN_SECURITY}/titles/`,
+        UPDATE_TITLE: `${ApiEndpointService.SYSTEMS_ADMIN_SECURITY}/titles/`,
+        // Roles Endpoint
+        LOAD_ROLES_LIST: `${ApiEndpointService.SYSTEMS_ADMIN_SECURITY}/roles/load`,
+        ROLES_LIST_BY_STATUS: `${ApiEndpointService.SYSTEMS_ADMIN_SECURITY}/roles/load/`,
+        ADD_ROLES: `${ApiEndpointService.SYSTEMS_ADMIN_SECURITY}/roles/`,
+        UPDATE_ROLES: `${ApiEndpointService.SYSTEMS_ADMIN_SECURITY}/roles/`,
+        // Authorities Endpoint
+        LOAD_AUTHORITIES_LIST: `${ApiEndpointService.SYSTEMS_ADMIN_SECURITY}/authorities/load`,
+        AUTHORITIES_LIST_BY_STATUS: `${ApiEndpointService.SYSTEMS_ADMIN_SECURITY}/authorities/load/`,
+        ADD_AUTHORITIES: `${ApiEndpointService.SYSTEMS_ADMIN_SECURITY}/authorities/`,
+        UPDATE_AUTHORITIES: `${ApiEndpointService.SYSTEMS_ADMIN_SECURITY}/authorities/`,
+        // RBAC Endpoint
+        FETCH_ACTIVE_ROLE_LIST: `${ApiEndpointService.SYSTEMS_ADMIN_SECURITY}/rbac/fetch/roles/`,
+        AUTHORITIES_BY_ROLE_AND_STATUS_LISTING: `${ApiEndpointService.SYSTEMS_ADMIN_SECURITY}/rbac/fetch/authorities/`,
+        REVOKE_AUTHORIZATION_FROM_ROLE: `${ApiEndpointService.SYSTEMS_ADMIN_SECURITY}/rbac/revoke/`,
+        ASSIGN_AUTHORIZATION_TO_ROLE: `${ApiEndpointService.SYSTEMS_ADMIN_SECURITY}/rbac/assign/`,
+        LIST_ACTIVE_RBAC_USERS: `${ApiEndpointService.SYSTEMS_ADMIN_SECURITY}/rbac/fetch/users/`,
+        LIST_ACTIVE_RBAC_USERS_ROLES: `${ApiEndpointService.SYSTEMS_ADMIN_SECURITY}/rbac/fetch/user-roles/`,
+        LIST_ACTIVE_RBAC_USERS_CFS: `${ApiEndpointService.SYSTEMS_ADMIN_SECURITY}/rbac/fetch/user-cfs/`,
+        REVOKE_ROLE_FROM_USER: `${ApiEndpointService.SYSTEMS_ADMIN_SECURITY}/rbac/role/revoke/`,
+        ASSIGN_ROLE_TO_USER: `${ApiEndpointService.SYSTEMS_ADMIN_SECURITY}/rbac/role/assign/`,
+        REVOKE_CFS_FROM_USER: `${ApiEndpointService.SYSTEMS_ADMIN_SECURITY}/rbac/cfs/revoke/`,
+        ASSIGN_CFS_TO_USER: `${ApiEndpointService.SYSTEMS_ADMIN_SECURITY}/rbac/cfs/assign/`,
+
         // tslint:disable-next-line:max-line-length
         /*:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::QA ENDPOINTS:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
         PERMIT_PROCESS_STEP: `${ApiEndpointService.QA_CONTEXT_APPLY}/process-step-add`,
@@ -203,6 +261,8 @@ export class ApiEndpointService {
         PERMIT_UPDATE_STA10_MACHINERY_PLANT: `${ApiEndpointService.QA_CONTEXT_APPLY}/sta10/machinery_plant_update`,
         PERMIT_UPDATE_STA10_MANUFACTURING_PROCESS: `${ApiEndpointService.QA_CONTEXT_APPLY}/sta10/manufacturing_process_update`,
 
+
+        /*:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::SD ENDPOINTS:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
         // SD Kenya National Workshop Agreement
         NWA_PREPARE_JUSTIFICATION: `${ApiEndpointService.SD_NWA_CONTEXT}/prepareJustification`,
         NWA_DEPARTMENTS: `${ApiEndpointService.SD_NWA_CONTEXT}/getKNWDepartments`,
@@ -239,15 +299,15 @@ export class ApiEndpointService {
         IST_SAC_SEC_TASKS: `${ApiEndpointService.SD_IST_CONTEXT}/getSACSECTasks`,
         IST_APPROVE_STANDARD: `${ApiEndpointService.SD_IST_CONTEXT}/approveStandard`,
 
-        //SD COMPANY STANDARDS
+        // SD COMPANY STANDARDS
         ICT_GET_PRODUCTS: `${ApiEndpointService.SD_ICT_CONTEXT}/getProducts`,
-        //ICT_GET_PRODUCTS_LS: `${ApiEndpointService.SD_DR_CONTEXT}/getProducts/${id}`,
+        // ICT_GET_PRODUCTS_LS: `${ApiEndpointService.SD_DR_CONTEXT}/getProducts/${id}`,
         ICT_GET_PRODUCTS_LS: `${ApiEndpointService.SD_DR_CONTEXT}/getProducts/`,
         ICT_GET_DEPARTMENTS: `${ApiEndpointService.SD_ICT_CONTEXT}/getDepartments`,
         ICT_GET_USERS: `${ApiEndpointService.SD_ICT_CONTEXT}/getUserList`,
         ICT_GET_DEPARTMENT: `${ApiEndpointService.SD_DR_CONTEXT}/getDepartments`,
         ICT_GET_TC_COMMITTEE: `${ApiEndpointService.SD_DR_CONTEXT}/getTechnicalCommittee`,
-        //ICT_GET_PRODUCT_CATEGORIES: `${ApiEndpointService.SD_DR_CONTEXT}/getProductCategories/${id}`,
+        // ICT_GET_PRODUCT_CATEGORIES: `${ApiEndpointService.SD_DR_CONTEXT}/getProductCategories/${id}`,
         ICT_GET_PRODUCT_CATEGORIES: `${ApiEndpointService.SD_DR_CONTEXT}/getProductCategories/`,
         ICT_ADD_STD_REQUEST: `${ApiEndpointService.SD_ICT_CONTEXT}/request`,
         ICT_HOD_TASKS: `${ApiEndpointService.SD_ICT_CONTEXT}/getHODTasks`,
@@ -257,7 +317,7 @@ export class ApiEndpointService {
         ICT_SPC_SEC_TASKS: `${ApiEndpointService.SD_ICT_CONTEXT}/getSpcSecTasks`,
         ICT_DECISION_ON_JUSTIFICATION: `${ApiEndpointService.SD_ICT_CONTEXT}/decisionOnJustification`,
 
-        //SD SYSTEMIC REVIEW
+        // SD SYSTEMIC REVIEW
         SR_GET_REVIEWED_STANDARDS: `${ApiEndpointService.SD_SR_CONTEXT}/reviewedStandards`,
         SR_REVIEW_FORM: `${ApiEndpointService.SD_SR_CONTEXT}/standardReviewForm`,
         SR_GET_REVIEW_FORM: `${ApiEndpointService.SD_SR_CONTEXT}/getReviewForms`,
@@ -266,7 +326,7 @@ export class ApiEndpointService {
         SR_DECISION_ON_RECOMMENDATION: `${ApiEndpointService.SD_SR_CONTEXT}/decisionOnRecommendation`,
         SR_UPLOAD_DOCUMENT: `${ApiEndpointService.SD_SR_CONTEXT}/sr-file-upload`,
 
-        //SD NATIONAL ENQUIRY POINT
+        // SD NATIONAL ENQUIRY POINT
         NEP_ENQUIRY_NEP_TASKS: `${ApiEndpointService.SD_NEP_NATIONAL_ENQUIRY}/nep_officer/tasks`,
         NEP_ENQUIRY_DIVISION_TASKS: `${ApiEndpointService.SD_NEP_NATIONAL_ENQUIRY}/division/tasks`,
         NEP_MAKE_ENQUIRY: `${ApiEndpointService.SD_NEP_NATIONAL_ENQUIRY}/notification_request`,

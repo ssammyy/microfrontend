@@ -301,6 +301,10 @@ export class AllBatchInvoiceDetailsDto {
     allRelatedBatchInvoices: PermitInvoiceDto[];
 }
 
+export class MPesaMessageDto {
+    message: String;
+}
+
 export class TaskDto {
     permitId: bigint;
     taskName: String;

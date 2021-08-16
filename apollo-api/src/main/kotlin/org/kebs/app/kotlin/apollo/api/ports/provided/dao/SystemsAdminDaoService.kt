@@ -10,6 +10,7 @@ import org.kebs.app.kotlin.apollo.common.exceptions.InvalidValueException
 import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.*
+import org.kebs.app.kotlin.apollo.store.model.di.CfsTypeCodesEntity
 import org.kebs.app.kotlin.apollo.store.model.di.UsersCfsAssignmentsEntity
 import org.kebs.app.kotlin.apollo.store.model.qa.ManufacturePlantDetailsEntity
 import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileDirectorsEntity
@@ -190,19 +191,19 @@ class SystemsAdminDaoService(
     fun listUsers(page: Int, records: Int): List<UserEntityDto>? {
         val userList = mutableListOf<UserEntityDto>()
 
-        PageRequest.of(page, records)
-            .let {
-                usersRepo.findAll(it)
-                    .map { u ->
-                        userList.add(
-                            UserEntityDto(
-                                u.id,
-                                u.firstName,
-                                u.lastName,
-                                u.userName,
-                                u.userPinIdNumber,
-                                u.personalContactNumber,
-                                u.typeOfUser,
+//        PageRequest.of(page, records)
+//            .let {
+        usersRepo.findAll()
+            .map { u ->
+                userList.add(
+                    UserEntityDto(
+                        u.id,
+                        u.firstName,
+                        u.lastName,
+                        u.userName,
+                        u.userPinIdNumber,
+                        u.personalContactNumber,
+                        u.typeOfUser,
                                 u.email,
                                 u.userRegNo,
                                 u.enabled == 1,
@@ -216,7 +217,7 @@ class SystemsAdminDaoService(
                             )
                         )
                     }
-            }
+//            }
 
 //        return usersRepo.findAll().toList().sortedBy { it.id }
         return userList.sortedByDescending { it.id }
@@ -998,7 +999,7 @@ class SystemsAdminDaoService(
                         /* todo: Discuss with KEN on how the function works */
                         usersCfsRepo.findByUserProfileIdAndCfsIdAndStatus(userProfile.id ?: -1L, cfs.id, status)
                             ?.let { usersCfs ->
-                                usersCfs.status = 1
+                                usersCfs.status = 0
                                 usersCfs.modifiedBy = loggedInUserDetails().userName
                                 usersCfs.modifiedOn = Timestamp.from(Instant.now())
                                 usersCfs.varField1 = "${usersCfs.status}"
@@ -1016,6 +1017,9 @@ class SystemsAdminDaoService(
 
     fun listRbacRolesByUsersIdAndByStatus(userId: Long, status: Int): List<UserRolesEntity>? =
         rolesRepo.findRbacRolesByUserId(userId, status)
+
+    fun listRbacCfsByUsersProfileIdAndByStatus(userProfileId: Long, status: Int): List<CfsTypeCodesEntity>? =
+        iCfsTypeCodesRepo.findRbacCfsByUserProfileID(userProfileId, status)
 
 
     fun userSearchResultListing(search: UserSearchValues): List<UserEntityDto>? {
