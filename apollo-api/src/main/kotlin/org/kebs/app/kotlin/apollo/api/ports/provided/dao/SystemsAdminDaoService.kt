@@ -10,12 +10,14 @@ import org.kebs.app.kotlin.apollo.common.exceptions.InvalidValueException
 import org.kebs.app.kotlin.apollo.common.exceptions.NullValueNotAllowedException
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.*
+import org.kebs.app.kotlin.apollo.store.model.di.CfsTypeCodesEntity
 import org.kebs.app.kotlin.apollo.store.model.di.UsersCfsAssignmentsEntity
 import org.kebs.app.kotlin.apollo.store.model.qa.ManufacturePlantDetailsEntity
 import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileDirectorsEntity
 import org.kebs.app.kotlin.apollo.store.model.registration.CompanyProfileEntity
 import org.kebs.app.kotlin.apollo.store.model.registration.UserRequestsEntity
 import org.kebs.app.kotlin.apollo.store.repo.*
+import org.kebs.app.kotlin.apollo.store.repo.di.ICfsTypeCodesRepository
 import org.kebs.app.kotlin.apollo.store.repo.di.IUsersCfsAssignmentsRepository
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
@@ -60,6 +62,7 @@ class SystemsAdminDaoService(
     private val sectionsRepo: ISectionsRepository,
     private val subSectionsL1Repo: ISubSectionsLevel1Repository,
     private val subSectionsL2Repo: ISubSectionsLevel2Repository,
+    private val iCfsTypeCodesRepo: ICfsTypeCodesRepository,
     private val applicationMapProperties: ApplicationMapProperties,
     private val countiesRepo: ICountiesRepository,
     private val townsRepo: ITownsRepository,
@@ -188,19 +191,19 @@ class SystemsAdminDaoService(
     fun listUsers(page: Int, records: Int): List<UserEntityDto>? {
         val userList = mutableListOf<UserEntityDto>()
 
-        PageRequest.of(page, records)
-            .let {
-                usersRepo.findAll(it)
-                    .map { u ->
-                        userList.add(
-                            UserEntityDto(
-                                u.id,
-                                u.firstName,
-                                u.lastName,
-                                u.userName,
-                                u.userPinIdNumber,
-                                u.personalContactNumber,
-                                u.typeOfUser,
+//        PageRequest.of(page, records)
+//            .let {
+        usersRepo.findAll()
+            .map { u ->
+                userList.add(
+                    UserEntityDto(
+                        u.id,
+                        u.firstName,
+                        u.lastName,
+                        u.userName,
+                        u.userPinIdNumber,
+                        u.personalContactNumber,
+                        u.typeOfUser,
                                 u.email,
                                 u.userRegNo,
                                 u.enabled == 1,
@@ -214,7 +217,7 @@ class SystemsAdminDaoService(
                             )
                         )
                     }
-            }
+//            }
 
 //        return usersRepo.findAll().toList().sortedBy { it.id }
         return userList.sortedByDescending { it.id }
@@ -268,6 +271,7 @@ class SystemsAdminDaoService(
                 user.userName = dto.userName
                 user.userPinIdNumber = dto.userPinIdNumber
                 user.personalContactNumber = dto.personalContactNumber
+                user.cellphone = dto.personalContactNumber
                 user.typeOfUser = dto.typeOfUser
                 user.email = dto.email
                 user.enabled = when (dto.enabled) {
@@ -841,7 +845,7 @@ class SystemsAdminDaoService(
     fun assignCFSToUser(userProfileId: Long, cfsId: Long): UsersCfsAssignmentsEntity? {
         return userProfilesRepo.findByIdOrNull(userProfileId)
             ?.let { userProfile ->
-                subSectionsL2Repo.findByIdOrNull(cfsId)
+                iCfsTypeCodesRepo.findByIdOrNull(cfsId)
                     ?.let { cfs ->
                         /* todo: Discuss with KEN on how the function works */
                         usersCfsRepo.findByUserProfileIdAndCfsId(userProfile.id ?: -1L, cfs.id)
@@ -990,12 +994,12 @@ class SystemsAdminDaoService(
     fun revokeCfsFromUser(userProfileId: Long, cfsId: Long, status: Int): UsersCfsAssignmentsEntity? {
         return userProfilesRepo.findByIdOrNull(userProfileId)
             ?.let { userProfile ->
-                subSectionsL2Repo.findByIdOrNull(cfsId)
+                iCfsTypeCodesRepo.findByIdOrNull(cfsId)
                     ?.let { cfs ->
                         /* todo: Discuss with KEN on how the function works */
                         usersCfsRepo.findByUserProfileIdAndCfsIdAndStatus(userProfile.id ?: -1L, cfs.id, status)
                             ?.let { usersCfs ->
-                                usersCfs.status = 1
+                                usersCfs.status = 0
                                 usersCfs.modifiedBy = loggedInUserDetails().userName
                                 usersCfs.modifiedOn = Timestamp.from(Instant.now())
                                 usersCfs.varField1 = "${usersCfs.status}"
@@ -1013,6 +1017,9 @@ class SystemsAdminDaoService(
 
     fun listRbacRolesByUsersIdAndByStatus(userId: Long, status: Int): List<UserRolesEntity>? =
         rolesRepo.findRbacRolesByUserId(userId, status)
+
+    fun listRbacCfsByUsersProfileIdAndByStatus(userProfileId: Long, status: Int): List<CfsTypeCodesEntity>? =
+        iCfsTypeCodesRepo.findRbacCfsByUserProfileID(userProfileId, status)
 
 
     fun userSearchResultListing(search: UserSearchValues): List<UserEntityDto>? {

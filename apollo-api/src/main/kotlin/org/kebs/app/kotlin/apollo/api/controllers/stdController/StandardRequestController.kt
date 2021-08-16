@@ -13,7 +13,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder
 import java.util.stream.Collectors
 
 @RestController
-@RequestMapping("api/v1/standard")
+@RequestMapping("api/v1/migration")
 class StandardRequestController(
     val standardRequestService: StandardRequestService,
     val purposeAnnexService: FilePurposeAnnexService,
@@ -22,14 +22,14 @@ class StandardRequestController(
 ) {
 
     //********************************************************** deployment endpoints **********************************************************
-    @PostMapping("/deploy")
+    @PostMapping("/anonymous/standard/deploy")
     fun deployWorkflow(): ServerResponse {
         standardRequestService.deployProcessDefinition()
         return ServerResponse(HttpStatus.OK, "Successfully deployed server", HttpStatus.OK)
     }
 
     //********************************************************** process upload standard request **********************************************************
-    @PostMapping("dropdown/request")
+    @PostMapping("/anonymous/standard/dropdown/request")
     @ResponseBody
     fun requestForStandard(@RequestBody standardRequest: StandardRequest): ServerResponse {
         //return ResponseEntity(standardRequestService.requestForStandard(standardRequest), HttpStatus.OK)
@@ -40,13 +40,13 @@ class StandardRequestController(
         )
     }
 
-    @GetMapping("dropdown/getProducts/{technicalCommitteeId}")
+    @GetMapping("/anonymous/standard/dropdown/getProducts/{technicalCommitteeId}")
     @ResponseBody
     fun getProducts(@PathVariable("technicalCommitteeId") technicalCommitteeId: String?): MutableList<Product> {
         return standardRequestService.getProducts(technicalCommitteeId?.toLong());
     }
 
-    @GetMapping("/getStandardRequest")
+    @GetMapping("/anonymous/standard/getStandardRequest")
     @ResponseBody
     fun getStandardRequests(): String {
         return standardRequestService.generateSRNumber("ENG");
@@ -59,7 +59,7 @@ class StandardRequestController(
           return ServerResponse(HttpStatus.OK,"Successfully returned products",standardRequestService.getProducts());
      }*/
 
-    @GetMapping("dropdown/getProductCategories/{productId}")
+    @GetMapping("/anonymous/standard/dropdown/getProductCategories/{productId}")
     @ResponseBody
     fun getProductCategories(@PathVariable("productId") productId: String?): MutableList<ProductSubCategory> {
         return standardRequestService.getProductCategories(productId?.toLong());
@@ -73,13 +73,13 @@ class StandardRequestController(
     }*/
 
 
-    @GetMapping("dropdown/getDepartments")
+    @GetMapping("/anonymous/standard/dropdown/getDepartments")
     @ResponseBody
     fun getDepartments(): MutableList<Department> {
         return standardRequestService.getDepartments();
     }
 
-    @GetMapping("/getLiaisonOrganizations")
+    @GetMapping("/anonymous/standard/getLiaisonOrganizations")
     @ResponseBody
     fun getLiaisonOrganization(): MutableList<LiaisonOrganization> {
         return standardRequestService.getLiaisonOrganization();
@@ -92,14 +92,14 @@ class StandardRequestController(
         return ServerResponse(HttpStatus.OK,"Successfully returned departments",standardRequestService.getDepartments());
     }*/
 
-    @GetMapping("dropdown/getTechnicalCommittee/{departmentId}")
+    @GetMapping("/anonymous/standard/dropdown/getTechnicalCommittee/{departmentId}")
     @ResponseBody
     fun getTechnicalCommittee(@PathVariable("departmentId") departmentId: String?): MutableList<TechnicalCommittee> {
         return standardRequestService.getTechnicalCommittee(departmentId?.toLong());
     }
 
 
-    @GetMapping("/getTechnicalCommitteeName/{tcId}")
+    @GetMapping("/anonymous/standard/getTechnicalCommitteeName/{tcId}")
     @ResponseBody
     fun getTechnicalCommitteeName(@PathVariable("tcId") tcId: String?): String {
         return standardRequestService.getTechnicalCommitteeName(tcId?.toLong());
@@ -112,12 +112,12 @@ class StandardRequestController(
         return ServerResponse(HttpStatus.OK,"Successfully returned technical committee",standardRequestService.getTechnicalCommittee());
     }*/
 
-    @GetMapping("/getHOFTasks")
+    @GetMapping("standard/getHOFTasks")
     fun getHOFTasks(): List<TaskDetails> {
         return standardRequestService.getHOFTasks()
     }
 
-    @PostMapping("/process")
+    @PostMapping("standard/process")
     @ResponseBody
     fun checkState(@RequestBody id: ID): ServerResponse {
         return ServerResponse(
@@ -127,7 +127,7 @@ class StandardRequestController(
         )
     }
 
-    @PostMapping("/hof/review")
+    @PostMapping("standard/hof/review")
     @ResponseBody
     fun hofReview(@RequestBody hofFeedback: HOFFeedback): ServerResponse {
         println(hofFeedback)
@@ -138,13 +138,13 @@ class StandardRequestController(
         )
     }
 
-    @GetMapping("/getTCSECTasks")
+    @GetMapping("standard/getTCSECTasks")
     fun getTCSECTasks(): List<TaskDetails> {
         return standardRequestService.getTCSECTasks()
     }
 
 
-    @PostMapping("/uploadNWI")
+    @PostMapping("standard/uploadNWI")
     @ResponseBody
     fun uploadNWI(@RequestBody standardNWI: StandardNWI): ServerResponse {
         println("hereeeeee")
@@ -152,13 +152,13 @@ class StandardRequestController(
         return ServerResponse(HttpStatus.OK, "Upload new work item", standardRequestService.uploadNWI(standardNWI))
     }
 
-    @GetMapping("/getTCTasks")
+    @GetMapping("standard/getTCTasks")
     fun getTCTasks(): List<TaskDetails> {
         return standardRequestService.getTCTasks()
     }
 
 
-    @PostMapping("/decisionOnNWI")
+    @PostMapping("standard/decisionOnNWI")
     @ResponseBody
     fun decisionOnNWI(@RequestBody voteOnNWI: VoteOnNWI): ServerResponse {
         return ServerResponse(
@@ -169,12 +169,12 @@ class StandardRequestController(
     }
 
 
-    @GetMapping("/tc-sec/tasks")
+    @GetMapping("standard/tc-sec/tasks")
     fun getTCSecTasks(): List<TaskDetails> {
         return standardRequestService.getTCSecTasks()
     }
 
-    @PostMapping("/uploadJustification")
+    @PostMapping("standard/uploadJustification")
     @ResponseBody
     fun uploadJustification(@RequestBody standardJustification: StandardJustification): ServerResponse {
         return ServerResponse(
@@ -184,12 +184,12 @@ class StandardRequestController(
         )
     }
 
-    @GetMapping("/spc-sec/tasks")
+    @GetMapping("standard/spc-sec/tasks")
     fun getSPCSecTasks(): List<TaskDetails> {
         return standardRequestService.getSPCSecTasks()
     }
 
-    @PostMapping("/decisionOnJustification")
+    @PostMapping("standard/decisionOnJustification")
     @ResponseBody
     fun decisionOnJustification(@RequestBody decisionJustification: DecisionJustification): ServerResponse {
         return ServerResponse(
@@ -199,12 +199,12 @@ class StandardRequestController(
         )
     }
 
-    @GetMapping("/tc-sec/tasks/workplan")
+    @GetMapping("standard/tc-sec/tasks/workplan")
     fun getTCSecTasksWorkPlan(): List<TaskDetails> {
         return standardRequestService.getTCSecTasksWorkPlan()
     }
 
-    @PostMapping("/uploadWorkPlan")
+    @PostMapping("standard/uploadWorkPlan")
     @ResponseBody
     fun uploadWorkPlan(@RequestBody standardWorkPlan: StandardWorkPlan): ServerResponse {
         return ServerResponse(
@@ -214,7 +214,7 @@ class StandardRequestController(
         )
     }
 
-    @PostMapping("/uploadFiles")
+    @PostMapping("standard/uploadFiles")
     fun uploadFiles(
         @RequestParam("file") file: MultipartFile,
         @RequestParam("itemId") itemId: String,
@@ -245,7 +245,7 @@ class StandardRequestController(
     }
 
 
-    @GetMapping("list/files/{type}/{itemId}")
+    @GetMapping("standard/list/files/{type}/{itemId}")
     fun getListFiles(
         @PathVariable type: String?,
         @PathVariable("itemId") itemId: String
@@ -309,7 +309,7 @@ class StandardRequestController(
         return ResponseEntity.status(HttpStatus.OK).body(files)
     }
 
-    @GetMapping("/files/{id}")
+    @GetMapping("standard/files/{id}")
     fun getFile(@PathVariable id: String?): ResponseEntity<ByteArray?>? {
         val fileDB = purposeAnnexService.getFile(id!!)
         return ResponseEntity.ok()

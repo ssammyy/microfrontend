@@ -44,7 +44,7 @@ export class AdministratorService {
   }
 
   assignCfsToUser(userProfileId: bigint, cfsId: bigint, status: number): any {
-    return this.http.post(`${this.urlToUsers}cfs/assign/${userProfileId}/${cfsId}/${status}`, null);
+    return this.http.post(`${this.urlToRbac}cfs/assign/${userProfileId}/${cfsId}/${status}`, null);
   }
 
   loadUserSearch(userSearch: any): any {

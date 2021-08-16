@@ -13,7 +13,9 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.scheduler.SchedulerImpl
 import org.kebs.app.kotlin.apollo.api.ports.provided.sftp.UpAndDownLoad
 import org.kebs.app.kotlin.apollo.api.utils.Delimiters
 import org.kebs.app.kotlin.apollo.api.utils.XMLDocument
+import org.kebs.app.kotlin.apollo.common.dto.UserEntityDto
 import org.kebs.app.kotlin.apollo.common.dto.kesws.receive.ConsignmentDocument
+import org.kebs.app.kotlin.apollo.common.utils.generateRandomText
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.customdto.PvocReconciliationReportDto
 import org.kebs.app.kotlin.apollo.store.model.*
@@ -57,6 +59,9 @@ class DITest {
 
     @Autowired
     lateinit var qaDaoServices: QADaoServices
+
+    @Autowired
+    lateinit var daoServiceAdmin: SystemsAdminDaoService
 
     @Autowired
     lateinit var schedulerImpl: SchedulerImpl
@@ -622,6 +627,50 @@ class DITest {
         invoiceDaoService.updateOfInvoiceTables()
     }
 
+
+    @Test
+    fun createEmployees() {
+        val appId: Int = applicationMapProperties.mapUserRegistration
+        val map = commonDaoServices.serviceMapDetails(appId)
+        var userCreated = UserEntityDto().apply {
+            id = null
+            firstName = "PHILIP"
+            lastName = "CHEPKWONY"
+            email = "chepkwonyp@kebs.org"
+            userName = email
+            userPinIdNumber = null
+            personalContactNumber = "254724175178"
+            typeOfUser = null
+            userRegNo =
+                "KEBS#EMP${generateRandomText(5, map.secureRandom, map.messageDigestAlgorithm, true).toUpperCase()}"
+            enabled = false
+            accountExpired = false
+            accountLocked = false
+            credentialsExpired = false
+            status = false
+            registrationDate = null
+            userType = null
+            title = 1
+            directorate = 1
+            department = 2
+            division = 4
+            section = null
+            l1SubSubSection = null
+            l2SubSubSection = null
+            designation = 410
+            profileId = null
+            region = 4
+            county = 26
+            town = 579
+            subRegion = null
+        }
+
+        userCreated = daoServiceAdmin.updateUserDetails(userCreated)!!
+
+
+        invoiceDaoService.updateOfInvoiceTables()
+    }
+
     @Test
     fun checkLabResults() {
         schedulerImpl.updateLabResultsWithDetails()
@@ -657,7 +706,7 @@ class DITest {
 
                     var itemDetails = destinationInspectionDaoServices.findItemWithItemID(284)
                     with(itemDetails) {
-                        paymentFeeIdSelected = iDIFeeDetailsRepo.findByIdOrNull(7)
+                        paymentFeeIdSelected = iDIFeeDetailsRepo.findByIdOrNull(5)
                     }
                     itemDetails = destinationInspectionDaoServices.updateCdItemDetailsInDB(itemDetails, loggedInUser)
                     val importerDetails =

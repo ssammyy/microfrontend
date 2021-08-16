@@ -117,6 +117,15 @@ export class SubSectionsL2EntityDto {
   status?: boolean;
 }
 
+
+export class FreightStationsDto {
+  id?: number;
+  cfsCode?: string;
+  cfsName?: string;
+  description?: string;
+  status?: boolean;
+}
+
 export class TitlesEntityDto {
   id?: number;
   title?: string;

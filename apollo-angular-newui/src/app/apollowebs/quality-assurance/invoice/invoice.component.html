@@ -45,7 +45,7 @@
                                     <td *ngIf="row[4] == 10">PAID</td>
                                     <td *ngIf="row[4] != 10">NOT PAID</td>
                                     <td class="text-right">
-                                        <a (click)="onSelect(row[5])" target="_blank"
+                                        <a href="/invoiceDetails#{{row[5]}}"
                                            class="btn btn-link btn-info btn-just-icon view"><i
                                                 class="material-icons">remove_red_eye</i></a>
                                     </td>

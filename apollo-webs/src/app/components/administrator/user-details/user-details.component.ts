@@ -1,7 +1,12 @@
 import {Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import {faArrowLeft} from '@fortawesome/free-solid-svg-icons/faArrowLeft';
 import {FormArray, FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {DivisionDetails, RolesEntityDto, SubSectionsL2EntityDto} from '../../../shared/models/master-data-details';
+import {
+  DivisionDetails,
+  FreightStationsDto,
+  RolesEntityDto,
+  SubSectionsL2EntityDto
+} from '../../../shared/models/master-data-details';
 import {ActivatedRoute, Router} from '@angular/router';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {NgxSpinnerService} from 'ngx-spinner';
@@ -43,11 +48,12 @@ export class UserDetailsComponent implements OnInit {
   public persons!: FormArray;
   public userDetails!: UserRegister;
   public subSectionsL2EntityDto!: SubSectionsL2EntityDto[];
+  public freightStationsDto!: FreightStationsDto[];
 
 
   divisionOptions: DivisionDetails[] = [];
   rolesEntity: RolesEntityDto[] = [];
-  cfsEntity: SubSectionsL2EntityDto[] = [];
+  cfsEntity: FreightStationsDto[] = [];
 
   constructor(private router: Router,
               private administratorService: AdministratorService,
@@ -89,6 +95,20 @@ export class UserDetailsComponent implements OnInit {
       (data: any) => {
         console.log(data);
         this.rolesEntity = data;
+
+        this.masterDataService.loadCfsSystemAdmin().subscribe(
+          (dataCfs: any) => {
+            this.cfsEntity = dataCfs;
+            console.log(dataCfs);
+
+          },
+          // tslint:disable-next-line:max-line-length
+          (error: { error: { message: any; }; }) => {
+            this.notificationService.showError(error.error.message, 'Access Denied');
+            this.spinner.hide();
+          }
+        );
+
       },
       // tslint:disable-next-line:max-line-length
       (error: { error: { message: any; }; }) => {
@@ -96,20 +116,6 @@ export class UserDetailsComponent implements OnInit {
         this.spinner.hide();
       }
     );
-
-    this.masterDataService.loadL2SubSubSectionSystemAdmin().subscribe(
-      (data: any) => {
-        this.subSectionsL2EntityDto = data;
-        console.log(data);
-
-      },
-      // tslint:disable-next-line:max-line-length
-      (error: { error: { message: any; }; }) => {
-        this.notificationService.showError(error.error.message, 'Access Denied');
-        this.spinner.hide();
-      }
-    );
-
 
     // this.masterDataService.loadRolesSystemAdmin().subscribe(
     //   (data: any) => {
@@ -176,21 +182,21 @@ export class UserDetailsComponent implements OnInit {
 
     this.route.paramMap.subscribe(params => {
        const r = params.get('requestID');
-       const rn = params.get('requestNAME');
-       if (r != null && rn != null){
-         this.requestId = r;
-         this.requestName = rn;
-       }
-       console.log(this.requestId);
+      const rn = params.get('requestNAME');
+      if (r != null && rn != null) {
+        this.requestId = r;
+        this.requestName = rn;
+      }
+      console.log(this.requestId);
     });
 
   }
 
-  onSelectL1SubSubSection(l1SubSubSectionName: string): any {
-    this.cfsEntity = this.subSectionsL2EntityDto.filter((item) => {
-      return item.subSection === l1SubSubSectionName;
-    });
-  }
+  // onSelectL1SubSubSection(l1SubSubSectionName: string): any {
+  //   this.cfsEntity = this.subSectionsL2EntityDto.filter((item) => {
+  //     return item.subSection === l1SubSubSectionName;
+  //   });
+  // }
 
   openModal(divVal: string): void {
     const arrHead = ['assignUserARole', 'assignUserARoleFromRequest', 'rejectOGAComplaint', 'approveComplaint', 'assignOfficer'];
@@ -239,7 +245,7 @@ export class UserDetailsComponent implements OnInit {
   }
 
   onSubmitAssignedCFS(userProfileId: any): void {
-    this.administratorService.assignCfsToUser(userProfileId, this.assignRoleForm.get('roleID')?.value, 1).subscribe(
+    this.administratorService.assignCfsToUser(userProfileId, this.assignCfsForm.get('cfsID')?.value, 1).subscribe(
       (data: Complaints) => {
         console.log(data);
         // this.onUpdateReturnToList();

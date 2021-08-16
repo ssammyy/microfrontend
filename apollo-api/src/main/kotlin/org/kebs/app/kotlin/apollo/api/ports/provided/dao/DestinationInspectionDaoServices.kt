@@ -41,13 +41,11 @@ import java.time.format.DateTimeFormatter
 class DestinationInspectionDaoServices(
     private val applicationMapProperties: ApplicationMapProperties,
     private val commonDaoServices: CommonDaoServices,
-    private val SampleCollectionRepo: IQaSampleCollectionRepository,
     private val SampleSubmissionRepo: IQaSampleSubmissionRepository,
     private val serviceRequestsRepository: IServiceRequestsRepository,
     private val invoiceDaoService: InvoiceDaoService,
     private val notifications: Notifications,
     private val iCocItemRepository: ICocItemRepository,
-    private val coiItemsRepository: ICoiItemsRepository,
     private val iUserProfilesRepo: IUserProfilesRepository,
     private val iSubSectionsLevel2Repo: ISubSectionsLevel2Repository,
     private val idfsRepo: IIDFDetailsEntityRepository,
@@ -56,6 +54,7 @@ class DestinationInspectionDaoServices(
     private val iLocalCocTypeRepo: ILocalCocTypesRepository,
     private val cocRepo: ICocsRepository,
     private val coisRep: ICoisRepository,
+    private val usersCfsRepo: IUsersCfsAssignmentsRepository,
     private val iCdInspectionChecklistRepo: ICdInspectionChecklistRepository,
     private val cdTypesRepo: IConsignmentDocumentTypesEntityRepository,
     private val iCdImporterRepo: ICdImporterEntityRepository,
@@ -78,9 +77,9 @@ class DestinationInspectionDaoServices(
     private val iSampleSubmissionParamRepo: ICdSampleSubmissionParametersRepository,
     private val iChecklistInspectionTypesRepo: IChecklistInspectionTypesRepository,
     private val iUserRepository: IUserRepository,
-
     private val iCdItemsRepo: IConsignmentItemsRepository,
     private val iLocalCocRepo: ILocalCocEntityRepository,
+
     private val iLocalCorRepo: ILocalCorEntityRepository,
     private val iLocalCocItemRepo: ILocalCocItemsEntityRepository,
     private val iCdItemNonStandardEntityRepository: ICdItemNonStandardEntityRepository,
@@ -90,25 +89,22 @@ class DestinationInspectionDaoServices(
     private val corsBakRepository: ICorsBakRepository,
     private val idfItemRepo: IIDFItemDetailsEntityRepository,
     private val declarationItemRepo: IDeclarationItemDetailsEntityRepository,
-
     private val iCdTransactionRepo: ICdTransactionsRepository,
     private val iCountryTypeCodesRepo: ICountryTypeCodesRepository,
 
     private val iCfsTypeCodesRepository: ICfsTypeCodesRepository,
     private val iCdCfsUserCfsRepository: ICdCfsUserCfsRepository,
+
     private val iPortsTypeCodesRepository: IPortsTypeCodesRepository,
     private val iCdPortsUserPortsRepository: ICdPortsUserPortsRepository,
-
-    //Inspection Checklist Repos
     private val iCdInspectionGeneralRepo: ICdInspectionGeneralRepository,
     private val iCdInspectionAgrochemItemChecklistRepo: ICdInspectionAgrochemItemChecklistRepository,
+
+    //Inspection Checklist Repos
     private val iCdInspectionEngineeringItemChecklistRepo: ICdInspectionEngineeringItemChecklistRepository,
     private val iCdInspectionOtherItemChecklistRepo: ICdInspectionOtherItemChecklistRepository,
     private val iCdInspectionMotorVehicleItemChecklistRepo: ICdInspectionMotorVehicleItemChecklistRepository,
-
     private val iPvocPartnersCountriesRepository: IPvocPartnersCountriesRepository,
-
-    //DI BPMNs
     private val diBpmn: DestinationInspectionBpmn
 
 ) {
@@ -1026,7 +1022,9 @@ fun createLocalCoc(
     ): BigDecimal? {
         val percentage = 100
         var amount = (diInspectionFeeId.rate?.toBigDecimal())?.multiply(cfiValue)?.divide(percentage.toBigDecimal())
+
         KotlinLogging.logger { }.info { "MY AMOUNT BEFORE CALCULATION = $amount" }
+
         val currencyValues = itemDetails.foreignCurrencyCode?.let { iCfgMoneyTypeCodesRepo.findByTypeCode(it) }
 //        var amountInUSD = itemDetails.foreignCurrencyCode?.let { iCfgMoneyTypeCodesRepo.findByTypeCode(it) }
 
@@ -1059,20 +1057,26 @@ fun createLocalCoc(
             }
         }
 
-        if (diInspectionFeeId.higher != null) {
-            val higherValue =
-                (currencyValues?.typeCodeValue)?.toBigDecimal()?.multiply(diInspectionFeeId.higher?.toBigDecimal())
-            if (higherValue != null) {
-                if (amount != null) {
-                    amount = when {
-                        amount > higherValue -> {
-                            amount
-                        }
-                        amount < higherValue -> {
-                            higherValue
-                        }
-                        else -> {
-                            amount
+        when {
+            diInspectionFeeId.higher != null -> {
+                val higherValue =
+                    (currencyValues?.typeCodeValue)?.toBigDecimal()?.multiply(diInspectionFeeId.higher?.toBigDecimal())
+                when {
+                    higherValue != null -> {
+                        when {
+                            amount != null -> {
+                                amount = when {
+                                    amount > higherValue -> {
+                                        amount
+                                    }
+                                    amount < higherValue -> {
+                                        higherValue
+                                    }
+                                    else -> {
+                                        amount
+                                    }
+                                }
+                            }
                         }
                     }
                 }
@@ -1596,6 +1600,13 @@ fun createLocalCoc(
         return iCfsTypeCodesRepository.findByCfsCode(cfsCodeValue)
     }
 
+    fun findCfsID(id: Long): CfsTypeCodesEntity {
+        iCfsTypeCodesRepository.findByIdOrNull(id)?.let {
+            return it
+        }
+            ?: throw Exception("No CFS with ID = $id")
+    }
+
     fun findCfsUserFromCdCfs(cfsCdID: Long): CdCfsUserCfsEntity? {
         return iCdCfsUserCfsRepository.findByCdCfs(cfsCdID)
     }
@@ -2047,10 +2058,26 @@ fun createLocalCoc(
 
     }
 
+    fun findAllOngoingCdWithFreightStationID(
+        cfsEntity: CfsTypeCodesEntity,
+        cdType: ConsignmentDocumentTypesEntity
+    ): List<ConsignmentDocumentDetailsEntity> {
+        iConsignmentDocumentDetailsRepo.findByFreightStationAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNull(
+            cfsEntity.id,
+            cdType
+        )?.let {
+            return it
+        }
+            ?: throw Exception("COC List with the following  Freight STATION = ${cfsEntity.cfsName} and CD Type = ${cdType.typeName}, does not Exist")
+
+    }
+
     fun findAllOngoingCdWithPortOfEntry(
         sectionsEntity: SectionsEntity
     ): List<ConsignmentDocumentDetailsEntity> {
-        iConsignmentDocumentDetailsRepo.findByPortOfArrivalAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNull(sectionsEntity.id)
+        iConsignmentDocumentDetailsRepo.findByPortOfArrivalAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNull(
+            sectionsEntity.id
+        )
             ?.let {
                 return it
             }
@@ -2086,9 +2113,27 @@ fun createLocalCoc(
 
     }
 
+    fun findAllCompleteCdWithFreightStation(
+        cfsEntity: CfsTypeCodesEntity
+    ): List<ConsignmentDocumentDetailsEntity> {
+        iConsignmentDocumentDetailsRepo.findByFreightStationAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNotNull(
+            cfsEntity.id
+        )?.let {
+            return it
+        }
+            ?: throw Exception("COC List with the following Freight Station = ${cfsEntity.cfsName}, does not Exist")
+
+    }
+
     fun findAllCdWithNoPortOfEntry(cdType: ConsignmentDocumentTypesEntity): List<ConsignmentDocumentDetailsEntity>? {
         return iConsignmentDocumentDetailsRepo.findByPortOfArrivalIsNullAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNull(
             cdType.id
+        )
+    }
+
+    fun findAllCdWithNoFreghitStation(cdType: ConsignmentDocumentTypesEntity): List<ConsignmentDocumentDetailsEntity>? {
+        return iConsignmentDocumentDetailsRepo.findByFreightStationIsNullAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNull(
+            cdType
         )
     }
 
@@ -2102,7 +2147,7 @@ fun createLocalCoc(
     ): List<ConsignmentDocumentDetailsEntity> {
         iConsignmentDocumentDetailsRepo.findAllByAssignedInspectionOfficerAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNull(
             usersEntity,
-            cdType.id
+            cdType
         )
             ?.let {
                 return it
@@ -2128,7 +2173,7 @@ fun createLocalCoc(
     ): List<ConsignmentDocumentDetailsEntity> {
         iConsignmentDocumentDetailsRepo.findAllByAssignedInspectionOfficerAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNotNull(
             usersEntity,
-            cdType.id
+            cdType
         )
             ?.let {
                 return it
@@ -2150,12 +2195,12 @@ fun createLocalCoc(
 
 
     fun findAllCdWithNoAssignedIoID(
-        subSectionsLevel2Entity: SubSectionsLevel2Entity,
+        cfsEntity: CfsTypeCodesEntity,
         cdType: ConsignmentDocumentTypesEntity
     ): List<ConsignmentDocumentDetailsEntity>? {
         return iConsignmentDocumentDetailsRepo.findByFreightStationAndAssignedInspectionOfficerIsNullAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNull(
-            subSectionsLevel2Entity.id,
-            cdType.id
+            cfsEntity.id,
+            cdType
         )
     }
 
@@ -2277,6 +2322,15 @@ fun createLocalCoc(
         return iSampleSubmissionParamRepo.save(sampleSubmitParamEntity)
     }
 
+
+    fun findAllCFSUserList(userProfileID: Long): List<UsersCfsAssignmentsEntity> {
+        usersCfsRepo.findByUserProfileId(userProfileID)
+            ?.let {
+                return it
+            }
+            ?: throw ServiceMapNotFoundException("NO USER CFS FOUND WITH PROFILE ID = ${userProfileID}")
+    }
+
     fun findSavedChecklist(itemId: Long): CdInspectionChecklistEntity {
         iCdInspectionChecklistRepo.findByItemId(itemId)
             ?.let { checklist ->
@@ -2355,6 +2409,11 @@ fun createLocalCoc(
                     "https://localhost:8006/api/di/item/sample-Submit-param/bs-number?cdSampleSubmitID=${paramatersEntity.sampleSubmissionId?.id}&docType=${sampSubmitName}&itemID=${paramatersEntity.sampleSubmissionId?.itemId}&message=${labResults}"
         notifications.sendEmail(recipientEmail, subject, messageBody)
         return true
+    }
+
+
+    fun addCDByCFSToList() {
+
     }
 
     fun sendBSNumber(

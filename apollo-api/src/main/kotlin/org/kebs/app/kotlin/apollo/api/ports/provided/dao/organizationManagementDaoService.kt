@@ -171,6 +171,7 @@ class RegistrationManagementDaoService(
                         confirmCredentials = BCryptPasswordEncoder().encode("")
                         modifiedBy = request.username
                         modifiedOn = Timestamp.from(Instant.now())
+                        enabled = applicationMapProperties.transactionActiveStatus
                         accountExpired = applicationMapProperties.transactionInactiveStatus
                         accountLocked = applicationMapProperties.transactionInactiveStatus
                         credentialsExpired = applicationMapProperties.transactionInactiveStatus

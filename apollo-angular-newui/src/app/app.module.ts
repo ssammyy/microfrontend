@@ -91,35 +91,41 @@ import {FmarkApplicationComponent} from './apollowebs/quality-assurance/fmark-ap
 import {LoaderComponent} from './shared/loader/loader.component';
 import { FormsComponent } from './apollowebs/forms/forms.component';
 import { FieldErrorDisplayComponent } from './apollowebs/forms/field-error-display/field-error-display.component';
-import {NwaJustificationFormComponent} from "./apollowebs/standards-development/nwa-justification-form/nwa-justification-form.component";
+import {NwaJustificationFormComponent} from "./apollowebs/standards-development/workshop-agreement/nwa-justification-form/nwa-justification-form.component";
 import {StandardsDevelopmentComponent} from "./apollowebs/standards-development/standards-development.component";
 import { InformationcheckComponent } from './apollowebs/standards-development/informationcheck/informationcheck.component';
 import { UsermanagementComponent } from './apollowebs/usermanagement/usermanagement.component';
-import { NwaJustificationTasksComponent } from './apollowebs/standards-development/nwa-justification-tasks/nwa-justification-tasks.component';
+import { NwaJustificationTasksComponent } from './apollowebs/standards-development/workshop-agreement/nwa-justification-tasks/nwa-justification-tasks.component';
 import {DataTablesModule} from "angular-datatables";
-import { NwaKnwSecTasksComponent } from './apollowebs/standards-development/nwa-knw-sec-tasks/nwa-knw-sec-tasks.component';
-import { NwaDiSdtTasksComponent } from './apollowebs/standards-development/nwa-di-sdt-tasks/nwa-di-sdt-tasks.component';
-import { NwaHopTasksComponent } from './apollowebs/standards-development/nwa-hop-tasks/nwa-hop-tasks.component';
-import { SacSecTasksComponent } from './apollowebs/standards-development/sac-sec-tasks/sac-sec-tasks.component';
+import { NwaKnwSecTasksComponent } from './apollowebs/standards-development/workshop-agreement/nwa-knw-sec-tasks/nwa-knw-sec-tasks.component';
+import { NwaDiSdtTasksComponent } from './apollowebs/standards-development/workshop-agreement/nwa-di-sdt-tasks/nwa-di-sdt-tasks.component';
+import { NwaHopTasksComponent } from './apollowebs/standards-development/workshop-agreement/nwa-hop-tasks/nwa-hop-tasks.component';
+import { SacSecTasksComponent } from './apollowebs/standards-development/workshop-agreement/sac-sec-tasks/sac-sec-tasks.component';
 import { HoSicTasksComponent } from './apollowebs/standards-development/ho-sic-tasks/ho-sic-tasks.component';
-import { InternationalStandardProposalComponent } from './apollowebs/standards-development/international-standard-proposal/international-standard-proposal.component';
-import { IntStdCommentsComponent } from './apollowebs/standards-development/int-std-comments/int-std-comments.component';
-import { IntStdJustificationAppComponent } from './apollowebs/standards-development/int-std-justification-app/int-std-justification-app.component';
-import { IntStdJustificationListComponent } from './apollowebs/standards-development/int-std-justification-list/int-std-justification-list.component';
-import { IntStdResponsesListComponent } from './apollowebs/standards-development/int-std-responses-list/int-std-responses-list.component';
-import { IsProposalFormComponent } from './apollowebs/standards-development/international-standard-proposal/is-proposal-form/is-proposal-form.component';
-import { RequestStandardReviewComponent } from './apollowebs/standards-development/request-standard-review/request-standard-review.component';
-import { ReviewStandardsComponent } from './apollowebs/standards-development/request-standard-review/review-standards/review-standards.component';
-import { SystemicReviewCommentsComponent } from './apollowebs/standards-development/systemic-review-comments/systemic-review-comments.component';
-import { SystemicAnalyseCommentsComponent } from './apollowebs/standards-development/systemic-analyse-comments/systemic-analyse-comments.component';
-import { CompanyStandardRequestComponent } from './apollowebs/standards-development/company-standard-request/company-standard-request.component';
-import { CsRequestFormComponent } from './apollowebs/standards-development/company-standard-request/cs-request-form/cs-request-form.component';
-import { ComStdRequestListComponent } from './apollowebs/standards-development/com-std-request-list/com-std-request-list.component';
-import { ComStdJcJustificationComponent } from './apollowebs/standards-development/com-std-jc-justification/com-std-jc-justification.component';
-import { ComStdJcJustificationListComponent } from './apollowebs/standards-development/com-std-jc-justification-list/com-std-jc-justification-list.component';
+import { ReviewStandardsComponent } from './apollowebs/standards-development/systemic-review/request-standard-review/review-standards/review-standards.component';
+import { CsRequestFormComponent } from './apollowebs/standards-development/company-standard/company-standard-request/cs-request-form/cs-request-form.component';
 import {DivisionresponseComponent} from "./apollowebs/standards-development/divisionresponse/divisionresponse.component";
 import { NationalEnquiryPointComponent } from './apollowebs/standards-development/national-enquiry-point/national-enquiry-point.component';
 import { MakeEnquiryComponent } from './apollowebs/standards-development/national-enquiry-point/make-enquiry/make-enquiry.component';
+import {InternationalStandardProposalComponent} from "./apollowebs/standards-development/international-standard/international-standard-proposal/international-standard-proposal.component";
+import {ComStdRequestListComponent} from "./apollowebs/standards-development/company-standard/com-std-request-list/com-std-request-list.component";
+import {IntStdResponsesListComponent} from "./apollowebs/standards-development/international-standard/int-std-responses-list/int-std-responses-list.component";
+import {ComStdJcJustificationComponent} from "./apollowebs/standards-development/company-standard/com-std-jc-justification/com-std-jc-justification.component";
+import {IntStdJustificationListComponent} from "./apollowebs/standards-development/international-standard/int-std-justification-list/int-std-justification-list.component";
+import {IntStdCommentsComponent} from "./apollowebs/standards-development/international-standard/int-std-comments/int-std-comments.component";
+import {CompanyStandardRequestComponent} from "./apollowebs/standards-development/company-standard/company-standard-request/company-standard-request.component";
+import {ComStdJcJustificationListComponent} from "./apollowebs/standards-development/company-standard/com-std-jc-justification-list/com-std-jc-justification-list.component";
+import {RequestStandardReviewComponent} from "./apollowebs/standards-development/systemic-review/request-standard-review/request-standard-review.component";
+import {SystemicReviewCommentsComponent} from "./apollowebs/standards-development/systemic-review/systemic-review-comments/systemic-review-comments.component";
+import {IntStdJustificationAppComponent} from "./apollowebs/standards-development/international-standard/int-std-justification-app/int-std-justification-app.component";
+import {IsProposalFormComponent} from "./apollowebs/standards-development/international-standard/international-standard-proposal/is-proposal-form/is-proposal-form.component";
+import {SystemicAnalyseCommentsComponent} from "./apollowebs/standards-development/systemic-review/systemic-analyse-comments/systemic-analyse-comments.component";
+import { UserManagementProfileComponent } from './apollowebs/usermanagement/user-management-profile/user-management-profile.component';
+import { NepNotificationComponent } from './apollowebs/standards-development/nep-notification/nep-notification.component';
+import { StandardRequestComponent } from './apollowebs/standards-development/standard-request/standard-request.component';
+import { RequestStandardFormComponent } from './apollowebs/standards-development/standard-request/request-standard-form/request-standard-form.component';
+import {ModalModule} from "ngb-modal";
+
 
 // import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 
@@ -160,6 +166,7 @@ import { MakeEnquiryComponent } from './apollowebs/standards-development/nationa
         MdModule,
         CommonModule,
         BrowserModule,
+        ModalModule,
         // TODO: Discuss as it seems to kill sending of requests to backend
         // EffectsModule.forRoot([]),
         // EntityDataModule.forRoot(entityConfig),
@@ -239,7 +246,11 @@ import { MakeEnquiryComponent } from './apollowebs/standards-development/nationa
         InformationcheckComponent,
         DivisionresponseComponent,
         NationalEnquiryPointComponent,
-        MakeEnquiryComponent
+        MakeEnquiryComponent,
+        UserManagementProfileComponent,
+        NepNotificationComponent,
+        StandardRequestComponent,
+        RequestStandardFormComponent
 
     ]
 

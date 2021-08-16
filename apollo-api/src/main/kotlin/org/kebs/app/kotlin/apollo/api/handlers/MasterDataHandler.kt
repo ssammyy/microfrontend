@@ -649,6 +649,41 @@ class MasterDataHandler(
 
     }
 
+    @PreAuthorize("hasAuthority('COUNTIES_LIST')")
+    fun countiesListingAdmin(req: ServerRequest): ServerResponse {
+        try {
+            val status = try {
+                req.pathVariable("status").toInt()
+            } catch (e: Exception) {
+                -1
+            }
+            when {
+                status <= 1 -> {
+                    daoService.getAllCounties()
+                        ?.let {
+                            return ok().body(it)
+                        }
+                        ?: throw NullValueNotAllowedException("No records found")
+
+                }
+                else -> {
+                    daoService.getCountiesByStatus(status)
+                        ?.let {
+                            return ok().body(it)
+                        }
+                        ?: throw NullValueNotAllowedException("No records found")
+
+                }
+            }
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            return badRequest().body(e.message ?: "Unknown Error")
+        }
+
+
+    }
+
     @PreAuthorize("hasAuthority('TOWNS_LIST')")
     fun regionCountyTownListing(req: ServerRequest): ServerResponse =
         try {
@@ -734,6 +769,78 @@ class MasterDataHandler(
 
 
 }
+
+    @PreAuthorize("hasAuthority('TOWNS_LIST')")
+    fun townsListingAdmin(req: ServerRequest): ServerResponse {
+        try {
+            val status = try {
+                req.pathVariable("status").toInt()
+            } catch (e: Exception) {
+                -1
+            }
+            when {
+                status <= 1 -> {
+                    daoService.getAllTowns()
+                        ?.let {
+                            return ok().body(it)
+                        }
+                        ?: throw NullValueNotAllowedException("No records found")
+
+                }
+                else -> {
+                    daoService.getTownsByStatus(status)
+
+                        ?.let {
+                            return ok().body(it)
+                        }
+                        ?: throw NullValueNotAllowedException("No records found")
+
+                }
+            }
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            return badRequest().body(e.message ?: "Unknown Error")
+        }
+
+
+    }
+
+    @PreAuthorize("hasAuthority('RBAC_ASSIGN_CFS')")
+    fun cfsListing(req: ServerRequest): ServerResponse {
+        try {
+            val status = try {
+                req.pathVariable("status").toInt()
+            } catch (e: Exception) {
+                -1
+            }
+            when {
+                status <= 1 -> {
+                    daoService.getAllCFS()
+                        ?.let {
+                            return ok().body(it)
+                        }
+                        ?: throw NullValueNotAllowedException("No records found")
+
+                }
+                else -> {
+                    daoService.getCFSByStatus(status)
+
+                        ?.let {
+                            return ok().body(it)
+                        }
+                        ?: throw NullValueNotAllowedException("No records found")
+
+                }
+            }
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            return badRequest().body(e.message ?: "Unknown Error")
+        }
+
+
+    }
 
     @PreAuthorize("isAnonymous()")
     fun townsListingByCountyId(req: ServerRequest): ServerResponse {

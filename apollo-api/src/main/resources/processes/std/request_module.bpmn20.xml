@@ -14,21 +14,21 @@
                   flowable:formFieldValidation="true"/>
         <endEvent id="endEvent"/>
         <serviceTask id="sendNotificationCompiledRequests" name="Send notification of the compiled request"
-                     flowable:class="org.kebs.app.kotlin.apollo.api.handlers.std.EmailHandler"/>
+                     flowable:class="org.kebs.app.kotlin.apollo.api.handlers.EmailHandler"/>
         <userTask id="analyzeNotificationRequest" name="Review request" flowable:candidateGroups="HOF"
                   flowable:formFieldValidation="true"/>
         <serviceTask id="reviewRequest" name="Prioritize,Evaluate and Rank request"
-                     flowable:class="org.kebs.app.kotlin.apollo.api.handlers.std.EvaluateStandardRequest"/>
+                     flowable:class="org.kebs.app.kotlin.apollo.api.handlers.EvaluateStandardRequest"/>
         <sequenceFlow id="flow11" sourceRef="prepareJustification" targetRef="sendToSPCSECForAprroval"/>
         <sequenceFlow id="flow18" sourceRef="prepareWorkPlan" targetRef="receiveWorkPlanNotification"/>
         <serviceTask id="approveNotification" name="Send notification of assignment to TC"
-                     flowable:class="org.kebs.app.kotlin.apollo.api.handlers.std.EmailHandler"/>
+                     flowable:class="org.kebs.app.kotlin.apollo.api.handlers.EmailHandler"/>
         <serviceTask id="sendToSPCSECForAprroval" name="Send notification for approval"
-                     flowable:class="org.kebs.app.kotlin.apollo.api.handlers.std.EmailHandler"/>
+                     flowable:class="org.kebs.app.kotlin.apollo.api.handlers.EmailHandler"/>
         <serviceTask id="receiveWorkPlanNotification" name="Send notification of workplan"
-                     flowable:class="org.kebs.app.kotlin.apollo.api.handlers.std.EmailHandler"/>
+                     flowable:class="org.kebs.app.kotlin.apollo.api.handlers.EmailHandler"/>
         <serviceTask id="negativeFeedbackRemarks" name="Send feedback with remarks"
-                     flowable:class="org.kebs.app.kotlin.apollo.api.handlers.std.EmailHandler"/>
+                     flowable:class="org.kebs.app.kotlin.apollo.api.handlers.EmailHandler"/>
         <userTask id="approveOrDisapproveRequest" name="Adopt NWI or not" flowable:candidateGroups="TC"
                   flowable:formFieldValidation="true"/>
         <userTask id="approveOrDisapproveJustification" name="Approve or disapprove justification"
@@ -46,7 +46,7 @@
             <conditionExpression xsi:type="tFormalExpression"><![CDATA[${spc_approved}]]></conditionExpression>
         </sequenceFlow>
         <serviceTask id="sendNotiReviewNWI" name="Send notification to review NWI"
-                     flowable:class="org.kebs.app.kotlin.apollo.api.handlers.std.EmailHandler"/>
+                     flowable:class="org.kebs.app.kotlin.apollo.api.handlers.EmailHandler"/>
         <userTask id="prepareNWI" name="Prepare NWI" flowable:candidateGroups="TC-sec"
                   flowable:formFieldValidation="true"/>
         <sequenceFlow id="flow250" sourceRef="prepareNWI" targetRef="sendNotiReviewNWI"/>
@@ -65,7 +65,7 @@
                       targetRef="notificationForAdoption"/>
         <sequenceFlow id="flow3" sourceRef="sendNotificationCompiledRequests" targetRef="analyzeNotificationRequest"/>
         <serviceTask id="notificationForAdoption" name="Send notification for adoption of the request to NSC-Sec"
-                     flowable:class="org.kebs.app.kotlin.apollo.api.handlers.std.EmailHandler"/>
+                     flowable:class="org.kebs.app.kotlin.apollo.api.handlers.EmailHandler"/>
         <userTask id="viewStdRequest" name="View Standard Request" flowable:candidateUsers="NSC-SEC"
                   flowable:formFieldValidation="true"/>
         <sequenceFlow id="sid-9A47291C-4C9B-403A-8DF9-F4E03C5391EC" sourceRef="notificationForAdoption"
@@ -78,7 +78,7 @@
         <parallelGateway id="sid-2699202F-FBD3-4E4F-B061-88E9808AC39C"/>
         <sequenceFlow id="flow200" sourceRef="sid-2699202F-FBD3-4E4F-B061-88E9808AC39C" targetRef="reviewRequest"/>
         <serviceTask id="sendNotificationNSPSec" name="Send notification for adoption of the request to NSP-Sec"
-                     flowable:class="org.kebs.app.kotlin.apollo.api.handlers.std.EmailHandler"/>
+                     flowable:class="org.kebs.app.kotlin.apollo.api.handlers.EmailHandler"/>
         <userTask id="viewAllStdRequestNSP" name="Notification to include the request in NSP"
                   flowable:candidateUsers="NSP-SEC" flowable:formFieldValidation="true"/>
         <sequenceFlow id="sid-BA3226D4-7F2C-4920-9446-23781A19B0CF" sourceRef="sendNotificationNSPSec"
