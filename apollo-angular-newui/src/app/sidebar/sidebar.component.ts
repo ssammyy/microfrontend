@@ -45,18 +45,7 @@ export const ROUTES: RouteInfo[] = [
         ]
     },
 
-    {
-        path: '/fmark',
-        title: 'Fortification Mark',
-        type: 'sub',
-        icontype: 'recommended',
-        collapse: 'fmark',
-        children: [
-            {path: 'application', title: 'Make Application', ab: 'MA'},
-            {path: 'fMarkAllApp', title: 'All My Applications', ab: 'AMA'},
-            {path: 'panels', title: 'Awarded Applications', ab: 'AA'}
-        ]
-    }, {
+     {
         path: '/dmark',
         title: 'Diamond Mark',
         type: 'sub',
@@ -79,14 +68,25 @@ export const ROUTES: RouteInfo[] = [
             {path: 'panels', title: 'Awarded Applications', ab: 'AA'}
         ]
     }, {
+        path: '/fmark',
+        title: 'Fortification Mark',
+        type: 'sub',
+        icontype: 'recommended',
+        collapse: 'fmark',
+        children: [
+            {path: 'application', title: 'Make Application', ab: 'MA'},
+            {path: 'fMarkAllApp', title: 'All My Applications', ab: 'AMA'},
+            {path: 'panels', title: 'Awarded Applications', ab: 'AA'}
+        ]
+    }, {
         path: '/invoice',
         title: 'Invoices',
         type: 'sub',
         icontype: 'receipt',
         collapse: 'invoice',
         children: [
-            {path: 'all_invoice', title: 'All Invoices', ab: 'AI'},
-            {path: 'consolidate_invoice', title: 'Consolidate Invoices', ab: 'CI'}
+            {path: 'consolidate_invoice', title: 'Consolidate Invoices', ab: 'CI'},
+            {path: 'all_invoice', title: 'All Invoices', ab: 'AI'}
         ]
     },
     {

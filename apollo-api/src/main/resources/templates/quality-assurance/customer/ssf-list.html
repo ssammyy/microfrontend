@@ -31,6 +31,7 @@
                                         <th>SSF NO</th>
                                         <th>SSF SUBMISSION DATE</th>
                                         <th>BS NUMBER</th>
+                                        <th>PRODUCT NAME</th>
                                         <th>BRAND NAME</th>
                                         <th>SAMPLE STATUS</th>
                                         <th>View Details</th>
@@ -42,6 +43,7 @@
                                         <td th:text="${ssfDetails?.ssfNo}"></td>
                                         <td th:text="${#dates.format(ssfDetails?.ssfSubmissionDate, 'dd/MM/yyyy')}"></td>
                                         <td th:text="${ssfDetails?.bsNumber}"></td>
+                                        <td th:text="${ssfDetails?.productDescription}"></td>
                                         <td th:text="${ssfDetails?.brandName}"></td>
                                         <td style="color: #0082f3" th:text="${ssfDetails?.sampleStatus}"></td>
                                         <!--                                        <td style="color: #0082f3" th:text="${ssfDetails?.sampleStatus} ? 'PAID' : 'NOT PAID'"></td>-->
