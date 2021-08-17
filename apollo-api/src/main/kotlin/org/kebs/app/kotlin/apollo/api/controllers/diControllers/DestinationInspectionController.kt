@@ -1332,7 +1332,7 @@ class DestinationInspectionController(
     }
 
 
-    @PreAuthorize("hasAuthority('DI_INSPECTION_OFFICER_MODIFY')")
+    @PreAuthorize("hasAuthority('DI_INSPECTION_OFFICER_MODIFY') or hasAuthority('DI_OFFICER_CHARGE_MODIFY')")
     @GetMapping("ministry-inspection-report")
     fun downloadFileDocument(
         response: HttpServletResponse,

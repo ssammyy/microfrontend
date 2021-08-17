@@ -548,9 +548,9 @@ class ConsignmentDocumentDaoService(
 //            val sectionL3 = cdCfsAndUserCfs?.userCfs?.let { daoServices.findFreightStation(it) }
 //                        freightStation = cdCfsAndUserCfs?.userCfs
                         freightStation = cdCfsEntity?.id
-                        val sectionsLevel2 = freightStation?.let { commonDaoServices.findSectionLevel2WIthId(it) }
-                        clusterId = sectionsLevel2?.subSectionLevel1Id?.id
-                        portOfArrival = sectionsLevel2?.sectionId?.id
+//                        val sectionsLevel2 = freightStation?.let { commonDaoServices.findSectionLevel2WIthId(it) }
+//                        clusterId = sectionsLevel2?.subSectionLevel1Id?.id
+//                        portOfArrival = sectionsLevel2?.sectionId?.id
                     }
 
                     val updatedConsignmentDocumentDetails =
@@ -786,7 +786,7 @@ class ConsignmentDocumentDaoService(
 
         KotlinLogging.logger { }.info { "Standards Two Details saved ID = ${standardsTwoDetails.id}" }
         with(consignmentDocumentDetailsEntity) {
-            cdStandardsTwo = standardsTwoDetails.id
+            cdStandardsTwo = standardsTwoDetails
             val cocTypeDetails = standardsTwoDetails.cocType?.let { daoServices.findCocTypeWithTypeName(it) }
             when {
                 applicationMapProperties.mapDICocTypeForeignID == cocTypeDetails?.id -> {
