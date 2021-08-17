@@ -1681,6 +1681,40 @@ fun createLocalCoc(
         return iDIUploadsRepo.save(uploads)
     }
 
+    fun saveConsignmentAttachment(
+        uploads: DiUploadsEntity,
+        docFile: MultipartFile,
+        doc: String,
+        user: UsersEntity,
+        map: ServiceMapsEntity,
+        consignmentDocumentDetailsEntity: ConsignmentDocumentDetailsEntity?
+    ): DiUploadsEntity {
+        with(uploads) {
+            name = commonDaoServices.saveDocuments(docFile)
+            fileType = docFile.contentType
+            documentType = doc
+            document = docFile.bytes
+            cdId = consignmentDocumentDetailsEntity
+            transactionDate = commonDaoServices.getCurrentDate()
+            status = map.activeStatus
+            createdBy = commonDaoServices.getUserName(user)
+            createdOn = commonDaoServices.getTimestamp()
+
+        }
+        return iDIUploadsRepo.save(uploads)
+    }
+
+    fun findDiUploadById(uploadId: Long): DiUploadsEntity {
+        iDIUploadsRepo.findByIdOrNull(uploadId)
+            ?.let { diUpload ->
+                return diUpload
+            }
+            ?: throw Exception("Attachment with the following ID= ${uploadId}, do not Exist")
+    }
+
+    fun findAllAttachmentsByCd(cd: ConsignmentDocumentDetailsEntity): List<DiUploadsEntity>? {
+        return iDIUploadsRepo.findAllByCdId(cd)
+    }
 
     fun findItemWithItemID(cdItemId: Long): CdItemDetailsEntity {
         iCdItemsRepo.findByIdOrNull(cdItemId)

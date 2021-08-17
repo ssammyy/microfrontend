@@ -402,6 +402,7 @@ private val destinationInspectionHomePage = "destination-inspection/di-home-new"
                             req.attributes()["cdStatusTypeRejectCategory"] = daoServices.cdStatusTypeRejectCategory
                             req.attributes()["cdStatusTypeOnHoldCategory"] = daoServices.cdStatusTypeOnHoldCategory
                             req.attributes()["cdStatusTypeQuerydCategory"] = daoServices.cdStatusTypeQueryCategory
+                            req.attributes()["attachments"] = daoServices.findAllAttachmentsByCd(cdDetails)
 
                             //Check for flash attributes
                             val request = req.servletRequest()
@@ -1049,7 +1050,8 @@ private val destinationInspectionHomePage = "destination-inspection/di-home-new"
                 Pair("currentDate", commonDaoServices.getCurrentDate()),
                 Pair("CDStatusTypes", daoServices.findCdStatusValueList(s.activeStatus)),
                 Pair("cdTypeGoodsCategory", daoServices.cdTypeGoodsCategory),
-                Pair("cdTypeVehiclesCategory", daoServices.cdTypeVehiclesCategory)
+                Pair("cdTypeVehiclesCategory", daoServices.cdTypeVehiclesCategory),
+                Pair("upLoads", DiUploadsEntity())
         )
     }
 

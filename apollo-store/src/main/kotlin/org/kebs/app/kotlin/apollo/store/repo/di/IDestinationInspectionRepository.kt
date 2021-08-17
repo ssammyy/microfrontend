@@ -197,6 +197,7 @@ interface ICfgMoneyTypeCodesRepository : HazelcastRepository<MoneyTypeCodesEntit
 
 @Repository
 interface IDiUploadsRepository : HazelcastRepository<DiUploadsEntity, Long> {
+    fun findAllByCdId(cdId: ConsignmentDocumentDetailsEntity): List<DiUploadsEntity>?
     fun findAllById(Id: Long): List<DiUploadsEntity>?
 }
 
