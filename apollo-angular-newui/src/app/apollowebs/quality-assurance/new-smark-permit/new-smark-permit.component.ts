@@ -4,7 +4,7 @@ import {Store} from '@ngrx/store';
 import {ActivatedRoute, Router} from '@angular/router';
 import {QaService} from '../../../core/store/data/qa/qa.service';
 import {
-    AllSTA10DetailsDto,
+    AllSTA10DetailsDto, FilesListDto,
     PermitEntityDetails, PermitProcessStepDto,
     PlantDetailsDto,
     SectionDto, STA1,
@@ -47,6 +47,7 @@ export class NewSmarkPermitComponent implements OnInit {
     allSta10Details: AllSTA10DetailsDto;
     permitProcessStep: PermitProcessStepDto | undefined;
     sta10Details: Sta10Dto;
+    sta10FilesList: FilesListDto[] = [];
     sta10ProductsManufactureDetails: STA10ProductsManufactureDto[] = [];
     sta10ProductsManufactureDetail: STA10ProductsManufactureDto;
     sta10RawMaterialsDetails: STA10RawMaterialsDto[] = [];
@@ -197,8 +198,10 @@ export class NewSmarkPermitComponent implements OnInit {
             this.permitID = params;
             console.log(this.permitID);
             if (this.permitID) {
+                this.SpinnerService.show();
                 this.qaService.viewSTA1Details(this.permitID).subscribe(
                     (data) => {
+                        this.SpinnerService.hide();
                         this.sta1 = data;
                         this.sta1Form.patchValue(this.sta1);
                         this.qaService.viewSTA10Details(String(this.sta1.id)).subscribe(
@@ -213,6 +216,7 @@ export class NewSmarkPermitComponent implements OnInit {
                                 this.sta10MachineryAndPlantDetails = this.allSta10Details.sta10MachineryAndPlantDetails;
                                 this.sta10ManufacturingProcessDetails = this.allSta10Details.sta10ManufacturingProcessDetails;
                                 this.sta10ManufacturingProcessDetails = this.allSta10Details.sta10ManufacturingProcessDetails;
+                                this.sta10FilesList = this.allSta10Details.sta10FilesList;
                                 this.sta10FormF.patchValue(this.allSta10Details.sta10FirmDetails);
                             },
                         );
@@ -697,35 +701,54 @@ export class NewSmarkPermitComponent implements OnInit {
     }
 
     onClickSaveSTA10G() {
-        if (this.uploadedFiles.length > 0) {
-            const file = this.uploadedFiles;
-            const formData = new FormData();
-            for (let i = 0; i < file.length; i++) {
-                console.log(file[i]);
-                formData.append('docFile', file[i], file[i].name);
+        if (this.sta10FilesList.length > 0) {
+            if (this.uploadedFiles) {
+                this.fileListSaveDetails();
+            } else {
+                this.step += 1;
+                swal.fire({
+                    title: 'STA10 Form Completed! Proceed to submit application.',
+                    buttonsStyling: false,
+                    customClass: {
+                        confirmButton: 'btn btn-success form-wizard-next-btn ',
+                    },
+                    icon: 'success'
+                });
+                this.router.navigate(['/smarkpermitdetails'], {fragment: String(this.sta1.id)});
             }
-
-            this.SpinnerService.show();
-            this.qaService.uploadSTA10File(this.sta1.id.toString(), formData).subscribe(
-                (data: any) => {
-                    this.SpinnerService.hide();
-                    console.log(data);
-                    this.onClickUpdateStep(this.step);
-                    this.step += 1;
-                    swal.fire({
-                        title: 'STA10 Form Completed! Proceed to submit application.',
-                        buttonsStyling: false,
-                        customClass: {
-                            confirmButton: 'btn btn-success form-wizard-next-btn ',
-                        },
-                        icon: 'success'
-                    });
-                    // this.router.navigate(['/permitdetails'], {fragment: this.permitEntityDetails.id.toString()});
-                },
-            );
-            this.router.navigate(['/smarkpermitdetails'], {fragment: String(this.sta1.id)});
+        } else if (this.uploadedFiles.length > 0) {
+            this.fileListSaveDetails();
         }
 
+    }
+
+    fileListSaveDetails() {
+        const file = this.uploadedFiles;
+        const formData = new FormData();
+        for (let i = 0; i < file.length; i++) {
+            console.log(file[i]);
+            formData.append('docFile', file[i], file[i].name);
+        }
+
+        this.SpinnerService.show();
+        this.qaService.uploadSTA10File(this.sta1.id.toString(), formData).subscribe(
+            (data: any) => {
+                this.SpinnerService.hide();
+                console.log(data);
+                this.onClickUpdateStep(this.step);
+                this.step += 1;
+                swal.fire({
+                    title: 'STA10 Form Completed! Proceed to submit application.',
+                    buttonsStyling: false,
+                    customClass: {
+                        confirmButton: 'btn btn-success form-wizard-next-btn ',
+                    },
+                    icon: 'success'
+                });
+                // this.router.navigate(['/permitdetails'], {fragment: this.permitEntityDetails.id.toString()});
+            },
+        );
+        this.router.navigate(['/smarkpermitdetails'], {fragment: String(this.sta1.id)});
     }
 
     showNotification(from: any, align: any) {
@@ -758,6 +781,7 @@ export class NewSmarkPermitComponent implements OnInit {
 
 // Remove Form repeater values
     removePersonnelDetails(index) {
+        console.log(index);
         this.sta10PersonnelDetails.splice(index, index);
     }
 
