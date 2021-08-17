@@ -210,6 +210,7 @@ data class InvoiceDetailsDto(
     var taxAmount: BigDecimal? = null,
     var subTotalBeforeTax: BigDecimal? = null,
     var totalAmount: BigDecimal? = null,
+    var invoiceDetailsList: List<InvoicePerDetailsDto>? = null,
 )
 
 data class PermitUploads(
@@ -447,12 +448,22 @@ data class AllSTA10DetailsDto(
     var sta10RawMaterialsDetails: List<STA10RawMaterialsDto>? = null,
     var sta10MachineryAndPlantDetails: List<STA10MachineryAndPlantDto>? = null,
     var sta10ManufacturingProcessDetails: List<STA10ManufacturingProcessDto>? = null,
+    var sta10FilesList: List<FilesListDto>? = null,
 )
 
 data class StandardsDto(
     var id: Long? = null,
     var standardTitle: String? = null,
     var standardNumber: String? = null,
+)
+
+data class InvoicePerDetailsDto(
+    var id: Long? = null,
+    var itemDescName: String? = null,
+    var itemAmount: BigDecimal? = null,
+    var inspectionStatus: Boolean? = null,
+    var permitStatus: Boolean? = null,
+    var fmarkStatus: Boolean? = null,
 )
 
 data class SSCApprovalRejectionDto(

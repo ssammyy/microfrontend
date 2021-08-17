@@ -81,6 +81,11 @@
                                                 <div class="list-text-accordion"
                                                      th:text="${cdDetails?.cdStandard?.amendedDate}"></div>
                                             </li>
+                                            <li class="list-item-accordion">
+                                                <div class="list-title-accordion">Local CoC Type</div>
+                                                <div class="list-text-accordion"
+                                                     th:text="${cdDetails?.cdStandardsTwo?.localCocType}"></div>
+                                            </li>
                                             <!--                                            <li class="list-item-accordion">-->
                                             <!--                                                <div class="list-title-accordion">Used Status</div>-->
                                             <!--                                                <div class="list-text-accordion"-->
@@ -899,6 +904,27 @@
                                 </div>
                             </div>
 
+                            <button class="accordion">Attachments</button>
+                            <div class="panel">
+                                <div class="row-table ">
+                                    <table id="attachments_table" class="table table-striped table-bordered" style="width:100%">
+                                        <thead>
+                                        <tr>
+                                            <th>File Name</th>
+                                            <th>Download</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr class="list" th:each="attachment: ${attachments}" style="cursor: pointer">
+                                            <td th:text="${attachment.name}"></td>
+                                            <td><a th:href="@{/api/di/download/attachment/(id=${attachment.id})}"
+                                                   class="btn btn-primary itemViewBtn">Download</a></td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
 
                         </div>
 
@@ -992,6 +1018,10 @@
                                         <a class="filter-link" onclick="popUpFunction('targetApproveItem');"
                                            th:if="${cdDetails.targetApproveStatus != activeStatus and cdDetails.targetStatus == activeStatus}">Target
                                             Approve</a>
+                                    </div>
+                                    <div sec:authorize="hasAuthority('DI_OFFICER_CHARGE_MODIFY') or hasAuthority('DI_INSPECTION_OFFICER_MODIFY')">
+                                        <a class="filter-link" style="color: white"
+                                           onclick="popUpFunctionUpload('uploadBtn');">Upload Attachments</a>
                                     </div>
                                 </div>
                             </div>
@@ -1381,6 +1411,35 @@
                 </form>
             </div>
 
+            <div class="uploadForm">
+                <form id="upload-form" enctype="multipart/form-data"  name="upload-form" th:action="@{/api/di/attachment(cdUuid=${cdDetails?.uuid})}" method="post" th:object="${upLoads}">
+                    <div class="modal fade" id="uploadModal" tabindex="-1" role="dialog" aria-labelledby="uploadModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 style="font-weight: bold; " class="modal-title" id="uploadModalLabel"><span id="uploadSpan" >none</span></h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="form-group">
+                                        <label for="description" class="col-form-label">Description Of Attachment(s):</label>
+                                        <input class="input-field w-input"  max="20" id="description" placeholder="Name of Activity" th:field="*{description}" th:required="required">
+                                        <label for="docFile">Upload your Attachments</label>
+                                        <input type="file"  multiple name="doc_file" data-name="doc_file" id="docFile" required="required" >
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button class="btn btn-secondary" data-dismiss="modal" onClick="refreshPage()" type="button">Close</button>
+                                    <input type="submit" id="upload" class="btn btn-primary" value="Save"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
         </section>
     </div>
 </div>
@@ -1495,6 +1554,25 @@
 
         $('.CDForm #cdModal').modal();
     }
+
+    function popUpFunctionUpload(eventAction) {
+        let arrHead = [ 'uploadBtn'];
+        let arrHeadSave = [ 'Upload Report'];
+
+        for (let h = 0; h < arrHead.length; h++) {
+            if(eventAction !== arrHead[h]){
+                document.getElementById(arrHead[h]).remove();
+            }else {
+                if (eventAction === arrHead[h]) {
+                    document.getElementById('uploadSpan').innerHTML = arrHeadSave[h];
+                    document.getElementById("upload").value = 'Save';
+                }
+            }
+        }
+
+        $('.uploadForm #uploadModal').modal();
+    }
+
 
     function refreshPage() {
         window.location.reload();
