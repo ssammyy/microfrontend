@@ -211,6 +211,12 @@ interface ICdTransportEntityRepository : HazelcastRepository<CdTransportDetailsE
 }
 
 @Repository
+interface IMinistryStationEntityRepository : HazelcastRepository<MinistryStationEntity, Long> {
+    fun findAllById(Id: Long): List<MinistryStationEntity>?
+    fun findByStatus(status: Int): List<MinistryStationEntity>?
+}
+
+@Repository
 interface ICdTransactionsRepository : HazelcastRepository<CdTransactionsEntity, Long> {
     fun findAllById(Id: Long): List<CdTransactionsEntity>?
 }
