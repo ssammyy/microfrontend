@@ -716,3 +716,27 @@ export interface finalSubmit{
     taskId: string;
 }
 
+export interface ReviewApplicationTask
+{
+    taskId: string;
+    name: string;
+    taskData: SubmitApplication;
+}
+export interface SubmitApplication
+{
+    technicalCommittee: string;
+    organization: string;
+    nomineeName: string;
+    position:string;
+    postalAddress:string;
+    mobileNumber:string;
+    email:string;
+    authorizingName:string;
+    authorisingPersonPosition:string;
+    authorisingPersonEmail:string;
+    qualifications:string;
+    commitment:string;
+    taskId:string;
+}
+
+
