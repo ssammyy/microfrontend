@@ -214,6 +214,15 @@ export class FilesListDto {
     document: Blob;
 }
 
+export class InvoicePerDetailsDto {
+    id: bigint;
+    itemDescName: string;
+    itemAmount: any;
+    inspectionStatus: boolean;
+    permitStatus: boolean;
+    fmarkStatus: boolean;
+}
+
 export class InvoiceDetailsDto {
     invoiceMasterId: bigint;
     invoiceRef: string;
@@ -221,6 +230,7 @@ export class InvoiceDetailsDto {
     taxAmount: any;
     subTotalBeforeTax: any;
     totalAmount: any;
+    invoiceDetailsList: InvoicePerDetailsDto[];
 }
 
 export class AllPermitDetailsDto {
@@ -245,6 +255,7 @@ export class AllSTA10DetailsDto {
     sta10RawMaterialsDetails: STA10RawMaterialsDto[];
     sta10MachineryAndPlantDetails: STA10MachineryAndPlantDto[];
     sta10ManufacturingProcessDetails: STA10ManufacturingProcessDto[];
+    sta10FilesList: FilesListDto[];
 }
 
 export class PlantDetailsDto {
@@ -299,6 +310,10 @@ export class PermitInvoiceDto {
 export class AllBatchInvoiceDetailsDto {
     batchDetails: InvoiceDto;
     allRelatedBatchInvoices: PermitInvoiceDto[];
+}
+
+export class MPesaMessageDto {
+    message: String;
 }
 
 export class TaskDto {

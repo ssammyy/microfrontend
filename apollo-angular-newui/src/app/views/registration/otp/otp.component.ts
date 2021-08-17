@@ -37,7 +37,7 @@ export class OtpComponent implements OnInit {
   public onClickLogin() {
     // if (valid) {
     this.router.navigate(['dashboard']);
-    //}
+    // }
 
   }
 

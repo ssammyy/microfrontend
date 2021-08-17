@@ -42,10 +42,10 @@ type="ball-scale-multiple"
         </thead>
         <tbody>
         <tr  *ngFor="let task of tasks ">
-            <td>{{task.taskData.knw}}</td>
+            <td>{{task.taskData.knwCommittee}}</td>
             <td>{{task.taskData.sl}}</td>
             <td>{{task.taskData.requestNumber}}</td>
-            <td>{{task.taskData.department}}</td>
+            <td>{{task.taskData.departmentName}}</td>
             <td>{{task.taskData.issuesAddressed}}</td>
             <td>{{task.taskData.referenceMaterial}}</td>
             <td>{{task.taskData.requestedBy}}</td>
@@ -101,12 +101,25 @@ type="ball-scale-multiple"
                         </div>
                         <form #preliminaryDraftForm="ngForm" >
                         <div class="row col-12">
-
                                 <div class=" col-12">
-
                                 <label><b>Upload Justification for Director of Standards Approval </b> <span style="font-size: xx-small; color: red;">(*)Required</span></label><br>
+<!--                                    <file-upload [(ngModel)]="uploadedFiles" name="uploadedFiles"  fileslimit="2" accept=".pdf, .doc, .docx" simple>-->
+<!--                                        <ng-template let-file #placeholder>-->
+<!--                                            <ng-container *ngIf="file; else emptyList">-->
+<!--                                                {{ file.name }}-->
+<!--                                            </ng-container>-->
 
-                                    <file-upload   [(ngModel)]="uploadedFiles" name="uploadedFiles"  fileslimit="2" accept=".pdf, .doc, .docx"></file-upload>
+<!--                                            <ng-template #emptyList>-->
+<!--                                                Choose a file...-->
+<!--                                            </ng-template>-->
+<!--                                        </ng-template>-->
+
+<!--                                        <ng-template let-control="control" #button>-->
+<!--                                            Browse for file-->
+<!--                                        </ng-template>-->
+<!--                                    </file-upload>-->
+                                    <input type="file" select-ng-files [(ngModel)]="uploadedFiles" name="uploadedFiles"  fileslimit="2" accept=".pdf, .doc, .docx" multiple>
+
                                 </div>
 
 

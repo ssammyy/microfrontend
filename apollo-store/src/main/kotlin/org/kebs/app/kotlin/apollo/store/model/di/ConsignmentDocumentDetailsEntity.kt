@@ -245,9 +245,9 @@ class ConsignmentDocumentDetailsEntity : Serializable {
     @Basic
     var cdHeaderOne: Long? = null
 
-    @Column(name = "CD_STANDARDS_TWO")
-    @Basic
-    var cdStandardsTwo: Long? = null
+    @JoinColumn(name = "CD_STANDARDS_TWO", referencedColumnName = "ID")
+    @ManyToOne
+    var cdStandardsTwo: CdStandardsTwoEntity? = null
 
     @JoinColumn(name = "ASSIGNER", referencedColumnName = "ID")
     @ManyToOne

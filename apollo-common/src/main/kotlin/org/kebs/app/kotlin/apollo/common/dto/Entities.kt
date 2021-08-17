@@ -362,6 +362,10 @@ data class MPesaPushDto(
     var phoneNumber: String
 )
 
+data class MPesaMessageDto(
+    var message: String? = null,
+)
+
 data class UserCompanyEntityDto(
     @JsonProperty("name")
     @NotEmpty(message = "is mandatory")

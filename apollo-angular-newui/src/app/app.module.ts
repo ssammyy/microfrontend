@@ -126,6 +126,8 @@ import { StandardRequestComponent } from './apollowebs/standards-development/sta
 import { RequestStandardFormComponent } from './apollowebs/standards-development/standard-request/request-standard-form/request-standard-form.component';
 import { ReviewApplicationsComponent } from './apollowebs/standards-development/standard-request/review-applications/review-applications.component';
 import { StandardTaskComponent } from './apollowebs/standards-development/standard-request/standard-task/standard-task.component';
+import {ModalModule} from "ngb-modal";
+
 
 // import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 
@@ -166,6 +168,7 @@ import { StandardTaskComponent } from './apollowebs/standards-development/standa
         MdModule,
         CommonModule,
         BrowserModule,
+        ModalModule,
         // TODO: Discuss as it seems to kill sending of requests to backend
         // EffectsModule.forRoot([]),
         // EntityDataModule.forRoot(entityConfig),

@@ -30,6 +30,7 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.dao.InvoiceDaoService
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.QADaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.lims.LimsServices
 import org.kebs.app.kotlin.apollo.common.dto.FmarkEntityDto
+import org.kebs.app.kotlin.apollo.common.dto.MPesaMessageDto
 import org.kebs.app.kotlin.apollo.common.dto.MPesaPushDto
 import org.kebs.app.kotlin.apollo.common.dto.qa.*
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
@@ -1232,7 +1233,10 @@ class QualityAssuranceHandler(
             val invoiceEntity = qaDaoServices.findBatchInvoicesWithID(dto.entityValueID)
             qaDaoServices.permitInvoiceSTKPush(map, loggedInUser, dto.phoneNumber, invoiceEntity)
 
-            ok().body("Check You phone for an STK Push,If You can't see the push either pay with Bank or MPesa Paybill number")
+            val messageDto = MPesaMessageDto(
+                "Check You phone for an STK Push,If You can't see the push either pay with Bank or MPesa Paybill number"
+            )
+            ok().body(messageDto)
 
         } catch (e: Exception) {
             KotlinLogging.logger { }.error(e.message)
@@ -2007,6 +2011,9 @@ class QualityAssuranceHandler(
                 qaDaoServices.findMachinePlantsWithSTA10ID(qaSta10ID) ?: throw ExpectedDataNotFound("EMPTY RESULTS")
             val sta10ManufacturingProcess = qaDaoServices.findManufacturingProcessesWithSTA10ID(qaSta10ID)
                 ?: throw ExpectedDataNotFound("EMPTY RESULTS")
+            val sta10FileList = qaDaoServices.findAllUploadedFileBYPermitIDAndSta10Status(
+                permit.id ?: throw Exception("MISSING PERMIT ID"), 1
+            )
 
 
             qaDaoServices.listSTA10ViewDetails(
@@ -2015,7 +2022,8 @@ class QualityAssuranceHandler(
                 qaDaoServices.listSTA10Product(sta10Products),
                 qaDaoServices.listSTA10RawMaterials(sta10Raw),
                 qaDaoServices.listSTA10MachinePlants(sta10MachinePlant),
-                qaDaoServices.listSTA10ManufacturingProcess(sta10ManufacturingProcess)
+                qaDaoServices.listSTA10ManufacturingProcess(sta10ManufacturingProcess),
+                sta10FileList
             ).let {
                 return ok().body(it)
             }

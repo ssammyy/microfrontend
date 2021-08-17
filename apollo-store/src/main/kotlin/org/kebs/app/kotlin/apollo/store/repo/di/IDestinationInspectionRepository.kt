@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.hazelcast.repository.HazelcastRepository
 import org.springframework.data.jpa.repository.Query
+import org.springframework.data.repository.query.Param
 import org.springframework.stereotype.Repository
 
 
@@ -25,6 +26,9 @@ interface IConsignmentDocumentDetailsRepository : HazelcastRepository<Consignmen
 
     fun findByFreightStationAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNull(
         freightStation: Long, cdType: ConsignmentDocumentTypesEntity
+    ): List<ConsignmentDocumentDetailsEntity>?
+
+    fun findByFreightStationAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNull(freightStation: Long
     ): List<ConsignmentDocumentDetailsEntity>?
 
     fun findByPortOfArrivalAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNull(
@@ -47,6 +51,8 @@ interface IConsignmentDocumentDetailsRepository : HazelcastRepository<Consignmen
     fun findByPortOfArrivalIsNullAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNull(cdType: Long): List<ConsignmentDocumentDetailsEntity>?
 
     fun findByFreightStationIsNullAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNull(cdType: ConsignmentDocumentTypesEntity): List<ConsignmentDocumentDetailsEntity>?
+
+    fun findByFreightStationIsNullAndUcrNumberIsNotNullAndOldCdStatusIsNull(): List<ConsignmentDocumentDetailsEntity>?
 
     fun findByPortOfArrivalIsNullAndUcrNumberIsNotNullAndOldCdStatusIsNull(): List<ConsignmentDocumentDetailsEntity>?
 
@@ -76,8 +82,7 @@ interface IConsignmentDocumentDetailsRepository : HazelcastRepository<Consignmen
     ): List<ConsignmentDocumentDetailsEntity>?
 
     fun findByFreightStationAndAssignedInspectionOfficerIsNullAndUcrNumberIsNotNullAndOldCdStatusIsNull(
-        freightStation: Long
-    ): List<ConsignmentDocumentDetailsEntity>?
+        freightStation: Long): List<ConsignmentDocumentDetailsEntity>?
 
     fun findByUcrNumber(ucrNumber: String): ConsignmentDocumentDetailsEntity?
     fun findByUcrNumberAndOldCdStatus(ucrNumber: String, oldCdStatus: Int): List<ConsignmentDocumentDetailsEntity>?
@@ -132,6 +137,15 @@ interface ICfsTypeCodesRepository : HazelcastRepository<CfsTypeCodesEntity, Long
 
     fun findByStatus(status: Int): List<CfsTypeCodesEntity>?
     fun findByStatusOrderByCfsName(status: Int): List<CfsTypeCodesEntity>?
+
+    @Query(
+        "SELECT r.* FROM CFG_USERS_CFS_ASSIGNMENTS UR, CFG_KEBS_CFS_TYPE_CODES R WHERE UR.CFS_ID = R.ID AND UR.STATUS = :status AND UR.USER_PROFILE_ID = :userProfileID order by r.ID",
+        nativeQuery = true
+    )
+    fun findRbacCfsByUserProfileID(
+        @Param("userProfileID") userProfileID: Long,
+        @Param("status") status: Int
+    ): List<CfsTypeCodesEntity>?
 //    fun findAllById(Id: Long): List<ConsignmentDocumentTypesEntity>?
 }
 
@@ -183,6 +197,7 @@ interface ICfgMoneyTypeCodesRepository : HazelcastRepository<MoneyTypeCodesEntit
 
 @Repository
 interface IDiUploadsRepository : HazelcastRepository<DiUploadsEntity, Long> {
+    fun findAllByCdId(cdId: ConsignmentDocumentDetailsEntity): List<DiUploadsEntity>?
     fun findAllById(Id: Long): List<DiUploadsEntity>?
 }
 
@@ -194,6 +209,12 @@ interface ICdExporterEntityRepository : HazelcastRepository<CdExporterDetailsEnt
 @Repository
 interface ICdTransportEntityRepository : HazelcastRepository<CdTransportDetailsEntity, Long> {
     fun findAllById(Id: Long): List<CdTransportDetailsEntity>?
+}
+
+@Repository
+interface IMinistryStationEntityRepository : HazelcastRepository<MinistryStationEntity, Long> {
+    fun findAllById(Id: Long): List<MinistryStationEntity>?
+    fun findByStatus(status: Int): List<MinistryStationEntity>?
 }
 
 @Repository

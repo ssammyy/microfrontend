@@ -252,6 +252,7 @@ export class DmarkComponent implements OnInit, AfterViewInit {
             let formattedArrayLabResultsList = [];
             let formattedArrayOlderVersionList = [];
             const formattedArrayInvoiceDetailsList = [];
+            this.SpinnerService.show();
             this.qaService.loadPermitDetails(params).subscribe(
                 (data: AllPermitDetailsDto) => {
                     this.allPermitDetails = data;
@@ -263,6 +264,7 @@ export class DmarkComponent implements OnInit, AfterViewInit {
                     );
                     this.qaService.viewSTA3Details(String(this.allPermitDetails.permitDetails.id)).subscribe(
                         (dataSta3) => {
+                            this.SpinnerService.hide();
                             this.sta3 = dataSta3;
                             this.sta3FormA.patchValue(this.sta3);
                             this.sta3FormB.patchValue(this.sta3);
@@ -348,8 +350,10 @@ export class DmarkComponent implements OnInit, AfterViewInit {
     }
 
     viewPdfFile(pdfId: string, fileName: string, applicationType: string): void {
+        this.SpinnerService.show();
         this.qaService.loadFileDetailsPDF(pdfId).subscribe(
             (dataPdf: any) => {
+                this.SpinnerService.hide();
                 this.blob = new Blob([dataPdf], {type: applicationType});
 
                 // tslint:disable-next-line:prefer-const
@@ -379,8 +383,10 @@ export class DmarkComponent implements OnInit, AfterViewInit {
     }
 
     getPdfFile(pdfId: string): any {
+        this.SpinnerService.show();
         this.qaService.loadFileDetailsPDF(pdfId).subscribe(
             (dataPdf: any) => {
+                this.SpinnerService.hide();
                 return dataPdf;
             },
         );
@@ -437,10 +443,11 @@ export class DmarkComponent implements OnInit, AfterViewInit {
     submitApplicationForReview(): void {
         // tslint:disable-next-line:max-line-length
         if (this.allPermitDetails.permitDetails.permitForeignStatus === true && this.allPermitDetails.permitDetails.permitTypeID === ApiEndpointService.QA_APPLICATION_MAP_PROPERTIES.DMARK_TYPE_ID) {
+            this.SpinnerService.show();
             this.qaService.submitPermitForReview(String(this.allPermitDetails.permitDetails.id)).subscribe(
                 (data: AllPermitDetailsDto) => {
                     this.allPermitDetails = data;
-                    this.reloadCurrentRoute();
+                    this.SpinnerService.hide();
                     swal.fire({
                         title: 'DMARK SUBMITTED SUCCESSFULLY FOR REVIEW FROM PCM!',
                         buttonsStyling: false,
@@ -449,6 +456,7 @@ export class DmarkComponent implements OnInit, AfterViewInit {
                         },
                         icon: 'success'
                     });
+                    this.reloadCurrentRoute();
 
                     // this.onUpdateReturnToList();
                 },
@@ -459,10 +467,11 @@ export class DmarkComponent implements OnInit, AfterViewInit {
     submitApplicationForReviewHOD(): void {
         // tslint:disable-next-line:max-line-length
         // if (this.allPermitDetails.permitDetails.permitForeignStatus === true && this.allPermitDetails.permitDetails.permitTypeID === ApiEndpointService.QA_APPLICATION_MAP_PROPERTIES.DMARK_TYPE_ID) {
+        this.SpinnerService.show();
         this.qaService.submitPermitForReviewHODQAM(String(this.allPermitDetails.permitDetails.id)).subscribe(
             (data: AllPermitDetailsDto) => {
                 this.allPermitDetails = data;
-                this.reloadCurrentRoute();
+                this.SpinnerService.hide();
                 swal.fire({
                     title: 'DMARK SUBMITTED SUCCESSFULLY FOR REVIEW HOD/RM!',
                     buttonsStyling: false,
@@ -471,7 +480,7 @@ export class DmarkComponent implements OnInit, AfterViewInit {
                     },
                     icon: 'success'
                 });
-
+                this.reloadCurrentRoute();
                 // this.onUpdateReturnToList();
             },
         );
@@ -479,10 +488,11 @@ export class DmarkComponent implements OnInit, AfterViewInit {
     }
 
     submitApplication(): void {
+        this.SpinnerService.show();
         this.qaService.submitPermitApplication(String(this.allPermitDetails.permitDetails.id)).subscribe(
             (data: AllPermitDetailsDto) => {
                 this.allPermitDetails = data;
-                this.reloadCurrentRoute();
+                this.SpinnerService.hide();
                 swal.fire({
                     title: 'DMARK SUBMITTED SUCCESSFULLY PENDING PAYMENT!',
                     buttonsStyling: false,
@@ -491,6 +501,7 @@ export class DmarkComponent implements OnInit, AfterViewInit {
                     },
                     icon: 'success'
                 });
+                this.reloadCurrentRoute();
                 // this.router.navigate(['/invoiceDetails'], {fragment: this.allPermitDetails.batchID.toString()});
 
                 // this.onUpdateReturnToList();
@@ -505,7 +516,6 @@ export class DmarkComponent implements OnInit, AfterViewInit {
         this.qaService.submitSSCApprovalRejection(String(this.allPermitDetails.permitDetails.id), this.approveRejectSSCForm.value).subscribe(
             (data: PermitEntityDetails) => {
                 this.allPermitDetails.permitDetails = data;
-                this.reloadCurrentRoute();
                 this.SpinnerService.hide();
                 swal.fire({
                     title: 'PERMIT APPLICATION SSC UPDATED SUCCESSFULLY!',
@@ -515,6 +525,7 @@ export class DmarkComponent implements OnInit, AfterViewInit {
                     },
                     icon: 'success'
                 });
+                this.reloadCurrentRoute();
                 // this.router.navigate(['/invoiceDetails'], {fragment: this.allPermitDetails.batchID.toString()});
 
                 // this.onUpdateReturnToList();
@@ -706,10 +717,11 @@ export class DmarkComponent implements OnInit, AfterViewInit {
     }
 
     submitRenewalApplication() {
+        this.SpinnerService.show();
         this.qaService.submitPermitRenewApplication(String(this.allPermitDetails.permitDetails.id)).subscribe(
             (data: AllPermitDetailsDto) => {
                 this.allPermitDetails = data;
-                this.reloadCurrentRoute();
+                this.SpinnerService.hide();
                 console.log(AllPermitDetailsDto);
                 swal.fire({
                     title: 'DMARK Renewed Successfully! Proceed to submit application.',
@@ -719,7 +731,7 @@ export class DmarkComponent implements OnInit, AfterViewInit {
                     },
                     icon: 'success'
                 });
-                // this.router.navigate(['/permitdetails'], {fragment: String(this.AllPermitDetailsDto.permitDetails.id)});
+                this.reloadCurrentRoute();
             },
         );
     }
@@ -766,7 +778,6 @@ export class DmarkComponent implements OnInit, AfterViewInit {
             this.qaService.uploadFile(String(this.allPermitDetails.permitDetails.id), this.upLoadDescription, formData).subscribe(
                 (data: any) => {
                     this.SpinnerService.hide();
-                    this.reloadCurrentRoute();
                     console.log(data);
                     swal.fire({
                         title: 'UPLOADED SUCCESSFULLY',
@@ -776,7 +787,7 @@ export class DmarkComponent implements OnInit, AfterViewInit {
                         },
                         icon: 'success'
                     });
-                    // this.router.navigate(['/permitdetails'], {fragment: this.permitEntityDetails.id.toString()});
+                    this.reloadCurrentRoute();
                 },
             );
             // this.router.navigate(['/permitdetails'], {fragment: String(this.sta1.id)});
