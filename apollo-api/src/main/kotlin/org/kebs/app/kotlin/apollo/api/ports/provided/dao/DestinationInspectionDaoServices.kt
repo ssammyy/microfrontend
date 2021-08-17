@@ -22,7 +22,6 @@ import org.kebs.app.kotlin.apollo.store.model.di.*
 import org.kebs.app.kotlin.apollo.store.model.qa.QaSampleSubmissionEntity
 import org.kebs.app.kotlin.apollo.store.repo.*
 import org.kebs.app.kotlin.apollo.store.repo.di.*
-import org.kebs.app.kotlin.apollo.store.repo.qa.IQaSampleCollectionRepository
 import org.kebs.app.kotlin.apollo.store.repo.qa.IQaSampleSubmissionRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
@@ -1682,6 +1681,40 @@ fun createLocalCoc(
         return iDIUploadsRepo.save(uploads)
     }
 
+    fun saveConsignmentAttachment(
+        uploads: DiUploadsEntity,
+        docFile: MultipartFile,
+        doc: String,
+        user: UsersEntity,
+        map: ServiceMapsEntity,
+        consignmentDocumentDetailsEntity: ConsignmentDocumentDetailsEntity?
+    ): DiUploadsEntity {
+        with(uploads) {
+            name = commonDaoServices.saveDocuments(docFile)
+            fileType = docFile.contentType
+            documentType = doc
+            document = docFile.bytes
+            cdId = consignmentDocumentDetailsEntity
+            transactionDate = commonDaoServices.getCurrentDate()
+            status = map.activeStatus
+            createdBy = commonDaoServices.getUserName(user)
+            createdOn = commonDaoServices.getTimestamp()
+
+        }
+        return iDIUploadsRepo.save(uploads)
+    }
+
+    fun findDiUploadById(uploadId: Long): DiUploadsEntity {
+        iDIUploadsRepo.findByIdOrNull(uploadId)
+            ?.let { diUpload ->
+                return diUpload
+            }
+            ?: throw Exception("Attachment with the following ID= ${uploadId}, do not Exist")
+    }
+
+    fun findAllAttachmentsByCd(cd: ConsignmentDocumentDetailsEntity): List<DiUploadsEntity>? {
+        return iDIUploadsRepo.findAllByCdId(cd)
+    }
 
     fun findItemWithItemID(cdItemId: Long): CdItemDetailsEntity {
         iCdItemsRepo.findByIdOrNull(cdItemId)
@@ -2072,6 +2105,15 @@ fun createLocalCoc(
 
     }
 
+    fun findAllOngoingCdWithFreightStationID(cfsEntity: CfsTypeCodesEntity): List<ConsignmentDocumentDetailsEntity> {
+        iConsignmentDocumentDetailsRepo.findByFreightStationAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNull(
+            cfsEntity.id
+        )?.let {
+            return it
+        }
+            ?: throw Exception("COC List with the following  Freight STATION = ${cfsEntity.cfsName}, does not Exist")
+    }
+
     fun findAllOngoingCdWithPortOfEntry(
         sectionsEntity: SectionsEntity
     ): List<ConsignmentDocumentDetailsEntity> {
@@ -2135,6 +2177,10 @@ fun createLocalCoc(
         return iConsignmentDocumentDetailsRepo.findByFreightStationIsNullAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNull(
             cdType
         )
+    }
+
+    fun findAllCdWithNoFreightStation(): List<ConsignmentDocumentDetailsEntity>? {
+        return iConsignmentDocumentDetailsRepo.findByFreightStationIsNullAndUcrNumberIsNotNullAndOldCdStatusIsNull()
     }
 
     fun findAllCdWithNoPortOfEntry(): List<ConsignmentDocumentDetailsEntity>? {
@@ -2201,6 +2247,12 @@ fun createLocalCoc(
         return iConsignmentDocumentDetailsRepo.findByFreightStationAndAssignedInspectionOfficerIsNullAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNull(
             cfsEntity.id,
             cdType
+        )
+    }
+
+    fun findAllCdWithNoAssignedIoID(cfsEntity: CfsTypeCodesEntity): List<ConsignmentDocumentDetailsEntity>? {
+        return iConsignmentDocumentDetailsRepo.findByFreightStationAndAssignedInspectionOfficerIsNullAndUcrNumberIsNotNullAndOldCdStatusIsNull(
+            cfsEntity.id
         )
     }
 
@@ -2953,8 +3005,8 @@ fun createLocalCoc(
 
         //COR Details
         map["CorSerialNo"] = ""
-        map["CorIssueDate"] = commonDaoServices.getCurrentDate()
-        map["CorExpiryDate"] = commonDaoServices.addMonthsToCurrentDate(3)
+        map["CorIssueDate"] = commonDaoServices.convertDateToString(commonDaoServices.getCurrentDate(), "mm/dd/yyyy")
+        map["CorExpiryDate"] = commonDaoServices.convertDateToString(commonDaoServices.addMonthsToCurrentDate(3), "mm/dd/yyyy")
 
         val cdItem = findCDItemsListWithCDID(cdDetails)[0]
         val itemNonStandardDetail = findCdItemNonStandardByItemID(cdItem)

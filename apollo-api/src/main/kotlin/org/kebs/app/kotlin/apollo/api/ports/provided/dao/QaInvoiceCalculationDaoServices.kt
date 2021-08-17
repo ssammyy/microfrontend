@@ -89,6 +89,16 @@ class QaInvoiceCalculationDaoServices(
             }
         }
 
+        if (permit.fmarkGenerateStatus == 1) {
+            calculatePaymentFMarkOnSMark(
+                permit,
+                user,
+                qaDaoServices.findPermitType(applicationMapProperties.mapQAPermitTypeIdFmark),
+                invoiceMaster
+            )
+        }
+
+
         invoiceMaster = calculateTotalInvoiceAmountToPay(invoiceMaster, user)
 
 
@@ -204,6 +214,7 @@ class QaInvoiceCalculationDaoServices(
             itemDescName = permitType.itemInvoiceDesc
             itemQuantity = BigDecimal.ZERO
             itemAmount = stgAmount
+            permitStatus = 1
             status = 1
             createdOn = Timestamp.from(Instant.now())
             createdBy = commonDaoServices.concatenateName(user)
@@ -227,6 +238,7 @@ class QaInvoiceCalculationDaoServices(
 
         return invoiceMaster
     }
+
 
     fun calculatePaymentFMark(
         permit: PermitApplicationsEntity,
@@ -264,6 +276,8 @@ class QaInvoiceCalculationDaoServices(
             itemDescName = permitType.itemInvoiceDesc
             itemQuantity = BigDecimal.ZERO
             itemAmount = applicationCostValue
+            permitStatus = 1
+            status = 1
             createdOn = Timestamp.from(Instant.now())
             createdBy = commonDaoServices.concatenateName(user)
         }
@@ -285,6 +299,34 @@ class QaInvoiceCalculationDaoServices(
         KotlinLogging.logger { }.info { "invoiceMaster total Amount = ${invoiceMaster.totalAmount}" }
 
         return invoiceMaster
+    }
+
+    fun calculatePaymentFMarkOnSMark(
+        permit: PermitApplicationsEntity,
+        user: UsersEntity,
+        permitType: PermitTypesEntity,
+        invoiceMaster: QaInvoiceMasterDetailsEntity
+    ): QaInvoiceDetailsEntity {
+        val numberOfYears = permitType.numberOfYears?.toBigDecimal() ?: throw Exception("INVALID NUMBER OF YEARS")
+        val applicationCostValue: BigDecimal? = permitType.fmarkAmount?.times(numberOfYears)
+
+        var invoiceDetails = QaInvoiceDetailsEntity().apply {
+            invoiceMasterId = invoiceMaster.id
+            generatedDate = Timestamp.from(Instant.now())
+            umo = "PER"
+            itemDescName = permitType.itemInvoiceDesc
+            itemQuantity = BigDecimal.ZERO
+            itemAmount = applicationCostValue
+            fmarkStatus = 1
+            status = 1
+            createdOn = Timestamp.from(Instant.now())
+            createdBy = commonDaoServices.concatenateName(user)
+        }
+
+        invoiceDetails = qaInvoiceDetailsRepo.save(invoiceDetails)
+
+
+        return invoiceDetails
     }
 
 
@@ -320,6 +362,7 @@ class QaInvoiceCalculationDaoServices(
                     itemDescName = selectedRate.invoiceDesc
                     itemQuantity = BigDecimal.valueOf(1)
                     itemAmount = selectedRate.productFee?.multiply(selectedRate.validity?.toBigDecimal())
+                    permitStatus = 1
                     status = 1
                     createdOn = Timestamp.from(Instant.now())
                     createdBy = commonDaoServices.concatenateName(user)
@@ -361,6 +404,7 @@ class QaInvoiceCalculationDaoServices(
             itemDescName = "INSPECTION FEE"
             itemQuantity = BigDecimal.valueOf(1)
             itemAmount = selectedRate.firmFee?.multiply(selectedRate.validity?.toBigDecimal())
+            inspectionStatus = 1
             status = 1
             createdOn = Timestamp.from(Instant.now())
             createdBy = commonDaoServices.concatenateName(user)
@@ -376,6 +420,7 @@ class QaInvoiceCalculationDaoServices(
             tokenValue = tokenGenerated
             itemQuantity = BigDecimal.valueOf(1)
             itemAmount = selectedRate.productFee?.multiply(selectedRate.validity?.toBigDecimal())
+            permitStatus = 1
             status = 1
             createdOn = Timestamp.from(Instant.now())
             createdBy = commonDaoServices.concatenateName(user)
@@ -439,6 +484,7 @@ class QaInvoiceCalculationDaoServices(
                             itemDescName = selectedRate.invoiceDesc
                             itemQuantity = BigDecimal.valueOf(1)
                             itemAmount = selectedRate.productFee?.multiply(selectedRate.validity?.toBigDecimal())
+                            permitStatus = 1
                             status = 1
                             createdOn = Timestamp.from(Instant.now())
                             createdBy = commonDaoServices.concatenateName(user)
@@ -466,6 +512,7 @@ class QaInvoiceCalculationDaoServices(
                     itemDescName = "EXTRA PRODUCT"
                     itemQuantity = BigDecimal.valueOf(1)
                     itemAmount = selectedRate.extraProductFee?.multiply(selectedRate.validity?.toBigDecimal())
+                    permitStatus = 1
                     status = 1
                     createdOn = Timestamp.from(Instant.now())
                     createdBy = commonDaoServices.concatenateName(user)
@@ -499,6 +546,7 @@ class QaInvoiceCalculationDaoServices(
             tokenValue = tokenGenerated
             itemDescName = selectedRate.invoiceDesc
             itemQuantity = BigDecimal.valueOf(1)
+            permitStatus = 1
             status = 1
             itemAmount = selectedRate.countBeforeFee?.multiply(selectedRate.validity?.toBigDecimal())
             createdOn = Timestamp.from(Instant.now())

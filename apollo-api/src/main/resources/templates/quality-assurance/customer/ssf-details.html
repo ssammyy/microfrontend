@@ -60,11 +60,11 @@
                                                 <div class="list-text-accordion"
                                                      th:text="${ssfDetails?.productDescription}"></div>
                                             </li>
-                                            <li class="list-item-accordion">
-                                                <div class="list-title-accordion">SAMPLE STATUS:</div>
-                                                <div class="list-text-accordion"
-                                                     th:text="${ssfDetails?.sampleStatus}"></div>
-                                            </li>
+                                            <!--                                            <li class="list-item-accordion">-->
+                                            <!--                                                <div class="list-title-accordion">SAMPLE STATUS:</div>-->
+                                            <!--                                                <div class="list-text-accordion"-->
+                                            <!--                                                     th:text="${ssfDetails?.sampleStatus}"></div>-->
+                                            <!--                                            </li>-->
                                             <li class="list-item-accordion">
                                                 <div class="list-title-accordion">RESULTS DATE:</div>
                                                 <div class="list-text-accordion"
@@ -256,7 +256,8 @@
 
                                 <div sec:authorize="hasAuthority('QA_OFFICER_MODIFY') or hasAuthority('QA_ASSESSORS_READ')">
                                     <!--                                    <a th:if="${ssfDetails.labResultsStatus == 0}" th:href="@{/api/qa/inspection/check-results(bsNumber=${ssfDetails?.bsNumber})}" class="filter-link" style="color: white">CHECK RESULTS</a>-->
-                                    <a onclick="popUpComplianceFunction('addComplianceStatusDetailsSSF');"
+                                    <a th:if="${ssfDetails.labResultsStatus == 1}"
+                                       onclick="popUpComplianceFunction('addComplianceStatusDetailsSSF');"
                                        class="filter-link" style="color: white">ADD COMPLIANCE DETAILS</a>
                                 </div>
 

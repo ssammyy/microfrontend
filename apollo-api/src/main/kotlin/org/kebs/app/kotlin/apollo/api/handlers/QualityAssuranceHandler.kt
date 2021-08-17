@@ -2011,6 +2011,9 @@ class QualityAssuranceHandler(
                 qaDaoServices.findMachinePlantsWithSTA10ID(qaSta10ID) ?: throw ExpectedDataNotFound("EMPTY RESULTS")
             val sta10ManufacturingProcess = qaDaoServices.findManufacturingProcessesWithSTA10ID(qaSta10ID)
                 ?: throw ExpectedDataNotFound("EMPTY RESULTS")
+            val sta10FileList = qaDaoServices.findAllUploadedFileBYPermitIDAndSta10Status(
+                permit.id ?: throw Exception("MISSING PERMIT ID"), 1
+            )
 
 
             qaDaoServices.listSTA10ViewDetails(
@@ -2019,7 +2022,8 @@ class QualityAssuranceHandler(
                 qaDaoServices.listSTA10Product(sta10Products),
                 qaDaoServices.listSTA10RawMaterials(sta10Raw),
                 qaDaoServices.listSTA10MachinePlants(sta10MachinePlant),
-                qaDaoServices.listSTA10ManufacturingProcess(sta10ManufacturingProcess)
+                qaDaoServices.listSTA10ManufacturingProcess(sta10ManufacturingProcess),
+                sta10FileList
             ).let {
                 return ok().body(it)
             }

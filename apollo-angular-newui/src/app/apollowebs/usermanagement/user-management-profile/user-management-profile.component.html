@@ -198,8 +198,8 @@
                                                             <button mat-raised-button type="button" data-toggle="modal"
                                                                     (click)="revokeRole(row[2], userDetails?.id)"
                                                                     class="btn btn-info {{row[2]}}">
-                                                                <i class="material-icons">visibility</i>
-
+                                                                <!--                                                                <i class="material-icons">visibility</i>-->
+                                                                REMOVE
                                                             </button>
                                                         </td>
                                                     </tr>
@@ -215,7 +215,7 @@
                                     <button (click)="openModalAction('addCfs')"
                                             mat-raised-button="" data-toggle="modal" data-target="#myModal1"
                                             class="btn btn-kebs mat-raised-button mat-button-base"><span
-                                            class="mat-button-wrapper">ADD NEW ROLE</span>
+                                            class="mat-button-wrapper">ADD NEW CFS</span>
                                         <div matripple="" class="mat-ripple mat-button-ripple"></div>
                                         <div class="mat-button-focus-overlay"></div>
                                     </button>
@@ -241,10 +241,9 @@
                                                         <td class="td-actions text-right">
                                                             <!--                                                            <a href="/permitdetails#{{row[4]}}"><i class="material-icons">remove_red_eye</i></a>-->
                                                             <button mat-raised-button type="button" data-toggle="modal"
-                                                                    (click)="revokeCfs(row[3], userDetails?.id)"
+                                                                    (click)="revokeCfs(row[3], userDetails?.employeeProfile?.profileId)"
                                                                     class="btn btn-info {{row[3]}}">
-                                                                <i class="material-icons">visibility</i>
-
+                                                                REMOVE
                                                             </button>
                                                         </td>
                                                     </tr>

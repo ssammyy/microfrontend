@@ -54,6 +54,7 @@ class DestinationInspectionController(
 //    private val motorVehicleInspectionDetailsPage = "redirect:/api/di/inspection/motor-vehicle-inspection-details?itemId"
     private val motorVehicleInspectionDetailsPage = "redirect:/api/di/motor-vehicle-inspection-details?itemId"
     private val cdItemViewPageDetails = "redirect:/api/di/cd-item-details?cdItemUuid"
+    private val cdDetailsView = "destination-inspection/cd-documents/consignment-document-detail"
 
     @PreAuthorize("hasAuthority('DI_OFFICER_CHARGE_MODIFY') or hasAuthority('DI_INSPECTION_OFFICER_MODIFY')")
     @PostMapping("upload/coc")
@@ -89,6 +90,66 @@ class DestinationInspectionController(
 
 
         TODO()
+    }
+
+    @PreAuthorize("hasAuthority('DI_OFFICER_CHARGE_MODIFY') or hasAuthority('DI_INSPECTION_OFFICER_MODIFY')")
+    @PostMapping("/attachment")
+    fun uploadAttachment(
+        @ModelAttribute upLoads: DiUploadsEntity,
+        @RequestParam("cdUuid") cdUuid: String,
+        @RequestParam("doc_file") docFile: MultipartFile,
+        model: Model,
+        redirectAttributes: RedirectAttributes,
+        result: BindingResult
+    ): String {
+        commonDaoServices.serviceMapDetails(appId)
+            .let { map ->
+                commonDaoServices.loggedInUserDetails()
+                    .let { loggedInUser ->
+                        if (docFile.isEmpty) {
+                            redirectAttributes.addFlashAttribute("message", "Please select a file to upload.")
+
+                            return daoServices.viewCdPageDetails(cdUuid)
+                        }
+
+                        daoServices.findCDWithUuid(cdUuid)
+                            .let { cdDetails ->
+                                daoServices.saveConsignmentAttachment(
+                                    upLoads,
+                                    docFile,
+                                    "consignment_doc",
+                                    loggedInUser,
+                                    map,
+                                    cdDetails
+                                )
+                                redirectAttributes.addFlashAttribute("success", "Attachment successfully uploaded")
+                                return daoServices.viewCdPageDetails(cdUuid)
+                            }
+                    }
+            }
+    }
+
+    @PreAuthorize("hasAuthority('DI_INSPECTION_OFFICER_MODIFY') or hasAuthority('DI_OFFICER_CHARGE_MODIFY')")
+    @GetMapping("download/attachment")
+    fun downloadCDAttachment(
+        response: HttpServletResponse,
+        @RequestParam("id") diUploadsId: Long
+    ) {
+
+        val diUpload: DiUploadsEntity = daoServices.findDiUploadById(diUploadsId)
+        diUpload.document?.let {
+            response.contentType = "application/pdf"
+            response.addHeader(
+                "Content-Dispostion", "inline; filename=${
+                    diUpload.name
+                };"
+            )
+            response.outputStream
+                .let { responseOutputStream ->
+                    responseOutputStream.write(it)
+                    responseOutputStream.close()
+                }
+        } ?: throw ExpectedDataNotFound("Attachment file not found")
     }
 
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
@@ -1332,7 +1393,7 @@ class DestinationInspectionController(
     }
 
 
-    @PreAuthorize("hasAuthority('DI_INSPECTION_OFFICER_MODIFY')")
+    @PreAuthorize("hasAuthority('DI_INSPECTION_OFFICER_MODIFY') or hasAuthority('DI_OFFICER_CHARGE_MODIFY')")
     @GetMapping("ministry-inspection-report")
     fun downloadFileDocument(
         response: HttpServletResponse,
