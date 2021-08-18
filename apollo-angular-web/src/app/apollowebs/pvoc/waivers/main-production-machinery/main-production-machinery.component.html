@@ -1,0 +1,38 @@
+<h2 mat-dialog-title>Add production machinery</h2>
+<mat-dialog-content>
+    <div [formGroup]="productMachinery">
+        <div class="form-group">
+            <div class="form-group row">
+                <label for="hs-code" class="col-5 col-form-label">HS Code</label>
+                <div class="col-7">
+                    <input formControlName="hsCode" id="hs-code" name="hs-code" type="text" class="form-control">
+                </div>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="machine-description" class="col-5 col-form-label">MACHINE DESCRIPTION</label>
+            <div class="col-7">
+                <input formControlName="machineDescription" id="machine-description" name="machine-description"
+                       type="text"
+                       class="form-control">
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="make-model" class="col-5 col-form-label">MAKE AND MODEL</label>
+            <div class="col-7">
+                <input formControlName="makeModel" id="make-model" name="make-model" type="text" class="form-control">
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="country-of-origin" class="col-5 col-form-label">COUNTRY Of ORIGIN</label>
+            <div class="col-7">
+                <input formControlName="countryOfOrigin" id="country-of-origin" name="country-of-origin" type="text"
+                       class="form-control">
+            </div>
+        </div>
+    </div>
+</mat-dialog-content>
+<mat-dialog-actions>
+    <button class="btn btn-warning" mat-dialog-close>Close</button>
+    <button class="btn btn-primary" (click)="addMachinery()">Save</button>
+</mat-dialog-actions>

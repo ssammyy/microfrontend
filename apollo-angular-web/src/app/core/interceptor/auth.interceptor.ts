@@ -1,12 +1,12 @@
 import {HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest} from "@angular/common/http";
-import {Store} from "@ngrx/store";
+import {select, Store} from "@ngrx/store";
 import {HandleErrorService} from "../services/errors/handle-error.service";
 import {ApiEndpointService} from "../services/endpoints/api-endpoint.service";
-
+import {Observable, of, throwError} from "rxjs";
+import {catchError, first, mergeMap, switchMap} from "rxjs/operators";
 
 import {Injectable} from "@angular/core";
-import {Observable, of, throwError} from "rxjs";
-import {catchError, first, mergeMap} from "rxjs/operators";
+import {LoggedInUser, selectUserInfo} from "../store";
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
@@ -29,7 +29,6 @@ export class AuthInterceptor implements HttpInterceptor {
           .pipe(
             catchError((err: HttpErrorResponse) => {
               const errorMsg = (err.error instanceof ErrorEvent) ? `Error: ${err.error.message}` : `Error Code: ${err.status},  Message: ${err.message}`;
-              // console.log(errorMsg);
               this.error.handleError(err);
               return throwError(errorMsg);
             })
@@ -39,12 +38,6 @@ export class AuthInterceptor implements HttpInterceptor {
     } else {
       return next.handle(request).pipe(
         catchError((err: HttpErrorResponse) => {
-          // if ([401, 403].indexOf(err.status) !== -1) {
-          //   // auto logout if 401 Unauthorized or 403 Forbidden response returned from api
-          //   this.store$.dispatch(fromState.navigateToLogin());
-          //   location.reload();
-          // }
-          // console.log(`The response code is ${err.status}`);
           const errorMsg = (err.error instanceof ErrorEvent) ? `Error: ${err.error.message}` : `Error Code: ${err.status},  Message: ${err.message}`;
           // console.log(errorMsg);
           this.error.handleError(err);
@@ -57,24 +50,27 @@ export class AuthInterceptor implements HttpInterceptor {
   /**
    * Adds the JWT token to the request's header.
    */
+  /**
+   * Adds the JWT token to the request's header.
+   */
   private addToken(request: HttpRequest<any>): Observable<HttpRequest<any>> {
-    return of(request);
-    // // @ts-ignore
-    // return this.store$
-    //   .pipe(
-    //     select({'selectResponseDataStr'}),
-    //     switchMap((token: string) => {
-    //       if (!token) {
-    //         // console.warn(`addToken( Invalid token!!! Cannot use token "${token}" for endpoint: ${request.url} ).`);
-    //       } else {
-    //         request = request.clone({
-    //           headers: request.headers.set('Authorization', `${token}`),
-    //           // TODO: revert to true when going live
-    //           withCredentials: false
-    //         });
-    //       }
-    //       return of(request);
-    //     })
-    //   );
+    return this.store$
+      .pipe(
+        select(selectUserInfo),
+        switchMap((profile: LoggedInUser) => {
+          const token = profile.accessToken
+          if (!token) {
+            console.warn(`addToken( Invalid token!!! Cannot use token "${token}" for endpoint: ${request.url} ).`);
+          } else {
+            request = request.clone({
+              headers: request.headers.set('Authorization', `${token}`),
+              // TODO: revert to true when going live
+              withCredentials: false
+            });
+            // console.warn(`addToken( Valid token used token "${token}" for endpoint: ${request.url} ).`);
+          }
+          return of(request);
+        })
+      );
   }
 }

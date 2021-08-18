@@ -262,6 +262,7 @@ class ControllerRoutes {
     }
 
     @Bean
+    @CrossOrigin
     fun registrationRoutes(handler: RegistrationHandler) = router {
         "/api/v1/auth/signup".nest {
             POST("/user", handler::signUpAllUsers)

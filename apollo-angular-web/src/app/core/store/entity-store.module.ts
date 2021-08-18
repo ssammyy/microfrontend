@@ -1,7 +1,7 @@
 import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
-import {DefaultDataServiceConfig, EntityDataModuleConfig, EntityMetadataMap, PropsFilterFnFactory} from "@ngrx/data";
-import {ApiEndpointService} from "../services/endpoints/api-endpoint.service";
+import {DefaultDataServiceConfig, EntityDataModuleConfig, EntityMetadataMap, PropsFilterFnFactory} from '@ngrx/data';
+import {ApiEndpointService} from '../services/endpoints/api-endpoint.service';
 
 
 export const entityMetadata: EntityMetadataMap = {
@@ -32,7 +32,25 @@ export const entityMetadata: EntityMetadataMap = {
   Town: {
     filterFn: activeFilter,
   },
+  Company: {
+    filterFn: activeFilter,
+  },
+  Branches: {
+    filterFn: activeFilter,
+  },
+  User: {
+    filterFn: activeFilter,
+  },
+  UserEntityDto: {
+    filterFn: activeFilter,
+  },
+  Titles: {
+    filterFn: activeFilter,
+  },
 };
+
+
+export const pluralNames = {Branches: 'branches'};
 
 export const entityConfig: EntityDataModuleConfig = {
   entityMetadata
@@ -70,6 +88,10 @@ export const defaultDataServiceConfig: DefaultDataServiceConfig = {
       entityResourceUrl: ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.REGIONS_LIST),
       collectionResourceUrl: ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.REGIONS_LIST)
     },
+    Titles: {
+      entityResourceUrl: ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.TITLES_LIST),
+      collectionResourceUrl: ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.TITLES_LIST)
+    },
     County: {
       entityResourceUrl: ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.COUNTY_LIST),
       collectionResourceUrl: ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.COUNTY_LIST)
@@ -78,8 +100,20 @@ export const defaultDataServiceConfig: DefaultDataServiceConfig = {
       entityResourceUrl: ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.TOWN_LIST),
       collectionResourceUrl: ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.TOWN_LIST)
     },
+    Company: {
+      entityResourceUrl: ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.COMPANY_LIST),
+      collectionResourceUrl: ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.COMPANY_LIST)
+    },
+    Branches: {
+      entityResourceUrl: ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.BRANCH_LIST),
+      collectionResourceUrl: ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.BRANCH_LIST)
+    },
+    UserEntityDto: {
+      entityResourceUrl: ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.USER_DETAILS),
+      collectionResourceUrl: ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.USER_DETAILS)
+    },
   }
-}
+};
 
 
 /**

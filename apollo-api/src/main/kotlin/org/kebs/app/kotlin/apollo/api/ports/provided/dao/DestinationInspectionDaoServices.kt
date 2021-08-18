@@ -32,11 +32,14 @@ import org.kebs.app.kotlin.apollo.store.repo.qa.IQaSampleCollectionRepository
 import org.kebs.app.kotlin.apollo.store.repo.qa.IQaSampleSubmissionRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageRequest
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.multipart.MultipartFile
+import java.awt.print.Pageable
 import java.math.BigDecimal
 import java.sql.Date
 import java.sql.Timestamp
@@ -47,77 +50,77 @@ import java.time.format.DateTimeFormatter
 
 @Service
 class DestinationInspectionDaoServices(
-    private val applicationMapProperties: ApplicationMapProperties,
-    private val commonDaoServices: CommonDaoServices,
-    private val SampleCollectionRepo: IQaSampleCollectionRepository,
-    private val SampleSubmissionRepo: IQaSampleSubmissionRepository,
-    private val serviceRequestsRepository: IServiceRequestsRepository,
-    private val invoiceDaoService: InvoiceDaoService,
-    private val notifications: Notifications,
-    private val iCocItemRepository: ICocItemRepository,
-    private val coiItemsRepository: ICoiItemsRepository,
-    private val iUserProfilesRepo: IUserProfilesRepository,
-    private val iSubSectionsLevel2Repo: ISubSectionsLevel2Repository,
-    private val idfsRepo: IIDFDetailsEntityRepository,
-    private val manifestRepo: IManifestDetailsEntityRepository,
-    private val declarationRepo: IDeclarationDetailsEntityRepository,
-    private val iLocalCocTypeRepo: ILocalCocTypesRepository,
-    private val cocRepo: ICocsRepository,
-    private val coisRep: ICoisRepository,
-    private val iCdInspectionChecklistRepo: ICdInspectionChecklistRepository,
-    private val cdTypesRepo: IConsignmentDocumentTypesEntityRepository,
-    private val iCdImporterRepo: ICdImporterEntityRepository,
-    private val iDemandNoteRepo: IDemandNoteRepository,
-    private val iDemandNoteItemRepo: IDemandNoteItemsDetailsRepository,
-    private val iCfgMoneyTypeCodesRepo: ICfgMoneyTypeCodesRepository,
-    private val iCdTransportRepo: ICdTransportEntityRepository,
-    private val iCdConsignorRepo: ICdConsignorEntityRepository,
-    private val iCdServiceProviderRepo: ICdServiceProviderEntityRepository,
-    private val iConsignmentDocumentDetailsRepo: IConsignmentDocumentDetailsRepository,
-    private val iCocTypesRepo: ICocTypesEntityRepository,
-    private val iBlackListUserTargetRep: IBlackListUserTargetRepository,
-    private val iCdStatusTypesDetailsRepo: ICdStatusTypesEntityRepository,
-    private val iDIFeeDetailsRepo: IDestinationInspectionFeeRepository,
-    private val iDIUploadsRepo: IDiUploadsRepository,
-    private val iCdStandardsRepo: ICdStandardsEntityRepository,
-    private val iCdStandardsTwoRepo: ICdStandardsTwoEntityRepository,
-    private val iSampleCollectRepo: ISampleCollectRepository,
-    private val iSampleSubmitRepo: ISampleSubmitRepository,
-    private val iSampleSubmissionParamRepo: ICdSampleSubmissionParametersRepository,
-    private val iChecklistInspectionTypesRepo: IChecklistInspectionTypesRepository,
-    private val iUserRepository: IUserRepository,
+        private val applicationMapProperties: ApplicationMapProperties,
+        private val commonDaoServices: CommonDaoServices,
+        private val SampleCollectionRepo: IQaSampleCollectionRepository,
+        private val SampleSubmissionRepo: IQaSampleSubmissionRepository,
+        private val serviceRequestsRepository: IServiceRequestsRepository,
+        private val invoiceDaoService: InvoiceDaoService,
+        private val notifications: Notifications,
+        private val iCocItemRepository: ICocItemRepository,
+        private val coiItemsRepository: ICoiItemsRepository,
+        private val iUserProfilesRepo: IUserProfilesRepository,
+        private val iSubSectionsLevel2Repo: ISubSectionsLevel2Repository,
+        private val idfsRepo: IIDFDetailsEntityRepository,
+        private val manifestRepo: IManifestDetailsEntityRepository,
+        private val declarationRepo: IDeclarationDetailsEntityRepository,
+        private val iLocalCocTypeRepo: ILocalCocTypesRepository,
+        private val cocRepo: ICocsRepository,
+        private val coisRep: ICoisRepository,
+        private val iCdInspectionChecklistRepo: ICdInspectionChecklistRepository,
+        private val cdTypesRepo: IConsignmentDocumentTypesEntityRepository,
+        private val iCdImporterRepo: ICdImporterEntityRepository,
+        private val iDemandNoteRepo: IDemandNoteRepository,
+        private val iDemandNoteItemRepo: IDemandNoteItemsDetailsRepository,
+        private val iCfgMoneyTypeCodesRepo: ICfgMoneyTypeCodesRepository,
+        private val iCdTransportRepo: ICdTransportEntityRepository,
+        private val iCdConsignorRepo: ICdConsignorEntityRepository,
+        private val iCdServiceProviderRepo: ICdServiceProviderEntityRepository,
+        private val iConsignmentDocumentDetailsRepo: IConsignmentDocumentDetailsRepository,
+        private val iCocTypesRepo: ICocTypesEntityRepository,
+        private val iBlackListUserTargetRep: IBlackListUserTargetRepository,
+        private val iCdStatusTypesDetailsRepo: ICdStatusTypesEntityRepository,
+        private val iDIFeeDetailsRepo: IDestinationInspectionFeeRepository,
+        private val iDIUploadsRepo: IDiUploadsRepository,
+        private val iCdStandardsRepo: ICdStandardsEntityRepository,
+        private val iCdStandardsTwoRepo: ICdStandardsTwoEntityRepository,
+        private val iSampleCollectRepo: ISampleCollectRepository,
+        private val iSampleSubmitRepo: ISampleSubmitRepository,
+        private val iSampleSubmissionParamRepo: ICdSampleSubmissionParametersRepository,
+        private val iChecklistInspectionTypesRepo: IChecklistInspectionTypesRepository,
+        private val iUserRepository: IUserRepository,
 
-    private val iCdItemsRepo: IConsignmentItemsRepository,
-    private val iLocalCocRepo: ILocalCocEntityRepository,
-    private val iLocalCorRepo: ILocalCorEntityRepository,
-    private val iLocalCocItemRepo: ILocalCocItemsEntityRepository,
-    private val iCdItemNonStandardEntityRepository: ICdItemNonStandardEntityRepository,
-    private val iCdValuesHeaderLevelRepo: ICdValuesHeaderLevelEntityRepository,
-    private val iCdConsigneeRepo: ICdConsigneeEntityRepository,
-    private val iCdExporterRepo: ICdExporterEntityRepository,
-    private val corsBakRepository: ICorsBakRepository,
-    private val idfItemRepo: IIDFItemDetailsEntityRepository,
-    private val declarationItemRepo: IDeclarationItemDetailsEntityRepository,
+        private val iCdItemsRepo: IConsignmentItemsRepository,
+        private val iLocalCocRepo: ILocalCocEntityRepository,
+        private val iLocalCorRepo: ILocalCorEntityRepository,
+        private val iLocalCocItemRepo: ILocalCocItemsEntityRepository,
+        private val iCdItemNonStandardEntityRepository: ICdItemNonStandardEntityRepository,
+        private val iCdValuesHeaderLevelRepo: ICdValuesHeaderLevelEntityRepository,
+        private val iCdConsigneeRepo: ICdConsigneeEntityRepository,
+        private val iCdExporterRepo: ICdExporterEntityRepository,
+        private val corsBakRepository: ICorsBakRepository,
+        private val idfItemRepo: IIDFItemDetailsEntityRepository,
+        private val declarationItemRepo: IDeclarationItemDetailsEntityRepository,
 
-    private val iCdTransactionRepo: ICdTransactionsRepository,
-    private val iCountryTypeCodesRepo: ICountryTypeCodesRepository,
+        private val iCdTransactionRepo: ICdTransactionsRepository,
+        private val iCountryTypeCodesRepo: ICountryTypeCodesRepository,
 
-    private val iCfsTypeCodesRepository: ICfsTypeCodesRepository,
-    private val iCdCfsUserCfsRepository: ICdCfsUserCfsRepository,
-    private val iPortsTypeCodesRepository: IPortsTypeCodesRepository,
-    private val iCdPortsUserPortsRepository: ICdPortsUserPortsRepository,
+        private val iCfsTypeCodesRepository: ICfsTypeCodesRepository,
+        private val iCdCfsUserCfsRepository: ICdCfsUserCfsRepository,
+        private val iPortsTypeCodesRepository: IPortsTypeCodesRepository,
+        private val iCdPortsUserPortsRepository: ICdPortsUserPortsRepository,
 
-    //Inspection Checklist Repos
-    private val iCdInspectionGeneralRepo: ICdInspectionGeneralRepository,
-    private val iCdInspectionAgrochemItemChecklistRepo: ICdInspectionAgrochemItemChecklistRepository,
-    private val iCdInspectionEngineeringItemChecklistRepo: ICdInspectionEngineeringItemChecklistRepository,
-    private val iCdInspectionOtherItemChecklistRepo: ICdInspectionOtherItemChecklistRepository,
-    private val iCdInspectionMotorVehicleItemChecklistRepo: ICdInspectionMotorVehicleItemChecklistRepository,
+        //Inspection Checklist Repos
+        private val iCdInspectionGeneralRepo: ICdInspectionGeneralRepository,
+        private val iCdInspectionAgrochemItemChecklistRepo: ICdInspectionAgrochemItemChecklistRepository,
+        private val iCdInspectionEngineeringItemChecklistRepo: ICdInspectionEngineeringItemChecklistRepository,
+        private val iCdInspectionOtherItemChecklistRepo: ICdInspectionOtherItemChecklistRepository,
+        private val iCdInspectionMotorVehicleItemChecklistRepo: ICdInspectionMotorVehicleItemChecklistRepository,
 
-    private val iPvocPartnersCountriesRepository: IPvocPartnersCountriesRepository,
+        private val iPvocPartnersCountriesRepository: IPvocPartnersCountriesRepository,
 
-    //DI BPMNs
-    private val diBpmn: DestinationInspectionBpmn
+        //DI BPMNs
+        private val diBpmn: DestinationInspectionBpmn
 
 ) {
 
@@ -229,7 +232,7 @@ class DestinationInspectionDaoServices(
     private val cdViewPageDetails = "redirect:/api/di/cd-details?cdUuid"
 
     fun viewSampleSubmitPage(itemDetails: CdItemDetailsEntity, message: String): String =
-        "$cdItemSampleSubmittedViewPageDetails=${itemDetails.uuid}&docType=${message}"
+            "$cdItemSampleSubmittedViewPageDetails=${itemDetails.uuid}&docType=${message}"
 
     fun viewCdItemPage(cdItemUuid: String) = "$cdItemViewPageDetails=$cdItemUuid"
 
@@ -268,23 +271,23 @@ class DestinationInspectionDaoServices(
 
     fun findCocType(cocTypeID: Long): CocTypesEntity {
         iCocTypesRepo.findByIdOrNull(cocTypeID)
-            ?.let {
-                return it
-            }
-            ?: throw Exception("COC TYPE WIth id = ${cocTypeID}, does not Exist")
+                ?.let {
+                    return it
+                }
+                ?: throw Exception("COC TYPE WIth id = ${cocTypeID}, does not Exist")
     }
 
     fun findAllBlackListUsers(status: Int): List<CdBlackListUserTargetTypesEntity> {
         iBlackListUserTargetRep.findAllByStatusOrderByTypeName(status)
-            ?.let {
-                return it
-            }
-            ?: throw Exception("List Of BlackList Users With Status = ${status}, does not Exist")
+                ?.let {
+                    return it
+                }
+                ?: throw Exception("List Of BlackList Users With Status = ${status}, does not Exist")
     }
 
     fun findAllOlderVersionCDsWithSameUcrNumber(
-        ucrNumber: String,
-        map: ServiceMapsEntity
+            ucrNumber: String,
+            map: ServiceMapsEntity
     ): List<ConsignmentDocumentDetailsEntity>? {
         return iConsignmentDocumentDetailsRepo.findByUcrNumberAndOldCdStatus(ucrNumber, map.activeStatus)
 //            ?.let {
@@ -295,26 +298,26 @@ class DestinationInspectionDaoServices(
 
     fun findCocTypeWithTypeName(cocType: String): CocTypesEntity {
         iCocTypesRepo.findByTypeName(cocType)
-            ?.let {
-                return it
-            }
-            ?: throw Exception("COC TYPE with type name = ${cocType}, does not Exist")
+                ?.let {
+                    return it
+                }
+                ?: throw Exception("COC TYPE with type name = ${cocType}, does not Exist")
     }
 
     fun findLocalCocTypeWithCocTypeCode(cocTypeCode: String): LocalCocTypesEntity {
         iLocalCocTypeRepo.findByCocTypeCode(cocTypeCode)
-            ?.let {
-                return it
-            }
-            ?: throw Exception("Local COC TYPE with type code = ${cocTypeCode}, does not Exist")
+                ?.let {
+                    return it
+                }
+                ?: throw Exception("Local COC TYPE with type code = ${cocTypeCode}, does not Exist")
     }
 
     fun findALlLocalCocTypeDetails(status: Int): List<LocalCocTypesEntity> {
         iLocalCocTypeRepo.findByStatus(status)
-            ?.let {
-                return it
-            }
-            ?: throw Exception("All Local COC TYPE with status = ${status}, does not Exist")
+                ?.let {
+                    return it
+                }
+                ?: throw Exception("All Local COC TYPE with status = ${status}, does not Exist")
     }
 
 
@@ -369,35 +372,135 @@ class DestinationInspectionDaoServices(
 //    }
 //Todo : after confermation
 
-fun createLocalCoc(
-    user: UsersEntity,
-    consignmentDocumentDetailsEntity: ConsignmentDocumentDetailsEntity,
-    map: ServiceMapsEntity,
-    routValue: String
-): CocsEntity {
-    var localCoc = CocsEntity()
-    consignmentDocumentDetailsEntity.ucrNumber?.let {
-        cocRepo.findByUcrNumber(it)
-            ?.let { coc ->
-                throw Exception("There is an Existing COC with the following UCR No = ${coc.ucrNumber}")
-            }
-    }
-        ?: kotlin.run {
+    fun createLocalCoc(
+            user: UsersEntity,
+            consignmentDocumentDetailsEntity: ConsignmentDocumentDetailsEntity,
+            map: ServiceMapsEntity,
+            routValue: String
+    ): CocsEntity {
+        var localCoc = CocsEntity()
+        consignmentDocumentDetailsEntity.ucrNumber?.let {
+            cocRepo.findByUcrNumber(it)
+                    ?.let { coc ->
+                        throw Exception("There is an Existing COC with the following UCR No = ${coc.ucrNumber}")
+                    }
+        }
+                ?: kotlin.run {
 //            GlobalScope.launch(Dispatchers.IO) {
-                KotlinLogging.logger { }.debug("Starting background task")
-                try {
-                    with(localCoc) {
-                        coiNumber = "UNKNOWN"
-                        cocNumber =
-                            "KEBSCOC${
-                                generateRandomText(
-                                    5,
-                                    map.secureRandom,
-                                    map.messageDigestAlgorithm,
-                                    true
-                                )
-                            }".toUpperCase()
-                        idfNumber = consignmentDocumentDetailsEntity.ucrNumber?.let { findIdf(it)?.baseDocRefNo } ?: "UNKOWN"
+                    KotlinLogging.logger { }.debug("Starting background task")
+                    try {
+                        with(localCoc) {
+                            coiNumber = "UNKNOWN"
+                            cocNumber =
+                                    "KEBSCOC${
+                                        generateRandomText(
+                                                5,
+                                                map.secureRandom,
+                                                map.messageDigestAlgorithm,
+                                                true
+                                        )
+                                    }".toUpperCase()
+                            idfNumber = consignmentDocumentDetailsEntity.ucrNumber?.let { findIdf(it)?.baseDocRefNo }
+                                    ?: "UNKOWN"
+                            rfiNumber = "UNKNOWN"
+                            ucrNumber = consignmentDocumentDetailsEntity.ucrNumber
+                            rfcDate = commonDaoServices.getTimestamp()
+                            shipmentQuantityDelivered = "UNKNOWN"
+                            cocIssueDate = commonDaoServices.getTimestamp()
+                            coiIssueDate = commonDaoServices.getTimestamp()
+                            clean = "Y"
+
+                            cocRemarks = "UNKNOWN"
+                            coiRemarks = "UNKNOWN"
+                            issuingOffice = "UNKNOWN"
+
+                            val cdImporter = consignmentDocumentDetailsEntity.cdImporter?.let { findCDImporterDetails(it) }
+                            importerName = cdImporter?.name
+                            importerPin = cdImporter?.pin
+                            importerAddress1 = cdImporter?.physicalAddress
+                            importerAddress2 = "UNKNOWN"
+                            importerCity = "UNKNOWN"
+                            importerCountry = cdImporter?.physicalCountryName
+                            importerZipCode = "UNKNOWN"
+                            importerTelephoneNumber = cdImporter?.telephone
+                            importerFaxNumber = cdImporter?.fax
+                            importerEmail = cdImporter?.email
+
+                            val cdExporter = consignmentDocumentDetailsEntity.cdExporter?.let { findCdExporterDetails(it) }
+                            exporterName = cdExporter?.name
+                            exporterPin = cdExporter?.pin
+                            exporterAddress1 = cdExporter?.physicalAddress
+                            exporterAddress2 = "UNKNOWN"
+                            exporterCity = "UNKNOWN"
+                            exporterCountry = cdExporter?.physicalCountryName
+                            exporterZipCode = "UNKNOWN"
+                            exporterTelephoneNumber = cdExporter?.telephone
+                            exporterFaxNumber = cdExporter?.fax
+                            exporterEmail = cdExporter?.email
+
+                            placeOfInspection = "UNKNOWN"
+                            dateOfInspection = commonDaoServices.getTimestamp()
+
+                            val cdTransport = consignmentDocumentDetailsEntity.cdTransport?.let { findCdTransportDetails(it) }
+                            portOfDestination = cdTransport?.portOfArrival
+                            shipmentMode = "UNKNOWN"
+                            countryOfSupply = "UNKNOWN"
+                            finalInvoiceCurrency = "KES"
+                            finalInvoiceDate = commonDaoServices.getTimestamp()
+                            shipmentSealNumbers = "UNKNOWN"
+                            shipmentContainerNumber = "UNKNOWN"
+                            shipmentGrossWeight = "UNKNOWN"
+                            route = routValue
+                            cocType = "L"
+                            productCategory = "UNKNOWN"
+                            partner = "UNKNOWN"
+                            createdBy = commonDaoServices.concatenateName(user)
+                            createdOn = commonDaoServices.getTimestamp()
+                        }
+
+                        localCoc = cocRepo.save(localCoc)
+                        KotlinLogging.logger { }.info { "localCoc = ${localCoc.id}" }
+                        localCocItems(consignmentDocumentDetailsEntity, localCoc, user, map)
+                        sendLocalCoc(localCoc.id)
+                    } catch (e: Exception) {
+                        KotlinLogging.logger { }.debug("Threw error from forward express callback")
+                        KotlinLogging.logger { }.debug(e.message)
+                        KotlinLogging.logger { }.debug(e.toString())
+                    }
+//            }
+                    return localCoc
+                }
+
+    }
+
+
+    fun createLocalCoi(
+            user: UsersEntity,
+            consignmentDocumentDetailsEntity: ConsignmentDocumentDetailsEntity,
+            map: ServiceMapsEntity,
+            routValue: String
+    ): CocsEntity {
+        val coc = CocsEntity()
+        consignmentDocumentDetailsEntity.ucrNumber?.let {
+            cocRepo.findByUcrNumber(it)
+                    ?.let { coc ->
+                        throw Exception("There is an Existing COI with the following UCR No = ${coc.ucrNumber}")
+                    }
+        }
+                ?: kotlin.run {
+
+                    with(coc) {
+                        cocNumber = "UNKNOWN"
+                        coiNumber =
+                                "KEBSCOI${
+                                    generateRandomText(
+                                            5,
+                                            map.secureRandom,
+                                            map.messageDigestAlgorithm,
+                                            true
+                                    )
+                                }".toUpperCase()
+                        idfNumber = consignmentDocumentDetailsEntity.ucrNumber?.let { findIdf(it)?.baseDocRefNo }
                         rfiNumber = "UNKNOWN"
                         ucrNumber = consignmentDocumentDetailsEntity.ucrNumber
                         rfcDate = commonDaoServices.getTimestamp()
@@ -405,7 +508,6 @@ fun createLocalCoc(
                         cocIssueDate = commonDaoServices.getTimestamp()
                         coiIssueDate = commonDaoServices.getTimestamp()
                         clean = "Y"
-
                         cocRemarks = "UNKNOWN"
                         coiRemarks = "UNKNOWN"
                         issuingOffice = "UNKNOWN"
@@ -453,110 +555,11 @@ fun createLocalCoc(
                         createdBy = commonDaoServices.concatenateName(user)
                         createdOn = commonDaoServices.getTimestamp()
                     }
-
-                    localCoc = cocRepo.save(localCoc)
-                    KotlinLogging.logger { }.info { "localCoc = ${localCoc.id}" }
-                    localCocItems(consignmentDocumentDetailsEntity, localCoc, user, map)
-                    sendLocalCoc(localCoc.id)
-                } catch (e: Exception) {
-                    KotlinLogging.logger { }.debug("Threw error from forward express callback")
-                    KotlinLogging.logger { }.debug(e.message)
-                    KotlinLogging.logger { }.debug(e.toString())
+                    return cocRepo.save(coc)
                 }
-//            }
-            return localCoc
-        }
-
-}
-
-
-    fun createLocalCoi(
-        user: UsersEntity,
-        consignmentDocumentDetailsEntity: ConsignmentDocumentDetailsEntity,
-        map: ServiceMapsEntity,
-        routValue: String
-    ): CocsEntity {
-        val coc = CocsEntity()
-        consignmentDocumentDetailsEntity.ucrNumber?.let {
-            cocRepo.findByUcrNumber(it)
-                ?.let { coc ->
-                    throw Exception("There is an Existing COI with the following UCR No = ${coc.ucrNumber}")
-                }
-        }
-            ?: kotlin.run {
-
-                with(coc) {
-                    cocNumber = "UNKNOWN"
-                    coiNumber =
-                        "KEBSCOI${
-                            generateRandomText(
-                                5,
-                                map.secureRandom,
-                                map.messageDigestAlgorithm,
-                                true
-                            )
-                        }".toUpperCase()
-                    idfNumber = consignmentDocumentDetailsEntity.ucrNumber?.let { findIdf(it)?.baseDocRefNo }
-                    rfiNumber = "UNKNOWN"
-                    ucrNumber = consignmentDocumentDetailsEntity.ucrNumber
-                    rfcDate = commonDaoServices.getTimestamp()
-                    shipmentQuantityDelivered = "UNKNOWN"
-                    cocIssueDate = commonDaoServices.getTimestamp()
-                    coiIssueDate = commonDaoServices.getTimestamp()
-                    clean = "Y"
-                    cocRemarks = "UNKNOWN"
-                    coiRemarks = "UNKNOWN"
-                    issuingOffice = "UNKNOWN"
-
-                    val cdImporter = consignmentDocumentDetailsEntity.cdImporter?.let { findCDImporterDetails(it) }
-                    importerName = cdImporter?.name
-                    importerPin = cdImporter?.pin
-                    importerAddress1 = cdImporter?.physicalAddress
-                    importerAddress2 = "UNKNOWN"
-                    importerCity = "UNKNOWN"
-                    importerCountry = cdImporter?.physicalCountryName
-                    importerZipCode = "UNKNOWN"
-                    importerTelephoneNumber = cdImporter?.telephone
-                    importerFaxNumber = cdImporter?.fax
-                    importerEmail = cdImporter?.email
-
-                    val cdExporter = consignmentDocumentDetailsEntity.cdExporter?.let { findCdExporterDetails(it) }
-                    exporterName = cdExporter?.name
-                    exporterPin = cdExporter?.pin
-                    exporterAddress1 = cdExporter?.physicalAddress
-                    exporterAddress2 = "UNKNOWN"
-                    exporterCity = "UNKNOWN"
-                    exporterCountry = cdExporter?.physicalCountryName
-                    exporterZipCode = "UNKNOWN"
-                    exporterTelephoneNumber = cdExporter?.telephone
-                    exporterFaxNumber = cdExporter?.fax
-                    exporterEmail = cdExporter?.email
-
-                    placeOfInspection = "UNKNOWN"
-                    dateOfInspection = commonDaoServices.getTimestamp()
-
-                    val cdTransport = consignmentDocumentDetailsEntity.cdTransport?.let { findCdTransportDetails(it) }
-                    portOfDestination = cdTransport?.portOfArrival
-                    shipmentMode = "UNKNOWN"
-                    countryOfSupply = "UNKNOWN"
-                    finalInvoiceCurrency = "KES"
-                    finalInvoiceDate = commonDaoServices.getTimestamp()
-                    shipmentSealNumbers = "UNKNOWN"
-                    shipmentContainerNumber = "UNKNOWN"
-                    shipmentGrossWeight = "UNKNOWN"
-                    route = routValue
-                    cocType = "L"
-                    productCategory = "UNKNOWN"
-                    partner = "UNKNOWN"
-                    createdBy = commonDaoServices.concatenateName(user)
-                    createdOn = commonDaoServices.getTimestamp()
-                }
-                return cocRepo.save(coc)
-            }
 
 
     }
-
 
 
 //    fun generateLocalCoc(cdLocalCocEntity: CdLocalCocEntity, consignmentDocumentDetailsEntity: ConsignmentDocumentDetailsEntity, user: UsersEntity, map: ServiceMapsEntity): CdLocalCocEntity {
@@ -588,12 +591,12 @@ fun createLocalCoc(
 
 
     fun generateLocalCocItem(
-        cdItemDetails: CdItemDetailsEntity,
-        localCocEntity: CocsEntity,
-        user: UsersEntity,
-        map: ServiceMapsEntity,
-        ownerPinValues: String,
-        ownerNameValues: String
+            cdItemDetails: CdItemDetailsEntity,
+            localCocEntity: CocsEntity,
+            user: UsersEntity,
+            map: ServiceMapsEntity,
+            ownerPinValues: String,
+            ownerNameValues: String
     ): CocItemsEntity {
         var localCocItems = CocItemsEntity()
         with(localCocItems) {
@@ -625,39 +628,40 @@ fun createLocalCoc(
 
 
     fun localCocItems(
-        updatedCDDetails: ConsignmentDocumentDetailsEntity,
-        localCocEntity: CocsEntity,
-        user: UsersEntity,
-        map: ServiceMapsEntity
+            updatedCDDetails: ConsignmentDocumentDetailsEntity,
+            localCocEntity: CocsEntity,
+            user: UsersEntity,
+            map: ServiceMapsEntity
     ) {
 
         findCDItemsListWithCDID(updatedCDDetails)
-            .forEach { cdItemDetails ->
+                .forEach { cdItemDetails ->
 //                                if (cdItemDetails.approveStatus == map.activeStatus) {
-                generateLocalCocItem(cdItemDetails, localCocEntity, user, map, "NA", "NA")
+                    generateLocalCocItem(cdItemDetails, localCocEntity, user, map, "NA", "NA")
 //                                }
-            }
+                }
 
 
     }
 
 
     fun localCoiItems(
-        updatedCDDetails: ConsignmentDocumentDetailsEntity,
-        localCocEntity: CocsEntity,
-        user: UsersEntity,
-        map: ServiceMapsEntity
+            updatedCDDetails: ConsignmentDocumentDetailsEntity,
+            localCocEntity: CocsEntity,
+            user: UsersEntity,
+            map: ServiceMapsEntity
     ) {
 
         findCDItemsListWithCDID(updatedCDDetails)
-            .forEach { cdItemDetails ->
-                val ownerPinValues =
-                    cdItemDetails.ownerPin ?: throw Exception("Add OWNER PIN for ITEM number = ${cdItemDetails.itemNo}")
-                val ownerNameValues = cdItemDetails.ownerName
-                    ?: throw Exception("Add OWNER NAME for ITEM number = ${cdItemDetails.itemNo}")
-                generateLocalCocItem(cdItemDetails, localCocEntity, user, map, ownerPinValues, ownerNameValues)
+                .forEach { cdItemDetails ->
+                    val ownerPinValues =
+                            cdItemDetails.ownerPin
+                                    ?: throw Exception("Add OWNER PIN for ITEM number = ${cdItemDetails.itemNo}")
+                    val ownerNameValues = cdItemDetails.ownerName
+                            ?: throw Exception("Add OWNER NAME for ITEM number = ${cdItemDetails.itemNo}")
+                    generateLocalCocItem(cdItemDetails, localCocEntity, user, map, ownerPinValues, ownerNameValues)
 
-            }
+                }
 
 
     }
@@ -678,8 +682,8 @@ fun createLocalCoc(
 
                 val fileName = cocFinalDto.coc?.ucrNumber?.let {
                     commonDaoServices.createKesWsFileName(
-                        applicationMapProperties.mapKeswsCocDoctype,
-                        it
+                            applicationMapProperties.mapKeswsCocDoctype,
+                            it
                     )
                 }
 
@@ -707,8 +711,8 @@ fun createLocalCoc(
 
                 val fileName = coiFinalDto.coi?.ucrNumber?.let {
                     commonDaoServices.createKesWsFileName(
-                        applicationMapProperties.mapKeswsCocDoctype,
-                        it
+                            applicationMapProperties.mapKeswsCocDoctype,
+                            it
                     )
                 }
 
@@ -723,8 +727,8 @@ fun createLocalCoc(
 
     //TODO: Figure out where to get the null details
     fun generateLocalCor(
-        cdLocalCorEntity: CdLocalCorEntity, cdEntity: ConsignmentDocumentDetailsEntity, s: ServiceMapsEntity,
-        user: UsersEntity,
+            cdLocalCorEntity: CdLocalCorEntity, cdEntity: ConsignmentDocumentDetailsEntity, s: ServiceMapsEntity,
+            user: UsersEntity,
     ): CdLocalCorEntity {
         var localCor = cdLocalCorEntity
         //Get CD Item by cd doc id
@@ -732,7 +736,7 @@ fun createLocalCoc(
             this.findMotorVehicleInspectionByCdItem(cdItemDetailsList.get(0))?.let { cdMvInspectionEntity ->
                 with(localCor) {
                     corSerialNo =
-                        "KEBS/COR-NBI/${generateRandomText(5, s.secureRandom, s.messageDigestAlgorithm, false)}"
+                            "KEBS/COR-NBI/${generateRandomText(5, s.secureRandom, s.messageDigestAlgorithm, false)}"
                     corIssueDate = commonDaoServices.getCurrentDate()
                     corExpiryDate = commonDaoServices.addMonthsToCurrentDate(3)
 
@@ -784,9 +788,9 @@ fun createLocalCoc(
     }
 
     fun generateCor(
-        cdEntity: ConsignmentDocumentDetailsEntity,
-        s: ServiceMapsEntity,
-        user: UsersEntity,
+            cdEntity: ConsignmentDocumentDetailsEntity,
+            s: ServiceMapsEntity,
+            user: UsersEntity,
     ): CorsBakEntity {
         var localCor = CorsBakEntity()
         //Get CD Item by cd doc id
@@ -854,9 +858,9 @@ fun createLocalCoc(
             var myReturnValue: String? = null
             if (it.has(valueToFind)) {
                 it.get(valueToFind)
-                    ?.let { myValue ->
-                        myReturnValue = myValue.toString()
-                    }
+                        ?.let { myValue ->
+                            myReturnValue = myValue.toString()
+                        }
             }
             return myReturnValue
         }
@@ -864,18 +868,18 @@ fun createLocalCoc(
 
     fun findCD(cdId: Long): ConsignmentDocumentDetailsEntity {
         iConsignmentDocumentDetailsRepo.findByIdOrNull(cdId)
-            ?.let { cdDetailsEntity ->
-                return cdDetailsEntity
-            }
-            ?: throw Exception("CD Details with the following ID = ${cdId}, does not Exist")
+                ?.let { cdDetailsEntity ->
+                    return cdDetailsEntity
+                }
+                ?: throw Exception("CD Details with the following ID = ${cdId}, does not Exist")
     }
 
     fun findCDWithUuid(uuid: String): ConsignmentDocumentDetailsEntity {
         iConsignmentDocumentDetailsRepo.findByUuid(uuid)
-            ?.let { cdDetailsEntity ->
-                return cdDetailsEntity
-            }
-            ?: throw Exception("CD Details with the following uuid = ${uuid}, does not Exist")
+                ?.let { cdDetailsEntity ->
+                    return cdDetailsEntity
+                }
+                ?: throw Exception("CD Details with the following uuid = ${uuid}, does not Exist")
     }
 
     fun findCORById(cdId: Long): CorsBakEntity? {
@@ -884,23 +888,23 @@ fun createLocalCoc(
 
     fun findCORByChassisNumber(chassisNo: String): CorsBakEntity {
         corsBakRepository.findByChasisNumber(chassisNo)
-            ?.let { corEntity ->
-                return corEntity
-            }
-            ?: throw Exception("CoR Entity with the following chassis number = ${chassisNo}, does not Exist")
+                ?.let { corEntity ->
+                    return corEntity
+                }
+                ?: throw Exception("CoR Entity with the following chassis number = ${chassisNo}, does not Exist")
     }
 
     fun findCdStatusValueList(status: Int): List<CdStatusTypesEntity> {
         iCdStatusTypesDetailsRepo.findByStatus(status)
-            ?.let { cdStatusDetails ->
-                return cdStatusDetails
-            }
-            ?: throw Exception("cd Status Details with status = ${status}, do not Exist")
+                ?.let { cdStatusDetails ->
+                    return cdStatusDetails
+                }
+                ?: throw Exception("cd Status Details with status = ${status}, do not Exist")
     }
 
     fun findDemandNoteListFromCdItemList(
-        cdItemList: List<CdItemDetailsEntity>,
-        status: Int
+            cdItemList: List<CdItemDetailsEntity>,
+            status: Int
     ): MutableList<CdDemandNoteEntity> {
         val demandNotes: MutableList<CdDemandNoteEntity> = mutableListOf()
         cdItemList.forEach { item ->
@@ -914,50 +918,50 @@ fun createLocalCoc(
 
     fun findLocalCocItemsList(localCocId: Long): List<CdLocalCocItemsEntity> {
         iLocalCocItemRepo.findByLocalCocId(localCocId)
-            ?.let { localCocItemDetails ->
-                return localCocItemDetails
-            }
-            ?: throw Exception("Local COC with ID = ${localCocId}, do not Exist")
+                ?.let { localCocItemDetails ->
+                    return localCocItemDetails
+                }
+                ?: throw Exception("Local COC with ID = ${localCocId}, do not Exist")
     }
 
     fun findCdStatusValue(statusID: Long): CdStatusTypesEntity {
         iCdStatusTypesDetailsRepo.findByIdOrNull(statusID)
-            ?.let { cdStatusDetails ->
-                return cdStatusDetails
-            }
-            ?: throw Exception("Status Details with id = ${statusID}, does not Exist")
+                ?.let { cdStatusDetails ->
+                    return cdStatusDetails
+                }
+                ?: throw Exception("Status Details with id = ${statusID}, does not Exist")
     }
 
     fun findDIFeeList(status: Int): List<DestinationInspectionFeeEntity>? {
         iDIFeeDetailsRepo.findByStatus(status)
-            ?.let { diFeeDetails ->
-                return diFeeDetails
-            }
-            ?: throw Exception("DI fee Details with status = ${status}, do not Exist")
+                ?.let { diFeeDetails ->
+                    return diFeeDetails
+                }
+                ?: throw Exception("DI fee Details with status = ${status}, do not Exist")
     }
 
     fun findCocItemList(cocId: Long): List<CocItemsEntity> {
         iCocItemRepository.findByCocId(cocId)
-            ?.let { cocItemDetails ->
-                return cocItemDetails
-            }
-            ?: throw Exception("COC ITEM(s) Details with COC ID = ${cocId}, do not Exist")
+                ?.let { cocItemDetails ->
+                    return cocItemDetails
+                }
+                ?: throw Exception("COC ITEM(s) Details with COC ID = ${cocId}, do not Exist")
     }
 
     fun findDemandNoteWithCDID(cdId: Long): CdDemandNoteEntity {
         iDemandNoteRepo.findByCdId(cdId)
-            ?.let { demandNote ->
-                return demandNote
-            }
-            ?: throw Exception("Demand Note Details with CD ID = ${cdId}, do not Exist")
+                ?.let { demandNote ->
+                    return demandNote
+                }
+                ?: throw Exception("Demand Note Details with CD ID = ${cdId}, do not Exist")
     }
 
     fun findCoiItemList(coiId: Long): List<CocItemsEntity> {
         iCocItemRepository.findByCocId(coiId)
-            ?.let { cocItemDetails ->
-                return cocItemDetails
-            }
-            ?: throw Exception("COI ITEM(s) Details with COI ID = ${coiId}, do not Exist")
+                ?.let { cocItemDetails ->
+                    return cocItemDetails
+                }
+                ?: throw Exception("COI ITEM(s) Details with COI ID = ${coiId}, do not Exist")
     }
 
     fun findIdfItemList(idf: IDFDetailsEntity): List<IDFItemDetailsEntity>? {
@@ -1008,27 +1012,27 @@ fun createLocalCoc(
 
     fun sendDemandNotePayedStatusToKWIS(demandNoteId: Long) {
         iDemandNoteRepo.findByIdOrNull(demandNoteId)
-            ?.let { demandNote ->
-                val customDemandNotePay = CustomDemandNotePayXmlDto(demandNote)
-                val demandNotePay = DemandNotePayXmlDTO()
-                demandNotePay.customDemandNotePay = customDemandNotePay
+                ?.let { demandNote ->
+                    val customDemandNotePay = CustomDemandNotePayXmlDto(demandNote)
+                    val demandNotePay = DemandNotePayXmlDTO()
+                    demandNotePay.customDemandNotePay = customDemandNotePay
 
-                val fileName = customDemandNotePay.demandNoteNumber?.let {
-                    commonDaoServices.createKesWsFileName(applicationMapProperties.mapKeswsDemandNotePayDoctype, it)
+                    val fileName = customDemandNotePay.demandNoteNumber?.let {
+                        commonDaoServices.createKesWsFileName(applicationMapProperties.mapKeswsDemandNotePayDoctype, it)
+                    }
+
+                    val xmlFile = fileName?.let { commonDaoServices.serializeToXml(fileName, demandNotePay) }
+
+                    xmlFile?.let { it1 -> sftpService.uploadFile(it1) }
                 }
-
-                val xmlFile = fileName?.let { commonDaoServices.serializeToXml(fileName, demandNotePay) }
-
-                xmlFile?.let { it1 -> sftpService.uploadFile(it1) }
-            }
-            ?: throw ExpectedDataNotFound("Demand note WIth ID= ${demandNoteId}, does not Exist")
+                ?: throw ExpectedDataNotFound("Demand note WIth ID= ${demandNoteId}, does not Exist")
 
     }
 
     fun demandNoteCalculation(
-        cfiValue: BigDecimal,
-        diInspectionFeeId: DestinationInspectionFeeEntity,
-        itemDetails: CdItemDetailsEntity
+            cfiValue: BigDecimal,
+            diInspectionFeeId: DestinationInspectionFeeEntity,
+            itemDetails: CdItemDetailsEntity
     ): BigDecimal? {
         val percentage = 100
         var amount = (diInspectionFeeId.rate?.toBigDecimal())?.multiply(cfiValue)?.divide(percentage.toBigDecimal())
@@ -1045,7 +1049,7 @@ fun createLocalCoc(
         when {
             diInspectionFeeId.minimumUsd != null -> {
                 val minimumValue = (currencyValues?.typeCodeValue)?.toBigDecimal()
-                    ?.multiply(diInspectionFeeId.minimumUsd?.toBigDecimal())
+                        ?.multiply(diInspectionFeeId.minimumUsd?.toBigDecimal())
                 when {
                     minimumValue != null -> {
                         when {
@@ -1067,7 +1071,7 @@ fun createLocalCoc(
 
         if (diInspectionFeeId.higher != null) {
             val higherValue =
-                (currencyValues?.typeCodeValue)?.toBigDecimal()?.multiply(diInspectionFeeId.higher?.toBigDecimal())
+                    (currencyValues?.typeCodeValue)?.toBigDecimal()?.multiply(diInspectionFeeId.higher?.toBigDecimal())
             if (higherValue != null) {
                 if (amount != null) {
                     amount = when {
@@ -1112,11 +1116,11 @@ fun createLocalCoc(
     }
 
     fun addItemDetailsToDemandNote(
-        itemDetails: CdItemDetailsEntity, demandNote: CdDemandNoteEntity, map: ServiceMapsEntity,
-        user: UsersEntity
+            itemDetails: CdItemDetailsEntity, demandNote: CdDemandNoteEntity, map: ServiceMapsEntity,
+            user: UsersEntity
     ) {
         val fee = itemDetails.paymentFeeIdSelected
-            ?: throw Exception("Item details with Id = ${itemDetails.id}, does not Have any Details For payment Fee Id Selected ")
+                ?: throw Exception("Item details with Id = ${itemDetails.id}, does not Have any Details For payment Fee Id Selected ")
         val demandNoteItem = CdDemandNoteItemsDetailsEntity()
         with(demandNoteItem) {
             itemId = itemDetails.id
@@ -1126,7 +1130,7 @@ fun createLocalCoc(
             rate = fee.rate
             // Demand note Calculation Details
             amountPayable = cfvalue?.let { demandNoteCalculation(it, fee, itemDetails) }
-                ?: throw Exception("Item details with Id = ${itemDetails.id}, does not Have any Details For total Price Ncy")
+                    ?: throw Exception("Item details with Id = ${itemDetails.id}, does not Have any Details For total Price Ncy")
             status = map.activeStatus
             createdOn = commonDaoServices.getTimestamp()
             createdBy = commonDaoServices.getUserName(user)
@@ -1135,18 +1139,18 @@ fun createLocalCoc(
     }
 
     fun calculateTotalAmountDemandNote(
-        demandNote: CdDemandNoteEntity,
-        map: ServiceMapsEntity,
-        user: UsersEntity
+            demandNote: CdDemandNoteEntity,
+            map: ServiceMapsEntity,
+            user: UsersEntity
     ): CdDemandNoteEntity {
         /* todo: Discuss with KEN on how to go with the bigDecimal not to be null when initializing */
         var totalAmountPayable: BigDecimal = 0.00.toBigDecimal()
         val demandNoteID =
-            demandNote.id ?: throw Exception("Demand Note details with Id = ${demandNote.id}, does not Exist")
+                demandNote.id ?: throw Exception("Demand Note details with Id = ${demandNote.id}, does not Exist")
         iDemandNoteItemRepo.findByDemandNoteId(demandNoteID)
-            ?.forEach { demandNoteItem ->
-                totalAmountPayable = demandNoteItem.amountPayable?.plus(totalAmountPayable)!!
-            }
+                ?.forEach { demandNoteItem ->
+                    totalAmountPayable = demandNoteItem.amountPayable?.plus(totalAmountPayable)!!
+                }
         //Add the total amount To demandNote Details
         with(demandNote) {
             totalAmount = totalAmountPayable
@@ -1157,92 +1161,92 @@ fun createLocalCoc(
 
 
     fun generateDemandNoteWithItemList(
-        itemDetails: CdItemDetailsEntity,
-        map: ServiceMapsEntity,
-        user: UsersEntity
+            itemDetails: CdItemDetailsEntity,
+            map: ServiceMapsEntity,
+            user: UsersEntity
     ): CdDemandNoteEntity {
 
         /* todo: Discuss with KEN on how the function works */
         val itemCdId = itemDetails.cdDocId?.id
-            ?: throw Exception("Item details with Id = ${itemDetails.id}, does not Have any Details For CD attached ")
+                ?: throw Exception("Item details with Id = ${itemDetails.id}, does not Have any Details For CD attached ")
         iDemandNoteRepo.findByCdId(itemCdId)
-            ?.let { demandNote ->
-                var demandNoteDetails = demandNote
-                //Call Function to add Item Details To be attached To The Demand note
-                addItemDetailsToDemandNote(itemDetails, demandNoteDetails, map, user)
-                //Calculate the total Amount for Items In one Cd Tobe paid For
-                demandNoteDetails = calculateTotalAmountDemandNote(demandNoteDetails, map, user)
-                itemDetails.dnoteStatus = map.activeStatus
-                return demandNoteUpDatingCDAndItem(itemDetails, user, demandNoteDetails)
-            }
-            ?: kotlin.run {
-                var demandNote = CdDemandNoteEntity()
-                with(demandNote) {
-                    cdId = itemDetails.cdDocId?.id
-                    val cdImporter = itemDetails.cdDocId?.cdImporter?.let { findCDImporterDetails(it) }
-                    nameImporter = cdImporter?.name
-                    address = cdImporter?.physicalAddress
-                    telephone = cdImporter?.telephone
-                    cdRefNo = itemDetails.cdDocId?.cdStandard?.applicationRefNo
-                    //todo: Entry Number
-                    entryAblNumber = "UNKNOWN"
-                    amountPayable = 0.00.toBigDecimal()
-                    receiptNo = "NOT PAID"
-                    product = "UNKNOWN"
-                    rate = "UNKNOWN"
-                    cfvalue = 0.00.toBigDecimal()
-
-
-                    //Generate Demand note number
-                    demandNoteNumber =
-                        "KIMS${itemDetails.cdDocId?.cdType?.let { findCdTypeDetails(it).demandNotePrefix }}${
-                            generateRandomText(
-                                5,
-                                map.secureRandom,
-                                map.messageDigestAlgorithm,
-                                true
-                            )
-                        }".toUpperCase()
-                    paymentStatus = map.inactiveStatus
-                    dateGenerated = commonDaoServices.getCurrentDate()
-                    generatedBy = commonDaoServices.concatenateName(user)
-                    status = map.activeStatus
-                    createdOn = commonDaoServices.getTimestamp()
-                    createdBy = commonDaoServices.getUserName(user)
+                ?.let { demandNote ->
+                    var demandNoteDetails = demandNote
+                    //Call Function to add Item Details To be attached To The Demand note
+                    addItemDetailsToDemandNote(itemDetails, demandNoteDetails, map, user)
+                    //Calculate the total Amount for Items In one Cd Tobe paid For
+                    demandNoteDetails = calculateTotalAmountDemandNote(demandNoteDetails, map, user)
+                    itemDetails.dnoteStatus = map.activeStatus
+                    return demandNoteUpDatingCDAndItem(itemDetails, user, demandNoteDetails)
                 }
-                demandNote = iDemandNoteRepo.save(demandNote)
-                //Call Function to add Item Details To be attached To The Demand note
-                addItemDetailsToDemandNote(itemDetails, demandNote, map, user)
-                //Calculate the total Amount for Items In one Cd Tobe paid For
-                demandNote = calculateTotalAmountDemandNote(demandNote, map, user)
-                itemDetails.dnoteStatus = map.activeStatus
-                return demandNoteUpDatingCDAndItem(itemDetails, user, demandNote)
+                ?: kotlin.run {
+                    var demandNote = CdDemandNoteEntity()
+                    with(demandNote) {
+                        cdId = itemDetails.cdDocId?.id
+                        val cdImporter = itemDetails.cdDocId?.cdImporter?.let { findCDImporterDetails(it) }
+                        nameImporter = cdImporter?.name
+                        address = cdImporter?.physicalAddress
+                        telephone = cdImporter?.telephone
+                        cdRefNo = itemDetails.cdDocId?.cdStandard?.applicationRefNo
+                        //todo: Entry Number
+                        entryAblNumber = "UNKNOWN"
+                        amountPayable = 0.00.toBigDecimal()
+                        receiptNo = "NOT PAID"
+                        product = "UNKNOWN"
+                        rate = "UNKNOWN"
+                        cfvalue = 0.00.toBigDecimal()
 
-            }
+
+                        //Generate Demand note number
+                        demandNoteNumber =
+                                "KIMS${itemDetails.cdDocId?.cdType?.let { findCdTypeDetails(it).demandNotePrefix }}${
+                                    generateRandomText(
+                                            5,
+                                            map.secureRandom,
+                                            map.messageDigestAlgorithm,
+                                            true
+                                    )
+                                }".toUpperCase()
+                        paymentStatus = map.inactiveStatus
+                        dateGenerated = commonDaoServices.getCurrentDate()
+                        generatedBy = commonDaoServices.concatenateName(user)
+                        status = map.activeStatus
+                        createdOn = commonDaoServices.getTimestamp()
+                        createdBy = commonDaoServices.getUserName(user)
+                    }
+                    demandNote = iDemandNoteRepo.save(demandNote)
+                    //Call Function to add Item Details To be attached To The Demand note
+                    addItemDetailsToDemandNote(itemDetails, demandNote, map, user)
+                    //Calculate the total Amount for Items In one Cd Tobe paid For
+                    demandNote = calculateTotalAmountDemandNote(demandNote, map, user)
+                    itemDetails.dnoteStatus = map.activeStatus
+                    return demandNoteUpDatingCDAndItem(itemDetails, user, demandNote)
+
+                }
 
     }
 
 
     fun demandNoteUpDatingCDAndItem(
-        itemDetails: CdItemDetailsEntity,
-        user: UsersEntity,
-        demandNote: CdDemandNoteEntity
+            itemDetails: CdItemDetailsEntity,
+            user: UsersEntity,
+            demandNote: CdDemandNoteEntity
     ): CdDemandNoteEntity {
         (updateCdItemDetailsInDB(itemDetails, user).cdDocId
-            ?.let { cdDetails ->
-                cdDetails.cdStandard?.let { updateCDStatus(it, awaitPaymentStatus.toLong()) }
-                updateCdDetailsInDB(cdDetails, user)
-                    .let {
-                        return demandNote
-                    }
-            }
-            ?: throw Exception("CD details for Item with Id = ${itemDetails.id}, does not Exist"))
+                ?.let { cdDetails ->
+                    cdDetails.cdStandard?.let { updateCDStatus(it, awaitPaymentStatus.toLong()) }
+                    updateCdDetailsInDB(cdDetails, user)
+                            .let {
+                                return demandNote
+                            }
+                }
+                ?: throw Exception("CD details for Item with Id = ${itemDetails.id}, does not Exist"))
     }
 
     fun demandNotePayment(
-        dNote: CdDemandNoteEntity,
-        invoiceDetails: StagingPaymentReconciliation,
-        map: ServiceMapsEntity
+            dNote: CdDemandNoteEntity,
+            invoiceDetails: StagingPaymentReconciliation,
+            map: ServiceMapsEntity
     ): CdDemandNoteEntity {
         var demandNote = dNote
         with(demandNote) {
@@ -1308,10 +1312,10 @@ fun createLocalCoc(
 
     fun findDIFee(feeId: Long): DestinationInspectionFeeEntity {
         iDIFeeDetailsRepo.findByIdOrNull(feeId)
-            ?.let { diFeeDetails ->
-                return diFeeDetails
-            }
-            ?: throw Exception("DI fee Details with ID = ${feeId}, does not Exist")
+                ?.let { diFeeDetails ->
+                    return diFeeDetails
+                }
+                ?: throw Exception("DI fee Details with ID = ${feeId}, does not Exist")
     }
 
     fun findDemandNote(item: CdItemDetailsEntity): CdDemandNoteEntity? {
@@ -1340,10 +1344,10 @@ fun createLocalCoc(
 
     fun findDemandNoteWithPaymentStatus(item: CdItemDetailsEntity, status: Int): CdDemandNoteEntity? {
         iDemandNoteRepo.findByItemIdAndPaymentStatus(item, status)
-            ?.let { demandNoteDetails ->
-                return demandNoteDetails
-            }
-            ?: throw Exception("Demand Note Details with [Item ID = ${item.id} and Status ${status}], does not Exist")
+                ?.let { demandNoteDetails ->
+                    return demandNoteDetails
+                }
+                ?: throw Exception("Demand Note Details with [Item ID = ${item.id} and Status ${status}], does not Exist")
     }
 
 //    fun findDemandNoteByCDID(invoiceBatchId:Long): List<CdDemandNoteEntity> {
@@ -1356,10 +1360,10 @@ fun createLocalCoc(
 
     fun findDemandNoteByBatchID(invoiceBatchId: Long): List<CdDemandNoteEntity> {
         iDemandNoteRepo.findByInvoiceBatchNumberId(invoiceBatchId)
-            ?.let { demandNoteDetails ->
-                return demandNoteDetails
-            }
-            ?: throw Exception("Demand Note Details with [Invoice Batch ID = ${invoiceBatchId}], do not exist")
+                ?.let { demandNoteDetails ->
+                    return demandNoteDetails
+                }
+                ?: throw Exception("Demand Note Details with [Invoice Batch ID = ${invoiceBatchId}], do not exist")
     }
 
     fun generateDemandNoteNumber(): String {
@@ -1375,27 +1379,27 @@ fun createLocalCoc(
 
     fun findCDItemsListWithCDID(consignmentDocumentDetailsEntity: ConsignmentDocumentDetailsEntity): List<CdItemDetailsEntity> {
         iCdItemsRepo.findByCdDocId(consignmentDocumentDetailsEntity)
-            ?.let { cdItemsDetailsList ->
-                return cdItemsDetailsList
-            }
-            ?: throw Exception("CD Item Details with the following CD ID= ${consignmentDocumentDetailsEntity.id}, do not Exist")
+                ?.let { cdItemsDetailsList ->
+                    return cdItemsDetailsList
+                }
+                ?: throw Exception("CD Item Details with the following CD ID= ${consignmentDocumentDetailsEntity.id}, do not Exist")
     }
 
     fun findCDItemsListWithCDIDAndDemandNoteStatus(
-        consignmentDocumentDetailsEntity: ConsignmentDocumentDetailsEntity,
-        map: ServiceMapsEntity
+            consignmentDocumentDetailsEntity: ConsignmentDocumentDetailsEntity,
+            map: ServiceMapsEntity
     ): List<CdItemDetailsEntity> {
         iCdItemsRepo.findByCdDocIdAndDnoteStatus(consignmentDocumentDetailsEntity, map.activeStatus)
-            ?.let { cdItemsDetailsList ->
-                return cdItemsDetailsList
-            }
-            ?: throw Exception("CD Item Details with the following CD ID= ${consignmentDocumentDetailsEntity.id} and  demand note status = ${map.activeStatus}, do not Exist")
+                ?.let { cdItemsDetailsList ->
+                    return cdItemsDetailsList
+                }
+                ?: throw Exception("CD Item Details with the following CD ID= ${consignmentDocumentDetailsEntity.id} and  demand note status = ${map.activeStatus}, do not Exist")
     }
 
     fun saveCheckListDetails(
-        checklistEntity: CdInspectionChecklistEntity,
-        user: UsersEntity,
-        map: ServiceMapsEntity
+            checklistEntity: CdInspectionChecklistEntity,
+            user: UsersEntity,
+            map: ServiceMapsEntity
     ): CdInspectionChecklistEntity {
         var checklist = checklistEntity
         with(checklist) {
@@ -1410,8 +1414,8 @@ fun createLocalCoc(
     }
 
     fun saveInspectionGeneralDetails(
-        inspectionGeneralEntity: CdInspectionGeneralEntity, itemDetails: CdItemDetailsEntity,
-        user: UsersEntity, map: ServiceMapsEntity
+            inspectionGeneralEntity: CdInspectionGeneralEntity, itemDetails: CdItemDetailsEntity,
+            user: UsersEntity, map: ServiceMapsEntity
     ): CdInspectionGeneralEntity {
         var inspectionGeneralChecklist = inspectionGeneralEntity
         with(inspectionGeneralChecklist) {
@@ -1424,14 +1428,14 @@ fun createLocalCoc(
         inspectionGeneralChecklist = iCdInspectionGeneralRepo.save(inspectionGeneralChecklist)
 
         KotlinLogging.logger { }
-            .info { "Inspection General CheckList Details saved ID = ${inspectionGeneralChecklist.id}" }
+                .info { "Inspection General CheckList Details saved ID = ${inspectionGeneralChecklist.id}" }
         return inspectionGeneralChecklist
     }
 
     fun saveInspectionAgrochemItemChecklist(
-        inspectionAgrochemItemChecklistEntity: CdInspectionAgrochemItemChecklistEntity,
-        inspectionGeneralEntity: CdInspectionGeneralEntity,
-        user: UsersEntity, map: ServiceMapsEntity
+            inspectionAgrochemItemChecklistEntity: CdInspectionAgrochemItemChecklistEntity,
+            inspectionGeneralEntity: CdInspectionGeneralEntity,
+            user: UsersEntity, map: ServiceMapsEntity
     ): CdInspectionAgrochemItemChecklistEntity {
         var inspectionAgrochemItemChecklist = inspectionAgrochemItemChecklistEntity
         with(inspectionAgrochemItemChecklist) {
@@ -1443,14 +1447,14 @@ fun createLocalCoc(
         inspectionAgrochemItemChecklist = iCdInspectionAgrochemItemChecklistRepo.save(inspectionAgrochemItemChecklist)
 
         KotlinLogging.logger { }
-            .info { "Inspection Agrochem CheckList Details saved ID = ${inspectionAgrochemItemChecklist.id}" }
+                .info { "Inspection Agrochem CheckList Details saved ID = ${inspectionAgrochemItemChecklist.id}" }
         return inspectionAgrochemItemChecklist
     }
 
     fun saveInspectionEngineeringItemChecklist(
-        inspectionEngineeringItemChecklistEntity: CdInspectionEngineeringItemChecklistEntity,
-        inspectionGeneralEntity: CdInspectionGeneralEntity,
-        user: UsersEntity, map: ServiceMapsEntity
+            inspectionEngineeringItemChecklistEntity: CdInspectionEngineeringItemChecklistEntity,
+            inspectionGeneralEntity: CdInspectionGeneralEntity,
+            user: UsersEntity, map: ServiceMapsEntity
     ): CdInspectionEngineeringItemChecklistEntity {
         var inspectionEngineeringItemChecklist = inspectionEngineeringItemChecklistEntity
         with(inspectionEngineeringItemChecklist) {
@@ -1460,17 +1464,17 @@ fun createLocalCoc(
             createdOn = commonDaoServices.getTimestamp()
         }
         inspectionEngineeringItemChecklist =
-            iCdInspectionEngineeringItemChecklistRepo.save(inspectionEngineeringItemChecklist)
+                iCdInspectionEngineeringItemChecklistRepo.save(inspectionEngineeringItemChecklist)
 
         KotlinLogging.logger { }
-            .info { "Inspection Engineering CheckList Details saved ID = ${inspectionEngineeringItemChecklist.id}" }
+                .info { "Inspection Engineering CheckList Details saved ID = ${inspectionEngineeringItemChecklist.id}" }
         return inspectionEngineeringItemChecklist
     }
 
     fun saveInspectionOtherItemChecklist(
-        inspectionOtherItemChecklistEntity: CdInspectionOtherItemChecklistEntity,
-        inspectionGeneralEntity: CdInspectionGeneralEntity,
-        user: UsersEntity, map: ServiceMapsEntity
+            inspectionOtherItemChecklistEntity: CdInspectionOtherItemChecklistEntity,
+            inspectionGeneralEntity: CdInspectionGeneralEntity,
+            user: UsersEntity, map: ServiceMapsEntity
     ): CdInspectionOtherItemChecklistEntity {
         var inspectionOtherItemChecklist = inspectionOtherItemChecklistEntity
         with(inspectionOtherItemChecklist) {
@@ -1482,14 +1486,14 @@ fun createLocalCoc(
         inspectionOtherItemChecklist = iCdInspectionOtherItemChecklistRepo.save(inspectionOtherItemChecklist)
 
         KotlinLogging.logger { }
-            .info { "Inspection Engineering CheckList Details saved ID = ${inspectionOtherItemChecklist.id}" }
+                .info { "Inspection Engineering CheckList Details saved ID = ${inspectionOtherItemChecklist.id}" }
         return inspectionOtherItemChecklist
     }
 
     fun saveInspectionMotorVehicleItemChecklist(
-        inspectionMotorVehicleItemChecklistEntity: CdInspectionMotorVehicleItemChecklistEntity,
-        inspectionGeneralEntity: CdInspectionGeneralEntity,
-        user: UsersEntity, map: ServiceMapsEntity
+            inspectionMotorVehicleItemChecklistEntity: CdInspectionMotorVehicleItemChecklistEntity,
+            inspectionGeneralEntity: CdInspectionGeneralEntity,
+            user: UsersEntity, map: ServiceMapsEntity
     ): CdInspectionMotorVehicleItemChecklistEntity {
         var inspectionMotorVehicleItemChecklist = inspectionMotorVehicleItemChecklistEntity
         with(inspectionMotorVehicleItemChecklist) {
@@ -1499,24 +1503,24 @@ fun createLocalCoc(
             createdOn = commonDaoServices.getTimestamp()
         }
         inspectionMotorVehicleItemChecklist =
-            iCdInspectionMotorVehicleItemChecklistRepo.save(inspectionMotorVehicleItemChecklist)
+                iCdInspectionMotorVehicleItemChecklistRepo.save(inspectionMotorVehicleItemChecklist)
 
         KotlinLogging.logger { }
-            .info { "Inspection Motor Vehicle CheckList Details saved ID = ${inspectionMotorVehicleItemChecklist.id}" }
+                .info { "Inspection Motor Vehicle CheckList Details saved ID = ${inspectionMotorVehicleItemChecklist.id}" }
         return inspectionMotorVehicleItemChecklist
     }
 
     fun findChecklistInspectionTypeById(checkListId: Long): CdChecklistTypesEntity =
-        iChecklistInspectionTypesRepo.findByIdOrNull(checkListId)
-            ?.let {
-                return it
-            }
-            ?: throw Exception("No inspection type with the following ID= $checkListId")
+            iChecklistInspectionTypesRepo.findByIdOrNull(checkListId)
+                    ?.let {
+                        return it
+                    }
+                    ?: throw Exception("No inspection type with the following ID= $checkListId")
 
     fun saveSampleCollectDetails(
-        sampleCollectEntity: CdSampleCollectionEntity,
-        user: UsersEntity,
-        map: ServiceMapsEntity
+            sampleCollectEntity: CdSampleCollectionEntity,
+            user: UsersEntity,
+            map: ServiceMapsEntity
     ): CdSampleCollectionEntity {
         var sampleCollect = sampleCollectEntity
         with(sampleCollect) {
@@ -1532,14 +1536,14 @@ fun createLocalCoc(
     }
 
     fun saveSampleSubmitDetails(
-        sampleSubmitEntity: CdSampleSubmissionItemsEntity,
-        user: UsersEntity,
-        map: ServiceMapsEntity
+            sampleSubmitEntity: CdSampleSubmissionItemsEntity,
+            user: UsersEntity,
+            map: ServiceMapsEntity
     ): CdSampleSubmissionItemsEntity {
         var sampleSubmit = sampleSubmitEntity
         with(sampleSubmit) {
             sampleRefNumber =
-                "SSF#${generateRandomText(5, map.secureRandom, map.messageDigestAlgorithm, true).toUpperCase()}"
+                    "SSF#${generateRandomText(5, map.secureRandom, map.messageDigestAlgorithm, true).toUpperCase()}"
             status = map.activeStatus
             createdBy = commonDaoServices.getUserName(user)
             createdOn = commonDaoServices.getTimestamp()
@@ -1551,9 +1555,9 @@ fun createLocalCoc(
     }
 
     fun updateSampleSubmitDetails(
-        sampleSubmitEntity: CdSampleSubmissionItemsEntity,
-        user: UsersEntity,
-        map: ServiceMapsEntity
+            sampleSubmitEntity: CdSampleSubmissionItemsEntity,
+            user: UsersEntity,
+            map: ServiceMapsEntity
     ): CdSampleSubmissionItemsEntity {
         var sampleSubmit = sampleSubmitEntity
         with(sampleSubmit) {
@@ -1567,11 +1571,11 @@ fun createLocalCoc(
     }
 
     fun saveSampleSubmitParamDetails(
-        sampleSubmitEntity: CdSampleSubmissionItemsEntity,
-        laboratoryEntity: CdLaboratoryEntity,
-        sampleSubmitParamEntity: CdSampleSubmissionParamatersEntity,
-        user: UsersEntity,
-        map: ServiceMapsEntity
+            sampleSubmitEntity: CdSampleSubmissionItemsEntity,
+            laboratoryEntity: CdLaboratoryEntity,
+            sampleSubmitParamEntity: CdSampleSubmissionParamatersEntity,
+            user: UsersEntity,
+            map: ServiceMapsEntity
     ): CdSampleSubmissionParamatersEntity {
         var sampleSubmitParam = sampleSubmitParamEntity
         with(sampleSubmitParam) {
@@ -1615,23 +1619,23 @@ fun createLocalCoc(
     }
 
     fun findCdWithUcrNumber(ucrNumber: String): ConsignmentDocumentDetailsEntity? =
-        iConsignmentDocumentDetailsRepo.findByUcrNumber(ucrNumber)
-            ?.let {
-                return it
-            }
+            iConsignmentDocumentDetailsRepo.findByUcrNumber(ucrNumber)
+                    ?.let {
+                        return it
+                    }
 
     fun findCdWithUcrNumberLatest(ucrNumber: String): ConsignmentDocumentDetailsEntity? =
-        iConsignmentDocumentDetailsRepo.findTopByUcrNumberOrderByIdDesc(ucrNumber)
-            ?.let {
-                return it
-            }
+            iConsignmentDocumentDetailsRepo.findTopByUcrNumberOrderByIdDesc(ucrNumber)
+                    ?.let {
+                        return it
+                    }
 
     fun createCDTransactionLog(
-        map: ServiceMapsEntity,
-        user: UsersEntity,
-        CDID: Long,
-        transRemarks: String,
-        transProcess: String
+            map: ServiceMapsEntity,
+            user: UsersEntity,
+            CDID: Long,
+            transRemarks: String,
+            transProcess: String
     ): CdTransactionsEntity {
         var cdTransactionLog = CdTransactionsEntity()
         with(cdTransactionLog) {
@@ -1651,13 +1655,13 @@ fun createLocalCoc(
 
 
     fun saveUploads(
-        uploads: DiUploadsEntity,
-        docFile: MultipartFile,
-        doc: String,
-        user: UsersEntity,
-        map: ServiceMapsEntity,
-        itemDetails: CdItemDetailsEntity?,
-        consignmentDocumentDetailsEntity: ConsignmentDocumentDetailsEntity?
+            uploads: DiUploadsEntity,
+            docFile: MultipartFile,
+            doc: String,
+            user: UsersEntity,
+            map: ServiceMapsEntity,
+            itemDetails: CdItemDetailsEntity?,
+            consignmentDocumentDetailsEntity: ConsignmentDocumentDetailsEntity?
     ): DiUploadsEntity {
 
         with(uploads) {
@@ -1680,26 +1684,26 @@ fun createLocalCoc(
 
     fun findItemWithItemID(cdItemId: Long): CdItemDetailsEntity {
         iCdItemsRepo.findByIdOrNull(cdItemId)
-            ?.let { cdItemDetails ->
-                return cdItemDetails
-            }
-            ?: throw Exception("CD Item Details with the following ID= ${cdItemId}, do not Exist")
+                ?.let { cdItemDetails ->
+                    return cdItemDetails
+                }
+                ?: throw Exception("CD Item Details with the following ID= ${cdItemId}, do not Exist")
     }
 
     fun findItemWithUuid(uuid: String): CdItemDetailsEntity {
         iCdItemsRepo.findByUuid(uuid)
-            ?.let { cdItemDetails ->
-                return cdItemDetails
-            }
-            ?: throw Exception("CD Item Details with the following uuid= ${uuid}, do not Exist")
+                ?.let { cdItemDetails ->
+                    return cdItemDetails
+                }
+                ?: throw Exception("CD Item Details with the following uuid= ${uuid}, do not Exist")
     }
 
     fun findInspectionGeneralWithItemDetails(cdItemDetails: CdItemDetailsEntity): CdInspectionGeneralEntity {
         iCdInspectionGeneralRepo.findFirstByCdItemDetails(cdItemDetails)
-            ?.let { it ->
-                return it
-            }
-            ?: throw Exception("Inspection General Checklist with CD Item ID= ${cdItemDetails.id}, do not Exist")
+                ?.let { it ->
+                    return it
+                }
+                ?: throw Exception("Inspection General Checklist with CD Item ID= ${cdItemDetails.id}, do not Exist")
     }
 
     fun findInspectionMotorVehicleWithInspectionGeneral(cdInspectionGeneralEntity: CdInspectionGeneralEntity):
@@ -1713,82 +1717,82 @@ fun createLocalCoc(
 
     fun findCDImporterDetails(importerDetailsID: Long): CdImporterDetailsEntity {
         iCdImporterRepo.findByIdOrNull(importerDetailsID)
-            ?.let { it ->
-                return it
-            }
-            ?: throw Exception("Importer Details with ID= ${importerDetailsID}, does not Exist")
+                ?.let { it ->
+                    return it
+                }
+                ?: throw Exception("Importer Details with ID= ${importerDetailsID}, does not Exist")
     }
 
     fun findCdStandardsTWODetails(standardsTwoDetailsID: Long): CdStandardsTwoEntity {
         iCdStandardsTwoRepo.findByIdOrNull(standardsTwoDetailsID)
-            ?.let { it ->
-                return it
-            }
-            ?: throw Exception("Standards Two Details with ID= ${standardsTwoDetailsID}, does not Exist")
+                ?.let { it ->
+                    return it
+                }
+                ?: throw Exception("Standards Two Details with ID= ${standardsTwoDetailsID}, does not Exist")
     }
 
     fun findCdConsigneeDetails(consigneeDetailsID: Long): CdConsigneeDetailsEntity {
         iCdConsigneeRepo.findByIdOrNull(consigneeDetailsID)
-            ?.let { it ->
-                return it
-            }
-            ?: throw Exception("Consignee Details with ID= ${consigneeDetailsID}, does not Exist")
+                ?.let { it ->
+                    return it
+                }
+                ?: throw Exception("Consignee Details with ID= ${consigneeDetailsID}, does not Exist")
     }
 
     fun findCdExporterDetails(exporterDetailsID: Long): CdExporterDetailsEntity {
         iCdExporterRepo.findByIdOrNull(exporterDetailsID)
-            ?.let { it ->
-                return it
-            }
-            ?: throw Exception("Exporter Details with ID= ${exporterDetailsID}, does not Exist")
+                ?.let { it ->
+                    return it
+                }
+                ?: throw Exception("Exporter Details with ID= ${exporterDetailsID}, does not Exist")
     }
 
     fun findCdConsignorDetails(consignorDetailsID: Long): CdConsignorDetailsEntity {
         iCdConsignorRepo.findByIdOrNull(consignorDetailsID)
-            ?.let { it ->
-                return it
-            }
-            ?: throw Exception("Consignor Details with ID= ${consignorDetailsID}, does not Exist")
+                ?.let { it ->
+                    return it
+                }
+                ?: throw Exception("Consignor Details with ID= ${consignorDetailsID}, does not Exist")
     }
 
     fun findCdTransportDetails(transportDetailsID: Long): CdTransportDetailsEntity {
         iCdTransportRepo.findByIdOrNull(transportDetailsID)
-            ?.let { it ->
-                return it
-            }
-            ?: throw Exception("Transport Details with ID= ${transportDetailsID}, does not Exist")
+                ?.let { it ->
+                    return it
+                }
+                ?: throw Exception("Transport Details with ID= ${transportDetailsID}, does not Exist")
     }
 
     fun findCdHeaderOneDetails(headerOneDetailsID: Long): CdValuesHeaderLevelEntity {
         iCdValuesHeaderLevelRepo.findByIdOrNull(headerOneDetailsID)
-            ?.let { it ->
-                return it
-            }
-            ?: throw Exception("Header One Details with ID= ${headerOneDetailsID}, does not Exist")
+                ?.let { it ->
+                    return it
+                }
+                ?: throw Exception("Header One Details with ID= ${headerOneDetailsID}, does not Exist")
     }
 
     fun findInspectionAgrochemWithInspectionGeneral(cdInspectionGeneralEntity: CdInspectionGeneralEntity): CdInspectionAgrochemItemChecklistEntity {
         iCdInspectionAgrochemItemChecklistRepo.findByInspectionGeneral(cdInspectionGeneralEntity)
-            ?.let { it ->
-                return it
-            }
-            ?: throw Exception("Agrochem Inspection Checklist with General Checklist ID= ${cdInspectionGeneralEntity.id}, do not Exist")
+                ?.let { it ->
+                    return it
+                }
+                ?: throw Exception("Agrochem Inspection Checklist with General Checklist ID= ${cdInspectionGeneralEntity.id}, do not Exist")
     }
 
     fun findInspectionOthersWithInspectionGeneral(cdInspectionGeneralEntity: CdInspectionGeneralEntity): CdInspectionOtherItemChecklistEntity {
         iCdInspectionOtherItemChecklistRepo.findByInspectionGeneral(cdInspectionGeneralEntity)
-            ?.let { it ->
-                return it
-            }
-            ?: throw Exception("Other Inspection Checklist with General Checklist ID= ${cdInspectionGeneralEntity.id}, do not Exist")
+                ?.let { it ->
+                    return it
+                }
+                ?: throw Exception("Other Inspection Checklist with General Checklist ID= ${cdInspectionGeneralEntity.id}, do not Exist")
     }
 
     fun findInspectionEngineeringWithInspectionGeneral(cdInspectionGeneralEntity: CdInspectionGeneralEntity): CdInspectionEngineeringItemChecklistEntity {
         iCdInspectionEngineeringItemChecklistRepo.findByInspectionGeneral(cdInspectionGeneralEntity)
-            ?.let { it ->
-                return it
-            }
-            ?: throw Exception("Engineering Inspection Checklist with General Checklist ID= ${cdInspectionGeneralEntity.id}, do not Exist")
+                ?.let { it ->
+                    return it
+                }
+                ?: throw Exception("Engineering Inspection Checklist with General Checklist ID= ${cdInspectionGeneralEntity.id}, do not Exist")
     }
 
     fun findInspectionMotorVehicleById(id: Long): CdInspectionMotorVehicleItemChecklistEntity? {
@@ -1838,10 +1842,10 @@ fun createLocalCoc(
     }
 
     fun ssfSave(
-        cdItemDetails: CdItemDetailsEntity,
-        ssfDetails: QaSampleSubmissionEntity,
-        user: UsersEntity,
-        map: ServiceMapsEntity
+            cdItemDetails: CdItemDetailsEntity,
+            ssfDetails: QaSampleSubmissionEntity,
+            user: UsersEntity,
+            map: ServiceMapsEntity
     ): Pair<ServiceRequestsEntity, QaSampleSubmissionEntity> {
 
         var sr = commonDaoServices.createServiceRequest(map)
@@ -1884,10 +1888,10 @@ fun createLocalCoc(
     }
 
     fun ssfUpdateDetails(
-        cdItemDetails: CdItemDetailsEntity,
-        ssfDetails: QaSampleSubmissionEntity,
-        user: UsersEntity,
-        map: ServiceMapsEntity
+            cdItemDetails: CdItemDetailsEntity,
+            ssfDetails: QaSampleSubmissionEntity,
+            user: UsersEntity,
+            map: ServiceMapsEntity
     ): Pair<ServiceRequestsEntity, QaSampleSubmissionEntity> {
 
         var sr = commonDaoServices.createServiceRequest(map)
@@ -1927,8 +1931,8 @@ fun createLocalCoc(
     }
 
     fun updateCDDetailsWithCOCData(
-        cocEntity: CocsEntity,
-        cdDetailsEntity: ConsignmentDocumentDetailsEntity
+            cocEntity: CocsEntity,
+            cdDetailsEntity: ConsignmentDocumentDetailsEntity
     ): ConsignmentDocumentDetailsEntity {
         if (cocEntity.clean.equals("Y")) {
             with(cdDetailsEntity) {
@@ -1950,8 +1954,8 @@ fun createLocalCoc(
     }
 
     fun updateCDDetailsWithCORData(
-        corsBakEntity: CorsBakEntity,
-        cdDetailsEntity: ConsignmentDocumentDetailsEntity
+            corsBakEntity: CorsBakEntity,
+            cdDetailsEntity: ConsignmentDocumentDetailsEntity
     ): ConsignmentDocumentDetailsEntity {
         KotlinLogging.logger { }.info { "CorsBakEntity = $corsBakEntity.id" }
         with(cdDetailsEntity) {
@@ -1963,39 +1967,39 @@ fun createLocalCoc(
 
     fun automaticRejectCDNcr(cdId: Long): Boolean {
         findCDItemsListWithCDID(findCD(cdId))
-            .forEach { cdItemDetails ->
-                with(cdItemDetails) {
-                    rejectDate = commonDaoServices.getCurrentDate()
-                    rejectStatus = commonDaoServices.activeStatus.toInt()
-                    rejectReason = "Goods with NCR to be flagged and automatically rejected on the system"
+                .forEach { cdItemDetails ->
+                    with(cdItemDetails) {
+                        rejectDate = commonDaoServices.getCurrentDate()
+                        rejectStatus = commonDaoServices.activeStatus.toInt()
+                        rejectReason = "Goods with NCR to be flagged and automatically rejected on the system"
 //                        val myStatus = findCdStatusValue(rejectedStatus.toLong()).typeName
 //                        if (myStatus == null) {
 //                        } else {
 //                            rejectedStatus = myStatus
 //                        }
-                    lastModifiedBy = "SYSTEM"
-                    lastModifiedOn = commonDaoServices.getTimestamp()
-                }
-                cdItemDetails.cdDocId?.let {
-                    it.cdStandard?.let { it1 ->
-                        updateCDStatus(
-                            it1,
-                            rejectedStatus.toLong()
-                        )
+                        lastModifiedBy = "SYSTEM"
+                        lastModifiedOn = commonDaoServices.getTimestamp()
                     }
+                    cdItemDetails.cdDocId?.let {
+                        it.cdStandard?.let { it1 ->
+                            updateCDStatus(
+                                    it1,
+                                    rejectedStatus.toLong()
+                            )
+                        }
+                    }
+                    iCdItemsRepo.save(cdItemDetails)
+                    KotlinLogging.logger { }.info { "MY SYSTEM REJECTION  ${cdItemDetails.id}" }
                 }
-                iCdItemsRepo.save(cdItemDetails)
-                KotlinLogging.logger { }.info { "MY SYSTEM REJECTION  ${cdItemDetails.id}" }
-            }
         return true
     }
 
     fun findCOC(ucrNumber: String): CocsEntity {
         cocRepo.findByUcrNumber(ucrNumber)
-            ?.let { cocEntity ->
-                return cocEntity
-            }
-            ?: throw Exception("COC Details with the following UCR NUMBER = ${ucrNumber}, does not Exist")
+                ?.let { cocEntity ->
+                    return cocEntity
+                }
+                ?: throw Exception("COC Details with the following UCR NUMBER = ${ucrNumber}, does not Exist")
     }
 
     fun findCOCById(cocId: Long): CocsEntity? {
@@ -2012,10 +2016,10 @@ fun createLocalCoc(
 
     fun findCOI(ucrNumber: String): CocsEntity {
         cocRepo.findByUcrNumber(ucrNumber)
-            ?.let { coiEntity ->
-                return coiEntity
-            }
-            ?: throw Exception("COI Details with the following UCR NUMBER = ${ucrNumber}, does not Exist")
+                ?.let { coiEntity ->
+                    return coiEntity
+                }
+                ?: throw Exception("COI Details with the following UCR NUMBER = ${ucrNumber}, does not Exist")
     }
 
     fun saveCoc(cocDetails: CocsEntity): CocsEntity {
@@ -2024,53 +2028,50 @@ fun createLocalCoc(
 
     fun findCdTypeDetails(cdTypeID: Long): ConsignmentDocumentTypesEntity {
         cdTypesRepo.findByIdOrNull(cdTypeID)
-            ?.let { cdTypeDetails ->
-                return cdTypeDetails
-            }
-            ?: throw Exception("CD Type Details with the following ID = ${cdTypeID}, does not Exist")
+                ?.let { cdTypeDetails ->
+                    return cdTypeDetails
+                }
+                ?: throw Exception("CD Type Details with the following ID = ${cdTypeID}, does not Exist")
     }
 
     fun findCdTypeDetailsWithUuid(uuid: String): ConsignmentDocumentTypesEntity {
         cdTypesRepo.findByUuid(uuid)
-            ?.let { cdTypeDetails ->
-                return cdTypeDetails
-            }
-            ?: throw Exception("CD Type Details with the following uuid = ${uuid}, does not Exist")
+                ?.let { cdTypeDetails ->
+                    return cdTypeDetails
+                }
+                ?: throw Exception("CD Type Details with the following uuid = ${uuid}, does not Exist")
     }
 
     fun findAllOngoingCdWithPortOfEntry(
-        sectionsEntity: SectionsEntity,
-        cdType: ConsignmentDocumentTypesEntity
-    ): List<ConsignmentDocumentDetailsEntity> {
-        iConsignmentDocumentDetailsRepo.findByPortOfArrivalAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNull(
-            sectionsEntity.id,
-            cdType.id
+            sectionsEntity: SectionsEntity,
+            cdType: ConsignmentDocumentTypesEntity,
+            page: PageRequest
+    ): Page<ConsignmentDocumentDetailsEntity> {
+        return iConsignmentDocumentDetailsRepo.findByPortOfArrivalAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNull(
+                sectionsEntity.id,
+                cdType.id,
+                page
         )
-            ?.let {
-                return it
-            }
-            ?: throw Exception("COC List with the following Port arrival = ${sectionsEntity.section} and CD Type = ${cdType.typeName}, does not Exist")
 
     }
 
     fun findAllCompleteCdWithPortOfEntry(
-        sectionsEntity: SectionsEntity,
-        cdType: ConsignmentDocumentTypesEntity
-    ): List<ConsignmentDocumentDetailsEntity> {
-        iConsignmentDocumentDetailsRepo.findByPortOfArrivalAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNotNull(
-            sectionsEntity.id,
-            cdType.id
+            sectionsEntity: SectionsEntity,
+            cdType: ConsignmentDocumentTypesEntity,
+            page: PageRequest
+    ): Page<ConsignmentDocumentDetailsEntity> {
+        return iConsignmentDocumentDetailsRepo.findByPortOfArrivalAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNotNull(
+                sectionsEntity.id,
+                cdType.id,
+                page
         )
-            ?.let {
-                return it
-            }
-            ?: throw Exception("COC List with the following Port arrival = ${sectionsEntity.section} and CD Type = ${cdType.typeName}, does not Exist")
 
     }
 
-    fun findAllCdWithNoPortOfEntry(cdType: ConsignmentDocumentTypesEntity): List<ConsignmentDocumentDetailsEntity>? {
+    fun findAllCdWithNoPortOfEntry(cdType: ConsignmentDocumentTypesEntity, page: PageRequest): Page<ConsignmentDocumentDetailsEntity> {
         return iConsignmentDocumentDetailsRepo.findByPortOfArrivalIsNullAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNull(
-            cdType.id
+                cdType.id,
+                page
         )
 //                ?.let {
 //                    return it
@@ -2080,70 +2081,64 @@ fun createLocalCoc(
     }
 
     fun findAllCdWithAssignedIoID(
-        usersEntity: UsersEntity,
-        cdType: ConsignmentDocumentTypesEntity
-    ): List<ConsignmentDocumentDetailsEntity> {
-        iConsignmentDocumentDetailsRepo.findAllByAssignedInspectionOfficerAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNull(
-            usersEntity,
-            cdType.id
+            usersEntity: UsersEntity,
+            cdType: ConsignmentDocumentTypesEntity,
+            page: PageRequest
+    ): Page<ConsignmentDocumentDetailsEntity> {
+        return iConsignmentDocumentDetailsRepo.findAllByAssignedInspectionOfficerAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNull(
+                usersEntity,
+                cdType.id,
+                page
         )
-            ?.let {
-                return it
-            }
-            ?: throw Exception("Assigned Inspection Officer with ID = ${usersEntity.id}, does not Exist")
     }
 
     fun findAllCompleteCdWithAssignedIoID(
-        usersEntity: UsersEntity,
-        cdType: ConsignmentDocumentTypesEntity
-    ): List<ConsignmentDocumentDetailsEntity> {
-        iConsignmentDocumentDetailsRepo.findAllByAssignedInspectionOfficerAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNotNull(
-            usersEntity,
-            cdType.id
+            usersEntity: UsersEntity,
+            cdType: ConsignmentDocumentTypesEntity,
+            page: PageRequest
+    ): Page<ConsignmentDocumentDetailsEntity> {
+        return iConsignmentDocumentDetailsRepo.findAllByAssignedInspectionOfficerAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNotNull(
+                usersEntity,
+                cdType.id,
+                page
         )
-            ?.let {
-                return it
-            }
-            ?: throw Exception("Assigned Inspection Officer with ID = ${usersEntity.id}, does not Exist")
     }
 
 
     fun findAllCdWithNoAssignedIoID(
-        subSectionsLevel2Entity: SubSectionsLevel2Entity,
-        cdType: ConsignmentDocumentTypesEntity
-    ): List<ConsignmentDocumentDetailsEntity>? {
+            subSectionsLevel2Entity: SubSectionsLevel2Entity,
+            cdType: ConsignmentDocumentTypesEntity,
+            page: PageRequest
+    ): Page<ConsignmentDocumentDetailsEntity> {
         return iConsignmentDocumentDetailsRepo.findByFreightStationAndAssignedInspectionOfficerIsNullAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNull(
-            subSectionsLevel2Entity.id,
-            cdType.id
+                subSectionsLevel2Entity.id,
+                cdType.id,
+                page
         )
-//                ?.let {
-//                    return it
-//                }
-//                ?: throw Exception("Assigned Inspection Officer with ID = ${usersEntity.id}, does not Exist")
 
     }
 
     fun addFreightStation(freightStation: String, status: Int): SubSectionsLevel2Entity =
-        iSubSectionsLevel2Repo.findBySubSectionAndStatus(freightStation, status)
-            ?.let { subSectionsLevel2Entity ->
-                return subSectionsLevel2Entity
-            }
-            ?: throw Exception("The freight station with name = $freightStation and status = ${status}, does not Exist")
+            iSubSectionsLevel2Repo.findBySubSectionAndStatus(freightStation, status)
+                    ?.let { subSectionsLevel2Entity ->
+                        return subSectionsLevel2Entity
+                    }
+                    ?: throw Exception("The freight station with name = $freightStation and status = ${status}, does not Exist")
 
 
     fun findFreightStation(freightStationID: Long): SubSectionsLevel2Entity =
-        iSubSectionsLevel2Repo.findByIdOrNull(freightStationID)
-            ?.let { subSectionsLevel2Entity ->
-                return subSectionsLevel2Entity
-            }
-            ?: throw Exception("The freight station with ID = $freightStationID, does not Exist")
+            iSubSectionsLevel2Repo.findByIdOrNull(freightStationID)
+                    ?.let { subSectionsLevel2Entity ->
+                        return subSectionsLevel2Entity
+                    }
+                    ?: throw Exception("The freight station with ID = $freightStationID, does not Exist")
 
     fun addPortOfArrival(freightStation: SubSectionsLevel2Entity): SectionsEntity {
         freightStation.sectionId
-            ?.let { sectionsEntity ->
-                return sectionsEntity
-            }
-            ?: throw Exception("The Port of arrival for freight Station with name = ${freightStation.subSection}, does not Exist")
+                ?.let { sectionsEntity ->
+                    return sectionsEntity
+                }
+                ?: throw Exception("The Port of arrival for freight Station with name = ${freightStation.subSection}, does not Exist")
     }
 
 //    fun findPortOfArrival(freightStation: SubSectionsLevel2Entity): SectionsEntity {
@@ -2157,18 +2152,18 @@ fun createLocalCoc(
 
     fun findOfficersList(consignmentDocumentDetailsEntity: ConsignmentDocumentDetailsEntity): List<UserProfilesEntity> {
         consignmentDocumentDetailsEntity.freightStation
-            ?.let { subSectionsLevel2Entity ->
-                iUserProfilesRepo.findBySubSectionL2IdAndStatus(
-                    commonDaoServices.findSectionLevel2WIthId(
-                        subSectionsLevel2Entity
-                    ), commonDaoServices.activeStatus.toInt()
-                )
-                    ?.let { userProfileList ->
-                        return userProfileList
-                    }
-                    ?: throw ServiceMapNotFoundException("Users with Freight Station with ID = $subSectionsLevel2Entity and Status = ${commonDaoServices.activeStatus}, Does not exist")
-            }
-            ?: throw ServiceMapNotFoundException("Freight Station details on consignment with ID = ${consignmentDocumentDetailsEntity.id}, is Empty")
+                ?.let { subSectionsLevel2Entity ->
+                    iUserProfilesRepo.findBySubSectionL2IdAndStatus(
+                            commonDaoServices.findSectionLevel2WIthId(
+                                    subSectionsLevel2Entity
+                            ), commonDaoServices.activeStatus.toInt()
+                    )
+                            ?.let { userProfileList ->
+                                return userProfileList
+                            }
+                            ?: throw ServiceMapNotFoundException("Users with Freight Station with ID = $subSectionsLevel2Entity and Status = ${commonDaoServices.activeStatus}, Does not exist")
+                }
+                ?: throw ServiceMapNotFoundException("Freight Station details on consignment with ID = ${consignmentDocumentDetailsEntity.id}, is Empty")
     }
 
     fun convertEntityToJsonObject(entityToConvert: Any): Any {
@@ -2221,64 +2216,64 @@ fun createLocalCoc(
     }
 
     fun updateCdItemSampleParamDetailsInDB(
-        sampleSubmitParamEntity: CdSampleSubmissionParamatersEntity,
-        user: UsersEntity
+            sampleSubmitParamEntity: CdSampleSubmissionParamatersEntity,
+            user: UsersEntity
     ): CdSampleSubmissionParamatersEntity {
         with(sampleSubmitParamEntity) {
             modifiedBy = commonDaoServices.getUserName(user)
             modifiedOn = commonDaoServices.getTimestamp()
         }
         KotlinLogging.logger { }
-            .info { "MY UPDATED sample SubmitParam Entity with ID =  ${sampleSubmitParamEntity.id}" }
+                .info { "MY UPDATED sample SubmitParam Entity with ID =  ${sampleSubmitParamEntity.id}" }
         return iSampleSubmissionParamRepo.save(sampleSubmitParamEntity)
     }
 
     fun findSavedChecklist(itemId: Long): CdInspectionChecklistEntity {
         iCdInspectionChecklistRepo.findByItemId(itemId)
-            ?.let { checklist ->
-                return checklist
-            }
-            ?: throw ServiceMapNotFoundException("CheckList for ITEM with ID = ${itemId}, Does not exist")
+                ?.let { checklist ->
+                    return checklist
+                }
+                ?: throw ServiceMapNotFoundException("CheckList for ITEM with ID = ${itemId}, Does not exist")
     }
 
     fun findSavedGeneralInspection(itemId: CdItemDetailsEntity): CdInspectionGeneralEntity {
         iCdInspectionGeneralRepo.findFirstByCdItemDetails(itemId)
-            ?.let { checklist ->
-                return checklist
-            }
-            ?: throw ServiceMapNotFoundException("CheckList for ITEM with ID = ${itemId}, Does not exist")
+                ?.let { checklist ->
+                    return checklist
+                }
+                ?: throw ServiceMapNotFoundException("CheckList for ITEM with ID = ${itemId}, Does not exist")
     }
 
     fun findSavedSampleCollection(itemId: Long): CdSampleCollectionEntity {
         iSampleCollectRepo.findByItemId(itemId)
-            ?.let { sampleCollect ->
-                return sampleCollect
-            }
-            ?: throw ServiceMapNotFoundException("Sample Collection for ITEM with ID = ${itemId}, Does not exist")
+                ?.let { sampleCollect ->
+                    return sampleCollect
+                }
+                ?: throw ServiceMapNotFoundException("Sample Collection for ITEM with ID = ${itemId}, Does not exist")
     }
 
     fun findSavedSampleSubmission(itemId: Long): CdSampleSubmissionItemsEntity {
         iSampleSubmitRepo.findByItemId(itemId)
-            ?.let { sampleSubmitted ->
-                return sampleSubmitted
-            }
-            ?: throw ServiceMapNotFoundException("Sample Submitted for ITEM with ID = ${itemId}, Does not exist")
+                ?.let { sampleSubmitted ->
+                    return sampleSubmitted
+                }
+                ?: throw ServiceMapNotFoundException("Sample Submitted for ITEM with ID = ${itemId}, Does not exist")
     }
 
     fun findSavedSampleSubmissionById(sampleSubmissionId: Long): CdSampleSubmissionItemsEntity {
         iSampleSubmitRepo.findByIdOrNull(sampleSubmissionId)
-            ?.let { sampleSubmitted ->
-                return sampleSubmitted
-            }
-            ?: throw ServiceMapNotFoundException("Sample Submitted with ID = ${sampleSubmissionId}, Does not exist")
+                ?.let { sampleSubmitted ->
+                    return sampleSubmitted
+                }
+                ?: throw ServiceMapNotFoundException("Sample Submitted with ID = ${sampleSubmissionId}, Does not exist")
     }
 
     fun sendSamplesToRespectiveLabs(
-        sampleSubmitEntity: CdSampleSubmissionItemsEntity,
-        remarksValue: String,
-        user: UsersEntity,
-        map: ServiceMapsEntity,
-        sampleParams: List<CdSampleSubmissionParamatersEntity>
+            sampleSubmitEntity: CdSampleSubmissionItemsEntity,
+            remarksValue: String,
+            user: UsersEntity,
+            map: ServiceMapsEntity,
+            sampleParams: List<CdSampleSubmissionParamatersEntity>
     ): CdSampleSubmissionItemsEntity {
         //Todo: function for sending To LIMS to give Back BS Number
         val mySampleSubmittedToLab = sendBSNumber(sampleSubmitEntity, user, map)
@@ -2306,17 +2301,17 @@ fun createLocalCoc(
     fun sendLabEmail(recipientEmail: String, paramatersEntity: CdSampleSubmissionParamatersEntity): Boolean {
         val subject = "LAB RESULTS"
         val messageBody =
-            "Please Find The attached Lab Results of the samples collected and submitted for testing  \n" +
-                    "\n " +
-                    "https://localhost:8006/api/di/item/sample-Submit-param/bs-number?cdSampleSubmitID=${paramatersEntity.sampleSubmissionId?.id}&docType=${sampSubmitName}&itemID=${paramatersEntity.sampleSubmissionId?.itemId}&message=${labResults}"
+                "Please Find The attached Lab Results of the samples collected and submitted for testing  \n" +
+                        "\n " +
+                        "https://localhost:8006/api/di/item/sample-Submit-param/bs-number?cdSampleSubmitID=${paramatersEntity.sampleSubmissionId?.id}&docType=${sampSubmitName}&itemID=${paramatersEntity.sampleSubmissionId?.itemId}&message=${labResults}"
         notifications.sendEmail(recipientEmail, subject, messageBody)
         return true
     }
 
     fun sendBSNumber(
-        sampleSubmitEntity: CdSampleSubmissionItemsEntity,
-        user: UsersEntity,
-        map: ServiceMapsEntity
+            sampleSubmitEntity: CdSampleSubmissionItemsEntity,
+            user: UsersEntity,
+            map: ServiceMapsEntity
     ): CdSampleSubmissionItemsEntity {
         with(sampleSubmitEntity) {
             bsNumber = generatedBsNumberUpdate(map)
@@ -2340,9 +2335,9 @@ fun createLocalCoc(
     }
 
     fun bsNumberLabDTOResultsEmailCompose(
-        sampleSubmittedToLab: CdSampleSubmissionItemsEntity,
-        updatedItemDetails: CdItemDetailsEntity,
-        docType: String
+            sampleSubmittedToLab: CdSampleSubmissionItemsEntity,
+            updatedItemDetails: CdItemDetailsEntity,
+            docType: String
     ): BSNumberLabDTO {
         val bsNumberLabDto = BSNumberLabDTO()
         with(bsNumberLabDto) {
@@ -2353,14 +2348,14 @@ fun createLocalCoc(
             baseUrl = applicationMapProperties.baseUrlValue
             uuid = updatedItemDetails.uuid
             fullName =
-                updatedItemDetails.cdDocId?.assignedInspectionOfficer?.let { commonDaoServices.concatenateName(it) }
+                    updatedItemDetails.cdDocId?.assignedInspectionOfficer?.let { commonDaoServices.concatenateName(it) }
         }
         return bsNumberLabDto
     }
 
     fun inspectionReportApprovalDTOEmailCompose(
-        itemDetails: CdItemDetailsEntity,
-        generalReportInspection: CdInspectionGeneralEntity
+            itemDetails: CdItemDetailsEntity,
+            generalReportInspection: CdInspectionGeneralEntity
     ): InspectionReportApprovalDTO {
         val inspectionReportApprovalDto = InspectionReportApprovalDTO()
         with(inspectionReportApprovalDto) {
@@ -2374,8 +2369,8 @@ fun createLocalCoc(
     }
 
     fun inspectionReportApprovedDTOEmailCompose(
-        itemDetails: CdItemDetailsEntity,
-        generalReportInspection: CdInspectionGeneralEntity
+            itemDetails: CdItemDetailsEntity,
+            generalReportInspection: CdInspectionGeneralEntity
     ): InspectionReportApprovedDTO {
         val inspectionReportApprovedDto = InspectionReportApprovedDTO()
         with(inspectionReportApprovedDto) {
@@ -2391,8 +2386,8 @@ fun createLocalCoc(
     }
 
     fun inspectionReportDisApprovedDTOEmailCompose(
-        itemDetails: CdItemDetailsEntity,
-        generalReportInspection: CdInspectionGeneralEntity
+            itemDetails: CdItemDetailsEntity,
+            generalReportInspection: CdInspectionGeneralEntity
     ): InspectionReportDisApprovedDTO {
         val inspectionReportDisApprovedDto = InspectionReportDisApprovedDTO()
         with(inspectionReportDisApprovedDto) {
@@ -2408,10 +2403,10 @@ fun createLocalCoc(
     }
 
     fun sampleResultsLabDTOResultsEmailCompose(
-        sampleSubmitParam: CdSampleSubmissionParamatersEntity,
-        sampleSubmitted: CdSampleSubmissionItemsEntity,
-        updatedItemDetails: CdItemDetailsEntity,
-        docType: String
+            sampleSubmitParam: CdSampleSubmissionParamatersEntity,
+            sampleSubmitted: CdSampleSubmissionItemsEntity,
+            updatedItemDetails: CdItemDetailsEntity,
+            docType: String
     ): SampleResultsLabDTO {
         val sampleResultsLabDTO = SampleResultsLabDTO()
         with(sampleResultsLabDTO) {
@@ -2424,16 +2419,16 @@ fun createLocalCoc(
             baseUrl = applicationMapProperties.baseUrlValue
             uuid = updatedItemDetails.uuid
             fullName =
-                updatedItemDetails.cdDocId?.assignedInspectionOfficer?.let { commonDaoServices.concatenateName(it) }
+                    updatedItemDetails.cdDocId?.assignedInspectionOfficer?.let { commonDaoServices.concatenateName(it) }
         }
         return sampleResultsLabDTO
     }
 
     fun simulateLabReportSendingResults(
-        sampleSubmitParameters: List<CdSampleSubmissionParamatersEntity>,
-        map: ServiceMapsEntity,
-        user: UsersEntity,
-        sampleSubmitted: CdSampleSubmissionItemsEntity
+            sampleSubmitParameters: List<CdSampleSubmissionParamatersEntity>,
+            map: ServiceMapsEntity,
+            user: UsersEntity,
+            sampleSubmitted: CdSampleSubmissionItemsEntity
     ): Boolean {
         sampleSubmitParameters.forEach { sampleParam ->
             //Update Lab With Simulated Results
@@ -2448,8 +2443,8 @@ fun createLocalCoc(
     }
 
     fun checkIfResultsCompleted(
-        sampleSubmitParameters: List<CdSampleSubmissionParamatersEntity>,
-        map: ServiceMapsEntity
+            sampleSubmitParameters: List<CdSampleSubmissionParamatersEntity>,
+            map: ServiceMapsEntity
     ): Int {
         var resultsNumber = 0
         val sampleParamNumber = sampleSubmitParameters.size
@@ -2471,12 +2466,12 @@ fun createLocalCoc(
     }
 
     fun simulateEmailLabResults(
-        sampleParam: CdSampleSubmissionParamatersEntity,
-        map: ServiceMapsEntity,
-        user: UsersEntity
+            sampleParam: CdSampleSubmissionParamatersEntity,
+            map: ServiceMapsEntity,
+            user: UsersEntity
     ) {
         val payload =
-            "Updated details with Lab Results [${this::simulateEmailLabResults.name} with Item ID =[${sampleParam.id}]]"
+                "Updated details with Lab Results [${this::simulateEmailLabResults.name} with Item ID =[${sampleParam.id}]]"
         val sr = commonDaoServices.mapServiceRequestForSuccess(map, payload, user)
         //Creation Of Email DTO for sending Lab results
         val item = sampleParam.sampleSubmissionId?.itemId?.let { findItemWithItemID(it) }
@@ -2495,8 +2490,8 @@ fun createLocalCoc(
     }
 
     fun simulateLabReportResults(
-        sampleSubmitParamEntity: CdSampleSubmissionParamatersEntity,
-        s: ServiceMapsEntity
+            sampleSubmitParamEntity: CdSampleSubmissionParamatersEntity,
+            s: ServiceMapsEntity
     ): CdSampleSubmissionParamatersEntity {
         with(sampleSubmitParamEntity) {
             lod = "test lod"
@@ -2512,26 +2507,26 @@ fun createLocalCoc(
 
     fun findListSampleSubmissionParameter(sampleSubmission: CdSampleSubmissionItemsEntity): List<CdSampleSubmissionParamatersEntity> {
         iSampleSubmissionParamRepo.findBySampleSubmissionId(sampleSubmission)
-            ?.let { sampleSubmittedParameter ->
-                return sampleSubmittedParameter
-            }
-            ?: throw ServiceMapNotFoundException("Parameters with for ITEM with ID = ${sampleSubmission.id}, Does not exist")
+                ?.let { sampleSubmittedParameter ->
+                    return sampleSubmittedParameter
+                }
+                ?: throw ServiceMapNotFoundException("Parameters with for ITEM with ID = ${sampleSubmission.id}, Does not exist")
     }
 
     fun findSavedSampleSubmissionParameter(paramId: Long): CdSampleSubmissionParamatersEntity {
         iSampleSubmissionParamRepo.findByIdOrNull(paramId)
-            ?.let { sampleSubmittedParameter ->
-                return sampleSubmittedParameter
-            }
-            ?: throw ServiceMapNotFoundException("Parameter with ID = ${paramId}, Does not exist")
+                ?.let { sampleSubmittedParameter ->
+                    return sampleSubmittedParameter
+                }
+                ?: throw ServiceMapNotFoundException("Parameter with ID = ${paramId}, Does not exist")
     }
 
     fun findSavedSampleSubmissionParameterList(paramId: Long): List<CdSampleSubmissionParamatersEntity> {
         iSampleSubmissionParamRepo.findByIdAndStatus(paramId, commonDaoServices.activeStatus.toInt())
-            ?.let { sampleSubmittedParameter ->
-                return sampleSubmittedParameter
-            }
-            ?: throw ServiceMapNotFoundException("Parameter with ID = ${paramId}, Does not exist")
+                ?.let { sampleSubmittedParameter ->
+                    return sampleSubmittedParameter
+                }
+                ?: throw ServiceMapNotFoundException("Parameter with ID = ${paramId}, Does not exist")
     }
 
 //    fun notifyKRATargetedItem(CDItem: CdItemDetailsEntity, map: ServiceMapsEntity, user: UsersEntity): Boolean {
@@ -2562,21 +2557,21 @@ fun createLocalCoc(
     }
 
     fun sendMinistryInspectionReportSubmittedEmail(
-        recipientEmail: String,
-        paramatersEntity: CdItemDetailsEntity
+            recipientEmail: String,
+            paramatersEntity: CdItemDetailsEntity
     ): Boolean {
         val subject = "Motor Vehicle Inspection Report"
         val messageBody =
-            "Motor vehicle inspection report has been submitted from the ministry. Click the link to view it:  \n" +
-                    "\n " +
-                    "https://localhost:8006/api/di/cd-item-details?cdItemUuid=${paramatersEntity.id}"
+                "Motor vehicle inspection report has been submitted from the ministry. Click the link to view it:  \n" +
+                        "\n " +
+                        "https://localhost:8006/api/di/cd-item-details?cdItemUuid=${paramatersEntity.id}"
         notifications.sendEmail(recipientEmail, subject, messageBody)
         return true
     }
 
     fun updateCdDetailsInDB(
-        updateCD: ConsignmentDocumentDetailsEntity,
-        user: UsersEntity
+            updateCD: ConsignmentDocumentDetailsEntity,
+            user: UsersEntity
     ): ConsignmentDocumentDetailsEntity {
         with(updateCD) {
             modifiedBy = commonDaoServices.getUserName(user)
@@ -2587,96 +2582,96 @@ fun createLocalCoc(
     }
 
     fun updateCDDetails(
-        cdDetails: ConsignmentDocumentDetailsEntity,
-        cdId: Long,
-        user: UsersEntity,
-        s: ServiceMapsEntity
+            cdDetails: ConsignmentDocumentDetailsEntity,
+            cdId: Long,
+            user: UsersEntity,
+            s: ServiceMapsEntity
     ): ConsignmentDocumentDetailsEntity {
         // Getting an Object with fields that user Has Updated that are needed to be updated to the database
         JSONObject(ObjectMapper().writeValueAsString(cdDetails))
-            .let { addValues ->
-                // Creating of a json object that can be user to map the details from Database with the updated fields from user
-                JSONObject(ObjectMapper().writeValueAsString(findCD(cdId)))
-                    .let { JCD ->
-                        // Looping each field of the updated Entity to be updated
-                        for (key in addValues.keys()) {
-                            key.let { keyStr ->
-                                // Checks if the field with the following Key is null or not Null (meaning it is the field that is updated)
-                                when {
-                                    addValues.isNull(keyStr) -> {
-                                        KotlinLogging.logger { }
-                                            .info { "MY null values key: $keyStr value: ${addValues.get(keyStr)}" }
-                                    }
+                .let { addValues ->
+                    // Creating of a json object that can be user to map the details from Database with the updated fields from user
+                    JSONObject(ObjectMapper().writeValueAsString(findCD(cdId)))
+                            .let { JCD ->
+                                // Looping each field of the updated Entity to be updated
+                                for (key in addValues.keys()) {
+                                    key.let { keyStr ->
+                                        // Checks if the field with the following Key is null or not Null (meaning it is the field that is updated)
+                                        when {
+                                            addValues.isNull(keyStr) -> {
+                                                KotlinLogging.logger { }
+                                                        .info { "MY null values key: $keyStr value: ${addValues.get(keyStr)}" }
+                                            }
 //                                            keyStr.equals("confirmAssignedUserId").and(addValues.get(keyStr) != null) -> {
 //                                                KotlinLogging.logger { }.info { "My values key: $keyStr value: ${addValues.get(keyStr)}" }
 //
 //                                                removeKeyAndUpdateValueJsonObject(JCD,"assignedInspectionOfficer", convertEntityToJsonObject(commonDaoServices.findUserByID(addValues.getLong(keyStr))))
 //                                                KotlinLogging.logger { }.info { "My values key: $keyStr value: ${addValues.get(keyStr)}" }
 //                                            }
-                                    // Field with Key Have values so we will update the  database value with the updated one
-                                    else -> {
-                                        removeKeyAndUpdateValueJsonObject(JCD, keyStr, addValues.get(keyStr))
-                                        KotlinLogging.logger { }
-                                            .info { "My values key: $keyStr value: ${addValues.get(keyStr)}" }
+                                            // Field with Key Have values so we will update the  database value with the updated one
+                                            else -> {
+                                                removeKeyAndUpdateValueJsonObject(JCD, keyStr, addValues.get(keyStr))
+                                                KotlinLogging.logger { }
+                                                        .info { "My values key: $keyStr value: ${addValues.get(keyStr)}" }
+                                            }
+                                        }
                                     }
                                 }
-                            }
-                        }
-                        // Change the JCD to an Entity to be saved
-                        ObjectMapper().readValue(JCD.toString(), ConsignmentDocumentDetailsEntity::class.java)
-                            .let { updateCD ->
-                                return updateCdDetailsInDB(updateCD, user)
-                            }
+                                // Change the JCD to an Entity to be saved
+                                ObjectMapper().readValue(JCD.toString(), ConsignmentDocumentDetailsEntity::class.java)
+                                        .let { updateCD ->
+                                            return updateCdDetailsInDB(updateCD, user)
+                                        }
 
-                    }
-            }
+                            }
+                }
     }
 
 
     fun updateCDSampleParamsDetails(
-        sampleSubmitParamEntity: CdSampleSubmissionParamatersEntity,
-        paramID: Long,
-        user: UsersEntity,
-        s: ServiceMapsEntity
+            sampleSubmitParamEntity: CdSampleSubmissionParamatersEntity,
+            paramID: Long,
+            user: UsersEntity,
+            s: ServiceMapsEntity
     ): CdSampleSubmissionParamatersEntity {
         // Getting an Object with fields that user Has Updated that are needed to be updated to the database
         JSONObject(ObjectMapper().writeValueAsString(sampleSubmitParamEntity))
-            .let { addValues ->
-                // Creating of a json object that can be user to map the details from Database with the updated fields from user
-                JSONObject(ObjectMapper().writeValueAsString(findSavedSampleSubmissionParameter(paramID)))
-                    .let { JCD ->
-                        // Looping each field of the updated Entity to be updated
-                        for (key in addValues.keys()) {
-                            key.let { keyStr ->
-                                // Checks if the field with the following Key is null or not Null (meaning it is the field that is updated)
-                                when {
-                                    addValues.isNull(keyStr) -> {
-                                        KotlinLogging.logger { }
-                                            .info { "MY null values key: $keyStr value: ${addValues.get(keyStr)}" }
-                                    }
+                .let { addValues ->
+                    // Creating of a json object that can be user to map the details from Database with the updated fields from user
+                    JSONObject(ObjectMapper().writeValueAsString(findSavedSampleSubmissionParameter(paramID)))
+                            .let { JCD ->
+                                // Looping each field of the updated Entity to be updated
+                                for (key in addValues.keys()) {
+                                    key.let { keyStr ->
+                                        // Checks if the field with the following Key is null or not Null (meaning it is the field that is updated)
+                                        when {
+                                            addValues.isNull(keyStr) -> {
+                                                KotlinLogging.logger { }
+                                                        .info { "MY null values key: $keyStr value: ${addValues.get(keyStr)}" }
+                                            }
 //                                            keyStr.equals("confirmAssignedUserId").and(addValues.get(keyStr) != null) -> {
 //                                                KotlinLogging.logger { }.info { "My values key: $keyStr value: ${addValues.get(keyStr)}" }
 //
 //                                                removeKeyAndUpdateValueJsonObject(JCD,"assignedInspectionOfficer", convertEntityToJsonObject(commonDaoServices.findUserByID(addValues.getLong(keyStr))))
 //                                                KotlinLogging.logger { }.info { "My values key: $keyStr value: ${addValues.get(keyStr)}" }
 //                                            }
-                                    // Field with Key Have values so we will update the  database value with the updated one
-                                    else -> {
-                                        removeKeyAndUpdateValueJsonObject(JCD, keyStr, addValues.get(keyStr))
-                                        KotlinLogging.logger { }
-                                            .info { "My values key: $keyStr value: ${addValues.get(keyStr)}" }
+                                            // Field with Key Have values so we will update the  database value with the updated one
+                                            else -> {
+                                                removeKeyAndUpdateValueJsonObject(JCD, keyStr, addValues.get(keyStr))
+                                                KotlinLogging.logger { }
+                                                        .info { "My values key: $keyStr value: ${addValues.get(keyStr)}" }
+                                            }
+                                        }
                                     }
                                 }
-                            }
-                        }
-                        // Change the JCD to an Entity to be saved
-                        ObjectMapper().readValue(JCD.toString(), CdSampleSubmissionParamatersEntity::class.java)
-                            .let { updateParam ->
-                                return updateCdItemSampleParamDetailsInDB(updateParam, user)
-                            }
+                                // Change the JCD to an Entity to be saved
+                                ObjectMapper().readValue(JCD.toString(), CdSampleSubmissionParamatersEntity::class.java)
+                                        .let { updateParam ->
+                                            return updateCdItemSampleParamDetailsInDB(updateParam, user)
+                                        }
 
-                    }
-            }
+                            }
+                }
     }
 
     fun makeItemNotBeNull(itemId: Long, itemDetails: CdItemDetailsEntity): CdItemDetailsEntity {
@@ -2687,9 +2682,9 @@ fun createLocalCoc(
     }
 
     fun checkIfChecklistUndergoesSampling(
-        sampled: String,
-        item: CdItemDetailsEntity,
-        map: ServiceMapsEntity
+            sampled: String,
+            item: CdItemDetailsEntity,
+            map: ServiceMapsEntity
     ): CdItemDetailsEntity? {
         var updateItem = item
         when (sampled) {
@@ -2714,108 +2709,101 @@ fun createLocalCoc(
 
 
     fun updateCDItemDetails(
-        cdItemDetails: CdItemDetailsEntity,
-        cdItemId: Long,
-        user: UsersEntity,
-        s: ServiceMapsEntity
+            cdItemDetails: CdItemDetailsEntity,
+            cdItemId: Long,
+            user: UsersEntity,
+            s: ServiceMapsEntity
     ): CdItemDetailsEntity {
         // Getting an Object with fields that user Has Updated that are needed to be updated to the database
         JSONObject(ObjectMapper().writeValueAsString(cdItemDetails))
-            .let { addValues ->
-                // Creating of a json object that can be user to map the details from Database with the updated fields from user
-                JSONObject(ObjectMapper().writeValueAsString(findItemWithItemID(cdItemId)))
-                    .let { JCD ->
-                        // Looping each field of the updated Entity to be updated
-                        for (key in addValues.keys()) {
-                            key.let { keyStr ->
-                                // Checks if the field with the following Key is null or not Null (meaning it is the field that is updated)
-                                when {
-                                    addValues.isNull(keyStr) -> {
-                                        KotlinLogging.logger { }
-                                            .info { "MY null values key: $keyStr value: ${addValues.get(keyStr)}" }
-                                    }
+                .let { addValues ->
+                    // Creating of a json object that can be user to map the details from Database with the updated fields from user
+                    JSONObject(ObjectMapper().writeValueAsString(findItemWithItemID(cdItemId)))
+                            .let { JCD ->
+                                // Looping each field of the updated Entity to be updated
+                                for (key in addValues.keys()) {
+                                    key.let { keyStr ->
+                                        // Checks if the field with the following Key is null or not Null (meaning it is the field that is updated)
+                                        when {
+                                            addValues.isNull(keyStr) -> {
+                                                KotlinLogging.logger { }
+                                                        .info { "MY null values key: $keyStr value: ${addValues.get(keyStr)}" }
+                                            }
 //                                            keyStr.equals("confirmAssignedUserId").and(addValues.get(keyStr) != null) -> {
 //                                                KotlinLogging.logger { }.info { "My values key: $keyStr value: ${addValues.get(keyStr)}" }
 //
 //                                                removeKeyAndUpdateValueJsonObject(JCD,"assignedInspectionOfficer", convertEntityToJsonObject(commonDaoServices.findUserByID(addValues.getLong(keyStr))))
 //                                                KotlinLogging.logger { }.info { "My values key: $keyStr value: ${addValues.get(keyStr)}" }
 //                                            }
-                                    // Field with Key Have values so we will update the  database value with the updated one
-                                    else -> {
-                                        removeKeyAndUpdateValueJsonObject(JCD, keyStr, addValues.get(keyStr))
-                                        KotlinLogging.logger { }
-                                            .info { "My values key: $keyStr value: ${addValues.get(keyStr)}" }
+                                            // Field with Key Have values so we will update the  database value with the updated one
+                                            else -> {
+                                                removeKeyAndUpdateValueJsonObject(JCD, keyStr, addValues.get(keyStr))
+                                                KotlinLogging.logger { }
+                                                        .info { "My values key: $keyStr value: ${addValues.get(keyStr)}" }
+                                            }
+                                        }
                                     }
                                 }
-                            }
-                        }
-                        // Change the JCD to an Entity to be saved
-                        ObjectMapper().readValue(JCD.toString(), CdItemDetailsEntity::class.java)
-                            .let { updateCDItem ->
+                                // Change the JCD to an Entity to be saved
+                                ObjectMapper().readValue(JCD.toString(), CdItemDetailsEntity::class.java)
+                                        .let { updateCDItem ->
 
-                                return updateCdItemDetailsInDB(updateCDItem, user)
-                            }
+                                            return updateCdItemDetailsInDB(updateCDItem, user)
+                                        }
 
-                    }
-            }
+                            }
+                }
     }
 
     fun updateDemandNotePayment(demandNoteNumber: String, amount: BigDecimal, user: UsersEntity) =//Get the demandNote
-        iDemandNoteRepo.findByDemandNoteNumber(demandNoteNumber)
-            ?.let { demandNote ->
-                demandNote.amountPayable?.let {
-                    //Amount paid is less than amount payable
-                    if (it < amount) {
-                        throw InvalidInputException("Amount paid is less than payable amount of: $it")
-                    }
-                    demandNote.paymentStatus = 1
-                    upDateDemandNoteWithUser(demandNote, user)
-                    //Get the consignment document
-                    demandNote.itemId?.cdDocId?.cdStandard?.applicationDate?.let {
-                        //TODO: Update CD status to previous one
-                    }
-                }
-            } ?: throw InvalidInputException("Demand note with Number = ${demandNoteNumber}, Does not exist")
+            iDemandNoteRepo.findByDemandNoteNumber(demandNoteNumber)
+                    ?.let { demandNote ->
+                        demandNote.amountPayable?.let {
+                            //Amount paid is less than amount payable
+                            if (it < amount) {
+                                throw InvalidInputException("Amount paid is less than payable amount of: $it")
+                            }
+                            demandNote.paymentStatus = 1
+                            upDateDemandNoteWithUser(demandNote, user)
+                            //Get the consignment document
+                            demandNote.itemId?.cdDocId?.cdStandard?.applicationDate?.let {
+                                //TODO: Update CD status to previous one
+                            }
+                        }
+                    } ?: throw InvalidInputException("Demand note with Number = ${demandNoteNumber}, Does not exist")
 
     fun findAllMinistryInspectionRequests(status: Int): List<CdItemDetailsEntity> {
         iCdItemsRepo.findByMinistrySubmissionStatus(status)
-            ?.let { ministryInspectionItems ->
-                return ministryInspectionItems
-            }
-            ?: throw ExpectedDataNotFound("Ministry Inspection requests with status = $status, do not exist")
-    }
-
-    fun findAllOngoingMinistryInspectionRequests(): List<CdItemDetailsEntity> {
-            iCdItemsRepo.findOngoingMinistrySubmissions()
                 ?.let { ministryInspectionItems ->
                     return ministryInspectionItems
                 }
-                ?: throw ExpectedDataNotFound("Ongoing Ministry Inspection requests, do not exist")
+                ?: throw ExpectedDataNotFound("Ministry Inspection requests with status = $status, do not exist")
     }
-    fun findAllCompleteMinistryInspectionRequests(): List<CdItemDetailsEntity> {
-        iCdItemsRepo.findCompletedMinistrySubmissions()
-            ?.let { ministryInspectionItems ->
-                return ministryInspectionItems
-            }
-            ?: throw ExpectedDataNotFound("Complete Ministry Inspection requests, do not exist")
+
+    fun findAllOngoingMinistryInspectionRequests(page: PageRequest): Page<CdItemDetailsEntity> {
+        return iCdItemsRepo.findOngoingMinistrySubmissions(page)
+    }
+
+    fun findAllCompleteMinistryInspectionRequests(page: PageRequest): Page<CdItemDetailsEntity> {
+        return iCdItemsRepo.findCompletedMinistrySubmissions(page)
     }
 
     fun updateCdInspectionMotorVehicleItemChecklistInDB(
-        cdInspectionMotorVehicleItemChecklistEntity: CdInspectionMotorVehicleItemChecklistEntity,
-        user: UsersEntity
+            cdInspectionMotorVehicleItemChecklistEntity: CdInspectionMotorVehicleItemChecklistEntity,
+            user: UsersEntity
     ): CdInspectionMotorVehicleItemChecklistEntity {
         with(cdInspectionMotorVehicleItemChecklistEntity) {
             modifiedBy = commonDaoServices.getUserName(user)
             modifiedOn = commonDaoServices.getTimestamp()
         }
         KotlinLogging.logger { }
-            .info { "CdInspectionMotorVehicleItemChecklistEntity UPDATED ITEM ID =  ${cdInspectionMotorVehicleItemChecklistEntity.id}" }
+                .info { "CdInspectionMotorVehicleItemChecklistEntity UPDATED ITEM ID =  ${cdInspectionMotorVehicleItemChecklistEntity.id}" }
         return iCdInspectionMotorVehicleItemChecklistRepo.save(cdInspectionMotorVehicleItemChecklistEntity)
     }
 
     fun updateCdInspectionGeneralChecklistInDB(
-        cdInspectionGeneralEntity: CdInspectionGeneralEntity,
-        user: UsersEntity
+            cdInspectionGeneralEntity: CdInspectionGeneralEntity,
+            user: UsersEntity
     ): CdInspectionGeneralEntity {
         with(cdInspectionGeneralEntity) {
             modifiedBy = commonDaoServices.getUserName(user)
@@ -2832,12 +2820,20 @@ fun createLocalCoc(
         return null
     }
 
+//    fun findMotorVehicleInspectionCdItems(documentId: String): List<CdInspectionMotorVehicleItemChecklistEntity> {
+//        iCdInspectionGeneralRepo.findFirstByCdItemDetails(cdItem)?.let { inspectionGeneral ->
+//            return findInspectionMotorVehicleWithInspectionGeneral(inspectionGeneral)
+//        }
+//        return null
+//    }
+
+
     fun findLocalCorByUcrNumber(ucrNumber: String): CdLocalCorEntity {
         iLocalCorRepo.findByUcrNumber(ucrNumber)
-            ?.let { cocEntity ->
-                return cocEntity
-            }
-            ?: throw Exception("Local Cor Details with the following UCR NUMBER = ${ucrNumber}, does not Exist")
+                ?.let { cocEntity ->
+                    return cocEntity
+                }
+                ?: throw Exception("Local Cor Details with the following UCR NUMBER = ${ucrNumber}, does not Exist")
     }
 
     fun createLocalCorReportMap(cdDetails: ConsignmentDocumentDetailsEntity): HashMap<String, Any> {
@@ -2919,8 +2915,8 @@ fun createLocalCoc(
                     corCdType -> consignmentDoc.id?.let { it1 ->
                         consignmentDoc.assignedInspectionOfficer?.id?.let { it2 ->
                             diBpmn.startImportedVehiclesWithCorProcess(
-                                it1,
-                                it2
+                                    it1,
+                                    it2
                             )
                         }
                     }
@@ -2948,9 +2944,9 @@ fun createLocalCoc(
         consignmentDoc.id?.let { it1 ->
             consignmentDoc.assignedInspectionOfficer?.id?.let { it2 ->
                 diBpmn.diAssignIOComplete(
-                    it1,
-                    it2,
-                    supervisorTargetStatus
+                        it1,
+                        it2,
+                        supervisorTargetStatus
                 )
             }
         }
@@ -2990,8 +2986,8 @@ fun createLocalCoc(
                 consignmentDocumentDetailsEntity.id?.let {
                     consignmentDocumentDetailsEntity.assignedInspectionOfficer?.id?.let { it1 ->
                         return diBpmn.diReceivePaymentConfirmation(
-                            it,
-                            it1
+                                it,
+                                it1
                         )
                     }
                 }
@@ -3019,7 +3015,7 @@ fun createLocalCoc(
             cdApprovalResponseDTO.documentDetails = docDetails
 
             val fileName =
-                commonDaoServices.createKesWsFileName(applicationMapProperties.mapKeswsCdApprovalDoctype, cdNumber)
+                    commonDaoServices.createKesWsFileName(applicationMapProperties.mapKeswsCdApprovalDoctype, cdNumber)
             val xmlFile = fileName.let { commonDaoServices.serializeToXml(it, cdApprovalResponseDTO) }
             xmlFile.let { it1 -> sftpService.uploadFile(it1) }
         }
@@ -3054,8 +3050,8 @@ fun createLocalCoc(
         corDto.cor = cor
         val fileName = corDto.cor?.chasisNumber?.let {
             commonDaoServices.createKesWsFileName(
-                applicationMapProperties.mapKeswsCorDoctype,
-                it
+                    applicationMapProperties.mapKeswsCorDoctype,
+                    it
             )
         }
         val xmlFile = fileName?.let { commonDaoServices.serializeToXml(it, corDto) }
@@ -3070,7 +3066,7 @@ fun createLocalCoc(
         //Find the declaration
         val declaration = declarationVerificationDocumentMessage.data?.dataIn?.sad?.sadId?.let {
             this.findDeclarationByDclRefNum(
-                it
+                    it
             )
         }
         //Find the CD
@@ -3079,7 +3075,7 @@ fun createLocalCoc(
                 KotlinLogging.logger { }.info { "::: cdDetails: ${cdDetails.id} ::::::::" }
                 val inspectionDateReceived = declarationVerificationDocumentMessage.data?.dataIn?.sad?.verificationDateTime?.let {
                     commonDaoServices.convertISO8601DateToTimestamp(
-                        it
+                            it
                     )
                 }
                 KotlinLogging.logger { }.info { "::: inspectionDateReceived: ${inspectionDateReceived} ::::::::" }
@@ -3093,16 +3089,17 @@ fun createLocalCoc(
                     updateCDStatus(cdStd, applicationMapProperties.mapDIStatusTypeKraVerificationApprovedId)
                 }
 
-            } ?: KotlinLogging.logger { }.info { "Consignment document for declaration: ${declarationVerificationDocumentMessage.data?.dataIn?.sad?.sadId} not found" }
+            }
+                    ?: KotlinLogging.logger { }.info { "Consignment document for declaration: ${declarationVerificationDocumentMessage.data?.dataIn?.sad?.sadId} not found" }
         }
     }
 
     fun sendLocalCocReportEmail(recipientEmail: String, filePath: String): Boolean {
         val subject = "Local COC Certificate"
         val messageBody =
-            "Hello,  \n" +
-                    "\n " +
-                    "Find attached the Local COC Certificate."
+                "Hello,  \n" +
+                        "\n " +
+                        "Find attached the Local COC Certificate."
         notifications.sendEmail(recipientEmail, subject, messageBody, filePath)
         return true
     }
@@ -3110,15 +3107,15 @@ fun createLocalCoc(
     fun sendLocalCorReportEmail(recipientEmail: String, filePath: String): Boolean {
         val subject = "Local COR Certificate"
         val messageBody =
-            "Hello,  \n" +
-                    "\n " +
-                    "Find attached the Local COR Certificate."
+                "Hello,  \n" +
+                        "\n " +
+                        "Find attached the Local COR Certificate."
         notifications.sendEmail(recipientEmail, subject, messageBody, filePath)
         return true
     }
 
     fun convertCdItemDetailsToMinistryInspectionListResponseDto(cdItemDetails: CdItemDetailsEntity): MinistryInspectionListResponseDto {
-        var ministryInspectionItem  = MinistryInspectionListResponseDto()
+        var ministryInspectionItem = MinistryInspectionListResponseDto()
         ministryInspectionItem.cdId = cdItemDetails.cdDocId?.id!!
         ministryInspectionItem.cdUcr = cdItemDetails.cdDocId?.ucrNumber
         ministryInspectionItem.cdItemDetailsId = cdItemDetails.id

@@ -1,9 +1,7 @@
 import {Injectable} from '@angular/core';
-import * as fromResponseActions from '../../store';
-import {Actions} from "@ngrx/effects";
+import {Actions} from '@ngrx/effects';
 import {ToastrService} from 'ngx-toastr';
-import {Store} from "@ngrx/store";
-import {HttpErrorResponse} from "@angular/common/http";
+import {HttpErrorResponse} from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +10,7 @@ export class HandleErrorService {
 
   constructor(actions$: Actions,
               private toastrService: ToastrService,
-              private store$: Store<any>) {
+  ) {
   }
 
   /**
@@ -25,26 +23,35 @@ export class HandleErrorService {
       errorMessage = `An error occurred: ${err.error.message}`;
     } else {
       // The backend returned an unsuccessful response code.
-      errorMessage = `Error Code: ${err.status},  Message: ${err.message}`;
-    }
-    this.store$.dispatch(
-      fromResponseActions.loadResponsesFailure({
-        error: {
-          payload: err.error,
-          status: err.status,
-          response: (err.error instanceof ErrorEvent) ? `Error: ${err.error.message}` : `Error Code: ${err.status},  Message: ${err.error}`
-        }
-      })
-    );
+      // errorMessage = `Error Code: ${err.status},  Message: ${err.error}`;
+      errorMessage = `Message: ${err.error}`;
 
-    this.toastrService.error(errorMessage);
+      console.log(`Message: ${err.error}`)
+    }
+    this.toastrService.warning(errorMessage);
   }
 
   public handleMessaging(message: string, code: number) {
-    if (code === 200) {
-      this.toastrService.info(message);
+    if (
+      message
+    ) {
+      if (
+        message === 'null' ||
+        message.trim().length < 1 ||
+        message === ''
+      ) {
+        console.warn('No toastr for empty messages');
+      } else {
+        if (code === 200) {
+          this.toastrService.info(message);
+        } else {
+          this.toastrService.warning(JSON.stringify(message));
+        }
+
+      }
+
     } else {
-      this.toastrService.error(message);
+      console.warn('No toastr for null messages');
     }
   }
 }

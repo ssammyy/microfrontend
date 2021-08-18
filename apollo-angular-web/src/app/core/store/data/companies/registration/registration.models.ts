@@ -1,5 +1,5 @@
 import {User} from "../../users";
-import {Company} from "../company.model";
+import {Company} from "../company";
 
 export interface RegistrationPayload {
   company: Company;

@@ -17,10 +17,10 @@ export class ApiEndpointService {
    * Map of domains for API endpoints.
    */
   public static DOMAIN = {
-    LOCAL_DEV: 'localhost:8006'
+   LOCAL_DEV: 'localhost:8006'
     // LOCAL_DEV: '12:8006'
     // LOCAL_DEV: '41.72.209.58:8006'
-    // LOCAL_DEV: 'kimsint.kebs.org:8006'
+    //  LOCAL_DEV: 'kimsint.kebs.org:8006'
      //LOCAL_DEV: 'nice-baboon-72.loca.lt'
    //  LOCAL_DEV: 'kimsint.kebs.org'
     //   LOCAL_DEV: 'kims.kebs.org:8006'
@@ -208,8 +208,7 @@ export class ApiEndpointService {
   public static getEndpoint(endpoint: string): string {
     const protocol: string = ApiEndpointService.PROTOCOL.HTTPS;
     const domain: string = ApiEndpointService.DOMAIN.LOCAL_DEV;
-    const context: string = ApiEndpointService.CONTEXT;
-    // return `https://localhost:8006${endpoint}`;
+    const context: string = ApiEndpointService.CONTEXT
     return `${protocol}${domain}${context}${endpoint}`;
   }
 

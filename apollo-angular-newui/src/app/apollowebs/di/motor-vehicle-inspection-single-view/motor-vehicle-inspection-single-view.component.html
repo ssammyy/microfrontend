@@ -1,0 +1,177 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">Motor Vehicle Inspection</i>
+                        </div>
+                        <h4 class="card-title">Motor Vehicle Inspection Checklist Details</h4>
+                       
+                    </div>
+                    <div class="card-body">
+                        <div class="row"> 
+                            <div class="col-md-2">
+                                <div widget class=" border-0 box-shadow">
+                                    <div class="text-center pt-2" style="color: green;">
+                                        General Details
+                                    </div>
+                                    <div class="card-body pt-0 widget-body">
+                                        <table class="table-responsive">
+                                            <th>
+                                                Inspection
+                                            </th>
+                                            <tr>
+                                                <td>100% Inspection</td>
+                                            </tr>
+                                            <th>
+                                                Entry Point
+                                            </th>
+                                            <tr>
+                                                <td>KEMBA</td>
+                                            </tr>
+                                            <th>
+                                                CFS
+                                            </th>
+                                            <tr>
+                                                <td>TCC</td>
+                                            </tr>
+                                            <th>
+                                                Importers Name
+                                            </th>
+                                            <tr>
+                                                <td>Test EXIM 1</td>
+                                            </tr>
+                                            <th>
+                                                Clearing Agent
+                                            </th>
+                                            <tr>
+                                                <td>Randy</td>
+                                            </tr>
+                                            <th>
+                                                Customs Entry No
+                                            </th>
+                                            <tr>
+                                                <td>9876w4</td>
+                                            </tr>
+                                            <th>
+                                                IDF No
+                                            </th>
+                                            <tr>
+                                                <td></td>
+                                            </tr>
+                                            <th>
+                                                UCR No
+                                            </th>
+                                            <tr>
+                                                <td>UCR123800127639</td>
+                                            </tr>
+                                            <th>
+                                                COC No:
+                                            </th>
+                                            <tr>
+                                                <td></td>
+                                            </tr>
+                                            <th>
+                                                Fee Paid:
+                                            </th>
+                                            <tr>
+                                                <td></td>
+                                            </tr>
+                                            <th>
+                                                Receipt No:
+                                            </th>
+                                            <tr>
+                                                <td></td>
+                                            </tr>
+
+
+
+
+                                        </table>
+                                    </div>
+                                    <b>Action:</b>
+                                    <button class="btn btn-sm btn-primary" >Download Report Checklist</button>
+                                    <button class="btn btn-sm btn-primary" >Upload Filled Report</button>
+                                    
+                                </div>
+                            </div>
+                            <div class="col-md-9">
+                              
+                                <!-- <div class="d-flex"> -->
+                                    <ul ngbNav #nav="ngbNav" [(activeId)]="active" class="nav-tabs">
+                                        
+                                        <li ngbNavItem="consignee">
+                                            <a ngbNavLink>USed Motor Vehicle Details</a>
+                                            <ng-template ngbNavContent>
+                                                <b class="text-primary">Used Motor Vehicle Details</b>
+                                                <ul class="w-list-unstyled">
+                                                    <li class="list-item-accordion">
+                                                        <div class="list-title-accordion">Serial Number:</div>
+                                                        <div class="list-text-accordion">34567890876</div>
+                                                    </li>
+                                                    <li class="list-item-accordion">
+                                                        <div class="list-title-accordion">Make Of Vehicle:</div>
+                                                        <div class="list-text-accordion">Toyota</div>
+                                                    </li>
+                                                    <li class="list-item-accordion">
+                                                        <div class="list-title-accordion">Chassis No:</div>
+                                                        <div class="list-text-accordion">987</div>
+                                                    </li>
+                                                    <li class="list-item-accordion">
+                                                        <div class="list-title-accordion">Engine No/Capacity:</div>
+                                                        <div class="list-text-accordion">678tw</div>
+                                                    </li>
+                                                    <li class="list-item-accordion">
+                                                        <div class="list-title-accordion">Manufacturer Date:</div>
+                                                        <div class="list-text-accordion"></div>
+                                                    </li>
+                                                    <li class="list-item-accordion">
+                                                        <div class="list-title-accordion">Registration Date:</div>
+                                                        <div class="list-text-accordion"></div>
+                                                    </li>
+                                                    <li class="list-item-accordion">
+                                                        <div class="list-title-accordion">Odometre Reading:</div>
+                                                        <div class="list-text-accordion">gyhy778</div>
+                                                    </li>
+                                                    <li class="list-item-accordion">
+                                                        <div class="list-title-accordion">Drive:</div>
+                                                        <div class="list-text-accordion">jijki9</div>
+                                                    </li>
+                                                    <li class="list-item-accordion">
+                                                        <div class="list-title-accordion">Transmission:</div>
+                                                        <div class="list-text-accordion">Automatic</div>
+                                                    </li>
+                                                    <li class="list-item-accordion">
+                                                        <div class="list-title-accordion">Colour:</div>
+                                                        <div class="list-text-accordion">black</div>
+                                                    </li>
+                                                    <li class="list-item-accordion">
+                                                        <div class="list-title-accordion">Overall Appearance:</div>
+                                                        <div class="list-text-accordion">good</div>
+                                                    </li>
+                                                    <li class="list-item-accordion">
+                                                        <div class="list-title-accordion">Remarks:</div>
+                                                        <div class="list-text-accordion"></div>
+                                                    </li>
+                                                </ul>
+                                            </ng-template>
+                                        </li>
+                                     
+                                    </ul>
+
+                                    <div [ngbNavOutlet]="nav" class="ml-4"></div>
+                                <!-- </div>  -->
+                            </div>
+                           
+                        </div>
+                        <!-- end content-->
+                    </div>
+                    <!--  end card  -->
+                </div>
+                <!-- end col-md-12 -->
+            </div>
+            <!-- end row -->
+        </div>
+    </div>

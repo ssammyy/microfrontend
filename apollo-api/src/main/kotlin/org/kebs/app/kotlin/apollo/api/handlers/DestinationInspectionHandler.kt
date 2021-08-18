@@ -22,6 +22,7 @@
 package org.kebs.app.kotlin.apollo.api.handlers
 
 import mu.KotlinLogging
+import org.kebs.app.kotlin.apollo.api.payload.extractPage
 import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.DestinationInspectionBpmn
 import org.kebs.app.kotlin.apollo.api.ports.provided.createUserAlert
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.*
@@ -110,18 +111,19 @@ class DestinationInspectionHandler(
     fun ministryInspectionHome(req: ServerRequest): ServerResponse =
             try {
                 val map = commonDaoServices.serviceMapDetails(appId)
-                val ministryInspectionItemsOngoing = daoServices.findAllOngoingMinistryInspectionRequests()
-                val ministryInspectionItemsComplete = daoServices.findAllCompleteMinistryInspectionRequests()
+                val page= extractPage(req)
+                val ministryInspectionItemsOngoing = daoServices.findAllOngoingMinistryInspectionRequests(page)
+                val ministryInspectionItemsComplete = daoServices.findAllCompleteMinistryInspectionRequests(page)
                 val ministryInspectionItemsViewListOngoing: MutableList<MinistryInspectionListResponseDto> = ArrayList()
                 val ministryInspectionItemsViewListComplete: MutableList<MinistryInspectionListResponseDto> = ArrayList()
 
-                if (!ministryInspectionItemsOngoing.isNullOrEmpty()) {
+                if (!ministryInspectionItemsOngoing.isEmpty) {
                     for (item in ministryInspectionItemsOngoing) {
                         val ministryInspectionItem =  daoServices.convertCdItemDetailsToMinistryInspectionListResponseDto(item)
                         ministryInspectionItemsViewListOngoing.add(ministryInspectionItem)
                     }
                 }
-                if (!ministryInspectionItemsComplete.isNullOrEmpty()) {
+                if (!ministryInspectionItemsComplete.isEmpty) {
                     for (item in ministryInspectionItemsComplete) {
                         val ministryInspectionItem =  daoServices.convertCdItemDetailsToMinistryInspectionListResponseDto(item)
                         ministryInspectionItemsViewListComplete.add(ministryInspectionItem)
@@ -141,6 +143,7 @@ class DestinationInspectionHandler(
             try {
                 val map = commonDaoServices.serviceMapDetails(appId)
                 val auth = commonDaoServices.loggedInUserAuthentication()
+                val page= extractPage(req)
                 req.paramOrNull("cdTypeUuid")
                         ?.let { cdTypeUuid ->
                             val cdType = daoServices.findCdTypeDetailsWithUuid(cdTypeUuid)
@@ -151,11 +154,11 @@ class DestinationInspectionHandler(
                                     val userProfilesEntity = commonDaoServices.findUserProfileByUserID(usersEntity, map.activeStatus)
                                     userProfilesEntity.sectionId
                                             ?.let { sectionsEntity ->
-                                                req.attributes()["CDSAutoAssigned"] = daoServices.findAllOngoingCdWithPortOfEntry(sectionsEntity, cdType)
+                                                req.attributes()["CDSAutoAssigned"] = daoServices.findAllOngoingCdWithPortOfEntry(sectionsEntity, cdType, page)
                                                 req.attributes()["CDSManualAssign"] =
-                                                    daoServices.findAllCdWithNoPortOfEntry(cdType)
+                                                    daoServices.findAllCdWithNoPortOfEntry(cdType,page)
                                                 req.attributes()["CDCompleted"] =
-                                                    daoServices.findAllCompleteCdWithPortOfEntry(sectionsEntity, cdType)
+                                                    daoServices.findAllCompleteCdWithPortOfEntry(sectionsEntity, cdType, page)
                                                 ok().render(cdPageList, req.attributes())
                                             }
                                             ?: throw ExpectedDataNotFound("missing section id, check config")
@@ -163,15 +166,16 @@ class DestinationInspectionHandler(
                                 auth.authorities.stream().anyMatch { authority -> authority.authority == "DI_INSPECTION_OFFICER_READ" } -> {
                                     val usersEntity = commonDaoServices.findUserByUserName(auth.name)
                                     val userProfilesEntity = commonDaoServices.findUserProfileByUserID(usersEntity, map.activeStatus)
-                                    req.attributes()["CDSAutoAssigned"] = daoServices.findAllCdWithAssignedIoID(usersEntity, cdType)
+                                    req.attributes()["CDSAutoAssigned"] = daoServices.findAllCdWithAssignedIoID(usersEntity, cdType, page)
                                     req.attributes()["CDSManualAssign"] = userProfilesEntity.subSectionL2Id?.let {
                                         daoServices.findAllCdWithNoAssignedIoID(
                                             it,
-                                            cdType
+                                            cdType,
+                                                page
                                         )
                                     }
                                     req.attributes()["CDCompleted"] =
-                                        daoServices.findAllCompleteCdWithAssignedIoID(usersEntity, cdType)
+                                        daoServices.findAllCompleteCdWithAssignedIoID(usersEntity, cdType,page)
                                     ok().render(cdPageList, req.attributes())
                                 }
                                 else -> throw SupervisorNotFoundException("can't access this page Due to Invalid authority")

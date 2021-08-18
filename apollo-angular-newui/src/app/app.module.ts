@@ -89,7 +89,7 @@ import {FileUploadModule} from '@iplab/ngx-file-upload';
 import {AddUserComponent} from './apollowebs/company/branch/add-user/add-user.component';
 import {FmarkApplicationComponent} from './apollowebs/fmark-application/fmark-application.component';
 import {LoaderComponent} from './shared/loader/loader.component';
-import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
+import {NgbModule, NgbNavModule} from '@ng-bootstrap/ng-bootstrap';
 import { ImportInspectionComponent } from './apollowebs/pvoc/import-inspection/import-inspection.component';
 import { ExceptionsApplicationComponent } from './apollowebs/pvoc/exceptions-application/exceptions-application.component';
 import { WaiverApplicationComponent } from './apollowebs/pvoc/waiver-application/waiver-application.component';
@@ -102,7 +102,14 @@ import {MainProductionMachineryComponent} from "./apollowebs/pvoc/waivers/main-p
 import {RawMaterialsComponent} from "./apollowebs/pvoc/waivers/raw-materials/raw-materials.component";
 import {WaiverProductComponent} from "./apollowebs/pvoc/waivers/waiver-product/waiver-product.component";
 import {IndustrialSparesComponent} from "./apollowebs/pvoc/waivers/industrial-spares/industrial-spares.component";
-
+import { ConsignmentDocumentListComponent } from './apollowebs/di/consignment-document-list/consignment-document-list.component';
+import { Ng2SmartTableModule } from 'ng2-smart-table';
+import { ViewSingleConsignmentDocumentComponent } from './apollowebs/di/view-single-consignment-document/view-single-consignment-document.component';
+import { ItemDetailsListViewComponent } from './apollowebs/di/view-single-consignment-document/item-details-list-view/item-details-list-view.component';
+import { OtherVersionDetailsComponent } from './apollowebs/di/view-single-consignment-document/other-version-details/other-version-details.component';
+import { ApproveRejectConsignmentComponent } from './apollowebs/di/view-single-consignment-document/approve-reject-consignment/approve-reject-consignment.component';
+import { MinistryInspectionHomeComponent } from './apollowebs/di/ministry-inspection-home/ministry-inspection-home.component';
+import { MotorVehicleInspectionSingleViewComponent } from './apollowebs/di/motor-vehicle-inspection-single-view/motor-vehicle-inspection-single-view.component';
 @NgModule({
     exports: [
         MatAutocompleteModule,
@@ -150,6 +157,8 @@ import {IndustrialSparesComponent} from "./apollowebs/pvoc/waivers/industrial-sp
         PdfViewerModule,
         NgxExtendedPdfViewerModule,
         FileUploadModule,
+        Ng2SmartTableModule,
+        NgbNavModule
         // CoreModule
     ],
     declarations: [
@@ -192,7 +201,14 @@ import {IndustrialSparesComponent} from "./apollowebs/pvoc/waivers/industrial-sp
         MainProductionMachineryComponent,
         RawMaterialsComponent,
         WaiverProductComponent,
-        IndustrialSparesComponent
+        IndustrialSparesComponent,
+        ConsignmentDocumentListComponent,
+        ViewSingleConsignmentDocumentComponent,
+        ItemDetailsListViewComponent,
+        OtherVersionDetailsComponent,
+        ApproveRejectConsignmentComponent,
+        MinistryInspectionHomeComponent,
+        MotorVehicleInspectionSingleViewComponent
     ]
 
 })

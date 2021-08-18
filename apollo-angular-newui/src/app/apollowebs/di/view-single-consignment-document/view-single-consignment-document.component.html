@@ -1,0 +1,666 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">Consignment # 1001</i>
+                        </div>
+                        <h4 class="card-title">Consignment # 1001</h4>
+                       
+                    </div>
+                    <div class="card-body" *ngIf="consignment">
+                        <div class="row"> 
+                            <div class="col-md-2">
+                                <div widget class=" border-0 box-shadow">
+                                    <div class="text-center pt-2" style="color: green;">
+                                        APPLICATION INFORMATION
+                                    </div>
+                                    <div class="card-body pt-0 widget-body">
+                                        <table class="table-responsive">
+                                            <th>
+                                                Application Reference No #
+                                            </th>
+                                            <tr>
+                                                <td>{{ consignment.cd_details.applicationRefNo?consignment.cd_details.applicationRefNo:'NA' }}</td>
+                                            </tr>
+                                            <th>
+                                                Application Date
+                                            </th>
+                                            <tr>
+                                                <td>{{ consignment.cd_details.applicationDate?consignment.cd_details.applicationDate:'NA' }}</td>
+                                            </tr>
+                                            <th>
+                                                Declaration Number
+                                            </th>
+                                            <tr>
+                                                <td>{{ consignment.cd_details.declarationNumber?consignment.cd_details.declarationNumber:'NA' }}</td>
+                                            </tr>
+                                            <th>
+                                                UCR Number
+                                            </th>
+                                            <tr>
+                                                <td>{{ consignment.cd_details.ucrNumber?consignment.cd_details.ucrNumber:'NA' }}</td>
+                                            </tr>
+                                            <th>
+                                                Application Type
+                                            </th>
+                                            <tr>
+                                                <td>{{ consignment.cd_details.applicationType?consignment.cd_details.applicationType:'NA' }}</td>
+                                            </tr>
+                                            <th>
+                                                Document Type
+                                            </th>
+                                            <tr>
+                                                <td>{{consignment.cd_details.documentType?consignment.cd_details.documentType:'NA'}}</td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                    <b>Action:</b>
+                                    <button class="btn btn-sm btn-warning" (click)="approveRejectConsignment()">Approve / Reject Consignment</button>
+                                    <b>Document Details:</b>
+                                    <button class="btn btn-sm btn-primary">CERTIFICATE OF ROADWORTHINESS</button>
+                                    <button class="btn btn-sm btn-primary">IDF DOCUMENT</button>
+                                    <button class="btn btn-sm btn-primary">DECLARATION DOCUMENT</button>
+                                </div>
+                            </div>
+                            <div class="col-md-9">
+                              
+                                <!-- <div class="d-flex"> -->
+                                    <ul ngbNav #nav="ngbNav" [(activeId)]="active" class="nav-tabs">
+                                        
+                                        <li ngbNavItem="consignee">
+                                            <a ngbNavLink>Consignee Details</a>
+                                            <ng-template ngbNavContent>
+                                                <b class="text-primary">Consignee Details</b>
+                                                <ul class="w-list-unstyled">
+                                                    <li class="list-item-accordion ">
+                                                        <div class="list-title-accordion">Name</div>
+                                                        <div class="list-text-accordion">Test EXIM 1</div>
+                                                    </li>
+                                                    <li class="list-item-accordion">
+                                                        <div class="list-title-accordion">PIN</div>
+                                                        <div class="list-text-accordion">P111111111N</div>
+                                                    </li>
+                                                    <li class="list-item-accordion">
+                                                        <div class="list-title-accordion">Physical Address</div>
+                                                        <div class="list-text-accordion">Nairobi,Nairobi,Nairobi,984584
+                                                        </div>
+                                                    </li>
+                                                    <li class="list-item-accordion">
+                                                        <div class="list-title-accordion">Postal Address</div>
+                                                        <div class="list-text-accordion">Nairobi,Nairobi,Nairobi,8736442
+                                                        </div>
+                                                    </li>
+                                                    <li class="list-item-accordion">
+                                                        <div class="list-title-accordion">Telephone</div>
+                                                        <div class="list-text-accordion">894399387</div>
+                                                    </li>
+                                                    <li class="list-item-accordion">
+                                                        <div class="list-title-accordion">Email</div>
+                                                        <div class="list-text-accordion">john@gmail.com</div>
+                                                    </li>
+                                                    <li class="list-item-accordion">
+                                                        <div class="list-title-accordion">Warehouse Code</div>
+                                                        <div class="list-text-accordion"></div>
+                                                    </li>
+                                                    <li class="list-item-accordion">
+                                                        <div class="list-title-accordion">Warehouse Location</div>
+                                                        <div class="list-text-accordion">NRB</div>
+                                                    </li>
+                                                    <li class="list-item-accordion">
+                                                        <div class="list-title-accordion">OGA Ref Number</div>
+                                                        <div class="list-text-accordion"></div>
+                                                    </li>
+                                                    <li class="list-item-accordion">
+                                                        <div class="list-title-accordion">Physical Country</div>
+                                                        <div class="list-text-accordion">KE</div>
+                                                    </li>
+                                                    <li class="list-item-accordion">
+                                                        <div class="list-title-accordion">Physical Country Name</div>
+                                                        <div class="list-text-accordion">KENYA</div>
+                                                    </li>
+                                                    <li class="list-item-accordion">
+                                                        <div class="list-title-accordion">Postal Country</div>
+                                                        <div class="list-text-accordion">KE</div>
+                                                    </li>
+                                                    <li class="list-item-accordion">
+                                                        <div class="list-title-accordion">Postal Country Name</div>
+                                                        <div class="list-text-accordion">KENYA</div>
+                                                    </li>
+                                                    <li class="list-item-accordion">
+                                                        <div class="list-title-accordion">Fax</div>
+                                                        <div class="list-text-accordion">894399387</div>
+                                                    </li>
+                                                    <li class="list-item-accordion">
+                                                        <div class="list-title-accordion">Sector of Activity</div>
+                                                        <div class="list-text-accordion">TRD</div>
+                                                    </li>
+                                                </ul>
+                                            </ng-template>
+                                        </li>
+                                        <li ngbNavItem="importer">
+                                            <a ngbNavLink>Importer Details</a>
+                                            <ng-template ngbNavContent>
+                                                <b class="text-primary">Importer Details</b>
+                                                <ul class="w-list-unstyled">
+                                                    <li class="list-item-accordion">
+                                                        <div class="list-title-accordion">Name</div>
+                                                        <div class="list-text-accordion">Test EXIM 1</div>
+                                                    </li>
+                                                    <li class="list-item-accordion">
+                                                        <div class="list-title-accordion">PIN</div>
+                                                        <div class="list-text-accordion">P111111111N</div>
+                                                    </li>
+                                                    <li class="list-item-accordion">
+                                                        <div class="list-title-accordion">MDA Ref No</div>
+                                                        <div class="list-text-accordion"></div>
+                                                    </li>
+                                                    <li class="list-item-accordion">
+                                                        <div class="list-title-accordion">Physical Address</div>
+                                                        <div class="list-text-accordion">Nairobi,Nairobi,Nairobi,984584
+                                                        </div>
+                                                    </li>
+                                                    <li class="list-item-accordion">
+                                                        <div class="list-title-accordion">Postal Address</div>
+                                                        <div class="list-text-accordion">Nairobi,null,Nairobi,8736442
+                                                        </div>
+                                                    </li>
+                                                    <li class="list-item-accordion">
+                                                        <div class="list-title-accordion">Telephone</div>
+                                                        <div class="list-text-accordion">894399387</div>
+                                                    </li>
+                                                    <li class="list-item-accordion">
+                                                        <div class="list-title-accordion">Email</div>
+                                                        <div class="list-text-accordion">john@gmail.com</div>
+                                                    </li>
+                                                    <li class="list-item-accordion">
+                                                        <div class="list-title-accordion">Warehouse Code</div>
+                                                        <div class="list-text-accordion"></div>
+                                                    </li>
+                                                    <li class="list-item-accordion">
+                                                        <div class="list-title-accordion">Warehouse Location</div>
+                                                        <div class="list-text-accordion">NRB</div>
+                                                    </li>
+                                                    <li class="list-item-accordion">
+                                                        <div class="list-title-accordion">OGA Ref Number</div>
+                                                        <div class="list-text-accordion"></div>
+                                                    </li>
+                                                    <li class="list-item-accordion">
+                                                        <div class="list-title-accordion">Physical Country</div>
+                                                        <div class="list-text-accordion">KE</div>
+                                                    </li>
+                                                    <li class="list-item-accordion">
+                                                        <div class="list-title-accordion">Physical Country Name</div>
+                                                        <div class="list-text-accordion">KENYA</div>
+                                                    </li>
+                                                    <li class="list-item-accordion">
+                                                        <div class="list-title-accordion">Postal Country</div>
+                                                        <div class="list-text-accordion">KE</div>
+                                                    </li>
+                                                    <li class="list-item-accordion">
+                                                        <div class="list-title-accordion">Postal Country Name</div>
+                                                        <div class="list-text-accordion"></div>
+                                                    </li>
+                                                    <li class="list-item-accordion">
+                                                        <div class="list-title-accordion">Fax</div>
+                                                        <div class="list-text-accordion">894399387</div>
+                                                    </li>
+                                                    <li class="list-item-accordion">
+                                                        <div class="list-title-accordion">Sector of Activity</div>
+                                                        <div class="list-text-accordion">TRD</div>
+                                                    </li>
+                                                </ul>
+                                            </ng-template>
+                                        </li>
+                                        <li ngbNavItem="exporter">
+                                            <a ngbNavLink>Exporter Details</a>
+                                            <ng-template ngbNavContent>
+                                                <b class="text-primary">Exporter Details</b>
+                                                <ul class="w-list-unstyled">
+                                                    <li class="list-item-accordion">
+                                                        <div class="list-title-accordion">Name</div>
+                                                        <div class="list-text-accordion">UNILEAVER UK</div>
+                                                    </li>
+                                                    <li class="list-item-accordion">
+                                                        <div class="list-title-accordion">PIN</div>
+                                                        <div class="list-text-accordion">P111111111N</div>
+                                                    </li>
+                                                    <li class="list-item-accordion">
+                                                        <div class="list-title-accordion">Physical Address</div>
+                                                        <div class="list-text-accordion">
+                                                            Burningham,Burningham,Burningham,888658</div>
+                                                    </li>
+                                                    <li class="list-item-accordion">
+                                                        <div class="list-title-accordion">Postal Address</div>
+                                                        <div class="list-text-accordion">
+                                                            Burningham,Burnigham,Burningham,984574543</div>
+                                                    </li>
+                                                    <li class="list-item-accordion">
+                                                        <div class="list-title-accordion">Telephone</div>
+                                                        <div class="list-text-accordion">39975629009</div>
+                                                    </li>
+                                                    <li class="list-item-accordion">
+                                                        <div class="list-title-accordion">Email</div>
+                                                        <div class="list-text-accordion">s@uk.com</div>
+                                                    </li>
+                                                    <li class="list-item-accordion">
+                                                        <div class="list-title-accordion">Warehouse Code</div>
+                                                        <div class="list-text-accordion"></div>
+                                                    </li>
+                                                    <li class="list-item-accordion">
+                                                        <div class="list-title-accordion">Warehouse Location</div>
+                                                        <div class="list-text-accordion">B44</div>
+                                                    </li>
+                                                    <li class="list-item-accordion">
+                                                        <div class="list-title-accordion">OGA Ref Number</div>
+                                                        <div class="list-text-accordion"></div>
+                                                    </li>
+                                                    <li class="list-item-accordion">
+                                                        <div class="list-title-accordion">Physical Country</div>
+                                                        <div class="list-text-accordion">GB</div>
+                                                    </li>
+                                                    <li class="list-item-accordion">
+                                                        <div class="list-title-accordion">Physical Country Name</div>
+                                                        <div class="list-text-accordion">UNITED KINGDOM</div>
+                                                    </li>
+                                                    <li class="list-item-accordion">
+                                                        <div class="list-title-accordion">Postal Country</div>
+                                                        <div class="list-text-accordion">GB</div>
+                                                    </li>
+                                                    <li class="list-item-accordion">
+                                                        <div class="list-title-accordion">Postal Country Name</div>
+                                                        <div class="list-text-accordion">UNITED KINGDOM</div>
+                                                    </li>
+                                                    <li class="list-item-accordion">
+                                                        <div class="list-title-accordion">Fax</div>
+                                                        <div class="list-text-accordion">39975629009</div>
+                                                    </li>
+                                                    <li class="list-item-accordion">
+                                                        <div class="list-title-accordion">Sector of Activity</div>
+                                                        <div class="list-text-accordion">TRD</div>
+                                                    </li>
+                                                </ul>
+                                            </ng-template>
+                                        </li>
+                                        <li ngbNavItem="consignor">
+                                            <a ngbNavLink>Consignor Details</a>
+                                            <ng-template ngbNavContent>
+                                                <b class="text-primary">Consignor Details</b>
+                                                <div class="panel" style="max-height: 388px;">
+                                                    <ul class="w-list-unstyled">
+                                                        <li class="list-item-accordion">
+                                                            <div class="list-title-accordion">Name</div>
+                                                            <div class="list-text-accordion">UNILEAVER UK</div>
+                                                        </li>
+                                                        <li class="list-item-accordion">
+                                                            <div class="list-title-accordion">PIN</div>
+                                                            <div class="list-text-accordion">P111111111N</div>
+                                                        </li>
+                                                        <li class="list-item-accordion">
+                                                            <div class="list-title-accordion">Physical Address</div>
+                                                            <div class="list-text-accordion">
+                                                                Burningham,Burningham,Burningham,888658</div>
+                                                        </li>
+                                                        <li class="list-item-accordion">
+                                                            <div class="list-title-accordion">Physical Country</div>
+                                                            <div class="list-text-accordion">GB</div>
+                                                        </li>
+                                                        <li class="list-item-accordion">
+                                                            <div class="list-title-accordion">Physical Country Name
+                                                            </div>
+                                                            <div class="list-text-accordion">UNITED KINGDOM</div>
+                                                        </li>
+                                                        <li class="list-item-accordion">
+                                                            <div class="list-title-accordion">Postal Address</div>
+                                                            <div class="list-text-accordion">
+                                                                Burningham,Burnigham,Burningham,984574543</div>
+                                                        </li>
+                                                        <li class="list-item-accordion">
+                                                            <div class="list-title-accordion">Postal Country</div>
+                                                            <div class="list-text-accordion">GB</div>
+                                                        </li>
+                                                        <li class="list-item-accordion">
+                                                            <div class="list-title-accordion">Postal Country Name</div>
+                                                            <div class="list-text-accordion">UNITED KINGDOM</div>
+                                                        </li>
+                                                        <li class="list-item-accordion">
+                                                            <div class="list-title-accordion">Telephone</div>
+                                                            <div class="list-text-accordion">39975629009</div>
+                                                        </li>
+                                                        <li class="list-item-accordion">
+                                                            <div class="list-title-accordion">Email</div>
+                                                            <div class="list-text-accordion">s@uk.com</div>
+                                                        </li>
+                                                        <li class="list-item-accordion">
+                                                            <div class="list-title-accordion">Warehouse Code</div>
+                                                            <div class="list-text-accordion"></div>
+                                                        </li>
+                                                        <li class="list-item-accordion">
+                                                            <div class="list-title-accordion">Warehouse Location</div>
+                                                            <div class="list-text-accordion">B44</div>
+                                                        </li>
+                                                        <li class="list-item-accordion">
+                                                            <div class="list-title-accordion">OGA Ref Number</div>
+                                                            <div class="list-text-accordion"></div>
+                                                        </li>
+                                                        <li class="list-item-accordion">
+                                                            <div class="list-title-accordion">Fax</div>
+                                                            <div class="list-text-accordion">39975629009</div>
+                                                        </li>
+                                                        <li class="list-item-accordion">
+                                                            <div class="list-title-accordion">Sector of Activity</div>
+                                                            <div class="list-text-accordion">TRD</div>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </ng-template>
+                                        </li>
+                                        <li ngbNavItem="values">
+                                            <a ngbNavLink>Values - Header Levels</a>
+                                            <ng-template ngbNavContent>
+                                                <b class="text-primary">Values - Header Levels</b>
+                                                <div class="panel" style="max-height: 487px;">
+                                                    <ul class="w-list-unstyled">
+                                                        <li class="list-item-accordion">
+                                                            <div class="list-title-accordion">Foreign Currency Code
+                                                            </div>
+                                                            <div class="list-text-accordion">KES</div>
+                                                        </li>
+                                                        <li class="list-item-accordion">
+                                                            <div class="list-title-accordion">Freight FCY</div>
+                                                            <div class="list-text-accordion"></div>
+                                                        </li>
+                                                        <li class="list-item-accordion">
+                                                            <div class="list-title-accordion">CIF FCY</div>
+                                                            <div class="list-text-accordion">89000.00</div>
+                                                        </li>
+                                                        <li class="list-item-accordion">
+                                                            <div class="list-title-accordion">Insurance NCY</div>
+                                                            <div class="list-text-accordion"></div>
+                                                        </li>
+                                                        <li class="list-item-accordion">
+                                                            <div class="list-title-accordion">Forex Rate</div>
+                                                            <div class="list-text-accordion">1</div>
+                                                        </li>
+                                                        <li class="list-item-accordion">
+                                                            <div class="list-title-accordion">Insurance FCY</div>
+                                                            <div class="list-text-accordion"></div>
+                                                        </li>
+                                                        <li class="list-item-accordion">
+                                                            <div class="list-title-accordion">FOB NCY</div>
+                                                            <div class="list-text-accordion">89000.00</div>
+                                                        </li>
+                                                        <li class="list-item-accordion">
+                                                            <div class="list-title-accordion">Other Charges NCY</div>
+                                                            <div class="list-text-accordion"></div>
+                                                        </li>
+                                                        <li class="list-item-accordion">
+                                                            <div class="list-title-accordion">FOB FCY</div>
+                                                            <div class="list-text-accordion">89000.00</div>
+                                                        </li>
+                                                        <li class="list-item-accordion">
+                                                            <div class="list-title-accordion">Other Charges FCY</div>
+                                                            <div class="list-text-accordion"></div>
+                                                        </li>
+                                                        <li class="list-item-accordion">
+                                                            <div class="list-title-accordion">Freight NCY</div>
+                                                            <div class="list-text-accordion"></div>
+                                                        </li>
+                                                        <li class="list-item-accordion">
+                                                            <div class="list-title-accordion">CIF NCY</div>
+                                                            <div class="list-text-accordion">89000.00</div>
+                                                        </li>
+                                                        <li class="list-item-accordion">
+                                                            <div class="list-title-accordion">COMESA</div>
+                                                            <div class="list-text-accordion">N</div>
+                                                        </li>
+                                                        <li class="list-item-accordion">
+                                                            <div class="list-title-accordion">INCO Terms</div>
+                                                            <div class="list-text-accordion">CIF</div>
+                                                        </li>
+                                                        <li class="list-item-accordion">
+                                                            <div class="list-title-accordion">Transaction Terms</div>
+                                                            <div class="list-text-accordion"></div>
+                                                        </li>
+                                                        <li class="list-item-accordion">
+                                                            <div class="list-title-accordion">Invoice Date</div>
+                                                            <div class="list-text-accordion">20210331</div>
+                                                        </li>
+                                                        <li class="list-item-accordion">
+                                                            <div class="list-title-accordion">Invoice Number</div>
+                                                            <div class="list-text-accordion">IN78742</div>
+                                                        </li>
+                                                        <li class="list-item-accordion">
+                                                            <div class="list-title-accordion">Country Of Supply</div>
+                                                            <div class="list-text-accordion">AO</div>
+                                                        </li>
+                                                        <li class="list-item-accordion">
+                                                            <div class="list-title-accordion">Country Of Supply Name
+                                                            </div>
+                                                            <div class="list-text-accordion">ANGOLA</div>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </ng-template>
+                                        </li>
+                                        <li ngbNavItem="standards-two">
+                                            <a ngbNavLink>Standards Two</a>
+                                            <ng-template ngbNavContent>
+                                                <b class="text-primary">Standards Two</b>
+                                                <ul class="w-list-unstyled">
+                                                    <li class="list-item-accordion">
+                                                        <div class="list-title-accordion">Conditions Of Approval</div>
+                                                        <div class="list-text-accordion"></div>
+                                                    </li>
+                                                    <li class="list-item-accordion">
+                                                        <div class="list-title-accordion">Applicant Remarks</div>
+                                                        <div class="list-text-accordion"></div>
+                                                    </li>
+                                                    <li class="list-item-accordion">
+                                                        <div class="list-title-accordion">MDA Remarks</div>
+                                                        <div class="list-text-accordion"></div>
+                                                    </li>
+                                                    <li class="list-item-accordion">
+                                                        <div class="list-title-accordion">Customs Remarks</div>
+                                                        <div class="list-text-accordion"></div>
+                                                    </li>
+                                                    <li class="list-item-accordion">
+                                                        <div class="list-title-accordion">Purpose Of Import</div>
+                                                        <div class="list-text-accordion">Q</div>
+                                                    </li>
+                                                    <li class="list-item-accordion">
+                                                        <div class="list-title-accordion">Coc Type</div>
+                                                        <div class="list-text-accordion">L</div>
+                                                    </li>
+                                                    <li class="list-item-accordion">
+                                                        <div class="list-title-accordion">Local Coc Type</div>
+                                                        <div class="list-text-accordion">EXE</div>
+                                                    </li>
+                                                </ul>
+                                            </ng-template>
+                                        </li>
+                                        <li ngbNavItem="service-providers">
+                                            <a ngbNavLink>Service Providers</a>
+                                            <ng-template ngbNavContent>
+                                                <b class="text-primary">Service Providers</b>
+                                                <ul class="w-list-unstyled">
+                                                    <li class="list-item-accordion">
+                                                        <div class="list-title-accordion">Application Code</div>
+                                                        <div class="list-text-accordion">texim1</div>
+                                                    </li>
+                                                    <li class="list-item-accordion">
+                                                        <div class="list-title-accordion">Name</div>
+                                                        <div class="list-text-accordion">Test EXIM 1</div>
+                                                    </li>
+                                                    <li class="list-item-accordion">
+                                                        <div class="list-title-accordion">Pin</div>
+                                                        <div class="list-text-accordion">A004418191C</div>
+                                                    </li>
+                                                    <li class="list-item-accordion">
+                                                        <div class="list-title-accordion">Physical Address</div>
+                                                        <div class="list-text-accordion"></div>
+                                                    </li>
+                                                    <li class="list-item-accordion">
+                                                        <div class="list-title-accordion">Physical Country Name</div>
+                                                        <div class="list-text-accordion"></div>
+                                                    </li>
+                                                    <li class="list-item-accordion">
+                                                        <div class="list-title-accordion">Pin</div>
+                                                        <div class="list-text-accordion">A004418191C</div>
+                                                    </li>
+                                                </ul>
+                                            </ng-template>
+                                        </li>
+                                        <li ngbNavItem="transport-details">
+                                            <a ngbNavLink>Transport Details</a>
+                                            <ng-template ngbNavContent>
+                                                <b class="text-primary">Transport Details</b>
+                                                <div class="panel" style="max-height: 636px;">
+                                                    <ul class="w-list-unstyled">
+                                                        <li class="list-item-accordion">
+                                                            <div class="list-title-accordion">Mode Of Transport</div>
+                                                            <div class="list-text-accordion">S</div>
+                                                        </li>
+                                                        <li class="list-item-accordion">
+                                                            <div class="list-title-accordion">Mode Of Transport
+                                                                Description</div>
+                                                            <div class="list-text-accordion">Maritime transport</div>
+                                                        </li>
+                                                        <li class="list-item-accordion">
+                                                            <div class="list-title-accordion">Vessel Name</div>
+                                                            <div class="list-text-accordion"></div>
+                                                        </li>
+                                                        <li class="list-item-accordion">
+                                                            <div class="list-title-accordion">Date Of Arrival</div>
+                                                            <div class="list-text-accordion">20210331</div>
+                                                        </li>
+                                                        <li class="list-item-accordion">
+                                                            <div class="list-title-accordion">Shipment Date</div>
+                                                            <div class="list-text-accordion">20210331</div>
+                                                        </li>
+                                                        <li class="list-item-accordion">
+                                                            <div class="list-title-accordion">Carrier</div>
+                                                            <div class="list-text-accordion"></div>
+                                                        </li>
+                                                        <li class="list-item-accordion">
+                                                            <div class="list-title-accordion">Voyage No</div>
+                                                            <div class="list-text-accordion">V949598</div>
+                                                        </li>
+                                                        <li class="list-item-accordion">
+                                                            <div class="list-title-accordion">Marks And Numbers</div>
+                                                            <div class="list-text-accordion"></div>
+                                                        </li>
+                                                        <li class="list-item-accordion">
+                                                            <div class="list-title-accordion">BLAWB</div>
+                                                            <div class="list-text-accordion"></div>
+                                                        </li>
+                                                        <li class="list-item-accordion">
+                                                            <div class="list-title-accordion">Customs Office</div>
+                                                            <div class="list-text-accordion">02</div>
+                                                        </li>
+                                                        <li class="list-item-accordion">
+                                                            <div class="list-title-accordion">Customs Office Description
+                                                            </div>
+                                                            <div class="list-text-accordion"></div>
+                                                        </li>
+                                                        <li class="list-item-accordion">
+                                                            <div class="list-title-accordion">Mode Of Transport
+                                                                Description</div>
+                                                            <div class="list-text-accordion">Maritime transport</div>
+                                                        </li>
+                                                        <li class="list-item-accordion">
+                                                            <div class="list-title-accordion">Manifest No</div>
+                                                            <div class="list-text-accordion"></div>
+                                                        </li>
+                                                        <li class="list-item-accordion">
+                                                            <div class="list-title-accordion">Port Of Departure</div>
+                                                            <div class="list-text-accordion">ZADUR</div>
+                                                        </li>
+                                                        <li class="list-item-accordion">
+                                                            <div class="list-title-accordion">Port Of Departure
+                                                                Description</div>
+                                                            <div class="list-text-accordion">ZADUR</div>
+                                                        </li>
+                                                        <li class="list-item-accordion">
+                                                            <div class="list-title-accordion">Port Of Arrival</div>
+                                                            <div class="list-text-accordion">KEMBA</div>
+                                                        </li>
+                                                        <li class="list-item-accordion">
+                                                            <div class="list-title-accordion">Port Of Arrival
+                                                                Description</div>
+                                                            <div class="list-text-accordion">KEMBA</div>
+                                                        </li>
+                                                        <li class="list-item-accordion">
+                                                            <div class="list-title-accordion">Freight Station</div>
+                                                            <div class="list-text-accordion">TCC</div>
+                                                        </li>
+                                                        <li class="list-item-accordion">
+                                                            <div class="list-title-accordion">Freight Station
+                                                                Description</div>
+                                                            <div class="list-text-accordion">Transglobal Cargo Centre
+                                                            </div>
+                                                        </li>
+                                                        <li class="list-item-accordion">
+                                                            <div class="list-title-accordion">Cargo Type Indicator</div>
+                                                            <div class="list-text-accordion">BG</div>
+                                                        </li>
+                                                        <li class="list-item-accordion">
+                                                            <div class="list-title-accordion">In Land Trans Port Co
+                                                            </div>
+                                                            <div class="list-text-accordion"></div>
+                                                        </li>
+                                                        <li class="list-item-accordion">
+                                                            <div class="list-title-accordion">In Land Trans Port Co Ref
+                                                                No</div>
+                                                            <div class="list-text-accordion"></div>
+                                                        </li>
+                                                        <li class="list-item-accordion">
+                                                            <div class="list-title-accordion">Kephis Collection Office
+                                                            </div>
+                                                            <div class="list-text-accordion"></div>
+                                                        </li>
+                                                        <li class="list-item-accordion">
+                                                            <div class="list-title-accordion">Certification Category
+                                                            </div>
+                                                            <div class="list-text-accordion"></div>
+                                                        </li>
+                                                        <li class="list-item-accordion">
+                                                            <div class="list-title-accordion">Place Of Application</div>
+                                                            <div class="list-text-accordion"></div>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </ng-template>
+                                        </li>
+                                        <li ngbNavItem="item-details">
+                                            <a ngbNavLink>Item Details</a>
+                                            <ng-template ngbNavContent>
+                                                <b class="text-primary">Item Details</b>
+                                                <app-item-details-list-view [dataSet]="consignmentItems"></app-item-details-list-view>
+                                            </ng-template>
+                                        </li>
+                                        <li ngbNavItem="other-version-details">
+                                            <a ngbNavLink>Other Version Details</a>
+                                            <ng-template ngbNavContent>
+                                                <b class="text-primary">Other Version Details</b>
+                                                <app-other-version-details></app-other-version-details>
+                                            </ng-template>
+                                        </li>
+                                    </ul>
+
+                                    <div [ngbNavOutlet]="nav" class="ml-4"></div>
+                                <!-- </div>  -->
+                            </div>
+                           
+                        </div>
+                        <!-- end content-->
+                    </div>
+                    <!--  end card  -->
+                </div>
+                <!-- end col-md-12 -->
+            </div>
+            <!-- end row -->
+        </div>
+    </div>

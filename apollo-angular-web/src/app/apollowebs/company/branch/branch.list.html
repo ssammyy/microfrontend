@@ -1,0 +1,82 @@
+<div class="main-content">
+    <div class="container-fluid">
+
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">assignment</i>
+                        </div>
+                        <h4 class="card-title">Organizations: All My Branches</h4>
+
+                        <div (click)="addBranches()" style="float: right; margin: inherit" class="card-icon">
+                            <i class="material-icons">add</i>
+                        </div>
+                        <h4 style="float: right" class="card-title">Add A New Branch</h4>
+
+                    </div>
+
+                    <div class="card-body">
+                        <div class="toolbar">
+                            <!--        Here you can write extra buttons/actions for the toolbar              -->
+
+                        </div>
+                        <div class="material-datatables">
+                            <div class="table-responsive">
+                                <table id="datatables"
+                                       class="table table-striped table-no-bordered table-hover"
+                                >
+                                    <thead>
+                                    <tr>
+                                        <th>ID#</th>
+                                        <th>Building</th>
+                                        <th>Active</th>
+                                        <th class="disabled-sorting text-right">Actions</th>
+                                    </tr>
+                                    </thead>
+                                    <tfoot>
+                                    <tr>
+                                        <th>ID#</th>
+                                        <th>Building</th>
+                                        <th>Active</th>
+                                        <th class="disabled-sorting text-right">Actions</th>
+                                    </tr>
+                                    </tfoot>
+                                    <tbody>
+                                    <tr *ngFor="let theRecord of branches$ | async">
+                                        <td>{{ theRecord.id }}</td>
+                                        <td>{{ theRecord.buildingName | titlecase}}</td>
+                                        <td>
+                                            <div *ngIf="theRecord.status;  then true_span else false_span">
+                                            </div>
+                                            <ng-template #true_span><span id="true">Active</span></ng-template>
+                                            <ng-template #false_span><span id="false">Inactive</span></ng-template>
+                                        </td>
+                                        <td class="text-right">
+                                            <a (click)="editRecord(theRecord)"
+                                               class="btn btn-link btn-info"><i
+                                                    class="material-icons">remove_red_eye</i>View Details</a>
+                                            <!--                                            <a (click)="onClickUsers(theRecord)"-->
+                                            <!--                                               class="btn btn-link btn-warning btn-just-icon edit"><i-->
+                                            <!--                                                    class="material-icons">dvr</i></a>-->
+
+
+                                        </td>
+
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- end content-->
+                </div>
+                <!--  end card  -->
+            </div>
+            <!-- end col-md-12 -->
+        </div>
+        <!-- end row -->
+    </div>
+</div>

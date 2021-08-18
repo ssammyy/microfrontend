@@ -4,7 +4,7 @@ import {Observable, throwError} from "rxjs";
 import {ApiEndpointService} from "../../../../services/endpoints/api-endpoint.service";
 import {catchError, map} from "rxjs/operators";
 import {BrsLookUpRequest, RegistrationPayload, SendTokenToPhone, ValidateTokenAndPhone} from "./registration.models";
-import {Company} from "../company.model";
+import {Company} from "../company";
 import {ApiResponse} from "../../../../domain/response.model";
 
 @Injectable({

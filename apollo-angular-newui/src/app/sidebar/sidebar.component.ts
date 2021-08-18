@@ -97,7 +97,13 @@ export const ROUTES: RouteInfo[] = [
     },
     {
         path: '/pvoc',
-        title: 'Import Inspection',
+        title: 'PVOC',
+        type: 'link',
+        icontype: 'receipt'
+    },
+    {
+        path: '/di',
+        title: 'DI Inspection',
         type: 'link',
         icontype: 'receipt'
     }

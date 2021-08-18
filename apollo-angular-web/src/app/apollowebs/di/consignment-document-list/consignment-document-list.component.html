@@ -1,0 +1,43 @@
+
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">assignment</i>
+                        </div>
+                        <h4 class="card-title">Consignment Documents List</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="toolbar">
+                            <div class="btn-group btn-group-sm" role="group" aria-label="Applications Status">
+                             <button type="button"  (click)="toggleStatus('ongoing')"
+                              [className]="activeStatus == 'ongoing' ? 'btn btn-sm btn-primary' : 'btn btn-sm btn-default'">ASSIGNED/ONGOING</button>
+                             <button type="button"  (click)="toggleStatus('completed')" 
+                              [className]="activeStatus == 'completed' ? 'btn btn-sm btn-primary' : 'btn btn-sm btn-default'">NOT ASSIGNED/COMPLETED</button>
+                          </div>
+                        </div>
+                        
+                              <div widget class="card border-0 box-shadow">
+                              <div class="card-body pt-0 widget-body">
+                              <div class="table-responsive table-striped">
+                                <ng2-smart-table class="table table-hover" [settings]="settings" [source]="dataSet"
+                                 (custom) = "onCustomAction($event)" >
+                                </ng2-smart-table>
+                              </div>
+                              </div>
+                              </div>
+                       
+                    </div>
+                    <!-- end content-->
+                </div>
+                <!--  end card  -->
+            </div>
+            <!-- end col-md-12 -->
+        </div>
+        <!-- end row -->
+    </div>
+</div>
+

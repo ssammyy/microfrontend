@@ -1,40 +1,62 @@
 import {
-  AuthEffects,
-  authReducer,
-  brsValidationReducer,
-  RegistrationEffects,
-  registrationReducer,
-  responseReducer,
-  RouterEffects,
-  sendTokenToPhoneReducer,
-  validateTokenAndPhoneReducer
-} from "./data";
-import {ActionReducer, MetaReducer} from "@ngrx/store";
+    AuthEffects,
+    authReducer,
+    branchIdReducer,
+    brsValidationReducer,
+    CompaniesEffects,
+    companyIdReducer,
+    companyInfoDtoStateStateReducer,
+    countyIdReducer,
+    directorIdReducer,
+    RegistrationEffects,
+    registrationReducer,
+    responseReducer,
+    RouterEffects,
+    sendTokenToPhoneReducer,
+    tokenSentStateReducer,
+    tokenValidatedStateReducer,
+    TownEffects,
+    userIdReducer,
+    validateTokenAndPhoneReducer
+} from './data';
+import {ActionReducer, MetaReducer} from '@ngrx/store';
 import {localStorageSync} from 'ngrx-store-localstorage';
 
 export * from './data';
 
 export const appReducer = {
-  responses: responseReducer,
-  brsValidation: brsValidationReducer,
-  sendTokenToPhone: sendTokenToPhoneReducer,
-  validateTokenAndPhone: validateTokenAndPhoneReducer,
-  registration: registrationReducer,
-  auth: authReducer
+    responses: responseReducer,
+    brsValidation: brsValidationReducer,
+    sendTokenToPhone: sendTokenToPhoneReducer,
+    validateTokenAndPhone: validateTokenAndPhoneReducer,
+    registration: registrationReducer,
+    auth: authReducer,
+    companyId: companyIdReducer,
+    countyId: countyIdReducer,
+    branchId: branchIdReducer,
+    userId: userIdReducer,
+    directorId: directorIdReducer,
+    tokenSent: tokenSentStateReducer,
+    tokenValidated: tokenValidatedStateReducer,
+    companyInfoDtoState: companyInfoDtoStateStateReducer
 };
 
 export function localStorageSyncReducer(reducer: ActionReducer<any>): ActionReducer<any> {
-  return localStorageSync({
-    keys: [
-      'responses',
-      'routes',
-      'auth'
-    ],
-    rehydrate: true,
-    storage: sessionStorage
-  })(reducer);
+    return localStorageSync({
+        keys: [
+            'routes',
+            'auth',
+            'companyId',
+            'userId',
+            'branchId',
+            'companyInfoDtoState'
+
+        ],
+        rehydrate: true,
+        storage: sessionStorage
+    })(reducer);
 }
 
 export const metaReducers: Array<MetaReducer<any, any>> = [localStorageSyncReducer];
 
-export const appEffects = [RegistrationEffects, RouterEffects, AuthEffects];
+export const appEffects = [RegistrationEffects, RouterEffects, AuthEffects, CompaniesEffects, TownEffects];

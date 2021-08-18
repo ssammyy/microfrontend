@@ -2,22 +2,21 @@ package org.kebs.app.kotlin.apollo.api.service;
 
 import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.payload.ApiResponseModel
+import org.kebs.app.kotlin.apollo.api.payload.CdItemDetailsDao
+import org.kebs.app.kotlin.apollo.api.payload.ConsignmentDocument
 import org.kebs.app.kotlin.apollo.api.payload.ResponseCodes
-import org.kebs.app.kotlin.apollo.api.ports.provided.createUserAlert
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.*
 import org.kebs.app.kotlin.apollo.common.dto.MinistryInspectionListResponseDto
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.ServiceMapsEntity
-import org.kebs.app.kotlin.apollo.store.model.di.CdInspectionGeneralEntity
 import org.kebs.app.kotlin.apollo.store.model.di.CdItemDetailsEntity
 import org.kebs.app.kotlin.apollo.store.model.di.ConsignmentDocumentDetailsEntity
 import org.kebs.app.kotlin.apollo.store.repo.di.IConsignmentDocumentTypesEntityRepository
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Service
-import org.springframework.web.servlet.function.ServerRequest
-import org.springframework.web.servlet.function.ServerResponse
-import org.springframework.web.servlet.function.paramOrNull
 
 @Service
 class DestinationInspectionService(
@@ -55,19 +54,21 @@ class DestinationInspectionService(
         return response
     }
 
-    fun listMinistryInspection(completed: Boolean): ApiResponseModel {
-        val requests: List<CdItemDetailsEntity>
+    fun listMinistryInspection(completed: Boolean,page:PageRequest): ApiResponseModel {
+        val requests: Page<CdItemDetailsEntity>
         val ministryInspectionItems: MutableList<MinistryInspectionListResponseDto> = ArrayList()
         val response = ApiResponseModel()
         if (completed) {
-            requests = daoServices.findAllCompleteMinistryInspectionRequests()
+            requests = daoServices.findAllCompleteMinistryInspectionRequests(page)
         } else {
-            requests = daoServices.findAllOngoingMinistryInspectionRequests()
+            requests = daoServices.findAllOngoingMinistryInspectionRequests(page)
 
         }
-        requests.forEach {
+        requests.toList().forEach {
             ministryInspectionItems.add(this.daoServices.convertCdItemDetailsToMinistryInspectionListResponseDto(it))
         }
+        response.pageNo=requests.number
+        response.totalPages=requests.totalPages
         response.data = ministryInspectionItems
         response.extras = daoServices.motorVehicleMinistryInspectionChecklistName
         response.responseCode = ResponseCodes.SUCCESS_CODE
@@ -84,6 +85,7 @@ class DestinationInspectionService(
             response.responseCode = ResponseCodes.SUCCESS_CODE
             response.message = "Consignment Document"
         } catch (ex: Exception) {
+            KotlinLogging.logger {  }.error { ex }
             response.responseCode = ResponseCodes.EXCEPTION_STATUS
             response.message = "Not valid"
         }
@@ -143,79 +145,100 @@ class DestinationInspectionService(
                               map: ServiceMapsEntity): MutableMap<String, Any?> {
         val dataMap = mutableMapOf<String, Any?>()
         // Importer details
-        cdDetails.cdImporter?.let { cdImporterID ->
-            val cdImporter = daoServices.findCDImporterDetails(cdImporterID)
-            var riskProfileImporter = false
-            cdImporter.pin?.let {
-                riskProfileDaoService.findImportersInRiskProfile(it, map.activeStatus).let { riskImporter ->
-                    when {
-                        riskImporter != null -> {
-                            riskProfileImporter = true
+        try {
+            cdDetails.cdImporter?.let { cdImporterID ->
+                val cdImporter = daoServices.findCDImporterDetails(cdImporterID)
+                var riskProfileImporter = false
+                cdImporter.pin?.let {
+                    riskProfileDaoService.findImportersInRiskProfile(it, map.activeStatus).let { riskImporter ->
+                        when {
+                            riskImporter != null -> {
+                                riskProfileImporter = true
+                            }
                         }
                     }
+                    dataMap.put("cd_importer", cdImporter)
+                    dataMap.put("risk_profile_importer", riskProfileImporter)
                 }
-                dataMap.put("cd_importer", cdImporter)
-                dataMap.put("risk_profile_importer", riskProfileImporter)
+            } ?: run {
+                dataMap.put("risk_profile_importer", false)
+                dataMap.put("cd_importer", null)
             }
-        } ?: run {
+        }catch (ex: Exception) {
+            KotlinLogging.logger {  }.error { ex }
             dataMap.put("risk_profile_importer", false)
             dataMap.put("cd_importer", null)
         }
         // Consignee details
-        cdDetails.cdConsignee?.let { cdConsigneeID ->
-            val cdConsignee = daoServices.findCdConsigneeDetails(cdConsigneeID)
-            var riskProfileConsignee = false
-            cdConsignee.pin?.let {
-                riskProfileDaoService.findConsigneeInRiskProfile(it, map.activeStatus).let { riskConsignee ->
-                    when {
-                        riskConsignee != null -> {
-                            riskProfileConsignee = true
+        try {
+            cdDetails.cdConsignee?.let { cdConsigneeID ->
+                val cdConsignee = daoServices.findCdConsigneeDetails(cdConsigneeID)
+                var riskProfileConsignee = false
+                cdConsignee.pin?.let {
+                    riskProfileDaoService.findConsigneeInRiskProfile(it, map.activeStatus).let { riskConsignee ->
+                        when {
+                            riskConsignee != null -> {
+                                riskProfileConsignee = true
+                            }
                         }
                     }
+                    dataMap.put("cd_consignee", cdConsignee)
+                    dataMap.put("risk_profile_consignee", riskProfileConsignee)
                 }
-                dataMap.put("cd_consignee", cdConsignee)
-                dataMap.put("risk_profile_consignee", riskProfileConsignee)
+            } ?: run {
+                dataMap.put("cd_consignee", null)
+                dataMap.put("risk_profile_consignee", false)
             }
-        } ?: run {
-            dataMap.put("cd_consignee", null)
-            dataMap.put("risk_profile_consignee", false)
+        }catch (ex: Exception) {
+
         }
         // Importer details
-        cdDetails.cdImporter?.let { cdExporterID ->
-            val cdExporter = daoServices.findCdExporterDetails(cdExporterID)
-            var riskProfileExporter = false
-            cdExporter.pin?.let {
-                riskProfileDaoService.findExporterInRiskProfile(it, map.activeStatus).let { riskExporter ->
-                    when {
-                        riskExporter != null -> {
-                            riskProfileExporter = true
+        try {
+            cdDetails.cdImporter?.let { cdExporterID ->
+                val cdExporter = daoServices.findCdExporterDetails(cdExporterID)
+                var riskProfileExporter = false
+                cdExporter.pin?.let {
+                    riskProfileDaoService.findExporterInRiskProfile(it, map.activeStatus).let { riskExporter ->
+                        when {
+                            riskExporter != null -> {
+                                riskProfileExporter = true
+                            }
                         }
                     }
                 }
+                dataMap.put("cd_exporter", cdExporter)
+                dataMap.put("risk_profile_exporter", riskProfileExporter)
+            } ?: run {
+                dataMap.put("cd_exporter", null)
+                dataMap.put("risk_profile_exporter", false)
             }
-            dataMap.put("cd_exporter", cdExporter)
-            dataMap.put("risk_profile_exporter", riskProfileExporter)
-        } ?: run {
+        }catch (ex: Exception) {
             dataMap.put("cd_exporter", null)
             dataMap.put("risk_profile_exporter", false)
         }
-
         // Consignor ID
-        cdDetails.cdConsignor?.let { cdConsignorID ->
-            val cdConsignor = daoServices.findCdConsignorDetails(cdConsignorID)
-            var riskProfileConsignor = false
-            cdConsignor.pin?.let {
-                riskProfileDaoService.findConsignorInRiskProfile(it, map.activeStatus).let { riskConsignor ->
-                    when {
-                        riskConsignor != null -> {
-                            riskProfileConsignor = true
+        try {
+            cdDetails.cdConsignor?.let { cdConsignorID ->
+                val cdConsignor = daoServices.findCdConsignorDetails(cdConsignorID)
+                var riskProfileConsignor = false
+                cdConsignor.pin?.let {
+                    riskProfileDaoService.findConsignorInRiskProfile(it, map.activeStatus).let { riskConsignor ->
+                        when {
+                            riskConsignor != null -> {
+                                riskProfileConsignor = true
+                            }
                         }
                     }
                 }
+                dataMap.put("cd_consignor", cdConsignor)
+                dataMap.put("risk_profile_consignor", riskProfileConsignor)
+            } ?: run {
+                dataMap.put("cd_consignor", null)
+                dataMap.put("risk_profile_consignor", false)
+
             }
-            dataMap.put("cd_consignor", cdConsignor)
-            dataMap.put("risk_profile_consignor", riskProfileConsignor)
-        } ?: run {
+        }catch(ex: Exception) {
+            KotlinLogging.logger {  }.error { ex }
             dataMap.put("cd_consignor", null)
             dataMap.put("risk_profile_consignor", false)
         }
@@ -243,8 +266,8 @@ class DestinationInspectionService(
         } ?: run {
             dataMap.put("cd_header_one", null)
         }
-        dataMap.put("cd_details", cdDetails)
-        dataMap.put("items_cd", daoServices.findCDItemsListWithCDID(cdDetails))
+        dataMap.put("cd_details", ConsignmentDocument.fromEntity(cdDetails))
+        dataMap.put("items_cd", CdItemDetailsDao.fromList(daoServices.findCDItemsListWithCDID(cdDetails)))
 
         return dataMap
     }

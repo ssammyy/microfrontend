@@ -36,6 +36,10 @@ import {SmarkComponent} from "./apollowebs/smark/smark.component";
 import { ImportInspectionComponent } from './apollowebs/pvoc/import-inspection/import-inspection.component';
 import { ExceptionsApplicationComponent } from './apollowebs/pvoc/exceptions-application/exceptions-application.component';
 import { ImportationWaiverComponent } from './apollowebs/pvoc/importation-waiver/importation-waiver.component';
+import { ConsignmentDocumentListComponent } from './apollowebs/di/consignment-document-list/consignment-document-list.component';
+import { ViewSingleConsignmentDocumentComponent } from './apollowebs/di/view-single-consignment-document/view-single-consignment-document.component';
+import { MinistryInspectionHomeComponent } from './apollowebs/di/ministry-inspection-home/ministry-inspection-home.component';
+import { MotorVehicleInspectionSingleViewComponent } from './apollowebs/di/motor-vehicle-inspection-single-view/motor-vehicle-inspection-single-view.component';
 
 // export const AppRoutes: Routes = [
 //     {
@@ -318,7 +322,38 @@ const routes: Routes = [
                
             }
         ]
-    }
+    },
+    {
+        path: 'di',
+        component: AdminLayoutComponent,
+        children: [
+            {
+                path: '',
+                component: ConsignmentDocumentListComponent
+            },
+           
+            {
+                path: ':id',
+                component: ViewSingleConsignmentDocumentComponent
+            },
+        ]
+    },
+    
+    {
+        path: 'ministry-inspection-home',
+        component: AdminLayoutComponent,
+        children: [
+            {
+                path: '',
+                component: MinistryInspectionHomeComponent
+            },
+            {
+                path: ':id',
+                component: MotorVehicleInspectionSingleViewComponent
+            }
+        ]
+    },
+   
 ];
 
 
