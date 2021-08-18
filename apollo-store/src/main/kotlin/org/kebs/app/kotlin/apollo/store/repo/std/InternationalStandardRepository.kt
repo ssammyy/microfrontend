@@ -29,6 +29,7 @@ interface ComStdDraftRepository: JpaRepository<ComStdDraft,Long> {
 interface ISAdoptionJustificationRepository : JpaRepository<ISAdoptionJustification, Long> {
 }
 interface ISAdoptionProposalRepository: JpaRepository<ISAdoptionProposal, Long> {
+    fun findAllByOrderByIdDesc(): MutableList<ISAdoptionProposal>
 }
 interface ISGazettementRepository : JpaRepository<ISGazettement, Long> {
 }
@@ -89,6 +90,11 @@ interface UserListRepository : JpaRepository<UsersEntity,Long>{
     fun findNameById(@Param("id") id: Long?): String
 }
 interface DatKebsSdNwaUploadsEntityRepository : JpaRepository<DatKebsSdNwaUploadsEntity, Long> {
+}
+interface SDDIJustificationUploadsRepository : JpaRepository<SDDIJustificationUploads, Long> {
+}
+
+interface SdIsDocumentUploadsRepository : JpaRepository<SdIsDocumentUploads, Long> {
 }
 //interface UserNameRepository : JpaRepository<UsersEntity,Long>{
 //    fun findByUserId(assignedTo: Long?) : MutableList<UsersEntity>

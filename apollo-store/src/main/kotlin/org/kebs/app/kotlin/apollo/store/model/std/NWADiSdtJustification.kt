@@ -29,6 +29,10 @@ class NWADiSdtJustification {
     @Basic
     val dateApprovalMade: String? = null
 
+    @Column(name = "DATE_OF_APPROVAL")
+    @Basic
+    val dateOfApproval: String? = null
+
     @Column(name="DATE_PREPARED")
     @Basic
     var datePrepared: Timestamp?=null

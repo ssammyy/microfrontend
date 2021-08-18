@@ -3,7 +3,7 @@ import {StdNwaService} from "../../../../core/store/data/std/std-nwa.service";
 import {NgxSpinnerService} from "ngx-spinner";
 import {KnwSecTasks, NWADiSdtJustification, NWAPreliminaryDraft} from "../../../../core/store/data/std/std.model";
 import {HttpErrorResponse} from "@angular/common/http";
-import {Subject} from "rxjs";
+import {Observable, Subject} from "rxjs";
 import swal from "sweetalert2";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {NotificationService} from "../../../../core/store/data/std/notification.service";
@@ -22,7 +22,7 @@ export class NwaKnwSecTasksComponent implements OnInit,OnDestroy {
   p2 = 1;
   tasks: KnwSecTasks[] = [];
   public actionRequest: KnwSecTasks | undefined;
-    public uploadedFiles: FileList;
+    public uploadedFiles:  FileList;
     public prepareDIJustificationFormGroup!: FormGroup;
   constructor(
       private formBuilder: FormBuilder,
@@ -39,7 +39,7 @@ export class NwaKnwSecTasksComponent implements OnInit,OnDestroy {
           numberOfMeetings: ['', Validators.required],
           identifiedNeed: ['', Validators.required],
           dateOfApproval: ['', Validators.required],
-          taskId: [],
+          taskId: []
 
       });
 
@@ -99,13 +99,14 @@ export class NwaKnwSecTasksComponent implements OnInit,OnDestroy {
     button.click();
 
   }
+
     uploadDiSdt(): void {
         this.SpinnerService.show();
         this.stdNwaService.prepareDisDtJustification(this.prepareDIJustificationFormGroup.value).subscribe(
             (response ) => {
                 console.log(response);
                 this.SpinnerService.hide();
-                this.showToasterSuccess(response.httpStatus, `Justification Prepared`);
+                this.showToasterSuccess(response.httpStatus, `Justification For Di-SDT Approval  Process Started`);
                 this.onClickSaveUPLOADS(response.body.savedRowID)
                 this.prepareDIJustificationFormGroup.reset();
             },
@@ -116,21 +117,7 @@ export class NwaKnwSecTasksComponent implements OnInit,OnDestroy {
         );
     }
 
-  // public uploadDiSdt(nWADiSdtJustification: NWADiSdtJustification): void{
-  //   this.SpinnerService.show();
-  //   this.stdNwaService.prepareDisDtJustification(nWADiSdtJustification).subscribe(
-  //       (response) => {
-  //         console.log(response);
-  //         this.SpinnerService.hide();
-  //           this.onClickSaveUPLOADS(response.body.savedRowID)
-  //         this.knwtasks();
-  //       },
-  //       (error: HttpErrorResponse) => {
-  //           this.SpinnerService.hide();
-  //         alert(error.message);
-  //       }
-  //   );
-  // }
+
   public uploadPreliminaryDraft(nwaPreliminaryDraft: NWAPreliminaryDraft): void{
     this.SpinnerService.show();
     this.stdNwaService.preparePreliminaryDraft(nwaPreliminaryDraft).subscribe(
@@ -162,7 +149,9 @@ export class NwaKnwSecTasksComponent implements OnInit,OnDestroy {
   ngOnDestroy(): void {
     this.dtTrigger.unsubscribe();
   }
-    onClickSaveUPLOADS(nwaJustificationID: string) {
+
+
+    onClickSaveUPLOADS(nwaDiSdtJustificationID: string) {
         if (this.uploadedFiles.length > 0) {
             const file = this.uploadedFiles;
             const formData = new FormData();
@@ -172,24 +161,49 @@ export class NwaKnwSecTasksComponent implements OnInit,OnDestroy {
             }
 
             this.SpinnerService.show();
-            this.stdNwaService.uploadDIFileDetails(nwaJustificationID, formData).subscribe(
+            this.stdNwaService.uploadDIFileDetails(nwaDiSdtJustificationID, formData).subscribe(
                 (data: any) => {
                     this.SpinnerService.hide();
                     this.uploadedFiles = null;
                     console.log(data);
                     swal.fire({
-                        title: 'Justification Prepared.',
+                        title: 'Justification For Di-SDT Approval Prepared.',
                         buttonsStyling: false,
                         customClass: {
-                            confirmButton: 'btn btn-success form-wizard-next-btn ',
+                            confirmButton: 'btn btn-success ',
                         },
                         icon: 'success'
                     });
+
                 },
             );
         }
 
     }
+
+
+
+    // onClickSaveUPLOADS(nwaJustificationID: string) {
+    //
+    //     const file = this.uploadedFiles;
+    //     this.fileName = this.uploadedFiles[0].name;
+    //     console.log(this.uploadedFiles);
+    //
+    //
+    //    if (this.uploadedFiles) {
+    //        const formData = new FormData();
+    //        formData.append('docFile', file[0], file[0].name);
+    //
+    //         //const formData = new FormData();
+    //         // for (let i = 0; i < file.length; i++) {
+    //         //     console.log(file[i]);
+    //         //     formData.append('docFile', file[i], file[i].name);
+    //         // }
+    //
+    //
+    //     }
+    //
+    // }
 
     showNotification(from: any, align: any) {
         const type = ['', 'info', 'success', 'warning', 'danger', 'rose', 'primary'];
@@ -218,5 +232,6 @@ export class NwaKnwSecTasksComponent implements OnInit,OnDestroy {
                 '</div>'
         });
     }
+
 
 }

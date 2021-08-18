@@ -60,6 +60,7 @@ import {UsermanagementComponent} from "./apollowebs/usermanagement/usermanagemen
 import {UserManagementProfileComponent} from "./apollowebs/usermanagement/user-management-profile/user-management-profile.component";
 import {RequestStandardFormComponent} from "./apollowebs/standards-development/standard-request/request-standard-form/request-standard-form.component";
 import {StandardRequestComponent} from "./apollowebs/standards-development/standard-request/standard-request.component";
+import {StandardTaskComponent} from "./apollowebs/standards-development/standard-request/standard-task/standard-task.component";
 
 // export const AppRoutes: Routes = [
 //     {
@@ -454,6 +455,11 @@ export const routes: Routes = [
         component: StandardRequestComponent,
         children: [{path: '', component: RequestStandardFormComponent}]
     },
+    {
+        path: 'ms-standards', component: AdminLayoutComponent,
+        children: [{path: '', component: StandardTaskComponent}]
+    },
+
 ];
 
 

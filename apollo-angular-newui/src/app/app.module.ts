@@ -124,7 +124,10 @@ import { UserManagementProfileComponent } from './apollowebs/usermanagement/user
 import { NepNotificationComponent } from './apollowebs/standards-development/nep-notification/nep-notification.component';
 import { StandardRequestComponent } from './apollowebs/standards-development/standard-request/standard-request.component';
 import { RequestStandardFormComponent } from './apollowebs/standards-development/standard-request/request-standard-form/request-standard-form.component';
+import { ReviewApplicationsComponent } from './apollowebs/standards-development/standard-request/review-applications/review-applications.component';
+import { StandardTaskComponent } from './apollowebs/standards-development/standard-request/standard-task/standard-task.component';
 import {ModalModule} from "ngb-modal";
+import {NgbModule} from "@ng-bootstrap/ng-bootstrap";
 
 
 // import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
@@ -167,6 +170,7 @@ import {ModalModule} from "ngb-modal";
         CommonModule,
         BrowserModule,
         ModalModule,
+        NgbModule,
         // TODO: Discuss as it seems to kill sending of requests to backend
         // EffectsModule.forRoot([]),
         // EntityDataModule.forRoot(entityConfig),
@@ -178,7 +182,8 @@ import {ModalModule} from "ngb-modal";
         NgxExtendedPdfViewerModule,
         FileUploadModule,
         NgxSpinnerModule,
-        DataTablesModule
+        DataTablesModule,
+        NgxPaginationModule,
         // CoreModule
     ],
     declarations: [
@@ -250,7 +255,9 @@ import {ModalModule} from "ngb-modal";
         UserManagementProfileComponent,
         NepNotificationComponent,
         StandardRequestComponent,
-        RequestStandardFormComponent
+        RequestStandardFormComponent,
+        ReviewApplicationsComponent,
+        StandardTaskComponent
 
     ]
 

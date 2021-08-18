@@ -102,7 +102,7 @@ class NWAController(val nwaService: NWAService,
         }
 
         val sm = CommonDaoServices.MessageSuccessFailDTO()
-        sm.message = "Document Uploaded successful"
+        sm.message = "Document Uploaded successfully"
 
         return sm
     }
@@ -146,18 +146,18 @@ class NWAController(val nwaService: NWAService,
     @PostMapping("/di-file-upload")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun uploadDIFiles(
-        @RequestParam("nwaJustificationID") nwaJustificationID: Long,
+        @RequestParam("nwaDiSdtJustificationID") nwaDiSdtJustificationID: Long,
         @RequestParam("docFile") docFile: List<MultipartFile>,
         model: Model
     ): CommonDaoServices.MessageSuccessFailDTO {
 
         val loggedInUser = commonDaoServices.loggedInUserDetails()
-        val nwaJustification = nwadisdtJustificationRepository.findByIdOrNull(nwaJustificationID)?: throw Exception("NWA DI-SDT DOCUMENT ID DOES NOT EXIST")
+        val nwaDiSdtJustification = nwadisdtJustificationRepository.findByIdOrNull(nwaDiSdtJustificationID)?: throw Exception("NWA DI-SDT DOCUMENT ID DOES NOT EXIST")
 
         docFile.forEach { u ->
-            val upload = DatKebsSdNwaUploadsEntity()
+            val upload = SDDIJustificationUploads()
             with(upload) {
-                nwaDocumentId = nwaJustification.id
+                diDocumentId = nwaDiSdtJustification.id
 
             }
             nwaService.uploadSDIFile(

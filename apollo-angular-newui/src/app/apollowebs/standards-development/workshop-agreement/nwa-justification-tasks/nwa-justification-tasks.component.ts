@@ -1,9 +1,11 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {StdNwaService} from "../../../../core/store/data/std/std-nwa.service";
-import {NWAJustification, SPCSECTasks} from "../../../../core/store/data/std/std.model";
+import {NWADiSdtJustification, NWAJustification, SPCSECTasks} from "../../../../core/store/data/std/std.model";
 import {HttpErrorResponse} from "@angular/common/http";
 import {NgxSpinnerService} from "ngx-spinner";
 import {Subject} from "rxjs";
+import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {NotificationService} from "../../../../core/store/data/std/notification.service";
 
 
 
@@ -17,26 +19,35 @@ export class NwaJustificationTasksComponent implements OnInit , OnDestroy {
   dtTrigger: Subject<any> = new Subject<any>();
   tasks: SPCSECTasks[] = [];
   public actionRequest: SPCSECTasks | undefined;
+  public approveFormGroup!: FormGroup;
 
   constructor(
+      private formBuilder: FormBuilder,
       private stdNwaService: StdNwaService,
       private SpinnerService: NgxSpinnerService,
+      private notifyService : NotificationService
 
   ) {
   }
 
   ngOnInit(): void {
     this.getSPCSECTasks();
+    this.approveFormGroup = this.formBuilder.group({
+      taskId: [],
+      accentTo: []
+
+    });
+
   }
 
   public getSPCSECTasks(): void {
     this.SpinnerService.show();
     this.stdNwaService.getSPCSECTasks().subscribe(
         (response: SPCSECTasks[]) => {
-          this.SpinnerService.hide();
+          this.hideModel()
           this.tasks = response;
-
           this.dtTrigger.next();
+          this.SpinnerService.hide();
         },
         (error: HttpErrorResponse) => {
           this.SpinnerService.hide();
@@ -65,20 +76,39 @@ export class NwaJustificationTasksComponent implements OnInit , OnDestroy {
     button.click();
 
   }
-  public onDecision(nWAJustification: NWAJustification): void{
+  @ViewChild('closeModal') private closeModal: ElementRef | undefined;
+  public hideModel() {
+    this.closeModal?.nativeElement.click();
+  }
+  showToasterError(title:string,message:string){
+    this.notifyService.showError(message, title)
+
+  }
+  showToasterSuccess(title:string,message:string){
+    this.notifyService.showSuccess(message, title)
+
+  }
+  get formDecision(): any {
+    return this.approveFormGroup.controls;
+  }
+   onDecision(): void{
     this.SpinnerService.show();
-    this.stdNwaService.decisionOnJustification(nWAJustification).subscribe(
-        (response: NWAJustification) => {
+     this.stdNwaService.decisionOnJustification(this.approveFormGroup.value).subscribe(
+        (response) => {
           this.SpinnerService.hide();
+          this.showToasterSuccess('Success', `Justification Approved`);
+          this.dtTrigger.next();
           console.log(response);
-           this.getSPCSECTasks();
         },
         (error: HttpErrorResponse) => {
           this.SpinnerService.hide();
+          this.showToasterError('Error', `Justification Was Not Approved`);
           alert(error.message);
         }
     );
   }
+
+
 
   ngOnDestroy(): void {
     this.dtTrigger.unsubscribe();

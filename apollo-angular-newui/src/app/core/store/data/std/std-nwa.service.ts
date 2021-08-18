@@ -219,40 +219,23 @@ export class StdNwaService {
             })
         );
     }
-    public uploadDIFileDetails(nwaJustificationID: string, data: FormData): Observable<any> {
+    public uploadDIFileDetails(nwaDiSdtJustificationID: string, data: FormData): Observable<any> {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.NWA_UPLOAD_DATA_DI);
 
         return this.http.post<any>(url, data, {
             headers: {
                 'enctype': 'multipart/form-data'
-            }, params: {'nwaJustificationID': nwaJustificationID}
+            }, params: {'nwaDiSdtJustificationID': nwaDiSdtJustificationID}
         }).pipe(
             map(function (response: any) {
                 return response;
             }),
             catchError((fault: HttpErrorResponse) => {
-                // console.warn(`getAllFault( ${fault.message} )`);
                 return throwError(fault);
             })
         );
     }
 
 
-  // upload(file: File): Observable<HttpEvent<any>> {
-  //   const formData: FormData = new FormData();
-  //
-  //   formData.append('file', file);
-  //
-  //   const req = new HttpRequest('POST', `${this.apiServerUrl}`+`upload`, formData, {
-  //     reportProgress: true,
-  //     responseType: 'json'
-  //   });
-  //
-  //   return this.http.request(req);
-  // }
-  //
-  // getFiles(): Observable<any> {
-  //   return this.http.get(`${this.apiServerUrl}`+`files`);
-  // }
 
 }

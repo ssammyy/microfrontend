@@ -8,7 +8,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
 
 @RestController
-@RequestMapping("/membershipToTC")
+@RequestMapping("api/v1/migration/membershipToTC")
 class MembershipToTCController(val membershipToTCService: MembershipToTCService) {
 
     //********************************************************** deployment endpoints ********************************************//

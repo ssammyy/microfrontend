@@ -29,24 +29,23 @@ export class StdIntStandardService {
         })
     );
   }
+    public uploadFileDetails(isProposalID: string, data: FormData): Observable<any> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_UPLOAD_DOCUMENT);
 
-  public uploadFileDetails(nwaJustificationID: string, data: FormData): Observable<any> {
-    const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_UPLOAD_DOCUMENT);
+        return this.http.post<any>(url, data, {
+            headers: {
+                'enctype': 'multipart/form-data'
+            }, params: {'isProposalID': isProposalID}
+        }).pipe(
+            map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                return throwError(fault);
+            })
+        );
+    }
 
-    return this.http.post<any>(url, data, {
-      headers: {
-        'enctype': 'multipart/form-data'
-      }, params: {'nwaJustificationID': nwaJustificationID}
-    }).pipe(
-        map(function (response: any) {
-          return response;
-        }),
-        catchError((fault: HttpErrorResponse) => {
-          // console.warn(`getAllFault( ${fault.message} )`);
-          return throwError(fault);
-        })
-    );
-  }
   public getISProposals(): Observable<ProposalComments[]> {
     const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.IST_VIEW_IS_PROPOSALS);
     const params = new HttpParams();

@@ -9,10 +9,14 @@ import org.flowable.engine.RuntimeService
 import org.flowable.engine.TaskService
 import org.flowable.engine.repository.Deployment
 import org.flowable.task.api.Task
+import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
+import org.kebs.app.kotlin.apollo.store.model.UsersEntity
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Service
+import org.springframework.web.multipart.MultipartFile
 import java.sql.Timestamp
-import java.util.ArrayList
+import java.util.*
+import kotlin.collections.HashMap
 
 @Service
 class InternationalStandardService (private val runtimeService: RuntimeService,
@@ -24,7 +28,9 @@ class InternationalStandardService (private val runtimeService: RuntimeService,
                                     private val iSAdoptionJustificationRepository: ISAdoptionJustificationRepository,
                                     private val iSUploadStandardRepository: ISUploadStandardRepository,
                                     private val iSGazetteNoticeRepository: ISGazetteNoticeRepository,
-                                    private val iSGazettementRepository: ISGazettementRepository
+                                    private val iSGazettementRepository: ISGazettementRepository,
+                                    private val commonDaoServices: CommonDaoServices,
+                                    private val sdIsDocumentUploadsRepository: SdIsDocumentUploadsRepository
 
                                     )
 {
@@ -55,22 +61,52 @@ class InternationalStandardService (private val runtimeService: RuntimeService,
 //        return ProcessInstanceResponse(processInstance.id, processInstance.isEnded)
 //    }
     //prepare Adoption Proposal
-    fun prepareAdoptionProposal(iSAdoptionProposal: ISAdoptionProposal) : ProcessInstanceResponse
+    fun prepareAdoptionProposal(iSAdoptionProposal: ISAdoptionProposal) : ProcessInstanceProposal
     {
-
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
         val variables: MutableMap<String, Any> = HashMap()
         iSAdoptionProposal.proposal_doc_name?.let{ variables.put("proposal_doc_name", it)}
         iSAdoptionProposal.uploadedBy?.let{ variables.put("uploadedBy", it)}
         iSAdoptionProposal.accentTo?.let{ variables.put("accentTo", it)}
-        iSAdoptionProposal.submissionDate = Timestamp(System.currentTimeMillis())
-        variables["submissionDate"] = iSAdoptionProposal.submissionDate!!
+        iSAdoptionProposal.preparedDate = commonDaoServices.getTimestamp()
+        variables["preparedDate"] = iSAdoptionProposal.preparedDate!!
+        iSAdoptionProposal.proposalNumber = getPRNumber()
+
+        variables["proposalNumber"] = iSAdoptionProposal.proposalNumber!!
 
 
-        isAdoptionProposalRepository.save(iSAdoptionProposal)
+        val ispDetails = isAdoptionProposalRepository.save(iSAdoptionProposal)
         val processInstance = runtimeService.startProcessInstanceByKey(PROCESS_DEFINITION_KEY, variables)
-        return ProcessInstanceResponse(processInstance.id, processInstance.isEnded)
+        return ProcessInstanceProposal(ispDetails.id, processInstance.id, processInstance.isEnded,
+            iSAdoptionProposal.proposalNumber!!)
 
     }
+
+    fun uploadISFile(
+        uploads: SdIsDocumentUploads,
+        docFile: MultipartFile,
+        doc: String,
+        user: UsersEntity,
+        DocDescription: String
+    ): SdIsDocumentUploads {
+
+        with(uploads) {
+//            filepath = docFile.path
+            name = commonDaoServices.saveDocuments(docFile)
+//            fileType = docFile.contentType
+            fileType = commonDaoServices.getFileTypeByMimetypesFileTypeMap(docFile.name)
+            documentType = doc
+            description=DocDescription
+            document = docFile.bytes
+            transactionDate = commonDaoServices.getCurrentDate()
+            status = 1
+            createdBy = commonDaoServices.concatenateName(user)
+            createdOn = commonDaoServices.getTimestamp()
+        }
+
+        return sdIsDocumentUploadsRepository.save(uploads)
+    }
+
 
     //Function to retrieve task details for any candidate group
     private fun getTaskDetails(tasks: List<Task>): List<TaskDetails> {
@@ -251,6 +287,41 @@ class InternationalStandardService (private val runtimeService: RuntimeService,
         taskService.complete(iSGazettement.taskId, variable)
         println("IS Gazettement date has been updated")
 
+    }
+
+    fun getPRNumber(): String
+    {
+        val allRequests =isAdoptionProposalRepository.findAllByOrderByIdDesc()
+
+        var lastId:String?="0"
+        var finalValue =1
+        var startId="ISP"
+
+
+        for(item in allRequests){
+            println(item)
+            lastId = item.proposalNumber
+            break
+        }
+
+        if(lastId != "0")
+        {
+            val strs = lastId?.split(":")?.toTypedArray()
+
+            val firstPortion = strs?.get(0)
+
+            val lastPortArray = firstPortion?.split("/")?.toTypedArray()
+
+            val intToIncrement =lastPortArray?.get(1)
+
+            finalValue = (intToIncrement?.toInt()!!)
+            finalValue += 1
+        }
+
+
+        val year = Calendar.getInstance()[Calendar.YEAR]
+
+        return "$startId/$finalValue:$year";
     }
 
 

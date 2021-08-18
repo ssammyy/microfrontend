@@ -38,7 +38,7 @@ class NWAService(private val runtimeService: RuntimeService,
                  private val nwaStandardRepository: NwaStandardRepository,
                  private val nwaGazettementRepository: NwaGazettementRepository,
                  private val nwaGazetteNoticeRepository: NwaGazetteNoticeRepository,
-                 private val nwaDocumentsRepository: NwaDocumentsRepository
+                 private val sdDiJustificationUploadsRepository: SDDIJustificationUploadsRepository
 
 
 ) {
@@ -198,7 +198,7 @@ class NWAService(private val runtimeService: RuntimeService,
         nwaDiSdtJustification.cost?.let{variable.put("cost", it)}
         nwaDiSdtJustification.numberOfMeetings?.let{variable.put("numberOfMeetings", it)}
         nwaDiSdtJustification.identifiedNeed?.let{variable.put("identifiedNeed", it)}
-        nwaDiSdtJustification.dateApprovalMade?.let{variable.put("dateOfApproval", it)}
+        nwaDiSdtJustification.dateOfApproval?.let{variable.put("dateOfApproval", it)}
         nwaDiSdtJustification.datePrepared = commonDaoServices.getTimestamp()
         variable["datePrepared"] = nwaDiSdtJustification.datePrepared!!
 
@@ -209,17 +209,17 @@ class NWAService(private val runtimeService: RuntimeService,
         taskService.complete(nwaDiSdtJustification.taskId, variable)
         println("Justification for DI-SDT prepared")
         val processInstance = runtimeService.startProcessInstanceByKey(PROCESS_DEFINITION_KEY, variable)
-        return ProcessInstanceDISDT(nwaDetails.id, processInstance.id, processInstance.isEnded)
+        return ProcessInstanceDISDT(nwaDetails.id, processInstance.id, processInstance.isEnded,nwaDiSdtJustification.datePrepared!!)
 
 
     }
     fun uploadSDIFile(
-        uploads: DatKebsSdNwaUploadsEntity,
+        uploads: SDDIJustificationUploads,
         docFile: MultipartFile,
         doc: String,
         user: UsersEntity,
         DocDescription: String
-    ): DatKebsSdNwaUploadsEntity {
+    ): SDDIJustificationUploads {
 
         with(uploads) {
 //            filepath = docFile.path
@@ -235,7 +235,7 @@ class NWAService(private val runtimeService: RuntimeService,
             createdOn = commonDaoServices.getTimestamp()
         }
 
-        return sdNwaUploadsEntityRepository.save(uploads)
+        return sdDiJustificationUploadsRepository.save(uploads)
     }
 
     //Return task details for SPC_SEC

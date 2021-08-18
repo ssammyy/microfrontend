@@ -40,7 +40,8 @@
               "src/assets/css/demo.css",
               "node_modules/datatables.net-bs4/css/dataTables.bootstrap4.css",
               "src/assets/scss/material-dashboard.scss",
-              "node_modules/datatables.net-bs4/css/dataTables.bootstrap4.min.css"
+              "node_modules/datatables.net-bs4/css/dataTables.bootstrap4.min.css",
+              "node_modules/bootstrap/dist/css/bootstrap.min.css"
             ],
             "scripts": [
               "node_modules/jquery/dist/jquery.js",

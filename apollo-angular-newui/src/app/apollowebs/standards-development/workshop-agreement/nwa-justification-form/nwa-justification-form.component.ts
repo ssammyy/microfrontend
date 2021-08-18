@@ -106,7 +106,7 @@ export class NwaJustificationFormComponent implements OnInit {
           console.log(response);
           this.SpinnerService.hide();
           this.showToasterSuccess(response.httpStatus, `Request Number is ${response.body.requestNumber}`);
-         this.onClickSaveULOADS(response.body.savedRowID)
+         this.onClickSaveUploads(response.body.savedRowID)
           this.prepareJustificationFormGroup.reset();
         },
         (error: HttpErrorResponse) => {
@@ -127,7 +127,7 @@ export class NwaJustificationFormComponent implements OnInit {
     );
   }
 
-    onClickSaveULOADS(nwaJustificationID: string) {
+    onClickSaveUploads(nwaJustificationID: string) {
         if (this.uploadedFiles.length > 0) {
             const file = this.uploadedFiles;
             const formData = new FormData();

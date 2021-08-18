@@ -1,16 +1,27 @@
 package org.kebs.app.kotlin.apollo.api.controllers.stdController
 
+import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.std.*
 import org.kebs.app.kotlin.apollo.common.dto.std.*
 import org.kebs.app.kotlin.apollo.store.model.std.*
+import org.kebs.app.kotlin.apollo.store.repo.std.ISAdoptionProposalRepository
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.HttpStatus
 import org.springframework.security.access.prepost.PreAuthorize
+import org.springframework.transaction.annotation.Propagation
+import org.springframework.transaction.annotation.Transactional
+import org.springframework.ui.Model
 import org.springframework.web.bind.annotation.*
+import org.springframework.web.multipart.MultipartFile
 
 @RestController
-@CrossOrigin(origins = ["http://localhost:4200"])
-@RequestMapping("api/v1/international_standard")
-class InternationalStandardController(val internationalStandardService: InternationalStandardService) {
+//@CrossOrigin(origins = ["http://localhost:4200"])
+@RequestMapping("api/v1/migration/international_standard")
+class InternationalStandardController(
+    val internationalStandardService: InternationalStandardService,
+    private val commonDaoServices: CommonDaoServices,
+    private val isAdoptionProposalRepository: ISAdoptionProposalRepository,
+    ) {
     //********************************************************** deployment endpoints **********************************************************
     @PostMapping("/deploy")
     fun deployWorkflow(): ServerResponse {
@@ -29,9 +40,45 @@ class InternationalStandardController(val internationalStandardService: Internat
     @PreAuthorize("hasAuthority('TC_SEC_SD_MODIFY')")
     @PostMapping("/prepareAdoptionProposal")
     @ResponseBody
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun prepareAdoptionProposal(@RequestBody iSAdoptionProposal: ISAdoptionProposal): ServerResponse{
         return ServerResponse(HttpStatus.OK,"Successfully uploaded Adoption proposal",internationalStandardService.prepareAdoptionProposal(iSAdoptionProposal))
     }
+
+
+    @PostMapping("/file-upload")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun uploadFiles(
+        @RequestParam("isProposalID") isProposalID: Long,
+        @RequestParam("docFile") docFile: List<MultipartFile>,
+        model: Model
+    ): CommonDaoServices.MessageSuccessFailDTO {
+
+        val loggedInUser = commonDaoServices.loggedInUserDetails()
+        val iSAdoptionProposal = isAdoptionProposalRepository.findByIdOrNull(isProposalID)?: throw Exception("IS PROPOSAL DOCUMENT ID DOES NOT EXIST")
+
+        docFile.forEach { u ->
+            val upload = SdIsDocumentUploads()
+            with(upload) {
+                isDocumentId = iSAdoptionProposal.id
+
+            }
+            internationalStandardService.uploadISFile(
+                upload,
+                u,
+                "UPLOADS",
+                loggedInUser,
+                "IS Proposal"
+            )
+        }
+
+        val sm = CommonDaoServices.MessageSuccessFailDTO()
+        sm.message = "Document Uploaded successfully"
+
+        return sm
+    }
+
+
 
     //********************************************************** get Stakeholders Tasks **********************************************************
     @PreAuthorize("hasAuthority('STAKEHOLDERS_SD_READ')")
@@ -152,6 +199,12 @@ class InternationalStandardController(val internationalStandardService: Internat
     fun updateGazettementDate(@RequestBody iSGazettement: ISGazettement): ServerResponse
     {
         return ServerResponse(HttpStatus.OK,"Successfully uploaded Gazette Notice",internationalStandardService.updateGazettementDate(iSGazettement))
+    }
+    @GetMapping("/getPRNumber")
+    @ResponseBody
+    fun getPRNumber(): String
+    {
+        return internationalStandardService.getPRNumber();
     }
 
 }
