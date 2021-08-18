@@ -109,37 +109,6 @@ private val destinationInspectionHomePage = "destination-inspection/di-home-new"
         try {
             val map = commonDaoServices.serviceMapDetails(appId)
             val auth = commonDaoServices.loggedInUserAuthentication()
-//            when {
-//                auth.authorities.stream().anyMatch { authority -> authority.authority == "DI_OFFICER_CHARGE_READ" } -> {
-//                    val usersEntity = commonDaoServices.findUserByUserName(auth.name)
-//                    val userProfilesEntity = commonDaoServices.findUserProfileByUserID(usersEntity, map.activeStatus)
-//                    userProfilesEntity.sectionId
-//                        ?.let { sectionsEntity ->
-//                            req.attributes()["CDSAutoAssigned"] =
-//                                daoServices.findAllOngoingCdWithPortOfEntry(sectionsEntity)
-//                            req.attributes()["CDSManualAssign"] =
-//                                daoServices.findAllCdWithNoPortOfEntry()
-//                            req.attributes()["CDCompleted"] =
-//                                daoServices.findAllCompleteCdWithPortOfEntry(sectionsEntity)
-//                            ok().render(destinationInspectionHomePage, req.attributes())
-//                        }
-//                        ?: throw ExpectedDataNotFound("missing section id, check config")
-//                }
-//                auth.authorities.stream()
-//                    .anyMatch { authority -> authority.authority == "DI_INSPECTION_OFFICER_READ" } -> {
-//                    val usersEntity = commonDaoServices.findUserByUserName(auth.name)
-//                    val userProfilesEntity = commonDaoServices.findUserProfileByUserID(usersEntity, map.activeStatus)
-//                    req.attributes()["CDSAutoAssigned"] = daoServices.findAllCdWithAssignedIoID(usersEntity)
-//                    req.attributes()["CDSManualAssign"] = userProfilesEntity.subSectionL2Id?.let {
-//                        daoServices.findAllCdWithNoAssignedIoID(it)
-//                    }
-//                    req.attributes()["CDCompleted"] =
-//                        daoServices.findAllCompleteCdWithAssignedIoID(usersEntity)
-//                    ok().render(destinationInspectionHomePage, req.attributes())
-//                }
-//                else -> throw SupervisorNotFoundException("can't access this page Due to Invalid authority")
-//            }
-
             when {
                 auth.authorities.stream().anyMatch { authority -> authority.authority == "DI_OFFICER_CHARGE_READ" } -> {
                     val usersEntity = commonDaoServices.findUserByUserName(auth.name)
@@ -176,7 +145,7 @@ private val destinationInspectionHomePage = "destination-inspection/di-home-new"
                         cdListCompleted.addAll(allCdFound)
                     }
                     req.attributes()["CDCompleted"] = cdListCompleted
-                    ok().render(cdPageList, req.attributes())
+                    ok().render(destinationInspectionHomePage, req.attributes())
                 }
 
                 auth.authorities.stream().anyMatch { authority -> authority.authority == "DI_INSPECTION_OFFICER_READ" } -> {
@@ -205,7 +174,7 @@ private val destinationInspectionHomePage = "destination-inspection/di-home-new"
                     req.attributes()["CDSManualAssign"] = cdListAutoAssigned
                     req.attributes()["CDCompleted"] =
                         daoServices.findAllCompleteCdWithAssignedIoID(usersEntity)
-                    ok().render(cdPageList, req.attributes())
+                    ok().render(destinationInspectionHomePage, req.attributes())
                 }
                 else -> throw SupervisorNotFoundException("can't access this page Due to Invalid authority")
             }
