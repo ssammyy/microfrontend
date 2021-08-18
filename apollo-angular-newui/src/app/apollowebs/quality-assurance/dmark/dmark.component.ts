@@ -16,6 +16,7 @@ import {TableData} from '../../../md/md-table/md-table.component';
 import {FileUploadValidators} from '@iplab/ngx-file-upload';
 import {LoadingService} from '../../../core/services/loader/loadingservice.service';
 import {NgxSpinnerService} from 'ngx-spinner';
+import Swal from 'sweetalert2';
 // import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 // import {ModalComponent} from "ngb-modal";
 
@@ -317,11 +318,20 @@ export class DmarkComponent implements OnInit, AfterViewInit {
                         );
                     }
                     if (this.allPermitDetails.permitDetails.invoiceGenerated === true) {
+                        const invoiceDetailsList = this.allPermitDetails.invoiceDetails.invoiceDetailsList;
+                        let permitFee = 0;
+
+                        for (let h = 0; h < invoiceDetailsList.length; h++) {
+                            if (invoiceDetailsList[h].permitStatus === true) {
+                                permitFee = invoiceDetailsList[h].itemAmount;
+                            }
+                        }
                         this.tableData12 = {
                             headerRow: ['Item', 'Details/Fee'],
                             dataRows: [
                                 ['Invoice Ref No', this.allPermitDetails.invoiceDetails.invoiceRef],
-                                ['Description', this.allPermitDetails.invoiceDetails.description],
+                                ['DMARK Permit', `KSH ${permitFee}`],
+                                // ['Description', this.allPermitDetails.invoiceDetails.description],
                                 ['Sub Total Before Tax', `KSH ${this.allPermitDetails.invoiceDetails.subTotalBeforeTax}`],
                                 ['Tax Amount', `KSH ${this.allPermitDetails.invoiceDetails.taxAmount}`],
                                 ['Total Amount', `KSH ${this.allPermitDetails.invoiceDetails.totalAmount}`]
@@ -488,25 +498,51 @@ export class DmarkComponent implements OnInit, AfterViewInit {
     }
 
     submitApplication(): void {
-        this.SpinnerService.show();
-        this.qaService.submitPermitApplication(String(this.allPermitDetails.permitDetails.id)).subscribe(
-            (data: AllPermitDetailsDto) => {
-                this.allPermitDetails = data;
-                this.SpinnerService.hide();
-                swal.fire({
-                    title: 'DMARK SUBMITTED SUCCESSFULLY PENDING PAYMENT!',
-                    buttonsStyling: false,
-                    customClass: {
-                        confirmButton: 'btn btn-success form-wizard-next-btn ',
-                    },
-                    icon: 'success'
-                });
-                this.reloadCurrentRoute();
-                // this.router.navigate(['/invoiceDetails'], {fragment: this.allPermitDetails.batchID.toString()});
-
-                // this.onUpdateReturnToList();
+        const swalWithBootstrapButtons = Swal.mixin({
+            customClass: {
+                confirmButton: 'btn btn-success',
+                cancelButton: 'btn btn-danger'
             },
-        );
+            buttonsStyling: false
+        });
+
+        swalWithBootstrapButtons.fire({
+            title: 'Are you sure your application is complete?',
+            text: 'You won\'t be able to make changes after submission!',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes!',
+            cancelButtonText: 'No!',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                this.SpinnerService.show();
+                this.qaService.submitPermitApplication(String(this.allPermitDetails.permitDetails.id)).subscribe(
+                    (data: AllPermitDetailsDto) => {
+                        this.allPermitDetails = data;
+                        this.SpinnerService.hide();
+                        swalWithBootstrapButtons.fire(
+                            'Submitted!',
+                            'DMARK SUBMITTED SUCCESSFULLY PENDING PAYMENT!',
+                            'success'
+                        );
+                        this.reloadCurrentRoute();
+                        // this.router.navigate(['/invoiceDetails'], {fragment: this.allPermitDetails.batchID.toString()});
+
+                        // this.onUpdateReturnToList();
+                    },
+                );
+            } else if (
+                /* Read more about handling dismissals below */
+                result.dismiss === swal.DismissReason.cancel
+            ) {
+                swalWithBootstrapButtons.fire(
+                    'Cancelled',
+                    'You can click the \'UPDATE APPLICATION DETAILS\' button to complete.',
+                    'error'
+                );
+            }
+        });
     }
 
     submitApprovalRejectionSSC(): void {

@@ -3000,6 +3000,62 @@ class QADaoServices(
         return Pair(sr, createNewVersionPermit ?: throw ExpectedDataNotFound("MISSING SAVED PERMIT"))
     }
 
+
+    fun permitRejectedVersionCreateTiedFiles(
+        permitID: Long,
+        s: ServiceMapsEntity,
+        user: UsersEntity
+    ): Pair<ServiceRequestsEntity, PermitApplicationsEntity> {
+
+        var sr = commonDaoServices.createServiceRequest(s)
+        var createNewVersionPermit: PermitApplicationsEntity? = null
+        try {
+            val pm = findPermitBYID(permitID)
+            var oldPermit =
+                findPermitWithPermitRefNumberLatest(pm.permitRefNumber ?: throw Exception("INVALID PERMIT NUMBER"))
+            KotlinLogging.logger { }
+                .info { "::::::::::::::::::PERMIT With PERMIT NUMBER = ${pm.permitRefNumber}, DOES Exists::::::::::::::::::::: " }
+            val versionNumberOld =
+                oldPermit.versionNumber ?: throw ExpectedDataNotFound("Permit Version Number is Empty")
+
+            oldPermit.oldPermitStatus = 1
+            //update last previous version permit old status
+            oldPermit = permitUpdateDetails(oldPermit, s, user).second
+
+            createNewVersionPermit = SerializationUtils.clone(oldPermit)
+
+            with(createNewVersionPermit) {
+                id = null
+                oldPermitStatus = null
+                versionNumber = versionNumberOld.plus(1)
+            }
+
+            createNewVersionPermit = permitRepo.save(createNewVersionPermit)
+
+            sr.payload = "Permit Renewed Updated [updatePermit= ${createNewVersionPermit.id}]"
+            sr.names = "${createNewVersionPermit.permitRefNumber}} ${createNewVersionPermit.userId}"
+            sr.varField1 = "${createNewVersionPermit.id}"
+
+            sr.responseStatus = sr.serviceMapsId?.successStatusCode
+            sr.responseMessage = "Success ${sr.payload}"
+            sr.status = s.successStatus
+            sr = serviceRequestsRepository.save(sr)
+            sr.processingEndDate = Timestamp.from(Instant.now())
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message, e)
+//            KotlinLogging.logger { }.trace(e.message, e)
+            sr.status = sr.serviceMapsId?.exceptionStatus
+            sr.responseStatus = sr.serviceMapsId?.exceptionStatusCode
+            sr.responseMessage = e.message
+            sr = serviceRequestsRepository.save(sr)
+
+        }
+
+        KotlinLogging.logger { }.trace("${sr.id} ${sr.responseStatus}")
+        return Pair(sr, createNewVersionPermit ?: throw ExpectedDataNotFound("MISSING SAVED PERMIT"))
+    }
+
     fun permitUpdateNewWithSamePermitNumber(
         permitID: Long,
         s: ServiceMapsEntity,
@@ -3278,12 +3334,13 @@ class QADaoServices(
         s: ServiceMapsEntity,
         user: UsersEntity,
         permit: PermitApplicationsEntity,
+        invoiceDetails: QaInvoiceDetailsEntity?,
         permitTypeID: Long
     ) {
         val permitType = findPermitType(permitTypeID)
         val permitUser =
             commonDaoServices.findUserByID(permit.userId ?: throw ExpectedDataNotFound("Permit USER Id Not found"))
-        permitInvoiceCalculation(s, permitUser, permit)
+        permitInvoiceCalculation(s, permitUser, permit, invoiceDetails)
         with(permit) {
             sendApplication = s.activeStatus
             invoiceGenerated = s.activeStatus
@@ -3930,6 +3987,7 @@ class QADaoServices(
         s: ServiceMapsEntity,
         user: UsersEntity,
         permit: PermitApplicationsEntity,
+        invoiceDetails: QaInvoiceDetailsEntity?,
     ): Pair<ServiceRequestsEntity, QaInvoiceMasterDetailsEntity?> {
 
         var sr = commonDaoServices.createServiceRequest(s)
@@ -3966,6 +4024,17 @@ class QADaoServices(
                 }
                 applicationMapProperties.mapQAPermitTypeIDDmark -> {
                     invoiceGenerated = qaInvoiceCalculation.calculatePaymentDMark(permit, user, permitType)
+
+                    if (invoiceDetails != null) {
+                        qaInvoiceCalculation.calculatePaymentOtherDetails(
+                            permit,
+                            user,
+                            invoiceDetails,
+                            invoiceGenerated
+                        )
+                        invoiceGenerated = qaInvoiceCalculation.calculateTotalInvoiceAmountToPay(invoiceGenerated, user)
+                    }
+
                 }
                 applicationMapProperties.mapQAPermitTypeIdFmark -> {
                     invoiceGenerated = qaInvoiceCalculation.calculatePaymentFMark(permit, user, permitType)
@@ -4083,8 +4152,7 @@ class QADaoServices(
     fun permitGenerateFmark(
         s: ServiceMapsEntity,
         user: UsersEntity,
-        permit: PermitApplicationsEntity,
-        auth: Authentication
+        permit: PermitApplicationsEntity
     ): Pair<ServiceRequestsEntity, PermitApplicationsEntity> {
 
         var sr = commonDaoServices.createServiceRequest(s)

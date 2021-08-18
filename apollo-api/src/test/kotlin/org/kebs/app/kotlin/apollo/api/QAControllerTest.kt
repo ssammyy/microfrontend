@@ -102,7 +102,8 @@ class QAControllerTest {
         val allUnpaidInvoices = qaDaoServices.permitInvoiceCalculation(
             map,
             commonDaoServices.findUserByID(2361),
-            qaDaoServices.findPermitBYID(1422)
+            qaDaoServices.findPermitBYID(1422),
+            null
         )
         val gson = Gson()
 

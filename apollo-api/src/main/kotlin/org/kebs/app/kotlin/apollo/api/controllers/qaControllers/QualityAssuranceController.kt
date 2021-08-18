@@ -81,7 +81,7 @@ class QualityAssuranceController(
             fmarkEntityDto.smarkPermitID ?: throw ExpectedDataNotFound("Smark Permit id not found")
         )
 
-        result = qaDaoServices.permitGenerateFmark(map, loggedInUser, permitDetails, auth).first
+        result = qaDaoServices.permitGenerateFmark(map, loggedInUser, permitDetails).first
 
         val sm = CommonDaoServices.MessageSuccessFailDTO()
         sm.closeLink = "${applicationMapProperties.baseUrlValue}/qa/permit-details?permitID=${result.varField1}"
@@ -228,7 +228,7 @@ class QualityAssuranceController(
             qaDaoServices.findPermitType(permitDetails.permitType ?: throw Exception("MISSING PERMIT TYPE ID"))
 
         var returnDetails: Pair<PermitApplicationsEntity, String> =
-            assigndefalutDetailsDetails(map, permitDetails, loggedInUser)
+            assignDefalutDetailsDetails(map, permitDetails, loggedInUser)
 
         //Add Permit ID THAT was Fetched so That it wont create a new record while updating with the methode
         permit.id = permitDetails.id
@@ -262,7 +262,8 @@ class QualityAssuranceController(
         when {
             //PCM REVIEW ACTIONS TO BE DONE
             permit.pcmReviewApprovalStatus != null -> {
-                returnDetails = permitApplicationsPCMReviewActions(permitDetails, permit, map, loggedInUser)
+                returnDetails =
+                    permitApplicationsPCMReviewActions(permitDetails, permit, invoiceDetails, map, loggedInUser)
                 permitDetails = returnDetails.first
             }
             //Permit completeness status
@@ -840,7 +841,7 @@ class QualityAssuranceController(
         return Pair(permitDetailsDB, closeLink)
     }
 
-    fun assigndefalutDetailsDetails(
+    fun assignDefalutDetailsDetails(
         map: ServiceMapsEntity,
         permitDetailsFromDB: PermitApplicationsEntity,
         loggedInUser: UsersEntity
@@ -932,6 +933,7 @@ class QualityAssuranceController(
     fun permitApplicationsPCMReviewActions(
         permitDetailsFromDB: PermitApplicationsEntity,
         permitFromInterface: PermitApplicationsEntity,
+        invoiceDetails: QaInvoiceDetailsEntity?,
         map: ServiceMapsEntity,
         loggedInUser: UsersEntity
     ): Pair<PermitApplicationsEntity, String> {
@@ -940,7 +942,7 @@ class QualityAssuranceController(
 //            permitDetailsDB.permitType == applicationMapProperties.mapQAPermitTypeIDDmark && permitFromInterface.sendForPcmReview == map.activeStatus -> {
         when (permitFromInterface.pcmReviewApprovalStatus) {
             map.activeStatus -> {
-                KotlinLogging.logger { }.info(":::::: Sending compliance status along with e-permit :::::::")
+//                KotlinLogging.logger { }.info(":::::: Sending compliance status along with e-permit :::::::")
                 permitDetailsDB.userTaskId = applicationMapProperties.mapUserTaskNameMANUFACTURE
                 permitDetailsDB = qaDaoServices.permitUpdateDetails(
                     commonDaoServices.updateDetails(
@@ -952,6 +954,7 @@ class QualityAssuranceController(
                     map,
                     loggedInUser,
                     permitDetailsDB,
+                    invoiceDetails,
                     permitDetailsDB.permitType ?: throw Exception("ID NOT FOUND")
                 )
 //
@@ -977,15 +980,16 @@ class QualityAssuranceController(
             }
             map.inactiveStatus -> {
 
+
                 qaDaoServices.permitInsertStatus(
                     permitDetailsDB,
                     applicationMapProperties.mapQaStatusPendingCorrectionManf,
                     loggedInUser
                 )
                 //Rejected Permit creates a new version
-//                        permitDetailsDB = qaDaoServices.permitRejectedVersionCreation(
-//                            permitDetailsDB.id ?: throw ExpectedDataNotFound("MISSING PERMIT ID"), map, loggedInUser
-//                        ).second
+                permitDetailsDB = qaDaoServices.permitRejectedVersionCreation(
+                    permitDetailsDB.id ?: throw Exception("MISSING PERMIT ID"), map, loggedInUser
+                ).second
 
                 with(permitDetailsDB) {
                     resubmitApplicationStatus = map.activeStatus
@@ -2270,7 +2274,7 @@ class QualityAssuranceController(
         val permit = loggedInUser.id?.let { qaDaoServices.findPermitBYUserIDAndId(permitID, it) } ?: throw ExpectedDataNotFound("Required User ID, check config")
         val permitType = permit.permitType?.let { qaDaoServices.findPermitType(it) } ?: throw ExpectedDataNotFound("PermitType Id Not found")
 
-        result = qaDaoServices.permitInvoiceCalculation(map, loggedInUser, permit).first
+        result = qaDaoServices.permitInvoiceCalculation(map, loggedInUser, permit, null).first
         with(permit) {
             sendApplication = map.activeStatus
             invoiceGenerated = map.activeStatus

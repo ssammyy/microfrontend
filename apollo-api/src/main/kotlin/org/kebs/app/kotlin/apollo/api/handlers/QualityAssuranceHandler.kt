@@ -1423,8 +1423,13 @@ class QualityAssuranceHandler(
                 permit.permitType ?: throw ExpectedDataNotFound("Permit Type Id Not found")
             )
 
+            //Create FMARK From SMark
+            if (permit.fmarkGenerateStatus == 1) {
+                qaDaoServices.permitGenerateFmark(map, loggedInUser, permit).first
+            }
+
             //Calculate Invoice Details
-            val invoiceCreated = qaDaoServices.permitInvoiceCalculation(map, loggedInUser, permit).second
+            val invoiceCreated = qaDaoServices.permitInvoiceCalculation(map, loggedInUser, permit, null).second
 
             //Update Permit Details
             with(permit) {
@@ -1484,7 +1489,7 @@ class QualityAssuranceHandler(
                     map,
                     applicationMapProperties.mapQADesignationIDForPCMId
                 )?.id
-                permitStatus = applicationMapProperties.mapQaStatusPPCMAwarding
+                permitStatus = applicationMapProperties.mapQaStatusPPCMReview
                 userTaskId = applicationMapProperties.mapUserTaskNamePCM
             }
             permit = qaDaoServices.permitUpdateDetails(permit, map, loggedInUser).second
@@ -2563,7 +2568,7 @@ class QualityAssuranceHandler(
                 dto.smarkPermitID ?: throw ExpectedDataNotFound("Smark Permit id not found")
             )
 
-            val fmarkGenerated = qaDaoServices.permitGenerateFmark(map, loggedInUser, permitDetails, auth)
+            val fmarkGenerated = qaDaoServices.permitGenerateFmark(map, loggedInUser, permitDetails)
 
             qaDaoServices.mapAllPermitDetailsTogether(fmarkGenerated.second, null, map).let {
                 return ok().body(it)

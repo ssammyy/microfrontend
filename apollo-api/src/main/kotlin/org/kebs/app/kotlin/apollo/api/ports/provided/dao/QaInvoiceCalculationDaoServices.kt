@@ -329,6 +329,29 @@ class QaInvoiceCalculationDaoServices(
         return invoiceDetails
     }
 
+    fun calculatePaymentOtherDetails(
+        permit: PermitApplicationsEntity,
+        user: UsersEntity,
+        invoiceDetailsOthers: QaInvoiceDetailsEntity,
+        invoiceMaster: QaInvoiceMasterDetailsEntity
+    ): QaInvoiceDetailsEntity {
+
+        var invoiceDetails = invoiceDetailsOthers.apply {
+            invoiceMasterId = invoiceMaster.id
+            generatedDate = Timestamp.from(Instant.now())
+            umo = "PER"
+            itemQuantity = BigDecimal.ZERO
+            status = 1
+            createdOn = Timestamp.from(Instant.now())
+            createdBy = commonDaoServices.concatenateName(user)
+        }
+
+        invoiceDetails = qaInvoiceDetailsRepo.save(invoiceDetails)
+
+
+        return invoiceDetails
+    }
+
 
     fun calculatePaymentSMarkLargeFirm(
         permit: PermitApplicationsEntity,

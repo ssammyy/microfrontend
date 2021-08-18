@@ -289,6 +289,9 @@ class ApplicationMapProperties {
     @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.status.pending_pcm_awarding}")
     val mapQaStatusPPCMAwarding: Long = 0L
 
+    @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.status.pending_review_pcm}")
+    val mapQaStatusPPCMReview: Long = 0L
+
     @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.status.pending_sta10_completion}")
     val mapQaStatusPSTA10Completion: Long = 0L
 

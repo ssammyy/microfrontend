@@ -627,39 +627,6 @@ export class SmarkComponent implements OnInit {
                 );
             }
         });
-
-        // this.SpinnerService.show();
-        // this.qaService.submitPermitApplication(String(this.allPermitDetails.permitDetails.id)).subscribe(
-        //     (data: AllPermitDetailsDto) => {
-        //         this.allPermitDetails = data;
-        //         this.SpinnerService.hide();
-        //         this.reloadCurrentRoute();
-        //         if (this.allPermitDetails.permitDetails.permitTypeID === this.FMarkTypeID) {
-        //             swal.fire({
-        //                 title: 'FMARK SUBMITTED SUCCESSFULLY PENDING PAYMENT!',
-        //                 buttonsStyling: false,
-        //                 customClass: {
-        //                     confirmButton: 'btn btn-success form-wizard-next-btn ',
-        //                 },
-        //                 icon: 'success'
-        //             });
-        //         } else {
-        //             swal.fire({
-        //                 title: 'SMARK SUBMITTED SUCCESSFULLY PENDING PAYMENT!',
-        //                 buttonsStyling: false,
-        //                 customClass: {
-        //                     confirmButton: 'btn btn-success form-wizard-next-btn ',
-        //                 },
-        //                 icon: 'success'
-        //             });
-        //         }
-        //
-        //
-        //         // this.router.navigate(['/invoiceDetails'], {fragment: this.allPermitDetails.batchID.toString()});
-        //
-        //         // this.onUpdateReturnToList();
-        //     },
-        // );
     }
 
     submitRenewalApplication() {
