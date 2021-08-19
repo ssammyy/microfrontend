@@ -1,7 +1,8 @@
 import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {StandardDevelopmentService} from "../../../../core/store/data/std/standard-development.service";
-import {DecisionFeedback, ReviewApplicationTask} from "../../../../core/store/data/std/std.model";
+import { ReviewApplicationTask} from "../../../../core/store/data/std/std.model";
 import {HttpErrorResponse} from "@angular/common/http";
+import {DecisionFeedback} from "../../../../core/store/data/std/request_std.model";
 
 @Component({
   selector: 'app-review-applications',
