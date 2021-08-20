@@ -45,7 +45,7 @@ import org.kebs.app.kotlin.apollo.adaptor.kafka.producer.service.SendToKafkaQueu
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DestinationInspectionDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.PvocDaoServices
-import org.kebs.app.kotlin.apollo.api.ports.provided.dao.QualityAssuranceDaoServices
+//import org.kebs.app.kotlin.apollo.api.ports.provided.dao.QualityAssuranceDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.mpesa.MPesaService
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.qa.PermitApplicationsEntity
@@ -71,8 +71,8 @@ class ApiApplicationTest {
     @Autowired
     lateinit var permitRepo: IPermitRepository
 
-    @Autowired
-    lateinit var daoservises: QualityAssuranceDaoServices
+//    @Autowired
+//    lateinit var daoservises: QualityAssuranceDaoServices
 
     @Autowired
     lateinit var diDaoServices: DestinationInspectionDaoServices

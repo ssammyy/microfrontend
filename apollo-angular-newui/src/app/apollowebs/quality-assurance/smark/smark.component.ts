@@ -83,6 +83,8 @@ export class SmarkComponent implements OnInit {
     step = 1;
     public permitID!: string;
     batchID!: bigint;
+    COMPLIANTSTATUS = 'COMPLIANT';
+    NONCOMPLIANT = 'NON-COMPLIANT';
 
     private filesControl = new FormControl(null, FileUploadValidators.filesLimit(2));
 
@@ -199,13 +201,13 @@ export class SmarkComponent implements OnInit {
         });
 
         this.approveRejectSSCForm = this.formBuilder.group({
-            approvedRejectedScheme: [{value: '', disabled: true}, Validators.required],
+            approvedRejectedScheme: ['', Validators.required],
             approvedRejectedSchemeRemarks: [''],
             // approvedRemarks: [{value: '', disabled: true}, Validators.required],
         });
 
         this.uploadForm = this.formBuilder.group({
-            upLoadDescription: [{value: '', disabled: true}, Validators.required],
+            upLoadDescription: ['', Validators.required],
             uploadedFile: this.filesControl
             // approvedRemarks: [{value: '', disabled: true}, Validators.required],
         });
@@ -729,8 +731,15 @@ export class SmarkComponent implements OnInit {
     }
 
     openModalUpload(viewDiv: string) {
+        const arrHead = ['uploadModal', 'schemeModal'];
+        const arrHeadSave = ['Upload PDF Documents Only', 'Agree/Consent to SSC'];
+
+        for (let h = 0; h < arrHead.length; h++) {
+            if (viewDiv === arrHead[h]) {
+                this.currDivLabel = arrHeadSave[h];
+            }
+        }
         this.currDiv = viewDiv;
-        this.currDivLabel = 'Upload PDF Documents Only';
     }
 
     openModalViewUpload(viewDiv: string) {

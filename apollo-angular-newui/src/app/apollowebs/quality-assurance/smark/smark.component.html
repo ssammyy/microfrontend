@@ -1435,6 +1435,20 @@ enctype="multipart/form-data" method="post">
         <div id="main17">
             <div class="container">
                 <div class="container">
+                    <button (click)="viewPdfFile((allPermitDetails?.schemeOfSuperVision?.id).toString(),(allPermitDetails?.schemeOfSuperVision?.name).toString(),(allPermitDetails?.schemeOfSuperVision?.fileType).toString())"
+                            mat-raised-button=""
+                            class="btn btn-kebs mat-raised-button mat-button-base"><span
+                            class="mat-button-wrapper">VIEW REMARKS</span>
+                        <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                        <div class="mat-button-focus-overlay"></div>
+                    </button>
+                    <button (click)="viewPdfFile((allPermitDetails?.schemeOfSuperVision?.id).toString(),(allPermitDetails?.schemeOfSuperVision?.name).toString(),(allPermitDetails?.schemeOfSuperVision?.fileType).toString())"
+                            mat-raised-button=""
+                            class="btn btn-kebs mat-raised-button mat-button-base"><span
+                            class="mat-button-wrapper">RE-SUBMIT</span>
+                        <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                        <div class="mat-button-focus-overlay"></div>
+                    </button>
                     <div class="table-responsive">
                         <table class="table">
                             <thead>
@@ -1451,7 +1465,8 @@ enctype="multipart/form-data" method="post">
                             <tbody>
                             <tr *ngFor="let row of tableData4?.dataRows">
                                 <td class="text-left">{{row[0]}}</td>
-                                <td>{{row[1]}}</td>
+                                <td *ngIf="row[1] == true">{{COMPLIANTSTATUS}}</td>
+                                <td *ngIf="row[1] == false">{{NONCOMPLIANT}}</td>
                                 <!--                                <td>{{row[2]}}</td>-->
                                 <!--                                <td>{{row[3]}}</td>-->
 
