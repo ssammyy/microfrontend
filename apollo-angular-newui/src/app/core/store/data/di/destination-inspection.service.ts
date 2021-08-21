@@ -10,6 +10,14 @@ export class DestinationInspectionService {
 
     constructor(private client: HttpClient) {
     }
+
+    uploadMinistryChecklist(file: File, fileType: string): Observable<any>{
+        let fd=new FormData()
+        fd.append("file", file)
+        fd.append("file_type", fileType)
+        return this.client.post(ApiEndpointService.getEndpoint("/api/v1/di//ministry/inspection/checklist"),fd)
+    }
+
     uploadForeignDocuments(file: File, fileType: string): Observable<any>{
         let fd=new FormData()
         fd.append("file", file)

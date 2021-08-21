@@ -9,15 +9,18 @@ import org.kebs.app.kotlin.apollo.api.payload.extractPage
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.CommonDaoServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.DestinationInspectionDaoServices
 import org.kebs.app.kotlin.apollo.api.service.DestinationInspectionService
+import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.kebs.app.kotlin.apollo.store.model.di.ConsignmentDocumentTypesEntity
 import org.springframework.http.HttpStatus
+import org.springframework.http.MediaType
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Component
 import org.springframework.web.multipart.MultipartHttpServletRequest
 import org.springframework.web.server.ResponseStatusException
 import org.springframework.web.servlet.function.ServerRequest
 import org.springframework.web.servlet.function.ServerResponse
+import org.springframework.web.servlet.function.bodyWithType
 import org.springframework.web.servlet.function.paramOrNull
 
 @Component
@@ -42,6 +45,37 @@ class ApiDestinationInspectionHandler(
         response.message = "Not Implemented"
         response.responseCode = ResponseCodes.NOT_IMPLEMENTED
         return ServerResponse.ok().body(response)
+    }
+
+    fun uploadMinistryCheckList(req: ServerRequest): ServerResponse {
+        var response = ApiResponseModel()
+        val multipartRequest = (req.servletRequest() as? MultipartHttpServletRequest)
+        if(multipartRequest!=null){
+            val multipartFile = multipartRequest.getFile("file")
+            val comment=req.attribute("comment")
+                    .orElse("")
+            val itemId = req.pathVariable("itemId")
+            response=this.destinationInspectionService.ministryInspectionList(itemId.toLongOrDefault(0L),comment.toString(), multipartFile!!)
+        } else {
+            response.responseCode=ResponseCodes.INVALID_CODE
+            response.message="Request is not a multipart request"
+        }
+        return ServerResponse.ok().body(response)
+    }
+
+    fun downloadMinistryCheckList(req: ServerRequest): ServerResponse {
+        val itemId=req.pathVariable("itemId")
+                .toLongOrDefault(0L)
+        daoServices.findInspectionMotorVehicleById(itemId)
+                ?.let { cdInspectionMotorVehicleItemChecklistEntity ->
+                    cdInspectionMotorVehicleItemChecklistEntity.ministryReportFile?.let {
+                        return ServerResponse.ok()
+                                .header( "Content-Disposition", "inline; filename=${cdInspectionMotorVehicleItemChecklistEntity.chassisNo}_inspection_report;")
+                                .contentType(MediaType.APPLICATION_PDF)
+                                .body(it)
+                    } ?: throw ExpectedDataNotFound("Inspection Report file not found")
+                }
+                ?: throw ExpectedDataNotFound("Motor Vehicle Inspection checklist with ID: $itemId not found")
     }
 
     fun listConsignmentDocumentTypes(req: ServerRequest): ServerResponse {

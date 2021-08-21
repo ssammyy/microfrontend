@@ -26,6 +26,8 @@ class DestinationInspectionRoutes {
             GET("/consignment/documents/item/lab/{cdItemUuid}", handler::consignmentDocumentSSFLabDetails)
             GET("/ministry/inspections/{inspectionStatus}", handler::ministryInspections)
             GET("/ministry/inspection/details/{itemId}", handler::motorVehicleInspection)
+            POST("/ministry/inspection/checklist/{itemId}", handler::uploadMinistryCheckList)
+            GET("/ministry/inspection/checklist/download/{itemId}", handler::downloadMinistryCheckList)
             GET("/consignment/documents/assigned", handler::assignedConsignmentDocuments)
             GET("/consignment/documents/ongoing", handler::outgoingConsignmentDocuments)
             GET("/consignment/documents/manual/assigned", handler::manualAssignedConsignmentDocuments)

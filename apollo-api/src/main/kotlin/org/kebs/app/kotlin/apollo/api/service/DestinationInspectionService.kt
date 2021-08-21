@@ -3,6 +3,7 @@ package org.kebs.app.kotlin.apollo.api.service
 import com.fasterxml.jackson.databind.ObjectMapper
 import mu.KotlinLogging
 import org.kebs.app.kotlin.apollo.api.payload.*
+import org.kebs.app.kotlin.apollo.api.ports.provided.bpmn.DestinationInspectionBpmn
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.*
 import org.kebs.app.kotlin.apollo.common.dto.MinistryInspectionListResponseDto
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
@@ -15,6 +16,7 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Service
+import org.springframework.web.multipart.MultipartFile
 
 @Service
 class DestinationInspectionService(
@@ -25,6 +27,7 @@ class DestinationInspectionService(
         private val cdTypesRepo: IConsignmentDocumentTypesEntityRepository,
         private val importerDaoServices: ImporterDaoServices,
         private val qaDaoServices: QADaoServices,
+        private val diBpmn: DestinationInspectionBpmn,
 ) {
     @Value("\${destination.inspection.cd.type.cor}")
     lateinit var corCdType: String
@@ -41,6 +44,50 @@ class DestinationInspectionService(
         response.data = this.cdTypesRepo.findByStatus(1)
         response.message = "Success"
         response.responseCode = ResponseCodes.SUCCESS_CODE
+        return response
+    }
+
+    fun ministryInspectionList(inspectionChecklistId: Long, comment: String?, docFile: MultipartFile): ApiResponseModel {
+        val response = ApiResponseModel()
+        val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
+        commonDaoServices.loggedInUserDetails()
+                .let { loggedInUser ->
+                    KotlinLogging.logger { }.info { "mvInspectionChecklistId = $inspectionChecklistId" }
+                    daoServices.findInspectionMotorVehicleById(inspectionChecklistId)
+                            ?.let { inspectionMotorVehicle ->
+                                inspectionMotorVehicle.ministryReportFile = docFile.bytes
+                                inspectionMotorVehicle.ministryReportReinspectionRemarks = comment
+                                inspectionMotorVehicle.ministryReportSubmitStatus = map.activeStatus
+                                daoServices.updateCdInspectionMotorVehicleItemChecklistInDB(
+                                        inspectionMotorVehicle,
+                                        loggedInUser
+                                ).let { cdInspectionMVChecklist ->
+                                    cdInspectionMVChecklist.inspectionGeneral?.cdItemDetails?.let { cdItemDetails ->
+                                        cdItemDetails.cdDocId?.let { cdEntity ->
+                                            //Update status
+                                            cdEntity.cdStandard?.let { cdStd ->
+                                                daoServices.updateCDStatus(cdStd, applicationMapProperties.mapDIStatusTypeMinistryInspectionUploadedId)
+                                            }
+                                            //daoServices.sendMinistryInspectionReportSubmittedEmail(it, cdItemDetails)
+                                            //Complete Generate Ministry Inspection Report & Assign Review Ministry Inspection Report
+                                            cdEntity.id?.let {
+                                                cdEntity.assignedInspectionOfficer?.id?.let { it1 ->
+                                                    diBpmn.diGenerateMinistryInspectionReportComplete(
+                                                            it, it1
+                                                    )
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                response.message = "Report Submitted Successfully"
+                                response.responseCode = ResponseCodes.SUCCESS_CODE
+
+                            } ?: run {
+                        response.message = "No Motor Vehicle Inspection Checklist Found"
+                        response.responseCode = ResponseCodes.NOT_FOUND
+                    }
+                }
         return response
     }
 
