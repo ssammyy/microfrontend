@@ -3,19 +3,16 @@ package org.kebs.app.kotlin.apollo.api.ports.provided.sftp
 import com.google.common.io.Files
 import com.jcraft.jsch.Channel
 import com.jcraft.jsch.ChannelSftp
-import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
-import org.springframework.stereotype.Service
 import com.jcraft.jsch.JSch
 import com.jcraft.jsch.Session
 import mu.KotlinLogging
 import org.apache.commons.io.FileUtils
-import org.apache.commons.io.FilenameUtils
 import org.jasypt.encryption.StringEncryptor
+import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
+import org.springframework.stereotype.Service
 import java.io.File
-import java.io.FileInputStream
 import java.io.IOException
 import java.io.InputStream
-import java.util.*
 
 
 @Service("sftpService")
@@ -30,16 +27,14 @@ class SftpServiceImpl(
     val password = applicationMapProperties.mapSftpPassword
 
     fun createSftp(): ChannelSftp {
-//        val decryptedUsername = jasyptStringEncryptor.decrypt(applicationMapProperties.mapSftpUsername)
-//        val decryptedPassword = jasyptStringEncryptor.decrypt(applicationMapProperties.mapSftpPassword)
 
-        val decryptedUsername = "kebs\\bsk"
-        val decryptedPassword = "1ntegrat10n@!234"
+        val username = applicationMapProperties.mapSftpUsername
+        val decryptedPassword = jasyptStringEncryptor.decrypt(applicationMapProperties.mapSftpPassword)
 
         val jsch = JSch()
-        KotlinLogging.logger { }.info(":::: Trying to connect sftp[$decryptedUsername @ $host], using password: $decryptedPassword ::::")
+        KotlinLogging.logger { }.info(":::: Trying to connect sftp[$username @ $host], using password: $decryptedPassword ::::")
 
-        val session: Session = createSession(jsch, host, decryptedUsername, port = applicationMapProperties.mapSftpPort)
+        val session: Session = createSession(jsch, host, username, port = applicationMapProperties.mapSftpPort)
         try {
             session.setPassword(decryptedPassword)
             session.connect()

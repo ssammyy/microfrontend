@@ -76,7 +76,63 @@
  *  *
  *
  */
-***************************Table USED IN DI*****************************************
+*
+**************************Table USED IN DI*****************************************
+
+select *
+from CFG_USERS_CFS_ASSIGNMENTS
+where USER_PROFILE_ID = 1065
+order by id desc;
+
+select CFG_USERS_CFS_ASSIGNMENTS_SEQ.nextval
+from dual;
+
+truncate table CFG_USERS_CFS_ASSIGNMENTS;
+
+create table apollo.CFG_USERS_CFS_ASSIGNMENTS_20210811 as
+select *
+from CFG_USERS_CFS_ASSIGNMENTS;
+
+select *
+from CFG_USER_ROLES_ASSIGNMENTS
+where USER_ID = 2486
+order by id desc;
+
+create table apollo.CFG_USER_ROLES_ASSIGNMENTS_20210811 as
+select *
+from CFG_USER_ROLES_ASSIGNMENTS;
+
+select *
+from DAT_KEBS_USERS
+-- where ID = 1622
+
+-- where USER_PIN_ID_NUMBER = '13869968'
+where EMAIL = 'kathenyan@kebsorg'
+-- where USER_NAME = 'Muriithig'
+-- where USER_PIN_ID_NUMBER = '0715668934'
+order by id desc;
+
+create table apollo.DAT_KEBS_USERS_20210811 as
+select *
+from DAT_KEBS_USERS;
+
+select *
+from DAT_KEBS_USER_PROFILES
+where USER_ID = 1522
+
+-- where USER_PIN_ID_NUMBER = '13869968'
+-- where EMAIL = 'njinei@kebs.org'
+-- where USER_PIN_ID_NUMBER = '0715668934'
+order by id desc;
+
+truncate table DAT_KEBS_USER_PROFILES;
+
+create table apollo.DAT_KEBS_USER_PROFILES_20210811 as
+select *
+from DAT_KEBS_USER_PROFILES;
+
+
+
 select *
 from DAT_KEBS_USER_VERIFICATION_TOKEN
 -- where TOKEN =
@@ -86,8 +142,9 @@ select *
 from DAT_KEBS_NOTIFICATIONS
 -- where TOKEN =
 order by id desc;
-select * from CFG_ROLES_PRIVILEGES --the role is 40 and prRole ID = 774
--- where PRIVILEGE_ID =52425
+
+select *from CFG_ROLES_PRIVILEGES --the role is 40 and prRole ID = 774
+where PRIVILEGE_ID = 764
 order by id desc;
 
 select *
@@ -112,13 +169,14 @@ order by id desc;
 select *
 from CFG_USER_ROLES--512
 --where id like '%5%'
--- where id = 9
+where id = 653
 order by id desc;
 
-select * from CFG_USER_PRIVILEGES--QA_OFFICER_READ
+select *
+from CFG_USER_PRIVILEGES--QA_OFFICER_READ
 -- where id like '%521%'
 order by id desc;--MS
-
+73:"RBAC_ASSIGN_CFS"
 -- _MP_MODIFY MS_MP_READ AUTHORITIES_WRITE 29
 select *
 from CFG_ROLES_PRIVILEGES
@@ -127,7 +185,7 @@ where ROLES_ID = 9
 order by id desc;--MS_MP_MODIFY MS_MP_READ
 select *
 from CFG_USER_ROLES_ASSIGNMENTS
--- where USER_ID = 54
+where USER_ID = 54
 order by id desc;--MS_MP_MODIFY MS_MP_READ
 select *
 from DAT_KEBS_USER_VERIFICATION_TOKEN

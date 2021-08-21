@@ -60,24 +60,24 @@
                                                 <div class="list-text-accordion"
                                                      th:text="${ssfDetails?.productDescription}"></div>
                                             </li>
-                                            <li class="list-item-accordion">
-                                                <div class="list-title-accordion">SAMPLE STATUS:</div>
-                                                <div class="list-text-accordion"
-                                                     th:text="${ssfDetails?.sampleStatus}"></div>
-                                            </li>
+                                            <!--                                            <li class="list-item-accordion">-->
+                                            <!--                                                <div class="list-title-accordion">SAMPLE STATUS:</div>-->
+                                            <!--                                                <div class="list-text-accordion"-->
+                                            <!--                                                     th:text="${ssfDetails?.sampleStatus}"></div>-->
+                                            <!--                                            </li>-->
                                             <li class="list-item-accordion">
                                                 <div class="list-title-accordion">RESULTS DATE:</div>
                                                 <div class="list-text-accordion"
                                                      th:text="${ssfDetails?.resultsDate}"></div>
                                             </li>
-                                            <li th:if="${ssfDetails?.labReportFileId != null}"
-                                                class="list-item-accordion">
-                                                <div class="list-title-accordion">VIEW ATTACHED PDF RESULTS:</div>
-                                                <div class="list-text-accordion"><a
-                                                        th:href="@{/api/qa/kebs/view/attached(fileID=${ssfDetails.labReportFileId})}"
-                                                        target='_blank' class="btn btn-primary itemViewBtn">VIEW</a>
-                                                </div>
-                                            </li>
+                                            <!--                                            <li th:if="${ssfDetails?.labReportFileId != null}"-->
+                                            <!--                                                class="list-item-accordion">-->
+                                            <!--                                                <div class="list-title-accordion">VIEW ATTACHED PDF RESULTS:</div>-->
+                                            <!--                                                <div class="list-text-accordion"><a-->
+                                            <!--                                                        th:href="@{/api/qa/kebs/view/attached(fileID=${ssfDetails.labReportFileId})}"-->
+                                            <!--                                                        target='_blank' class="btn btn-primary itemViewBtn">VIEW</a>-->
+                                            <!--                                                </div>-->
+                                            <!--                                            </li>-->
                                             <li th:if="${ssfDetails?.resultsAnalysis != null}"
                                                 class="list-item-accordion">
                                                 <div class="list-title-accordion">RESULTS ANALYSIS:</div>
@@ -155,7 +155,7 @@
                                 </div>
                             </div>
 
-                            <button class="accordion">Lab Results PDFS Details</button>
+                            <button class="accordion">Lab Results PDFS Details Found</button>
                             <div class="panel">
                                 <div class="row-table ">
                                     <table class="table table-striped">
@@ -188,6 +188,58 @@
                                 </div>
                             </div>
 
+                            <button class="accordion">Lab Results PDFS Details Saved On KIMS</button>
+                            <div class="panel">
+                                <div class="row-table ">
+                                    <table class="table table-striped">
+                                        <thead>
+                                        <tr>
+                                            <!--                                            <th>Sample Number</th>-->
+                                            <th>PDF-ID</th>
+                                            <th>PDF-Name</th>
+                                            <th>Compliance Status</th>
+                                            <th>View Remarks</th>
+                                            <th>View PDF</th>
+                                            <th sec:authorize="hasAuthority('QA_OFFICER_MODIFY') or hasAuthority('QA_ASSESSORS_READ')">
+                                                Action
+                                            </th>
+                                            <!--                                            <th>View</th>-->
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr class="list" th:each="pdfSaved: ${savedPDFFiles}" style="cursor: pointer">
+
+                                            <td class="nr" th:text="${pdfSaved?.id}"></td>
+                                            <td th:text="${pdfSaved?.pdfName}"></td>
+                                            <td th:if="${pdfSaved?.complianceStatus == null}"
+                                                th:text="'NO COMPLIANT STATUS PICKED YET'"></td>
+                                            <td th:if="${pdfSaved?.complianceStatus != null}"
+                                                th:text="${pdfSaved?.complianceStatus} ? 'COMPLIANT' : 'NOT-COMPLIANT'"></td>
+                                            <td>
+                                                <button onclick="popUpViewRemarksFunction('viewComplianceRemarksDetails', this);"
+                                                        type="button"
+                                                        id="addMyComplianceRemark"
+                                                        th:value="${pdfSaved?.complianceRemarks}"
+                                                        class="btn btn-primary itemViewBtn">VIEW
+                                                </button>
+                                            </td>
+                                            <td>
+                                                <a th:href="@{/api/qa/kebs/view/lab-pdf(fileID=${pdfSaved.pdfSavedId})}"
+                                                   target='_blank' class="btn btn-primary itemViewBtn">VIEW</a></td>
+                                            <td th:if="${pdfSaved?.sentToManufacturerStatus != 1}"
+                                                sec:authorize="hasAuthority('QA_OFFICER_MODIFY') or hasAuthority('QA_ASSESSORS_READ')">
+                                                <button onclick="popUpCompanyFunction('addComplianceStatusDetails', this);"
+                                                        type="button"
+                                                        id="addMyCompliance" th:value="${pdfSaved?.id}"
+                                                        class="btn btn-primary itemViewBtn">ADD COMPLIANCE
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
                         </div>
 
                         <div class="filter-block">
@@ -202,18 +254,23 @@
                             </div>
                             <div>
 
-                                <div sec:authorize="hasAuthority('QA_OFFICER_MODIFY')">
+                                <div sec:authorize="hasAuthority('QA_OFFICER_MODIFY') or hasAuthority('QA_ASSESSORS_READ')">
                                     <!--                                    <a th:if="${ssfDetails.labResultsStatus == 0}" th:href="@{/api/qa/inspection/check-results(bsNumber=${ssfDetails?.bsNumber})}" class="filter-link" style="color: white">CHECK RESULTS</a>-->
-                                    <a th:if="${ssfDetails.resultsAnalysis == null and ssfDetails.labResultsStatus == 1}" onclick="popUpCompanyFunction('addComplianceStatusDetails');" class="filter-link" style="color: white">ADD COMPLIANCE DETAILS</a>
+                                    <a th:if="${ssfDetails.labResultsStatus == 1}"
+                                       onclick="popUpComplianceFunction('addComplianceStatusDetailsSSF');"
+                                       class="filter-link" style="color: white">ADD COMPLIANCE DETAILS</a>
                                 </div>
 
+                                <a style="color: white"
+                                   th:href="@{/api/qa/permit-details(permitID=${permitDetails.id},userID=${permitDetails?.userId})}"
+                                   class="filter-link">GO TO PERMIT DETAILS</a>
                             </div>
-
                         </div>
+
                         <div class="commodityDetailsForm" >
                             <form id="commodityDetails-Form" name="commodityDetails-Form"
-                                  th:action="@{/api/qa/kebs/lab-results-compliance-status/save(ssfID = ${ssfDetails?.id})}"
-                                  method="post" th:object="${ssfDetails}">
+                                  th:action="@{/api/qa/kebs/lab-results-compliance-status/save}"
+                                  method="post" th:object="${complianceDetails}">
                                 <div class="modal fade" id="commodityDetailsModal" tabindex="-1" role="dialog"
                                      aria-labelledby="commodityDetailsModalLable" aria-hidden="true">
                                     <div class="modal-dialog" role="document">
@@ -230,6 +287,72 @@
                                             <div class="modal-body">
                                                 <div class="form-group">
                                                     <div id="addComplianceStatusDetails">
+                                                        <input type="hidden" id="complianceSaveID"
+                                                               name="complianceSaveID">
+                                                        <label for="complianceStatus" class="col-form-label">Select a
+                                                            Compliance status:</label>
+                                                        <select id="complianceStatus" required
+                                                                class="select-field w-select"
+                                                                th:field="*{complianceStatus}">
+                                                            <option th:text="'Select one.....'"
+                                                                    th:value="null"></option>
+                                                            <option th:text="'Compliant'" th:value="1"></option>
+                                                            <option th:text="'Non-Compliant'" th:value="0"></option>
+                                                        </select>
+                                                        <label for="complianceStatus" class="col-form-label">Select a
+                                                            Compliance Remarks:</label>
+                                                        <textarea name="complianceRemarks" required="required"
+                                                                  id="complianceRemarks"
+                                                                  class="input-field w-input" cols="65" rows="5"
+                                                                  th:field="*{complianceRemarks}"></textarea>
+                                                    </div>
+                                                    <div id="viewComplianceRemarksDetails">
+                                                        <textarea name="complianceRemarks" readonly="readonly"
+                                                                  required="required"
+                                                                  id="complianceRemarks"
+                                                                  class="input-field w-input" cols="65"
+                                                                  rows="5"></textarea>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button class="btn btn-secondary" data-dismiss="modal" onClick="refreshPage()"
+                                                        type="button">Close
+                                                </button>
+                                                <input type="submit" id="saveValueCommodity" class="btn btn-primary"
+                                                       value="Save"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+
+                        <div class="qaSSFForm">
+                            <form id="qa-ssf-form" name="qa-ssf-form" enctype="multipart/form-data"
+                                  th:action="@{/api/qa/kebs/ssf-results-compliance-status/save(ssfID = ${ssfDetails?.id})}"
+                                  method="post"
+                                  th:object="${SampleSubmissionDetails}">
+                                <div class="modal fade" id="qaSSFModal" tabindex="-1" role="dialog"
+                                     aria-labelledby="qaSSFModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 style="font-weight: bold; " class="modal-title"
+                                                    id="qaSSFModalLabel"><span
+                                                        id="spanSSFValue">none</span></h5>
+                                                <button type="button" class="close" data-dismiss="modal"
+                                                        onClick="refreshPage()"
+                                                        aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div class="form-group">
+
+
+                                                    <div id="addComplianceStatusDetailsSSF">
                                                         <label for="resultsAnalysis" class="col-form-label">Select a
                                                             Compliance status:</label>
                                                         <select id="resultsAnalysis" required
@@ -239,7 +362,9 @@
                                                                     th:value="null"></option>
                                                             <option th:text="'Compliant'" th:value="1"></option>
                                                             <option th:text="'Non-Compliant'" th:value="0"></option>
-                                                        </select>complianceRemarks
+                                                        </select>
+                                                        <label for="complianceStatus" class="col-form-label">Select a
+                                                            Compliance Remarks:</label>
                                                         <textarea name="complianceRemarks" required="required"
                                                                   id="complianceRemarks"
                                                                   class="input-field w-input" cols="65" rows="5"
@@ -249,10 +374,12 @@
                                                 </div>
                                             </div>
                                             <div class="modal-footer">
-                                                <button class="btn btn-secondary" data-dismiss="modal" onClick="refreshPage()"
+                                                <button class="btn btn-secondary" data-dismiss="modal"
+                                                        onClick="refreshPage()"
                                                         type="button">Close
                                                 </button>
-                                                <input type="submit" id="saveValueCommodity" class="btn btn-primary" value="Save"/>
+                                                <input type="submit" id="saveSSfValue" class="btn btn-primary"
+                                                       value="Save"/>
                                             </div>
                                         </div>
                                     </div>
@@ -377,7 +504,36 @@
         $('.productsManufacturedForm #productsManufacturedModal').modal();
     }
 
-    function popUpCompanyFunction(eventAction) {
+    // $(".use-address").click(function() {
+    //     var $row = $(this).closest("tr");    // Find the row
+    //     var $text = $row.find(".nr").text(); // Find the text
+    //
+    //     // Let's test it out
+    //     alert($text);
+    // // });
+    function popUpCompanyFunction(eventAction, paramID) {
+        let arrHead = ['addComplianceStatusDetails', 'viewComplianceRemarksDetails'];
+        let arrHeadSave = ['Add Compliance status', 'View Compliance Remarks'];
+        let paramValue = paramID.value
+        console.log(paramValue);
+
+
+        for (let h = 0; h < arrHead.length; h++) {
+            if (eventAction !== arrHead[h]) {
+                document.getElementById(arrHead[h]).remove();
+            } else {
+                if (eventAction === arrHead[h]) {
+                    document.getElementById('spanValueCommodity').innerHTML = arrHeadSave[h];
+                    document.getElementById("saveValueCommodity").value = 'Submit';
+                    document.getElementById('complianceSaveID').value = paramValue;
+                }
+            }
+        }
+
+        $('.commodityDetailsForm #commodityDetailsModal').modal();
+    }
+
+    function popUpComplianceFunction(eventAction) {
         let arrHead = ['addComplianceStatusDetails'];
         let arrHeadSave = ['Add Compliance status'];
 
@@ -388,6 +544,27 @@
                 if (eventAction === arrHead[h]) {
                     document.getElementById('spanValueCommodity').innerHTML = arrHeadSave[h];
                     document.getElementById("saveValueCommodity").value = 'Submit';
+                }
+            }
+        }
+
+        $('.qaSSFForm #qaSSFModal').modal();
+    }
+
+    function popUpViewRemarksFunction(eventAction, paramID) {
+        let arrHead = ['addComplianceStatusDetails', 'viewComplianceRemarksDetails'];
+        let arrHeadSave = ['Add Compliance status', 'View Compliance Remarks'];
+        let paramValue = paramID.value
+        console.log(paramValue);
+
+        for (let h = 0; h < arrHead.length; h++) {
+            if (eventAction !== arrHead[h]) {
+                document.getElementById(arrHead[h]).remove();
+            } else {
+                if (eventAction === arrHead[h]) {
+                    document.getElementById('spanValueCommodity').innerHTML = arrHeadSave[h];
+                    document.getElementById("complianceRemarks").value = paramValue;
+                    // document.getElementById("saveValueCommodity").remove();
                 }
             }
         }

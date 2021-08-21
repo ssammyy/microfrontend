@@ -92,6 +92,22 @@ data class PermitInvoiceDto(
     var batchID: Long? = null
 )
 
+data class SSFPDFListDetailsDto(
+    var pdfSavedId: Long? = null,
+    var pdfName: String? = null,
+    var sffId: Long? = null,
+    var complianceRemarks: String? = null,
+    var complianceStatus: Boolean? = null,
+)
+
+data class PermitAllRemarksDetailsDto(
+    var hofQamCompleteness: RemarksAndStatusDto? = null,
+    var pcmApproval: RemarksAndStatusDto? = null,
+    var pscMemberApproval: RemarksAndStatusDto? = null,
+    var pcmReviewApproval: RemarksAndStatusDto? = null,
+    var justificationReport: RemarksAndStatusDto? = null,
+)
+
 data class NewBatchInvoiceDto(
     var batchID: Long = -1L,
     var plantID: Long? = null,
@@ -182,14 +198,29 @@ data class STA10MachineryAndPlantDto(
     var countryOfOrigin: String? = null,
 )
 
+data class RemarksAndStatusDto(
+    var remarksStatus: Boolean? = null,
+    var remarksValue: String? = null,
+)
+
+data class InvoiceDetailsDto(
+    var invoiceMasterId: Long? = null,
+    var invoiceRef: String? = null,
+    var description: String? = null,
+    var taxAmount: BigDecimal? = null,
+    var subTotalBeforeTax: BigDecimal? = null,
+    var totalAmount: BigDecimal? = null,
+    var invoiceDetailsList: List<InvoicePerDetailsDto>? = null,
+)
+
 data class PermitUploads(
-    var permitID: Long?= null,
+    var permitID: Long? = null,
     var manufactureNonStatus: Int,
-    var ordinaryStatus: Int?= null,
-    var inspectionReportStatus: Int?= null,
-    var sta10Status: Int?= null,
-    var sscUploadStatus: Int?= null,
-    var scfStatus: Int?= null,
+    var ordinaryStatus: Int? = null,
+    var inspectionReportStatus: Int? = null,
+    var sta10Status: Int? = null,
+    var sscUploadStatus: Int? = null,
+    var scfStatus: Int? = null,
     var ssfStatus: Int?= null,
     var cocStatus: Int?= null,
     var assessmentReportStatus: Int?= null,
@@ -334,6 +365,7 @@ data class PermitEntityDto(
     var companyId: Long? = null,
     var permitType: Long? = null,
     var processStatusID: Long? = null,
+    var versionNumber: Long? = null,
 )
 
 data class PermitDetailsDto(
@@ -395,12 +427,16 @@ data class PermitDetailsDto(
 
 data class AllPermitDetailsDto(
     var permitDetails: PermitDetailsDto? = null,
+    var remarksDetails: PermitAllRemarksDetailsDto? = null,
+    var invoiceDetails: InvoiceDetailsDto? = null,
 //    var standardList: List<UserEntityDto>? = null,
     var officerList: List<UserEntityDto>? = null,
     var oldVersionList: List<PermitEntityDto>? = null,
     var ordinaryFilesList: List<FilesListDto>? = null,
     var sta3FilesList: List<FilesListDto>? = null,
     var sta10FilesList: List<FilesListDto>? = null,
+    var labResultsList: List<SSFPDFListDetailsDto>? = null,
+    var schemeOfSuperVision: FilesListDto? = null,
     var batchID: Long? = null
 )
 
@@ -412,12 +448,22 @@ data class AllSTA10DetailsDto(
     var sta10RawMaterialsDetails: List<STA10RawMaterialsDto>? = null,
     var sta10MachineryAndPlantDetails: List<STA10MachineryAndPlantDto>? = null,
     var sta10ManufacturingProcessDetails: List<STA10ManufacturingProcessDto>? = null,
+    var sta10FilesList: List<FilesListDto>? = null,
 )
 
 data class StandardsDto(
     var id: Long? = null,
     var standardTitle: String? = null,
     var standardNumber: String? = null,
+)
+
+data class InvoicePerDetailsDto(
+    var id: Long? = null,
+    var itemDescName: String? = null,
+    var itemAmount: BigDecimal? = null,
+    var inspectionStatus: Boolean? = null,
+    var permitStatus: Boolean? = null,
+    var fmarkStatus: Boolean? = null,
 )
 
 data class SSCApprovalRejectionDto(

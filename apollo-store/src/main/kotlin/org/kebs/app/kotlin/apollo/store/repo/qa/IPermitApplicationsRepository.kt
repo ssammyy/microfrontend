@@ -1,12 +1,6 @@
 package org.kebs.app.kotlin.apollo.store.repo.qa
 
-import org.kebs.app.kotlin.apollo.store.model.InvoiceEntity
-import org.kebs.app.kotlin.apollo.store.model.UsersEntity
-import org.kebs.app.kotlin.apollo.store.model.importer.TemporaryImportApplicationsEntity
-import org.kebs.app.kotlin.apollo.store.model.importer.TemporaryImportApplicationsUploadsEntity
 import org.kebs.app.kotlin.apollo.store.model.qa.*
-import org.springframework.data.domain.Page
-import org.springframework.data.domain.Pageable
 import org.springframework.data.hazelcast.repository.HazelcastRepository
 import org.springframework.stereotype.Repository
 
@@ -161,7 +155,7 @@ interface IPermitApplicationsRepository : HazelcastRepository<PermitApplications
     ): List<PermitApplicationsEntity>?
 
     fun findByPermitTypeAndEndOfProductionStatusAndApplicationStatusAndAttachedPlantIdAndOldPermitStatusIsNull(
-        permitType: Long, endOfProductionStatus: Int, permitAwardStatus: Int, attachedPlantId: Long
+        permitType: Long, endOfProductionStatus: Int, applicationStatus: Int, attachedPlantId: Long
     ): List<PermitApplicationsEntity>?
 
 
@@ -238,7 +232,8 @@ interface IQaProcessStatusRepository : HazelcastRepository<QaProcessStatusEntity
 
 @Repository
 interface IQaInvoiceDetailsRepository : HazelcastRepository<QaInvoiceDetailsEntity, Long> {
-//    fun findByProcessStatusName(processStatusName: String): QaInvoiceDetailsEntity?
+    fun findByStatusAndInvoiceMasterId(status: Int, invoiceMasterId: Long): List<QaInvoiceDetailsEntity>?
+    fun findByInvoiceMasterId(invoiceMasterId: Long): List<QaInvoiceDetailsEntity>?
 //    fun findByProcessStatusNameAndStatus(processStatusName: String, status: Long): QaProcessStatusEntity?
 //    fun findByStatus(status: Int): List<QaInvoiceDetailsEntity>?
 }
@@ -303,6 +298,17 @@ interface IQaSampleSubmissionRepository : HazelcastRepository<QaSampleSubmission
 
     fun findByCdItemId(cdItemId: Long): QaSampleSubmissionEntity?
     fun findByBsNumber(bsNumber: String): QaSampleSubmissionEntity?
+}
+
+@Repository
+interface IQaSampleSubmittedPdfListRepository : HazelcastRepository<QaSampleSubmittedPdfListDetailsEntity, Long> {
+    fun findByStatusAndId(status: Int, id: Long): QaSampleSubmittedPdfListDetailsEntity?
+    fun findBySffId(sffId: Long): List<QaSampleSubmittedPdfListDetailsEntity>?
+    fun findBySffIdAndSentToManufacturerStatus(
+        sffId: Long,
+        sentToManufacturerStatus: Int
+    ): List<QaSampleSubmittedPdfListDetailsEntity>?
+//    fun findByPermitRefNumber(permitId: Long): QaSampleCollectionEntity?
 }
 
 @Repository

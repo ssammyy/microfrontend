@@ -13,21 +13,6 @@ class AngularRoutes {
     @Bean
     fun systemsAdministrationMigrationRoutes(handler: SystemsAdministrationHandler) = router {
         "/api/v1/migration/".nest {
-            GET("/home", handler::sysadminHome)
-            "/ui".nest {
-                GET("/rbac-user-roles", handler::rbacUserRoles)
-                GET("/rbac-user-requests", handler::rbacUserRequests)
-                GET("/rbac-role-authorities", handler::rbacRoleAuthorities)
-                GET("/users-crud", handler::usersCrud)
-                GET("/roles-crud", handler::rolesCrud)
-                GET("/authorities-crud", handler::authoritiesCrud)
-                GET("/titles-crud", handler::titlesCrud)
-                GET("/userTypes-crud", handler::userTypesCrud)
-
-            }
-
-            GET("/", handler::sysadminHome)
-//            GET("/rbacRolesTemplate", handler::sysadminHome)
             "/security".nest {
                 "/rbac".nest {
                     GET("/fetch/roles/{status}", handler::listActiveRbacRoles)
@@ -37,6 +22,7 @@ class AngularRoutes {
 //                    GET("/fetch/users/{status}/{criteria}", handler::list)
                     GET("/fetch/users/{status}", handler::listActiveRbacUsers)
                     GET("/fetch/user-roles/{userId}/{status}", handler::listActiveRbacUserRoles)
+                    GET("/fetch/user-cfs/{userProfileId}/{status}", handler::listActiveRbacUserCfs)
                     POST("/role/revoke/{userId}/{roleId}/{status}", handler::revokeRoleFromUser)
                     POST("/role/assign/{userId}/{roleId}/{status}", handler::assignRoleToUser)
                     POST("/cfs/revoke/{userProfileId}/{cfsId}/{status}", handler::revokeCfsFromUser)
@@ -94,6 +80,150 @@ class AngularRoutes {
 
         }
 
+
+    }
+
+    @Bean
+    fun masterDataRoutesMigration(handler: MasterDataHandler) = router {
+        "/api/v1/migration/system/admin".nest {
+            "/masters".nest {
+                "/ui".nest {
+                    GET("/designations", handler::designationsUi)
+                    GET("/directorates", handler::directoratesUi)
+                    GET("/departments", handler::departmentsUi)
+                    GET("/divisions", handler::divisionsUi)
+                    GET("/sections", handler::sectionsUi)
+                    GET("/sub-sections-l1", handler::subSectionsL1Ui)
+                    GET("/sub-sections-l2", handler::subSectionsL2Ui)
+                    GET("/regions", handler::regionsUi)
+                    GET("/sub-regions", handler::subRegionsUi)
+                    GET("/counties", handler::countiesUi)
+                    GET("/towns", handler::townsUi)
+                }
+                "/designations".nest {
+                    GET("/load", handler::designationsListing)
+                    GET("/loads/{status}", handler::designationsListing)
+                    PUT("/", handler::designationsUpdate)
+                    POST("/", handler::designationsUpdate)
+                }
+                "/departments".nest {
+                    GET("/load", handler::departmentsListing)
+                    GET("/loads/{status}", handler::departmentsListing)
+                    PUT("/", handler::departmentsUpdate)
+                    POST("/", handler::departmentsUpdate)
+                }
+                "/divisions".nest {
+                    GET("/load", handler::divisionsListing)
+                    GET("/loads/{status}", handler::divisionsListing)
+                    PUT("/", handler::divisionsUpdate)
+                    POST("/", handler::divisionsUpdate)
+                }
+                "/directorate".nest {
+                    GET("/load", handler::directoratesListing)
+                    GET("/loads/{status}", handler::directoratesListing)
+                    PUT("/", handler::directoratesUpdate)
+                    POST("/", handler::directoratesUpdate)
+                }
+                "/regions".nest {
+                    GET("/load", handler::regionsListing)
+                    GET("/loads/{status}", handler::regionsListing)
+                    PUT("/", handler::regionsUpdate)
+                    POST("/", handler::regionsUpdate)
+                }
+                "/subRegions".nest {
+                    GET("/load", handler::subRegionsListing)
+                    GET("/loads/{status}", handler::subRegionsListing)
+                    PUT("/", handler::subRegionsUpdate)
+                    POST("/", handler::subRegionsUpdate)
+                }
+                "/sections".nest {
+                    GET("/load", handler::sectionsListing)
+                    GET("/loads/{status}", handler::sectionsListing)
+                    PUT("/", handler::sectionsUpdate)
+                    POST("/", handler::sectionsUpdate)
+                }
+                "/subsections".nest {
+                    "/l1".nest {
+                        GET("/load", handler::subSectionsL1Listing)
+                        GET("/loads/{status}", handler::subSectionsL1Listing)
+                        PUT("/", handler::subSectionsL1Update)
+                        POST("/", handler::subSectionsL1Update)
+
+                    }
+                    "/l2".nest {
+                        GET("/load", handler::subSectionsL2Listing)
+                        GET("/loads/{status}", handler::subSectionsL2Listing)
+                        PUT("/", handler::subSectionsL2Update)
+                        POST("/", handler::subSectionsL2Update)
+                    }
+
+                }
+                "/freightStations".nest {
+                    GET("/load", handler::cfsListing)
+                    GET("/loads/{status}", handler::cfsListing)
+//                    PUT("/", handler::townsUpdate)
+//                    POST("/", handler::townsUpdate)
+                }
+                "/counties".nest {
+                    GET("/load", handler::countiesListingAdmin)
+                    GET("/loads/{status}", handler::countiesListingAdmin)
+                    PUT("/", handler::countiesUpdate)
+                    POST("/", handler::countiesUpdate)
+                }
+                "/towns".nest {
+                    GET("/load", handler::townsListingAdmin)
+                    GET("/loads/{status}", handler::townsListingAdmin)
+                    PUT("/", handler::townsUpdate)
+                    POST("/", handler::townsUpdate)
+                }
+                "/businessLines".nest {
+                    GET("/load", handler::businessLinesListing)
+                    POST("", handler::notSupported)
+                    "/{id}".nest {
+                        GET("", handler::notSupported)
+                        PUT("", handler::notSupported)
+                    }
+
+                }
+                "/businessNatures".nest {
+                    GET("/load", handler::businessNaturesListing)
+                    POST("", handler::notSupported)
+                    "/{id}".nest {
+                        GET("/load", handler::notSupported)
+                        PUT("", handler::notSupported)
+                    }
+
+                }
+                "/regionCountyTown".nest {
+                    GET("/load", handler::regionCountyTownListing)
+
+                }
+                "/regionSubRegion".nest {
+                    GET("/load", handler::regionSubRegionListing)
+
+                }
+                "/directorateDesignations".nest {
+                    GET("/load", handler::getDirectorateDesignationsViewDtoListing)
+
+                }
+                "/directorateToSubSectionL2".nest {
+                    GET("/load", handler::getDirectorateToSubSectionL2ViewDtoListing)
+
+                }
+                "/standardProductCategory".nest {
+                    GET("/load", handler::standardProductCategoryListing)
+                    GET("/loads/{status}", handler::standardProductCategoryListing)
+                    PUT("/", handler::standardProductCategoryUpdate)
+                    POST("/", handler::standardProductCategoryUpdate)
+                }
+                "/userRequestType".nest {
+                    GET("/load", handler::userRequestTypeListing)
+                    GET("/loads/{status}", handler::userRequestTypeListing)
+                    PUT("/", handler::userRequestTypeUpdate)
+                    POST("/", handler::userRequestTypeUpdate)
+                }
+            }
+        }
 
     }
 
@@ -340,7 +470,6 @@ class AngularRoutes {
                     }
                     "/invoice".nest {
                         POST("/batch-invoice-submit", handler::invoiceBatchSubmitMigration)
-//                        POST("/batch-invoice-create", handler::invoiceBatchSubmitMigration)
                         POST("/batch-invoice-add", handler::invoiceBatchAddMigration)
                         PUT("/batch-invoice-remove", handler::invoiceBatchRemoveMigration)
                     }

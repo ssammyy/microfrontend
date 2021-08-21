@@ -47,9 +47,17 @@ class ManufacturePlantDetailsEntity : Serializable {
     @Basic
     var userId: Long? = null
 
+    @Column(name = "INVOICE_SHARED_ID")
+    @Basic
+    var invoiceSharedId: Long? = null
+
     @Column(name = "LOCATION")
     @Basic
     var location: String? = null
+
+    @Column(name = "TOKEN_GIVEN")
+    @Basic
+    var tokenGiven: String? = null
 
     @Column(name = "STREET")
     @Basic
@@ -203,10 +211,12 @@ class ManufacturePlantDetailsEntity : Serializable {
                 companyProfileId == that.companyProfileId &&
                 county == that.county &&
                 userId == that.userId &&
+                invoiceSharedId == that.invoiceSharedId &&
                 town == that.town &&
                 inspectionFeeStatus == that.inspectionFeeStatus &&
                 paidDate == that.paidDate &&
                 endingDate == that.endingDate &&
+                tokenGiven == that.tokenGiven &&
                 location == that.location &&
                 street == that.street &&
                 buildingName == that.buildingName &&
@@ -251,11 +261,13 @@ class ManufacturePlantDetailsEntity : Serializable {
             id,
             companyProfileId,
             emailAddress,
+            tokenGiven,
             physicalAddress,
             faxNo,
             plotNo,
             designation,
             county,
+            invoiceSharedId,
             userId,
             town,
             location,

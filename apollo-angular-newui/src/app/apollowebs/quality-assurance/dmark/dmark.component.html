@@ -1,0 +1,1466 @@
+
+<div class="main-content">
+    <div class="loading-spinner ">
+        <ngx-spinner
+                bdColor="rgba(51,51,51,0.8)"
+                size="medium"
+                color="#fff"
+                type="ball-scale-multiple"
+        >
+            <p style="font-size: 20px; color: white">Loading Please Wait...</p>
+        </ngx-spinner>
+    </div>
+    <div class="row">
+        <div class="col-lg-9">
+            <div class="card ">
+                <div class="card-header ">
+                    <h4 class="card-title">Diamond Mark Permit
+                    </h4>
+                </div>
+                <div class="card-body ">
+                    <div class="row">
+                        <div class="col-lg-3 col-md-5">
+
+<ul class="nav nav-pills nav-pills-rose nav-pills-icons flex-column" role="tablist">
+<li class="nav-item">
+<a class="nav-link active" data-toggle="tab" href="#link10" role="tablist">
+<i class="material-icons">description</i> Permit Details
+</a>
+</li>
+<li class="nav-item">
+    <a class="nav-link" data-toggle="tab" href="#link11" role="tablist">
+        <i class="material-icons">assignment_turned_in</i> Branch Attached Details
+    </a>
+</li>
+<li class="nav-item">
+    <a class="nav-link" data-toggle="tab" href="#link12" role="tablist">
+        <i class="material-icons">assignment_turned_in</i> STA3 Summary
+    </a>
+</li>
+    <li *ngIf="allPermitDetails?.sta3FilesList.length > 0" class="nav-item">
+        <a class="nav-link" data-toggle="tab" href="#link13" role="tablist">
+            <i class="material-icons">assignment_turned_in</i>STA 3 Uploaded Documents
+        </a>
+    </li>
+    <li *ngIf="allPermitDetails?.ordinaryFilesList.length > 0" class="nav-item">
+        <a class="nav-link" data-toggle="tab" href="#link16" role="tablist">
+            <i class="material-icons">assignment_turned_in</i>Uploaded Documents
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" data-toggle="tab" href="#link15" role="tablist">
+            <i class="material-icons">message</i> Comments
+        </a>
+    </li>
+    <li *ngIf="allPermitDetails?.permitDetails?.generateSchemeStatus == true" class="nav-item">
+        <a class="nav-link" data-toggle="tab" href="#link19" role="tablist">
+            <i class="material-icons">preview</i> Scheme of Supervision
+        </a>
+    </li>
+    <li *ngIf="allPermitDetails?.labResultsList.length > 0" class="nav-item">
+        <a class="nav-link" data-toggle="tab" href="#link17" role="tablist">
+            <i class="material-icons">summarize</i> Lab Results
+        </a>
+    </li>
+    <li *ngIf="allPermitDetails?.permitDetails?.invoiceGenerated == true" class="nav-item">
+        <a class="nav-link" data-toggle="tab" href="#link18" role="tablist">
+            <i class="material-icons">money</i> Payment Details
+        </a>
+    </li>
+    <li *ngIf="allPermitDetails?.permitDetails?.permitAwardStatus == true" class="nav-item">
+        <a class="nav-link" data-toggle="tab" href="#link14" role="tablist">
+            <i class="material-icons">assignment_turned_in</i>CERTIFICATE ISSUED
+        </a>
+    </li>
+    <li *ngIf="allPermitDetails?.oldVersionList.length > 0" class="nav-item">
+        <a class="nav-link" data-toggle="tab" href="#link20" role="tablist">
+            <i class="material-icons">table_view</i> Other Version Details
+        </a>
+    </li>
+</ul>
+</div>
+<div class="col-md-9" style="background-color: #eeeeee8a; border-left: 0.5px solid black;">
+<div class="tab-content">
+    <div class="tab-pane active" id="link10">
+        <h3>Permit Details</h3>
+        <div class="row">
+            <div class="col-md-7">
+                <br>
+                <table class="table">
+                    <tbody>
+                    <tr>
+                        <td>
+                            <i class="material-icons">table_view</i>
+                        </td>
+<td><strong>
+Permit Ref No.</strong></td>
+    <td>{{allPermitDetails?.permitDetails?.permitRefNumber}} </td>
+</tr>
+<tr>
+<td>
+<i class="material-icons">toc</i>
+</td>
+<td><strong>Name of firm
+</strong></td>
+    <td>{{allPermitDetails?.permitDetails?.firmName}}
+        <LIMITED></LIMITED>
+    </td>
+</tr>
+<tr>
+<td>
+<i class="material-icons">room_preferences</i>
+</td>
+<td><strong>Firm type
+</strong></td>
+<td></td>
+</tr>
+<tr>
+<td>
+<i class="material-icons">mail</i>
+</td>
+<td><strong>Postal address
+</strong></td>
+    <td>
+        {{allPermitDetails?.permitDetails?.postalAddress}}</td>
+</tr>
+<tr>
+<td>
+<i class="material-icons">location_city</i>
+</td>
+<td><strong>Physical address
+</strong></td>
+    <td>{{allPermitDetails?.permitDetails?.physicalAddress}}</td>
+</tr>
+<tr>
+<td>
+<i class="material-icons">contacts</i>
+</td>
+<td><strong>Telephone number
+</strong></td>
+    <td>{{allPermitDetails?.permitDetails?.telephoneNo}}</td>
+</tr>
+<tr>
+<td>
+<i class="material-icons">print</i>
+</td>
+<td><strong>Fax No.
+</strong></td>
+    <td>{{allPermitDetails?.permitDetails?.faxNo}}</td>
+</tr>
+<tr>
+<td>
+<i class="material-icons">forward_to_inbox</i>
+</td>
+<td><strong>Email address
+</strong></td>
+    <td>{{allPermitDetails?.permitDetails?.email}}</td>
+</tr>
+<tr>
+<td>
+<i class="material-icons">date_range</i>
+</td>
+<td><strong>Date of Application
+</strong></td>
+    <td>{{allPermitDetails?.permitDetails?.createdOn}}</td>
+</tr>
+<tr>
+<td>
+<i class="material-icons">calendar_today</i>
+</td>
+<td><strong>Date of Issue
+</strong></td>
+    <td>{{allPermitDetails?.permitDetails?.dateOfIssue}}</td>
+</tr>
+<tr>
+<td>
+<i class="material-icons">today</i>
+</td>
+<td><strong>Date of Expiry
+</strong></td>
+    <td>{{allPermitDetails?.permitDetails?.dateOfExpiry}}</td>
+</tr>
+<tr>
+<td>
+<i class="material-icons">description</i>
+</td>
+<td><strong>Description of commodity
+</strong></td>
+    <td>{{allPermitDetails?.permitDetails?.commodityDescription}}</td>
+</tr>
+<tr>
+<td>
+<i class="material-icons">verified</i>
+</td>
+<td><strong>Trade Mark
+</strong></td>
+    <td>{{allPermitDetails?.permitDetails?.brandName}}</td>
+</tr>
+<tr>
+<td>
+<i class="material-icons">pin</i>
+</td>
+<td><strong>KS Number
+</strong></td>
+    <td>{{allPermitDetails?.permitDetails?.standardNumber}}</td>
+</tr>
+<tr>
+<td>
+<i class="material-icons">subtitles</i>
+</td>
+<td><strong>Title
+</strong></td>
+    <td>{{allPermitDetails?.permitDetails?.standardTitle}}</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class = "col-md-5">
+<div class="alert alert-info alert-with-icon" data-notify="container" style="background-color: #1b75bc1f; ">
+<i class="material-icons" data-notify="icon">push_pin</i>
+<table class="table">
+<tbody>
+<tr>
+<td><strong>
+Division</strong></td>
+    <td style="word-wrap: break-word;min-width: 160px;max-width: 160px;  text-align: justify;
+text-justify: inter-word;">{{allPermitDetails?.permitDetails?.divisionValue}}</td>
+</tr>
+<tr>
+<td><strong>
+Section</strong></td>
+    <td style="word-wrap: break-word;min-width: 160px;max-width: 160px;  text-align: justify;
+text-justify: inter-word;">{{allPermitDetails?.permitDetails?.sectionValue}}</td>
+</tr>
+<tr>
+<td><strong>
+Status</strong></td>
+<td style="word-wrap: break-word;min-width: 160px;max-width: 160px;  text-align: justify;
+text-justify: inter-word;">
+    <mark style="  background-color: #0066b5;
+color: #ffffff;"><strong>{{allPermitDetails?.permitDetails?.processStatusName}}</strong></mark>
+</td>
+</tr>
+<tr>
+<td><strong>
+Version Number</strong></td>
+    <td style="word-wrap: break-word;min-width: 160px;max-width: 160px;  text-align: justify;
+text-justify: inter-word;">{{allPermitDetails?.permitDetails?.versionNumber}}</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+</div>
+</div>
+    <div class="tab-pane" id="link11">
+        <h3>Branch Attached Details</h3>
+        <br>
+        <table class="table">
+            <tbody>
+            <tr>
+                <td>
+                    <i class="material-icons">room</i>
+                </td>
+                <td><strong>
+                    REGION</strong></td>
+    <td>{{allPermitDetails?.permitDetails?.regionPlantValue}}</td>
+</tr>
+<tr>
+<td>
+<i class="material-icons">travel_explore</i>
+</td>
+<td><strong>COUNTY
+</strong></td>
+    <td>{{allPermitDetails?.permitDetails?.countyPlantValue}}</td>
+</tr>
+<tr>
+<td>
+<i class="material-icons">location_city</i>
+</td>
+<td><strong>TOWN
+</strong></td>
+    <td>{{allPermitDetails?.permitDetails?.townPlantValue}}</td>
+</tr>
+<tr>
+<td>
+<i class="material-icons">explore</i>
+</td>
+<td><strong>LOCATION
+</strong></td>
+    <td>
+        {{allPermitDetails?.permitDetails?.location}}</td>
+</tr>
+<tr>
+<td>
+<i class="material-icons">my_location</i>
+</td>
+<td><strong>STREET
+</strong></td>
+    <td>{{allPermitDetails?.permitDetails?.street}}</td>
+</tr>
+<tr>
+<td>
+<i class="material-icons">maps_home_work</i>
+</td>
+<td><strong>BUILDING NAME
+</strong></td>
+    <td>{{allPermitDetails?.permitDetails?.buildingName}}</td>
+</tr>
+<tr>
+<td>
+<i class="material-icons">holiday_village</i>
+</td>
+<td><strong>NEAREST LAND MARK
+</strong></td>
+    <td>{{allPermitDetails?.permitDetails?.nearestLandMark}}</td>
+</tr>
+<tr>
+<td>
+<i class="material-icons">forward_to_inbox</i>
+</td>
+<td><strong>POSTAL ADDRESS
+</strong></td>
+    <td>{{allPermitDetails?.permitDetails?.postalAddress}}</td>
+</tr>
+<tr>
+<td>
+<i class="material-icons">account_circle</i>
+</td>
+<td><strong>CONTACT PERSON
+</strong></td>
+    <td>{{allPermitDetails?.permitDetails?.contactPerson}}</td>
+</tr>
+<tr>
+<td>
+<i class="material-icons">phone</i>
+</td>
+<td><strong>TELEPHONE
+</strong></td>
+    <td>{{allPermitDetails?.permitDetails?.telephoneNo}}</td>
+</tr>
+<tr>
+<td>
+<i class="material-icons">email</i>
+</td>
+<td><strong>EMAIL ADDRESS
+</strong></td>
+    <td>{{allPermitDetails?.permitDetails?.email}}</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+    <div class="tab-pane" id="link12">
+        <h3>Account Summary</h3>
+        <br>
+        <div id="main">
+            <div class="container">
+                <div class="accordion" id="faq">
+                    <div class="card">
+                        <div class="card-header" id="faqhead1">
+                            <a href="#" class="btn btn-header-link" data-toggle="collapse" data-target="#faq1"
+                               aria-expanded="true" aria-controls="faq1"
+                               style="width: 623px; background-color: #3a75bc;">STA 1 Form</a>
+                        </div>
+
+<div id="faq1" class="collapse show" aria-labelledby="faqhead1" data-parent="#faq">
+<div class="card-body">
+<form (ngSubmit)="onClickSaveSTA1(sta1Form.valid)" [formGroup]="sta1Form" class="form"
+enctype="multipart/form-data" >
+<div class="row">
+<div class="form-group col-6">
+<label for="commodityDescription">Commodity Description</label>
+<input [class.is-invalid]="formSta1Form.commodityDescription.invalid && formSta1Form.commodityDescription.touched" type="text" class="form-control" id="commodityDescription" formControlName="commodityDescription"
+name="commodityDescription" placeholder="Commodity Description" required="">
+</div>
+<div class="form-group col-6">
+<label for="tradeMark">Trade Mark</label>
+<input type="text" [class.is-invalid]="formSta1Form.tradeMark.invalid && formSta1Form.tradeMark.touched" class="form-control" id="tradeMark" formControlName="tradeMark" name="tradeMark"
+placeholder="Trade Mark" required="">
+</div>
+</div>
+<div class="row">
+<div class="form-group col-6">
+<label for="applicantName">Applicant Name</label>
+<input type="text" [class.is-invalid]="formSta1Form.applicantName.invalid && formSta1Form.applicantName.touched" class="form-control" id="applicantName" formControlName="applicantName" name="applicantName"
+placeholder="Applicant Name" required="">
+</div>
+
+<div class="form-group col-6">
+<label for="inputState">Select Section</label>
+<select id="inputState" class="form-control" formControlName="sectionId" name="sectionId"
+[class.is-invalid]="formSta1Form.sectionId.invalid && formSta1Form.sectionId.touched">
+<option selected>Select Section</option>
+<option *ngFor="let section of sections"
+[ngValue]="section.id"
+class="dropdown-item">{{section.section}}</option>
+</select>
+</div>
+</div>
+
+<div class="row">
+<div class="form-group col-6">
+<label for="permitForeignStatus">Application Type</label>
+<select id="permitForeignStatus" class="form-control" formControlName="permitForeignStatus"
+name="permitForeignStatus" [class.is-invalid]="formSta1Form.permitForeignStatus.invalid && formSta1Form.permitForeignStatus.touched">
+<option selected>Select Application</option>
+<option [ngValue]="0">DOMESTIC</option>
+<option [ngValue]="1">FOREIGN</option>
+</select>
+</div>
+<div class="form-group col-6">
+    <label for="attachedPlant">Indicate Branch</label>
+<select id="attachedPlant" class="form-control" formControlName="attachedPlant" name="attachedPlant"
+[class.is-invalid]="formSta1Form.attachedPlant.invalid && formSta1Form.attachedPlant.touched">
+    <option selected>Select Branch</option>
+<option *ngFor="let plant of plants"
+[ngValue]="plant.id"
+class="dropdown-item">{{plant.buildingName}}</option>
+
+</select>
+</div>
+
+</div>
+</form>
+</div>
+</div>
+</div>
+<div class="card">
+<div class="card-header" id="faqhead2">
+<a href="#" class="btn btn-header-link collapsed" data-toggle="collapse" data-target="#faq2"
+aria-expanded="true" aria-controls="faq2" style="width: 623px; background-color: #3a75bc;">STA3 Form : 1.Factory Organization</a>
+</div>
+
+<div id="faq2" class="collapse" aria-labelledby="faqhead2" data-parent="#faq">
+<div class="card-body">
+<form (ngSubmit)="onClickSaveSTA3A(sta3FormA.valid)" [formGroup]="sta3FormA" action="" class="form"
+enctype="multipart/form-data" method="post">
+<div class="row">
+<div class="form-group col-12">
+<label for="produceOrdersOrStock">Do you produce against Orders or for Stock?</label>
+<textarea class="form-control" id="produceOrdersOrStock" formControlName="produceOrdersOrStock"
+name="produceOrdersOrStock" rows="3" placeholder=""
+[class.is-invalid]="formSta3FormA.produceOrdersOrStock.invalid && formSta3FormA.produceOrdersOrStock.touched" required="required"></textarea>
+</div>
+
+</div>
+<div class="row">
+<div class="form-group col-12">
+<label for="issueWorkOrderOrEquivalent">Do you issue a work Order or equivalent?</label>
+<textarea class="form-control" id="issueWorkOrderOrEquivalent"
+formControlName="issueWorkOrderOrEquivalent" name="issueWorkOrderOrEquivalent" rows="3"
+placeholder=""
+[class.is-invalid]="formSta3FormA.issueWorkOrderOrEquivalent.invalid && formSta3FormA.issueWorkOrderOrEquivalent.touched"></textarea>
+</div>
+
+</div>
+<div class="row">
+<div class="form-group col-12">
+<label for="identifyBatchAsSeparate">If so does this identify a batch as separate entity?</label>
+<textarea class="form-control" id="identifyBatchAsSeparate"
+formControlName="identifyBatchAsSeparate" name="identifyBatchAsSeparate" rows="3"
+placeholder="" [class.is-invalid]="formSta3FormA.identifyBatchAsSeparate.invalid && formSta3FormA.identifyBatchAsSeparate.touched"
+></textarea>
+</div>
+
+</div>
+<div class="row">
+<div class="form-group col-12">
+<label for="productsContainersCarryWorksOrder">Do products and/or containers carry works order
+identification in manufacture?</label>
+<textarea class="form-control" id="productsContainersCarryWorksOrder"
+formControlName="productsContainersCarryWorksOrder"
+name="productsContainersCarryWorksOrder" rows="3" placeholder="" [class.is-invalid]="formSta3FormA.productsContainersCarryWorksOrder.invalid && formSta3FormA.productsContainersCarryWorksOrder.touched"></textarea>
+</div>
+
+</div>
+<div class="row">
+<div class="form-group col-12">
+<label for="isolatedCaseDoubtfulQuality">If not how does system allow for products to be isolated in
+case of doubtful quality?</label>
+<textarea class="form-control" id="isolatedCaseDoubtfulQuality"
+formControlName="isolatedCaseDoubtfulQuality" name="isolatedCaseDoubtfulQuality" rows="3"
+placeholder="" [class.is-invalid]="formSta3FormA.isolatedCaseDoubtfulQuality.invalid && formSta3FormA.isolatedCaseDoubtfulQuality.touched"></textarea>
+</div>
+
+</div>
+
+</form>
+</div>
+</div>
+</div>
+<div class="card">
+<div class="card-header" id="faqhead3">
+<a href="#" class="btn btn-header-link collapsed" data-toggle="collapse" data-target="#faq3"
+aria-expanded="true" aria-controls="faq3" style="width: 623px; background-color: #3a75bc;">QUALITY CONTROL/INSPECTION STAFF</a>
+</div>
+
+<div id="faq3" class="collapse" aria-labelledby="faqhead3" data-parent="#faq">
+<div class="card-body">
+<form (ngSubmit)="onClickSaveSTA3A(sta3FormB.valid)" [formGroup]="sta3FormB" action="" class="form"
+enctype="multipart/form-data" method="post">
+<div class="row">
+<div class="form-group col-12">
+<label for="headQaQualificationsTraining">Head of Quality Assurance, Qualifications, Training
+etc.</label>
+<textarea class="form-control" id="headQaQualificationsTraining"
+formControlName="headQaQualificationsTraining" name="headQaQualificationsTraining"
+rows="3" placeholder=""
+[class.is-invalid]="formSta3FormB.headQaQualificationsTraining.invalid && formSta3FormB.headQaQualificationsTraining.touched"></textarea>
+</div>
+
+</div>
+<div class="row">
+<div class="form-group col-12">
+<label for="reportingTo">Reporting to:</label>
+<textarea class="form-control" id="reportingTo" formControlName="reportingTo" name="reportingTo"
+rows="3" placeholder=""
+[class.is-invalid]="formSta3FormB.reportingTo.invalid && formSta3FormB.reportingTo.touched"></textarea>
+</div>
+
+</div>
+<div class="row">
+<div class="form-group col-12">
+<label for="separateQcid">Is there a separate Quality Control Inspection Department?</label>
+<textarea class="form-control" id="separateQcid" formControlName="separateQcid" name="separateQcid"
+rows="3" placeholder=""
+[class.is-invalid]="formSta3FormB.separateQcid.invalid && formSta3FormB.separateQcid.touched"></textarea>
+</div>
+</div>
+<div class="row">
+<div class="form-group col-12">
+<label for="testsRelevantStandard">If so indicate if staff are aware of the tests in the relevant
+standard(s)</label>
+<textarea class="form-control" id="testsRelevantStandard" formControlName="testsRelevantStandard"
+name="testsRelevantStandard" rows="3" placeholder=""
+[class.is-invalid]="formSta3FormB.testsRelevantStandard.invalid && formSta3FormB.testsRelevantStandard.touched"></textarea>
+</div>
+</div>
+<p><b>Please give the following information on factory QC staff organization:</b></p>
+<div class="row">
+<div class="form-group col-12">
+<label for="spoComingMaterials">i). In-coming materials?</label>
+<textarea class="form-control" id="spoComingMaterials" formControlName="spoComingMaterials"
+name="spoComingMaterials" rows="3" placeholder=""
+[class.is-invalid]="formSta3FormB.spoComingMaterials.invalid && formSta3FormB.spoComingMaterials.touched"></textarea>
+</div>
+
+</div>
+<div class="row">
+<div class="form-group col-12">
+<label for="spoProcessOperations">ii). In process operations?</label>
+<textarea class="form-control" id="spoProcessOperations" formControlName="spoProcessOperations"
+name="spoProcessOperations" rows="3" placeholder=""
+[class.is-invalid]="formSta3FormB.spoProcessOperations.invalid && formSta3FormB.spoProcessOperations.touched"></textarea>
+</div>
+
+</div>
+<div class="row">
+<div class="form-group col-12">
+<label for="spoFinalProducts">iii). Final Products? </label>
+<textarea class="form-control" id="spoFinalProducts" formControlName="spoFinalProducts"
+name="spoFinalProducts" rows="3" placeholder=""
+[class.is-invalid]="formSta3FormB.spoFinalProducts.invalid && formSta3FormB.spoFinalProducts.touched"></textarea>
+</div>
+
+</div>
+<div class="row">
+<div class="form-group col-12">
+<label for="monitoredQcs">if so are they monitored by Quality Control Staff? </label>
+<textarea class="form-control" id="monitoredQcs" formControlName="monitoredQcs" name="monitoredQcs"
+rows="3" placeholder=""
+[class.is-invalid]="formSta3FormB.monitoredQcs.invalid && formSta3FormB.monitoredQcs.touched"></textarea>
+</div>
+
+</div>
+<div class="row">
+<div class="form-group col-12">
+<label for="qauditChecksCarried">Are Quality Audit checks carried out and by whom? </label>
+<textarea class="form-control" id="qauditChecksCarried" formControlName="qauditChecksCarried"
+name="qauditChecksCarried" rows="3" placeholder=""
+[class.is-invalid]="formSta3FormB.qauditChecksCarried.invalid && formSta3FormB.qauditChecksCarried.touched"></textarea>
+</div>
+
+</div>
+<div class="row">
+<div class="form-group col-12">
+<label for="informationQcso">Please give any other information on quality Control Staff
+Organization </label>
+<textarea class="form-control" id="informationQcso" formControlName="informationQcso"
+name="informationQcso" rows="3" placeholder=""
+[class.is-invalid]="formSta3FormB.informationQcso.invalid && formSta3FormB.informationQcso.touched"></textarea>
+</div>
+
+</div>
+</form>
+</div>
+</div>
+</div>
+<div class="card">
+<div class="card-header" id="faqhead4">
+<a href="#" class="btn btn-header-link collapsed" data-toggle="collapse" data-target="#faq4"
+aria-expanded="true" aria-controls="faq4" style="width: 623px; background-color: #3a75bc;">MATERIALS OR COMPONENTS: PURCHASE SPECIFICATION/MATERIALS QUALITY ASSURANCE</a>
+</div>
+
+<div id="faq4" class="collapse" aria-labelledby="faqhead4" data-parent="#faq">
+<div class="card-body">
+<form (ngSubmit)="onClickSaveSTA3A(sta3FormC.valid)" [formGroup]="sta3FormC" action="" class="form"
+enctype="multipart/form-data" method="post">
+<div class="row">
+<div class="form-group col-12">
+<label for="mainMaterialsPurchasedSpecification">Please detail main materials purchased,
+specification(s) used and major supplies involved. </label>
+<textarea class="form-control" id="mainMaterialsPurchasedSpecification"
+formControlName="mainMaterialsPurchasedSpecification"
+name="mainMaterialsPurchasedSpecification" rows="3" placeholder=""
+[class.is-invalid]="formSta3FormC.mainMaterialsPurchasedSpecification.invalid && formSta3FormC.mainMaterialsPurchasedSpecification.touched"></textarea>
+</div>
+
+</div>
+<div class="row">
+<div class="form-group col-12">
+<label for="adoptedReceiptMaterials">Please also give quality assurance method adopted on receipt of
+materials, or components indicating action taken on rejects</label>
+<textarea class="form-control" id="adoptedReceiptMaterials"
+formControlName="adoptedReceiptMaterials" name="adoptedReceiptMaterials" rows="3"
+placeholder=""
+[class.is-invalid]="formSta3FormC.adoptedReceiptMaterials.invalid && formSta3FormC.adoptedReceiptMaterials.touched"></textarea>
+</div>
+
+</div>
+<div class="row">
+<div class="form-group col-12">
+<label for="storageFacilitiesExist">What storage facilities exist for in-coming materials and
+finished products? </label>
+<textarea class="form-control" id="storageFacilitiesExist" formControlName="storageFacilitiesExist"
+name="storageFacilitiesExist" rows="3" placeholder=""
+[class.is-invalid]="formSta3FormC.storageFacilitiesExist.invalid && formSta3FormC.storageFacilitiesExist.touched"></textarea>
+</div>
+
+</div>
+</form>
+</div>
+</div>
+</div>
+<div class="card">
+<div class="card-header" id="faqhead5">
+<a href="#" class="btn btn-header-link collapsed" data-toggle="collapse" data-target="#faq5"
+aria-expanded="true" aria-controls="faq5" style="width: 623px; background-color: #3a75bc;">MANUFACTURE : SYSTEM</a>
+</div>
+
+<div id="faq5" class="collapse" aria-labelledby="faqhead5" data-parent="#faq">
+<div class="card-body">
+<form (ngSubmit)="onClickSaveSTA3A(sta3FormD.valid)" [formGroup]="sta3FormD" action="" class="form"
+enctype="multipart/form-data" method="post">
+<div class="row">
+<div class="form-group col-12">
+<label for="stepsManufacture">Please detail various steps in manufacture – A production schedule and
+/or supplement in chart form showing stages, which may be advantageous </label>
+<textarea class="form-control" id="stepsManufacture" formControlName="stepsManufacture"
+name="stepsManufacture" rows="3" placeholder=""
+[class.is-invalid]="formSta3FormD.stepsManufacture.invalid && formSta3FormD.stepsManufacture.touched"></textarea>
+</div>
+
+</div>
+<h3>MAINTENANCE SYSTEM – PLANT AND EQUIPMENT</h3>
+<div class="row">
+<div class="form-group col-12">
+<label for="maintenanceSystem">What maintenance system is in operation? </label>
+<textarea class="form-control" id="maintenanceSystem" formControlName="maintenanceSystem"
+name="maintenanceSystem" rows="3" placeholder=""
+[class.is-invalid]="formSta3FormD.maintenanceSystem.invalid && formSta3FormD.maintenanceSystem.touched"></textarea>
+</div>
+
+</div>
+<h3>QUALITY CONTROL AND TESTING</h3>
+<p>SYSTEM</p>
+<div class="row">
+<div class="form-group col-12">
+<label for="qcsSupplement">Please detail Quality Control System, including sampling followed with
+particular reference to the tests
+in the relevant Standard. A quality Control Schedule or supplement cross-reference to Chart required
+in
+3.1 is advantageous</label>
+<textarea class="form-control" id="qcsSupplement" formControlName="qcsSupplement" name="qcsSupplement"
+rows="3" placeholder=""
+[class.is-invalid]="formSta3FormD.qcsSupplement.invalid && formSta3FormD.qcsSupplement.touched"></textarea>
+</div>
+
+</div>
+<div class="row">
+<div class="form-group col-12">
+<label for="qmInstructions">Please attach a copy of the Quality Manual or instructions on Quality
+Control issued to staff.</label>
+<textarea class="form-control" id="qmInstructions" formControlName="qmInstructions"
+name="qmInstructions" rows="3" placeholder=""
+[class.is-invalid]="formSta3FormD.qmInstructions.invalid && formSta3FormD.qmInstructions.touched"></textarea>
+</div>
+
+</div>
+<h3>TEST EQUIPMENT/INSTRUMENTS, GAUGES AND TOOLS.</h3>
+<div class="row">
+<div class="form-group col-12">
+<label for="testEquipmentUsed">Please detail test equipment used and if any of the production or test
+equipment are calibrated?</label>
+<textarea class="form-control" id="testEquipmentUsed" formControlName="testEquipmentUsed"
+name="testEquipmentUsed" rows="3" placeholder=""
+[class.is-invalid]="formSta3FormD.testEquipmentUsed.invalid && formSta3FormD.testEquipmentUsed.touched"></textarea>
+</div>
+
+</div>
+<div class="row">
+<div class="form-group col-12">
+<label for="indicateExternalArrangement">Indicate External arrangement for testing if any</label>
+<textarea class="form-control" id="indicateExternalArrangement"
+formControlName="indicateExternalArrangement" name="indicateExternalArrangement" rows="3"
+placeholder=""
+[class.is-invalid]="formSta3FormD.indicateExternalArrangement.invalid && formSta3FormD.indicateExternalArrangement.touched"></textarea>
+</div>
+
+</div>
+<h3>RECORDS AND DOCUMENTATION</h3>
+<h4>COMPLIANCE TO SPECIFICATION</h4>
+<div class="row">
+<div class="form-group col-12">
+<label for="levelDefectivesFound">Please indicate level of defectives found in past six month. If tests
+in accordance with the relevant
+standard(s) have already been carried out attach copies of test reports if available. </label>
+<textarea class="form-control" id="levelDefectivesFound" formControlName="levelDefectivesFound"
+name="levelDefectivesFound" rows="3" placeholder=""
+[class.is-invalid]="formSta3FormD.levelDefectivesFound.invalid && formSta3FormD.levelDefectivesFound.touched"></textarea>
+</div>
+
+</div>
+<div class="row">
+<div class="form-group col-12">
+<label for="levelClaimsComplaints">Please indicate the level of claims/complaints made under
+warranty and/or otherwise and also give as a
+percentage of total out put. </label>
+<textarea class="form-control" id="levelClaimsComplaints" formControlName="levelClaimsComplaints"
+name="levelClaimsComplaints" rows="3" placeholder=""
+[class.is-invalid]="formSta3FormD.levelClaimsComplaints.invalid && formSta3FormD.levelClaimsComplaints.touched"></textarea>
+</div>
+
+</div>
+<div class="row">
+<div class="form-group col-12">
+<label for="levelClaimsComplaints">) Have independent tests been made on products against the
+standard? By whom? Please attach
+copies if available. </label>
+<textarea class="form-control" id="independentTests" formControlName="independentTests"
+name="independentTests" rows="3" placeholder=""
+[class.is-invalid]="formSta3FormD.independentTests.invalid && formSta3FormD.independentTests.touched"></textarea>
+</div>
+
+</div>
+<h3>AFFIXATION ON MARK OF CONFORMITY</h3>
+<div class="row">
+<div class="form-group col-12">
+<label for="independentTests">Please attach an illustration and indicate method e.g. special label,
+Embossing etc. which will be used
+to affix the Mark of Conformity. Please indicate at which stage of manufacture the Mark of
+Conformity
+will be affixed.</label>
+<textarea class="form-control" id="indicateStageManufacture"
+formControlName="indicateStageManufacture" name="indicateStageManufacture" rows="3"
+placeholder=""
+[class.is-invalid]="formSta3FormD.indicateStageManufacture.invalid && formSta3FormD.indicateStageManufacture.touched"></textarea>
+</div>
+
+</div>
+</form>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+    <div class="tab-pane" id="link14">
+        <ngx-extended-pdf-viewer [src]="pdfSources" [zoom]="'page-actual'"
+                                 [filenameForDownload]="'Certificate'"></ngx-extended-pdf-viewer>
+    </div>
+    <div class="tab-pane" id="link13">
+        <h3>STA 3 Uploaded Documents</h3>
+        <br>
+        <div id="main1">
+            <div class="container">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th class="text-left">{{ tableData2?.headerRow[0] }}</th>
+                            <th>{{ tableData2?.headerRow[1] }}</th>
+                            <th>{{ tableData2?.headerRow[2] }}</th>
+                            <th>{{ tableData2?.headerRow[3] }}</th>
+                            <th class="text-right">{{ tableData2?.headerRow[4] }}</th>
+
+
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr *ngFor="let row of tableData2?.dataRows">
+                            <td class="text-left">{{row[0]}}</td>
+                            <td>{{row[1]}}</td>
+                            <td>{{row[2]}}</td>
+                            <td>{{row[3]}}</td>
+
+                            <td class="td-actions text-right">
+                                <button mat-raised-button type="button" data-toggle="modal"
+                                        (click)="viewPdfFile(row[4], row[0], row[1])" class="btn btn-info {{row[4]}}">
+                                    <i class="material-icons">visibility</i>
+
+                                </button>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+        <!--        <ngx-extended-pdf-viewer [src]="pdfUploadsView" [zoom]="'page-actual'"-->
+        <!--                                 [filenameForDownload]="'STA3 UPLOAD'"></ngx-extended-pdf-viewer>-->
+    </div>
+    <div class="tab-pane" id="link16">
+        <h3>Uploaded Documents</h3>
+        <br>
+        <div id="main16">
+            <div class="container">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th class="text-left">{{ tableData3?.headerRow[0] }}</th>
+                            <th>{{ tableData3?.headerRow[1] }}</th>
+                            <th>{{ tableData3?.headerRow[2] }}</th>
+                            <th>{{ tableData3?.headerRow[3] }}</th>
+                            <th class="text-right">{{ tableData3?.headerRow[4] }}</th>
+
+
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr *ngFor="let row of tableData3?.dataRows">
+                            <td class="text-left">{{row[0]}}</td>
+                            <td>{{row[1]}}</td>
+                            <td>{{row[2]}}</td>
+                            <td>{{row[3]}}</td>
+
+                            <td class="td-actions text-right">
+                                <button mat-raised-button type="button" data-toggle="modal"
+                                        (click)="viewPdfFile(row[4], row[0], row[1])" class="btn btn-info {{row[4]}}">
+                                    <i class="material-icons">visibility</i>
+
+                                </button>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="tab-pane" id="link20">
+        <h3>Other Permit Versions</h3>
+        <br>
+        <div id="main20">
+            <div class="container">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th class="text-left">{{ tableData5?.headerRow[0] }}</th>
+                            <th>{{ tableData5?.headerRow[1] }}</th>
+                            <th>{{ tableData5?.headerRow[2] }}</th>
+                            <th>{{ tableData5?.headerRow[3] }}</th>
+                            <th class="text-right">{{ tableData5?.headerRow[4] }}</th>
+
+
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr *ngFor="let row of tableData5?.dataRows">
+                            <td class="text-left">{{row[0]}}</td>
+                            <td>{{row[1] | date}}</td>
+                            <td>{{row[2]}}</td>
+                            <td>{{row[3]}}</td>
+
+                            <td class="td-actions text-right">
+                                <a href="/permitdetails#{{row[4]}}"><i class="material-icons">remove_red_eye</i></a>
+                                <!--                                <button mat-raised-button type="button" data-toggle="modal"-->
+                                <!--                                        (click)="goToPermitOlderVersion(row[4])" class="btn btn-info {{row[4]}}">-->
+                                <!--                                    <i class="material-icons">visibility</i>-->
+
+                                <!--                                </button>-->
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="tab-pane" id="link15">
+        <h3>Comments</h3>
+        <br>
+        <div id="main3">
+            <div class="container">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>{{ tableData1.headerRow[0] }}</th>
+                            <th class="text-right">{{ tableData1.headerRow[1] }}</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr *ngFor="let row of tableData1.dataRows">
+                            <!--                            <div *ngIf="row[0]">-->
+                            <td>{{row[0]}}</td>
+                            <td class="td-actions text-right">
+                                <button mat-raised-button type="button" data-toggle="modal" data-target="#myModal2"
+                                        class="btn btn-info {{row[1]}}" (click)="openModalRemarks(row[2])">
+                                    <i class="material-icons">visibility</i>
+
+                                </button>
+                            </td>
+                            <!--                            </div>-->
+
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="tab-pane" id="link19">
+        <h3>Schema Supervision</h3>
+        <br>
+        <div id="main19">
+            <div class="container">
+                <button (click)="viewPdfFile((allPermitDetails?.schemeOfSuperVision?.id).toString(),(allPermitDetails?.schemeOfSuperVision?.name).toString(),(allPermitDetails?.schemeOfSuperVision?.fileType).toString())"
+                        mat-raised-button=""
+                        class="btn btn-kebs mat-raised-button mat-button-base"><span
+                        class="mat-button-wrapper">VIEW SCHEME</span>
+                    <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                    <div class="mat-button-focus-overlay"></div>
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="tab-pane" id="link17">
+        <h3>Lab Results</h3>
+        <br>
+        <div id="main17">
+            <div class="container">
+                <div class="container">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th class="text-left">{{ tableData4?.headerRow[0] }}</th>
+                                <th>{{ tableData4?.headerRow[1] }}</th>
+                                <th class="text-right">{{ tableData4?.headerRow[2] }}</th>
+                                <th class="text-right">{{ tableData4?.headerRow[3] }}</th>
+                                <!--                                <th class="text-right">{{ tableData3?.headerRow[4] }}</th>-->
+
+
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr *ngFor="let row of tableData4?.dataRows">
+                                <td class="text-left">{{row[0]}}</td>
+                                <td>{{row[1]}}</td>
+                                <!--                                <td>{{row[2]}}</td>-->
+                                <!--                                <td>{{row[3]}}</td>-->
+
+                                <td class="td-actions text-right">
+                                    <button mat-raised-button type="button" data-toggle="modal" data-target="#myModal2"
+                                            (click)="viewLabRemarks(row[1], row[3])" class="btn btn-info {{row[3]}}">
+                                        <i class="material-icons">visibility</i>
+
+                                    </button>
+                                </td>
+                                <td class="td-actions text-right">
+                                    <button mat-raised-button type="button" data-toggle="modal"
+                                            (click)="viewPdfFile(row[4], row[0], 'application/pdf')"
+                                            class="btn btn-info {{row[4]}}">
+                                        <i class="material-icons">visibility</i>
+
+                                    </button>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="tab-pane" id="link18">
+        <h3>Invoice</h3>
+        <br>
+        <div id="main18">
+            <div class="container">
+                <button (click)="goToPayment()" mat-raised-button=""
+                        class="btn btn-kebs mat-raised-button mat-button-base"><span
+                        class="mat-button-wrapper">MAKE PAYMENT</span>
+                    <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                    <div class="mat-button-focus-overlay"></div>
+                </button>
+                <button *ngIf="allPermitDetails?.permitDetails?.invoiceGenerated == true && allPermitDetails.batchID != null"
+                        (click)="goToInvoiceGenerated()" mat-raised-button=""
+                        class="btn btn-kebs mat-raised-button mat-button-base"><span
+                        class="mat-button-wrapper">VIEW CONSOLIDATE INVOICE</span>
+                    <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                    <div class="mat-button-focus-overlay"></div>
+                </button>
+                <button (click)="goToNewApplication()" mat-raised-button=""
+                        class="btn btn-kebs mat-raised-button mat-button-base"><span
+                        class="mat-button-wrapper">MAKE NEW APPLICATION</span>
+                    <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                    <div class="mat-button-focus-overlay"></div>
+                </button>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>{{ tableData12?.headerRow[0] }}</th>
+                            <th class="text-right">{{ tableData12?.headerRow[1] }}</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr *ngFor="let row of tableData12?.dataRows">
+                            <td>
+                                {{row[0]}}</td>
+                            <td class="td-actions text-right">
+                                {{row[1]}}
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+    <!--                        <div class="tab-pane" id="link12">-->
+    <!--                            <div class="material-datatables">-->
+    <!--                                <table id="datatables" class="table table-striped table-no-bordered table-hover" cellspacing="0" width="100%" style="width:100%">-->
+    <!--                                    <thead>-->
+    <!--                                    <tr>-->
+    <!--                                        <th>{{ dataTable.headerRow[0] }}</th>-->
+    <!--                                        <th>{{ dataTable.headerRow[1] }}</th>-->
+    <!--                                        <th>{{ dataTable.headerRow[2] }}</th>-->
+    <!--                                        <th>{{ dataTable.headerRow[3] }}</th>-->
+    <!--                                        <th>{{ dataTable.headerRow[4] }}</th>-->
+<!--                                        <th class="disabled-sorting text-right">{{ dataTable.headerRow[5] }}</th>-->
+<!--                                    </tr>-->
+<!--                                    </thead>-->
+<!--                                    <tfoot>-->
+<!--                                    <tr>-->
+<!--                                        <th>{{ dataTable.footerRow[0] }}</th>-->
+<!--                                        <th>{{ dataTable.footerRow[1] }}</th>-->
+<!--                                        <th>{{ dataTable.footerRow[2] }}</th>-->
+<!--                                        <th>{{ dataTable.footerRow[3] }}</th>-->
+<!--                                        <th>{{ dataTable.footerRow[4] }}</th>-->
+<!--                                        <th class="text-right">{{ dataTable.footerRow[5] }}</th>-->
+<!--                                    </tr>-->
+<!--                                    </tfoot>-->
+<!--                                    <tbody>-->
+<!--                                    <tr *ngFor="let row of dataTable.dataRows">-->
+<!--                                        <td>{{row[0]}}</td>-->
+<!--                                        <td>{{row[1]}}</td>-->
+<!--                                        <td>{{row[2]}}</td>-->
+<!--                                        <td>{{row[3]}}</td>-->
+<!--                                        <td>{{row[4]}}</td>-->
+<!--                                        <td class="text-right">-->
+<!--                                            <a href="javascript:void(0)" class="btn btn-link btn-info btn-just-icon like"><i class="material-icons">download</i></a>-->
+<!--                                        </td>-->
+<!--                                    </tr>-->
+<!--                                    </tbody>-->
+<!--                                </table>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                        <div class="tab-pane" id="link13">-->
+
+<!--                        </div>-->
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="col-lg-3">
+<div class="card ">
+<div class="card-header ">
+<h4 class="card-title">Actions
+</h4>
+</div>
+    <div class="card-body ">
+        <button *ngIf="allPermitDetails?.permitDetails?.invoiceGenerated == true && allPermitDetails.batchID != null"
+                mat-raised-button=""
+                (click)="goToInvoiceGenerated()" class="btn btn-kebs mat-raised-button mat-button-base"><span
+                class="mat-button-wrapper">View Generated Invoice</span>
+            <div matripple="" class="mat-ripple mat-button-ripple"></div>
+            <div class="mat-button-focus-overlay"></div>
+        </button>
+        <button *ngIf="allPermitDetails?.permitDetails?.permitAwardStatus == true" mat-raised-button=""
+                (click)="submitRenewalApplication()" class="btn btn-kebs mat-raised-button mat-button-base"><span
+                class="mat-button-wrapper">RENEW</span>
+            <div matripple="" class="mat-ripple mat-button-ripple"></div>
+            <div class="mat-button-focus-overlay"></div>
+        </button>
+
+
+        <div *ngIf="allPermitDetails?.permitDetails?.resubmitApplicationStatus == true">
+            <button (click)="openModalUpload('uploadModal')" mat-raised-button="" data-toggle="modal"
+                    data-target="#myModal1"
+                    class="btn btn-kebs mat-raised-button mat-button-base"><span
+                    class="mat-button-wrapper">UPLOAD DOCUMENTS</span>
+                <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                <div class="mat-button-focus-overlay"></div>
+            </button>
+        </div>
+
+
+        <!--        <div *ngIf="allPermitDetails?.permitDetails?.permitTypeID == DMarkTypeID">-->
+        <button *ngIf="allPermitDetails?.permitDetails?.permitForeignStatus == true && allPermitDetails?.permitDetails?.sendForPcmReview == false"
+                (click)="submitApplicationForReview()" mat-raised-button=""
+                class="btn btn-kebs mat-raised-button mat-button-base"><span class="mat-button-wrapper">SUBMIT APPLICATION FOR REVIEW</span>
+            <div matripple="" class="mat-ripple mat-button-ripple"></div>
+            <div class="mat-button-focus-overlay"></div>
+        </button>
+        <button *ngIf="allPermitDetails?.permitDetails?.pcmReviewApprove == false && allPermitDetails?.permitDetails?.sendForPcmReview == true && allPermitDetails?.permitDetails?.resubmitApplicationStatus == true"
+                    (click)="submitApplicationForReview()" mat-raised-button=""
+                    class="btn btn-kebs mat-raised-button mat-button-base"><span class="mat-button-wrapper">RE-SUBMIT APPLICATION FOR REVIEW</span>
+                <div matripple="" class="mat-ripple mat-button-ripple"></div>
+            <div class="mat-button-focus-overlay"></div>
+        </button>
+        <!--        <div *ngIf="allPermitDetails?.permitDetails?.pcmReviewApprove == true && allPermitDetails?.permitDetails?.sendForPcmReview == true">-->
+        <!--            <button *ngIf="allPermitDetails?.permitDetails?.hofQamCompletenessStatus == false && allPermitDetails?.permitDetails?.resubmitApplicationStatus == true"-->
+        <!--                    (click)="submitApplicationForReviewHOD()" mat-raised-button=""-->
+        <!--                    class="btn btn-kebs mat-raised-button mat-button-base"><span class="mat-button-wrapper">RE-SUBMIT APPLICATION FOR REVIEW</span>-->
+        <!--                <div matripple="" class="mat-ripple mat-button-ripple"></div>-->
+        <!--                <div class="mat-button-focus-overlay"></div>-->
+        <!--            </button>-->
+        <!--        </div>-->
+        <div *ngIf="allPermitDetails?.permitDetails?.hofQamCompletenessStatus == false && allPermitDetails?.permitDetails?.resubmitApplicationStatus == true ">
+            <a href="/dmark/newDmarkPermit#{{sta1.id}}" mat-raised-button=""
+               class="btn btn-kebs mat-raised-button mat-button-base"><span class="mat-button-wrapper">UPDATE APPLICATION DETAILS</span>
+                <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                <div class="mat-button-focus-overlay"></div>
+            </a>
+            <button (click)="submitApplicationForReviewHOD()" mat-raised-button=""
+                    class="btn btn-kebs mat-raised-button mat-button-base"><span class="mat-button-wrapper">RE-SUBMIT APPLICATION FOR REVIEW</span>
+                <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                <div class="mat-button-focus-overlay"></div>
+            </button>
+        </div>
+        <button *ngIf="allPermitDetails?.permitDetails?.permitForeignStatus == false && allPermitDetails?.permitDetails?.sendApplication == false "
+                (click)="submitApplication()" mat-raised-button=""
+                class="btn btn-kebs mat-raised-button mat-button-base"><span class="mat-button-wrapper">SUBMIT APPLICATION</span>
+            <div matripple="" class="mat-ripple mat-button-ripple"></div>
+            <div class="mat-button-focus-overlay"></div>
+        </button>
+        <a *ngIf="allPermitDetails?.permitDetails?.sendApplication == false "
+           href="/dmark/newDmarkPermit#{{sta1.id}}" mat-raised-button=""
+           class="btn btn-kebs mat-raised-button mat-button-base"><span class="mat-button-wrapper">UPDATE APPLICATION DETAILS</span>
+            <div matripple="" class="mat-ripple mat-button-ripple"></div>
+            <div class="mat-button-focus-overlay"></div>
+        </a>
+        <button *ngIf="allPermitDetails?.permitDetails?.generateSchemeStatus == true && allPermitDetails?.permitDetails?.approvedRejectedScheme == false"
+                (click)="openModalUpload('schemeModal')" mat-raised-button=""
+                data-toggle="modal"
+                data-target="#myModal1"
+                class="btn btn-kebs mat-raised-button mat-button-base"><span class="mat-button-wrapper">AGREE/CONSENT TO SSC</span>
+            <div matripple="" class="mat-ripple mat-button-ripple"></div>
+            <div class="mat-button-focus-overlay"></div>
+        </button>
+        <!--    </div>-->
+    </div>
+</div>
+
+
+
+    <!-- Classic Modal -->
+    <div class="modal fade" id="myModal1" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">{{currDivLabel}}</h4>
+                    <button mat-button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        <i class="material-icons">clear</i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!--                <p>Are you sure this userDetails falls in the KEBS mandate ?</p>-->
+                    <div *ngIf="(currDiv == 'schemeModal')">
+                        <form [formGroup]="approveRejectSSCForm" class="form">
+                            <div class="form-body">
+                                <div class="form-group">
+
+                                    <div>
+                                        <label for="approvedRejectedScheme"><b>Approve/Reject SCC</b></label>
+                                        <mat-form-field id="approvedRejectedScheme">
+                                            <mat-select placeholder="Please Select an option"
+                                                        formControlName="approvedRejectedScheme"
+                                                        [class.is-invalid]="formApproveRejectSSC.approvedRejectedScheme.invalid && formApproveRejectSSC.approvedRejectedScheme.touched"
+                                                        name="approvedRejectedScheme">
+                                                <mat-option [value]="1">APPROVE</mat-option>
+                                                <mat-option [value]="0">REJECT</mat-option>
+
+                                            </mat-select>
+                                        </mat-form-field>
+                                        <label for="approvedRejectedSchemeRemarks">Feedback For This Permit</label>
+                                        <mat-form-field class="example-full-width">
+                                            <textarea id="approvedRejectedSchemeRemarks" matInput type="text"
+                                                      formControlName="approvedRejectedSchemeRemarks"
+                                                      name="approvedRejectedSchemeRemarks"
+                                                      [class.is-invalid]="formApproveRejectSSC.approvedRejectedSchemeRemarks.invalid && formApproveRejectSSC.approvedRejectedSchemeRemarks.touched"
+                                                      disabled>
+                                            </textarea>
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div *ngIf="(currDiv == 'uploadModal')">
+                        <form #demoForm="ngForm">
+                            <label for="upLoadDescription">File Description</label>
+                            <mat-form-field class="example-full-width">
+                                <input [(ngModel)]="upLoadDescription" name="upLoadDescription" id="upLoadDescription"
+                                       matInput type="text">
+                            </mat-form-field>
+                            <file-upload [(ngModel)]="uploadedFiles" name="files" fileslimit="2"></file-upload>
+                        </form>
+                    </div>
+                </div>
+                <div class="modal-footer">
+
+                    <button mat-raised-button type="button" class="btn btn-danger" data-dismiss="modal">Close
+                    </button>
+                    <button *ngIf="(currDiv == 'schemeModal')" mat-raised-button type="button" class="btn btn-success"
+                            (click)="submitApprovalRejectionSSC();"
+                            [disabled]="!approveRejectSSCForm.valid"
+                            data-dismiss="modal"
+                    >SUBMIT
+                    </button>
+                    <button *ngIf="(currDiv == 'uploadModal')" mat-raised-button type="button" class="btn btn-success"
+                            (click)="uploadDocument();"
+                            data-dismiss="modal"
+                    >UPLOAD
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--  End Modal -->
+
+    <!-- Classic Modal -->
+    <div class="modal fade" id="myModal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">{{currDivLabel}}</h4>
+                    <button mat-button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        <i class="material-icons">clear</i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!--                <p>Are you sure this userDetails falls in the KEBS mandate ?</p>-->
+                    <!--                    <div>-->
+                    <!--                        <label for="recommendation">Recommendation</label>-->
+                    <!--                        <mat-form-field class="example-full-width">-->
+                    <!--                            <textarea id="recommendation" matInput type="text" value="Recommendation"-->
+                    <!--                                      disabled>-->
+                    <!--                            </textarea>-->
+                    <!--                        </mat-form-field>-->
+                    <!--                        <label for="reviewsattus">Review Status</label>-->
+                    <!--                        <mat-form-field class="example-full-width">-->
+                    <!--                            <input id="reviewsattus" matInput type="text" value="REJECTED"-->
+                    <!--                                   disabled>-->
+                    <!--                        </mat-form-field>-->
+
+                    <!--                        <label for="feedback">Feedback For This Permit</label>-->
+                    <!--                        <mat-form-field class="example-full-width">-->
+                    <!--                            <textarea id="feedback" matInput type="text" value="REJECTED"-->
+                    <!--                                      disabled>-->
+                    <!--                            </textarea>-->
+                    <!--                        </mat-form-field>-->
+                    <!--                    </div>-->
+                    <!--                    <div *ngIf="(currDiv == 'uploadModal')">-->
+                    <!--                        <div *ngIf="allPermitDetails.remarksDetails.hofQamCompletenessStatus === false">-->
+                    <!--                            <label for="reviewsattus52">Review Status</label>-->
+                    <!--                            <mat-form-field class="example-full-width">-->
+                    <!--                                <input id="reviewsattus52" matInput type="text" value="REJECTED"-->
+                    <!--                                       disabled>-->
+                    <!--                            </mat-form-field>-->
+                    <!--                        </div>-->
+
+                    <!--                        <label for="feedback">Feedback For This Permit</label>-->
+                    <!--                        <mat-form-field class="example-full-width">-->
+                    <!--                            <textarea id="feedback" matInput type="text"-->
+                    <!--                                      value="{{allPermitDetails.remarksDetails.hofQamCompletenessRemarks}}"-->
+                    <!--                                      disabled>-->
+                    <!--                            </textarea>-->
+                    <!--                        </mat-form-field>-->
+                    <!--                    </div>-->
+                    <div *ngIf="(currDiv == 'viewLabResultsRemarks')">
+
+                        <label for="reviewsattus52">Lab Results Status</label>
+                        <mat-form-field class="example-full-width">
+                            <input id="reviewsattus52" matInput type="text" value="{{labResultsStatus}}"
+                                   disabled>
+                        </mat-form-field>
+                        <label for="feedback">Lab Results Remarks</label>
+                        <mat-form-field class="example-full-width">
+                            <textarea id="feedback" matInput type="text"
+                                      value="{{labResultsRemarks}}"
+                                      disabled>
+                            </textarea>
+                        </mat-form-field>
+                    </div>
+                    <div *ngIf="(currDiv == 'hofQamCompletenessRemarks')">
+                        <div *ngIf="allPermitDetails.remarksDetails.hofQamCompleteness.remarksStatus === true">
+                            <label for="reviewsattus25">Review Status</label>
+                            <mat-form-field class="example-full-width">
+                                <input id="reviewsattus25" matInput type="text" value="APPROVED"
+                                       disabled>
+                            </mat-form-field>
+                        </div>
+                        <div *ngIf="allPermitDetails.remarksDetails.hofQamCompleteness.remarksStatus === false">
+                            <label for="reviewsattus52">Review Status</label>
+                            <mat-form-field class="example-full-width">
+                                <input id="reviewsattus52" matInput type="text" value="REJECTED"
+                                       disabled>
+                            </mat-form-field>
+                        </div>
+
+                        <label for="feedback">Feedback For This Permit</label>
+                        <mat-form-field class="example-full-width">
+                            <textarea id="feedback" matInput type="text"
+                                      value="{{allPermitDetails.remarksDetails.hofQamCompleteness.remarksValue}}"
+                                      disabled>
+                            </textarea>
+                        </mat-form-field>
+                    </div>
+                    <div *ngIf="(currDiv == 'reviewRemarksPCMRemarks')">
+                        <div *ngIf="allPermitDetails.remarksDetails.pcmReviewApproval.remarksStatus === true">
+                            <label for="reviewsattus25">Review Status</label>
+                            <mat-form-field class="example-full-width">
+                                <input id="reviewsattus25" matInput type="text" value="APPROVED"
+                                       disabled>
+                            </mat-form-field>
+                        </div>
+                        <div *ngIf="allPermitDetails.remarksDetails.pcmReviewApproval.remarksStatus === false">
+                            <label for="reviewsattus52">Review Status</label>
+                            <mat-form-field class="example-full-width">
+                                <input id="reviewsattus52" matInput type="text" value="REJECTED"
+                                       disabled>
+                            </mat-form-field>
+                        </div>
+
+                        <label for="feedback">Feedback For This Permit</label>
+                        <mat-form-field class="example-full-width">
+                            <textarea id="feedback" matInput type="text"
+                                      value="{{allPermitDetails.remarksDetails.pcmReviewApproval.remarksValue}}"
+                                      disabled>
+                            </textarea>
+                        </mat-form-field>
+                    </div>
+                    <!--                    <div *ngIf="(currDiv == 'recommendationRemarks')">-->
+                    <!--                        <div *ngIf="allPermitDetails.remarksDetails.pcmReviewApprovalStatus === true">-->
+                    <!--                            <label for="reviewsattus25">Review Status</label>-->
+                    <!--                            <mat-form-field class="example-full-width">-->
+                    <!--                                <input id="reviewsattus25" matInput type="text" value="APPROVED"-->
+                    <!--                                       disabled>-->
+                    <!--                            </mat-form-field>-->
+                    <!--                        </div>-->
+                    <!--                        <div *ngIf="allPermitDetails.remarksDetails.pcmReviewApprovalStatus === false">-->
+                    <!--                            <label for="reviewsattus52">Review Status</label>-->
+                    <!--                            <mat-form-field class="example-full-width">-->
+                    <!--                                <input id="reviewsattus52" matInput type="text" value="REJECTED"-->
+                    <!--                                       disabled>-->
+                    <!--                            </mat-form-field>-->
+                    <!--                        </div>-->
+
+                    <!--                        <label for="feedback">Feedback For This Permit</label>-->
+                    <!--                        <mat-form-field class="example-full-width">-->
+                    <!--                            <textarea id="feedback" matInput type="text"-->
+                    <!--                                      value="{{allPermitDetails.remarksDetails.pcmReviewApprovalRemarks}}"-->
+                    <!--                                      disabled>-->
+                    <!--                            </textarea>-->
+                    <!--                        </mat-form-field>-->
+                    <!--                    </div>-->
+                    <div *ngIf="(currDiv == 'pscApprovalRejectionRemarks')">
+                        <div *ngIf="allPermitDetails.remarksDetails.pscMemberApproval.remarksStatus === true">
+                            <label for="reviewsattus25">Review Status</label>
+                            <mat-form-field class="example-full-width">
+                                <input id="reviewsattus25" matInput type="text" value="APPROVED"
+                                       disabled>
+                            </mat-form-field>
+                        </div>
+                        <div *ngIf="allPermitDetails.remarksDetails.pscMemberApproval.remarksStatus === false">
+                            <label for="reviewsattus52">Review Status</label>
+                            <mat-form-field class="example-full-width">
+                                <input id="reviewsattus52" matInput type="text" value="REJECTED"
+                                       disabled>
+                            </mat-form-field>
+                        </div>
+
+                        <label for="feedback">Feedback For This Permit</label>
+                        <mat-form-field class="example-full-width">
+                            <textarea id="feedback" matInput type="text"
+                                      value="{{allPermitDetails.remarksDetails.pscMemberApproval.remarksValue}}"
+                                      disabled>
+                            </textarea>
+                        </mat-form-field>
+                    </div>
+                    <div *ngIf="(currDiv == 'pcmApprovalRejectionRemarks')">
+                        <div *ngIf="allPermitDetails.remarksDetails.pcmApproval.remarksStatus === true">
+                            <label for="reviewsattus25">Review Status</label>
+                            <mat-form-field class="example-full-width">
+                                <input id="reviewsattus25" matInput type="text" value="APPROVED"
+                                       disabled>
+                            </mat-form-field>
+                        </div>
+                        <div *ngIf="allPermitDetails.remarksDetails.pcmApproval.remarksStatus === false">
+                            <label for="reviewsattus52">Review Status</label>
+                            <mat-form-field class="example-full-width">
+                                <input id="reviewsattus52" matInput type="text" value="REJECTED"
+                                       disabled>
+                            </mat-form-field>
+                        </div>
+
+                        <label for="feedback">Feedback For This Permit</label>
+                        <mat-form-field class="example-full-width">
+                            <textarea id="feedback" matInput type="text"
+                                      value="{{allPermitDetails.remarksDetails.pcmApproval.remarksValue}}"
+                                      disabled>
+                            </textarea>
+                        </mat-form-field>
+                    </div>
+                </div>
+                <div class="modal-footer">
+
+
+                    <button mat-raised-button type="button" class="btn btn-danger" data-dismiss="modal">Close
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--  End Modal -->
+</div>
+</div>
+</div>

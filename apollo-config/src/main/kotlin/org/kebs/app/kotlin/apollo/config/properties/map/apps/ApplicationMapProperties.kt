@@ -145,7 +145,7 @@ class ApplicationMapProperties {
     val mapQaFuelInspection: Int = 0
 
     @Value("\${org.kebs.app.kotlin.apollo.application.map.tax.rate}")
-    val mapKebsTaxRate: BigDecimal = 0.0000.toBigDecimal()
+    val mapKebsTaxRate: BigDecimal = BigDecimal.ZERO
 
     @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.type.smark.mediumFirm.extra.products.cost}")
     val mapQaSmarkMediumExtraProductCost: BigDecimal = 0.0000.toBigDecimal()
@@ -407,6 +407,12 @@ class ApplicationMapProperties {
     @Value("\${org.kebs.app.kotlin.apollo.application.map.mpesa.config.integration}")
     val mapMpesaConfigIntegration: Long = 0L
 
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.config.integration.max.amount}")
+    val mapMpesaConfigIntegrationMaxAmount: BigDecimal = BigDecimal.ZERO
+
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.sage.config.integration}")
+    val mapSageConfigIntegration: Long = 0L
+
     @Value("\${org.kebs.app.kotlin.apollo.application.map.lims.config.integration}")
     val mapLimsConfigIntegration: Long = 0L
 
@@ -484,6 +490,9 @@ class ApplicationMapProperties {
 
     @Value("\${org.kebs.app.kotlin.apollo.resources.report.proforma.invoice.with.item.path}")
     val mapReportProfomaInvoiceWithItemsPath: String = ""
+
+    @Value("\${org.kebs.app.kotlin.apollo.resources.report.break.down.invoice.with.item.path}")
+    val mapReportBreakDownInvoiceWithItemsPath: String = ""
 
     @Value("\${org.kebs.app.kotlin.apollo.resources.report.proforma.invoice.pdf.with.item.path}")
     val mapPDFProfomaInvoiceWithItemsPath: String = ""
@@ -859,6 +868,9 @@ class ApplicationMapProperties {
 
     @Value("\${org.kebs.app.kotlin.apollo.application.map.kesws.air.manifest.doctype}")
     val mapKeswsAirManifestDoctype: String = ""
+
+    @Value("\${org.kebs.app.kotlin.apollo.application.map.kesws.checking.officer}")
+    val mapKeswsCheckingOfficer: String = ""
 
     @Value("\${org.kebs.app.kotlin.apollo.application.map.cors.urls}")
     val mapCorsUrls: String = ""

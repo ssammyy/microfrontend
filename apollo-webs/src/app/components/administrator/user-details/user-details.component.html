@@ -163,15 +163,21 @@
                 data-toggle="modal" type="button">USER ASSIGN ROLE
         </button>
 
-        <button (click)="openModal('assignUserARoleFromRequest')" *ngIf="(role == 'USER_MANAGEMENT_MODIFY')  && (requestId!=null)"
+        <button (click)="openModal('assignUserACFS')" *ngIf="(role == 'USER_MANAGEMENT_MODIFY') && (requestId==null)"
+                class="submit-button mb-4"
+                data-toggle="modal" type="button">USER ASSIGN A CFS
+        </button>
+
+        <button (click)="openModal('assignUserARoleFromRequest')"
+                *ngIf="(role == 'USER_MANAGEMENT_MODIFY')  && (requestId!=null)"
                 class="submit-button mb-4"
                 data-toggle="modal" type="button">USER ASSIGN ROLE REQUEST
         </button>
         <!--        <button *ngIf="(role == 'MS_HOD_MODIFY')"  class="btn btn-outline-secondary action-button"  type="button" data-toggle="modal"  >REJECT</button>-->
-<!--        <button (click)="openModal('assignUserACFS')" *ngIf="(role == 'RBAC_ASSIGN_CFS')"-->
-<!--                class="submit-button mb-4"-->
-<!--                data-toggle="modal" type="button">USER ASSIGN CFS-->
-<!--        </button>-->
+        <!--        <button (click)="openModal('assignUserACFS')" *ngIf="(role == 'RBAC_ASSIGN_CFS')"-->
+        <!--                class="submit-button mb-4"-->
+        <!--                data-toggle="modal" type="button">USER ASSIGN CFS-->
+        <!--        </button>-->
 
       </div>
     </div>
@@ -270,7 +276,7 @@
                       name="cfsID">
                 <option label="--select something --"></option>
                 <option *ngFor="let cfs of cfsEntity"
-                        [value]="cfs.id"> {{ cfs.subSection }} </option>
+                        [value]="cfs.id"> {{ cfs.cfsCode }} == {{ cfs.cfsName }} </option>
               </select>
 
             </div>

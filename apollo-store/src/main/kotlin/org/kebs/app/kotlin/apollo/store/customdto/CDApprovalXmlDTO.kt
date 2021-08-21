@@ -43,7 +43,7 @@ class DocumentHeader(corNumber: String, msgDate: String, version: String) {
     var version: String? = version
 }
 
-class DocumentDetails(corNumber: String, expiryDate: String, assessedDate: String, status: String, pgaRemarks: String) {
+class DocumentDetails(corNumber: String, expiryDate: String, assessedDate: String, status: String, pgaRemarks: String, checkingOfficer: String) {
 
     @JacksonXmlProperty(localName = "consignment_refnumber")
     var consignmentRefNumber: String? = corNumber
@@ -76,7 +76,7 @@ class DocumentDetails(corNumber: String, expiryDate: String, assessedDate: Strin
     var ioInd: String? = "N"
 
     @JacksonXmlProperty(localName = "user_id")
-    var userId: String? = "kebsco"
+    var userId: String? = checkingOfficer
 
     @JacksonXmlProperty(localName = "pga_remarks")
     var pgaRemarks: String? = pgaRemarks
@@ -103,7 +103,7 @@ class DocumentDetails(corNumber: String, expiryDate: String, assessedDate: Strin
     var pgaRiskAssessmentLane: String? = "1"
 
     @JacksonXmlProperty(localName = "assessed_by")
-    var assessedBy: String? = "kebsco"
+    var assessedBy: String? = checkingOfficer
 
     @JacksonXmlProperty(localName = "assessed_date")
     var assesedDate: String? = assessedDate

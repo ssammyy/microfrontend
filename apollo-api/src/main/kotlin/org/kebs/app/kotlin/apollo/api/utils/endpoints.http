@@ -17,3 +17,11 @@ Content-Type: application/json
 > {%
     client.global.set("auth_token", response.headers.valuesOf('accessToken')[0]);
 %}
+
+###GET Department
+GET https://localhost:8006/api/v1/migration/anonymous/standard/dropdown/getDepartments
+
+
+###GET Department
+POST https://localhost:8006/api/v1/migration/anonymous/standard/deploy
+

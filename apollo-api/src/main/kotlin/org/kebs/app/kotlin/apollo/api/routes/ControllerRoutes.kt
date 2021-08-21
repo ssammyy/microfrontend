@@ -120,6 +120,12 @@ class ControllerRoutes {
                     }
 
                 }
+                "/freightStations".nest {
+                    GET("/load", handler::cfsListing)
+                    GET("/loads/{status}", handler::cfsListing)
+//                    PUT("/", handler::townsUpdate)
+//                    POST("/", handler::townsUpdate)
+                }
                 "/counties".nest {
                     GET("/load", handler::countiesListing)
                     GET("/loads/{status}", handler::countiesListing)

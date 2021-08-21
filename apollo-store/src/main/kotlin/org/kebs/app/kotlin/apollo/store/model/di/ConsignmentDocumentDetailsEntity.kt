@@ -1,7 +1,5 @@
 package org.kebs.app.kotlin.apollo.store.model.di
 
-import org.kebs.app.kotlin.apollo.store.model.SectionsEntity
-import org.kebs.app.kotlin.apollo.store.model.SubSectionsLevel2Entity
 import org.kebs.app.kotlin.apollo.store.model.UsersEntity
 import java.io.Serializable
 import java.sql.Date
@@ -203,9 +201,9 @@ class ConsignmentDocumentDetailsEntity : Serializable {
     @Basic
     var cdCocLocalTypeId: Long? = null
 
-    @Column(name = "CD_TYPE")
-    @Basic
-    var cdType: Long? = null
+    @JoinColumn(name = "CD_TYPE", referencedColumnName = "ID")
+    @ManyToOne
+    var cdType: ConsignmentDocumentTypesEntity? = null
 
     @Column(name = "PORT_OF_ARRIVAL")
     @Basic
@@ -247,9 +245,9 @@ class ConsignmentDocumentDetailsEntity : Serializable {
     @Basic
     var cdHeaderOne: Long? = null
 
-    @Column(name = "CD_STANDARDS_TWO")
-    @Basic
-    var cdStandardsTwo: Long? = null
+    @JoinColumn(name = "CD_STANDARDS_TWO", referencedColumnName = "ID")
+    @ManyToOne
+    var cdStandardsTwo: CdStandardsTwoEntity? = null
 
     @JoinColumn(name = "ASSIGNER", referencedColumnName = "ID")
     @ManyToOne
@@ -525,6 +523,7 @@ class ConsignmentDocumentDetailsEntity : Serializable {
             clusterId,
             cdHeaderTwo,
             cdCocLocalTypeId,
+            cdType,
             cdStandardsTwo,
             portOfArrival,
             freightStation,

@@ -2,7 +2,6 @@ package org.kebs.app.kotlin.apollo.api.ports.provided.dao
 
 
 import com.google.common.io.Files
-import mu.KotlinLogging
 import net.sf.jasperreports.engine.JREmptyDataSource
 import net.sf.jasperreports.engine.JasperCompileManager
 import net.sf.jasperreports.engine.JasperExportManager
@@ -15,11 +14,8 @@ import net.sf.jasperreports.export.SimpleExporterInput
 import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput
 import org.kebs.app.kotlin.apollo.common.dto.reports.LocalCocItemsReportInput
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
-import org.kebs.app.kotlin.apollo.store.model.CocsEntity
-import org.kebs.app.kotlin.apollo.store.model.CorsBakEntity
 import org.kebs.app.kotlin.apollo.store.model.di.CdItemDetailsEntity
 import org.kebs.app.kotlin.apollo.store.model.di.ConsignmentDocumentDetailsEntity
-import org.kebs.app.kotlin.apollo.store.repo.ICocsRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Lazy
 import org.springframework.core.io.ResourceLoader
@@ -115,8 +111,8 @@ class ReportsDaoService(
         pdfExporter.setExporterInput(SimpleExporterInput(jasperPrint))
         pdfExporter.exporterOutput = SimpleOutputStreamExporterOutput(pdfReportStream)
         pdfExporter.exportReport()
-        response.contentType = "text/html"
-//        response.contentType = "application/pdf"
+//        response.contentType = "text/html"
+        response.contentType = "application/pdf"
         response.setHeader("Content-Length", pdfReportStream.size().toString())
         response.addHeader("Content-Dispostion", "inline; filename=jasper.html;")
         response.outputStream
@@ -147,7 +143,7 @@ class ReportsDaoService(
         response.contentType = "text/html"
         response.contentType = "application/pdf"
         response.setHeader("Content-Length", pdfReportStream.size().toString())
-        response.addHeader("Content-Dispostion", "inline; filename=Permit-Certificate-${map.getValue("PermitNo")}.pdf;")
+        response.addHeader("Content-Dispostion", "inline; filename=file.pdf;")
         response.outputStream.let { responseOutputStream ->
             responseOutputStream.write(pdfReportStream.toByteArray())
             responseOutputStream.close()
@@ -227,7 +223,7 @@ class ReportsDaoService(
         map: HashMap<String, Any>,
         filePath: String,
         dataSourceList: List<Any>
-    ): File? {
+    ): File {
 
         val file = ResourceUtils.getFile(filePath)
         val design = JRXmlLoader.load(file)

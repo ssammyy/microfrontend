@@ -1,0 +1,273 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:flowable="http://flowable.org/bpmn"
+             xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC"
+             xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath"
+             targetNamespace="http://www.flowable.org/processdef">
+    <process id="requestModule" name="Request Module" isExecutable="true">
+        <startEvent id="startEvent" flowable:formFieldValidation="true"/>
+        <exclusiveGateway id="decideOfTC"/>
+        <userTask id="prepareJustification" name="Prepare a justification" flowable:candidateGroups="TC-sec"
+                  flowable:formFieldValidation="true"/>
+        <exclusiveGateway id="decisionOfSPC"/>
+        <userTask id="prepareWorkPlan" name="Prepare workplan" flowable:candidateGroups="TC-sec"
+                  flowable:formFieldValidation="true"/>
+        <endEvent id="endEvent"/>
+        <serviceTask id="sendNotificationCompiledRequests" name="Send notification of the compiled request"
+                     flowable:class="org.kebs.app.kotlin.apollo.api.handlers.EmailHandler"/>
+        <userTask id="analyzeNotificationRequest" name="Review request" flowable:candidateGroups="HOF"
+                  flowable:formFieldValidation="true"/>
+        <serviceTask id="reviewRequest" name="Prioritize,Evaluate and Rank request"
+                     flowable:class="org.kebs.app.kotlin.apollo.api.handlers.EvaluateStandardRequest"/>
+        <sequenceFlow id="flow11" sourceRef="prepareJustification" targetRef="sendToSPCSECForAprroval"/>
+        <sequenceFlow id="flow18" sourceRef="prepareWorkPlan" targetRef="receiveWorkPlanNotification"/>
+        <serviceTask id="approveNotification" name="Send notification of assignment to TC"
+                     flowable:class="org.kebs.app.kotlin.apollo.api.handlers.EmailHandler"/>
+        <serviceTask id="sendToSPCSECForAprroval" name="Send notification for approval"
+                     flowable:class="org.kebs.app.kotlin.apollo.api.handlers.EmailHandler"/>
+        <serviceTask id="receiveWorkPlanNotification" name="Send notification of workplan"
+                     flowable:class="org.kebs.app.kotlin.apollo.api.handlers.EmailHandler"/>
+        <serviceTask id="negativeFeedbackRemarks" name="Send feedback with remarks"
+                     flowable:class="org.kebs.app.kotlin.apollo.api.handlers.EmailHandler"/>
+        <userTask id="approveOrDisapproveRequest" name="Adopt NWI or not" flowable:candidateGroups="TC"
+                  flowable:formFieldValidation="true"/>
+        <userTask id="approveOrDisapproveJustification" name="Approve or disapprove justification"
+                  flowable:candidateGroups="SPC-sec" flowable:formFieldValidation="true"/>
+        <sequenceFlow id="flow8" sourceRef="approveOrDisapproveRequest" targetRef="decideOfTC"/>
+        <sequenceFlow id="flow31" sourceRef="sendToSPCSECForAprroval" targetRef="approveOrDisapproveJustification"/>
+        <sequenceFlow id="flow12" sourceRef="approveOrDisapproveJustification" targetRef="decisionOfSPC"/>
+        <sequenceFlow id="flow9" name="No" sourceRef="decideOfTC" targetRef="negativeFeedbackRemarks">
+            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${!approved}]]></conditionExpression>
+        </sequenceFlow>
+        <sequenceFlow id="flow10" name="Yes" sourceRef="decideOfTC" targetRef="prepareJustification">
+            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${approved}]]></conditionExpression>
+        </sequenceFlow>
+        <sequenceFlow id="flow13" name="Yes" sourceRef="decisionOfSPC" targetRef="prepareWorkPlan">
+            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${spc_approved}]]></conditionExpression>
+        </sequenceFlow>
+        <serviceTask id="sendNotiReviewNWI" name="Send notification to review NWI"
+                     flowable:class="org.kebs.app.kotlin.apollo.api.handlers.EmailHandler"/>
+        <userTask id="prepareNWI" name="Prepare NWI" flowable:candidateGroups="TC-sec"
+                  flowable:formFieldValidation="true"/>
+        <sequenceFlow id="flow250" sourceRef="prepareNWI" targetRef="sendNotiReviewNWI"/>
+        <sequenceFlow id="flow700" sourceRef="approveNotification" targetRef="prepareNWI"/>
+        <sequenceFlow id="flow30" sourceRef="sendNotiReviewNWI" targetRef="approveOrDisapproveRequest"/>
+        <sequenceFlow id="flow1" sourceRef="startEvent" targetRef="sendNotificationCompiledRequests"/>
+        <sequenceFlow id="flow17" sourceRef="receiveWorkPlanNotification" targetRef="endEvent"/>
+        <sequenceFlow id="flow16" name="No" sourceRef="decisionOfSPC" targetRef="negativeFeedbackRemarks">
+            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${!spc_approved}]]></conditionExpression>
+        </sequenceFlow>
+        <sequenceFlow id="flow88" sourceRef="negativeFeedbackRemarks" targetRef="endEvent"/>
+        <sequenceFlow id="sid-F3E700CB-EDE0-42F6-8EC8-0B0656219C7A" sourceRef="reviewRequest"
+                      targetRef="sid-46E82580-8789-4472-9F86-D2DA2C8C5712"/>
+        <parallelGateway id="sid-46E82580-8789-4472-9F86-D2DA2C8C5712"/>
+        <sequenceFlow id="sid-A594E6EF-9B45-48A9-9626-C26AAE6E7598" sourceRef="sid-46E82580-8789-4472-9F86-D2DA2C8C5712"
+                      targetRef="notificationForAdoption"/>
+        <sequenceFlow id="flow3" sourceRef="sendNotificationCompiledRequests" targetRef="analyzeNotificationRequest"/>
+        <serviceTask id="notificationForAdoption" name="Send notification for adoption of the request to NSC-Sec"
+                     flowable:class="org.kebs.app.kotlin.apollo.api.handlers.EmailHandler"/>
+        <userTask id="viewStdRequest" name="View Standard Request" flowable:candidateUsers="NSC-SEC"
+                  flowable:formFieldValidation="true"/>
+        <sequenceFlow id="sid-9A47291C-4C9B-403A-8DF9-F4E03C5391EC" sourceRef="notificationForAdoption"
+                      targetRef="viewStdRequest"/>
+        <sequenceFlow id="flow6" sourceRef="sid-46E82580-8789-4472-9F86-D2DA2C8C5712" targetRef="approveNotification"/>
+        <sequenceFlow id="sid-289E1133-33A5-4E24-8019-CCC2585184F0" sourceRef="analyzeNotificationRequest"
+                      targetRef="sid-2699202F-FBD3-4E4F-B061-88E9808AC39C"/>
+        <sequenceFlow id="sid-F46DE0E9-0431-424C-9115-69833D95FFDB" sourceRef="sid-2699202F-FBD3-4E4F-B061-88E9808AC39C"
+                      targetRef="sendNotificationNSPSec"/>
+        <parallelGateway id="sid-2699202F-FBD3-4E4F-B061-88E9808AC39C"/>
+        <sequenceFlow id="flow200" sourceRef="sid-2699202F-FBD3-4E4F-B061-88E9808AC39C" targetRef="reviewRequest"/>
+        <serviceTask id="sendNotificationNSPSec" name="Send notification for adoption of the request to NSP-Sec"
+                     flowable:class="org.kebs.app.kotlin.apollo.api.handlers.EmailHandler"/>
+        <userTask id="viewAllStdRequestNSP" name="Notification to include the request in NSP"
+                  flowable:candidateUsers="NSP-SEC" flowable:formFieldValidation="true"/>
+        <sequenceFlow id="sid-BA3226D4-7F2C-4920-9446-23781A19B0CF" sourceRef="sendNotificationNSPSec"
+                      targetRef="viewAllStdRequestNSP"/>
+    </process>
+    <bpmndi:BPMNDiagram id="BPMNDiagram_requestModule">
+        <bpmndi:BPMNPlane bpmnElement="requestModule" id="BPMNPlane_requestModule">
+            <bpmndi:BPMNShape bpmnElement="startEvent" id="BPMNShape_startEvent">
+                <omgdc:Bounds height="30.0" width="30.0" x="245.0" y="130.0"/>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="decideOfTC" id="BPMNShape_decideOfTC">
+                <omgdc:Bounds height="40.00000000000003" width="40.0" x="840.0" y="239.99999999999997"/>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="prepareJustification" id="BPMNShape_prepareJustification">
+                <omgdc:Bounds height="80.0" width="100.0" x="720.0" y="220.0"/>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="decisionOfSPC" id="BPMNShape_decisionOfSPC">
+                <omgdc:Bounds height="40.0" width="40.0" x="360.0" y="240.0"/>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="prepareWorkPlan" id="BPMNShape_prepareWorkPlan">
+                <omgdc:Bounds height="80.0" width="100.0" x="210.0" y="210.0"/>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="endEvent" id="BPMNShape_endEvent">
+                <omgdc:Bounds height="28.0" width="28.0" x="60.0" y="510.0"/>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="sendNotificationCompiledRequests" id="BPMNShape_sendNotificationCompiledRequests">
+                <omgdc:Bounds height="80.0" width="100.0" x="315.0" y="105.0"/>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="analyzeNotificationRequest" id="BPMNShape_analyzeNotificationRequest">
+                <omgdc:Bounds height="72.058109580798" width="88.76970210956483" x="455.6151489452176"
+                              y="108.97094520960098"/>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="reviewRequest" id="BPMNShape_reviewRequest">
+                <omgdc:Bounds height="80.0" width="100.0" x="780.0" y="105.0"/>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="approveNotification" id="BPMNShape_approveNotification">
+                <omgdc:Bounds height="80.0" width="100.0" x="1200.0" y="240.0"/>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="sendToSPCSECForAprroval" id="BPMNShape_sendToSPCSECForAprroval">
+                <omgdc:Bounds height="80.0" width="100.0" x="585.0" y="220.0"/>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="receiveWorkPlanNotification" id="BPMNShape_receiveWorkPlanNotification">
+                <omgdc:Bounds height="80.0" width="100.0" x="210.0" y="345.0"/>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="negativeFeedbackRemarks" id="BPMNShape_negativeFeedbackRemarks">
+                <omgdc:Bounds height="80.0" width="100.0" x="795.0" y="360.0"/>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="approveOrDisapproveRequest" id="BPMNShape_approveOrDisapproveRequest">
+                <omgdc:Bounds height="80.0" width="100.0" x="915.0" y="210.0"/>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="approveOrDisapproveJustification" id="BPMNShape_approveOrDisapproveJustification">
+                <omgdc:Bounds height="80.0" width="100.0" x="450.0" y="220.0"/>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="sendNotiReviewNWI" id="BPMNShape_sendNotiReviewNWI">
+                <omgdc:Bounds height="80.0" width="100.0" x="1060.2984833151181" y="210.0"/>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="prepareNWI" id="BPMNShape_prepareNWI">
+                <omgdc:Bounds height="80.0" width="100.0" x="1200.0" y="390.0"/>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="sid-46E82580-8789-4472-9F86-D2DA2C8C5712" id="BPMNShape_sid-46E82580-8789-4472-9F86-D2DA2C8C5712">
+                <omgdc:Bounds height="40.0" width="40.0" x="975.0" y="125.0"/>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="notificationForAdoption" id="BPMNShape_notificationForAdoption">
+                <omgdc:Bounds height="80.00000000000001" width="100.0" x="1095.0" y="30.0"/>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="viewStdRequest" id="BPMNShape_viewStdRequest">
+                <omgdc:Bounds height="80.0" width="100.0" x="1240.0" y="30.0"/>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="sid-2699202F-FBD3-4E4F-B061-88E9808AC39C" id="BPMNShape_sid-2699202F-FBD3-4E4F-B061-88E9808AC39C">
+                <omgdc:Bounds height="40.0" width="40.0" x="615.0" y="125.0"/>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="sendNotificationNSPSec" id="BPMNShape_sendNotificationNSPSec">
+                <omgdc:Bounds height="80.0" width="100.0" x="585.0" y="15.0"/>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="viewAllStdRequestNSP" id="BPMNShape_viewAllStdRequestNSP">
+                <omgdc:Bounds height="80.0" width="100.0" x="730.0" y="15.0"/>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNEdge bpmnElement="flow17" id="BPMNEdge_flow17">
+                <omgdi:waypoint x="210.0" y="385.0"/>
+                <omgdi:waypoint x="88.0" y="385.0"/>
+                <omgdi:waypoint x="75.39806765748324" y="510.06943197212127"/>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow18" id="BPMNEdge_flow18">
+                <omgdi:waypoint x="260.0" y="289.95000000000005"/>
+                <omgdi:waypoint x="260.0" y="345.0"/>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="sid-289E1133-33A5-4E24-8019-CCC2585184F0"
+                             id="BPMNEdge_sid-289E1133-33A5-4E24-8019-CCC2585184F0">
+                <omgdi:waypoint x="544.3348510547723" y="145.0"/>
+                <omgdi:waypoint x="615.0" y="145.0"/>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow13" id="BPMNEdge_flow13">
+                <omgdi:waypoint x="361.53194765203966" y="258.46153846153845"/>
+                <omgdi:waypoint x="309.9499999999999" y="254.1625"/>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow250" id="BPMNEdge_flow250">
+                <omgdi:waypoint x="1199.9999999999495" y="430.0"/>
+                <omgdi:waypoint x="1110.0" y="430.0"/>
+                <omgdi:waypoint x="1110.2321536895363" y="289.95000000000005"/>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="sid-F3E700CB-EDE0-42F6-8EC8-0B0656219C7A"
+                             id="BPMNEdge_sid-F3E700CB-EDE0-42F6-8EC8-0B0656219C7A">
+                <omgdi:waypoint x="879.9499999999836" y="145.0"/>
+                <omgdi:waypoint x="975.0" y="145.0"/>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow16" id="BPMNEdge_flow16">
+                <omgdi:waypoint x="380.0" y="279.9428800856531"/>
+                <omgdi:waypoint x="380.0" y="400.0"/>
+                <omgdi:waypoint x="795.0" y="400.0"/>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="sid-A594E6EF-9B45-48A9-9626-C26AAE6E7598"
+                             id="BPMNEdge_sid-A594E6EF-9B45-48A9-9626-C26AAE6E7598">
+                <omgdi:waypoint x="995.0" y="125.0"/>
+                <omgdi:waypoint x="995.0" y="55.0"/>
+                <omgdi:waypoint x="1095.0" y="65.0"/>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="sid-9A47291C-4C9B-403A-8DF9-F4E03C5391EC"
+                             id="BPMNEdge_sid-9A47291C-4C9B-403A-8DF9-F4E03C5391EC">
+                <omgdi:waypoint x="1194.95" y="70.0"/>
+                <omgdi:waypoint x="1240.0" y="70.0"/>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow700" id="BPMNEdge_flow700">
+                <omgdi:waypoint x="1250.0" y="319.95000000000005"/>
+                <omgdi:waypoint x="1250.0" y="390.0"/>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow1" id="BPMNEdge_flow1">
+                <omgdi:waypoint x="274.94999834279304" y="145.0"/>
+                <omgdi:waypoint x="315.0" y="145.0"/>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow3" id="BPMNEdge_flow3">
+                <omgdi:waypoint x="414.95000000000005" y="145.0"/>
+                <omgdi:waypoint x="455.6151489450756" y="145.0"/>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="sid-F46DE0E9-0431-424C-9115-69833D95FFDB"
+                             id="BPMNEdge_sid-F46DE0E9-0431-424C-9115-69833D95FFDB">
+                <omgdi:waypoint x="635.0" y="125.0"/>
+                <omgdi:waypoint x="635.0" y="94.95"/>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow31" id="BPMNEdge_flow31">
+                <omgdi:waypoint x="585.0" y="260.0"/>
+                <omgdi:waypoint x="549.9499999999281" y="260.0"/>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow6" id="BPMNEdge_flow6">
+                <omgdi:waypoint x="1014.9460897687122" y="145.0"/>
+                <omgdi:waypoint x="1250.0" y="145.0"/>
+                <omgdi:waypoint x="1250.0" y="240.0"/>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow10" id="BPMNEdge_flow10">
+                <omgdi:waypoint x="840.0" y="260.0"/>
+                <omgdi:waypoint x="819.9499999999999" y="260.0"/>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow11" id="BPMNEdge_flow11">
+                <omgdi:waypoint x="720.0" y="260.0"/>
+                <omgdi:waypoint x="684.9499999999999" y="260.0"/>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow8" id="BPMNEdge_flow8">
+                <omgdi:waypoint x="915.0" y="250.0"/>
+                <omgdi:waypoint x="905.0" y="250.0"/>
+                <omgdi:waypoint x="905.0" y="260.0"/>
+                <omgdi:waypoint x="879.9221046770601" y="260.0"/>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow88" id="BPMNEdge_flow88">
+                <omgdi:waypoint x="845.0" y="439.95000000000005"/>
+                <omgdi:waypoint x="845.0" y="522.0"/>
+                <omgdi:waypoint x="87.94995405436816" y="523.9636836474975"/>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow12" id="BPMNEdge_flow12">
+                <omgdi:waypoint x="450.0" y="260.0"/>
+                <omgdi:waypoint x="399.90827773134777" y="260.0"/>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow9" id="BPMNEdge_flow9">
+                <omgdi:waypoint x="860.0" y="279.9334026622296"/>
+                <omgdi:waypoint x="860.0" y="320.0"/>
+                <omgdi:waypoint x="845.0" y="320.0"/>
+                <omgdi:waypoint x="845.0" y="360.0"/>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="sid-BA3226D4-7F2C-4920-9446-23781A19B0CF"
+                             id="BPMNEdge_sid-BA3226D4-7F2C-4920-9446-23781A19B0CF">
+                <omgdi:waypoint x="684.9499999999999" y="55.0"/>
+                <omgdi:waypoint x="729.999999999987" y="55.0"/>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow200" id="BPMNEdge_flow200">
+                <omgdi:waypoint x="654.9448872371812" y="145.0"/>
+                <omgdi:waypoint x="779.9999999999362" y="145.0"/>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow30" id="BPMNEdge_flow30">
+                <omgdi:waypoint x="1060.2984833151181" y="250.0"/>
+                <omgdi:waypoint x="1014.9499999999999" y="250.0"/>
+            </bpmndi:BPMNEdge>
+        </bpmndi:BPMNPlane>
+    </bpmndi:BPMNDiagram>
+</definitions>

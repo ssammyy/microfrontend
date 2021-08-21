@@ -95,6 +95,21 @@ where PERMIT_REF_NUMBER = 'REFSM#202106098701C'
 order by id desc;
 
 select *
+from CFG_KEBS_PERMIT_RATING
+-- where id = 503
+
+-- where PERMIT_NUMBER = 'DM#0954A'
+order by id desc;
+
+select *
+from DAT_KEBS_MANUFACTURE_PLANT_DETAILS
+where id = 681
+
+-- where PERMIT_NUMBER = 'DM#0954A'
+order by id desc;
+
+
+select *
 from dat_kebs_qa_batch_invoice
 -- where id = 503
 
@@ -725,17 +740,69 @@ create or replace trigger dat_kebs_qa_invoice_details_seq_trg
 begin
     if inserting then
         if :new.id is null then
-select dat_kebs_qa_invoice_details_seq.nextval
-into :new.id
-from dual;
+            select dat_kebs_qa_invoice_details_seq.nextval
+            into :new.id
+            from dual;
 
-end if;
+        end if;
 
-end if;
+    end if;
 end;
 
 create
-index dat_kebs_qa_invoice_details_idx on dat_kebs_qa_invoice_details (PERMIT_ID, status) TABLESPACE qaimssdb_idx;
+    index dat_kebs_qa_invoice_details_idx on dat_kebs_qa_invoice_details (PERMIT_ID, status) TABLESPACE qaimssdb_idx;
+/
+
+
+create table dat_kebs_qa_sample_submitted_pdf_list_details
+(
+    id           NUMBER PRIMARY KEY,
+    PDF_SAVED_ID NUMBER REFERENCES dat_kebs_qa_uploads (ID),
+    PDF_NAME     VARCHAR2(200),
+    SFF_ID       NUMBER REFERENCES dat_kebs_qa_sample_submission (ID),
+    DESCRIPTION  VARCHAR2(200),
+    status       NUMBER(2),
+    var_field_1  VARCHAR2(350 CHAR),
+    var_field_2  VARCHAR2(350 CHAR),
+    var_field_3  VARCHAR2(350 CHAR),
+    var_field_4  VARCHAR2(350 CHAR),
+    var_field_5  VARCHAR2(350 CHAR),
+    var_field_6  VARCHAR2(350 CHAR),
+    var_field_7  VARCHAR2(350 CHAR),
+    var_field_8  VARCHAR2(350 CHAR),
+    var_field_9  VARCHAR2(350 CHAR),
+    var_field_10 VARCHAR2(350 CHAR),
+    created_by   VARCHAR2(100 CHAR)          DEFAULT 'admin' NOT NULL ENABLE,
+    created_on   TIMESTAMP(6) WITH TIME ZONE DEFAULT sysdate NOT NULL ENABLE,
+    modified_by  VARCHAR2(100 CHAR)          DEFAULT 'admin',
+    modified_on  TIMESTAMP(6) WITH TIME ZONE DEFAULT sysdate,
+    delete_by    VARCHAR2(100 CHAR)          DEFAULT 'admin',
+    deleted_on   TIMESTAMP(6) WITH TIME ZONE
+) TABLESPACE qaimssdb_data;
+
+create sequence dat_kebs_qa_sample_submitted_pdf_list_details_seq minvalue 1 maxvalue 9999999999999999999999999999 increment by 1 start with 1 cache 20 noorder nocycle;
+
+create or replace trigger dat_kebs_qa_sample_submitted_pdf_list_details_seq_trg
+    before
+        insert
+    on dat_kebs_qa_sample_submitted_pdf_list_details
+    for each row
+begin
+    if inserting then
+        if :new.id is null then
+            select dat_kebs_qa_sample_submitted_pdf_list_details_seq.nextval
+            into :new.id
+            from dual;
+
+        end if;
+
+    end if;
+end;
+
+create
+    index dat_kebs_qa_sample_submitted_pdf_list_details_idx on dat_kebs_qa_sample_submitted_pdf_list_details (PDF_SAVED_ID,
+                                                                                                              SFF_ID,
+                                                                                                              status) TABLESPACE qaimssdb_idx;
 /
 
 create table dat_kebs_qa_invoice_master_details
@@ -744,7 +811,7 @@ create table dat_kebs_qa_invoice_master_details
     INVOICE_REF     VARCHAR2(200) UNIQUE,
     GENERATED_DATE  TIMESTAMP,
     ITEM_COUNT      NUMBER,
-    TOTAL_AMOUNT    NUMBER(38,2),
+    TOTAL_AMOUNT    NUMBER(38, 2),
     AMOUNT_IN_WORDS VARCHAR2(200),
     PERMIT_ID       NUMBER REFERENCES DAT_KEBS_PERMIT_TRANSACTION (ID),
     DESCRIPTION     VARCHAR2(200),
@@ -1265,17 +1332,20 @@ create index dat_kebs_qa_batch_invoice_idx on dat_kebs_qa_batch_invoice (status)
 /
 
 
+create sequence dat_kebs_qa_uploads_seq minvalue 1 maxvalue 9999999999999999999999999999 increment by 1 start with 1 cache 20 noorder nocycle;
+
 create table dat_kebs_qa_uploads
 (
     id               NUMBER PRIMARY KEY,
     FILEPATH         VARCHAR2(200),
-    DESCRIPTION      VARCHAR2(200),
     NAME             VARCHAR2(50),
     FILE_TYPE        VARCHAR2(200),
     DOCUMENT_TYPE    VARCHAR2(200),
     DOCUMENT         BLOB,
     TRANSACTION_DATE DATE,
     PERMIT_ID      NUMBER REFERENCES DAT_KEBS_PERMIT_TRANSACTION (ID),
+
+    DESCRIPTION      VARCHAR2(200),
     status           NUMBER(2),
     var_field_1      VARCHAR2(350 CHAR),
     var_field_2      VARCHAR2(350 CHAR),
@@ -1294,8 +1364,6 @@ create table dat_kebs_qa_uploads
     delete_by        VARCHAR2(100 CHAR)          DEFAULT 'admin',
     deleted_on       TIMESTAMP(6) WITH TIME ZONE
 ) TABLESPACE qaimssdb_data;
-
-create sequence dat_kebs_qa_uploads_seq minvalue 1 maxvalue 9999999999999999999999999999 increment by 1 start with 1 cache 20 noorder nocycle;
 
 create or replace trigger dat_kebs_qa_uploads_seq_trg
     before

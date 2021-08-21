@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xmlns:flowable="http://flowable.org/bpmn"
+             xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+             xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI"
+             typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath"
+             targetNamespace="http://www.flowable.org/processdef">
+    <process id="nationalEnquiryPoint" name="National Enquiry Point" isExecutable="true">
+        <documentation>The process for National Enquiry Point includes: Receive enquiries and save them on the system
+            (Qaimss), NEP officer are notified of the Enquiry comments, NEP officer responds with required information
+        </documentation>
+        <startEvent id="startEvent1" flowable:formFieldValidation="true"/>
+        <sequenceFlow id="sid-3A36F601-0168-4B44-8256-8FED76AFA080" sourceRef="enquiryNotification"
+                      targetRef="informationAvailable"/>
+        <exclusiveGateway id="informationAvailable" name="Information Available"/>
+        <sequenceFlow id="sid-361EFC03-DA18-4012-8E8B-BBBB7DBE07C1" name="Yes" sourceRef="informationAvailable"
+                      targetRef="responseEmail">
+            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${Yes}]]></conditionExpression>
+        </sequenceFlow>
+        <sequenceFlow id="sid-2294CAD0-CF9C-4057-9FF1-80D972793696" name="No" sourceRef="informationAvailable"
+                      targetRef="receiveEnquiryNotification">
+            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${!Yes}]]></conditionExpression>
+        </sequenceFlow>
+        <endEvent id="processEnd"/>
+        <sequenceFlow id="sid-C0DD3FFD-1A31-4622-BDA1-A57BD08E0F5B" sourceRef="responseEmail"
+                      targetRef="processEnd"/>
+        <userTask id="enquiryNotification" name="New Notification" flowable:candidateGroups="SD_NEP_OFFICER"
+                  flowable:formFieldValidation="true"/>
+        <userTask id="receiveEnquiryNotification" name="Division or organization provides feedback
+" flowable:candidateGroups="DIVISION_ORG" flowable:formFieldValidation="true"/>
+        <sequenceFlow id="sid-D97DA51C-6AC8-4751-9605-8B62A2BA2A15" sourceRef="startEvent1"
+                      targetRef="enquiryNotification"/>
+        <userTask id="responseEmail" name="Send Feedback Email" flowable:candidateGroups="SD_NEP_OFFICER"
+                  flowable:formFieldValidation="true"/>
+        <sequenceFlow id="sid-8FA4D482-098B-4EAF-88E7-5B6723CDE94D" sourceRef="receiveEnquiryNotification"
+                      targetRef="responseEmail"/>
+    </process>
+    <bpmndi:BPMNDiagram id="BPMNDiagram_nationalEnquiryPoint">
+        <bpmndi:BPMNPlane bpmnElement="nationalEnquiryPoinnt" id="BPMNPlane_nationalEnquiryPoint">
+            <bpmndi:BPMNShape bpmnElement="startEvent1" id="BPMNShape_startEvent1">
+                <omgdc:Bounds height="30.0" width="30.0" x="105.0" y="40.0"/>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="informationAvailable" id="BPMNShape_informationAvailable">
+                <omgdc:Bounds height="40.0" width="40.0" x="450.0" y="35.0"/>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="processEnd" id="BPMNShape_processEnd">
+                <omgdc:Bounds height="28.0" width="28.0" x="330.0" y="146.0"/>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="enquiryNotification" id="BPMNShape_enquiryNotification">
+                <omgdc:Bounds height="80.0" width="100.0" x="285.0" y="15.0"/>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="receiveEnquiryNotification" id="BPMNShape_receiveEnquiryNotification">
+                <omgdc:Bounds height="111.0" width="121.0" x="675.0" y="0.0"/>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="responseEmail" id="BPMNShape_responseEmail">
+                <omgdc:Bounds height="80.0" width="100.0" x="420.0" y="120.0"/>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNEdge bpmnElement="sid-8FA4D482-098B-4EAF-88E7-5B6723CDE94D"
+                             id="BPMNEdge_sid-8FA4D482-098B-4EAF-88E7-5B6723CDE94D">
+                <omgdi:waypoint x="675.0" y="83.6039441747573"/>
+                <omgdi:waypoint x="519.9499999999999" y="141.37135922330097"/>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="sid-2294CAD0-CF9C-4057-9FF1-80D972793696"
+                             id="BPMNEdge_sid-2294CAD0-CF9C-4057-9FF1-80D972793696">
+                <omgdi:waypoint x="489.90876550169105" y="55.037499999999994"/>
+                <omgdi:waypoint x="675.0" y="55.38606403013183"/>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="sid-C0DD3FFD-1A31-4622-BDA1-A57BD08E0F5B"
+                             id="BPMNEdge_sid-C0DD3FFD-1A31-4622-BDA1-A57BD08E0F5B">
+                <omgdi:waypoint x="419.9999999999987" y="160.0"/>
+                <omgdi:waypoint x="357.9499294512592" y="160.0"/>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="sid-3A36F601-0168-4B44-8256-8FED76AFA080"
+                             id="BPMNEdge_sid-3A36F601-0168-4B44-8256-8FED76AFA080">
+                <omgdi:waypoint x="384.95000000000005" y="55.0"/>
+                <omgdi:waypoint x="450.0" y="55.0"/>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="sid-361EFC03-DA18-4012-8E8B-BBBB7DBE07C1"
+                             id="BPMNEdge_sid-361EFC03-DA18-4012-8E8B-BBBB7DBE07C1">
+                <omgdi:waypoint x="470.0" y="74.94050903901045"/>
+                <omgdi:waypoint x="470.0" y="120.0"/>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="sid-D97DA51C-6AC8-4751-9605-8B62A2BA2A15"
+                             id="BPMNEdge_sid-D97DA51C-6AC8-4751-9605-8B62A2BA2A15">
+                <omgdi:waypoint x="134.94999933672412" y="55.0"/>
+                <omgdi:waypoint x="285.0" y="55.0"/>
+            </bpmndi:BPMNEdge>
+        </bpmndi:BPMNPlane>
+    </bpmndi:BPMNDiagram>
+</definitions>

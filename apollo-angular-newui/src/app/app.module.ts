@@ -46,14 +46,14 @@ import {AuthLayoutComponent} from './layouts/auth/auth-layout.component';
 
 // import {routes} from './app.routing';
 import {DashboardComponent} from './apollowebs/dashboard/dashboard.component';
-import {InvoiceComponent} from './apollowebs/invoice/invoice.component';
+import {InvoiceComponent} from './apollowebs/quality-assurance/invoice/invoice.component';
 import {AppRoutingModule} from './app.routing';
 import {MdModule} from './md/md.module';
-import {FmarkComponent} from './apollowebs/fmark/fmark.component';
-import {DmarkComponent} from './apollowebs/dmark/dmark.component';
-import {SmarkComponent} from './apollowebs/smark/smark.component';
-import {FmarkallappsComponent} from './apollowebs/fmarkallapps/fmarkallapps.component';
-import {St10FormComponent} from './apollowebs/st10-form/st10-form.component';
+import {FmarkComponent} from './apollowebs/quality-assurance/fmark/fmark.component';
+import {DmarkComponent} from './apollowebs/quality-assurance/dmark/dmark.component';
+import {SmarkComponent} from './apollowebs/quality-assurance/smark/smark.component';
+import {FmarkallappsComponent} from './apollowebs/quality-assurance/fmarkallapps/fmarkallapps.component';
+import {St10FormComponent} from './apollowebs/quality-assurance/st10-form/st10-form.component';
 import {FontAwesomeModule} from '@fortawesome/angular-fontawesome';
 import {NgxPaginationModule} from 'ngx-pagination';
 import {CoreModule} from './core/core.module';
@@ -63,23 +63,23 @@ import {SignUpComponent} from './views/registration/sign-up.component';
 import {ResetCredentialsComponent} from './views/registration/reset-credentials.component';
 import {LoginComponent} from './views/registration/login.component';
 import {PermitReportComponent} from './apollowebs/permit-report/permit-report.component';
-import {NewSmarkPermitComponent} from './apollowebs/new-smark-permit/new-smark-permit.component';
-import {NewDmarkPermitComponent} from './apollowebs/new-dmark-permit/new-dmark-permit.component';
-import {DmarkApplicationsAllComponent} from './apollowebs/dmark-applications-all/dmark-applications-all.component';
-import { InvoiceDetailsComponent } from './apollowebs/invoice-details/invoice-details.component';
-import { CompaniesList } from './apollowebs/company/companies.list';
-import { CompanyComponent } from './apollowebs/company/company.component';
-import { BranchComponent } from './apollowebs/company/branch/branch.component';
-import { BranchList } from './apollowebs/company/branch/branch.list';
+import {NewSmarkPermitComponent} from './apollowebs/quality-assurance/new-smark-permit/new-smark-permit.component';
+import {NewDmarkPermitComponent} from './apollowebs/quality-assurance/new-dmark-permit/new-dmark-permit.component';
+import {DmarkApplicationsAllComponent} from './apollowebs/quality-assurance/dmark-applications-all/dmark-applications-all.component';
+import {InvoiceDetailsComponent} from './apollowebs/quality-assurance/invoice-details/invoice-details.component';
+import {CompaniesList} from './apollowebs/company/companies.list';
+import {CompanyComponent} from './apollowebs/company/company.component';
+import {BranchComponent} from './apollowebs/company/branch/branch.component';
+import {BranchList} from './apollowebs/company/branch/branch.list';
 import {UserComponent} from './apollowebs/company/branch/users/user.component';
 import {UserList} from './apollowebs/company/branch/users/user.list';
 import {UserProfileComponent} from './apollowebs/company/branch/users/user-profile.component';
-import {SmarkApplicationsAllComponent} from './apollowebs/smark-applications-all/smark-applications-all.component';
+import {SmarkApplicationsAllComponent} from './apollowebs/quality-assurance/smark-applications-all/smark-applications-all.component';
 import {UserProfileMainComponent} from './apollowebs/userprofilemain/user-profile-main.component';
 import {NgxSpinnerModule} from 'ngx-spinner';
 import {AddBranchComponent} from './apollowebs/company/branch/add-branch/add-branch.component';
 import {OtpComponent} from './views/registration/otp/otp.component';
-import {InvoiceConsolidateComponent} from './apollowebs/invoice-consolidate/invoice-consolidate.component';
+import {InvoiceConsolidateComponent} from './apollowebs/quality-assurance/invoice-consolidate/invoice-consolidate.component';
 import {PdfViewComponent} from './pdf-view/pdf-view.component';
 import {PdfViewerModule} from 'ng2-pdf-viewer';
 import {BrowserModule} from '@angular/platform-browser';
@@ -87,7 +87,7 @@ import {NgxExtendedPdfViewerModule} from 'ngx-extended-pdf-viewer';
 import {TaskManagerComponent} from './apollowebs/task-manager/task-manager.component';
 import {FileUploadModule} from '@iplab/ngx-file-upload';
 import {AddUserComponent} from './apollowebs/company/branch/add-user/add-user.component';
-import {FmarkApplicationComponent} from './apollowebs/fmark-application/fmark-application.component';
+import {FmarkApplicationComponent} from './apollowebs/quality-assurance/fmark-application/fmark-application.component';
 import {LoaderComponent} from './shared/loader/loader.component';
 import {NgbModule, NgbNavModule} from '@ng-bootstrap/ng-bootstrap';
 import { ImportInspectionComponent } from './apollowebs/pvoc/import-inspection/import-inspection.component';
@@ -111,6 +111,49 @@ import { ApproveRejectConsignmentComponent } from './apollowebs/di/view-single-c
 import { MinistryInspectionHomeComponent } from './apollowebs/di/ministry-inspection-home/ministry-inspection-home.component';
 import { MotorVehicleInspectionSingleViewComponent } from './apollowebs/di/motor-vehicle-inspection-single-view/motor-vehicle-inspection-single-view.component';
 import { UploadForeignFormComponent } from './apollowebs/di/consignment-document-list/upload-foreign-form/upload-foreign-form.component';
+import {FormsComponent} from './apollowebs/forms/forms.component';
+import {FieldErrorDisplayComponent} from './apollowebs/forms/field-error-display/field-error-display.component';
+import {NwaJustificationFormComponent} from "./apollowebs/standards-development/workshop-agreement/nwa-justification-form/nwa-justification-form.component";
+import {StandardsDevelopmentComponent} from "./apollowebs/standards-development/standards-development.component";
+import {InformationcheckComponent} from './apollowebs/standards-development/informationcheck/informationcheck.component';
+import {UsermanagementComponent} from './apollowebs/usermanagement/usermanagement.component';
+import {NwaJustificationTasksComponent} from './apollowebs/standards-development/workshop-agreement/nwa-justification-tasks/nwa-justification-tasks.component';
+import {DataTablesModule} from "angular-datatables";
+import {NwaKnwSecTasksComponent} from './apollowebs/standards-development/workshop-agreement/nwa-knw-sec-tasks/nwa-knw-sec-tasks.component';
+import {NwaDiSdtTasksComponent} from './apollowebs/standards-development/workshop-agreement/nwa-di-sdt-tasks/nwa-di-sdt-tasks.component';
+import {NwaHopTasksComponent} from './apollowebs/standards-development/workshop-agreement/nwa-hop-tasks/nwa-hop-tasks.component';
+import {SacSecTasksComponent} from './apollowebs/standards-development/workshop-agreement/sac-sec-tasks/sac-sec-tasks.component';
+import {HoSicTasksComponent} from './apollowebs/standards-development/ho-sic-tasks/ho-sic-tasks.component';
+import {ReviewStandardsComponent} from './apollowebs/standards-development/systemic-review/request-standard-review/review-standards/review-standards.component';
+import {CsRequestFormComponent} from './apollowebs/standards-development/company-standard/company-standard-request/cs-request-form/cs-request-form.component';
+import {DivisionresponseComponent} from "./apollowebs/standards-development/divisionresponse/divisionresponse.component";
+import {NationalEnquiryPointComponent} from './apollowebs/standards-development/national-enquiry-point/national-enquiry-point.component';
+import {MakeEnquiryComponent} from './apollowebs/standards-development/national-enquiry-point/make-enquiry/make-enquiry.component';
+import {InternationalStandardProposalComponent} from "./apollowebs/standards-development/international-standard/international-standard-proposal/international-standard-proposal.component";
+import {ComStdRequestListComponent} from "./apollowebs/standards-development/company-standard/com-std-request-list/com-std-request-list.component";
+import {IntStdResponsesListComponent} from "./apollowebs/standards-development/international-standard/int-std-responses-list/int-std-responses-list.component";
+import {ComStdJcJustificationComponent} from "./apollowebs/standards-development/company-standard/com-std-jc-justification/com-std-jc-justification.component";
+import {IntStdJustificationListComponent} from "./apollowebs/standards-development/international-standard/int-std-justification-list/int-std-justification-list.component";
+import {IntStdCommentsComponent} from "./apollowebs/standards-development/international-standard/int-std-comments/int-std-comments.component";
+import {CompanyStandardRequestComponent} from "./apollowebs/standards-development/company-standard/company-standard-request/company-standard-request.component";
+import {ComStdJcJustificationListComponent} from "./apollowebs/standards-development/company-standard/com-std-jc-justification-list/com-std-jc-justification-list.component";
+import {RequestStandardReviewComponent} from "./apollowebs/standards-development/systemic-review/request-standard-review/request-standard-review.component";
+import {SystemicReviewCommentsComponent} from "./apollowebs/standards-development/systemic-review/systemic-review-comments/systemic-review-comments.component";
+import {IntStdJustificationAppComponent} from "./apollowebs/standards-development/international-standard/int-std-justification-app/int-std-justification-app.component";
+import {IsProposalFormComponent} from "./apollowebs/standards-development/international-standard/international-standard-proposal/is-proposal-form/is-proposal-form.component";
+import {SystemicAnalyseCommentsComponent} from "./apollowebs/standards-development/systemic-review/systemic-analyse-comments/systemic-analyse-comments.component";
+import {UserManagementProfileComponent} from './apollowebs/usermanagement/user-management-profile/user-management-profile.component';
+import {NepNotificationComponent} from './apollowebs/standards-development/nep-notification/nep-notification.component';
+import {StandardRequestComponent} from './apollowebs/standards-development/standard-request/standard-request.component';
+import {RequestStandardFormComponent} from './apollowebs/standards-development/standard-request/request-standard-form/request-standard-form.component';
+import {ReviewApplicationsComponent} from './apollowebs/standards-development/standard-request/review-applications/review-applications.component';
+import {StandardTaskComponent} from './apollowebs/standards-development/standard-request/standard-task/standard-task.component';
+//import {ModalModule} from "ngb-modal";
+import {ModalModule} from "ngb-modal";
+
+
+// import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
+
 @NgModule({
     exports: [
         MatAutocompleteModule,
@@ -148,6 +191,9 @@ import { UploadForeignFormComponent } from './apollowebs/di/consignment-document
         MdModule,
         CommonModule,
         BrowserModule,
+        ModalModule,
+        // NgbModule,
+        //ModalModule,
         // TODO: Discuss as it seems to kill sending of requests to backend
         // EffectsModule.forRoot([]),
         // EntityDataModule.forRoot(entityConfig),
@@ -158,6 +204,9 @@ import { UploadForeignFormComponent } from './apollowebs/di/consignment-document
         PdfViewerModule,
         NgxExtendedPdfViewerModule,
         FileUploadModule,
+        NgxSpinnerModule,
+        DataTablesModule,
+        NgxPaginationModule,
         Ng2SmartTableModule,
         NgbNavModule
         // CoreModule
@@ -197,6 +246,44 @@ import { UploadForeignFormComponent } from './apollowebs/di/consignment-document
         AddUserComponent,
         FmarkApplicationComponent,
         LoaderComponent,
+        FormsComponent,
+        FieldErrorDisplayComponent,
+        NwaJustificationFormComponent,
+        StandardsDevelopmentComponent,
+        InformationcheckComponent,
+        UsermanagementComponent,
+        NwaJustificationTasksComponent,
+        NwaKnwSecTasksComponent,
+        NwaDiSdtTasksComponent,
+        NwaHopTasksComponent,
+        SacSecTasksComponent,
+        HoSicTasksComponent,
+        InternationalStandardProposalComponent,
+        IntStdCommentsComponent,
+        IntStdJustificationAppComponent,
+        IntStdJustificationListComponent,
+        IntStdResponsesListComponent,
+        IsProposalFormComponent,
+        RequestStandardReviewComponent,
+        ReviewStandardsComponent,
+        SystemicReviewCommentsComponent,
+        SystemicAnalyseCommentsComponent,
+        CompanyStandardRequestComponent,
+        CsRequestFormComponent,
+        ComStdRequestListComponent,
+        ComStdJcJustificationComponent,
+        ComStdJcJustificationListComponent,
+        InformationcheckComponent,
+        DivisionresponseComponent,
+        NationalEnquiryPointComponent,
+        MakeEnquiryComponent,
+        UserManagementProfileComponent,
+        NepNotificationComponent,
+        StandardRequestComponent,
+        RequestStandardFormComponent,
+        ReviewApplicationsComponent,
+        StandardTaskComponent
+
         ProductDetailsComponent,
         ImportationWaiverComponent,
         MainProductionMachineryComponent,

@@ -2,11 +2,11 @@ package org.kebs.app.kotlin.apollo.store.repo.di
 
 import org.kebs.app.kotlin.apollo.store.model.*
 import org.kebs.app.kotlin.apollo.store.model.di.*
-import org.kebs.app.kotlin.apollo.store.model.di.ConsignmentDocumentDetailsEntity
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.hazelcast.repository.HazelcastRepository
 import org.springframework.data.jpa.repository.Query
+import org.springframework.data.repository.query.Param
 import org.springframework.stereotype.Repository
 
 
@@ -20,27 +20,41 @@ interface IConsignmentDocumentDetailsRepository : HazelcastRepository<Consignmen
 //    fun findByPortOfArrivalAndCocIdIsNotNull(portOfArrival: SectionsEntity, pageable: Pageable): Page<ConsignmentDocumentDetailsEntity>?
 
     fun findByPortOfArrivalAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNull(
-            portOfArrival: Long,
-            cdType: Long,
-            page: Pageable
-    ): Page<ConsignmentDocumentDetailsEntity>
+        portOfArrival: Long,
+        cdType: Long
+    ): List<ConsignmentDocumentDetailsEntity>?
+
+    fun findByFreightStationAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNull(
+        freightStation: Long, cdType: ConsignmentDocumentTypesEntity
+    ): List<ConsignmentDocumentDetailsEntity>?
+
+    fun findByFreightStationAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNull(freightStation: Long
+    ): List<ConsignmentDocumentDetailsEntity>?
 
     fun findByPortOfArrivalAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNull(
-            portOfArrival: Long,
-            page: Pageable
-    ): Page<ConsignmentDocumentDetailsEntity>
+        portOfArrival: Long
+    ): List<ConsignmentDocumentDetailsEntity>?
 
     fun findByPortOfArrivalAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNotNull(
-            portOfArrival: Long,
-            cdType: Long,
-            page: Pageable
-    ): Page<ConsignmentDocumentDetailsEntity>
+        portOfArrival: Long,
+        cdType: Long
+    ): List<ConsignmentDocumentDetailsEntity>?
+
     fun findByPortOfArrivalAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNotNull(
-            portOfArrival: Long,
-            page: Pageable
-    ): Page<ConsignmentDocumentDetailsEntity>
-    fun findByPortOfArrivalIsNullAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNull(cdType: Long, page: Pageable): Page<ConsignmentDocumentDetailsEntity>
-    fun findByPortOfArrivalIsNullAndUcrNumberIsNotNullAndOldCdStatusIsNull(page: Pageable): Page<ConsignmentDocumentDetailsEntity>
+        portOfArrival: Long
+    ): List<ConsignmentDocumentDetailsEntity>?
+
+    fun findByFreightStationAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNotNull(
+        freightStation: Long
+    ): List<ConsignmentDocumentDetailsEntity>?
+
+    fun findByPortOfArrivalIsNullAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNull(cdType: Long): List<ConsignmentDocumentDetailsEntity>?
+
+    fun findByFreightStationIsNullAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNull(cdType: ConsignmentDocumentTypesEntity): List<ConsignmentDocumentDetailsEntity>?
+
+    fun findByFreightStationIsNullAndUcrNumberIsNotNullAndOldCdStatusIsNull(): List<ConsignmentDocumentDetailsEntity>?
+
+    fun findByPortOfArrivalIsNullAndUcrNumberIsNotNullAndOldCdStatusIsNull(): List<ConsignmentDocumentDetailsEntity>?
 
     fun findByPortOfArrivalOrderByIdDesc(
             portOfArrival: Long,
@@ -48,6 +62,12 @@ interface IConsignmentDocumentDetailsRepository : HazelcastRepository<Consignmen
     ): Page<ConsignmentDocumentDetailsEntity>?
 
     fun findAllByAssignedInspectionOfficerAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNull(
+        assignedInspectionOfficer: UsersEntity, cdType: ConsignmentDocumentTypesEntity
+    ): List<ConsignmentDocumentDetailsEntity>?
+
+    fun findAllByAssignedInspectionOfficerAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNull(
+        assignedInspectionOfficer: UsersEntity
+    ): List<ConsignmentDocumentDetailsEntity>?
             assignedInspectionOfficer: UsersEntity,
             cdType: Long,
             page: Pageable,
@@ -55,6 +75,12 @@ interface IConsignmentDocumentDetailsRepository : HazelcastRepository<Consignmen
 
 
     fun findAllByAssignedInspectionOfficerAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNotNull(
+        assignedInspectionOfficer: UsersEntity, cdType: ConsignmentDocumentTypesEntity
+    ): List<ConsignmentDocumentDetailsEntity>?
+
+    fun findAllByAssignedInspectionOfficerAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNotNull(
+        assignedInspectionOfficer: UsersEntity
+    ): List<ConsignmentDocumentDetailsEntity>?
             assignedInspectionOfficer: UsersEntity,
             cdType: Long,
             page: Pageable
@@ -66,6 +92,8 @@ interface IConsignmentDocumentDetailsRepository : HazelcastRepository<Consignmen
     ): Page<ConsignmentDocumentDetailsEntity>
 
     fun findByFreightStationAndAssignedInspectionOfficerIsNullAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNull(
+        freightStation: Long, cdType: ConsignmentDocumentTypesEntity
+    ): List<ConsignmentDocumentDetailsEntity>?
             freightStation: Long,
             cdType: Long,
             page: Pageable
@@ -74,6 +102,9 @@ interface IConsignmentDocumentDetailsRepository : HazelcastRepository<Consignmen
             freightStation: Long,
             page: Pageable
     ): Page<ConsignmentDocumentDetailsEntity>
+
+    fun findByFreightStationAndAssignedInspectionOfficerIsNullAndUcrNumberIsNotNullAndOldCdStatusIsNull(
+        freightStation: Long): List<ConsignmentDocumentDetailsEntity>?
 
     fun findByUcrNumber(ucrNumber: String): ConsignmentDocumentDetailsEntity?
     fun findByUcrNumberAndOldCdStatus(ucrNumber: String, oldCdStatus: Int): List<ConsignmentDocumentDetailsEntity>?
@@ -129,6 +160,16 @@ interface ICfsTypeCodesRepository : HazelcastRepository<CfsTypeCodesEntity, Long
     fun findByCfsCode(cfsCode: String): CfsTypeCodesEntity?
 
     fun findByStatus(status: Int): List<CfsTypeCodesEntity>?
+    fun findByStatusOrderByCfsName(status: Int): List<CfsTypeCodesEntity>?
+
+    @Query(
+        "SELECT r.* FROM CFG_USERS_CFS_ASSIGNMENTS UR, CFG_KEBS_CFS_TYPE_CODES R WHERE UR.CFS_ID = R.ID AND UR.STATUS = :status AND UR.USER_PROFILE_ID = :userProfileID order by r.ID",
+        nativeQuery = true
+    )
+    fun findRbacCfsByUserProfileID(
+        @Param("userProfileID") userProfileID: Long,
+        @Param("status") status: Int
+    ): List<CfsTypeCodesEntity>?
 //    fun findAllById(Id: Long): List<ConsignmentDocumentTypesEntity>?
 }
 
@@ -180,6 +221,7 @@ interface ICfgMoneyTypeCodesRepository : HazelcastRepository<MoneyTypeCodesEntit
 
 @Repository
 interface IDiUploadsRepository : HazelcastRepository<DiUploadsEntity, Long> {
+    fun findAllByCdId(cdId: ConsignmentDocumentDetailsEntity): List<DiUploadsEntity>?
     fun findAllById(Id: Long): List<DiUploadsEntity>?
 }
 
@@ -191,6 +233,12 @@ interface ICdExporterEntityRepository : HazelcastRepository<CdExporterDetailsEnt
 @Repository
 interface ICdTransportEntityRepository : HazelcastRepository<CdTransportDetailsEntity, Long> {
     fun findAllById(Id: Long): List<CdTransportDetailsEntity>?
+}
+
+@Repository
+interface IMinistryStationEntityRepository : HazelcastRepository<MinistryStationEntity, Long> {
+    fun findAllById(Id: Long): List<MinistryStationEntity>?
+    fun findByStatus(status: Int): List<MinistryStationEntity>?
 }
 
 @Repository
@@ -380,6 +428,7 @@ interface ICdValuesHeaderLevelEntityRepository : HazelcastRepository<CdValuesHea
 @Repository
 interface IUsersCfsAssignmentsRepository : HazelcastRepository<UsersCfsAssignmentsEntity, Long> {
     fun findAllById(Id: Long): List<UsersCfsAssignmentsEntity>?
+    fun findByUserProfileId(userProfileId: Long): List<UsersCfsAssignmentsEntity>?
     fun findByUserProfileIdAndCfsId(userProfileId: Long, cfsId: Long): UsersCfsAssignmentsEntity?
     fun findByUserProfileIdAndCfsIdAndStatus(userProfileId: Long, cfsId: Long, status: Int): UsersCfsAssignmentsEntity?
 }
@@ -440,24 +489,24 @@ interface IConsignmentItemsRepository : HazelcastRepository<CdItemDetailsEntity,
     fun findByMinistrySubmissionStatus(status: Int): List<CdItemDetailsEntity>?
 
     @Query(
-            "SELECT DAT_KEBS_CD_ITEM_DETAILS.* FROM\n" +
-                    "    DAT_KEBS_CD_ITEM_DETAILS\n" +
-                    "        INNER JOIN DAT_KEBS_CD_INSPECTION_GENERAL ON DAT_KEBS_CD_ITEM_DETAILS.ID = DAT_KEBS_CD_INSPECTION_GENERAL.CD_ITEM_DETAILS_ID\n" +
-                    "        INNER JOIN DAT_KEBS_CD_INSPECTION_MOTOR_VEHICLE_ITEM_CHECKLIST ON DAT_KEBS_CD_INSPECTION_GENERAL.ID = DAT_KEBS_CD_INSPECTION_MOTOR_VEHICLE_ITEM_CHECKLIST.INSPECTION_GENERAL_ID\n" +
-                    "WHERE DAT_KEBS_CD_ITEM_DETAILS.MINISTRY_SUBMISSION_STATUS = 1 AND\n" +
-                    "      DAT_KEBS_CD_INSPECTION_MOTOR_VEHICLE_ITEM_CHECKLIST.MINISTRY_REPORT_SUBMIT_STATUS = 1",
-            nativeQuery = true
+        "SELECT DAT_KEBS_CD_ITEM_DETAILS.* FROM\n" +
+                "    DAT_KEBS_CD_ITEM_DETAILS\n" +
+                "        INNER JOIN DAT_KEBS_CD_INSPECTION_GENERAL ON DAT_KEBS_CD_ITEM_DETAILS.ID = DAT_KEBS_CD_INSPECTION_GENERAL.CD_ITEM_DETAILS_ID\n" +
+                "        INNER JOIN DAT_KEBS_CD_INSPECTION_MOTOR_VEHICLE_ITEM_CHECKLIST ON DAT_KEBS_CD_INSPECTION_GENERAL.ID = DAT_KEBS_CD_INSPECTION_MOTOR_VEHICLE_ITEM_CHECKLIST.INSPECTION_GENERAL_ID\n" +
+                "WHERE DAT_KEBS_CD_ITEM_DETAILS.MINISTRY_SUBMISSION_STATUS = 1 AND\n" +
+                "      DAT_KEBS_CD_INSPECTION_MOTOR_VEHICLE_ITEM_CHECKLIST.MINISTRY_REPORT_SUBMIT_STATUS = 1",
+        nativeQuery = true
     )
-    fun findCompletedMinistrySubmissions(page: Pageable): Page<CdItemDetailsEntity>
+    fun findCompletedMinistrySubmissions(): List<CdItemDetailsEntity>?
 
     @Query(
-            "SELECT DAT_KEBS_CD_ITEM_DETAILS.* FROM\n" +
-                    "    DAT_KEBS_CD_ITEM_DETAILS\n" +
-                    "        INNER JOIN DAT_KEBS_CD_INSPECTION_GENERAL ON DAT_KEBS_CD_ITEM_DETAILS.ID = DAT_KEBS_CD_INSPECTION_GENERAL.CD_ITEM_DETAILS_ID\n" +
-                    "        INNER JOIN DAT_KEBS_CD_INSPECTION_MOTOR_VEHICLE_ITEM_CHECKLIST ON DAT_KEBS_CD_INSPECTION_GENERAL.ID = DAT_KEBS_CD_INSPECTION_MOTOR_VEHICLE_ITEM_CHECKLIST.INSPECTION_GENERAL_ID\n" +
-                    "WHERE DAT_KEBS_CD_ITEM_DETAILS.MINISTRY_SUBMISSION_STATUS = 1 AND\n" +
-                    "      DAT_KEBS_CD_INSPECTION_MOTOR_VEHICLE_ITEM_CHECKLIST.MINISTRY_REPORT_SUBMIT_STATUS IS NULL",
-            nativeQuery = true
+        "SELECT DAT_KEBS_CD_ITEM_DETAILS.* FROM\n" +
+                "    DAT_KEBS_CD_ITEM_DETAILS\n" +
+                "        INNER JOIN DAT_KEBS_CD_INSPECTION_GENERAL ON DAT_KEBS_CD_ITEM_DETAILS.ID = DAT_KEBS_CD_INSPECTION_GENERAL.CD_ITEM_DETAILS_ID\n" +
+                "        INNER JOIN DAT_KEBS_CD_INSPECTION_MOTOR_VEHICLE_ITEM_CHECKLIST ON DAT_KEBS_CD_INSPECTION_GENERAL.ID = DAT_KEBS_CD_INSPECTION_MOTOR_VEHICLE_ITEM_CHECKLIST.INSPECTION_GENERAL_ID\n" +
+                "WHERE DAT_KEBS_CD_ITEM_DETAILS.MINISTRY_SUBMISSION_STATUS = 1 AND\n" +
+                "      DAT_KEBS_CD_INSPECTION_MOTOR_VEHICLE_ITEM_CHECKLIST.MINISTRY_REPORT_SUBMIT_STATUS IS NULL",
+        nativeQuery = true
     )
     fun findOngoingMinistrySubmissions(page: Pageable): Page<CdItemDetailsEntity>
 

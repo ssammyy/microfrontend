@@ -12,11 +12,11 @@ class QaInvoiceMasterDetailsEntity : Serializable {
     @Column(name = "ID")
     @Id
     @SequenceGenerator(
-        name = "DAT_KEBS_QA_INVOICE_DETAILS_SEQ_GEN",
-        sequenceName = "DAT_KEBS_QA_INVOICE_DETAILS_SEQ",
+        name = "DAT_KEBS_QA_INVOICE_MASTER_DETAILS_SEQ_GEN",
+        sequenceName = "DAT_KEBS_QA_INVOICE_MASTER_DETAILS_SEQ",
         allocationSize = 1
     )
-    @GeneratedValue(generator = "DAT_KEBS_QA_INVOICE_DETAILS_SEQ_GEN", strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(generator = "DAT_KEBS_QA_INVOICE_MASTER_DETAILS_SEQ_GEN", strategy = GenerationType.SEQUENCE)
     var id: Long = 0
 
     @Column(name = "INVOICE_REF")
@@ -30,6 +30,10 @@ class QaInvoiceMasterDetailsEntity : Serializable {
     @Column(name = "PERMIT_REF_NUMBER")
     @Basic
     var permitRefNumber: String? = null
+
+    @Column(name = "RECEIPT_NO")
+    @Basic
+    var receiptNo: String? = null
 
     @Column(name = "BATCH_INVOICE_NO")
     @Basic
@@ -54,6 +58,10 @@ class QaInvoiceMasterDetailsEntity : Serializable {
     @Column(name = "TAX_AMOUNT")
     @Basic
     var taxAmount: BigDecimal? = null
+
+    @Column(name = "SUB_TOTAL_BEFORE_TAX")
+    @Basic
+    var subTotalBeforeTax: BigDecimal? = null
 
     @Column(name = "AMOUNT_IN_WORDS")
     @Basic
@@ -142,8 +150,10 @@ class QaInvoiceMasterDetailsEntity : Serializable {
                 invoiceRef == that.invoiceRef &&
                 taxAmount == that.taxAmount &&
                 batchInvoiceNo == that.batchInvoiceNo &&
+                subTotalBeforeTax == that.subTotalBeforeTax &&
                 userId == that.userId &&
                 permitRefNumber == that.permitRefNumber &&
+                receiptNo == that.receiptNo &&
                 paymentStatus == that.paymentStatus &&
                 generatedDate == that.generatedDate && itemCount == that.itemCount && totalAmount == that.totalAmount && amountInWords == that.amountInWords && permitId == that.permitId && description == that.description && status == that.status && varField1 == that.varField1 && varField2 == that.varField2 && varField3 == that.varField3 && varField4 == that.varField4 && varField5 == that.varField5 && varField6 == that.varField6 && varField7 == that.varField7 && varField8 == that.varField8 && varField9 == that.varField9 && varField10 == that.varField10 && createdBy == that.createdBy && createdOn == that.createdOn && modifiedBy == that.modifiedBy && modifiedOn == that.modifiedOn && deleteBy == that.deleteBy && deletedOn == that.deletedOn
     }
@@ -153,7 +163,9 @@ class QaInvoiceMasterDetailsEntity : Serializable {
             id,
             invoiceRef,
             userId,
+            receiptNo,
             permitRefNumber,
+            subTotalBeforeTax,
             batchInvoiceNo,
             taxAmount,
             paymentStatus,

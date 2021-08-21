@@ -3,27 +3,27 @@ import {RouterModule, Routes} from '@angular/router';
 import {AdminLayoutComponent} from './layouts/admin/admin-layout.component';
 import {DashboardComponent} from './apollowebs/dashboard/dashboard.component';
 import {NgModule} from '@angular/core';
-import {DmarkComponent} from './apollowebs/dmark/dmark.component';
-import {FmarkallappsComponent} from './apollowebs/fmarkallapps/fmarkallapps.component';
-import {St10FormComponent} from './apollowebs/st10-form/st10-form.component';
+import {DmarkComponent} from './apollowebs/quality-assurance/dmark/dmark.component';
+import {FmarkallappsComponent} from './apollowebs/quality-assurance/fmarkallapps/fmarkallapps.component';
+import {St10FormComponent} from './apollowebs/quality-assurance/st10-form/st10-form.component';
 import {RegistrationComponent} from './views/registration.component';
 import {SignUpComponent} from './views/registration/sign-up.component';
 import {ResetCredentialsComponent} from './views/registration/reset-credentials.component';
 import {RouteGuard} from './core/route-guard/route.guard';
 import {LoginComponent} from './views/registration/login.component';
 import {PermitReportComponent} from './apollowebs/permit-report/permit-report.component';
-import {NewSmarkPermitComponent} from './apollowebs/new-smark-permit/new-smark-permit.component';
-import {NewDmarkPermitComponent} from './apollowebs/new-dmark-permit/new-dmark-permit.component';
-import {DmarkApplicationsAllComponent} from './apollowebs/dmark-applications-all/dmark-applications-all.component';
-import {InvoiceComponent} from './apollowebs/invoice/invoice.component';
-import {InvoiceDetailsComponent} from './apollowebs/invoice-details/invoice-details.component';
+import {NewSmarkPermitComponent} from './apollowebs/quality-assurance/new-smark-permit/new-smark-permit.component';
+import {NewDmarkPermitComponent} from './apollowebs/quality-assurance/new-dmark-permit/new-dmark-permit.component';
+import {DmarkApplicationsAllComponent} from './apollowebs/quality-assurance/dmark-applications-all/dmark-applications-all.component';
+import {InvoiceComponent} from './apollowebs/quality-assurance/invoice/invoice.component';
+import {InvoiceDetailsComponent} from './apollowebs/quality-assurance/invoice-details/invoice-details.component';
 import {CompaniesList} from './apollowebs/company/companies.list';
 import {CompanyComponent} from './apollowebs/company/company.component';
 import {BranchComponent} from './apollowebs/company/branch/branch.component';
 import {BranchList} from './apollowebs/company/branch/branch.list';
 import {UserComponent} from './apollowebs/company/branch/users/user.component';
 import {UserList} from './apollowebs/company/branch/users/user.list';
-import {SmarkApplicationsAllComponent} from './apollowebs/smark-applications-all/smark-applications-all.component';
+import {SmarkApplicationsAllComponent} from './apollowebs/quality-assurance/smark-applications-all/smark-applications-all.component';
 import {UserProfileMainComponent} from './apollowebs/userprofilemain/user-profile-main.component';
 import {AddBranchComponent} from "./apollowebs/company/branch/add-branch/add-branch.component";
 import {OtpComponent} from "./views/registration/otp/otp.component";
@@ -40,6 +40,42 @@ import { ConsignmentDocumentListComponent } from './apollowebs/di/consignment-do
 import { ViewSingleConsignmentDocumentComponent } from './apollowebs/di/view-single-consignment-document/view-single-consignment-document.component';
 import { MinistryInspectionHomeComponent } from './apollowebs/di/ministry-inspection-home/ministry-inspection-home.component';
 import { MotorVehicleInspectionSingleViewComponent } from './apollowebs/di/motor-vehicle-inspection-single-view/motor-vehicle-inspection-single-view.component';
+import {AddBranchComponent} from './apollowebs/company/branch/add-branch/add-branch.component';
+import {OtpComponent} from './views/registration/otp/otp.component';
+import {InvoiceConsolidateComponent} from './apollowebs/quality-assurance/invoice-consolidate/invoice-consolidate.component';
+import {PdfViewComponent} from './pdf-view/pdf-view.component';
+import {TaskManagerComponent} from './apollowebs/task-manager/task-manager.component';
+import {AddUserComponent} from './apollowebs/company/branch/add-user/add-user.component';
+import {FmarkApplicationComponent} from './apollowebs/quality-assurance/fmark-application/fmark-application.component';
+import {SmarkComponent} from './apollowebs/quality-assurance/smark/smark.component';
+import {NwaJustificationFormComponent} from './apollowebs/standards-development/workshop-agreement/nwa-justification-form/nwa-justification-form.component';
+import {NwaJustificationTasksComponent} from './apollowebs/standards-development/workshop-agreement/nwa-justification-tasks/nwa-justification-tasks.component';
+import {NwaKnwSecTasksComponent} from './apollowebs/standards-development/workshop-agreement/nwa-knw-sec-tasks/nwa-knw-sec-tasks.component';
+import {NwaDiSdtTasksComponent} from './apollowebs/standards-development/workshop-agreement/nwa-di-sdt-tasks/nwa-di-sdt-tasks.component';
+import {SacSecTasksComponent} from './apollowebs/standards-development/workshop-agreement/sac-sec-tasks/sac-sec-tasks.component';
+import {HoSicTasksComponent} from './apollowebs/standards-development/ho-sic-tasks/ho-sic-tasks.component';
+import {NwaHopTasksComponent} from './apollowebs/standards-development/workshop-agreement/nwa-hop-tasks/nwa-hop-tasks.component';
+import {IsProposalFormComponent} from './apollowebs/standards-development/international-standard/international-standard-proposal/is-proposal-form/is-proposal-form.component';
+import {ReviewStandardsComponent} from './apollowebs/standards-development/systemic-review/request-standard-review/review-standards/review-standards.component';
+import {CsRequestFormComponent} from './apollowebs/standards-development/company-standard/company-standard-request/cs-request-form/cs-request-form.component';
+import {InformationcheckComponent} from './apollowebs/standards-development/informationcheck/informationcheck.component';
+import {DivisionresponseComponent} from './apollowebs/standards-development/divisionresponse/divisionresponse.component';
+import {NationalEnquiryPointComponent} from './apollowebs/standards-development/national-enquiry-point/national-enquiry-point.component';
+import {MakeEnquiryComponent} from './apollowebs/standards-development/national-enquiry-point/make-enquiry/make-enquiry.component';
+import {ComStdRequestListComponent} from "./apollowebs/standards-development/company-standard/com-std-request-list/com-std-request-list.component";
+import {IntStdResponsesListComponent} from "./apollowebs/standards-development/international-standard/int-std-responses-list/int-std-responses-list.component";
+import {ComStdJcJustificationComponent} from "./apollowebs/standards-development/company-standard/com-std-jc-justification/com-std-jc-justification.component";
+import {IntStdJustificationListComponent} from "./apollowebs/standards-development/international-standard/int-std-justification-list/int-std-justification-list.component";
+import {IntStdCommentsComponent} from "./apollowebs/standards-development/international-standard/int-std-comments/int-std-comments.component";
+import {ComStdJcJustificationListComponent} from "./apollowebs/standards-development/company-standard/com-std-jc-justification-list/com-std-jc-justification-list.component";
+import {SystemicReviewCommentsComponent} from "./apollowebs/standards-development/systemic-review/systemic-review-comments/systemic-review-comments.component";
+import {IntStdJustificationAppComponent} from "./apollowebs/standards-development/international-standard/int-std-justification-app/int-std-justification-app.component";
+import {SystemicAnalyseCommentsComponent} from "./apollowebs/standards-development/systemic-review/systemic-analyse-comments/systemic-analyse-comments.component";
+import {UsermanagementComponent} from "./apollowebs/usermanagement/usermanagement.component";
+import {UserManagementProfileComponent} from "./apollowebs/usermanagement/user-management-profile/user-management-profile.component";
+import {RequestStandardFormComponent} from "./apollowebs/standards-development/standard-request/request-standard-form/request-standard-form.component";
+import {StandardRequestComponent} from "./apollowebs/standards-development/standard-request/standard-request.component";
+import {StandardTaskComponent} from "./apollowebs/standards-development/standard-request/standard-task/standard-task.component";
 
 // export const AppRoutes: Routes = [
 //     {
@@ -234,6 +270,12 @@ const routes: Routes = [
         children: [{path: '', component: InvoiceDetailsComponent}]
     },
     {
+        path: 'user_management', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+
+        children: [{path: '', component: UsermanagementComponent}]
+    },
+    {
         path: 'fmark/fMarkAllApp', component: AdminLayoutComponent,
         canActivate: [RouteGuard],
 
@@ -262,6 +304,12 @@ const routes: Routes = [
         canActivate: [RouteGuard],
 
         children: [{path: '', component: NewDmarkPermitComponent}]
+    },
+    {
+        path: 'userDetails', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+
+        children: [{path: '', component: UserManagementProfileComponent}]
     },
     {
         path: 'dmark/all_dmark', component: AdminLayoutComponent,
@@ -319,7 +367,7 @@ const routes: Routes = [
             {
                 path: 'exceptions',
                 component: ExceptionsApplicationComponent
-               
+
             }
         ]
     },
@@ -331,14 +379,14 @@ const routes: Routes = [
                 path: '',
                 component: ConsignmentDocumentListComponent
             },
-           
+
             {
                 path: ':id',
                 component: ViewSingleConsignmentDocumentComponent
             },
         ]
     },
-    
+
     {
         path: 'ministry',
         component: AdminLayoutComponent,
@@ -353,7 +401,130 @@ const routes: Routes = [
             }
         ]
     },
-   
+
+
+    // SD Kenya National Workshop Agreement
+    {
+        path: 'nwaJustification', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: NwaJustificationFormComponent}]
+    },
+    {
+        path: 'nwaJustificationTasks', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: NwaJustificationTasksComponent}]
+    },
+    {
+        path: 'nwaKnwSecTasks', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: NwaKnwSecTasksComponent}]
+    },
+    {
+        path: 'nwaDirStTasks', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: NwaDiSdtTasksComponent}]
+    },
+    {
+        path: 'nwaHopTasks', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: NwaHopTasksComponent}]
+    },
+    {
+        path: 'nwaSacSecTasks', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: SacSecTasksComponent}]
+    },
+    {
+        path: 'nwaHoSicTasks', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: HoSicTasksComponent}]
+    },
+
+    // SD International Standards
+    {
+        path: 'isProposalForm', component: AdminLayoutComponent,
+        // canActivate: [RouteGuard],
+        children: [{path: '', component: IsProposalFormComponent}]
+    },
+    {
+        path: 'isProposalComments', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: IntStdCommentsComponent}]
+    },
+    {
+        path: 'isProposalResponses', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: IntStdResponsesListComponent}]
+    },
+    {
+        path: 'isJustificationList', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: IntStdJustificationListComponent}]
+    },
+    {
+        path: 'isJustificationApp', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: IntStdJustificationAppComponent}]
+    },
+    // SD SYSTEMIC REVIEW
+    {
+        path: 'requestStandardReview', component: AdminLayoutComponent,
+        children: [{path: '', component: ReviewStandardsComponent}]
+    },
+    {
+        path: 'systemicReviewComments', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: SystemicReviewCommentsComponent}]
+    },
+    {
+        path: 'systemicRecommendations', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: SystemicAnalyseCommentsComponent}]
+    },
+
+    // SD COMPANY STANDARDS
+    {
+        path: 'comStdRequest', component: AdminLayoutComponent,
+        children: [{path: '', component: CsRequestFormComponent}]
+    },
+    {
+        path: 'comStdList', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: ComStdRequestListComponent}]
+    },
+    {
+        path: 'comStdJustification', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: ComStdJcJustificationComponent}]
+    },
+    {
+        path: 'comStdJustificationList', component: AdminLayoutComponent,
+        canActivate: [RouteGuard],
+        children: [{path: '', component: ComStdJcJustificationListComponent}]
+    },
+
+    {
+        path: 'nep_information_received', component: AdminLayoutComponent,
+        children: [{path: '', component: InformationcheckComponent}]
+    },
+    {
+        path: 'nep_division_response', component: AdminLayoutComponent,
+        children: [{path: '', component: DivisionresponseComponent}]
+    },
+    {
+        path: 'make_enquiry', component: MakeEnquiryComponent
+    },
+
+    {
+        path: 'request-standards',
+        component: StandardRequestComponent,
+        children: [{path: '', component: RequestStandardFormComponent}]
+    },
+    {
+        path: 'ms-standards', component: AdminLayoutComponent,
+        children: [{path: '', component: StandardTaskComponent}]
+    },
+
 ];
 
 

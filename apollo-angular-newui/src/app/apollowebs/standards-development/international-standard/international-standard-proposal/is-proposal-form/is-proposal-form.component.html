@@ -1,0 +1,83 @@
+<div class="container-fluid" style="margin-top: 5%" id="main-container">
+<div  class="loading-spinner ">
+<ngx-spinner
+bdColor="rgba(51,51,51,0.8)"
+size="medium"
+color="#fff"
+type="ball-scale-multiple"
+>
+<p style="font-size: 20px; color: white">Loading...</p>
+</ngx-spinner>
+</div>
+<div class="main-content" >
+<div class="container-fluid">
+<div class="row">
+<div class="col-md-12">
+<div class="card">
+<div class="card-header card-header-primary card-header-icon">
+<div class="card-icon">
+<i class="material-icons">assignment</i>
+</div>
+<h4 class="card-title">Upload Standard Proposal</h4>
+</div>
+<div class="card-body">
+<div class="toolbar">
+
+</div>
+<div class="material-datatables">
+<form (ngSubmit)="uploadProposal()" [formGroup]="isProposalFormGroup" class="form">
+
+<hr>
+
+<div class="form-body">
+    <div class="row col-12">
+<div class="form-group col-12">
+    <label><b>Enter Document Name</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
+<input [class.is-invalid]="formISProposal.proposal_doc_name.invalid && formISProposal.proposal_doc_name.touched"
+aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+class="form-control one-column-input" formControlName="proposal_doc_name" name="proposal_doc_name"
+placeholder="name" type="text">
+</div>
+    </div>
+    <div class="row col-12">
+    <div class="form-group col-12">
+        <label><b>Uploaded By</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
+        <input
+                aria-describedby="inputGroup-sizing-sm" aria-label="Small"
+                class="form-control one-column-input" formControlName="uploadedBy" ngModel="{{fullname}}" name="uploadedBy"
+                placeholder="Name" type="text" disabled>
+    </div>
+    </div>
+    <div class="row col-12">
+        <div class=" col-12">
+            <label><b>Upload Proposal</b><span style="font-size: xx-small; color: red;">(*)Required</span></label>
+    <form #demoForm="ngForm">
+        <file-upload [(ngModel)]="uploadedFiles" name="uploadedFiles" fileslimit="2" accept=".pdf, .doc, .docx" ></file-upload>
+        <input class="form-control one-column-input" ngModel="IS Proposal"  name="DocDescription" type="hidden">
+    </form>
+        </div>
+    </div>
+    </div>
+    <div class="row col-12 float-right " style="margin: 3em 0 2em 0">
+        <button *ngIf="isProposalFormGroup.valid" [disabled]="!isProposalFormGroup.valid" class="btn btn-sm btn-primary float-right" type="submit">Submit</button>
+
+    </div>
+
+
+
+
+
+</form>
+    <div class="row col-12 float-right " style="margin: 3em 0 2em 0">
+        <button *ngIf="!isProposalFormGroup.valid" class="btn btn-sm btn-primary float-right"
+                (click)="showNotification('top','right')">Submit
+        </button>
+    </div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>

@@ -1,0 +1,343 @@
+<div class="main-content">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card ">
+                <div class="card-header ">
+                    <h4 class="card-title">User Details
+                    </h4>
+                </div>
+                <div class="card-body ">
+                    <div class="row">
+                        <div class="col-lg-3 col-md-5">
+
+                            <ul class="nav nav-pills nav-pills-rose nav-pills-icons flex-column" role="tablist">
+                                <li class="nav-item">
+                                    <a class="nav-link active" data-toggle="tab" href="#link10" role="tablist">
+                                        <i class="material-icons">description</i> User Details
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" data-toggle="tab" href="#link12" role="tablist">
+                                        <i class="material-icons">assignment_turned_in</i> Roles Assigned
+                                    </a>
+                                </li>
+                                <li class="nav-item" *ngIf="userDetails?.employeeProfile!=null">
+                                    <a class="nav-link" data-toggle="tab" href="#link13" role="tablist">
+                                        <i class="material-icons">assignment_turned_in</i> CFS Assigned
+                                    </a>
+                                </li>
+
+                                <!-- -->
+
+                            </ul>
+                        </div>
+                        <div class="col-md-9" style="background-color: #eeeeee8a; border-left: 0.5px solid black;">
+                            <div class="tab-content">
+                                <div class="tab-pane active" id="link10">
+                                    <h3>User Details</h3>
+                                    <div class="row">
+                                        <div class="col-md-10">
+                                            <br>
+                                            <table class="table">
+                                                <tbody>
+                                                <tr>
+                                                    <td>
+                                                        <i class="material-icons">title</i>
+                                                    </td>
+                                                    <td><strong>
+                                                        Title</strong></td>
+                                                    <td>{{userDetails?.title}}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <i class="material-icons">email</i>
+                                                    </td>
+                                                    <td><strong>
+                                                        Email Address</strong></td>
+                                                    <td>{{userDetails?.email}}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <i class="material-icons">person</i>
+                                                    </td>
+                                                    <td><strong>
+                                                        First Name</strong></td>
+                                                    <td>{{userDetails?.firstName}}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <i class="material-icons">person</i>
+                                                    </td>
+                                                    <td><strong>
+                                                        Last Name</strong></td>
+                                                    <td>{{userDetails?.lastName}}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <i class="material-icons">contacts</i>
+                                                    </td>
+                                                    <td><strong>
+                                                        User Name</strong></td>
+                                                    <td>{{userDetails?.userName}}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <i class="material-icons">corporate_fare</i>
+                                                    </td>
+                                                    <td><strong>
+                                                        Directorate</strong></td>
+                                                    <td>{{userDetails?.employeeProfile?.directorate}}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <i class="material-icons">corporate_fare</i>
+                                                    </td>
+                                                    <td><strong>
+                                                        Designation</strong></td>
+                                                    <td>{{userDetails?.employeeProfile?.designation}}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <i class="material-icons">corporate_fare</i>
+                                                    </td>
+                                                    <td><strong>
+                                                        Department</strong></td>
+                                                    <td>{{userDetails?.employeeProfile?.department}}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <i class="material-icons">corporate_fare</i>
+                                                    </td>
+                                                    <td><strong>
+                                                        Division</strong></td>
+                                                    <td>{{userDetails?.employeeProfile?.division}}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <i class="material-icons">corporate_fare</i>
+                                                    </td>
+                                                    <td><strong>
+                                                        Section</strong></td>
+                                                    <td>{{userDetails?.employeeProfile?.section}}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <i class="material-icons">corporate_fare</i>
+                                                    </td>
+                                                    <td><strong>
+                                                        Sub Section 1</strong></td>
+                                                    <td>{{userDetails?.employeeProfile?.l1SubSubSection}}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <i class="material-icons">corporate_fare</i>
+                                                    </td>
+                                                    <td><strong>
+                                                        Sub Section 2</strong></td>
+                                                    <td>{{userDetails?.employeeProfile?.l2SubSubSection}}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <i class="material-icons">location_on</i>
+                                                    </td>
+                                                    <td><strong>
+                                                        Region</strong></td>
+                                                    <td>{{userDetails?.employeeProfile?.region}}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <i class="material-icons">push_pin</i>
+                                                    </td>
+                                                    <td><strong>
+                                                        County</strong></td>
+                                                    <td>{{userDetails?.employeeProfile?.county}}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <i class="material-icons">location_city</i>
+                                                    </td>
+                                                    <td><strong>
+                                                        Town</strong></td>
+                                                    <td>{{userDetails?.employeeProfile?.town}}</td>
+                                                </tr>
+
+                                                </tbody>
+                                            </table>
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <div class="tab-pane" id="link12">
+                                    <h3>Role Assignment</h3>
+                                    <button (click)="openModalAction('addRole')"
+                                            mat-raised-button="" data-toggle="modal" data-target="#myModal1"
+                                            class="btn btn-kebs mat-raised-button mat-button-base"><span
+                                            class="mat-button-wrapper">ADD NEW ROLE</span>
+                                        <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                                        <div class="mat-button-focus-overlay"></div>
+                                    </button>
+                                    <div id="main20">
+                                        <div class="container">
+                                            <div class="table-responsive">
+                                                <table class="table">
+                                                    <thead>
+                                                    <tr>
+                                                        <th class="text-left">{{ tableData1?.headerRow[0] }}</th>
+                                                        <th>{{ tableData1?.headerRow[1] }}</th>
+                                                        <th class="text-right">{{ tableData1?.headerRow[2] }}</th>
+
+
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    <tr *ngFor="let row of tableData1?.dataRows">
+                                                        <td class="text-left">{{row[0]}}</td>
+                                                        <td>{{row[1]}}</td>
+                                                        <td class="td-actions text-right">
+                                                            <!--                                                            <a href="/permitdetails#{{row[4]}}"><i class="material-icons">remove_red_eye</i></a>-->
+                                                            <button mat-raised-button type="button" data-toggle="modal"
+                                                                    (click)="revokeRole(row[2], userDetails?.id)"
+                                                                    class="btn btn-info {{row[2]}}">
+                                                                <!--                                                                <i class="material-icons">visibility</i>-->
+                                                                REMOVE
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="tab-pane" id="link13">
+                                    <h3>CFS Assignment</h3>
+                                    <button (click)="openModalAction('addCfs')"
+                                            mat-raised-button="" data-toggle="modal" data-target="#myModal1"
+                                            class="btn btn-kebs mat-raised-button mat-button-base"><span
+                                            class="mat-button-wrapper">ADD NEW CFS</span>
+                                        <div matripple="" class="mat-ripple mat-button-ripple"></div>
+                                        <div class="mat-button-focus-overlay"></div>
+                                    </button>
+                                    <div id="main21">
+                                        <div class="container">
+                                            <div class="table-responsive">
+                                                <table class="table">
+                                                    <thead>
+                                                    <tr>
+                                                        <th class="text-left">{{ tableData2?.headerRow[0] }}</th>
+                                                        <th>{{ tableData2?.headerRow[1] }}</th>
+                                                        <th>{{ tableData2?.headerRow[2] }}</th>
+                                                        <th class="text-right">{{ tableData2?.headerRow[3] }}</th>
+
+
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    <tr *ngFor="let row of tableData2?.dataRows">
+                                                        <td class="text-left">{{row[0]}}</td>
+                                                        <td>{{row[1]}}</td>
+                                                        <td>{{row[2]}}</td>
+                                                        <td class="td-actions text-right">
+                                                            <!--                                                            <a href="/permitdetails#{{row[4]}}"><i class="material-icons">remove_red_eye</i></a>-->
+                                                            <button mat-raised-button type="button" data-toggle="modal"
+                                                                    (click)="revokeCfs(row[3], userDetails?.employeeProfile?.profileId)"
+                                                                    class="btn btn-info {{row[3]}}">
+                                                                REMOVE
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Classic Modal -->
+            <div class="modal fade" id="myModal1" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+                 aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title">{{currDivLabel}}</h4>
+                            <button mat-button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                                <i class="material-icons">clear</i>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <!--                <p>Are you sure this userDetails falls in the KEBS mandate ?</p>-->
+                            <div *ngIf="(currDiv == 'addRole')">
+                                <form [formGroup]="assignRoleForm" class="form">
+                                    <div class="form-body">
+                                        <div class="form-group">
+
+                                            <div>
+                                                <label><b>Select Role</b></label>
+                                                <select [class.is-invalid]="formAssignRole.roleID.invalid && formAssignRole.roleID.touched"
+                                                        class="form-control mt-2" formControlName="roleID"
+                                                        name="roleID">
+                                                    <option label="--select something --"></option>
+                                                    <option *ngFor="let rle of rolesEntity"
+                                                            [value]="rle.id"> {{ rle.roleName }} </option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <div *ngIf="(currDiv == 'addCfs')">
+                                <form [formGroup]="assignCfsForm" class="form">
+                                    <div class="form-body">
+                                        <div class="form-group">
+
+                                            <div>
+                                                <label><b>Select cfs</b></label>
+                                                <select [class.is-invalid]="formAssignCfs.cfsID.invalid && formAssignCfs.cfsID.touched"
+                                                        class="form-control mt-2" formControlName="cfsID"
+                                                        name="cfsID">
+                                                    <option label="--select something --"></option>
+                                                    <option *ngFor="let cfs of cfsEntity"
+                                                            [value]="cfs.id"> {{ cfs.cfsCode }}
+                                                        == {{ cfs.cfsName }} </option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+
+                            <button mat-raised-button type="button" class="btn btn-danger" data-dismiss="modal">Close
+                            </button>
+                            <button *ngIf="(currDiv == 'addRole')" mat-raised-button type="button"
+                                    class="btn btn-success"
+                                    (click)="onSubmitAssignedRole(userDetails?.id);"
+                                    [disabled]="!assignRoleForm.valid"
+                                    data-dismiss="modal"
+                            >SUBMIT ROLE
+                            </button>
+                            <button *ngIf="(currDiv == 'addCfs')" mat-raised-button type="button"
+                                    class="btn btn-success"
+                                    (click)="onSubmitAssignedCFS(userDetails?.employeeProfile?.profileId);"
+                                    [disabled]="!assignCfsForm.valid"
+                                    data-dismiss="modal"
+                            >SUBMIT CFS
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--  End Modal -->
+        </div>
+    </div>
+</div>

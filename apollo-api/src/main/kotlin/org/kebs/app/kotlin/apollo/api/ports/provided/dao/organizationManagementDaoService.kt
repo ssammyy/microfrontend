@@ -214,6 +214,7 @@ class RegistrationManagementDaoService(
                         confirmCredentials = BCryptPasswordEncoder().encode("")
                         modifiedBy = request.username
                         modifiedOn = Timestamp.from(Instant.now())
+                        enabled = applicationMapProperties.transactionActiveStatus
                         accountExpired = applicationMapProperties.transactionInactiveStatus
                         accountLocked = applicationMapProperties.transactionInactiveStatus
                         credentialsExpired = applicationMapProperties.transactionInactiveStatus
@@ -962,7 +963,9 @@ class RegistrationManagementDaoService(
                         name = dto.name
                         kraPin = dto.kraPin
                         userId = user.id
-
+                        firmCategory = qaDaoServices.manufactureType(
+                            yearlyTurnover ?: throw NullValueNotAllowedException("Invalid Record")
+                        ).id
                         registrationNumber = dto.registrationNumber
                         postalAddress = dto.postalAddress
                         physicalAddress = dto.physicalAddress
