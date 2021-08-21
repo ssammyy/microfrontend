@@ -1,0 +1,26 @@
+<h2 mat-dialog-title>Upload Foreign COC/COR</h2>
+<mat-dialog-content>
+    <div class="form-group row">
+        <label for="select-file" class="col-5 col-form-label">SELECT UPLOAD DOCUMENT</label>
+        <div class="col-7">
+            <input id="select-file" type="file" accept="image/*" (change)="uploadForeignCoROrCor($event)"
+                   class="display-nothing" #cocFiles>
+            <button type="button" (click)="cocFiles.click()"
+                    class="btn btn-sm btn-primary mr-2">Select File
+            </button>
+        </div>
+        <label class="col-6 col-form-label font-weight-bold" *ngIf="selectedFile">SELECTED: {{selectedFile.name}}</label>
+        <label class="col-6 col-form-label font-weight-bold" *ngIf="selectedFile">SIZE:{{selectedFile.size/1000| number}}KB</label>
+        <mat-error *ngIf="message">
+            {{message}}
+        </mat-error>
+    </div>
+</mat-dialog-content>
+<mat-dialog-actions>
+    <div class="btn-group btn-group pull-right" role="group" aria-label="Foreign COC/COR Buttons">
+        <button class="btn btn-warning" mat-button mat-dialog-close>Close</button>
+        <button [disabled]="!selectedFile" name="submit" type="button" class="btn btn-primary"
+                (click)="saveForeignDocument()">SAVE
+        </button>
+    </div>
+</mat-dialog-actions>
