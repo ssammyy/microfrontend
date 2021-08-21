@@ -10,7 +10,7 @@
                         <h4 class="card-title">Motor Vehicle Inspection Checklist Details</h4>
                        
                     </div>
-                    <div class="card-body">
+                    <div class="card-body" *ngIf="itemDetails">
                         <div class="row"> 
                             <div class="col-md-2">
                                 <div widget class=" border-0 box-shadow">
@@ -23,67 +23,67 @@
                                                 Inspection
                                             </th>
                                             <tr>
-                                                <td>100% Inspection</td>
+                                                <td>{{itemDetails.inspectionGeneralEntity.inspection}}</td>
                                             </tr>
                                             <th>
                                                 Entry Point
                                             </th>
                                             <tr>
-                                                <td>KEMBA</td>
+                                                <td>{{itemDetails.inspectionGeneralEntity.entryPoint}}</td>
                                             </tr>
                                             <th>
                                                 CFS
                                             </th>
                                             <tr>
-                                                <td>TCC</td>
+                                                <td>{{itemDetails.inspectionGeneralEntity.cfs}}</td>
                                             </tr>
                                             <th>
                                                 Importers Name
                                             </th>
                                             <tr>
-                                                <td>Test EXIM 1</td>
+                                                <td>{{itemDetails.inspectionGeneralEntity.importersName}}</td>
                                             </tr>
                                             <th>
                                                 Clearing Agent
                                             </th>
                                             <tr>
-                                                <td>Randy</td>
+                                                <td>{{itemDetails.inspectionGeneralEntity.clearingAgent}}</td>
                                             </tr>
                                             <th>
                                                 Customs Entry No
                                             </th>
                                             <tr>
-                                                <td>9876w4</td>
+                                                <td>{{itemDetails.inspectionGeneralEntity.entryNo}}</td>
                                             </tr>
                                             <th>
                                                 IDF No
                                             </th>
                                             <tr>
-                                                <td></td>
+                                                <td>{{itemDetails.inspectionGeneralEntity.idfNumber}}</td>
                                             </tr>
                                             <th>
                                                 UCR No
                                             </th>
                                             <tr>
-                                                <td>UCR123800127639</td>
+                                                <td>{{itemDetails.inspectionGeneralEntity.ucrNumber}}</td>
                                             </tr>
                                             <th>
                                                 COC No:
                                             </th>
                                             <tr>
-                                                <td></td>
+                                                <td>{{itemDetails.inspectionGeneralEntity.cocNo}}</td>
                                             </tr>
                                             <th>
                                                 Fee Paid:
                                             </th>
                                             <tr>
-                                                <td></td>
+                                                <td>{{itemDetails.inspectionGeneralEntity.feePaid}}</td>
                                             </tr>
                                             <th>
                                                 Receipt No:
                                             </th>
                                             <tr>
-                                                <td></td>
+                                                <td>{{itemDetails.inspectionGeneralEntity.receiNo}}</td>
                                             </tr>
 
 
@@ -109,51 +109,51 @@
                                                 <ul class="w-list-unstyled">
                                                     <li class="list-item-accordion">
                                                         <div class="list-title-accordion">Serial Number:</div>
-                                                        <div class="list-text-accordion">34567890876</div>
+                                                        <div class="list-text-accordion">{{itemDetails.mvInspectionChecklist.serialNumber}}</div>
                                                     </li>
                                                     <li class="list-item-accordion">
                                                         <div class="list-title-accordion">Make Of Vehicle:</div>
-                                                        <div class="list-text-accordion">Toyota</div>
+                                                        <div class="list-text-accordion">{{itemDetails.mvInspectionChecklist.makeVehicle}}</div>
                                                     </li>
                                                     <li class="list-item-accordion">
                                                         <div class="list-title-accordion">Chassis No:</div>
-                                                        <div class="list-text-accordion">987</div>
+                                                        <div class="list-text-accordion">{{itemDetails.mvInspectionChecklist.chassisNo}}</div>
                                                     </li>
                                                     <li class="list-item-accordion">
                                                         <div class="list-title-accordion">Engine No/Capacity:</div>
-                                                        <div class="list-text-accordion">678tw</div>
+                                                        <div class="list-text-accordion">{{itemDetails.mvInspectionChecklist.engineNoCapacity}}</div>
                                                     </li>
                                                     <li class="list-item-accordion">
                                                         <div class="list-title-accordion">Manufacturer Date:</div>
-                                                        <div class="list-text-accordion"></div>
+                                                        <div class="list-text-accordion">{{itemDetails.mvInspectionChecklist.manufactureDate}}</div>
                                                     </li>
                                                     <li class="list-item-accordion">
                                                         <div class="list-title-accordion">Registration Date:</div>
-                                                        <div class="list-text-accordion"></div>
+                                                        <div class="list-text-accordion">{{itemDetails.mvInspectionChecklist.registrationDate}}</div>
                                                     </li>
                                                     <li class="list-item-accordion">
                                                         <div class="list-title-accordion">Odometre Reading:</div>
-                                                        <div class="list-text-accordion">gyhy778</div>
+                                                        <div class="list-text-accordion">{{itemDetails.mvInspectionChecklist.odemetreReading}}</div>
                                                     </li>
                                                     <li class="list-item-accordion">
                                                         <div class="list-title-accordion">Drive:</div>
-                                                        <div class="list-text-accordion">jijki9</div>
+                                                        <div class="list-text-accordion">{{itemDetails.mvInspectionChecklist.driveRhdLhd}}</div>
                                                     </li>
                                                     <li class="list-item-accordion">
                                                         <div class="list-title-accordion">Transmission:</div>
-                                                        <div class="list-text-accordion">Automatic</div>
+                                                        <div class="list-text-accordion">{{itemDetails.mvInspectionChecklist.transmissionAutoManual}}</div>
                                                     </li>
                                                     <li class="list-item-accordion">
                                                         <div class="list-title-accordion">Colour:</div>
-                                                        <div class="list-text-accordion">black</div>
+                                                        <div class="list-text-accordion">{{itemDetails.mvInspectionChecklist.colour}}</div>
                                                     </li>
                                                     <li class="list-item-accordion">
                                                         <div class="list-title-accordion">Overall Appearance:</div>
-                                                        <div class="list-text-accordion">good</div>
+                                                        <div class="list-text-accordion">{{itemDetails.mvInspectionChecklist.overallAppearance}}</div>
                                                     </li>
                                                     <li class="list-item-accordion">
                                                         <div class="list-title-accordion">Remarks:</div>
-                                                        <div class="list-text-accordion"></div>
+                                                        <div class="list-text-accordion">{{itemDetails.mvInspectionChecklist.remarks}}</div>
                                                     </li>
                                                 </ul>
                                             </ng-template>

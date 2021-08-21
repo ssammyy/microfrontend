@@ -110,6 +110,7 @@ import { OtherVersionDetailsComponent } from './apollowebs/di/view-single-consig
 import { ApproveRejectConsignmentComponent } from './apollowebs/di/view-single-consignment-document/approve-reject-consignment/approve-reject-consignment.component';
 import { MinistryInspectionHomeComponent } from './apollowebs/di/ministry-inspection-home/ministry-inspection-home.component';
 import { MotorVehicleInspectionSingleViewComponent } from './apollowebs/di/motor-vehicle-inspection-single-view/motor-vehicle-inspection-single-view.component';
+import { UploadForeignFormComponent } from './apollowebs/di/consignment-document-list/upload-foreign-form/upload-foreign-form.component';
 @NgModule({
     exports: [
         MatAutocompleteModule,
@@ -208,7 +209,8 @@ import { MotorVehicleInspectionSingleViewComponent } from './apollowebs/di/motor
         OtherVersionDetailsComponent,
         ApproveRejectConsignmentComponent,
         MinistryInspectionHomeComponent,
-        MotorVehicleInspectionSingleViewComponent
+        MotorVehicleInspectionSingleViewComponent,
+        UploadForeignFormComponent
     ]
 
 })

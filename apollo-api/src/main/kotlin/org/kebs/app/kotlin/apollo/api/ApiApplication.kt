@@ -38,6 +38,7 @@
 package org.kebs.app.kotlin.apollo.api
 
 import org.codehaus.jackson.map.ObjectMapper
+import org.codehaus.jackson.map.annotate.JsonSerialize
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.builder.SpringApplicationBuilder
@@ -58,8 +59,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 class ApiApplication : SpringBootServletInitializer() {
     @Bean
     fun objectMapper(): ObjectMapper{
-        var mapper=ObjectMapper()
-
+        val mapper=ObjectMapper()
+        mapper.setSerializationInclusion(JsonSerialize.Inclusion.NON_NULL);
         return mapper
     }
 

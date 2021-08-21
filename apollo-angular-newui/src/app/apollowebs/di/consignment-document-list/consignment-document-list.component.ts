@@ -1,6 +1,9 @@
 import {Component, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
 import {DestinationInspectionService} from "../../../core/store/data/di/destination-inspection.service";
+import {ConsignmentStatusComponent} from "../../../core/shared/customs/consignment-status/consignment-status.component";
+import {MatDialog} from "@angular/material/dialog";
+import {UploadForeignFormComponent} from "./upload-foreign-form/upload-foreign-form.component";
 
 @Component({
     selector: 'app-consignment-document-list',
@@ -8,7 +11,8 @@ import {DestinationInspectionService} from "../../../core/store/data/di/destinat
     styleUrls: ['./consignment-document-list.component.css']
 })
 export class ConsignmentDocumentListComponent implements OnInit {
-    activeStatus: string = 'ongoing';
+    activeStatus: string = 'my-tasks';
+    defaultPageSize: number = 20
     public settings = {
         selectMode: 'single',  // single|multi
         hideHeader: false,
@@ -32,7 +36,8 @@ export class ConsignmentDocumentListComponent implements OnInit {
         columns: {
             id: {
                 title: 'ID',
-                type: 'string'
+                type: 'string',
+                filter: false
             },
             ucrNumber: {
                 title: 'UCR No',
@@ -44,18 +49,26 @@ export class ConsignmentDocumentListComponent implements OnInit {
             },
             applicationDate: {
                 title: 'Application Date',
-                type: 'string'
+                type: 'string',
+                filter: false
             },
             approveRejectCdDate: {
                 title: 'Approval Date',
-                type: 'string'
+                type: 'string',
+                filter: false
             },
             approveRejectCdStatus: {
                 title: 'Approval Status',
-                type: 'string'
+                type: 'custom',
+                renderComponent: ConsignmentStatusComponent,
+                filter: false
             },
             assignedTo: {
                 title: 'Assigned Officer',
+                type: 'string'
+            },
+            documentType: {
+                title: 'Document Type',
                 type: 'string'
             }
         },
@@ -65,32 +78,63 @@ export class ConsignmentDocumentListComponent implements OnInit {
         }
     };
     dataSet: any = [];
+    documentTypes: any[];
     private documentTypeUuid: string
 
-    constructor(private router: Router, private diService: DestinationInspectionService) {
+    constructor(private dialog: MatDialog, private router: Router, private diService: DestinationInspectionService) {
     }
 
     ngOnInit(): void {
-        this.documentTypeUuid = "5a015375-5661-46cf-9ea4-cc4823c7e80e"
-        this.loadData(this.documentTypeUuid, 0, 10);
+        this.documentTypeUuid = null;
+        this.loadTypes(() => {
+            this.loadData(this.documentTypeUuid, 0, this.defaultPageSize);
+        })
+
     }
 
     private loadData(documentTypeUuid: string, page: number, size: number): any {
+
         let data = this.diService.listAssignedCd(documentTypeUuid, page, size);
-        if (this.activeStatus === "1") {
+        if (this.activeStatus === "completed") {
             data = this.diService.listCompletedCd(documentTypeUuid, page, size)
-        } else if (this.activeStatus == "0") {
+        } else if (this.activeStatus == "ongoing") {
+            data = this.diService.listSectionOngoingCd(documentTypeUuid, page, size)
+        } else if (this.activeStatus === "not-assigned") {
             data = this.diService.listManualAssignedCd(documentTypeUuid, page, size)
         }
         data.subscribe(
             result => {
                 if (result.responseCode === "00") {
-                    this.dataSet = result.data;
+                    let listD: any[] = result.data;
+                    for (let i in listD) {
+                        let docTpe = this.documentTypes.filter(dd => listD[i].cdType == dd.id)
+                        if (docTpe.length > 0) {
+                            // console.log(i)
+                            listD[i]["documentType"] = docTpe[0].typeName
+                        }
+                    }
+                    this.dataSet = listD
                 } else {
                     console.log(result)
                 }
             }
         );
+    }
+
+    private loadTypes(fn: Function) {
+        this.diService.documentTypes()
+            .subscribe(
+                res => {
+                    if (res.responseCode === "00") {
+                        this.documentTypes = res.data;
+                    } else {
+                        this.documentTypes = []
+                    }
+                    if (fn) {
+                        fn()
+                    }
+                }
+            )
     }
 
     public onCustomAction(event: any): void {
@@ -106,10 +150,34 @@ export class ConsignmentDocumentListComponent implements OnInit {
         this.router.navigate([`/di`, data.uuid]);
     }
 
+    public onFilterChange(event: any) {
+        // console.log(event)
+        if (event.target.value != this.documentTypeUuid) {
+            this.documentTypeUuid = event.target.value
+            this.loadData(this.documentTypeUuid, 0, this.defaultPageSize)
+        }
+    }
+
+    uploadForeignCoROrCor(event: any, type: string) {
+        let ref = this.dialog.open(UploadForeignFormComponent, {
+            data: {
+                "type": type
+            }
+        })
+        ref.afterClosed()
+            .subscribe(
+                res => {
+                    if (res) {
+                        this.loadData(this.documentTypeUuid, 0, this.defaultPageSize)
+                    }
+                }
+            )
+    }
+
     toggleStatus(status: string): void {
-        if (status != this.activeStatus) {
+        if (status !== this.activeStatus) {
             this.activeStatus = status;
-            this.loadData(this.documentTypeUuid, 0, 15)
+            this.loadData(this.documentTypeUuid, 0, this.defaultPageSize)
         }
     }
 }

@@ -13,9 +13,9 @@
                     <div class="card-body">
                         <div class="toolbar">
                             <div class="btn-group btn-group-sm" role="group" aria-label="Applications Status">
-                             <button type="button"  (click)="toggleStatus('ongoing')"
+                             <button type="button"  (click)="toggleStatus(0)"
                               [className]="activeStatus == 'ongoing' ? 'btn btn-sm btn-primary' : 'btn btn-sm btn-default'">ONGOING</button>
-                             <button type="button"  (click)="toggleStatus('completed')" 
+                             <button type="button"  (click)="toggleStatus(1)"
                               [className]="activeStatus == 'completed' ? 'btn btn-sm btn-primary' : 'btn btn-sm btn-default'">COMPLETED</button>
                           </div>
                         </div>

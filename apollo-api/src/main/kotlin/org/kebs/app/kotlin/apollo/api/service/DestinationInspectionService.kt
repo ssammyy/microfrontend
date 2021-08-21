@@ -1,10 +1,8 @@
-package org.kebs.app.kotlin.apollo.api.service;
+package org.kebs.app.kotlin.apollo.api.service
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import mu.KotlinLogging
-import org.kebs.app.kotlin.apollo.api.payload.ApiResponseModel
-import org.kebs.app.kotlin.apollo.api.payload.CdItemDetailsDao
-import org.kebs.app.kotlin.apollo.api.payload.ConsignmentDocument
-import org.kebs.app.kotlin.apollo.api.payload.ResponseCodes
+import org.kebs.app.kotlin.apollo.api.payload.*
 import org.kebs.app.kotlin.apollo.api.ports.provided.dao.*
 import org.kebs.app.kotlin.apollo.common.dto.MinistryInspectionListResponseDto
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
@@ -54,7 +52,7 @@ class DestinationInspectionService(
         return response
     }
 
-    fun listMinistryInspection(completed: Boolean,page:PageRequest): ApiResponseModel {
+    fun listMinistryInspection(completed: Boolean, page: PageRequest): ApiResponseModel {
         val requests: Page<CdItemDetailsEntity>
         val ministryInspectionItems: MutableList<MinistryInspectionListResponseDto> = ArrayList()
         val response = ApiResponseModel()
@@ -67,8 +65,8 @@ class DestinationInspectionService(
         requests.toList().forEach {
             ministryInspectionItems.add(this.daoServices.convertCdItemDetailsToMinistryInspectionListResponseDto(it))
         }
-        response.pageNo=requests.number
-        response.totalPages=requests.totalPages
+        response.pageNo = requests.number
+        response.totalPages = requests.totalPages
         response.data = ministryInspectionItems
         response.extras = daoServices.motorVehicleMinistryInspectionChecklistName
         response.responseCode = ResponseCodes.SUCCESS_CODE
@@ -81,13 +79,15 @@ class DestinationInspectionService(
         try {
             val map = commonDaoServices.serviceMapDetails(applicationMapProperties.mapImportInspection)
             val cdDetails = daoServices.findCDWithUuid(cdUuid)
+            KotlinLogging.logger { }.info(ObjectMapper().writeValueAsString(cdDetails))
             response.data = loadCDDetails(cdDetails, map)
             response.responseCode = ResponseCodes.SUCCESS_CODE
             response.message = "Consignment Document"
         } catch (ex: Exception) {
-            KotlinLogging.logger {  }.error { ex }
+            KotlinLogging.logger { }.error { ex }
+            response.data = null
             response.responseCode = ResponseCodes.EXCEPTION_STATUS
-            response.message = "Not valid"
+            response.message = "Record not found"
         }
         return response
     }
@@ -135,6 +135,7 @@ class DestinationInspectionService(
             response.message = "Success"
             response.responseCode = ResponseCodes.SUCCESS_CODE
         } catch (e: Exception) {
+            KotlinLogging.logger { }.error { e }
             response.message = "Failed"
             response.responseCode = ResponseCodes.FAILED_CODE
         }
@@ -146,8 +147,8 @@ class DestinationInspectionService(
         val dataMap = mutableMapOf<String, Any?>()
         // Importer details
         try {
-            cdDetails.cdImporter?.let { cdImporterID ->
-                val cdImporter = daoServices.findCDImporterDetails(cdImporterID)
+            if (cdDetails.cdImporter != null) {
+                val cdImporter = daoServices.findCDImporterDetails(cdDetails.cdImporter!!)
                 var riskProfileImporter = false
                 cdImporter.pin?.let {
                     riskProfileDaoService.findImportersInRiskProfile(it, map.activeStatus).let { riskImporter ->
@@ -160,21 +161,21 @@ class DestinationInspectionService(
                     dataMap.put("cd_importer", cdImporter)
                     dataMap.put("risk_profile_importer", riskProfileImporter)
                 }
-            } ?: run {
+            } else {
                 dataMap.put("risk_profile_importer", false)
                 dataMap.put("cd_importer", null)
             }
-        }catch (ex: Exception) {
-            KotlinLogging.logger {  }.error { ex }
+        } catch (ex: Exception) {
+            KotlinLogging.logger { }.error { ex }
             dataMap.put("risk_profile_importer", false)
             dataMap.put("cd_importer", null)
         }
         // Consignee details
         try {
-            cdDetails.cdConsignee?.let { cdConsigneeID ->
-                val cdConsignee = daoServices.findCdConsigneeDetails(cdConsigneeID)
+            if (cdDetails.cdConsignee != null) {
+                val cdConsignee = cdDetails.cdConsignee?.let { daoServices.findCdConsigneeDetails(it) }
                 var riskProfileConsignee = false
-                cdConsignee.pin?.let {
+                cdConsignee?.pin?.let {
                     riskProfileDaoService.findConsigneeInRiskProfile(it, map.activeStatus).let { riskConsignee ->
                         when {
                             riskConsignee != null -> {
@@ -185,16 +186,16 @@ class DestinationInspectionService(
                     dataMap.put("cd_consignee", cdConsignee)
                     dataMap.put("risk_profile_consignee", riskProfileConsignee)
                 }
-            } ?: run {
+            } else {
                 dataMap.put("cd_consignee", null)
                 dataMap.put("risk_profile_consignee", false)
             }
-        }catch (ex: Exception) {
-
+        } catch (ex: Exception) {
+            KotlinLogging.logger { }.error { ex }
         }
-        // Importer details
+        // Exporter details
         try {
-            cdDetails.cdImporter?.let { cdExporterID ->
+            cdDetails.cdExporter?.let { cdExporterID ->
                 val cdExporter = daoServices.findCdExporterDetails(cdExporterID)
                 var riskProfileExporter = false
                 cdExporter.pin?.let {
@@ -208,18 +209,16 @@ class DestinationInspectionService(
                 }
                 dataMap.put("cd_exporter", cdExporter)
                 dataMap.put("risk_profile_exporter", riskProfileExporter)
-            } ?: run {
-                dataMap.put("cd_exporter", null)
-                dataMap.put("risk_profile_exporter", false)
             }
-        }catch (ex: Exception) {
+        } catch (ex: Exception) {
+            KotlinLogging.logger { }.error { ex }
             dataMap.put("cd_exporter", null)
             dataMap.put("risk_profile_exporter", false)
         }
         // Consignor ID
         try {
-            cdDetails.cdConsignor?.let { cdConsignorID ->
-                val cdConsignor = daoServices.findCdConsignorDetails(cdConsignorID)
+            cdDetails.cdConsignor?.let { consignorId ->
+                val cdConsignor = daoServices.findCdConsignorDetails(consignorId)
                 var riskProfileConsignor = false
                 cdConsignor.pin?.let {
                     riskProfileDaoService.findConsignorInRiskProfile(it, map.activeStatus).let { riskConsignor ->
@@ -232,41 +231,35 @@ class DestinationInspectionService(
                 }
                 dataMap.put("cd_consignor", cdConsignor)
                 dataMap.put("risk_profile_consignor", riskProfileConsignor)
-            } ?: run {
-                dataMap.put("cd_consignor", null)
-                dataMap.put("risk_profile_consignor", false)
-
             }
-        }catch(ex: Exception) {
-            KotlinLogging.logger {  }.error { ex }
+        } catch (ex: Exception) {
+            KotlinLogging.logger { }.error { ex }
             dataMap.put("cd_consignor", null)
             dataMap.put("risk_profile_consignor", false)
         }
         // CdType details
         cdDetails.cdType?.let {
             dataMap.put("cd_type", daoServices.findCdTypeDetails(it))
-        } ?: run {
-            dataMap.put("cd_type", null)
         }
         // Standard
         cdDetails.cdStandardsTwo?.let {
             dataMap.put("cd_standards_two", daoServices.findCdStandardsTWODetails(it))
-        } ?: run {
-            dataMap.put("cd_standards_two", null)
         }
         // Transporter
         cdDetails.cdTransport?.let {
             dataMap.put("cd_transport", daoServices.findCdTransportDetails(it))
-        } ?: run {
-            dataMap.put("cd_transport", null)
         }
         // Headers
         cdDetails.cdHeaderOne?.let {
             dataMap.put("cd_header_one", daoServices.findCdHeaderOneDetails(it))
-        } ?: run {
-            dataMap.put("cd_header_one", null)
         }
-        dataMap.put("cd_details", ConsignmentDocument.fromEntity(cdDetails))
+        cdDetails.cdStandard?.cdServiceProvider?.let {
+            dataMap.put("cd_service_provider", it)
+        }
+        cdDetails.ucrNumber?.let {
+            dataMap.put("old_versions", daoServices.findAllOlderVersionCDsWithSameUcrNumber(it, map))
+        }
+        dataMap.put("cd_details", ConsignmentDocumentDao.fromEntity(cdDetails))
         dataMap.put("items_cd", CdItemDetailsDao.fromList(daoServices.findCDItemsListWithCDID(cdDetails)))
 
         return dataMap
@@ -430,4 +423,36 @@ class DestinationInspectionService(
         }
         return response
     }
+
+    fun motorVehicleInspectionDetails(itemId: Long): ApiResponseModel {
+        //Get the CD Item
+        val response = ApiResponseModel()
+        try {
+            val cdItemDetails = daoServices.findItemWithItemID(itemId)
+            val dataMap = mutableMapOf<String, Any?>()
+            dataMap["item"] = CdItemDetailsDao.fromEntity(cdItemDetails)
+            //Get inspection checklist details
+            val inspectionGeneralEntity = daoServices.findInspectionGeneralWithItemDetails(cdItemDetails)
+            //Get the motor vehicle checklist
+
+            dataMap["inspectionGeneralEntity"] = CdInspectionGeneralDao.fromEntity(inspectionGeneralEntity)
+            daoServices.findInspectionMotorVehicleWithInspectionGeneral(inspectionGeneralEntity)
+                    ?.let {
+                        dataMap["mvInspectionChecklist"] = CdInspectionMotorVehicleItemChecklistDao.fromEntity(it)
+                    } ?: run {
+                dataMap["mvInspectionChecklist"] = null
+            }
+
+            //Check for flash attributes
+            response.data = dataMap
+            response.responseCode = ResponseCodes.SUCCESS_CODE
+            response.message = "Success"
+        } catch (ex: Exception) {
+            KotlinLogging.logger { }.error { ex }
+            response.responseCode = ResponseCodes.EXCEPTION_STATUS
+            response.message = "Request failed, please try again"
+        }
+        return response
+    }
+
 }

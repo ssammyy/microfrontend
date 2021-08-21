@@ -102,8 +102,14 @@ export const ROUTES: RouteInfo[] = [
         icontype: 'receipt'
     },
     {
+        path: '/ministry/inspection',
+        title: 'Motor Vehicle Inspection',
+        type: 'link',
+        icontype: 'receipt'
+    },
+    {
         path: '/di',
-        title: 'DI Inspection',
+        title: 'Import Inspection',
         type: 'link',
         icontype: 'receipt'
     }

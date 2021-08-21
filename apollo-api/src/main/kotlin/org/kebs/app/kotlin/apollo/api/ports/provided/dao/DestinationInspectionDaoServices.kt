@@ -2044,77 +2044,108 @@ class DestinationInspectionDaoServices(
 
     fun findAllOngoingCdWithPortOfEntry(
             sectionsEntity: SectionsEntity,
-            cdType: ConsignmentDocumentTypesEntity,
+            cdType: ConsignmentDocumentTypesEntity?,
             page: PageRequest
     ): Page<ConsignmentDocumentDetailsEntity> {
-        return iConsignmentDocumentDetailsRepo.findByPortOfArrivalAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNull(
-                sectionsEntity.id,
-                cdType.id,
-                page
-        )
+        return cdType?.let {
+            iConsignmentDocumentDetailsRepo.findByPortOfArrivalAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNull(
+                    sectionsEntity.id,
+                    cdType.id,
+                    page
+            )
+        }?:run{
+            iConsignmentDocumentDetailsRepo.findByPortOfArrivalAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNull(
+                    sectionsEntity.id,
+                    page
+            )
+        }
 
     }
 
     fun findAllCompleteCdWithPortOfEntry(
             sectionsEntity: SectionsEntity,
-            cdType: ConsignmentDocumentTypesEntity,
+            cdType: ConsignmentDocumentTypesEntity?,
             page: PageRequest
     ): Page<ConsignmentDocumentDetailsEntity> {
-        return iConsignmentDocumentDetailsRepo.findByPortOfArrivalAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNotNull(
+        return cdType?.let{iConsignmentDocumentDetailsRepo.findByPortOfArrivalAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNotNull(
                 sectionsEntity.id,
                 cdType.id,
                 page
-        )
+        )}?:run{
+            iConsignmentDocumentDetailsRepo.findByPortOfArrivalAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNotNull(
+                    sectionsEntity.id,
+                    page
+            )
+        }
 
     }
 
-    fun findAllCdWithNoPortOfEntry(cdType: ConsignmentDocumentTypesEntity, page: PageRequest): Page<ConsignmentDocumentDetailsEntity> {
-        return iConsignmentDocumentDetailsRepo.findByPortOfArrivalIsNullAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNull(
-                cdType.id,
+    fun findAllCdWithNoPortOfEntry(cdType: ConsignmentDocumentTypesEntity?, page: PageRequest): Page<ConsignmentDocumentDetailsEntity> {
+        return cdType?.let { iConsignmentDocumentDetailsRepo.findByPortOfArrivalIsNullAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNull(
+                it.id,
                 page
-        )
-//                ?.let {
-//                    return it
-//                }
-//                ?: throw Exception("COC List with the following Port arrival = ${sectionsEntity.section} and CD Type = ${cdType.typeName}, does not Exist")
-
+        )}?:run {
+            iConsignmentDocumentDetailsRepo.findByPortOfArrivalIsNullAndUcrNumberIsNotNullAndOldCdStatusIsNull(
+                    page
+            )
+        }
     }
 
     fun findAllCdWithAssignedIoID(
             usersEntity: UsersEntity,
-            cdType: ConsignmentDocumentTypesEntity,
+            cdType: ConsignmentDocumentTypesEntity?,
             page: PageRequest
     ): Page<ConsignmentDocumentDetailsEntity> {
-        return iConsignmentDocumentDetailsRepo.findAllByAssignedInspectionOfficerAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNull(
-                usersEntity,
-                cdType.id,
-                page
-        )
+        return cdType?.let {
+            iConsignmentDocumentDetailsRepo.findAllByAssignedInspectionOfficerAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNull(
+                    usersEntity,
+                    it.id,
+                    page
+            )
+        }?:run{
+            iConsignmentDocumentDetailsRepo.findAllByAssignedInspectionOfficerAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNull(
+                    usersEntity,
+                    page
+            )
+        }
     }
 
     fun findAllCompleteCdWithAssignedIoID(
             usersEntity: UsersEntity,
-            cdType: ConsignmentDocumentTypesEntity,
+            cdType: ConsignmentDocumentTypesEntity?,
             page: PageRequest
     ): Page<ConsignmentDocumentDetailsEntity> {
-        return iConsignmentDocumentDetailsRepo.findAllByAssignedInspectionOfficerAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNotNull(
-                usersEntity,
-                cdType.id,
-                page
-        )
+        return cdType?.let{
+            iConsignmentDocumentDetailsRepo.findAllByAssignedInspectionOfficerAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNotNull(
+                    usersEntity,
+                    cdType.id,
+                    page
+            )
+        }?:run{
+            iConsignmentDocumentDetailsRepo.findAllByAssignedInspectionOfficerAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNotNull(
+                    usersEntity,
+                    page
+            )
+        }
     }
 
 
     fun findAllCdWithNoAssignedIoID(
             subSectionsLevel2Entity: SubSectionsLevel2Entity,
-            cdType: ConsignmentDocumentTypesEntity,
+            cdType: ConsignmentDocumentTypesEntity?,
             page: PageRequest
     ): Page<ConsignmentDocumentDetailsEntity> {
-        return iConsignmentDocumentDetailsRepo.findByFreightStationAndAssignedInspectionOfficerIsNullAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNull(
+        return cdType?.let{
+            iConsignmentDocumentDetailsRepo.findByFreightStationAndAssignedInspectionOfficerIsNullAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNull(
                 subSectionsLevel2Entity.id,
                 cdType.id,
                 page
         )
+        }?:run {
+            iConsignmentDocumentDetailsRepo.findByFreightStationAndAssignedInspectionOfficerIsNullAndUcrNumberIsNotNullAndOldCdStatusIsNull(
+                    subSectionsLevel2Entity.id,
+                    page)
+        }
 
     }
 

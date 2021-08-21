@@ -7,28 +7,23 @@
                     class="waiver-form-input-master"
                     formControlName="applicable_status">
                 <option value="" disabled selected>Select Status</option>
-                <option  value="onHold">On-Hold</option>
-                <option  value="rejected">Rejected</option>
-                <option  value="approved">Approved</option>
-                <option  value="rejectedForAmmendment">Rejected for ammendment</option>
+                <option value="onHold">On-Hold</option>
+                <option value="rejected">Rejected</option>
+                <option value="approved">Approved</option>
+                <option value="rejectedForAmmendment">Rejected for ammendment</option>
             </select>
 
             <label class="waiver-form-label">Please write, in detail, your feedback for this consignment:</label>
             <textarea name="comments" class="waiver-form-input-master"
-                   placeholder="" 
-                   formControlName="comments"></textarea>
-
-          
-
+                      placeholder=""
+                      formControlName="comments"></textarea>
         </div>
-
-      
     </div>
 </mat-dialog-content>
 <mat-dialog-actions>
     <div class="row no_margin master-list-new-btn">
-<!--        [disabled]="!productDetails.valid"-->
-        <button  class="next-btn btn-gen new-btn" (click)="saveRecord()">SAVE
+        <!--        [disabled]="!productDetails.valid"-->
+        <button class="next-btn btn-gen new-btn" (click)="saveRecord()">SAVE
         </button>
     </div>
 </mat-dialog-actions>

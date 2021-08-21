@@ -56,13 +56,16 @@ export class ViewSingleConsignmentDocumentComponent implements OnInit {
 
     approveRejectConsignment() {
         let ref = this.dialog.open(ApproveRejectConsignmentComponent, {
-            data: {}
+            data: {
+                consignment: this.consignment
+            }
         });
         ref.afterClosed()
             .subscribe(
                 res => {
-                    console.log(res)
+                   if(res){
 
+                   }
                 }
             )
     }

@@ -340,15 +340,15 @@ const routes: Routes = [
     },
     
     {
-        path: 'ministry-inspection-home',
+        path: 'ministry',
         component: AdminLayoutComponent,
         children: [
             {
-                path: '',
+                path: 'inspection',
                 component: MinistryInspectionHomeComponent
             },
             {
-                path: ':id',
+                path: 'inspection/:id',
                 component: MotorVehicleInspectionSingleViewComponent
             }
         ]

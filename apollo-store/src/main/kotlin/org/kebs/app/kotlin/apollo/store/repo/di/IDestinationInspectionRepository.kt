@@ -7,7 +7,6 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.hazelcast.repository.HazelcastRepository
 import org.springframework.data.jpa.repository.Query
-import org.springframework.data.repository.query.Param
 import org.springframework.stereotype.Repository
 
 
@@ -26,13 +25,22 @@ interface IConsignmentDocumentDetailsRepository : HazelcastRepository<Consignmen
             page: Pageable
     ): Page<ConsignmentDocumentDetailsEntity>
 
+    fun findByPortOfArrivalAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNull(
+            portOfArrival: Long,
+            page: Pageable
+    ): Page<ConsignmentDocumentDetailsEntity>
+
     fun findByPortOfArrivalAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNotNull(
             portOfArrival: Long,
             cdType: Long,
             page: Pageable
     ): Page<ConsignmentDocumentDetailsEntity>
-
+    fun findByPortOfArrivalAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNotNull(
+            portOfArrival: Long,
+            page: Pageable
+    ): Page<ConsignmentDocumentDetailsEntity>
     fun findByPortOfArrivalIsNullAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNull(cdType: Long, page: Pageable): Page<ConsignmentDocumentDetailsEntity>
+    fun findByPortOfArrivalIsNullAndUcrNumberIsNotNullAndOldCdStatusIsNull(page: Pageable): Page<ConsignmentDocumentDetailsEntity>
 
     fun findByPortOfArrivalOrderByIdDesc(
             portOfArrival: Long,
@@ -52,9 +60,18 @@ interface IConsignmentDocumentDetailsRepository : HazelcastRepository<Consignmen
             page: Pageable
     ): Page<ConsignmentDocumentDetailsEntity>
 
+    fun findAllByAssignedInspectionOfficerAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNotNull(
+            assignedInspectionOfficer: UsersEntity,
+            page: Pageable
+    ): Page<ConsignmentDocumentDetailsEntity>
+
     fun findByFreightStationAndAssignedInspectionOfficerIsNullAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNull(
             freightStation: Long,
             cdType: Long,
+            page: Pageable
+    ): Page<ConsignmentDocumentDetailsEntity>
+    fun findByFreightStationAndAssignedInspectionOfficerIsNullAndUcrNumberIsNotNullAndOldCdStatusIsNull(
+            freightStation: Long,
             page: Pageable
     ): Page<ConsignmentDocumentDetailsEntity>
 
@@ -62,6 +79,7 @@ interface IConsignmentDocumentDetailsRepository : HazelcastRepository<Consignmen
     fun findByUcrNumberAndOldCdStatus(ucrNumber: String, oldCdStatus: Int): List<ConsignmentDocumentDetailsEntity>?
     fun findTopByUcrNumberOrderByIdDesc(ucrNumber: String): ConsignmentDocumentDetailsEntity?
     fun findByUuid(uuid: String): ConsignmentDocumentDetailsEntity?
+    fun findAllByAssignedInspectionOfficerAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNull(usersEntity: UsersEntity, page: Pageable): Page<ConsignmentDocumentDetailsEntity>
 }
 
 @Repository
