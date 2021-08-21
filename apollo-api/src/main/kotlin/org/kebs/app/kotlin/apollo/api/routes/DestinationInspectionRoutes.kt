@@ -35,12 +35,6 @@ class DestinationInspectionRoutes {
             GET("/inspection/coc/details/{coUuid}", handler::certificateOfConformance)
             GET("/inspection/idf/details/{coUuid}", handler::importDeclarationFormDetails)
             GET("/inspection/cor/details/{coUuid}", handler::certificateOfRoadWorthines)
-
-//            POST("/exemption/apply", handler::exemptionApplication)
-//            GET("/exemption/check/eligible", handler::checkExemptionEligibility)
-//            GET("/exemption/history", handler::exemptionHistory)
-//            GET("/exemption/{exemptionId}", handler::viewExemption)
-
         }
     }
 }

@@ -118,7 +118,6 @@ import {StandardsDevelopmentComponent} from "./apollowebs/standards-development/
 import {InformationcheckComponent} from './apollowebs/standards-development/informationcheck/informationcheck.component';
 import {UsermanagementComponent} from './apollowebs/usermanagement/usermanagement.component';
 import {NwaJustificationTasksComponent} from './apollowebs/standards-development/workshop-agreement/nwa-justification-tasks/nwa-justification-tasks.component';
-import {DataTablesModule} from "angular-datatables";
 import {NwaKnwSecTasksComponent} from './apollowebs/standards-development/workshop-agreement/nwa-knw-sec-tasks/nwa-knw-sec-tasks.component';
 import {NwaDiSdtTasksComponent} from './apollowebs/standards-development/workshop-agreement/nwa-di-sdt-tasks/nwa-di-sdt-tasks.component';
 import {NwaHopTasksComponent} from './apollowebs/standards-development/workshop-agreement/nwa-hop-tasks/nwa-hop-tasks.component';
@@ -150,6 +149,7 @@ import {ReviewApplicationsComponent} from './apollowebs/standards-development/st
 import {StandardTaskComponent} from './apollowebs/standards-development/standard-request/standard-task/standard-task.component';
 //import {ModalModule} from "ngb-modal";
 import {ModalModule} from "ngb-modal";
+import {DataTablesModule} from "angular-datatables";
 
 
 // import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
@@ -192,11 +192,6 @@ import {ModalModule} from "ngb-modal";
         CommonModule,
         BrowserModule,
         ModalModule,
-        // NgbModule,
-        //ModalModule,
-        // TODO: Discuss as it seems to kill sending of requests to backend
-        // EffectsModule.forRoot([]),
-        // EntityDataModule.forRoot(entityConfig),
         ReactiveFormsModule,
         RouterModule,
         CoreModule,
@@ -282,8 +277,7 @@ import {ModalModule} from "ngb-modal";
         StandardRequestComponent,
         RequestStandardFormComponent,
         ReviewApplicationsComponent,
-        StandardTaskComponent
-
+        StandardTaskComponent,
         ProductDetailsComponent,
         ImportationWaiverComponent,
         MainProductionMachineryComponent,

@@ -27,12 +27,9 @@ import {SmarkApplicationsAllComponent} from './apollowebs/quality-assurance/smar
 import {UserProfileMainComponent} from './apollowebs/userprofilemain/user-profile-main.component';
 import {AddBranchComponent} from "./apollowebs/company/branch/add-branch/add-branch.component";
 import {OtpComponent} from "./views/registration/otp/otp.component";
-import {InvoiceConsolidateComponent} from "./apollowebs/invoice-consolidate/invoice-consolidate.component";
 import {PdfViewComponent} from "./pdf-view/pdf-view.component";
 import {TaskManagerComponent} from "./apollowebs/task-manager/task-manager.component";
 import {AddUserComponent} from "./apollowebs/company/branch/add-user/add-user.component";
-import {FmarkApplicationComponent} from "./apollowebs/fmark-application/fmark-application.component";
-import {SmarkComponent} from "./apollowebs/smark/smark.component";
 import { ImportInspectionComponent } from './apollowebs/pvoc/import-inspection/import-inspection.component';
 import { ExceptionsApplicationComponent } from './apollowebs/pvoc/exceptions-application/exceptions-application.component';
 import { ImportationWaiverComponent } from './apollowebs/pvoc/importation-waiver/importation-waiver.component';
@@ -40,14 +37,6 @@ import { ConsignmentDocumentListComponent } from './apollowebs/di/consignment-do
 import { ViewSingleConsignmentDocumentComponent } from './apollowebs/di/view-single-consignment-document/view-single-consignment-document.component';
 import { MinistryInspectionHomeComponent } from './apollowebs/di/ministry-inspection-home/ministry-inspection-home.component';
 import { MotorVehicleInspectionSingleViewComponent } from './apollowebs/di/motor-vehicle-inspection-single-view/motor-vehicle-inspection-single-view.component';
-import {AddBranchComponent} from './apollowebs/company/branch/add-branch/add-branch.component';
-import {OtpComponent} from './views/registration/otp/otp.component';
-import {InvoiceConsolidateComponent} from './apollowebs/quality-assurance/invoice-consolidate/invoice-consolidate.component';
-import {PdfViewComponent} from './pdf-view/pdf-view.component';
-import {TaskManagerComponent} from './apollowebs/task-manager/task-manager.component';
-import {AddUserComponent} from './apollowebs/company/branch/add-user/add-user.component';
-import {FmarkApplicationComponent} from './apollowebs/quality-assurance/fmark-application/fmark-application.component';
-import {SmarkComponent} from './apollowebs/quality-assurance/smark/smark.component';
 import {NwaJustificationFormComponent} from './apollowebs/standards-development/workshop-agreement/nwa-justification-form/nwa-justification-form.component';
 import {NwaJustificationTasksComponent} from './apollowebs/standards-development/workshop-agreement/nwa-justification-tasks/nwa-justification-tasks.component';
 import {NwaKnwSecTasksComponent} from './apollowebs/standards-development/workshop-agreement/nwa-knw-sec-tasks/nwa-knw-sec-tasks.component';
@@ -60,7 +49,6 @@ import {ReviewStandardsComponent} from './apollowebs/standards-development/syste
 import {CsRequestFormComponent} from './apollowebs/standards-development/company-standard/company-standard-request/cs-request-form/cs-request-form.component';
 import {InformationcheckComponent} from './apollowebs/standards-development/informationcheck/informationcheck.component';
 import {DivisionresponseComponent} from './apollowebs/standards-development/divisionresponse/divisionresponse.component';
-import {NationalEnquiryPointComponent} from './apollowebs/standards-development/national-enquiry-point/national-enquiry-point.component';
 import {MakeEnquiryComponent} from './apollowebs/standards-development/national-enquiry-point/make-enquiry/make-enquiry.component';
 import {ComStdRequestListComponent} from "./apollowebs/standards-development/company-standard/com-std-request-list/com-std-request-list.component";
 import {IntStdResponsesListComponent} from "./apollowebs/standards-development/international-standard/int-std-responses-list/int-std-responses-list.component";
@@ -76,6 +64,9 @@ import {UserManagementProfileComponent} from "./apollowebs/usermanagement/user-m
 import {RequestStandardFormComponent} from "./apollowebs/standards-development/standard-request/request-standard-form/request-standard-form.component";
 import {StandardRequestComponent} from "./apollowebs/standards-development/standard-request/standard-request.component";
 import {StandardTaskComponent} from "./apollowebs/standards-development/standard-request/standard-task/standard-task.component";
+import {InvoiceConsolidateComponent} from "./apollowebs/quality-assurance/invoice-consolidate/invoice-consolidate.component";
+import {FmarkApplicationComponent} from "./apollowebs/quality-assurance/fmark-application/fmark-application.component";
+import {SmarkComponent} from "../../../apollo-angular-web/src/app/apollowebs/smark/smark.component";
 
 // export const AppRoutes: Routes = [
 //     {
