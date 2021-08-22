@@ -1359,6 +1359,33 @@ class QualityAssuranceHandler(
 
     @PreAuthorize("hasAuthority('PERMIT_APPLICATION')")
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    fun permitResubmitMigration(req: ServerRequest): ServerResponse {
+        try {
+            val loggedInUser = commonDaoServices.loggedInUserDetails()
+            val map = commonDaoServices.serviceMapDetails(appId)
+            val permitID = req.paramOrNull("permitID")?.toLong()
+                ?: throw ExpectedDataNotFound("Required PermitType ID, check config")
+            val permitDetails = qaDaoServices.findPermitBYID(permitID)
+
+            val dto = req.body<ResubmitApplicationDto>()
+
+            //updating of Details in DB
+            val updateResults = qaDaoServices.permitResubmitDetails(permitDetails, dto, map, loggedInUser)
+
+            qaDaoServices.permitDetails(updateResults.second, map).let {
+                return ok().body(it)
+            }
+
+        } catch (e: Exception) {
+            KotlinLogging.logger { }.error(e.message)
+            KotlinLogging.logger { }.debug(e.message, e)
+            return badRequest().body(e.message ?: "UNKNOWN_ERROR")
+        }
+
+    }
+
+    @PreAuthorize("hasAuthority('PERMIT_APPLICATION')")
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun permitUpdateSTA1Migration(req: ServerRequest): ServerResponse {
         try {
             val loggedInUser = commonDaoServices.loggedInUserDetails()

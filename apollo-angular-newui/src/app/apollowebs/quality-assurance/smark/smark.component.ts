@@ -5,7 +5,7 @@ import {
     AllSTA10DetailsDto, FilesListDto,
     PermitEntityDetails, PermitEntityDto,
     PlantDetailsDto,
-    SectionDto, SSFPDFListDetailsDto,
+    SectionDto, SSFComplianceStatusDetailsDto, SSFPDFListDetailsDto,
     STA1,
     Sta10Dto,
     STA10MachineryAndPlantDto,
@@ -36,6 +36,7 @@ export class SmarkComponent implements OnInit {
     labResultsStatus!: string;
     labResultsRemarks!: string;
     approveRejectSSCForm!: FormGroup;
+    resubmitForm!: FormGroup;
     uploadForm!: FormGroup;
     uploadedFile: File;
     uploadedFiles: FileList;
@@ -77,11 +78,13 @@ export class SmarkComponent implements OnInit {
     sta10FileList: FilesListDto[];
     ordinaryFilesList: FilesListDto[];
     labResultsDetailsList: SSFPDFListDetailsDto[];
+    complianceResultsDetailsList: SSFComplianceStatusDetailsDto[];
     olderVersionDetailsList: PermitEntityDto[];
     sta10ManufacturingProcessDetail: STA10ManufacturingProcessDto;
     stepSoFar: | undefined;
     step = 1;
-    public permitID!: string;
+    resubmitDetail!: string;
+    permitID!: string;
     batchID!: bigint;
     COMPLIANTSTATUS = 'COMPLIANT';
     NONCOMPLIANT = 'NON-COMPLIANT';
@@ -96,6 +99,7 @@ export class SmarkComponent implements OnInit {
     public tableData2: TableData;
     public tableData3: TableData;
     public tableData4: TableData;
+    public tableData6: TableData;
     public tableData5: TableData;
     public tableData12: TableData;
     blob: Blob;
@@ -205,6 +209,13 @@ export class SmarkComponent implements OnInit {
             approvedRejectedSchemeRemarks: [''],
             // approvedRemarks: [{value: '', disabled: true}, Validators.required],
         });
+        this.resubmitForm = this.formBuilder.group({
+            resubmitRemarks: ['', Validators.required],
+            resubmittedDetails: ['', Validators.required],
+            // resubmittedDetails: ['']
+            // resubmittedDetails: [this.resubmitDetail, Validators.required]
+            // approvedRemarks: [{value: '', disabled: true}, Validators.required],
+        });
 
         this.uploadForm = this.formBuilder.group({
             upLoadDescription: ['', Validators.required],
@@ -268,6 +279,11 @@ export class SmarkComponent implements OnInit {
         return this.approveRejectSSCForm.controls;
     }
 
+    get formResubmitRemarks(): any {
+        this.resubmitForm.controls['resubmittedDetails'].setValue(this.resubmitDetail);
+        return this.resubmitForm.controls;
+    }
+
     get formSta1Form(): any {
         return this.sta1Form.controls;
     }
@@ -309,6 +325,7 @@ export class SmarkComponent implements OnInit {
             let formattedArraySta10 = [];
             let formattedArrayOrdinaryFiles = [];
             let formattedArrayLabResultsList = [];
+            let formattedArrayComplianceResultsList = [];
             let formattedArrayOlderVersionList = [];
             const formattedArrayInvoiceDetailsList = [];
             this.SpinnerService.show();
@@ -359,13 +376,21 @@ export class SmarkComponent implements OnInit {
                             dataRows: formattedArrayOrdinaryFiles
                         };
                     }
-                    if (this.allPermitDetails.labResultsList !== []) {
-                        this.labResultsDetailsList = this.allPermitDetails.labResultsList;
+                    if (this.allPermitDetails.labResultsList.labResultsList !== []) {
+                        this.labResultsDetailsList = this.allPermitDetails.labResultsList.labResultsList;
                         // tslint:disable-next-line:max-line-length
                         formattedArrayLabResultsList = this.labResultsDetailsList.map(i => [i.pdfName, i.complianceStatus, i.sffId, i.complianceRemarks, i.pdfSavedId]);
                         this.tableData4 = {
                             headerRow: ['File Name', 'Compliant Status', 'View Remarks', 'View PDF'],
                             dataRows: formattedArrayLabResultsList
+                        };
+
+                        this.complianceResultsDetailsList = this.allPermitDetails.labResultsList.ssfResultsList;
+                        // tslint:disable-next-line:max-line-length
+                        formattedArrayComplianceResultsList = this.complianceResultsDetailsList.map(i => [i.sffId, i.bsNumber, i.complianceStatus, i.complianceRemarks]);
+                        this.tableData6 = {
+                            headerRow: ['BS Number', 'Compliant Status', 'View Remarks', 'Action'],
+                            dataRows: formattedArrayComplianceResultsList
                         };
                     }
                     if (this.allPermitDetails.oldVersionList !== []) {
@@ -507,6 +532,26 @@ export class SmarkComponent implements OnInit {
                 // this.router.navigate(['/invoiceDetails'], {fragment: this.allPermitDetails.batchID.toString()});
 
                 // this.onUpdateReturnToList();
+            },
+        );
+    }
+
+    reSubmitWithRemarks(): void {
+        console.log(this.resubmitForm.value);
+        this.SpinnerService.show();
+        // tslint:disable-next-line:max-line-length
+        this.qaService.resubmitApplicationBack(String(this.allPermitDetails.permitDetails.id), this.resubmitForm.value).subscribe(
+            (data: PermitEntityDetails) => {
+                this.allPermitDetails.permitDetails = data;
+                this.SpinnerService.hide();
+                swal.fire({
+                    title: 'PERMIT APPLICATION RE-SUBMITTED SUCCESSFULLY!',
+                    buttonsStyling: false,
+                    customClass: {
+                        confirmButton: 'btn btn-success form-wizard-next-btn ',
+                    },
+                    icon: 'success'
+                });
             },
         );
     }
@@ -715,24 +760,9 @@ export class SmarkComponent implements OnInit {
 
     }
 
-    viewLabRemarks(status: string, remarksValue: string) {
-        this.currDiv = 'viewLabResultsRemarks';
-        this.currDivLabel = 'LAB RESULTS DETAILS';
-        switch (status) {
-            case 'true':
-                this.labResultsStatus = 'COMPLIANT';
-                break;
-            case 'false':
-                this.labResultsStatus = 'NOT-COMPLIANT';
-                break;
-        }
-
-        this.labResultsRemarks = remarksValue;
-    }
-
-    openModalUpload(viewDiv: string) {
-        const arrHead = ['uploadModal', 'schemeModal'];
-        const arrHeadSave = ['Upload PDF Documents Only', 'Agree/Consent to SSC'];
+    viewLabRemarks(status: boolean, remarksValue: string, viewDiv: string) {
+        const arrHead = ['viewLabResultsRemarks', 'viewLabComplianceRemarks'];
+        const arrHeadSave = ['LAB RESULTS DETAILS', 'Inspection Compliance Status'];
 
         for (let h = 0; h < arrHead.length; h++) {
             if (viewDiv === arrHead[h]) {
@@ -740,6 +770,32 @@ export class SmarkComponent implements OnInit {
             }
         }
         this.currDiv = viewDiv;
+
+        switch (status) {
+            case true:
+                this.labResultsStatus = this.COMPLIANTSTATUS;
+                break;
+            case false:
+                this.labResultsStatus = this.NONCOMPLIANT;
+                break;
+        }
+
+        this.labResultsRemarks = remarksValue;
+    }
+
+    openModalUpload(viewDiv: string, resubmit: string) {
+        const arrHeadResubmit = ['resubmitLabNonComplianceResults', 'schemeModal', 'resubmitDetails'];
+        const arrHead = ['uploadModal', 'schemeModal', 'resubmitDetails'];
+        const arrHeadSave = ['Upload PDF Documents Only', 'Agree/Consent to SSC', 'Resubmit Details With Remarks'];
+
+        for (let h = 0; h < arrHead.length; h++) {
+            if (viewDiv === arrHead[h]) {
+                this.currDivLabel = arrHeadSave[h];
+            }
+        }
+        this.currDiv = viewDiv;
+        this.resubmitDetail = resubmit;
+        console.log(this.resubmitDetail);
     }
 
     openModalViewUpload(viewDiv: string) {

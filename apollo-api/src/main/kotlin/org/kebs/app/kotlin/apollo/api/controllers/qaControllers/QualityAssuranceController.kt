@@ -10,6 +10,7 @@ import org.kebs.app.kotlin.apollo.api.ports.provided.lims.LimsServices
 import org.kebs.app.kotlin.apollo.api.ports.provided.makeAnyNotBeNull
 import org.kebs.app.kotlin.apollo.common.dto.FmarkEntityDto
 import org.kebs.app.kotlin.apollo.common.dto.qa.NewBatchInvoiceDto
+import org.kebs.app.kotlin.apollo.common.dto.qa.ResubmitApplicationDto
 import org.kebs.app.kotlin.apollo.common.exceptions.ExpectedDataNotFound
 import org.kebs.app.kotlin.apollo.common.utils.generateRandomText
 import org.kebs.app.kotlin.apollo.config.properties.map.apps.ApplicationMapProperties
@@ -1021,6 +1022,7 @@ class QualityAssuranceController(
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     fun updateResubmitPermitDetails(
         @ModelAttribute("permit") permit: PermitApplicationsEntity,
+        @ModelAttribute("resubmitApplication") resubmitApplication: ResubmitApplicationDto,
         @RequestParam("permitID") permitID: Long,
         model: Model
     ): String? {

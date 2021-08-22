@@ -7,7 +7,7 @@ import {
     AllBatchInvoiceDetailsDto,
     AllPermitDetailsDto,
     AllSTA10DetailsDto, FmarkEntityDto, GenerateInvoiceDto,
-    MPesaPushDto, PermitProcessStepDto, SSCApprovalRejectionDto,
+    MPesaPushDto, PermitEntityDetails, PermitProcessStepDto, ResubmitApplicationDto, SSCApprovalRejectionDto,
     STA1,
     Sta10Dto,
     STA10MachineryAndPlantDto,
@@ -807,6 +807,21 @@ export class QaService {
             .set('permitID', permitID);
         return this.http.post<any>(url, data, {params}).pipe(
             map(function (response: any) {
+                return response;
+            }),
+            catchError((fault: HttpErrorResponse) => {
+                // console.warn(`getAllFault( ${fault.message} )`);
+                return throwError(fault);
+            })
+        );
+    }
+
+    public resubmitApplicationBack(permitID: string, data: ResubmitApplicationDto): Observable<PermitEntityDetails> {
+        const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.PERMIT_RE_SUBMIT_APPLICATION);
+        const params = new HttpParams()
+            .set('permitID', permitID);
+        return this.http.post<PermitEntityDetails>(url, data, {params}).pipe(
+            map(function (response: PermitEntityDetails) {
                 return response;
             }),
             catchError((fault: HttpErrorResponse) => {

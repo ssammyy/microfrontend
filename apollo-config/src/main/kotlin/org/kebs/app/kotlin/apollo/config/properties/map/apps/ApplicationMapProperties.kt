@@ -286,6 +286,9 @@ class ApplicationMapProperties {
     @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.status.deferred_by_psc_members}")
     val mapQaStatusDeferredPSCMembers: Long = 0L
 
+    @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.status.pending_re_inspection}")
+    val mapQaStatusPendingReInspection: Long = 0L
+
     @Value("\${org.kebs.app.kotlin.apollo.quality.assurance.map.permit.status.pending_pcm_awarding}")
     val mapQaStatusPPCMAwarding: Long = 0L
 

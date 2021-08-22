@@ -100,6 +100,18 @@ data class SSFPDFListDetailsDto(
     var complianceStatus: Boolean? = null,
 )
 
+data class SSFComplianceStatusDetailsDto(
+    var sffId: Long? = null,
+    var bsNumber: String? = null,
+    var complianceRemarks: String? = null,
+    var complianceStatus: Boolean? = null,
+)
+
+data class PermitSSFLabResultsDto(
+    var ssfResultsList: List<SSFComplianceStatusDetailsDto>? = null,
+    var labResultsList: List<SSFPDFListDetailsDto>? = null,
+)
+
 data class PermitAllRemarksDetailsDto(
     var hofQamCompleteness: RemarksAndStatusDto? = null,
     var pcmApproval: RemarksAndStatusDto? = null,
@@ -435,7 +447,7 @@ data class AllPermitDetailsDto(
     var ordinaryFilesList: List<FilesListDto>? = null,
     var sta3FilesList: List<FilesListDto>? = null,
     var sta10FilesList: List<FilesListDto>? = null,
-    var labResultsList: List<SSFPDFListDetailsDto>? = null,
+    var labResultsList: PermitSSFLabResultsDto? = null,
     var schemeOfSuperVision: FilesListDto? = null,
     var batchID: Long? = null
 )
@@ -469,6 +481,11 @@ data class InvoicePerDetailsDto(
 data class SSCApprovalRejectionDto(
     var approvedRejectedScheme: Int? = null,
     var approvedRejectedSchemeRemarks: String? = null,
+)
+
+data class ResubmitApplicationDto(
+    var resubmitRemarks: String? = null,
+    var resubmittedDetails: String? = null,
 )
 
 data class TaskDto(

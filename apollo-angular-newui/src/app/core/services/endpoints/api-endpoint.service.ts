@@ -204,6 +204,7 @@ export class ApiEndpointService {
         PERMIT_SUBMIT_DETAILS_FOR_HOD_QAM_REVIEW: `${ApiEndpointService.QA_CONTEXT_APPLY}/submit-application-qam-hod-review`,
         PERMIT_SUBMIT_APPLICATION: `${ApiEndpointService.QA_CONTEXT_APPLY}/submit-application`,
         PERMIT_SUBMIT_SSC_APPROVAL_REJECTION: `${ApiEndpointService.QA_CONTEXT_APPLY}/submit-application-ssc-approval-rejection`,
+        PERMIT_RE_SUBMIT_APPLICATION: `${ApiEndpointService.QA_CONTEXT_APPLY}/re-submit-application`,
 
         PERMIT_RENEW: `${ApiEndpointService.QA_CONTEXT}/permit/renew/`,
         PLANT_LIST: `${ApiEndpointService.QA_CONTEXT}/branch-list`,

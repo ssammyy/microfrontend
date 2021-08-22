@@ -5,7 +5,7 @@ import {
     AllPermitDetailsDto, FilesListDto,
     PermitEntityDetails, PermitEntityDto,
     PlantDetailsDto,
-    SectionDto, SSFPDFListDetailsDto,
+    SectionDto, SSFComplianceStatusDetailsDto, SSFPDFListDetailsDto,
     STA1,
     STA3
 } from '../../../core/store/data/qa/qa.model';
@@ -64,11 +64,14 @@ export class DmarkComponent implements OnInit, AfterViewInit {
     sta3FileList: FilesListDto[];
     ordinaryFilesList: FilesListDto[];
     labResultsDetailsList: SSFPDFListDetailsDto[];
+    complianceResultsDetailsList: SSFComplianceStatusDetailsDto[];
     olderVersionDetailsList: PermitEntityDto[];
     permitEntityDetails: PermitEntityDetails;
     public dataTable: DataTable;
     public permitID!: string;
     allPermitDetails!: AllPermitDetailsDto;
+    COMPLIANTSTATUS = 'COMPLIANT';
+    NONCOMPLIANT = 'NON-COMPLIANT';
 
     private filesControl = new FormControl(null, FileUploadValidators.filesLimit(2));
 
@@ -80,6 +83,7 @@ export class DmarkComponent implements OnInit, AfterViewInit {
     public tableData2: TableData;
     public tableData3: TableData;
     public tableData4: TableData;
+    public tableData6: TableData;
     public tableData5: TableData;
     public tableData12: TableData;
     blob: Blob;
@@ -251,6 +255,7 @@ export class DmarkComponent implements OnInit, AfterViewInit {
             let formattedArraySta3 = [];
             let formattedArrayOrdinaryFiles = [];
             let formattedArrayLabResultsList = [];
+            let formattedArrayComplianceResultsList = [];
             let formattedArrayOlderVersionList = [];
             const formattedArrayInvoiceDetailsList = [];
             this.SpinnerService.show();
@@ -291,13 +296,21 @@ export class DmarkComponent implements OnInit, AfterViewInit {
                             dataRows: formattedArrayOrdinaryFiles
                         };
                     }
-                    if (this.allPermitDetails.labResultsList !== []) {
-                        this.labResultsDetailsList = this.allPermitDetails.labResultsList;
+                    if (this.allPermitDetails.labResultsList.labResultsList !== []) {
+                        this.labResultsDetailsList = this.allPermitDetails.labResultsList.labResultsList;
                         // tslint:disable-next-line:max-line-length
                         formattedArrayLabResultsList = this.labResultsDetailsList.map(i => [i.pdfName, i.complianceStatus, i.sffId, i.complianceRemarks, i.pdfSavedId]);
                         this.tableData4 = {
                             headerRow: ['File Name', 'Compliant Status', 'View Remarks', 'View PDF'],
                             dataRows: formattedArrayLabResultsList
+                        };
+
+                        this.complianceResultsDetailsList = this.allPermitDetails.labResultsList.ssfResultsList;
+                        // tslint:disable-next-line:max-line-length
+                        formattedArrayComplianceResultsList = this.complianceResultsDetailsList.map(i => [i.sffId, i.bsNumber, i.complianceStatus, i.complianceRemarks]);
+                        this.tableData6 = {
+                            headerRow: ['BS Number', 'Compliant Status', 'View Remarks', 'Action'],
+                            dataRows: formattedArrayComplianceResultsList
                         };
                     }
                     if (this.allPermitDetails.oldVersionList !== []) {
