@@ -51,6 +51,8 @@ class ConsignmentDocumentDao {
     var processRejectionRemarks: String? = null
     var docTypeId: Long? = null
     var cdType: Long? = null
+    var cdTypeCategory: String? = null
+    var cdTypeName: String? = null
     var portOfArrival: Long? = null
     var freightStation: Long? = null
     var cdImporter: Long? = null
@@ -75,15 +77,19 @@ class ConsignmentDocumentDao {
     var assignedTo: String? = null
     var declarationNumber: String? = null
     var applicationRefNo: String? = null
-    var summaryPageURL: String?=null
+    var summaryPageURL: String? = null
 
     companion object {
         fun fromEntity(doc: ConsignmentDocumentDetailsEntity): ConsignmentDocumentDao {
             val dt = ConsignmentDocumentDao()
             dt.id = doc.id
-            dt.summaryPageURL=doc.summaryPageURL
+            dt.summaryPageURL = doc.summaryPageURL
             dt.uuid = doc.uuid
-            dt.cdType=doc.cdType
+            doc.cdType?.let {
+                dt.cdType = it.id
+                dt.cdTypeCategory = it.category
+                dt.cdTypeName = it.typeName
+            }
             dt.cocNumber = doc.cocNumber
             dt.cdRefNumber = doc.cdRefNumber
             dt.ucrNumber = doc.ucrNumber

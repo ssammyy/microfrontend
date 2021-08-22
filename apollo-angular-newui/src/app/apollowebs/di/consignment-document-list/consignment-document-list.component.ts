@@ -67,8 +67,12 @@ export class ConsignmentDocumentListComponent implements OnInit {
                 title: 'Assigned Officer',
                 type: 'string'
             },
-            documentType: {
+            cdTypeName: {
                 title: 'Document Type',
+                type: 'string'
+            },
+            cdTypeCategory: {
+                title: 'Document Category',
                 type: 'string'
             }
         },
@@ -106,13 +110,13 @@ export class ConsignmentDocumentListComponent implements OnInit {
             result => {
                 if (result.responseCode === "00") {
                     let listD: any[] = result.data;
-                    for (let i in listD) {
-                        let docTpe = this.documentTypes.filter(dd => listD[i].cdType == dd.id)
-                        if (docTpe.length > 0) {
-                            // console.log(i)
-                            listD[i]["documentType"] = docTpe[0].typeName
-                        }
-                    }
+                    // for (let i in listD) {
+                    //     let docTpe = this.documentTypes.filter(dd => listD[i].cdType == dd.id)
+                    //     if (docTpe.length > 0) {
+                    //         // console.log(i)
+                    //         listD[i]["documentType"] = docTpe[0].typeName
+                    //     }
+                    // }
                     this.dataSet = listD
                 } else {
                     console.log(result)

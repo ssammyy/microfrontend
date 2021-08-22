@@ -66,7 +66,7 @@ import {StandardRequestComponent} from "./apollowebs/standards-development/stand
 import {StandardTaskComponent} from "./apollowebs/standards-development/standard-request/standard-task/standard-task.component";
 import {InvoiceConsolidateComponent} from "./apollowebs/quality-assurance/invoice-consolidate/invoice-consolidate.component";
 import {FmarkApplicationComponent} from "./apollowebs/quality-assurance/fmark-application/fmark-application.component";
-import {SmarkComponent} from "../../../apollo-angular-web/src/app/apollowebs/smark/smark.component";
+import {SmarkComponent} from "./apollowebs/quality-assurance/smark/smark.component";
 
 // export const AppRoutes: Routes = [
 //     {

@@ -169,11 +169,11 @@ private val destinationInspectionHomePage = "destination-inspection/di-home-new"
                         }
                     }
 
-                    req.attributes()["CDSAutoAssigned"] =
-                        daoServices.findAllCdWithAssignedIoID(usersEntity)
+//                    req.attributes()["CDSAutoAssigned"] =
+//                        daoServices.findAllCdWithAssignedIoID(usersEntity)
                     req.attributes()["CDSManualAssign"] = cdListAutoAssigned
-                    req.attributes()["CDCompleted"] =
-                        daoServices.findAllCompleteCdWithAssignedIoID(usersEntity)
+//                    req.attributes()["CDCompleted"] =
+//                        daoServices.findAllCompleteCdWithAssignedIoID(usersEntity)
                     ok().render(destinationInspectionHomePage, req.attributes())
                 }
                 else -> throw SupervisorNotFoundException("can't access this page Due to Invalid authority")
@@ -185,27 +185,27 @@ private val destinationInspectionHomePage = "destination-inspection/di-home-new"
     fun ministryInspectionHome(req: ServerRequest): ServerResponse =
             try {
                 val map = commonDaoServices.serviceMapDetails(appId)
-                val ministryInspectionItemsOngoing = daoServices.findAllOngoingMinistryInspectionRequests()
-                val ministryInspectionItemsComplete = daoServices.findAllCompleteMinistryInspectionRequests()
-                val ministryInspectionItemsViewListOngoing: MutableList<MinistryInspectionListResponseDto> = ArrayList()
-                val ministryInspectionItemsViewListComplete: MutableList<MinistryInspectionListResponseDto> = ArrayList()
-
-                if (!ministryInspectionItemsOngoing.isNullOrEmpty()) {
-                    for (item in ministryInspectionItemsOngoing) {
-                        val ministryInspectionItem =  daoServices.convertCdItemDetailsToMinistryInspectionListResponseDto(item)
-                        ministryInspectionItemsViewListOngoing.add(ministryInspectionItem)
-                    }
-                }
-                if (!ministryInspectionItemsComplete.isNullOrEmpty()) {
-                    for (item in ministryInspectionItemsComplete) {
-                        val ministryInspectionItem =  daoServices.convertCdItemDetailsToMinistryInspectionListResponseDto(item)
-                        ministryInspectionItemsViewListComplete.add(ministryInspectionItem)
-                    }
-                }
-
-                req.attributes()["ongoingMinistryInspectionItemsViewList"] = ministryInspectionItemsViewListOngoing
-                req.attributes()["completeMinistryInspectionItemsViewList"] = ministryInspectionItemsViewListComplete
-                req.attributes()["motorVehicleMinistryInspectionChecklistName"] = daoServices.motorVehicleMinistryInspectionChecklistName
+//                val ministryInspectionItemsOngoing = daoServices.findAllOngoingMinistryInspectionRequests()
+//                val ministryInspectionItemsComplete = daoServices.findAllCompleteMinistryInspectionRequests()
+//                val ministryInspectionItemsViewListOngoing: MutableList<MinistryInspectionListResponseDto> = ArrayList()
+//                val ministryInspectionItemsViewListComplete: MutableList<MinistryInspectionListResponseDto> = ArrayList()
+//
+//                if (!ministryInspectionItemsOngoing.isNullOrEmpty()) {
+//                    for (item in ministryInspectionItemsOngoing) {
+//                        val ministryInspectionItem =  daoServices.convertCdItemDetailsToMinistryInspectionListResponseDto(item)
+//                        ministryInspectionItemsViewListOngoing.add(ministryInspectionItem)
+//                    }
+//                }
+//                if (!ministryInspectionItemsComplete.isNullOrEmpty()) {
+//                    for (item in ministryInspectionItemsComplete) {
+//                        val ministryInspectionItem =  daoServices.convertCdItemDetailsToMinistryInspectionListResponseDto(item)
+//                        ministryInspectionItemsViewListComplete.add(ministryInspectionItem)
+//                    }
+//                }
+//
+//                req.attributes()["ongoingMinistryInspectionItemsViewList"] = ministryInspectionItemsViewListOngoing
+//                req.attributes()["completeMinistryInspectionItemsViewList"] = ministryInspectionItemsViewListComplete
+//                req.attributes()["motorVehicleMinistryInspectionChecklistName"] = daoServices.motorVehicleMinistryInspectionChecklistName
                 req.attributes()["map"] = map
                 ok().render(destinationInspectionMinistryHomePage, req.attributes())
             } catch (e: Exception) {
@@ -274,17 +274,17 @@ private val destinationInspectionHomePage = "destination-inspection/di-home-new"
                                             assignedCfs.cfsId
                                                 ?: throw ExpectedDataNotFound("missing cfs id, check config")
                                         )
-                                        val allCdFound = daoServices.findAllCdWithNoAssignedIoID(cfsEntity, cdType)
-                                        if (allCdFound != null) {
-                                            cdListAutoAssigned.addAll(allCdFound)
-                                        }
+//                                        val allCdFound = daoServices.findAllCdWithNoAssignedIoID(cfsEntity, cdType)
+//                                        if (allCdFound != null) {
+//                                            cdListAutoAssigned.addAll(allCdFound)
+//                                        }
                                     }
 
-                                    req.attributes()["CDSAutoAssigned"] =
-                                        daoServices.findAllCdWithAssignedIoID(usersEntity, cdType)
+//                                    req.attributes()["CDSAutoAssigned"] =
+//                                        daoServices.findAllCdWithAssignedIoID(usersEntity, cdType)
                                     req.attributes()["CDSManualAssign"] = cdListAutoAssigned
-                                    req.attributes()["CDCompleted"] =
-                                        daoServices.findAllCompleteCdWithAssignedIoID(usersEntity, cdType)
+//                                    req.attributes()["CDCompleted"] =
+//                                        daoServices.findAllCompleteCdWithAssignedIoID(usersEntity, cdType)
                                     ok().render(cdPageList, req.attributes())
                                 }
                                 else -> throw SupervisorNotFoundException("can't access this page Due to Invalid authority")

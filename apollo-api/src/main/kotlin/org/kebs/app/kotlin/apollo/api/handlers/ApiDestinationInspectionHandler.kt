@@ -20,7 +20,6 @@ import org.springframework.web.multipart.MultipartHttpServletRequest
 import org.springframework.web.server.ResponseStatusException
 import org.springframework.web.servlet.function.ServerRequest
 import org.springframework.web.servlet.function.ServerResponse
-import org.springframework.web.servlet.function.bodyWithType
 import org.springframework.web.servlet.function.paramOrNull
 
 @Component

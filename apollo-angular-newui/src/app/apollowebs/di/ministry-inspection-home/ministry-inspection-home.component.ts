@@ -9,7 +9,7 @@ import swal from "sweetalert2";
     styleUrls: ['./ministry-inspection-home.component.css']
 })
 export class MinistryInspectionHomeComponent implements OnInit {
-    activeStatus: number = 1;
+    activeStatus: string = 'ongoing';
     public settings = {
         selectMode: 'single',  // single|multi
         hideHeader: false,
@@ -75,7 +75,11 @@ export class MinistryInspectionHomeComponent implements OnInit {
     }
 
     private loadData(page: number, size: number): any {
-        this.diService.listMinistryInspections(this.activeStatus, page, size)
+        let status=0;
+        if(this.activeStatus==='completed'){
+            status=1
+        }
+        this.diService.listMinistryInspections(status, page, size)
             .subscribe(
                 result => {
                     if (result.responseCode === "00") {
@@ -108,7 +112,7 @@ export class MinistryInspectionHomeComponent implements OnInit {
         this.router.navigate([`/ministry/inspection`, data.cdItemDetailsId]);
     }
 
-    toggleStatus(status: number): void {
+    toggleStatus(status: string): void {
         if (this.activeStatus !== status) {
             this.activeStatus = status;
             this.loadData(0, 20)

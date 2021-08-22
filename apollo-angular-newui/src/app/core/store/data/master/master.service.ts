@@ -1,14 +1,8 @@
 import {Injectable} from '@angular/core';
-import {
-    UserCompanyEntityDto,
-    UserRequestEntityDto
-} from '../../../../../../../apollo-webs/src/app/shared/models/master-data-details';
 import {HttpClient, HttpErrorResponse, HttpParams} from '@angular/common/http';
 import {Observable, throwError} from 'rxjs';
-import {AllBatchInvoiceDetailsDto, STA10PersonnelDto} from '../qa/qa.model';
 import {ApiEndpointService} from '../../../services/endpoints/api-endpoint.service';
 import {catchError, map} from 'rxjs/operators';
-import {UserDetailsDto, UserEntityDto} from '../users';
 import {
     AuthoritiesEntityDto,
     CountiesDto, DepartmentDto, DesignationEntityDto, DirectoratesEntityDto, DivisionDetailsDto,
@@ -18,6 +12,7 @@ import {
     SubSectionsL2EntityDto, TitlesEntityDto, TownsDto,
     UserSearchValues
 } from './master.model';
+import {UserEntityDto} from "../users";
 
 @Injectable({
     providedIn: 'root'
@@ -331,8 +326,8 @@ export class MasterService {
         const url = ApiEndpointService.getEndpoint(ApiEndpointService.ENDPOINT.USER_SELECTED_DETAILS);
         const params = new HttpParams()
             .set('userID', userID);
-        return this.http.get<UserDetailsDto>(url, {params}).pipe(
-            map(function (response: UserDetailsDto) {
+        return this.http.get<UserEntityDto>(url, {params}).pipe(
+            map(function (response: UserEntityDto) {
                 return response;
             }),
             catchError((fault: HttpErrorResponse) => {

@@ -152,8 +152,6 @@ import {ModalModule} from "ngb-modal";
 import {DataTablesModule} from "angular-datatables";
 
 
-// import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
-
 @NgModule({
     exports: [
         MatAutocompleteModule,
@@ -204,7 +202,6 @@ import {DataTablesModule} from "angular-datatables";
         NgxPaginationModule,
         Ng2SmartTableModule,
         NgbNavModule
-        // CoreModule
     ],
     declarations: [
         LoginComponent,
@@ -303,9 +300,6 @@ export class MaterialModule {}
         BrowserAnimationsModule,
         FormsModule,
         PdfViewerModule,
-        // RouterModule.forRoot(routes, {
-        //     useHash: true
-        // }),
         HttpClientModule,
         MaterialModule,
         SidebarModule,

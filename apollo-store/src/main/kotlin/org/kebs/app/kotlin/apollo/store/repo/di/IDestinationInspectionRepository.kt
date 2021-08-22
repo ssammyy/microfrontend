@@ -24,6 +24,17 @@ interface IConsignmentDocumentDetailsRepository : HazelcastRepository<Consignmen
         cdType: Long
     ): List<ConsignmentDocumentDetailsEntity>?
 
+    fun findByPortOfArrivalAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNull(
+            portOfArrival: Long,
+            cdType: Long,
+            page: Pageable
+    ): Page<ConsignmentDocumentDetailsEntity>
+
+    fun findByPortOfArrivalAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNull(
+            portOfArrival: Long,
+            page: Pageable
+    ): Page<ConsignmentDocumentDetailsEntity>
+
     fun findByFreightStationAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNull(
         freightStation: Long, cdType: ConsignmentDocumentTypesEntity
     ): List<ConsignmentDocumentDetailsEntity>?
@@ -40,6 +51,17 @@ interface IConsignmentDocumentDetailsRepository : HazelcastRepository<Consignmen
         cdType: Long
     ): List<ConsignmentDocumentDetailsEntity>?
 
+    fun findByPortOfArrivalAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNotNull(
+            portOfArrival: Long,
+            cdType: Long,
+            page: Pageable
+    ): Page<ConsignmentDocumentDetailsEntity>
+
+    fun findByPortOfArrivalAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNotNull(
+            portOfArrival: Long,
+            page: Pageable
+    ): Page<ConsignmentDocumentDetailsEntity>
+
     fun findByPortOfArrivalAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNotNull(
         portOfArrival: Long
     ): List<ConsignmentDocumentDetailsEntity>?
@@ -49,7 +71,8 @@ interface IConsignmentDocumentDetailsRepository : HazelcastRepository<Consignmen
     ): List<ConsignmentDocumentDetailsEntity>?
 
     fun findByPortOfArrivalIsNullAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNull(cdType: Long): List<ConsignmentDocumentDetailsEntity>?
-
+    fun findByPortOfArrivalIsNullAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNull(cdType: Long, page: Pageable): Page<ConsignmentDocumentDetailsEntity>
+    fun findByPortOfArrivalIsNullAndUcrNumberIsNotNullAndOldCdStatusIsNull(page: Pageable): Page<ConsignmentDocumentDetailsEntity>
     fun findByFreightStationIsNullAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNull(cdType: ConsignmentDocumentTypesEntity): List<ConsignmentDocumentDetailsEntity>?
 
     fun findByFreightStationIsNullAndUcrNumberIsNotNullAndOldCdStatusIsNull(): List<ConsignmentDocumentDetailsEntity>?
@@ -62,14 +85,13 @@ interface IConsignmentDocumentDetailsRepository : HazelcastRepository<Consignmen
     ): Page<ConsignmentDocumentDetailsEntity>?
 
     fun findAllByAssignedInspectionOfficerAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNull(
-        assignedInspectionOfficer: UsersEntity, cdType: ConsignmentDocumentTypesEntity
-    ): List<ConsignmentDocumentDetailsEntity>?
+        assignedInspectionOfficer: UsersEntity,
+        cdType: Long,
+        pageable: Pageable
+    ): Page<ConsignmentDocumentDetailsEntity>
 
     fun findAllByAssignedInspectionOfficerAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNull(
-        assignedInspectionOfficer: UsersEntity
-    ): List<ConsignmentDocumentDetailsEntity>?
-            assignedInspectionOfficer: UsersEntity,
-            cdType: Long,
+        assignedInspectionOfficer: UsersEntity,
             page: Pageable,
     ): Page<ConsignmentDocumentDetailsEntity>
 
@@ -78,10 +100,14 @@ interface IConsignmentDocumentDetailsRepository : HazelcastRepository<Consignmen
         assignedInspectionOfficer: UsersEntity, cdType: ConsignmentDocumentTypesEntity
     ): List<ConsignmentDocumentDetailsEntity>?
 
-    fun findAllByAssignedInspectionOfficerAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNotNull(
-        assignedInspectionOfficer: UsersEntity
-    ): List<ConsignmentDocumentDetailsEntity>?
+    fun findAllByAssignedInspectionOfficerAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNotNull(
             assignedInspectionOfficer: UsersEntity,
+            cdType: Long,
+            page: Pageable
+    ): Page<ConsignmentDocumentDetailsEntity>
+
+    fun findAllByAssignedInspectionOfficerAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNotNull(
+        assignedInspectionOfficer: UsersEntity,
             cdType: Long,
             page: Pageable
     ): Page<ConsignmentDocumentDetailsEntity>
@@ -92,9 +118,7 @@ interface IConsignmentDocumentDetailsRepository : HazelcastRepository<Consignmen
     ): Page<ConsignmentDocumentDetailsEntity>
 
     fun findByFreightStationAndAssignedInspectionOfficerIsNullAndCdTypeAndUcrNumberIsNotNullAndOldCdStatusIsNull(
-        freightStation: Long, cdType: ConsignmentDocumentTypesEntity
-    ): List<ConsignmentDocumentDetailsEntity>?
-            freightStation: Long,
+        freightStation: Long,
             cdType: Long,
             page: Pageable
     ): Page<ConsignmentDocumentDetailsEntity>
@@ -110,7 +134,6 @@ interface IConsignmentDocumentDetailsRepository : HazelcastRepository<Consignmen
     fun findByUcrNumberAndOldCdStatus(ucrNumber: String, oldCdStatus: Int): List<ConsignmentDocumentDetailsEntity>?
     fun findTopByUcrNumberOrderByIdDesc(ucrNumber: String): ConsignmentDocumentDetailsEntity?
     fun findByUuid(uuid: String): ConsignmentDocumentDetailsEntity?
-    fun findAllByAssignedInspectionOfficerAndUcrNumberIsNotNullAndOldCdStatusIsNullAndApproveRejectCdStatusIsNull(usersEntity: UsersEntity, page: Pageable): Page<ConsignmentDocumentDetailsEntity>
 }
 
 @Repository
@@ -497,7 +520,7 @@ interface IConsignmentItemsRepository : HazelcastRepository<CdItemDetailsEntity,
                 "      DAT_KEBS_CD_INSPECTION_MOTOR_VEHICLE_ITEM_CHECKLIST.MINISTRY_REPORT_SUBMIT_STATUS = 1",
         nativeQuery = true
     )
-    fun findCompletedMinistrySubmissions(): List<CdItemDetailsEntity>?
+    fun findCompletedMinistrySubmissions(page: Pageable): Page<CdItemDetailsEntity>
 
     @Query(
         "SELECT DAT_KEBS_CD_ITEM_DETAILS.* FROM\n" +

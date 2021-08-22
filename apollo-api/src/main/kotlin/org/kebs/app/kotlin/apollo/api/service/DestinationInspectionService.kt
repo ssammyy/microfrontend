@@ -286,11 +286,11 @@ class DestinationInspectionService(
         }
         // CdType details
         cdDetails.cdType?.let {
-            dataMap.put("cd_type", daoServices.findCdTypeDetails(it))
+            dataMap.put("cd_type", it)
         }
         // Standard
         cdDetails.cdStandardsTwo?.let {
-            dataMap.put("cd_standards_two", daoServices.findCdStandardsTWODetails(it))
+            dataMap.put("cd_standards_two", it)
         }
         // Transporter
         cdDetails.cdTransport?.let {
